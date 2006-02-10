@@ -32,7 +32,7 @@ if(preg_match("#\[list\](.*?)\[/list\]#si", $full_text, $match))
 }
 else if(preg_match("#\[list=(.*?)\](.*?)\[/list\]#si", $full_text, $match))
 {
-	$type = $match[1];
+	$type = $tp -> toAttribute($match[1]);
 	$listitems = $match[2];
 	$listitems = explode("*", $match[2]);
 	$listtext = "\n<ol style='list-style-type: $type'>";

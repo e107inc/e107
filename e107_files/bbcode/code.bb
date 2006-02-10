@@ -31,7 +31,7 @@ else
 	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
 	$highlighted_text = highlight_string($code_text, TRUE);
 	$divClass = ($parm) ? $parm : 'code_highlight';
-	$ret = "<div class='{$divClass}'>{$highlighted_text}</div>";
+	$ret = "<div class='".$tp -> toAttribute($divClass)."'>{$highlighted_text}</div>";
 }
 $ret = str_replace("[", "&#091;", $ret);
 return $ret;

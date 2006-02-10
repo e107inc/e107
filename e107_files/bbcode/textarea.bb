@@ -9,7 +9,7 @@ parse_str($parm, $tmp);
 
 foreach($tmp as $key => $p)
 {
-	$tastr .= $key." = '$p' ";
+	$tastr .= $tp -> toAttribute($key)." = '".$tp -> toAttribute($p)."' ";
 }
 
 

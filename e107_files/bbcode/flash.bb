@@ -17,18 +17,18 @@ foreach($flParms as $k => $v)
 {
 	if($k != 'height' && $k != 'width')
 	{
-		$parmStr .= "<param name='{$k}' value='{$v}'\n";
+		$parmStr .= "<param name='".$tp -> toAttribute($k)."' value='".$tp -> toAttribute($v)."'\n";
 	}
 }
 
-$ret = "<object type='application/x-shockwave-flash' data='{$code_text}' ";
+$ret = "<object type='application/x-shockwave-flash' data='".$tp -> toAttribute($code_text)."' ";
 if($flParms['height'])
 {
-	$ret .= "height='{$flParms['height']}' ";
+	$ret .= "height='".$tp -> toAttribute($flParms['height'])."' ";
 }
 if($flParms['width'])
 {
-	$ret .= "width='{$flParms['width']}' ";
+	$ret .= "width='".$tp -> toAttribute($flParms['width'])."' ";
 }
 $ret .= ">\n";
 $ret .= $parmStr;
