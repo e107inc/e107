@@ -35,7 +35,7 @@ define("LAN_411", "Bestand");
 define("LAN_412", "Schermprint");
 define("LAN_413", "Beschrijving");
 define("LAN_414", "Werkende demo");
-define("LAN_415", "Voer het adres van de site, waar de demo te zien is, in");
+define("LAN_415", "Voer het adres van de site in, waar de demo te zien is");
 define("LAN_416", "Plaatsen en uploaden");
 define("LAN_417", "Upload bestand");
 define("LAN_418", "Maximale bestandsgrootte: ");

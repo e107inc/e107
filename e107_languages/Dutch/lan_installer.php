@@ -116,4 +116,8 @@ define("LANINS_080", "E-mailadres beheerder");
 define("LANINS_081", "Geef je e-mailadres op");
 define("LANINS_082", "gebruiker@jouwsite.net");
 
+define("LANINS_083", "MySQL foutmelding:");
+define("LANINS_084", "De installer kon geen verbinding maken met de database");
+define("LANINS_085", "De installer kon deze database niet vinden:");
+
 ?>

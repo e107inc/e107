@@ -38,6 +38,10 @@ define("FORLAN_24", "Verplaats de discussie naar forum");
 define("FORLAN_25", "Verplaats discussie");
 define("FORLAN_26", "Reactie verwijderd");
 define("FORLAN_27", "verplaatst");
-
+define("FORLAN_28", "Deze discussie niet hernoemen");
+define("FORLAN_29", "Toevoegen");
+define("FORLAN_30", "aan titel");
+define("FORLAN_31", "Hernoemen als:");
+define("FORLAN_32", "Hernoemen discussie opties:");
 
 ?>

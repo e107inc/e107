@@ -16,6 +16,7 @@
 */
 
 define("PAGE_NAME", "Forum");
+define("FORLAN_HIDDEN", "VERBORGEN - INLOGGEN EN BEANTWOORDEN OM TE ZIEN");
 define("LAN_01", "Forums");
 define("LAN_02", "terug omhoog");
 define("LAN_03", "Ga");

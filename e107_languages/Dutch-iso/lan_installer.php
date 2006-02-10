@@ -14,7 +14,7 @@ define("LANINS_009", "Opnieuw testen permissions");
 define("LANINS_010", "Bestand niet beschrijfbaar: ");
 define("LANINS_010a", "Map niet beschrijfbaar: ");
 define("LANINS_011", "Fout");
-define("LANINS_012", "MySQL functies lijken niet te bestaan. Dit betekent vermoedelijk dat de MySQL PHP extensies niet  zijn geïnstalleerd of dat ze niet goed zijn geconfigureerd."); // help for 012
+define("LANINS_012", "MySQL functies lijken niet te bestaan. Dit betekent vermoedelijk dat de MySQL PHP extensies niet zijn geïnstalleerd of dat ze niet goed zijn geconfigureerd."); // help for 012
 define("LANINS_013", "Het MySQL versienummer is niet vast te stellen. Dat kan betekenen dat je MySQL server down is of dat de server de verbindingen weigert.");
 define("LANINS_014", "Bestandspermissies");
 define("LANINS_015", "PHP Versie");
@@ -51,7 +51,7 @@ define("LANINS_040", "Fouten");
 define("LANINS_041", "e107 kon met de informatie die je net opgaf geen verbinding maken met de MySQL server. Ga terug naar de vorige pagina en controleer de opgegeven informatie.");
 define("LANINS_042", "Verbinding met de MySQL server gemaakt en geverifieerd.");
 
-define("LANINS_043", "De database kan niet worden gecreëerd. Controleerd of je de juiste permissies hebt om databases op je server te creëren.");
+define("LANINS_043", "De database kan niet worden gecreëerd. Controleer of je de juiste permissies hebt om databases op je server te creëren.");
 define("LANINS_044", "Database succesvol aangemaakt.");
 define("LANINS_045", "Druk op de knop om verder te gaan met de volgende stap.");
 define("LANINS_046", "5");
@@ -63,7 +63,7 @@ define("LANINS_051", "Geïnstalleerd");
 define("LANINS_052", "Niet geïnstalleerd");
 define("LANINS_053", "e107 .700 vereist de PHP XML Extensies. Neem contact op met je provider of lees de informatie op ");
 define("LANINS_054", " voordat je verder gaat");
-define("LANINS_055", "Installatie bevestiging");
+define("LANINS_055", "Bevestig installatie");
 define("LANINS_056", "6");
 define("LANINS_057", " e107 heeft nu alle informatie die nodig is om de installatie af te ronden.
 
@@ -115,5 +115,9 @@ define("LANINS_079", "Voer het beheerderswachtwoord nogmaals in ter bevestiging"
 define("LANINS_080", "E-mailadres beheerder");
 define("LANINS_081", "Geef je e-mailadres op");
 define("LANINS_082", "gebruiker@jouwsite.net");
+
+define("LANINS_083", "MySQL foutmelding:");
+define("LANINS_084", "De installer kon geen verbinding maken met de database");
+define("LANINS_085", "De installer kon deze database niet vinden:");
 
 ?>
