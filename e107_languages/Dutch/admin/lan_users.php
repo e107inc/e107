@@ -104,7 +104,7 @@ define("USRLAN_135", "Geen IP adres gevonden in de gebruikersinfo, IP adres niet
 define("USRLAN_136", "Meerdere gebruikers gevonden met het IP adres {IP}, IP niet geblokkeerd.");
 define("USRLAN_137", "Gebruikers met IP adres {IP} geblokkeerd.");
 define("USRLAN_138", "Nog niet goedgekeurde aanmeldingen");
-define("USRLAN_139", "Je account is geactivateerd.\n\nJe kunt {SITEURL} nu bezoeken en inloggen met de inloggegevens die je bij je aanmelding hebt opgegeven.");
+define("USRLAN_139", "Je account is geactiveerd.\n\nJe kunt {SITEURL} nu bezoeken en inloggen met de inloggegevens die je bij je aanmelding hebt opgegeven.");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Weergavenaam");
