@@ -1,6 +1,7 @@
 <?php
 
-class auth_login {
+class auth_login
+{
 
 	var $server;
 	var $dn;
@@ -12,29 +13,33 @@ class auth_login {
 	var $connection;
 	var $result;
 	var $ldapVersion;
+	var $Available;
 
 	function auth_login()
 	{
 		$sql = new db;
-		$sql -> db_Select("alt_auth","*","auth_type = 'ldap' ");
+		$sql -> db_Select("alt_auth", "*", "auth_type = 'ldap' ");
 		while($row = $sql -> db_Fetch())
 		{
-			extract($row);
-			$ldap[$auth_parmname]=$auth_parmval;
+			$ldap[$row['auth_parmname']]=$row['auth_parmval'];
 		}
 
+		$this->server = explode(",", $ldap['ldap_server']);
+		$this->serverType = $ldap['ldap_servertype'];
+		$this->dn = $ldap['ldap_basedn'];
+		$this->usr = $ldap['ldap_user'];
+		$this->pwd = $ldap['ldap_passwd'];
+		$this->ldapVersion = $ldap['ldap_version'];
 
-		$this -> server = explode(",",$ldap['ldap_server']);
-		$this -> serverType = $ldap['ldap_servertype'];
-		$this -> dn = $ldap['ldap_basedn'];
-		$this -> usr = $ldap['ldap_user'];
-		$this -> pwd = $ldap['ldap_passwd'];
-		$this -> ldapVersion = $ldap['ldap_version'];
+		if(!function_exists('ldap_connect'))
+		{
+			$this->Available = FALSE;
+			return false;
+		}
 
 		if(!$this -> connect())
 		{
-			echo "could not connect";
-			exit;
+			return AUTH_NOCONNECT;
 		}
 	}
 
@@ -79,12 +84,9 @@ class auth_login {
 		if ($this->serverType == "ActiveDirectory")
 		{
 			$checkDn = "$uname@$this->dn";
-			//            echo "here";
 		}
 		else
 		{
-//			echo $this -> dn."<br />";
-//			echo "uid=".$uname."<br />";
 			if ($this -> usr != '' && $this -> pwd != '')
 			{
 				$this -> result = ldap_bind($this -> connection, $this -> usr, $this -> pwd);
@@ -93,17 +95,27 @@ class auth_login {
 			{
 				$this -> result = ldap_bind($this -> connection);
 			}
-			$query = ldap_search($this -> connection, $this -> dn, "uid=".$uname);
-			if ($query == false)
+			
+//			In ldap_auth.php, should look like this instead for eDirectory 
+//			$query = ldap_search($this -> connection, $this -> dn, "cn=".$uname);
+
+			if($this->serverType == "eDirectory")
 			{
-				echo "Could not perform query to LDAP directory.";
-				exit;
+				$query = ldap_search($this->connection, $this->dn, "cn=".$uname);
 			}
 			else
 			{
-//				echo "getting entries";
+				$query = ldap_search($this->connection, $this->dn, "uid=".$uname);
+			}
+
+			if ($query == false)
+			{
+//				Could not perform query to LDAP directory
+				return AUTH_NOCONNECT;
+			}
+			else
+			{
 				$query_result = ldap_get_entries($this -> connection, $query);
-//				echo $query_result["count"]."<br />";
 
 				if ($query_result["count"] != 1)
 				{
@@ -137,11 +149,6 @@ class auth_login {
 			$this->ldapErrorCode = ldap_errno( $this->connection);
 			$this->ldapErrorText = ldap_error( $this->connection);
 
-//			echo $this->ldapErrorCode."<br />";
-//			echo $this->ldapErrorText;
-//			exit;
-
-
 			if($this -> ldapErrorCode == 32)
 			{
 				return AUTH_NOUSER;
@@ -150,7 +157,8 @@ class auth_login {
 			{
 				return AUTH_BADPASSWORD;
 			}
-			return false;
+			// return error code as if it never connected, maybe change that in the future
+			return AUTH_NOCONNECT;  
 		}
 	}
 }
