@@ -8,7 +8,7 @@ if (!array_key_exists($tmp[0],$eMenuList)) {
 	return;
 }
 
-if ($tmp[1] == ret) {
+if (isset($tmp[1]) && $tmp[1] == 'ret') {
 	ob_start();
 }
 
@@ -80,7 +80,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 	}
 }
 
-if ($tmp[1] == ret) {
+if (isset($tmp[1]) && $tmp[1] == 'ret') {
 	$ret = ob_get_contents();
 	ob_end_clean();
 	return $ret;
