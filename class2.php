@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.258 $
-|     $Date: 2006-02-04 07:20:31 $
-|     $Author: streaky $
+|     $Revision: 1.259 $
+|     $Date: 2006-02-12 19:14:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -226,7 +226,10 @@ if(!$PrefCache){
 	// cache of core prefs was found, so grab all the useful core rows we need
 	$sysprefs->DefaultIgnoreRows .= '|SitePrefs';
 	$sysprefs->prefVals['core']['SitePrefs'] = $PrefCache;
-	$sysprefs->ExtractPrefs($retrieve_prefs, TRUE);
+	if(isset($retrieve_prefs))
+	{
+		$sysprefs->ExtractPrefs($retrieve_prefs, TRUE);
+	}
 	$pref = $eArrayStorage->ReadArray($PrefCache);
 }
 
@@ -287,7 +290,7 @@ $user_language='';
 if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 
 	if ($pref['user_tracking'] == "session") {
-		$user_language=$_SESSION['e107language_'.$pref['cookie_name']];
+		$user_language=(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : "");
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
 	} else {
 		$user_language=$_COOKIE['e107language_'.$pref['cookie_name']];
@@ -766,6 +769,7 @@ function get_user_data($uid, $extra = "", $force_join = TRUE)
 {
 	global $pref, $sql;
 	$uid = intval($uid);
+	$var = array();
 	if($ret = getcachedvars("userdata_{$uid}"))
 	{
 		return $ret;
@@ -799,15 +803,21 @@ function get_user_data($uid, $extra = "", $force_join = TRUE)
 						$extended_struct[] = $row;
 					}
 				}
-				cachevars("extended_struct", $extended_struct);
+				if(isset($extended_struct))
+				{
+					cachevars("extended_struct", $extended_struct);
+				}
 			}
 		}
 
-		foreach($extended_struct as $row)
+		if(isset($extended_struct))
 		{
-			if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
+			foreach($extended_struct as $row)
 			{
-				$var[$row['Field']] = $row['Default'];
+				if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
+				{
+					$var[$row['Field']] = $row['Default'];
+				}
 			}
 		}
 		cachevars("userdata_{$uid}", $var);
@@ -977,7 +987,7 @@ function cachevars($id, $var) {
 
 function getcachedvars($id) {
 	global $cachevar;
-	return ($cachevar[$id] ? $cachevar[$id] : false);
+	return (isset($cachevar[$id]) ? $cachevar[$id] : false);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1023,7 +1033,7 @@ function init_session() {
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
 	} else {
-		list($uid, $upw)=($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
+		list($uid, $upw)=(isset($_COOKIE[$pref['cookie_name']]) && $_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
 
 		if (empty($uid) || empty($upw)) {
 			cookie($pref['cookie_name'], "", (time() - 2592000));

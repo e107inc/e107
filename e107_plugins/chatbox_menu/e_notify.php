@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/e_notify.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-02-02 06:37:52 $
+|     $Revision: 1.8 $
+|     $Date: 2006-02-12 19:14:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if(ADMIN_PAGE === true)
+if(defined('ADMIN_PAGE') && ADMIN_PAGE === true)
 {
 	include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 	$config_category = NT_LAN_CB_1;
