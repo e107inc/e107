@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.26 $
-| $Date: 2006-02-12 19:13:26 $
+| $Revision: 1.27 $
+| $Date: 2006-02-12 19:23:06 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -128,7 +128,7 @@ class e_shortcode {
 		global $e107_debug;
 		if($e107_debug)
 		{
-			trigger_error("starting shortode [$code]", E_USER_ERROR);
+			trigger_error("starting shortcode {".$code.}", E_USER_ERROR);
 		}
 		$ret = (isset($shortcode) ? eval($shortcode) : "");
 
