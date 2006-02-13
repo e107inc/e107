@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2006-01-07 01:37:26 $
+|		$Revision: 1.20 $
+|		$Date: 2006-02-13 10:13:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -37,6 +37,10 @@ $fl = new e_file;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
+//these have to be set for the tinymce wysiwyg
+$e_wysiwyg	= "content_text";
+$WYSIWYG	= true;
+
 global $tp;
 
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
@@ -49,21 +53,11 @@ if(e_QUERY){
 // define e_pagetitle
 $aa -> setPageTitle();
 
-require_once(HEADERF);
-
 //include js
-function headerjs(){
-	global $tp, $plugindir, $qs, $pref;
+//function headerjs(){
+//}
 
-	if( $qs[0] == "content" && $qs[1] == "submit" && is_numeric($qs[2]) ){
-		$e_wysiwyg			= "content_text";
-		if($pref['wysiwyg']){
-			$pref['allow_html']	= "1";
-			require_once(e_HANDLER."tiny_mce/wysiwyg.php");
-			echo wysiwyg($e_wysiwyg);
-		}
-	}
-}
+require_once(HEADERF);
 
 if(isset($_POST['create_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none" && $_POST['content_author_name'] != "" && $_POST['content_author_email'] != ""){

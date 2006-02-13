@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.100 $
-|		$Date: 2006-01-16 15:21:52 $
+|		$Revision: 1.101 $
+|		$Date: 2006-02-13 10:13:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -115,7 +115,10 @@ class contentform{
 				$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
 				$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
 				$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
-				$content_text		= $tp -> post_toHTML($_POST['content_text']);
+				if(e_WYSIWYG){
+					$_POST['content_text'] = $tp->createConstants($_POST['content_text']); // convert e107_images/ to {e_IMAGE} etc.
+				}
+				$content_text = $tp->post_toHTML($_POST['content_text'],TRUE);
 
 				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_HEADING = ($content_heading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$content_heading.$TDPOST.$TRPOST : "");
@@ -231,7 +234,7 @@ class contentform{
 							return;
 						}
 
-						if($mode == 'submit'){
+						if($mode == 'submit' || $mode=='contentmanager'){
 							$border = "border:1px solid #5d6e75;";
 							$padding = "padding:6px;";
 							$tableprop = "border-collapse: collapse; border-spacing:0px;";
@@ -413,7 +416,12 @@ class contentform{
 								$row['content_heading']		= $tp -> toForm($row['content_heading']);
 								$row['content_subheading']	= $tp -> toForm($row['content_subheading']);
 								$row['content_summary']		= $tp -> toForm($row['content_summary']);
-								$row['content_text']		= $tp -> toForm($row['content_text']);
+								if(e_WYSIWYG){
+									$row['content_text']	= $tp->toHTML($row['content_text'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
+									$row['content_text']	= $tp->replaceConstants($row['content_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+								}else{
+									$row['content_text']	= $tp -> toForm($row['content_text']);
+								}
 								$row['content_meta']		= $tp -> toForm($row['content_meta']);
 								$authordetails				= $aa -> getAuthor($row['content_author']);
 							}
@@ -430,7 +438,12 @@ class contentform{
 								$row['content_heading']				= $tp -> post_toForm($_POST['content_heading']);
 								$row['content_subheading']			= $tp -> post_toForm($_POST['content_subheading']);
 								$row['content_summary']				= $tp -> post_toForm($_POST['content_summary']);
-								$row['content_text']				= $tp -> post_toForm($_POST['content_text']);
+								if(e_WYSIWYG){
+									$row['content_text'] = $tp->toHTML($_POST['content_text'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
+									$row['content_text'] = $tp->replaceConstants($_POST['content_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+								}else{
+									$row['content_text'] = $_POST['content_text'];
+								}
 								$authordetails[0]					= $_POST['content_author_id'];
 								$authordetails[1]					= $_POST['content_author_name'];
 								$authordetails[2]					= $_POST['content_author_email'];
@@ -1427,7 +1440,11 @@ class contentform{
 				$formurl			= e_SELF."?".e_QUERY;
 				$cat_heading		= $tp -> post_toHTML($_POST['cat_heading']);
 				$cat_subheading		= $tp -> post_toHTML($_POST['cat_subheading']);
-				$cat_text			= $tp -> post_toHTML($_POST['cat_text']);
+				//$cat_text			= $tp -> post_toHTML($_POST['cat_text']);
+				if(e_WYSIWYG){
+					$_POST['cat_text'] = $tp->createConstants($_POST['cat_text']); // convert e107_images/ to {e_IMAGE} etc.
+				}
+				$cat_text = $tp->post_toHTML($_POST['cat_text'],TRUE);
 				
 				$text = "
 				<div style='text-align:center'>
@@ -1458,6 +1475,11 @@ class contentform{
 			if( isset($_POST['preview_category']) || isset($message) || isset($_POST['uploadcaticon']) ){
 				$row['content_heading']		= $tp -> post_toForm($_POST['cat_heading']);
 				$row['content_subheading']	= $tp -> post_toForm($_POST['cat_subheading']);
+				//$row['content_text']		= $tp -> post_toForm($_POST['cat_text']);
+				if(e_WYSIWYG){
+					$_POST['cat_text']		= $tp->toHTML($_POST['cat_text'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
+					$_POST['cat_text']		= $tp->replaceConstants($_POST['cat_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+				}
 				$row['content_text']		= $tp -> post_toForm($_POST['cat_text']);
 				$ne_day						= $_POST['ne_day'];
 				$ne_month					= $_POST['ne_month'];
@@ -1470,6 +1492,10 @@ class contentform{
 				$row['content_rate']		= $_POST['cat_rate'];
 				$row['content_pe']			= $_POST['cat_pe'];
 				$row['content_class']		= $_POST['cat_class'];
+			}else{
+				if(e_WYSIWYG){
+					$row['content_text']	= $tp->replaceConstants($row['content_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+				}
 			}
 
 			$text = "

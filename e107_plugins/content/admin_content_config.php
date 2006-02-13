@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.59 $
-|		$Date: 2006-01-16 15:21:52 $
+|		$Revision: 1.60 $
+|		$Date: 2006-02-13 10:13:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -31,7 +31,6 @@ include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
 
-
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -46,8 +45,6 @@ require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
-
-
 
 global $tp;
 $deltest = array_flip($_POST);
