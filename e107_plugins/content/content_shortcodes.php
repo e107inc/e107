@@ -349,10 +349,11 @@ SC_BEGIN CONTENT_CAT_LIST_TABLE_TEXT
 global $CONTENT_CAT_LIST_TABLE_TEXT, $tp, $row, $mainparent, $content_pref;
 if($row['content_text'] && isset($content_pref["content_cat_text_{$mainparent}"]) && $content_pref["content_cat_text_{$mainparent}"] && ($content_pref["content_cat_text_char_{$mainparent}"] > 0 || $content_pref["content_cat_text_char_{$mainparent}"] == 'all')){
 	if($content_pref["content_cat_text_char_{$mainparent}"] == 'all'){
-		$CONTENT_CAT_LIST_TABLE_TEXT = $row['content_text'];
+		//$CONTENT_CAT_LIST_TABLE_TEXT = $row['content_text'];
+		$CONTENT_CAT_LIST_TABLE_TEXT = $tp->toHTML($row['content_text'], TRUE, "constants");
 	}else{
 		$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
-		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
+		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak constants");
 		
 		$rowtext = strip_tags($rowtext);
 		$words = explode(" ", $rowtext);

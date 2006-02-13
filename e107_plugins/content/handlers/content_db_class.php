@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.42 $
-|		$Date: 2006-01-16 15:21:52 $
+|		$Revision: 1.43 $
+|		$Date: 2006-02-13 10:13:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -110,6 +110,9 @@ class contentdb{
 			$_POST['content_heading']		= $tp -> toDB($_POST['content_heading']);
 			$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
 			$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
+			if(e_WYSIWYG){
+				$_POST['content_text']		= $tp->createConstants($_POST['content_text']); // convert e107_images/ to {e_IMAGE} etc.
+			}
 			$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
 			$_POST['parent']				= ($_POST['parent'] ? intval($_POST['parent']) : "0");
 			$_POST['content_class']			= ($_POST['content_class'] ? intval($_POST['content_class']) : "0");
@@ -305,6 +308,9 @@ class contentdb{
 
 			$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
 			$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
+			if(e_WYSIWYG){
+				$_POST['cat_text']		= $tp->createConstants($_POST['cat_text']); // convert e107_images/ to {e_IMAGE} etc.
+			}
 			$_POST['cat_text']			= $tp -> toDB($_POST['cat_text']);
 			$_POST['parent']			= ($_POST['parent'] == "0" ? "0" : "0.".intval($_POST['parent']));
 			$_POST['cat_class']			= ($_POST['cat_class'] ? intval($_POST['cat_class']) : "0");
