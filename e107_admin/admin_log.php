@@ -11,15 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_log.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-11-23 13:43:26 $
-|     $Author: streaky $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-13 02:03:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 
 require_once("auth.php");
 $text = "";
+
+if(e_QUERY == 'purge')
+{
+	$sql->db_Delete('dblog');
+}
 
 $sql -> db_Select("dblog", "*", "ORDER BY `dblog_datestamp` DESC", "no_where");
 
