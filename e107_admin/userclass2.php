@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-21 20:41:12 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-02-13 03:04:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,81 +26,100 @@ require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 $uclass = new e_userclass;
 
-function check_allowed($class_id) {
+function check_allowed($class_id)
+{
 	global $sql;
-	if (!$sql->db_Select('userclass_classes', '*', "userclass_id = {$class_id}")) {
+	if (!$sql->db_Select('userclass_classes', '*', "userclass_id = {$class_id}"))
+	{
 		header("location:".SITEURL);
 		exit;
 	}
 	$row = $sql->db_Fetch();
-	extract($row);
-	if (!getperms('0') && !check_class($userclass_editclass)) {
+	if (!getperms('0') && !check_class($row['userclass_editclass']))
+	{
 		header("location:".SITEURL);
 		exit;
 	}
 }
 
-if (strstr(e_QUERY, 'clear')) {
+if (strstr(e_QUERY, 'clear'))
+{
 	$tmp = explode('.', e_QUERY);
 	$class_id = $tmp[1];
-	$chk = check_allowed($class_id);
-	if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')")) {
-		while ($row = $sql->db_Fetch()) {
+	check_allowed($class_id);
+	if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
+	{
+		while ($row = $sql->db_Fetch())
+		{
 			$uidList[$row['user_id']] = $row['user_class'];
 		}
 		$uclass->class_remove($class_id, $uidList);
 		$message = UCSLAN_1;
 	}
-} elseif(e_QUERY) {
+}
+elseif(e_QUERY)
+{
 	$tmp2 = explode('-', e_QUERY);
 	$class_id = $tmp2[0];
 	check_allowed($class_id);
 	$message = UCSLAN_2;
 
-	if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')")) {
-		while ($row = $sql->db_Fetch()) {
+	if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
+	{
+		while ($row = $sql->db_Fetch())
+		{
 			$uidList[$row['user_id']] = $row['user_class'];
 		}
 		$uclass->class_remove($class_id, $uidList);
 	}
 	unset($uidList);
-	if ($sql->db_Select('user', 'user_id, user_class', "user_id IN({$tmp2[1]})")) {
-		while ($row = $sql->db_Fetch()) {
+	if ($sql->db_Select('user', 'user_id, user_class', "user_id IN({$tmp2[1]})"))
+	{
+		while ($row = $sql->db_Fetch())
+		{
 			$uidList[$row['user_id']] = $row['user_class'];
 		}
 		$uclass->class_add($class_id, $uidList);
 	}
 }
 
-if (isset($_POST['delete'])) {
+if (isset($_POST['delete']))
+{
 	$class_id = $_POST['existing'];
 	check_allowed($class_id);
 	if ($_POST['confirm']) {
 		$sql->db_Delete('userclass_classes', "userclass_id='".$_POST['existing']."' ");
-		if ($sql->db_Select('user', 'user_id, user_class', "user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')")) {
-			while ($row = $sql->db_Fetch()) {
+		if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
+		{
+			while ($row = $sql->db_Fetch())
+			{
 				$uidList[$row['user_id']] = $row['user_class'];
 			}
 			$uclass->class_remove($class_id, $uidList);
 		}
-		if (isset($pref['frontpage'][$class_id])) {
+		if (isset($pref['frontpage'][$class_id]))
+		{
 			unset($pref['frontpage'][$class_id]);
 			save_prefs();
 		}
 		$message = UCSLAN_3;
-	} else {
+	}
+	else
+	{
 		$message = UCSLAN_4;
 	}
 }
 
-If(isset($_POST['edit'])) {
+if(isset($_POST['edit']))
+{
 	check_allowed($_POST['existing']);
 	$sql->db_Select('userclass_classes', '*', "userclass_id='".$_POST['existing']."' ");
 	$row = $sql->db_Fetch();
 	extract($row);
 }
 
-if (isset($_POST['updateclass'])) {
+if (isset($_POST['updateclass']))
+{
 	check_allowed($_POST['userclass_id']);
 	$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
 	$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
@@ -118,25 +137,31 @@ if (isset($_POST['createclass']))
 		if (getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']) {
 			$editclass = $_POST['userclass_editclass'];
 			$i = 1;
-			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255) {
+			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
+			{
 				$i++;
 			}
-			if ($i < 255) {
+			if ($i < 255)
+			{
 				$sql->db_Insert("userclass_classes", $i.", '".strip_tags($_POST['userclass_name'])."', '".$_POST['userclass_description']."',{$editclass} ");
 			}
-			if (!isset($pref['frontpage'][$i])) {
+			if (!isset($pref['frontpage'][$i]))
+			{
 				$pref['frontpage'][$i] = $pref['frontpage'][e_UC_GUEST];
 				save_prefs();
 			}
 			$message = UCSLAN_6;
-		} else {
+		}
+		else
+		{
 			header("location:".SITEURL);
 			exit;
 		}
 	}
 }
 
-if (isset($message)) {
+if (isset($message))
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -148,13 +173,18 @@ $text = "<div style='text-align:center'>
 	<tr>
 	<td class='fcaption' style='text-align:center' colspan='2'>";
 
-if ($class_total == "0") {
+if ($class_total == "0")
+{
 	$text .= UCSLAN_7;
-} else {
+}
+else
+{
 	$text .= "<span class='defaulttext'>".UCSLAN_8.":</span>
 		<select name='existing' class='tbox'>";
-	while ($row = $sql->db_Fetch()) {
-		if (check_class($row['userclass_editclass']) || getperms("0")) {
+	while ($row = $sql->db_Fetch())
+	{
+		if (check_class($row['userclass_editclass']) || getperms("0"))
+		{
 			$text .= "<option value='{$row['userclass_id']}'>{$row['userclass_name']}</option>";
 		}
 	}
@@ -193,36 +223,40 @@ $text .= "
 $text .= "
 	<tr><td colspan='2' style='text-align:center' class='forumheader'>";
 
-If(isset($_POST['edit'])) {
+if(isset($_POST['edit']))
+{
 	$text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />
 		<input type='hidden' name='userclass_id' value='$userclass_id' />";
-} else {
+}
+else
+{
 	$text .= "<input class='button' type='submit' name='createclass' value='".UCSLAN_15."' />";
 }
 
 $text .= "</td></tr></table>";
 
-If(isset($_POST['edit'])) {
-
+if(isset($_POST['edit']))
+{
 	$sql->db_Select("user", "user_id, user_name, user_class, user_login", "ORDER BY user_name", "no-where");
 	$c = 0;
 	$d = 0;
-	while ($row = $sql->db_Fetch()) {
+	while ($row = $sql->db_Fetch())
+	{
 		extract($row);
-		if (check_class($userclass_id, $user_class)) {
+		if (check_class($userclass_id, $user_class))
+		{
 			$in_userid[$c] = $user_id;
 			$in_username[$c] = $user_name;
-			$in_userlogin[$c] = $user_login ? "(".$user_login.")" :
-			 "";
+			$in_userlogin[$c] = $user_login ? "(".$user_login.")" : "";
 			$c++;
-		} else {
+		}
+		else
+		{
 			$out_userid[$d] = $user_id;
 			$out_username[$d] = $user_name;
-			$out_userlogin[$d] = $user_login ? "(".$user_login.")" :
-			 "";
+			$out_userlogin[$d] = $user_login ? "(".$user_login.")" : "";
 			$d++;
 		}
-
 	}
 
 	$text .= "<br /><table class='fborder' style='".ADMIN_WIDTH."'>
@@ -237,7 +271,8 @@ If(isset($_POST['edit'])) {
 		".UCSLAN_22."<br />
 		<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' multiple='multiple' onchange='moveOver();'>";
 
-	for ($a = 0; $a <= ($d-1); $a++) {
+	for ($a = 0; $a <= ($d-1); $a++)
+	{
 		$text .= "<option value=".$out_userid[$a].">".$out_username[$a]." ".$out_userlogin[$a]."</option>";
 	}
 
@@ -246,7 +281,8 @@ If(isset($_POST['edit'])) {
 		<td style='width:45%; vertical-align:top'>
 		".UCSLAN_23."<br />
 		<select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' multiple='multiple'>";
-	for($a = 0; $a <= ($c-1); $a++) {
+	for($a = 0; $a <= ($c-1); $a++)
+	{
 		$text .= "<option value=".$in_userid[$a].">".$in_username[$a]." ".$in_userlogin[$a]."</option>";
 	}
 	$text .= "</select><br /><br />
@@ -264,14 +300,14 @@ If(isset($_POST['edit'])) {
 
 }
 
-
 $text .= "</form>
 	</div>";
 
 $ns->tablerender(UCSLAN_21, $text);
 
 require_once("footer.php");
-function headerjs() {
+function headerjs()
+{
 
 	$script_js = "<script type=\"text/javascript\">
 		//<![CDATA[
@@ -360,6 +396,5 @@ function headerjs() {
 		</script>\n";
 	return $script_js;
 }
-
 
 ?>
