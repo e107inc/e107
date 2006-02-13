@@ -12,7 +12,7 @@ $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-require_once("languages/ldap_auth_".e_LANGUAGE.".php");
+include_lan("languages/".e_LANGUAGE."/lan_ldap_auth.php");
 
 $server_types[1]="LDAP";
 $server_types[2]="ActiveDirectory";
