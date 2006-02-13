@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.88 $
-|		$Date: 2006-01-13 20:03:43 $
+|		$Revision: 1.89 $
+|		$Date: 2006-02-13 11:19:50 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -97,9 +97,10 @@ if(isset($_POST['commentsubmit'])){
 		$row = $sql -> db_Fetch();
 		if(ANON === TRUE || USER === TRUE){
 			//enter_comment($author_name, $comment, $table, $id, $pid, $subject)
+			$author = ($_POST['author_name'] ? $_POST['author_name'] : USERNAME);
 			$pid = "0";
 			$rated = (isset($_POST['rateindex']) ? $_POST['rateindex'] : "");
-			$cobj -> enter_comment(USERNAME, $_POST['comment'], $plugintable, $qs[1], $pid, $_POST['subject'], $rated);
+			$cobj -> enter_comment($author, $_POST['comment'], $plugintable, $qs[1], $pid, $_POST['subject'], $rated);
 			if($qs[0] == "content" && is_numeric($qs[1])){
 				if(!isset($qs[2])){ $cacheid = 1; }else{ $cacheid = $qs[2]; }
 				$e107cache->clear("comment.$plugintable.$qs[1].$cacheid");
