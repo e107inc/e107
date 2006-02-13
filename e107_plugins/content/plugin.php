@@ -110,6 +110,6 @@ $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;",
 "ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';",
 );
-$eplug_upgrade_done = "Content Management Plugin table structure updated<br />";
+$eplug_upgrade_done = CONTENT_PLUGIN_LAN_6;
 
 ?>
