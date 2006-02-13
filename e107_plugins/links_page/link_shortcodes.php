@@ -71,7 +71,7 @@ if($mains){
 
 //	$selectjs = " onchange=\"if(this.options[this.selectedIndex].value != '-- view category --' || this.options[this.selectedIndex].value != '&nbsp;'){ return document.location=this.options[this.selectedIndex].value; }\" ";
 	$main .= $rs -> form_select_open("navigator", $selectjs);
-	$main .= $rs -> form_option("link navigator...", "0", "", "");
+	$main .= $rs -> form_option(LAN_LINKS_47, "0", "", "");
 	$main .= $mains;
 	$main .= $rs -> form_select_close();
 	return $main;

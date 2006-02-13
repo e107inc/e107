@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-10-03 22:55:21 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2006-02-13 08:35:00 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
@@ -307,7 +307,7 @@ define("LAN_LINKS_43", "view all categories");
 define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Link Category");
 define("LAN_LINKS_46", "Link Subcategories");
-define("LAN_LINKS_47", "");
+define("LAN_LINKS_47", "link navigator...");
 define("LAN_LINKS_48", "");
 define("LAN_LINKS_49", "");
 
