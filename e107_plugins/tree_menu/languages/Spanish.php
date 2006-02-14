@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/tree_menu/languages/Spanish.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-19 00:30:15 $
+|     $Revision: 1.9 $
+|     $Date: 2006-02-14 21:30:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
