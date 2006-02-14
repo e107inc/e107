@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-01-24 06:18:27 $
+|     $Revision: 1.13 $
+|     $Date: 2006-02-14 23:00:29 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -83,10 +83,15 @@ if ($tmp = gethostbyaddr(getenv('REMOTE_ADDR'))) {
 if(count($visitInfo) == 20) {
 	$visitInfo = array_shift($visitInfo);
 }
-$visitInfo[$ip] = $tmp.chr(1).time().chr(1).$os.chr(1).$browser.chr(1).$screenstats.chr(1).$ref;
 
-$varStart = chr(36);
-$quote = chr(34);
+$visitInfo[$tmp] = array(
+	'host'    => trim($tmp),
+	'date'    => time(),
+	'os'      => trim($os),
+	'browser' => trim($browser),
+	'screen'  => trim($screenstats),
+	'referer' => substr(trim($ref), 0, 255),
+);
 
 $data = "<?php
 
