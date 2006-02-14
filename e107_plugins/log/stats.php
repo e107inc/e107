@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-01-25 19:44:28 $
+|     $Revision: 1.36 $
+|     $Date: 2006-02-14 23:00:31 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -521,12 +521,6 @@ class siteStats {
 		$this -> filesiteTotal = $siteTotal;
 		$this -> filesiteUnique = $siteUnique;
 
-
-		/* else {
-		$this -> error = "Unable to read logfile ".$logfile.".";
-		return;
-		}*/
-
 		/* set order var */
 		global $order;
 		$this -> order = $order;
@@ -580,6 +574,7 @@ class siteStats {
 		return($array);
 		/* end method */
 	}
+	
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderTodaysVisits() {
@@ -662,8 +657,6 @@ class siteStats {
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-
 
 	function renderBrowsers() {
 		global $sql, $browser_map;
@@ -948,8 +941,7 @@ class siteStats {
 			<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 			$count ++;
-			if($count == $pref['statDisplayNumber'])
-			{
+			if($count == $pref['statDisplayNumber']) {
 				break;
 			}
 		}
@@ -965,13 +957,20 @@ class siteStats {
 		}
 
 		$gen = new convert;
-
 		$recentArray = array_reverse($this -> fileRecent, TRUE);
-
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>\n<td class='fcaption' style='width: 70%;'>Information</td>\n</tr>\n";
 
 		foreach($recentArray as $key => $info) {
-			list($host, $datestamp, $os, $browser, $screen, $referer) = explode(chr(1), $info);
+			if(is_array($info)) {
+				$host      = $info['host'];
+				$datestamp = $info['date'];
+				$os        = $info['os'];
+				$browser   = $info['browser'];
+				$screen    = $info['screen'];
+				$referer   = $info['referer'];
+			} else {
+				list($host, $datestamp, $os, $browser, $screen, $referer) = explode(chr(1), $info);
+			}
 			$datestamp = $gen -> convert_date($datestamp, "long");
 
 			$text .= "<tr>
@@ -982,7 +981,6 @@ class siteStats {
 
 		$text .= "</table>";
 		return $text;
-
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -1000,37 +998,37 @@ class siteStats {
 		DESC LIMIT 0,14
 		";
 
-		if($amount = $sql -> db_Select_gen($qry))
-		{
+		if($amount = $sql -> db_Select_gen($qry)) {
 			$array = $sql -> db_getList();
 
 			$ttotal = 0;
 			$utotal = 0;
 
-			foreach($array as $key => $value)
-			{
+			foreach($array as $key => $value) {
 				extract($value);
-				$entries = explode(chr(1), $log_data);
+				if(is_array($log_data)) {
+					$entries[0] = $log_data['host'];
+					$entries[1] = $log_data['date'];
+					$entries[2] = $log_data['os'];
+					$entries[3] = $log_data['browser'];
+					$entries[4] = $log_data['screen'];
+					$entries[5] = $log_data['referer'];
+				} else {
+					$entries = explode(chr(1), $log_data);
+				}
 
 				$dayarray[$log_id]['daytotal'] = $entries[0];
 				$dayarray[$log_id]['dayunique'] = $entries[1];
 
 				unset($entries[0]);
 				unset($entries[1]);
-
-
-
-				foreach($entries as $entry)
-				{
-					if($entry)
-					{
+				
+				foreach($entries as $entry) {
+					if($entry) {
 						list($url, $total, $unique) = explode("|", $entry);
-						if(strstr($url, "/"))
-						{
+						if(strstr($url, "/")) {
 							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
-						}
-						else
-						{
+						} else {
 							$urlname = preg_replace("/\.php|\?.*/", "", $url);
 						}
 						$dayarray[$log_id][$urlname] = array('url' => $url, 'total' => $total, 'unique' => $unique);
@@ -1069,8 +1067,6 @@ class siteStats {
 		}
 
 		$text .= "</table>";
-
-
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 
@@ -1097,9 +1093,7 @@ class siteStats {
 
 		}
 		$text .= "</table>";
-
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
-
 		$newArray = $this -> arraySort($pagearray, "unique");
 
 		foreach($newArray as $key => $total) {
