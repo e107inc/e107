@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.19 $
+|     $Date: 2006-02-15 03:06:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -310,8 +310,8 @@ while ($files[$c]) {
 		if(e_QUERY != str_replace("../","",e_IMAGE)){
         	$movechoice[] = e_IMAGE;
 		}
-		if(e_QUERY != str_replace("../","",e_IMAGE."newspostimages/")){
-        	$movechoice[] = e_IMAGE."newspostimages/";
+		if(e_QUERY != str_replace("../","",e_IMAGE."newspost_images/")){
+        	$movechoice[] = e_IMAGE."newspost_images/";
 		}
 
 
