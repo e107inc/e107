@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-12-05 19:28:57 $
-|     $Author: sweetas $
+|     $Revision: 1.25 $
+|     $Date: 2006-02-15 15:46:07 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -124,22 +124,22 @@ class page
 
 			foreach($pages as $pge)
 			{
-				extract($pge);
 				$text .= "
 				<tr>
-				<td style='width:5%; text-align: center;' class='forumheader3'>$page_id</td>
-				<td style='width:60%' class='forumheader3'><a href='".e_BASE."page.php?$page_id'>$page_title</a></td>
-				<td style='width:15%; text-align: center;' class='forumheader3'>".($page_theme ? "menu" : "page")."</td>
+				<td style='width:5%; text-align: center;' class='forumheader3'>$pge[page_id]</td>
+				<td style='width:60%' class='forumheader3'><a href='".($pge[page_theme] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge[page_id]}" )."'>$pge[page_title]</a></td>
+				<td style='width:15%; text-align: center;' class='forumheader3'>".($pge[page_theme] ? "menu" : "page")."</td>
 				<td style='width:20%; text-align: center;' class='forumheader3'>
-				<a href='".e_SELF."?".($page_theme ? "createm": "create").".edit.{$page_id}'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete[{$page_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $page_id ]')\"/>
+				<a href='".e_SELF."?".($pge[page_theme] ? "createm": "create").".edit.{$pge[page_id]}'>".ADMIN_EDIT_ICON."</a>
+				<input type='image' title='".LAN_DELETE."' name='delete[{$pge[page_id]}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $pge[page_id] ]')\"/>
 				</td>
 				</tr>
 				";
 			}
 		
-			$text .= "</form>
+			$text .= "
 			</table>
+			</form>
 			";
 		}
 
@@ -166,10 +166,9 @@ class page
 			if ($sql->db_Select("page", "*", "page_id='$id' "))
 			{
 				$row = $sql->db_Fetch();
-				extract($row);
-				$page_title = $tp -> toFORM($page_title);
-				$data = $tp -> toFORM($page_text);
-				$page_display_authordate_flag = ($page_author );
+				$page_title = $tp -> toFORM($row[page_title]);
+				$data = $tp -> toFORM($row[page_text]);
+				$page_display_authordate_flag = ($row[page_author]);
 				$edit = TRUE;
 			}
 		}
