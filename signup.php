@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2006-01-19 20:00:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.75 $
+|     $Date: 2006-02-15 21:17:04 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -43,9 +43,31 @@ if(!$_POST){   // Notice Removal.
 	 $signature = "";
 }
 
-if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test" )) {
+if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.aftersignup")) {
+
+
+    if(e_QUERY == "preview.aftersignup"){
+
+		require_once(HEADERF);
+    	if(trim($pref['signup_text_after'])){
+				$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+		}else{
+			if ($pref['user_reg_veri'] == 2){
+				$text = LAN_SIGNUP_37;
+			} else {
+				$text = LAN_405;
+			}
+		}
+        $ns->tablerender(LAN_406, $text);
+		require_once(FOOTERF);
+		exit;
+	}
+
 	$eml = render_email(TRUE);
 	echo $eml['preview'];
+
+
+
 
 	if(e_QUERY == "test"){
 		require_once(e_HANDLER."mail.php");
