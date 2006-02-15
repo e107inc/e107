@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/updateadmin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-05 19:28:57 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-02-15 03:23:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
 $e_sub_cat = 'admin_pass';
 require_once('auth.php');
-	
+
 if (isset($_POST['update_settings'])) {
 	if ($_POST['ac'] == md5(ADMINPWCHANGE)) {
 		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) {
@@ -43,17 +43,17 @@ if (isset($_POST['update_settings'])) {
 	<tr>
 	<td style='width:30%' class='forumheader3'>".UDALAN_5.": </td>
 	<td style='width:70%' class='forumheader3'>
-	<input class='tbox' type='password' name='a_password' size='60' value='' maxlength='100' />
+	<input class='tbox' type='password' name='a_password' size='60' value='' maxlength='20' />
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:30%' class='forumheader3'>".UDALAN_6.": </td>
 	<td style='width:70%' class='forumheader3'>
-	<input class='tbox' type='password' name='a_password2' size='60' value='' maxlength='100' />
+	<input class='tbox' type='password' name='a_password2' size='60' value='' maxlength='20' />
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td colspan='2' style ='text-align:center'  class='forumheader'>
 	<input class='button' type='submit' name='update_settings' value='".UDALAN_7."' />
@@ -61,10 +61,10 @@ if (isset($_POST['update_settings'])) {
 	</td>
 	</tr>
 	</table>
-	 
+
 	</form>
 	</div>";
-	
+
 	$ns->tablerender(UDALAN_8." ".ADMINNAME, $text);
 }
 
