@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-25 19:38:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-02-15 23:44:16 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -100,11 +100,7 @@ Temas: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e
 Gracias por probar e107, esperamos que cubra sus necesidades.
 (Puede eliminar este mensaje desde la sección de administración.)");
 define("LANINS_063", "Bienvenido a e107.");
-define("LANINS_064", "Su sección de administración se encuentra");
-define("LANINS_065", "localizada aquí");
-define("LANINS_066", "Click para ir ahora. Necesitará conectarse utilizando el nombre y contraseña facilitados durante el proceso de instalación.");
-define("LANINS_067", "Encontrará la documentación y FAQ aquí.");
-define("LANINS_068", "Gracias por probar e107, esperamos que cumpla sus espectativas y necesidades.\n(Puede borrar este mensaje desde su sección de noticias dentro del Administrador.)\n\n<b>Por favor, tenga en cuenta que esta versión de e107 es beta y no está plenamente preparada para usarse en páginas webs completas.</b>");
+
 define("LANINS_069", "¡e107 Se ha instalado con éxito!
 
 Por razones de seguridad debería fijar los permisos en el archivo <b>e107_config.php</b> a 644.
@@ -126,5 +122,8 @@ define("LANINS_079", "Vuelva a escribir la contraseña para confrimarla");
 define("LANINS_080", "Email Admin");
 define("LANINS_081", "Escriba su dirección email");
 define("LANINS_082", "usuario@susitio.com");
-
+// Better table creation error reporting
+define("LANINS_083", "MySQL Informe error:");
+define("LANINS_084", "El instalador no puede conectarse con la base de datos");
+define("LANINS_085", "El instalador no puede seleccionar la base de datos:");
 ?>
