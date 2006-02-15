@@ -6,9 +6,9 @@ $forum_post_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN LATESTPOSTS
 global $thread_info, $action, $gen, $tp, $forum_shortcodes, $post_info;
-global $LATESTPOSTS_START, $LATESTPOSTS_START, $LATESTPOSTS_POST; 
+global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST; 
 $txt = $tp->parseTemplate($LATESTPOSTS_START, TRUE, $forum_shortcodes);
-for($i = count($thread_info)-2; $i>=0; $i--)
+for($i = count($thread_info)-2; $i>0; $i--)
 {
 	$post_info = $thread_info[$i];
 	$txt .= $tp->parseTemplate($LATESTPOSTS_POST, TRUE, $forum_shortcodes);

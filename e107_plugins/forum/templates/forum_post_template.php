@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-02-08 02:59:04 $
+|     $Revision: 1.17 $
+|     $Date: 2006-02-15 01:58:12 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -157,6 +157,8 @@ $FORUMPOST_REPLY = "
 <tr style='vertical-align:top'>
 <td colspan='2' class='forumheader' style='text-align:center'>
 {BUTTONS}
+</td>
+</tr>
 </table>
 {FORMEND}
 
@@ -190,9 +192,11 @@ if(!$LATESTPOSTS_POST)
 {
 $LATESTPOSTS_POST = "
 <tr>
-<td class='forumheader3' style='width:20%' style='vertical-align:top'><b>{POSTER}</b></td>
+<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
 <td class='forumheader3' style='width:80%'>
-<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322."{THREADDATESTAMP}</div>{POST}</td>
+	<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322."{THREADDATESTAMP}</div>
+	{POST}
+</td>
 </tr>
 ";
 }
@@ -209,11 +213,13 @@ if(!$THREADTOPIC_REPLY)
 $THREADTOPIC_REPLY = "
 <table style='width:100%' class='fborder'>
 <tr>
-<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_100."</td></tr>
+	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_100."</td>
+</tr>
 <tr>
-<td class='forumheader3' style='width:20%' style='vertical-align:top'><b>{POSTER}</b></td>
-<td class='forumheader3' style='width:80%'>
-<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322."{THREADDATESTAMP}</div>{POST}</td>
+	<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
+	<td class='forumheader3' style='width:80%'>
+		<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322."{THREADDATESTAMP}</div>{POST}
+	</td>
 </tr>
 </table>
 ";
