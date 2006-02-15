@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/integrity_check/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-09 20:48:52 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2006-02-15 15:00:07 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 	
@@ -36,6 +36,7 @@ define("Integ_23", "Only check installed themes");
 define("Integ_24", "Admin Front Page");
 define("Integ_25", "Leave Admin Area");
 define("Integ_26", "Load Site with normal header");
+define("Integ_27", "USE THE FILE INSPECTOR FOR CHECKING CORE FILES");
 	
 // define("Integ_29", "<br /><br /><b>*<u>CRC-ERRORS:</u></b><br />These are checksum errors and there are two possible reasons for this:<br />-You changed something within the mentioned file, so it isn't longer the same as the original.<br />-The mentioned file is corrupt, you should reupload it!");
 // language file should contain NO html. 
