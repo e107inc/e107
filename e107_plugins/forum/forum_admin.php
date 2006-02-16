@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-01-15 19:07:40 $
+|     $Revision: 1.35 $
+|     $Date: 2006-02-16 21:37:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -159,7 +159,7 @@ if(isset($_POST['update_subs']))
 if(isset($_POST['submit_parent']))
 {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '', '0', '".time()."', '', '0', '0', '', '', '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
+	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '0', '0', '".time()."', '', '0', '0', '', '', '".$_POST['forum_class']."', '0', '{$_POST['forum_postclass']}'");
 	$forum->show_message(FORLAN_13);
 }
 
