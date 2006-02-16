@@ -1,12 +1,12 @@
 // USAGE: [flash=width,height]http://www.example.com/file.swf[/flash]
 
-$movie_path   = "http://".eregi_replace("http://", "",$movie_path);
-$movie_path   = $tp -> toAttribute($code_text);
+$movie_path   = "http://".eregi_replace("http://", "",$code_text);
+$movie_path   = $tp -> toAttribute($movie_path);
 
 $parm_array   = explode(",",$parm);
 
-$width_type   = strstr("%", $parm_array[0]) ? "%" : "px";
-$height_type  = strstr("%", $parm_array[1]) ? "%" : "px";
+$width_type   = strpos($parm_array[0], "%") !== FALSE ? "%" : "px";
+$height_type  = strpos($parm_array[1], "%") !== FALSE ? "%" : "px";
 
 $width_value  = ereg_replace("[^0-9]","",$parm_array[0]);
 $height_value = ereg_replace("[^0-9]","",$parm_array[1]);
