@@ -11,26 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-01-19 23:57:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.63 $
+|     $Date: 2006-02-16 15:29:56 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
 global $tp, $e107cache, $e_event, $e107, $pref, $footer_js, $PLUGINS_DIRECTORY;
-
-//if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
-//	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
-//} else {
-//	include_once(e_PLUGIN."chatbox_menu/languages/English/English.php");
-//}
-
 
 if($pref['cb_layer'] || isset($_POST['chatbox_ajax']))
 {
 	if(isset($_POST['chat_submit']))
 	{
 		include_once("../../class2.php");
+
+		//Normally the menu.sc file will auto-load the language file, this is needed in case
+		//ajax is turned on and the menu is not loaded from the menu.sc
+		include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 	}
 	$footer_js[] = e_FILE_ABS.'e_ajax.js';
 }
@@ -47,14 +44,11 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 	}
 	else
 	{
+		$nick = trim(preg_replace("#\[.*\]#si", "", $tp -> toDB($_POST['nick'])));
+
 		$cmessage = $_POST['cmessage'];
-		if(isset($_POST['ajax_used']))
-		{
-			//Normally the menu.sc file will auto-load the language file, this is needed in case
-			//ajax is turned on and the menu is not loaded from the menu.sc
-			include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
-		}
-		$nick = trim(preg_replace("/\[.*\]/si", "", $tp -> toDB($_POST['nick'])));
+		$cmessage = preg_replace("#\[.*?\](.*?)\[/.*?\]#s", "\\1", $cmessage);
+
 		$fp = new floodprotect;
 		if($fp -> flood("chatbox", "cb_datestamp"))
 		{
@@ -130,7 +124,7 @@ else
 	{
 		$texta =  (e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>");
 	}
-	$texta .= "<div style='text-align:center; width: 100%'>";
+	$texta .= "<div style='text-align:center; width:100%'>";
 
 	if(($pref['anon_post'] == "1" && USER == FALSE))
 	{
@@ -203,7 +197,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
 			$emotes_active = $pref['cb_emote'] ? 'emotes_on' : 'emotes_off';
 
-			$cb_message = $tp -> toHTML($cb['cb_message'], TRUE, $emotes_active, $cb['cb_uid'], $pref['menu_wordwrap']);
+			$cb_message = $tp -> toHTML($cb['cb_message'], FALSE, $emotes_active, $cb['cb_uid'], $pref['menu_wordwrap']);
 
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
