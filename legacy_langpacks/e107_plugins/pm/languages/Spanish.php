@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/Spanish.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-10 10:16:39 $
+|     $Revision: 1.9 $
+|     $Date: 2006-02-16 00:09:50 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ define('LAN_PM_31', "De");
 define('LAN_PM_32', "Recibido"); 
 define('LAN_PM_33', "Enviados"); 
 define('LAN_PM_34', "Sin mensajes"); 
-define('LAN_PM_35', "Enviar nuevo Mensaje Privado"); 
+define('LAN_PM_35', "Nuevo Mensaje Privado"); 
 define('LAN_PM_36', "Total"); 
 define('LAN_PM_37', "Sin leer"); 
 define('LAN_PM_38', "MP enviado a la clase de usuario"); 
