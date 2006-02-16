@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-12-05 19:28:57 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2006-02-16 19:23:06 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -39,13 +39,23 @@ if (isset($_POST['update_admin']))
 	$row = $sql->db_Fetch();
 	$a_name = $row['user_name'];
 
-	for ($i = 0; $i <= count($_POST['perms']); $i++)
+	$perm = "";
+
+	foreach($_POST['perms'] as $value)
 	{
-		if (strlen($_POST['perms'][$i]))
-		{
-			$perm .= $_POST['perms'][$i].".";
-		}
-	}
+      if ($value == "0")
+      {
+        if (!getperms('0')) { $value = ""; break; }
+
+        $perm = "0."; break;
+      }
+
+      if ($value)
+      {
+        $perm .= $value.".";
+      }
+    }
+
 	admin_update($sql -> db_Update("user", "user_perms='$perm' WHERE user_name='$a_name' "), 'update', ADMSLAN_56." ".$_POST['ad_name']." ".ADMSLAN_2."<br />");
 	unset($ad_name, $a_perms);
 }
@@ -99,9 +109,9 @@ function show_admins(){
 	$sql->db_Select("user", "*", "user_admin='1'");
 
 	$text = "<div style='text-align:center'><div style='padding: 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>
-	<form action=\"".e_SELF."\" method=\"post\" id=\"del_administrator\" >
+	<form action='".e_SELF."' method='post' id='del_administrator'>
 	<div>
-	<input type=\"hidden\" name=\"del_administrator_confirm\" id=\"del_administrator_confirm\" value=\"1\" />
+	<input type='hidden' name='del_administrator_confirm' id='del_administrator_confirm' value='1' />
 	<table class='fborder' style='width:99%'>
 	<tr>
 	<td style='width:5%' class='fcaption'>ID</td>
@@ -123,7 +133,7 @@ function show_admins(){
    		$text .= "</td>
 
 		<td style='width:10%; text-align:center' class='forumheader3'>";
-		if($row['user_perms'] != "0")
+		if($row['user_id'] != "1")
 		{
     		$text .= "
 			<input type='image' name='edit_admin[{$row['user_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' title='".LAN_EDIT."' />
@@ -177,12 +187,12 @@ function edit_administrator($row){
 	$text .= checkb("4", $a_perms).ADMSLAN_22."<br />"; // Moderate users/bans etc
 	$text .= checkb("5", $a_perms).ADMSLAN_23."<br />"; // create/edit custom pages/menus
 	$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />"; // Manage download categories
-	$text .= checkb("6", $a_perms).ADMSLAN_25."<br />";  //Upload /manage files
+	$text .= checkb("6", $a_perms).ADMSLAN_25."<br />"; // Upload /manage files
 	$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />"; // file inspector
 	$text .= checkb("O", $a_perms).ADMSLAN_68."<br />"; // notify
 	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";
 	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";
-	$text .= checkb("0", $a_perms).ADMSLAN_64."<br />";
+	$text .= checkb("C", $a_perms).ADMSLAN_64."<br />"; // Clear Cache - Previously moderate chatbox
 	$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";
 	$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";
 
@@ -194,15 +204,12 @@ function edit_administrator($row){
 	$text .= checkb("T", $a_perms).ADMSLAN_34."<br />";
 	$text .= checkb("V", $a_perms).ADMSLAN_35."<br />"; // Configure public file uploads
 	$text .= checkb("X", $a_perms).ADMSLAN_66."<br />";
-
-	// $text .= checkb("A", $a_perms).ADMSLAN_36."<br />"; // Moderate forums   - PLUGIN.
+//	$text .= checkb("A", $a_perms).ADMSLAN_36."<br />"; // Moderate forums - NOW PLUGIN
 	$text .= checkb("B", $a_perms).ADMSLAN_37."<br />";
-	// $text .= checkb("C", $a_perms).ADMSLAN_38."<br /><br />"; // Moderate/configure chatbox
-
 	$text .= checkb("H", $a_perms).ADMSLAN_39."<br />";
 	$text .= checkb("I", $a_perms).ADMSLAN_40."<br />";
-	// $text .= checkb("J", $a_perms).ADMSLAN_41."<br />";  // Post articles   - PLUGIN
-	// $text .= checkb("K", $a_perms).ADMSLAN_42."<br />";  // Post reviews   - PLUGIN
+//	$text .= checkb("J", $a_perms).ADMSLAN_41."<br />"; // Post articles   - NOW PLUGIN
+//	$text .= checkb("K", $a_perms).ADMSLAN_42."<br />"; // Post reviews    - NOW PLUGIN
 	$text .= checkb("L", $a_perms).ADMSLAN_43."<br />";
 	$text .= checkb("R", $a_perms).ADMSLAN_44."<br />";
 	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";
@@ -236,12 +243,16 @@ function edit_administrator($row){
 	}
 	// -------------------------
 
+	if (getperms('0'))
+	{
+		$text .= "<br /><br /><div class='fcaption'>".ADMSLAN_58."</div><br />";
+		$text .= checkb("0", $a_perms).ADMSLAN_58."<br />";
+	}
 
-	$text .= "
-	<br />
+	$text .= "<br /><br />
 	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('myform', true, 'perms[]'); return false;\">".ADMSLAN_49."</a> -
-	<a href='".e_SELF."' onclick=\"setCheckboxes('myform', false, 'perms[]'); return false;\">".ADMSLAN_51."</a>
-
+	<a href='".e_SELF."' onclick=\"setCheckboxes('myform', false, 'perms[]'); return false;\">".ADMSLAN_51."</a><br />
+	<br />
 	</td>
 	</tr>";
 
@@ -305,7 +316,7 @@ function renderperms($perm,$id){
 		$pt["O"] = ADMSLAN_68;// notify
 		$pt["7"] = ADMSLAN_26;
 		$pt["8"] = ADMSLAN_27;
-		$pt["0"] = ADMSLAN_64;
+		$pt["C"] = ADMSLAN_64;
 		$pt["9"] = ADMSLAN_28;
 		$pt["W"] = ADMSLAN_65;
     	$pt["D"] = ADMSLAN_29;
