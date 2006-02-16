@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-23 00:45:22 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-02-16 14:25:46 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,7 +26,8 @@ if (!e_QUERY) {
   	header("location:".e_ADMIN."admin.php");
 	exit;
 } else {
-	$id = e_QUERY;
+    $qs = explode(".", e_QUERY);
+	$id = $qs[0];
 }
 
 $sql->db_Select("userclass_classes");
@@ -42,11 +43,10 @@ while ($row = $sql->db_Fetch()) {
 
 if (isset($_POST['updateclass'])) {
 	$remuser = TRUE;
-	extract($_POST);
 	$classcount = count($_POST['userclass'])-1;
 	for($a = 0; $a <= $classcount; $a++) {
-		check_allowed($userclass[$a]);
-		$svar .= $userclass[$a];
+		check_allowed($_POST['userclass'][$a]);
+		$svar .= $_POST['userclass'][$a];
 		$svar .= ($a < $classcount ) ? "," : "";
 	}
 	$sql->db_Update("user", "user_class='$svar' WHERE user_id='$id' ");
@@ -70,7 +70,7 @@ if (isset($_POST['updateclass'])) {
 
 
 	 header("location: ".$_POST['adminreturn']);
-	 echo "location redirect failed. (".$_POST['adminreturn'].")";
+	 echo "location redirect failed.";
      exit;
 }
 
@@ -82,33 +82,34 @@ require_once("auth.php");
 
 $sql->db_Select("user", "*", "user_id='$id' ");
 $row = $sql->db_Fetch();
-extract($row);
 
-$caption = UCSLAN_6." <b>".$user_name."</b> (".$user_class.")";
+$caption = UCSLAN_6." <b>".$row['user_name']."</b> (".$row['user_class'].")";
 
-$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."?".e_QUERY."'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>";
+$text = "	<div style='text-align:center'>
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
+			<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 for($a = 0; $a <= (count($class)-1); $a++) {
 	$text .= "<tr><td style='width:30%' class='forumheader3'>";
-	if (check_class($class[$a][0], $user_class)) {
+	if (check_class($class[$a][0], $row['user_class'])) {
 		$text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' checked='checked' />".$class[$a][1]." ";
 	} else {
 		$text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' />".$class[$a][1]." ";
 	}
 	$text .= "</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
 }
- $ref = str_replace("main","cu",$_SERVER['HTTP_REFERER']);
- $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center'>
-		<input type='hidden' name='adminreturn' value='".$ref."' />
-		<input type='checkbox' name='notifyuser' value='1' /> ".UCSLAN_8."&nbsp;&nbsp;
-		<input class='button' type='submit' name='updateclass' value='".UCSLAN_7."' />
-	</td>
-	</tr>
-	</table>
-	</form>
-	</div>";
+ 
+$adminreturn = e_ADMIN."users.php?cu".($qs[2] ? ".{$qs[2]}.{$qs[3]}.{$qs[4]}" : "");
+
+$text .= "	<tr><td class='forumheader' colspan='2' style='text-align:center'>
+			<input type='hidden' name='adminreturn' value='$adminreturn' />
+			<input type='checkbox' name='notifyuser' value='1' /> ".UCSLAN_8."&nbsp;&nbsp;
+			<input class='button' type='submit' name='updateclass' value='".UCSLAN_7."' />
+			</td>
+			</tr>
+			</table>
+			</form>
+			</div>";
 
 $ns->tablerender($caption, $text);
 
