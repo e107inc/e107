@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2006-02-08 02:27:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.71 $
+|     $Date: 2006-02-16 14:25:46 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -34,7 +34,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'usersettings') {
 }
 
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass') {
-	header('location:'.e_ADMIN."userclass.php?".$tp -> toDB($_POST['userid']));
+	header('location:'.e_ADMIN."userclass.php?".$tp -> toDB($_POST['userid'].".".e_QUERY));
 	exit;
 }
 
