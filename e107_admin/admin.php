@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-02-09 09:35:52 $
-|     $Author: sweetas $
+|     $Revision: 1.31 $
+|     $Date: 2006-02-17 23:35:38 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -22,11 +22,9 @@ require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 
 if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea')) {
-	$text = "There are files on your server that are known to be
-	exploitable. These must be removed <b>immediately</b>. The files are related to the WYSIWYG system used in the
-	older 0.6xx branch of e107 - htmlArea. Please delete the following directories and all their contents:<br /><br />
+	$text = ADLAN_ERR_2."<br /><br />
 	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
-	$ns -> tablerender('Warning!', $text);
+	$ns -> tablerender(ADLAN_ERR_1, $text);
 }
 
 if (is_readable(e_ADMIN.'filetypes.php')) {
@@ -62,24 +60,13 @@ foreach ($public as $dir) {
 }
 
 if (isset($potential)) {
-	$text = "There are one or more files in your public upload directories that are not in your allowed upload filetypes
-	list. These may have been placed here by an attacker and if so should be removed <b>immediately</b>. You should
-	<b>not</b> open these files as this may execute any malicious code the file might contain. ie. do not open them
-	with your browser.<br /><br />
-
-	If you recognise these files as being legitimate, it is likely that due to the recent allowed filetypes changes,
-	the filetype you allowed is no longer in the allowed filetypes list and you will need to re-add it
-	(see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of
-	this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or
-	any other type of executable script.<br ><br />
-
-	Below is the list of files that could potentially be malicious:<br /><br />";
+	$text = ADLAN_ERR_3."<br /><br />";
 
 	foreach ($potential as $p_file) {
 		$text .= $p_file.'<br />';
 	}
 
-	$ns -> tablerender('Warning!', $text);
+	$ns -> tablerender(ADLAN_ERR_1, $text);
 }
 
 // update users using old layout names to their new names
