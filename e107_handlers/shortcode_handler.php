@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.28 $
-| $Date: 2006-02-12 19:28:28 $
-| $Author: mcfly_e107 $
+| $Revision: 1.29 $
+| $Date: 2006-02-17 16:20:42 $
+| $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -99,7 +99,7 @@ class e_shortcode {
 		{
 			if ($this->parseSCFiles == TRUE)
 			{
-				if (array_key_exists($code, $this->registered_codes))
+				if (is_array($this -> registered_codes) && array_key_exists($code, $this->registered_codes))
 				{
 					if($this->registered_codes[$code]['type'] == 'plugin')
 					{
@@ -170,7 +170,7 @@ class e_shortcode {
 			if (preg_match("#^SC_BEGIN (\w*).*#", $line, $matches)) {
 				$cur_sc = $matches[1];
 				$ret[$cur_sc]='';
-				if (array_key_exists($cur_sc, $this -> registered_codes)) {
+				if (is_array($this -> registered_codes) && array_key_exists($cur_sc, $this -> registered_codes)) {
 					if ($this -> registered_codes[$cur_sc]['type'] == 'plugin') {
 						$scFile = e_PLUGIN.strtolower($this -> registered_codes[$cur_sc]['path']).'/'.strtolower($cur_sc).'.sc';
 					} else {
