@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-02-10 23:38:58 $
+|     $Revision: 1.45 $
+|     $Date: 2006-02-17 06:08:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -80,6 +80,7 @@ class rssCreate {
 	var $rssQuery;
 	var $topicid;
 	var $offset;
+	var $rssNamespace;
 
 	function rssCreate($content_type, $rss_type, $topic_id) {
 		// constructor
@@ -375,6 +376,7 @@ class rssCreate {
 	// dear McFly, I remember why I used extract() now..  to avoid this: $row[($something['whatever'])]
 				if($sql -> db_Select_gen($query)){
 					$this -> contentType = $content_type;
+					$this -> rssNamespace = $namespace;
 					$this -> rssItems = array();
 					$tmp = $sql->db_getList();
 					$loop=0;
@@ -428,6 +430,7 @@ class rssCreate {
 		header('Content-type: application/xml', TRUE);
 
 		$rss_title = $tp->toRss($pref['sitename']." : ".$rss_title);
+        $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : "";
 
 		$time = time();
 		switch ($this -> rssType) {
@@ -464,7 +467,7 @@ class rssCreate {
 
 				<!-- test=\"".SITEDISCLAIMER."\" -->
 
-				<rss version=\"2.0\">
+				<rss {$rss_namespace} version=\"2.0\">
 				<channel>
 				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
