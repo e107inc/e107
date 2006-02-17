@@ -15,7 +15,8 @@ if (!defined('e107_INIT')) { exit; }
 	$bullet = $this -> getBullet($arr[6], $mode);
 
 	$mp = MPREFIX;
-	$qry = "SELECT download_id, download_name, download_author, download_datestamp, {$mp}download_category.download_category_id, {$mp}download_category.download_category_name, {$mp}download_category.download_category_class FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE download_category_class REGEXP '".e_CLASS_REGEXP."' AND download_class REGEXP '".e_CLASS_REGEXP."' AND {$mp}download.download_active = '1' ".$qry." ORDER BY download_datestamp DESC LIMIT 0,".intval($arr[7])." ";
+	$qry = "SELECT download_id, download_name, download_author, download_datestamp, {$mp}download_category.download_category_id, {$mp}download_category.download_category_name, {$mp}download_category.download_category_class FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE download_category_class REGEXP '".e_CLASS_REGEXP."' AND download_class REGEXP '".e_CLASS_REGEXP."' AND {$mp}download.download_active != '0' ".$qry." ORDER BY download_datestamp DESC LIMIT 0,".intval($arr[7])." ";
+
 	$downloads = $sql -> db_Select_gen($qry);
 	if($downloads == 0) {
 		$LIST_DATA = LIST_DOWNLOAD_2;
