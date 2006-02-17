@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2006-02-16 15:29:56 $
+|     $Revision: 1.64 $
+|     $Date: 2006-02-17 14:35:30 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,8 @@ if($pref['cb_layer'] || isset($_POST['chatbox_ajax']))
 
 		//Normally the menu.sc file will auto-load the language file, this is needed in case
 		//ajax is turned on and the menu is not loaded from the menu.sc
-		include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+		@include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+		@include_lan(e_PLUGIN."chatbox_menu/languages/English/English.php");
 	}
 	$footer_js[] = e_FILE_ABS.'e_ajax.js';
 }
