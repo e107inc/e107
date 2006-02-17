@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-01-13 15:37:31 $
-|     $Author: lisa_ $
+|     $Revision: 1.19 $
+|     $Date: 2006-02-17 21:26:38 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -173,7 +173,7 @@ $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 if (ADMIN && getperms("H")) {
 	$adop_icon = (file_exists(THEME."generic/newsedit.png") ? THEME."generic/newsedit.png" : e_IMAGE."generic/".IMODE."/newsedit.png");
-	return "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_item['news_id']."'><img src='".$adop_icon."' alt='' style='border:0' /></a>\n";
+	return " <a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_item['news_id']."'><img src='".$adop_icon."' alt='' style='border:0' /></a>\n";
 } else {
 	return '';
 }
