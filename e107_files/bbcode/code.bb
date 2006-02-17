@@ -24,7 +24,7 @@ if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
 		$CodeCache = $geshi->parse_code();
 		$e107cache->set('GeshiParsed_'.$code_md5, $CodeCache);
 	}
-	$ret = str_replace("&amp;", "&", $CodeCache);
+	$ret = "<code>".str_replace("&amp;", "&", $CodeCache)."</code>";
 }
 else
 {
