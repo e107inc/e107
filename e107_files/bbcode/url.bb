@@ -1,16 +1,14 @@
 global $pref;
 
-$external = ($pref['links_new_window'] || strpos($parm, "external") !== FALSE) ? " rel='external'" : "";
-$parm     = preg_replace("#^external.?#si", "", $parm);
+$parm     = trim($parm);
+$external = ($pref['links_new_window'] || strpos($parm, 'external') === 0) ? " rel='external'" : "";
 
-if (strpos($parm,".") === FALSE)
+if ($parm && $parm != 'external' && strpos($parm, ' ') === FALSE)
 {
-  $parm = $code_text;
+	$parm = preg_replace('#^external.#is', '', $parm);
+	return "<a href='".$tp -> toAttribute($parm)."'".$external.">".$code_text."</a>";
 }
-
-if (strpos($parm,"://") === FALSE)
+else
 {
-  $parm = "http://".preg_replace("#http:\/\/#si", "",$parm);
+	return "<a href='".$tp -> toAttribute($code_text)."'".$external.">".$code_text."</a>";
 }
-
-return "<a href='".$tp->toAttribute($parm)."'$external>".$code_text."</a>";
