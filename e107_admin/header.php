@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.44 $
-|   $Date: 2006-02-09 09:35:52 $
-|   $Author: sweetas $
+|   $Revision: 1.45 $
+|   $Date: 2006-02-18 14:16:29 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -73,7 +73,7 @@ if (!defined('ADMIN_DELETE_ICON'))
 }
 
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-	<html xmlns='http://www.w3.org/1999/xhtml'>
+	<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 	<head>
 	<title>".SITENAME." : ".LAN_head_4."</title>\n";
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
