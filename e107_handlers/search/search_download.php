@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_download.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-28 14:50:24 $
+|     $Revision: 1.11 $
+|     $Date: 2006-02-18 18:08:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -36,12 +36,12 @@ if (isset($_GET['author']) && $_GET['author'] != '') {
 if (isset($_GET['match']) && $_GET['match']) {
 	$search_fields = array('d.download_name');
 } else {
-	$search_fields = array('d.download_name', 'd.download_description', 'd.download_author', 'd.download_author_website');
+	$search_fields = array('d.download_name', 'd.download_url', 'd.download_description', 'd.download_author', 'd.download_author_website');
 }
 
 // basic
 $return_fields = 'd.download_id, d.download_category, download_category_id, d.download_name, d.download_description, d.download_author, d.download_author_website, d.download_datestamp, d.download_class, c.download_category_name, c.download_category_class';
-$weights = array('1.2', '0.6', '0.6', '0.4');
+$weights = array('1.2', '0.9', '0.6', '0.6', '0.4');
 $no_results = LAN_198;
 $where = "download_active = '1' AND d.download_class IN (".USERCLASS_LIST.") AND c.download_category_class IN (".USERCLASS_LIST.") AND".$advanced_where;
 $order = array('download_datestamp' => DESC);
