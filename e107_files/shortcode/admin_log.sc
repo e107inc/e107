@@ -1,5 +1,3 @@
-//<?php
-
 if (ADMIN) {
 	if (!function_exists('admin_log')) {
 		function admin_log() {
