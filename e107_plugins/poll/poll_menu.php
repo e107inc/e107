@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-02-18 00:02:17 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -135,8 +135,8 @@ if ($sql->db_Select_gen($query))
 
 				$sql->db_Update("polls", "poll_votes = '$votep', poll_ip='".$poll_ip.$userid."^' WHERE poll_id=".$poll_id);
 				$POLLMODE = "voted";
+				header("location:".e_SELF.(e_QUERY ? "?".e_QUERY : ''));
 
-			
 		}
 	}
 
