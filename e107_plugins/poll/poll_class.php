@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-02-18 14:02:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.41 $
+|     $Date: 2006-02-18 14:10:36 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -110,7 +110,7 @@ class poll
 
 	function get_poll($query)
 	{
-		global $sql;
+		global $sql, $e107;
 		if ($sql->db_Select_gen($query))
 		{
 			$pollArray = $sql -> db_Fetch();
