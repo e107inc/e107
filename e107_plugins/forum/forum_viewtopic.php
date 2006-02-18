@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-02-18 00:23:09 $
-|     $Author: lisa_ $
+|     $Revision: 1.58 $
+|     $Date: 2006-02-18 14:02:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -263,28 +263,16 @@ if (isset($_POST['pollvote']))
 	}
 }
 
+
 if (stristr($thread_info['head']['thread_name'], "[".LAN_430."]"))
 {
-	if ($sql->db_Select("polls", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'"))
+	if(!defined("POLLCLASS"))
 	{
-		$pollArray = $sql -> db_Fetch();
-
-		$cookiename = "poll_".$pollArray['poll_id'];
-		if(isset($_COOKIE[$cookiename]))
-		{
-			$POLLMODE = "voted";
-		}
-		else
-		{
-			$POLLMODE = "notvoted";
-		}
-		if(!defined("POLLCLASS"))
-		{
-			require(e_PLUGIN."poll/poll_class.php");
-		}
-		$poll = new poll;
-		$pollstr = "<div class='spacer'>".$poll->render_poll($pollArray, "forum", $POLLMODE, TRUE)."</div>";
+		require(e_PLUGIN."poll/poll_class.php");
 	}
+	$_qry = "SELECT * FROM #polls WHERE `poll_datestamp` = '{$thread_info['head']['thread_id']}'";
+	$poll = new poll;
+	$pollstr = "<div class='spacer'>".$poll->render_poll($_qry, "forum", "query", TRUE)."</div>";
 }
 //Load forum templates
 

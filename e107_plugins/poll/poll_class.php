@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-02-08 02:59:04 $
+|     $Revision: 1.40 $
+|     $Date: 2006-02-18 14:02:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,9 @@ define("POLLCLASS", TRUE);
 class poll
 {
 
+	var $pollRow;
+	var $pollmode;
+	
 	function delete_poll($existing)
 	{
 		global $sql;
@@ -104,9 +107,123 @@ class poll
 		return $message;
 	}
 
-	function render_poll($pollArray, $type = "menu", $POLLMODE, $returnMethod=FALSE)
+
+	function get_poll($query)
+	{
+		global $sql;
+		if ($sql->db_Select_gen($query))
+		{
+			$pollArray = $sql -> db_Fetch();
+		
+			if (!check_class($pollArray['poll_vote_userclass']))
+			{
+				$POLLMODE = "disallowed";
+			}
+			else
+			{
+		
+				switch($pollArray['poll_storage_method'])
+				{
+					case 0:
+						$userid = "";
+						$cookiename = "poll_".$pollArray['poll_id'];
+						if(isset($_COOKIE[$cookiename]))
+						{
+							$POLLMODE = "voted";
+						}
+						else
+						{
+							$POLLMODE = "notvoted";
+						}
+					break;
+		
+					case 1:
+						$userid = $e107->getip();
+						$voted_ids = explode("^", substr($pollArray['poll_ip'], 0, -1));
+						if (in_array($userid, $voted_ids))
+						{
+							$POLLMODE = "voted";
+						}
+						else
+						{
+							$POLLMODE = "notvoted";
+						}
+					break;
+		
+					case 2:
+						if(!USER)
+						{
+							$POLLMODE = "disallowed";
+						}
+						else
+						{
+							$userid = USERID;
+							$voted_ids = explode("^", substr($pollArray['poll_ip'], 0, -1));
+							if (in_array($userid, $voted_ids))
+							{
+								$POLLMODE = "voted";
+							}
+							else
+							{
+								$POLLMODE = "notvoted";
+							}
+						}
+					break;
+				}
+			}		
+		}
+		if(isset($_POST['pollvote']) && $POLLMODE == "notvoted")
+		{
+				if ($_POST['votea'])
+				{
+//					$sql -> db_Select("polls", "*", "poll_vote_userclass!=255 AND poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
+					$row = $pollArray;
+					extract($row);
+					$votes = explode(chr(1), $poll_votes);
+					if(is_array($_POST['votea']))
+					{
+						/* multiple choice vote */
+						foreach($_POST['votea'] as $vote)
+						{
+							$vote = intval($vote);
+							$votes[($vote-1)] ++;
+						}
+					}
+					else
+					{
+						$votes[($_POST['votea']-1)] ++;
+					}
+					$optionArray = explode(chr(1), $pollArray['poll_options']);
+					$optionArray = array_slice($optionArray, 0, -1);
+					foreach($optionArray as $k=>$v)
+					{
+						if(!$votes[$k])
+						{
+							$votes[$k] = 0;
+						}
+					}
+					$votep = implode(chr(1), $votes);
+					$pollArray['poll_votes'] = $votep;
+	
+					$sql->db_Update("polls", "poll_votes = '$votep', poll_ip='".$poll_ip.$userid."^' WHERE poll_id=".$poll_id);
+					$POLLMODE = "voted";
+	
+			}
+		}
+		$this->pollRow = $pollArray;
+		$this->pollmode = $POLLMODE;
+	}
+			
+
+	function render_poll($pollArray = "", $type = "menu", $POLLMODE = "", $returnMethod=FALSE)
 	{
 		global $POLLSTYLE, $sql, $tp, $ns;
+		if($POLLMODE == "query")
+		{
+			$this->get_poll($pollArray);
+			$pollArray = $this->pollRow;
+			$POLLMODE = $this->pollmode;
+		}
 
 		$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
 		$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
@@ -137,14 +254,14 @@ class poll
 				$optionArray = array_slice($optionArray, 0, -1);
 			}
 			$voteArray = explode(chr(1), $pollArray['poll_votes']);
-			$voteArray = array_slice($voteArray, 0, -1);
+//			$voteArray = array_slice($voteArray, 0, -1);
 		}
 		else
 		{
 			$optionArray = explode(chr(1), $pollArray['poll_options']);
 			$optionArray = array_slice($optionArray, 0, -1);
 			$voteArray = explode(chr(1), $pollArray['poll_votes']);
-			$voteArray = array_slice($voteArray, 0, -1);
+//			$voteArray = array_slice($voteArray, 0, -1);
 		}
 
 		$voteTotal = array_sum($voteArray);
