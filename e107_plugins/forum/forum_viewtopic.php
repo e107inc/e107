@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-02-03 19:57:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.57 $
+|     $Date: 2006-02-18 00:23:09 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -257,6 +257,7 @@ if (isset($_POST['pollvote']))
 
 			$sql->db_Update("polls", "poll_votes = '$votep' WHERE poll_id=".intval($poll_id));
 			$POLLMODE = "voted";
+			js_location(e_SELF.(e_QUERY ? "?".e_QUERY : ''));
 
 		}
 	}
