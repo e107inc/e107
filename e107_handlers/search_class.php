@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-02-19 03:11:40 $
+|     $Revision: 1.35 $
+|     $Date: 2006-02-19 03:13:25 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -141,7 +141,7 @@ class e_search {
 			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 		}
 
-		if ($ps['results'] = $sql -> db_Select_gen($sql_query, true)) {
+		if ($ps['results'] = $sql -> db_Select_gen($sql_query)) {
 			if (!$search_prefs['mysql_sort']) {
 				$x = 0;
 				foreach ($search_fields as $field_key => $field) {
