@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-02-07 12:06:28 $
-|     $Author: streaky $
+|     $Revision: 1.38 $
+|     $Date: 2006-02-19 00:08:26 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -44,7 +44,7 @@ if($e107_popup!=1){
 	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory Usage: ".$e107->get_memory_usage(); }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
-	if (ADMIN && E107_DEBUG_LEVEL) {
+	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
 		global $db_debug,$ns;
 		echo "\n<!-- DEBUG -->\n";
 		if (!isset($ns)) {
@@ -135,7 +135,7 @@ if (ob_get_level() != $start_ob_level && $pref['developer']) {
 	echo $obdbg;
 }
 
-if(ADMIN == true && $error_handler->debug == true) {
+if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
 	echo "
 	<br /><br />
 	<div>
