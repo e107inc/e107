@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2006-02-19 14:42:29 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -282,8 +282,8 @@ class private_message
 	function pm_getuid($var)
 	{
 		global $sql, $tp;
-		$var = trim($var);
-		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$tp -> toDB($var)."'"))
+
+		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$sql -> escape(trim($var))."'"))
 		{
 			$row = $sql->db_Fetch();
 			return $row;
