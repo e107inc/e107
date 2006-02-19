@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-02-14 23:00:29 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2006-02-19 16:08:44 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,8 +80,10 @@ if ($tmp = gethostbyaddr(getenv('REMOTE_ADDR'))) {
 }
 
 /* last 20 visitors */
-if(count($visitInfo) == 20) {
-	$visitInfo = array_shift($visitInfo);
+if(count($visitInfo) >= 20) {
+	$length = 20;
+	$offset = count($visitInfo)-$length;
+	$visitInfo = array_slice($visitInfo, $offset, $length);
 }
 
 $visitInfo[$tmp] = array(
