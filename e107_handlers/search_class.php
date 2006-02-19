@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-01-16 15:06:30 $
+|     $Revision: 1.34 $
+|     $Date: 2006-02-19 03:11:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ class e_search {
 	
 	function e_search() {
 		global $query, $tp;
-		$this -> query = $tp -> toDB($query);
+		$this -> query = $query;
 		$this -> bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle' />" : "<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align: middle' />");
 		preg_match_all('/(\W?".*?")|(.*?)(\s|$)/', $this -> query, $boolean_keys);
 		sort($this -> keywords['split'] = array_filter(str_replace('"', '', array_merge($boolean_keys[1], $boolean_keys[2]))));
@@ -54,6 +54,7 @@ class e_search {
 					$this -> keywords['match'][$k_key] = $key;
 				}
 				$this -> keywords['exact'][$k_key] = (strpos($key, ' ') !== FALSE) ? TRUE : FALSE;
+				$this -> keywords['match'][$k_key] = $tp -> toDB($this -> keywords['match'][$k_key]);
 			} else {
 				unset ($this -> keywords['split'][$k_key]);
 			}
@@ -126,6 +127,7 @@ class e_search {
 				$this -> keywords['split'] = array_merge($exact_query, $this -> keywords['split']);
 			}
 		} else {
+			$this -> query = str_replace('&quot;', '"', $this -> query);
 			$field_query = implode(',', $search_fields);
 			foreach ($search_fields as $field_key => $field) {
 				$search_query[] = "(".$weights[$field_key]." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
@@ -139,7 +141,7 @@ class e_search {
 			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 		}
 
-		if ($ps['results'] = $sql -> db_Select_gen($sql_query)) {
+		if ($ps['results'] = $sql -> db_Select_gen($sql_query, true)) {
 			if (!$search_prefs['mysql_sort']) {
 				$x = 0;
 				foreach ($search_fields as $field_key => $field) {
