@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.141 $
-|     $Date: 2006-02-10 23:53:06 $
+|     $Revision: 1.142 $
+|     $Date: 2006-02-19 22:43:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -436,12 +436,15 @@ class e_parse
 		return strtr ($stringarray, $trans_tbl);
 	}
 
-	function toRss($text)
+	function toRss($text,$tags=FALSE)
 	{
-		$text = $this -> toHTML($text,TRUE);
-		$text = strip_tags($text);
 
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ");
+		if($tags != TRUE){
+			$text = $this -> toHTML($text,TRUE);
+			$text = strip_tags($text);
+		}
+
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ",);
 		$replace = array("'", '$', "'", '$',' &amp; ' );
 		$text = str_replace($search, $replace, $text);
 
@@ -469,7 +472,7 @@ class e_parse
 		}
 
 		$text = preg_replace_callback("#\{(e_[A-Z]*)\}#s", array($this, 'doReplace'), $text);
-		$text = str_replace("{THEME}",constant("THEME"),$text);   
+		$text = str_replace("{THEME}",constant("THEME"),$text);
 		return $text;
 	}
 
