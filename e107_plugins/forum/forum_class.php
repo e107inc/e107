@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-01-12 12:20:08 $
+|     $Revision: 1.47 $
+|     $Date: 2006-02-20 14:18:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -629,10 +629,22 @@ class e107forum
 		return $ret;
 	}
 
-	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_poster, $thread_active, $thread_s)
+
+	function _forum_lp_update($lp_type, $lp_user, $lp_info, $lp_forum_id, $lp_forum_sub)
+	{
+		global $sql;
+		$sql->db_Update('forum', "{$lp_type}={$lp_type}+1, forum_lastpost_user='{$lp_user}', forum_lastpost_info = '{$lp_info}' WHERE forum_id='".intval($lp_forum_id)."' ");
+		if($lp_forum_sub)
+		{
+			$sql->db_Update('forum', "forum_lastpost_info = '{$lp_info}' WHERE forum_id='".intval($lp_forum_sub)."' ");
+		}
+	}
+
+	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_poster, $thread_active, $thread_s, $forum_sub)
 	{
 		$post_time = time();
 		global $sql, $tp, $pref, $e107;
+		$forum_sub = intval($forum_sub);
 		$ip = $e107->getip();
 		//Check for duplicate post
 		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_thread='$thread_thread' and thread_datestamp > ".($post_time - 180)))
@@ -670,7 +682,7 @@ class e107forum
 			$forum_lp_info = $post_time.".".intval($thread_parent);
 			$gen = new convert;
 			// Update main forum with last post info and increment reply count
-			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost_user='{$post_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='".intval($thread_forum_id)."' ");
+			$this->_forum_lp_update("forum_replies", $post_user, $forum_lp_info, $thread_forum_id, $forum_sub);
 
 			// Update head post with last post info and increment reply count
 			$sql->db_Update('forum_t', "thread_lastpost={$post_time}, thread_lastuser='{$post_user}', thread_total_replies=thread_total_replies+1 WHERE thread_id = ".intval($thread_parent));
@@ -713,7 +725,7 @@ class e107forum
 		{
 			//post is a new thread
 			$forum_lp_info = $post_time.".".$newthread_id;
-			$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_lastpost_user='{$post_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='".intval($thread_forum_id)."' ");
+			$this->_forum_lp_update("forum_threads", $post_user, $forum_lp_info, $thread_forum_id, $forum_sub);
 		}
 		return $newthread_id;
 	}
