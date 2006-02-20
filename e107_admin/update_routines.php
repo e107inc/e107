@@ -11,16 +11,29 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.175 $
-|     $Date: 2006-01-24 23:41:17 $
-|     $Author: e107coders $
+|     $Revision: 1.176 $
+|     $Date: 2006-02-20 18:34:13 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
 
+if (isset($pref['signup_options'])) // CONVERT 0.6 STYLE SIGNUP OPTIONS
+{
+    $tmp = explode(".", $pref['signup_options']);
+	$pref['signup_option_realname']  = $tmp[0];
+	$pref['signup_option_signature'] = $tmp[7];
+	$pref['signup_option_image']     = $tmp[8];
+	$pref['signup_option_timezone']  = $tmp[9];
+	$pref['signup_option_class']     = $tmp[10];
+	unset($pref['signup_options']);
+	save_prefs();
+}
+
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
 if (!defined("LAN_UPDATE_9")) { define("LAN_UPDATE_9", ""); }
+
 if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
 	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 	{
