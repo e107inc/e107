@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/integrity_check/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.6 $
+|     $Date: 2006-02-20 19:46:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,7 @@ define("Integ_23", "Chequear solo los temas existentes actualmente en su servido
 define("Integ_24", "Página principal de Admin.");
 define("Integ_25", "Página principal de Admin.");
 define("Integ_26", "Cargar sitio con la cabecera normal");
+define("Integ_27", "USE EL INSPECTOR DE ARCHIVOS PARA VERIFICAR ARCHIVOS DEL NÚCLEO");
 
 //define("Integ_29", "<br /><br /><b>*<u>Errores-CRC:</u></b><br />Hay errores en el checksum por dos posibles razones:<br />-Ha cambiado algo en el archivo mencionado, por eso tiene más tamaño que el archivo original.<br />-El archivo mencionado está corrupto, ¡debe volver a transferir el archivo a su servidor!");
 define("Integ_30", "Para un uso menor de la cpu, puede realizar el chequeo en  1 - 10 pasos.");

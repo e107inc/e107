@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_print.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-02-20 19:46:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -23,5 +23,7 @@ define("LAN_304", "Título del artículo: ");
 define("LAN_305", "Encabezado: ");
 define("LAN_306", "Este artículo es de ");
 define("LAN_307", "Imprimir esta página");
+
+define("LAN_PRINT_1", "modo impresión");
 
 ?>
