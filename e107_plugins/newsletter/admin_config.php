@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-02-07 03:16:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2006-02-20 15:13:15 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -365,7 +365,7 @@ class newsletter
 
 		$mail->From = $pref['siteadminemail'];
 		$mail->FromName = $pref['siteadmin'];
-		if ($pref['smtp_enable'])
+		if ($pref['mailer'] == "smtp")
 		{
 			$mail->Mailer = "smtp";
 			$mail->SMTPKeepAlive = TRUE;
@@ -429,7 +429,7 @@ class newsletter
 				$sent_counter ++;
 
 				$mail->ClearAddresses();
-				if ($pref['smtp_enable']) {
+				if ($pref['mailer'] == "smtp") {
 					$mail->SmtpClose();
 				}
 			}

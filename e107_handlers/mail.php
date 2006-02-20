@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.26 $
+|     $Date: 2006-02-20 15:13:15 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 	$mail = new PHPMailer();
 
-    if ($pref['mailer']== 'smtp' || $pref['smtp_enable']==1) {
+	if ($pref['mailer']== 'smtp') {
 		$mail->Mailer = "smtp";
 	 	$mail->SMTPKeepAlive = FALSE;
 		$mail->Host = $pref['smtp_server'];

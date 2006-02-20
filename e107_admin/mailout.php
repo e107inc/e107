@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-02-06 18:33:32 $
-|     $Author: e107coders $
+|     $Revision: 1.51 $
+|     $Date: 2006-02-20 15:13:14 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -244,7 +244,6 @@ if (isset($_POST['submit'])) {
 if (isset($_POST['updateprefs'])) {
 	$pref['mailer'] = $_POST['mailer'];
 	$pref['sendmail'] = $_POST['sendmail'];
-	$pref['smtp_enable'] = $_POST['smtp_enable'];
 	$pref['smtp_server'] = $tp->toDB($_POST['smtp_server']);
 	$pref['smtp_username'] = $tp->toDB($_POST['smtp_username']);
 	$pref['smtp_password'] = $tp->toDB($_POST['smtp_password']);

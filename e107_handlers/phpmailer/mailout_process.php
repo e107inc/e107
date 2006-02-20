@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-28 14:50:24 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2006-02-20 15:13:15 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -57,7 +57,7 @@ if($_POST['cancel_emails']){
 	$mail->From = ($_POST['email_from_email'])? $_POST['email_from_email']:	$pref['siteadminemail'];
 	$mail->FromName = ($_POST['email_from_name'])? $_POST['email_from_name']: $pref['siteadmin'];
 	//  $mail->Host     = "smtp1.site.com;smtp2.site.com";
-	if ($pref['mailer']== 'smtp' || $pref['smtp_enable']==1) {
+	if ($pref['mailer']== 'smtp') {
 		$mail->Mailer = "smtp";
 		$mail->SMTPKeepAlive = TRUE;
 		$mail->Host = $pref['smtp_server'];
@@ -236,7 +236,7 @@ if($_POST['cancel_emails']){
 	$message = $sql -> db_Delete("generic", "gen_datestamp='".intval($_POST['mail_id'])."' ") ? "deleted" : "deleted_failed";
 
 	$mail->ClearAttachments();
-    if ($pref['smtp_enable'] || $pref['mailer']== 'smtp') {
+	if ($pref['mailer']== 'smtp') {
 			$mail->SmtpClose();
 	}
 
