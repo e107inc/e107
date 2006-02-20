@@ -11,13 +11,13 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-12-30 15:26:25 $
+|		$Revision: 1.10 $
+|		$Date: 2006-02-20 08:52:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
-
 require_once("../../class2.php");
+$listplugindir = e_PLUGIN."list_new/";
 //get language file
 $lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
@@ -28,7 +28,6 @@ if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_instal
 	require_once(FOOTERF);
 	exit;
 }
-$listplugindir = e_PLUGIN."list_new/";
 require_once($listplugindir."list_shortcodes.php");
 require_once($listplugindir."list_class.php");
 $rc = new listclass;
