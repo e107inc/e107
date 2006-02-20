@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2006-02-16 21:39:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.77 $
+|     $Date: 2006-02-20 18:34:12 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -40,7 +40,7 @@ if(!$_POST){   // Notice Removal.
 	$avatar_upload = "";
 	$photo_upload = "";
 	$_POST['ue'] = "";
-	 $signature = "";
+	$signature = "";
 }
 
 if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.aftersignup")) {
@@ -141,10 +141,6 @@ if (e_QUERY)
 		}
 	}
 }
-
-$signupval = explode(".", $pref['signup_options']);
-$signup_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_SIGNUP_28);
-$signup_name = array("realname", "signature", "image", "timezone", "usrclass");
 
 if (isset($_POST['register']))
 {
@@ -286,15 +282,17 @@ if (isset($_POST['register']))
 
 	// ========== Verify Custom Signup options if selected ========================
 
-	for ($i = 0; $i < count($signup_title); $i++)
+    $signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_SIGNUP_28);
+    $signup_option_names = array("realname", "signature", "image", "timezone", "class");
+
+	foreach($signup_option_names as $key => $value)
 	{
-		$postvalue = $signup_name[$i];
-		if ($signupval[$i] == 2 && $_POST[$postvalue] == "")
+		if ($pref['signup_option_'.$value] == 2 && !$_POST[$value])
 		{
-			$error_message .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
+			$error_message .= LAN_SIGNUP_6.$signup_option_title[$key].LAN_SIGNUP_7."\\n";
 			$error = TRUE;
 		}
-	}
+    }
 
 	if ($sql->db_Select("user", "user_email", "user_email='".$tp -> toDB($_POST['email'])."' "))
 	{
@@ -389,11 +387,11 @@ if (isset($_POST['register']))
 
 // ==== Update Userclass =======>
 
-			if ($_POST['usrclass'])
+			if ($_POST['class'])
 			{
 				unset($insert_class);
-				sort($_POST['usrclass']);
-				$insert_class = implode(",",$_POST['usrclass']);
+				sort($_POST['class']);
+				$insert_class = implode(",",$_POST['class']);
 				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
 			}
 
@@ -465,11 +463,11 @@ if (isset($_POST['register']))
 			$sql->db_Update("user", "user_ban = '0' WHERE user_id = '{$nid}'");
 
 // ==== Update Userclass =======
-			if ($_POST['usrclass'])
+			if ($_POST['class'])
 			{
 				unset($insert_class);
-				sort($_POST['usrclass']);
-				$insert_class = implode(",",$_POST['usrclass']);
+				sort($_POST['class']);
+				$insert_class = implode(",",$_POST['class']);
 				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
 			}
 // ======== save extended fields to DB table.
@@ -639,10 +637,10 @@ $text .="
 </tr>
 ";
 
-if ($signupval[0]) {
+if ($pref['signup_option_realname']) {
 	$text .= "
 		<tr>
-		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($signupval[0])."</td>
+		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($pref['signup_option_realname'])."</td>
 		<td class='forumheader3' style='width:70%' >
 		".$rs->form_text("realname", 30, ($_POST['realname'] ? $_POST['realname'] : $realname), 100)."
 		</td>
@@ -695,10 +693,10 @@ $text .= "
 
 
 // ----------  User subscription to userclasses.
-if ($signupval[10] && ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0 order by userclass_name")))
+if ($pref['signup_option_class'] && ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0 order by userclass_name")))
 {
 	$text .= "<tr>
-		<td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USET_5." ".req($signupval[10])."
+		<td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USET_5." ".req($pref['signup_option_class'])."
 		<br /><span class='smalltext'>".LAN_USET_6."</span></td>
 		<td class='forumheader3' style='width:70%'>";
 	$text .= "<table style='width:100%'>";
@@ -706,7 +704,7 @@ if ($signupval[10] && ($sql->db_Select("userclass_classes", "*", "userclass_edit
 	{
 		//  $frm_checked = check_class($userclass_id,$user_class) ? "checked='checked'" : "";
 		$text .= "<tr><td class='defaulttext' style='width:10%;vertical-align:top'>";
-		$text .= "<input type='checkbox' name='usrclass[]' value='".$row3['userclass_id']."'  />\n";
+		$text .= "<input type='checkbox' name='class[]' value='".$row3['userclass_id']."'  />\n";
 		$text .= "</td><td class='defaulttext' style='text-align:left;margin-left:0px;width:90%padding-top:3px;vertical-align:top'>".$tp->toHTML($row3['userclass_name'],"","defs")."<br />";
 		$text .= "<span class='smalltext'>".$tp->toHTML($row3['userclass_description'],"","defs")."</span></td>";
 		$text .= "</tr>\n";
@@ -731,22 +729,22 @@ foreach($extList as $ext) {
 	}
 }
 
-if ($signupval[7])
+if ($pref['signup_option_signature'])
 {
 	require_once(e_HANDLER."ren_help.php");
 	$text .= "<tr>
-		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
+		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($pref['signup_option_signature'])."</td>
 		<td class='forumheader3' style='width:70%' >
 		<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".($_POST['signature'] ? $_POST['signature'] : $signature)."</textarea><br />
 		<div style='width:99%'>".ren_help(2)."</div>
 		</td></tr>";
 }
 
-if ($signupval[8])
+if ($pref['signup_option_image'])
 {
 	$text .= "
 		<tr>
-		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_SIGNUP_33.")</span></td>
+		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($pref['signup_option_image'])."<br /><span class='smalltext'>(".LAN_SIGNUP_33.")</span></td>
 		<td class='forumheader3' style='width:70%;vertical-align:top' >
 		<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 
@@ -787,11 +785,11 @@ if ($signupval[8])
 		</tr>";
 }
 
-if ($signupval[9])
+if ($pref['signup_option_timezone'])
 {
 	$text .= "
 		<tr>
-		<td class='forumheader3' style='width:30%' >".LAN_122.req($signupval[9])."</td>
+		<td class='forumheader3' style='width:30%' >".LAN_122.req($pref['signup_option_timezone'])."</td>
 		<td class='forumheader3' style='width:70%;white-space:nowrap'>
 		<select style='width:99%' name='timezone' class='tbox'>\n";
 
@@ -854,9 +852,12 @@ function timezone() {
 
 function req($field) {
 	global $pref;
-	if ($field === 1) {
+	if ($field == 2)
+	{
 		$ret = "<span style='text-align:right;font-size:15px; color:red'> *</span>";
-	} else {
+	}
+	else
+	{
 		$ret = "";
 	}
 	return $ret;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-12 19:54:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2006-02-20 18:34:14 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,7 @@ $sc_style['PASSWORD_LEN']['pre'] = "<br /><span class='smalltext'>  (".LAN_SIGNU
 $sc_style['PASSWORD_LEN']['post'] = " ".LAN_SIGNUP_2.")</span>";
 
 $sc_style['USERCLASSES']['pre'] = "<tr>
-<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USET_5.":
+<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USET_5.":".req($pref['signup_option_class'])."
 <br /><span class='smalltext'>".LAN_USET_6."</span>
 </td>
 <td style='width:60%' class='forumheader2'>";
@@ -103,7 +103,7 @@ $USERSETTINGS_EDIT = "
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_308.req($signupval[0])."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_308.req($pref['signup_option_realname'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{REALNAME}
 	</td>
@@ -146,7 +146,7 @@ $USERSETTINGS_EDIT = "
 
 	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
 	<tr>
-	<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_120.req($signupval[7])."</td>
+	<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_120.req($pref['signup_option_signature'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{SIGNATURE=cols=58&rows=4}
 	<br />
@@ -155,7 +155,7 @@ $USERSETTINGS_EDIT = "
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_122.req($signupval[9])."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_122.req($pref['signup_option_timezone'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{TIMEZONE}
 	</td>
@@ -170,7 +170,7 @@ $USERSETTINGS_EDIT = "
 	</tr>
 
 	<tr>
-	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_422.req($signupval[8])."<br /><span class='smalltext'>".LAN_423."</span></td>
+	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_422.req($pref['signup_option_image'])."<br /><span class='smalltext'>".LAN_423."</span></td>
 	<td style='width:60%' class='forumheader2'>
 	{AVATAR_REMOTE}
 	</td>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-01-12 17:27:11 $
-|     $Author: streaky $
+|     $Revision: 1.48 $
+|     $Date: 2006-02-20 18:34:13 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -93,22 +93,15 @@ $pref = array (
   ),
   'signup_text' => '',
   'admin_alerts_ok' => '1',
-  'real' => '1',
-  'url' => '1',
-  'icq' => '1',
-  'aim' => '1',
-  'msn' => '1',
-  'dob' => '1',
-  'loc' => '1',
-  'sig' => '1',
-  'avt' => '1',
-  'zone' => '1',
-  'usrclass' => '1',
   'link_replace' => '0',
   'link_text' => '',
   'signcode' => '0',
   'logcode' => '0',
-  'signup_options' => '1.......1.1.1.1',
+  'signup_option_realname' => '1',
+  'signup_option_signature' => '1',
+  'signup_option_image' => '1',
+  'signup_option_timezone' => '1',
+  'signup_option_class' => '1',
   'newsposts_archive' => '0',
   'newsposts_archive_title' => '',
   'news_cats' => '',

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.259 $
-|     $Date: 2006-02-12 19:14:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.260 $
+|     $Date: 2006-02-20 18:34:08 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -278,7 +278,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 	} else {
 		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
-		if (strpos(e_SELF, e_ADMIN) === FALSE) {
+		if (strpos(e_SELF, ADMINDIR) === FALSE) {
 			$locat = (!$_GET['elan'] && e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
 			header("Location:".$locat);
 		}
@@ -441,8 +441,8 @@ $ns=new e107table;
 
 $e107->ban();
 
-if(isset($pref['force_userupdate']) && $pref['force_userupdate'] && USER && e_PAGE != "usersettings.php"){
-	if(force_userupdate()){
+if($pref['force_userupdate'] && USER) {
+	if(force_userupdate()) {
 		header("Location: ".e_BASE."usersettings.php?update");
 	};
 }
@@ -1048,6 +1048,8 @@ function init_session() {
 
 		if($result = get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE)) {
 			$currentUser = $result;
+			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
+
 			define("USERID", $result['user_id']);
 			define("USERNAME", $result['user_name']);
 			define("USERURL", (isset($result['user_homepage']) ? $result['user_homepage'] : false));
@@ -1206,28 +1208,33 @@ if(!function_exists("print_a")) {
 	}
 }
 
-function force_userupdate(){
-	// returns TRUE if required fields are empty in the user's profile.
+function force_userupdate() {
+
 	global $sql,$pref,$currentUser;
-	$signupval = explode(".", $pref['signup_options']);
-	if(in_array("2",$signupval)){
-		$signup_name = array("login", "homepage", "icq", "aim", "msn", "birthday", "location", "signature", "image", "timezone", "usrclass");
-		foreach($signupval as $key=>$sign){
-			$field = "user_".$signup_name[$key];
-			$req = $signupval[$key];
-			if($req ==2 && $currentUser[$field] == ""){
-			 //	echo "field = $field ";
-			 return TRUE;
-			}
-		}
+	
+	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE)
+	{
+		return FALSE;
 	}
 
-	// extended user.
-	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", " user_extended_struct_required = '1' ")){
-		while($row = $sql -> db_Fetch()){
-			//extract($row); //really neccessary?
+    $signup_option_names = array("realname", "signature", "image", "timezone", "class");
+
+	foreach($signup_option_names as $key => $value)
+	{
+		if ($pref['signup_option_'.$value] == 2 && !$currentUser['user_'.$value])
+		{
+			return TRUE;
+		}
+    }
+
+	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", "user_extended_struct_required = '1'"))
+	{
+		while($row = $sql -> db_Fetch())
+		{
 			$user_extended_struct_name = "user_{$row['user_extended_struct_name']}";
-			if(!$currentUser[$user_extended_struct_name]){
+
+			if(!$currentUser[$user_extended_struct_name])
+			{
 				return TRUE;
 			}
 		}

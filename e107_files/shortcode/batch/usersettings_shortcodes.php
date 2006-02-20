@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-01-12 19:54:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2006-02-20 18:34:13 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -92,13 +92,13 @@ if($sql->db_Select("userclass_classes", "*", "userclass_editclass IN(".$tp -> to
 	foreach($ucList as $row)
 	{
 		$inclass = check_class($row['userclass_id'], $curVal['user_class']) ? TRUE : FALSE;
-		if(isset($_POST['usrclass']))
+		if(isset($_POST['class']))
 		{
-			$inclass = in_array($row['userclass_id'], $_POST['usrclass']);
+			$inclass = in_array($row['userclass_id'], $_POST['class']);
 		}
 		$frm_checked = $inclass ? "checked='checked'" : "";
 		$ret .= "<tr><td class='defaulttext'>";
-		$ret .= "<input type='checkbox' name='usrclass[]' value='{$row['userclass_id']}' $frm_checked />\n";
+		$ret .= "<input type='checkbox' name='class[]' value='{$row['userclass_id']}' $frm_checked />\n";
 		$ret .= $tp->toHTML($row['userclass_name'], "", "defs")."</td>";
 		$ret .= "<td class='smalltext'>".$tp->toHTML($row['userclass_description'], "", "defs")."</td>";
 		$ret .= "</tr>\n";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-02-07 02:50:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.63 $
+|     $Date: 2006-02-20 18:34:12 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,16 +46,18 @@ if (isset($_POST['sub_review'])) {
     header("location:".e_BASE."subcontent.php?review");
     exit;
 }
+
 if (!USER) {
     header("location:".e_BASE."index.php");
     exit;
 }
-require_once(e_HANDLER."ren_help.php");
 
-if (e_QUERY && !ADMIN) {
+if (!ADMIN && e_QUERY && e_QUERY != "update") {
     header("location:".e_BASE."usersettings.php");
     exit;
 }
+
+require_once(e_HANDLER."ren_help.php");
 
 if(is_readable(THEME."usersettings_template.php"))
 {
@@ -70,8 +72,6 @@ include_once(e_FILE."shortcode/batch/usersettings_shortcodes.php");
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 $_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
-
-$signupval = explode(".", $pref['signup_options']);
 
 // Save Form Data  --------------------------------------->
 
@@ -89,9 +89,6 @@ if (isset($_POST['updatesettings']))
 
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
-
-	$signup_title = array(LAN_308, LAN_120, LAN_121, LAN_122);
-	$signup_name = array("realname", "signature", "image", "user_timezone");
 
 	if ($_POST['image'] && $size = getimagesize($_POST['image'])) {
 		$avwidth = $size[0];
@@ -112,14 +109,17 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
-	for ($i = 0; $i < count($signup_title); $i++)
+	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_USET_6);
+	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
+
+	foreach($signup_option_names as $key => $value)
 	{
-		$postvalue = $signup_name[$i];
-		if ($signupval[$i] == 2 && $_POST[$postvalue] == "" && !$_uid)
+		if ($pref['signup_option_'.$value] == 2 && !$_POST[$value] && !$_uid)
 		{
-			$error .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
+			$error .= LAN_SIGNUP_6.$signup_option_title[$key].LAN_SIGNUP_7."\\n";
 		}
-	}
+    }
+
 
 	if($sql->db_Select('user_extended_struct'))	{
 		while($row = $sql->db_Fetch()) {
@@ -300,7 +300,7 @@ if (isset($_POST['updatesettings']))
 					foreach($ucList as $c)
 					{
 						$cid = $c['userclass_id'];
-						if(!in_array($cid, $_POST['usrclass']))
+						if(!in_array($cid, $_POST['class']))
 						{
 							unset($newclist[$cid]);
 						}
@@ -410,8 +410,7 @@ require_once(FOOTERF);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function req($field)
-{
+function req($field) {
 	global $pref;
 	if ($field == 2)
 	{

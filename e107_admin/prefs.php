@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2006-02-07 15:35:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.79 $
+|     $Date: 2006-02-20 18:34:13 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,10 +38,6 @@ if (!$pref['timezone']) {
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-$signup_title = array(CUSTSIG_2, "null", "null", "null", "null", "null", "null", CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17);
-$signup_name = array("real", "null", "null", "null", "null", "null", "null", "sig", "avt", "zone", "usrclass");
-
-
 if (isset($_POST['updateprefs']))
 {
 	unset($_POST['updateprefs']);
@@ -52,14 +48,6 @@ if (isset($_POST['updateprefs']))
 	{
 		$pref[$key] = $tp->toDB($value);
 	}
-	$signup_options = "";
-	for ($i = 0; $i < count($signup_title); $i++)
-	{
-		$valuesignup = $signup_name[$i];
-		$signup_options .= $_POST[$valuesignup];
-		$signup_options .= $i < (count($signup_title)-1) ? "." : "";
-	}
-	$pref['signup_options'] = $signup_options;
 
 	$e107cache->clear();
 	save_prefs();
@@ -469,22 +457,22 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 	<td class='forumheader'>".CUSTSIG_13."</td>
 	<td class='forumheader'>".CUSTSIG_14."</td>
 	</tr>";
-$signupval = explode(".", $pref['signup_options']);
-for ($i = 0; $i < count($signup_title); $i++)
-{
-	if($signup_title[$i] != "null")
+
+    $signup_option_title = array(CUSTSIG_2, CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17);
+    $signup_option_names = array("signup_option_realname", "signup_option_signature", "signup_option_image", "signup_option_timezone", "signup_option_class");
+
+	foreach($signup_option_names as $key => $value)
 	{
 		$text .= "
-			<tr>
-				<td style='width:50%' class='forumheader3'>".$signup_title[$i]."</td>
-				<td style='width:50%' class='forumheader3' >". ($signupval[$i] == "0" || $$signup_name[$i] == "" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='".$signup_name[$i]."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;". ($signupval[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='".$signup_name[$i]."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;". ($signupval[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='".$signup_name[$i]."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;</td>
-			</tr>";
+		<tr>
+			<td style='width:50%' class='forumheader3'>".$signup_option_title[$key]."</td>
+			<td style='width:50%' class='forumheader3'>". 
+			(!$pref[$value]        ? "<input type='radio' name='{$value}' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='{$value}' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;".
+			( $pref[$value] == "1" ? "<input type='radio' name='{$value}' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='{$value}' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;".
+			( $pref[$value] == "2" ? "<input type='radio' name='{$value}' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='{$value}' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;
+			</td>
+		</tr>";
 	}
-	else
-	{
-		$text .= "<input type='hidden' name='{$signup_name[$i]}' value='0' />";
-	}
-}
 
 // Custom Fields.
 
