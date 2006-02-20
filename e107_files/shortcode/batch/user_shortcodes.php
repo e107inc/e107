@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-12-27 19:19:39 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2006-02-20 18:14:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -376,6 +376,7 @@ $qry = "
 	LEFT JOIN #user_extended_struct as c ON f.user_extended_struct_parent = c.user_extended_struct_id
 	ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
 ";
+
 require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
 $ueCatList = $ue->user_extended_get_categories();
@@ -385,7 +386,7 @@ $ueCatList[0][0] = array('user_extended_struct_name' => LAN_410);
 foreach($ueCatList as $catnum => $cat)
 {
 	$key = $cat[0]['user_extended_struct_name'];
-	$cat_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE);
+	$cat_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user['user_id']}}", TRUE);
 	if($cat_name != FALSE && count($ueFieldList[$catnum]))
 	{
 		$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
