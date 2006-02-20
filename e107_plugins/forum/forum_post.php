@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-02-05 12:32:47 $
-|     $Author: streaky $
+|     $Revision: 1.65 $
+|     $Date: 2006-02-20 14:18:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -269,7 +269,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$forum_id = $id;
 		}
 
-		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $poster, $email_notify, $threadtype);
+		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $poster, $email_notify, $threadtype, $forum_info['forum_sub']);
 		if($iid === -1)
 		{
 			require_once(HEADERF);
