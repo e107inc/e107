@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-25 01:26:59 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-02-20 19:29:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -291,7 +291,7 @@ $text = "<div style='text-align:center'>
 	<tr>
 	<td style='width:70%' class='forumheader3'>".UPLLAN_37."<br />
 	<span class='smalltext'>".UPLLAN_38."</span></td>
-	<td style='width:30%' class='forumheader3'>".r_userclass("upload_class", $pref['upload_class'])."
+	<td style='width:30%' class='forumheader3'>".r_userclass("upload_class", $pref['upload_class'],"off","nobody,public,guest,member,admin,classes")."
 
 	</td>
 	</tr>
