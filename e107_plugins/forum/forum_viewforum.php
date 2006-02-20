@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-02-15 16:37:16 $
+|     $Revision: 1.51 $
+|     $Date: 2006-02-20 16:42:33 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -306,7 +306,7 @@ else
 	
 $sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
 $FORUMJUMP = forumjump();
-$TOPLINK = "<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a>";
+$TOPLINK = "<a href='".e_SELF."?".e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_02."</a>";
 	
 if($container_only)
 {

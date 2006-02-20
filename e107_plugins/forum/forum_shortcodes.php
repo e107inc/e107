@@ -4,7 +4,7 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $forum_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN TOP
-return "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
+return "<a href='".e_SELF."?".e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_10."</a>";
 SC_END
 	
 SC_BEGIN JOINED
