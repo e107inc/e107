@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2006-01-05 09:06:46 $
-|		$Author: sweetas $
+|		$Revision: 1.9 $
+|		$Date: 2006-02-20 08:40:14 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -118,6 +118,9 @@ class listclass {
 	function getContentSections($mode){
 		global $sql, $sections, $titles, $content_types, $content_name;
 
+		if(!$content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){
+			return;
+		}
 		$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
 		//get main parent types
