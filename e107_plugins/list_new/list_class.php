@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2006-02-20 08:40:14 $
+|		$Revision: 1.10 $
+|		$Date: 2006-02-20 08:52:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -292,7 +292,7 @@ class listclass {
 		$this -> getContentSections("");
 
 		//require is needed here instead of require_once, since both the menu and the page could be visible at the same time
-		if(in_array($arr[9], $content_types)){
+		if(is_array($content_types) && in_array($arr[9], $content_types)){
 			$file = $content_name;
 			if(file_exists(e_PLUGIN.$file."/e_list.php")){
 				global $contentmode;
