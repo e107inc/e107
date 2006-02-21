@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2006-02-20 18:34:13 $
+|     $Revision: 1.80 $
+|     $Date: 2006-02-21 17:37:05 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -37,6 +37,12 @@ if (!$pref['timezone']) {
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
+
+if ($_POST['submit_resetdisplaynames'])
+{
+    $sql -> db_Update("user", "user_name=user_loginname");
+	$message = PRFLAN_157;
+}
 
 if (isset($_POST['updateprefs']))
 {
@@ -427,6 +433,22 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<textarea class='tbox' name='signup_disallow_text' cols='1' rows='3' style='width: 80%;'>".$pref['signup_disallow_text']."</textarea>
 	</td>
 	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_155.":</td>
+	<td class='forumheader3' style='width:50%;text-align:right' >
+	".r_userclass('displayname_class',$pref['displayname_class'],'off','nobody, public, admin, classes')."
+	<input class='button' type='submit' name='submit_resetdisplaynames' value='".PRFLAN_156."' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_158.":</td>
+	<td class='forumheader3' style='width:50%;text-align:right' >
+	<input type='text' class='tbox' size='3' name='displayname_maxlength' value='".$pref['displayname_maxlength']."' />
+	</td>
+	</tr>
+
 	";
 
 $text .= pref_submit();

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-02-21 02:21:32 $
+|     $Revision: 1.16 $
+|     $Date: 2006-02-21 17:37:05 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -21,8 +21,15 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $usersettings_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN USERNAME
-global $rs, $curVal;
-return $rs->form_text("username", 20, $curVal['user_name'], 100, "tbox");
+global $rs, $curVal, $pref;
+if (check_class($pref['displayname_class']))
+{
+	return $rs->form_text("username", 20, $curVal['user_name'], $pref['displayname_maxlength'], "tbox");
+}
+else
+{
+	return $curVal['user_name'];
+}
 SC_END
 
 SC_BEGIN LOGINNAME

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-01-15 01:08:03 $
-|     $Author: streaky $
+|     $Revision: 1.47 $
+|     $Date: 2006-02-21 17:37:05 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -89,7 +89,7 @@ define("CUSTSIG_3", "Website:");
 define("CUSTSIG_4", "Birthday:");
 define("CUSTSIG_5", "Location:");
 define("CUSTSIG_6", "Signature:");
-define("CUSTSIG_7", "Avatar");
+define("CUSTSIG_7", "Avatar:");
 define("CUSTSIG_8", "Time-Zone:");
 define("CUSTSIG_12", "Hide");
 define("CUSTSIG_13", "Fields");
@@ -162,5 +162,11 @@ define("PRFLAN_31", "Email Verification");
 define("PRFLAN_152", "No Verification");
 define("PRFLAN_153", "Admin Approval");
 define("PRFLAN_154", "New user verification method <br />If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
+
+define("PRFLAN_155", "Display Name available to");
+define("PRFLAN_156", "Reset ALL Display Names");
+define("PRFLAN_157", "All Display Names have been reset to the Login Name");
+define("PRFLAN_158", "Display Name maximum length");
+
 
 ?>

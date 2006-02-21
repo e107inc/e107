@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.176 $
-|     $Date: 2006-02-20 18:34:13 $
+|     $Revision: 1.177 $
+|     $Date: 2006-02-21 17:37:05 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,12 @@ if (isset($pref['signup_options'])) // CONVERT 0.6 STYLE SIGNUP OPTIONS
 	$pref['signup_option_class']     = $tmp[10];
 	unset($pref['signup_options']);
 	save_prefs();
+}
+
+if (!$pref['displayname_maxlength'])
+{
+  $pref['displayname_maxlength'] = 15;
+  save_prefs();
 }
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.260 $
-|     $Date: 2006-02-20 18:34:08 $
+|     $Revision: 1.261 $
+|     $Date: 2006-02-21 17:37:05 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -444,7 +444,7 @@ $e107->ban();
 if($pref['force_userupdate'] && USER) {
 	if(force_userupdate()) {
 		header("Location: ".e_BASE."usersettings.php?update");
-	};
+	}
 }
 
 $sql->db_Mark_Time('Start: Signup/splash/admin');
