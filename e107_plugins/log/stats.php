@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-02-14 23:00:31 $
-|     $Author: streaky $
+|     $Revision: 1.37 $
+|     $Date: 2006-02-21 01:19:33 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -24,9 +24,10 @@ require_once("../../class2.php");
 $stat = new siteStats();
 
 function core_head() {
+	$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 	return "<style type='text/css'>
 <!--
-.b { background-image: url(".$stat -> bar."); border: 1px solid #999; height: 10px; font: 0px }
+.b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font: 0px }
 -->
 </style>";
 }
@@ -494,7 +495,6 @@ class siteStats {
 	var $fileQueryInfo;
 	var $fileRecent;
 	var $error;
-	var $barImage;
 	var $order;
 	var $bar;
 
@@ -504,9 +504,6 @@ class siteStats {
 	function siteStats() {
 		/* constructor */
 		global $sql;
-
-		/* set image for bar */
-		$this -> barImage = e_PLUGIN."log/images/bar.png";
 
 		/* get today's logfile ... */
 		$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
