@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-02-21 02:21:32 $
+|     $Revision: 1.65 $
+|     $Date: 2006-02-21 17:37:05 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -206,10 +206,12 @@ if (isset($_POST['updatesettings']))
 
 	$username = strip_tags($_POST['username']);
 	$loginname = strip_tags($_POST['loginname']);
+	
 	if (!$loginname)
 	{
+		$sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
 		$row = $sql -> db_Fetch();
-		$loginname = $row['user_name'];
+		$loginname = $row['user_loginname'];
 	}
 	
 	$user_sess = "";
@@ -247,6 +249,15 @@ if (isset($_POST['updatesettings']))
 
 	if (!$error)
 	{
+		if (check_class($pref['displayname_class']))
+		{
+			$username = substr($username, 0, $pref['displayname_maxlength']);
+		}
+		else
+		{
+			$username = substr($loginname, 0, $pref['displayname_maxlength']);
+		}
+
 		$_POST['signature'] = $tp->toDB($_POST['signature']);
 		$_POST['realname'] = $tp->toDB($_POST['realname']);
 
