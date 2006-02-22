@@ -224,5 +224,7 @@ define("ADLAN_LAT_6", "Gemeldde forumberichten");
 define("ADLAN_LAT_7", "Bestandsuploads");
 define("ADLAN_LAT_8", "Er zijn nog niet beoordeelde beheerboodschappen");
 
-
+define("ADLAN_ERR_1", "Waarschuwing!");
+define("ADLAN_ERR_2", "Er staan bestanden op uw server waarin bekende kwetsbaarheden zitten. Die moeten <b>onmiddellijk</b> worden verwijderd. De bestanden hebben te maken met het WYSIWYG systeem dat in de oudere 0.6xx versies van e107 - htmlArea werd gebruikt. Verwijdert u de volgende directories en alle bestanden daarbinnen:");
+define("ADLAN_ERR_3", "Er zijn een of meer bestanden in de openbare upload directories die niet in de toegestane upload bestandsformaat lijst staan. Ze kunnen daar zijn neergezet door een aanvaller en als dat zo is, moeten ze  <b>onmiddelijk</b> worden verwijderd. U moet de bestanden <b>niet</b> openen, omdat ze kwaadaardige code zouden kunnen bevatten. Open ze hoe dan ook niet met een browser.<br /><br />Als u deze bestanden legitiem vindt, dan kunnen ze worden getoond omdat u recent de lijst met niet toegestane bestandsformaten hebt gewijzigd. Vult u de lijst dan aan met dit bestandsformaat (in beheer => uploads). U moet upload van .html,  .txt, etc. nooit toestaan, omdat een aanvaller een bestand van een dergelijk type via kwaadaardige javascripts zou kunnen uploaden. U moet ook nooit upload van .php of andere uitvoerbare scripts toestaan.<br /><br />Hieronder staan de mogelijk schadelijke bestanden opgesomd:");
 ?>

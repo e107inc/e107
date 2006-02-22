@@ -22,4 +22,5 @@ define("LAN_email_3", "Nieuwsbericht van ");
 define("LAN_email_4", "Verstuur e-mail");
 define("LAN_email_5", "Verstuur onderwerp per e-mail aan een kennis");
 define("LAN_email_6", "Ik denk dat je geïnteresseerd bent in dit onderwerp van");
+define("LAN_email_7", "iemand een e-mailtje sturen");
 ?>

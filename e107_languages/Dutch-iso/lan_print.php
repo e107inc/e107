@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 
 /*
 +---------------------------------------------------------------+
 |        e107 website system
 |        lan_print.php Dutch-utf language file 
 |
-|        �Steve Dunstan 2001-2002
+|        ©Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -16,7 +16,8 @@
 +---------------------------------------------------------------+
 */
 
-define("PAGE_NAME", "Afdrukvriendelijk");
+define("PAGE_NAME", "Printervriendelijk");
+define("LAN_PRINT_1", "printervriendelijk");
 define("LAN_86", "Categorie:");
 define("LAN_87", "door ");
 define("LAN_94", "Geplaatst door");

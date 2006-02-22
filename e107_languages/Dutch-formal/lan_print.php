@@ -16,7 +16,8 @@
 +---------------------------------------------------------------+
 */
 
-define("PAGE_NAME", "Afdrukvriendelijk");
+define("PAGE_NAME", "Printervriendelijk");
+define("LAN_PRINT_1", "printervriendelijk");
 define("LAN_86", "Categorie:");
 define("LAN_87", "door ");
 define("LAN_94", "Geplaatst door");
