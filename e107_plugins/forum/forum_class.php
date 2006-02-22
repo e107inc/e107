@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-02-20 17:34:26 $
+|     $Revision: 1.49 $
+|     $Date: 2006-02-22 02:51:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -242,12 +242,21 @@ class e107forum
 		{
 			$viewed = " AND thread_id NOT IN (".$viewed.")";
 		}
-		
-		if($sql->db_Select('forum_t', 'distinct thread_forum_id', "thread_parent=0 AND thread_lastpost > '".USERLV."' {$viewed}"))
+
+		$_newqry = 	"
+		SELECT DISTINCT ff.forum_sub, ft.thread_forum_id FROM #forum_t AS ft
+		LEFT JOIN #forum AS ff ON ft.thread_forum_id = ff.forum_id
+		WHERE thread_parent = 0 AND thread_lastpost > '".USERLV."' {$viewed}
+		";
+		if($sql->db_Select_gen($_newqry))
 		{
 			while($row = $sql->db_Fetch())
 			{
 				$ret[] = $row['thread_forum_id'];
+				if($row['forum_sub'])
+				{
+					$ret[] = $row['forum_sub'];
+				}
 			}
 			return $ret;
 		}
