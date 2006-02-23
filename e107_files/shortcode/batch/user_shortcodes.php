@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-02-20 18:14:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2006-02-23 01:02:13 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -210,9 +210,9 @@ else
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
 
-SC_BEGIN USER_NAME_LINK
+SC_BEGIN USER_ID
 global $user;
-return "<a href='".e_SELF."?id.{$user['user_id']}'>".$user['user_name']."</a>";
+return $user['user_id'];
 SC_END
 
 SC_BEGIN USER_NAME
@@ -220,9 +220,16 @@ global $user;
 return $user['user_name'];
 SC_END
 
-SC_BEGIN USER_ID
+SC_BEGIN USER_NAME_LINK
 global $user;
-return $user['user_id'];
+return "<a href='".e_SELF."?id.{$user['user_id']}'>".$user['user_name']."</a>";
+SC_END
+
+SC_BEGIN USER_LOGINNAME
+global $user;
+if(ADMIN && getperms("4")) {
+	return $user['user_loginname'];
+}
 SC_END
 
 SC_BEGIN USER_BIRTHDAY_ICON

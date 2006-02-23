@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-14 19:28:53 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-02-23 01:02:13 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -95,7 +95,7 @@ $USER_FULL_TEMPLATE = "
 <div style='text-align:center'>
 <table style='width:95%' class='fborder'>
 <tr>
-	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID}: {USER_NAME}</td>
+	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID} : {USER_NAME} : {USER_LOGINNAME}</td>
 </tr>
 <tr>
 	$user_picture
