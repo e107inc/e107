@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-02-08 01:34:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2006-02-23 15:37:18 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -75,17 +75,17 @@ class userlogin {
 				$userpass = md5(utf8_decode($ouserpass));
 			}
 
-			if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) {
+			if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username, TRUE)."'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 				$this -> checkibr($fip);
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}'")) {
+			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username, TRUE)."' AND user_password = '{$userpass}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
+			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username, TRUE)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
                 	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 					$this -> checkibr($fip);

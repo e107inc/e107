@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-10-05 11:05:07 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-02-23 15:37:18 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -28,10 +28,15 @@ global $tp;
 
 $tmp	= explode(".", e_QUERY);
 $table	= $tmp[0];
-$id		= $tmp[1];
+$id		= intval($tmp[1]);
+$editid	= intval($tmp[2]);
 $type	= $cobj -> getCommentType($table);
 
 if (isset($_POST['moderate'])) {
+	if (isset($_POST['comment_comment'])) {
+		$sql->db_Update("comments", "comment_comment='".$tp -> todb($_POST['comment_comment'])."' WHERE comment_id='$editid' ");
+		header("location: ".e_ADMIN."modcomment.php?{$table}.{$id}"); exit;
+	}
 	if (isset($_POST['comment_lock']) && $_POST['comment_lock'] == "1" && $_POST['comment_lock'] != $_POST['current_lock']) {
 		$sql->db_Update("comments", "comment_lock='1' WHERE comment_item_id='$id' ");
 	}
@@ -71,6 +76,23 @@ $text = "
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <table class='fborder' style='".ADMIN_WIDTH."'>";
 
+if ($editid)
+{
+	if (!$sql->db_Select("comments", "*", "comment_id=$editid")) {
+		$text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr>";
+	}
+	else
+	{
+		$row = $sql->db_Fetch();
+		$text .= "<tr><td><textarea class='tbox' name='comment_comment' cols='1' rows='15' style='width:100%;'>".$row['comment_comment']."</textarea></td></tr>";
+		$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' /></td></tr>";
+	}
+
+	$text .= "</table></form></div>";
+	$ns->tablerender(MDCLAN_8, $text);
+	require_once("footer.php"); exit;
+}
+
 if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$table."') AND comment_item_id=$id")) {
 	$text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr>";
 } else {
@@ -103,7 +125,11 @@ if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type
 			<td class='forumheader3' style='width:15%;'>".$datestamp."</td>
 			<td class='forumheader3' style='width:15%;'><b>".$comment_nick."</b><br />".$comment_str."</td>
 			<td class='forumheader3' style='width:40%;'>".$row['comment_comment']."</td>
-			<td class='forumheader3' style='width:25%;'>".($row['comment_blocked'] ? "<input type='checkbox' name='comment_unblocked[]' value='".$row['comment_id']."' /> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='".$row['comment_id']."' /> ".MDCLAN_6."")."&nbsp;<input type='checkbox' name='comment_delete[]' value='".$row['comment_id']."' /> ".LAN_DELETE."</td>
+			<td class='forumheader3' style='width:25%;'>
+				<a href='".e_ADMIN."modcomment.php?{$table}.{$id}.".$row['comment_id']."'><img src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:none' /></a>"
+				."&nbsp;".($row['comment_blocked'] ? "<input type='checkbox' name='comment_unblocked[]' value='".$row['comment_id']."' /> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='".$row['comment_id']."' /> ".MDCLAN_6."")
+				."&nbsp;<input type='checkbox' name='comment_delete[]' value='".$row['comment_id']."' /> ".LAN_DELETE."
+			</td>
 		</tr>";
 	}
 	$text .= "

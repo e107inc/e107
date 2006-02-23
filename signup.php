@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2006-02-20 18:34:12 $
+|     $Revision: 1.78 $
+|     $Date: 2006-02-23 15:37:18 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -224,14 +224,14 @@ if (isset($_POST['register']))
 		exit;
 	}
 // username exists.
-	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
+	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'], FALSE, TRUE)."'"))
 	{
 		$error_message .= LAN_411."\\n";
 		$error = TRUE;
 		$name = "";
 	}
 // Login name exists
-	if ($sql->db_Select("user", "*", "user_loginname='".$tp -> toDB($_POST['loginname'])."' "))
+	if ($sql->db_Select("user", "*", "user_loginname='".$tp -> toDB($_POST['loginname'], FALSE, TRUE)."' "))
 	{
 		$error_message .= LAN_104."\\n";
 		$error = TRUE;
@@ -360,7 +360,7 @@ if (isset($_POST['register']))
 		}
 
 		$username = $tp -> toDB(strip_tags($_POST['name']));
-		$loginname = $tp -> toDB(strip_tags($_POST['loginname']));
+		$loginname = $tp -> toDB(strip_tags($_POST['loginname'], FALSE, TRUE));
 		$time = time();
 		$ip = $e107->getip();
 
