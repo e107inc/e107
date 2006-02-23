@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_update.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-19 14:42:29 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-23 15:37:19 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -84,19 +84,19 @@ function pm_convert()
 
 function pm_convert_uid($name)
 {
-	global $uinfo;
+	global $uinfo, $tp;
 	$sqlu =& new db;
 	$name = trim($name);
 	if(!array_key_exists($uinfo[$name]))
 	{
-		if($sqlu->db_Select("user", "user_id", "user_name LIKE '".$sqlu -> escape($name)."'"))
+		if($sqlu->db_Select("user", "user_id", "user_name LIKE '".$tp -> todb($name, TRUE)."'"))
 		{
 			$row = $sqlu->db_Fetch();
 			$uinfo[$name] = $row['user_id'];
 		}
 		else
 		{
-			if($sqlu->db_Select("user", "user_id", "user_loginname LIKE '".$sqlu -> escape($name)."'"))
+			if($sqlu->db_Select("user", "user_id", "user_loginname LIKE '".$tp -> todb($name, TRUE)."'"))
 			{
 				$row = $sqlu->db_Fetch();
 				$uinfo[$name] = $row['user_id'];

@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-01-17 16:18:33 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2006-02-23 15:37:18 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -43,8 +43,8 @@ $thescript = (strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")) ? "tiny_mce_gzip.p
 
 $text = "<script type='text/javascript' src='".e_HANDLER."tiny_mce/".$thescript."'></script>\n";
 
-$text .= "<script type='text/javascript'>\n
-	tinyMCE.init({\n";
+$text .= "<script type='text/javascript'>\n	tinyMCE.init({\n";
+
 $text .= "language : '".$tinylang[$lang]."',\n";
 $text .= "mode : 'exact',\n";
 $text .= "elements : '".$formids."',\n";
@@ -67,7 +67,7 @@ $text .= "'"; // end of buttons 2
 
 $text .= ",theme_advanced_buttons3 : ''";
 $text .= ",theme_advanced_toolbar_location : 'top'";
-$text .= ",extended_valid_elements : 'p[style],a[name|href|title|style],img[class|src|style|alt|title|name],hr[class],span[class|style],div[class|style],table[class|style|cellpadding|cellspacing]'";
+$text .= ",extended_valid_elements : 'p[style],a[name|href|target|rel|title|style],img[class|src|style|alt|title|name],hr[class],span[class|style],div[class|style],table[class|style|cellpadding|cellspacing]'";
 $text .= ",invalid_elements: 'p,font,align,script,applet,iframe'\n";
 // $text .= ",auto_cleanup_word: true\n";
 $text .= ",convert_fonts_to_spans : true\n";
@@ -83,12 +83,42 @@ $text .= ",document_base_url: '".SITEURL."'\n";
 $text .= ",theme_advanced_styles: 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3'\n";
 $text .= ",popup_css: '".THEME."style.css'\n";
 $text .= ",verify_css_classes : false\n";
-
+$text .= ",cleanup_callback : \"tinymce_html_bbcode_control\" \n";
 $text .= (ADMIN) ? "\n, external_link_list_url: '../".$HANDLERS_DIRECTORY."tiny_mce/filelist.php'\n" : "";
 
 $text .= "
 
 	});
+
+function tinymce_html_bbcode_control(type, value) {
+
+	switch (type) {
+
+		case 'get_from_editor':
+
+			value = value.replace(/target=\"_blank\"/, 'rel=\"external\"');
+			value = '[html]\\n' + value + '\\n[/html]';
+			break;
+
+		case 'insert_to_editor':
+
+			html_bbcode_check = value.slice(0,6);
+
+			if (html_bbcode_check == '[html]') {
+				value = value.slice(6);
+			}
+
+			html_bbcode_check = value.slice(-7);
+
+			if (html_bbcode_check == '[/html]') {
+				value = value.slice(0, -7);
+			}
+
+			break;
+	}
+
+	return value;
+}
 
 </script>\n
 ";
