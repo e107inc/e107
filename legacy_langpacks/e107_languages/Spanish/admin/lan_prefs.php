@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-05 11:03:52 $
+|     $Revision: 1.9 $
+|     $Date: 2006-02-24 06:12:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -148,6 +148,10 @@ define("PRFLAN_151", "e107 - No hay métodos de autententificación instalados");
 define("PRFLAN_152", "Sin verificación");
 define("PRFLAN_153", "Aprobación Admin");
 define("PRFLAN_154", "Nuevo método de verificación de usuraio <br />Si selecciona 'Aprobación Admin', se recomienda que active la verificación por email en el registro <a href='".e_ADMIN."notify.php'>aquí</a>.");
+define("PRFLAN_155", "Mostrar Nombre disponible a");
+define("PRFLAN_156", "Resetear TODOS los nombres mostrables");
+define("PRFLAN_157", "Todoso los nombres mostrables se han reseteado a nombres de conexión");
+define("PRFLAN_158", "Longitud máxima del nombre mostrable");
 
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
@@ -156,7 +160,7 @@ define("CUSTSIG_3", "Web:");
 define("CUSTSIG_4", "Cumpleaños:");
 define("CUSTSIG_5", "Localización:");
 define("CUSTSIG_6", "Firma:");
-define("CUSTSIG_7", "Avatar");
+define("CUSTSIG_7", "Avatar:");
 define("CUSTSIG_8", "Zona Horaria:");
 
 define("CUSTSIG_12", "Ocultar");
