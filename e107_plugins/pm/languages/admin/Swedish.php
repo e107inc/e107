@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 12:52:54 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-24 11:19:17 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ define('ADLAN_PM_31', "Aktivera sändning till användarklass");
 define('ADLAN_PM_32', "Uppdatera inställningar");
 define('ADLAN_PM_33', "Inaktiv (inga begränsningar)");
 define('ADLAN_PM_34', "PM räknare");
-define('ADLAN_PM_35', "PM fönsterstorlek");
+define('ADLAN_PM_35', "PM brevlådestorlek");
 define('ADLAN_PM_36', "Användarklass");
 define('ADLAN_PM_37', "Räknarbegränsningar");
 define('ADLAN_PM_38', "Storleksbegränsning (i kB)");

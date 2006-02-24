@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-24 12:42:35 $
+|     $Revision: 1.6 $
+|     $Date: 2006-02-24 11:19:17 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ define("FORLAN_42", "flytta ner");
 define("FORLAN_43", "Förhandsgranska/Forumordning");
 define("FORLAN_44", "Kapsla in tabeller");
 define("FORLAN_45", "Markera här för att visa forumet inom en tematabell");
-define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
+define("FORLAN_46", "Titel som visas i rubrik om inkapslingstabeller är aktiverade");
 define("FORLAN_47", "Aktivera e-postnotifieringar");
 define("FORLAN_48", "Markera här för att tillåta användare att använda alternativet att få ett e-postbrev när någon svarar på deras inlägg.");
 define("FORLAN_49", "Aktivera röstningar");
