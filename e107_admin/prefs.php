@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2006-02-21 17:37:05 $
+|     $Revision: 1.81 $
+|     $Date: 2006-02-24 02:38:55 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ if (isset($_POST['updateprefs']))
 
 	foreach($_POST as $key => $value)
 	{
-		$pref[$key] = $tp->toDB($value);
+		$pref[$key] = strip_if_magic($value);
 	}
 
 	$e107cache->clear();
@@ -151,7 +151,6 @@ $text = "<script type=\"text/javascript\">
 	<input type='radio' name='redirectsiteurl' value='0'".(!$pref['redirectsiteurl'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
-
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_4."</td>
@@ -841,7 +840,7 @@ $text .= "<div id='advanced' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_17."<br /><span class='smalltext'>&nbsp</span></td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_17."<br /><span class='smalltext'>&nbsp;</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='compress_output' value='1'".($pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='compress_output' value='0'".(!$pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
@@ -849,7 +848,7 @@ $text .= "<div id='advanced' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_150."<br /><span class='smalltext'>&nbsp</span></td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_150."<br /><span class='smalltext'>&nbsp;</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}</td>
 	</tr>
 

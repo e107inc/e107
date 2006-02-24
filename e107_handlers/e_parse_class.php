@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.143 $
-|     $Date: 2006-02-23 15:37:18 $
+|     $Revision: 1.144 $
+|     $Date: 2006-02-24 02:38:55 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -34,9 +34,9 @@ class e_parse
 
 		if (is_array($data))
 		{
-			foreach ($data as $key => $var) // Recursively run though arrays
+			foreach ($data as $key => $value) // Recursively run though arrays
 			{
-				$ret[$key] = $this -> toDB($var, $no_strip, $no_html_removal);
+				$data[$key] = $this -> toDB($value, $leave_magic_quotes, $skip_encoding, $skip_html_permissions);
 			}
 		}
 		else

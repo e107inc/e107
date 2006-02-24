@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-02-21 17:37:05 $
+|     $Revision: 1.48 $
+|     $Date: 2006-02-24 02:38:55 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -149,7 +149,7 @@ define("PRFLAN_140", "Text to display after signup form has been submitted.");
 define("PRFLAN_141", "Allow registration using XML User Profiles");
 define("PRFLAN_142", "Flood Only");
 define("PRFLAN_143", "Failed Login Only");
-define("PRFLAN_144", "Flood & Failed Login");
+define("PRFLAN_144", "Flood &amp; Failed Login");
 define("PRFLAN_145", "Links in new window");
 define("PRFLAN_146", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
 define("PRFLAN_147", "Developer Mode");
