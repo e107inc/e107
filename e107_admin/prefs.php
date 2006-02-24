@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2006-02-24 02:38:55 $
+|     $Revision: 1.82 $
+|     $Date: 2006-02-24 17:14:22 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ if (isset($_POST['updateprefs']))
 
 	foreach($_POST as $key => $value)
 	{
-		$pref[$key] = strip_if_magic($value);
+		$pref[$key] = $tp->toDB($value);
 	}
 
 	$e107cache->clear();

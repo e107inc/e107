@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-02-23 15:37:18 $
+|     $Revision: 1.15 $
+|     $Date: 2006-02-24 17:14:22 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,14 @@ $type	= $cobj -> getCommentType($table);
 
 if (isset($_POST['moderate'])) {
 	if (isset($_POST['comment_comment'])) {
-		$sql->db_Update("comments", "comment_comment='".$tp -> todb($_POST['comment_comment'])."' WHERE comment_id='$editid' ");
+
+		// TEMP CLONE OF TODB FUNCTION UNTIL TODB OPTION TO IGNORE PRIVALAGES IS FIXED
+		$comment_comment = strip_if_magic($_POST['comment_comment']);
+		$comment_comment = htmlspecialchars($comment_comment, ENT_QUOTES, CHARSET);
+		$comment_comment = str_replace('\\', '&#092;', $comment_comment);
+		$comment_comment = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $comment_comment);
+		
+		$sql->db_Update("comments", "comment_comment='".$comment_comment."' WHERE comment_id='$editid' ");
 		header("location: ".e_ADMIN."modcomment.php?{$table}.{$id}"); exit;
 	}
 	if (isset($_POST['comment_lock']) && $_POST['comment_lock'] == "1" && $_POST['comment_lock'] != $_POST['current_lock']) {

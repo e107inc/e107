@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-02-23 15:37:19 $
+|     $Revision: 1.13 $
+|     $Date: 2006-02-24 17:14:22 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -283,7 +283,7 @@ class private_message
 	{
 		global $sql, $tp;
 
-		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$tp -> todb(trim($var), TRUE)."'"))
+		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$sql -> escape(trim($var), TRUE)."'"))
 		{
 			$row = $sql->db_Fetch();
 			return $row;
