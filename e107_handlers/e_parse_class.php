@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.144 $
-|     $Date: 2006-02-24 02:38:55 $
+|     $Revision: 1.145 $
+|     $Date: 2006-02-24 18:36:35 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -26,40 +26,41 @@ class e_parse
 	var $e_pf;
 	var $e_emote;
 	var $e_hook;
+	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
+	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
 
-	function toDB($data, $leave_magic_quotes = FALSE, $skip_encoding = FALSE, $skip_html_permissions = FALSE)
+	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
 		global $pref;
-
-		if (is_array($data))
-		{
-			foreach ($data as $key => $value) // Recursively run though arrays
+		if (is_array($data)) {
+			// recursively run toDB (for arrays)
+			foreach ($data as $key => $var) {
+				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode);
+			}
+		} else {
+			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false) {
+				$data = stripslashes($data);
+			}
+			if(isset($pref['post_html']) && check_class($pref['post_html']))
 			{
-				$data[$key] = $this -> toDB($value, $leave_magic_quotes, $skip_encoding, $skip_html_permissions);
+				$no_encode = TRUE;
+			}
+			if (getperms("0") || $no_encode === TRUE)
+			{
+				$search = array('$', '"', "'", '\\', '<?');
+				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt?');
+				$ret = str_replace($search, $replace, $data);
+			} else {
+				$data = htmlspecialchars($data, ENT_QUOTES, CHARSET);
+				$data = str_replace('\\', '&#092;', $data);
+				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 			}
 		}
-		else
-		{
-			if ($leave_magic_quotes == FALSE)
-			{
-				$data = strip_if_magic($data);
-			}
 
-			if(!$skip_html_permissions && !check_class($pref['post_html']))
-			{
-				$data = preg_replace("#\[html](.*?)\[/html]#si", "[ html ] \\1 [ /html ]", $data);
-			}
+ //       ret = $this->createConstants($ret);
 
-			if ($skip_encoding == FALSE)
-			{
-				$data = htmlentities($data, ENT_QUOTES, CHARSET);
-			}
-
-			$data = mysql_real_escape_string($data);
-		}
-
-		return $data;
+		return $ret;
 	}
 
 	function toForm($text, $single_quotes = FALSE)
@@ -287,6 +288,10 @@ class e_parse
 		}
 		global $pref;
 
+
+		//$text = str_replace(array("&#092;&quot;", "&#092;&#039;", "&#092;&#092;"), array("&quot;", "&#039;", "&#092;"), $text);
+
+
 		// support for converting defines(constants) within text. eg. Lan_XXXX
 		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 20 && defined(trim($text))){
 			return constant(trim($text));
@@ -335,6 +340,15 @@ class e_parse
 			}
 		}
 
+		if (strpos($modifiers, 'nobreak') === FALSE) {
+			$text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
+			foreach ($embeds[0] as $embed) {
+				$text = preg_replace("#<\|>#", $embed, $text, 1);
+			}
+		}
+
+		$text = str_replace($this -> search, $this -> replace, $text);
+
 		// Start parse [bb][/bb] codes
 		if ($parseBB === TRUE) {
 			if (!is_object($this->e_bb)) {
@@ -344,20 +358,6 @@ class e_parse
 			$text = $this->e_bb->parseBBCodes($text, $postID);
 		}
 		// End parse [bb][/bb] codes
-
-
-        // Auto line break and more ?
-		if (strpos($modifiers, 'nobreak') === FALSE) {
-			$text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
-			foreach ($embeds[0] as $embed) {
-				$text = preg_replace("#<\|>#", $embed, $text, 1);
-			}
-		}
-
-        // Turn old entities back into html that do not have [html][/html] tags
-		$search = array('&#39;', '&#039;', '&quot;', '&amp;#039;', '&amp;quot;');
-		$replace = array("'", "'", '"', "'", '"');
-		// $text = str_replace($search, $replace, $text);
 
 		if ($pref['profanity_filter']) {
 			if (!is_object($this->e_pf)) {

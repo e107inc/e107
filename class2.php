@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.262 $
-|     $Date: 2006-02-23 15:37:18 $
+|     $Revision: 1.263 $
+|     $Date: 2006-02-24 18:36:35 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -838,7 +838,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			}
 
 			// traverse the pref array, with toDB on everything
-			$_pref = $tp -> toDB($pref, TRUE, FALSE, TRUE);
+			$_pref = $tp -> toDB($pref, true, true);
 			// Create the data to be stored
 			$PrefCache1 = $eArrayStorage->WriteArray($_pref);
 			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'")){
@@ -848,7 +848,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 		}
 	} else {
 
-		$_user_pref = $tp -> toDB($user_pref, TRUE, TRUE, TRUE);
+		$_user_pref = $tp -> toDB($user_pref);
 
 		$tmp=addslashes(serialize($_user_pref));
 		$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=".intval($uid));
