@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-01-12 21:12:49 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2006-02-24 13:54:22 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -110,7 +110,7 @@ if ($action == "top") {
 	define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
 	 
 	if ($subaction == "forum" || $subaction == "all") {
-		$top_forum_posters = $sql->db_Select("user", "*", "ORDER BY user_forums DESC LIMIT ".$from.", ".$view."", "no_where");
+		$top_forum_posters = $sql->db_Select("user", "*", "`user_forums` > 0 ORDER BY user_forums DESC LIMIT ".$from.", ".$view."");
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -136,14 +136,14 @@ if ($action == "top") {
 		$ns->tablerender(TOP_LAN_0, $text);
 		if ($subaction == "forum") {
 			require_once(e_HANDLER."np_class.php");
-			$ftotal = $sql->db_Count("user", "(*)", "no_where");
+			$ftotal = $sql->db_Count("user", "(*)", "WHERE `user_forums` > 0");
 			$ix = new nextprev("top.php", $from, $view, $ftotal, "Forum Posts", "top.forum.".$view."");
 		}
 	}
 	 
 	 
 	if ($subaction == "comment" || $subaction == "all") {
-		$top_forum_posters = $sql->db_Select("user", "*", "ORDER BY user_comments DESC LIMIT 0, 10", "no_where");
+		$top_forum_posters = $sql->db_Select("user", "*", "`user_comments` > 0 ORDER BY user_comments DESC LIMIT 0, 10");
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -170,7 +170,7 @@ if ($action == "top") {
 	}
 	 
 	if ($subaction == "chat" || $subaction == "all") {
-		$top_forum_posters = $sql->db_Select("user", "*", "ORDER BY user_chats DESC LIMIT 0, 10", "no_where");
+		$top_forum_posters = $sql->db_Select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
