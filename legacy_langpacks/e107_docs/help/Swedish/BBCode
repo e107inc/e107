@@ -1,12 +1,12 @@
 
-Q>	Vad &auml;r BBCode?
-A>	BBCode &auml;r en genv&auml;g till en HTML tagg, t.ex. genom att skriva  &#91;b] Jag &auml;r fetstil! &#91;/b] i n&aring;gon av dina admin textrutor s&aring; kommer texten inom &#91;b] och &#91;/b] att visas i fetstil, s&aring; [b]Jag &auml;r fetstil![/b] kommer att visas p&aring; sk&auml;rmen.
+Q&gt;	Vad &auml;r BBCode?
+A&gt;	BBCode &auml;r en genv&auml;g till en HTML tagg, t.ex. genom att skriva  &#91;b] Jag &auml;r fetstil! &#91;/b] i n&aring;gon av dina admin textrutor s&aring; kommer texten inom &#91;b] och &#91;/b] att visas i fetstil, s&aring; [b]Jag &auml;r fetstil![/b] kommer att visas p&aring; sk&auml;rmen.
 
-Q>	Men vad &auml;r det bra f&ouml;r?
-A>	Den spar tid n&auml;r man skall anv&auml;nda HTML taggar. Du kan anv&auml;nda normala HTML taggar i dina textrutor men om du anv&auml;nder BBCode kommer ditt skrivande att g&aring; mycket fortare.
+Q&gt;	Men vad &auml;r det bra f&ouml;r?
+A&gt;	Den spar tid n&auml;r man skall anv&auml;nda HTML taggar. Du kan anv&auml;nda normala HTML taggar i dina textrutor men om du anv&auml;nder BBCode kommer ditt skrivande att g&aring; mycket fortare.
 
-Q>	N&auml;r jag klickar p&aring; n&aring;gon av BBCode knapparna f&ouml;r att skriva koden klistars den in i slutet av min text, inte d&auml;r mark&ouml;ren &auml;r - varf&ouml;r?
-A>	Det finns en bugg i Internet Explorer som kan f&aring; den att krascha om e107 f&ouml;rs&ouml;ker att skriva koden vid mark&ouml;rpositione, s&aring; av kompatibilitetssk&auml;l l&auml;ggs koden in i slutet av din text.
+Q&gt;	N&auml;r jag klickar p&aring; n&aring;gon av BBCode knapparna f&ouml;r att skriva koden klistars den in i slutet av min text, inte d&auml;r mark&ouml;ren &auml;r - varf&ouml;r?
+A&gt;	Det finns en bugg i Internet Explorer som kan f&aring; den att krascha om e107 f&ouml;rs&ouml;ker att skriva koden vid mark&ouml;rpositione, s&aring; av kompatibilitetssk&auml;l l&auml;ggs koden in i slutet av din text.
 
-Q>	Vilka BBkoder kan jag anv&auml;nda?
-A>	L&aring;t din musmark&ouml;r sv&auml;va &ouml;ver n&aring;gon av BBkod-rutorna s&aring; kommer du att se att en liten f&ouml;rklaring visas just &ouml;ver knapparna. Det finns ocks&aring; koder f&ouml;r l&auml;nkar &#91;url] &#91;/url] och e-post &#91;email] &#91;/email], &auml;ven h&auml;r kan vanliga HTML taggar anv&auml;ndas. Alla webbadresser och e-postadresser som l&auml;ggs in g&ouml;rs automatiskt till klickbara hyperl&auml;nkar.
+Q&gt;	Vilka BBkoder kan jag anv&auml;nda?
+A&gt;	L&aring;t din musmark&ouml;r sv&auml;va &ouml;ver n&aring;gon av BBkod-rutorna s&aring; kommer du att se att en liten f&ouml;rklaring visas just &ouml;ver knapparna. Det finns ocks&aring; koder f&ouml;r l&auml;nkar &#91;url] &#91;/url] och e-post &#91;email] &#91;/email], &auml;ven h&auml;r kan vanliga HTML taggar anv&auml;ndas. Alla webbadresser och e-postadresser som l&auml;ggs in g&ouml;rs automatiskt till klickbara hyperl&auml;nkar.

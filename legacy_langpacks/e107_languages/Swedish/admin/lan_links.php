@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -61,5 +61,6 @@ define("LINKLAN_6", "Skapa underl&auml;nkar fr&aring;n:");
 define("LINKLAN_7", "Skapa underl&auml;nkar under vilken l&auml;nk?");
 define("LINKLAN_8", "Nyhetskategorier");
 define("LINKLAN_9", "Nerladdningsategorier");
+define("LINKLAN_10", "Skapa underl&auml;nk");
 
 ?>

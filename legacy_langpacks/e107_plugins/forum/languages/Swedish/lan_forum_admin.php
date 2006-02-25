@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ define("FORLAN_42", "flytta ner");
 define("FORLAN_43", "F&ouml;rhandsgranska/Forumordning");
 define("FORLAN_44", "Kapsla in tabeller");
 define("FORLAN_45", "Markera h&auml;r f&ouml;r att visa forumet inom en tematabell");
-define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
+define("FORLAN_46", "Titel som visas i rubrik om inkapslingstabeller &auml;r aktiverade");
 define("FORLAN_47", "Aktivera e-postnotifieringar");
 define("FORLAN_48", "Markera h&auml;r f&ouml;r att till&aring;ta anv&auml;ndare att anv&auml;nda alternativet att f&aring; ett e-postbrev n&auml;r n&aring;gon svarar p&aring; deras inl&auml;gg.");
 define("FORLAN_49", "Aktivera r&ouml;stningar");
@@ -68,7 +68,7 @@ define("FORLAN_56", "Antal inl&auml;gg i en tr&aring;d innan den markeras som po
 define("FORLAN_57", "Inl&auml;gg per sida");
 define("FORLAN_58", "Antal inl&auml;gg visade per sida");
 define("FORLAN_59", "Rensa");
-define("FORLAN_60", "Detta kommer att radera alla tr&aring;dar som inte f&aring;tt n&aring;got nytt inl&auml;gg p&aring; det antal dagar du anger. <br /><b>Var f&ouml;rsiktig med denna funktion!</b>");
+define("FORLAN_60", "Detta kommer att radera alla tr&aring;dar som inte f&aring;tt n&aring;got nytt inl&auml;gg p&aring; det antal dagar du anger. &lt;br /&gt;&lt;b&gt;Var f&ouml;rsiktig med denna funktion!&lt;/b&gt;");
 define("FORLAN_61", "Uppdatera alternativ");
 define("FORLAN_62", "Forumalternativ");
 define("FORLAN_63", "Ranger");
@@ -132,7 +132,7 @@ define("FORLAN_115", "Markera f&ouml;r att l&aring;ta anv&auml;ndare att sj&auml
 define("FORLAN_116", "Rapporterade inl&auml;gg");
 define("FORLAN_117", "Detta kommer att radera posten f&ouml;r det rapporterade inl&auml;gget, inte inl&auml;gget i sig sj&auml;lvt.");
 define("FORLAN_118", "Rapporterat inl&auml;gg raderat");
-define("FORLAN_119", "Klickning p&aring; l&auml;nkar kommer att &ouml;ppna forum i nytt f&ouml;nster.");
+// define("FORLAN_119", "Klickning p&aring; l&auml;nkar kommer att &ouml;ppna forum i nytt f&ouml;nster.");
 define("FORLAN_120", "Markera f&ouml;r att l&aring;ta anv&auml;ndare att sj&auml;lva &auml;ndra egen titel");
 define("FORLAN_121", "Inga rapporterade inl&auml;gg");
 define("FORLAN_122", "Klicka h&auml;r f&ouml;r att e-posta admin n&auml;r n&aring;gon rapporterar ett foruminl&auml;gg");
@@ -143,8 +143,7 @@ define("WMGLAN_3", "Regler f&ouml;r Administrat&ouml;rer");
 define("WMGLAN_4", "Skicka");
 define("WMGLAN_5", "S&auml;tt forumregler");
 define("WMGLAN_6", "Aktivera?");
-define("FORLAN_124", "L&auml;nkar i nytt f&ouml;nster");
-define("FORLAN_125", "Markera h&auml;r f&ouml;r att alla l&auml;nkar skall &ouml;ppnas i nytt f&ouml;nster (<i>Detta kommer att g&auml;lla <b>hela</b> sajten</i>). ");
+
 define("FORLAN_126", "Visa verktygstips");
 define("FORLAN_127", "Markera f&ouml;r att visa verktygstips inneh&aring;llande det f&ouml;rsta inl&auml;gget i tr&aring;den n&auml;r musen sv&auml;var &ouml;ver tr&aring;dens namn. ");
 define("FORLAN_128", "L&auml;ngd p&aring; verktygstips");
@@ -158,7 +157,7 @@ define("FORLAN_135", "L&auml;mna tomt f&ouml;r att avaktivera automatisk skalnin
 define("FORLAN_136", "Skapa l&auml;nk till fullskalig bild");
 define("FORLAN_137", "Aktivering av detta kommer att f&ouml;rminska st&ouml;rre bilder och ocks&aring; skapa en l&auml;nk till den st&ouml;rre originalbilden.  Om avaktiverad kommer bilden att kastas.");
 define("FORLAN_138", "Rensa dessa forum");
-define("FORLAN_139", "F&ouml;r att anv&auml;nda denna inst&auml;llning m&aring;ste du ocks&aring; markera 'Aktivera bildpostning' p&aring; <a href='".e_ADMIN."image.php'>sidan f&ouml;r bilder</a>");
+define("FORLAN_139", "F&ouml;r att anv&auml;nda denna inst&auml;llning m&aring;ste du ocks&aring; markera 'Aktivera bildpostning' p&aring; &lt;a href='".e_ADMIN."image.php'&gt;sidan f&ouml;r bilder&lt;/a&gt;");
 define("FORLAN_140", "Visa");
 define("FORLAN_141", "Posta");
 define("FORLAN_142", "Postningstill&aring;telse");
@@ -190,8 +189,16 @@ define("FORLAN_166", "Forumverktyg");
 define("FORLAN_167", "R&auml;knare f&ouml;r forum uppdaterade");
 define("FORLAN_168", "Info om senaste inl&auml;gg uppdaterade f&ouml;r forum");
 define("FORLAN_169", "R&auml;knare f&ouml;r anv&auml;ndares inl&auml;gg uppdaterade");
-define("FORLAN_166", "Forumverktyg");
-define("FORLAN_166", "Forumverktyg");
-define("FORLAN_166", "Forumverktyg");
+define("FORLAN_170", "Rapporter");
+define("FORLAN_171", "Rapport om foruminl&auml;gg");
+define("FORLAN_172", "Radera denna rapport");
+define("FORLAN_173", "Tr&aring;drubrik");
+define("FORLAN_174", "Rapporterad av anv&auml;ndare");
+define("FORLAN_175", "Rapport ins&auml;nd");
+define("FORLAN_176", "Rapport");
+define("FORLAN_177", "e-postnotfiering P&Aring; som standard");
+define("FORLAN_178", "Markera detta f&ouml;r att s&auml;tta rutan f&ouml;r e-postnotifiering som till som standard");
+
+define("FORLAN_179", "(L&auml;gg till en * i b&ouml;rjan av forumnamet f&ouml;r att g&ouml;ra detta forum till endast en beh&aring;llare f&ouml;r underforum.  Forumtemat m&aring;ste ocks&aring; ha st&ouml;d f&ouml;r detta.)");
 
 ?>

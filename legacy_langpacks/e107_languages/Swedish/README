@@ -1,23 +1,19 @@
 
 README for the Swedish language pack for e107.
-README f&ouml;r det svenska språkpaketet till e107.
+README för det svenska språkpaketet till e107.
 
 With respect for the non-Swedish users who wish to use this
 language package, all documentation files will be written in Egnlish.
 
-Med respekt f&ör icke-Svenska användare kommer alla dokumentationsfiler
+Med respekt för icke-Svenska användare kommer alla dokumentationsfiler
 att vara skrivna på Engelska.
 
 -------------
 
-*** This is a convertion straight up from my UTF-8 encoded files
-*** in the e107_langpacks directory. Please report to me id these
-*** does not work as expected!
+This language pack is corresponding to the e107 v0.7.2 RELEASE
+at the moment, and by that only grammar and spelling changes
+should be required as of now.
 
-This language pack is under development at the moment, and by that
-in no way complete as of now.
-
-Files will be added to the CVS as they become ready for beta use.
 Keep your eyes on the CHANGELOG for information on language files
 and the status of them.
 

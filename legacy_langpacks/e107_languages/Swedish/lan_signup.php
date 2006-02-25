@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_signup.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:52 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -16,7 +16,7 @@ define("LAN_9", "Inloggningsnamn: ");
 define("LAN_10", "namnet du anv&auml;nder f&ouml;r inloggning");
 define("LAN_17", "L&ouml;senord: ");
 define("LAN_103", "Det anv&auml;ndarnamnet kan inte accepteras som giltigt, v&auml;lj n&aring;got annat");
-define("LAN_104", "Det anv&auml;ndarnamnet finns redan i databasen, v&auml;lj n&aring;got annat namn");
+define("LAN_104", "Den inloggningen finns redan i databasen, v&auml;lj n&aring;got annat inloggningsnamn");
 define("LAN_105", "De tv&aring; l&ouml;senorden &auml;r inte lika");
 define("LAN_106", "Det ser inte ut som en giltig e-postadress");
 define("LAN_107", "Tack! Du &auml;r nu en registrerad medlem p&aring;");
@@ -31,10 +31,10 @@ define("LAN_123", "Registrera");
 define("LAN_185", "Du har l&auml;mnat n&ouml;dv&auml;ndigt f&auml;lt tomt");
 define("LAN_201", "Ja");
 define("LAN_200", "Nej");
-define("LAN_202", "Registrering misslyckades");
+define("LAN_202", "Du har redan ett konto. Om du har gl&ouml;mt ditt l&ouml;senord, klicka p&aring; \'Gl&ouml;mt l&ouml;senord\' l&auml;nken.");
 define("LAN_309", "Ange dina uppgifter nedan.");
 define("LAN_399", "Forts&auml;tt");
-define("LAN_400", "Anv&auml;ndarnamn och l&ouml;senord &auml;r <b>skiftl&auml;gesk&auml;nsliga</b>");
+define("LAN_400", "Anv&auml;ndarnamn och l&ouml;senord &auml;r &lt;b&gt;skiftl&auml;gesk&auml;nsliga&lt;/b&gt;");
 define("LAN_401", "Ditt konto har nu aktiverats, var v&auml;nlig");
 define("LAN_402", "Registrering aktiverad");
 define("LAN_403", "V&auml;lkommen till");
@@ -59,7 +59,7 @@ define("LAN_409", "Ogiltiga tecken i anv&auml;ndarnamnet");
 define("LAN_410", "Ange koden som visas i bilden");
 
 define("LAN_SIGNUP_12", "v&auml;nligen ha ditt anv&auml;ndarnamn och l&ouml;senord nerskrivet och sparat p&aring; ett s&auml;kert st&auml;lle, om du f&ouml;rlorar dem kan de ej &aring;terf&aring;s.");
-define("LAN_SIGNUP_13", "Nu kan du logga in fr&aring;n inloggningsrutan, eller <a href='".e_BASE."login.php'>h&auml;rifr&aring;n</a>.");
+define("LAN_SIGNUP_13", "Nu kan du logga in fr&aring;n inloggningsrutan, eller &lt;a href='".e_BASE."login.php'&gt;h&auml;rifr&aring;n&lt;/a&gt;.");
 define("LAN_SIGNUP_14", "h&auml;r");
 define("LAN_SIGNUP_15", "V&auml;nligen kontakta sajtens huvudadmin");
 define("LAN_SIGNUP_16", "om du beh&ouml;ver assistans.");
@@ -91,5 +91,9 @@ define("LAN_EMAIL_01", "K&auml;ra");
 define("LAN_EMAIL_04", "Spara detta e-postbrev f&ouml;r din egen referens.");
 define("LAN_EMAIL_05", "Ditt l&ouml;senord har krypterats och kan inte &aring;terskapas om gl&ouml;mmer bort det. Du kan d&auml;remot beg&auml;ra ett nytt l&ouml;senord om det skulle h&auml;nda.");
 define("LAN_EMAIL_06", "Tack f&ouml;r din registrering.");
+
+define("LAN_SIGNUP_37", "Detta steg i registreringen &auml;r nu klart. En sajtadministrat&ouml;r m&aring;ste nu godk&auml;nna ditt medlemskap.  N&auml;r det &auml;r gjort kommer du att f&aring; ett bekr&auml;ftelsebrev med e-post som upplyser dig om att medlemskapet har godk&auml;nts.");
+define("LAN_SIGNUP_38", "Du angav tv&aring; olika e-postadresser. Ange en korrekt e-postadress i de tv&aring; f&auml;lten f&ouml;r detta.");
+define("LAN_SIGNUP_39", "Ange e-postadressen igen:");
 
 ?>

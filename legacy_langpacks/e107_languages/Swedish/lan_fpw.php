@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_fpw.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:52 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -32,9 +32,9 @@ define("LAN_FPW3","Felaktig kod angiven");
 define("LAN_FPW4","En &aring;terst&auml;llningsbeg&auml;ran har redan s&auml;nts om detta l&ouml;senord. Om du inte f&aring;tt meddelande via e-post, kontakta administrat&ouml;ren f&ouml;r hj&auml;lp.");
 define("LAN_FPW5","En beg&auml;ran om &aring;terst&auml;llning av l&ouml;senord f&ouml;r");
 define("LAN_FPW6","E-post har skickats till dig med en l&auml;nk som l&aring;ter dig &aring;terst&auml;lla ditt l&ouml;senord.");
-define("LAN_FPW7","Detta &auml;r inte en giltig l&auml;nk f&ouml;r att &aring;terst&auml;lla ditt l&ouml;senord.<br />Kontakta sajtadministrat&ouml;ren f&ouml;r mer information.");
+define("LAN_FPW7","Detta &auml;r inte en giltig l&auml;nk f&ouml;r att &aring;terst&auml;lla ditt l&ouml;senord.&lt;br /&gt;Kontakta sajtadministrat&ouml;ren f&ouml;r mer information.");
 define("LAN_FPW8","L&ouml;senordet f&ouml;r anv&auml;ndanamn");
-define("LAN_FPW9","har blivit &auml;ndrat.<br /><br />Det nya l&ouml;senordet &auml;r:");
+define("LAN_FPW9","har blivit &auml;ndrat.&lt;br /&gt;&lt;br /&gt;Det nya l&ouml;senordet &auml;r:");
 define("LAN_FPW10","V&auml;nligen");
 define("LAN_FPW11","logga in nu");
 define("LAN_FPW12","och &auml;ndra ditt l&ouml;senord omg&aring;ende av s&auml;kerhetssk&auml;l.");

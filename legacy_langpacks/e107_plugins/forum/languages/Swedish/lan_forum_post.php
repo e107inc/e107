@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_post.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ define("LAN_389", "Dublettinl&auml;gg, omdirigerar...");
 define("LAN_390", "Bifoga fil/bild");
 define("LAN_391", "Alternativ");
 define("LAN_392", "Fil att bifoga");
-define("LAN_393", "<b>Observera</b><br />Till&aring;tna filtyper:");
+define("LAN_393", "&lt;b&gt;Observera&lt;/b&gt;&lt;br /&gt;Till&aring;tna filtyper:");
 define("LAN_394", "N&aring;gon annan filtyp som laddas upp kommer att raderas omedelbart.");
 define("LAN_395", "Maximal filstorlek");
 define("LAN_396", "bytes");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,14 @@ define("FC_LAN_10", "Av");
 define("FC_LAN_11", "Skanna nu");
 define("FC_LAN_12", "Inga");
 define("FC_LAN_13", "Saknade k&auml;rnfiler");
+define("FC_LAN_14", "Visa resultat som");
+define("FC_LAN_15", "Katalogtr&auml;d");
+define("FC_LAN_16", "Lista");
+define("FC_LAN_17", "Str&auml;ngmatchning");
+define("FC_LAN_18", "Regulj&auml;rt uttryck");
+define("FC_LAN_19", "Visa radnummer");
+define("FC_LAN_20", "Visa matchande rader");
+define("FC_LAN_21", "Gamla k&auml;rnfiler");
 
 define("FR_LAN_1", "Skannar");
 define("FR_LAN_2", "Skaningsresultat");
@@ -54,5 +62,12 @@ define("FR_LAN_19", "filer fallerade");
 define("FR_LAN_20", "Alla filer klara");
 define("FR_LAN_21", "inga");
 define("FR_LAN_22", "Saknade k&auml;rnfiler");
+define("FR_LAN_23", "Inga matchningar hittades.");
+define("FR_LAN_24", "Gamla k&auml;rnfiler");
+define("FR_LAN_25", "Integritet kan ej ber&auml;knas");
+
+define("FR_LAN_26", "Varning! K&auml;nd os&auml;kerhet detekterad!");
+define("FR_LAN_27", "Det finns filer p&aring; din server som &auml;r k&auml;nda f&ouml;r att kunna utnyttjas och de m&aring;ste raderas omedelbart.");
+define("FR_LAN_28", "K&auml;nda os&auml;kra filer");
 
 ?>

@@ -1,6 +1,6 @@
 
-Q>	Jag vill till&aring;ta att anv&auml;ndare laddar upp filer till sajten men jag &auml;r oroad &ouml;ver s&auml;kerheten...
-A>	Det finns n&aring;gra saker att g&ouml;ra f&ouml;r att &ouml;ka s&auml;kerheten. F&ouml;rst, anv&auml;nd bin&auml;r lagring, de uppladdade filerna kommer d&aring; att sparas i MySQL databasen och &auml;r d&auml;rf&ouml;r inte tillg&auml;ngliga f&ouml;r n&aring;gon annan &auml;n nerladdningen. Ange ocks&aring; en lista &ouml;ver till&aring;tna filtyper, om n&aring;gon laddar upp en annan filtyp &auml;n de till&aring;tna kommer filen omedelbart att raderas fr&aring;n din server.
+Q&gt;	Jag vill till&aring;ta att anv&auml;ndare laddar upp filer till sajten men jag &auml;r oroad &ouml;ver s&auml;kerheten...
+A&gt;	Det finns n&aring;gra saker att g&ouml;ra f&ouml;r att &ouml;ka s&auml;kerheten. F&ouml;rst, anv&auml;nd bin&auml;r lagring, de uppladdade filerna kommer d&aring; att sparas i MySQL databasen och &auml;r d&auml;rf&ouml;r inte tillg&auml;ngliga f&ouml;r n&aring;gon annan &auml;n nerladdningen. Ange ocks&aring; en lista &ouml;ver till&aring;tna filtyper, om n&aring;gon laddar upp en annan filtyp &auml;n de till&aring;tna kommer filen omedelbart att raderas fr&aring;n din server.
 
-Q>	Jag har f&aring;tt n&aring;gra filer uppladdade, vad g&ouml;r jag nu?
-A>	Du kan v&auml;lja att kopiera dem till nerladdningshanteraren f&ouml;r att l&aring;ta andra ladda hem dem, och kopiera informationen till din nyhetssektion f&ouml;r att skapa en nyhetspost om filen.
+Q&gt;	Jag har f&aring;tt n&aring;gra filer uppladdade, vad g&ouml;r jag nu?
+A&gt;	Du kan v&auml;lja att kopiera dem till nerladdningshanteraren f&ouml;r att l&aring;ta andra ladda hem dem, och kopiera informationen till din nyhetssektion f&ouml;r att skapa en nyhetspost om filen.

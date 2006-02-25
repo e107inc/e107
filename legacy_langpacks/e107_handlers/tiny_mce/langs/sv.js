@@ -3,8 +3,8 @@
 |     Swedish (SE) language variables
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_handlers/tiny_mce/langs/sv.js,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:52 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -36,8 +36,8 @@ update : 'Uppdatera',
 cancel : 'Avbryt',
 insert_link_url : 'L&auml;nkens URL',
 insert_link_target : 'F&ouml;nster',
-insert_link_target_same : '&ouml;ppna l&auml;nken i samma f&ouml;nster',
-insert_link_target_blank : '&ouml;ppna l&auml;nken i ett nytt f&ouml;nster',
+insert_link_target_same : '&Ouml;ppna l&auml;nken i samma f&ouml;nster',
+insert_link_target_blank : '&Ouml;ppna l&auml;nken i ett nytt f&ouml;nster',
 insert_link_delta_width : 20,
 insert_link_delta_height : 10,
 insert_image_title : 'Skapa/redigera bild',
@@ -48,5 +48,5 @@ italic_img : 'italic_de_se.gif',
 underline_img : "underline.gif",
 clipboard_msg : 'Klipput/Kopiera/Klistra fungerar inte Mozilla och Firefox. Vill du veta mer om detta?',
 help_desc : "Hj&auml;lp",
-popup_blocked : 'Tyv&auml;rr, vi ser att din popup-blockerare har avaktiverat ett f&ouml;nster som ger applikationen sin funktionalitet. Du m&aring;ste avaktivera popup blockering p&aring; denna sajt f&ouml;r att kunna anv&auml;nda detta verktyg.'
+popup_blocked : 'Tyv&auml;rr har vi noterat att din popup-stoppare har blockerat ett f&ouml;nster som tillhandah&aring;ller programfunktioner. Du m&aring;ste avaktivera din pop-stoppare f&ouml;r denna sajten f&ouml;r att kunna utnyttja detta verktyget helt och h&aring;llet.'
 });

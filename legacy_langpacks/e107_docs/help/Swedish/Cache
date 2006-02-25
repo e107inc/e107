@@ -1,9 +1,9 @@
 
-Q>	Vad &auml;r denna sektion till f&ouml;r?
-A>	S&auml;tter du Cache Status till p&aring;, kommer vissa delar av din sajt att buffras. Detta reducerar anropen till MySQL, och snabbar upp sajten drastiskt.
+Q&gt;	Vad &auml;r denna sektion till f&ouml;r?
+A&gt;	S&auml;tter du Cache Status till p&aring;, kommer vissa delar av din sajt att buffras. Detta reducerar anropen till MySQL, och snabbar upp sajten drastiskt.
 
-Q>	Jag gjorde en del &auml;ndringar i temat jag anv&auml;nder, men ingen &auml;ndring syns - beror det p&aring; cachningen?
-A>	Mycket troligt. N&auml;r du &auml;ndrar teman rensas cacheminnet, men &auml;ndrar du koden i din theme.php rensas inte cacheminnet. S&auml;tt Cache Status till av tills att du &auml;r f&auml;rdig.
+Q&gt;	Jag gjorde en del &auml;ndringar i temat jag anv&auml;nder, men ingen &auml;ndring syns - beror det p&aring; cachningen?
+A&gt;	Mycket troligt. N&auml;r du &auml;ndrar teman rensas cacheminnet, men &auml;ndrar du koden i din theme.php rensas inte cacheminnet. S&auml;tt Cache Status till av tills att du &auml;r f&auml;rdig.
 
-Q>	Kan jag spara cacheminnet till filer p&aring; h&aring;rddisken?
-A>	Ja. Se bara till att katalogen e107_files/cache &auml;r skrivbar (chmod 777). Klicka sedan p&aring; knappen f&ouml;r att spara cache p&aring; cachesidan.
+Q&gt;	Kan jag spara cacheminnet till filer p&aring; h&aring;rddisken?
+A&gt;	Ja. Se bara till att katalogen e107_files/cache &auml;r skrivbar (chmod 777). Klicka sedan p&aring; knappen f&ouml;r att spara cache p&aring; cachesidan.

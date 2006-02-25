@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/rss_menu/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -24,5 +24,16 @@ define("BACKEND_MENU_L9", "V&aring;ra nerladdningar");
 
 define("RSS_LAN01", "Aktivera separata fl&ouml;den f&ouml;r varje nyhetskategori?");
 define("RSS_LAN02", "Aktivera separata fl&ouml;den f&ouml;r varje nerladdningskategori?");
+
+define("RSS_NEWS","Nyheter");
+define("RSS_COM","Kommentarer");
+define("RSS_ART","Artiklar");
+define("RSS_REV", "Recensioner");
+define("RSS_FT","Forumtr&aring;dar");
+define("RSS_FP","Foruminl&auml;gg");
+define("RSS_FSP","Forum specifikt inl&auml;gg");
+define("RSS_BUG","Buggsp&aring;rare");
+define("RSS_FOR","Forum");
+define("RSS_DL","Nerladdningar");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -122,22 +122,24 @@ define("USRLAN_127", "Till&aring;t kommentarer i anv&auml;ndarprofil");
 
 define("USRLAN_128", "Inloggningsnamn");
 
-define("USRLAN_129", "Ingen IP adress hittades i anv&auml;ndarens info, IP inte sp&auml;rrad");
-define("USRLAN_130", "Flera anv&auml;ndare hittades med IP adressen {IP}, IP inte sp&auml;rrad.");
-define("USRLAN_131", "Anv&auml;ndare med IP adressen {IP} sp&auml;rrade.");
-
-define("LAN_MAINADMIN", "Huvudadmin");
-define("LAN_ADMIN", "Admin");
-define("LAN_NOTVERIFIED", "Ej verifierad");
-define("LAN_BANNED", "Sp&auml;rrad");
-
-
 define("USRLAN_130", "Aktivera anv&auml;ndarsp&aring;rning online");
 define("USRLAN_131", "Du m&aring;ste aktivera denna funktion f&ouml;r att anv&auml;nda anv&auml;ndarsp&aring;rning online som online.php, forum online info och online menyer");
 define("USRLAN_132", "Aktivera");
 
 define("USRLAN_133", "Tvinga anv&auml;ndare att uppdatera inst&auml;llningar");
 define("USRLAN_134", "Aktivering av detta alternativ kommer att automatiskt skicka anv&auml;ndaren till  sina anv&auml;ndarinst&auml;llningar om ett n&ouml;dv&auml;ndigt f&auml;lt inte &auml;r ifyllt.");
+
+define("USRLAN_135", "Ingen IP adress hittades i anv&auml;ndarens info, IP inte sp&auml;rrad");
+define("USRLAN_136", "Flera anv&auml;ndare hittades med IP adressen {IP}, IP inte sp&auml;rrad.");
+define("USRLAN_137", "Anv&auml;ndare med IP adressen {IP} sp&auml;rrade.");
+define("USRLAN_138", "Ej verifierade anv&auml;ndare");
+define("USRLAN_139", "Ditt konto har aktiverats.\n\nDu kan nu bes&ouml;ka {SITEURL} och logga in p&aring; sajten med den inloggningsinformation du angivit.");
+
+
+define("LAN_MAINADMIN", "Huvudadmin");
+define("LAN_ADMIN", "Admin");
+define("LAN_NOTVERIFIED", "Ej verifierad");
+define("LAN_BANNED", "Sp&auml;rrad");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Visat namn");

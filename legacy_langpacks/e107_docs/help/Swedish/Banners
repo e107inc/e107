@@ -1,15 +1,15 @@
 
-Q>	Jag definierade en ny banner fr&aring;n adminarean, men den visas inte - varf&ouml;r?
-A>	Temat du anv&auml;nder m&aring;ste k&auml;nna till hur det skall visa en banner. &Ouml;ppna theme.php f&ouml;r det temat och se till att du har {BANNER} eller {BANNER=yourcampaignname} i $HEADER sektionen.
+Q&gt;	Jag definierade en ny banner fr&aring;n adminarean, men den visas inte - varf&ouml;r?
+A&gt;	Temat du anv&auml;nder m&aring;ste k&auml;nna till hur det skall visa en banner. &Ouml;ppna theme.php f&ouml;r det temat och se till att du har {BANNER} eller {BANNER=yourcampaignname} i $HEADER sektionen.
 
-Q>	Jag vill ha en upps&auml;ttning banners i en area och en annan upps&auml;ttning i en annan area - hur?
-A>	Du kan gruppera banners under 'kampanjer', och sedan s&auml;tta upp ditt tema att visa banners fr&aring;n s&auml;rskilda kampanjer. T.ex. om du har 2 kampanjer, kallade cam_1 och cam_2, s&auml;tter du {BANNER=cam1} i en area av din $HEADER sektion i theme.php kommer den bara att visa cam_1 banners, och s&auml;tter du {BANNER=cam_2} i en annan area kommer den vara att visa cam_2 banners. S&auml;tter du {BANNER} (utan kampanjnamn) i din theme.php kommer slumpvisa banners att visas fr&aring;n alla kampanjer.
+Q&gt;	Jag vill ha en upps&auml;ttning banners i en area och en annan upps&auml;ttning i en annan area - hur?
+A&gt;	Du kan gruppera banners under 'kampanjer', och sedan s&auml;tta upp ditt tema att visa banners fr&aring;n s&auml;rskilda kampanjer. T.ex. om du har 2 kampanjer, kallade cam_1 och cam_2, s&auml;tter du {BANNER=cam1} i en area av din $HEADER sektion i theme.php kommer den bara att visa cam_1 banners, och s&auml;tter du {BANNER=cam_2} i en annan area kommer den vara att visa cam_2 banners. S&auml;tter du {BANNER} (utan kampanjnamn) i din theme.php kommer slumpvisa banners att visas fr&aring;n alla kampanjer.
 
-Q>	Vad &auml;r klients inloggning och l&ouml;senord till f&ouml;r?
-A>	Du kan ange ett inloggningsnamn och l&ouml;senord f&ouml;r dina bannerklienter, genom att anv&auml;nda dessa kan de f&aring; tillg&aring;ng till information om deras banners resultat genom att g&aring; till http://www.dinsajt.com/banner.php och ange sina inloggninsuppgifter.
+Q&gt;	Vad &auml;r klients inloggning och l&ouml;senord till f&ouml;r?
+A&gt;	Du kan ange ett inloggningsnamn och l&ouml;senord f&ouml;r dina bannerklienter, genom att anv&auml;nda dessa kan de f&aring; tillg&aring;ng till information om deras banners resultat genom att g&aring; till http://www.dinsajt.com/banner.php och ange sina inloggninsuppgifter.
 
-Q>	Hur kan jag f&aring; en 'st&aring;ende' bannertyp i ett menyobjekt?
-A>	F&ouml;rst m&aring;ste du definiera kampanjen f&ouml;r st&aring;ende bannertyper (detta kommer att skilja dem fr&aring;n andra banners)...
+Q&gt;	Hur kan jag f&aring; en 'st&aring;ende' bannertyp i ett menyobjekt?
+A&gt;	F&ouml;rst m&aring;ste du definiera kampanjen f&ouml;r st&aring;ende bannertyper (detta kommer att skilja dem fr&aring;n andra banners)...
 	1. G&aring; till din adminarea och klicka p&aring; banners.
 	2. Ange dina st&aring;ende banners, se till att du anv&auml;nder ett nytt kampanjnamn.
 	3. G&aring; nu till din menykonfiguration och aktivera Banner_menu i en av dina menyomr&aring;den.

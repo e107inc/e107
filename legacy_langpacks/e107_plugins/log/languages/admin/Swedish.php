@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/log/languages/admin/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@
 define("ADSTAT_ON", "Till");
 define("ADSTAT_OFF", "Fr&aring;n");
 define("ADSTAT_L1", "Denna plugin kommer att logga alla bes&ouml;k till din sajt och bygga detaljerade statistikbilder baserade p&aring; den insamlade informationen.");
-define("ADSTAT_L2", "Statistikloggaren har installerats. F&ouml;r att aktivera, g&aring; till konfigurationsbilden och klicka p&aring; Aktivera.<br /><b>Du m&aring;ste s&auml;tta filr&auml;ttigheterns till e107_plugins/log/logs katalogen till 777 (chmod 777)</b>");
+define("ADSTAT_L2", "Statistikloggaren har installerats. F&ouml;r att aktivera, g&aring; till konfigurationsbilden och klicka p&aring; Aktivera.&lt;br /&gt;&lt;b&gt;Du m&aring;ste s&auml;tta filr&auml;ttigheterns till e107_plugins/log/logs katalogen till 777 (chmod 777)&lt;/b&gt;");
 define("ADSTAT_L3", "Statistikloggning");
 define("ADSTAT_L4", "Aktivera statistikloggning");
 define("ADSTAT_L5", "Statistiktyper");

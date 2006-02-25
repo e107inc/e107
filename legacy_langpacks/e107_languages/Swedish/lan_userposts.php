@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_userposts.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:52 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("UP_LAN_7", "Inga kommentarer");
 define("UP_LAN_8", "Inga inl&auml;gg");
 define("UP_LAN_9", " den ");
 define("UP_LAN_10", "Ang");
-define("UP_LAN_11", "Postat den: ");
+define("UP_LAN_11", "Postat den");
 define("UP_LAN_12", "S&ouml;k");
 define("UP_LAN_13", "Kommentarer");
 define("UP_LAN_14", "Foruminl&auml;gg");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_menus.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -37,8 +37,8 @@ define("MENLAN_23", "Flytta till botten");
 define("MENLAN_24", "Flytta till topp");
 define("MENLAN_25", "Funktion ...");
 
-define("MENLAN_26", "Denna meny kommer bara att <strong>SYNAS</strong> p&aring; f&ouml;ljande sidor");
-define("MENLAN_27", "Denna meny kommer bara att vara <strong>G&Ouml;MD</strong> p&aring; f&ouml;ljande sidor");
+define("MENLAN_26", "Denna meny kommer bara att &lt;strong&gt;SYNAS&lt;/strong&gt; p&aring; f&ouml;ljande sidor");
+define("MENLAN_27", "Denna meny kommer bara att vara &lt;strong&gt;G&Ouml;MD&lt;/strong&gt; p&aring; f&ouml;ljande sidor");
 define("MENLAN_28", "Ange en sida per rad, ange tillr&auml;ckligt mycket av URLen f&ouml;r att utm&auml;rka den ordentligt");
 
 define("MENLAN_29", "V&auml;lj layout");
@@ -49,7 +49,7 @@ define("MENLAN_33", "Egen layout");
 define("MENLAN_34", "Inb&auml;ddad");
 define("MENLAN_35", "Konfigurera menyer");
 define("MENLAN_36", "V&auml;lj meny(er) att aktivera");
-define("MENLAN_37", "v&auml;lj sedan var de skall aktiveras.");
+define("MENLAN_37", "och var de skall aktiveras.");
 define("MENLAN_38", "H&aring;ll ner CTRL f&ouml;r att v&auml;lja flera menyer.");
 
 ?>

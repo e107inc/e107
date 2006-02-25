@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ define("NWSLAN_89", "Spara nyhetspreferenser");
 define("NWSLAN_90", "Nyhetspreferenser");
 define("NWSLAN_100", "Aktivera bilduppladdning p&aring; sidan f&ouml;r ins&auml;ndning av nyhet");
 define("NWSLAN_101", "Automatisk skalning av ins&auml;nd bild");
-define("NWSLAN_102", "bredd i pixlar<br /> eller l&auml;mna blankt f&ouml;r avaktivering.");
+define("NWSLAN_102", "bredd i pixlar&lt;br /&gt; eller l&auml;mna blankt f&ouml;r avaktivering.");
 define("NWSLAN_103", "Posta om");
 define("NWSLAN_104", "av");
 define("NWSLAN_105", "Markera rutan f&ouml;r att uppdatera tidst&auml;mpeln p&aring; nyheten till aktuell tid");
@@ -116,16 +116,17 @@ define("NWSLAN_116", "Uppdatera f&ouml;rst preferenserna med det &auml;ndrade an
 define("NWSLAN_117", "S&auml;tt rubriken f&ouml;r nyhetsarkivet");
 define("NWSLAN_118", "Visa bilder");
 define("NWSLAN_119", "Inst&auml;llningar sparade");
+define("NWSLAN_120", "Text att visa h&ouml;gst upp p&aring; Skicka in Nyhet");
 
 define("LAN_NEWS_5", "Fel! - Kunde inte uppdatera nyhets&auml;mnet till databasen!");
 define("LAN_NEWS_6", "Nyhet inlagd i databasen.");
 define("LAN_NEWS_7", "Fel! - Kunde inte spara nyheten till databasen!");
-define("LAN_NEWS_9", "Endast rubrik vald - <b>endast nyhetsrubriken kommer att visas</b>");
-define("LAN_NEWS_10", "Denna nyhet &auml;r <b>inaktiv</b> (Den kommer inte att synas p&aring; f&ouml;rstasidan). ");
-define("LAN_NEWS_11", "Denna nyhet &auml;r <b>aktiv</b> (Den kommer att synas p&aring; f&ouml;rstasidan). ");
-define("LAN_NEWS_12", "Kommentarer &auml;r <b>p&aring;</b>.");
-define("LAN_NEWS_13", "Kommentarer &auml;r <b>av</b>.");
-define("LAN_NEWS_14", "<br />Aktiverad period: ");
+define("LAN_NEWS_9", "Endast rubrik vald - &lt;b&gt;endast nyhetsrubriken kommer att visas&lt;/b&gt;");
+define("LAN_NEWS_10", "Denna nyhet &auml;r &lt;b&gt;inaktiv&lt;/b&gt; (Den kommer inte att synas p&aring; f&ouml;rstasidan). ");
+define("LAN_NEWS_11", "Denna nyhet &auml;r &lt;b&gt;aktiv&lt;/b&gt; (Den kommer att synas p&aring; f&ouml;rstasidan). ");
+define("LAN_NEWS_12", "Kommentarer &auml;r &lt;b&gt;p&aring;&lt;/b&gt;.");
+define("LAN_NEWS_13", "Kommentarer &auml;r &lt;b&gt;av&lt;/b&gt;.");
+define("LAN_NEWS_14", "&lt;br /&gt;Aktiverad period: ");
 define("LAN_NEWS_15", "Text l&auml;ngd: ");
 define("LAN_NEWS_16", "t. ut&ouml;kad l&auml;ngd: ");
 define("LAN_NEWS_17", "t.");
@@ -143,14 +144,14 @@ define("LAN_NEWS_27", "Summering");
 define("LAN_NEWS_28", "Klistrad");
 define("LAN_NEWS_29", "V&auml;lj om nyheten skall vara 'klistrad'");
 define("LAN_NEWS_30", "Om valt kommer nyheten att visas &ouml;ver alla andra");
-define("LAN_NEWS_31", "Denna nyhet &auml;r <b>klistrad</b> (den kommer att visas &ouml;ver alla andra). ");
+define("LAN_NEWS_31", "Denna nyhet &auml;r &lt;b&gt;klistrad&lt;/b&gt; (den kommer att visas &ouml;ver alla andra). ");
 define("LAN_NEWS_32", "Tidst&auml;mpel");
 define("LAN_NEWS_33", "S&auml;tt tidst&auml;mpel f&ouml;r denna nyhet.");
 
 define("LAN_NEWS_34", "K&auml;llor");
 define("LAN_NEWS_35", "Ange k&auml;llors URLer");
-define("LAN_NEWS_36", "<b>Pingback</b> (skicka en pingback till alla URLer i denna post)");
-define("LAN_NEWS_37", "<b>K&auml;llors URLer:</b> (en URL per rad)");
+define("LAN_NEWS_36", "&lt;b&gt;Pingback&lt;/b&gt; (skicka en pingback till alla URLer i denna post)");
+define("LAN_NEWS_37", "&lt;b&gt;K&auml;llors URLer:&lt;/b&gt; (en URL per rad)");
 define("LAN_NEWS_38", "Infoga bilder");
 
 define("LAN_NEWS_39", "klicka p&aring; fil f&ouml;r att infoga vid mark&ouml;rens posistion");

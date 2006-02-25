@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("LAN_37", "Det &auml;r nu ");
 define("LAN_38", ", alla tider &auml;r ");
 define("LAN_41", "Nyaste medlemmen: ");
 define("LAN_42", "Registrerade medlemmar: ");
-define("LAN_44", "Detta forum kan anv&auml;ndas av icke-registrerade anv&auml;ndare, men var medveten om att din IP-adress kommer att loggas om du skriver ett inl&auml;gg.<br />F&ouml;r att kunna anv&auml;nda alla funktioner i detta forum m&aring;ste du");
+define("LAN_44", "Detta forum kan anv&auml;ndas av icke-registrerade anv&auml;ndare, men var medveten om att din IP-adress kommer att loggas om du skriver ett inl&auml;gg.&lt;br /&gt;F&ouml;r att kunna anv&auml;nda alla funktioner i detta forum m&aring;ste du");
 define("LAN_45", "I detta forum kan endast registrerade och inloggade anv&auml;ndare skrivan, v&auml;nligen klicka");
 define("LAN_46", "Forum");
 define("LAN_47", "Tr&aring;dar");
@@ -41,12 +41,12 @@ define("LAN_196", "Du har l&auml;st ");
 define("LAN_197", " av dessa inl&auml;gg.");
 define("LAN_198", " Alla nya inl&auml;gg &auml;r l&auml;sta.");
 define("LAN_199", "Markera alla inl&auml;gg som l&auml;sta");
-define("LAN_204", "Du <b>kan</b> starta nya tr&aring;dar");
-define("LAN_205", "Du <b>kan inte</b> starta nya tr&aring;dar");
-define("LAN_206", "Du <b>kan</b> skicka svar");
-define("LAN_207", "Du <b>kan inte</b> skicka svar");
-define("LAN_208", "Du <b>kan</b> redigera dina inl&auml;gg");
-define("LAN_209", "Du <b>kan inte</b> redigera dina inl&auml;gg");
+define("LAN_204", "Du &lt;b&gt;kan&lt;/b&gt; starta nya tr&aring;dar");
+define("LAN_205", "Du &lt;b&gt;kan inte&lt;/b&gt; starta nya tr&aring;dar");
+define("LAN_206", "Du &lt;b&gt;kan&lt;/b&gt; skicka svar");
+define("LAN_207", "Du &lt;b&gt;kan inte&lt;/b&gt; skicka svar");
+define("LAN_208", "Du &lt;b&gt;kan&lt;/b&gt; redigera dina inl&auml;gg");
+define("LAN_209", "Du &lt;b&gt;kan inte&lt;/b&gt; redigera dina inl&auml;gg");
 define("LAN_392", "sluta bevaka denna tr&aring;d");
 define("LAN_393", "Lista bevakade tr&aring;dar");
 define("LAN_394", "St&auml;ngt forum");

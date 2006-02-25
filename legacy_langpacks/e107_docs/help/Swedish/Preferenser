@@ -1,15 +1,15 @@
 
-Q>	Hur kan jag &auml;ndra teman?
-A>	Det finns en sektion p&aring; din Preferens sida som l&aring;ter dig &auml;ndra sajtens tema. F&ouml;rhandsgranska temat f&ouml;rst eftersom en del &auml;ldre teman inte l&auml;ngre &auml;r kompatibla och kan g&ouml;ra ditt system obrukbart om de anv&auml;nds.
+Q&gt;	Hur kan jag &auml;ndra teman?
+A&gt;	Det finns en sektion p&aring; din Preferens sida som l&aring;ter dig &auml;ndra sajtens tema. F&ouml;rhandsgranska temat f&ouml;rst eftersom en del &auml;ldre teman inte l&auml;ngre &auml;r kompatibla och kan g&ouml;ra ditt system obrukbart om de anv&auml;nds.
 
-Q>	Vad &auml;r COPPA?
-A>	Det st&aring;r f&ouml;r Children's Online Privacy Protection Act of 1998. Det &auml;r ett globalt anv&auml;nt regelverk som avser att skydda barn 13 &aring;r och under. Det f&ouml;rs&auml;krar bland annat att ingen information om minder&aring;riga kommer att anv&auml;ndas av 'Operat&ouml;ren' (dvs, Du) f&ouml;r andra sk&auml;l &auml;n att underh&aring;lla webbsajten. F&ouml;r mer information se http://www.cdt.org/legislation/105th/privacy/coppa.html.
+Q&gt;	Vad &auml;r COPPA?
+A&gt;	Det st&aring;r f&ouml;r Children's Online Privacy Protection Act of 1998. Det &auml;r ett globalt anv&auml;nt regelverk som avser att skydda barn 13 &aring;r och under. Det f&ouml;rs&auml;krar bland annat att ingen information om minder&aring;riga kommer att anv&auml;ndas av 'Operat&ouml;ren' (dvs, Du) f&ouml;r andra sk&auml;l &auml;n att underh&aring;lla webbsajten. F&ouml;r mer information se http://www.cdt.org/legislation/105th/privacy/coppa.html.
 
-Q>	Vad &auml;r fl&ouml;desskyddet?
-A>	Det f&ouml;rhindrar att din sajt blir bomarderad (fl&ouml;dad) av HTTP anrop som kan g&ouml;ra din sajt on&aring;bar.
+Q&gt;	Vad &auml;r fl&ouml;desskyddet?
+A&gt;	Det f&ouml;rhindrar att din sajt blir bomarderad (fl&ouml;dad) av HTTP anrop som kan g&ouml;ra din sajt on&aring;bar.
 
-Q>	Skall jag anv&auml;nda kakor eller sessioner f&ouml;r att sp&aring;ra mina anv&auml;ndare?
-A>	Det &auml;r upp till dig, om din sajt anv&auml;nder kakor (standardinst&auml;llning), l&auml;mna den s&aring;. Om du f&ouml;redrar PHP sessioner, anv&auml;nd d&aring; dem (en s&auml;rskild sessionshanterare anv&auml;nds av e107 f&ouml;r att lagra och hantera sessioner).
+Q&gt;	Skall jag anv&auml;nda kakor eller sessioner f&ouml;r att sp&aring;ra mina anv&auml;ndare?
+A&gt;	Det &auml;r upp till dig, om din sajt anv&auml;nder kakor (standardinst&auml;llning), l&auml;mna den s&aring;. Om du f&ouml;redrar PHP sessioner, anv&auml;nd d&aring; dem (en s&auml;rskild sessionshanterare anv&auml;nds av e107 f&ouml;r att lagra och hantera sessioner).
 
-Q>	Varf&ouml;r skall jag k&ouml;ra min sajt i standardl&auml;ge?
-A>	Om du utvecklar ett tema och har problem med att det visas felaktigt i Firefox/Mozilla och IE, prova att markera denna rutan. IE kommer d&aring; att k&ouml;ras i standardl&auml;ge och visa den korrekta box modellen.
+Q&gt;	Varf&ouml;r skall jag k&ouml;ra min sajt i standardl&auml;ge?
+A&gt;	Om du utvecklar ett tema och har problem med att det visas felaktigt i Firefox/Mozilla och IE, prova att markera denna rutan. IE kommer d&aring; att k&ouml;ras i standardl&auml;ge och visa den korrekta box modellen.

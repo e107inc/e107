@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:52 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -62,18 +62,18 @@ define("LAN_dl_45", "Rapportera trasig nerladdning");
 define("LAN_dl_46", "klicka h&auml;r f&ouml;r att h&auml;mta");
 
 define("LAN_dl_47", "Posten har rapporterats");
-define("LAN_dl_48", "Nerladdningen har rapporterats till administrat&ouml;r.<br />Tack.");
+define("LAN_dl_48", "Nerladdningen har rapporterats till administrat&ouml;r.&lt;br /&gt;Tack.");
 define("LAN_dl_49", "Klicka h&auml;r f&ouml;r att &aring;terg&aring; till h&auml;mtningar");
 define("LAN_dl_50", "Rapportera trasig nerladdning till en administrat&ouml;r");
 define("LAN_dl_51", "Rapporterar nerladdning: ");
 define("LAN_dl_52", "G&auml;st");
 define("LAN_dl_53", "Klicka f&ouml;r att visa nerladdning");
 define("LAN_dl_54", "En administrat&ouml;r kommer att uppm&auml;rksammas p&aring; denna nerladdning, l&auml;mna ett meddelande om du k&auml;nner att det beh&ouml;vs.");
-define("LAN_dl_55", "Anv&auml;nd <b>INTE</b> detta formul&auml;r f&ouml;r att kontakta admin av n&aring;gon annan orsak.");
+define("LAN_dl_55", "Anv&auml;nd &lt;b&gt;INTE&lt;/b&gt; detta formul&auml;r f&ouml;r att kontakta admin av n&aring;gon annan orsak.");
 define("LAN_dl_56", "Rapportera trasig nerladdning");
 define("LAN_dl_57", "rapporterad av");
-define("LAN_dl_58", "Denna post har rapporterats fr&aring;n sajt ");
-define("LAN_dl_59", "Meddelande fr&aring;n: ");
+define("LAN_dl_58", "F&ouml;ljande nerladdning har rapporterats som trasig fr&aring;n sajt");
+define("LAN_dl_59", "Rapporterad av: ");
 define("LAN_dl_60", "Rapport om trasig nerladdning fr&aring;n");
 
 define("LAN_dl_61", "Fel vid nerladdning");
@@ -86,7 +86,7 @@ define("LAN_dl_66", "V&auml;lj nerladdningsspegel");
 
 define("LAN_dl_67", "V&auml;nligen v&auml;lj spegel att anv&auml;nda ...");
 define("LAN_dl_68", "Spegelv&auml;rd");
-define("LAN_dl_69", "Ladda ner");
+// define("LAN_dl_69", "Ladda ner"); //Dublett
 define("LAN_dl_70", "Plats");
 define("LAN_dl_71", "Om");
 
@@ -95,5 +95,6 @@ define("LAN_dl_73", "Nerladdningar fr&aring;n denna spegel: ");
 define("LAN_dl_74", "Totala nerladdningar fr&aring;n denna spegel: ");
 
 define("LAN_dl_75", "ingen bild tillg&auml;nglig ");
+define("LAN_dl_76", "G&aring; till sidan");
 
 ?>

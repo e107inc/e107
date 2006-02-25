@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/links_page/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -308,52 +308,52 @@ define("LAN_LINKS_49", "");
 
 define("LAN_ADMIN_HELP_0", "L&auml;nksidans hj&auml;lp");
 
-define("LAN_ADMIN_HELP_1", "<i>Sidan Hantera l&auml;nkar visar alla tillg&auml;ngliga kategorier.</i><br /><br /><b>Detaljerad lista</b><br />H&auml;r ser du en lista med alla kategorier och deras ikoner, namn, beskrivning, alternativ och sorteringsinst&auml;llningar.<br /><br /><b>F&ouml;rklaring av ikoner</b><br />
-".LINK_ICON_LINK." : L&auml;nk till kategorin<br /><br />
-".LINK_ICON_EDIT." : Redigera kategorin<br /><br />
-".LINK_ICON_DELETE." : Radera kategorin<br /><br />
-".LINK_ICON_ORDER_UP." : Upp&aring;tknappen l&aring;ter dig flytta kategorin en placering upp&aring;t i listan.<br /><br />
-".LINK_ICON_ORDER_DOWN." : Ned&aring;tknappen l&aring;ter dig flytta kategorin en placering ned&aring;t i listan.<br />
-<br />
-<b>Ordning</b><br />H&auml;r kan du manuellt s&auml;tta ordningen p&aring; alla kategorierna. Du m&aring;ste &auml;ndra ordningen i valrutorna till den &ouml;nskade ordningen och sedan klicka p&aring; sortera om knappen nedan f&ouml;r att spara den nya ordningen.<br />");
+define("LAN_ADMIN_HELP_1", "&lt;i&gt;Sidan Hantera l&auml;nkar visar alla tillg&auml;ngliga kategorier.&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Detaljerad lista&lt;/b&gt;&lt;br /&gt;H&auml;r ser du en lista med alla kategorier och deras ikoner, namn, beskrivning, alternativ och sorteringsinst&auml;llningar.&lt;br /&gt;&lt;br /&gt;&lt;b&gt;F&ouml;rklaring av ikoner&lt;/b&gt;&lt;br /&gt;
+".LINK_ICON_LINK." : L&auml;nk till kategorin&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_EDIT." : Redigera kategorin&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_DELETE." : Radera kategorin&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_ORDER_UP." : Upp&aring;tknappen l&aring;ter dig flytta kategorin en placering upp&aring;t i listan.&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_ORDER_DOWN." : Ned&aring;tknappen l&aring;ter dig flytta kategorin en placering ned&aring;t i listan.&lt;br /&gt;
+&lt;br /&gt;
+&lt;b&gt;Ordning&lt;/b&gt;&lt;br /&gt;H&auml;r kan du manuellt s&auml;tta ordningen p&aring; alla kategorierna. Du m&aring;ste &auml;ndra ordningen i valrutorna till den &ouml;nskade ordningen och sedan klicka p&aring; sortera om knappen nedan f&ouml;r att spara den nya ordningen.&lt;br /&gt;");
 
 
-define("LAN_ADMIN_HELP_2", "<i>Skapa l&auml;nkkategori l&aring;ter dig l&auml;gga till nya kategorier</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till kategorin efter uppladdning.");
-define("LAN_ADMIN_HELP_3", "<i>Sidan f&ouml;r l&auml;nkhantering visar f&ouml;rst alla kategorier.</i><br /><br />".LINK_ICON_LINK." : L&auml;nk till kategorin<br /><br />".LINK_ICON_EDIT." : Klicka p&aring; ikonen f&ouml;r att se l&auml;nkarna i denna ketagori<br />");
-define("LAN_ADMIN_HELP_4", "<i>Skapa l&auml;nk l&aring;ter dig skapa en ny l&auml;nk</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till l&auml;nken efter uppladdning.<br /><br />&Ouml;ppningstypen l&aring;ter dig best&auml;mma p&aring; vilket s&auml;tt l&auml;nken skall &ouml;ppnas n&auml;r anv&auml;ndaren klickar p&aring; den.");
-define("LAN_ADMIN_HELP_5", "<i>Sidan f&ouml;r ins&auml;nda l&auml;nkar visar alla l&auml;nkar som anv&auml;ndare skickat in</i><br /><br /><b>Detaljerad lista</b><br />Du ser en l&auml;nk URL, namnetr p&aring; anv&auml;ndaren som skickat in l&auml;nken och alternativ.<br /><br /><b>F&ouml;rklaring av ikoner</b><br />
-".LINK_ICON_EDIT." : Posta den ins&auml;nda l&auml;nken till formul&auml;ret f&ouml;r att skapa l&auml;nk<br /><br />
-".LINK_ICON_DELETE." : Radera den ins&auml;nda l&auml;nken<br />
+define("LAN_ADMIN_HELP_2", "&lt;i&gt;Skapa l&auml;nkkategori l&aring;ter dig l&auml;gga till nya kategorier&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Du kan ladda upp en ny ikon och tilldela den till kategorin efter uppladdning.");
+define("LAN_ADMIN_HELP_3", "&lt;i&gt;Sidan f&ouml;r l&auml;nkhantering visar f&ouml;rst alla kategorier.&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;".LINK_ICON_LINK." : L&auml;nk till kategorin&lt;br /&gt;&lt;br /&gt;".LINK_ICON_EDIT." : Klicka p&aring; ikonen f&ouml;r att se l&auml;nkarna i denna ketagori&lt;br /&gt;");
+define("LAN_ADMIN_HELP_4", "&lt;i&gt;Skapa l&auml;nk l&aring;ter dig skapa en ny l&auml;nk&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Du kan ladda upp en ny ikon och tilldela den till l&auml;nken efter uppladdning.&lt;br /&gt;&lt;br /&gt;&Ouml;ppningstypen l&aring;ter dig best&auml;mma p&aring; vilket s&auml;tt l&auml;nken skall &ouml;ppnas n&auml;r anv&auml;ndaren klickar p&aring; den.");
+define("LAN_ADMIN_HELP_5", "&lt;i&gt;Sidan f&ouml;r ins&auml;nda l&auml;nkar visar alla l&auml;nkar som anv&auml;ndare skickat in&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Detaljerad lista&lt;/b&gt;&lt;br /&gt;Du ser en l&auml;nk URL, namnetr p&aring; anv&auml;ndaren som skickat in l&auml;nken och alternativ.&lt;br /&gt;&lt;br /&gt;&lt;b&gt;F&ouml;rklaring av ikoner&lt;/b&gt;&lt;br /&gt;
+".LINK_ICON_EDIT." : Posta den ins&auml;nda l&auml;nken till formul&auml;ret f&ouml;r att skapa l&auml;nk&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_DELETE." : Radera den ins&auml;nda l&auml;nken&lt;br /&gt;
 ");
-define("LAN_ADMIN_HELP_6", "<i>Sidan med alternativ l&aring;ter dig &auml;ndra alternativen f&ouml;r l&auml;nkside-plugin modulen</i><br /><br />
-Generella alternativ<br />
-Dessa alternativ anv&auml;nds p&aring; alla l&auml;nksidor.<br /><br />
-Hanterare av personliga l&auml;nkar<br />
-Dessa anv&auml;ndare har r&auml;ttigheter att sj&auml;lva hantera sina egna l&auml;nkar.<br /><br />
-Kategorisida<br />
-H&auml;r &auml;ndrar du alternativen f&ouml;r kategorisidan.<br /><br />
-L&auml;nksida<br />
-Dessa alternativ anv&auml;nds p&aring; l&auml;nksidorna.<br /><br />
-H&auml;nvisare sida<br />
-Dessa alternativ anv&auml;nds p&aring; sidan f&ouml;r topph&auml;nvisare.<br /><br />
-Betygssida<br />
-Dessa alternativ anv&auml;nds p&aring; sidan f&ouml;r l&auml;nkar med toppbetyg.<br />
+define("LAN_ADMIN_HELP_6", "&lt;i&gt;Sidan med alternativ l&aring;ter dig &auml;ndra alternativen f&ouml;r l&auml;nkside-plugin modulen&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;
+Generella alternativ&lt;br /&gt;
+Dessa alternativ anv&auml;nds p&aring; alla l&auml;nksidor.&lt;br /&gt;&lt;br /&gt;
+Hanterare av personliga l&auml;nkar&lt;br /&gt;
+Dessa anv&auml;ndare har r&auml;ttigheter att sj&auml;lva hantera sina egna l&auml;nkar.&lt;br /&gt;&lt;br /&gt;
+Kategorisida&lt;br /&gt;
+H&auml;r &auml;ndrar du alternativen f&ouml;r kategorisidan.&lt;br /&gt;&lt;br /&gt;
+L&auml;nksida&lt;br /&gt;
+Dessa alternativ anv&auml;nds p&aring; l&auml;nksidorna.&lt;br /&gt;&lt;br /&gt;
+H&auml;nvisare sida&lt;br /&gt;
+Dessa alternativ anv&auml;nds p&aring; sidan f&ouml;r topph&auml;nvisare.&lt;br /&gt;&lt;br /&gt;
+Betygssida&lt;br /&gt;
+Dessa alternativ anv&auml;nds p&aring; sidan f&ouml;r l&auml;nkar med toppbetyg.&lt;br /&gt;
 ");
 
 
 
-define("LAN_ADMIN_HELP_7", "<i>Sidan &ouml;r redigering av kategorier l&aring;ter dig redigera befintliga kategorier</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till kategorin efter uppladdning.<br />Du kan ocks&aring; uppdatera tidsst&auml;mpeln f&ouml;r l&auml;nken genom att markera i kryssrutan.");
+define("LAN_ADMIN_HELP_7", "&lt;i&gt;Sidan &ouml;r redigering av kategorier l&aring;ter dig redigera befintliga kategorier&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Du kan ladda upp en ny ikon och tilldela den till kategorin efter uppladdning.&lt;br /&gt;Du kan ocks&aring; uppdatera tidsst&auml;mpeln f&ouml;r l&auml;nken genom att markera i kryssrutan.");
 
-define("LAN_ADMIN_HELP_8", "<i>Denna sida visar alla befintliga l&auml;nkar i den valda kategorin.</i><br /><br /><b>Detaljerad lista</b><br />YDu ser en lista med l&auml;nkar och deras bild, namn, alternativ och sortringsordning.<br /><br /><b>F&ouml;rklaring av ikoner</b><br />
-".LINK_ICON_LINK." : L&auml;nk till webbsajten<br /><br />
-".LINK_ICON_EDIT." : Redigera l&auml;nken<br /><br />
-".LINK_ICON_DELETE." : Radera l&auml;nken<br /><br />
-".LINK_ICON_ORDER_UP." : Upp&aring;tpilen l&aring;ter dig flytta l&auml;nken en placering upp&aring;t i listan.<br /><br />
-".LINK_ICON_ORDER_DOWN." : Ned&aring;tknappen l&aring;ter dig flytta l&auml;nken en placering ned&aring;t i listan.<br />
-<br />
-<b>Ordning</b><br />H&auml;r kan du manuellt s&auml;tta ordningen p&aring; alla l&auml;nkarna. Du m&aring;ste &auml;ndra ordningen i valrutorna till den &ouml;nskade ordningen och sedan klicka p&aring; sortera om knappen nedan f&ouml;r att spara den nya ordningen.<br />");
+define("LAN_ADMIN_HELP_8", "&lt;i&gt;Denna sida visar alla befintliga l&auml;nkar i den valda kategorin.&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Detaljerad lista&lt;/b&gt;&lt;br /&gt;YDu ser en lista med l&auml;nkar och deras bild, namn, alternativ och sortringsordning.&lt;br /&gt;&lt;br /&gt;&lt;b&gt;F&ouml;rklaring av ikoner&lt;/b&gt;&lt;br /&gt;
+".LINK_ICON_LINK." : L&auml;nk till webbsajten&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_EDIT." : Redigera l&auml;nken&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_DELETE." : Radera l&auml;nken&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_ORDER_UP." : Upp&aring;tpilen l&aring;ter dig flytta l&auml;nken en placering upp&aring;t i listan.&lt;br /&gt;&lt;br /&gt;
+".LINK_ICON_ORDER_DOWN." : Ned&aring;tknappen l&aring;ter dig flytta l&auml;nken en placering ned&aring;t i listan.&lt;br /&gt;
+&lt;br /&gt;
+&lt;b&gt;Ordning&lt;/b&gt;&lt;br /&gt;H&auml;r kan du manuellt s&auml;tta ordningen p&aring; alla l&auml;nkarna. Du m&aring;ste &auml;ndra ordningen i valrutorna till den &ouml;nskade ordningen och sedan klicka p&aring; sortera om knappen nedan f&ouml;r att spara den nya ordningen.&lt;br /&gt;");
 
-define("LAN_ADMIN_HELP_9", "<i>Sidan f&ouml;r att redigera l&auml;nk l&aring;ter dig redigera en befintlig l&auml;nk</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till l&auml;nken efter uppladdning.<br /><br />&Ouml;ppningstypen l&aring;ter dig best&auml;mma p&aring; vilket s&auml;tt l&auml;nken skall &ouml;ppnas n&auml;r anv&auml;ndaren klickar p&aring; den.");
-define("LAN_ADMIN_HELP_10", "<i>Sidan f&ouml;r att posta en ins&auml;nd l&auml;nk l&aring;ter dig l&auml;gga till den ins&auml;nda l&auml;nken till den befintliga l&auml;nksamlingen</i><br /><br />En kort text om ins&auml;nd l&auml;nk l&auml;ggs till i f&auml;ltet med beskrivningen.<br /><br />Du kan ladda upp en ny ikon och tilldela den till l&auml;nken efter uppladdning.<br /><br />&Ouml;ppningstypen l&aring;ter dig best&auml;mma p&aring; vilket s&auml;tt l&auml;nken skall &ouml;ppnas n&auml;r anv&auml;ndaren klickar p&aring; den.");
+define("LAN_ADMIN_HELP_9", "&lt;i&gt;Sidan f&ouml;r att redigera l&auml;nk l&aring;ter dig redigera en befintlig l&auml;nk&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;Du kan ladda upp en ny ikon och tilldela den till l&auml;nken efter uppladdning.&lt;br /&gt;&lt;br /&gt;&Ouml;ppningstypen l&aring;ter dig best&auml;mma p&aring; vilket s&auml;tt l&auml;nken skall &ouml;ppnas n&auml;r anv&auml;ndaren klickar p&aring; den.");
+define("LAN_ADMIN_HELP_10", "&lt;i&gt;Sidan f&ouml;r att posta en ins&auml;nd l&auml;nk l&aring;ter dig l&auml;gga till den ins&auml;nda l&auml;nken till den befintliga l&auml;nksamlingen&lt;/i&gt;&lt;br /&gt;&lt;br /&gt;En kort text om ins&auml;nd l&auml;nk l&auml;ggs till i f&auml;ltet med beskrivningen.&lt;br /&gt;&lt;br /&gt;Du kan ladda upp en ny ikon och tilldela den till l&auml;nken efter uppladdning.&lt;br /&gt;&lt;br /&gt;&Ouml;ppningstypen l&aring;ter dig best&auml;mma p&aring; vilket s&auml;tt l&auml;nken skall &ouml;ppnas n&auml;r anv&auml;ndaren klickar p&aring; den.");
 
 ?>

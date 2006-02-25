@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -31,8 +31,7 @@ define("SEALAN_23", "Alternativ:");
 define("SEALAN_24", "Typ");
 define("SEALAN_25", "Anv&auml;ndarklass");
 define("SEALAN_26", "Titel prefix");
-define("SEALAN_27", "Tecken");
-define("SEALAN_28", "Resultat");
+
 define("SEALAN_30", "Framh&auml;v nyckelord p&aring; refererar till sida:");
 define("SEALAN_31", "PHP begr&auml;nsad till");
 define("SEALAN_32", "resultat (l&auml;mna tomt f&ouml;r obegr&auml;nsat)");
@@ -43,10 +42,16 @@ define("SEALAN_36", "Rullgardinsmeny");
 define("SEALAN_37", "Kryssrutor");
 define("SEALAN_38", "Radioknappar");
 define("SEALAN_39", "Egna sidor");
+define("SEALAN_40", "S&ouml;kalternativ");
+define("SEALAN_41", "Huvudsida");
+define("SEALAN_42", "Preferenser");
 
-define("LAN_98", "Nyheter");
-define("LAN_197", "Nerladdningar");
-
-define("LAN_418", "Egna sidor");
+define("SEALAN_43", "Redigera s&ouml;kinst&auml;llningarna f&ouml;r");
+define("SEALAN_44", "Anv&auml;ndarklass som till&aring;ts s&ouml;ka i denna area");
+define("SEALAN_45", "Antal resultat att visa per sida");
+define("SEALAN_46", "Antal tecken att visa i s&ouml;kningens resultatsummering");
+define("SEALAN_47", "Matcha enbart hela ord:");
+define("SEALAN_48", "Denna inst&auml;llning g&auml;ller enbart om sorteringsmetoden &auml;r PHP. Om din sajt inneh&aring;ller Ideografiska spr&aring;k som kinesiska eller japanska m&aring;ste du l&auml;mna detta avaktiverat.");
+define("SEALAN_49", "Om din sajt inneh&aring;ller Ideografiska spr&aring;k som kinesiska eller japanska m&aring;ste du anv&auml;nda PHP's sorteringsmetod.");
 
 ?>

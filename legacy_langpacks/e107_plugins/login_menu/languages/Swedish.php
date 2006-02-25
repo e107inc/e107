@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/login_menu/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -16,7 +16,7 @@ define("LOGIN_MENU_L3", "Registrera");
 define("LOGIN_MENU_L4", "Gl&ouml;mt l&ouml;senord?");
 define("LOGIN_MENU_L5", "V&auml;lkommen");
 define("LOGIN_MENU_L6", "Kom ih&aring;g mig");
-define("LOGIN_MENU_L7", "Ditt anv&auml;ndar-ID k&auml;nns inte igen (m&ouml;ligen korrupt kaka).<br />V&auml;nligen <a href=\"".e_BASE."index.php?logout\">klicka h&auml;r</a> f&ouml;r att f&ouml;rst&ouml;ra kakan.");
+define("LOGIN_MENU_L7", "Ditt anv&auml;ndar-ID k&auml;nns inte igen (m&ouml;ligen korrupt kaka).&lt;br /&gt;V&auml;nligen &lt;a href=\"".e_BASE."index.php?logout\"&gt;klicka h&auml;r&lt;/a&gt; f&ouml;r att f&ouml;rst&ouml;ra kakan.");
 define("LOGIN_MENU_L8", "Logga ut");
 define("LOGIN_MENU_L9", "Inloggningsfel");
 define("LOGIN_MENU_L10", "Underh&aring;llsflaggan satt - detta betyder att vanliga anv&auml;ndare omdirigeras till sitedown.php. F&ouml;r att &aring;terst&auml;lla flaggan, g&aring; till admin/underh&aring;ll.");

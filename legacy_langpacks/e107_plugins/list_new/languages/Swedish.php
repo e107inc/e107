@@ -4,53 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "Lista nya &auml;mnen");
 
-//allt nedan kommer att tas bort vid senare tillf&auml;lle
-define("LIST_1", "Nyhets&auml;mnen");
-define("LIST_2", "orubricerat");
-define("LIST_3", "Nya sedan ditt senaste bes&ouml;k...");
-define("LIST_4", "Inget nytt hittades.");
-define("LIST_5", "Chattruteinl&auml;gg");
-define("LIST_6", "blockerat av admin");
-define("LIST_7", "Foruminl&auml;gg");
-define("LIST_8", "Nya medlemmar");
-define("LIST_9", "Kommentarer");
-define("LIST_10", "Idéer");
-define("LIST_11", "Nerladdning");
-define("LIST_12", "Nyheter");
-define("LIST_13", "Buggsp&aring;rning");
-define("LIST_14", "R&ouml;stning");
-define("LIST_15", "FAQ");
-define("LIST_16", "Buggar");
-define("LIST_17", "Idéer");
-
-define("LIST_13", "Profil");
-define("LIST_14", "Artikel");
-define("LIST_15", "Inneh&aring;ll");
-
-define("LIST_18", "FAQ");
-define("LIST_18", "R&ouml;stning");
-define("LIST_19", "Dokumentation");
-define("LIST_20", "Buggsp&aring;rare");
-
-define("LIST_21", "Artiklar");
-define("LIST_22", "Idéer");
-//allt ovan kommer att tas bort vid senare tillf&auml;lle
-
-define("LIST_23", "Denna plugin &auml;r inte installerad.");
-
 define("LIST_PLUGIN_1", "Lista nya till&auml;gg");
 define("LIST_PLUGIN_2", "Denna plugin l&aring;ter dig se en lista p&aring; nya till&auml;gg i alla e107 kategorier. Du kan antingen visa listan med data sedan ditt senaste bes&ouml;k, eller visa en generell lista p&aring; senaste till&auml;gg. F&ouml;rutom sidan finns &auml;ven en meny. Alla sektioner &auml;r konfigurerbara i adminsektionen.");
 define("LIST_PLUGIN_3", "Konfigurera huvudmeny");
 define("LIST_PLUGIN_4", "Plugin f&ouml;r nya till&auml;gg &auml;r nu klar att anv&auml;ndas.");
 define("LIST_PLUGIN_5", "lista");
+define("LIST_PLUGIN_6", "Denna plugin &auml;r inte installerad.");
 
 define("LIST_ADMIN_1", "Senaste");
 define("LIST_ADMIN_2", "Uppdatera inst&auml;llningar");
@@ -105,7 +72,6 @@ define("LIST_ADMIN_SECT_25", "Rubrik");
 define("LIST_ADMIN_SECT_26", "V&auml;lj en rubrik f&ouml;r varje sektion");
 define("LIST_ADMIN_SECT_27", "");
 
-
 define("LIST_ADMIN_OPT_1", "Generellt");
 define("LIST_ADMIN_OPT_2", "Senaste sida");
 define("LIST_ADMIN_OPT_3", "Senaste meny");
@@ -135,11 +101,11 @@ define("LIST_ADMIN_LAN_13", "L&auml;mna tomt f&ouml;r att inte anv&auml;nda post
 
 define("LIST_ADMIN_LAN_14", "Datum");
 define("LIST_ADMIN_LAN_15", "V&auml;lj en datumstil");
-define("LIST_ADMIN_LAN_16", "F&ouml;r mer information om datumformat, se <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funktionens</a> sida p&aring; php.net");
+define("LIST_ADMIN_LAN_16", "F&ouml;r mer information om datumformat, se &lt;a href='http://www.php.net/manual/en/function.strftime.php' rel='external'&gt;strftime funktionens&lt;/a&gt; sida p&aring; php.net");
 
 define("LIST_ADMIN_LAN_17", "Dagens datum");
 define("LIST_ADMIN_LAN_18", "V&auml;lj datumstil om datumet &auml;r dagens datum");
-define("LIST_ADMIN_LAN_19", "F&ouml;r mer information om datumformat, se <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funktionens</a> sida p&aring; php.net");
+define("LIST_ADMIN_LAN_19", "F&ouml;r mer information om datumformat, se &lt;a href='http://www.php.net/manual/en/function.strftime.php' rel='external'&gt;strftime funktionens&lt;/a&gt; sida p&aring; php.net");
 
 define("LIST_ADMIN_LAN_20", "Kolumner");
 define("LIST_ADMIN_LAN_21", "Ange antal kolumner");
@@ -165,8 +131,6 @@ define("LIST_ADMIN_LAN_35", "dagar");
 define("LIST_ADMIN_LAN_36", "Tidsp&auml;nnvidd");
 define("LIST_ADMIN_LAN_37", "Visa en valruta med antale dagar att se tillbaka?");
 define("LIST_ADMIN_LAN_38", "");
-
-
 
 define("LIST_MENU_1", "Senaste till&auml;ggen");
 define("LIST_MENU_2", "av");
@@ -200,7 +164,7 @@ define("LIST_COMMENT_6", "Dokumentation");
 define("LIST_COMMENT_7", "Buggsp&aring;rning");
 define("LIST_COMMENT_8", "Inneh&aring;ll");
 define("LIST_COMMENT_9", "Nerladdningar");
-define("LIST_COMMENT_10", "Idéer");
+define("LIST_COMMENT_10", "Id&eacute;er");
 
 define("LIST_DOWNLOAD_1", "Nerladdningar");
 define("LIST_DOWNLOAD_2", "Inga nerladdningar");

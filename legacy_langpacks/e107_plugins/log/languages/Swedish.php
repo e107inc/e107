@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/log/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@
 define("PAGE_NAME", "Statistik");
 
 define("ADSTAT_L1", "Denna plugin kommer att logga alla bes&ouml;k till din sajt och bygga detaljerade statistikbilder baserade p&aring; den insamlade informationen.");
-define("ADSTAT_L2", "Statistik loggningen har installerats. F&ouml;r att konvertera existerande statistik till det nya systemet, <a href='".e_PLUGIN."log/update_routine.php'>klicka h&auml;r</a> f&ouml;r att k&ouml;ra uppdateringsrutinen.");
+define("ADSTAT_L2", "Statistik loggningen har installerats. F&ouml;r att konvertera existerande statistik till det nya systemet, &lt;a href='".e_PLUGIN."log/update_routine.php'&gt;klicka h&auml;r&lt;/a&gt; f&ouml;r att k&ouml;ra uppdateringsrutinen.");
 define("ADSTAT_L3", "Statistikloggning");
 define("ADSTAT_L4", "Du har inte till&aring;telse att se sidan.");
 define("ADSTAT_L5", "Funktionerna p&aring; denna sida har avaktiverats.");

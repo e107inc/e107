@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_mailout.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -45,5 +45,9 @@ define("MAILAN_17","Registreringsl&auml;nk");
 define("MAILAN_18","Anv&auml;ndar-id");
 define("MAILAN_19","Det finns ingen e-postadress angiven f&ouml;r sajtadmin. Kontrollera dina preferenser och f&ouml;rs&ouml;k igen.");
 define("MAILAN_20","S&ouml;kv&auml;g till sendmail");
+define("MAILAN_21","Massbrev-poster");
+define("MAILAN_22","Det finns f&ouml;r n&auml;rvarande inga sparade poster");
+define("MAILAN_23","anv&auml;ndarklass: ");
+define("MAILAN_24", "brev &auml;r klar(a) att s&auml;ndas");
 
 ?>

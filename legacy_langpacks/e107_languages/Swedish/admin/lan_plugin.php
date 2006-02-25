@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ define("EPL_ADLAN_41", "Den filen verkar inte vara ett giltigt .zip eller .tar a
 define("EPL_ADLAN_42", "Ett fel har uppst&aring;tt, kan inte packa upp arkivfilen");
 define("EPL_ADLAN_43", "Din plugin har laddats upp och packats upp, bl&auml;ddra ner f&ouml;r att se din plugin i listan.");
 define("EPL_ADLAN_44", "Auto plugin uppladdning och extrahering &auml;r avaktiverat eftersom din pluginfolder inte har korekta r&auml;ttigheter - &auml;ndra din e107_plugins katalog till CHMOD 777.");
-define("EPL_ADLAN_45", "Ditt menyobjekt har laddats upp och extraherats, g&aring; till <a href='".e_ADMIN."menus.php'>din menysida</a> f&ouml;r att aktivera det.");
+define("EPL_ADLAN_45", "Ditt menyobjekt har laddats upp och extraherats, g&aring; till &lt;a href='".e_ADMIN."menus.php'&gt;din menysida&lt;/a&gt; f&ouml;r att aktivera det.");
 
 // define("EPL_CANCEL", "Avbryt"); anv&auml;nd LAN_CANCEL ist&auml;llet!!
 // define("EPL_EMAIL", "e-post");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -60,13 +60,13 @@ define("LAN_414", "Rapportera denna tr&aring;d till en moderator");
 define("LAN_415", "Tr&aring;drubrik");
 define("LAN_416", "Skriv din rapport");
 define("LAN_417", "Admin kommer att uppm&auml;rksammas p&aring; denna tr&aring;d. Du kan skriva ett meddelande d&auml;r du f&ouml;rklarar vad du anser vara tvivelaktigt.");
-define("LAN_418", "Anv&auml;nd <b>inte</b> detta fomul&auml;r till att kontakta admin av n&aring;got annat sk&auml;l.");
+define("LAN_418", "Anv&auml;nd &lt;b&gt;inte&lt;/b&gt; detta fomul&auml;r till att kontakta admin av n&aring;got annat sk&auml;l.");
 define("LAN_419", "Skicka rapport");
 define("LAN_420", "Klicka f&ouml;r att se inl&auml;gg");
 define("LAN_421", "Rapport om forumtr&aring;d fr&aring;n");
 define("LAN_422", "Detta inl&auml;gg har rapporterats fr&aring;n sajten ");
 define("LAN_423", "Meddelandet kunde inte skickas. ");
-define("LAN_424", "Inl&auml;gger har rapporterats till en moderator.<br />Tack.");
+define("LAN_424", "Inl&auml;gger har rapporterats till en moderator.&lt;br /&gt;Tack.");
 define("LAN_425", "Meddelande fr&aring;n: ");
 define("LAN_426", "Rappoerterar inl&auml;gg i &auml;mnet: ");
 define("LAN_427", "Fel vid s&auml;nding av e-post");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:52 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -105,5 +105,6 @@ define("LAN_USET_7", "Diverse");
 define("LAN_USET_8", "Signatur / Tidszon");
 define("LAN_USET_9", "N&aring;got/n&aring;gra av de n&ouml;dv&auml;ndiga f&auml;lten (markerade med *) saknas i dina inst&auml;llningar.");
 define("LAN_USET_10","V&auml;nligen uppdatera dina inst&auml;llningar nu f&ouml;r att kunna forts&auml;tta.");
+define("LAN_USET_11", "Det anv&auml;ndarnamnet kan inte accepteras som giltigt, v&auml;nligen v&auml;lj n&aring;got annat namn");
 
 ?>

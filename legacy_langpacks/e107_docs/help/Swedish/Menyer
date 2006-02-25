@@ -1,12 +1,12 @@
 
-Q>	Vad &auml;r menyer?
-A>	De &auml;r objekt som visas i menyomr&aring;dena (eller kolumnerna) p&aring; din sajt. De kan inneh&aring;lla text, l&auml;nkar eller vad som helst.
+Q&gt;	Vad &auml;r menyer?
+A&gt;	De &auml;r objekt som visas i menyomr&aring;dena (eller kolumnerna) p&aring; din sajt. De kan inneh&aring;lla text, l&auml;nkar eller vad som helst.
 
-Q>	Hur kan jag aktivera ett menyobjekt?
-A>	G&aring; till din admin area och klicka p&aring; menyer. D&aring; kommer du att se huvudlayouten f&ouml;r din sajt med en lista av alla menyer i deras respektive areor. Menyobjekten i mitten &auml;r inaktiva, du kan flytta dem till ett aktivt omr&aring;de genom att klicka p&aring; Aktivera denna meny. Du kan ocks&aring; flytta menyn upp&aring;t eller ned&aring;t i kolumnen n&auml;r den v&auml;l &auml;r aktiverad.
+Q&gt;	Hur kan jag aktivera ett menyobjekt?
+A&gt;	G&aring; till din admin area och klicka p&aring; menyer. D&aring; kommer du att se huvudlayouten f&ouml;r din sajt med en lista av alla menyer i deras respektive areor. Menyobjekten i mitten &auml;r inaktiva, du kan flytta dem till ett aktivt omr&aring;de genom att klicka p&aring; Aktivera denna meny. Du kan ocks&aring; flytta menyn upp&aring;t eller ned&aring;t i kolumnen n&auml;r den v&auml;l &auml;r aktiverad.
 
-Q>	Jag beh&ouml;ver l&auml;gga in text inuti ett menyobjekt, hur g&ouml;r jag det?
-A>	G&aring; till admin arean och klicak p&aring; Egna menyer. D&auml;rifr&aring;n kan du l&auml;gga in vilken text du vill i en meny och den sparas och blir tillg&auml;nglig som vilken annan meny som helst.
+Q&gt;	Jag beh&ouml;ver l&auml;gga in text inuti ett menyobjekt, hur g&ouml;r jag det?
+A&gt;	G&aring; till admin arean och klicak p&aring; Egna menyer. D&auml;rifr&aring;n kan du l&auml;gga in vilken text du vill i en meny och den sparas och blir tillg&auml;nglig som vilken annan meny som helst.
 
-Q>	Hur kan jag &auml;ndra alternativen f&ouml;r ett menyobjekt?
-A>	Om en konfigurationspanel &auml;r tillg&auml;nglig kommer du att se en l&auml;nk till den (kallad 'Konfigurera') i menyrutan n&auml;r den har aktiverats.
+Q&gt;	Hur kan jag &auml;ndra alternativen f&ouml;r ett menyobjekt?
+A&gt;	Om en konfigurationspanel &auml;r tillg&auml;nglig kommer du att se en l&auml;nk till den (kallad 'Konfigurera') i menyrutan n&auml;r den har aktiverats.

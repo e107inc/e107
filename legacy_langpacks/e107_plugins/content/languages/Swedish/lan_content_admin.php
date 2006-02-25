@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Swedish/lan_content_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -57,7 +57,7 @@ define("CONTENT_ADMIN_CAT_LAN_36", "Kategorikontroll: det finns fortfarande unde
 define("CONTENT_ADMIN_CAT_LAN_37", "Inneh&aring;llskontroll: Det finns fortfarande inneh&aring;ll, kategorin kommer INTE att raderas. Ta f&ouml;rst bort allt inneh&aring;ll och f&ouml;rs&ouml;k igen.");
 define("CONTENT_ADMIN_CAT_LAN_38", "Inneh&aring;llskontroll: Inga objekt funna");
 define("CONTENT_ADMIN_CAT_LAN_39", "Kategorikontroll: Inga underkategorier funna");
-define("CONTENT_ADMIN_CAT_LAN_40", "Nedan ser du en lista av huvudkategorin och alla underkategorier, om n&aring;gra finns.<br />");
+define("CONTENT_ADMIN_CAT_LAN_40", "Nedan ser du en lista av huvudkategorin och alla underkategorier, om n&aring;gra finns.&lt;br /&gt;");
 
 define("CONTENT_ADMIN_CAT_LAN_41", "Den personliga managern av inneh&aring;llskategorier l&aring;ter dig tilldela vissa admins till en kategori. Med detta privelegie kan admins hantera sina, och bara sina, pesronliga inneh&aring;llsposter i denna specificerade kategori utan att beh&ouml;va ha kontroll &ouml;ver hela innehl&aring;llshanteringen. Fr&aring;n den normala inneh&aring;llssidan utanf&ouml;r adminomr&aring;det kommer de att se en ikon som omdirigerar dem till sin personliga managersida.");
 define("CONTENT_ADMIN_CAT_LAN_42", "F&ouml;r att redigera en kategori fr&aring;n den tidigare valda huvudkategorin");
@@ -69,8 +69,8 @@ define("CONTENT_ADMIN_CAT_LAN_46", "Ange om betyg skall till&aring;tas");
 define("CONTENT_ADMIN_CAT_LAN_47", "Skall skriv ut/e-post ikoner visas?");
 define("CONTENT_ADMIN_CAT_LAN_48", "V&auml;lj vilka anv&auml;ndare som skall se detta objekt");
 define("CONTENT_ADMIN_CAT_LAN_49", "V&auml;lj en ikon f&ouml;r denna kategori");
-//define("CONTENT_ADMIN_CAT_LAN_50", "Inneh&aring;llsmeny skapad<br /><br />Eftersom du skapat en huvudv&auml;rdkategori s&aring; har en meny skapats.<br />Menyfilen har sparats i din /menus folder.<br /><br />F&ouml;r att se menyn i aktion m&aring;ste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
-define("CONTENT_ADMIN_CAT_LAN_50", "Bara om du skapat en ny huvudv&auml;rdkategori s&aring; har en meny skapats.<br />Menyfilen har sparats i din /menus folder.<br />F&ouml;r att se menyn i aktion m&aring;ste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
+//define("CONTENT_ADMIN_CAT_LAN_50", "Inneh&aring;llsmeny skapad&lt;br /&gt;&lt;br /&gt;Eftersom du skapat en huvudv&auml;rdkategori s&aring; har en meny skapats.&lt;br /&gt;Menyfilen har sparats i din /menus folder.&lt;br /&gt;&lt;br /&gt;F&ouml;r att se menyn i aktion m&aring;ste du aktivera menyn i din &lt;a href='".e_ADMIN."menus.php'&gt;admin menyarea&lt;/a&gt;.");
+define("CONTENT_ADMIN_CAT_LAN_50", "Bara om du skapat en ny huvudv&auml;rdkategori s&aring; har en meny skapats.&lt;br /&gt;Menyfilen har sparats i din /menus folder.&lt;br /&gt;F&ouml;r att se menyn i aktion m&aring;ste du aktivera menyn i din &lt;a href='".e_ADMIN."menus.php'&gt;admin menyarea&lt;/a&gt;.");
 define("CONTENT_ADMIN_CAT_LAN_51", "Fel; Menyfil skapades inte");
 define("CONTENT_ADMIN_CAT_LAN_52", "V&auml;lj ALLTID en kategori f&ouml;rst innan du fyller i de andra f&auml;lten!");
 define("CONTENT_ADMIN_CAT_LAN_53", "Huvudv&auml;rdkategori");
@@ -78,11 +78,11 @@ define("CONTENT_ADMIN_CAT_LAN_54", "anv&auml;ndare");
 define("CONTENT_ADMIN_CAT_LAN_55", "anv&auml;ndare"); //Pluralis
 define("CONTENT_ADMIN_CAT_LAN_56", "objekt");
 define("CONTENT_ADMIN_CAT_LAN_57", "objekt"); //Pluralis
-define("CONTENT_ADMIN_CAT_LAN_58", "kategoriikon laddades upp okej<br />Notera: Du m&aring;ste ocks&aring; tilldela ikonen till denna kategorin i Ikon>V&auml;lj befintlig ikon arean!<br />och efter det m&aring;ste du ocks&aring; spara formul&auml;ret f&ouml;r att skapa/uppdatera denna kategori");
+define("CONTENT_ADMIN_CAT_LAN_58", "kategoriikon laddades upp okej&lt;br /&gt;Notera: Du m&aring;ste ocks&aring; tilldela ikonen till denna kategorin i Ikon&gt;V&auml;lj befintlig ikon arean!&lt;br /&gt;och efter det m&aring;ste du ocks&aring; spara formul&auml;ret f&ouml;r att skapa/uppdatera denna kategori");
 define("CONTENT_ADMIN_CAT_LAN_59", "kategoriikon ej uppladdad");
 define("CONTENT_ADMIN_CAT_LAN_60", "V&auml;lj en befintlig ikon");
 define("CONTENT_ADMIN_CAT_LAN_61", "eller ladda upp en ny ikon");
-define("CONTENT_ADMIN_CAT_LAN_62", "N&auml;r du laddat upp en ny kategoriikon kan tilldela ikonen med 'V&auml;lj befintlig ikon' arean ovan<br />Om du laddar upp en ny ikon kommer den att skalas till 48 pixlar, en mindre 16 pixlars ikonkommer ocks&aring; att skapas<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_62", "N&auml;r du laddat upp en ny kategoriikon kan tilldela ikonen med 'V&auml;lj befintlig ikon' arean ovan&lt;br /&gt;Om du laddar upp en ny ikon kommer den att skalas till 48 pixlar, en mindre 16 pixlars ikonkommer ocks&aring; att skapas&lt;br /&gt;&lt;br /&gt;");
 define("CONTENT_ADMIN_CAT_LAN_63", "Ladda upp ikon");
 
 
@@ -141,7 +141,7 @@ define("CONTENT_ADMIN_ITEM_LAN_51", "F&ouml;rfattardetaljer");
 define("CONTENT_ADMIN_ITEM_LAN_52", "Skicka in inneh&aring;ll");
 define("CONTENT_ADMIN_ITEM_LAN_53", "Meta nyckelord");
 define("CONTENT_ADMIN_ITEM_LAN_54", "Extra data");
-define("CONTENT_ADMIN_ITEM_LAN_55", "G&aring; tillbaka till <a href='".e_SELF."'>huvudsidan f&ouml;r eget inneh&aring;ll</a> f&ouml;r att hantera mer av ditt personliga inneh&aring;ll<br />eller<br />G&aring; till <a href='".e_PLUGIN."content/content.php'>huvudsidan f&ouml;r inneh&aring;ll</a> f&ouml;r att se inneh&aring;llet.");
+define("CONTENT_ADMIN_ITEM_LAN_55", "G&aring; tillbaka till &lt;a href='".e_SELF."'&gt;huvudsidan f&ouml;r eget inneh&aring;ll&lt;/a&gt; f&ouml;r att hantera mer av ditt personliga inneh&aring;ll&lt;br /&gt;eller&lt;br /&gt;G&aring; till &lt;a href='".e_PLUGIN."content/content.php'&gt;huvudsidan f&ouml;r inneh&aring;ll&lt;/a&gt; f&ouml;r att se inneh&aring;llet.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "Personlig inneh&aring;llshanterare");
 define("CONTENT_ADMIN_ITEM_LAN_57", "Kategori");
 define("CONTENT_ADMIN_ITEM_LAN_58", "Poster");
@@ -152,9 +152,9 @@ define("CONTENT_ADMIN_ITEM_LAN_62", "Sortera kategorier");
 define("CONTENT_ADMIN_ITEM_LAN_63", "Stig.");
 define("CONTENT_ADMIN_ITEM_LAN_64", "Fall.");
 define("CONTENT_ADMIN_ITEM_LAN_65", "Sortera inneh&aring;llsposter");
-define("CONTENT_ADMIN_ITEM_LAN_66", "Nedan ser du de olika bokst&auml;verna i rubreikerna f&ouml;r alla objekt i denna kasterorin.<br />Genom att klicka p&aring; n&aring;gon av bokst&auml;verna kommer du att se alla objekt som b&ouml;rjar p&aring; den valda bokstaven. Du kan ocks&aring; v&auml;lja knappen ALLA f&ouml;r att visa alla objekt i denna kategori.");
-define("CONTENT_ADMIN_ITEM_LAN_67", "Nedan ser du inneh&aring;llet listat f&ouml;r den valda kategorin, begr&auml;nsat av den valda bokstaven.<br />Du kan redigera eller radera ett objekt genom att klicka p&aring; knapparna till h&ouml;ger.");
-define("CONTENT_ADMIN_ITEM_LAN_68", "Nedan kan du l&auml;gga till egen data f&ouml;r detta objekt. Varje eget datapar m&aring;ste ha b&aring;de nyckel och v&auml;rde. Du kan specificera nyckeln i v&auml;nstra f&auml;ltet och tillh&ouml;rande v&auml;rde i det h&ouml;gra f&auml;ltet.<br />(t.ex. nyckel'fotografi' och v&auml;rde='alla foton tagna av mig'.");
+define("CONTENT_ADMIN_ITEM_LAN_66", "Nedan ser du de olika bokst&auml;verna i rubreikerna f&ouml;r alla objekt i denna kasterorin.&lt;br /&gt;Genom att klicka p&aring; n&aring;gon av bokst&auml;verna kommer du att se alla objekt som b&ouml;rjar p&aring; den valda bokstaven. Du kan ocks&aring; v&auml;lja knappen ALLA f&ouml;r att visa alla objekt i denna kategori.");
+define("CONTENT_ADMIN_ITEM_LAN_67", "Nedan ser du inneh&aring;llet listat f&ouml;r den valda kategorin, begr&auml;nsat av den valda bokstaven.&lt;br /&gt;Du kan redigera eller radera ett objekt genom att klicka p&aring; knapparna till h&ouml;ger.");
+define("CONTENT_ADMIN_ITEM_LAN_68", "Nedan kan du l&auml;gga till egen data f&ouml;r detta objekt. Varje eget datapar m&aring;ste ha b&aring;de nyckel och v&auml;rde. Du kan specificera nyckeln i v&auml;nstra f&auml;ltet och tillh&ouml;rande v&auml;rde i det h&ouml;gra f&auml;ltet.&lt;br /&gt;(t.ex. nyckel'fotografi' och v&auml;rde='alla foton tagna av mig'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "H&auml;r kan du ladda upp ikoner, bilagor och/eller bilder till ditt inneh&aring;ll. De till&aring;tna filtyperna &auml;r: ");
 define("CONTENT_ADMIN_ITEM_LAN_70", "I n&auml;sta ruta kan du specificera metanyckelord till ditt inneh&aring;ll. Dessa metanyckelord visas i sidans huvud. Separera orden med kommatecken, och inga mellanslag &auml;r till&aring;tna!");
 define("CONTENT_ADMIN_ITEM_LAN_71", "L&auml;mna om skrivet av dig");
@@ -197,13 +197,13 @@ define("CONTENT_ADMIN_ITEM_LAN_103", "Efter att du laddat upp en ny bild kan du 
 define("CONTENT_ADMIN_ITEM_LAN_104", "Ladda upp");
 define("CONTENT_ADMIN_ITEM_LAN_105", "Visa");
 
-define("CONTENT_ADMIN_ITEM_LAN_106", "Ikon uppladdad<br />OBSERVERA: Du m&aring;ste fortfarande tilldela denna ikonen till inneh&aring;llsobjektet med 'V&auml;lj en befintlig ikon'!<br />Sj&auml;lvklart m&aring;ste du efter det ocks&aring; spara inst&auml;llningarna genom att skicka in formul&auml;ret.");
+define("CONTENT_ADMIN_ITEM_LAN_106", "Ikon uppladdad&lt;br /&gt;OBSERVERA: Du m&aring;ste fortfarande tilldela denna ikonen till inneh&aring;llsobjektet med 'V&auml;lj en befintlig ikon'!&lt;br /&gt;Sj&auml;lvklart m&aring;ste du efter det ocks&aring; spara inst&auml;llningarna genom att skicka in formul&auml;ret.");
 define("CONTENT_ADMIN_ITEM_LAN_107", "Ikon laddades inte upp");
 
-define("CONTENT_ADMIN_ITEM_LAN_108", "Bilaga uppladdad<br />OBSERVERA: Du m&aring;ste fortfarande tilldela denna bilagan till inneh&aring;llsobjektet med 'V&auml;lj en befintlig bilaga'!<br />Sj&auml;lvklart m&aring;ste du efter det ocks&aring; spara inst&auml;llningarna genom att skicka in formul&auml;ret.");
+define("CONTENT_ADMIN_ITEM_LAN_108", "Bilaga uppladdad&lt;br /&gt;OBSERVERA: Du m&aring;ste fortfarande tilldela denna bilagan till inneh&aring;llsobjektet med 'V&auml;lj en befintlig bilaga'!&lt;br /&gt;Sj&auml;lvklart m&aring;ste du efter det ocks&aring; spara inst&auml;llningarna genom att skicka in formul&auml;ret.");
 define("CONTENT_ADMIN_ITEM_LAN_109", "Bilaga laddades inte upp");
 
-define("CONTENT_ADMIN_ITEM_LAN_110", "Bild uppladdad<br />OBSERVERA: Du m&aring;ste fortfarande tilldela denna bilden till inneh&aring;llsobjektet med 'V&auml;lj en befintlig bild'!<br />Sj&auml;lvklart m&aring;ste du efter det ocks&aring; spara inst&auml;llningarna genom att skicka in formul&auml;ret.");
+define("CONTENT_ADMIN_ITEM_LAN_110", "Bild uppladdad&lt;br /&gt;OBSERVERA: Du m&aring;ste fortfarande tilldela denna bilden till inneh&aring;llsobjektet med 'V&auml;lj en befintlig bild'!&lt;br /&gt;Sj&auml;lvklart m&aring;ste du efter det ocks&aring; spara inst&auml;llningarna genom att skicka in formul&auml;ret.");
 define("CONTENT_ADMIN_ITEM_LAN_111", "Bild laddades inte upp");
 
 define("CONTENT_ADMIN_ITEM_LAN_112", "Ladda upp en ikon, bilaga eller bild");
@@ -219,7 +219,7 @@ define("CONTENT_ADMIN_ITEM_LAN_120", "standardlayout");
 define("CONTENT_ADMIN_ITEM_LAN_121", "Ingen ny okon uppladdad &auml;nnu");
 define("CONTENT_ADMIN_ITEM_LAN_122", "Ingen ny bilaga uppladdad &auml;nnu");
 define("CONTENT_ADMIN_ITEM_LAN_123", "Ingen ny bild uppladdad &auml;nnu");
-
+define("CONTENT_ADMIN_ITEM_LAN_124", "f&ouml;r att se objektet");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Ordningen &auml;r stigande");
 define("CONTENT_ADMIN_ORDER_LAN_1", "Ordningen &auml;r fallande");
@@ -244,16 +244,16 @@ define("CONTENT_ADMIN_MAIN_LAN_13", "Du kan skapa nytt inneh&aring;ll p&aring; d
 define("CONTENT_ADMIN_MAIN_LAN_14", "Du kan ange ordningen f&ouml;r inneh&aring;llet p&aring; denna sida. Klicka p&aring; knappen p&aring; n&aring;gon av v&auml;rdarna nedan f&ouml;r att b&ouml;rja sortera inneh&aring;llet eller kategorierna f&ouml;r den valda huvudkategorin.");
 define("CONTENT_ADMIN_MAIN_LAN_15", "Du hanterar kategorier p&aring; denna sida. V&auml;lj huvudkategorin fr&aring;n knapparna nedan f&ouml;r att visa en &ouml;verblick p&aring; alla kategorier och underkategorier i denna huvudkategori.");
 define("CONTENT_ADMIN_MAIN_LAN_16", "Du kan skapa nya kategorier p&aring; denna sida. Som standard visas formul&auml;ret f&ouml;r ny huvudkategori. Om du vill skapa en underkategori till en befintlig huvudkategori, klicka d&aring; p&aring; en av knapparna visade nedan f&ouml;r att visa formul&auml;ret f&ouml;r underkategori till den valda huvudkaategorin.");
-define("CONTENT_ADMIN_MAIN_LAN_17", "Skapa en my kategori via <a href='".e_SELF."?type.0.cat.create'>Skapa ny kategori</a> sidan");
+define("CONTENT_ADMIN_MAIN_LAN_17", "Skapa en my kategori via &lt;a href='".e_SELF."?type.0.cat.create'&gt;Skapa ny kategori&lt;/a&gt; sidan");
 
 define("CONTENT_ADMIN_MAIN_LAN_18", "Konvertera poster");
-define("CONTENT_ADMIN_MAIN_LAN_19", "Det f&ouml;rsta du m&aring;ste g&ouml;ra &auml;r att s&auml;kerhetskopiera din inneh&aring;llstabell s&aring;v&auml;l som dina kommentarer och betygstabellen.<br />Anv&auml;nd ett databasprogram f&ouml;r detta, t.ex. phpMyAdmin.<br />Efter att du kopierat ditt inneh&aring;ll kan du b&ouml;rja konvertera posterna till den nya inneh&aring;llshanteraren.<br />Efter att du konverterat ditt gamla innehh&aring;ll, skill du inte l&auml;ngre se denna information, och du skall ha m&ouml;jlighet att hantera ditt befintliga inneh&aring;ll.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_19", "Det f&ouml;rsta du m&aring;ste g&ouml;ra &auml;r att s&auml;kerhetskopiera din inneh&aring;llstabell s&aring;v&auml;l som dina kommentarer och betygstabellen.&lt;br /&gt;Anv&auml;nd ett databasprogram f&ouml;r detta, t.ex. phpMyAdmin.&lt;br /&gt;Efter att du kopierat ditt inneh&aring;ll kan du b&ouml;rja konvertera posterna till den nya inneh&aring;llshanteraren.&lt;br /&gt;Efter att du konverterat ditt gamla innehh&aring;ll, skill du inte l&auml;ngre se denna information, och du skall ha m&ouml;jlighet att hantera ditt befintliga inneh&aring;ll.&lt;br /&gt;");
 define("CONTENT_ADMIN_MAIN_LAN_20", "Starta med en tom tabell");
-define("CONTENT_ADMIN_MAIN_LAN_21", "Om du inte l&auml;ngre beh&ouml;ver posterna fr&aring;n din gamla inneh&aring;llstabell,<br />och du bara vill starta med en ny, f&auml;rsk inneh&aring;llshanteringstabell,<br />och du inte vill skapa standardupps&auml;ttningen av kategorier,<br />s&aring; kan du b&ouml;rja med att skapa en ny kategori.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_21", "Om du inte l&auml;ngre beh&ouml;ver posterna fr&aring;n din gamla inneh&aring;llstabell,&lt;br /&gt;och du bara vill starta med en ny, f&auml;rsk inneh&aring;llshanteringstabell,&lt;br /&gt;och du inte vill skapa standardupps&auml;ttningen av kategorier,&lt;br /&gt;s&aring; kan du b&ouml;rja med att skapa en ny kategori.&lt;br /&gt;");
 define("CONTENT_ADMIN_MAIN_LAN_22", "Skapa en standardupps&auml;ttning kategorier");
-define("CONTENT_ADMIN_MAIN_LAN_23", "Om du vill b&ouml;rja med en f&auml;rsk installation kan du f&ouml;rst skapa en standardupps&auml;ttning kategorier.<br />Denna standardupps&auml;ttning skapa tre huvudkategorier, ben&auml;mnda Inneh&aring;ll, Recensioner och Artiklar.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_23", "Om du vill b&ouml;rja med en f&auml;rsk installation kan du f&ouml;rst skapa en standardupps&auml;ttning kategorier.&lt;br /&gt;Denna standardupps&auml;ttning skapa tre huvudkategorier, ben&auml;mnda Inneh&aring;ll, Recensioner och Artiklar.&lt;br /&gt;");
 define("CONTENT_ADMIN_MAIN_LAN_24", "Detta &auml;r en f&auml;rsk installation / Den gamla tabellen inneh&aring;ller inga poster");
-define("CONTENT_ADMIN_MAIN_LAN_25", "Eftersom den befintliga tabellen inte innh&aring;ller n&aring;gra poster kan du nu b&ouml;rja hantera ditt nya inneh&aring;ll.<br />Genom att klicka p&aring; n&auml;sta-knappen kommer standardupps&auml;ttningen automatiskt att skapas, n&auml;mligen Inneh&aring;ll, Recensioner och Artiklar.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_25", "Eftersom den befintliga tabellen inte innh&aring;ller n&aring;gra poster kan du nu b&ouml;rja hantera ditt nya inneh&aring;ll.&lt;br /&gt;Genom att klicka p&aring; n&auml;sta-knappen kommer standardupps&auml;ttningen automatiskt att skapas, n&auml;mligen Inneh&aring;ll, Recensioner och Artiklar.&lt;br /&gt;");
 define("CONTENT_ADMIN_MAIN_LAN_26", "F&ouml;rhandsgranska");
 define("CONTENT_ADMIN_MAIN_LAN_27", "F&ouml;rhandsgranska igen");
 define("CONTENT_ADMIN_MAIN_LAN_28", "V&auml;lj kategori...");
@@ -296,7 +296,7 @@ define("CONTENT_ADMIN_JS_LAN_5", "Fil");
 define("CONTENT_ADMIN_JS_LAN_6", "ID");
 define("CONTENT_ADMIN_JS_LAN_7", "&Auml;r du s&auml;ker p&aring; att du vill ta bort nuvarande ikon?");
 define("CONTENT_ADMIN_JS_LAN_8", "Ikon");
-define("CONTENT_ADMIN_JS_LAN_9", "OBSERVERA:<br />endast tomma kategorier kan raderas.<br />En kategori &auml;r tom om den INTE inneh&aring;llar n&aring;gra underkategorier och<br />om den INTE inneh&aring;ller n&aring;gra inneh&aring;llsobjekt!");
+define("CONTENT_ADMIN_JS_LAN_9", "OBSERVERA:&lt;br /&gt;endast tomma kategorier kan raderas.&lt;br /&gt;En kategori &auml;r tom om den INTE inneh&aring;llar n&aring;gra underkategorier och&lt;br /&gt;om den INTE inneh&aring;ller n&aring;gra inneh&aring;llsobjekt!");
 define("CONTENT_ADMIN_JS_LAN_10", "&Auml;r du s&auml;ker p&aring; att du vill ta bort ins&auml;nt inneh&aring;ll f&ouml;re du postat det?");
 
 
@@ -305,7 +305,7 @@ define("CONTENT_ADMIN_SUBMIT_LAN_1", "Type av material att s&auml;nda in");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Tack, ditt inneh&aring;ll har s&auml;nt in.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Tack, ditt inneh&aring;ll har s&auml;nt in och kommer att granskas av en administrat&ouml;r snarast.");
 define("CONTENT_ADMIN_SUBMIT_LAN_4", "N&ouml;dv&auml;ndigt f&auml;lt l&auml;mnat tomt");
-define("CONTENT_ADMIN_SUBMIT_LAN_5", "G&aring; tillbaka till <a href='".e_SELF."'>huvudsidan f&ouml;r ins&auml;ndning</a> f&ouml;r att skicka in mer material<br />eller<br />G&aring; till <a href='".e_PLUGIN."content/content.php'>huvudsida f&ouml;r inneh&aring;ll</a> f&ouml;r att se inneh&aring;llet.");
+define("CONTENT_ADMIN_SUBMIT_LAN_5", "G&aring; tillbaka till &lt;a href='".e_SELF."'&gt;huvudsidan f&ouml;r ins&auml;ndning&lt;/a&gt; f&ouml;r att skicka in mer material&lt;br /&gt;eller&lt;br /&gt;G&aring; till &lt;a href='".e_PLUGIN."content/content.php'&gt;huvudsida f&ouml;r inneh&aring;ll&lt;/a&gt; f&ouml;r att se inneh&aring;llet.");
 define("CONTENT_ADMIN_SUBMIT_LAN_6", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_7", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_8", "Ins&auml;nt material raderat");
@@ -366,9 +366,9 @@ define("CONTENT_ADMIN_CONVERSION_LAN_40", "Varning");
 define("CONTENT_ADMIN_CONVERSION_LAN_41", "Varning");
 define("CONTENT_ADMIN_CONVERSION_LAN_42", "Konverteringsresultat f&ouml;r den gamla inneh&aring;llstabellen till den nya inneh&aring;llsplugin-tabellen");
 define("CONTENT_ADMIN_CONVERSION_LAN_43", "Klicka p&aring; knappen f&ouml;r att konvertera den gamla tabellen");
-define("CONTENT_ADMIN_CONVERSION_LAN_44", "Den nya tabellen inneh&aring;ller redan data!<br />&auml;r du s&auml;ker p&aring; att du vill konvertera den gamla inneh&aring;llstabellen till den nya inneh&aring;llstabellen?<br /><br />Om du fortfarande vill konvertera den gamla tabellen kommer det gamla inneh&aring;llet att l&auml;ggas till till den redan existerande nya tabellen, men inga garantier kan l&auml;mnas p&aring; att alla objekt kommer att l&auml;ggas till p&aring; ett korrekt vis!");
+define("CONTENT_ADMIN_CONVERSION_LAN_44", "Den nya tabellen inneh&aring;ller redan data!&lt;br /&gt;&auml;r du s&auml;ker p&aring; att du vill konvertera den gamla inneh&aring;llstabellen till den nya inneh&aring;llstabellen?&lt;br /&gt;&lt;br /&gt;Om du fortfarande vill konvertera den gamla tabellen kommer det gamla inneh&aring;llet att l&auml;ggas till till den redan existerande nya tabellen, men inga garantier kan l&auml;mnas p&aring; att alla objekt kommer att l&auml;ggas till p&aring; ett korrekt vis!");
 define("CONTENT_ADMIN_CONVERSION_LAN_45", "Infogning misslyckades: Huvudv&auml;rd ej infogad");
-define("CONTENT_ADMIN_CONVERSION_LAN_46", "B&ouml;rja hantera ditt inneh&aring;ll genom att g&aring; till <a href='".e_PLUGIN."content/admin_content_config.php'>Inneh&aring;llshanterarens f&ouml;rstasida</a>!");
+define("CONTENT_ADMIN_CONVERSION_LAN_46", "B&ouml;rja hantera ditt inneh&aring;ll genom att g&aring; till &lt;a href='".e_PLUGIN."content/admin_content_config.php'&gt;Inneh&aring;llshanterarens f&ouml;rstasida&lt;/a&gt;!");
 define("CONTENT_ADMIN_CONVERSION_LAN_47", "Konvertering slutf&ouml;rd");
 define("CONTENT_ADMIN_CONVERSION_LAN_48", "Klicka h&auml;r f&ouml;r detaljerna");
 define("CONTENT_ADMIN_CONVERSION_LAN_49", "Konvertering av sidor");
@@ -380,7 +380,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "Skapa en standardupps&auml;ttning av 
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "Inneh&aring;llshanteraren: Konverteringsalternativ");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "Klicka p&aring; knappen f&ouml;r att g&aring; till sidan f&ouml;r att skapa ny inneh&aring;llskategori.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "V&auml;lj v&auml;rd");
-define("CONTENT_ADMIN_CONVERSION_LAN_58", "Uppgradering lyckades<br /><br /><b>Observera:<br />Du m&aring;ste rekonfigurera alternativen f&ouml;r varje huvudv&auml;rdt<br />och du m&aring;ste radera menyerna du skapat i din inneh&aring;ll/meny folder, och &aring;terskapa dem genom att uppdatera alternativen f&ouml;r de specifika huvudv&auml;rdarna du vill ha menyer till.</b>");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "Uppgradering lyckades&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Observera:&lt;br /&gt;Du m&aring;ste rekonfigurera alternativen f&ouml;r varje huvudv&auml;rdt&lt;br /&gt;och du m&aring;ste radera menyerna du skapat i din inneh&aring;ll/meny folder, och &aring;terskapa dem genom att uppdatera alternativen f&ouml;r de specifika huvudv&auml;rdarna du vill ha menyer till.&lt;/b&gt;");
 
 define("CONTENT_ADMIN_CONVERSION_LAN_59", "Konvertera tabell");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "Skapa standard");
@@ -450,7 +450,7 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "Avaktiverad");
 
 
 define("CONTENT_PRESET_LAN_0", "Fel: F&auml;ltnamn ej ifyllt");
-define("CONTENT_PRESET_LAN_1", "Fel: Alla f&auml;lt &auml;r inte korrekt ifyllda<br />Alla f&auml;lt m&aring;ste fyllas i");
+define("CONTENT_PRESET_LAN_1", "Fel: Alla f&auml;lt &auml;r inte korrekt ifyllda&lt;br /&gt;Alla f&auml;lt m&aring;ste fyllas i");
 define("CONTENT_PRESET_LAN_2", "");
 define("CONTENT_PRESET_LAN_3", "B&aring;de storlek och maxstorlek m&aring;ste vara numeriska v&auml;rden");
 define("CONTENT_PRESET_LAN_4", "B&aring;de kolumner och rader m&aring;ste vara numeriska v&auml;rden");
@@ -493,7 +493,7 @@ define("CONTENT_ADMIN_OPT_LAN_4", "Antal bilagor som kan laddas upp");
 define("CONTENT_ADMIN_OPT_LAN_5", "Antal egna datataggar tillg&auml;ngliga");
 define("CONTENT_ADMIN_OPT_LAN_6", "F&ouml;rinst&auml;llda datataggar");
 define("CONTENT_ADMIN_OPT_LAN_7", "Definiera f&ouml;rinst&auml;llda standard datataggar");
-//define("CONTENT_ADMIN_OPT_LAN_8", "H&auml;r kan du s&auml;tta ytterligare f&ouml;rinst&auml;llda datataggar. F&auml;lten du anger h&auml;r &auml;r nycklarna i nyckel=>v&auml;rde datataggarna. De kommer att ha ett inmatningselement f&ouml;r v&auml;rdet som skall s&auml;ttas i admins formul&auml;r f&ouml;r att skapa. Du kan v&auml;lja vilken typ av element du vill ha i taggen i rullgardinsmenyn. OBS: Dessa &auml;r inte en del av m&auml;nden egna datataggar du angett ovan, utan anv&auml;nds ut&ouml;ver dessa. Dessa f&ouml;rdefinierade taggar &auml;r mycket anv&auml;ndbara om du vill ha vissa taggar tillg&auml;ngliga som standard i alla nya objekt. T.ex. om du alltid vill ha ett f&auml;rt f&ouml;r 'Fotograf' s&aring; kan du skapa en s&aring;dan h&auml;r tagg som kommer att visas f&ouml;r varje nytt objekt i denna v&auml;rd.");
+//define("CONTENT_ADMIN_OPT_LAN_8", "H&auml;r kan du s&auml;tta ytterligare f&ouml;rinst&auml;llda datataggar. F&auml;lten du anger h&auml;r &auml;r nycklarna i nyckel=&gt;v&auml;rde datataggarna. De kommer att ha ett inmatningselement f&ouml;r v&auml;rdet som skall s&auml;ttas i admins formul&auml;r f&ouml;r att skapa. Du kan v&auml;lja vilken typ av element du vill ha i taggen i rullgardinsmenyn. OBS: Dessa &auml;r inte en del av m&auml;nden egna datataggar du angett ovan, utan anv&auml;nds ut&ouml;ver dessa. Dessa f&ouml;rdefinierade taggar &auml;r mycket anv&auml;ndbara om du vill ha vissa taggar tillg&auml;ngliga som standard i alla nya objekt. T.ex. om du alltid vill ha ett f&auml;rt f&ouml;r 'Fotograf' s&aring; kan du skapa en s&aring;dan h&auml;r tagg som kommer att visas f&ouml;r varje nytt objekt i denna v&auml;rd.");
 define("CONTENT_ADMIN_OPT_LAN_9", "Till&aring;t ins&auml;ndning av objekt?");
 define("CONTENT_ADMIN_OPT_LAN_10", "Vem kan s&auml;nda in objekt?");
 define("CONTENT_ADMIN_OPT_LAN_11", "Direktpostning");
@@ -539,13 +539,13 @@ define("CONTENT_ADMIN_OPT_LAN_50", "Hur m&aring;nga objekt skall visas");
 define("CONTENT_ADMIN_OPT_LAN_51", "V&auml;lj standardsortering");
 define("CONTENT_ADMIN_OPT_LAN_52", "Max bildstorlek");
 define("CONTENT_ADMIN_OPT_LAN_53", "Ange till vilken storlek uppladdade bilder skall f&ouml;rmiskas till");
-define("CONTENT_ADMIN_OPT_LAN_54", "Om h&ouml;jden eller bredden p&aring; den uppladdade bilden &auml;r st&ouml;rre &auml;n angivet v&auml;rde kommer kommer bilden att f&ouml;rminskas till detta v&auml;rde.<br />Popup bilder kommer ocks&aring; att visas med denna storlek.");
+define("CONTENT_ADMIN_OPT_LAN_54", "Om h&ouml;jden eller bredden p&aring; den uppladdade bilden &auml;r st&ouml;rre &auml;n angivet v&auml;rde kommer kommer bilden att f&ouml;rminskas till detta v&auml;rde.&lt;br /&gt;Popup bilder kommer ocks&aring; att visas med denna storlek.");
 define("CONTENT_ADMIN_OPT_LAN_55", "Tumnagel storlek");
 define("CONTENT_ADMIN_OPT_LAN_56", "Ange vilken storlek tumnagelbilderna till de uppladdade bilderna skall skapas med");
-define("CONTENT_ADMIN_OPT_LAN_57", "Om h&ouml;jden eller bredden p&aring; den uppladdade bilden &auml;r st&ouml;rre &auml;n angivet v&auml;rde kommer kommer bilden att f&ouml;rminskas till detta v&auml;rde.<br />Bilderna kommer ocks&aring; att visas med denna storlek p&aring; inneh&aring;llssidorna.");
+define("CONTENT_ADMIN_OPT_LAN_57", "Om h&ouml;jden eller bredden p&aring; den uppladdade bilden &auml;r st&ouml;rre &auml;n angivet v&auml;rde kommer kommer bilden att f&ouml;rminskas till detta v&auml;rde.&lt;br /&gt;Bilderna kommer ocks&aring; att visas med denna storlek p&aring; inneh&aring;llssidorna.");
 define("CONTENT_ADMIN_OPT_LAN_58", "Max ikonbredd");
 define("CONTENT_ADMIN_OPT_LAN_59", "Ange maximal bredd p&aring; ikon vid uppladdning");
-define("CONTENT_ADMIN_OPT_LAN_60", "Om den uppladdede ikonen &auml;r st&ouml;rre &auml;n angivet v&auml;rde kommer kommer den att f&ouml;rminskas till detta v&auml;rde.<br />Ikonen kommer ocks&aring; att visas med denna storlek.");
+define("CONTENT_ADMIN_OPT_LAN_60", "Om den uppladdede ikonen &auml;r st&ouml;rre &auml;n angivet v&auml;rde kommer kommer den att f&ouml;rminskas till detta v&auml;rde.&lt;br /&gt;Ikonen kommer ocks&aring; att visas med denna storlek.");
 define("CONTENT_ADMIN_OPT_LAN_61", "pxl");
 define("CONTENT_ADMIN_OPT_LAN_62", "V&auml;lj hanterare fr&aring;n denna anv&auml;ndarklass");
 define("CONTENT_ADMIN_OPT_LAN_63", "Anv&auml;ndarlistan i admins inneh&aring;llshanterare kommer enbart att inneh&aring;lla anv&auml;ndarna i den angivna klassen. Du m&aring;ste fortfaranda tilldela anv&auml;ndare till varje kategori! Denna klass kommer bara att begr&auml;nsa antalet anv&auml;ndare att v&auml;lja fr&aring;n.");
@@ -553,8 +553,8 @@ define("CONTENT_ADMIN_OPT_LAN_64", "Visa e-postadressen till f&ouml;rfattare som
 define("CONTENT_ADMIN_OPT_LAN_65", "Visa ett bokstavsindex");
 define("CONTENT_ADMIN_OPT_LAN_66", "Bokstavsindex &auml;r en lista med knappar med de f&ouml;rsta bokst&auml;verna fr&aring;n inneh&aring;llets rubrikf&auml;lt. Du kan begr&auml;nsa arkivlistan genom att klicka p&aring; en bokstav, d&aring; kommer bara inneh&aring;ll som b&ouml;rjar p&aring; den bokstaven att visas p&aring; sk&auml;rmen.");
 define("CONTENT_ADMIN_OPT_LAN_67", "Ange datumstil f&ouml;r visning av datum");
-define("CONTENT_ADMIN_OPT_LAN_68", "F&ouml;r mer information om datumformat, se <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funktionens sida p&aring; php.net</a>");
-define("CONTENT_ADMIN_OPT_LAN_69", "Visa ikoner f&ouml;r alla objekt<br />(Skriv ut/E-post/PDF ikoner)");
+define("CONTENT_ADMIN_OPT_LAN_68", "F&ouml;r mer information om datumformat, se &lt;a href='http://www.php.net/manual/en/function.strftime.php' rel='external'&gt;strftime funktionens sida p&aring; php.net&lt;/a&gt;");
+define("CONTENT_ADMIN_OPT_LAN_69", "Visa ikoner f&ouml;r alla objekt&lt;br /&gt;(Skriv ut/E-post/PDF ikoner)");
 define("CONTENT_ADMIN_OPT_LAN_70", "Till&aring;t betygss&auml;ttning av alla objekt");
 define("CONTENT_ADMIN_OPT_LAN_71", "Till&aring;t kommentarer till alla objekt");
 define("CONTENT_ADMIN_OPT_LAN_72", "");
@@ -591,7 +591,7 @@ define("CONTENT_ADMIN_OPT_LAN_102", "L&auml;nk: Topprankad");
 define("CONTENT_ADMIN_OPT_LAN_103", "L&auml;nk: Senaste objekt");
 define("CONTENT_ADMIN_OPT_LAN_104", "L&auml;nk: S&auml;nd in objekt");
 define("CONTENT_ADMIN_OPT_LAN_105", "Ikon: L&auml;nkar");
-define("CONTENT_ADMIN_OPT_LAN_106", "Ingen (), Punkt ( ), Mellanpunkt (·), Vit punkt (º), Pil (»), Inneh&aring;llsikon()");
+define("CONTENT_ADMIN_OPT_LAN_106", "Ingen (), Punkt ( ), Mellanpunkt (&#183;), Vit punkt (&#186;), Pil (&#187;), Inneh&aring;llsikon()");
 define("CONTENT_ADMIN_OPT_LAN_107", "Ingen");
 define("CONTENT_ADMIN_OPT_LAN_108", "Punkt");
 define("CONTENT_ADMIN_OPT_LAN_109", "Mellanpunkt");

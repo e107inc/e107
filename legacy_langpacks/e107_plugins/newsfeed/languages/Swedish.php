@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newsfeed/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -52,24 +52,24 @@ define("NFLAN_39", "Detaljer");
 define("NFLAN_40", "Nyhetsfl&ouml;de raderat");
 define("NFLAN_41", "Inga nyhetsfl&ouml;den definierade &auml;nnu");
 
-define("NFLAN_42", "<b>»</b> <u>Fl&ouml;desnamn:</u>
+define("NFLAN_42", "&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Fl&ouml;desnamn:&lt;/u&gt;
 	Namn f&ouml;r att identifiera fl&ouml;det, kan vara vad du vill.
-	<br /><br />
-	<b>»</b> <u>URL till rss fl&ouml;de:</u>
+	&lt;br /&gt;&lt;br /&gt;
+	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;URL till rss fl&ouml;de:&lt;/u&gt;
 	Adressen till rss fl&ouml;det
-	<br /><br />
-	<b>»</b> <u>S&ouml;kv&auml;g till bild:</u>
+	&lt;br /&gt;&lt;br /&gt;
+	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;S&ouml;kv&auml;g till bild:&lt;/u&gt;
 	Om fl&ouml;det har en bild definierat i sig, ange 'default' f&ouml;r att anv&auml;nda den. F&ouml;r att anv&auml;nda en egen bild, ange hela s&ouml;kv&auml;gen till den. L&auml;mna tomt f&ouml;r att inte visa n&aring;gon bild alls.
-	<br /><br />
-	<b>»</b> <u>Beskrivning:</u>
+	&lt;br /&gt;&lt;br /&gt;
+	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Beskrivning:&lt;/u&gt;
 	Ange en kort beskrivning av fl&ouml;det, eller 'default' f&ouml;r att anv&auml;nda beskrivningen definierad i fl&ouml;det (om det finns n&aring;gon).
-	<br /><br />
-	<b>»</b> <u>Uppdateringsintervall i sekunder:</u>
+	&lt;br /&gt;&lt;br /&gt;
+	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Uppdateringsintervall i sekunder:&lt;/u&gt;
 	Antal sekunder mellan uppdateringarna av fl&ouml;det, t.ex 1800: 30 minuter, 3600: en timma.
-	<br /><br />
-	<b>»</b> <u>Aktivering:</u>
-	Var du vill att fl&ouml;det skall visas, f&ouml;r att se fl&ouml;desmenyn m&aring;ste du aktivera nyhetsfl&ouml;desmenyn p&aring; <a href='".e_ADMIN."menus.php'>menysidan</a>.
-	<br /><br />F&ouml;r en bra exempellista &ouml;ver diverse fl&ouml;den, se <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> eller <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
+	&lt;br /&gt;&lt;br /&gt;
+	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Aktivering:&lt;/u&gt;
+	Var du vill att fl&ouml;det skall visas, f&ouml;r att se fl&ouml;desmenyn m&aring;ste du aktivera nyhetsfl&ouml;desmenyn p&aring; &lt;a href='".e_ADMIN."menus.php'&gt;menysidan&lt;/a&gt;.
+	&lt;br /&gt;&lt;br /&gt;F&ouml;r en bra exempellista &ouml;ver diverse fl&ouml;den, se &lt;a href='http://www.syndic8.com/' rel='external'&gt;syndic8.com&lt;/a&gt; eller &lt;a href='http://feedfinder.feedster.com/index.php' rel='external'&gt;feedster.com&lt;/a&gt;");
 define("NFLAN_43", "Nyhetsfl&ouml;den hj&auml;lp");
 define("NFLAN_44", "klicka f&ouml;r att se");
 

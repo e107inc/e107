@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_newforumposts_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -20,5 +20,6 @@ define("NFP_7", "Postfix f&ouml;r f&ouml;r l&aring;nga inl&auml;gg?");
 define("NFP_8", "Visa ursprungliga &auml;mnen i meny?");
 define("NFP_9", "Uppdatera menyinst&auml;llningar");
 define("NFP_10", "Menykonfiguration f&ouml;r nya foruminl&auml;gg");
+define("NFP_11", "Postad av");
 
 ?>

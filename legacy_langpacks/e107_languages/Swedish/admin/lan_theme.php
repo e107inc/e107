@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("TPVLAN_1", "Du tittar p&aring; en f&ouml;rhandsgranskning av <b>'".PREVIEWTHEMENAME."'</b> temat. Det har inte satts som huvudtema f&ouml;r sajten &auml;nnu, det &auml;r bara aktiverat f&ouml;r f&ouml;rhandsgranskning av hur temat ser ut.<br />F&ouml;r att s&auml;tta detta som din sajts tema, <a href='".e_ADMIN."theme.php'>g&aring; tillbaka till din temahanterare</a> och v&auml;lj 'S&auml;tt som sajttema'.<br />F&ouml;r att f&ouml;rhandsgranska fler teman <a href='".e_ADMIN."theme.php'>klicka h&auml;r</a>");
+define("TPVLAN_1", "Du tittar p&aring; en f&ouml;rhandsgranskning av &lt;b&gt;'".PREVIEWTHEMENAME."'&lt;/b&gt; temat. Det har inte satts som huvudtema f&ouml;r sajten &auml;nnu, det &auml;r bara aktiverat f&ouml;r f&ouml;rhandsgranskning av hur temat ser ut.&lt;br /&gt;F&ouml;r att s&auml;tta detta som din sajts tema, &lt;a href='".e_ADMIN."theme.php'&gt;g&aring; tillbaka till din temahanterare&lt;/a&gt; och v&auml;lj 'S&auml;tt som sajttema'.&lt;br /&gt;F&ouml;r att f&ouml;rhandsgranska fler teman &lt;a href='".e_ADMIN."theme.php'&gt;klicka h&auml;r&lt;/a&gt;");
 define("TPVLAN_2", "Tema f&ouml;rhandsgranskning");
 define("TPVLAN_3", "Sajttema satt till");
 define("TPVLAN_4", "F&ouml;rfattare");
@@ -36,7 +36,7 @@ define("TPVLAN_21", "Detta &auml;r det nuvarande sajttemat");
 define("TPVLAN_22", "datta tema har flera stilmallar");
 define("TPVLAN_23", "standard stilmall");
 define("TPVLAN_24", "ingen information");
-define("TPVLAN_25", "F&ouml;r att v&auml;lja stilmall, g&aring; till <a href='".e_ADMIN."prefs.php'>preferenser</a> och klicka p&aring; 'Tema'.");
+define("TPVLAN_25", "F&ouml;r att v&auml;lja stilmall, g&aring; till &lt;a href='".e_ADMIN."prefs.php'&gt;preferenser&lt;/a&gt; och klicka p&aring; 'Tema'.");
 
 define("TPVLAN_26", "Temahanterare");
 define("TPVLAN_27", "V&auml;lj stilmall att anv&auml;nda");

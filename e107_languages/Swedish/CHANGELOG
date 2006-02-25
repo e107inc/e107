@@ -1,6 +1,17 @@
++ ----------------------------------------------------------------------------+
+|     e107 website system - Swedish translation
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/CHANGELOG,v $
+|     $Revision: 1.10 $
+|     $Author: mrpiercer $
++----------------------------------------------------------------------------+
+
 Changelog for the Swedish Language pack:
 
-Tue Jan 24 2005 - mrpiercer (at) users.sourceforge.net
+Sat Feb 25 2006 - mrpiercer (at) users.sourceforge.net
+- Uppdated to e107 v0.7.2 RELEASE. Both UTF-8 och
+ ISO8859-1 has the same content and release status.
+Tue Jan 24 2006 - mrpiercer (at) users.sourceforge.net
 - Updated to todays CVS code, which should be the e107
   v0.7.1 RELEASE.
 Sat Sep 17 2005 - mrpiercer (at) users.sourceforge.net

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_login.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:52 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,6 @@ define("LAN_LOGIN_15", "Anv&auml;ndare f&ouml;rs&ouml;kte logga in med felaktigt
 define("LAN_LOGIN_16", "Anv&auml;ndare f&ouml;rs&ouml;kte logga in med anv&auml;ndarnamn/l&ouml;senordskombination som redan finns");
 define("LAN_LOGIN_17", "Anv&auml;ndarl&ouml;senord (hashed)");
 define("LAN_LOGIN_18", "Auto-avst&auml;ngd: Fler &auml;n 10 misslyckade inloggningsf&ouml;rs&ouml;k");
-define("LAN_LOGIN_19", "> 10 misslyckade inloggningsf&ouml;rs&ouml;k");
+define("LAN_LOGIN_19", "&gt; 10 misslyckade inloggningsf&ouml;rs&ouml;k");
 
 ?>

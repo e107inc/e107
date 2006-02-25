@@ -5,8 +5,8 @@
 |     Swedish language file.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_themes/jayya/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */

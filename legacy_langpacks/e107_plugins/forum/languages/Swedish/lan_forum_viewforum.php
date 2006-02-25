@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-25 13:24:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -28,12 +28,12 @@ define("LAN_180", "S&ouml;k");
 define("LAN_199", "Ol&auml;st post finns");
 define("LAN_202", "Klistrad");
 define("LAN_203", "Klistrad/St&auml;ngd");
-define("LAN_204", "Du <b>kan</b> starta nya tr&aring;dar");
-define("LAN_205", "Du <b>kan inte</b> starta nya tr&aring;dar");
-define("LAN_206", "Du <b>kan</b> posta svar");
-define("LAN_207", "Du <b>kan inte</b> posta svar");
-define("LAN_208", "Du <b>kan</b> redigera dina inl&auml;gg");
-define("LAN_209", "Du <b>kan inte</b> redigera dina inl&auml;gg");
+define("LAN_204", "Du &lt;b&gt;kan&lt;/b&gt; starta nya tr&aring;dar");
+define("LAN_205", "Du &lt;b&gt;kan inte&lt;/b&gt; starta nya tr&aring;dar");
+define("LAN_206", "Du &lt;b&gt;kan&lt;/b&gt; posta svar");
+define("LAN_207", "Du &lt;b&gt;kan inte&lt;/b&gt; posta svar");
+define("LAN_208", "Du &lt;b&gt;kan&lt;/b&gt; redigera dina inl&auml;gg");
+define("LAN_209", "Du &lt;b&gt;kan inte&lt;/b&gt; redigera dina inl&auml;gg");
 define("LAN_316", "G&aring; till sida: ");
 define("LAN_317", "Inga");
 define("LAN_321", "Moderatorer: ");
