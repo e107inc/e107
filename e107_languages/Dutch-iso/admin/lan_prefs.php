@@ -128,7 +128,7 @@ define("PRFLAN_140", "Te tonen tekst na het insturen van het aanmeldingsformulie
 define("PRFLAN_141", "Gebruik van XMP User Profiles bij registratie toestaan");
 define("PRFLAN_142", "Alleen Flood");
 define("PRFLAN_143", "Alleen mislukte aanlogpogingen");
-define("PRFLAN_144", "Flood & mislukte aanlogpogingen");
+define("PRFLAN_144", "Flood &amp; mislukte aanlogpogingen");
 define("PRFLAN_145", "Links in nieuw venster");
 define("PRFLAN_146", "Deze optie aankruisen om alle links in een nieuw venster te openen(<i>geldt voor de hele site</i>). ");
 define("PRFLAN_147", "Ontwikkelmode");
