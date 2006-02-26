@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2006-02-24 18:36:35 $
+|     $Revision: 1.80 $
+|     $Date: 2006-02-26 14:50:57 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -196,13 +196,13 @@ if (isset($_POST['register']))
 	if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
 	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
 
-	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=") || strstr($_POST['name'], "\\") || strstr($_POST['name'], "'") || strstr($_POST['name'], '"')) {
+	if (strstr($_POST['loginname'], "#") || strstr($_POST['loginname'], "=") || strstr($_POST['loginname'], "\\") || strstr($_POST['loginname'], "'") || strstr($_POST['loginname'], '"')) {
 		$error_message .= LAN_409."\\n";
 		$error = TRUE;
 	}
 
-	$_POST['name'] = trim(preg_replace("/&nbsp;|\#|\=/", "", $_POST['name']));
-	if ($_POST['name'] == "Anonymous") {
+	$_POST['loginname'] = trim(preg_replace("/&nbsp;|\#|\=/", "", $_POST['loginname']));
+	if ($_POST['loginname'] == "Anonymous") {
 		$error_message .= LAN_103."\\n";
 		$error = TRUE;
 		$name = "";
@@ -212,7 +212,7 @@ if (isset($_POST['register']))
 	{
 		$tmp = explode(",", $pref['signup_disallow_text']);
 		foreach($tmp as $disallow){
-			if(strstr($_POST['name'], $disallow)){
+			if( strstr($_POST['name'], $disallow) || strstr($_POST['loginname'], $disallow) ){
 				$error_message .= LAN_103."\\n";
 				$error = TRUE;
 				$name = "";
@@ -220,17 +220,19 @@ if (isset($_POST['register']))
 		}
 	}
 
-	if (strlen($_POST['name']) > 30) {
+// Check if form maxlength has been bypassed
+	if ( strlen($_POST['name']) > 30 || strlen($_POST['loginname']) > 30) {
 		exit;
 	}
-// username exists.
+
+// Display Name exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
 		$error_message .= LAN_411."\\n";
 		$error = TRUE;
 		$name = "";
 	}
-// Login name exists
+// Login Name exists
 	if ($sql->db_Select("user", "*", "user_loginname='".$tp -> toDB($_POST['loginname'])."' "))
 	{
 		$error_message .= LAN_104."\\n";
@@ -274,7 +276,14 @@ if (isset($_POST['register']))
 		$password2 = "";
 	}
 
-	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "")
+// Use LoginName for DisplayName if restricted
+	if (!check_class($pref['displayname_class']))
+	{
+  		$_POST['name'] = $_POST['loginname'];
+	}
+
+// Check for emtpy fields
+	if ($_POST['name'] == "" || $_POST['loginname'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "")
 	{
 		$error_message .= LAN_185."\\n";
 		$error = TRUE;
@@ -410,14 +419,8 @@ if (isset($_POST['register']))
 
 				require_once(e_HANDLER."mail.php");
 				$eml = render_email();
-				$message = $eml['message'];
-				$subj = $eml['subject'];
-				$inline = $eml['inline-images'];
-				$Cc = $eml['cc'];
-				$Bcc = $eml['bcc'];
-				$attachments = $eml['attachments'];
 
-				if(!sendemail($_POST['email'], $subj, $message, $_POST['name'], "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+				if(!sendemail($_POST['email'], $eml['subject'], $eml['message'], "", "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], "", "", $eml['inline-images']))
 				{
 					$error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
 				}
@@ -620,15 +623,20 @@ if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
 
 $text .="
 <div id='default'>
-<table class='fborder' style='width:99%'>
+<table class='fborder' style='width:99%'>";
 
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
-<td class='forumheader3' style='width:70%'>
-".$rs->form_text("name", 30, ($_POST['name'] ? $_POST['name'] : $name), 30)."
-</td>
-</tr>
+if (check_class($pref['displayname_class']))
+{
+	$text .= "
+		<tr>
+		<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
+		<td class='forumheader3' style='width:70%'>
+		".$rs->form_text("name", 30, ($_POST['name'] ? $_POST['name'] : $name), 30)."
+		</td>
+		</tr>";
+}
 
+$text .= "
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
 <td class='forumheader3' style='width:70%'>
