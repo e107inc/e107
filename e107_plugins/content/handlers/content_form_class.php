@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.102 $
-|		$Date: 2006-02-27 16:24:08 $
+|		$Revision: 1.103 $
+|		$Date: 2006-02-27 16:27:42 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1227,7 +1227,7 @@ class contentform{
 							".$row['content_heading']." ".($row['content_subheading'] ? "[".$row['content_subheading']."]" : "")."</td>
 						<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap; vertical-align:top;'>
 							<a href='".e_SELF."?content.edit.".$cid."'>".CONTENT_ICON_EDIT."</a> 
-							<input type='image' title='delete' name='delete[content_{$cid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
+							<input type='image' title='".CONTENT_ICON_LAN_1."' name='delete[content_{$cid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
 						</td>
 						</tr>";
 					}
@@ -1296,7 +1296,7 @@ class contentform{
 					</td>
 					<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 						<a href='".e_SELF."?content.sa.".$delid."'>".CONTENT_ICON_EDIT."</a>
-						<input type='image' title='delete' name='delete[submitted_{$delid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$delid." : ".$delete_heading."]")."')\"/>
+						<input type='image' title='".CONTENT_ICON_LAN_1."' name='delete[submitted_{$delid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$delid." : ".$delete_heading."]")."')\"/>
 					</td>
 					</tr>";
 				}
@@ -1358,7 +1358,7 @@ class contentform{
 						$pcmusers = "";
 						if($mode == "category"){
 							$options = "<a href='".e_SELF."?cat.edit.".$catid."'>".CONTENT_ICON_EDIT."</a>
-							<input type='image' title='delete' name='delete[cat_{$catid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$catid." : ".$delete_heading."]\\n\\n")."')\"/>";
+							<input type='image' title='".CONTENT_ICON_LAN_1."' name='delete[cat_{$catid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$catid." : ".$delete_heading."]\\n\\n")."')\"/>";
 						
 						}elseif($mode == "manager"){
 							$options = "<a href='".e_SELF."?manager.".intval($catid)."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>";
