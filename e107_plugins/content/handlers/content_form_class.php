@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.101 $
-|		$Date: 2006-02-13 10:13:22 $
+|		$Revision: 1.102 $
+|		$Date: 2006-02-27 16:24:08 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2959,8 +2959,8 @@ class contentform{
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_91;
 			$TOPIC_FIELD = "
 			".$rs -> form_select_open("content_cat_rendertype_{$id}")."
-			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_41, ($content_pref["content_cat_rendertype_{$id}"] == "1" ? "1" : "0"), "1")."
-			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_92, ($content_pref["content_cat_rendertype_{$id}"] == "2" ? "1" : "0"), "2")."
+			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_92, ($content_pref["content_cat_rendertype_{$id}"] == "1" ? "1" : "0"), "1")."
+			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_41, ($content_pref["content_cat_rendertype_{$id}"] == "2" ? "1" : "0"), "2")."
 			".$rs -> form_select_close()."
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
