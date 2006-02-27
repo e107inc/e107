@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.45 $
-|   $Date: 2006-02-18 14:16:29 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.46 $
+|   $Date: 2006-02-27 12:30:27 $
+|   $Author: asperon $
 +---------------------------------------------------------------+
 */
 
@@ -209,7 +209,11 @@ if (!function_exists('show_admin_menu')) {
 				}
 				$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 				$replace[1] = $e107_vars[$act]['link'];
-				$replace[2] = $js ? "onclick=\"showhideit('".$act."');\"" : "onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+				if ($e107_vars[$act]['include']!='') {
+					$replace[2] = $e107_vars[$act]['include'];
+				} else {
+					$replace[2] = $js ? "onclick=\"showhideit('".$act."');\"" : "onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+				}
 				$replace[3] = $title;
 				$replace[4] = $id_title;
 				$text .= preg_replace($search, $replace, $BUTTON_TEMPLATE);
