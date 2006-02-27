@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-02-17 14:35:30 $
+|     $Revision: 1.65 $
+|     $Date: 2006-02-27 12:32:24 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -135,7 +135,7 @@ else
 	if($pref['cb_layer'] == 2)
 	{
 
-		$oc = "onclick=\"javascript:sendInfo('".$pref['siteurl'].$PLUGINS_DIRECTORY."chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
+		$oc = "onclick=\"javascript:sendInfo('".SITEURL.$PLUGINS_DIRECTORY."chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
 	}
 	else
 	{

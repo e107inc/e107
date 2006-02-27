@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-02-24 02:38:55 $
+|     $Revision: 1.49 $
+|     $Date: 2006-02-27 12:32:24 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -167,6 +167,6 @@ define("PRFLAN_155", "Display Name available to");
 define("PRFLAN_156", "Reset ALL Display Names");
 define("PRFLAN_157", "All Display Names have been reset to the Login Name");
 define("PRFLAN_158", "Display Name maximum length");
-
+define("PRFLAN_159", "viewing this page with");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2006-02-24 17:14:22 $
+|     $Revision: 1.83 $
+|     $Date: 2006-02-27 12:32:24 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -47,8 +47,12 @@ if ($_POST['submit_resetdisplaynames'])
 if (isset($_POST['updateprefs']))
 {
 	unset($_POST['updateprefs']);
+
 	$_POST['cookie_name'] = str_replace(array(" ","."), "_", $_POST['cookie_name']);
 	$_POST['cookie_name'] = preg_replace("#[^a-zA-Z0-9_]#", "", $_POST['cookie_name']);
+
+	$_POST['siteurl']     = trim($_POST['siteurl']) ? trim($_POST['siteurl']) : SITEURL;
+	$_POST['siteurl']     = substr($_POST['siteurl'], -1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
 
 	foreach($_POST as $key => $value)
 	{
@@ -140,7 +144,8 @@ $text = "<script type=\"text/javascript\">
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_3."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='siteurl' size='50' value='".SITEURL."' maxlength='150' />
+	<input class='tbox' type='text' name='siteurl' size='50' value='".$pref['siteurl']."' maxlength='150' /><br />
+	<br />( ".PRFLAN_159.": <b>".SITEURL."</b> )
 	</td>
 	</tr>
 
