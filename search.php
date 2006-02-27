@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-01-26 21:52:38 $
+|     $Revision: 1.50 $
+|     $Date: 2006-02-27 12:17:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -54,31 +54,31 @@ function search_info($id, $type, $plug_require, $info='') {
 
 //core search routines
 $search_id = 0;
-if ($search_info[$search_id] = search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php'))) {
+if ($search_info[$search_id] = search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php', 'id' => 'news'))) {
 	$search_id++;
 } else {
 	unset($search_info[$search_id]);
 }
 
-if ($search_info[$search_id] = search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php'))) {
+if ($search_info[$search_id] = search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
 	$search_id++;
 } else {
 	unset($search_info[$search_id]);
 }
 
-if ($search_info[$search_id] = search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php'))) {
+if ($search_info[$search_id] = search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
 	$search_id++;
 } else {
 	unset($search_info[$search_id]);
 }
 
-if ($search_info[$search_id] = search_info('downloads', 'core', false, array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php', 'advanced' => e_HANDLER.'search/advanced_download.php'))) {
+if ($search_info[$search_id] = search_info('downloads', 'core', false, array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php', 'advanced' => e_HANDLER.'search/advanced_download.php', 'id' => 'download'))) {
 	$search_id++;
 } else {
 	unset($search_info[$search_id]);
 }
 
-if ($search_info[$search_id] = search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php'))) {
+if ($search_info[$search_id] = search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
 	$search_id++;
 } else {
 	unset($search_info[$search_id]);
