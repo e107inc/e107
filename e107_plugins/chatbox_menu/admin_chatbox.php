@@ -11,21 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-12-21 21:00:17 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2006-02-27 00:33:37 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("C")) {
-	header("location:".e_BASE."index.php");
-	 exit ;
-}
-if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php")) {
-	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php");
-} else {
-	include_once(e_PLUGIN."chatbox_menu/languages/English/English_config.php");
-}
+
+if(!getperms("P")) { header("location:".e_BASE."index.php"); exit; }
+
+@include_once e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php";
+@include_once e_PLUGIN."chatbox_menu/languages/English/English_config.php";
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
