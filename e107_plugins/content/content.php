@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.90 $
-|		$Date: 2006-02-22 12:17:18 $
+|		$Revision: 1.91 $
+|		$Date: 2006-02-27 21:04:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ function core_head(){
 	global $qs, $sql, $tp, $pref, $plugintable, $eArrayStorage;
 
 	if($qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) ){
-		if($sql -> db_Select($plugintable, "content_meta", "content_id='".$qs[1]."'")){
+		if($sql -> db_Select($plugintable, "content_meta", "content_id='".intval($qs[1])."'")){
 			list($row['content_meta']) = $sql -> db_Fetch();
 
 			$exmeta = $row['content_meta'];
@@ -1153,7 +1153,7 @@ function show_content_item(){
 		show_content_search_menu("item", $mainparent);		//show navigator/search/order menu
 		$array				= $aa -> getCategoryTree("", $mainparent, TRUE);
 		$validparent		= implode(",", array_keys($array));
-		$qry				= "content_id='".$qs[1]."' AND content_refer !='sa' AND  content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
+		$qry				= "content_id='".intval($qs[1])."' AND content_refer !='sa' AND  content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
 
 		if(!$resultitem = $sql -> db_Select($plugintable, "*", $qry)){
 			header("location:".e_SELF."?recent.".$mainparent); exit;
