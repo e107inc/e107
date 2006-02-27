@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-02-22 02:51:15 $
+|     $Revision: 1.50 $
+|     $Date: 2006-02-27 10:41:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -427,7 +427,7 @@ class e107forum
 					$threadList[$i++] = $row['thread_id'];
 				}
 				$id = array_search($thread_id, $threadList);
-				if ($id)
+				if ($id !== FALSE)
 				{
 					if ($id != 99)
 					{
