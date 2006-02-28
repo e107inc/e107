@@ -11,21 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-02-15 15:46:07 $
+|     $Revision: 1.26 $
+|     $Date: 2006-02-28 22:23:26 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
-if (!getperms("5")){
-	header("location:".e_BASE."index.php");
-	exit;
-}
+
+if (!getperms("5")) { header("location:".e_BASE."index.php"); exit; }
 
 $e_sub_cat = 'custom';
 $e_wysiwyg = "data";
-
 $page = new page;
 
 require_once("auth.php");
@@ -33,15 +30,13 @@ require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."userclass_class.php");
 $custpage_lang = ($sql->mySQLlanguage) ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
-
 if (e_QUERY)
 {
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
+	$tmp        = explode(".", e_QUERY);
+	$action     = $tmp[0];
 	$sub_action = $tmp[1];
-	$id = $tmp[2];
-	$from = ($tmp[3] ? $tmp[3] : 0);
-	unset($tmp);
+	$id         = $tmp[2];
+	$from       = ($tmp[3] ? $tmp[3] : 0);
 }
 
 if(isset($_POST['submitPage']))
@@ -58,7 +53,6 @@ if(isset($_POST['updateMenu']))
 {
 	$page -> submitPage($_POST['pe_id'], TRUE);
 }
-
 
 if(isset($_POST['updatePage']))
 {
@@ -96,7 +90,6 @@ require_once(e_ADMIN."footer.php");
 
 class page
 {
-
 	var $message;
 
 	function showExistingPages()
@@ -119,8 +112,7 @@ class page
 			<td style='width:60%' class='fcaption'>".CUSLAN_1."</td>
 			<td style='width:15%; text-align: center;' class='fcaption'>".CUSLAN_2."</td>
 			<td style='width:20%; text-align: center;' class='fcaption'>".CUSLAN_3."</td>
-			</tr>
-			";
+			</tr>";
 
 			foreach($pages as $pge)
 			{
@@ -133,21 +125,18 @@ class page
 				<a href='".e_SELF."?".($pge[page_theme] ? "createm": "create").".edit.{$pge[page_id]}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='delete[{$pge[page_id]}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $pge[page_id] ]')\"/>
 				</td>
-				</tr>
-				";
+				</tr>";
 			}
 		
 			$text .= "
 			</table>
-			</form>
-			";
+			</form>";
 		}
 
-		$text .= "</div>
-		";
+		$text .= "
+		</div>";
 
 		$ns -> tablerender(CUSLAN_5, $text);
-
 	}
 
 	function createmPage()
@@ -165,37 +154,39 @@ class page
 		{
 			if ($sql->db_Select("page", "*", "page_id='$id' "))
 			{
-				$row = $sql->db_Fetch();
-				$page_title = $tp -> toFORM($row[page_title]);
-				$data = $tp -> toFORM($row[page_text]);
-				$page_display_authordate_flag = ($row[page_author]);
-				$edit = TRUE;
+				$row                          = $sql->db_Fetch();
+				$page_class                   = $row['page_class'];
+				$page_password                = $row['page_password'];
+				$page_title                   = $tp -> toFORM($row['page_title']);
+				$page_rating_flag             = $row['page_rating_flag'];
+				$page_comment_flag            = $row['page_comment_flag'];
+				$page_display_authordate_flag = $row['page_author'];
+				$data                         = $tp -> toFORM($row['page_text']);
+				$edit                         = TRUE;
 			}
 		}
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='dataform'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		";
+		<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 		if($mode)
 		{
 			$text .= "<tr>
 			<td style='width:30%' class='forumheader3'>".CUSLAN_7."</td>
-			<td style='width:70%' class='forumheader3'>
-			";
+			<td style='width:70%' class='forumheader3'>";
+			
 			if($edit)
 			{
 				$text .= $page_theme;
 			}
 			else
 			{
-				$text .= "<input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' />
-				";
+				$text .= "<input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' />";
 			}
+			
 			$text .= "</td>
-			</tr>
-			";
+			</tr>";
 		}
 
 		$text .= "<tr>
@@ -208,24 +199,20 @@ class page
 		
 		<tr>
 		<td style='width:30%' class='forumheader3'>".CUSLAN_9."</td>
-		<td style='width:70%' class='forumheader3'>
-		";
+		<td style='width:70%' class='forumheader3'>";
 
 		$insertjs = (!$pref['wysiwyg'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
 		"rows='25' style='width:100%' ";
 		$data = $tp->toForm($data);
-		$text .= "<textarea class='tbox' id='data' name='data' cols='80'  style='width:95%' $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>
-		";
+		$text .= "<textarea class='tbox' id='data' name='data' cols='80'  style='width:95%' $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 
 		if (!$pref['wysiwyg']) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
-			<br />". display_help("helpb");
+			<br />".display_help("helpb");
 		}
 
-		$text .= "
-		</td>
-		</tr>
-		";
+		$text .= "</td>
+		</tr>";
 	
 		if(!$mode)
 		{
@@ -233,7 +220,7 @@ class page
 			<td style='width:30%' class='forumheader3'>".CUSLAN_10."</td>
 			<td style='width:70%;' class='forumheader3'>
 			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-			<input type='radio' name='page_rating_flag' value='0'".(!$page_rating_flag ? " checked='checked'" : "")." /> ".CUSLAN_39."
+			<input type='radio' name='page_rating_flag' value='0'".($page_rating_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
@@ -241,7 +228,7 @@ class page
 			<td style='width:30%' class='forumheader3'>".CUSLAN_13."</td>
 			<td style='width:70%;' class='forumheader3'>
 			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_39."
+			<input type='radio' name='page_comment_flag' value='0'".($page_comment_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
@@ -249,7 +236,7 @@ class page
 			<td style='width:30%' class='forumheader3'>".CUSLAN_41."</td>
 			<td style='width:70%;' class='forumheader3'>
 			<input type='radio' name='page_display_authordate_flag' value='1'".($page_display_authordate_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-			<input type='radio' name='page_display_authordate_flag' value='0'".(!$page_display_authordate_flag ? " checked='checked'" : "")." /> ".CUSLAN_39."
+			<input type='radio' name='page_display_authordate_flag' value='0'".($page_display_authordate_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
@@ -266,27 +253,22 @@ class page
 			<tr>
 			<td style='width:30%' class='forumheader3'>".CUSLAN_18."</td>
 			<td style='width:70%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
-			</tr>
-			";
+			</tr>";
 		}
 
 		$text .= "<tr>
 		<td colspan='2' style='text-align:center' class='forumheader'>". 
 
 		(!$mode ? 
+		($edit  ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") : 
+		($edit  ? "<input class='button' type='submit' name='updateMenu' value='".CUSLAN_21."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitMenu' value='".CUSLAN_22."' />"))
 
-		($edit ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") : 
-		
-		($edit ? "<input class='button' type='submit' name='updateMenu' value='".CUSLAN_21."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitMenu' value='".CUSLAN_22."' />"))
-		
-		."
-		</td>
+		."</td>
 		</tr>
 
 		</table>
 		</form>
-		</div>
-		";
+		</div>";
 
 		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
 		$ns -> tablerender($caption, $text);
@@ -341,9 +323,7 @@ class page
 	{
 		global $ns, $pref;
 
-		if(!isset($pref['listPages'])) $pref['listPages'] = TRUE;
 		if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
-	
 
 		$text = "<div style='text-align: center; margin-left:auto; margin-right: auto;'>
 		<form method='post' action='".e_SELF."'>
@@ -353,7 +333,7 @@ class page
 		<td style='width:50%' class='forumheader3'>".CUSLAN_29."</td>
 		<td style='width:50%; text-align: right;' class='forumheader3'>
 		<input type='radio' name='listPages' value='1'".($pref['listPages'] ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-		<input type='radio' name='listPages' value='0'".(!$pref['listPages'] ? " checked='checked'" : "")." /> ".CUSLAN_39."
+		<input type='radio' name='listPages' value='0'".($pref['listPages'] ? "" : " checked='checked'")." /> ".CUSLAN_39."
 		</td>
 		</tr>
 

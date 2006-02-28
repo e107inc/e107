@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-02-15 10:52:13 $
+|     $Revision: 1.54 $
+|     $Date: 2006-02-28 22:23:26 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -42,21 +42,29 @@ class comment {
 	 * @param unknown_type $rating
 	 * @return unknown
 	 */
-	function form_comment($action, $table, $id, $subject, $content_type, $return=FALSE, $rating=FALSE) {
+	function form_comment($action, $table, $id, $subject, $content_type, $return=FALSE, $rating=FALSE, $tablerender=TRUE)
+	{
 		//rating	: boolean, to show rating system in comment
 		global $pref, $sql, $tp;
 		require_once(e_HANDLER."ren_help.php");
-		if (ANON == TRUE || USER == TRUE) {
+		if (ANON == TRUE || USER == TRUE)
+		{
 			$itemid = $id;
 			$ns = new e107table;
-			if ($action == "reply" && substr($subject, 0, 4) != "Re: ") {
+			if ($action == "reply" && substr($subject, 0, 4) != "Re: ")
+			{
 				$subject = COMLAN_5.' '.$subject;
 			}
+			
 			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:100%'>";
-			if ($pref['nested_comments']) {
+			
+			if ($pref['nested_comments'])
+			{
 				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='66' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
 				$text2 = "";
-			} else {
+			}
+			else
+			{
 				$text2 = "<input type='hidden' name='subject' value='".$tp -> toForm($subject)."'  />\n";
 			}
 
@@ -65,6 +73,7 @@ class comment {
 				$eaction = "edit";
 				$tmp = explode(".", e_QUERY);
 				$count = 0;
+
 				foreach($tmp as $t)
 				{
 					if($t == "edit")
@@ -89,6 +98,7 @@ class comment {
 					require_once(FOOTERF);
 					exit;
 				}
+				
 				$caption = LAN_318;
 				$comval = $tp -> toFORM($ecom['comment_comment']);
 				$comval = preg_replace("#\[ ".LAN_319.".*\]#si", "", $comval);
@@ -101,7 +111,8 @@ class comment {
 
 			//add the rating select box/result ?
 			$rate = "";
-			if($rating == TRUE && !(ANON == TRUE && USER == FALSE) ){
+			if($rating == TRUE && !(ANON == TRUE && USER == FALSE) )
+			{
 				global $rater;
 				require_once(e_HANDLER."rate_class.php");
 				if(!is_object($rater)){ $rater = new rater; }
@@ -110,21 +121,30 @@ class comment {
 			}
 			//end rating area
 
-			if (ANON == TRUE && USER == FALSE) {
+			if (ANON == TRUE && USER == FALSE)
+			{
 				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= $rate."<tr> \n
 			<td style='width:20%; vertical-align:top;'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
 			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
+			
+			if($tablerender)
+			{
+				$text = $ns->tablerender($caption, $text, '', TRUE);
+			}
+			
 			if($return)
 			{
-				return $ns->tablerender($caption, $text, '', TRUE);
+				return $text;
 			}
 			else
 			{
-				$ns->tablerender($caption, $text);
+				echo $text;
 			}
-			} else {
+		}
+		else
+		{
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
@@ -421,17 +441,16 @@ class comment {
 	 * @param unknown_type $subject
 	 * @param unknown_type $rate
 	 */
-	function compose_comment($table, $action, $id, $width, $subject, $rate = false,$return = false){
-			//compose comment	: single call function will render the existing comments and show the form_comment
-	//rate				: boolean, to show/hide rating system in comment, default FALSE
+	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE, $return=FALSE, $tablerender=TRUE){
+		//compose comment	: single call function will render the existing comments and show the form_comment
+		//rate				: boolean, to show/hide rating system in comment, default FALSE
 		global $pref, $sql, $ns, $e107cache, $tp, $totcc;
 
 		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
 
 		$type = $this -> getCommentType($table);
 
-		$text = "";
-		$query = ($pref['nested_comments'] ?
+		$query = $pref['nested_comments'] ?
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
 		LEFT JOIN #user AS u ON c.comment_author = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
@@ -440,41 +459,61 @@ class comment {
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
 		LEFT JOIN #user AS u ON c.comment_author = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp -> toDB($type, true)."' ORDER BY c.comment_datestamp"
-		);
+		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp -> toDB($type, true)."' ORDER BY c.comment_datestamp";
 
 		$text = "";
-		$comment_total = $sql->db_Select_gen($query);
 
-		if ($comment_total) {
+		if ($comment_total = $sql->db_Select_gen($query))
+		{
 			$width = 0;
-			while ($row = $sql->db_Fetch()) {
+			while ($row = $sql->db_Fetch())
+			{
 				$lock = $row['comment_lock'];
 				// $subject = $tp->toHTML($subject);
-				if ($pref['nested_comments']) {
+				if ($pref['nested_comments'])
+				{
 					$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
-				} else {
+				}
+				else
+				{
 					$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
 				}
 			}
 
-			if ($return == FALSE){
-			 	$ns->tablerender(LAN_99, $text);
-            } else {
-                $ret['comment'] = $text;
+			if ($tablerender)
+			{
+				$text = $ns->tablerender(LAN_99, $text, '', TRUE);
 			}
-			if (ADMIN==TRUE && getperms("B")){
+			
+			if (!$return)
+			{
+				echo $text;
+            }
+            else
+            {
+				$ret['comment'] = $text;
+			}
+
+			if (ADMIN && getperms("B"))
+			{
 				$modcomment =  "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
 			}
 		}
-		if ($lock != "1"){
-		   	$comment =	$this->form_comment($action, $table, $id, $subject, "", TRUE, $rate);
-		} else {
+
+		if ($lock != "1")
+		{
+		   	$comment =	$this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, $tablerender);
+		}
+		else
+		{
 			$comment = "<br /><div style='text-align:center'><b>".COMLAN_8."</b></div>";
 		}
-		if (!$return){
+		
+		if (!$return)
+		{
           	echo $modcomment.$comment;
 		}
+		
 		$ret['comment'] .= $modcomment;
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = LAN_99;
