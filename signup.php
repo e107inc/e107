@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2006-02-26 14:50:57 $
-|     $Author: whoisrich $
+|     $Revision: 1.81 $
+|     $Date: 2006-03-02 02:29:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,6 +25,73 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
+
+// Resend Activation Email ------------------------------------------->
+if(e_QUERY == "resend" && !USER){
+	require_once(HEADERF);
+	if($_POST['submit_resend']){
+
+		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($_POST['resend_email'])."\" AND user_ban=0")){
+			$ns -> tablerender("Activation not necessary","Your account is already activated.<br />");
+			require_once(FOOTERF);
+			exit;
+		}
+
+		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($_POST['resend_email'])."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
+           $row = $sql -> db_Fetch();
+
+            $_POST['password1'] = "xxxxxxxx";
+    		$_POST['loginname'] = $row['user_loginname'];
+    		$_POST['name'] = $row['user_name'];
+			$nid = $row['user_id'];
+			$u_key = $row['user_sess'];
+
+            $eml = render_email();
+
+		 	require_once(e_HANDLER."mail.php");
+	        if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images'])) {
+				$ns -> tablerender("Error","There was a problem, the registration mail was not sent, please contact the website administrator.");
+				require_once(FOOTERF);
+				exit;
+			}else{
+				$ns -> tablerender("Email Sent","Activation email sent to: ".$row['user_email']." - Please check your inbox.<br /><br />");
+				require_once(FOOTERF);
+				exit;
+			}
+
+	}else{
+          $text = "<div style='text-align:center'>
+           <form method='post' action='".e_SELF."?resend' name='resend_form'>
+           <table style='width:99%' class='fborder'>
+           <tr>
+			<td class='forumheader3'>
+			If you have already registered but did not receive an email to activate your account, please enter the email address you used during registration below. A new activation email will be resent to you at that address.
+			</td>
+           	</tr>
+			<tr><td class='forumheader3'>".LAN_112."
+          	<input type='text' name='resend_email' class='tbox' style='width:80%' value='' />
+           	</td>
+           	</tr>
+           ";
+
+           	$text .="<tr style='vertical-align:top'>
+           	<td colspan='2' style='text-align:center' class='forumheader'>";
+           	$text .= "<input class='button' type='submit' name='submit_resend' value='Send Activation Email' />";
+           	$text .= "</td>
+           	</tr>
+           	</table>
+           	</form>
+           	</div>";
+
+			$ns -> tablerender("Resend Activation Email", $text);
+			require_once(FOOTERF);
+			exit;
+	}
+
+
+}
+
+// ------------------------------------------------------------------
 
 if(!$_POST){   // Notice Removal.
 	$error = "";

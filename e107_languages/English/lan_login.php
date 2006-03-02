@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-23 01:03:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2006-03-02 02:29:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("LAN_27", "You left required field(s) blank");
 define("LAN_300", "Incorrect login. The entered data doesn't match to a registered user. Check if you have the CAPS-LOCK key activated as logins on this site are case sensitive");
-define("LAN_302", "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please contact a site administrator.");
+define("LAN_302", "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please click <a href='".e_BASE."signup.php?resend'>here</a>.");
 define("LAN_303", "Incorrect code entered.");
 define("LAN_304", "That username/password combination is already in use.");
 define("LAN_LOGIN_1", "User name");
@@ -34,4 +34,5 @@ define("LAN_LOGIN_16", "User attempted to login with username/password combinati
 define("LAN_LOGIN_17", "User password (hashed)");
 define("LAN_LOGIN_18", "Auto-ban: More than 10 failed login attempts");
 define("LAN_LOGIN_19", "> 10 failed login attempts");
+
 ?>
