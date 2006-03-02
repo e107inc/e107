@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2006-03-02 02:29:17 $
+|     $Revision: 1.82 $
+|     $Date: 2006-03-02 02:47:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,15 +29,17 @@ $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 // Resend Activation Email ------------------------------------------->
 if(e_QUERY == "resend" && !USER){
 	require_once(HEADERF);
+	$clean_email = check_email($tp -> toDB($_POST['resend_email']));
+
 	if($_POST['submit_resend']){
 
-		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($_POST['resend_email'])."\" AND user_ban=0")){
+		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($clean_email)."\" AND user_ban=0")){
 			$ns -> tablerender("Activation not necessary","Your account is already activated.<br />");
 			require_once(FOOTERF);
 			exit;
 		}
 
-		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($_POST['resend_email'])."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
+		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($clean_email)."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
            $row = $sql -> db_Fetch();
 
             $_POST['password1'] = "xxxxxxxx";
