@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-02-20 15:13:15 $
+|     $Revision: 1.27 $
+|     $Date: 2006-03-02 17:32:25 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -142,9 +142,8 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 function validatemail($Email) {
 	$HTTP_HOST = $_SERVER['HTTP_HOST'];
 	$result = array();
-	 ;
 
-	if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $Email)) {
+	if (!preg_match("/^([_a-z0-9-+]+)(\.[_a-z0-9-]+)*@([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,6})$/" , $Email)) {
 		$result[0] = false;
 		$result[1] = "$Email is not properly formatted";
 		return $result;
