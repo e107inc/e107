@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-02-24 18:36:35 $
-|     $Author: whoisrich $
+|     $Revision: 1.16 $
+|     $Date: 2006-03-02 02:46:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -88,10 +88,14 @@ if (isset($_POST['pwsubmit'])) {
 			fpw_error(LAN_FPW3);
 		}
 	}
-	
+
 	$clean_email = check_email($tp -> toDB($_POST['email']));
 	$clean_username = $tp -> toDB($_POST['username']);
-	if ($sql->db_Select("user", "*", "user_email='{$clean_email}' AND user_loginname='{$clean_username}' ")) {
+	$query = "user_email='{$clean_email}' ";
+	// Allow admins to remove 'username' from fpw_template.php if they wish.
+	$query .= (isset($_POST['username'])) ? " AND user_loginname='{$clean_username}'" : "";
+
+	if ($sql->db_Select("user", "*", $query)) {
 		$row = $sql->db_Fetch();
 		 extract($row);
 
