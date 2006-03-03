@@ -1,10 +1,10 @@
 /**
  * $RCSfile: tiny_mce_popup.js,v $
- * $Revision: 1.6 $
- * $Date: 2005-12-24 00:09:57 $
+ * $Revision: 1.7 $
+ * $Date: 2006-03-03 05:07:11 $
  *
  * @author Moxiecode
- * @copyright Copyright © 2004, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright © 2004-2006, Moxiecode Systems AB, All rights reserved.
  */
 
 var tinyMCE = null, tinyMCELang = null;
@@ -14,6 +14,7 @@ function TinyMCEPopup() {
 
 TinyMCEPopup.prototype.init = function() {
 	var win = window.opener ? window.opener : window.dialogArguments;
+	var inst;
 
 	if (!win) {
 		// Try parent
@@ -37,6 +38,7 @@ TinyMCEPopup.prototype.init = function() {
 		return;
 	}
 
+	inst = tinyMCE.selectedInstance;
 	this.isWindow = tinyMCE.getWindowArg('mce_inside_iframe', false) == false;
 	this.storeSelection = (tinyMCE.isMSIE && !tinyMCE.isOpera) && !this.isWindow && tinyMCE.getWindowArg('mce_store_selection', true);
 
@@ -45,7 +47,7 @@ TinyMCEPopup.prototype.init = function() {
 
 	// Store selection
 	if (this.storeSelection)
-		tinyMCE.selectedInstance.execCommand('mceStoreSelection');
+		inst.selectionBookmark = inst.selection.getBookmark(true);
 
 	// Setup dir
 	if (tinyMCELang['lang_dir'])
@@ -117,13 +119,13 @@ TinyMCEPopup.prototype.resizeToInnerSize = function() {
 
 		// Remove margin
 		oldMargin = body.style.margin;
-		body.style.margin = '0px';
+		body.style.margin = '0';
 
 		// Create wrapper
 		wrapper = doc.createElement("div");
 		wrapper.id = 'mcBodyWrapper';
 		wrapper.style.display = 'none';
-		wrapper.style.margin = '0px';
+		wrapper.style.margin = '0';
 
 		// Wrap body elements
 		nodes = doc.body.childNodes;
@@ -145,7 +147,7 @@ TinyMCEPopup.prototype.resizeToInnerSize = function() {
 		iframe.src = document.location.href.toLowerCase().indexOf('https') == -1 ? "about:blank" : tinyMCE.settings['default_document'];
 		iframe.width = "100%";
 		iframe.height = "100%";
-		iframe.style.margin = '0px';
+		iframe.style.margin = '0';
 
 		// Add iframe
 		doc.body.appendChild(iframe);
@@ -205,7 +207,9 @@ TinyMCEPopup.prototype.restoreSelection = function() {
 		var inst = tinyMCE.selectedInstance;
 
 		inst.getWin().focus();
-		inst.execCommand('mceRestoreSelection');
+
+		if (inst.selectionBookmark)
+			inst.selection.moveToBookmark(inst.selectionBookmark);
 	}
 };
 
@@ -217,7 +221,7 @@ TinyMCEPopup.prototype.execCommand = function(command, user_interface, value) {
 
 	// Store selection
 	if (this.storeSelection)
-		inst.execCommand('mceStoreSelection');
+		inst.selectionBookmark = inst.selection.getBookmark(true);
 };
 
 TinyMCEPopup.prototype.close = function() {

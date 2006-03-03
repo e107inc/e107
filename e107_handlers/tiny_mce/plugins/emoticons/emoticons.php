@@ -25,15 +25,20 @@ function headerjs(){
 	global $IMAGES_DIRECTORY,$pref;
 	$js = "<script type='text/javascript' src='../../tiny_mce_popup.js'></script>";
 	$js .= " <script type='text/javascript'>
-	function insertEmotion(file_name) {
-		if (window.opener) {
-			tinyMCE.insertImage('".SITEURL.$IMAGES_DIRECTORY."emotes/" . $pref['emotepack'] . "/' + file_name,file_name);
-			window.close();
-		}
-	}
-</script>";
 
-return $js;
+    function init() {
+		tinyMCEPopup.resizeToInnerSize();
+	}
+
+	function insertEmotion(file_name, title) {
+		var html = '<img src=\'".SITEURL.$IMAGES_DIRECTORY."emotes/".$pref['emotepack']."/' + file_name + '\'  mce_src=\'".SITEURL.$IMAGES_DIRECTORY."emotes/".$pref['emotepack']."/' + file_name + '\' border=\'0\' alt=\'\' />';
+		tinyMCE.execCommand('mceInsertContent', false, html);
+		tinyMCEPopup.close();
+	}
+	";
+
+	$js .= "</script>";
+	return $js;
 
 }
 

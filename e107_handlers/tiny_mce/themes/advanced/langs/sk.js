@@ -4,7 +4,7 @@
  * 
  * @author Vladimir VASIL vvasil@post.sk
  *    
- * $Id: sk.js,v 1.1 2005-12-24 00:09:57 e107coders Exp $ 
+ * $Id: sk.js,v 1.2 2006-03-03 05:07:12 e107coders Exp $ 
  */  
 
 
