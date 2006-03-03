@@ -1,22 +1,32 @@
-// Import theme specific language pack 
-tinyMCE.importPluginLanguagePack('ibrowser', 'uk,de');
+// Import theme specific language pack
+tinyMCE.importPluginLanguagePack('ibrowser', 'en,de');
 
 // Returns the HTML contents of the ibrowser control.
 
-function TinyMCE_ibrowser_getControlHTML(control_name) {
-	switch (control_name) {
-		case "ibrowser":
-			return '<img id="{$editor_id}_ibrowser" src="{$pluginurl}/images/ibrowser.gif" title="{$lang_ibrowser_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceBrowseImage\');">';
-	}
+var TinyMCE_ibrowserPlugin = {
+	getInfo : function() {
+		return {
+			longname : 'ibrowser',
+			author : 'Your name',
+			authorurl : '',
+			infourl : '',
+			version : "1.0"
+		};
+	},
 
-	return "";
-}
+	getControlHTML : function(cn) {
+		switch (cn) {
+			case "ibrowser":
+				return tinyMCE.getButtonHTML(cn, 'lang_ibrowser_desc', '{$pluginurl}/images/ibrowser.gif', 'mceBrowseImage', true);
+		}
 
-// Executes the mceBrowseImage command.
+		return "";
+	},
 
-function TinyMCE_ibrowser_execCommand(editor_id, element, command, user_interface, value) {
-	// Handle commands
-	switch (command) {
+
+	execCommand : function(editor_id, element, command, user_interface, value) {
+		// Handle commands
+		switch (command) {
 		case "mceBrowseImage":
 			var template = new Array();
 
@@ -25,31 +35,53 @@ function TinyMCE_ibrowser_execCommand(editor_id, element, command, user_interfac
 			template['height'] = 670;
 
 			var src = "", alt = "", border = "", hspace = "", vspace = "", width = "", height = "", align = "";
+            var margin_left = "";
+			var margin_right = "";
+			var margin_top = "";
+			var margin_bottom = "";
 
 			if (tinyMCE.selectedElement != null && tinyMCE.selectedElement.nodeName.toLowerCase() == "img")
 				tinyMCE.imgElement = tinyMCE.selectedElement;
 
-			if (tinyMCE.imgElement) {
-				src = tinyMCE.imgElement.getAttribute('src') ? tinyMCE.imgElement.getAttribute('src') : "";
-				alt = tinyMCE.imgElement.getAttribute('alt') ? tinyMCE.imgElement.getAttribute('alt') : "";
-				border = tinyMCE.imgElement.getAttribute('border') ? tinyMCE.imgElement.getAttribute('border') : "";
-				hspace = tinyMCE.imgElement.getAttribute('hspace') ? tinyMCE.imgElement.getAttribute('hspace') : "";
-				vspace = tinyMCE.imgElement.getAttribute('vspace') ? tinyMCE.imgElement.getAttribute('vspace') : "";
-				width = tinyMCE.imgElement.getAttribute('width') ? tinyMCE.imgElement.getAttribute('width') : "";
-				height = tinyMCE.imgElement.getAttribute('height') ? tinyMCE.imgElement.getAttribute('height') : "";
-				align = tinyMCE.imgElement.getAttribute('align') ? tinyMCE.imgElement.getAttribute('align') : "";
-
-				// Fix for drag-drop/copy paste bug in Mozilla
-				mceRealSrc = tinyMCE.imgElement.getAttribute('mce_real_src') ? tinyMCE.imgElement.getAttribute('mce_real_src') : "";
-				if (mceRealSrc != "")
-					src = mceRealSrc;
-
-				src = eval(tinyMCE.settings['urlconvertor_callback'] + "(src, tinyMCE.imgElement, true);");
+            if (tinyMCE.imgElement) {
+                src = tinyMCE.imgElement.getAttribute('src') ? tinyMCE.imgElement.getAttribute('src') : "";
+                alt = tinyMCE.imgElement.getAttribute('alt') ? tinyMCE.imgElement.getAttribute('alt') : "";                 
 			}
+            /*
+
+                border = tinyMCE.imgElement.style.border ? tinyMCE.imgElement.style.border : "";
+                hspace = tinyMCE.imgElement.getAttribute('hspace') ? tinyMCE.imgElement.getAttribute('hspace') : "";
+                vspace = tinyMCE.imgElement.getAttribute('vspace') ? tinyMCE.imgElement.getAttribute('vspace') : "";
+                width = tinyMCE.imgElement.style.width ? tinyMCE.imgElement.style.width.replace('px','') : "";
+                height = tinyMCE.imgElement.style.height ? tinyMCE.imgElement.style.height.replace('px','') : "";
+                align = tinyMCE.imgElement.getAttribute('align') ? tinyMCE.imgElement.getAttribute('align') : "";
+
+                margin_left = tinyMCE.imgElement.style.marginLeft ? tinyMCE.imgElement.style.marginLeft.replace('px','') : "";
+                margin_right = tinyMCE.imgElement.style.marginRight ? tinyMCE.imgElement.style.marginRight.replace('px','') : "";
+                margin_top = tinyMCE.imgElement.style.marginTop ? tinyMCE.imgElement.style.marginTop.replace('px','') : "";
+                margin_bottom = tinyMCE.imgElement.style.marginBottom ? tinyMCE.imgElement.style.marginBottom.replace('px','') : "";
+
+                // Fix for drag-drop/copy paste bug in Mozilla
+                mceRealSrc = tinyMCE.imgElement.getAttribute('mce_real_src') ? tinyMCE.imgElement.getAttribute('mce_real_src') : "";
+                if (mceRealSrc != "")
+                    src = mceRealSrc;
+
+           //       src = eval(tinyMCE.settings['urlconvertor_callback'] + "(src, tinyMCE.imgElement, true);");
+            }*/
 				tinyMCE.openWindow(template, {editor_id : editor_id, src : src, alt : alt, border : border, hspace : hspace, vspace : vspace, width : width, height : height, align : align});
 				return true;
 	}
 
-	// Pass to next handler in chain
-	return false;
-}
+   		// Pass to next handler in chain
+		return false;
+	}
+
+};
+
+
+tinyMCE.addPlugin("ibrowser", TinyMCE_ibrowserPlugin);
+
+
+
+
+

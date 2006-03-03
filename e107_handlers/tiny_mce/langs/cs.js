@@ -6,7 +6,7 @@
  * @author Pavel Novák
  * @author Josef Klimosz
  *    
- * $Id: cs.js,v 1.4 2005-12-24 00:09:57 e107coders Exp $ 
+ * $Id: cs.js,v 1.5 2006-03-03 05:07:12 e107coders Exp $ 
  */  
 
 

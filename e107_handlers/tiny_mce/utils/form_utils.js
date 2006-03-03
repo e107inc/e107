@@ -1,12 +1,12 @@
 /**
  * $RCSfile: form_utils.js,v $
- * $Revision: 1.2 $
- * $Date: 2005-12-24 00:09:57 $
+ * $Revision: 1.3 $
+ * $Date: 2006-03-03 05:07:12 $
  *
  * Various form utilitiy functions.
  *
  * @author Moxiecode
- * @copyright Copyright © 2005, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright © 2004-2006, Moxiecode Systems AB, All rights reserved.
  */
 
 function getColorPickerHTML(id, target_form_element) {
@@ -14,9 +14,9 @@ function getColorPickerHTML(id, target_form_element) {
 
 	html += '<a id="' + id + '_link" href="javascript:void(0);" onkeydown="pickColor(event,\'' + target_form_element +'\');" onmousedown="pickColor(event,\'' + target_form_element +'\');return false;">';
 	html += '<img id="' + id + '" src="../../themes/advanced/images/color.gif"';
-	html += ' onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');"';
-	html += ' onmouseout="tinyMCE.restoreClass(this);"';
-	html += ' onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');"';
+	html += ' onmouseover="this.className=\'mceButtonOver\'"';
+	html += ' onmouseout="this.className=\'mceButtonNormal\'"';
+	html += ' onmousedown="this.className=\'mceButtonDown\'"';
 	html += ' width="20" height="16" border="0" title="' + tinyMCE.getLang('lang_browse') + '"';
 	html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" /></a>';
 
@@ -58,9 +58,9 @@ function getBrowserHTML(id, target_form_element, type, prefix) {
 
 	html += '<a id="' + id + '_link" href="javascript:openBrower(\'' + id + '\',\'' + target_form_element + '\', \'' + type + '\',\'' + option + '\');" onmousedown="return false;">';
 	html += '<img id="' + id + '" src="../../themes/advanced/images/browse.gif"';
-	html += ' onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');"';
-	html += ' onmouseout="tinyMCE.restoreClass(this);"';
-	html += ' onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');"';
+	html += ' onmouseover="this.className=\'mceButtonOver\';"';
+	html += ' onmouseout="this.className=\'mceButtonNormal\';"';
+	html += ' onmousedown="this.className=\'mceButtonDown\';"';
 	html += ' width="20" height="18" border="0" title="' + tinyMCE.getLang('lang_browse') + '"';
 	html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" /></a>';
 
@@ -74,7 +74,7 @@ function openBrower(img_id, target_form_element, type, option) {
 		tinyMCEPopup.openBrowser(target_form_element, type, option);
 }
 
-function selectByValue(form_obj, field_name, value, add_custom) {
+function selectByValue(form_obj, field_name, value, add_custom, ignore_case) {
 	if (!form_obj || !form_obj.elements[field_name])
 		return;
 
@@ -84,7 +84,7 @@ function selectByValue(form_obj, field_name, value, add_custom) {
 	for (var i=0; i<sel.options.length; i++) {
 		var option = sel.options[i];
 
-		if (option.value == value) {
+		if (option.value == value || (ignore_case && option.value.toLowerCase() == value.toLowerCase())) {
 			option.selected = true;
 			found = true;
 		} else
@@ -107,6 +107,12 @@ function getSelectValue(form_obj, field_name) {
 		return "";
 
 	return elm.options[elm.selectedIndex].value;
+}
+
+function addSelectValue(form_obj, field_name, name, value) {
+	var s = form_obj.elements[field_name];
+	var o = new Option(name, value);
+	s.options[s.options.length] = o;
 }
 
 function addClassesToList(list_id, specific_option) {

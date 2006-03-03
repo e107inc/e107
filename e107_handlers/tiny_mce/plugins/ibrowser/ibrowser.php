@@ -9,18 +9,20 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.3 $Date: 2004/10/04
+// $Revision: 1.4 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.3 $
-// $Date: 2005-08-23 00:44:23 $
-// $Author: sweetas $
+// $Revision: 1.4 $
+// $Date: 2006-03-03 05:07:12 $
+// $Author: e107coders $
 // +----------------------------------------------------------------------------+
+// Major Re-work by CaMer0n
 
 
 // unset $tinyMCE_imglib_include
 require_once("../../../../class2.php");
+if (!defined('e107_INIT')) { exit; }
 unset($tinyMCE_imglib_include);
 
 // include image library config settings
@@ -86,22 +88,41 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
 <script type="text/javascript">
 	// click ok - select picture or save changes
 	function selectClick() {
-		if (validateParams()) {
+
+	 //	if (validateParams()) {
 			if (document.forms[0].src.value !='') {
+
 				var src = document.forms[0].src.value;
 				var alt = document.forms[0].alt.value;
-				var border = document.forms[0].border.value;
-				var vspace = document.forms[0].vspace.value;
-				var hspace = document.forms[0].hspace.value;
-				var width = document.forms[0].width.value;
-				var height = document.forms[0].height.value;
-				var align = document.forms[0].align.options[document.forms[0].align.selectedIndex].value;
-				window.opener.tinyMCE.insertImage(src, alt, border, hspace, vspace, width, height, align);
-				window.close();
+		 		var border = document.forms[0].border.value;
+		 		var width = document.forms[0].width.value;
+		 		var height = document.forms[0].height.value;
+
+				var margleft = document.forms[0].margin_left.value;
+                var margright = document.forms[0].margin_right.value;
+                var margtop = document.forms[0].margin_top.value;
+                var margbottom = document.forms[0].margin_bottom.value;
+
+		  		var cssfloat = document.forms[0].align.options[document.forms[0].align.selectedIndex].value;
+				var css_style = "";
+
+               	css_style = 'width:' + width + 'px; height:' + height + 'px; border:' + border + 'px solid black; ';
+                css_style = (cssfloat) ? css_style + 'float: ' + cssfloat + '; ' : css_style;
+				css_style = (margleft != 0) ? css_style + 'margin-left:' + margleft + 'px; ' : css_style;
+				css_style = (margright != 0) ? css_style + 'margin-right:' + margright + 'px; ' : css_style;
+				css_style = (margtop != 0) ? css_style + 'margin-top:' + margtop + 'px; ' : css_style;
+				css_style = (margbottom != 0) ? css_style + 'margin-bottom:' + margbottom + 'px; ' : css_style;
+
+				var html = '<img src=\''+ src +'\' alt=\''+ alt +'\'  style=\'' + css_style + '\'  />';
+
+  //				alert(html);
+			  	tinyMCE.execCommand('mceInsertContent',false,html);
+		   		tinyMCEPopup.close();
+
 			} else {
 			alert(tinyMCE.getLang('lang_ibrowser_error')+ ' : '+ tinyMCE.getLang('lang_ibrowser_errornoimg'));}
-    	}
-	}
+      	}
+  //	}
 
 	// validate input values
 	function validateParams() {
@@ -174,19 +195,23 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
 	{
 		// if existing image (image properties)
 		if (tinyMCE.getWindowArg('src') != '') {
+
 			var formObj = document.forms[0];
 			for (var i=0; i<document.forms[0].align.options.length; i++) {
-				if (document.forms[0].align.options[i].value == tinyMCE.getWindowArg('align'))
+				if (document.forms[0].align.options[i].value == tinyMCE.imgElement.style.cssFloat)
 				document.forms[0].align.options.selectedIndex = i;
 			}
 
 			formObj.src.value = tinyMCE.getWindowArg('src');
-			formObj.alt.value = tinyMCE.getWindowArg('alt');
-			formObj.border.value = tinyMCE.getWindowArg('border');
-			formObj.vspace.value = tinyMCE.getWindowArg('vspace');
-			formObj.hspace.value = tinyMCE.getWindowArg('hspace');
-			formObj.width.value = tinyMCE.getWindowArg('width');
-			formObj.height.value = tinyMCE.getWindowArg('height');
+			formObj.alt.value = tinyMCE.imgElement.alt;
+			formObj.border.value = tinyMCE.imgElement.style.borderLeftWidth.replace('px','');
+        	formObj.width.value = tinyMCE.imgElement.style.width.replace('px','');
+			formObj.height.value = tinyMCE.imgElement.style.height.replace('px','');
+			formObj.margin_left.value = tinyMCE.imgElement.style.marginLeft.replace('px','');
+			formObj.margin_right.value = tinyMCE.imgElement.style.marginRight.replace('px','');
+			formObj.margin_top.value = tinyMCE.imgElement.style.marginTop.replace('px','');
+			formObj.margin_bottom.value = tinyMCE.imgElement.style.marginBottom.replace('px','');
+
 			formObj.size.value = 'n/a';
 			owidth = eval(formObj.width.value);
 			oheight = eval(formObj.height.value);
@@ -202,12 +227,18 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
 
 	// updates style settings
 	function updateStyle() {
-		if (validateParams()) {
-			document.getElementById('wrap').align = document.libbrowser.align.value;
-			document.getElementById('wrap').vspace = document.libbrowser.vspace.value;
-			document.getElementById('wrap').hspace = document.libbrowser.hspace.value;
-			document.getElementById('wrap').border = document.libbrowser.border.value;
-			document.getElementById('wrap').alt = document.libbrowser.alt.value;}
+	 //	if (validateParams()) {
+		  //	alert('val=' + document.getElementById('wrap').style.marginLeft);
+
+
+			document.getElementById('wrap').style.marginLeft = document.libbrowser.margin_left.value;
+			document.getElementById('wrap').style.marginRight = document.libbrowser.margin_right.value;
+			document.getElementById('wrap').style.marginTop = document.libbrowser.margin_top.value;
+			document.getElementById('wrap').style.marginBottom = document.libbrowser.margin_bottom.value;
+            document.getElementById('wrap').style.cssFloat = document.libbrowser.align.value;
+			document.getElementById('wrap').style.borderWidth = document.libbrowser.border.value;
+			document.getElementById('wrap').alt = document.libbrowser.alt.value;
+	 //	}
 	}
 
 	// change picture dimensions
@@ -234,12 +265,13 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
 		var formObj = document.forms[0];
 		var splitvar = obj.options[obj.selectedIndex].value.split("|");
 		formObj.src.value = splitvar[3];
+	  // 	alert('<?php echo $tinyMCE_base_url.$imglib?>' + formObj.src.value);
 		if (splitvar[3]) imgpreview.location.href = '<?php echo $tinyMCE_base_url.$imglib?>' + formObj.src.value;
 	}
 </script>
 </head>
 <body onLoad="init();">
-<script language="JavaScript" type="text/JavaScript">
+<script type="text/javascript">
     window.name = 'imglibrary';
 </script>
 <form name="libbrowser" method="post" action="ibrowser.php?request_uri=<?php echo $HTTP_GET_VARS['request_uri']?>" enctype="multipart/form-data" target="imglibrary">
@@ -332,11 +364,11 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
   </fieldset>
   <fieldset style= "padding: 5 5 5 5; margin-top: 10px;">
   <legend>{$lang_ibrowser_img_info}</legend>
-  <table width="440" border="0" cellspacing="0" cellpadding="0">
+  <table style='width:440px;border:0px' cellspacing="0" cellpadding="0">
     <tr>
-      <td><table width="440" border="0" cellpadding="2" cellspacing="0">
+      <td><table style='width:440px;border:0px' cellpadding="2" cellspacing="0">
           <tr>
-            <td width="80">{$lang_ibrowser_src}:</td>
+            <td style='width:80px'>{$lang_ibrowser_src}:</td>
             <td colspan="5"><input name="src" type="text" id="src" value="" style="width: 100%;" readonly="true"></td>
           </tr>
           <tr>
@@ -347,19 +379,13 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
             <td>{$lang_ibrowser_align}:</td>
             <td colspan="3"><select name="align" style="width: 100%;" onChange="updateStyle()">
                 <option value="">{$lang_insert_image_align_default}</option>
-                <option value="baseline">{$lang_insert_image_align_baseline}</option>
-                <option value="top">{$lang_insert_image_align_top}</option>
-                <option value="middle">{$lang_insert_image_align_middle}</option>
-                <option value="bottom">{$lang_insert_image_align_bottom}</option>
-                <option value="texttop">{$lang_insert_image_align_texttop}</option>
-                <option value="absmiddle">{$lang_insert_image_align_absmiddle}</option>
-                <option value="absbottom">{$lang_insert_image_align_absbottom}</option>
                 <option value="left">{$lang_insert_image_align_left}</option>
                 <option value="right">{$lang_insert_image_align_right}</option>
               </select></td>
             <td width="5">&nbsp;</td>
-            <td width="210" rowspan="7" align="left" valign="top"><div id="stylepreview" style="padding:10px; width: 100%; height:100%; overflow:hidden; background-color:#ffffff; font-size:8px" class="previewWindow">
-                <p><img id="wrap" src="images/textflow.gif" width="45" height="45" align="" alt="" hspace="" vspace="" border="" />Lorem
+            <td rowspan="8" align="left" valign="top" style='width:210px;overflow:hidden'>
+			<div id="stylepreview" style="padding:10px; width: 200px; height:100%; overflow:hidden; background-color:#ffffff; font-size:8px" class="previewWindow">
+                <p><img id="wrap" src="images/textflow.gif" width="45" height="45" align="" alt="" hspace="" vspace="" border="" style="float:right; margin-left:0px; margin-right:0px; margin-top:0px; margin-bottom:0px" />Lorem
                   ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum
                   edipiscing elit, sed diam nonummy nibh euismod tincidunt ut
                   laoreet dolore magna aliquam erat volutpat.Loreum ipsum edipiscing
@@ -369,7 +395,8 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
                   Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing
                   elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore
                   magna aliquam erat volutpat.</p>
-              </div></td>
+              </div>
+			</td>
           </tr>
           <tr>
             <td>{$lang_ibrowser_size}:</td>
@@ -390,19 +417,37 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
           </tr>
           <tr>
             <td>{$lang_ibrowser_border}:</td>
-            <td colspan="3"><input name="border" type="text" id="border" value="" size="5" maxlength="4" style="text-align: right;" onChange="updateStyle()"></td>
+            <td colspan="3">
+			<input name="border" type="text" id="border" value="0" size="5" maxlength="4" style="text-align: right;" onchange="updateStyle()" />px
+			</td>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td>{$lang_ibrowser_vspace}:</td>
-            <td colspan="3"><input name="vspace" type="text" id="vspace" value="" size="5" maxlength="4" style="text-align: right;" onChange="updateStyle()"></td>
+            <td>Margin-left:</td>
+            <td colspan="3"><input name="margin_left" type="text" id="margin_left" value="0" size="5" maxlength="4" style="text-align: right;" onchange="updateStyle()" />px
+			</td>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td>{$lang_ibrowser_hspace}:</td>
-            <td colspan="3"><input name="hspace" type="text" id="hspace" value="" size="5" maxlength="4" style="text-align: right;" onChange="updateStyle()"></td>
+            <td>Margin-Right:</td>
+            <td colspan="3"><input name="margin_right" type="text" id="margin_right" value="0" size="5" maxlength="4" style="text-align: right;" onchange="updateStyle()" />px
+			</td>
             <td>&nbsp;</td>
           </tr>
+
+          <tr>
+            <td>Margin-Top:</td>
+            <td colspan="3"><input name="margin_top" type="text" id="margin_top" value="0" size="5" maxlength="4" style="text-align: right;" onchange="updateStyle()" />px
+			</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Margin-Bottom:</td>
+            <td colspan="3"><input name="margin_bottom" type="text" id="margin_bottom" value="0" size="5" maxlength="4" style="text-align: right;" onchange="updateStyle()" />px
+			</td>
+            <td>&nbsp;</td>
+          </tr>
+
         </table></td>
     </tr>
   </table>
