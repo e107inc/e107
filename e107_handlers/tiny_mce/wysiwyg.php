@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-02-23 15:37:18 $
-|     $Author: whoisrich $
+|     $Revision: 1.21 $
+|     $Date: 2006-03-03 05:37:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -97,7 +97,8 @@ function tinymce_html_bbcode_control(type, value) {
 		case 'get_from_editor':
 
 			value = value.replace(/target=\"_blank\"/, 'rel=\"external\"');
-			value = '[html]\\n' + value + '\\n[/html]';
+		// This line messes with the TinyMce image paths. 
+	   //		value = '[html]\\n' + value + '\\n[/html]';
 			break;
 
 		case 'insert_to_editor':
