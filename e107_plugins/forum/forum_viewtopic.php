@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-02-20 16:42:33 $
-|     $Author: whoisrich $
+|     $Revision: 1.60 $
+|     $Date: 2006-03-03 23:36:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -320,7 +320,7 @@ if(is_array($FORUM_CRUMB))
 	$replace 	= array($forum_info['forum_name'],"href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'");
 	$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
 	$FORUM_CRUMB['fieldlist'] = "sitename,forums,subparent,forum";
-	
+
 	$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
 
 }
@@ -353,7 +353,7 @@ $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] 
 $pages = ceil(($replies+1)/$pref['forum_postspage']);
 if ($pages > 1)
 {
-	$parms = ($replies+1).",{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM]';
+	$parms = ($replies+1).",{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM],off';
 	$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
@@ -469,7 +469,7 @@ function showmodoptions()
 		$type = 'reply';
 		$ret = "<form method='post' action='".e_SELF."?".e_QUERY."' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>";
 	}
-	
+
 	$ret .= "
 		<div>
 		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$from}'>".IMAGE_admin_edit."</a>

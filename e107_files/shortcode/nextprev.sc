@@ -1,6 +1,19 @@
 
 global $pref;
-list($total_items, $perpage, $current_start, $url) = explode(",", $parm, 4);
+
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
+@include_once(e_LANGUAGEDIR."English/lan_np.php");
+
+list($total_items, $perpage, $current_start, $url, $caption) = explode(",", $parm, 5);
+
+if($total_items < $perpage){
+	return "";
+}
+
+$caption = (!$caption && $caption != "off") ? NP_3."&nbsp;" : $caption;
+if($caption == "off"){
+ $caption = "";
+}
 while(substr($url, -1) == ".")
 {
 	$url=substr($url, 0, -1);
@@ -118,7 +131,7 @@ if($total_pages > 1)
 			}
 		}
         $nppage .= "\n\n<!-- End of Next/Prev -->\n\n";
-		return $nppage;
+		return $caption.$nppage;
 	}
 
 	// Use NEW nextprev method
@@ -168,6 +181,6 @@ if($total_pages > 1)
 	$ret = str_replace('[DROPDOWN]', $dropdown, $ret);
 	$ret = str_replace('[PREV]', $prev, $ret);
 	$ret = str_replace('[NEXT]', $next, $ret);
-	return $ret;
+	return $caption.$ret;
 }
 return "";

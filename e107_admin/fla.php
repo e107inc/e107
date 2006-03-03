@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-01-13 22:36:07 $
+|     $Revision: 1.11 $
+|     $Date: 2006-03-03 23:36:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -142,7 +142,7 @@ else
 	";
 
 	$parms = $fla_total.",".$amount.",".$from.",".e_SELF.'?'."[FROM].".$amount;
-	$text .= ($fla_total > $amount) ? "&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
+	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
     $text .= "</div>";
 

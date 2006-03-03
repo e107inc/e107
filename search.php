@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-02-27 12:17:36 $
-|     $Author: sweetas $
+|     $Revision: 1.51 $
+|     $Date: 2006-03-03 23:36:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -114,9 +114,9 @@ $perform_search = true;
 function magic_search($data) {
 	foreach ($data as $key => $value) {
 		if (is_array($value)) {
-			$data[$key] = magic_search($value);	
+			$data[$key] = magic_search($value);
 		} else {
-			$data[$key] = stripslashes($value);	
+			$data[$key] = stripslashes($value);
 		}
 	}
 	return $data;
@@ -232,7 +232,7 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 			} else {
 				$refpage = "";
 			}
-		
+
 			foreach($search_info as $key => $value) {
 				if ($value['refpage']) {
 					if (strpos($refpage, $value['refpage']) !== FALSE) {
@@ -275,7 +275,7 @@ foreach($search_info as $key => $value) {
 	} else if ($search_prefs['selector'] == 1) {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
 	} else {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;		
+		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
 	}
 }
 
@@ -302,7 +302,7 @@ if ($search_prefs['selector'] == 1) {
 
 $SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
 
-$ENHANCED_ICON = "<img src='".e_IMAGE."generic/".IMODE."/search_enhanced.png' style='width: 16px; height: 16px; vertical-align: top' 
+$ENHANCED_ICON = "<img src='".e_IMAGE."generic/".IMODE."/search_enhanced.png' style='width: 16px; height: 16px; vertical-align: top'
 alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
 
 $enhanced_types['in'] = LAN_SEARCH_24.':';
@@ -317,7 +317,7 @@ if (!$_GET['adv'] || $_GET['t'] == 'all') {
 	foreach ($_GET as $gk => $gv) {
 		if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') {
 			unset($_GET[$gk]);
-		} 
+		}
 	}
 }
 
@@ -433,7 +433,7 @@ if ($_GET['adv']) {
 
 $text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
-	
+
 $ns -> tablerender(PAGE_NAME." ".SITENAME, $text);
 
 // parse search
@@ -454,7 +454,7 @@ if ($perform_search) {
 					}
 				}
 				if ($results > $search_res) {
-					$nextprev = ($results > $search_res) ? LAN_SEARCH_10."&nbsp;".$tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
+					$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
 					$text .= "<div class='nextprev' style='text-align: center'>".$nextprev."</div>";
 				}
 				if ($results > 0) {
@@ -495,24 +495,24 @@ function headerjs() {
 			document.getElementById('searchform')[\"t[\" + i + \"]\"].checked = true ;
 			uncheckG();
 		}
-		 
+
 		function uncheckAll(allbox) {
 			for (var i = 0; i < ".$search_count."; i++)
 			document.getElementById('searchform')[\"t[\" + i + \"]\"].checked = false ;
 		}\n";
-		
+
 		if (check_class($search_prefs['google'])) {
 		$script .= "
 		function uncheckG() {
 			document.getElementById('searchform')[\"t[".$google_id."]\"].checked = false ;
 		}\n";
 		}
-	
+
 		$script .= "// -->
 		</script>";
-		
+
 	}
-		
+
 	$script .= "<script type='text/javascript'>
 	<!--
 	function ab() {
@@ -525,10 +525,10 @@ function headerjs() {
 	}
 	//-->
 	</script>";
-	
+
 	return $script;
 }
-	
+
 require_once(FOOTERF);
 
 ?>

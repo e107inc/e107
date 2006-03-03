@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2006-01-31 04:55:00 $
-|     $Author: qnome $
+|     $Revision: 1.93 $
+|     $Date: 2006-03-03 23:36:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -136,7 +136,7 @@ if ($action == 'cat' || $action == 'all'){
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
-	$text .= ($news_total > $amount) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
+	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
 	ob_start();
 	$ns->tablerender(LAN_82." '{$category_name}'", $text);
@@ -453,7 +453,7 @@ if ($action != "item") {
 		$action = "";
 	}
 	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
-	$nextprev = ($news_total > ITEMVIEW) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
+	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 }
 

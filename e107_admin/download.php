@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2006-01-31 04:08:49 $
+|     $Revision: 1.74 $
+|     $Date: 2006-03-03 23:36:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -522,7 +522,7 @@ class download {
 		$downloads = $sql->db_Count("download");
 		if ($downloads > $amount && !$_POST['searchquery']) {
 			$parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.download_id.desc.")."[FROM]";
-			$text .= "<br />".LAN_GOPAGE." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
+			$text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 
 

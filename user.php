@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-01-05 12:39:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2006-03-03 23:36:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -175,7 +175,7 @@ if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $f
 	<td class='fcaption' style='width:20%'>".LAN_145."</td>
 	</tr>";
 
-	foreach ($userList as $row) 
+	foreach ($userList as $row)
 	{
 		$text .= renderuser($row, "short");
 	}
@@ -184,15 +184,18 @@ if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $f
 
 $ns->tablerender(LAN_140, $text);
 
-require_once(e_HANDLER."np_class.php");
-$ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
+ 	$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
+	echo "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+
+
+
 
 function renderuser($uid, $mode = "verbose")
 {
 	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
 	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
 	global $user;
-	
+
 	if(is_array($uid))
 	{
 		$user = $uid;
