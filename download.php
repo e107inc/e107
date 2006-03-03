@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-02-03 05:03:49 $
-|     $Author: qnome $
+|     $Revision: 1.61 $
+|     $Date: 2006-03-03 23:36:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -300,7 +300,7 @@ if ($action == "list") {
 
 	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><a href='".e_SELF."'>".LAN_dl_9."</a><br /><br />";
 	$parms = $total_downloads.",".$view.",".$from.",".e_SELF."?[FROM].list.{$id}.{$view}.{$order}.{$sort}.";
-	echo ($total_downloads > $view) ? "<div class='nextprev'>".LAN_dl_76."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>" : "";
+	echo ($total_downloads > $view) ? "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>" : "";
     echo "</div>";
 
 	require_once(FOOTERF);
