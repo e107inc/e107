@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.264 $
-|     $Date: 2006-03-02 17:32:22 $
-|     $Author: whoisrich $
+|     $Revision: 1.265 $
+|     $Date: 2006-03-03 16:40:52 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -483,7 +483,7 @@ if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !=
 
 $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
 
-if (isset($_POST['userlogin'])) {
+if (isset($_POST['userlogin']) || isset($_POST['userlogin_x'])) {
 	e107_require_once(e_HANDLER."login.php");
 	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
