@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-03-02 17:32:25 $
-|     $Author: whoisrich $
+|     $Revision: 1.28 $
+|     $Date: 2006-03-03 05:24:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -160,7 +160,7 @@ function validatemail($Email) {
 	$Connect = fsockopen ($ConnectAddress, 25 );
 
 	if ($Connect) {
-		if (strpos("220", $Out = fgets($Connect, 1024)) === 0) {
+		if (strpos($Out = fgets($Connect, 1024), "220") === 0) {
 			fputs ($Connect, "HELO $HTTP_HOST\r\n");
 			$Out = fgets ($Connect, 1024 );
 			fputs ($Connect, "MAIL FROM: <{$Email}>\r\n");
@@ -169,7 +169,7 @@ function validatemail($Email) {
 			$To = fgets ($Connect, 1024);
 			fputs ($Connect, "QUIT\r\n");
 			fclose($Connect);
-			if (strpos("250", $From) !== 0 || strpos("250", $To) !== 0) {
+			if (strpos($From,"250") !== 0 || strpos($To,"250") !== 0) {
 				$result[0] = false;
 				$result[1] = "Server rejected address";
 				$result[2] = $From;
@@ -178,7 +178,7 @@ function validatemail($Email) {
 		} else {
 			$result[0] = false;
 			$result[1] = "No response from server";
-			$result[2] = $From;
+		  $result[2] = $Out;
 			return $result;
 		}
 
