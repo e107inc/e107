@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2006-03-03 23:36:47 $
+|     $Revision: 1.75 $
+|     $Date: 2006-03-05 06:10:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1303,7 +1303,7 @@ class download {
 
 		if(!$sql -> db_Select("download_mirror"))
 		{
-			$text = "<div style='text-align:center;'>No mirrors defined yet</div>";
+			$text = "<div style='text-align:center;'>".DOWLAN_144."</div>"; // No mirrors defined yet
 		}
 		else
 		{
