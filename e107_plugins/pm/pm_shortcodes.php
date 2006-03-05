@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-03-05 06:04:02 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 include_once(e_PLUGIN.'pm/pm_func.php');
 $pm_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-		
+
 /*
 SC_BEGIN FORM_TOUSER
 global $pm_prefs, $pm_info;
@@ -223,16 +223,16 @@ SC_BEGIN PM_FROM_TO
 global $pm_info, $tp;
 if($pm_info['pm_from'] == USERID)
 {
-	$ret = "To: <br />";
+	$ret = LAN_PM_2.": <br />";
 	$pm_info['user_name'] = $pm_info['sent_name'];
 	$ret .= $tp->parseTemplate("{PM_TO=link}");
 }
 else
 {
-	$ret = "From: <br />";
+	$ret = LAN_PM_31.": <br />";
 	$pm_info['user_name'] = $pm_info['from_name'];
 	$ret .= $tp->parseTemplate("{PM_FROM=link}");
-}	
+}
 return $ret;
 SC_END
 
@@ -243,7 +243,7 @@ if('link' == $parm)
 {
 	$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$pm_info['pm_id']}'>".$ret."</a>";
 }
-return $ret; 
+return $ret;
 SC_END
 
 SC_BEGIN PM_FROM
