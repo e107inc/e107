@@ -1,0 +1,23 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_mail_handler.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("LANMAILH_1", "Produced By  ãÌáÉ e107 ÇáÚÑÈíÉ");
+define("LANMAILH_2", "åÐå ÚÏÉ ÃÌÒÇÁ ãä ÑÓÇáÉ ÐÇÊ ÇáÕíÛÉ MIME.");
+define("LANMAILH_3", " is not properly formatted");
+define("LANMAILH_4", "ÇáÎÇÏã ÑÝÖ ÇáÚäæÇä");
+define("LANMAILH_5", "áÇ íæÌÏ ÑÏ ÝÚá Ãæ ÊÌÇæÈ ãä ÇáÎÇÏã");
+define("LANMAILH_6", "áã íÊãßä ãä ÇáÚËæÑ Úáì ÓíÑÝÑ ÇáÈÑíÏ ÇáÅáßÊÑæäí.");
+define("LANMAILH_7", " íÈÏæÇ Ãäå ÕÍíÍ.");
+
+
+
+?>

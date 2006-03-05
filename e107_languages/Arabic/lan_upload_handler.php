@@ -1,0 +1,27 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_upload_handler.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("LANUPLOAD_1", "ÃäæÇÚ ÇáãáÝÇÊ ");
+define("LANUPLOAD_2", "ÛíÑ ãÓãæÍ ÈåÇ æ ÈÇáÊÇáí Êã ÍÐÝåÇ.");
+define("LANUPLOAD_3", "ÚãáíÉ ÑÝÚ äÇÌÍÉ ááãáÝ");
+define("LANUPLOAD_4", "ÃãÇ Ãä ÇáãÌáÏ ÇáÐí ÓÊÊã Ýíå ÚãáíÉ ÇáÑÝÚ ÛíÑ ãæÌæÏ Ãæ áÇ íÊãÊÚ ÈÇáÊÑÇÎíÕ ÇáßÇÝíÉ (chmod 777).");
+define("LANUPLOAD_5", "ÇáãáÝ ÇáãÑÝÚ ÝÇÞ ÇáÍÌã ÇáÃÞÕì ÇáãÓãæÍ Èå (upload_max_filesize) Ýí ãáÝ ÅÚÏÇÏÇÊ ÎÇÏã ÇáÅÓÊÖÇÝÉ (php.ini).");
+define("LANUPLOAD_6", "ÇáãáÝ ÇáãÑÝÚ ÝÇÞ ÇáÍÌã ÇáÃÞÕì ÇáãÓãæÍ Èå ãä ØÑÝ ãÏíÑ ÇáãæÞÚ.");
+define("LANUPLOAD_7", "Êã ÑÝÚ ÌÒÁ ãä ÇáãáÝ ÝÞØ.");
+define("LANUPLOAD_8", "áã íÊã ÑÝÚ Ãí ãáÝ.");
+define("LANUPLOAD_9", "ÍÌã ÇáãáÝ ÇáãÑÝæÚ 0 ÈÇíÊ");
+define("LANUPLOAD_10", "ÚãáíÉ ÑÝÚ ÝÇÔáÉ [ÅÓã ãáÝ ãßÑÑ] - íæÌÏ ãáÝ ÈäÝÓ ÇáÅÓã .");
+define("LANUPLOAD_11", "ÇáãáÝ áä íÑÝÚ. ÅÓã ÇáãáÝ: ");
+define("LANUPLOAD_12", "ÎØÃ");
+
+?>

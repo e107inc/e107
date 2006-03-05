@@ -1,0 +1,63 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_subcontent.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("ARLAN_0", "Êã ÅÑÓÇá ÇáãÞÇá ÈäÌÇÍ¡ æ ÓíÞæã ÃÍÏ ÇáãÔÑÝíä ÈãÑÇÌÚÊå æ äÔÑå Ýí ÃÞÑÈ æÞÊ ããßä.");
+define("ARLAN_1", "ÊÑßÊ ÈÚÖ ÇáÍÞæá ÝÇÑÛÉ.");
+define("ARLAN_2", "Êã ÅÑÓÇá ÇáÊÞÑíÑ ÈäÌÇÍ¡ æ ÓíÞæã ÃÍÏ ÇáãÔÑÝíä ÈãÑÇÌÚÊå æ äÔÑå Ýí ÃÞÑÈ æÞÊ ããßä.");
+define("ARLAN_15", "Submit Article");
+define("ARLAN_17", "ÇáãÞÏãÉ");
+define("ARLAN_18", "ÇáÚäæÇä ÇáÝÑÚí");
+define("ARLAN_19", "ÇáãáÎÕ");
+define("ARLAN_20", "ÇáãÞÇá");
+define("ARLAN_21", "ÇáÓãÇÍ ÈÇáÊÚáíÞÇÊ¿");
+define("ARLAN_22", "äÚã");
+define("ARLAN_23", "áÇ");
+define("ARLAN_24", "ÃÖÝ æÕáÉ ÈÑíÏ/ØÈÇÚÉ ¿");
+define("ARLAN_25", "äÚã");
+define("ARLAN_26", "áÇ");
+define("ARLAN_27", "ÃÑÓá ÇáãÞÇá");
+define("ARLAN_28", "ãÚÇíäÉ");
+define("ARLAN_55", "ÍÞ ÇáÑÄíÉ");
+define("ARLAN_73", "ÝÊÍ ãÍÑÑ Çá HTML");
+define("ARLAN_74", "ÇáÞÓã");
+define("ARLAN_75", "áÇ ÔíÁ");
+define("ARLAN_82", "ãÚáæãÇÊ ÇáäÇÔÑ");
+define("ARLAN_84", "ÇÓã ÇáäÇÔÑ");
+define("ARLAN_85", "ÈÑíÏ ÇáäÇÔÑ");
+define("ARLAN_86", "ÊÞÑíÑ");
+define("ARLAN_87", "ÇáÊÞííã");
+define("ARLAN_88", "ãÇ åæ ÊÞííãß ¿");
+define("ARLAN_89", "ÃÑÓá ÇáÊÞÑíÑ");
+
+define("ARLAN_90", "ÊÑßÊ ÈÚÖ ÇáÍÞæá ÝÇÑÛÉ¡ ãä ÝÖáß ÚÏ æ Þã ÈÊÚÈÆÉ ÌãíÚ ÇáÍÞæá .");
+define("ARLAN_91", "ãÚÇíäÉ ÃÎÑì");
+define("ARLAN_92", "ãä ÝÖáß ÃÏÎá ÅÓãß/ÇáÈÑíÏ ÇáÅáßÊÑæäí");
+
+
+define("ARLAN_93", "ãÞÇá");
+define("ARLAN_94", "ÊÞÑíÑ");
+define("ARLAN_95", "ÅÑÓÇá ÇáãÞÇáÇÊ ãä ØÑÝ ÇáÃÚÖÇÁ ÍÇáíÇ ãÚØá");
+define("ARLAN_96", "ÅÑÓÇá ÇáÊÞÇÑíÑ ãä ØÑÝ ÇáÃÚÖÇÁ ÍÇáíÇ ãÚØá");
+define("ARLAN_97", "áÇ Êãáß ÇáÕáÇÍíÇÊ áÅÖÇÝÉ ãÞÇá . ");
+define("ARLAN_98", "áÇ Êãáß ÇáÕáÇÍíÇÊ áÅÖÇÝÉ ÊÞÑíÑ . ");
+
+
+define("ARLAN_99", "ãÇÐÇ ÊÑíÏ Ãä ÊÖíÝ¿");
+define("ARLAN_100", "ÎÈÑ");
+define("ARLAN_101", " ÍÏË");
+define("ARLAN_102", "ãÞÇá ");
+define("ARLAN_103", "ÊÞÑíÑ ");
+define("ARLAN_104", "ÑÇÈØ ");
+define("ARLAN_105", "ÊÍãíá");
+define("ARLAN_106", "ÃÖÝ ...");
+
+?>

@@ -1,0 +1,52 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_comment.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "ÇáÊÚáíÞÇÊ");
+
+define("LAN_0", "[ Êã ÍÌÈåÇ ãä ØÑÝ ÇáãÔÑÝ ]");
+define("LAN_1", "Unblock");
+define("LAN_2", "Block");
+define("LAN_3", "ÍÐÝ");
+define("LAN_4", "ãÚáæãÇÊ");
+define("LAN_5", "ÇáÊÚáíÞÇÊ ...");
+define("LAN_6", "ÚÝæÇ¡ Úáíß ÊÓÌíá ÇáÏÎæá áÊÊãßä ãä ÅÖÇÝÉ ÊÚáíÞ - æ ÅÐÇ áã Êßä ãÓÌáÇ áÏíäÇ ÝÚáíß ÇáÊÓÌíá¡ ÅÖÛØ");
+define("LAN_7", "ÇáãÏíÑ ÇáÚÇã ááãæÞÚ");
+define("LAN_8", "ÊÚáíÞ");
+define("LAN_9", "ÃÑÓá ÇáÊÚáíÞ");
+define("LAN_10", "ÇáãÔÑÝ");
+define("LAN_11", "ÊÚÐÑ ÅÖÇÝÉ ÇáÊÚáíÞ - ÅÚÏ ßÊÇÈÉ ÇáãæÖæÚ ãÑÇÚíÇ ÚÏã ÅÏÎÇá ÍÑæÝ ÞíÇÓíÉ.");
+define("LAN_16", "ÅÓã ÇáãÓÊÎÏã: ");
+define("LAN_99", "ÇáÊÚáíÞÇÊ");
+define("LAN_100", "ÇáÃÎÈÇÑ");
+define("LAN_101", "ÇÓÊØáÇÚ ÇáÑÃí");
+define("LAN_102", "ÇáÑÏ Úáì: ");
+define("LAN_103", "ÇáãÞÇá");
+define("LAN_104", "ÇáÊÞÑíÑ");
+define("LAN_105", "ÇáãÍÊæì");
+define("LAN_145", "ãÓÌá: ");
+define("LAN_194", "ÖíÝ");
+define("LAN_195", "ÚÖæ ãÓÌá");
+define("LAN_310", "áÇ íãßä ÞÈæá ãÔÇÑßÉ ÈæÇÓØÉ ÇÓã ãÓÊÎÏã ãÓÌá áÏíäÇ - ÅÐÇ ßÇä åÐÇ åæ ÇÓãß ÇáÎÇÕ ÇáãÑÌæ ÊÓÌíá ÇáÏÎæá.");
+define("LAN_312", "ãÔÇÑßÉ ãßÑÑÉ - áÇ íãßä ÇáÇÓÊãÑÇÑ.");
+define("LAN_313", "ÇáãßÇä");
+define("LAN_314", "ÊÚÏíá ÇáÊÚáíÞÇÊ");
+define("COMLAN_1", "åäÇ");
+define("COMLAN_2", "ááÊÓÌíá");
+define("COMLAN_3", "ÎØÃ!");
+define("COMLAN_4", 'ÇáãæÖæÚ');
+define("COMLAN_5", 'ÑÏ:');
+define("COMLAN_6", 'ÃÖÝ ÑÏÇ');
+
+define("LAN_315", "Trackbacks");
+define("LAN_316", "No trackbacks for this newspost.");
+define("LAN_317", "Moderate trackbacks");
+?>

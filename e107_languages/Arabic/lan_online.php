@@ -1,0 +1,64 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_online.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+
+//v.616
+define("ONLINE_EL1", "ÇáÒæÇÑ: ");
+define("ONLINE_EL2", "ÇáÃÚÖÇÁ: ");
+define("ONLINE_EL3", "ÇáãÊÕÝÍæä ÇáÂä: ");
+define("ONLINE_EL4", "ÇáãÊæÇÌÏæä ÇáÂä");
+define("ONLINE_EL5", "ÚÏÏ ÇáÃÚÖÇÁ");
+define("ONLINE_EL6", "äÑÍÈ ÈÚÖæäÇ ÇáÌÏíÏ");
+define("ONLINE_EL7", "íÔÇåÏ");
+define("ONLINE_EL8", "ÃßÈÑ ÚÏÏ ÃÚÖÇÁ ÊæÇÌÏæÇ ßÇä ");
+define("ONLINE_EL9", "Ýí");
+define("ONLINE_EL10", "ÅÓã ÇáãÓÊÎÏã");
+define("ONLINE_EL11", "íÊÕÝÍ");
+define("ONLINE_EL12", "íÞæã ÈÇáÑÏ Úáì");
+define("ONLINE_EL13", "ãäÊÏì");
+define("ONLINE_EL14", "ãæÖæÚ");
+define("ONLINE_EL15", "ÕÝÍÉ");
+define("CLASSRESTRICTED", "ãÌãæÚÉ ÛíÑ ãÎæá áåÇ ÏÎæá ÇáÕÝÍÉ.");
+define("ARTICLEPAGE", "ÇáãÞÇáÇÊ/ÇáãÑÇÌÚÇÊ");
+define("CHAT", "ÕäÏæÞ ÇáãÍÇÏËÉ");
+define("COMMENT", "ÇáÊÚáíÞÇÊ");
+define("DOWNLOAD", "ÇáÊÍãíáÇÊ");
+define("EMAIL", "email.php");
+define("FORUM", "ÇáÕÝÍÉ ÇáÑÆíÓíÉ ááãäÊÏì");
+define("LINKS", "ÇáÑæÇÈØ");
+define("NEWS", "ÇáÃÎÈÇÑ");
+define("OLDPOLLS", "ÇÓÊØáÇÚÇÊ ÞÏíãÉ");
+define("POLLCOMMENT", "ÇÓÊØáÇÚ ááÑÃí");
+define("PRINTPAGE", "ØÈÇÚÉ ÇáÕÝÍÉ");
+define("LOGIN", "ÊÓÌíá ÇáÏÎæá");
+define("SEARCH", "ÇáÈÍË");
+define("STATS", "ÅÍÕÇÆíÇÊ ÇáãæÞÚ");
+define("SUBMITNEWS", "ÅÑÓÇá ÎÈÑ");
+define("UPLOAD", "ÑÝÚ ÇáãáÝÇÊ");
+define("USERPAGE", "ÇáãáÝ ÇáÔÎÕí");
+define("USERSETTINGS", "ÅÚÏÇÏÇÊ ÇáÚÖæ");
+define("ONLINE", "ÇáãÊæÇÌÏæä ÇáÂä");
+define("LISTNEW", "áÇÆÍÉ ÇáãÓÊÌÏÇÊ");
+define("USERPOSTS", "ãÔÇÑßÇÊ ÇáÚÖæ");
+define("SUBCONTENT", "ÃÑÓá ãÞÇá/ÊÞÑíÑ");
+define("TOP", "ÃÝÖá ÇáÃÚÖÇÁ/ ÃäÔØ ÇáãæÇÖíÚ");
+define("ADMINAREA", "áæÍÉ ÇáÊÍßã");
+define("BUGTRACKER", "Bugtracker");
+define("EVENT", "ÃÍÏÇË ÇáÊÞæíã");
+define("CALENDAR", "ÇáÊÞæíã");
+define("FAQ", "ÇáÃÓÆáÉ ÇáÔÇÆÚÉ");
+define("PM", "ÇáÑÓÇÆá ÇáÎÇÕÉ");
+define("SURVEY", "Survey");
+define("ARTICLE", "ÇáãÞÇáÇÊ");
+define("CONTENT", "ÇáãÞÇáÇÊ/ÇáãÑÇÌÚÇÊ");
+define("REVIEW", "ÇáÊÞÇÑíÑ");
+?>

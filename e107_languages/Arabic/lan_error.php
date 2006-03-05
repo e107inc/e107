@@ -1,0 +1,41 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_error.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "ÎØÃ");
+
+define("LAN_1", "ÎØÃ 401 - Permission Denied");
+define("LAN_2", "áÇ Êãáß ÇáÕáÇÍíÇÊ áÑÄíÉ ÇáÕÝÍÉ ÇáãØáæÈÉ.");
+define("LAN_3", "ãä ÝÖáß ÃÎÈÑÃÍÏ ÇáãÔÑÝíä Ãæ ÇáãÏíÑ ÇáÚÇã Ýí ÍÇáÉ ÇÚÊÞÇÏß ÈÃä åÐå ÇáÕÝÍÉ ÊÙåÑ ÈÇáÎØÃ.");
+define("LAN_4", "ÎØÃ 403 - Authentication Failed");
+define("LAN_5", "Úáíß ÊÓÌíá ÇáÏÎæá áÑÄíÉ ÇáÕÝÍÉ ÇáãØáæÈÉ.  Ýí ÍÇáÉ ÊÓÌíáß ÇáÏÎæá æ ÚÏã ÑÄíÊß ááÕÝÍÉ¡ ÝÅä ãÊÕÝÍß áÇ íÏÚã åÐå ÇáÎÇÕíÉ.");
+define("LAN_6", "ãä ÝÖáß ÃÎÈÑÃÍÏ ÇáãÔÑÝíä Ãæ ÇáãÏíÑ ÇáÚÇã Ýí ÍÇáÉ ÇÚÊÞÇÏß ÈÃä åÐå ÇáÕÝÍÉ ÊÙåÑ ÈÇáÎØÃ.");
+define("LAN_7", "ÎØÃ 404 - ãáÝ ÎÇØÆ");
+define("LAN_8", "áã íÊã ÇáÚËæÑ Úáì ÇáÕÝÍÉ ÇáãØáæÈÉ. ÅãÇ Êã ÊÍÏíË ÇáÑÇÈØ¡ Ãæ Ãä ÇáÑÇÈØ ãÍãí Úáì ÇáÎÇÏã.");
+define("LAN_9", "ãä ÝÖáß ÃÎÈÑÃÍÏ ÇáãÔÑÝíä Ãæ ÇáãÏíÑ ÇáÚÇã Ýí ÍÇáÉ ÇÚÊÞÇÏß ÈÃä åÐå ÇáÕÝÍÉ ÊÙåÑ ÈÇáÎØÃ.");
+define("LAN_10", "ÎØÃ 500 - Malformed Header");
+define("LAN_11", "ÇáÎÇÏã æÇÌå ãÔßáÉ ÏÇÎáíÉ¡ Ãæ Ãäå áã íÊã ÊÚÏíáå áÊáÈíÉ åÐÇ ÇáØáÈ");
+define("LAN_12", "ãä ÝÖáß ÃÎÈÑÃÍÏ ÇáãÔÑÝíä Ãæ ÇáãÏíÑ ÇáÚÇã Ýí ÍÇáÉ ÇÚÊÞÇÏß ÈÃä åÐå ÇáÕÝÍÉ ÊÙåÑ ÈÇáÎØÃ.");
+define("LAN_13", "ÎØÃ - ÛíÑ ãÚÑæÝ");
+define("LAN_14", "ÇáÎÇÏã æÇÌå ãÔßáÉ");
+define("LAN_15", "ãä ÝÖáß ÃÎÈÑÃÍÏ ÇáãÔÑÝíä Ãæ ÇáãÏíÑ ÇáÚÇã Ýí ÍÇáÉ ÇÚÊÞÇÏß ÈÃä åÐå ÇáÕÝÍÉ ÊÙåÑ ÈÇáÎØÃ.");
+define("LAN_16", "ãÍÇæáÊß ÇáÝÇÔáÉ ááæÕæá Åáì ");
+define("LAN_17", "Êã ÊÓÌíáåÇ.");
+define("LAN_18", "Apparently, you were referred here by");
+define("LAN_19", "Unfortunately, there's an obsolete or just plain wrong link at that address.");
+define("LAN_20", "ÅÖÛØ åäÇ ááÚæÏÉ ááÕÝÍÉ ÇáÑÆíÓíÉ");
+
+define("LAN_ERROR_01", "The requested URL could not be found on this server. The link you followed is probably outdated.");
+define("LAN_ERROR_02", "Please click here to go to this site's search page");
+define("LAN_ERROR_03", "ãÍÇæáÊß ááæÕæá Åáì  ");
+define("LAN_ERROR_04", " ßÇäÊ ÝÇÔáÉ.");
+
+?>

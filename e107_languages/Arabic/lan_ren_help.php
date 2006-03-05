@@ -1,0 +1,54 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_ren_help.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("LANHELP_1", "ÃÓæÏ");
+define("LANHELP_2", "ÃÒÑÞ");
+define("LANHELP_3", "Þåæí");
+define("LANHELP_4", "Cyan");
+define("LANHELP_5", "ÃÒÑÞ ÛÇãÞ");
+define("LANHELP_6", "ÃÍãÑ ÛÇãÞ");
+define("LANHELP_7", "ÃÎÖÑ");
+define("LANHELP_8", "ÃÒÑÞ äíáí");
+define("LANHELP_9", "ÒíÊæäí");
+define("LANHELP_10", "ÈÑÊÞÇáí");
+define("LANHELP_11", "ÃÍãÑ");
+define("LANHELP_12", "ÈäÝÓÌí");
+define("LANHELP_13", "ÃÈíÖ");
+define("LANHELP_14", "ÃÕÝÑ");
+
+define("LANHELP_15", "ÕÛíÑ ÌÏÇ");
+define("LANHELP_16", "ÕÛíÑ");
+define("LANHELP_17", "ÚÇÏí");
+define("LANHELP_18", "ßÈíÑ");
+define("LANHELP_19", "ßÈíÑ ÌÏÇ");
+define("LANHELP_20", "ÖÎã");
+
+define("LANHELP_21", "ÇÖÛØ áÝÊÍ ÕäÏæÞ ÇáÃáæÇä ...");
+define("LANHELP_22", "ÅÖÛØ áÝÊÍ ÕäÏæÞ ÇáÞíÇÓ ...");
+
+define("LANHELP_23", "ÃÖÝ ÑÇÈØ: [link]http://all-patch.org[/link] or  [link=http://all-patch.org]ÒÑ ãæÞÚí[/link]");
+define("LANHELP_24", "äÕ ÏÇßä: [b]åÐÇ ÇáäÕ ÏÇßä[/b]", "font-weight:bold; width: 20px");
+define("LANHELP_25", "äÕ ãÇÆá: [i]åÐÇ ÇáäÕ ãÇÆá[/i]", "font-style:italic; width: 20px");
+define("LANHELP_26", "ÎØ ÃÓÝá ÇáäÕ: [u]åÐÇ ÇáäÕ ÊÍÊå ÎØ[/u]", "text-decoration: underline; width: 20px");
+define("LANHELP_27", "ÃÖÝ ÕæÑÉ: [img]mypicture.jpg[/img]");
+define("LANHELP_28", "ÊæÓíØ : [center]åÐÇ ÇáäÕ Ýí ÇáæÓØ[/center]");
+define("LANHELP_29", "Åáì ÇáíÓÇÑ: [left]åÐÇ ÇáäÕ Ýí ÇáíÓÇÑ[/left]");
+define("LANHELP_30", "Åáì Çáíãíä: [right]åÐÇ ÇáäÕ Ýí Çáíãíä[/right]");
+define("LANHELP_31", "ÇÞÊÈÇÓ: [blockquote]åÐÇ ÇáäÕ ãÞÊÈÓ (ÊÑß åÇãÔ)[/blockquote]");
+define("LANHELP_32", "ßæÏ - äÕ ãäÓÞ : [code]\$foo = bah;[/code]");
+define("LANHELP_33", "HTML : [html]&lt;table&gt;&lt;tr&gt;&lt;td&gt; etc[/html]");
+define("LANHELP_34", "[newpage] Ãæ [newpage=title] ÃÖÝ ÚáÇãÉ ÕÝÍÉ ÌÏíÏÉ¡ ÞÓã ÇáãÞÇá áÃßËÑ ãä ÕÝÍÉ æÇÍÏÉ");
+define("LANHELP_35", "hyperlink url");
+define("LANHELP_36", "ÞÇÆãÉ ãÊÓáÓáÉ: [list]line1*line2*line3[/list] ÞÇÆãÉ ãÊÓáÓáÉ: [list=type]line1*line2*line3[/list]");
+
+
+?>

@@ -1,0 +1,43 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_user_extended.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("UE_LAN_1", "Text Box");
+define("UE_LAN_2", "Radio Buttons");
+define("UE_LAN_3", "Drop-Down Menu");
+define("UE_LAN_4", "DB Table Field");
+define("UE_LAN_5", "Textarea");
+define("UE_LAN_6", "ãÊÛíÑ");
+define("UE_LAN_7", "ÇáÊÇÑíÎ");
+define("UE_LAN_8", "ÇááÛÉ");
+
+define("UE_LAN_9", "ÇáÇÓã");
+define("UE_LAN_10", "ÇáäæÚ");
+define("UE_LAN_11", "ãÓÊÚãá");
+
+define("UE_LAN_HIDE", "ÅÎÝÇÁ Úáì ÇáÃÚÖÇÁ");
+
+define("UE_LAN_LOCATION", "ÇáÇÞÇãÉ");
+define("UE_LAN_LOCATION_DESC", "ãßÇä ÇÞÇãÉ ÇáÚÖæ");
+define("UE_LAN_AIM", "ÚäæÇä AIM");
+define("UE_LAN_AIM_DESC", "ÚäæÇä AIM");
+define("UE_LAN_ICQ", "ÑÞã ICQ");
+define("UE_LAN_ICQ_DESC", "ÑÞã ICQ");
+define("UE_LAN_YAHOO", "ÈÑíÏ íÇåææ");
+define("UE_LAN_YAHOO_DESC", "ÈÑíÏ íÇåææ");
+define("UE_LAN_MSN", "MSN");
+define("UE_LAN_MSN_DESC", "ÈÑíÏ MSN");
+define("UE_LAN_HOMEPAGE", "ÇáÕÝÍÉ ÇáÔÎÕíÉ");
+define("UE_LAN_HOMEPAGE_DESC", "ÇáãæÞÚ ÇáãÝÖá ááÚÖæ (url)");
+define("UE_LAN_BIRTHDAY", "ÊÇÑíÎ ÇáãíáÇÏ");
+define("UE_LAN_BIRTHDAY_DESC", "ÊÇÑíÎ ÇáãíáÇÏ");
+
+?>

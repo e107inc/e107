@@ -1,0 +1,45 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_newspost.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("NWSLAN_1", "Êã ÍÐÝ ÇáÎÈÑ ÈäÌÇÍ.");
+define("NWSLAN_2", "åá ÃäÊ ãÊÃßÏ ãä Çäß ÊÑíÏ ÍÐÝ ÇáÎÈÑ ¿");
+define("NWSLAN_3", "áÇ ÊæÌÏ ÃÎÈÇÑ ãäÔæÑÉ áÍÏ ÇáÇä.");
+define("NWSLAN_4", "ÇáÇÎÈÇÑ ÇáãäÔæÑÉ");
+define("NWSLAN_5", "ÇÝÊÍ ãÚÇáÌ HTML ");
+define("NWSLAN_6", "ÞÓã");
+define("NWSLAN_7", "ÊÚÏíá");
+define("NWSLAN_8", "ÍÐÝ");
+define("NWSLAN_9", "ÖÚ ÚáÇãÉ ááÊÇßíÏ");
+define("NWSLAN_10", "áÇ ÊæÌÏ ÃÞÓÇã ãÍÏÏÉ.");
+define("NWSLAN_11", "ÅÖÇÝÉ/ÊÚÏíá ÇáÃÞÓÇã");
+define("NWSLAN_12", "ÇáÚäæÇä");
+define("NWSLAN_13", "ÇáäÕ");
+define("NWSLAN_14", "ÇáäÕ ÇáããÊÏ");
+define("NWSLAN_15", "ÇáÊÚáíÞÇÊ");
+define("NWSLAN_16", "ÊÝÚíá");
+define("NWSLAN_17", "ÅáÛÇÁ");
+define("NWSLAN_18", "ÇáÓãÇÍ ÈÅÖÇÝÉ ÊÚáíÞÇÊ áåÐÇ ÇáÎÈÑ");
+define("NWSLAN_19", "ÊÝÚíá");
+define("NWSLAN_20", "ÃÊÑßå ÝÇÑÛÇ áíÊã ÅáÛÇÁ ÇáÊÝÚíá ÇáÊáÞÇÆí");
+define("NWSLAN_21", "ãÏÉ ÇáÊÝÚíá");
+define("NWSLAN_22", "ÍÞ ÇáÑÄíÉ");
+define("NWSLAN_23", "ÈÇÎÊíÇÑß áãÌãæÚÉ ãÚíäÉ ¡ Óíßæä ÃÚÖÇÁ åÐå ÇáãÌãæÚÉ ÝÞØ áåæ ÍÞ ÇáÑÄíÉ");
+define("NWSLAN_24", "ãÚÇíäÉ ãÑÉ ÃÎÑì");
+define("NWSLAN_25", "ÊÍÏíË ÇáÎÈÑ");
+define("NWSLAN_26", "ÅÖÇÝÉ ÇáÎÈÑ áÞÇÚÏÉ ÇáÈíÇäÇÊ æ äÔÑå");
+define("NWSLAN_27", "ãÚÇíäÉ");
+define("NWSLAN_28", "ÎÈÑ ÌÏíÏ");
+define("NWSLAN_29", "News Post");
+
+define("NWSLAN_30", "ÚÑÖ ÇáÚäæÇä ÝÞØ");
+
+?>

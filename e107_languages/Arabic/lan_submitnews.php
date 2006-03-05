@@ -1,0 +1,34 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Arabic Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_submitnews.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-03-05 00:00:47 $
+|     $Author: e107_arabs $
+|     $Translation : AnouaroS $
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "ÃÑÓá ÎÈÑ");
+define("LAN_7", "ÅÓã ÇáãÓÊÎÏã: ");
+define("LAN_62", "ÇáãæÖæÚ: ");
+define("LAN_112", "ÇáÈÑíÏ ÇáÅáßÊÑæäí: ");
+define("LAN_133", "ÔßÑÇ áß");
+define("LAN_134", "Êã ÅÑÓÇá ÇáÎÈÑ ÈäÌÇÍ¡ æ ÓíÞæã ÃÍÏ ÇáãÔÑÝíä ÈãÑÇÌÚÉ ÇáÎÈÑ æ äÔÑå Ýí ÃÞÑÈ æÞÊ ããßä.");
+define("LAN_135", "ãÍÊæì ÇáÎÈÑ: ");
+define("LAN_136", "ÃÖÝ ÎÈÑ");
+define("NWSLAN_6", "ÇáÞÓã");
+define("NWSLAN_10", "ÃÞÓÇã ÛíÑ ãÊæÝÑÉ");
+define("NWSLAN_11", "áÇ Êãáß ÇáÕáÇÍíÇÊ ááæáæÌ Åáì åÐå ÇáãäØÞÉ.");
+define("NWSLAN_12", "ÏÎæá ããäæÚ.");
+
+define("SUBNEWSLAN_1", "Úáíß ÅÏÎÇá ÚäæÇä ááÎÈÑ.\\n");
+define("SUBNEWSLAN_2", "Úáíß ÅÏÎÇá ãÍÊæì ÇáÎÈÑ.\\n");
+define("SUBNEWSLAN_3", "ÇáãáÝ ÇáãÑÝÞ íÌÈ Ãä íßæä ÕæÑÉ ãä äæÚ jpg, gif Ãæ png");
+define("SUBNEWSLAN_4", "ãáÝ ßÈíÑ");
+define("SUBNEWSLAN_5", "ÇáÕæÑÉ");
+define("SUBNEWSLAN_6", "(jpg, gif Ãæ png)");
+
+
+?>
