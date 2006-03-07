@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.105 $
-|   $Date: 2006-02-09 01:42:31 $
+|   $Revision: 1.106 $
+|   $Date: 2006-03-07 03:36:52 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -150,7 +150,7 @@ if (isset($_POST['preview'])) {
 
 if (isset($_POST['submit_news'])) {
     if(e_WYSIWYG){
-		$_POST['data'] = $tp->createConstants($_POST['data']); // convert e107_images to {e_IMAGE} etc.
+	  	$_POST['data'] = $tp->createConstants($_POST['data']); // convert e107_images to {e_IMAGE} etc.
 		$_POST['news_extended'] = $tp->createConstants($_POST['news_extended']);
 	}
 	$newspost->submit_item($sub_action, $id);
@@ -918,8 +918,8 @@ class newspost {
 		$_PR = $_POST;
 
 		if(e_WYSIWYG){
-            $_PR['data'] = $tp->createConstants($_PR['data']); // convert e107_images/ to {e_IMAGE} etc.
- 			$_PR['news_extended'] = $tp->createConstants($_PR['news_extended']);
+           //  $_PR['data'] = $tp->createConstants($_PR['data'],TRUE); // convert e107_images/ to {e_IMAGE} etc.
+ 		  //	 $_PR['news_extended'] = $tp->createConstants($_PR['news_extended'],TRUE);
 		}
 
 		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
