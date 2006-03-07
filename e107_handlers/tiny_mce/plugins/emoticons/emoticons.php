@@ -14,7 +14,7 @@ require_once(HEADERF);
 		$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 		$value2 = substr($value, 0, strpos($value, " "));
 		$value = ($value2 ? $value2 : $value);
-		$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$key')\"><img src=\"".e_IMAGE."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
+		$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$key')\"><img src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 	}
 
 	$str .= "</div>";
@@ -22,7 +22,7 @@ require_once(HEADERF);
  echo $str;
 
 function headerjs(){
-	global $IMAGES_DIRECTORY,$pref;
+	global $pref;
 	$js = "<script type='text/javascript' src='../../tiny_mce_popup.js'></script>";
 	$js .= " <script type='text/javascript'>
 
@@ -31,7 +31,7 @@ function headerjs(){
 	}
 
 	function insertEmotion(file_name, title) {
-		var html = '<img src=\'".SITEURL.$IMAGES_DIRECTORY."emotes/".$pref['emotepack']."/' + file_name + '\'  mce_src=\'".SITEURL.$IMAGES_DIRECTORY."emotes/".$pref['emotepack']."/' + file_name + '\' border=\'0\' alt=\'\' />';
+		var html = '<img src=\'".e_IMAGE_ABS."emotes/".$pref['emotepack']."/' + file_name + '\' style=\'border:0px\' alt=\'' + file_name + '\' />';
 		tinyMCE.execCommand('mceInsertContent', false, html);
 		tinyMCEPopup.close();
 	}
