@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-02-21 17:37:05 $
+|     $Revision: 1.66 $
+|     $Date: 2006-03-07 13:46:20 $
 |     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
@@ -196,11 +196,11 @@ if (isset($_POST['updatesettings']))
 		$password2 = "";
 	}
 
-	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])) {
+	if (!check_email($_POST['email'])) {
 	  	$error .= LAN_106."\\n";
 	}
 
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB(check_email($_POST['email']))."' AND user_id !=".USERID."' ")) {
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !=".USERID."' ")) {
 	  	$error .= LAN_408."\\n";
 	}
 
@@ -282,7 +282,7 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
-			$sql->db_Update("user", "user_name='".$tp -> toDB($username)."' {$pwreset} ".$sesschange.", user_email='".$tp -> toDB(check_email($_POST['email']))."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
+			$sql->db_Update("user", "user_name='".$tp -> toDB($username)."' {$pwreset} ".$sesschange.", user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
 			// If user has changed display name, update the record in the online table
 			if($username != USERNAME && !$_uid)
 			{
