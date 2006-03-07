@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.106 $
-|   $Date: 2006-03-07 03:36:52 $
-|   $Author: e107coders $
+|   $Revision: 1.107 $
+|   $Date: 2006-03-07 10:57:56 $
+|   $Author: whoisrich $
 +---------------------------------------------------------------+
 
 */
@@ -228,8 +228,8 @@ if ($action == "create") {
 
 			if(e_WYSIWYG){
 
-				$_POST['data'] = $tp->toHTML($news_body,$parseBB = TRUE); // parse the bbcodes to we can edit as html.
-            	$_POST['data'] = $tp->replaceConstants($_POST['data'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+            	$_POST['data'] = $tp->replaceConstants($news_body,TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+				$_POST['data'] = $tp->toHTML($_POST['data'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
 				$_POST['news_extended'] = $tp->toHTML($news_extended,$parseBB = TRUE);
             	$_POST['news_extended'] = $tp->replaceConstants($_POST['news_extended'],TRUE);
 
