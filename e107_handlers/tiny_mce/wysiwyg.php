@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-03-03 05:37:25 $
+|     $Revision: 1.22 $
+|     $Date: 2006-03-07 03:36:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -78,7 +78,8 @@ $text .= ",force_br_newlines: true\n";
 $text .= ",force_p_newlines: false\n";
 $text .= ",entity_encoding: \"raw\" \n";
 $text .= ",convert_fonts_to_styles: true\n";
-$text .= ",relative_urls: true\n";
+$text .= ",remove_script_host : true\n";
+$text .= ",relative_urls: false\n";
 $text .= ",document_base_url: '".SITEURL."'\n";
 $text .= ",theme_advanced_styles: 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3'\n";
 $text .= ",popup_css: '".THEME."style.css'\n";
@@ -97,7 +98,7 @@ function tinymce_html_bbcode_control(type, value) {
 		case 'get_from_editor':
 
 			value = value.replace(/target=\"_blank\"/, 'rel=\"external\"');
-		// This line messes with the TinyMce image paths. 
+		// This line messes with the TinyMce image paths.
 	   //		value = '[html]\\n' + value + '\\n[/html]';
 			break;
 
