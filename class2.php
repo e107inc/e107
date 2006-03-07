@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.265 $
-|     $Date: 2006-03-03 16:40:52 $
-|     $Author: streaky $
+|     $Revision: 1.266 $
+|     $Date: 2006-03-07 13:46:20 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -633,8 +633,8 @@ function js_location($qry){
 	echo "<script type='text/javascript'>document.location.href='{$qry}'</script>\n"; exit;
 }
 
-function check_email($var) {
-	return preg_match("/^([_a-z0-9-+]+)(\.[_a-z0-9-]+)*@([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,6})$/" , $email) ? TRUE : FALSE;
+function check_email($email) {
+	return preg_match("/^([_a-z0-9-+]+)(\.[_a-z0-9-]+)*@([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,6})$/" , $email) ? $email : FALSE;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
