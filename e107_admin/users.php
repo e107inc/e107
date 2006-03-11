@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2006-03-03 23:36:47 $
+|     $Revision: 1.73 $
+|     $Date: 2006-03-11 21:47:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -413,8 +413,7 @@ class users{
 		if ($sql->db_Select("userclass_classes")) {
 			while ($row = $sql->db_Fetch())
 			{
-				//extract($row);
-				$class[$row['userclass_id']] = $row['userclass_name'];
+				$class[$row['userclass_id']] = $tp->toHTML($row['userclass_name'],"","defs");
 			}
 		}
 
