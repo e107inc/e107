@@ -11,13 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-01-13 03:36:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.42 $
+|     $Date: 2006-03-13 21:53:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+if(defined("FPW_ACTIVE")){
+	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
+}
 
 global $eMenuActive, $e107, $tp, $use_imagecode;
 require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
