@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-03-02 02:46:26 $
+|     $Revision: 1.17 $
+|     $Date: 2006-03-13 21:53:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ if(USER){
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
 
 $use_imagecode = ($pref['fpwcode'] && extension_loaded("gd"));
 if ($use_imagecode) {
@@ -53,6 +54,7 @@ function fpw_error($txt) {
 }
 
 if (e_QUERY) {
+	define("FPW_ACTIVE","TRUE");    
 	$tmp = explode(".", e_QUERY);
 	$tmpinfo = preg_replace("#[\W_]#", "", $tp -> toDB($tmp[0], true));
 	if ($sql->db_Select("tmp", "*", "tmp_info LIKE '%.{$tmpinfo}' ")) {
