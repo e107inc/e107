@@ -1,30 +1,36 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Arabic Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_date.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-03-05 00:00:47 $
+|     $Revision: 1.2 $
+|     $Date: 2006-03-14 18:29:59 $
 |     $Author: e107_arabs $
-|     $Translation : AnouaroS
+|     $Translation : AnouaroS $
 +----------------------------------------------------------------------------+
 */
 
-define("LANDT_01", "ÓäÉ");
-define("LANDT_02", "ÔåÑ");
-define("LANDT_03", "ÃÓÈæÚ");
-define("LANDT_04", "íæã");
-define("LANDT_05", "ÓÇÚÉ");
-define("LANDT_06", "ÏÞíÞÉ");
-define("LANDT_07", "ËÇäíÉ");
-define("LANDT_01s", "ÓäæÇÊ");
-define("LANDT_02s", "ÔåæÑ");
-define("LANDT_03s", "ÃÓÇÈíÚ");
-define("LANDT_04s", "ÃíÇã");
-define("LANDT_05s", "ÓÇÚÇÊ");
-define("LANDT_06s", "ÏÞÇÆÞ");
+define("LANDT_01", "&#1587;&#1606;&#1577;");
+define("LANDT_02", "&#1588;&#1607;&#1585;");
+define("LANDT_03", "&#1571;&#1587;&#1576;&#1608;&#1593;");
+define("LANDT_04", "&#1610;&#1608;&#1605;");
+define("LANDT_05", "&#1587;&#1575;&#1593;&#1577;");
+define("LANDT_06", "&#1583;&#1602;&#1610;&#1602;&#1577;");
+define("LANDT_07", "&#1579;&#1575;&#1606;&#1610;&#1577;");
+define("LANDT_01s", "&#1587;&#1606;&#1608;&#1575;&#1578;");
+define("LANDT_02s", "&#1588;&#1607;&#1608;&#1585;");
+define("LANDT_03s", "&#1571;&#1587;&#1575;&#1576;&#1610;&#1593;");
+define("LANDT_04s", "&#1571;&#1610;&#1575;&#1605;");
+define("LANDT_05s", "&#1587;&#1575;&#1593;&#1575;&#1578;");
+define("LANDT_06s", "&#1583;&#1602;&#1575;&#1574;&#1602;");
 define("LANDT_07s", "ËæÇä");
+
+define("LANDT_08", "&#1583;&#1602;&#1610;&#1602;&#1577;");
+define("LANDT_08s", "&#1583;&#1602;&#1575;&#1574;&#1602;");
+define("LANDT_09", "&#1579;&#1575;&#1606;&#1610;&#1577;");
+define("LANDT_09s", "&#1579;&#1608;&#1575;&#1606;");
+define("LANDT_AGO", "&#1605;&#1590;&#1578;");
 
 
 ?>

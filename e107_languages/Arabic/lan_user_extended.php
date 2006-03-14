@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Arabic/lan_user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-03-05 00:00:47 $
+|     $Revision: 1.2 $
+|     $Date: 2006-03-14 18:29:59 $
 |     $Author: e107_arabs $
 |     $Translation : AnouaroS $
 +----------------------------------------------------------------------------+
@@ -15,29 +15,28 @@ define("UE_LAN_2", "Radio Buttons");
 define("UE_LAN_3", "Drop-Down Menu");
 define("UE_LAN_4", "DB Table Field");
 define("UE_LAN_5", "Textarea");
-define("UE_LAN_6", "ãÊÛíÑ");
-define("UE_LAN_7", "ÇáÊÇÑíÎ");
-define("UE_LAN_8", "ÇááÛÉ");
+define("UE_LAN_6", "&#1605;&#1578;&#1594;&#1610;&#1585;");
+define("UE_LAN_7", "&#1575;&#1604;&#1578;&#1575;&#1585;&#1610;&#1582;");
+define("UE_LAN_8", "&#1575;&#1604;&#1604;&#1594;&#1577;");
 
-define("UE_LAN_9", "ÇáÇÓã");
-define("UE_LAN_10", "ÇáäæÚ");
-define("UE_LAN_11", "ãÓÊÚãá");
+define("UE_LAN_9", "&#1575;&#1604;&#1575;&#1587;&#1605;");
+define("UE_LAN_10", "&#1575;&#1604;&#1606;&#1608;&#1593;");
+define("UE_LAN_11", "&#1605;&#1587;&#1578;&#1593;&#1605;&#1604;");
 
-define("UE_LAN_HIDE", "ÅÎÝÇÁ Úáì ÇáÃÚÖÇÁ");
+define("UE_LAN_HIDE", "&#1573;&#1582;&#1601;&#1575;&#1569; &#1593;&#1604;&#1609; &#1575;&#1604;&#1571;&#1593;&#1590;&#1575;&#1569;");
 
-define("UE_LAN_LOCATION", "ÇáÇÞÇãÉ");
-define("UE_LAN_LOCATION_DESC", "ãßÇä ÇÞÇãÉ ÇáÚÖæ");
-define("UE_LAN_AIM", "ÚäæÇä AIM");
-define("UE_LAN_AIM_DESC", "ÚäæÇä AIM");
-define("UE_LAN_ICQ", "ÑÞã ICQ");
-define("UE_LAN_ICQ_DESC", "ÑÞã ICQ");
-define("UE_LAN_YAHOO", "ÈÑíÏ íÇåææ");
-define("UE_LAN_YAHOO_DESC", "ÈÑíÏ íÇåææ");
+define("UE_LAN_LOCATION", "&#1575;&#1604;&#1575;&#1602;&#1575;&#1605;&#1577;");
+define("UE_LAN_LOCATION_DESC", "&#1605;&#1603;&#1575;&#1606; &#1575;&#1602;&#1575;&#1605;&#1577; &#1575;&#1604;&#1593;&#1590;&#1608;");
+define("UE_LAN_AIM", "&#1593;&#1606;&#1608;&#1575;&#1606; AIM");
+define("UE_LAN_AIM_DESC", "&#1593;&#1606;&#1608;&#1575;&#1606; AIM");
+define("UE_LAN_ICQ", "&#1585;&#1602;&#1605; ICQ");
+define("UE_LAN_ICQ_DESC", "&#1585;&#1602;&#1605; ICQ");
+define("UE_LAN_YAHOO", "&#1576;&#1585;&#1610;&#1583; &#1610;&#1575;&#1607;&#1608;&#1608;");
+define("UE_LAN_YAHOO_DESC", "&#1576;&#1585;&#1610;&#1583; &#1610;&#1575;&#1607;&#1608;&#1608;");
 define("UE_LAN_MSN", "MSN");
-define("UE_LAN_MSN_DESC", "ÈÑíÏ MSN");
-define("UE_LAN_HOMEPAGE", "ÇáÕÝÍÉ ÇáÔÎÕíÉ");
-define("UE_LAN_HOMEPAGE_DESC", "ÇáãæÞÚ ÇáãÝÖá ááÚÖæ (url)");
-define("UE_LAN_BIRTHDAY", "ÊÇÑíÎ ÇáãíáÇÏ");
-define("UE_LAN_BIRTHDAY_DESC", "ÊÇÑíÎ ÇáãíáÇÏ");
-
+define("UE_LAN_MSN_DESC", "&#1576;&#1585;&#1610;&#1583; MSN");
+define("UE_LAN_HOMEPAGE", "&#1575;&#1604;&#1589;&#1601;&#1581;&#1577; &#1575;&#1604;&#1588;&#1582;&#1589;&#1610;&#1577;");
+define("UE_LAN_HOMEPAGE_DESC", "&#1575;&#1604;&#1605;&#1608;&#1602;&#1593; &#1575;&#1604;&#1605;&#1601;&#1590;&#1604; &#1604;&#1604;&#1593;&#1590;&#1608; (url)");
+define("UE_LAN_BIRTHDAY", "&#1578;&#1575;&#1585;&#1610;&#1582; &#1575;&#1604;&#1605;&#1610;&#1604;&#1575;&#1583;");
+define("UE_LAN_BIRTHDAY_DESC", "&#1578;&#1575;&#1585;&#1610;&#1582; &#1575;&#1604;&#1605;&#1610;&#1604;&#1575;&#1583;");
 ?>
