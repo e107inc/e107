@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-02-14 21:30:55 $
+|     $Revision: 1.4 $
+|     $Date: 2006-03-14 20:39:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -362,7 +362,7 @@ define("LAN_ADMIN_HELP_8", "<i>Esta página muestra todos los enlaces en la categ
   	 ".LINK_ICON_ORDER_UP." : sube 1 posición de orden.<br /><br />
   	 ".LINK_ICON_ORDER_DOWN." : baja una posición de orden.<br />
   	 <br />
-  	 <b>order</b><br />Aquí puede manualmente fijat el orden de los enalces. Necesita cambiar los valores de las cajas de selección al orden que desee, y luego pulsar el botón de reordenar para actualizar.<br />");
+  	 <b>order</b><br />Aquí puede manualmente fijar el orden de los enlaces. Necesita cambiar los valores de las cajas de selección al orden que desee, y luego pulsar el botón de reordenar para actualizar.<br />");
   	 
 define("LAN_ADMIN_HELP_9", "<i>La página de edición de enlaces le permite editar los enlaces</i><br /><br />Puede transferir un nuevo icono, y después asignarlo al enlace.<br /><br />El tipo de apertura le permite como se abrirá el enlace cuando se pulse sobre él.");
 define("LAN_ADMIN_HELP_10", "<i>La página de envío de enlaces le permite añadir un enlace a los enlaces existentes</i><br /><br />Se añadira un pequeño texto en el campo de descripción del envío.<br /><br />Puede transferir un nuevo icono, y después asignarlo al enlace.<br /><br />El tipo de apertura le permite como se abrirá el enlace cuando se pulse sobre él.");
