@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-03-03 05:24:07 $
+|     $Revision: 1.29 $
+|     $Date: 2006-03-14 17:29:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -138,63 +138,12 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 }
 
-
+/*  Deprecated.
+ Use mail_validation_class.php instead.
 function validatemail($Email) {
-	$HTTP_HOST = $_SERVER['HTTP_HOST'];
-	$result = array();
 
-	if (!preg_match("/^([_a-z0-9-+]+)(\.[_a-z0-9-]+)*@([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,6})$/" , $Email)) {
-		$result[0] = false;
-		$result[1] = "$Email is not properly formatted";
-		return $result;
-	}
-
-	list ($Username, $Domain ) = split ("@", $Email);
-
-	if (function_exists("getmxrr") && getmxrr($Domain, $MXHost)) {
-		$ConnectAddress = $MXHost[0];
-	} else {
-		$ConnectAddress = $Domain;
-	}
-
-	$Connect = fsockopen ($ConnectAddress, 25 );
-
-	if ($Connect) {
-		if (strpos($Out = fgets($Connect, 1024), "220") === 0) {
-			fputs ($Connect, "HELO $HTTP_HOST\r\n");
-			$Out = fgets ($Connect, 1024 );
-			fputs ($Connect, "MAIL FROM: <{$Email}>\r\n");
-			$From = fgets ($Connect, 1024 );
-			fputs ($Connect, "RCPT TO: <{$Email}>\r\n");
-			$To = fgets ($Connect, 1024);
-			fputs ($Connect, "QUIT\r\n");
-			fclose($Connect);
-			if (strpos($From,"250") !== 0 || strpos($To,"250") !== 0) {
-				$result[0] = false;
-				$result[1] = "Server rejected address";
-				$result[2] = $From;
-				return $result;
-			}
-		} else {
-			$result[0] = false;
-			$result[1] = "No response from server";
-		  $result[2] = $Out;
-			return $result;
-		}
-
-	} else {
-
-		$result[0] = false;
-		$result[1] = "Cannot find E-Mail server.";
-		$result[2] = $From;
-		return $result;
-	}
-	$result[0] = true;
-	$result[1] = "$Email appears to be valid.";
-	$result[2] = $From;
-	return $result;
-} // end of function
-
+}
+*/
 
 
 

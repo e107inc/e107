@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2006-03-02 02:47:30 $
+|     $Revision: 1.83 $
+|     $Date: 2006-03-14 17:29:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -277,6 +277,7 @@ if (isset($_POST['register']))
 		$name = "";
 	}
 
+// Check for disallowed names.
 	if(isset($pref['signup_disallow_text']))
 	{
 		$tmp = explode(",", $pref['signup_disallow_text']);
@@ -319,6 +320,7 @@ if (isset($_POST['register']))
 		}
 	}
 
+// Check password fields are matching.
 	if ($_POST['password1'] != $_POST['password2'])
 	{
 		$error_message .= LAN_105."\\n";
@@ -372,12 +374,14 @@ if (isset($_POST['register']))
 		}
     }
 
+// Check for Duplicate Email address.
 	if ($sql->db_Select("user", "user_email", "user_email='".$tp -> toDB($_POST['email'])."' "))
 	{
 		$error_message .= LAN_408."\\n";
 		$error = TRUE;
 	}
 
+// Extended Field validation
 	$extList = $usere->user_extended_get_fieldList();
 
 	foreach($extList as $ext)
@@ -394,12 +398,14 @@ if (isset($_POST['register']))
 		}
 	}
 
+// Email syntax validation.
 	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email'])) {
 		message_handler("P_ALERT", LAN_106);
 		$error_message .= LAN_106."\\n";
      	$error = TRUE;
 	}
 
+// Check Email against banlist.
 	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
 	if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_POST['email'])."' OR banlist_ip='{$wc}'"))
 	{
@@ -416,6 +422,29 @@ if (isset($_POST['register']))
 			exit;
 		}
 	}
+
+
+// Check email address on remote server (if enabled).
+	if ($pref['signup_remote_emailcheck'] && $error != TRUE)
+	{
+		require_once(e_HANDLER."mail_validation_class.php");
+		list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
+		$validator = new email_validation_class;
+		$validator->localuser= $adminuser;
+		$validator->localhost= $adminhost;
+		$validator->timeout=3;
+ 	  //	$validator->debug=1;
+ 	  //	$validator->html_debug=1;
+		if($validator->ValidateEmailBox($_POST['email']) != 1){
+			$error_message .= LAN_106."\\n";
+			$error = TRUE;
+			$email = "";
+			$email_confirm = "";
+		}
+
+	}
+
+
 
 	if($error_message)
 	{
