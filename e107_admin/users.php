@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2006-03-14 17:29:08 $
+|     $Revision: 1.75 $
+|     $Date: 2006-03-14 18:18:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,17 +60,31 @@ $amount = 30;
 // ------- Resend Email. --------------
 if (isset($_POST['resend_mail'])) {
 	$tid = $_POST['resend_id'];
+
+	// Check for a Language field, and if present, send the email in the user's language.
+    if($sql -> db_Select("user_extended", "user_language", "user_extended_id = '$tid'")){
+    	$row = $sql -> db_Fetch();
+		$lfile = e_LANGUAGEDIR.$row['user_language']."/lan_signup.php";
+    }
+
+    if(is_readable($lfile)){
+		require_once($lfile);
+	}else{
+		$row['user_language'] = e_LANGUAGE;
+    	require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+	}
+
 	$key = $_POST['resend_key'];
 	$name = $_POST['resend_name'];
 	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$tid.".".$key : SITEURL."/signup.php?activate.".$tid.".".$key));
 
-	$message = USRLAN_114." ".$_POST['resend_name']."\n\n".USRLAN_122." ".SITENAME."\n".USRLAN_123."\n\n".USRLAN_124."...\n\n";
-	$message .= RETURNADDRESS . "\n\n".USRLAN_115."\n\n ".USRLAN_125." ".SITENAME."\n".SITEURL;
+	$message = LAN_EMAIL_01." ".$_POST['resend_name']."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."...\n\n";
+	$message .= RETURNADDRESS . "\n\n".SITENAME."\n".SITEURL;
 
 	require_once(e_HANDLER."mail.php");
-	if(sendemail($_POST['resend_email'], USRLAN_113." ".SITENAME, $message)){
+	if(sendemail($_POST['resend_email'], LAN_404." ".SITENAME, $message)){
 	//  echo str_replace("\n","<br>",$message);
-		$user->show_message("Email Re-sent to: ".$name);
+		$user->show_message("Email Re-sent to: ".$name." (".$row['user_language'].")");
 	}else{
     	$user->show_message("Failed to Re-sent to: ".$name);
 	}
@@ -231,7 +245,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unban") {
 	if(!$sub_action){$sub_action = "user_id"; }
 }
 
-// ------- Resend Email. --------------
+// ------- Resend Email Confirmation. --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
@@ -250,7 +264,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') {
 		exit;
 	}
 }
-// ------- TEst Email. --------------
+// ------- TEst Email confirmation. --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
