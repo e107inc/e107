@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2006-02-27 12:32:24 $
-|     $Author: whoisrich $
+|     $Revision: 1.84 $
+|     $Date: 2006-03-14 17:29:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -382,8 +382,8 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 
 	<select name='user_reg_veri' class='tbox'>";
 	$veri_list[0] = PRFLAN_152;
-  $veri_list[1] = PRFLAN_31;
-  $veri_list[2] = PRFLAN_153;
+	$veri_list[1] = PRFLAN_31;
+	$veri_list[2] = PRFLAN_153;
 
 	foreach($veri_list as $v => $v_title){
 		$sel = ($pref['user_reg_veri'] == $v) ? "selected='selected'" : "";
@@ -391,6 +391,14 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	}
 
 	$text .="</select></td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_160."<br /></td>
+	<td class='forumheader3' style='width:50%;text-align:right' >
+	<input type='radio' name='signup_remote_emailcheck' value='1'".($pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='signup_remote_emailcheck' value='0'".(!$pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
 	</tr>
 
 	<tr>
@@ -423,6 +431,8 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<input type='text' class='tbox' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."' />
 	</td>
 	</tr>
+
+
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_136."</td>
@@ -492,7 +502,7 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 		$text .= "
 		<tr>
 			<td style='width:50%' class='forumheader3'>".$signup_option_title[$key]."</td>
-			<td style='width:50%' class='forumheader3'>". 
+			<td style='width:50%' class='forumheader3'>".
 			(!$pref[$value]        ? "<input type='radio' name='{$value}' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='{$value}' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;".
 			( $pref[$value] == "1" ? "<input type='radio' name='{$value}' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='{$value}' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;".
 			( $pref[$value] == "2" ? "<input type='radio' name='{$value}' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='{$value}' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;

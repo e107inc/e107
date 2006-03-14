@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2006-03-11 21:47:44 $
+|     $Revision: 1.74 $
+|     $Date: 2006-03-14 17:29:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -78,12 +78,23 @@ if (isset($_POST['resend_mail'])) {
 }
 // ------- Test Email. --------------
 if (isset($_POST['test_mail'])) {
-	require_once(e_HANDLER."mail.php");
-	$text = validatemail($_POST['test_email']);
+	require_once(e_HANDLER."mail_validation_class.php");
+	list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
+	$validator = new email_validation_class;
+	$validator->localuser= $adminuser;
+	$validator->localhost= $adminhost;
+	$validator->timeout=5;
+	$validator->debug=1;
+	$validator->html_debug=1;
+	$text = "<div style='".ADMIN_WIDTH."'>";
+	ob_start();
+	$email_status = $validator->ValidateEmailBox($_POST['test_email']);
+	$text .= ob_get_contents();
+	ob_end_clean();
+	$text .= "</div>";
 	$caption = $_POST['test_email']." - ";
-	$caption .= ($text[0] == TRUE)?"Successful":
-	 "Error";
-	$ns->tablerender($caption, $text[1]);
+	$caption .= ($email_status == 1)? "Valid": "Invalid";
+	$ns->tablerender($caption, $text);
 	unset($id, $action, $sub_cation);
 }
 // ------- Update Options. --------------
@@ -678,7 +689,7 @@ class users{
 
 
 // ======================
-		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $user_total)";
+		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $users)";
 		$ns->tablerender($caption, $text);
 
 	}
