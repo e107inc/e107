@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-01-13 13:27:22 $
-|     $Author: lisa_ $
+|     $Revision: 1.22 $
+|     $Date: 2006-03-16 21:01:44 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -132,8 +132,8 @@ foreach($forumArray as $forumInfo)
 		}
 	}
 
-	$THREAD = "<a href='".$path."forum_viewtopic.php?$thread_id'>$thread_name</a>";
-	$FORUM = "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>";
+	$THREAD = "<a href='".$path."forum_viewtopic.php?{$thread_id}.last'>$thread_name</a>";
+	$FORUM = "<a href='".$path."forum_viewforum.php?{$forum_id}'>$forum_name</a>";
 	 
 	$VIEWS = $thread_views;
 	$REPLIES = $thread_total_replies;
