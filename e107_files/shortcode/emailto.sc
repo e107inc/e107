@@ -1,8 +1,14 @@
 global $pref;
+
+if (!USER)
+{
+	return "";
+}
+
 $image = IMAGE_email;
+
 if(is_numeric($parm))
 {
-	if(!$pref['emailusers']){return "";}
 	return "<a href='".e_BASE."emailmember.php?id.{$parm}'>{$image}</a>";
 }
 else
