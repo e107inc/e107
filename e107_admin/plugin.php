@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-01-31 19:36:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.59 $
+|     $Date: 2006-03-16 15:58:14 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -522,59 +522,51 @@ function show_uninstall_confirm()
 	{
 		$del_text = "
 		<select class='tbox' name='delete_files'>
-		<option value='0'>No</option>
-		<option value='1'>Yes</option>
+		<option value='0'>".EPL_ADLAN_51."</option>
+		<option value='1'>".EPL_ADLAN_52."</option>
 		</select>
 		";
 	}
 	else
 	{
 		$del_text = "
-		Directory not writable
+		".EPL_ADLAN_53."
 		<input type='hidden' name='delete_files' value='0' />
 		";
 	}
-
+	
 	$text = "
 	<form action='".e_SELF."?".e_QUERY."' method='post'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-		<td colspan='2' class='forumheader'>Please select the option for uninstalling the plugin: $eplug_name </td>
+		<td colspan='2' class='forumheader'>".EPL_ADLAN_54." $eplug_name </td>
 	</tr>
 	<tr>
-		<td class='forumheader3'>Uninstall plugin</td>
-		<td class='forumheader3'>Yes</td>
+		<td class='forumheader3'>".EPL_ADLAN_55."</td>
+		<td class='forumheader3'>".EPL_ADLAN_52."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>
-		Delete plugin tables
-		<div class='smalltext'>
-		If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail.  Tables will have to be manually deleted to remove.
-		</div>
+			".EPL_ADLAN_57."<div class='smalltext'>".EPL_ADLAN_58."</div>
 		</td>
 		<td class='forumheader3'>
-		<select class='tbox' name='delete_tables'>
-		<option value='1'>Yes</option>
-		<option value='0'>No</option>
-		</select>
+			<select class='tbox' name='delete_tables'>
+			<option value='1'>".EPL_ADLAN_52."</option>
+			<option value='0'>".EPL_ADLAN_51."</option>
+			</select>
 		</td>
 	</tr>
 	<tr>
-		<td class='forumheader3'>Delete plugin files
-		<div class='smalltext'>
-		e107 will attempt to remove all plugin related files.
-		</div>
-		</td>
-		<td class='forumheader3'>{$del_text}
-		</td>
+		<td class='forumheader3'>".EPL_ADLAN_59."<div class='smalltext'>".EPL_ADLAN_60."</div></td>
+		<td class='forumheader3'>{$del_text}</td>
 	</tr>
 	<tr>
-		<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='uninstall_confirm' value='Confirm uninstall' />&nbsp;&nbsp;<input class='button' type='submit' name='uninstall_cancel' value='Cancel uninstall' onclick=\"location.href='".e_SELF."'; return false;\"/></td>
+		<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='uninstall_confirm' value='".EPL_ADLAN_61."' />&nbsp;&nbsp;<input class='button' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/></td>
 	</tr>
 	</table>
 	</form>
 	";
-	$ns->tablerender("Uninstall: {$eplug_name}", $text);
+	$ns->tablerender(EPL_ADLAN_63." {$eplug_name}", $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
