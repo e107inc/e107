@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.266 $
-|     $Date: 2006-03-07 13:46:20 $
-|     $Author: whoisrich $
+|     $Revision: 1.267 $
+|     $Date: 2006-03-18 21:33:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -473,14 +473,6 @@ if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") 
 	exit;
 }
 
-if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !== FALSE) {
-	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
-	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
-} else if (strpos(e_SELF, $PLUGINS_DIRECTORY) === FALSE) {
-	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
-	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
-}
-
 $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x'])) {
@@ -585,6 +577,14 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SEL
 	}
 } else {
 	require_once(THEME."theme.php");
+}
+
+if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !== FALSE) {
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
+} else if (strpos(e_SELF, $PLUGINS_DIRECTORY) === FALSE) {
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
 
 if(!defined("IMODE")) define("IMODE", "lite");
