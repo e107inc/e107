@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-02-16 21:37:06 $
+|     $Revision: 1.36 $
+|     $Date: 2006-03-18 20:53:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -553,13 +553,12 @@ class forum
 		$this->show_message($txt);
 		$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<div style='text-align:center'>
-		Confirm delete operation<br /><br />
-		<input type='submit' class='button' name='confirm' value='Confirm Delete' />
+		<div style='text-align:center'>".FORLAN_180."<br /><br />
+		<input type='submit' class='button' name='confirm' value='">FORLAN_181."' />
 		</div>
 		</form>
 		";
-		$ns->tablerender("Delete confirmation", $txt);
+		$ns->tablerender(FORLAN_181, $txt);
 	}
 
 	function show_subs($id)
