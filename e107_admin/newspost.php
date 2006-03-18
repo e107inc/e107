@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.107 $
-|   $Date: 2006-03-07 10:57:56 $
-|   $Author: whoisrich $
+|   $Revision: 1.108 $
+|   $Date: 2006-03-18 03:43:08 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -641,7 +641,7 @@ class newspost {
 			</tr>\n";
 
 			$text .= "<tr>
-			<td class='forumheader3'>Images</td>
+			<td class='forumheader3'>".ADLAN_105."</td>
 			<td class='forumheader3'>
 			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_38."</a>
 			<div style='display: none;'>
