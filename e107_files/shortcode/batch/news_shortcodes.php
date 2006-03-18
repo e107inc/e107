@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-02-17 21:26:38 $
-|     $Author: streaky $
+|     $Revision: 1.20 $
+|     $Date: 2006-03-18 14:59:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -31,9 +31,9 @@ SC_BEGIN NEWSBODY
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'parse_sc', $news_item['news_author']);
+$news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'parse_sc, fromadmin', $news_item['news_author']);
 if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
-    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'parse_sc', $news_item['news_author']);
+    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'parse_sc, fromadmin', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
 }
 return $news_body;
