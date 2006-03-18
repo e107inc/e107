@@ -1,5 +1,5 @@
-global $pref;
-if (array_key_exists('forum_attach',$pref) && $pref['forum_attach'] && FILE_UPLOADS || ADMIN)
+global $pref, $fromadmin;
+if (array_key_exists('forum_attach', $pref) && $pref['forum_attach'] && FILE_UPLOADS || ADMIN || $fromadmin)
 {
 	$image = (file_exists(THEME."generic/file.png") ? THEME."generic/file.png" : e_IMAGE."generic/".IMODE."/file.png");
 	list($fname, $uc) = explode("^", $parm);
