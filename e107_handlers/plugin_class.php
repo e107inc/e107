@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-01-22 19:53:06 $
-|     $Author: e107coders $
+|     $Revision: 1.41 $
+|     $Date: 2006-03-19 23:43:28 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 
@@ -245,7 +245,7 @@ class e107plugin
 		}
 		if ($action == 'remove') {
 			foreach($prefvals as $v) {
-				if ($i = array_search($v, $curvals)) {
+				if (($i = array_search($v, $curvals)) !== FALSE) {
 					unset($curvals[$i]);
 				}
 			}
