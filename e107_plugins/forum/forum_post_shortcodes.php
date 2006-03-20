@@ -155,10 +155,10 @@ return "";
 SC_END
 
 SC_BEGIN POLL
-global $poll, $action, $pref;
+global $poll_form, $action, $pref;
 if ($action == "nt" && $pref['forum_poll'] && strpos(e_QUERY, "edit") === FALSE)
 {
-	return $poll;
+	return $poll_form;
 }
 return "";
 SC_END
