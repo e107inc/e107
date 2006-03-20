@@ -12,9 +12,9 @@ class alt_login{
 		
 		if($login_result === AUTH_SUCCESS ){
 			$sql = new db;
-			if(!$sql -> db_Select("user","*","user_name='{$username}' ")){
+			if(!$sql -> db_Select("user","*","user_loginname='{$username}' ")){
 				// User not found in e107 database - add it now.
-				$qry = "INSERT INTO ".MPREFIX."user (user_id,user_name,user_join) VALUES ('0','{$username}',".time().")";
+				$qry = "INSERT INTO ".MPREFIX."user (user_id, user_loginname, user_name, user_join) VALUES ('0', '{$username}', '{$username}', ".time().")";
 				$sql -> db_Select_gen($qry);
 			}
 			// Set password and any other applicable fields
@@ -22,7 +22,7 @@ class alt_login{
 			foreach($newvals as $key => $val){
 				$qry .= " ,user_{$key}='{$val}' ";
 			}
-			$qry.=" WHERE user_name='{$username}' ";
+			$qry.=" WHERE user_loginname='{$username}' ";
 			$sql -> db_Update("user",$qry);
 		} else {
 			switch($login_result){
