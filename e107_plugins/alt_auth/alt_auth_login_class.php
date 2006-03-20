@@ -22,7 +22,7 @@ class alt_login
 		if($login_result === AUTH_SUCCESS )
 		{
 			$sql = new db;
-			if(!$sql -> db_Select("user","*","user_name='{$username}' "))
+			if(!$sql -> db_Select("user","*","user_loginname='{$username}' "))
 			{
 				// User not found in e107 database - add it now.
 				$qry = "INSERT INTO #user (user_id, user_loginname, user_name, user_join) VALUES ('0','{$username}','{$username}',".time().")";
@@ -34,7 +34,7 @@ class alt_login
 			{
 				$qry .= " ,user_{$key}='{$val}' ";
 			}
-			$qry.=" WHERE user_name='{$username}' ";
+			$qry.=" WHERE user_loginname='{$username}' ";
 			$sql -> db_Update("user", $qry);
 		}
 		else
