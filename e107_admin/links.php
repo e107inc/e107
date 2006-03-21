@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-12-25 01:26:59 $
-|     $Author: sweetas $
+|     $Revision: 1.54 $
+|     $Date: 2006-03-21 21:00:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -292,7 +292,7 @@ class links
 				<table cellspacing='0' cellpadding='0' border='0' style='width: 100%'>
 				<tr>
 				".$subindent."
-				<td style='width: 100%'>".$link_name."</td>
+				<td style='".($indent ? "" : "font-weight:bold;")."width: 100%'>".$link_name."</td>
 				</tr>
 				</table>
 				</td>";
@@ -462,12 +462,12 @@ class links
 		if(!is_object($tp)) {
 			$tp=new e_parse;
 		}
+		$_POST['link_name'] = $tp->toDB($_POST['link_name']);
 		if($_POST['link_parent']){
 			$tmp = explode("|",$_POST['link_parent']);
 			$link_name = $tp->toDB(("submenu.".$tmp[1].".".$_POST['link_name']));
 			$parent_id = intval($tmp[0]);
 		}else{
-			$link_name = $tp->toDB($_POST['link_name']);
 			$parent_id = 0;
 		}
 		$link_url = $tp->toDB($_POST['link_url']);
@@ -484,7 +484,7 @@ class links
 				foreach($childList as $c)
 				{
 					$old = explode(".", $c['link_name'], 3);
-					$newname = "submenu.".$link_name.".".$old[2];
+					$newname = "submenu.".$_POST['link_name'].".".$old[2];
 					$sql->db_Update("links", "link_name = '{$newname}' WHERE link_id = '{$c['link_id']}'");
 				}
 			}
