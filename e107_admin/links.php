@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-03-21 21:00:37 $
+|     $Revision: 1.55 $
+|     $Date: 2006-03-22 01:58:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -469,6 +469,7 @@ class links
 			$parent_id = intval($tmp[0]);
 		}else{
 			$parent_id = 0;
+			$link_name = $_POST['link_name'];
 		}
 		$link_url = $tp->toDB($_POST['link_url']);
 		$link_description = $tp->toDB($_POST['link_description']);
