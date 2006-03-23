@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-12 01:23:56 $
+|     $Revision: 1.4 $
+|     $Date: 2006-03-23 22:06:16 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19", "Ahora");
 define("LAN_NEWS_20", "Noticias actualizadas en la base de datos para este idioma: ");
 define("LAN_NEWS_21", "Noticias actualizadas en la base de datos.");
-define("LAN_NEWS_22", "Ir a la página: ");
+//define("LAN_NEWS_22", "Ir a la página: ");
 define("LAN_NEWS_23", "Categoría de noticias");
 define("LAN_NEWS_24", "Crear PDF para esta noticia");
 ?>

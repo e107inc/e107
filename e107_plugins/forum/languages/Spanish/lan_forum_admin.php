@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-01-19 00:30:15 $
+|     $Revision: 1.13 $
+|     $Date: 2006-03-23 22:06:16 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -192,7 +192,8 @@ define("FORLAN_176", "Informe");
 define("FORLAN_177", "Notificación correo ACTIVADA por defecto");
 define("FORLAN_178", "Actívalo para permitir que la notificación de email esté activa por defecto");
 define("FORLAN_179", "(Poniendo un * al inicio del nombre del foro hará que este foro sea un contenedor de subforos. El tema del foro también debe soportar esta situación.)");
-
+define("FORLAN_180", "Confirmar operación de eliminar"); 
+define("FORLAN_181", "Comfirme Eliminar"); 
 
 define("LAN_46", "Foros");
 ?>

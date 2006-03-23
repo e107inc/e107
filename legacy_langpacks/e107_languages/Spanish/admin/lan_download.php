@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-25 19:38:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-03-23 22:06:16 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ define("DOWLAN_140", "Transferir imágenes locales en e107_files/downloadimages p
 define("DOWLAN_141", "Localización");
 define("DOWLAN_142", "Actualizar zona");
 define("DOWLAN_143", "Crear zona");
-define("DOWLAN_144", "No hay zonas definidas, vaya a la sección de zonas para añadir una.");
+define("DOWLAN_144", "No hay zonas definidas en la sección de zonas");
 define("DOWLAN_145", "Descarga visible para");
 define("DOWLAN_146", "Mensaje de negación de descarga o URL");
 define("DOWLAN_147", "Icono para categoría vacía");

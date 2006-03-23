@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-03-14 20:39:27 $
+|     $Revision: 1.11 $
+|     $Date: 2006-03-23 22:06:16 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -152,7 +152,8 @@ define("PRFLAN_155", "Mostrar Nombre disponible a");
 define("PRFLAN_156", "Resetear TODOS los nombres mostrables");
 define("PRFLAN_157", "Todoso los nombres mostrables se han reseteado a nombres de conexión");
 define("PRFLAN_158", "Longitud máxima del nombre mostrable");
-
+define("PRFLAN_159", "Viendo esta página con");
+define("PRFLAN_160", "Comprueba servidores remotos al validar direcciones email.");
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");

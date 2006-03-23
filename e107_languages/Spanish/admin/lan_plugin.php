@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.10 $
+|     $Date: 2006-03-23 22:06:16 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -60,6 +60,25 @@ define("EPL_ADLAN_47", "Parámetros RSS eliminados");
 define("EPL_ADLAN_48", "No se pueden crear los parámetros RSS");
 define("EPL_ADLAN_49", "No se pueden eliminar los parámetros RSS");
 define("EPL_ADLAN_50", "Comentarios eliminados con éxito");
+define("EPL_ADLAN_51", "No"); 
+define("EPL_ADLAN_52", "Si"); 
+define("EPL_ADLAN_53", "Directorio no escribible"); 
+define("EPL_ADLAN_54", "Por favor, seleccione la opción para desinstalar el plugin:"); 
+define("EPL_ADLAN_55", "Desinstalar plugin"); 
+define("EPL_ADLAN_56", "Si"); 
+define("EPL_ADLAN_57", "Eliminar tablas del plugin"); 
+define("EPL_ADLAN_58", "Si no se eliminan las tablas, el plugin puede ser reinstalado sin perder la información contenida. La creación de tablas durante la instalación  fallará. Las tablas deberásn ser eliminadas manualmente."); 
+define("EPL_ADLAN_59", "Eliminar archivos del plugin"); 
+define("EPL_ADLAN_60", "e107 intentará eliminar todos los archivos del plugin."); 
+define("EPL_ADLAN_61", "Confirmar desinstalación"); 
+define("EPL_ADLAN_62", "Cancelar desinstalación"); 
+define("EPL_ADLAN_63", "Desinstalar:"); 
+define("EPL_ADLAN_64", ""); 
+define("EPL_ADLAN_65", ""); 
+define("EPL_ADLAN_66", ""); 
+define("EPL_ADLAN_67", ""); 
+define("EPL_ADLAN_68", ""); 
+define("EPL_ADLAN_69", "");
 
 //define("EPL_CANCEL", "Cancelar");
 //define("EPL_EMAIL", "Email");
