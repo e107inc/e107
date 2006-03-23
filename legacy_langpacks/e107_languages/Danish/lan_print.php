@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_print.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2006-03-23 16:01:01 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -20,5 +20,8 @@ define("LAN_304", "Titel: ");
 define("LAN_305", "Underoverskrift: ");
 define("LAN_306", "Er fra ");
 define("LAN_307", "Udskriv denne side");
+
+define("LAN_PRINT_1", "udskrifts venlig");
+
 
 ?>

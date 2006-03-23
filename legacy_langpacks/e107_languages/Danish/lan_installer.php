@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_installer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-17 14:50:45 $
+|     $Revision: 1.4 $
+|     $Date: 2006-03-23 16:01:01 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -124,5 +124,10 @@ define("LANINS_080", "Admin Email");
 define("LANINS_081", "Skriv din email adresse");
 
 define("LANINS_082", "bruger@ditsite.dk");
+
+// Better table creation error reporting
+define("LANINS_083", "MySQL Rapoterede Fejl:");
+define("LANINS_084", "Installationen kunne ikke etablere en forbindelse til databasen");
+define("LANINS_085", "Installationen kunne ikke v&aelig;lge database:");
 
 ?>

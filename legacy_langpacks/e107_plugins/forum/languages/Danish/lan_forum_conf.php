@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Danish/lan_forum_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:21 $
+|     $Revision: 1.2 $
+|     $Date: 2006-03-23 16:01:01 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
-
 define("FORLAN_5", "Afstemning slettet.");
 define("FORLAN_6", "Tr&aring;d slettet");
 define("FORLAN_7", "svar slettet");
@@ -34,5 +33,12 @@ define("FORLAN_25", "Flyt tr&aring;d");
 define("FORLAN_26", "Svar slettet");
 	
 define("FORLAN_27", "flyttet");
-	
+
+define("FORLAN_28", "Omb&oslash;b ikke tr&aring;d titel");
+define("FORLAN_29", "Tilf&oslash;j");
+define("FORLAN_30", "til titel");
+define("FORLAN_31", "Omd&oslash;b til:");
+define("FORLAN_32", "Omd&oslash;b tr&aring;d egenskaber:");
+
+
 ?>

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.7 $
-|        $Date: 2006-01-17 14:50:45 $
+|        $Revision: 1.8 $
+|        $Date: 2006-03-23 16:01:01 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -162,5 +162,13 @@ define("PRFLAN_31", "Email Bekr&aelig;ftigelse");
 define("PRFLAN_152", "Ingen Bekr&aelig;ftigelse");
 define("PRFLAN_153", "Administrator Godkendelse");
 define("PRFLAN_154", "Ny bruger godkendelse metode <br />Hvis 'Administrator Godkendelse' er valgt, anbefales det at du sl&aring;r email bekr&aelig;ftigelse ved bruger tilmelding til <a href='".e_ADMIN."notify.php'>her</a>.");
+
+define("PRFLAN_155", "Fremvis tilg&aelig;ngelig til Navn");
+define("PRFLAN_156", "Nulstil ALLE Fremvis Navne");
+define("PRFLAN_157", "Alle Fremvis Navne er blevet nulstillet til Login Navn");
+define("PRFLAN_158", "Fremvist Navn maksimum l&aelig;ngde");
+define("PRFLAN_159", "ser denne side med");
+
+define("PRFLAN_160", "Kontroller fjerne servere ved validering af email adresser.");
 
 ?>

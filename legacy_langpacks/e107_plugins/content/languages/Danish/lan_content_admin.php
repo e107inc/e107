@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Danish/lan_content_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-02 16:57:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-03-23 16:01:01 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -16,6 +16,7 @@ define("CONTENT_PLUGIN_LAN_2", "En Komplet Indholds H&aring;ndterings Sektion.")
 define("CONTENT_PLUGIN_LAN_3", "Konfigurer Indholds H&aring;ndtering");
 define("CONTENT_PLUGIN_LAN_4", "Dette plugin er nu klar til at blive brugt.");
 define("CONTENT_PLUGIN_LAN_5", "indhold");
+define("CONTENT_PLUGIN_LAN_6", "Indholds H&aring;ndterings Plugin tabel struktur opdateret");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "opret indholds kategori");
 define("CONTENT_ADMIN_CAT_LAN_1", "rediger indholds kategori");

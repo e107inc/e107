@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Danish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:21 $
+|     $Revision: 1.2 $
+|     $Date: 2006-03-23 16:01:01 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -85,5 +85,5 @@ define("FORLAN_101", "Email Tr&aring;d");
 define("FORLAN_102", "Vis Udskrift");
 define('FORLAN_103', '[bruger slettet]');
 define('FORLAN_104', 'Tr&aring;d ikke fundet');
-
+define("FORLAN_HIDDEN", "SKJULT - LOGIN OG BESVAR FOR AT VISE");
 ?>

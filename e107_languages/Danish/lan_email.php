@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_email.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-09-14 20:09:42 $
+|        $Revision: 1.4 $
+|        $Date: 2006-03-23 16:01:00 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -32,5 +32,8 @@ define("LAN_email_3", "Emailet emne fra ");
 define("LAN_email_4", "Send e-mail");
 define("LAN_email_5", "E-mail emne til en ven");
 define("LAN_email_6", "Jeg tænkte du måske ville være intereseret i dette emne fra");
+define("LAN_email_7", "email til en ven");
+
+
 
 ?>
