@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-01-18 01:51:14 $
+|     $Revision: 1.20 $
+|     $Date: 2006-03-24 17:55:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -202,7 +202,7 @@ function show_send($to_uid)
 	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
 	$enc = (check_class($pm_prefs['attach_class']) ? "enctype='multipart/form-data'" : "");
 	$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform' name='frmPMSend'>
-	<input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}'".
+	<input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
 	$tp->parseTemplate($PM_SEND_PM, TRUE, $pm_shortcodes).
 	"</form>";
 	return $text;
