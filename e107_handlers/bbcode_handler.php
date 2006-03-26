@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-03-19 23:43:28 $
-|     $Author: whoisrich $
+|     $Revision: 1.39 $
+|     $Date: 2006-03-26 01:31:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,6 +40,7 @@ class e_bbcode
 		'textarea', 'list', 'php', 'time',
 		'spoiler', 'hide'
 		);
+
 		foreach($core_bb as $c)
 		{
 			$this->bbLocation[$c] = 'core';
@@ -76,7 +77,27 @@ class e_bbcode
 		$done = false;
 		$single_bb = false;
 		$i=0;
+		
+		$tmplist = array();
 		foreach($this->List as $code)
+		{
+			if("*" == $code[0])
+			{
+				if(strpos($text, "[".substr($code, 1)) !== FALSE)
+				{
+					$tmplist[] = $code;
+				}
+			}
+			else
+			{
+				if(strpos($text, "[{$code}") !== FALSE && strpos($text, "[/{$code}") !== FALSE)
+				{
+					$tmplist[] = $code;
+				}
+			}
+		}
+
+		foreach($tmplist as $code)
 		{
 			if("*" == $code{0})
 			{
@@ -92,12 +113,8 @@ class e_bbcode
 			$i=0;
 			while($code && ($pos = strpos($text, "[{$code}")) !== false)
 			{
-				$old_text = $text;
 				$text = preg_replace_callback($pattern, array($this, 'doCode'), $text);
-				if($old_text == $text)
-				{
-					$text = substr($old_text, 0, $pos)."&#091;".substr($old_text, $pos+1);
-				}
+				$text = str_replace("[{$code}", "&#091;", $text);
 			}
 		}
 		return $text;
@@ -106,7 +123,6 @@ class e_bbcode
 	function doCode($matches)
 	{
 		global $tp, $postID, $full_text, $code_text, $parm;
-
 		$full_text = $tp->replaceConstants($matches[0]);
 		$code = $matches[1];
 		$parm = substr($matches[3], 1);
