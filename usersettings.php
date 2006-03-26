@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2006-03-07 13:46:20 $
-|     $Author: whoisrich $
+|     $Revision: 1.67 $
+|     $Date: 2006-03-26 16:50:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -73,6 +73,8 @@ include_once(e_FILE."shortcode/batch/usersettings_shortcodes.php");
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 $_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
+
+require_once(HEADERF);
 
 // Save Form Data  --------------------------------------->
 
@@ -350,8 +352,6 @@ if (isset($_POST['updatesettings']))
 	}
 }
 // -------------------
-
-require_once(HEADERF);
 
 if(isset($message))
 {
