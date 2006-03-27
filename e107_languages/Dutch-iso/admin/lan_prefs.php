@@ -143,6 +143,8 @@ define("PRFLAN_155", "Weergavenaam beschikbaar voor");
 define("PRFLAN_156", "Reset ALLE weergavenamen");
 define("PRFLAN_157", "Alle weergavenamen zijn teruggezet naar de inlognaam");
 define("PRFLAN_158", "Maximum lengte weergavenaam");
+define("PRFLAN_159", "bekijkt deze pagina met");
+define("PRFLAN_160", "Controleer externe servers bij het valideren van e-mailadressen.");   
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");

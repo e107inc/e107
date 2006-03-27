@@ -189,6 +189,8 @@ define("FORLAN_176", "Melding");
 define("FORLAN_177", "e-mail meldingen standaard AAN");
 define("FORLAN_178", "Aankruisen om de keuze voor melding per e-mail standaard op AAN te zetten.");
 define("FORLAN_179", "(Door de forumnaam te beginnen met een  *, wordt dit een container voor uitsluitend subforums.  Het forum theme moet dit wel ondersteunen.)");
+define("FORLAN_180", "Bevestig verwijderactie");
+define("FORLAN_181", "Bevestig verwijderen");
 
 define("WMGLAN_1", "Regels voor gasten");
 define("WMGLAN_2", "Regels voor leden");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-iso/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-06 10:54:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-03-27 21:07:38 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -15,6 +15,7 @@ define("CONTENT_PLUGIN_LAN_2", "Een complete contentbeheer sectie.");
 define("CONTENT_PLUGIN_LAN_3", "Configureren contentbeheer");
 define("CONTENT_PLUGIN_LAN_4", "Deze plugin kan nu worden gebruikt.");
 define("CONTENT_PLUGIN_LAN_5", "Content");
+define("CONTENT_PLUGIN_LAN_6", "Content Management plugin tabelstructuur bijgewerkt");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "creëren onderwerpcategorie");
 define("CONTENT_ADMIN_CAT_LAN_1", "bewerken onderwerpcategorie");
