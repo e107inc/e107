@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_fpw.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-13 22:40:38 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2006-03-27 05:01:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Password Reset");
@@ -18,7 +18,7 @@ define("LAN_06", "Attempted password reset");
 define("LAN_07", "Someone with ip address ");
 define("LAN_08", "attempted to reset the main admin password.");
 define("LAN_09", "Password reset from ");
-define("LAN_112", "Email Address used when signing up ");
+define("LAN_112", "Email address used when signing up");
 define("LAN_156", "Submit");
 define("LAN_213", "That username/email address was not found in database.");
 define("LAN_214", "Unable to reset password");
@@ -26,7 +26,7 @@ define("LAN_216", "To validate your new password please go to the following URL 
 define("LAN_217", "Your new password is now validated, you may now login using your new password.");
 define("LAN_218", "Your username is:");
 define("LAN_219", "The password associated with that email address has already been reset and cannot be reset again. Please contact the site administrator for more details.");
-define("LAN_FPW1","User Name");
+define("LAN_FPW1","Username");
 define("LAN_FPW2","Enter code");
 define("LAN_FPW3","Incorrect code entered");
 define("LAN_FPW4","A request has already been sent to reset this password, if you did not receive the email, please contact the site administrator for help.");
