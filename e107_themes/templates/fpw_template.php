@@ -6,24 +6,24 @@ if (!defined('e107_INIT')) { exit; }
 if(!$FPW_TABLE){
 		$FPW_TABLE = "
 		<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>\n
-		<table style='width:85%' class='fborder'>
+		<form method='post' action='".e_SELF."'>
+		<table style='width:70%' class='fborder'>
 
 		<tr>
-		<td class='forumheader3' colspan='2' style='text-align:center'>".LAN_05."</td>
+		<td class='fcaption' colspan='2'>".LAN_05."</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3' style='width:25%'>".LAN_FPW1."</td>
-		<td class='forumheader3' style='width:75%;text-align:center'>
-		<input class='tbox' type='text' name='username' size='60' value='' maxlength='100' />
+		<td class='forumheader3' style='width:70%'>".LAN_FPW1.":</td>
+		<td class='forumheader3' style='width:30%;text-align:center'>
+		<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />
 		</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3' style='width:25%'>".LAN_112."</td>
-		<td class='forumheader3' style='width:75%; text-align:center'>
-		<input class='tbox' type='text' name='email' size='60' value='' maxlength='100' />
+		<td class='forumheader3' style='width:70%'>".LAN_112.":</td>
+		<td class='forumheader3' style='width:30%; text-align:center'>
+		<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />
 		</td>
 		</tr>";
 
