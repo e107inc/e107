@@ -11,83 +11,108 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2006-03-14 17:29:08 $
-|     $Author: e107coders $
+|     $Revision: 1.84 $
+|     $Date: 2006-04-04 22:29:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+
 require_once("class2.php");
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
-@include_once(e_LANGUAGEDIR."English/lan_usersettings.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
 include_once(e_HANDLER."user_extended_class.php");
 $usere = new e107_user_extended;
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
+$fname = "signup_template.php";
+if(is_readable(THEME."templates/".$fname))
+{
+	include_once(THEME."templates/".$fname);
+}
+elseif(is_readable(THEME.$fname))
+{
+	include_once(THEME.$fname);
+}
+if(is_readable(e_THEME."templates/{$fname}"))
+{
+	include_once(e_THEME."templates/{$fname}");
+}
+
+
+
+include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
+
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 // Resend Activation Email ------------------------------------------->
-if(e_QUERY == "resend" && !USER){
+if(e_QUERY == "resend" && !USER)
+{
 	require_once(HEADERF);
 	$clean_email = check_email($tp -> toDB($_POST['resend_email']));
 
-	if($_POST['submit_resend']){
-
-		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($clean_email)."\" AND user_ban=0")){
+	if($_POST['submit_resend'])
+	{
+		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($clean_email)."\" AND user_ban=0"))
+		{
 			$ns -> tablerender("Activation not necessary","Your account is already activated.<br />");
 			require_once(FOOTERF);
 			exit;
 		}
 
 		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($clean_email)."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
-           $row = $sql -> db_Fetch();
+		$row = $sql -> db_Fetch();
 
-            $_POST['password1'] = "xxxxxxxx";
-    		$_POST['loginname'] = $row['user_loginname'];
-    		$_POST['name'] = $row['user_name'];
-			$nid = $row['user_id'];
-			$u_key = $row['user_sess'];
+		$_POST['password1'] = "xxxxxxxx";
+		$_POST['loginname'] = $row['user_loginname'];
+		$_POST['name'] = $row['user_name'];
+		$nid = $row['user_id'];
+		$u_key = $row['user_sess'];
 
-            $eml = render_email();
+		$eml = render_email();
 
-		 	require_once(e_HANDLER."mail.php");
-	        if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images'])) {
-				$ns -> tablerender("Error","There was a problem, the registration mail was not sent, please contact the website administrator.");
-				require_once(FOOTERF);
-				exit;
-			}else{
-				$ns -> tablerender("Email Sent","Activation email sent to: ".$row['user_email']." - Please check your inbox.<br /><br />");
-				require_once(FOOTERF);
-				exit;
-			}
-
-	}else{
-          $text = "<div style='text-align:center'>
-           <form method='post' action='".e_SELF."?resend' name='resend_form'>
-           <table style='width:99%' class='fborder'>
-           <tr>
-			<td class='forumheader3'>
-			If you have already registered but did not receive an email to activate your account, please enter the email address you used during registration below. A new activation email will be resent to you at that address.
-			</td>
-           	</tr>
-			<tr><td class='forumheader3'>".LAN_112."
-          	<input type='text' name='resend_email' class='tbox' style='width:80%' value='' />
-           	</td>
-           	</tr>
-           ";
-
-           	$text .="<tr style='vertical-align:top'>
-           	<td colspan='2' style='text-align:center' class='forumheader'>";
-           	$text .= "<input class='button' type='submit' name='submit_resend' value='Send Activation Email' />";
-           	$text .= "</td>
-           	</tr>
-           	</table>
-           	</form>
-           	</div>";
-
-			$ns -> tablerender("Resend Activation Email", $text);
+		require_once(e_HANDLER."mail.php");
+		if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
+		{
+			$ns -> tablerender("Error","There was a problem, the registration mail was not sent, please contact the website administrator.");
 			require_once(FOOTERF);
 			exit;
+		}
+		else
+		{
+			$ns -> tablerender("Email Sent","Activation email sent to: ".$row['user_email']." - Please check your inbox.<br /><br />");
+			require_once(FOOTERF);
+			exit;
+		}
+
+	}
+	else
+	{
+		$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?resend' name='resend_form'>
+		<table style='width:99%' class='fborder'>
+		<tr>
+		<td class='forumheader3'>
+		If you have already registered but did not receive an email to activate your account, please enter the email address you used during registration below. A new activation email will be resent to you at that address.
+		</td>
+		</tr>
+		<tr><td class='forumheader3'>".LAN_112."
+		<input type='text' name='resend_email' class='tbox' style='width:80%' value='' />
+		</td>
+		</tr>
+		";
+
+		$text .="<tr style='vertical-align:top'>
+		<td colspan='2' style='text-align:center' class='forumheader'>";
+		$text .= "<input class='button' type='submit' name='submit_resend' value='Send Activation Email' />";
+		$text .= "</td>
+		</tr>
+		</table>
+		</form>
+		</div>";
+
+		$ns -> tablerender("Resend Activation Email", $text);
+		require_once(FOOTERF);
+		exit;
 	}
 
 
@@ -95,7 +120,9 @@ if(e_QUERY == "resend" && !USER){
 
 // ------------------------------------------------------------------
 
-if(!$_POST){   // Notice Removal.
+if(!$_POST)   // Notice Removal.
+{
+
 	$error = "";
 	$text = " ";
 	$password1 = "";
@@ -112,22 +139,27 @@ if(!$_POST){   // Notice Removal.
 	$signature = "";
 }
 
-if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.aftersignup")) {
-
-
-    if(e_QUERY == "preview.aftersignup"){
-
+if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.aftersignup"))
+{
+	if(e_QUERY == "preview.aftersignup")
+	{
 		require_once(HEADERF);
-    	if(trim($pref['signup_text_after'])){
-				$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
-		}else{
-			if ($pref['user_reg_veri'] == 2){
+		if(trim($pref['signup_text_after']))
+		{
+			$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+		}
+		else
+		{
+			if ($pref['user_reg_veri'] == 2)
+			{
 				$text = LAN_SIGNUP_37;
-			} else {
+			}
+			else
+			{
 				$text = LAN_405;
 			}
 		}
-        $ns->tablerender(LAN_406, $text);
+		$ns->tablerender(LAN_406, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -135,10 +167,8 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 	$eml = render_email(TRUE);
 	echo $eml['preview'];
 
-
-
-
-	if(e_QUERY == "test"){
+	if(e_QUERY == "test")
+	{
 		require_once(e_HANDLER."mail.php");
 		$message = $eml['message'];
 		$subj = $eml['subject'];
@@ -147,39 +177,48 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 		$Bcc = $eml['bcc'];
 		$attachments = $eml['attachments'];
 
-        if(!sendemail(USEREMAIL, $subj, $message, USERNAME, "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline)) {
-	  //	if(!sendemail(USEREMAIL, $subj, $message, USERNAME)) {
+		if(!sendemail(USEREMAIL, $subj, $message, USERNAME, "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+		{
+			//	if(!sendemail(USEREMAIL, $subj, $message, USERNAME)) {
 			echo "<br /><br /><br /><br >&nbsp;&nbsp;>> There was a problem, the registration mail was not sent, please contact the website administrator.";
-		}else{
-        	echo "<br /><br />&nbsp;&nbsp;>> Email Sent to: ".USEREMAIL." - Check your inbox!";
+		}
+		else
+		{
+			echo "<br /><br />&nbsp;&nbsp;>> Email Sent to: ".USEREMAIL." - Check your inbox!";
 		}
 	}
 	exit;
 }
 
-if ($pref['membersonly_enabled']) {
+if ($pref['membersonly_enabled'])
+{
 	$HEADER = "<div style='text-align:center; width:100%;margin-left:auto;margin-right:auto;text-align:center'><div style='width:70%;text-align:center;margin-left:auto;margin-right:auto'><br />";
-	if (file_exists(THEME."images/login_logo.png")) {
+	if (file_exists(THEME."images/login_logo.png"))
+	{
 		$HEADER .= "<img src='".THEME."images/login_logo.png' alt='' />\n";
-	} else {
+	}
+	else
+	{
 		$HEADER .= "<img src='".e_IMAGE."logo.png' alt='' />\n";
 	}
 	$HEADER .= "<br />";
 	$FOOTER = "</div></div>";
 }
 
-
-if ($signup_imagecode) {
+if($signup_imagecode)
+{
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 }
 
-if ($pref['user_reg'] == 0) {
+if($pref['user_reg'] == 0)
+{
 	header("location: ".e_HTTP."index.php");
 	exit;
 }
 
-if (USER) {
+if(USER)
+{
 	header("location: ".e_HTTP."index.php");
 	exit;
 }
@@ -216,7 +255,6 @@ if (isset($_POST['register']))
 	$e107cache->clear("online_menu_totals");
 	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
-
 	if ($signup_imagecode && !isset($_POST['xupexist']))
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
@@ -260,28 +298,30 @@ if (isset($_POST['register']))
 
 		unset($xup);
 	}
-
 	if($_POST['loginnamexup']) $_POST['loginname'] = $_POST['loginnamexup'];
 	if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
 	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
 
-	if (strstr($_POST['loginname'], "#") || strstr($_POST['loginname'], "=") || strstr($_POST['loginname'], "\\") || strstr($_POST['loginname'], "'") || strstr($_POST['loginname'], '"')) {
+	if (strstr($_POST['loginname'], "#") || strstr($_POST['loginname'], "=") || strstr($_POST['loginname'], "\\") || strstr($_POST['loginname'], "'") || strstr($_POST['loginname'], '"'))
+	{
 		$error_message .= LAN_409."\\n";
 		$error = TRUE;
 	}
 
 	$_POST['loginname'] = trim(preg_replace("/&nbsp;|\#|\=/", "", $_POST['loginname']));
-	if ($_POST['loginname'] == "Anonymous") {
+	if ($_POST['loginname'] == "Anonymous")
+	{
 		$error_message .= LAN_103."\\n";
 		$error = TRUE;
 		$name = "";
 	}
 
-// Check for disallowed names.
+	// Check for disallowed names.
 	if(isset($pref['signup_disallow_text']))
 	{
 		$tmp = explode(",", $pref['signup_disallow_text']);
-		foreach($tmp as $disallow){
+		foreach($tmp as $disallow)
+		{
 			if( strstr($_POST['name'], $disallow) || strstr($_POST['loginname'], $disallow) ){
 				$error_message .= LAN_103."\\n";
 				$error = TRUE;
@@ -290,19 +330,20 @@ if (isset($_POST['register']))
 		}
 	}
 
-// Check if form maxlength has been bypassed
-	if ( strlen($_POST['name']) > 30 || strlen($_POST['loginname']) > 30) {
+	// Check if form maxlength has been bypassed
+	if ( strlen($_POST['name']) > 30 || strlen($_POST['loginname']) > 30)
+	{
 		exit;
 	}
 
-// Display Name exists.
+	// Display Name exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
 		$error_message .= LAN_411."\\n";
 		$error = TRUE;
 		$name = "";
 	}
-// Login Name exists
+	// Login Name exists
 	if ($sql->db_Select("user", "*", "user_loginname='".$tp -> toDB($_POST['loginname'])."' "))
 	{
 		$error_message .= LAN_104."\\n";
@@ -310,7 +351,7 @@ if (isset($_POST['register']))
 		$name = "";
 	}
 
-// check for multiple signups from the same IP address.
+	// check for multiple signups from the same IP address.
 	if($ipcount = $sql->db_Select("user", "*", "user_ip='".$e107->getip()."' and user_ban !='2' "))
 	{
 		if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != "")
@@ -320,7 +361,7 @@ if (isset($_POST['register']))
 		}
 	}
 
-// Check password fields are matching.
+	// Check password fields are matching.
 	if ($_POST['password1'] != $_POST['password2'])
 	{
 		$error_message .= LAN_105."\\n";
@@ -329,7 +370,7 @@ if (isset($_POST['register']))
 		$password2 = "";
 	}
 
-// Email address confirmation.
+	// Email address confirmation.
 	if ($_POST['email'] != $_POST['email_confirm'])
 	{
 		$error_message .= LAN_SIGNUP_38."\\n";
@@ -338,7 +379,7 @@ if (isset($_POST['register']))
 		$email_confirm = "";
 	}
 
-// Password length check.
+	// Password length check.
 	if (strlen($_POST['password1']) < $pref['signup_pass_len'])
 	{
 		$error_message .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
@@ -347,13 +388,13 @@ if (isset($_POST['register']))
 		$password2 = "";
 	}
 
-// Use LoginName for DisplayName if restricted
+	// Use LoginName for DisplayName if restricted
 	if (!check_class($pref['displayname_class']))
 	{
-  		$_POST['name'] = $_POST['loginname'];
+		$_POST['name'] = $_POST['loginname'];
 	}
 
-// Check for emtpy fields
+	// Check for emtpy fields
 	if ($_POST['name'] == "" || $_POST['loginname'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "")
 	{
 		$error_message .= LAN_185."\\n";
@@ -362,8 +403,8 @@ if (isset($_POST['register']))
 
 	// ========== Verify Custom Signup options if selected ========================
 
-    $signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_SIGNUP_28);
-    $signup_option_names = array("realname", "signature", "image", "timezone", "class");
+	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_SIGNUP_28);
+	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
 
 	foreach($signup_option_names as $key => $value)
 	{
@@ -372,16 +413,16 @@ if (isset($_POST['register']))
 			$error_message .= LAN_SIGNUP_6.$signup_option_title[$key].LAN_SIGNUP_7."\\n";
 			$error = TRUE;
 		}
-    }
+	}
 
-// Check for Duplicate Email address.
+	// Check for Duplicate Email address.
 	if ($sql->db_Select("user", "user_email", "user_email='".$tp -> toDB($_POST['email'])."' "))
 	{
 		$error_message .= LAN_408."\\n";
 		$error = TRUE;
 	}
 
-// Extended Field validation
+	// Extended Field validation
 	$extList = $usere->user_extended_get_fieldList();
 
 	foreach($extList as $ext)
@@ -398,19 +439,20 @@ if (isset($_POST['register']))
 		}
 	}
 
-// Email syntax validation.
-	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email'])) {
+	// Email syntax validation.
+	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email']))
+	{
 		message_handler("P_ALERT", LAN_106);
 		$error_message .= LAN_106."\\n";
-     	$error = TRUE;
+		$error = TRUE;
 	}
 
-// Check Email against banlist.
+	// Check Email against banlist.
 	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
 	if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_POST['email'])."' OR banlist_ip='{$wc}'"))
 	{
 		$brow = $sql -> db_Fetch();
-	 	$error = TRUE;
+		$error = TRUE;
 		if($brow['banlist_reason'])
 		{
 			$repl = array("\n","\r","<br />");
@@ -423,8 +465,7 @@ if (isset($_POST['register']))
 		}
 	}
 
-
-// Check email address on remote server (if enabled).
+	// Check email address on remote server (if enabled).
 	if ($pref['signup_remote_emailcheck'] && $error != TRUE)
 	{
 		require_once(e_HANDLER."mail_validation_class.php");
@@ -433,9 +474,10 @@ if (isset($_POST['register']))
 		$validator->localuser= $adminuser;
 		$validator->localhost= $adminhost;
 		$validator->timeout=3;
- 	  //	$validator->debug=1;
- 	  //	$validator->html_debug=1;
-		if($validator->ValidateEmailBox($_POST['email']) != 1){
+		//	$validator->debug=1;
+		//	$validator->html_debug=1;
+		if($validator->ValidateEmailBox($_POST['email']) != 1)
+		{
 			$error_message .= LAN_106."\\n";
 			$error = TRUE;
 			$email = "";
@@ -443,8 +485,6 @@ if (isset($_POST['register']))
 		}
 
 	}
-
-
 
 	if($error_message)
 	{
@@ -491,8 +531,7 @@ if (isset($_POST['register']))
 
 		if ($pref['user_reg_veri'])
 		{
-
-// ==== Update Userclass =======>
+			// ==== Update Userclass =======>
 
 			if ($_POST['class'])
 			{
@@ -502,7 +541,7 @@ if (isset($_POST['register']))
 				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
 			}
 
-// ========= save extended fields into db table. =====
+			// ========= save extended fields into db table. =====
 
 			if($ue_fields)
 			{
@@ -510,7 +549,7 @@ if (isset($_POST['register']))
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
 
-// ========== Send Email =========>
+			// ========== Send Email =========>
 
 			if ($pref['user_reg_veri'] != 2)
 			{
@@ -545,7 +584,7 @@ if (isset($_POST['register']))
 			}
 			if(isset($error_message))
 			{
-      	$text .= "<br /><b>".$error_message."</b><br />";
+				$text .= "<br /><b>".$error_message."</b><br />";
 			}
 			$ns->tablerender(LAN_406, $text);
 			require_once(FOOTERF);
@@ -563,7 +602,7 @@ if (isset($_POST['register']))
 			}
 			$sql->db_Update("user", "user_ban = '0' WHERE user_id = '{$nid}'");
 
-// ==== Update Userclass =======
+			// ==== Update Userclass =======
 			if ($_POST['class'])
 			{
 				unset($insert_class);
@@ -571,7 +610,7 @@ if (isset($_POST['register']))
 				$insert_class = implode(",",$_POST['class']);
 				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
 			}
-// ======== save extended fields to DB table.
+			// ======== save extended fields to DB table.
 
 			if($ue_fields)
 			{
@@ -579,7 +618,7 @@ if (isset($_POST['register']))
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
 
-// ==========================================================
+			// ==========================================================
 
 			$edata_su = array("username" => $username, "email" => $_POST['email'], "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname'], "xup" => $_POST['xupexist']);
 			$e_event->trigger("usersup", $edata_su);
@@ -602,26 +641,9 @@ if (isset($_POST['register']))
 require_once(HEADERF);
 
 $qs = ($error ? "stage" : e_QUERY);
-
 if ($pref['use_coppa'] == 1 && strpos($qs, "stage") === FALSE)
 {
-	$cert_text = LAN_109 . " <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href='mailto:".SITEADMINEMAIL."'>".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."<br /><br /><div style='text-align:center'><b>".LAN_SIGNUP_17."\n";
-	if (strpos(LAN_109, "stage") !== FALSE)
-	{
-		$text .= $cert_text."</b></div>\n";
-	}
-	else
-	{
-		$text .= $cert_text."</b>\n<form method='post' action='signup.php?stage1' >\n
-			<div><br />
-			<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_200."
-			<input type='radio' name='coppa' value='1' /> ".LAN_201."<br />
-			<br />
-			<input class='button' type='submit' name='newver' value='".LAN_399."' />
-			</div></form>
-			</div>";
-	}
-
+	$text = $tp->parseTemplate($COPPA_TEMPLATE, TRUE, $signup_shortcodes);
 	$ns->tablerender(LAN_110, $text);
 	require_once(FOOTERF);
 	exit;
@@ -638,304 +660,24 @@ if (strpos(LAN_109, "stage") === FALSE)
 	{
 		if (!$_POST['coppa'])
 		{
-			$ns->tablerender(LAN_110, "<div style='text-align:center'>".LAN_SIGNUP_9."</div>");
+			$text = $tp->parseTemplate($COPPA_FAIL);
+			$ns->tablerender(LAN_110, $text);
 			require_once(FOOTERF);
 			exit;
 		}
 	}
 }
-$text .= "<div style='text-align:center;width:100%'>";
 
-if($pref['signup_text'])
-{
-	$text .= $tp->toHTML($pref['signup_text'], TRUE, 'parse_sc,defs')."<br />";
-}
-elseif($pref['user_reg_veri'])
-{
-	$text .= LAN_309."<b>".LAN_SIGNUP_29."</b><br />".LAN_SIGNUP_30."<br /><br />";
-}
-
-$text .= LAN_400;
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-$text .= $rs->form_open("post", e_SELF, "signupform");
 
-// Xup Signup Form -------------->
-if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
-{
-	$text .= "
-	<div style='padding:10px;text-align:center'>
-	<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_35."' onclick=\"expandit('xup','default')\" />
-	</div>
-
-	<div id='xup' style='display:none' >
-<table style='width: 100%;'>
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_31."
-</td>
-<td class='forumheader3' style='width:70%'>
-<input class='tbox' type='text' name='xupexist' size='50' value='' maxlength='100' />
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
-<td class='forumheader3' style='width:70%'>
-".$rs->form_text("loginnamexup", 30, $loginname, 30)."
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
-<td class='forumheader3' style='width:70%'>
-".$rs->form_password("password1xup", 30, $password1, 20)."
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_111."<span style='font-size:15px; color:red'> *</span></td>
-<td class='forumheader3' style='width:70%'>
-".$rs->form_password("password2xup", 30, $password2, 20)."
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3' colspan='2'  style='text-align:center'>
-<span class='smalltext'><a href='http://e107.org/generate_xup.php' rel='external'>".LAN_SIGNUP_32."</a></span>
-</td>
-</tr>
-
-
-<tr>
-<td class='forumheader' colspan='2'  style='text-align:center'>
-<input class='button' type='submit' name='register' value='".LAN_123."' />
-</td>
-</tr>
-
-</table>
-	</div>";
-}
+$text = $tp->parseTemplate($SIGNUP_BEGIN.$SIGNUP_BODY.$SIGNUP_END, TRUE, $signup_shortcodes);
+$ns->tablerender(LAN_123, $text);
+require_once(FOOTERF);
+exit;
 
 // Default Signup Form ----->
-
-$text .="
-<div id='default'>
-<table class='fborder' style='width:99%'>";
-
-if (check_class($pref['displayname_class']))
-{
-	$text .= "
-		<tr>
-		<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
-		<td class='forumheader3' style='width:70%'>
-		".$rs->form_text("name", 30, ($_POST['name'] ? $_POST['name'] : $name), 30)."
-		</td>
-		</tr>";
-}
-
-$text .= "
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
-<td class='forumheader3' style='width:70%'>
-".$rs->form_text("loginname", 30,  ($_POST['loginname'] ? $_POST['loginname'] : $loginname), 30)."
-</td>
-</tr>
-";
-
-if ($pref['signup_option_realname']) {
-	$text .= "
-		<tr>
-		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($pref['signup_option_realname'])."</td>
-		<td class='forumheader3' style='width:70%' >
-		".$rs->form_text("realname", 30, ($_POST['realname'] ? $_POST['realname'] : $realname), 100)."
-		</td>
-		</tr>";
-}
-
-$text .= "
-	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
-	<td class='forumheader3' style='width:70%'>
-	".$rs->form_password("password1", 30, $password1, 20)."
-	";
-
-if ($pref['signup_pass_len'])
-{
-	$text .= "<span class='smalltext'> (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
-}
-
-$text .= "
-	</td>
-	</tr>
-	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_111."<span style='font-size:15px; color:red'> *</span></td>
-	<td class='forumheader3' style='width:70%'>
-	".$rs->form_password("password2", 30, $password2, 20)."
-	</td>
-	</tr>
-
-	<tr>
-		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."<span style='font-size:15px; color:red'> *</span></td>
-		<td class='forumheader3' style='width:70%'>
-		".$rs->form_text("email", 30, ($_POST['email'] ? $_POST['email'] : $email), 100)."
-		</td>
-	</tr>
-
-	<tr>
-		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_39."<span style='font-size:15px; color:red'> *</span></td>
-		<td class='forumheader3' style='width:70%'>
-		".$rs->form_text("email_confirm", 30, ($_POST['email_confirm'] ? $_POST['email_confirm'] : $email_confirm), 100)."
-		</td>
-	</tr>
-
-
-
-	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_113."</td>
-	<td class='forumheader3' style='width:70%'>". $rs->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0, 1)." ".LAN_200."
-	</td>
-	</tr>";
-
-
-// ----------  User subscription to userclasses.
-if ($pref['signup_option_class'] && ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0 order by userclass_name")))
-{
-	$text .= "<tr>
-		<td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USET_5." ".req($pref['signup_option_class'])."
-		<br /><span class='smalltext'>".LAN_USET_6."</span></td>
-		<td class='forumheader3' style='width:70%'>";
-	$text .= "<table style='width:100%'>";
-	while ($row3 = $sql->db_Fetch())
-	{
-		//  $frm_checked = check_class($userclass_id,$user_class) ? "checked='checked'" : "";
-		$text .= "<tr><td class='defaulttext' style='width:10%;vertical-align:top'>";
-		$text .= "<input type='checkbox' name='class[]' value='".$row3['userclass_id']."'  />\n";
-		$text .= "</td><td class='defaulttext' style='text-align:left;margin-left:0px;width:90%padding-top:3px;vertical-align:top'>".$tp->toHTML($row3['userclass_name'],"","defs")."<br />";
-		$text .= "<span class='smalltext'>".$tp->toHTML($row3['userclass_description'],"","defs")."</span></td>";
-		$text .= "</tr>\n";
-	}
-	$text .= "</table>\n";
-	$text .= " </td>
-		</tr>";
-}
-// --------------------------
-
-$extList = $usere->user_extended_get_fieldList();
-
-foreach($extList as $ext) {
-	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2) {
-		$text .= "
-		<tr>
-			<td style='width:40%' class='forumheader3'>".$tp->toHTML($ext['user_extended_struct_text'],"","emotes_off defs")." ".($ext['user_extended_struct_required'] == 1 ? "<span style='text-align:right;font-size:15px; color:red'> *</span>" : "")."</td>
-			<td style='width:60%' class='forumheader3'>".$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])."
-		</td>
-		</tr>
-		";
-	}
-}
-
-if ($pref['signup_option_signature'])
-{
-	require_once(e_HANDLER."ren_help.php");
-	$text .= "<tr>
-		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($pref['signup_option_signature'])."</td>
-		<td class='forumheader3' style='width:70%' >
-		<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".($_POST['signature'] ? $_POST['signature'] : $signature)."</textarea><br />
-		<div style='width:99%'>".ren_help(2)."</div>
-		</td></tr>";
-}
-
-if ($pref['signup_option_image'])
-{
-	$text .= "
-		<tr>
-		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($pref['signup_option_image'])."<br /><span class='smalltext'>(".LAN_SIGNUP_33.")</span></td>
-		<td class='forumheader3' style='width:70%;vertical-align:top' >
-		<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
-
-		<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_27."' onclick='expandit(this)' />
-		<div style='display:none' >";
-	$avatarlist[0] = "";
-	$handle = opendir(e_IMAGE."avatars/");
-	while ($file = readdir($handle))
-	{
-		if ($file != "." && $file != ".." && $file != "CVS" && $file != "index.html")
-		{
-			$avatarlist[] = $file;
-		}
-	}
-	closedir($handle);
-
-	for($c = 1; $c <= (count($avatarlist)-1); $c++)
-	{
-		$text .= "<a href='javascript:insertext(\"$avatarlist[$c]\", \"avatar\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' style='border:0' alt='' /></a> ";
-	}
-
-	$text .= "<br />
-		</div><br />";
-
-	if ($pref['avatar_upload'] && FILE_UPLOADS)
-	{
-		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
-			<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
-	}
-
-	if ($pref['photo_upload'] && FILE_UPLOADS)
-	{
-		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
-			<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
-	}
-
-	$text .= "</td>
-		</tr>";
-}
-
-if ($pref['signup_option_timezone'])
-{
-	$text .= "
-		<tr>
-		<td class='forumheader3' style='width:30%' >".LAN_122.req($pref['signup_option_timezone'])."</td>
-		<td class='forumheader3' style='width:70%;white-space:nowrap'>
-		<select style='width:99%' name='timezone' class='tbox'>\n";
-
-	timezone();
-	$count = 0;
-	while ($timezone[$count]) {
-		if ($timezone[$count] == $user_timezone) {
-			$text .= "<option value='".$timezone[$count]."' selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-		} else {
-			$text .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-		}
-		$count++;
-	}
-
-	$text .= "</select>
-		</td>
-		</tr>";
-}
-
-if ($signup_imagecode)
-{
-	$text .= " <tr>
-		<td class='forumheader3' style='width:30%'>".LAN_410.req(2)."</td>
-		<td class='forumheader3' style='width:70%'>". $rs->form_hidden("rand_num", $sec_img->random_number). $sec_img->r_image()."<br />".$rs->form_text("code_verify", 20, "", 20)."
-		</td>
-		</tr>";
-}
-
-$text .= "
-	<tr style='vertical-align:top'>
-	<td class='forumheader' colspan='2'  style='text-align:center'>
-	<input class=\"button\" type=\"submit\" name=\"register\" value=\"".LAN_123."\" />
-	<br />
-	</td>
-	</tr>
-	</table>
-	</div>
-	</form>
-	</div>
-	";
 
 $ns->tablerender(LAN_123, $text);
 
@@ -943,45 +685,25 @@ require_once(FOOTERF);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function timezone() {
-	/*
-	# Render style table
-	# - parameters                none
-	# - return                    timezone arrays
-	# - scope                     public
-	*/
-	global $timezone, $timearea;
-	$timezone = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "GMT", "+1", "+2", "+3", "+4", "+5", "+5.30", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
-	$timearea = array("International DateLine West", "Samoa", "Hawaii", "Alaska", "Pacific Time (US and Canada)", "Mountain Time (US and Canada)", "Central Time (US and Canada), Central America", "Eastern Time (US and Canada)", "Atlantic Time (Canada)", "Greenland, Brasilia, Buenos Aires, Georgetown", "Mid-Atlantic", "Azores", "GMT - UK, Ireland, Lisbon", "West Central Africa, Western Europe", "Greece, Egypt, parts of Africa", "Russia, Baghdad, Kuwait, Nairobi", "Abu Dhabi, Kabul", "Islamabad, Karachi", "Mumbai, Delhi, Calcutta", "Astana, Dhaka", "Bangkok, Rangoon", "Hong Kong, Singapore, Perth, Beijing", "Tokyo, Seoul", "Brisbane, Canberra, Sydney, Melbourne", "Soloman Islands", "New Zealand", "Nuku'alofa");
+function req($field)
+{
+	return ($field == 2 ? REQUIRED_FIELD_MARKER : "");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function req($field) {
-	global $pref;
-	if ($field == 2)
-	{
-		$ret = "<span style='text-align:right;font-size:15px; color:red'> *</span>";
-	}
-	else
-	{
-		$ret = "";
-	}
-	return $ret;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-function headerjs() {
+function headerjs()
+{
 	$script_txt = "
 	<script type=\"text/javascript\">
 	function addtext3(sc){
-	document.getElementById('signupform').image.value = sc;
+		document.getElementById('signupform').image.value = sc;
 	}
 
 	function addsig(sc){
-	document.getElementById('signupform').signature.value += sc;
+		document.getElementById('signupform').signature.value += sc;
 	}
 	function help(help){
-	document.getElementById('signupform').helpb.value = help;
+		document.getElementById('signupform').helpb.value = help;
 	}
 	</script>\n";
 
@@ -991,35 +713,39 @@ function headerjs() {
 }
 
 
-function render_email($preview = FALSE){
-
+function render_email($preview = FALSE)
+{
 	// 1 = Body
 	// 2 = Subject
 
-   	global $pref,$nid,$u_key,$_POST,$SIGNUPEMAIL_LINKSTYLE,$SIGNUPEMAIL_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
+	global $pref,$nid,$u_key,$_POST,$SIGNUPEMAIL_LINKSTYLE,$SIGNUPEMAIL_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
 
-	if($preview == TRUE){
-    	$_POST['password1'] = "test-password";
-    	$_POST['loginname'] = "test-loginname";
-    	$_POST['name'] = "test-username";
+	if($preview == TRUE)
+	{
+		$_POST['password1'] = "test-password";
+		$_POST['loginname'] = "test-loginname";
+		$_POST['name'] = "test-username";
 		$_POST['website'] = "www.test-site.com";
 		$nid = 0;
 		$u_key = "1234567890ABCDEFGHIJKLMNOP";
 	}
 
-
 	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
 	$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
 
-	if (file_exists(THEME."email_template.php")){
+	if (file_exists(THEME."email_template.php"))
+	{
 		require_once(THEME."email_template.php");
-	}else{
+	}
+	else
+	{
 		require_once(e_THEME."templates/email_template.php");
 	}
 
-    $inline_images = explode(",",$SIGNUPEMAIL_IMAGES);
-    if($SIGNUPEMAIL_BACKGROUNDIMAGE){
-    	$inline_images[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
+	$inline_images = explode(",",$SIGNUPEMAIL_IMAGES);
+	if($SIGNUPEMAIL_BACKGROUNDIMAGE)
+	{
+		$inline_images[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
 	}
 
 	$ret['cc'] = $SIGNUPEMAIL_CC;
@@ -1050,46 +776,50 @@ function render_email($preview = FALSE){
 	$search[6] = "{USERURL}";
 	$replace[6] = ($_POST['website']) ? $_POST['website'] : "";
 
-    $cnt=1;
+	$cnt=1;
 
-		foreach($inline_images as $img){
-			if(is_readable($inline_images[$cnt-1])){
-				$cid_search[] = "{IMAGE".$cnt."}";
-				$cid_replace[] = "<img alt=\"".SITENAME."\" src='cid:".md5($inline_images[$cnt-1])."' />\n";
-				$path_search[] = "{IMAGE".$cnt."}";
-				$path_replace[] = "<img alt=\"".SITENAME."\" src=\"".$inline_images[$cnt-1]."\" />\n";
-			}
-			$cnt++;
+	foreach($inline_images as $img)
+	{
+		if(is_readable($inline_images[$cnt-1]))
+		{
+			$cid_search[] = "{IMAGE".$cnt."}";
+			$cid_replace[] = "<img alt=\"".SITENAME."\" src='cid:".md5($inline_images[$cnt-1])."' />\n";
+			$path_search[] = "{IMAGE".$cnt."}";
+			$path_replace[] = "<img alt=\"".SITENAME."\" src=\"".$inline_images[$cnt-1]."\" />\n";
 		}
+		$cnt++;
+	}
 
 	$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
-    $ret['subject'] =  $subject;
+	$ret['subject'] =  $subject;
 
 	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
 	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 	$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
-	if($SIGNUPEMAIL_USETHEME == 2){
-      	$CSS = file_get_contents(THEME."style.css");
-      	$HEAD .= "<style>\n".$CSS."\n</style>";
+	if($SIGNUPEMAIL_USETHEME == 2)
+	{
+		$CSS = file_get_contents(THEME."style.css");
+		$HEAD .= "<style>\n".$CSS."\n</style>";
 	}
 
 	$HEAD .= "</head>\n";
-    if($SIGNUPEMAIL_BACKGROUNDIMAGE){
-    	$HEAD .= "<body background=\"cid:".md5($SIGNUPEMAIL_BACKGROUNDIMAGE)."\" >\n";
-	}else{
+	if($SIGNUPEMAIL_BACKGROUNDIMAGE)
+	{
+		$HEAD .= "<body background=\"cid:".md5($SIGNUPEMAIL_BACKGROUNDIMAGE)."\" >\n";
+	}
+	else
+	{
 		$HEAD .= "<body>\n";
 	}
-
-
 	$FOOT = "\n<body>\n</html>\n";
 
 	$SIGNUPEMAIL_TEMPLATE = $HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT;
 	$message = str_replace($search,$replace,$SIGNUPEMAIL_TEMPLATE);
 
-    $ret['message'] = str_replace($cid_search,$cid_replace,$message);
+	$ret['message'] = str_replace($cid_search,$cid_replace,$message);
 	$ret['preview'] = str_replace($path_search,$path_replace,$message);
 
-    return $ret;
+	return $ret;
 }
 ?>
