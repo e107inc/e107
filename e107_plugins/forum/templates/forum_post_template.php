@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-03-20 03:34:50 $
+|     $Revision: 1.19 $
+|     $Date: 2006-04-04 23:19:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -177,7 +177,7 @@ $FORUMPOST_REPLY = "
 ";
 }
 
-if(!$LASTFORUMPOSTS_START)
+if(!$LATESTPOSTS_START)
 {
 $LATESTPOSTS_START = "
 <table style='width:100%' class='fborder'>
