@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.147 $
-|     $Date: 2006-03-18 14:59:47 $
+|     $Revision: 1.148 $
+|     $Date: 2006-04-04 22:35:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -302,7 +302,7 @@ class e_parse
 			$text = $this->replaceConstants($text);
 		}
 
-		if(!$wrap) $wrap = $pref['main_wordwrap'];
+		if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
 		$text = " ".$text;
 
 		if (strpos($modifiers, 'nobreak') === FALSE) {
