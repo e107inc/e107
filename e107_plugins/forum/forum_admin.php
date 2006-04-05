@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-03-18 20:53:50 $
+|     $Revision: 1.37 $
+|     $Date: 2006-04-05 02:35:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1194,7 +1194,16 @@ class forum
 	{
 		global $ns, $sql;
 		
-		$sql -> db_Select("forum", "forum_id, forum_name", "forum_parent!=0 ORDER BY forum_order ASC");
+//		$sql -> db_Select("forum", "forum_id, forum_name", "forum_parent!=0 ORDER BY forum_order ASC");
+		$qry = "
+		SELECT f.forum_id, f.forum_name, sp.forum_name AS sub_parent, fp.forum_name AS forum_parent
+		FROM #forum AS f
+		LEFT JOIN #forum AS sp ON sp.forum_id = f.forum_sub
+		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
+		WHERE f.forum_parent != 0
+		ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
+		";
+		$sql -> db_Select_gen($qry);
 		$forums = $sql -> db_getList();
 		
 		$text = "<div style='text-align:center'>
@@ -1222,7 +1231,10 @@ class forum
 
 			foreach($forums as $forum)
 			{
-				$text .= "<input type='checkbox' name='pruneForum[]' value='".$forum['forum_id']."' /> ".$forum['forum_name']."<br />";
+				$for_name = $forum['forum_parent']." -> ";
+				$for_name .= ($forum['sub_parent'] ? $forum['sub_parent']." -> " : "");
+				$for_name .= $forum['forum_name'];
+				$text .= "<input type='checkbox' name='pruneForum[]' value='".$forum['forum_id']."' /> ".$for_name."<br />";
 			}
 			
 			

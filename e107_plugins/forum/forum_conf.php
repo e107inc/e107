@@ -11,8 +11,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.7 $
-| $Date: 2006-02-07 03:28:40 $
+| $Revision: 1.8 $
+| $Date: 2006-04-05 02:35:51 $
 | $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -138,23 +138,30 @@ if ($action == "move")
 		<td style='text-align:left'>
 		<select name='forum_move' class='tbox'>";
 	$qry = "
-	SELECT f.forum_id, f.forum_name FROM #forum AS f
+	SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
+	FROM #forum AS f
 	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
+	LEFT JOIN #forum AS sp ON f.forum_sub = sp.forum_id
 	WHERE f.forum_parent != 0
 	AND f.forum_id != ".intval($info['forum_id'])."	
 	AND f.forum_class IN (".USERCLASS_LIST.")
 	AND fp.forum_class IN (".USERCLASS_LIST.")
-	ORDER BY f.forum_order
+	ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
 	";
-	$sql->db_Select_gen($qry);
+	$sql->db_Select_gen($qry, TRUE);
 	$fList = $sql->db_getList();
+//	print_a($fList); exit;
 	foreach($fList as $f)
 	{
 		if($f['forum_sub'] > 0)
 		{
 			$f['forum_name'] = "subforum -> ".$f['forum_name'];
 		}
-		$text .= "<option value='{$f['forum_id']}'>".$f['forum_name']."</option>";
+		$for_name = $f['forum_parent']." -> ";
+		$for_name .= ($f['sub_parent'] ? $f['sub_parent']." -> " : "");
+		$for_name .= $f['forum_name'];
+
+		$text .= "<option value='{$f['forum_id']}'>".$for_name."</option>";
 	}
 	$text .= "</select>
 		</td>
