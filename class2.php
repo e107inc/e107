@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.267 $
-|     $Date: 2006-03-18 21:33:39 $
+|     $Revision: 1.268 $
+|     $Date: 2006-04-05 12:03:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -232,6 +232,8 @@ if(!$PrefCache){
 	}
 	$pref = $eArrayStorage->ReadArray($PrefCache);
 }
+
+$e107->set_base_path();
 
 // extract menu prefs
 $menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-01-11 04:49:50 $
-|     $Author: streaky $
+|     $Revision: 1.51 $
+|     $Date: 2006-04-05 12:03:04 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,6 +28,8 @@ class e107{
 	var $server_path;
 	var $e107_dirs;
 	var $http_path;
+	var $https_path;
+	var $base_path;
 	var $file_path;
 	var $relative_base_path;
 	var $_ip_cache;
@@ -44,6 +46,12 @@ class e107{
 		$this->e107_dirs = $e107_paths;
 		$this->set_paths();
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
+	}
+
+	function set_base_path()
+	{
+		global $pref;
+		$this->base_path = ($pref['ssl_enabled']==1 ?  $this->https_path : $this->http_path);
 	}
 
 	function set_paths(){
