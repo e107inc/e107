@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.46 $
-|   $Date: 2006-02-27 12:30:27 $
-|   $Author: asperon $
+|   $Revision: 1.47 $
+|   $Date: 2006-04-05 09:42:43 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -38,11 +38,6 @@ if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php')) {
 }
 if (!defined('ADMIN_WIDTH')) {
 	define('ADMIN_WIDTH', 'width: 95%');
-}
-if (file_exists(THEME.'admin_template.php')) {
-  	require_once(THEME.'admin_template.php');
-} else {
-  	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
 }
 
 if (!defined('ADMIN_TRUE_ICON'))
@@ -227,6 +222,12 @@ if (!function_exists('show_admin_menu')) {
 			$ns -> tablerender($title, $text, array('id' => $id_title, 'style' => 'button_menu'));
 		}
 	}
+}
+
+if (file_exists(THEME.'admin_template.php')) {
+  	require_once(THEME.'admin_template.php');
+} else {
+  	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
 }
 
 if (!function_exists("parse_admin")) {
