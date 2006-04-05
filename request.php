@@ -12,16 +12,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.36 $
+|     $Date: 2006-04-05 12:19:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 
 if (!e_QUERY || isset($_POST['userlogin'])) {
-	header("location: {$e107->http_path}");
+	header("location: {$e107->base_path}");
 	exit();
 }
 
@@ -294,7 +294,7 @@ function send_file($file) {
 			echo "The file-path <b>".$path."<b> didn't match with either <b>$path_downloads</b> or <b>$path_public</b><br />";
 			exit();
         }else{
-			header("location: {$e107->http_path}");
+			header("location: {$e107->base_path}");
 			exit();
 		}
 	} else {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-04-05 12:19:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,7 +29,7 @@ class trackbackClass
 		$title = urlencode(stripslashes($title));
 		$excerpt = urlencode(stripslashes($excerpt));
 		$blog_name = urlencode(stripslashes(SITENAME));
-		$permLink = urlencode(stripslashes($e107->http_path.$permLink));
+		$permLink = urlencode(stripslashes($e107->base_path.$permLink));
 		$query_string = "title=".$title."&url=".$permLink."&blog_name=".$blog_name."&excerpt=".$excerpt;
 
 		if (strstr($pingUrl, '?'))
