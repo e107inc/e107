@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-02-24 17:14:22 $
-|     $Author: whoisrich $
+|     $Revision: 1.14 $
+|     $Date: 2006-04-05 02:10:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -305,7 +305,7 @@ class private_message
 		elseif($class)
 		{
 			$regex = "(^|,)(".$tp -> toDB($class).")(,|$)";
-			$qry = "SELECT user_id, user_name, user_email, user_class FROM #user WHERE user_class REGEXP {$regex}";
+			$qry = "SELECT user_id, user_name, user_email, user_class FROM #user WHERE user_class REGEXP '{$regex}'";
 		}
 		if($sql->db_Select_gen($qry))
 		{
