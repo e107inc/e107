@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-28 16:12:59 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-04-05 12:19:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -55,15 +55,15 @@ else
 		$link = "";
 		switch ($c['comment_type']) {
 			case "0":
-				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->http_path."comment.php?comment.news.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
+				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->base_path."comment.php?comment.news.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
 			case "4":
-				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->http_path."comment.php?comment.poll.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
+				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->base_path."comment.php?comment.poll.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
 			case "profile":
 				if(USER)
 				{
-					$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->http_path."user.php?id.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
+					$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->base_path."user.php?id.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				}
 				break;
 

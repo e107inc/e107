@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-02-19 22:43:16 $
-|     $Author: e107coders $
+|     $Revision: 1.47 $
+|     $Date: 2006-04-05 12:19:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -190,7 +190,7 @@ class rssCreate {
 					}
 
 					$this -> rssItems[$loop]['title'] = $value['thread_name'];
-					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+					$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 
 					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
 
@@ -222,10 +222,10 @@ class rssCreate {
 
 					if($value['parent_name']) {
 						$this -> rssItems[$loop]['title'] = "Re: ".$value['parent_name'];
-						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
+						$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
 					} else {
 						$this -> rssItems[$loop]['title'] = $value['thread_name'];
-						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+						$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
 
 					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
@@ -262,14 +262,14 @@ class rssCreate {
 				$loop = 0;
 
 				if($value['user_name']) {
-					$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
+					$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->base_path."user.php?id.".intval($value['thread_user'])." )";
 				} else {
 					$tmp=explode(".", $value['thread_user'], 2);
 					list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 				}
 
 				$this -> rssItems[$loop]['title'] = $topic['thread_name'];
-				$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
+				$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
 				$this -> rssItems[$loop]['description'] = $topic['thread_thread'];
 				$loop ++;
 				foreach($replies as $value) {
@@ -281,7 +281,7 @@ class rssCreate {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
 					$this -> rssItems[$loop]['title'] = "Re: ".$topic['thread_name'];
-					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
+					$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
 					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
 					$loop++;
 				}
@@ -298,7 +298,7 @@ class rssCreate {
 					$nick = preg_replace("/[0-9]+\./", "", $value['bugtrack2_bugs_poster']);
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = $value['bugtrack2_bugs_summary'];
-					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
+					$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
 					$this -> rssItems[$loop]['description'] = $value['bugtrack2_bugs_description'];
 					$loop++;
 				}
@@ -332,10 +332,10 @@ class rssCreate {
 
 					if($value['parent_name']) {
 						$this -> rssItems[$loop]['title'] = "Re: ".$value['parent_name'];
-						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'].".post";
+						$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'].".post";
 					} else {
 						$this -> rssItems[$loop]['title'] = $value['thread_name'];
-						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+						$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
 					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
 					$loop++;
@@ -357,9 +357,9 @@ class rssCreate {
 					}
 					$this -> rssItems[$loop]['author_email'] = $value['download_author_email'];
 					$this -> rssItems[$loop]['title'] = $value['download_name'];
-					$this -> rssItems[$loop]['link'] = $e107->http_path."download.php?view.".$value['download_id'];
+					$this -> rssItems[$loop]['link'] = $e107->base_path."download.php?view.".$value['download_id'];
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $value['download_description'] : $value['download_description']);
-					$this -> rssItems[$loop]['enc_url'] = $e107->http_path."request.php?".$value['download_id'];
+					$this -> rssItems[$loop]['enc_url'] = $e107->base_path."request.php?".$value['download_id'];
 					$this -> rssItems[$loop]['enc_leng'] = $value['download_filesize'];
 					$this -> rssItems[$loop]['enc_type'] = $this->getmime($value['download_url']);
 					$this -> rssItems[$loop]['pubdate'] = $value['download_datestamp'];
@@ -393,12 +393,12 @@ class rssCreate {
 							if(eregi("http",$link2)){
                                 $this -> rssItems[$loop]['link'] = $link2;
 							}else{
-                            	$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link2;
+                            	$this -> rssItems[$loop]['link'] = $e107->base_path.$PLUGINS_DIRECTORY.$link2;
 							}
                                             }
 						$this -> rssItems[$loop]['description'] = $row[$description];
 
-						if($enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
+						if($enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->base_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
                			if($enc_leng){ $this -> rssItems[$loop]['enc_leng'] = $row[$enc_leng]; }
 						if($row[$enc_type]){
 							$this -> rssItems[$loop]['enc_type'] = $this->getmime($row[$enc_type]);
@@ -410,7 +410,7 @@ class rssCreate {
 						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
 						if($categoryname && $catlink){
 							$this -> rssItems[$loop]['category_name'] = $row[$categoryname];
-							$this -> rssItems[$loop]['category_link'] = $e107->http_path.$catlink;
+							$this -> rssItems[$loop]['category_link'] = $e107->base_path.$catlink;
 						}
 						if($datestamp){
 							$this -> rssItems[$loop]['pubdate'] = $row[$datestamp];
