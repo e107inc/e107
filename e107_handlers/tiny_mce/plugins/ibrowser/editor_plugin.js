@@ -1,5 +1,10 @@
 // Import theme specific language pack
-tinyMCE.importPluginLanguagePack('ibrowser', 'en,de');
+// $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/editor_plugin.js,v $
+// $Revision: 1.3 $
+// $Date: 2006-04-05 05:37:10 $
+// $Author: e107coders $
+
+tinyMCE.importPluginLanguagePack('ibrowser', 'en,es,da,de,fr,nl,pl,sv');
 
 // Returns the HTML contents of the ibrowser control.
 
@@ -10,7 +15,7 @@ var TinyMCE_ibrowserPlugin = {
 			author : 'Your name',
 			authorurl : '',
 			infourl : '',
-			version : "1.0"
+			version : "1.1"
 		};
 	},
 
@@ -45,7 +50,7 @@ var TinyMCE_ibrowserPlugin = {
 
             if (tinyMCE.imgElement) {
                 src = tinyMCE.imgElement.getAttribute('src') ? tinyMCE.imgElement.getAttribute('src') : "";
-                alt = tinyMCE.imgElement.getAttribute('alt') ? tinyMCE.imgElement.getAttribute('alt') : "";                 
+                alt = tinyMCE.imgElement.getAttribute('alt') ? tinyMCE.imgElement.getAttribute('alt') : "";
 			}
             /*
 
@@ -67,7 +72,8 @@ var TinyMCE_ibrowserPlugin = {
                     src = mceRealSrc;
 
            //       src = eval(tinyMCE.settings['urlconvertor_callback'] + "(src, tinyMCE.imgElement, true);");
-            }*/
+            }
+*/
 				tinyMCE.openWindow(template, {editor_id : editor_id, src : src, alt : alt, border : border, hspace : hspace, vspace : vspace, width : width, height : height, align : align});
 				return true;
 	}
@@ -80,7 +86,6 @@ var TinyMCE_ibrowserPlugin = {
 
 
 tinyMCE.addPlugin("ibrowser", TinyMCE_ibrowserPlugin);
-
 
 
 
