@@ -20,9 +20,9 @@ $sql->db_Select("download");
 		}
 
 echo "var tinyMCELinkList = new Array(";
-for ($i=0; $i<count($filelist); $i++) {
+for ($i=0; $i<count($filelist['id']); $i++) {
 echo "['".$filelist['name'][$i]."', '".SITEURL."request.php?".$filelist['id'][$i]."']\n\n";
-echo ($i != (count($filelist)-1)) ? "," : "";
+echo ($i != (count($filelist['id'])-1)) ? "," : "";
 };
 
 echo ");";
