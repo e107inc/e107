@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-03-03 23:36:47 $
-|     $Author: e107coders $
+|     $Revision: 1.52 $
+|     $Date: 2006-04-05 09:48:05 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -224,7 +224,7 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 					$_GET['t'] = $key;
 				}
 			}
-		} else {
+		} else if (e_QUERY) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) {
 					$refpage = "index.php";
