@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2006-03-05 06:10:42 $
+|     $Revision: 1.76 $
+|     $Date: 2006-04-06 05:49:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -588,7 +588,7 @@ class download {
 	}
 
 	function create_download($sub_action, $id) {
-		global $cal, $sql, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
+		global $cal,$tp, $sql, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
 		$download_status[0] = DOWLAN_122;
 		$download_status[1] = DOWLAN_123;
 		$download_status[2] = DOWLAN_124;
@@ -669,7 +669,7 @@ class download {
 			<tr>
 			<td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_12."</span>:</td>
 			<td style='width:80%' class='forumheader3'>
-			<input class='tbox' type='text' name='download_name' size='60' value='$download_name' maxlength='200' />
+			<input class='tbox' type='text' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200' />
 			</td>
 			</tr>
 
