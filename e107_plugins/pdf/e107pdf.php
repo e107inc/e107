@@ -80,6 +80,20 @@ class e107PDF extends UFPDF{
 		return $pdfpref;
 	}
 
+	function toPDF($text){
+		$search = array('&#39;', '&#039;', '&#036;', '&quot;');
+		$replace = array("'", "'", '$', '"');
+		$text = str_replace($search, $replace, $text);
+		return $text;
+	}
+
+	function toPDFTitle($text){
+		$search = array(":", "*", "?", '"', '<', '>', '|');
+		$replace = array('-', '-', '-', '-', '-', '-', '-');
+		$text = str_replace($search, $replace, $text);
+		return $text;
+	}
+
 	/*
 	The makePDF function does all the real parsing and composing
 	input argument $text needs to be an array containing the following:
@@ -100,23 +114,9 @@ class e107PDF extends UFPDF{
 		define('PDFLOGO', $logo);					//define logo to add in header
 		define('PDFPAGEURL', $text[6]);				//define page url to add in header
 
-		function toPDF($text){
-			$search = array('&#39;', '&#039;', '&#036;', '&quot;');
-			$replace = array("'", "'", '$', '"');
-			$text = str_replace($search, $replace, $text);
-			return $text;
-		}
-
-		function toPDFTitle($text){
-			$search = array(":", "*", "?", '"', '<', '>', '|');
-			$replace = array('-', '-', '-', '-', '-', '-', '-');
-			$text = str_replace($search, $replace, $text);
-			return $text;
-		}
-
 		//parse the data
-		$text[3] = toPDF($text[3]);					//replace some in the title
-		$text[3] = toPDFTitle($text[3]);			//replace some in the title
+		$text[3] = $this->toPDF($text[3]);					//replace some in the title
+		$text[3] = $this->toPDFTitle($text[3]);			//replace some in the title
 		foreach($text as $k=>$v){
 			$text[$k] = $tp->toHTML($v, TRUE);
 		}
