@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-02-20 18:14:13 $
+|     $Revision: 1.33 $
+|     $Date: 2006-04-06 17:54:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -149,17 +149,15 @@ if(isset($_POST['deactivate']))
 	$message .= field_deactivate();
 }
 
-//set order of all fields
-if($sql->db_Select("user_extended_struct", "user_extended_struct_id", "user_extended_struct_parent = 0"))
+if($sql->db_Select("user_extended_struct","DISTINCT(user_extended_struct_parent)"))
 {
 	$plist = $sql->db_getList();
 	foreach($plist as $_p)
 	{
-		$_parent = $_p['user_extended_struct_id'];
-		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_parent = {$_parent} ORDER BY user_extended_struct_order ASC"))
+		$o = 0;
+		if($sql->db_Select("user_extended_struct", "user_extended_struct_id", "user_extended_struct_parent = {$_p['user_extended_struct_parent']} && user_extended_struct_type != 0 ORDER BY user_extended_struct_order ASC"))
 		{
 			$_list = $sql->db_getList();
-			$o = 0;
 			foreach($_list as $r)
 			{
 				$sql->db_Update("user_extended_struct", "user_extended_struct_order = '{$o}' WHERE user_extended_struct_id = {$r['user_extended_struct_id']}");
@@ -277,12 +275,12 @@ class users_ext
 						";
 						if($i > 0){
 							$text .= "
-							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
+							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />{$ext['user_extended_struct_order']}
 							";
 						}
 						if($i <= count($extendedList[$cn])-2)
 						{
-							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />{$ext['user_extended_struct_order']}";
 						}
 						$text .= "
 						</form>
