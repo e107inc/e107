@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2006-03-14 17:29:07 $
-|     $Author: e107coders $
+|     $Revision: 1.85 $
+|     $Date: 2006-04-06 20:53:57 $
+|     $Author: whoisrich $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -145,7 +145,7 @@ $text = "<script type=\"text/javascript\">
 	<td style='width:50%' class='forumheader3'>".PRFLAN_3."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input class='tbox' type='text' name='siteurl' size='50' value='".$pref['siteurl']."' maxlength='150' /><br />
-	<br />( ".PRFLAN_159.": <b>".SITEURL."</b> )
+	".($pref['siteurl'] == SITEURL ? "" : "<br />( ".PRFLAN_159.": <b>".SITEURL."</b> )")."
 	</td>
 	</tr>
 
