@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-07-06 10:04:17 $
-|     $Author: lisa_ $
+|     $Revision: 1.13 $
+|     $Date: 2006-04-07 15:31:47 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -69,15 +69,15 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 			'0',
 			'".$_POST['event_cat_name']."',
 			'".$_POST['ne_new_category_icon']."',
-			'".$_POST['event_cat_class']."',
-			'".$_POST['event_cat_subs']."',
-			'".$_POST['event_cat_force']."',
-			'".$_POST['event_cat_ahead']."',
+			'".intval($_POST['event_cat_class'])."',
+			'".intval($_POST['event_cat_subs'])."',
+			'".intval($_POST['event_cat_force'])."',
+			'".intval($_POST['event_cat_ahead'])."',
 			'".$_POST['event_cat_msg1']."',
 			'".$_POST['event_cat_msg2']."',
-			'".$_POST['event_cat_notify']."',
+			'".intval($_POST['event_cat_notify'])."',
 			'0','0','".time()."',
-			'".$_POST['event_cat_addclass']."'";
+			'".intval($_POST['event_cat_addclass'])."'";
 			if ($calendarmenu_db->db_Insert("event_cat", $calendarmenu_args)){
 				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A26."</strong></td></tr>";
 			}else{
@@ -87,15 +87,15 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 			// Update existing
 			$calendarmenu_args = "
 			event_cat_name='".$_POST['event_cat_name']."',
-			event_cat_class='".$_POST['event_cat_class']."',
+			event_cat_class='".intval($_POST['event_cat_class'])."',
 			event_cat_icon='".$_POST['ne_new_category_icon']."',
-			event_cat_subs='".$_POST['event_cat_subs']."',
-			event_cat_force='".$_POST['event_cat_force']."',
-			event_cat_ahead='".$_POST['event_cat_ahead']."',
+			event_cat_subs='".intval($_POST['event_cat_subs'])."',
+			event_cat_force='".intval($_POST['event_cat_force'])."',
+			event_cat_ahead='".intval($_POST['event_cat_ahead'])."',
 			event_cat_msg1='".$_POST['event_cat_msg1']."',
 			event_cat_msg2='".$_POST['event_cat_msg2']."',
-			event_cat_notify='".$_POST['event_cat_notify']."',
-			event_cat_addclass='".$_POST['event_cat_addclass']."',
+			event_cat_notify='".intval($_POST['event_cat_notify'])."',
+			event_cat_addclass='".intval($_POST['event_cat_addclass'])."',
 			event_cat_lastupdate='".time()."'		
 			where event_cat_id='$calendarmenu_id'";
 			if ($calendarmenu_db->db_Update("event_cat", $calendarmenu_args)){ 
