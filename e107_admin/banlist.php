@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-05 19:28:57 $
+|     $Revision: 1.17 $
+|     $Date: 2006-04-07 15:24:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -49,6 +49,7 @@ if (isset($_POST['update_ban']) && $_POST['ban_ip'] != "" && strpos($_POST['ban_
 }
 
 if ($action == "remove" && isset($_POST['ban_secure'])) {
+	$sql -> db_Delete("generic", "gen_type='failed_login' AND gen_ip='$sub_action'");
 	admin_update($sql -> db_Delete("banlist", "banlist_ip='$sub_action'"), 'delete');
 }
 
