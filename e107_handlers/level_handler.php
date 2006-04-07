@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2006-04-07 18:35:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -39,7 +39,7 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 		$data['special'] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
 		$data[0] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
 	}
-	if ($user_admin)
+	if ($user_admin && !isset($data['special']))
 	{
 		$data['special'] = IMAGE_rank_admin_image."<br />";
 		$data[0] = IMAGE_rank_admin_image."<br />";
