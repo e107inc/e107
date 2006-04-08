@@ -1,7 +1,6 @@
-
-Q>	A quoi sert cette section? 
-R>  Cet section vous permet de rendre votre site inaccessable aux visiteurs, utilisez-la quand vous voulez améliorer votre site ou lorsque vous avez besoin de le désactiver pour toute autre raison.
-Seul l'administrateur principal du site peut accéder au site en mode de maintenance, vous en serez averti par un message s'affichant sur les pages.
-
-Q>	A l'aide! J'ai activé l'indicateur de maintenance et je me suis déconnecté accidentellement, comment est-ce que je peux revenir à la zone d'administration pour réactiver le site?
-R>  Rendez vous directement à la page http://yoursite.com/e107_admin.php/admin.php et connectez vous.
+﻿<div class='forumheader4'>Q>	 A quoi sert cette section? 
+A>	Cet écran vous permet de rendre votre site inaccessable aux visiteurs, employez-le quand vous voulez améliorer votre site ou lorsque vous avez besoin de le désactivé pour n'importe quelle raison.  
+Seul l'administrateur principal du site peut accéder au site en mode de maintenance, vous le verrez signaler par un message s'affichant à chaque page.
+</div><div class='forumheader4'>Q>	A l'aide! J'ai placé le drapeau de maintenance et accidentellement me suis déconnecté, comment est-ce que je peux revenir à l'espace administration pour reactiver le site?
+A>	Allez à la page http://yoursite.com/e107_admin.php/admin.php et connectez vous de là.
+</div>
