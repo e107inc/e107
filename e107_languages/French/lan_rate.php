@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_rate.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-06 08:11:57 $
-|     $Author: tpruvot $
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-
-define("RATELAN_0", "vote");
-define("RATELAN_1", "votes");
-define("RATELAN_2", "Comment trouvez vous cet élément?");
-define("RATELAN_3", "merci pour votre vote");
-define("RATELAN_4", "non évalué");
-define("RATELAN_5", "Voter");
-
-?>
+  define("RATELAN_0", "vote");
+  define("RATELAN_1", "votes");
+  define("RATELAN_2", "Comment évaluez-vous cet item?");
+  define("RATELAN_3", "Merci pour votre évaluation");
+  define("RATELAN_4", "non évalué");
+  define("RATELAN_5", "Évaluer");
+  ?>

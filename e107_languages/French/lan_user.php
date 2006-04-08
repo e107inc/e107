@@ -1,67 +1,63 @@
-<?php
+﻿<?php 
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - French Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-06 07:45:40 $
-|     $Author: tpruvot $
-|     Encoding: UTF-8
-+----------------------------------------------------------------------------+
+|     $Revision: 1.4 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-define("PAGE_NAME", "Membres");
-
-define("LAN_20", "Erreur");
-define("LAN_112", "Adresse email");
-define("LAN_115", "Numéro ICQ");
-define("LAN_116", "Adresse AIM");
-define("LAN_117", "Adresse MSN");
-define("LAN_118", "Date de naissance");
-define("LAN_119", "Lieu");
-define("LAN_120", "Signature");
-define("LAN_137", "Il n'y a pas d'information au sujet de cet utilisateur car non inscrit à");
-define("LAN_138", "Membres inscrits: ");
-define("LAN_139", "Ordre: ");
-define("LAN_140", "Nombre de membres inscrits");
-define("LAN_141", "Membres pas encore inscrits.");
-define("LAN_142", "Membre");
-define("LAN_143", "[caché sur demande]");
-define("LAN_144", "URL Site Web");
-define("LAN_145", "Inscrit le");
-define("LAN_146", "Visites depuis l'inscription");
-define("LAN_147", "Messages dans le Chatbox");
-define("LAN_148", "Commentaires postés");
-define("LAN_149", "Messages dans le Forum");
-define("LAN_308", "Véritable nom");
-define("LAN_400", "Ce n'est pas un utilisateur valide.");
-define("LAN_401", "pas d'informations");
-define("LAN_402", "Profil de membre");
-define("LAN_403", "Statistiques du site");
-define("LAN_404", "Dernière visite");
-define("LAN_405", "il y a plusieurs jours");
-define("LAN_406", "Rang");
-define("LAN_407", "aucun/e");
-define("LAN_408", "pas de photo");
-define("LAN_409", "points");
-define("LAN_410", "Divers");
-define("LAN_411", "Cliquer ici pour mettre à jour vos informations");
-define("LAN_412", "Cliquer ici pour modifier les informations relatives à cet utilisateur");
-define("LAN_413", "effacer la photo");
-define("LAN_414", "membre précédent");
-define("LAN_415", "membre suivant");
-define("LAN_416", "Vous devez être enregistré pour accéder à cette page");
-define("LAN_417", "Administrateur principal du site");
-define("LAN_418", "Administrateur du site");
-define("LAN_419", "Afficher");
-define("LAN_420", "Décroissant");
-define("LAN_421", "Croissant");
-define("LAN_422", "Go");
-define("LAN_423", "Cliquer ici pour voir les commentaires des utilisateurs");
-define("LAN_424", "Cliquer ici pour voir les messages du forum");
-define("LAN_425", "Envoyer un message privé");
-define("LAN_426", "");
-
-define("USERLAN_1", "Evaluation des pairs");
-
-?>
+  define("PAGE_NAME", "Membres");
+  define("LAN_20", "Erreur");
+  define("LAN_112", "Adresse courriel");
+  define("LAN_115", "Numéro ICQ");
+  define("LAN_116", "Adresse AIM");
+  define("LAN_117", "MSN Messenger");
+  define("LAN_118", "Anniversaire");
+  define("LAN_119", "Résidence");
+  define("LAN_120", "Signature");
+  define("LAN_137", "Il n'y a pas d'information sur cet utilisateur car il n'a pas rempli son profil");
+  define("LAN_138", "Nombre de membres enregistrés: ");
+  define("LAN_139", "Par Ordre: ");
+  define("LAN_140", "Membres enregistrés");
+  define("LAN_141", "Aucun membre enregistré pour le moment.");
+  define("LAN_142", "Membre");
+  define("LAN_143", "[Caché sur demande]");
+  define("LAN_144", "Site Internet");
+  define("LAN_145", "Inscrit le");
+  define("LAN_146", "Nombre de visites depuis son inscription");
+  define("LAN_147", "Messages dans la Chatbox");
+  define("LAN_148", "Commentaires postés");
+  define("LAN_149", "Messages sur le Forum");
+  define("LAN_308", "Nom réel");
+  define("LAN_400", "Ce n'est pas un utilisateur valide.");
+  define("LAN_401", "aucune information");
+  define("LAN_402", "Profil du membre");
+  define("LAN_403", "Statistiques");
+  define("LAN_404", "Dernière visite");
+  define("LAN_405", "jours avant");
+  define("LAN_406", "Rang");
+  define("LAN_407", "aucune");
+  define("LAN_408", "Aucune Photo");
+  define("LAN_409", "points");
+  define("LAN_410", "Divers");
+  define("LAN_411", "Cliquer ici pour mettre à jour votre profil");
+  define("LAN_412", "Cliquer ici pour éditer le profil de ce membre");
+  define("LAN_413", "Supprimer la photo");
+  define("LAN_414", "membre précédent");
+  define("LAN_415", "membre suivant");
+  define("LAN_416", "Vous devez vous identifier pour accéder à cette page");
+  define("LAN_417", "Administrateur principal du site");
+  define("LAN_418", "Administrateur du site");
+  define("LAN_419", "Afficher");
+  define("LAN_420", "Décr");
+  define("LAN_421", "Croi");
+  define("LAN_422", "Trier");
+  define("LAN_423", "Cliquer ici pour voir les commentaires de ce membre");
+  define("LAN_424", "Cliquer ici pour voir les messages de ce membre sur le Forum");
+  define("LAN_425", "Envoyer un Message privé");
+  define("LAN_426", "");
+  define("USERLAN_1", "Évaluation des pairs");
+  ?>

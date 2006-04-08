@@ -1,24 +1,22 @@
-<?php
+ï»¿<?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage FranÃ§ais e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communautÃ© franÃ§aise e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_userclass.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-07 19:17:45 $
-|     $Author: tpruvot $
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-
-define("UCSLAN_1", "Envoyer une notification par email à");
-define("UCSLAN_2", "Privilèges mis à jour");
-define("UCSLAN_3", "Cher");
-define("UCSLAN_4", "Vos privilèges ont été mis à jour à");
-define("UCSLAN_5", "Désormais vous avez accès aux zones suivantes");
-define("UCSLAN_6", "Configuration des groupes de l'utilisateur");
-define("UCSLAN_7", "Configuration des groupes");
-define("UCSLAN_8", "Avertir l'utilisateur");
-define("UCSLAN_9", "Groupe(s) mis à jour.");
-define("UCSLAN_10", "Cordialement,");
-
-?>
+  define("UCSLAN_1", "Envoyer une alerte par courriel Ã ");
+  define("UCSLAN_2", "PrivilÃ¨ges mis Ã  jour");//part of user message ligne 80
+  define("UCSLAN_3", "Cher");//part of user message ligne 80
+  define("UCSLAN_4", "Vos privillÃ¨ges ont Ã©tÃ© Mis Ã  jour Ã ");//part of user message ligne 80
+  define("UCSLAN_5", "DÃ©sormais vous avez accÃ¨s au(x) espaces(s) suivant(s)");//part of user message ligne 80
+  define("UCSLAN_6", "Configurer l'appartenance au(x) groupe(s) de l'utilisateur");
+  define("UCSLAN_7", "Enregistrer Appartenance Groupes");//ligne 105
+  define("UCSLAN_8", "Avertir l'utilisateur"); //ligne 105
+  define("UCSLAN_9", "Groupe Mis Ã  jour");//ligne 105
+  define("UCSLAN_10", "Cordialement");//part of user message ligne 80
+  ?>

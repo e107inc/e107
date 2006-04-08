@@ -1,20 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_userinfo.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-07 19:17:45 $
-|     $Author: tpruvot $
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-define("USFLAN_1", "Impossible de trouver l'IP de cette personne - aucune information disponible.");
-// define("USFLAN_2", "Erreur");
-define("USFLAN_3", "Messages envoyés depuis cette adresse IP");
-define("USFLAN_4", "Hôte");
-define("USFLAN_5", "Cliquez ici pour bannir cette adresse IP");
-define("USFLAN_6", "ID du membre");
-define("USFLAN_7", "Information Utilisateur");
-
-?>
+  define("USFLAN_1", "Impossible de trouver l'Ip de cette personne - aucune information n'est disponible.");
+  //  define("USFLAN_2", "Erreur");
+  define("USFLAN_3", "Messages postés depuis l'adresse IP");
+  define("USFLAN_4", "Hôte");
+  define("USFLAN_5", "Cliquer ici pour transférer l'adresse IP vers la page des Bans");
+  define("USFLAN_6", "ID du membre");
+  define("USFLAN_7", "Informations sur l'utilisateur");
+  ?>

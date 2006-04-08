@@ -1,20 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - French Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_request.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: UTF-8   
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-
-define("LAN_dl_61", "Erreur de téléchargement");
-define("LAN_dl_62", "Le téléChargement de ce fichier vous est interdit, vous avez dépassé votre quota de téléchargements");
-define("LAN_dl_63", "Vous n'avez pas la bonne autorisation pour télécharger ce fichier.");
-define("LAN_dl_64", "De retour");
-define("LAN_dl_65", "Fichier non trouvé");
-
-?>
+  define("LAN_dl_61", "Erreur lors du téléchargement");
+  define("LAN_dl_62", "Vous ne pouvez pas télécharger ce fichier car vous avez dépassé votre quota de téléchargement");
+  define("LAN_dl_63", "Vous n'avez pas les autorisations adéquates pour télécharger ce fichier.");
+  define("LAN_dl_64", "Retour");
+  define("LAN_dl_65", "Fichier non trouvé");
+  ?>

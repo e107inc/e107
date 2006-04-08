@@ -1,65 +1,61 @@
-<?php
+<?php 
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - French Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_online.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: UTF-8
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-
-//v.616
-define("ONLINE_EL1", "Invités: ");
-define("ONLINE_EL2", "Membres: ");
-define("ONLINE_EL3", "Dans cette page: ");
-define("ONLINE_EL4", "En ligne");
-define("ONLINE_EL5", "Membres");
-define("ONLINE_EL6", "Nouveau membre");
-define("ONLINE_EL7", "visualisant");
-define("ONLINE_EL8", "le plus grand nombre atteint en ligne: ");
-define("ONLINE_EL9", "ouvert");
-define("ONLINE_EL10", "Nom de membre");
-define("ONLINE_EL11", "Visualisant la Page");
-define("ONLINE_EL12", "En répondant à");
-define("ONLINE_EL13", "Forum");
-define("ONLINE_EL14", "Discussion");
-define("ONLINE_EL15", "Page");
-define("CLASSRESTRICTED", " Page pour groupe restreint");
-define("ARTICLEPAGE", "Article/Revue");
-define("CHAT", "Chat");
-define("COMMENT", "Commentaires");
-define("DOWNLOAD", "téléchargements");
-define("EMAIL", "email.php");
-define("FORUM", "Index des forums principaux");
-define("LINKS", "Liens");
-define("NEWS", "Nouvelles");
-define("OLDPOLLS", "Anciens sondages");
-define("POLLCOMMENT", "Sondage");
-define("PRINTPAGE", "Imprimer");
-define("LOGIN", "Connection");
-define("SEARCH", "En recherche");
-define("STATS", "Statistiques du site");
-define("SUBMITNEWS", "Soumettre une Nouvelle");
-define("UPLOAD", "Téléchargements");
-define("USERPAGE", "Profil d'utilisateur");
-define("USERSETTINGS", "Coordonnées d'utilisateur");
-define("ONLINE", "Utilisateurs en ligne");
-define("LISTNEW", "List des nouvelles");
-define("USERPOSTS", "Messages des utilisateurs");
-define("SUBCONTENT", "Soumettre un Article/Revue");
-define("TOP", "Top Posteurs de messages/Discussions les plus actives");
-define("ADMINAREA", "Zone d'administration");
-define("BUGTRACKER", "Traceur de bug");
-define("EVENT", "Liste des évènements");
-define("CALENDAR", "Calendrier des évènements");
-define("FAQ", "Questions fréquemment posées");
-define("PM", "Messagerie privée");
-define("SURVEY", "Enquête");
-define("ARTICLE", "Article");
-define("CONTENT", "Contenu de la Page");
-define("REVIEW", "Revue");
-
-?>
+  define("ONLINE_EL1", "Invité(s): ");
+  define("ONLINE_EL2", "Membre(s): ");
+  define("ONLINE_EL3", "Sur cette page : ");
+  define("ONLINE_EL4", "En ligne");
+  define("ONLINE_EL5", "Membres");
+  define("ONLINE_EL6", "Dernier membre");
+  define("ONLINE_EL7", "regarde");
+  define("ONLINE_EL8", "le plus de membres en ligne : ");
+  define("ONLINE_EL9", "le");
+  define("ONLINE_EL10", "Nom du membre");
+  define("ONLINE_EL11", "Page visitée");
+  define("ONLINE_EL12", "Répond à ");
+  define("ONLINE_EL13", "Forum");
+  define("ONLINE_EL14", "Sujet");
+  define("ONLINE_EL15", "Page");
+  define("CLASSRESTRICTED", "Page à accès restreint");
+  define("ARTICLEPAGE", "Article/Chronique");
+  define("CHAT", "Chat");
+  define("COMMENT", "Commentaires");
+  define("DOWNLOAD", "Téléchargements");
+  define("EMAIL", "Courriel");
+  define("FORUM", "Index du forum principal");
+  define("LINKS", "Liens");
+  define("NEWS", "Actualités");
+  define("OLDPOLLS", "Anciens sondages");
+  define("POLLCOMMENT", "Sondage");
+  define("PRINTPAGE", "Page déimpression");
+  define("LOGIN", "Page déidentification");
+  define("SEARCH", "Recherche");
+  define("STATS", "Statistiques du site");
+  define("SUBMITNEWS", "Proposition d'actualités");
+  define("UPLOAD", "Uploads public");
+  define("USERPAGE", "Profil déun membre");
+  define("USERSETTINGS", "Paramètres de son compte");
+  define("ONLINE", "Membres en ligne");
+  define("LISTNEW", "Liste des Nouveautés par catégorie");
+  define("USERPOSTS", "Messages déun membre");
+  define("SUBCONTENT", "Proposer Article/Chronique");
+  define("TOP", "Les meilleurs Posteurs/Sujets les plus actifs");
+  define("ADMINAREA", "Administration");
+  define("BUGTRACKER", "Rapport de bugs");
+  define("EVENT", "Liste des événements");
+  define("CALENDAR", "Calendrier des événements");
+  define("FAQ", "Faq");
+  define("PM", "Message privé");
+  define("SURVEY", "Sondage");
+  define("ARTICLE", "Article");
+  define("CONTENT", "Contenu");
+  define("REVIEW", "Chronique");
+  ?>

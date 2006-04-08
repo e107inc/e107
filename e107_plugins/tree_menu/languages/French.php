@@ -1,26 +1,21 @@
-<?php
+﻿<?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/tree_menu/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-01 22:18:24 $
-|     $Author: tpruvot $
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:28 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-	
-	
-define("TREE_L1", "Paramétrer le menu Arbre");
-define("TREE_L2", "Valider les préférences");
-define("TREE_L3", "Le menu Arbre a été configuré.");
-define("TREE_L4", "On");
-define("TREE_L5", "Off");
-?>
+  define("TREE_L1", "Configurer le Tree Menu");
+  define("TREE_L2", "Mettre à jour les paramètres du Tree Menu ");
+  define("TREE_L3", "Configuration du Tree Menu sauvegardée.");
+  define("TREE_L4", "Activé");
+  define("TREE_L5", "Désactivé");
+  define("TREE_L6", "Classe CSS à utiliser pour les liens non ouvrable");
+  define("TREE_L7", "Classe CSS à utiliser pour les liens ouvrable ");
+  define("TREE_L8", "Classe CSS à utiliser pour les liens ouverts");
+  define("TREE_L9", "Utiliser la classe Espace entre les liens principaux");
+  ?>

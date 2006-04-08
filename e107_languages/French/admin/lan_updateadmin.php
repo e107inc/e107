@@ -1,21 +1,20 @@
-<?php
+﻿<?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_updateadmin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-07 19:17:45 $
-|     $Author: tpruvot $
-+----------------------------------------------------------------------------+
+|     $Revision: 1.3 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-define("UDALAN_1", "Erreur - Veuillez recommencer");
-define("UDALAN_2", "Paramètres mis à jour");
-define("UDALAN_3", "Paramètres mis à jour pour");
-define("UDALAN_4", "Nom");
-define("UDALAN_5", "Mot de passe");
-define("UDALAN_6", "Confirmation du mot de passe");
-define("UDALAN_7", "Modifier le mot de passe");
-define("UDALAN_8", "Mot de passe modifié pour");
-
-?>
+  define("UDALAN_1", "Erreur - veuillez recommencer");
+  define("UDALAN_2", "Paramètres Mis à jour");
+  define("UDALAN_3", "Paramètres Mis à jour de");
+  define("UDALAN_4", "Nom");
+  define("UDALAN_5", "Mot de passe");
+  define("UDALAN_6", "Retaper le mot de passe");
+  define("UDALAN_7", "Changer de mot de passe");
+  define("UDALAN_8", "Mot de passe Mis à jour de");
+  ?>

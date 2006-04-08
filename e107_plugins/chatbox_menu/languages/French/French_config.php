@@ -1,48 +1,50 @@
-<?php
+﻿<?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/French/French_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-26 04:10:33 $
-|     $Author: tpruvot $
-|     Encoding:
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:27 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-define("CHBLAN_1", "Préférences du Chatbox mises à jour.");
-define("CHBLAN_2", "Modéré.");
-define("CHBLAN_3", "Pas de messages.");
-define("CHBLAN_4", "Membre");
-define("CHBLAN_5", "Invité");
-define("CHBLAN_6", "débloquer");
-define("CHBLAN_7", "bloquer");
-define("CHBLAN_8", "supprimer");
-define("CHBLAN_9", "Modérer le Chatbox");
-define("CHBLAN_10", "Modérer les messages");
-define("CHBLAN_11", "Nombre de messages à afficher");
-define("CHBLAN_12", "Nombre maximum de messages à afficher dans le Chatbox");
-define("CHBLAN_13", "Remplacer les liens");
-define("CHBLAN_14", "si coché, les liens envoyés seront remplacés par le texte du champ ci-dessous");
-define("CHBLAN_15", "Chaîne de remplacement si activé");
-define("CHBLAN_16", "les liens seront remplacé par cette chaîne de caractères");
-define("CHBLAN_17", "Taille de cessure");
-define("CHBLAN_18", "les mots plus longs que ce nombre seront découpés automatiquement");
-define("CHBLAN_19", "Valider les paramètres du Chatbox");
-define("CHBLAN_20", "Préférences du Chatbox");
-define("CHBLAN_21", "Délester");
-define("CHBLAN_22", "Supprimer les messages plus anciens qu'un certain laps de temps");
-define("CHBLAN_23", "Supprimer les messages agés de plus de");
-
-define("CHBLAN_24", "Un jour");
-define("CHBLAN_25", "Une semaine");
-define("CHBLAN_26", "Un mois");
-define("CHBLAN_27", "- Supprimer tous les messages -");
-define("CHBLAN_28", "Le Chatbox a été délesté.");
-
-define("CHBLAN_29", "Afficher le Chatbox avec une barre de défilement");
-define("CHBLAN_30", "Hauteur du Chatbox");
-define("CHBLAN_31", "Afficher les smileys");
-define("CHBLAN_32", "Groupe modérateur");
-
-?>
+  define("CHBLAN_1", "Paramètres Chatbox  mis à jour.");
+  define("CHBLAN_2", "Moderée.");
+  define("CHBLAN_3", "Pas de Messages postés pour le moment.");
+  define("CHBLAN_4", "Membre");
+  define("CHBLAN_5", "Invité");
+  define("CHBLAN_6", "débloquer");
+  define("CHBLAN_7", "bloquer");
+  define("CHBLAN_8", "Supprimé");
+  define("CHBLAN_9", "Modérer la Chatbox");
+  define("CHBLAN_10", "Modérer les messages");
+  define("CHBLAN_11", "Message Chatbox  à afficher");
+  define("CHBLAN_12", "Nombres des messages affichés dans la chatbox");
+  define("CHBLAN_13", "Remplacez les liens");
+  define("CHBLAN_14", "si coché, les liens postées seront remplacées par le texte entré dans la boîte ci-dessous");
+  define("CHBLAN_15", "Remplacez la phrase si activé");
+  define("CHBLAN_16", "Les liens seront remplacées par cette phrase");
+  define("CHBLAN_17", "Compteur Wrappeur ");
+  define("CHBLAN_18", "Les mots long du nombre que vous mettrez ici seront wrapper");
+  define("CHBLAN_19", "Mettre à jour les Paramètres Chatbox ");
+  define("CHBLAN_20", "Paramètres Chatbox ");
+  define("CHBLAN_21", "Purger");
+  define("CHBLAN_22", "Supprimer les messages vieux de plus d'une période de temps");
+  define("CHBLAN_23", "Supprimer les messages vieux de plus ");
+  define("CHBLAN_24", "Un jour");
+  define("CHBLAN_25", "Une semaine");
+  define("CHBLAN_26", "Un mois");
+  define("CHBLAN_27", "- supprimer tous les messages -");
+  define("CHBLAN_28", "Chatbox épurée.");
+  define("CHBLAN_29", "Afficher la chatbox à l'intérieur d'une fenêtre déroulante");
+  define("CHBLAN_30", "Hauteur de la fenêtre");
+  define("CHBLAN_31", "Afficher émoticons");
+  define("CHBLAN_32", "Groupe d'utilisateur Modérateur");
+  define("CHBLAN_33", "Comptes Utilisateur recalculés");
+  define("CHBLAN_34", "Recalculer les comptes messages Utilisateur");
+  define("CHBLAN_35", "Recalculer");
+  define("CHBLAN_36", "Options Affichage Chatbox");
+  define("CHBLAN_37", "Chatbox Normale");
+  define("CHBLAN_38", "Utilisez le code javascript pour mettre è jour des messages dynamiquement (AJAX)");
+  ?>

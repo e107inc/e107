@@ -1,44 +1,42 @@
-<?php
+<?php 
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_newspost.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-06 07:55:23 $
-|     $Author: tpruvot $
-+----------------------------------------------------------------------------+
+|     $Revision: 1.3 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-define("NWSLAN_1", "Nouvelle supprimée.");
-define("NWSLAN_2", "Veuillez cocher la case de confirmation pour supprimer cet article.");
-define("NWSLAN_3", "Pas d'articles pour le moment.");
-define("NWSLAN_4", "Articles existants");
-define("NWSLAN_5", "Ouvrir l'éditeur HTML");
-define("NWSLAN_6", "Catégorie");
-define("NWSLAN_7", "Modifier");
-define("NWSLAN_8", "Supprimer");
-define("NWSLAN_9", "cocher pour confirmer");
-define("NWSLAN_10", "Pas de catégories pour le moment.");
-define("NWSLAN_11", "Ajouter/Modifier Catégories");
-define("NWSLAN_12", "Titre");
-define("NWSLAN_13", "Contenu");
-define("NWSLAN_14", "Extension");
-define("NWSLAN_15", "Commentaires");
-define("NWSLAN_16", "Activé");
-define("NWSLAN_17", "Désactivé");
-define("NWSLAN_18", "Autoriser les commentaires sur cette nouvelle");
-define("NWSLAN_19", "Activation");
-define("NWSLAN_20", "Laisser à vide pour désactiver l'activation automatique");
-define("NWSLAN_21", "Activer entre");
-define("NWSLAN_22", "Visibilité");
-define("NWSLAN_23", "En cochant, cet article ne sera visible que pour les utilisateurs de ce groupe");
-define("NWSLAN_24", "Nouvel aperçu");
-define("NWSLAN_25", "Mise à jour des nouvelles dans la base");
-define("NWSLAN_26", "Envoyer les nouvelles dans la base");
-define("NWSLAN_27", "Aperçu");
-define("NWSLAN_28", "Nouvel article");
-define("NWSLAN_29", "Envoi de Nouvelles");
-
-define("NWSLAN_30", "Afficher seulement le titre");
-
-?>
+  define("NWSLAN_1", "Actualités supprimées.");
+  define("NWSLAN_2", "Veuillez cocher la case de confirmation pour supprimer cette actualité.");
+  define("NWSLAN_3", "Aucune actualité pour le moment.");
+  define("NWSLAN_4", "Actualités existantes");
+  define("NWSLAN_5", "Ouvrir l'éditeur HTML");
+  define("NWSLAN_6", "Catégorie");
+  define("NWSLAN_7", "éditer");
+  define("NWSLAN_8", "Supprimer");
+  define("NWSLAN_9", "cocher pour confirmer");
+  define("NWSLAN_10", "Aucune catégorie configurée pour le moment.");
+  define("NWSLAN_11", "Ajouter/éditer des Catégories");
+  define("NWSLAN_12", "Titre");
+  define("NWSLAN_13", "Corps");
+  define("NWSLAN_14", "Suite");
+  define("NWSLAN_15", "Autoriser les commentaires");
+  define("NWSLAN_16", "Oui");
+  define("NWSLAN_17", "Non");
+  define("NWSLAN_18", "Autoriser les commentaires pour cette actualité");
+  define("NWSLAN_19", "Activation");
+  define("NWSLAN_20", "Laisser le formulaire vide pour ne pas mettre de limite de temps");
+  define("NWSLAN_21", "Activer entre le");
+  define("NWSLAN_22", "Visibilité");
+  define("NWSLAN_23", "Si cochée, l'actualité ne sera lisible que par les membres de ce groupe");
+  define("NWSLAN_24", "Aperçu");
+  define("NWSLAN_25", "Mettre à jour");
+  define("NWSLAN_26", "Poster l'Actualité");
+  define("NWSLAN_27", "Aperçu");
+  define("NWSLAN_28", "Créer une actualité");
+  define("NWSLAN_29", "Poster une actualité");
+  define("NWSLAN_30", "Afficher seulement le Titre de l'Actualité");
+  ?>

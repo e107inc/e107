@@ -1,26 +1,24 @@
-<?php
+﻿<?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - French Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_upload_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: UTF-8
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:11 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-define("LANUPLOAD_1", "Le type de fichier");
-define("LANUPLOAD_2", "n'est pas autorisé et a été effacé.");
-define("LANUPLOAD_3", "Chargé avec succès");
-define("LANUPLOAD_4", "Soit le dossier de destination n'existe pas, soit il n'est pas modifiable.");
-define("LANUPLOAD_5", "Le fichier chargé dépasse la taille maximum permise tele qu'indiqué dans php.ini.");
-define("LANUPLOAD_6", "Le fichier chargé dépasse la taille maximum permise telle qie spécifiée dans le document html.");
-define("LANUPLOAD_7", "Le fichier chargé n'a été que partiellement chargé.");
-define("LANUPLOAD_8", "Aucun fichier n'a été chargé.");
-define("LANUPLOAD_9", "Taille du fichier chargé 0 bytes");
-define("LANUPLOAD_10", "Chargement non réussi [Duplicate filename] - Un fichier portant le même nom existe déjà.");
-define("LANUPLOAD_11", "Le fichier n'a pas été chargé. Nom du fichier: ");
-define("LANUPLOAD_12", "Erreur");
-
-?>
+  define("LANUPLOAD_1", "Le type de fichier");
+  define("LANUPLOAD_2", "n'est pas autorisé et a été supprimé.");
+  define("LANUPLOAD_3", "chargé avec succès");
+  define("LANUPLOAD_4", "Le dossier de destination n'existe pas ou n'est pas modifiable.");
+  define("LANUPLOAD_5", "Le fichier chargé excède la valeur indiquée par la variable upload_max_filesize dans php.ini.");
+  define("LANUPLOAD_6", "Le fichier chargé excède la valeur indiquée par la variable MAX_FILE_SIZE qui était précisé dans le formulaire HTML.");
+  define("LANUPLOAD_7", "Le fichier chargé a été partiellement envoyé.");
+  define("LANUPLOAD_8", "Aucun fichier n'a été envoyé.");
+  define("LANUPLOAD_9", "Le fichier envoyé fait 0 octet");
+  define("LANUPLOAD_10", "L'Upload a échoué [Nom du fichier dupliqué] - Un fichier existant porte déjàle même nom.");
+  define("LANUPLOAD_11", "Le fichier n'a pas été chargé. Nom du fichier : ");
+  define("LANUPLOAD_12", "Erreur");
+  ?>

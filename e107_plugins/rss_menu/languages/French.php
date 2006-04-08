@@ -1,20 +1,33 @@
-<?php
+﻿<?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - French Language File.
-|
++---------------------------------------------------------------+
+| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 23:44:53 $
-|     $Author: e107coders $
-|     Encoding: UTF-8
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-04-08 19:49:27 $
+|     $Author: daddycool78 $
++---------------------------------------------------------------+
 */
-define("BACKEND_MENU_L1", " peuvent être syndiqués en utilisant ces sources rss.");
-define("BACKEND_MENU_L2", "RSS sources");
-define("BACKEND_MENU_L3", "Nos nouvelles");
-define("BACKEND_MENU_L4", "Nos commentaires");
-define("BACKEND_MENU_L5", "Nos sujets de forum");
-define("BACKEND_MENU_L6", "Nos messages de forum");
-
-?>
+  define("BACKEND_MENU_L1", " peuvent être syndiqués en utilisant ces sources rss.");
+  define("BACKEND_MENU_L2", "RSS sources");
+  define("BACKEND_MENU_L3", "Nos actualités");
+  define("BACKEND_MENU_L4", "Nos commentaires");
+  define("BACKEND_MENU_L5", "Nos sujets de forum");
+  define("BACKEND_MENU_L6", "Nos messages de forum");
+  define("BACKEND_MENU_L7", "Nos messages chatbox ");
+  define("BACKEND_MENU_L8", "Nos rapports de bogues ");
+  define("BACKEND_MENU_L9", "Nos téléchargements");
+  define("RSS_LAN01", "Activer les ressources séparées pour chaque catégorie d'actualité?");
+  define("RSS_LAN02", "Activer les ressources séparées pour chaque catégorie de téléchargements ?");
+  define("RSS_NEWS","Actualités");
+  define("RSS_COM","Commentaires"); 
+  define("RSS_ART","Articles");
+  define("RSS_REV", "Chroniques");
+  define("RSS_FT","Sujet du Forum ");
+  define("RSS_FP","Message Forum ");
+  define("RSS_FSP","Message Spécifique Forum ");
+  define("RSS_BUG","Bugtracker");
+  define("RSS_FOR","Forum");
+  define("RSS_DL","Téléchargememts");
+  ?>
