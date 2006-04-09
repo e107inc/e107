@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.177 $
-|     $Date: 2006-02-21 17:37:05 $
-|     $Author: whoisrich $
+|     $Revision: 1.178 $
+|     $Date: 2006-04-09 00:51:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -498,7 +498,7 @@ function update_617_to_700($type='') {
 				{
 					unset($new_field);
 					$parms = explode("|", $val);
-					$ext_name['ue_'.$key] = 'user_'.$parms[0];
+					$ext_name['ue_'.$key] = 'user_'.preg_replace("#\W#","",$parms[0]);
 					$new_field['name'] = preg_replace("#\W#","",$parms[0]);
 					$new_field['text'] = $parms[0];
 					$new_field['type'] = $new_types[$parms[1]];
@@ -531,19 +531,21 @@ function update_617_to_700($type='') {
 								{
 									if($new_values)
 									{
-										$new_values .= " ,";
+										$new_values .= ", ";
 									}
-									$new_values .= $ext_name[$key]."='".$val."'";
+									$new_values .= "`".$ext_name[$key]."`='".$val."'";
 								}
 							}
 						}
-						foreach ($user_pref as $key => $prefvalue) {
+						foreach ($user_pref as $key => $prefvalue)
+						{
 							$user_pref[$key] = $tp->toDB($prefvalue);
 						}
 						$tmp=addslashes(serialize($user_pref));
 						$sql2->db_Update("user", "user_prefs='$tmp' WHERE user_id='{$row['user_id']}'");
 						if($new_values)
 						{
+//							echo $new_values."<br />";
 							$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
 							$sql2->db_Update('user_extended', $new_values." WHERE user_extended_id = '{$row['user_id']}'");
 						}
@@ -551,10 +553,7 @@ function update_617_to_700($type='') {
 				}
 			}
 			$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
-
-
 		}
-
 		//End Extended user field conversion
 
 
