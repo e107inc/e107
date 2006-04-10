@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-01-05 04:11:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2006-04-10 05:05:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -179,4 +179,7 @@ define("DUSRLAN_37", "XUP");
 define("USRLAN_138", "Unverified users");
 define("USRLAN_139", "Your account has been activated.\n\nYou can visit {SITEURL} and log into the site using the login information you provided.");
 
+define("USRLAN_140", "Email Re-sent to");
+define("USRLAN_141", "Failed to Re-send email to");
+define("USRLAN_142", "with the following activation link");
 ?>

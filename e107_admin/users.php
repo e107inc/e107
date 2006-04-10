@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2006-03-14 18:18:50 $
+|     $Revision: 1.76 $
+|     $Date: 2006-04-10 05:05:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -84,9 +84,9 @@ if (isset($_POST['resend_mail'])) {
 	require_once(e_HANDLER."mail.php");
 	if(sendemail($_POST['resend_email'], LAN_404." ".SITENAME, $message)){
 	//  echo str_replace("\n","<br>",$message);
-		$user->show_message("Email Re-sent to: ".$name." (".$row['user_language'].")");
+		$user->show_message(USRLAN_140.": <a href='mailto:".$_POST['resend_email']."' title=\"".DUSRLAN_7."\" >".$name."</a> (".$row['user_language'].") ".USRLAN_142.":<span class='smalltext'><br /><br /><a href='".RETURNADDRESS."'>".RETURNADDRESS."</a></span>");
 	}else{
-    	$user->show_message("Failed to Re-sent to: ".$name);
+    	$user->show_message(USRLAN_141.": ".$name);
 	}
 	unset($tid);
 }
@@ -108,6 +108,17 @@ if (isset($_POST['test_mail'])) {
 	$text .= "</div>";
 	$caption = $_POST['test_email']." - ";
 	$caption .= ($email_status == 1)? "Valid": "Invalid";
+
+	if($email_status == 1){
+		$text .= "<form method='post' action='".e_SELF.$qry."'>
+			<div style='text-align:left'>
+			<input type='hidden' name='useraction' value='resend' />\n
+			<input type='hidden' name='userid' value='".$_POST['test_id']."' />\n
+			<input class='button' type='submit' name='resend_' value='".USRLAN_112."' />\n</div></form>\n";
+    	$text .= "<div>";
+	}
+
+
 	$ns->tablerender($caption, $text);
 	unset($id, $action, $sub_cation);
 }
@@ -272,6 +283,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
 		$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 		$text .= USRLAN_117." <br /><b>".$test['user_email']."</b><br /><br />
 			<input type='hidden' name='test_email' value='".$test['user_email']."' />\n
+			<input type='hidden' name='test_id' value='".$_POST['userid']."' />\n
 			<input class='button' type='submit' name='test_mail' value='".USRLAN_118."' />\n</div></form>\n";
 		$caption = USRLAN_118;
 		$ns->tablerender($caption, $text);
