@@ -138,9 +138,9 @@ SC_BEGIN SHOWEVENT_HEADING
 		}
 	}
 	if($ev['startofevent']){
-		return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext' style='color:black;' >".$show_title."</span></a></b>";
+		return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
 	}else{
-		return "<a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='smalltext' style='color:black;' >".$show_title."</span></a>";
+		return "<a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
 	}
 SC_END
 
