@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2006-04-07 15:23:11 $
-|     $Author: sweetas $
+|     $Revision: 1.86 $
+|     $Date: 2006-04-11 01:43:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -226,7 +226,7 @@ if(USER)
 if (e_QUERY)
 {
 	$qs = explode(".", e_QUERY);
-	if ($qs[0] == "activate")
+	if ($qs[0] == "activate" && count($qs) == 3 && $qs[2])
 	{
 		$e107cache->clear("online_menu_totals");
 		if ($sql->db_Select("user", "*", "user_sess='".$tp -> toDB($qs[2], true)."' "))
