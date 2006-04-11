@@ -4,16 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-23 23:10:14 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-11 01:43:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 define("NT_LAN_US_1", "User Signup");
 
 define("NT_LAN_UV_1", "User Signup Verified");
-define("NT_LAN_UV_2", "Users session string");
+define("NT_LAN_UV_2", "User ID: ");
+define("NT_LAN_UV_3", "User Login Name: ");
+define("NT_LAN_UV_4", "User IP: ");
+
 
 define("NT_LAN_LI_1", "User Logged In");
 
