@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-04-12 17:12:54 $
+|     $Revision: 1.34 $
+|     $Date: 2006-04-12 17:42:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -232,7 +232,7 @@ function Color_Select() {
 function Size_Select() {
 	$text ="<!-- Start of Size selector -->
 		<div style='margin-left:0px;margin-right:0px;width:60px;position:relative;z-index:1000;float:right;display:none' id='size_selector' onclick=\"this.style.display='none'\">";
-	$text .="<div style='position:absolute;bottom:30px;right:200px;'>";
+	$text .="<div style='position:absolute;bottom:30px;right:125px;'>";
 	$text .= "<table class='fborder' style='background-color: #fff; cursor: pointer; cursor: hand; width: 100px;'>";
 
 	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
@@ -250,8 +250,8 @@ function PreImage_Select() {
 	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 	$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
 	$text ="<!-- Start of PreImage selector -->
-	<div style='margin-left:0px;margin-right:0px;width:100%;position:relative;z-index:1000;float:right;display:none' id='preimage_selector'>";
-	$text .="<div style='position:absolute; bottom:30px; right:150px'>";
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='preimage_selector'>";
+	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>";
 
@@ -323,8 +323,8 @@ function PreFile_Select() {
 			}
 		}
 	$text ="<!-- Start of PreFile selector -->
-	<div style='margin-left:0px;margin-right:0px;width:100%;position:relative;z-index:1000;float:right;display:none' id='prefile_selector'>";
-	$text .="<div style='position:absolute; bottom:30px; right:150px'>";
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='prefile_selector'>";
+	$text .="<div style='position:absolute; bottom:30px; right:75px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>";
 
