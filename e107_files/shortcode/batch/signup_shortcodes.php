@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-04 22:29:31 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-12 16:19:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -212,13 +212,13 @@ if($pref['signup_option_image'])
 
 	if ($pref['avatar_upload'] && FILE_UPLOADS)
 	{
-		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
+		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
 		<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
 	}
 
 	if ($pref['photo_upload'] && FILE_UPLOADS)
 	{
-		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
+		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
 		<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
 	}
 	return $text;
@@ -247,6 +247,7 @@ if ($pref['signup_option_timezone'])
 		}
 		$count++;
 	}
+	$text .= "</select>";
 	return $text;
 }
 return "";
@@ -262,7 +263,7 @@ if($signup_imagecode)
 SC_END
 
 SC_BEGIN SIGNUP_FORM_CLOSE
-return "</form";
+return "</form>";
 SC_END
 
 SC_BEGIN SIGNUP_XUP_LOGINNAME
