@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.31 $
+|     $Date: 2006-04-12 15:43:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -83,6 +83,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	global $pref;
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
+	//        $mode == 'news' : preuploaded news images dialog is rendered
 
 	if (strstr(e_SELF, "content") || strstr(e_SELF, "cpage")) {
 		$code[0] = array("newpage", "[newpage]", LANHELP_34);
@@ -100,6 +101,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$code[11] = array("list", "[list][/list]", LANHELP_36);
 	$code[12] = array("fontcol", "[color][/color]", LANHELP_21);
 	$code[13] = array("fontsize", "[size][/size]", LANHELP_22);
+	if ($mode == 'news') {
+		$code[14] = array("preimage", "[img][/img]", LANHELP_37);
+	}
 
 	$img[0] = "newpage.png";
 	$img[1] = "link.png";
@@ -115,6 +119,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$img[11] = "list.png";
 	$img[12] = "fontcol.png";
 	$img[13] = "fontsize.png";
+	if ($mode == 'news') {
+		$img[14] = "preimage.png";
+	}
 
 	$imgpath = (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
 
@@ -124,6 +131,8 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else if($key == 13){
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('size_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+		}else if($key == 14){
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('preimage_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else{
 		  $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}
@@ -140,6 +149,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	if ($mode) {
 		$text .= Size_Select();
 		$text .= Color_Select();
+		if ($mode == 'news') {
+			$text .= PreImage_Select();
+		}
 	}
 
 	return $text;
@@ -224,6 +236,51 @@ function Size_Select() {
 	}
 	$text .="	\n </table></div>
 	</div>\n<!-- End of Size selector -->";
+	return $text;
+}
+
+function PreImage_Select() {
+	global $imagelist, $IMAGES_DIRECTORY, $fl;
+	$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
+	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
+	$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
+	$text ="<!-- Start of PreImage selector -->
+	<div style='margin-left:0px;margin-right:0px;width:100%;position:relative;z-index:1000;float:right;display:none' id='preimage_selector' onclick=\"this.style.display='none'\">";
+	$text .="<div style='position:absolute;bottom:30px;right:200px;'>";
+	$text .= "<table class='fborder' style='background-color: #fff; cursor: pointer; cursor: hand; width: 100%;'>";
+
+	if(!count($imagelist))
+			{
+				$text .= LAN_NEWS_43;
+			}
+			else
+			{
+				foreach($imagelist as $image)
+				{
+					if(strstr($image['fname'], "thumb"))
+					{
+						$fi = str_replace("thumb_", "", $image['fname']);
+						if(file_exists(e_IMAGE."newspost_images/".$fi))
+						{
+							// thumb and main image found
+							$text .= "<tr><td class='button' onclick=\"addtext('[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]');\">".$image['fname']." (".LANHELP_38.")</td></tr>\n
+							";
+						}
+						else
+						{
+							$text .= "<tr><td class='button' onclick=\"addtext('[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]');\">".$image['fname']."</td></tr>\n
+							";
+						}
+					}
+					else
+					{
+						$text .= "<tr><td class='button' onclick=\"addtext('[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]');\">".$image['fname']."</td></tr>\n
+						";
+					}
+				}
+			}
+	$text .="	\n </table></div>
+	</div>\n<!-- End of PreImage selector -->";
 	return $text;
 }
 
