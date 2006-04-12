@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-01-12 09:52:21 $
-|     $Author: lisa_ $
+|     $Revision: 1.49 $
+|     $Date: 2006-04-12 19:33:12 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -115,10 +115,13 @@ define('LINKALIGN', 'left');
 
 // [newsstyle]
 
+define("NEWSLIST_THUMB", "border: 0px; float: right; margin-left: 10px; margin-bottom: 10px");
+
 $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='bevel'>
 {STICKY_ICON}{NEWSTITLE}
 </div></div></div>
 <div class='menu_content'>
+{NEWSIMAGE}
 {NEWSBODY}
 {EXTENDED}
 <br /></div>
