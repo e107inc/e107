@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.110 $
-|   $Date: 2006-04-12 16:16:33 $
+|   $Revision: 1.111 $
+|   $Date: 2006-04-12 19:33:12 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -398,7 +398,8 @@ class newspost {
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
-		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
+		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
+		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
 
 		if ($sub_action == "sn" && !$_POST['preview']) {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
@@ -501,7 +502,7 @@ class newspost {
 		</tr>
 
 		<tr>
-		<td style='width:20%' class='forumheader3'>".NWSLAN_66."</td>
+		<td style='width:20%' class='forumheader3'>".NWSLAN_66.":</td>
 		<td style='width:80%' class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_69."</a>
 		<div style='display: none;'>";
@@ -539,7 +540,7 @@ class newspost {
 			</div>
 			<table style='width:100%'>
 			<tr><td><input type='button' class='button' value='".LAN_NEWS_26."' onclick=\"duplicateHTML('upline','up_container');\"  /></td>
-			<td><span class='smalltext'>".LAN_NEWS_25."</span>&nbsp;<input class='tbox' type='text' name='resize_value' value='".$_POST['resize_value']."' size='3' />&nbsp;px</td>
+			<td><span class='smalltext'>".LAN_NEWS_25."</span>&nbsp;<input class='tbox' type='text' name='resize_value' value='".($_POST['resize_value'] ? $_POST['resize_value'] : '100')."' size='3' />&nbsp;px</td>
 			<td><input class='button' type='submit' name='submitupload' value='".NWSLAN_66."' /></td>
 			</tr></table>";
 
@@ -549,25 +550,27 @@ class newspost {
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".LAN_NEWS_41."</td>
+		<td class='forumheader3'>".LAN_NEWS_47.":</td>
 		<td class='forumheader3'>
 		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
-		<div style='display: none;'>
-		<input class='tbox' type='text' id='news_thumbnail' name='news_thumbnail' size='60' value='".$_POST['news_thumbnail']."' maxlength='100' />
-		<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_118."' onclick='expandit(this)' />
-		<div id='newsicn' style='display:none;{head}'>";
+		<div style='display: none;'>";
 
-		foreach($thumblist as $icon){
-			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumbnail','newsicn')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a>\n ";
+		$text .= "<select class='tbox' name='news_thumbnail' id='news_thumbnail'>
+		<option value=''>No Image</option>";
+		foreach($imagelist as $icon)
+		{
+			$selected = ($_POST['news_thumbnail'] == $icon['fname']) ? " selected='selected'" : "";
+			$text .= "<option value='".$icon['fname']."'".$selected.">".$icon['fname']."</option>\n";
 		}
+		$text .= "</select>";
 
-		$text .= "</div></div>
+		$text .= "</div>
 		</td>
 		</tr>
 		";
 
 		$text .= "<tr>
-		<td style='width:20%' class='forumheader3'>".NWSLAN_15."</td>
+		<td style='width:20%' class='forumheader3'>".NWSLAN_15.":</td>
 		<td style='width:80%' class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_18."</a>
 		<div style='display: none;'>
