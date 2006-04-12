@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_ren_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-04-12 16:16:33 $
+|     $Revision: 1.7 $
+|     $Date: 2006-04-12 17:12:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -53,5 +53,6 @@ define("LANHELP_37", "Insert image from e107_images/newspost_images/ directory")
 define("LANHELP_38", "link to full image will be generated");
 
 define("LANHELP_39", "Insert download link from existing downloads");
+define("LANHELP_40", "There are currently no existing downloads");
 
 ?>
