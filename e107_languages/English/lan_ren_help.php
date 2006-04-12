@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_ren_help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-11 14:35:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2006-04-12 15:43:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("LANHELP_1", "Black");
@@ -49,5 +49,7 @@ define("LANHELP_34", "[newpage] or [newpage=title] Insert newpage tag, splits ar
 define("LANHELP_35", "hyperlink url");
 define("LANHELP_36", "Unordered: [list]line1*line2*line3[/list] Ordered: [list=type]line1*line2*line3[/list]");
 
+define("LANHELP_37", "Insert image from e107_images/newspost_images/ directory");
+define("LANHELP_38", "link to full image will be generated");
 
 ?>

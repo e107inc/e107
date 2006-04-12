@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.108 $
-|   $Date: 2006-03-18 03:43:08 $
-|   $Author: e107coders $
+|   $Revision: 1.109 $
+|   $Date: 2006-04-12 15:43:26 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -504,7 +504,7 @@ class newspost {
 		//Main news body textarea
 		if (!$pref['wysiwyg']) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
-			<br />". display_help("helpb");
+			<br />". display_help("helpb", 'news');
 		} // end of htmlarea check.
 
 		//Extended news form textarea
@@ -519,7 +519,7 @@ class newspost {
 		<div style='display:none'>
 		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."</textarea>";
 		if (!$pref['wysiwyg']) {
-			$text .="<br />". display_help("helpb");
+			$text .="<br />". display_help("helpb", 'news');
 		}
 		$text .= "
 		</div>
@@ -579,8 +579,6 @@ class newspost {
 		<td class='forumheader3'>
 		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
 		<div style='display: none;'>
-
-		(".LAN_NEWS_38.")<br />
 		<input class='tbox' type='text' id='news_thumbnail' name='news_thumbnail' size='60' value='".$_POST['news_thumbnail']."' maxlength='100' />
 		<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_118."' onclick='expandit(this)' />
 		<div id='newsicn' style='display:none;{head}'>";
@@ -638,69 +636,7 @@ class newspost {
 
 			$text .= "</div>
 			</td>
-			</tr>\n";
-
-			$text .= "<tr>
-			<td class='forumheader3'>".ADLAN_105."</td>
-			<td class='forumheader3'>
-			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_38."</a>
-			<div style='display: none;'>
-			<br />
-			";
-			if(!count($imagelist))
-			{
-				$text .= LAN_NEWS_43;
-			}
-			else
-			{
-				$text .= LAN_NEWS_39."<br /><br />";
-				foreach($imagelist as $image)
-				{
-					if(strstr($image['fname'], "thumb"))
-					{
-						$fi = str_replace("thumb_", "", $image['fname']);
-						if(file_exists(e_IMAGE."newspost_images/".$fi))
-						{
-							// thumb and main image found
-							$text .= "<a href='javascript:addtext(\"[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
-							";
-						}
-						else
-						{
-							$text .= "<a href='javascript:addtext(\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
-							";
-						}
-					}
-					else
-					{
-						$text .= "<a href='javascript:addtext(\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
-						";
-					}
-				}
-			}
-            /*
-			$text .= "</div>
-			</td>
-			</tr>\n";
-
-
-
-			<input class='tbox' type='text' name='news_image' size='60' value='".$_POST['news_image']."' maxlength='100' />
-			<input class='button' type ='button' style='cursor:hand' size='30' value='View images' onclick='expandit(this)' />
-			<div id='imagefile' style='display:none;{head}'>";
-
-			$text .= "Multiple images can be added. Once an image has been selected, type {NEWSIMAGE=imagenumber} into your text to display it, eg {NEWSIMAGE=1}, {NEWSIMAGE=2).<br /><br />";
-
-			foreach($imagelist as $file){
-			$text .= "<a href=\"javascript:appendtext('".$file['fname']."|','news_image','null')\">".$file['fname']."</a><br />";
-			}
-			*/
-
-
-			$text .= "</div>
-			</td>
-			</tr>\n
-
+			</tr>
 			<!-- end of wysiwyg off -->\n\n";
 		}
 
