@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-04-12 17:58:41 $
+|     $Revision: 1.36 $
+|     $Date: 2006-04-12 17:59:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -232,7 +232,7 @@ function Color_Select() {
 function Size_Select() {
 	$text ="<!-- Start of Size selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='size_selector'>";
-	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
+	$text .="<div style='position:absolute; bottom:30px; right:125px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>
 	<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('size_selector')\">
