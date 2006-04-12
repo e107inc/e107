@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-04-12 17:42:36 $
+|     $Revision: 1.35 $
+|     $Date: 2006-04-12 17:58:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -231,15 +231,18 @@ function Color_Select() {
 
 function Size_Select() {
 	$text ="<!-- Start of Size selector -->
-		<div style='margin-left:0px;margin-right:0px;width:60px;position:relative;z-index:1000;float:right;display:none' id='size_selector' onclick=\"this.style.display='none'\">";
-	$text .="<div style='position:absolute;bottom:30px;right:125px;'>";
-	$text .= "<table class='fborder' style='background-color: #fff; cursor: pointer; cursor: hand; width: 100px;'>";
-
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='size_selector'>";
+	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
+	$text .= "<table class='fborder' style='background-color: #fff'>
+	<tr><td class='forumheader3'>
+	<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('size_selector')\">
+	<option value=''>Font Size...</option>";
+	
 	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
 	foreach($sizes as $s){
-		$text .= "<tr><td class='button' onclick=\"addtext('[size=".$s."][/size]')\">".$s."px</td></tr>\n";
+		$text .= "<option value='[size=".$s."][/size]'>".$s."px</option>\n";
 	}
-	$text .="	\n </table></div>
+	$text .="</select></td></tr>	\n </table></div>
 	</div>\n<!-- End of Size selector -->";
 	return $text;
 }
