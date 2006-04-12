@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-04-12 16:16:33 $
+|     $Revision: 1.33 $
+|     $Date: 2006-04-12 17:12:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -250,9 +250,10 @@ function PreImage_Select() {
 	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 	$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
 	$text ="<!-- Start of PreImage selector -->
-	<div style='margin-left:0px;margin-right:0px;width:100%;position:relative;z-index:1000;float:right;display:none' id='preimage_selector' onclick=\"this.style.display='none'\">";
-	$text .="<div style='position:absolute;bottom:30px;right:200px;'>";
-	$text .= "<table class='fborder' style='background-color: #fff; cursor: pointer; cursor: hand; width: 100%;'>";
+	<div style='margin-left:0px;margin-right:0px;width:100%;position:relative;z-index:1000;float:right;display:none' id='preimage_selector'>";
+	$text .="<div style='position:absolute; bottom:30px; right:150px'>";
+	$text .= "<table class='fborder' style='background-color: #fff'>
+	<tr><td class='forumheader3'>";
 
 	if(!count($imagelist))
 			{
@@ -260,6 +261,8 @@ function PreImage_Select() {
 			}
 			else
 			{
+				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('preimage_selector')\">
+				<option value=''>Select Image...</option>";
 				foreach($imagelist as $image)
 				{
 					if(strstr($image['fname'], "thumb"))
@@ -268,23 +271,24 @@ function PreImage_Select() {
 						if(file_exists(e_IMAGE."newspost_images/".$fi))
 						{
 							// thumb and main image found
-							$text .= "<tr><td class='button' onclick=\"addtext('[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]');\">".$image['fname']." (".LANHELP_38.")</td></tr>\n
+							$text .= "<option value='[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]'>".$image['fname']." (".LANHELP_38.")</option>\n
 							";
 						}
 						else
 						{
-							$text .= "<tr><td class='button' onclick=\"addtext('[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]');\">".$image['fname']."</td></tr>\n
+							$text .= "<option value='[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]'>".$image['fname']."</option>\n
 							";
 						}
 					}
 					else
 					{
-						$text .= "<tr><td class='button' onclick=\"addtext('[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]');\">".$image['fname']."</td></tr>\n
+						$text .= "<option value='[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]'>".$image['fname']."</option>\n
 						";
 					}
 				}
+				$text .="</select>";
 			}
-	$text .="	\n </table></div>
+	$text .="</td></tr>	\n </table></div>
 	</div>\n<!-- End of PreImage selector -->";
 	return $text;
 }
@@ -319,20 +323,22 @@ function PreFile_Select() {
 			}
 		}
 	$text ="<!-- Start of PreFile selector -->
-	<div style='margin-left:0px;margin-right:0px;width:100%;position:relative;z-index:1000;float:right;display:none' id='prefile_selector' onclick=\"this.style.display='none'\">";
-	$text .="<div style='position:absolute;bottom:30px;right:200px;'>";
-	$text .= "<table class='fborder' style='background-color: #fff; cursor: pointer; cursor: hand; width: 100%;'>";
+	<div style='margin-left:0px;margin-right:0px;width:100%;position:relative;z-index:1000;float:right;display:none' id='prefile_selector'>";
+	$text .="<div style='position:absolute; bottom:30px; right:150px'>";
+	$text .= "<table class='fborder' style='background-color: #fff'>
+	<tr><td class='forumheader3'>";
 
 
 	if(!count($filelist))
 	{
-		$text .= LAN_NEWS_43;
+		$text .= LANHELP_40;
 	}
 	else
 	{
+		$text .= "<select class='tbox' name='prefileselect' onchange=\"addtext(this.value); expandit('prefile_selector')\">
+				<option value=''>Select Download File...</option>";
 		foreach($filelist as $file)
 		{
-
 					if(isset($file['class']))
 					{
 						$ucinfo = "^".$file['class'];
@@ -346,16 +352,18 @@ function PreFile_Select() {
 
 					if($file['id'])
 					{
-						$text .= "<tr><td class='button' onclick=\"addtext('[file=request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]');\">".$file['name']."</a> - $ucname</td></tr>\n";
+						$text .= "<option value='[file=request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]'>".$file['name']." - $ucname</option>\n";
 											}
 					else
 					{
-						$text .= "<tr><td class='button' onclick=\"addtext('[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]');\">".$file['name']."</a> - $ucname</td></tr>\n";
-											}
+						$text .= "<option value='[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]'>".$file['name']." - $ucname</option>\n";
+					}
+					
 		}
+		$text .="</select>";
 	}
 
-	$text .="	\n </table></div>
+	$text .="</td></tr>	\n </table></div>
 	</div>\n<!-- End of PreFile selector -->";
 	return $text;
 }
