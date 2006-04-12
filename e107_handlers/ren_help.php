@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-04-12 17:59:51 $
+|     $Revision: 1.37 $
+|     $Date: 2006-04-12 18:08:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -256,7 +256,7 @@ function PreImage_Select() {
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='preimage_selector'>";
 	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
-	<tr><td class='forumheader3'>";
+	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
 	if(!count($imagelist))
 			{
@@ -329,7 +329,7 @@ function PreFile_Select() {
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='prefile_selector'>";
 	$text .="<div style='position:absolute; bottom:30px; right:75px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
-	<tr><td class='forumheader3'>";
+	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
 
 	if(!count($filelist))
