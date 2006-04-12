@@ -115,6 +115,10 @@ ul {
 	margin-bottom: 0px;
 }
 
+.helpbox {
+	border: 0px;
+}
+
 /* Theme Specific Classes */
 
 .top_section, .main_section {
