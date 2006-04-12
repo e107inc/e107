@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-04 22:29:31 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-12 16:19:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -235,7 +235,7 @@ $SIGNUP_BEGIN = "
 <div style='text-align:center;width:100%'>
 {SIGNUP_SIGNUP_TEXT}
 <br />
-".LAN_400;
+".LAN_400."</div>";
 }
 
 if(!defined($SIGNUP_BODY))
@@ -307,7 +307,6 @@ $SIGNUP_BODY = "
 if(!defined($SIGNUP_END))
 {
 $SIGNUP_END = "
-</div>
 ";
 }
 ?>
