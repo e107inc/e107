@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.109 $
-|   $Date: 2006-04-12 15:43:26 $
+|   $Revision: 1.110 $
+|   $Date: 2006-04-12 16:16:33 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -400,32 +400,6 @@ class newspost {
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
 		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
 
-
-		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
-
-		$filelist = array();
-		$downloadList = array();
-
-		$sql->db_Select("download", "*", "download_class != ".e_UC_NOBODY);
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			if($download_url)
-			{
-				$filelist[] = array("id" => $download_id, "name" => $download_name, "url" => $download_url, "class" => $download_class);
-				$downloadList[] = $download_url;
-			}
-		}
-
-		$tmp = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
-		foreach($tmp as $value)
-		{
-			if(!in_array($value['fname'], $downloadList))
-			{
-				$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
-			}
-		}
-
 		if ($sub_action == "sn" && !$_POST['preview']) {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
 				list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
@@ -591,54 +565,6 @@ class newspost {
 		</td>
 		</tr>
 		";
-
-		if (!$pref['wysiwyg'])
-		{
-
-			$text .= "\n\n<!-- wysiwyg off -->\n\n<tr>
-			<td class='forumheader3'>".LAN_NEWS_42."</td>
-			<td class='forumheader3'>
-			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_40."</a>
-			<div style='display: none;'>
-			<br />
-			";
-			if(!count($filelist))
-			{
-				$text .= LAN_NEWS_43;
-			}
-			else
-			{
-				$text .= LAN_NEWS_39."<br /><br />";
-				foreach($filelist as $file)
-				{
-
-					if(isset($file['class']))
-					{
-						$ucinfo = "^".$file['class'];
-						$ucname = r_userclass_name($file['class']);
-					}
-					else
-					{
-						$ucinfo = "";
-						$ucname = r_userclass_name(0);
-					}
-
-					if($file['id'])
-					{
-						$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a> - $ucname<br />";
-					}
-					else
-					{
-						$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a> - $ucname<br />";
-					}
-				}
-			}
-
-			$text .= "</div>
-			</td>
-			</tr>
-			<!-- end of wysiwyg off -->\n\n";
-		}
 
 		$text .= "<tr>
 		<td style='width:20%' class='forumheader3'>".NWSLAN_15."</td>
