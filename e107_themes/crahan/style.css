@@ -478,3 +478,10 @@ a.forumlink:hover {
 	padding: 1px;
 	width: 100%;
 }
+
+
+#marqueecontainer{
+	position: relative;
+	height: 200px;
+	overflow: hidden;
+}
