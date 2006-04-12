@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_ren_help.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-04-12 15:43:27 $
+|     $Revision: 1.6 $
+|     $Date: 2006-04-12 16:16:33 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -51,5 +51,7 @@ define("LANHELP_36", "Unordered: [list]line1*line2*line3[/list] Ordered: [list=t
 
 define("LANHELP_37", "Insert image from e107_images/newspost_images/ directory");
 define("LANHELP_38", "link to full image will be generated");
+
+define("LANHELP_39", "Insert download link from existing downloads");
 
 ?>
