@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2006-01-24 07:18:19 $
+|     $Revision: 1.83 $
+|     $Date: 2006-04-12 20:37:47 $
 |     $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -206,9 +206,9 @@ class sitelinks
 
 			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
-				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."',{$dimen})\"";
+				$href = " href=\"javascript:open_window('".$tp -> replaceConstants($linkInfo['link_url'])."',{$dimen})\"";
 			} else {
-				$href = " href='".$linkInfo['link_url']."'";
+				$href = " href='".$tp -> replaceConstants($linkInfo['link_url'])."'";
 			}
 
 			// Open link in a new window.  (equivalent of target='_blank' )
