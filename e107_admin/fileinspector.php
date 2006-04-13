@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-12-25 00:01:31 $
+|     $Revision: 1.36 $
+|     $Date: 2006-04-13 23:14:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -613,8 +613,8 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.35 $\n";
-		$data .= "|     \$Date: 2005-12-25 00:01:31 $\n";
+		$data .= "|     \$Revision: 1.36 $\n";
+		$data .= "|     \$Date: 2006-04-13 23:14:54 $\n";
 		$data .= "|     \$Author: sweetas $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
@@ -764,11 +764,11 @@ function sh(showid) {
 //-->
 </script>
 <style type='text/css'>
-<!--";
+<!--\n";
 if ($_POST['regex']) {
-	$text .= ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }";
+	$text .= ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }\n";
 } else {
-	$text .= ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }";
+	$text .= ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }\n";
 }
 $text .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
 .s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
@@ -777,7 +777,7 @@ $text .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
 .i { width: 16px; height: 16px }
 .e { width: 9px; height: 9px }
 -->
-</style>";
+</style>\n";
 		
 return $text;
 }
