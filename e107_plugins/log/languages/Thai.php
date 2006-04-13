@@ -1,0 +1,70 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ฉSteve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Thai.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-04-13 16:03:08 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+แปลเป็นภาษาไทยโดย ผศ.ประชิด ทิณบุตร 
+อาจารย์ประจำโปรแกรมวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900
+Thai Translator/Developer : Assistant Professor Prachid Tinnabutr : 
+Date:18-March 2006 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 962 9505 prachid@tinnabutr.com,prachid@wittycomputer.com ,Mobile Phone : (66)0 9667 0091
+URL : http://www.tinnabutr.com, http://www.wittycomputer.com
+*/
+
+define("PAGE_NAME", "สถิติการใช้งานเว็ปไซท์");
+	
+define("ADSTAT_L1", "โปรแกรมเสริมนี้จะบันทึกค่าการเข้าใช้งานในระบบของเว็ปไซท์คุณ พร้อมเก็บค่าสถิติและข้อมูลต่างๆที่เกี่ยวข้องไว้แสดงเป็นข้อมูล");
+define("ADSTAT_L2", "ระบบการบันทึกค่าสถิติได้ติดตั้งเรียบร้อยแล้ว. หากต้องการปรับค่าสถิตจากที่มีอยู่เดิม กรุณา <a href='".e_PLUGIN."log/update_routine.php'>คลิกที่นี่เพื่อปรับปรุงระบบ</a>.");
+define("ADSTAT_L3", "สถิติการเข้าใช้ระบบ");
+define("ADSTAT_L4", "คุณไม่ได้รับอนุญาตให้เข้าดูในหน้าสถิติเว็ปไซท์.");
+define("ADSTAT_L5", "ยังใช้งานไม่ได้.");
+define("ADSTAT_L6", "ค่าสถิติของเว็ปไซท์");
+define("ADSTAT_L7", "ค่าสถิติที่คุณพิมพ์ยังไม่ได้เก็บรวบรวมไว้.");
+define("ADSTAT_L8", "สถิติของวันนี้");
+define("ADSTAT_L9", "สถิติทุกระยะเวลา");
+define("ADSTAT_L10", "สถิติรายวัน");
+define("ADSTAT_L11", "สถิติรายรายเดือน");
+define("ADSTAT_L12", "สถิติโปรแกรมใช้อินเตอร์เน็ต");
+define("ADSTAT_L13", "สถิติของระบบปฏิบัติการ");
+define("ADSTAT_L14", "สถิติชื่อของเว็ปไซท์");
+define("ADSTAT_L15", "สถิติการตั้งค่าแสดงผลความละเอียดหน้าจอ");
+define("ADSTAT_L16", "สถิติการอ้างอิงจาก");
+define("ADSTAT_L17", "สถิติคำค้นหา");
+define("ADSTAT_L18", "สถิติผู้เข้าดูเว็ปเมื่อเร็วๆนี้");
+define("ADSTAT_L19", "หน้า");
+define("ADSTAT_L20", "เข้ามาวันนี้");
+define("ADSTAT_L21", "รวม");
+define("ADSTAT_L22", "รวมทั้งหมด");
+define("ADSTAT_L23", "เข้าดูทั้งหมด");
+define("ADSTAT_L24", "รวมจำนวนทั้งสิ้น");
+define("ADSTAT_L25", "ยังไม่มีสถิติ.");
+define("ADSTAT_L26", "ใช้โปรแกรมดูอินเตอร์เน็ต");
+define("ADSTAT_L27", "ใช้ระบบปฏิบัติการ");
+define("ADSTAT_L28", "จากประเทศ");
+define("ADSTAT_L29", "ตั้งความละเอียดแสดงผลหน้าจอ");
+define("ADSTAT_L30", "แหล่งอ้างอิง");
+define("ADSTAT_L31", "สืบค้นคำจากแหล่งค้นของ");
+define("ADSTAT_L32", "อ้างจาก");
+define("ADSTAT_L33", "สถิตย้อนหลัง");
+define("ADSTAT_L34", "รวมจำนวน");
+define("ADSTAT_L35", "ภาพรวมที่ผ่านมา");
+define("ADSTAT_L36", "วันต่อหน้า");
+define("ADSTAT_L37", "เดือนต่อหน้า");
+define("ADSTAT_L38", "รวมทั้งหมดต่อเดือน");
+define("ADSTAT_L39", "เอารายการนี้ออก");
+define("ADSTAT_L40", "วัน");
+define("ADSTAT_L41", "ผิดพลาด");
+
+?>

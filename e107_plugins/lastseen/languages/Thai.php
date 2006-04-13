@@ -1,0 +1,16 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/lastseen/languages/Thai.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-04-13 16:03:08 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+
+define("LSP_LAN_1", "ผู้ชมล่าสุดคือ");
+
+
+?>
