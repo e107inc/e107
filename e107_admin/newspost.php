@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.112 $
-|   $Date: 2006-04-13 17:30:34 $
+|   $Revision: 1.113 $
+|   $Date: 2006-04-13 17:33:41 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -1147,8 +1147,4 @@ function newspost_adminmenu() {
 }
 
 
-function headerjs(){
-
-
-}
 ?>
