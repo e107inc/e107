@@ -1,12 +1,21 @@
 <?php
-
-setlocale(LC_ALL, 'he');
-define("CORE_LC", 'he');
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/Hebrew.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-13 15:13:34 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+setlocale(LC_ALL, 'il');
+define("CORE_LC", 'il');
 define("CORE_LC2", 'il');
 define("CHARSET", "utf-8");  // for a true multi-language site. :)
-define("CORE_LAN1","ùâéàä : òøëä çñøä.\\n\\nùðä àú äòøëä äðåëçéú áäâãøåú (àâåø äðéäåì) àå äòìä ÷áöéí ùì äòøëä äðåëçéú ìùøú.");
+define("CORE_LAN1","×©×’×™××”: ×¢×™×¦×•×‘ ×—×¡×¨.\\n\\n×©× ×” ××ª ×”×¢×™×¦×•×‘ ×”×¤×¢×™×œ ×‘×”×’×“×¨×•×ª (×‘××™×–×•×¨ ×”× ×™×”×•×œ) ××• ×”×¢×œ×” ×§×‘×¦×™× ×œ×¢×™×¦×•×‘ ×”× ×•×›×—×™ ×‘×©×¨×ª.");
 
 //v.616
-define("CORE_LAN2"," \\1 ëúá:");// "\\1" îúééçñ ìùí äîùúîù.
-define("CORE_LAN3","äöîãú ÷áöéí îáåèìú");
+define("CORE_LAN2"," \\1 wrote:");// "\\1" represents the username.
+define("CORE_LAN3","×¦×™×¨×•×£ ×§×‘×¦×™× ×œ× ×¤×¢×™×œ");
 ?>

@@ -5,8 +5,8 @@
 |		Hebrew-utf language file
 |
 |		$Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/admin/lan_prefs.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-09-12 21:20:27 $
+|		$Revision: 1.3 $
+|		$Date: 2006-04-13 15:13:35 $
 |		$Author: e107coders $
 |		Encoding: utf-8
 +---------------------------------------------------------------+
@@ -19,7 +19,7 @@ define("PRFLAN_4", "כפתור הקישור לאתר");
 define("PRFLAN_5", "שורת כותרת האתר (Tagline)");
 define("PRFLAN_6", "תאור האתר");
 define("PRFLAN_7", "מנהל האתר הראשי");
-define("PRFLAN_8", "דוא&quot;ל מנהל האתר הראשי");
+define("PRFLAN_8", "אי-מייל מנהל האתר הראשי");
 define("PRFLAN_9", "פסקת הגבלת האחריות של האתר");
 define("PRFLAN_10", "ערכת נושא");
 define("PRFLAN_11", "ערכת הנושא של האתר");
@@ -68,7 +68,7 @@ define("PRFLAN_45", "להשתמש ב-COPPA בדף הרישום?");
 define("PRFLAN_46", "למידע נוסף על COPPA ראה");
 define("PRFLAN_47", "אבטחה והגנה");
 define("PRFLAN_48", "שיטת מעקב אחרי משתמשים");
-define("PRFLAN_49", "Cookies");
+define("PRFLAN_49", "עוגיות (קוקיז)");
 define("PRFLAN_50", "Sessions");
 define("PRFLAN_52", "שמור שינויים");
 define("PRFLAN_53", "העדפות האתר");
@@ -85,7 +85,7 @@ define("PRFLAN_59", "סימון יגביל את כל האזורים פרט לד�
 define("PRFLAN_60", "להפעיל SSL");
 define("PRFLAN_61", "הפעל SSL רק אם <b>אתה בטוח שאתה יודע מה אתה עושה!</b>");
 
-// define("PRFLAN_62", "הגדרות דוא\"ל");
+// define("PRFLAN_62", "הגדרות אי-מייל");
 // define("PRFLAN_63", "שלח דוא&quot;ל ניסוי");
 // define("PRFLAN_64", "לחיצה על הכפתור תשלח דוא&quot;ל ניסוי לכתובת של מנהל האתר הראשי");
 // define("PRFLAN_65", "לחץ כדי לשלוח דוא&quot;ל אל");
