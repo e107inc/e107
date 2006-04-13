@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.115 $
-|   $Date: 2006-04-13 17:56:47 $
-|   $Author: e107coders $
+|   $Revision: 1.116 $
+|   $Date: 2006-04-13 18:29:15 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -579,7 +579,7 @@ class newspost {
 		}
 		$text .= "</select>";
 		$pvw_default = ($_POST['news_thumbnail']) ? e_IMAGE."newspost_images/".$_POST['news_thumbnail'] : e_IMAGE."generic/blank.gif";
-        $text .= "&nbsp;<img id='prev_image' src='{$pvw_default}' alt='' style='width:100px;height:100px' />";
+        $text .= "&nbsp;<img id='prev_image' src='{$pvw_default}' alt='' style='height:100px' />";
 		$text .= "</div>
 		</td>
 		</tr>
