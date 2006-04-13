@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.47 $
-|   $Date: 2006-04-05 09:42:43 $
+|   $Revision: 1.48 $
+|   $Date: 2006-04-13 23:26:30 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -103,12 +103,16 @@ if (function_exists("headerjs")) {
 if (isset($htmlarea_js) && $htmlarea_js) {
 	echo $htmlarea_js;
 }
+if (strpos(e_SELF, 'fileinspector.php') === FALSE) {
 echo "<script type='text/javascript'>
-		function savepreset(ps,pid){
-			document.getElementById(ps).action='".e_SELF."?savepreset.'+pid;
-			document.getElementById(ps).submit();
-		}
-	</script> ";
+<!--
+function savepreset(ps,pid){
+	document.getElementById(ps).action='".e_SELF."?savepreset.'+pid;
+	document.getElementById(ps).submit();
+}
+//-->
+</script>\n";
+}
 if (isset($eplug_js) && $eplug_js) {
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
@@ -123,7 +127,7 @@ if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
 	define("e_WYSIWYG",FALSE);
 }
 echo "</head>
-	<body>";
+<body>\n";
 
 $ns = new e107table;
 $e107_var = array();
