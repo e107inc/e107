@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.113 $
-|   $Date: 2006-04-13 17:33:41 $
+|   $Revision: 1.114 $
+|   $Date: 2006-04-13 17:46:12 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -565,9 +565,9 @@ class newspost {
 		<td class='forumheader3'>".LAN_NEWS_47.":</td>
 		<td class='forumheader3'>
 		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
-		<div style='display: none;'>";
+		<div style='display: none;'><br />";
 
-		$text .= "<select id='news_pic' class='tbox' style='float:left' name='news_thumbnail' id='news_thumbnail' onchange='preview_image();'>
+		$text .= "<select id='news_pic' multiple='multiple' class='tbox' style='height:100px;float:left' name='news_thumbnail' id='news_thumbnail' onchange='preview_image();'>
 		<option value=''>No Image</option>";
 		foreach($imagelist as $icon)
 		{
@@ -575,7 +575,7 @@ class newspost {
 			$text .= "<option value='".$icon['fname']."'".$selected.">".$icon['fname']."</option>\n";
 		}
 		$text .= "</select>";
-        $text .= "<img id='prev_image' src='".e_IMAGE."newspost_images/{$_POST['news_thumbnail']}' alt='' style='float:right;width:100px;height:100px' />";
+        $text .= "<img id='prev_image' src='".e_IMAGE."newspost_images/{$_POST['news_thumbnail']}' alt='' style='width:100px;height:100px' />";
 		$text .= "</div>
 		</td>
 		</tr>
