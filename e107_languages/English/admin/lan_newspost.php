@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-04-12 19:33:12 $
+|     $Revision: 1.26 $
+|     $Date: 2006-04-13 23:43:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("NWSLAN_17", "Disabled");
 define("NWSLAN_18", "Allow comments to be posted to this news item");
 define("NWSLAN_19", "Activation");
 
-define("NWSLAN_21", "Activate between dates");
+define("NWSLAN_21", "Activate between");
 define("NWSLAN_22", "Visibility");
 
 define("NWSLAN_24", "Preview again");
@@ -157,7 +157,6 @@ define("LAN_NEWS_38", "Insert images");
 define("LAN_NEWS_39", "click on file to insert at cursor position");
 define("LAN_NEWS_40", "Insert download links");
 
-define("LAN_NEWS_41", "Thumbnail / Icon");
 define("LAN_NEWS_42", "Files");
 define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback not enabled.");
@@ -166,5 +165,8 @@ define("LAN_NEWS_45", "ID");
 
 define("LAN_NEWS_46", "News item not updated as no changes were made.");
 define("LAN_NEWS_47", "Image");
+define("LAN_NEWS_48", "No Image");
+
+define("LAN_NEWS_49", "Render-type");
 
 ?>
