@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.111 $
-|   $Date: 2006-04-12 19:33:12 $
-|   $Author: sweetas $
+|   $Revision: 1.112 $
+|   $Date: 2006-04-13 17:30:34 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -27,8 +27,20 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 function headerjs()
 {
-	global $cal;
-	return $cal->load_files();
+  	global $cal;
+ $js = "<script type='text/javascript'>
+			function preview_image(){
+				var ta;
+				ta = document.getElementById('news_pic').value;
+            	document.getElementById('prev_image').src = '".e_IMAGE."newspost_images/' + ta;
+                return;
+			}
+		</script>";
+
+
+    $js .= $cal->load_files();
+
+   return $js;
 }
 $e_sub_cat = 'news';
 $e_wysiwyg = "data,news_extended";
@@ -555,7 +567,7 @@ class newspost {
 		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
 		<div style='display: none;'>";
 
-		$text .= "<select class='tbox' name='news_thumbnail' id='news_thumbnail'>
+		$text .= "<select id='news_pic' class='tbox' style='float:left' name='news_thumbnail' id='news_thumbnail' onchange='preview_image();'>
 		<option value=''>No Image</option>";
 		foreach($imagelist as $icon)
 		{
@@ -563,7 +575,7 @@ class newspost {
 			$text .= "<option value='".$icon['fname']."'".$selected.">".$icon['fname']."</option>\n";
 		}
 		$text .= "</select>";
-
+        $text .= "<img id='prev_image' src='".e_IMAGE."newspost_images/{$_POST['news_thumbnail']}' alt='' style='float:right;width:100px;height:100px' />";
 		$text .= "</div>
 		</td>
 		</tr>
@@ -1134,4 +1146,9 @@ function newspost_adminmenu() {
 	$newspost->show_options($action);
 }
 
+
+function headerjs(){
+
+
+}
 ?>
