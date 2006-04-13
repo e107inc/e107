@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-04-12 19:33:12 $
+|     $Revision: 1.39 $
+|     $Date: 2006-04-13 23:43:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -236,7 +236,7 @@ function Size_Select() {
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>
 	<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('size_selector')\">
-	<option value=''>Font Size...</option>";
+	<option value=''>".LANHELP_41."</option>";
 	
 	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
 	foreach($sizes as $s){
@@ -264,7 +264,7 @@ function PreImage_Select() {
 			else
 			{
 				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('preimage_selector')\">
-				<option value=''>Select Image...</option>";
+				<option value=''>".LANHELP_42."</option>";
 				foreach($imagelist as $image)
 				{
 					if(strstr($image['fname'], "thumb"))
@@ -335,7 +335,7 @@ function PreFile_Select() {
 	else
 	{
 		$text .= "<select class='tbox' name='prefileselect' onchange=\"addtext(this.value); expandit('prefile_selector')\">
-				<option value=''>Select Download File...</option>";
+				<option value=''>".LANHELP_43."</option>";
 		foreach($filelist as $file)
 		{
 					if(isset($file['class']))

@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.117 $
-|   $Date: 2006-04-13 18:54:29 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.118 $
+|   $Date: 2006-04-13 23:43:16 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -319,7 +319,7 @@ class newspost {
 			<tr>
 			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>".LAN_NEWS_45."</a></td>
 			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
-			<td style='width:15%' class='fcaption'>Render-type</td>
+			<td style='width:15%' class='fcaption'>".LAN_NEWS_49."</td>
 			<td style='width:15%' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>";
 			$ren_type = array("default","title","other-news","other-news 2");
@@ -571,7 +571,7 @@ class newspost {
 		<div style='display: none;'><br />";
 
 		$text .= "<select id='news_pic' multiple='multiple' class='tbox' style='height:100px;float:left' name='news_thumbnail' id='news_thumbnail' onchange='preview_image();'>
-		<option value=''>No Image</option>";
+		<option value=''>".LAN_NEWS_48."</option>";
 		foreach($imagelist as $icon)
 		{
 			$selected = ($_POST['news_thumbnail'] == $icon['fname']) ? " selected='selected'" : "";
