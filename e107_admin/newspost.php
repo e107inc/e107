@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.114 $
-|   $Date: 2006-04-13 17:46:12 $
+|   $Revision: 1.115 $
+|   $Date: 2006-04-13 17:56:47 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -25,18 +25,21 @@ if (!getperms("H")) {
 }
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
-function headerjs()
-{
+function headerjs(){
   	global $cal;
- $js = "<script type='text/javascript'>
+	$js = "
+		<script type='text/javascript'>
 			function preview_image(){
 				var ta;
 				ta = document.getElementById('news_pic').value;
-            	document.getElementById('prev_image').src = '".e_IMAGE."newspost_images/' + ta;
-                return;
+				if(ta){
+            		document.getElementById('prev_image').src = '".e_IMAGE."newspost_images/' + ta;
+                }else{
+                	document.getElementById('prev_image').src = '".e_IMAGE."generic/blank.gif';
+				}
+				return;
 			}
 		</script>";
-
 
     $js .= $cal->load_files();
 
@@ -575,7 +578,8 @@ class newspost {
 			$text .= "<option value='".$icon['fname']."'".$selected.">".$icon['fname']."</option>\n";
 		}
 		$text .= "</select>";
-        $text .= "<img id='prev_image' src='".e_IMAGE."newspost_images/{$_POST['news_thumbnail']}' alt='' style='width:100px;height:100px' />";
+		$pvw_default = ($_POST['news_thumbnail']) ? e_IMAGE."newspost_images/".$_POST['news_thumbnail'] : e_IMAGE."generic/blank.gif";
+        $text .= "&nbsp;<img id='prev_image' src='{$pvw_default}' alt='' style='width:100px;height:100px' />";
 		$text .= "</div>
 		</td>
 		</tr>
