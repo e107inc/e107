@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_log.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-13 14:58:21 $
+|     $Revision: 1.4 $
+|     $Date: 2006-04-13 15:07:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -85,8 +85,8 @@ function get_log_img($log_type) {
 		case E_LOG_FATAL:
 			return "<img src='".e_IMAGE_ABS."admin_images/nopreview_16.png' alt='Fatal Icon' title='Fatal Error Message' />";
 		break;
-			return $log_type;
 	}
+		return $log_type;
 }
 
 function headerjs() {
