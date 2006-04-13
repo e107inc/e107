@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-28 20:44:18 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2006-04-13 14:33:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -87,7 +87,7 @@ class e_admin_log {
 			$event_detail = $tp -> toDB($event_detail, true);
 			$event_type = $tp -> toDB($event_type, true);
 			$time_stamp = time();
-			$uid = (USER === FALSE) ? USERID : '0';
+			$uid = (USERID !== FALSE) ? USERID : '0';
 			$ip = $e107->getip();
 			if($this->_options['backtrace'] == true) {
 				$event_detail .= "\n\n".debug_backtrace();
