@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/Hebrew.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-13 15:13:34 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-14 17:46:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -13,6 +13,9 @@ setlocale(LC_ALL, 'il');
 define("CORE_LC", 'il');
 define("CORE_LC2", 'il');
 define("CHARSET", "utf-8");  // for a true multi-language site. :)
+
+define("TEXTDIRECTION", "rtl");   
+
 define("CORE_LAN1","שגיאה: עיצוב חסר.\\n\\nשנה את העיצוב הפעיל בהגדרות (באיזור הניהול) או העלה קבצים לעיצוב הנוכחי בשרת.");
 
 //v.616
