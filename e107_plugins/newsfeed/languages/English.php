@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-29 19:57:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2006-04-14 14:09:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,5 +80,9 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
 	<br /><br />For a good list of available feeds, see <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> or <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Newsfeed help");
 define("NFLAN_44", "click to view");
+
+define("NFLAN_45", "Number of items to show in menu");
+define("NFLAN_46", "Number of items to show on main page");
+define("NFLAN_47", "0 or blank to show all");
 
 ?>

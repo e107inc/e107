@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-19 08:58:20 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-04-14 14:09:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -52,6 +52,9 @@ if($action == "show")
 	{
 		$row = $sql->db_Fetch();
 		extract ($row);
+		list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $newsfeed_image);				
+		$numtoshow = $newsfeed_showmain;
+		$numtoshow = (intval($numtoshow) > 0 ? $numtoshow : 999);
 
 		$rss = unserialize($newsfeed_data);
 
@@ -109,8 +112,13 @@ if($action == "show")
 		$FEEDLINK = $rss -> channel['link'];
 
 		$data = "";
-		foreach ($rss -> items as $item)
+		
+		$i = 0;
+		while($i < $numtoshow && $rss->items[$i])
 		{
+			$item = $rss->items[$i];
+//		foreach ($rss -> items as $item)
+//		{
 	
 			if($NEWSFEED_COLLAPSE)
 			{
@@ -129,6 +137,7 @@ if($action == "show")
 			}
 			$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN);
+			$i++;
 		}
 		$BACKLINK = "<a href='".e_SELF."'>".NFLAN_31."</a>";
 		$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN_START) . $data . preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN_END);

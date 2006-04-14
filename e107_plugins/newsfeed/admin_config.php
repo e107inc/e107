@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-02 04:53:21 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2006-04-14 14:09:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -38,7 +38,8 @@ if(isset($_POST['createFeed']))
 	if ($_POST['newsfeed_url'] && $_POST['newsfeed_name']) {
 		$name = $tp -> toDB($_POST['newsfeed_name']);
 		$description = $tp -> toDB($_POST['newsfeed_description']);
-		$sql->db_Insert("newsfeed", "0, '$name', '".$_POST['newsfeed_url']."', '', '0', '$description', '".$_POST['newsfeed_image']."', ".$_POST['newsfeed_active'].", ".$_POST['newsfeed_updateint']." ");
+		$imgfield = $_POST['newsfeed_image']."::".$_POST['newsfeed_showmenu']."::".$_POST['newsfeed_showmain'];
+		$sql->db_Insert("newsfeed", "0, '$name', '".$_POST['newsfeed_url']."', '', '0', '{$description}', '{$imgfield}', ".$_POST['newsfeed_active'].", ".$_POST['newsfeed_updateint']." ");
 		$message = NFLAN_23;
 	} else {
 		$message = NFLAN_24;
@@ -49,7 +50,8 @@ if(isset($_POST['updateFeed']))
 {
 	$name = $tp -> toDB($_POST['newsfeed_name']);
 	$description = $tp -> toDB($_POST['newsfeed_description']);
-	$sql->db_Update("newsfeed", "newsfeed_name='$name', newsfeed_url='".$_POST['newsfeed_url']."', newsfeed_timestamp='0', newsfeed_image='".$_POST['newsfeed_image']."', newsfeed_description='$description', newsfeed_active=".$_POST['newsfeed_active'].", newsfeed_updateint=".$_POST['newsfeed_updateint']." WHERE newsfeed_id=".$_POST['newsfeed_id']);
+	$imgfield = $_POST['newsfeed_image']."::".$_POST['newsfeed_showmenu']."::".$_POST['newsfeed_showmain'];
+	$sql->db_Update("newsfeed", "newsfeed_name='{$name}', newsfeed_url='".$_POST['newsfeed_url']."', newsfeed_timestamp='0', newsfeed_image='{$imgfield}', newsfeed_description='{$description}', newsfeed_active=".$_POST['newsfeed_active'].", newsfeed_updateint=".$_POST['newsfeed_updateint']." WHERE newsfeed_id=".$_POST['newsfeed_id']);
 	$message = NFLAN_25;
 }
 
@@ -118,11 +120,12 @@ if($action == "edit")
 	{
 		$row = $sql->db_Fetch();
 		extract($row);
+		list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $newsfeed_image);
 	}
 }
 else
 {
-	unset($newsfeed_name, $newsfeed_url, $newsfeed_image, $newsfeed_description, $newsfeed_updateint, $newsfeed_active);
+	unset($newsfeed_showmenu, $newsfeed_showmain, $newsfeed_name, $newsfeed_url, $newsfeed_image, $newsfeed_description, $newsfeed_updateint, $newsfeed_active);
 }
 
 $text = "<div style='text-align:center'>
@@ -174,6 +177,20 @@ $text = "<div style='text-align:center'>
 <input type='radio' name='newsfeed_active' value='1'".($newsfeed_active == 1 ? " checked='checked'" : "")." /> ".NFLAN_14."&nbsp;<br />
 <input type='radio' name='newsfeed_active' value='2'".($newsfeed_active == 2 ? " checked='checked'" : "")." /> ".NFLAN_20."&nbsp;<br />
 <input type='radio' name='newsfeed_active' value='3'".($newsfeed_active == 3 ? " checked='checked'" : "")." /> ".NFLAN_21."&nbsp;
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".NFLAN_45."<br /><span class='smalltext'>".NFLAN_47."</span></td>
+<td style='width:50%; text-align: left;' class='forumheader3'>
+<input class='tbox' type='text' name='newsfeed_showmenu' size='5' value='".($newsfeed_showmenu ? $newsfeed_showmenu : "0")."' maxlength='200' />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".NFLAN_46."<br /><span class='smalltext'>".NFLAN_47."</span></td>
+<td style='width:50%; text-align: left;' class='forumheader3'>
+<input class='tbox' type='text' name='newsfeed_showmain' size='5' value='".($newsfeed_showmain ? $newsfeed_showmain : "0")."' maxlength='200' />
 </td>
 </tr>
 
