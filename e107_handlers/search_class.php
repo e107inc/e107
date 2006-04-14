@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-02-19 03:13:25 $
+|     $Revision: 1.36 $
+|     $Date: 2006-04-14 00:28:13 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ class e_search {
 		$this -> query = $query;
 		$this -> bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle' />" : "<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align: middle' />");
 		preg_match_all('/(\W?".*?")|(.*?)(\s|$)/', $this -> query, $boolean_keys);
-		sort($this -> keywords['split'] = array_filter(str_replace('"', '', array_merge($boolean_keys[1], $boolean_keys[2]))));
+		sort($this -> keywords['split'] = array_unique(array_filter(str_replace('"', '', array_merge($boolean_keys[1], $boolean_keys[2])))));
 		foreach ($this -> keywords['split'] as $k_key => $key) {
 			if (!$this -> stopword($key)) {
 				if ($key{(strlen($key) - 1)} == '*') {
