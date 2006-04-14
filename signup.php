@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2006-04-11 01:43:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.87 $
+|     $Date: 2006-04-14 17:34:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -797,6 +797,7 @@ function render_email($preview = FALSE)
 	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
 	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 	$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
+    $HEAD .= ($preview) ? "<title>Signup Preview</title>\n" : "";
 	if($SIGNUPEMAIL_USETHEME == 2)
 	{
 		$CSS = file_get_contents(THEME."style.css");
@@ -812,7 +813,7 @@ function render_email($preview = FALSE)
 	{
 		$HEAD .= "<body>\n";
 	}
-	$FOOT = "\n<body>\n</html>\n";
+	$FOOT = "\n</body>\n</html>\n";
 
 	$SIGNUPEMAIL_TEMPLATE = $HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT;
 	$message = str_replace($search,$replace,$SIGNUPEMAIL_TEMPLATE);
