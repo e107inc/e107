@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-02-28 22:23:26 $
-|     $Author: whoisrich $
+|     $Revision: 1.55 $
+|     $Date: 2006-04-15 13:31:14 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,6 +46,10 @@ class comment {
 	{
 		//rating	: boolean, to show rating system in comment
 		global $pref, $sql, $tp;
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+        	return;
+		}
+
 		require_once(e_HANDLER."ren_help.php");
 		if (ANON == TRUE || USER == TRUE)
 		{
@@ -55,9 +59,9 @@ class comment {
 			{
 				$subject = COMLAN_5.' '.$subject;
 			}
-			
+
 			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:100%'>";
-			
+
 			if ($pref['nested_comments'])
 			{
 				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='66' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
@@ -98,7 +102,7 @@ class comment {
 					require_once(FOOTERF);
 					exit;
 				}
-				
+
 				$caption = LAN_318;
 				$comval = $tp -> toFORM($ecom['comment_comment']);
 				$comval = preg_replace("#\[ ".LAN_319.".*\]#si", "", $comval);
@@ -128,12 +132,12 @@ class comment {
 			$text .= $rate."<tr> \n
 			<td style='width:20%; vertical-align:top;'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
 			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
-			
+
 			if($tablerender)
 			{
 				$text = $ns->tablerender($caption, $text, '', TRUE);
 			}
-			
+
 			if($return)
 			{
 				return $text;
@@ -166,6 +170,11 @@ class comment {
 		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction, $thistable, $thisid;
+
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+        	return;
+		}
+
 
 		$comrow				= $row;
 		$thistable			= $table;
@@ -295,6 +304,10 @@ class comment {
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex=FALSE) {
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
 		global $sql, $sql2, $tp, $e107cache, $e_event, $e107, $pref, $rater;
+
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+        	return;
+		}
 
 		if(strstr(e_QUERY, "edit"))
 		{
@@ -446,6 +459,10 @@ class comment {
 		//rate				: boolean, to show/hide rating system in comment, default FALSE
 		global $pref, $sql, $ns, $e107cache, $tp, $totcc;
 
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+        	return;
+		}
+
 		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
 
 		$type = $this -> getCommentType($table);
@@ -484,7 +501,7 @@ class comment {
 			{
 				$text = $ns->tablerender(LAN_99, $text, '', TRUE);
 			}
-			
+
 			if (!$return)
 			{
 				echo $text;
@@ -508,12 +525,12 @@ class comment {
 		{
 			$comment = "<br /><div style='text-align:center'><b>".COMLAN_8."</b></div>";
 		}
-		
+
 		if (!$return)
 		{
           	echo $modcomment.$comment;
 		}
-		
+
 		$ret['comment'] .= $modcomment;
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = LAN_99;

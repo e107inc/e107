@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-03-14 17:29:08 $
+|     $Revision: 1.51 $
+|     $Date: 2006-04-15 13:31:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -169,6 +169,6 @@ define("PRFLAN_157", "All Display Names have been reset to the Login Name");
 define("PRFLAN_158", "Display Name maximum length");
 define("PRFLAN_159", "viewing this page with");
 
-define("PRFLAN_160", "Check remote servers when validating email addresses.");   
-
+define("PRFLAN_160", "Check remote servers when validating email addresses.");
+define("PRFLAN_161", "Disable all comments on the site"); 
 ?>
