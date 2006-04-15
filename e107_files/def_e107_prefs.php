@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-02-20 18:34:13 $
-|     $Author: whoisrich $
+|     $Revision: 1.49 $
+|     $Date: 2006-04-15 13:27:02 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -87,7 +87,7 @@ $pref = array (
   'plug_status' => 'rss_menu',
   'plug_latest' => '',
   'wmessage_sc' => '0',
-  'frontpage' => 
+  'frontpage' =>
   array (
     'all' => 'news.php',
   ),
@@ -153,7 +153,8 @@ $pref = array (
   'rss_feeds' => '1',
   'admincss' => 'style.css',
   'developer' => '0',
-  'download_email' => '0'
+  'download_email' => '0',
+  'comments_disabled' => '0'
 );
 
 ?>
