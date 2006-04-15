@@ -11,12 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/gsitemap.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-12 13:36:16 $
+|     $Revision: 1.6 $
+|     $Date: 2006-04-15 17:44:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+
+if (file_exists(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php"))
+{
+	include_once(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php");
+}
+else
+{
+	include_once(e_PLUGIN."gsitemap/languages/gsitemap_English.php");
+}
+
 
 if(e_QUERY == "show")
 {
@@ -32,7 +42,7 @@ if(e_QUERY == "show")
 	}
 	$text .= "</ul>";
 
-	$ns -> tablerender(SITENAME." : Sitemap", $text);
+	$ns -> tablerender(SITENAME." : ".GSLAN_Name."", $text);
 
 	require_once(FOOTERF);
 	exit;
@@ -50,7 +60,7 @@ foreach($smArray as $sm)
 {
 	$xml .= "
 	<url>
-		<loc>".$tp->toRSS($sm['gsitemap_url'])."</loc>
+		<loc>".$tp->toRSS($sm['gsitemap_url'],TRUE)."</loc>
 		<lastmod>".get_iso_8601_date($sm['gsitemap_lastmod'])."</lastmod>
     		<changefreq>".$sm['gsitemap_freq']."</changefreq>
     		<priority>".$sm['gsitemap_priority']."</priority>
