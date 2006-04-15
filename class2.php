@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.268 $
-|     $Date: 2006-04-05 12:03:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.269 $
+|     $Date: 2006-04-15 01:55:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -166,7 +166,7 @@ At a later date add a check to load e107 compat mode by $pref
 PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER."php_compatibility_handler.php");
 e107_require_once(e_HANDLER."e107_Compat_handler.php");
-
+$aj = new textparse; // required for backwards compatibility with 0.6 plugins. 
 
 e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
@@ -1213,7 +1213,7 @@ if(!function_exists("print_a")) {
 function force_userupdate() {
 
 	global $sql,$pref,$currentUser;
-	
+
 	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE)
 	{
 		return FALSE;
