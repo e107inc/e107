@@ -7,9 +7,9 @@
 *    www.e107poland.net
 **************************************************************************/
 
-//setlocale(LC_TIME, 'pl_PL'); 
-setlocale(LC_ALL, 'pl_PL');
-
+setlocale(LC_ALL, 'pl');
+setlocale(LC_TIME,"pl_PL");
+define("CORE_LC", 'pl');
 define("CHARSET", "utf-8");
 
 define("CORE_LAN1","BŁĄD : brakujący temat.\\n\\n Zmień temat w ustawieniach (panel admina) albo załaduj pliki aktualnego tematu na serwer.");
