@@ -1,7 +1,7 @@
 /**
  * $RCSfile: form_utils.js,v $
- * $Revision: 1.3 $
- * $Date: 2006-03-03 05:07:12 $
+ * $Revision: 1.4 $
+ * $Date: 2006-04-16 07:02:36 $
  *
  * Various form utilitiy functions.
  *
@@ -13,7 +13,7 @@ function getColorPickerHTML(id, target_form_element) {
 	var html = "";
 
 	html += '<a id="' + id + '_link" href="javascript:void(0);" onkeydown="pickColor(event,\'' + target_form_element +'\');" onmousedown="pickColor(event,\'' + target_form_element +'\');return false;">';
-	html += '<img id="' + id + '" src="../../themes/advanced/images/color.gif"';
+	html += '<img id="' + id + '" src="../../themes/' + tinyMCE.getParam("theme") + '/images/color.gif"';
 	html += ' onmouseover="this.className=\'mceButtonOver\'"';
 	html += ' onmouseout="this.className=\'mceButtonNormal\'"';
 	html += ' onmousedown="this.className=\'mceButtonDown\'"';
@@ -57,7 +57,7 @@ function getBrowserHTML(id, target_form_element, type, prefix) {
 	var html = "";
 
 	html += '<a id="' + id + '_link" href="javascript:openBrower(\'' + id + '\',\'' + target_form_element + '\', \'' + type + '\',\'' + option + '\');" onmousedown="return false;">';
-	html += '<img id="' + id + '" src="../../themes/advanced/images/browse.gif"';
+	html += '<img id="' + id + '" src="../../themes/' + tinyMCE.getParam("theme") + '/images/browse.gif"';
 	html += ' onmouseover="this.className=\'mceButtonOver\';"';
 	html += ' onmouseout="this.className=\'mceButtonNormal\';"';
 	html += ' onmousedown="this.className=\'mceButtonDown\';"';
