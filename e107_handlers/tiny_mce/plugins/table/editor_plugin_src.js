@@ -1,7 +1,7 @@
 /**
  * $RCSfile: editor_plugin_src.js,v $
- * $Revision: 1.8 $
- * $Date: 2006-03-03 05:07:12 $
+ * $Revision: 1.9 $
+ * $Date: 2006-04-16 07:02:35 $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2006, Moxiecode Systems AB, All rights reserved.
