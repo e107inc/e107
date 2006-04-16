@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-12-25 01:26:59 $
-|     $Author: sweetas $
+|     $Revision: 1.29 $
+|     $Date: 2006-04-16 08:03:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -210,16 +210,7 @@ require_once(e_ADMIN."footer.php");
 
 // ---------------------------------------------------------------------------
 function multilang_prefs() {
-	global $ns, $pref;
-
-	$handle = opendir(e_LANGUAGEDIR);
-	while ($file = readdir($handle)) {
-		if ($file != "." && $file != ".." && $file != "/") {
-			$lanlist[] = $file;
-		}
-	}
-	closedir($handle);
-
+	global $ns, $pref,$lanlist;
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='linkform'>
@@ -234,16 +225,12 @@ function multilang_prefs() {
 
 	$text .= "
 		<select name='sitelanguage' class='tbox'>\n";
-	$counter = 0;
-	$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
-	while (isset($lanlist[$counter])) {
-		if ($lanlist[$counter] == $sellan) {
-			$text .= "<option selected='selected'>".$lanlist[$counter]."</option>\n";
-		} else {
-			$text .= "<option>".$lanlist[$counter]."</option>\n";
+		$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
+		foreach($lanlist as $lan){
+			$sel =  ($lan == $sellan) ? "selected='selected'" : "";
+    		$text .= "<option value='{$lan}' {$sel}>".$lan."</option>\n";
 		}
-		$counter++;
-	}
+
 	$text .= "</select>
 		</td>
 		</tr>";
