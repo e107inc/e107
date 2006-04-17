@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2006-04-12 20:37:47 $
-|     $Author: sweetas $
+|     $Revision: 1.84 $
+|     $Date: 2006-04-17 17:02:25 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -35,6 +35,7 @@ class sitelinks
 
 	function getlinks($cat=1)
 	{
+		
 		global $sql;
 		if ($sql->db_Select('links', '*', "link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
 			while ($row = $sql->db_Fetch())
@@ -56,7 +57,7 @@ class sitelinks
 	{
 		global $pref, $ns, $e107cache;
 
-		if (($data = $e107cache->retrieve('sitelinks_'.$cat)) && !strpos(e_SELF,e_ADMIN) ) {
+		if (($data = $e107cache->retrieve('sitelinks_'.md5($cat.e_PAGE.e_QUERY))) && !strpos(e_SELF,e_ADMIN) ) {
 			return $data;
 		}
 
@@ -158,7 +159,7 @@ class sitelinks
 			}
 		}
 		$text .= "\n\n\n<!--- end Site Links -->\n\n\n";
-		$e107cache->set('sitelinks_'.$cat, $text);
+		$e107cache->set('sitelinks_'.$cat.md5(e_PAGE.e_QUERY), $text);
 	 	return $text;
 	}
 
