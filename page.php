@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-04-17 03:37:09 $
+|     $Revision: 1.25 $
+|     $Date: 2006-04-17 18:09:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -37,8 +37,8 @@ if(!e_QUERY)
 else
 {
 
-	$cacheString = e_LANGUAGE.'_page_'.e_QUERY;
-	$cachePageTitle = e_LANGUAGE.'_page-t'.e_QUERY;
+	$cacheString = 'page';
+	$cachePageTitle = 'page-t';
 
     if($cacheData = $e107cache->retrieve($cacheString)){
 
