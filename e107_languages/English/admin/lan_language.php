@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_language.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-15 19:11:12 $
+|     $Revision: 1.9 $
+|     $Date: 2006-04-17 14:52:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,9 +22,9 @@ define("LANG_LAN_08", "Replace existing tables (data will be lost).");
 define("LANG_LAN_10", "Confirm delete");
 define("LANG_LAN_11", "Delete unchecked tables above (if they exist).");
 define("LANG_LAN_12", "Enable Multi-Language Tables");
-define("LANG_LAN_13", "Multi-Language Preferences");
+define("LANG_LAN_13", "Language Preferences");
 define("LANG_LAN_14", "Default Site Language");
 define("LANG_LAN_15", "Tick to copy data from the default language.(useful for links, news-categories etc) ");
-
+define("LANG_LAN_16", "Multi-language Database Usage"); 
 
 ?>

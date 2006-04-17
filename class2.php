@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.270 $
-|     $Date: 2006-04-17 13:23:40 $
-|     $Author: sweetas $
+|     $Revision: 1.271 $
+|     $Date: 2006-04-17 14:52:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -166,7 +166,7 @@ At a later date add a check to load e107 compat mode by $pref
 PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER."php_compatibility_handler.php");
 e107_require_once(e_HANDLER."e107_Compat_handler.php");
-$aj = new textparse; // required for backwards compatibility with 0.6 plugins. 
+$aj = new textparse; // required for backwards compatibility with 0.6 plugins.
 
 e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
@@ -299,18 +299,24 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
 	}
 
-	// Get Language List for rights checking.
+
+}
+
+// Get Language List for rights checking.
+if(!$tmplan = getcachedvars("language-list")){
 	$handle=opendir(e_LANGUAGEDIR);
 	while ($file = readdir($handle)) {
 		if (is_dir(e_LANGUAGEDIR.$file) && $file !="." && $file !=".." && $file !="CVS") {
-			$lanlist[] = $file;
+				$lanlist[] = $file;
 		}
 	}
 	closedir($handle);
 	$tmplan = implode(",",$lanlist);
+	cachevars("language-list", $tmplan);
 }
 
 define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
+
 
 $sql->db_Mark_Time('(Start: Pref/multilang done)');
 
@@ -329,6 +335,8 @@ $e_online = new e_online();
 
 // cache class
 $e107cache = new ecache;
+
+
 
 if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2) {
 	$threshold=(time() - ($pref['del_unv'] * 60));
@@ -616,6 +624,12 @@ define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
+if(isset($_SERVER['HTTP_REFERER'])) {
+	$tmp = explode("?", $_SERVER['HTTP_REFERER']);
+	define("e_REFERER_SELF",($tmp[0] == e_SELF));
+} else {
+	define('e_REFERER_SELF', FALSE);
+}
 
 if (!class_exists('convert'))
 {
