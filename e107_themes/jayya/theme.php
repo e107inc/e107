@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-04-12 19:33:12 $
+|     $Revision: 1.50 $
+|     $Date: 2006-04-17 13:37:50 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -115,16 +115,26 @@ define('LINKALIGN', 'left');
 
 // [newsstyle]
 
-define("NEWSLIST_THUMB", "border: 0px; float: right; margin-left: 10px; margin-bottom: 10px");
+define("NEWSLIST_THUMB", "border: 0px");
+
+$sc_style['NEWSIMAGE']['pre'] = "<td style='padding-right: 7px; vertical-align: top'>";
+$sc_style['NEWSIMAGE']['post'] = "</td>";
 
 $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='bevel'>
 {STICKY_ICON}{NEWSTITLE}
 </div></div></div>
 <div class='menu_content'>
+<table>
+<tr>
 {NEWSIMAGE}
+<td style='width: 100%; vertical-align: top'>
 {NEWSBODY}
 {EXTENDED}
-<br /></div>
+<br />
+</td>
+</tr>
+</table>
+</div>
 <div class='menu_content'>
 <table class='news_info'>
 <tr>
