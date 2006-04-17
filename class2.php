@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.269 $
-|     $Date: 2006-04-15 01:55:28 $
-|     $Author: e107coders $
+|     $Revision: 1.270 $
+|     $Date: 2006-04-17 13:23:40 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -616,12 +616,6 @@ define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
-if(isset($_SERVER['HTTP_REFERER'])) {
-	$tmp = explode("?", $_SERVER['HTTP_REFERER']);
-	define("e_REFERER_SELF",($tmp[0] == e_SELF));
-} else {
-	define('e_REFERER_SELF', FALSE);
-}
 
 if (!class_exists('convert'))
 {

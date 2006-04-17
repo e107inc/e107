@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-06 07:21:05 $
+|     $Revision: 1.11 $
+|     $Date: 2006-04-17 13:23:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,25 +27,18 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 
-if (strstr(e_QUERY, "delp")) {
-	if (!e_REFERER_SELF) {
-		exit;
-	}
-	$tmp = explode("-", e_QUERY);
-	$image = $tmp[1];
+if (isset($_POST['delete'])) {
+	$image = $_POST['filename'];
 	@unlink(e_FILE."public/avatars/".$image);
 	$sql->db_Update("user", "user_image='' WHERE user_image='-upload-$image'");
 	$sql->db_Update("user", "user_sess='' WHERE user_sess='$image'");
 	$message = $image." ".IMALAN_28;
 }
 
-if (e_QUERY == "del") {
-	if (!e_REFERER_SELF) {
-		exit;
-	}
+if (isset($_POST['deleteall'])) {
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
-		if ($file != "." && $file != ".." && $file != "index.html" && $file != "null.txt" && $file != "/") {
+		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') { 
 			$dirlist[] = $file;
 		}
 	}
@@ -82,7 +75,7 @@ if (isset($_POST['show_avatars'])) {
 
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
-		if ($file != "." && $file != ".." && $file != "index.html" && $file != "null.txt" && $file != "/" && !is_dir($file)) {
+		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file)) { 
 			$dirlist[] = $file;
 		}
 	}
@@ -108,26 +101,36 @@ if (isset($_POST['show_avatars'])) {
 			}
 
 			$text .= "<div class='spacer'>
+				<form method='post' action='".e_SELF."'>
 				<table style='".ADMIN_WIDTH."' class='fborder'>
 				<tr>
 				<td class='fcaption'>$image_name</td>
 				</tr>
 				<tr>
-				<td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /><br />[ <a href='".e_SELF."?delp-$image_name'>".LAN_DELETE." ]</a></td>
+				<td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /></a><br />
+				<input type='hidden' name='filename' value='".$image_name."' />
+				<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
+				</td>
 				</tr>
 				<tr>
 				<td class='forumheader3'>$users</td>
 				</tr>
 				</table>
+				</form>
 				</div>";
 		}
 
 		$text .= "<div class='spacer'>
+			<form method='post' action='".e_SELF."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td class='forumheader'><a href='".e_SELF."?del'>".IMALAN_25."</a></td>
+			<td class='forumheader'>
+			<input class='button' type='submit' name='deleteall' value='".IMALAN_25."' />
+			</td>
 			</tr>
-			</table>";
+			</table>
+			</form>
+			</div>";
 
 	}
 
