@@ -51,16 +51,6 @@
 	border-bottom: 1px solid black;
 }
 
-#logo {
-	position: absolute;
-	left:0px;
-	top:0px;
-	height: 80px;
-	width: 216px;
-	background-image: url(images/logo.png);
-	background-repeat: no-repeat;
-}
-
 #quote {
 	position: absolute;
 	left:6px;

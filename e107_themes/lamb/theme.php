@@ -37,7 +37,7 @@ define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 $layout = "_default";
 
 $HEADER = "<div id='header'>
-<div id='logo'>&nbsp;</div>
+<img src='".THEME."images/logo.png' style='width: 168px; height: 80px; display: block' alt='' />
 </div>
 <div id='banner'>
 {BANNER}
