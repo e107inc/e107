@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-02-28 22:23:26 $
-|     $Author: whoisrich $
+|     $Revision: 1.27 $
+|     $Date: 2006-04-18 04:19:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -104,7 +104,7 @@ class page
 		}
 		else
 		{
-			$pages = $sql -> db_getList();
+			$pages = $sql -> db_getList('ALL', FALSE, FALSE);
 			$text .= "<form action='".e_SELF."' id='newsform' method='post'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
