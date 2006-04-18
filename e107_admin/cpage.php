@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-04-18 05:14:58 $
+|     $Revision: 1.29 $
+|     $Date: 2006-04-18 05:25:10 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -344,9 +344,14 @@ class page
 
 	function delete_page($del_id)
 	{
-		global $sql;
+		global $sql, $e107cache;
 		admin_update($sql -> db_Delete("page", "page_id='$del_id' "), 'delete', CUSLAN_28);
 		$sql -> db_Delete("menus", "menu_path='$del_id' ");
+		if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$del_id."'"))
+		{
+			$sql -> db_Delete("links", "link_url='page.php?".$del_id."'");
+			$e107cache->clear("sitelinks");
+		}
 	}
 
 	function optionsPage()
