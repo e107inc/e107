@@ -1,17 +1,23 @@
 if (ADMIN) {
-	global $sql,$ns, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
+	global $sql, $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
 
-	$sql -> db_Select("core", "*", "e107_name='e107' ");
-	$row = $sql -> db_Fetch();
-	$e107info = unserialize($row['e107_value']);
+	if (!isset($pref['install_date'])) {
+		$sql -> db_Select("core", "*", "e107_name='e107' ");
+		$row = $sql -> db_Fetch();
+		$coreinfo = unserialize($row['e107_value']);
+		$pref['install_date'] = $coreinfo['e107_datestamp'];
+   		save_prefs();
+   		$sql -> db_Delete("core", "e107_name='e107'");
+	}
+	
 
-    $e107info['e107_version'] = "";
-	$e107info['e107_build'] = "";
-
-	if(file_exists(e_ADMIN."ver.php")){ @include(e_ADMIN."ver.php"); }
+	if (file_exists(e_ADMIN."ver.php"))
+	{ 
+		include(e_ADMIN."ver.php"); 
+	}
 
 	$obj = new convert;
-	$install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
+	$install_date = $obj->convert_date($pref['install_date'], "long");
 
 	$text = "<b>".FOOTLAN_1."</b>
 	<br />".
