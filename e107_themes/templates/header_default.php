@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2006-01-26 21:57:06 $
+|     $Revision: 1.79 $
+|     $Date: 2006-04-18 01:33:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -264,8 +264,11 @@ if ($e107_popup != 1) {
 		parseheader(($ph ? $cust_header : $HEADER));
 	}
 	$sql->db_Mark_Time("Main Page Body");
-
-
+	
+	if(ADMIN){
+		if(file_exists('install.php')){ echo "<div class='installe' style='text-align:center'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
+	}
+	
 	if(defined("PREVIEWTHEME")) {
 		themeHandler :: showPreview();
 	}
