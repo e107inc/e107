@@ -8,7 +8,7 @@ if (ADMIN) {
     $e107info['e107_version'] = "";
 	$e107info['e107_build'] = "";
 
-	if(file_exists(e_ADMIN."ver.php")){ @include_once(e_ADMIN."ver.php"); }
+	if(file_exists(e_ADMIN."ver.php")){ @include(e_ADMIN."ver.php"); }
 
 	$obj = new convert;
 	$install_date = $obj->convert_date($e107info['e107_datestamp'], "long");

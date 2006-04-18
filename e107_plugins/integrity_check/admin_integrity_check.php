@@ -230,7 +230,7 @@ function headerjs() {
 	
 //check Version you are using
 if (file_exists(e_ADMIN."ver.php")) {
-	include_once(e_ADMIN."ver.php");
+	include(e_ADMIN."ver.php");
 }
 	
 //Arrays for replacing Directorys (if non-standard)
