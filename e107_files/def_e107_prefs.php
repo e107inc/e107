@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-04-15 13:27:02 $
-|     $Author: e107coders $
+|     $Revision: 1.50 $
+|     $Date: 2006-04-18 08:53:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 $pref = array (
+  'install_date' => time(),
   'sitename' => LAN_PREF_1,
   'siteurl' => $e_HTTP,
   'sitebutton' => 'button.png',
