@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-04-18 04:19:34 $
+|     $Revision: 1.28 $
+|     $Date: 2006-04-18 05:14:58 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -164,6 +164,12 @@ class page
 				$data                         = $tp -> toFORM($row['page_text']);
 				$edit                         = TRUE;
 			}
+			
+			if ($sql -> db_Select("links", "*", "link_url='page.php?".$id."'"))
+			{
+				$row = $sql -> db_Fetch();
+				$page_link = $row['link_name'];
+			}
 		}
 
 		$text = "<div style='text-align:center'>
@@ -247,7 +253,7 @@ class page
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".CUSLAN_16."<br /><span class='smalltext'>".CUSLAN_17."</span></td>
-			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='' maxlength='50' /></td>
+			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='50' /></td>
 			</tr>
 
 			<tr>
@@ -285,7 +291,31 @@ class page
 
 		if($mode)
 		{
-			admin_update($sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode'"), 'update', "Page updated in database.");
+			$update = $sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode'");
+			
+			if ($_POST['page_link'])
+			{
+				if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$mode."' && link_name!='".$tp -> toDB($_POST['page_link'])."'"))
+				{
+					$sql -> db_Update("links", "link_name='".$tp -> toDB($_POST['page_link'])."' WHERE link_url='page.php?".$mode."'");
+					$update++;
+					$e107cache->clear("sitelinks");
+				}
+				else if (!$sql -> db_Select("links", "link_id", "link_url='page.php?".$mode."'"))
+				{
+					$sql -> db_Insert("links", "0, '".$tp -> toDB($_POST['page_link'])."', 'page.php?".$mode."', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
+					$update++;
+					$e107cache->clear("sitelinks");
+				}
+			} else {
+				if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$mode."'"))
+				{
+					$sql -> db_Delete("links", "link_url='page.php?".$mode."'");
+					$update++;
+					$e107cache->clear("sitelinks");
+				}
+			}
+			admin_update($update, 'update', "Page updated in database.");
 		}
 		else
 		{
