@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-04-17 13:37:50 $
+|     $Revision: 1.51 $
+|     $Date: 2006-04-18 08:23:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -115,8 +115,6 @@ define('LINKALIGN', 'left');
 
 // [newsstyle]
 
-define("NEWSLIST_THUMB", "border: 0px");
-
 $sc_style['NEWSIMAGE']['pre'] = "<td style='padding-right: 7px; vertical-align: top'>";
 $sc_style['NEWSIMAGE']['post'] = "</td>";
 
@@ -124,7 +122,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
 {STICKY_ICON}{NEWSTITLE}
 </div></div></div>
 <div class='menu_content'>
-<table>
+<table style='width: 100%'>
 <tr>
 {NEWSIMAGE}
 <td style='width: 100%; vertical-align: top'>
@@ -139,7 +137,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
 <table class='news_info'>
 <tr>
 <td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
-<img src='".THEME_ABS."images/postedby_16.png' style='width: 16px; height: 16px' alt='' />
+{NEWSICON}
 </td>
 <td style='width: 100%; padding: 0px; padding-bottom: 0px; padding-left: 2px'>
 ".LAN_THEME_5." 
@@ -163,7 +161,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
 
 define('ICONMAIL', 'email_16.png');
 define('ICONPRINT', 'print_16.png');
-define('ICONSTYLE', 'float: left; border:0');
+define('ICONSTYLE', 'border: 0px');
 define('COMMENTLINK', LAN_THEME_2);
 define('COMMENTOFFSTRING', LAN_THEME_1);
 define('PRE_EXTENDEDSTRING', '<br /><br />[ ');
