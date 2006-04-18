@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-01-17 16:57:08 $
-|     $Author: lisa_ $
+|     $Revision: 1.14 $
+|     $Date: 2006-04-18 08:37:54 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 $e_sub_cat = 'credits';
-require_once(e_ADMIN.'ver.php');
+include(e_ADMIN.'ver.php');
 
 
 
