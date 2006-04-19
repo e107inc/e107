@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@
   define("LAN_105", "Contenu");
   define("LAN_145", "Enregistré : ");
   define("LAN_194", "Invité");
-  define("LAN_195", "Membre Enregistré");
+  define("LAN_195", "Membre enregistré");
   define("LAN_310", "Impossible d'accepter ce commentaire car ce nom d'utilisateur est enregistré - si c'est </br>votre nom d'utilisateur, merci de vous enregistrer pour poster.");
   define("LAN_312", "Message dupliqué - impossible d'accepter.");
   define("LAN_313", "Emplacement");
@@ -46,9 +46,9 @@
   define("COMLAN_6", 'Répondre à ceci');
   define("COMLAN_7", "Évaluation");
   define("COMLAN_8", "les commentaires sont fermés");
-  define("LAN_315", "Suivi Retours (Trackbacks)");
-  define("LAN_316", "Pas de Suivi Retours (Trackback) pour cet apport d'actualité.");
-  define("LAN_317", "Modérer le suivi retours (Trackbacks)");
+  define("LAN_315", "Références externes à votre contenu (Trackbacks)");
+  define("LAN_316", "Pas de références externes à votre contenu (Trackback) pour cet apport d'actualité.");
+  define("LAN_317", "Modérer les références externes à votre contenu (Trackbacks)");
   define("LAN_318", "Éditer le commentaire");
   define("LAN_319", "Édité");
   define("LAN_320", "Mise à jour du commentaire");

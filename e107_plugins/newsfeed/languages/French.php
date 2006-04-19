@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/French.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-08 19:49:27 $
+|     $Revision: 1.4 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -21,9 +21,9 @@
   define("NFLAN_10", "URL vers la ressource rss");
   define("NFLAN_11", "Chemin d'accès image");
   define("NFLAN_12", "Activation");
-  define("NFLAN_13", "Maintenant ici (desactivé)");
+  define("NFLAN_13", "Maintenant ici (désactivé)");
   define("NFLAN_14", "Uniquement dans un menu");
-  define("NFLAN_15", "Créer la ressource dactualité");
+  define("NFLAN_15", "Créer la ressource d'actualité");
   define("NFLAN_16", "Mise à jour de la ressource d'actualités");
   define("NFLAN_17", "Entrez 'default' dans la case pour utiliser l'image definie dans la ressource; Pour utiliser votre propre image entrez le chemin complet vers celle-ci, ou laissez blanc pour sans images.");
   define("NFLAN_18", "L’intervalle de la mise à jour en secondes");
@@ -66,7 +66,7 @@
 	Le nombre de secondes qui s'écoulent avant la mise à jour de la ressources, par exemple, 1800: 30 minutes, 3600: une heure.
 	<br /><br />
 	<strong>»</strong> <u>Activation:</u><br />
-	Où vous voulez que les ressources d'actualités soient affichés, si vous voulez les afficher dans un menu ressources vous devrez activer le menu ressources d'actualités dans <a href='".e_ADMIN."menus.php'>la page de menus </a>.
+	Où vous désirez que les ressources d'actualités soient affichés, si vous voulez les afficher dans un menu ressources vous devrez activer le menu ressources d'actualités dans <a href='".e_ADMIN."menus.php'>la page de menus </a>.
 	<br /><br />Pour une liste des ressources disponibles, voir <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> or <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>.");
   define("NFLAN_43", "Aide RSS");
   ?>

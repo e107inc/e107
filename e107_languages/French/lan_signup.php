@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@
   define("LAN_404", "Inscription sur le site");
   define("LAN_405", "L'inscription est terminée. Vous allez recevoir un courriel de confirmation contenant vos informations personnelles. Veuillez cliquer sur le lien contenu dans le courriel pour activer votre compte.");
   define("LAN_406", "Merci !");
-  define("LAN_407", "Veuillez garder précieusement vos informations personnelles. Votre mot de passe  a été encrypté et ne peut pas vous être restitué en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas échéant.\nMerci de vous être inscrit(e).\nDe");
+  define("LAN_407", " Veuillez garder précieusement vos informations personnelles. Votre mot de passe  a été encrypté et ne peut pas vous être restitué en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas échéant.\nMerci de vous être inscrit(e).\nDe");
   define("LAN_408", "Un membre avec cette adresse courriel existe déja. Veuillez utiliser la page 'mot de passe oublié' pour obtenir votre mot de passe en cas d'oubli.");
   define("LAN_SIGNUP_1", "minimum");
   define("LAN_SIGNUP_2", "caractères");

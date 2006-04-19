@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@
   define("LAN_dl_42", "Sous-catégorie");
   define("LAN_dl_43", "vote");
   define("LAN_dl_44", "votes");
-  define("LAN_dl_45", "Signaler que le téléchargement est défecteux");
+  define("LAN_dl_45", "Signaler que le téléchargement est défectueux");
   define("LAN_dl_46", "Cliquez ici pour télécharger");
   define("LAN_dl_47", "Le message a été transmis");
   define("LAN_dl_48", "Le téléchargement concerné a été transmis à l'administrateur.<br />Merci.");

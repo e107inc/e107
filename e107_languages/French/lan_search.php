@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.8 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@
   define("LAN_20", "Erreur");
   define("LAN_98", "Actualités");
   define("LAN_99", "Commentaires");
-  define("LAN_140", "Membres enregistrés");
+  define("LAN_140", "Membres");
   define("LAN_180", "Chercher");
   define("LAN_192", "Toutes les Catégories");
   define("LAN_193", "Evénement du Calendrier");
@@ -42,7 +42,7 @@
   define("LAN_SEARCH_10", "Aller à la page:");
   define("LAN_SEARCH_11", "Résultats");
   define("LAN_SEARCH_12", " de");
-  define("LAN_SEARCH_13", " dans ");
+  define("LAN_SEARCH_13", " dans : ");
   define("LAN_SEARCH_14", "Catégorie:");
   define("LAN_SEARCH_15", "Auteur:");
   define("LAN_SEARCH_16", "Recherche restreinte");
@@ -51,7 +51,7 @@
   define("LAN_SEARCH_19", "Recherche dans:");
   define("LAN_SEARCH_20", "Autorisation Exigée");
   define("LAN_SEARCH_21", "Vous n'êtes pas autorisés à voir cette page.");
-  define("LAN_SEARCH_22", "Tous les aires");
+  define("LAN_SEARCH_22", "Toutes les sections");
   define("LAN_SEARCH_23", "Formulaire de Questionnaire Avancé");
   define("LAN_SEARCH_24", "Doit contenir le(s) mot(s)");
   define("LAN_SEARCH_25", "Ne doit pas contenir le(s) mot(s)");

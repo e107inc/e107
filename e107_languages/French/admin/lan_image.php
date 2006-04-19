@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_image.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -15,9 +15,9 @@
   define("IMALAN_4", "Méthode utilisée pour redimensionner les images, GD1/2 ou ImageMagick");
   define("IMALAN_5", "Chemin vers ImageMagick (si sélectionné)");
   define("IMALAN_6", "Chemin complet vers l'utilitaire de conversion ImageMagick");
-  define("IMALAN_7", "Paramètres des Images");
-  define("IMALAN_8", "Mettre à jour les Paramètres");
-  define("IMALAN_9", "Paramètres des Images Mis à jour");
+  define("IMALAN_7", "Paramètres des images");
+  define("IMALAN_8", "Mettre à jour les paramètres");
+  define("IMALAN_9", "Paramètres des images mis à jour");
   define("IMALAN_10", "Groupe autorisé à poster des images");
   define("IMALAN_11", "Restreindre les utilisateurs qui peuvent poster des images (si activé ci-dessus)");
   define("IMALAN_12", "Si l'affichage des images est désactivé");
@@ -42,5 +42,5 @@
   define("IMALAN_32", "Membre uniquement");
   define("IMALAN_33", "Admin uniquement");
   define("IMALAN_34", "Activer un cadre");
-  define("IMALAN_35", "Pose une image transparente PNG-24 avec transparence alpha dans IE 5/ 6 par-dessus les images (S'applique sur tous le site)");
+  define("IMALAN_35", "Pose une image transparente PNG-24 avec transparence alpha dans IE 5/ 6 par-dessus les images (s'applique sur tout le site)");
   ?>

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@
   define("EPL_ADLAN_34", "L'extension a été mise à jour avec succès.");
   define("EPL_ADLAN_35", "Les paramètres d'analyse syntaxique ont été correctement ajoutés.");
   define("EPL_ADLAN_36", "L'insertion du code de l'interprétateur à échoué.");
-  define("EPL_ADLAN_37", "Télécharger l'extension sur le serveur (format.zip or .tar.gz)");
+  define("EPL_ADLAN_37", "Télécharger une extension sur le serveur (le fichier doit être au format.zip ou .tar.gz)");
   define("EPL_ADLAN_38", "Télécharger l'extension sur le serveur");
   define("EPL_ADLAN_39", "Ce fichier ne peut pas être uploadé tant que le dossier ".e_PLUGIN." n'a pas les permissions correctes - SVP CHMODER à 777 et réuploadez le fichier.");
   define("EPL_ADLAN_40", "Message Admin");
@@ -73,7 +73,7 @@
   define("EPL_ADLAN_55", "Désinstaller l'extension");
   define("EPL_ADLAN_56", "Oui");
   define("EPL_ADLAN_57", "Effacer les tables de l'extension");
-  define("EPL_ADLAN_58", "Si les tables ne sont pas enlevées, l'extension peut être réinstallée sans pertes de données. La création de tables lors de la réinstallation échouera. Les tables devront être effacées manuellement.");
+  define("EPL_ADLAN_58", "Si les tables ne sont pas enlevées, il sera possible de réinstaller l'extension en retrouvant les données actuelles. La création de tables lors de la réinstallation échouera, ce qui sera normal. Si plus tard, vous voulez supprimer définitivement les tables vous devrez le faire manuellement.");
   define("EPL_ADLAN_59", "Effacer les fichiers de l'extension");
   define("EPL_ADLAN_60", "e107 va tenter d'effacer tous les fichiers reliés à l'extension.");
   define("EPL_ADLAN_61", "Confirmer la désinstallation");

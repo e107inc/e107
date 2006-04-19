@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-19 00:53:55 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@
   define("DOWLAN_46", "Mettre à jour la catégorie");
   define("DOWLAN_47", "Catégorie créer");
   define("DOWLAN_48", "Catégorie mise à jour");
-  define("DOWLAN_49", "Catégorie des téléhchargements");
+  define("DOWLAN_49", "Catégorie des téléchargements");
   
   define("DOWLAN_51", "Chercher/Rafraîchir les téléchargements");
   define("DOWLAN_52", "Fichier");
@@ -74,13 +74,13 @@
   define("DOWLAN_67", "ID");
   define("DOWLAN_68", "Fichier inexistant !");
   define("DOWLAN_69", "Téléchargements traités par le PHP");
-  define("DOWLAN_70", "La vérification de cela enverra toutes les demandes de téléchargement en PHP.");
+  define("DOWLAN_70", "Cocher pour envoyer toutes les demandes de téléchargement via PHP.");
   define("DOWLAN_100", "Activer l'accord de téléchargement");
   define("DOWLAN_101", "Texte de l'accord");
   define("DOWLAN_102", "Autoriser les commentaires ?");
-  define("DOWLAN_103", "Enlever des Uploads publics");
-  define("DOWLAN_104", "A été enlevé des Uploads publics");
-  define("DOWLAN_105", "Retour vers les Uploads publics");
+  define("DOWLAN_103", "Enlever des Téléchargements publics");
+  define("DOWLAN_104", "A été enlevé des Téléchargements publics");
+  define("DOWLAN_105", "Retour vers les Téléchargements publics");
   define("DOWLAN_106", "Téléchargement accessible");
   define("DOWLAN_107", "Limitation Nombres de Téléchargement");
   define("DOWLAN_108", "Limitation de la largeur de bande du Téléchargement");
@@ -96,11 +96,11 @@
   define("DOWLAN_118", "Limitation non mis en place - erreur inconnue");
   define("DOWLAN_119", "Limitation désactivée avec succès ");
   define("DOWLAN_120", "Limitation non désactivée - erreur inconnue");
-  define("DOWLAN_121", "Limitation avec succès updated");
+  define("DOWLAN_121", "Limitation mise à jour avec succès");
   define("DOWLAN_122", "Inactif");
   define("DOWLAN_123", "Active - Fichier est sujet à des limitations de Téléchargement ");
   define("DOWLAN_124", "Active - Fichier n'est pas sujet à des limitations de Téléchargement");
-  define("DOWLAN_125", "Limitation téléchargement  activée");
+  define("DOWLAN_125", "Limitation de téléchargements activée");
   define("DOWLAN_126", "Satus d'activation mis à jour");
   define("DOWLAN_127", "Entrez seulement à la taille du fichier si le téléchargement est un fichier externe");
   define("DOWLAN_128", "Miroirs");
@@ -113,10 +113,10 @@
   define("DOWLAN_134", "Miroir sauvegarder en base de données");
   define("DOWLAN_135", "Miroir supprimé");
   define("DOWLAN_136", "Image");
-  define("DOWLAN_137", "êtes-vous sûrs que vous voulez supprimer ce miroir ?");
+  define("DOWLAN_137", "Êtes-vous sûr de vouloir supprimer ce miroir ?");
   define("DOWLAN_138", "Miroir Existants");
   define("DOWLAN_139", "Adresse");
-  define("DOWLAN_140", "Télécharger des images locales dans e107_files/downloadimages pour les afficher ici, ou entrez l'adresse complète si l'image à été déplacé");
+  define("DOWLAN_140", "Télécharger des images locales dans e107_files/downloadimages pour les afficher ici, ou entrez l'adresse complète si l'image à été déplacée");
   define("DOWLAN_141", "Lieu");
   define("DOWLAN_142", "Mettre à jour les Miroirs");
   define("DOWLAN_143", "Créer un Miroir");
