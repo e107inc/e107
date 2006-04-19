@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_prefs.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-24 12:44:19 $
+|     $Revision: 1.6 $
+|     $Date: 2006-04-19 11:23:10 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -152,5 +152,14 @@ define("PRFLAN_151", "e107 - Inga alternativa autentiseringsmetoder installerade
 define("PRFLAN_152", "Ingen verifiering");
 define("PRFLAN_153", "Admins godkännande");
 define("PRFLAN_154", "Verifieringsmetod för nya användare<br />Om 'Admins godkännande' är valt rekommenderas att du aktiverar e-postnotifiering vid användarregistrering <a href='".e_ADMIN."notify.php'>här</a>.");
+
+define("PRFLAN_155", "Visningsnamn synligt för");
+define("PRFLAN_156", "Nollställ ALLA visningsnamn");
+define("PRFLAN_157", "Alla visningsnamn är nu satta till samma som inloggningsnamnet.");
+define("PRFLAN_158", "Maximum längd på visningsnamn");
+define("PRFLAN_159", "läser denna sida med");
+
+define("PRFLAN_160", "Kontrollera med extern e-postserver vid validering av e-postadresser.");
+define("PRFLAN_161", "Avaktivera alla kommentarer på sajten");
 
 ?>
