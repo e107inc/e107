@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.118 $
-|   $Date: 2006-04-13 23:43:16 $
-|   $Author: sweetas $
+|   $Revision: 1.119 $
+|   $Date: 2006-04-19 20:01:10 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -164,10 +164,7 @@ if (isset($_POST['preview'])) {
 }
 
 if (isset($_POST['submit_news'])) {
-    if(e_WYSIWYG){
-	  	$_POST['data'] = $tp->createConstants($_POST['data']); // convert e107_images to {e_IMAGE} etc.
-		$_POST['news_extended'] = $tp->createConstants($_POST['news_extended']);
-	}
+
 	$newspost->submit_item($sub_action, $id);
 	$action = "main";
 	unset($sub_action, $id);
@@ -240,20 +237,8 @@ if ($action == "create") {
 			$row = $sql->db_Fetch();
 			extract($row);
 			$_POST['news_title'] = $news_title;
-
-			if(e_WYSIWYG){
-
-            	$_POST['data'] = $tp->replaceConstants($news_body,TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
-				$_POST['data'] = $tp->toHTML($_POST['data'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
-				$_POST['news_extended'] = $tp->toHTML($news_extended,$parseBB = TRUE);
-            	$_POST['news_extended'] = $tp->replaceConstants($_POST['news_extended'],TRUE);
-
-			}else{
-
-				$_POST['data'] = $news_body;
-				$_POST['news_extended'] = $news_extended;
-			}
-
+			$_POST['data'] = $news_body;
+			$_POST['news_extended'] = $news_extended;
 			$_POST['news_allow_comments'] = $news_allow_comments;
 			$_POST['news_class'] = $news_class;
 			$_POST['news_summary'] = $news_summary;
@@ -414,13 +399,14 @@ class newspost {
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
 		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
-
+		if($imagelist = $fl->get_files(e_IMAGE."newspost_images/",".jpg|.gif|.png",$rejecthumb)){
+        	sort($imagelist);
+		}
 		if ($sub_action == "sn" && !$_POST['preview']) {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
 				list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
 
-				if ($pref['wysiwyg'])
+				if (e_WYSIWYG)
 				{
 					$_POST['data'] .= "<br /><b>".NWSLAN_49." ".$submitnews_name."</b>";
 					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":	"";
@@ -486,19 +472,19 @@ class newspost {
 		<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 		<td style='width:80%;margin-left:auto' class='forumheader3'>";
 
-		$insertjs = (!$pref['wysiwyg']) ? "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' ";
+		$insertjs = (!e_WYSIWYG) ? "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' ";
 		$_POST['data'] = $tp->toForm($_POST['data']);
 		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:100%' $insertjs>".(strstr($tp->post_toForm($_POST['data']), "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['data'])))."</textarea>
 		";
 
 		//Main news body textarea
-		if (!$pref['wysiwyg']) {
+		if (!e_WYSIWYG) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
 			<br />". display_help("helpb", 'news');
 		} // end of htmlarea check.
 
 		//Extended news form textarea
-		if($pref['wysiwyg']){ $ff_expand = "tinyMCE.execCommand('mceResetDesignMode')";  } // Fixes Firefox issue with hidden wysiwyg textarea.
+		if(e_WYSIWYG){ $ff_expand = "tinyMCE.execCommand('mceResetDesignMode')";  } // Fixes Firefox issue with hidden wysiwyg textarea.
 		$text .= "
 		</td>
 		</tr>
@@ -508,7 +494,7 @@ class newspost {
 		<a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);$ff_expand\">".NWSLAN_83."</a>
 		<div style='display:none'>
 		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."</textarea>";
-		if (!$pref['wysiwyg']) {
+		if (!e_WYSIWYG) {
 			$text .="<br />". display_help("helpb", 'news');
 		}
 		$text .= "
@@ -571,7 +557,7 @@ class newspost {
 		<div style='display: none;'><br />";
 
 		$text .= "<select id='news_pic' multiple='multiple' class='tbox' style='height:100px;float:left' name='news_thumbnail' id='news_thumbnail' onchange='preview_image();'>
-		<option value=''>".LAN_NEWS_48."</option>";
+		<option value=''> -- ".LAN_NEWS_48." -- </option>";
 		foreach($imagelist as $icon)
 		{
 			$selected = ($_POST['news_thumbnail'] == $icon['fname']) ? " selected='selected'" : "";
@@ -798,10 +784,6 @@ class newspost {
 		$_POST['comment_total'] = $comment_total;
 		$_PR = $_POST;
 
-		if(e_WYSIWYG){
-           //  $_PR['data'] = $tp->createConstants($_PR['data'],TRUE); // convert e107_images/ to {e_IMAGE} etc.
- 		  //	 $_PR['news_extended'] = $tp->createConstants($_PR['news_extended'],TRUE);
-		}
 
 		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
