@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.271 $
-|     $Date: 2006-04-17 14:52:38 $
-|     $Author: e107coders $
+|     $Revision: 1.272 $
+|     $Date: 2006-04-19 12:07:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -1056,7 +1056,9 @@ function init_session() {
 			return (FALSE);
 		}
 
-		if($result = get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE)) {
+		$result = get_user_data($uid);
+		if(is_array($result) && md5($result['user_password']) == $upw)
+		{
 			$currentUser = $result;
 			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
 
