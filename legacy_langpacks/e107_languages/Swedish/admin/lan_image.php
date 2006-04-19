@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_image.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 09:33:06 $
+|     $Revision: 1.4 $
+|     $Date: 2006-04-19 10:27:48 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -21,12 +21,12 @@ define("IMALAN_9", "Bildinst&auml;llningar uppdaterade");
 define("IMALAN_10", "Klass f&ouml;r bildpostning");
 define("IMALAN_11", "Begr&auml;nsa vilka anv&auml;ndare som kan posta bilder (om aktiverat ovan)");
 define("IMALAN_12", "Metod vid inaktiva bilder");
-define("IMALAN_13", "Vad som skall g&ouml;rad med postade bilder om postning avaktiveras");
+define("IMALAN_13", "Vad som skall g&ouml;ras med postade bilder om postning avaktiveras");
 define("IMALAN_14", "Visa bildens URL");
 define("IMALAN_15", "Visa ingenting");
 define("IMALAN_16", "Visa uppladdade figurer");
 define("IMALAN_17", "Klicka h&auml;r");
-define("IMALAN_18", "Uppladdede bilder");
+define("IMALAN_18", "Uppladdade bilder");
 
 define("IMALAN_21", "Anv&auml;nd av");
 define("IMALAN_22", "Bilden ej anv&auml;nd");
