@@ -4,12 +4,12 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/French.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-04-19 03:22:16 $
+|     $Revision: 1.5 $
+|     $Date: 2006-04-19 06:35:29 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  setlocale(LC_ALL, 'fr_FR.utf8', 'french');
+  setlocale(LC_ALL, 'fr_FR.utf8');
   define("CORE_LC", 'fr');
   define("CORE_LC2", 'fr');
   // define("TEXTDIRECTION","rtl");
