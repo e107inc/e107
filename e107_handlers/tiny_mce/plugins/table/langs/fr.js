@@ -72,6 +72,9 @@ row : 'Rang&eacute;e',
 col : 'Colonne',
 rowgroup : 'Groupe de rang&eacute;es',
 colgroup : 'Groupe de colonnes',
+col_limit : 'Vous avez d&eacute;pass&eacute; le nombre maximum de {$cols} colonnes permises.',
+row_limit : 'Vous avez d&eacute;pass&eacute; le nombre maximum de {$rows} lignes permises.',
+cell_limit : 'Vous avez d&eacute;pass&eacute; le nombre maximum de {$cells} cellules permises.',
 missing_scope: 'Les attributs scope rendraient votre tableau de donn&eacute;es plus\naccessible &agrave; certains groupes d\'utilisateurs.\n\n&ecric;tes-vous sûr de ne pas vouloir sp&eacute;cifier\nd\'attribut scope aux cellules d\'en-t&ecric;te ?\n\n',
 cellprops_delta_width : 50
 });

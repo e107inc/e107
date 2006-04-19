@@ -4,15 +4,17 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 03:22:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("NT_LAN_US_1", "Inscription d'un utilisateur ");
   
   define("NT_LAN_UV_1", "Inscription d'un utilisateur vérifiée");
-  define("NT_LAN_UV_2", "Utilisateurs session string");
+  define("NT_LAN_UV_2", "ID utilisateur");
+  define("NT_LAN_UV_3", "Nom d'Identification de l'utilisateur: ");
+  define("NT_LAN_UV_4", "IP utilisateur: ");
   
   define("NT_LAN_LI_1", "Utilisateur connecté");
   

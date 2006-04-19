@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_ren_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 03:22:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -45,4 +45,12 @@
   define("LANHELP_34", "[newpage] ou [newpage=title]Insère une nouvelle page, divise le contenu en plusieurs pages");
   define("LANHELP_35", "url du lien");
   define("LANHELP_36", "Non ordonnée: [list]line1*line2*line3[/list]. Ordonnée: [list=type]line1*line2*line3[/list]");
+  define("LANHELP_37", "Insérer une image du répertoire e107_images/newspost_images/");
+  define("LANHELP_38", "un lien vers l'image complète sera généré");
+  define("LANHELP_39", "Insérer le lien de téléchargement d'un fichier existant");   //Insert download link from existing downloads");
+  define("LANHELP_40", "Il n'y a pas encore de téléchargements");
+  
+  define("LANHELP_41", "Taille des caractères...");
+  define("LANHELP_42", "Choisir une image...");
+  define("LANHELP_43", "Choisir le fichier de téléchargement...");
   ?>

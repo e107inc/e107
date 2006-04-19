@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_news.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 03:22:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,8 +19,8 @@
   
   define("LAN_NEWS_1", "Actualité réservée uniquement aux membres du site");
   define("LAN_NEWS_2", "Vous n'êtes pas autorisé à voir cette actualité");
-  define("LAN_NEWS_3", "Veuillez supprimer le fichier install.php de votre serveur");
-  define("LAN_NEWS_4", "Si vous ne le faites pas, il y aura une faille potentielle de sécurité sur votre site");
+  //define("LAN_NEWS_3", "Veuillez supprimer le fichier install.php de votre serveur");
+  //define("LAN_NEWS_4", "Si vous ne le faites pas, il y aura une faille potentielle de sécurité sur votre site");
   define("LAN_NEWS_5", "<strong>Erreur!</strong> N'a pu mettre à jour l'actualité dans la base de données !</strong>");
   define("LAN_NEWS_6", "Actualité insérée dans la base de données");
   define("LAN_NEWS_7", "<strong>Erreur!</strong> N'a pu insérer l'actualité dans la base de données !</strong>");

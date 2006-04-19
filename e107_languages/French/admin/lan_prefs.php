@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 03:22:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -174,4 +174,5 @@
   define("PRFLAN_158", "Longueur maximum du Nom d'Affichage");
   define("PRFLAN_159", "vous regardez cette page depuis");
   define("PRFLAN_160", "Vérifier les serveurs distants lors de la validation des adresses courriel.");   
+  define("PRFLAN_161", "Désactiver tous les commentaires sur le site"); 
   ?>

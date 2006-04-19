@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/French.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.5 $
+|     $Date: 2006-04-19 03:22:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -69,4 +69,8 @@
 	Où vous désirez que les ressources d'actualités soient affichés, si vous voulez les afficher dans un menu ressources vous devrez activer le menu ressources d'actualités dans <a href='".e_ADMIN."menus.php'>la page de menus </a>.
 	<br /><br />Pour une liste des ressources disponibles, voir <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> or <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>.");
   define("NFLAN_43", "Aide RSS");
+  define("NFLAN_44", "clicker pour voir");
+  define("NFLAN_45", "Nombre d'items affichés dans le menu");
+  define("NFLAN_46", "Nombre d'items affichés dans la page principale");
+  define("NFLAN_47", "0 ou vide pour tout afficher");
   ?>

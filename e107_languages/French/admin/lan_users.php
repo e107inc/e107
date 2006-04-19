@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-19 03:22:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -165,4 +165,7 @@
   
   define("USRLAN_138", "Utilisateurs non vérifiés");
   define("USRLAN_139", "Votre compte a été activé.\n\nVous pouvez visiter {SITEURL} et vous connecter au site en utilisant les informations de connexion avez fournies.");
+  define("USRLAN_140", "Courriel réenvoyé à");
+  define("USRLAN_141", "Échec du renvoie de courriel à");
+  define("USRLAN_142", "avec le lien d'activation suivant");
   ?>

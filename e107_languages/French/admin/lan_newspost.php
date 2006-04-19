@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-19 03:22:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@
   define("LAN_NEWS_19", "Maintenant");
   define("LAN_NEWS_21", "Actualité mise à jour en base de données.");
   define("LAN_NEWS_22", "Vignette");
-  define("LAN_NEWS_23", "Choisissez une image vignette / icône pour cette actualité.");
+  define("LAN_NEWS_23", "Choisissez une image pour cette actualité.");
   define("LAN_NEWS_24", "Image + Auto-Vignette");
   define("LAN_NEWS_25", "Taille Auto-Vignette ");
   define("LAN_NEWS_26", "Ajouter un nouvel upload");
@@ -135,7 +135,7 @@
   define("LAN_NEWS_30", "Si selectionné, l'actualité apparaîtra au dessus de toutes les autres");
   define("LAN_NEWS_31", "Cette actualité est <strong> épinglée </strong> (il s'affichera au dessus de tous les autres articles). ");
   define("LAN_NEWS_32", "Date publication");
-  define("LAN_NEWS_33", "Placer la date pour l'actualité actuelle.");
+  define("LAN_NEWS_33", "Fixer la date pour l'actualité actuelle");
   define("LAN_NEWS_34", "Trackback");
   define("LAN_NEWS_35", "Ajouter des URL de trackback");
   define("LAN_NEWS_36", "<strong>Pingback</strong> (envoyez un pingback à tous les URL dans ce publication)");
@@ -143,10 +143,12 @@
   define("LAN_NEWS_38", "Insérer des images");
   define("LAN_NEWS_39", "Cliquer sur le dossier à insérer à la position de curseur");
   define("LAN_NEWS_40", "Insérer un lien vers un téléchargement");
-  define("LAN_NEWS_41", "Cliquer sur l'image à insérer à la position de curseur");
   define("LAN_NEWS_42", "Fichier");
   define("LAN_NEWS_43", "(Aucune image dans /e107_images/newspost_images)");
   define("LAN_NEWS_44", "<strong>Trackback non activé.</strong>");
   define("LAN_NEWS_45", "ID");
   define("LAN_NEWS_46", "Actualité non mise à jour car aucune modification n'a été faite");
+  define("LAN_NEWS_47", "Image");
+  define("LAN_NEWS_48", "Pas d'Image");
+  define("LAN_NEWS_49", "Type de rendu");
   ?>
