@@ -3,8 +3,8 @@
 |     Swedish (SE) language variables
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_handlers/tiny_mce/plugins/emoticons/langs/sv.js,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-19 09:33:05 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */

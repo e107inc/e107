@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/banner_menu/languages/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("BANNER_MENU_L12", "en kampanj i en meny");
 define("BANNER_MENU_L13", "alla valda kampanj i en meny");
 define("BANNER_MENU_L14", "alla valda kamanjer i separata menyer");
 define("BANNER_MENU_L15", "hur m&aring;nga banners skall visas?");
-define("BANNER_MENU_L16", "denna inst&auml;llning anv&auml;nds bara med valen 2 and 3.&lt;br /&gt;om det finns f&auml;rre banners &auml;n detta maxv&auml;rde kommer alla tillg&auml;ngliga banners att anv&auml;ndas.");
+define("BANNER_MENU_L16", "denna inst&auml;llning anv&auml;nds bara med valen 2 and 3.<br />om det finns f&auml;rre banners &auml;n detta maxv&auml;rde kommer alla tillg&auml;ngliga banners att anv&auml;ndas.");
 define("BANNER_MENU_L17", "s&auml;tt antal...");
 define("BANNER_MENU_L18", "Uppdatera menyinst&auml;llningarna");
 

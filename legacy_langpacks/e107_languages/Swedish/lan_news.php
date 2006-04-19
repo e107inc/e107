@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_news.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -27,12 +27,12 @@ define("LAN_NEWS_5", "&lt;b&gt;Fel!&lt;/b&gt; Kunde inte uppdatera nyhets&auml;m
 define("LAN_NEWS_6", "Nyhet inlagd i databasen.");
 define("LAN_NEWS_7", "&lt;b&gt;Fel!&lt;/b&gt; Kunde inte l&auml;gga in nyhet i databasen!&lt;/b&gt;");
 define("LAN_NEWS_8", "Nyhet inlagd i databasen f&ouml;r alla spr&aring;k. ID: ");
-define("LAN_NEWS_9", "Endast rubrik &auml;r aktivt - &lt;b&gt;endast nyhetens rubrik kommer att visas&lt;/b&gt;&lt;br /&gt;");
+define("LAN_NEWS_9", "Endast rubrik &auml;r aktivt - &lt;b&gt;endast nyhetens rubrik kommer att visas&lt;/b&gt;<br />");
 define("LAN_NEWS_10", "Denna nyhetspost &auml;r &lt;b&gt;inaktiv&lt;/b&gt; (Den kommer inte att synas p&aring; f&ouml;rstasidan). ");
 define("LAN_NEWS_11", "Denna nyhetspost &auml;r &lt;b&gt;aktiv&lt;/b&gt; (Den kommer att synas p&aring; f&ouml;rstasidan). ");
 define("LAN_NEWS_12", "Kommentararer &auml;r &lt;b&gt;p&aring;&lt;/b&gt;. ");
 define("LAN_NEWS_13", "Kommentararer &auml;r &lt;b&gt;av&lt;/b&gt;. ");
-define("LAN_NEWS_14", "&lt;br /&gt;Aktiveringsperiod: ");
+define("LAN_NEWS_14", "<br />Aktiveringsperiod: ");
 define("LAN_NEWS_15", "Textl&auml;ngd: ");
 define("LAN_NEWS_16", "t. ut&ouml;kad l&auml;ngd: ");
 define("LAN_NEWS_17", "t.");

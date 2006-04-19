@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ define("FORLAN_56", "Antal inl&auml;gg i en tr&aring;d innan den markeras som po
 define("FORLAN_57", "Inl&auml;gg per sida");
 define("FORLAN_58", "Antal inl&auml;gg visade per sida");
 define("FORLAN_59", "Rensa");
-define("FORLAN_60", "Detta kommer att radera alla tr&aring;dar som inte f&aring;tt n&aring;got nytt inl&auml;gg p&aring; det antal dagar du anger. &lt;br /&gt;&lt;b&gt;Var f&ouml;rsiktig med denna funktion!&lt;/b&gt;");
+define("FORLAN_60", "Detta kommer att radera alla tr&aring;dar som inte f&aring;tt n&aring;got nytt inl&auml;gg p&aring; det antal dagar du anger. <br />&lt;b&gt;Var f&ouml;rsiktig med denna funktion!&lt;/b&gt;");
 define("FORLAN_61", "Uppdatera alternativ");
 define("FORLAN_62", "Forumalternativ");
 define("FORLAN_63", "Ranger");

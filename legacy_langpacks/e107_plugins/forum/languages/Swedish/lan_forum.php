@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("LAN_37", "Det &auml;r nu ");
 define("LAN_38", ", alla tider &auml;r ");
 define("LAN_41", "Nyaste medlemmen: ");
 define("LAN_42", "Registrerade medlemmar: ");
-define("LAN_44", "Detta forum kan anv&auml;ndas av icke-registrerade anv&auml;ndare, men var medveten om att din IP-adress kommer att loggas om du skriver ett inl&auml;gg.&lt;br /&gt;F&ouml;r att kunna anv&auml;nda alla funktioner i detta forum m&aring;ste du");
+define("LAN_44", "Detta forum kan anv&auml;ndas av icke-registrerade anv&auml;ndare, men var medveten om att din IP-adress kommer att loggas om du skriver ett inl&auml;gg.<br />F&ouml;r att kunna anv&auml;nda alla funktioner i detta forum m&aring;ste du");
 define("LAN_45", "I detta forum kan endast registrerade och inloggade anv&auml;ndare skrivan, v&auml;nligen klicka");
 define("LAN_46", "Forum");
 define("LAN_47", "Tr&aring;dar");

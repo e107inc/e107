@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ define("UPLLAN_25", "Uppladdningar aktiverade?");
 define("UPLLAN_26", "Inga publika uppladdningar till&aring;ts om inaktiverad");
 
 define("UPLLAN_29", "Lagringstyp");
-define("UPLLAN_30", "V&auml;lj hur uppladdade filer skall sparas, antingen som normala filer p&aring; servern eller som bin&auml;r info i databasen&lt;br /&gt;&lt;b&gt;OBS&lt;/b&gt; bin&auml;rt &auml;r bara l&auml;mpligt f&ouml;r mindre filer under cirka 500 kB");
+define("UPLLAN_30", "V&auml;lj hur uppladdade filer skall sparas, antingen som normala filer p&aring; servern eller som bin&auml;r info i databasen<br />&lt;b&gt;OBS&lt;/b&gt; bin&auml;rt &auml;r bara l&auml;mpligt f&ouml;r mindre filer under cirka 500 kB");
 define("UPLLAN_31", "Fil");
 define("UPLLAN_32", "Bin&auml;rt");
 define("UPLLAN_33", "Maximal filstorlek");

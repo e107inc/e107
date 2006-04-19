@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/admin/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:07 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 
 define('ADLAN_PM', "Privata meddelanden");
-define('ADLAN_PM_1', "F&ouml;r att aktivera, g&aring; till dina menyer och v&auml;lj private_msg till n&aring;gon av dina menyomr&aring;den.&lt;br /&gt;&lt;br /&gt;Om du beh&ouml;ver konvertera meddelanden fr&aring;n en tidigare version, g&aring; till huvudkonfigurationssidan f&ouml;r denna plugin och v&auml;lj l&auml;nken 'konvertera'.");
+define('ADLAN_PM_1', "F&ouml;r att aktivera, g&aring; till dina menyer och v&auml;lj private_msg till n&aring;gon av dina menyomr&aring;den.<br /><br />Om du beh&ouml;ver konvertera meddelanden fr&aring;n en tidigare version, g&aring; till huvudkonfigurationssidan f&ouml;r denna plugin och v&auml;lj l&auml;nken 'konvertera'.");
 define('ADLAN_PM_2', "Konfigurera Privata meddelanden");
 define('ADLAN_PM_3', "PM inst&auml;llningar hittade inte, anv&auml;nder standardinst&auml;llningar");
 define('ADLAN_PM_4', "Alternativen uppdaterade");
@@ -58,7 +58,7 @@ define('ADLAN_PM_44', "sekunder");
 define('ADLAN_PM_45', "Begr&auml;nsa PM med: ");
 define('ADLAN_PM_46', "PM konvertering");
 define('ADLAN_PM_47', "Det verkar inte som om du har n&aring;gra gamla meddelande fr&aring;n tidigare versioner, det &auml;r okej att avinstallera den gamla pluginmodulen.");
-define('ADLAN_PM_48', "Du har {OLDCOUNT} meddelanden fr&aring;n en tidigare version, v&auml;lj vad du vill g&ouml;ra med dessa meddelanden&lt;br /&gt;&lt;br /&gt;Om du konverterar meddelande, kommer lyckosamt konverterade meddelanden att tas bort fr&aring;n det gamla systemet.");
+define('ADLAN_PM_48', "Du har {OLDCOUNT} meddelanden fr&aring;n en tidigare version, v&auml;lj vad du vill g&ouml;ra med dessa meddelanden<br /><br />Om du konverterar meddelande, kommer lyckosamt konverterade meddelanden att tas bort fr&aring;n det gamla systemet.");
 define('ADLAN_PM_49', "Konvertera till nya PM");
 define('ADLAN_PM_50', "Kasta bort gamla meddelanden");
 define('ADLAN_PM_51', "PM #{PMNUM} konverterades inte");

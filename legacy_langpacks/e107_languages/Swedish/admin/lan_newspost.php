@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_newspost.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ define("NWSLAN_89", "Spara nyhetspreferenser");
 define("NWSLAN_90", "Nyhetspreferenser");
 define("NWSLAN_100", "Aktivera bilduppladdning p&aring; sidan f&ouml;r ins&auml;ndning av nyhet");
 define("NWSLAN_101", "Automatisk skalning av ins&auml;nd bild");
-define("NWSLAN_102", "bredd i pixlar&lt;br /&gt; eller l&auml;mna blankt f&ouml;r avaktivering.");
+define("NWSLAN_102", "bredd i pixlar<br /> eller l&auml;mna blankt f&ouml;r avaktivering.");
 define("NWSLAN_103", "Posta om");
 define("NWSLAN_104", "av");
 define("NWSLAN_105", "Markera rutan f&ouml;r att uppdatera tidst&auml;mpeln p&aring; nyheten till aktuell tid");
@@ -126,7 +126,7 @@ define("LAN_NEWS_10", "Denna nyhet &auml;r &lt;b&gt;inaktiv&lt;/b&gt; (Den komme
 define("LAN_NEWS_11", "Denna nyhet &auml;r &lt;b&gt;aktiv&lt;/b&gt; (Den kommer att synas p&aring; f&ouml;rstasidan). ");
 define("LAN_NEWS_12", "Kommentarer &auml;r &lt;b&gt;p&aring;&lt;/b&gt;.");
 define("LAN_NEWS_13", "Kommentarer &auml;r &lt;b&gt;av&lt;/b&gt;.");
-define("LAN_NEWS_14", "&lt;br /&gt;Aktiverad period: ");
+define("LAN_NEWS_14", "<br />Aktiverad period: ");
 define("LAN_NEWS_15", "Text l&auml;ngd: ");
 define("LAN_NEWS_16", "t. ut&ouml;kad l&auml;ngd: ");
 define("LAN_NEWS_17", "t.");

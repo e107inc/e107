@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/help/list_menu_conf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -19,6 +19,6 @@ Skriv in ett nummer, t.ex. '5' i det f&ouml;rsta f&auml;ltet f&ouml;r att visa d
 Antalet kommentarer &auml;r 5 som standard, antalet tecken &auml;r 10000 som standard. Postfixet &auml;r till f&ouml;r om en rad &auml;r f&ouml;r l&aring;ng s&aring; kommer den att kapas och s&aring; l&auml;ggs postfixet till sist, ett bra val kan vara '...', markera original&auml;mnena om du vill se dessa i &ouml;versikten.&lt;br&gt;
 
 ";
-$ns -&gt; tablerender("Hj&auml;lp menykonfiguration", $text);
+$ns -> tablerender("Hj&auml;lp menykonfiguration", $text);
 
 ?>

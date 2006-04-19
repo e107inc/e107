@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newsfeed/languages/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -54,22 +54,22 @@ define("NFLAN_41", "Inga nyhetsfl&ouml;den definierade &auml;nnu");
 
 define("NFLAN_42", "&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Fl&ouml;desnamn:&lt;/u&gt;
 	Namn f&ouml;r att identifiera fl&ouml;det, kan vara vad du vill.
-	&lt;br /&gt;&lt;br /&gt;
+	<br /><br />
 	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;URL till rss fl&ouml;de:&lt;/u&gt;
 	Adressen till rss fl&ouml;det
-	&lt;br /&gt;&lt;br /&gt;
+	<br /><br />
 	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;S&ouml;kv&auml;g till bild:&lt;/u&gt;
 	Om fl&ouml;det har en bild definierat i sig, ange 'default' f&ouml;r att anv&auml;nda den. F&ouml;r att anv&auml;nda en egen bild, ange hela s&ouml;kv&auml;gen till den. L&auml;mna tomt f&ouml;r att inte visa n&aring;gon bild alls.
-	&lt;br /&gt;&lt;br /&gt;
+	<br /><br />
 	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Beskrivning:&lt;/u&gt;
 	Ange en kort beskrivning av fl&ouml;det, eller 'default' f&ouml;r att anv&auml;nda beskrivningen definierad i fl&ouml;det (om det finns n&aring;gon).
-	&lt;br /&gt;&lt;br /&gt;
+	<br /><br />
 	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Uppdateringsintervall i sekunder:&lt;/u&gt;
 	Antal sekunder mellan uppdateringarna av fl&ouml;det, t.ex 1800: 30 minuter, 3600: en timma.
-	&lt;br /&gt;&lt;br /&gt;
+	<br /><br />
 	&lt;b&gt;&#187;&lt;/b&gt; &lt;u&gt;Aktivering:&lt;/u&gt;
 	Var du vill att fl&ouml;det skall visas, f&ouml;r att se fl&ouml;desmenyn m&aring;ste du aktivera nyhetsfl&ouml;desmenyn p&aring; &lt;a href='".e_ADMIN."menus.php'&gt;menysidan&lt;/a&gt;.
-	&lt;br /&gt;&lt;br /&gt;F&ouml;r en bra exempellista &ouml;ver diverse fl&ouml;den, se &lt;a href='http://www.syndic8.com/' rel='external'&gt;syndic8.com&lt;/a&gt; eller &lt;a href='http://feedfinder.feedster.com/index.php' rel='external'&gt;feedster.com&lt;/a&gt;");
+	<br /><br />F&ouml;r en bra exempellista &ouml;ver diverse fl&ouml;den, se &lt;a href='http://www.syndic8.com/' rel='external'&gt;syndic8.com&lt;/a&gt; eller &lt;a href='http://feedfinder.feedster.com/index.php' rel='external'&gt;feedster.com&lt;/a&gt;");
 define("NFLAN_43", "Nyhetsfl&ouml;den hj&auml;lp");
 define("NFLAN_44", "klicka f&ouml;r att se");
 

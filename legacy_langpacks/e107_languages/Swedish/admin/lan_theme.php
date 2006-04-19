@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("TPVLAN_1", "Du tittar p&aring; en f&ouml;rhandsgranskning av &lt;b&gt;'".PREVIEWTHEMENAME."'&lt;/b&gt; temat. Det har inte satts som huvudtema f&ouml;r sajten &auml;nnu, det &auml;r bara aktiverat f&ouml;r f&ouml;rhandsgranskning av hur temat ser ut.&lt;br /&gt;F&ouml;r att s&auml;tta detta som din sajts tema, &lt;a href='".e_ADMIN."theme.php'&gt;g&aring; tillbaka till din temahanterare&lt;/a&gt; och v&auml;lj 'S&auml;tt som sajttema'.&lt;br /&gt;F&ouml;r att f&ouml;rhandsgranska fler teman &lt;a href='".e_ADMIN."theme.php'&gt;klicka h&auml;r&lt;/a&gt;");
+define("TPVLAN_1", "Du tittar p&aring; en f&ouml;rhandsgranskning av &lt;b&gt;'".PREVIEWTHEMENAME."'&lt;/b&gt; temat. Det har inte satts som huvudtema f&ouml;r sajten &auml;nnu, det &auml;r bara aktiverat f&ouml;r f&ouml;rhandsgranskning av hur temat ser ut.<br />F&ouml;r att s&auml;tta detta som din sajts tema, &lt;a href='".e_ADMIN."theme.php'&gt;g&aring; tillbaka till din temahanterare&lt;/a&gt; och v&auml;lj 'S&auml;tt som sajttema'.<br />F&ouml;r att f&ouml;rhandsgranska fler teman &lt;a href='".e_ADMIN."theme.php'&gt;klicka h&auml;r&lt;/a&gt;");
 define("TPVLAN_2", "Tema f&ouml;rhandsgranskning");
 define("TPVLAN_3", "Sajttema satt till");
 define("TPVLAN_4", "F&ouml;rfattare");

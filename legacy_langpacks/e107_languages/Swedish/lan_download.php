@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ define("LAN_dl_45", "Rapportera trasig nerladdning");
 define("LAN_dl_46", "klicka h&auml;r f&ouml;r att h&auml;mta");
 
 define("LAN_dl_47", "Posten har rapporterats");
-define("LAN_dl_48", "Nerladdningen har rapporterats till administrat&ouml;r.&lt;br /&gt;Tack.");
+define("LAN_dl_48", "Nerladdningen har rapporterats till administrat&ouml;r.<br />Tack.");
 define("LAN_dl_49", "Klicka h&auml;r f&ouml;r att &aring;terg&aring; till h&auml;mtningar");
 define("LAN_dl_50", "Rapportera trasig nerladdning till en administrat&ouml;r");
 define("LAN_dl_51", "Rapporterar nerladdning: ");

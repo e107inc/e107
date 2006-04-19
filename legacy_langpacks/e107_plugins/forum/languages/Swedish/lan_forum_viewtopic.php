@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -66,7 +66,7 @@ define("LAN_420", "Klicka f&ouml;r att se inl&auml;gg");
 define("LAN_421", "Rapport om forumtr&aring;d fr&aring;n");
 define("LAN_422", "Detta inl&auml;gg har rapporterats fr&aring;n sajten ");
 define("LAN_423", "Meddelandet kunde inte skickas. ");
-define("LAN_424", "Inl&auml;gger har rapporterats till en moderator.&lt;br /&gt;Tack.");
+define("LAN_424", "Inl&auml;gger har rapporterats till en moderator.<br />Tack.");
 define("LAN_425", "Meddelande fr&aring;n: ");
 define("LAN_426", "Rappoerterar inl&auml;gg i &auml;mnet: ");
 define("LAN_427", "Fel vid s&auml;nding av e-post");

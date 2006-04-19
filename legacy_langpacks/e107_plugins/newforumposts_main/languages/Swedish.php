@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newforumposts_main/languages/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("NFPM_L11", "Lagrets h&ouml;jd");
 define("NFPM_L12", "Konfiguration f&ouml;r nya foruminl&auml;gg");
 define("NFPM_L13", "Uppdatera inst&auml;llningar f&ouml;r nya foruminl&auml;gg");
 define("NFPM_L14", "Inst&auml;llningara uppdaterade.");
-define("NFPM_L15", "Markera f&ouml;r att visa senaste foruminl&auml;gg.&lt;br /&gt;Standard &auml;r senaste &auml;mnen.");
+define("NFPM_L15", "Markera f&ouml;r att visa senaste foruminl&auml;gg.<br />Standard &auml;r senaste &auml;mnen.");
 define('NFPM_L16', '[anv&auml;ndare raderad]');
 
 ?>

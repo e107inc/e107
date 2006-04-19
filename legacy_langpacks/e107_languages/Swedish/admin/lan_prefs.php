@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-25 13:24:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-19 09:33:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -151,6 +151,6 @@ define("PRFLAN_150", "V&auml;lj e107 autentiseringsmetod");
 define("PRFLAN_151", "e107 - Inga alternativa autentiseringsmetoder installerade");
 define("PRFLAN_152", "Ingen verifiering");
 define("PRFLAN_153", "Admins godk&auml;nnande");
-define("PRFLAN_154", "Verifieringsmetod f&ouml;r nya anv&auml;ndare&lt;br /&gt;Om 'Admins godk&auml;nnande' &auml;r valt rekommenderas att du aktiverar e-postnotifiering vid anv&auml;ndarregistrering &lt;a href='".e_ADMIN."notify.php'&gt;h&auml;r&lt;/a&gt;.");
+define("PRFLAN_154", "Verifieringsmetod f&ouml;r nya anv&auml;ndare<br />Om 'Admins godk&auml;nnande' &auml;r valt rekommenderas att du aktiverar e-postnotifiering vid anv&auml;ndarregistrering &lt;a href='".e_ADMIN."notify.php'&gt;h&auml;r&lt;/a&gt;.");
 
 ?>
