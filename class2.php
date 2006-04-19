@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.272 $
-|     $Date: 2006-04-19 12:07:40 $
+|     $Revision: 1.273 $
+|     $Date: 2006-04-19 19:22:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1033,8 +1033,9 @@ function init_session() {
 	# - return boolean
 	# - scope public
 	*/
-	global $sql, $pref, $user_pref, $tp, $currentUser;
+	global $sql, $pref, $user_pref, $tp, $currentUser, $e107;
 
+	define('USERIP', $e107->getip());
 	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']])) {
 		define("USER", FALSE);
 		define("USERTHEME", FALSE);
@@ -1059,8 +1060,6 @@ function init_session() {
 		$result = get_user_data($uid);
 		if(is_array($result) && md5($result['user_password']) == $upw)
 		{
-			$currentUser = $result;
-			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
 
 			define("USERID", $result['user_id']);
 			define("USERNAME", $result['user_name']);
@@ -1073,17 +1072,25 @@ function init_session() {
 			define("USERIMAGE", $result['user_image']);
 			define("USERSESS", $result['user_sess']);
 
-			if ($result['user_currentvisit'] + 3600 < time() || !$result['user_lastvisit']) {
+			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
+			
+			if($result['user_currentvisit'] + 3600 < time() || !$result['user_lastvisit'])
+			{
 				$result['user_lastvisit'] = $result['user_currentvisit'];
 				$result['user_currentvisit'] = time();
-				$sql->db_Update("user", "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}', user_viewed = '' WHERE user_name='".USERNAME."' ");
+				$sql->db_Update("user", "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}', user_viewed = ''{$update_ip} WHERE user_id='".USERID."' ");
+			}
+			else
+			{
+				$result['user_currentvisit'] = time();
+				$sql->db_Update("user", "user_currentvisit = '{$result['user_currentvisit']}'{$update_ip} WHERE user_id='".USERID."' ");
 			}
 
+			$currentUser = $result;
+			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
 			define("USERLV", $result['user_lastvisit']);
 
-			if ($result['user_ban'] == 1) {
-				exit;
-			}
+			if ($result['user_ban'] == 1) { exit; }
 
 			$user_pref = unserialize($result['user_prefs']);
 
