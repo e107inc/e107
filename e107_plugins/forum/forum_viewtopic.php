@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-03-03 23:36:48 $
-|     $Author: e107coders $
+|     $Revision: 1.61 $
+|     $Date: 2006-04-21 01:36:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -567,11 +567,18 @@ function rpg($user_join, $user_forums)
 		$lvl_exp = ($user_forums - $lvl_posts_for_this) . "/" . ($lvl_posts_for_next - $lvl_posts_for_this);
 		$lvl_exp_percent = floor((($user_forums - $lvl_posts_for_this) / max(1, ($lvl_posts_for_next - $lvl_posts_for_this ) ) ) * 100);
 	}
-	$rpg_info .= "<div style='padding:2px;'>";
+
+	$bar_image = THEME."images/bar.jpg";
+	if(!is_readable($bar_image))
+	{
+		$bar_image = e_PLUGIN."forum/images/".IMODE."/bar.jpg";
+	}
+		
+	$rpg_info .= "<div style='padding:2px; white-space:nowrap'>";
 	$rpg_info .= "<b>Level = ".$lvl_level."</b><br />";
-	$rpg_info .= "HP = ".$lvl_hp."<br /><img src='".THEME."images/bar.jpg' height='10' alt='' style='border:#345487 1px solid; width:".$lvl_hp_percent."'><br />";
-	$rpg_info .= "EXP = ".$lvl_exp."<br /><img src='".THEME."images/bar.jpg' height='10' alt='' style='border:#345487 1px solid; width:".$lvl_exp_percent."'><br />";
-	$rpg_info .= "MP = ".$lvl_mp."<br /><img src='".THEME."images/bar.jpg' height='10' alt='' style='border:#345487 1px solid; width:".$lvl_mp_percent."'><br />";
+	$rpg_info .= "HP = ".$lvl_hp."<br /><img src='{$bar_image}' alt='' style='border:#345487 1px solid; height:10px; width:".$lvl_hp_percent."%'><br />";
+	$rpg_info .= "EXP = ".$lvl_exp."<br /><img src='{$bar_image}' alt='' style='border:#345487 1px solid; height:10px; width:".$lvl_exp_percent."%'><br />";
+	$rpg_info .= "MP = ".$lvl_mp."<br /><img src='{$bar_image}' alt='' style='border:#345487 1px solid; height:10px; width:".$lvl_mp_percent."%'><br />";
 	$rpg_info .= "</div>";
 	return $rpg_info;
 }
