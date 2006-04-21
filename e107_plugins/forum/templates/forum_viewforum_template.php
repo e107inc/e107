@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-01-15 19:07:41 $
+|     $Revision: 1.14 $
+|     $Date: 2006-04-21 02:08:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -215,7 +215,8 @@ if (!$FORUM_VIEW_SUB_START)
 		<div>
 		<table style='width:100%'>
 		<tr>
-			<td class='fcaption' style='width: 50%'>".FORLAN_20."</td>
+			<td class='fcaption' style='width: 5%'>&nbsp;</td>
+			<td class='fcaption' style='width: 45%'>".FORLAN_20."</td>
 			<td class='fcaption' style='width: 10%'>".FORLAN_21."</td>
 			<td class='fcaption' style='width: 10%'>".LAN_55."</td>
 			<td class='fcaption' style='width: 30%'>".FORLAN_22."</td>
@@ -226,6 +227,7 @@ if (!$FORUM_VIEW_SUB_START)
 if (!$FORUM_VIEW_SUB) {
 	$FORUM_VIEW_SUB = "
 	<tr>
+		<td class='forumheader3' style='text-align:center'>{NEWFLAG}</td>
 		<td class='forumheader3' style='text-align:left'><b>{SUB_FORUMTITLE}</b><br />{SUB_DESCRIPTION}</td>
 		<td class='forumheader3' style='text-align:center'>{SUB_THREADS}</td>
 		<td class='forumheader3' style='text-align:center'>{SUB_REPLIES}</td>
