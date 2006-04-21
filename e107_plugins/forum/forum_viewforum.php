@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-03-03 23:36:48 $
-|     $Author: e107coders $
+|     $Revision: 1.53 $
+|     $Date: 2006-04-21 02:08:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -249,6 +249,7 @@ $gen = new convert;
 $SUBFORUMS = "";
 if(is_array($sub_list))
 {
+	$newflag_list = $forum->forum_newflag_list();
 	$sub_info = "";
 	foreach($sub_list as $sub)
 	{
@@ -491,11 +492,20 @@ function parse_thread($thread_info)
 
 function parse_sub($subInfo)
 {
-	global $FORUM_VIEW_SUB, $gen, $tp;
+	global $FORUM_VIEW_SUB, $gen, $tp, $newflag_list;
 	$SUB_FORUMTITLE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$subInfo['forum_id']}'>{$subInfo['forum_name']}</a>";
 	$SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
 	$SUB_THREADS = $subInfo['forum_threads'];
 	$SUB_REPLIES = $subInfo['forum_replies'];
+	if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
+	{
+		$NEWFLAG = "<a href='".e_SELF."?mfar.{$subInfo['forum_id']}'>".IMAGE_new."</a>";
+	}
+	else
+	{
+		$NEWFLAG = IMAGE_nonew;
+	}
+
 	if($subInfo['forum_lastpost_info'])
 	{
 		$tmp = explode(".", $subInfo['forum_lastpost_info']);
