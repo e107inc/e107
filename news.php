@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2006-04-18 01:33:36 $
-|     $Author: sweetas $
+|     $Revision: 1.95 $
+|     $Date: 2006-04-22 15:42:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -137,8 +137,12 @@ if ($action == 'cat' || $action == 'all'){
 	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
 	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
+    if(!$NEWSLISTTITLE){
+		$NEWSLISTTITLE = LAN_82." '{$category_name}'";
+	}
+
 	ob_start();
-	$ns->tablerender(LAN_82." '{$category_name}'", $text);
+	$ns->tablerender($NEWSLISTTITLE, $text);
 	$cache_data = ob_get_flush();
 	setNewsCache($cacheString, $cache_data);
 	require_once(FOOTERF);
