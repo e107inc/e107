@@ -2,6 +2,27 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+/*
+if (!defined('SEARCH_SHORTCODE_REF')) {
+	define('SEARCH_SHORTCODE_REF',"");
+}
+*/
+
+
+if (!isset($SEARCH_SHORTCODE)) {
+
+	$SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' value='' maxlength='50' />
+	<input class='button search' type='submit' name='s' value=\"".LAN_180."\" />";
+
+	/*  // Image Version Example
+	$SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' value='Default Value' maxlength='50' onclick=\"this.value=''\" />
+	<input type='image' name='s' src='".e_PLUGIN_ABS."search_menu/images/search.png'  value='".LAN_180."' style='width: 16px; height: 16px; border: 0px; vertical-align: middle'  />";
+    */
+}
+
+
+
+
 if (!isset($SEARCH_TOP_TABLE)) {
 	$SEARCH_TOP_TABLE = "<div style='text-align: center'>
 	<form id='searchform' name='searchform' method='get' action='".e_SELF."'>
