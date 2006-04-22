@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2006-04-17 17:02:25 $
+|     $Revision: 1.85 $
+|     $Date: 2006-04-22 04:31:36 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ class sitelinks
 
 	function getlinks($cat=1)
 	{
-		
+
 		global $sql;
 		if ($sql->db_Select('links', '*', "link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
 			while ($row = $sql->db_Fetch())
@@ -247,6 +247,9 @@ function hilite($link,$enabled=''){
 	global $PLUGINS_DIRECTORY,$tp,$pref;
     if(!$enabled){ return FALSE; }
 
+	$tmp = explode("?",$link);
+	$lnk = explode(".",$tmp[1]); // link queries.
+	$qry = explode(".",e_QUERY); // current page queries.
 
 // ----------- highlight overriding - set the link matching in the page itself.
 
@@ -259,8 +262,9 @@ function hilite($link,$enabled=''){
 
 // --------------- highlighting for 'HOME'. ----------------
 	global $pref;
-	if(strpos(e_SELF,$pref['frontpage']['all']) && $link == e_HTTP."index.php"){
-		return TRUE;
+	list($fp,$fp_q) = explode("?",$pref['frontpage']['all']);
+	if(strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $qry && $link == e_HTTP."index.php"){
+	  	return TRUE;
 	}
 
 // --------------- highlighting for plugins. ----------------
@@ -287,9 +291,6 @@ function hilite($link,$enabled=''){
 // eg. news.php?list.1 or news.php?cat.2 etc
 
 		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")) {
-            $tmp = explode("?",$link);
-			$lnk = explode(".",$tmp[1]); // link queries.
-			$qry = explode(".",e_QUERY); // current page queries.
 
 			if($qry[0] == "item"){
 				return ($qry[2] == $lnk[1]) ? TRUE : FALSE;
@@ -304,7 +305,7 @@ function hilite($link,$enabled=''){
 // eg. page.php?1
 
 		if (strpos($link, "page.php?") !== FALSE && strpos(e_SELF,"/page.php")) {
-			$tmp = explode("?",$link);
+
 			if(e_QUERY == $tmp[1]){
             	return TRUE;
 			}
@@ -316,11 +317,11 @@ function hilite($link,$enabled=''){
 			$linkq = $subq[1];
 			$thelink = str_replace("../", "", $link);
 			if((strpos(e_SELF,$thelink) !== false) && (strpos(e_QUERY,$linkq) !== false)){
-		  		return true;
+		   		return true;
 			}
 		}
 		if(!preg_match("/all|item|cat|list/", e_QUERY) && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
-			return true;
+		  	return true;
 		}
 
 		return false;
