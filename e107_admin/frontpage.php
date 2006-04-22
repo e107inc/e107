@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-10-29 12:51:52 $
-|     $Author: sweetas $
+|     $Revision: 1.22 $
+|     $Date: 2006-04-22 19:30:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,6 +30,7 @@ require_once(e_HANDLER.'userclass_class.php');
 
 $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
 $front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);
+$front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);   
 
 if ($sql -> db_Select("page", "*", "page_theme=''")) {
 	$front_page['custom']['title'] = 'Custom Page';
@@ -107,7 +108,7 @@ class frontpage {
 		<td style='width: 50%' class='forumheader3'>".FRTLAN_2.":</td>
 		<td style='width: 50%' class='forumheader3'>
 		".$rs -> form_radio('type', 'all_users', (isset($pref['frontpage']['all']) ? TRUE : FALSE))." ".FRTLAN_31."&nbsp;
-		".$rs -> form_radio('type', 'user_class', (isset($pref['frontpage']['all']) ? FALSE : TRUE))." ".FRTLAN_32.": 
+		".$rs -> form_radio('type', 'user_class', (isset($pref['frontpage']['all']) ? FALSE : TRUE))." ".FRTLAN_32.":
 		".r_userclass('class', '', 'off', 'guest,member,admin,classes')."</td>
 		</tr>";
 
@@ -121,7 +122,7 @@ class frontpage {
 		</div>";
 
 		$ns -> tablerender(FRTLAN_13, $text);
-		
+
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
 		<table style='".ADMIN_WIDTH."' class='fborder'><tr>
@@ -129,7 +130,7 @@ class frontpage {
 		<td style='width: 65%' class='fcaption'>".FRTLAN_34."</td>
 		<td style='width: 10%' class='fcaption'>".LAN_EDIT."</td>
 		</tr>";
-		
+
 		if (isset($pref['frontpage']['all'])) {
 			$text .= "<tr>
 			<td class='forumheader3'>All Users</td>
@@ -168,12 +169,12 @@ class frontpage {
 		</div>";
 
 		$ns -> tablerender(FRTLAN_33, $text);
-		
+
 	}
-	
+
 	function select_page() {
 		global $rs, $pref, $ns, $front_page;
-		
+
 		if ($_POST['type'] == 'all_users') {
 			$title = FRTLAN_26;
 		} else {
@@ -192,14 +193,14 @@ class frontpage {
 				}
 			}
 		}
-		
+
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
 		<td colspan='3' class='fcaption'>".FRTLAN_2." ".$title.": </td>
 		</tr>";
-		
+
 		foreach ($front_page as $front_key => $front_value) {
 			$type_selected = FALSE;
 			$current_setting = (isset($pref['frontpage']['all'])) ? $pref['frontpage']['all'] : $pref['frontpage'][$_POST['class']];
@@ -216,11 +217,11 @@ class frontpage {
 					$not_other = TRUE;
 				}
 			}
-		
+
 			$text .= "<tr><td class='forumheader3'>";
 			$text .= $rs -> form_radio('frontpage', $front_key, $type_selected);
 			$text .= "</td>";
-			
+
 			if (is_array($front_value['page'])) {
 				$text .= "<td style='width: 50%' class='forumheader3'>".$front_value['title']."</td>";
 				$text .= "<td style='width: 50%' class='forumheader3'>";
@@ -237,7 +238,7 @@ class frontpage {
 			}
 			$text .= "</tr>";
 		}
-		
+
 		$text .= "<tr>
 		<td class='forumheader3'>".$rs -> form_radio('frontpage', 'other', (!$not_other ? TRUE : FALSE))."</td>
 		<td style='width: 50%' class='forumheader3'>".FRTLAN_15."</td>
@@ -245,7 +246,7 @@ class frontpage {
 		".$rs -> form_text('other_page', 50, (!$not_other ? $current_setting : ''))."
 		</td>
 		</tr>";
-		
+
 		$text .= "<tr style='vertical-align:top'>
 		<td colspan='3' style='text-align: center' class='forumheader'>";
 		$text .= $rs -> form_hidden('type', $_POST['type']);
@@ -256,7 +257,7 @@ class frontpage {
 		</table>
 		</form>
 		</div>";
-		
+
 		$ns -> tablerender(FRTLAN_13, $text);
 	}
 }

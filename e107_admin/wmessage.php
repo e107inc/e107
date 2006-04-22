@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-05-21 03:10:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.23 $
+|     $Date: 2006-04-22 19:30:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -48,12 +48,14 @@ if (e_QUERY) {
 
 if (isset($_POST['wm_update'])) {
 	$wm_text = $tp->toDB($_POST['wm_text']);
-	$message = ($sql->db_Update("generic", "gen_chardata ='$wm_text', gen_intdata='".$_POST['wm_active']."' WHERE gen_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+	$wm_title = $tp->toDB($_POST['wm_caption']);
+	$message = ($sql->db_Update("generic", "gen_chardata ='$wm_text',gen_ip ='$wm_title', gen_intdata='".$_POST['wm_active']."' WHERE gen_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 }
 
 if (isset($_POST['wm_insert'])) {
 	$wmtext = $tp->toDB($_POST['wm_text']);
-	$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
+	$wmtitle = $tp->toDB($_POST['wm_caption']);
+	$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 }
 
 if (isset($_POST['updateoptions'])) {
@@ -63,14 +65,9 @@ if (isset($_POST['updateoptions'])) {
 	$message = LAN_SETSAVED;
 }
 
-$deltest = array_flip($_POST);
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
-	$delete = $matches[1];
-	$del_id = $matches[2];
-}
-
-if ($delete && $del_id) {
-	$message = ($sql->db_Delete("generic", "gen_id='".$del_id."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
+if (isset($_POST['main_delete'])) {
+	$del_id = array_keys($_POST['main_delete']);
+	$message = ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
 }
 
 if (isset($message)) {
@@ -91,16 +88,16 @@ if ($action == "main" || $action == "") {
 			<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
 			</tr>";
 		foreach($wmList as $row) {
-			$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>";
-			$text .= $row['gen_id'];
-			$text .= "</td><td style='width:70%' class='forumheader3'>".$tp->toHTML($row['gen_chardata'])."</td>";
-			$text .= "</td><td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>";
-
-			$text .= "</td><td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
-			$text .= $rs->form_button("button", "main_edit_{$row['gen_id']}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.{$row['gen_id']}'\"");
-			$text .= $rs->form_button("submit", "main_delete_".$row['gen_id'], LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ ID: {$row['gen_id']} ]")."' )\"");
-			$text .= "</td>";
-			$text .= "</tr>";
+			$text .= "
+			<tr>
+				<td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
+				<td style='width:70%' class='forumheader3'>".$tp->toHTML($row['gen_chardata'])."</td>
+				<td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>
+            	<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>
+					<a href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
+					<input type='image' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]')\"/>
+				</td>
+			</tr>";
 		}
 
 		$text .= "</table></div>";
@@ -117,7 +114,7 @@ if ($action == "create" || $action == "edit")
 
 	if ($sub_action == "edit")
 	{
-		$sql->db_Select("generic", "gen_intdata, gen_chardata", "gen_id = $id");
+		$sql->db_Select("generic", "gen_intdata, gen_ip, gen_chardata", "gen_id = $id");
 		$row = $sql->db_Fetch();
 	}
 
@@ -131,19 +128,24 @@ if ($action == "create" || $action == "edit")
 		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'  id='wmform'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>";
+		";
 
 	$text .= "
+		<tr>
+		<td style='width:20%' class='forumheader3'>".WMLAN_10."</td>
+		<td style='width:60%' class='forumheader3'>
+		<input type='text' class='tbox' id='wm_caption' name='wm_caption' maxlength='80' style='width:95%' value=\"".$tp->toForm($row['gen_ip'])."\" />
+		</td>
+		</tr>";
+
+	$text .= "<tr>
 		<td style='width:20%' class='forumheader3'>".WMLAN_04."</td>
 		<td style='width:60%' class='forumheader3'>
-		<textarea class='tbox' id='wm_text' name='wm_text' cols='70' rows='18' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$row['gen_chardata']."</textarea>
+		<textarea class='tbox' id='wm_text' name='wm_text' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
 		<br />";
 
-	if(!$pref['wysiwyg'])
-	{
-		$text .= "
-		<br />
-		".display_help("helpb", 2);
+	if(!e_WYSIWYG){
+		$text .= "<br />".display_help("helpb", 2);
 	}
 
 	$text .= "

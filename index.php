@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-01-26 00:48:32 $
-|     $Author: sweetas $
+|     $Revision: 1.21 $
+|     $Date: 2006-04-22 19:30:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -81,7 +81,13 @@ if(isset($pref['frontpage_method']) && $pref['frontpage_method'] == "include") {
 		exit();
 	}
 } else {
-	header("Location: {$location}");
+	if($location == "index.php"){
+    	require_once(HEADERF);
+		require_once(FOOTERF);
+	}else{
+		header("Location: {$location}");
+	}
+
 	exit();
 }
 

@@ -1,5 +1,8 @@
 if ($pref['wmessage_sc'])
 {
+
+
+
 	global $e107;
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
 		$front_url = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['all'];
@@ -33,7 +36,10 @@ if ($pref['wmessage_sc'])
 			{
 				while ($row = $sql->db_Fetch())
 				{
-					$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc', 'admin')."<br />";
+					$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc defs', 'admin')."<br />";
+					if(!$wmcaption){
+						$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'defs');
+					}
 				}
 			}
 
@@ -41,10 +47,11 @@ if ($pref['wmessage_sc'])
 			{
 				if ($pref['wm_enclose'])
 				{
-					$ns->tablerender("", $wmessage, "wm");
+					$ns->tablerender($wmcaption, $wmessage, "wm");
 				}
 				else
 				{
+					echo ($wmcaption) ? $wmcaption."<br />" : "";
 					echo $wmessage;
 				}
 			}
