@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-03-14 17:29:08 $
+|     $Revision: 1.30 $
+|     $Date: 2006-04-22 18:10:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -109,17 +109,25 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 
 	if($Cc){
-        $tmp = explode(",",$Cc);
-		foreach($tmp as $addc){
-			$mail->AddCC($addc);
-        }
+        if($mail->Mailer == "mail"){
+			$mail->AddCustomHeader("Cc: {$Cc}");
+		}else{
+        	$tmp = explode(",",$Cc);
+			foreach($tmp as $addc){
+		  		$mail->AddCC("Cc", $addc);
+        	}
+		}
 	}
 
 	if($Bcc){
-        $tmp = explode(",",$Bcc);
-		foreach($tmp as $addbc){
-			$mail->AddBCC($addbc);
-        }
+		if($mail->Mailer == "mail"){
+			$mail->AddCustomHeader("Bcc: {$Bcc}");
+		}else{
+        	$tmp = explode(",",$Bcc);
+	   		foreach($tmp as $addbc){
+				$mail->AddBCC($addbc);
+        	}
+		}
 	}
 
 
