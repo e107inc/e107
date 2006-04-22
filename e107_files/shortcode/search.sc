@@ -32,7 +32,7 @@ if (!isset($SEARCH_SHORTCODE)) {
 	}else{
     	$page = 'all';
 	}
-    $text .= "p= ".$page;
+
 	$text .= "<form method='get' action='".e_HTTP."search.php'>\n";
 	$text .= "<input type='hidden' name='t' value='$page' />\n";
 	$text .= "<input type='hidden' name='r' value='0' />\n";
