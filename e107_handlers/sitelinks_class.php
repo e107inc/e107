@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2006-04-22 04:31:36 $
+|     $Revision: 1.86 $
+|     $Date: 2006-04-22 04:39:19 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -248,8 +248,6 @@ function hilite($link,$enabled=''){
     if(!$enabled){ return FALSE; }
 
 	$tmp = explode("?",$link);
-	$lnk = explode(".",$tmp[1]); // link queries.
-	$qry = explode(".",e_QUERY); // current page queries.
 
 // ----------- highlight overriding - set the link matching in the page itself.
 
@@ -263,7 +261,7 @@ function hilite($link,$enabled=''){
 // --------------- highlighting for 'HOME'. ----------------
 	global $pref;
 	list($fp,$fp_q) = explode("?",$pref['frontpage']['all']);
-	if(strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $qry && $link == e_HTTP."index.php"){
+	if(strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $tmp[1] && $link == e_HTTP."index.php"){
 	  	return TRUE;
 	}
 
@@ -292,6 +290,9 @@ function hilite($link,$enabled=''){
 
 		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")) {
 
+			$lnk = explode(".",$tmp[1]); // link queries.
+			$qry = explode(".",e_QUERY); // current page queries.
+
 			if($qry[0] == "item"){
 				return ($qry[2] == $lnk[1]) ? TRUE : FALSE;
      		}
@@ -305,7 +306,7 @@ function hilite($link,$enabled=''){
 // eg. page.php?1
 
 		if (strpos($link, "page.php?") !== FALSE && strpos(e_SELF,"/page.php")) {
-
+			$tmp = explode("?",$link);
 			if(e_QUERY == $tmp[1]){
             	return TRUE;
 			}
