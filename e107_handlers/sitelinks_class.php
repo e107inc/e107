@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2006-04-22 04:39:19 $
+|     $Revision: 1.87 $
+|     $Date: 2006-04-23 04:54:09 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -109,7 +109,7 @@ class sitelinks
 			foreach ($this->eLinkList['head_menu'] as $key => $link){
 				$main_linkid = "sub_".$link['link_id'];
 
-				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
+				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 
 				$render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
