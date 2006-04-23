@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2006-04-22 15:42:49 $
+|     $Revision: 1.96 $
+|     $Date: 2006-04-23 06:14:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -135,7 +135,7 @@ if ($action == 'cat' || $action == 'all'){
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
-	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
     if(!$NEWSLISTTITLE){
 		$NEWSLISTTITLE = LAN_82." '{$category_name}'";
