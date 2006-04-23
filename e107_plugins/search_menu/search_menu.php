@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-03-26 17:07:17 $
+|     $Revision: 1.18 $
+|     $Date: 2006-04-23 09:34:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -59,7 +59,7 @@ if (isset($custom_query[5]) && $custom_query[5]) {
 }
 
 $text = "<form method='get' action='".e_HTTP."search.php'>
-	<p>
+	<div>
 	<input class='tbox search' type='text' name='q' size='20' ".$value_text." maxlength='50' />
 	<input type='hidden' name='r' value='0' />";
 	
@@ -68,7 +68,7 @@ $text = "<form method='get' action='".e_HTTP."search.php'>
 	}
 	
 	$text .= $search_button."
-	</p>
+	</div>
 	</form>";
 if (isset($searchflat) && $searchflat) {
 	echo $text;
