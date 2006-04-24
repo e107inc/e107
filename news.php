@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2006-04-23 06:14:43 $
+|     $Revision: 1.97 $
+|     $Date: 2006-04-24 23:46:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -271,7 +271,7 @@ if($tmp_cache = checkCache($cacheString)){
 	require_once(HEADERF);
 
 	if(!$action){
-		render_wmessage();
+
 		if (isset($pref['fb_active'])){  // --->feature box
 			require_once(e_PLUGIN."featurebox/featurebox.php");
 		}
@@ -302,7 +302,7 @@ if($action != "" && !is_numeric($action)){
 
 require_once(HEADERF);
 if(!$action){
-	render_wmessage();   // --> wmessage.
+
 	if (isset($pref['fb_active'])){   // --->feature box
 		require_once(e_PLUGIN."featurebox/featurebox.php");
 	}
@@ -515,29 +515,6 @@ function renderCache($cache, $nfp = FALSE){
 	require_once(FOOTERF);
 	exit;
 }
-
-
-
-function render_wmessage(){
-
-	global $pref,$sql,$ns,$tp;
-	if (!$pref['wmessage_sc']) {
-		if (!defined("WMFLAG")) {
-			$sql->db_Select("generic", "gen_chardata", "gen_type='wmessage' AND gen_intdata REGEXP '".e_CLASS_REGEXP."' ORDER BY gen_intdata ASC");
-			while ($row = $sql->db_Fetch()){
-				$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc', 'admin')."<br />";
-			}
-		}
-		if (isset($wmessage)) {
-			if ($pref['wm_enclose']) {
-				$ns->tablerender("", $wmessage, "wm");
-			} else {
-				echo $wmessage;
-			}
-		}
-	}
-}
-
 
 function render_newscats(){  // --  CNN Style Categories. ----
 	global $pref,$ns,$tp;
