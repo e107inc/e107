@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-04-05 02:10:54 $
+|     $Revision: 1.15 $
+|     $Date: 2006-04-24 14:23:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -107,6 +107,7 @@ class private_message
 					}
 					if(check_class($pm_prefs['notify_class'], $u['user_class']))
 					{
+						$vars['to_info'] = $u;
 						$this->pm_send_notify($u['user_id'], $vars, $pmid, count($a_list));
 					}
 				}
