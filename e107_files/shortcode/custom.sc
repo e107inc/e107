@@ -85,24 +85,7 @@ switch($custom_query[0])
 
 
 		case "welcomemessage":
-				if(GUEST == TRUE && $sql -> db_Select("wmessage",wm_text,"wm_id = 1 AND wm_active = 1"))
-				{
-					$row = $sql -> db_Fetch();
-					$ret .= $tp -> toHTML($row['wm_text']);
-				}
 
-				if(USER == TRUE && $sql -> db_Select("wmessage",wm_text,"wm_id = 2 AND wm_active = 1"))
-				{
-					$row = $sql -> db_Fetch();
-					$ret .= $tp -> toHTML($row['wm_text']);
-				}
-
-				if(ADMIN == TRUE && $sql -> db_Select("wmessage",wm_text,"wm_id = 3 AND wm_active = 1"))
-				{
-					$row = $sql -> db_Fetch();
-					$ret .= $tp -> toHTML($row['wm_text']);
-				}
-				define("WMFLAG", TRUE);
-				return $ret;
+				return $tp->parseTemplate("{WMESSAGE}");
 				break;
 }

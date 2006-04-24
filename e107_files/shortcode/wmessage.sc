@@ -1,7 +1,3 @@
-if ($pref['wmessage_sc'])
-{
-
-
 
 	global $e107;
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
@@ -57,4 +53,4 @@ if ($pref['wmessage_sc'])
 			}
 		}
 	}
-}
+
