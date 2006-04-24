@@ -1,4 +1,4 @@
-global $sql,$sysprefs;
+global $sql,$sysprefs,$SEARCH_SHORTCODE;
 
 
 @include_once(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
