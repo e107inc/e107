@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.273 $
-|     $Date: 2006-04-19 19:22:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.274 $
+|     $Date: 2006-04-24 21:42:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -477,6 +477,8 @@ define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off 
 define("SITEADMIN", $pref['siteadmin']);
 define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
+define("SITECONTACTINFO", $tp->toHTML($pref['sitecontactinfo'], TRUE, "emotes_off defs"));
+
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
 	header("Location: ".SITEURL."sitedown.php");
@@ -1073,7 +1075,7 @@ function init_session() {
 			define("USERSESS", $result['user_sess']);
 
 			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
-			
+
 			if($result['user_currentvisit'] + 3600 < time() || !$result['user_lastvisit'])
 			{
 				$result['user_lastvisit'] = $result['user_currentvisit'];
