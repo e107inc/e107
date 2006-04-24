@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-15 17:38:00 $
-|     $Author: whoisrich $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-24 19:04:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -56,13 +56,13 @@ global $pref;
 if ($pref['user_reg']) {
 	if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 	{
-		return "<a href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";
+		return "<a class='login_menu_link' href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";
 	}
 }
 SC_END
 
 SC_BEGIN LM_FPW_LINK
-return "<a href='".e_BASE."fpw.php'>".LOGIN_MENU_L4."</a>";
+return "<a class='login_menu_link' href='".e_BASE."fpw.php'>".LOGIN_MENU_L4."</a>";
 SC_END
 
 */
