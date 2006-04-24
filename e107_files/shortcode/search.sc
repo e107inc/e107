@@ -1,4 +1,4 @@
-global $sql,$sysprefs, $SEARCH_SHORTCODE;
+global $sql,$sysprefs;
 
 
 @include_once(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
@@ -13,8 +13,8 @@ if (!isset($SEARCH_SHORTCODE)) {
 	$ref['all'] = 'all';
 	$ref['news'] = '0';
 	$ref['comments'] = 1;
-	$ref['user'] = 2;
-	$ref['download'] = 3;
+	$ref['users'] = 2;
+	$ref['downloads'] = 3;
 	$ref['pages'] = 4;
 
 	$search_prefs = $sysprefs -> getArray('search_prefs');
@@ -46,5 +46,4 @@ if (!isset($SEARCH_SHORTCODE)) {
 	$text .="\n</form>";
 
  return $text;
-
 
