@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-03-13 21:53:47 $
-|     $Author: e107coders $
+|     $Revision: 1.43 $
+|     $Date: 2006-04-24 19:04:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,13 +45,13 @@ $text = '';
 if (USER == TRUE || ADMIN == TRUE) {
 	if (ADMIN == TRUE) {
 		$text = ($pref['maintainance_flag'] == 1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
-		$text .= $bullet.' <a href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
+		$text .= $bullet.' <a class="login_menu_link" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
 	}
-	$text .= $bullet.' <a href="'.e_HTTP.'usersettings.php">'.LOGIN_MENU_L12.'</a>
+	$text .= $bullet.' <a class="login_menu_link" href="'.e_HTTP.'usersettings.php">'.LOGIN_MENU_L12.'</a>
 	<br />
-	'.$bullet.' <a href="'.e_HTTP.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
+	'.$bullet.' <a class="login_menu_link" href="'.e_HTTP.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
 	<br />
-	'.$bullet.' <a href="'.e_HTTP.'index.php?logout">'.LOGIN_MENU_L8.'</a>';
+	'.$bullet.' <a class="login_menu_link" href="'.e_HTTP.'index.php?logout">'.LOGIN_MENU_L8.'</a>';
 
 	if (!$sql->db_Select('online', '*', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ')) {
 		$sql->db_Delete('online', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ');
