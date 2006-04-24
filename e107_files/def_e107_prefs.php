@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-04-18 08:53:36 $
+|     $Revision: 1.51 $
+|     $Date: 2006-04-24 19:28:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ $pref = array (
   'sitedescription' => '',
   'siteadmin' => $site_admin_user,
   'siteadminemail' => $site_admin_email,
-  'sitetheme' => 'jayya',
+  'sitetheme' => 'reline',
   'image_preload' => '0',
   'admintheme' => 'jayya',
   'adminstyle' => 'classis',
