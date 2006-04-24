@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2006-04-15 13:31:14 $
+|     $Revision: 1.87 $
+|     $Date: 2006-04-24 21:42:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -192,6 +192,12 @@ $text = "<script type=\"text/javascript\">
 	</td>
 	</tr>
 	<tr>
+
+	<td style='width:50%' class='forumheader3'>".PRFLAN_162."<br /><span class='smalltext'>".PRFLAN_163."</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<textarea class='tbox' name='sitecontactinfo' cols='59' rows='6'>".$pref['sitecontactinfo']."</textarea>
+	</td>
+	</tr>
 
 	<td style='width:50%' class='forumheader3'>".PRFLAN_9."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
