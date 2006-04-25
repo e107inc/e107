@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-04-25 09:16:26 $
+|     $Revision: 1.6 $
+|     $Date: 2006-04-25 12:03:18 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -69,33 +69,11 @@ $no_core_css = TRUE;
 
 // Output into <head> section.
 // Anything echoed from within the theme_head() function gets outputted into the <head> of your page.
+// Uncomment the following three lines to use.
 
-function theme_head() {
-		echo "<script type='text/javascript'>
-<!--
-Behaviour._apply = Behaviour.apply;
-	Behaviour.apply = function() {
-	if (this.applied) return;
-	this.applied = true;
-	this._apply();
-	};
-	if (document.addEventListener) {
-		document.addEventListener(\"DOMContentLoaded\", function() {
-		Behaviour.apply();
-		}, false);
-		}
-		//-->
-</script>
-	";
-	
-	// include behaviour script to fix alpha transparency on logo (If you delete the e107 logo from
-	// the $HEADER section then you should delete this too.
-	echo "<style type='text/css'><!--\n";
-	echo ".alpha_logo { behavior: url(".e_FILE."pngbehavior.php); }\n";
-	echo "--></style>\n";
-	
-
-}
+//function theme_head() {
+//	echo "<script></script>";
+//}
 
 
 // Header and footer templates for the body of your site.
@@ -120,8 +98,14 @@ Behaviour._apply = Behaviour.apply;
 // Main header
 $HEADER = "<table class='top_section'>
 <tr>
-<td style='height: 106px' colspan='2'>
+<td style='height: 106px'>
 <img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 4px' alt='' />
+</td>
+
+<td style='height: 106px; 	background-image: url(".THEME_ABS."images/header.png);
+	background-repeat: no-repeat;
+	background-position: top left;'>
+<img src='".THEME_ABS."images/logo.png' style='width: 347px; height: 106px; display: block' alt='' />
 </td>
 </tr>
 
@@ -159,7 +143,7 @@ $HEADER = "<table class='top_section'>
 <tr>
 <td style='color: #fff; padding-right: 5px; width: 100%; vertical-align: top'>
 <div style='position: relative; left: 0; top: 0'>
-<img class='alpha_logo' src='".THEME_ABS."images/logo.png' style='position: absolute; top: -111px; left: -49px; width: 373px; height: 143px; display: block' alt='' />
+<img class='alpha_logo' src='".THEME_ABS."images/cube.png' style='position: absolute; top: -76px; left: -49px; width: 96px; height: 108px; display: block' alt='' />
 </div>
 {SITELINKS_ALT=no_icons+noclick}
 </td>
