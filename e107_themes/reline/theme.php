@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-24 19:02:07 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-25 01:48:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ $layout = "_default";
 $HEADER = "<table class='top_section' style='border-bottom: 1px solid #126CA3; width: 749px'>
 <tr>
 <td style='height: 106px; background-image: url(".THEME_ABS."images/header.png); background-repeat: no-repeat; background-position: top right' colspan='2'>
-<img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 2px' alt='' />
+<img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 4px' alt='' />
 </td>
 </tr>
 
