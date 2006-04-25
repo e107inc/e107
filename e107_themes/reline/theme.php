@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-04-25 13:18:56 $
+|     $Revision: 1.9 $
+|     $Date: 2006-04-25 19:48:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,8 +23,8 @@ if (!defined('e107_INIT')) { exit; }
 
 
 // Get language definition files for this theme
-@include_once(e_THEME."jayya/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."jayya/languages/English.php");
+@include_once(e_THEME."reline/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."reline/languages/English.php");
 
 
 // Set theme info
