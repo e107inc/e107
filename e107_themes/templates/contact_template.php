@@ -1,5 +1,5 @@
 <?php
-// $Id: contact_template.php,v 1.1 2006-04-24 21:42:06 e107coders Exp $
+// $Id: contact_template.php,v 1.2 2006-04-25 18:01:18 e107coders Exp $
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -18,13 +18,12 @@ if(!$CONTACT_INFO){
 if(!$CONTACT_FORM){
   $CONTACT_FORM = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
-	<input type='hidden' name='username' value=\"".USERNAME."\" />
 	<table style='width:97%' cellpadding='1' cellspacing='7'>
 	<tr><td>".LANCONTACT_03."<br />
 	<input type='text' name='author_name' size='30' class='tbox' value='' />
 	</td></tr>
 	<tr><td>".LANCONTACT_04."<br />
-	<input type='text' name='email_send' size='30' class='tbox' value='' />
+	<input type='text' name='email_send' size='30' class='tbox' value='".USEREMAIL."' />
 	</td></tr>
 	<tr><td>
 	".LANCONTACT_05."<br />

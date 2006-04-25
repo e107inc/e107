@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-24 21:42:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-25 18:01:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,22 +29,64 @@ if (!$CONTACT_FORM) {
 
 if(isset($_POST['send-contactus'])){
 
+	$error = "";
+
 	$sender_name = $tp->post_toHTML($_POST['author_name']);
 	$sender = check_email($_POST['email_send']);
 	$subject = $tp->post_toHTML($_POST['subject']);
 	$body = $tp->post_toHTML($_POST['body']);
 
-    require_once(e_HANDLER."mail.php");
- 	$message =  (sendemail(SITEADMINEMAIL,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
-    if($_POST['email_copy'] == 1){
-		sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
+// Check message body.
+	if(strlen($_POST['body']) < 15)
+	{
+		$error .= LANCONTACT_12."\\n";
     }
 
-    $ns -> tablerender('', $message);
-	require_once(FOOTERF);
-	exit;
-}
+// Check subject line.
+	if(strlen($_POST['subject']) < 2)
+	{
+		$error .= LANCONTACT_13."\\n";
+    }
 
+
+// Check email address on remote server (if enabled).
+	if ($pref['signup_remote_emailcheck'] && $error == "")
+	{
+		require_once(e_HANDLER."mail_validation_class.php");
+		list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
+		$validator = new email_validation_class;
+		$validator->localuser= $adminuser;
+		$validator->localhost= $adminhost;
+		$validator->timeout=3;
+		//	$validator->debug=1;
+		//	$validator->html_debug=1;
+		if($validator->ValidateEmailBox($sender) != 1)
+		{
+			$error .= LANCONTACT_11."\\n";
+		}
+
+	}
+
+// No errors - so proceed to email the admin and the user (if selected).
+    if(!$error)
+	{
+		$body .= "\n\nIP:\t".USERIP."\n";
+        $body .= "User:\t#".USERID." ".USERNAME."\n";
+
+    	require_once(e_HANDLER."mail.php");
+ 		$message =  (sendemail(SITEADMINEMAIL,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
+    	if($_POST['email_copy'] == 1){
+			sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
+    	}
+    	$ns -> tablerender('', $message);
+		require_once(FOOTERF);
+		exit;
+    } else {
+		require_once(e_HANDLER."message_handler.php");
+		message_handler("ALERT", $error);
+	}
+
+}
 
 if(SITECONTACTINFO && $CONTACT_INFO){
 	$text = $tp->toHTML($CONTACT_INFO,"","parse_sc");
