@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-04-25 12:03:18 $
+|     $Revision: 1.7 $
+|     $Date: 2006-04-25 13:16:37 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ $themeauthor = "SweetAs";
 $themedate = "24/04/06";
 $themeinfo = "";
 $xhtmlcompliant = TRUE;	// If set to TRUE will display an XHTML compliant logo in theme manager
-$csscompliant = FALSE;	// If set to TRUE will display a CSS compliant logo in theme manager
+$csscompliant = TRUE;	// If set to TRUE will display a CSS compliant logo in theme manager
 
 
 // Define which icon set to use.
@@ -69,11 +69,21 @@ $no_core_css = TRUE;
 
 // Output into <head> section.
 // Anything echoed from within the theme_head() function gets outputted into the <head> of your page.
+// Please note that you have other choices for <head> based javascript. You can create a theme.js file 
+// in your themes folder and a link will automatically be generated to it in the <head> of your page.
+// If you have javascript that is independant of the theme rather than use theme.js or the theme_head()
+// functino below, its advisable to istaed place the script into e107_files/user.js and as with 
+// theme.js, a link will automatically be generated to this file.
 // Uncomment the following three lines to use.
 
 //function theme_head() {
 //	echo "<script></script>";
 //}
+
+
+// Register custom theme shortcodes
+
+$register_sc[] = 'CUBE'; // use as {CUBE} in your templates (e107_themes/your_theme/cube.sc)
 
 
 // Header and footer templates for the body of your site.
@@ -98,36 +108,30 @@ $no_core_css = TRUE;
 // Main header
 $HEADER = "<table class='top_section'>
 <tr>
-<td style='height: 106px'>
+<td>
 <img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 4px' alt='' />
 </td>
 
-<td style='height: 106px; 	background-image: url(".THEME_ABS."images/header.png);
-	background-repeat: no-repeat;
-	background-position: top left;'>
+<td class='top_back'>
 <img src='".THEME_ABS."images/logo.png' style='width: 347px; height: 106px; display: block' alt='' />
 </td>
 </tr>
 
 <tr>
-<td style='vertical-align: top; width: 149px; border-right: 1px solid #126CA3; background-color: #CCDCF9'>
+<td class='left_section'>
 
-<table class='collapse' style='width: 149px'>
+<table class='collapse'>
 <tr>
-<td style='background-color: #126CA3; color: #fff; padding-right: 5px; width: 100%; height: 23px'>
+<td style='background-color: #126CA3'>
 {SETSTYLE=blue_menu}
 {MENU=1}
-</td>
-</tr>
+</td></tr>
 
-<tr>
-<td style='vertical-align: top'>
+<tr><td style='vertical-align: top'>
 {SETSTYLE=leftmenu}
 {MENU=2}
 <br />
-</td>
-</tr>
-</table>
+</td></tr></table>
 
 </td>
 
@@ -135,17 +139,15 @@ $HEADER = "<table class='top_section'>
 
 <table class='collapse' style='width: 100%'>
 <tr>
-<td style='background-color: #126CA3; color: #fff; text-align: right; padding-right: 5px; width: 100%; height: 23px'>
+<td class='search_bar'>
 {SEARCH}
 </td>
 </tr>
 
 <tr>
-<td style='color: #fff; padding-right: 5px; width: 100%; vertical-align: top'>
-<div style='position: relative; left: 0; top: 0'>
-<img class='alpha_logo' src='".THEME_ABS."images/cube.png' style='position: absolute; top: -76px; left: -49px; width: 96px; height: 108px; display: block' alt='' />
-</div>
-{SITELINKS_ALT=no_icons+noclick}
+<td style='padding-right: 5px; vertical-align: top'>
+{CUBE=top=-76px&left=-49px}
+{SITELINKS}
 </td>
 </tr>
 </table>
@@ -162,7 +164,7 @@ $HEADER = "<table class='top_section'>
 // Main footer
 $FOOTER = "</td>
 
-<td style='border-left: 1px solid #126CA3; width: 145px; vertical-align: top'>
+<td class='right_section'>
 {SETSTYLE=paperclip}
 {MENU=3}
 {SETSTYLE=rightmenu}
@@ -184,12 +186,12 @@ $FOOTER = "</td>
 </div>";
 
 
-// [linkstyle]
+// Define attributes associated with site links.
 
-define('PRELINK', '');
-define('POSTLINK', '');
-define('LINKSTART', '');
-define('LINKEND', '');
+define('PRELINK', 'utyutyu'); // Prefixed to all links as a group
+define('POSTLINK', 'iyiiyi'); // Postfixed to all links as a group
+define('LINKSTART', '88'); // Prefixed to each indivdual link
+define('LINKEND', '888888888'); // Postfixed to each indivdual link
 define('LINKDISPLAY', 1);
 define('LINKALIGN', 'left');
 
