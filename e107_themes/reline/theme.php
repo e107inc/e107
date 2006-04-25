@@ -11,42 +11,91 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-25 05:36:25 $
+|     $Revision: 1.4 $
+|     $Date: 2006-04-25 08:35:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
+
+// Protect the file from direct access
 if (!defined('e107_INIT')) { exit; }
 
-// [multilanguage]
 
+// Get language definition files for this theme
 @include_once(e_THEME."jayya/languages/".e_LANGUAGE.".php");
 @include_once(e_THEME."jayya/languages/English.php");
 
 
-// [theme]
-
+// Set theme info
 $themename = "Reline";
 $themeversion = "1.0";
 $themeauthor = "SweetAs";
-$themedate = "24/4/06";
+$themedate = "24/04/06";
 $themeinfo = "";
-$xhtmlcompliant = TRUE;
-$csscompliant = TRUE;
-define("THEME_DISCLAIMER", "");
-define("IMODE", "lite");
+$xhtmlcompliant = TRUE;	// If set to TRUE will display an XHTML compliant logo in theme manager
+$csscompliant = FALSE;	// If set to TRUE will display a CSS compliant logo in theme manager
 
-// [dont render core style sheet link]
+
+// Define which icon set to use.
+// There are two possible values here 'dark' and 'lite'.
+// If your theme has a light background then use 'lite' and vice versa for dark themes.
+// Because IE does not yet support Alpha transparency with PNG24 images, all of e107's 
+// icons have been saved with both a light and dark matte background (to prevent jagged 
+// edges that you see when no matte is present).
+// The IMODE is specifying which of the icon sets to use.
+// IE7 will support Alpha transparent PNG's at which point we will create a third set
+// of icons (using alpha transparency instead of a matte) and IMODE will gradually be 
+// filtered out as this new set will work with all background colours.
+// Uncomment the line below to define IMODE (remove the // ). Default is 'lite'.
+
+// define("IMODE", "lite");
+
+
+// Theme disclaimer is displayed in your site disclaimer appended to the site disclaimer text.
+// Uncomment the line below to set a theme disclaimer (remove the // ).
+
+// define("THEME_DISCLAIMER", "Example theme disclaimer text."); 
+
+
+// Dont render core style sheet link.
+// the contents of e107_files/e107.css have been copied to this themes style.css.
+// By setting $no_core_css to TRUE below we can prevent the <link> tag 
+// that would normally be generated in the <head> of the page from being outputted.
+// This saves us a call by the browser to a stylesheet that we no longer need.
 
 $no_core_css = TRUE;
 
+function theme_head() {
+	echo "<style type='text/css'><!--\n";
+	echo ".alpha_logo { behavior: url(".e_FILE."pngbehavior.php); }\n";
+	echo "--></style>\n";
+}
 
-// [layout]
 
-$HEADER = "<table class='top_section' style='border-bottom: 1px solid #126CA3; width: 749px'>
+// Header and footer templates for the body of your site.
+// These are the header and footer that wraps the content of a page.
+// Note that these are the templates for *inbetween* the <body> and </body> tags. 
+// The rest of the output (eg. the <head> section of the page) are covered by 
+// the header and footer template files in e107_themes/templates.
+// These are called header_default.php and footer_default.php.
+// If you wish to use your own versions of these files uncomment the line below (remove the // ) 
+// and edit it so that the text string represents the postfix of the new set of files.
+// eg. using the example text e107 will include these files: 
+// e107_themes/templates/header_your_version.php and e107_themes/templates/footer_your_version.php 
+// instead of the default:
+// e107_themes/templates/header_default.php and e107_themes/templates/footer_default.php 
+// Please note however that using non default core header and footer templates is not recommended 
+// and that the flexibility of these files enables you to add and edit content to them without editing 
+// the files directly. Documentation for this can be found on e107.org.
+
+// $layout = '_your_version'; // uncomment this line (remove the // ) to use alternative template files.
+
+
+// Main header
+$HEADER = "<table class='top_section'>
 <tr>
-<td style='height: 106px; background-image: url(".THEME_ABS."images/header.png); background-repeat: no-repeat; background-position: top right' colspan='2'>
+<td style='height: 106px' colspan='2'>
 <img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 4px' alt='' />
 </td>
 </tr>
@@ -54,11 +103,11 @@ $HEADER = "<table class='top_section' style='border-bottom: 1px solid #126CA3; w
 <tr>
 <td style='vertical-align: top; width: 149px; border-right: 1px solid #126CA3; background-color: #CCDCF9'>
 
-<table class='inner_section' style='width: 149px'>
+<table class='collapse' style='width: 149px'>
 <tr>
 <td style='background-color: #126CA3; color: #fff; padding-right: 5px; width: 100%; height: 23px'>
 {SETSTYLE=blue_menu}
-{MENU=1} 
+{MENU=1}
 </td>
 </tr>
 
@@ -75,7 +124,7 @@ $HEADER = "<table class='top_section' style='border-bottom: 1px solid #126CA3; w
 
 <td style='vertical-align: top; width: 600px'>
 
-<table class='inner_section' style='width: 100%'>
+<table class='collapse' style='width: 100%'>
 <tr>
 <td style='background-color: #126CA3; color: #fff; text-align: right; padding-right: 5px; width: 100%; height: 23px'>
 {SEARCH}
@@ -94,12 +143,14 @@ $HEADER = "<table class='top_section' style='border-bottom: 1px solid #126CA3; w
 
 {SETSTYLE=default}
 <br />
-<table class='inner_section' style='width: 100%'>
+<table class='collapse' style='width: 100%'>
 <tr>
 <td style='vertical-align: top; padding: 10px'>
 {WMESSAGE}
 ";
 
+
+// Main footer
 $FOOTER = "</td>
 
 <td style='border-left: 1px solid #126CA3; width: 145px; vertical-align: top'>
@@ -162,7 +213,7 @@ $NEWSSTYLE = "<table style='width: 100%; border-collapse: collapse; border-spaci
 <tr>
 <td style='text-align: right; padding: 0px 3px 0px 7px' colspan='4'>
 {NEWSCOMMENTS}
-<img src='".THEME_ABS."images/comments_16.png' style='width: 16px; height: 16px; vertical-align: middle' alt='' />
+&nbsp;<img src='".THEME_ABS."images/comments_16.png' style='width: 16px; height: 16px; vertical-align: middle' alt='' />
 </td>
 </tr>
 <tr>
@@ -214,8 +265,7 @@ function tablestyle($caption, $text, $mode){
 		{
 			$logged_in = "";
 		}
-		echo "<div style='font-weight: bold; padding: 12px 7px; background-color: #126CA3; color: #fff'>
-		".$logged_in."<b><span style='font-size: 12px'>".$caption."</span></b><br /><br />".$text."<br /></div>";
+		echo "<div class='blue_menu'>".$logged_in."<b><span style='font-size: 12px'>".$caption."</span></b><br /><br />".$text."<br /></div>";
 	} 
 	else if ($style == 'paperclip') 
 	{
@@ -271,8 +321,7 @@ function tablestyle($caption, $text, $mode){
 
 
 // chatbox post style
-$CHATBOXSTYLE = "
-<img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
+$CHATBOXSTYLE = "<img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
 <b>{USERNAME}</b><br />{TIMEDATE}<br />{MESSAGE}<br /><br />";
 
 
