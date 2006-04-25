@@ -106,11 +106,6 @@ table {
 
 /* Theme Specific Classes */
 
-.alpha_logo {	
-	behavior: url(e107_files/pngbehavior.php);
-	behavior: url(/e107_0.7/e107_files/pngbehavior.php);
-}
-
 .blue_menu {
 	font-weight: bold;
 	padding: 12px 7px;
