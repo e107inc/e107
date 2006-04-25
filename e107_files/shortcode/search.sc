@@ -33,7 +33,7 @@ if (!isset($SEARCH_SHORTCODE)) {
     	$page = 'all';
 	}
 
-	$text .= "<form method='get' action='".e_HTTP."search.php'>\n";
+	$text .= "<form method='get' action='".e_HTTP."search.php'><div>\n";
 	$text .= "<input type='hidden' name='t' value='$page' />\n";
 	$text .= "<input type='hidden' name='r' value='0' />\n";
 
@@ -43,7 +43,7 @@ if (!isset($SEARCH_SHORTCODE)) {
 
 	$text .= $SEARCH_SHORTCODE;
 
-	$text .="\n</form>";
+	$text .="\n</div></form>";
 
  return $text;
 
