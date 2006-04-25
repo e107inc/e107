@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-04-25 13:16:37 $
+|     $Revision: 1.8 $
+|     $Date: 2006-04-25 13:18:56 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -147,7 +147,7 @@ $HEADER = "<table class='top_section'>
 <tr>
 <td style='padding-right: 5px; vertical-align: top'>
 {CUBE=top=-76px&left=-49px}
-{SITELINKS}
+{SITELINKS_ALT=no_icons+noclick}
 </td>
 </tr>
 </table>
@@ -190,8 +190,8 @@ $FOOTER = "</td>
 
 define('PRELINK', 'utyutyu'); // Prefixed to all links as a group
 define('POSTLINK', 'iyiiyi'); // Postfixed to all links as a group
-define('LINKSTART', '88'); // Prefixed to each indivdual link
-define('LINKEND', '888888888'); // Postfixed to each indivdual link
+define('LINKSTART', ''); // Prefixed to each indivdual link
+define('LINKEND', ''); // Postfixed to each indivdual link
 define('LINKDISPLAY', 1);
 define('LINKALIGN', 'left');
 
