@@ -1,3 +1,8 @@
+// $Id: wmessage.sc,v 1.11 2006-04-25 00:40:53 e107coders Exp $
+
+if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $parm !='header') ){
+	return;
+}
 
 	global $e107;
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
@@ -53,4 +58,3 @@
 			}
 		}
 	}
-

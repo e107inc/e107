@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2006-04-24 23:46:36 $
+|     $Revision: 1.81 $
+|     $Date: 2006-04-25 00:40:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -271,10 +271,9 @@ if ($e107_popup != 1) {
 	}
 
 
-// Display Welcome Message
-	if (!$pref['wmessage_sc']){
-		echo $tp->parseTemplate("{WMESSAGE}");
-    }
+// Display Welcome Message when old method activated.
+
+	echo $tp->parseTemplate("{WMESSAGE=header}");
 
 
 
