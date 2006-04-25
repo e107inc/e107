@@ -161,22 +161,12 @@ table {
 	vertical-align: top;
 }
 
-.cap_border {
-	border-top: 1px solid #878787;
-	border-bottom: 1px solid #fff;
-}
-
 .news_info {
 	width: 100%;
 	background-color: #f7f7f9;
 	border-collapse: collapse;
 	border-spacing: 0px;
 }
-
-td.link_button {
-	border-bottom: 1px solid #000;
-}
-
 
 /* Nav Menu Classes */
 
