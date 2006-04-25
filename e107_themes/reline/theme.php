@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-25 01:48:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-25 05:36:25 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -43,8 +43,6 @@ $no_core_css = TRUE;
 
 
 // [layout]
-
-$layout = "_default";
 
 $HEADER = "<table class='top_section' style='border-bottom: 1px solid #126CA3; width: 749px'>
 <tr>

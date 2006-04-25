@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.274 $
-|     $Date: 2006-04-24 21:42:06 $
-|     $Author: e107coders $
+|     $Revision: 1.275 $
+|     $Date: 2006-04-25 05:36:25 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -610,6 +610,7 @@ if ($pref['antiflood1'] == 1) {
 	define('FLOODTIMEOUT', $pref['antiflood_timeout']);
 }
 
+$layout = isset($layout) ? $layout : '_default';
 define("HEADERF", e_THEME."templates/header{$layout}.php");
 define("FOOTERF", e_THEME."templates/footer{$layout}.php");
 
