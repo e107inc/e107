@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-04-25 08:35:51 $
+|     $Revision: 1.5 $
+|     $Date: 2006-04-25 09:16:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -66,10 +66,35 @@ $csscompliant = FALSE;	// If set to TRUE will display a CSS compliant logo in th
 
 $no_core_css = TRUE;
 
+
+// Output into <head> section.
+// Anything echoed from within the theme_head() function gets outputted into the <head> of your page.
+
 function theme_head() {
+		echo "<script type='text/javascript'>
+<!--
+Behaviour._apply = Behaviour.apply;
+	Behaviour.apply = function() {
+	if (this.applied) return;
+	this.applied = true;
+	this._apply();
+	};
+	if (document.addEventListener) {
+		document.addEventListener(\"DOMContentLoaded\", function() {
+		Behaviour.apply();
+		}, false);
+		}
+		//-->
+</script>
+	";
+	
+	// include behaviour script to fix alpha transparency on logo (If you delete the e107 logo from
+	// the $HEADER section then you should delete this too.
 	echo "<style type='text/css'><!--\n";
 	echo ".alpha_logo { behavior: url(".e_FILE."pngbehavior.php); }\n";
 	echo "--></style>\n";
+	
+
 }
 
 
