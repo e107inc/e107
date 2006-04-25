@@ -128,9 +128,6 @@ table {
 	border-right: 1px solid #126CA3;
 	border-bottom: 1px solid #126CA3;
 	margin-left: 0px;
-	background-image: url(images/header.png);
-	background-repeat: no-repeat;
-	background-position: top right;
 }
 
 .collapse {
