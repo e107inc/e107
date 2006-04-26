@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-04-26 02:44:21 $
+|     $Revision: 1.57 $
+|     $Date: 2006-04-26 13:06:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ class comment {
 
 			if ($pref['nested_comments'])
 			{
-				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='66' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='61' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
 				$text2 = "";
 			}
 			else
@@ -127,10 +127,10 @@ class comment {
 
 			if (ANON == TRUE && USER == FALSE)
 			{
-				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='61' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= $rate."<tr> \n
-			<td style='width:20%; vertical-align:top;'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
+			<td style='width:20%; vertical-align:top;'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='tbox' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
 			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 
 			if($tablerender)
