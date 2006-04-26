@@ -11,8 +11,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.8 $
-| $Date: 2006-04-05 02:35:51 $
+| $Revision: 1.9 $
+| $Date: 2006-04-26 11:38:30 $
 | $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -148,9 +148,9 @@ if ($action == "move")
 	AND fp.forum_class IN (".USERCLASS_LIST.")
 	ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
 	";
-	$sql->db_Select_gen($qry, TRUE);
+	$sql->db_Select_gen($qry);
 	$fList = $sql->db_getList();
-//	print_a($fList); exit;
+
 	foreach($fList as $f)
 	{
 		if($f['forum_sub'] > 0)
