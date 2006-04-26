@@ -7,6 +7,37 @@ body {
 	font-style: normal;
 }
 
+.header_setup {
+	margin-left:0px;
+	margin-right:auto;
+	padding-left:3px;
+	padding-right:3px;
+	width:770px;
+	background-color:#6A6A6A;
+	border:1px solid black
+}
+
+.newscat{
+
+
+}
+
+.newscat_table {
+   	width:100%;
+	margin-bottom:3px
+}
+
+.newscat_link {
+	text-align:left;
+	font-size:12px;
+	color:#fff
+}
+
+.othernews2 {
+	padding:3px;
+	background-color:#6A6A6A
+}
+
 td {
 	font-family: verdana, arial, "ms sans serif", sans-serif;
 	font-size: 10px;
@@ -321,5 +352,4 @@ hr {
 	font-family: tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 9px;
 }
-
 

@@ -20,7 +20,7 @@ $layout = "_default";
 
 $HEADER = "
 <div style='text-align:left'>
-<div style='margin-left:0px;margin-right:auto;padding-left:3px;padding-right:3px;width:770px;background-color:#6A6A6A;border:1px solid black'>
+<div class='header_setup'>
 <div style='width:770px;padding:0px;'>
 <table cellpadding='0' cellspacing='0' style=\"background-image: url('".THEME_ABS."images/logo_bg.png');margin-bottom:0px;padding:0px;width:100%;\">
 	<tr>
@@ -111,7 +111,7 @@ $FOOTERBASE = "
 
 <!-- FOOTER -->
 
-<table style='margin-top:4px' width=\"770\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n
+<table style='margin-top:4px;border:0px' width=\"770\" cellpadding=\"0\" cellspacing=\"0\">\n
 <tr>
 <td style='width:770px;border-top:1px solid #999999'>
 
@@ -253,12 +253,12 @@ $OTHERNEWS2_STYLE = "
 	<tr><td class='caption2' colspan='2' style='padding:3px;text-decoration:none'>
 	{NEWSCATEGORY}
 	</td></tr>
-	<tr><td style='padding:3px;vertical-align:top;background-color:#6A6A6A'>
+	<tr><td class='othernews2' style='vertical-align:top;'>
 	{NEWSTITLELINK}
 	<br />
 	{NEWSSUMMARY}
 	</td>
-	<td style='padding:3px;text-align:right;vertical-align:top;background-color:#6A6A6A'>
+	<td class='othernews2' style='text-align:right;vertical-align:top'>
 	{NEWSTHUMBNAIL}
 	</td>
 	</tr>
@@ -301,12 +301,12 @@ define("OTHERNEWS2_LIMIT",4);
 
 // [linkstyle]
 
-define(PRELINK, "<table style='width:145px;background-color:#eeeeee' border=\"0\" cellpadding=\"0\" cellspacing=\"0\" summary=\"Newsroom Navigation\">");
+define(PRELINK, "<table style='width:145px;background-color:#eeeeee' cellpadding='0' cellspacing='0' >");
 define(POSTLINK, "</table>");
-define(LINKSTART, "<tr class=\"newsroomRow\">
-	<td class=\"dent\">&nbsp;</td>
-	<td class=\"newsroom\" onmouseover=\"this.style.backgroundColor='#6998CC';window.status='hithere'\" onmouseout=\"this.style.backgroundColor='#333333'\" >
-	<div class=\"newsroomText\"><b>&nbsp;");
+define(LINKSTART, "<tr class='newsroomRow'>
+	<td class='dent'>&nbsp;</td>
+	<td class='newsroom' onmouseover=\"this.style.backgroundColor='#6998CC';window.status='hithere'\" onmouseout=\"this.style.backgroundColor='#333333'\" >
+	<div class='newsroomText'><b>&nbsp;");
 
 define(LINKSTART_HILITE, "<tr class=\"newsroomHiliteRow\">
 	<td class=\"dent\">&nbsp;</td>
