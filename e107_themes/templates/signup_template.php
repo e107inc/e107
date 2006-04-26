@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-12 16:19:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2006-04-26 05:08:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -151,7 +151,7 @@ $sc_style['SIGNUP_IMAGECODE']['post'] = "
 
 if(!defined($COPPA_TEMPLATE))
 {
-$COPPA_TEMPLATE = LAN_109 . " 
+$COPPA_TEMPLATE = LAN_109 . "
 <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href='mailto:".SITEADMINEMAIL."'>".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."
 <br />
 <br />
@@ -168,8 +168,8 @@ $COPPA_FAIL = "<div style='text-align:center'>".LAN_SIGNUP_9."</div>";
 
 if(!defined($SIGNUP_TEXT))
 {
-$SIGNUP_TEXT = 
-LAN_309."<b>".LAN_SIGNUP_29."</b><br />".LAN_SIGNUP_30."<br />
+$SIGNUP_TEXT =
+LAN_309." <b>".LAN_SIGNUP_29."</b><br />".LAN_SIGNUP_30."<br />
 ";
 }
 
