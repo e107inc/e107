@@ -1,19 +1,35 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++----------------------------------------------------------------------------+
+|	e107 website system
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
 |
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-04-25 19:48:15 $
-|     $Author: sweetas $
+|	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
+|	$Revision: 1.10 $
+|	$Date: 2006-04-26 01:50:48 $
+|	$Author: sweetas $
+|
++----------------------------------------------------------------------------+
+|	Photo Credits
+|
+|	mosaic glass by 
+|	-> by massimo bassi [maXb] ( http://www.robamia.com )
+|
+|	funky_box 1
+|	-> by Andrzej Pobiedzinski [Sarej] ( http://www.imagecreators.olsztyn.pl )
+|
+|	Lime Light | Orange Splash
+|	-> by Martin R.W [matchstick] ( http://www.match-stick.co.uk )
+|
+|	Hands 4: holding a poster | Paper clipped | Post-It | Bubbles 3
+|	-> by Davide Guglielmo [brokenarts] ( http://www.broken-arts.com )
+|
 +----------------------------------------------------------------------------+
 */
 
@@ -72,8 +88,8 @@ $no_core_css = TRUE;
 // Please note that you have other choices for <head> based javascript. You can create a theme.js file 
 // in your themes folder and a link will automatically be generated to it in the <head> of your page.
 // If you have javascript that is independant of the theme rather than use theme.js or the theme_head()
-// functino below, its advisable to istaed place the script into e107_files/user.js and as with 
-// theme.js, a link will automatically be generated to this file.
+// functino below, its advisable to instead create a new file e107_files/user.js, placing your script 
+// into this, and as with theme.js, a link will automatically be generated to this file.
 // Uncomment the following three lines to use.
 
 //function theme_head() {
