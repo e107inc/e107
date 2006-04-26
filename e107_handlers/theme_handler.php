@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-01-30 20:34:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.28 $
+|     $Date: 2006-04-26 20:22:55 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -89,7 +89,7 @@ class themeHandler{
 							if(strstr($file2, "preview.")) {
 								$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
 							}
-							if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
+							if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0 && strpos($file2, "admin_") !== 0)
 							{
 								/* get information string */
 								$fp=fopen(e_THEME.$file."/".$file2, "r");
