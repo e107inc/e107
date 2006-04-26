@@ -1,4 +1,6 @@
 /* Core Classes */
+/*----------------------------------------------------------------------------*/
+
 body {
 	background-color: #fff;
 }
@@ -104,7 +106,14 @@ table {
 	border: 0px;
 }
 
+.news_image {
+	float: right;
+	padding: 0px 0px 7px 7px;
+}
+
+
 /* Theme Specific Classes */
+/*----------------------------------------------------------------------------*/
 
 .blue_menu {
 	font-weight: bold;
@@ -147,7 +156,7 @@ table {
 	background-color: #CCDCF9;
 }
 
-.search_bar {
+.blue_bar {
 	background-color: #126CA3;
 	text-align: right;
 	padding-right: 5px;
@@ -157,8 +166,23 @@ table {
 
 .right_section {
 	border-left: 1px solid #126CA3;
-	width: 145px;
+	text-align: center;
 	vertical-align: top;
+}
+
+.main_caption, .menu_caption {
+	font-weight: bold;
+	color: #0B4366;
+	margin-bottom: 7px;
+}
+
+.main_caption {
+	font-size: 13px;
+}
+
+.menu_caption {
+	border-bottom: 1px solid #222;
+	font-size: 12px;
 }
 
 .news_info {
@@ -168,12 +192,92 @@ table {
 	border-spacing: 0px;
 }
 
-/* Nav Menu Classes */
+.news_info td {
+	padding: 2px;
+}
+
+
+/* Theme Specific Classes: Paperclipped Notes Menu */
+
+.paperclip {
+	font-weight: bold;
+	font-size: 12px;
+	padding: 34px 20px 0px 20px;
+	text-align: left;
+	background-image: url(images/paperclip.png);
+	background-repeat: no-repeat;
+	background-position: top center;
+	margin-bottom: 5px;
+	vertical-align: top;
+}
+
+
+/* Theme Specific Classes: Cube Logo Graphic */
+
+.cube_container {
+	position: relative;
+	left: 0;
+	top: 0;
+}
+
+.cube_image {
+	position: absolute;
+	top: -76px;
+	left: -49px;
+	width: 96px;
+	height: 108px;
+	display: block;
+}
+
+
+/* Theme Specific Classes: Post It Note Menu */
+
+.post_it_container {
+	text-align: center;
+	margin-bottom: 9px;
+	margin-top: 7px;
+	width: 160px;
+	margin-left: auto;
+	margin-right: auto;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.post_it_top {
+	background-image: url(images/post_it_top.png);
+	background-repeat: no-repeat;
+	background-position: top center;
+}
+
+.post_it_back {
+	text-align: left;
+	background-image: url(images/post_it_middle.png);
+	background-repeat: repeat-y;
+	background-position: center;
+	width: 120px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.post_it_bottom {
+	background-image: url(images/post_it_bottom.png);
+	background-repeat: no-repeat;
+	background-position: bottom center;
+	padding: 12px 7px;
+}
+
+
+/* Brainjar Nav Menu Classes {SITELINS_ALT} */
+/*
+If you do not use {SITELINS_ALT} and switch to the standard {SITELINKS} instead, 
+all of the below can be deleted.
+*/
+/*----------------------------------------------------------------------------*/
 
 div.menuBar, div.menuBar a.menuButton, div.menuButton, div.menuButton_over, div.menu, div.menu a.menuItem {
 	font: bold 12px arial, verdana, arial, tahoma, sans-serif;
 	color: #126CA3;
-	text-align: left
+	text-align: left;
 }
 
 div.menuBar {
@@ -206,7 +310,7 @@ div.menuBar a.menuButton, div.menuButton, div.menuButton_over {
 div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
 	background-color: #126CA3;
 	border-color: #fff #fff #fff #fff !important;
-	color: #fff
+	color: #fff;
 }
 
 div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, div.menuBar a.menuButtonActive:hover {
@@ -214,7 +318,7 @@ div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover
 	border-color: #fff #fff #fff #fff !important;
 	left: 1px;
 	top: 1px;
-	color: #fff
+	color: #fff;
 }
 
 div.menu {
