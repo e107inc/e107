@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-04-15 13:31:14 $
-|     $Author: e107coders $
+|     $Revision: 1.56 $
+|     $Date: 2006-04-26 02:44:21 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -258,7 +258,7 @@ class comment {
 
 		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
 
-		$text = $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
+		$text = $tp -> parseTemplate($renderstyle, TRUE, $comment_shortcodes);
 
 		if ($action == "comment" && $pref['nested_comments']) {
 
