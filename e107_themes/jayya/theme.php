@@ -11,18 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-04-18 08:23:26 $
+|     $Revision: 1.52 $
+|     $Date: 2006-04-26 13:21:10 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
+// Protect the file from direct access
 if (!defined('e107_INIT')) { exit; }
 
-// [multilanguage]
 
-@include_once(e_THEME."jayya/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."jayya/languages/English.php");
+// Get language definition files for this theme
+include_lan(e_THEME."jayya/languages/".e_LANGUAGE.".php");
 
 
 // [theme]
