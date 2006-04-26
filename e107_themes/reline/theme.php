@@ -11,8 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|	$Revision: 1.11 $
-|	$Date: 2006-04-26 13:06:17 $
+|	$Revision: 1.12 $
+|	$Date: 2006-04-26 13:12:53 $
 |	$Author: sweetas $
 |
 +----------------------------------------------------------------------------+
@@ -88,7 +88,7 @@ $no_core_css = TRUE;
 // Please note that you have other choices for <head> based javascript. You can create a theme.js file 
 // in your themes folder and a link will automatically be generated to it in the <head> of your page.
 // If you have javascript that is independant of the theme rather than use theme.js or the theme_head()
-// functino below, its advisable to instead create a new file e107_files/user.js, placing your script 
+// function below, its advisable to instead create a new file e107_files/user.js, placing your script 
 // into this, and as with theme.js, a link will automatically be generated to this file.
 // Uncomment the following three lines to use.
 
