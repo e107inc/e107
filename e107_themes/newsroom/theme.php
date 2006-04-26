@@ -5,13 +5,13 @@
 if (!defined('e107_INIT')) { exit; }
 
 $themename = "newsroom";
-$themeversion = "1.0";
+$themeversion = "1.01";
 $themeauthor = "CaMer0n";
-$themedate = "10th March 2005";
-$themeinfo = "This theme displays some of the news features of 0.7<br />For best results, create news items with a thumbnail image of 65x50 pixels.<br />To place these items in the top right area, choose 'othernews2' for the rendertype of the news item.<br />'othernews' may be used for the simple bullet listing below it.<br />This theme may be used freely under the GPL license providing the 'e107 newsroom' image is replaced.";
+$themedate = "25th April 2006";
+$themeinfo = "This theme displays some of the news features of 0.7<br />For best results, create news items with a 'news-image' of 65x50 pixels.<br />To place these items in the top right area, choose 'othernews2' for the rendertype of the news item.<br />'othernews' may be used for the simple bullet listing below it.<br />This theme may be used freely under the GPL license providing the 'e107 newsroom' image is replaced.";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
-define("THEME_DISCLAIMER", "<br /><i>NewsRoom theme v1.0 by CaMer0n</i>");
+define("THEME_DISCLAIMER", "<br /><i>NewsRoom theme v1.01 by CaMer0n</i>");
 define("IMODE", "dark");
 
 // [layout]
@@ -30,7 +30,7 @@ $HEADER = "
 		<td style='text-align:right;padding-right:4px'>
 
 			<br />
-			{CUSTOM=search}
+			{SEARCH=news}
 		</td>
 	</tr>
 </table>
@@ -301,21 +301,19 @@ define("OTHERNEWS2_LIMIT",4);
 
 // [linkstyle]
 
-define(PRELINK, "<table style='width:145px;background-color:#eeeeee' cellpadding='0' cellspacing='0' >");
-define(POSTLINK, "</table>");
-define(LINKSTART, "<tr class='newsroomRow'>
-	<td class='dent'>&nbsp;</td>
-	<td class='newsroom' onmouseover=\"this.style.backgroundColor='#6998CC';window.status='hithere'\" onmouseout=\"this.style.backgroundColor='#333333'\" >
-	<div class='newsroomText'><b>&nbsp;");
+function linkstyle($linkstyle){
 
-define(LINKSTART_HILITE, "<tr class=\"newsroomHiliteRow\">
-	<td class=\"dent\">&nbsp;</td>
-	<td class=\"newsroomHilite\" onmouseover=\"this.style.backgroundColor='#666666'\" onmouseout=\"this.style.backgroundColor='#c00'\" >
-	<div class=\"newsroomText\"><b>&nbsp;");
+	$style['prelink'] = "<div style='width:145px'>";
+	$style['postlink'] = "</div>";
+	$style['linkstart'] = "<span class='dent' style='float:left'>&nbsp;</span><div class='newsroomRow'><div class='newsroom' onmouseover=\"this.style.backgroundColor='#6998CC';window.status='hithere'\" onmouseout=\"this.style.backgroundColor='#333333'\">";
+	$style['linkstart_hilite'] = "<span class='denthi' style='float:left'>&nbsp;</span><div class='newsroomHiliteRow'><div class='newsroomHilite' onmouseover=\"this.style.backgroundColor='#666666'\" onmouseout=\"this.style.backgroundColor='#c00'\">";
+	$style['linkend'] = "</div></div>";
+	$style['linkdisplay'] = 1;
+	$style['linkalign'] = "left";
+	$style['linkclass'] = "";
 
-define(LINKEND, "</b></div></td></tr>");
-define(LINKDISPLAY, 1);
-define(LINKALIGN, "left");
+    return $style;
+}
 
 
 function tablestyle($caption, $text){

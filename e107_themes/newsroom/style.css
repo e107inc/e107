@@ -76,6 +76,7 @@ a.forumlink:visited{
 #clock {
  font-family: arial, "ms sans serif", sans-serif;
 }
+
 .newsroom {
 	background-color: #333333;
 	color: #fff;
@@ -84,7 +85,7 @@ a.forumlink:visited{
 .newsroom A:link, .newsroom A:visited {
 	color: #fff;
 }
-TR TD.newsroom A:link, TR TD.newsroom A:visited {
+.newsroom A:link, TR .newsroom A:visited {
 	text-decoration: none;
 }
 
@@ -96,7 +97,7 @@ TR TD.newsroom A:link, TR TD.newsroom A:visited {
 .newsroomHilite A:link, .newsroomHilite A:visited {
 	color: #fff;
 }
-TR TD.newsroomHilite A:link, TR TD.newsroomHilite A:visited {
+.newsroomHilite A:link, .newsroomHilite A:visited {
 	text-decoration: none;
 }
 
@@ -114,26 +115,26 @@ TR TD.newsroomHilite A:link, TR TD.newsroomHilite A:visited {
 
 
 
-TR.newsroomRow TD {
+.newsroomRow  {
 	vertical-align: middle;
 	border: 1px solid;
 	border-color: #666666 #003 #003;
 }
 
-TR.newsroomRow TD.dent {
+.dent {
 	background-color: #464545;
 	border-right: none;
 }
 
 
 
-TR.newsroomHiliteRow TD {
+.newsroomHiliteRow  {
 	vertical-align: middle;
 	border: 1px solid;
 	border-color: #f66 #600 #600;
 }
 
-TR.newsroomHiliteRow TD.dent {
+.denthi {
 	background-color: #f66;
 	border-right: none;
 }
@@ -352,4 +353,3 @@ hr {
 	font-family: tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 9px;
 }
-
