@@ -1,5 +1,12 @@
 <?xml version="1.0" ?>
 <e107_extended_user_fields version="1.0">
+	<item name="language">
+		<type>language</type>
+		<include_text></include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
 	<item name="location">
 		<type>text</type>
 		<include_text>class='tbox' size='40' maxlength='254'</include_text>
