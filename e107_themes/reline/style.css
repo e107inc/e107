@@ -111,6 +111,10 @@ table {
 	padding: 0px 0px 7px 7px;
 }
 
+.logo {
+	 display: block;
+}
+ 
 
 /* Theme Specific Classes */
 /*----------------------------------------------------------------------------*/

@@ -11,8 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|	$Revision: 1.14 $
-|	$Date: 2006-04-26 13:41:54 $
+|	$Revision: 1.15 $
+|	$Date: 2006-04-27 07:35:21 $
 |	$Author: sweetas $
 |
 +----------------------------------------------------------------------------+
@@ -120,11 +120,11 @@ $no_core_css = TRUE;
 $HEADER = "<table class='top_section'>
 <tr>
 <td>
-<img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 4px' alt='' />
+<img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 14px' alt='' />
 </td>
 
 <td class='top_back'>
-<img src='".THEME_ABS."images/logo.png' style='width: 347px; height: 106px; display: block' alt='' />
+{LOGO}
 </td>
 </tr>
 
@@ -306,7 +306,7 @@ function tablestyle($caption, $text, $mode){
 	} 
 	else if ($style == 'leftmenu' || $style == 'rightmenu') 
 	{
-		echo "<table class='collapse' style='width: 100%'><tr><td style='padding: 7px'>
+		echo "<table class='collapse' style='width: 160px'><tr><td style='padding: 10px 7px'>
 		<div class='menu_caption'>".$caption."</div>".$text."</td></tr></table>";
 	}  
 	else 
