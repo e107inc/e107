@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:53:08 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2006-04-27 06:02:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -58,5 +58,8 @@ define('LOGIN_MENU_L35', 'Show New Forum Posts');
 define('LOGIN_MENU_L36', 'Show New Members');
 define('LOGIN_MENU_L37', 'Update Settings');
 define('LOGIN_MENU_L38', 'Settings Updated');
+
+
+define('LOGIN_MENU_L39', 'Leave Admin');
 	
 ?>
