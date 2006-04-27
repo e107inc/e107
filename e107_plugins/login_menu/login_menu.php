@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-04-24 19:04:36 $
+|     $Revision: 1.44 $
+|     $Date: 2006-04-27 06:02:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ if(defined("FPW_ACTIVE")){
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
 
-global $eMenuActive, $e107, $tp, $use_imagecode;
+global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY;
 require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
 $ip = $e107->getip();
 
@@ -45,7 +45,15 @@ $text = '';
 if (USER == TRUE || ADMIN == TRUE) {
 	if (ADMIN == TRUE) {
 		$text = ($pref['maintainance_flag'] == 1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
-		$text .= $bullet.' <a class="login_menu_link" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
+		if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE) 
+		{
+			$text .= $bullet.' <a class="login_menu_link" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
+		}
+		else
+		{
+			$text .= $bullet.' <a class="login_menu_link" href="'.e_BASE.'index.php">'.LOGIN_MENU_L39.'</a><br />';
+		}
+			
 	}
 	$text .= $bullet.' <a class="login_menu_link" href="'.e_HTTP.'usersettings.php">'.LOGIN_MENU_L12.'</a>
 	<br />
