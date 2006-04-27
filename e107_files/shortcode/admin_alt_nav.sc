@@ -1,5 +1,6 @@
 if (ADMIN) {
 	global $sql, $pref;
+	parse_str($parm);
 	require(e_ADMIN.'ad_links.php');
 	require_once(e_HANDLER.'admin_handler.php');
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
@@ -107,16 +108,20 @@ if (ADMIN) {
 
 
 	$text .= "</div>
-	</td>
-	<td style='width: 160px; white-space: nowrap'>
-	<div class='menuBar' style='width: 100%'>";
+	</td>";
 	
-	$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV);
-	$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT);
+	if ($exit != 'off') {
+		$text .= "<td style='width: 160px; white-space: nowrap'>
+		<div class='menuBar' style='width: 100%'>";
 	
-	$text .= "</div>
-	</td>
-	</tr>
+		$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV);
+		$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT);
+	
+		$text .= "</div>
+		</td>";
+	}
+	
+	$text .= "</tr>
 	</table></div>";
 
 	return $text;
