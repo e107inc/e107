@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.49 $
-|   $Date: 2006-04-26 20:22:55 $
+|   $Revision: 1.50 $
+|   $Date: 2006-04-27 05:25:06 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -74,12 +74,14 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 	<meta http-equiv='content-style-type' content='text/css' />\n";
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
-	$admin_css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? THEME_ABS.'admin_'.$pref['admincss'] : THEME_ABS.$pref['admincss'];
-	echo "<link rel='stylesheet' href='".$admin_css_file."' type='text/css' />\n";
+	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? THEME_ABS.'admin_'.$pref['admincss'] : THEME_ABS.$pref['admincss'];
+	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 } else if (isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss'])) {
-	echo "<link rel='stylesheet' href='".THEME_ABS."{$pref['themecss']}' type='text/css' />\n";
+	$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? THEME_ABS.'admin_'.$pref['themecss'] : THEME_ABS.$pref['themecss'];
+	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 } else {
-	echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' />\n";
+	$css_file = file_exists(THEME.'admin_style.css') ? THEME_ABS.'admin_style.css' : THEME_ABS.'style.css';
+	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 }
 
 if (!isset($no_core_css) || !$no_core_css) {
