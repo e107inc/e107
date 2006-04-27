@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Členové");
@@ -25,7 +25,7 @@ define("LAN_139", "Řazení: ");
 define("LAN_140", "Registrovaní uživatelé");
 define("LAN_141", "Zatím se nikdo neregistroval.");
 define("LAN_142", "Člen");
-define("LAN_143", "[poažadováno skrytí]");
+define("LAN_143", "[požadováno skrytí]");
 define("LAN_144", "URL webu");
 define("LAN_145", "Připojil se");
 define("LAN_146", "Od registrace navštívil web");
@@ -49,7 +49,7 @@ define("LAN_412", "Kliknutím zde můžete upravovat informace uživatele");
 define("LAN_413", "smazat fotku");
 define("LAN_414", "předchozí člen");
 define("LAN_415", "další člen");
-define("LAN_416", "Chcete-li vstoupit na tuto strnu, musíte být přihlášeni.");
+define("LAN_416", "Chcete-li vstoupit na tuto stránku, musíte být přihlášeni.");
 define("LAN_417", "Hlavní správce webu");
 define("LAN_418", "Správce");
 define("LAN_419", "Ukaž");
@@ -57,7 +57,7 @@ define("LAN_420", "Sestupně");
 define("LAN_421", "Vzestupně");
 define("LAN_422", "Jdi");
 define("LAN_423", "Kliknutím zde zobrazíte komentáře uživatele");
-define("LAN_424", "Kliknutím zde zobrazíte příspěvky v diskusích");
+define("LAN_424", "Kliknutím zde zobrazíte příspěvky v diskuzích");
 define("LAN_425", "Poslat soukromou zprávu");
 define("LAN_426", "před");
 

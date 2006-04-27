@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 
@@ -27,9 +27,9 @@ define("LAN_198", "Nenalezena shoda");
 define("LAN_199", "Hledat v:");
 define("LAN_200", "Kategorie:");
 
-define("LAN_201", "Upravte prosím hledaný výraz");
+define("LAN_201", "Upravte, prosím, hledaný výraz");
 define("LAN_416", "K přístupu na tuto stranu musíte být přihlášen");
-define("LAN_417", "Výraz pro vyhledávání musí být dlouhý alespoň 3 znaky.");
+define("LAN_417", "Výraz pro vyhledávání musí mít alespoň 3 znaky.");
 
 define("LAN_418", "Další stránky");
 
@@ -38,7 +38,7 @@ define("LAN_SEARCH_2", "Zruš výběr");
 define("LAN_SEARCH_3", "Zasláno v ");
 define("LAN_SEARCH_4", "Shoda nalezena v názvu novinky");
 define("LAN_SEARCH_5", "Shoda nalezena v textu novinky");
-define("LAN_SEARCH_6", "Shoda nalezena v rozšířením textu novinky");
+define("LAN_SEARCH_6", "Shoda nalezena v rozšířeném textu novinky");
 define("LAN_SEARCH_7", "Zasláno od ");
 define("LAN_SEARCH_8", " v ");
 define("LAN_SEARCH_9", "Nepojmenováno");
@@ -48,7 +48,7 @@ define("LAN_SEARCH_12", "  ");
 define("LAN_SEARCH_13", " v ");
 define("LAN_SEARCH_14", "Kategorie:");
 define("LAN_SEARCH_15", "Autor:");
-define("LAN_SEARCH_17", "Pardon, vyhledávání je omezeno na jedno každých ");
+define("LAN_SEARCH_17", "Pardon, vyhledávat můžete pouze jednou za každých ");
 define("LAN_SEARCH_18", " vteřin.");
 define("LAN_SEARCH_19", "Hledám v:");
 define("LAN_SEARCH_20", "Požadována autorizace");
@@ -57,7 +57,7 @@ define("LAN_SEARCH_21", "Nejste autorizován pro přístup k této straně.");
 
 
 define("LAN_SEARCH_22", "Všechny oblasti");
-define("LAN_SEARCH_23", "Formuláš rozšířených možností vyhledávání");
+define("LAN_SEARCH_23", "Formulář rozšířených možností vyhledávání");
 define("LAN_SEARCH_24", "Musí obsahovat slovo (slova)");
 define("LAN_SEARCH_25", "Nesmí obsahovat slovo (slova)");
 define("LAN_SEARCH_26", "Přesná fráze");
@@ -86,7 +86,7 @@ define("LAN_SEARCH_48", "Dva roky");
 define("LAN_SEARCH_49", "Tři roky");
 
 define("LAN_SEARCH_50", "Datum zaslání");
-define("LAN_SEARCH_51", "Všechy kategorie");
+define("LAN_SEARCH_51", "Všechny kategorie");
 define("LAN_SEARCH_52", "Shoda v");
 define("LAN_SEARCH_53", "Celá položka");
 define("LAN_SEARCH_54", "Pouze název");

@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Bannery");
@@ -15,7 +15,7 @@ define("LAN_16", "Uživatel(ka): ");
 define("LAN_17", "Heslo: ");
 define("LAN_18", "Pokračuj");
 define("LAN_19", "Zadejte své přihlašovací údaje");
-define("LAN_20", "Pardon, nemůžu najít tyto údaje v databázi. Spojte se s adminsitrátorem.");
+define("LAN_20", "Pardon, nemůžu najít tyto údaje v databázi. Spojte se s administrátorem.");
 define("LAN_21", "Statistiky bannerů");
 define("LAN_22", "Klient");
 define("LAN_23", "ID banneru");
@@ -31,7 +31,7 @@ define("LAN_32", "Ano");
 define("LAN_33", "Ne");
 define("LAN_34", "Končí:");
 define("LAN_35", "IP adresy prokliknutí");
-define("LAN_36", "AKtivní:");
+define("LAN_36", "Aktivní:");
 define("LAN_37", "Začíná:");
 define("LAN_38", "Chyba");
 

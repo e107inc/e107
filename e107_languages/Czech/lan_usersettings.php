@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Nastavení uživatele");
@@ -18,11 +18,11 @@ define("LAN_10", "jméno používané pro přihlášení k webu");
 define("LAN_11", "jméno používané pro přihlášení k webu - toto jméno nelze měnit, pokud z bezpečnostních důvodů změnu potřebujete, kontaktujte prosím správce");
 
 define("LAN_20", "Chyba");
-define("LAN_105", "Hesla nesouhlasí");
-define("LAN_106", "Emailová adresa zadaná nevypadá jako správná emailová adresa");
+define("LAN_105", "Heslo nesouhlasí");
+define("LAN_106", "Zadaná emailová adresa nevypadá jako správná");
 define("LAN_112", "Emailová adresa: ");
 define("LAN_113", "Skrýt emailovou adresu?: ");
-define("LAN_114", "Emailová adresa se nebude na webu zobrazovat");
+define("LAN_114", "Emailová adresa nebude na webu zobrazována");
 define("LAN_115", "ICQ číslo: ");
 define("LAN_116", "AIM adresa: ");
 define("LAN_117", "MSN Messenger: ");
@@ -38,7 +38,7 @@ define("LAN_152", "Nové heslo: ");
 define("LAN_153", "Zadejte nové heslo znovu: ");
 define("LAN_154", "Uložit nastavení");
 define("LAN_155", "Upravit nastavení uživatele");
-define("LAN_185", "Pole pro heslo jste nevyplnil ");
+define("LAN_185", "Nevyplnil jste pole pro heslo ");
 define("LAN_308", "Reálné jméno: ");
 define("LAN_401", "Ponechte prázdné a bude zachováno aktuální heslo");
 define("LAN_402", "Vložte cestu nebo vyberte panďuláka/podobiznu");
@@ -55,7 +55,7 @@ define("LAN_415", "Nahrát svého panďuláka/podobiznu");
 define("LAN_416", "Ano");
 define("LAN_417", "Ne");
 
-define("LAN_418", "Registrovaní informace");
+define("LAN_418", "Registrační informace");
 define("LAN_419", "Osobní / kontaktní informace");
 define("LAN_420", "Panďulák/podobizna (avatar)");
 define("LAN_421", "Výběr z podobizen uložených zde na webu");
@@ -63,7 +63,7 @@ define("LAN_422", "Použít vzdáleného panďuláka/podobiznu");
 define("LAN_423", "Zadejte plnou adresu obrázku (URL)");
 define("LAN_424", "Klikněte a prohlédněte si panďuláky uložené zde na serveru");
 define("LAN_425", "Fotka");
-define("LAN_426", "Toto bude zobrazeno na stránce Vašeho profilu");
+define("LAN_426", "Toto bude zobrazeno na stránce vašeho profilu");
 define("LAN_427", "Odeslat ...");
 define("LAN_428", "Novinka");
 define("LAN_429", "Odkaz");
@@ -77,8 +77,8 @@ define("LAN_435", "soubor XML User Protocol");
 
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "znaků.");
-define("LAN_SIGNUP_4", "Heslo musí být minimálně ");
-define("LAN_SIGNUP_5", " znaků dlouhé.");
+define("LAN_SIGNUP_4", "Heslo musí mít minimálně ");
+define("LAN_SIGNUP_5", " znaků.");
 define("LAN_SIGNUP_6", "Vaše ");
 define("LAN_SIGNUP_7", " je vyžadovaný údaj.");
 
@@ -89,7 +89,7 @@ define("LAN_USET_4", "Největší povolená výška je");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Vlastní titulek");
-define("LAN_ICQNUMBER", "ICQ číslo musí obsahovat pouze číslice");
+define("LAN_ICQNUMBER", "ICQ číslo smí obsahovat pouze číslice");
 
 //v.617
 define("LAN_408", "Uživatel s tímto emailem je již registrován. ");
@@ -103,8 +103,8 @@ define("LAN_USET_5", "Přihlášen do");
 define("LAN_USET_6", "Přihlašte se do našeho seznamu pro zasílání (mailinglist) a/nebo sekcí webu.");
 define("LAN_USET_7", "Různé");
 define("LAN_USET_8", "Signatura / časová zóna");
-define("LAN_USET_9", "Některé z požadovaných položek (označené *) chybí ve Vašem nastavení.");
+define("LAN_USET_9", "Některé z požadovaných položek (označené *) ve vašem nastavení chybí.");
 define("LAN_USET_10","Doplňte prosím tyto informace hned, ať můžeme pokračovat.");
-define("LAN_USET_11", "Toto uživatelské jméno nemůže být použito jako platné. Vyberte si prosím jiné.");
+define("LAN_USET_11", "Toto uživatelské jméno nemůže být použito. Vyberte si prosím jiné.");
 
 ?>

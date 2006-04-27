@@ -3,14 +3,14 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 define("UE_LAN_1", "Textové pole");
-define("UE_LAN_2", "Tlačítka");
+define("UE_LAN_2", "Tlačítka pro výběr");
 define("UE_LAN_3", "Vyskakovací nabídka");
 define("UE_LAN_4", "Pole tabulky databáze");
 define("UE_LAN_5", "Pole pro volný text");
@@ -25,7 +25,7 @@ define("UE_LAN_11", "Použití");
 define("UE_LAN_HIDE", "Skrýt před ostatními uživateli");
 
 define("UE_LAN_LOCATION", "Působiště");
-define("UE_LAN_LOCATION_DESC", "Lokace uživatele");
+define("UE_LAN_LOCATION_DESC", "Odkud je uživatel?");
 define("UE_LAN_AIM", "AIM adresa");
 define("UE_LAN_AIM_DESC", "Adresa pro AIM");
 define("UE_LAN_ICQ", "ICQ číslo");

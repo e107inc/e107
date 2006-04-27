@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "Novinka smazána.");
@@ -37,7 +37,7 @@ define("NWSLAN_25", "Upravit novinku v databázi");
 define("NWSLAN_26", "Vložit novinku do databáze");
 define("NWSLAN_27", "Náhled");
 define("NWSLAN_28", "Nový příběh");
-define("NWSLAN_29", "Nevinka");
+define("NWSLAN_29", "Novinka");
 
 define("NWSLAN_30", "Ukázat pouze název");
 

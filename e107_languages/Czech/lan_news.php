@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_news.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Novinky");
@@ -29,7 +29,7 @@ define("LAN_NEWS_7", "<b>Chyba!</b> Nebylo možno vložit novinku do databáze!<
 define("LAN_NEWS_8", "Novinka byla do databáze vložena pro všechny jazyky. ID: ");
 define("LAN_NEWS_9", "Vložen pouze název novinky - <b>pouze název bude také zobrazen</b><br />");
 define("LAN_NEWS_10", "Tato novinka je <b>neaktivní</b> (nebude zobrazena na hlavní straně). ");
-define("LAN_NEWS_11", "Novinka je aktivní <b>aktivní</b> (bude zobrazena na hlavní straně). ");
+define("LAN_NEWS_11", "Novinka je <b>aktivní</b> (bude zobrazena na hlavní straně). ");
 define("LAN_NEWS_12", "Komentáře jsou <b>povolené</b>. ");
 define("LAN_NEWS_13", "Komentáře jsou <b>zakázané</b>. ");
 define("LAN_NEWS_14", "<br />Perioda aktivace: ");
@@ -39,7 +39,7 @@ define("LAN_NEWS_17", "Tělo");
 define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19", "Teď");
 define("LAN_NEWS_20", "Novinka byla v databázi upravena pro tyto jazyky: ");
-define("LAN_NEWS_21", "Novinkia byla v databázi upravena.");
+define("LAN_NEWS_21", "Novinka byla upravena v databázi.");
 define("LAN_NEWS_22", "Jdi na stranu: ");
 define("LAN_NEWS_23", "Kategorie novinek");
 define("LAN_462", "Pro vybraný měsíc nejsou k dispozici žádné novinky");

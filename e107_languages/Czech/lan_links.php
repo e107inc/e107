@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Czech/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-28 22:41:10 $
-|     $Author: e107coders $
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Odkazy");
@@ -27,7 +27,7 @@ define("LAN_90", "vložit nový odkaz do této kategorie");
 define("LAN_91", "přidat novou kategorii");
 
 define("LAN_92", "Odeslat odkaz");
-define("LAN_93", "After submitting your link it will be reviewed by a site admin and if appropriate it will be added to the main links page.");
+define("LAN_93", "Poté co odkaz odešlete, jej zkontrolujeme a pokud bude vše v pořádku, vložíme jej na hlavní stranu odkazů.");
 define("LAN_94", "Název odkazu:");
 define("LAN_95", "URL odkazu:");
 define("LAN_96", "Popis odkazu:");

@@ -1,4 +1,14 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     Czech Language Pack for e107 Version 0.7
+|     Copyright (c) 2006 - translation by Tomas Liska (fox),
+|                        - czech language correction by Mirek Dvorak
+|     e107 czech support: http://www.fox1.cz
++----------------------------------------------------------------------------+
+*/
 
 define("LANINS_001", "Instalace systému e107");
 
@@ -27,20 +37,20 @@ define("LANINS_021", "2");
 define("LANINS_022", "Detaily serveru MySQL");
 define("LANINS_023", "Vložte prosím údaje nastavení MySQL.
 
-Pokud máte root práva, lze vytvořit databázi - zaškrtněte výběrové pole. Pokud práva roota nemáte, musíte vytvořit databázi sami a nebo použít nějakou již existující.
+Pokud máte root práva, lze vytvořit databázi - zaškrtněte výběrové pole. Pokud práva roota nemáte, musíte vytvořit databázi sami a nebo použít již existující.
 
-Pokud máte k dispozici pouze jednu databázi, použijte prefxi, aby i jiné skripty mohly s databází pracovat.
+Pokud máte k dispozici pouze jednu databázi, použijte prefixi, aby mohly s databází pracovat i jiné skripty.
 Pokud neznáte detaily nastavení MySQL serveru kontaktujte správce hostingu");
 define("LANINS_024", "MySQL server:");
 define("LANINS_025", "MySQL uživatel:");
 define("LANINS_026", "MySQL heslo:");
 define("LANINS_027", "MySQL databáze:");
 define("LANINS_028", "Vytvořit databázi?");
-define("LANINS_029", "Prefix pro tavulky:");
+define("LANINS_029", "Prefix pro tabulky:");
 define("LANINS_030", "Server MySQL, který chcete použít pro e107. Může obsahovat i číslo portu, např. \"hostname:port\" nebo cestu k lokální zásuvce (socket), např. \":/cesta/k/zásuvce/\", v případě lokálního nastavení (localhost).");
 define("LANINS_031", "Uživatelské jméno, které má e107 použít pro spojení se serverem MySQL");
-define("LANINS_032", "Heslo k tomuto užovatelskému jménu");
-define("LANINS_033", "Databáze, do které se má e107 usadit, někdy též označováno jako schema. Pokud má uživatel práva pro vytvoření databáze, můžete zvolit, aby byla databáze vytvořena automaticky (v případě, že již neexistuje).");
+define("LANINS_032", "Heslo k tomuto uživatelskému jménu");
+define("LANINS_033", "Databáze, do které se má e107 umístit/nainstalovat, někdy též označováno jako schema. Pokud má uživatel práva pro vytvoření databáze, můžete zvolit, aby byla databáze vytvořena automaticky (v případě, že ještě neexistuje).");
 define("LANINS_034", "Prefix, který má e107 používat při tvorbě tabulek databáze. To je užitečné hlavně pro vícero instalací e107 v rámci jednoho databázového schématu.");
 define("LANINS_035", "Pokračovat");
 define("LANINS_036", "3");
@@ -48,11 +58,11 @@ define("LANINS_037", "Ověření spojení s MySQL");
 define("LANINS_038", " a tvorba databáze");
 define("LANINS_039", "Ujistěte se, že jste vyplnili všechny údaje. Nejdůležitější jsou: jméno MySQL serveru, uživatelské jméno MySQL a heslo, název databáze MySQL (tyto údaje server MySQL vždy vyžaduje).");
 define("LANINS_040", "Chyby");
-define("LANINS_041", "e107 nemohl navázat spojení se serverem MySQL s použitím vložených informací. Vraťte se na předchozí stranu a ujistěte se, že vložené údaje jsou správné.");
+define("LANINS_041", "S použitím vložených informací nemohl systém e107 navázat spojení se serverem MySQL. Vraťte se na předchozí stranu a ujistěte se, že jsou vložené údaje správné.");
 define("LANINS_042", "Spojení se serverem bylo navázáno a ověřeno.");
 define("LANINS_043", "Nelze vytvořit databázi. Ujistěte se prosím, že máte korektně nastavená práva pro vytváření databáze na serveru MySQL (create permission)");
 define("LANINS_044", "Databáze byla úspěšně vytvořena.");
-define("LANINS_045", "Klikněte na tlačítko, ať se dostaneme o krok dále.");
+define("LANINS_045", "Klikněte na tlačítko, ať se dostaneme o krok dál.");
 define("LANINS_046", "5");
 define("LANINS_047", "Detaily správce");
 define("LANINS_048", "Vrátit na poslední krok");
@@ -74,9 +84,9 @@ define("LANINS_060", "Není možné přečíst soubor s daty pro sql.
 
 Ujistěte se, že soubor <b>core_sql.php</b> je v adresáři <b>/e107_admin/sql</b> .");
 define("LANINS_061", "e107 se nezdařilo vytvořit všechny tabulky databáze.
-Vyčistěte databázi a odstraňte všechny problémy dříve, než to zkusíte znovu.");
+Před tím, než to zkusíte znovu, vyčistěte databázi a odstraňte všechny problémy.");
 
-define("LANINS_062", "[b]Vitejte na svém novém webu![/b]
+define("LANINS_062", "[b]Vítejte na svém novém webu![/b]
 e107 je nainstalováno a připraveno.<br />Sekce pro správce je na [link=e107_admin/admin.php]této adrese[/link]. Kliknutím na odkaz do ní vstoupíte. Budete se muset přihlásit s použitím uživatelského jména a hesla, které jste vložili během instalace.
 
 [b]Podpora[/b]
@@ -106,10 +116,10 @@ define("LANINS_071", "Dokončuji instalaci");
 define("LANINS_072", "Uživatelské jméno pro správce");
 define("LANINS_073", "To je uživatelské jméno, které použijete k přihlášení do systému. Pokud jej chcete používat také jako své jméno pro zobrazení (display name)");
 define("LANINS_074", "Jméno správce pro zobrazení");
-define("LANINS_075", "Jméno, které bude zobrazováno uživatelům ve Vašem profilu, diskusích a dalších oblastech. Pokud chcete použít stejné jako je jméno uživatelské, nechejte toto pole prázdné");
+define("LANINS_075", "Jméno, které bude zobrazováno uživatelům ve Vašem profilu, diskusích a dalších oblastech. Pokud chcete použít stejné jako je jméno uživatelské, nechte toto pole prázdné");
 define("LANINS_076", "Heslo správce");
 define("LANINS_077", "Sem zadejte heslo správce");
-define("LANINS_078", "Potrvzení hesla správce");
+define("LANINS_078", "Potvrzení hesla správce");
 define("LANINS_079", "Heslo správce vložte ještě jednou, pro potvrzení");
 define("LANINS_080", "Email správce");
 define("LANINS_081", "Vložte svou emailovou adresu");
