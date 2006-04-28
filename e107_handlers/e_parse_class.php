@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.148 $
-|     $Date: 2006-04-04 22:35:54 $
+|     $Revision: 1.149 $
+|     $Date: 2006-04-28 01:23:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,14 @@ class e_parse
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
+
+	//Constructor:
+	//Create shortcode object on e_parse creation
+	function e_parse()
+	{
+		require_once(e_HANDLER."shortcode_handler.php");
+		$this->e_sc = new e_shortcode;
+	}
 
 	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
@@ -58,8 +66,6 @@ class e_parse
 			}
 		}
 
- //       ret = $this->createConstants($ret);
-
 		return $ret;
 	}
 
@@ -80,9 +86,6 @@ class e_parse
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
 	}
-
-
-
 
 	function post_toHTML($text, $modifier = true, $extra = '') {
 		/*
@@ -120,9 +123,6 @@ class e_parse
 
 		return ($modifier ? $this->toHTML($text, true, $extra) : $text);
 	}
-
-
-
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
 		// Start parse {XXX} codes
