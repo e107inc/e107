@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_menus.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-11-24 15:03:58 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2006-04-28 01:08:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("MENLAN_1", "Visible to all");
@@ -39,7 +39,7 @@ define("MENLAN_25", "Function ...");
 
 define("MENLAN_26", "This menu will only be <strong>SHOWN</strong> on the following pages");
 define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the following pages");
-define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly");
+define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly.  If you need the ending of the url to match exactly, use a ! at the end of the page name <br />For example: <strong>page.php?1!</strong>");
 
 define("MENLAN_29", "Select Layout");
 define("MENLAN_30", "To see the menu areas and their positions for custom layouts, select the custom layout here:");
