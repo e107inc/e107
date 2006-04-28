@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-04-05 02:35:50 $
+|     $Revision: 1.38 $
+|     $Date: 2006-04-28 00:09:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -554,7 +554,7 @@ class forum
 		$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<div style='text-align:center'>".FORLAN_180."<br /><br />
-		<input type='submit' class='button' name='confirm' value='">FORLAN_181."' />
+		<input type='submit' class='button' name='confirm' value='".FORLAN_181."' />
 		</div>
 		</form>
 		";
