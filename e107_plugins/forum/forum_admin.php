@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-04-28 00:09:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.39 $
+|     $Date: 2006-04-29 20:34:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -155,7 +155,7 @@ if(isset($_POST['update_subs']))
 		$forum->show_message($msg);
 	}
 }
-	
+
 if(isset($_POST['submit_parent']))
 {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
@@ -376,7 +376,7 @@ require_once(e_ADMIN."footer.php");
 function headerjs()
 {
 	global $tp;
-// These functions need to be removed and replaced with the generic jsconfirm() function. 
+// These functions need to be removed and replaced with the generic jsconfirm() function.
 	$headerjs = "<script type=\"text/javascript\">
 		function confirm_(mode, forum_id, forum_name) {
 		if (mode == 'sr') {
@@ -427,10 +427,10 @@ class forum
 		$var['mods']['link'] = e_SELF."?mods";
 		$var['tools']['text'] = FORLAN_153;
 		$var['tools']['link'] = e_SELF."?tools";
-	
+
 		show_admin_menu(FORLAN_7, $action, $var);
 	}
-	
+
 	function delete_item($id)
 	{
 		global $sql;
@@ -465,7 +465,7 @@ class forum
 	}
 
 	function delete_parent($id, $confirm = FALSE)
-	{	
+	{
 		global $sql;
 		$ret = "";
 		if($sql->db_Select("forum", "forum_id", "forum_parent = {$id} AND forum_sub = 0"))
@@ -489,9 +489,9 @@ class forum
 			return $ret;
 		}
 		return "The forum parent has the following info: <br />".$ret;
-		
+
 	}
-	
+
 	function delete_forum($id, $confirm = FALSE)
 	{
 		global $sql, $tp;
@@ -518,12 +518,12 @@ class forum
 			}
 			return $ret;
 		}
-		
+
 		$sql->db_Select("forum", "*", "forum_id = {$id}");
 		$row = $sql->db_Fetch();
 		return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 	}
-	
+
 	function delete_sub($id, $confirm = FALSE)
 	{
 		global $sql, $tp;
@@ -541,7 +541,7 @@ class forum
 			}
 			return $ret;
 		}
-		
+
 		$sql->db_Select("forum", "*", "forum_id = {$id}");
 		$row = $sql->db_Fetch();
 		return "Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
@@ -606,7 +606,7 @@ class forum
 		{
 			$txt .= "<tr><td colspan='5' class='forumheader3' style='text-align:center'>".FORLAN_146."</td>";
 		}
-		
+
 		$txt .= "
 		<tr>
 			<td class='fcaption'>".FORLAN_151."</td>
@@ -630,11 +630,11 @@ class forum
 		";
 		$ns->tablerender(FORLAN_149, $txt);
 	}
-	
+
 	function show_existing_forums($sub_action, $id, $mode = FALSE)
 	{
 		global $sql, $rs, $ns, $sql2, $sql3, $tp, $for;
-		
+
 		$subList = $for->forum_getsubs();
 		if (!is_object($sql2))
 		{
@@ -714,11 +714,11 @@ class forum
 							<td style='width:5%; text-align:center' class='forumheader3'>".IMAGE_new."</td>\n<td style='width:55%' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".$forum_name."</a>" ;
 
 						$text .= "
-							<br /><span class='smallblacktext'>".$forum_description."</span>
+							<br /><span class='smallblacktext'>".$forum_description."&nbsp;</span>
 							<br /><b>".FORLAN_140.":</b> ".r_userclass_name($forum_class)."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".r_userclass_name($forum_postclass)."
-						
+
 						</td>
-						
+
 							<td colspan='2' class='forumheader3' style='text-align:center'>";
 
 						if ($mode)
@@ -1016,7 +1016,7 @@ class forum
 
 			<tr>
 			<td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71." <a href='".e_ADMIN."upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span>";
-			
+
 			if(!$pref['image_post'])
 			{
 				$text .= "<br /><b>".FORLAN_139."</b>";
@@ -1028,7 +1028,7 @@ class forum
 
 			<tr>
 			<td style='width:75%' class='forumheader3'>".FORLAN_134."<br /><span class='smalltext'>".FORLAN_135."</span></td>
-			<td style='width:25%;text-align:center' class='forumheader3' ><input class='tbox' type='text' size='3' maxlength='5' name='forum_maxwidth' value='{$pref['forum_maxwidth']}'</td>
+			<td style='width:25%;text-align:center' class='forumheader3' ><input class='tbox' type='text' size='3' maxlength='5' name='forum_maxwidth' value='{$pref['forum_maxwidth']}' /></td>
 			</tr>
 
 			<tr>
@@ -1193,7 +1193,7 @@ class forum
 	function show_prune()
 	{
 		global $ns, $sql;
-		
+
 //		$sql -> db_Select("forum", "forum_id, forum_name", "forum_parent!=0 ORDER BY forum_order ASC");
 		$qry = "
 		SELECT f.forum_id, f.forum_name, sp.forum_name AS sub_parent, fp.forum_name AS forum_parent
@@ -1205,7 +1205,7 @@ class forum
 		";
 		$sql -> db_Select_gen($qry);
 		$forums = $sql -> db_getList();
-		
+
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -1225,7 +1225,7 @@ class forum
 			".FORLAN_90." <input type='radio' name='prune_type' value='".FORLAN_111."' checked='checked' />
 			</td>
 			</tr>
-			
+
 			<tr>
 			<td class='forumheader3'>".FORLAN_138.": <br />";
 
@@ -1236,8 +1236,8 @@ class forum
 				$for_name .= $forum['forum_name'];
 				$text .= "<input type='checkbox' name='pruneForum[]' value='".$forum['forum_id']."' /> ".$for_name."<br />";
 			}
-			
-			
+
+
 			$text .= "<tr>
 			<td colspan='2'  style='text-align:center' class='forumheader'>
 			<input class='button' type='submit' name='do_prune' value='".FORLAN_5."' />
@@ -1339,8 +1339,8 @@ class forum
 			<input class='button' type='submit' name='setMods' value='".WMGLAN_4." ".FORLAN_33."' />
 		</td>
 		</tr>
-		
-		</table>";		
+
+		</table></form>";
 		$ns->tablerender(FORLAN_33, $txt);
 	}
 
@@ -1481,7 +1481,7 @@ class forum
 			";
 
 	}
-}	
+}
 
 function forum_admin_adminmenu()
 {

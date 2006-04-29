@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-04-29 06:37:18 $
-|     $Author: sweetas $
+|     $Revision: 1.55 $
+|     $Date: 2006-04-29 20:34:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,14 +62,6 @@ City, State, Country
   'meta_tag' => '',
   'user_reg_veri' => '1',
   'email_notify' => '0',
-  'forum_poll' => '0',
-  'forum_popular' => '10',
-  'forum_track' => '0',
-  'forum_eprefix' => '[forum]',
-  'forum_enclose' => '1',
-  'forum_title' => LAN_PREF_5,
-  'forum_postspage' => '10',
-  'forum_highlightsticky' => '1',
   'user_tracking' => 'cookie',
   'cookie_name' => 'e107cookie',
   'resize_method' => 'gd2',
