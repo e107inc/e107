@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-01-26 07:35:52 $
+|     $Revision: 1.46 $
+|     $Date: 2006-04-29 00:16:22 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -409,10 +409,10 @@ function parseheader($LAYOUT, $check = FALSE) {
 }
 
 function checklayout($str) {
-	global $pref, $menu_areas, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style;
+	global $pref, $menu_areas, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style, $tp;
 
 	if (strstr($str, "LOGO")) {
-		echo "<div style='padding: 2px'>[Logo]</div>";
+		echo $tp -> parseTemplate("{LOGO}");
 	}
 	else if(strstr($str, "SITENAME")) {
 		echo "<div style='padding: 2px'>[SiteName]</div>";
@@ -421,7 +421,7 @@ function checklayout($str) {
 		echo "<div style='padding: 2px'>[SiteTag]</div>";
 	}
 	else if (strstr($str, "SITELINKS")) {
-		echo "<div style='padding: 2px'>[SiteLinks]</div>";
+		echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
 	}
 	else if (strstr($str, "CUSTOM")) {
 		$cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
