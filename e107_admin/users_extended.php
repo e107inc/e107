@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-04-09 00:58:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2006-04-29 04:36:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -35,7 +35,6 @@ $cal = new DHTML_Calendar(true);
 require_once("auth.php");
 require_once(e_HANDLER."user_extended_class.php");
 require_once(e_HANDLER."userclass_class.php");
-require_once("users_extended_predefined.php");
 
 
 $ue = new e107_user_extended;
@@ -515,7 +514,7 @@ class users_ext
 				$sel = ($current['user_extended_struct_required'] == $k ? " selected='selected' " : "");
 				$text .= "<option value='{$k}' {$sel}>{$v}</option>\n";
 			}
-		
+
 			$text .= "
 			</select>
 			<br />
@@ -846,7 +845,7 @@ function show_field($var, $type='activate')
 //	$showlist = array('type','text', 'values', 'include_text', 'regex');
 	if($head_shown != 1)
 	{
-	
+
 		$txt .= "
 		<tr>
 		<td class='forumheader'>".UE_LAN_9."</td>
