@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-04-22 19:30:47 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2006-04-29 05:20:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -91,7 +91,7 @@ if ($action == "main" || $action == "") {
 			$text .= "
 			<tr>
 				<td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
-				<td style='width:70%' class='forumheader3'>".$tp->toHTML($row['gen_chardata'])."</td>
+				<td style='width:70%' class='forumheader3'>".strip_tags($tp->toHTML($row['gen_chardata']))."</td>
 				<td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>
             	<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>
 					<a href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
