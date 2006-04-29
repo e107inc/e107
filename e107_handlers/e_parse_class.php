@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.149 $
-|     $Date: 2006-04-28 01:23:47 $
+|     $Revision: 1.150 $
+|     $Date: 2006-04-29 01:03:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -29,14 +29,6 @@ class e_parse
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
-
-	//Constructor:
-	//Create shortcode object on e_parse creation
-	function e_parse()
-	{
-		require_once(e_HANDLER."shortcode_handler.php");
-		$this->e_sc = new e_shortcode;
-	}
 
 	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
