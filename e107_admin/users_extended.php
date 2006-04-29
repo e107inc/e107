@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-04-29 04:36:20 $
+|     $Revision: 1.36 $
+|     $Date: 2006-04-29 06:45:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -884,12 +884,18 @@ function field_activate()
 	$ret = "";
 	$preList = $ue->parse_extended_xml('getfile');
 	$tmp = $preList;
+
 	foreach(array_keys($_POST['activate']) as $f)
 	{
-		$tmp[$f]['parms'] = addslashes($tmp[$f]['parms']);
+
+		$tmp[$f]['parms'] = $tp->toDB($tmp[$f]['parms']);
 		if($ue->user_extended_add($tmp[$f]))
 		{
 			$ret .= "Field: $f has been activated <br />";
+
+			if($tmp[$f]['type']=="db field" && is_readable(e_ADMIN."sql/extended_".$f.".php")){
+             	$ret .= (process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
+			}
 		}
 		else
 		{
@@ -901,13 +907,16 @@ function field_activate()
 
 function field_deactivate()
 {
-	global $ue, $ns, $tp;
+	global $ue, $ns, $tp,$sql;
 	$ret = "";
 	foreach(array_keys($_POST['deactivate']) as $f)
 	{
 		if($ue->user_extended_remove($f, $f))
 		{
 			$ret .= "Field: $f has been deactivated <br />";
+			if(is_readable(e_ADMIN."sql/extended_".$f.".php")){
+             	$ret .= (mysql_query("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
+			}
 		}
 		else
 		{
@@ -916,6 +925,39 @@ function field_deactivate()
 	}
 	return $ret;
 }
+
+
+function process_sql($f){
+    global $sql;
+	$filename = e_ADMIN."sql/extended_".$f.".php";
+	$fd = fopen ($filename, "r");
+	$sql_data = fread($fd, filesize($filename));
+	fclose ($fd);
+
+	$search[0] = "CREATE TABLE ";	$replace[0] = "CREATE TABLE ".MPREFIX;
+	$search[1] = "INSERT INTO ";	$replace[1] = "INSERT INTO ".MPREFIX;
+
+    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
+    foreach($creation[0] as $tab){
+		$query = str_replace($search,$replace,$tab);
+      	if(!mysql_query($query)){
+        	$error = TRUE;
+		}
+	}
+
+    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
+	foreach($inserts[0] as $ins){
+		$qry = str_replace($search,$replace,$ins);
+		if(!mysql_query($qry)){
+		  	$error = TRUE;
+		}
+    }
+
+	return ($error) ? FALSE : TRUE;
+
+}
+
+
 
 function headerjs()
 {
