@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-04-29 20:34:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 @include_once(e_PLUGIN.'forum/languages/English/lan_forum_conf.php');
-	
+
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = 'Forum';
 $eplug_version = '1.2';
@@ -33,32 +33,40 @@ $eplug_compatible = 'e107v0.7+';
 $eplug_readme = '';
 $eplug_latest = TRUE; //Show reported threads in admin (use latest.php)
 $eplug_status = TRUE; //Show post count in admin (use status.php)
-	
+
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "forum";
-	
+
 // Name of menu item for plugin ----------------------------------------------------------------------------------
 $eplug_menu_name = "forum";
-	
+
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "forum_admin.php";
-	
+
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/forums_32.png";
 $eplug_icon_small = $eplug_folder."/images/forums_16.png";
 $eplug_caption = 'Configure Forum';
-	
+
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
-"forum_show_topics" => "1",
+	"forum_show_topics" => "1",
 	"forum_postfix" => "[more...]",
-	"forum_no_characters" => "20" );
-	
+	'forum_poll' => '0',
+	'forum_popular' => '10',
+	'forum_track' => '0',
+	'forum_eprefix' => '[forum]',
+	'forum_enclose' => '1',
+	'forum_title' => 'Forums',
+	'forum_postspage' => '10',
+	'forum_hilightsticky' => '1'
+ );
+
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
 "forum",
 	"forum_t" );
-	
+
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
 "CREATE TABLE ".MPREFIX."forum (
@@ -98,15 +106,15 @@ $eplug_tables = array(
 	KEY thread_datestamp (thread_datestamp),
 	KEY thread_forum_id (thread_forum_id)
 	) TYPE=MyISAM AUTO_INCREMENT=1;");
-	
+
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
 $eplug_link_name = "Forum";
 $eplug_link_url = e_PLUGIN.'forum/forum.php';
-	
+
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = 'Your forum is now installed';
-	
+
 $eplug_upgrade_done = 'Forum successfully upgraded, now using version: '.$eplug_version;
 
 $upgrade_alter_tables = array(
@@ -126,5 +134,5 @@ if (!function_exists('forum_install')) {
 		$sql -> db_Update("user", "user_forums='0'");
 	}
 }
-	
+
 ?>
