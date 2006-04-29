@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-04-29 06:45:38 $
+|     $Revision: 1.37 $
+|     $Date: 2006-04-29 06:53:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -804,7 +804,7 @@ function show_predefined()
 	}
 
 	$txt = "
-	<form method='post'>
+	<form method='post' action='".e_SELF."?pre'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='fcaption' colspan='4'>".EXTLAN_57."</td>
@@ -872,7 +872,6 @@ function show_field($var, $type='activate')
 //	}
 	$val = ('activate' == $type) ? EXTLAN_59 : EXTLAN_60;
 	$txt .= "
-	</td>
 	<td class='forumheader3' style='text-align: center'><input class='button' type='submit' name='{$type}[{$var['name']}]' value='{$val}' /></td>
 	</tr>";
 	return $txt;
@@ -964,6 +963,7 @@ function headerjs()
 	include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 	$text = "
 	<script type='text/javascript'>
+
 	function changeHelp(type) {
 		var ftype;
 		var helptext;
@@ -991,6 +991,8 @@ function headerjs()
 			document.getElementById('db_mode').style.display = 'none';
 		}
 	}
+
+
 	</script>";
 
 	global $cal;
