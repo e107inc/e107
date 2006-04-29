@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-04-26 01:39:17 $
-|     $Author: e107coders $
+|     $Revision: 1.54 $
+|     $Date: 2006-04-29 06:37:18 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,8 +34,10 @@ City, State, Country
 [b]Phone:[/b] 555-555-5555
 [b]Email:[/b] sales@mydomain.com',
   'sitetheme' => 'reline',
+  'themecss' => 'style.css',
   'image_preload' => '0',
-  'admintheme' => 'jayya',
+  'admintheme' => 'reline',
+  'admincss' => 'style.css',
   'adminstyle' => 'classis',
   'sitedisclaimer' => LAN_PREF_3,
   'newsposts' => '10',
