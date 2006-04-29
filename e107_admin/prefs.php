@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2006-04-24 21:42:06 $
+|     $Revision: 1.88 $
+|     $Date: 2006-04-29 22:52:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -159,9 +159,13 @@ $text = "<script type=\"text/javascript\">
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_4."</td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='sitebutton' size='50' value='".SITEBUTTON."' maxlength='150' />
-	</td>
+	<td style='width:50%; text-align:right' class='forumheader3'>";
+
+    $param = "sitebutton,".e_IMAGE.",".SITEBUTTON.",81px,30px,";
+    $text .= $tp->parseTemplate("{IMAGESELECTOR={$param}}");
+
+	$text .= "
+		</td>
 	</tr>
 	<tr>
 
