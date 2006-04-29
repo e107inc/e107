@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.18 $
-|	$Date: 2006-01-27 01:41:23 $
-|	$Author: mcfly_e107 $
+|	$Revision: 1.19 $
+|	$Date: 2006-04-29 22:52:38 $
+|	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -74,7 +74,7 @@ function expandit(curobj, hide) {
 		folder.display="none";
 	}
 	if(hide) {
-		var hide_objects = hide.split(",");	
+		var hide_objects = hide.split(",");
 		for(i=0; i<hide_objects.length; i++) {
 			hide_objects[i]=hide_objects[i].replace(/^\s*(.*)/, "$1");
 			hide_objects[i]=hide_objects[i].replace(/(.*?)\s*$/, "$1");
@@ -303,5 +303,20 @@ function duplicateHTML(copy,paste,baseid){
 			destination.appendChild(newentry);
 		}
 }
+
+function preview_image(src_val,img_path){
+	var ta;
+	var desti
+
+	var desti = src_val + '_prev';
+	ta = document.getElementById(src_val).value;
+	if(ta){
+		document.getElementById(desti).src = img_path + ta;
+	}else{
+		document.getElementById(desti).src = '".e_IMAGE."generic/blank.gif';
+	}
+	return;
+}
+
 
 //-->
