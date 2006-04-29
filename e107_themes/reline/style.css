@@ -120,7 +120,7 @@ table {
 /*----------------------------------------------------------------------------*/
 
 .container {
-	width: 749px;
+	width: 755px;
 	border-collapse: collapse;
 	border-spacing: 0px;
 	border-right: 1px solid #126CA3;
@@ -246,7 +246,7 @@ table {
 
 .disclaimer {
 	text-align: center;
-	width: 749px;
+	width: 755px;
 	padding: 12px 0px;
 }
 
