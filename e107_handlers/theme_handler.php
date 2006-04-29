@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-04-26 20:22:55 $
+|     $Revision: 1.29 $
+|     $Date: 2006-04-29 05:57:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -426,6 +426,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$themeArray = $this -> getThemes("id");
 		$pref['sitetheme'] = $themeArray[$this -> id];
+		$pref['themecss'] ='style.css';
 		$e107cache->clear();
 		save_prefs();
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
@@ -436,6 +437,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$themeArray = $this -> getThemes("id");
 		$pref['admintheme'] = $themeArray[$this -> id];
+		$pref['admincss'] = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
 		$e107cache->clear();
 		save_prefs();
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
