@@ -7,6 +7,14 @@
 		<read>253</read>
 		<write>253</write>
 	</item>
+	<item name="country">
+		<type>db field</type>
+		<values>user_extended_country,country_iso,country_name,country_name</values>
+		<include_text></include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
 	<item name="location">
 		<type>text</type>
 		<include_text>class='tbox' size='40' maxlength='254'</include_text>

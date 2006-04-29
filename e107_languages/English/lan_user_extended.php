@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_user_extended.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-04-27 18:26:23 $
+|     $Revision: 1.10 $
+|     $Date: 2006-04-29 06:45:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -40,6 +40,7 @@ define("UE_LAN_BIRTHDAY", "Birthday");
 define("UE_LAN_BIRTHDAY_DESC", "Birthday");
 define("UE_LAN_LANGUAGE", "Language");
 define("UE_LAN_LANGUAGE_DESC", "User Language");
-
+define("UE_LAN_COUNTRY", "Country");
+define("UE_LAN_COUNTRY_DESC", "User Country (includes db table)");
 
 ?>
