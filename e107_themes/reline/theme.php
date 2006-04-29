@@ -11,8 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|	$Revision: 1.15 $
-|	$Date: 2006-04-27 07:35:21 $
+|	$Revision: 1.16 $
+|	$Date: 2006-04-29 06:00:37 $
 |	$Author: sweetas $
 |
 +----------------------------------------------------------------------------+
@@ -117,13 +117,13 @@ $no_core_css = TRUE;
 
 
 // Main header
-$HEADER = "<table class='top_section'>
+$HEADER = "<table class='container'>
 <tr>
 <td>
-<img src='".e_IMAGE."advanced.png' style='width: 145px; height: 90px; display: block; margin-left: 14px' alt='' />
+<img class='advanced_image' src='".e_IMAGE."advanced.png' alt='' />
 </td>
 
-<td class='top_back'>
+<td class='top_section'>
 {LOGO}
 </td>
 </tr>
@@ -131,32 +131,29 @@ $HEADER = "<table class='top_section'>
 <tr>
 <td class='left_section'>
 
-<table class='collapse' style='width: 100%'>
-<tr>
-<td style='background-color: #126CA3'>
-{SETSTYLE=blue_menu}
+<table class='top_left_menu_container'><tr><td>
+{SETSTYLE=top_left_menu}
 {MENU=1}
 </td></tr>
 
-<tr><td style='vertical-align: top'>
-{SETSTYLE=leftmenu}
+<tr><td class='bottom_left_menu_area'>
+{SETSTYLE=bottom_left_menu}
 {MENU=2}
-<br />
 </td></tr></table>
 
 </td>
 
-<td style='vertical-align: top'>
+<td class='main_container'>
 
-<table class='collapse' style='width: 100%'>
+<table class='top_inner_container'>
 <tr>
-<td class='blue_bar'>
+<td class='top_bar'>
 {SEARCH}
 </td>
 </tr>
 
 <tr>
-<td style='padding-right: 5px; vertical-align: top'>
+<td class='main_nav'>
 
 <div class='cube_container'>
 <img class='cube_image' src='".THEME_ABS."images/cube.png' alt='' />
@@ -168,10 +165,10 @@ $HEADER = "<table class='top_section'>
 </table>
 
 {SETSTYLE=default}
-<br />
-<table class='collapse' style='width: 100%'>
+
+<table class='bottom_inner_container'>
 <tr>
-<td style='vertical-align: top; padding: 10px; width: 100%'>
+<td class='main_section'>
 {WMESSAGE}
 ";
 
@@ -182,22 +179,20 @@ $FOOTER = "</td>
 <td class='right_section'>
 {SETSTYLE=paperclip}
 {MENU=3}
-{SETSTYLE=rightmenu}
+{SETSTYLE=right_menu}
 {MENU=4}
 {SETSTYLE=post_it}
 {MENU=5}
 </td>
 </tr>
 </table>
-<br />
+
 </td>
 </tr>
 </table>
 
-<div style='text-align:center; width: 749px'>
-<br />
+<div class='disclaimer'>
 {SITEDISCLAIMER}
-<br /><br />
 </div>";
 
 // Custom footer for pages with no right menu area. Uncomment the $CUSTOMPAGES line below the 
@@ -206,15 +201,13 @@ $FOOTER = "</td>
 $CUSTOMFOOTER['No_Right_Menu_Area'] = "</td>
 </tr>
 </table>
-<br />
+
 </td>
 </tr>
 </table>
 
-<div style='text-align:center; width: 749px'>
-<br />
+<div class='disclaimer'>
 {SITEDISCLAIMER}
-<br /><br />
 </div>";
 
 
@@ -236,29 +229,28 @@ define('LINKALIGN', 'left');
 
 // News style
 
-$NEWSSTYLE = "<div><div class='main_caption'>{STICKY_ICON}{NEWSTITLE}</div>{NEWSIMAGE}{NEWSBODY}{EXTENDED}</div><br />
+$NEWSSTYLE = "<div class='tablerender'><div class='main_caption'>{STICKY_ICON}{NEWSTITLE}</div>{NEWSIMAGE}{NEWSBODY}{EXTENDED}</div>
 
-<div style='padding: 2px'>
-<img src='".THEME_ABS."images/comments_16.png' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;
+<div class='news_info_top'>
+<img class='news_comments_icon' src='".THEME_ABS."images/comments_16.png' alt='' />&nbsp;
 {NEWSCOMMENTS}{TRACKBACK}
 </div>
 
-<table class='news_info'>
+<table class='news_info_bottom'>
 <tr>
-<td>
+<td class='news_info_bottom_left'>
 {NEWSICON}
 </td>
 
-<td style='width: 100%'>
+<td class='news_info_bottom_middle'>
 ".LAN_THEME_5." {NEWSAUTHOR} ".LAN_THEME_6." {NEWSDATE}
 </td>
 
-<td style='white-space: nowrap'>
+<td class='news_info_bottom_right'>
 {EMAILICON}{PRINTICON}{PDFICON}{ADMINOPTIONS}
 </td>
 </tr>
-</table>
-<br />";
+</table>";
 
 
 // Define attributes associated with news style.
@@ -280,38 +272,38 @@ define('TRACKBACKBEFORESTRING', '&nbsp;&nbsp;|&nbsp;&nbsp;');
 function tablestyle($caption, $text, $mode){
 	global $style;
 	
-	if ($style == 'blue_menu') 
+	if ($style == 'top_left_menu') 
 	{
-		echo "<div class='blue_menu'>";
+		echo "<div class='top_left_menu'>";
 		if (USER && $mode == 'login') 
 		{
 			echo "<img src='".THEME_ABS."images/loggedin.png' style='width: 32px; height: 32px; display: block' alt='' /><br />";
 		}
-		echo "<span style='font-size: 12px'>".$caption."</span><br /><br />".$text."<br /></div>";
+		echo "<div class='top_left_menu_caption'>".$caption."</div>".$text."</div>";
 	} 
 	else if ($style == 'paperclip') 
 	{
-		echo "<div style='text-align: center; width: 160px; margin-left: auto; margin-right: auto'>
-		<table class='collapse' style='width: 130px; height: 175px'><tr><td class='paperclip'>";
+		echo "<div class='paperclip_container'>
+		<table class='paperclip_inner_container'><tr><td class='paperclip'>";
 		if ($caption) 
 		{
-			echo "<div style='padding: 6px 0px; text-align: right'>".$caption."</div>";
+			echo "<div class='paperclip_caption'>".$caption."</div>";
 		}
 		echo $text."</td></tr></table></div>";
 	} 
 	else if ($style == 'post_it') 
 	{
 		echo "<div class='post_it_container'><div class='post_it_back'><div class='post_it_top'><div class='post_it_bottom'>
-		<div style='padding-bottom: 5px'>".$caption."</div>".$text."</div></div></div></div>";
+		<div class='post_it_caption'>".$caption."</div>".$text."</div></div></div></div>";
 	} 
-	else if ($style == 'leftmenu' || $style == 'rightmenu') 
+	else if ($style == 'bottom_left_menu' || $style == 'right_menu') 
 	{
-		echo "<table class='collapse' style='width: 160px'><tr><td style='padding: 10px 7px'>
+		echo "<table class='menu_container'><tr><td class='menu_inner_container'>
 		<div class='menu_caption'>".$caption."</div>".$text."</td></tr></table>";
 	}  
 	else 
 	{
-		echo "<div><div class='main_caption'>".$caption."</div>".$text."</div><br />";
+		echo "<div class='tablerender'><div class='main_caption'>".$caption."</div>".$text."</div>";
 	}
 	
 }
@@ -360,8 +352,8 @@ $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fbo
 
 
 // Search shortcode style
-$SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' value='Search...' maxlength='50' onclick=\"this.value=''\" />
-<input type='image' name='s' src='".THEME_ABS."images/search.png'  value='".LAN_180."' style='width: 16px; height: 16px; border: 0px; vertical-align: middle'  />";
+$SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' value='' maxlength='50' />
+<input type='image' name='s' src='".THEME_ABS."images/search.png'  value='' style='width: 16px; height: 16px; border: 0px; vertical-align: middle'  />";
 
 
 // Chatbox post style

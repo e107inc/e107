@@ -120,12 +120,10 @@ table {
 /*----------------------------------------------------------------------------*/
 
 .container {
-	width: 749px;
+	width: 100%;
 	border-collapse: collapse;
 	border-spacing: 0px;
-	border-right: 1px solid #126CA3;
 	border-bottom: 1px solid #126CA3;
-	margin-left: 0px;
 }
 
 .top_section {
@@ -175,7 +173,6 @@ table {
 }
 
 .main_nav {
-	padding-right: 5px;
 	vertical-align: top;
 }
 
@@ -246,8 +243,24 @@ table {
 
 .disclaimer {
 	text-align: center;
-	width: 749px;
+	width: 100%;
 	padding: 12px 0px;
+}
+
+
+.menuButton_menu {
+	margin: 0px;
+	padding: 2px 4px 2px 4px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.menuButton_menu_over {
+	margin: 0px;
+	padding: 2px 4px 2px 4px;
+	text-decoration: none;
+	background-color: #efefef;
+	cursor: pointer;
 }
 
 
@@ -389,6 +402,20 @@ table {
 }
 
 
+/* Theme Specific Classes: Admin Area Header */
+
+.admin_header {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+.admin_header_right {
+	text-align: right;
+	padding: 0px 12px;
+}
+
+
 /* Brainjar Nav Menu Classes {SITELINS_ALT} */
 /*
 If you do not use {SITELINS_ALT} and switch to the standard {SITELINKS} instead, 
@@ -397,16 +424,17 @@ all of the below can be deleted.
 /*----------------------------------------------------------------------------*/
 
 div.menuBar, div.menuBar a.menuButton, div.menuButton, div.menuButton_over, div.menu, div.menu a.menuItem {
-	font: bold 12px arial, verdana, arial, tahoma, sans-serif;
-	color: #126CA3;
-	text-align: left;
+	font: normal 11px arial, verdana, tahoma, sans-serif;
+	color: #000;
 }
 
 div.menuBar {
-	background-color: #fff;
+	background-color: #F7F9FA;
+	background-image: url(images/s_nav.png);
+	background-repeat: repeat-x;
 	border-top: 1px solid #fff;
-	padding: 4px 0px;
-	text-align: right;
+	padding: 4px 0px 4px 47px;
+	text-align: left;
 }
 
 div.emenuBar {
@@ -419,10 +447,11 @@ div.menuBar a.menuButton, div.menuButton, div.menuButton_over {
 	background-color: transparent;
 	border: 1px solid;
 	border-color: transparent !important;
-	border-color: #fff #fff #fff #fff;
+	border-color: #fff #F8FAFB #F0F2F3 #F8FAFB;
+	cursor: default;
 	left: 0px;
 	margin: 0px;
-	padding: 2px 6px 2px 6px;
+	padding: 2px 4px 2px 22px;
 	position: relative;
 	text-decoration: none;
 	top: 0px;
@@ -430,17 +459,15 @@ div.menuBar a.menuButton, div.menuButton, div.menuButton_over {
 }
 
 div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
-	background-color: #126CA3;
-	border-color: #fff #fff #fff #fff !important;
-	color: #fff;
+	background-color: transparent;
+	border-color: #fff #a5a5a5 #a5a5a5 #fff !important;
 }
 
 div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, div.menuBar a.menuButtonActive:hover {
-	background-color: #126CA3;
-	border-color: #fff #fff #fff #fff !important;
+	background-color: #fff;
+	border-color: #a5a5a5 #fff #fff #a5a5a5 !important;
 	left: 1px;
 	top: 1px;
-	color: #fff;
 }
 
 div.menu {
@@ -456,6 +483,7 @@ div.menu {
 }
 
 div.menu a.menuItem {
+	cursor: default;
 	display: block;
 	padding: 2px 11px 2px 0px;
 	text-decoration: none;
