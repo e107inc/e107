@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-04-29 05:57:21 $
+|     $Revision: 1.30 $
+|     $Date: 2006-04-29 06:29:37 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -95,8 +95,9 @@ class themeHandler{
 								$fp=fopen(e_THEME.$file."/".$file2, "r");
 								$cssContents = fread ($fp, filesize(e_THEME.$file."/".$file2));
 								fclose($fp);
+								$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
 								preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
-								$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1]);
+								$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1], "nonadmin" => $nonadmin);
 								if($STYLESHEET)
 								{
 									$themeArray[$file]['multipleStylesheets'] = TRUE;
@@ -105,6 +106,7 @@ class themeHandler{
 								{
 									$STYLESHEET = TRUE;
 								}
+								
 							}
 						}
 						$fp=fopen(e_THEME.$file."/theme.php", "r");
@@ -324,8 +326,10 @@ class themeHandler{
 
 					if($mode == 2)
 					{
-						$text .= "
-						<input type='radio' name='admincss' value='".$css['name']."' ".($pref['admincss'] == $css['name'] || (!$pref['admincss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." /><b>".$css['name'].":</b><br />".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />\n";
+						if (!$css['nonadmin']) {
+							$text .= "
+							<input type='radio' name='admincss' value='".$css['name']."' ".($pref['admincss'] == $css['name'] || (!$pref['admincss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." /><b>".$css['name'].":</b><br />".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />\n";
+						}
 					}
 
 					if($mode == 1)
