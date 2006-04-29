@@ -1,3 +1,4 @@
+/* info: Reline in full screen mode */
 /* Core Classes */
 /*----------------------------------------------------------------------------*/
 
@@ -120,12 +121,10 @@ table {
 /*----------------------------------------------------------------------------*/
 
 .container {
-	width: 749px;
+	width: 100%;
 	border-collapse: collapse;
 	border-spacing: 0px;
-	border-right: 1px solid #126CA3;
 	border-bottom: 1px solid #126CA3;
-	margin-left: 0px;
 }
 
 .top_section {
@@ -246,7 +245,7 @@ table {
 
 .disclaimer {
 	text-align: center;
-	width: 749px;
+	width: 100%;
 	padding: 12px 0px;
 }
 
