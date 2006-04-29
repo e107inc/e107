@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-04-27 06:02:46 $
+|     $Revision: 1.45 $
+|     $Date: 2006-04-29 05:46:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -179,7 +179,6 @@ if (USER == TRUE || ADMIN == TRUE) {
 	}
 	$ns->tablerender($caption, $text, 'login');
 } else {
-
 	if (!$LOGIN_MENU_FORM) {
 		if (file_exists(THEME."login_menu_template.php")){
 	   		require_once(THEME."login_menu_template.php");
@@ -187,14 +186,18 @@ if (USER == TRUE || ADMIN == TRUE) {
 			require_once(e_PLUGIN."login_menu/login_menu_template.php");
 		}
 	}
+	if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE) 
+	{
+		if (LOGINMESSAGE != '') {
+			$text = '<div style="text-align: center;">'.LOGINMESSAGE.'</div>';
+		}
 
-	if (LOGINMESSAGE != '') {
-		$text = '<div style="text-align: center;">'.LOGINMESSAGE.'</div>';
+		$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
+		$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
+		$text .= '</form>';
+	} else {
+		$text = $tp->parseTemplate("<div style='padding-top: 150px'>{LM_FPW_LINK}</div>", true, $login_menu_shortcodes);
 	}
-
-	$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
-	$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
-	$text .= '</form>';
 
 
 	if (file_exists(THEME.'images/login_menu.png')) {
