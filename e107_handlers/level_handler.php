@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-04-07 18:35:03 $
+|     $Revision: 1.14 $
+|     $Date: 2006-04-29 01:27:03 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -27,22 +27,23 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	if (!$user_id) {
 		return FALSE;
 	}
-	if ($user_admin) {
-		if ($user_perms == "0")
-		{
-			$data['special'] = IMAGE_rank_main_admin_image."<br />";
-			$data[0] = IMAGE_rank_main_admin_image."<br />";
-		}
-	}
 	if($fmod === TRUE)
 	{
 		$data['special'] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
 		$data[0] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
 	}
-	if ($user_admin && !isset($data['special']))
+	if ($user_admin)
 	{
-		$data['special'] = IMAGE_rank_admin_image."<br />";
-		$data[0] = IMAGE_rank_admin_image."<br />";
+		if ($user_perms == "0")
+		{
+			$data['special'] = IMAGE_rank_main_admin_image."<br />";
+			$data[0] = IMAGE_rank_main_admin_image."<br />";
+		}
+		else
+		{
+			$data['special'] = IMAGE_rank_admin_image."<br />";
+			$data[0] = IMAGE_rank_admin_image."<br />";
+		}
 	}
 	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
 	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
