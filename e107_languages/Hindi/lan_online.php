@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hindi/lan_online.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-30 12:40:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-04-30 13:18:39 $
 |     $Author: arunshekher $
 +----------------------------------------------------------------------------+
 */
