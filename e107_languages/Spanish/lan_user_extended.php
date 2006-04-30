@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user_extended.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.13 $
+|     $Date: 2006-04-30 11:24:30 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,9 @@ define("UE_LAN_7", "Fecha");
 define("UE_LAN_8", "Idioma");
 define("UE_LAN_9", "Nombre");
 define("UE_LAN_10", "Tipo");
-define("UE_LAN_11", "Descripción");
+define("UE_LAN_11", "DescripciÃ³n");
+
+define("UE_LAN_HIDE", "Oculto de los usuarios");
 
 define("UE_LAN_LOCATION", "Zona");
 define("UE_LAN_LOCATION_DESC", "Zona del usuario");
