@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-04-21 01:36:17 $
+|     $Revision: 1.62 $
+|     $Date: 2006-04-30 23:48:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -375,18 +375,22 @@ $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
 unset($forrep);
 if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
 $alt = FALSE;
-for($i = 0; $i < count($thread_info)-1; $i++) {
+for($i = 0; $i < count($thread_info)-1; $i++)
+{
 	unset($post_info);
 	$post_info = $thread_info[$i];
 	$loop_uid = intval($post_info['user_id']);
-	if (!$post_info['thread_user']) {
+	if (!$post_info['thread_user'])
+	{
 		// guest
 		$tmp = explode(chr(1), $post_info['thread_anon']);
 		$ip = $tmp[1];
 		$host = $e107->get_host_name($ip);
 		$post_info['iphost'] = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
 		$post_info['anon'] = TRUE;
-	} else {
+	}
+	else
+	{
 		$post_info['anon'] = FALSE;
 	}
 	$e_hide_query = "SELECT thread_id FROM #forum_t WHERE (`thread_parent` = {$thread_id} OR `thread_id` = {$thread_id}) AND FLOOR(thread_user) = ".USERID;
@@ -410,7 +414,7 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, TRUE, $forum_shortcodes)."\n";
 	}
 }
-
+unset($loop_uid);
 
 if (((check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass'])) || MODERATOR) && $thread_info['head']['thread_active'] )
 {

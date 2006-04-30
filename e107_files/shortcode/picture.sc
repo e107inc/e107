@@ -1,16 +1,17 @@
+global $loop_uid;
+if($parm == "" && is_numeric($loop_uid))
+{
+	$parm = $loop_uid;
+}
 if(is_numeric($parm))
 {
-	if($parm == USERID)
+	if(intval($parm) == USERID)
 	{
 		$image = USERSESS;
 	}
 	else
 	{
-		if(!is_object($sql2)){
-			$sql2 = new db;
-		}
-		$sql2 -> db_Select("user","user_sess","user_id = '".intval($parm)."'");
-		$row = $sql2 -> db_Fetch();
+		$row = get_user_data(intval($parm));
 		$image=$row['user_sess'];
 	}
 }
