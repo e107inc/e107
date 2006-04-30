@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-03-07 10:57:56 $
-|     $Author: whoisrich $
+|     $Revision: 1.24 $
+|     $Date: 2006-04-30 23:06:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -98,8 +98,11 @@ function tinymce_html_bbcode_control(type, value) {
 		case 'get_from_editor':
 
 			value = value.replace(/target=\"_blank\"/, 'rel=\"external\"');
-
-			value = '[html]\\n' + value + '\\n[/html]';
+			value = value.replace(/^\s*|\s*$/g,'');
+			if(value != '')
+			{
+				value = '[html]\\n' + value + '\\n[/html]';
+			}
 
 			break;
 
