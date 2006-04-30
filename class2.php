@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.276 $
-|     $Date: 2006-04-26 11:44:31 $
+|     $Revision: 1.277 $
+|     $Date: 2006-04-30 23:48:39 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -783,6 +783,7 @@ function get_user_data($uid, $extra = "", $force_join = TRUE)
 	global $pref, $sql;
 	$uid = intval($uid);
 	$var = array();
+	if($uid == 0) { return $var; }
 	if($ret = getcachedvars("userdata_{$uid}"))
 	{
 		return $ret;
