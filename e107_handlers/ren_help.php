@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-04-13 23:43:16 $
+|     $Revision: 1.40 $
+|     $Date: 2006-05-01 08:08:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -184,7 +184,7 @@ function Color_Select() {
 	var s = 0;
 	
 	function td_render(color) {
-		return '<td style=\'background-color: #' + color + '; height: 10px; width: 10px;\' onclick=\"addtext(\'[color=#' + color + '][/color]\')\"><\/td>';
+		return '<td style=\'background-color: #' + color + '; height: 10px; width: 10px;\' onmousedown=\"addtext(\'[color=#' + color + '][/color]\')\"><\/td>';
 	}
 
 	for (i=0; i < coloursrgb.length; i++) { 
