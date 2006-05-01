@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-04-22 18:10:11 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2006-05-01 07:16:25 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -101,7 +101,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 		if($inline){
 			$tmp = explode(",",$inline);
 			foreach($tmp as $inline_img){
-				if(is_readable($inline_img)){
+				if(is_readable($inline_img) && !is_dir($inline_img)){
 					$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
 				}
 			}
