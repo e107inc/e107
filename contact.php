@@ -11,13 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-25 18:01:18 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-01 23:58:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(HEADERF);
+
+if(!isset($pref['contact_emailcopy']) || !$pref['contact_emailcopy'])
+{
+	$CONTACT_EMAIL_COPY = " ";
+}
 
 if (!$CONTACT_FORM) {
 	if (file_exists(THEME."contact_template.php")) {
@@ -71,11 +76,11 @@ if(isset($_POST['send-contactus'])){
     if(!$error)
 	{
 		$body .= "\n\nIP:\t".USERIP."\n";
-        $body .= "User:\t#".USERID." ".USERNAME."\n";
+		$body .= "User:\t#".USERID." ".USERNAME."\n";
 
     	require_once(e_HANDLER."mail.php");
  		$message =  (sendemail(SITEADMINEMAIL,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
-    	if($_POST['email_copy'] == 1){
+    	if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $_POST['email_copy'] == 1){
 			sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
     	}
     	$ns -> tablerender('', $message);

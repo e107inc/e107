@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2006-04-29 22:52:38 $
-|     $Author: e107coders $
+|     $Revision: 1.89 $
+|     $Date: 2006-05-01 23:58:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -200,6 +200,14 @@ $text = "<script type=\"text/javascript\">
 	<td style='width:50%' class='forumheader3'>".PRFLAN_162."<br /><span class='smalltext'>".PRFLAN_163."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='sitecontactinfo' cols='59' rows='6'>".$pref['sitecontactinfo']."</textarea>
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_164."<br /><span class='smalltext'>".PRFLAN_165."</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='contact_emailcopy' value='1'".($pref['contact_emailcopy'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='contact_emailcopy' value='0'".(!$pref['contact_emailcopy'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
