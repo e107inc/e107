@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/core_image.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-02-10 15:58:08 $
+|     $Revision: 1.35 $
+|     $Date: 2006-05-03 14:28:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -38,21 +38,22 @@ $core_image = array (
         'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       ),
       'core_pg.php' => '19aaa67253a3b38160e58fa694c9d7fe',
-      'core_sql.php' => '5b2f3f2d7d22f3d25246523eec206fb5',
+      'core_sql.php' => '11275c580cee22b181d52f632ecc9cc3',
+      'extended_country.php' => 'a145336ba04e1e6b776ba6b5c9d5610a',
     ),
-    'ad_links.php' => '39be4a8424547b3e2e0f2835fa3a09b0',
-    'admin.php' => 'e06c951e57fba5400f35392566421855',
+    'ad_links.php' => '26947a04ae76938cd5402c726c2af90a',
+    'admin.php' => '19c3be7bffbe32bcf47cb712a301c21b',
     'admin_classis.php' => 'f0876f967229f0ce85339b6b0bf9d9df',
     'admin_combo.php' => '8e670742c54affd0b8dbbb6999036658',
     'admin_etalkers.php' => 'a0a6b8c166b96b73d40b35102c093f2b',
-    'admin_log.php' => '6fa7aeb6402e48f13fd23e696a312821',
+    'admin_log.php' => '7dfca031fd886863dc03442f74ac481d',
     'adminb.php' => '3cc424990bbda80be3b02671789687d6',
-    'administrator.php' => 'af1dc41e054e05d9121f15bac388fd56',
+    'administrator.php' => 'fda6294f7582769d900e5c770914ff25',
     'article.php' => 'ba2344b15140b8d699ecaf6c9e705f5e',
     'auth.php' => 'da16472493665708a0d3ab92a421e6b5',
-    'banlist.php' => '144dac7611743aa2fca007253ac58ac8',
+    'banlist.php' => 'c4723d5b88e4b1b09270011e01cc59d9',
     'banner.php' => '17ae7c3abf90c7c123810b3cdd53b977',
-    'cache.php' => 'ad7495d8b026dd61a3f586ea8a6dddda',
+    'cache.php' => '323122758ad0c372fe45391bfc984580',
     'cascade.php' => '63efd422971865e813d6a991f752da63',
     'categories.php' => '44a1e06e6ea212647580bf8a18a395ba',
     'classis.php' => 'c90fb5498b48e49173dce2357b17c10f',
@@ -60,52 +61,51 @@ $core_image = array (
     'comment.php' => 'f2d601f41beb8ebb5d9d76271aa564af',
     'compact.php' => '58382a577c486004ee9f7c4611277213',
     'content.php' => '0483549a7530320e24f00d93a47dbfb7',
-    'core_image.php' => 'a2b8c3c80419f0ccde962f4b520fa341',
-    'cpage.php' => 'e37bb22dda6618a5cc36624bc9b34238',
-    'credits.php' => '62f3c4a92a52758d0bebc23786386df4',
+    'core_image.php' => 'ad853529e6107a6400c557bd36f6c523',
+    'cpage.php' => 'be682b4c15eeb76d97456eb48952d4d6',
+    'credits.php' => '7ca334bcbead407abd8b173cb5031722',
     'db.php' => '21908a19ce8fcae5012a5636addc1d44',
     'db_verify.php' => '98538ba7b57a19e0d44d1ded30589051',
     'docs.php' => '2ba44276d64d8ff0435007417b6bc629',
-    'download.php' => 'ce2ec0b5cb413e58d20117c1fca15bc9',
+    'download.php' => '63d2990e95e8eadda0ff05afda5c1122',
     'e107_update.php' => 'f928b2487e8c76602b94a46fd19a7782',
     'emoticon.php' => '77ff4b775351b32d283cda2f7fe02e7e',
-    'fileinspector.php' => '0089e2b904cf18137e1425e765d66102',
-    'filemanager.php' => '7dbadbe84c124a2b8191ad800650939d',
+    'fileinspector.php' => '4d1d3e6021d28f8b48bc2ade721141cc',
+    'filemanager.php' => 'f23bdc922bd212f0b9254724771c5155',
     'filetypes_.php' => 'f951037335e993337792606cc1475cec',
-    'fla.php' => '686daf9af33a3365b4a39796b607d8e0',
+    'fla.php' => 'f3696ca51edf8d7779bf846d982a9e78',
     'footer.php' => '42cff4e6702a56da21fbc23e86ef278f',
-    'frontpage.php' => '00c74d8e2e5d8005e8c8b7ebff0b42dd',
-    'header.php' => 'eeba1be7406ff6d997d38eb67460077f',
-    'image.php' => '983a0f3cc8c282ed1222fe464c176aa3',
+    'frontpage.php' => '58ebf7eec02f04f7c03b23726ea3097d',
+    'header.php' => 'd10f6c211e45c6e3bfc7eb7235cfa849',
+    'image.php' => 'c71708d3f22f2da0af7ed72cda3026d1',
     'index.php' => 'a53d3c6f2f89fe65c215f1b0328e7908',
     'lancheck.php' => 'd59afeacaf8e9a6b0e0f3998cd3038f0',
-    'language.php' => '21ff1df95edf88637e759e7b67cb6778',
-    'links.php' => '288daff8faa13dbb4e64f99e27b093f9',
-    'mailout.php' => '35cec1e406901a14f531216fca2d0b53',
-    'menus.php' => '53f8b4ca7d8829f2c9367b2ee0d960da',
+    'language.php' => '44384f413874e3fcc5916a4c3788c0b1',
+    'links.php' => 'c97ad82b5e97cfd1538a35d02b303c77',
+    'mailout.php' => '9884bfe70101db8a729176efc457cd08',
+    'menus.php' => '3fc560dbc7f5994c5fe76b1cfa4fad6e',
     'message.php' => 'f8859e79b105a974c79f4299b20b7f0e',
     'meta.php' => '45b5dff1d2c1513b9a4f924a363a253c',
-    'modcomment.php' => '2107ede5200847a481178a79a82d0e1f',
-    'newspost.php' => 'de6b2d42dc350f46ee2cf9c599002d85',
+    'modcomment.php' => '73f056d18d9108642937916f06e40a0b',
+    'newspost.php' => 'd855317efea18b8b29091f3ab90d30b6',
     'notify.php' => '3af03762d145bd378ccdc250e308d16b',
     'phpinfo.php' => '3f065d95aaf03250f9c69b598d6f1bf6',
-    'plugin.php' => 'e749e9d3699642a6d6d1c6ed71ec343c',
-    'prefs.php' => 'd6a9ff72e00db2556340d87b21a45bc7',
+    'plugin.php' => '56e809f4758e2839c18904b4915d647e',
+    'prefs.php' => 'c08425a2b31fd4b45388f7aa1142911f',
     'review.php' => 'a687983283686336e3a1078ddc1bcf1c',
     'search.php' => '64a607c88cd9a1b3fa27963a3cddb55a',
     'theme.php' => 'bcbd65925aaa66d4707ff8605f4e1c46',
     'ugflag.php' => '63c23cb7fdff82d01dc32c974388e9c1',
-    'update_routines.php' => 'f70001b757202d8fd22ba66f98aa47b5',
-    'updateadmin.php' => '7bc6ed58b8dda8d4a4cc8cee5a3021fe',
-    'upload.php' => '8b78bf03cad2c17f01bf8b997252326a',
-    'userclass.php' => '6190e675a0ff13eb76230ae24f432253',
-    'userclass2.php' => '08f4d84225296370096255af68c8c122',
+    'update_routines.php' => 'f932814d11a1ebc689e661bf54adf89d',
+    'updateadmin.php' => '0cb12e6473cdf28f5ae55df7462ae1f0',
+    'upload.php' => '1363cfd60c6568f1a1396a7b6943bd85',
+    'userclass.php' => 'a7adf84e4184f6afbec3a91dcf152ba0',
+    'userclass2.php' => 'c2f2f24cf9cb42e265823b5d85e4322e',
     'userinfo.php' => '7462cc6800536b61fd8951da6df70d50',
-    'users.php' => '745e4d33d9ebeacfd9aff48462c07aa9',
-    'users_extended.php' => '9c7261d7155b3aa1da202eb5815621c0',
-    'users_extended_predefined.php' => '732e9d318628fcce3f199e4cba09296b',
-    'ver.php' => 'd55a76d9b8d05dbe85bcd5c7857bcc3f',
-    'wmessage.php' => '944f5f6fbba4b675960f3305a0ebcc93',
+    'users.php' => '4a50d56199e9b1dc9cdf4b0c1eeafd33',
+    'users_extended.php' => 'aa5ea710a2093df6f0ffcc81c922458a',
+    'ver.php' => '3e07a96a3a80fa8c3e2c09774e7f2dd3',
+    'wmessage.php' => 'f304ce93b9d0a8a882b0bdaa867c80e9',
   ),
   $coredir['docs'] => 
   array (
@@ -150,35 +150,35 @@ $core_image = array (
       'blockquote.bb' => '2cfbbd3ab3fe2872d1a9873223d21522',
       'br.bb' => 'cb8d211703f0459735baa8dfbebb4bb4',
       'center.bb' => '5a1957946e3d8898a0b3d86650771809',
-      'code.bb' => 'abc19adaa0537d8224d462cd561dfa65',
-      'color.bb' => '2f101a3833cbcbea9301c3bd69575c7f',
+      'code.bb' => 'f2b77061dba7fe8e243a5f3af8c8a192',
+      'color.bb' => 'e31b2fe07937d0ca3ac1a46f262744a9',
       'email.bb' => '4511c10aa359bb3add67e3aca835626a',
-      'file.bb' => '3eacae1aec792da67ddc981233811c6f',
-      'flash.bb' => '40e32a4d41b9aa719d535df48200855a',
+      'file.bb' => '41df9633e09bf8e51d7663aa8d34e3e8',
+      'flash.bb' => 'be95107cdc211f81d394f94ac7ec0c4a',
       'hide.bb' => '1626d590525d4552d57ec44eaa9efffc',
-      'html.bb' => 'bb88649e0a775169873bccb7e4851a57',
+      'html.bb' => 'cdac02c0cd9b8258f3ef0bc624de4d92',
       'i.bb' => 'd97c389b4fe7ce7ba06ee77802835c8c',
-      'img.bb' => 'ff674bd48dc9b94e23f6acc6764cf32b',
+      'img.bb' => '013b0d585ca90225803552fffc6bdeb5',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'justify.bb' => '016500f910beb0f820dd58c4915f2489',
       'left.bb' => '86c2496a72c3bc9d18f39d49d61490e0',
-      'link.bb' => '5b7927a0fc7ae218c8a27a54931ca91c',
+      'link.bb' => '0494637c1a33930f5be3368f81a64241',
       'list.bb' => '53587b9a6b69e04a4923d66f23b3bf07',
       'php.bb' => '6fde19b06b489059403500e44e19fbdf',
       'quote.bb' => '8ee92ce3b293bf1f8b4228c13bd903d6',
       'right.bb' => '092e1a3e22fdb1696241ebf09e9d2194',
       'size.bb' => 'ca5d841259d59b96944c6a02bce8d59a',
       'spoiler.bb' => '1b8f87fe1ae252afd9dc0fbed7280509',
-      'stream.bb' => '49776b1b9c87d69f818b1b68eb29e184',
+      'stream.bb' => '5082f559b662c05c641608e81c0dd340',
       'textarea.bb' => '540ef76359b64e66d012ce582c1e4842',
       'time.bb' => '3c64e6e30ee8b94e0911d4bd58d60978',
       'u.bb' => '4d95b259d881604959e49e8312e7cffc',
-      'url.bb' => '5b7927a0fc7ae218c8a27a54931ca91c',
+      'url.bb' => '0494637c1a33930f5be3368f81a64241',
     ),
     'cache' => 
     array (
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'user_extended.xml' => '1743bc8755a5c6b253081bd4d71751da',
+      'user_extended.xml' => '558b8f69394f17541766739278e4ca97',
     ),
     'downloadimages' => 
     array (
@@ -234,20 +234,21 @@ $core_image = array (
         'download_shortcodes.php' => '1d1a141e26ed462e55c7fc0f0077d6dd',
         'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
         'news_archives.php' => '125cdf75df386b566d33e94006514b4b',
-        'news_shortcodes.php' => 'dd0e251b61ab3b3edc67224fd5c60b16',
-        'user_shortcodes.php' => '0708cbd4f2db4fa9fe10d7ae9f513c1d',
-        'usersettings_shortcodes.php' => 'd0158a6d9cfc5fca7d333a5c99aa5394',
+        'news_shortcodes.php' => 'b25ea776df8f933953a75548380746cd',
+        'signup_shortcodes.php' => 'f11a96429381e23abb6ddcabc6876733',
+        'user_shortcodes.php' => '0f31fa35db3f13eae03098d65b205630',
+        'usersettings_shortcodes.php' => '4ef428a94c17e3a20650812106d4430d',
       ),
-      'admin_alt_nav.sc' => '9268be55e51f2514cb33a661b3212727',
+      'admin_alt_nav.sc' => '2530d0cb58cfd424ee568a70b2ec4e2f',
       'admin_credits.sc' => '110ae4aeaa5b3df7ceff1f7fec7550bc',
       'admin_docs.sc' => 'cd716db360b8368daa7308a7b4e9b624',
       'admin_help.sc' => 'f7ad8cf68d13b05a761097647123a026',
       'admin_icon.sc' => '2d3d00b55c4ff84a99d08cf8d3a8b76c',
       'admin_lang.sc' => '9f2e01e30b3b8df5085bcebf4b30f840',
       'admin_latest.sc' => '73f36bbb13155ff2f2bd7225a79d04e7',
-      'admin_log.sc' => '16580dc8dfe81ec56e73ea47613ccaa9',
+      'admin_log.sc' => 'd5b8ada11ea590129b6cc4cd91fce544',
       'admin_logged.sc' => '2f2b43979ed8f73e7424fbc8a854a844',
-      'admin_logo.sc' => 'fb4436bd3de69f77777d887eaad3c8c4',
+      'admin_logo.sc' => '0b43202195b574b76c6824812294fdce',
       'admin_menu.sc' => 'a2b08f5a1fe8229de946e41e22ff33eb',
       'admin_msg.sc' => '90b5b1652c1399b2deb871fe1759dc10',
       'admin_nav.sc' => 'dff7a3d04fda1b139aa6cfb434038b8a',
@@ -255,46 +256,49 @@ $core_image = array (
       'admin_preset.sc' => 'd3368e95f61a7265ed34c30ccfe9378d',
       'admin_pword.sc' => '54a6634b295b113b39ba4fe3540e98c3',
       'admin_sel_lan.sc' => '18755e6ee5583738789df4bad91e2946',
-      'admin_siteinfo.sc' => 'f8192271ac97016b8ab122b6b5e73ad9',
+      'admin_siteinfo.sc' => '1bdf3cf43705ef7984167eb51c716d96',
       'admin_status.sc' => '14acf71f83a8492813ae0485c9fa1423',
       'admin_userlan.sc' => 'e3675c74489a007d15d11ad98f5dac69',
       'banner.sc' => 'c8909752f6eef9c7bd9d13730d8873d5',
       'breadcrumb.sc' => '234dcd1e930458348647f8c6f74820f6',
-      'custom.sc' => '1eb29c8f0b55c5753962cbf7b24b309f',
+      'custom.sc' => '1a5ca92a3f57fb899bd2f5fe1ca35c53',
       'e_image.sc' => '0434b1432a68e5a22cd5f015468180c4',
       'email.sc' => '8a6a553eade2b35cfa3553394f978281',
       'email_item.sc' => 'dae636cb608237e11422764e488f0326',
-      'emailto.sc' => '71dfb470b92fcdee85fb9cda8a671c3d',
+      'emailto.sc' => '4201aa5df6bd7cbfebc2699a704b4523',
       'extended.sc' => '238f7cc0a5706d9efce61b4233b233c4',
       'extended_icon.sc' => '339ea0598072fa4c466c479b1b92db4c',
       'extended_text.sc' => '794ab6ac73e6e856f12e645b0ad31e45',
       'extended_value.sc' => '22596dcaa7322ae0432069fd22511395',
+      'imageselector.sc' => '9444e48ee2dae057c5c1cb3972aa78a3',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'linkstyle.sc' => 'b0ff2fc0eb76ad5bc039384713b7bc9b',
-      'logo.sc' => '24a78a53227fa5e2143b5e4eb0544b54',
-      'menu.sc' => 'e10760354d742b7709a31fbeafc2e737',
+      'logo.sc' => 'e73cc87d14bb7bbbfc8c18a42b9a4481',
+      'menu.sc' => '29eab24bb912bc4f9508b024992f1fac',
       'news_alt.sc' => 'af92c79bbe1d027b1fb4597741177378',
       'news_categories.sc' => '0535bc325cf5efd89095944275be257a',
       'news_category.sc' => 'db0bb5bbda5d3eaf580f1675572070ed',
       'newsfile.sc' => 'aec07d2d8cdd3e2682ffea0bc5a717e4',
       'newsimage.sc' => 'c832652189bf235fb4a4c6a95126fd7c',
-      'nextprev.sc' => '89e54ff2fdefa56dde0bd65a6a564102',
-      'picture.sc' => '6c5108ab2c291ae2389c83742c6a7352',
+      'nextprev.sc' => 'd7eadab8a7d46d4cb97501d8658f9234',
+      'picture.sc' => 'e1a46bbe49b8d408e4c6d6dad54b275f',
       'plugin.sc' => '51f62fc5f95e5b8a8825e24ef4dea02f',
       'print_item.sc' => 'c8d02ad58f6a6948dda7745bacc871aa',
       'profile.sc' => 'f4559f49c431b37345341b5962ce6eb3',
+      'search.sc' => '2f281cd11ac49c19998a0bdc8ddc6d06',
       'setstyle.sc' => 'f6a2fbdf0043351c4648eeee1285cbfd',
+      'sitecontactinfo.sc' => '5467f65cd62b910389014b5fb8b33fe5',
       'sitedisclaimer.sc' => '3c3c4eae39daf6f42656ddefbbb42e0c',
       'sitelinks.sc' => '2ab811c1621f97c1b11d18b77399d687',
       'sitelinks_alt.sc' => 'bafd72a66edab7de306cd4831c37992e',
       'sitename.sc' => '49193510fce1805716ef34478b82daf2',
       'sitetag.sc' => '338e16589e67c9fe45613e3c6dbb9b0d',
-      'user_avatar.sc' => 'c379eb023755915253af8b23b3fdb9ca',
-      'wmessage.sc' => '14b6d3b64adee2b2ba743d8a55ec1968',
+      'user_avatar.sc' => '59b7ed79bd704cdfe7f95305202ae138',
+      'wmessage.sc' => 'b6ddda434c827d4774f73e75a1b10786',
     ),
-    'def_e107_prefs.php' => '371959ff7074bc2ecf1d29e92a51ca3a',
+    'def_e107_prefs.php' => 'ebe2a079769217393a7fb30d11ba6920',
     'e107.css' => '6e1d2fa703bf7118e5ee99bdf39de548',
-    'e107.js' => '58719f425bb904525289ebf198862dee',
+    'e107.js' => '7761a46450080c0b0812e54ac91ec1e7',
     'e_ajax.js' => '5db6bb29ec03d7f6c05398aa5f36da9a',
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
     'nav_menu.css' => 'b70783546bbf8953f9644ba650038556',
@@ -336,7 +340,7 @@ $core_image = array (
       'class.phpmailer.php' => '5dc9ac1e6f9570da4091774b5f6979fa',
       'class.smtp.php' => 'f9fe49e938a6efa354beabde5c9972f0',
       'e107.htaccess' => '507de3fb6f951cafa6b1a346d232604f',
-      'mailout_process.php' => '8387cbd9cfb50eed1e28165865df4fd0',
+      'mailout_process.php' => 'f06aca8fa24f949202274a586b8328c7',
     ),
     'search' => 
     array (
@@ -351,7 +355,7 @@ $core_image = array (
       'comments_user.php' => 'e9f95e0e755bc2082caeb3bb7091e378',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'search_comment.php' => '4c4080e131e134233c9873e3768911f0',
-      'search_download.php' => 'd3c7673267a684cec7a63fb0e53faffa',
+      'search_download.php' => 'a976ffc8d5f5f727499dc3277025e4e9',
       'search_event.php' => 'b4dd4e1f251c52145a9dc0436d47a90e',
       'search_news.php' => '28a432ba78de6e15b36d8174669321de',
       'search_pages.php' => '156219f81d46b277fce168bb32092c13',
@@ -363,10 +367,10 @@ $core_image = array (
       array (
         'ar.js' => '7536e1794a47e44637b09bed1239f2e3',
         'ca.js' => '763db361967f164b14965a731fc81575',
-        'cs.js' => '0c4f8fa7ed7d6a6e15ba2279c93fa867',
+        'cs.js' => 'e20a476087b45a338df17b52cba65ff3',
         'cy.js' => 'e9632bd6f6a2a8fbcd0bcc2bcbbe2bb1',
-        'da.js' => 'f5d65e49613fa644946155a3d6f06f0c',
-        'de.js' => '7d9f8e03d8ea6d5d9e8c1e89a8f71c5e',
+        'da.js' => '2d03943047677f6181f9958db27ed74c',
+        'de.js' => '76cdffc0477ec3342ebab1243c94bee9',
         'el.js' => '839ea9691132ff44318d4917f885b4f0',
         'en.js' => 'a9c67a04e2d5c8f05b35256746c1547b',
         'es.js' => 'd1cd1d5078257b18705863647f82bd2a',
@@ -386,10 +390,13 @@ $core_image = array (
         'no.js' => 'fc847bd78500a1cb78f56997a3d1a151',
         'pl.js' => '831aa15bf1e7e607110ba76221a7d35d',
         'pt.js' => 'e04e463d3c8307e25fee5eeb8b1dbd59',
+        'pt_br.js' => '40a08edac74e477426ce6486ff4c2bbc',
         'ru.js' => '9ed9d44486521aee7891179c64c021f4',
-        'sk.js' => 'f622dfcd7c57a06c9b0d73fb79eba97b',
+        'si.js' => 'c8c910bcc1b200cf75d60793f2ba6476',
+        'sk.js' => '5283e0ecce1244cb2ae5811c1179adb1',
         'sv.js' => 'e1008814ffd518ed0c0db72f4ce35e2f',
         'th.js' => '7fb72eaeed8da2543f6fe701e3bf82b8',
+        'tr.js' => 'e4c8ab48985671bd613aecfdd4ce4351',
         'zh_cn.js' => 'a6f1292dcc4c3f2fc269d467ae88c40a',
       ),
       'plugins' => 
@@ -398,15 +405,15 @@ $core_image = array (
         array (
           'css' => 
           array (
-            'contextmenu.css' => '62d24aed7ff6c7bf8a771367e5021eb6',
+            'contextmenu.css' => '8c47af8f17aec54510447dbb183603bb',
           ),
           'images' => 
           array (
             'spacer.gif' => '12bf9e19374920de3146a64775f46a5e',
           ),
           'contextmenu.css' => '62d24aed7ff6c7bf8a771367e5021eb6',
-          'editor_plugin.js' => '7275f7d4b4f39c349517cde89f20f1ac',
-          'editor_plugin_src.js' => '7392b21f2b0fcf9e72bf98af571efca9',
+          'editor_plugin.js' => 'b09a0d1b0c4da08ed86166f737d32d9f',
+          'editor_plugin_src.js' => '5b02338cb1aa3615627b68daa43b880d',
         ),
         'emoticons' => 
         array (
@@ -420,8 +427,8 @@ $core_image = array (
             'en.js' => '82fdaf943db5294b46df795cd2350b47',
             'es.js' => 'ad4be574c2fb8118374c38661c314405',
           ),
-          'editor_plugin.js' => 'adc54e35c18ce203019835b27fc8eaa0',
-          'emoticons.php' => '29feab9e099d254eb2c77647ed8be5a0',
+          'editor_plugin.js' => '89b410ba36e127e8cbe914529bd48251',
+          'emoticons.php' => 'dc1c7ea7800ac6432e5ac740233c5b5d',
           'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
         ),
         'flash' => 
@@ -441,9 +448,9 @@ $core_image = array (
           ),
           'langs' => 
           array (
-            'cs.js' => 'e9b31945ed21c3cb8adbc7dd3b374989',
+            'cs.js' => 'fa825b8415dd5c05bc13381da9682131',
             'cy.js' => '12ca407faf216a8b28dda1e1e37051d7',
-            'da.js' => 'eefc100a662478e2c1f411c99c95c79a',
+            'da.js' => 'bca6c9b973ecd3b8635ce9b8d869227a',
             'de.js' => 'bb345a79959f1bcd81b4540f49ddf359',
             'en.js' => '043e411fa852cc03fd3d8cb34cb60e69',
             'es.js' => '62025048639dbbcc3d6dd74558a812ee',
@@ -459,12 +466,14 @@ $core_image = array (
             'pl.js' => '7c1ef13bdd14c37dd0802b014a328e47',
             'pt_br.js' => 'ff58098ced9e45d7380a816ee72c18a2',
             'ru.js' => '57651060aa8ffdfe4c8b864fdfb4391b',
-            'sk.js' => 'e21837204117abed646599cae3766acd',
+            'si.js' => '04020c938e923b3e852e611e9ab21990',
+            'sk.js' => '588a201b085fcb0eb478a61b0a07ca6c',
             'sv.js' => '2905f957130ae907496f49f54428a3bf',
+            'tr.js' => 'db3b85a6424bcec0ac597d6ed1060226',
             'zh_cn.js' => '41a32b823b1a12ff042349b6458d1800',
           ),
-          'editor_plugin.js' => '4c767bb4b328054957f75b6c8a314e38',
-          'editor_plugin_src.js' => '9291072cb09dd090063c8ea2db4afc2c',
+          'editor_plugin.js' => 'd9a86e84d6de9a92c07caa14c32fa436',
+          'editor_plugin_src.js' => 'e1cbba4dbd00457a829cb5c0e44f3eb1',
           'flash.css' => '9239b8c8eea8c726cc7a169d3064edc1',
           'flash.htm' => '9e99c61ba4f1a353d594f89bd8b8579f',
         ),
@@ -481,13 +490,14 @@ $core_image = array (
             'da.js' => 'd59bc0933e2989f9bac88ffbd9e3728b',
             'en.js' => 'acb765a9712c2b9301e63709f5167f4a',
             'es.js' => '127800759788db6c4219616b99da880f',
+            'fr.js' => 'ccc826b781bf5602cde669dd8a117607',
             'nl.js' => '64161852435eb41d34ec4286f8bac6fc',
             'pl.js' => 'acb765a9712c2b9301e63709f5167f4a',
             'sv.js' => '222085d130148b9c96deae7bc4a57d9d',
           ),
           'config.php' => 'd5bf7737d7ce8f651aca88cff8b61b52',
-          'editor_plugin.js' => '8bb841d93e3c628fb99629a9e6947abf',
-          'ibrowser.php' => 'b31b4b024bb001422d8f7e0d265aa215',
+          'editor_plugin.js' => 'ae08a0140d9cb8541204efe7c2d4dd59',
+          'ibrowser.php' => '5ce844639ccce613f7fe5209e5ca4846',
         ),
         'iespell' => 
         array (
@@ -497,9 +507,9 @@ $core_image = array (
           ),
           'langs' => 
           array (
-            'cs.js' => 'a477eae49aae1cd39a4938c85f8fc03d',
+            'cs.js' => 'd36349c814ef95976b9e46aeada53dae',
             'cy.js' => '29266672da5c4f3ada0d43482c236ff6',
-            'da.js' => 'fd0a9975ffbb645a85c61bd060171932',
+            'da.js' => 'd2dbedaba39b8f48d095348478a46f76',
             'de.js' => 'c7d86fd3233fdfecfc59adb8510aa8ae',
             'el.js' => '74b68b4a02ffe96c51403b5f213358e8',
             'en.js' => '246a510d28ef64364bfae0bb6da57221',
@@ -517,12 +527,14 @@ $core_image = array (
             'pl.js' => '087d58adc24f3658179387a023e6cc40',
             'pt_br.js' => '92ffbb2e638bc8c87e7ebf3f82fcbecc',
             'ru.js' => 'ff46b0aa6f52915a1ea9d01d69f8c8da',
-            'sk.js' => 'badbe540ace6a3c5550d08b1d890906f',
+            'si.js' => 'fa09d3895b20b20e3eab09d02d84242c',
+            'sk.js' => '8addd1ce8ffc6bfc641d1d2b89acf216',
             'sv.js' => '21c362d06bb1bd69fe32e78c8db76f21',
+            'tr.js' => 'c00a3160cad4e544d876a6e6f45c28e4',
             'zh_cn.js' => 'daccd8b8367b26a4eda17e59d0362a1a',
           ),
-          'editor_plugin.js' => 'dc23cefd8c4b2a4e8d4cf189dc3ff4a6',
-          'editor_plugin_src.js' => '9b8ac6a51ad4f7475db33c526edf9072',
+          'editor_plugin.js' => 'c2db1286b602688099f0636540380d1a',
+          'editor_plugin_src.js' => '45e9860fb7245215274253b486bbbecb',
         ),
         'table' => 
         array (
@@ -550,20 +562,20 @@ $core_image = array (
           ),
           'jscripts' => 
           array (
-            'cell.js' => '56f8445e29e942d54f7d1aa9928b6948',
+            'cell.js' => '9736b5040535364b7089fb3368b7d335',
             'merge_cells.js' => 'addf31a042f94c4a551a09e601e0c11b',
-            'row.js' => 'a09bc225d131f80657937301228bf100',
-            'table.js' => '02e090987c279975d2539a0666c1f24a',
+            'row.js' => '6604f88ae883171d526e975cee7c2252',
+            'table.js' => 'e247d3682bfa265f0cae3b1db062a7af',
           ),
           'langs' => 
           array (
             'ar.js' => '07644b95a9ad5c49de663b2a3a04af30',
-            'cs.js' => '190d3f151cadd996626bc5f7e34f8690',
+            'cs.js' => '93e09a404f4fbd70a709f09514eeea2c',
             'cy.js' => '6ef5b2ff6c532ba6db678a9a6cbdae34',
-            'da.js' => 'fc5549e124d41588f5442d8629dfa843',
-            'de.js' => '3ced3e7bb864cda5d3286c72cb68cc23',
+            'da.js' => 'f9ecc3d477138175c200751c0834f696',
+            'de.js' => '76954a7467f3a06ed00bdddf6ee9c6a4',
             'el.js' => 'e364e0ed0ebb84b8d467be97d2986562',
-            'en.js' => '0adcca1a7e161c2a8792803125e44955',
+            'en.js' => '1cdcc09befff65ef615e04ef5998de66',
             'es.js' => '36740763898c3523ccd4702959c1e849',
             'fa.js' => '564aea68aa0698528e7348f91c2f6054',
             'fi.js' => '84159b6c9108b7737f5077ce6a58d17a',
@@ -581,18 +593,21 @@ $core_image = array (
             'no.js' => 'cb5bdb1fda35c3856d95e4b392dbf987',
             'pl.js' => 'b7773896d9c3fc65da42419399e445b5',
             'pt.js' => '97371cc9cf27fa800b7f70ce71bb93e6',
+            'pt_br.js' => '595809a204495ffb45979383d60a7c50',
             'ru.js' => 'd65535eb441dfb566818f930e3ca1c8d',
-            'sk.js' => '004d5256cae656ffdbd607cb7ed69f0c',
+            'si.js' => '446575de3d46dc3ddebbf675d0afad44',
+            'sk.js' => '5caec2bc69ba077cb449f1c0aeacfb3d',
             'sv.js' => '796c1e4177a8a9a1de1875128ab9ebef',
+            'tr.js' => 'c67a13812a5de7604c7f634f404464e5',
             'tw.js' => '745b0a065b687fbec8f04824fd31ab5b',
             'zh_cn.js' => '56726bce1e01d446570eece427b2c75f',
           ),
-          'cell.htm' => '8aa144de97475fa44ed3d2f718576d1b',
-          'editor_plugin.js' => '07e6d8e4b783c9035ec8958f5d2cc8a4',
-          'editor_plugin_src.js' => 'ff624b06823668e2f6836b973f37d1b7',
+          'cell.htm' => 'dedb8e814f14d3c120de33967645a43d',
+          'editor_plugin.js' => '508bce2b3685ef444dbdef1d9658deb5',
+          'editor_plugin_src.js' => '1964baffc1c1171023159b804ccd4391',
           'merge_cells.htm' => '064077a06605ee8d66a6b65152cee797',
-          'row.htm' => '1e78ef287fe9741de8701861e4899e8a',
-          'table.htm' => '5b35c17bc1f13cc6a0352f2e0eef6e98',
+          'row.htm' => '5d60849478ebeebf51aa213fc77e3c53',
+          'table.htm' => 'b9198175b711170800888f5adad49d15',
         ),
       ),
       'themes' => 
@@ -601,9 +616,9 @@ $core_image = array (
         array (
           'css' => 
           array (
-            'editor_content.css' => '886d22dbb1b9f8fe2dd2912bda92b05d',
-            'editor_popup.css' => '36510217e0a1146ef809342fd690c8af',
-            'editor_ui.css' => '55cfecc718165c9c46f3895c6d8feba7',
+            'editor_content.css' => '06c6d00d668caf39935a7ddec3f27c63',
+            'editor_popup.css' => '2b02c3a47b5509232d086617fb1c8f10',
+            'editor_ui.css' => 'ca8e4d33ae188c79248e03bc229f5cf8',
           ),
           'images' => 
           array (
@@ -625,7 +640,7 @@ $core_image = array (
             'bold_ru.gif' => 'd70c4659f516157591c2470695c6d64e',
             'browse.gif' => 'bc730549b16f827d1c04db513e34d011',
             'bullist.gif' => 'f360470402affab13062de5ffbfb7f74',
-            'buttons.gif' => '4ad67d7e69bdc6cf5f43126479e39469',
+            'buttons.gif' => 'ae47baabfa7f32a9384d66ea5f944839',
             'cancel_button_bg.gif' => '23ba9eb7eb91efec2014bbf0ecb7422b',
             'center.gif' => '9cc7a9c3f4c2a697c32aaab6bb3185b8',
             'charmap.gif' => '948c608cfe393168642e3946097eba3d',
@@ -685,22 +700,22 @@ $core_image = array (
           ),
           'jscripts' => 
           array (
-            'about.js' => '0d8231212de38ac33fc0acc47640532c',
-            'anchor.js' => '6e13f946344844a532a8b5b06af27bba',
-            'charmap.js' => 'a7adfd8471aa61e073761c6e493fc888',
-            'color_picker.js' => '0ff9bfe2714875340d9e59fd53c6a379',
-            'image.js' => '078b0969e96b21b4dc27e9db654954fd',
-            'link.js' => '34691fcecdac824ae979ea17b973b637',
-            'source_editor.js' => '77768b7678cba38913db6d5ea2775776',
+            'about.js' => 'e2797544e2ff9d93619115c814cb499b',
+            'anchor.js' => '4fb4a4ac51be664a0dbb5ef2cdb15d7c',
+            'charmap.js' => 'f2be81dcf588ab0c63f38c8e784f5b92',
+            'color_picker.js' => '1cdc347fadca8d396fc114e473c8c8ee',
+            'image.js' => '84624af8d91ef4844b2a0c63a189e126',
+            'link.js' => '22b0443e24a34be45bf8b16053491edb',
+            'source_editor.js' => 'dd2694d599abed74c7106f88d2927944',
           ),
           'langs' => 
           array (
             'ar.js' => '8090fffee4c6c361bf0369e65c2b9039',
             'ca.js' => 'f55c7e272108c01a1caf8769612ef4d8',
-            'cs.js' => '550d9b8100b0142871f63ba6cb1f1fb2',
+            'cs.js' => 'f11d75cad646bb897b796cb5061a0b5a',
             'cy.js' => '12f9c9abd3366069334cc17bdeb35963',
-            'da.js' => '0644a7c5b17777edc84c20a113e324b0',
-            'de.js' => 'f545ff6811c479a3be5a59a1c87b61d0',
+            'da.js' => '48ad61a822ea772e2827913303fc6eaa',
+            'de.js' => 'ac585181157040af175c0bd1b730c636',
             'el.js' => 'd3a7a980f8450bef27f2bfb94139a304',
             'en.js' => '27f235aa378519f7ff3104113849df70',
             'es.js' => '1343b67a3a5593249cffe9cd29b69b1e',
@@ -722,54 +737,57 @@ $core_image = array (
             'pt.js' => 'dfe617da90d918a8b24d140d808ba526',
             'pt_br.js' => 'aa537e6193174896df59e85199cdd634',
             'ru.js' => '37dc9f53302adfa7a14eaab7a8518749',
-            'sk.js' => 'd7198fa7b206f61fa904649a265a7253',
+            'si.js' => '63cca8a8d20f9adefeb69bd8a2405e0e',
+            'sk.js' => '58be902d3de30fb9ff09ca20c5185431',
             'sv.js' => '7f2405c3f8dba8ccbef539f0ff743245',
+            'tr.js' => '79fb409a7113a63f4ab77d500a2e9ac8',
             'tw.js' => 'c89e7db9f8a188e3d61350a11a9f6c92',
             'zh_cn.js' => '3071235cfec7d275e6a5df476a83e0dc',
           ),
-          'about.htm' => '619a4399eab4106ab69c0f396bc9c805',
+          'about.htm' => 'f33f7fa8ff16f5ea67777719e51ea349',
           'anchor.htm' => 'fcdc4522e42d5e4eb46a43ba771a16c0',
           'charmap.htm' => '813a9c698d9150d198f438a7928bfa29',
-          'color_picker.htm' => '0bcf8966698f49beb0bcecaf739dbfc5',
+          'color_picker.htm' => 'e5641589c55d58143a5a14e5332428c0',
           'editor_content.css' => 'c67dd16fa9d0ac71d40b3e9ec5fb7fcb',
           'editor_popup.css' => '09a19d9580c1ab1bbabdf00b42c342fc',
-          'editor_template.js' => 'feced1821d1db4d3349a10ae2246cec5',
-          'editor_template_src.js' => '9613fb6d0b3252678b51221546d141dc',
+          'editor_template.js' => '4a3b60b65bb5c0fa28bf1368da8ce905',
+          'editor_template_src.js' => 'c578a7f6d47b535c65a6fa463e503cd9',
           'editor_ui.css' => '11c95cb5032c5364e5087ad0ccf7afe9',
-          'image.htm' => '06d8510b8a4e067875d8db9c94db877c',
-          'link.htm' => '03ce59f632a45de02502e2850f75a01a',
-          'source_editor.htm' => '857249a14076e7eb9f33bb3f2ebc7b40',
+          'image.htm' => '57004c89239afbec1ab4d618f644be28',
+          'link.htm' => 'de3d4b556c63bf601787b489fcd2637f',
+          'source_editor.htm' => 'bb64ff9db21467aaf0f2d9d3a69581ab',
         ),
       ),
       'utils' => 
       array (
-        'form_utils.js' => 'e55173781e963e6dacd35738977f2d19',
-        'mctabs.js' => 'f10164b4abcd39b02994fc4336ef7b1e',
-        'validate.js' => '4393d06d3f0ff6926a8f3c9652e360c9',
+        'form_utils.js' => 'f0e53fb802b3635f186bcc4939ac53ca',
+        'mclayer.js' => 'b87c35800faef8f62dd2d9d1615f7e56',
+        'mctabs.js' => 'ac9e95527e6315563fc6d6b8e3940150',
+        'validate.js' => '5fe68cbcb25c45b7b03eee42f879227b',
       ),
       'blank.htm' => 'a35859a0902cbc290d6638823d50df88',
-      'filelist.php' => 'e52182eca1d09b0aa1e8a641d1657c8f',
+      'filelist.php' => '5ced57bcdf114cfb89bddeda3171cb07',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'tiny_mce.js' => '841ce09ddab51ac98a695648e1886039',
-      'tiny_mce_gzip.php' => 'fc1ec1f35d54243ee42544576b8755ce',
-      'tiny_mce_popup.js' => '9bb618661dd938a8b827e8fadfcbec41',
-      'tiny_mce_src.js' => 'b81880c31e4ef4875d0d428f092de7db',
-      'wysiwyg.php' => '7cd0cba21ee478cccf8de40b3971ebde',
+      'tiny_mce.js' => '322024cc5c48a67c6521a7bc6eec869e',
+      'tiny_mce_gzip.php' => '4c9f5f5bfa1088b975f14826ec50c7e0',
+      'tiny_mce_popup.js' => '8d20eaae4dd10c098144d6e90ca497de',
+      'tiny_mce_src.js' => '8c05808c300a54c03c33acbdc1026383',
+      'wysiwyg.php' => '64cb1de7fe26923a88a49a357e51fd16',
     ),
     'admin_handler.php' => '0ec1d7b269c886f5b944cb79a9bea8c3',
-    'admin_log_class.php' => '1c2506e3c91728663a1442fa4e6e2eeb',
+    'admin_log_class.php' => '03c58cec4fca5d56dc93bd0727afa653',
     'arraystorage_class.php' => 'f33ed364dc9538eb66f939613f6edb7a',
     'avatar_handler.php' => 'f8d47315642779d1313366b4e7afc742',
-    'bbcode_handler.php' => '9d4071a5f8fb8087e7e8bf5c8276cd2e',
+    'bbcode_handler.php' => '937539c768ec16597585f2d5246c693c',
     'cache_handler.php' => 'd5c63cc3d519135dda2b15253701e5c8',
-    'comment_class.php' => '3e3cae9a7261b437be96b3f68a759a32',
+    'comment_class.php' => '698351d979f47758d40504eaaa0d0c48',
     'date_handler.php' => '281dc02610561490a2a04f7f82ed7852',
     'db_debug_class.php' => 'ccdb67ecff09771531a9280ad274c45a',
     'debug_handler.php' => 'ee6c77412e7421945e41d0ff91e57087',
     'e107_Compat_handler.php' => '34aa30c9de10593c88e03be063526ffc',
-    'e107_class.php' => '925e842e7f6dc0204e2f3c0373334f5a',
-    'e_parse_class.php' => 'cee5dcb5949ce12100ae8e62f8f7d940',
-    'emailprint_class.php' => '27a344a9fa041a87c15b33a5708ca390',
+    'e107_class.php' => '9d98b8f339cd8732ac78ac3257c57af9',
+    'e_parse_class.php' => 'ecc5b70ef891eb83887227427cda2b37',
+    'emailprint_class.php' => 'decdbd8e24a8a6b93dc7dc8f7844f794',
     'emote.php' => '4ff0e6587757229f1ec232d934767b71',
     'emote_filter.php' => '4107f6f61ffc10bd2d3120e80e913dc9',
     'encrypt_handler.php' => '947d387ecbc46acd1f6887733c3ced64',
@@ -782,14 +800,15 @@ $core_image = array (
     'forum_mod.php' => 'f18e7afd9b96d508367320c5e0d20167',
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
     'input_class.php' => '42c69401157b3ea6310458a34d81f90d',
-    'level_handler.php' => '1d5a812a1d7343e2daf315c3f2dc5d68',
-    'login.php' => '13dccae03b2812b0a6fcd02d22bf84f9',
+    'level_handler.php' => 'a85ac3ff4df6dd82e541bb8b388c2660',
+    'login.php' => '3763bce181fea403ae8935fc80e64ebb',
     'magpie_rss.php' => '5467d9db66a0c8067cd3efcc4eb8d6b6',
-    'mail.php' => '4bbf5962b9cee64d87cb2ddd71f64a6b',
+    'mail.php' => '6cf6ebf31a4fc1bc64f51a93f76d15f5',
+    'mail_validation_class.php' => 'd370179aa23983c166f41e958a2aee11',
     'message_handler.php' => '31d6c7181f5f4aa11d5bd4a7545fef16',
-    'mysql_class.php' => 'fe0433bc5794f0426465b62a76710359',
-    'news_class.php' => '67e72a95a4684f6d9fc7c75964006aa9',
-    'notify_class.php' => 'f58a397c31e75297215e3c1a846fbdda',
+    'mysql_class.php' => '09bfdc6ba9b8df3d8b5e20e6fb88f873',
+    'news_class.php' => 'bedfb100e21340d023c11dd203d65abf',
+    'notify_class.php' => 'c2c72a8371692ec2bf907c34c11423da',
     'np_class.php' => '0fe475b05dfda5b58d25b5f6d98e2715',
     'override_class.php' => 'ee86d0aafbeeb2231daccf317b4935a5',
     'parser_functions.php' => '835b14333175545dc50fafd7f0684b9b',
@@ -799,26 +818,26 @@ $core_image = array (
     'pcltrace.lib.php' => 'e6d4452c7f91df2f283f03389555b389',
     'pclzip.lib.php' => 'f251b0ee7eac90e8e6cf2f320c6444dd',
     'php_compatibility_handler.php' => '33469758065afd16bf9ddbca811ed545',
-    'plugin_class.php' => '7d17b43274ceb4cd5f0ee3011d90063a',
+    'plugin_class.php' => '65dc9ed66273d16aa46bf445360a019e',
     'popup_handler.php' => 'bf0d532a213b72c1ffff7cc65100d910',
     'pref_class.php' => '520d657c8ab51e766c75f0072e685444',
     'preset_class.php' => '9760aee1c5e6926be0cbc89281cc8812',
     'profanity_filter.php' => '32aa2077b8b1a2f560a2a0c47bcb4338',
     'rate_class.php' => '9c826e776436cb16890c096b0213d404',
-    'ren_help.php' => '58f8d7b8d65c27bc4cce96018653b52a',
+    'ren_help.php' => 'b0917d6dd1d2fa99348e8189fb8d0ba5',
     'resize_handler.php' => '314e78178f08d12b5618bb86d46dbe49',
-    'search_class.php' => '72385f91135494277edae204f0300dfc',
+    'search_class.php' => '7a7a330516843b96ba22b93039b53d41',
     'secure_img_handler.php' => '1efce70b84001e3cf3d6eabb71c441d7',
     'secure_img_render.php' => 'db068fac74a958efa8fe88e5eea73aa2',
     'session_handler.php' => 'eccf28807bf21c47094ba3bc2f209935',
-    'shortcode_handler.php' => 'a5d9873e789db336d55855c4874a633c',
-    'sitelinks_class.php' => 'ea6cb42b9153138eef0f074b37a90548',
+    'shortcode_handler.php' => '655c2087a7ffa345a0d6d9def2bc7500',
+    'sitelinks_class.php' => '31599347d0740dc104b4d087640bcee8',
     'smtp.php' => '9de01eae0badbbdbc787cde20da37bbf',
-    'theme_handler.php' => 'e3915a50fb79771b5823641b732f20b2',
+    'theme_handler.php' => 'e8969d3cfb8948905b7e7262f9cda460',
     'traffic_class.php' => '3c5c30de4e93dba65dfe3c0bab70840d',
     'traffic_class_display.php' => '6f13cf686cfea1cb3eefa4ab9cb3a971',
     'upload_handler.php' => '8e492d880083591c10b78f123c1d0c1c',
-    'user_extended_class.php' => '89572d63e21d0d4b124314d283368027',
+    'user_extended_class.php' => 'cdb9759209f1fa93afb77ff6363d8c76',
     'user_func.php' => '7c4bbf44b0f4fbbb08c92eedfd9878cc',
     'user_select_class.php' => 'cedee9fa6a85828009c12357260f31bd',
     'userclass_class.php' => 'edeea3cce6e6eb1a339d5788a442adb3',
@@ -1073,6 +1092,8 @@ $core_image = array (
         'link.png' => 'c337391172971fc7bfad5d37493b6a8b',
         'list.png' => '9459a55083a0cbeec1b8b37bfd4dee4e',
         'newpage.png' => 'd6e828ab3ebb55e35f27acf02b08a9c8',
+        'prefile.png' => 'e5504659984fe90e853cdedc7cfdeb42',
+        'preimage.png' => '566a32aa1a4edab39269016e3ca8bfc2',
         'right.png' => 'c4eadf4e16ddd81ca4abdc77ba2fbb26',
         'template.png' => 'e7ba32b7ac12fdd271182409b4ff68b6',
         'underline.png' => '53ecfb79d1b18088105b7fb72c64da8a',
@@ -1088,7 +1109,7 @@ $core_image = array (
         'image.png' => 'bcf769b884d5ff7dd8626e0bc6a7a69a',
         'new.png' => '4e4c7d4317565c073725c9734c92c6a7',
         'new_comments.png' => 'e98ac03d94a0ad3dd6fe675e7a8a0e88',
-        'newsedit.png' => 'cb9c16118631c1c8585ee812a80d80c3',
+        'newsedit.png' => '9cdc829c0990c413574aefacef591af7',
         'nonew_comments.png' => 'ca2fd973a74780884179c4038b6779e0',
         'password.png' => '5f1096711bbb6b80330cb908713361a4',
         'printer.png' => 'f282e7e4282963995a9fba1e83a232db',
@@ -1104,13 +1125,13 @@ $core_image = array (
         'answer.png' => '3bfe2b0afbb74b1f2e73c257e977c79a',
         'arrow.png' => 'ea063cad25087b0e5eade3ef85b473a7',
         'download.png' => '5d36d5ee607d0baf53f696eba3d5e2da',
-        'edit.png' => '773b4ea60d83e1cd396c5bfe30053b91',
+        'edit.png' => '68e2911af0b4c3feee5b257ee79b69ba',
         'email.png' => '3704f496998584fdb5c9323b2b541f8b',
         'file.png' => 'cf3131d735950872e6c20e2130a7d67b',
         'image.png' => '9d656d42fed67b6c5278f0a86495aeda',
         'new.png' => '3dccdafa66969c48e94ddc0619eeef60',
         'new_comments.png' => 'e98ac03d94a0ad3dd6fe675e7a8a0e88',
-        'newsedit.png' => '1f037b375ab335de830bb5a0e33e0993',
+        'newsedit.png' => '92abc5a51059544ea13f6c33d8d7e62e',
         'nonew_comments.png' => 'ca2fd973a74780884179c4038b6779e0',
         'password.png' => 'c45de7f4b9090a9c66465ddb6604ebc4',
         'printer.png' => 'a1cfe75bb0cd5c24f20c385ff11aad69',
@@ -1160,6 +1181,7 @@ $core_image = array (
       'icon23.png' => 'bb112d97ea0708cd924c530a7126cc4c',
       'icon24.png' => '4a0163c7bfc391e10b44423c9e1bd6c6',
       'icon25.png' => 'f16801a5eeb73ae3d17855f09bcc6b41',
+      'icon26.png' => '7988e05b7415ff46346b2768ce4fab72',
       'icon3.png' => '4304e744e5a9dc29462f7d2e50b1afa5',
       'icon4.png' => '94aa35dc3b74d3a295743a4c2543af20',
       'icon5.png' => '103cb1b2c14881c82cebfd381c99b463',
@@ -1171,6 +1193,7 @@ $core_image = array (
     'newspost_images' => 
     array (
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'welcome.png' => 'b4d1e47c0fb00c58019c6ca8ec58b62c',
     ),
     'rate' => 
     array (
@@ -1256,6 +1279,7 @@ $core_image = array (
       'user_star_lite.png' => '2c5ebe831fad4488baa18f29870f3258',
     ),
     'adminlogo.png' => 'd58bf8a12ade20daddb7b429291820cd',
+    'advanced.png' => 'da9ba3a1373f6aec0cebb5a74b1b3db2',
     'button.png' => '33f571f0b6d7ab79ddad37c43a0e4304',
     'e107_icon_16.png' => 'd7c8d13c9d066328c2543ecbfa079ebb',
     'e107_icon_32.png' => 'a0eef42517cdb6ad41c4b3e4a5ac25a7',
@@ -1263,26 +1287,9 @@ $core_image = array (
     'logo.png' => '86801dd5ba7d5c92ad4bd011bcbba48d',
     'logo_template.png' => 'fda21429b31592c9fedb0b369cfc6f1f',
     'logo_template_large.png' => 'f40e743323fcc41ccac62b85611ea634',
+    'pcmag.png' => '0d31ab5b4c0fddc7021e68975fe9f276',
+    'splash.jpg' => 'db8b03237542d6385f09204b06b75dc3',
     'thumb.php' => '8b727fd22077ae3d68da600df64199fb',
-  ),
-  'e107_install' => 
-  array (
-    'images' => 
-    array (
-      '01_bg.gif' => 'f8127c078c86f779c7aa9be87ebba4bd',
-      '01_bodybg.jpg' => 'ec50ebe30b313ea2a29bece9babb5973',
-      '01_footer.jpg' => '365531e7cdf511793900ce9dc781d2a6',
-      '01_hdot.gif' => '945bc76d6f25d2a32fafb0abe1933e1d',
-      '01_header01.jpg' => 'b19e48a23d9bde070fd0d489bcb556af',
-    ),
-    'defaults.php' => 'e25d64383dd8071a90cea9aea40ac1e2',
-    'forms_class.php' => '172f40973704ff32930819da0591e8ec',
-    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-    'install_template_class.php' => '34b3302a50bdbbe3d68fbec62b76b04c',
-    'installer_handling_class.php' => 'fba6a2159125d6ad4978dfc412c656b4',
-    'installer_template.html' => 'd07b1ca621f710a211ad697b35e2a798',
-    'style.css' => '4339f7934c0ec257fe711f197ada039a',
-    'writable_file_list.txt' => '65391cea1b3218eee4fc5e3535c4b6eb',
   ),
   $coredir['languages'] => 
   array (
@@ -1336,7 +1343,7 @@ $core_image = array (
           'users_extended.php' => '2f76e851de7f8e7c10fdbf6734a26cba',
           'wmessage.php' => '76c51ebd3a4741ff8b6056fc43d6088c',
         ),
-        'lan_admin.php' => '6cc55bba3dd17b307fb3c63887a9b5ae',
+        'lan_admin.php' => 'ea03b2f4debfc5a1fc6f5f3e1c1d19e0',
         'lan_administrator.php' => '52479dcc55b64304e19e6817805113a4',
         'lan_banlist.php' => '93871900972b966bb44be84358cb8a37',
         'lan_banner.php' => '973e0e440014a140c206ed8fb41762b6',
@@ -1346,7 +1353,7 @@ $core_image = array (
         'lan_db.php' => '0b0356aba57bdde59d1eb0e67b410d74',
         'lan_db_verify.php' => '914e6c8d07812999acaf12b8b9546e3b',
         'lan_docs.php' => 'e40ef5265dd4213fdcbfeb0735e1b8b0',
-        'lan_download.php' => '68207b2d998d57e497678f231780a765',
+        'lan_download.php' => '0845e8c644f869db4023c6e8597711f4',
         'lan_e107_update.php' => '3e43a1d44731edf1ea4d879070d797cf',
         'lan_emoticon.php' => '0107bb92032360586e6ab044c9107ebf',
         'lan_fileinspector.php' => '95a9866dd0e79ec78f82b94e0a3002d8',
@@ -1357,17 +1364,17 @@ $core_image = array (
         'lan_header.php' => '4aa8d1da55529cdc3538a296a1f3f284',
         'lan_image.php' => '896230c4ae2536d2985b4144177b133e',
         'lan_lancheck.php' => '2290fcdae54968d3f6b36ea66bac3af2',
-        'lan_language.php' => 'a13c0db5be1516fca57dbe5f8451f8e9',
+        'lan_language.php' => 'd0cbdd1e6804ad181bad555bba48414f',
         'lan_links.php' => '87b6f1e9e1d4f4003cd4972ecb78d30c',
         'lan_mailout.php' => '0512e1614ae80d6d905597d3058ed4d9',
-        'lan_menus.php' => 'b0209b3afb3ee403fd1e2bc98b56b4b5',
+        'lan_menus.php' => '9eb75fc5182d646be37512f26388bb17',
         'lan_message.php' => '1fee9af44b6c0567063a7e3ef6ce0263',
         'lan_meta.php' => '19cadf7c40c181617d29d7cda014156d',
         'lan_modcomment.php' => 'de020bf7ab35a1a78947ccaa22d29006',
-        'lan_newspost.php' => '08113235328bb78bae8df570fe8cc9ca',
+        'lan_newspost.php' => '192c986cdc49bcd855106daf9d7a45ec',
         'lan_notify.php' => '20420e34f6d40d682f805f080e9b984b',
-        'lan_plugin.php' => '11c198a23e593c4cc36db098e1351d5d',
-        'lan_prefs.php' => '9a25e2217d5aa7a1e44d1bf0a05a7c48',
+        'lan_plugin.php' => '5b9cd96ba2853bb593716c10352bf2f6',
+        'lan_prefs.php' => '1701bf959c55059fcd5cbb9104dd6381',
         'lan_review.php' => '3672ec83bd595a1276d4e92422a01975',
         'lan_search.php' => '5f94eee37fb8ff6b72ea1fa970adaa74',
         'lan_theme.php' => '88c6980540ddaa0a9454b33652ba6ffe',
@@ -1377,34 +1384,36 @@ $core_image = array (
         'lan_userclass.php' => '376e83620f15b699432be03be306a270',
         'lan_userclass2.php' => '96695a16dcb3065d1b559342e3ce00fe',
         'lan_userinfo.php' => '963b85c1b568949a0a3b13138b66f6a9',
-        'lan_users.php' => '50023e27b0a2360506c43d492f792eaf',
+        'lan_users.php' => 'a388ee260efd78e4d71b923cf50fd846',
         'lan_users_extended.php' => '8609d5e152626f063ead99a01dad1f95',
-        'lan_wmessage.php' => '29d337043bd8ad60570bf86035e66764',
+        'lan_wmessage.php' => '633713bb4a238b9dff0f9e07aa0a73a8',
       ),
-      'English.php' => '1b96c93c2e76249670e93443c7c84e38',
+      'English.php' => 'f31c2f547bad5cbd406ed2860d1179d1',
       'lan_banner.php' => 'd0164123c23189e638319f9d5e5c51d2',
       'lan_comment.php' => 'c31306b87956ddf5c484627b852a05b0',
+      'lan_contact.php' => 'c3f9c9e5330a3281ea202122b2001dcc',
       'lan_date.php' => 'ba06e3bd210f693198a3af0e2ebd3949',
       'lan_download.php' => 'fabde3ced3545360788ae79caefc77d5',
-      'lan_email.php' => '9412773718e51caf27fece5b7967612b',
+      'lan_email.php' => '5701be3196a099b557116f78e3d6411a',
       'lan_equery_secure.php' => '76b0f3eb6f7a2ebd3a8bce0535b59093',
       'lan_error.php' => '6d9d075ddae8a7f1bbe6aeaf1902c416',
-      'lan_fpw.php' => '595da083a6106fdd44b38f606272c56f',
+      'lan_fpw.php' => '285fa06c60ff347acaeddf0b22f108f4',
       'lan_installer.php' => 'ecb981846ae4133910cd88a900b26219',
       'lan_links.php' => 'e7bf891d1d110461981d66a85375629e',
-      'lan_login.php' => 'a427fd47a5e6024a98e063958e0e0374',
+      'lan_login.php' => 'ddfcd36fa924f0c755cf7a70c6eddf33',
       'lan_mail_handler.php' => 'cb709f5d9f70f101ce4ed97a03371c98',
       'lan_membersonly.php' => 'e5c3b6854ff65c9f808f07be28a2efac',
-      'lan_news.php' => '67c0565f29bdbd1b0e88baf6b85fe5fb',
+      'lan_news.php' => '31fe1da0d87283ef9ee2dfd6b7e30c7a',
       'lan_newspost.php' => 'ee8751ad450e930685dd3380e4934de9',
-      'lan_notify.php' => '03832685366bddb33a5a20aa50ff637d',
+      'lan_notify.php' => 'eb237133b386d60c3371c1c473c5e184',
       'lan_np.php' => '65ba11f5995c807bfb97292852b563b4',
       'lan_online.php' => '1b9dc9c8c5d2219515cabedaffb92d39',
+      'lan_page.php' => '82e0a80781e7c47dfc6ccc2fe1d98224',
       'lan_parser_functions.php' => 'ec48830e0e968a048dea9b99acae925b',
-      'lan_prefs.php' => 'cfd8e9fb6d7bbafa4171be61b6f04f99',
-      'lan_print.php' => '0ffcf98e2adba66d98a8150e2e2f27fd',
+      'lan_prefs.php' => 'c994de665b7b5ee30f13ef213ffaf64d',
+      'lan_print.php' => 'cac0bc4d3c2f0699d25271de4a5705ac',
       'lan_rate.php' => '45a26814ab80e326269592441274c55f',
-      'lan_ren_help.php' => '37f00e15cf7d86dc12aa8e642598344c',
+      'lan_ren_help.php' => '275363011afa2dc5e186b506b44928b6',
       'lan_request.php' => '5772f9d5fbf76b9505da9c1fa9146b89',
       'lan_search.php' => '3e098dc3477132d0a1205894c633e667',
       'lan_signup.php' => '721a5e4f0b97a4e845d79b27e5b3f02a',
@@ -1416,7 +1425,7 @@ $core_image = array (
       'lan_upload.php' => '582e6b65bbd78a9d005cdc5c710031d9',
       'lan_upload_handler.php' => 'c7693775c570174fdc02a4ff30d74028',
       'lan_user.php' => '91c9426e418f910c4575cd80a39e1cb1',
-      'lan_user_extended.php' => '332cbd63ac96455139a02fd5984856d6',
+      'lan_user_extended.php' => 'd38e511e73c39f92c752f70c2f790116',
       'lan_user_select.php' => 'ad1f9ab521914589901cf0922f6234a1',
       'lan_userclass.php' => '2026fc51dff8137b74f59868d3286a56',
       'lan_userposts.php' => '39cc25b6a96bbce8282469646d827633',
@@ -1434,18 +1443,22 @@ $core_image = array (
     array (
       'images' => 
       array (
-        'icon_ldap.png' => 'd39b9f7c7145c8e77777be3f8008180f',
+        'icon_ldap.png' => '9bf0b1cdc85e1d73145ca1b250b97842',
       ),
       'languages' => 
       array (
-        'ldap_auth_English.php' => '7ddd482b187a3640577dfe096abecf62',
+        'English' => 
+        array (
+          'lan_alt_auth_conf.php' => '29a1383be7917466e7887fa4dc190db6',
+          'lan_ldap_auth.php' => '7ddd482b187a3640577dfe096abecf62',
+        ),
       ),
-      'alt_auth_conf.php' => '47d053b8f4877a850afe4899d61cc52f',
-      'alt_auth_login_class.php' => '7c780e322d88b53b536127ca52113eab',
+      'alt_auth_conf.php' => '0fead50e68daccb3051642813e9a33f6',
+      'alt_auth_login_class.php' => 'ffa9472e0a6c25ea176ac17ba2293f2a',
       'alt_auth_readme.txt' => 'ae4beaf43db928004733b1613a4d51be',
-      'alt_login_class.php' => '5898910371e92568f4a148b05d0f3375',
-      'ldap_auth.php' => '913210392741f9d4fd0cc9a241f7e1e6',
-      'ldap_conf.php' => '195be5018989d1b115bce2fcdf5d6be0',
+      'alt_login_class.php' => '1aa0a0c3d415bb79978b1d294b0ed513',
+      'ldap_auth.php' => '29552d84408768c42506ac2dfc026a13',
+      'ldap_conf.php' => '9a1f665ac821d59741ba06f459168966',
       'plugin.php' => '5c6b2db81104b598e24a7259eb0829df',
     ),
     'alt_news' => 
@@ -1518,11 +1531,11 @@ $core_image = array (
       array (
         'search_parser.php' => '10b2691e5deefab192950366ddd477b9',
       ),
-      'admin_config.php' => '0f8095efc25626be6e0b96ad0c9fa27d',
+      'admin_config.php' => '4a6e8f653a876cdcd261ed5d1a68fd25',
       'calendar.php' => '305803d3ff5e71d1101b97947cf2ed4c',
       'calendar_menu.crc.gz' => 'f9ca5e0bb13d1057c5853ff418672649',
       'calendar_menu.php' => '3588b0302bc35d31a7c5e7975dbb8ee3',
-      'calendar_shortcodes.php' => '09b7c81f098eafa8409cb423619228d6',
+      'calendar_shortcodes.php' => 'e352893f59f63e7c248388744b075532',
       'calendar_sql.php' => '1ad53920d7123797b610f716560b5f90',
       'calendar_template.php' => 'a94bd5836cb686ea458c8f2adfdf7b64',
       'config.php' => '7caf06d10b5d5a694d8151af4a438c96',
@@ -1556,13 +1569,13 @@ $core_image = array (
         'search_advanced.php' => '7bcdc9fb372a08a7cb84f6715a1005d4',
         'search_parser.php' => '3deaeb79a68520b4a8cc20dbeb2adfc5',
       ),
-      'admin_chatbox.php' => 'd6fbf07ac651d81412454540e8191be8',
+      'admin_chatbox.php' => '5117820ebbfe574bdcf0230b125737f2',
       'chat.php' => 'dadd2139062d9484e9c4da0c6c17be23',
       'chat_template.php' => 'c8caa5a8bab7bb3f92c6e67db21fac13',
-      'chatbox_menu.php' => '8ce5813d78cf9cd8469225484965d928',
+      'chatbox_menu.php' => '12381275d33947e10b883e0aa0921837',
       'chatbox_sql.php' => '49ca5089c917a7150353bb5015b0bb09',
       'e_list.php' => '54c9e8007d65d43d38cdf7a4b83b202e',
-      'e_notify.php' => '3ec4481499fc43aa87660eb287316317',
+      'e_notify.php' => '646562386d9304be614c9444a9d80436',
       'e_search.php' => '8be6d5e211622b68ad30c87b8c48a9ef',
       'e_status.php' => '4095075210a977ce32970fa2d4d47d16',
       'plugin.php' => 'ce532c202bad991082dd6d750186132c',
@@ -1587,7 +1600,7 @@ $core_image = array (
       array (
         'English.php' => 'b58dd5a66fb7ebb1282a0852ac05f33f',
       ),
-      'comment_menu.php' => '1d26a5ca500640fc83140e54df825294',
+      'comment_menu.php' => 'ad8c5351874a0436ebc11211a921e508',
       'config.php' => '061b499f91613dc9de23d80b57478f1e',
     ),
     'compliance_menu' => 
@@ -1609,9 +1622,9 @@ $core_image = array (
       array (
         'content_class.php' => 'c51b92f9fa7da4d9bd6c9d1c6e7b8419',
         'content_convert_class.php' => 'a7b1a443b6832090df6d07529b88895f',
-        'content_db_class.php' => '3ed3957d4886c503813e87cff36e48ff',
+        'content_db_class.php' => 'f4bae1990b84057e872367f3a3816a73',
         'content_defines.php' => 'b68ed4b3e0e11e3b8a9a019e35f1266d',
-        'content_form_class.php' => '59ecbb0da8f26f705c46ad4fbade1673',
+        'content_form_class.php' => '6bd883c4c55e6d93659f1a8f1773e01b',
         'content_preset.php' => '47bb57d11f0a5093e329de2a8ec91da8',
       ),
       'images' => 
@@ -1690,7 +1703,7 @@ $core_image = array (
         'English' => 
         array (
           'lan_content.php' => 'c8a6ea60b4e2216896d922d800916119',
-          'lan_content_admin.php' => 'c68722c50f862daee0aa1b9a2cf6d890',
+          'lan_content_admin.php' => 'de38e0dcfbd34ed2527fabdaaa96d050',
           'lan_content_frontpage.php' => '44b321d7fabf833a29aae356e5cde12b',
           'lan_content_help.php' => '625ac288e89c2b14d24f2d8b55f9dc39',
           'lan_content_search.php' => 'b3bef6af9b87a50a7bc08c8edfc8c20f',
@@ -1727,13 +1740,13 @@ $core_image = array (
         'content_submit_type_template.php' => '2ecdf332fdafac9913463b6551b7c8ba',
         'content_type_template.php' => '4a7eceee04a41d770ae861bc488fa400',
       ),
-      'admin_content_config.php' => '350a20244c7bac70ba5f07a49fcb65a3',
+      'admin_content_config.php' => 'd07c0b1e1155a37a062e4c5c09819b7a',
       'content.js' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'content.php' => '543158a4ead10c950d8a135325e4b549',
-      'content_manager.php' => 'e87fb0b7023bf1ce399d422632008c2f',
-      'content_shortcodes.php' => 'f95944a0d9ddf1ce3cacb450400adb83',
+      'content.php' => '8b49f8cd6f84f931dd2e97606743d111',
+      'content_manager.php' => 'baf111b1bbe250c5d98129bcea74d124',
+      'content_shortcodes.php' => 'a24b8330e10f7fef50efd22637e49fb6',
       'content_sql.php' => '385fee6407009526265420574e0a9d7f',
-      'content_submit.php' => 'b110a753337eb1328ee3e77f73a58fd9',
+      'content_submit.php' => 'ae6bcd4c4845c143763ffd1633e7d2ce',
       'content_update.php' => '453fd2d08574fc86a16d985555b2125a',
       'content_update_check.php' => '6d09994e14249a2b4a2f470d4e7b1dbc',
       'e_comment.php' => 'c4d430fdbb36f332ec5a8d36e3c8bf44',
@@ -1744,7 +1757,7 @@ $core_image = array (
       'e_search.php' => '37d78e15f619b82d5ed26498956f6976',
       'e_status.php' => '7f0fba2cec748d73be2575ad77403150',
       'help.php' => '3274a242c5c8b399820463f0552f56d5',
-      'plugin.php' => 'b901a25bd8b1901e81816d6a3a41c002',
+      'plugin.php' => '1ab4ebd1f2b029bb68eca2c600aeea69',
     ),
     'counter_menu' => 
     array (
@@ -1792,6 +1805,7 @@ $core_image = array (
           'aim.png' => 'f381fc1c46428b956843693d19aa01e2',
           'announce.png' => 'c51fd6cc77f08f98225e913deb0d2f0e',
           'announce_small.png' => 'e0e0a9b9a047bf7e1c19ad78d225ebae',
+          'bar.jpg' => '55a798bbd68cea713391a0faeb66361c',
           'closed.png' => '9774aa8a59a691d9279365b502dd57cf',
           'closed_small.png' => 'f7591f94d8b64afe6cc148630837a219',
           'delete.png' => 'bd4daef13c867a7ff73c8d48204bd73e',
@@ -1838,6 +1852,7 @@ $core_image = array (
           'aim.png' => 'f381fc1c46428b956843693d19aa01e2',
           'announce.png' => '9d7c87aaf5b305b5c74c09e3eb22646f',
           'announce_small.png' => '97d50189cb4d19c4fcfdf34a3087fbef',
+          'bar.jpg' => '55a798bbd68cea713391a0faeb66361c',
           'closed.png' => '74484653b03febd3fb356210abeb9ce6',
           'closed_small.png' => '8485faac08b30ab8e8460d625232a133',
           'delete.png' => 'bd4daef13c867a7ff73c8d48204bd73e',
@@ -1882,7 +1897,7 @@ $core_image = array (
         'English' => 
         array (
           'lan_forum.php' => '3c4fda1bf5ba7dc00eb0d24b0799858b',
-          'lan_forum_admin.php' => 'f0982d743be3a934d50b52ef43338b8b',
+          'lan_forum_admin.php' => 'd24034672ee1e4b6a6f6886597d36a56',
           'lan_forum_conf.php' => 'ec7cbcd72aed0ba0f0dc3c8df6328c26',
           'lan_forum_frontpage.php' => '3d3e2556862d6b7d31d94eec58c4c007',
           'lan_forum_post.php' => '3eb6a3084c3c45013dd5dbbc0154a807',
@@ -1902,40 +1917,40 @@ $core_image = array (
       'templates' => 
       array (
         'forum_icons_template.php' => 'a0547a599ea208f6de2321856edb7d31',
-        'forum_post_template.php' => '563bb9d09c6123c794c322b0139f1b6c',
+        'forum_post_template.php' => '98e1fe4f6b32168685a5cd0448b3f1e3',
         'forum_posted_template.php' => '5453cd40704291f4e90fafc01294c113',
         'forum_preview_template.php' => 'f8b368bcfc2f13f576619f698ebbf899',
         'forum_template.php' => 'aeacaadf82d66480cdac248bd966b2d7',
-        'forum_viewforum_template.php' => 'ab6585ea4e4f1992f838f0b6a17960f4',
-        'forum_viewtopic_template.php' => '18b36002fb50a897b56be2b0cc43d0da',
+        'forum_viewforum_template.php' => 'a546da08077dbb6702edd71ed57a8c33',
+        'forum_viewtopic_template.php' => '2d21d03c37c42d9d9266bc6affe76fe1',
       ),
       'e_emailprint.php' => 'd08e9c3d652d8df862bf0010d7e5e4c0',
       'e_frontpage.php' => 'bd591645c0c252ceec60ebb5a268d462',
       'e_latest.php' => '721ca318363e9d6c4bb291826fd3319d',
       'e_linkgen.php' => '39bce31258b5a5f19d4c688ebe953177',
       'e_list.php' => '8678122a98851a8f37e6f1ec12517438',
-      'e_search.php' => 'f9975c5b927fc51d24797a9405db9c5f',
+      'e_search.php' => 'a7c868faac72619990f69e84a022a8ea',
       'e_status.php' => '6523fd5e51725f3a48ec1088bfcaf603',
       'forum.php' => '25f82775bde7b3ffde7e808dc7a81ad5',
-      'forum_admin.php' => '8eae405f592ed0562936549230e259e1',
-      'forum_class.php' => 'd60d399b245ca7037e2aa6df133b27a4',
-      'forum_conf.php' => '308cb36f271db64543e11ea2b7ac4e90',
+      'forum_admin.php' => 'dd8b7bd6951ea1d4cd163bdb8ee8d232',
+      'forum_class.php' => '35e45ed8fab12d71b0ac5efe4d691cbd',
+      'forum_conf.php' => 'ac5ff7e7d5a90297b68010fc83030741',
       'forum_mod.php' => 'a4e499c98a6b3e71f3e6f98dd4f13ee6',
-      'forum_post.php' => '2a45ac4dc671a32a583a5fa4babd5dd8',
-      'forum_post_shortcodes.php' => '5e6800b7d266e8461ab6f33ce9131118',
-      'forum_shortcodes.php' => '2adedee73cf2f4c1c8657186f5f1c300',
+      'forum_post.php' => '816f25f33e281198ee56b0daaddc750a',
+      'forum_post_shortcodes.php' => '1e6048a9993f0ae3bad80ce66db9f589',
+      'forum_shortcodes.php' => '74eb88dba7119de6f988eb3a749fe7ab',
       'forum_sql.php' => 'd0b2b1b8ddfdd690f4cc4046adb007ed',
       'forum_stats.php' => '702ba8105f38176a52fe80024bba87d2',
       'forum_test.php' => 'e19a80e4085d633e07b774f620c6b2c8',
       'forum_update.php' => 'a8f2480a128c8813dd9749725e27e9c4',
       'forum_update_check.php' => '400cbad222aa0aafd2ce5f25d9e956e3',
       'forum_uploads.php' => '98bafb7ecc916edf9a454352556d9cda',
-      'forum_viewforum.php' => '2a3c71c1be0f6225121428ab611b72bf',
-      'forum_viewtopic.php' => 'e59f0b2910169f6fbe8a66ec14861c93',
+      'forum_viewforum.php' => '243e31317c177f045c872035aab1a6ec',
+      'forum_viewtopic.php' => '7f06606ab50c695d49ca2c3ff8af69ec',
       'index.php' => '6ff0b314688860135b7d2da0cac579aa',
       'newforumposts_menu.php' => '0a5fc8f0350de3fbbee116fc8a250a02',
       'newforumposts_menu_config.php' => '006665ba278c2d41f5c61922fba7f292',
-      'plugin.php' => 'fc8698eb3dcac2157bc8b4bd5f040f8f',
+      'plugin.php' => '6c93a5f6ac5ef3c8b9eac6dd9308f5ed',
     ),
     'gsitemap' => 
     array (
@@ -1944,15 +1959,15 @@ $core_image = array (
         'icon.png' => 'b090b7d8429fe418c923664ba724323c',
         'icon_16.png' => 'edb31df87b0e0b1ccc4d773e83c05d03',
       ),
-      'admin_config.php' => 'fa7276447c0951f2f5e5d277ff0a3eb9',
+      'languages' => 
+      array (
+        'gsitemap_English.php' => '0f6a1e23ff1418f2e700dd353eb593b9',
+      ),
+      'admin_config.php' => 'a75ffce6ccd9121dbb3978df73c8b6de',
       'plugin.php' => '7b0c73d8954a2336ae83e3325bb0d5d9',
     ),
     'integrity_check' => 
     array (
-      'crc' => 
-      array (
-        'core_v0.617b20040917.crc.gz' => 'f927e4ffb52d0dbbd0075e010213c147',
-      ),
       'images' => 
       array (
         'integ.gif' => '9a3d33d4b794565621eb65077e165183',
@@ -1961,9 +1976,9 @@ $core_image = array (
       ),
       'languages' => 
       array (
-        'English.php' => '7076cc59eaced079519950a3bd11dd94',
+        'English.php' => '5fbbf3cdfafec554b5e5fdbf8ecc26af',
       ),
-      'admin_integrity_check.php' => 'd2f995f87f8c830829cf3c2f2443df0c',
+      'admin_integrity_check.php' => 'd2ceb73c469f3e351dbc23e977b582b3',
       'plugin.php' => '49f8875eb494f53a5a07c18eda253e6f',
     ),
     'lastseen' => 
@@ -1989,7 +2004,7 @@ $core_image = array (
       ),
       'languages' => 
       array (
-        'English.php' => '6133930d19207dc7f801ce41c4b24b37',
+        'English.php' => 'c4f7460c04682dc8970f9be93892f98a',
       ),
       'link_images' => 
       array (
@@ -2006,14 +2021,14 @@ $core_image = array (
       'e_frontpage.php' => '8080f21aaad89305f798b42b16f55200',
       'e_latest.php' => 'b7d1982de4eebef605b16825f78dc672',
       'e_list.php' => '91a9d55f694bd0c7fdb8e0355c5e2b72',
-      'e_notify.php' => '67772c05e5aa95195f7fca6424b80eec',
+      'e_notify.php' => '8e7f1732e01dba37de7eb6a584f54b5c',
       'e_search.php' => '76879f9eb3ec3c5bca3821d8d2b9d3bc',
       'e_status.php' => '45e55f8ebdaad8815e2248a93814619f',
       'help.php' => 'b484aaec8466956c8447092918209c90',
-      'link_class.php' => '96a0bff34f84fc817dc37a4b382603cb',
+      'link_class.php' => '4263af5a401ca93876921b5a78527249',
       'link_defines.php' => 'da901b6c5c0038c6b142f6c0739da62b',
       'link_menu.php' => '83ef16dcc5b6d1debfcdd7e3ac3e0ff3',
-      'link_shortcodes.php' => 'e66a846bbe88a3119c092ad75d0bb01e',
+      'link_shortcodes.php' => '3b0f70b0cba1094a47ec9545f3887c40',
       'links.php' => '9a44aa4f3601cc6fe8fc4e7e41d94532',
       'links_page_sql.php' => '430a2f586a9bdea53c1ae6f6950c3d4e',
       'links_template.php' => '8c0737874378afa69945c4641a50a24c',
@@ -2063,13 +2078,13 @@ $core_image = array (
       'section' => 
       array (
         'list_comment.php' => '060f35f0dc1151c0794f9043ea9cedb4',
-        'list_download.php' => '7c2338ed53d4535543eb425702ebfa1d',
+        'list_download.php' => '439a0bebdd709108cc89ec1d628e4cb0',
         'list_members.php' => 'f35d568d4df07e492dfd29271b03bc82',
-        'list_news.php' => '5bb02a4d1c852604e157b5e4831963c1',
+        'list_news.php' => '96b3518e2096f74f4fad1f44814eaf2c',
       ),
       'admin_list_config.php' => '943f459ceae8e431e836f8b1a5ae940d',
-      'list.php' => '56ac32b1a770aaffd866f4ef1f348074',
-      'list_class.php' => '667ece6063770f22ca525143850c0e09',
+      'list.php' => '2376bbbbc677032981da8ab26833556f',
+      'list_class.php' => '0b74061fd286b275eb8f2bb2cdb3005a',
       'list_new_menu.php' => 'd06c3318fcd8dc2f5937db641d495c47',
       'list_recent_menu.php' => '14fa72454d8c697a18687383c363b692',
       'list_shortcodes.php' => '265b8545fea55d6b021761186092805f',
@@ -2181,19 +2196,19 @@ $core_image = array (
       'log_sql.php' => '7dde4d6eb8cb5e8641fe989ee1645928',
       'log_update.php' => 'fa6297902cd0c7b2580ad481138b7c90',
       'log_update_check.php' => 'd8467e1d40186030049694dbc1344766',
-      'loginfo.php' => '39a9b8408c518a44d4b02e078cf73e44',
+      'loginfo.php' => '05d0b276365e3c34a3e5c5ff83e745d4',
       'plugin.php' => 'f9e28fa3f7922fe7894970dec5837b8f',
-      'stats.php' => '83782e147713895e012b2bf2d27b2898',
+      'stats.php' => 'a11da89521d35e559f17f54f922a4151',
     ),
     'login_menu' => 
     array (
       'languages' => 
       array (
-        'English.php' => '73886d057519edad54e7825001f31f89',
+        'English.php' => 'e14d2befcda2ebcf201daeae30d9a7bd',
       ),
       'config.php' => '1e86ebfdf0a643b16c156bcfb4599d0d',
-      'login_menu.php' => 'b840181757001d26868f56a7523d5136',
-      'login_menu_shortcodes.php' => '84fc323de8bf02a5f5e6633b3ec7cea4',
+      'login_menu.php' => '96b104801476eb1b93a51fcaeec47455',
+      'login_menu_shortcodes.php' => 'e16cf2ffc6ee98fbc7c838fdb999e541',
       'login_menu_template.php' => '484c870762a8865aa9acfc7fa1058736',
     ),
     'newforumposts_main' => 
@@ -2209,7 +2224,7 @@ $core_image = array (
         'English.php' => 'd57f3dc0d1218cf953a47442766cbf60',
       ),
       'admin_config.php' => '26a2c0fa70292098ec6f6ff4d28d3faa',
-      'newforumposts_main.php' => '3b5eadfd4b5656ceb46a30bf8ef17201',
+      'newforumposts_main.php' => '832857aba44417494b192587e579c1d1',
       'plugin.php' => '84f20499b6d76ca860d022087c0f5f47',
     ),
     'newsfeed' => 
@@ -2221,7 +2236,7 @@ $core_image = array (
       ),
       'languages' => 
       array (
-        'English.php' => 'e4fb5a82a26dde89f46359e3dd23cd7d',
+        'English.php' => 'cf1939e6d42d1944c842085a3e16be30',
         'English_frontpage.php' => '0803a214d93bc7471d72158ec9b70c8f',
       ),
       'templates' => 
@@ -2229,12 +2244,12 @@ $core_image = array (
         'newsfeed_menu_template.php' => 'f244f9bfae71f6745e00297cb7b85b24',
         'newsfeed_template.php' => 'b7486c4329ef2dc828b33103c7961ce3',
       ),
-      'admin_config.php' => '664073bb5d5d0d569bc27ad6f12d637b',
+      'admin_config.php' => '45639309c20db247ccb6ae09a08b1728',
       'e_frontpage.php' => '7456012f82dfd01642bd20bad217f002',
       'help.php' => '095668106dcb9849112c4ee0d6047d6c',
-      'newsfeed.php' => '5cd6b4f2b54fc1bbb3f16ce2a784c1b7',
-      'newsfeed_functions.php' => 'f175ec473a4d49082817e1cd6221ce84',
-      'newsfeed_menu.php' => '756d76ca87bf95520045d8d401fbfc32',
+      'newsfeed.php' => '443377493ab767123656a9170825e740',
+      'newsfeed_functions.php' => '616e0b3ad470b80d74e76c78f65e28a9',
+      'newsfeed_menu.php' => '96f40a01de7c6c3e25af8f01c333a758',
       'plugin.php' => '00e452ff56ef8a8f859c8b07cdb263f5',
     ),
     'newsletter' => 
@@ -2248,7 +2263,7 @@ $core_image = array (
       array (
         'English.php' => '721814ba19cb5f2c7e341e2263eab494',
       ),
-      'admin_config.php' => 'bfaaacfc7ba858c6e98f194f57789de7',
+      'admin_config.php' => 'da4e92fdbadad1aaf3bb6713c197cd60',
       'newsletter_menu.php' => '8e5712dfcb6afcca8943694dcd0b6420',
       'plugin.php' => '490de09a33c7e2fb78efdf51363b152c',
     ),
@@ -2331,7 +2346,7 @@ $core_image = array (
         'English.php' => 'b0dec1e7b2040019c5cbe5325764c836',
       ),
       'admin_pdf_config.php' => 'd357827c50ff7b2ae1b3e36907b6da53',
-      'e107pdf.php' => '3f5fa1fc96c25d9e6293cf3aabafcaeb',
+      'e107pdf.php' => 'e5513194af41842f285752113dc225cc',
       'fpdf.css' => 'befed91b93191349206442531b538a1c',
       'fpdf.php' => '4897de460c820c1b93a5e22d6c3ac1a0',
       'pdf.php' => '4a7e1940edff3a2565b726c637e6a67a',
@@ -2354,7 +2369,7 @@ $core_image = array (
         'mail_send.png' => '4a026b166e6610688d2deda4d63034eb',
         'mail_unblock.png' => '8fa1ee89687ae196966f1e67aaccc7ef',
         'newpm.gif' => '689474c03106805685d0264e182223f2',
-        'pm.png' => 'dcad17e3b707338d2adc1072004c4a11',
+        'pm.png' => 'd9f1657fea6c1077d6859c81534155a5',
         'pvt_message_16.png' => 'e15931d11463e83dac301b0b9a48d752',
         'pvt_message_32.png' => 'd7f0e11f88e3b50e58f6ccfbdc82ae93',
         'read.png' => '27a055b798bd90c745496fb31778402a',
@@ -2369,15 +2384,16 @@ $core_image = array (
         'English.php' => 'b99f148aa9aa2bfd5dd4dc7d3d418d5c',
       ),
       'plugin.php' => '165186ae246f47d77fb9d81c29347435',
-      'pm.php' => 'be4857ccdd8ace11fc0efdbf8d293703',
-      'pm_class.php' => '06ddd1fdabc939c7e8b4e490d9e1cb33',
+      'pm.php' => 'b0a4eac8e31d51d6f78a11cb3e6de11a',
+      'pm_class.php' => '8e956a5bccfc0433cdec02fe4c9f5308',
       'pm_conf.php' => 'aaa537f209842614a42d54bcefe78ab4',
       'pm_default.php' => '847889c19d0d7fd7cbc1f94d9c5aef6c',
       'pm_func.php' => 'f8f4c52602002f02815affec8f9d409f',
       'pm_notes.txt' => '30ace9d54eacd12d03963d69c3e35022',
-      'pm_shortcodes.php' => '975d577f935a5b277168de0341d79c58',
+      'pm_shortcodes.php' => '250ef73a10bd80ebe2be0ee654c10276',
+      'pm_sql.php' => '8557a2f0fb9f0c2642b101a91b643666',
       'pm_template.php' => '92a23276fda2d9e7525f8403b8ad98b4',
-      'pm_update.php' => 'c1e6ef784d4222178cc9bd8ae2bd5a3c',
+      'pm_update.php' => '8878dda806cefc5165e6ea0849ffd88b',
       'pm_update_check.php' => '5d1af27ce4a65e774f9a41f85cac1bd9',
       'private_msg_menu.php' => '9e344b4f4213dace19a676bbf4a06096',
       'sendpm.sc' => '2ea12e5eec111258d6d722e47c9dfbfa',
@@ -2407,8 +2423,8 @@ $core_image = array (
       'admin_config.php' => '95d503bc93c50d3276781317d4bf3b9a',
       'oldpolls.php' => '13d68a42672203b8c9ce5a1a5b6f3840',
       'plugin.php' => 'b4e8e7a33940356d2a6faf1b8846c5c7',
-      'poll_class.php' => 'cbe6158b3c5b1372ae707f6ba34756b0',
-      'poll_menu.php' => '7543dcae5748745cd6a3e9fbabe27d21',
+      'poll_class.php' => 'cebffcaa622d3cd05b3cfc57a91e4c56',
+      'poll_menu.php' => '730e4a16ce8ce2b714dcd94351f5ed9a',
       'poll_sql.php' => 'ed44a896fee8626c23ae65a75600e65e',
     ),
     'powered_by_menu' => 
@@ -2435,7 +2451,7 @@ $core_image = array (
       ),
       'admin_prefs.php' => 'd99bf6d3a0f90b6ddca7635e52a36923',
       'plugin.php' => '475f6affeddb3a29747540fdc45b1f4e',
-      'rss.php' => '0d09ef4e4f9316086d0276622c8ab937',
+      'rss.php' => '1daf1c1577b97d028874f1a097e5c42e',
       'rss_menu.php' => 'cc8f342473add2dad7e2da52ac7eaa9c',
       'rss_meta.php' => '978d31cf47e6eb8a68313af9c36eebf8',
     ),
@@ -2450,7 +2466,7 @@ $core_image = array (
       array (
         'English.php' => '157e15f41465107d55837cbc83b71e19',
       ),
-      'search_menu.php' => 'fd61f9a57db44c91a9246155abfddde4',
+      'search_menu.php' => '361e02e6a900b550f88853c4e1cb3e7d',
     ),
     'sitebutton_menu' => 
     array (
@@ -2475,7 +2491,7 @@ $core_image = array (
       'modtrackback.php' => '9b1dcf78e9ad584256233d859e54910b',
       'plugin.php' => '088f0a317eb981da97db92f7aa678232',
       'trackback.php' => '4fe4400fba3cfd48742d124bb45bb16b',
-      'trackbackClass.php' => 'a3c4c7218d44709d29faccec7eb28c13',
+      'trackbackClass.php' => '07ed895726203198d268456f0bac250e',
     ),
     'tree_menu' => 
     array (
@@ -2522,7 +2538,7 @@ $core_image = array (
       ),
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'preview.jpg' => '133903d6fbc1be968b8304d819e17f2a',
-      'style.css' => 'd19df28158e91d734b24f5ba5054732e',
+      'style.css' => 'e1d26ea54adf0cb39e7137626fe6e06d',
       'theme.php' => 'eba144fcd332be7122946938a93383a9',
     ),
     'e107v4a' => 
@@ -2684,6 +2700,7 @@ $core_image = array (
       'images' => 
       array (
         'arrow.png' => '99204ef7a34285620da66e0e31fedc18',
+        'bar.jpg' => '55a798bbd68cea713391a0faeb66361c',
         'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
         'bullet2.gif' => '016eee9667e96062b520d0b96cc870fe',
         'button.png' => 'a8f71f7c2b44cd79e1ec6c1f873ad1ea',
@@ -2722,8 +2739,8 @@ $core_image = array (
       'nav_menu.css' => '5bae34254dc5184c033369d29d78367d',
       'pepper.css' => '3ea8d306e0f1cd1e09139def31ab50fd',
       'preview.jpg' => '2f2b6cc30d15b139551bc754676bbd9a',
-      'style.css' => 'e336b30e077ff3654131dd9c6dab9cff',
-      'theme.php' => 'cbe03a603125654f340f48dd45d1fee2',
+      'style.css' => '5d0532553271e3725366ccf5406a1296',
+      'theme.php' => '8af9767318d6f7061a04ca4f919a62ee',
     ),
     'khatru' => 
     array (
@@ -2768,7 +2785,6 @@ $core_image = array (
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'newforumpost.php' => 'a76aeeefa8644873eb6036cb4386ece5',
       'news_template.php' => '755b0287f7e8d5e9c2fc32cb52623c0b',
-      'nexter.css' => '1c78fdbb8412e204a1c3e10cc1c357e3',
       'poll_template.php' => '6e3fa8a8884caf0f9704cc9ee97e0053',
       'preview.png' => '0a3eb21b6c75d90b4670fffe85a503d8',
       'style.css' => 'cc5969b7c0b85187bee511916ede705d',
@@ -2845,8 +2861,8 @@ $core_image = array (
       'newforumpost.php' => 'f9145e24b475da80de81d99b6984380a',
       'news_template.php' => '94d7e562f1c41972c7a44262b8f2c7a9',
       'preview.jpg' => '4c9a40feea0a9218cc21ec8ced993f2d',
-      'style.css' => '307691b1373c3d0b587c76b347d30b65',
-      'theme.php' => '9a56c43a4b0d3e89b74b06d58fcfc5f6',
+      'style.css' => '030e282f1b18319e5c097d6a239abcca',
+      'theme.php' => '24ef522ac180a04a05b65d28ba89a432',
     ),
     'leaf' => 
     array (
@@ -2914,8 +2930,50 @@ $core_image = array (
       ),
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'preview.jpg' => '6ec6ddfc1b06fab490d0fe379b2b1627',
-      'style.css' => '978f0f471784bd051c0ec6217ee749da',
-      'theme.php' => 'e6521a12eba8f78677da08430e3d0266',
+      'style.css' => '818e939c2f4b06555de4df8180108fe6',
+      'theme.php' => '7c39b9137ed1e0a9174e1b1bed200a37',
+    ),
+    'reline' => 
+    array (
+      'images' => 
+      array (
+        'arrow.png' => '99204ef7a34285620da66e0e31fedc18',
+        'bar.jpg' => '55a798bbd68cea713391a0faeb66361c',
+        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
+        'bullet2.gif' => '6df113704c36c3ed86f44fc88503d018',
+        'button.png' => 'a8f71f7c2b44cd79e1ec6c1f873ad1ea',
+        'buttonover.png' => 'bec50a33995c2f70dd89a732737ad8b9',
+        'comments_16.png' => '5a31a66549aab06440a1a1d0264a2033',
+        'cube.png' => '6d01471d1379c812e04d822e5301077a',
+        'e_adminlogo.png' => 'b2188a076b70f7cc0981da45c491ca48',
+        'e_logo.png' => 'f4bb289a40e735fff9a42fa1de7201b9',
+        'email_16.png' => '7b27857f73b66f385be93af0b60dafb6',
+        'header.jpg' => '4dae8971f28673371a8f7716e0dd442e',
+        'header.png' => 'ac3914d85997e245f571a2e668a967b5',
+        'loggedin.png' => '7458c8c20ce11d74f8f3fafcd9402b75',
+        'logo.png' => 'f4bb289a40e735fff9a42fa1de7201b9',
+        'paperclip.png' => 'd133ce6b53a8bbbd3925849b5a422102',
+        'polls.png' => '72236d4f8e8fc40f40a3c0a1e6e21227',
+        'post_it_bottom.png' => '685be21682203026297eb63492c66e77',
+        'post_it_middle.png' => '9652946323bdc59123926c1ee766c5a3',
+        'post_it_top.png' => '74dadc3b173df45107eb4451617892b8',
+        'postedby_16.png' => '7988e05b7415ff46346b2768ce4fab72',
+        'print_16.png' => '33786409119f454d12179adfcbd1dc70',
+        's_nav.png' => '1410dd483b11cf2462f2ba0650e08070',
+        'search.png' => '5ad275b2a983a16383b55eff6c9b5def',
+      ),
+      'languages' => 
+      array (
+        'English.php' => '2652d37db3c58e4b0833ae5984d7fd9d',
+      ),
+      'admin_style.css' => '7b3e215e66175cfc6aee6013d342dacd',
+      'admin_template.php' => 'a9e40a36c3033061ea0ff8b82cb3d94e',
+      'cube.sc' => '2f5fb58541941f7f123e7e4602854ab7',
+      'full_width.css' => 'f709f68afc666b996e3cf6789ad55433',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'preview.jpg' => '32187a6c28f271fbcacfb8d88501f8b3',
+      'style.css' => 'f4b0b97fd4e19156a171364c15c0fe12',
+      'theme.php' => 'defadbfefe53c300278a3f01630d7d62',
     ),
     'sebes' => 
     array (
@@ -2949,23 +3007,25 @@ $core_image = array (
       'admin_template.php' => '06a94da410ae06ec3356a71bf83e460d',
       'banner_template.php' => '32bc1beb69f8e64ba87ec8f3e147f189',
       'comment_template.php' => 'fd6a018e95e63b89e643770f4c196c9b',
+      'contact_template.php' => 'cdec695984d5b4b732432ac1c422f915',
       'content_template.php' => '8c9db686452c730a63f10a4fc5321a09',
       'download_template.php' => '68e0b1ecfdce5e84f1ade02fa54160f6',
       'email_template.php' => '9df3dfc8c37436beadd2289704abd088',
-      'footer_default.php' => '02b283e19bdf2073a7e1a1744c434fe2',
-      'fpw_template.php' => '50781c0811168d00ce0a4bb20efe6321',
-      'header_default.php' => 'aab3ea7dfa9b4b92d42fe9950fdbc741',
+      'footer_default.php' => '6142e1b93e2d7767f2f3c4cc8476dec9',
+      'fpw_template.php' => '7ffa9eab35718920689be87853e7fb2a',
+      'header_default.php' => '8cd0d9e616b617ca1e2b31c567a62adc',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'links_template.php' => '85ef33318c55de19572677503d2150c2',
       'login_template.php' => '7bb39469ed118c9de2404843815e5445',
       'membersonly_template.php' => '2684bca5627b0eb69ff2ed6dabcd5120',
       'online_template.php' => '78f08941a9cbc88d3d790c27c0f963b5',
-      'search_template.php' => '1583bec5348cd3cfd5430e32585451df',
+      'search_template.php' => 'ed449aa17f4d5a67a33073206acd564f',
+      'signup_template.php' => 'd2efcb85bfc098302f283f22f4a449b8',
       'sitedown_template.php' => 'a2aca2b60243de677b40b161d2f31499',
       'trackback_template.php' => 'b32c8ec44783adabb8f8edb2b548ce0c',
-      'user_template.php' => '2471000cb7d1b139962e6e3a15774344',
+      'user_template.php' => 'ec95afa50a031c0636c8331b7313b253',
       'userposts_template.php' => 'b96c9f8ed78c88e12f1d1fa9cfa1e196',
-      'usersettings_template.php' => '46d6f3a9b59106990cd1ca6d662aeddf',
+      'usersettings_template.php' => 'b669c25972e658a5ca4e70d136eff8cf',
     ),
     'vekna_blue' => 
     array (
@@ -3000,10 +3060,11 @@ $core_image = array (
   'article.php' => 'ffa0f8d06c81b950f7d597f07adc7dac',
   'backend.php' => '41931f6d75e636bc04327db4c95e8f1c',
   'banner.php' => '2bc7cccd5544dc129c134a9409495b13',
-  'class2.php' => '91b43aac8797d9ea1d99b09c700efaf1',
+  'class2.php' => 'c4add7d51dca510855aca872b4188fc8',
   'comment.php' => '9216d5a7426d8ce13b1b4ae4bd8470dd',
+  'contact.php' => '9ab0eef17f64fea15608fc33a05f8708',
   'content.php' => 'df72673f99ec9a990fa0cc310744cd40',
-  'download.php' => '249055e50d53cb695b1b63558cc6c8c1',
+  'download.php' => '9ef953a2d7d75d03e21fd67387142685',
   'e107.htaccess' => 'd0957d0486a70f6a30a6542d58e2b0c6',
   'e107_config.php' => 'd41d8cd98f00b204e9800998ecf8427e',
   'email.php' => 'ea29e51b63c6a3fa4e151f3b332f3ba1',
@@ -3012,30 +3073,29 @@ $core_image = array (
   'forum.php' => '073cb93fc951454a7a36f4d56500a1f6',
   'forum_viewforum.php' => '6d2da7070760843488232d050416f016',
   'forum_viewtopic.php' => '8019d433c0ccad804c1b7592107ec5db',
-  'fpw.php' => '7ee7bff3bc5f6af6dbc6a553f2a5b868',
-  'gsitemap.php' => '30eb85c2489575a9fa8bba5a7b6501bb',
-  'index.php' => '0c4b1224282d18003b2d1c1b8ee38a27',
-  'install_.php' => 'e3f69a9ae3b03a6d457e47e8b4edaaf8',
+  'fpw.php' => '961e6e8c93cd8a46e489b0cb6a72270f',
+  'gsitemap.php' => '3862da969ed4277397711bd87e56c623',
+  'index.php' => 'c03738b8f641e0291f4bd987998940f7',
   'links.php' => '120bb137157f9eff7907d7f941e45253',
   'login.php' => 'aff538c7630695838d875bdf2e4eb3c7',
   'membersonly.php' => 'afd8a3307907bcefd1481f50248891f3',
-  'news.php' => '652be0a6bae6b35188ab98ee8fc04a26',
+  'news.php' => '3f311ccd4eba07b8cbcfbd511029c841',
   'online.php' => '411ae8b0cb440eb75f7d8b4cbac1fd53',
-  'page.php' => '83d6b673356b13478f3593f99cf263bb',
+  'page.php' => '17ee1a6203b48d48dc50ededa15ef0db',
   'print.php' => '46af3f3d539386c13f4664697fa98470',
   'rate.php' => 'ad8d4612c7b746245503f348dbee0f66',
-  'request.php' => 'ece5d73b48c983dae522468d7691874f',
-  'robots.txt' => '14ed83cbfef310b7995f7495e7f56088',
-  'search.php' => '460c35a96497c27dbbc96951eaa73c1a',
-  'signup.php' => '34fbe964b3841326aa93d7f2f151e657',
+  'request.php' => 'a35c56ef51905e12aa08068436842fde',
+  'robots.txt' => 'dd859fb82ad097f9a0e6e66da927ae40',
+  'search.php' => '18fb250e58a081a58f36587392a23805',
+  'signup.php' => '528191f8c24f502a5df7347ea135faa7',
   'sitedown.php' => '442a32ae7cc3cd7df3cfa10bb48e66ea',
   'subcontent.php' => '78e732447d765db78a71a747da87e1dc',
   'submitnews.php' => '6a85d7ab7a0063773dd5a2754cc7fcab',
-  'top.php' => '339e10237ea0a959aee05d75872de694',
+  'top.php' => 'cd3ec060860af3233a7c04d259c3f27c',
   'upload.php' => '3736ba6368c1f314a90c7b2c90ae4063',
-  'user.php' => 'baf54215fb9396c815d4d04edfcfae8c',
+  'user.php' => 'bf22925877ce35eb2326f49122fcab16',
   'userposts.php' => 'c07c072cd0862674c1e338c5c70f053c',
-  'usersettings.php' => '01913c92d383893bc7c35baa62e49599',
+  'usersettings.php' => 'c56d6d1d131358b709a78e6f93662097',
 );
 
 $deprecated_image = array (
@@ -3134,6 +3194,9 @@ $deprecated_image = array (
       'index.php' => 'dcc74dfdbaecfdfa27727007dbce195d',
       'license.txt' => '05389e64589d247475013880d06595ef',
     ),
+    'includes' => 
+    array (
+    ),
     'sql' => 
     array (
       'db_update' => 
@@ -3148,7 +3211,7 @@ $deprecated_image = array (
     'downloadOLD.php' => '958dc19cccb83c007ed12c6e2a546ce4',
     'download_.php' => 'caeea790f670fad2d631f097f861cea9',
     'download_category.php' => '2675265f706ec209c540ba11a68cfd85',
-    'filetypes_.php' => 'f951037335e993337792606cc1475cec',
+    'filetypes.php' => 'f951037335e993337792606cc1475cec',
     'forum.php' => 'bb850eef7ba9ead930abd61efc19d57b',
     'forum_conf.php' => 'dd2043f57a0cfe21abde3a89b22cc6be',
     'header_links.php' => 'd8aa17c4b82d54a5f55772c6486db602',
@@ -3162,6 +3225,7 @@ $deprecated_image = array (
     'submenusgen.php' => '71692992153cec9779e4802d1477f182',
     'submitnews.php' => 'ed51e2d023ce3add366909676c433947',
     'theme_prev.php' => 'f09a872ba601fd10209e4106fe955fba',
+    'users_extended_predefined.php' => '732e9d318628fcce3f199e4cba09296b',
   ),
   $coredir['docs'] => 
   array (
@@ -3205,6 +3269,9 @@ $deprecated_image = array (
       'news.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
       'news.xml' => 'd41d8cd98f00b204e9800998ecf8427e',
     ),
+    'bbcode' => 
+    array (
+    ),
     'cache' => 
     array (
     ),
@@ -3220,6 +3287,9 @@ $deprecated_image = array (
     'images' => 
     array (
     ),
+    'import' => 
+    array (
+    ),
     'misc' => 
     array (
     ),
@@ -3230,11 +3300,26 @@ $deprecated_image = array (
         'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
       ),
     ),
+    'resetcore' => 
+    array (
+    ),
+    'shortcode' => 
+    array (
+      'batch' => 
+      array (
+      ),
+    ),
     'default.css' => '3c16cdade7f5fc5bf43e9fe0adf3d2b7',
     'style.css' => 'ce301a8f5bf6cb07dc11ead5d45cb578',
   ),
   $coredir['handlers'] => 
   array (
+    'calendar' => 
+    array (
+      'language' => 
+      array (
+      ),
+    ),
     'htmlarea' => 
     array (
       'examples' => 
@@ -3673,12 +3758,19 @@ $deprecated_image = array (
       'parse_profile.php' => '1b6547b7a8f55d230fc4eb3871a465a9',
       'parse_username.php' => '95225d3fd11a5b709bc54ddecd168009',
     ),
+    'phpmailer' => 
+    array (
+      'language' => 
+      array (
+      ),
+    ),
     'search' => 
     array (
       'search_article.php' => 'bcd831877eabcb2bce0f1c6f35421ce8',
       'search_chatbox.php' => 'ab312af791d9cdf38d889874890b9591',
       'search_content.php' => '73d580b68397625a5291b61f96a67816',
       'search_forum.php' => '3ddb52ca4e130949afce3d14c64c3ce9',
+      'search_links.php' => 'c48015fc4e706e33f1a10c941157aa4d',
       'search_review.php' => 'f65cda9b2e9d7924c27f7005289e7d96',
     ),
     'sitemap' => 
@@ -3699,6 +3791,105 @@ $deprecated_image = array (
     array (
       'basic.php' => 'd81de16f7f0e4eecf599459abe8cd065',
     ),
+    'tiny_mce' => 
+    array (
+      'langs' => 
+      array (
+      ),
+      'plugins' => 
+      array (
+        'contextmenu' => 
+        array (
+          'css' => 
+          array (
+          ),
+          'images' => 
+          array (
+          ),
+        ),
+        'emoticons' => 
+        array (
+          'images' => 
+          array (
+          ),
+          'langs' => 
+          array (
+          ),
+        ),
+        'flash' => 
+        array (
+          'css' => 
+          array (
+          ),
+          'images' => 
+          array (
+          ),
+          'jscripts' => 
+          array (
+          ),
+          'langs' => 
+          array (
+          ),
+        ),
+        'ibrowser' => 
+        array (
+          'images' => 
+          array (
+          ),
+          'langs' => 
+          array (
+          ),
+        ),
+        'iespell' => 
+        array (
+          'images' => 
+          array (
+          ),
+          'langs' => 
+          array (
+          ),
+        ),
+        'table' => 
+        array (
+          'css' => 
+          array (
+          ),
+          'images' => 
+          array (
+          ),
+          'jscripts' => 
+          array (
+          ),
+          'langs' => 
+          array (
+          ),
+        ),
+      ),
+      'themes' => 
+      array (
+        'advanced' => 
+        array (
+          'css' => 
+          array (
+          ),
+          'images' => 
+          array (
+            'xp' => 
+            array (
+            ),
+          ),
+          'jscripts' => 
+          array (
+          ),
+          'langs' => 
+          array (
+          ),
+        ),
+      ),
+      'utils' => 
+      array (
+      ),
+    ),
     'errorhandler_class.php' => 'e2703328fd8379fcd88a3ce3063f7485',
     'poll_class.php' => '51c2f954ebf1844cacf15760bc9c0872',
     'security_handler.php' => 'a1e7f2dbc17c3ebef7101b5227d25ada',
@@ -3709,6 +3900,9 @@ $deprecated_image = array (
   ),
   $coredir['images'] => 
   array (
+    'admin_images' => 
+    array (
+    ),
     'avatars' => 
     array (
     ),
@@ -3726,6 +3920,12 @@ $deprecated_image = array (
       'icon5.png' => '460caf982d6aba5be255f0fadd3b4ae8',
       'star2.gif' => 'be6622a8dc7c4e1c71b31f894817b1a5',
       'star4.gif' => 'b660fb0c498a9dbe834238bc8ffcf6a1',
+    ),
+    'emotes' => 
+    array (
+      'default' => 
+      array (
+      ),
     ),
     'emoticons' => 
     array (
@@ -3760,6 +3960,9 @@ $deprecated_image = array (
       'template2.png' => 'ccd1fad3a1793d7d35c4f4797b97034e',
       'tongue.png' => '679f29c38a2ae17559b7315be0e2d711',
       'wink.png' => '1155a9a73dc9f9b541d0a2f86021d878',
+    ),
+    'fileinspector' => 
+    array (
     ),
     'filemanager' => 
     array (
@@ -3832,6 +4035,15 @@ $deprecated_image = array (
         'but_create.png' => '6f275e35506f4c6db810f06ad3d5a021',
         'but_delete.png' => '937b33c01d8494589ed873ea9f0ea1af',
       ),
+      'bbcode' => 
+      array (
+      ),
+      'dark' => 
+      array (
+      ),
+      'lite' => 
+      array (
+      ),
       'access.png' => 'd30fa59d45ad714bd25761094fe6065e',
       'admin.gif' => 'b4d2ee0f18dee92d807e9277785a036a',
       'aim.png' => 'e836f8d0370a420f3be4438f8c9fb027',
@@ -3889,6 +4101,9 @@ $deprecated_image = array (
       'up.png' => 'a2b49db69fbbeec34a721b659a1a4851',
       'upgrade.png' => 'e433f87f34318096664419b1628abd2f',
       'user.png' => 'b31bb198e4c899d636bd8359edc46301',
+    ),
+    'icons' => 
+    array (
     ),
     'install' => 
     array (
@@ -3948,6 +4163,15 @@ $deprecated_image = array (
     ),
     'rate' => 
     array (
+      'box' => 
+      array (
+      ),
+      'dark' => 
+      array (
+      ),
+      'lite' => 
+      array (
+      ),
       '1.png' => '09c643761793c2b124cf1370e8dd3a7f',
       '2.png' => 'e715366760fbb1abe60b80fea12c7f47',
       '3.png' => '74f2d630e67e085887d7e0dc6bad4453',
@@ -3959,12 +4183,20 @@ $deprecated_image = array (
       '9.png' => 'd9779dfe46afb591c25c90035b489183',
       'empty.png' => '6f9c56755d5387c7a71f56fea1b31c13',
     ),
+    'user_icons' => 
+    array (
+    ),
     'logo3.png' => '8fd7855db31a4a1eb3b4c193d72f1da1',
   ),
   'e107_install' => 
   array (
     'images' => 
     array (
+      '01_bg.gif' => 'f8127c078c86f779c7aa9be87ebba4bd',
+      '01_bodybg.jpg' => 'ec50ebe30b313ea2a29bece9babb5973',
+      '01_footer.jpg' => '365531e7cdf511793900ce9dc781d2a6',
+      '01_hdot.gif' => '945bc76d6f25d2a32fafb0abe1933e1d',
+      '01_header01.jpg' => 'b19e48a23d9bde070fd0d489bcb556af',
       'bar.jpg' => '9940695361e5c477c440f9649c0c190b',
       'bar2.gif' => 'eb85624e746f91fd33511783cccc92a6',
       'bar2edge.gif' => '6d273a53798e532091bd6354f1e39c60',
@@ -3991,6 +4223,14 @@ $deprecated_image = array (
       'topleft.png' => 'd2e88f7429b07911299547c5e327dfa1',
       'topright.png' => '0086a3f25ccd0a15c4e05bd762ce5b7c',
     ),
+    'defaults.php' => 'e25d64383dd8071a90cea9aea40ac1e2',
+    'forms_class.php' => '172f40973704ff32930819da0591e8ec',
+    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+    'install_template_class.php' => '34b3302a50bdbbe3d68fbec62b76b04c',
+    'installer_handling_class.php' => 'fba6a2159125d6ad4978dfc412c656b4',
+    'installer_template.html' => 'd07b1ca621f710a211ad697b35e2a798',
+    'style.css' => '4339f7934c0ec257fe711f197ada039a',
+    'writable_file_list.txt' => '65391cea1b3218eee4fc5e3535c4b6eb',
   ),
   $coredir['languages'] => 
   array (
@@ -4078,6 +4318,16 @@ $deprecated_image = array (
       ),
       '.#admin_menu.php.1.1' => '0274cefd7c29ea4dbc1940cb33681368',
     ),
+    'alt_auth' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+        'ldap_auth_English.php' => '1215a618e17f87dcd4e268f23634121a',
+      ),
+    ),
     'alt_news' => 
     array (
     ),
@@ -4121,18 +4371,33 @@ $deprecated_image = array (
       'languages' => 
       array (
       ),
+      'search' => 
+      array (
+      ),
     ),
     'chatbox_menu' => 
     array (
+      'images' => 
+      array (
+      ),
       'languages' => 
       array (
+        'English' => 
+        array (
+        ),
         'English.php' => '1b336ae212a99cead96aa77c846b1e32',
+      ),
+      'search' => 
+      array (
       ),
     ),
     'clock_menu' => 
     array (
       'languages' => 
       array (
+        'admin' => 
+        array (
+        ),
       ),
     ),
     'comment_menu' => 
@@ -4143,8 +4408,65 @@ $deprecated_image = array (
     ),
     'compliance_menu' => 
     array (
+      'images' => 
+      array (
+      ),
       'languages' => 
       array (
+      ),
+    ),
+    'content' => 
+    array (
+      'handlers' => 
+      array (
+      ),
+      'images' => 
+      array (
+        'cat' => 
+        array (
+          16 => 
+          array (
+          ),
+          48 => 
+          array (
+          ),
+        ),
+        'file' => 
+        array (
+          'tmp' => 
+          array (
+          ),
+        ),
+        'icon' => 
+        array (
+          'tmp' => 
+          array (
+          ),
+        ),
+        'image' => 
+        array (
+          'tmp' => 
+          array (
+          ),
+        ),
+      ),
+      'languages' => 
+      array (
+        'English' => 
+        array (
+        ),
+      ),
+      'menus' => 
+      array (
+      ),
+      'search' => 
+      array (
+      ),
+      'templates' => 
+      array (
+        'default' => 
+        array (
+        ),
       ),
     ),
     'counter_menu' => 
@@ -4175,6 +4497,48 @@ $deprecated_image = array (
       'fader_menu.php' => '29d4a0d5b14a0aa72a30976be585f527',
       'plugin.php' => '42c8f133e6f07b88419a1ca53577a149',
     ),
+    'featurebox' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+      'templates' => 
+      array (
+      ),
+    ),
+    'forum' => 
+    array (
+      'images' => 
+      array (
+        'dark' => 
+        array (
+        ),
+        'lite' => 
+        array (
+        ),
+      ),
+      'languages' => 
+      array (
+        'English' => 
+        array (
+        ),
+      ),
+      'search' => 
+      array (
+      ),
+      'templates' => 
+      array (
+      ),
+    ),
+    'gsitemap' => 
+    array (
+      'images' => 
+      array (
+      ),
+    ),
     'headlines_menu' => 
     array (
       'languages' => 
@@ -4200,6 +4564,7 @@ $deprecated_image = array (
         'core_v0.613b0.crc.gz' => 'fff4d2627a94d784ad724899d0a9946f',
         'core_v0.614b0.crc.gz' => '6aab75883c7e1f1864664d82eb6c90fd',
         'core_v0.616b0.crc.gz' => 'e9f235efa33791fdccbdfae53daff128',
+        'core_v0.617b20040917.crc.gz' => 'f927e4ffb52d0dbbd0075e010213c147',
       ),
       'images' => 
       array (
@@ -4212,17 +4577,69 @@ $deprecated_image = array (
       'integrity_check.crc.gz' => 'd96701aacb1b825ece3ecd242440ed41',
       'integrity_check.php' => '3f5f8bd4c8320b4fcfc9f4f90e5988f2',
     ),
-    'list_new' => 
+    'lastseen' => 
     array (
       'languages' => 
       array (
       ),
+    ),
+    'links_page' => 
+    array (
+      'cat_images' => 
+      array (
+      ),
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+      'link_images' => 
+      array (
+      ),
+      'search' => 
+      array (
+      ),
+    ),
+    'linkwords' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
+    'list_new' => 
+    array (
+      'icon' => 
+      array (
+      ),
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+      'section' => 
+      array (
+      ),
+      'new.php' => 'c2da39db43158fd4ec42c5bb96b18913',
     ),
     'log' => 
     array (
       'images' => 
       array (
         'trans.gif' => '39bc952559e5a8f4e84ba035fb2f7390',
+      ),
+      'languages' => 
+      array (
+        'admin' => 
+        array (
+        ),
+      ),
+      'logs' => 
+      array (
       ),
     ),
     'login_menu' => 
@@ -4250,6 +4667,27 @@ $deprecated_image = array (
       'config.php' => '9143a4dd38c8d64f85c1d7aa9c0d9726',
       'newforumposts_menu.php' => '5aef7894633ac7331db129978f6e8fd7',
     ),
+    'newsfeed' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+      'templates' => 
+      array (
+      ),
+    ),
+    'newsletter' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
     'online_extended_menu' => 
     array (
       'images' => 
@@ -4269,6 +4707,36 @@ $deprecated_image = array (
     array (
       'languages' => 
       array (
+      ),
+    ),
+    'pdf' => 
+    array (
+      'font' => 
+      array (
+        'makefont' => 
+        array (
+        ),
+      ),
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
+    'pm' => 
+    array (
+      'attachments' => 
+      array (
+      ),
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+        'admin' => 
+        array (
+        ),
       ),
     ),
     'pm_menu' => 
@@ -4321,6 +4789,21 @@ $deprecated_image = array (
       'pm_readme.txt' => '899470c8f26b498b0acb97d5da379cdf',
       'pm_sql.php' => '78df752baf20937c018f8566233255ad',
     ),
+    'poll' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+      'search' => 
+      array (
+      ),
+      'templates' => 
+      array (
+      ),
+    ),
     'poll_menu' => 
     array (
       'languages' => 
@@ -4339,10 +4822,25 @@ $deprecated_image = array (
     array (
       'languages' => 
       array (
+        'English.php' => 'c07a387ac63ca8ac17c647ddb9e8ae5d',
+      ),
+      'config.php' => '9e2df6bf318b6875ecd91d7317affa34',
+      'review_menu.php' => '49b830d9aec06181083835dc9226f062',
+    ),
+    'rss_menu' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
       ),
     ),
     'search_menu' => 
     array (
+      'images' => 
+      array (
+      ),
       'languages' => 
       array (
       ),
@@ -4377,6 +4875,15 @@ $deprecated_image = array (
       'poll_layout.php' => '64c00593afcc0acf47581eb8c664f6f6',
       'theme.php' => '8337371ab26f9239c5943f2b41b5aedc',
       'theme_layout.php' => '1359a7d0f3317b2a2140a918a05aa716',
+    ),
+    'trackback' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
     ),
     'tree_menu' => 
     array (
@@ -4606,6 +5113,15 @@ $deprecated_image = array (
       'style.css' => '09e8a97633d55445b74a7a613cb68ed6',
       'theme.php' => '0c570eb8fc0cb67aa5c6d95e7511bdc5',
     ),
+    'crahan' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
     'e107' => 
     array (
       'images' => 
@@ -4630,6 +5146,9 @@ $deprecated_image = array (
       array (
         'bar2.gif' => 'eb85624e746f91fd33511783cccc92a6',
         'bar2edge.gif' => '6d273a53798e532091bd6354f1e39c60',
+      ),
+      'languages' => 
+      array (
       ),
       'forum_design.php' => '707aab8cf22d8bd6e15e737dbb280cab',
     ),
@@ -4686,6 +5205,77 @@ $deprecated_image = array (
       'style.css' => '7036dffcf48ba7130d7577a21cfcc18e',
       'theme.php' => 'fe620620e6425cff7d0ca9b5d9b783ba',
     ),
+    'human_condition' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
+    'interfectus' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
+    'jayya' => 
+    array (
+      'forum' => 
+      array (
+      ),
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
+    'khatru' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+      'nexter.css' => '5fe2726366937901fcc630220ef125da',
+    ),
+    'kubrick' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+      'nicetitle.js' => '9e5ac53aafbcd2b2b5d642412cf4c338',
+    ),
+    'lamb' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
+    'leaf' => 
+    array (
+      'fontstyles' => 
+      array (
+      ),
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
     'leap of faith' => 
     array (
       'images' => 
@@ -4731,6 +5321,12 @@ $deprecated_image = array (
       ),
       'style.css' => '2700aef19622a7aac0b0f0158e235bac',
       'theme.php' => 'd8ca4804d2e972d0620575bca9823c19',
+    ),
+    'newsroom' => 
+    array (
+      'images' => 
+      array (
+      ),
     ),
     'nordranious' => 
     array (
@@ -4860,6 +5456,15 @@ $deprecated_image = array (
       'style.css' => '8435df83ddb57eba3b522bdba8cf8e6c',
       'theme.php' => '2c3d55140d0563b1c57437b80ccb0e2d',
     ),
+    'sebes' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
     'smacks' => 
     array (
       'images' => 
@@ -4921,6 +5526,15 @@ $deprecated_image = array (
       'forum_viewforum_template.php' => '00d07368f8ec0c1a49533d19bc2bf1bd',
       'forum_viewtopic_template.php' => 'eb9e9285f459efec4d189152ab432fbb',
     ),
+    'vekna_blue' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
     'wan' => 
     array (
       'forum' => 
@@ -4964,11 +5578,13 @@ $deprecated_image = array (
   'CHANGES.txt' => '63ce3c2347fa1705cdc07bd6a18f8f0b',
   'Copy of class2.php' => '98e51871d71e43c526cc5ecc2df04e15',
   'Copy of forum_post.php' => '57a503ffde3c5c1363c81ec64634c15e',
+  'ReadMe_English_iso-8859-1.txt' => '408063cb43aba15292bdeebcfebcdcab',
   'chat.php' => '25cf92e658943c89ad4175e6089f7b90',
   'e107_6171_readme.txt' => '388bc81a9a79a7d9947b86e3e53fcbb8',
   'forum_post.php' => '98f1f836634bc8e698cde4a0b0131d07',
-  'install.php' => '71dfbd2d6c923b451a47bb19966359ae',
+  'install.php' => 'e3f69a9ae3b03a6d457e47e8b4edaaf8',
   'oldpolls.php' => '44af80765e98edaba7dbd0aab0e666ac',
+  'readme.txt' => '66f9df6c595f124df47abd2f6abe69b8',
   'sitemap.php' => 'ef7b4e734ebebb70b7cb8e52f8d08af0',
   'stats.php' => '0c5fff38ca4556c7b4a5a2d6618411d5',
   'upgrade.php' => '48f6ce7ade7fb5b2aad11005da5f310d',
