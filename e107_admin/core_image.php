@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/core_image.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-05-03 14:28:46 $
+|     $Revision: 1.36 $
+|     $Date: 2006-05-04 17:37:48 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@ $core_image = array (
     'comment.php' => 'f2d601f41beb8ebb5d9d76271aa564af',
     'compact.php' => '58382a577c486004ee9f7c4611277213',
     'content.php' => '0483549a7530320e24f00d93a47dbfb7',
-    'core_image.php' => 'ad853529e6107a6400c557bd36f6c523',
+    'core_image.php' => '9f4d4ae7561b9d6edab7759706d439e9',
     'cpage.php' => 'be682b4c15eeb76d97456eb48952d4d6',
     'credits.php' => '7ca334bcbead407abd8b173cb5031722',
     'db.php' => '21908a19ce8fcae5012a5636addc1d44',
@@ -104,7 +104,7 @@ $core_image = array (
     'userinfo.php' => '7462cc6800536b61fd8951da6df70d50',
     'users.php' => '4a50d56199e9b1dc9cdf4b0c1eeafd33',
     'users_extended.php' => 'aa5ea710a2093df6f0ffcc81c922458a',
-    'ver.php' => '3e07a96a3a80fa8c3e2c09774e7f2dd3',
+    'ver.php' => 'd627a2b6a3512d3095a260d9dbecbfcf',
     'wmessage.php' => 'f304ce93b9d0a8a882b0bdaa867c80e9',
   ),
   $coredir['docs'] => 
@@ -274,7 +274,7 @@ $core_image = array (
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'linkstyle.sc' => 'b0ff2fc0eb76ad5bc039384713b7bc9b',
       'logo.sc' => 'e73cc87d14bb7bbbfc8c18a42b9a4481',
-      'menu.sc' => '29eab24bb912bc4f9508b024992f1fac',
+      'menu.sc' => 'b3b3f6b2eaa62abac7e870e322801f27',
       'news_alt.sc' => 'af92c79bbe1d027b1fb4597741177378',
       'news_categories.sc' => '0535bc325cf5efd89095944275be257a',
       'news_category.sc' => 'db0bb5bbda5d3eaf580f1675572070ed',
@@ -2383,6 +2383,7 @@ $core_image = array (
         ),
         'English.php' => 'b99f148aa9aa2bfd5dd4dc7d3d418d5c',
       ),
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'plugin.php' => '165186ae246f47d77fb9d81c29347435',
       'pm.php' => 'b0a4eac8e31d51d6f78a11cb3e6de11a',
       'pm_class.php' => '8e956a5bccfc0433cdec02fe4c9f5308',
@@ -4325,6 +4326,9 @@ $deprecated_image = array (
       ),
       'languages' => 
       array (
+        'English' => 
+        array (
+        ),
         'ldap_auth_English.php' => '1215a618e17f87dcd4e268f23634121a',
       ),
     ),
@@ -4536,6 +4540,9 @@ $deprecated_image = array (
     'gsitemap' => 
     array (
       'images' => 
+      array (
+      ),
+      'languages' => 
       array (
       ),
     ),
@@ -5456,6 +5463,15 @@ $deprecated_image = array (
       'style.css' => '8435df83ddb57eba3b522bdba8cf8e6c',
       'theme.php' => '2c3d55140d0563b1c57437b80ccb0e2d',
     ),
+    'reline' => 
+    array (
+      'images' => 
+      array (
+      ),
+      'languages' => 
+      array (
+      ),
+    ),
     'sebes' => 
     array (
       'images' => 
@@ -5583,6 +5599,7 @@ $deprecated_image = array (
   'e107_6171_readme.txt' => '388bc81a9a79a7d9947b86e3e53fcbb8',
   'forum_post.php' => '98f1f836634bc8e698cde4a0b0131d07',
   'install.php' => 'e3f69a9ae3b03a6d457e47e8b4edaaf8',
+  'install_.php' => 'cf8ce315c1d8cc0498cde9d19263adfe',
   'oldpolls.php' => '44af80765e98edaba7dbd0aab0e666ac',
   'readme.txt' => '66f9df6c595f124df47abd2f6abe69b8',
   'sitemap.php' => 'ef7b4e734ebebb70b7cb8e52f8d08af0',
