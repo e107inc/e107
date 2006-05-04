@@ -14,7 +14,6 @@ if (isset($tmp[1]) && $tmp[1] == 'ret') {
 
 foreach($eMenuList[$tmp[0]] as $row)
 {
-
 	$show_menu = TRUE;
 	if($row['menu_pages']) {
 		list($listtype,$listpages) = explode("-",$row['menu_pages']);
@@ -32,7 +31,6 @@ foreach($eMenuList[$tmp[0]] as $row)
 					if(substr($check_url, strlen($p)*-1) == $p)
 					{
 						$show_menu = TRUE;
-						continue 2;
 					}
 				}
 				else 
@@ -40,7 +38,6 @@ foreach($eMenuList[$tmp[0]] as $row)
 					if(strpos($check_url,$p) !== FALSE)
 					{
 						$show_menu = TRUE;
-						continue 2;
 					}
 				}
 			}
@@ -55,7 +52,6 @@ foreach($eMenuList[$tmp[0]] as $row)
 					if(substr($check_url, strlen($p)*-1) == $p)
 					{
 						$show_menu = FALSE;
-						continue 2;
 					}
 				}
 				else 
@@ -63,7 +59,6 @@ foreach($eMenuList[$tmp[0]] as $row)
 					if(strpos($check_url, $p) !== FALSE)
 					{
 						$show_menu = FALSE;
-						continue 2;
 					}
 				}
 			}
