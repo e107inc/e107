@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-01-12 09:52:21 $
-|     $Author: lisa_ $
+|     $Revision: 1.18 $
+|     $Date: 2006-05-05 22:44:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -66,6 +66,7 @@ $HEADER .=
 </tr>
 </table>
 <table style='width:100%' cellspacing='3'>
+<tr>
 <td style='width:20%;'></td>
 <td style='width:60%;'><img src='".THEME_ABS."images/blank.gif' width='1' height='1' alt='' /></td>
 <td style='width:20%;'></td>
