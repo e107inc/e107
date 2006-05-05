@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.119 $
-|   $Date: 2006-04-19 20:01:10 $
-|   $Author: e107coders $
+|   $Revision: 1.120 $
+|   $Date: 2006-05-05 22:35:09 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -126,8 +126,10 @@ if ($delete == "category" && $del_id) {
 	}
 }
 
-if ($delete == "sn" && $del_id) {
-	if ($sql->db_Delete("submitnews", "submitnews_id='$del_id' ")) {
+if($delete == "sn" && $del_id)
+{
+	if ($sql->db_Delete("submitnews", "submitnews_id='$del_id' "))
+	{
 		$newspost->show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
 		$e107cache->clear("news.php");
 		unset($delete, $del_id);
@@ -1110,7 +1112,7 @@ class newspost {
 				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :	NWSLAN_103;
 				$text .= $rs->form_open("post", e_SELF."?sn", "myform__{$submitnews_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_38." [ID: $submitnews_id ]")."')\"   ")
 				."<div>".$rs->form_button("button", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
-				".$rs->form_button("submit", "sn_delete_{$submitnews_id}", LAN_DELETE)."
+				".$rs->form_button("submit", "delete[sn_{$submitnews_id}]", LAN_DELETE)."
 				</div>".$rs->form_close()."
 				</td>
 				</tr>\n";
