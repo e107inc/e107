@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-12 16:19:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-05 06:40:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -147,6 +147,8 @@ SC_END
 
 SC_BEGIN SIGNUP_EXTENDED_USER_FIELDS
 global $usere, $tp, $SIGNUP_EXTENDED_USER_FIELDS, $EXTENDED_USER_FIELD_REQUIRED;
+$text = "";
+
 $extList = $usere->user_extended_get_fieldList();
 
 $search = array(
@@ -164,9 +166,10 @@ foreach($extList as $ext)
 			($ext['user_extended_struct_required'] == 1 ? $EXTENDED_USER_FIELD_REQUIRED : ''),
 			$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])
 		);
-		return str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
+		$text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
 	}
 }
+	return $text;
 SC_END
 
 SC_BEGIN SIGNUP_SIGNATURE
