@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-04-29 20:34:37 $
+|     $Revision: 1.56 $
+|     $Date: 2006-05-05 06:41:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ City, State, Country
   'sitetheme' => 'reline',
   'themecss' => 'style.css',
   'image_preload' => '0',
-  'admintheme' => 'reline',
+  'admintheme' => 'jayya',
   'admincss' => 'style.css',
   'adminstyle' => 'classis',
   'sitedisclaimer' => LAN_PREF_3,
