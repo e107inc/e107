@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-03-26 01:31:33 $
+|     $Revision: 1.40 $
+|     $Date: 2006-05-05 23:06:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -73,6 +73,7 @@ class e_bbcode
 		global $code;
 		global $postID;
 		global $single_bb;
+		global $_matches;
 		$postID = $p_ID;
 		$done = false;
 		$single_bb = false;
@@ -114,7 +115,8 @@ class e_bbcode
 			while($code && ($pos = strpos($text, "[{$code}")) !== false)
 			{
 				$text = preg_replace_callback($pattern, array($this, 'doCode'), $text);
-				$text = str_replace("[{$code}", "&#091;", $text);
+				$leftover_code = $_matches[1].$_matches[2];
+				$text = str_replace("[{$leftover_code}", "&#091;{$leftover_code}", $text);
 			}
 		}
 		return $text;
@@ -122,7 +124,8 @@ class e_bbcode
 
 	function doCode($matches)
 	{
-		global $tp, $postID, $full_text, $code_text, $parm;
+		global $tp, $postID, $full_text, $code_text, $parm, $_matches;
+		$_matches = $matches;
 		$full_text = $tp->replaceConstants($matches[0]);
 		$code = $matches[1];
 		$parm = substr($matches[3], 1);
