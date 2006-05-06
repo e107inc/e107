@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-05-01 08:08:47 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2006-05-06 03:25:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -169,9 +169,9 @@ function Color_Select() {
 
 	$text .= "<script type='text/javascript'>
 	//<![CDATA[
-	var maxtd = 18; 
-	var maxtddiv = -1; 
-	var coloursrgb = new Array('00', '33', '66', '99', 'cc', 'ff'); 
+	var maxtd = 18;
+	var maxtddiv = -1;
+	var coloursrgb = new Array('00', '33', '66', '99', 'cc', 'ff');
 	var coloursgrey = new Array('000000', '333333', '666666', '999999', 'cccccc', 'ffffff');
 	var colourssol = new Array('ff0000', '00ff00', '0000ff', 'ffff00', '00ffff', 'ff00ff');
 	var rowswitch = 0;
@@ -182,16 +182,16 @@ function Color_Select() {
 	var tdblk = '<td style=\'background-color: #000000; cursor: default; height: 10px; width: 10px;\'><\/td>';
 	var g = 1;
 	var s = 0;
-	
+
 	function td_render(color) {
 		return '<td style=\'background-color: #' + color + '; height: 10px; width: 10px;\' onmousedown=\"addtext(\'[color=#' + color + '][/color]\')\"><\/td>';
 	}
 
-	for (i=0; i < coloursrgb.length; i++) { 
-		for (j=0; j < coloursrgb.length; j++) { 
-			for (k=0; k < coloursrgb.length; k++) { 
-				maxtddiv++; 
-				if (maxtddiv % maxtd == 0) { 
+	for (i=0; i < coloursrgb.length; i++) {
+		for (j=0; j < coloursrgb.length; j++) {
+			for (k=0; k < coloursrgb.length; k++) {
+				maxtddiv++;
+				if (maxtddiv % maxtd == 0) {
 					if (rowswitch) {
 						if (notr < 5){
 							rows1 += '<\/tr><tr>' + td_render(coloursgrey[g]) + tdblk;
@@ -204,7 +204,7 @@ function Color_Select() {
 						s++;
 						rowswitch = 1;
 					}
-					maxtddiv = 0; 
+					maxtddiv = 0;
 				}
 				rowline = td_render(coloursrgb[j] + coloursrgb[k] + coloursrgb[i]);
 				if (rowswitch) {
@@ -237,7 +237,7 @@ function Size_Select() {
 	<tr><td class='forumheader3'>
 	<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('size_selector')\">
 	<option value=''>".LANHELP_41."</option>";
-	
+
 	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
 	foreach($sizes as $s){
 		$text .= "<option value='[size=".$s."][/size]'>".$s."px</option>\n";
@@ -248,7 +248,13 @@ function Size_Select() {
 }
 
 function PreImage_Select() {
+
 	global $IMAGES_DIRECTORY, $fl;
+	if(!is_object($fl)){
+        require_once(e_HANDLER."file_class.php");
+		$fl = new e_file;
+	}
+
 	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 	$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
 	$text ="<!-- Start of PreImage selector -->
@@ -357,7 +363,7 @@ function PreFile_Select() {
 					{
 						$text .= "<option value='[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]'>".$file['name']." - $ucname</option>\n";
 					}
-					
+
 		}
 		$text .="</select>";
 	}
