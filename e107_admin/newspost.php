@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.120 $
-|   $Date: 2006-05-05 22:35:09 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.121 $
+|   $Date: 2006-05-06 03:25:40 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -27,21 +27,7 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 function headerjs(){
   	global $cal;
-	$js = "
-		<script type='text/javascript'>
-			function preview_image(){
-				var ta;
-				ta = document.getElementById('news_pic').value;
-				if(ta){
-            		document.getElementById('prev_image').src = '".e_IMAGE."newspost_images/' + ta;
-                }else{
-                	document.getElementById('prev_image').src = '".e_IMAGE."generic/blank.gif';
-				}
-				return;
-			}
-		</script>";
-
-    $js .= $cal->load_files();
+    $js = $cal->load_files();
 
    return $js;
 }
@@ -396,14 +382,11 @@ class newspost {
 
 	function create_item($sub_action, $id)
 	{
-		global $cal, $IMAGES_DIRECTORY;
+		global $cal;
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
-		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-		if($imagelist = $fl->get_files(e_IMAGE."newspost_images/",".jpg|.gif|.png",$rejecthumb)){
-        	sort($imagelist);
-		}
+		global $sql, $rs, $ns, $pref, $tp, $pst, $e107;
+
 		if ($sub_action == "sn" && !$_POST['preview']) {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
 				list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
@@ -556,18 +539,18 @@ class newspost {
 		<td class='forumheader3'>".LAN_NEWS_47.":</td>
 		<td class='forumheader3'>
 		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
-		<div style='display: none;'><br />";
+		<div style='display: none'><br />";
 
-		$text .= "<select id='news_pic' multiple='multiple' class='tbox' style='height:100px;float:left' name='news_thumbnail' id='news_thumbnail' onchange='preview_image();'>
-		<option value=''> -- ".LAN_NEWS_48." -- </option>";
-		foreach($imagelist as $icon)
-		{
-			$selected = ($_POST['news_thumbnail'] == $icon['fname']) ? " selected='selected'" : "";
-			$text .= "<option value='".$icon['fname']."'".$selected.">".$icon['fname']."</option>\n";
-		}
-		$text .= "</select>";
-		$pvw_default = ($_POST['news_thumbnail']) ? e_IMAGE."newspost_images/".$_POST['news_thumbnail'] : e_IMAGE."generic/blank.gif";
-        $text .= "&nbsp;<img id='prev_image' src='{$pvw_default}' alt='' style='width:100px;height:100px' />";
+        $parms = "name=news_thumbnail";
+		$parms .= "&path=".e_IMAGE."newspost_images/";
+		$parms .= "&default=".$_POST['news_thumbnail'];
+		$parms .= "&width=100px";
+		$parms .= "&height=100px";
+		$parms .= "&multiple=TRUE";
+		$parms .= "&label=-- ".LAN_NEWS_48." --";
+
+        $text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}}");
+
 		$text .= "</div>
 		</td>
 		</tr>
