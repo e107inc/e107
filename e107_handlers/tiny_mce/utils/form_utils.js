@@ -1,7 +1,7 @@
 /**
  * $RCSfile: form_utils.js,v $
- * $Revision: 1.4 $
- * $Date: 2006-04-16 07:02:36 $
+ * $Revision: 1.5 $
+ * $Date: 2006-05-06 03:05:16 $
  *
  * Various form utilitiy functions.
  *
@@ -92,9 +92,10 @@ function selectByValue(form_obj, field_name, value, add_custom, ignore_case) {
 	}
 
 	if (!found && add_custom && value != '') {
-		var option = new Option('Value: ' + value, value);
+		var option = new Option(value, value);
 		option.selected = true;
 		sel.options[sel.options.length] = option;
+		sel.selectedIndex = sel.options.length - 1;
 	}
 
 	return found;
