@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.278 $
-|     $Date: 2006-05-06 00:07:58 $
+|     $Revision: 1.279 $
+|     $Date: 2006-05-06 02:05:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -94,6 +94,11 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	define("e_QUERY", $matches[2]);
+	parse_str(e_MENU, $_emenu);
+	if(isset($_emenu['lan']))
+	{
+		$_GET['elan'] = $_emenu['lan'];
+	}
 } else {
 	define("e_MENU", "");
 	define("e_QUERY", $_SERVER['QUERY_STRING']);
