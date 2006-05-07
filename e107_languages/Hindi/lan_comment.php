@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hindi/lan_comment.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-27 22:49:19 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-07 10:23:37 $
 |     $Author: arunshekher $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("LAN_5", "टिप्पणियॉं ...");
 define("LAN_6", "टिप्पणियॉं प्रस्तुत करने के लिये आपको लॉग इन होना होगा - कृपया लॉग इन कीजियेे अथवा रजिस्टर कीजिये");
 define("LAN_7", "मुख्य जाल स्थल प्रशासक");
 define("LAN_8", "टिप्पणी");
-define("LAN_9", "ैैटिप्पणी उपस्थित करें");
+define("LAN_9", "टिप्पणी उपस्थित करें");
 define("LAN_10", "प्रशासक");
 define("LAN_11", "Was unable to enter your comment into the database - please retype leaving out any non-standard characters.");
 define("LAN_16", "प्रयोक्ता नाम: ");
