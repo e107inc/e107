@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-05-01 07:16:25 $
-|     $Author: sweetas $
+|     $Revision: 1.32 $
+|     $Date: 2006-05-12 22:50:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,10 +27,15 @@ php 4.3.6 does NOT have this problem.
 // ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline ="") {
-	global $pref;
+	global $pref,$mailheader_e107id;
+
 	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
 
 	$mail = new PHPMailer();
+
+    if($mailheader_e107id){
+		$mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
+    }
 
 	if ($pref['mailer']== 'smtp') {
 		$mail->Mailer = "smtp";
@@ -130,6 +135,9 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 		}
 	}
 
+	if($pref['mail_bounce_email'] !=''){
+		$mail->Sender = $pref['mail_bounce_email'];
+    }
 
 	if (!$mail->Send()) {
 		// echo "There has been a mail error sending to " . $row["email"] . "<br>";
