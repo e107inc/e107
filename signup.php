@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2006-04-14 17:34:30 $
+|     $Revision: 1.88 $
+|     $Date: 2006-05-12 22:50:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -69,7 +69,7 @@ if(e_QUERY == "resend" && !USER)
 		$u_key = $row['user_sess'];
 
 		$eml = render_email();
-
+        $mailheader_e107id = $nid;
 		require_once(e_HANDLER."mail.php");
 		if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
 		{
@@ -416,10 +416,18 @@ if (isset($_POST['register']))
 	}
 
 	// Check for Duplicate Email address.
-	if ($sql->db_Select("user", "user_email", "user_email='".$tp -> toDB($_POST['email'])."' "))
+	if ($sql->db_Select("user", "user_email, user_ban, user_sess", "user_email='".$tp -> toDB($_POST['email'])."' "))
 	{
-		$error_message .= LAN_408."\\n";
-		$error = TRUE;
+        $chk = $sql -> db_Fetch();
+		if($chk['user_ban']== 2 && $chk['user_sess']){
+		// duplicate because unactivated
+			$error = TRUE;
+        	header("Location: ".e_BASE."signup.php?resend");
+			exit;
+		}else{
+			$error_message .= LAN_408."\\n";
+			$error = TRUE;
+		}
 	}
 
 	// Extended Field validation
@@ -553,9 +561,10 @@ if (isset($_POST['register']))
 
 			if ($pref['user_reg_veri'] != 2)
 			{
-
+                $eml = render_email();
+				$mailheader_e107id = $eml['userid'];
 				require_once(e_HANDLER."mail.php");
-				$eml = render_email();
+
 
 				if(!sendemail($_POST['email'], $eml['subject'], $eml['message'], "", "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], "", "", $eml['inline-images']))
 				{
@@ -748,6 +757,7 @@ function render_email($preview = FALSE)
 		$inline_images[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
 	}
 
+	$ret['userid'] = $nid;
 	$ret['cc'] = $SIGNUPEMAIL_CC;
 	$ret['bcc'] = $SIGNUPEMAIL_BCC;
 	$ret['attachments'] = $SIGNUPEMAIL_ATTACHMENTS;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-02-20 15:13:14 $
-|     $Author: whoisrich $
+|     $Revision: 1.52 $
+|     $Date: 2006-05-12 22:50:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,6 +37,7 @@ if (isset($_POST['testemail'])) {
     if(SITEADMINEMAIL == ""){
 		$message = MAILAN_19;
 	}else{
+		$mailheader_e107id = USERID;
 		require_once(e_HANDLER."mail.php");
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
 		if (!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME.$add, PRFLAN_67)) {
@@ -249,6 +250,12 @@ if (isset($_POST['updateprefs'])) {
 	$pref['smtp_password'] = $tp->toDB($_POST['smtp_password']);
 	$pref['mail_pause'] = $_POST['mail_pause'];
 	$pref['mail_pausetime'] = $_POST['mail_pausetime'];
+	$pref['mail_bounce_email'] = $_POST['mail_bounce_email'];
+	$pref['mail_bounce_pop3'] = $_POST['mail_bounce_pop3'];
+	$pref['mail_bounce_user'] =	$_POST['mail_bounce_user'];
+	$pref['mail_bounce_pass'] = $_POST['mail_bounce_pass'];
+	$pref['mail_bounce_delete'] = $_POST['mail_bounce_delete'];
+
 	save_prefs();
 	$message = LAN_SETSAVED;
 }
@@ -504,7 +511,7 @@ function show_mailform($foo=""){
 function show_prefs(){
 	global $pref,$ns;
 $text = "
-	<form method='post' action='".e_SELF."' id='mailsettingsform'>
+	<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
 	<div id='mail' style='text-align:center;'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
@@ -566,19 +573,33 @@ $text = "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>Pause</td>
-		<td class='forumheader3' style='text-align: right;'> Pause mass-mailing every
-		<input class='tbox' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> emails.
+		<td class='forumheader3'>".MAILAN_25."</td>
+		<td class='forumheader3' style='text-align: right;'> ".MAILAN_26."
+		<input class='tbox' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> ".MAILAN_27.".
 		</td>
 	</tr>\n
 
 	<tr>
-		<td class='forumheader3'>Pause Length</td>
+		<td class='forumheader3'>".MAILAN_28."</td>
 		<td class='forumheader3' style='text-align: right;'>
-		<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> seconds.<br />
-		<span class='smalltext'>More than 30 seconds may cause the browser to time-out</span>
+		<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".MAILAN_29.".<br />
+		<span class='smalltext'>".MAILAN_30."</span>
 		</td>
 	</tr>\n
+
+	<tr>
+	<td style='width:40%;vertical-align:top' class='forumheader3'>".MAILAN_31."</td>
+	<td style='width:60%; text-align:right' class='forumheader3'>
+		".MAILAN_32.": <input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /><br />
+		".MAILAN_33." (POP3):  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /><br />
+		".MAILAN_34.":  <input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /><br />
+		".MAILAN_35.":  <input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /><br />";
+
+	$check = ($pref['mail_bounce_delete']==1) ? "checked='checked'" : "";
+	$text .= MAILAN_36.":  <input type='checkbox' name='mail_bounce_delete' value='1' {$check} />
+
+	</td>
+	</tr>
 
 
 	<tr>

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-10-31 18:12:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2006-05-12 22:50:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Save Changes");
@@ -49,4 +49,17 @@ define("MAILAN_21","Mass-Mail Entries");
 define("MAILAN_22","There are currently no saved entries");
 define("MAILAN_23","userclass: ");
 define("MAILAN_24", "email(s) are ready to be sent");
+
+define("MAILAN_25", "Pause");
+define("MAILAN_26", "Pause mass-mailing every");
+define("MAILAN_27", "emails");
+define("MAILAN_28", "Pause Length");
+define("MAILAN_29", "seconds");
+define("MAILAN_30", "More than 30 seconds may cause the browser to time-out");
+define("MAILAN_31", "Bounced Email Processing");
+define("MAILAN_32", "Email address");
+define("MAILAN_33", "Incoming Mail");
+define("MAILAN_34", "Account Name");
+define("MAILAN_35", "Password");
+define("MAILAN_36", "Delete Bounced Mails after checking");  
 ?>

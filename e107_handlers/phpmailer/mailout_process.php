@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-02-20 15:13:15 $
-|     $Author: whoisrich $
+|     $Revision: 1.8 $
+|     $Date: 2006-05-12 22:50:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -79,6 +79,7 @@ if($_POST['cancel_emails']){
 	$mail->Charset = CHARSET;
 	$mail->Subject = $_POST['email_subject'];
 	$mail->IsHTML(TRUE);
+	$mail->SMTPDebug = False;
 
 	if($_POST['email_cc']){
         $tmp = explode(",",$_POST['email_cc']);
@@ -92,6 +93,10 @@ if($_POST['cancel_emails']){
 		foreach($tmp as $addbc){
 			$mail->AddBCC($addbc);
         }
+	}
+
+	if($pref['mail_bounce_email'] !=''){
+		$mail->Sender = $pref['mail_bounce_email'];
 	}
 
 	$attach = chop($_POST['email_attachment']);
@@ -188,6 +193,8 @@ if($_POST['cancel_emails']){
 		$mail->AltBody = $alt_body;
 
 		$mail->AddAddress($row['user_email'], $row['user_name']);
+        $mail->AddCustomHeader("X-e107-id: ".$row['user_id']);
+
 
 		if ($mail->Send()) {
 			$sent[] = $row['user_id'];

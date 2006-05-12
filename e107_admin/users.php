@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2006-04-10 05:05:22 $
+|     $Revision: 1.77 $
+|     $Date: 2006-05-12 22:50:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -57,39 +57,25 @@ if (e_QUERY) {
 
 $from = (isset($from)) ? $from : 0;
 $amount = 30;
+
+if(isset($_POST['check_bounces'])){
+	$user->check_bounces();
+}
+
+
 // ------- Resend Email. --------------
 if (isset($_POST['resend_mail'])) {
-	$tid = $_POST['resend_id'];
 
-	// Check for a Language field, and if present, send the email in the user's language.
-    if($sql -> db_Select("user_extended", "user_language", "user_extended_id = '$tid'")){
-    	$row = $sql -> db_Fetch();
-		$lfile = e_LANGUAGEDIR.$row['user_language']."/lan_signup.php";
-    }
+	$user->resend($_POST['resend_id'],$_POST['resend_key'],$_POST['resend_name'],$_POST['resend_email']);
 
-    if(is_readable($lfile)){
-		require_once($lfile);
-	}else{
-		$row['user_language'] = e_LANGUAGE;
-    	require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
-	}
-
-	$key = $_POST['resend_key'];
-	$name = $_POST['resend_name'];
-	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$tid.".".$key : SITEURL."/signup.php?activate.".$tid.".".$key));
-
-	$message = LAN_EMAIL_01." ".$_POST['resend_name']."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."...\n\n";
-	$message .= RETURNADDRESS . "\n\n".SITENAME."\n".SITEURL;
-
-	require_once(e_HANDLER."mail.php");
-	if(sendemail($_POST['resend_email'], LAN_404." ".SITENAME, $message)){
-	//  echo str_replace("\n","<br>",$message);
-		$user->show_message(USRLAN_140.": <a href='mailto:".$_POST['resend_email']."' title=\"".DUSRLAN_7."\" >".$name."</a> (".$row['user_language'].") ".USRLAN_142.":<span class='smalltext'><br /><br /><a href='".RETURNADDRESS."'>".RETURNADDRESS."</a></span>");
-	}else{
-    	$user->show_message(USRLAN_141.": ".$name);
-	}
-	unset($tid);
 }
+// ------- Resend Email. --------------
+if(isset($_POST['resend_to_all'])){
+	$user->resend_to_all();
+}
+
+
+
 // ------- Test Email. --------------
 if (isset($_POST['test_mail'])) {
 	require_once(e_HANDLER."mail_validation_class.php");
@@ -563,7 +549,10 @@ class users{
 				}
 				else if($user_ban == 2) {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
-				} else {
+				}
+				else if($user_ban == 3) {
+					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_BOUNCED."</div>";
+				}  else {
 					$text .= "&nbsp;";
 				}
 
@@ -666,6 +655,20 @@ class users{
 				$text .= "</form></td></tr>";
 			}
 			$text .= "</table>";
+		}
+
+		if($action == "unverified"){
+        	$text .= "
+				<div style='text-align:center'>
+				<br />
+				<form method='post' action='".e_SELF.$qry."'>";
+			if($pref['mail_bounce_pop3']!=''){
+				$text .= "<input type='submit' class='button' name='check_bounces' value=\"".USRLAN_143."\" />\n";
+			}
+			$text .= "&nbsp;<input type='submit' class='button' name='resend_to_all' value=\"".USRLAN_144."\" />
+				</form>
+				</div>";
+
 		}
 
 		$users = $sql->db_Count("user");
@@ -916,6 +919,108 @@ class users{
 			";
 
 		$ns->tablerender(USRLAN_59, $text);
+	}
+
+
+	function resend($id,$key,$name,$email,$lfile=''){
+        global $sql,$mailheader_e107id;
+
+
+    	// Check for a Language field, and if present, send the email in the user's language.
+        if($lfile == ""){
+			if($sql -> db_Select("user_extended", "user_language", "user_extended_id = '$id'")){
+    			$row = $sql -> db_Fetch();
+				$lfile = e_LANGUAGEDIR.$row['user_language']."/lan_signup.php";
+    		}
+        }
+   		if(is_readable($lfile)){
+			require_once($lfile);
+		}else{
+			$row['user_language'] = e_LANGUAGE;
+    		require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+		}
+
+
+		define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
+
+		$message = LAN_EMAIL_01." ".$name."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."...\n\n";
+		$message .= RETURNADDRESS . "\n\n".SITENAME."\n".SITEURL;
+
+        $mailheader_e107id = $id;
+
+		require_once(e_HANDLER."mail.php");
+	  	if(sendemail($email, LAN_404." ".SITENAME, $message)){
+	   //		echo str_replace("\n","<br>",$message);
+			$this->show_message(USRLAN_140.": <a href='mailto:".$email."?body=".RETURNADDRESS."' title=\"".DUSRLAN_7."\" >".$name."</a> (".$row['user_language'].") ");
+	  	}else{
+    		$this->show_message(USRLAN_141.": ".$name);
+	  	}
+
+	}
+
+
+	function resend_to_all(){
+        global $sql,$pref,$sql3;
+		$pause_count = 1;
+		$pause_amount = ($pref['mail_pause']) ? $pref['mail_pause'] : 10;
+		$pause_time = ($pref['mail_pausetime']) ? $pref['mail_pausetime'] : 1;
+
+		if($sql -> db_Select_gen("SELECT user_language FROM #user_extended LIMIT 1")){
+			$query = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 ORDER BY u.user_id DESC";
+		}else{
+        	$query = "SELECT * FROM #user WHERE user_ban='2'";
+		}
+
+		if(!is_object($sql3)){
+        	$sql3 = new db;
+		}
+
+        $sql3 -> db_Select_gen($query,TRUE);
+			while($row = $sql3-> db_Fetch()){
+				  	echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
+                    $this->resend($row['user_id'],$row['user_sess'],$row['user_name'],$row['user_email'],$row['user_language']);
+                	if($pause_count > $pause_amount){
+						sleep($pause_time);
+            			$pause_count = 1;
+        			}
+				sleep(1);
+				$pause_count++;
+			}
+	}
+
+// ---------------------------------------------------------------------
+
+	function check_bounces(){
+		global $sql,$pref;
+        include(e_HANDLER."pop3_class.php");
+
+		$obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],'pop3','110');
+		$obj->connect();
+		$tot=$obj->getTotalMails();
+		$DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
+
+		for($i=1;$i<=$tot;$i++)	{
+			// $head=$obj->getHeaders($i);
+
+			if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result)){
+				$id[] = intval($result[1]);
+				if($DEL){ $obj->deleteMails($i); }
+        	}elseif(preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result)){
+                $emails[] = "'".$result[0]."'";
+				if($DEL){ $obj->deleteMails($i); }  
+			}
+
+		}
+        $all_ids = implode(",",$id);
+		$all_emails = implode(",",$emails);
+		$obj->close_mailbox();
+        $found = count($id) + count($emails);
+	  	if($sql -> db_Update("user", "user_ban=3 WHERE (user_id IN (".$all_ids.") OR user_email IN (".$all_emails.")) AND user_sess !='' ")){
+        	$this->show_message(LAN_UPDATED."<br >Found $tot, updated $found");
+	  	}else{
+        	$this->show_message(LAN_UPDATED_FAILED."<br >Found $tot, not updated $found");
+	  	}
+
 	}
 
 }
