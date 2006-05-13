@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-02-18 14:10:36 $
-|     $Author: lisa_ $
+|     $Revision: 1.42 $
+|     $Date: 2006-05-13 18:18:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -32,6 +32,10 @@ class poll
 		global $sql;
 		if ($sql -> db_Delete("polls", " poll_id='".intval($existing)."' "))
 		{
+			if(function_exists("admin_purge_related"))
+			{
+				admin_purge_related("poll", $existing);
+			}
 			return "Poll deleted.";
 		}
 	}
