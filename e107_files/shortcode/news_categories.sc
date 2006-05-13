@@ -114,7 +114,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	}
 
 	while ($t % $nbr_cols != 0){
-		$text3 .= "<td style='".NEWSCAT_CELL.";width:$wid'>&nbsp;</td>\n";
+		$text3 .= "<td style='".NEWSCAT_CELL.";width:{$wid}%'>&nbsp;</td>\n";
 		$text3 .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
 		$t++;
 	}
