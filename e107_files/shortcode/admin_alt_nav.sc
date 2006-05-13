@@ -33,7 +33,7 @@ if (ADMIN) {
 	
 	$text .= "<div style='width: 100%'><table border='0' cellspacing='0' cellpadding='0' style='width: 100%'>
 	<tr><td>
-	<div class='menuBar' style='width: auto !important; width: 100%'>";
+	<div class='menuBar' style='width: 100%'>";
 
 	$text .= adnav_cat(ADLAN_151, e_ADMIN.'admin.php', E_16_NAV_MAIN);
 
