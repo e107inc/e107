@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.50 $
-|   $Date: 2006-04-27 05:25:06 $
-|   $Author: sweetas $
+|   $Revision: 1.51 $
+|   $Date: 2006-05-13 15:05:38 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -273,6 +273,22 @@ function admin_update($update, $type = 'update', $success = false, $failed = fal
 	}
 	$ns -> tablerender($caption, "<div style='text-align:center'>".$text."</div>");
 	return $update;
+}
+
+function admin_purge_comments($table, $id)
+{
+	global $ns, $tp;
+	$tp->parseTemplate("");
+	require_once(e_HANDLER."comment_class.php");
+	if(!isset($_com))
+	{
+		$_com = new comment;
+	}
+	$num = $_com->delete_comments($table, $id);
+	if($num)
+	{
+		$ns->tablerender(ADLAN_114, $num." ".ADLAN_114." ".LAN_DELETED); 
+	}
 }
 
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
