@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-29 20:41:10 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2006-05-13 01:21:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,7 +30,7 @@ people it shouldn't be used by.
 
 */
 
-//define("ACTIVE", true);
+define("ACTIVE", false);
 
 
 /* #################################################### */
@@ -97,12 +97,13 @@ if (isset($_POST['usubmit'])) {
 
 		$admin_directory = "e107_admin";
 
+//			<input type='radio' name='mode' value='1'> <span class='headertext2'>Manually edit core values</span><br />
+
 		echo "<span class='headertext2'><b>Please select which method you want to use, then click the button to proceed ...</b></span><br /><br /><br /><br />
 			<table style='width: auto; margin-left:auto; margin-right: auto;'>
 			<tr>
 			<td>
 			<form method='post' action='".$_SERVER['PHP_SELF']."'>
-			<input type='radio' name='mode' value='1'> <span class='headertext2'>Manually edit core values</span><br />
 			<input type='radio' name='mode' value='2'> <span class='headertext2'>Reset core to default values</span><br />". ($bu_exist ? "<input type='radio' name='mode' value='3'> <span class='headertext2'>Restore core backup</span>" : "<br />( There is no backed-up core - unable to offer option to restore backup )")."<br /><br /><input class='button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
 				 
 			<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
@@ -146,9 +147,10 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 	$e_path = (!strpos($_SERVER['SCRIPT_FILENAME'], ".php") ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME']);
 	define("e_PATH", $e_path);
 
+
 	$pref_language = "English";
-	include_once(e_BASE.$LANGUAGES_DIRECTORY."English/lan_prefs.php");
-	require_once(e_BASE.$FILES_DIRECTORY."def_e107_prefs.php");
+	include_once("../../".$LANGUAGES_DIRECTORY."English/lan_prefs.php");
+	require_once("../../".$FILES_DIRECTORY."def_e107_prefs.php");
 
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
 
@@ -264,7 +266,7 @@ if (isset($END)) {
 }
 
 echo "<span class='headertext2'>
-	This is the e107 resetcore utility. It allows you to completely rebuild your core if it becomes corrupt, or to restore a backup, or to change core settings manually. It won't affect your actual content (news posts, forum posts, articles etc).<br />
+	This is the e107 resetcore utility. It allows you to completely rebuild your core if it becomes corrupt, or to restore a backup. <br />It won't affect your actual content (news posts, forum posts, articles etc).<br />
 	<b>Only run this utility if your site is failing to load due to a critical core error, or if you need to change a setting and can't log into your admin area.</b></span><br /><br /><br /><br />
 	 
 	<span class='headertext'>Please enter your main administrator username and password to continue ...</span><br /><br />
