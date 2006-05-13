@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2006-05-13 15:05:38 $
+|     $Revision: 1.78 $
+|     $Date: 2006-05-13 18:18:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -217,10 +217,11 @@ if ($action == "cat") {
 }
 
 if ($delete == 'main') {
-	$result = admin_update(TRUE, 'delete', DOWLAN_35." #".$del_id." ".DOWLAN_36);
+
+	$result = admin_update($sql->db_Delete("download", "download_id='$del_id' "), 'delete', DOWLAN_35." #".$del_id." ".DOWLAN_36);
 	if($result)
 	{
-		admin_purge_comments("download", $del_id);
+		admin_purge_related("download", $del_id);
 	}
 	unset($sub_action, $id);
 }

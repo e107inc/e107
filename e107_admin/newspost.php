@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.121 $
-|   $Date: 2006-05-06 03:25:40 $
-|   $Author: e107coders $
+|   $Revision: 1.122 $
+|   $Date: 2006-05-13 18:18:43 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -96,10 +96,7 @@ if ($delete == "main" && $del_id)
 			$newspost->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
 			$e107cache->clear("news.php");
 
-			/* bugtracker #1477 - delete associated comments */
-			$sql->db_Delete("comments", "comment_item_id='$del_id' AND comment_type='0' ");
-			/* end */
-
+			admin_purge_related("news", $del_id);
 		}
 	}
 	unset($delete, $del);

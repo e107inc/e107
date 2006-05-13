@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.51 $
-|   $Date: 2006-05-13 15:05:38 $
+|   $Revision: 1.52 $
+|   $Date: 2006-05-13 18:18:43 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -275,19 +275,33 @@ function admin_update($update, $type = 'update', $success = false, $failed = fal
 	return $update;
 }
 
-function admin_purge_comments($table, $id)
+function admin_purge_related($table, $id)
 {
 	global $ns, $tp;
+	$msg = "";
 	$tp->parseTemplate("");
+
+	// Delete any related comments
 	require_once(e_HANDLER."comment_class.php");
-	if(!isset($_com))
-	{
-		$_com = new comment;
-	}
+	$_com = new comment;
 	$num = $_com->delete_comments($table, $id);
 	if($num)
 	{
-		$ns->tablerender(ADLAN_114, $num." ".ADLAN_114." ".LAN_DELETED); 
+		$msg .= $num." ".ADLAN_114." ".LAN_DELETED."<br />";
+	}
+
+	// Delete any related ratings
+	require_once(e_HANDLER."rate_class.php");
+	$_rate = new rater;
+	$num = $_rate->delete_ratings($table, $id);
+	if($num)
+	{
+		$msg .= LAN_RATING." ".LAN_DELETED."<br />";
+	}
+	
+	if($msg)
+	{
+		$ns->tablerender(LAN_DELETE, $msg);
 	}
 }
 

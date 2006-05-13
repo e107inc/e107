@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-28 14:03:36 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-05-13 18:18:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -214,6 +214,14 @@ class rater {
 
 		return $rate;
 
+	}
+
+	function delete_ratings($table, $id)
+	{
+		global $tp, $sql;
+		$table = $tp->toDB($table, true);
+		$id = intval($id);
+		return $sql -> db_Delete("rate", "rate_itemid='{$id}' AND rate_table='{$table}'");
 	}
 }
 ?>

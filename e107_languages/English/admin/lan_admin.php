@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-04-17 15:02:51 $
-|     $Author: e107coders $
+|     $Revision: 1.43 $
+|     $Date: 2006-05-13 18:18:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -246,6 +246,7 @@ define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
 
 define("LAN_BAN","Ban");
+define("LAN_RATING", "Rating");
 
 
 
