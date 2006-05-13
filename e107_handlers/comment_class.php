@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-04-26 13:06:17 $
-|     $Author: sweetas $
+|     $Revision: 1.58 $
+|     $Date: 2006-05-13 15:05:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -537,6 +537,25 @@ class comment {
 
 		return (!$return) ? "" : $ret;
 	}
+	
+	function delete_comments($table, $id)
+	{
+		global $sql, $tp;
+
+		if(is_numeric($table))
+		{
+			$type = $table;
+		}
+		else
+		{
+			$type = $this -> getCommentType($table);
+		}
+		$type = $tp -> toDB($type, true);
+		$id = intval($id);
+		$num_deleted = $sql -> db_Delete("comments", "comment_item_id='{$id}' AND comment_type='{$type}'");
+		return $num_deleted;
+	}
+	
 }
 
 ?>
