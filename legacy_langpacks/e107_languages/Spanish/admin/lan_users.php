@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-05 11:03:52 $
+|     $Revision: 1.5 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,10 @@ define("USRLAN_135", "No se encontró la IP en la info de usuario, IP no expulsad
 define("USRLAN_136", "Varios usuarios tienen la ip {IP}, IP no expulsada."); 
 define("USRLAN_137", "Usuarios con la IP {IP} expulsados.");
 define("USRLAN_138", "Usuarios sin verificar");
-define("USRLAN_139", "Su cuenta ha sido activada.\n\nAhora puede visitar {SITEURL} y conectarse usando la información que escribió en su registro."); 
+define("USRLAN_139", "Su cuenta ha sido activada.\n\nAhora puede visitar {SITEURL} y conectarse usando la información que escribió en su registro.");
+define("USRLAN_140", "Reenviar email a"); 
+define("USRLAN_141", "Fallo al reenviar email a"); 
+define("USRLAN_142", "con el siguiente enlace de activación"); 
     
 define("LAN_MAINADMIN","Admin principal"); 
 define("LAN_ADMIN","Admin"); 

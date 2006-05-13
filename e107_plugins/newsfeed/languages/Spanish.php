@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.6 $
+|     $Date: 2006-05-13 16:13:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -70,4 +70,7 @@ define("NFLAN_42", "<b>»</b> <u>Feed Nombre:</u>
 	<br /><br />Para una buena lista de feeds disponibles, vea <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> o <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Ayuda Newsfeed");
 define("NFLAN_44", "Click para ver");
+define("NFLAN_45", "Número de elementos a mostrar en el menú"); 
+define("NFLAN_46", "Número de elementos a mostrar en la página principal"); 
+define("NFLAN_47", "0 o en blanco para mostrar todos"); 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-03-23 22:06:16 $
+|     $Revision: 1.12 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -154,6 +154,12 @@ define("PRFLAN_157", "Todoso los nombres mostrables se han reseteado a nombres d
 define("PRFLAN_158", "Longitud máxima del nombre mostrable");
 define("PRFLAN_159", "Viendo esta página con");
 define("PRFLAN_160", "Comprueba servidores remotos al validar direcciones email.");
+define("PRFLAN_160", "Comprueba servidores remotos al validar direcciones email.");
+define("PRFLAN_161", "Desactivar todos los comentarios del sitio");
+define("PRFLAN_162", "Información del sitio de contacto"); 
+define("PRFLAN_163", "ej. Nombre empresa, Dirección, Teléfono etc."); 
+define("PRFLAN_164", "Permitir a los usuarios enviarse copia del email de contacto"); 
+define("PRFLAN_165", "Posible aviso de permitir ventana spam, usar con precaución"); 
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");

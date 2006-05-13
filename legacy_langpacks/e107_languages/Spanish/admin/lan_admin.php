@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-02-20 19:46:44 $
+|     $Revision: 1.6 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -176,7 +176,7 @@ define("ADLAN_LAT_7", "Archivos transferidos");
 define("ADLAN_LAT_8", "Hay mensajes del Admin sin moderar");
 
 define("ADLAN_ERR_1", "¡Atención!"); 
-define("ADLAN_ERR_2", "Hay archivos en su servidor que son conocidos como atacables. Deben ser eliminaos <b>inmediatamente</b>. Los archivos están relacionados con el sistema WYSIWYG usado en la estructura antigua de 0.6xx de e107 - htmlArea. Por favor, elimine los siguientes directorios y su contenido:"); 
+define("ADLAN_ERR_2", "Hay archivos en su servidor que son conocidos como atacables. Deben ser eliminaos <b>inmediatamente</b>. Los archivos están relacionados con el antiguo sistema de 0.6xx de e107. Por favor, elimine los siguientes directorios y su contenido:"); 
 define("ADLAN_ERR_3", "Hay uno o más archivos en su carpeta pública de transferencias con extensiones que no están permitidos en su lista de permitidos. Pueden haber sido puestas por un atacante i deberían ser eliminados <b>inmediatamente</b>. <b>NO</b> debería abrir esos archivos ya que pueden ejecutar código malicioso. pe. no los abra con su navegador.<br /><br />Si reconoce que estos archivos son legítimos, debería añadir esas extensiones en su lista de extensiones permitidas (mire admin => transferencias). NO debería permitir transferir .html, .txt, etc ya que un atacante podría incluir código malicioso en forma de javascript. Debería también, por supuesto, no permitir la transferencia de archivos .php o otro tipo de script ejecutables..<br /><br />Debajo verá una lista de archivos que son potencialmente maliciosos:");
 
 // Common Terms

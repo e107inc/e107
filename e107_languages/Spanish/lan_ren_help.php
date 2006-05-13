@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_ren_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.7 $
+|     $Date: 2006-05-13 16:12:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -45,4 +45,12 @@ define("LANHELP_33", "HTML - elimina saltos de linea del texto: [html]<table><tr
 define("LANHELP_34", "[newpage] o [newpage=title] Insertando el tag newpage, agrupa el artículo en más de una página");
 define("LANHELP_35", "hyperlink url");
 define("LANHELP_36", "Desordenado: [list]line1*line2*line3[/list] Ordenado: [list=type]line1*line2*line3[/list]");
+define("LANHELP_37", "Insertar imagen desde la carpeta e107_images/newspost_images/"); 
+define("LANHELP_38", "Se generará un enlace a pantalla completa"); 
+define("LANHELP_39", "Insertar un enlace a una descarga de las descargas existentes");
+define("LANHELP_40", "Actualmente no exiten descargas");
+define("LANHELP_41", "Tamaño texto..."); 
+define("LANHELP_42", "Selecciona imagen..."); 
+define("LANHELP_43", "Selecciona archivo de descarga..."); 
+
 ?>

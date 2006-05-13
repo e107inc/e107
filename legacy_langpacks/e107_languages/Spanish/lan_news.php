@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_news.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-03-23 22:06:16 $
+|     $Revision: 1.5 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,8 +25,8 @@ define("LAN_462", "No hay noticias del mes seleccionado");
 
 define("LAN_NEWS_1", "Noticias para usuarios específicos");
 define("LAN_NEWS_2", "No tiene permisos para ver estas noticias");
-define("LAN_NEWS_3", "Por favor, borre el archivo install.php de su servidor");
-define("LAN_NEWS_4", "si no lo borra, su sitio web corre un riesgo de seguidad grave.");
+//define("LAN_NEWS_3", "Por favor, borre el archivo install.php de su servidor");
+//define("LAN_NEWS_4", "si no lo borra, su sitio web corre un riesgo de seguidad grave.");
 define("LAN_NEWS_5", "<b>¡Error!</b> ¡Fué imposible actualizar la noticia en la base de datos!</b>");
 define("LAN_NEWS_6", "Noticia registrada en la base de datos.");
 define("LAN_NEWS_7", "<b>¡Error!</b> ¡Fué imposible registrar la noticia en la base de datos!</b>");

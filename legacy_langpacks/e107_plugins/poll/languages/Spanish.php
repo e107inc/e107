@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/poll/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-13 16:12:46 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -14,19 +14,19 @@ define("POLL_ADLAN02", "El plugin encuesta permite definir encuestas en forma de
 define("POLL_ADLAN03", "Configure las encuestas");
 define("POLL_ADLAN04", "El plugin encuestas se instaló correctamente. Para añadir encuestas, click en el icono de encuestas en el menu del Administrador->sección plugins, y recuerde de activar el bloque menú en la sección menús.");
 
-define("POLLAN_MENU_CAPTION", "Poll");
-define("POLL_1", "Votos: ");
-define("POLL_2", "Comentarios");
-define("POLL_3", "Encuestas antiguas");
-define("POLL_4", "Votar");
-define("POLL_5", "Encuesta");
-define("POLL_6", "Sin Votos");
-define("POLL_7", "1 voto");
-define("POLL_8", " Votos");
-define("POLL_9", "Moderador");
-define("POLL_10", "Borrar solo encuesta");
-define("POLL_11", "Encuesta actualizada.");
-define("POLL_12", "Enviada por: ");
+define("POLLAN_MENU_CAPTION", "Encuesta");
+define("POLL_1", "Encuestas existentes");
+define("POLL_2", "Crear/Editar encuestas");
+define("POLL_3", "Pregunta encuesta");
+define("POLL_4", "Opciones");
+define("POLL_5", "Editar");
+define("POLL_6", "Eliminar");
+define("POLL_7", "Sin encuestas todavía");
+define("POLL_8", "Añadir otra opción");
+define("POLL_9", "¿Permitir varias opciones?");
+define("POLL_10", "Si");
+define("POLL_11", "No");
+define("POLL_12", "Mostrar resultados");
 define("POLLAN_13", "Después de votar");
 define("POLLAN_14", "Pulsando en el enlace de resultados - Los comentarios deben estar activos para usar esta opción");
 define("POLLAN_15", "Permitir votar en esta encuesta");
@@ -60,6 +60,4 @@ define("POLLAN_42", "Esta encuesta está restringida solo a los Admins");
 define("POLLAN_43", "No tiene permisos para votar en esta encuenta");
 define("POLLAN_44", "¿Eliminar esta encuesta?");
 define("POLLAN_45", "Encuesta actualizada con éxito");
-
-
 ?>

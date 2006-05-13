@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ define("LAN_NEWS_19",  "Ahora");
 
 define("LAN_NEWS_21", "Noticias actualizadas en la Base de Datos.");
 define("LAN_NEWS_22", "Miniatura");
-define("LAN_NEWS_23", "Escoja el icono / imagen en miniatura para esta noticia.");
+define("LAN_NEWS_23", "Escoja una imagen para esta noticia");
 define("LAN_NEWS_24", "Imagen + Autominiatura");
 define("LAN_NEWS_25", "Tamaño autominiatura");
 define("LAN_NEWS_26", "Añadir nueva");
@@ -142,7 +142,7 @@ define("LAN_NEWS_29", "Seleccionar si la noticia será fijada");
 define("LAN_NEWS_30", "Seleccionado, la noticia aparecerá encima de las demás");
 define("LAN_NEWS_31", "La noticia está <b>FIJADA</b> (se verá encima de las demás). ");
 define("LAN_NEWS_32", "Sello de fecha");
-define("LAN_NEWS_33", "Poner el sello de fecha para esta noticia.");
+define("LAN_NEWS_33", "Poner el sello de fecha para esta noticia");
 define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Añadir URL's trackback");
 define("LAN_NEWS_36", "<b>Ping</b> (envía un ping a todas las URL de esta noticia)");
@@ -150,10 +150,13 @@ define("LAN_NEWS_37", "<b>URL's Trackback:</b> (una URL por linea)");
 define("LAN_NEWS_38", "Insertar imágenes");
 define("LAN_NEWS_39", "Click en archivo para insertar en la posición del cursor");
 define("LAN_NEWS_40", "Insertar enlaces de descargas");
-define("LAN_NEWS_41", "Icono / miniatura");
+
 define("LAN_NEWS_42", "Archivos");
 define("LAN_NEWS_43", "(no hay imágenes en /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback no activo.");
 define("LAN_NEWS_45", "ID");
 define("LAN_NEWS_46", "Noticia no actualizada ya que no se han realizado cambios.");
+define("LAN_NEWS_47", "Imagen");
+define("LAN_NEWS_48", "Sin imagen"); 
+define("LAN_NEWS_49", "Tipo renderizado"); 
 ?>

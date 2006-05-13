@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/login_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-13 16:12:46 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -48,4 +48,5 @@ define('LOGIN_MENU_L35', 'Mostrar nuevos envíos del foro');
 define('LOGIN_MENU_L36', 'Mostrar nuevos miembros');
 define('LOGIN_MENU_L37', 'Actualizar parámetros');
 define('LOGIN_MENU_L38', 'Parámetros actualizados');
+define('LOGIN_MENU_L39', 'Salir ADM');
 ?>

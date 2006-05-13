@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_wmessage.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.12 $
+|     $Date: 2006-05-13 16:12:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -27,5 +27,6 @@ define("WMLAN_06","<b>On:</b> El mensaje se renderizará en la caja");
 define("WMLAN_07","Invalidar el método abreviado {WMESSAGE}:");
 //define("WMLAN_08","Preferencias");
 define("WMLAN_09","No hay mensajes de bienvenida");
+define("WMLAN_10","Texto del mensaje");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -22,8 +22,8 @@ define("LANG_LAN_08", "Reemplazar tablas existentes (los datos se perderán).");
 define("LANG_LAN_10", "Confirmar eliminación");
 define("LANG_LAN_11", "Eliminar tablas de arriba no marcadas (si existen).");
 define("LANG_LAN_12", "Activar tablas multi-idioma");
-define("LANG_LAN_13", "Preferencias multi-idioma");
+define("LANG_LAN_13", "Preferencias de idioma");
 define("LANG_LAN_14", "Idioma por defecto");
 define("LANG_LAN_15", "Para copiar los datos del idioma predeterminado.(útil para enlaces, nuevas categorías, etc...) ");
-
+define("LANG_LAN_16", "Uso de la base de datos multi-idioma");
 ?>

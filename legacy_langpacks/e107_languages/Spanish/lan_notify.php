@@ -4,15 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("NT_LAN_US_1", "Conexión de usuario");
 
 define("NT_LAN_UV_1", "Verificación de la conexión de usuario");
-define("NT_LAN_UV_2", "Cadena de la sesión de usuarios");
+define("NT_LAN_UV_2", "Usuario ID: "); 
+define("NT_LAN_UV_3", "suario nombre conexión: "); 
+define("NT_LAN_UV_4", "Usuario IP: "); 
 
 define("NT_LAN_LI_1", "Usuario conectado");
 

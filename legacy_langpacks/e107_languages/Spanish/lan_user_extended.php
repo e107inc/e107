@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_user_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-30 11:24:30 $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-13 16:12:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -37,4 +37,8 @@ define("UE_LAN_HOMEPAGE", "Página Web");
 define("UE_LAN_HOMEPAGE_DESC", "Página web del usuario (url)");
 define("UE_LAN_BIRTHDAY", "Cumpleaños");
 define("UE_LAN_BIRTHDAY_DESC", "Fecha de cumpleaños");
+define("UE_LAN_LANGUAGE", "Idioma"); 
+define("UE_LAN_LANGUAGE_DESC", "Idioma del usuario"); 
+define("UE_LAN_COUNTRY", "Pais"); 
+define("UE_LAN_COUNTRY_DESC", "Pais del usuario (incluye tabla db)"); 
 ?>
