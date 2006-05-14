@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-05-06 03:25:40 $
+|     $Revision: 1.42 $
+|     $Date: 2006-05-14 00:20:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,8 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
+
+	$rand = rand(1000,9999);
 
 	if (strstr(e_SELF, "content") || strstr(e_SELF, "cpage")) {
 		$code[0] = array("newpage", "[newpage]", LANHELP_34);
@@ -63,16 +65,17 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$text = "";
 	foreach($code as $key=>$bbcode){
 		if($key == 12){
-			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else if($key == 13){
-			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('size_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('size_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else{
 		  $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}
 	}
 
-	$text .= Size_Select();
-	$text .= Color_Select();
+
+	$text .= Size_Select('size_selector_'.$rand);
+	$text .= Color_Select('col_selector_'.$rand);
 	return $text;
 }
 
@@ -84,7 +87,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
 	//        $mode == 'news' : preuploaded news images dialog is rendered
-
+	$rand = rand(1000,9999);
 	if (strstr(e_SELF, "content") || strstr(e_SELF, "cpage")) {
 		$code[0] = array("newpage", "[newpage]", LANHELP_34);
 	}
@@ -130,13 +133,13 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$text = "";
 	foreach($code as $key=>$bbcode){
 		if($key == 12){
-			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else if($key == 13){
-			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('size_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('size_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else if($key == 14){
-			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('preimage_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('preimage_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else if($key == 15){
-			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('prefile_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('prefile_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else{
 		  $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}
@@ -150,21 +153,24 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		$string .= "<input type='button' value='Check Spelling' onclick=\"DoSpellCheck('top.opener.parent.document.dataform.data')\">";
 	}
 */
+
+
 	if ($mode) {
-		$text .= Size_Select();
-		$text .= Color_Select();
+		$text .= Size_Select('size_selector_'.$rand);
+		$text .= Color_Select('col_selector_'.$rand);
 		if ($mode == 'news') {
-			$text .= PreImage_Select();
-			$text .= PreFile_Select();
+			$text .= PreImage_Select('preimage_selector_'.$rand);
+			$text .= PreFile_Select('prefile_selector_'.$rand);
 		}
 	}
 
 	return $text;
 }
 
-function Color_Select() {
+function Color_Select($formid='col_selector') {
+
 	$text = "<!-- Start of Color selector -->
-	<div style='margin-left: 0px; margin-right: 0px; width: 221px; position: relative; z-index: 1000; float: right; display: none' id='col_selector' onclick=\"this.style.display='none'\">
+	<div style='margin-left: 0px; margin-right: 0px; width: 221px; position: relative; z-index: 1000; float: right; display: none' id='{$formid}' onclick=\"this.style.display='none'\">
 	<div style='position: absolute; bottom: 30px; right: 145px; width: 221px'>";
 
 	$text .= "<script type='text/javascript'>
@@ -229,13 +235,13 @@ function Color_Select() {
 }
 
 
-function Size_Select() {
+function Size_Select($formid='size_selector') {
 	$text ="<!-- Start of Size selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='size_selector'>";
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:125px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>
-	<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('size_selector')\">
+	<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
 	<option value=''>".LANHELP_41."</option>";
 
 	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
@@ -247,7 +253,7 @@ function Size_Select() {
 	return $text;
 }
 
-function PreImage_Select() {
+function PreImage_Select($formid='preimage_selector') {
 
 	global $IMAGES_DIRECTORY, $fl;
 	if(!is_object($fl)){
@@ -258,7 +264,7 @@ function PreImage_Select() {
 	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 	$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
 	$text ="<!-- Start of PreImage selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='preimage_selector'>";
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
@@ -269,7 +275,7 @@ function PreImage_Select() {
 			}
 			else
 			{
-				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('preimage_selector')\">
+				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
 				<option value=''>".LANHELP_42."</option>";
 				foreach($imagelist as $image)
 				{
@@ -279,29 +285,29 @@ function PreImage_Select() {
 						if(file_exists(e_IMAGE."newspost_images/".$fi))
 						{
 							// thumb and main image found
-							$text .= "<option value='[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]'>".$image['fname']." (".LANHELP_38.")</option>\n
+							$text .= "<option value=\"[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]\">".$image['fname']." (".LANHELP_38.")</option>\n
 							";
 						}
 						else
 						{
-							$text .= "<option value='[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]'>".$image['fname']."</option>\n
+							$text .= "<option value=\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\">".$image['fname']."</option>\n
 							";
 						}
 					}
 					else
 					{
-						$text .= "<option value='[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]'>".$image['fname']."</option>\n
+						$text .= "<option value=\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\">".$image['fname']."</option>\n
 						";
 					}
 				}
 				$text .="</select>";
 			}
 	$text .="</td></tr>	\n </table></div>
-	</div>\n<!-- End of PreImage selector -->";
+	</div>\n<!-- End of PreImage selector -->\n";
 	return $text;
 }
 
-function PreFile_Select() {
+function PreFile_Select($formid='prefile_selector') {
 	global $IMAGES_DIRECTORY, $fl, $sql;
 		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
@@ -328,7 +334,7 @@ function PreFile_Select() {
 			}
 		}
 	$text ="<!-- Start of PreFile selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='prefile_selector'>";
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:75px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
@@ -340,7 +346,7 @@ function PreFile_Select() {
 	}
 	else
 	{
-		$text .= "<select class='tbox' name='prefileselect' onchange=\"addtext(this.value); expandit('prefile_selector')\">
+		$text .= "<select class='tbox' name='prefileselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
 				<option value=''>".LANHELP_43."</option>";
 		foreach($filelist as $file)
 		{
@@ -357,11 +363,11 @@ function PreFile_Select() {
 
 					if($file['id'])
 					{
-						$text .= "<option value='[file=request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]'>".$file['name']." - $ucname</option>\n";
+						$text .= "<option value=\"[file=request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
 											}
 					else
 					{
-						$text .= "<option value='[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]'>".$file['name']." - $ucname</option>\n";
+						$text .= "<option value=\"[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
 					}
 
 		}
@@ -369,7 +375,7 @@ function PreFile_Select() {
 	}
 
 	$text .="</td></tr>	\n </table></div>
-	</div>\n<!-- End of PreFile selector -->";
+	</div>\n<!-- End of PreFile selector -->\n";
 	return $text;
 }
 
