@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2006-05-13 18:18:43 $
+|     $Revision: 1.79 $
+|     $Date: 2006-05-14 01:01:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1037,21 +1037,29 @@ class download {
 		}
 	}
 
-	function show_categories($sub_action, $id) {
-		global $sql, $rs, $ns, $sql2, $sql3, $tp, $pst;
+	function show_categories($sub_action, $id)
+	{
+		global $sql, $rs, $ns, $tp, $pst;
 
 		if (!is_object($sql2)) {
 			$sql2 = new db;
 		}
-		if (!is_object($sql3)) {
-			$sql3 = new db;
-		}
-		if (!is_object($sql4)) {
-			$sql4 = new db;
-		}
 		$text = $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		$text .= "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
-		if ($download_total = $sql->db_Select("download_category", "*", "download_category_parent=0 ORDER BY download_category_order")) {
+		
+		$qry = "
+		SELECT dc.*, COUNT(d.download_id) AS filecount FROM #download_category AS dc
+		LEFT JOIN #download AS d ON d.download_category = dc.download_category_id
+		GROUP BY dc.download_category_id
+		ORDER BY dc.download_category_order
+		";
+		if($sql->db_Select_gen($qry))
+		{
+			$categories = $sql->db_getList();
+			foreach($categories as $cat)
+			{
+				$cat_array[$cat['download_category_parent']][] = $cat;
+			}
 
 			$text .= "
 			<table class='fborder' style='width:99%'>
@@ -1063,79 +1071,102 @@ class download {
 				<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 
-			while ($row = $sql->db_Fetch()) {
-				extract($row);
 
-				if(strstr($download_category_icon, chr(1)))
+			//Start displaying parent categories
+			foreach($cat_array[0] as $parent)
+			{
+				if(strstr($parent['download_category_icon'], chr(1)))
 				{
-					list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
+					list($parent['download_category_icon'], $parent['download_category_icon_empty']) = explode(chr(1), $parent['download_category_icon']);
 				}
 
 				$text .= "<tr>
-					<td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
-					<td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></td>
+					<td style='width:5%; text-align:center' class='forumheader'>".($parent['download_category_icon'] ? "<img src='".e_IMAGE."icons/{$main['download_category_icon']}' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+					<td colspan='2' style='width:70%' class='forumheader'><b>{$parent['download_category_name']}</b></td>
 					<td class='forumheader3'>
-					 <input class='tbox' type='text' name='catorder[$download_category_id]' value='$download_category_order' size='3' />
+					 <input class='tbox' type='text' name='catorder[{$parent['download_category_id']}]' value='{$parent['download_category_order']}' size='3' />
 					</td>
-					<td style='text-align:center' class='forumheader'>
-					<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
-					<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
+					<td style='text-align:left;padding-left:12px' class='forumheader'>
+					<a href='".e_SELF."?cat.edit.{$parent['download_category_id']}'>".ADMIN_EDIT_ICON."</a>
+					";
+					if(!is_array($cat_array[$parent['download_category_id']]))
+					{
+						$text .= "<input type='image' title='".LAN_DELETE."' name='delete[category_{$parent['download_category_id']}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: {$parent['download_category_id']} ]")."') \"/>";
+					}
+				$text .= "
 					</td>
-					</tr>";
+					</tr>
+					";
 
-				$parent_id = $download_category_id;
-				if ($sql2->db_Select("download_category", "*", "download_category_parent=$parent_id ORDER BY download_category_order")) {
-					while ($row = $sql2->db_Fetch()) {
-						extract($row);
-							if(strstr($download_category_icon, chr(1)))
-							{
-								list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
-							}
-						$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."' ");
+				//Show main categories
+
+				if(is_array($cat_array[$parent['download_category_id']]))
+				{
+					foreach($cat_array[$parent['download_category_id']] as $main)
+					{
+						
+						if(strstr($main['download_category_icon'], chr(1)))
+						{
+							list($main['download_category_icon'], $main['download_category_icon_empty']) = explode(chr(1), $main['download_category_icon']);
+						}
 						$text .= "<tr>
-							<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
-							<td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>
-							<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
-							<td class='forumheader3'>
-                            <input class='tbox' type='text' name='catorder[$download_category_id]' value='$download_category_order' size='3' />
-							</td>
-							<td style='width:20%; text-align:center' class='forumheader3'>
-							<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
-							<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
-							</td>
-							</tr>";
+						<td style='width:5%; text-align:center' class='forumheader3'>".($main['download_category_icon'] ? "<img src='".e_IMAGE."icons/{$main['download_category_icon']}' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+						<td style='width:70%' class='forumheader3'>{$main['download_category_name']}<br /><span class='smalltext'>{$main['download_category_description']}</span></td>
+						<td style='width:5%; text-align:center' class='forumheader3'>{$main['filecount']}</td>
+						<td class='forumheader3'>
+							<input class='tbox' type='text' name='catorder[{$main['download_category_id']}]' value='{$main['download_category_order']}' size='3' />
+						</td>
+						<td style='width:20%; text-align:left;padding-left:12px' class='forumheader3'>
+						<a href='".e_SELF."?cat.edit.{$main['download_category_id']}'>".ADMIN_EDIT_ICON."</a>";
+						if(!is_array($cat_array[$main['download_category_id']]) && !$main['filecount'])
+						{
+							$text .= "<input type='image' title='".LAN_DELETE."' name='delete[category_{$main['download_category_id']}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: {$main['download_category_id']} ]")."') \"/>";
+						}
+						$text .= "
+						</td>
+						</tr>";
 
-
-						$sub_parent_id = $download_category_id;
-						if ($sql3->db_Select("download_category", "*", "download_category_parent=$sub_parent_id ORDER BY download_category_order")) {
-							while ($row = $sql3->db_Fetch()) {
-								extract($row);
-								if(strstr($download_category_icon, chr(1)))
+						//Show sub categories
+						if(is_array($cat_array[$main['download_category_id']]))
+						{
+							foreach($cat_array[$main['download_category_id']] as $sub)
+							{
+						
+								if(strstr($sub['download_category_icon'], chr(1)))
 								{
-									list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
+									list($sub['download_category_icon'], $sub['download_category_icon_empty']) = explode(chr(1), $sub['download_category_icon']);
 								}
-								$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."' ");
 								$text .= "<tr>
-									<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
-									<td style='width:70%' class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;".DOWLAN_53.": $download_category_name<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class='smalltext'>$download_category_description</span></td>
-									<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
-									<td>
+									<td style='width:5%; text-align:center' class='forumheader3'>".($sub['download_category_icon'] ? "<img src='".e_IMAGE."icons/{$sub['download_category_icon']}' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+									<td style='width:70%' class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;".DOWLAN_53.": {$sub['download_category_name']}<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class='smalltext'>{$sub['download_category_description']}</span></td>
+									<td style='width:5%; text-align:center' class='forumheader3'>{$sub['filecount']}</td>
+									<td class='forumheader3'>
+										<input class='tbox' type='text' name='catorder[{$sub['download_category_id']}]' value='{$sub['download_category_order']}' size='3' />
 									</td>
-									<td style='width:20%; text-align:center' class='forumheader3'>
-									<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
-									<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
+									<td style='width:20%; text-align:left;padding-left:12px' class='forumheader3'>
+									<a href='".e_SELF."?cat.edit.{$sub['download_category_id']}'>".ADMIN_EDIT_ICON."</a>
+									";
+									if(!$sub['filecount'])
+									{
+										$text .= "<input type='image' title='".LAN_DELETE."' name='delete[category_{$sub['download_category_id']}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: {$sub['download_category_id']} ]")."') \"/>";
+									}
+								$text .= "
 									</td>
 									</tr>";
 							}
 						}
 					}
 				}
+
 			}
+
 			$text .= "</table></div>";
 			$text .= "<div style='text-align:center'>
 				<input class='button' type='submit' name='update_catorder' value='".LAN_UPDATE."' />
 				</div>";
-		} else {
+		}
+		else
+		{
 			$text .= "<div style='text-align:center'>".DOWLAN_38."</div>";
 		}
 		$text .= "</form>";
