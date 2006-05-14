@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-04-29 05:46:12 $
-|     $Author: sweetas $
+|     $Revision: 1.46 $
+|     $Date: 2006-05-14 04:05:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if(defined("FPW_ACTIVE")){
+if(defined("FPW_ACTIVE"))
+{
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
 
@@ -29,21 +30,25 @@ $ip = $e107->getip();
 
 $bullet = (defined("BULLET") ? "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
 
-if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE) {
+if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
+{
 	$text = "<div style='text-align:center'>".LOGIN_MENU_L7."<br /><br />
 	".$bullet." <a href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a></div>";
 	$ns->tablerender(LOGIN_MENU_L9, $text, 'login');
 }
 $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
 
-if ($use_imagecode) {
+if ($use_imagecode)
+{
 	global $sec_img;
 	include_once(e_HANDLER.'secure_img_handler.php');
 	$sec_img = new secure_image;
 }
 $text = '';
-if (USER == TRUE || ADMIN == TRUE) {
-	if (ADMIN == TRUE) {
+if (USER == TRUE || ADMIN == TRUE)
+{
+	if (ADMIN == TRUE)
+	{
 		$text = ($pref['maintainance_flag'] == 1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
 		if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE) 
 		{
@@ -61,8 +66,9 @@ if (USER == TRUE || ADMIN == TRUE) {
 	<br />
 	'.$bullet.' <a class="login_menu_link" href="'.e_HTTP.'index.php?logout">'.LOGIN_MENU_L8.'</a>';
 
-	if (!$sql->db_Select('online', '*', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ')) {
-		$sql->db_Delete('online', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ');
+	if (!$sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
+	{
+		$sql->db_Delete('online', "`online_ip` = '{$ip}' AND `online_user_id` = '0' ");
 	}
 
 	$new_total = 0;
@@ -70,15 +76,12 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 		// ------------ News Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_news'] == true) {
-			$new_news = $sql->db_Select('news', '*', '`news_datestamp` > '.$time);
-			while ($row = $sql->db_Fetch()) {
-				if (!check_class($row['news_class'])) {
-					$new_news--;
-				}
-			}
+		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_news'] == true)
+		{
+			$new_news = $sql->db_Count("news", "(*)", "WHERE `news_datestamp` > {$time} AND news_class REGEXP '".e_CLASS_REGEXP."'");
 			$new_total += $new_news;
-			if (!$new_news) {
+			if (!$new_news)
+			{
 				$new_news = LOGIN_MENU_L26;
 			}
 			$NewItems[] = $new_news.' '.($new_news == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15);
@@ -86,18 +89,24 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 		// ------------ Article Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_comments'] == true) {
+		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_comments'] == true)
+		{
 			$new_comments = 0;
 			$new_comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
 
 			$handle = opendir(e_PLUGIN);
-			while (false !== ($file = readdir($handle))) {
-				if ($file != '.' && $file != '..' && is_dir(e_PLUGIN.$file)) {
+			while (false !== ($file = readdir($handle)))
+			{
+				if ($file != '.' && $file != '..' && is_dir(e_PLUGIN.$file))
+				{
 					$plugin_handle = opendir(e_PLUGIN.$file."/");
-					while (false !== ($file2 = readdir($plugin_handle))) {
-						if ($file2 == 'e_comment.php') {
+					while (false !== ($file2 = readdir($plugin_handle)))
+					{
+						if ($file2 == 'e_comment.php')
+						{
 							require_once(e_PLUGIN.$file.'/'.$file2);
-							if ($comment_type == $e_plug_table) {
+							if ($comment_type == $e_plug_table)
+							{
 								$new_comments++;
 								break 2;
 							}
@@ -106,7 +115,8 @@ if (USER == TRUE || ADMIN == TRUE) {
 				}
 			}
 			$new_total += $new_comments;
-			if (!$new_comments) {
+			if (!$new_comments)
+			{
 				$new_comments = LOGIN_MENU_L26;
 			}
 			$NewItems[] = $new_comments.' '.($new_comments == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19);
@@ -166,7 +176,8 @@ if (USER == TRUE || ADMIN == TRUE) {
 		if (isset($NewItems) && $NewItems) {
 			$text .= '<br /><br /><span class="smalltext">'.LOGIN_MENU_L25.'<br />'.implode(',<br />', $NewItems).'</span>';
 			if ($new_total) {
-				if ($sql -> db_Select("plugin", "plugin_installflag", "plugin_path='list_new' AND plugin_installflag='1'")) {
+				if ($sql -> db_Select("plugin", "plugin_installflag", "plugin_path='list_new' AND plugin_installflag='1'"))
+				{
 					$text .= '<br /><a href="'.e_PLUGIN.'list_new/list.php?new">'.LOGIN_MENU_L24.'</a>';
 				}
 			}

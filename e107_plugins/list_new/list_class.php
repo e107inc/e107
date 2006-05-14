@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2006-02-20 08:52:46 $
-|		$Author: lisa_ $
+|		$Revision: 1.11 $
+|		$Date: 2006-05-14 04:05:13 $
+|		$Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -42,7 +42,8 @@ if (file_exists(THEME."list_template.php")) {
 
 class listclass {
 
-	function getListPrefs(){
+	function getListPrefs()
+	{
 		global $sql,$eArrayStorage;
 
 		//check preferences from database
@@ -115,20 +116,24 @@ class listclass {
 	}
 
 	//content needs this to split each main parent into seperate sections
-	function getContentSections($mode){
+	function getContentSections($mode)
+	{
 		global $sql, $sections, $titles, $content_types, $content_name;
 
-		if(!$content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){
+		if(!$content_install = $sql -> db_Select("plugin", "plugin_id", "plugin_path = 'content' AND plugin_installflag = '1' ")){
 			return;
 		}
 		$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
 		//get main parent types
-		if($mainparents = $sql -> db_Select("pcontent", "*", "content_parent = '0' ".$datequery." ORDER BY content_heading")){
-			while($row = $sql -> db_Fetch()){
+		if($mainparents = $sql -> db_Select("pcontent", "content_id, content_heading", "content_parent = '0' ".$datequery." ORDER BY content_heading"))
+		{
+			while($row = $sql -> db_Fetch())
+			{
 				$content_types[] = "content_".$row['content_id'];
 				$content_name = 'content';
-				if($mode == "add"){
+				if($mode == "add")
+				{
 					$sections[] = "content_".$row['content_id'];
 					$titles[] = $content_name." : ".$row['content_heading'];
 				}
@@ -139,7 +144,8 @@ class listclass {
 		return;
 	}
 
-	function getSections(){
+	function getSections()
+	{
 		global $sql, $sections, $titles;
 
 		$this -> getDefaultSections();
@@ -148,17 +154,20 @@ class listclass {
 		$fl = new e_file;
 		$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', '.bak');
 		$iconlist = $fl->get_files(e_PLUGIN, "e_list\.php$", "standard", 1);
-		foreach($iconlist as $icon){
-			
+		foreach($iconlist as $icon)
+		{
 			$tmp = explode("/", $icon['path']);
 			$tmp = array_reverse($tmp);
 			$icon['fname'] = $tmp[1];
 
-			if($plugin_installed = $sql -> db_Select("plugin", "*", "plugin_path = '".$icon['fname']."' AND plugin_installflag = '1' ")){
-
-				if($icon['fname'] == "content"){
+			if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$icon['fname']."' AND plugin_installflag = '1' "))
+			{
+				if($icon['fname'] == "content")
+				{
 					$this -> getContentSections("add");
-				}else{
+				}
+				else
+				{
 					$sections[] = $icon['fname'];
 					$titles[] = $icon['fname'];
 				}
@@ -167,26 +176,35 @@ class listclass {
 		return;
 	}
 
-	function getDefaultPrefs(){
+	function getDefaultPrefs()
+	{
 		global $sql, $sections, $titles, $defaultarray, $content_types, $tp;
 
 		//section preferences
-		for($i=0;$i<count($sections);$i++){
-			if(!in_array($sections[$i], $defaultarray)){
-				if(!in_array($sections[$i], $content_types)){
-					if($plugin_installed = $sql -> db_Select("plugin", "*", "plugin_path = '".$tp -> toDB($sections[$i], true)."' AND plugin_installflag = '1' ")){
+		for($i=0;$i<count($sections);$i++)
+		{
+			if(!in_array($sections[$i], $defaultarray))
+			{
+				if(!in_array($sections[$i], $content_types))
+				{
+					if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($sections[$i], true)."' AND plugin_installflag = '1' "))
+					{
 						$list_pref["$sections[$i]_recent_menu_caption"]	= $sections[$i];
 						$list_pref["$sections[$i]_recent_page_caption"]	= $sections[$i];
 						$list_pref["$sections[$i]_new_menu_caption"]	= $sections[$i];
 						$list_pref["$sections[$i]_new_page_caption"]	= $sections[$i];
 					}
-				}else{
+				}
+				else
+				{
 					$list_pref["$sections[$i]_recent_menu_caption"]	= $titles[$i];
 					$list_pref["$sections[$i]_recent_page_caption"]	= $titles[$i];
 					$list_pref["$sections[$i]_new_menu_caption"]	= $titles[$i];
 					$list_pref["$sections[$i]_new_page_caption"]	= $titles[$i];
 				}
-			}else{
+			}
+			else
+			{
 				$list_pref["$sections[$i]_recent_menu_caption"]	= $sections[$i];
 				$list_pref["$sections[$i]_recent_page_caption"]	= $sections[$i];
 				$list_pref["$sections[$i]_new_menu_caption"]	= $sections[$i];
@@ -279,32 +297,41 @@ class listclass {
 		return $list_pref;
 	}
 
-	function show_section_list($arr, $mode, $max=""){
+	function show_section_list($arr, $mode, $max="")
+	{
 		global $tp, $listplugindir, $list_shortcodes, $sql, $list_pref, $defaultarray, $content_types, $content_name;
 		global $LIST_ICON, $LIST_DATE, $LIST_HEADING, $LIST_AUTHOR, $LIST_CATEGORY, $LIST_INFO;
 		global $LIST_DISPLAYSTYLE, $LIST_CAPTION, $LIST_STYLE_CAPTION, $LIST_STYLE_BODY;
 		global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;
 
-		$menu_installed = $sql -> db_Select("menus", "*", "(menu_name = 'list_new_menu' || menu_name = 'list_recent_menu') AND menu_location != '0' AND menu_class REGEXP '".e_CLASS_REGEXP."' ");
+		$menu_installed = $sql -> db_Select("menus", "menu_id", "(menu_name = 'list_new_menu' || menu_name = 'list_recent_menu') AND menu_location != '0' AND menu_class REGEXP '".e_CLASS_REGEXP."' ");
 		$LIST_DATA = "";
 		$LIST_CAPTION = "";
 
 		$this -> getContentSections("");
 
 		//require is needed here instead of require_once, since both the menu and the page could be visible at the same time
-		if(is_array($content_types) && in_array($arr[9], $content_types)){
+		if(is_array($content_types) && in_array($arr[9], $content_types))
+		{
 			$file = $content_name;
-			if(file_exists(e_PLUGIN.$file."/e_list.php")){
+			if(file_exists(e_PLUGIN.$file."/e_list.php"))
+			{
 				global $contentmode;
 				$contentmode = $arr[9];
 				require(e_PLUGIN.$file."/e_list.php");
 			}
-		}else{
+		}
+		else
+		{
 			$file = $arr[9];
-			if(in_array($file, $defaultarray)){
+			if(in_array($file, $defaultarray))
+			{
 				require($listplugindir."section/list_".$file.".php");
-			}else{
-				if(file_exists(e_PLUGIN.$file."/e_list.php")){
+			}
+			else
+			{
+				if(file_exists(e_PLUGIN.$file."/e_list.php"))
+				{
 					require(e_PLUGIN.$file."/e_list.php");
 				}
 			}
@@ -324,7 +351,8 @@ class listclass {
 		//echo $list_pref["$arr_{$mode}_caption"];
 
 		if(is_array($LIST_DATA)){			//if it is an array, data exists and data is not empty
-			for($i=0;$i<count($LIST_DATA[$mode]);$i++){				
+			for($i=0;$i<count($LIST_DATA[$mode]);$i++)
+			{				
 				$LIST_ICON		= $LIST_DATA[$mode][$i][0];
 				$LIST_HEADING	= $LIST_DATA[$mode][$i][1];
 				$LIST_AUTHOR	= $LIST_DATA[$mode][$i][2];
@@ -429,13 +457,16 @@ class listclass {
 		return $lvisit;
 	}
 
-	function getBullet($sectionicon, $mode){
+	function getBullet($sectionicon, $mode)
+	{
 		global $list_pref, $listplugindir;
 
 		$default_bullet = "";
 
-		if($list_pref[$mode."_icon_default"]){
-			if(file_exists(THEME."images/bullet2.gif")){
+		if($list_pref[$mode."_icon_default"])
+		{
+			if(file_exists(THEME."images/bullet2.gif"))
+			{
 				$default_bullet = "<img src='".THEME."images/bullet2.gif' alt='' />";
 			}
 		}
