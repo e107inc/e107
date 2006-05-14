@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-05-14 00:20:59 $
+|     $Revision: 1.43 $
+|     $Date: 2006-05-14 02:08:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -263,6 +263,7 @@ function PreImage_Select($formid='preimage_selector') {
 
 	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 	$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
+    sort($imagelist);
 	$text ="<!-- Start of PreImage selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
@@ -311,7 +312,7 @@ function PreFile_Select($formid='prefile_selector') {
 	global $IMAGES_DIRECTORY, $fl, $sql;
 		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
-
+		sort($imagelist); 
 		$filelist = array();
 		$downloadList = array();
 
