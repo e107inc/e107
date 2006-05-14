@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2006-05-12 22:50:40 $
+|     $Revision: 1.78 $
+|     $Date: 2006-05-14 06:04:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -126,7 +126,8 @@ if (isset($_POST['update_options'])) {
 if (isset($_POST['prune'])) {
 	$e107cache->clear("online_menu_totals");
 	$text = USRLAN_56." ";
-	if ($sql->db_Select("user", "user_id, user_name", "user_ban=2"))
+	$bantype = $_POST['prune_type'];
+	if ($sql->db_Select("user", "user_id, user_name", "user_ban= {$bantype}"))
 	{
 		$uList = $sql->db_getList();
 		foreach($uList as $u)
@@ -834,12 +835,23 @@ class users{
 		global $ns, $sql;
 
 		$unactive = $sql->db_Select("user", "*", "user_ban=2");
-		$text = "<div style='text-align:center'>".USRLAN_84." ".$unactive." ".USRLAN_85."<br /><br />
+		$bounced = $sql->db_Select("user", "*", "user_ban=3");
+		$text = "<div style='text-align:center'><br /><br />
 			<form method='post' action='".e_SELF."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td class='forumheader3' style='text-align:center'>
-			<input class='button' type='submit' name='prune' value='".USRLAN_54."' />
+			<td class='forumheader3' style='text-align:center'><br />".LAN_DELETE.":&nbsp;
+			<select class='tbox' name='prune_type'>";
+            $prune_type = array(2=>USRLAN_138." [".$unactive."]",3=>USRLAN_145." [".$bounced."]");
+			foreach($prune_type as $key=>$val){
+            	$text .= "<option value='$key'>{$val}</option>\n";
+			}
+
+		$text .= "</select><br /><br /></td>
+			</tr>
+			<tr>
+			<td class='forumheader' style='text-align:center'>
+			<input class='button' type='submit' name='prune' value=\"".USRLAN_55."\" />
 			</td>
 			</tr>
 			</table>
@@ -997,17 +1009,29 @@ class users{
 		$obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],'pop3','110');
 		$obj->connect();
 		$tot=$obj->getTotalMails();
+        $found = FALSE;
 		$DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
 
 		for($i=1;$i<=$tot;$i++)	{
-			// $head=$obj->getHeaders($i);
+			 $head=$obj->getHeaders($i);
+            if($head['bounce']){
+		   		if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result)){
+					if($result[1]){
+						$id[] = intval($result[1]);
+						$found = TRUE;
+					}
 
-			if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result)){
-				$id[] = intval($result[1]);
-				if($DEL){ $obj->deleteMails($i); }
-        	}elseif(preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result)){
-                $emails[] = "'".$result[0]."'";
-				if($DEL){ $obj->deleteMails($i); }  
+        		}elseif(preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result)){
+                	if($result[0] && $result[0] != $pref['mail_bounce_email']){
+						$emails[] = "'".$result[0]."'";
+						$found = TRUE;
+					}elseif($result[1] && $result[1] != $pref['mail_bounce_email']){
+                    	$emails[] = "'".$result[1]."'";
+						$found = TRUE;
+					}
+
+				}
+					if($DEL && $found){ $obj->deleteMails($i); }
 			}
 
 		}
@@ -1015,10 +1039,10 @@ class users{
 		$all_emails = implode(",",$emails);
 		$obj->close_mailbox();
         $found = count($id) + count($emails);
-	  	if($sql -> db_Update("user", "user_ban=3 WHERE (user_id IN (".$all_ids.") OR user_email IN (".$all_emails.")) AND user_sess !='' ")){
-        	$this->show_message(LAN_UPDATED."<br >Found $tot, updated $found");
+	  	if($ed = $sql -> db_Update("user", "user_ban=3 WHERE (user_id IN (".$all_ids.") OR user_email IN (".$all_emails.")) AND user_sess !='' ")){
+        	$this->show_message(LAN_UPDATED."<br >Found $tot, updated $ed / $found");
 	  	}else{
-        	$this->show_message(LAN_UPDATED_FAILED."<br >Found $tot, not updated $found");
+        	$this->show_message(LAN_UPDATED_FAILED."<br >Found $tot, not updated $ed / $found");
 	  	}
 
 	}
