@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-05-13 16:12:19 $
+|     $Revision: 1.6 $
+|     $Date: 2006-05-14 09:25:39 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -121,8 +121,6 @@ define("USRLAN_126", "Permitir a usuarios valorar usuarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
 define("USRLAN_128", "Nombre de conexión");
 
-
-
 define("USRLAN_130", "Activar tracking de usuario online");
 define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracking de usuario online, como online.php, foro online info y menús online");
 define("USRLAN_132", "Activar");
@@ -136,7 +134,10 @@ define("USRLAN_139", "Su cuenta ha sido activada.\n\nAhora puede visitar {SITEUR
 define("USRLAN_140", "Reenviar email a"); 
 define("USRLAN_141", "Fallo al reenviar email a"); 
 define("USRLAN_142", "con el siguiente enlace de activación"); 
-    
+define("USRLAN_143", "Comprobar saltos"); 
+define("USRLAN_144", "Reenviar confirmación de mail a todos"); 
+
+define("LAN_BOUNCED","Saltado");   
 define("LAN_MAINADMIN","Admin principal"); 
 define("LAN_ADMIN","Admin"); 
 define("LAN_NOTVERIFIED","Sin verificar"); 

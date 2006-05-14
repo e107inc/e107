@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.13 $
+|     $Date: 2006-05-14 09:25:39 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -49,4 +49,16 @@ define("MAILAN_21","Entradas de mail masivo");
 define("MAILAN_22","Actualmente no hay entradas guardadas");
 define("MAILAN_23","Clase de usuario: ");
 define("MAILAN_24", "Email(s) listo(s) para ser enviado(s)");
+define("MAILAN_25", "Pausa"); 
+define("MAILAN_26", "Pausar todos los envíos masivos"); 
+define("MAILAN_27", "Mails"); 
+define("MAILAN_28", "Tiempo de pausa"); 
+define("MAILAN_29", "segundos"); 
+define("MAILAN_30", "Más de 30 segundos puede causar errores en el navegador"); 
+define("MAILAN_31", "Procesando saltos de mails"); 
+define("MAILAN_32", "Dirección correo"); 
+define("MAILAN_33", "Bandeja Entrada"); 
+define("MAILAN_34", "Nombre cuenta"); 
+define("MAILAN_35", "Contraseña"); 
+define("MAILAN_36", "Eliminar mails saltados después de comprobar"); 
 ?>
