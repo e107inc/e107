@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.122 $
-|   $Date: 2006-05-13 18:18:43 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.123 $
+|   $Date: 2006-05-14 00:28:40 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -302,7 +302,7 @@ class newspost {
 
 				$text .= "<tr>
 				<td style='width:5%' class='forumheader3'>$news_id</td>
-				<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
+				<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title,"","no_make_clickable") : "[".NWSLAN_42."]")."</a></td>
 				<td style='20%' class='forumheader3'>";
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
