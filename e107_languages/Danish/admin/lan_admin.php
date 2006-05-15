@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_admin.php,v $
-|        $Revision: 1.6 $
-|        $Date: 2006-01-17 15:27:37 $
+|        $Revision: 1.7 $
+|        $Date: 2006-05-15 15:26:23 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -191,6 +191,10 @@ define("ADLAN_LAT_6", "Rappoterede forumindlæg");
 define("ADLAN_LAT_7", "Filuploads");
 define("ADLAN_LAT_8", "Der er uredigerede administrator beskeder");
 
+define("ADLAN_ERR_1", "Advarsel!");
+define("ADLAN_ERR_2", "Der er filer på din server der er kendt for at være sårbare. Disse skal fjernes <b>øjeblikkeligt</b>. Filerne hører til den ældre 0.6xx version i e107. Slet venligst de følgende mapper og alt deres indhold:");
+define("ADLAN_ERR_3", "Der er en eller flere filer i din offentlige upload mapper der ikke er blandt dine tilladte upload filtyper. Disse kan være placeret der af en angriber er det tilfældet bør de fjernes <b>jeblikkeligt</b>. Du bør <b>ikke</b> åbne disse filer da de kan eksekvere en ondsindet kode filen kan indeholde. eks. åben dem ikke med din browser.<br /><br />Hvis du genkender disse filer som værende ok, er det sikkert på grund af nylige ændringer i tilladte filtyper, den filtype du tillod er ikke længere i de tilladte filtypers liste og du er nød til at gen-tilføje den (se admin => uploads). Du bør ikke tillade upload af .html, .txt, osv. da en angriber kan uploade en fil af denne type der indeholder ondsindet javascript. Du bør selvfølgelig heller ikke, tillade upload af .php filer eller andre former for eksekverbart script.<br /><br />Nedenfor er en liste over filer der potiencielt kan være ondsindet:");
+
 // Almindelige udtryk
 define("LAN_EDIT","Rediger");
 define("LAN_DELETE","Slet");
@@ -242,6 +246,7 @@ define("LAN_OPTIONAL", "valgfri");
 define("LAN_INACTIVE","Inaktiv");
 
 define("LAN_BAN","Ban");
+define("LAN_RATING", "Bedømmelse");
 
 
 

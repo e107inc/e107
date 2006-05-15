@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_mailout.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-03 18:12:35 $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-15 15:26:23 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -50,8 +50,16 @@ define("MAILAN_22","Der er pt. ingen gemte poster");
 define("MAILAN_23","brugergruppe: ");
 define("MAILAN_24", "email(s) er klar til at blive sendt");
 
-
-
-
-
+define("MAILAN_25", "Pause");
+define("MAILAN_26", "Pause i masse-maile hver");
+define("MAILAN_27", "emails");
+define("MAILAN_28", "Pause L&aelig;ngde");
+define("MAILAN_29", "sekunder");
+define("MAILAN_30", "Mere end 30 sekunder kan for&aring;rsage at browseren time-outer");
+define("MAILAN_31", "Tilbagesend Email H&aring;ndtering");
+define("MAILAN_32", "Email adresse");
+define("MAILAN_33", "Inkommende Mail");
+define("MAILAN_34", "Konto Navn");
+define("MAILAN_35", "Kodeord");
+define("MAILAN_36", "Slet Tilbagesende Mails efter kontrol");
 ?>
