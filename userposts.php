@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.21 $
+|     $Date: 2006-05-15 00:54:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -211,41 +211,39 @@ function parse_userposts_comments_table($row) {
 	if ($comment_type == "0") {
 		$sql2->db_Select("news", "news_title, news_class", "news_id = '".intval($comment_item_id)."' ");
 		$row = $sql2->db_Fetch();
-		 extract($row);
-		if (!$news_class) {
+		if (!$row['news_class']) {
 			 
 			$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
 			$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-			$USERPOSTS_COMMENTS_HEADING = $news_title;
+			$USERPOSTS_COMMENTS_HEADING = $row['news_title'];
 			$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 			$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."comment.php?comment.news.$comment_item_id'>";
 			$USERPOSTS_COMMENTS_TYPE = "news";
 		}
 	}
 	if ($comment_type == "1") {
-		$sql2->db_Select("content", "*", "content_id=".intval($comment_item_id));
+		$sql2->db_Select("content", "content_heading, content_class, content_type", "content_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
-		 extract($row);
 		 
-		if (check_class($content_class)) {
-			if ($content_type == 0) {
+		if (check_class($row['content_class'])) {
+			if ($row['content_type'] == 0) {
 				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
 				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-				$USERPOSTS_COMMENTS_HEADING = $content_heading;
+				$USERPOSTS_COMMENTS_HEADING = $row['content_heading'];
 				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?article.$comment_item_id'>";
 				$USERPOSTS_COMMENTS_TYPE = "article";
 			}
-			else if($content_type == 3) {
+			else if($row['content_type'] == 3) {
 				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
 				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-				$USERPOSTS_COMMENTS_HEADING = $content_heading;
+				$USERPOSTS_COMMENTS_HEADING = $row['content_heading'];
 				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?review.$comment_item_id'>";
 				$USERPOSTS_COMMENTS_TYPE = "review";
 			}
-			else if($content_type == 1) {
+			else if($row['content_type'] == 1) {
 				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
 				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-				$USERPOSTS_COMMENTS_HEADING = $content_heading;
+				$USERPOSTS_COMMENTS_HEADING = $row['content_heading'];
 				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?content.$comment_item_id'>";
 				$USERPOSTS_COMMENTS_TYPE = "content";
 			}
@@ -253,38 +251,35 @@ function parse_userposts_comments_table($row) {
 		}
 	}
 	if ($comment_type == "2") {
-		$sql2->db_Select("download", "*", "download_id=".intval($comment_item_id));
+		$sql2->db_Select("download", "download_name", "download_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
-		 extract($row);
 		 
 		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
 		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-		$USERPOSTS_COMMENTS_HEADING = $download_name;
+		$USERPOSTS_COMMENTS_HEADING = $row['download_name'];
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."download.php?view.".$comment_item_id."'>";
 		$USERPOSTS_COMMENTS_TYPE = "download";
 	}
 	if ($comment_type == "4") {
-		$sql2->db_Select("poll", "*", "poll_id=".intval($comment_item_id));
+		$sql2->db_Select("poll", "poll_title", "poll_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
-		 extract($row);
 		 
 		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
 		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-		$USERPOSTS_COMMENTS_HEADING = $poll_title;
+		$USERPOSTS_COMMENTS_HEADING = $row['poll_title'];
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."comment.php?comment.poll.".$comment_item_id."'>";
 		$USERPOSTS_COMMENTS_TYPE = "poll";
 	}
 
 	if ($comment_type == "5") {
-		$sql2->db_Select("documentation", "*", "doc_id=".intval($comment_item_id));
+		$sql2->db_Select("documentation", "doc_title", "doc_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
-		 extract($row);
 		 
 		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
 		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-		$USERPOSTS_COMMENTS_HEADING = $doc_title;
+		$USERPOSTS_COMMENTS_HEADING = $row['doc_title'];
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_PLUGIN."documentation/documentation.php?".$comment_item_id."'>";
 		$USERPOSTS_COMMENTS_TYPE = "documentation";
