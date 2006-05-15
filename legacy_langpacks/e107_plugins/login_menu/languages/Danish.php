@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/login_menu/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:52:22 $
+|        $Revision: 1.2 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -58,5 +58,8 @@ define('LOGIN_MENU_L35', 'Vis Nye Forum Indl&aelig;g');
 define('LOGIN_MENU_L36', 'Vis Nye Medlemmer');
 define('LOGIN_MENU_L37', 'Opdater Indstillinger');
 define('LOGIN_MENU_L38', 'Indstillinger Opdateret');
-	
+
+
+define('LOGIN_MENU_L39', 'Forlad Admin');
+
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-06 22:12:01 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-15 13:50:06 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -25,5 +25,6 @@ define("LANG_LAN_12", "Anvend multisprog tabeller");
 define("LANG_LAN_13", "Multisprog indstillinger");
 define("LANG_LAN_14", "Standard sprog");
 define("LANG_LAN_15", "Marker for at kopiere data fra standard sprog. (nyttig i forbindelse med links, nyhedskategorier mv.)");
+define("LANG_LAN_16", "Multi-sprog Database Brug");
 
 ?>

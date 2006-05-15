@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.10 $
-|        $Date: 2006-03-23 16:00:59 $
+|        $Revision: 1.11 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -170,5 +170,11 @@ define("PRFLAN_158", "Fremvist Navn maksimum længde");
 define("PRFLAN_159", "ser denne side med");
 
 define("PRFLAN_160", "Kontroller fjerne servere ved validering af email adresser.");
+define("PRFLAN_161", "Slå alle kommentarer fra på sitet");
 
+define("PRFLAN_162", "Site Kontakt Information");
+define("PRFLAN_163", "eks. Firmanavn, Adresse, Telefon osv.");
+
+define("PRFLAN_164", "Tillad brugere at emaile en kopi af indholdet i kontakt emailen til dem selv");
+define("PRFLAN_165", "Mulig åbning for spam, benyt med omtanke");
 ?>

@@ -4,8 +4,8 @@
 |        e107 website system  Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_search.php,v $
-|        $Revision: 1.5 $
-|        $Date: 2006-01-17 15:27:37 $
+|        $Revision: 1.6 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -60,5 +60,4 @@ define("SEALAN_48", "Denne indstilling gælder kun når sorterings metoden er PH
 define("SEALAN_49", "Hvis dit site inkluderer Ideografiske sprog som Kinesisk og Japansk skal du bruge PHP som sorterings metode.");
 
 
-?>
 ?>

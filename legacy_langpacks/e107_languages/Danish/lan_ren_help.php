@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_ren_help.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -47,5 +47,15 @@ define("LANHELP_33", "HTML - fjerner linjeskift fra tekst: [html]<table><tr><td>
 define("LANHELP_34", "Inds&aelig;t nyside, opdeler artiklen i mere end en side");
 define("LANHELP_35", "hyperlink url");
 define("LANHELP_36", "Usorteret: [list]line1*line2*line3[/list] Sorteret: [list=type]line1*line2*line3[/list]");
+
+define("LANHELP_37", "Inds&aelig;t billede fra e107_images/newspost_images/ mappen");
+define("LANHELP_38", "link til originalt billede vil blive genereret");
+
+define("LANHELP_39", "Inds&aelig;t download link fra eksisterende downloads");
+define("LANHELP_40", "Der er pt. ingen eksisterende downloads");
+
+define("LANHELP_41", "Font St&oslash;rrelse...");
+define("LANHELP_42", "V&aelig;lg Billede...");
+define("LANHELP_43", "V&aelig;lg Download Fil...");
 
 ?>

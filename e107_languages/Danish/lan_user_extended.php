@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_user_extended.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-07-09 10:35:02 $
+|        $Revision: 1.4 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -38,5 +38,9 @@ define("UE_LAN_HOMEPAGE", "Hjemmeside");
 define("UE_LAN_HOMEPAGE_DESC", "Bruger hjemmeside (url)");
 define("UE_LAN_BIRTHDAY", "Fødselsdag");
 define("UE_LAN_BIRTHDAY_DESC", "Fødselsdag");
+define("UE_LAN_LANGUAGE", "Sprog");
+define("UE_LAN_LANGUAGE_DESC", "Bruger Sprog");
+define("UE_LAN_COUNTRY", "Land");
+define("UE_LAN_COUNTRY_DESC", "Bruger Land (inkluderer db tabel)");
 
 ?>

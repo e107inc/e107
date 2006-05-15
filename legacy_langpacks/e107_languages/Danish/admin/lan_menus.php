@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_menus.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-12-04 16:20:39 $
+|        $Revision: 1.3 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ define("MENLAN_25", "Funktion ...");
 
 define("MENLAN_26", "Menu vil kun blive <strong>VIST</strong> p&aring; flg. sider");
 define("MENLAN_27", "Menu vil kun blive <strong>SKJULT</strong> p&aring; flg. sider");
-define("MENLAN_28", "Skriv en side pr. linje, skrive nok af url til at kunne kende den ordentligt");
+define("MENLAN_28", "Skriv en side pr. linje, skrive nok af url til at kunne kende den ordentligt. hvis du beh&oslash;ver at slutningen af urlen passer precist, s&aring; brug et ! til sidst i sidenavnet <br />For eksempel: <strong>page.php?1!</strong>");
 
 define("MENLAN_29", "V&aelig;lg layout");
 define("MENLAN_30", "For at se menu omr&aring;derne og deres positioner for specielle layouts, v&aelig;lg det specielle layout her:");

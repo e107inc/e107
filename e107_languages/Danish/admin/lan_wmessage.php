@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_wmessage.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-09-14 21:32:16 $
+|        $Revision: 1.4 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -29,5 +29,6 @@ define("WMLAN_07","Overgå standard system til at bruge {WMESSAGE} shortcode:");
 // define("WMLAN_08","Indstillinger");
 
 define("WMLAN_09","Ingen velkomstbeskeder indstillet endnu");
+define("WMLAN_10","Besked Overskrift");
 
 ?>

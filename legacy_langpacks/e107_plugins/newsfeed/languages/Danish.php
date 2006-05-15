@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newsfeed/languages/Danish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:22 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-15 13:50:06 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -72,5 +72,9 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Navn:</u>
 	<br /><br />For en god liste over tilg&aelig;ngelige feeds, se <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> eller <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Newsfeed hj&aelig;lp");
 define("NFLAN_44", "klik for at se");
+
+define("NFLAN_45", "Antal emner der skal vises i menuen");
+define("NFLAN_46", "Antal emner der skal vises p&aring; hovedsiden");
+define("NFLAN_47", "0 eller tom for at vise alt");
 
 ?>

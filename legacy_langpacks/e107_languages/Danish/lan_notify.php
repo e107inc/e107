@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:29:27 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-15 13:50:06 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -14,6 +14,9 @@ define("NT_LAN_US_1", "Bruger tilmelding");
 
 define("NT_LAN_UV_1", "Bruger tilmelding verifiseret");
 define("NT_LAN_UV_2", "Bruger session tekst");
+define("NT_LAN_UV_3", "Bruger Login Navn: ");
+define("NT_LAN_UV_4", "Bruger IP: ");
+
 
 define("NT_LAN_LI_1", "Bruger logget ind");
 

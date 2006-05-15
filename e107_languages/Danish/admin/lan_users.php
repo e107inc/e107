@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_users.php,v $
-|        $Revision: 1.7 $
-|        $Date: 2006-01-17 14:50:45 $
+|        $Revision: 1.8 $
+|        $Date: 2006-05-15 13:50:06 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -179,4 +179,7 @@ define("DUSRLAN_37", "XUP");
 define("USRLAN_138", "Ubekræftede brugere");
 define("USRLAN_139", "Din konto er blevet aktiveret.\n\nDu kan besøge {SITEURL} og logge ind på sitet ved hjælp af de login informationer du angav.");
 
+define("USRLAN_140", "Email Gen-sendt til");
+define("USRLAN_141", "Kunne ikke Gen-sende email til");
+define("USRLAN_142", "med det følgende aktiverings link");
 ?>
