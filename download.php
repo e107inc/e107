@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-03-03 23:36:47 $
-|     $Author: e107coders $
+|     $Revision: 1.62 $
+|     $Date: 2006-05-15 00:30:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -30,26 +30,27 @@ define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.p
 
 /* define image style */
 
-
-
-
-
-if (!e_QUERY || $_GET['elan']) {
+if (!e_QUERY || $_GET['elan'])
+{
 	require_once(HEADERF);
 	// no qs - render categories ...
 
-	if (!$DOWNLOAD_CAT_PARENT_TABLE) {
-		if (file_exists(THEME."download_template.php")) {
+	if (!$DOWNLOAD_CAT_PARENT_TABLE)
+	{
+		if (is_readable(THEME."templates/download_template.php"))
+		{
+			require_once(THEME."templates/download_template.php");
+		}
+		elseif (is_readable(THEME."download_template.php"))
+		{
 			require_once(THEME."download_template.php");
-		} else {
+		}
+		else
+		{
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 		}
 	}
     if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
-
-
-
-
 
 	$qry = "
 	SELECT dc.*, SUM(d.download_filesize) AS d_size,
@@ -127,14 +128,18 @@ if (is_numeric($tmp[0])) {
 	$id = intval($tmp[1]);
 }
 
-if (isset($_POST['commentsubmit'])) {
-	if (!$sql->db_Select("download", "download_comment", "download_id = '{$id}' ")) {
+if (isset($_POST['commentsubmit']))
+{
+	if (!$sql->db_Select("download", "download_comment", "download_id = '{$id}' "))
+	{
 		header("location:".e_BASE."index.php");
 		exit;
-	} else {
+	}
+	else
+	{
 		$row = $sql->db_Fetch();
-		if ($row[0] && (ANON === TRUE || USER === TRUE)) {
-
+		if ($row['download_comment'] && (ANON === TRUE || USER === TRUE))
+		{
 			$clean_authorname = $_POST['author_name'];
 			$clean_comment = $_POST['comment'];
 			$clean_subject = $_POST['subject'];
@@ -166,7 +171,8 @@ if ($action == "list") {
 		$view = ($pref['download_view'] ? $pref['download_view'] : "10");
 	}
 
-	$total_downloads = $sql->db_Select("download", "*", "download_category = '{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
+	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
+
 	/*
 	if (!$total_downloads) {
 		require_once(HEADERF);
@@ -176,17 +182,6 @@ if ($action == "list") {
 	*/
 
 	/* SHOW SUBCATS ... */
-
-
-
-
-
-
-
-
-
-
-
 
 	if($sql -> db_Select("download_category", "download_category_id", "download_category_parent='{$id}' "))
 	{
@@ -401,10 +396,6 @@ if ($action == "view") {
 		$DOWNLOAD_VIEW_IMAGE = LAN_dl_75;
 	}
 
-
-
-
-
 	$DOWNLOAD_VIEW_IMAGEFULL = ($download_image) ? "<img src='".e_FILE."downloadimages/{$download_image}' alt='' style='".DL_IMAGESTYLE."' />" : "";
 
 	if ($pref['agree_flag'] == 1) {
@@ -468,8 +459,6 @@ if ($action == "view") {
 		$DOWNLOAD_VIEW_RATING .= LAN_dl_15;
 	}
 	$DOWNLOAD_VIEW_RATING .= "</td></tr></table>";
-
-
 
 	$download_view_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_START);
 	$download_view_table_string = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE);
@@ -630,8 +619,6 @@ if($action == "mirror")
 		$DOWNLOAD_MIRROR_DESCRIPTION_LAN = LAN_dl_71;
 		$DOWNLOAD_MIRROR_REQUEST = LAN_dl_72."'".$download_name."'";
 
-
-
 		$download_mirror_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_START);
 		$download_mirror_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_END);
 
@@ -668,9 +655,6 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR));
 }
-
-
-
 
 function parsesize($size) {
 	$kb = 1024;
