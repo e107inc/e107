@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.280 $
-|     $Date: 2006-05-13 22:27:07 $
-|     $Author: e107coders $
+|     $Revision: 1.281 $
+|     $Date: 2006-05-15 13:32:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -783,7 +783,7 @@ function getperms($arg, $ap = ADMINPERMS) {
  *
  * @return array
  */
-function get_user_data($uid, $extra = "", $force_join = TRUE)
+function get_user_data($uid, $extra = "")
 {
 	global $pref, $sql;
 	$uid = intval($uid);
@@ -793,56 +793,55 @@ function get_user_data($uid, $extra = "", $force_join = TRUE)
 	{
 		return $ret;
 	}
-	if($force_join == TRUE || array_key_exists('ue_upgrade', $pref) || array_key_exists('signup_maxip'))
-	{
-		$qry = "
-		SELECT u.*, ue.* FROM #user AS u
-		LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
-		WHERE u.user_id='{$uid}' {$extra}
-		";
-	}
-	else
+
+	$qry = "
+	SELECT u.*, ue.* FROM #user AS u
+	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
+	WHERE u.user_id='{$uid}' {$extra}
+	";
+	if (!$sql->db_Select_gen($qry))
 	{
 		$qry = "SELECT * FROM #user AS u WHERE u.user_id='{$uid}' {$extra}";
-	}
-	if ($sql->db_Select_gen($qry))
-	{
-		$var = $sql->db_Fetch();
-		$extended_struct = getcachedvars("extended_struct");
-		if(!$extended_struct)
+		if(!$sql->db_Select_gen($qry))
 		{
-			unset($extended_struct);
-			$qry = "SHOW COLUMNS FROM #user_extended ";
-			if($sql->db_Select_gen($qry))
-			{
-				while($row = $sql->db_Fetch())
-				{
-					if($row['Default'] != "")
-					{
-						$extended_struct[] = $row;
-					}
-				}
-				if(isset($extended_struct))
-				{
-					cachevars("extended_struct", $extended_struct);
-				}
-			}
+			return FALSE;
 		}
+	}
 
-		if(isset($extended_struct))
+	$var = $sql->db_Fetch();
+	$extended_struct = getcachedvars("extended_struct");
+	if(!$extended_struct)
+	{
+		unset($extended_struct);
+		$qry = "SHOW COLUMNS FROM #user_extended ";
+		if($sql->db_Select_gen($qry))
 		{
-			foreach($extended_struct as $row)
+			while($row = $sql->db_Fetch())
 			{
-				if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
+				if($row['Default'] != "")
 				{
-					$var[$row['Field']] = $row['Default'];
+					$extended_struct[] = $row;
 				}
 			}
+			if(isset($extended_struct))
+			{
+				cachevars("extended_struct", $extended_struct);
+			}
 		}
-		cachevars("userdata_{$uid}", $var);
-		return $var;
 	}
-	return FALSE;
+
+	if(isset($extended_struct))
+	{
+		foreach($extended_struct as $row)
+		{
+			if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
+			{
+				$var[$row['Field']] = $row['Default'];
+			}
+		}
+	}
+	cachevars("userdata_{$uid}", $var);
+	return $var;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
