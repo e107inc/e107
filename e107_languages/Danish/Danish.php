@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/Danish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-18 17:46:05 $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-15 13:49:22 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -20,4 +20,7 @@ define("CORE_LAN1", "Fejl : tema mangler.\\n\\nændrer temaet fra Indstillinger 
 define("CORE_LAN2", " \\1 skrev:");// "\\1" represents the username.
 define("CORE_LAN3", "fil vedhæftning er slået fra");
 
+//v0.7+
+define("CORE_LAN4", "Slet venligst install.php fra din server");
+define("CORE_LAN5", "hvis du undlader er der en potentiel sikkerheds risiko for dit website");
 ?>
