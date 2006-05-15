@@ -35,4 +35,4 @@ tinyMCELang['lang_ibrowser_error_width_nan'] = 'Bredde er ikke et tal!';
 tinyMCELang['lang_ibrowser_error_height_nan'] = 'H&oslash;jde er ikke et tal!';
 tinyMCELang['lang_ibrowser_error_border_nan'] = 'Kant er ikke et tal!';
 tinyMCELang['lang_ibrowser_error_hspace_nan'] = 'Horisontalt rum er ikke et tal!';
-tinyMCELang['lang_ibrowser_error_vspace_nan'] = 'Verticalt rum er ikke et tal!';	
+tinyMCELang['lang_ibrowser_error_vspace_nan'] = 'Vertikalt rum er ikke et tal!';

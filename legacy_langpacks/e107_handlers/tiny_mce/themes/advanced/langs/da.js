@@ -71,6 +71,6 @@ version : 'Version',
 loaded_plugins : 'Indl&aelig;ste plugins',
 help : 'Hj&aelig;lp',
 not_set : '-- Ikke defineret --',
-close : 'Luk'
+close : 'Luk',
 toolbar_focus : 'G&aring; til v&aelig;rkt&oslash;jsknapperne - Alt+Q, G&aring; til editor - Alt-Z, G&aring; til element sti - Alt-X'
 });

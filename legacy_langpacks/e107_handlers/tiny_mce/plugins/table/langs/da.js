@@ -65,11 +65,14 @@ row_all : 'Opdater alle kolonner i tabellen',
 thead : 'Tabel Hoved',
 tbody : 'Table Center',
 tfoot : 'Table Fod',
-del : 'Slet tabel'
+del : 'Slet tabel',
 scope : 'Scope',
 row : 'Row',
 col : 'Col',
-rowgroup : 'Række Gruppe',
+rowgroup : 'R&aelig;kke Gruppe',
 colgroup : 'Kolonne Gruppe',
+col_limit : 'Du har overskredet det maksimalt tilladte antal kolonner p&aring; {$cols}.',
+row_limit : 'Du har overskredet det maksimalt tilladte antal r&aelig;kker p&aring; {$rows}.',
+cell_limit : 'Du har overskredet det maksimalt tilladte antal celler p&aring; {$cells}.',
 missing_scope: 'Er du sikker p&aring; du vil forts&aelig;tte uden at specifisere et Scope for denne tabel hoved celle. Uden den, kan det v&aelig;re sv&aelig;rt for brugere med handikap at forst&aring; indholdet eller data vis i tabellen.'
 });

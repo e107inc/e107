@@ -71,5 +71,8 @@ row : 'R&#230;k',
 col : 'Kol',
 rowgroup : 'R&#230;kke Gruppe',
 colgroup : 'Kolonne Gruppe',
+col_limit : 'Du har overskredet det maksimalt tilladte antal kolonner p&#229; {$cols}.',
+row_limit : 'Du har overskredet det maksimalt tilladte antal r&#230;kker p&#229; {$rows}.',
+cell_limit : 'Du har overskredet det maksimalt tilladte antal celler p&#229; {$cells}.',
 missing_scope: 'Er du sikker p&#229; du vil forts&#230;tte uden at specifisere et Scope for denne tabel hoved celle. Uden den, kan det v&#230;re sv&#230;rt for brugere med handikap at forst&#229; indholdet eller data vis i tabellen.'
 });

@@ -1,12 +1,3 @@
-/*
-+ ----------------------------------------------------------------------------+
-|     Swedish (SE) language variables
-|
-|     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_handlers/tiny_mce/langs/da.js,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-02-02 16:57:53 $
-|     $Author: e107dk $
-+----------------------------------------------------------------------------+
 */// DA_DK utf-8 lang variables contributed by Jesper Olesen e107.dk
 
 tinyMCE.addToLang('',{
