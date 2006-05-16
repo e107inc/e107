@@ -1,4 +1,21 @@
-ï»¿<?php
+<?php
+/*
++----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/install_.php,v $
+|     $Revision: 1.49 $
+|     $Date: 2006-05-16 12:36:22 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
+*/
 
 /* Default Options and Paths for Installer */
 $MySQLPrefix	     = 'e107_';
@@ -31,8 +48,11 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid',    0);
 
 
-//  Ensure thet '.' is the first part of the include path
-define("PATH_SEPARATOR", (strtoupper(substr(PHP_OS,0,3)=='WIN') ? ';' : ':'));
+if(!function_exists("file_get_contents")) {
+	die("e107 requires PHP 4.3 or greater to work correctly.");
+}
+
+//  Ensure that '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
 if($inc_path[0] != ".") {
 	array_unshift($inc_path, ".");
@@ -40,10 +60,6 @@ if($inc_path[0] != ".") {
 	ini_set("include_path", $inc_path);
 }
 unset($inc_path);
-
-if(!function_exists("file_get_contents")) {
-	die("e107 requires PHP 4.3 or greater to work correctly.");
-}
 
 if(!function_exists("mysql_connect")) {
 	die("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
@@ -484,7 +500,7 @@ class e_install {
 |   e107 website system
 |   e107_config.php
 |
-|   Â©Steve Dunstan 2001-2002
+|   ©Steve Dunstan 2001-2002
 |   http://e107.org
 |   jalist@e107.org
 |
