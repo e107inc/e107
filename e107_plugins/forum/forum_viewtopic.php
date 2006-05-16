@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-04-30 23:48:40 $
+|     $Revision: 1.63 $
+|     $Date: 2006-05-16 17:29:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -304,6 +304,10 @@ if(is_array($FORUM_CRUMB))
 	$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
 	$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
 	$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
+	
+	$search 	= array("{PARENT_TITLE}");
+	$replace 	= array($tp->toHTML($forum_info['parent_name']));
+	$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
 
 	if($forum_info['sub_parent'])
 	{
@@ -319,7 +323,7 @@ if(is_array($FORUM_CRUMB))
 	$search 	= array("{FORUM_TITLE}", "{FORUM_HREF}");
 	$replace 	= array($forum_info['forum_name'],"href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'");
 	$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
-	$FORUM_CRUMB['fieldlist'] = "sitename,forums,subparent,forum";
+	$FORUM_CRUMB['fieldlist'] = "sitename,forums,parent,subparent,forum";
 
 	$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
 

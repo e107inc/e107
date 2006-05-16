@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-04-21 02:08:18 $
+|     $Revision: 1.54 $
+|     $Date: 2006-05-16 17:29:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -158,6 +158,10 @@ if(is_array($FORUM_CRUMB))
 	$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
 	$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
+	$search 	= array("{PARENT_TITLE}");
+	$replace 	= array($tp->toHTML($forum_info['parent_name']));
+	$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
+
 	if($forum_info['sub_parent'])
 	{
 		$search 	= array("{SUBPARENT_TITLE}", "{SUBPARENT_HREF}");
@@ -172,7 +176,7 @@ if(is_array($FORUM_CRUMB))
 	$search 	= array("{FORUM_TITLE}");
 	$replace 	= array($forum_info['forum_name']);
 	$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
-	$FORUM_CRUMB['fieldlist'] = "sitename,forums,subparent,forum";
+	$FORUM_CRUMB['fieldlist'] = "sitename,forums,parent,subparent,forum";
 
 	$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
 
