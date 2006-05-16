@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2006-05-12 22:50:40 $
-|     $Author: e107coders $
+|     $Revision: 1.89 $
+|     $Date: 2006-05-16 01:31:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -448,7 +448,7 @@ if (isset($_POST['register']))
 	}
 
 	// Email syntax validation.
-	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email']))
+	if (!check_email($_POST['email']))
 	{
 		message_handler("P_ALERT", LAN_106);
 		$error_message .= LAN_106."\\n";
