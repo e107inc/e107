@@ -3,11 +3,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_handlers/tiny_mce/plugins/ibrowser/langs/es.js,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-16 19:52:10 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
-*/CC
+*/
 
 tinyMCELang['lang_ibrowser_title'] = 'Insertar / Editar Imagen';
 tinyMCELang['lang_ibrowser_desc'] = 'Insertar / Editar Imagen';

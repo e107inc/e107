@@ -1,4 +1,13 @@
-// ES lang variables by Natxo CC
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/plugins/ibrowser/langs/es.js,v $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-16 19:52:10 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 
 tinyMCELang['lang_ibrowser_title'] = 'Insertar / Editar Imagen';
 tinyMCELang['lang_ibrowser_desc'] = 'Insertar / Editar Imagen';
