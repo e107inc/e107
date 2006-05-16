@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2006-04-25 00:40:53 $
-|     $Author: e107coders $
+|     $Revision: 1.82 $
+|     $Date: 2006-05-16 18:42:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -267,7 +267,7 @@ if ($e107_popup != 1) {
 
 
 	if(ADMIN){
-		if(file_exists('install.php')){ echo "<div class='installe' style='text-align:center'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
+		if(file_exists(e_BASE.'install.php')){ echo "<div class='installe' style='text-align:center'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
 	}
 
 
