@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2006-03-26 16:50:16 $
-|     $Author: sweetas $
+|     $Revision: 1.68 $
+|     $Date: 2006-05-16 03:11:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -198,7 +198,8 @@ if (isset($_POST['updatesettings']))
 		$password2 = "";
 	}
 
-	if (!check_email($_POST['email'])) {
+	if (!check_email($_POST['email'])) 
+	{
 	  	$error .= LAN_106."\\n";
 	}
 
@@ -298,7 +299,7 @@ if (isset($_POST['updatesettings']))
 
 			if($ue_fields)
 			{
-				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('".intval($inp)."')");
+				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".intval($inp)."'");
 			}
 

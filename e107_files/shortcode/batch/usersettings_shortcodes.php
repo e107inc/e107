@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-05-05 21:26:46 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2006-05-16 03:11:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -244,7 +244,7 @@ if(!$catInfo)
 	$qry = "
 	SELECT * FROM #user_extended_struct
 	WHERE user_extended_struct_applicable IN (".$tp -> toDB($curVal['userclass_list'], true).")
-	AND user_extended_struct_write IN (".$tp -> toDB($curVal['userclass_list'], true).")
+	AND user_extended_struct_write IN (".USERCLASS_LIST.")
 	AND user_extended_struct_id = ".intval($parm)."
 	";
 	if($sql->db_Select_gen($qry))
@@ -258,7 +258,7 @@ if($catInfo)
 	$qry = "
 	SELECT * FROM #user_extended_struct
 	WHERE user_extended_struct_applicable IN (".$tp -> toDB($curVal['userclass_list'], true).")
-	AND user_extended_struct_write IN (".$tp -> toDB($curVal['userclass_list'], true).")
+	AND user_extended_struct_write IN (".USERCLASS_LIST.")
 	AND user_extended_struct_parent = ".intval($parm)."
 	AND user_extended_struct_type != 0
 	ORDER BY user_extended_struct_order ASC
@@ -297,7 +297,7 @@ if(!$fInfo)
 	$qry = "
 	SELECT * FROM #user_extended_struct
 	WHERE user_extended_struct_applicable IN (".$tp -> toDB($curVal['userclass_list'], true).")
-	AND user_extended_struct_write IN (".$tp -> toDB($curVal['userclass_list'], true).")
+	AND user_extended_struct_write IN (".USERCLASS_LIST.")
 	AND user_extended_struct_name = '".$tp -> toDB($parm, true)."'
 	";
 	if($sql->db_Select_gen($qry))
