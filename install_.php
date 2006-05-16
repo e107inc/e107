@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /* Default Options and Paths for Installer */
 $MySQLPrefix	     = 'e107_';
@@ -30,7 +30,9 @@ ini_set('arg_separator.output',     '&amp;');
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid',    0);
 
+
 //  Ensure thet '.' is the first part of the include path
+define("PATH_SEPARATOR", (strtoupper(substr(PHP_OS,0,3)=='WIN') ? ';' : ':'));
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
 if($inc_path[0] != ".") {
 	array_unshift($inc_path, ".");
