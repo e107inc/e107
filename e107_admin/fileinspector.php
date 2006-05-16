@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-04-13 23:14:54 $
-|     $Author: sweetas $
+|     $Revision: 1.37 $
+|     $Date: 2006-05-16 13:29:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -613,9 +613,9 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.36 $\n";
-		$data .= "|     \$Date: 2006-04-13 23:14:54 $\n";
-		$data .= "|     \$Author: sweetas $\n";
+		$data .= "|     \$Revision: 1.37 $\n";
+		$data .= "|     \$Date: 2006-05-16 13:29:26 $\n";
+		$data .= "|     \$Author: mcfly_e107 $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
 		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
@@ -697,7 +697,7 @@ class file_inspector {
 	}
 	
 	function checksum($filename) {
-		$checksum = md5(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename)));
+		$checksum = md5(str_replace(array(chr(13),chr(10)), "", file_get_contents($filename)));
 		return $checksum;
 	}
 	
