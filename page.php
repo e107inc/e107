@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-04-17 18:09:22 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2006-05-16 01:48:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -137,8 +137,10 @@ class pageClass
 
 		if(!$sql -> db_Select_gen($query) && !$_GET['elan'])
 		{
+			require_once(HEADERF);
 			message_handler("MESSAGE", LAN_PAGE_3);
-			require_once(FOOTERF); exit;
+			require_once(FOOTERF); 
+			exit;
 		}
 
 		extract($sql -> db_Fetch());
