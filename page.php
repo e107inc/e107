@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-05-16 01:48:23 $
+|     $Revision: 1.27 $
+|     $Date: 2006-05-16 15:55:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -37,8 +37,8 @@ if(!e_QUERY)
 else
 {
 
-	$cacheString = 'page';
-	$cachePageTitle = 'page-t';
+	$cacheString = 'page_'.$page->pageID;
+	$cachePageTitle = 'page-t_'.$page->pageID;
 
     if($cacheData = $e107cache->retrieve($cacheString)){
 
