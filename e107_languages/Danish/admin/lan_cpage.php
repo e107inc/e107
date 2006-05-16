@@ -5,8 +5,8 @@
 |        e107 website system  UTF-8 Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_cpage.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2006-05-16 10:39:43 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ define("CUSLAN_25", "Rediger menu");
 define("CUSLAN_26", "Opret ny menu");
 define("CUSLAN_27", "Side gemt");
 define("CUSLAN_28", "Side slettet");
-define("CUSLAN_29", "Vis sider hvis inge side er valgt");
+define("CUSLAN_29", "Vis sider hvis ingen side er valgt");
 define("CUSLAN_30", "Varighed for cookie (i sekunder)");
 define("CUSLAN_31", "Opret menu");
 define("CUSLAN_32", "Konverter gamle sider/menuer");
