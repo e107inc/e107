@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/e_list.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-05-17 18:10:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -89,7 +89,7 @@ if (!defined('e107_INIT')) { exit; }
 			}
 			
 			$gen = new convert;
-			$r_datestamp = $gen->convert_date($thread_datestamp, "short");
+			$r_datestamp = $gen->convert_date($thread_lastpost, "short");
 			if($thread_total_replies)
 			{
 				$LASTPOST = "";
@@ -142,7 +142,7 @@ if (!defined('e107_INIT')) { exit; }
 			}
 			else
 			{
-				$INFO		= "[ ".LIST_FORUM_3." ".$tviews." ]";
+				$INFO		= "[ ".LIST_FORUM_3." ".intval($tviews)." ]";
 			}
 			$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
 		}
