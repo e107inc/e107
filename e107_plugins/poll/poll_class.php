@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-05-13 18:18:43 $
+|     $Revision: 1.43 $
+|     $Date: 2006-05-17 15:37:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -210,6 +210,13 @@ class poll
 					$pollArray['poll_votes'] = $votep;
 	
 					$sql->db_Update("polls", "poll_votes = '$votep', poll_ip='".$poll_ip.$userid."^' WHERE poll_id=".$poll_id);
+					echo "
+				<script type='text/javascript'>
+				<!--
+				setcook({$poll_id});
+				//-->
+				</script>
+				";					
 					$POLLMODE = "voted";
 	
 			}
@@ -323,7 +330,7 @@ class poll
 					}
 					$count ++;
 				}
-				$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' onclick='setcook(\"".$pollArray['poll_id']."\");' />";
+				$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' />";
 				if(('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
 				{
 					$SUBMITBUTTON = "[".POLLAN_30."]";
