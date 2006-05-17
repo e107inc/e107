@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2006-04-24 23:46:36 $
-|     $Author: e107coders $
+|     $Revision: 1.98 $
+|     $Date: 2006-05-17 11:57:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -267,15 +267,18 @@ else
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 
-if($tmp_cache = checkCache($cacheString)){
+if($tmp_cache = checkCache($cacheString))
+{
 	require_once(HEADERF);
 
-	if(!$action){
-
-		if (isset($pref['fb_active'])){  // --->feature box
+	if(!$action)
+	{
+		if (isset($pref['fb_active']))
+		{
 			require_once(e_PLUGIN."featurebox/featurebox.php");
 		}
-		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
+		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1)
+		{
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 		}
 
@@ -294,15 +297,15 @@ if (!$sql->db_Select_gen($query)) {
 }
 
 
-
 $p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
-if($action != "" && !is_numeric($action)){
+if($action != "" && !is_numeric($action))
+{
 	define("e_PAGETITLE", $p_title);
 }
 
 require_once(HEADERF);
-if(!$action){
-
+if(!$action)
+{
 	if (isset($pref['fb_active'])){   // --->feature box
 		require_once(e_PLUGIN."featurebox/featurebox.php");
 	}
@@ -396,7 +399,7 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	$cache_data = ob_get_clean();
 	require_once(HEADERF);
 	echo $cache_data;
-	setNewsCache($cacheString, $text);
+	setNewsCache($cacheString, $cache_data);
 }
 
 // ##### --------------------------------------------------------------------------------------------------------------
