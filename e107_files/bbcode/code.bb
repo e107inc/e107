@@ -1,7 +1,7 @@
-global $pref, $e107cache;
+global $pref, $e107cache, $tp;
 
 if($pref['smiley_activate']) {
-	$code_text = $tp -> e_emote -> filterEmotesRev($code_text);
+	$code_text = $tp->e_emote->filterEmotesRev($code_text);
 }
 
 $search = array(E_NL,'&#092;','&#036;', '&lt');
