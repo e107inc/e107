@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-02-23 01:02:13 $
-|     $Author: whoisrich $
+|     $Revision: 1.13 $
+|     $Date: 2006-05-18 15:20:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,6 +62,8 @@ $sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
 $sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' style='width:100%' class='forumheader3'><span style='float:left'>".LAN_406."</span></span><span style='float:right;'>";
 $sc_style['USER_RATING']['post'] = "</span></td></tr>";
 
+$sc_style['USER_LOGINNAME']['pre'] = " : ";
+
 if(isset($pref['photo_upload']) && $pref['photo_upload'])
 {
 	$user_picture =  "{USER_PICTURE}";
@@ -95,7 +97,7 @@ $USER_FULL_TEMPLATE = "
 <div style='text-align:center'>
 <table style='width:95%' class='fborder'>
 <tr>
-	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID} : {USER_NAME} : {USER_LOGINNAME}</td>
+	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
 </tr>
 <tr>
 	$user_picture
