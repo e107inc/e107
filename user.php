@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-03-03 23:36:47 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2006-05-18 22:28:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -64,7 +64,7 @@ else if(!e_QUERY) {
 		$qs = explode(".", e_QUERY);
 		$from = intval($qs[0]);
 		$records = intval($qs[1]);
-		$order = $tp -> toDB($qs[2], true);
+		$order = ($qs[2] == 'DESC' ? 'DESC' : 'ASC');
 	}
 }
 if ($records > 30) {
