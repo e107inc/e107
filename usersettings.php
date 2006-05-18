@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2006-05-16 03:11:13 $
+|     $Revision: 1.69 $
+|     $Date: 2006-05-18 15:12:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -207,7 +207,7 @@ if (isset($_POST['updatesettings']))
 	  	$error .= LAN_408."\\n";
 	}
 
-	$username = strip_tags($_POST['username']);
+//	$username = strip_tags($_POST['username']);
 	$loginname = strip_tags($_POST['loginname']);
 	
 	if (!$loginname)
@@ -252,13 +252,11 @@ if (isset($_POST['updatesettings']))
 
 	if (!$error)
 	{
-		if (check_class($pref['displayname_class']))
+		if (isset($_POST['username']) && check_class($pref['displayname_class']))
 		{
-			$username = substr($username, 0, $pref['displayname_maxlength']);
-		}
-		else
-		{
-			$username = substr($loginname, 0, $pref['displayname_maxlength']);
+			$username = strip_tags($_POST['username']);
+			$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
+			$new_username = "user_name = '{$username}'";
 		}
 
 		$_POST['signature'] = $tp->toDB($_POST['signature']);
@@ -285,11 +283,11 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
-			$sql->db_Update("user", "user_name='".$tp -> toDB($username)."' {$pwreset} ".$sesschange.", user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
+			$sql->db_Update("user", "{$new_username} {$pwreset} ".$sesschange.", user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
 			// If user has changed display name, update the record in the online table
-			if($username != USERNAME && !$_uid)
+			if(isset($username) && ($username != USERNAME) && !$_uid)
 			{
-				$sql->db_Update("online", "online_user_id = '".USERID.".".$tp -> toDB($username)."' WHERE online_user_id = '".USERID.".".USERNAME."'");
+				$sql->db_Update("online", "online_user_id = '".USERID.".".$username."' WHERE online_user_id = '".USERID.".".USERNAME."'");
 			}
 
 			if(ADMIN && getperms("4"))
