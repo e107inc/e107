@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-05-18 22:28:57 $
+|     $Revision: 1.32 $
+|     $Date: 2006-05-19 01:57:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ if (!USER) {
 
 if (isset($_POST['records'])) {
 	$records = intval($_POST['records']);
-	$order = $tp -> toDB($_POST['order']);
+	$order = ($_POST['order'] == 'ASC' ? 'ASC' : 'DESC');
 	$from = 0;
 }
 else if(!e_QUERY) {
@@ -64,7 +64,7 @@ else if(!e_QUERY) {
 		$qs = explode(".", e_QUERY);
 		$from = intval($qs[0]);
 		$records = intval($qs[1]);
-		$order = ($qs[2] == 'DESC' ? 'DESC' : 'ASC');
+		$order = ($qs[2] == 'ASC' ? 'ASC' : 'DESC');
 	}
 }
 if ($records > 30) {
