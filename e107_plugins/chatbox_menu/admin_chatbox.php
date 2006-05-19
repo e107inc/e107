@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-02-27 00:33:37 $
-|     $Author: whoisrich $
+|     $Revision: 1.16 $
+|     $Date: 2006-05-19 22:02:22 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -50,6 +50,7 @@ if (isset($_POST['prune'])) {
 }
 
 if (isset($_POST['recalculate'])) {
+	$sql->db_Update("user", "user_chats = 0");
 	$qry = "SELECT u.user_id AS uid, count(c.cb_nick) AS count FROM #chatbox AS c
 		LEFT JOIN #user AS u on FLOOR(c.cb_nick) = u.user_id
 		WHERE u.user_id > 0
