@@ -1,105 +1,137 @@
 <?php
-
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:43 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_installer.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.10
++-----------------------------------------------------------------------------+
+*/
+ 
 define("LANINS_001", "Instalacja e107");
-
 
 define("LANINS_002", "Etap ");
 define("LANINS_003", "1");
-define("LANINS_004", "Wybór Języka");
-define("LANINS_005", "Proszę wybrać język w celu dalszej kontunuacji ");
-define("LANINS_006", "Język");
-define("LANINS_007", "2");
-define("LANINS_008", "Sprawdzanie wersji PHP / mySQL oraz uprawnień do plików i katalogów");
-define("LANINS_009", "Retest Uprawnień Do Plików");
-define("LANINS_010", "nie ma uprawnień do zapisu: ");
+define("LANINS_004", "Wybór języka");
+define("LANINS_005", "Proszę wybrać język, który będzie używany w dalszym procesie instalacji");
+define("LANINS_006", "Ustaw język");
+define("LANINS_007", "4");
+define("LANINS_008", "Sprawdzenie wersji PHP, MySQL oraz uprawnień plików");
+define("LANINS_009", "Ponów test uprawnień plików");
+define("LANINS_010", "Plik niezapisywalny: ");
+define("LANINS_010a", "Folder niezapisywalny: ");
 define("LANINS_011", "Błąd");
-define("LANINS_012", "Funkcje MySQL  wydaje się że nie istnieją. Prawdopodobnie rozszerzenie MySQL PHP nie jest zainstalowane lub nie jest skonfigurowany poprawnie."); // help for 012
-define("LANINS_013", "Nie znany numer Twojej wersji MySQL ,oznacza to że serwer jest wyłączony lub nie można nawiązać połączenie.");
-define("LANINS_014", "Uprawnienia do plików");
+define("LANINS_012", "Prawdopodobnie serwer hostujący nie obsługuje funkcji MySQL. Możliwe, że rozszerzenie MySQL PHP nie jest zainstalowane lub Twoja instalacja PHP nie została skompilowane ze wsparciem dla MySQL."); // pomoc dla 012
+define("LANINS_013", "Nie mogę ustalić wersji MySQL. To nie jest błąd krytyczny, więc proszę kontynuować instalację, ale proszę być świadomym tego, że system e107 wymaga MySQL w wersji 3.23 lub nowszej, aby funkcjonować poprawnie.");
+define("LANINS_014", "Uprawnienia plików");
 define("LANINS_015", "Wersja PHP");
 define("LANINS_016", "MySQL");
-define("LANINS_017", "Zaliczone");
-define("LANINS_018", "Upewnij się, że uprawnienia do plików i folderów wskazanych powyżej zostały ustawione prawidłowo na Twoim serwerze.  Uprawnienia powinny być ustawione na wartość 777. Aby zmienić uprawnienia, <br />naciśnij prawym przyciskiem myszy na nazwę pliku w oknie Twojego klienta FTP i wybierz CHMOD, <br />albo Set File Permissions, po czym wpisz 777. Jeśli otworzy się okno dialogowe z polami do zaznaczania, <br />wówczas zaznacz wszystkie pola.<br /><br />Po zmianie uprawnień uruchom ponownie skrypt instalacyjny.");
-define("LANINS_019", "Wersja PHP zainstalowana na Twoim serwerze nie nadaje się do e107. System e107 do poprawnego działania wymaga wersji PHP od 4.3.0. Zaktualizuj wersję PHP, lub skontaktuj się z usługodawcą w celu aktualizacji.");
-define("LANINS_020", "Kontynuacja Instalacji");
-define("LANINS_021", "3");
-define("LANINS_022", "Serwer mySQL");
-define("LANINS_023", "Wprowadź tutaj Twoje ustawienia mySQL.
+define("LANINS_017", "OK");
+define("LANINS_018", "Upewnij się, że na pliki i foldery wskazane powyżej nadałeś odpowiednie uprawnienia. Atrybuty powinny być ustawione na wartość 777. <br />Aby zmienić uprawnienia plików, przejdź do okna klienta FTP, a następnie kliknij prawym przyciskiem myszy na pliku i wybierz CHMOD (<i>Set File Permissions</i>), po czym wpisz tam wartość 777. Jeżeli natomiast wyświetli się okno dialogowe z polami do wyboru, to zaznacz wszystkie opcje i potwierdź swój wybór.<br /><br />Po zmianie uprawnień kontynuuj instalację skryptu, lecz jeśli napotkasz na jakieś utrudnienia skontaktuj się ze swoim administratorem serwera.");
+define("LANINS_019", "Wersja PHP zainstalowana na serwerze hostującym nie nadaje się do uruchamiania skryptu e107. System e107 do poprawnego działania wymaga PHP od wersji 4.3.0 wzwyż. Zaktualizuj wersję PHP lub skontaktuj się z usługodawcą, aby go poinformować, że do poprawnego działania Twojego serwisu wymagana jest nowsza wersja PHP.");
+define("LANINS_020", "Zacznij instalację");
+define("LANINS_021", "2");
+define("LANINS_022", "Konfiguracja połączenia z serwerem MySQL");
+define("LANINS_023", "Poniżej proszę wpisać dane niezbędne do poprawnego połączenia z bazą danych MySQL.
 
-Jeśli podany użytkownik ma odpowiednie uprawnienia (root), możesz zaznaczyć pole utworzenia nowej bazy danych, jeśli nie - musisz w inny sposób utworzyć bazę danych, lub posłużyć się istniejącą bazą.
-Jeśli możesz korzystać tylko z jednej bazy danych, użyj przedrostka, dzięki czemu inne skrypty będą mogły korzystać z tej samej bazy.
-Jeśli nie znasz szczegółów połączenia ze swoją bazą mySQL, skontaktuj się z Twoim dostawcą usług.");
-define("LANINS_024", "Serwer mySQL:");
-define("LANINS_025", "Użytkownik mySQL:");
-define("LANINS_026", "Hasło mySQL:");
-define("LANINS_027", "Baza danych mySQL:");
-define("LANINS_028", "Czy utworzyć Bazę Danych ?");
-define("LANINS_029", "Prefix do tabel:");
-define("LANINS_030", "Serwer MySQL który chcesz użyć do e107 może zawierać numer portu np. \"hostname:port\" lub ścieżkę do lokalnych zasobów np. \":/path/to/socket\" na localhost.");
-define("LANINS_031", "Wpisz nazwę użytkownika którą system e107 będzie łączył się z serwerem MySQL");
-define("LANINS_032", "Hasło użytkownika już podałeś");
-define("LANINS_033", "Baza Danych MySQL ,którą wybrałeś dla e107 czasami bywa schematyczna.Jeżeli użytkownik ma prawa utworzenia nowej bazy danych, może utworzyć ją automatycznie jeżeli nie istnieje.");
-define("LANINS_034", "Przedrostek do tabel zawartych w bazie danych systemu e107. Przydatne jeżeli instalujesz więcej systemów e107.");
-define("LANINS_035", "Kontynuacja");
-define("LANINS_036", "4");
-define("LANINS_037", "Sprawdzanie połączenia z mySQL");
-define("LANINS_038", " oraz Utworzenie Bazy Danych");
-define("LANINS_039", "Upewnij się że wszystkie dane które wpisałeś w polach są podane prawidłowo,Serwer MySQL, Nazwa Uytkownika MySQL oraz Baza Danych MySQL (Są one wymagane przez serwer MySQL)");
-define("LANINS_040", "Błędy");
-define("LANINS_041", "e107 nie był w stanie nawiązać połączenia z mySQL przy użyciu podanych przez Ciebie informacji. Powróć do poprzedniej strony i upewnij się, że podane informacje są prawidłowe.");
-define("LANINS_042", "Połączenie z mySQL nawiązane i sprawdzone.");
-define("LANINS_043", "Nie mogę utworzyć bazy danych, upewnij się, że masz uprawnienia do tworzenia baz danych na tym serwerze.");
-define("LANINS_044", "Baza danych została utworzona.");
-define("LANINS_045", "Kliknij na button, aby przejść do następnego etapu.");
+Jeśli masz na serwerze uprawnienia <i>root</i> (głównego administratora) lub masz nadane uprawnienia do tworzenia baz danych, możesz zaznaczyć pole utworzenia nowej bazy. Jeśli nie masz wspomnianych uprawnień, musisz utworzyć bazę danych w jakiś inny sposób lub posłużyć się już istniejącą bazą.
+
+Jeśli masz tylko jedną bazę danych użyj prefiksu, dzięki któremu inne skrypty będą mogły korzystać z tej samej bazy.
+
+Jeśli nie znasz dokładnych danych niezbędnych do połączenia z Twoim kontem MySQL, skontaktuj się z administratorem serwera, na którym hostowana będzie strona.");
+define("LANINS_024", "Host MySQL:");
+define("LANINS_025", "Użytkownik:");
+define("LANINS_026", "Hasło:");
+define("LANINS_027", "Baza danych:");
+define("LANINS_028", "Utwórz nową bazę");
+define("LANINS_029", "Prefiks:");
+define("LANINS_030", "Adres serwera MySQL (najczęściej localhost), na którym chcesz zainstalować system e107. Adres może zawierać numer portu, np. \"nazwahosta:port\", lub ścieżkę do lokalnych zasobów serwera, np. \":/ścieżka/do/zasobów\".");
+define("LANINS_031", "Wpisz nazwę użytkownika, którą system e107 będzie używał do łączenia się z serwerem MySQL");
+define("LANINS_032", "Wpisz hasło użytkownika MySQL");
+define("LANINS_033", "Wpisz nazwę baza danych MySQL, którą wybrałeś do instalacji skryptu e107. Jeśli jeszcze jej nie utworzyłeś, a posiadasz odpowiednie uprawnienia, wpisz sugerowaną nazwę i zaznacz pole obok - baza danych zostanie utworzona automatycznie.");
+define("LANINS_034", "Prefiks (przedrostek) do tabel zawartych w bazie danych systemu e107. Jest przydatny, jeżeli instalujesz więcej niż jeden skrypt w tej samej bazie.");
+define("LANINS_035", "Dalej");
+define("LANINS_036", "3");
+define("LANINS_037", "Weryfikacja połączenia z MySQL");
+define("LANINS_038", " i tworzenie bazy danych");
+define("LANINS_039", "Proszę upewnić się, że wszystkie najważniejsze pola zostały wypełnione - Host MySQL, użytkownik i baza danych są zawsze wymagane do uzyskania połączenia z serwerem MySQL)");
+define("LANINS_040", "Błąd");
+define("LANINS_041", "System e107 nie mógł nawiązać połączenia z serwerem MySQL używając podanych informacji. Wróć do poprzedniej strony i upewnij się, że wpisane dane są poprawne.");
+define("LANINS_042", "Połączenie z serwerem MySQL nawiązane i sprawdzone.");
+define("LANINS_043", "Nie mogę utworzyć bazy danych. Proszę upewnić się, że masz poprawne uprawnienia do tworzenia bazy danych na wskazanym serwerze.");
+define("LANINS_044", "Baza danych utworzona pomyślnie.");
+define("LANINS_045", "Proszę kliknąć na przycisk, aby przejść do następnego etapu.");
 define("LANINS_046", "5");
-define("LANINS_047", "Informacje o administratorze");
-define("LANINS_048", "Powrót do poprzedniej strony");
-define("LANINS_049", "Hasło i powtórka nie są identyczne, wpisz ponownie.");
+define("LANINS_047", "Specyfikacja administratora");
+define("LANINS_048", "Wróć do poprzedniego etapu");
+define("LANINS_049", "Wpisane hasła nie są identyczne. Proszę wrócić i spróbować ponownie.");
 define("LANINS_050", "Rozszerzenie XML");
 define("LANINS_051", "Zainstalowane");
-define("LANINS_052", "Nie zainstalowane");
-define("LANINS_053", "e107 .700 wymaga rozszerzenia . Skontaktuj się z usługodawcą lub przeczytaj więcej ");
-define("LANINS_054", " przed kontynuowaniem");
-define("LANINS_055", "Potwierdzenie Instalacji");
+define("LANINS_052", "Niezainstalowane");
+define("LANINS_053", "e107 .700 wymaga zainstalowanego rozszerzenia PHP XML. Proszę skontaktować się z administratorem hosta lub przeczytać więcej informacji ");
+define("LANINS_054", " przed kontynuacją");
+define("LANINS_055", "Potwierdzenie instalacji");
 define("LANINS_056", "6");
-define("LANINS_057", " e107 ma w tej chwili wszystkie informacje potrzebne do zakończenia instalacji.
+define("LANINS_057", " e107 ma teraz wszystkie informacje, które są konieczne do ukończenia instalacji.
 
-Kliknij w button, aby utworzyć tablice w bazie danych i zapisać swoje ustawienia.
+Proszę kliknąć na przycisk, aby utworzyć tabele bazy danych i zapisać wszystkie ustawienia.
 
 ");
 define("LANINS_058", "7");
 define("LANINS_060", "Nie można odczytać pliku z danymi sql
 
-Sprawdź czy plik <b>core_sql.php</b> istnieje w katalogu <b>/e107_admin/sql</b>.");
-define("LANINS_061", "e107 nie mógł utworzyć wszystkich wymaganych tabel w bazie danych.
-Zanim spróbujesz ponownie wyczyść bazę danych i sprawdź, czy nie masz problemów z korzystaniem z niej.");
-define("LANINS_062", "Witaj w swoim nowym serwisie!");
-define("LANINS_063", "e107 został prawidłowo zainstalowany i jest gotowy do używania.");
-define("LANINS_064", "Twój panel administracyjny ");
-define("LANINS_065", "znajduje się tutaj");
-define("LANINS_066", "przejdź tam teraz. Będziesz potrzebował zalogować się używając nazwy i hasła podanych w czasie instalacji.");
-define("LANINS_067", "tutaj znajdziesz FAQ i dokumentację.");
-define("LANINS_068", "Dziękujemy za korzystanie z e107, mamy nadzieję, że spełni wymagania Twojego serwisu.\n(Możesz skasować ten komunikat ze swojego panelu administracyjnego.)\n\n<b>Ta wersja systemu e107 jest jeszcze betą i radzimy używać jej z rozwagą.</b>");
-define("LANINS_069", "e107 został prawidłowo zainstalowany !
+Proszę upewnić się, że plik <b>core_sql.php</b> znajduje się w folderze <b>/e107_admin/sql</b>.");
+define("LANINS_061", "e107 nie mógł utworzyć wszystkich wymaganych tabel bazy danych.
+Proszę wyczyścić bazę danych i rozwiązać wszystkie problemy przed ponowną próbą.");
+define("LANINS_062", "[b]Witaj na swojej nowej stronie internetowej![/b]
+System e107 został pomyślnie zainstalowany i jest gotowy do aktualizacji zawartości strony.<br />Twoja sekcja administracyjna (panel administratora) jest dostępna [link=e107_admin/admin.php]pod tym linkiem[/link] - kliknij, aby teraz tam przejść. Do logowania użyj loginu i hasła administratora, które wpisałeś podczas procesu instalacji.
+
+[b]Wsparcie[/b]
+Oficjalna strona e107: [link=http://e107.org]http://e107.org[/link], znajdziesz tutaj FAQ najczęściej zadawane pytania) oraz dokumentację.
+Forum: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
+
+[b]Download[/b]
+Pluginy: [link=http://e107coders.org]http://e107coders.org[/link]
+Tematy: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+
+Dziękujemy za korzystanie z e107, mamy nadzieję, że spełni on Twoje potrzeby i będziesz zadowolony z jego użytkowania.
+(Możesz usunąć tą wiadomość za pomocą panelu administracyjnego.)");
+
+define("LANINS_063", "Witaj w e107");
+define("LANINS_069", "e107 został pomyślnie zainstalowany!
 
 Ze względu na bezpieczeństwo powinieneś teraz przywrócić uprawnienia pliku <b>e107_config.php</b> do wartości 644.
 
-Skasuj też plik /install.php z serwera - zaraz po kliknięciu na button poniżej.
+Proszę również usunąć plik <i>install.php</i> oraz folder <i>e107_install</i> z serwera po kliknięciu na poniższy przycisk
 ");
-define("LANINS_070", "e107 nie był w stanie zapisać głównego pliku konfiguracyjnego na Twoim serwerze.
+define("LANINS_070", "e107 nie mógł zapisać głównego pliku konfiguracyjnego na obecnym serwerze.
 
-Upewnij się, że plik <b>e107_config.php</b> ma odpowiednio ustawione uprawnienia");
-define("LANINS_071", "Kończenie Instalacji");
+Proszę upewnić się, że plik <b>e107_config.php</b> posiada prawidłowe uprawnienia");
+define("LANINS_071", "Finalizacja instalacji");
 
-define("LANINS_072", "Nazwa Administratora");
-define("LANINS_073", "Ta nazwa będzie używana przez ciebie w celu zalogowania się.Jeżeli chcesz możesz ustawić również jako pokazywaną nazwę Administratora");
-define("LANINS_074", "Pokazywana Nazwa Administratora");
-define("LANINS_075", "Taką nazwę użytkownicy będą widzieli w Twoim profilu użytkownika.Pozostaw puste jeżeli chcesz używać nazwy logowania.");
-define("LANINS_076", "Hasło Administratora");
-define("LANINS_077", "Wpisz swoje hasło jakie chcesz używać");
-define("LANINS_078", "Potwierdzenie Hasła Administratora");
-define("LANINS_079", "W celu potwierdzenia zgodności, wpisz hasło jeszcze raz");
-define("LANINS_080", "Adres e-mail Administratora");
-define("LANINS_081", "Wpisz adres Administratora");
+define("LANINS_072", "Login");
+define("LANINS_073", "Login administratora, posłuży Ci do logowania się na stronę oraz sekcji Panel administratora. Jeśli chcesz możesz go również używać jako nazwy administratora.");
+define("LANINS_074", "Wyświetlana nazwa");
+define("LANINS_075", "To nazwa, pod którą będziesz widoczny na forum, czacie, w komentarzach itp. Będzie ona również wyświetlana w Twoim profilu. Pozostaw to pole puste, jeśli jako nazwy administratora chcesz używać loginu.");
+define("LANINS_076", "Hasło");
+define("LANINS_077", "Proszę wpisać hasło administratora, którym będziesz się posługiwał podczas logowania w serwisie.");
+define("LANINS_078", "Potwierdź");
+define("LANINS_079", "Proszę powtórzyć hasło administratora.");
+define("LANINS_080", "Email");
+define("LANINS_081", "Wpisz swój adres email.");
+
+define("LANINS_082", "nazwa@twojastrona.pl");
+
+// Lepsze zgłaszanie listy tworzonych błędów
+define("LANINS_083", "Zgłoszenie błędu MySQL:");
+define("LANINS_084", "Instalator nie mógł nawiązać połączenia z bazą danych");
+define("LANINS_085", "Instalator nie mógł wybrać bazy danych:");
 
 ?>

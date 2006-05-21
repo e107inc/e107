@@ -1,51 +1,59 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_mailout.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_mailout.php rev. 1.10
++-----------------------------------------------------------------------------+
 */
-define("PRFLAN_52", "Zapisz Zmiany");
-define("PRFLAN_62", "Ustawienia Email");
-define("PRFLAN_63", "Wyślij testowy e-mail");
-define("PRFLAN_64", "Klikając w button, zostanie wysłany testowy e-mail na adres Głównego Administratora");
-define("PRFLAN_65", "Kliknij, aby wysłać e-mail do");
-define("PRFLAN_66", "Wiadomość testowa z");
-define("PRFLAN_67", "To jest email testowy, wskazuje on na to, że Twoje ustawienia email działają prawidłowo!\n\nPozdrowienia\nz e107 website system.");
-define("PRFLAN_68", "Wiadomość email nie mogła być wysłana. Wskazuje na to, iż twój serwer nie jest poprawnie skonfigurowany, aby przesyłać wiadomości email. Proszę spróbować użyć ponownie SMTP lub skontaktować się administratorem twojej sieci aby sprwdził ustawinia sendemail/email w ustawieniach serwera.");
-define("PRFLAN_69", "Wysyłanie wiadomości email zakończone powodzeniem, proszę sprawdzić swoją skrzynkę.");
-define("PRFLAN_70", "Włącz SMTP");
-define("PRFLAN_71", "Jeśli zaznaczone, wiadomości email będą wysyłane za pośrednictwem serwera SMTP");
-define("PRFLAN_72", "Server SMTP");
-define("PRFLAN_73", "Nazwa Użytkownika SMTP");
+ 
+define("PRFLAN_52", "Zapisz zmiany");
+define("PRFLAN_63", "Wyślij testowego emaila");
+define("PRFLAN_64", "Kliknięcie na przycisk spowoduje wysłanie emaila na adres głównego administratora strony."); // Clicking button will send test email to main admin email address
+define("PRFLAN_65", "Kliknij, aby wysłać email do");
+define("PRFLAN_66", "Testowa wiadomość email ze strony");
+define("PRFLAN_67", "To jest testowa wiadomość email. Otrzymanie jej świadczy o tym, że ustawienia email są poprawnie skonfigurowane!\n\nPozdrowienia\ne107 website system.");
+define("PRFLAN_68", "Email nie został wysłany. Prawdopodobnie serwer hostingowy nie jest poprawnie skonfigurowany do wysyłania wiadomości email. Proszę spróbować ponownie używając funkcji SMTP. Możesz również skontaktować się z administratorem hosta i poinformować go o zaistniałym problemie. Być może będzie potrzebne sprawdzenie konfiguracji serwera pod względem ustawień usług email oraz sendmail.");
+define("PRFLAN_69", "Wiadomość email została wysłana pomyślnie, proszę sprawdzić swoją skrzynkę odbiorczą.");
+define("PRFLAN_70", "Metoda wysyłania emaili");
+define("PRFLAN_71", "Jeśli nie wiesz, pozostaw jako php");
+define("PRFLAN_72", "Serwer SMTP");
+define("PRFLAN_73", "Użytkownik SMTP");
 define("PRFLAN_74", "Hasło SMTP");
-define("PRFLAN_75", "Wiadomość email nie mogła być wysłana. Proszę sprawdzić ustawinia SMTP, lub wyłaczyć SMTP i spróbować ponownie.");
+define("PRFLAN_75", "Email nie został wysłany. Proszę wykonać przegląd ustawień SMTP lub odblokować protokół SMTP i sprawdzić ponownie.");
 
-define("MAILAN_01","Wiadomość od");
-define("MAILAN_02","Adres e-mail");
+define("MAILAN_01","Od");
+define("MAILAN_02","Adres email");
 define("MAILAN_03","Do");
-define("MAILAN_04","Cc");
-define("MAILAN_05","Bcc");
+define("MAILAN_04","Kopia do");
+define("MAILAN_05","Ukryta kopia do");
 define("MAILAN_06","Temat");
 define("MAILAN_07","Załącznik");
-define("MAILAN_08","Wyślij Email");
-define("MAILAN_09","Użyj stylu tamatu serwisu");
+define("MAILAN_08","Wyślij emaila");
+define("MAILAN_09","Użyj stylu tematu");
+define("MAILAN_10","Subskrynenci");
+define("MAILAN_11","Wstaw zmienne");
+define("MAILAN_12","Wszyscy zarejestrowani użytkownicy");
+define("MAILAN_13","Wszyscy nieautoryzowani użytkownicy");
+define("MAILAN_14","Do wysyłania dużej liczby wiadomości email wskazane jest używanie funkcji SMTP - możesz to ustawić w poniższych preferencjach.");
+define("MAILAN_15","Wysyłanie wiadomości email");
 
-define("MAILAN_10","Subskrybowany Użytkownik");
-define("MAILAN_11","Wstaw Zmiennie");
-define("MAILAN_12","Wszyscy Użytkownicy");
-define("MAILAN_13","Wszyscy niezweryfikowani użytkownicy ");
-
-define("MAILAN_14","Jeżeli chcesz wysłać wiekszą ilość maili, lepiej włączyć SMTP - ustaw to w preferencjach .");
-define("MAILAN_15","Mail-Out");
-define("MAILAN_16","nazwa użytkownika");
+define("MAILAN_16","użytkownik");
 define("MAILAN_17","link do rejestracji");
 define("MAILAN_18","id użytkownika");
-define("MAILAN_19","Brak adresów email dla administratora. Sprawdź swoje ustawienia i spróbuj ponownie.");
-define("MAILAN_20","Ścieżka do programu mail");
+define("MAILAN_19","Brak adresu email administratora strony. Proszę sprawdzić ustawienia i spróbować ponownie.");
+define("MAILAN_20","Śceżka dostępu do <i>sendmail</i>");
+define("MAILAN_21","Zapisane wiadomości email");
+define("MAILAN_22","Aktualnie nie ma zapisanych pozycji"); // There are currently no saved entries
+define("MAILAN_23","grupa użytkowników: ");
+define("MAILAN_24", "email(e) są gotowe do wysłania");
 
 ?>

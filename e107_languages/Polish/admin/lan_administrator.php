@@ -1,83 +1,87 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_administrator.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_administrator.php rev. 1.12
++-----------------------------------------------------------------------------+
 */
-define("ADMSLAN_0", "Nowy wpis użytkownika/admina utworzono dla");
-define("ADMSLAN_1", "ma teraz uprawnienia administratora.");
-define("ADMSLAN_2", "zaktualizowany w bazie danych.");
-define("ADMSLAN_3", "jest głównym administratorem serwisu i nie można redagować jego ustawień.");
-define("ADMSLAN_4", "Kontynuacja");
-define("ADMSLAN_5", "Błąd !!!");
-define("ADMSLAN_6", "jest głównym administratorem serwisu i nie można go usunąć.");
-define("ADMSLAN_7", "Potwierdź chęć usunięcia");
-define("ADMSLAN_8", "z bazy danych");
-define("ADMSLAN_9", "Anulowano");
-define("ADMSLAN_10", "Potwierdź usunięcie");
-define("ADMSLAN_11", "Potwierdź usunięcie administratora");
-define("ADMSLAN_12", "Kasowanie anulowane");
-define("ADMSLAN_13", "Obecni administratorzy");
-define("ADMSLAN_14", "Kasowanie");
-define("ADMSLAN_15", "Edycja");
-define("ADMSLAN_16", "Nazwa admina");
-define("ADMSLAN_17", "Hasło admina");
+ 
+define("ADMSLAN_0", "Nowe hasło użytkownika/administratora utworzone dla");
+define("ADMSLAN_1", "teraz ma status administratora.");
+define("ADMSLAN_2", "został zaktualizowany w bazie danych.");
+define("ADMSLAN_3", "jest głównym administratorem strony i nie można go edytować.");
+define("ADMSLAN_4", "Dalej");
+define("ADMSLAN_6", "jest głównym administratorem strony i nie można go usunąć.");
+
+define("ADMSLAN_13", "Aktualni administratorzy");
+
+define("ADMSLAN_16", "Nazwa administratora");
+define("ADMSLAN_17", "Hasło administratora");
 define("ADMSLAN_18", "Uprawnienia");
-define("ADMSLAN_19", "Zmiany preferencji serwisu");
-define("ADMSLAN_20", "Zmiany bloków (menu)");
-define("ADMSLAN_21", "Dodanie administratorów");
-define("ADMSLAN_22", "Moderowanie/blokowanie użytkowników itp.");
-define("ADMSLAN_23", "Tworzenie/Edycja wypowiedzi forum");
-define("ADMSLAN_24", "Przeglądanie kategorii plików");
-define("ADMSLAN_25", "Ładowanie plików");
-define("ADMSLAN_26", "Przeglądanie kategorii wiadomości");
-define("ADMSLAN_27", "Przeglądanie kategorii linków");
-define("ADMSLAN_28", "Wyłączenie serwisu do konserwacji");
-define("ADMSLAN_29", "Zarządzanie bannerami");
-define("ADMSLAN_30", "Konfigurowanie nagłówków wiadomości zdalnych");
-define("ADMSLAN_31", "Konfigurowanie uśmieszków");
-define("ADMSLAN_32", "Konfigurowanie zawartości strony startowej");
-define("ADMSLAN_33", "Konfigurowanie logowań/statystyk");
-define("ADMSLAN_34", "Konfigurowanie znaczników meta");
-define("ADMSLAN_35", "Konfigurowanie ładowania plików");
-define("ADMSLAN_36", "Moderacja forum");
+define("ADMSLAN_19", "Zmiana preferencji strony");
+define("ADMSLAN_20", "Zmiana menu");
+define("ADMSLAN_21", "Dodawanie administratorów strony");
+define("ADMSLAN_22", "Moderacja użytkowników/blokowanych etc");
+define("ADMSLAN_23", "Tworzenie/edytowanie zawartości stron/menu");
+define("ADMSLAN_24", "Zarządzanie kategoriami plików do pobrania");
+define("ADMSLAN_25", "Nadsyłanie/zarządzanie plikami");
+define("ADMSLAN_26", "Nadzorowanie kategorii aktualności");
+define("ADMSLAN_27", "Nadzorowanie kategorii linków");
+define("ADMSLAN_28", "Wyłączenie strony w celu konserwacji");
+define("ADMSLAN_29", "Zarządzanie reklamami");
+define("ADMSLAN_30", "Konfiguracja nagłówków zdalnych wiadomości");
+define("ADMSLAN_31", "Konfiguracja emotikon");
+define("ADMSLAN_32", "Konfiguracja zawartości strony głównej");
+define("ADMSLAN_33", "Konfiguracja logów/statystyk");
+define("ADMSLAN_34", "Konfiguracja znaczników meta");
+define("ADMSLAN_35", "Konfiguracja uploadu");
+// define("ADMSLAN_36", "Moderacja forum");
 define("ADMSLAN_37", "Moderacja komentarzy");
-define("ADMSLAN_38", "Moderacja czatu");
-define("ADMSLAN_39", "Publikowanie wiadomości");
+// define("ADMSLAN_38", "Moderacja/konfiguracja czata");
+define("ADMSLAN_39", "Publikowanie aktualności");
 define("ADMSLAN_40", "Publikowanie linków");
 define("ADMSLAN_41", "Publikowanie artykułów");
 define("ADMSLAN_42", "Publikowanie recenzji");
-define("ADMSLAN_43", "Publikowanie stron,działów (content)");
+define("ADMSLAN_43", "Publikowanie treści");
 define("ADMSLAN_44", "Publikowanie plików do pobrania");
 define("ADMSLAN_45", "Publikowanie ankiet");
-define("ADMSLAN_46", "Wiadomość powitalna");
-define("ADMSLAN_47", "Moderacja nadesłanych wiadomości");
-define("ADMSLAN_48", "Konfiguracja dodatków");
+define("ADMSLAN_46", "Wiadomości powitalne");
+define("ADMSLAN_47", "Moderacja nadesłanych aktualności");
+
 define("ADMSLAN_49", "Zaznacz wszystko");
 define("ADMSLAN_51", "Odznacz wszystko");
-define("ADMSLAN_52", "Aktualizacja administratora");
+define("ADMSLAN_52", "Aktualizacja uprawnień administratora");
 define("ADMSLAN_53", "Dodaj administratora");
-define("ADMSLAN_54", "Administratorzy serwisu");
-define("ADMSLAN_55", "Pole (a) pozostały czyste");
-define("ADMSLAN_56", "Administrator");
-define("ADMSLAN_57", "Opcje");
-define("ADMSLAN_58", "Główny Administrator Serwisu");
-define("ADMSLAN_59", "Usuń status admina");
-define("ADMSLAN_60", "Czy jesteś pewien ,że chcesz usunąć status admina ?");
-define("ADMSLAN_61", "Admin jest wspomnieniem ...");
-define("ADMSLAN_62", "Zarządzanie pluginami");
-define("ADMSLAN_63", "Plugin");
+define("ADMSLAN_54", "Administratorzy strony");
 
-define("ADMSLAN_64", "Wyczyść cache systemu");
-define("ADMSLAN_65", "Konfiguruj ustawienia mail");
+define("ADMSLAN_55", "Wymagane pola pozostały puste");
 
-define("ADMSLAN_66", "Ustawienia Wyszukiwania");
-define("ADMSLAN_67", "Skanuj wraz z inspektorem plików");
-define("ADMSLAN_68", "Ustawienia powiadamiania email");
+define("ADMSLAN_56", "Administrator strony");
+
+define("ADMSLAN_58", "Główny administrator strony");
+define("ADMSLAN_59", "Usunąć status administratora");
+define("ADMSLAN_60", "Czy jesteś pewien usunięcia statusu administratora?");
+define("ADMSLAN_61", "Administrator został usunięty");
+
+define("ADMSLAN_62", "Menadżer pluginów");
+
+define("ADMSLAN_64", "Czyszczenie cachu systemu");
+define("ADMSLAN_65", "Konfiguracja emaila oraz wysyłanie maili");
+define("ADMSLAN_66", "Konfiguracja wyszukiwania");
+define("ADMSLAN_67", "Skanowanie inspektorem plików");
+define("ADMSLAN_68", "Konfiguracja powiadomień email");
+define("ADMSLAN_69", "jest już administratorem i musi być edytowany.");
+
+define("ADMSLAN_70", "Powróć do listy administratorów");
+define("ADMSLAN_71", "Kliknij tutaj, aby wyświetlić uprawnienia");
 
 ?>

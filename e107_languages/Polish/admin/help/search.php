@@ -1,7 +1,24 @@
 <?php
-$text = "Jeżeli Twój serwer MySql zezwala, możesz przełączyć na metodę wyszukiwania MySql, która jest owiele szybszą niż PHP .<br /><br />
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/search.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/search.php rev. 1.5
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
 
-<b>Znaków</b> To jest ilość znaków tekstowych, jaka będzie wyświetlona na stronie wyszukiwań.<br /><br />
-<b>Wyników</b> To jest ilość wyników, jaka będzie pokazana na stronie.";
-$ns -> tablerender("Search Help", $text);
+$text = "Jeśli Twoja wersja serwera MySQL wspiera ta opcję możesz przełączyć na metodę sortowania MySQL, ponieważ jest ona szybsza niż metoda sortowania PHP. Zobacz w preferencjach.<br /><br />
+Jeśli Twoja strona zawiera języki ideograficzne takie jak chiński oraz japoński, musisz używać metody sortowania PHP oraz musisz również wyłączyć opcję <i>Tylko pełne słowa</i>.";
+$ns -> tablerender("Wyszukiwanie", $text);
+
 ?>

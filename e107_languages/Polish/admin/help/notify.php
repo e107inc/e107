@@ -1,8 +1,27 @@
 <?php
-$text = "Na tej stronie ,ustawiasz wszystkie parametry oraz zdarzenia, po których zostanie wysłany email do osób lub na podany adres, o zmianach w serwisie.<br /><br />
-Na przykład, ustaw w 'Zablokowany adres IP' do klasy 'Tylko Administatorzy' a wszyscy admini otrzymają email gdy strona zostanie zablokowana.<br /><br />
-Możesz również, dla kolejnego przykładu, ustawić w 'Pozycja nowości nadesłana przez admina' dla klasy 'Tylko Zarejestrowani' , wtedy wszyscy użytkownicy serwisu otrzymają stosowny o tym fakcie list.<br /><br />
-Jeżeli chcesz aby email został wysłany na inny adres - zaznacz 'Email' i wpisz jego adres w pole.";
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/notify.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/notify.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
 
-$ns -> tablerender("Pomoc do Powiadomienia", $text);
+$text = "Powiadomienia email będą rozsyłane, gdy na Twojej stronie zajdzie jakieś ściśle określone wydarzenie.<br /><br />
+Na przykład, ustawienie powiadomienia o <i>Adresach IP zablokowanych w wyniku ataków typu flood</i> dla grupy <i>Adminstratorzy</i> spowoduje wysłanie emaili do wszystkich administratorów, kiedy Twojej stronie będzie groziło zapchanie w wyniku ataku typu flood.<br /><br />
+Możesz również, jako inny przykład, ustawić powiadomienie o <i>Nowych pozycjach dodanych przez administratorów</i> dla grupy <i>Zarejestrowani</i>, co spowoduje wysłanie emaili o nowościach dodanych do serwisu do wszystkich użytkowników serwisu.<br /><br />
+Jeśli chcesz, aby powiadomienia email były wysyłane na alternatywny adres email - zaznacz opcję <i>Email</i> i wpisz w pole docelowy adres email.";
+
+$ns -> tablerender("Powiadomienia", $text);
+
 ?>

@@ -1,23 +1,41 @@
 <?php
-$caption = "Pomoc: Dyskusje";
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/forum.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/forum.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
+
+$caption = "Forum";
 $text = "<b>Ogólne</b><br />
-Na tej stronie możesz tworzyć i redagować dyskusje<br />
+Używaj tej strony do tworzenia lub edytowania swoich forów.<br />
 <br />
-<b>Działy i Dyskusje</b><br />
-Dział jest to nagłówek, pod którym występują inne dyskusje, dzięki czemu układ jest bardziej przejrzysty, a nawigacja prostsza.
+<b>Działy i fora</b><br />
+Dział jest nagłówkiem, pod którym są wyświetlane inne fora, co czyni układ strony prostszym i sprawia, że nawigacja na forach jest znacznie łatwiejsza dla odwiedzających.
 <br /><br />
 <b>Dostępność</b>
 <br />
-Możesz nakazać, aby dyskusje były dostępne tylko dla niektórych użytkowników. Kiedy określisz 'klasę' użytkowników, możesz kliknąć 
-na tę klasę, aby tylko użytkownicy z tej klasy mieli dostęp do dyskusji. Ten sposób działa zarówno dla działów, jak i dyskusji.
+Tutaj możesz ustawić swoje fora tak, aby były dostępne tylko dla określonych odwiedzających. Gdy ustawisz 'grupę' odwiedzających możesz ją zaznaczyć, aby zezwolić tylko tym użytkownikom na dostęp do forum. Postępując w sposób analogiczny możesz nadać dostęp dla działów jak i pojedynczych forów.
 <br /><br />
 <b>Moderatorzy</b>
 <br />
-Zaznacz nazwy na liście administratorów, aby nadać im uprawnienia moderatorów tej dyskusji. Tylko administratorzy z uprawnieniami moderatorów znajdują się na tej liście.
+Zaznacz nazwy z listy administratorów, aby nadać im status moderatora tego forum. Administrator, aby zostać tutaj wyświetlonym, musi mieć nadane uprawnienia moderatora forum.
 <br /><br />
-<b>Rangi</b>
+<b>Ranga</b>
 <br />
-Tutaj możesz ustawić rangi dla swoich użytkowników. Jeśli pola od obrazu są wypełnione, zostaną użyte obrazy. Jeżeli chcesz użyć rangi w formie nazwy musisz pozostawić puste pole obrazu, nazwa zostanie tam umieszczona.<br />Progiem zmiany rangi na poziom wyższy jest uzyskanie maksymalnej ilości punktów dla rangi, którą obecnie posiada. Ilość punktów w danej randze określa poziom zmiany na rangę wyżej.";
+Tutaj możesz ustawić rangi dla użytkowników. Jeśli pola obrazków są wypełnione, zostaną użyte odpowiednie grafiki. Aby użyć nazwy rangi wpisz ją i upewnij się, że odpowiednie pole obrazka rangi jest puste.<br />Próg stanowi ilość punktów, które użytkownik musi zdobyć przed zmianą jego poziomu.";
 $ns -> tablerender($caption, $text);
 unset($text);
+
 ?>

@@ -1,42 +1,45 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_error.php Polish-utf-8 language file 
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 11th Sep 2004
-+---------------------------------------------------------------+
+|     $Revision: 1.3 $
+|     $Date: 2006-05-21 16:06:43 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_error.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_error.php rev. 1.4
++-----------------------------------------------------------------------------+
 */
-
+ 
 define("PAGE_NAME", "Błąd");
-define("LAN_1", "Error 401 - Zezwolenie odrzucone");
-define("LAN_2", "Nie masz pozwolenia, dostępu do URL albo linku o który poprosiłeś");
-define("LAN_3", "Proszę poinformować administratora odnośnie tej strony, jeśli uważasz, iż ta strona błędu została pokazana przez pomyłkę.");
-define("LAN_4", "Error 403 - Dostęp zabroniony");
-define("LAN_5", "URL o którego poprosiłeś wymaga poprawnej nazwy użytkownika i hasła. Albo wpisałeś niepoprawną nazwę użytkownika / hasło, albo twoja przeglądarka nie obsługuje tej właściwości.");
-define("LAN_6", "Proszę poinformować administratora odnośnie tej strony, jeśli uważasz, iż ta strona błędu została pokazana przez pomyłkę.");
-define("LAN_7", "Error 404 - Strony o podanej nazwie nie znaleziono");
-define("LAN_8", "Poproszony URL nie został odnaleziony na tym serwerze. Link, za którym poszedłeś jest albo przedawniony, niedokładny, albo serwer został poinformowany, aby nie zezwalać na dostęp do tego.");
-define("LAN_9", "Proszę poinformować administratora odnośnie tej strony, jeśli uważasz, iż ta strona błędu została pokazana przez pomyłkę.");
-define("LAN_10", "Error 500 - Wewnętrzny błąd serwera");
-define("LAN_11", "Serwer spotkał wewnętrzny błąd albo jest błędnie skonfigurowany i był wstanie odpowiedzieć na twoje zapytanie.");
-define("LAN_12", "Proszę poinformować administratora odnośnie tej strony, jeśli uważasz, iż ta strona błędu została pokazana przez pomyłkę.");
-define("LAN_13", "Error - Nieznany");
+
+define("LAN_1", "Błąd 401 - Brak uprawnień");
+define("LAN_2", "Nie masz właściwych uprawnień dostępu do żądanego adresu.");
+define("LAN_3", "Proszę poinformować administratora odnośnie tej strony, jeśli sądzisz, że strona błędu została wyświetlona przez pomyłkę.");
+define("LAN_4", "Błąd 403 - Dostęp zabroniony");
+define("LAN_5", "Żądany URL wymaga poprawnej nazwy użytkownika i hasła. Albo wpisałeś niepoprawne dane (nazwa użytkownika i hasło) albo twoja przeglądarka nie wspiera tej właściwości.");
+define("LAN_6", "Proszę poinformować administratora odnośnie tej strony, jeśli sądzisz, że strona błędu została wyświetlona przez pomyłkę.");
+define("LAN_7", "Błąd 404 - Strona o podanej nazwie nie istnieje");
+define("LAN_9", "Proszę poinformować administratora odnośnie tej strony, jeśli sądzisz, że strona błędu została wyświetlona przez pomyłkę.");
+define("LAN_10", "Błąd 500 - Wewnętrzny błąd serwera");
+define("LAN_11", "Serwer napotkał wewnętrzny błąd lub jest błędnie skonfigurowany i nie był w stanie odpowiedzieć na twoje zapytanie");
+define("LAN_12", "Proszę poinformować administratora odnośnie tej strony, jeśli sądzisz, że strona błędu została wyświetlona przez pomyłkę.");
+define("LAN_13", "Błąd - Nieznany");
 define("LAN_14", "Serwer napotkał błąd");
-define("LAN_15", "Proszę poinformować administratora odnośnie tej strony, jeśli uważasz, iż ta strona błędu została pokazana przez pomyłkę.");
-define("LAN_16", "Twoja nieudana próba uzyskania dostęp do");
+define("LAN_15", "Proszę poinformować administratora odnośnie tej strony, jeśli sądzisz, że strona błędu została wyświetlona przez pomyłkę.");
+define("LAN_16", "Twoja nieudana próba uzyskania dostępu do");
 define("LAN_17", "została zapisana.");
-define("LAN_18", "Widocznie, zostałeś odesłany tutaj przez");
-define("LAN_19", "Niestety, jest przestarzały albo tylko zwykły niepoprawny link w tym adresie.");
+define("LAN_18", "Widocznie zostałeś tutaj odesłany przez");
+define("LAN_19", "Niestety, link o wskazanym adresie jest nieaktualny.");
+define("LAN_20", "Proszę kliknąć tutaj, aby powrócić na stronę główną.");
 
-define("LAN_20", "Proszę kliknąć tutaj i powrócić do pierwszej strony.");
-
+define("LAN_ERROR_01", "Żądany adres URL nie został znaleziony na tym serwerze. Wskazany przez Ciebie link jest prawdopodobnie nieaktualny.");
+define("LAN_ERROR_02", "Proszę kliknąć <a href='".e_BASE."search.php'>tutaj</a>, aby przejść do strony wyszukiwania.");
+define("LAN_ERROR_03", "Twoja próba uzyskania dostępu do ");
+define("LAN_ERROR_04", " nie powiodła się.");
 
 ?>

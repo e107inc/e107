@@ -1,6 +1,24 @@
 <?php
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/content.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/content.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
 
-$text = "Przy pomocy tej funkcji możesz dodawać do serwisu zwykłe strony. Link do takiej strony zostanie wygenerowany w głównym menu serwisu. Na przykład jeśli utworzysz nową stronę, której Nazwa linku będzie 'Test', po wysłaniu tej strony link o nazwie 'Test' pojawi się w głównym menu.<br />
-Jeśli wprowadzana strona redakcyjna ma mieć nagłówek, wpisz go w pole 'Nagłówek strony'.";
-$ns -> tablerender("Pomoc: Redakcyjne", $text);
+$text = "Używając tej strony możesz tworzyć strony dla własnego serwisu. Link do nowej strony zostanie utworzony w menu głównym. Na przykład, jeśli utworzysz nową stronę z nazwą linku 'Test', link Test zostanie wyświetlony w menu po wysłanie nowej strony.<br />
+Jeśli chcesz, aby Twoja strona miała nagłówek, wpisz jego nazwę w pole <i>Nagłówek strony</i>.";
+$ns -> tablerender("Kontent", $text);
+
 ?>

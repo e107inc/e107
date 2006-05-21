@@ -1,54 +1,68 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_search.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_search.php rev. 1.23
++-----------------------------------------------------------------------------+
 */
-define("SEALAN_1", "Ustawienia wyszukiwarki");
-define("SEALAN_2", "Ilość znaków wyświetlonych w wynikach wyszukiwania:");
-define("SEALAN_3", "Metoda sortowania wyszukiwania:");
-// define("SEALAN_4", "Searchable areas:");
-// define("SEALAN_5", "News");
+ 
+define("SEALAN_1", "Konfiguracja wyszukiwania");
+define("SEALAN_2", "Ilość znaków wyświetlanych w krótkim wyniku wyszukiwania:");
+define("SEALAN_3", "Metoda sortowania wyników:");
 define("SEALAN_6", "Komentarze");
-define("SEALAN_7", "Użytkowników");
-// define("SEALAN_8", "Downloads");
-// define("SEALAN_9", "Number of results to display per page:");
-define("SEALAN_10", "Pokaż wartość odniesienia:");
-define("SEALAN_11", "Zezwolić użytkownikom na dostęp do strony wyszukiwarki:");
-define("SEALAN_12", "Ograniczony czas dostępu do wyszukiwarki (max 5 min):");
-define("SEALAN_13", "Ogranicz jedno wyszukiwanie co");
+define("SEALAN_7", "Zarejestrowani<br />użytkownicy");
+define("SEALAN_10", "Pokazuj ocenę trafności:"); // Display relevance value
+define("SEALAN_11", "Pozwól użytkownikom na wybór stref przeszukiwania:");
+define("SEALAN_12", "Ogranicz czas dostępu pomiędzy wyszukiwaniami (max 5 min):");
+define("SEALAN_13", "Ogranicz do jednego wyszukiwania co każde");
 define("SEALAN_14", "sekund");
-define("SEALAN_15", "Strona wyszukiwań dostępna dla ");
-define("SEALAN_16", "Wł");
-define("SEALAN_17", "Wył");
-define("SEALAN_18", "Wyszukiwanie w komentarzach (jeżeli wyszukiwanie komentarzy jest aktywne)");
-define("SEALAN_19", "Umożliwić na wyszukiwanie więcej niż jedno wyszukiwanie:");
-define("SEALAN_20", "Ustawienia Ogólne");
-define("SEALAN_21", "Wyszukiwanie w strefie");
-define("SEALAN_22", "Domyślna");
-define("SEALAN_23", "Alternatywne:");
+define("SEALAN_15", "Strona wyszukiwania dostępna dla grupy użytkowników");
+define("SEALAN_16", "Włącz");
+define("SEALAN_17", "Wyłącz");
+define("SEALAN_18", "Przeszukiwanie strefy komentarzy (tylko wówczas gdy wyszukiwanie komentarzy zostało aktywowane)");
+define("SEALAN_19", "Zezwól użytkownikowi na więcej niż jeden proces <br />wyszukiwania w tym samym czasie:");
+define("SEALAN_20", "Główne ustawienia");
+define("SEALAN_21", "Przeszukiwane strefy");
+define("SEALAN_22", "Domyślny");
+define("SEALAN_23", "Alternatywny:");
 define("SEALAN_24", "Typ");
-define("SEALAN_25", "Klasa");
-define("SEALAN_26", "Pre-Tytuł Tekst");
-define("SEALAN_27", "Znaków");
-define("SEALAN_28", "Wyników");
-// define("SEALAN_29", "Order");
-define("SEALAN_30", "Podświetl wyrazy zapytania ,w wynikach wyszukiwania:");
-define("SEALAN_31", "PHP ograniczony do");
-define("SEALAN_32", "wyniki (pozostaw puste jeżeli brak limitów)");
-define("SEALAN_33", "Nie można przełączyć do metody MySql tak jak wymagano, możliwe dopiero od wersji 4.0.1  MySql.");
-define("SEALAN_34", "Twoja wersja jest prawidłowa");
-define("SEALAN_35", "Metoda wyboru obszaru przeszukującego:");
-define("SEALAN_36", "Rozwijana lista");
+define("SEALAN_25", "Grupa użytkowników");
+define("SEALAN_26", "Podtytuł");
+define("SEALAN_30", "Podświetl słowa kluczowe w wynikach wyszukiwania:"); // Highlight keywords on referred too page
+define("SEALAN_31", "PHP - limituj do");
+define("SEALAN_32", "wyników (pozostaw puste, aby nie używać limitów)");
+define("SEALAN_33", "Nie mogę przełączyć na metodę sortowania MySql wymaga to przynajmniej wersji 4.0.1 MySql."); // Could not switch to MySql sort method as this requires at least version 4.0.1 of MySql
+define("SEALAN_34", "Twoja wersja jest poprawna");
+define("SEALAN_35", "Sposób wyboru stref przeszukiwania:");
+define("SEALAN_36", "Rozwijalna lista");
 define("SEALAN_37", "Zaznaczenie");
-define("SEALAN_38", "Radio");
-define("SEALAN_39", "Własne Strony");
+define("SEALAN_38", "Przyciski");
+define("SEALAN_39", "Inne strony");
 
-define("LAN_98", "Nowości");
-define("LAN_197", "Downloads");
+define("LAN_98", "Aktualności");
+define("LAN_197", "Pliki do pobrania");
+define("LAN_418", "Inne strony");
+
+define("SEALAN_40", "Opcje wyszukiwania");
+define("SEALAN_41", "Strona główna");
+define("SEALAN_42", "Ustawienia");
+
+define("SEALAN_43", "Edycja ustawień wyszukiwania dla");
+define("SEALAN_44", "Dozwolona grupa użytkowników do wyszukiwania w tej strefie");
+define("SEALAN_45", "Ilość wyników wyświetlanych na stronie");
+define("SEALAN_46", "Ilość znaków w streszczonym wyniku wyszukiwania");
+
+define("SEALAN_47", "Tylko pełne słowa:");
+define("SEALAN_48", "Tego ustawienie używaj tylko, kiedy metodą sortowania wyszukiwań jest PHP. Jeśli Twoja strona zawiera języki ideograficzne takie jak chiński i japoński, musisz tą opcję wyłączyć.");
+define("SEALAN_49", "Jeśli Twoja strona zawiera języki ideograficzne takie jak chiński i japoński, musisz używać metody sortowania PHP.");
+
 ?>

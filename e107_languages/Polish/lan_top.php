@@ -1,30 +1,36 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_top.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_top.php rev. 1.1
++-----------------------------------------------------------------------------+
 */
-
-define("TOP_LAN_0", "Najwięcej napisali na forum");
-define("TOP_LAN_1", "Nazwa użytkownika");
-define("TOP_LAN_2", "Wpisy");
+ 
+define("TOP_LAN_0", "Najwięcej postów na forum");
+define("TOP_LAN_1", "Użytkownik");
+define("TOP_LAN_2", "Postów");
 define("TOP_LAN_3", "Najwięcej komentarzy");
 define("TOP_LAN_4", "Komentarze");
 define("TOP_LAN_5", "Najwięcej postów na czacie");
 define("TOP_LAN_6", "Ranga na stronie");
-define("LAN_1", "Wątek");
-define("LAN_2", "Piszący");
-define("LAN_3", "Obejrzeń");
-define("LAN_4", "Odpowiedzi");
-define("LAN_5", "Ostatni Wpis");
-define("LAN_6", "Wątków");
-define("LAN_7", "Aktywne Wątki");
-define("LAN_8", "Najwięcej napisali");
 
+//v.616
+define("LAN_1", "Temat");
+define("LAN_2", "Autor");
+define("LAN_3", "Odsłon");
+define("LAN_4", "Posty");
+define("LAN_5", "Ostatni post");
+define("LAN_6", "Tematy");
+define("LAN_7", "Aktywne tematy");
+define("LAN_8", "Najwięcej napisali");
 
 ?>

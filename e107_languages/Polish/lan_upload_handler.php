@@ -1,32 +1,31 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_upload_handler.php Polish-utf-8 language file 
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|        ÂŠSteve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 12th Sep 2004
-+---------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_upload_handler.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_upload_handler.php rev. 1.2
++-----------------------------------------------------------------------------+
 */
-
+ 
 define("LANUPLOAD_1", "Typ pliku");
 define("LANUPLOAD_2", "jest niedozwolony i zostanie usunięty.");
-define("LANUPLOAD_3", "ładowanie pliku powiodło się");
-define("LANUPLOAD_4", "Folder docelowy nie istnieje lub nie jest zapisywalny.");
-define("LANUPLOAD_5", "ładowany plik przewyższa dyrektywą upload_max_filesize w php.ini.");
-define("LANUPLOAD_6", "ładowany plik przewyższa dyrektywą MAX_FILE_SIZE, która została wyszczególniona w formularzu HTML.");
-define("LANUPLOAD_7", "ładowany plik tylko częściowo został skopiowany.");
-define("LANUPLOAD_8", "żaden plik nie został skopiowany.");
-define("LANUPLOAD_9", "Rozmiar ładowanego pliku 0 bajtów");
-define("LANUPLOAD_10", "Błąd ładowania pliku [duplikat nazwy] -Plik z taką nazwą już istnieje. ");
-define("LANUPLOAD_11", "Plik nie załadował się.Nazwa pliku:");
+define("LANUPLOAD_3", "Wysyłanie zakończone pomyślnie");
+define("LANUPLOAD_4", "Prawdopodobnie folder docelowy nie istnieje, albo nie jest zapisywalny.");
+define("LANUPLOAD_5", "Wysyłany plik przewyższa dyrektywę <i>upload_max_filesize</i> w <i>php.ini</i>.");
+define("LANUPLOAD_6", "Wysyłany plik przewyższa dyrektywę <i>MAX_FILE_SIZE</i>, która została wyszczególniona w formularzu HTML.");
+define("LANUPLOAD_7", "Wysyłany plik tylko częściowo został załadowany.");
+define("LANUPLOAD_8", "Żaden plik nie został wysłany.");
+define("LANUPLOAD_9", "Wysyłany plik posiada rozmiar 0 bajtów");
+define("LANUPLOAD_10", "Błąd wysyłania [napotkano duplikat nazwy] - Plik z taką sama nazwą już istnieje.");
+define("LANUPLOAD_11", "Plik nie został wysłany. Nazwa pliku: ");
 define("LANUPLOAD_12", "Błąd");
-
 
 ?>

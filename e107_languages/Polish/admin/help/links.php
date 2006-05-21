@@ -1,6 +1,25 @@
 <?php
-$text = "Tu możesz wprowadzać linki. Aby dodać link do głównego menu serwisu (okienka nawigacyjnego), umieść go w kategorii 'Main'=>'Główna', pozostałe kategorie ukażą sie na stronie Linków. Możesz rozdzielić te linki do różnych kategorii<br />
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/links.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/links.php rev. 1.4
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
+
+$text = "Tutaj możesz dodać wszystkie linki związane bezpośrednio z Twoim serwisem. Dodane linki zostaną wyświetlone w głównym menu strony. Jeśli chcesz utworzyć stronę z linkami do zewnętrznych serwisów użyj plugina <i>Links Page</i> (Strona linków).
 <br />
-Program generujący podmenu można użyć tylko dla e107 DHTML menu (TreeMenu, UltraTreeMenu, eDynamicMenu, ypSlideMenu...)";
-$ns -> tablerender("Pomoc: Linki", $text);
+";
+$ns -> tablerender("Linki", $text);
+
 ?>

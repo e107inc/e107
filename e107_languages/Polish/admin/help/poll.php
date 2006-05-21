@@ -1,6 +1,24 @@
 <?php
-$text = "Na tej stronie budujesz ankiety i badania opinii, wystarczy, że wpiszesz tytuł ankiety i opcje, obejrzysz jej podgląd i jeśli wszystko wygląda jak należy, zaznaczysz w kratce jej aktywację.<br /><br />
-Aby ankiety dawało się aktywować, przejdź do panelu Menu i upewnij się, że poll_menu jest włączone.";
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/poll.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/poll.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
 
-$ns -> tablerender("Pomoc: ankiety", $text);
+$text = "Na tej stronie możesz tworzyć ankiety oraz sondy. Aby utworzyć ankietę (sondę) wpisz jej tytuł oraz opcje głosowania, następnie podejrzyj ją i, po zaakceptowaniu wyglądu, wybierz grupę, którą będzie mogła uczestniczyć w głosowaniu.<br /><br />
+Aby zobaczyć ankietę, przejdź do strony <i>Menu</i> i upewnij się, że menu <i>poll_menu</i> jest aktywne.";
+$ns -> tablerender("Ankiety", $text);
+
 ?>

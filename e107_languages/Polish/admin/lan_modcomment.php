@@ -1,22 +1,40 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_modcomment.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_modcomment.php rev. 1.3
++-----------------------------------------------------------------------------+
 */
-define("MDCLAN_1", "Moderowany.");
+ 
+define("MDCLAN_1", "Komentarze zostały moderowane.");
 define("MDCLAN_2", "Ten obiekt nie posiada komentarzy");
 define("MDCLAN_3", "Użytkownik");
 define("MDCLAN_4", "Gość");
-define("MDCLAN_5", "odblokuj");
-define("MDCLAN_6", "zablokuj");
-define("MDCLAN_7", "skasuj");
-define("MDCLAN_8", "Moderuj Komentarze");
-define("MDCLAN_9", "Ostrzeżenie!!! Usunięte źródło wypowiedzi <b>usunie</b> wszystkie odpowiedzi.");
+define("MDCLAN_5", "Odblokuj");
+define("MDCLAN_6", "Zablokuj");
+
+define("MDCLAN_8", "Moderacja komentarzy");
+define("MDCLAN_9", "Uwaga! Usunięcie komentarza spowoduje również skasowanie wszystkich tyczących się niego odpowiedzi!");
+
+define("MDCLAN_10", "Opcje");
+define("MDCLAN_11", "komentarz");
+define("MDCLAN_12", "komentarze");
+define("MDCLAN_13", "zablokowany(ch)");
+define("MDCLAN_14", "Blokada komentarzy");
+define("MDCLAN_15", "Otwarta");
+define("MDCLAN_16", "Zamknięta");
+define("MDCLAN_17", "");
+define("MDCLAN_18", "");
+define("MDCLAN_19", "");
+define("MDCLAN_20", "");
 
 ?>

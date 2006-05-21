@@ -1,31 +1,37 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.8 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_cpage.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_cpage.php rev. 1.4
++-----------------------------------------------------------------------------+
 */
-define("CUSLAN_1", "Tytuł");
-define("CUSLAN_2", "Type");
+ 
+define("CUSLAN_1", "Nazwa");
+define("CUSLAN_2", "Rodzaj");
 define("CUSLAN_3", "Opcje");
-define("CUSLAN_4", "Usunąć tę stronę page?");
-define("CUSLAN_5", "Istniejące strony");
+define("CUSLAN_4", "Usunąć wybraną stronę?");
+define("CUSLAN_5", "Aktualne strony oraz menu");
 define("CUSLAN_7", "Nazwa menu");
-define("CUSLAN_8", "Tytuł / Opis");
-define("CUSLAN_9", "Tekst");
-define("CUSLAN_10", "Zezwolić na ocenę tej strony");
-define("CUSLAN_11", "Strona startowa");
+define("CUSLAN_8", "Tytuł/nagłówek");
+define("CUSLAN_9", "Treść");
+define("CUSLAN_10", "Pozwól na ocenę tej strony");
+define("CUSLAN_11", "Aktualne strony");
 define("CUSLAN_12", "Utwórz stronę");
-define("CUSLAN_13", "Zezwolić na komentarze");
-define("CUSLAN_14", "Ochrona strony hasłem");
-define("CUSLAN_15", "wpisz hasło do ochrony strony");
-define("CUSLAN_16", "Utwórz link do strony w menu głównym");
-define("CUSLAN_17", "nazwa linku");
-define("CUSLAN_18", "Strona / link widoczne dla");
+define("CUSLAN_13", "Pozwól na komentarze");
+define("CUSLAN_14", "Zabezpiecz tą stronę hasłem. ");
+define("CUSLAN_15", "Wpisz hasło do zabezpieczenia tej strony.");
+define("CUSLAN_16", "Utwórz link w menu głównym. ");
+define("CUSLAN_17", "Wpisz nazwę linku do utworzenia.");
+define("CUSLAN_18", "Strona/link widoczny dla");
 define("CUSLAN_19", "Aktualizuj stronę");
 define("CUSLAN_20", "Utwórz stronę");
 define("CUSLAN_21", "Aktualizuj menu");
@@ -34,21 +40,22 @@ define("CUSLAN_23", "Edytuj stronę");
 define("CUSLAN_24", "Utwórz nową stronę");
 define("CUSLAN_25", "Edytuj menu");
 define("CUSLAN_26", "Utwórz nowe menu");
-define("CUSLAN_27", "Strona zapisana w bazie danych.");
-define("CUSLAN_28", "Strona usunięta");
-define("CUSLAN_29", "Lista stron, jeżeli żadna nie została //List pages if no page selected");
-define("CUSLAN_30", "Czas do wygaśnięcia cookie (w sekundach)");
+define("CUSLAN_27", "Strona została zapisana do bazy danych.");
+define("CUSLAN_28", "Strona została usunięta");
+define("CUSLAN_29", "Lista stron, jeśli żadna strona nie została wybrana");
+define("CUSLAN_30", "Czas wygaśnięcia ciasteczek (w sekundach)");
 define("CUSLAN_31", "Utwórz menu");
-define("CUSLAN_32", "Przekonwertuj stare strony/menu");
+define("CUSLAN_32", "Konwertuj stare strony/menu");
 define("CUSLAN_33", "Opcje strony");
-define("CUSLAN_34", "Start konwersji");
-define("CUSLAN_35", "Zakończenie aktualizacji własnej strony");
-define("CUSLAN_36", "Aby zapisać własne ustawienia dla każdej ze stron,wróć do strony głównej i zredaguj strony.");
-define("CUSLAN_37", "Aktualizacja własnej strony");
-define("CUSLAN_38", "wł");
-define("CUSLAN_39", "wył");
-define("CUSLAN_40", "Zapisz Opcje");
+define("CUSLAN_34", "Zacznij konwersję");
+define("CUSLAN_35", "Zakończono aktualizację własnych stron - aktualizacja zakończona powodzeniem");
+define("CUSLAN_36", "Aby ustawić własne preferencje dla każdej ze stron, proszę wrócić do strony głównej i zredagować każdą ze stron.");
+define("CUSLAN_37", "Zawartość strony została zaktualizowana");
+define("CUSLAN_38", "Włączone");
+define("CUSLAN_39", "Wyłączone");
+define("CUSLAN_40", "Zapisz opcje");
 
-define("CUSLAN_41", "Pokazuj nazwę autora oraz datę publikacji");
-define("CUSLAN_42", "Brak zdefiniowanych stron");
+define("CUSLAN_41", "Wyświetl informacje o autorze oraz datę");
+define("CUSLAN_42", "Nie ma jeszcze zdefiniowanych stron");
+
 ?>

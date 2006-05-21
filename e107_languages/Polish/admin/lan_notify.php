@@ -1,35 +1,40 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_notify.php rev. 1.1
++-----------------------------------------------------------------------------+
 */
-
+ 
 define("NT_LAN_1", "Powiadomienia");
-define("NT_LAN_2", "Wysyłanie powiadomienia o");
-define("NT_LAN_3", "Włącz");
-define("NT_LAN_4", "Główny Admin");
-define("NT_LAN_5", "Klasa");
+define("NT_LAN_2", "Dostarcz powiadomienie emailem o");
+define("NT_LAN_3", "Wyłącz");
+define("NT_LAN_4", "Główny administrator");
+define("NT_LAN_5", "Grupa");
 define("NT_LAN_6", "Email");
 
-define("NU_LAN_1", "Działalności użytkownika");
-define("NU_LAN_2", "Rejestracja Użytkownika");
-define("NU_LAN_3", "Weryfikacja Konta");
-define("NU_LAN_4", "Logowanie Użytkownika");
-define("NU_LAN_5", "Wylogowanie Użytkownika");
+define("NU_LAN_1", "Użytkownikach");
+define("NU_LAN_2", "Rejestracji użytkownika");
+define("NU_LAN_3", "Weryfikacji konta użytkownika");
+define("NU_LAN_4", "Logowaniu użytkownika");
+define("NU_LAN_5", "Wylogowaniu użytkownika");
 
-define("NS_LAN_1", "Bezpieczeństwo");
-define("NS_LAN_2", "Zablokowany adres IP"); // IP banned for flooding site
+define("NS_LAN_1", "Bezpieczeństwie");
+define("NS_LAN_2", "Adresach IP zablokowanych w wyniku ataków typu flood"); // IP banned for flooding site
 
-define("NN_LAN_1", "Nowości");
-define("NN_LAN_2", "Pozycja nowości nadesłane przez użytkownika");
-define("NN_LAN_3", "Pozycja nowości nadesłana przez admina");
-define("NN_LAN_4", "Pozycja nowości edytowana przez admina");
-define("NN_LAN_5", "Pozycja nowości usunięta przez admina");
+define("NN_LAN_1", "Nowościach");
+define("NN_LAN_2", "Nowych pozycjach nadesłanych przez użytkowników");
+define("NN_LAN_3", "Nowych pozycjach dodanych przez administratorów");
+define("NN_LAN_4", "Nowych pozycjach edytowanych przez administratorów");
+define("NN_LAN_5", "Nowych pozycjach usuniętych przez administratorów");
 
 ?>

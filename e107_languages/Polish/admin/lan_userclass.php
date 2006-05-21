@@ -1,25 +1,29 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_userclass.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_userclass.php rev. 1.2
++-----------------------------------------------------------------------------+
 */
-
-define("UCSLAN_1", "Wysyłanie powiadomienia emailem do");
-define("UCSLAN_2", "Aktualizacja uprawnień");
-define("UCSLAN_3", "Szanowny");
-define("UCSLAN_4", "Twoje uprawnienia zostały zaktualizowane do");
-define("UCSLAN_5", "Masz obecnie dostęp do następujących obszarów");
-define("UCSLAN_6", "Ustaw klasę dla użytkownika");
-define("UCSLAN_7", "Ustaw klasy");
+ 
+define("UCSLAN_1", "Wyślij potwierdzenie emailem do");
+define("UCSLAN_2", "Uprawnienia zostały zaktualizowane");
+define("UCSLAN_3", "Witaj");
+define("UCSLAN_4", "Twoje uprawnienia zostały zaktualizowane w serwisie");
+define("UCSLAN_5", "Masz teraz dostęp do następujących stref");
+define("UCSLAN_6", "Ustaw grupę dla użytkownika");
+define("UCSLAN_7", "Ustaw grupę");
 define("UCSLAN_8", "Powiadom użytkownika");
-define("UCSLAN_8", "Klasa uaktualniona.");
-define("UCSLAN_9", "Dotyczy");
+define("UCSLAN_9", "Grupy zostały zaktualizowane.");
 define("UCSLAN_10", "Pozdrawiam,");
 
 ?>

@@ -1,63 +1,69 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_theme.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_theme.php rev. 1.7
++-----------------------------------------------------------------------------+
 */
-define("TPVLAN_1", "Właśnie oglądasz podgląd tematu <b>'".PREVIEWTHEMENAME."'</b>.Nie został on jeszcze ustawiony jako główny wygląd serwisu.<br />Aby go ustawić,wróć do <a href='".e_ADMIN."theme.php'>Podglądu Tematów</a> i wybierz 'Jako Wygląd Serwisu'.<br />Aby zobaczyć więcej tematów <a href='".e_ADMIN."theme.php'>kliknij tutaj</a>");
-define("TPVLAN_2", "Podgląd Tematu");
-define("TPVLAN_3", "Main site theme set to");
+ 
+define("TPVLAN_1", "Oglądasz podgląd tematu <b>'".PREVIEWTHEMENAME."'</b>. Nie jest on ustawiony jako główny temat strony, lecz został aktywowany, aby zapewnić podgląd wyglądu tematu.<br />Aby ustawić ten temat jako główny wygląd strony, <a href='".e_ADMIN."theme.php'>powróć do menadżera tematów</a> i wybierz 'Ustaw jako główny temat strony'.<br />Aby zobaczyć więcej tematów proszę <a href='".e_ADMIN."theme.php'>kliknąć tutaj</a>");
+define("TPVLAN_2", "Podgląd tematu");
+define("TPVLAN_3", "Główny temat strony został ustawiony na");
 define("TPVLAN_4", "Autor");
-define("TPVLAN_5", "Adres www");
-define("TPVLAN_6", "Data napisania");
-define("TPVLAN_7", "Informacja");
+define("TPVLAN_5", "Strona domowa");
+define("TPVLAN_6", "Data");
+define("TPVLAN_7", "Informacje");
 define("TPVLAN_8", "Opcje");
-define("TPVLAN_9", "Podgląd Tematu");
-define("TPVLAN_10", "Jako Wygląd Serwisu");
+define("TPVLAN_9", "Podejrzyj temat");
+define("TPVLAN_10", "Ustaw jako główny temat strony");
 define("TPVLAN_11", "Wersja");
-define("TPVLAN_12", "Brak podglądu");
+define("TPVLAN_12", "Brak dostępnego podglądu");
 
-define("TPVLAN_13", "Ładowanie tematów (.zip lub .tar.gz format)");
-define("TPVLAN_14", "Załaduj");
-define("TPVLAN_15", "The file could not be uploaded as the ".e_THEME." folder does not have the correct permissions - please CHMOD to 777 and reupload the file.");
-define("TPVLAN_16", "Admin Message");
-define("TPVLAN_17", "That file does not appear to be a valid .zip or .tar archive.");
-define("TPVLAN_18", "An error has occurred, unable to un-archive the file");
-define("TPVLAN_19", "Your theme has been uploaded and unzipped, please scroll down to see your theme in the list.");
-define("TPVLAN_20", "Auto theme upload and extraction is disabled as your themes folder does not have the correct permissions - please CHMOD your e107_themes folder to 777.");
+define("TPVLAN_13", "Wybierz temat (format .zip lub .tar.gz)");
+define("TPVLAN_14", "Załaduj temat");
+define("TPVLAN_15", "Plik nie mógł być załadowany do ".e_THEME." - folder nie ma prawidłowych uprawnień - proszę ustawić CHMOD na wartość 777 i ponownie załadować plik.");
+define("TPVLAN_16", "Wiadomość administracyjna");
+define("TPVLAN_17", "Plik jest prawdopodobnie uszkodzonym archiwum .zip lub .tar.");
+define("TPVLAN_18", "Wystąpił błąd, nie mogę wyodrębnić pliku z archiwum");
+define("TPVLAN_19", "Twój temat został załadowany i rozpakowany, proszę przewinąć stronę w dół i poszukać tematu na liście.");
+define("TPVLAN_20", "Automatyczne ładowanie i rozpakowanie tematu jest niemożliwe, jeśli twój folder tematów ma nie nieprawidłowe uprawnienia. Proszę ustawić CHMOD głównego folderu tematów na wartość 777.");
 
-define("TPVLAN_21", "This is the currently selected site theme");
+define("TPVLAN_21", "To jest aktualnie wybrany temat strony głównej");
 
-define("TPVLAN_22", "ten temat jest wielostylowy");
-define("TPVLAN_23", "domyślny styl");
-define("TPVLAN_24", "brak informacji");
-define("TPVLAN_25", "Aby wybrać ,który styl użyć udaj się <a href='".e_ADMIN."prefs.php'> ustawień </a> and click on 'Theme'.");
+define("TPVLAN_22", "Zbiór zestawów styli tematu");
+define("TPVLAN_23", "Domyślny zestaw styli"); //  stylesheet
+define("TPVLAN_24", "Brak informacji");
+define("TPVLAN_25", "Aby wybrać któryś ze zestawów styli proszę przejść do <a href='".e_ADMIN."prefs.php'>ustawień</a> i kliknąć na 'Theme'.");
 
-define("TPVLAN_26", "Strona z tematami graficznymi");
-define("TPVLAN_27", "Wybierz styl");
-define("TPVLAN_28", "wł");
-define("TPVLAN_29", "wył");
-define("TPVLAN_30", "Przeładowanie grafik tematu:");
+define("TPVLAN_26", "Menadżer tematów");
+define("TPVLAN_27", "Proszę wybrać zestaw stylu do użycia");
+define("TPVLAN_28", "Włączone");
+define("TPVLAN_29", "Wyłączone");
+define("TPVLAN_30", "Przeładowuj grafikę tematu:");
 
-define("TPVLAN_31", "To jest aktualny wygląd strony administratora");
-define("TPVLAN_32", "Ustaw jako temat admina");
+define("TPVLAN_31", "To jest aktualnie wybrany temat strony administracyjnej");
+define("TPVLAN_32", "Ustaw jako temat strony administracyjnej");
 
-define("TPVLAN_33", "Aktualny wygląd serwisu");
-define("TPVLAN_34", "Aktualny wygląd strony administratora");
-define("TPVLAN_35", "Zapisz ustawienia");
-define("TPVLAN_36", "Wiadomość do admina");
-define("TPVLAN_37", "Opcje tematu zapisano");
-define("TPVLAN_38", "Ładowanie tematu");
+define("TPVLAN_33", "Bieżący temat strony głównej");
+define("TPVLAN_34", "Bieżący temat strony administracyjnej");
+define("TPVLAN_35", "Zapisz opcje");
+define("TPVLAN_36", "Wiadomość administracyjna");
+define("TPVLAN_37", "Opcje tematu zostały zapisane");
+define("TPVLAN_38", "Załaduj temat");
 define("TPVLAN_39", "Dostępne tematy");
-define("TPVLAN_40", "Zapisano jako temat admina :");
+define("TPVLAN_40", "Temat strony administracyjne został ustawiony na");
 
-define("TPVLAN_41", "Wybierz styl admina");
-define("TPVLAN_42", "Zapisz opcje admina");
-define("TPVLAN_43", "Opcje wyświetleń panelu admina ,zapisano");
+define("TPVLAN_41", "Proszę wybrać styl układu strony administracyjnej");
+define("TPVLAN_42", "Zapisz opcje dla administracji");
+define("TPVLAN_43", "Opcje administracji zostały zapisane");
 
 ?>

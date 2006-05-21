@@ -1,20 +1,25 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:43 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_rate.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_rate.php rev. 1.3
++-----------------------------------------------------------------------------+
 */
-
+ 
 define("RATELAN_0", "głos");
 define("RATELAN_1", "głosów");
-define("RATELAN_2", "jak oceniasz tę pozycję ?");
-define("RATELAN_3", "dziękujemy za ocenę");
-define("RATELAN_4", "brak ocen");
+define("RATELAN_2", "Jak oceniasz tą pozycję?");
+define("RATELAN_3", "Dziękujemy za oddany głos");
+define("RATELAN_4", "Brak oceny");
 define("RATELAN_5", "Ocena");
 
 ?>

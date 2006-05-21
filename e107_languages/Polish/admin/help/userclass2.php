@@ -1,5 +1,24 @@
 <?php
-$caption = "Use Class Help";
-$text = "Na tej stronie możesz tworzyć nowe oraz redagować i kasować istniejące klasy użytkowników.<br />Przydaje się to, kiedy chcesz ograniczyć dostęp użytkowników do pewnych miejsc w serwisie. Na przykład możesz utworzyć klasę o nazwie TEST, następnie utworzyć dyskusję, do której będą mieli dostęp tylko użytkownicy z klasy TEST.<br /> Przy pomocy klas możesz łatwo budować obszary serwisu dostępne tylko dla użytkowników.";
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/userclass2.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/userclass2.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
+
+$caption = "Używanie grup";
+$text = "Na tej stronie możesz tworzyć, edytować lub usuwać grupy użytkowników.<br />Grupy są przydatne do ograniczenia dostępu dla użytkowników do niektórych części Twojego serwisu. Na przykład, możesz utworzyć grupę i nazwać ją <i>Test</i>, a następnie utworzyć forum z przyznanym tylko dla tej grupy dostępem do niego.";
 $ns -> tablerender($caption, $text);
+
 ?>

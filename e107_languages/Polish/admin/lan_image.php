@@ -1,49 +1,53 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_image.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_image.php rev. 1.3
++-----------------------------------------------------------------------------+
 */
-define("IMALAN_1", "Włącz obrazy w postach");
-define("IMALAN_2", "Pokazuje obrazy, będzie to stosowane dla wszystkich stron (komentarze, czat itd.)");
-define("IMALAN_3", "Metoda zmieniania wielkości");
-define("IMALAN_4", "Metoda do zmieniania wielkości obrazu, Albo biblioteka GD1/2, lub ImageMagick");
-define("IMALAN_5", "ścieżka do ImageMagick (jeżeli wybrano)");
-define("IMALAN_6", "Pełna ścieżka do programu ImageMagick Convert");
-define("IMALAN_7", "Ustawienia obrazów");
-define("IMALAN_8", "Uaktualnij ustawienia obrazów");
-define("IMALAN_9", "Ustawienia obrazów uaktualniono");
-define("IMALAN_10", "Obrazy wstawia klasa");
-define("IMALAN_11", "Ogranicza użytkowników, którzy mogą wstawiać obrazy (jeżeli umożliwisz powyżej)");
-define("IMALAN_12", "Wyłączone dodawane obrazy, metoda:");
-define("IMALAN_13", "Co zrobić z wstawionymi obrazami jeżeli wstawiany obraz jest wyłączony/niedozwolony");
-define("IMALAN_14", "Wstaw adres URL obrazu");
+ 
+define("IMALAN_1", "Uaktywnij obrazy w postach");
+define("IMALAN_2", "Wyświetla nadsyłane obrazy, funkcja będzie stosowana na wszystkich stronach (komentarze, czat etc)");
+define("IMALAN_3", "Metoda zmiany rozmiaru");
+define("IMALAN_4", "Metoda używana do zmiany rozmiaru obrazów, wybierz albo bibloteki GD1/2,  albo ImageMagick");
+define("IMALAN_5", "Ścieżka dostępu do ImageMagick (jeśli wybrałeś tą metodę)");
+define("IMALAN_6", "Pełna ścieżka dostępu do narzędzia ImageMagick Convert");
+define("IMALAN_7", "Ustawienia obrazków");
+define("IMALAN_8", "Aktualizuj ustawienia obrazków");
+define("IMALAN_9", "Ustawienia obrazów zostały zaktualizowane");
+define("IMALAN_10", "Uprawniona grupa użytkowników");
+define("IMALAN_11", "Ograniczenie użytkowników, którzy będą mogli korzystać we wpisach z obrazów (tylko wówczas gdy uaktywniłeś powyższą funkcję)");
+define("IMALAN_12", "Metoda wstawiania nieaktywnych obrazów");
+define("IMALAN_13", "Wybierz co robić z obrazami, gdy funkcja ich wstawiania jest nieaktywna");
+define("IMALAN_14", "Pokazuj adres URL obrazka");
 define("IMALAN_15", "Nic nie pokazuj");
-define("IMALAN_16", "Pokazuj nadesłane avatary");
+define("IMALAN_16", "Pokaż nadesłane awatary");
 define("IMALAN_17", "Kliknij tutaj");
-define("IMALAN_18", "Uaktualnij obrazy");
-define("IMALAN_19", "Nazwa obrazu");
-define("IMALAN_20", "Obraz");
-define("IMALAN_21", "Używany przez");
-define("IMALAN_22", "Obraz nieużywany");
-define("IMALAN_23", "Avatar");
-define("IMALAN_24", "Fotografia");
-define("IMALAN_25", "Kliknij tutaj, aby usunąć niestosowane obrazy");
-define("IMALAN_26", "obraz(y) usunięte");
-define("IMALAN_27", "usunięty");
-define("IMALAN_28", "usuniete");
-define("IMALAN_29", "Brak obrazów");
-define("IMALAN_30", "Dla każdego (publiczny)");
-define("IMALAN_31", "Tylko dla gości");
-define("IMALAN_32", "Tylko dla zarejestrowanych");
-define("IMALAN_33", "Tylko dla administratorów");
+define("IMALAN_18", "Nadesłane obrazki");
 
-define("IMALAN_34", "Włącz Sleight");
-define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
+define("IMALAN_21", "Używany przez");
+define("IMALAN_22", "Obraz nie jest w użyciu");
+define("IMALAN_23", "Awatar");
+define("IMALAN_24", "Fotografia");
+define("IMALAN_25", "Kliknij tutaj, aby usunąć wszystkie niestosowne obrazy"); // Kliknij tutaj, aby usunąć wszystkie używane obrazy
+define("IMALAN_26", "obrazy zostały usunięte");
+
+define("IMALAN_28", "usunięty");
+define("IMALAN_29", "Nie ma jeszcze obrazów");
+define("IMALAN_30", "Wszyscy (publicznie)");
+define("IMALAN_31", "Goście");
+define("IMALAN_32", "Zarejestrowani użytkownicy");
+define("IMALAN_33", "Administratorzy");
+define("IMALAN_34", "Uaktywnij Sleight");
+define("IMALAN_35", "Naprawia przezroczystość kanału alpha dla plików PNG-24 w przeglądarce internetowej IE 5/6 (stosuje <i>Sitewide</i>)"); // Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)
 
 ?>

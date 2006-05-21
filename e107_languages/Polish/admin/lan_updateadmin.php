@@ -1,21 +1,27 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_updateadmin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_updateadmin.php rev. 1.1
++-----------------------------------------------------------------------------+
 */
-define("UDALAN_1", "Błąd - proszę wysłać ponownie");
-define("UDALAN_2", "Ustawienia zaktualizowane");
-define("UDALAN_3", "Zaktualizowano ustawienia dla");
+ 
+define("UDALAN_1", "Błąd - proszę ponowić wysyłanie");
+define("UDALAN_2", "Ustawienia zostały zaktualizowane");
+define("UDALAN_3", "Ustawienia zostały zaktualizowane dla");
 define("UDALAN_4", "Nazwa");
 define("UDALAN_5", "Hasło");
-define("UDALAN_6", "Hasło ponownie");
+define("UDALAN_6", "Powtórz hasło");
 define("UDALAN_7", "Zmień hasło");
-define("UDALAN_8", "Zmiana hasła dla");
+define("UDALAN_8", "Aktualizacja hasła dla");
 
 ?>

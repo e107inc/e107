@@ -1,30 +1,52 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.8 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_user_extended.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_user_extended.php rev. 1.10
++-----------------------------------------------------------------------------+
 */
-define("UE_LAN_1", "Tekst Box");
-define("UE_LAN_2", "Przycisk typu Radio");
-define("UE_LAN_3", "Drop-Down Menu");
-define("UE_LAN_4", "DB Table Field");
-define("UE_LAN_5", "Textarea");
-define("UE_LAN_6", "Integer");
+ 
+define("UE_LAN_1", "Pole opisowe");
+define("UE_LAN_2", "Przycisk");
+define("UE_LAN_3", "Rozwijalna lista");
+define("UE_LAN_4", "Pole tabeli BD");
+define("UE_LAN_5", "Pole tekstowe");
+define("UE_LAN_6", "Pole liczbowe");
 define("UE_LAN_7", "Data");
-define("UE_LAN_8", "Język");
+define("UE_LAN_8", "Styl");
+
+define("UE_LAN_9", "Nazwa");
+define("UE_LAN_10", "Typ");
+define("UE_LAN_11", "Ustaw");
 
 define("UE_LAN_HIDE", "Ukryty dla użytkowników");
 
-define("UE_LAN_LOCATION", "Lokalizacja");
-define("UE_LAN_AIM", "GG");
-define("UE_LAN_ICQ", "ICQ");
-define("UE_LAN_YAHOO", "Yahoo!");
-define("UE_LAN_MSN", "Tlen");
-define("UE_LAN_HOMEPAGE", "Strona www");
+define("UE_LAN_LOCATION", "Miejscowość");
+define("UE_LAN_LOCATION_DESC", "Miejscowość");
+define("UE_LAN_AIM", "Adres AIM");
+define("UE_LAN_AIM_DESC", "Adres AIM");
+define("UE_LAN_ICQ", "Numer ICQ");
+define("UE_LAN_ICQ_DESC", "Numer ICQ");
+define("UE_LAN_YAHOO", "Adres Yahoo!");
+define("UE_LAN_YAHOO_DESC", "Adres Yahoo!");
+define("UE_LAN_MSN", "MSN");
+define("UE_LAN_MSN_DESC", "Adres MSN");
+define("UE_LAN_HOMEPAGE", "Strona domowa");
+define("UE_LAN_HOMEPAGE_DESC", "Strona domowa");
 define("UE_LAN_BIRTHDAY", "Urodziny");
+define("UE_LAN_BIRTHDAY_DESC", "Urodziny");
+define("UE_LAN_LANGUAGE", "Język");
+define("UE_LAN_LANGUAGE_DESC", "Język użytkownika");
+define("UE_LAN_COUNTRY", "Kraj");
+define("UE_LAN_COUNTRY_DESC", "Kraj użytkownika (zawiera tabele DB)");
+
 ?>

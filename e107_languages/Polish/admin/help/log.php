@@ -1,4 +1,23 @@
 <?php
-$text = "Na tej stronie możesz włączyć gromadzenie statystyki serwisu. Jeżeli masz mało przestrzeni dyskowej, możesz zaznaczyć 'Tylko domeny', wówczas zapamiętywane będą tylko domeny, z których odwiedzający przywędrował, zamiast kompletnego adresu, czyli tylko 'jalist.com' zamiast 'http://jalist.com/links.php' ";
-$ns -> tablerender("Pomoc: Statystyki", $text);
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/log.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/log.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
+
+$text = "Na tej stronie możesz aktywować zapisywanie statystyk serwisu. Jeśli masz niewiele przestrzeni dyskowej, zaznacz pole <i>Tylko domeny</i> jako zapis odwołania. Powyższy wybór spowoduje, że będą zapisywane tylko domeny, z których nastąpiło odwołania, zamiast całych adresów url, np domena 'jalist.com' zamiast całego adresu 'http://jalist.com/links.php'.";
+$ns -> tablerender("Logi statystyczne", $text);
+
 ?>

@@ -1,21 +1,26 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:43 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_membersonly.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_membersonly.php rev. 1.3
++-----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Tylko zarejestrowani");
+ 
+define("PAGE_NAME", "Obszar tylko dla zarejestrowanych");
 
-define("LAN_MEMBERS_0", "ograniczony obszar");
-define("LAN_MEMBERS_1", "To jest ograniczony obszar");
-define("LAN_MEMBERS_2","aby uzuskać dostęp <a href='login.php'>zaloguj się</a> lub");
-define("LAN_MEMBERS_3","rejestuj się jako użytkownik");
-define("LAN_MEMBERS_4","Kliknij tutaj aby wrócić do pierwszej strony");
-
+define("LAN_MEMBERS_0", "Ograniczenie strefy");
+define("LAN_MEMBERS_1", "Jesteś w strefie zastrzeżonej.");
+define("LAN_MEMBERS_2", "W celu uzyskania dostępu proszę się <a href='".e_LOGIN."'>zalogować</a>");
+define("LAN_MEMBERS_3", ", albo <a href='".e_SIGNUP."'>zarejestrować</a> dla uzyskania odpowiednich uprawnień");
+define("LAN_MEMBERS_4", "Kliknij tutaj, aby powrócić do strony głównej");
 
 ?>

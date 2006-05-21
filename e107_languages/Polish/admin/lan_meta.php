@@ -1,24 +1,31 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_meta.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_meta.php rev. 1.3
++-----------------------------------------------------------------------------+
 */
-define("METLAN_1", "Znaczniki META zaktualizowane w bazie danych");
-define("METLAN_2", "Wprowadź znaczniki META");
-define("METLAN_3", "Wprowadź właściwości nowego znacznika META");
-define("METLAN_4", "Uaktualnij");
-define("METLAN_5", "Tutaj wstaw swój opis");
-define("METLAN_6", "Tutaj wstaw kluczowe słowa do strony, oddziel przecinkiem");
-define("METLAN_7", "Tutaj wstaw informacje na temat praw autorskich");
-define("METLAN_8", "Znacznik META");
-define("METLAN_9", "opis");
-define("METLAN_10", "słowa kluczowe");
-define("METLAN_11", "prawo autorskie");
+ 
+define("METLAN_1", "Znaczniki meta zostały zaktualizowane w bazie danych");
+define("METLAN_2", "Dodatkowe znaczniki meta");
+define("METLAN_3", "Dodaj znaczniki meta");
+define("METLAN_4", "Zaktualizowano znaczniki");
+define("METLAN_5", "tutaj zamieść opis strony");
+define("METLAN_6", "tutaj możesz wpisać słowa kluczowe, oddziel je przecinkami");
+define("METLAN_7", "tutaj możesz wpisać informacje o prawach autorskich");
+define("METLAN_8", "Znaczniki meta");
+
+define("METLAN_9", "Opis");
+define("METLAN_10", "Słowa kluczowe");
+define("METLAN_11", "Prawa autorskie");
 
 ?>

@@ -1,5 +1,24 @@
 <?php
-$text = "Jeżeli instalujesz nową wersję e107, lub po prostu chcesz wyłączyć serwis na jakiś czas, zaznacz opcję konserwacji, a wszyscy odwiedzający zostaną odesłani do strony z objaśnieniem, że serwis jest zamknięty. Kiedy skończysz pracę, odznacz tę opcję, aby powrócić do normalnego działania systemu.";
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/ugflag.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/ugflag.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
 
-$ns -> tablerender("Pomoc: Konserwacja", $text);
+$text = "Jeśli aktualizujesz e107 do nowszej wersji lub po prostu potrzebujesz przełączyć swoją stronę na chwilę w tryb offline zaznacz pole <i>Aktywuj tryb konserwacji</i>. Od tej chwili odwiedzający Twoja stronę będą przekierowani do strony wyjaśniającej przyczyny przerwy technicznej. Gdy zakończysz odznacz pole, aby przywrócić normalne funkcjonowanie serwisu.";
+
+$ns -> tablerender("Konserwacja", $text);
+
 ?>

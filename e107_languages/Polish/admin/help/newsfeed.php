@@ -1,5 +1,24 @@
 <?php
-$text = "Możesz pobierać i przetwarzać wiadomości zdalne ze źródeł RSS w innych serwisach oraz udostępniać je na swoich stronach.<br />Wpisz pełną ścieżkę (URL) do źródła wiadomości (np. http://e107.org/news.xml). Jeżeli źródło RSS, z którego korzystasz podaje ścieżkę do guzika z linkiem, a Ty chcesz go pokazać, pozostaw pole obrazu puste, w przeciwnym razie wpisz ścieżkę do obrazu, lub też wpisz 'none', aby nie pokazywać żadnego obrazu. Następnie pozaznaczaj w kratkach co dokładnie chcesz, aby się pojawiło w Twoim menu z nagłówkami wiadomości. Możesz dołączać i odłączać źródło w przypadku gdy np. serwis źródłowy jest niedostępny.<br /><br />Aby zobaczyć nagłówki z własnego serwisu, upewnij się, że headlines_menu jest włączone w Twoim panelu Menu.";
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/newsfeed.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/newsfeed.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
 
-$ns -> tablerender("Pomoc: Nagłówki Wiadomości", $text);
+$text = "Za pośrednictwem tej strony możesz pobierać i wyświetlać kanały wiadomości RSS pochodzące z innych serwisów na Twojej własnej stronie.<br />Wpisz pełną ścieżkę adresu URL do kanału (np. http://e107.org/news.xml). Możesz również dodać ścieżkę do obrazka, jeśli nie podoba Ci się domyślny lub nie jest on zdefiniowany. Z poziomu tej strony możesz również aktywować i dezaktywować kanały, jeśli strona przestała je nadawać.<br /><br />Aby zobaczyć nagłówki na swojej stronie upewnij się, że na stronie <i>Menu</i> zostało aktywowane menu <i>headlines_menu</i>.";
+
+$ns -> tablerender("Kolporter RSS", $text);
+
 ?>

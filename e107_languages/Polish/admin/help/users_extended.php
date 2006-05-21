@@ -1,4 +1,23 @@
 <?php
-$text = " Dzięki rozszerzonym polom użytkownika będziesz mógł dodawać dodatkowe typy danych do wypełnienia przez użytkowników, których zawartość będzie pokazana w ich profilu.";
-$ns -> tablerender(" Pomoc do Rozszerzonych Pól Użytkownika", $text);
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/users_extended.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/help/users_extended.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
+ 
+if (!defined('e107_INIT')) { exit; }
+
+$text = "Na tej stronie możesz dodać dodatkowe pola dla użytkowników, które będą mogli wypełniać we własnym profilu oraz podczas zakładania nowego konta.";
+$ns -> tablerender("Dodatkowe pola", $text);
+
 ?>

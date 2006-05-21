@@ -1,173 +1,178 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_newspost.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_newspost.php rev. 1.26
++-----------------------------------------------------------------------------+
 */
-define("NWSLAN_1", "Treść wiadomości skasowana.");
-define("NWSLAN_2", "Zaznacz, aby potwierdzić skasowanie tej wiadomości.");
-define("NWSLAN_3", "Nie ma jeszcze wiadomości.");
-define("NWSLAN_4", "Istniejące wiadomości");
+ 
+define("NWSLAN_1", "Historia aktualności została usunięta.");
+define("NWSLAN_2", "Proszę zaznaczyć pole, aby potwierdzić usunięcie wskazanej aktualności.");
+define("NWSLAN_3", "Nie ma jeszcze żadnych aktualności.");
+define("NWSLAN_4", "Aktualne wiadomości");
 define("NWSLAN_5", "Otwórz edytor HTML");
 define("NWSLAN_6", "Kategoria");
-define("NWSLAN_7", "Redaguj");
-define("NWSLAN_8", "Skasuj");
-define("NWSLAN_9", "zaznacz, aby potwierdzić");
-define("NWSLAN_10", "Nie utworzono jeszcze kategorii.");
-define("NWSLAN_11", "Dodaj/Redaguj kategorie");
+
+define("NWSLAN_9", "Zaznacz, aby potwierdzić");
+define("NWSLAN_10", "Nie ma jeszcze żadnej kategorii");
+define("NWSLAN_11", "Dodaj/Edytuj kategorię");
 define("NWSLAN_12", "Tytuł");
 define("NWSLAN_13", "Treść");
 define("NWSLAN_14", "Rozszerzenie");
 define("NWSLAN_15", "Komentarze");
-define("NWSLAN_16", "Dozwolone");
-define("NWSLAN_17", "Niedozwolone");
-define("NWSLAN_18", "Pozwól publikować komentarze do tej wiadomości");
+define("NWSLAN_16", "Włączone");
+define("NWSLAN_17", "Wyłączone");
+define("NWSLAN_18", "Pozwól zamieszczać komentarze dla tej wiadomości");
 define("NWSLAN_19", "Aktywacja");
-define("NWSLAN_20", "Pozostaw puste, aby nie uruchamiać automatycznej aktywacji");
+
 define("NWSLAN_21", "Aktywuj pomiędzy");
 define("NWSLAN_22", "Widoczność");
-define("NWSLAN_23", "Zaznaczenie spowoduje, że wiadomość będzie widoczna tylko dla użytkowników z tej klasy");
+
 define("NWSLAN_24", "Ponowny podgląd");
-define("NWSLAN_25", "Aktualizuj wiadomości w bazie danych");
+define("NWSLAN_25", "Aktualizuj wiadomość w bazie danych");
 define("NWSLAN_26", "Wyślij wiadomość do bazy danych");
 define("NWSLAN_27", "Podgląd");
-define("NWSLAN_28", "Nowa treść");
-define("NWSLAN_29", "Publikowanie wiadomości");
-define("NWSLAN_30", "Pokazuj tylko tytuły");
-define("NWSLAN_31", "Pozycja wiadomości");
-define("NWSLAN_32", "usunięta");
-define("NWSLAN_33", "Kategoria wiadomości");
-define("NWSLAN_34", "Nadesłana wiadomość");
-define("NWSLAN_35", "Kategoria wiadomości została zapisana");
-define("NWSLAN_36", "Kategoria wiadomości została zaktualizowana");
-define("NWSLAN_37", "Czy jesteś pewny(a), że chcesz usunąć tą kategorię?");
-define("NWSLAN_38", "Czy na pewno chcesz usunać tą nadesłaną wiadomość?");
-define("NWSLAN_39", "Czy na pewno chcesz usunąć tą wiadomość?");
+
+define("NWSLAN_29", "Publikacja wiadomości");
+
+define("NWSLAN_31", "Wiadomość o pozycji");
+define("NWSLAN_32", "została usunięta");
+define("NWSLAN_33", "Kategoria aktualności");
+define("NWSLAN_34", "Nadesłane newsy");
+define("NWSLAN_35", "Kategoria aktualności została zapisana");
+define("NWSLAN_36", "Kategoria aktualności została zaktualizowana");
+define("NWSLAN_37", "Czy na pewno usunąć wskazaną kategorię");
+define("NWSLAN_38", "Czy na pewno usunąć nadesłanego newsa?");
+define("NWSLAN_39", "Czy na pewno usunąć wiadomość?");
 define("NWSLAN_40", "Tytuł");
-define("NWSLAN_41", "Opcje");
-define("NWSLAN_42", "Niezatytułowany");
-define("NWSLAN_43", "Wiadomości");
-define("NWSLAN_44", "Pierwsza strona wiadomości");
+
+define("NWSLAN_42", "Bez tytułu");
+define("NWSLAN_43", "Nie ma jeszcze aktualności");
+define("NWSLAN_44", "Aktualne wiadomości");
 define("NWSLAN_45", "Dodaj nową wiadomość");
 define("NWSLAN_46", "Kategorie");
-define("NWSLAN_47", "Nadesłane wiadomości");
-define("NWSLAN_48", "Opcje wiadomości");
+define("NWSLAN_47", "Nadesłane aktualności");
+define("NWSLAN_48", "Opcje aktualności");
 define("NWSLAN_49", "Nadesłane przez");
-define("NWSLAN_50", "Wstaw obraz: Obrazy zapisane są do katalogu e107_images/newsicons");
-define("NWSLAN_51", "Istniejące kategorie wiadomości");
+
+define("NWSLAN_51", "Aktualne kategorie wiadomości");
 define("NWSLAN_52", "Nazwa kategorii");
 define("NWSLAN_53", "Ikona kategorii");
-define("NWSLAN_54", "Podgląd obrazu");
-define("NWSLAN_55", "Uaktualnij kategorię wiadomości");
-define("NWSLAN_56", "Utwórz kategorię wiadomości");
+define("NWSLAN_54", "Zobacz obrazki");
+define("NWSLAN_55", "Aktualizuj kategorię aktualności");
+define("NWSLAN_56", "Utwórz kategorię aktualności");
 define("NWSLAN_57", "Pozycja");
-define("NWSLAN_58", "Prześlij do edycji");
-define("NWSLAN_59", "Brak nadesłanych wiadomości");
-define("NWSLAN_60", "Nadesłane wiadomości");
-define("NWSLAN_61", "usunięto");
+define("NWSLAN_58", "Wyślij");
+define("NWSLAN_59", "Brak nadesłanych aktualności");
+define("NWSLAN_60", "Nadesłane aktualności");
+
 define("NWSLAN_62", "Idź do strony: ");
-define("NWSLAN_63", "Szukaj wiadomości");
-define("NWSLAN_64", "Wstaw pobieranie: Pliki zapisaną są do katalogu e107_files/downloads");
-define("NWSLAN_65", "jeżeli to obraz, zaznacz a zostanie zrobiona miniatura obrazu");
-define("NWSLAN_66", "Zapisywanie pliku");
+define("NWSLAN_63", "Wyszukaj wiadomość");
+
+define("NWSLAN_66", "Załaduj plik");
 define("NWSLAN_67", "Obraz");
 define("NWSLAN_68", "Plik");
-define("NWSLAN_69", "Zapisz obraz lub plik do wstawienia w nowej wiadomości");
-define("NWSLAN_70", "Katalog ".e_FILE."downloads nie jest dostępny do zapisu, musisz ustawić CHMOD 777 przed zapisem dla tego katalogu");
-define("NWSLAN_71", "Katalog ".e_IMAGE."newspost_images nie jest dostępny do zapisu, musisz ustawić CHMOD 777 przed zapisem dla tego katalogu");
-define("NWSLAN_72", "Wiadomość pokazuj tylko pomiędzy określonymi datami");
-define("NWSLAN_73", "Sposób pokazywania");
-define("NWSLAN_74", "Wybierz jak i gdzie wiadomość jest wstawiona");
-define("NWSLAN_75", "Domyślny - post na pierwszej stronie");
-define("NWSLAN_76", "Tylko tytuł - post na pierwszej stronie");
-define("NWSLAN_77", "Post w spisie wiadomości");
-define("NWSLAN_78", "Ta opcja jest wyłączona, ponieważ zapisywanie plików nie jest włączone na twoim serwerze.");
-define("NWSLAN_79","Wyczyść");
-define("NWSLAN_80","Wstaw miniaturkę");
-define("NWSLAN_81","Wstaw obraz");
-define("NWSLAN_82","Wstaw plik do pobrania");
-define("NWSLAN_83","Rozszerzenie nowej wiadomości");
-define("NWSLAN_83","i");
-define("NWSLAN_84","Wybierz grupę użytkowników dla kogo będzie widoczna ta wiadomość");
-define("NWSALAN_85", "nadesłany przez");
-define("NWSLAN_86", "Pokaż kategorię wiadomości w stopce menu");
-define("NWSLAN_87", "Kolumn kategori wiadomości?");
-define("NWSLAN_88", "Ile wiadomości ma być pokazywanych na pierwszej stronie?");
-define("NWSLAN_89", "Zapisz ustawienia wiadomości");
-define("NWSLAN_90", "Opcje wiadomości");
-define("NWSLAN_100", "Włączy możliwość nadsyłania zdjęć wraz z wiadomością");
-define("NWSLAN_101", "Automatyczne rozmiarowanie nadesłanego obrazu");
-define("NWSLAN_102", "szerokość w pikslach<br> albo pozostaw puste by wyłączyć.");
-define("NWSLAN_103", "re-Post");
+define("NWSLAN_69", "Załaduj obraz albo plik, aby go użyć w redagowanej wiadomości");
+define("NWSLAN_70", "Folder ".e_FILE."downloads nie jest zapisywalny, przed ładowaniem plików ustaw CHMOD wskazanego folderu na wartości 777.");
+define("NWSLAN_71", "Folder ".e_IMAGE."newspost_images nie jest zapisywalny, przed ładowaniem obrazków ustaw CHMOD wskazanego folderu na wartości 777.");
+define("NWSLAN_72", "Wyświetlaj wiadomość tylko pomiędzy wskazanymi datami");
+define("NWSLAN_73", "Metoda prezentacji");
+define("NWSLAN_74", "Wybierz jak i gdzie ma być wyświetlana wiadomość");
+define("NWSLAN_75", "Domyślnie - publikacja na pierwszej stronie");
+define("NWSLAN_76", "Tylko tytuł - publikacja na pierwszej stronie");
+define("NWSLAN_77", "Publikacja w menu aktualności");
+
+define("NWSLAN_78", "Ta opcja jest nieaktywna, ponieważ zapisywanie plików na Twoim serwerze jest wyłączone");
+define("NWSLAN_79", "Wyczyść formularz");
+
+define("NWSLAN_83", "Rozszerzona wiadomość");
+define("NWSLAN_84", "Wybierz użytkowników, dla których jest przeznaczona ta wiadomość");
+
+define("NWSLAN_86", "Pokazuj kategorię wiadomości w stopce menu");
+define("NWSLAN_87", "Wyświetlać kategorie w kolumnach?");
+define("NWSLAN_88", "Ile aktualności ma być pokazywanych na pierwszej stronie?");
+define("NWSLAN_89", "Zapisz preferencje aktualności");
+define("NWSLAN_90", "Preferencje aktualności");
+define("NWSLAN_100", "Włącz możliwość nadsyłania obrazów");
+define("NWSLAN_101", "Automatyczna zmiana rozmiarów nadsyłanych obrazów");
+define("NWSLAN_102", "szerokość w pikselach<br /> lub pozostaw puste, aby nie aktywować.");
+define("NWSLAN_103", "Wyślij ponownie");
 define("NWSLAN_104", "przez");
-define("NWSLAN_105", "Zaznacz,aby data wypowiedzi była zastąpiona aktualną");
-define("NWSLAN_106", "Wysyłanie nowości możliwe dla:");
-define("NWSLAN_107", "Włącz HtmlArea podczas wysyłania nowości.");
-define("NWSLAN_108", "Pokazuj wszystkie wiadomości.");
-define("NWSLAN_109", "Zaznacz,aby wiadomość pokazywana była dla wszystkich.");
-define("NWSLAN_110", "nie jest dostępny do zapisu, musisz ustawić CHMOD 777 przed zapisem dla tego katalogu");
+define("NWSLAN_105", "Zaznacz, aby data publikacji była zastąpiona aktualną");
+define("NWSLAN_106", "Nadsyłanie aktualności jest możliwe przez:");
+define("NWSLAN_107", "Włącz edytor WYSIWYG na stronie do nadsyłania wiadomości.");
 
 define("NWSLAN_111", "Pokaż datę nowego nagłówka");
-define("NWSLAN_112", "Jeśli kratka będzie odznaczona, informacja zawierająca datę będzie pokazana ponad wiadomościami wystawionymi na nowym dniu,przydatne dla odróżniania wpisów wiadomości w różnych dniach");
+define("NWSLAN_112", "jeśli pole będzie odznaczone, wiadomości zawierające datę będą wyświetlane ponad wiadomościami wystawionymi w nowym dniu, przydatne dla oddzielenia wiadomości pisanych w innym dniu");
 
-define("NWSLAN_113", "Użyć niestandardowego szablonu dla pokazywania wiadomości");
-define("NWSLAN_114", "jeżeli dany temat który używasz,posiada swój styl news ,użyj tej funkcji w celu generowania stylu.");
+define("NWSLAN_113", "Używaj niestandardowego szablony dla układu aktualności");
+define("NWSLAN_114", "jeśli temat, którego używasz posiada własny szablon wyświetlania aktualności, użyj tej opcji aby go aktywować");
 
-define("NWSLAN_115", "Wiadomości pokazywanych jako archiwalne");
-define("NWSLAN_116", "Jako pierwsze,zapisz ustawienia preferencji serwisu z ustawieniami ile wiadomości ma być pokazywanych na pierwszej stronie.Następnie ponownie zapisz ustawienia wiadomości archiwalnych. (0 znaczy nieaktywne)");
-define("NWSLAN_117", "Podaj tytuł nagłówka wiadomości archiwalnych");
-define("NWSLAN_118", "Pokazywać grafiki");
-define("NWSLAN_119", "Ustawienia Zapisane");
+define("NWSLAN_115", "Ile aktualności ma być wyświetlanych w archiwum?");
+define("NWSLAN_116", "Najpierw zaktualizuj zmiany w ustawieniach wyświetlania wiadomości na stronie głównej, następnie ponownie zaktualizuj ustawienia preferencji wyświetlania wiadomości w archiwum"); // First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 oznacza nieaktywne)
+define("NWSLAN_117", "Wpisz nazwę dla archiwum aktualności");
+define("NWSLAN_118", "Zobacz obrazki");
+define("NWSLAN_119", "Ustawienia zostały zapisane");
+define("NWSLAN_120", "Wiadomość dla osób nasyłających newsy"); // Text to show at the top of Submit News
 
-define("LAN_NEWS_5", "Błąd !!! - Nie można było zaktualizować wiadomości w bazie danych.");
-define("LAN_NEWS_6", "News zapisany w bazie danych.");
-define("LAN_NEWS_7", "Error! - Nie można było zapisać wiadomości w bazie danych");
-define("LAN_NEWS_9", "Pokazywany tytuł - <b>będzie pokazywany tylko tytuł wiadomości</b>");
-define("LAN_NEWS_10", "Ta wiadomość będzie <b>nieaktywna</b> (nie będzie pokazywana na stronie startowej). ");
-define("LAN_NEWS_11", "Ta wiadomość będzie <b>aktywna</b> (będzie pokazywana na stronie startowej). ");
-define("LAN_NEWS_12", "Komentarze <b>włączone</b>.");
-define("LAN_NEWS_13", "Komentarze <b>wyłączone</b>.");
-define("LAN_NEWS_14", "<br />Okres aktywowania: ");
+define("LAN_NEWS_5", "Błąd! - Aktualizacja wiadomości w bazie danych była niemożliwa");
+define("LAN_NEWS_6", "Aktualność została dodana do bazy danych.");
+define("LAN_NEWS_7", "Błąd! - Dodanie wiadomości do bazy danych było niemożliwe!");
+define("LAN_NEWS_9", "Tylko tytuł - <b>będzie pokazywany tylko tytuł waidomości</b>");
+define("LAN_NEWS_10", "Wiadomość jest <b>nieaktywna</b> (nie będzie wyświetlana na pierwszej stronie). ");
+define("LAN_NEWS_11", "Wiadomość jest <b>aktywna</b> (będzie wyświetlana na pierwszej stronie). ");
+define("LAN_NEWS_12", "Komentarze są <b>włączone</b>.");
+define("LAN_NEWS_13", "Komentarze są <b>wyłączone</b>.");
+define("LAN_NEWS_14", "<br />Okres aktywacji: ");
 define("LAN_NEWS_15", "Długość treści: ");
-define("LAN_NEWS_16", "b. Rozszerzona treść: ");
+define("LAN_NEWS_16", "b. Długość rozszerzonej treści: ");
 define("LAN_NEWS_17", "b.");
-define("LAN_NEWS_18", "Info:");
-define("LAN_NEWS_19",  "Teraz");
-define("LAN_NEWS_21", "Wiadomość zapisana w bazie danych.");
-define("LAN_NEWS_22", "Miniatura obrazu");
-define("LAN_NEWS_23", "Wybierz miniaturę obrazu dla tej wiadomości.");
-define("LAN_NEWS_24", "Obraz + Auto-Miniaturka");
-define("LAN_NEWS_25", "Rozmiar Auto-Miniaturki");
-define("LAN_NEWS_26", "załaduj plik");
-define("LAN_NEWS_27", "Streszczenie");
+define("LAN_NEWS_18", "Informacje");
+define("LAN_NEWS_19", "Od teraz");
+define("LAN_NEWS_21", "Wiadomość została zaktualizowana w bazie danych.");
 
-define("LAN_NEWS_28", "Przyklejony");
-define("LAN_NEWS_29", "Zaznacz jeśli wiadomość ma być przyklejona");
-define("LAN_NEWS_30", "Jeśli zaznaczone,wiadomość będzie widoczna dla wszystkich.");
-define("LAN_NEWS_31", "Ta wiadomość będzie <b>przyklejona</b> (it will be shown above all other items). ");
-define("LAN_NEWS_32", "Znak czasu");
-define("LAN_NEWS_33", "Ustaw datę i czas ,dla tej wiadomości.");
+define("LAN_NEWS_22", "Miniaturka");
+define("LAN_NEWS_23", "Wybierz obrazek dla tej wiadomości");
+define("LAN_NEWS_24", "Obraz + auto-miniaturka");
+define("LAN_NEWS_25", "Rozmiar auto-miniaturki");
+define("LAN_NEWS_26", "Dodaj nowy plik");
+define("LAN_NEWS_27", "Podtytuł");
 
-define("LAN_NEWS_34", "Trackback");
-define("LAN_NEWS_35", "Dodaj adres url dla trackback");
-define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all url's in this post)");
-define("LAN_NEWS_37", "<b>Trackback url's:</b> (jeden adres url w linii)");
+define("LAN_NEWS_28", "Przyklej");
+define("LAN_NEWS_29", "Wybierz jeśli chcesz, aby wiadomość była przyklejona");
+define("LAN_NEWS_30", "Jeśli zaznaczysz, wiadomość będzie pokazywana ponad wszystkimi innymi aktualnościami");
+define("LAN_NEWS_31", "Wiadomość jest <b>przyklejona</b> (będzie wyświetlana ponad wszystkimi innymi wiadomościami). ");
+define("LAN_NEWS_32", "Data dodania"); // Datestamp
+define("LAN_NEWS_33", "Ustaw znacznik czasu dla bieżącej wiadomości");
 
-define("LAN_NEWS_38", "Dołącz obrazy");
+define("LAN_NEWS_34", "Powiązania");
+define("LAN_NEWS_35", "Dodaj adres powiązania");
+define("LAN_NEWS_36", "<b><i>Pingback</i></b> (wyślij <i>pingback</i> do wszystkich adresów w tym wpisie)");
+define("LAN_NEWS_37", "<b>Adresy powiązań:</b> (jeden adres w każdej linii)");
+define("LAN_NEWS_38", "Dołącz obrazki");
 
-define("LAN_NEWS_39", "click on file to insert at cursor position");
-define("LAN_NEWS_40", "Wpisz link do pliku");
+define("LAN_NEWS_39", "kliknij na pliku, aby umieścić znacznik pozycji");
+define("LAN_NEWS_40", "Dołącz pliki do pobrania");
 
-define("LAN_NEWS_41", "Miniatura / Ikona");
 define("LAN_NEWS_42", "Pliki");
-define("LAN_NEWS_43", "(brak obrazków w /e107_images/newspost_images)");
-define("LAN_NEWS_44", "Trackback nie włączony.");
+define("LAN_NEWS_43", "(brak obrazków w ".e_IMAGE."/newspost_images)");
+define("LAN_NEWS_44", "Powiązania nieaktywne.");
 
 define("LAN_NEWS_45", "ID");
+
+define("LAN_NEWS_46", "Pozycja nie została zaktualizowana, ponieważ żadne zmiany nie zostały wprowadzone."); // News item not updated as no changes were made
+define("LAN_NEWS_47", "Obrazek");
+define("LAN_NEWS_48", "Brak obrazka");
+
+define("LAN_NEWS_49", "Metoda prezentacji");
 
 ?>

@@ -1,45 +1,45 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_upload.php Polish-utf-8 language file 
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 12th Sep 2004
-+---------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_upload.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_upload.php rev. 1.1
++-----------------------------------------------------------------------------+
 */
+ 
+define("PAGE_NAME", "Wysyłanie pliku");
 
-define("PAGE_NAME", "Nadsyłanie plików");
 define("LAN_20", "Błąd");
-define("LAN_61", "Nazywasz się:");
-define("LAN_112", "Adres email:");
-define("LAN_144", "Strona WWW:");
-define("LAN_402", "Tylko zarejestrowani użytkownicy mogą nadsyłać pliki do tego serwisu.");
-define("LAN_403", "Nie masz uprawnień, aby nadesłać plik do tego serwisu.");
-define("LAN_404", "Dziękujemy. Nadesłany plik zostanie podjęty przez administratora i po akceptacji zamieszczony w serwisie.");
-define("LAN_405", "Plik przekracza wyznaczony limit wielkości - skasowano.");
-define("LAN_406", "<b>UWAGA !!!</b> Ważne");
-define("LAN_407", "Nadesłane pliki innych typów zostaną natychmiast skasowane.");
+define("LAN_61", "Imię: ");
+define("LAN_112", "Adres email: ");
+define("LAN_144", "Strona domowa: ");
+define("LAN_402", "Musisz być zarejestrowanym użytkownikiem, aby wysłać pliki na ten serwer.");
+define("LAN_403", "Nie masz odpowiednich uprawnień, aby wysyłać pliki na ten serwer.");
+define("LAN_404", "Dziękujemy, wysłany plik będzie sprawdzony przez administratora i po uzyskaniu pozytywnej oceny zostanie umieszczony w odpowiednim dziale.");
+define("LAN_405", "Plik przekracza zdefiniowany limit wielkości - plik został usunięty.");
+define("LAN_406", "Uwaga");
+define("LAN_407", "Wszystkie inne typy wysyłanych plików zostaną natychmiast skasowane.");
 define("LAN_408", "Podkreślone");
 define("LAN_409", "Nazwa pliku");
 define("LAN_410", "Wersja");
 define("LAN_411", "Plik");
 define("LAN_412", "Zrzut ekranu");
 define("LAN_413", "Opis");
-define("LAN_414", "Adres działającego demo");
-define("LAN_415", "wprowadź adres strony, gdzie działa demo programu");
-define("LAN_416", "Wyślij plik");
+define("LAN_414", "Demo");
+define("LAN_415", "Wpisz adres strony, na której znajduje się działające demo");
+define("LAN_416", "Dodaj i wyślij plik");
 define("LAN_417", "Wyślij plik");
-define("LAN_418", "Maksymalny rozmiar pliku:");
+define("LAN_418", "Maksymalny rozmiar pliku: ");
 define("DOWLAN_11", "Kategoria");
-define("LAN_419", "Dopuszczalne typy plików");
+define("LAN_419", "Dozwolone typy plików");
 define("LAN_420", "pola są wymagane");
-
 
 ?>

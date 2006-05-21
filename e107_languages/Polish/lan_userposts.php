@@ -1,30 +1,38 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:44 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_userposts.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/lan_userposts.php rev. 1.4
++-----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Wpisy użytkownika");
-define("UP_LAN_0", "Wszystkie wpisy forum");
-define("UP_LAN_1", "Wszystkie komentarze");
-define("UP_LAN_2", "Wątek");
+ 
+define("PAGE_NAME", "Posty użytkownika");
+
+define("UP_LAN_0", "Wszystkie posty na forum dla ");
+define("UP_LAN_1", "Wszystkie komentarze dla ");
+define("UP_LAN_2", "Temat");
 define("UP_LAN_3", "Podgląd");
-define("UP_LAN_4", "Odpowiedź");
+define("UP_LAN_4", "Posty");
 define("UP_LAN_5", "Ostatni post");
-define("UP_LAN_6", "Wątek");
+define("UP_LAN_6", "Tematy");
 define("UP_LAN_7", "Brak komentarzy");
 define("UP_LAN_8", "Brak postów");
-define("UP_LAN_9", "w");
-define("UP_LAN_10", "Odpowiedź");
-define("UP_LAN_11", "Wpisał w:");
-define("UP_LAN_12", "Szukaj w");
-define("UP_LAN_13", "Komentarzach");
-define("UP_LAN_14", "Wątkach forum");
-define("UP_LAN_15", "Odp.");
-define("UP_LAN_16", "Adresach IP");
+define("UP_LAN_9", " dnia ");
+define("UP_LAN_10", "Odp");
+define("UP_LAN_11", "Dodane dnia");
+define("UP_LAN_12", "Szukaj");
+define("UP_LAN_13", "Komentarze");
+define("UP_LAN_14", "Posty na forum");
+define("UP_LAN_15", "Odp");
+define("UP_LAN_16", "Adres IP");
+
 ?>

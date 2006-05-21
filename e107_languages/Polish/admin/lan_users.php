@@ -1,156 +1,192 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:06:45 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:26 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_languages/English/admin/lan_users.php rev. 1.22
++-----------------------------------------------------------------------------+
 */
-define("USRLAN_1", "Opcje zapisane.");
-define("USRLAN_2", "Rozszerzone pola użytkownika zapisane.");
-define("USRLAN_3", "występuje teraz jako Administrator - aby zmienić uprawnienia przejdź do");
-define("USRLAN_4", "strony Administratora");
-define("USRLAN_5", "Nie możesz odebrać uprawnień administratora głównemu administratorowi serwisu");
-define("USRLAN_6", "zostały odebrane prawa Administratora.");
-define("USRLAN_7", "Nie możesz zablokować głównego administratora serwisu");
-define("USRLAN_8", "Użytkownik zablokowany.");
-define("USRLAN_9", "Użytkownik odblokowany.");
-define("USRLAN_10", "Użytkownik skasowany.");
-define("USRLAN_11", "Kasowanie anulowane.");
-define("USRLAN_12", "Nie możesz skasować głównego administratora serwisu.");
-define("USRLAN_13", "Potwierdź, że chcesz skasować tego użytkownika");
-//define("USRLAN_14", "po skasowaniu zapis nie może być odtworzony");
-//define("USRLAN_15", "Anuluj");
-define("USRLAN_16", "Potwierdź skasowanie");
-define("USRLAN_17", "Potwierdź skasowanie użytkownika");
-//define("USRLAN_18", "Użytkownik aktywowany.");
-//define("USRLAN_19", "Szukaj");
-//define("USRLAN_20", "Sortuj według");
-//define("USRLAN_21", "ID Użytkownika");
-//define("USRLAN_22", "Nazwa użytkownika");
-//define("USRLAN_23", "Odwiedzin serwisu");
-//define("USRLAN_24", "Status administratora");
-//define("USRLAN_25", "Status");
-//define("USRLAN_26", "Malejąco");
-//define("USRLAN_27", "Rosnąco");
-//define("USRLAN_28", "Sortuj");
-define("USRLAN_29", "Skasuj");
-define("USRLAN_30", "Blokuj");
-//define("USRLAN_31", "Blokuj -nieaktywowany-");
+ 
+define("USRLAN_1", "Opcje zostały zapisane.");
+define("USRLAN_3", "jest teraz administratorem - aby zmienić uprawnienia przejdź do strony");
+define("USRLAN_4", "administratora.");
+define("USRLAN_5", "Nie możesz usunąć statusu administratora głównemu administratorowi strony");
+define("USRLAN_6", "- utracił status administratora.");
+define("USRLAN_7", "Nie możesz zablokować głównego administratora strony");
+define("USRLAN_8", "Użytkownik został zablokowany.");
+define("USRLAN_9", "Użytkownik został odblokowany.");
+define("USRLAN_10", "Użytkownik został usunięty.");
+define("USRLAN_11", "Usuwanie zostało anulowane.");
+define("USRLAN_12", "Nie możesz usunąć głównego administratora strony.");
+define("USRLAN_13", "Proszę potwierdzić, jeśli chcesz usunąć tego użytkownika");
+// define("USRLAN_14", "raz usunięty użytkownik nie będzie mógł być odtworzony");
+// define("USRLAN_15", "Anuluj");
+define("USRLAN_16", "Potwierdź usunięcie");
+define("USRLAN_17", "Potwierdź usunięcie użytkownika");
+// define("USRLAN_18", "Użytkownik aktywowany.");
+// define("USRLAN_19", "Wyszukaj");
+// define("USRLAN_20", "Sortuj według");
+// define("USRLAN_21", "ID użytkownika");
+// define("USRLAN_22", "Nazwa użytkownika");
+// define("USRLAN_23", "Wizyt na stronie");
+// define("USRLAN_24", "Status administratora");
+// define("USRLAN_25", "Status");
+// define("USRLAN_26", "Malejąco");
+// define("USRLAN_27", "Rosnąco");
+// define("USRLAN_28", "Sortuj");
+
+define("USRLAN_30", "Zablokuj");
+// define("USRLAN_31", "Blokada -dezaktywowana-");
 define("USRLAN_32", "Aktywuj");
 define("USRLAN_33", "Odblokuj");
-define("USRLAN_34", "Pozbaw praw administratora");
-define("USRLAN_35", "Nadaj prawa administratora");
-define("USRLAN_36", "Ustaw klasę");
-//define("USRLAN_37", "Użytkownicy");
-//define("USRLAN_38", "Wyszukano");
-//define("USRLAN_39", "wyników");
-//define("USRLAN_40", "Brak definicji");
-define("USRLAN_41", "Nazwa pola");
-define("USRLAN_42", "Dodaj pola rozszerzone");
-define("USRLAN_43", "Rozszerzone pola użytkownika");
-define("USRLAN_44", "Zezwalać użytkownikom na nadsyłanie avatarów?");
-define("USRLAN_45", "Tak");
-define("USRLAN_46", "Nie");
-define("USRLAN_47", "Maksymalna szerokość avatara (w pikselach)");
-define("USRLAN_48", "wartość domyślna: 120");
-define("USRLAN_49", "Max.wys.avataru (w pix.)");
-define("USRLAN_50", "domyślna wartość 100");
+define("USRLAN_34", "Usuń status admina");
+define("USRLAN_35", "Nadaj status admina");
+define("USRLAN_36", "Ustaw grupę");
+
+// define("USRLAN_37", "Użytkownicy");
+// define("USRLAN_38", "Wyszukano");
+// define("USRLAN_39", "wynik(i)");
+// define("USRLAN_40", "Brak zdefiniowanych");
+
+define("USRLAN_44", "Pozwolić użytkownikom na nadsyłanie awatarów?");
+
+define("USRLAN_47", "Maksymalna szerokość awatara (w pikselach)");
+define("USRLAN_48", "domyślnie jest 120");
+define("USRLAN_49", "Maksymalna wysokość awatara (w pikselach)");
+define("USRLAN_50", "domyślnie jest 100");
 define("USRLAN_51", "Aktualizuj opcje");
-define("USRLAN_52", "Opcje użytkownika");
-define("USRLAN_53", "Czy pozwalać użytkownikom na nadsyłanie zdjęć?");
-define("USRLAN_54", "Kliknij tutaj aby usunąć wszystkich nieaktywowanych użytkowników.");
-define("USRLAN_55", "Czyszczenie");
-define("USRLAN_56", "Kasowanie");
-define("USRLAN_57", "Usunięto nieaktywowanych użytkowników ...");
-define("USRLAN_58", "Zapisywanie plików jest wyłączne w php.ini");
-define("USRLAN_59", "Szybkie dodawanie użytkownika");
+define("USRLAN_52", "Opcje użytkowników");
+define("USRLAN_53", "Pozwolić użytkownikom na nadsyłanie zdjęć?");
+define("USRLAN_54", "Kliknij tutaj, aby usunąć wszystkich nieaktywowanych użytkowników");
+define("USRLAN_55", "Oczyszczanie");
+define("USRLAN_56", "Usunięto");
+define("USRLAN_57", "Usuwanie nieaktywowanych użytkowników..."); // Deleting un-activated members
+define("USRLAN_58", "zapisywanie nadesłanych plików jest wyłączone w php.ini");
+define("USRLAN_59", "Szybkie dodawanie użytkowników");
 define("USRLAN_60", "Dodaj użytkownika");
-define("USRLAN_61", "Nazwa użytkownika");
+define("USRLAN_61", "Wyświetlana nazwa");
 define("USRLAN_62", "Hasło");
 define("USRLAN_63", "Powtórz hasło");
 define("USRLAN_64", "Adres email");
-define("USRLAN_65", "Ta nazwa użytkownika nie może być zaakceptowana. Proszę wybrać inną nazwę");
-define("USRLAN_66", "Użytkownik o takiej nazwie istnieje już w bazie danych. Proszę wybrać inną nazwę użytkownika");
-define("USRLAN_67", "Wpisane hasło nie jest zgodne z powtórzeniem");
-define("USRLAN_68", "Pozostawiłeś nieuzupełnione pole");
-define("USRLAN_69", "Wpisany adres email jest nieprawidłowy.");
+define("USRLAN_65", "Podana wyświetlana nazwa lub login nie może być zaakceptowana, proszę zmienić te dane na jakieś inne.");
+define("USRLAN_66", "Podany login już istnieje w bazie danych, proszę zmienić go na jakiś inny.");
+define("USRLAN_67", "Podane hasła różnią się. Proszę wprowadzić je ponownie.");
+define("USRLAN_68", "Pozostały niewypełnione pola");
+define("USRLAN_69", "Podany adres email jest błędny. Wprowadź go ponownie.");
 define("USRLAN_70", "Użytkownik został dodany");
-define("USRLAN_71", "Pierwsza strona ustawień użytkowników");
-define("USRLAN_72", "Szybkie dodawanie użytkownika");
-define("USRLAN_73", "Czyść użytkowników");
-define("USRLAN_74", "Dodatkowe pola dla użytkownika");
-//define("USRLAN_75", "Opcje");
+define("USRLAN_71", "Aktualni użytkownicy");
+define("USRLAN_72", "Dodaj użytkownika");
+define("USRLAN_73", "Oczyszczanie");
+// define("USRLAN_75", "Opcje");
 define("USRLAN_76", "Opcje użytkowników");
-define("USRLAN_77", "Istniejący użytkownicy");
+define("USRLAN_77", "Aktualni użytkownicy");
 define("USRLAN_78", "Nazwa użytkownika");
 define("USRLAN_79", "Status");
-define("USRLAN_80", "Info");
-define("USRLAN_81", "Edytuj");
-//define("USRLAN_82", "Czy na pewno chcesz usunąć tego użytkownika?");
-define("USRLAN_83", "Dodatkowe pole usunięto");
-define("USRLAN_84", "W serwisie jest");
-define("USRLAN_85", "użytkowników co nie aktywowali sowich kont - Kliknij aby ich usunąć.");
+define("USRLAN_80", "Informacje");
+
+// define("USRLAN_82", "Czy na pewno chcesz usunąć tego użytkownika");
+define("USRLAN_84", "Obecnie jest");
+define("USRLAN_85", "użytkowników, którzy nie dokonali aktywacji kont - kliknij poniżej, aby ich usunąć.");
 define("USRLAN_86", "Użytkownik zweryfikowany");
-define("USRLAN_87", "Ustawienia użytkownika zostały uaktualnione");
-define("USRLAN_88", "Klasa użytkownika została uaktualniona");
-define("USRLAN_89", "Idź do strony:");
-define("USRLAN_90", "Szukaj uzytkownika");
-define("USRLAN_91", "Klasa");
-define("USRLAN_92", "Błędna litera w nazwie użytkownika");
-define("USRLAN_93", "Usuń niesprawdzonych użytkowników");
-define("USRLAN_94", "Usuń zarejestrowanych, jeżeli po tej ilości czasu nie zatwierdził on konta - zostaw lukę, by nie używać tej opcji");
+define("USRLAN_87", "Ustawienia użytkownika zostały zaktualizowane");
+define("USRLAN_88", "Grupy użytkowników zostały zaktualizowane");
+
+define("USRLAN_90", "Szukaj/Odśwież");
+define("USRLAN_91", "Grupa");
+define("USRLAN_92", "Niepoprawne znaki w nazwie użytkownika");
+
+define("USRLAN_93", "Usuń niezweryfikowanych użytkowników");
+define("USRLAN_94", "Usuń rejestracje, jeśli nie zostaną zweryfikowane po wskazanym czasie - pozostaw puste, aby nie używać tej opcji<br />Ta opcja zostanie zignorowana, jeśli rejestracja użytkownika jest moderowana przez administratora");
 define("USRLAN_95", "minut");
-define("USRLAN_96", "Nazwa");
-define("USRLAN_97", "Typ");
-define("USRLAN_98", "Wartość");
-define("USRLAN_99", "Domyślny");
-define("USRLAN_100", "Przydatny dla");
-define("USRLAN_101", "Widzialne dla");
-define("USRLAN_102", "Działanie");
-define("USRLAN_103", "Typ pola");
-define("USRLAN_104", "Domyślna wartość");
-define("USRLAN_105", "Wartości Enter oddzielaj przecinkami np. wartość1,wartośc2 itd. &lt;br&gt;Dla formatu tabeli DB: dbtable,pole-wartość,pole-nazwa.");
-define("USRLAN_106", "To określa, kto będzie widział pole w ustawieniach użytkownika.");
-define("USRLAN_107", "To określa, kto może widzieć wartość na stronie użytkownika.");
-define("USRLAN_108", "Ramka tekstowa");
-define("USRLAN_109", "Przycisk typu Radio");
-define("USRLAN_110", "Rozwijane menu");
-define("USRLAN_111", "Pole w tabeli DB");
-define("USRLAN_112", "Odeślij e-mail");
-define("USRLAN_113", "Szczegóły rejestracji dla");
-define("USRLAN_114", "Drogi");
-define("USRLAN_115", "Dziękuję za rejestrację.");
-define("USRLAN_116", "Proszę potwierdzić, że życzysz sobie odpowiedzi potwierdzającej na email:");
-define("USRLAN_117", "Kliknij przycisk aby przetestować następujący email:");
-define("USRLAN_118", "Test Email");
-define("USRLAN_119", "Uaktualnij pola rozszerzeń.");
-define("USRLAN_120", "Ustaw klasy");
-define("USRLAN_121", "Mailing");
-define("USRLAN_122", "Witaj w");
-define("USRLAN_123", "Twoja tejestracja została zakceptowana i utworzona.");
-define("USRLAN_124", "Aktualnie jest oznaczone jako nieaktywowane, aby aktywować konto proszę przejść do linku");
+
+
+define("USRLAN_112", "Ponowne wysyłanie emaila");
+define("USRLAN_113", "Potwierdzenie rejestracji w serwisie");
+define("USRLAN_114", "Drogi(a)");
+define("USRLAN_115", "Dziękujemy za rejestrację.");
+define("USRLAN_116", "Proszę potwierdzić chęć ponownego wysłania emaila potwierdzającego do:");
+define("USRLAN_117", "Kliknij na przycisku poniżej, aby przetestować email:");
+define("USRLAN_118", "Testuj emaila");
+
+define("USRLAN_120", "Ustawianie grup");
+define("USRLAN_121", "Mailingi");
+define("USRLAN_122", "Witaj na");
+define("USRLAN_123", "Twoja rejestracja oraz tworzenie konta zostało zaakceptowane.");
+define("USRLAN_124", "Twoje konto jest aktualnie odznaczone jako nieaktywne, aby aktywować swoje konto proszę udać się pod następujący adres");
 define("USRLAN_125", "Od");
 
-define("USRLAN_126", "Zezwolić użytkownikom na wzajemne ocenianie się");
-define("USRLAN_127", "Zezwolić na komentarze w profilu użytkownika");
+define("USRLAN_126", "Pozwól użytkownikom na ocenę użytkowników");
+define("USRLAN_127", "Pozwól na komentarze w profilu użytkownika");
 
-define("USRLAN_128", "Nazwa - Login");
-define("USRLAN_129", "Edytuj Opcje Wyświetlania");
+define("USRLAN_128", "Login");
 
-define("LAN_MAINADMIN","Główny Administrator");
-define("LAN_ADMIN","Admin");
-define("LAN_NOTVERIFIED","Brak weryfikacji");
-define("LAN_BANNED","Banned");
+define("USRLAN_130", "Włącz śledzenie użytkowników online");
+define("USRLAN_131", "Musisz włączyć tą opcje, aby używać opcji śledzenia użytkowników online. Wymagane przez online.php, informacje online na forum oraz menu online");
+define("USRLAN_132", "Włącz");
 
+define("USRLAN_133", "Zmuś użytkownika do aktualizacji ustawień");
+define("USRLAN_134", "Włączenie tej opcji spowoduje automatyczne przesłanie użytkownika do jego ustawień, jeśli któreś z wymaganych pól nie będzie wypełnione.");
 
-define("USRLAN_130", "Włączone śledzenie online użytkowników");
-define("USRLAN_131", "Musisz mieć włączoną tę funkcję, jeżeli chcesz użyć metody śledzenia online użytkowników.");
-define("USRLAN_132", "Włączone");
-define("USRLAN_133", "Wymuś od użytkownika aktualizacji swoich danych");
-define("USRLAN_134", "Włączenie tej opcji, automatycznie wyśle użytkownikowi przypomnienie o wypełnieniu wszystkich wymaganych danych w jego ustawieniach.");
+define("USRLAN_135", "Nie znalazłem adresu IP w informacjach o użytkownikach, IP nie jest zablokowany");
+define("USRLAN_136", "Znalazłem wielu użytkowników, którzy używają adresu IP {IP}, IP nie jest zablokowany.");
+define("USRLAN_137", "Użytkownicy o adresie IP {IP} są zablokowani.");
+
+define("LAN_MAINADMIN","Główny administrator");
+define("LAN_ADMIN","Administrator");
+define("LAN_NOTVERIFIED","Niezweryfikowany");
+define("LAN_BANNED","Zablokowany");
+
+define("DUSRLAN_1", "ID");
+define("DUSRLAN_2", "Wyświetlana nazwa");
+define("DUSRLAN_3", "Login");
+define("DUSRLAN_4", "Dodatkowy opis");
+define("DUSRLAN_5", "Hasło");
+define("DUSRLAN_6", "Sesja");
+define("DUSRLAN_7", "Email");
+define("DUSRLAN_8", "Strona domowa");
+define("DUSRLAN_9", "ICQ");
+define("DUSRLAN_10", "AIM");
+define("DUSRLAN_11", "MSN");
+define("DUSRLAN_12", "Miejscowość");
+define("DUSRLAN_13", "Urodziny");
+define("DUSRLAN_14", "Sygnatura");
+define("DUSRLAN_15", "Obraz");
+define("DUSRLAN_16", "Strefa czasowa");
+define("DUSRLAN_17", "Ukryj email");
+define("DUSRLAN_18", "Data dołączenia");
+define("DUSRLAN_19", "Ostatnia wizyta");
+define("DUSRLAN_20", "Aktualnie ogląda");
+define("DUSRLAN_21", "Ostatni post");
+define("DUSRLAN_22", "Posty na czacie");
+define("DUSRLAN_23", "Komentarze");
+define("DUSRLAN_24", "Posty na forum");
+define("DUSRLAN_25", "IP");
+define("DUSRLAN_26", "Zablokuj");
+define("DUSRLAN_27", "Ustawienia");
+define("DUSRLAN_28", "Nowe");
+define("DUSRLAN_29", "Odsłon");
+define("DUSRLAN_30", "Wizyt");
+define("DUSRLAN_31", "Administrator");
+define("DUSRLAN_32", "Prawdziwe imię");
+define("DUSRLAN_33", "Grupa użytkownika");
+define("DUSRLAN_34", "Uprawnienia");
+define("DUSRLAN_35", "Obraz");
+define("DUSRLAN_36", "Zmień hasło");
+define("DUSRLAN_37", "XUP");
+
+define("USRLAN_138", "Konta bez weryfikacji");
+define("USRLAN_139", "Twoje konto zostało aktywowane.\n\nOd tej chwili możesz się zalogować na stronie {SITEURL} używając hasła i loginu podanego podczas procesu rejestracji.");
+
+define("USRLAN_140", "Ponownie wysłano emaila do");
+define("USRLAN_141", "Nieudana próba wysłania ponownego emaila aktywacyjnego do");
+define("USRLAN_142", "z następującym linkiem aktywacyjnym");
 
 ?>
