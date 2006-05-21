@@ -1,0 +1,15 @@
+
+Q>	Jak zmieniać tematy?
+A>	Odpowiednia sekcja jest na stronie <i>Preferencji</i>, pozwoli Ci ona dokonać zmiany tematu. Proszę najpierw podejrzeć wybrany temat, jako że starsze tematy są niekompatybilne i mogą spowodować błędy w generowaniu strony, a co za tym idzie stanie się ona niezdatna do użytku.
+
+Q>	Co to jest COPPA?
+A>	COPPA to skrót od The Children's Online Privacy Protection Act z 1998 roku. Jest to uniwersalnie stosowana zasada, która chroni nieletnich w wieku 13 lat i niższym. Zapewnia, że żadne informacje o nieletnich nie będą wykorzystywane przez 'Operatora' (tzn. Ciebie) do celów innych niż zarządzanie i administracja stroną internetową. W celu otrzymania bardziej szczegółowych informacji odwiedź stronę http://www.cdt.org/legislation/105th/privacy/coppa.html.
+
+Q>	Co to jest zabezpieczenie przeciwko atakom <i>flood</i>?
+A>	Zapobiegnie zapchaniu strony przez odwołania HTTP (często ataki flood), które mogą spowodować przerwę w działaniu Twojego serwisu.
+
+Q>	Powinienem używać plików cookies czy sesji do śledzenia użytkowników?
+A>	To jest Twój wybór, jeśli Twoja strona działa dobrze z plikami cookies (domyślnie), to pozostaw to tak jak jest. Jeśli preferujesz używanie sesji PHP, to używaj ich (e107 używa własnych nagłówków sesji do przechowywania i zarządzania sesjami).
+
+Q>	Dlaczego powinienem uruchomić swoją stronę w trybie standardowym?
+A>	Jeśli udoskonaliłeś temat i masz problemy z otrzymaniem poprawnie wygenerowanej strony w przeglądarce Firefox/Mozilla oraz IE, spróbuj zaznaczyć to pole. Wówczas IE zostanie uruchomiony w trybie standardowym i użyje poprawnego modelu pól.

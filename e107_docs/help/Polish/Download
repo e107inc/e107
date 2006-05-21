@@ -1,0 +1,6 @@
+
+Q>	Do czego służy dział <i>Download</i>?
+A>	Pozwoli Ci on pogrupować pliki do pobrania pomiędzy różne kategorie.
+
+Q>	Chciałbym dodać plik do pobrania, ale nie pojawia on się na liście - dlaczego tak się dzieje?
+A>	Tylko pliki umieszczone w folderze e107_files/downloads są wyświetlane na rozwijalnej liście. Skopiuj ten plik do tego katalogu, a zostanie on tam wyświetlony. To samo tyczy się obrazków, muszą one być umieszczone w katalogu e107_files/downloadimages.

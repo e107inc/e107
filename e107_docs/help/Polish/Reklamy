@@ -1,0 +1,18 @@
+
+Q>	Zdefiniowałem nową reklamę z poziomu panelu admina, lecz nie jest ona wyświetlana - dlaczego tak się dzieje?
+A>	Temat, którego używasz, musi wiedzieć gdzie ma wyświetlać reklamy. Otwórz plik theme.php swojego tematu i upewnij się, że zawiera on wpisy {BANNER} lub {BANNER=nazwa_twojej_kampanii} w sekcji $HEADER.
+
+Q>	Chcę jeden zestaw reklam w jednym obszarze a drugi zestaw w innym obszarze - jak to zrobić?
+A>	Możesz pogrupować swoje reklamy w 'kampanie', a następnie skonfigurować swój temat do wyświetlania reklam z danej kampanii. Na przykład, jeśli masz dwie kampanie, nazwane kam_1 oraz kam_2, wstawienie kodu {BANNER=kam_1} w pierwszym obszarze swojej sekcji $HEADER w pliku theme.php pokaże tylko reklamy z kampanii kam_1, a wstawienie kodu {BANNER=kam_2} w innym obszarze pokaże tylko reklamy z kam_2. Wstawienie kodu {BANNER} (bez nazwy kampanii) w pliku theme.php spowoduje wyświetlenie zmieniających się reklam pochodzących ze wszystkich kampanii.
+
+Q>	Do czego służy login i hasło klienta?
+A>	Możesz zdefiniować hasło i login dla klientów zamawiających reklamy, będą oni mogli wówczas uzyskać dostęp do informacji o swoich kampaniach reklamowych. Informacje są dostępne po wprowadzeniu loginu klienta i hasła pod adresem http://twojastrona.com/banner.php.
+
+Q>	Jak mogę utworzyć menu z reklamami typu pionowego (w postaci wieży)?
+A>	Pierwsze co musisz zrobić, to zdefiniować kampanię dla pionowych reklam (to oddzieli je od reklam typu poziomego) ...
+	1. Przejdź do panelu administracyjnego i kliknij na reklamy.
+	2. Wprowadź reklamy typu pionowego, upewnij się, że używasz nowej nazwy kampanii, na przykład 'kampania_pionowa'.
+	3. Następnie przejdź do działu Menu, i aktywuj menu Banner_menu w jednym z obszarów menu.
+	4. Kliknij na link 'Konfiguracja' znajdujący się na rozwijalnej liście w tym menu.
+	5. Wpisz nazwę nagłówka (domyślnie jest to 'Reklama'), a następnie nazwę kampanii zdefiniowaną już wcześniej.
+	6. Opuść panel administracyjny, a zobaczysz swoje reklamy typu pionowego w obszarze, który do tego celu przeznaczyłeś.

@@ -1,12 +1,12 @@
 
 Q>	Co to jest BBCode?
-A>	BBCode jest skrótową formą znacznika HTML, na przykład wpisując [b] Jestem pogrubiony! [/b] w okienkach tekstowych administratora spowodujesz, że tekst pomiędzy [b] oraz [/b] ukaże sie jako pogrubiony, a więc na ekranie będzie to [b]Jestem pogrubiony![/b].
+A>	BBCode stanowi zbiór skrótowych znaczników HTML, na przykład wpisując &#91;b] To jest pogrubiony tekst! &#91;/b] w jednym z pól tekstowych panelu administracyjnego spowodujesz, że tekst umieszczony pomiędzy znacznikami &#91;b] oraz &#91;/b] zostanie pogrubiony, w związku z czym wyrażenie [b]To jest pogrubiony tekst![/b] zostanie wyświetlone na ekranie w stylu pogrubionym.
 
 Q>	Do czego służy?
-A>	Pozwala oszczędzać czas przy wprowadzaniu znaczników HTML. Możesz uzywać normalnych znaczników HTML w okienkach tekstowych, lecz używanie BBCode znacznie przyspiesza wpisywanie tekstu.
+A>	Narzędzie to zaoszczędzi Ci czas podczas wpisywania znaczników HTML. Możesz używać normalnych znaczników HTML w polach przeznaczonych do tego, lecz używając BBCode rzeczywiście przyspieszysz wprowadzanie swojego tekstu.
 
-Q>	Kiedy kliknę na jeden z guzików, aby wprowadzić BBCode, kod pojawia się na końcu tekstu, a nie w pozycji kursora. Dlaczego?
-A>	W programie Internet Explorer jest błąd, który może zdestabilizowac tę aplikację, jeśli e107 spróbuje wstawić kod w pozycji kursora, dlatego dla zachowania kompatybilności kod jest umieszczany na końcu tekstu.
+Q>	Kiedy klikam w jeden z przycisków znaczników BBCode, aby wprowadzić kod, to zostaje on umieszczony na końcu mojego tekstu, a nie tam gdzie jest aktualnie kursor - dlaczego tak się dzieje?
+A>	Jest to spowodowane błędem w działaniu Internet Explorer-a, który może ulec destabilizacji przy próbie wprowadzenia kody w miejscu kursora, w związku z czym w celu zachowania kompaatybilności kod jest umieszczany na końcu edytowanego tekstu.
 
-Q>	Jakie kody BBCodes mogę używać?
-A>	Przejedź kursorem myszy nad dowolnym z guzików BBcode. Zobaczysz krótkie objaśmnienie tuż nad obszarem guzików. Istnieją także kody dla linków [url] [/url] i adresów email [email] [/email], choć oczywiście możesz również używać zwykłych znaczników HTML. Wszystkie wpisane adresy stron i adresy email są automatycznie zamieniane na linki, które mozna kliknąć.
+Q>	Jakich znaczników BBCodes mogę używać?
+A>	Najeżdżając wskaźnikiem myszy na jeden z przycisków BBCode, ujrzysz krótkie wyjaśnienie pokazane tuż nad tymi przyciskami. Wśród znaczników są tagi dla linków url - &#91;url] &#91;/url] oraz email - &#91;email] &#91;/email], pomimo tego jednak używanie normalnych znaczników HTML jest możliwe i wskazane według konieczności. Wszystkie wprowadzone adresy internetowe oraz adresy email zostaną automatycznie przerobione na adresy klikalne (hiperłącza).

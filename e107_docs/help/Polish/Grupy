@@ -1,0 +1,5 @@
+
+Q>	Co to są grypy użytkowników? Do czego one służą?
+A>	Grupy użytkowników ograniczają dostęp do określonych obszarów oraz funkcji serwisu. Jeśli zdefiniujesz grupę, a następnie dodasz do niej pewnych użytkowników, będziesz mógł wybrać obszary widoczne tylko dla użytkowników należących do tej grupy.
+Przykładowo, jest już grupa utworzona domyślnie podczas instalacji e107 i nazwana FORUMPRYWATNE. Dodanie użytkowników do tej grupy, a następnie utworzenie forum pod tą grupę spowoduj, że tylko użytkownicy z tej grupy będą mieli dostęp do tego forum. Możesz ograniczyć inne obszary i funkcje dla grupy, jak aktualności, linki, pliki do pobrania itp.
+

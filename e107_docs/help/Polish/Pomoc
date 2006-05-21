@@ -1,0 +1,9 @@
+
+Q>	Wprowadziłem pewne zmiany na mojej stronie i teraz otrzymuje komunikaty błędów MySQL, w wyniku czego moja strona się nie pokazuje.
+A>	Może to być spowodowane tym, że Twoje jądro systemu e107 zostało uszkodzone. Jądro zawiera ustawienia jądra oraz wartości zmiennych systemu e107. Aby zresetować swoje jądro, przejdź do strony http://twojastrona.com/e107_files/resetcore/resetcore.php. Przed wprowadzeniem jakichkolwiek zmian, zawsze wykonuj kopię bezpieczeństwa swoich ustawień jądra z poziomu strony <i>Baza danych</i>, ponieważ gdy pójdzie coś źle będziesz mógł przywrócić ustawienia jądra ze wcześniej zapisanej kopii. Do ponownego przywrócenia ustawień używaj strony resetcore.php.
+
+Q>	Zapomniałem hasło głównego administratora i teraz nie mogę się dostać do panelu administracyjnego.
+A>	Z bardzo ważnych powodów bezpieczeństwa jest niemożliwe zresetowanie Twojego hasła, chyba że jesteś zalogowany. Jeśli nie masz zapisanego hasła w bezpiecznym miejscu zrób to teraz, aby podobny scenariusz nie wydarzył się w przyszłości. Jeśli juz to zrobiłeś , będziesz musiał zresetować swoje hasło ręcznie używając PHPMyAdmin lub podobnego menadżera baz MySQL. Przejdź do tabeli użytkowników (prefiks_users), główny administrator powinien mieć numer 1. Kliknij na przycisk <i>Edycja</i> i zmień hasło na 4cb9c8a8048fd02294477fcb1a41191a, to zmieni Twoje hasło na changeme. Teraz zaloguj się i [b]niezwłocznie zaktualizuj swoje hasło[/b].
+
+Q>	Zainstalowałem temat/plugin itp. i teraz moja strona jest nieosiągalna, co mogę w związku z tym zrobić?
+A>	Użyj resetcore.php (wyjaśniono powyżej).
