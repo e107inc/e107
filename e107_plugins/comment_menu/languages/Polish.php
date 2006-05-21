@@ -1,27 +1,29 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|	Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
-|
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:21:24 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/comment_menu/languages/Polish.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/comment_menu/languages/English.php rev. 1.2 (27 Jan 2005)
++-----------------------------------------------------------------------------+
 */
-
+ 
 define("CM_L1", "Nie ma jeszcze żadnych komentarzy.");
-define("CM_L2", "[Zablokowany]");
+define("CM_L2", "");
 define("CM_L3", "Nagłówek");
-define("CM_L4", "Ile komentarzy wyświetlić?");
-define("CM_L5", "Ile znaków/liter wyświetlić?");
+define("CM_L4", "Ilość wyświetlanych komentarzy?");
+define("CM_L5", "Ilość wyświetlanych znaków?");
 define("CM_L6", "Przyrostek dla zbyt długich komentarzy?");
-define("CM_L7", "Pokazać oryginalny tytuł wiadomości w menu?");
-define("CM_L8", "Menu konfiguracyjne nowych komentarzy");
-define("CM_L9", "Uaktualnij ustaiwienia menu");
-define("CM_L10", "Konfiguracja menu komentarzy zapisana");
-
+define("CM_L7", "Pokazywać oryginalny nagłówek wiadomości w menu?");
+define("CM_L8", "Konfiguracja menu Ostatnie komentarze");
+define("CM_L9", "Aktualizuj ustawienia");
+define("CM_L10", "Konfiguracja została zapisana");
 
 ?>

@@ -1,25 +1,27 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|	&#138;Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
-|
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     $Revision: 1.3 $
+|     $Date: 2006-05-21 16:25:17 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/counter_menu/languages/Polish.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/counter_menu/languages/English.php rev. 1.5
++-----------------------------------------------------------------------------+
 */
-
-
-define("COUNTER_L1", "Wizyty admina nie są zliczane.");
-define("COUNTER_L2", "Na tej stronie dzisiaj ...");
-define("COUNTER_L3", "łacznie");
-define("COUNTER_L4", "Na tej stronie łacznie ...");
-define("COUNTER_L5", "unikalny");
-define("COUNTER_L6", "Strona ...");
+ 
+define("COUNTER_L1", "Wizyty administratorów nie są zliczane.");
+define("COUNTER_L2", "Dzisiaj tą stronę odwiedziło...");
+define("COUNTER_L3", "ogółem");
+define("COUNTER_L4", "Dotychczas tą stronę odwiedziło...");
+define("COUNTER_L5", "unikalnych");
+define("COUNTER_L6", "Wszystkich odwiedzin...");
 define("COUNTER_L7", "Licznik");
-define("COUNTER_L8", "Wiadomość admina: <b>Rejestracja statystyk jest wyłączona.</b><br />aby aktywować zainstaluj plugin statystyk logowania w panelu admina <a href='".e_ADMIN."plugin.php'>pluginy</a>, następnie aktywuj go w <a href='".e_PLUGIN."log/admin_config.php'>ustawieniach</a>.");
+define("COUNTER_L8", "Wiadomość administracyjna: <b>Rejestracja statystyk jest wyłączona.</b><br />Aby ją aktywować, zainstaluj plugin <i>Statystyki</i> używając <a href='".e_ADMIN."plugin.php'>menadżera pluginów</a>, a następnie aktywuj tą opcję na stronie <a href='".e_PLUGIN."log/admin_config.php'>ustawień plugina</a>.");
 
 ?>

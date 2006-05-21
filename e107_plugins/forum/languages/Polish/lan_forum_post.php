@@ -1,107 +1,120 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:27:16 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_post.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_post.php rev rev. 1.9
++-----------------------------------------------------------------------------+
 */
+ 
 define("PAGE_NAME", "Forum");
+
 define("LAN_01", "Forum");
-define("LAN_02", "Odpowiadając do:");
-define("LAN_03", "Nowy wątek");
+define("LAN_02", "Odpowiedź na: ");
+define("LAN_03", "Zamieszczanie wypowiedzi");
 define("LAN_1", "Normalny");
-define("LAN_2", "Przytwierdzony");
-define("LAN_3", "Zawiadomienie");
-define("LAN_4", "Wyślij ankietę");
-define("LAN_5", "Pytanie ankiety:");
-define("LAN_6", "Dodaj następną opcję");
+define("LAN_2", "Przyklejony");
+define("LAN_3", "Ogłoszenie");
+define("LAN_4", "Ankieta do wypowiedzi");
+define("LAN_5", "Pytanie:");
+define("LAN_6", "Kolejna opcja");
 define("LAN_7", "Opcja głosowania:");
 define("LAN_8", "Pozwól głosować wszystkim");
 define("LAN_9", "Pozwól głosować tylko zarejestrowanym");
-define("LAN_10", "Login");
+define("LAN_10", "Zaloguj");//login
 define("LAN_11", "Zapamiętaj mnie");
-define("LAN_16", "Użytkownik:");
-define("LAN_17", "Hasło:");
+define("LAN_16", "Login: ");
+define("LAN_17", "Hasło: ");
 define("LAN_20", "Błąd");
-define("LAN_27", "Obowiązkowe pola nie zostały wypełnione");
-define("LAN_28", "Niczego nie napisałeś ...");
-define("LAN_29", "Redagowany dnia");
-define("LAN_45", "W tych dyskusjach mogą się wypowiadać tylko zarejestrowani i zalogowani użytkownicy, kliknij");
-define("LAN_60", "Rozpocznij nowy wątek");
-define("LAN_61", "Nazywasz się:");
-define("LAN_62", "Temat:");
-define("LAN_63", "Wyślij:");
-define("LAN_64", "Zacznij nowy wątek");
-define("LAN_73", "Odpowiedz:");
-define("LAN_74", "Odpowiedz w wątku");
-define("LAN_77", "Aktualizuj wątek");
-define("LAN_78", "Aktualizuj odpowiedź");
-define("LAN_94", "Wysłane przez");
+define("LAN_27", "Wymagane pola pozostały puste");
+define("LAN_28", "Niczego nie napisałeś...");
+define("LAN_29", "Edytowany");
+define("LAN_45", "Na tym forum mogą się wypowiadać tylko zarejestrowani użytkownicy, prosze kliknąć");
+define("LAN_60", "Rozpoczynanie nowego tematu");
+define("LAN_61", "Twoje imię: ");
+define("LAN_62", "Temat: ");
+define("LAN_63", "Treść posta: ");
+define("LAN_64", "Wyślij");
+define("LAN_73", "Treść posta: ");
+define("LAN_74", "Wyślij");
+define("LAN_77", "Aktualizacja");
+define("LAN_78", "Aktualizacja");
+define("LAN_94", "Napisany przez");
 define("LAN_95", "Brak uprawnień");
-define("LAN_96", "Nie masz uprawnień, aby redagować tę wypowiedź.");
-define("LAN_100", "Pierwszy post");
-define("LAN_101", "Ostanie");
-define("LAN_102", "odpowiedzi");
-define("LAN_103", "Przejrzyj w całości ten wątek.(Otworzy się nowe okno.)");
+define("LAN_96", "Nie posiadasz uprawnień do redagowania wskazanej wypowiedzi.");
+define("LAN_100", "Temat przewodni"); //Thread Topic
+define("LAN_101", "Ostanie ");
+define("LAN_102", " posty");
+define("LAN_103", "Przejrzyj w całości temat. (Otworzy się osobne okno.)");
 define("LAN_133", "Dziękujemy");
-define("LAN_174", "Zaloguj");
+define("LAN_174", "Rejestracja");
 define("LAN_175", "Login");
 define("LAN_212", "Zapomniałeś hasła?");
-define("LAN_310", "Nie można kontynuować, ponieważ takie imię należy do zarejestrowanego użytkownika - jeśli jesteś tym użytkownikiem najpierw zaloguj się.");
+define("LAN_310", "Nie mogę zamieścić tego posta, jako że użytkownik o danej nazwie już istnieje - jeśli jest to Twoja nazwa zaloguj się w celu wysłania posta.");
 define("LAN_311", "Anonim");
-define("LAN_322", "Wypowiedzi:");
+define("LAN_322", "Wysłany: ");
 define("LAN_323", "Podgląd");
-define("LAN_324", "Twoja wypowiedź została opublikowana.");
-define("LAN_325", "Kliknij, żeby zobaczyć swoją wypowiedź");
-define("LAN_326", "Kliknij, żeby powrócić do forum");
-define("LAN_327", "Przegląd");
-define("LAN_380", "Jeżeli chcesz być powiadomiony emailem, kiedy ktoś wyśle odpowiedź w Twoim wątku, zaznacz tutaj");
-define("LAN_381", "Odpowiedź na forum od");
-define("LAN_382", "Odpowiedź wysłana:");
-define("LAN_383", "Kliknij na ten link, żeby zobaczyć cały wątek ...");
-define("LAN_384", "Wypowiedź na forum z ");
-define("LAN_385", "Wypowiedź:");
-define("LAN_386", "Jeśli nie chcesz dodawać ankiety do swojego wątku, pozostaw pola niewypełnione");
-define("LAN_387", "Dalej");
+define("LAN_324", "Twoja wypowiedź została pomyślnie wysłana.");
+define("LAN_325", "Kliknij tutaj, aby zobaczyć swoją wypowiedź");
+define("LAN_326", "Kliknij tutaj, aby powrócić do forum");
+define("LAN_327", "Przeglądaj");//review
+define("LAN_380", "Jeśli chcesz być powiadomiony emailem o odpowiedziach zamieszczonych w tym temacie, zaznacz pole obok ");
+define("LAN_381", "Udzielone odpowiedzi na forum ");
+define("LAN_382", "Wysyłanie wykonane: "); //Post made
+define("LAN_383", "Proszę kliknąć na następujący link, aby zobaczyć cały temat...");
+define("LAN_384", "Udzielanie odpowiedzi na "); //Forum reply at
+define("LAN_385", "Treść: ");
+define("LAN_386", "Jeśli nie chcesz dodawać ankiety do swojego tematu, pozostaw pola niewypełnione ");
+define("LAN_387", "Przejdź");
 define("LAN_388", "Powrót do góry");
-define("LAN_389", "Wypowiedź już istnieje, przechodzę do strony ...");
-define("LAN_390", "Dołączanie pliku / obrazu");
-define("LAN_391", "Opcje");
-define("LAN_392", "Plik do dołączenia");
-define("LAN_393", "<b>UWAGA!</b> Zezwolono na dołączenie tylko tych typów pliku :<br />");
-define("LAN_394", "Jakiekolwiek inne typy ładowanych plików zostaną natychmiast usunięte.");
+define("LAN_389", "Taki post już istnieje, przekierowywanie...");
+define("LAN_390", "Załączanie pliku lub obrazka");
+define("LAN_391", "Opcje wyboru");
+define("LAN_392", "Załącznik");
+define("LAN_393", "<b>UWAGA!</b><br />Dozwolone typy plików:");
+define("LAN_394", "Jakiekolwiek inne załadowane pliki zostaną natychmiast usunięte.");
 define("LAN_395", "Maksymalny rozmiar pliku");
 define("LAN_396", "bajtów");
-define("LAN_397", "Ten wątek jest zamknięty.");
-define("LAN_398", "To forum jest tylko do czytania");
-define("LAN_399", "Nie jesteś autoryzowany aby pisać na tym forum.");
-define("LAN_400", "wątek postu jako");
-define("LAN_401", "Skocz");
+define("LAN_397", "Ten temat jest zamknięty.");
+define("LAN_398", "Forum tylko do odczytu");
+define("LAN_399", "Nie posiadasz uprawnień do zamieszczania postów na tym forum.");
+define("LAN_400", "Rodzaj tematu");
+define("LAN_401", "Przejdź do");
+	
 define("LAN_402", "ankieta");
 define("LAN_403", "ogłoszenie");
 define("LAN_404", "przyklejony");
 define("LAN_405", "Forum");
-define("LAN_406", "Odpowiedź:");
-define("LAN_407", "Ponownie");
-define("LAN_408", "Jeśli Twoja przeglądarka,nie obsługuje meta kliknij");
+define("LAN_406", "Odp:");
+
+//v.616
+define("LAN_407", "Przekierowanie");
+define("LAN_408", "Jeśli twoja przeglądarka nie wspiera automatycznych przekierowań, proszę kliknąć");
 define("LAN_409", "TUTAJ");
-define("LAN_410", "zostaniesz przeniesiony");
+define("LAN_410", ", aby zostac przekierowanym.");
 define("LAN_411", "tutaj");
-define("LAN_412", "aby przejść do strony rejestracji.");
-define("LAN_413", "Twoja ankieta została dodana.");
-define("LAN_414", "Zobacz tutaj jak wygląda Twoja ankieta");
-define("LAN_415", "Twoja odpowiedź, została zapisana.");
-define("LAN_416", "Plik załącznika");
-define("LAN_417", "Dodaj jeszcze jeden załącznik");
+define("LAN_412", ", aby przejść do strony rejestracji. W wypadku posiadania już konta <a href='".e_BASE."login.php'>zaloguj się</a>.");
+	
+define("LAN_413", "Twoja ankieta została pomyślnie wysłany.");
+define("LAN_414", "Kliknij tutaj, aby obejrzeć swoją ankietę");
+define("LAN_415", "Twój post został pomyślnie wysłany.");
 
-define("POLL_506", "Zezwolić na wielokrotny wybór?");
-define("POLL_507", "tak");
-define("POLL_508", "nie");
+define("LAN_416", "Załącz plik");
+define("LAN_417", "Dodaj kolejny załącznik");
 
-define("LAN_FORUM_1", "Nadsyłanie wyłączone: ".e_FILE."public katalog nie jest zapisywalny");
-define("LAN_FORUM_2", "Powielony wpis");
+define("POLL_506", "Zezwalać na wielokrotny wybór?");
+define("POLL_507", "Tak");
+define("POLL_508", "Nie");
+
+define("LAN_FORUM_1", "Nadsyłanie plików jest niemożliwe: katalog ".e_FILE."public jest niezapisywalny");
+define("LAN_FORUM_2", "Taki post już istnieje");
+
 ?>

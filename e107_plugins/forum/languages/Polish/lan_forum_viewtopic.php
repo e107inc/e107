@@ -1,86 +1,96 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
 |     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:27:16 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_viewtopic.php rev. 1.11
++-----------------------------------------------------------------------------+
 */
+ 
 define("PAGE_NAME", "Forum");
+	
 define("LAN_01", "Forum");
-define("LAN_02", "Idź do strony");
-define("LAN_03", "Idź");
-define("LAN_04", "Poprzednia");
-define("LAN_05", "Następna");
+define("LAN_02", "Przejdź do strony");
+define("LAN_03", "Przejdź");
+define("LAN_04", "Poprzedni");
+define("LAN_05", "Następny");
 define("LAN_06", "Dołączył");
 define("LAN_07", "Miejscowość");
 define("LAN_08", "Strona WWW");
-define("LAN_09", "Odwiedzin serwisu od rejestracji");
+define("LAN_09", "Wizyt na stronie od czasu rejestracji");
 define("LAN_10", "Powrót do góry");
-define("LAN_65", "Skocz do");
-define("LAN_66", "Ten wątek został zamknięty");
-define("LAN_67", "wypowiedzi");
+define("LAN_65", "Przejdź do");
+define("LAN_66", "Ten temat jest aktualnie zamknięty");
+define("LAN_67", "postów");
 define("LAN_194", "Gość");
-define("LAN_195", "Zarejestrowany użytkownik");
-define("LAN_321", "Moderatorzy:");
-define("LAN_389", "Poprzedni wątek");
-define("LAN_390", "Następny wątek");
-define("LAN_391", "Śledź ten wątek");
-define("LAN_392", "przestań śledzić ten wątek");
+define("LAN_195", "Zarejestrowany");
+define("LAN_321", "Moderatorzy: ");
+define("LAN_389", "Poprzedni temat");
+define("LAN_390", "Kolejny temat");
+define("LAN_391", "Śledź temat");;
+define("LAN_392", "Zakończ śledzenie");
 define("LAN_393", "Szybka odpowiedź");
 define("LAN_394", "Podgląd");
-define("LAN_395", "Odpowiedz w wątku");
+define("LAN_395", "Wyślij");
 define("LAN_396", "Strona WWW");
 define("LAN_397", "Email");
 define("LAN_398", "Profil");
 define("LAN_399", "Wiadomość prywatna");
 define("LAN_400", "Redaguj");
 define("LAN_401", "Cytuj");
+
 define("LAN_402", "Autor");
-define("LAN_403", "Post");
-define("LAN_404", "Brak poprzednich wątków");
-define("LAN_405", "Brak następnych wątków");
+define("LAN_403", "Odpowiedzi");
+define("LAN_404", "Brak wcześniejszych tematu");
+define("LAN_405", "Brak kolejnych tematu");
+
 define("LAN_406", "Moderator: Redaguj");
-define("LAN_407", "Moderator: Skasuj");
+define("LAN_407", "Moderator: Usuń");
 define("LAN_408", "Moderator: Przesuń");
-define("LAN_409", "Czy na pewno chcesz skasować ten wątek i wszystkie odpowiedzi?");
-define("LAN_410", "Czy na pewno chcesz usunąć tą odpowiedź?");
-define("LAN_411", "napisany przez");
+define("LAN_409", "Czy na pewno chcesz usunąć ten temat oraz tyczące się niego odpowiedzi?");
+define("LAN_410", "Czy na pewno chcesz usunąć tego posta?");
+define("LAN_411", "napisał ");
+	
+//v.616
 define("LAN_412", "Tytuł");
 define("LAN_413", "Raport");
-define("LAN_414", "Przekaż ten wątek do moderatora");
-define("LAN_415", "Tytuł wątka");
-define("LAN_416", "Wyślij swój raport");
-define("LAN_417", "Administrator zostanie powiadomiony o tym wątku. Możesz wysłać wiadomość wyjaśniającą.");
-define("LAN_418", "<b>Nie używaj</b> z byle powodu ,tego sposobu aby skontaktować się z administratorem .");
+define("LAN_414", "Zgłoszenie wskazanego tematu do moderatora");
+define("LAN_415", "Tytuł tematu");
+define("LAN_416", "Wejdź do swojego raportu");
+define("LAN_417", "Administrator zostanie powiadomiony o tym temacie. Możesz wysłać wiadomość wyjaśniającą, co według Ciebie jest nieodpowiednie w zgłaszanej wypowiedzi.");
+define("LAN_418", "<b>Nie</b> używaj tej formy kontaktu z administratorem z jakiegokolwiek innego powodu.");
 define("LAN_419", "Wyślij raport");
-define("LAN_420", "Zobacz wpisy");
-define("LAN_421", "Raport wątku z forum");
-define("LAN_422", "Ten wpis został wysłany ze strony");
-define("LAN_423", "Wiadomość nie mogłaby zostać wysłana.");
-define("LAN_424", "Wiadomość została wysłana do moderatora.<br />Thank You.");
-define("LAN_425", "Wiadomość od:");
-define("LAN_426", "Raport wpisu:");
-define("LAN_427", "Błąd wysłania e-maila");
-define("LAN_428", "Wpis został raportowany");
-define("LAN_429", "Kliknij tutaj ,aby powrócić do forum");
+define("LAN_420", "Kliknij, aby zobaczyć posta");
+define("LAN_421", "Temat forum został zgłoszony z");
+define("LAN_422", "Ta wypowiedź został zgłoszona ze strony" );
+define("LAN_423", "Wiadomość nie mogła być wysłana.  ");
+define("LAN_424", "Wypowiedź została zgłoszona do moderatora.<br />Dziękujemy.");
+define("LAN_425", "Wiadomość od: ");
+define("LAN_426", "Zgłoszenie posta w temacie: ");
+define("LAN_427", "Błąd wysyłania emaila");
+define("LAN_428", "Post został zgłoszony");
+define("LAN_429", "Kliknij tutaj, aby powrócić do forum");
 define("LAN_430", "ankieta");
-
-define("LAN_435", "Moderator: Skasuj");
-
-define("FORLAN_26", "Odpowiedź skasowana");
-define("FORLAN_10", "Rozpocznij Nowy Temat");
+define("FORLAN_26", "Odpowiedź została usunięta");
+define("FORLAN_10", "Rozpoczęcie nowego tematu");
 define("LAN_29", "Edytowany");
 
-define("LAN_431", "Zobacz ten wątek w : rss 0.92");
-define("LAN_432", "Zobacz ten wątek w : rss 2.0");
-define("LAN_433", "Zobacz ten wątek w : RDF");
+define("LAN_431", "Kanały informacyjne: RSS 0.92");
+define("LAN_432", "Kanały informacyjne: RSS 2.0");
+define("LAN_433", "Kanały informacyjne: RDF");
 	
-define("FORLAN_101", "Wyślij wątek pocztą");
-define("FORLAN_102", "Podgląd wydruku");
-define('FORLAN_103', '[użytkownik usunięty]');
+define("FORLAN_101", "Temat emaila");
+define("FORLAN_102", "Drukuj podgląd");
+define("FORLAN_103", "[użytkownik usunięty]");
+define('FORLAN_104', 'Tematu nie odnaleziono');
+define("FORLAN_HIDDEN", "Wypowiedź ukryta - zaloguj się i odpowiedz w temacie, aby ją zobaczyć.");
 
 ?>

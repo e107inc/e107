@@ -1,41 +1,43 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/e107_plugins/clock_menu/languages/English.php
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - maks@e107.org.pl
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
-|
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:21:03 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/Polish.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/clock_menu/languages/English.php rev. 1.5
++-----------------------------------------------------------------------------+
 */
 
-define('CLOCK_MENU_L1','Zaktualizowano ustawienia clock_menu');
-define('CLOCK_MENU_L2','Nagłówek');
-define('CLOCK_MENU_L3','Aktualizuj Ustawienia');
-define('CLOCK_MENU_L4','Ustawienia Clock Menu ');
-define('CLOCK_MENU_L5','Poniedziałek,');
-define('CLOCK_MENU_L6','Wtorek,');
-define('CLOCK_MENU_L7','Środa,');
-define('CLOCK_MENU_L8','Czwartek,');
-define('CLOCK_MENU_L9','Piątek,');
-define('CLOCK_MENU_L10','Sobota,');
-define('CLOCK_MENU_L11','Niedziela,');
-define('CLOCK_MENU_L12','Styczeń');
-define('CLOCK_MENU_L13','Luty');
-define('CLOCK_MENU_L14','Marzec');
-define('CLOCK_MENU_L15','Kwiecień');
-define('CLOCK_MENU_L16','Maj');
-define('CLOCK_MENU_L17','Czerwiec');
-define('CLOCK_MENU_L18','Lipiec');
-define('CLOCK_MENU_L19','Sierpień');
-define('CLOCK_MENU_L20','Wrzesień');
-define('CLOCK_MENU_L21','Październik');
-define('CLOCK_MENU_L22','Listopad');
-define('CLOCK_MENU_L23','Grudzień');
-define('CLOCK_MENU_L24','');
+define('CLOCK_MENU_L1', 'Konfiguracja menu Data i czas została zapisana');
+define('CLOCK_MENU_L2', 'Nagłówek');
+define('CLOCK_MENU_L3', 'Aktualizuj ustawienia');
+define('CLOCK_MENU_L4', 'Konfiguracja menu Data i czas');
+define('CLOCK_MENU_L5', 'Poniedziałek,');
+define('CLOCK_MENU_L6', 'Wtorek,');
+define('CLOCK_MENU_L7', 'Środa,');
+define('CLOCK_MENU_L8', 'Czwartek,');
+define('CLOCK_MENU_L9', 'Piątek,');
+define('CLOCK_MENU_L10', 'Sobota,');
+define('CLOCK_MENU_L11', 'Niedziela,');
+define('CLOCK_MENU_L12', 'Stycznia');
+define('CLOCK_MENU_L13', 'Lutego');
+define('CLOCK_MENU_L14', 'Marca');
+define('CLOCK_MENU_L15', 'Kwietnia');
+define('CLOCK_MENU_L16', 'Maja');
+define('CLOCK_MENU_L17', 'Czerwca');
+define('CLOCK_MENU_L18', 'Lipca');
+define('CLOCK_MENU_L19', 'Sierpnia');
+define('CLOCK_MENU_L20', 'Września');
+define('CLOCK_MENU_L21', 'Pażdziernika');
+define('CLOCK_MENU_L22', 'Listopada');
+define('CLOCK_MENU_L23', 'Grudnia');
+define('CLOCK_MENU_L24', '');
 
 ?>

@@ -1,31 +1,30 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
+|     $Revision: 1.9 $
+|     $Date: 2006-05-21 16:27:16 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_newforumposts_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 22:46:27 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_newforumposts_menu.php rev. 1.2
++-----------------------------------------------------------------------------+
 */
-	
-define("NFP_1", "Wszystkie ostatnie wypowiedzi są spoza Twojej klasy użytkownika, nie można pokazać.");
-define("NFP_2", "Nie ma jeszcze postów");
-define("NFP_3", "New Forum Posts menu zaktualizowany");
+ 
+define("NFP_1", "Wszystkie ostatnie posty są niedostępne dla Twojej grupy użytkowników, nie mogę ich wyświetlić.");
+define("NFP_2", "Obecnie nie ma żadnych nowych postów");
+define("NFP_3", "Konfiguracja menu została zapisana");
 define("NFP_4", "Nagłówek");
-define("NFP_5", "Ile wpisów pokazywać ?");
-define("NFP_6", "Ile znaków pokazywać ?");
-define("NFP_7", "Prefix dla zbyt długich wpisów");
-define("NFP_8", "Pokazywać oryginalny tytuł w menu ?");
-define("NFP_9", "Aktualizacja Ustawień");
-define("NFP_10", "Konfiguracja New Forum Posts Menu ");
-	
+define("NFP_5", "Ilość wyświetlanych postów?");
+define("NFP_6", "Ilość wyświetlanych znaków?");
+define("NFP_7", "Przyrostek dla zbyt długich wypowiedzi?");
+define("NFP_8", "Pokazywać oryginalne tematy w menu?");
+define("NFP_9", "Aktualizuj ustawienia menu");
+define("NFP_10", "Konfiguracja menu Nowych Postów na Forum");
+define("NFP_11", "Napisał(a)");
+
 ?>

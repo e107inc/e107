@@ -6,15 +6,15 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2006-05-21 16:27:16 $
+|     $Revision: 1.1 $
+|     $Date: 2006-05-21 16:18:17 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_frontpage.php,v $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Polish_search.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_frontpage.php rev. 1.1
+|     Zgodne z: /e107_plugins/calendar_menu/languages/English_search.php rev. 1.1 (15 Nov 2005)
 +-----------------------------------------------------------------------------+
 */
  
-define("FOR_FP_1", "Forum");
+define("CM_SCH_LAN_1", "Kalendarz");
 
 ?>
