@@ -1,26 +1,28 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
+|     $Revision: 1.7 $
+|     $Date: 2006-05-21 16:44:23 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/tree_menu/languages/Polish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-26 20:51:19 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/tree_menu/languages/English.php rev. 1.3
++-----------------------------------------------------------------------------+
 */
-	
-	
-define("TREE_L1", "Ustawienia Tree Menu");
-define("TREE_L2", "Update Tree Menu Settings");
-define("TREE_L3", "Tree Menu configuration saved.");
-define("TREE_L4", "Włącz");
-define("TREE_L5", "Wyłącz");
+ 
+define("TREE_L1", "Konfiguracja Tree Menu");
+define("TREE_L2", "Aktualizuj ustawienia");
+define("TREE_L3", "Konfiguracja Tree Menu została zapisana.");
+define("TREE_L4", "Włączone");
+define("TREE_L5", "Wyłączone");
+define("TREE_L6", "Klasa CSS dla nieodwiedzonych linków");
+define("TREE_L7", "Klasa CSS dla aktywnych linków");
+define("TREE_L8", "Klasa CSS dla odwiedzonych linków");
+define("TREE_L9", "Użyj klasy <i>spacer</i> pomiędzy głównymi linkami");
+
 ?>

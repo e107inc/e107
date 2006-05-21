@@ -1,37 +1,35 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
+|     $Revision: 1.8 $
+|     $Date: 2006-05-21 16:44:23 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/trackback/languages/Polish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:19 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/trackback/languages/English.php rev. 1.2
++-----------------------------------------------------------------------------+
 */
-	
-define("TRACKBACK_L1", "Configure Trackback");
-define("TRACKBACK_L2", "This plugin enables you to use trackback in your news posts.");
-define("TRACKBACK_L3", "Trackback is now installed and enabled.");
-define("TRACKBACK_L4", "Trackback settings saved.");
-define("TRACKBACK_L5", "Włącz");
-define("TRACKBACK_L6", "Wyłącz");
-define("TRACKBACK_L7", "Activate trackback");
-define("TRACKBACK_L8", "Trackback URL text");
-define("TRACKBACK_L9", "Save Settings");
-define("TRACKBACK_L10", "Trackback Settings");
-define("TRACKBACK_L11", "Trackback address for this post:");
+ 
+define("TRACKBACK_L1", "Konfiguracja powiązań");
+define("TRACKBACK_L2", "Ten plugin pozwoli Ci na używanie powiązań pomiędzy Twoim aktualnościami."); // This plugin enables you to use trackback in your news posts.
+define("TRACKBACK_L3", "Trackback jest zainstalowany i gotowy do użytku.");
+define("TRACKBACK_L4", "Ustawienia powiązań zostały zapisane.");
+define("TRACKBACK_L5", "Włączone");
+define("TRACKBACK_L6", "Wyłączone");
+define("TRACKBACK_L7", "Aktywuj powiązania");
+define("TRACKBACK_L8", "Treść adresu URL powiązania");
+define("TRACKBACK_L9", "Zapisz ustawienia");
+define("TRACKBACK_L10", "Ustawienia powiązań");
+define("TRACKBACK_L11", "Powiązania dla tej pozycji:");
 
-define("TRACKBACK_L12", "No trackbacks for this item");
-define("TRACKBACK_L13", "Moderate trackbacks");
-define("TRACKBACK_L14", "Delete");
-define("TRACKBACK_L15", "Trackbacks deleted.");
+define("TRACKBACK_L12", "Nie ma jeszcze powiązań dla tej pozycji");
+define("TRACKBACK_L13", "Moderuj powiązania");
+define("TRACKBACK_L14", "Usuń");
+define("TRACKBACK_L15", "Powiązania zostały usunięte.");
 
 ?>

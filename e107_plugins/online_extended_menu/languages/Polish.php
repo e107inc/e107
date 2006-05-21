@@ -1,24 +1,31 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|	Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
-|
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:44:23 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Polish.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins//languages/English.php rev. 1.3
++-----------------------------------------------------------------------------+
 */
-
-define("ONLINE_EL1", "Przypadkowych: ");
-define("ONLINE_EL2", "Zarejestrowanych: ");
+ 
+define("ONLINE_EL1", "Gości: ");
+define("ONLINE_EL2", "Użytkowników: ");
 define("ONLINE_EL3", "Na tej stronie: ");
-define("ONLINE_EL4", "Obecni");
-define("ONLINE_EL5", "Zarejestrowani");
-define("ONLINE_EL6", "Najnowszy użytkownik");
+define("ONLINE_EL4", "Online");
+define("ONLINE_EL5", "Użytkowników");
+define("ONLINE_EL6", "Najnowszy");
 define("ONLINE_EL7", "przegląda");
-define("ONLINE_EL8", "najwięcej wizyt online: ");
-define("ONLINE_EL9", "w");
+
+define("ONLINE_EL8", "najwięcej online: ");
+define("ONLINE_EL9", "dnia");
+
+define("TRACKING_MESSAGE", "Śledzenie użytkowników online jest obecnie wyłączone, proszę odblokować tą opcję <a href='".e_ADMIN."users.php?options'>tutaj</a></span><br />");
+
 ?>

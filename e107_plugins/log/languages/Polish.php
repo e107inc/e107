@@ -1,27 +1,62 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
+|     $Revision: 1.8 $
+|     $Date: 2006-05-21 16:44:23 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Polish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/log/languages/English.php rev. 1.6
++-----------------------------------------------------------------------------+
 */
-	
-	
-define("ADSTAT_L1", "Plugin zapisuje statystyki logowań Twojego serwisu, oraz pokazuje na stronie wszystkie zgromadzone statystyki.");
-define("ADSTAT_L2", "Plugin statystyk serwisu został zainstalowany. Aby przekonwertować statystyki do nowego systemu ,udaj się <a href='".e_PLUGIN."log/update_routine.php'> tutaj </a>.");
-define("ADSTAT_L3", "Statystyki Logowań");
+ 
+define("PAGE_NAME", "Statystyki");
 
-	
-	
+define("ADSTAT_L1", "Plugin statystyk będzie zapisywał wszystkie odwiedziny strony, a następnie na podstawie zgromadzonych danych utworzy szczegółowe statystyki.");
+define("ADSTAT_L2", "Plugin statystyk został pomyślnie zainstalowany. Aby przetworzyć aktualne statystyki do nowszej wersji, proszę <a href='".e_PLUGIN."log/update_routine.php'>kliknąć tutaj w celu uruchomienia podprogramu</a>.");
+define("ADSTAT_L3", "Statystyki");
+define("ADSTAT_L4", "Nie masz uprawnień do przeglądanie tej strony.");
+define("ADSTAT_L5", "Funkcje na tej stronie zostały wyłączone."); // The features on this page have been disabled
+define("ADSTAT_L6", "Statystyki strony");
+define("ADSTAT_L7", "Statystyki wskazanego typu nie zostały jeszcze utworzone.");
+define("ADSTAT_L8", "Dzisiejsze statystyki");
+define("ADSTAT_L9", "Ogólne statystyki");
+define("ADSTAT_L10", "Dzienne statystyki");
+define("ADSTAT_L11", "Miesięczne statystyki");
+define("ADSTAT_L12", "Przeglądarki");
+define("ADSTAT_L13", "Systemy operacyjne");
+define("ADSTAT_L14", "Domeny");
+define("ADSTAT_L15", "Rozdzielczość ekranu oraz głębia kolorów");
+define("ADSTAT_L16", "Strony odsyłające");
+define("ADSTAT_L17", "Słowa kluczowe");
+define("ADSTAT_L18", "Ostatni goście");
+define("ADSTAT_L19", "Strona");
+define("ADSTAT_L20", "Dzisiejszych odwiedzin");
+define("ADSTAT_L21", "Wszystkich");
+define("ADSTAT_L22", "Unikalnych");
+define("ADSTAT_L23", "Wszystkich wizyt");
+define("ADSTAT_L24", "Wszystkich unikalnych wizyt");
+define("ADSTAT_L25", "Nie ma jeszcze statystyk wskazanego typu.");
+define("ADSTAT_L26", "Przeglądarka");
+define("ADSTAT_L27", "System operacyjny");
+define("ADSTAT_L28", "Kraje i domeny");
+define("ADSTAT_L29", "Rozdzielczość ekranu");
+define("ADSTAT_L30", "Strona odsyłająca");
+define("ADSTAT_L31", "Wyszukiwarki - słowa kluczowe");
+define("ADSTAT_L32", "Odesłany z");
+define("ADSTAT_L33", "Odwiedziny w ciągu ostatnich");
+define("ADSTAT_L34", "Odwiedziny");
+define("ADSTAT_L35", "Unikalnych odwiedzin w ciągu ostatnich");
+define("ADSTAT_L36", "dni na stronach");
+define("ADSTAT_L37", "Odwiedziny w miesiącu");
+define("ADSTAT_L38", "Unikalnych odzwiedzin w miesiącu");
+define("ADSTAT_L39", "Usuń wskazane wpisy");
+define("ADSTAT_L40", "dni");
+define("ADSTAT_L41", "Błąd");
+
 ?>

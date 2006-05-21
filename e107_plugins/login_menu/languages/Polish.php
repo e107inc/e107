@@ -1,43 +1,62 @@
 <?php
-
-define("LOGIN_MENU_L1", "Nazwa użytkownika: ");
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-05-21 16:44:23 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Polish.php,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/login_menu/languages/English.php rev. 1.4
++-----------------------------------------------------------------------------+
+*/
+ 
+define("LOGIN_MENU_L1", "Login: ");
 define("LOGIN_MENU_L2", "Hasło: ");
-define("LOGIN_MENU_L3", "Rejestracja (nowe konto)");
-define("LOGIN_MENU_L4", "Zapomniałeś hasła?");
+define("LOGIN_MENU_L3", "Rejestracja");
+define("LOGIN_MENU_L4", "Zapomniałem hasła");
 define("LOGIN_MENU_L5", "Witaj");
 define("LOGIN_MENU_L6", "Zapamiętaj mnie");
-define("LOGIN_MENU_L7", "Nierozpoznany unikalny identyfikator użytkownika (prawdopodobnie uszkodzone cookie).<br />Proszę <a href=\"".e_BASE."index.php?logout\">kliknąć tutaj</a>, aby zniszczyć plik cookie.");
+define("LOGIN_MENU_L7", "Unikalne id użytkownika nie zostało rozpoznane (prawdopodobnie jest uszkodzony plik cookie).<br />Proszę <a href=\"".e_BASE."index.php?logout\">kliknąć tutaj</a>, aby usunąć wadliwy plik cookie.");
 define("LOGIN_MENU_L8", "Wyloguj");
 define("LOGIN_MENU_L9", "Błąd logowania");
-define("LOGIN_MENU_L10", "Ustawiono znacznik konserwacji - zwykli użytkownicy zostają przekierowani do sitedown.php. Aby wyłączyć znacznik konserwacji przejdź do admin/maintenance.");
-define("LOGIN_MENU_L11", "Admin");
+define("LOGIN_MENU_L10", "Strona jest w trybie konserwacji - to oznacza, że osoby odwiedzające Twoją stronę zostaną przekierowane do strony sitedown.php. Aby przywrócić normalne funkcjonowanie strony przejdź do panelu administratora i zmień odpowiednie opcje na stronie konserwacja.");
+define("LOGIN_MENU_L11", "Panel admina");
 define("LOGIN_MENU_L12", "Ustawienia");
 define("LOGIN_MENU_L13", "Profil");
-define("LOGIN_MENU_L14", "wiadomość"); 
+define("LOGIN_MENU_L14", "wiadomość");
 define("LOGIN_MENU_L15", "wiadomości");
 define("LOGIN_MENU_L16", "post na czacie");
-define("LOGIN_MENU_L17", "posty na czacie");
+define("LOGIN_MENU_L17", "postów na czacie");
 define("LOGIN_MENU_L18", "komentarz");
-define("LOGIN_MENU_L19", "komentarze");
+define("LOGIN_MENU_L19", "komentarzy");
 define("LOGIN_MENU_L20", "post na forum");
-define("LOGIN_MENU_L21", "posty na forum");
+define("LOGIN_MENU_L21", "postów na forum");
 define("LOGIN_MENU_L22", "nowy użytkownik");
 define("LOGIN_MENU_L23", "nowych użytkowników");
-define("LOGIN_MENU_L24", "Kliknij tutaj aby zobaczyć listę nowych punktów");
-define("LOGIN_MENU_L25", "Od twoich ostatnich odwiedzin jest (są):");
-define("LOGIN_MENU_L26", "brak");
+define("LOGIN_MENU_L24", "Kliknij tutaj, aby zobaczyć listę nowych pozycji");
+define("LOGIN_MENU_L25", "Od Twojej ostatniej wizyty na stronie pojawiło się");
+define("LOGIN_MENU_L26", "0");
 define("LOGIN_MENU_L27", "i");
 define("LOGIN_MENU_L28", "Zaloguj");
+
 define("LOGIN_MENU_L29", "nowy artykuł");
 define("LOGIN_MENU_L30", "nowe artykuły");
 
-// New config options for cvs07
-define('LOGIN_MENU_L31', 'Pokaż Nowe Wpisy Wiadomości');
-define('LOGIN_MENU_L32', 'Pokaż Nowe Artykuły');
-define('LOGIN_MENU_L33', 'Pokaż Nowe Wpisy W Czacie');
-define('LOGIN_MENU_L34', 'Pokaż Nowe Komentarze');
-define('LOGIN_MENU_L35', 'Pokaż Nowe Wypowiedzi Na Forum');
-define('LOGIN_MENU_L36', 'Pokaż Nowych Użytkowników');
-define('LOGIN_MENU_L37', 'Zapisz Ustawienia');
-define('LOGIN_MENU_L38', 'Ustawienia Zapisano');
+// New config options
+define('LOGIN_MENU_L31', 'Pokaż nowe aktualności');
+define('LOGIN_MENU_L32', 'Pokaż nowe artykuły');
+define('LOGIN_MENU_L33', 'Pokaż nowe pozty na czacie');
+define('LOGIN_MENU_L34', 'Pokaż nowe komentarze');
+define('LOGIN_MENU_L35', 'Pokaż nowe posty na forum');
+define('LOGIN_MENU_L36', 'Pokaż nowo zarejstrowanych użytkowników');
+define('LOGIN_MENU_L37', 'Aktualizuj ustawienia');
+define('LOGIN_MENU_L38', 'Ustawienia zostały zaktualizowane');
+
+define('LOGIN_MENU_L39', 'Opuść panel');
+
 ?>

@@ -1,89 +1,85 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
+|     $Revision: 1.8 $
+|     $Date: 2006-05-21 16:44:23 $
+|     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Polish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
-|     $Author: jacek_c $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_plugins/newsfeed/languages/English.php rev. 1.6
++-----------------------------------------------------------------------------+
 */
-
-
-define("NFLAN_01", "Zdalne Wiadomości");
-define("NFLAN_02", "Ten plugin pobiera wiadomości rss dostarczone z innych serwisów internetowych i pokazuje je według twoich preferencji");
-define("NFLAN_03", "Ustawienia newsfeeds");
-define("NFLAN_04", "Newsfeeds plugin został poprawnie zainstalowany. Aby dodać newsfeeds lub skonfigurować go, przejdź do Panelu Administracyjnego i kliknij ikonę Zdalne Wiadomości .");
-define("NFLAN_05", "Redaguj");
+ 
+define("NFLAN_01", "Kanały informacyjne"); //  (Agregator RSS)
+define("NFLAN_02", "Ten plugin będzie odbierał kanały rss z innych stron internetowych, a następnie wyświetli je zgodnie z Twoim preferencjami.");  // This plugin will retrieve rss feeds from other websites and display them according to your preferences
+define("NFLAN_03", "Konfiguruj Kanały informacyjne");
+define("NFLAN_04", "Plugin Kanały informacyjne został pomyślnie zainstalowany. Aby dodać kanały wiadomości i je skonfigurować, powróć do <i>Panelu administratora</i> i kliknij w sekcji pluginów na linku <i>Kanały informacyjne</i>.");
+define("NFLAN_05", "Edytuj");
 define("NFLAN_06", "Usuń");
-define("NFLAN_07", "Istniejące Zdalne Wiadomości");
-define("NFLAN_08", "Strona Główna Zdalnych Wiadomości");
-define("NFLAN_09", "Utwórz Zdalne Wiadomości");
-define("NFLAN_10", "Adres URL do wiadomości rss");
-define("NFLAN_11", "Adres url do przycisku");
+define("NFLAN_07", "Aktualne kanały informacyjne");
+define("NFLAN_08", "Strona główna Kanały informacyjne");
+define("NFLAN_09", "Utwórz kanał informacyjny");
+define("NFLAN_10", "URL do kanału rss");
+define("NFLAN_11", "Ścieżka dostępu do obrazka");
 define("NFLAN_12", "Aktywacja");
-define("NFLAN_13", "Nigdzie (nieaktywny)");
+define("NFLAN_13", "Nigdzie (nieaktywne)");
 define("NFLAN_14", "Tylko w menu");
-define("NFLAN_15", "Utwórz Zdalne Wiadomości");
-define("NFLAN_16", "Aktualizuj Zdalne Wiadomości");
-define("NFLAN_17", "zaznacz 'wartość domyślną' aby użyć przycisku zdefiniowanego w zdalnym serwisie. Wpisz pełen adres, jeżeli chcesz użyć własnej grafiki. Pozostaw puste dla wyłączenia.");
-define("NFLAN_18", "Aktualizacja w sekundach");
-define("NFLAN_19", "przykład, 3600: Zdalne Wiadomości aktualizowane będą co godzinę");
-define("NFLAN_20", "Zdalne Wiadomości tylko na głównej stronie");
-define("NFLAN_21", "Zdalne Wiadomości zarówno w menu oraz na stronie Zdalne Wiadomości");
-define("NFLAN_22", "Wybierz, gdzie Zdalne Wiadomości mają być wyświetlane");
-define("NFLAN_23", "Zdalne Wiadomości dodano do bazy danych.");
-define("NFLAN_24", "Wumagane pola(e) zostały puste.");
-define("NFLAN_25", "Zdalne Wiadomości zaktualizowano w bazie danych.");
-define("NFLAN_26", "Okresowa Aktualizacja");
+define("NFLAN_15", "Utwórz kanał informacyjny");
+define("NFLAN_16", "Zaktualizuj kanał informacyjny");
+define("NFLAN_17", "Aby używać obrazka zdefiniowanego w kanale wpisz 'default'. Jeśli chcesz używać własnego obrazka wpisz pełną ścieżkę dostępu, aby nie wyświetlać obrazka pozostaw to pole puste.");
+define("NFLAN_18", "Okres aktualizacji w sekundach");
+define("NFLAN_19", "np, wartość 3600 oznacza, że kanał informacyjny będzie aktualizowany co godzinę");
+define("NFLAN_20", "Tylko na stronie głównej kanałów informacyjnych");
+define("NFLAN_21", "Jednocześnie w menu i na stronie kanałów informacyjnych");
+define("NFLAN_22", "Wybierz miejsce wyświetlania wskazanego kanału informacyjnego"); // choose where you want the newsfeed displayed
+define("NFLAN_23", "Kanał informacyjny został dodany do bazy danych.");
+define("NFLAN_24", "Wymagane pola pozostały puste.");
+define("NFLAN_25", "Kanał informacyjny został zaktualizowany w bazie danych.");
+define("NFLAN_26", "Okres aktualizacji");
 define("NFLAN_27", "Opcje");
 define("NFLAN_28", "URL");
-define("NFLAN_29", "Dostępne Zdalne Wiadomości");
-define("NFLAN_30", "Nazwa");
-define("NFLAN_31", "Z powrotem do Zdalnych Wiadomości");
-define("NFLAN_32", "Nie znaleziono żadnych Zdalnych Wiadomości o podanym ID.");
-define("NFLAN_33", "Data publikowania: ");
+define("NFLAN_29", "Dostępne kanały informacyjne");
+define("NFLAN_30", "Nazwa kanału");
+define("NFLAN_31", "Powróć do listy kanałów informacyjnych");
+define("NFLAN_32", "Nie mogę odnaleźć kanału ze wskazanym numerem identyfikacyjnym"); // 
+define("NFLAN_33", "Data publikacji: ");
 define("NFLAN_34", "nieznana");
-define("NFLAN_35", "napisane przez ");
+define("NFLAN_35", "dodane przez ");
 define("NFLAN_36", "Opis");
-define("NFLAN_37", "krótki opis wiadomości, zaznacz 'domyślne' aby użyć opisu dostarczonego z serwisu.");
-define("NFLAN_38", "Nagłówki");
+define("NFLAN_37", "krótki opis kanału, aby użyć opisu zdefiniowanego przez nadawcę kanału wpisz 'default'");
+define("NFLAN_38", "Serwis wiadomości");
 define("NFLAN_39", "Szczegóły");
-define("NFLAN_40", "Usunięto Zdalne Wiadomości");
+define("NFLAN_40", "Kanał wiadomości został usunięty");
+define("NFLAN_41", "Nie ma jeszcze zdefiniowanych kanałów informacyjnych");
 
-define("NFLAN_41", "Brak dostępnych Wiadomości Zdalnych");
-
-define("NFLAN_42", "<b>&raquo;</b> <u>Nazwa Wiadomości:</u>
-	Nazwa Wiadomości może być jaka tylko chcesz.
+define("NFLAN_42", "<b>&raquo;</b> <u>Nazwa kanału:</u>
+	Nazwa pod jaką kanał będzie identyfikowany, może to być dowolna nazwa.
 	<br /><br />
-	<b>&raquo;</b> <u>Adres URL do wiadomości rss:</u><br />
-	Wpisz adres wiadomości rss.
+	<b>&raquo;</b> <u>URL do kanału rss:</u>
+	Adres do wskazanego kanału rss
 	<br /><br />
-	<b>&raquo;</b> <u>Adres url do przycisku:</u>
-	Zaznacz 'wartość domyślną' aby użyć przycisku zdefiniowanego w zdalnym serwisie. Wpisz pełen adres, jeżeli chcesz użyć własnej grafiki. Pozostaw puste dla wyłączenia.
+	<b>&raquo;</b> <u>Ścieżka dostępu do obrazka:</u>
+	Jeśli kanał posiada zdefiniowany obrazek, wpisz 'default', aby go użyć. Jeśli chcesz użyć własnego obrazka, wpisz pełną ścieżkę dostępu do niego. Pozostaw puste aby nie używać żadnych obrazków.
 	<br /><br />
 	<b>&raquo;</b> <u>Opis:</u>
-	Krótki opis wiadomości, zaznacz 'domyślne' aby użyć opisu dostarczonego z serwisu.
+	Zredaguj krótki opis o kanale, lub wpisz 'default' i użyj zdefiniowanego opisu przez nadawcę kanału (jeśli taki posiada).
 	<br /><br />
-	<b>&raquo;</b> <u>Aktualizacja w sekundach:</u>
-	 Zdalne Wiadomości z serwisów aktualizowane będą ;przykład:3600-co godzinę, 1800-co 30 minut.
+	<b>&raquo;</b> <u>Okres aktualizacji w sekundach:</u>
+	Ilość sekunda jaka musi upłynąć zanim kanał zostanie zaktualizowany, na przykład, 1800: 30 minut, 3600: godzina.
 	<br /><br />
 	<b>&raquo;</b> <u>Aktywacja:</u>
-	Wybierz, gdzie Zdalne Wiadomości mają być wyświetlane na stronie <a href='".e_ADMIN."menus.php'>menu</a>.
-	<br /><br />
-  <b>&raquo;</b> <u>Przykład:</u>	
-	Oto lista dostępnych Wiadomości Zdalnych: <br />
-	http://e107poland.org/e107_files/backend/news.xml <br />
-	http://cvs07.e107poland.org/e107_plugins/rss_menu/rss.php?1.1 <br />
-	");
-define("NFLAN_43", "Pomoc Newsfeed");
+	tutaj możesz wskazać sekcję, w której będą wyświetlane utworzone przez Ciebie kanały wiadomości, aby zobaczyć wiadomości w postaci menu musisz je najpierw aktywować na stronie <a href='".e_ADMIN."menus.php'>dostępnych menu</a>.
+	<br /><br />Pod adresami <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> oraz <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a> możesz znaleźć wiele aktualnych kanałów posortowanych według kategorii. Jeśli poszukujesz polskiego kanału wiadomości przejrzyj stronę <a href='http://rss.mrok.org/' rel='external'>rss.mrok.org</a>.");
+define("NFLAN_43", "Pomoc");
+define("NFLAN_44", "aby wyświetlić kliknij");
+
+define("NFLAN_45", "Ilość pozycji wyświetlanych w menu");
+define("NFLAN_46", "Ilość pozycji wyświetlanych na stronie głównej");
+define("NFLAN_47", "0 lub puste pole oznacza wszystkie");
 
 ?>
