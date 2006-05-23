@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-05-23 14:07:28 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
 +-----------------------------------------------------------------------------+
@@ -194,7 +194,7 @@ define("ADLAN_LAT_3", "Nadesłane artykuły");
 define("ADLAN_LAT_4", "Nadesłane recenzje");
 define("ADLAN_LAT_5", "Nadesłane linki");
 define("ADLAN_LAT_6", "Raporty na forum");
-define("ADLAN_LAT_7", "Załadowae pliki");
+define("ADLAN_LAT_7", "Załadowane pliki");
 define("ADLAN_LAT_8", "Niesprawdzone wiadomości");
 
 define("ADLAN_ERR_1", "Ostrzeżenie!");
