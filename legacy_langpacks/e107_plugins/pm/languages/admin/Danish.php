@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/admin/Danish.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-10-02 10:08:30 $
+|        $Revision: 1.3 $
+|        $Date: 2006-05-24 16:49:05 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -29,8 +29,8 @@ define('ADLAN_PM_15', "Tilf&oslash;j PB Gr&aelig;nse");
 define('ADLAN_PM_16', "Plugin Titel");
 define('ADLAN_PM_17', "Vis ny PB animation");
 define('ADLAN_PM_18', "Vis bruger rullegardin");
-define('ADLAN_PM_19', "L&AELIG;ST besked tidsudl&oslash;b");
-define('ADLAN_PM_20', "UL&AELIG;ST besked tidsudl&oslash;b");
+define('ADLAN_PM_19', "L&aelig;st besked tidsudl&oslash;b");
+define('ADLAN_PM_20', "Ul&aelig;st besked tidsudl&oslash;b");
 define('ADLAN_PM_21', "popup besked ved ny PB");
 define('ADLAN_PM_22', "Popup forsinkelse tidsudl&oslash;b");
 define('ADLAN_PM_23', "Begr&aelig;ns PB brug til");
