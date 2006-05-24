@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-05-24 16:46:46 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_mailout.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_mailout.php rev. 1.10
+|     Zgodne z: /e107_languages/English/admin/lan_mailout.php rev. 1.11
 +-----------------------------------------------------------------------------+
 */
  
@@ -55,5 +55,18 @@ define("MAILAN_21","Zapisane wiadomości email");
 define("MAILAN_22","Aktualnie nie ma zapisanych pozycji"); // There are currently no saved entries
 define("MAILAN_23","grupa użytkowników: ");
 define("MAILAN_24", "email(e) są gotowe do wysłania");
+
+define("MAILAN_25", "Pauza");
+define("MAILAN_26", "Zatrzymaj zbiorcze wysyłanie poczty co każde");
+define("MAILAN_27", "emaile");
+define("MAILAN_28", "Czas trwania pauzy");
+define("MAILAN_29", "sekund(y)");
+define("MAILAN_30", "Więcej niż 30 sekund może spowodować przekroczenie czasu oczekiwania przeglądarki");
+define("MAILAN_31", "Przetwarzanie emaila zwrotnego");
+define("MAILAN_32", "Adres email");
+define("MAILAN_33", "Skrzynka odbiorcza");
+define("MAILAN_34", "Nazwa konta");
+define("MAILAN_35", "Hasło");
+define("MAILAN_36", "Usuń maile zwrotne po sprawdzeniu");
 
 ?>

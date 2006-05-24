@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-05-23 14:07:28 $
+|     $Revision: 1.11 $
+|     $Date: 2006-05-24 16:46:46 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.42
+|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.43
 +-----------------------------------------------------------------------------+
 */
  
@@ -252,5 +252,6 @@ define("LAN_OPTIONAL", "opcjonalnie");
 define("LAN_INACTIVE", "Nieaktywny");
 
 define("LAN_BAN", "Zablokuj");
+define("LAN_RATING", "Ocena");
 
 ?>

@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-05-24 16:46:46 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_users.php rev. 1.22
+|     Zgodne z: /e107_languages/English/admin/lan_users.php rev. 1.23
 +-----------------------------------------------------------------------------+
 */
  
@@ -188,5 +188,9 @@ define("USRLAN_139", "Twoje konto zostało aktywowane.\n\nOd tej chwili możesz 
 define("USRLAN_140", "Ponownie wysłano emaila do");
 define("USRLAN_141", "Nieudana próba wysłania ponownego emaila aktywacyjnego do");
 define("USRLAN_142", "z następującym linkiem aktywacyjnym");
+
+define("LAN_BOUNCED", "Odpowiedź zwrotna");
+define("USRLAN_143", "Sprawdź odpowiedź do nadawców");
+define("USRLAN_144", "Ponownie wyślij emaile weryfikacyjne do wszystkich");
 
 ?>
