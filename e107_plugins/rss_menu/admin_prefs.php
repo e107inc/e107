@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-09 00:04:36 $
+|     $Revision: 1.6 $
+|     $Date: 2006-05-25 03:35:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."rss_menu/languages/E
 
 require_once(e_ADMIN."auth.php");
 
-if(IsSet($_POST['updatesettings'])){
+if(isset($_POST['updatesettings'])){
 	$pref['rss_feeds'] = implode(",",$_POST['feeds']);
 	$pref['rss_newscats'] = $_POST['rss_newscats'];
 	$pref['rss_dlcats'] = $_POST['rss_dlcats'];
@@ -33,9 +33,16 @@ if(IsSet($_POST['updatesettings'])){
 	$message = LAN_SAVED;
 }
 
+if(e107_config_check()){
+	$message = RSS_LAN03; // space found in file.
+}
+
 if(isset($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>$message</b></div>");
 }
+
+
+
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
@@ -89,5 +96,15 @@ $text = "<div style='text-align:center'>
 $ns -> tablerender(BACKEND_MENU_L2, $text);
 
 require_once(e_ADMIN."footer.php");
+
+
+function e107_config_check(){
+
+	$arrays = file_get_contents(e_BASE."e107_config.php");
+	if($arrays[0] != "<"){
+		return TRUE;
+	}
+
+}
 
 ?>
