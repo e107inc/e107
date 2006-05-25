@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpbb2.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-25 02:02:41 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-05-25 02:26:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -198,6 +198,8 @@ while($topic = mysql_fetch_array($phpbb_res))
 		}
 
 		extract($pollQ);
+		$vote_text = $tp->toDB($vote_text);
+		$options = $tp->toDB($options);
 		$query = "INSERT INTO ".$mySQLprefix."polls VALUES ('0', {$vote_start}, {$vote_start}, 0, 0, '{$vote_text}', '{$options}', '{$votes}', '', 2, 0, 0, 0, 255, 0)";
 		echo (mysql_query($query, $e107Connection) ? "Poll successfully inserted" : "Unable to insert poll ({$query})")."<br />";
 	}
@@ -210,11 +212,11 @@ while($topic = mysql_fetch_array($phpbb_res))
 
 	if($topic['topic_poster'] == -1)
 	{
-		$topic['topic_poster'] = 0;
 		$poster = ($topic['post_username'] ? $topic['post_username'] : "Anonymous");
+		$topic['topic_poster'] = "0.".$poster;
 	}
 
-	$topicArray = convertTopics($poster);
+	$topicArray = convertTopics();
 	$query = createQuery($topicArray, $topic, $mySQLprefix."forum_t");	
 
 	if(!mysql_query($query, $e107Connection))
@@ -246,8 +248,8 @@ while($topic = mysql_fetch_array($phpbb_res))
 			}
 			if($post['poster_id'] == -1)
 			{
-				$post['poster_id'] = 0;
 				$poster = ($post['post_username'] ? $post['post_username'] : "Anonymous");
+				$post['poster_id'] = "0.".$poster;
 			}
 	
 
@@ -281,13 +283,17 @@ function convertUsers()
 		array("phpbb" => "username", "e107" => "user_loginname", "type" => "STRING"),
 		array("phpbb" => "user_password", "e107" => "user_password", "type" => "STRING"),
 		array("phpbb" => "user_email", "e107" => "user_email", "type" => "STRING"),
-		array("phpbb" => "user_website", "e107" => "user_homepage", "type" => "STRING"),
-		array("phpbb" => "user_from", "e107" => "user_location", "type" => "STRING"),
 		array("phpbb" => "user_sig", "e107" => "user_signature", "type" => "STRING"),
 		array("phpbb" => "user_viewemail", "e107" => "user_hideemail", "type" => "INT"),
 		array("phpbb" => "user_regdate", "e107" => "user_join", "type" => "INT"), 
 		array("phpbb" => "user_posts", "e107" => "user_forums", "type" => "INT"), 
-		array("phpbb" => "user_level", "e107" => "user_admin", "type" => "INT")
+		array("phpbb" => "user_level", "e107" => "user_admin", "type" => "INT"),
+		array("phpbb" => "xxx", "e107" => "user_prefs", "type" => "INT"),
+		array("phpbb" => "xxx", "e107" => "user_new", "type" => "INT"),
+		array("phpbb" => "xxx", "e107" => "user_realm", "type" => "INT"),
+		array("phpbb" => "xxx", "e107" => "user_class", "type" => "INT"),
+		array("phpbb" => "xxx", "e107" => "user_viewed", "type" => "INT"),
+		array("phpbb" => "xxx", "e107" => "user_perms", "type" => "INT"),
 	);
 	return $usersArray;
 }
@@ -297,7 +303,9 @@ function convertParents($catid)
 	$parentArray = array(
 		array("phpbb" => "cat_id", "e107" => "forum_id", "type" => "INT", "value" => $catid),
 		array("phpbb" => "cat_title", "e107" => "forum_name", "type" => "STRING"),
-		array("phpbb" => "cat_order", "e107" => "forum_order", "type" => "INT")
+		array("phpbb" => "cat_order", "e107" => "forum_order", "type" => "INT"),
+		array("phpbb" => "cat_desc", "e107" => "forum_description", "type" => "STRING"),
+		array("phpbb" => "null", "e107" => "forum_moderators", "type" => "INT", "value" => 254)
 	);
 	return $parentArray;
 }
@@ -311,25 +319,26 @@ function convertForums($catid)
 		array("phpbb" => "forum_desc", "e107" => "forum_description", "type" => "STRING"),
 		array("phpbb" => "forum_order", "e107" => "forum_order", "type" => "INT"),
 		array("phpbb" => "forum_topics", "e107" => "forum_threads", "type" => "INT"),
-		array("phpbb" => "forum_posts", "e107" => "forum_replies", "type" => "INT")
+		array("phpbb" => "forum_posts", "e107" => "forum_replies", "type" => "INT"),
+		array("phpbb" => "null", "e107" => "forum_moderators", "type" => "INT", "value" => 254)
 	);
 	return $forumArray;
 }
 
 
-function convertTopics($poster)
+function convertTopics()
 {
 	$topicArray = array(
 		array("phpbb" => "forum_id", "e107" => "thread_forum_id", "type" => "INT"),
 		array("phpbb" => "topic_title", "e107" => "thread_name", "type" => "STRING"),
 		array("phpbb" => "post_text", "e107" => "thread_thread", "type" => "STRING"),
-		array("phpbb" => "topic_poster", "e107" => "thread_user", "type" => "INT"), 
+		array("phpbb" => "topic_poster", "e107" => "thread_user", "type" => "STRING"), 
 		array("phpbb" => "null", "e107" => "thread_active", "type" => "INT", "value" => 1), 
 		array("phpbb" => "topic_time", "e107" => "thread_datestamp", "type" => "INT"),
 		array("phpbb" => "topic_views", "e107" => "thread_views", "type" => "INT"),
 		array("phpbb" => "topic_replies", "e107" => "thread_total_replies", "type" => "INT"), 
 		array("phpbb" => "null", "e107" => "thread_parent", "type" => "INT", "value" => 0), 
-		array("phpbb" => "null", "e107" => "thread_anon", "type" => "INT", "value" => $poster)
+//		array("phpbb" => "null", "e107" => "thread_anon", "type" => "INT", "value" => $poster)
 	);
 	return $topicArray;
 }
@@ -345,10 +354,10 @@ function convertForumPosts($parent_id, $poster)
 		array("phpbb" => "post_time", "e107" => "thread_datestamp", "type" => "INT"),
 		array("phpbb" => "topic_views", "e107" => "thread_views", "type" => "INT"),
 		array("phpbb" => "post_time", "e107" => "thread_lastpost", "type" => "INT"),
-		array("phpbb" => "poster_id", "e107" => "thread_user", "type" => "INT"), 
+		array("phpbb" => "poster_id", "e107" => "thread_user", "type" => "STRING"), 
 		array("phpbb" => "post_subject", "e107" => "thread_name", "type" => "STRING"), 
 		array("phpbb" => "null", "e107" => "thread_parent", "type" => "INT", "value" => $parent_id), 
-		array("phpbb" => "null", "e107" => "thread_anon", "type" => "INT", "value" => $poster)
+//		array("phpbb" => "null", "e107" => "thread_anon", "type" => "INT", "value" => $poster)
 	);
 	return $postArray;
 }
@@ -372,6 +381,10 @@ function createQuery($convertArray, $dataArray, $table)
 		{
 			$dataArray[$convert['phpbb']] = preg_replace("#\[.*\]#", "", $tp -> toDB($dataArray[$convert['phpbb']]));
 		}
+		if($convert['type'] == "INT")
+		{
+			$dataArray[$convert['phpbb']] = intval($dataArray[$convert['phpbb']]);
+		}
 		$columns .= $convert['e107'].",";
 		$values .= (array_key_exists("value", $convert) ? "'".$convert['value']."'," : "'".$dataArray[$convert['phpbb']]."',");
 	}
@@ -380,17 +393,9 @@ function createQuery($convertArray, $dataArray, $table)
 	$columns = substr($columns, 0, -1).")";
 	$values = substr($values, 0, -1).")";
 
+
 	return "INSERT INTO $table $columns VALUES $values";
 	
 }	
-
-
-
-
-
-
-
-
-
 
 ?>
