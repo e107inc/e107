@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.52 $
-|   $Date: 2006-05-13 18:18:43 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.53 $
+|   $Date: 2006-05-25 04:41:15 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -87,6 +87,14 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['
 if (!isset($no_core_css) || !$no_core_css) {
 	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 }
+
+// ---------- Favicon ---------
+if (file_exists(THEME."favicon.ico")) {
+	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
+}elseif (file_exists(e_BASE."favicon.ico")) {
+	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
+}
+
 
 if (function_exists('theme_head')) {
    	echo theme_head();
@@ -298,7 +306,7 @@ function admin_purge_related($table, $id)
 	{
 		$msg .= LAN_RATING." ".LAN_DELETED."<br />";
 	}
-	
+
 	if($msg)
 	{
 		$ns->tablerender(LAN_DELETE, $msg);
