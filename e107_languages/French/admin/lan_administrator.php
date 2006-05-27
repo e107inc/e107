@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -65,11 +65,11 @@
   define("ADMSLAN_62", "Gestionnaire des Extensions");
   define("ADMSLAN_64", "Vider le système cache");
   define("ADMSLAN_65", "Configurer les paramètres des courriels et de messagerie");
-  define("ADMSLAN_66", "Configurer Recherche");
+  define("ADMSLAN_66", "Configurer les recherches");
   define("ADMSLAN_67", "Scanner avec l'inspecteur de fichier");
   define("ADMSLAN_68", "Configurer les alertes par courriel");
   define("ADMSLAN_69", "est déjà un administrateur et doit être édité");
   
-  define("ADMSLAN_70", "Retour à Inscription d'Administrateur");
+  define("ADMSLAN_70", "Retourner à la gestion des administrateurs");
   define("ADMSLAN_71", "Cliquez ici pour afficher les privilèges");
   ?>

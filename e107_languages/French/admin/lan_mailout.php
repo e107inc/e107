@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_mailout.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -48,4 +48,16 @@
   define("MAILAN_22", "Il n'y a aucune sauvegarde d'entrée pour le moment.");
   define("MAILAN_23","Groupe d'utilisateurs: ");
   define("MAILAN_24", "courriel(s) prêt à être envoyé(s)");
+define("MAILAN_25", "Pause");
+define("MAILAN_26", "Différer l'envoi massif de courriel tous les");
+define("MAILAN_27", "courriels");
+define("MAILAN_28", "Durée de la Pause");
+define("MAILAN_29", "secondes");
+define("MAILAN_30", "Plus de 30 secondes peut causer une erreur de 'time-out' à votre explorateur");
+define("MAILAN_31", "Vérification des courriels rebondis");
+define("MAILAN_32", "Addresse courriel");
+define("MAILAN_33", "Réception d'un courriel");
+define("MAILAN_34", "Nom du compte");
+define("MAILAN_35", "Mot de passe");
+define("MAILAN_36", "Effacer les courriels rebondis après vérification");  
   ?>

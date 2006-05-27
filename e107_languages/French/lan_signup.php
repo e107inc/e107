@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -25,9 +25,9 @@
   define("LAN_110", "Inscription");
   define("LAN_111", "Retaper votre mot de passe : ");
   define("LAN_112", "Adresse Courriel : ");
-  define("LAN_113", "Cacher votre adresse courriel ? ");
+  define("LAN_113", "Cacher mon adresse courriel ? ");
   define("LAN_114", "Cela empêchera que votre adresse courriel soit affichée sur le site");
-  define("LAN_123", "S'inscrire");
+  define("LAN_123", "Enregistrez vous");
   define("LAN_185", "Vous avez laissé un ou plusieurs champ(s) exigé(s) vide(s)");
   define("LAN_201", "Oui");
   define("LAN_200", "Non");
@@ -75,7 +75,7 @@
   define("LAN_SIGNUP_27", "Afficher");
   define("LAN_SIGNUP_28", "Choix de Contenu/Mailing-listes");
   define("LAN_SIGNUP_29", "Un courriel de vérification vous sera envoyé à l'adresse que vous avez fournie, elle doit donc être valide.");
-  define("LAN_SIGNUP_30", "Si vous ne souhaitez pas que votre adresse courriel apparaisse sur ce site, veuillez cocher la case 'Cacher votre adresse courriel'.");
+  define("LAN_SIGNUP_30", "Si vous ne souhaitez pas que votre adresse courriel apparaisse sur ce site, veuillez cocher la case 'Cacher mon adresse courriel'.");
   define("LAN_SIGNUP_31", "URL de votre fichier XUP ");
   define("LAN_SIGNUP_32", "Qu'est ce qu'un fichier XUP ?");
   define("LAN_SIGNUP_33", "Entrez l'url ou choisissez une image proposée");

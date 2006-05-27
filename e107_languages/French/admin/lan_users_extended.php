@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@
   define("EXTLAN_54", "Texte d'échec regex");
   define("EXTLAN_55", "Entrer un message d'erreur. Cela affichera si la validation regex a échouée.");
   define("EXTLAN_56", "Champs prédéfinis");
-  define("EXTLAN_57", "Activaté");
+  define("EXTLAN_57", "Activé");
   define("EXTLAN_58", "Non Activé");
   define("EXTLAN_59", "Activé");
   define("EXTLAN_60", "Désactivé");

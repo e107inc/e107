@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_wmessage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -27,4 +27,5 @@
   define("WMLAN_07","Ignorez le standard du système pour utiliser {WMESSAGE} shortcode de votre thème:");
   define("WMLAN_08","Préférences");
   define("WMLAN_09","Pas de message de bienvenue installé pour le moment");
+  define("WMLAN_10","Légende du Message");    
   ?>

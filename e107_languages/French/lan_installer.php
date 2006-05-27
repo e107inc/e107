@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_installer.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -109,7 +109,7 @@
   
   Veuillez vous assurer le dossier de <strong>e107_config.php</strong> a les permissions correctes");
   define("LANINS_071", "Finalisation de l'Installation");
-  define("LANINS_072", "Nom d'utilisateur Admin");
+  define("LANINS_072", "Nom d'utilisateur de l'Administrateur");
   define("LANINS_073", "C'est le nom que vous utiliserez lors de la connexion dans le site. Si vous voulez vous pouver l'utiliser comme  nom d'affichage aussi");
   define("LANINS_074", "Nom d'affichage Admin");
   define("LANINS_075", "C'est le nom que vous voulez que vos utilisateurs voient s'afficher sur votre profil, le forum et autres secteurs. 
@@ -121,7 +121,7 @@
   define("LANINS_080", "Courriel Admin");
   define("LANINS_081", "Entrer votre adresse courriel");
   define("LANINS_082", "vous@votresite.com");
-  define("LANINS_083", "N'a pas pu établir de connection avec le serveur Mysql.Détails des erreurs :");
+  define("LANINS_083", "N'a pas pu établir de connection avec le serveur Mysql. Détails des erreurs :");
   define("LANINS_084", "N'a pas pu créer de base de données. Détails des erreurs :");
   define("LANINS_085", "Aide");
   define("LANINS_086", "e107 Page d'accueil: http://e107.org");
@@ -160,5 +160,5 @@
   define("LANINS_117_2", "Oui lorsque... Non quand...");
   define("LANINS_118",  "Impossible de lire le fichier sql<br /><br />Svp assurez-vous que le fichier <strong>user_sql.php</strong> existe dans le répertoire <strong>/e107_admin/sql</strong>");
   define("LANINS_119", "UDLH n'a pas pu créer les tables d'utilisateurs de bases de données utilisateurs.<br />Svp Vider les tables de données and rectifier tous les problèmes avant de rééssayer.");
-  define("LANINS_120", "Vous AVEZ décidé de NE PAS INSTALLER les Tables d'UTILISATEURS. br/><strong>Les Tables d'Utilisateurs n'ont donc pas été créés</strong>");
+  define("LANINS_120", "Vous avez décidé de NE PAS INSTALLER les Tables d'UTILISATEURS. br/><strong>Les Tables d'Utilisateurs n'ont donc pas été créés</strong>");
   ?>

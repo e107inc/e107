@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@
   define("FBLAN_18", "Message de la Boîte d'affichage supprimé");
   define("FBLAN_19", "Options");
   define("FBLAN_20", "éditer");
-  define("FBLAN_21", "éffacer");
+  define("FBLAN_21", "effacer");
   define("FBLAN_22", "Type de rendu");
   define("FBLAN_23", "Comme un menu (n'utilise pas les modèles)");
   define("FBLAN_24", "Plat (utilise les modèles)");

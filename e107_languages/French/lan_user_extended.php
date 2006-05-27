@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -35,4 +35,8 @@
   define("UE_LAN_HOMEPAGE_DESC", "URL du site web du membre");
   define("UE_LAN_BIRTHDAY", "Anniversaire");
   define("UE_LAN_BIRTHDAY_DESC", "Date de Naissance");
+  define("UE_LAN_LANGUAGE", "Langage");
+  define("UE_LAN_LANGUAGE_DESC", "Langage de l'utilisateur");
+  define("UE_LAN_COUNTRY", "Pays");
+  define("UE_LAN_COUNTRY_DESC", "Pays de l'utilisateur (inclus la table de BdD)");
   ?>

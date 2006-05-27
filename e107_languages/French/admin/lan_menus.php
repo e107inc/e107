@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_menus.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@
   define("MENLAN_25", "Fonction ...");
   define("MENLAN_26", "Ce menu sera uniquement <strong>MONTRÉ</strong> dans les pages suivantes");
   define("MENLAN_27", "Ce menu sera uniquement <strong>CACHE</strong> dans les pages suivantes");
-  define("MENLAN_28", "Entrer une page (un lien) par ligne, entrer assez de l'url pour le distinguer correctement");
+  define("MENLAN_28", "Entrer une page (un lien) par ligne, entrer suffisament de l'url pour le distinguer correctement. S'il est nécessaire que l'url corresponde exactement, mettez un ! à la fin du nom de la page. <br />Par exemple: <strong>page.php?1!</strong>");
   define("MENLAN_29", "Sélectioner une composition graphique");
   define("MENLAN_30", "Pour voir les sections de menus leur position dans une diposition personnalisée, sélectionner la disposition ici:");
   define("MENLAN_31", "Disposition par défaut");

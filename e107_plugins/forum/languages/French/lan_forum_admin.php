@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-04-08 19:49:27 $
+|     $Revision: 1.5 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@
   define("FORLAN_56", "Nombre de messages pour qu'un sujet soit marqué comme populaire");
   define("FORLAN_57", "Messages par page");
   define("FORLAN_58", "Nombre de messages affichés par page");
-  define("FORLAN_59", "Délester");
+  define("FORLAN_59", "Purger");
   define("FORLAN_60", "Cela supprimera tous les sujets n'ayant pas reçus de réponses depuis le nombre de jour que vous entrerez. <br /><strong>Veuillez être prudent en utilisant cette fonctionnalité !</strong>");
   define("FORLAN_61", "Mettre à jour les Options");
   define("FORLAN_62", "Options du Forum");
@@ -113,7 +113,7 @@
   define("FORLAN_107", "Forum");
   define("FORLAN_108", " supprimé");
   define("FORLAN_109", "jours :");
-  define("FORLAN_110", "Délester");
+  define("FORLAN_110", "Purger");
   define("FORLAN_111", "désactiver");
   define("FORLAN_112", "Activer la redirection");
   define("FORLAN_113", "Cocher cette case pour rediriger l'utilisateur vers la page du forum après avoir répondu");

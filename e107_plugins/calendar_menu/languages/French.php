@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -241,7 +241,7 @@
   
   define("EC_ADLAN_A80", "Visible à ");
   define("EC_ADLAN_A81", "Autoriser l'abonnement");
-  define("EC_ADLAN_A82", "Abonnement Forcé de cette catégorie");
+  define("EC_ADLAN_A82", "Forcer l'abonnement à cette catégorie");
   define("EC_ADLAN_A83", "Nbr de Jours d'avance - Courriel aux abonnés");
   define("EC_ADLAN_A84", "Message d'Avance");
   define("EC_ADLAN_A85", "Message le jour même");
@@ -254,7 +254,7 @@
   define("EC_ADLAN_A92", "Nom - de le Courriel aux abonnés");
   define("EC_ADLAN_A93", "Adresse électronique - de le Courriel aux abonnés");
   define("EC_ADLAN_A94", "Permission d'ajouter un événement à cette catégorie");
-  define("EC_ADLAN_A95", "Activer les abonnements");
-  define("EC_ADLAN_A96", "Mis hors service, cela enlèvera le bouton Abonnements et ignore les paramètres d'abonnement des catégories.");
+  define("EC_ADLAN_A95", "Permettre les abonnements");
+  define("EC_ADLAN_A96", "Mis hors service, le bouton Abonnements sera enlevé et les paramètres d'abonnement des catégories seront ignorés.");
   define("EC_ADLAN_A97", "Si un abonnement forcé est coché, cette catégorie ne sera pas affichée dans la liste d'abonnements disponibles.");
   ?>

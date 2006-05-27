@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -34,8 +34,8 @@
   define("LAN_PM_22", "Échec de téléchargement de fichier sur le serveur");
   define("LAN_PM_23", "Vous n'êtes pas autorisé à envoyer des fichiers joints");
   define("LAN_PM_24", "Suppression des MP");
-  define("LAN_PM_25", "Réception des MP");
-  define("LAN_PM_26", "Envoi des MP");
+  define("LAN_PM_25", "Boîte de réception");
+  define("LAN_PM_26", "Boîte d'envoi");
   define("LAN_PM_27", "Non lu");
   define("LAN_PM_28", "N/A");
   define("LAN_PM_29", "Message envoyé le");

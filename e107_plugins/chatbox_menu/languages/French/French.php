@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/French/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:26 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@
   define("CHATBOX_L12", "Tous les messages");
   define("CHATBOX_L13", "Modérer la chatbox");
   define("CHATBOX_L14", "Smileys");
-  define("CHATBOX_L15", "Le message trop long ou vide.");
+  define("CHATBOX_L15", "Le message est trop long ou vide.");
   define("CHATBOX_L16", "Anonyme");
   define("CHATBOX_L17", "Message doublon");   // Duplicate post
   define("CHATBOX_L18", "Messages Chatbox modérés");
@@ -35,7 +35,7 @@
   define("CHATBOX_L24", "Vous n'avez les permissions correctes pour visualiser cette page.");
   define("CHATBOX_L25", "[ Ce message à été bloqué par admin ]");
   // Notify
-  define("NT_LAN_CB_1", "évènements Chatbox");
+  define("NT_LAN_CB_1", "Événements Chatbox");
   define("NT_LAN_CB_2", "Message publié");
   define("NT_LAN_CB_3", "Publié par");
   define("NT_LAN_CB_4", "Adresse IP ");

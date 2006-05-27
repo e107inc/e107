@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 03:22:16 $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@
   define("PRFLAN_49", "Cookies");
   define("PRFLAN_50", "Sessions");
   define("PRFLAN_52", "Sauvegarder les modifications");
-  define("PRFLAN_53", "Préférences du Site");
+  define("PRFLAN_53", "Préférences du site");
   define("PRFLAN_55", "Nom du Cookie (si le mode cookies est séléctionné)");
   define("PRFLAN_56", "Fuseau horaire");
   
@@ -98,7 +98,7 @@
   define("CUSTSIG_18", "Noms d'utilisateurs non acceptables");
   define("CUSTSIG_19", "les noms d'utilisateurs contenant le texte suivant seront rejetés, séparer les termes par des virgules");
   
-  define("PRFLAN_89", "En-tête du Site :");
+  define("PRFLAN_89", "En-tête du site :");
   
   //  define("PRFLAN_90", "Cliquer ici pour forcer Internet Explorer à utiliser le mode Standard. Par défaut, c'est le mode quirks.");
   
@@ -175,4 +175,8 @@
   define("PRFLAN_159", "vous regardez cette page depuis");
   define("PRFLAN_160", "Vérifier les serveurs distants lors de la validation des adresses courriel.");   
   define("PRFLAN_161", "Désactiver tous les commentaires sur le site"); 
+  define("PRFLAN_162", "Informations de contact");
+  define("PRFLAN_163", "eg. Nom de la compagnie, Addresse, Téléphone etc.");
+  define("PRFLAN_164", "Permettre aux utilisateurs de s'envoyer une copie du courriel de contact");
+  define("PRFLAN_165", "Faille possible de spam, utilisez avec précaution");
   ?>

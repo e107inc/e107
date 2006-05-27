@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -34,8 +34,8 @@
   
   define("DOWLAN_27", "Téléchargement");
   
-  define("DOWLAN_29", "Page principale des téléchargements");
-  define("DOWLAN_30", "Créer un téléchargement");
+  define("DOWLAN_29", "Page principale");
+  define("DOWLAN_30", "Ajouter un téléchargement");
   define("DOWLAN_31", "Catégories");
   define("DOWLAN_32", "Options Téléchargements");
   define("DOWLAN_33", "êtes-vous sûr de vouloir supprimer ce téléchargement ?");

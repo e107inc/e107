@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -267,7 +267,7 @@
   define("CONTENT_ADMIN_JS_LAN_6", "ID");
   define("CONTENT_ADMIN_JS_LAN_7", "Êtes vous sûr de vouloir supprimer l'icône en cours?");
   define("CONTENT_ADMIN_JS_LAN_8", "Icône");
-  define("CONTENT_ADMIN_JS_LAN_9", "NOTICE :nPeuvent être seules supprimées les catégories vides. La catégorie est vide si elle ne contient pas de sous-catégories et ne contient pas de contenu!");
+  define("CONTENT_ADMIN_JS_LAN_9", "NOTE : Seules les catégories vides peuvent être effacées. La catégorie est vide si elle ne contient pas de sous-catégories et ne contient pas de contenu!");
   define("CONTENT_ADMIN_JS_LAN_10", "Êtes vous sûr de vouloirde supprimer ce contenu proposé avant de l'avoir envoyé?");
   define("CONTENT_ADMIN_SUBMIT_LAN_0", "Aucune catégorie ne permet la proposition de contenu aux usagers");
   define("CONTENT_ADMIN_SUBMIT_LAN_1", "Choisir un type de contenu à proposer");

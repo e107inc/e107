@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 03:22:16 $
+|     $Revision: 1.3 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -168,4 +168,7 @@
   define("USRLAN_140", "Courriel réenvoyé à");
   define("USRLAN_141", "Échec du renvoie de courriel à");
   define("USRLAN_142", "avec le lien d'activation suivant");
+define("LAN_BOUNCED","Rebondi");
+define("USRLAN_143", "Vérifier les rebonds");
+define("USRLAN_144", "Réenvoyer un dourriel de confirmation à Tous");
   ?>

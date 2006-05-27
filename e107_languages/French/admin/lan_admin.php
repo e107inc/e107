@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.6 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -227,5 +227,7 @@
   define("LAN_DATESTAMP", "Date publication ");
   define("LAN_OPTIONAL", "En option");
   define("LAN_INACTIVE", "Désactivé");
-  define("LAN_BAN","Ban");
-  ?>
+  define("LAN_BAN","Bannir");
+define("LAN_RATING", "Évaluation");
+
+?>

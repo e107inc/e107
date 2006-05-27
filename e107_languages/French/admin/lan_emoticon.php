@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_emoticon.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-05-27 13:23:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@
   define("EMOLAN_8", "Statut");
   define("EMOLAN_9", "Options");
   define("EMOLAN_10", "Activé");
-  define("EMOLAN_11", "Activer le Pack");
+  define("EMOLAN_11", "Activer");
   define("EMOLAN_12", "Éditer / configurer ce pack");
   define("EMOLAN_13", "Packs Installés");
   define("EMOLAN_14", "Sauvegarder la configuration");
