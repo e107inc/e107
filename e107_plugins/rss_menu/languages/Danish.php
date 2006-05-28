@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Danish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-10-15 11:46:12 $
+|     $Revision: 1.4 $
+|     $Date: 2006-05-28 12:22:54 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -35,4 +35,6 @@ define("RSS_FSP","Forum Specifik Post");
 define("RSS_BUG","Fejlsøger");
 define("RSS_FOR","Forum");
 define("RSS_DL","Downloads");
+
+define("RSS_LAN03","Din e107_config.php fil har tegn før &lt;? tegnene. Du bør fjerne dette mellemrum hvis du ønsker at have et gyldigt RSS feed.");
 ?>
