@@ -1,4 +1,4 @@
-// $Id: wmessage.sc,v 1.11 2006-04-25 00:40:53 e107coders Exp $
+// $Id: wmessage.sc,v 1.12 2006-05-30 01:47:46 e107coders Exp $
 
 if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $parm !='header') ){
 	return;
@@ -6,27 +6,32 @@ if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $pa
 
 	global $e107;
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
-		$front_url = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['all'];
+		$full_url = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['all'];
+		list($front_url,$front_qry) = explode("?",$full_url);
 	} else if (ADMIN) {
-		$front_url = ((strpos($pref['frontpage']['254'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['254'];
+		$full_url = ((strpos($pref['frontpage']['254'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['254'];
+        list($front_url,$front_qry) = explode("?",$full_url);
 	} else if (USER) {
 		require_once(e_HANDLER.'userclass_class.php');
 		$class_list = get_userclass_list();
 		foreach ($class_list as $fp_class) {
 			if (check_class($fp_class['userclass_id'])) {
-				$front_url = ((strpos($pref['frontpage'][$fp_class['userclass_id']], 'http') === FALSE) ? SITEURL : '').$pref['frontpage'][$fp_class['userclass_id']];
+				$full_url = ((strpos($pref['frontpage'][$fp_class['userclass_id']], 'http') === FALSE) ? SITEURL : '').$pref['frontpage'][$fp_class['userclass_id']];
+                list($front_url,$front_qry) = explode("?",$full_url);
 				$class_match = true;
 				break;
 			}
 		}
 		if (!$class_match) {
-			$front_url = ((strpos($pref['frontpage']['253'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['253'];
+			$full_url = ((strpos($pref['frontpage']['253'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['253'];
+            list($front_url,$front_qry) = explode("?",$full_url);
 		}
 	} else {
-		$front_url = ((strpos($pref['frontpage']['252'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['252'];
+		$full_url = ((strpos($pref['frontpage']['252'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['252'];
+        list($front_url,$front_qry) = explode("?",$full_url);
 	}
 
-	if (e_SELF == $front_url) {
+	if (e_SELF == $front_url && e_QUERY == $front_qry) {
 		global $sql, $pref, $tp, $ns;
 		if (!defined("WMFLAG")) {
 			$qry = "
