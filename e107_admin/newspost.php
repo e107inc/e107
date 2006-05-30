@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.123 $
-|   $Date: 2006-05-14 00:28:40 $
+|   $Revision: 1.124 $
+|   $Date: 2006-05-30 01:32:23 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -800,8 +800,6 @@ class newspost {
 		{
 			$_POST['news_end'] = 0;
 		}
-
-		$_POST['update_datestamp'] = 0;
 
 		if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['news_datestamp'], $matches))
 		{
