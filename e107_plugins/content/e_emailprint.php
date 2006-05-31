@@ -32,8 +32,8 @@ function print_item($id)
 
 		$mainparent					= $aa -> getMainParent($id);
 		$content_pref				= $aa -> getContentPref($mainparent);
-		$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
-		$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+		$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path"]);
+		$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path"]);
 		$img						= $tp -> parseTemplate('{CONTENT_PRINT_IMAGES}', FALSE, $content_shortcodes);
 
 		$text = "
@@ -100,8 +100,8 @@ function print_item_pdf($id){
 
 	$mainparent					= $aa -> getMainParent(intval($id));
 	$content_pref				= $aa -> getContentPref($mainparent);
-	$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
-	$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+	$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path"]);
+	$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path"]);
 	$img						= $tp -> parseTemplate('{CONTENT_PDF_IMAGES}', FALSE, $content_shortcodes);
 
 	//add custom and preset tags if present
@@ -112,7 +112,7 @@ function print_item_pdf($id){
 	if(!empty($custom)){
 		foreach($custom as $k => $v){
 			if($k == "content_custom_presettags"){
-				if(isset($content_pref["content_content_presettags_{$mainparent}"]) && $content_pref["content_content_presettags_{$mainparent}"]){
+				if(isset($content_pref["content_content_presettags"]) && $content_pref["content_content_presettags"]){
 					foreach($v as $ck => $cv){
 						if(is_array($cv)){	//date
 							if(!($cv['day']=="" && $cv['month']=="" && $cv['year']=="")){
@@ -130,7 +130,7 @@ function print_item_pdf($id){
 					}
 				}
 			}else{
-				if(isset($content_pref["content_content_customtags_{$mainparent}"]) && $content_pref["content_content_customtags_{$mainparent}"]){
+				if(isset($content_pref["content_content_customtags"]) && $content_pref["content_content_customtags"]){
 					$key = substr($k,15);
 					if( isset($key) && $key != "" && isset($v) && $v!="" ){
 						$CUSTOM_TAGS = TRUE;

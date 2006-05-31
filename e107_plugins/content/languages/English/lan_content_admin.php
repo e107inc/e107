@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-02-13 10:48:25 $
+|     $Revision: 1.8 $
+|     $Date: 2006-05-31 21:29:59 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -308,8 +308,7 @@ define("CONTENT_ADMIN_MENU_LAN_19", "Content Manager");
 define("CONTENT_ADMIN_MENU_LAN_20", "Top Rated Page");
 define("CONTENT_ADMIN_MENU_LAN_21", "Pages");
 define("CONTENT_ADMIN_MENU_LAN_22", "Top Score Page");
-
-
+define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Create Category");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Are you sure you want to delete this category?");
 define("CONTENT_ADMIN_JS_LAN_1", "Are you sure you want to delete this content?");
@@ -438,7 +437,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_17", "view category page (parent item, subcat
 define("CONTENT_ADMIN_OPT_LAN_MENU_18", "categories");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "recent items list");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "links to pages");
-
+define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin : Create Category");
 
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "sections");
@@ -473,7 +472,14 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_28", "of the category item");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_29", "of the list of subcategories");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_30", "enabled");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "disabled");
-
+define("CONTENT_ADMIN_OPT_LAN_SECTION_32", "subheading");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_33", "start date");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_34", "end date");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_35", "upload icon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_36", "assign icon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_37", "Admin : Create Category");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_38", "summary");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_39", "");
 
 
 define("CONTENT_PRESET_LAN_0", "error : fieldname not filled in");
@@ -575,7 +581,7 @@ define("CONTENT_ADMIN_OPT_LAN_59", "define the maximum width of the icon on icon
 define("CONTENT_ADMIN_OPT_LAN_60", "if the uploaded icon is greater than the given value, the icon will be resized to this value.<br />the icon will also be displayed with this value.");
 define("CONTENT_ADMIN_OPT_LAN_61", "px");
 define("CONTENT_ADMIN_OPT_LAN_62", "choose managers from this userclass");
-define("CONTENT_ADMIN_OPT_LAN_63", "The userlist in the admin content manager area will consist of only the users in the defined class. You still need to assign users to each category! This class will just narrow down the list of users to choose from");
+define("CONTENT_ADMIN_OPT_LAN_63", "For several areas you can define which userclass is able to actually view the page. With these options, you can limit certain areas and certain pages from view for certain userclasses.");
 define("CONTENT_ADMIN_OPT_LAN_64", "display email of non-member author");
 define("CONTENT_ADMIN_OPT_LAN_65", "display a letter index");
 define("CONTENT_ADMIN_OPT_LAN_66", "the letterindex is a list of buttons with all the first letters of the content heading fields. you can narrow down the archive list by clicking a certain letter so only content items starting with that letter will be displayed on the screen.");
@@ -648,9 +654,25 @@ define("CONTENT_ADMIN_OPT_LAN_132", "icon for recent items");
 define("CONTENT_ADMIN_OPT_LAN_133", "icon : width");
 define("CONTENT_ADMIN_OPT_LAN_134", "if chosen 'content icon', define the width of the icon to use");
 define("CONTENT_ADMIN_OPT_LAN_135", "caption recent item list");
-define("CONTENT_ADMIN_OPT_LAN_136", "");
-define("CONTENT_ADMIN_OPT_LAN_137", "");
-define("CONTENT_ADMIN_OPT_LAN_138", "");
-define("CONTENT_ADMIN_OPT_LAN_139", "");
+define("CONTENT_ADMIN_OPT_LAN_136", "Back End");
+define("CONTENT_ADMIN_OPT_LAN_137", "Front End");
+define("CONTENT_ADMIN_OPT_LAN_138", "Manage Content");
+define("CONTENT_ADMIN_OPT_LAN_139", "Create Content");
+define("CONTENT_ADMIN_OPT_LAN_140", "Manage Category");
+define("CONTENT_ADMIN_OPT_LAN_141", "Create Category");
+define("CONTENT_ADMIN_OPT_LAN_142", "Order");
+define("CONTENT_ADMIN_OPT_LAN_143", "Options");
+define("CONTENT_ADMIN_OPT_LAN_144", "Personal Content Manager");
+define("CONTENT_ADMIN_OPT_LAN_145", "Recent");
+define("CONTENT_ADMIN_OPT_LAN_146", "All Categories");
+define("CONTENT_ADMIN_OPT_LAN_147", "One Category");
+define("CONTENT_ADMIN_OPT_LAN_148", "Content Item");
+define("CONTENT_ADMIN_OPT_LAN_149", "Author Page");
+define("CONTENT_ADMIN_OPT_LAN_150", "Archive Page");
+define("CONTENT_ADMIN_OPT_LAN_151", "Top Rated Page");
+define("CONTENT_ADMIN_OPT_LAN_152", "Top Score Page");
+define("CONTENT_ADMIN_OPT_LAN_153", "Submit Page");
+define("CONTENT_ADMIN_OPT_LAN_154", "Manager Page");
+
 
 ?>

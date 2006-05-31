@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update_check.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-29 22:19:37 $
+|     $Revision: 1.8 $
+|     $Date: 2006-05-31 21:29:59 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -40,8 +40,8 @@ function update_content_07($type='')
 		}else{
 			$row = $sql->db_Fetch();
 			
-			//if version < 1.21, return FALSE = needed
-			if($row['plugin_version'] < 1.21){
+			//if version < 1.22, return FALSE = needed
+			if($row['plugin_version'] < 1.22){
 				return FALSE; //needed
 			}
 

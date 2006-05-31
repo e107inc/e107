@@ -11,13 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-01-13 20:03:44 $
+|     $Revision: 1.24 $
+|     $Date: 2006-05-31 21:29:59 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-
-if (!defined('e107_INIT')) { exit; }
 
 // ##### CONTENT CONTENT ------------------------------------------------------
 global $sc_style, $content_shortcodes;
@@ -75,29 +73,25 @@ $sc_style['CONTENT_CONTENT_TABLE_PARENT']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<td style='width:10%; white-space:nowrap; vertical-align:top; padding-right:10px;'>";
 $sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</td>";
 
-$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['pre'] = "<table cellpadding='0' cellspacing='0' style='width:100%; margin-bottom:10px;'><tr>";
+$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['pre'] = "<table cellpadding='0' cellspacing='0' style='width:100%; margin-bottom:20px;'><tr>";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['pre'] = "";
-$sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['post'] = "</tr></table><div style='clear:both;'><br /></div>";
+$sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['post'] = "</tr></table>";
 
-$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA']['pre'] = "<td style='vertical-align:top;' class='forumheader3'>";
-$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA']['post'] = "";
-$sc_style['CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA']['pre'] = "";
-$sc_style['CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA']['post'] = "</td>";
-
-
-$CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0' style='margin-bottom:20px;'><tr><td>
+$CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0'><tr><td>
 <div style='clear:both;'>
+
 	{CONTENT_CONTENT_TABLE_INFO_PRE}
 		{CONTENT_CONTENT_TABLE_ICON}
-		{CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA}
-			{CONTENT_CONTENT_TABLE_SUBHEADING}
-			{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE} {CONTENT_CONTENT_TABLE_REFER}
-			{CONTENT_CONTENT_TABLE_RATING}
-			{CONTENT_CONTENT_TABLE_FILE}
-		{CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA}
+		<td style='vertical-align:top;'>
+		{CONTENT_CONTENT_TABLE_SUBHEADING}
+		{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE} {CONTENT_CONTENT_TABLE_REFER}
+		{CONTENT_CONTENT_TABLE_RATING}
+		{CONTENT_CONTENT_TABLE_FILE}
+		</td>
 	{CONTENT_CONTENT_TABLE_INFO_POST}
-	<table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td class='forumheader3'>
+	<div style='clear:both;'><br /></div>
+	<table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>
 		{CONTENT_CONTENT_TABLE_IMAGES}
 		{CONTENT_CONTENT_TABLE_SUMMARY}
 		{CONTENT_CONTENT_TABLE_TEXT}

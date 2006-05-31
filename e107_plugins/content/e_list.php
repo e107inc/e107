@@ -38,8 +38,8 @@ if (!defined('e107_INIT')) { exit; }
 
 			//get path variables
 			$content_recent_pref = $aa -> getContentPref($mainparent);
-			$content_recent_pref["content_icon_path_{$mainparent}"] = ($content_recent_pref["content_icon_path_{$mainparent}"] ? $content_recent_pref["content_icon_path_{$mainparent}"] : "{e_PLUGIN}content/images/icon/" );
-			$content_icon_path = $tp -> replaceConstants($content_recent_pref["content_icon_path_{$mainparent}"]);
+			$content_recent_pref["content_icon_path"] = ($content_recent_pref["content_icon_path"] ? $content_recent_pref["content_icon_path"] : "{e_PLUGIN}content/images/icon/" );
+			$content_icon_path = $tp -> replaceConstants($content_recent_pref["content_icon_path"]);
 
 			//prepare query string
 			$array = $aa -> getCategoryTree("", $mainparent, TRUE);
@@ -78,7 +78,14 @@ if (!defined('e107_INIT')) { exit; }
 						}
 
 						$DATE = ($arr[5] ? $this -> getListDate($rowi['content_datestamp'], $mode) : "");
-						$ICON = $this -> getBullet($arr[6], $mode);
+						//$ICON = $this -> getBullet($arr[6], $mode);
+
+						$image_link_append = "<a href='".e_PLUGIN."content/content.php?content.".$rowi['content_id']."'>";
+						if($rowi['content_icon'] && file_exists(e_PLUGIN."content/images/icon/".$rowi['content_icon'])){
+							$ICON = $image_link_append."<img src='".e_PLUGIN."content/images/icon/".$rowi['content_icon']."' style='width:50px; border:1px solid #000;' alt='' /></a>";
+						}else{
+							$ICON = "";
+						}
 
 						//get author details
 						if($arr[3]){

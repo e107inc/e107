@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.43 $
-|		$Date: 2006-02-13 10:13:22 $
+|		$Revision: 1.44 $
+|		$Date: 2006-05-31 21:29:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ if(isset($_POST['uploadfile'])){
 		$new = "";
 		if($uploaded){
 			$uporg		= $uploaded[0]['name'];
-			$resize		= (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
+			$resize		= (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
 			if($uporg){
 				$new = $newpid."_".$uporg;
 				rename($pathtmp.$uporg, $pathtmp.$new);
@@ -85,8 +85,8 @@ if(isset($_POST['uploadfile'])){
 		$new = "";
 		if($uploaded){
 			$uporg		= $uploaded[0]['name'];
-			$resize		= (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
-			$resizethumb	= (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
+			$resize		= (isset($content_pref["content_upload_image_size"]) && $content_pref["content_upload_image_size"] ? $content_pref["content_upload_image_size"] : "500");
+			$resizethumb	= (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
 			if($uporg){
 				$new = $newpid."_".$uporg;
 				rename($pathtmp.$uporg, $pathtmp.$new);
@@ -110,9 +110,16 @@ class contentdb{
 			$_POST['content_heading']		= $tp -> toDB($_POST['content_heading']);
 			$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
 			$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
+
 			if(e_WYSIWYG){
 				$_POST['content_text']		= $tp->createConstants($_POST['content_text']); // convert e107_images/ to {e_IMAGE} etc.
 			}
+			//the problem with tiny_mce is it's storing e_HTTP with an image path, while it should only use the {e_xxx} variables
+			//this small check resolves this, and stores the paths correctly
+			if(strstr($_POST['content_text'],e_HTTP."{e_")){
+				$_POST['content_text'] = str_replace(e_HTTP."{e_", "{e_", $_POST['content_text']);
+			}
+			
 			$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
 			$_POST['parent']				= ($_POST['parent'] ? intval($_POST['parent']) : "0");
 			$_POST['content_class']			= ($_POST['content_class'] ? intval($_POST['content_class']) : "0");
@@ -150,18 +157,18 @@ class contentdb{
 			$mainparent						= $aa -> getMainParent(intval($_POST['parent']));
 			$content_pref					= $aa -> getContentPref($mainparent);
 			
-			$content_pref["content_icon_path_tmp_{$mainparent}"] = ($content_pref["content_icon_path_tmp_{$mainparent}"] ? $content_pref["content_icon_path_tmp_{$mainparent}"] : $content_pref["content_icon_path_{$mainparent}"]."tmp/");
-			$content_pref["content_file_path_tmp_{$mainparent}"] = ($content_pref["content_file_path_tmp_{$mainparent}"] ? $content_pref["content_file_path_tmp_{$mainparent}"] : $content_pref["content_file_path_{$mainparent}"]."tmp/");
-			$content_pref["content_image_path_tmp_{$mainparent}"] = ($content_pref["content_image_path_tmp_{$mainparent}"] ? $content_pref["content_image_path_tmp_{$mainparent}"] : $content_pref["content_image_path_{$mainparent}"]."tmp/");
+			$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
+			$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
+			$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
 			
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
-			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
-			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
-			$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp_{$mainparent}"]);
-			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp_{$mainparent}"]);
-			$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp_{$mainparent}"]);
+			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
+			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
+			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
+			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
+			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
+			$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
+			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
+			$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
 
 			//move icon to correct folder
 			if($_POST['content_icon']){
@@ -233,7 +240,7 @@ class contentdb{
 			}
 
 			//custom additional data tags
-			for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
+			for($i=0;$i<$content_pref["content_admin_custom_number"];$i++){
 				if(isset($_POST["content_custom_key_{$i}"]) && isset($_POST["content_custom_value_{$i}"]) && $_POST["content_custom_value_{$i}"] != ""){
 					$keystring = $tp->toDB($_POST["content_custom_key_{$i}"]);
 					$custom["content_custom_{$keystring}"] = $tp->toDB($_POST["content_custom_value_{$i}"]);
@@ -255,7 +262,7 @@ class contentdb{
 
 			if($mode == "create"){
 				if($type == "submit"){
-					$refer = ($content_pref["content_submit_directpost_{$mainparent}"] ? "" : "sa");
+					$refer = ($content_pref["content_submit_directpost"] ? "" : "sa");
 				}else{
 					$refer = "";
 				}
@@ -267,7 +274,7 @@ class contentdb{
 				}elseif($type == "contentmanager"){
 					js_location(e_SELF."?c");
 				}elseif($type == "submit"){
-					if($content_pref["content_submit_directpost_{$mainparent}"]){
+					if($content_pref["content_submit_directpost"]){
 						js_location(e_SELF."?s");
 					}else{
 						js_location(e_SELF."?d");
@@ -367,9 +374,9 @@ class contentdb{
 
 				//assign new preferences
 				if($value == "clear"){
-					$content_pref["content_manager_allowed_{$id}"] = "";
+					$content_pref["content_manager_allowed"] = "";
 				}else{
-					$content_pref["content_manager_allowed_{$id}"] = $value;
+					$content_pref["content_manager_allowed"] = $value;
 				}
 				
 				//create new array of preferences

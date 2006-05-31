@@ -17,7 +17,8 @@ if (!defined('CONTENT_ICON_OPTIONS')) { define("CONTENT_ICON_OPTIONS", "<img src
 if (!defined('CONTENT_ICON_USER')) { define("CONTENT_ICON_USER", "<img src='".$imagedir."users_16.png' alt='".CONTENT_ICON_LAN_3."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_FILE')) { define("CONTENT_ICON_FILE", "<img src='".$plugindir."images/file_16.png' alt='".CONTENT_ICON_LAN_4."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_NEW')) { define("CONTENT_ICON_NEW", "<img src='".$imagedir."articles_16.png' alt='".CONTENT_ICON_LAN_5."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_SUBMIT')) { define("CONTENT_ICON_SUBMIT", "<img src='".$plugindir."images/redo.png' alt='".CONTENT_ICON_LAN_6."' style='border:0; cursor:pointer;' />"); }
+if (!defined('CONTENT_ICON_SUBMIT')) { define("CONTENT_ICON_SUBMIT", "<img src='".$plugindir."images/submit_32.png' alt='".CONTENT_ICON_LAN_6."' style='border:0; cursor:pointer;' />"); }
+if (!defined('CONTENT_ICON_SUBMIT_SMALL')) { define("CONTENT_ICON_SUBMIT_SMALL", "<img src='".$plugindir."images/submit_16.png' alt='".CONTENT_ICON_LAN_6."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_AUTHORLIST')) { define("CONTENT_ICON_AUTHORLIST", "<img src='".$plugindir."images/personal.png' alt='".CONTENT_ICON_LAN_7."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_WARNING')) { define("CONTENT_ICON_WARNING", "<img src='".$plugindir."images/warning_16.png' alt='".CONTENT_ICON_LAN_8."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_OK')) { define("CONTENT_ICON_OK", "<img src='".$plugindir."images/ok_16.png' alt='".CONTENT_ICON_LAN_9."' style='border:0; cursor:pointer;' />"); }

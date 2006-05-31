@@ -11,13 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_manager_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-05-31 21:29:59 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-if (!defined('e107_INIT')) { exit; }
-
 global $sc_style, $content_shortcodes;
 
 // ##### CONTENT CONTENTMANAGER LIST --------------------------------------------------
@@ -33,9 +31,10 @@ if(!isset($CONTENT_CONTENTMANAGER_TABLE)){
 	$CONTENT_CONTENTMANAGER_TABLE = "
 	<tr>
 		<td class='forumheader3'>{CONTENT_CONTENTMANAGER_CATEGORY}</td>
-		<td class='forumheader3' style='width:10%;'>{CONTENT_CONTENTMANAGER_ICONEDIT} {CONTENT_CONTENTMANAGER_ICONNEW}</td>
+		<td class='forumheader3' style='width:10%;white-space:nowrap;'>{CONTENT_CONTENTMANAGER_ICONEDIT} {CONTENT_CONTENTMANAGER_ICONNEW} {CONTENT_CONTENTMANAGER_ICONSUBM}</td>
 	</tr>";
 }
+
 if(!isset($CONTENT_CONTENTMANAGER_TABLE_END)){
 	$CONTENT_CONTENTMANAGER_TABLE_END = "
 	</table>";

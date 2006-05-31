@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2006-02-13 10:13:22 $
+|		$Revision: 1.18 $
+|		$Date: 2006-05-31 21:29:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -59,9 +59,14 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS("delete")],$matches)){
 }
 
 //these have to be set for the tiny_mce wysiwyg
-$WYSIWYG	= true;
-$e_wysiwyg	= "content_text";
-
+$e_wysiwyg = "content_text";
+if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
+	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+	define("e_WYSIWYG",TRUE);
+	echo wysiwyg($e_wysiwyg);
+}else{
+	define("e_WYSIWYG",FALSE);
+}
 // ##### DB ---------------------------------------------------------------------------------------
 
 require_once(HEADERF);
@@ -70,7 +75,6 @@ require_once(HEADERF);
 function headerjs(){
 	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
 }
-
 
 if(isset($_POST['create_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
@@ -132,6 +136,27 @@ if(!e_QUERY){
 	//edit item
 	}elseif($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])){
 		$aform -> show_create_content("contentmanager", USERID, USERNAME);
+
+	//manage submitted
+	}elseif($qs[0] == "content" && $qs[1] == "submitted" && is_numeric($qs[2])){
+		//$aform -> show_submitted("contentmanager", USERID, USERNAME, $qs[2]);
+		$aform -> show_submitted($qs[2]);
+
+		//post submitted content item
+	}elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
+		$newqs = array_reverse($qs);
+		if($newqs[0] == "cu"){										//item; submit post / update redirect
+			$mainparent = $aa -> getMainParent($qs[2]);
+			$message = CONTENT_ADMIN_ITEM_LAN_117."<br /><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?content.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_124." <a href='".e_PLUGIN."content/content.php?content.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
+			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+			require_once(e_ADMIN."footer.php");
+			exit;
+		}
+		$aform -> show_create_content("sa", USERID, USERNAME);
 
 	}else{
 		header("location:".e_SELF); exit;
