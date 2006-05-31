@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.60 $
-|		$Date: 2006-02-13 10:13:22 $
+|		$Revision: 1.61 $
+|		$Date: 2006-05-31 21:29:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -116,12 +116,48 @@ if(isset($delete) && $delete == 'submitted'){
 	}
 }
 
+//update options
 if(isset($_POST['updateoptions'])){
 	$content_pref	= $aa -> UpdateContentPref($_POST['options_type']);
 	$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
 	if($_POST['options_type'] != "0"){
 		$message		.= $aa -> CreateParentMenu($_POST['options_type']);
 	}
+	$e107cache->clear($plugintable);
+}
+
+//update the inheritance of options
+if(isset($_POST['updateinherit'])){
+	foreach($_POST['id'] as $k=>$v){
+		//get current
+		$sql -> db_Select($plugintable, "content_pref", "content_id='".intval($k)."' ");
+		$row = $sql -> db_Fetch();
+		$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
+		//assign or remove inherit option
+		if(isset($_POST['content_inherit']) && isset($_POST['content_inherit'][$k]) ){
+			$content_pref['content_inherit'] = "1";
+		}else{
+			unset($content_pref['content_inherit']);
+		}
+		//update
+		$tmp = $eArrayStorage->WriteArray($content_pref);
+		$sql2 -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='".intval($k)."' ");
+	}
+	$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
+	$e107cache->clear($plugintable);
+}
+
+//update manager classes into preferences
+if(isset($_POST['update_manager'])){
+	$content_pref	= $aa -> UpdateContentPref($_POST['options_type']);
+	$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
+	$e107cache->clear($plugintable);
+}
+
+//update page restriction classes into preferences
+if(isset($_POST['update_restrict'])){
+	$content_pref	= $aa -> UpdateContentPref($_POST['options_type']);
+	$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
 	$e107cache->clear($plugintable);
 }
 
@@ -329,7 +365,7 @@ if(!e_QUERY){																//show main categories
 	}elseif($qs[0] == "manager" && !isset($qs[1]) ){
 		if(!getperms("0")){ header("location:".e_SELF); exit; }
 		//$aform -> show_admin_contentmanager();
-		$aform -> show_manage("manager");
+		$aform -> manager();
 	
 	//category content manager : view contentmanager
 	}elseif($qs[0] == "manager" && isset($qs[1]) && is_numeric($qs[1]) ){
@@ -338,14 +374,14 @@ if(!e_QUERY){																//show main categories
 			$message = $adb -> dbAssignAdmins("admin", intval($qs[1]), $qs[2]);
 			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 		}
-		$aform -> show_admin_contentmanager_category();
+		$aform -> manager_category();
 
 
 
 
 	//overview all categories
 	}elseif($qs[0] == "cat" && !isset($qs[1]) ){
-		$aform -> show_manage("category");
+		$aform -> manage_cat();
 
 	//create category
 	}elseif($qs[0] == "cat" && $qs[1] == "create" ){
@@ -377,7 +413,18 @@ if(!e_QUERY){																//show main categories
 		$aform -> show_create_category();
 
 
+
+	//restrict : choose category
+	}elseif($qs[0] == "restrict" && !isset($qs[1]) ){
+		//if(!getperms("0")){ header("location:".e_SELF); exit; }
+		$aform -> restrict();
+	
+	//restrict : view restrict for main parent
+	}elseif($qs[0] == "restrict" && isset($qs[1]) && is_numeric($qs[1]) ){
+		//if(!getperms("0")){ header("location:".e_SELF); exit; }
+		$aform -> restrict_category();
 	}
+
 }
 
 // ##### End --------------------------------------------------------------------------------------
@@ -436,10 +483,10 @@ function admin_content_config_adminmenu(){
 					unset($var);
 					$var=array();
 					$var['creation']['text']		= CONTENT_ADMIN_MENU_LAN_7;
+					$var['catcreation']['text']		= CONTENT_ADMIN_MENU_LAN_23;
 					$var['submission']['text']		= CONTENT_ADMIN_MENU_LAN_8;
 					$var['paththeme']['text']		= CONTENT_ADMIN_MENU_LAN_9;
 					$var['general']['text']			= CONTENT_ADMIN_MENU_LAN_10;
-					$var['contentmanager']['text']	= CONTENT_ADMIN_MENU_LAN_19;
 					$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
 
 					$sql = new db;
@@ -548,93 +595,10 @@ function headerjs(){
 	}
 	}
 	}
-	//<![CDATA[
-	// Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com)
-	function moveOver() {
-	var boxLength = document.getElementById('assignclass2').length;
-	var selectedItem = document.getElementById('assignclass1').selectedIndex;
-	var selectedText = document.getElementById('assignclass1').options[selectedItem].text;
-	var selectedValue = document.getElementById('assignclass1').options[selectedItem].value;
-	var i;
-	//var newvalues;
-	var isNew = true;
-	if (boxLength != 0) {
-	for (i = 0; i < boxLength; i++) {
-	thisitem = document.getElementById('assignclass2').options[i].text;
-	if (thisitem == selectedText) {
-	isNew = false;
-	break;
-	}
-	}
-	}
-	if (isNew) {
-	newoption = new Option(selectedText, selectedValue, false, false);
-	document.getElementById('assignclass2').options[boxLength] = newoption;
-	document.getElementById('assignclass1').options[selectedItem].text = '';
-	}
-	document.getElementById('assignclass1').selectedIndex=-1;
-	}
-
-
-	function removeMe() {
-	var boxLength = document.getElementById('assignclass2').length;
-	var boxLength2 = document.getElementById('assignclass1').length;
-	arrSelected = new Array();
-	var count = 0;
-	for (i = 0; i < boxLength; i++) {
-	if (document.getElementById('assignclass2').options[i].selected) {
-	arrSelected[count] = document.getElementById('assignclass2').options[i].value;
-	var valname = document.getElementById('assignclass2').options[i].text;
-	for (j = 0; j < boxLength2; j++) {
-	if (document.getElementById('assignclass1').options[j].value == arrSelected[count]){
-	document.getElementById('assignclass1').options[j].text = valname;
-	}
-	}
-
-	// document.getElementById('assignclass1').options[i].text = valname;
-	}
-	count++;
-	}
-	var x;
-	for (i = 0; i < boxLength; i++) {
-	for (x = 0; x < arrSelected.length; x++) {
-	if (document.getElementById('assignclass2').options[i].value == arrSelected[x]) {
-	document.getElementById('assignclass2').options[i] = null;
-	}
-	}
-	boxLength = document.getElementById('assignclass2').length;
-	}
-	}
-
-	function clearMe(clid) {
-	location.href = document.location + \".clear\";
-	}
-
-	function saveMe(clid) {
-	var strValues = \"\";
-	var boxLength = document.getElementById('assignclass2').length;
-	var count = 0;
-	if (boxLength != 0) {
-	for (i = 0; i < boxLength; i++) {
-	if (count == 0) {
-	strValues = document.getElementById('assignclass2').options[i].value;
-	} else {
-	strValues = strValues + \",\" + document.getElementById('assignclass2').options[i].value;
-	}
-	count++;
-	}
-	}
-	if (strValues.length == 0) {
-	//alert(\"You have not made any selections\");
-	}
-	else {
-	location.href = document.location + \".\" + strValues;
-	}
-	}
-	//]]>
 	</script>";
 
 	return $script;
+
 }
 
 ?>

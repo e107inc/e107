@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-29 23:01:57 $
+|     $Revision: 1.15 $
+|     $Date: 2006-05-31 21:29:59 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -37,13 +37,15 @@ define("CONTENT_ADMIN_HELP_ORDER_3", "<i>this page shows all content items from 
 define("CONTENT_ADMIN_HELP_OPTION_1", "On this page you can select a main parent category to set options for, or you can choose to edit the default preferences.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_OPTIONS." : edit the options<br /><br /><br />
 The default preferences are only used when you create a new main parent. So when you create a new main parent these default preferences will be stored. You can change these to make sure newly created main parents already have a certain set of features present.
 <br /><br />
-Each main parent has its own set of options, which are unique to that specific main parent category");
+Each main parent has its own set of options, which are unique to that specific main parent category<br /><br />
+<b>inherit</b><br />The inherit checkboxes allow you to overrride the main parents individual options, and use the default preferences for the checked main parents.");
 
 //define("CONTENT_ADMIN_HELP_OPTION_2", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />");
 //<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
-define("CONTENT_ADMIN_HELP_MANAGER_1", "On this page you see a list of all categories. You can manage the 'personal content manager' for each category by clicking the icon.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : edit the personal content managers<br />");
+define("CONTENT_ADMIN_HELP_MANAGER_1", "On this page you see a list of all categories. You can manage the 'personal content manager' for each category by clicking the icon.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : edit the personal content managers<br />");
 
-define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>on this page you can assign users to the selected category you have clicked</i><br /><br /><b>personal manager</b><br />you can assign users to certain categories. In doing so, these users can manage their personal content items within these categories from outside of the admin page (content_manager.php).<br /><br />Assign users from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the users in the right colomn are assigned to this category.");
+define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>on this page you can assign the userclasses to the selected category you have clicked</i><br /><br /><b>personal manager</b><br />You can define classes for the different types of personal managers. currently there are three types of managers you can define:<br /><br />approve submitted: users with this class are able to approve submitted content items<br /><br />personal manager: users with this class are able to manage only their personal content items<br /><br />category manager: users with this class are able to manage all content items in this category<br />");
+
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>On this page you see a list of all content items that were submitted by users.</i><br /><br /><b>detailed list</b><br />You see a list of these content items with their id, icon, main parent, heading [subheading], author and options.<br /><br /><b>options</b><br />you can post or delete a content item using the buttons shown.");
 
@@ -57,7 +59,7 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "In the Path and Theme Options you can
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "The General Options are options that are used throughout the content pages of the content management plugin.");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "These options have affect on the Personal Content Manager area on the content management admin area.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "These Options are used in the Menu for this main parent if you have activated the menu.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
 
@@ -75,4 +77,5 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "The Top Rated Page shows all content
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "The Top Score Page shows all content items that have been given a score by the author of the content item.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "this page allows you to set options for the admin create category page.<br /><br />You can define which sections are available when an admin (or personal content manager) creates a new content category.");
 ?>
