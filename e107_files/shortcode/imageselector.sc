@@ -1,4 +1,4 @@
-// $Id: imageselector.sc,v 1.3 2006-05-31 00:31:59 e107coders Exp $
+// $Id: imageselector.sc,v 1.4 2006-05-31 06:33:28 e107coders Exp $
 
 global $sql,$parm;
 
@@ -15,7 +15,7 @@ global $sql,$parm;
 
   //	$paths = explode("|",$path);
     $recurse = ($subdirs) ? $subdirs : 0;
-	if($imagelist = $fl->get_files($path,".jpg|.gif|.png", 'standard', $recurse)){
+	if($imagelist = $fl->get_files($path,".jpg|.gif|.png|.JPG|.GIF|.PNG", 'standard', $recurse)){
 		sort($imagelist);
 	}
 
@@ -29,7 +29,7 @@ global $sql,$parm;
 	foreach($imagelist as $icon)
 	{
 		$dir = str_replace($path,"",$icon['path']);
-		$selected = ($default == $icon['fname']) ? " selected='selected'" : "";
+		$selected = ($default == $dir.$icon['fname']) ? " selected='selected'" : "";
 		$text .= "<option value='".$dir.$icon['fname']."'".$selected.">".$dir.$icon['fname']."</option>\n";
 	}
 	$text .= "</select>";
