@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Danish/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-03-23 16:01:01 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-01 13:00:27 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -320,7 +320,7 @@ define("CONTENT_ADMIN_JS_LAN_5", "fil");
 define("CONTENT_ADMIN_JS_LAN_6", "ID");
 define("CONTENT_ADMIN_JS_LAN_7", "er du sikker p&aring; du vil fjerne det nuv&aelig;rrende ikon ?");
 define("CONTENT_ADMIN_JS_LAN_8", "ikon");
-define("CONTENT_ADMIN_JS_LAN_9", "BEM&AELIG;RK :\\nkun tomme kategorier kan slettes.\\nen kategori er tom hvis den IKKE indeholder underkategorier og\\nhvis den IKKE indeholder indholds emner!");
+define("CONTENT_ADMIN_JS_LAN_9", "BEM&AElig;RK :\\nkun tomme kategorier kan slettes.\\nen kategori er tom hvis den IKKE indeholder underkategorier og\\nhvis den IKKE indeholder indholds emner!");
 define("CONTENT_ADMIN_JS_LAN_10", "Er du sikker p&aring; du vil slette dette bruger tilf&oslash;jede indhold f&oslash;r du poster det?");
 
 
@@ -440,7 +440,6 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_19", "seneste emners liste");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "links til sider");
 
 
-
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "sektioner");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "v&aelig;lg hvad der skal vises");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_2", "vedh&aelig;ftninger");
@@ -473,7 +472,14 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_28", "af kategori emne");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_29", "af listen over underkategorier");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_30", "sl&aring;et til");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "sl&aring;et fra");
-
+define("CONTENT_ADMIN_OPT_LAN_SECTION_32", "undertitel");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_33", "start dato");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_34", "slut dato");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_35", "upload ikon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_36", "tildel ikon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_37", "Admin : Opret Kategori");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_38", "opsummering");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_39", "");
 
 
 define("CONTENT_PRESET_LAN_0", "fejl : feltnavn ikke udfyldt");
@@ -648,9 +654,25 @@ define("CONTENT_ADMIN_OPT_LAN_132", "ikon for seneste emner");
 define("CONTENT_ADMIN_OPT_LAN_133", "ikon : bredde");
 define("CONTENT_ADMIN_OPT_LAN_134", "hvis valgt 'indholds ikon', definer bredden p&aring; ikonet der skal bruges");
 define("CONTENT_ADMIN_OPT_LAN_135", "overskrift seneste emne liste");
-define("CONTENT_ADMIN_OPT_LAN_136", "");
-define("CONTENT_ADMIN_OPT_LAN_137", "");
-define("CONTENT_ADMIN_OPT_LAN_138", "");
-define("CONTENT_ADMIN_OPT_LAN_139", "");
+define("CONTENT_ADMIN_OPT_LAN_136", "Bagside");
+define("CONTENT_ADMIN_OPT_LAN_137", "Forside");
+define("CONTENT_ADMIN_OPT_LAN_138", "H&aring;ndter Indhold");
+define("CONTENT_ADMIN_OPT_LAN_139", "Opret Indhold");
+define("CONTENT_ADMIN_OPT_LAN_140", "H&aring;ndter Kategori");
+define("CONTENT_ADMIN_OPT_LAN_141", "Opret Kategori");
+define("CONTENT_ADMIN_OPT_LAN_142", "Orden");
+define("CONTENT_ADMIN_OPT_LAN_143", "Egenskaber");
+define("CONTENT_ADMIN_OPT_LAN_144", "Personlig Indholds H&aring;ndtering");
+define("CONTENT_ADMIN_OPT_LAN_145", "Seneste");
+define("CONTENT_ADMIN_OPT_LAN_146", "Alle Kategorier");
+define("CONTENT_ADMIN_OPT_LAN_147", "En Kategori");
+define("CONTENT_ADMIN_OPT_LAN_148", "Indholds Emne");
+define("CONTENT_ADMIN_OPT_LAN_149", "Forfatter Side");
+define("CONTENT_ADMIN_OPT_LAN_150", "Arkiv Side");
+define("CONTENT_ADMIN_OPT_LAN_151", "Top Bed&oslash;mte Side");
+define("CONTENT_ADMIN_OPT_LAN_152", "Top Score Side");
+define("CONTENT_ADMIN_OPT_LAN_153", "Tilf&oslash;j Side");
+define("CONTENT_ADMIN_OPT_LAN_154", "H&aring;ndter Side");
+
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Danish/lan_content_help.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-24 11:39:08 $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-01 13:00:27 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -37,14 +37,15 @@ define("CONTENT_ADMIN_HELP_ORDER_3", "<i>denne side viser alle indholds emner fr
 define("CONTENT_ADMIN_HELP_OPTION_1", "På denne side kan du vælge en hoved kategori forælder til at indstille egenskaber for, eller du kan vælge at redigere standard indstillingerne.<br /><br /><b>forklaring af ikoner</b><br />".CONTENT_ICON_USER." : link til forfatter profilen<br />".CONTENT_ICON_LINK." : link til kategorien<br />".CONTENT_ICON_OPTIONS." : rediger egenskaber<br /><br /><br />
 Standard indstillingerne bruges kun når du opretter en ny hoved forælder. Så når du opretter en hoved forælder vil disse standard indstillinger blive gemt. Du kan ændre disse for at sikre at nyligt oprettede hoved forældre allerede har et bestemt sæt muligheder tilstede.
 <br /><br />
-Hver hoved forælder har sit eget sæt indstillinger, der er unikke til den bestemte hoved kategori forælder");
-
+Hver hoved forælder har sit eget sæt indstillinger, der er unikke til den bestemte hoved kategori forælder<br /><br />
+<b>nedarve</b><br />Nedarv tjekboksene lader dig tilsidesætte hovedforældrernes individuelle egenskaber, og bruge standard indstillingerne for de markerede hoved forældre.");
 
 //define("CONTENT_ADMIN_HELP_OPTION_2", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />");
 //<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
 define("CONTENT_ADMIN_HELP_MANAGER_1", "På denne side kan du se en liste over alle kategorier. Du kan håndtere 'personlig indholds håndtering' for hver kategori ved at klikke på ikonet.<br /><br /><b>forklaring af ikoner</b><br />".CONTENT_ICON_USER." : link til forfatter profilen<br />".CONTENT_ICON_LINK." : link til kategorien<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : rediger personlig indholds håndtering<br />");
 
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>på denne side kan du tildele brugere til den kategori du har klikket på</i><br /><br /><b>personlig håndtering</b><br />du kan tildele brugere til bestemte kategorier. Ved at gøre detteo, kan disse brugere håndtere deres personlige indholds emner inden for disse kategorier uden for admin siden (content_manager.php).<br /><br />Tildel brugere fra venstre kolonne ved at klikke på deres navn. du vil se nevnet flyttes til den højre kolonne. Efter du klikker på tildel knappen vil brugerne i den højre kolonne være tildelt til denne kategori.");
+
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>På denne side kan du se en liste over alle indholds emner der er tilføjet af brugere.</i><br /><br /><b>detaljeret liste</b><br />Du ser en liste over disse indholds emner med deres id, ikon, hoved forælder, overskrift [underoverskrift], forfatter og egenskaber.<br /><br /><b>egenskaber</b><br />du kan oprette eller slette et indholds emne ved hjælp af de viste knapper.");
 
@@ -76,4 +77,5 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "Top Bedømt Siden viser alle indhold
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "Top Score Siden viser alle indholds emner der har fået en score af forfatteren til indholds emnet.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "denne side lader dig indstille egenskaber for admin opret kategori siden.<br /><br />Du kan definere hvilke sektioner der er tilgængelige når en admin (eller personlig indholds håndterer) opretter en ny indholds kategori.");
 ?>

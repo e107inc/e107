@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Danish/lan_content_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:21 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-01 13:00:27 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -37,14 +37,15 @@ define("CONTENT_ADMIN_HELP_ORDER_3", "<i>denne side viser alle indholds emner fr
 define("CONTENT_ADMIN_HELP_OPTION_1", "P&aring; denne side kan du v&aelig;lge en hoved kategori for&aelig;lder til at indstille egenskaber for, eller du kan v&aelig;lge at redigere standard indstillingerne.<br /><br /><b>forklaring af ikoner</b><br />".CONTENT_ICON_USER." : link til forfatter profilen<br />".CONTENT_ICON_LINK." : link til kategorien<br />".CONTENT_ICON_OPTIONS." : rediger egenskaber<br /><br /><br />
 Standard indstillingerne bruges kun n&aring;r du opretter en ny hoved for&aelig;lder. S&aring; n&aring;r du opretter en hoved for&aelig;lder vil disse standard indstillinger blive gemt. Du kan &aelig;ndre disse for at sikre at nyligt oprettede hoved for&aelig;ldre allerede har et bestemt s&aelig;t muligheder tilstede.
 <br /><br />
-Hver hoved for&aelig;lder har sit eget s&aelig;t indstillinger, der er unikke til den bestemte hoved kategori for&aelig;lder");
-
+Hver hoved for&aelig;lder har sit eget s&aelig;t indstillinger, der er unikke til den bestemte hoved kategori for&aelig;lder<br /><br />
+<b>nedarve</b><br />Nedarv tjekboksene lader dig tilsides&aelig;tte hovedfor&aelig;ldrernes individuelle egenskaber, og bruge standard indstillingerne for de markerede hoved for&aelig;ldre.");
 
 //define("CONTENT_ADMIN_HELP_OPTION_2", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />");
 //<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
 define("CONTENT_ADMIN_HELP_MANAGER_1", "P&aring; denne side kan du se en liste over alle kategorier. Du kan h&aring;ndtere 'personlig indholds h&aring;ndtering' for hver kategori ved at klikke p&aring; ikonet.<br /><br /><b>forklaring af ikoner</b><br />".CONTENT_ICON_USER." : link til forfatter profilen<br />".CONTENT_ICON_LINK." : link til kategorien<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : rediger personlig indholds h&aring;ndtering<br />");
 
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>p&aring; denne side kan du tildele brugere til den kategori du har klikket p&aring;</i><br /><br /><b>personlig h&aring;ndtering</b><br />du kan tildele brugere til bestemte kategorier. Ved at g&oslash;re detteo, kan disse brugere h&aring;ndtere deres personlige indholds emner inden for disse kategorier uden for admin siden (content_manager.php).<br /><br />Tildel brugere fra venstre kolonne ved at klikke p&aring; deres navn. du vil se nevnet flyttes til den h&oslash;jre kolonne. Efter du klikker p&aring; tildel knappen vil brugerne i den h&oslash;jre kolonne v&aelig;re tildelt til denne kategori.");
+
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>P&aring; denne side kan du se en liste over alle indholds emner der er tilf&oslash;jet af brugere.</i><br /><br /><b>detaljeret liste</b><br />Du ser en liste over disse indholds emner med deres id, ikon, hoved for&aelig;lder, overskrift [underoverskrift], forfatter og egenskaber.<br /><br /><b>egenskaber</b><br />du kan oprette eller slette et indholds emne ved hj&aelig;lp af de viste knapper.");
 
@@ -76,4 +77,5 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "Top Bed&oslash;mt Siden viser alle i
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "Top Score Siden viser alle indholds emner der har f&aring;et en score af forfatteren til indholds emnet.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "denne side lader dig indstille egenskaber for admin opret kategori siden.<br /><br />Du kan definere hvilke sektioner der er tilg&aelig;ngelige n&aring;r en admin (eller personlig indholds h&aring;ndterer) opretter en ny indholds kategori.");
 ?>
