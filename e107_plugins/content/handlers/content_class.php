@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.90 $
-|		$Date: 2006-06-01 11:54:32 $
+|		$Revision: 1.91 $
+|		$Date: 2006-06-01 12:37:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -973,12 +973,16 @@ class content{
 					if(isset($content_pref["content_{$mode}_authoremail"]) && $authordetails[2]){
 						if($authordetails[0] == "0"){
 							if(isset($content_pref["content_{$mode}_authoremail_nonmember"]) && $content_pref["content_{$mode}_authoremail_nonmember"] && strpos($authordetails[2], "@") ){
-								$authorinfo = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+								//$authorinfo = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+								
+								$authorinfo = preg_replace("#([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\"; return true;' onmouseout='window.status=\"\";return true;'>".$authordetails[1]."</a>", $authordetails[2]);
 							}else{
 								$authorinfo = $authordetails[1];
 							}
 						}else{
-							$authorinfo = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+							//$authorinfo = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+
+							$authorinfo = preg_replace("#([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\"; return true;' onmouseout='window.status=\"\";return true;'>".$authordetails[1]."</a>", $authordetails[2]);
 						}
 					}else{
 						$authorinfo = $authordetails[1];
