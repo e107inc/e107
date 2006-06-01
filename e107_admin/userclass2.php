@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-02-13 03:04:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2006-06-01 10:47:41 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -165,7 +165,7 @@ if (isset($message))
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$class_total = $sql->db_Select("userclass_classes");
+$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
 
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='classForm'>
