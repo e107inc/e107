@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.44 $
-|		$Date: 2006-05-31 21:29:59 $
+|		$Revision: 1.45 $
+|		$Date: 2006-06-01 12:51:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -319,7 +319,7 @@ class contentdb{
 				$_POST['cat_text']		= $tp->createConstants($_POST['cat_text']); // convert e107_images/ to {e_IMAGE} etc.
 			}
 			$_POST['cat_text']			= $tp -> toDB($_POST['cat_text']);
-			$_POST['parent']			= ($_POST['parent'] == "0" ? "0" : "0.".intval($_POST['parent']));
+			$_POST['parent']			= ($_POST['parent'] == "0" || $_POST['parent']==$_POST['cat_id'] ? "0" : "0.".intval($_POST['parent']));
 			$_POST['cat_class']			= ($_POST['cat_class'] ? intval($_POST['cat_class']) : "0");
 
 			if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
