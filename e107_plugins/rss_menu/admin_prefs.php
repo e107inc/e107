@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-05-25 03:35:17 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-01 20:34:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,7 @@ if(isset($_POST['updatesettings'])){
 	$pref['rss_feeds'] = implode(",",$_POST['feeds']);
 	$pref['rss_newscats'] = $_POST['rss_newscats'];
 	$pref['rss_dlcats'] = $_POST['rss_dlcats'];
+	$pref['rss_othernews'] = $_POST['rss_othernews'];
 	save_prefs();
 	$message = LAN_SAVED;
 }
@@ -46,7 +47,7 @@ if(isset($message)){
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table class='fborder' style='width:94%' class='fborder'>
+<table class='fborder' style='width:94%' >
 <tr><td class='fcaption'>".BACKEND_MENU_L2."</td><td class='fcaption'>Enable</td></tr>";
 
 	$feedlist[1] = "News";
@@ -72,6 +73,12 @@ $text = "<div style='text-align:center'>
 	$text .="</td></tr>";
 	}
 
+	$text .= "<tr><td class='forumheader3'>".RSS_LAN04."</td>";
+	$text .= "<td class='forumheader3'>";
+	$sel = ($pref['rss_othernews'] == 1) ? " checked='checked' " : "";
+	$text .= "<input type='checkbox' $sel name='rss_othernews' value='1' />
+				</td></tr>";
+
 	$text .= "<tr><td class='forumheader3'>".RSS_LAN01."</td>";
 	$text .= "<td class='forumheader3'>";
 	$sel = ($pref['rss_newscats'] == 1) ? " checked='checked' " : "";
@@ -83,6 +90,9 @@ $text = "<div style='text-align:center'>
 	$sel = ($pref['rss_dlcats'] == 1) ? " checked='checked' " : "";
 	$text .= "<input type='checkbox' $sel name='rss_dlcats' value='1' />
 				</td></tr>";
+
+
+
 
 	$text .="<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center' class='forumheader'>
