@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-04-05 12:19:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2006-06-01 20:34:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -96,11 +96,15 @@ class rssCreate {
 			case 1:
 				$topic = (is_numeric($topic_id))? " AND news_category = ".intval($topic_id) : "";
 				$this -> contentType = "news";
+				$render = ($pref['rss_othernews'] != 1) ? "AND n.news_render_type < 2" : "";
+
 				$this -> rssQuery = "
 				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 $topic ORDER BY news_datestamp DESC LIMIT 0,9";
+				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY news_datestamp DESC LIMIT 0,9";
+
+
 				$sql->db_Select_gen($this -> rssQuery);
 
 				$tmp = $sql->db_getList();
@@ -120,7 +124,7 @@ class rssCreate {
                     $this -> rssItems[$loop]['author_email'] = $value['user_email'];
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 
-					if($value['news_allow_comments']){
+					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1){
 						$this -> rssItems[$loop]['comment'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id;
                     }
 					$this -> rssItems[$loop]['pubdate'] = $value['news_datestamp'];
