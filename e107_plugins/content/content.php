@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.92 $
-|		$Date: 2006-05-31 21:29:59 $
+|		$Revision: 1.93 $
+|		$Date: 2006-06-01 10:00:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1202,7 +1202,16 @@ function show_content_item(){
 
 					$lastpage = FALSE;		//boolean whether or not the current page is the last page
 					if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches)){
+						//remove html bbcode (since we're splitting the text, the html bbcode would not be parsed)
+						$row['content_text'] = preg_replace("/\\[html\](.*?)\[\/html\]/si", '\1', $row['content_text']);
+						//split newpage
 						$pages = preg_split("/\[newpage.*?]/si", $row['content_text'], -1, PREG_SPLIT_NO_EMPTY);
+						$pages = array_values($pages);
+
+						//remove empty values
+						if(trim($pages[0]) == ""){
+							unset($pages[0]);
+						}
 						$pages = array_values($pages);
 
 						if(count($pages) == count($matches[0])){
