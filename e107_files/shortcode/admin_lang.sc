@@ -65,7 +65,7 @@ if (ADMIN) {
 		$text .= "<br /><br /></div>";
 
 		$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
+		<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
 		<div>
 		<select name='sitelanguage' class='tbox'>";
 
