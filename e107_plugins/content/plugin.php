@@ -21,7 +21,7 @@ include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/En
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = CONTENT_PLUGIN_LAN_1;
-$eplug_version = "1.21";
+$eplug_version = "1.22";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
 $eplug_url = "http://eindhovenseschool.net";
