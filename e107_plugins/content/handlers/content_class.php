@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.89 $
-|		$Date: 2006-05-31 21:29:59 $
+|		$Revision: 1.90 $
+|		$Date: 2006-06-01 11:54:32 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -399,7 +399,7 @@ class content{
 				if(e_PAGE == "admin_content_config.php" && isset($qs[0]) && $qs[0] == 'option'){
 				}else{
 					//check inheritance, if set, get core prefs (default prefs)
-					if(isset($content_pref['content_inherit'])){
+					if(isset($content_pref['content_inherit']) && $content_pref['content_inherit']!=''){
 						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 						$row = $sql -> db_Fetch();
 						$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
