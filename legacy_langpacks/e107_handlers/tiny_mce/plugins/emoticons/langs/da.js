@@ -1,4 +1,4 @@
 // UK lang variables
 
-tinyMCELang['lang_insert_emotions_title'] = 'Inds&aelig;t smiley';
-tinyMCELang['lang_emotions_desc'] = 'Smileys';
+tinyMCELang['lang_insert_emoticons_title'] = 'Inds&aelig;t smiley';
+tinyMCELang['lang_emoticons_desc'] = 'Smileys';
