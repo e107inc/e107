@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2006-05-16 17:29:51 $
+|     $Revision: 1.64 $
+|     $Date: 2006-06-02 00:22:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,8 @@ require_once('../../class2.php');
 @include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php';
 @include_once e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php';
 @require_once(e_PLUGIN.'forum/forum_class.php');
+
+
 global $FORUM_CRUMB;
 
 if (file_exists(THEME.'forum_design.php'))
@@ -228,41 +230,6 @@ if ($message)
 {
 	$ns->tablerender("", $message, array('forum_viewtopic', 'msg'));
 }
-
-if (isset($_POST['pollvote']))
-{
-	if ($_POST['votea'])
-	{
-		if($sql -> db_Select("polls", "*", "poll_datestamp=$thread_id"))
-		{
-			$row = $sql -> db_Fetch();
-			extract($row);
-			$votes = explode(chr(1), $poll_votes);
-			if(is_array($_POST['votea']))
-			{
-				/* multiple choice vote */
-				foreach($_POST['votea'] as $vote)
-				{
-					$vote = intval($vote);
-					$votes[($vote-1)] ++;
-				}
-			}
-			else
-			{
-				$_POST['votea'] = intval($_POST['votea']);
-				$votes[($_POST['votea']-1)] ++;
-			}
-
-			$votep = implode(chr(1), $votes);
-
-			$sql->db_Update("polls", "poll_votes = '$votep' WHERE poll_id=".intval($poll_id));
-			$POLLMODE = "voted";
-			js_location(e_SELF.(e_QUERY ? "?".e_QUERY : ''));
-
-		}
-	}
-}
-
 
 if (stristr($thread_info['head']['thread_name'], "[".LAN_430."]"))
 {
