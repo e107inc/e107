@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2006-05-24 01:13:35 $
-|     $Author: e107coders $
+|     $Revision: 1.89 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -130,7 +130,7 @@ class sitelinks
 			$text .= implode($style['linkseparator'], $render_link);
 			$text .= $style['postlink'];
 			if ($style['linkdisplay'] == 2)	{
-				$text = $ns->tablerender(LAN_183, $text, 'sitelinks', TRUE);
+				$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks', TRUE);
 			}
 		}
 		else
@@ -143,7 +143,7 @@ class sitelinks
 				}
 				$text .= $style['postlink'];
 			}
-			$text = $ns->tablerender(LAN_183, $text, 'sitelinks_main', TRUE);
+			$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks_main', TRUE);
 			foreach(array_keys($this->eLinkList) as $k)
 			{
 				$mnu = $style['prelink'];

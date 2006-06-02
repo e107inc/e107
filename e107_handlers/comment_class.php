@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-05-13 15:05:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.59 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,14 +57,14 @@ class comment {
 			$ns = new e107table;
 			if ($action == "reply" && substr($subject, 0, 4) != "Re: ")
 			{
-				$subject = COMLAN_5.' '.$subject;
+				$subject = COMLAN_325.' '.$subject;
 			}
 
 			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:100%'>";
 
 			if ($pref['nested_comments'])
 			{
-				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='61' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%'>".COMLAN_324."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='61' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
 				$text2 = "";
 			}
 			else
@@ -98,18 +98,18 @@ class comment {
 
 				if($prid != USERID || !USER)
 				{
-					echo "<div style='text-align: center;'>Unauthorized</div>";
+					echo "<div style='text-align: center;'>".COMLAN_329."</div>";
 					require_once(FOOTERF);
 					exit;
 				}
 
-				$caption = LAN_318;
+				$caption = COMLAN_318;
 				$comval = $tp -> toFORM($ecom['comment_comment']);
-				$comval = preg_replace("#\[ ".LAN_319.".*\]#si", "", $comval);
+				$comval = preg_replace("#\[ ".COMLAN_319.".*\]#si", "", $comval);
 			}
 			else
 			{
-				$caption = LAN_9;
+				$caption = COMLAN_9;
 				$comval = "";
 			}
 
@@ -121,17 +121,17 @@ class comment {
 				require_once(e_HANDLER."rate_class.php");
 				if(!is_object($rater)){ $rater = new rater; }
 				$rate = $rater -> composerating($table, $itemid, $enter=TRUE, USERID, TRUE);
-				$rate = "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_7.":</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
+				$rate = "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_327.":</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
 			}
 			//end rating area
 
 			if (ANON == TRUE && USER == FALSE)
 			{
-				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='61' value='$author_name' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".COMLAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='61' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= $rate."<tr> \n
-			<td style='width:20%; vertical-align:top;'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='tbox' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
-			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
+			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='tbox' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
+			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 
 			if($tablerender)
 			{
@@ -149,7 +149,7 @@ class comment {
 		}
 		else
 		{
-			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
+			echo "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
 		}
 	}
 
@@ -199,10 +199,10 @@ class comment {
 		$ns			= new e107table;
 		if(!$gen || !is_object($gen)){ $gen = new convert; }
 		$url		= e_PAGE."?".e_QUERY;
-		$unblock	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_1."</a>] ";
-		$block		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_2."</a>] ";
-		$delete		= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_3."</a>] ";
-		$userinfo	= "[<a href='".e_ADMIN_ABS."userinfo.php?".$comrow['comment_ip']."'>".LAN_4."</a>]";
+		$unblock	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
+		$block		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
+		$delete		= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
+		$userinfo	= "[<a href='".e_ADMIN_ABS."userinfo.php?".$comrow['comment_ip']."'>".COMLAN_4."</a>]";
 
 		if (!$COMMENTSTYLE) {
 			global $THEMES_DIRECTORY;
@@ -341,7 +341,7 @@ class comment {
 							list($cuser_id, $cuser_name) = $sql2->db_Fetch();
 							$nick = $cuser_id.".".$cuser_name;
 						} else {
-							define("emessage", LAN_310);
+							define("emessage", COMLAN_310);
 						}
 					} else {
 						$nick = "0.".$tp->toDB($author_name);
@@ -357,7 +357,7 @@ class comment {
 
 					if($editpid)
 					{
-						$comment .= "\n[ ".LAN_319." [time=short]".time()."[/time] ]";
+						$comment .= "\n[ ".COMLAN_319." [time=short]".time()."[/time] ]";
 						$sql -> db_Update("comments", "comment_comment='$comment' WHERE comment_id='".intval($editpid)."' ");
 						$e107cache->clear("comment");
 						return;
@@ -365,7 +365,7 @@ class comment {
 
 					if (!$sql->db_Insert("comments", "0, '".intval($pid)."', '".intval($id)."', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '".$tp -> toDB($type, true)."', '0' "))
 					{
-						echo "<b>".COMLAN_3."</b> ".LAN_11;
+						echo "<b>".COMLAN_323."</b> ".COMLAN_11;
 					}
 					else
 					{
@@ -385,7 +385,7 @@ class comment {
 		}
 		else
 		{
-			define("emessage", LAN_312);
+			define("emessage", COMLAN_312);
 		}
 		//if rateindex is posted, enter the rating from this user
 		if($rateindex){
@@ -499,7 +499,7 @@ class comment {
 
 			if ($tablerender)
 			{
-				$text = $ns->tablerender(LAN_99, $text, '', TRUE);
+				$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
 			}
 
 			if (!$return)
@@ -513,7 +513,7 @@ class comment {
 
 			if (ADMIN && getperms("B"))
 			{
-				$modcomment =  "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
+				$modcomment =  "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a></div><br />";
 			}
 		}
 
@@ -523,7 +523,7 @@ class comment {
 		}
 		else
 		{
-			$comment = "<br /><div style='text-align:center'><b>".COMLAN_8."</b></div>";
+			$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
 		}
 
 		if (!$return)
@@ -533,7 +533,7 @@ class comment {
 
 		$ret['comment'] .= $modcomment;
 		$ret['comment_form'] = $comment;
-		$ret['caption'] = LAN_99;
+		$ret['caption'] = COMLAN_99;
 
 		return (!$return) ? "" : $ret;
 	}

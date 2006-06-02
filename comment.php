@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-01-09 12:43:02 $
-|     $Author: sweetas $
+|     $Revision: 1.48 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -165,7 +165,7 @@ if ($action == "reply") {
 			} else {
 				list($news['news_title']) = $sql->db_Fetch();
 				$subject = $news['news_title'];
-				$title = LAN_100;
+				$title = COMLAN_100;
 			}
 		} elseif ($table == "poll") {
 			if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' ")) {
@@ -174,7 +174,7 @@ if ($action == "reply") {
 			} else {
 				list($poll['poll_title']) = $sql->db_Fetch();
 				$subject = $poll['poll_title'];
-				$title = LAN_101;
+				$title = COMLAN_101;
 			}
 		} elseif ($table == "content") {
 			$sql->db_Select("content", "content_heading", "content_id='{$nid}'");
@@ -189,17 +189,17 @@ if ($action == "reply") {
 		list($content['content_type']) = $sql->db_Fetch();
 		if ($content['content_type'] == "0") {
 			$content_type = "article";
-			$title = LAN_103;
+			$title = COMLAN_103;
 		} elseif ($content['content_type'] == "3") {
 			$content_type = "review";
-			$title = LAN_104;
+			$title = COMLAN_104;
 		} elseif ($content['content_type'] == "1") {
 			$content_type = "content";
-			$title = LAN_105;
+			$title = COMLAN_105;
 		}
 	}
 
-	define('e_PAGETITLE', $title." / ".LAN_99." / ".LAN_102.$subject."");
+	define('e_PAGETITLE', $title." / ".COMLAN_99." / ".COMLAN_102.$subject."");
 	require_once(HEADERF);
 } else {
 
@@ -240,7 +240,7 @@ if ($action == "reply") {
 			} else {
 				$news = $sql->db_Fetch();
 				$subject = $tp->toForm($news['news_title']);
-				define("e_PAGETITLE", LAN_100." / ".LAN_99." / {$subject}");
+				define("e_PAGETITLE", COMLAN_100." / ".COMLAN_99." / {$subject}");
 				require_once(HEADERF);
 				ob_start();
 				$ix = new news;
@@ -257,7 +257,7 @@ if ($action == "reply") {
 				$row = $sql->db_Fetch();
 				$comments_poll = $row['poll_comment'];
 				$subject = $row['poll_title'];
-				define("e_PAGETITLE", LAN_101." / ".LAN_99." / ".$subject."");
+				define("e_PAGETITLE", COMLAN_101." / ".COMLAN_99." / ".$subject."");
 				require_once(HEADERF);
 				require(e_PLUGIN."poll/poll_menu.php");
 				$field = $row['poll_id'];
@@ -312,7 +312,7 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "n
 
 		if($TRACKBACK_RENDER_METHOD)
 		{
-			$ns->tablerender("<a name='track'></a>".LAN_315, $text);
+			$ns->tablerender("<a name='track'></a>".COMLAN_315, $text);
 		}
 		else
 		{
@@ -321,10 +321,10 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "n
 	}
 	else
 	{
-		echo "<a name='track'></a>".LAN_316;
+		echo "<a name='track'></a>".COMLAN_316;
 	}
 	if (ADMIN && getperms("B")) {
-		echo "<div style='text-align:right'><a href='".e_PLUGIN."trackback/modtrackback.php?".$id."'>".LAN_317."</a></div><br />";
+		echo "<div style='text-align:right'><a href='".e_PLUGIN."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
 	}
 }
 

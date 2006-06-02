@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-12-14 19:35:26 $
-|     $Author: sweetas $
+|     $Revision: 1.24 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -167,6 +167,6 @@ $text .= "
 	
 $text .= "</script>
 	";
-$ns->tablerender(LAN_183, $text, 'tree_menu');
+$ns->tablerender(LAN_SITELINKS_183, $text, 'tree_menu');
 	
 ?>

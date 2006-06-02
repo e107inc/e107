@@ -4,35 +4,35 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_banner.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-14 12:57:27 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-02 13:59:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Banner");
 
-define("LAN_16", "Username: ");
-define("LAN_17", "Password: ");
-define("LAN_18", "Continue");
-define("LAN_19", "Please enter your client login and password to continue");
-define("LAN_20", "Sorry, unable to find those details in the database. Please contact the site administrator for details.");
-define("LAN_21", "Banners Statistics");
-define("LAN_22", "Client");
-define("LAN_23", "Banner ID");
-define("LAN_24", "Clickthroughs");
-define("LAN_25", "Click %");
-define("LAN_26", "Impressions");
-define("LAN_27", "Impressions Purchased");
-define("LAN_28", "Impressions Left");
-define("LAN_29", "No banners");
-define("LAN_30", "Unlimited");
-define("LAN_31", "Not applicable");
-define("LAN_32", "Yes");
-define("LAN_33", "No");
-define("LAN_34", "Ends:");
-define("LAN_35", "Clickthrough IP addresses");
-define("LAN_36", "Active:");
-define("LAN_37", "Starts:");
-define("LAN_38", "Error");
+define("BANNERLAN_16", "Username: ");
+define("BANNERLAN_17", "Password: ");
+define("BANNERLAN_18", "Continue");
+define("BANNERLAN_19", "Please enter your client login and password to continue");
+define("BANNERLAN_20", "Sorry, unable to find those details in the database. Please contact the site administrator for details.");
+define("BANNERLAN_21", "Banners Statistics");
+define("BANNERLAN_22", "Client");
+define("BANNERLAN_23", "Banner ID");
+define("BANNERLAN_24", "Clickthroughs");
+define("BANNERLAN_25", "Click %");
+define("BANNERLAN_26", "Impressions");
+define("BANNERLAN_27", "Impressions Purchased");
+define("BANNERLAN_28", "Impressions Left");
+define("BANNERLAN_29", "No banners");
+define("BANNERLAN_30", "Unlimited");
+define("BANNERLAN_31", "Not applicable");
+define("BANNERLAN_32", "Yes");
+define("BANNERLAN_33", "No");
+define("BANNERLAN_34", "Ends:");
+define("BANNERLAN_35", "Clickthrough IP addresses");
+define("BANNERLAN_36", "Active:");
+define("BANNERLAN_37", "Starts:");
+define("BANNERLAN_38", "Error");
 
 ?>

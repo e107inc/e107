@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_news/alt_news.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-28 16:12:59 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,7 +56,7 @@ function alt_news($news_category) {
 						$text .= "<a href='comment.php?comment.news.".$news_id."'>".$news_title."</a>";
 					}
 					$text .= "<br />
-						".LAN_100." ".$datestamp." (".LAN_99.": ";
+						".LAN_NEWS_100." ".$datestamp." (".LAN_NEWS_99.": ";
 					if ($news_allow_comments) {
 						$text .= COMMENTOFFSTRING.")";
 					} else {
@@ -66,9 +66,9 @@ function alt_news($news_category) {
 						".$news_body."
 						<br /><br />\n";
 				}
-				$text = "<img src='$category_icon' alt='' /><br />". LAN_307.$count."
+				$text = "<img src='$category_icon' alt='' /><br />". LAN_NEWS_307.$count."
 					<br /><br />".$text;
-				$ns->tablerender(LAN_82." '".$category_name."'", $text, 'alt_news');
+				$ns->tablerender(LAN_NEWS_82." '".$category_name."'", $text, 'alt_news');
 			}
 		}
 		return TRUE;
