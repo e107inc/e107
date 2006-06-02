@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-04-15 17:43:12 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-02 01:04:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -131,7 +131,7 @@ class gsitemap
 			foreach($glArray as $row2)
 			{
 
-				$datestamp = $gen->convert_date($row2['GSLAN_astmod'], "short");
+				$datestamp = $gen->convert_date($row2['gsitemap_lastmod'], "short");
 
 				$text .= "<tr>
 				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_id'] ."</td>
@@ -196,16 +196,10 @@ class gsitemap
 		<span class='smalltext'>&nbsp;</span></td>
 		<td class='forumheader3'>
 		<input class='tbox' type='text' style='width:90%' name='gsitemap_url' size='40' value='".$editArray['gsitemap_url']."' maxlength='100' />
+		<input class='tbox' type='hidden'  name='gsitemap_lastmod' size='40' value='".time()."' maxlength='100' />
 		</td>
 		</tr>
 
-		<tr>
-		<td style='width:25%' class='forumheader3'>".GSLAN_27."
-		<span class='smalltext'>&nbsp;</span></td>
-		<td class='forumheader3'>
-		<input class='tbox' type='text'  name='GSLAN_astmod' size='40' value='".$editArray['GSLAN_astmod']."' maxlength='100' />
-		</td>
-		</tr>
 
 		<tr>
 		<td style='width:25%' class='forumheader3'>".GSLAN_10."
@@ -298,11 +292,11 @@ class gsitemap
 		}
 		if(isset($_POST['gsitemap_id']))
 		{
-			$this -> message = $sql -> db_Update("gsitemap", "gsitemap_name='$gsitemap_name', gsitemap_url='$gsitemap_url', gsitemap_priority='".$_POST['gsitemap_priority']."', GSLAN_astmod='".$_POST['GSLAN_astmod']."', gsitemap_freq= '".$_POST['gsitemap_freq']."', gsitemap_order='".$_POST['gsitemap_order']."', gsitemap_active='".$_POST['gsitemap_active']."' WHERE gsitemap_id='".$_POST['gsitemap_id']."' ") ? LAN_UPDATED : LAN_UPDATED_FAILED;
+			$this -> message = $sql -> db_Update("gsitemap", "gsitemap_name='$gsitemap_name', gsitemap_url='$gsitemap_url', gsitemap_priority='".$_POST['gsitemap_priority']."', gsitemap_lastmod='".$_POST['gsitemap_lastmod']."', gsitemap_freq= '".$_POST['gsitemap_freq']."', gsitemap_order='".$_POST['gsitemap_order']."', gsitemap_active='".$_POST['gsitemap_active']."' WHERE gsitemap_id='".$_POST['gsitemap_id']."' ") ? LAN_UPDATED : LAN_UPDATED_FAILED;
 		}
 		else
 		{
-			$this -> message = ($sql -> db_Insert("gsitemap", "0, '".$_POST['gsitemap_name']."', '".$_POST['gsitemap_url']."', '".$_POST['GSLAN_astmod']."', '".$_POST['gsitemap_freq']."', '".$_POST['gsitemap_priority']."', '".$_POST['gsitemap_cat']."', '".$_POST['gsitemap_order']."', '".$_POST['gsitemap_img']."', '".$_POST['gsitemap_active']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
+			$this -> message = ($sql -> db_Insert("gsitemap", "0, '".$_POST['gsitemap_name']."', '".$_POST['gsitemap_url']."', '".$_POST['gsitemap_lastmod']."', '".$_POST['gsitemap_freq']."', '".$_POST['gsitemap_priority']."', '".$_POST['gsitemap_cat']."', '".$_POST['gsitemap_order']."', '".$_POST['gsitemap_img']."', '".$_POST['gsitemap_active']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
 		}
 	}
 
