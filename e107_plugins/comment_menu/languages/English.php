@@ -22,6 +22,7 @@ define("CM_L7", "Show original news title in menu?");
 define("CM_L8", "New Comments Menu Configuration");
 define("CM_L9", "Update Menu Settings");
 define("CM_L10", "Comments menu configuration saved");
-	
+define("CM_L11", "on");
+define("CM_L12", "Re:")
 	
 ?>
