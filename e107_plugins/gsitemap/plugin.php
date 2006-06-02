@@ -10,9 +10,9 @@
 |       Released under the terms and conditions of the
 |       GNU General Public License (http://gnu.org).
 |     	$Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/plugin.php,v $
-|     	$Revision: 1.7 $
-|     	$Date: 2005-12-14 19:28:44 $
-|     	$Author: sweetas $
+|     	$Revision: 1.8 $
+|     	$Date: 2006-06-02 01:04:10 $
+|     	$Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -40,7 +40,7 @@ $eplug_conffile = "admin_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/icon.png";
-$eplug_icon_small = $eplug_folder."/images/icon_16.png";   
+$eplug_icon_small = $eplug_folder."/images/icon_16.png";
 $eplug_logo = $eplug_folder."/images/icon.png";
 
 $eplug_caption =  "Configure Sitemap";
@@ -59,11 +59,11 @@ CREATE TABLE ".MPREFIX."gsitemap (
 	gsitemap_url varchar(200) NOT NULL default '',
 	gsitemap_lastmod varchar(15) NOT NULL default '',
 	gsitemap_freq varchar(10) NOT NULL default '',
-	gsitemap_priority varchar(3) NOT NULL default '',
+	gsitemap_priority char(3) NOT NULL default '',
 	gsitemap_cat varchar(100) NOT NULL default '',
-	gsitemap_order int(3) NOT NULL default '',
+	gsitemap_order int(3) NOT NULL default '0',
 	gsitemap_img varchar(50) NOT NULL default '',
-	gsitemap_active int(3) NOT NULL default '',
+	gsitemap_active int(3) NOT NULL default '0',
 	PRIMARY KEY  (gsitemap_id)
 ) TYPE=MyISAM;"
 );
