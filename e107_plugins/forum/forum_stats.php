@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-01 03:18:30 $
+|     $Revision: 1.11 $
+|     $Date: 2006-06-02 00:37:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ $total_topics = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent=0");
 $total_replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent!=0");
 $total_views = $sql->db_Count("SELECT sum(thread_views) FROM ".MPREFIX."forum_t", "generic");
 
-$firstpost = $sql -> db_Select("forum_t", "thread_datestamp", "ORDER BY thread_datestamp ASC LIMIT 0,1", "nowhere");
+$firstpost = $sql -> db_Select("forum_t", "thread_datestamp", "thread_datestamp > 0 ORDER BY thread_datestamp ASC LIMIT 0,1");
 $fp = $sql -> db_Fetch();
 
 $open_ds = $fp['thread_datestamp'];
