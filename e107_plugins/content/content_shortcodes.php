@@ -3,6 +3,12 @@ if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 $content_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
+
+SC_BEGIN CONTENT_NEXTPREV
+global $CONTENT_NEXTPREV;
+return $CONTENT_NEXTPREV;
+SC_END
+
 // CONTENT_TYPE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_TYPE_TABLE_TOTAL
 global $contenttotal;
@@ -90,14 +96,14 @@ $tmp = explode(".", $row['rate_avg']);
 $rating = "";
 $rating .= $row['rate_avg']." ";
 for($c=1; $c<= $tmp[0]; $c++){
-	$rating .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
+	$rating .= "<img src='".e_IMAGE."rate/box.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
 }
 if($tmp[0] < 10){
 	for($c=9; $c>=$tmp[0]; $c--){
-		$rating .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+		$rating .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
 	}
 }
-$rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
+$rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
 return $rating;
 SC_END
 
@@ -940,7 +946,7 @@ for($i=0;$i<count($images);$i++){
 
 	$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
 	if($iconwidth){
-		$iconwidth = "width:".$iconwidth."px;";
+		$style = "style='width:".$iconwidth."px;'";
 	}
 	
 	//use $image if $thumb doesn't exist
@@ -950,7 +956,7 @@ for($i=0;$i<count($images);$i++){
 		}else{
 			$thumb = $oSrcThumb;
 		}
-		$CONTENT_PRINT_IMAGES .= "<img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' /><br /><br />";
+		$CONTENT_PRINT_IMAGES .= "<img src='".$thumb."' ".$style." alt='' /><br /><br />";
 	}
 }
 return $CONTENT_PRINT_IMAGES;
@@ -978,7 +984,7 @@ for($i=0;$i<count($images);$i++){
 
 	$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
 	if($iconwidth){
-		$iconwidth = "width:".$iconwidth."px;";
+		$style = "style='width:".$iconwidth."px;'";
 	}
 	
 	//use $image if $thumb doesn't exist
@@ -989,7 +995,7 @@ for($i=0;$i<count($images);$i++){
 			$thumb = $oSrcThumb;
 		}
 		$thumb = $oSrc;
-		$CONTENT_PDF_IMAGES .= "<img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' />";
+		$CONTENT_PDF_IMAGES .= "<img src='".$thumb."' ".$style." alt='' />";
 	}
 }
 return $CONTENT_PDF_IMAGES;
