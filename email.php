@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-05-19 13:11:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -54,7 +54,7 @@ if (isset($_POST['emailsubmit']))
 {
 	if (!$email_send)
 	{
-		$error .= LAN_106;
+		$error .= LAN_EMAIL_106;
 	}
 
 	if($use_imagecode)
@@ -73,14 +73,14 @@ if (isset($_POST['emailsubmit']))
 
 	if ($comments == "")
 	{
-		$message = LAN_188." ".SITENAME." (".SITEURL.")";
+		$message = LAN_EMAIL_188." ".SITENAME." (".SITEURL.")";
 		if (USER == TRUE)
 		{
-			$message .= "\n\n".LAN_email_1." ".USERNAME;
+			$message .= "\n\n".LAN_EMAIL_1." ".USERNAME;
 		}
 		else
 		{
-			$message .= "\n\n".LAN_email_1." ".$author;
+			$message .= "\n\n".LAN_EMAIL_1." ".$author;
 		}
 	}
 	else
@@ -88,7 +88,7 @@ if (isset($_POST['emailsubmit']))
 		$message .= $comments;
 	}
 	$ip = $e107->getip();
-	$message .= "\n\n".LAN_email_2." ".$ip."\n\n";
+	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
 
 	if(strpos($source,'plugin:') !== FALSE)
 	{
@@ -139,19 +139,19 @@ if (isset($_POST['emailsubmit']))
 	if ($error == "")
 	{
 		require_once(e_HANDLER."mail.php");
-		if (sendemail($email_send, LAN_email_3.SITENAME, $message))
+		if (sendemail($email_send, LAN_EMAIL_3.SITENAME, $message))
 		{
-			$text = "<div style='text-align:center'>".LAN_10." ".$email_send."</div>";
+			$text = "<div style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
 		}
 		else
 		{
-			$text = "<div style='text-align:center'>".LAN_9."</div>";
+			$text = "<div style='text-align:center'>".LAN_EMAIL_9."</div>";
 		}
-		$ns->tablerender(LAN_11, $text);
+		$ns->tablerender(LAN_EMAIL_11, $text);
 	}
 	else
 	{
-		$ns->tablerender(LAN_12, "<div style='text-align:center'>".$error."</div>");
+		$ns->tablerender(LAN_EMAIL_12, "<div style='text-align:center'>".$error."</div>");
 	}
 }
 
@@ -161,7 +161,7 @@ $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 if (USER != TRUE)
 {
 	$text .= "<tr>
-		<td style='width:25%'>".LAN_7."</td>
+		<td style='width:25%'>".LAN_EMAIL_15."</td>
 		<td style='width:75%'>
 		<input class='tbox' type='text' name='author_name' size='60' style='width:95%' value='$author' maxlength='100' />
 		</td>
@@ -170,14 +170,14 @@ if (USER != TRUE)
 
 $text .= "
 <tr>
-	<td style='width:25%'>".LAN_8."</td>
+	<td style='width:25%'>".LAN_EMAIL_8."</td>
 	<td style='width:75%'>
-	<textarea class='tbox' name='comment' cols='70' rows='4' style='width:95%'>".LAN_email_6." ".SITENAME." (".$emailurl.")
+	<textarea class='tbox' name='comment' cols='70' rows='4' style='width:95%'>".LAN_EMAIL_6." ".SITENAME." (".$emailurl.")
 ";
 
 if (USER == TRUE)
 {
-	$text .= "\n\n".LAN_email_1." ".USERNAME;
+	$text .= "\n\n".LAN_EMAIL_1." ".USERNAME;
 }
 
 $text .= "</textarea>
@@ -185,7 +185,7 @@ $text .= "</textarea>
 	</tr>
 
 	<tr>
-	<td style='width:25%'>".LAN_187."</td>
+	<td style='width:25%'>".LAN_EMAIL_187."</td>
 	<td style='width:75%'>
 	<input class='tbox' type='text' name='email_send' size='60' value='$email_send' style='width:95%' maxlength='100' />
 	</td>
@@ -194,7 +194,7 @@ $text .= "</textarea>
 	
 	if($use_imagecode)
 	{
-		$text .= "<tr><td>".LAN_email_8."</td><td>";
+		$text .= "<tr><td>".LAN_EMAIL_8."</td><td>";
 		$text .= $sec_img->r_image();
 		$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>
 			<input type='hidden' name='rand_num' value='".$sec_img->random_number."'></td></tr>";
@@ -204,14 +204,14 @@ $text .= "
 	<tr style='vertical-align:top'>
 	<td style='width:25%'></td>
 	<td style='width:75%'>
-	<input class='button' type='submit' name='emailsubmit' value='".LAN_email_4."' />
+	<input class='button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
 	<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />
 </td>
 	</tr>
 	</table>
 	</form>";
 
-$ns->tablerender(LAN_email_5, $text);
+$ns->tablerender(LAN_EMAIL_5, $text);
 
 require_once(FOOTERF);
 ?>

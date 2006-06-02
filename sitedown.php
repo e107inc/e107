@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/sitedown.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-11 22:24:48 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -27,7 +27,7 @@ e107_include_once(e_LANGUAGEDIR."English/lan_sitedown.php");
 if($pref['maintainance_text']) {
 	$SITEDOWN_TABLE_MAINTAINANCETEXT = $tp->toHTML($pref['maintainance_text'], TRUE, 'parse_sc', 'admin');
 } else {
-	$SITEDOWN_TABLE_MAINTAINANCETEXT = "<b>- ".SITENAME." ".LAN_00." -</b><br /><br />".LAN_01 ;
+	$SITEDOWN_TABLE_MAINTAINANCETEXT = "<b>- ".SITENAME." ".LAN_SITEDOWN_00." -</b><br /><br />".LAN_SITEDOWN_01 ;
 }
 
 $SITEDOWN_TABLE_PAGENAME = PAGE_NAME;

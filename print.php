@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/print.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-06 01:52:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-02 13:59:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -62,11 +62,11 @@ else
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");
 	$text = "<font style=\"font-size: 11px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<b>".LAN_135.": ".$news_title."</b>
+	<b>".LAN_PRINT_135.": ".$news_title."</b>
 	<br />
-	(".LAN_86." ".$category_name.")
+	(".LAN_PRINT_86." ".$category_name.")
 	<br />
-	".LAN_94." ".$a_name."<br />
+	".LAN_PRINT_94." ".$a_name."<br />
 	".$news_datestamp."
 	<br /><br />".
 	$news_body;
@@ -76,7 +76,7 @@ else
 	if ($news_url != ""){ $text .= "<br />".$news_url; }
 	 
 	$text .= "<br /><br /><hr />".
-	LAN_303.SITENAME."
+	LAN_PRINT_303.SITENAME."
 	<br />
 	( http://".$_SERVER[HTTP_HOST].e_HTTP."comment.php?comment.news.".$news_id." )
 	</font>";
@@ -92,6 +92,6 @@ echo "
 	<br />
 	";
 echo $text;
-echo "<br /><br /><div style='text-align:center'><form><input type='button' value='".LAN_307."' onClick='window.print()'></form></div>";
+echo "<br /><br /><div style='text-align:center'><form><input type='button' value='".LAN_PRINT_307."' onClick='window.print()'></form></div>";
 	
 ?>
