@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.71 $
-| $Date: 2006-04-12 14:58:12 $
-| $Author: sweetas $
+| $Revision: 1.72 $
+| $Date: 2006-06-02 15:53:14 $
+| $Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -129,10 +129,10 @@ class news {
 
 		if (!$param) {
 			if (!defined("IMAGE_nonew_small")){
-				define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME_ABS."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/nonew_comments.png' alt=''  />"));
+				define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/nonew_comments.png' alt=''  />"));
 			}
 			if (!defined("IMAGE_new_small"))	{
-				define("IMAGE_new_small", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME_ABS."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/new_comments.png' alt=''  /> "));
+				define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/new_comments.png' alt=''  /> "));
 			}
 			if (!defined("IMAGE_sticky")){
 				define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));

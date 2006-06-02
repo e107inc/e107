@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-05-15 00:30:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.63 $
+|     $Date: 2006-06-02 15:53:14 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,8 +25,8 @@ $cobj = new comment;
 global $tp;
 
 /* define images */
-define("IMAGE_DOWNLOAD", (file_exists(THEME."generic/download.png") ? THEME."generic/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
-define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : e_IMAGE."generic/".IMODE."/new.png"));
+define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
+define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/".IMODE."/new.png"));
 
 /* define image style */
 

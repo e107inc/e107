@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.126 $
-|   $Date: 2006-06-02 01:27:48 $
-|   $Author: e107coders $
+|   $Revision: 1.127 $
+|   $Date: 2006-06-02 15:53:14 $
+|   $Author: lisa_ $
 +---------------------------------------------------------------+
 
 */
@@ -307,7 +307,7 @@ class newspost {
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
 				{
-					$sicon = (file_exists(THEME."generic/sticky.png") ? THEME."generic/sticky.png" : e_IMAGE."generic/".IMODE."/sticky.png");
+					$sicon = (file_exists(THEME."images/sticky.png") ? THEME."images/sticky.png" : e_IMAGE."generic/".IMODE."/sticky.png");
 					$text .= " <img src='".$sicon."' alt='' />";
 				}
 				$text .= "

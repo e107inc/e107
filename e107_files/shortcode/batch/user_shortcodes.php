@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-02-23 01:02:13 $
-|     $Author: whoisrich $
+|     $Revision: 1.17 $
+|     $Date: 2006-06-02 15:53:14 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -147,9 +147,9 @@ if(defined("USER_REALNAME_ICON"))
 {
 	return USER_REALNAME_ICON;
 }
-if(file_exists(THEME."generic/user_realname.png"))
+if(file_exists(THEME."images/user_realname.png"))
 {
-	return "<img src='".THEME_ABS."generic/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 return "<img src='".e_IMAGE_ABS."user_icons/user_realname_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
@@ -164,9 +164,9 @@ if(defined("USER_EMAIL_ICON"))
 {
 	return USER_EMAIL_ICON;
 }
-if(file_exists(THEME."generic/email.png"))
+if(file_exists(THEME."images/email.png"))
 {
-	return "<img src='".THEME_ABS."generic/email.png' alt='' style='vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."images/email.png' alt='' style='vertical-align:middle;' /> ";
 }
 return "<img src='".e_IMAGE_ABS."generic/".IMODE."/email.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
@@ -186,9 +186,9 @@ if(defined("USER_ICON"))
 {
 	return USER_ICON;
 }
-if(file_exists(THEME."generic/user.png"))
+if(file_exists(THEME."images/user.png"))
 {
-	return "<img src='".THEME_ABS."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."images/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 return "<img src='".e_IMAGE_ABS."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
@@ -199,9 +199,9 @@ if(defined("USER_ICON"))
 {
 	$icon = USER_ICON;
 }
-else if(file_exists(THEME."generic/user.png"))
+else if(file_exists(THEME."images/user.png"))
 {
-	$icon = "<img src='".THEME_ABS."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	$icon = "<img src='".THEME_ABS."images/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 else
 {
@@ -237,9 +237,9 @@ if(defined("USER_BIRTHDAY_ICON"))
 {
 	return USER_BIRTHDAY_ICON;
 }
-if(file_exists(THEME."generic/user_birthday.png"))
+if(file_exists(THEME."images/user_birthday.png"))
 {
-	return "<img src='".THEME_ABS."generic/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."images/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 }
 return "<img src='".e_IMAGE_ABS."user_icons/user_birthday_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 SC_END
