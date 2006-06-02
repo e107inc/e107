@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.124 $
-|   $Date: 2006-05-30 01:32:23 $
+|   $Revision: 1.125 $
+|   $Date: 2006-06-02 01:17:00 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -326,22 +326,13 @@ class newspost {
 
 		$newsposts = $sql->db_Count("news");
 
-		$text .= "<div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>";
-		if ($newsposts > $amount && !$_POST['searchquery']) {
-			$a = $newsposts/$amount;
-			$r = explode(".", $a);
-			if ($r[1] != 0 ? $pages = ($r[0]+1) : $pages = $r[0]);
-			if ($pages) {
-				$current = ($from/$amount)+1;
-				$text .= "<br />".NWSLAN_62." ";
-				for($a = 1; $a <= $pages; $a++) {
-					$text .= ($current == $a ? " <b>[$a]</b>" : " [<a href='".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.news_datestamp.desc.").(($a-1) * $amount)."'>$a</a>] ");
-				}
-				$text .= "<br />";
-			}
+		if (!$_POST['searchquery']) {
+            $parms = $newsposts.",".$amount.",".$from.",".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.news_datestamp.desc.")."[FROM]";
+            $text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
+
 		}
 
-		$text .= "</div><br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
 
 
 
