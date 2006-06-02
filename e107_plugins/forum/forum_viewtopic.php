@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-06-02 00:22:09 $
+|     $Revision: 1.65 $
+|     $Date: 2006-06-02 00:32:39 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -306,7 +306,7 @@ else
 }
 
 $BACKLINK = $BREADCRUMB;
-$THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE);
+$THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off');
 $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.prev'>".LAN_389."</a>";
 $NEXTPREV .= " | ";
 $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>".LAN_390."</a> &gt;&gt;";

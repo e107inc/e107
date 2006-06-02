@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-05-16 17:29:51 $
+|     $Revision: 1.55 $
+|     $Date: 2006-06-02 00:32:39 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ if (!$FORUM_VIEW_START) {
 }
 
 
-$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook');
+$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook, emotes_off');
 $forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE, 'no_hook');
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
@@ -409,7 +409,7 @@ function parse_thread($thread_info)
 		$ICON = IMAGE_closed;
 	}
 
-	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook'));
+	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook, emotes_off'));
 	if (strtoupper($THREADTYPE) == strtoupper(substr($thread_name, 0, strlen($THREADTYPE)))) {
 		$thread_name = substr($thread_name, strlen($THREADTYPE));
 	}
