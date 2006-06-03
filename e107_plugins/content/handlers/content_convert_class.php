@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2006-05-31 21:29:59 $
+|		$Revision: 1.18 $
+|		$Date: 2006-06-03 10:42:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -178,6 +178,68 @@ class content_convert{
 			$content_pref['content_manager_approve'] = '255';
 			$content_pref['content_manager_personal'] = '255';
 			$content_pref['content_manager_category'] = '255';
+
+			return $content_pref;
+		}
+
+
+		//update preferences storage method
+		function upgrade_1_23(){
+			global $sql, $sql2, $eArrayStorage, $tp, $aa;
+
+			$upgrade = FALSE;
+
+			$sqlc = new db;
+			$sqld = new db;
+			//add new preferences in core
+			if($sqlc -> db_Select("core", "*", "e107_name='pcontent' ")){
+				$row = $sqlc -> db_Fetch();
+
+				$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
+
+				//add new options to the preferences
+				$content_pref = $this->upgrade_1_23_prefs($content_pref);
+
+				$tmp1 = $eArrayStorage->WriteArray($content_pref);
+				$sqld -> db_Update("core", "e107_value = '{$tmp1}' WHERE e107_name = 'pcontent' ");
+			}
+
+			//add new preferences for each main parent
+			if($sqlc -> db_Select("pcontent", "content_id, content_heading, content_pref", "LEFT(content_parent, 1) = '0' ")){
+				while($row=$sqlc->db_Fetch()){
+
+					$id = $row['content_id'];
+					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
+
+					//add new options to the preferences
+					$content_pref = $this->upgrade_1_23_prefs($content_pref);
+
+					$tmp1 = $eArrayStorage->WriteArray($content_pref);
+					$sqld -> db_Update("pcontent", "content_pref='{$tmp1}' WHERE content_id='$id' ");
+				}
+			}
+			return "Content Management Plugin : content_preferences updated<br />";
+		}
+		//add new preferences that come with this upgrade
+		function upgrade_1_23_prefs($content_pref){
+
+			$content_pref['content_list_caption'] = CONTENT_LAN_23;			//caption for recent list
+			$content_pref['content_list_caption_append_name'] = '1';		//append category heading to caption
+			$content_pref['content_catall_caption'] = CONTENT_LAN_25;		//caption for all categories page
+			$content_pref['content_cat_caption'] = CONTENT_LAN_26;			//caption for single category page
+			$content_pref['content_cat_caption_append_name'] = '1';			//append category heading to caption
+			$content_pref['content_cat_sub_caption'] = CONTENT_LAN_28;		//caption for subcategories
+			$content_pref['content_cat_item_caption'] = CONTENT_LAN_31;		//caption for items in category
+			$content_pref['content_author_index_caption'] = CONTENT_LAN_32;	//caption for author index page
+			$content_pref['content_author_caption'] = CONTENT_LAN_32;		//caption for single author page
+			$content_pref['content_author_caption_append_name'] = '1';		//append author name to caption
+			$content_pref['content_archive_caption'] = CONTENT_LAN_84;		//caption for archive page
+			$content_pref['content_top_icon_width'] = '';					//use this size for icon
+			$content_pref['content_top_caption'] = CONTENT_LAN_38;			//caption for top rated page
+			$content_pref['content_top_caption_append_name'] = '1';			//append category heading to caption
+			$content_pref['content_score_icon_width'] = '';					//use this size for icon
+			$content_pref['content_score_caption'] = CONTENT_LAN_87;		//caption for top score page
+			$content_pref['content_score_caption_append_name'] = '1';		//append category heading to caption
 
 			return $content_pref;
 		}
