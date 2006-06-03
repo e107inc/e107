@@ -79,6 +79,7 @@ SC_BEGIN CONTENT_TOP_TABLE_ICON
 global $CONTENT_TOP_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
 if($content_pref["content_top_icon"]){
 $width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
+$width = (isset($content_pref["content_top_icon_width"]) && $content_pref["content_top_icon_width"] ? $content_pref["content_top_icon_width"] : $width);
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 }
 SC_END
@@ -117,6 +118,7 @@ SC_BEGIN CONTENT_SCORE_TABLE_ICON
 global $CONTENT_SCORE_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
 if(isset($content_pref["content_score_icon"]) && $content_pref["content_score_icon"]){
 $width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
+$width = (isset($content_pref["content_score_icon_width"]) && $content_pref["content_score_icon_width"] ? $content_pref["content_score_icon_width"] : $width);
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 }
 SC_END

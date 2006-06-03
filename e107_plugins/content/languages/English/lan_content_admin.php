@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-05-31 21:29:59 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-03 10:27:54 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -673,6 +673,13 @@ define("CONTENT_ADMIN_OPT_LAN_151", "Top Rated Page");
 define("CONTENT_ADMIN_OPT_LAN_152", "Top Score Page");
 define("CONTENT_ADMIN_OPT_LAN_153", "Submit Page");
 define("CONTENT_ADMIN_OPT_LAN_154", "Manager Page");
-
+define("CONTENT_ADMIN_OPT_LAN_155", "caption");
+define("CONTENT_ADMIN_OPT_LAN_156", "caption index page");
+define("CONTENT_ADMIN_OPT_LAN_157", "caption author page");
+define("CONTENT_ADMIN_OPT_LAN_158", "append author name to caption");
+define("CONTENT_ADMIN_OPT_LAN_159", "caption category page");
+define("CONTENT_ADMIN_OPT_LAN_160", "append category heading to caption");
+define("CONTENT_ADMIN_OPT_LAN_161", "caption parent subcategories (only used if rendertype is set to seperate menus)");
+define("CONTENT_ADMIN_OPT_LAN_162", "caption content items (only used if rendertype is set to seperate menus)");
 
 ?>
