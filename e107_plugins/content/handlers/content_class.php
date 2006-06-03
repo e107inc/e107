@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.92 $
-|		$Date: 2006-06-02 12:25:36 $
+|		$Revision: 1.93 $
+|		$Date: 2006-06-03 10:27:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -179,6 +179,8 @@ class content{
 			$content_pref['content_list_rating_all'] = "0";					//override rating system
 			$content_pref['content_list_editicon'] = "0";					//show link to admin edit item
 			$content_pref['content_list_datestyle'] = "%d %b %Y";			//choose datestyle for given date
+			$content_pref['content_list_caption'] = CONTENT_LAN_23;			//caption for recent list
+			$content_pref['content_list_caption_append_name'] = '1';		//append category heading to caption
 
 			//CATEGORY PAGES
 			//sections of content category in 'view all categories page'
@@ -197,6 +199,7 @@ class content{
 			$content_pref['content_catall_text_char'] = "65";				//define amount of words of text to display
 			$content_pref['content_catall_text_post'] = "[read more]";		//define postfix is text is too long
 			$content_pref['content_catall_text_link'] = "1";				//define if link to category should be added on postfix
+			$content_pref['content_catall_caption'] = CONTENT_LAN_25;		//caption for all categories page
 			//sections of content category in 'view category' page
 			$content_pref['content_cat_icon'] = "1";						//show icon
 			$content_pref['content_cat_subheading'] = "1";					//show subheading
@@ -210,6 +213,10 @@ class content{
 			$content_pref['content_cat_peicon'] = "1";						//show pe icons
 			$content_pref['content_cat_comment'] = "1";						//show amount of comments
 			$content_pref['content_cat_amount'] = "1";						//show amount of items
+			$content_pref['content_cat_caption'] = CONTENT_LAN_26;			//caption for single category page
+			$content_pref['content_cat_caption_append_name'] = '1';			//append category heading to caption
+			$content_pref['content_cat_sub_caption'] = CONTENT_LAN_28;		//caption for subcategories
+			$content_pref['content_cat_item_caption'] = CONTENT_LAN_31;		//caption for items in category
 
 			//sections of subcategories in 'view category page'
 			$content_pref['content_catsub_icon'] = "1";						//show icon
@@ -257,6 +264,9 @@ class content{
 			$content_pref['content_author_amount'] = "1";					//show amount of items from this author
 			$content_pref['content_author_nextprev'] = "1";					//use next prev buttons
 			$content_pref['content_author_nextprev_number'] = "20";			//amount of items per page
+			$content_pref['content_author_index_caption'] = CONTENT_LAN_32;	//caption for author index page
+			$content_pref['content_author_caption'] = CONTENT_LAN_32;		//caption for single author page
+			$content_pref['content_author_caption_append_name'] = '1';		//append author name to caption
 
 			//ARCHIVE PAGE
 			$content_pref['content_archive_nextprev'] = "1";				//archive : choose to show next/prev links
@@ -269,6 +279,7 @@ class content{
 			$content_pref['content_archive_authoricon'] = "0";				//archive : section: show link to author list
 			$content_pref['content_archive_authoremail'] = "0";				//archive : section: show author email
 			$content_pref['content_archive_authoremail_nonmember'] = "0";	//archive : show link to email of non-member author
+			$content_pref['content_archive_caption'] = CONTENT_LAN_84;		//caption for archive page
 
 			//TOP RATED PAGE
 			$content_pref['content_top_icon'] = "0";						//top : section: show icon
@@ -277,6 +288,9 @@ class content{
 			$content_pref['content_top_authoricon'] = "0";					//top : section: show link to author list
 			$content_pref['content_top_authoremail'] = "0";					//top : section: show author email
 			$content_pref['content_top_authoremail_nonmember'] = "0";		//top : show link to email of non-member author
+			$content_pref['content_top_icon_width'] = '';					//use this size for icon
+			$content_pref['content_top_caption'] = CONTENT_LAN_38;			//caption for top rated page
+			$content_pref['content_top_caption_append_name'] = '1';			//append category heading to caption
 
 			//TOP SCORE PAGE
 			$content_pref['content_score_icon'] = "0";						//score : section: show icon
@@ -285,6 +299,9 @@ class content{
 			$content_pref['content_score_authoricon'] = "0";				//score : section: show link to author list
 			$content_pref['content_score_authoremail'] = "0";				//score : section: show author email
 			$content_pref['content_score_authoremail_nonmember'] = "0";		//score : show link to email of non-member author
+			$content_pref['content_score_icon_width'] = '';					//use this size for icon
+			$content_pref['content_score_caption'] = CONTENT_LAN_87;		//caption for top score page
+			$content_pref['content_score_caption_append_name'] = '1';		//append category heading to caption
 
 			//MENU OPTIONS
 			$content_pref['content_menu_caption'] = CONTENT_MENU_LAN_0;		//caption of menu
@@ -324,11 +341,11 @@ class content{
 			$content_pref['content_inherit'] = '0';							//inherit options from default preferences
 
 			//CONTENT MANAGER
-			$content_pref['content_manager_approve'] = '0';
-			$content_pref['content_manager_personal'] = '0';
-			$content_pref['content_manager_category'] = '0';
+			$content_pref['content_manager_approve'] = '0';					//class for managers who can approve submitted items
+			$content_pref['content_manager_personal'] = '0';				//class for managers who can manage personal items
+			$content_pref['content_manager_category'] = '0';				//class for managers who can manage all items in a category
 
-			//PAGE RESTRICTION
+			//PAGE RESTRICTION (NOT YET IN USE)
 			$content_pref['content_restrict_managecontent'] = '0';
 			$content_pref['content_restrict_createcontent'] = '0';
 			$content_pref['content_restrict_managecat'] = '0';

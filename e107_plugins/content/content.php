@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.94 $
-|		$Date: 2006-06-02 12:25:36 $
+|		$Revision: 1.95 $
+|		$Date: 2006-06-03 10:27:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -458,17 +458,47 @@ function show_content_archive(){
 
 			if ($distinctfirstletter > 1){
 				$CONTENT_ARCHIVE_TABLE_LETTERS = "<form method='post' action='".e_SELF."?list.".$mainparent."'>";
+				$int=TRUE;
 				for($i=0;$i<count($arrletters);$i++){
-					if($arrletters[$i]!= ""){
-						$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20px' type='submit' name='letter' value='".strtoupper($arrletters[$i])."' onclick=\"document.location='".e_SELF."?list.".$mainparent.".".strtoupper($arrletters[$i])."'\" /> ";
+					if(is_numeric($arrletters[$i])){
+						if($int===TRUE){
+							if(isset($qs[2]) && is_numeric($qs[2])){
+								$class = 'nextprev_current';
+							}else{
+								$class = 'nextprev_link';
+							}
+							$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent.".0'>0-9</a> ";
+						}
+						$int=FALSE;
+					}else{
+						if(isset($qs[2]) && strtoupper($qs[2]) == strtoupper($arrletters[$i])){
+							$class = 'nextprev_current';
+						}else{
+							$class = 'nextprev_link';
+						}
+						$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent.".".strtoupper($arrletters[$i])."'>".strtoupper($arrletters[$i])."</a> ";
 					}
 				}
-				$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='submit' name='letter' value='all' />";
+				if(!isset($qs[2]) || (isset($qs[2]) && strtolower($qs[2])=='all') ){
+					$class = 'nextprev_current';
+				}else{
+					$class = 'nextprev_link';
+				}
+				$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent."'>ALL</a> ";
 				$CONTENT_ARCHIVE_TABLE_LETTERS .= "</form>";
 			}
-			//check posted letter
-			$letter=(isset($_POST['letter']) ? $_POST['letter'] : "");
-			if ($letter != "" && $letter != "all" ) { $qry .= " AND content_heading LIKE '".$tp->toDB($letter)."%' "; }else{ $qry .= ""; }
+			//check letter
+			if(isset($qs[2])){
+				if($qs[2] == 'all'){
+					$qry .= '';
+				}elseif(strlen($qs[2]) == 1 && $qs[2] == '0'){
+					$qry .= " AND content_heading NOT REGEXP '^[[:alpha:]]' ";
+				}elseif(strlen($qs[2]) == 1 && !is_numeric($qs[2]) ){
+					$qry .= " AND content_heading LIKE '".$tp->toDB($qs[2])."%' ";
+				}else{
+					$qry .= '';
+				}
+			}
 		}
 		$CONTENT_ARCHIVE_TABLE_START = $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE_START, FALSE, $content_shortcodes);
 
@@ -484,7 +514,8 @@ function show_content_archive(){
 			$text .= $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
 		}
 		$text		= $aa -> getCrumbPage("archive", $array, $mainparent).$text;
-		$caption	= CONTENT_LAN_84;
+		//$caption	= CONTENT_LAN_84;
+		$caption	= $content_pref['content_archive_caption'];
 		$ns->tablerender($caption, $text);
 		$aa -> ShowNextPrev("archive", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);
@@ -562,7 +593,11 @@ function show_content_recent(){
 		$recentqry			= "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery;
 		$text				= displayPreview($recentqry);
 		$text				= $aa -> getCrumbPage("recent", $array, $mainparent).$text;
-		$caption			= CONTENT_LAN_23;
+		//$caption			= CONTENT_LAN_23;
+		$caption			= $content_pref['content_list_caption'];
+		if(isset($content_pref['content_list_caption_append_name']) && $content_pref['content_list_caption_append_name']){
+			$caption .= " ".$array[intval($qs[1])][1];
+		}
 		$ns -> tablerender($caption, $text);
 		$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);
@@ -638,7 +673,8 @@ function show_content_cat_all(){
 		}
 		$text		= $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
 		$text		= $aa -> getCrumbPage("catall", $array, $mainparent).$text;
-		$caption	= CONTENT_LAN_25;
+		//$caption	= CONTENT_LAN_25;
+		$caption	= $content_pref['content_catall_caption'];
 		$ns -> tablerender($caption, $text);
 		$cachecheck = CachePost($cachestr);
 }
@@ -676,8 +712,12 @@ function show_content_cat($mode=""){
 		$order							= $aa -> getOrder();
 		$number							= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
 		$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
-		$capqs							= array_reverse($array[$qs[1]]);
-		$caption						= CONTENT_LAN_26." : ".$capqs[0];
+		$capqs							= array_reverse($array[intval($qs[1])]);
+		//$caption						= CONTENT_LAN_26." : ".$capqs[0];
+		$caption	= $content_pref['content_cat_caption'];
+		if(isset($content_pref['content_cat_caption_append_name']) && $content_pref['content_cat_caption_append_name']){
+			$caption .= " ".$capqs[0];
+		}
 
 		// parent article
 		if(isset($content_pref["content_cat_showparent"]) && $content_pref["content_cat_showparent"]){
@@ -731,7 +771,8 @@ function show_content_cat($mode=""){
 							$content_cat_listsub_table_string .= $tp -> parseTemplate($CONTENT_CAT_LISTSUB_TABLE, FALSE, $content_shortcodes);
 						}
 						$textsubparent = $CONTENT_CAT_LISTSUB_TABLE_START.$content_cat_listsub_table_string.$CONTENT_CAT_LISTSUB_TABLE_END;
-						$captionsubparent = CONTENT_LAN_28;
+						//$captionsubparent = CONTENT_LAN_28;
+						$captionsubparent = $content_pref['content_cat_sub_caption'];
 					}
 				}
 			}
@@ -750,7 +791,8 @@ function show_content_cat($mode=""){
 			$contenttotal		= $sql -> db_Count($plugintable, "(*)", "WHERE ".$qrycat);
 			$childqry			= $qrycat." ".$order." ".$nextprevquery;
 			$textchild			= displayPreview($childqry);
-			$captionchild		= CONTENT_LAN_31;
+			//$captionchild		= CONTENT_LAN_31;
+			$captionchild		= $content_pref['content_cat_item_caption'];
 
 			if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
 				require_once(e_HANDLER."np_class.php");
@@ -933,7 +975,8 @@ function show_content_author_all(){
 			$text = $CONTENT_AUTHOR_TABLE_START.$content_author_table_string.$CONTENT_AUTHOR_TABLE_END;
 			$text = $aa -> getCrumbPage("authorall", $array, $mainparent).$text;
 		}
-		$caption = CONTENT_LAN_32;
+		//$caption = CONTENT_LAN_32;
+		$caption	= $content_pref['content_author_index_caption'];
 		$ns -> tablerender($caption, $text);
 		$aa -> ShowNextPrev("author", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);
@@ -982,7 +1025,11 @@ function show_content_author(){
 			$authorqry		= $qry." ".$order." ".$nextprevquery;
 			$text			= displayPreview($authorqry);
 			$text			= $aa -> getCrumbPage("author", $array, $mainparent).$text;
-			$caption		= CONTENT_LAN_32." : ".$authordetails[1];
+			//$caption		= CONTENT_LAN_32." : ".$authordetails[1];
+			$caption		= $content_pref['content_author_caption'];
+			if(isset($content_pref['content_author_caption_append_name']) && $content_pref['content_author_caption_append_name']){
+				$caption .= " ".$authordetails[1];
+			}
 			$ns -> tablerender($caption, $text);
 			$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 		}
@@ -1042,7 +1089,11 @@ function show_content_top(){
 			}
 			$content_top_table_string		= $aa -> getCrumbPage("top", $array, $mainparent).$content_top_table_string;
 			$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
-			$caption	= CONTENT_LAN_38;
+			//$caption	= CONTENT_LAN_38;
+			$caption	= $content_pref['content_top_caption'];
+			if(isset($content_pref['content_top_caption_append_name']) && $content_pref['content_top_caption_append_name']){
+				$caption .= " ".$array[intval($qs[1])][1];
+			}
 			$ns -> tablerender($caption, $text);
 			$aa -> ShowNextPrev("", $from, $number, $total);
 		}
@@ -1096,7 +1147,11 @@ function show_content_score(){
 		}
 		$content_score_table_string = $aa -> getCrumbPage("score", $array, $mainparent).$content_score_table_string;
 		$text		= $CONTENT_SCORE_TABLE_START.$content_score_table_string.$CONTENT_SCORE_TABLE_END;
-		$caption	= CONTENT_LAN_87;
+		//$caption	= CONTENT_LAN_87;
+		$caption	= $content_pref['content_score_caption'];
+		if(isset($content_pref['content_score_caption_append_name']) && $content_pref['content_score_caption_append_name']){
+			$caption .= " ".$array[intval($qs[1])][1];
+		}
 		$ns -> tablerender($caption, $text);
 		$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);

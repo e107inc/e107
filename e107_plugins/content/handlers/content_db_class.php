@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.45 $
-|		$Date: 2006-06-01 12:51:02 $
+|		$Revision: 1.46 $
+|		$Date: 2006-06-03 10:27:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -107,7 +107,7 @@ class contentdb{
 			//$type		: none(=admin), submit, contentmanager
 			global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage;
 
-			$_POST['content_heading']		= $tp -> toDB($_POST['content_heading']);
+			$_POST['content_heading']		= $tp -> toDB(trim($_POST['content_heading']));
 			$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
 			$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
 
