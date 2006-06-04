@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.95 $
-|		$Date: 2006-06-03 10:27:54 $
+|		$Revision: 1.96 $
+|		$Date: 2006-06-04 09:09:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -794,10 +794,6 @@ function show_content_cat($mode=""){
 			//$captionchild		= CONTENT_LAN_31;
 			$captionchild		= $content_pref['content_cat_item_caption'];
 
-			if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
-				require_once(e_HANDLER."np_class.php");
-				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-			}
 			$crumbpage = $aa -> getCrumbPage("cat", $array, $qs[1]);
 			if(isset($textparent)){ 
 				$textparent = $crumbpage.$textparent;
@@ -813,20 +809,20 @@ function show_content_cat($mode=""){
 					$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : "").$textchild);
 				}
 				if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
-					$ix = new nextprev("content.php", $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
+					$aa->ShowNextPrev(FALSE, $from, $number, $contenttotal);
 				}
 			}else{
 				if(isset($content_pref["content_cat_rendertype"]) && $content_pref["content_cat_rendertype"] == "1"){
 					if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
 					if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
-						$ix = new nextprev("content.php", $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
+						$aa->ShowNextPrev(FALSE, $from, $number, $contenttotal);
 					}
 					if(isset($textparent)){		$ns -> tablerender($caption, $textparent); }
 					if(isset($textsubparent)){	$ns -> tablerender($captionsubparent, $textsubparent); }
 				}else{
 					if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
 					if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
-						$ix = new nextprev("content.php", $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
+						$aa->ShowNextPrev(FALSE, $from, $number, $contenttotal);
 					}
 					$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : ""));
 				}
@@ -861,8 +857,7 @@ function show_content_cat($mode=""){
 
 // ##### AUTHOR LIST --------------------------------------
 function show_content_author_all(){
-		global $qs, $plugindir, $ix, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery;
-		global $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_AUTHOR_TABLE, $CONTENT_AUTHOR_TABLE_START, $CONTENT_AUTHOR_TABLE_END, $CONTENT_AUTHOR_TABLE_DATE, $CONTENT_AUTHOR_TABLE_HEADING;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery, $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_AUTHOR_TABLE, $CONTENT_AUTHOR_TABLE_START, $CONTENT_AUTHOR_TABLE_END, $CONTENT_AUTHOR_TABLE_DATE, $CONTENT_AUTHOR_TABLE_HEADING;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[2]));
 		$content_pref	= $aa -> getContentPref($mainparent);
