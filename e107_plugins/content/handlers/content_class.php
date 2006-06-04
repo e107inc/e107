@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.93 $
-|		$Date: 2006-06-03 10:27:54 $
+|		$Revision: 1.94 $
+|		$Date: 2006-06-04 10:14:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1063,12 +1063,12 @@ class content{
 			}
 
 			if($mode == "menu"){
-				$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?recent.$searchtypeid", "contentsearchmenu_{$mode}", "", "enctype='multipart/form-data'")."<input class='tbox' size='20' type='text' id='searchfieldmenu_{$mode}' name='searchfieldmenu_{$mode}' value='".(isset($_POST['searchfieldmenu_{$mode}']) ? $_POST['searchfieldmenu_{$mode}'] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearchmenu_{$mode}'].searchfieldmenu_$mode.value='';\" /> <input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />".$rs -> form_close();
+				$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?recent.$searchtypeid", "contentsearchmenu_{$mode}", "", "enctype='multipart/form-data'")."<div><input class='tbox' size='20' type='text' id='searchfieldmenu_{$mode}' name='searchfieldmenu_{$mode}' value='".(isset($_POST['searchfieldmenu_{$mode}']) ? $_POST['searchfieldmenu_{$mode}'] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearchmenu_{$mode}'].searchfieldmenu_$mode.value='';\" /> <input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' /></div>".$rs -> form_close();
 			}else{
 				$searchfieldname = "searchfield_{$mode}";
-				$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?recent.$searchtypeid", "contentsearch_{$mode}", "", "enctype='multipart/form-data'")."
+				$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?recent.$searchtypeid", "contentsearch_{$mode}", "", "enctype='multipart/form-data'")."<div>
 				<input class='tbox' size='27' type='text' id='$searchfieldname' name='$searchfieldname' value='".(isset($_POST[$searchfieldname]) ? $_POST[$searchfieldname] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearch_{$mode}'].$searchfieldname.value='';\" />
-				<input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />
+				<input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' /></div>
 				".$rs -> form_close();
 			}
 			return $CONTENT_SEARCH_TABLE_KEYWORD;
@@ -1118,7 +1118,7 @@ class content{
 				if($mode == "menu"){ $style = "style='width:100%;' "; }else{ $style = ""; }
 				$CONTENT_SEARCH_TABLE_SELECT = "
 				".$rs -> form_open("post", $plugindir."content.php".(e_QUERY ? "?".e_QUERY : ""), "contentredirect".$mode, "", "enctype='multipart/form-data'")."				
-				<select id='{$mode}value' name='{$mode}value' class='tbox' $style onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
+				<div><select id='{$mode}value' name='{$mode}value' class='tbox' $style onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
 
 				if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_links"] && $content_pref["content_menu_links_dropdown"]) ){
 					$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_56, 1, "none").$rs -> form_option("&nbsp;", "0", "none");
@@ -1149,9 +1149,7 @@ class content{
 				if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_cat"] && $content_pref["content_menu_cat_dropdown"])){
 					$CONTENT_SEARCH_TABLE_SELECT .= $catarray;
 				}
-				$CONTENT_SEARCH_TABLE_SELECT .= "
-				".$rs -> form_select_close()."
-				".$rs -> form_close();
+				$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_select_close()."</div>".$rs -> form_close();
 			}
 			return $CONTENT_SEARCH_TABLE_SELECT;
 		}
@@ -1183,7 +1181,7 @@ class content{
 					$baseurl = $plugindir."content.php";
 					$qry = (isset($qs[0]) && substr($qs[0],0,5) != "order" ? $qs[0] : "").(isset($qs[1]) && substr($qs[1],0,5) != "order" ? ".".$qs[1] : "").(isset($qs[2]) && substr($qs[2],0,5) != "order" ? ".".$qs[2] : "").(isset($qs[3]) && substr($qs[3],0,5) != "order" ? ".".$qs[3] : "");
 					$text = $rs -> form_open("post", $baseurl."?$qs[0].$ordertypeid", "contentsearchorder{$mode}", "", "enctype='multipart/form-data'");
-					$text .= "<select id='ordervalue{$mode}' name='ordervalue{$mode}' class='tbox' onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";
+					$text .= "<div><select id='ordervalue{$mode}' name='ordervalue{$mode}' class='tbox' onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";
 					$text .= $rs -> form_option(CONTENT_ORDER_LAN_0, 1, "none");
 
 					if($qs[0] == "author" && $qs[1] == "list"){
@@ -1202,6 +1200,7 @@ class content{
 						$text .= $rs -> form_option(CONTENT_ORDER_LAN_10, ($check == "orderdorder" ? "1" : "0"), $baseurl."?".$qry.".orderdorder" );
 					}
 					$text .= $rs -> form_select_close();
+					$text .= "</div>";
 					$text .= $rs -> form_close();
 				}
 			}
@@ -1231,226 +1230,228 @@ class content{
 
 			$data = chr(60)."?php\n". chr(47)."*\n+---------------------------------------------------------------+\n|        e107 website system\n|        ".e_PLUGIN."content/menus/".$menufile."_menu.php\n|\n|        ©Steve Dunstan 2001-2002\n|        http://e107.org\n|        jalist@e107.org\n|\n|        Released under the terms and conditions of the\n|        GNU General Public License (http://gnu.org).\n+---------------------------------------------------------------+\n\nThis file has been generated by ".e_PLUGIN."content/handlers/content_class.php.\n\n*". chr(47)."\n\n";
 			$data .= "\n";
-			$data .= "unset(".chr(36)."text);\n";
-			$data .= chr(36)."text = \"\";\n";
-			$data .= chr(36)."menutypeid		= \"$parentid\";\n";
-			$data .= chr(36)."menuname		= \"$menuname\";\n";
+			$data .= "unset(\$text);\n";
+			$data .= "\$text = \"\";\n";
+			$data .= "\$menutypeid		= \"$parentid\";\n";
+			$data .= "\$menuname		= \"$menuname\";\n";
 			$data .= "\n";
-			$data .= chr(36)."plugindir		= e_PLUGIN.'content/';\n";
-			$data .= chr(36)."plugintable	= \"pcontent\";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)\n";
-			$data .= chr(36)."datequery		= \" AND content_datestamp < \".time().\" AND (content_enddate=0 || content_enddate>\".time().\") \";\n";
+			$data .= "\$plugindir		= e_PLUGIN.'content/';\n";
+			$data .= "\$plugintable	= \"pcontent\";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)\n";
+			$data .= "\$datequery		= \" AND content_datestamp < \".time().\" AND (content_enddate=0 || content_enddate>\".time().\") \";\n";
 			$data .= "\n";
 			$data .= "require_once(e_PLUGIN.'content/handlers/content_class.php');\n";
-			$data .= chr(36)."aa = new content;\n";
+			$data .= "\$aa = new content;\n";
 			$data .= "require_once(e_HANDLER.'form_handler.php');\n";
-			$data .= chr(36)."rs = new form;\n";
-			$data .= chr(36)."gen = new convert;\n";
-			$data .= "global ".chr(36)."tp;\n";
+			$data .= "\$rs = new form;\n";
+			$data .= "\$gen = new convert;\n";
+			$data .= "global \$tp;\n";
 			$data .= "\n";
-			$data .= chr(36)."lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';\n";
-			$data .= "include_once(file_exists(".chr(36)."lan_file) ? ".chr(36)."lan_file : e_PLUGIN.'content/languages/English/lan_content.php');\n";
+			$data .= "\$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';\n";
+			$data .= "include_once(file_exists(\$lan_file) ? \$lan_file : e_PLUGIN.'content/languages/English/lan_content.php');\n";
 			$data .= "\n";
-			$data .= chr(36)."content_pref					= ".chr(36)."aa -> getContentPref(".chr(36)."menutypeid);\n";
-			$data .= chr(36)."content_icon_path				= ".chr(36)."tp -> replaceConstants(".chr(36)."content_pref[\"content_icon_path\"]);\n";
-			$data .= chr(36)."content_cat_icon_path_small	= ".chr(36)."tp -> replaceConstants(".chr(36)."content_pref[\"content_cat_icon_path_small\"]);\n";
+			$data .= "\$bullet = (defined('BULLET') ? \"<img src='\".THEME_ABS.\"images/\".BULLET.\"' alt='' style='border:0;vertical-align: middle;' />\" : \"<img src='\".THEME_ABS.\"images/bullet2.gif' alt='bullet' style='border:0;vertical-align: middle;' />\");\n";
 			$data .= "\n";
-			$data .= "	".chr(36)."break = FALSE;\n";
+			$data .= "\$content_pref					= \$aa -> getContentPref(\$menutypeid);\n";
+			$data .= "\$content_icon_path				= \$tp -> replaceConstants(\$content_pref[\"content_icon_path\"]);\n";
+			$data .= "\$content_cat_icon_path_small	= \$tp -> replaceConstants(\$content_pref[\"content_cat_icon_path_small\"]);\n";
+			$data .= "\n";
+			$data .= "	\$break = FALSE;\n";
 			$data .= "//##### SEARCH SELECT ORDER --------------------------------------------------\n";
 			$data .= "//show search box\n";
-			$data .= "if(".chr(36)."content_pref[\"content_menu_search\"]){\n";
-			$data .= "	".chr(36)."text .= ".chr(36)."aa -> showOptionsSearch(\"menu\", ".chr(36)."menutypeid);\n";
-			$data .= "	".chr(36)."break = TRUE;\n";
+			$data .= "if(\$content_pref[\"content_menu_search\"]){\n";
+			$data .= "	\$text .= \$aa -> showOptionsSearch(\"menu\", \$menutypeid);\n";
+			$data .= "	\$break = TRUE;\n";
 			$data .= "}\n";
 			$data .= "//show select box (with either links to other content pages, to categories, to both, or don't show at all)\n";
-			$data .= "if( (".chr(36)."content_pref[\"content_menu_links\"] && ".chr(36)."content_pref[\"content_menu_links_dropdown\"]) || (".chr(36)."content_pref[\"content_menu_cat\"] && ".chr(36)."content_pref[\"content_menu_cat_dropdown\"]) ){\n";
-			$data .= "	".chr(36)."text .= ".chr(36)."aa -> showOptionsSelect(\"menu\", ".chr(36)."menutypeid);\n";
-			$data .= "	".chr(36)."break = TRUE;\n";
+			$data .= "if( (\$content_pref[\"content_menu_links\"] && \$content_pref[\"content_menu_links_dropdown\"]) || (\$content_pref[\"content_menu_cat\"] && \$content_pref[\"content_menu_cat_dropdown\"]) ){\n";
+			$data .= "	\$text .= \$aa -> showOptionsSelect(\"menu\", \$menutypeid);\n";
+			$data .= "	\$break = TRUE;\n";
 			$data .= "}\n";
 			$data .= "//show order box\n";
-			$data .= "if(".chr(36)."content_pref[\"content_menu_sort\"]){\n";
-			$data .= "	".chr(36)."text .= ".chr(36)."aa -> showOptionsOrder(\"menu\", ".chr(36)."menutypeid);\n";
-			$data .= "	".chr(36)."break = TRUE;\n";
+			$data .= "if(\$content_pref[\"content_menu_sort\"]){\n";
+			$data .= "	\$text .= \$aa -> showOptionsOrder(\"menu\", \$menutypeid);\n";
+			$data .= "	\$break = TRUE;\n";
 			$data .= "}\n";
 			$data .= "\n";
 			$data .= "//show links list if chosen so\n";
-			$data .= "if(".chr(36)."content_pref[\"content_menu_links\"] && !".chr(36)."content_pref[\"content_menu_links_dropdown\"]){\n";
-			$data .= "	if(".chr(36)."break === TRUE){\n";
-			$data .= "	   ".chr(36)."text .= \"<br />\";\n";
+			$data .= "if(\$content_pref[\"content_menu_links\"] && !\$content_pref[\"content_menu_links_dropdown\"]){\n";
+			$data .= "	if(\$break === TRUE){\n";
+			$data .= "	   \$text .= \"<br />\";\n";
 			$data .= "	}\n";
-			$data .= "	".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_links_caption\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_links_caption\"] : CONTENT_MENU_LAN_4).\"<br />\";\n";
+			$data .= "	\$text .= (\$content_pref[\"content_menu_links_caption\"] != \"\" ? \$content_pref[\"content_menu_links_caption\"] : CONTENT_MENU_LAN_4).\"<br />\";\n";
 			$data .= "\n";
 			$data .= "	//define icon\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_links_icon\"] == \"0\"){ ".chr(36)."linksicon = \"\";\n";
-			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon\"] == \"1\"){ ".chr(36)."linksicon = \"<img src='\".THEME.\"images/bullet2.gif' alt='' />\";\n";
-			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon\"] == \"2\"){ ".chr(36)."linksicon = \"&middot\";\n";
-			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon\"] == \"3\"){ ".chr(36)."linksicon = \"&ordm;\";\n";
-			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon\"] == \"4\"){ ".chr(36)."linksicon = \"&raquo;\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_links_icon\"] == \"0\"){ \$linksicon = \"\";\n";
+			$data .= "	}elseif(\$content_pref[\"content_menu_links_icon\"] == \"1\"){ \$linksicon = \$bullet;\n";
+			$data .= "	}elseif(\$content_pref[\"content_menu_links_icon\"] == \"2\"){ \$linksicon = \"&middot\";\n";
+			$data .= "	}elseif(\$content_pref[\"content_menu_links_icon\"] == \"3\"){ \$linksicon = \"&ordm;\";\n";
+			$data .= "	}elseif(\$content_pref[\"content_menu_links_icon\"] == \"4\"){ \$linksicon = \"&raquo;\";\n";
 			$data .= "	}\n";
 			$data .= "\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_viewallcat\"]){\n";
-			$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?cat.list.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_6.\"</a><br />\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_viewallcat\"]){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content.php?cat.list.\".\$menutypeid.\"'>\".CONTENT_LAN_6.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_viewallauthor\"]){\n";
-			$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?author.list.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_7.\"</a><br />\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_viewallauthor\"]){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content.php?author.list.\".\$menutypeid.\"'>\".CONTENT_LAN_7.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_viewallitems\"]){\n";
-			$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?list.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_83.\"</a><br />\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_viewallitems\"]){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content.php?list.\".\$menutypeid.\"'>\".CONTENT_LAN_83.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_viewtoprated\"]){\n";
-			$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?top.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_8.\"</a><br />\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_viewtoprated\"]){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content.php?top.\".\$menutypeid.\"'>\".CONTENT_LAN_8.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_viewtopscore\"]){\n";
-			$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?score.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_12.\"</a><br />\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_viewtopscore\"]){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content.php?score.\".\$menutypeid.\"'>\".CONTENT_LAN_12.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_viewrecent\"]){\n";
-			$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?recent.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_61.\"</a><br />\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_viewrecent\"]){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content.php?recent.\".\$menutypeid.\"'>\".CONTENT_LAN_61.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	if( ".chr(36)."content_pref[\"content_menu_viewsubmit\"] && ".chr(36)."content_pref[\"content_submit\"] && check_class(".chr(36)."content_pref[\"content_submit_class\"]) ){\n";
-			$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content_submit.php'>\".CONTENT_LAN_75.\"</a><br />\";\n";
+			$data .= "	if( \$content_pref[\"content_menu_viewsubmit\"] && \$content_pref[\"content_submit\"] && check_class(\$content_pref[\"content_submit_class\"]) ){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content_submit.php'>\".CONTENT_LAN_75.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	".chr(36)."text .= \"<br />\";\n";
+			$data .= "	\$text .= \"<br />\";\n";
 			$data .= "}\n";
 			$data .= "\n";
 			$data .= "//get category array\n";
-			$data .= chr(36)."array = ".chr(36)."aa -> getCategoryTree(\"\", intval(".chr(36)."menutypeid), TRUE);\n";
+			$data .= "\$array = \$aa -> getCategoryTree(\"\", intval(\$menutypeid), TRUE);\n";
 			$data .= "\n";
 			$data .= "//##### CATEGORY LIST --------------------------------------------------\n";
-			$data .= "if(!".chr(36)."content_pref[\"content_menu_cat_dropdown\"]){\n";
-			$data .= "	if(".chr(36)."content_pref[\"content_menu_cat\"]){\n";
-			$data .= "		".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_caption\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_cat_caption\"] : CONTENT_MENU_LAN_3).\"<br />\";\n";
+			$data .= "if(!\$content_pref[\"content_menu_cat_dropdown\"]){\n";
+			$data .= "	if(\$content_pref[\"content_menu_cat\"]){\n";
+			$data .= "		\$text .= (\$content_pref[\"content_menu_cat_caption\"] != \"\" ? \$content_pref[\"content_menu_cat_caption\"] : CONTENT_MENU_LAN_3).\"<br />\";\n";
 			$data .= "\n";
-			$data .= "		".chr(36)."newparent = \"\";\n";
-			$data .= "		".chr(36)."checkid = \"\";\n";
-			$data .= "		".chr(36)."newarray = array_merge_recursive(".chr(36)."array);\n";
-			$data .= "		for(".chr(36)."a=0;".chr(36)."a<count(".chr(36)."newarray);".chr(36)."a++){\n";
-			$data .= "			for(".chr(36)."b=0;".chr(36)."b<count(".chr(36)."newarray[".chr(36)."a]);".chr(36)."b++){\n";
-			$data .= "				".chr(36)."newparent[".chr(36)."newarray[".chr(36)."a][".chr(36)."b]] = ".chr(36)."newarray[".chr(36)."a][".chr(36)."b+1];\n";
-			$data .= "				if( (".chr(36)."content_pref[\"content_menu_cat_main\"] && ".chr(36)."newarray[".chr(36)."a][".chr(36)."b] == ".chr(36)."menutypeid) || ".chr(36)."newarray[".chr(36)."a][".chr(36)."b] != ".chr(36)."menutypeid ){\n";
-			$data .= "					".chr(36)."checkid .= \" content_id = '\".".chr(36)."newarray[".chr(36)."a][".chr(36)."b].\"' OR \";\n";
+			$data .= "		\$newparent = \"\";\n";
+			$data .= "		\$checkid = \"\";\n";
+			$data .= "		\$newarray = array_merge_recursive(\$array);\n";
+			$data .= "		for(\$a=0;\$a<count(\$newarray);\$a++){\n";
+			$data .= "			for(\$b=0;\$b<count(\$newarray[\$a]);\$b++){\n";
+			$data .= "				\$newparent[\$newarray[\$a][\$b]] = \$newarray[\$a][\$b+1];\n";
+			$data .= "				if( (\$content_pref[\"content_menu_cat_main\"] && \$newarray[\$a][\$b] == \$menutypeid) || \$newarray[\$a][\$b] != \$menutypeid ){\n";
+			$data .= "					\$checkid .= \" content_id = '\".\$newarray[\$a][\$b].\"' OR \";\n";
 			$data .= "				}\n";
-			$data .= "				".chr(36)."b++;\n";
+			$data .= "				\$b++;\n";
 			$data .= "			}\n";
 			$data .= "		}\n";
-			$data .= "		".chr(36)."checkid = substr(".chr(36)."checkid,0,-3);\n";
-			$data .= "		if(!is_object(".chr(36)."sql)){ ".chr(36)."sql = new db; }\n";
+			$data .= "		\$checkid = substr(\$checkid,0,-3);\n";
+			$data .= "		if(!is_object(\$sql)){ \$sql = new db; }\n";
 			
-			$data .= "		if(".chr(36)."sql -> db_Select(".chr(36)."plugintable, \"*\", \" \".".chr(36)."checkid.\" ORDER BY content_order \")){\n";
-			$data .= "			while(".chr(36)."row = ".chr(36)."sql -> db_Fetch()){\n";
+			$data .= "		if(\$sql -> db_Select(\$plugintable, \"*\", \" \".\$checkid.\" ORDER BY content_order \")){\n";
+			$data .= "			while(\$row = \$sql -> db_Fetch()){\n";
 			$data .= "\n";
 			$data .= "				//define icon\n";
-			$data .= "				".chr(36)."ICON = \"\";\n";
-			$data .= "				if(".chr(36)."content_pref[\"content_menu_cat_icon\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
-			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
-			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
-			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon\"] == \"3\"){ ".chr(36)."ICON = \"&ordm;\";\n";
-			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
-			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon\"] == \"5\"){\n";
-			$data .= "					if(".chr(36)."row['content_icon'] != \"\" && file_exists(".chr(36)."content_cat_icon_path_small.".chr(36)."row['content_icon']) ){\n";
-			$data .= "						".chr(36)."ICON = \"<img src='\".".chr(36)."content_cat_icon_path_small.".chr(36)."row['content_icon'].\"' alt='' style='border:0;' />\";\n";
+			$data .= "				\$ICON = \"\";\n";
+			$data .= "				if(\$content_pref[\"content_menu_cat_icon\"] == \"0\"){ \$ICON = \"\";\n";
+			$data .= "				}elseif(\$content_pref[\"content_menu_cat_icon\"] == \"1\"){ \$ICON = \$bullet;\n";
+			$data .= "				}elseif(\$content_pref[\"content_menu_cat_icon\"] == \"2\"){ \$ICON = \"&middot\";\n";
+			$data .= "				}elseif(\$content_pref[\"content_menu_cat_icon\"] == \"3\"){ \$ICON = \"&ordm;\";\n";
+			$data .= "				}elseif(\$content_pref[\"content_menu_cat_icon\"] == \"4\"){ \$ICON = \"&raquo;\";\n";
+			$data .= "				}elseif(\$content_pref[\"content_menu_cat_icon\"] == \"5\"){\n";
+			$data .= "					if(\$row['content_icon'] != \"\" && file_exists(\$content_cat_icon_path_small.\$row['content_icon']) ){\n";
+			$data .= "						\$ICON = \"<img src='\".\$content_cat_icon_path_small.\$row['content_icon'].\"' alt='' style='border:0;' />\";\n";
 			$data .= "					}else{\n";
 			$data .= "						//default category icon\n";
-			$data .= "						if(".chr(36)."content_pref[\"content_menu_cat_icon_default\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
-			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
-			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
-			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default\"] == \"3\"){ ".chr(36)."ICON = \"&ordm;\";\n";
-			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
+			$data .= "						if(\$content_pref[\"content_menu_cat_icon_default\"] == \"0\"){ \$ICON = \"\";\n";
+			$data .= "						}elseif(\$content_pref[\"content_menu_cat_icon_default\"] == \"1\"){ \$ICON = \$bullet;\n";
+			$data .= "						}elseif(\$content_pref[\"content_menu_cat_icon_default\"] == \"2\"){ \$ICON = \"&middot\";\n";
+			$data .= "						}elseif(\$content_pref[\"content_menu_cat_icon_default\"] == \"3\"){ \$ICON = \"&ordm;\";\n";
+			$data .= "						}elseif(\$content_pref[\"content_menu_cat_icon_default\"] == \"4\"){ \$ICON = \"&raquo;\";\n";
 			$data .= "						}\n";
 			$data .= "					}\n";
 			$data .= "				}\n";
 			$data .= "				//display category list\n";
-			$data .= "				".chr(36)."text .= \"<table style='width:100%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>\";\n";
-			$data .= "				".chr(36)."text .= \"<tr>\";\n";
-			$data .= "				".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:1%; white-space:nowrap; text-align:left; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
-			$data .= "				".chr(36)."text .= \"<td colspan='2'>\";\n";
-			$data .= "				".chr(36)."text .= \"<a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a>\";\n";
-			$data .= "				".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_number\"] ? \" <span class='smalltext'>(\".".chr(36)."aa -> countCatItems(".chr(36)."row['content_id']).\")</span>\" : \"\");\n";
-			$data .= "				".chr(36)."text .= \"</td>\";\n";
-			$data .= "				".chr(36)."text .= \"</tr>\";\n";
-			$data .= "				".chr(36)."text .= \"</table>\";\n";
+			$data .= "				\$text .= \"<table style='width:100%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>\";\n";
+			$data .= "				\$text .= \"<tr>\";\n";
+			$data .= "				\$text .= (\$ICON ? \"<td style='width:1%; white-space:nowrap; text-align:left; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?cat.\".\$row['content_id'].\"'>\".\$ICON.\"</a></td>\" : \"\");\n";
+			$data .= "				\$text .= \"<td colspan='2'>\";\n";
+			$data .= "				\$text .= \"<a href='\".e_PLUGIN.\"content/content.php?cat.\".\$row['content_id'].\"'>\".\$row['content_heading'].\"</a>\";\n";
+			$data .= "				\$text .= (\$content_pref[\"content_menu_cat_number\"] ? \" <span class='smalltext'>(\".\$aa -> countCatItems(\$row['content_id']).\")</span>\" : \"\");\n";
+			$data .= "				\$text .= \"</td>\";\n";
+			$data .= "				\$text .= \"</tr>\";\n";
+			$data .= "				\$text .= \"</table>\";\n";
 			$data .= "			}\n";
 			$data .= "		}\n";
 			$data .= "	}\n";
 			$data .= "}\n";
 			$data .= "\n";
 			$data .= "//##### RECENT --------------------------------------------------\n";
-			$data .= "if(".chr(36)."content_pref[\"content_menu_recent\"]){\n";
-			$data .= chr(36)."text .= \"<br />\";\n";
+			$data .= "if(\$content_pref[\"content_menu_recent\"]){\n";
+			$data .= "	\$text .= \"<br />\";\n";
 			$data .= "\n";
-			$data .= "//prepare query paramaters\n";
-			$data .= chr(36)."validparent = implode(\",\", array_keys(".chr(36)."array));\n";
-			$data .= chr(36)."qry = \" content_parent REGEXP '\".".chr(36)."aa -> CONTENTREGEXP(".chr(36)."validparent).\"' \";\n";
+			$data .= "	//prepare query paramaters\n";
+			$data .= "	\$validparent = implode(\",\", array_keys(\$array));\n";
+			$data .= "	\$qry = \" content_parent REGEXP '\".\$aa -> CONTENTREGEXP(\$validparent).\"' \";\n";
 			$data .= "\n";
-			$data .= chr(36)."sql1 = new db;\n";
-			$data .= chr(36)."contenttotal = ".chr(36)."sql1 -> db_Count(".chr(36)."plugintable, \"(*)\", \"WHERE content_refer != 'sa' AND \".".chr(36)."qry.\" \".".chr(36)."datequery.\" AND content_class REGEXP '\".e_CLASS_REGEXP.\"' \" );\n";
+			$data .= "	\$sql1 = new db;\n";
+			$data .= "	\$contenttotal = \$sql1 -> db_Count(\$plugintable, \"(*)\", \"WHERE content_refer != 'sa' AND \".\$qry.\" \".\$datequery.\" AND content_class REGEXP '\".e_CLASS_REGEXP.\"' \" );\n";
 			$data .= "\n";
-			$data .= "if(".chr(36)."resultitem = ".chr(36)."sql1 -> db_Select(".chr(36)."plugintable, \"*\", \"content_refer !='sa' AND \".".chr(36)."qry.\" \".".chr(36)."datequery.\" AND content_class REGEXP '\".e_CLASS_REGEXP.\"' ORDER BY content_datestamp DESC LIMIT 0,\".".chr(36)."content_pref[\"content_menu_recent_number\"] )){\n";
+			$data .= "	if(\$resultitem = \$sql1 -> db_Select(\$plugintable, \"*\", \"content_refer !='sa' AND \".\$qry.\" \".\$datequery.\" AND content_class REGEXP '\".e_CLASS_REGEXP.\"' ORDER BY content_datestamp DESC LIMIT 0,\".\$content_pref[\"content_menu_recent_number\"] )){\n";
 			$data .= "\n";
-			$data .= "	".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_recent_caption\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_recent_caption\"] : CONTENT_MENU_LAN_2).\"<br />\";\n";
-			$data .= "	while(".chr(36)."row = ".chr(36)."sql1 -> db_Fetch()){\n";
+			$data .= "		\$text .= (\$content_pref[\"content_menu_recent_caption\"] != \"\" ? \$content_pref[\"content_menu_recent_caption\"] : CONTENT_MENU_LAN_2).\"<br />\";\n";
+			$data .= "		while(\$row = \$sql1 -> db_Fetch()){\n";
 			$data .= "\n";
-			$data .= "		".chr(36)."ICON = \"\";\n";
-			$data .= "		".chr(36)."DATE = \"\";\n";
-			$data .= "		".chr(36)."AUTHOR = \"\";\n";
-			$data .= "		".chr(36)."SUBHEADING = \"\";\n";
+			$data .= "			\$ICON = \"\";\n";
+			$data .= "			\$DATE = \"\";\n";
+			$data .= "			\$AUTHOR = \"\";\n";
+			$data .= "			\$SUBHEADING = \"\";\n";
 			$data .= "\n";
-			$data .= "		if(".chr(36)."content_pref[\"content_menu_recent_date\"]){\n";
-			$data .= "			".chr(36)."datestyle = (".chr(36)."content_pref[\"content_archive_datestyle\"] ? ".chr(36)."content_pref[\"content_archive_datestyle\"] : \"%d %b %Y\");\n";
-			$data .= "			".chr(36)."DATE = strftime(".chr(36)."datestyle, ".chr(36)."row['content_datestamp']);\n";
-			$data .= "		}\n";
-			$data .= "		if(".chr(36)."content_pref[\"content_menu_recent_author\"]){\n";
-			$data .= "			".chr(36)."authordetails = ".chr(36)."aa -> getAuthor(".chr(36)."row['content_author']);\n";
-			$data .= "			".chr(36)."AUTHOR = ".chr(36)."authordetails[1];\n";
-			$data .= "		}\n";
+			$data .= "			if(\$content_pref[\"content_menu_recent_date\"]){\n";
+			$data .= "				\$datestyle = (\$content_pref[\"content_archive_datestyle\"] ? \$content_pref[\"content_archive_datestyle\"] : \"%d %b %Y\");\n";
+			$data .= "				\$DATE = strftime(\$datestyle, \$row['content_datestamp']);\n";
+			$data .= "			}\n";
+			$data .= "			if(\$content_pref[\"content_menu_recent_author\"]){\n";
+			$data .= "				\$authordetails = \$aa -> getAuthor(\$row['content_author']);\n";
+			$data .= "				\$AUTHOR = \$authordetails[1];\n";
+			$data .= "			}\n";
 			$data .= "\n";
-			$data .= "		//subheading\n";
-			$data .= "		if(".chr(36)."content_pref[\"content_menu_recent_subheading\"] && ".chr(36)."row['content_subheading']){\n";
-			$data .= "			if(".chr(36)."content_pref[\"content_menu_recent_subheading_char\"] && ".chr(36)."content_pref[\"content_menu_recent_subheading_char\"] != \"\" && ".chr(36)."content_pref[\"content_menu_recent_subheading_char\"] != \"0\"){\n";
-			$data .= "				if(strlen(".chr(36)."row['content_subheading']) > ".chr(36)."content_pref[\"content_menu_recent_subheading_char\"]) {\n";
-			$data .= "					".chr(36)."row['content_subheading'] = substr(".chr(36)."row['content_subheading'], 0, ".chr(36)."content_pref[\"content_menu_recent_subheading_char\"]).".chr(36)."content_pref[\"content_menu_recent_subheading_post\"];\n";
+			$data .= "			//subheading\n";
+			$data .= "			if(\$content_pref[\"content_menu_recent_subheading\"] && \$row['content_subheading']){\n";
+			$data .= "				if(\$content_pref[\"content_menu_recent_subheading_char\"] && \$content_pref[\"content_menu_recent_subheading_char\"] != \"\" && \$content_pref[\"content_menu_recent_subheading_char\"] != \"0\"){\n";
+			$data .= "					if(strlen(\$row['content_subheading']) > \$content_pref[\"content_menu_recent_subheading_char\"]) {\n";
+			$data .= "						\$row['content_subheading'] = substr(\$row['content_subheading'], 0, \$content_pref[\"content_menu_recent_subheading_char\"]).\$content_pref[\"content_menu_recent_subheading_post\"];\n";
+			$data .= "					}\n";
+			$data .= "				}\n";
+			$data .= "				\$SUBHEADING = \$row['content_subheading'];\n";
+			$data .= "			}\n";
+			$data .= "\n";
+			$data .= "			//define icon\n";
+			$data .= "			\$recenticonwidth = \"\";\n";
+			$data .= "			if(\$content_pref[\"content_menu_recent_icon\"] == \"0\"){ \$ICON = \"\";\n";
+			$data .= "			}elseif(\$content_pref[\"content_menu_recent_icon\"] == \"1\"){ \$ICON = \$bullet;\n";
+			$data .= "			}elseif(\$content_pref[\"content_menu_recent_icon\"] == \"2\"){ \$ICON = \"&middot\";\n";
+			$data .= "			}elseif(\$content_pref[\"content_menu_recent_icon\"] == \"3\"){ \$ICON = \"&ordm;\";\n";
+			$data .= "			}elseif(\$content_pref[\"content_menu_recent_icon\"] == \"4\"){ \$ICON = \"&raquo;\";\n";
+			$data .= "			}elseif(\$content_pref[\"content_menu_recent_icon\"] == \"5\"){\n";
+			$data .= "				if(\$content_pref[\"content_menu_recent_icon\"] == \"5\"){\n";
+			$data .= "					if(\$content_pref[\"content_menu_recent_icon_width\"]){\n";
+			$data .= "						\$recenticonwidth = \" width:\".\$content_pref[\"content_menu_recent_icon_width\"].\"px; \";\n";
+			$data .= "					}else{\n";
+			$data .= "						\$recenticonwidth = \" width:50px; \";\n";
+			$data .= "					}\n";
+			$data .= "				}\n";
+			$data .= "				if(\$content_pref[\"content_menu_recent_icon\"] == \"5\" && \$row['content_icon'] != \"\" && file_exists(\$content_icon_path.\$row['content_icon'])){\n";
+			$data .= "					\$ICON = \"<img src='\".\$content_icon_path.\$row['content_icon'].\"' alt='' style='\".\$recenticonwidth.\" border:0;' />\";\n";
 			$data .= "				}\n";
 			$data .= "			}\n";
-			$data .= "			".chr(36)."SUBHEADING = ".chr(36)."row['content_subheading'];\n";
-			$data .= "		}\n";
 			$data .= "\n";
-			$data .= "		//define icon\n";
-			$data .= "		".chr(36)."recenticonwidth = \"\";\n";
-			$data .= "		if(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
-			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
-			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
-			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"3\"){ ".chr(36)."ICON = \"&ordm;\";\n";
-			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
-			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"5\"){\n";
-			$data .= "			if(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"5\"){\n";
-			$data .= "				if(".chr(36)."content_pref[\"content_menu_recent_icon_width\"]){\n";
-			$data .= "					".chr(36)."recenticonwidth = \" width:\".".chr(36)."content_pref[\"content_menu_recent_icon_width\"].\"px; \";\n";
-			$data .= "				}else{\n";
-			$data .= "					".chr(36)."recenticonwidth = \" width:50px; \";\n";
-			$data .= "				}\n";
-			$data .= "			}\n";
-			$data .= "			if(".chr(36)."content_pref[\"content_menu_recent_icon\"] == \"5\" && ".chr(36)."row['content_icon'] != \"\" && file_exists(".chr(36)."content_icon_path.".chr(36)."row['content_icon'])){\n";
-			$data .= "				".chr(36)."ICON = \"<img src='\".".chr(36)."content_icon_path.".chr(36)."row['content_icon'].\"' alt='' style='\".".chr(36)."recenticonwidth.\" border:0;' />\";\n";
-			$data .= "			}\n";
+			$data .= "			//display recent list\n";
+			$data .= "			\$text .= \"<table style='width:100%; text-align:left; border:0; margin-bottom:10px;' cellpadding='0' cellspacing='0'>\";\n";
+			$data .= "			\$text .= \"<tr>\";\n";
+			$data .= "			\$text .= (\$ICON ? \"<td style='width:1%; white-space:nowrap; vertical-align:top; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?content.\".\$row['content_id'].\"'>\".\$ICON.\"</a></td>\" : \"\");\n";
+			$data .= "			\$text .= \"<td style='width:99%; vertical-align:top;'>\";\n";
+			$data .= "			\$text .= \"<a href='\".e_PLUGIN.\"content/content.php?content.\".\$row['content_id'].\"'>\".\$row['content_heading'].\"</a><br />\";\n";
+			$data .= "			\$text .= (\$DATE ? \$DATE.\"<br />\" : \"\" );\n";
+			$data .= "			\$text .= (\$AUTHOR ? \$AUTHOR.\"<br />\" : \"\" );\n";
+			$data .= "			\$text .= (\$SUBHEADING ? \$SUBHEADING.\"<br />\" : \"\" );\n";
+			$data .= "			\$text .= \"</td>\";\n";
+			$data .= "			\$text .= \"</tr>\";\n";
+			$data .= "			\$text .= \"</table>\";\n";
 			$data .= "		}\n";
-			$data .= "\n";
-			$data .= "		//display recent list\n";
-			$data .= "		".chr(36)."text .= \"<table style='width:100%; text-align:left; border:0; margin-bottom:10px;' cellpadding='0' cellspacing='0'>\";\n";
-			$data .= "		".chr(36)."text .= \"<tr>\";\n";
-			$data .= "		".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:1%; white-space:nowrap; vertical-align:top; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
-			$data .= "		".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'>\";\n";
-			$data .= "		".chr(36)."text .= \"<a href='\".e_PLUGIN.\"content/content.php?content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a><br />\";\n";
-			$data .= "		".chr(36)."text .= (".chr(36)."DATE ? ".chr(36)."DATE.\"<br />\" : \"\" );\n";
-			$data .= "		".chr(36)."text .= (".chr(36)."AUTHOR ? ".chr(36)."AUTHOR.\"<br />\" : \"\" );\n";
-			$data .= "		".chr(36)."text .= (".chr(36)."SUBHEADING ? ".chr(36)."SUBHEADING.\"<br />\" : \"\" );\n";
-			$data .= "		".chr(36)."text .= \"</td>\";\n";
-			$data .= "		".chr(36)."text .= \"</tr>\";\n";
-			$data .= "		".chr(36)."text .= \"</table>\";\n";
 			$data .= "	}\n";
 			$data .= "}\n";
-			$data .= "}\n";
 			$data .= "\n";				
-			$data .= "if(!isset(".chr(36)."text)){ ".chr(36)."text = CONTENT_MENU_LAN_1; }\n";
-			$data .= chr(36)."caption = (".chr(36)."content_pref[\"content_menu_caption\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_caption\"] : CONTENT_MENU_LAN_0.\" \".".chr(36)."menuname);\n";
-			$data .= chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text, '$menufile');\n";
+			$data .= "if(!isset(\$text)){ \$text = CONTENT_MENU_LAN_1; }\n";
+			$data .= "\$caption = (\$content_pref[\"content_menu_caption\"] != \"\" ? \$content_pref[\"content_menu_caption\"] : CONTENT_MENU_LAN_0.\" \".\$menuname);\n";
+			$data .= "\$ns -> tablerender(\$caption, \$text, '$menufile');\n";
 			$data .= "\n";
 			$data .= "?".chr(62);
 				 
