@@ -1,6 +1,6 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
-// $Id: pop3_class.php,v 1.1 2006-05-12 22:50:40 e107coders Exp $ 
+// $Id: pop3_class.php,v 1.2 2006-06-04 08:55:21 e107coders Exp $
 // Main ReciveMail Class File - Version 1.0 (01-03-2006)
 /*
  * File: recivemail.class.php
@@ -48,7 +48,9 @@ class receiveMail
 		$sender=$mail_header->from[0];
 		$sender_replyto=$mail_header->reply_to[0];
 		$stat = (strtolower($sender->mailbox)!='mailer-daemon' && strtolower($sender->mailbox)!='postmaster') ? FALSE : TRUE;
-
+        if(strpos($mail_header->subject,"delayed")){
+           $stat = FALSE;
+		}
 			$mail_details=array(
 					'from'=>strtolower($sender->mailbox).'@'.$sender->host,
 					'fromName'=>$sender->personal,
