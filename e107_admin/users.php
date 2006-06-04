@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2006-05-14 06:04:33 $
+|     $Revision: 1.79 $
+|     $Date: 2006-06-04 08:55:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,8 +58,12 @@ if (e_QUERY) {
 $from = (isset($from)) ? $from : 0;
 $amount = 30;
 
+
+// ------- Check for Bounces --------------
 if(isset($_POST['check_bounces'])){
 	$user->check_bounces();
+	require_once("footer.php");
+	exit;
 }
 
 
@@ -421,7 +425,7 @@ class users{
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 
-		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
+		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified;
 		// save the display choices.
 		if(isset($_POST['searchdisp'])){
 			$pref['admin_user_disp'] = implode("|",$_POST['searchdisp']);
@@ -672,7 +676,8 @@ class users{
 
 		}
 
-		$users = $sql->db_Count("user");
+
+		$users = (e_QUERY != "unverified") ? $sql->db_Count("user"): $unverified;
 
 		if ($users > $amount && !$_POST['searchquery']) {
 			$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
@@ -1002,7 +1007,7 @@ class users{
 
 // ---------------------------------------------------------------------
 
-	function check_bounces(){
+    function check_bounces(){
 		global $sql,$pref;
         include(e_HANDLER."pop3_class.php");
 
@@ -1011,39 +1016,50 @@ class users{
 		$tot=$obj->getTotalMails();
         $found = FALSE;
 		$DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
-
+        $text = "<br /><div><table class='fborder' style='".ADMIN_WIDTH."'>
+		<tr><td class='fcaption' style='width:5%'>#</td><td class='fcaption'>e107-id</td><td class='fcaption'>email</td><td class='fcaption'>Subject</td><td class='fcaption'>Bounce</td></tr>\n";
 		for($i=1;$i<=$tot;$i++)	{
 			 $head=$obj->getHeaders($i);
+
             if($head['bounce']){
 		   		if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result)){
 					if($result[1]){
-						$id[] = intval($result[1]);
+						$id[$i] = intval($result[1]);
 						$found = TRUE;
 					}
 
         		}elseif(preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result)){
                 	if($result[0] && $result[0] != $pref['mail_bounce_email']){
-						$emails[] = "'".$result[0]."'";
+						$emails[$i] = "'".$result[0]."'";
 						$found = TRUE;
 					}elseif($result[1] && $result[1] != $pref['mail_bounce_email']){
-                    	$emails[] = "'".$result[1]."'";
+                    	$emails[$i] = "'".$result[1]."'";
 						$found = TRUE;
 					}
 
 				}
-					if($DEL && $found){ $obj->deleteMails($i); }
+				 	if($DEL && $found){ $obj->deleteMails($i); }
+
 			}
 
+			$text .= "<tr><td class='forumheader3'>".$i."</td><td class='forumheader3'>".$id[$i]."</td><td class='forumheader3'>".$emails[$i]."</td><td class='forumheader3'>".$head['subject']."</td><td class='forumheader3'>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON)."</td></tr>";
+
 		}
+		$text .= "</table></div>";
+
+		array_unique($id);
+		array_unique($emails);
+
         $all_ids = implode(",",$id);
 		$all_emails = implode(",",$emails);
+
 		$obj->close_mailbox();
         $found = count($id) + count($emails);
 	  	if($ed = $sql -> db_Update("user", "user_ban=3 WHERE (user_id IN (".$all_ids.") OR user_email IN (".$all_emails.")) AND user_sess !='' ")){
-        	$this->show_message(LAN_UPDATED."<br >Found $tot, updated $ed / $found");
+        	$this->show_message(LAN_UPDATED."<br >Found $tot, updated $ed / $found".$text);
 	  	}else{
-        	$this->show_message(LAN_UPDATED_FAILED."<br >Found $tot, not updated $ed / $found");
-	  	}
+       		$this->show_message(LAN_UPDATED_FAILED."<br >Found $tot, not updated $ed / $found".$text);
+   	  	}
 
 	}
 
