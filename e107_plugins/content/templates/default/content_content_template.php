@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-05-31 21:29:59 $
+|     $Revision: 1.25 $
+|     $Date: 2006-06-05 11:27:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -78,7 +78,12 @@ $sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['pre'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['post'] = "</tr></table>";
 
-$CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0'><tr><td>
+$sc_style['CONTENT_CONTENT_TABLE_PREV_PAGE']['pre'] = "<div style='clear:both; padding-bottom:20px; padding-top:20px;'><div style='float:left;'>";
+$sc_style['CONTENT_CONTENT_TABLE_PREV_PAGE']['post'] = "</div>";
+$sc_style['CONTENT_CONTENT_TABLE_NEXT_PAGE']['pre'] = "<div style='float:right;'>";
+$sc_style['CONTENT_CONTENT_TABLE_NEXT_PAGE']['post'] = "</div></div>";
+
+$CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>
 <div style='clear:both;'>
 
 	{CONTENT_CONTENT_TABLE_INFO_PRE}
@@ -91,12 +96,13 @@ $CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0'
 		</td>
 	{CONTENT_CONTENT_TABLE_INFO_POST}
 	<div style='clear:both;'><br /></div>
-	<table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>
+	<table class='fborder' cellpadding='0' cellspacing='0' style='width:100%;'><tr><td class='forumheader3'>
 		{CONTENT_CONTENT_TABLE_IMAGES}
 		{CONTENT_CONTENT_TABLE_SUMMARY}
 		{CONTENT_CONTENT_TABLE_TEXT}
 		{CONTENT_CONTENT_TABLE_CUSTOM_TAGS}
 		{CONTENT_CONTENT_TABLE_PAGENAMES}
+		{CONTENT_CONTENT_TABLE_PREV_PAGE}{CONTENT_CONTENT_TABLE_NEXT_PAGE}
 	</td></tr></table>
 </div>
 </td></tr></table>\n";

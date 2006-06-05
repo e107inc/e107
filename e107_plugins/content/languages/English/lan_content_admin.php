@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-03 10:27:54 $
+|     $Revision: 1.10 $
+|     $Date: 2006-06-05 11:27:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -681,5 +681,8 @@ define("CONTENT_ADMIN_OPT_LAN_159", "caption category page");
 define("CONTENT_ADMIN_OPT_LAN_160", "append category heading to caption");
 define("CONTENT_ADMIN_OPT_LAN_161", "caption parent subcategories (only used if rendertype is set to seperate menus)");
 define("CONTENT_ADMIN_OPT_LAN_162", "caption content items (only used if rendertype is set to seperate menus)");
+define("CONTENT_ADMIN_OPT_LAN_163", "show next and previous page links");
+define("CONTENT_ADMIN_OPT_LAN_164", "caption for previous page link<br />(use {PAGETITLE} to add the title of the previous page)");
+define("CONTENT_ADMIN_OPT_LAN_165", "caption for next page link<br />(use {PAGETITLE} to add the title of the next page)");
 
 ?>
