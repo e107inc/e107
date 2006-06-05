@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2006-05-16 01:31:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.90 $
+|     $Date: 2006-06-05 09:51:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,21 +24,11 @@ $usere = new e107_user_extended;
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
-$fname = "signup_template.php";
-if(is_readable(THEME."templates/".$fname))
-{
-	include_once(THEME."templates/".$fname);
+if (is_readable(THEME."signup_template.php")) {
+	require_once(THEME."signup_template.php");
+} else {
+	require_once(e_THEME."templates/signup_template.php");
 }
-elseif(is_readable(THEME.$fname))
-{
-	include_once(THEME.$fname);
-}
-if(is_readable(e_THEME."templates/{$fname}"))
-{
-	include_once(e_THEME."templates/{$fname}");
-}
-
-
 
 include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
 
