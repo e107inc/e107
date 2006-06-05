@@ -11,12 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/print.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-02 13:59:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-05 14:16:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+$HEADER="";
+$FOOTER="";
+require_once(HEADERF);
 $qs = explode(".", e_QUERY);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
@@ -75,23 +78,18 @@ else
 	if ($news_source != ""){ $text .= "<br /><br />".$news_source; }
 	if ($news_url != ""){ $text .= "<br />".$news_url; }
 	 
-	$text .= "<br /><br /><hr />".
+	$text .= "<br /><br /></font><hr />".
 	LAN_PRINT_303.SITENAME."
 	<br />
 	( http://".$_SERVER[HTTP_HOST].e_HTTP."comment.php?comment.news.".$news_id." )
-	</font>";
+	";
 }
 
 echo "
-	<div style=\"text-align:center\">
-	";
-	echo $tp->parseTemplate("{LOGO}", TRUE);
-	echo "
-	</div>
-	<hr />
-	<br />
-	";
-echo $text;
-echo "<br /><br /><div style='text-align:center'><form><input type='button' value='".LAN_PRINT_307."' onClick='window.print()'></form></div>";
-	
+<div style='text-align:left'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
+<div style='text-align:left'>".$text."</div><br /><br />
+<div style='text-align:left'><form action=''><input type='button' value='".LAN_PRINT_307."' onClick='window.print()' /></form></div>";
+
+require_once(FOOTERF);
+
 ?>
