@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.96 $
-|		$Date: 2006-06-04 09:09:24 $
+|		$Revision: 1.97 $
+|		$Date: 2006-06-05 11:27:57 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1156,6 +1156,7 @@ function show_content_score(){
 function show_content_item(){
 		global $pref, $content_pref, $content_icon_path, $content_image_path, $content_file_path, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
 		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA, $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
+		global $CONTENT_CONTENT_TABLE_PREV_PAGE, $CONTENT_CONTENT_TABLE_NEXT_PAGE;
 
 		$mainparent			= $aa -> getMainParent(intval($qs[1]));
 		$content_pref		= $aa -> getContentPref($mainparent);
@@ -1217,6 +1218,8 @@ function show_content_item(){
 			$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("content", $row['content_author'], $row['content_id']);
 			$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
 
+			$CONTENT_CONTENT_TABLE_PREV_PAGE = FALSE;
+			$CONTENT_CONTENT_TABLE_NEXT_PAGE = FALSE;
 			$lastpage = FALSE;		//boolean whether or not the current page is the last page
 			if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches)){
 				//remove html bbcode (since we're splitting the text, the html bbcode would not be parsed)
@@ -1248,6 +1251,31 @@ function show_content_item(){
 						$arrpagename = explode("[newpage=", $matches[0][$i]);
 						$pagename[$i] = substr($arrpagename[1],0,-1);
 					}
+					if(isset($content_pref["content_content_pagenames_nextprev"]) && $content_pref["content_content_pagenames_nextprev"]){
+						if($idp>1){
+							if(isset($content_pref["content_content_pagenames_nextprev_prevhead"]) && $content_pref["content_content_pagenames_nextprev_prevhead"]){
+								$cap = $content_pref["content_content_pagenames_nextprev_prevhead"];
+								$cap = str_replace("{PAGETITLE}", $pagename[$idp-2], $cap);
+							}else{
+								$cap = CONTENT_LAN_90;
+							}
+							$CONTENT_CONTENT_TABLE_PREV_PAGE = "<a href='".e_SELF."?".$qs[0].".".$qs[1].".".($idp-1)."'>".$cap."</a>";
+						}else{
+							$CONTENT_CONTENT_TABLE_PREV_PAGE = ' ';
+						}
+						if($idp<count($pages)){
+							if(isset($content_pref["content_content_pagenames_nextprev_nexthead"]) && $content_pref["content_content_pagenames_nextprev_nexthead"]){
+								$cap = $content_pref["content_content_pagenames_nextprev_nexthead"];
+								$cap = str_replace("{PAGETITLE}", $pagename[$idp], $cap);
+							}else{
+								$cap = CONTENT_LAN_91;
+							}
+							$CONTENT_CONTENT_TABLE_NEXT_PAGE = "<a href='".e_SELF."?".$qs[0].".".$qs[1].".".($idp+1)."'>".$cap."</a>";
+						}else{
+							$CONTENT_CONTENT_TABLE_NEXT_PAGE = ' ';
+						}
+					}
+					
 					//0:normal links, 1:selectbox
 					//$content_pref["content_content_pagenames_rendertype"] = "1";
 					if(isset($content_pref["content_content_pagenames_rendertype"]) && $content_pref["content_content_pagenames_rendertype"] == "1"){

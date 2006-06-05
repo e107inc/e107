@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2005-06-29 16:38:23 $
+|     $Revision: 1.67 $
+|     $Date: 2006-06-05 11:27:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -173,6 +173,8 @@ define("CONTENT_LAN_86", "view top score items");
 define("CONTENT_LAN_87", "Top Score Content");
 define("CONTENT_LAN_88", "no content items have a score yet");
 define("CONTENT_LAN_89", "select page");
+define("CONTENT_LAN_90", "previous page");
+define("CONTENT_LAN_91", "next page");
 
 define("CONTENT_MENU_LAN_0", "content Menu :");
 define("CONTENT_MENU_LAN_1", "no content items yet");

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.105 $
-|		$Date: 2006-06-03 10:27:54 $
+|		$Revision: 1.106 $
+|		$Date: 2006-06-05 11:27:57 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -3012,7 +3012,7 @@ class contentform{
 
 			//content_list_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_155;
-			$TOPIC_FIELD = $rs -> form_text("content_list_caption", 15, $tp->toHTML($content_pref['content_list_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_list_caption", 25, $tp->toHTML($content_pref['content_list_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_list_caption_append_name
@@ -3076,7 +3076,7 @@ class contentform{
 
 			//content_catall_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_155;
-			$TOPIC_FIELD = $rs -> form_text("content_catall_caption", 15, $tp->toHTML($content_pref['content_catall_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_catall_caption", 25, $tp->toHTML($content_pref['content_catall_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_ROW_SPACER;
@@ -3200,7 +3200,7 @@ class contentform{
 
 			//content_cat_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_159;
-			$TOPIC_FIELD = $rs -> form_text("content_cat_caption", 15, $tp->toHTML($content_pref['content_cat_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_cat_caption", 25, $tp->toHTML($content_pref['content_cat_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 			
 			//content_cat_caption_append_name
@@ -3213,12 +3213,12 @@ class contentform{
 
 			//content_cat_sub_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_161;
-			$TOPIC_FIELD = $rs -> form_text("content_cat_sub_caption", 15, $tp->toHTML($content_pref['content_cat_sub_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_cat_sub_caption", 25, $tp->toHTML($content_pref['content_cat_sub_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_cat_item_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_162;
-			$TOPIC_FIELD = $rs -> form_text("content_cat_item_caption", 15, $tp->toHTML($content_pref['content_cat_item_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_cat_item_caption", 25, $tp->toHTML($content_pref['content_cat_item_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
@@ -3296,6 +3296,24 @@ class contentform{
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
+			//content_content_pagenames_nextprev
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_163;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_content_pagenames_nextprev", "1", ($content_pref['content_content_pagenames_nextprev'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_content_pagenames_nextprev", "0", ($content_pref['content_content_pagenames_nextprev'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."
+			";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_content_pagenames_nextprev_prevhead
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_164;
+			$TOPIC_FIELD = $rs -> form_text("content_content_pagenames_nextprev_prevhead", 25, $tp->toHTML($content_pref['content_content_pagenames_nextprev_prevhead'],"","defs"), 50);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_content_pagenames_nextprev_nexthead
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_165;
+			$TOPIC_FIELD = $rs -> form_text("content_content_pagenames_nextprev_nexthead", 25, $tp->toHTML($content_pref['content_content_pagenames_nextprev_nexthead'],"","defs"), 50);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
 			$text .= $TOPIC_TABLE_END;
 
 			$text .= "
@@ -3333,12 +3351,12 @@ class contentform{
 
 			//content_author_index_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_156;
-			$TOPIC_FIELD = $rs -> form_text("content_author_index_caption", 15, $tp->toHTML($content_pref['content_author_index_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_author_index_caption", 25, $tp->toHTML($content_pref['content_author_index_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_author_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_157;
-			$TOPIC_FIELD = $rs -> form_text("content_author_caption", 15, $tp->toHTML($content_pref['content_author_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_author_caption", 25, $tp->toHTML($content_pref['content_author_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 			
 			//content_author_caption_append_name
@@ -3409,7 +3427,7 @@ class contentform{
 
 			//content_archive_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_155;
-			$TOPIC_FIELD = $rs -> form_text("content_archive_caption", 15, $tp->toHTML($content_pref['content_archive_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_archive_caption", 25, $tp->toHTML($content_pref['content_archive_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
@@ -3447,7 +3465,7 @@ class contentform{
 			
 			//content_top_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_155;
-			$TOPIC_FIELD = $rs -> form_text("content_top_caption", 15, $tp->toHTML($content_pref['content_top_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_top_caption", 25, $tp->toHTML($content_pref['content_top_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_top_caption_append_name
@@ -3493,7 +3511,7 @@ class contentform{
 			
 			//content_score_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_155;
-			$TOPIC_FIELD = $rs -> form_text("content_score_caption", 15, $tp->toHTML($content_pref['content_score_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_score_caption", 25, $tp->toHTML($content_pref['content_score_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_score_caption_append_name
@@ -3515,7 +3533,7 @@ class contentform{
 
 			//content_menu_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_93;
-			$TOPIC_FIELD = $rs -> form_text("content_menu_caption", 15, $tp->toHTML($content_pref['content_menu_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_menu_caption", 25, $tp->toHTML($content_pref['content_menu_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_menu_search_
@@ -3626,7 +3644,7 @@ class contentform{
 
 			//content_menu_links_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_115;
-			$TOPIC_FIELD = $rs -> form_text("content_menu_links_caption", 15, $tp->toHTML($content_pref['content_menu_links_caption'],"","defs"), 50)." (".CONTENT_ADMIN_OPT_LAN_116.")";
+			$TOPIC_FIELD = $rs -> form_text("content_menu_links_caption", 25, $tp->toHTML($content_pref['content_menu_links_caption'],"","defs"), 50)." (".CONTENT_ADMIN_OPT_LAN_116.")";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_ROW_SPACER;
@@ -3695,7 +3713,7 @@ class contentform{
 
 			//content_menu_cat_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_124;
-			$TOPIC_FIELD = $rs -> form_text("content_menu_cat_caption", 15, $tp->toHTML($content_pref['content_menu_cat_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_menu_cat_caption", 25, $tp->toHTML($content_pref['content_menu_cat_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_ROW_SPACER;
@@ -3780,7 +3798,7 @@ class contentform{
 
 			//content_menu_recent_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_135;
-			$TOPIC_FIELD = $rs -> form_text("content_menu_recent_caption", 15, $tp->toHTML($content_pref['content_menu_recent_caption'],"","defs"), 50);
+			$TOPIC_FIELD = $rs -> form_text("content_menu_recent_caption", 25, $tp->toHTML($content_pref['content_menu_recent_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
