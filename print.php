@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/print.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-06-05 14:16:03 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-05 14:30:07 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -85,10 +85,16 @@ else
 	";
 }
 
+if(defined("TEXTDIRECTION") && TEXTDIRECTION == "rtl"){
+	$align = 'right';
+}else{
+	$align = 'left';
+}
+
 echo "
-<div style='text-align:left'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
-<div style='text-align:left'>".$text."</div><br /><br />
-<div style='text-align:left'><form action=''><input type='button' value='".LAN_PRINT_307."' onClick='window.print()' /></form></div>";
+<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
+<div style='text-align:".$align."'>".$text."</div><br /><br />
+<div style='text-align:".$align."'><form action=''><input type='button' value='".LAN_PRINT_307."' onClick='window.print()' /></form></div>";
 
 require_once(FOOTERF);
 
