@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_log.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-04-13 15:07:10 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-05 20:02:15 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -39,16 +39,14 @@ if(!is_object($gen)) {
 	$text .= "<div style='text-align:center'><br />".$tp->parseTemplate("{NEXTPREV={$parms}}")."<br /><br /></div>";
 $text .= "<div id='admin_log'><table>\n";
 
-//
-
 $text .= "
   <tr>
     <td class='fcaption'>&nbsp;</td>
-    <td class='fcaption' style='font-weight: bold;'>Date</td>
-    <td class='fcaption' style='font-weight: bold;'>Title</td>
-    <td class='fcaption' style='font-weight: bold;'>Description</td>
-    <td class='fcaption' style='font-weight: bold;'>User IP</td>
-    <td class='fcaption' style='font-weight: bold;'>User ID</td>
+    <td class='fcaption' style='font-weight: bold;'>".LAN_ADMINLOG_1."</td>
+    <td class='fcaption' style='font-weight: bold;'>".LAN_ADMINLOG_2."</td>
+    <td class='fcaption' style='font-weight: bold;'>".LAN_ADMINLOG_3."</td>
+    <td class='fcaption' style='font-weight: bold;'>".LAN_ADMINLOG_4."</td>
+    <td class='fcaption' style='font-weight: bold;'>".LAN_ADMINLOG_5."</td>
   </tr>\n";
 
 while ($row = $sql -> db_Fetch()) {
@@ -68,25 +66,25 @@ $text .= "</table></div>\n";
 
 	$text .= "<div style='text-align:center'><br />".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
-$ns->tablerender("Admin Log", $text);
+$ns->tablerender(LAN_ADMINLOG_0, $text);
 require_once("footer.php");
 
 function get_log_img($log_type) {
 	switch ($log_type) {
 		case E_LOG_INFORMATIVE:
-			return "<img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='Informative Icon' title='Informative Message' />";
+			return "<img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".LAN_ADMINLOG_6."' title='".LAN_ADMINLOG_7."' />";
 		break;
 		case E_LOG_NOTICE:
-			return "<img src='".e_IMAGE_ABS."admin_images/notice_16.png' alt='Notice Icon' title='Notice Message' />";
+			return "<img src='".e_IMAGE_ABS."admin_images/notice_16.png' alt='".LAN_ADMINLOG_8."' title='".LAN_ADMINLOG_9."' />";
 		break;
 		case E_LOG_WARNING:
-			return "<img src='".e_IMAGE_ABS."admin_images/blocked_16.png' alt='Warning Icon' title='Warning Message' />";
+			return "<img src='".e_IMAGE_ABS."admin_images/blocked_16.png' alt='".LAN_ADMINLOG_10."' title='".LAN_ADMINLOG_11."' />";
 		break;
 		case E_LOG_FATAL:
-			return "<img src='".e_IMAGE_ABS."admin_images/nopreview_16.png' alt='Fatal Icon' title='Fatal Error Message' />";
+			return "<img src='".e_IMAGE_ABS."admin_images/nopreview_16.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";
 		break;
 	}
-		return $log_type;
+	return $log_type;
 }
 
 function headerjs() {
