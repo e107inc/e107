@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-05-14 02:08:13 $
-|     $Author: e107coders $
+|     $Revision: 1.44 $
+|     $Date: 2006-06-05 13:41:31 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -145,22 +145,24 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		}
 	}
 
-
-/*
-	if(file_exists(e_PLUGIN."sphpell/spellcheckpageinc.php"))
-	{
-		require_once(e_PLUGIN."sphpell/spellcheckpageinc.php");
-		$string .= "<input type='button' value='Check Spelling' onclick=\"DoSpellCheck('top.opener.parent.document.dataform.data')\">";
-	}
-*/
-
-
 	if ($mode) {
 		$text .= Size_Select('size_selector_'.$rand);
 		$text .= Color_Select('col_selector_'.$rand);
 		if ($mode == 'news') {
 			$text .= PreImage_Select('preimage_selector_'.$rand);
 			$text .= PreFile_Select('prefile_selector_'.$rand);
+		}
+	}
+
+	//if(strpos('emoticons', $mode)!==FALSE && $pref['comments_emoticons']){
+	if($pref['comments_emoticons']){
+		if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
+		{
+			require_once(e_HANDLER."emote.php");
+			if($pref['smiley_activate'])
+			{
+				$text .= r_emote();
+			}
 		}
 	}
 

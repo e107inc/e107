@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2006-05-01 23:58:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.90 $
+|     $Date: 2006-06-05 13:41:31 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -858,6 +858,13 @@ $text .= "<div id='comments' style='display:none; text-align:center'>
 	</td>
 	</tr>
 
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_166.": </td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='comments_emoticons' value='1'".($pref['comments_emoticons'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='comments_emoticons' value='0'".(!$pref['comments_emoticons'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
 	";
 
 $text .= pref_submit();

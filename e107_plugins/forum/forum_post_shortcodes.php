@@ -55,7 +55,7 @@ global $post, $pref;
 $ret = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
 if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
 {
-	$ret .= ren_help(2);
+	$ret .= display_help('helpb', 2);
 }
 return $ret;
 SC_END
