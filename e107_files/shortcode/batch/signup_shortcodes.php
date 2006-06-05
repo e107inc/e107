@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-05 06:40:20 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-05 13:41:31 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -177,8 +177,8 @@ global $pref, $SIGNUP_SIGNATURE_START, $SIGNUP_SIGNATURE_END;
 if($pref['signup_option_signature'])
 {
 	require_once(e_HANDLER."ren_help.php");
-	$SIGNUP_SIGNATURE_START = str_replace("{REN_HELP}", ren_help(2), $SIGNUP_SIGNATURE_START);
-	$SIGNUP_SIGNATURE_END = str_replace("{REN_HELP}", ren_help(2), $SIGNUP_SIGNATURE_END);
+	$SIGNUP_SIGNATURE_START = str_replace("{REN_HELP}", display_help('helpb', 2), $SIGNUP_SIGNATURE_START);
+	$SIGNUP_SIGNATURE_END = str_replace("{REN_HELP}", display_help('helpb', 2), $SIGNUP_SIGNATURE_END);
 	$sig = ($_POST['signature'] ? $_POST['signature'] : $signature);
 	return $SIGNUP_SIGNATURE_START.$sig.$SIGNUP_SIGNATURE_END;
 }

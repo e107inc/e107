@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.127 $
-|   $Date: 2006-06-02 15:53:14 $
+|   $Revision: 1.128 $
+|   $Date: 2006-06-05 13:41:30 $
 |   $Author: lisa_ $
 +---------------------------------------------------------------+
 
@@ -1041,7 +1041,7 @@ class newspost {
 		<tr>
 		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_120."</span><br /></td>
 		<td class='forumheader3' style='width:40%'>
-		<textarea name='news_subheader' style='width:95%;' rows='6' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' class='tbox'>".stripcslashes($pref['news_subheader'])." </textarea><br />" . ren_help(2) . "
+		<textarea name='news_subheader' style='width:95%;' rows='6' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' class='tbox'>".stripcslashes($pref['news_subheader'])." </textarea><br />" . display_help('helpb', 2) . "
 		</td>
 		</tr>
 

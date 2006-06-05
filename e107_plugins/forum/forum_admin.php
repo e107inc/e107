@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-04-29 20:34:37 $
-|     $Author: e107coders $
+|     $Revision: 1.40 $
+|     $Date: 2006-06-05 13:41:31 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -1397,7 +1397,7 @@ class forum
 			<br />
 			<input class='helpbox' type='text' name='helpguest' size='100' />
 			<br />
-			".ren_help(1, "addtext1", "help1")."
+			".display_help('helpb', 1, 'addtext1', 'help1')."
 			</td>
 			</tr>
 
@@ -1418,7 +1418,7 @@ class forum
 			<br />
 			<input class='helpbox' type='text' name='helpmember' size='100' />
 			<br />
-			".ren_help(1, "addtext2", "help2")."
+			".display_help('helpb', 1, 'addtext2', 'help2')."
 			</td>
 			</tr>
 
@@ -1441,7 +1441,7 @@ class forum
 			<br />
 			<input class='helpbox' type='text' name='helpadmin' size='100' />
 			<br />
-			".ren_help(1, "addtext3", "help3")."
+			".display_help('helpb', 1, 'addtext3', 'help3')."
 			</td>
 			</tr>
 
