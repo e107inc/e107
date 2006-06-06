@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-01-15 03:01:08 $
+|     $Revision: 1.15 $
+|     $Date: 2006-06-06 12:56:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -29,10 +29,9 @@ else
 {
 	include_once(e_PLUGIN."forum/languages/English/lan_newforumposts_menu.php");
 }
-$_chars = max($menu_pref['newforumposts_characters'] * 3, 200);
 
 $query2 = "
-SELECT tp.thread_name AS parent_name, t.thread_datestamp , left(t.thread_thread, {$_chars}) as thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
+SELECT tp.thread_name AS parent_name, t.thread_datestamp , t.thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
 LEFT JOIN #user AS u ON t.thread_user = u.user_id 
 LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
@@ -77,16 +76,19 @@ else
 			}
 		}
 
-		$fi['thread_thread'] = strip_tags($tp->toHTML($fi['thread_thread'], TRUE, "emotes_off, no_make_clickable, parse_bb", "", $pref['menu_wordwrap']));
+		$fi['thread_thread'] = strip_tags($tp->toHTML($fi['thread_thread'], TRUE, "emotes_off, no_make_clickable", "", $pref['menu_wordwrap']));
 
 		if (strlen($fi['thread_thread']) > $menu_pref['newforumposts_characters'])
 		{
 			$fi['thread_thread'] = substr($fi['thread_thread'], 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];
 		}
 
-		if ($menu_pref['newforumposts_title']) {
+		if ($menu_pref['newforumposts_title'])
+		{
 			$text .= "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br/><br />";
-		} else {
+		}
+		else
+		{
 			$text .= "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".NFP_11." ".$poster."</a><br />".$fi['thread_thread']."<br />".$datestamp."<br/><br />";
 		}
 	}
