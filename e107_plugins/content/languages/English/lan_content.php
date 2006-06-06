@@ -4,14 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2006-06-05 11:27:57 $
+|     $Revision: 1.68 $
+|     $Date: 2006-06-06 14:17:44 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 
 define("CONTENT_EMAILPRINT_LAN_1", "this content item is from");
+
+define("CONTENT_NOTIFY_LAN_1", "Content Events");
+define("CONTENT_NOTIFY_LAN_2", "Content item submitted by user");
+define("CONTENT_NOTIFY_LAN_3", "Content Submitted");
 
 define("CONTENT_ICON_LAN_0", "edit");
 define("CONTENT_ICON_LAN_1", "delete");
