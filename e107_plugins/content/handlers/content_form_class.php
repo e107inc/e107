@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.106 $
-|		$Date: 2006-06-05 11:27:57 $
+|		$Revision: 1.107 $
+|		$Date: 2006-06-06 14:17:44 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -33,14 +33,14 @@ $stylespacer = "style='border:0; height:20px;'";
 //only used in admin pages, for normal rows (+ in content_submit.php creation form)
 $TOPIC_ROW_NOEXPAND = "
 <tr>
-	<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+	<td class='forumheader3' style='width:20%; vertical-align:top;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3'>{TOPIC_FIELD}</td>
 </tr>
 ";
 //only used in admin pages, for expanding rows (+ in content_submit.php creation form)
 $TOPIC_ROW = "
 <tr>
-	<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+	<td class='forumheader3' style='width:20%; vertical-align:top;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3' style='vertical-align:top;'>
 		<a style='cursor: pointer;' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 		<div style='display: none;'>

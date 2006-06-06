@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.46 $
-|		$Date: 2006-06-03 10:27:54 $
+|		$Revision: 1.47 $
+|		$Date: 2006-06-06 14:17:44 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -105,7 +105,7 @@ class contentdb{
 		function dbContent($mode, $type){
 			//$mode		: create or update
 			//$type		: none(=admin), submit, contentmanager
-			global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage;
+			global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage, $e_event;
 
 			$_POST['content_heading']		= $tp -> toDB(trim($_POST['content_heading']));
 			$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
@@ -269,6 +269,11 @@ class contentdb{
 				$sql -> db_Insert($plugintable, "'0', '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['content_summary']."', '".$_POST['content_text']."', '".$tp->toDB($author)."', '".$icon."', '".$totalattach."', '".$totalimages."', '".$_POST['parent']."', '".intval($_POST['content_comment'])."', '".intval($_POST['content_rate'])."', '".intval($_POST['content_pe'])."', '".$refer."', '".$starttime."', '".$endtime."', '".$_POST['content_class']."', '".$contentprefvalue."', '0', '".intval($_POST['content_score'])."', '".$_POST['content_meta']."', '".$_POST['content_layout']."' ");
 
 				$e107cache->clear("$plugintable");
+
+				//trigger event for notify
+				$edata_cs = array("content_heading" => $_POST['content_heading'], "content_subheading" => $_POST['content_subheading'], "content_author" => $_POST['content_author_name']);
+				$e_event->trigger("content", $edata_cs);
+
 				if(!$type || $type == "admin"){
 					js_location(e_SELF."?".e_QUERY.".cc");
 				}elseif($type == "contentmanager"){
