@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/popup_handler.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2006-01-11 09:26:39 $
+|		$Revision: 1.5 $
+|		$Date: 2006-06-06 18:43:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ class popup{
 				$title		= str_replace($search, $replace, $title);
 				$text		= str_replace($search, $replace, $text);
 
-				$popup = "<a href='javascript:void(0);' onclick=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='".POPUP_LAN_1."'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' /></a><br /><br />";
+				$popup = "<a href='javascript:void(0);' onclick=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='".POPUP_LAN_1."'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='".$iconwidth."' alt='' /></a><br /><br />";
 
 			}else{
 				$popup = "";
