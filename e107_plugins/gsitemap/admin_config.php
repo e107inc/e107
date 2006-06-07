@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-02 01:04:10 $
+|     $Revision: 1.10 $
+|     $Date: 2006-06-07 22:27:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -136,7 +136,7 @@ class gsitemap
 				$text .= "<tr>
 				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_id'] ."</td>
 				<td class='forumheader3'>".$row2['gsitemap_name']."</td>
-				<td class='forumheader3'>".str_replace(SITEURL,"",$row2['gsitemap_url'])."</td>
+				<td class='forumheader3'>".$row2['gsitemap_url']."</td>
 				<td class='forumheader3' style='; text-align: center;'>".$datestamp."</td>
 				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_freq'] ."</td>
 				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_priority'] ."</td>
@@ -286,17 +286,14 @@ class gsitemap
 		global $sql, $tp;
 		$gsitemap_name = $tp -> toDB($_POST['gsitemap_name']);
 		$gsitemap_url = $tp -> toDB($_POST['gsitemap_url']);
-		if(!strstr($gsitemap_url, "http"))
-		{
-			$gsitemap_url = SITEURL.$gsitemap_url;
-		}
+
 		if(isset($_POST['gsitemap_id']))
 		{
 			$this -> message = $sql -> db_Update("gsitemap", "gsitemap_name='$gsitemap_name', gsitemap_url='$gsitemap_url', gsitemap_priority='".$_POST['gsitemap_priority']."', gsitemap_lastmod='".$_POST['gsitemap_lastmod']."', gsitemap_freq= '".$_POST['gsitemap_freq']."', gsitemap_order='".$_POST['gsitemap_order']."', gsitemap_active='".$_POST['gsitemap_active']."' WHERE gsitemap_id='".$_POST['gsitemap_id']."' ") ? LAN_UPDATED : LAN_UPDATED_FAILED;
 		}
 		else
 		{
-			$this -> message = ($sql -> db_Insert("gsitemap", "0, '".$_POST['gsitemap_name']."', '".$_POST['gsitemap_url']."', '".$_POST['gsitemap_lastmod']."', '".$_POST['gsitemap_freq']."', '".$_POST['gsitemap_priority']."', '".$_POST['gsitemap_cat']."', '".$_POST['gsitemap_order']."', '".$_POST['gsitemap_img']."', '".$_POST['gsitemap_active']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
+			$this -> message = ($sql -> db_Insert("gsitemap", "0, '".$_POST['gsitemap_name']."', '".$gsitemap_url."', '".$_POST['gsitemap_lastmod']."', '".$_POST['gsitemap_freq']."', '".$_POST['gsitemap_priority']."', '".$_POST['gsitemap_cat']."', '".$_POST['gsitemap_order']."', '".$_POST['gsitemap_img']."', '".$_POST['gsitemap_active']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
 		}
 	}
 
@@ -323,7 +320,7 @@ class gsitemap
 		{
 			if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['link_name']."' "))
 			{
-				$importArray[] = array('name' => $row['link_name'], 'url' => SITEURL.$row['link_url'], 'type' => GSLAN_1);
+				$importArray[] = array('name' => $row['link_name'], 'url' => $row['link_url'], 'type' => GSLAN_1);
 			}
 		}
 
@@ -334,7 +331,7 @@ class gsitemap
 		{
 			if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['page_title']."' "))
 			{
-				$importArray[] = array('name' => $row['page_title'], 'url' => SITEURL."page.php?".$row['page_id'],'type' => "Custom Page");
+				$importArray[] = array('name' => $row['page_title'], 'url' => "page.php?".$row['page_id'],'type' => "Custom Page");
 			}
 		}
 
@@ -347,7 +344,7 @@ class gsitemap
 		{
 			if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['forum_name']."' "))
 			{
-				$importArray[] = array('name' => $row['forum_name'], 'url' => SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$row['forum_id'], 'type' => "Forum");
+				$importArray[] = array('name' => $row['forum_name'], 'url' => $PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$row['forum_id'], 'type' => "Forum");
 			}
 		}
 
@@ -363,7 +360,7 @@ class gsitemap
 			{
 				if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row2['content_heading']."' "))
 				{
-					$importArray[] = array('name' => $row2['content_heading'], 'url' => SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
+					$importArray[] = array('name' => $row2['content_heading'], 'url' => $PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
 				}
 			}
 
