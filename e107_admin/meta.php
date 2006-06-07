@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-01-20 00:50:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2006-06-07 04:08:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -35,18 +35,22 @@ if (isset($_POST['metasubmit'])) {
 		$meta_diz[$lan] = $pref['meta_description'][$lan];
 		$meta_keywords[$lan] = $pref['meta_keywords'][$lan];
 		$meta_copyright[$lan] = $pref['meta_copyright'][$lan];
+		$meta_author[$lan] = $pref['meta_author'][$lan];
 	}
 
 	$meta_tag[$current_lang] = strip_if_magic(chop($_POST['meta']));
 	$meta_diz[$current_lang] = strip_if_magic(chop($_POST['meta_description']));
 	$meta_keywords[$current_lang] = strip_if_magic(chop($_POST['meta_keywords']));
 	$meta_copyright[$current_lang] = strip_if_magic(chop($_POST['meta_copyright']));
-	
+	$meta_author[$current_lang] = strip_if_magic(chop($_POST['meta_author']));
 
+    $pref['meta_news_summary'] = $_POST['meta_news_summary'];
 	$pref['meta_tag'] = $meta_tag;
 	$pref['meta_description'] = $meta_diz;
 	$pref['meta_keywords'] = $meta_keywords;
 	$pref['meta_copyright'] = $meta_copyright;
+	$pref['meta_author'] = $meta_author;
+
    /*
     if($pref['meta_tag'][$current_lang] == ""){
         unset($meta_tag[$current_lang]);
@@ -64,6 +68,7 @@ $meta = $pref['meta_tag'];
 $meta_diz = $pref['meta_description'];
 $meta_keywords = $pref['meta_keywords'];
 $meta_copyright = $pref['meta_copyright'];
+$meta_author = $pref['meta_author'];
 
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='dataform'>
@@ -91,6 +96,13 @@ $text = "<div style='text-align:center'>
 	</tr>
 
 	<tr>
+	<td style='width:25%' class='forumheader3'>".METLAN_13."</td>
+    <td style='width:75%' class='forumheader3'>
+	<input class='tbox' style='width:90%' size='70' type='text' name='meta_author' value=\"".$meta_author[$current_lang]."\" />
+	</td>
+	</tr>
+
+	<tr>
 	<td style='width:25%' class='forumheader3'>".METLAN_2.":
 	<span class='smalltext'><br /><br />eg.
 	&lt;meta name='author' content='your name' /&gt; </span>
@@ -101,6 +113,15 @@ $text = "<div style='text-align:center'>
 	<br />";
 $text .= "</td>
 </tr>
+
+	<tr>
+	<td style='width:25%' class='forumheader3'>".METLAN_12."</td>
+    <td class='forumheader3' style='text-align:left;width:75%' >";
+    $checked = ($pref['meta_news_summary']) ? "checked='checked'" : "";
+	$text .= "
+	<input type='checkbox' name='meta_news_summary' value='1' {$checked} />
+	</td>
+	</tr>
 
 <tr><td colspan='2' style='text-align:center' class='forumheader'>
 

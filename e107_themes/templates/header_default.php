@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2006-05-16 18:42:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.83 $
+|     $Date: 2006-06-07 04:08:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,7 +58,9 @@ if (isset($pref['meta_description'][e_LANGUAGE])) {
 if (isset($pref['meta_keywords'][e_LANGUAGE])) {
 	echo ($pref['meta_keywords'][e_LANGUAGE] && !defined("META_KEYWORDS") ) ? "<meta name=\"keywords\" content=\"".$pref['meta_keywords'][e_LANGUAGE]."\" />\n" : "";
 }
+
 echo ($pref['meta_copyright'][e_LANGUAGE]) ? "<meta name=\"copyright\" content=\"".$pref['meta_copyright'][e_LANGUAGE]."\" />\n" : "";
+echo ($pref['meta_author'][e_LANGUAGE]) ? "<meta name=\"author\" content=\"".$pref['meta_author'][e_LANGUAGE]."\" />\n" : "";
 echo ($pref['meta_tag'][e_LANGUAGE]) ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 unset($key_merge,$diz_merge);
 

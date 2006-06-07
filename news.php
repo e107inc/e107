@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2006-05-27 01:03:15 $
+|     $Revision: 1.100 $
+|     $Date: 2006-06-07 04:08:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -166,6 +166,9 @@ if ($action == "extend") {
 	$news = $sql->db_Fetch();
 
 	if($news['news_title']){
+		if($pref['meta_news_summary'] && $news['news_summary']){
+        	define("META_DESCRIPTION",$news['news_summary']);
+		}
 		define("e_PAGETITLE",$news['news_title']);
 	}
 
@@ -298,8 +301,12 @@ if (!$sql->db_Select_gen($query)) {
 
 
 $p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
+
 if($action != "" && !is_numeric($action))
 {
+    if($action == "item" && $pref['meta_news_summary'] && $newsAr[1]['news_summary']){
+		define("META_DESCRIPTION",$newsAr[1]['news_summary']);
+	}
 	define("e_PAGETITLE", $p_title);
 }
 
@@ -491,15 +498,21 @@ function setNewsCache($cache_tag, $cache_data) {
 	global $e107cache;
 	$e107cache->set($cache_tag, $cache_data);
 	$e107cache->set($cache_tag."_title", e_PAGETITLE);
+	$e107cache->set($cache_tag."_diz", META_DESCRIPTION);
 }
 
 function checkCache($cacheString){
 	global $pref,$e107cache;
 	$cache_data = $e107cache->retrieve($cacheString);
 	$cache_title = $e107cache->retrieve($cacheString."_title");
+	$cache_diz = $e107cache->retrieve($cacheString."_diz");
 	$etitle = ($cache_title != "e_PAGETITLE") ? $cache_title : "";
+	$ediz = ($cache_diz != "META_DESCRIPTION") ? $cache_diz : "";
 	if($etitle){
 		define(e_PAGETITLE,$etitle);
+	}
+	if($ediz){
+    	define("META_DESCRIPTION",$ediz);
 	}
 	if ($cache_data) {
 		return $cache_data;
