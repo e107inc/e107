@@ -1,1 +1,1 @@
-return "<em class='bbcode'>$code_text</em>";
+return "<em class='bbcode italic'>$code_text</em>";
