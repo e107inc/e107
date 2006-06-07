@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/gsitemap.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-04-15 17:44:17 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-07 22:27:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,8 @@ if(e_QUERY == "show")
 
 	foreach($nfArray as $nfa)
 	{
-		$text .= "<li>".$tp->toHTML($nfa['gsitemap_cat'],"","defs").": <a href='".$nfa['gsitemap_url']."'>".$tp->toHTML($nfa['gsitemap_name'],"","defs")."</a><br />\n";
+		$url = (substr($nfa['gsitemap_url'],0,4)== "http")? $nfa['gsitemap_url'] : SITEURL.$nfa['gsitemap_url'];
+		$text .= "<li>".$tp->toHTML($nfa['gsitemap_cat'],"","defs").": <a href='".$url."'>".$tp->toHTML($nfa['gsitemap_name'],"","defs")."</a><br />\n";
 	}
 	$text .= "</ul>";
 
@@ -58,9 +59,10 @@ $sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ");
 $smArray = $sql -> db_getList();
 foreach($smArray as $sm)
 {
+	$loc = (substr($sm['gsitemap_url'],0,4)== "http")? $sm['gsitemap_url'] : SITEURL.$sm['gsitemap_url'];
 	$xml .= "
 	<url>
-		<loc>".$tp->toRSS($sm['gsitemap_url'],TRUE)."</loc>
+		<loc>".$tp->toRSS($loc,TRUE)."</loc>
 		<lastmod>".get_iso_8601_date($sm['gsitemap_lastmod'])."</lastmod>
     		<changefreq>".$sm['gsitemap_freq']."</changefreq>
     		<priority>".$sm['gsitemap_priority']."</priority>
