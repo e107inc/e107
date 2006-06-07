@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-05-19 01:57:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.33 $
+|     $Date: 2006-06-07 17:40:50 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -58,13 +58,17 @@ else if(!e_QUERY) {
 	$order = "DESC";
 } else {
 	$qs = explode(".", e_QUERY);
-	if ($qs[0] == "id") {
-		$id = $qs[1];
+	if ($qs[0] == "self") {
+		$id = USERID;
 	} else {
-		$qs = explode(".", e_QUERY);
-		$from = intval($qs[0]);
-		$records = intval($qs[1]);
-		$order = ($qs[2] == 'ASC' ? 'ASC' : 'DESC');
+		if ($qs[0] == "id") {
+			$id = $qs[1];
+		} else {
+			$qs = explode(".", e_QUERY);
+			$from = intval($qs[0]);
+			$records = intval($qs[1]);
+			$order = ($qs[2] == 'ASC' ? 'ASC' : 'DESC');
+		}
 	}
 }
 if ($records > 30) {
