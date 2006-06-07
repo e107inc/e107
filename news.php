@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2006-06-07 04:08:33 $
+|     $Revision: 1.101 $
+|     $Date: 2006-06-07 05:04:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -166,8 +166,8 @@ if ($action == "extend") {
 	$news = $sql->db_Fetch();
 
 	if($news['news_title']){
-		if($pref['meta_news_summary'] && $news['news_summary']){
-        	define("META_DESCRIPTION",$news['news_summary']);
+		if($pref['meta_news_summary'] && $news['news_title']){
+        	define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
 		}
 		define("e_PAGETITLE",$news['news_title']);
 	}
@@ -304,8 +304,8 @@ $p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category
 
 if($action != "" && !is_numeric($action))
 {
-    if($action == "item" && $pref['meta_news_summary'] && $newsAr[1]['news_summary']){
-		define("META_DESCRIPTION",$newsAr[1]['news_summary']);
+    if($action == "item" && $pref['meta_news_summary'] && $newsAr[1]['news_title']){
+		define("META_DESCRIPTION",SITENAME.": ".$newsAr[1]['news_title']." - ".$newsAr[1]['news_summary']);
 	}
 	define("e_PAGETITLE", $p_title);
 }
