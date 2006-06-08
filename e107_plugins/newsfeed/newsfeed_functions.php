@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-04-14 14:09:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2006-06-08 02:32:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -100,11 +100,13 @@ if(!function_exists("newsfeed_info"))
 		{
 			while($row = $sql->db_Fetch())
 			{
+
 				extract ($row);
-				list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $newsfeed_image);				
+				list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $newsfeed_image);
 				$numtoshow = ($where == 'main' ? $newsfeed_showmain : $newsfeed_showmenu);
 				$numtoshow = (intval($numtoshow) > 0 ? $numtoshow : 999);
 				$rss = unserialize($newsfeed_data);
+
 				$FEEDNAME = "<a href='".e_SELF."?show.$newsfeed_id'>$newsfeed_name</a>";
 				$FEEDDESCRIPTION = $newsfeed_description;
 				if($newsfeed_image == "default")
@@ -158,7 +160,9 @@ if(!function_exists("newsfeed_info"))
 
 				$data = "";
 
-				$item_total = array_slice($rss->items, 0, $items);
+				$amount = ($items) ? $items :  $numtoshow;
+
+				$item_total = array_slice($rss->items, 0, $amount);
 
 				$i = 0;
 				while($i < $numtoshow && $item_total[$i])
