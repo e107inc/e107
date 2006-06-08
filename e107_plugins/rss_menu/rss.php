@@ -11,19 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-06-01 20:34:17 $
+|     $Revision: 1.49 $
+|     $Date: 2006-06-08 04:38:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 /*
 Query string: content_type.rss_type.[topic id]
+content_type may also be the plugin folder - plugin dependent.
+
 1: news
 5: comments
 12: downloads (option: specify category)
 
-The following should be using $eplug_rss in their plugin.php file (see chatbox)
+The following should be using $eplug_rss in their plugin.php file
+and the following system: rss.php?{plugin folder}.{rss_type}.[id]
+eg. rss.php?chatbox.2
 ----------------------------------------------------------------
 2: articles
 3: reviews
@@ -91,6 +95,7 @@ class rssCreate {
 		$this -> rssType = $rss_type;
 		$this -> topicid = $topic_id;
 		$this -> offset = $pref['time_offset'] * 3600;
+        $this -> limit = ($pref['rss_limit']) ? $pref['rss_limit'] : 9;
 
 		switch ($content_type) {
 			case 1:
@@ -102,7 +107,7 @@ class rssCreate {
 				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY news_datestamp DESC LIMIT 0,9";
+				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY news_datestamp DESC LIMIT 0,".$this -> limit;
 
 
 				$sql->db_Select_gen($this -> rssQuery);
@@ -144,7 +149,7 @@ class rssCreate {
 				break;
 			case 5:
 				$this -> contentType = "comments";
-				$this -> rssQuery = "SELECT * FROM #comments ORDER BY comment_datestamp DESC LIMIT 0,9";
+				$this -> rssQuery = "SELECT * FROM #comments ORDER BY comment_datestamp DESC LIMIT 0,".$this -> limit;
 				$sql->db_Select_gen($this -> rssQuery);
 
 				$tmp = $sql->db_getList();
@@ -176,8 +181,7 @@ class rssCreate {
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class IN (0, 251, 252) AND t.thread_parent=0
-				ORDER BY t.thread_datestamp DESC LIMIT 0, 9
-				";
+				ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 
@@ -209,7 +213,7 @@ class rssCreate {
 				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 251, 252)
-				ORDER BY t.thread_datestamp DESC LIMIT 0, 9";
+				ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
@@ -294,7 +298,7 @@ class rssCreate {
 
 			case 10:
 				$this -> contentType = "bugtracker reports";
-				$sql->db_Select("bugtrack2_bugs", "*", "bugtrack2_bugs_status=0 ORDER BY bugtrack2_bugs_datestamp");
+				$sql->db_Select("bugtrack2_bugs", "*", "bugtrack2_bugs_status=0 ORDER BY bugtrack2_bugs_datestamp LIMIT 0,".$this -> limit);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
@@ -318,8 +322,7 @@ class rssCreate {
 				AND f.forum_class IN (0, 251, 255)
 				ORDER BY
 				t.thread_datestamp DESC
-				LIMIT 0, 9
-				";
+				LIMIT 0,".$this -> limit;
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 				$this -> contentType = "forum: ".$tmp[1]['forum_name'];
@@ -350,7 +353,7 @@ class rssCreate {
 				$topic = ($topic_id) ? "download_category='".intval($topic_id)."' AND " : "";
 				$this -> contentType = "downloads";
 				$class_list = "0,251,252,253";
-				$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,29");
+				$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,".$this -> limit);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
@@ -482,7 +485,7 @@ class rssCreate {
 
 			echo $tp->toRss($rss_custom_channel,TRUE)."\n";
 
-			echo "<language>en-gb</language>
+			echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
 				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$pref['siteadmin']." - ".$pref['siteadminemail']."</managingEditor>
 				<webMaster>".$pref['siteadminemail']."</webMaster>
@@ -555,7 +558,7 @@ class rssCreate {
 				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
-				<dc:language>en</dc:language>
+				<dc:language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
 				<dc:date>".$this->get_iso_8601_date($time + $this -> offset). "</dc:date>
 				<dc:creator>".$pref['siteadminemail']."</dc:creator>
 				<admin:generatorAgent rdf:resource=\"http://e107.org\" />

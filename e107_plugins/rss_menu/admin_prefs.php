@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-01 20:34:17 $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-08 04:38:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,7 @@ if(isset($_POST['updatesettings'])){
 	$pref['rss_newscats'] = $_POST['rss_newscats'];
 	$pref['rss_dlcats'] = $_POST['rss_dlcats'];
 	$pref['rss_othernews'] = $_POST['rss_othernews'];
+	$pref['rss_limit'] = $_POST['rss_limit'];
 	save_prefs();
 	$message = LAN_SAVED;
 }
@@ -89,9 +90,14 @@ $text = "<div style='text-align:center'>
 	$text .= "<td class='forumheader3'>";
 	$sel = ($pref['rss_dlcats'] == 1) ? " checked='checked' " : "";
 	$text .= "<input type='checkbox' $sel name='rss_dlcats' value='1' />
-				</td></tr>";
+			</td>
+			</tr>";
 
-
+	$text .= "<tr><td class='forumheader3'>".RSS_LAN05."</td>";
+	$text .= "<td class='forumheader3'>";
+	$text .= "<input class='tbox' type='text' size='3' name='rss_limit' value=\"".$pref['rss_limit']."\" />
+			</td>
+			</tr>";
 
 
 	$text .="<tr style='vertical-align:top'>

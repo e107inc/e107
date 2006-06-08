@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/languages/English.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-01 20:34:17 $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-08 04:38:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,5 +38,5 @@ define("RSS_DL","Downloads");
 
 define("RSS_LAN03","Your e107_config.php file contains space before the &lt;? characters. You should remove this space if you wish to have a valid RSS feed.");
 define("RSS_LAN04","Include Other-news items in News Feed?");
-
+define("RSS_LAN05","Number of items to display in each Feed");  
 ?>
