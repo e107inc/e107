@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-04-14 14:09:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-08 04:02:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -79,29 +79,16 @@ if($headline_total = $sql->db_Select("newsfeed"))
 	<td class='forumheader' style='width: 10%; text-align: center;'>".NFLAN_27."</td>
 	</tr>\n";
 
+	$active = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
+
 	foreach($nfArray as $newsfeed)
 	{
 		extract($newsfeed);
-		switch ($newsfeed_active)
-		{
-			case 0:
-				$active = NFLAN_13;
-			break;
-			case 1:
-				$active = NFLAN_14;
-			break;
-			case 2:
-				$active = NFLAN_20;
-			break;
-			case 3:
-				$active = NFLAN_21;
-			break;
-		}
 
 		$text .= "<tr><td class='forumheader3' style='width: 5%; text-align: center;'>$newsfeed_id</td>
 		<td class='forumheader3' style='width: 50%;'><a href='$newsfeed_url' rel='external'>$newsfeed_name</a></td>
 		<td class='forumheader3' style='width: 10%; text-align: center;'>".($newsfeed_updateint ? $newsfeed_updateint : "3600")."</td>
-		<td class='forumheader3' style='width: 25%; text-align: center;'>$active</td>
+		<td class='forumheader3' style='width: 25%; text-align: center;'>".$active[$newsfeed_active]."</td>
 		<td class='forumheader3' style='width: 10%; text-align: center;'><a href='".e_SELF."?edit.".$newsfeed_id."'>".ADMIN_EDIT_ICON."</a>&nbsp;<a href='".e_SELF."?delete.".$newsfeed_id."'>".ADMIN_DELETE_ICON."</a></td>
 		</tr>\n";
 	}
