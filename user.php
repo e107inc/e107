@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-06-09 15:48:42 $
+|     $Revision: 1.35 $
+|     $Date: 2006-06-09 16:27:00 $
 |     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
@@ -216,11 +216,11 @@ function renderuser($uid, $mode = "verbose")
 
 	if($mode == 'verbose')
 	{
-		return $tp->parseTemplate($USER_FULL_TEMPLATE, FALSE, $user_shortcodes);
+		return $tp->parseTemplate($USER_FULL_TEMPLATE, TRUE, $user_shortcodes);
 	}
 	else
 	{
-		return $tp->parseTemplate($USER_SHORT_TEMPLATE, FALSE, $user_shortcodes);
+		return $tp->parseTemplate($USER_SHORT_TEMPLATE, TRUE, $user_shortcodes);
 	}
 }
 
