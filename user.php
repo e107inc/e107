@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-06-07 17:40:50 $
+|     $Revision: 1.34 $
+|     $Date: 2006-06-09 15:48:42 $
 |     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
@@ -83,6 +83,8 @@ if (isset($id))
 		require_once(FOOTERF);
 		exit;
 	}
+
+	$loop_uid = $id;
 
 	$ret = $e_event->trigger("showuser", $id);
 	if ($ret!='') {
