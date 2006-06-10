@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -48,8 +48,8 @@
   define("ADLAN_PM_36", "Groupe d'utilisateurs");
   define("ADLAN_PM_37", "Nombre Limites");
   define("ADLAN_PM_38", "Taille limite (en KB)");
-  define("ADLAN_PM_39", "Boîte de réception :");
-  define("ADLAN_PM_40", "Boîte d'envoi:");
+  define("ADLAN_PM_39", "Messages reçus :");
+  define("ADLAN_PM_40", "Messages envoyés :");
   define("ADLAN_PM_41", "Il n'y a pas de limites établies en ce moment.");
   define("ADLAN_PM_42", "Mettre à jour les limites");
   define("ADLAN_PM_43", "Ajouter une nouvelle limite");

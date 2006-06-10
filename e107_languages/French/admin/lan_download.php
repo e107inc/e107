@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -123,7 +123,7 @@
   define("DOWLAN_144", "Pas de serveur miroir défini dans la section miroir.");
   
   define("DOWLAN_145", "Téléchargement visible au");
-  define("DOWLAN_146", "Message de démenti pour Téléchargement Personnalisé ou URL");
+  define("DOWLAN_146", "Message d'avertissement pour Téléchargement Personnalisé ou URL");
   
   define("DOWLAN_147", "Icône pour catégorie vide");
   define("DOWLAN_148", "Cocher pour mettre la date à aujourd'hui");

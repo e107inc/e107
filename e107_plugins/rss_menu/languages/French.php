@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:27 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -30,4 +30,5 @@
   define("RSS_BUG","Bugtracker");
   define("RSS_FOR","Forum");
   define("RSS_DL","Téléchargememts");
+define("RSS_LAN03","Votre fichier e107_config.php contient des espaces avant les caractères &lt;? . Vous devriez enlever ces espaces si vous désirez avoir un source RSS valide.");
   ?>

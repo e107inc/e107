@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_menus.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@
   define("MENLAN_6", "Sauvegarder les options de visibilité");
   define("MENLAN_7", "Configurer la visibilité pour");
   define("MENLAN_8", "Options de visibilité mises à jour");
-  define("MENLAN_9", "Nouveau menu personnalisable installé");
+  define("MENLAN_9", "Nouveau menu personnifié installé");
   define("MENLAN_10", "Nouveau menu installé");
   define("MENLAN_11", "Menu supprimé");
   define("MENLAN_12", "Activer ce menu - veuillez choisir un emplacement");

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -163,7 +163,7 @@
   define("CONTENT_ADMIN_ITEM_LAN_81", "Choisissez quels utilisateurs veront cet article");
   define("CONTENT_ADMIN_ITEM_LAN_82", "Définir une note");
   define("CONTENT_ADMIN_ITEM_LAN_83", "Définir des meta mot-clés");
-  define("CONTENT_ADMIN_ITEM_LAN_84", "Définir des champs  données personnalisés données (clé + valeur)");
+  define("CONTENT_ADMIN_ITEM_LAN_84", "Définir des champs de données personnalisés(clé + valeur)");
   define("CONTENT_ADMIN_ITEM_LAN_85", "Activé");
   define("CONTENT_ADMIN_ITEM_LAN_86", "Désactivé");
   define("CONTENT_ADMIN_ITEM_LAN_87", "Choisissez une icône pour cet article");
@@ -258,6 +258,7 @@
   define("CONTENT_ADMIN_MENU_LAN_20", "Page Meilleures Évaluation");
   define("CONTENT_ADMIN_MENU_LAN_21", "Affichage");
   define("CONTENT_ADMIN_MENU_LAN_22", "Page Meilleurs Qualités");
+define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Créer une catégorie");
   define("CONTENT_ADMIN_JS_LAN_0", "Êtes vous sûr de vouloir supprimer cette catégorie ?");
   define("CONTENT_ADMIN_JS_LAN_1", "Êtes vous sûr de vouloir supprimer ce contenu?");
   define("CONTENT_ADMIN_JS_LAN_2", "Êtes vous sûr de vouloir supprimer l'image en cours ?");
@@ -376,6 +377,7 @@
   define("CONTENT_ADMIN_OPT_LAN_MENU_18", "Catégories");
   define("CONTENT_ADMIN_OPT_LAN_MENU_19", "Liste des items récents ");
   define("CONTENT_ADMIN_OPT_LAN_MENU_20", "Liens vers les pages");
+define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin : Créer une catégorie");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "sections");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "Choisissez les options qui s'afficheront...");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_2", "Fichiers attachés");
@@ -408,6 +410,14 @@
   define("CONTENT_ADMIN_OPT_LAN_SECTION_29", "à la liste des sous-catégories");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_30", "activé");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "désactivé");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_32", "sous-titre");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_33", "date de publication");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_34", "date de clôture");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_35", "uploader une icône");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_36", "assigner une icône");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_37", "Admin : Créer une catégorie");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_38", "sommaire");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_39", "");
   define("CONTENT_PRESET_LAN_0", "Erreur : nom des champs non rempli");
   define("CONTENT_PRESET_LAN_1", "Erreur : tous les champs ne sont pas remplis correctement <br /> tous les champs doivent être remplis");
   //  define("CONTENT_PRESET_LAN_2", "");
@@ -575,8 +585,23 @@
   define("CONTENT_ADMIN_OPT_LAN_133", "Icône : largeur");
   define("CONTENT_ADMIN_OPT_LAN_134", "si vous choisissez 'icône de contenu', définissez la largeur de l'icône utilisé");
   define("CONTENT_ADMIN_OPT_LAN_135", "Légende de la liste des items récents");
-  //  define("CONTENT_ADMIN_OPT_LAN_136", "");
-  //  define("CONTENT_ADMIN_OPT_LAN_137", "");
-  //  define("CONTENT_ADMIN_OPT_LAN_138", "");
-  //  define("CONTENT_ADMIN_OPT_LAN_139", "");
+define("CONTENT_ADMIN_OPT_LAN_136", "Back End");
+define("CONTENT_ADMIN_OPT_LAN_137", "Front End");
+define("CONTENT_ADMIN_OPT_LAN_138", "Gérer le contenu");
+define("CONTENT_ADMIN_OPT_LAN_139", "Créer un contenu");
+define("CONTENT_ADMIN_OPT_LAN_140", "Gérer la catégorie");
+define("CONTENT_ADMIN_OPT_LAN_141", "Créer une catégorie");
+define("CONTENT_ADMIN_OPT_LAN_142", "Ordre");
+define("CONTENT_ADMIN_OPT_LAN_143", "Options");
+define("CONTENT_ADMIN_OPT_LAN_144", "Gestionnaire Personnel de Contenu");
+define("CONTENT_ADMIN_OPT_LAN_145", "Récent");
+define("CONTENT_ADMIN_OPT_LAN_146", "Toutes les Catégories");
+define("CONTENT_ADMIN_OPT_LAN_147", "Une Catégorie");
+define("CONTENT_ADMIN_OPT_LAN_148", "Item de Contenu");
+define("CONTENT_ADMIN_OPT_LAN_149", "Page de l'auteur");
+define("CONTENT_ADMIN_OPT_LAN_150", "Page d'Archive");
+define("CONTENT_ADMIN_OPT_LAN_151", "Page des Meilleures Évaluations");
+define("CONTENT_ADMIN_OPT_LAN_152", "Page des Meilleures Qualités");
+define("CONTENT_ADMIN_OPT_LAN_153", "Page des Propositions");
+define("CONTENT_ADMIN_OPT_LAN_154", "Page de Gestion");
   ?>

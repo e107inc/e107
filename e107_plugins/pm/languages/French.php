@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/French.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -29,13 +29,13 @@
   define("LAN_PM_16", "Doit être membre de ce groupe d'utilisateur");
   define("LAN_PM_17", "Utilisateur non trouvé");
   define("LAN_PM_18", "Vous n'êtes pas autorisé à envoyer de MP à : ");
-  define("LAN_PM_19", "Votre boîte d'envoi est pleine, vous n'êtes pas autorisé à envoyer des messages");
+  define("LAN_PM_19", "Votre boîte d'envoi est pleine, vous n'êtes pas autorisé à envoyer des messages pour l'instant. Veuillez la vider.");
   define("LAN_PM_21", "Ajouter ce MP excèdera la capacité maximum de votre boîte d'envoi. Message non posté");
   define("LAN_PM_22", "Échec de téléchargement de fichier sur le serveur");
   define("LAN_PM_23", "Vous n'êtes pas autorisé à envoyer des fichiers joints");
   define("LAN_PM_24", "Suppression des MP");
-  define("LAN_PM_25", "Boîte de réception");
-  define("LAN_PM_26", "Boîte d'envoi");
+  define("LAN_PM_25", "Messages reçus");
+  define("LAN_PM_26", "Messages envoyés");
   define("LAN_PM_27", "Non lu");
   define("LAN_PM_28", "N/A");
   define("LAN_PM_29", "Message envoyé le");

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_cpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -43,9 +43,9 @@
   define("CUSLAN_32", "Convertion de pages/menus anciens");
   define("CUSLAN_33", "Page Options");
   define("CUSLAN_34", "Commencer la conversion");
-  define("CUSLAN_35", "Mettre à jour la Page Personnalisée finalisée - mise à jour ");
+  define("CUSLAN_35", "Mettre à jour la Page Personnifiée finalisée - mise à jour ");
   define("CUSLAN_36", "Établissez vos préférences pour chaque page, retournez s'il vous plaît à la première page et éditez les pages.");
-  define("CUSLAN_37", "Mise à jour de Page Personnalisée");
+  define("CUSLAN_37", "Mise à jour de Page Personnifiée");
   define("CUSLAN_38", "Oui");
   define("CUSLAN_39", "Non");
   define("CUSLAN_40", "Sauvegarder les Options");

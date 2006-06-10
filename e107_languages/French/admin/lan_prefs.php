@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@
   define("PRFLAN_15", "Afficher le temps de génération des pages ?");
   define("PRFLAN_16", "Afficher le nombre de requêtes SQL ?");
   define("PRFLAN_17", "Compresser les données du site en utilisant gzip");
-  define("PRFLAN_19", "Options de la page d'inscription");
+  define("PRFLAN_19", "Page d'inscription");
   define("PRFLAN_21", "Affichage des dates");
   define("PRFLAN_22", "Format de date courte ");
   define("PRFLAN_23", "Format de date longue ");
@@ -114,7 +114,7 @@
   
   //  define("PRFLAN_100", "Prévisualisation des Images de Thème :");
   
-  define("PRFLAN_101", "Contrôle du texte");
+  define("PRFLAN_101", "Gestion du texte");
   define("PRFLAN_102", "Remplacer les liens");
   define("PRFLAN_103", "Si activé, les liens postés seront remplacés par le texte écrit dans la boîte à textes ci-dessous, bloquant l'affichage des liens trop longs pouvant détruire la présentation générale de vos pages");
   define("PRFLAN_104", "Texte remplaçant les liens");

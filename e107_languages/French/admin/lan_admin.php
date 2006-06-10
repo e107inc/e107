@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@
   define("ADLAN_39", "Créer/Éditer un groupe d'utilisateur");
   define("ADLAN_40", "Maintenance");
   define("ADLAN_41", "Désactiver le site pour effectuer une maintenance");
-  define("ADLAN_42", "Menus/Pages personnalisées");
+  define("ADLAN_42", "Menus/Pages personnifiés");
   define("ADLAN_43", "Créer des menus/pages originales");
   define("ADLAN_44", "Base de données");
   define("ADLAN_45", "Sauvegarder/Optimiser/Réparer votre base de données");

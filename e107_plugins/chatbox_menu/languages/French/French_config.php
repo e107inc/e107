@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/French/French_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:27 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -31,15 +31,15 @@
   define("CHBLAN_20", "Paramètres Chatbox ");
   define("CHBLAN_21", "Purger");
   define("CHBLAN_22", "Supprimer les messages vieux de plus d'une période de temps");
-  define("CHBLAN_23", "Supprimer les messages vieux de plus ");
-  define("CHBLAN_24", "Un jour");
-  define("CHBLAN_25", "Une semaine");
-  define("CHBLAN_26", "Un mois");
+  define("CHBLAN_23", "Supprimer les messages vieux de plus d'");
+  define("CHBLAN_24", "un jour");
+  define("CHBLAN_25", "une semaine");
+  define("CHBLAN_26", "un mois");
   define("CHBLAN_27", "- supprimer tous les messages -");
   define("CHBLAN_28", "Chatbox épurée.");
-  define("CHBLAN_29", "Afficher la chatbox à l'intérieur d'une fenêtre déroulante");
+  define("CHBLAN_29", " Afficher la chatbox à l'intérieur d'une fenêtre déroulante");
   define("CHBLAN_30", "Hauteur de la fenêtre");
-  define("CHBLAN_31", "Afficher émoticons");
+  define("CHBLAN_31", "Afficher les émoticônes");
   define("CHBLAN_32", "Groupe d'utilisateur Modérateur");
   define("CHBLAN_33", "Comptes Utilisateur recalculés");
   define("CHBLAN_34", "Recalculer les comptes messages Utilisateur");

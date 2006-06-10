@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_contact.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-06-01 12:34:53 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-10 03:15:42 $
 |     $Author: daddycool78 $
 +----------------------------------------------------------------------------+
 */
