@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-04-04 23:19:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2006-06-11 08:58:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -103,7 +103,7 @@ $FORUMPOST = "
 <tr>
 <td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
 <td class='forumheader2' style='width:80%'>
-{POSTBOX}<br />{EMOTES}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
+{POSTBOX}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
 </td>
 </tr>
 
@@ -146,7 +146,7 @@ $FORUMPOST_REPLY = "
 <tr>
 <td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
 <td class='forumheader2' style='width:80%'>
-{POSTBOX}<br />{EMOTES}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
+{POSTBOX}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
 </td>
 </tr>
 

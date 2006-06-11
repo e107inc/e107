@@ -74,22 +74,6 @@ else
 return $ret;
 SC_END
 
-SC_BEGIN EMOTES
-global $pref;
-if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
-{
-	require_once(e_HANDLER."emote.php");
-	if($pref['smiley_activate'])
-	{
-		return r_emote();
-	}
-	else
-	{
-		return "";
-	}
-}
-SC_END
-
 SC_BEGIN FILEATTACH
 global $pref, $fileattach, $fileattach_alert;
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/forum_post_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-21 17:03:51 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-11 08:58:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,7 +72,7 @@ $FORUMPOST = "
 <tr>
 <td class='forumheader2' style='width:20%; vertical-align:top;'>{POSTTYPE}</td>
 <td style='width:80%'>
-{POSTBOX}<br />{EMOTES}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
+{POSTBOX}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
 </td>
 </tr>
 {POLL}
