@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2006-06-03 10:42:46 $
+|		$Revision: 1.19 $
+|		$Date: 2006-06-11 16:20:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -26,6 +26,8 @@ $datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || con
 
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
 
 require_once($plugindir."handlers/content_class.php");
 $aa = new content;
@@ -45,7 +47,7 @@ class content_convert{
 				mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_score TINYINT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';");
 				mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;");
 				mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';");
-				$text = "Content Management Plugin table structure updated<br />";
+				$text = CONTENT_ADMIN_CONVERSION_LAN_64."<br />";
 			}
 			return $text;
 		}
@@ -69,7 +71,7 @@ class content_convert{
 				}
 			}
 			if($upgrade){
-				return "Content Management Plugin : content_author updated<br />";
+				return CONTENT_ADMIN_CONVERSION_LAN_65."<br />";
 			}else{
 				return FALSE;
 			}
@@ -145,7 +147,7 @@ class content_convert{
 				}
 			}
 
-			return "Content Management Plugin : content_preferences and menus updated<br />";
+			return CONTENT_ADMIN_CONVERSION_LAN_66."<br />";
 		}
 
 		//add new preferences that come with this upgrade
@@ -218,7 +220,7 @@ class content_convert{
 					$sqld -> db_Update("pcontent", "content_pref='{$tmp1}' WHERE content_id='$id' ");
 				}
 			}
-			return "Content Management Plugin : content_preferences updated<br />";
+			return CONTENT_ADMIN_CONVERSION_LAN_67."<br />";
 		}
 		//add new preferences that come with this upgrade
 		function upgrade_1_23_prefs($content_pref){
