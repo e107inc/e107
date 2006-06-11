@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-06-11 18:16:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -215,7 +215,7 @@ $LINK_SUBMIT_TABLE = "
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:30%'>".LCLAN_SL_14."</td>
-		<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' /></td>
+		<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_but' size='60' value='' maxlength='200' /></td>
 	</tr>
 	<tr>
 		<td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LCLAN_SL_15."</span></td>
