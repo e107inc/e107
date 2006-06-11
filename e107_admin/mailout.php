@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-05-12 22:50:40 $
-|     $Author: e107coders $
+|     $Revision: 1.53 $
+|     $Date: 2006-06-11 16:10:48 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -146,8 +146,8 @@ if (isset($_POST['submit'])) {
 
 	$text .= "<div>$c ".MAILAN_24."</div>";
 
-	$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='Proceed' />
-	<input class='button' type='submit' name='cancel_emails' value='Cancel' />
+	$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='".MAILAN_37."' />
+	<input class='button' type='submit' name='cancel_emails' value='".MAILAN_38."' />
 	</div>";
 	$text .= "</form><br /><br /></div>";
 
@@ -232,7 +232,7 @@ if (isset($_POST['submit'])) {
 	</div>";
 
 
- 	$ns->tablerender("Emailing ($c) ", $text);
+ 	$ns->tablerender(MAILAN_39." ($c) ", $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
@@ -298,8 +298,8 @@ function show_mailform($foo=""){
 	$text = "";
 
 	if(strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip") && !is_readable(e_HANDLER."phpmailer/.htaccess")){
-		$warning = "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in ".$HANDLERS_DIRECTORY."phpmailer/ before sending mail from this page.";
-		$ns -> tablerender("Warning", $warning);
+		$warning = MAILAN_40." ".$HANDLERS_DIRECTORY."phpmailer/ ".MAILAN_41;
+		$ns -> tablerender(MAILAN_42, $warning);
 	}
 
 
@@ -333,11 +333,11 @@ function show_mailform($foo=""){
 	// User Search Field.
 
 
-		$u_array = array("user_name"=>"Username","user_login"=>"User Login","user_email"=>"User Email");
+		$u_array = array("user_name"=>MAILAN_43,"user_login"=>MAILAN_44,"user_email"=>MAILAN_45);
 
 		$text .= "
 		<tr>
-			<td style='width:35%' class='forumheader3'>User-Match
+			<td style='width:35%' class='forumheader3'>".MAILAN_46."
 			<select name='user_search_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 
@@ -346,7 +346,7 @@ function show_mailform($foo=""){
 			}
 
 	$text .= "
-		</select> contains </td>
+		</select> ".MAILAN_47." </td>
 		<td style='width:65%' class='forumheader3'>
 		<input type='text' name='user_search_value' class='tbox' style='width:80%' value='' />
 		</td></tr>
@@ -356,7 +356,7 @@ function show_mailform($foo=""){
 
 		$text .= "
 		<tr>
-			<td class='forumheader3'>User-Match
+			<td class='forumheader3'>".MAILAN_46."
 			<select name='extended_1_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 			$sql -> db_Select("user_extended_struct");
@@ -365,7 +365,7 @@ function show_mailform($foo=""){
 			}
 
 		$text .= "
-		</select> equals </td>
+		</select> ".MAILAN_48." </td>
 		<td  class='forumheader3'>
 		<input type='text' name='extended_1_value' class='tbox' style='width:80%' value='' />
 		</td></tr>
@@ -377,7 +377,7 @@ function show_mailform($foo=""){
 
 		$text .= "
 		<tr>
-			<td class='forumheader3'>User-Match
+			<td class='forumheader3'>".MAILAN_46."
 			<select name='extended_2_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 			$sql -> db_Select("user_extended_struct");
@@ -386,7 +386,7 @@ function show_mailform($foo=""){
 			}
 
 		$text .= "
-		</select> equals </td>
+		</select> ".MAILAN_48." </td>
 		<td  class='forumheader3'>
 		<input type='text' name='extended_2_value' class='tbox' style='width:80%' value='' />
 		</td></tr>
@@ -649,10 +649,10 @@ function showList()
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 
 			<tr>
-			<td style='width:5%; text-align: center;' class='fcaption'>Id</td>
-			<td style='width:10%' class='fcaption'>Author</td>
-			<td style='width:40%' class='fcaption'>Subject</td>
-			<td style='width:20%; text-align: center;' class='fcaption'>Lastmod</td>
+			<td style='width:5%; text-align: center;' class='fcaption'>".MAILAN_49."</td>
+			<td style='width:10%' class='fcaption'>".MAILAN_50."</td>
+			<td style='width:40%' class='fcaption'>".MAILAN_51."</td>
+			<td style='width:20%; text-align: center;' class='fcaption'>".MAILAN_52."</td>
 			<td style='width:5%; text-align: center;' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>
 			";
@@ -693,8 +693,8 @@ function userclasses($name) {
 	$text .= "<select style='width:80%' class='tbox' name='$name' >
 		<option value='all'>".MAILAN_12."</option>
 		<option value='unverified'>".MAILAN_13."</option>
-		<option value='admin'>Admins</option>
-		<option value='self'>Self</option>";
+		<option value='admin'>".MAILAN_53."</option>
+		<option value='self'>".MAILAN_54."</option>";
 	$query = "SELECT uc.*, count(u.user_id) AS members
 			FROM #userclass_classes AS uc
 			LEFT JOIN #user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
@@ -704,7 +704,7 @@ function userclasses($name) {
 	$sql->db_Select_gen($query);
 	while ($row = $sql->db_Fetch()) {
 		$public = ($row['userclass_editclass'] == 0)? "(".MAILAN_10.")" : "";
-		$text .= "<option value='{$row['userclass_id']}' >Userclass - {$row['userclass_name']}  $public [{$row['members']}]</option>";
+		$text .= "<option value='{$row['userclass_id']}' >".MAILAN_55." - {$row['userclass_name']}  $public [{$row['members']}]</option>";
 	}
 	$text .= " </select>";
 
@@ -717,7 +717,7 @@ function mailout_adminmenu() {
 	if($action == "edit"){
     	$action = "post";
 	}
-    $var['post']['text'] = "Send Mail";
+    $var['post']['text'] = MAILAN_56;
 	$var['post']['link'] = e_SELF;
 	$var['post']['perm'] = "W";
     $var['list']['text'] = LAN_SAVED;
