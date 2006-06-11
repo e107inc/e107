@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-05-12 22:50:40 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2006-06-11 16:10:48 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Save Changes");
@@ -61,5 +61,27 @@ define("MAILAN_32", "Email address");
 define("MAILAN_33", "Incoming Mail");
 define("MAILAN_34", "Account Name");
 define("MAILAN_35", "Password");
-define("MAILAN_36", "Delete Bounced Mails after checking");  
+define("MAILAN_36", "Delete Bounced Mails after checking");
+
+define("MAILAN_37", "Proceed");
+define("MAILAN_38", "Cancel");
+define("MAILAN_39", "Emailing");
+define("MAILAN_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
+define("MAILAN_41", "before sending mail from this page.");
+define("MAILAN_42", "Warning");
+define("MAILAN_43", "Username");
+define("MAILAN_44", "User Login");
+define("MAILAN_45", "User Email");
+define("MAILAN_46", "User-Match");
+define("MAILAN_47", "contains");
+define("MAILAN_48", "equals");
+define("MAILAN_49", "Id");
+define("MAILAN_50", "Author");
+define("MAILAN_51", "Subject");
+define("MAILAN_52", "Lastmod");
+define("MAILAN_53", "Admins");
+define("MAILAN_54", "Self");
+define("MAILAN_55", "Userclass");
+define("MAILAN_56", "Send Mail");
+
 ?>
