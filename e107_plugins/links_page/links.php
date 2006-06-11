@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.34 $
+|     $Date: 2006-06-11 18:43:04 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -210,12 +210,7 @@ function displayTopRated(){
 		$text = $link_rated_table_start.$link_rated_table_string.$link_rated_table_end;
 		
 		$ns->tablerender($caption, $text);
-
-		if(isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
-			require_once(e_HANDLER."np_class.php");
-			$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-			$ix = new nextprev(e_SELF, $from, $number, $linktotalrated, NP_3, ($np_querystring ? $np_querystring : ""));
-		}
+		$lc->ShowNextPrev($from, $number, $linktotalrated);
 	}
 }
 
@@ -256,12 +251,7 @@ function displayTopRefer(){
 		$text = $link_top_table_start.$link_top_table_string.$link_top_table_end;
 		$caption = LAN_LINKS_10;
 		$ns->tablerender($caption, $text);
-
-		if(isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
-			require_once(e_HANDLER."np_class.php");
-			$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-			$ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
-		}
+		$lc->ShowNextPrev($from, $number, $link_total);
 	}
 }
 
@@ -476,10 +466,8 @@ function displayCategoryLinks($mode=''){
 			$caption .= " (<b title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".$link_total."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".$link_total."</b>" : "").") ";
 			$ns->tablerender($caption, $text);
 
-			if(is_numeric($mode) && isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
-				require_once(e_HANDLER."np_class.php");
-				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-				$ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
+			if(is_numeric($mode)){
+				$lc->ShowNextPrev($from, $number, $link_total);
 			}
 		}else{
 			foreach($arr as $key => $value){

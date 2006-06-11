@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.27 $
-|    $Date: 2006-03-09 23:08:58 $
-|    $Author: whoisrich $
+|    $Revision: 1.28 $
+|    $Date: 2006-06-11 18:43:04 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -134,6 +134,25 @@ class linkclass {
         }
         return $linkspage_pref;
     }
+
+	function ShowNextPrev($from='0', $number, $total){
+		global $linkspage_pref, $qs, $tp, $link_shortcodes, $LINK_NEXTPREV, $LINK_NP_TABLE;
+
+		if(isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
+			$np_querystring = e_SELF."?[FROM]".(isset($qs[0]) ? ".".$qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
+			$parms = $total.",".$number.",".$from.",".$np_querystring."";
+			$LINK_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
+
+			if(!isset($LINK_NP_TABLE)){
+				if(is_readable(THEME."links_template.php")){
+					require_once(THEME."links_template.php");
+				}else{
+					require_once(e_PLUGIN."links_page/links_template.php");
+				}
+			}
+			echo $tp -> parseTemplate($LINK_NP_TABLE, FALSE, $link_shortcodes);
+		}
+	}
 
     function setPageTitle(){
         global $sql, $qs, $linkspage_pref;
@@ -752,10 +771,7 @@ class linkclass {
             ".$rs->form_close();
         }
         $ns->tablerender($caption, $text);
-
-        require_once(e_HANDLER."np_class.php");
-        $np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "");
-        $ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
+		$this->ShowNextPrev($from, $number, $link_total);
     }
 
     function show_cat_create() {

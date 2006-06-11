@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-06-11 18:16:52 $
+|     $Revision: 1.19 $
+|     $Date: 2006-06-11 18:43:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,12 @@
 if (!defined('e107_INIT')) { exit; }
 
 global $sc_style, $link_shortcodes;
+
+// ##### NEXT PREV --------------------------------------------------
+if(!isset($LINK_NP_TABLE)){
+	$LINK_NP_TABLE = "<div class='nextprev'>{LINK_NEXTPREV}</div>";
+}
+// ##### ----------------------------------------------------------------------
 
 //general : backlink to link frontpage
 $sc_style['LINK_NAVIGATOR']['pre'] = "<td style='text-align:right;'>";
