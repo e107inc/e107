@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_banlist.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-12 03:12:57 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,5 +19,5 @@
   define("BANLAN_8", "Bannir l'utilisateur");
   define("BANLAN_9", "Bannir les utilisateurs du site");
   define("BANLAN_10", "IP / Courriel / Raison");
-  define("BANLAN_11", "Bannissement-Automatique: Plus de 10 essais de connection infructueux");
+  define("BANLAN_11", "Bannissement-Automatique: Plus de 10 essais de connexion infructueux");
   ?>

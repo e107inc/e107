@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_installer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-12 03:12:57 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -53,11 +53,11 @@
   define("LANINS_034", "Le préfixe que vous souhaitez employer pour e107 lors de la création des tables de e107. Utile pour l'installation multiple d'e107 dans un seul schéma de base de données.");
   define("LANINS_035", "Continuer");
   define("LANINS_036", "4");
-  define("LANINS_037", "Vérification de Connection MySQL  ");
+  define("LANINS_037", "Vérification de Connexion MySQL  ");
   define("LANINS_038", " et de création de Base de données ");
   define("LANINS_039", "Veuillez vous assurer d'avoir complété d'une manière primordiale tous les champs, le serveur de MySQL, le nom d'utilisateur MySQL , la base de données de MySQL (ceux-ci sont toujours exigés par le serveur de MySQL)");
   define("LANINS_040", "Erreurs");
-  define("LANINS_041", "e107 n'a pas été en mesure d'établir une connection au serveur MySQL
+  define("LANINS_041", "e107 n'a pas été en mesure d'établir une connexion au serveur MySQL
   en utilisant les informations que vous avez introduites. Revenez svp à la dernière page et assurez vous que vos données soient correctes.");
   define("LANINS_042", "Le raccordement au serveur MySQL a été établi et vérifié.");
   define("LANINS_043", "Incapable de créer la base de données, assurez-svp vous d'avoir permissions correctes pour créer des bases de données sur votre serveur.");
@@ -121,7 +121,7 @@
   define("LANINS_080", "Courriel Admin");
   define("LANINS_081", "Entrer votre adresse courriel");
   define("LANINS_082", "vous@votresite.com");
-  define("LANINS_083", "N'a pas pu établir de connection avec le serveur Mysql. Détails des erreurs :");
+  define("LANINS_083", "N'a pas pu établir de connexion avec le serveur Mysql. Détails des erreurs :");
   define("LANINS_084", "N'a pas pu créer de base de données. Détails des erreurs :");
   define("LANINS_085", "Aide");
   define("LANINS_086", "e107 Page d'accueil: http://e107.org");

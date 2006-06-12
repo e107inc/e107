@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-09 19:00:44 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-12 03:12:57 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -33,7 +33,7 @@
   define("ADSTAT_L20", "Compte visites admin");
   define("ADSTAT_L21", "Maximum d'enregistrement à afficher sur la page des stats");
   define("ADSTAT_L22", "Lancer la routine de mise à jour");
-  define("ADSTAT_L23", "Les connections d'une version précédente d'e107 ont été détectés, les mettre à  jour ici");
+  define("ADSTAT_L23", "Les connexions d'une version précédente d'e107 ont été détectés, les mettre à  jour ici");
   define("ADSTAT_L24", "Mis à  jour du script");
   define("ADSTAT_L25", "Selectionner Réinitialisation Stats");
   define("ADSTAT_L26", "Supprimer les entrées des pages");

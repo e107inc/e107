@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-12 03:12:57 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -82,12 +82,12 @@
   define("LAN_SIGNUP_34", "Attention: toute image téléchargée sur ce serveur et considérée comme inapproprié par les administrateurs sera supprimée immédiatement.");
   define("LAN_SIGNUP_35", "Cliquez ici pour enregistrer l'utilisation d'un fichier XUP");
   define("LAN_SIGNUP_36", "Une erreur s'est produite lors de la création de vos paramètres utilisateur. Veuillez contacter l'administrateur du site");
-  define("LAN_LOGINNAME", "Nom de connection");
+  define("LAN_LOGINNAME", "Nom de connexion");
   define("LAN_PASSWORD", "Mot de passe");
   define("LAN_USERNAME", "Nom affiché");
   define("LAN_EMAIL_01", "Cher");
   
-  define("LAN_EMAIL_04", "Veuillez garder ce courriel pour votre information.");
+  define("LAN_EMAIL_04", "Veuillez conserver ce courriel comme aide-mémoire.");
   define("LAN_EMAIL_05", "Votre mot de passe a été encrypté et ne pourra vous être restitué en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas échéant.");
   define("LAN_EMAIL_06", "Merci de vous être enregistré.");
   define("LAN_SIGNUP_37","Cette étape de l'enregistrement est terminée. L'administateur du site devra approuver votre adhésion. Lorsque cela aura été fait, vous recevrez un courriel de confirmation vous informant que votre adhésion a été approuvée.");¨

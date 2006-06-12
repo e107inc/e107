@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-12 03:12:57 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -222,7 +222,7 @@
   define("CONTENT_ADMIN_MAIN_LAN_14", "Vous pouvez ordonner les éléments contenus dans cette page.  Cliquez sur le bouton des principaux parents énumérés ci-dessous pour commencer à ordonner des articles ou des catégories de contenu pour la catégorie principale choisi.");
   define("CONTENT_ADMIN_MAIN_LAN_15", "Vous pouvez gérer des catégories sur cette page de catégorie principale sélectionner les boutons de numérotation ci-dessous pour montrer un autre aperçu des catégories et des sous-catégories dans cette catégorie principale.");
   define("CONTENT_ADMIN_MAIN_LAN_16", "Vous pouvez créer de nouvelles catégories sur cette page. Par défaut le formulaire de création d'une nouvelle catégorie principale s'affichera. Si vous voulez créer une sous-catégorie pour une catégorie principale existante, cliquez s'il vous plaît sur un des boutons inscrits ci-dessous pour afficher le formulaire de création de sous-catégorie pour la catégorie principale choisie.");
-  define("CONTENT_ADMIN_MAIN_LAN_17", "svp  créer une nouvelle Catégorie  sur la page <a href='".e_SELF."?type.0.cat.create'>Nouvelle Catégorie</a>");
+  define("CONTENT_ADMIN_MAIN_LAN_17", "veuillez créer une nouvelle Catégorie  sur la page <a href='".e_SELF."?type.0.cat.create'>Nouvelle Catégorie</a>");
   define("CONTENT_ADMIN_MAIN_LAN_18", "Records de convertion");
   define("CONTENT_ADMIN_MAIN_LAN_19", "La première chose que vous devez faire est de créer une sauvegarde de votre table contenu existante ainsi que celle de vos commentaires et des évaluatons .<br /> Utiliser un programme pour sauvegarder votre table contenu, comme phpmyadmin.<br />Après avoir créé une sauvegarde de votre vieille table contenu, vous pouvez commencer à convertir ces enregistrements vers la nouvelle extension de Gestion de contenu.<br />Après avoir converti votre ancien contenu, Vous ne devriez plus voir cette information et être à même de gérer vos contenus existants.");
   define("CONTENT_ADMIN_MAIN_LAN_20", "Débuter avec une table contenu vide");
