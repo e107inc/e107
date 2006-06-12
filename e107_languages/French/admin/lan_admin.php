@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-12 08:48:19 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -121,7 +121,7 @@
   define("ADLAN_117", "Voir toutes les entrées");
   define("ADLAN_118", "Effacer les entrées");
   define("ADLAN_119", "Liens proposés non vérifiés ");
-  define("ADLAN_120", "Il y a une mise à jour de votre base de données disponible, veuillez cliquer sur le bouton &quot;installer&quot; ...");
+  define("ADLAN_120", "Une mise à jour de votre base de données est disponible, veuillez cliquer sur le bouton de mise à jour ...");
   define("ADLAN_121", "Installer");
   
   define("ADLAN_123", "Articles proposés non vérifiés ");

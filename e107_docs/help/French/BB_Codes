@@ -1,4 +1,4 @@
-﻿<div class='forumheader4'>Q>	Qu'est ce que le BBCode?
+<div class='forumheader4'>Q>	Qu'est ce que le BBCode?
 A>	Un <strong><i>BBCode</i></strong> est un <strong><i>raccourci</i></strong> <strong><i>d'une étiquette (Tag) HTML</i></strong>, par exemple entrant [ b ] je suis du texte bold!  [/b ] dans n'importe laquelle de vos boîtes à textes d'admin cela mettra le texte à l'intérieur du [b ] et [/b ] et s'affichera en gras, ainsi [b]Je suis du text Bold![/b] devrait être affiché en ce moment en gras à l'écran.
 </div><div class='forumheader4'>Q>	Mais c'est pourquoi faire?
 A>	Il vous économise du temps lorsque vous entrer les étiquettes (Tag) HTML. Vous pouvez employer les étiquettes normales HTML dans des vos boîtes d'enregistrement de texte mais utiliser les BBCodes accélérera vraiment votre enregistrement de texte.

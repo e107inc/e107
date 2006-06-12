@@ -1,4 +1,4 @@
-﻿<div class='forumheader4'>Q>	J'ai défini une nouvelle bannière de pub depuis secteur d'administration mais pourquoi n'apparaît-elle pas ?
+<div class='forumheader4'>Q>	J'ai défini une nouvelle bannière de pub depuis secteur d'administration mais pourquoi n'apparaît-elle pas ?
 A>	le thème que vous employez à besoin de le savoir pour afficher la dite bannière.  
 		Ouvrez le fichier"theme.php"du thème utilisé et assurez-vous d'avoir {BANNER} ou {BANNER=yourcampaignname} dans $HEADER section.
 </div><div class='forumheader4'>Q>	Je veux un ensemble de bannières publicitaires dans un secteur et à un ensemble différent dans un autre secteur - comment faire?

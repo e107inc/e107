@@ -1,4 +1,4 @@
-﻿<div class='forumheader4'>Q>	A quoi sert la section Remplacez les Liens?
+<div class='forumheader4'>Q>	A quoi sert la section Remplacez les Liens?
 A>	Vous pouvez convertir tous les liens entrés dans votre chatbox en textes, ou en images.  Ceci empêche votre chatbox d'être submergé de longues adresses de website.
     Pour employer une image, le cochage remplacent les liens, et dans la boîte ci-dessous écrivez &lt;img src='path_to_your_image' alt='' />, ainsi tous les liens écrits seront converti par l' image que vous avez entrez.
 </div><div class='forumheader4'>Q>	A quoi sert la 'Wordwrap'?

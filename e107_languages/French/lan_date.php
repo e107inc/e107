@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
    define("LANDT_01", "année");
    define("LANDT_02", "mois");
    define("LANDT_03", "semaine");

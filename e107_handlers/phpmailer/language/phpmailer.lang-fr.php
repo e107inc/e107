@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/phpmailer/language/phpmailer.lang-fr.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-12 08:48:19 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */

@@ -1,4 +1,4 @@
-﻿<div class='forumheader4'>Q>	J'ai fait quelques changements sur mon site et maintenant j'obtiens des erreurs de mySQL et mon site n'apparaît pas.
+<div class='forumheader4'>Q>	J'ai fait quelques changements sur mon site et maintenant j'obtiens des erreurs de mySQL et mon site n'apparaît pas.
 A>	Il se pourrait que votre noyau soit corrompu. Le noyau contient les paramètres de configuration et les variables d'e107. 
 Pour reinstaller votre noyau, allez à la page http://yoursite.com/e107_files/resetcore.php</a>.  
 Faites toujours une sauvegarde de votre noyau (depuis l'écran de base de données) avant de procéder à des changements, 

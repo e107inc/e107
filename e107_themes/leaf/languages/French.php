@@ -1,4 +1,4 @@
-﻿<?php
+<?php
   define("LAN_THEME_1", "Commentaire(s) ");
   define("LAN_THEME_2", "Commentaires désactivés");
   define("LAN_THEME_3", "commentaires ");

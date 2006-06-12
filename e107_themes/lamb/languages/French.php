@@ -1,4 +1,4 @@
-﻿<?php
+<?php
   define("LAN_THEME_1", "'lamb' par <a href='http://e107.org' rel='external'>jalist</a>");
   define("LAN_THEME_2", "Commentaires désactivés");
   define("LAN_THEME_3", "commentaires: ");
