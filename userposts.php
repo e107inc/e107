@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-06-12 18:11:01 $
+|     $Revision: 1.23 $
+|     $Date: 2006-06-12 18:14:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -314,7 +314,6 @@ function parse_userposts_comments_table($row)
 		if(!isset($comment_files))
 		{
 			$comment_files = get_comment_files();
-			print_a($comment_files);
 		}
 
 		//unset all vars that will be set by e_comment.php
