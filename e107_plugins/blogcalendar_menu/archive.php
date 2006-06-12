@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/archive.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-28 16:12:59 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-12 09:07:10 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -72,28 +72,27 @@ $end_year = $cur_year;
 // ----------------------
 $year_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
 $year_selector .= "".BLOGCAL_ARCHIV1.": <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
-	
+
 for($i = $start_year; $i <= $end_year; $i++) {
 	$start = mktime(0, 0, 0, 1, 1, intval($req_year));
 	$end = mktime(23, 59, 59, 12, 31, intval($req_year));
+	// create the option entry
+	$year_link = $prefix."/archive.php?year.".$i;
+	$year_selector .= "<option value='".$year_link."'";
+	if ($i == $req_year) {
+		$year_selector .= " selected";
+	}
 	if ($sql->db_Select("news", "news_id, news_datestamp, news_class", "news_datestamp > $start AND news_datestamp < $end")) {
-		// create the option entry
-		$year_link = $prefix."/archive.php?year.".$i;
-		$year_selector .= "<option value='".$year_link."'";
-		 
-		if ($i == $req_year) {
-			$year_selector .= " selected";
-			while ($news = $sql->db_Fetch()) {
-				if (check_class($news['news_class'])) {
-					list($xmonth, $xday) = explode(" ", date("n j", $news['news_datestamp']));
-					if (!$day_links[$xmonth][$xday]) {
-						$day_links[$xmonth][$xday] = e_BASE."news.php?day.".formatdate($req_year, $xmonth, $xday);
-					}
+		while ($news = $sql->db_Fetch()) {
+			if (check_class($news['news_class'])) {
+				list($xmonth, $xday) = explode(" ", date("n j", $news['news_datestamp']));
+				if (!$day_links[$xmonth][$xday]) {
+					$day_links[$xmonth][$xday] = e_BASE."news.php?day.".formatdate($req_year, $xmonth, $xday);
 				}
 			}
 		}
-		$year_selector .= ">".$i."</option>";
 	}
+	$year_selector .= ">".$i."</option>";
 }
 	
 $year_selector .= "</select>";
