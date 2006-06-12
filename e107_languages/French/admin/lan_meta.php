@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_meta.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-12 05:08:05 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -20,4 +20,6 @@
   define("METLAN_9", "Description");
   define("METLAN_10", "Mots clés");
   define("METLAN_11", "Copyright");
-  ?>
+  define("METLAN_12", "Utiliser le titre et le sommaire des Actualités comme méta-description des pages d'actualités.");
+define("METLAN_13", "Auteur");
+?>

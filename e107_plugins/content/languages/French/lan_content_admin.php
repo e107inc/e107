@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-12 03:12:57 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-12 05:08:05 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -15,6 +15,7 @@
   define("CONTENT_PLUGIN_LAN_4", "Cette extension est maintenant prête à être utilisé.");
   define("CONTENT_PLUGIN_LAN_5", "Contenu");
   define("CONTENT_PLUGIN_LAN_6", "La structure des tables de l'extension Gestion de contenus a été mise à jour");
+define("CONTENT_LATEST_LAN_1", "Contenu proposé:");
   define("CONTENT_ADMIN_CAT_LAN_0", "Créer une catégorie de contenu");
   define("CONTENT_ADMIN_CAT_LAN_1", "Éditer une catégorie de contenu");
   define("CONTENT_ADMIN_CAT_LAN_2", "Titre");
@@ -355,8 +356,13 @@ define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Créer une catégorie");
   define("CONTENT_ADMIN_CONVERSION_LAN_61", "Créer une nouvelle catégorie ");
   define("CONTENT_ADMIN_CONVERSION_LAN_62", "Extension Gestion de Contenus mise à jour à la version:");
   define("CONTENT_ADMIN_CONVERSION_LAN_63", "mise à jour");
-  //  define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
-  //  define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "Structure de la table de l'extension Gestionnaire de Contenu mise à jour");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "Extension Gestionnaire de Contenu : content_author mis à jour");
+define("CONTENT_ADMIN_CONVERSION_LAN_66", "Extension Gestionnaire de Contenu : content_preferences et menus mis à jour");
+define("CONTENT_ADMIN_CONVERSION_LAN_67", "Extension Gestionnaire de Contenu : content_preferences mis à jour");
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_69", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_70", "");
   define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Options:");
   define("CONTENT_ADMIN_OPT_LAN_MENU_2", "Pages:");
   define("CONTENT_ADMIN_OPT_LAN_MENU_3", "Création de contenu <i>pour cette catégorie</i>");
@@ -604,4 +610,15 @@ define("CONTENT_ADMIN_OPT_LAN_151", "Page des Meilleures Évaluations");
 define("CONTENT_ADMIN_OPT_LAN_152", "Page des Meilleures Qualités");
 define("CONTENT_ADMIN_OPT_LAN_153", "Page des Propositions");
 define("CONTENT_ADMIN_OPT_LAN_154", "Page de Gestion");
+define("CONTENT_ADMIN_OPT_LAN_155", "légende");
+define("CONTENT_ADMIN_OPT_LAN_156", "page d'index des légendes");
+define("CONTENT_ADMIN_OPT_LAN_157", "légende de la page auteur");
+define("CONTENT_ADMIN_OPT_LAN_158", "annexer le nom de l'auteur à la légende");
+define("CONTENT_ADMIN_OPT_LAN_159", "légende page de catégorie");
+define("CONTENT_ADMIN_OPT_LAN_160", "annexer le nom de la catégorie à la légende");
+define("CONTENT_ADMIN_OPT_LAN_161", "légende sous-catégorie (seulement utilisé si l'option de rendu est réglée pour séparer les menus)");
+define("CONTENT_ADMIN_OPT_LAN_162", "légente items de contenu (seulement utilisé si l'option de rendu est réglée pour séparer les menus)");
+define("CONTENT_ADMIN_OPT_LAN_163", "afficher les liens de page précédente et suivante");
+define("CONTENT_ADMIN_OPT_LAN_164", "légende pour le lien de la page précédente<br />(utilisez {PAGETITLE} pour ajouter le titre de la page précédente)");
+define("CONTENT_ADMIN_OPT_LAN_165", "légende pour le lien de la page suivante<br />(utilisez {PAGETITLE} pour ajouter le titre de la page précédente)");
   ?>

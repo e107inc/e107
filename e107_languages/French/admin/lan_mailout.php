@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-12 05:08:05 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -59,5 +59,25 @@ define("MAILAN_32", "Addresse courriel");
 define("MAILAN_33", "Réception d'un courriel");
 define("MAILAN_34", "Nom du compte");
 define("MAILAN_35", "Mot de passe");
-define("MAILAN_36", "Effacer les courriels rebondis après vérification");  
-  ?>
+define("MAILAN_36", "Effacer les courriels rebondis après vérification");
+define("MAILAN_37", "Procéder");
+define("MAILAN_38", "Annuler");
+define("MAILAN_39", "Envoi de courriel(s)");
+define("MAILAN_40", "Vous devez renommer le fichier <b>e107.htaccess</b> pour <b>.htaccess</b> dans");
+define("MAILAN_41", "avant d'envoyer des courriels de cette page.");
+define("MAILAN_42", "Avertissement");
+define("MAILAN_43", "Nom d'utilisateur");
+define("MAILAN_44", "Nom de connexion");
+define("MAILAN_45", "Courriel");
+define("MAILAN_46", "Correspondance utilisateur");
+define("MAILAN_47", "contient");
+define("MAILAN_48", "égal");
+define("MAILAN_49", "Id");
+define("MAILAN_50", "Auteur");
+define("MAILAN_51", "Sujet");
+define("MAILAN_52", "Dernière modification");
+define("MAILAN_53", "Admins");
+define("MAILAN_54", "Soi-même");
+define("MAILAN_55", "Groupe d'utilisateurs");
+define("MAILAN_56", "Envoyer le courriel");
+?>

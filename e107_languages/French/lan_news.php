@@ -4,19 +4,12 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 03:22:16 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-12 05:08:05 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Actualités");
-  define("LAN_82", "Actualités - Catégorie");
-  define("LAN_83", "Aucune actualité pour le moment - veuillez revenir plus tard.");
-  define("LAN_84", "Actualités");
-  define("LAN_99", "Commentaires");
-  define("LAN_100", "Autorisés");
-  define("LAN_307", "Nombre total d'Actualités dans cette catégorie : ");
-  
   define("LAN_NEWS_1", "Actualité réservée uniquement aux membres du site");
   define("LAN_NEWS_2", "Vous n'êtes pas autorisé à voir cette actualité");
   //define("LAN_NEWS_3", "Veuillez supprimer le fichier install.php de votre serveur");
@@ -41,5 +34,11 @@
   //   define("LAN_NEWS_22", "Aller à la page:");
   define("LAN_NEWS_23", "Catégories d'actualités ");
   define("LAN_NEWS_24", "Créer un pdf pour cette actualité");
-  define("LAN_462", "Pas d'actualités pour le mois spécifié");
+  define("LAN_NEWS_82", "Actualités - Catégorie");
+  define("LAN_NEWS_83", "Aucune actualité pour le moment - veuillez revenir plus tard.");
+  define("LAN_NEWS_84", "Actualités");
+  define("LAN_NEWS_99", "Commentaires");
+  define("LAN_NEWS_100", "Autorisés");
+  define("LAN_NEWS_307", "Nombre total d'Actualités dans cette catégorie : ");
+  define("LAN_NEWS_462", "Pas d'actualités pour le mois spécifié");
   ?>
