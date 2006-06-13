@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-01-13 14:38:41 $
-|     $Author: sweetas $
+|     $Revision: 1.33 $
+|     $Date: 2006-06-13 16:16:12 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,8 +64,11 @@ foreach($_POST as $key => $value)
 	}
 }
 
-$emote -> installCheck();
-$emote -> listPacks();
+$check = TRUE;
+$check = $emote -> installCheck();
+if($check!==FALSE){
+	$emote -> listPacks();
+}
 
 class emotec
 {
@@ -234,6 +237,24 @@ class emotec
 		global $sql, $fl;
 		foreach($this -> packArray as $value)
 		{
+			if(strpos($value,' ')!==FALSE){
+				global $ns;
+				$msg = "
+				<div style='text-align:center;'><b>".EMOLAN_17."<br />".EMOLAN_18."</b><br /><br />
+					<table class='fborder'>
+					<tr>
+						<td class='fcaption'>".EMOLAN_19."</td>
+						<td class='fcaption'>".EMOLAN_20."</td>
+					</tr>
+					<tr>
+						<td class='forumheader3'>".$value."</td>
+						<td class='forumheader3'>".e_IMAGE."emotes/</td>
+					</tr>
+					</table>
+				</div>";
+				$ns->tablerender(EMOLAN_21, $msg);
+				return FALSE;
+			}
 			if(!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' "))
 			{
 				$fileArray = $fl -> get_files(e_IMAGE."emotes/".$value);
