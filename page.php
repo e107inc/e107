@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-05-16 15:55:05 $
+|     $Revision: 1.28 $
+|     $Date: 2006-06-13 16:58:55 $ - mods to make password protected pages work
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+
 require_once("class2.php");
 $page = new pageClass();
 if(isset($_POST['enterpw']))
@@ -37,30 +38,40 @@ if(!e_QUERY)
 else
 {
 
-	$cacheString = 'page_'.$page->pageID;
-	$cachePageTitle = 'page-t_'.$page->pageID;
+	$cacheString = 'page';
+	$cachePageTitle = 'page-t';
 
-    if($cacheData = $e107cache->retrieve($cacheString)){
+	if($cacheData = $e107cache->retrieve($cacheString))
+	{
 
-        list($pagetitle,$comment_flag) = explode("^",$e107cache->retrieve($cachePageTitle));
+		list($pagetitle,$comment_flag) = explode("^",$e107cache->retrieve($cachePageTitle));
 		define("e_PAGETITLE", $pagetitle);
 		require_once(HEADERF);
-       	echo $cacheData;
+		echo $cacheData;
 
-	}else{
+	}
+	else
+	{
 
 		$tmp = $page -> showPage();
 		define("e_PAGETITLE", $tmp['title']);
 		require_once(HEADERF);
+		if ($tmp['err'])		// Need to display error block after header defined
+		{
+			$ns -> tablerender($tmp['title'], $tmp['text']);
+			require_once(FOOTERF);
+			exit;
+		}
 		ob_start();
 		$ns -> tablerender($tmp['title'], $tmp['text']);
-    	$cache_data = ob_get_flush();
+		$cache_data = ob_get_flush();
 		$e107cache->set($cacheString, $cache_data);
-    	$e107cache->set($cachePageTitle, $tmp['title']."^".$tmp['comment_flag']);
-        $comment_flag = $tmp['comment_flag'];
+		$e107cache->set($cachePageTitle, $tmp['title']."^".$tmp['comment_flag']);
+		$comment_flag = $tmp['comment_flag'];
 	}
 
-	if($com = $page -> pageComment($comment_flag)){
+	if($com = $page -> pageComment($comment_flag))
+	{
 		echo $com['comment'].$com['comment_form'];
 	}
 }
@@ -137,10 +148,11 @@ class pageClass
 
 		if(!$sql -> db_Select_gen($query) && !$_GET['elan'])
 		{
-			require_once(HEADERF);
-			message_handler("MESSAGE", LAN_PAGE_3);
-			require_once(FOOTERF); 
-			exit;
+			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
+			$ret['text'] = LAN_PAGE_3;
+			$ret['comment_flag'] = '';
+			$ret['err'] = TRUE;
+			return $ret;
 		}
 
 		extract($sql -> db_Fetch());
@@ -174,9 +186,10 @@ class pageClass
 
 		$ret['title'] = $page_title;
 		$ret['text'] = $text;
-        $ret['comment_flag'] = $page_comment_flag;
+		$ret['comment_flag'] = $page_comment_flag;
+		$ret['err'] = FALSE;
 
-	 	return $ret;
+		return $ret;
 	}
 
 	function parsePage()
@@ -281,12 +294,16 @@ class pageClass
 			}
 			$rate_text .= "</td><td style='width:50%; text-align:right'>";
 
-			if (!$rater->checkrated("page", $this -> pageID) && USER) {
+			if (!$rater->checkrated("page", $this -> pageID) && USER)
+			{
 				$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>".LAN_PAGE_4."</b>", "page", $this -> pageID);
 			}
-			else if(!USER) {
+			else if(!USER)
+			{
 				$rate_text .= "&nbsp;";
-			} else {
+			}
+			else
+			{
 				$rate_text .= LAN_PAGE_5;
 			}
 			$rate_text .= "</td></tr></table>";
@@ -306,9 +323,9 @@ class pageClass
 			if (isset($_POST['commentsubmit']))
 			{
 				$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "page", $this -> pageID, $pid, $_POST['subject']);
-						$e107cache->clear("comment.page.".$this -> pageID);
-                        $e107cache->clear($cacheString);
-					}
+				$e107cache->clear("comment.page.".$this -> pageID);
+				$e107cache->clear($cacheString);
+			}
 
 			return $cobj->compose_comment("page", "comment", $this -> pageID, $width="", $subject="", $showrate=FALSE, $return=TRUE);
 		}
@@ -316,7 +333,7 @@ class pageClass
 
 	function pageCheckPerms($page_class, $page_password)
 	{
-		global $ns, $HEADER, $FOOTER, $sql;
+		global $ns, $tp, $HEADER, $FOOTER, $sql;     // $tp added
 
 		if (!check_class($page_class))
 		{
@@ -335,9 +352,9 @@ class pageClass
 			{
 				$this -> setPageCookie();
 			}
-			}
-			else
-			{
+		}
+		else
+		{
 			$cookiename = "e107page_".$this -> pageID;
 
 			if($_COOKIE[$cookiename] == md5($page_password.USERID))
@@ -351,28 +368,32 @@ class pageClass
 			message_handler("MESSAGE", LAN_PAGE_7);
 		}
 
-			$text = "
-			<div style='text-align:center; margin-left:auto; margin-right: auto;'>
-			<form method='post' action='".e_SELF."?".e_QUERY."' id='pwform'>
-			<table style='width:100%;' class='fborder'>
-			<tr>
-			<td class='forumheader' colspan='3' style='text-align:center; white-space:nowrap'>".LAN_PAGE_8."</td>
-			</tr>
-			<tr>
-			<td class='forumheader3' style='width:20%;'>".LAN_PAGE_9.":</td>
-			<td class='forumheader3' style='width: 60%;'><input type='password' id='page_pw' name='page_pw' style='width: 90%;'/></td>
-			<td class='forumheader3' style='width:20%; vertical-align:middle; margin-left:auto; margin-right:auto; text-align:center;'><img src='".e_IMAGE."generic/".IMODE."/password.png' alt='' /></td>
-			</tr>
-			<tr>
-			<td class='forumheader' colspan='3' style='text-align:center;'><input class='button' type='submit' name='submit_page_pw' value='".LAN_PAGE_10."' /></td>
-			</tr>
-			</table>
-			</form>
-			</div>
-			";
+		$pw_entry_text = "
+		<div style='text-align:center; margin-left:auto; margin-right: auto;'>
+		<form method='post' action='".e_SELF."?".e_QUERY."' id='pwform'>
+		<table style='width:100%;' class='fborder'>
+		<tr>
+		<td class='forumheader' colspan='3' style='text-align:center; white-space:nowrap'>".LAN_PAGE_8."</td>
+		</tr>
+		<tr>
+		<td class='forumheader3' style='width:20%;'>".LAN_PAGE_9.":</td>
+		<td class='forumheader3' style='width: 60%;'><input type='password' id='page_pw' name='page_pw' style='width: 90%;'/></td>
+		<td class='forumheader3' style='width:20%; vertical-align:middle; margin-left:auto; margin-right:auto; text-align:center;'><img src='".e_IMAGE."generic/".IMODE."/password.png' alt='' /></td>
+		</tr>
+		<tr>
+		<td class='forumheader' colspan='3' style='text-align:center;'><input class='button' type='submit' name='submit_page_pw' value='".LAN_PAGE_10."' /></td>
+		</tr>
+		</table>
+		</form>
+		</div>
+		";
+		// Mustn't return to higher level code here
 
-			$ns->tablerender("&nbsp;", $text);
-		require_once(FOOTERF); exit;
+		// HEADERF requires that $tp is defined - hence declared as global above.
+		require_once(HEADERF);
+		$ns->tablerender("&nbsp;", $pw_entry_text);		// HEADERF also clears $text - hence different variable
+		require_once(FOOTERF);
+		exit;
 	}
 
 	function setPageCookie()
