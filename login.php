@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-27 21:54:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-13 18:13:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -36,9 +36,9 @@ if (!USER) {
 	$LOGIN_TABLE_PASSWORD = $rs->form_password("userpass", 40, "", 100);
 	if ($use_imagecode) {
 		$LOGIN_TABLE_SECIMG_LAN = LAN_LOGIN_13;
-		$LOGIN_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img->random_number."'>";
+		$LOGIN_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />";
 		$LOGIN_TABLE_SECIMG_SECIMG = $sec_img->r_image();
-		$LOGIN_TABLE_SECIMG_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>";
+		$LOGIN_TABLE_SECIMG_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";
 	}
 	$LOGIN_TABLE_AUTOLOGIN = $rs->form_checkbox("autologin", "1");
 	$LOGIN_TABLE_AUTOLOGIN_LAN = LAN_LOGIN_8;
