@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-06-02 15:53:14 $
-|     $Author: lisa_ $
+|     $Revision: 1.18 $
+|     $Date: 2006-06-13 17:39:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -355,6 +355,19 @@ else
 	return LAN_408;
 }
 SC_END
+
+SC_BEGIN USER_AVATAR
+global $user, $tp;
+if ($user['user_image'])
+{
+	return $tp->parseTemplate("{USER_AVATAR=".$user['user_image']."}", true);
+}
+else
+{
+	return LAN_408;
+}
+SC_END
+
 
 SC_BEGIN USER_PICTURE_NAME
 global $user;
