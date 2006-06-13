@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_page.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-02-28 23:02:59 $
-|     $Author: whoisrich $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-13 16:58:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,5 +21,6 @@ define("LAN_PAGE_8", "Password Protected Page");
 define("LAN_PAGE_9", "Password");
 define("LAN_PAGE_10", "Submit");
 define("LAN_PAGE_11", "Page List");
+define("LAN_PAGE_12", "Invalid page");
 
 ?>
