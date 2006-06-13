@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2006-06-07 05:04:58 $
-|     $Author: e107coders $
+|     $Revision: 1.102 $
+|     $Date: 2006-06-13 12:33:21 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -138,7 +138,7 @@ if ($action == 'cat' || $action == 'all'){
 	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
     if(!$NEWSLISTTITLE){
-		$NEWSLISTTITLE = LAN_82." '{$category_name}'";
+		$NEWSLISTTITLE = LAN_NEWS_82." '{$category_name}'";
 	}
 
 	ob_start();
@@ -292,7 +292,7 @@ if($tmp_cache = checkCache($cacheString))
 
 if (!$sql->db_Select_gen($query)) {
 	require_once(HEADERF);
-	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
+	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</b></div><br /><br />";
 	require_once(FOOTERF);
 	exit;
 } else {
