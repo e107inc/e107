@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-12-05 19:28:57 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2006-06-14 22:12:07 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -42,16 +42,16 @@ $reject = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', '.DS_
 $images = $fl->get_files(e_IMAGE."banners/","",$reject);
 
 if (isset($_POST['update_menu'])) {
-	foreach($_POST as $k => $v) {
-		if (strpos($k, "banner_") === 0) {
-			$menu_pref[$k] = $v;
-		}
-	}
+
+	$menu_pref['banner_caption']	= $tp->toDB($_POST['banner_caption']);
+	$menu_pref['banner_amount']		= intval($_POST['banner_amount']);
+	$menu_pref['banner_rendertype']	= intval($_POST['banner_rendertype']);
 
 	if (isset($_POST['catid'])) {
 		$array_cat = explode("-", $_POST['catid']);
+		$cat='';
 		for($i = 0; $i < count($array_cat); $i++) {
-			$cat .= $array_cat[$i]."|";
+			$cat .= $tp->toDB($array_cat[$i])."|";
 		}
 		$cat = substr($cat, 0, -1);
 		$menu_pref['banner_campaign'] = $cat;
@@ -514,6 +514,13 @@ if ($action == "menu")
 	</tr>
 	</table>
 
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L19."</td>
+	<td style='width:60%' class='forumheader3'>
+	<input class='tbox' type='text' name='banner_amount' size='10' value='".$menu_pref['banner_amount']."' maxlength='2' />
 	</td>
 	</tr>
 

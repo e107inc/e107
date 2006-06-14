@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-22 22:21:37 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2006-06-14 22:12:07 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("BNRLAN_1", "Banner deleted.");
@@ -58,8 +58,6 @@ define("BNRLAN_64", "Banner Updated");
 
 define("BANNER_MENU_L1", "Advertisement");
 define("BANNER_MENU_L2", "Banner menu configuration saved");
-
-//v.617
 define("BANNER_MENU_L3", "Caption");
 define("BANNER_MENU_L5", "Banner Configuration"); 
 define("BANNER_MENU_L6", "choose campaigns to show in menu");
@@ -70,5 +68,6 @@ define("BANNER_MENU_L10", "Render type");
 define("BANNER_MENU_L12", "plain");
 define("BANNER_MENU_L13", "in captioned box");
 define("BANNER_MENU_L18", "Update Menu Settings");
+define("BANNER_MENU_L19", "number of banners to show:<br />this is only used when multiple campaigns are selected");
 
 ?>
