@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.97 $
-|		$Date: 2006-06-05 11:27:57 $
+|		$Revision: 1.98 $
+|		$Date: 2006-06-14 19:18:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -312,7 +312,7 @@ function show_content(){
 			return;
 		}
 		if(!is_object($sql)){ $sql = new db; }
-		if(!$sql -> db_Select($plugintable, "*", "content_parent = '0' AND content_class REGEXP '".e_CLASS_REGEXP."' ".$datequery." ORDER BY content_order")){
+		if(!$sql -> db_Select($plugintable, "*", "content_parent = '0' AND content_class REGEXP '".e_CLASS_REGEXP."' ".$datequery." ORDER BY round(content_order)")){
 			$text .= "<div style='text-align:center;'>".CONTENT_LAN_21."</div>";
 		}else{
 
