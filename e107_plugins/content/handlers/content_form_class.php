@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.107 $
-|		$Date: 2006-06-06 14:17:44 $
+|		$Revision: 1.108 $
+|		$Date: 2006-06-14 07:42:49 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1286,7 +1286,7 @@ class contentform{
 			if(!$content_total = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_author, content_icon", $qryitem)){
 				$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
 			}else{
-				if($content_total < 50 || isset($letter)){
+				if($content_total < 50 || (isset($letter) && $letter!='') ){
 					$text .= "
 					<div style='text-align:center'>
 					".$rs -> form_open("post", e_SELF."?".e_QUERY, "deletecontentform","","", "")."
