@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_post.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:27 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
   define("LAN_6", "Ajouter une proposition");
   define("LAN_7", "Option de vote:");
   define("LAN_8", "Autoriser tout le monde à voter");
-  define("LAN_9", "Autoriser seulement les membres à voter");
+  define("LAN_9", "Autoriser seulement les utilisateurs à voter");
   define("LAN_10", "Identification");
   define("LAN_11", "Connexion automatique");
   define("LAN_16", "Nom d'utilisateur: ");
@@ -30,7 +30,7 @@
   define("LAN_27", "Vous avez laissé vide un/des champ(s) obligatoire(s)");
   define("LAN_28", "Vous n'avez rien posté ...");
   define("LAN_29", "édité");
-  define("LAN_45", "Ces forums sont réservés uniquement aux membres enregistrés, merci de cliquer");
+  define("LAN_45", "Ces forums sont réservés uniquement aux utilisateurs enregistrés, merci de cliquer");
   define("LAN_60", "Poster un nouveau sujet");
   define("LAN_61", "Votre nom: ");
   define("LAN_62", "Sujet: ");

@@ -1,18 +1,18 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/French/French_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("CHBLAN_1", "Paramètres Chatbox  mis à jour.");
   define("CHBLAN_2", "Moderée.");
   define("CHBLAN_3", "Pas de Messages postés pour le moment.");
-  define("CHBLAN_4", "Membre");
+  define("CHBLAN_4", "Utilisateur");
   define("CHBLAN_5", "Invité");
   define("CHBLAN_6", "débloquer");
   define("CHBLAN_7", "bloquer");

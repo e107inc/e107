@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -35,8 +35,8 @@
   define("MAILAN_09", "Utilise un style de Thème ");
   define("MAILAN_10", "Utilisateurs inscrits");
   define("MAILAN_11", "Insérer  des Variables");
-  define("MAILAN_12", "Tous les membres");
-  define("MAILAN_13", "Tous les Membres non vérifiés ");
+  define("MAILAN_12", "Tous les utilisateurs");
+  define("MAILAN_13", "Tous les Utilisateurs non vérifiés ");
   define("MAILAN_14", "Il est recommandé d'activer le <a href='prefs.php'>SMTP</a> pour des envois massifs de courriels. <br /><br />");
   define("MAILAN_15", "Envoi de Courriels");
   define("MAILAN_16", "Nom d'utilisateur");

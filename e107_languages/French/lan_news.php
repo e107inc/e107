@@ -1,16 +1,16 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_news.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Actualités");
-  define("LAN_NEWS_1", "Actualité réservée uniquement aux membres du site");
+  define("LAN_NEWS_1", "Actualité réservée uniquement aux utilisateurs du site");
   define("LAN_NEWS_2", "Vous n'êtes pas autorisé à voir cette actualité");
   //define("LAN_NEWS_3", "Veuillez supprimer le fichier install.php de votre serveur");
   //define("LAN_NEWS_4", "Si vous ne le faites pas, il y aura une faille potentielle de sécurité sur votre site");

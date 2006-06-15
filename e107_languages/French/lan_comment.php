@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_comment.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@
   define("COMLAN_105", "Contenu");
   define("COMLAN_145", "Enregistré : ");
   define("COMLAN_194", "Invité");
-  define("COMLAN_195", "Membre enregistré");
+  define("COMLAN_195", "Utilisateur enregistré");
   define("COMLAN_310", "Impossible d'accepter ce commentaire car ce nom d'utilisateur est enregistré - si c'est </br>votre nom d'utilisateur, merci de vous enregistrer pour poster.");
   define("COMLAN_312", "Message dupliqué - impossible d'accepter.");
   define("COMLAN_313", "Emplacement");

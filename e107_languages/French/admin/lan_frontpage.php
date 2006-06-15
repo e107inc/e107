@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_frontpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@
   define("FRTLAN_21", "Page Contenus");
   define("FRTLAN_26", "tous les utilisateurs");
   define("FRTLAN_27", "Invités");
-  define("FRTLAN_28", "Membres");
+  define("FRTLAN_28", "Utilisateurs");
   define("FRTLAN_29", "Administrateurs");
   define("FRTLAN_31", "Tous les utilisateurs");
   define("FRTLAN_32", "Groupe d'utilisateurs");

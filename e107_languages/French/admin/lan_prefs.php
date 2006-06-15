@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@
   define("PRFLAN_30", "permettre aux visiteurs de  s'inscrire sur votre site");
   define("PRFLAN_31", "Vérification par courriel");
   define("PRFLAN_32", "Autoriser les invités à participer ?");
-  define("PRFLAN_33", "Si désactivé, seuls les membres inscrits pourront poster des messages, etc ...");
+  define("PRFLAN_33", "Si désactivé, seuls les utilisateurs inscrits pourront poster des messages, etc ...");
   
   define("PRFLAN_35", "Activer la protection anti-flood ? ");
   define("PRFLAN_36", "Temps d'attente minimum entre 2 envois consécutifs ");
@@ -62,8 +62,8 @@
   define("PRFLAN_55", "Nom du Cookie (si le mode cookies est séléctionné)");
   define("PRFLAN_56", "Fuseau horaire");
   
-  define("PRFLAN_58", "Restreindre le site aux membres uniquement");
-  define("PRFLAN_59", "Si activé, toutes les pages de votre site seront restreintes aux membres uniquement sauf la page d'accueil et d'inscription");
+  define("PRFLAN_58", "Restreindre le site aux utilisateurs uniquement");
+  define("PRFLAN_59", "Si activé, toutes les pages de votre site seront restreintes aux utilisateurs uniquement sauf la page d'accueil et d'inscription");
   define("PRFLAN_60", "Activer le mode SSL");
   define("PRFLAN_61", "Activer le mode SSL seulement <strong>si vous savez comment ça fonctionne !</strong>");
   
@@ -72,7 +72,7 @@
   define("PRFLAN_78", "Laisser vide pour désactiver");
   
   define("PRFLAN_80", "Cliquer ici pour voir");
-  define("PRFLAN_81", "Activer la vérification du code-image durant l'identification des membres au site.");
+  define("PRFLAN_81", "Activer la vérification du code-image durant l'identification des utilisateurs au site.");
   define("PRFLAN_83", "exemple");
   
   define("PRFLAN_87", "Commentaires");

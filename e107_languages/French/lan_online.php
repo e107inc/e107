@@ -4,21 +4,21 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_online.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("ONLINE_EL1", "Invité(s): ");
-  define("ONLINE_EL2", "Membre(s): ");
+  define("ONLINE_EL2", "Utilisateur(s): ");
   define("ONLINE_EL3", "Sur cette page : ");
   define("ONLINE_EL4", "En ligne");
-  define("ONLINE_EL5", "Membres");
-  define("ONLINE_EL6", "Dernier membre");
+  define("ONLINE_EL5", "Utilisateurs");
+  define("ONLINE_EL6", "Dernier utilisateur");
   define("ONLINE_EL7", "regarde");
-  define("ONLINE_EL8", "le plus de membres en ligne : ");
+  define("ONLINE_EL8", "le plus d'utilisateurs en ligne : ");
   define("ONLINE_EL9", "le");
-  define("ONLINE_EL10", "Nom du membre");
+  define("ONLINE_EL10", "Nom du utilisateur");
   define("ONLINE_EL11", "Page visitée");
   define("ONLINE_EL12", "Répond à ");
   define("ONLINE_EL13", "Forum");
@@ -41,11 +41,11 @@
   define("STATS", "Statistiques du site");
   define("SUBMITNEWS", "Proposition d'actualités");
   define("UPLOAD", "Uploads public");
-  define("USERPAGE", "Profil déun membre");
+  define("USERPAGE", "Profil déun utilisateur");
   define("USERSETTINGS", "Paramètres de son compte");
-  define("ONLINE", "Membres en ligne");
+  define("ONLINE", "Utilisateurs en ligne");
   define("LISTNEW", "Liste des Nouveautés par catégorie");
-  define("USERPOSTS", "Messages déun membre");
+  define("USERPOSTS", "Messages déun utilisateur");
   define("SUBCONTENT", "Proposer Article/Chronique");
   define("TOP", "Les meilleurs Posteurs/Sujets les plus actifs");
   define("ADMINAREA", "Administration");

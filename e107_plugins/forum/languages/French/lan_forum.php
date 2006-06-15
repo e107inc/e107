@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,10 +19,10 @@
   define("LAN_36", "Votre dernière visite date du ");
   define("LAN_37", "En ce moment, nous sommes le ");
   define("LAN_38", ", les heures sont ");
-  define("LAN_41", "Dernier membre: ");
-  define("LAN_42", "Membres enregistrés: ");
-  define("LAN_44", "Ces forums peuvent être visités par des membres non-enregistrés, mais votre adresse IP sera affichée si vous postez un message.<br />Pour accéder à toutes les fonctionnalités du forum vous avez besoin de vous");
-  define("LAN_45", "Ces forums sont réservés uniquement aux membres enregistrés, merci de cliquer");
+  define("LAN_41", "Dernier utilisateur: ");
+  define("LAN_42", "Utilisateurs enregistrés: ");
+  define("LAN_44", "Ces forums peuvent être visités par des utilisateurs non-enregistrés, mais votre adresse IP sera affichée si vous postez un message.<br />Pour accéder à toutes les fonctionnalités du forum vous avez besoin de vous");
+  define("LAN_45", "Ces forums sont réservés uniquement aux utilisateurs enregistrés, merci de cliquer");
   define("LAN_46", "Forum");
   define("LAN_47", "Sujets");
   define("LAN_48", "Réponses");
@@ -52,14 +52,14 @@
   define("LAN_397", "Suivre ce sujet");
   define("LAN_398", "Verrouillé");
   define("LAN_399", "Restreint");
-  define("LAN_400", "Ce forum ne peut être visité que par des membres enregistrés");
-  define("LAN_401", "Membres seulement");
+  define("LAN_400", "Ce forum ne peut être visité que par des utilisateurs enregistrés");
+  define("LAN_401", "Utilisateurs seulement");
   define("LAN_402", "Ce forum peut être seulement lu");
   define("LAN_403", "Aucun message pour le moment");
   define("LAN_404", "messages");
   define("LAN_405", "Lecture seule");
   define("LAN_406", "Ce forum est restreint aux administrateurs seulement");
-  define("LAN_407", "Ce forum est restreint aux membres seulement");
+  define("LAN_407", "Ce forum est restreint aux utilisateurs seulement");
   define("LAN_408", "Ce forum est en lecture seule");
   define("LAN_409", "Ce forum est restreint à un groupe seulement");
   define("LAN_410", "Bienvenue cher invité");
@@ -69,9 +69,9 @@
   define("LAN_414", "réponses");
   define("LAN_415", " utilisateur visite ce forum en ce moment");
   define("LAN_416", " utilisateurs visitent ce forum en ce moment");
-  define("LAN_417", "membre");
+  define("LAN_417", "utilisateur");
   define("LAN_418", "invité");
-  define("LAN_419", "membres");
+  define("LAN_419", "utilisateurs");
   define("LAN_420", "invités");
   define("LAN_421", "Liste des nouveaux messages");
   define("LAN_422", "Nouveaux messages depuis votre dernière visite");

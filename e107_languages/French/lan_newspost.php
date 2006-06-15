@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_newspost.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@
   define("NWSLAN_20", "Laisser le formulaire vide pour ne pas mettre de limite de temps");
   define("NWSLAN_21", "Activer entre le");
   define("NWSLAN_22", "Visibilité");
-  define("NWSLAN_23", "Si cochée, l'actualité ne sera lisible que par les membres de ce groupe");
+  define("NWSLAN_23", "Si cochée, l'actualité ne sera lisible que par les utilisateurs de ce groupe");
   define("NWSLAN_24", "Aperçu");
   define("NWSLAN_25", "Mettre à jour");
   define("NWSLAN_26", "Poster l'Actualité");

@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -519,7 +519,7 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_39", "");
   define("CONTENT_ADMIN_OPT_LAN_61", "px");
   define("CONTENT_ADMIN_OPT_LAN_62", "Choisir les gestionnaires depuis ce groupe");
   define("CONTENT_ADMIN_OPT_LAN_63", "La liste d'utilisateur accessible depuis la section d'administration du 'Gestionnaire <strong>personnel</strong>' sera uniquement constituer d'utilisateurs du groupe défini.<br /><strong>Vous devrez toujours assigner des utilisateurs à chacune des catégories !</strong> Cette option raccourcira simplement la liste des utilisateurs choisissables.");
-  define("CONTENT_ADMIN_OPT_LAN_64", "Afficher le courriel des auteurs non-membre");
+  define("CONTENT_ADMIN_OPT_LAN_64", "Afficher le courriel des auteurs non-utilisateur");
   define("CONTENT_ADMIN_OPT_LAN_65", "Afficher un index de lettre");
   define("CONTENT_ADMIN_OPT_LAN_66", "L'index de lettre est une liste de boutons avec toutes les premières lettres de contenu en tête de champs. Vous pouvez rétrécir la liste des archives en cliquant sur une certaine lettre uniquement si des articles contenus commençant par cette lettre sont affichées sur l'écran.");
   define("CONTENT_ADMIN_OPT_LAN_67", "Définir le style de date");

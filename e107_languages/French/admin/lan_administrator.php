@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_administrator.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
   define("ADMSLAN_19", "Éditer les Préférences du site");
   define("ADMSLAN_20", "Éditer les Menus");
   define("ADMSLAN_21", "Ajouter un administrateur");
-  define("ADMSLAN_22", "Modérer les membres/Bannir ...");
+  define("ADMSLAN_22", "Modérer les utilisateurs/Bannir ...");
   define("ADMSLAN_23", "Configurer le forum");
   define("ADMSLAN_24", "Gérer les catégories de téléchargements");
   define("ADMSLAN_25", "Uploader/Gérer le gestionnaire de fichiers");

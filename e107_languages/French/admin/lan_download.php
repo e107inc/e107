@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@
   define("DOWLAN_41", "Icône");
   define("DOWLAN_42", "Voir les icônes");
   define("DOWLAN_43", "Visible par");
-  define("DOWLAN_44", "La catégorie ne sera visible que par les membres du groupe que vous aurez sélectionner");
+  define("DOWLAN_44", "La catégorie ne sera visible que par les utilisateurs du groupe que vous aurez sélectionner");
   define("DOWLAN_45", "Créer la catégorie");
   define("DOWLAN_46", "Mettre à jour la catégorie");
   define("DOWLAN_47", "Catégorie créer");

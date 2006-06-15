@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_viewforum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@
   define("LAN_56", "Vues");
   define("LAN_57", "Dernier message");
   define("LAN_58", "Il n'y a pas encore de messages dans ce forum.");
-  define("LAN_59", "Vous devez être un membre inscrit et connecté pour poster sur ce forum. Cliquez sur inscription ou connectez-vous depuis le menu de connexion.");
+  define("LAN_59", "Vous devez être un utilisateur inscrit et connecté pour poster sur ce forum. Cliquez sur inscription ou connectez-vous depuis le menu de connexion.");
   define("LAN_79", "Nouveaux messages");
   define("LAN_80", " Pas de nouveaux messages");
   define("LAN_81", "Sujet verrouillé");
@@ -48,9 +48,9 @@
   define("LAN_404", "Ce forum est modéré par");
   define("LAN_405", "utilisateur visite ce forum en ce moment");
   define("LAN_406", "utilisateurs visitent ce forum en ce moment");
-  define("LAN_407", "membre");
+  define("LAN_407", "utilisateur");
   define("LAN_408", "invité");
-  define("LAN_409", "membres");
+  define("LAN_409", "utilisateurs");
   define("LAN_410", "invités");
   //v.616
   define("LAN_411", "Sujets d'Importance");

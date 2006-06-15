@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -60,7 +60,6 @@
   
   define("BANNER_MENU_L1", "Publicité");
   define("BANNER_MENU_L2", "Configuration Menu Bannière sauvegardée");
-  //v.617
   define("BANNER_MENU_L3", "Légende");
   define("BANNER_MENU_L5", "Configuration Menu Bannières");
   define("BANNER_MENU_L6", "Choisisser les campagnes à afficher dans le menu");
@@ -71,4 +70,5 @@
   define("BANNER_MENU_L12", "plein");
   define("BANNER_MENU_L13", "Dans boîte intitulée");
   define("BANNER_MENU_L18", "Mettre à jour Paramètres Menu ");
-  ?>
+define("BANNER_MENU_L19", "nombre de bannières à afficher:<br />cette option n'est utilisée que dans le cas où plusieurs campagnes sont en cours simultanément");
+?>

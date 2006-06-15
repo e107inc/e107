@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@
   //  define("SEALAN_4", "Aire de recherche:");
   //  define("SEALAN_5", "Actualités");
   define("SEALAN_6", "Commentaires");
-  define("SEALAN_7", "Membres enregistrés");
+  define("SEALAN_7", "Utilisateurs enregistrés");
   //  define("SEALAN_8", "Téléchargements");
   //  define("SEALAN_9", "Nombre de résultats à afficher par page:");
   define("SEALAN_10", "Afficher la pertinence :");

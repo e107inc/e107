@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_image.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@
   define("IMALAN_29", "pas d'images");
   define("IMALAN_30", "Tous (public)");
   define("IMALAN_31", "Invités uniquement");
-  define("IMALAN_32", "Membre uniquement");
+  define("IMALAN_32", "Utilisateur uniquement");
   define("IMALAN_33", "Admin uniquement");
   define("IMALAN_34", "Activer un cadre");
   define("IMALAN_35", "Pose une image transparente PNG-24 avec transparence alpha dans IE 5/ 6 par-dessus les images (s'applique sur tout le site)");

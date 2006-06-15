@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/French.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -149,8 +149,8 @@
   define("LIST_DOWNLOAD_1", "Téléchargements");
   define("LIST_DOWNLOAD_2", "aucun Téléchargement");
   
-  define("LIST_MEMBER_1", "Membres");
-  define("LIST_MEMBER_2", "Aucun membre");
+  define("LIST_MEMBER_1", "Utilisateurs");
+  define("LIST_MEMBER_2", "Aucun utilisateur");
   
   define("LIST_CONTENT_1", "Contenu");
   define("LIST_CONTENT_2", "aucun contenu");

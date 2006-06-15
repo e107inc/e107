@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@
   define("LAN_20", "Erreur");
   define("LAN_98", "Actualités");
   define("LAN_99", "Commentaires");
-  define("LAN_140", "Membres");
+  define("LAN_140", "Utilisateurs");
   define("LAN_180", "Chercher");
   define("LAN_192", "Toutes les Catégories");
   define("LAN_193", "Evénement du Calendrier");

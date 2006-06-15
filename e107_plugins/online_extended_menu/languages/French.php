@@ -1,20 +1,20 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("ONLINE_EL1", "Invit&eacute;s : "); //ne pas changer cette syntaxe ascii!
-  define("ONLINE_EL2", "Membres : ");
+  define("ONLINE_EL2", "Utilisateurs : ");
   define("ONLINE_EL3", "Sur cette page : ");
   define("ONLINE_EL4", "En ligne");
-  define("ONLINE_EL5", "Membres");
-  define("ONLINE_EL6", "Dernier membre");
+  define("ONLINE_EL5", "Utilisateurs");
+  define("ONLINE_EL6", "Dernier utilisateur");
   define("ONLINE_EL7", "sur");
   define("ONLINE_EL8", "Record :");
   define("ONLINE_EL9", "le");

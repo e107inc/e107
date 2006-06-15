@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@
   define("ADLAN_PM_15", "Ajouter une limite aux MP");
   define("ADLAN_PM_16", "Titre de l'extension");
   define("ADLAN_PM_17", "Afficher d'une animation lorsqu'il y a un nouveau MP");
-  define("ADLAN_PM_18", "Afficher une liste déroulante des membres");
+  define("ADLAN_PM_18", "Afficher une liste déroulante des utilisateurs");
   define("ADLAN_PM_19", "Purger le message après combien de temps s'il est lu");
   define("ADLAN_PM_20", "Purger le message après combien de temps s'il N'EST PAS LU");
   define("ADLAN_PM_21", "Popup d'avis de nouveau MP");
@@ -35,10 +35,10 @@
   define("ADLAN_PM_23", "Restreindre l'utilisation des MPs à ");
   define("ADLAN_PM_24", "Nombre de MPs à afficher par page");
   define("ADLAN_PM_25", "Permettre l'avis de lecture par courriel pour les MP");
-  define("ADLAN_PM_26", "Permettre à quels membres de demander une confirmation par courriel de réception/lecture du MP");
+  define("ADLAN_PM_26", "Permettre à quels utilisateurs de demander une confirmation par courriel de réception/lecture du MP");
   define("ADLAN_PM_27", "Permettre de joindre des fichiers aux messages à ");
   define("ADLAN_PM_28", "Taille maximale du fichier attaché");
-  define("ADLAN_PM_29", "Autoriser l'envoi à tous les membres");
+  define("ADLAN_PM_29", "Autoriser l'envoi à tous les utilisateurs");
   define("ADLAN_PM_30", "Autoriser l'envoi vers des boîtes de réception multiple");
   define("ADLAN_PM_31", "Permettre l'envoi vers les groupes d'utilisateurs");
   define("ADLAN_PM_32", "Mettre à jour les paramètres");

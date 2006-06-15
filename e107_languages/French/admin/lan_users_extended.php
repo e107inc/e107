@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -18,19 +18,19 @@
   define("EXTLAN_7", "Accès en écriture");
   define("EXTLAN_8", "Action");
   define("EXTLAN_9", "Champs étendus du profil");
-  define("EXTLAN_10", "Nom du champ");
-  define("EXTLAN_11", "C'est le nom du champ qui sera stocké dans la table, cela doit être différent de tout autre");
-  define("EXTLAN_12", "Champ texte");
-  define("EXTLAN_13", "C'est le nom du champ affiché dans les pages rendues");
-  define("EXTLAN_14", "Type de champ");
-  define("EXTLAN_15", "Paramètres des Type de champ");
-  define("EXTLAN_16", "Valeur par défault");
-  define("EXTLAN_17", "Entrez des valeurs séparées par des virgules ex: Valeur1, valeur2 etc <br/> Pour une table BdD utilisez le format : table BdD, valeur des champs, nom des champs.");
+  define("EXTLAN_10", "Nom du champ ");
+  define("EXTLAN_11", "C'est le nom du champ qui sera stocké dans la table MySQL, il doit être différent de tout autre champ déjà stocké.");
+  define("EXTLAN_12", "Titre du champ ");
+  define("EXTLAN_13", "C'est le nom du champ tel qu'il sera affiché dans les pages rendues (profil, etc.)");
+  define("EXTLAN_14", "Type de champ :");
+  define("EXTLAN_15", "Paramètres du Type de champ");
+  define("EXTLAN_16", "Valeur par défaut");
+  define("EXTLAN_17", "Entrez chaque valeurs disponibles dans une case différente<br/>Voyez l'aide à droite pour les tables MySQL.");
   define("EXTLAN_18", "Requis");
-  define("EXTLAN_19", "Les utilisateurs devront entrer une valeur obligatoirement dans ce champ en mettant à jour leurs paramètres.");
+  define("EXTLAN_19", "Les utilisateurs devront entrer une valeur obligatoirement dans ce champ en mettant à jour leur profil.");
   define("EXTLAN_20", "Déterminez à quels utilisateurs ce champ s'appliquera.");
-  define("EXTLAN_21", "Ceci déterminera qui verra ce champ dans ses paramètres utilisateur.");
-  define("EXTLAN_22", "Ceci déterminera qui peut voir la valeur dans la page utilisateur.");
+  define("EXTLAN_21", "Ceci déterminera qui pourra modifier ce champ dans les paramètres du profil de l'utilisateur.");
+  define("EXTLAN_22", "Ceci déterminera qui peut voir la valeur dans la profil de l'utilisateur.");
   define("EXTLAN_23", "Ajouter le champ");
   define("EXTLAN_24", "Mettre à jour");
   define("EXTLAN_25", "déplacer en bas");
@@ -57,13 +57,13 @@
   define("EXTLAN_46", "Aide");
   define("EXTLAN_47", "Ajouter un nouveau paramètre");
   define("EXTLAN_48", "Ajouter une nouvelle valeur");
-  define("EXTLAN_49", "Autoriser les utilisateur à cacher");
-  define("EXTLAN_50", "Établir sur OUI autorisera l'utilisateur à cacher cette valeur aux non-admins");
-  define("EXTLAN_51", "Aucun paramètre w3c valide ne devrait être introduit ici<br />ie <i><strong>class='tbox' size='40' maxlength='80'</i></strong>");
+  define("EXTLAN_49", "Autoriser les utilisateurs à cacher");
+  define("EXTLAN_50", "Établir sur OUI autorisera l'utilisateur à cacher cette valeur aux non-administrateurs du site.");
+  define("EXTLAN_51", "Tous les paramètres w3c valides peuvent être introduits ici<br />ie <i><strong>class='tbox' size='40' maxlength='80'</i></strong>");
   define("EXTLAN_52", "code validation regex");
-  define("EXTLAN_53", "Entrer le code regex that will need to be matched to make it a valid entry <br />**regex delimiters are required**");
+  define("EXTLAN_53", "Entrer le code regex that will need to be matched to make it a valid entry.<br />**regex delimiters are required**");
   define("EXTLAN_54", "Texte d'échec regex");
-  define("EXTLAN_55", "Entrer un message d'erreur. Cela affichera si la validation regex a échouée.");
+  define("EXTLAN_55", "Entrer un message d'erreur. Cela s'affichera si la validation regex a échouée.");
   define("EXTLAN_56", "Champs prédéfinis");
   define("EXTLAN_57", "Activé");
   define("EXTLAN_58", "Non Activé");
@@ -75,7 +75,7 @@
   define("EXTLAN_64", "Choisissez une valeur d'affichage");
   define("EXTLAN_65", "Non - Ne sera pas affiché sur la page d'inscription");
   define("EXTLAN_66", "Oui - Sera affiché sur la page d'inscription");
-  define("EXTLAN_67", "Non - Affiché sur la page d'inscription");
+  define("EXTLAN_67", "Non - Sera affiché sur la page d'inscription");
   //textbox
   define("EXTLAN_HELP_1", "<strong><i>Paramètres:</i></strong><br />Taille - Taille du champs<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
   //radio buttons

@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@
   define("POLLAN_16", "Méthode de stockage des votes");
   define("POLLAN_17", "cookie");
   define("POLLAN_18", "adresse IP ");
-  define("POLLAN_19", "UserID (seuls les membres peuvent voter)");
+  define("POLLAN_19", "UserID (seuls les utilisateurs peuvent voter)");
   define("POLLAN_20", "Autoriser la publication de commentaires pour ce sondage?");
   define("POLLAN_21", "Prévisualiser à nouveau");
   define("POLLAN_22", "Mettre à jour un sondage");
@@ -56,7 +56,7 @@
   define("POLLAN_38", "jusqu'au");
   define("POLLAN_39", "Merci pour votre évaluation!");
   define("POLLAN_40", "Cliquez ici pour voir les résultats");
-  define("POLLAN_41", "Ce sondage est accessible seulement aux membres");
+  define("POLLAN_41", "Ce sondage est accessible seulement aux utilisateurs");
   define("POLLAN_42", "Ce sondage est accessible seulement aux administrateurs");
   define("POLLAN_43", "vous n'avez les permissions requises pour voter sur ce sondage");
   define("POLLAN_44", "Supprimer ce sondage?");

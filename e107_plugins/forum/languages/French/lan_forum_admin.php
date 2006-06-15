@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@
   define("FORLAN_36", "Créer le Forum");
   define("FORLAN_37", "Ordre");
   define("FORLAN_38", "Fermé");
-  define("FORLAN_39", "Membres Seulement");
+  define("FORLAN_39", "Utilisateurs Seulement");
   define("FORLAN_40", "Restreint");
   define("FORLAN_41", "vers le haut");
   define("FORLAN_42", "vers le bas");
@@ -75,7 +75,7 @@
   define("FORLAN_64", "Entrer vos rangs ici, si laissé vide des étoiles génériques seront utilisées pour dénoter le rang. Séparer les rangs par des virgules. 10 rangs maximun, le plus petit en premier.");
   define("FORLAN_65", "Titre du Forum");
   define("FORLAN_70", "Activer l'upload de fichiers / images");
-  define("FORLAN_71", "Autoriser les utilisateurs à uploader un fichier ou une image afin de l'insérer dans leur message sur le forum, <a href=upload.php>cliquer ici</a> pour configurer la taille max des fichiers, types autorisés etc");
+  define("FORLAN_71", "Autoriser les utilisateurs à uploader un fichier ou une image afin de l'insérer dans leur message sur le forum, ");
   define("FORLAN_72", "Mettre à jour l'Ordre");
   define("FORLAN_73", "Ordre des forums mis à jour");
   define("FORLAN_75", "Catégories");
@@ -87,7 +87,7 @@
   define("FORLAN_81", "Êtes-vous sûr de vouloir supprimer cette catégorie ? - les forums de cette catégorie seront également supprimés");
   define("FORLAN_82", "Êtes-vous sûr de vouloir supprimer ce forum ?");
   define("FORLAN_83", "Créer des Catégories");
-  define("FORLAN_84", "Membres Seulement");
+  define("FORLAN_84", "Utilisateurs Seulement");
   define("FORLAN_85", "Lecture Seule");
   define("FORLAN_86", "Admin Seulement");
   define("FORLAN_87", "Supprimer les sujets avec aucune réponse depuis le nombre de jours suivant :");
@@ -128,7 +128,7 @@
   define("FORLAN_122", "Cliquer ici pour envoyer un courriel à un admin lorsque quelqu'un rapporte un message du forum");
   define("FORLAN_123", "Règles du Forum");
   define("WMGLAN_1", "Règles pour les Invités");
-  define("WMGLAN_2", "Règles pour les Membres");
+  define("WMGLAN_2", "Règles pour les Utilisateurs");
   define("WMGLAN_3", "Règles pour les Administrateurs");
   define("WMGLAN_4", "Proposer");
   define("WMGLAN_5", "Configurer les Règles du Forum");

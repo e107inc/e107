@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@
   define("LOGIN_MENU_L19", "commentaires");
   define("LOGIN_MENU_L20", "message de forum");
   define("LOGIN_MENU_L21", "messages de forum");
-  define("LOGIN_MENU_L22", "nouveau membre");
-  define("LOGIN_MENU_L23", "nouveaux membres");
+  define("LOGIN_MENU_L22", "nouveau utilisateur");
+  define("LOGIN_MENU_L23", "nouveaux utilisateurs");
   define("LOGIN_MENU_L24", "Voir la liste des nouveaut&eacute;s");
   define("LOGIN_MENU_L25", "Depuis votre dernière visite, <br />il y a eu :");
   define("LOGIN_MENU_L26", "aucun");
@@ -45,7 +45,7 @@
   define("LOGIN_MENU_L33", "Afficher les nouveaux messages de Chatbox");
   define("LOGIN_MENU_L34", "Afficher les nouveaux commentaires");
   define("LOGIN_MENU_L35", "Afficher les nouveaux messages de forum");
-  define("LOGIN_MENU_L36", "Afficher les nouveaux membres");
+  define("LOGIN_MENU_L36", "Afficher les nouveaux utilisateurs");
   define("LOGIN_MENU_L37", "Mettre à jour les réglages");
   define("LOGIN_MENU_L38", "Réglages mis à jour");
   define("LOGIN_MENU_L39", "Quitter l'administration");

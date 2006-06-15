@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -43,8 +43,8 @@
   define("ADLAN_33", "Voir les Actualités proposées");
   define("ADLAN_34", "Liste des bannis");
   define("ADLAN_35", "Bannir un visiteur");
-  define("ADLAN_36", "Membres");
-  define("ADLAN_37", "Modérer les Membres du site");
+  define("ADLAN_36", "Utilisateurs");
+  define("ADLAN_37", "Modérer les Utilisateurs du site");
   define("ADLAN_38", "Groupes");
   define("ADLAN_39", "Créer/Éditer un groupe d'utilisateur");
   define("ADLAN_40", "Maintenance");
@@ -111,8 +111,8 @@
   define("ADLAN_107", "Actualités non vérifiées ");
   define("ADLAN_108", "Fichiers uploadés non vérifiés ");
   define("ADLAN_109", "Informations");
-  define("ADLAN_110", "Membres inscrits ");
-  define("ADLAN_111", "Membres non activés ");
+  define("ADLAN_110", "Utilisateurs inscrits ");
+  define("ADLAN_111", "Utilisateurs non activés ");
   define("ADLAN_112", "Internautes bannis ");
   define("ADLAN_113", "Messages sur le forum ");
   define("ADLAN_114", "Commentaires ");
@@ -128,7 +128,7 @@
   define("ADLAN_124", "Chroniques proposées non vérifiées ");
   define("ADLAN_125", "Messages rapportés du forum non vérifiés ");
   define("ADLAN_126", "Options Principales");
-  define("ADLAN_127", "Membres");
+  define("ADLAN_127", "Utilisateurs");
   define("ADLAN_128", "Contenu");
   define("ADLAN_129", "Communication");
   define("ADLAN_130", "Gestion des Fichiers");

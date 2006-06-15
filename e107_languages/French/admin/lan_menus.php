@@ -1,16 +1,16 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_menus.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("MENLAN_1", "Visible par tout le monde");
-  define("MENLAN_2", "Visible par les membres seulement");
+  define("MENLAN_2", "Visible par les utilisateurs seulement");
   define("MENLAN_3", "Visible par les administrateurs seulement");
   define("MENLAN_4", "Uniquement visible par les utilisateurs de :");
   //  define("MENLAN_5", "groupe");

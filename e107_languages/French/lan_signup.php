@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-12 03:12:57 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@
   define("LAN_104", "Ce nom d'utilisateur existe déjà dans la base de données, veuillez en choisir un autre");
   define("LAN_105", "Les deux mots de passe sont différents");
   define("LAN_106", "Cette adresse courriel semble être invalide");
-  define("LAN_107", "Félicitations ! Vous êtes désormais membre du site");
+  define("LAN_107", "Félicitations ! Vous êtes désormais utilisateur du site");
   define("LAN_108", "Inscription terminée");
   define("LAN_109", "Ce site est conforme à la loi américaine de 1998 qui vise à protéger la vie privée en ligne des enfants (COPPA), ainsi nous ne pouvons accepter l'inscription d'enfants de moins de 13 ans sans la permission écrite de leur parents ou tuteur(s). Pour plus d'informations, vous pouvez lire la législation");
   define("LAN_110", "Inscription");
@@ -42,7 +42,7 @@
   define("LAN_405", "L'inscription est terminée. Vous allez recevoir un courriel de confirmation contenant vos informations personnelles. Veuillez cliquer sur le lien contenu dans le courriel pour activer votre compte.");
   define("LAN_406", "Merci !");
   define("LAN_407", " Veuillez garder précieusement vos informations personnelles. Votre mot de passe  a été encrypté et ne peut pas vous être restitué en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas échéant.\nMerci de vous être inscrit(e).\nDe");
-  define("LAN_408", "Un membre avec cette adresse courriel existe déja. Veuillez utiliser la page 'mot de passe oublié' pour obtenir votre mot de passe en cas d'oubli.");
+  define("LAN_408", "Un utilisateur avec cette adresse courriel existe déja. Veuillez utiliser la page 'mot de passe oublié' pour obtenir votre mot de passe en cas d'oubli.");
   define("LAN_SIGNUP_1", "minimum");
   define("LAN_SIGNUP_2", "caractères");
   define("LAN_SIGNUP_3", "La vérification du code a échoué.");

@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_installer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-12 03:12:57 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -133,7 +133,7 @@
   define("LANINS_092", "Divers");
   define("LANINS_093", "Accueil");
   define("LANINS_094", "Téléchargements");
-  define("LANINS_095", "Membres");
+  define("LANINS_095", "Utilisateurs");
   define("LANINS_096", "Proposition d'Actualités");
   define("LANINS_097", "http://e107.org");
   define("LANINS_098", "v0.7CVS"); //$e107['e107_version']

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_emoticon.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -25,4 +25,9 @@
   define("EMOLAN_14", "Sauvegarder la configuration");
   define("EMOLAN_15", "Éditer / configurer les émoticônes");
   define("EMOLAN_16", "Configuration des émoticônes sauvegardé");
+define("EMOLAN_17", "Vous avez un pack d'émoticônes qui contient des espaces, elles ne sont pas permises !");
+define("EMOLAN_18", "veuillez renommer les items sous-jacents afin qu'ils ne contiennent plus d'espaces:");
+define("EMOLAN_19", "Nom");
+define("EMOLAN_20", "Localisation");
+define("EMOLAN_21", "Erreur");
   ?>

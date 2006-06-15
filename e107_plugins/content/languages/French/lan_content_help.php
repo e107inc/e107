@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-10 03:15:42 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -42,10 +42,10 @@
   define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "Ces options sont utilisés dans le Menu de cette catégorie si vous avez activé son menu.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
   define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "Ces options affectent les détails aperçus des contenus.<br /><br />Cet aperçu est donné sur plusieurs pages, comme la page des nouveautés, la page voir les items d'une catégorie et la page des contenus des auteurs.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
   define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "Les pages catégories affichent les informations sur les catégories de contenu qui sont DANS la catégorie principale.<br /><br />Deux zones distinctes sont présentes:<br /><br /><strong>Page liste des catégories :</strong><br />content.php?cat.list.#<br />Cette page affiche toutes les catégories d'un parent (une catégorie principale)<br /><br /><strong>Page aperçu d'une catégorie :</strong><br />content.php?cat.#<br />Cette page affiche tous les items d'une catégorie, optionellement les sous-catégories et leurs items.<br />");
-  define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "Les Pages de Contenus montre le contenu.<br /><br />Vous pouvez définir quelles sections seront montrées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-membre.<br /><br />Vous pouvez choisir l'affichage ou non des icônes courriel/impression/pdf, de l'évaluation et des commentaires.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
+  define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "Les Pages de Contenus montre le contenu.<br /><br />Vous pouvez définir quelles sections seront montrées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-utilisateur.<br /><br />Vous pouvez choisir l'affichage ou non des icônes courriel/impression/pdf, de l'évaluation et des commentaires.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
   define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "La page Auteur montre une liste de tous les auteurs de contenu de cette catégorie principale.<br /><br />Vous pouvez définir quelles sections seront montrées en cochant/décochant les boîtes.<br /><br />Vous pouvez limiter le nombre d'items à montrer par page.<br />");
-  define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "La page Archive montre tous les contenus de cette catégorie principale.<br /><br />Vous pouvez définir quelles sections seront affichées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-membre.<br /><br />Vous pouvez limiter le nombre d'items à montrer par page.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
-  define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "La page <strong>Meilleur Évaluation</strong> affiche tous les contenus qui ont été évalués par les usagers.<br /><br />Vous pouvez définir quelles sections seront affichées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-membre.");
-  define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "La page des <strong>Meilleurs Qualités</strong> affiche tous les contenus qui ont reçus un score de leur auteur.<br /><br />Vous pouvez définir quelles sections seront affichées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-membre.");
+  define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "La page Archive montre tous les contenus de cette catégorie principale.<br /><br />Vous pouvez définir quelles sections seront affichées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-utilisateur.<br /><br />Vous pouvez limiter le nombre d'items à montrer par page.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+  define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "La page <strong>Meilleur Évaluation</strong> affiche tous les contenus qui ont été évalués par les usagers.<br /><br />Vous pouvez définir quelles sections seront affichées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-utilisateur.");
+  define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "La page des <strong>Meilleurs Qualités</strong> affiche tous les contenus qui ont reçus un score de leur auteur.<br /><br />Vous pouvez définir quelles sections seront affichées en cochant/décochant les boîtes.<br /><br />Vous pouvez montrer l'adresse courriel d'un auteur non-utilisateur.");
 define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "cette page vous permet de configurer les options de la page d'administration de création de catégorie.<br /><br />Vous pouvez définir quelles sections seront disponibles lorsqu'un admin (ou un gestionnaire personnel de contenu) crée une nouvelle catégorie de contenu.");
   ?>

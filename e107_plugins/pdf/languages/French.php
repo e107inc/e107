@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pdf/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@
   define("PDF_LAN_14", "Afficher le nom du site sur le pdf?");
   define("PDF_LAN_15", "Afficher l'url de la page créatrice sur le pdf?");
   define("PDF_LAN_16", "Afficher numéros de page sur le pdf?");
-  define("PDF_LAN_17", "Mettre à  Jour");
-  define("PDF_LAN_18", "Préférences PDF mis à  Jour avec succès");
+  define("PDF_LAN_17", "Mettre à jour");
+  define("PDF_LAN_18", "Préférences PDF mises à jour avec succès");
   define("PDF_LAN_19", "Page");
   define("PDF_LAN_20", "Rapporter les erreurs");
   ?>

@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-15 01:47:24 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -116,7 +116,7 @@ define("CONTENT_NOTIFY_LAN_3", "Contenu proposé");
   define("CONTENT_LAN_29", "inconnue");
   define("CONTENT_LAN_30", "Contenu ");
   define("CONTENT_LAN_31", "Contenus ");
-  define("CONTENT_LAN_32", "Contributions du membre");
+  define("CONTENT_LAN_32", "Contributions du utilisateur");
   define("CONTENT_LAN_33", "Aller à la page");
   define("CONTENT_LAN_34", "Contenu");
   define("CONTENT_LAN_35", "Commentaires");

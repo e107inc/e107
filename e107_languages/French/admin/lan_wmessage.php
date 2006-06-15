@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_wmessage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-15 01:47:23 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("WMGLAN_1", "Message pour les invités");
-  define("WMGLAN_2", "Message pour les membres");
+  define("WMGLAN_2", "Message pour les utilisateurs");
   define("WMGLAN_3", "Message pour les administrateurs");
   define("WMGLAN_4", "Proposer");
   define("WMGLAN_5", "Configurer les messages de bienvenue");
