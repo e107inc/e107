@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-14 19:28:53 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-06-15 14:42:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -191,7 +191,7 @@ if(!$DOWNLOAD_LIST_TABLE){
 		{DOWNLOAD_LIST_RATING}
 		</td>
 		<td class='forumheader3' style='text-align:center;'>
-		{DOWNLOAD_LIST_LINK} {DOWNLOAD_LIST_ICON}
+		{DOWNLOAD_LIST_LINK} {DOWNLOAD_LIST_ICON}</a>
 		</td>
 		</tr>";
 }
