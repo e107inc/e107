@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2006-06-02 13:59:40 $
+|     $Revision: 1.90 $
+|     $Date: 2006-06-15 06:30:24 $
 |     $Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -234,9 +234,9 @@ class sitelinks
 			$_link .= $tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook");
 		}
 
-		$_link = $linkstart.$indent.$_link."\n";
+		$_link = $linkstart.$indent.$_link;
 
-		return $_link.$style['linkend'];
+		return $_link.$style['linkend']."\n";
 	}
 
 
