@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-06-13 16:58:55 $ - mods to make password protected pages work
+|     $Revision: 1.29 $
+|     $Date: 2006-06-15 14:19:06 $ - mods to make password protected pages work
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -38,8 +38,8 @@ if(!e_QUERY)
 else
 {
 
-	$cacheString = 'page';
-	$cachePageTitle = 'page-t';
+	$cacheString = 'page_'.$page->pageID;
+  $cachePageTitle = 'page-t_'.$page->pageID;
 
 	if($cacheData = $e107cache->retrieve($cacheString))
 	{
