@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-16 02:37:30 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-16 10:31:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,22 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $download_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN DOWNLOAD_LIST_NAME
-global $row,$tp;
+global $row,$tp,$pref;
+if($parm == "nolink"){
+	return $tp->toHTML($row['download_name']);
+}
+if($parm == "request"){
+
+	$agreetext = $tp->toJS($pref['agree_text']);
+	if($row['download_mirror_type']){
+		$text = ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."' title='".LAN_dl_32."'>");
+	}else{
+		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."' title='".LAN_dl_32."'>");
+	}
+	$text .= $tp->toHTML($row['download_name'])."</a>";
+	return $text;
+}
+
 return  "<a href='".e_SELF."?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'])."</a>";
 SC_END
 
