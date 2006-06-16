@@ -70,19 +70,19 @@ $text .= $frm -> form_select_close();
 $text .= "</td></tr>";
 
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_1."</td><td class='forumheader3'>";
-$text .= $frm -> form_text("ldap_server", 35, $ldap['ldap_server'], 60);
+$text .= $frm -> form_text("ldap_server", 35, $ldap['ldap_server'], 120);
 $text .= "</td></tr>";
 
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_2."</td><td class='forumheader3'>";
-$text .= $frm -> form_text("ldap_basedn", 35, $ldap['ldap_basedn'], 60);
+$text .= $frm -> form_text("ldap_basedn", 35, $ldap['ldap_basedn'], 120);
 $text .= "</td></tr>";
 
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_3."</td><td class='forumheader3'>";
-$text .= $frm -> form_text("ldap_user", 35, $ldap['ldap_user'], 60);
+$text .= $frm -> form_text("ldap_user", 35, $ldap['ldap_user'], 120);
 $text .= "</td></tr>";
 
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_4."</td><td class='forumheader3'>";
-$text .= $frm -> form_text("ldap_passwd", 35, $ldap['ldap_passwd'], 60);
+$text .= $frm -> form_text("ldap_passwd", 35, $ldap['ldap_passwd'], 120);
 $text .= "</td></tr>";
 
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_5."</td><td class='forumheader3'>";
