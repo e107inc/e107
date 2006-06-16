@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-04-05 12:19:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.37 $
+|     $Date: 2006-06-16 19:08:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -107,7 +107,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 
 if ($type == "file")
 {
-	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id WHERE d.download_id = {$id}";
+	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category WHERE d.download_id = {$id}";
 	if ($sql->db_Select_gen($qry)) {
 		$row = $sql->db_Fetch();
 		if (check_class($row['download_category_class']) && check_class($row['download_class'])) {
