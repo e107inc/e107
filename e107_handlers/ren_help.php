@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-06-05 13:41:31 $
+|     $Revision: 1.45 $
+|     $Date: 2006-06-16 07:05:16 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -109,6 +109,16 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		$code[15] = array("prefile", "[file][/file]", LANHELP_39);
 	}
 
+	//check emotes
+	$emotes=FALSE;
+	if($pref['comments_emoticons'] && $pref['smiley_activate'] && (!$pref['wysiwyg'] || !check_class($pref['post_html'])) ){
+		$emotes=TRUE;
+	}
+
+	if($emotes===TRUE){
+		$code[16] = array("emotes", "", LANHELP_44);
+	}
+
 	$img[0] = "newpage.png";
 	$img[1] = "link.png";
 	$img[2] = "bold.png";
@@ -127,6 +137,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		$img[14] = "preimage.png";
 		$img[15] = "prefile.png";
 	}
+	if($emotes===TRUE){
+		$img[16] = "emotes.png";
+	}
 
 	$imgpath = (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
 
@@ -140,6 +153,8 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('preimage_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else if($key == 15){
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('prefile_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+		}else if($key == 16){
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('emoticon_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else{
 		  $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}
@@ -153,18 +168,12 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 			$text .= PreFile_Select('prefile_selector_'.$rand);
 		}
 	}
-
-	//if(strpos('emoticons', $mode)!==FALSE && $pref['comments_emoticons']){
-	if($pref['comments_emoticons']){
-		if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
-		{
-			require_once(e_HANDLER."emote.php");
-			if($pref['smiley_activate'])
-			{
-				$text .= r_emote();
-			}
-		}
+	
+	if($emotes===TRUE){
+		require_once(e_HANDLER."emote.php");
+		$text .= Emoticon_Select('emoticon_selector_'.$rand);
 	}
+
 
 	return $text;
 }
@@ -382,5 +391,17 @@ function PreFile_Select($formid='prefile_selector') {
 	return $text;
 }
 
+function Emoticon_Select($formid='emoticon_selector') {
+	$text ="<!-- Start of Emoticon selector -->
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>
+		<div style='position:absolute; bottom:30px; right:75px;'>
+			<table class='fborder' style='background-color:#fff; width:220px;'>
+			<tr><td class='forumheader3'>
+			".r_emote()."
+			</td></tr></table>
+		</div>
+	</div>\n<!-- End of Emoticon selector -->\n";
+	return $text;
+}
 
 ?>
