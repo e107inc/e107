@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-04-22 19:30:47 $
+|     $Revision: 1.22 $
+|     $Date: 2006-06-17 03:09:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -77,15 +77,17 @@ if(isset($pref['frontpage_method']) && $pref['frontpage_method'] == "include") {
 		$e_QUERY = preg_match('/^page\.php\?([0-9]*)$/', $location);
 		require_once("page.php");
 	} else {
-		header("Location: {$location}");
+
+	  	header("Location: {$location}");
 		exit();
 	}
 } else {
 	if($location == "index.php"){
-    	require_once(HEADERF);
-		require_once(FOOTERF);
-	}else{
-		header("Location: {$location}");
+      	require_once(HEADERF);
+	 	require_once(FOOTERF);
+	  	exit;
+	}elseif(e_PAGE != "index.php"){ // avoid infinite loop when using ?elan= and index.php as the start page. 
+	  	header("Location: {$location}");
 	}
 
 	exit();
