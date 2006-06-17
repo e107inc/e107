@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-03-19 23:43:28 $
-|     $Author: whoisrich $
+|     $Revision: 1.42 $
+|     $Date: 2006-06-17 02:38:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -59,7 +59,7 @@ class e107plugin
 
 		 	include_once("{$p['path']}{$p['fname']}");
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
-			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($plugin_path, true)."'")) && $eplug_name){
+			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($eplug_folder, true)."'")) && $eplug_name){
 				if (!$eplug_link_url && !$eplug_link && !$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status){
 					if(is_array($eplug_rss)){
                     	foreach($eplug_rss as $key=>$val){
