@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-05-13 16:12:19 $
+|     $Revision: 1.13 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("PRFLAN_13", "Mostrar información");
 define("PRFLAN_14", "¿Mostrar información del tema?");
 define("PRFLAN_15", "¿Mostrar tiempo de generación?");
 define("PRFLAN_16", "¿Mostrar secuencias SQL?");
-define("PRFLAN_17", "Comprimir Salido del sitio usando gzip");
+define("PRFLAN_17", "Comprimir Salida del sitio usando gzip");
 
 define("PRFLAN_19", "Campos en registro");
 
@@ -154,12 +154,12 @@ define("PRFLAN_157", "Todoso los nombres mostrables se han reseteado a nombres d
 define("PRFLAN_158", "Longitud máxima del nombre mostrable");
 define("PRFLAN_159", "Viendo esta página con");
 define("PRFLAN_160", "Comprueba servidores remotos al validar direcciones email.");
-define("PRFLAN_160", "Comprueba servidores remotos al validar direcciones email.");
 define("PRFLAN_161", "Desactivar todos los comentarios del sitio");
 define("PRFLAN_162", "Información del sitio de contacto"); 
 define("PRFLAN_163", "ej. Nombre empresa, Dirección, Teléfono etc."); 
 define("PRFLAN_164", "Permitir a los usuarios enviarse copia del email de contacto"); 
-define("PRFLAN_165", "Posible aviso de permitir ventana spam, usar con precaución"); 
+define("PRFLAN_165", "Posible aviso de permitir ventana spam, usar con precaución");
+define("PRFLAN_166", "¿Mostrar imágenes de emoticono en el formulario de comentario?"); 
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");
@@ -178,6 +178,5 @@ define("CUSTSIG_16", "Caracteres mínimos para la contraseña");
 define("CUSTSIG_17", "Suscríbase a los contenidos por correo");
 define("CUSTSIG_18", "No permitir nombres de usuario");
 define("CUSTSIG_19", "Los usuarios con el siguiente texto serán rechazados, separado entre comas");
-
 
 ?>

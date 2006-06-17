@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_ren_help.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-13 16:12:19 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-17 10:47:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -51,5 +51,6 @@ define("LANHELP_39", "Insertar un enlace a una descarga de las descargas existen
 define("LANHELP_40", "Actualmente no exiten descargas");
 define("LANHELP_41", "Tamaño texto..."); 
 define("LANHELP_42", "Selecciona imagen..."); 
-define("LANHELP_43", "Selecciona archivo de descarga..."); 
+define("LANHELP_43", "Selecciona archivo de descarga...");
+define("LANHELP_44", "Click para abrir el diálogo de emoticonos ...");
 ?>

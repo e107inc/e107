@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_banner.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -63,17 +63,18 @@ define("BNRLAN_63", "Anuncio creado");
 define("BNRLAN_64", "Anuncio actualizado");
 
 
-define("anuncio_MENU_L1", "Aviso");
-define("anuncio_MENU_L2", "Configuración del menú del anuncio guardado");
-define("anuncio_MENU_L3", "Título");
-define("anuncio_MENU_L5", "Configuración del menú del anuncio");
-define("anuncio_MENU_L6", "Escoger campañas para mostrar en el menú");
-define("anuncio_MENU_L7", "Campañas disponibles");
-define("anuncio_MENU_L8", "Campañas seleccionadas");
-define("anuncio_MENU_L9", "Eliminar selección");
-define("anuncio_MENU_L10", "Tipo de renderizado");
-define("anuncio_MENU_L12", "Plano");
-define("anuncio_MENU_L13", "En caja titulada");
+define("BANNER_MENU_L1", "Aviso");
+define("BANNER_MENU_L2", "Configuración del menú del anuncio guardado");
+define("BANNER_MENU_L3", "Título");
+define("BANNER_MENU_L5", "Configuración del menú del anuncio");
+define("BANNER_MENU_L6", "Escoger campañas para mostrar en el menú");
+define("BANNER_MENU_L7", "Campañas disponibles");
+define("BANNER_MENU_L8", "Campañas seleccionadas");
+define("BANNER_MENU_L9", "Eliminar selección");
+define("BANNER_MENU_L10", "Tipo de renderizado");
+define("BANNER_MENU_L12", "Plano");
+define("BANNER_MENU_L13", "En caja titulada");
 
-define("anuncio_MENU_L18", "Actualizar parámetros de menú");
+define("BANNER_MENU_L18", "Actualizar parámetros de menú");
+define("BANNER_MENU_L19", "Número de anuncios a mostrar:<br />Solo se utiliza cuando se seleccionan varias campañas");
 ?>

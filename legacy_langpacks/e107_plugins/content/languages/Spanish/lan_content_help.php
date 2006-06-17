@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-17 10:47:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@ define("CONTENT_ADMIN_HELP_1", "Área de ayuda de la página de contenidos");
 define("CONTENT_ADMIN_HELP_ITEM_1", "
 <i>Si no ha añadido categorías principales, hágalo en la página <a href='".e_SELF."?type.0.cat.create'>Crear nueva categoría</a>.</i><br /><br />
 <b>Categoría</b><br />Seleccione una categoría desde el menú desplegable para gestionar el contenido de esa categoría.<br /><br />
-Las categorías principales se mostrarán en negrita y tendrán (TODAS) las extensiones detrás de ellas. Seleccionando una de éstas se mostrarán todos los elementos de esta categoría principal.<br /><br />Para cada categoría principal todas las subcategorías se mostrarán incluyendo la propia categoría principal (éstas mostradas en texto plano). Seleccionando en estas categorías se mostrarán los elementos, solo se mostrarán los elementos de esa categoría.");
+Las categorías principales se mostrarán en negrita y tendrán (TODAS) las extensiones detrás de ellas. Seleccionando una de éstas se mostrarán todos los elementos de esta categoría principal.<br /><br />Para cada categoría principal todas las subcategorías se mostrarán incluyendo la propia categoría principal (éstas mostradas en texto plano). Seleccionando en estas categorías se mostrarán los elementos, solo se mostrarán los elementos de esa categoría.<br /><br /><b>Heredar</b><br />La caja de heredar le permite sobreescribir la opciones de los principales, y usar las preferencias por defecto de las marcas de los principales.");
 define("CONTENT_ADMIN_HELP_ITEM_2", "
 <b>Primeras letras</b><br />Si múltiples primeras letras de contenidos existen (cabeceras de contenidos), verá los botones para seleccionar solo los contenidos con esa letra. Seleccionando el botón 'todo' se mostrará una lista conteniendo todos los contenidos en esa categoría.<br /><br />
 <b>Lista detallada</b><br />Verá una lista de todos los caontenidos con su id, icono, autor, cabecera [subcabecera] y opciones.<br /><br />
@@ -45,7 +45,9 @@ define("CONTENT_ADMIN_HELP_OPTION_1", "En esta página puede seleccionar una cate
 ");
 */
 define("CONTENT_ADMIN_HELP_MANAGER_1", "En esta página verá una lista de categorías. Puede gestionar el 'Gestor personal de contenidos' para cada categoría pulsando en el icono.<br /><br /><b>Explicación de inconos</b><br />".CONTENT_ICON_USER." : Enlace al perfil del autor<br />".CONTENT_ICON_LINK." : Enlace a la categoría<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : Editar los gestores personales de contenidos<br />");
-define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>En esta página puede asignar usuarios a las categorías seleccionadas</i><br /><br /><b>Gestor personal</b><br />Puede asignar usuarios a ciertas categorías. Haciendo ésto, esos ususarios pueden gestionar su contenido personal de esas categorías fuera las área del administrador (content_manager.php).<br /><br />Asigne usuarios desde la columna de la izquierda pulsando sobre su nombre. Verá como esos nombres se mueven a la columna de la derecha. Después de pulsar el botón de asignación, los usuarios de la columan de la derecha serán asignados a esa categoría.");
+define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>En esta página puede asignar clases de usuario a la categoría seleccionada que ha pulsado.</i><br /><br /><b>personal manager</b><br />Pudede definir clases para los diferentes administradores del sitio. Actualmente hay 3 tipos de gestores que puede definir:<br /><br />Aprobar envíos: Estos usuarios con esta clase pueden aprobar los envíos de contenidosu<br /><br />Gestor personal: Estos usuarios con esta clase solo pueden gestionar sus propios contenidos<br /><br />Gestor de categorías: Estos usuarios de esta clase pueden gestionar todos los contenidos dentro de esta categoría<br />");
+
+"<i>En esta página puede asignar clases de usuario a la categoría seleccionada que ha pulsado.</i><br /><br /><b>personal manager</b><br />Pudede definir clases para los diferentes administradores del sitio. Actualmente hay 3 tipos de gestores que puede definir:<br /><br />Aprobar envíos: Estos usuarios con esta clase pueden aprobar los envíos de contenidosu<br /><br />Gestor personal: Estos usuarios con esta clase solo pueden gestionar sus propios contenidos<br /><br />Gestor de categorías: Estos usuarios de esta clase pueden gestionar todos los contenidos dentro de esta categoría<br />");
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>En esta página verá una lista de todos los contenidos que han enviado los usuarios.</i><br /><br /><b>Lista detallada</b><br />Verá una lista de esos contenidos con su id, autor, categoría principal, cabecera [subcabecera] y opciones.<br /><br /><b>Opciones</b><br />Puede enviar o eliminar contenidos usando los botones mostrados.");
 
@@ -57,7 +59,7 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "En la ruta y opciones de temas, puede
   	 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "Las opciones generales son opciones que se usan a través de páginas de contenidos del plugin gestor de contenidos.");
   	 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "Estas opciones afectan sobre el área de los contenidos personales en el área del administrador del gestor de contenidos.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "");
   	 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "Estas opciones se usan en el menú para esta categoría principal si la ha activado en el menú.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
   	 
@@ -74,5 +76,5 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "La página de archivos muestra todos 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "La página más valorada muestra los contenidos que han sido valorados por los usuarios.<br /><br />Puede escojer que secciones mostrar activando las cajas de selección.<br /><br />También puede definir si se mostrará la dirección de correo del un autor no-miembro.");
   	 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "La página más puntuada muestra todos los contenidos que han sido puntuados por el autor en los contenidos.<br /><br />Puede escojer que secciones mostrar activando las cajas de selección.<br /><br />También puede definir si se mostrará la dirección de correo del un autor no-miembro.");
-
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "Esta página le permite fijar una serie de opciones para que el Admin cree ua página de categorías.<br /><br />Puede definir que secciones están disponibles cuando el admin (o personal adjunto) crea una nueva categoría.");
 ?>

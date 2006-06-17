@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_emoticon.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,11 +25,10 @@ define("EMOLAN_13", "Packs instalados");
 define("EMOLAN_14", "Guardar configuración");
 define("EMOLAN_15", "Editar / configurar Emoticonos");
 define("EMOLAN_16", "Configuración de emoticono guardada");
-define("EMOLAN_2", "Nombre");
-define("EMOLAN_2", "Nombre");
-define("EMOLAN_2", "Nombre");
-define("EMOLAN_2", "Nombre");
-define("EMOLAN_2", "Nombre");
-define("EMOLAN_2", "Nombre");
-
+define("EMOLAN_17", "¡ Tiene un pack de emoticonos que contiene espacios, lo cual no está permitido !"); 
+define("EMOLAN_18", "por favor, renombre las instancias listadas debajo para que no contengan espacios:"); 
+define("EMOLAN_19", "Nombre"); 
+define("EMOLAN_20", "Lugar"); 
+define("EMOLAN_21", "Error"); 
+//define("EMOLAN_2", "Name"); 
 ?>

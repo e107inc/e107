@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-05-14 09:25:39 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -128,21 +128,21 @@ define("USRLAN_133", "Forzar al usuario que actualice sus ajustes");
 define("USRLAN_134", "Activando esta opción se enviará al usuario a sus ajustes automáticamente, si algún campo requerido no se ha rellenado.");
 define("USRLAN_135", "No se encontró la IP en la info de usuario, IP no expulsada"); 
 define("USRLAN_136", "Varios usuarios tienen la ip {IP}, IP no expulsada."); 
-define("USRLAN_137", "Usuarios con la IP {IP} expulsados.");
-define("USRLAN_138", "Usuarios sin verificar");
+define("USRLAN_137", "Usuarios con la IP {IP} expulsados."); 
+define("USRLAN_138", "Usuarios sin verificar"); 
 define("USRLAN_139", "Su cuenta ha sido activada.\n\nAhora puede visitar {SITEURL} y conectarse usando la información que escribió en su registro.");
 define("USRLAN_140", "Reenviar email a"); 
 define("USRLAN_141", "Fallo al reenviar email a"); 
 define("USRLAN_142", "con el siguiente enlace de activación"); 
 define("USRLAN_143", "Comprobar saltos"); 
-define("USRLAN_144", "Reenviar confirmación de mail a todos"); 
+define("USRLAN_144", "Reenviar confirmación de mail a todos");
+define("USRLAN_145", "Usuarios rechazados");
 
-define("LAN_BOUNCED","Saltado");   
+define("LAN_BOUNCED","Saltado");
 define("LAN_MAINADMIN","Admin principal"); 
 define("LAN_ADMIN","Admin"); 
 define("LAN_NOTVERIFIED","Sin verificar"); 
 define("LAN_BANNED","Expuldado"); 
-
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Nombre a mostrar");
@@ -181,9 +181,4 @@ define("DUSRLAN_34", "Permisos");
 define("DUSRLAN_35", "Foto");
 define("DUSRLAN_36", "Cambiar contraseña");
 define("DUSRLAN_37", "XUP");
-
-
-
-
-
 ?>

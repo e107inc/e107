@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-02-14 21:30:54 $
+|     $Revision: 1.15 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -15,6 +15,8 @@ define("CONTENT_PLUGIN_LAN_3", "Configurar el gestor de contenidos");
 define("CONTENT_PLUGIN_LAN_4", "Este plugin está listo para ser usado.");
 define("CONTENT_PLUGIN_LAN_5", "Contenido");
 define("CONTENT_PLUGIN_LAN_6", "Actualizada la estructura de la tabla del CMS");
+
+define("CONTENT_LATEST_LAN_1", "Contenidos enviados:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "Crear categoría de contenido");
 define("CONTENT_ADMIN_CAT_LAN_1", "Editar categoría de contenido");
@@ -284,6 +286,7 @@ define("CONTENT_ADMIN_MENU_LAN_19", "Gestor de contenidos");
  define("CONTENT_ADMIN_MENU_LAN_20", "Página más valorada");
 define("CONTENT_ADMIN_MENU_LAN_21", "Páginas");
 define("CONTENT_ADMIN_MENU_LAN_22", "Página de máxima puntuación");
+define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Crear Categoría");
 
 define("CONTENT_ADMIN_JS_LAN_0", "¿Está seguro de eliminar esta categoría?");
 define("CONTENT_ADMIN_JS_LAN_1", "¿Está seguro de eliminar este contenido?");
@@ -383,8 +386,14 @@ define("CONTENT_ADMIN_CONVERSION_LAN_60", "Crear por defectos");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "Crear nueva categoría");
 define("CONTENT_ADMIN_CONVERSION_LAN_62", "Plugin de gestor de contenidos actualizado a la versión:");
 define("CONTENT_ADMIN_CONVERSION_LAN_63", "Actualice");
-define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "Estructura de la tabla del plugin de contenidos actualizada"); 
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "Plugin gestor de contenidos : autor de contenido actualizado"); 
+define("CONTENT_ADMIN_CONVERSION_LAN_66", "Plugin gestor de contenidos : preferencias de contenido y menus actualizado"); 
+define("CONTENT_ADMIN_CONVERSION_LAN_67", "Plugin gestor de contenidos : preferencias de contenido actualizado"); 
+define("CONTENT_ADMIN_CONVERSION_LAN_68", ""); 
+define("CONTENT_ADMIN_CONVERSION_LAN_69", ""); 
+define("CONTENT_ADMIN_CONVERSION_LAN_70", ""); 
 
 define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Opciones:");
 define("CONTENT_ADMIN_OPT_LAN_MENU_2", "Páginas:");
@@ -406,6 +415,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_17", "Ver página de categorías (parent item
 define("CONTENT_ADMIN_OPT_LAN_MENU_18", "Categorías");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "Elementos recientes");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "Enlaces a páginas");
+define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin : Crear Categoría");
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "Secciones");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "Escoja que se mostrará");
@@ -439,6 +449,15 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_28", " de la categoría");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_29", " de la lista de subcategorías");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_30", "Activado");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "Desactivado");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_32", "subcabecera"); 
+define("CONTENT_ADMIN_OPT_LAN_SECTION_33", "Fecha inicio"); 
+define("CONTENT_ADMIN_OPT_LAN_SECTION_34", "fecha fin"); 
+define("CONTENT_ADMIN_OPT_LAN_SECTION_35", "icono transferido"); 
+define("CONTENT_ADMIN_OPT_LAN_SECTION_36", "icono asignado"); 
+define("CONTENT_ADMIN_OPT_LAN_SECTION_37", "Admin : Crear Categoría"); 
+define("CONTENT_ADMIN_OPT_LAN_SECTION_38", "sumario"); 
+define("CONTENT_ADMIN_OPT_LAN_SECTION_39", ""); 
+
 
 define("CONTENT_PRESET_LAN_0", "Error : nombre del campo sin rellenar");
 define("CONTENT_PRESET_LAN_1", "Error : no se ha rellenado todos los campos correctamente<br />Todos los campos deben ser rellenados");
@@ -536,7 +555,7 @@ define("CONTENT_ADMIN_OPT_LAN_59", "Defina el ancho máximo del icono para los i
 define("CONTENT_ADMIN_OPT_LAN_60", "Si el icono es mayor que el valor dado, el icono se reajustará a este valor.");
 define("CONTENT_ADMIN_OPT_LAN_61", "px");
 define("CONTENT_ADMIN_OPT_LAN_62", "Escoja gestores para esta clase de usuario");
-define("CONTENT_ADMIN_OPT_LAN_63", "La lista de usuarios del área del gestor de contenidos consiste solamente en los ususarios de la clase definida. Necesitará asignar los usuarios a cada categoría. Esta clase reducirá la lista de usuarios a escojer");
+define("CONTENT_ADMIN_OPT_LAN_63", "Para algunas áreas puede definir que clases de usuarios pueden ver esta página. Con estas opciones, puede limitar ciertas áreas y ciertas páginas para que sean vistas para ciertas clases de usuarios");
 define("CONTENT_ADMIN_OPT_LAN_64", "Mostrar email de un autor no-miembro");
 define("CONTENT_ADMIN_OPT_LAN_65", "Mostrar un índica de letra");
 define("CONTENT_ADMIN_OPT_LAN_66", "El índice de letras es una lista de botones con las primeras letras de las cabeceras de los contenidos. Puede reducir la lista de archivos haciendo click en una letra para ver los contenidos que empiezas por esa misma.");
@@ -609,8 +628,34 @@ define("CONTENT_ADMIN_OPT_LAN_132", "Icono para elementos recientes");
 define("CONTENT_ADMIN_OPT_LAN_133", "Icono : Ancho");
 define("CONTENT_ADMIN_OPT_LAN_134", "Si escoje 'icono de contenido', defina el ancho del icono");
 define("CONTENT_ADMIN_OPT_LAN_135", "Título de la lista de elementos recientes");
-define("CONTENT_ADMIN_OPT_LAN_136", "");
-define("CONTENT_ADMIN_OPT_LAN_137", "");
-define("CONTENT_ADMIN_OPT_LAN_138", "");
-define("CONTENT_ADMIN_OPT_LAN_139", "");
+define("CONTENT_ADMIN_OPT_LAN_136", "Fondo"); 
+define("CONTENT_ADMIN_OPT_LAN_137", "Frontal"); 
+define("CONTENT_ADMIN_OPT_LAN_138", "Gestionar Contenido"); 
+define("CONTENT_ADMIN_OPT_LAN_139", "Crear Contenido"); 
+define("CONTENT_ADMIN_OPT_LAN_140", "Gestionar Categoría"); 
+define("CONTENT_ADMIN_OPT_LAN_141", "Creaar Categoría"); 
+define("CONTENT_ADMIN_OPT_LAN_142", "Orden"); 
+define("CONTENT_ADMIN_OPT_LAN_143", "Opciones"); 
+define("CONTENT_ADMIN_OPT_LAN_144", "Gestor personal de contenidos"); 
+define("CONTENT_ADMIN_OPT_LAN_145", "Reciente"); 
+define("CONTENT_ADMIN_OPT_LAN_146", "Todos las Categorías"); 
+define("CONTENT_ADMIN_OPT_LAN_147", "Una Categoría"); 
+define("CONTENT_ADMIN_OPT_LAN_148", "Contenido"); 
+define("CONTENT_ADMIN_OPT_LAN_149", "Página del autor"); 
+define("CONTENT_ADMIN_OPT_LAN_150", "Página de archivo"); 
+define("CONTENT_ADMIN_OPT_LAN_151", "Página máx valorada"); 
+define("CONTENT_ADMIN_OPT_LAN_152", "Página máx puntuada"); 
+define("CONTENT_ADMIN_OPT_LAN_153", "Enviar página"); 
+define("CONTENT_ADMIN_OPT_LAN_154", "Gestionar página");
+define("CONTENT_ADMIN_OPT_LAN_155", "Título");
+define("CONTENT_ADMIN_OPT_LAN_156", "Título del índice de página");
+define("CONTENT_ADMIN_OPT_LAN_157", "Título del autor de página");
+define("CONTENT_ADMIN_OPT_LAN_158", "Añadir nombre de autor al título");
+define("CONTENT_ADMIN_OPT_LAN_159", "Título de categoría de página");
+define("CONTENT_ADMIN_OPT_LAN_160", "Añadir cabecera categoría al título");
+define("CONTENT_ADMIN_OPT_LAN_161", "Título subcategorías (solo si usa renderizado separado por menus)");
+define("CONTENT_ADMIN_OPT_LAN_162", "Título contenidos (solo si usa renderizado separado por menus)");
+define("CONTENT_ADMIN_OPT_LAN_163", "Mostrar enlaces de anterior siguiente página");
+define("CONTENT_ADMIN_OPT_LAN_164", "Título para enlace página anterior<br />(use {PAGETITLE} para añadir el título de página anterior)");
+define("CONTENT_ADMIN_OPT_LAN_165", "Título para enlace de página siguiente<br />(use {PAGETITLE} para añadir el título de página siguiente)");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-05-14 09:25:39 $
+|     $Revision: 1.14 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -60,5 +60,26 @@ define("MAILAN_32", "Dirección correo");
 define("MAILAN_33", "Bandeja Entrada"); 
 define("MAILAN_34", "Nombre cuenta"); 
 define("MAILAN_35", "Contraseña"); 
-define("MAILAN_36", "Eliminar mails saltados después de comprobar"); 
+define("MAILAN_36", "Eliminar mails saltados después de comprobar");
+define("MAILAN_37", "Proceed"); 
+define("MAILAN_38", "Cancel"); 
+define("MAILAN_39", "Emailing"); 
+define("MAILAN_40", "Necesita renombrar <b>e107.htaccess</b> a <b>.htaccess</b> en"); 
+define("MAILAN_41", "antes de enviar un correo de esta página."); 
+define("MAILAN_42", "Atención"); 
+define("MAILAN_43", "Nombre usuario"); 
+define("MAILAN_44", "Usuario"); 
+define("MAILAN_45", "Correo usuario"); 
+define("MAILAN_46", "Coincidencias usuario"); 
+define("MAILAN_47", "contiene"); 
+define("MAILAN_48", "igual"); 
+define("MAILAN_49", "Id"); 
+define("MAILAN_50", "Autor"); 
+define("MAILAN_51", "Asunto"); 
+define("MAILAN_52", "Último mod");
+define("MAILAN_53", "Admins"); 
+define("MAILAN_54", "Propio"); 
+define("MAILAN_55", "Clase de usuario"); 
+define("MAILAN_56", "Enviar correo"); 
+ 
 ?>

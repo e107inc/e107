@@ -4,12 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-17 10:47:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("CONTENT_EMAILPRINT_LAN_1", "Este contenido es de");
+
+define("CONTENT_NOTIFY_LAN_1", "Eventos de contenido"); 
+define("CONTENT_NOTIFY_LAN_2", "Contenido enviado por el usuario"); 
+define("CONTENT_NOTIFY_LAN_3", "Contenido enviado"); 
 
 define("CONTENT_ICON_LAN_0", "Editar");
 define("CONTENT_ICON_LAN_1", "Eliminar");
@@ -171,6 +175,8 @@ define("CONTENT_LAN_86", "Ver los elementos más puntuados");
 define("CONTENT_LAN_87", "Contenido de más puntuación");
 define("CONTENT_LAN_88", "No hay contenidos con puntuación todavía");
 define("CONTENT_LAN_89", "Seleccione página");
+define("CONTENT_LAN_90", "página anterior"); 
+define("CONTENT_LAN_91", "página siguiente"); 
 
 define("CONTENT_MENU_LAN_0", "Menú de contenido :");
 define("CONTENT_MENU_LAN_1", "No hay contenidos todavía");

@@ -4,24 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_news.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-05-13 16:12:00 $
+|     $Revision: 1.14 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Noticias");
 
 define("LAN_00", "Por favor, borre install.php de su servidor ***</b><br />si no lo hace puede provocar un grave problema de seguridad en su sitio");
-
-define("LAN_82", "Noticias - Categoría");
-define("LAN_83", "No hay noticias en este momento - por favor vuelva más tarde.");
-define("LAN_84", "Noticias");
-define("LAN_99", "Comentarios");
-define("LAN_100", "En");
-
-define("LAN_307", "Añadidos en total en esta categoría: ");
-
-define("LAN_462", "No hay noticias del mes seleccionado");
 
 define("LAN_NEWS_1", "Noticias para usuarios específicos");
 define("LAN_NEWS_2", "No tiene permisos para ver estas noticias");
@@ -47,4 +37,14 @@ define("LAN_NEWS_21", "Noticias actualizadas en la base de datos.");
 //define("LAN_NEWS_22", "Ir a la página: ");
 define("LAN_NEWS_23", "Categoría de noticias");
 define("LAN_NEWS_24", "Crear PDF para esta noticia");
+
+define("LAN_NEWS_82", "Noticias - Categoría");
+define("LAN_NEWS_83", "No hay noticias en este momento - por favor vuelva más tarde.");
+define("LAN_NEWS_84", "Noticias");
+define("LAN_NEWS_99", "Comentarios");
+define("LAN_NEWS_100", "En");
+
+define("LAN_NEWS_307", "Añadidos en total en esta categoría: ");
+
+define("LAN_NEWS_462", "No hay noticias del mes seleccionado");
 ?>

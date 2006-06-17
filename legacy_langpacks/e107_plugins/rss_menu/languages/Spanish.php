@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/rss_menu/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-25 18:53:44 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-17 10:47:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,8 @@ define("BACKEND_MENU_L9", "Nuestras descargas");
 define("RSS_LAN01", "¿Activar Feeds separados para cada categoría de noticias?");
 define("RSS_LAN02", "¿Activar Feeds separados para cada categoría de descargas?");
 define("RSS_LAN03","Su archivo e107_config.php contiene un espacio antres de los carácteres &lt;? . Debe eliminar este espaciosi desea tener alimentación RSS funcionando correctamente.");
+define("RSS_LAN04","¿Incluir otras noticias en el alimentador de noticias?");
+define("RSS_LAN05","Número de elementos a mostrar en cada alimentador");
 
 define("RSS_NEWS","Noticias"); 
 define("RSS_COM","Comentarios"); 
@@ -34,5 +36,4 @@ define("RSS_FSP","Envío fijo del foro");
 define("RSS_BUG","Bugtracker"); 
 define("RSS_FOR","Foro"); 
 define("RSS_DL","Descargas"); 
-
 ?>

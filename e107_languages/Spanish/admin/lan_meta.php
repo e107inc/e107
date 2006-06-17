@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_meta.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.10 $
+|     $Date: 2006-06-17 10:47:07 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -20,4 +20,6 @@ define("METLAN_8", "Meta-Tags");
 define("METLAN_9", "Descripción");
 define("METLAN_10", "Palabras Clave");
 define("METLAN_11", "Copyright");
+define("METLAN_12", "Use título y sumario de noticias como descripción meta en las nuevas páginas."); 
+define("METLAN_13", "Autor"); 
 ?>
