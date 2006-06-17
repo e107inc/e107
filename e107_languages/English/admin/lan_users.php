@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-05-12 22:50:40 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2006-06-17 01:50:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -186,5 +186,6 @@ define("USRLAN_142", "with the following activation link");
 define("LAN_BOUNCED","Bounced");
 define("USRLAN_143", "Check For Bounces");
 define("USRLAN_144", "Resend Confirmation Email to All");
+define("USRLAN_145", "Bounced users");
 
 ?>
