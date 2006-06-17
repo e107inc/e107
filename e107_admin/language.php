@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-04-17 14:52:38 $
+|     $Revision: 1.31 $
+|     $Date: 2006-06-17 03:07:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -126,18 +126,19 @@ if(isset($pref['multilanguage']) && $pref['multilanguage']){
 				$installed++;
 			}
 		}
-
-		$text .= (!$installed)? "<div style='text-align:center'><i>".LANG_LAN_05."</i></div>" :
-	 	"";
+        if($lanlist[$i] == $pref['sitelanguage']){
+        	$text .= "<div style='text-align:center'><i>".LANG_LAN_17."</i></div>";
+		}else{
+			$text .= (!$installed)? "<div style='text-align:center'><i>".LANG_LAN_05."</i></div>" : "";
+		}
 		$text .= "</td><td class='forumheader3' style='width:10%;white-space:nowrap;text-align:right'>\n";
 		$text .= $rs->form_open("post", e_SELF."?modify", "lang_form_".str_replace(" ", "_", $lanlist[$i]));
 		$text .= "<div style='text-align: center'>\n";
-
-		if ($installed) {
-			$text .= " <input type='submit' class='button' name='edit_existing' value='".LAN_EDIT."' />\n";
-			$text .= " <input type='submit' class='button' name='del_existing' value='".LAN_DELETE."' onclick=\"return jsconfirm('Delete all tables in ".$lanlist[$i]." ?')\" />\n";
-		} else {
-			$text .= "<input type='submit' class='button' name='edit_existing' value='".LAN_CREATE."' />\n";
+   		if ($installed) {
+				$text .= " <input type='submit' class='button' name='edit_existing' value='".LAN_EDIT."' />\n";
+		   		$text .= " <input type='submit' class='button' name='del_existing' value='".LAN_DELETE."' onclick=\"return jsconfirm('Delete all tables in ".$lanlist[$i]." ?')\" />\n";
+		} elseif($lanlist[$i] != $pref['sitelanguage']) {
+				$text .= "<input type='submit' class='button' name='edit_existing' value='".LAN_CREATE."' />\n";
 		}
 		$text .= "<input type='hidden' name='lang_choices' value='".$lanlist[$i]."' />";
    		$text .= "</div>";
