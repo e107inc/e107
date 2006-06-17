@@ -1,4 +1,9 @@
 <?php
+// 13.02.06 - EVENT_CONTACT modified to allow BBCode.
+// 27.02.06 - EVENT_HEADING_DATE added for better display
+// 25.03.06 - EVENT_DISPLAY_STYLE expands events for single day
+// 26.03.06 - CALENDAR_CALENDAR_DAY_EVENT_HEADING displays events expanded
+// 17.04.06 - SHOWEVENT_HEADING modified to reflect current CVS - as released 0.7.4
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 $calendar_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
@@ -164,8 +169,8 @@ SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_EVENT_HEADING
 	global $CALENDAR_CALENDAR_DAY_EVENT_HEADING, $startt, $c, $days;
-	//return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a>";
-	return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a>";
+	return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a>";
+	//return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a>";
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_EMPTY_HEADING
@@ -267,6 +272,28 @@ SC_BEGIN EVENT_DATE_START
 	return $EVENT_DATE_START;
 SC_END
 
+SC_BEGIN EVENT_HEADING_DATE
+	global $EVENT_HEADING_DATE, $thisevent;
+	// Combination of EVENT_DATE_START and EVENT_HEADING
+	if ($thisevent['event_allday'] == 0)
+	{
+	  if ($thisevent['event_start'] > $thisevent['event_end'])
+	  {
+	    $thisevent['event_end'] = $thisevent['event_start'];
+	  }
+	}
+	$startds	= cal_landate($thisevent['event_start'], $thisevent['event_recurring'], $thisevent['event_allday']);
+	if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']))
+	{
+		$EVENT_HEADING_DATE = "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ".$startds." - ".$thisevent['event_title'] ;
+	}
+	else
+	{
+		$EVENT_HEADING_DATE = $startds." - ".$thisevent['event_title'];
+	}
+	return $EVENT_HEADING_DATE;
+SC_END
+
 SC_BEGIN EVENT_DATE_END
 	global $EVENT_DATE_END, $thisevent;
 	if ($thisevent['event_allday'] == 0){
@@ -291,7 +318,7 @@ SC_END
 
 SC_BEGIN EVENT_DISPLAYSTYLE
 	global $EVENT_DISPLAYSTYLE, $ds;
-	if ($ds=="event"){
+	if (($ds=="event") || ($ds=="one")){
 		$EVENT_DISPLAYSTYLE = "show";
 	}else{
 		$EVENT_DISPLAYSTYLE = "none";
@@ -341,7 +368,7 @@ SC_BEGIN EVENT_CONTACT
 		//$EVENT_CONTACT = EC_LAN_38; // Not Specified ;
 	$EVENT_CONTACT = "";
 	}else{
-		$EVENT_CONTACT = $tp->toHTML($thisevent['event_contact'],"noreplace");
+		$EVENT_CONTACT = $tp->toHTML($thisevent['event_contact'],TRUE);
 	}
 	return $EVENT_CONTACT;
 SC_END
