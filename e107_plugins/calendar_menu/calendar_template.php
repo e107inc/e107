@@ -2,6 +2,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+// 27.02.06 - Template EVENT_EVENT_TABLE adjusted to show date (uses new shortcode EVENT_HEADING_DATE
+
 // TIME SWITCH BUTTONS ------------------------------------------------------------
 $sc_style['PREV_MONTH']['pre'] = "<span class='defaulttext'>";
 $sc_style['PREV_MONTH']['post'] = "</span>";
@@ -128,7 +130,7 @@ $sc_style['EVENT_DATE_END']['post'] = "";
 $EVENT_EVENT_TABLE = "
 <tr>
 	<td >
-		<div title='".EC_LAN_132."' class='fcaption' style='cursor:pointer; text-align:left; border:0px solid #000;' onclick=\"expandit('{EVENT_ID}')\">{EVENT_HEADING}</div>
+		<div title='".EC_LAN_132."' class='fcaption' style='cursor:pointer; text-align:left; border:0px solid #000;' onclick=\"expandit('{EVENT_ID}')\">{EVENT_HEADING_DATE}</div>
 		<div id='{EVENT_ID}' style='display:{EVENT_DISPLAYSTYLE}; padding-top:10px; padding-bottom:10px; text-align:left;'>
 			<table style='width:100%;'  cellspacing='0' cellpadding='0'>
 				<tr><td colspan='2' class='forumheader3'>{EVENT_AUTHOR} {EVENT_CATEGORY} {EVENT_CONTACT} {EVENT_OPTIONS}</td></tr>

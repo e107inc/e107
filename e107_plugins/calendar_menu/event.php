@@ -11,9 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-01-12 22:18:29 $
-|     $Author: lisa_ $
+|     $Revision: 1.25 $
+|     $Date: 2006-06-17 01:20:13 $
+|     $Author: mcfly_e107 $
+|
+| 25.02.06 - Extra comments to try and sort out listing problem.
+| 26.02.06 - Bug fix - didn't list events where end date before start date (0.6175 legacy?)
+| 02.03.06 - Bug - sometimes lists an event from next month (due to end date before start date) - can't easily fix
+|                - doesn't display some multi-day events (those straddling two months) - fixed
+| 19.03.06 - Bug - if displaying item from a single date, 'next 10 events' starts from beginning of following month.
+|					- mod in line 620 or so - fixed
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -21,16 +28,16 @@ require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 if (isset($_POST['viewallevents']))
 {
     Header("Location: ".e_PLUGIN."calendar_menu/calendar.php?".$_POST['enter_new_val']);
-} 
+}
 
 if (isset($_POST['doit']))
 {
     Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
-} 
+}
 if (isset($_POST['subs']))
 {
     Header("Location: ".e_PLUGIN."calendar_menu/subscribe.php");
-} 
+}
 
 $ec_dir		= e_PLUGIN."calendar_menu/";
 $lan_file	= $ec_dir."languages/".e_LANGUAGE.".php";
@@ -49,12 +56,12 @@ if (isset($_POST['ne_cat_create']))
     {
         $sql->db_Insert("event_cat", "0, '".$tp->toDB($_POST['ne_new_category'])."', '".$tp->toDB($_POST['ne_new_category_icon'])."', '0', '0', '0', '0', '', '', '0', '0', '0', '".time()."', '0'  ");
         header("location:event.php?".$_POST['qs'].".m1");
-    } 
+    }
     else
     {
         header("location:event.php?".$_POST['qs'].".m3");
-    } 
-} 
+    }
+}
 // enter new event into db
 if (isset($_POST['ne_insert']) && USER == true)
 {
@@ -75,13 +82,13 @@ if (isset($_POST['ne_insert']) && USER == true)
         }else{
             $rec_m = "";
             $rec_y = "";
-        } 
+        }
 
         $sql->db_Insert("event", " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".intval($_POST['allday'])."', '".intval($_POST['recurring'])."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$tp -> toDB($_POST['ne_email'])."', '".intval($_POST['ne_category'])."', '".$tp -> toDB($_POST['ne_thread'])."', '".intval($rec_m)."', '".intval($rec_y)."' ");
         $qs = preg_replace("/ne./i", "", $_POST['qs']);
         header("location:event.php?".$qs.".m4");
     }
-} 
+}
 
 // update event in db
 if (isset($_POST['ne_update']) && USER == true)
@@ -103,14 +110,14 @@ if (isset($_POST['ne_update']) && USER == true)
         }else{
             $rec_m = "";
             $rec_y = "";
-        } 
+        }
 
         $sql->db_Update("event", "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".intval($_POST['allday'])."', event_recurring='".intval($_POST['recurring'])."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$tp -> toDB($_POST['ne_email'])."', event_category='".intval($_POST['ne_category'])."', event_thread='".$tp -> toDB($_POST['ne_thread'])."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id='".intval($_POST['id'])."' ");
         $qs = preg_replace("/ed./i", "", $_POST['qs']);
 
         header("location:event.php?".$ev_start.".".$qs.".m5");
     }
-} 
+}
 
 
 require_once(HEADERF);
@@ -120,7 +127,7 @@ if (isset($_POST['jump']))
 		$smarray	= getdate(mktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));
 		$month		= $smarray['mon'];
 		$year		= $smarray['year'];
-} 
+}
 else
 {
     if(e_QUERY){
@@ -134,26 +141,26 @@ else
         $nowarray	= getdate();
         $month		= $nowarray['mon'];
         $year		= $nowarray['year'];
-    } 
+    }
     else
     {
         $smarray	= getdate($action);
         $month		= $smarray['mon'];
         $year		= $smarray['year'];
-    } 
-} 
+    }
+}
 
 if (isset($_POST['confirm']))
 {
     if ($sql->db_Delete("event", "event_id='".intval($_POST['existing'])."' "))
     {
         $message = EC_LAN_51; //Event Deleted
-    } 
+    }
     else
     {
         $message = EC_LAN_109; //Unable to Delete event for some my.erious reason
-    } 
-} 
+    }
+}
 
 if ($action == "de")
 {
@@ -170,10 +177,10 @@ if ($action == "de")
     $ns->tablerender(EC_LAN_46, $text); // Confirm Delete Event
     require_once(FOOTERF);
     exit;
-} 
+}
 if (isset($_POST['cancel']))
 {
-    $message = EC_LAN_47; 
+    $message = EC_LAN_47;
     // Delete Cancelled
 }
 
@@ -181,11 +188,11 @@ if (isset($_POST['cancel']))
 if ($pref['eventpost_weekstart'] == 'sun')
 {
     $days	= Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
-} 
+}
 else
 {
     $days	= Array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
-} 
+}
 $dayslo		= array('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '10.', '11.', '12.', '13.', '14.', '15.', '16.', '17.', '18.', '19.', '20.', '21.', '22.', '23.', '24.', '25.', '26.', '27.', '28.', '29.', '30.', '31.');
 $monthabb	= Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
 $months		= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
@@ -194,22 +201,22 @@ $months		= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_
 if (isset($qs[2]) && $qs[2] == "m1")
 {
     $message = EC_LAN_41; //"New category created.";
-} 
+}
 else if (isset($qs[2]) && $qs[2] == "m2")
 {
     $message = EC_LAN_42; //"Event cannot end before it starts.";
-} 
+}
 else if (isset($qs[2]) && $qs[2] == "m3")
 {
     $message = EC_LAN_43; //"You left required field(s) blank.";
-} 
+}
 else if (isset($qs[2]) && $qs[2] == "m4")
 {
     $message = EC_LAN_44; //"New event created and entered into database.";
 } elseif (isset($qs[2]) && $qs[2] == "m5")
 {
     $message = EC_LAN_45; //"Event updated in database.";
-} 
+}
 
 if (isset($message))
 {
@@ -235,7 +242,7 @@ if ($action == "ne" || $action == "ed")
             $end_hour = $smarray['hours'];
             $end_minute = $smarray['minutes'];
             $ne_enddate = date("Y-m-d", $ne_end);
-        } 
+        }
         else
         {
             $smarray = getdate($qs[1]);
@@ -249,9 +256,9 @@ if ($action == "ne" || $action == "ed")
             $end_hour = $smarray['hours'];
             $end_minute = $smarray['minutes'];
             $ne_enddate = date("Y-m-d", $qs[1]);
-        } 
+        }
 
-        
+
 		$text = "
 		<script type=\"text/javascript\">
 		<!--
@@ -306,23 +313,23 @@ if ($action == "ne" || $action == "ed")
 		}
 		-->
 		</script>";
-		
+
 		$text .= "
 		<form method='post' action='".e_SELF."' id='linkform' onsubmit='return calcheckform(this, submitted)'>
 		<table style='width:98%' class='fborder' >";
 
         if ($action == "ed")
         {
-            $caption = EC_LAN_66; // edit Event 
-            
+            $caption = EC_LAN_66; // edit Event
+
         } elseif ($action == "ne")
         {
             $caption = EC_LAN_28; // Enter New Event
-        } 
+        }
         else
         {
             $caption = EC_LAN_83;
-        } 
+        }
 
         $text .= "
 		<tr>
@@ -355,7 +362,7 @@ if ($action == "ne" || $action == "ed")
         $cal_attrib['name'] = "end_date";
         $cal_attrib['value'] = $ne_enddate;
         $text .= $cal->make_input_field($cal_options, $cal_attrib);
-        $text .= "		
+        $text .= "
 		</td>
 		</tr>
 		<tr>
@@ -366,14 +373,14 @@ if ($action == "ne" || $action == "ed")
         {
             $val = sprintf("%02d", $count);
             $text .= "<option value='{$val}' ".(isset($ne_hour) && $count == $ne_hour ? "selected='selected'" :"")." >".$val."</option>";
-        } 
+        }
         $text .= "</select>
 		<select name='ne_minute' class='tbox'>";
         for($count = "00"; $count <= "59"; $count++)
         {
             $val = sprintf("%02d", $count);
             $text .= "<option ".(isset($ne_minute) && $count == $ne_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>";
-        } 
+        }
         $text .= "</select>
 
 		&nbsp;&nbsp;".EC_LAN_73." <select name='end_hour' class='tbox'>";
@@ -381,14 +388,14 @@ if ($action == "ne" || $action == "ed")
         {
             $val = sprintf("%02d", $count);
             $text .= "<option ".(isset($end_hour) && $count == $end_hour ? "selected='selected'" :"")." value='{$val}'>".$val."</option>";
-        } 
+        }
         $text .= "</select>
 		<select name='end_minute' class='tbox'>";
         for($count = "00"; $count <= "59"; $count++)
         {
             $val = sprintf("%02d", $count);
             $text .= "<option ".(isset($end_minute) && $count == $end_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>";
-        } 
+        }
         $text .= "</select>";
 		$text .= "<br /><input type='checkbox' name='allday' value='1' ".(isset($allday) && $allday == 1 ? "checked='checked'" :"")." />";
         $text .= EC_LAN_64."
@@ -410,19 +417,19 @@ if ($action == "ne" || $action == "ed")
 		<tr>
 		<td class='forumheader3' style='width:20%'>".EC_LAN_52." </td>
 		<td class='forumheader3' style='width:80%'>
-		<select name='ne_category' class='tbox'>"; 
+		<select name='ne_category' class='tbox'>";
         // Check if supervisor, if so get all categories, otherwise ju. get those the user is allowed to see
 		$cal_arg = ($cal_super ? "" : "find_in_set(event_cat_addclass,'".USERCLASS_LIST."')");
         if ($sql->db_Select("event_cat", "*", $cal_arg)){
             while ($row = $sql->db_Fetch()){
 				$text .= "<option value='{$row['event_cat_id']}' ".(isset($ne_category) && $ne_category == $row['event_cat_id'] ? "selected='selected'" :"")." >".$row['event_cat_name']."</option>";
-            } 
+            }
         }else{
             $text .= "<option value=''>".EC_LAN_91."</option>";
-        } 
+        }
         $text .= "</select>
 		</td>
-		</tr>"; 
+		</tr>";
         // * *BK* Check if the add class is appropriate for adding new categories
         // * *BK* It will default to everybody class when created.  Need to go in to admin categories if
         // * *BK* you want to change read class.
@@ -444,14 +451,14 @@ if ($action == "ne" || $action == "ed")
             foreach($imagelist as $img){
                 if ($img['fname']){
                     $text .= "<a href=\"javascript:insertext('".$img['fname']."','ne_new_category_icon','cat_icons')\"><img src='".e_PLUGIN."calendar_menu/images/".$img['fname']."' style='border:0px' alt='' /></a> ";
-                } 
-            } 
+                }
+            }
             $text .= "</div>";
             $text .= "<div style='text-align:center'>
 			<input class='button' type='submit' name='ne_cat_create' value='".EC_LAN_56."' onclick='submitted=this.name' /></div>
 			</td>
 			</tr>";
-        } 
+        }
 
         $text .= "
 		<tr>
@@ -466,7 +473,7 @@ if ($action == "ne" || $action == "ed")
 		<td class='forumheader3' style='width:80%'>
 		<textarea class='tbox' name='ne_event' cols='59' rows='8' style='width:95%'>".(isset($ne_event) ? $ne_event : "")."</textarea>
 		</td>
-		</tr>"; 
+		</tr>";
         // * *BK*
         // * *BK* Only display for forum thread if it is required.  No point in being in if not wanted
         // * *BK* or if forums are inactive
@@ -480,14 +487,14 @@ if ($action == "ne" || $action == "ed")
 			<input class='tbox' type='text' name='ne_thread' size='60' value='".(isset($ne_thread) ? $ne_thread : "")."' maxlength='100' style='width:95%' />
 			</td>
 			</tr>";
-        } 
+        }
         // * *BK*
         // * *BK* If the user is logged in and has their email set plus the field is empty then put in
         // * *BK* their email address.  They can always take it out if they want, its not a required field
         if (empty($ne_email) && defined('USEREMAIL'))
         {
             $ne_email = USEREMAIL;
-        } 
+        }
         $text .= "
 		<tr>
 		<td class='forumheader3' style='width:20%'>".EC_LAN_59." </td>
@@ -505,7 +512,7 @@ if ($action == "ne" || $action == "ed")
 			<input type='hidden' name='id' value='".$qs[1]."' />";
         }else{
             $text .= "<input class='button' type='submit' name='ne_insert' value='".EC_LAN_28."' onclick='submitted=this.name' />";
-        } 
+        }
         $text .= "<input type='hidden' name='qs' value='".e_QUERY."' /></td>
 		</tr>
 		</table>
@@ -514,15 +521,18 @@ if ($action == "ne" || $action == "ed")
         $ns->tablerender($caption, $text);
         require_once(FOOTERF);
         exit;
-    } 
+    }
     else
     {
         header("location:".e_PLUGIN."calendar_menu/event.php");
         exit;
-    } 
-} 
+    }
+}   // End of "Enter New Event
 
+//-----------------------------------------------
 // show events
+// $month, $year have the month required
+//-----------------------------------------------
 $monthstart		= mktime(0, 0, 0, $month, 1, $year);
 $firstdayarray	= getdate($monthstart);
 $monthend		= mktime(0, 0, 0, $month + 1, 1, $year) -1 ;
@@ -534,7 +544,7 @@ if ($prevmonth == 0)
 {
     $prevmonth	= 12;
     $prevyear	= ($year-1);
-} 
+}
 $previous		= mktime(0, 0, 0, $prevmonth, 1, $prevyear);
 
 $nextmonth		= ($month + 1);
@@ -543,7 +553,7 @@ if ($nextmonth == 13)
 {
     $nextmonth	= 1;
     $nextyear	= ($year + 1);
-} 
+}
 $next			= mktime(0, 0, 0, $nextmonth, 1, $nextyear);
 
 //$todayarray		= getdate();
@@ -555,7 +565,7 @@ $nowarray		= getdate();
 $nowmonth		= $nowarray['mon'];
 $nowyear		= $nowarray['year'];
 $nowday			= $nowarray['mday'];
-$current		= mktime(0, 0, 0, $nowmonth, 1, $nowyear); 
+$current		= mktime(0, 0, 0, $nowmonth, 1, $nowyear);
 
 $prop			= mktime(0, 0, 0, $month, 1, $year);
 $next			= mktime(0, 0, 0, $nextmonth, 1, $nextyear);
@@ -578,12 +588,13 @@ $text2 .= $tp -> parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes
 $text2 .= $tp -> parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calendar_shortcodes);
 
 //$sql2 = new db;
-if ($ds == "event"){ 
+if ($ds == "event")
+{
 	$qry = "
 	SELECT e.*, ec.*
 	FROM #event as e
 	LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
-	WHERE e.event_id='".intval($eveid)."' 
+	WHERE e.event_id='".intval($eveid)."'
 	";
 	$sql2->db_Select_gen($qry);
     $row = $sql2->db_Fetch();
@@ -593,26 +604,34 @@ if ($ds == "event"){
 	$text2 .= show_event($event);
 	$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE_END, FALSE, $calendar_shortcodes);
 
-}else{
+}
+else
+{
     //$sql2->db_Select("event_cat", "*", "event_cat_id='".intval($event_true[($c)])."' ");
     //$event_cat = $sql2->db_Fetch();
     //extract($event_cat);
 
-    if ($ds == 'one'){
+  if ($ds == 'one')
+  {
         $tmp			= getdate($action);
         $selected_day	= $tmp['mday'];
         $selected_mon	= $tmp['mon'];
         $start_time		= $action;
         $end_time		= $action + 86399;
+		$next10_start   = $end_time + 1;				// Added 19.03.06
         $cap_title		= " - ".$months[$selected_mon-1]." ".$selected_day;
-    }else{
+  }
+  else
+  {  // Display whole of selected month
         $start_time		= $monthstart;
         $end_time		= $monthend;
         $cap_title		= '';
-    } 
-    $extra = " OR e.event_rec_y = ".intval($month)." ";
+  }
 
-    if ($cal_super) {
+  $extra = " OR e.event_rec_y = ".intval($month)." ";
+
+  if ($cal_super)
+  {
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
@@ -622,7 +641,9 @@ if ($ds == "event"){
 		OR (e.event_start <= ".intval($start_time)." AND e.event_end >= ".intval($end_time).")
 		{$extra}
 		ORDER BY e.event_start ASC";
-    } else {
+  }
+  else
+  {
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
@@ -634,37 +655,78 @@ if ($ds == "event"){
 		{$extra})
 		ORDER BY e.event_start ASC
 		";
-    }
+  }
 
-    if ($sql->db_Select_gen($qry)){
-        while ($row = $sql->db_Fetch()){
-            if ($row['event_rec_y'] == $month){
-                if (!in_array($row['event_id'], $idArray)){
-                    $events[$row['event_rec_m']][] = $row;
-                    $idArray[] = $row['event_id'];
-                } 
-            }else{
-                if ($ds == 'one'){
-                    if (!isset($idArray) || !is_array($idArray) || !in_array($row['event_id'], $idArray)){
-                        $events[$selected_day][] = $row;
-                        $idArray[] = $row['event_id'];
-                    } 
-                }else{
-                    $tmp		= getdate($row['event_start']);
-					$start_day	= ($tmp['year'] == $year ? $tmp['mday'] : "1");
-                    $tmp		= getdate($row['event_end']);
-					$end_day	= ($tmp['year'] == $year ? $tmp['mday'] : "31");
-                    for ($i = $start_day; $i <= $end_day; $i++){
-                        if (!isset($idArray) || !is_array($idArray) || !in_array($row['event_id'], $idArray)){
-                            $events[$i][] = $row;
-                            $idArray[] = $row['event_id'];
-                        } 
-                    } 
-                } 
-            } 
-        } 
-    } 
-} 
+// Query generates a list of event IDs in $idarray which meet the criteria.
+// $idarray has one primary index location for each day of month, then secondary for events.
+  if ($cal_count=$sql->db_Select_gen($qry))
+  {
+//    echo($cal_count." records found");    Get right number of records
+    while ($row = $sql->db_Fetch())
+    {
+      if ($row['event_rec_y'] == $month)
+      {
+        if (!in_array($row['event_id'], $idArray))
+        {
+          $events[$row['event_rec_m']][] = $row;
+          $idArray[] = $row['event_id'];
+        }
+      }
+      else
+      {
+        if ($ds == 'one')
+        {
+          if (!isset($idArray) || !is_array($idArray) || !in_array($row['event_id'], $idArray))
+          {
+            $events[$selected_day][] = $row;
+            $idArray[] = $row['event_id'];
+          }
+        }
+        else
+        {
+            if ($row['event_start'] < intval($start_time))
+            {
+              $start_day = "1";		// Event starts before this month
+            }
+            else
+            {
+              $tmp		= getdate($row['event_start']);
+			  $start_day	= $tmp['mday'];
+			}
+//            echo(", ".$start_day);
+            if ($row['event_end'] < $row['event_start'])
+            {  // End date before start date
+              $end_day = $start_day;
+            }
+            else
+            {
+              if ($row['event_end'] > intval($end_time))
+              {
+                $end_day = "31";	// Event ends after this month
+              }
+              else
+              {
+                $tmp = getdate($row['event_end']);
+                $end_day	= $tmp['mday'];
+              }
+            }
+//			$end_day	= ($tmp['year'] == $year ? $tmp['mday'] : "31");
+//            echo(", ".$end_day);
+//			$end_day	= ($tmp['month'] == $month ? $end_day : "31");     // Added
+//			echo(", ".$end_day."<br />");
+            for ($i = $start_day; $i <= $end_day; $i++)
+            {
+              if (!isset($idArray) || !is_array($idArray) || !in_array($row['event_id'], $idArray))
+              {
+                $events[$i][] = $row;
+                $idArray[] = $row['event_id'];
+              }
+        	}
+      	}
+      }
+    }
+  }
+}
 
 
 // event list
@@ -676,7 +738,7 @@ if(isset($events) && is_array($events)){
 	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calendar_shortcodes);
 	foreach ($events as $dom => $event){
 		$text2 .= show_event($event);
-	} 
+	}
 	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
 }
 
@@ -684,13 +746,13 @@ if(isset($events) && is_array($events)){
 $nextmonth = mktime(0, 0, 0, $month + 1, 1, $year)-1;
 if (!isset($next10_start)){
     $next10_start = $nextmonth;
-} 
+}
 
 $qry = "
 SELECT e.* FROM #event AS e
 LEFT JOIN #event_cat AS ec ON e.event_category = ec.event_cat_id
 WHERE e.event_start > '".intval($next10_start)."' AND ec.event_cat_class IN (".USERCLASS_LIST.")
-ORDER BY e.event_start ASC 
+ORDER BY e.event_start ASC
 LIMIT 0, 10
 ";
 $num = $sql->db_Select_gen($qry);
@@ -699,10 +761,10 @@ if ($num != 0){
 	$archive_events = "";
 	while ($events = $sql->db_Fetch()){
 		$archive_events .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calendar_shortcodes);
-	} 
+	}
 }else{
 	$archive_events = $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, FALSE, $calendar_shortcodes);
-} 
+}
 $text2 .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_START, FALSE, $calendar_shortcodes);
 $text2 .= $archive_events;
 $text2 .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calendar_shortcodes);
@@ -713,6 +775,7 @@ $ns->tablerender($caption.(isset($cap_title) ? $cap_title : ""), $text2);
 require_once(FOOTERF);
 
 
+// Display one event in a form which can be expanded.
 function show_event($day_events)
 {
 	global $tp, $cal_super, $_POST, $ds, $thisevent, $EVENT_ID, $EVENT_EVENT_TABLE, $calendar_shortcodes, $event_author_id, $event_author_name;
@@ -721,9 +784,8 @@ function show_event($day_events)
     {
 		$thisevent = $event;
         $gen = new convert;
-        if ( ( !isset($_POST['do']) || (isset($_POST['do']) && $_POST['do'] == null)) || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == "all") || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == $thisevent['event_cat_id']) ){
-			
-		//if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $thisevent['event_cat_id'])){
+        if ( ( !isset($_POST['do']) || (isset($_POST['do']) && $_POST['do'] == null)) || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == "all") || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == $thisevent['event_cat_id']) )
+        {
             $lp = explode(".", $thisevent['event_author']);
             if (preg_match("/[0-9]+/", $lp[0]))
             {
@@ -731,10 +793,10 @@ function show_event($day_events)
                 $event_author_name = $lp[1];
             }
 			$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, FALSE, $calendar_shortcodes);
-        } 
+        }
     }
     return $text2;
-} 
+}
 
 function cal_landate($dstamp, $recurring = false, $allday = false)
 {
@@ -744,14 +806,14 @@ function cal_landate($dstamp, $recurring = false, $allday = false)
 
     if ($now['wday'] == 0){
         $now['wday'] = 7;
-    } 
+    }
     $dow = constant("EC_LAN_".($long_day_start + $now['wday']-1));
     $moy = constant("EC_LAN_".($long_month_start + $now['mon']-1));
 
     if ($recurring == TRUE){
         $today = getdate();
         $now['year'] = $today['year'];
-    } 
+    }
 
     if ($allday == TRUE){
         return sprintf("%s %02d %s %d", $dow, $now['mday'], $moy, $now['year']);
@@ -761,8 +823,8 @@ function cal_landate($dstamp, $recurring = false, $allday = false)
 		}else{
 	        return sprintf("%s %02d %s %d - %02d:%02d", $dow, $now['mday'], $moy, $now['year'], $now['hours'], $now['minutes']);
 		}
-    } 
-} 
+    }
+}
 
 function headerjs()
 {
@@ -813,6 +875,6 @@ function headerjs()
 	</script>";
 */
 	return $script;
-} 
+}
 
 ?>
