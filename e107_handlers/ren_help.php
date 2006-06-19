@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-06-19 11:00:45 $
+|     $Revision: 1.47 $
+|     $Date: 2006-06-19 18:44:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -394,7 +394,7 @@ function PreFile_Select($formid='prefile_selector') {
 function Emoticon_Select($formid='emoticon_selector') {
 	$text ="<!-- Start of Emoticon selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>
-		<div style='position:absolute; bottom:30px; right:75px; width:221px; overflow:auto;'>
+		<div style='position:absolute; bottom:30px; right:75px; width:221px; height:133px; overflow:auto;'>
 			<table class='fborder' style='background-color:#fff;'>
 			<tr><td class='forumheader3'>
 			".r_emote()."
