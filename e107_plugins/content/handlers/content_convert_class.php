@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2006-06-11 16:20:25 $
+|		$Revision: 1.20 $
+|		$Date: 2006-06-19 07:48:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -140,10 +140,12 @@ class content_convert{
 						require_once($plugindir."handlers/content_class.php");
 						$aa = new content;
 					}
-					//remove menu
-					@unlink(e_PLUGIN."content/menus/content_".$row['content_heading']."_menu.php");
-					//create menu
-					$aa -> CreateParentMenu($id);
+					if($row['content_parent']==0){
+						//remove menu
+						@unlink(e_PLUGIN."content/menus/content_".$row['content_heading']."_menu.php");
+						//create menu
+						$aa -> CreateParentMenu($id);
+					}
 				}
 			}
 
