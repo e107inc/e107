@@ -11,12 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-06-08 04:38:47 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-20 06:50:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+/*
+Notes:
 
+- array_flip method deprecated for delete item detection.
+- using form handler is deprecated and present only for backwards compatibility.
+- using generic terms like EDIT and DELETE in Language file is deprecated, use LAN_EDIT etc. instead.
+- using terms like created, update, options etc..deprecated should use built in terms.
+- generic admin icons used. ADMIN_ICON_EDIT etc.
+- using $caption = "whatever", is unneccessary.
+
+*/
 
 require_once("../../class2.php");
 if(!getperms("P")){ header("location:".e_BASE."index.php"); }
@@ -25,102 +35,380 @@ require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."rss_menu/languages/E
 
 require_once(e_ADMIN."auth.php");
 
+$imagedir = e_IMAGE."admin_images/";
+$lan_file = e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'.php';
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'rss_menu/languages/English.php');
+require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
+$rss = new rss;
+
+global $tp;
+
+
+//delete entry
+if(isset($_POST['delete'])){
+	$d_idt = array_keys($_POST['delete']);
+	$message = ($sql -> db_Delete("rss", "rss_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
+    $e107cache->clear("rss");
+}
+
+//create rss feed
+if(isset($_POST['create_rss'])){
+	$message = $rss -> dbrss("create");
+}
+
+//update rss feed
+if(isset($_POST['update_rss'])){
+	$message = $rss -> dbrss("update");
+
+}
+
+//import rss feed
+if(isset($_POST['import_rss'])){
+	$message = $rss -> dbrssimport();
+}
+
+//update_limit
+if(isset($_POST['update_limit'])){
+	$message = $rss -> dbrsslimit();
+}
+//update options
 if(isset($_POST['updatesettings'])){
-	$pref['rss_feeds'] = implode(",",$_POST['feeds']);
-	$pref['rss_newscats'] = $_POST['rss_newscats'];
-	$pref['rss_dlcats'] = $_POST['rss_dlcats'];
-	$pref['rss_othernews'] = $_POST['rss_othernews'];
-	$pref['rss_limit'] = $_POST['rss_limit'];
-	save_prefs();
-	$message = LAN_SAVED;
+	$message = $rss->dboptions();
 }
 
-if(e107_config_check()){
-	$message = RSS_LAN03; // space found in file.
+//config check
+if($rss->e107_config_check()){
+	$message = RSS_LAN_ERROR_2; // space found in file.
 }
 
+//render message
 if(isset($message)){
-	$ns -> tablerender("", "<div style='text-align:center'><b>$message</b></div>");
+	$rss->show_message('', $message);
+}
+
+//get template
+if (is_readable(THEME."rss_template.php")) {
+	require_once(THEME."rss_template.php");
+	} else {
+	require_once(e_PLUGIN."rss_menu/rss_template.php");
+}
+
+//listing
+if(e_QUERY){
+	$qs = explode(".", e_QUERY);
+	$field = (isset($qs[1])) ? $qs[1] : "";
+	$sort = (isset($qs[2])) ? $qs[2] : "";
 }
 
 
+	//create
+	if(isset($qs[0]) && $qs[0] == 'create' && !$_POST){
+		$rss -> rssadmincreate();
 
+	//import
+	}elseif(isset($qs[0]) && $qs[0] == 'import'){
+		$rss -> rssadminimport();
 
-$text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
-<table class='fborder' style='width:94%' >
-<tr><td class='fcaption'>".BACKEND_MENU_L2."</td><td class='fcaption'>Enable</td></tr>";
+	//options
+	}elseif(isset($qs[0]) && $qs[0] == 'options'){
+		$rss -> rssadminoptions();
 
-	$feedlist[1] = "News";
-	$feedlist[12] = "Downloads";
-	$feedlist[6] = "Forum Threads";
-	$feedlist[7] = "Forum Posts";
-    if($sql -> db_Select("plugin","plugin_rss","plugin_rss != '' ")){
-		while($row = $sql -> db_Fetch()){
-			$tmp = explode(",",$row['plugin_rss']);
-			foreach($tmp as $key){
-				$feedlist[$key] = ucfirst($key);
-			}
-		}
-    }
-	$preset = explode(",",$pref['rss_feeds']);
+	//list
+	}else{
 
-	foreach($feedlist as $key=>$name){
-		$text .= "<tr><td class='forumheader3'><a rel='external' title='view $name feed' href='".e_PLUGIN."rss_menu/rss.php?$key.2'>$name</a></td>";
-		$text .= "<td class='forumheader3'>";
-		$selected = in_array($key,$preset) ? "checked='checked'" : "";
-		$text .= "<input type='checkbox'  name='feeds[]' value='$key' $selected />";
-
-	$text .="</td></tr>";
+		$rss -> rssadminlist();
 	}
 
-	$text .= "<tr><td class='forumheader3'>".RSS_LAN04."</td>";
-	$text .= "<td class='forumheader3'>";
-	$sel = ($pref['rss_othernews'] == 1) ? " checked='checked' " : "";
-	$text .= "<input type='checkbox' $sel name='rss_othernews' value='1' />
-				</td></tr>";
 
-	$text .= "<tr><td class='forumheader3'>".RSS_LAN01."</td>";
-	$text .= "<td class='forumheader3'>";
-	$sel = ($pref['rss_newscats'] == 1) ? " checked='checked' " : "";
-	$text .= "<input type='checkbox' $sel  name='rss_newscats' value='1' />
-				</td></tr>";
-
-	$text .= "<tr><td class='forumheader3'>".RSS_LAN02."</td>";
-	$text .= "<td class='forumheader3'>";
-	$sel = ($pref['rss_dlcats'] == 1) ? " checked='checked' " : "";
-	$text .= "<input type='checkbox' $sel name='rss_dlcats' value='1' />
-			</td>
-			</tr>";
-
-	$text .= "<tr><td class='forumheader3'>".RSS_LAN05."</td>";
-	$text .= "<td class='forumheader3'>";
-	$text .= "<input class='tbox' type='text' size='3' name='rss_limit' value=\"".$pref['rss_limit']."\" />
-			</td>
-			</tr>";
-
-
-	$text .="<tr style='vertical-align:top'>
-	<td colspan='2'  style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='updatesettings' value='".LAN_SAVE."' />
-	</td>
-	</tr>
-	</table>
-	</form>
-	</div>";
-
-$ns -> tablerender(BACKEND_MENU_L2, $text);
 
 require_once(e_ADMIN."footer.php");
 
 
-function e107_config_check(){
 
-	$arrays = file_get_contents(e_BASE."e107_config.php");
-	if($arrays[0] != "<"){
-		return TRUE;
-	}
+// ##### Display options --------------------------------------------------------------------------
+function admin_prefs_adminmenu(){
+	global $sql, $qs;
+
+	$act = $qs[0];
+	if($act==""){$act="list";}
+
+	$var['list']['text']		= RSS_LAN_ADMINMENU_2;
+	$var['list']['link']		= e_SELF."?list";
+
+	$var['create']['text']		= LAN_CREATE;
+	$var['create']['link']		= e_SELF."?create";
+
+	$var['import']['text']		= RSS_LAN_ADMINMENU_4;
+	$var['import']['link']		= e_SELF."?import";
+
+	$var['options']['text']		= LAN_OPTIONS;
+	$var['options']['link']		= e_SELF."?options";
+
+	show_admin_menu(RSS_LAN_ADMINMENU_1, $act, $var);
 
 }
+// ##### End --------------------------------------------------------------------------------------
+
+
+
+
+
+
+class rss{
+
+	//check for config
+	function e107_config_check(){
+		$arrays = file_get_contents(e_BASE."e107_config.php");
+		if($arrays[0] != "<"){
+			return TRUE;
+		}
+	}
+
+	//admin : list : existing rss feeds
+	function rssadminlist(){
+		global $qs, $ns, $sql, $rs, $tp, $field, $sort, $rss_shortcodes, $row, $RSS_ADMIN_LIST_HEADER, $RSS_ADMIN_LIST_TABLE, $RSS_ADMIN_LIST_FOOTER;
+
+        $fieldstag = array('id'=>'rss_id','path'=>'rss_path','name'=>'rss_name','url'=>'rss_url','limit'=>'rss_limit');
+		$order = (isset($fieldstag[$field])) ? "ORDER BY ".$fieldstag[$field]." ".$sort : "ORDER BY rss_id";
+
+        $query = "SELECT * FROM #rss ".$order;
+		if(!$sql->db_Select_gen($query))
+		{
+			$this->show_message(LAN_ERROR, RSS_LAN_ERROR_3);
+		}
+		else
+		{
+			$text = $tp -> parseTemplate($RSS_ADMIN_LIST_HEADER, FALSE, $rss_shortcodes);
+			while($row=$sql->db_Fetch())
+			{
+				$text .= $tp -> parseTemplate($RSS_ADMIN_LIST_TABLE, FALSE, $rss_shortcodes);
+			}
+			$text .= $tp -> parseTemplate($RSS_ADMIN_LIST_FOOTER, FALSE, $rss_shortcodes);
+			$ns->tablerender(RSS_LAN_ADMIN_1, $text);
+		}
+	}
+
+	//create
+	function rssadmincreate(){
+		global $ns, $qs, $rs, $sql, $tp, $rss_shortcodes, $row, $RSS_ADMIN_CREATE_TABLE;
+
+		if( isset($qs[1]) && $qs[1] == "edit" && isset($qs[2]) && is_numeric($qs[2]) ){
+			if(!$sql -> db_Select("rss", "*", "rss_id='".intval($qs[2])."' ")){
+				$this->show_message(LAN_ERROR, RSS_LAN_ERROR_5);
+			}else{
+				$row = $sql -> db_Fetch();
+
+				$row['rss_name']	= $tp -> toForm($row['rss_name']);
+				$row['rss_path']	= $tp -> toForm($row['rss_path']);
+				$row['rss_url']		= $tp -> toForm($row['rss_url']);
+				$row['rss_text']	= $tp -> toForm($row['rss_text']);
+			}
+		}
+		$text = $tp -> parseTemplate($RSS_ADMIN_CREATE_TABLE, FALSE, $rss_shortcodes);
+		$ns->tablerender(RSS_LAN_ADMIN_10, $text);
+	}
+
+	//import
+	function rssadminimport(){
+		global $sql, $ns, $i, $qs, $rs, $tp, $rss_shortcodes, $feed;
+		global $RSS_ADMIN_IMPORT_HEADER, $RSS_ADMIN_IMPORT_TABLE, $RSS_ADMIN_IMPORT_FOOTER;
+
+		$sqli = new db;
+		$feedlist = array();
+
+		//news
+		$feed['name']		= 'News';
+		$feed['url']		= 'news';	//the identifier for the rss feed url
+		$feed['topic_id']	= '';		//the topic_id, empty on default (to select a certain category)
+		$feed['path']		= 'news';	//this is the plugin path location
+		$feed['text']		= 'The rss feed of the news';
+		$feed['class']		= '0';
+		$feed['limit']		= '9';
+		$feedlist[]			= $feed;
+
+		//news categories
+		if($sqli -> db_Select("news_category", "*","category_id!='' ORDER BY category_name ")){
+			while($rowi = $sqli -> db_Fetch()){
+				$feed['name']		= 'News > '.$rowi['category_name'];
+				$feed['url']		= 'news';
+				$feed['topic_id']	= $rowi['category_id'];
+				$feed['path']		= 'news';
+				$feed['text']		= 'The rss feed of the news category: '.$rowi['category_name'];
+				$feed['class']		= '0';
+				$feed['limit']		= '9';
+				$feedlist[]			= $feed;
+			}
+		}
+
+		//download
+		$feed['name']		= 'Downloads';
+		$feed['url']		= 'download';
+		$feed['topic_id']	= '';
+		$feed['path']		= 'download';
+		$feed['text']		= 'The rss feed of the downloads';
+		$feed['class']		= '0';
+		$feed['limit']		= '9';
+		$feedlist[]			= $feed;
+
+		//download categories
+		if($sqli -> db_Select("download_category", "*","download_category_id!='' ORDER BY download_category_order ")){
+			while($rowi = $sqli -> db_Fetch()){
+				$feed['name']		= 'Downloads > '.$rowi['download_category_name'];
+				$feed['url']		= 'download';
+				$feed['topic_id']	= $rowi['download_category_id'];
+				$feed['path']		= 'download';
+				$feed['text']		= 'The rss feed of the download category: '.$rowi['download_category_name'];
+				$feed['class']		= '0';
+				$feed['limit']		= '9';
+				$feedlist[]			= $feed;
+			//	echo "cat = ".$rowi['download_category_id']." ".$rowi['download_category_name']."<br />";
+			}
+		}
+
+		//comments
+		$feed['name']		= 'Comments';
+		$feed['url']		= 'comments';
+		$feed['topic_id']	= '';
+		$feed['path']		= 'comments';
+		$feed['text']		= 'The rss feed of the comments';
+		$feed['class']		= '0';
+		$feed['limit']		= '9';
+		$feedlist[]			= $feed;
+
+		//plugin rss feed, using e_rss.php in plugin folder
+		$plugin_feedlist = array();
+		if($sqli -> db_Select("plugin","plugin_path","plugin_installflag = '1' ORDER BY plugin_path ")){
+			while($rowi = $sqli -> db_Fetch()){
+				if (is_readable(e_PLUGIN.$rowi['plugin_path']."/e_rss.php")) {
+					require_once(e_PLUGIN.$rowi['plugin_path']."/e_rss.php");
+					$plugin_feedlist = $eplug_rss_feed;
+				}
+			}
+		}
+
+	 //	print_a($feedlist);
+		$feedlist = array_merge($feedlist, $plugin_feedlist);
+
+		$render=FALSE;
+		$i=0;
+		$text = $RSS_ADMIN_IMPORT_HEADER;
+		foreach($feedlist as $k=>$feed){
+			$feed['topic_id']		= $tp -> toDB($feed['topic_id']);
+			$feed['url']			= $tp -> toDB($feed['url']);
+			//$rss_url		= "{e_PLUGIN}rss_menu/rss.php?".$url.".2".($topic_id ? ".".$topic_id : "");
+
+			//check if feed is not yet present
+			if(!$sql -> db_Select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
+			{
+				$render=TRUE;
+				$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_TABLE, FALSE, $rss_shortcodes);
+				$i++;
+			}
+		}
+		$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_FOOTER, FALSE, $rss_shortcodes);
+
+		if(!$render){
+			$this->show_message(RSS_LAN_ADMIN_11, RSS_LAN_ERROR_6);
+		}else{
+			$ns->tablerender(RSS_LAN_ADMIN_11, $text);
+		}
+	}
+
+	//options
+	function rssadminoptions(){
+		global $ns, $qs, $rs, $sql, $tp, $rss_shortcodes, $row, $RSS_ADMIN_OPTIONS_TABLE;
+
+		$text = $tp -> parseTemplate($RSS_ADMIN_OPTIONS_TABLE, FALSE, $rss_shortcodes);
+		$ns->tablerender(LAN_OPTIONS, $text);
+		return;
+	}
+
+	//render message
+	function show_message($caption='', $text=''){
+		global $ns;
+		$ns -> tablerender($caption, "<div style='text-align:center'><b>$text</b></div>");
+	}
+
+	//db:create/update
+	function dbrss($mode='create'){
+		global $qs, $sql, $ns, $rs, $tp, $e107cache;
+
+		if($_POST['rss_name'] && $_POST['rss_url'] && $_POST['rss_path']){
+
+			$_POST['rss_name']		= $tp -> toDB(trim($_POST['rss_name']));
+			$_POST['rss_url']		= $tp -> toDB($_POST['rss_url']);
+			$_POST['rss_topicid']	= $tp -> toDB($_POST['rss_topicid']);
+			$_POST['rss_path']		= $tp -> toDB($_POST['rss_path']);
+			$_POST['rss_text']		= $tp -> toDB($_POST['rss_text']);
+			$_POST['rss_class']		= (intval($_POST['rss_class']) ? intval($_POST['rss_class']) : '0');
+			$_POST['rss_limit']		= intval($_POST['rss_limit']);
+
+			if(isset($_POST['rss_datestamp']) && $_POST['rss_datestamp']!=''){
+				$datestamp = intval($_POST['rss_datestamp']);
+			}else{
+				$datestamp = time();
+			}
+
+			if($mode == 'create'){
+				$message = ($sql -> db_Insert("rss", "'0', '".$_POST['rss_name']."', '".$_POST['rss_url']."', '".$_POST['rss_topicid']."', '".$_POST['rss_path']."', '".$_POST['rss_text']."', '".$datestamp."', '".$_POST['rss_class']."', '".$_POST['rss_limit']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
+				$e107cache->clear("rss");
+
+			}elseif($mode == 'update'){
+				$message = ($sql -> db_Update("rss", "rss_name = '".$_POST['rss_name']."', rss_url = '".$_POST['rss_url']."', rss_topicid = '".$_POST['rss_topicid']."', rss_path = '".$_POST['rss_path']."', rss_text = '".$_POST['rss_text']."', rss_datestamp = '".$datestamp."', rss_class = '".$_POST['rss_class']."', rss_limit = '".$_POST['rss_limit']."' WHERE rss_id = '".intval($_POST['rss_id'])."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+				$e107cache->clear("rss");
+			}
+		}else{
+			$message = RSS_LAN_ERROR_7;
+		}
+		return $message;
+	}
+
+	//import rss feeds
+	function dbrssimport(){
+		global $sql, $tp;
+
+		foreach($_POST['importid'] as $key=>$value)
+		{
+			$rss_topcid		= ($_POST['topic_id'][$key] ? $tp -> toDB($_POST['topic_id'][$key]) : '');
+			$rss_url		= ($_POST['url'][$key] ? $tp -> toDB($_POST['url'][$key]) : '');
+			//$rss_url		= "{e_PLUGIN}rss_menu/rss.php?".$url.".2".($topic_id ? ".".$topic_id : "");
+
+			$rss_path		= ($_POST['path'][$key] ? $tp -> toDB($_POST['path'][$key]) : '');
+			$rss_name		= ($_POST['name'][$key] ? $tp -> toDB($_POST['name'][$key]) : '');
+			$rss_text		= ($_POST['text'][$key] ? $tp -> toDB($_POST['text'][$key]) : '');
+			$rss_datestamp	= time();
+			$rss_class		= ($_POST['class'][$key] ? intval($_POST['class'][$key]) : '0');
+			$rss_limit		= ($_POST['limit'][$key] ? intval($_POST['limit'][$key]) : '0');
+
+			//echo "rss, '0', '".$rss_name."', '".$rss_url."', '".$rss_path."', '".$rss_text."', '".$rss_datestamp."', '".$rss_class."', '".$rss_limit."' <br /><br />";
+			$sql -> db_Insert("rss", "'0', '".$rss_name."', '".$rss_url."', '".$rss_topcid."', '".$rss_path."', '".$rss_text."', '".$rss_datestamp."', '".$rss_class."', '".$rss_limit."' ");
+		}
+		$message = count($_POST['importid'])." ".RSS_LAN_ADMIN_18;
+		return $message;
+
+	}
+
+	function dbrsslimit(){
+		global $sql, $tp;
+		foreach($_POST['limit'] as $key=>$value)
+		{
+			$sql -> db_Update("rss", "rss_limit = '".intval($value)."' WHERE rss_id = '".intval($key)."' ");
+		}
+		header("location:".e_SELF."?r3");
+	}
+
+	//update options
+	function dboptions(){
+		global $tp, $pref;
+
+		$pref['rss_othernews'] = $_POST['rss_othernews'];
+
+		save_prefs();
+		return LAN_SAVED;
+	}
+
+
+} //end class
+
 
 ?>
