@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.20 $
-|   $Date: 2005-12-28 14:03:36 $
-|   $Author: sweetas $
+|   $Revision: 1.21 $
+|   $Date: 2006-06-20 00:23:06 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -22,14 +22,14 @@ if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 @include_once(e_LANGUAGEDIR."English/lan_upload_handler.php");
-function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "")
+function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "")
 {
 
 	global $pref, $sql, $tp;
 
 	if (!$uploaddir) {$uploaddir = e_FILE."public/";}
 	if($uploaddir == e_THEME) {$pref['upload_storagetype'] = 1;}
-	
+
 	if (is_readable(e_ADMIN.'filetypes.php')) {
 		$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
 		$a_filetypes = explode(',', $a_filetypes);
@@ -97,14 +97,14 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "")
 			if ($avatar == "attachment") {
 				$name = time()."_".USERID."_".$fileinfo.$name;
 			}
-			
+
 			$destination_file = getcwd()."/".$uploaddir."/".$name;
 			if ($avatar == "unique" && file_exists($destination_file))
 			{
 				$name = time()."_".$name;
 				$destination_file = getcwd()."/".$uploaddir."/".$name;
 			}
-			if (file_exists($destination_file))
+			if (file_exists($destination_file) && !$overwrite)
 			{
 				require_once(e_HANDLER."message_handler.php");
 				message_handler("MESSAGE", LANUPLOAD_10, __LINE__, __FILE__); // duplicate file
