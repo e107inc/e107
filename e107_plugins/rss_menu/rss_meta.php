@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_meta.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-20 06:50:09 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2006-06-20 08:12:25 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 global $tp;
-
 
 if($sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name")){
 	while($row=$sql->db_Fetch()){

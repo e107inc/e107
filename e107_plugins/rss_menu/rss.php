@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-06-20 06:50:09 $
-|     $Author: e107coders $
+|     $Revision: 1.51 $
+|     $Date: 2006-06-20 08:12:25 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,29 +23,19 @@ Query string: content_type.rss_type.[topic id]
 5: comments
 12: downloads (option: specify category)
 
-The following should be using $eplug_rss in their plugin.php file (see chatbox)
+Plugins shouls use an e_rss.php file in their plugin folder
 ----------------------------------------------------------------
-2: articles
-3: reviews
-4: content pages
-6: forum threads
-7: forum posts
-8: forum specific post (specify id)
-10: bugtracker
-11: forum
 */
 
 require_once("../../class2.php");
-if(e_LANGUAGE != "French"){
-	$_GET['elan'] = "French";
-}
+//if(e_LANGUAGE != "French"){
+//	$_GET['elan'] = "French";
+//}
 
 global $tp;
 
 require_once(e_PLUGIN."rss_menu/rss_shortcodes.php");
 require_once(e_HANDLER."userclass_class.php");
-
-
 
 if (!is_object($tp->e_bb)) {
 	require_once(e_HANDLER.'bbcode_handler.php');
@@ -66,17 +56,6 @@ if (is_readable(THEME."rss_template.php")) {
 	require_once(e_PLUGIN."rss_menu/rss_template.php");
 }
 
-$namearray[1] = RSS_NEWS;
-$namearray[2] = RSS_ART;
-$namearray[3] = RSS_REV;
-$namearray[5] = RSS_COM;
-$namearray[6] = RSS_FT;
-$namearray[7] = RSS_FP;
-$namearray[8] = RSS_FSP;
-$namearray[10] = RSS_BUG;
-$namearray[11] = RSS_FOR;
-$namearray[12] = RSS_DL;
-
 //query handler
 list($content_type, $rss_type, $topic_id) = explode(".", e_QUERY);
 
@@ -85,23 +64,20 @@ if (intval($rss_type) == false) {
 	require_once(HEADERF);
  	require_once(e_PLUGIN."rss_menu/rss_template.php");
 
-   		if(!$sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 AND rss_topicid NOT REGEXP ('\\\*') ORDER BY rss_name"))
+	if(!$sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 AND rss_topicid NOT REGEXP ('\\\*') ORDER BY rss_name"))
+	{
+		$ns->tablerender(LAN_ERROR, RSS_LAN_ERROR_4);
+	}
+	else
+	{
+		$text = $RSS_LIST_HEADER;
+		while($row=$sql->db_Fetch())
 		{
-			$ns->tablerender(LAN_ERROR, RSS_LAN_ERROR_4);
+			$text .= $tp -> parseTemplate($RSS_LIST_TABLE, FALSE, $rss_shortcodes);
 		}
-		else
-		{
-			$text = $RSS_LIST_HEADER;
-			while($row=$sql->db_Fetch())
-			{
-				$text .= $tp -> parseTemplate($RSS_LIST_TABLE, FALSE, $rss_shortcodes);
-			}
-			$text .= $RSS_LIST_FOOTER;
-			$ns->tablerender(BACKEND_MENU_L2, $text);
-		}
-
-
-
+		$text .= $RSS_LIST_FOOTER;
+		$ns->tablerender(BACKEND_MENU_L2, $text);
+	}
 
  	require_once(FOOTERF);
 	exit;
@@ -110,11 +86,7 @@ if (intval($rss_type) == false) {
 //conversion table for old urls -------
 $conversion[1] = "news";
 $conversion[5] = "comments";
-//$conversion[6] = "forum_threads";
-//$conversion[7] = "forum_posts";
-//$conversion[8] = "forum_topic";
 $conversion[10] = "bugtracker";
-//$conversion[11] = "forum_name";
 $conversion[12] = "download";
 //-------------------------------------
 
@@ -131,24 +103,12 @@ if($topic_id){
 	}
 }
 
-//check if url is valid, else return error message
-//$check_url = "{e_PLUGIN}rss_menu/rss.php?".$content_type.".2".($topic_id ? ".".$topic_id : "");
-if($topic_id){
-	$check_topic = " AND rss_topicid = '".$topic_id."' ";
-}else{
-	$check_topic = '';
-}
+$check_topic = ($topic_id ? " AND rss_topicid = '".$topic_id."' " : "");
 
 if(!$sql -> db_Select("rss", "*", "rss_class!='2' AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
 {
 	//check if wildcard present for topic_id
-	if($topic_id){
-		$topic = str_replace($topic_id, "*", $topic_id);
-		$check_topic = " AND rss_topicid = '".$topic."' ";
-	}else{
-		$check_topic = '';
-	}
-	//$check_url = "{e_PLUGIN}rss_menu/rss.php?".$content_type.".2".($topic ? ".".$topic : "");
+	$check_topic = ($topic_id ? " AND rss_topicid = '".str_replace($topic_id, "*", $topic_id)."' " : "");
 	if(!$sql -> db_Select("rss", "*", "rss_class!='2' AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
 	{
 		require_once(HEADERF);
@@ -301,6 +261,7 @@ class rssCreate {
 				$path = e_PLUGIN."forum/e_rss.php";
 				break;
 
+			/*
 			case 10:
 				$this -> limit = '9';
 				$path='';
@@ -318,6 +279,7 @@ class rssCreate {
 					$loop++;
 				}
 				break;
+			*/
 
 			case 11:
 				if(!$this -> topicid) {
@@ -406,12 +368,6 @@ class rssCreate {
 		}
 
 	}
-
-	// deprecated, never used in rss... cameron, any idea why this is in here ?
-	//function striptags($text)
-	//{
-	//	return $text;
-	//}
 
 	function buildRss($rss_title) {
 		global $sql, $pref, $tp, $e107, $PLUGINS_DIRECTORY;
@@ -601,12 +557,13 @@ class rssCreate {
 					<link rel='self' href='".$e107->base_path.$PLUGINS_DIRECTORY."rss_menu/".e_PAGE."?".e_QUERY."' />\n";
 
 					//optional
+					include(e_ADMIN."ver.php");
 					echo "
-					<category term='cms'/>\n
+					<category term='e107'/>\n
 					<contributor>\n
 						<name>e107</name>\n
 					</contributor>\n
-					<generator uri='http://e107.org/' version='0.7.5'>e107</generator>\n";
+					<generator uri='http://e107.org/' version='".$e107info['e107_version']."'>e107</generator>\n";
 					//<icon>/icon.jpg</icon>\n
 					echo "
 					<logo>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</logo>\n

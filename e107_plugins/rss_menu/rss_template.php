@@ -8,10 +8,8 @@ if(!isset($RSS_LIST_HEADER)){
 		<tr>
 			<td class='fcaption' style='width:55%'>".RSS_LAN_ADMIN_4."</td>
 			<td class='fcaption' style='text-align:right'>".RSS_PLUGIN_LAN_6."</td>
-		</tr>
-		";
+		</tr>";
 }
-
 if(!isset($RSS_LIST_TABLE)){
 	$RSS_LIST_TABLE = "
 	<tr>
@@ -21,8 +19,7 @@ if(!isset($RSS_LIST_TABLE)){
 	<td class='forumheader3' style='text-align:right'>
     	{RSS_TYPES}
 	</td>
-	</tr>
-	";
+	</tr>";
 }
 if(!isset($RSS_LIST_FOOTER)){
 	$RSS_LIST_FOOTER = "</table>";
@@ -30,7 +27,6 @@ if(!isset($RSS_LIST_FOOTER)){
 
 //admin : rss listing
 if(!isset($RSS_ADMIN_LIST_HEADER)){
-
     $RSS_ADMIN_LIST_HEADER = "
     <div style='text-align:center;'>
     <form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
@@ -61,9 +57,8 @@ if(!isset($RSS_ADMIN_LIST_FOOTER)){
 	$RSS_ADMIN_LIST_FOOTER = "
 	<tr>
 		<td class='forumheader' colspan='7' style='text-align:center'>
-				{RSS_ADMIN_LIMITBUTTON}
-
-	</td>
+			{RSS_ADMIN_LIMITBUTTON}
+		</td>
 	</tr>
 	</table>
 	</form>
@@ -164,13 +159,9 @@ if(!isset($RSS_ADMIN_IMPORT_TABLE)){
 	</tr>";
 }
 
-//<td colspan='3' style='text-align:center' class='forumheader'>{RSS_ADMIN_IMPORT_CHECKBOXES}</td>
 if(!isset($RSS_ADMIN_IMPORT_FOOTER)){
-
 	$RSS_ADMIN_IMPORT_FOOTER = "
 	<tr style='vertical-align:top'>
-
-
 		<td colspan='5' style='text-align:center' class='forumheader'>
 			<input class='button' type='submit' name='import_rss' value='".RSS_LAN_ADMIN_17."' />
 		</td>
