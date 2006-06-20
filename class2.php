@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.282 $
-|     $Date: 2006-06-20 18:56:11 $
+|     $Revision: 1.283 $
+|     $Date: 2006-06-20 19:28:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	define("e_QUERY", $matches[2]);
 
-	if(strlen(e_MENU) == 2) // language code ie. [fr] 
+	if(strlen(e_MENU) == 2) // language code ie. [fr]
 	{
         require_once(e_HANDLER."language_class.php");
 		$lng = new language;
@@ -109,7 +109,7 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 }else {
 	define("e_MENU", "");
 	define("e_QUERY", $_SERVER['QUERY_STRING']);
-	define("e_LAN", "");
+  	define("e_LAN", "");
 }
 $e_QUERY = e_QUERY;
 
@@ -284,9 +284,11 @@ define("e_PAGE", $page);
 
 // sort out the users language selection
 if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
-	if($_GET['elan']){  // query support, for language selection splash pages. etc
-	$_POST['sitelanguage'] = $_GET['elan'];
+	if($_GET['elan'])  // query support, for language selection splash pages. etc
+	{
+		$_POST['sitelanguage'] = $_GET['elan'];
 	}
+
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
 	if ($pref['user_tracking'] == "session") {
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
@@ -294,7 +296,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (strpos(e_SELF, ADMINDIR) === FALSE) {
-			$locat = (!$_GET['elan'] && e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
+			$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LAN)) ? e_SELF."?".e_QUERY : e_SELF;
 		  		header("Location:".$locat);
 		}
 	}
