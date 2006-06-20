@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-20 06:50:09 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2006-06-20 08:12:25 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -43,7 +43,6 @@ $rss = new rss;
 
 global $tp;
 
-
 //delete entry
 if(isset($_POST['delete'])){
 	$d_idt = array_keys($_POST['delete']);
@@ -59,7 +58,6 @@ if(isset($_POST['create_rss'])){
 //update rss feed
 if(isset($_POST['update_rss'])){
 	$message = $rss -> dbrss("update");
-
 }
 
 //import rss feed
@@ -100,7 +98,6 @@ if(e_QUERY){
 	$sort = (isset($qs[2])) ? $qs[2] : "";
 }
 
-
 	//create
 	if(isset($qs[0]) && $qs[0] == 'create' && !$_POST){
 		$rss -> rssadmincreate();
@@ -119,11 +116,7 @@ if(e_QUERY){
 		$rss -> rssadminlist();
 	}
 
-
-
 require_once(e_ADMIN."footer.php");
-
-
 
 // ##### Display options --------------------------------------------------------------------------
 function admin_prefs_adminmenu(){
@@ -217,11 +210,11 @@ class rss{
 		$feedlist = array();
 
 		//news
-		$feed['name']		= 'News';
+		$feed['name']		= RSS_PLUGIN_LAN_12;
 		$feed['url']		= 'news';	//the identifier for the rss feed url
 		$feed['topic_id']	= '';		//the topic_id, empty on default (to select a certain category)
 		$feed['path']		= 'news';	//this is the plugin path location
-		$feed['text']		= 'The rss feed of the news';
+		$feed['text']		= RSS_PLUGIN_LAN_7;
 		$feed['class']		= '0';
 		$feed['limit']		= '9';
 		$feedlist[]			= $feed;
@@ -229,11 +222,11 @@ class rss{
 		//news categories
 		if($sqli -> db_Select("news_category", "*","category_id!='' ORDER BY category_name ")){
 			while($rowi = $sqli -> db_Fetch()){
-				$feed['name']		= 'News > '.$rowi['category_name'];
+				$feed['name']		= RSS_PLUGIN_LAN_12.' > '.$rowi['category_name'];
 				$feed['url']		= 'news';
 				$feed['topic_id']	= $rowi['category_id'];
 				$feed['path']		= 'news';
-				$feed['text']		= 'The rss feed of the news category: '.$rowi['category_name'];
+				$feed['text']		= RSS_PLUGIN_LAN_10.' '.$rowi['category_name'];
 				$feed['class']		= '0';
 				$feed['limit']		= '9';
 				$feedlist[]			= $feed;
@@ -241,11 +234,11 @@ class rss{
 		}
 
 		//download
-		$feed['name']		= 'Downloads';
+		$feed['name']		= RSS_PLUGIN_LAN_13;
 		$feed['url']		= 'download';
 		$feed['topic_id']	= '';
 		$feed['path']		= 'download';
-		$feed['text']		= 'The rss feed of the downloads';
+		$feed['text']		= RSS_PLUGIN_LAN_8;
 		$feed['class']		= '0';
 		$feed['limit']		= '9';
 		$feedlist[]			= $feed;
@@ -253,24 +246,23 @@ class rss{
 		//download categories
 		if($sqli -> db_Select("download_category", "*","download_category_id!='' ORDER BY download_category_order ")){
 			while($rowi = $sqli -> db_Fetch()){
-				$feed['name']		= 'Downloads > '.$rowi['download_category_name'];
+				$feed['name']		= RSS_PLUGIN_LAN_13.' > '.$rowi['download_category_name'];
 				$feed['url']		= 'download';
 				$feed['topic_id']	= $rowi['download_category_id'];
 				$feed['path']		= 'download';
-				$feed['text']		= 'The rss feed of the download category: '.$rowi['download_category_name'];
+				$feed['text']		= RSS_PLUGIN_LAN_11.' '.$rowi['download_category_name'];
 				$feed['class']		= '0';
 				$feed['limit']		= '9';
 				$feedlist[]			= $feed;
-			//	echo "cat = ".$rowi['download_category_id']." ".$rowi['download_category_name']."<br />";
 			}
 		}
 
 		//comments
-		$feed['name']		= 'Comments';
+		$feed['name']		= RSS_PLUGIN_LAN_14;
 		$feed['url']		= 'comments';
 		$feed['topic_id']	= '';
 		$feed['path']		= 'comments';
-		$feed['text']		= 'The rss feed of the comments';
+		$feed['text']		= RSS_PLUGIN_LAN_9;
 		$feed['class']		= '0';
 		$feed['limit']		= '9';
 		$feedlist[]			= $feed;
@@ -286,7 +278,6 @@ class rss{
 			}
 		}
 
-	 //	print_a($feedlist);
 		$feedlist = array_merge($feedlist, $plugin_feedlist);
 
 		$render=FALSE;
@@ -295,7 +286,6 @@ class rss{
 		foreach($feedlist as $k=>$feed){
 			$feed['topic_id']		= $tp -> toDB($feed['topic_id']);
 			$feed['url']			= $tp -> toDB($feed['url']);
-			//$rss_url		= "{e_PLUGIN}rss_menu/rss.php?".$url.".2".($topic_id ? ".".$topic_id : "");
 
 			//check if feed is not yet present
 			if(!$sql -> db_Select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
@@ -371,8 +361,6 @@ class rss{
 		{
 			$rss_topcid		= ($_POST['topic_id'][$key] ? $tp -> toDB($_POST['topic_id'][$key]) : '');
 			$rss_url		= ($_POST['url'][$key] ? $tp -> toDB($_POST['url'][$key]) : '');
-			//$rss_url		= "{e_PLUGIN}rss_menu/rss.php?".$url.".2".($topic_id ? ".".$topic_id : "");
-
 			$rss_path		= ($_POST['path'][$key] ? $tp -> toDB($_POST['path'][$key]) : '');
 			$rss_name		= ($_POST['name'][$key] ? $tp -> toDB($_POST['name'][$key]) : '');
 			$rss_text		= ($_POST['text'][$key] ? $tp -> toDB($_POST['text'][$key]) : '');
@@ -380,7 +368,6 @@ class rss{
 			$rss_class		= ($_POST['class'][$key] ? intval($_POST['class'][$key]) : '0');
 			$rss_limit		= ($_POST['limit'][$key] ? intval($_POST['limit'][$key]) : '0');
 
-			//echo "rss, '0', '".$rss_name."', '".$rss_url."', '".$rss_path."', '".$rss_text."', '".$rss_datestamp."', '".$rss_class."', '".$rss_limit."' <br /><br />";
 			$sql -> db_Insert("rss", "'0', '".$rss_name."', '".$rss_url."', '".$rss_topcid."', '".$rss_path."', '".$rss_text."', '".$rss_datestamp."', '".$rss_class."', '".$rss_limit."' ");
 		}
 		$message = count($_POST['importid'])." ".RSS_LAN_ADMIN_18;

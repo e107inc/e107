@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-06-20 06:50:09 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2006-06-20 08:12:25 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -75,4 +75,5 @@ $text = "
 $caption = (file_exists(THEME."images/RSS_menu.png") ? "<img src='".THEME_ABS."images/RSS_menu.png' alt='' style='vertical-align:middle' /> ".RSS_MENU_L2 : RSS_MENU_L2);
 
 $ns->tablerender($caption, $text, 'backend');
+
 ?>

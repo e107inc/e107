@@ -3,19 +3,16 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $rss_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 
-
 SC_BEGIN RSS_FEED
 global $row, $tp;
 $url2 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
 return "<a href='".$url2."'>".$tp->toHTML($row['rss_name'], TRUE)."</a>";
-//return $tp->toHTML($row['rss_name'], TRUE);
 SC_END
 
 SC_BEGIN RSS_ICON
 global $row, $tp;
 $url2 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
 return "<a href='".$url2."'>".RSS_ICON."</a>";
-//return RSS_ICON;
 SC_END
 
 SC_BEGIN RSS_TEXT
@@ -153,22 +150,8 @@ SC_END
 
 
 
-
-
-
 SC_BEGIN RSS_ADMIN_IMPORT_CHECK
 global $feed, $rs, $tp, $i;
-//$text  = "<input type='checkbox' name='importid[]' value='1' />";
-//$text .= "<input type='hidden' name='id[$i]' value='".$i."' />";
-//$text .= "<input type='hidden' name='name[]' value='".$tp->toForm($feed['name'])."' />";
-//$text .= "<input type='hidden' name='url[]' value='".$tp->toForm($feed['url'])."' />";
-//$text .= "<input type='hidden' name='topic_id[]' value='".$tp->toForm($feed['topic_id'])."' />";
-//$text .= "<input type='hidden' name='path[]' value='".$tp->toForm($feed['path'])."' />";
-//$text .= "<input type='hidden' name='text[]' value='".$tp->toForm($feed['text'])."' />";
-//$text .= "<input type='hidden' name='class[]' value='".$tp->toForm($feed['class'])."' />";
-//$text .= "<input type='hidden' name='limit[]' value='".intval($feed['limit'])."' />";
-//return $text;
-
 $text  = "<input type='checkbox' name='importid[$i]' value='1' />";
 $text .= "<input type='hidden' name='name[$i]' value='".$tp->toForm($feed['name'])."' />";
 $text .= "<input type='hidden' name='url[$i]' value='".$tp->toForm($feed['url'])."' />";
@@ -197,25 +180,13 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_IMPORT_URL
 global $feed;
-//return "{e_PLUGIN}rss_menu/rss.php?".$feed['url'].".2".($feed['topic_id'] ? ".".$feed['topic_id'] : "");
 return $feed['url'];
 SC_END
 
 SC_BEGIN RSS_ADMIN_IMPORT_TOPICID
 global $feed;
-//return "{e_PLUGIN}rss_menu/rss.php?".$feed['url'].".2".($feed['topic_id'] ? ".".$feed['topic_id'] : "");
 return $feed['topic_id'];
 SC_END
-
-SC_BEGIN RSS_ADMIN_IMPORT_CHECKBOXES
-$text = "
-<a href='javascript:void(0);' onclick=\"setCheckboxes('imlistform', true, 'importid[]'); return false;\">".RSS_LAN_ADMIN_26."</a> -
-<a href='javascript:void(0);' onclick=\"setCheckboxes('imlistform', false, 'importid[]'); return false;\">".RSS_LAN_ADMIN_27."</a><br />";
-return $text;
-SC_END
-
-
-
 
 */
 ?>
