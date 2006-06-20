@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-06-20 08:12:25 $
-|     $Author: lisa_ $
+|     $Revision: 1.52 $
+|     $Date: 2006-06-20 15:39:32 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,14 +23,11 @@ Query string: content_type.rss_type.[topic id]
 5: comments
 12: downloads (option: specify category)
 
-Plugins shouls use an e_rss.php file in their plugin folder
+Plugins should use an e_rss.php file in their plugin folder
 ----------------------------------------------------------------
 */
 
 require_once("../../class2.php");
-//if(e_LANGUAGE != "French"){
-//	$_GET['elan'] = "French";
-//}
 
 global $tp;
 
