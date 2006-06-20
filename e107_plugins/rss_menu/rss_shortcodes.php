@@ -5,13 +5,13 @@ $rss_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 
 SC_BEGIN RSS_FEED
 global $row, $tp;
-$url2 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url2 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
 return "<a href='".$url2."'>".$tp->toHTML($row['rss_name'], TRUE)."</a>";
 SC_END
 
 SC_BEGIN RSS_ICON
 global $row, $tp;
-$url2 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url2 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
 return "<a href='".$url2."'>".RSS_ICON."</a>";
 SC_END
 
@@ -22,10 +22,10 @@ SC_END
 
 SC_BEGIN RSS_TYPES
 global $row, $tp;
-$url1 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".1".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
-$url2 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
-$url3 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".3".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
-$url4 = e_PLUGIN."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants').".4".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url1 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".1".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url2 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url3 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".3".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url4 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".4".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
 
 $text = "
 <a href='".$url1."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='rss1' /></a>
@@ -63,7 +63,7 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_URL
 global $row;
-return "<a href='".e_PLUGIN."rss_menu/rss.php?".$row['rss_url']."'>".$row['rss_url']."</a>";
+return "<a href='".e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$row['rss_url']."'>".$row['rss_url']."</a>";
 SC_END
 
 SC_BEGIN RSS_ADMIN_TOPICID
@@ -101,7 +101,7 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_FORM_URL
 global $row,$PLUGINS_DIRECTORY;
-return SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php? <input class='tbox' type='text' name='rss_url' size='10' value=\"".$row['rss_url']."\" maxlength='50' /> .{".RSS_LAN_ADMIN_9."}.{".RSS_LAN_ADMIN_12."}";
+return SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php?".e_LANQRY." <input class='tbox' type='text' name='rss_url' size='10' value=\"".$row['rss_url']."\" maxlength='50' /> .{".RSS_LAN_ADMIN_9."}.{".RSS_LAN_ADMIN_12."}";
 SC_END
 
 SC_BEGIN RSS_ADMIN_FORM_TOPICID
