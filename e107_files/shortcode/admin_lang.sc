@@ -43,12 +43,15 @@ if (ADMIN) {
 				$aff[] = str_replace(MPREFIX."lan_".$clang."_","",$tabs);
 			}
 		}
+		require_once(e_HANDLER."language_class.php");
+		$lng = new language;
 
 		$text .= "<div><img src='".e_IMAGE."admin_images/language_16.png' alt='' />&nbsp;";
 		if(isset($aff))
 		{
-			$text .= $sql->mySQLlanguage.
-			": <span class='button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
+			$text .= $sql->mySQLlanguage;
+			$text .= " (".$lng->convert($sql->mySQLlanguage).")
+			: <span class='button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
 			$text .= implode("<br />",$aff);
@@ -56,11 +59,12 @@ if (ADMIN) {
 		}
 		elseif($sql->mySQLlanguage)
 		{
-			$text .= $sql->mySQLlanguage.": ".LAN_INACTIVE;
+			$text .= $sql->mySQLlanguage;
+			$text .= " (".$lng->convert($sql->mySQLlanguage).")";
 		}
 		else
 		{
-			$text .= $pref['sitelanguage'].": ".LAN_INACTIVE;
+			$text .= $pref['sitelanguage'];
 		}
 		$text .= "<br /><br /></div>";
 
