@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-03-16 15:58:14 $
+|     $Revision: 1.60 $
+|     $Date: 2006-06-20 20:13:48 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -130,12 +130,6 @@ if ($action == 'uninstall')
 		$func = $eplug_folder.'_uninstall';
 		if (function_exists($func)) {
 			$text .= call_user_func($func);
-		}
-
-		if(is_array($eplug_rss)) {
-			foreach($eplug_rss as $key=>$values) {
-				$text .= ($sql -> db_Update("plugin", "plugin_rss = '' WHERE plugin_id='{$id}'")) ? EPL_ADLAN_47 .". ($key)<br />" : EPL_ADLAN_49 .". ($key)<br />";
-			}
 		}
 		
 		if($_POST['delete_tables'])

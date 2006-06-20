@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.178 $
-|     $Date: 2006-04-09 00:51:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.179 $
+|     $Date: 2006-06-20 20:13:48 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,6 +71,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_in
 }
 
 // $dbupdate["701_to_702"] = LAN_UPDATE_8." .7.1 ".LAN_UPDATE_9." .7.2";
+$dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
 $dbupdate["617_to_700"] = LAN_UPDATE_8." .617 ".LAN_UPDATE_9." .7";
 $dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
 $dbupdate["615_to_616"] = LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616";
@@ -115,6 +116,28 @@ function update_701_to_702($type='') {
 
 }
 */
+
+function update_70x_to_706($type='') {
+	global $sql;
+
+	if ($type == "do") {
+		//remove plugin_rss (new rss plugin no longer requires this field)
+		if($sql->db_Field("plugin",5) == "plugin_rss"){
+			mysql_query("ALTER TABLE `".MPREFIX."plugin` DROP `plugin_rss`;");
+			catch_error();
+		}
+		return '';
+
+	} else {
+
+		if($sql->db_Field("plugin",5) == "plugin_rss"){
+			return update_needed();
+		}
+		
+		// No updates needed
+	 	return TRUE;
+	}
+}
 
 // ------------------------------- .6 to .7 ----------------------------------
 function update_617_to_700($type='') {
@@ -1038,9 +1061,11 @@ function update_617_to_700($type='') {
 			}
 
 
-			if($sql->db_Field("plugin",5) != "plugin_rss"){
-				mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` varchar(255) NOT NULL default ''");
-				catch_error();
+			if (!function_exists("update_70x_to_706")) {
+				if($sql->db_Field("plugin",5) != "plugin_rss"){
+					mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` varchar(255) NOT NULL default ''");
+					catch_error();
+				}
 			}
 
 		//20050630: added comment_lock to comments
@@ -1309,8 +1334,10 @@ function update_617_to_700($type='') {
 			return update_needed();
 		}
 
-		if($sql->db_Field("plugin",5) != "plugin_rss"){
-		 	return update_needed();
+		if (!function_exists("update_70x_to_706")) {
+			if($sql->db_Field("plugin",5) != "plugin_rss"){
+				return update_needed();
+			}
 		}
 
 		if($sql->db_Field("links",7) != "link_parent"){

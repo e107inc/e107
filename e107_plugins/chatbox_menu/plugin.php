@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-20 20:13:48 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,8 +56,6 @@ $eplug_prefs = array(
 	'cb_mod' => e_UC_ADMIN
 );
 
-
-
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
 	"chatbox"
@@ -76,39 +74,18 @@ $eplug_tables = array(
 	) TYPE=MyISAM;"
 );
 
-$eplug_rss['chatbox'] = array(
-	"id" => "chatbox",
-	"author" => "cb_nick",
-	"link" => $eplug_folder."/chat.php?#",
-	"linkid" => "cb_id",
-	"title" => "",
-	"description" => "cb_message",
-	"query" => "SELECT * FROM #chatbox WHERE cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0, 9",
-	"category" => "1",
-	"datestamp" => "cb_datestamp",
-	"enc_url" => "0",
-	"enc_leng" => "0",
-	"enc_type" => "0"
-);
-
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = FALSE;
 $eplug_link_name = '';
 $eplug_link_url = '';
 
-
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = "Chatbox has successfully installed. To configure, click on the link on the admin front page.";
 
-
 // upgrading ... //
-
 $upgrade_add_prefs = "";
-
 $upgrade_remove_prefs = "";
-
 $upgrade_alter_tables = "";
-
 $eplug_upgrade_done = "";
 
 if (!function_exists('chatbox_menu_uninstall')) {
