@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.283 $
-|     $Date: 2006-06-20 19:28:47 $
+|     $Revision: 1.284 $
+|     $Date: 2006-06-20 20:13:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -102,14 +102,14 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	{
         require_once(e_HANDLER."language_class.php");
 		$lng = new language;
-		define("e_LAN",($lng->convert(e_MENU)));
-		$_GET['elan'] = e_LAN;
+		define("e_LANCODE",TRUE);
+		$_GET['elan'] = $lng->convert(e_MENU);
 	}
 
 }else {
 	define("e_MENU", "");
 	define("e_QUERY", $_SERVER['QUERY_STRING']);
-  	define("e_LAN", "");
+  	define("e_LANCODE", "");
 }
 $e_QUERY = e_QUERY;
 
@@ -296,7 +296,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (strpos(e_SELF, ADMINDIR) === FALSE) {
-			$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LAN)) ? e_SELF."?".e_QUERY : e_SELF;
+			$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
 		  		header("Location:".$locat);
 		}
 	}
@@ -336,12 +336,22 @@ define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
 $sql->db_Mark_Time('(Start: Pref/multilang done)');
 
 $language=(isset($_COOKIE['e107language_'.$pref['cookie_name']]) ? $_COOKIE['e107language_'.$pref['cookie_name']] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
-// define("e_LAN", $language);
+
 define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
+
+if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage']){
+	list($clc) = explode("_",CORE_LC);
+	define("e_LAN", strtolower($clc));
+	define("e_LANQRY", "[".e_LAN."]");
+	unset($clc);
+}else{
+    define("e_LAN","");
+	define("e_LANQRY", "");
+}
 
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
