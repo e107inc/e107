@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-20 08:12:25 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-20 15:39:32 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -76,9 +76,9 @@ $eplug_tables = array(
 	) TYPE=MyISAM;",
 
 	"INSERT INTO ".MPREFIX."rss VALUES
-	(0, '".RSS_PLUGIN_LAN_12."', 'news', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
-	(0, '".RSS_PLUGIN_LAN_13."', 'download', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
-	(0, '".RSS_PLUGIN_LAN_14."', 'comments', '', 'comments', '".RSS_PLUGIN_LAN_9."', '".time()."', 0, 9)
+	(0, '".RSS_PLUGIN_LAN_12."', 'News', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_13."', 'Downloads', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_14."', 'Comments', '', 'comments', '".RSS_PLUGIN_LAN_9."', '".time()."', 0, 9)
 	"
 );
 
@@ -109,9 +109,9 @@ $upgrade_alter_tables	= array(
 	) TYPE=MyISAM;",
 
 	"INSERT INTO ".MPREFIX."rss VALUES
-	(0, '".RSS_PLUGIN_LAN_12."', 'news', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
-	(0, '".RSS_PLUGIN_LAN_13."', 'download', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
-	(0, '".RSS_PLUGIN_LAN_14."', 'comments', '', 'comments', '".RSS_PLUGIN_LAN_9."', '".time()."', 0, 9)
+	(0, '".RSS_PLUGIN_LAN_12."', 'News', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_13."', 'Downloads', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_14."', 'Comments', '', 'comments', '".RSS_PLUGIN_LAN_9."', '".time()."', 0, 9)
 	"
 );
 
