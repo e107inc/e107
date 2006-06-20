@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-06-18 00:59:13 $
+|     $Revision: 1.24 $
+|     $Date: 2006-06-20 22:32:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ if (!is_array($pref['frontpage']) && $pref['frontpage'] != 'Array') {
 	save_prefs();
 }
 
-$query = (e_QUERY && e_QUERY != '' ? '?'.e_QUERY : '');
+$query = (e_QUERY && e_QUERY != '' && !$_GET['elan']) ? '?'.e_QUERY : '';
 
 if ($pref['membersonly_enabled'] && !USER) {
 	header('location: '.e_LOGIN);
@@ -83,11 +83,13 @@ if(isset($pref['frontpage_method']) && $pref['frontpage_method'] == "include") {
 	}
 } else {
 	if($location == "index.php"){
+
       	require_once(HEADERF);
 	 	require_once(FOOTERF);
 	  	exit;
-	}elseif($location != "index.php" && !$_GET['elan']){ // avoid infinite looping when using ?elan= and index.php as the start page.
-	  	header("Location: {$location}");
+	}elseif($location != "index.php"){ // avoid infinite looping when using ?elan= and index.php as the start page.
+	   	header("Location: {$location}");
+
 	}
 
 	exit();
