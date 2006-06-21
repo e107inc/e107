@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2006-05-18 15:12:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.70 $
+|     $Date: 2006-06-21 17:09:55 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 
@@ -198,9 +198,13 @@ if (isset($_POST['updatesettings']))
 		$password2 = "";
 	}
 
-	if (!check_email($_POST['email'])) 
+	if (isset($pref['disable_emailcheck']) && $pref['disable_emailcheck']==1) 
 	{
-	  	$error .= LAN_106."\\n";
+	} else {
+		if (!check_email($_POST['email'])) 
+		{
+	  		$error .= LAN_106."\\n";
+		}
 	}
 
 	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !=".USERID."' ")) {
