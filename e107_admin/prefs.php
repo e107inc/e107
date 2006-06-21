@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2006-06-05 13:41:31 $
-|     $Author: lisa_ $
+|     $Revision: 1.91 $
+|     $Date: 2006-06-21 17:10:32 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -416,6 +416,14 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<td class='forumheader3' style='width:50%;text-align:right' >
 	<input type='radio' name='signup_remote_emailcheck' value='1'".($pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='signup_remote_emailcheck' value='0'".(!$pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_167."<br /></td>
+	<td class='forumheader3' style='width:50%;text-align:right' >
+	<input type='radio' name='disable_emailcheck' value='1'".($pref['disable_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='disable_emailcheck' value='0'".(!$pref['disable_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
