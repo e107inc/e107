@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.98 $
-|		$Date: 2006-06-14 19:18:46 $
+|		$Revision: 1.99 $
+|		$Date: 2006-06-21 18:29:51 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1244,7 +1244,7 @@ function show_content_item(){
 				$options = "";
 				for ($i=0; $i < count($pages); $i++) {
 					if(!isset($qs[2])){ $idp = 1; }else{ $idp = $qs[2]; }
-					if($idp == $i+1){ $pre = " - current"; }else{ $pre = ""; }
+					if($idp == $i+1){ $pre = CONTENT_LAN_92; }else{ $pre = ""; }
 					if($matches[0][$i] == "[newpage]"){
 						$pagename[$i] = CONTENT_LAN_78;
 					}else{
