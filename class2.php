@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.284 $
-|     $Date: 2006-06-20 20:13:09 $
+|     $Revision: 1.285 $
+|     $Date: 2006-06-21 04:49:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
         require_once(e_HANDLER."language_class.php");
 		$lng = new language;
 		define("e_LANCODE",TRUE);
-		$_GET['elan'] = $lng->convert(e_MENU);
+		$_POST['setlanguage'] = $lng->convert(e_MENU);
 	}
 
 }else {
@@ -290,6 +290,8 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 	}
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
+
+
 	if ($pref['user_tracking'] == "session") {
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 	} else {
@@ -349,8 +351,8 @@ if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref
 	define("e_LANQRY", "[".e_LAN."]");
 	unset($clc);
 }else{
-    define("e_LAN","");
-	define("e_LANQRY", "");
+    define("e_LAN", FALSE);
+	define("e_LANQRY", FALSE);
 }
 
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
@@ -616,13 +618,17 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SEL
 	require_once(THEME."theme.php");
 }
 
+$exclude_lan = array("lan_signup.php");  // required for multi-language.
+
 if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !== FALSE) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
-} else if (strpos(e_SELF, $PLUGINS_DIRECTORY) === FALSE) {
+} else if (!in_array("lan_".e_PAGE,$exclude_lan) && strpos(e_SELF, $PLUGINS_DIRECTORY) === FALSE) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
+
+
 
 if(!defined("IMODE")) define("IMODE", "lite");
 
