@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-06-09 16:27:00 $
+|     $Revision: 1.36 $
+|     $Date: 2006-06-21 16:56:16 $
 |     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,9 @@ require_once(e_FILE."shortcode/batch/user_shortcodes.php");
 
 if (isset($_POST['delp'])) {
 	$tmp = explode(".", e_QUERY);
+	if ($tmp[0]=="self") {
+		$tmp[1]=USERID;
+	}
 	if (USERID == $tmp[1] || (ADMIN && getperms("4"))) {
 		$sql->db_Select("user", "user_sess", "user_id='". USERID."'");
 		@unlink(e_FILE."public/avatars/".$row['user_sess']);
