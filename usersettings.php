@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2006-06-21 17:27:48 $
+|     $Revision: 1.72 $
+|     $Date: 2006-06-21 18:39:12 $
 |     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
@@ -167,14 +167,6 @@ if (isset($_POST['updatesettings']))
 	}
 
 //	$username = strip_tags($_POST['username']);
-	$loginname = strip_tags($_POST['loginname']);
-	
-	if (!$loginname)
-	{
-		$sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
-		$row = $sql -> db_Fetch();
-		$loginname = $row['user_loginname'];
-	}
 	
 	$user_sess = "";
 	if ($file_userfile['error'] != 4)
@@ -211,22 +203,6 @@ if (isset($_POST['updatesettings']))
 
 	if (!$error)
 	{
-		if (isset($_POST['username']) && check_class($pref['displayname_class']))
-		{
-			$username = strip_tags($_POST['username']);
-			$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
-			$new_username = "user_name = '{$username}'";
-		}
-
-		$_POST['signature'] = $tp->toDB($_POST['signature']);
-		$_POST['realname'] = $tp->toDB($_POST['realname']);
-
-		$new_customtitle = "";
-
-		if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
-		{
-			$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
-		}
 		unset($_POST['password1']);
 		unset($_POST['password2']);
 
@@ -242,6 +218,32 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
+
+			$loginname = strip_tags($_POST['loginname']);
+			
+			if (!$loginname)
+			{
+				$sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
+				$row = $sql -> db_Fetch();
+				$loginname = $row['user_loginname'];
+			}
+
+			if (isset($_POST['username']) && check_class($pref['displayname_class']))
+			{
+				$username = strip_tags($_POST['username']);
+				$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
+				$new_username = "user_name = '{$username}'";
+			}
+	
+			$_POST['signature'] = $tp->toDB($_POST['signature']);
+			$_POST['realname'] = $tp->toDB($_POST['realname']);
+	
+			$new_customtitle = "";
+	
+			if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
+			{
+				$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
+			}
 
 			if($sql->db_Select('user_extended_struct'))	{
 				while($row = $sql->db_Fetch()) {
