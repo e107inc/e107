@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-06-11 16:20:25 $
+|     $Revision: 1.12 $
+|     $Date: 2006-06-21 06:55:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -689,5 +689,6 @@ define("CONTENT_ADMIN_OPT_LAN_162", "caption content items (only used if rendert
 define("CONTENT_ADMIN_OPT_LAN_163", "show next and previous page links");
 define("CONTENT_ADMIN_OPT_LAN_164", "caption for previous page link<br />(use {PAGETITLE} to add the title of the previous page)");
 define("CONTENT_ADMIN_OPT_LAN_165", "caption for next page link<br />(use {PAGETITLE} to add the title of the next page)");
+define("CONTENT_ADMIN_OPT_LAN_166", "use 'all' to show full text");
 
 ?>

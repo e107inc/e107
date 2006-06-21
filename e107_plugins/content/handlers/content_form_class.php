@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.108 $
-|		$Date: 2006-06-14 07:42:49 $
+|		$Revision: 1.109 $
+|		$Date: 2006-06-21 06:55:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -3114,7 +3114,7 @@ class contentform{
 
 			//content_cat_text_char_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_82." : ".CONTENT_ADMIN_OPT_LAN_81;
-			$TOPIC_FIELD = $rs -> form_text("content_cat_text_char", 10, $content_pref['content_cat_text_char'], 3)." (".CONTENT_ADMIN_OPT_LAN_80.")";
+			$TOPIC_FIELD = $rs -> form_text("content_cat_text_char", 10, $content_pref['content_cat_text_char'], 3)." <br />(".CONTENT_ADMIN_OPT_LAN_80.", ".CONTENT_ADMIN_OPT_LAN_166.")";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_cat_text_post_
