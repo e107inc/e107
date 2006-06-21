@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2006-06-21 17:09:55 $
+|     $Revision: 1.71 $
+|     $Date: 2006-06-21 17:27:48 $
 |     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
@@ -122,51 +122,6 @@ if (isset($_POST['updatesettings']))
 			$error .= LAN_SIGNUP_6.$signup_option_title[$key].LAN_SIGNUP_7."\\n";
 		}
     }
-
-
-	if($sql->db_Select('user_extended_struct'))	{
-		while($row = $sql->db_Fetch()) {
-			$extList["user_".$row['user_extended_struct_name']] = $row;
-		}
-	}
-
-	$ue_fields = "";
-	foreach($_POST['ue'] as $key => $val)
-	{
-		$err = false;
-		$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
-		$regex = $tp->toText($parms[1]);
-		$regexfail = $tp->toText($parms[2]);
-		if(defined($regexfail)) {$regexfail = constant($regexfail);}
-		if($val == '' && $extList[$key]['user_extended_struct_required'] == 1 && !$_uid)
-		{
-			$error .= LAN_SIGNUP_6.substr($key,5)." ".LAN_SIGNUP_7."\\n";
-			$err = TRUE;
-		}
-		if($regex != "" && $val != "")
-		{
-			if(!preg_match($regex, $val))
-			{
-				$error .= $regexfail."\\n";
-				$err = TRUE;
-			}
-		}
-		if(!$err)
-		{
-			$val = $tp->toDB($val);
-			$ue_fields .= ($ue_fields) ? ", " : "";
-			$ue_fields .= $key."='".$val."'";
-		}
-	}
-	if($ue_fields)
-	{
-		$hidden_fields = implode("^", array_keys($_POST['hide']));
-		if($hidden_fields != "")
-		{
-			$hidden_fields = "^".$hidden_fields."^";
-		}
-		$ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
-	}
 
 	// ====================================================================
 
@@ -287,6 +242,52 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
+
+			if($sql->db_Select('user_extended_struct'))	{
+				while($row = $sql->db_Fetch()) {
+					$extList["user_".$row['user_extended_struct_name']] = $row;
+				}
+			}
+		
+			$ue_fields = "";
+			foreach($_POST['ue'] as $key => $val)
+			{
+				$err = false;
+				$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
+				$regex = $tp->toText($parms[1]);
+				$regexfail = $tp->toText($parms[2]);
+				if(defined($regexfail)) {$regexfail = constant($regexfail);}
+				if($val == '' && $extList[$key]['user_extended_struct_required'] == 1 && !$_uid)
+				{
+					$error .= LAN_SIGNUP_6.substr($key,5)." ".LAN_SIGNUP_7."\\n";
+					$err = TRUE;
+				}
+				if($regex != "" && $val != "")
+				{
+					if(!preg_match($regex, $val))
+					{
+						$error .= $regexfail."\\n";
+						$err = TRUE;
+					}
+				}
+				if(!$err)
+				{
+					$val = $tp->toDB($val);
+					$ue_fields .= ($ue_fields) ? ", " : "";
+					$ue_fields .= $key."='".$val."'";
+				}
+			}
+			if($ue_fields)
+			{
+				$hidden_fields = implode("^", array_keys($_POST['hide']));
+				if($hidden_fields != "")
+				{
+					$hidden_fields = "^".$hidden_fields."^";
+				}
+				$ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
+			}
+
+
 			$sql->db_Update("user", "{$new_username} {$pwreset} ".$sesschange.", user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
 			// If user has changed display name, update the record in the online table
 			if(isset($username) && ($username != USERNAME) && !$_uid)
