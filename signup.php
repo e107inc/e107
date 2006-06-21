@@ -11,14 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2006-06-05 09:51:12 $
+|     $Revision: 1.91 $
+|     $Date: 2006-06-21 04:49:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
+$qs = explode(".", e_QUERY);
+if($qs[0] != "activate"){   // multi-language fix. 
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+	e107_include_once(e_LANGUAGEDIR."English/lan_signup.php");
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
+}
+
 include_once(e_HANDLER."user_extended_class.php");
 $usere = new e107_user_extended;
 require_once(e_HANDLER."calendar/calendar_class.php");
@@ -37,6 +43,8 @@ $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 // Resend Activation Email ------------------------------------------->
 if(e_QUERY == "resend" && !USER)
 {
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 	require_once(HEADERF);
 	$clean_email = check_email($tp -> toDB($_POST['resend_email']));
 
@@ -131,6 +139,8 @@ if(!$_POST)   // Notice Removal.
 
 if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.aftersignup"))
 {
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 	if(e_QUERY == "preview.aftersignup")
 	{
 		require_once(HEADERF);
@@ -216,8 +226,25 @@ if(USER)
 if (e_QUERY)
 {
 	$qs = explode(".", e_QUERY);
-	if ($qs[0] == "activate" && count($qs) == 3 && $qs[2])
+	if ($qs[0] == "activate" && (count($qs) == 3 || count($qs) == 4) && $qs[2])
 	{
+
+		if($qs[3] && strlen($qs[3]) == 2 )
+		{
+			require_once(e_HANDLER."language_class.php");
+			$lng = new language;
+			$the_language = $lng->convert($qs[3]);
+			if(is_readable(e_LANGUAGEDIR.$the_language."/lan_signup.php"))
+			{
+				include(e_LANGUAGEDIR.$the_language."/lan_signup.php");
+			}
+			else
+			{
+				require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+ 			}
+		}
+
+
 		$e107cache->clear("online_menu_totals");
 		if ($sql->db_Select("user", "*", "user_sess='".$tp -> toDB($qs[2], true)."' "))
 		{
@@ -239,6 +266,7 @@ if (e_QUERY)
 		}
 	}
 }
+
 
 if (isset($_POST['register']))
 {
@@ -729,7 +757,7 @@ function render_email($preview = FALSE)
 		$u_key = "1234567890ABCDEFGHIJKLMNOP";
 	}
 
-	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
+	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key.".".e_LAN));
 	$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
 
 	if (file_exists(THEME."email_template.php"))
