@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/integrity_check/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-02-15 15:00:07 $
-|     $Author: whoisrich $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 define("Integ_01", "Saving successful");
 define("Integ_02", "Saving failed");
 define("Integ_03", "Missing Files:");
@@ -37,9 +37,9 @@ define("Integ_24", "Admin Front Page");
 define("Integ_25", "Leave Admin Area");
 define("Integ_26", "Load Site with normal header");
 define("Integ_27", "USE THE FILE INSPECTOR FOR CHECKING CORE FILES");
-	
-// define("Integ_29", "<br /><br /><b>*<u>CRC-ERRORS:</u></b><br />These are checksum errors and there are two possible reasons for this:<br />-You changed something within the mentioned file, so it isn't longer the same as the original.<br />-The mentioned file is corrupt, you should reupload it!");
-// language file should contain NO html. 
+
+// define("Integ_29", "<br /><br /><b>*<u>CRC-ERRORS:</u></b><br />These are checksum errors and there are two possible reasons for this:<br />-You changed something within the mentioned file, so it isn't longer the same as the original.<br />-The mentioned file is corrupt, you should re-upload it!");
+// language file should contain NO html.
 
 define("Integ_30", "For less cpu-usage , you can do the checking in 1 - 10 steps.");
 define("Integ_31", "Steps: ");
@@ -51,5 +51,5 @@ define("Integ_36", "Click here, if you don't want to wait 5 Seconds till the nex
 define("Integ_37", "Click me");
 define("Integ_38", "Another <u><i>{counts}</i></u> lines to do...");
 define("Integ_39", "Please delete the file:<br />".e_PLUGIN."integrity_check/<u><i>do_core_file.php</i></u>!<br />It is outdated and never meant for public release...");
-	
+
 ?>

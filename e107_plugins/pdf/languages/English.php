@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-16 10:36:59 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ define("PDF_LAN_14", "show sitename on pdf?");
 define("PDF_LAN_15", "show creator page url on pdf?");
 define("PDF_LAN_16", "show page numbers on pdf?");
 define("PDF_LAN_17", "update");
-define("PDF_LAN_18", "PDF preferences succesfully updated");
+define("PDF_LAN_18", "PDF preferences successfully updated");
 define("PDF_LAN_19", "Page");
 define("PDF_LAN_20", "error reporting");
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-01-05 16:21:07 $
+|     $Revision: 1.18 $
+|     $Date: 2006-06-22 19:49:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@ define("LAN_103", "That user name cannot be accepted as valid, please choose a d
 define("LAN_104", "That login name already exists in the database, please choose a different login name");
 define("LAN_105", "The two passwords do not match");
 define("LAN_106", "That doesn't appear to be a valid email address");
-define("LAN_107", "Thankyou! You are now a registered member of");
+define("LAN_107", "Thank you! You are now a registered member of");
 define("LAN_108", "Registration complete");
 define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
 define("LAN_110", "Registration");
@@ -39,8 +39,8 @@ define("LAN_401", "Your account has now been activated, please");
 define("LAN_402", "Registration activated");
 define("LAN_403", "Welcome to");
 define("LAN_404", "Registration details for");
-define("LAN_405", "This stage of registation is complete. You will receive a confirmation email containing your login details. Please follow the link in the email to complete the signup process and activate your account.");
-define("LAN_406", "Thankyou!");
+define("LAN_405", "This stage of registration is complete. You will receive a confirmation email containing your login details. Please follow the link in the email to complete the signup process and activate your account.");
+define("LAN_406", "Thank you!");
 define("LAN_407", "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
 define("LAN_408", "A user with that email address already exists. Please use the 'forgot password' screen to retrieve your password.");
 define("LAN_SIGNUP_1", "Min.");
@@ -50,7 +50,7 @@ define("LAN_SIGNUP_4", "Your password must be at least ");
 define("LAN_SIGNUP_5", " characters long.");
 define("LAN_SIGNUP_6", "Your ");
 define("LAN_SIGNUP_7", " is required");
-define("LAN_SIGNUP_8", "Thankyou!");
+define("LAN_SIGNUP_8", "Thank you!");
 define("LAN_SIGNUP_9", "Unable to proceed.");
 define("LAN_SIGNUP_10", "Yes");
 define("LAN_SIGNUP_11", ".");
@@ -85,7 +85,7 @@ define("LAN_SIGNUP_32", "What's an XUP file?");
 define("LAN_SIGNUP_33", "Type path or choose avatar");
 define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 define("LAN_SIGNUP_35", "Click here to register using an XUP file");
-define("LAN_SIGNUP_36", "An error has occured creating your user information, please contact the site admin");
+define("LAN_SIGNUP_36", "An error has occurred creating your user information, please contact the site admin");
 
 define("LAN_LOGINNAME", "Login Name");
 define("LAN_PASSWORD", "Password");
@@ -95,7 +95,7 @@ define("LAN_EMAIL_04", "Please keep this email for your own information.");
 define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.");
 define("LAN_EMAIL_06", "Thanks for your registration.");
 
-define("LAN_SIGNUP_37", "This stage of registation is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
+define("LAN_SIGNUP_37", "This stage of registration is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
 define("LAN_SIGNUP_38", "You entered two different email addresses. Please enter a valid email address in the two fields provided");
 define("LAN_SIGNUP_39", "Re-type Email Address:");
 ?>

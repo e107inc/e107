@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-10-05 09:51:26 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 define("POLL_ADLAN01", "Poll");
 define("POLL_ADLAN02", "The poll plugin allows you to define polls in either a menu or forum post.");
 define("POLL_ADLAN03", "Configure polls");
-define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remeber to activate the menu item from your menus page.");
+define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remember to activate the menu item from your menus page.");
 
 define("POLLAN_MENU_CAPTION", "Poll");
 
@@ -54,7 +54,7 @@ define("POLLAN_27", "comments");
 define("POLLAN_28", "Previous polls");
 define("POLLAN_29", "posted by");
 define("POLLAN_30", "Submit");
-define("POLLAN_31", "votes");
+define("POLLAN_31", "Votes");
 define("POLLAN_32", "Click here to see results");
 define("POLLAN_33", "No previous polls yet.");
 define("POLLAN_34", "Title");
@@ -62,7 +62,7 @@ define("POLLAN_35", "Posted by");
 define("POLLAN_36", "Active");
 define("POLLAN_37", "active from");
 define("POLLAN_38", "to");
-define("POLLAN_39", "Thankyou for voting!");
+define("POLLAN_39", "Thank you for voting!");
 define("POLLAN_40", "Click here to see results");
 
 define("POLLAN_41", "This poll is restricted to members only");

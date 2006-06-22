@@ -29,7 +29,7 @@ define('ADLAN_PM_26', "Allow user to request read receipt email notifications");
 define('ADLAN_PM_27', "Allow posting of attachments");
 define('ADLAN_PM_28', "Maximum attachment size");
 define('ADLAN_PM_29', "Allow sending to all members");
-define('ADLAN_PM_30', "Allow sending to multiple receipients");
+define('ADLAN_PM_30', "Allow sending to multiple recipients");
 define('ADLAN_PM_31', "Enable sending to userclass");
 define('ADLAN_PM_32', "Update Settings");
 define('ADLAN_PM_33', "Inactive (no limits)");
