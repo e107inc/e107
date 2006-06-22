@@ -11,9 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-01-14 12:02:10 $
-|     $Author: lisa_ $
+|     $Revision: 1.17 $
+|     $Date: 2006-06-22 11:07:19 $
+|     $Author: mcfly_e107 $
+|
+| 15.06.06 - bug fix for recurring events - Bug ref 2911
+|
 +----------------------------------------------------------------------------+
 */ 
 
@@ -147,6 +150,7 @@ if ($sql->db_Select_gen($qry)){
 		// check for recurring events in this month
 		if($row['event_recurring']=='1' && $month == $row['event_rec_y']){
 			$row['event_start'] = mktime(0,0,0,$row['event_rec_y'],$row['event_rec_m'],$year);
+				$row['event_end'] = $row['event_start'];    // Added
 		}
 
 		//1) start in month, end in month
