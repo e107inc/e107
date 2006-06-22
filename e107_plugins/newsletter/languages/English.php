@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 17:23:35 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,7 +22,7 @@ define("NLLAN_MENU_CAPTION", "Newsletter");
 define("NLLAN_01", "Newsletter");
 define("NLLAN_02", "Provides a quick and easy way to configure and send newsletters");
 define("NLLAN_03", "Configure Newsletters");
-define("NLLAN_04", "The newsletter plugin has been successfuly installed. To configure, return to your main admin page and click on 'Newsletter' in the plugin section.");
+define("NLLAN_04", "The newsletter plugin has been successfully installed. To configure, return to your main admin page and click on 'Newsletter' in the plugin section.");
 define("NLLAN_05", "No newsletters defined yet");
 
 define("NLLAN_06", "Name");

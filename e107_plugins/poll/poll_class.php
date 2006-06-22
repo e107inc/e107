@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-06-02 00:22:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.45 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -30,7 +30,7 @@ class poll
 
 	var $pollRow;
 	var $pollmode;
-	
+
 	function delete_poll($existing)
 	{
 		global $sql;
@@ -84,7 +84,7 @@ class poll
 				}
 				$sql -> db_Update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
 			}
-	
+
 			$message = POLLAN_45;
 		} else {
 
@@ -122,14 +122,14 @@ class poll
 		if ($sql->db_Select_gen($query))
 		{
 			$pollArray = $sql -> db_Fetch();
-		
+
 			if (!check_class($pollArray['poll_vote_userclass']))
 			{
 				$POLLMODE = "disallowed";
 			}
 			else
 			{
-		
+
 				switch($pollArray['poll_storage_method'])
 				{
 					case POLL_MODE_COOKIE:
@@ -144,7 +144,7 @@ class poll
 							$POLLMODE = "notvoted";
 						}
 					break;
-		
+
 					case POLL_MODE_IP:
 						$userid = $e107->getip();
 						$voted_ids = explode("^", substr($pollArray['poll_ip'], 0, -1));
@@ -157,7 +157,7 @@ class poll
 							$POLLMODE = "notvoted";
 						}
 					break;
-		
+
 					case POLL_MODE_USERID:
 						if(!USER)
 						{
@@ -178,7 +178,7 @@ class poll
 						}
 					break;
 				}
-			}		
+			}
 		}
 		if(isset($_POST['pollvote']) && $POLLMODE == "notvoted")
 		{
@@ -212,7 +212,7 @@ class poll
 					}
 					$votep = implode(chr(1), $votes);
 					$pollArray['poll_votes'] = $votep;
-	
+
 					$sql->db_Update("polls", "poll_votes = '$votep', poll_ip='".$poll_ip.$userid."^' WHERE poll_id=".$poll_id);
 					echo "
 				<script type='text/javascript'>
@@ -220,15 +220,15 @@ class poll
 				setcook({$poll_id});
 				//-->
 				</script>
-				";					
+				";
 					$POLLMODE = "voted";
-	
+
 			}
 		}
 		$this->pollRow = $pollArray;
 		$this->pollmode = $POLLMODE;
 	}
-			
+
 
 	function render_poll($pollArray = "", $type = "menu", $POLLMODE = "", $returnMethod=FALSE)
 	{
@@ -311,10 +311,10 @@ class poll
 		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".intval($pollArray['poll_id'])."' AND comment_type=4");
 
 		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE,"emotes_off defs");
-		$VOTE_TOTAL = POLLAN_26.": ".$voteTotal;
+		$VOTE_TOTAL = POLLAN_31.": ".$voteTotal;
 		$COMMENTS = ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
 		$OLDPOLLS = ($type == "menu" ? "<a href='".e_PLUGIN."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
-		$AUTHOR = POLLAN_29." ".($type == "preview" || $type == "forum" ? USERNAME : "<a href='".e_BASE."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
+		$AUTHOR = POLLAN_35." ".($type == "preview" || $type == "forum" ? USERNAME : "<a href='".e_BASE."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
 
 		switch ($POLLMODE)
 		{
@@ -469,7 +469,7 @@ class poll
 			<input type='radio' name='multipleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLL_508."
 			</td>
 			</tr>
-		
+
 			<tr>
 			<td style='width:30%' class='forumheader3'>".POLLAN_16."</td>
 			<td class='forumheader3'>

@@ -4,23 +4,23 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-05-31 21:29:59 $
-|     $Author: lisa_ $
+|     $Revision: 1.16 $
+|     $Date: 2006-06-22 19:49:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 define("CONTENT_ADMIN_HELP_1", "Content Management Help Area");
 
-define("CONTENT_ADMIN_HELP_ITEM_1", "<i>if you have not yet added main parent categories, please do so at the <a href='".e_SELF."?cat.create'>Create New Category</a> page.</i><br /><br /><b>category</b><br />select a category from the pulldown menu to manage content for that category.<br /><br />Selecting a main parent from the pulldown menu will show all content items in that main category.<br />Selecting a subcategory will show only those content items in the specified subcategory.<br /><br />You can also use the menu on the right to view all content items for a specified category.");
+define("CONTENT_ADMIN_HELP_ITEM_1", "<i>if you have not yet added main parent categories, please do so at the <a href='".e_SELF."?cat.create'>Create New Category</a> page.</i><br /><br /><b>category</b><br />select a category from the pull-down menu to manage content for that category.<br /><br />Selecting a main parent from the pull-down menu will show all content items in that main category.<br />Selecting a subcategory will show only those content items in the specified subcategory.<br /><br />You can also use the menu on the right to view all content items for a specified category.");
 
 define("CONTENT_ADMIN_HELP_ITEM_2", "<b>first letters</b><br />if multiple content item starting letters of the content_heading are present, you will see buttons to select only those content items starting with that letter. Selecting the 'all' button will show a list containing all content items in this category.<br /><br /><b>detailed list</b><br />You see a list of all content items with their id, icon, author, heading [subheading] and options.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the content item<br />".CONTENT_ICON_EDIT." : edit the content item<br />".CONTENT_ICON_DELETE." : delete the content item<br />");
 
-define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>edit form</b><br />you can now edit all information for this content item and submit your changes.<br /><br />If you need to change the category for this content item, please do so first. After you have selectd the correct category, change or add any fields present, before you submit the changes.");
+define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>edit form</b><br />you can now edit all information for this content item and submit your changes.<br /><br />If you need to change the category for this content item, please do so first. After you have selected the correct category, change or add any fields present, before you submit the changes.");
 
 define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "<b>category</b><br />please select a category from the select box to create your content item for.<br />");
 
-define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "<b>creation form</b><br />you can now provide all information for this content item and submit it.<br /><br />Be aware of the fact that diffenent main parent categories can have a different set of preferences; different fields can be available for you to fill in. Therefore you always need to select a category first before you fill in other fields !");
+define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "<b>creation form</b><br />you can now provide all information for this content item and submit it.<br /><br />Be aware of the fact that different main parent categories can have a different set of preferences; different fields can be available for you to fill in. Therefore you always need to select a category first before you fill in other fields!");
 
 define("CONTENT_ADMIN_HELP_CAT_1", "<i>this page shows all categories and subcategories present.</i><br /><br /><b>detailed list</b><br />You see a list of all subcategories with their id, icon, author, category [subheading] and options.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_EDIT." : edit the category<br />".CONTENT_ICON_DELETE." : delete the category<br />");
 
@@ -38,7 +38,7 @@ define("CONTENT_ADMIN_HELP_OPTION_1", "On this page you can select a main parent
 The default preferences are only used when you create a new main parent. So when you create a new main parent these default preferences will be stored. You can change these to make sure newly created main parents already have a certain set of features present.
 <br /><br />
 Each main parent has its own set of options, which are unique to that specific main parent category<br /><br />
-<b>inherit</b><br />The inherit checkboxes allow you to overrride the main parents individual options, and use the default preferences for the checked main parents.");
+<b>inherit</b><br />The inherit checkboxes allow you to override the main parents individual options, and use the default preferences for the checked main parents.");
 
 //define("CONTENT_ADMIN_HELP_OPTION_2", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />");
 //<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
@@ -67,15 +67,15 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "The Content Item Preview options have
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "The Category Pages show information on the content categories in this main parent.<br /><br />There are two distinct areas present:<br /><br />all categories page:<br />this page shows all the categories in this main parent<br /><br />view category page:<br />this page shows the category item, optionally the subcategories in that category and the content items in that category or those categories<br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "The Content Page shows the Content Item.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the emailaddress of a non-member author.<br /><br />you can override the email/print/pdf icons, the rating system and the comments.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "The Content Page shows the Content Item.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the email address of a non-member author.<br /><br />you can override the email/print/pdf icons, the rating system and the comments.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "The Author Page shows a list of all unique authors of the content items in this main parent.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />You can limit the number of items to show per page.<br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "The Archive Page shows all content items in the main parent.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the emailaddress of a non-member author.<br /><br />You can limit the number of items to show per page.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "The Archive Page shows all content items in the main parent.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the email address of a non-member author.<br /><br />You can limit the number of items to show per page.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "The Top Rated Page shows all content items that have been rated by users.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "The Top Rated Page shows all content items that have been rated by users.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the email address of a non-member author will be displayed.");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "The Top Score Page shows all content items that have been given a score by the author of the content item.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "The Top Score Page shows all content items that have been given a score by the author of the content item.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the email address of a non-member author will be displayed.");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "this page allows you to set options for the admin create category page.<br /><br />You can define which sections are available when an admin (or personal content manager) creates a new content category.");
 ?>

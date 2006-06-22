@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-30 15:26:25 $
-|     $Author: lisa_ $
+|     $Revision: 1.14 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -116,7 +116,7 @@ define("LIST_ADMIN_LAN_19", "For more information on date formats see the <a hre
 
 define("LIST_ADMIN_LAN_20", "columns");
 define("LIST_ADMIN_LAN_21", "choose an amount of columns");
-define("LIST_ADMIN_LAN_22", "define how many columns you want to use. the number you specify will seperate the page into an equal amount of columns");
+define("LIST_ADMIN_LAN_22", "define how many columns you want to use. the number you specify will separate the page into an equal amount of columns");
 
 define("LIST_ADMIN_LAN_23", "welcome text");
 define("LIST_ADMIN_LAN_24", "define a welcome text that will be rendered at the top of the page");

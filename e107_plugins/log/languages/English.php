@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/languages/English.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-21 21:02:24 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "Statistics");
-	
+
 define("ADSTAT_L1", "This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.");
 define("ADSTAT_L2", "The statistics logger has been successfully installed. To convert your existing stats to the new system, please <a href='".e_PLUGIN."log/update_routine.php'>click here to run update routine</a>.");
 define("ADSTAT_L3", "Statistic Logging");
@@ -27,7 +27,7 @@ define("ADSTAT_L5", "The features on this page have been disabled.");
 define("ADSTAT_L6", "Site Statistics");
 define("ADSTAT_L7", "Statistics for this type is not being gathered.");
 define("ADSTAT_L8", "Today's Stats");
-define("ADSTAT_L9", "Alltime Stats");
+define("ADSTAT_L9", "All-time Stats");
 define("ADSTAT_L10", "Daily Stats");
 define("ADSTAT_L11", "Monthly Stats");
 define("ADSTAT_L12", "Browser Stats");

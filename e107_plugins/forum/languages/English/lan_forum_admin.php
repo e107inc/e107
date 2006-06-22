@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-03-18 20:53:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -55,7 +55,7 @@ define("FORLAN_43", "Preview / Forum Order");
 define("FORLAN_44", "Enclose tables");
 define("FORLAN_45", "Tick this to render the forum within theme table");
 define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
-define("FORLAN_47", "Enable email nofication");
+define("FORLAN_47", "Enable email notification");
 define("FORLAN_48", "Tick this to allow your users to have the option of receiving an email when somebody replies to their post");
 define("FORLAN_49", "Enable polls");
 define("FORLAN_50", "Tick this to allow your users to set polls in the forums - the Polls plugin must be installed to use this feature");
@@ -72,7 +72,7 @@ define("FORLAN_60", "This will delete all threads that have not received a reply
 define("FORLAN_61", "Update Options");
 define("FORLAN_62", "Forum Options");
 define("FORLAN_63", "Ranks");
-define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Seperate levels with comma. Maximum of 10 levels, lowest first.");
+define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Separate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
 
 define("FORLAN_70", "Enable file / image attachments");
@@ -160,7 +160,7 @@ define("FORLAN_139", "To use this setting you also need to tick 'Enable image po
 define("FORLAN_140", "View");
 define("FORLAN_141", "Post");
 define("FORLAN_142", "Post permission");
-define("FORLAN_143", "Indicates who can can post to the forum");
+define("FORLAN_143", "Indicates who can post to the forum");
 define("FORLAN_144", "Moderators set");
 define("FORLAN_145", "Configure sub-forums");
 define("FORLAN_146", "No sub-forums yet");
@@ -199,7 +199,7 @@ define("FORLAN_176", "Report");
 define("FORLAN_177", "email nofication ON by default");
 define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
 
-define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for subforums only.  The forum theme must support this option also.)");
+define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for sub-forums only.  The forum theme must support this option also.)");
 define("FORLAN_180", "Confirm delete operation");
 define("FORLAN_181", "Confirm Delete");
 

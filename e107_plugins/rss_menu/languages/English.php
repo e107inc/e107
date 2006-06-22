@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/languages/English.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-20 08:12:26 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2006-06-22 19:49:59 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,8 +21,8 @@ define("BACKEND_MENU_L7", "Our chatbox posts");
 define("BACKEND_MENU_L8", "Our bugtracker reports");
 define("BACKEND_MENU_L9", "Our downloads");
 
-define("RSS_LAN01", "Enable seperate feeds for each news category?");
-define("RSS_LAN02", "Enable seperate feeds for each download category?");
+define("RSS_LAN01", "Enable separate feeds for each news category?");
+define("RSS_LAN02", "Enable separate feeds for each download category?");
 define("RSS_LAN03","Your e107_config.php file contains space before the &lt;? characters. You should remove this space if you wish to have a valid RSS feed.");
 define("RSS_LAN04","Include Other-news items in News Feed?");
 define("RSS_LAN05","Number of items (0=inactive)");
@@ -70,7 +70,7 @@ define("RSS_PLUGIN_LAN_12", "News");
 define("RSS_PLUGIN_LAN_13", "Download");
 define("RSS_PLUGIN_LAN_14", "Comments");
 
-define("RSS_LAN_ADMINMENU_1", "RSS Options");  
+define("RSS_LAN_ADMINMENU_1", "RSS Options");
 define("RSS_LAN_ADMINMENU_2", "Listing");
 define("RSS_LAN_ADMINMENU_4", "Import");
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/languages/English.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-04-14 14:09:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-22 19:49:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -61,7 +61,7 @@ define("NFLAN_40", "Newsfeed deleted");
 define("NFLAN_41", "No newsfeeds defined yet");
 
 define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
-	The identifying name of the feed, can be anything you like.
+	The identifying name of the feed can be anything you like.
 	<br /><br />
 	<b>&raquo;</b> <u>URL to rss feed:</u>
 	The address of the rss feed
