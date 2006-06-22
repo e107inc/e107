@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/userposts_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-14 19:28:53 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-22 19:13:41 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
+
+if(!isset($USERPOSTS_NP_TABLE)){
+	$USERPOSTS_NP_TABLE = "<div class='nextprev'>{USERPOSTS_NEXTPREV}</div>";
+}
 
 // ##### USERPOSTS_COMMENTS TABLE -----------------------------------------------------------------
 if(!$USERPOSTS_COMMENTS_TABLE_START){

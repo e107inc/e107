@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-06-02 13:59:40 $
+|     $Revision: 1.9 $
+|     $Date: 2006-06-22 19:13:41 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -67,5 +67,13 @@ define("COMLAN_328", 'Comments are locked');
 define("COMLAN_329", 'Unauthorized');
 define("COMLAN_330", 'IP:');
 
+define("COMLAN_TYPE_1", "news");
+define("COMLAN_TYPE_2", "download");
+define("COMLAN_TYPE_3", "faq");
+define("COMLAN_TYPE_4", "poll");
+define("COMLAN_TYPE_5", "docs");
+define("COMLAN_TYPE_6", "bugtrack");
+define("COMLAN_TYPE_7", "ideas");
+define("COMLAN_TYPE_8", "userprofile");
 
 ?>

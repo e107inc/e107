@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-06-12 18:14:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2006-06-22 19:13:41 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+require_once(e_HANDLER."comment_class.php");
+$cobj = new comment;
 require_once(HEADERF);
 
 if (!USER) {
@@ -77,32 +79,25 @@ if ($action == "comments")
 		$sql->db_Select("user", "user_comments", "user_id=".$id."");
 		list($user_comments) = $sql->db_Fetch();
 		$ctotal = $user_comments;
-		$blah = $sql->db_Select("comments", "*", "comment_author = '".$user_id."' ORDER BY comment_datestamp DESC LIMIT ".$from.", 10 ");
+		$data = $cobj->getCommentData($amount='10', $from, "comment_author = '".$user_id."'");
 	}
 	else
 	{
 		require_once(e_HANDLER."encrypt_handler.php");
 		$dip = decode_ip($id);
 		$ccaption = UP_LAN_1.$dip;
-		$blah = $sql->db_Select("comments", "*", "comment_ip = '".$id."' ORDER BY comment_datestamp DESC LIMIT ".$from.", 10 ");
+		$data = $cobj->getCommentData($amount='10', $from, "comment_ip = '".$id."'");
 	}
 
-	if (!$blah)
-	{
+	if(empty($data) || !is_array($data)){
 		$ctext = "<span class='mediumtext'>".UP_LAN_7."</span>";
 	}
-	else
-	{
-		$render = $sql -> db_getList();
-		foreach ($render as $row)
-		{
-			extract($row);
-			if($comment_comment)
-			{
-				$userposts_comments_table_string .= parse_userposts_comments_table($row);
-			}
-		}
+
+	global $row;
+	foreach($data as $row){
+		$userposts_comments_table_string .= parse_userposts_comments_table($row);
 	}
+
 	$userposts_comments_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_START);
 	$userposts_comments_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_END);
 
@@ -110,8 +105,9 @@ if ($action == "comments")
 
 	$ns->tablerender($ccaption, $ctext);
 
-	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("userposts.php", $from, 10, $ctotal, UP_LAN_13, "comments.".$id."");
+	$parms = $ctotal.",10,".$from.",".e_SELF."?[FROM].comments.".$id;
+	$USERPOSTS_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	echo preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_NP_TABLE);
 }
 
 
@@ -200,8 +196,9 @@ if ($action == "forums" || isset($_POST['fsearch']))
 	}
 	$ns->tablerender($fcaption, $ftext);
 
-	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("userposts.php", $from, 10, $ftotal, UP_LAN_14, "forums.".$id."");
+	$parms = $ftotal.",10,".$from.",".e_SELF."?[FROM].forums.".$id;
+	$USERPOSTS_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	echo preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_NP_TABLE);
 }
 
 require_once(FOOTERF);
@@ -212,130 +209,15 @@ require_once(FOOTERF);
 function parse_userposts_comments_table($row)
 {
 	global $USERPOSTS_COMMENTS_TABLE, $pref, $gen, $tp, $menu_pref, $id, $sql2, $comment_files;
-	extract($row);
 
-	$comment_type = ($comment_type == 6 ? "bugtrack" : $comment_type);
-	$poster = substr($comment_author, (strpos($comment_author, ".")+1));
 	$gen = new convert;
-	$datestamp = $gen->convert_date($comment_datestamp, "short");
-	$DATESTAMP = $datestamp;
-
-	$comment_comment = $tp->toHTML($comment_comment, TRUE, "", $id);
-
-	if ($comment_type == "0")
-	{
-		$sql2->db_Select("news", "news_title, news_class", "news_id = '".intval($comment_item_id)."' ");
-		$row = $sql2->db_Fetch();
-		if (!$row['news_class'])
-		{
-			$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-			$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-			$USERPOSTS_COMMENTS_HEADING = $row['news_title'];
-			$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
-			$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."comment.php?comment.news.$comment_item_id'>";
-			$USERPOSTS_COMMENTS_TYPE = "news";
-		}
-	}
-	if ($comment_type == "1")
-	{
-		$sql2->db_Select("content", "content_heading, content_class, content_type", "content_id=".intval($comment_item_id));
-		$row = $sql2->db_Fetch();
-
-		if (check_class($row['content_class']))
-		{
-			if ($row['content_type'] == 0)
-			{
-				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-				$USERPOSTS_COMMENTS_HEADING = $row['content_heading'];
-				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?article.$comment_item_id'>";
-				$USERPOSTS_COMMENTS_TYPE = "article";
-			}
-			else if($row['content_type'] == 3)
-			{
-				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-				$USERPOSTS_COMMENTS_HEADING = $row['content_heading'];
-				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?review.$comment_item_id'>";
-				$USERPOSTS_COMMENTS_TYPE = "review";
-			}
-			else if($row['content_type'] == 1)
-			{
-				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-				$USERPOSTS_COMMENTS_HEADING = $row['content_heading'];
-				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?content.$comment_item_id'>";
-				$USERPOSTS_COMMENTS_TYPE = "content";
-			}
-			$USERPOSTS_COMMENTS_COMMENT = ($comment_blocked ? CM_L2 : $comment_comment);
-		}
-	}
-	if ($comment_type == "2")
-	{
-		$sql2->db_Select("download", "download_name", "download_id=".intval($comment_item_id));
-		$row = $sql2->db_Fetch();
-
-		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-		$USERPOSTS_COMMENTS_HEADING = $row['download_name'];
-		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
-		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."download.php?view.".$comment_item_id."'>";
-		$USERPOSTS_COMMENTS_TYPE = "download";
-	}
-	if ($comment_type == "4")
-	{
-		$sql2->db_Select("poll", "poll_title", "poll_id=".intval($comment_item_id));
-		$row = $sql2->db_Fetch();
-
-		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-		$USERPOSTS_COMMENTS_HEADING = $row['poll_title'];
-		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
-		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."comment.php?comment.poll.".$comment_item_id."'>";
-		$USERPOSTS_COMMENTS_TYPE = "poll";
-	}
-
-	if ($comment_type == "5")
-	{
-		$sql2->db_Select("documentation", "doc_title", "doc_id=".intval($comment_item_id));
-		$row = $sql2->db_Fetch();
-
-		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-		$USERPOSTS_COMMENTS_HEADING = $row['doc_title'];
-		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
-		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_PLUGIN."documentation/documentation.php?".$comment_item_id."'>";
-		$USERPOSTS_COMMENTS_TYPE = "documentation";
-	}
-
-	// added a check for non numeric comment_types (=custom comments for your own plugins)
-	if (!is_numeric($comment_type))
-	{
-		if(!isset($comment_files))
-		{
-			$comment_files = get_comment_files();
-		}
-
-		//unset all vars that will be set by e_comment.php
-		unset($e_plug_table, $reply_location, $db_table, $link_name, $db_id, $plugin_name);
-		if(isset($comment_files[$comment_type]))
-		{
-			$nid = $row['comment_item_id'];
-			include($comment_files[$comment_type]);
-			$sql2 -> db_Select($db_table, $link_name, $db_id." = '".$row['comment_item_id']."' ");
-			$row2 = $sql2 -> db_Fetch();
-			$comment_subject = $row2[$link_name];
-			$USERPOSTS_COMMENTS_HEADING = $comment_subject;
-			$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".$reply_location."' title='".$row2[$link_name]."'>";
-			$comment_type = $plugin_name;
-		}
-
-		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
-		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
-		$USERPOSTS_COMMENTS_TYPE = $comment_type;
-	}
-	// end
+	$datestamp = $gen->convert_date($row['comment_datestamp'], "short");
+	$USERPOSTS_COMMENTS_ICON		= "<img src='".THEME."images/".BULLET."' alt='' />";
+	$USERPOSTS_COMMENTS_DATESTAMP	= UP_LAN_11." ".$datestamp;
+	$USERPOSTS_COMMENTS_HEADING		= $row['comment_title'];
+	$USERPOSTS_COMMENTS_COMMENT		= $row['comment_comment'];
+	$USERPOSTS_COMMENTS_HREF_PRE	= "<a href='".$row['comment_url']."'>";
+	$USERPOSTS_COMMENTS_TYPE		= $row['comment_type'];
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE));
 }
@@ -387,17 +269,4 @@ function parse_userposts_forum_table($row)
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE));
 }
 
-function get_comment_files()
-{
-	require_once(e_HANDLER."file_class.php");
-	$fi = new e_file;
-	$flist = $fi->get_files(e_PLUGIN, 'e_comment\.php', 'standard', 1);
-	foreach($flist as $f)
-	{
-		unset($e_plug_table, $reply_location, $db_table, $link_name, $db_id, $plugin_name);
-		include($f['path'].$f['fname']);
-		$comment_file[$e_plug_table] = $f['path'].$f['fname'];
-	}
-	return $comment_file;
-}
 ?>
