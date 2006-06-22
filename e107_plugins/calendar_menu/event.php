@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-06-17 01:20:13 $
+|     $Revision: 1.26 $
+|     $Date: 2006-06-22 11:07:19 $
 |     $Author: mcfly_e107 $
 |
 | 25.02.06 - Extra comments to try and sort out listing problem.
@@ -21,6 +21,7 @@
 |                - doesn't display some multi-day events (those straddling two months) - fixed
 | 19.03.06 - Bug - if displaying item from a single date, 'next 10 events' starts from beginning of following month.
 |					- mod in line 620 or so - fixed
+| 15.06.06 - Bug - recurring events always displayed using current year - cal_landate modified
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -664,10 +665,12 @@ else
 //    echo($cal_count." records found");    Get right number of records
     while ($row = $sql->db_Fetch())
     {
-      if ($row['event_rec_y'] == $month)
+      if ($row['event_rec_y'] == $month)	// Recurring events
       {
         if (!in_array($row['event_id'], $idArray))
         {
+			$row['event_start'] = mktime(0,0,0,$row['event_rec_y'],$row['event_rec_m'],$year);    // Added 15.06.06
+				$row['event_end'] = $row['event_start'];    // Added 15.06.06
           $events[$row['event_rec_m']][] = $row;
           $idArray[] = $row['event_id'];
         }
@@ -810,10 +813,11 @@ function cal_landate($dstamp, $recurring = false, $allday = false)
     $dow = constant("EC_LAN_".($long_day_start + $now['wday']-1));
     $moy = constant("EC_LAN_".($long_month_start + $now['mon']-1));
 
-    if ($recurring == TRUE){
-        $today = getdate();
-        $now['year'] = $today['year'];
-    }
+//    if ($recurring == TRUE)
+//	{
+//        $today = getdate();
+//        $now['year'] = $today['year'];
+//    }
 
     if ($allday == TRUE){
         return sprintf("%s %02d %s %d", $dow, $now['mday'], $moy, $now['year']);

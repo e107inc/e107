@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-06-17 01:20:13 $
+|     $Revision: 1.21 $
+|     $Date: 2006-06-22 11:07:19 $
 |     $Author: mcfly_e107 $
 |
 | Mod in old line 55 to make query work.
