@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-06-02 13:59:40 $
+|     $Revision: 1.49 $
+|     $Date: 2006-06-22 19:13:41 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -96,21 +96,12 @@ if (isset($_POST['replysubmit']))
 			$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
 			$e107cache->clear("comment.php?{$table}.{$id}");
 		}
+		//plugin e_comment.php files
 		$plugin_redir = false;
-		$handle = opendir(e_PLUGIN);
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-				$plugin_handle = opendir(e_PLUGIN.$file."/");
-				while (false !== ($file2 = readdir($plugin_handle))) {
-					if ($file2 == "e_comment.php") {
-						require_once(e_PLUGIN.$file."/".$file2);
-						if ($table == $e_plug_table) {
-							$plugin_redir = TRUE;
-							break 2;
-						}
-					}
-				}
-			}
+		$e_comment = $cobj->get_e_comment();
+		if ($table == $e_comment[$table]['eplug_comment_ids']){
+			$plugin_redir = TRUE;
+			$reply_location = str_replace("{NID}", $nid, $e_comment[$table]['reply_location']);
 		}
 
 		if ($plugin_redir)
