@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.285 $
-|     $Date: 2006-06-21 04:49:22 $
+|     $Revision: 1.286 $
+|     $Date: 2006-06-23 01:15:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
         require_once(e_HANDLER."language_class.php");
 		$lng = new language;
 		define("e_LANCODE",TRUE);
-		$_POST['setlanguage'] = $lng->convert(e_MENU);
+		$_GET['elan'] = $lng->convert(e_MENU);
 	}
 
 }else {
