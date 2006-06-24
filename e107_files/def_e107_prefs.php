@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-05-05 06:41:38 $
+|     $Revision: 1.57 $
+|     $Date: 2006-06-24 02:25:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ City, State, Country
   'longdate' => '%A %d %B %Y - %H:%M:%S',
   'shortdate' => '%d %b : %H:%M',
   'forumdate' => '%a %b %d %Y, %I:%M%p',
-  'sitelanguage' => 'English',
+  'sitelanguage' => $pref_language,
   'maintainance_flag' => '0',
   'time_offset' => '0',
   'log_lvcount' => '10',
@@ -82,7 +82,7 @@ City, State, Country
   'antiflood1' => '1',
   'antiflood_timeout' => '10',
   'autoban' => '1',
-  'sitelang_init' => (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English"),
+  'sitelang_init' => $pref_language,
   'linkpage_screentip' => '0',
   'plug_status' => 'rss_menu',
   'plug_latest' => '',
