@@ -1,16 +1,16 @@
-﻿<?php 
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.10 $
+|     $Date: 2006-06-24 00:02:56 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Recherche");
-  
+
   define("LAN_20", "Erreur");
   define("LAN_98", "Actualités");
   define("LAN_99", "Commentaires");
@@ -29,7 +29,7 @@
   define("LAN_416", "Vous devez être identifier pour accéder à cette page");
   define("LAN_417", "Les mots clés de recherche doivent être au moins de 3 caractères.");
   define("LAN_418", "Autres Pages");
-  
+
   define("LAN_SEARCH_1", "TOUT Sélectionner");
   define("LAN_SEARCH_2", "TOUT Désélectionner");
   define("LAN_SEARCH_3", "Occurence posté le ");

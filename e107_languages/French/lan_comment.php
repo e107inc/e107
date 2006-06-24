@@ -1,12 +1,12 @@
-﻿<?php 
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_comment.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-24 00:02:56 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Commentaires");

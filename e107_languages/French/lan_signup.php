@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.7 $
+|     $Date: 2006-06-24 00:02:56 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Inscription");
@@ -86,12 +86,12 @@
   define("LAN_PASSWORD", "Mot de passe");
   define("LAN_USERNAME", "Nom affiché");
   define("LAN_EMAIL_01", "Cher");
-  
+
   define("LAN_EMAIL_04", "Veuillez conserver ce courriel comme aide-mémoire.");
   define("LAN_EMAIL_05", "Votre mot de passe a été encrypté et ne pourra vous être restitué en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas échéant.");
   define("LAN_EMAIL_06", "Merci de vous être enregistré.");
   define("LAN_SIGNUP_37","Cette étape de l'enregistrement est terminée. L'administateur du site devra approuver votre adhésion. Lorsque cela aura été fait, vous recevrez un courriel de confirmation vous informant que votre adhésion a été approuvée.");¨
-  
+
   //   define("LAN_SIGNUP_38", "Vous avez entré deux adresses courriel différentes. Veuillez indiquer une adresse courriel identique dans les deux champs fournis");
   //   define("LAN_SIGNUP_39", "Re-tapez l'adresse courriel:");
   ?>

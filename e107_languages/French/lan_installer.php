@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_installer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-24 00:02:56 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("LANINS_001", "Installation d'e107 ");
@@ -33,11 +33,11 @@
   define("LANINS_021", "3");
   define("LANINS_022", "Détails du Serveur MySQL ");
   define("LANINS_023", "SVP entrez vos paramètres MySQL ici.
-			  
-  Si vous avez les permissions d'administrateur vous pouvez créer une nouvelle base de données 
+
+  Si vous avez les permissions d'administrateur vous pouvez créer une nouvelle base de données
   en cochant dans la case, si non vous devez créer une base de données ou employer une
   pré-existante.
-  Si vous n'avez qu'une seule base de données utilisez un préfixe de sorte que d'autres scripts puissent partager la même base de données. 
+  Si vous n'avez qu'une seule base de données utilisez un préfixe de sorte que d'autres scripts puissent partager la même base de données.
   Si vous ne connaissez pas vos paramètres MySQL contactez votre hébergeur.");
   define("LANINS_024", "Serveur MySQL :");
   define("LANINS_025", "Nom d'utilisateur MySQL:");
@@ -76,43 +76,43 @@
   define("LANINS_055", "Confirmation de l'installation");
   define("LANINS_056", "6");
   define("LANINS_057", " e107 a maintenant toute l'information qu'il a besoin pour accomplir son installation.
-  
+
   Veuillez cliquer le bouton pour créer les tables de base de données et pour sauvegarder tous vos paramètres.
-  
+
   ");
   define("LANINS_058", "7");
-  define("LANINS_060", "Incapable de lire le fichier de données SQL 
+  define("LANINS_060", "Incapable de lire le fichier de données SQL
   Veuillez vous assurer que le fichier <strong>core_sql.php</strong> existe bien dans le répertoire <strong>/e107_admin/sql</strong> .");
   define("LANINS_061", "e107 n'a pas pu créer toutes les tables requise pour la base de données
   Svp nettoyez la base de données et rectifiez tous les problèmes avant d'essayer à nouveau.");
-  
+
   define("LANINS_062", "[b]Bienvenue sur votre nouveau site Web ![/b]
   e107 a installé avec succès et est maintenant prêt à accepter du contenu.<br />Votre section d'administration est [link=e107_admin/admin.php]est localisée ici[/link], cliquez pour y aller dès maintenant. Vous devez vous connecter en utilisant le nom d'utilisateur et le mot de passe que vous avez entrés pendant la procédure d'installation.
-  
+
   [b]Support[/b]
   e107 Page d'accueil: [link=http://e107.org]http://e107.org[/link], vous trouverez la FAQ et la documentation ici.
   Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
-  
+
   [b]Téléchargements[/b]
   Extensions: [link=http://e107coders.org]http://e107coders.org[/link]
   Themes: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
-  
+
   Merci d'essayer e107, nous espèront qu'il satisfera aux exigeances de votre site Web.
   (Vous pourrez supprimer ce message de votre section d'administration.)");
   define("LANINS_063", "e107 a installé avec succès et est maintenant prêt à accepter du contenu.");
   define("LANINS_069", "e107 a été installé avec succès  !
-  
+
   Pour des raisons de sécurité vous devriez maintenant placer les permissions de nouveau à 644 sur le fichier <strong>e107_config.php</strong>.
-  
+
   Veuillez en outre supprimer install.php et le répertoire e107_install de votre serveur après que vous ayez cliqué le bouton ci-dessous");
   define("LANINS_070", "e107 n'a pas pu sauvegarder le fichier principal de configuration sur votre serveur.
-  
+
   Veuillez vous assurer le dossier de <strong>e107_config.php</strong> a les permissions correctes");
   define("LANINS_071", "Finalisation de l'Installation");
   define("LANINS_072", "Nom d'utilisateur de l'Administrateur");
   define("LANINS_073", "C'est le nom que vous utiliserez lors de la connexion dans le site. Si vous voulez vous pouver l'utiliser comme  nom d'affichage aussi");
   define("LANINS_074", "Nom d'affichage Admin");
-  define("LANINS_075", "C'est le nom que vous voulez que vos utilisateurs voient s'afficher sur votre profil, le forum et autres secteurs. 
+  define("LANINS_075", "C'est le nom que vous voulez que vos utilisateurs voient s'afficher sur votre profil, le forum et autres secteurs.
   Si vous voulez utiliser le même que votre nom de connexion laisse en blanc alors ce champ.");
   define("LANINS_076", "Mot de passe Admin");
   define("LANINS_077", "SVP entrer le mot de passe admin que vous souhaitez utiliser");
@@ -137,7 +137,7 @@
   define("LANINS_096", "Proposition d'Actualités");
   define("LANINS_097", "http://e107.org");
   define("LANINS_098", "v0.7CVS"); //$e107['e107_version']
-  define("LANINS_099", "French"); //$pref['sitelanguage'] 
+  define("LANINS_099", "French"); //$pref['sitelanguage']
   define("LANINS_100", "Derniers commentaires");
   define("LANINS_101", "[ plus ... ]");
   define("LANINS_102", "Articles");
@@ -148,9 +148,9 @@
   define("LANINS_107", "Revue");
   define("LANINS_108", "Revues en page d'accueil ...");
   define("LANINS_109", "Campagne numéro une ...");
-  define("LANINS_110", "MENUPRIVE"); 
+  define("LANINS_110", "MENUPRIVE");
   define("LANINS_111", "Droits d'accès aux menus privés");
-  define("LANINS_112", "FORUMPRIVE1"); 
+  define("LANINS_112", "FORUMPRIVE1");
   define("LANINS_113", "Exemple de Groupe de Forum Privé");
   define("LANINS_114", "Créer les Tables Utilisateurs");
   define("LANINS_115_1", "Oui");
