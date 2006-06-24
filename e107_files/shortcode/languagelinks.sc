@@ -1,6 +1,6 @@
-// $Id: languagelinks.sc,v 1.1 2006-06-24 05:38:05 e107coders Exp $
+// $Id: languagelinks.sc,v 1.2 2006-06-24 06:55:26 e107coders Exp $
 
-$sep = (defined("LANGLINK_SEPARATOR")) ? LANGLINK_SEPARATOR : "|&nbsp;";
+$sep = (defined("LANGLINKS_SEPARATOR")) ? LANGLINKS_SEPARATOR : "|&nbsp;";
 
 require_once(e_HANDLER."language_class.php");
 $lng = new language;
