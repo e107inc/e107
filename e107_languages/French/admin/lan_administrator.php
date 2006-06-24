@@ -1,12 +1,12 @@
-﻿<?php 
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-24 00:10:47 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("ADMSLAN_0", "Nouvel utilisateur/admin créé pour");
@@ -53,12 +53,12 @@
   define("ADMSLAN_52", "Mettre à jour l'administrateur");
   define("ADMSLAN_53", "Ajouter un administrateur");
   define("ADMSLAN_54", "Administrateurs du site");
-  
+
   define("ADMSLAN_55", "Un ou plusieurs champ(s) ont été laissé(s) vide(s)");
   define("ADMSLAN_56", "Administrateur du Site");
-  
+
   define("ADMSLAN_58", "Administrateur Principal du Site");
-  
+
   define("ADMSLAN_59", "Retirer le statut d'administrateur");
   define("ADMSLAN_60", "Êtes-vous sûr de vouloir retirer le statut d'administrateur à");
   define("ADMSLAN_61", "Administrateur supprimé");
@@ -69,7 +69,7 @@
   define("ADMSLAN_67", "Scanner avec l'inspecteur de fichier");
   define("ADMSLAN_68", "Configurer les alertes par courriel");
   define("ADMSLAN_69", "est déjà un administrateur et doit être édité");
-  
+
   define("ADMSLAN_70", "Retourner à la gestion des administrateurs");
   define("ADMSLAN_71", "Cliquez ici pour afficher les privilèges");
   ?>

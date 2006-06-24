@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_mailout.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-24 00:10:47 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("PRFLAN_52", "Sauvegarder les Modifications");
@@ -23,7 +23,7 @@
   define("PRFLAN_73", "Nom d'utilisateur SMTP ");
   define("PRFLAN_74", "Mot de Passe SMTP");
   define("PRFLAN_75", "Le courriel n'as pas pu être envoyé.. Veuillez passer en revue vos paramètres SMTP, ou désactiver le SMTP et essayez de nouveau.");
-  
+
   define("MAILAN_01", "De (Pseudo): ");
   define("MAILAN_02", "De (Courriel): ");
   define("MAILAN_03", "À: ");

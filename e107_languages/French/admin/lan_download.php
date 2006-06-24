@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.6 $
+|     $Date: 2006-06-24 00:10:47 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("DOWLAN_1", "Téléchargement ajouté dans la base de données.");
@@ -16,7 +16,7 @@
   define("DOWLAN_5", "Il n'y a pas encore de catégorie de téléchargement définie, tant qu'aucune catégorie ne sera créée vous ne pourrez pas ajouter de téléchargements.");
   define("DOWLAN_6", "Aucun téléchargement pour le moment");
   define("DOWLAN_7", "Téléchargements existants");
-  
+
   define("DOWLAN_11", "Catégorie");
   define("DOWLAN_12", "Nom");
   define("DOWLAN_13", "Fichier");
@@ -28,12 +28,12 @@
   define("DOWLAN_19", "Image principale");
   define("DOWLAN_20", "Image réduite");
   define("DOWLAN_21", "Activer ?");
-  
+
   define("DOWLAN_24", "Mettre à jour le téléchargement");
   define("DOWLAN_25", "Proposer le téléchargement");
-  
+
   define("DOWLAN_27", "Téléchargement");
-  
+
   define("DOWLAN_29", "Page principale");
   define("DOWLAN_30", "Ajouter un téléchargement");
   define("DOWLAN_31", "Catégories");
@@ -55,17 +55,17 @@
   define("DOWLAN_47", "Catégorie créer");
   define("DOWLAN_48", "Catégorie mise à jour");
   define("DOWLAN_49", "Catégorie des téléchargements");
-  
+
   define("DOWLAN_51", "Chercher/Rafraîchir les téléchargements");
   define("DOWLAN_52", "Fichier");
   define("DOWLAN_53", "Sous-catégorie");
   define("DOWLAN_54", "Options Téléchargements");
   define("DOWLAN_55", "Nombre de téléchargements à afficher par page");
   define("DOWLAN_56", "Tri par ");
-  
+
   define("DOWLAN_59", "Nom du fichier");
   define("DOWLAN_60", "Auteur");
-  
+
   define("DOWLAN_62", "Croissant");
   define("DOWLAN_63", "Décroissant");
   define("DOWLAN_64", "Mettre à jour les options");
@@ -108,7 +108,7 @@
   define("DOWLAN_130", "Ajouter un autre miroir");
   define("DOWLAN_131", "Sélectionner le fichier local");
   define("DOWLAN_132", "SVP entrer un miroir à utiliser, puis l'adresse de téléchargement");
-  
+
   define("DOWLAN_133", "Miroir mis à jour en base de données");
   define("DOWLAN_134", "Miroir sauvegarder en base de données");
   define("DOWLAN_135", "Miroir supprimé");
@@ -121,10 +121,10 @@
   define("DOWLAN_142", "Mettre à jour les Miroirs");
   define("DOWLAN_143", "Créer un Miroir");
   define("DOWLAN_144", "Pas de serveur miroir défini dans la section miroir.");
-  
+
   define("DOWLAN_145", "Téléchargement visible au");
   define("DOWLAN_146", "Message d'avertissement pour Téléchargement Personnalisé ou URL");
-  
+
   define("DOWLAN_147", "Icône pour catégorie vide");
   define("DOWLAN_148", "Cocher pour mettre la date à aujourd'hui");
   define("DOWLAN_149", "Ou cliquez ici pour utiliser un fichier externe");

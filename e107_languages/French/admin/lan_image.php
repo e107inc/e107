@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_image.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-24 00:10:47 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("IMALAN_1", "Permettre de poster des images");
@@ -27,14 +27,14 @@
   define("IMALAN_16", "Voir les avatars uploadés");
   define("IMALAN_17", "Cliquer ici");
   define("IMALAN_18", "Images uploadées");
-  
+
   define("IMALAN_21", "Utilisée par");
   define("IMALAN_22", "Image non utilisée");
   define("IMALAN_23", "Avatar");
   define("IMALAN_24", "Photographie");
   define("IMALAN_25", "Cliquer ici pour supprimer toutes les images non utilisées");
   define("IMALAN_26", "image(s) supprimée(s)");
-  
+
   define("IMALAN_28", "supprimée");
   define("IMALAN_29", "pas d'images");
   define("IMALAN_30", "Tous (public)");

@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_wmessage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-15 01:47:23 $
-|     $Author: daddycool78 $
+|     $Revision: 1.4 $
+|     $Date: 2006-06-24 00:10:47 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
   define("WMGLAN_1", "Message pour les invités");
@@ -16,7 +16,7 @@
   define("WMGLAN_5", "Configurer les messages de bienvenue");
   define("WMGLAN_6", "Activer ?");
   define("WMGLAN_7", "Les paramètres des messages de bienvenus ont été Mis à jour.");
-  
+
   define("WMLAN_00","Messages de Bienvenue");
   define("WMLAN_01","Créer un Nouveau Message");
   define("WMLAN_02","Message");
@@ -27,5 +27,5 @@
   define("WMLAN_07","Ignorez le standard du système pour utiliser {WMESSAGE} shortcode de votre thème:");
   define("WMLAN_08","Préférences");
   define("WMLAN_09","Pas de message de bienvenue installé pour le moment");
-  define("WMLAN_10","Légende du Message");    
+  define("WMLAN_10","Légende du Message");
   ?>
