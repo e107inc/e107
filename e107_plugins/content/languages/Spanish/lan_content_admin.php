@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.16 $
+|     $Date: 2006-06-24 20:17:22 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -658,4 +658,5 @@ define("CONTENT_ADMIN_OPT_LAN_162", "Título contenidos (solo si usa renderizado
 define("CONTENT_ADMIN_OPT_LAN_163", "Mostrar enlaces de anterior siguiente página");
 define("CONTENT_ADMIN_OPT_LAN_164", "Título para enlace página anterior<br />(use {PAGETITLE} para añadir el título de página anterior)");
 define("CONTENT_ADMIN_OPT_LAN_165", "Título para enlace de página siguiente<br />(use {PAGETITLE} para añadir el título de página siguiente)");
+define("CONTENT_ADMIN_OPT_LAN_166", "use 'todo' para mostrar texto completo");
 ?>
