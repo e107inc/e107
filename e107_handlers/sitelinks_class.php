@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2006-06-15 06:30:24 $
-|     $Author: lisa_ $
+|     $Revision: 1.91 $
+|     $Date: 2006-06-24 05:39:30 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -118,7 +118,7 @@ class sitelinks
 
 					// if there's a submenu. :
 					if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
-						$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
+						$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "compact" : "none";   // expanding sub-menus.
 						$render_link[$key] .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
 						foreach ($this->eLinkList[$main_linkid] as $sub){
 							$render_link[$key] .= $this->makeLink($sub, TRUE, $style, $css_class);
