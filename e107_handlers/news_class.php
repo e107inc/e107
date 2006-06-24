@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.72 $
-| $Date: 2006-06-02 15:53:14 $
-| $Author: lisa_ $
+| $Revision: 1.73 $
+| $Date: 2006-06-24 00:15:49 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -106,7 +106,7 @@ class news {
 	}
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='') {
-		global $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes;
+		global $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid;
 		if ($override_newsitem = $override -> override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return') {
@@ -175,9 +175,10 @@ class news {
 				}
 			}
 		}
+		$loop_uid = $news['news_author'];
 
 		require_once(e_FILE.'shortcode/batch/news_shortcodes.php');
-		$text = $tp -> parseTemplate($NEWS_PARSE, FALSE, $news_shortcodes);
+		$text = $tp -> parseTemplate($NEWS_PARSE, TRUE, $news_shortcodes);
 
 		if ($mode == 'return') {
 			return $text;
