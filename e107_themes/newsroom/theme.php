@@ -1,13 +1,11 @@
 <?php
 
-
-
 if (!defined('e107_INIT')) { exit; }
 
 $themename = "newsroom";
-$themeversion = "1.01";
+$themeversion = "1.02";
 $themeauthor = "CaMer0n";
-$themedate = "25th April 2006";
+$themedate = "24th June 2006";
 $themeinfo = "This theme displays some of the news features of 0.7<br />For best results, create news items with a 'news-image' of 65x50 pixels.<br />To place these items in the top right area, choose 'othernews2' for the rendertype of the news item.<br />'othernews' may be used for the simple bullet listing below it.<br />This theme may be used freely under the GPL license providing the 'e107 newsroom' image is replaced.";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
@@ -20,8 +18,11 @@ $layout = "_default";
 
 $HEADER = "
 <div style='text-align:left'>
-<div class='header_setup'>
+
+<div class='header_setup' style='overflow:hidden'>
+
 <div style='width:770px;padding:0px;'>
+<div style='width:770px;position:absolute;top:5px;text-align:right'>{LANGUAGELINKS}</div> 
 <table cellpadding='0' cellspacing='0' style=\"background-image: url('".THEME_ABS."images/logo_bg.png');margin-bottom:0px;padding:0px;width:100%;\">
 	<tr>
 		<td style='padding-left:5px;'>

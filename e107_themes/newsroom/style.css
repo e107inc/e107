@@ -17,6 +17,15 @@ body {
 	border:1px solid black
 }
 
+a.languagelink:link, a.languagelink:visited {
+	color:white;
+}
+
+a.languagelink_active:link, a.languagelink_active:visited {
+	color:white;
+	text-decoration:underline;
+}
+
 .newscat{
 
 
