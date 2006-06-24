@@ -1,7 +1,6 @@
 global $sql,$sysprefs,$SEARCH_SHORTCODE;
 
-
-@include_once(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
 
 if (!isset($SEARCH_SHORTCODE)) {
 	if (file_exists(THEME."search_template.php")) {
@@ -46,4 +45,3 @@ if (!isset($SEARCH_SHORTCODE)) {
 	$text .="\n</div></form>";
 
  return $text;
-
