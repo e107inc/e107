@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2006-06-21 18:39:12 $
-|     $Author: asperon $
+|     $Revision: 1.73 $
+|     $Date: 2006-06-24 22:03:22 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -133,7 +133,7 @@ if (isset($_POST['updatesettings']))
 	{
 		if($_POST['password1'] != "")
 		{
-			$pwreset = ", user_password = '".md5($_POST['password1'])."' ";
+			$pwreset = "user_password = '".md5($_POST['password1'])."', ";
 		}
 	}
 
@@ -198,7 +198,7 @@ if (isset($_POST['updatesettings']))
 
 	if ($user_sess != "")
 	{
-		$sesschange = ", user_sess = '".$tp->toDB($user_sess)."' ";
+		$sesschange = "user_sess = '".$tp->toDB($user_sess)."', ";
 	}
 
 	if (!$error)
@@ -232,7 +232,7 @@ if (isset($_POST['updatesettings']))
 			{
 				$username = strip_tags($_POST['username']);
 				$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
-				$new_username = "user_name = '{$username}'";
+				$new_username = "user_name = '{$username}', ";
 			}
 	
 			$_POST['signature'] = $tp->toDB($_POST['signature']);
@@ -290,7 +290,7 @@ if (isset($_POST['updatesettings']))
 			}
 
 
-			$sql->db_Update("user", "{$new_username} {$pwreset} ".$sesschange.", user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
+			$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
 			// If user has changed display name, update the record in the online table
 			if(isset($username) && ($username != USERNAME) && !$_uid)
 			{
