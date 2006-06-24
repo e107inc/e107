@@ -1,3 +1,9 @@
+global $loop_uid;
+if(intval($loop_uid) > 0 && trim($parm) == "")
+{
+	$parm = $loop_uid;
+}
+
 if(is_numeric($parm))
 {
 	if($parm == USERID)
