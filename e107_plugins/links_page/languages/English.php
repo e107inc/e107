@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-06-22 19:49:58 $
+|     $Revision: 1.26 $
+|     $Date: 2006-06-25 05:30:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -130,7 +130,7 @@ define("LCLAN_OPT_85", "caption menu");
 define("LCLAN_OPT_86", "link menu");
 define("LCLAN_OPT_87", "show amount of links");
 
-define("LCLAN_ADMIN_1", "update");
+define("LCLAN_ADMIN_1", "update");  // deprecated
 define("LCLAN_ADMIN_2", "Link saved to database.");
 define("LCLAN_ADMIN_3", "Link updated in database.");
 define("LCLAN_ADMIN_4", "Link Category Saved");
@@ -140,7 +140,7 @@ define("LCLAN_ADMIN_7", "link icon was uploaded successfully !");
 define("LCLAN_ADMIN_8", "link icon was not uploaded !");
 define("LCLAN_ADMIN_9", "Order updated");
 define("LCLAN_ADMIN_10", "Link");
-define("LCLAN_ADMIN_11", "deleted");
+define("LCLAN_ADMIN_11", "deleted"); // deprecated
 define("LCLAN_ADMIN_12", "Link Category");
 define("LCLAN_ADMIN_13", "Submitted link deleted");
 define("LCLAN_ADMIN_14", "Links");
@@ -232,7 +232,7 @@ define("LCLAN_ITEM_35", "manage personal links");
 define("LCLAN_ITEM_36", "go");
 define("LCLAN_ITEM_37", "view all links");
 define("LCLAN_ITEM_38", "All Links");
-define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_39", "Rating");
 
 define("LCLAN_ADMINMENU_1", "Link Options");
 define("LCLAN_ADMINMENU_2", "Manage Link Categories");
@@ -286,7 +286,7 @@ define("LAN_LINKS_22", "is");
 define("LAN_LINKS_23", "are");
 define("LAN_LINKS_24", "total in");
 define("LAN_LINKS_25", "show all links");
-define("LAN_LINKS_26", "Referrals:");
+define("LAN_LINKS_26", "Referrals");
 define("LAN_LINKS_27", "submit a link");
 define("LAN_LINKS_28", "Thank you");
 define("LAN_LINKS_29", "Your link has been saved and will be reviewed by a site administrator.");
@@ -297,7 +297,7 @@ define("LAN_LINKS_33", "No Links are rated yet.");
 define("LAN_LINKS_34", "There are currently no links");
 define("LAN_LINKS_35", "personal links manager");
 define("LAN_LINKS_36", "link comments");
-define("LAN_LINKS_37", "comments:");
+define("LAN_LINKS_37", "Comments");
 define("LAN_LINKS_38", "date");
 define("LAN_LINKS_39", "Links");
 define("LAN_LINKS_40", "Category");
