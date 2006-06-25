@@ -67,7 +67,7 @@ if(isset($linkspage_pref['link_navigator_allcat']) && $linkspage_pref['link_navi
 if($mains){
 	$main = "";
 
-	$selectjs = " onchange=\"if(this.options[this.selectedIndex].value.indexOf('-') && this.options[this.selectedIndex].value != '' && this.options[this.selectedIndex].value != '&nbsp;'){ return document.location=this.options[this.selectedIndex].value; }\" ";
+	$selectjs = " onchange=\"if(this.options[this.selectedIndex].value.indexOf('-') &amp;&amp; this.options[this.selectedIndex].value != '' &amp;&amp; this.options[this.selectedIndex].value != '&nbsp;'){ return document.location=this.options[this.selectedIndex].value; }\" ";
 
 //	$selectjs = " onchange=\"if(this.options[this.selectedIndex].value != '-- view category --' || this.options[this.selectedIndex].value != '&nbsp;'){ return document.location=this.options[this.selectedIndex].value; }\" ";
 	$main .= $rs -> form_select_open("navigator", $selectjs);
@@ -285,12 +285,12 @@ SC_END
 
 SC_BEGIN LINK_REFER
 global $LINK_REFER, $linkspage_pref, $rowl;
-return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? LAN_LINKS_26." ".$rowl['link_refer'] : "");
+return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? $rowl['link_refer'] : "");
 SC_END
 
 SC_BEGIN LINK_COMMENT
 global $LINK_COMMENT, $linkspage_pref, $rowl;
-return (isset($linkspage_pref['link_comment']) && $linkspage_pref['link_comment'] ? "<a href='".e_SELF."?comment.".$rowl['link_id']."'>".LAN_LINKS_37." ".($rowl['link_comment'] ? $rowl['link_comment'] : "0")."</a>" : "");
+return (isset($linkspage_pref['link_comment']) && $linkspage_pref['link_comment'] ? "<a href='".e_SELF."?comment.".$rowl['link_id']."'>".($rowl['link_comment'] ? $rowl['link_comment'] : "0")."</a>" : "");
 SC_END
 
 SC_BEGIN LINK_DESC
@@ -314,6 +314,42 @@ if(USER && $rowl['link_datestamp'] > USERLV){
 $LINK_NEW = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
 }
 return $LINK_NEW;
+SC_END
+
+SC_BEGIN LINK_CAT_NAME
+global $rowl;
+return $rowl['link_category_name'];
+SC_END
+
+SC_BEGIN LINK_CAT_DESC
+global $rowl;
+return $rowl['link_category_description'];
+SC_END
+
+SC_BEGIN LINK_CAT_TOTAL
+global $link_category_total;
+return " (<span title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".$link_category_total."</span>".(ADMIN ? "/<span title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".$link_category_total."</span>" : "").") ";
+SC_END
+
+SC_BEGIN LINK_REFER_LAN
+global $linkspage_pref;
+return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? LAN_LINKS_26 : "");
+SC_END
+
+SC_BEGIN LINK_COMMENT_LAN
+global $linkspage_pref;
+return (isset($linkspage_pref['link_comment']) && $linkspage_pref['link_comment'] ? LAN_LINKS_37 : "");
+SC_END
+
+SC_BEGIN LINK_RATING_LAN
+global $linkspage_pref;
+if(isset($linkspage_pref['link_rating']) && $linkspage_pref['link_rating']){
+	return LCLAN_ITEM_39;
+}
+SC_END
+
+SC_BEGIN NAVIGATOR
+return displayNavigator('');
 SC_END
 
 
@@ -365,7 +401,7 @@ if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 		$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
 	}else{
 		$LINK_RATED_BUTTON = "";
-	}	
+	}
 }
 return $LINK_RATED_BUTTON;
 SC_END

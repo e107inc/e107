@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-06-11 18:43:04 $
-|     $Author: lisa_ $
+|     $Revision: 1.35 $
+|     $Date: 2006-06-25 05:30:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -122,47 +122,47 @@ if(isset($qs[0]) && substr($qs[0],0,5) == "order"){
 }
 //show all categories
 if((!isset($qs[0]) || $qsorder) && $linkspage_pref['link_page_categories']){
-	displayNavigator('cat');
+  	echo displayNavigator('cat');
 	displayCategory();
 }
 //show all categories
 if(isset($qs[0]) && $qs[0] == "cat" && !isset($qs[1]) ){
-	displayNavigator('cat');
+   echo displayNavigator('cat');
 	displayCategory();
 }
 //show all links in all categories
 if( ((!isset($qs[0]) || $qsorder) && !$linkspage_pref['link_page_categories']) || (isset($qs[0]) && $qs[0] == "all") ){
-	displayNavigator('');
+  //	displayNavigator('');
 	displayCategoryLinks();
 }
 //show all links in one categories
 if(isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && is_numeric($qs[1])){
-	displayNavigator('');
+	echo displayNavigator('');
 	displayCategoryLinks($qs[1]);
 }
 //view top rated
 if(isset($qs[0]) && $qs[0] == "rated"){
-	displayNavigator('');
+	echo displayNavigator('');
 	displayTopRated();
 }
 //view top refer
 if(isset($qs[0]) && $qs[0] == "top"){
-	displayNavigator('');
+	echo displayNavigator('');
 	displayTopRefer();
 }
 //personal link managers
 if (isset($qs[0]) && $qs[0] == "manage"){
-	displayNavigator('');
+	echo displayNavigator('');
 	displayPersonalManager();
 }
 //comments on links
 if (isset($qs[0]) && $qs[0] == "comment" && isset($qs[1]) && is_numeric($qs[1]) ){
-	displayNavigator('');
+	echo displayNavigator('');
 	displayLinkComment();
 }
 //submit link
 if (isset($qs[0]) && $qs[0] == "submit" && check_class($linkspage_pref['link_submit_class'])) {
-	displayNavigator('');
+	echo displayNavigator('');
 	displayLinkSubmit();
 }
 
@@ -170,7 +170,7 @@ if (isset($qs[0]) && $qs[0] == "submit" && check_class($linkspage_pref['link_sub
 function displayTopRated(){
 	global $qs, $sql, $lc, $tp, $rowl, $link_shortcodes, $from, $ns, $linkspage_pref;
 	global $LINK_RATED_TABLE_START, $LINK_RATED_TABLE, $LINK_RATED_TABLE_END, $LINK_RATED_RATING, $LINK_RATED_APPEND;
-	
+
 	$number		= (isset($linkspage_pref["link_nextprev_number"]) && $linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
 	$np			= ($linkspage_pref["link_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 	$catrate	= (isset($qs[1]) && is_numeric($qs[1]) ? " AND l.link_category='".$qs[1]."' " : "");
@@ -208,7 +208,7 @@ function displayTopRated(){
 		}
 		$caption = LAN_LINKS_11." ".(isset($captioncat) ? $captioncat : "");
 		$text = $link_rated_table_start.$link_rated_table_string.$link_rated_table_end;
-		
+
 		$ns->tablerender($caption, $text);
 		$lc->ShowNextPrev($from, $number, $linktotalrated);
 	}
@@ -326,7 +326,7 @@ function displayLinkComment(){
 		SELECT l.*, lc.*
 		FROM #links_page AS l
 		LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category
-		WHERE l.link_id = '".intval($qs[1])."' AND lc.link_category_class REGEXP '".e_CLASS_REGEXP."' AND l.link_class REGEXP '".e_CLASS_REGEXP."' 
+		WHERE l.link_id = '".intval($qs[1])."' AND lc.link_category_class REGEXP '".e_CLASS_REGEXP."' AND l.link_class REGEXP '".e_CLASS_REGEXP."'
 		";
 		$link_comment_table_string = "";
 		if(!$linkcomment = $sql -> db_Select_gen($qry)){
@@ -368,7 +368,7 @@ function displayCategory(){
 	$qry = "
 	SELECT lc.*
 	FROM #links_page_cat AS lc
-	WHERE lc.link_category_class REGEXP '".e_CLASS_REGEXP."' 
+	WHERE lc.link_category_class REGEXP '".e_CLASS_REGEXP."'
 	".$order."
 	";
 
@@ -403,7 +403,7 @@ function displayNavigator($mode=''){
 	if($mode == "cat"){
 		if(isset($linkspage_pref['link_cat_sortorder']) && $linkspage_pref['link_cat_sortorder']){
 			$LINK_SORTORDER = $lc->showLinkSort('cat');
-		}	
+		}
 	}else{
 		if(isset($linkspage_pref['link_sortorder']) && $linkspage_pref['link_sortorder']){
 			$LINK_SORTORDER = $lc->showLinkSort();
@@ -418,12 +418,12 @@ function displayNavigator($mode=''){
 		$LINK_NAVIGATOR_TABLE_POST = TRUE;
 	}
 	$text = $tp -> parseTemplate($LINK_NAVIGATOR_TABLE, FALSE, $link_shortcodes);
-	echo $text;
+	return $text;
 }
 
 function displayCategoryLinks($mode=''){
 	global $sql2, $ns, $lc, $tp, $cobj, $rowl, $qs, $linkspage_pref, $from, $link_shortcodes;
-	global $LINK_TABLE_START, $LINK_TABLE, $LINK_TABLE_END, $LINK_APPEND;
+	global $LINK_TABLE_START, $LINK_TABLE,$link_category_total, $LINK_TABLE_CAPTION, $LINK_TABLE_END, $LINK_APPEND;
 
 	$order			= $lc -> getOrder();
 	$number			= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
@@ -434,7 +434,7 @@ function displayCategoryLinks($mode=''){
 	FROM #links_page AS l
 	LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category
 	LEFT JOIN #comments as c ON c.comment_item_id=l.link_id AND comment_type='links_page'
-	WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' AND lc.link_category_class REGEXP '".e_CLASS_REGEXP."' ".$cat." 
+	WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' AND lc.link_category_class REGEXP '".e_CLASS_REGEXP."' ".$cat."
 	GROUP BY l.link_id
 	".$order."
 	".$nextprevquery."
@@ -452,7 +452,7 @@ function displayCategoryLinks($mode=''){
 				$cat_name			= $rowl['link_category_name'];
 				$cat_desc			= $rowl['link_category_description'];
 				$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
-				$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);			
+				$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 			}else{
 				$arr[$rowl['link_category_id']][] = $rowl;
 			}
@@ -480,15 +480,18 @@ function displayCategoryLinks($mode=''){
 					$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 					$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 				}
-				$caption = LAN_LINKS_32." ".$cat_name." ".($cat_desc ? " <i>[".$cat_desc."]</i>" : "");
+				//	$caption = LAN_LINKS_32." ".$cat_name." ".($cat_desc ? " <i>[".$cat_desc."]</i>" : "");
 				//number of links
-				$caption .= " (<b title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".count($value)."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".count($value)."</b>" : "").") ";
+	            //  $caption .= " (<b title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".count($value)."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".count($value)."</b>" : "").") ";
 
+				$link_category_total = count($value);
+				$link_table_caption 	= $tp -> parseTemplate($LINK_TABLE_CAPTION, FALSE, $link_shortcodes);
 				$link_table_start		= $tp -> parseTemplate($LINK_TABLE_START, FALSE, $link_shortcodes);
 				$link_table_end			= $tp -> parseTemplate($LINK_TABLE_END, FALSE, $link_shortcodes);
-				$text = $link_table_start.$link_table_string.$link_table_end;
-				$ns->tablerender($caption, $text);
+				$text .= $link_table_start.$link_table_string.$link_table_end;
+
 			}
+				$ns->tablerender($link_table_caption, $text);
 		}
 	}
 	return;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-06-11 18:43:04 $
-|     $Author: lisa_ $
+|     $Revision: 1.20 $
+|     $Date: 2006-06-25 05:30:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -116,37 +116,73 @@ $LINK_MAIN_TABLE_END_ALL = "
 
 // LINKS ITEM ----------------------------------------------------------------------------
 
-$sc_style['LINK_BUTTON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:10%; text-align:center'>";
+$sc_style['LINK_BUTTON']['pre'] = "<td class='forumheader3' style='width:5%; text-align:center'>";
 $sc_style['LINK_BUTTON']['post'] = "</td>";
 
-$sc_style['LINK_URL']['pre'] = "<i>";
-$sc_style['LINK_URL']['post'] = "</i><br />";
+$sc_style['LINK_COMMENT']['pre'] = "<td class='forumheader3' style='width:5%; text-align:center'>";
+$sc_style['LINK_COMMENT']['post'] = "</td>";
 
-$sc_style['LINK_DESC']['post'] = "<br />";
+$sc_style['LINK_RATING']['pre'] = "<td class='forumheader3' style='width:5%; text-align:center'>";
+$sc_style['LINK_RATING']['post'] = "</td>";
+
+$sc_style['LINK_REFER']['pre'] = "<td class='forumheader3' style='width:5%; text-align:center'>";
+$sc_style['LINK_REFER']['post'] = "</td>";
+
+$sc_style['LINK_URL']['pre'] = "<span class='smalltext'>";
+$sc_style['LINK_URL']['post'] = "</span>";
+
+$sc_style['LINK_DESC']['pre'] = "<span class='smalltext'>";
+$sc_style['LINK_DESC']['post'] = "</span>";
+
+$sc_style['LINK_REFER_LAN']['pre'] = "<td class='fcaption' style='text-align:center;width:5%'>";
+$sc_style['LINK_REFER_LAN']['post'] = "</td>";
+
+$sc_style['LINK_COMMENT_LAN']['pre'] = "<td class='fcaption' style='width:5%'>";
+$sc_style['LINK_COMMENT_LAN']['post'] = "</td>";
+
+$sc_style['LINK_RATING_LAN']['pre'] = "<td class='fcaption' style='width:5%'>";
+$sc_style['LINK_RATING_LAN']['post'] = "</td>";
+
+$sc_style['LINK_BUTTON_LAN']['pre'] = "<td class='fcaption' style='width:5%'>";
+$sc_style['LINK_BUTTON_LAN']['post'] = "</td>";
+
+$cols = ($linkspage_pref['link_icon']) ? 2 : 1;
+
+$sc_style['LINK_CAT_DESC']['pre'] = "<br /><span class='smalltext'><i>";
+$sc_style['LINK_CAT_DESC']['post'] = "</i></span>";
+
+$LINK_TABLE_CAPTION = LCLAN_ITEM_24."{NAVIGATOR}" ;
+
 
 $LINK_TABLE_START = "
-	<div style='text-align:center'>";
+	<div style='text-align:center'>
+	<table class='fborder' style='width:97%; margin-bottom:20px;'>
+	<tr>
+	<td colspan='$cols' class='fcaption'>".LAN_LINKS_32." {LINK_CAT_NAME} {LINK_CAT_TOTAL} {LINK_CAT_DESC} </td>
+   	{LINK_RATING_LAN}
+	{LINK_COMMENT_LAN}
+	{LINK_REFER_LAN}
+	</tr>";
 
-$LINK_TABLE = "<div style='text-align:center'>
-	<table class='fborder' style='width:95%; margin-bottom:20px;'>
+$LINK_TABLE = "
+
 	<tr>
 		{LINK_BUTTON}
-		<td class='fcaption' style='width:90%'>
-			{LINK_NEW} {LINK_APPEND} {LINK_NAME} </a>
-		</td>
-		<td class='fcaption' style='white-space:nowrap'>
-		{LINK_COMMENT}&nbsp;{LINK_REFER}
-		</td>
-	</tr>
-	<tr><td colspan='2' class='forumheader3'>
-	{LINK_URL}
+		<td class='forumheader3' style='width:60%'>
+			{LINK_NEW} {LINK_APPEND} {LINK_NAME} </a><br />
+    {LINK_URL}
 	{LINK_DESC}
-	{LINK_RATING}
-	</td></tr>
-	</table></div>";
+
+		</td>
+    	{LINK_RATING}
+	{LINK_COMMENT}
+	{LINK_REFER}
+
+	</tr>
+	";
 
 $LINK_TABLE_END = "
-	</div>";
+	</table></div>";
 
 
 
@@ -187,7 +223,7 @@ $LINK_RATED_TABLE = "
 	</tr>
 	{LINK_RATED_URL}
 	{LINK_RATED_CATEGORY}
-	{LINK_RATED_DESC}		
+	{LINK_RATED_DESC}
 	</table>";
 
 $LINK_RATED_TABLE_END = "
@@ -200,7 +236,7 @@ $sc_style['LINK_SUBMIT_PRETEXT']['post'] = "</td></tr>";
 // SUBMIT -----------------------------------------------------------------------------------
 $LINK_SUBMIT_TABLE = "
 	<div style='text-align:center'>
-	<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>	
+	<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
 	<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'>
 	{LINK_SUBMIT_PRETEXT}
 	<tr>
