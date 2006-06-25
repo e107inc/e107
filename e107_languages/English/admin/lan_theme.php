@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_theme.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-15 12:09:30 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2006-06-25 18:11:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
@@ -33,7 +33,7 @@ define("TPVLAN_20", "Auto theme upload and extraction is disabled as your themes
 
 define("TPVLAN_21", "This is the currently selected site theme");
 
-define("TPVLAN_22", "this theme has multiple stylesheets");
+define("TPVLAN_22", "This theme has multiple stylesheets");
 define("TPVLAN_23", "default stylesheet");
 define("TPVLAN_24", "no information");
 define("TPVLAN_25", "To choose which stylesheet to use, please go to <a href='".e_ADMIN."prefs.php'>preferences</a> and click on 'Theme'.");
