@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-06-24 02:25:40 $
+|     $Revision: 1.51 $
+|     $Date: 2006-06-25 02:47:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -184,6 +184,7 @@ class e_install {
 	function stage_2(){
 		global $e_forms;
 		$this->stage = 2;
+		$this->previous_steps['language'] = $_POST['language'];
 		$this->get_lan_file();
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
