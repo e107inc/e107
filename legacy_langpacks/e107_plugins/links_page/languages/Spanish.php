@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-03-14 20:39:27 $
+|     $Revision: 1.5 $
+|     $Date: 2006-06-25 07:54:26 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ define("LCLAN_OPT_85", "Título menú");
 define("LCLAN_OPT_86", "Menú de enlace");
 define("LCLAN_OPT_87", "Mostrar cantidad de enlaces");
 
-define("LCLAN_ADMIN_1", "Actualizar");
+define("LCLAN_ADMIN_1", "Actualizar"); //Antiguo
 define("LCLAN_ADMIN_2", "Enlace guardado en la base de datos.");
 define("LCLAN_ADMIN_3", "Enlace actualziado en la base de datos.");
 define("LCLAN_ADMIN_4", "Categoría de enlace guardada");
@@ -135,7 +135,7 @@ define("LCLAN_ADMIN_7", "¡El icono del enlace se transfirió con éxito!");
 define("LCLAN_ADMIN_8", "¡El icono del enlace no se transfirió!");
 define("LCLAN_ADMIN_9", "Orden actualizado");
 define("LCLAN_ADMIN_10", "Enlace");
-define("LCLAN_ADMIN_11", "Eliminado");
+define("LCLAN_ADMIN_11", "Eliminado");//Antiguo
 define("LCLAN_ADMIN_12", "Categoría de enlace");
 define("LCLAN_ADMIN_13", "Enlace enviado eliminado");
 define("LCLAN_ADMIN_14", "Enlaces");
@@ -228,7 +228,7 @@ define("LCLAN_ITEM_35", "Gestionar enlaces personales");
 define("LCLAN_ITEM_36", "Ir");
 define("LCLAN_ITEM_37", "Ver todos los enlaces");
 define("LCLAN_ITEM_38", "Todos los enlaces");
-define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_39", "Valoración");
 
 define("LCLAN_ADMINMENU_1", "Opciones de enlace");
 define("LCLAN_ADMINMENU_2", "Gestionar categorías de enlaces");
@@ -282,7 +282,7 @@ define("LAN_LINKS_22", "");
 define("LAN_LINKS_23", "");
 define("LAN_LINKS_24", " en total en");
 define("LAN_LINKS_25", "Mostrar todos los enlaces");
-define("LAN_LINKS_26", "Referentes:");
+define("LAN_LINKS_26", "Referentes");
 define("LAN_LINKS_27", "Enviar un enlace");
 define("LAN_LINKS_28", "Gracias");
 define("LAN_LINKS_29", "Su enlace ha sido enviado y será revisado por un Administrador.");
@@ -293,7 +293,7 @@ define("LAN_LINKS_33", "No hay enlaces valorados todavía.");
 define("LAN_LINKS_34", "No hay enlaces");
 define("LAN_LINKS_35", "Gestor personal de enlaces");
 define("LAN_LINKS_36", "Comentarios de enlaces");
-define("LAN_LINKS_37", "Comentarios:");
+define("LAN_LINKS_37", "Comentarios");
 define("LAN_LINKS_38", "Fecha");
 define("LAN_LINKS_39", "Enlace");
 define("LAN_LINKS_40", "Categoría");
