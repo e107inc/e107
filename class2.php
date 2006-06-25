@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.286 $
-|     $Date: 2006-06-23 01:15:59 $
+|     $Revision: 1.287 $
+|     $Date: 2006-06-25 21:18:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
-if(strlen($_SERVER['HTTP_USER_AGENT']) < 5){
+if(strlen($_SERVER['HTTP_USER_AGENT']) < 5 && (basename($_SERVER['SCRIPT_NAME'])) != "rss.php"){
  exit;
 }
 
