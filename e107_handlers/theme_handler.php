@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-04-29 06:29:37 $
-|     $Author: sweetas $
+|     $Revision: 1.31 $
+|     $Date: 2006-06-25 18:11:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -106,7 +106,7 @@ class themeHandler{
 								{
 									$STYLESHEET = TRUE;
 								}
-								
+
 							}
 						}
 						$fp=fopen(e_THEME.$file."/theme.php", "r");
@@ -305,12 +305,14 @@ class themeHandler{
 		<br />
 		</td>
 		<td class='forumheader3' style='vertical-align:top'>";
-		
+
 		$itext .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$itext .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$itext .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
 		$itext .= $theme['info'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>" : "";
 		$itext .= !$mode ? "<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>".$previewbutton.$selectmainbutton.$selectadminbutton."</td></tr>" : "";
+
+
 		if ($itext) {
 			$text .= "<table cellspacing='3' style='width:97%'>".$itext."</table>";
 		}
@@ -343,11 +345,12 @@ class themeHandler{
 			}
 			else
 			{
-				$text .= "<br /><br /><b>".TPVLAN_22.": </b><br />";
+				$text .= "<br /><table style='width:97%' cellspacing='3'><tr><td colspan='2'><b>".TPVLAN_22.": </b></td></tr>";
 				foreach($theme['css'] as $css)
 				{
-					$text .= "<b>".$css['name'].":</b> ".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />";
+					$text .= "<tr><td style='width:24%;vertical-align:top'><b>".$css['name'].":</b></td><td> ".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td></tr>\n";
 				}
+				$text .= "</table><br />\n";
 			}
 		}
 
@@ -376,7 +379,7 @@ class themeHandler{
 
 			$adminstyles = $file -> get_files(e_ADMIN."includes");
 
-			$astext = "<select name='adminstyle' class='tbox'>\n";
+			$astext = "<select id='mode2' name='adminstyle' class='tbox'>\n";
 
 			foreach($adminstyles as $as)
 			{
@@ -387,23 +390,18 @@ class themeHandler{
 
 			$text .= "<br /><br /><table cellspacing='3' style='width:97%'>
 			<tr><td style='vertical-align:top; width:50%;'><b>".TPVLAN_41.":</b></td><td style='vertical-align:top width:50%;'>$astext</td></tr>
-			<td colspan='2' class='center'>
+			<tr><td colspan='2' class='center'>
 			<input class='button' type='submit' name='submit_adminstyle' value='".TPVLAN_42."' /> ".$selectmainbutton."
-			</td>
-			</table>\n";
+			</td></tr></table>\n";
 		}
 
-
-		if($theme['xhtmlcompliant'])
-		{
-			$text .= "<img src='".e_IMAGE."generic/valid-xhtml11_small.png' alt='' style='border: 0;' /> ";
-		}
-
-		if($theme['csscompliant'])
-		{
-			$text .= "<img src='".e_IMAGE."generic/vcss_small.png' alt='' style='border: 0;' /> ";
-		}
-
+			if($theme['xhtmlcompliant'] || $theme['xhtmlcompliant'])
+			{
+				$text .= "<table cellspacing='3' style='width:97%'><tr><td >";
+				$text .= ($theme['xhtmlcompliant']) ? "<img src='".e_IMAGE."generic/valid-xhtml11_small.png' alt='' style='border: 0px;' /> ": "";
+            	$text .= ($theme['csscompliant']) ? "<img src='".e_IMAGE."generic/vcss_small.png' alt='' style='border: 0px;' /> " : "";
+				$text .= "</td></tr></table>";
+			}
 
 		$text .= "</td></tr></table></div>\n";
 		return $text;
