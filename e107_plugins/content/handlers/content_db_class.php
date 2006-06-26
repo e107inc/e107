@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.47 $
-|		$Date: 2006-06-06 14:17:44 $
+|		$Revision: 1.48 $
+|		$Date: 2006-06-26 08:16:38 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -343,10 +343,9 @@ class contentdb{
 
 				// check and insert default pref values if new main parent + create menu file
 				if($_POST['parent'] == "0"){
-					$sql -> db_Select($plugintable, "content_id", "content_parent = '0' ORDER BY content_datestamp DESC LIMIT 1");
-					list($parent_id) = $sql -> db_Fetch();
-					$content_pref = $aa -> getContentPref($parent_id);
-					$aa -> CreateParentMenu($parent_id);
+					$iid = mysql_insert_id();
+					$content_pref = $aa -> getContentPref($iid);
+					$aa -> CreateParentMenu($iid);
 				}
 				$e107cache->clear("$plugintable");
 				js_location(e_SELF."?".e_QUERY.".pc");
