@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-04-26 06:02:13 $
-|     $Author: sweetas $
+|     $Revision: 1.58 $
+|     $Date: 2006-06-26 17:24:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.57 $
-* @author $Author: sweetas $
+* @version $Revision: 1.58 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -663,7 +663,7 @@ class db {
 				}
 
 				if(!$this->db_Query($querylan)){ // run query on other language tables.
-					$error .= $qrylan." failed for language";
+					$error .= $querylan." failed for language";
 				}
 			 	if($debug){ echo "<br />** lang= ".$querylan; }
 			}
