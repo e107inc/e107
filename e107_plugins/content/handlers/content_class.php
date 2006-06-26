@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.94 $
-|		$Date: 2006-06-04 10:14:15 $
+|		$Revision: 1.95 $
+|		$Date: 2006-06-26 08:16:38 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -382,7 +382,6 @@ class content{
 				$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 				$row = $sql -> db_Fetch();
 				if (empty($row['content_pref'])) {
-					
 					//if no prefs present yet, get them from core (default preferences)
 					$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 					//if those are not present, insert the default ones given in this file
@@ -393,16 +392,18 @@ class content{
 						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 					}
 					$row = $sql -> db_Fetch();
-					$tmp = $eArrayStorage->ReadArray($row['e107_value']);
+					$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 					
 					//create array of custom preset tags
-					foreach($tmp['content_custom_preset_key'] as $ck => $cv){
+					foreach($content_pref['content_custom_preset_key'] as $ck => $cv){
 						if(!empty($cv)){
 							$string[] = $cv;
 						}
 					}
 					if($string){
 						$content_pref['content_custom_preset_key'] = $string;
+					}else{
+						unset($content_pref['content_custom_preset_key']);
 					}
 
 					//finally we can store the new default prefs into the db
