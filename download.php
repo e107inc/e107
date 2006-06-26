@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2006-06-02 15:53:14 $
-|     $Author: lisa_ $
+|     $Revision: 1.64 $
+|     $Date: 2006-06-26 02:48:04 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -303,210 +303,98 @@ if ($action == "list") {
 }
 
 
-//  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//  ---------------- View Mode ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 if ($action == "view") {
 
-	require_once(e_HANDLER."rate_class.php");
 	$gen = new convert;
-	$rater = new rater;
-	$sql2 = new db;
+
 	$highlight_search = FALSE;
 	if (isset($_POST['highlight_search'])) {
 		$highlight_search = TRUE;
 	}
 
-	$sql = new db;
-	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")")) {
-		require_once(HEADERF);
-		require_once(FOOTERF);
-		exit;
-	}
+    $query = "
+		SELECT d.*, dc.* FROM #download AS d
+		LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id
+		WHERE d.download_id = {$id} AND d.download_active > 0
+		AND d.download_visible IN (".USERCLASS_LIST.")
+		AND dc.download_category_class IN (".USERCLASS_LIST.")
+		LIMIT 1";
 
-    if (!$DOWNLOAD_VIEW_TABLE) {
-		if (file_exists(THEME."download_template.php")) {
-			require_once(THEME."download_template.php");
-		} else {
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
-		}
-	}
-    if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:0px");}
-
-	$gen = new convert;
-	$row = $sql->db_Fetch();
-	extract($row);
-	$comments_enabled = $row['download_comment'];
-	$subject = $download_name;
-	$sql2->db_Select("download_category", "*", "download_category_id='".intval($download_category)."' ");
-	$row = $sql2->db_Fetch();
-	extract($row);
-	$type = $download_category_name;
-	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
-	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name." / ".$download_name);
-
-	require_once(HEADERF);
-	if (!check_class($download_category_class)) {
+	if(!$sql -> db_Select_gen($query)){
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
 		require_once(FOOTERF);
 		exit;
 	}
 
-    $DOWNLOAD_ADMIN_EDIT = (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.$download_id' title='edit'><img src='".e_IMAGE."generic/lite/edit.png' alt='' style='padding:0px;border:0px' /></a>" : "";
+	$dl = $sql -> db_Fetch();
 
-
-	$DOWNLOAD_REPORT_LINK = "<a href='".e_SELF."?report.{$download_id}'>".LAN_dl_45."</a>";
-	$DOWNLOAD_CATEGORY = $download_category_name;
-	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE);
-
-	$DOWNLOAD_VIEW_NAME = $download_name;
-
-	$DOWNLOAD_VIEW_NAME_LINKED = "<a href='".e_BASE."request.php?".$download_id."' title='".LAN_dl_46."'>{$download_name}</a>";
-
-	$DOWNLOAD_VIEW_AUTHOR_LAN = LAN_dl_24;
-	$DOWNLOAD_VIEW_AUTHOR = ($download_author ? $download_author : "&nbsp;");
-
-	if ($download_author_email) {
-		$DOWNLOAD_VIEW_AUTHOREMAIL_LAN = LAN_dl_30;
-		$DOWNLOAD_VIEW_AUTHOREMAIL = $tp -> toHTML($download_author_email, TRUE);
-	}
-
-	if ($download_author_website) {
-		$DOWNLOAD_VIEW_AUTHORWEBSITE_LAN = LAN_dl_31;
-		$DOWNLOAD_VIEW_AUTHORWEBSITE = $tp -> toHTML($download_author_website, TRUE);
-	}
-
-	$DOWNLOAD_VIEW_DESCRIPTION_LAN = LAN_dl_7;
-	$DOWNLOAD_VIEW_DESCRIPTION = $tp->toHTML(($download_description ? $download_description : "&nbsp;"), TRUE);
-
-	$DOWNLOAD_VIEW_DATE_LAN = LAN_dl_22;
-	$DOWNLOAD_VIEW_DATE_SHORT = $gen->convert_date($download_datestamp, "short");
-	$DOWNLOAD_VIEW_DATE_LONG = $gen->convert_date($download_datestamp, "long");
-
-	$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
-
-
-	if ($download_thumb) {
-		$DOWNLOAD_VIEW_IMAGE = ($download_image ? "<a href='".e_BASE."request.php?download.".$download_id."'><img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' /></a>" : "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' />");
-	}
-	else if($download_image) {
-		$DOWNLOAD_VIEW_IMAGE = "<a href='".e_BASE."request.php?download.".$download_id."'>".LAN_dl_40."</a>";
-	}
+	if (!isset($DOWNLOAD_VIEW_TABLE) && is_readable(THEME."download_template.php"))
+	{
+		include_once(THEME."download_template.php");
+ 	}
 	else
 	{
-		$DOWNLOAD_VIEW_IMAGE = LAN_dl_75;
+        include_once(e_THEME."templates/download_template.php");
 	}
 
-	$DOWNLOAD_VIEW_IMAGEFULL = ($download_image) ? "<img src='".e_FILE."downloadimages/{$download_image}' alt='' style='".DL_IMAGESTYLE."' />" : "";
-
-	if ($pref['agree_flag'] == 1) {
-		$dnld_link = "<a href='request.php?{$download_id}' onclick= \"return confirm('{$agreetext}');\">";
-	} else {
-		$dnld_link = "<a href='request.php?{$download_id}'>";
-	}
-    $DOWNLOAD_VIEW_ID = $download_id;
-	$DOWNLOAD_VIEW_FILESIZE_LAN = LAN_dl_10;
-	$DOWNLOAD_VIEW_FILESIZE = parsesize($download_filesize);
-	$DOWNLOAD_VIEW_REQUESTED_LAN = LAN_dl_18;
-	$DOWNLOAD_VIEW_REQUESTED = $download_requested;
-	$DOWNLOAD_VIEW_LINK_LAN = LAN_dl_32;
-
-	if($download_mirror)
+	if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:0px");}
+    if(!isset($DL_VIEW_PAGETITLE))
 	{
-		if($download_mirror_type)
-		{
-			$DOWNLOAD_VIEW_LINK = "<a href='".e_SELF."?mirror.{$download_id}'>".LAN_dl_66."</a>";
-		}
-		else
-		{
-			$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
-		}
+    	$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 	}
-	else
+
+    $DL_TITLE = $tp->parseTemplate($DL_VIEW_PAGETITLE, TRUE, $download_shortcodes);
+
+	define("e_PAGETITLE", $DL_TITLE);
+
+	require_once(HEADERF);
+	$DL_TEMPLATE = $DOWNLOAD_VIEW_TABLE_START.$DOWNLOAD_VIEW_TABLE.$DOWNLOAD_VIEW_TABLE_END;
+	$text = $tp->parseTemplate($DL_TEMPLATE, TRUE, $download_shortcodes);
+
+	if(!isset($DL_VIEW_CAPTION))
 	{
-		$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
+		$DL_VIEW_CAPTION = "{DOWNLOAD_VIEW_CAPTION}";
 	}
 
-
-	$DOWNLOAD_VIEW_RATING_LAN = LAN_dl_12;
-	$DOWNLOAD_VIEW_RATING = "
-		<table style='width:100%'>
-		<tr>
-		<td style='width:50%'>";
-
-	if ($ratearray = $rater->getrating("download", $download_id)) {
-		for($c = 1; $c <= $ratearray[1]; $c++) {
-			$DOWNLOAD_VIEW_RATING .= "<img src='".e_IMAGE."rate/".IMODE."/star.png' alt=''>";
-		}
-		if ($ratearray[2]) {
-			$DOWNLOAD_VIEW_RATING .= "<img src='".e_IMAGE."rate/".IMODE."/".$ratearray[2].".png'  alt=''>";
-		}
-		if ($ratearray[2] == "") {
-			$ratearray[2] = 0;
-		}
-		$DOWNLOAD_VIEW_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-		$DOWNLOAD_VIEW_RATING .= ($ratearray[0] == 1 ? LAN_dl_43 : LAN_dl_44);
-	} else {
-		$DOWNLOAD_VIEW_RATING .= LAN_dl_13;
-	}
-	$DOWNLOAD_VIEW_RATING .= "</td><td style='width:50%; text-align:right'>";
-
-	if (!$rater->checkrated("download", $download_id) && USER) {
-		$DOWNLOAD_VIEW_RATING .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>".LAN_dl_14, "download", $download_id)."</b>";
-	}
-	else if(!USER) {
-		$DOWNLOAD_VIEW_RATING .= "&nbsp;";
-	} else {
-		$DOWNLOAD_VIEW_RATING .= LAN_dl_15;
-	}
-	$DOWNLOAD_VIEW_RATING .= "</td></tr></table>";
-
-	$download_view_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_START);
-	$download_view_table_string = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE);
-	$download_view_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_END);
-	$text .= $download_view_table_start.$download_view_table_string.$download_view_table_end;
-
-	$dl_id = intval($download_id);
-	if ($sql->db_Select("download", "*", "download_category='".intval($download_category_id)."' AND download_id < {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp DESC")) {
-		$row = $sql->db_Fetch();
-		 extract($row);
-		$prev = "<a href='".e_SELF."?view.{$download_id}'>&lt;&lt; ".LAN_dl_33." [{$download_name}]</a>\n";
-	} else {
-		$prev = "&nbsp;";
-	}
-	if ($sql->db_Select("download", "*", "download_category='".intval($download_category_id)."' AND download_id > {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp ASC")) {
-		$row = $sql->db_Fetch();
-		 extract($row);
-		$next = "<a href='".e_SELF."?view.{$download_id}'>[{$download_name}] ".LAN_dl_34." &gt;&gt;</a>\n";
-	} else {
-		$next = "&nbsp;";
-	}
-
-	if ($prev || $next) {
-		$text .= "
+	if(!isset($DL_VIEW_NEXTPREV))
+	{
+    	$DL_VIEW_NEXTPREV = "
 		<div style='text-align:center'>
 			<table style='width:95%'>
 			<tr>
-			<td style='width:40%;'>{$prev}</td>
-			<td style='width:20%; text-align: center;'><a href='".e_SELF."?list.{$download_category}'>".LAN_dl_35."</a></td>
-			<td style='width:40%; text-align: right;'>{$next}</td>
+			<td style='width:40%;'>{DOWNLOAD_VIEW_PREV}</td>
+			<td style='width:20%; text-align: center;'>{DOWNLOAD_BACK_TO_LIST}</td>
+			<td style='width:40%; text-align: right;'>{DOWNLOAD_VIEW_NEXT}</td>
 			</tr>
 			</table>
 			</div>
 			";
-	}
+    }
+		// ------- Next/Prev -----------
+    $text .= $tp->parseTemplate($DL_VIEW_NEXTPREV,TRUE,$download_shortcodes);
+	$caption = $tp->parseTemplate($DL_VIEW_CAPTION,TRUE,$download_shortcodes);
 
 	if($DOWNLOAD_VIEW_TABLE_RENDERPLAIN) {
 		echo $text;
 	} else {
-		$ns->tablerender($type, $text);
+
+		$ns->tablerender($caption, $text);
 	}
+
 	unset($text);
-	if ($comments_enabled) {
-		$cobj->compose_comment("download", "comment", $id, $width, $subject, $showrate=FALSE);
+
+	if ($dl['download_comment']) {
+		$cobj->compose_comment("download", "comment", $id, $width,$dl['download_name'], $showrate=FALSE);
 	}
 
 	require_once(FOOTERF);
+	exit;
+
 }
+
+//  ---------------- Report Broken Link Mode ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 if ($action == "report") {
 	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0")) {
@@ -573,6 +461,9 @@ if ($action == "report") {
 	require_once(FOOTERF);
 	exit;
 }
+
+//  ---------------- Mirror Mode ---------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 if($action == "mirror")
 {
