@@ -11,14 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/modtrackback.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-22 18:20:53 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2006-06-26 08:26:44 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-
-
 
 if (!getperms("P") || !$pref['trackbackEnabled'])
 {
@@ -26,8 +24,6 @@ if (!getperms("P") || !$pref['trackbackEnabled'])
 	exit;
 }
 require_once(e_ADMIN."auth.php");
-$id = intval(e_QUERY);
-
 if (IsSet($_POST['moderate'])) {
 	extract($_POST);
 
@@ -43,8 +39,13 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
+if (e_QUERY=='all') {
+	$res=$sql->db_Select("trackback", "*");
+} else {
+	$res=$sql->db_Select("trackback", "*", "trackback_pid=".intval(e_QUERY));
+}
 
-if (!$sql->db_Select("trackback", "*", "trackback_pid=$id"))
+if (!$res)
 {
 	$text .= "<tr><td class='forumheader3' style='text-align:center'>".TRACKBACK_L12.".</td></tr></table></form></div>";
 } 
@@ -62,8 +63,6 @@ else
 		</tr>\n";
 	}
 	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".TRACKBACK_L13."' /></td></tr></table></form></div>";
-	
-		 
 }
 	
 $ns->tablerender(TRACKBACK_L13, $text);
