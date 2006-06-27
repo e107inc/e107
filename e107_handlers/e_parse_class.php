@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.151 $
-|     $Date: 2006-06-02 15:53:14 $
-|     $Author: lisa_ $
+|     $Revision: 1.152 $
+|     $Date: 2006-06-27 18:34:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -294,119 +294,123 @@ class e_parse
 			$text = $this->replaceConstants($text);
 		}
 
-		if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
-		$text = " ".$text;
+       if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
+        $text = " ".$text;
 
-		if (strpos($modifiers, 'nobreak') === FALSE) {
-			$text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
-			preg_match_all("#<(script|style)[^>]+>.*?</(script|style)>#is", $text, $embeds);
-			$text = preg_replace("#<(script|style)[^>]+>.*?</(script|style)>#is", "<|>", $text);
+        if (strpos($modifiers, 'nobreak') === FALSE) {
+            $text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
+            preg_match_all("#<(script|style)[^>]+>.*?</(script|style)>#is", $text, $embeds);
+            $text = preg_replace("#<(script|style)[^>]+>.*?</(script|style)>#is", "<|>", $text);
+        }
+
+        if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
+            if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
+                $_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
+                $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
+                $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
+                if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
+                    $email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2&copy;\\3";
+                }else{
+                    $email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2©\\3";
+                }
+                $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
+            } else {
+                $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $text);
+                $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
+                $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>-email-</a>", $text);
+            }
+        }
+
+        if (strpos($modifiers, 'emotes_off') === FALSE) {
+            if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
+                if (!is_object($this->e_emote)) {
+                    require_once(e_HANDLER.'emote_filter.php');
+                    $this->e_emote = new e_emoteFilter;
+                }
+                $text = $this->e_emote->filterEmotes($text);
+            }
+        }
+
+        if (strpos($modifiers, 'nobreak') === FALSE) {
+            $text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
+            foreach ($embeds[0] as $embed) {
+                $text = preg_replace("#<\|>#", $embed, $text, 1);
+            }
+        }
+
+		if (strpos($modifiers, 'value') === FALSE) { // output not used for attribute values.
+	       	$text = str_replace($this -> search, $this -> replace, $text);
+        }else{   									// output used for attribute values.  
+            $text = str_replace($this -> replace, $this -> search, $text);
 		}
 
-		if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
-			if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
-				$_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
-				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
-				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
-				if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
-					$email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2&copy;\\3";
-				}else{
-					$email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2©\\3";
-				}
-				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
-			} else {
-				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $text);
-				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
-				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>-email-</a>", $text);
-			}
-		}
+        // Start parse [bb][/bb] codes
+        if ($parseBB === TRUE) {
+            if (!is_object($this->e_bb)) {
+                require_once(e_HANDLER.'bbcode_handler.php');
+                $this->e_bb = new e_bbcode;
+            }
+            $text = $this->e_bb->parseBBCodes($text, $postID);
+        }
+        // End parse [bb][/bb] codes
 
-		if (strpos($modifiers, 'emotes_off') === FALSE) {
-			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
-				if (!is_object($this->e_emote)) {
-					require_once(e_HANDLER.'emote_filter.php');
-					$this->e_emote = new e_emoteFilter;
-				}
-				$text = $this->e_emote->filterEmotes($text);
-			}
-		}
+        if ($pref['profanity_filter']) {
+            if (!is_object($this->e_pf)) {
+                require_once(e_HANDLER."profanity_filter.php");
+                $this->e_pf = new e_profanityFilter;
+            }
+            $text = $this->e_pf->filterProfanities($text);
+        }
 
-		if (strpos($modifiers, 'nobreak') === FALSE) {
-			$text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
-			foreach ($embeds[0] as $embed) {
-				$text = preg_replace("#<\|>#", $embed, $text, 1);
-			}
-		}
+        if (strpos($modifiers,'parse_sc') !== FALSE)
+        {
+            $text = $this->parseTemplate($text, TRUE);
+        }
 
-		$text = str_replace($this -> search, $this -> replace, $text);
+        //Run any hooked in parsers
+        if(isset($pref['tohtml_hook']) && $pref['tohtml_hook'])
+        {
+            foreach(explode(",",$pref['tohtml_hook']) as $hook)
+            {
+                if (strpos($modifiers, 'no_hook') === FALSE)
+                {
+                    if (!is_object($this->e_hook[$hook]))
+                    {
+                        require_once(e_PLUGIN.$hook."/".$hook.".php");
+                        $hook_class = "e_".$hook;
+                        $this->e_hook[$hook] = new $hook_class;
+                    }
+                    $text = $this->e_hook[$hook]->$hook($text);
+                }
+            }
+        }
 
-		// Start parse [bb][/bb] codes
-		if ($parseBB === TRUE) {
-			if (!is_object($this->e_bb)) {
-				require_once(e_HANDLER.'bbcode_handler.php');
-				$this->e_bb = new e_bbcode;
-			}
-			$text = $this->e_bb->parseBBCodes($text, $postID);
-		}
-		// End parse [bb][/bb] codes
+        if (strpos($modifiers, 'nobreak') === FALSE) {
+            $text = $this -> textclean($text, $wrap);
+        }
 
-		if ($pref['profanity_filter']) {
-			if (!is_object($this->e_pf)) {
-				require_once(e_HANDLER."profanity_filter.php");
-				$this->e_pf = new e_profanityFilter;
-			}
-			$text = $this->e_pf->filterProfanities($text);
-		}
+        // Search Highlight
+        if (strpos($modifiers, 'emotes_off') === FALSE) {
+            $shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
+            if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) {
+                if (!isset($this -> e_query)) {
+                    $query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
+                    $this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
+                }
+                $text = $this -> e_highlight($text, $this -> e_query);
+            }
+        }
 
-		if (strpos($modifiers,'parse_sc') !== FALSE)
-		{
-			$text = $this->parseTemplate($text, TRUE);
-		}
-
-		//Run any hooked in parsers
-		if(isset($pref['tohtml_hook']) && $pref['tohtml_hook'])
-		{
-			foreach(explode(",",$pref['tohtml_hook']) as $hook)
-			{
-				if (strpos($modifiers, 'no_hook') === FALSE)
-				{
-					if (!is_object($this->e_hook[$hook]))
-					{
-						require_once(e_PLUGIN.$hook."/".$hook.".php");
-						$hook_class = "e_".$hook;
-						$this->e_hook[$hook] = new $hook_class;
-					}
-					$text = $this->e_hook[$hook]->$hook($text);
-				}
-			}
-		}
-
-		if (strpos($modifiers, 'nobreak') === FALSE) {
-			$text = $this -> textclean($text, $wrap);
-		}
-
-		// Search Highlight
-		if (strpos($modifiers, 'emotes_off') === FALSE) {
-			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
-			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) {
-				if (!isset($this -> e_query)) {
-					$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
-					$this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
-				}
-				$text = $this -> e_highlight($text, $this -> e_query);
-			}
-		}
-
-		$nl_replace = "<br />";
-		if (strpos($modifiers, 'nobreak') !== FALSE)
-		{
-			$nl_replace = '';
-		}
-		elseif (strpos($modifiers, 'retain_nl') !== FALSE)
-		{
-			$nl_replace = "\n";
-		}
-		$text = str_replace(E_NL, $nl_replace, $text);
+        $nl_replace = "<br />";
+        if (strpos($modifiers, 'nobreak') !== FALSE)
+        {
+            $nl_replace = '';
+        }
+        elseif (strpos($modifiers, 'retain_nl') !== FALSE)
+        {
+            $nl_replace = "\n";
+        }
+        $text = str_replace(E_NL, $nl_replace, $text);
 
 		return trim($text);
 	}
