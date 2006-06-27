@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-06-06 12:56:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2006-06-27 23:06:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -31,13 +31,13 @@ else
 }
 
 $query2 = "
-SELECT tp.thread_name AS parent_name, t.thread_datestamp , t.thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
-LEFT JOIN #user AS u ON t.thread_user = u.user_id 
-LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
-LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
-LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id 
-WHERE f.forum_class  IN (".USERCLASS_LIST.") 
-AND fp.forum_class IN (".USERCLASS_LIST.") 
+SELECT tp.thread_name AS parent_name, t.thread_datestamp , t.thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t
+LEFT JOIN #user AS u ON t.thread_user = u.user_id
+LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+LEFT JOIN #forum AS f ON (f.forum_id = t.thread_forum_id
+AND f.forum_class IN (".USERCLASS_LIST."))
+LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
+WHERE fp.forum_class IN (".USERCLASS_LIST.")
 ORDER BY t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
 $results = $sql->db_Select_gen($query2);
@@ -95,5 +95,5 @@ else
 }
 
 $ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
-	
+
 ?>
