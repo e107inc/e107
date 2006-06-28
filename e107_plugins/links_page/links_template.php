@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-06-25 05:30:05 $
+|     $Revision: 1.21 $
+|     $Date: 2006-06-28 17:57:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -146,19 +146,16 @@ $sc_style['LINK_RATING_LAN']['post'] = "</td>";
 $sc_style['LINK_BUTTON_LAN']['pre'] = "<td class='fcaption' style='width:5%'>";
 $sc_style['LINK_BUTTON_LAN']['post'] = "</td>";
 
-$cols = ($linkspage_pref['link_icon']) ? 2 : 1;
-
 $sc_style['LINK_CAT_DESC']['pre'] = "<br /><span class='smalltext'><i>";
 $sc_style['LINK_CAT_DESC']['post'] = "</i></span>";
 
 $LINK_TABLE_CAPTION = LCLAN_ITEM_24."{NAVIGATOR}" ;
 
-
 $LINK_TABLE_START = "
 	<div style='text-align:center'>
 	<table class='fborder' style='width:97%; margin-bottom:20px;'>
 	<tr>
-	<td colspan='$cols' class='fcaption'>".LAN_LINKS_32." {LINK_CAT_NAME} {LINK_CAT_TOTAL} {LINK_CAT_DESC} </td>
+	<td colspan='{BUTTON_COLUMN}' class='fcaption'>".LAN_LINKS_32." {LINK_CAT_NAME} {LINK_CAT_TOTAL} {LINK_CAT_DESC} </td>
    	{LINK_RATING_LAN}
 	{LINK_COMMENT_LAN}
 	{LINK_REFER_LAN}

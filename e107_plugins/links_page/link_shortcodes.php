@@ -268,6 +268,11 @@ if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 return $LINK_BUTTON;
 SC_END
 
+SC_BEGIN BUTTON_COLUMN
+global $linkbutton_count,$linkspage_pref;
+return ($linkbutton_count >0 && $linkspage_pref['link_icon']) ? 2 : 1;
+SC_END
+
 SC_BEGIN LINK_APPEND
 global $LINK_APPEND;
 return $LINK_APPEND;

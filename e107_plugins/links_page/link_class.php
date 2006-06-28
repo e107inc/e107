@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.28 $
-|    $Date: 2006-06-11 18:43:04 $
-|    $Author: lisa_ $
+|    $Revision: 1.29 $
+|    $Date: 2006-06-28 17:57:30 $
+|    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,14 +32,14 @@ class linkclass {
         $linkspage_pref['link_comment'] = "";
         $linkspage_pref['link_rating'] = "";
 
-        $linkspage_pref['link_navigator_frontpage'] = "1";
+        $linkspage_pref['link_navigator_frontpage'] = "";
         $linkspage_pref['link_navigator_submit'] = "";
         $linkspage_pref['link_navigator_manager'] = "";
         $linkspage_pref['link_navigator_refer'] = "";
         $linkspage_pref['link_navigator_rated'] = "";
-        $linkspage_pref['link_navigator_allcat'] = "1";
-        $linkspage_pref['link_navigator_links'] = "1";
-        $linkspage_pref['link_navigator_category'] = "1";
+        $linkspage_pref['link_navigator_allcat'] = "";
+        $linkspage_pref['link_navigator_links'] = "";
+        $linkspage_pref['link_navigator_category'] = "";
 
         $linkspage_pref['link_cat_icon'] = "1";
         $linkspage_pref['link_cat_desc'] = "1";
@@ -250,7 +250,7 @@ class linkclass {
 
         $sotext = "
         ".$rs -> form_open("post", e_SELF, "linkorder", "", "enctype='multipart/form-data'")."
-            ".LAN_LINKS_15." 
+            ".LAN_LINKS_15."
             ".$rs -> form_select_open("link_sort");
             if($mode == "cat"){
                 $sotext .= "
@@ -267,7 +267,7 @@ class linkclass {
             }
             $sotext .= "
             ".$rs -> form_select_close()."
-            ".LAN_LINKS_6." 
+            ".LAN_LINKS_6."
             ".$rs -> form_select_open("link_order")."
             ".$rs -> form_option(LAN_LINKS_8, ($checko == "a" ? "1" : "0"), $baseurl."?".($qry ? $qry."." : "")."ordera", "")."
             ".$rs -> form_option(LAN_LINKS_9, ($checko == "d" ? "1" : "0"), $baseurl."?".($qry ? $qry."." : "")."orderd", "")."
@@ -336,7 +336,7 @@ class linkclass {
                 $orderstring    = "order".($linkspage_pref["link_cat_order"] == "ASC" ? "a" : "d" ).($linkspage_pref["link_cat_sort"] ? $linkspage_pref["link_cat_sort"] : "date" );
             }else{
                 $orderstringcat = "order".($linkspage_pref["link_cat_order"] == "ASC" ? "a" : "d" ).($linkspage_pref["link_cat_sort"] ? $linkspage_pref["link_cat_sort"] : "date" );
-                
+
                 $orderstring    = "order".($linkspage_pref["link_order"] == "ASC" ? "a" : "d" ).($linkspage_pref["link_sort"] ? $linkspage_pref["link_sort"] : "date" );
             }
         }
@@ -469,18 +469,18 @@ class linkclass {
         $link_url           = $tp->toDB($_POST['link_url']);
         $link_description   = $tp->toDB($_POST['link_description']);
         $link_button        = $tp->toDB($_POST['link_but']);
-        
+
         if (!strstr($link_url, "http")) {
             $link_url = "http://".$link_url;
         }
-            
+
         if(isset($mode) && $mode == "submit"){
             if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
                 $username           = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 
                 $submitted_link     = intval($_POST['cat_id'])."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
                 $sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
-                
+
                 $edata_ls = array("link_category" => $_POST['cat_id'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
                 $e_event->trigger("linksub", $edata_ls);
                 //header("location:".e_SELF."?s");
@@ -544,7 +544,7 @@ class linkclass {
                 $row['link_url']            = $submitted[2];
                 $row['link_description']    = $submitted[3]."\n[i]".LCLAN_ITEM_1." ".$submitted[5]."[/i]";
                 $row['link_button']         = $submitted[4];
-                
+
             }
         }
 
@@ -1007,12 +1007,12 @@ class linkclass {
                 hide=document.getElementById(hideid).style;
                 show.display=\"\";
                 hide.display=\"none\";
-                
+
                 //showh=document.getElementById(showid+'help').style;
                 //hideh=document.getElementById(hideid+'help').style;
                 //showh.display=\"\";
                 //hideh.display=\"none\";
-                
+
                 hideid = showid;
             }
         }
@@ -1119,7 +1119,7 @@ class linkclass {
         ".$rs -> form_radio("link_manager", "1", ($linkspage_pref['link_manager'] ? "1" : "0"), "", "").LCLAN_OPT_3."
         ".$rs -> form_radio("link_manager", "0", ($linkspage_pref['link_manager'] ? "0" : "1"), "", "").LCLAN_OPT_4;
         $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-        
+
         $TOPIC_TOPIC = LCLAN_OPT_46;
         $TOPIC_FIELD = r_userclass("link_manager_class", $linkspage_pref['link_manager_class'])."<br />".LCLAN_OPT_47;
         $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
@@ -1321,7 +1321,7 @@ class linkclass {
         $TOPIC_TOPIC = LCLAN_OPT_79;
         $TOPIC_FIELD = $rs -> form_text("link_menu_navigator_caption", "15", $linkspage_pref['link_menu_navigator_caption'], "100", "tbox", "", "", "");
         $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-        
+
         $TOPIC_TOPIC = LCLAN_OPT_69;
         $TOPIC_FIELD = "
         ".$rs -> form_radio("link_menu_navigator_rendertype", "1", ($linkspage_pref['link_menu_navigator_rendertype'] ? "1" : "0"), "", "").LCLAN_OPT_76."
