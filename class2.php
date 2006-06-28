@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.287 $
-|     $Date: 2006-06-25 21:18:43 $
+|     $Revision: 1.288 $
+|     $Date: 2006-06-28 17:16:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -290,7 +290,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 	}
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
-
+    $sql2->mySQLlanguage = $_POST['sitelanguage'];
 
 	if ($pref['user_tracking'] == "session") {
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
@@ -311,9 +311,11 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 	if ($pref['user_tracking'] == "session") {
 		$user_language=(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : "");
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
+		$sql2->mySQLlanguage = $sql->mySQLlanguage;
 	} else {
 		$user_language=$_COOKIE['e107language_'.$pref['cookie_name']];
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
+		$sql2->mySQLlanguage = $sql->mySQLlanguage;   
 	}
 
 
