@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.152 $
-|     $Date: 2006-06-27 18:34:12 $
+|     $Revision: 1.153 $
+|     $Date: 2006-06-28 05:00:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -340,7 +340,7 @@ class e_parse
 
 		if (strpos($modifiers, 'value') === FALSE) { // output not used for attribute values.
 	       	$text = str_replace($this -> search, $this -> replace, $text);
-        }else{   									// output used for attribute values.  
+        }else{   									// output used for attribute values.
             $text = str_replace($this -> replace, $this -> search, $text);
 		}
 
@@ -480,11 +480,27 @@ class e_parse
 		return $matches[1];
 	}
 
-    function createConstants($text){
-        global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY;
-        $search = array($IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
-        $replace = array("{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}");
-		return str_replace($search,$replace,$text);
+    function createConstants($url){
+        global $IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY;
+
+        $tmp = array(
+			"{"."e_IMAGE"."}"=>$IMAGES_DIRECTORY,
+			"{"."e_PLUGIN"."}"=>$PLUGINS_DIRECTORY,
+			"{"."e_FILE"."}"=>$FILES_DIRECTORY,
+			"{"."e_THEME"."}"=>$THEMES_DIRECTORY,
+			"{"."e_DOWNLOAD"."}"=>$DOWNLOADS_DIRECTORY
+  		);
+
+		foreach($tmp as $key=>$val)
+		{
+        	$len = strlen($val);
+			if(substr($url,0,$len) == $val)
+			{
+            	return str_replace($val,$key,$url);
+			}
+		}
+
+		return $url;
     }
 
 
