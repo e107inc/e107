@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-03-22 01:58:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.56 $
+|     $Date: 2006-06-28 05:00:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -176,7 +176,7 @@ exit;
 class links
 {
 	var $link_total;
-	
+
 	function getLinks()
 	{
 		global $sql;
@@ -219,7 +219,7 @@ class links
 		}
 		return $ret;
 	}
-			
+
 
 	function existing($id=0, $level=0)
 	{
@@ -254,7 +254,7 @@ class links
 				<td class='fcaption' style='width:5%'>".LAN_ORDER."</td>
 				</tr>";
 				$text .= $this->existing(0);
-				
+
 			$text .= "<tr>
 				<td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LAN_UPDATE."' /></td>
 				</tr>";
@@ -325,8 +325,9 @@ class links
 		$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".$message."</b></div>");
 	}
 
+
 	function create_link($sub_action, $id) {
-		global $sql, $rs, $ns, $pst;
+		global $sql, $rs, $ns, $pst,$tp;
 		$preset = $pst->read_preset("admin_links");
 		extract($preset);
 
@@ -349,13 +350,12 @@ class links
 			$link_name = $tmp[2];
 		}
 
-		$handle = opendir(e_IMAGE."icons");
-		while ($file = readdir($handle)) {
-			if ($file != "." && $file != ".." && $file != "/" && $file != "CVS") {
-				$iconlist[] = $file;
-			}
-		}
-		closedir($handle);
+        require_once(e_HANDLER."file_class.php");
+        $fl = new e_file;
+
+        if($iconlist = $fl->get_files(e_IMAGE."icons/", ".jpg|.gif|.png|.JPG|.GIF|.PNG")){
+        	sort($iconlist);
+        }
 
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."' id='linkform'>
@@ -379,8 +379,13 @@ class links
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_16.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<input class='tbox' type='text' name='link_url' size='60' value='$link_url' maxlength='200' />
-			</td>
+			<input class='tbox' type='text' name='link_url' size='60' value='".$tp->replaceConstants($link_url,TRUE)."' maxlength='200' />";
+            if(e_MENU == "debug")
+			{
+				$text .= $link_url;
+			}
+			$text .= "
+            </td>
 			</tr>
 
 			<tr>
@@ -398,8 +403,10 @@ class links
 					<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
 			<div id='linkicn' style='display:none;{head}'>";
 
-		while (list($key, $icon) = each($iconlist)) {
-			$text .= "<a href=\"javascript:insertext('$icon','link_button','linkicn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a> ";
+		foreach($iconlist as $icon)
+		{
+			$filepath = str_replace(e_IMAGE."icons/","",$icon['path'].$icon['fname']);
+			$text .= "<a href=\"javascript:insertext('".$filepath."','link_button','linkicn')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
 		}
 
 		// 1 = _blank
@@ -445,7 +452,8 @@ class links
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>";
 		if ($id && $sub_action == "edit") {
-			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_27."' />\n<input type='hidden' name='link_id' value='$link_id'>";
+			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_27."' />\n
+						<input type='hidden' name='link_id' value='$link_id' />";
 		} else {
 			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_28."' />";
 		}
@@ -471,7 +479,7 @@ class links
 			$parent_id = 0;
 			$link_name = $_POST['link_name'];
 		}
-		$link_url = $tp->toDB($_POST['link_url']);
+		$link_url = $tp->createConstants($_POST['link_url']);
 		$link_description = $tp->toDB($_POST['link_description']);
 		$link_button = $tp->toDB($_POST['link_button']);
 
