@@ -60,7 +60,7 @@ if (ADMIN) {
 		elseif($sql->mySQLlanguage)
 		{
 			$text .= $sql->mySQLlanguage;
-			$text .= " (".$lng->convert($sql->mySQLlanguage).")";
+			$text .= " (".$lng->convert($sql->mySQLlanguage)."): ".LAN_INACTIVE;
 		}
 		else
 		{
