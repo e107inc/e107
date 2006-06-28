@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-06-25 05:30:05 $
+|     $Revision: 1.36 $
+|     $Date: 2006-06-28 17:57:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -423,7 +423,7 @@ function displayNavigator($mode=''){
 
 function displayCategoryLinks($mode=''){
 	global $sql2, $ns, $lc, $tp, $cobj, $rowl, $qs, $linkspage_pref, $from, $link_shortcodes;
-	global $LINK_TABLE_START, $LINK_TABLE,$link_category_total, $LINK_TABLE_CAPTION, $LINK_TABLE_END, $LINK_APPEND;
+	global $LINK_TABLE_START,$linkbutton_count, $LINK_TABLE,$link_category_total, $LINK_TABLE_CAPTION, $LINK_TABLE_END, $LINK_APPEND;
 
 	$order			= $lc -> getOrder();
 	$number			= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
@@ -472,17 +472,16 @@ function displayCategoryLinks($mode=''){
 		}else{
 			foreach($arr as $key => $value){
 				$link_table_string = "";
+				$linkbutton_count = 0;
 				$i=0;
 				for($i=0;$i<count($value);$i++){
 					$rowl				= $value[$i];
+					$linkbutton_count   = ($rowl['link_button']) ?  $linkicon_count + 1 : $linkicon_count;
 					$cat_name			= $rowl['link_category_name'];
 					$cat_desc			= $rowl['link_category_description'];
 					$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 					$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 				}
-				//	$caption = LAN_LINKS_32." ".$cat_name." ".($cat_desc ? " <i>[".$cat_desc."]</i>" : "");
-				//number of links
-	            //  $caption .= " (<b title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".count($value)."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".count($value)."</b>" : "").") ";
 
 				$link_category_total = count($value);
 				$link_table_caption 	= $tp -> parseTemplate($LINK_TABLE_CAPTION, FALSE, $link_shortcodes);
@@ -491,6 +490,7 @@ function displayCategoryLinks($mode=''){
 				$text .= $link_table_start.$link_table_string.$link_table_end;
 
 			}
+
 				$ns->tablerender($link_table_caption, $text);
 		}
 	}
