@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.288 $
-|     $Date: 2006-06-28 17:16:49 $
+|     $Revision: 1.289 $
+|     $Date: 2006-06-29 06:53:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -117,6 +117,7 @@ define("e_TBQS", $_SERVER['QUERY_STRING']);
 $_SERVER['QUERY_STRING'] = e_QUERY;
 
 define("e_UC_PUBLIC", 0);
+define("e_UC_MAINADMIN", 250);
 define("e_UC_READONLY", 251);
 define("e_UC_GUEST", 252);
 define("e_UC_MEMBER", 253);
@@ -315,7 +316,7 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 	} else {
 		$user_language=$_COOKIE['e107language_'.$pref['cookie_name']];
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
-		$sql2->mySQLlanguage = $sql->mySQLlanguage;   
+		$sql2->mySQLlanguage = $sql->mySQLlanguage;
 	}
 
 
@@ -716,6 +717,11 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 
 	if (preg_match("/^([0-9]+)$/", $var) && !$peer)
 	{
+		if ($var == e_UC_MAINADMIN && getperms('0'))
+		{
+        	return TRUE;
+		}
+
 		if ($var == e_UC_MEMBER && USER == TRUE)
 		{
 			return TRUE;

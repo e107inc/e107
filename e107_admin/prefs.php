@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2006-06-21 17:10:32 $
-|     $Author: asperon $
+|     $Revision: 1.92 $
+|     $Date: 2006-06-29 06:53:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -545,7 +545,7 @@ $text .= "</table></div>";
 
 if(!isset($pref['post_html']))
 {
-	$pref['post_html'] = '254';
+	$pref['post_html'] = '250';
 	save_prefs();
 }
 
@@ -607,7 +607,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_116.":  <div class='smalltext'>".PRFLAN_117."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('post_html',$pref['post_html'],'off','nobody, public, member, admin, classes')."
+	".r_userclass('post_html',$pref['post_html'],'off','nobody, public, member, admin, main, classes')."
 	</td>
 	</tr>\n
 
