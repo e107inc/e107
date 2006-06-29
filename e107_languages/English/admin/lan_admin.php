@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-05-13 18:18:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.44 $
+|     $Date: 2006-06-29 22:15:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -248,6 +248,11 @@ define("LAN_INACTIVE","Inactive");
 define("LAN_BAN","Ban");
 define("LAN_RATING", "Rating");
 
+define("LAN_UPLOAD_IMAGES","Upload Images");
+define("LAN_UPLOAD_FILES","Upload Files");
+define("LAN_UPLOAD_ADDFILE","Add Another File");
+define("LAN_UPLOAD_CONFIRM","Any unsaved changes to this page will be lost. Continue?");
+define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:");
 
 
 ?>
