@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-06-29 22:15:27 $
+|     $Revision: 1.32 $
+|     $Date: 2006-06-29 22:19:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -444,8 +444,6 @@ class page
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
 
-		$var['upload']['text'] = LAN_UPLOAD;
-		$var['upload']['link'] = e_SELF."?upload";
 
 		show_admin_menu(CUSLAN_33, $action, $var);
 	}
