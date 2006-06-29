@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-06-01 10:47:41 $
-|     $Author: lisa_ $
+|     $Revision: 1.19 $
+|     $Date: 2006-06-29 06:53:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,6 +32,7 @@ nobody
 member
 readonly
 admin
+main - main admin
 classes - shows all classes
 matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
 language - list of languages.
@@ -44,26 +45,31 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 
 	$text = "<select class='tbox' name='{$fieldname}'>\n";
 	if (!$optlist || strpos($optlist, "public") !== FALSE) {
-		($curval == e_UC_PUBLIC) ? $s = " selected='selected'" : $s = "";
+		$s = ($curval == e_UC_PUBLIC) ?  "selected='selected'" : "";
 		$text .= "<option  value='".e_UC_PUBLIC."' ".$s.">".UC_LAN_0."</option>\n";
 	}
 
 	if (!$optlist || strpos($optlist, "guest") !== FALSE) {
-		($curval == e_UC_GUEST) ? $s = " selected='selected'" : $s = "";
+		$s = ($curval == e_UC_GUEST) ? "selected='selected'" : "";
 		$text .= "<option  value='".e_UC_GUEST."' ".$s.">".UC_LAN_1."</option>\n";
 	}
 	if (!$optlist || strpos($optlist, "nobody") !== FALSE) {
-		($curval == e_UC_NOBODY) ? $s = " selected='selected'" : $s = "";
+		$s = ($curval == e_UC_NOBODY) ? "selected='selected'" : "";
 		$text .= "<option value='".e_UC_NOBODY."' ".$s.">".UC_LAN_2."</option>\n";
 	}
 	if (!$optlist || strpos($optlist, "member") !== FALSE) {
-		($curval == e_UC_MEMBER) ? $s = " selected='selected'" : $s = "";
+		$s = ($curval == e_UC_MEMBER) ?  "selected='selected'" : "";
 		$text .= "<option value='".e_UC_MEMBER."' ".$s.">".UC_LAN_3."</option>\n";
 	}
 	if ($mode != "off" || strpos($optlist, "admin") !== FALSE)
 	{
-		($curval == e_UC_ADMIN) ? $s = " selected='selected'" : $s = "";
+		$s = ($curval == e_UC_ADMIN) ? "selected='selected'" : "";
 		$text .= "<option  value='".e_UC_ADMIN."' ".$s.">".UC_LAN_5."</option>\n";
+	}
+	if ($mode != "off" || strpos($optlist, "main") !== FALSE)
+	{
+		$s = ($curval == e_UC_MAINADMIN) ?  "selected='selected'" : "";
+		$text .= "<option  value='".e_UC_MAINADMIN."' ".$s.">".UC_LAN_6."</option>\n";
 	}
 	if (!$optlist || strpos($optlist, "classes") !== FALSE)
 	{
@@ -73,16 +79,14 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 			extract($row);
 			if (strpos($optlist, "matchclass") === FALSE || getperms("0") || check_class($userclass_id))
 			{
-				($userclass_id == $curval) ? $s = " selected='selected'" :
-				 $s = "";
+				$s = ($userclass_id == $curval) ? "selected='selected'" : "";
 				$text .= "<option value='$userclass_id' ".$s.">".$userclass_name ."</option>\n";
 			}
 		}
 	}
 	if (($mode != "off" && $mode != "admin") || strpos($optlist, "readonly") !== FALSE)
 	{
-		($curval == e_UC_READONLY) ? $s = " selected='selected'" :
-		 $s = "";
+		$s = ($curval == e_UC_READONLY) ? "selected='selected'" : "";
 		$text .= "<option  value='".e_UC_READONLY."' ".$s.">".UC_LAN_4."</option>\n";
 	}
 
