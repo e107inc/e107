@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.154 $
-|     $Date: 2006-06-29 06:53:06 $
+|     $Revision: 1.155 $
+|     $Date: 2006-06-29 22:15:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -480,17 +480,29 @@ class e_parse
 		return $matches[1];
 	}
 
-    function createConstants($url){
+    function createConstants($url,$mode=0){
         global $IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY;
 
-        $tmp = array(
-			"{"."e_IMAGE"."}"=>$IMAGES_DIRECTORY,
-			"{"."e_PLUGIN"."}"=>$PLUGINS_DIRECTORY,
-			"{"."e_FILE"."}"=>$FILES_DIRECTORY,
-			"{"."e_THEME"."}"=>$THEMES_DIRECTORY,
-			"{"."e_DOWNLOAD"."}"=>$DOWNLOADS_DIRECTORY
-  		);
-
+        if($mode == 0) // folder only.
+		{
+			$tmp = array(
+				"{"."e_IMAGE"."}"=>$IMAGES_DIRECTORY,
+				"{"."e_PLUGIN"."}"=>$PLUGINS_DIRECTORY,
+				"{"."e_FILE"."}"=>$FILES_DIRECTORY,
+				"{"."e_THEME"."}"=>$THEMES_DIRECTORY,
+				"{"."e_DOWNLOAD"."}"=>$DOWNLOADS_DIRECTORY
+  			);
+        }
+		elseif($mode == 1)  // relative path
+		{
+			$tmp = array(
+				"{"."e_IMAGE"."}"=>e_IMAGE,
+				"{"."e_PLUGIN"."}"=>e_PLUGIN,
+				"{"."e_FILE"."}"=>e_FILE,
+				"{"."e_THEME"."}"=>e_THEME,
+				"{"."e_DOWNLOAD"."}"=>e_DOWNLOAD
+			);
+		}
 		foreach($tmp as $key=>$val)
 		{
         	$len = strlen($val);

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-05-16 15:55:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.31 $
+|     $Date: 2006-06-29 22:15:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,6 +44,15 @@ if(isset($_POST['submitPage']))
 	$page -> submitPage();
 }
 
+if(isset($_POST['uploadfiles']))
+{
+
+	$page -> uploadPage();
+	$id = $_POST['pe_id'];
+	$sub_action = ($_POST['pe_id']) ? "edit" : "";
+	$page -> createPage($_POST['mode']);
+}
+
 if(isset($_POST['submitMenu']))
 {
 	$page -> submitPage("", TRUE);
@@ -66,7 +75,7 @@ if(isset($_POST['delete']))
 		$page -> delete_page($pid);
 	}
 }
-		
+
 if (isset($_POST['saveOptions'])) {
 	$page -> saveSettings();
 }
@@ -127,7 +136,7 @@ class page
 				</td>
 				</tr>";
 			}
-		
+
 			$text .= "
 			</table>
 			</form>";
@@ -142,6 +151,14 @@ class page
 	function createmPage()
 	{
 		$this -> createPage(TRUE);
+	}
+
+	function uploadPage()
+	{
+        $pref['upload_storagetype'] = "1";
+		require_once(e_HANDLER."upload_handler.php");
+		$uploaded = file_upload(e_IMAGE."custom/");
+
 	}
 
 	function createPage($mode=FALSE)
@@ -164,7 +181,7 @@ class page
 				$data                         = $tp -> toFORM($row['page_text']);
 				$edit                         = TRUE;
 			}
-			
+
 			if ($sql -> db_Select("links", "*", "link_url='page.php?".$id."'"))
 			{
 				$row = $sql -> db_Fetch();
@@ -173,7 +190,7 @@ class page
 		}
 
 		$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."' id='dataform'>
+		<form method='post' action='".e_SELF."' id='dataform' enctype='multipart/form-data'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 		if($mode)
@@ -181,7 +198,7 @@ class page
 			$text .= "<tr>
 			<td style='width:30%' class='forumheader3'>".CUSLAN_7."</td>
 			<td style='width:70%' class='forumheader3'>";
-			
+
 			if($edit)
 			{
 				$text .= $page_theme;
@@ -190,7 +207,7 @@ class page
 			{
 				$text .= "<input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' />";
 			}
-			
+
 			$text .= "</td>
 			</tr>";
 		}
@@ -199,10 +216,7 @@ class page
 		<td style='width:30%' class='forumheader3'>".CUSLAN_8."</td>
 		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_title' size='50' value='".$page_title."' maxlength='250' /></td>
 		</tr>
-		
-		</td>
-		</tr>
-		
+
 		<tr>
 		<td style='width:30%' class='forumheader3'>".CUSLAN_9."</td>
 		<td style='width:70%' class='forumheader3'>";
@@ -214,15 +228,23 @@ class page
 
 		if (!$pref['wysiwyg']) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
-			<br />".display_help("helpb");
+			<br />".display_help("helpb","cpage");
 		}
 
 		$text .= "</td>
+		</tr>
+
+		<tr>
+			<td style='width:30%' class='forumheader3'>".LAN_UPLOAD_IMAGES."</td>
+			<td style='width:70%;' class='forumheader3'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
 		</tr>";
-	
+
 		if(!$mode)
 		{
-			$text .= "<tr>
+			$text .= "
+
+
+			<tr>
 			<td style='width:30%' class='forumheader3'>".CUSLAN_10."</td>
 			<td style='width:70%;' class='forumheader3'>
 			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
@@ -263,13 +285,14 @@ class page
 		}
 
 		$text .= "<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>". 
+		<td colspan='2' style='text-align:center' class='forumheader'>".
 
-		(!$mode ? 
-		($edit  ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") : 
+		(!$mode ?
+		($edit  ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") :
 		($edit  ? "<input class='button' type='submit' name='updateMenu' value='".CUSLAN_21."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitMenu' value='".CUSLAN_22."' />"))
 
-		."</td>
+		."<input type='hidden' name='mode' value='$mode' />
+		</td>
 		</tr>
 
 		</table>
@@ -294,7 +317,7 @@ class page
 			$update = $sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode'");
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
-			
+
 			if ($_POST['page_link'])
 			{
 				if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$mode."' && link_name!='".$tp -> toDB($_POST['page_link'])."'"))
@@ -393,6 +416,7 @@ class page
 		$ns->tablerender("Options", $text);
 	}
 
+
 	function saveSettings()
 	{
 		global $pref;
@@ -419,6 +443,9 @@ class page
 
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
+
+		$var['upload']['text'] = LAN_UPLOAD;
+		$var['upload']['link'] = e_SELF."?upload";
 
 		show_admin_menu(CUSLAN_33, $action, $var);
 	}

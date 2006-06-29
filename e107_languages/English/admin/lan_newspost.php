@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-04-13 23:43:16 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2006-06-29 22:15:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -158,7 +158,7 @@ define("LAN_NEWS_39", "click on file to insert at cursor position");
 define("LAN_NEWS_40", "Insert download links");
 
 define("LAN_NEWS_42", "Files");
-define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
+// define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback not enabled.");
 
 define("LAN_NEWS_45", "ID");

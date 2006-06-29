@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-06-19 18:44:57 $
-|     $Author: lisa_ $
+|     $Revision: 1.48 $
+|     $Date: 2006-06-29 22:15:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -108,6 +108,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		$code[14] = array("preimage", "[img][/img]", LANHELP_37);
 		$code[15] = array("prefile", "[file][/file]", LANHELP_39);
 	}
+	if ($mode == 'cpage') {
+		$code[14] = array("preimage", "[img][/img]", LANHELP_45);
+	}
 
 	//check emotes
 	$emotes=FALSE;
@@ -136,6 +139,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	if ($mode == 'news') {
 		$img[14] = "preimage.png";
 		$img[15] = "prefile.png";
+	}
+	if ($mode == 'cpage') {
+		$img[14] = "preimage.png";
 	}
 	if($emotes===TRUE){
 		$img[16] = "emotes.png";
@@ -167,8 +173,11 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 			$text .= PreImage_Select('preimage_selector_'.$rand);
 			$text .= PreFile_Select('prefile_selector_'.$rand);
 		}
+		if ($mode == 'cpage') {
+			$text .= PreImage_Select('preimage_selector_'.$rand,e_IMAGE."custom/");
+		}
 	}
-	
+
 	if($emotes===TRUE){
 		require_once(e_HANDLER."emote.php");
 		$text .= Emoticon_Select('emoticon_selector_'.$rand);
@@ -264,17 +273,21 @@ function Size_Select($formid='size_selector') {
 	return $text;
 }
 
-function PreImage_Select($formid='preimage_selector') {
+function PreImage_Select($formid='preimage_selector',$path) {
+	global $fl, $tp;
 
-	global $IMAGES_DIRECTORY, $fl;
+    $path = ($path) ?  $path : e_IMAGE."newspost_images/";
+	$e_path = $tp->createConstants($path,1);
+
 	if(!is_object($fl)){
         require_once(e_HANDLER."file_class.php");
 		$fl = new e_file;
 	}
 
 	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-	$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
+	$imagelist = $fl->get_files($path,"",$rejecthumb);
     sort($imagelist);
+
 	$text ="<!-- Start of PreImage selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
@@ -283,7 +296,8 @@ function PreImage_Select($formid='preimage_selector') {
 
 	if(!count($imagelist))
 			{
-				$text .= LAN_NEWS_43;
+
+				$text .= LANHELP_46."<b>".str_replace("../","",$path)."</b>";
 			}
 			else
 			{
@@ -294,21 +308,21 @@ function PreImage_Select($formid='preimage_selector') {
 					if(strstr($image['fname'], "thumb"))
 					{
 						$fi = str_replace("thumb_", "", $image['fname']);
-						if(file_exists(e_IMAGE."newspost_images/".$fi))
+						if(file_exists($path.$fi))
 						{
 							// thumb and main image found
-							$text .= "<option value=\"[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]\">".$image['fname']." (".LANHELP_38.")</option>\n
+							$text .= "<option value=\"[link=".$e_path.$fi."][img]".$e_path.$image['fname']."[/img][/link]\">".$image['fname']." (".LANHELP_38.")</option>\n
 							";
 						}
 						else
 						{
-							$text .= "<option value=\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\">".$image['fname']."</option>\n
+							$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$image['fname']."</option>\n
 							";
 						}
 					}
 					else
 					{
-						$text .= "<option value=\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\">".$image['fname']."</option>\n
+						$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$image['fname']."</option>\n
 						";
 					}
 				}
@@ -323,7 +337,7 @@ function PreFile_Select($formid='prefile_selector') {
 	global $IMAGES_DIRECTORY, $fl, $sql;
 		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
-		sort($imagelist); 
+		sort($imagelist);
 		$filelist = array();
 		$downloadList = array();
 
