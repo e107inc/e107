@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-01-14 00:23:04 $
-|     $Author: qnome $
+|     $Revision: 1.34 $
+|     $Date: 2006-06-30 22:02:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -19,15 +19,16 @@
 
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {
 		global $tp;
+		$cat_link = $tp -> replaceConstants($cat_link);
 		$cat_link = (strpos($cat_link, '://') === FALSE && strpos($cat_link, 'mailto:') !== 0 ? e_HTTP.$cat_link : $cat_link);
-		
+
 		if ($cat_open == 4 || $cat_open == 5){
 			$dimen = ($cat_open == 4) ? "600,400" : "800,600";
 			$href = " href=\"javascript:open_window('".$cat_link."',".$dimen.")\"";
 		} else {
 			$href = "href='".$cat_link."'";
 		}
-		
+
 		$text = "<a class='menuButton' ".$href." ";
 		if ($cat_img != 'no_icons') {
 			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat; background-position: 3px 1px; white-space: nowrap' ";
@@ -44,15 +45,16 @@
 
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $params, $cat_open=FALSE) {
 		global $tp;
+		$cat_link = $tp -> replaceConstants($cat_link);
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
-		
+
 		if ($cat_open == 4 || $cat_open == 5){
 			$dimen = ($cat_open == 4) ? "600,400" : "800,600";
 			$href = " href=\"javascript:open_window('".$cat_link."',".$dimen.")\"";
 		} else {
 			$href = "href='".$cat_link."'";
 		}
-		
+
 		$text = "<a class='menuItem' ".$href." ";
 		if ($cat_id) {
 			if (isset($params[2]) && $params[2] == 'link') {
@@ -99,9 +101,9 @@
 
 
 	// Loops thru parents.--------->
-
+    global $tp;
     foreach ($linklist['head_menu'] as $lk) {
-
+        $lk['link_url'] = $tp -> replaceConstants($lk['link_url']);
 		if ($params[0] == 'no_icons') {
 			$link_icon = 'no_icons';
 		} else {
@@ -126,7 +128,7 @@
 	$text .= "</div>";
 
 	return $text;
-	
+
 	function render_sub($linklist, $id, $params, $icon) {
 		$text = "<div id='l_".$id."' class='menu' onmouseover=\"menuMouseover(event)\">";
 			foreach ($linklist['sub_'.$id] as $sub) {
@@ -157,13 +159,13 @@
 
 			}
 			$text .= "</div>";
-			
+
 			if(isset($sub_ids) && is_array($sub_ids))
 			{
 				foreach ($sub_ids as $sub_id) {
 					$text .= render_sub($linklist, $sub_id, $params, $icon);
 				}
 			}
-			
+
 			return $text;
 	}
