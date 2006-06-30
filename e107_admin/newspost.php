@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.128 $
-|   $Date: 2006-06-05 13:41:30 $
-|   $Author: lisa_ $
+|   $Revision: 1.129 $
+|   $Date: 2006-06-30 02:43:41 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -400,7 +400,7 @@ class newspost {
 				$post_author_id = substr($upload_poster, 0, strpos($upload_poster, "."));
 				$post_author_name = substr($upload_poster, (strpos($upload_poster, ".")+1));
 				$upload_file = "pub_" . (preg_match("#Binary\s(.*?)\/#", $upload_file, $match) ? $match[1] : $upload_file);
-				$_POST['news_title'] = NWSLAN_66.": ".$upload_name;
+				$_POST['news_title'] = LAN_UPLOAD.": ".$upload_name;
 				$_POST['data'] = $upload_description."\n[b]".NWSLAN_49." <a href='user.php?id.".$post_author_id."'>".$post_author_name."</a>[/b]\n\n[file=request.php?".$upload_file."]".$upload_name."[/file]\n";
 			}
 		}
@@ -483,17 +483,17 @@ class newspost {
 
 		if (!FILE_UPLOADS)
 		{
-			$text .= "<b>".NWSLAN_78."</b>";
+			$text .= "<b>".LAN_UPLOAD_SERVEROFF."</b>";
 		}
 		else
 		{
 			if (!is_writable(e_FILE."downloads"))
 			{
-				$text .= "<b>".NWSLAN_70."</b><br /><br />";
+				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_FILE."downloads/")."</b><br /><br />";
 			}
 			if (!is_writable(e_IMAGE."newspost_images"))
 			{
-				$text .= "<b>".NWSLAN_71."</b><br /><br />";
+				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_IMAGE."newspost_images/")."</b><br /><br />";
 			}
 
 			$up_name = array(LAN_NEWS_24,NWSLAN_67,LAN_NEWS_22,NWSLAN_68);
@@ -524,7 +524,7 @@ class newspost {
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".LAN_NEWS_47.":</td>
+		<td class='forumheader3'>".NWSLAN_67.":</td>
 		<td class='forumheader3'>
 		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
 		<div style='display: none'><br />";
@@ -550,7 +550,7 @@ class newspost {
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_18."</a>
 		<div style='display: none;'>
 
-		". ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked='checked' />".NWSLAN_17 : "<input name='news_allow_comments' type='radio' value='0' checked='checked' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' />".NWSLAN_17)."
+		". ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0' />".LAN_ENABLED."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked='checked' />".LAN_DISABLED : "<input name='news_allow_comments' type='radio' value='0' checked='checked' />".LAN_ENABLED."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' />".LAN_DISABLED)."
 		</div>
 		</td>
 		</tr>
@@ -1091,7 +1091,7 @@ class newspost {
 			$text .= "<div style='text-align:center'>".NWSLAN_59."</div>";
 		}
 		$text .= "</div>";
-		$ns->tablerender(NWSLAN_60, $text);
+		$ns->tablerender(NWSLAN_47, $text);
 
 	}
 

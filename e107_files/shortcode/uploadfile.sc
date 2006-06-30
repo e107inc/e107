@@ -1,9 +1,20 @@
-// $Id: uploadfile.sc,v 1.2 2006-06-29 22:19:50 e107coders Exp $
+// $Id: uploadfile.sc,v 1.3 2006-06-30 02:43:41 e107coders Exp $
 
 // Your <form> tag must include: enctype='multipart/form-data' - in order to work.
 // parm is the path to the upload folder.
+global $pref;
 
-if($parm && !is_readable($parm))
+if(!FILE_UPLOADS)
+{
+	return LAN_UPLOAD_SERVEROFF;
+}
+if(!$pref['upload_class'])
+{
+	return LAN_DISABLED;
+}
+
+
+if($parm && !is_writable($parm))
 {
 	return LAN_UPLOAD_777." <b>".str_replace("../","",$parm)."</b>";
 }
