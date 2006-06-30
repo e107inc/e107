@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-06-29 22:15:28 $
+|     $Revision: 1.28 $
+|     $Date: 2006-06-30 02:43:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,8 +23,8 @@ define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");
 define("NWSLAN_14", "Extended");
 define("NWSLAN_15", "Comments");
-define("NWSLAN_16", "Enabled");
-define("NWSLAN_17", "Disabled");
+// define("NWSLAN_16", "Enabled"); // deprecated see lan_admin.php
+// define("NWSLAN_17", "Disabled"); // deprecated see lan_admin.php
 define("NWSLAN_18", "Allow comments to be posted to this news item");
 define("NWSLAN_19", "Activation");
 
@@ -67,7 +67,7 @@ define("NWSLAN_56", "Create News Category");
 define("NWSLAN_57", "Item");
 define("NWSLAN_58", "Post");
 define("NWSLAN_59", "No submitted news");
-define("NWSLAN_60", "Submitted News");
+// define("NWSLAN_60", "Submitted News"); //already defined above. 
 
 define("NWSLAN_62", "Go to page: ");
 define("NWSLAN_63", "Search newsposts");
@@ -76,8 +76,8 @@ define("NWSLAN_66", "Upload");
 define("NWSLAN_67", "Image");
 define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
-define("NWSLAN_70", "The ".e_FILE."downloads folder is not writable, you need to CHMOD 777 the folder before uploading and files.");
-define("NWSLAN_71", "The ".e_IMAGE."newspost_images folder is not writable.  You need to CHMOD 777 the folder before uploading any images.");
+// define("NWSLAN_70", "The ".e_FILE."downloads folder is not writable, you need to CHMOD 777 the folder before uploading and files.");  // deprecated see lan_admin.php
+// define("NWSLAN_71", "The ".e_IMAGE."newspost_images folder is not writable.  You need to CHMOD 777 the folder before uploading any images.");  // deprecated see lan_admin.php
 define("NWSLAN_72", "Only show news item between certain dates");
 define("NWSLAN_73", "Render type");
 define("NWSLAN_74", "Select how and where news item is posted");
@@ -85,7 +85,7 @@ define("NWSLAN_75", "Default - post to front page");
 define("NWSLAN_76", "Title only - post to front page");
 define("NWSLAN_77", "Post to other news menu");
 
-define("NWSLAN_78", "This option is disabled as file uploading is not enabled on your server");
+// define("NWSLAN_78", "This option is disabled as file uploading is not enabled on your server");  // deprecated see lan_admin.php
 define("NWSLAN_79","Clear Form");
 
 define("NWSLAN_83","Extended news post");
@@ -114,7 +114,7 @@ define("NWSLAN_114", "if the theme you're using has a news layout template, use 
 define("NWSLAN_115", "News posts to display in archive ?");
 define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 is un-activated)");
 define("NWSLAN_117", "set the title for the newsarchive");
-define("NWSLAN_118", "View Images");
+// define("NWSLAN_118", "View Images"); already defined above.
 define("NWSLAN_119", "Settings Saved");
 define("NWSLAN_120", "Text to show at the top of Submit News");
 
@@ -158,13 +158,13 @@ define("LAN_NEWS_39", "click on file to insert at cursor position");
 define("LAN_NEWS_40", "Insert download links");
 
 define("LAN_NEWS_42", "Files");
-// define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
+// define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");  // deprecated see lan_admin.php
 define("LAN_NEWS_44", "Trackback not enabled.");
 
 define("LAN_NEWS_45", "ID");
 
 define("LAN_NEWS_46", "News item not updated as no changes were made.");
-define("LAN_NEWS_47", "Image");
+// define("LAN_NEWS_47", "Image");  // already defined above.
 define("LAN_NEWS_48", "No Image");
 
 define("LAN_NEWS_49", "Render-type");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-06-29 22:15:28 $
+|     $Revision: 1.45 $
+|     $Date: 2006-06-30 02:43:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -253,6 +253,10 @@ define("LAN_UPLOAD_FILES","Upload Files");
 define("LAN_UPLOAD_ADDFILE","Add Another File");
 define("LAN_UPLOAD_CONFIRM","Any unsaved changes to this page will be lost. Continue?");
 define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:");
+define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not enabled on your server");
+
+define("LAN_DISABLED","Disabled");
+define("LAN_ENABLED", "Enabled");
 
 
 ?>
