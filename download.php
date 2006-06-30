@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-06-26 02:48:04 $
+|     $Revision: 1.65 $
+|     $Date: 2006-06-30 03:01:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -452,7 +452,7 @@ if ($action == "report") {
 			</tr>
 			<tr>
 			<td colspan='2' style='text-align:center;'><br />
-			<input class='button' type='submit' name='report_download' value='".LAN_dl_56."' />
+			<input class='button' type='submit' name='report_download' value=\"".LAN_dl_45."\" />
 			</td>
 			</tr>
 			</table>";
