@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-03-05 06:10:42 $
+|     $Revision: 1.14 $
+|     $Date: 2006-06-30 04:16:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ define("DOWLAN_31", "Categories");
 define("DOWLAN_32", "Downloads Options");
 define("DOWLAN_33", "Are you sure you want to delete this download?");
 define("DOWLAN_34", "Are you sure you want to delete this download category?");
-define("DOWLAN_35", "Download");
+
 define("DOWLAN_36", "deleted");
 define("DOWLAN_37", "Parent");
 define("DOWLAN_38", "No existing categories");
@@ -65,7 +65,6 @@ define("DOWLAN_56", "Sort by ");
 
 
 define("DOWLAN_59", "Filename");
-define("DOWLAN_60", "Author");
 
 define("DOWLAN_62", "Ascending");
 define("DOWLAN_63", "Descending");

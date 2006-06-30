@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-03-16 15:58:14 $
-|     $Author: lisa_ $
+|     $Revision: 1.17 $
+|     $Date: 2006-06-30 04:16:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -29,7 +29,7 @@ define("EPL_ADLAN_16", "Plugin Information");
 define("EPL_ADLAN_17", "More info...");
 define("EPL_ADLAN_18", "Unable to successfully create table(s) for this plugin.");
 define("EPL_ADLAN_19", "Database tables successfully created.");
-define("EPL_ADLAN_20", "Preference settings successfully created.");
+// define("EPL_ADLAN_20", "Preference settings successfully created."); // duplicate of EPL_ADLAN_8;
 
 define("EPL_ADLAN_21", "Plugin is already installed.");
 define("EPL_ADLAN_22", "Installed");
@@ -85,14 +85,9 @@ define("EPL_ADLAN_57", "Delete plugin tables");
 define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail. Tables will have to be manually deleted to remove.");
 define("EPL_ADLAN_59", "Delete plugin files");
 define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
-define("EPL_ADLAN_61", "Confirm uninstall");
+// define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
 define("EPL_ADLAN_62", "Cancel uninstall");
 define("EPL_ADLAN_63", "Uninstall:");
-define("EPL_ADLAN_64", "");
-define("EPL_ADLAN_65", "");
-define("EPL_ADLAN_66", "");
-define("EPL_ADLAN_67", "");
-define("EPL_ADLAN_68", "");
-define("EPL_ADLAN_69", "");
+
 
 ?>

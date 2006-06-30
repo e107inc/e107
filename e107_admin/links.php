@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-06-28 05:00:00 $
+|     $Revision: 1.57 $
+|     $Date: 2006-06-30 04:16:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -247,7 +247,7 @@ class links
 				<table class='fborder' style='".ADMIN_WIDTH."'>
 				<tr>
 				<td class='fcaption' style='width:5%'>".LCLAN_89."</td>
-				<td class='fcaption' style='width:60%'>".LCLAN_90."</td>
+				<td class='fcaption' style='width:60%'>".LCLAN_15."</td>
 				<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
 				<td class='fcaption' style='width:10%'>".LCLAN_95."</td>
 				<td class='fcaption' style='width:5%'>".LCLAN_91."</td>

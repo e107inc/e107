@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2006-05-14 01:01:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.80 $
+|     $Date: 2006-06-30 04:16:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -218,7 +218,7 @@ if ($action == "cat") {
 
 if ($delete == 'main') {
 
-	$result = admin_update($sql->db_Delete("download", "download_id='$del_id' "), 'delete', DOWLAN_35." #".$del_id." ".DOWLAN_36);
+	$result = admin_update($sql->db_Delete("download", "download_id='$del_id' "), 'delete', DOWLAN_27." #".$del_id." ".DOWLAN_36);
 	if($result)
 	{
 		admin_purge_related("download", $del_id);
@@ -265,7 +265,7 @@ if ($action == "opt") {
 		<td class='forumheader3' style='width:30%;text-align:left'>
 
 		<select name='download_order' class='tbox'>";
-		$order_options = array("download_id"=>"Id No.","download_datestamp"=>LAN_DATE,"download_requested"=>ADLAN_24,"download_name"=>DOWLAN_59,"download_author"=>DOWLAN_60);
+		$order_options = array("download_id"=>"Id No.","download_datestamp"=>LAN_DATE,"download_requested"=>ADLAN_24,"download_name"=>DOWLAN_59,"download_author"=>DOWLAN_15);
 		foreach($order_options as $value=>$label){
 			$select = ($pref['download_order'] == $value) ? "selected='selected'" : "";
 			$text .= "<option value='$value' $select >$label</option>\n";
@@ -1046,7 +1046,7 @@ class download {
 		}
 		$text = $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		$text .= "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
-		
+
 		$qry = "
 		SELECT dc.*, COUNT(d.download_id) AS filecount FROM #download_category AS dc
 		LEFT JOIN #download AS d ON d.download_category = dc.download_category_id
@@ -1104,7 +1104,7 @@ class download {
 				{
 					foreach($cat_array[$parent['download_category_id']] as $main)
 					{
-						
+
 						if(strstr($main['download_category_icon'], chr(1)))
 						{
 							list($main['download_category_icon'], $main['download_category_icon_empty']) = explode(chr(1), $main['download_category_icon']);
@@ -1131,7 +1131,7 @@ class download {
 						{
 							foreach($cat_array[$main['download_category_id']] as $sub)
 							{
-						
+
 								if(strstr($sub['download_category_icon'], chr(1)))
 								{
 									list($sub['download_category_icon'], $sub['download_category_icon_empty']) = explode(chr(1), $sub['download_category_icon']);

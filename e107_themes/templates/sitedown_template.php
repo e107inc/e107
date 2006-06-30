@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/sitedown_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:53 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-06-30 04:16:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,17 +21,20 @@ if (!defined('e107_INIT')) { exit; }
 
 // ##### SITEDOWN TABLE -----------------------------------------------------------------
 if(!$SITEDOWN_TABLE){
-	$SITEDOWN_TABLE = "
-	<html>
+	$SITEDOWN_TABLE = (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+	";
+	$SITEDOWN_TABLE .= "
+    <html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 	<head>
 		<title>{SITEDOWN_TABLE_PAGENAME}</title>
 	</head>
 	<body>
-		<font style='font-size: 14px; color: black; font-family: Tahoma, Verdana, Arial, Helvetica; text-decoration: none'>
-		<div style='text-align:center'><img src='".e_IMAGE."logo.png' alt='Logo' /></div>
+		<div style='text-align:center;font-size: 14px; color: black; font-family: Tahoma, Verdana, Arial, Helvetica; text-decoration: none'>
+		<div style='text-align:center'>{LOGO}</div>
 		<hr />
 		<br />
-		<div style='text-align:center'>{SITEDOWN_TABLE_MAINTAINANCETEXT}</div>
+		{SITEDOWN_TABLE_MAINTAINANCETEXT}
+		</div>
 	</body>
 	</html>";
 }

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-06-20 20:13:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.61 $
+|     $Date: 2006-06-30 04:16:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -131,7 +131,7 @@ if ($action == 'uninstall')
 		if (function_exists($func)) {
 			$text .= call_user_func($func);
 		}
-		
+
 		if($_POST['delete_tables'])
 		{
 			if (is_array($eplug_table_names))
@@ -227,7 +227,7 @@ if ($action == 'uninstall')
 		$plugin -> manage_notify('remove', $eplug_folder);
 
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
-		
+
 		if($_POST['delete_files'])
 		{
 			include_once(e_HANDLER."file_class.php");
@@ -506,7 +506,7 @@ function show_uninstall_confirm()
 	global $plugin, $tp, $id, $ns;
 	$id = intval($id);
 	$plug = $plugin->getinfo($id);
-	
+
 	if ($plug['plugin_installflag'] == TRUE )
 	{
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
@@ -528,7 +528,7 @@ function show_uninstall_confirm()
 		<input type='hidden' name='delete_files' value='0' />
 		";
 	}
-	
+
 	$text = "
 	<form action='".e_SELF."?".e_QUERY."' method='post'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -555,7 +555,7 @@ function show_uninstall_confirm()
 		<td class='forumheader3'>{$del_text}</td>
 	</tr>
 	<tr>
-		<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='uninstall_confirm' value='".EPL_ADLAN_61."' />&nbsp;&nbsp;<input class='button' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/></td>
+		<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='uninstall_confirm' value=\"".EPL_ADLAN_3."\" />&nbsp;&nbsp;<input class='button' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/></td>
 	</tr>
 	</table>
 	</form>

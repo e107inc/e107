@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-11-23 18:08:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2006-06-30 04:16:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("LCLAN_1", "Options Saved");
@@ -46,7 +46,7 @@ define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Li
 define("LCLAN_83", "Submenus Generator");
 define("LCLAN_88", "Site Links Options");
 define("LCLAN_89", "Image");
-define("LCLAN_90", "Link Name");
+
 define("LCLAN_91", "Move");
 define("LCLAN_95", "Class");
 
