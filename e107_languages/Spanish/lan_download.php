@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_download.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-01-16 23:45:35 $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-01 20:56:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ define("LAN_dl_52", "Invitado");
 define("LAN_dl_53", "Click para ver descarga");
 define("LAN_dl_54", "Un administrador conocerá el estado de esta descarga. Puede dejar un mensaje si lo cree necesario.");
 define("LAN_dl_55", "<b>NO</b> use este formulario de contacto para otros motivos.");
-define("LAN_dl_56", "Informar descarga no válida");
+//define("LAN_dl_56", "Informar descarga no válida");
 define("LAN_dl_57", "Informado por");
 define("LAN_dl_58", "La siguiente descarga fue informada como rota desde el sitio");
 define("LAN_dl_59", "Enviado por: ");

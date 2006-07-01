@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-03-23 22:06:16 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-01 20:56:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ define("DOWLAN_31", "Categorías");
 define("DOWLAN_32", "Opciones de descargas");
 define("DOWLAN_33", "¿Está seguro de querer borrar esta descarga?");
 define("DOWLAN_34", "¿Está seguro de querer borrar esta categoría de descargas?");
-define("DOWLAN_35", "Descarga");
+
 define("DOWLAN_36", "Borrada");
 define("DOWLAN_37", "Categoría principal");
 define("DOWLAN_38", "No existen categorías");
@@ -64,7 +64,6 @@ define("DOWLAN_55", "Descargas por Página");
 define("DOWLAN_56", "Orden por defecto ");
 
 define("DOWLAN_59", "Archivo");
-define("DOWLAN_60", "Autor");
 
 define("DOWLAN_62", "Ascendente");
 define("DOWLAN_63", "Descendente");

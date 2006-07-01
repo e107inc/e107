@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-05-14 09:25:39 $
+|     $Revision: 1.8 $
+|     $Date: 2006-07-01 20:56:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -177,7 +177,8 @@ define("ADLAN_LAT_8", "Hay mensajes del Admin sin moderar");
 
 define("ADLAN_ERR_1", "¡Atención!"); 
 define("ADLAN_ERR_2", "Hay archivos en su servidor que son conocidos como atacables. Deben ser eliminaos <b>inmediatamente</b>. Los archivos están relacionados con el antiguo sistema de 0.6xx de e107. Por favor, elimine los siguientes directorios y su contenido:"); 
-define("ADLAN_ERR_3", "Hay uno o más archivos en su carpeta pública de transferencias con extensiones que no están permitidos en su lista de permitidos. Pueden haber sido puestas por un atacante i deberían ser eliminados <b>inmediatamente</b>. <b>NO</b> debería abrir esos archivos ya que pueden ejecutar código malicioso. pe. no los abra con su navegador.<br /><br />Si reconoce que estos archivos son legítimos, debería añadir esas extensiones en su lista de extensiones permitidas (mire admin => transferencias). NO debería permitir transferir .html, .txt, etc ya que un atacante podría incluir código malicioso en forma de javascript. Debería también, por supuesto, no permitir la transferencia de archivos .php o otro tipo de script ejecutables..<br /><br />Debajo verá una lista de archivos que son potencialmente maliciosos:");
+define("ADLAN_ERR_3", "Hay uno o más archivos en su carpeta pública de transferencias con extensiones que no están permitidos en su lista de permitidos. Pueden haber sido puestas por un atacante i deberían ser eliminados <b>inmediatamente</b>. <b>NO</b> debería abrir esos archivos ya que pueden ejecutar código malicioso. pe. no los abra con su navegador.<br /><br />Si reconoce que estos archivos son legítimos, debería añadir esas extensiones en su lista de extensiones permitidas (mire admin => transferencias). NO debería permitir transferir .html, .txt, etc ya que un atacante podría incluir código malicioso en forma de javascript. Debería también, por supuesto, no permitir la transferencia de archivos .php o otro tipo de script ejecutables..<br /><br />Debajo verá una lista de archivos que son potencialmente maliciosos:"); 
+
 
 // Common Terms
 define("LAN_EDIT","Editar");
@@ -226,4 +227,12 @@ define("LAN_NO_CHANGE","Falló la actualización y no se cambió nada.");
 define("LAN_TRY_AGAIN","Por favor, vuelva a intentarlo.");
 define("LAN_BAN","Expulsión");
 define("LAN_RATING", "Valoración");
+define("LAN_UPLOAD_IMAGES","Transferir imágenes"); 
+define("LAN_UPLOAD_FILES","Transferir archivos"); 
+define("LAN_UPLOAD_ADDFILE","Añadir otro archivo"); 
+define("LAN_UPLOAD_CONFIRM","Los cambios no guardados se perderán,¿Continuar?"); 
+define("LAN_UPLOAD_777","No existe la carpeta o no tiene permisos de escritura, necesita dar persmisos a la carpeta antes de trasnferir:");
+define("LAN_UPLOAD_SERVEROFF", "Opción desactivada ya que no tiene activa la transferencia de ficheros en su servidor"); 
+define("LAN_DISABLED","Desactivado"); 
+define("LAN_ENABLED", "Activado");
 ?>

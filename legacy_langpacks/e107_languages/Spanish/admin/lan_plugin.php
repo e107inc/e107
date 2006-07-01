@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-03-23 22:06:16 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-01 20:56:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ define("EPL_ADLAN_16", "Información de la aplicación");
 define("EPL_ADLAN_17", "Más información...");
 define("EPL_ADLAN_18", "No se puede crear tabla(s) para esta aplicación.");
 define("EPL_ADLAN_19", "Tablas de base de datos creadas con éxito.");
-define("EPL_ADLAN_20", "Configuraciones de preferencias creadas con éxito.");
+//define("EPL_ADLAN_20", "Configuraciones de preferencias creadas con éxito.");
 define("EPL_ADLAN_21", "Aplicación instalada.");
 define("EPL_ADLAN_22", "Instalado");
 define("EPL_ADLAN_23", "No instalado");
@@ -70,16 +70,9 @@ define("EPL_ADLAN_57", "Eliminar tablas del plugin");
 define("EPL_ADLAN_58", "Si no se eliminan las tablas, el plugin puede ser reinstalado sin perder la información contenida. La creación de tablas durante la instalación  fallará. Las tablas deberásn ser eliminadas manualmente."); 
 define("EPL_ADLAN_59", "Eliminar archivos del plugin"); 
 define("EPL_ADLAN_60", "e107 intentará eliminar todos los archivos del plugin."); 
-define("EPL_ADLAN_61", "Confirmar desinstalación"); 
+//define("EPL_ADLAN_61", "Confirmar desinstalación"); 
 define("EPL_ADLAN_62", "Cancelar desinstalación"); 
-define("EPL_ADLAN_63", "Desinstalar:"); 
-define("EPL_ADLAN_64", ""); 
-define("EPL_ADLAN_65", ""); 
-define("EPL_ADLAN_66", ""); 
-define("EPL_ADLAN_67", ""); 
-define("EPL_ADLAN_68", ""); 
-define("EPL_ADLAN_69", ""); 
-
+define("EPL_ADLAN_63", "Desinstalar:");
 
 //define("EPL_CANCEL", "Cancelar");
 //define("EPL_EMAIL", "Email");
@@ -90,5 +83,4 @@ define("EPL_DIRECTORY", " .");
 define("EPL_NOINSTALL_1", "No se requiere instalación, para desinstalar borre la carpeta ");
 define("EPL_UPGRADE", "Actualizar");
 define("EPL_CONFIGURE", "Configurar");
-
 ?>

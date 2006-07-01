@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_links.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-10 10:16:39 $
+|     $Revision: 1.12 $
+|     $Date: 2006-07-01 20:56:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,7 @@ define("LCLAN_83", "Generador de Submenús");
 
 define("LCLAN_88", "Opciones de los enlaces");
 define("LCLAN_89", "Imagen");
-define("LCLAN_90", "Nombre enlace");
+//define("LCLAN_90", "Nombre enlace");
 define("LCLAN_91", "Mover");
 
 define("LCLAN_95", "Clase");

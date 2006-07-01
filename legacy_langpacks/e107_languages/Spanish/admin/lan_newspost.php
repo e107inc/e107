@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-05-13 16:12:19 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-01 20:56:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -23,8 +23,8 @@ define("NWSLAN_12", "Título");
 define("NWSLAN_13", "Cuerpo");
 define("NWSLAN_14", "Extendido");
 define("NWSLAN_15", "Comentarios");
-define("NWSLAN_16", "Permitir");
-define("NWSLAN_17", "No permitir");
+//define("NWSLAN_16", "Permitir");
+//define("NWSLAN_17", "No permitir");
 define("NWSLAN_18", "Permitir añadir comentarios");
 define("NWSLAN_19", "Activación");
 
@@ -67,7 +67,7 @@ define("NWSLAN_56", "Crear categoría de noticias");
 define("NWSLAN_57", "Noticia");
 define("NWSLAN_58", "Mensaje");
 define("NWSLAN_59", "No hay noticias enviadas");
-define("NWSLAN_60", "Noticias enviadas");
+//define("NWSLAN_60", "Noticias enviadas");
 
 define("NWSLAN_62", "Ir a página: ");
 define("NWSLAN_63", "Buscar noticias");
@@ -76,15 +76,15 @@ define("NWSLAN_66", "Transferir");
 define("NWSLAN_67", "Imagen");
 define("NWSLAN_68", "Archivo");
 define("NWSLAN_69", "Transferir una imagen o archivo para usar en la noticia");
-define("NWSLAN_70", "La carpeta de descargas ".e_FILE." no tiene permisos de escritura, necesita habilitar con CHMOD 777 la carpeta antes de transferir archivos.");
-define("NWSLAN_71", "La carpeta de imágenes de noticias ".e_IMAGE." no tiene permisos de escritura.  Necesita habilitar con CHMOD 777 la carpeta antes de transferir imágenes.");
+//define("NWSLAN_70", "La carpeta de descargas ".e_FILE." no tiene permisos de escritura, necesita habilitar con CHMOD 777 la carpeta antes de transferir archivos.");
+//define("NWSLAN_71", "La carpeta de imágenes de noticias ".e_IMAGE." no tiene permisos de escritura.  Necesita habilitar con CHMOD 777 la carpeta antes de transferir imágenes.");
 define("NWSLAN_72", "Solo muestra la noticia entre ciertas fechas");
 define("NWSLAN_73", "Tipo de muestreo");
 define("NWSLAN_74", "Seleccione como y donde se mostrará la noticia");
 define("NWSLAN_75", "Por defecto - enviar a la página principal");
 define("NWSLAN_76", "Solo título - enviar a la página principal");
 define("NWSLAN_77", "Enviar a menú - otras noticias");
-define("NWSLAN_78", "Esta opción está desactivada porque su servidor no admite transferencia de archivos");
+//define("NWSLAN_78", "Esta opción está desactivada porque su servidor no admite transferencia de archivos");
 define("NWSLAN_79","Limpiar");
 
 define("NWSLAN_83","Texto extendido");
@@ -111,7 +111,7 @@ define("NWSLAN_114", "Si el tema que está usando tiene una plantilla para las no
 define("NWSLAN_115", "¿Mostrar envíos de noticias en archivos?");
 define("NWSLAN_116", "Primero ajuste las preferencias con los cambios mostrados en los ajustes de la página, luego actualice de nuevo después de fijar las preferencias de newarchive. (0 es desactivado)");
 define("NWSLAN_117", "Fije el título para el archivo de noticias");
-define("NWSLAN_118", "Ver imágenes");
+//define("NWSLAN_118", "Ver imágenes");
 define("NWSLAN_119", "Configuración guardada");
 define("NWSLAN_120", "Texto a mostrar encima de las noticias");
 
@@ -152,11 +152,12 @@ define("LAN_NEWS_39", "Click en archivo para insertar en la posición del cursor"
 define("LAN_NEWS_40", "Insertar enlaces de descargas");
 
 define("LAN_NEWS_42", "Archivos");
-define("LAN_NEWS_43", "(no hay imágenes en /e107_images/newspost_images)");
+//define("LAN_NEWS_43", "(no hay imágenes en /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback no activo.");
 define("LAN_NEWS_45", "ID");
 define("LAN_NEWS_46", "Noticia no actualizada ya que no se han realizado cambios.");
-define("LAN_NEWS_47", "Imagen");
+//define("LAN_NEWS_47", "Imagen");
 define("LAN_NEWS_48", "Sin imagen"); 
 define("LAN_NEWS_49", "Tipo renderizado"); 
+
 ?>

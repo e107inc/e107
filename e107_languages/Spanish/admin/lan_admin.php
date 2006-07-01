@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-05-14 09:25:39 $
+|     $Revision: 1.22 $
+|     $Date: 2006-07-01 20:56:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -227,4 +227,12 @@ define("LAN_NO_CHANGE","Falló la actualización y no se cambió nada.");
 define("LAN_TRY_AGAIN","Por favor, vuelva a intentarlo.");
 define("LAN_BAN","Expulsión");
 define("LAN_RATING", "Valoración");
+define("LAN_UPLOAD_IMAGES","Transferir imágenes"); 
+define("LAN_UPLOAD_FILES","Transferir archivos"); 
+define("LAN_UPLOAD_ADDFILE","Añadir otro archivo"); 
+define("LAN_UPLOAD_CONFIRM","Los cambios no guardados se perderán,¿Continuar?"); 
+define("LAN_UPLOAD_777","No existe la carpeta o no tiene permisos de escritura, necesita dar persmisos a la carpeta antes de trasnferir:");
+define("LAN_UPLOAD_SERVEROFF", "Opción desactivada ya que no tiene activa la transferencia de ficheros en su servidor"); 
+define("LAN_DISABLED","Desactivado"); 
+define("LAN_ENABLED", "Activado");
 ?>
