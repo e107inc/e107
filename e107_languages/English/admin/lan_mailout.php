@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-06-11 16:10:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.13 $
+|     $Date: 2006-07-02 19:59:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Save Changes");
@@ -83,5 +83,21 @@ define("MAILAN_53", "Admins");
 define("MAILAN_54", "Self");
 define("MAILAN_55", "Userclass");
 define("MAILAN_56", "Send Mail");
+define("MAILAN_57", "Keep SMTP session alive");
+define("MAILAN_58", "There is a problem with the attachment:");
+define("MAILAN_59", "Mailing Progress");
+define("MAILAN_60", "Sending...");
+define("MAILAN_61", "There are no remaining emails to be sent.");
+define("MAILAN_62", "Emails sent:");
+define("MAILAN_63", "Emails failed:");
+define("MAILAN_64", "Total time elapsed:");
+define("MAILAN_65", "seconds");
+define("MAILAN_66", "Cancelled Successfully");
+
+
+
+
+
+
 
 ?>

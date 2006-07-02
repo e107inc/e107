@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-06-11 16:10:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.54 $
+|     $Date: 2006-07-02 19:59:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -134,11 +134,14 @@ if (isset($_POST['submit'])) {
 	}
 	ob_end_flush();
 
+	$debug = (e_MENU == "debug") ? "?[debug]" : "";
+
 	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_HANDLER."phpmailer/mailout_process.php' name='mailform' onsubmit=\"open('', 'popup','width=230,height=170,resizable=1,scrollbars=0');this.target = 'popup';return true;\" >
+		<form method='post' action='".e_HANDLER."phpmailer/mailout_process.php".$debug."' name='mailform' onsubmit=\"open('', 'popup','width=230,height=170,resizable=1,scrollbars=0');this.target = 'popup';return true;\" >
 		<div>";
 
-    foreach($_POST as $key=>$val){
+    foreach($_POST as $key=>$val)
+	{
 		$text .= "<input type='hidden' name='".$key."' value='".stripslashes($tp->post_toForm($val))."' />\n";
     }
 
@@ -248,6 +251,7 @@ if (isset($_POST['updateprefs'])) {
 	$pref['smtp_server'] = $tp->toDB($_POST['smtp_server']);
 	$pref['smtp_username'] = $tp->toDB($_POST['smtp_username']);
 	$pref['smtp_password'] = $tp->toDB($_POST['smtp_password']);
+	$pref['smtp_keepalive'] = $_POST['smtp_keepalive'];
 	$pref['mail_pause'] = $_POST['mail_pause'];
 	$pref['mail_pausetime'] = $_POST['mail_pausetime'];
 	$pref['mail_bounce_email'] = $_POST['mail_bounce_email'];
@@ -302,9 +306,9 @@ function show_mailform($foo=""){
 		$ns -> tablerender(MAILAN_42, $warning);
 	}
 
-
+	$debug = (e_MENU == "debug") ? "?[debug]" : "";
 	$text .= "<div style='".ADMIN_WIDTH." text-align:center'>
-	<form method='post' action='".e_SELF."' id='mailout_form'>
+	<form method='post' action='".e_SELF.$debug."' id='mailout_form'>
 	<table class='fborder' style='".ADMIN_WIDTH."'  cellpadding='0' cellspacing='0'>
 	<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_01.": </td>
@@ -515,8 +519,8 @@ $text = "
 	<div id='mail' style='text-align:center;'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td style='width:40%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."</span><br /></td>
-	<td style='width:60%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value=\"".PRFLAN_65." ".SITEADMINEMAIL."\" />
+	<td style='width:30%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."</span><br /></td>
+	<td style='width:70%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value=\"".PRFLAN_65." ".SITEADMINEMAIL."\" />
 	</td>
 	</tr>
 
@@ -554,6 +558,14 @@ $text = "
 	</td>
 	</tr>
 
+	<tr>
+	<td colspan='2' style='text-align:right' >".MAILAN_57.":&nbsp;
+	";
+	$checked = (isset($pref['smtp_keepalive']) && $pref['smtp_keepalive']==1) ? "checked='checked'" : "";
+	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
+	</td>
+	</tr>
+
 	</table></div>";
 
 // Sendmail. -------------->
@@ -588,8 +600,8 @@ $text = "
 	</tr>\n
 
 	<tr>
-	<td style='width:40%;vertical-align:top' class='forumheader3'>".MAILAN_31."</td>
-	<td style='width:60%; text-align:right' class='forumheader3'>
+	<td style='vertical-align:top' class='forumheader3'>".MAILAN_31."</td>
+	<td style=' text-align:right' class='forumheader3'>
 		".MAILAN_32.": <input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /><br />
 		".MAILAN_33." (POP3):  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /><br />
 		".MAILAN_34.":  <input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /><br />

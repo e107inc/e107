@@ -11,17 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-05-12 22:50:40 $
+|     $Revision: 1.9 $
+|     $Date: 2006-07-02 19:59:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 if(!getperms("W")){ header("location:".e_BASE."index.php"); }
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_mailout.php");
 
 $HEADER = "";
 $FOOTER = "";
-define("e_PAGETITLE","Mailing...");
+define("e_PAGETITLE",MAILAN_60);
 require_once(HEADERF);
 set_time_limit(18000);
 session_write_close();
@@ -30,12 +31,12 @@ session_write_close();
 if($_POST['cancel_emails']){
 	$sql -> db_Delete("generic", "gen_datestamp='".intval($_POST['mail_id'])."' ");
 
-    $text = "<div style='text-align:center;width:220px'><br />Cancelled Successfully";
+    $text = "<div style='text-align:center;width:220px'><br />".MAILAN_66;   // Cancelled Successfully;
     $text .= "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
 	<br /><input type='button' class='button' name='close' value='Close' onclick=\"window.close()\" />
      </div></div>";
 
-    $ns -> tablerender("Mailing Progress", $text);
+    $ns -> tablerender(MAILAN_59, $text);
 	echo "</body></html>";
 
 	exit;
@@ -57,20 +58,29 @@ if($_POST['cancel_emails']){
 	$mail->From = ($_POST['email_from_email'])? $_POST['email_from_email']:	$pref['siteadminemail'];
 	$mail->FromName = ($_POST['email_from_name'])? $_POST['email_from_name']: $pref['siteadmin'];
 	//  $mail->Host     = "smtp1.site.com;smtp2.site.com";
-	if ($pref['mailer']== 'smtp') {
+	if ($pref['mailer']== 'smtp')
+	{
 		$mail->Mailer = "smtp";
-		$mail->SMTPKeepAlive = TRUE;
-		$mail->Host = $pref['smtp_server'];
-		if($pref['smtp_username'] && $pref['smtp_password']){
+		$mail->SMTPKeepAlive = (isset($pref['smtp_keepalive']) && $pref['smtp_keepalive']==1)  ? TRUE : FALSE;
+		if($pref['smtp_server'])
+		{
+			$mail->Host = $pref['smtp_server'];
+		}
+		if($pref['smtp_username'] && $pref['smtp_password'])
+		{
 			$mail->SMTPAuth = TRUE;
 			$mail->Username = $pref['smtp_username'];
 			$mail->Password = $pref['smtp_password'];
 			$mail->PluginDir = e_HANDLER."phpmailer/";
         }
-    } elseif ($pref['mailer']== 'sendmail'){
+    }
+	elseif ($pref['mailer']== 'sendmail')
+	{
 		$mail->Mailer = "sendmail";
 		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'];
-	} else {
+	}
+	 else
+	{
         $mail->Mailer = "mail";
 	}
 
@@ -79,36 +89,45 @@ if($_POST['cancel_emails']){
 	$mail->Charset = CHARSET;
 	$mail->Subject = $_POST['email_subject'];
 	$mail->IsHTML(TRUE);
-	$mail->SMTPDebug = False;
+	$mail->SMTPDebug = (e_MENU == "debug") ? TRUE : FALSE;
 
-	if($_POST['email_cc']){
+	if($_POST['email_cc'])
+	{
         $tmp = explode(",",$_POST['email_cc']);
-		foreach($tmp as $addc){
+		foreach($tmp as $addc)
+		{
 			$mail->AddCC($addc);
         }
 	}
 
-	if($_POST['email_bcc']){
+	if($_POST['email_bcc'])
+	{
         $tmp = explode(",",$_POST['email_bcc']);
-		foreach($tmp as $addbc){
+		foreach($tmp as $addbc)
+		{
 			$mail->AddBCC($addbc);
         }
 	}
 
-	if($pref['mail_bounce_email'] !=''){
+	if($pref['mail_bounce_email'] !='')
+	{
 		$mail->Sender = $pref['mail_bounce_email'];
 	}
 
 	$attach = chop($_POST['email_attachment']);
 
-	if(is_readable(e_DOWNLOAD.$attach))	{
+	if(is_readable(e_DOWNLOAD.$attach))
+	{
 		$attach_link = e_DOWNLOAD.$attach;
-	}else{
+	}
+	else
+	{
 		$attach_link = e_FILE.'public/'.$attach;
 	}
 
-	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach)){
-		$mss = "There is a problem with the attachment<br />$attach_link";
+	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach))
+	{
+		$mss = MAILAN_58."<br />$attach_link";  // problem with attachment.
 		$ns->tablerender("Error", $mss);
 		require_once(e_ADMIN."footer.php");
 		exit;
@@ -125,7 +144,8 @@ if($_POST['cancel_emails']){
 	$mail_head .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
 	$mail_head .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 
-	if (isset($_POST['use_theme'])) {
+	if (isset($_POST['use_theme']))
+	{
 		$theme = $THEMES_DIRECTORY.$pref['sitetheme']."/";
    	//	$mail_head .= "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />\n";
         $style_css = file_get_contents(e_THEME.$pref['sitetheme']."/style.css");
@@ -135,7 +155,9 @@ if($_POST['cancel_emails']){
 		$message_body .= "</head>\n<body>\n";
 		$message_body .= "<div style='padding:10px;width:97%'><div class='forumheader3'>\n";
 		$message_body .= $tp -> toHTML($_POST['email_body'],TRUE)."</div></div></body></html>";
-	}else{
+	}
+	else
+	{
 		$message_body = $mail_head;
 		$message_body .= "</head>\n<body>\n";
 		$message_body .= $tp -> toHTML($_POST['email_body'],TRUE)."</body></html>";
@@ -150,12 +172,13 @@ if($_POST['cancel_emails']){
 // ----------------  Display Progress and Send Emails. ----------------------->
 
 
-    echo "<div class='fcaption'>&nbsp;Mailing Progress</div>";
+    echo "<div class='fcaption'>&nbsp;".MAILAN_59."</div>";
     $qry = "SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='sendmail' and g.gen_datestamp = '".intval($_POST['mail_id'])."' ";
     $count = $sql -> db_Select_gen($qry);
 
-	if(!$count){
-		echo "<div style='text-align:center;width:200px'><br />There are no remaining emails to be sent.</div>";
+	if(!$count)
+	{
+		echo "<div style='text-align:center;width:200px'><br />".MAILAN_61."</div>";
 		echo "</body></html>";
         echo "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
 			<input type='button' class='button' name='close' value='Close' onclick=\"window.close()\" />
@@ -235,9 +258,9 @@ if($_POST['cancel_emails']){
 	ob_end_flush();
 
 	echo "<div style='position:absolute;left:10px;top:50px'><br />";
-	echo count($sent)." emails were sent.<br />";
-	echo count($failed)." emails failed.<br />";
-	echo "Total time elapsed: ".stopwatch()." seconds<br />";
+	echo MAILAN_62." ".count($sent)."<br />";
+	echo MAILAN_63." ".count($failed)."<br />";
+	echo MAILAN_64." ".stopwatch()." ".MAILAN_65."<br />";
 	echo "</div>";
 
 	$message = $sql -> db_Delete("generic", "gen_datestamp='".intval($_POST['mail_id'])."' ") ? "deleted" : "deleted_failed";
