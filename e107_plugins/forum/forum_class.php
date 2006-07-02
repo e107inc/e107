@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-05-16 17:29:51 $
+|     $Revision: 1.53 $
+|     $Date: 2006-07-02 22:33:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -538,9 +538,11 @@ class e107forum
 			}
 		}
 		$qry = "
-		SELECT t.*,u.* from #forum_t AS t
+		SELECT t.*,u.*,ue.* from #forum_t AS t
 		LEFT JOIN #user AS u
 		ON FLOOR(t.thread_user) = u.user_id
+		LEFT JOIN #user_extended AS ue
+		ON FLOOR(t.thread_user) = ue.user_extended_id
 		WHERE t.thread_id = $thread_id
 		LIMIT 0,1
 		";
