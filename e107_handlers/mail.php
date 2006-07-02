@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-05-12 22:50:40 $
+|     $Revision: 1.33 $
+|     $Date: 2006-07-02 18:07:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,6 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	$mail->CharSet = CHARSET;
 	$mail->From = ($send_from)? $send_from: $pref['siteadminemail'];
 	$mail->FromName = ($from_name)? $from_name:	$pref['siteadmin'];
-	$mail->Host = $pref['smtp_server'];
 	$mail->Subject = $subject;
 	$mail->SetLanguage("en",e_HANDLER."phpmailer/language/");
 
@@ -119,7 +118,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 		}else{
         	$tmp = explode(",",$Cc);
 			foreach($tmp as $addc){
-		  		$mail->AddCC("Cc", $addc);
+		  		$mail->AddCC($addc);
         	}
 		}
 	}
