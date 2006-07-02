@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2006-06-27 18:34:12 $
+|     $Revision: 1.93 $
+|     $Date: 2006-07-02 23:29:22 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -55,9 +55,9 @@ class sitelinks
 
 	function get($cat=1, $style='', $css_class = false)
 	{
-		global $pref, $ns, $e107cache;
+		global $pref, $ns, $e107cache, $linkstyle;
 
-		if (($data = $e107cache->retrieve('sitelinks_'.md5($cat.e_PAGE.e_QUERY))) && !strpos(e_SELF,e_ADMIN) ) {
+		if (($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY))) && !strpos(e_SELF,e_ADMIN) ) {
 			return $data;
 		}
 
@@ -159,7 +159,7 @@ class sitelinks
 			}
 		}
 		$text .= "\n\n\n<!--- end Site Links -->\n\n\n";
-		$e107cache->set('sitelinks_'.$cat.md5(e_PAGE.e_QUERY), $text);
+		$e107cache->set('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY), $text);
 	 	return $text;
 	}
 
