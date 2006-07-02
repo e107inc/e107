@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.289 $
-|     $Date: 2006-06-29 06:53:06 $
-|     $Author: e107coders $
+|     $Revision: 1.290 $
+|     $Date: 2006-07-02 21:57:49 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -96,7 +96,7 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 
 if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
-	define("e_QUERY", $matches[2]);
+	$e_QUERY = $matches[2];
 
 	if(strlen(e_MENU) == 2) // language code ie. [fr]
 	{
@@ -108,10 +108,18 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 
 }else {
 	define("e_MENU", "");
-	define("e_QUERY", $_SERVER['QUERY_STRING']);
+	$e_QUERY = $_SERVER['QUERY_STRING'];
   	define("e_LANCODE", "");
 }
-$e_QUERY = e_QUERY;
+
+e107_require_once(e_HANDLER.'e_parse_class.php');
+$tp = new e_parse;
+
+//define("e_QUERY", $matches[2]);
+//define("e_QUERY", $_SERVER['QUERY_STRING']);
+$e_QUERY = $tp->post_toForm($e_QUERY);
+define("e_QUERY", $e_QUERY);
+//$e_QUERY = e_QUERY;
 
 define("e_TBQS", $_SERVER['QUERY_STRING']);
 $_SERVER['QUERY_STRING'] = e_QUERY;
@@ -150,9 +158,6 @@ $eTraffic->Calibrate($eTraffic);
 define("MPREFIX", $mySQLprefix);
 
 e107_require_once(e_HANDLER."mysql_class.php");
-e107_require_once(e_HANDLER.'e_parse_class.php');
-
-$tp = new e_parse;
 
 $sql =& new db;
 $sql2 =& new db;

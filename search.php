@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-04-22 01:22:40 $
-|     $Author: e107coders $
+|     $Revision: 1.54 $
+|     $Date: 2006-07-02 21:57:49 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -386,7 +386,7 @@ if (!isset($SEARCH_TOP_TABLE)) {
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
 foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) {
 	$ENHANCED_DISPLAY_ID = "en_".$en_id;
-	$ENHANCED_FIELD = "<input class='tbox' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$_GET[$en_id]."' maxlength='50' />";
+	$ENHANCED_FIELD = "<input class='tbox' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm($_GET[$en_id])."' maxlength='50' />";
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ENHANCED);
 }
 if ($search_prefs['user_select']) {
