@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-06-28 17:57:30 $
+|     $Revision: 1.37 $
+|     $Date: 2006-07-03 05:33:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -479,7 +479,7 @@ function displayCategoryLinks($mode=''){
 					$linkbutton_count   = ($rowl['link_button']) ?  $linkicon_count + 1 : $linkicon_count;
 					$cat_name			= $rowl['link_category_name'];
 					$cat_desc			= $rowl['link_category_description'];
-					$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
+				 	$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 					$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 				}
 

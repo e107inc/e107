@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-06-28 17:57:31 $
+|     $Revision: 1.22 $
+|     $Date: 2006-07-03 05:33:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -167,7 +167,7 @@ $LINK_TABLE = "
 		{LINK_BUTTON}
 		<td class='forumheader3' style='width:60%'>
 			{LINK_NEW} {LINK_APPEND} {LINK_NAME} </a><br />
-    {LINK_URL}
+    {LINK_URL=link}
 	{LINK_DESC}
 
 		</td>
