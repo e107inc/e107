@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-07-03 05:33:44 $
+|     $Revision: 1.23 $
+|     $Date: 2006-07-03 06:51:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -51,7 +51,7 @@ $sc_style['LINK_MANAGE_NEWLINK']['pre'] = "<div style='text-align:right;'>";
 $sc_style['LINK_MANAGE_NEWLINK']['post'] = " >></div>";
 
 $LINK_TABLE_MANAGE_START = "
-	".$rs -> form_open("post", e_SELF."?".e_QUERY, "linkmanagerform", "", "enctype='multipart/form-data'", "")."
+	<form method='post' action='".e_SELF."?".e_QUERY."' id='linkmanagerform' enctype='multipart/form-data'>
 	<table class='fborder' style='width:100%;' cellspacing='0' cellpadding='0'>
 	<tr>
 	<td style='width:15%' class='fcaption'>".LAN_LINKS_MANAGER_5."</td>
@@ -66,7 +66,7 @@ $LINK_TABLE_MANAGE = "
 	<td style='width:10%; padding-bottom:5px; text-align:center; vertical-align:top;' class='forumheader3'>{LINK_MANAGE_OPTIONS}</td>
 	</tr>";
 
-$LINK_TABLE_MANAGE_END = "</table>".$rs -> form_close()."<br />{LINK_MANAGE_NEWLINK}";
+$LINK_TABLE_MANAGE_END = "</table></form><br />{LINK_MANAGE_NEWLINK}";
 
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-07-03 05:33:43 $
+|     $Revision: 1.38 $
+|     $Date: 2006-07-03 06:51:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -195,7 +195,7 @@ function displayTopRated(){
   	    foreach($list as $rowl) {
 			if( ($rowl['rate_avg'] > $ratemin) ){
 			$cat = $rowl['link_category_name'];
-			$LINK_RATED_APPEND			= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
+			$LINK_RATED_APPEND			= $lc -> parse_link_append($rowl);
 			$LINK_RATED_RATING			= $tp -> parseTemplate('{LINK_RATED_RATING}', FALSE, $link_shortcodes);
 			$link_rated_table_string	.= $tp -> parseTemplate($LINK_RATED_TABLE, FALSE, $link_shortcodes);
 			}
@@ -242,7 +242,7 @@ function displayTopRefer(){
 		$list = $sql2 -> db_getList();
   	    foreach($list as $rowl) {
 			$category				= $rowl['link_category_id'];
-			$LINK_APPEND			= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
+			$LINK_APPEND			= $lc -> parse_link_append($rowl);
 			$link_top_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 		}
 		$link_top_table_start		= $tp -> parseTemplate($LINK_TABLE_START, FALSE, $link_shortcodes);
@@ -333,7 +333,7 @@ function displayLinkComment(){
 			js_location(e_SELF);
 		}else{
 			$rowl = $sql->db_Fetch();
-			$LINK_APPEND	= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
+			$LINK_APPEND	= $lc -> parse_link_append($rowl);
 			$subject		= $rowl['link_name'];
 			$text = $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 			$ns->tablerender(LAN_LINKS_36, $text);
@@ -451,7 +451,7 @@ function displayCategoryLinks($mode=''){
 			if($mode){
 				$cat_name			= $rowl['link_category_name'];
 				$cat_desc			= $rowl['link_category_description'];
-				$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
+				$LINK_APPEND		= $lc -> parse_link_append($rowl);
 				$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 			}else{
 				$arr[$rowl['link_category_id']][] = $rowl;
@@ -476,10 +476,11 @@ function displayCategoryLinks($mode=''){
 				$i=0;
 				for($i=0;$i<count($value);$i++){
 					$rowl				= $value[$i];
+
 					$linkbutton_count   = ($rowl['link_button']) ?  $linkicon_count + 1 : $linkicon_count;
 					$cat_name			= $rowl['link_category_name'];
 					$cat_desc			= $rowl['link_category_description'];
-				 	$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
+				 	$LINK_APPEND		= $lc -> parse_link_append($rowl);
 					$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 				}
 
