@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.31 $
-|    $Date: 2006-07-03 06:51:52 $
+|    $Revision: 1.32 $
+|    $Date: 2006-07-03 07:17:22 $
 |    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -212,19 +212,19 @@ class linkclass {
 
         switch ($link_open_type) {
             case 1:
-            $lappend = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."' rel='external'>";
+            $lappend = "<a class='linkspage_url' href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."' rel='external'>";
             break;
             case 2:
-            $lappend = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+            $lappend = "<a class='linkspage_url'href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
             break;
             case 3:
-            $lappend = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+            $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
             break;
             case 4:
-            $lappend = "<a href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."')\">";
+            $lappend = "<a class='linkspage_url' href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."')\">";
             break;
             default:
-            $lappend = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+            $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
         }
         return $lappend;
     }
