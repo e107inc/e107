@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-07-03 02:16:23 $
+|     $Revision: 1.60 $
+|     $Date: 2006-07-03 17:11:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -205,14 +205,20 @@ class links
 		}
 	}
 
-	function dropdown($curval="", $id=0, $indent=0)
-	{   // only the parent Id is needed.
-		global $linkArray;
+	function dropdown($curval="", $lid=0, $indent=0)
+	{   // Drop-down list using on the parent_id. :)
+		global $linkArray,$id;
+
 		if(0 == $indent) {$ret = "<option value=''>".LINKLAN_3."</option>\n";}
-		foreach($linkArray[$id] as $l)
+		foreach($linkArray[$lid] as $l)
 		{
 			$s = ($l['link_id'] == $curval ? " selected='selected' " : "" );
-			$ret .= "<option value='".$l['link_id']."' {$s}>".str_pad("", $indent*36, "&nbsp;").$this->linkName($l['link_name'])."</option>\n";
+			 // prevent making self the parent.
+            $thename = ($l['link_id'] != $id) ? $l['link_name'] : "(".$l['link_name'].")";
+			$thelink = ($l['link_id'] != $id) ? $l['link_id'] : $l['link_parent'] ;
+
+			$ret .= "<option value='".$thelink."' {$s}>".str_pad("", $indent*36, "&nbsp;").$this->linkName($thename)."</option>\n";
+
 			if(array_key_exists($l['link_id'], $linkArray))
 			{
 				$ret .= $this->dropdown($curval, $l['link_id'], $indent+1);
@@ -266,6 +272,7 @@ class links
 		}
 		$ns->tablerender(LCLAN_8, $text);
 	}
+
 
 	function display_row($row2, $indent = FALSE) {
 		global $sql, $rs, $ns, $tp, $linkArray;
@@ -325,10 +332,12 @@ class links
 
 	}
 
+
 	function show_message($message) {
 		global $ns;
 		$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".$message."</b></div>");
 	}
+
 
 
 	function create_link($sub_action, $id) {
@@ -469,6 +478,7 @@ class links
 			</div>";
 		$ns->tablerender(LCLAN_29, $text);
 	}
+
 
 	function submit_link($sub_action, $id) {
 		global $sql, $e107cache, $tp;
