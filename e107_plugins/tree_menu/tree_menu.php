@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.25 $
+|     $Date: 2006-07-03 02:06:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,52 +28,62 @@ if (!defined('e107_INIT')) { exit; }
 - Add event onclick for div without subitem, and modify the existing events for items WITH subitems
 - Add a PHP function to read cookie (if existing) when page is loaded and restore menu status (writing or not window.onload js function)
 */
-	
+
 /* changes by jalist
 26/01/2005
 + complete rewrite
 + now uses single db query, links and sublinks are built into array
 */
-	
-include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
-	
+
+
+global $tp;
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
+
 // Many thanks to Lolo Irie for fixing the javascript that drives this menu item
 unset($text);
-	
-$sql->db_Select("links", "*", "ORDER BY link_order ASC", "nowhere"); // get main category links
+
+$query = "SELECT * FROM #links WHERE link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
+$sql -> db_Select_gen($query);
 $linkArray = $sql->db_getList();
-	
+
 // all main links now held in array, we now need to loop through them and assign the sublinks to the correct parent links ...
-	
+
 $mainLinkArray = array();
 foreach($linkArray as $links) {
+
+// Updated to stop using the deprecated method of splitting the link-name in 3.
+// Now uses uses the link parent to determine the 'tree'.
+
 	extract ($links);
-	if (check_class($link_class)) {
-		if (!strstr($link_name, "submenu")) {
+		if ($link_parent == 0)
+		{
 			// main link - add to main array ...
-			$mainLinkArray[$link_name]['id'] = $link_id;
-			$mainLinkArray[$link_name]['name'] = strip_tags($link_name);
-			$mainLinkArray[$link_name]['url'] = $link_url;
-			$mainLinkArray[$link_name]['description'] = $link_description;
-			$mainLinkArray[$link_name]['image'] = $link_button;
-			$mainLinkArray[$link_name]['openMethod'] = $link_open;
-			$mainLinkArray[$link_name]['class'] = $link_class;
-		} else {
-			// submenu - add to parent's array entry ...
-			list($null, $parent_name, $submenu_name) = explode(".", $link_name);
-			// get parent name ...
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['parent_name'] = $parent_name;
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['id'] = $link_id;
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['name'] = strip_tags($submenu_name);
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['url'] = $link_url;
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['description'] = $link_description;
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['image'] = $link_button;
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['openMethod'] = $link_open;
-			$mainLinkArray[$parent_name]['sublink'][$link_id]['class'] = $link_class;
+			$mainLinkArray[$link_id]['id'] = $link_id;
+			$mainLinkArray[$link_id]['name'] = $tp->toHtml(strip_tags($link_name),"","defs");
+			$mainLinkArray[$link_id]['url'] = $link_url;
+			$mainLinkArray[$link_id]['description'] = $link_description;
+			$mainLinkArray[$link_id]['image'] = $link_button;
+			$mainLinkArray[$link_id]['openMethod'] = $link_open;
+			$mainLinkArray[$link_id]['class'] = $link_class;
 		}
-	}
+		else
+		{
+			// submenu - add to parent's array entry ...
+			$tmp = explode(".", $link_name);
+			$submenu_name = ($tmp[2]) ? $tmp[2] : $link_name;
+
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['parent_name'] = $link_parent;
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['id'] = $link_id;
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['name'] = $tp->toHtml(strip_tags($submenu_name));
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['url'] = $link_url;
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['description'] = $links['link_description'];
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['image'] = $link_button;
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['openMethod'] = $link_open;
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['class'] = $link_class;
+		}
+
 }
-	
+
 // ok, now all mainlinks and sublinks are held in the array, now we have to loop through and build the text to send to screen ...
 
 $text = "";
@@ -81,11 +91,12 @@ foreach($mainLinkArray as $links) {
 	extract ($links);
 	if (array_key_exists("sublink", $links) && $links['name'] != "") {
 		// sublinks found ...
+
 		$url = "javascript:void(0);";
-		$spanName = str_replace(" ", "_", $name);
+		$spanName = $id;
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
 		$plink = "<div".($menu_pref['tm_class2'] ? " class='{$menu_pref['tm_class2']}'" : "")." style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$spanName."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
-		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
+		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>\n".$plink."\n</div>\n" : $plink);
 	} else {
 		// no sublinks found ...
 		if($links['name'])
@@ -94,26 +105,27 @@ foreach($mainLinkArray as $links) {
 			$spanName = "";
 			$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&middot;");
 			$plink = "<div".($menu_pref['tm_class1'] ? " class='{$menu_pref['tm_class1']}'" : "")." style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>";
-			$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
+			$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>\n".$plink."\n</div>\n" : $plink);
 		}
 	}
-	 
+
 	$c = 0;
 	if (array_key_exists("sublink", $links) && $links['name'] != "" ) {
-		$text .= "<span style=\"display:none\" id=\"span_".$spanName."\">\n";
+
+		$text .= "\n<span style=\"display:none\" id=\"span_".$spanName."\">\n";
 		foreach($sublink as $link) {
 			extract($link);
 			$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle' />  " : "&middot; ");
-			$spanName = str_replace(" ", "_", $parent_name);
-			 
+			$spanName = $parent_name;
+
 			$plink = $image.setLink($name, $url, $openMethod, $description)."<br />\n";
-			$text .=($menu_pref['tm_class3'] ? "<span".($menu_pref['tm_class3'] ? " class='{$menu_pref['tm_class3']}'" : "").">".$plink."</span>" : $plink);
+			$text .=($menu_pref['tm_class3'] ? "<span".($menu_pref['tm_class3'] ? " class='{$menu_pref['tm_class3']}'" : "").">".$plink."</span>\n\n" : $plink);
 		}
 		$text .= "</span>\n";
 	}
-	 
+
 }
-	
+
 function setlink($link_name, $link_url, $link_open, $link_description) {
 	switch ($link_open) {
 		case 1:
@@ -138,7 +150,7 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 	}
 	return $link;
 }
-	
+
 (isset($_COOKIE["treemenustatus"]) && $_COOKIE["treemenustatus"]) ? $treemenustatus = $_COOKIE["treemenustatus"] : $treemenustatus = "0";
 $text .= "
 	<script type='text/javascript'>
@@ -154,7 +166,7 @@ $text .= "
 	clearcook();
 	}
 	}\n
-	 
+
 	function clearcook(){
 	var expireDate = new Date;
 	expireDate.setMinutes(expireDate.getMinutes()+10);
@@ -162,11 +174,11 @@ $text .= "
 	}\n
 	//-->\n
 	";
-	
+
 (($treemenustatus != "0" && isset($treemenustatus))?$text .= "window.onload=document.getElementById('span_".$treemenustatus."').style.display=''":"");
-	
+
 $text .= "</script>
 	";
 $ns->tablerender(LAN_SITELINKS_183, $text, 'tree_menu');
-	
+
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-06-30 04:16:39 $
+|     $Revision: 1.58 $
+|     $Date: 2006-07-03 02:06:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -76,7 +76,7 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 	while($row = $sql-> db_Fetch()){
 		$subcat = $row[($sublink['fieldid'])];
 		$name = $row[($sublink['fieldname'])];
-		$subname = "submenu.$link_name.$name";
+		$subname = $name;  // use of sublink.parent.name is deprecated.
 		$suburl = str_replace("#",$subcat,$sublink['url']);
 		$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $link_button;
 		$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
@@ -205,13 +205,13 @@ class links
 	}
 
 	function dropdown($curval="", $id=0, $indent=0)
-	{
+	{   // only the parent Id is needed. 
 		global $linkArray;
 		if(0 == $indent) {$ret = "<option value=''>".LINKLAN_3."</option>\n";}
 		foreach($linkArray[$id] as $l)
 		{
 			$s = ($l['link_id'] == $curval ? " selected='selected' " : "" );
-			$ret .= "<option value='{$l['link_id']}|".$this->linkName($l['link_name'])."' {$s}>".str_pad("", $indent*36, "&nbsp;").$this->linkName($l['link_name'])."</option>\n";
+			$ret .= "<option value='".$l['link_id']."' {$s}>".str_pad("", $indent*36, "&nbsp;").$this->linkName($l['link_name'])."</option>\n";
 			if(array_key_exists($l['link_id'], $linkArray))
 			{
 				$ret .= $this->dropdown($curval, $l['link_id'], $indent+1);
@@ -269,12 +269,16 @@ class links
 	function display_row($row2, $indent = FALSE) {
 		global $sql, $rs, $ns, $tp, $linkArray;
 		extract($row2);
-		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0){
-			if(substr($link_name,0,8) == "submenu."){
+		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0)
+		{
+			if(substr($link_name,0,8) == "submenu.")
+			{
 				$tmp = explode(".",$link_name);
 				$sublinkname = $tmp[2];
-			}else{
-			$sublinkname = $link_name;
+			}
+			else
+			{
+				$sublinkname = $link_name;
 			}
 			$link_name = $sublinkname;
 		}
@@ -470,16 +474,13 @@ class links
 		if(!is_object($tp)) {
 			$tp=new e_parse;
 		}
-		$_POST['link_name'] = $tp->toDB($_POST['link_name']);
-		if($_POST['link_parent']){
-			$tmp = explode("|",$_POST['link_parent']);
-			$link_name = $tp->toDB(("submenu.".$tmp[1].".".$_POST['link_name']));
-			$parent_id = intval($tmp[0]);
-		}else{
-			$parent_id = 0;
-			$link_name = $_POST['link_name'];
-		}
+
+		$parent_id = ($_POST['link_parent']) ? intval($_POST['link_parent']) : 0;
+
+		$link_name = $tp->toDB($_POST['link_name']);
 		$link_url = $tp->createConstants($_POST['link_url']);
+		$link_url = str_replace("&","&amp;",$link_url); // xhtml compliant links.
+
 		$link_description = $tp->toDB($_POST['link_description']);
 		$link_button = $tp->toDB($_POST['link_button']);
 
@@ -487,16 +488,7 @@ class links
 		if ($id) {
 			$sql->db_Update("links", "link_parent='$parent_id', link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['linkrender']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
 			//rename all sublinks
-			if($sql->db_Select("links", "*", "link_parent='{$id}'"))
-			{
-				$childList = $sql->db_getList();
-				foreach($childList as $c)
-				{
-					$old = explode(".", $c['link_name'], 3);
-					$newname = "submenu.".$_POST['link_name'].".".$old[2];
-					$sql->db_Update("links", "link_name = '{$newname}' WHERE link_id = '{$c['link_id']}'");
-				}
-			}
+		    // renaming sublink names is deprecated. link_parent is used instead.
 
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_3);
