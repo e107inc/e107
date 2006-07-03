@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2006-06-30 04:16:39 $
+|     $Revision: 1.81 $
+|     $Date: 2006-07-03 17:24:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -91,11 +91,11 @@ if ($sql->db_Select("rbinary")){
 
 $reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 
-if($image_array = $fl->get_files(e_FILE."downloadimages/", "",$reject,1)){
+if($image_array = $fl->get_files(e_FILE."downloadimages/", "",$reject,2)){
 	sort($image_array);
 }
 
-if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", "",$reject,1)){
+if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", "",$reject,2)){
 	sort($thumb_array);
 }
 
