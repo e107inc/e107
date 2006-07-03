@@ -235,35 +235,34 @@ $LINK_BUTTON = "";
 if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 	if ($rowl['link_button']) {
 		if (strpos($rowl['link_button'], "http://") !== FALSE) {
-			$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000;' src='".$rowl['link_button']."' alt='' /></a>";
+			$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' src='".$rowl['link_button']."' alt='' /></a>";
 		} else {
 			if(strstr($rowl['link_button'], "/")){
 				if(file_exists(e_BASE.$rowl['link_button'])){
-					$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000;' src='".e_BASE.$rowl['link_button']."' alt='' /></a>";
+					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' src='".e_BASE.$rowl['link_button']."' alt='' /></a>";
 				} else {
 					if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-						$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+						$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
 					}
 				}
 			}else{
 				if(file_exists(e_PLUGIN."links_page/link_images/".$rowl['link_button'])){
-
-				$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
+					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
 				}else{
 					if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-					$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
 					}
 				}
 			}
 		}
 	} else {
 		if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-			$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+			$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
 		}
 	}
 }else{
 	if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-		$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+		$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
 	}
 }
 return $LINK_BUTTON;
@@ -290,7 +289,7 @@ if(!$linkspage_pref['link_url'])
 {
 	return;
 }
-return ($parm == "link") ? "<a href=\"".$rowl['link_url']."\" rel='external' title=\"".$rowl['link_description']."\">".$rowl['link_url']."</a>" : $rowl['link_url'];
+return ($parm == "link") ? "<a class='linkspage_url' href=\"".$rowl['link_url']."\" rel='external' title=\"".$rowl['link_description']."\">".$rowl['link_url']."</a>" : $rowl['link_url'];
 SC_END
 
 SC_BEGIN LINK_REFER
@@ -321,7 +320,7 @@ SC_BEGIN LINK_NEW
 global $LINK_NEW, $linkspage_pref, $qs, $rowl;
 $LINK_NEW = "";
 if(USER && $rowl['link_datestamp'] > USERLV){
-$LINK_NEW = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
+$LINK_NEW = "<img class='linkspage_new' src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
 }
 return $LINK_NEW;
 SC_END
