@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.29 $
-|    $Date: 2006-06-28 17:57:30 $
+|    $Revision: 1.30 $
+|    $Date: 2006-07-03 05:33:43 $
 |    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -200,29 +200,14 @@ class linkclass {
     }
 
     function parse_link_append($open, $id){
-        global $linkspage_pref;
-        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
-            $link_open_type = $open;
-        }else{
-            $link_open_type = $linkspage_pref['link_open_all'];
-        }
-        switch ($link_open_type) {
-            case 1:
-            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."' rel='external'>";
-            break;
-            case 2:
-            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."'>";
-            break;
-            case 3:
-            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."'>";
-            break;
-            case 4:
-            $link_append = "<a href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$id."')\">";
-            break;
-            default:
-            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."'>";
-        }
-        return $link_append;
+		// deprecated. Use shortcode instead: {LINK_APPEND}
+        global $tp,$rowl;
+
+		$rowl['link_open'] = $open;
+		$rowl['link_id'] = $id;
+
+     	return $tp->parseTemplate("{LINK_APPEND}");
+
     }
 
     function showLinkSort($mode=''){

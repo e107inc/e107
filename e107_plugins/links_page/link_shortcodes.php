@@ -274,8 +274,30 @@ return ($linkbutton_count >0 && $linkspage_pref['link_icon']) ? 2 : 1;
 SC_END
 
 SC_BEGIN LINK_APPEND
-global $LINK_APPEND;
-return $LINK_APPEND;
+global $linkspage_pref,$rowl;
+        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
+            $link_open_type = $rowl['link_open'];
+        }else{
+            $link_open_type = $linkspage_pref['link_open_all'];
+        }
+
+        switch ($link_open_type) {
+            case 1:
+            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."' rel='external'>";
+            break;
+            case 2:
+            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."'>";
+            break;
+            case 3:
+            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."'>";
+            break;
+            case 4:
+            $link_append = "<a href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."')\">";
+            break;
+            default:
+            $link_append = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+        }
+        return $link_append;
 SC_END
 
 SC_BEGIN LINK_NAME
@@ -285,7 +307,11 @@ SC_END
 
 SC_BEGIN LINK_URL
 global $LINK_URL, $linkspage_pref, $rowl;
-return (isset($linkspage_pref['link_url']) && $linkspage_pref['link_url'] ? $rowl['link_url'] : "");
+if(!$linkspage_pref['link_url'])
+{
+	return;
+}
+return ($parm == "link") ? "<a href=\"".$rowl['link_url']."\" rel='external' title=\"".$rowl['link_description']."\">".$rowl['link_url']."</a>" : $rowl['link_url'];
 SC_END
 
 SC_BEGIN LINK_REFER
