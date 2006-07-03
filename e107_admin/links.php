@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-07-03 02:06:25 $
+|     $Revision: 1.59 $
+|     $Date: 2006-07-03 02:16:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -128,6 +128,7 @@ if (isset($_POST['updateoptions'])) {
 	$pref['linkpage_screentip'] = $_POST['linkpage_screentip'];
 	$pref['sitelinks_expandsub'] = $_POST['sitelinks_expandsub'];
 	save_prefs();
+	$e107cache->clear("sitelinks");
 	$linkpost->show_message(LCLAN_1);
 }
 
@@ -205,7 +206,7 @@ class links
 	}
 
 	function dropdown($curval="", $id=0, $indent=0)
-	{   // only the parent Id is needed. 
+	{   // only the parent Id is needed.
 		global $linkArray;
 		if(0 == $indent) {$ret = "<option value=''>".LINKLAN_3."</option>\n";}
 		foreach($linkArray[$id] as $l)
