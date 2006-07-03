@@ -1,12 +1,12 @@
-global $sql, $link_class, $page;
+global $sql, $link_class, $page,$tp;
 
-$sql -> db_Select('links', '*', "link_category = 1 and link_name NOT REGEXP('submenu') and link_name NOT REGEXP('child') and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC");
+$sql -> db_Select('links', '*', "link_category = 1 and link_parent =0 and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC");
 $ulmenu = PRELINK."<ul>";
 $r="1";
 while($row = $sql -> db_Fetch()){
-	if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
 		if($r <= "8"){
 			extract($row);
+			$link_url = $tp->replaceConstants($link_url);
 			if(!preg_match("#(http:|mailto:|ftp:|https:)#",$link_url)){
 				$link_url = e_HTTP.$link_url;
 			}
@@ -28,7 +28,7 @@ while($row = $sql -> db_Fetch()){
 			$ulmenu .= "<li class='nav".$r."$ulclass'><a class='$ulclass' ".($link_description ? " title = '$link_description' " : "title = 'add a text description to this link' ")." href='".$link_url."' accesskey='".$r."' ".$link_append.">".LINKSTART."$lname".LINKEND."</a></li>";
 		}
 		$r++;
-	}
+
 }
 $ulmenu .= "</ul>\n".POSTLINK;
 return $ulmenu;
