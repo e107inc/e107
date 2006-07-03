@@ -11,11 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-06-30 03:01:43 $
+|     $Revision: 1.66 $ - with modifications
+|     $Date: 2006-07-03 23:51:25 $
 |     $Author: e107coders $
+|
+| Modifications by steved:
+|	1. Can display sub-categories which contain sub-sub categories and files
+|	2. New $pref['download_subsub'] - if defined and '0', doesn't display sub-sub categories
 +----------------------------------------------------------------------------+
 */
+
 require_once("class2.php");
 require_once(e_HANDLER."comment_class.php");
 require_once(e_FILE."shortcode/batch/download_shortcodes.php");
@@ -23,6 +28,10 @@ unset($text);
 $agreetext = $tp->toJS($pref['agree_text']);
 $cobj = new comment;
 global $tp;
+
+// To prevent display of sub-categories on the main display, un-comment the following line
+//$pref['download_subsub'] = '0';
+
 
 /* define images */
 define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
@@ -80,12 +89,18 @@ if (!e_QUERY || $_GET['elan'])
 			$catList[$row['download_category_parent']][] = $row;
 		}
 		foreach($catList[0] as $row)
-		{
-
+		{  // Display main category headings, then sub-categories, optionally with sub-sub categories expanded
 			$download_cat_table_string .= parse_download_cat_parent_table($row);
 			foreach($catList[$row['download_category_id']] as $crow)
 			{
+			  if (isset($pref['download_subsub']) && ($pref['download_subsub'] == '0'))
+			  {  // Don't display sub-sub categories here
+				$download_cat_table_string .= parse_download_cat_child_table($crow, FALSE);
+			  }
+			  else
+			  {		// Display sub-sub categories
 				$download_cat_table_string .= parse_download_cat_child_table($crow, $catList[$crow['download_category_id']]);
+			  }
 			}
 		}
 	}
@@ -115,15 +130,19 @@ if (!e_QUERY || $_GET['elan'])
 }
 
 
+// Got a query string from now on
 $tmp = explode(".", e_QUERY);
-if (is_numeric($tmp[0])) {
+if (is_numeric($tmp[0])) 
+{
 	$from = intval($tmp[0]);
 	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[1]));
 	$id = intval($tmp[2]);
 	$view = intval($tmp[3]);
 	$order = preg_replace("#\W#", "", $tp -> toDB($tmp[4]));
 	$sort = preg_replace("#\W#", "", $tp -> toDB($tmp[5]));
-} else {
+}
+ else 
+{
 	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[0]));
 	$id = intval($tmp[1]);
 }
@@ -173,13 +192,17 @@ if ($action == "list") {
 
 	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
 
-	/*
-	if (!$total_downloads) {
-		require_once(HEADERF);
-		require_once(FOOTERF);
-		exit;
-	}
-	*/
+// Next three lines extract page title
+	$sql->db_Select("download_category", "*", "download_category_id='{$id}'");
+	$row = $sql->db_Fetch();
+	extract($row);
+
+	$type = $download_category_name;
+
+	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
+	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
+
+	require_once(HEADERF);
 
 	/* SHOW SUBCATS ... */
 
@@ -199,18 +222,22 @@ if ($action == "list") {
 		";
 		$sql->db_Select_gen($qry);
 		$scArray = $sql -> db_getList();
-		if (!$DOWNLOAD_CAT_PARENT_TABLE) {
-			if (file_exists(THEME."download_template.php"))	{
+		if (!$DOWNLOAD_CAT_PARENT_TABLE) 
+		{
+			if (file_exists(THEME."download_template.php"))	
+			{
 				require_once(THEME."download_template.php");
-			} else {
+			}
+			else 
+			{
 				require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 			}
 		}
 		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
-		foreach($scArray as $row)	{
+		foreach($scArray as $row)	
+		{
 			$download_cat_table_string .= parse_download_cat_child_table($row, FALSE);
 		}
-		require_once(HEADERF);
 		if(strstr($row['parent_icon'], chr(1)))	{
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $row['parent_icon']);
 		}
@@ -220,27 +247,22 @@ if ($action == "list") {
 		$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 		$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
 		$text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
-		if($DOWNLOAD_CAT_TABLE_RENDERPLAIN) {
+		if($DOWNLOAD_CAT_TABLE_RENDERPLAIN) 
+		{
 			echo $text;
-		} else {
-			$ns->tablerender(LAN_dl_18.$type, $text);
 		}
-		require_once(FOOTERF);
-		exit;
-	}
+		else 
+		{
+			$ns->tablerender($type, $text);
+		}
+		$text = "";		// If other files, show in a separate block
+		$type = "";   	// Cancel title once displayed
+	}  // End of subcategory display
 
-	$sql->db_Select("download_category", "*", "download_category_id='{$id}'");
-	$row = $sql->db_Fetch();
-	extract($row);
-
+// Now display individual downloads
 	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
-	$type = $download_category_name;
-
-	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
-	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
-
-	require_once(HEADERF);
-	if (!check_class($download_category_class)) {
+	if (!check_class($download_category_class)) 
+	{
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
 		require_once(FOOTERF);
 		exit;
@@ -300,7 +322,7 @@ if ($action == "list") {
 
 	require_once(FOOTERF);
 	exit;
-}
+}    // end of action=="list"
 
 
 //  ---------------- View Mode ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -636,9 +658,8 @@ function parse_download_cat_child_table($row, $subList)
 	// check for subsub cats ...
 	if($subList != FALSE)
 	{
-		foreach($subList as $subrow){
-
-
+		foreach($subList as $subrow)
+		{
 			list($sub_download_category_icon, $sub_download_category_icon_empty) = explode(chr(1), $subrow['download_category_icon']);
 			if (!$sub_download_category_icon_empty)
 			{
