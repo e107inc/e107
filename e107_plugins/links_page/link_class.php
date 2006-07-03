@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.30 $
-|    $Date: 2006-07-03 05:33:43 $
+|    $Revision: 1.31 $
+|    $Date: 2006-07-03 06:51:52 $
 |    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -199,15 +199,34 @@ class linkclass {
         define("e_PAGETITLE", $page);
     }
 
-    function parse_link_append($open, $id){
-		// deprecated. Use shortcode instead: {LINK_APPEND}
-        global $tp,$rowl;
+    function parse_link_append($rowl){
 
-		$rowl['link_open'] = $open;
-		$rowl['link_id'] = $id;
+        global $tp;
 
-     	return $tp->parseTemplate("{LINK_APPEND}");
+        global $linkspage_pref, $rowl;
+        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
+            $link_open_type = $rowl['link_open'];
+        }else{
+            $link_open_type = $linkspage_pref['link_open_all'];
+        }
 
+        switch ($link_open_type) {
+            case 1:
+            $lappend = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."' rel='external'>";
+            break;
+            case 2:
+            $lappend = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+            break;
+            case 3:
+            $lappend = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+            break;
+            case 4:
+            $lappend = "<a href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."')\">";
+            break;
+            default:
+            $lappend = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+        }
+        return $lappend;
     }
 
     function showLinkSort($mode=''){

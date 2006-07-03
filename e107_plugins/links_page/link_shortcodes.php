@@ -247,6 +247,7 @@ if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 				}
 			}else{
 				if(file_exists(e_PLUGIN."links_page/link_images/".$rowl['link_button'])){
+
 				$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
 				}else{
 					if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
@@ -274,30 +275,8 @@ return ($linkbutton_count >0 && $linkspage_pref['link_icon']) ? 2 : 1;
 SC_END
 
 SC_BEGIN LINK_APPEND
-global $linkspage_pref,$rowl;
-        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
-            $link_open_type = $rowl['link_open'];
-        }else{
-            $link_open_type = $linkspage_pref['link_open_all'];
-        }
-
-        switch ($link_open_type) {
-            case 1:
-            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."' rel='external'>";
-            break;
-            case 2:
-            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."'>";
-            break;
-            case 3:
-            $link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."'>";
-            break;
-            case 4:
-            $link_append = "<a href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."')\">";
-            break;
-            default:
-            $link_append = "<a href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
-        }
-        return $link_append;
+global $LINK_APPEND;
+return $LINK_APPEND;
 SC_END
 
 SC_BEGIN LINK_NAME
