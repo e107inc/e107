@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.66 $ - with modifications
-|     $Date: 2006-07-03 23:51:25 $
+|     $Revision: 1.67 $ - with modifications
+|     $Date: 2006-07-04 20:07:48 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -132,7 +132,7 @@ if (!e_QUERY || $_GET['elan'])
 
 // Got a query string from now on
 $tmp = explode(".", e_QUERY);
-if (is_numeric($tmp[0])) 
+if (is_numeric($tmp[0]))
 {
 	$from = intval($tmp[0]);
 	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[1]));
@@ -141,7 +141,7 @@ if (is_numeric($tmp[0]))
 	$order = preg_replace("#\W#", "", $tp -> toDB($tmp[4]));
 	$sort = preg_replace("#\W#", "", $tp -> toDB($tmp[5]));
 }
- else 
+ else
 {
 	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[0]));
 	$id = intval($tmp[1]);
@@ -222,19 +222,19 @@ if ($action == "list") {
 		";
 		$sql->db_Select_gen($qry);
 		$scArray = $sql -> db_getList();
-		if (!$DOWNLOAD_CAT_PARENT_TABLE) 
+		if (!$DOWNLOAD_CAT_PARENT_TABLE)
 		{
-			if (file_exists(THEME."download_template.php"))	
+			if (file_exists(THEME."download_template.php"))
 			{
 				require_once(THEME."download_template.php");
 			}
-			else 
+			else
 			{
 				require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 			}
 		}
 		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
-		foreach($scArray as $row)	
+		foreach($scArray as $row)
 		{
 			$download_cat_table_string .= parse_download_cat_child_table($row, FALSE);
 		}
@@ -247,11 +247,11 @@ if ($action == "list") {
 		$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 		$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
 		$text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
-		if($DOWNLOAD_CAT_TABLE_RENDERPLAIN) 
+		if($DOWNLOAD_CAT_TABLE_RENDERPLAIN)
 		{
 			echo $text;
 		}
-		else 
+		else
 		{
 			$ns->tablerender($type, $text);
 		}
@@ -261,7 +261,7 @@ if ($action == "list") {
 
 // Now display individual downloads
 	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
-	if (!check_class($download_category_class)) 
+	if (!check_class($download_category_class))
 	{
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
 		require_once(FOOTERF);
@@ -418,7 +418,7 @@ if ($action == "view") {
 
 //  ---------------- Report Broken Link Mode ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-if ($action == "report") {
+if ($action == "report" && check_class($pref['download_reportbroken'])) {
 	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0")) {
 		require_once(HEADERF);
 		require_once(FOOTERF);
@@ -433,7 +433,7 @@ if ($action == "report") {
 		$download_name = $tp -> toDB($download_name);
 		$user = USER ? USERNAME : LAN_dl_52;
 
-		if ($pref['download_email']) {
+		if ($pref['download_email']) {    // this needs to be moved into the NOTIFY, with an event. 
 			require_once(e_HANDLER."mail.php");
 			$subject = LAN_dl_60." ".SITENAME;
 			$report = LAN_dl_58." ".SITENAME.":\n".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?view.".$download_id."\n
