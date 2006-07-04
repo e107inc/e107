@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-07-02 22:33:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.54 $
+|     $Date: 2006-07-04 07:14:51 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -327,11 +327,11 @@ class e107forum
 			{
 				$ret[$row['forum_id']] = $row['forum_name'];
 			}
-		
+
 		}
 		return $ret;
 	}
-	
+
 	function thread_update($thread_id, $newvals)
 	{
 		global $sql, $tp;
@@ -523,7 +523,7 @@ class e107forum
 		$qry = "
 		SELECT t.*, u.* FROM #forum_t as t
 		LEFT JOIN #user AS u
-		ON FLOOR(t.thread_user) = u.user_id
+		ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		WHERE t.thread_parent = $thread_id
 		ORDER by t.thread_datestamp {$sortdir}
 		LIMIT ".intval($start).",".intval($limit);
@@ -540,7 +540,7 @@ class e107forum
 		$qry = "
 		SELECT t.*,u.*,ue.* from #forum_t AS t
 		LEFT JOIN #user AS u
-		ON FLOOR(t.thread_user) = u.user_id
+		ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #user_extended AS ue
 		ON FLOOR(t.thread_user) = ue.user_extended_id
 		WHERE t.thread_id = $thread_id
@@ -662,7 +662,7 @@ class e107forum
 		{
 			return -1;
 		}
-		
+
 		$post_user = $thread_poster['post_userid'].".".$thread_poster['post_user_name'];
 		$thread_post_user = $post_user;
 		if($thread_poster['post_userid'] == 0)
@@ -761,7 +761,7 @@ class e107forum
 		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
 		FROM #forum_t AS ft
 		LEFT JOIN #forum_t as fp ON fp.thread_id = ft.thread_parent
-		LEFT JOIN #user as u ON u.user_id = FLOOR(ft.thread_user) 
+		LEFT JOIN #user as u ON u.user_id = FLOOR(ft.thread_user)
 		LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
 		WHERE ft.thread_datestamp > ".USERLV. "
 		AND f.forum_class IN (".USERCLASS_LIST.")
@@ -832,7 +832,7 @@ class e107forum
 		$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent != 0");
 		$sql->db_Update("forum", "forum_threads='$threads', forum_replies='$replies' WHERE forum_id='$forumID'");
 	}
-	
+
 	function get_user_counts()
 	{
 		global $sql;
@@ -848,7 +848,7 @@ class e107forum
 			$ret = array();
 			while($row = $sql->db_Fetch())
 			{
-				$ret[$row['uid']] = $row['cnt'];	
+				$ret[$row['uid']] = $row['cnt'];
 			}
 			return $ret;
 		}
