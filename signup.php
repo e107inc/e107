@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2006-06-21 04:49:22 $
+|     $Revision: 1.92 $
+|     $Date: 2006-07-04 07:34:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 $qs = explode(".", e_QUERY);
-if($qs[0] != "activate"){   // multi-language fix. 
+if($qs[0] != "activate"){   // multi-language fix.
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
 	e107_include_once(e_LANGUAGEDIR."English/lan_signup.php");
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
@@ -41,7 +41,7 @@ include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 // Resend Activation Email ------------------------------------------->
-if(e_QUERY == "resend" && !USER)
+if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1)
 {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
