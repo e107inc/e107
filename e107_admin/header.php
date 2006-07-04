@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.53 $
-|   $Date: 2006-05-25 04:41:15 $
+|   $Revision: 1.54 $
+|   $Date: 2006-07-04 21:19:28 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -118,8 +118,11 @@ if (strpos(e_SELF, 'fileinspector.php') === FALSE) {
 echo "<script type='text/javascript'>
 <!--
 function savepreset(ps,pid){
-	document.getElementById(ps).action='".e_SELF."?savepreset.'+pid;
-	document.getElementById(ps).submit();
+	if(confirm('".$tp->toJS(LAN_PRESET_CONFIRMSAVE)."'))
+	{
+		document.getElementById(ps).action='".e_SELF."?savepreset.'+pid;
+   		document.getElementById(ps).submit();
+	}
 }
 //-->
 </script>\n";

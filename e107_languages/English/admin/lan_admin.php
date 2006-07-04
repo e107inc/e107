@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-06-30 02:43:41 $
+|     $Revision: 1.46 $
+|     $Date: 2006-07-04 21:19:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -222,6 +222,7 @@ define("LAN_OK","OK");
 
 define("LAN_PRESET","Preset");
 define("LAN_PRESET_SAVED","Preset saved successfully");
+
 define("LAN_PRESET_DELETED","Preset successfully deleted");
 define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
 define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the folder first.");
@@ -257,6 +258,9 @@ define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not
 
 define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
+
+define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
+
 
 
 ?>
