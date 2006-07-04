@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-07-04 07:14:51 $
+|     $Revision: 1.55 $
+|     $Date: 2006-07-04 08:42:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -172,7 +172,7 @@ class e107forum
 		global $sql;
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
-		LEFT JOIN #user AS u ON FLOOR(f.forum_lastpost_user) = u.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id
 		WHERE forum_parent != 0 AND forum_sub = 0
 		ORDER BY f.forum_order ASC
 		";
@@ -200,7 +200,7 @@ class e107forum
 		$where = ($forum_id != "" && $forum_id != 'bysub' ? "AND forum_sub = ".intval($forum_id) : "");
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
-		LEFT JOIN #user AS u ON FLOOR(f.forum_lastpost_user) = u.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id
 		WHERE forum_sub != 0 {$where}
 		ORDER BY f.forum_order ASC
 		";
@@ -351,8 +351,8 @@ class e107forum
 		global $sql;
 		$qry = "
 		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from #forum_t as t
-		LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
-		LEFT JOIN #user AS lpu ON FLOOR(t.thread_lastuser) = lpu.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+		LEFT JOIN #user AS lpu ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lpu.user_id
 		WHERE t.thread_forum_id = $forum_id AND t.thread_parent = 0
 		ORDER BY
 		t.thread_s DESC,
@@ -385,7 +385,7 @@ class e107forum
 		}
 		$qry = "
 		SELECT t.thread_user, t.thread_datestamp, u.user_name FROM #forum_t AS t
-		LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		{$where}
 		ORDER BY t.thread_datestamp DESC	LIMIT 0,1
 		";
@@ -542,7 +542,7 @@ class e107forum
 		LEFT JOIN #user AS u
 		ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #user_extended AS ue
-		ON FLOOR(t.thread_user) = ue.user_extended_id
+		ON SUBSTRING_INDEX(t.thread_user,'.',1) = ue.user_extended_id
 		WHERE t.thread_id = $thread_id
 		LIMIT 0,1
 		";
@@ -601,7 +601,7 @@ class e107forum
 		$qry = "
 		SELECT t.*, u.user_name, u.user_id, u.user_email from #forum_t AS t
 		LEFT JOIN #user AS u
-		ON FLOOR(t.thread_user) = u.user_id
+		ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		WHERE t.thread_id = $thread_id
 		LIMIT 0,1
 		";
@@ -627,7 +627,7 @@ class e107forum
 			$qry = "
 			SELECT t.*, u.user_name, u.user_id from #forum_t AS t
 			LEFT JOIN #user AS u
-			ON FLOOR(t.thread_user) = u.user_id
+			ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 			WHERE t.thread_id = ".intval($parent_id)."
 			LIMIT 0,1
 			";
@@ -761,7 +761,7 @@ class e107forum
 		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
 		FROM #forum_t AS ft
 		LEFT JOIN #forum_t as fp ON fp.thread_id = ft.thread_parent
-		LEFT JOIN #user as u ON u.user_id = FLOOR(ft.thread_user)
+		LEFT JOIN #user as u ON u.user_id = SUBSTRING_INDEX(ft.thread_user,'.',1)
 		LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
 		WHERE ft.thread_datestamp > ".USERLV. "
 		AND f.forum_class IN (".USERCLASS_LIST.")
@@ -838,7 +838,7 @@ class e107forum
 		global $sql;
 		$qry = "
 		SELECT u.user_id AS uid, count(t.thread_user) AS cnt FROM #forum_t AS t
-		LEFT JOIN #user AS u on FLOOR(t.thread_user) = u.user_id
+		LEFT JOIN #user AS u on SUBSTRING_INDEX(t.thread_user,'.',1)  = u.user_id
 		WHERE u.user_id > 0
 		GROUP BY uid
 		";

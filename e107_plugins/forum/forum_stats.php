@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-06-02 00:37:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2006-07-04 08:42:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,12 +58,12 @@ foreach($array as $table)
 
 
 $query = "
-SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_class, u.user_name FROM #forum_t as ft 
-LEFT JOIN #user AS u ON ft.thread_user = u.user_id 
-LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id 
-WHERE ft.thread_parent = 0 
-AND ft.thread_active != 0 
-AND f.forum_class IN (".USERCLASS_LIST.") 
+SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_class, u.user_name FROM #forum_t as ft
+LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
+WHERE ft.thread_parent = 0
+AND ft.thread_active != 0
+AND f.forum_class IN (".USERCLASS_LIST.")
 ORDER BY thread_total_replies DESC LIMIT 0,10";
 $sql -> db_Select_gen($query);
 $most_activeArray = $sql -> db_getList();
@@ -89,10 +89,10 @@ foreach($posters as $poster)
 }
 
 $query = "
-SELECT FLOOR(thread_user) as t_user, COUNT(FLOOR(ft.thread_user)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft 
-LEFT JOIN #user AS u ON FLOOR(ft.thread_user) = u.user_id 
+SELECT SUBSTRING_INDEX(thread_user,'.',1) AS t_user, COUNT(SUBSTRING_INDEX(ft.thread_user,'.',1)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft
+LEFT JOIN #user AS u ON SUBSTRING_INDEX(ft.thread_user,'.',1) = u.user_id
 WHERE ft.thread_parent=0
-GROUP BY t_user 
+GROUP BY t_user
 ORDER BY ucount DESC
 LIMIT 0,10";
 $sql -> db_Select_gen($query);
@@ -105,8 +105,8 @@ foreach($posters as $poster)
 }
 
 $query = "
-SELECT FLOOR(thread_user) as t_user, COUNT(FLOOR(ft.thread_user)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft 
-LEFT JOIN #user AS u ON FLOOR(ft.thread_user) = u.user_id 
+SELECT SUBSTRING_INDEX(thread_user,'.',1) AS t_user, COUNT(SUBSTRING_INDEX(ft.thread_user,'.',1)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft
+LEFT JOIN #user AS u ON SUBSTRING_INDEX(ft.thread_user,'.',1) = u.user_id
 WHERE ft.thread_parent!=0
 GROUP BY t_user
 ORDER BY ucount DESC
@@ -176,7 +176,7 @@ foreach($most_activeArray as $ma)
 		$tmp = explode(chr(1), $ma['thread_anon']);
 		$uinfo = $tp->toHTML($tmp[0]);
 	}
-		
+
 	$text .= "<tr>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
 	<td style='width: 40%;' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$ma['thread_id']}'>{$ma['thread_name']}</a></td>
@@ -287,7 +287,7 @@ foreach($top_topic_starters as $ma)
 	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
 	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
 	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
-	
+
 	</td>
 	</tr>
 	";
@@ -321,11 +321,11 @@ foreach($top_repliers as $ma)
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
 	<td style='width: 50%; text-align: center;' class='forumheader3'>
-	
+
 	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
 	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
 	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
-	
+
 	</td>
 	</tr>
 	";

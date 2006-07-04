@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-01-20 00:26:53 $
-|     $Author: lisa_ $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-04 08:42:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -54,12 +54,12 @@ if($_POST['moderate'] && CB_MOD)
 		$unblocklist = implode(",", $kk);
 		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})");
 	}
-	
+
 	if(isset($_POST['delete']))
 	{
 		$deletelist = implode(",", array_keys($_POST['delete']));
-		$sql -> db_Select_gen("SELECT c.cb_id, u.user_id FROM #chatbox AS c 
-		LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id 
+		$sql -> db_Select_gen("SELECT c.cb_id, u.user_id FROM #chatbox AS c
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id
 		WHERE c.cb_id IN (".$deletelist.")");
 		$rowlist = $sql -> db_getList();
 		foreach ($rowlist as $row) {
@@ -128,7 +128,7 @@ foreach ($chatList as $row)
 			$cb_message .= "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='block[{$row['cb_id']}]' value='1' />".CHATBOX_L9;
 		}
 	}
-	
+
 	$CHAT_TABLE_MESSAGE = $cb_message;
 	$CHAT_TABLE_FLAG = ($flag ? "forumheader3" : "forumheader4");
 
@@ -157,7 +157,7 @@ if($message)
 {
 	$ns->tablerender("", $message);
 }
-	
+
 $ns->tablerender(CHATBOX_L20, $text);
 
 

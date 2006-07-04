@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-02-27 12:32:24 $
-|     $Author: whoisrich $
+|     $Revision: 1.66 $
+|     $Date: 2006-07-04 08:42:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -174,7 +174,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 
 	$qry = "
 	SELECT c.*, u.user_name FROM #chatbox AS c
-	LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id
+	LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id
 	ORDER BY c.cb_datestamp DESC LIMIT 0, ".intval($chatbox_posts);
 
 	if($sql -> db_Select_gen($qry))

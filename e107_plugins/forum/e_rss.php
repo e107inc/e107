@@ -107,7 +107,7 @@ switch($this->parm){
 	case 6:
 		$this -> rssQuery =
 		"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name, u.user_email FROM #forum_t AS t
-		LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 		WHERE f.forum_class IN (0, 251, 252) AND t.thread_parent=0
 		ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
@@ -138,7 +138,7 @@ switch($this->parm){
 	case posts:
 	case 7:
 		$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email FROM #forum_t AS t
-		LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 		WHERE f.forum_class  IN (0, 251, 252)
@@ -181,7 +181,7 @@ switch($this->parm){
 		/* get thread ...  */
 		$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
 		FROM #forum_t AS t
-		LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 		WHERE f.forum_class  IN (0, 251, 255) AND t.thread_id=".intval($this -> topicid);
 		$sqlrss->db_Select_gen($this -> rssQuery);
@@ -190,7 +190,7 @@ switch($this->parm){
 		/* get replies ...  */
 		$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email
 		FROM #forum_t AS t
-		LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 		WHERE f.forum_class  IN (0, 251, 255) AND t.thread_parent=".intval($this -> topicid);
 		$sqlrss->db_Select_gen($this -> rssQuery);
@@ -234,12 +234,12 @@ switch($this->parm){
 		}
 
 		$this -> rssQuery = "
-		SELECT f.forum_id, f.forum_name, f.forum_class, tp.thread_name AS parent_name, t.*, u.user_name, u.user_email 
-		FROM #forum_t as t 
-		LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id 
-		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
-		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
-		WHERE t.thread_forum_id = ".intval($this->topicid)." AND f.forum_class IN (0, 251, 255) 
+		SELECT f.forum_id, f.forum_name, f.forum_class, tp.thread_name AS parent_name, t.*, u.user_name, u.user_email
+		FROM #forum_t as t
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+		WHERE t.thread_forum_id = ".intval($this->topicid)." AND f.forum_class IN (0, 251, 255)
 		ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
 
 		$sqlrss->db_Select_gen($this -> rssQuery);

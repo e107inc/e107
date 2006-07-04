@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/search/search_parser.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-04 08:42:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-// advanced 
+// advanced
 $advanced_where = "";
 if (isset($_GET['forum']) && is_numeric($_GET['forum'])) {
 	$advanced_where .= " f.forum_id='".$_GET['forum']."' AND";
@@ -46,7 +46,7 @@ $no_results = LAN_198;
 
 $where = "f.forum_class REGEXP '".e_CLASS_REGEXP."' AND fp.forum_class REGEXP '".e_CLASS_REGEXP."' AND".$advanced_where;
 $order = array('thread_datestamp' => DESC);
-$table = "forum_t AS t LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+$table = "forum_t AS t LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id
 		LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id";
