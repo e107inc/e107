@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2006-06-04 08:55:21 $
+|     $Revision: 1.80 $
+|     $Date: 2006-07-04 07:28:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -315,7 +315,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	}
 }
 // ------- Make Admin.. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "admin") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "admin" && getperms('3')) {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
@@ -327,7 +327,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "admin") {
 }
 
 // ------- Remove Admin --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms('3')) {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
@@ -639,10 +639,10 @@ class users{
 						$text .= "<option value='ban'>".USRLAN_30."</option>\n";
 					}
 
-					if (!$user_admin && !$user_ban && $user_ban != 2) {
+					if (!$user_admin && !$user_ban && $user_ban != 2 && getperms('3')) {
 						$text .= "<option value='admin'>".USRLAN_35."</option>\n";
 					}
-					else if ($user_admin && $user_perms != "0") {
+					else if ($user_admin && $user_perms != "0" && getperms('3')) {
 						$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
 					}
 
