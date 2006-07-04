@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-06-05 13:41:31 $
-|     $Author: lisa_ $
+|     $Revision: 1.55 $
+|     $Date: 2006-07-04 16:08:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -178,4 +178,7 @@ define("PRFLAN_163", "eg. Company Name, Address, Phone etc.");
 define("PRFLAN_164", "Allow users to email copy of contact email to self");
 define("PRFLAN_165", "Possible opening for allowing spam, use with caution");
 define("PRFLAN_166", "Show emoticon images on comment form?");
+
+define("PRFLAN_167", "Make entering an email addresses optional"); // subject to change. 
+
 ?>
