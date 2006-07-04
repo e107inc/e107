@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-06-22 19:49:58 $
+|     $Revision: 1.46 $
+|     $Date: 2006-07-04 08:13:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -180,7 +180,7 @@ class poll
 				}
 			}
 		}
-		if(isset($_POST['pollvote']) && $POLLMODE == "notvoted")
+		if(isset($_POST['pollvote']) && $POLLMODE == "notvoted" && ($POLLMODE != "disallowed"))
 		{
 				if ($_POST['votea'])
 				{
