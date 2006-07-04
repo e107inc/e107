@@ -181,7 +181,7 @@ hr {
 	color: #444;
 }
 
-.button {	
+.button {
 	border: #000 1px solid;
 	color: #000;
 	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
@@ -299,11 +299,10 @@ p {
 	border: #c1c1c1 1px solid;
 }
 .forumheader{
-	background-color: #f3f3f7;
+	background-color: #ced6db;
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
-	background-image : url('../e107_images/forum/fcap2.png');
 	border: 1px solid #ececf2;
 }
 
@@ -340,7 +339,11 @@ p {
 	color:#000;
 	padding: 4px;
 	border: 1px solid #C3BDBD;
-	background-image : url('../e107_images/forum/finfobar.png');font-style:normal; font-variant:normal; font-weight:normal; font-size:11px; font-family:verdana, tahoma, arial, helvetica, sans-serif
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	font-size:11px;
+	font-family:verdana, tahoma, arial, helvetica, sans-serif
 }
 
 .helpbox {

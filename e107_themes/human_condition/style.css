@@ -21,12 +21,12 @@ a:hover, a:active {
 	color: #093860;
 }
 
-#rap { 
+#rap {
   	margin-left: auto;
   	margin-right: auto;
-  	width: 749px; 
-} 
-	
+  	width: 749px;
+}
+
 #header {
 	background: url(images/header.png) repeat-x;
 	height: 80px;
@@ -34,7 +34,7 @@ a:hover, a:active {
 	margin: 0 auto;
 	text-align: left;
 }
-	
+
 #header a {
 	text-decoration: none;
 	font-size: 18pt;
@@ -43,16 +43,16 @@ a:hover, a:active {
 	left: 10px;
 	font-family: verdana, arial, helvetica, geneva, sans-serif;
 }
-	
+
 #header a:visited {
 	color: #3F729E;
 }
-	
+
 #header a:hover {
 	color: #093860;
 }
 
-.wrapper { 
+.wrapper {
 	width: 100%;
 	margin-left: auto;
   	margin-right: auto;
@@ -60,7 +60,7 @@ a:hover, a:active {
 
 #menu {
 	width: 170px;
-	margin-left: 575px; 
+	margin-left: 575px;
 	text-align: left;
 	margin-top: 7px;
 	margin-bottom: 20px;
@@ -70,11 +70,11 @@ a:hover, a:active {
 	text-decoration: none;
 	font-family: verdana, arial, helvetica, geneva, sans-serif;
 }
-	
+
 #menu a:visited {
 	color: #3F729E;
 }
-	
+
 #menu a:hover {
 	color: #093860;
 }
@@ -102,7 +102,7 @@ ul, ol {
 	font-size: 8pt;
 	margin-top: 15px;
 	padding: 5px;
-	border: 1px solid #D7D7D7; 
+	border: 1px solid #D7D7D7;
 	background: #EAEAEA;
 	width: 150px;
 /*	margin-left: 20px;*/
@@ -130,11 +130,11 @@ ul, ol {
 	font-size: 13px;
 	margin: 5px 0 0 0;
 }
-	
+
 .textstyle4 a:link {
 	color: #000;
 }
-	
+
 .textstyle4 a:visited {
 	color: #000;
 	text-decoration: none;
@@ -150,7 +150,7 @@ ul, ol {
 	padding-left: 5px;
 	text-align: justify;
 	}
-	
+
 .textstyle3 a:hover {
 	background: #EFF8FF;
 }
@@ -278,7 +278,7 @@ blockquote {
 	border-right: #333A4B 1px solid;
 	border-top: #7180A6 1px solid;
 	letter-spacing: 0.1em;
-	cursor:pointer 
+	cursor:pointer
 }
 
 .button a{
@@ -340,7 +340,7 @@ p {
 .fborder {
 	border: 1px solid #c3bdbd;
 	background-color: #fff;
-	
+
 }
 .forumheader{
 	background-color: #EBEFF2;
@@ -348,7 +348,6 @@ p {
 	font-size: 11px;
 	color:#000;
 	padding: 4px;
-	background-image : url('../e107_images/forum/fcap2.png');
 	border: 1px solid #C3BDBD;
 }
 
@@ -402,7 +401,9 @@ p {
 	color:#000;
 	padding: 4px;
 	border: 1px solid #C3BDBD;
-	background-image : url('../e107_images/forum/finfobar.png');font-style:normal; font-variant:normal; font-weight:normal; font-size:11px; font-family:verdana, tahoma, arial, helvetica, sans-serif
+	font-style:normal; font-variant:normal;
+	font-weight:normal; font-size:11px;
+	font-family:verdana, tahoma, arial, helvetica, sans-serif
 }
 
 a.forumlink{
