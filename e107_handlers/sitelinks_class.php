@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2006-07-03 02:16:23 $
+|     $Revision: 1.95 $
+|     $Date: 2006-07-04 23:33:34 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -207,9 +207,9 @@ class sitelinks
 
 			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
-				$href = " href=\"javascript:open_window('".$tp -> replaceConstants($linkInfo['link_url'])."',{$dimen})\"";
+				$href = " href=\"javascript:open_window('".$tp -> replaceConstants($linkInfo['link_url'],TRUE)."',{$dimen})\"";
 			} else {
-				$href = " href='".$tp -> replaceConstants($linkInfo['link_url'])."'";
+				$href = " href='".$tp -> replaceConstants($linkInfo['link_url'],TRUE)."'";
 			}
 
 			// Open link in a new window.  (equivalent of target='_blank' )
@@ -247,7 +247,21 @@ function hilite($link,$enabled=''){
 	global $PLUGINS_DIRECTORY,$tp,$pref;
     if(!$enabled){ return FALSE; }
 
-	$tmp = explode("?",$link);
+    $link = $tp->replaceConstants($link,TRUE);
+  	$tmp = explode("?",$link);
+    $link_qry = $tmp[1];
+    $link_slf = $tmp[0];
+	$link_pge = basename($link_slf);
+	$link_match = strpos(e_SELF,$tmp[0]);
+
+    if(e_MENU == "debug" && getperms('0'))
+	{
+		echo "<br />link= ".$link;
+		echo "<br />link_q= ".$link_qry;
+		echo "<br />url= ".e_PAGE;
+		echo "<br />url_query= ".e_QUERY."<br />";
+
+	}
 
 // ----------- highlight overriding - set the link matching in the page itself.
 
@@ -267,30 +281,33 @@ function hilite($link,$enabled=''){
 
 // --------------- highlighting for plugins. ----------------
 		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE){
-			if(str_replace("?","",$link)){  // plugin links with queries
-                $subq = explode("?",$link);
 
+			if($link_qry)
+			{  // plugin links with queries
+                $subq = explode("?",$link);
 				if(strpos(e_SELF,$subq[0]) && e_QUERY == $subq[1]){
 			   		return TRUE;
 				}else{
-					return FALSE;
+				  	return FALSE;
 				}
-			}else{  // plugin links without queries
+			}
+			else
+			{  // plugin links without queries
 				$link = str_replace("../", "", $link);
 		   		if(stristr(dirname(e_SELF), dirname($link)) !== FALSE){
  			 		return TRUE;
 				}
-
 			}
             return FALSE;
 		}
 
 // --------------- highlight for news items.----------------
-// eg. news.php?list.1 or news.php?cat.2 etc
+// eg. news.php, news.php?list.1 or news.php?cat.2 etc
+	if(substr(basename($link),0,8) == "news.php")
+	{
+		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")!==FALSE) {
 
-		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")) {
-
-			$lnk = explode(".",$tmp[1]); // link queries.
+			$lnk = explode(".",$link_qry); // link queries.
 			$qry = explode(".",e_QUERY); // current page queries.
 
 			if($qry[0] == "item"){
@@ -302,22 +319,30 @@ function hilite($link,$enabled=''){
 			}
 
 		}
+		elseif (!e_QUERY && e_PAGE == "news.php")
+		{
+
+		   	return TRUE;
+		}
+			return FALSE;
+
+	}
 // --------------- highlight for Custom Pages.----------------
 // eg. page.php?1
 
 		if (strpos($link, "page.php?") !== FALSE && strpos(e_SELF,"/page.php")) {
-			$tmp = explode("?",$link);
-			if(e_QUERY == $tmp[1]){
+            list($custom,$page) = explode(".",$link_qry);
+			list($q_custom,$q_page) = explode(".",e_QUERY);
+			if($custom == $q_custom){
             	return TRUE;
 			}
 		}
 
 // --------------- highlight default ----------------
 		if(strpos($link, "?") !== FALSE){
-			$subq = explode("?",$link);
-			$linkq = $subq[1];
+
 			$thelink = str_replace("../", "", $link);
-			if((strpos(e_SELF,$thelink) !== false) && (strpos(e_QUERY,$linkq) !== false)){
+			if((strpos(e_SELF,$thelink) !== false) && (strpos(e_QUERY,$link_qry) !== false)){
 		   		return true;
 			}
 		}
@@ -325,7 +350,15 @@ function hilite($link,$enabled=''){
 		  	return true;
 		}
 
-		return false;
+   		if((!$link_qry && !e_QUERY) && (strpos(e_SELF,$link) !== FALSE)){
+			return TRUE;
+		}
+
+		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) ){
+          	return TRUE;
+		}
+
+	   	return FALSE;
 	}
 }
 ?>
