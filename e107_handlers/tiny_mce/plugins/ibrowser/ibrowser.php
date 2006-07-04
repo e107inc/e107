@@ -9,12 +9,12 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.4 $Date: 2004/10/04
+// $Revision: 1.5 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.4 $
-// $Date: 2006-03-03 05:07:12 $
+// $Revision: 1.5 $
+// $Date: 2006-07-04 05:44:31 $
 // $Author: e107coders $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
@@ -369,7 +369,7 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
       <td><table style='width:440px;border:0px' cellpadding="2" cellspacing="0">
           <tr>
             <td style='width:80px'>{$lang_ibrowser_src}:</td>
-            <td colspan="5"><input name="src" type="text" id="src" value="" style="width: 100%;" readonly="true"></td>
+            <td colspan="5"><input name="src" type="text" id="src" value="" style="width: 100%;" ></td>
           </tr>
           <tr>
             <td>{$lang_ibrowser_alt}:</td>
