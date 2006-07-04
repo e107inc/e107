@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-06-22 19:49:56 $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-04 16:33:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -72,7 +72,7 @@ define("LAN_SIGNUP_20", "Password:");
 define("LAN_SIGNUP_21", "Your account is currently marked as being inactive, to activate your account please go to the following link ...");
 define("LAN_SIGNUP_22", "click here");
 define("LAN_SIGNUP_23", "to login.");
-define("LAN_SIGNUP_24", "Thankyou for registering at");
+define("LAN_SIGNUP_24", "Thank you for registering at");
 define("LAN_SIGNUP_25", "Upload your avatar");
 define("LAN_SIGNUP_26", "Upload your photograph");
 define("LAN_SIGNUP_27", "Show");
