@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2006-07-03 17:24:18 $
+|     $Revision: 1.82 $
+|     $Date: 2006-07-04 20:07:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -130,6 +130,7 @@ if (isset($_POST['updateoptions']))
 	$pref['download_email'] = $_POST['download_email'];
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
 	$pref['download_denied'] = $tp->toDB($_POST['download_denied']);
+	$pref['download_reportbroken'] = $_POST['download_reportbroken'];
 	save_prefs();
 	$message = DOWLAN_65;
 }
@@ -284,6 +285,11 @@ if ($action == "opt") {
 		</tr>
 
 		<tr>
+		<td style='width:70%' class='forumheader3'>".DOWLAN_151."</td>
+		<td class='forumheader3' style='width:30%;text-align:left'>". r_userclass("download_reportbroken", $_POST['download_reportbroken'])."</td>
+		</tr>
+
+		<tr>
 		<td style='width:70%' class='forumheader3'>".DOWLAN_150."</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>". ($pref['download_email'] ? "<input type='checkbox' name='download_email' value='1' checked='checked' />" : "<input type='checkbox' name='download_email' value='1' />")."</td>
 		</tr>
@@ -292,6 +298,8 @@ if ($action == "opt") {
 		<td style='width:70%' class='forumheader3'>".DOWLAN_100."</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>". ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1' />")."</td>
 		</tr>
+
+
 
 		<tr><td style='width:70%' class='forumheader3'>
 		".DOWLAN_101."

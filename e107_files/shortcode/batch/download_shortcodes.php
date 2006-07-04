@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-26 02:48:04 $
+|     $Revision: 1.11 $
+|     $Date: 2006-07-04 20:07:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -289,8 +289,8 @@ return $text;
 SC_END
 
 SC_BEGIN DOWNLOAD_REPORT_LINK
-global $dl;
-return "<a href='".e_SELF."?report.".$dl['download_id']."'>".LAN_dl_45."</a>";
+global $dl,$pref;
+return (check_class($pref['download_reportbroken'])) ? "<a href='".e_SELF."?report.".$dl['download_id']."'>".LAN_dl_45."</a>" : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_CAPTION
