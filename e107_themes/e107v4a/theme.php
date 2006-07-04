@@ -11,23 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-05-05 22:44:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-04 19:09:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(e_THEME."e107v4a/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."e107v4a/languages/English.php");
+include_lan(e_THEME."e107v4a/languages/".e_LANGUAGE.".php");
 
 
 // [theme]
 
 $themename = "e107.v4";
-$themeversion = "2.0";
+$themeversion = "2.01";
 $themeauthor = "Steve Dunstan [jalist]";
 $themeemail = "jalist@e107.org";
 $themewebsite = "http://e107.org";
@@ -229,17 +228,6 @@ function tablestyle($caption, $text){
 ";
 
 }
-
-
-$POLLSTYLE = <<< EOF
-<b>Poll:</b> {QUESTION}
-<br /><br />
-{OPTIONS=<span class='alttd'>OPTION</span><br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
-<div style='text-align:center' class='smalltext'>{VOTE_TOTAL} {COMMENTS}
-<br />
-{OLDPOLLS}
-</div>
-EOF;
 
 
 $COMMENTSTYLE = "
