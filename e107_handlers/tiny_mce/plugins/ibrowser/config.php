@@ -38,6 +38,10 @@ $tinyMCE_imglibs = array(
     'text'    => 'Newspost Images',
   ),
   array(
+    'value'   => $IMAGES_DIRECTORY."custom/",
+    'text'    => 'Custom Images',
+  ),
+  array(
     'value'   => $IMAGES_DIRECTORY."icons/",
     'text'    => 'Icons',
   ),
