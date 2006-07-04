@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2006-07-04 07:35:26 $
+|     $Revision: 1.94 $
+|     $Date: 2006-07-04 18:22:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -398,7 +398,7 @@ if (isset($_POST['register']))
 	}
 
 	// Password length check.
-	if (strlen($_POST['password1']) < $pref['signup_pass_len'])
+	if (trim(strlen($_POST['password1'])) < $pref['signup_pass_len'])
 	{
 		$error_message .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		$error = TRUE;
@@ -413,7 +413,7 @@ if (isset($_POST['register']))
 	}
 
 	// Check for emtpy fields
-	if ($_POST['name'] == "" || $_POST['loginname'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "")
+	if (trim($_POST['name']) == "" || trim($_POST['loginname']) == "" || trim($_POST['password1']) == "" || trim($_POST['password2']) == "")
 	{
 		$error_message .= LAN_185."\\n";
 		$error = TRUE;
@@ -502,7 +502,7 @@ if (isset($_POST['register']))
 		$validator->timeout=3;
 		//	$validator->debug=1;
 		//	$validator->html_debug=1;
-		if($validator->ValidateEmailBox($_POST['email']) != 1)
+		if($validator->ValidateEmailBox(trim($_POST['email'])) != 1)
 		{
 			$error_message .= LAN_106."\\n";
 			$error = TRUE;
