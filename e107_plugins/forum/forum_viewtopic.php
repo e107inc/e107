@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-06-02 00:32:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.66 $
+|     $Date: 2006-07-04 08:42:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -271,7 +271,7 @@ if(is_array($FORUM_CRUMB))
 	$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
 	$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
 	$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
-	
+
 	$search 	= array("{PARENT_TITLE}");
 	$replace 	= array($tp->toHTML($forum_info['parent_name']));
 	$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
@@ -364,7 +364,7 @@ for($i = 0; $i < count($thread_info)-1; $i++)
 	{
 		$post_info['anon'] = FALSE;
 	}
-	$e_hide_query = "SELECT thread_id FROM #forum_t WHERE (`thread_parent` = {$thread_id} OR `thread_id` = {$thread_id}) AND FLOOR(thread_user) = ".USERID;
+	$e_hide_query = "SELECT thread_id FROM #forum_t WHERE (`thread_parent` = {$thread_id} OR `thread_id` = {$thread_id}) AND SUBSTRING_INDEX(thread_user,'.',1) = ".USERID;
 	$e_hide_hidden = FORLAN_HIDDEN;
 	$e_hide_allowed = USER;
 
@@ -548,7 +548,7 @@ function rpg($user_join, $user_forums)
 	{
 		$bar_image = e_PLUGIN."forum/images/".IMODE."/bar.jpg";
 	}
-		
+
 	$rpg_info .= "<div style='padding:2px; white-space:nowrap'>";
 	$rpg_info .= "<b>Level = ".$lvl_level."</b><br />";
 	$rpg_info .= "HP = ".$lvl_hp."<br /><img src='{$bar_image}' alt='' style='border:#345487 1px solid; height:10px; width:".$lvl_hp_percent."%'><br />";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-03-16 21:01:44 $
-|     $Author: whoisrich $
+|     $Revision: 1.23 $
+|     $Date: 2006-07-04 08:42:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -25,7 +25,7 @@ $path = e_PLUGIN."forum/";
 include_once((file_exists($lan_file) ? $lan_file : e_PLUGIN."newforumposts_main/languages/English.php"));
 global $sql, $ns;
 // get template ...
-	
+
 if (file_exists(THEME."newforumpost.php")) {
 	require_once(THEME."newforumpost.php");
 }
@@ -42,7 +42,7 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 		<td style='width:5%; text-align:center' class='forumheader'>".NFPM_LAN_4."</td>
 		<td style='width:25%; text-align:center' class='forumheader'>".NFPM_LAN_5."</td>
 		</tr>\n";
-	 
+
 	$NEWFORUMPOSTSTYLE_MAIN = "
 		<tr>
 		<td style='width:5%; text-align:center' class='forumheader3'>{ICON}</td>
@@ -52,29 +52,29 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 		<td style='width:5%; text-align:center' class='forumheader3'>{REPLIES}</td>
 		<td style='width:25%; text-align:center' class='forumheader3'>{LASTPOST}<br /><span class='smalltext'>{LASTPOSTDATE}</span></td>
 		</tr>\n";
-	 
+
 	$NEWFORUMPOSTSTYLE_FOOTER = "<tr>\n<td colspan='6' style='text-align:center' class='forumheader2'>
 		<span class='smalltext'>".NFPM_LAN_6.": <b>{TOTAL_TOPICS}</b> | ".NFPM_LAN_4.": <b>{TOTAL_REPLIES}</b> | ".NFPM_LAN_3.": <b>{TOTAL_VIEWS}</b></span>\n</td>\n</tr>\n</table>\n</div>";
-	 
+
 }
 
 $results = $sql->db_Select_gen("
 SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
 FROM #forum_t AS t
-LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
-LEFT JOIN #user AS lp ON FLOOR(t.thread_lastuser) = lp.user_id  
+LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+LEFT JOIN #user AS lp ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lp.user_id
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id 
-WHERE f.forum_id = t.thread_forum_id AND t.thread_parent=0 AND f.forum_class IN (".USERCLASS_LIST.") 
+LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
+WHERE f.forum_id = t.thread_forum_id AND t.thread_parent=0 AND f.forum_class IN (".USERCLASS_LIST.")
 AND fp.forum_class IN (".USERCLASS_LIST.")
 ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 
 $forumArray = $sql->db_getList();
-	
+
 if (!is_object($gen)) {
 	$gen = new convert;
 }
-	
+
 $ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
@@ -113,7 +113,7 @@ foreach($forumArray as $forumInfo)
 		$LASTPOST = " - ";
 		$LASTPOSTDATE = "";
 	}
-		
+
 	$x = explode(chr(1), $thread_user);
 	$tmp = explode(".", $x[0], 2);
 	if($user_name)
@@ -134,14 +134,14 @@ foreach($forumArray as $forumInfo)
 
 	$THREAD = "<a href='".$path."forum_viewtopic.php?{$thread_id}.last'>$thread_name</a>";
 	$FORUM = "<a href='".$path."forum_viewforum.php?{$forum_id}'>$forum_name</a>";
-	 
+
 	$VIEWS = $thread_views;
 	$REPLIES = $thread_total_replies;
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_MAIN);
-	 
+
 }
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_FOOTER);
-	
+
 $text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['nfp_layer_height']."px; overflow : auto; '>".$text."</div>" : $text);
 
 if ($results)
