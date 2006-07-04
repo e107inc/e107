@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-01 23:58:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-04 18:22:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -42,13 +42,13 @@ if(isset($_POST['send-contactus'])){
 	$body = $tp->post_toHTML($_POST['body']);
 
 // Check message body.
-	if(strlen($_POST['body']) < 15)
+	if(strlen(trim($_POST['body'])) < 15)
 	{
 		$error .= LANCONTACT_12."\\n";
     }
 
 // Check subject line.
-	if(strlen($_POST['subject']) < 2)
+	if(strlen(trim($_POST['subject'])) < 2)
 	{
 		$error .= LANCONTACT_13."\\n";
     }

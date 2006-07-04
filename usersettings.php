@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2006-06-24 22:03:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.74 $
+|     $Date: 2006-07-04 18:22:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -67,7 +67,7 @@ if(is_readable(THEME."usersettings_template.php"))
 else
 {
 	include_once(e_THEME."templates/usersettings_template.php");
-}	
+}
 include_once(e_FILE."shortcode/batch/usersettings_shortcodes.php");
 
 require_once(e_HANDLER."calendar/calendar_class.php");
@@ -131,9 +131,9 @@ if (isset($_POST['updatesettings']))
 	}
 	else
 	{
-		if($_POST['password1'] != "")
+		if(trim($_POST['password1']) != "")
 		{
-			$pwreset = "user_password = '".md5($_POST['password1'])."', ";
+			$pwreset = "user_password = '".md5(trim($_POST['password1']))."', ";
 		}
 	}
 
@@ -147,16 +147,16 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
-	if (strlen($_POST['password1']) < $pref['signup_pass_len'] && $_POST['password1'] != "") {
+	if (strlen(trim($_POST['password1'])) < $pref['signup_pass_len'] && trim($_POST['password1']) != "") {
 		$error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		$password1 = "";
 		$password2 = "";
 	}
 
-	if (isset($pref['disable_emailcheck']) && $pref['disable_emailcheck']==1) 
+	if (isset($pref['disable_emailcheck']) && $pref['disable_emailcheck']==1)
 	{
 	} else {
-		if (!check_email($_POST['email'])) 
+		if (!check_email($_POST['email']))
 		{
 	  		$error .= LAN_106."\\n";
 		}
@@ -167,13 +167,13 @@ if (isset($_POST['updatesettings']))
 	}
 
 //	$username = strip_tags($_POST['username']);
-	
+
 	$user_sess = "";
 	if ($file_userfile['error'] != 4)
 	{
 		require_once(e_HANDLER."upload_handler.php");
 		require_once(e_HANDLER."resize_handler.php");
-		
+
 		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
 		{
 			if ($uploaded[0]['name'] && $pref['avatar_upload'])
@@ -220,7 +220,7 @@ if (isset($_POST['updatesettings']))
 		{
 
 			$loginname = strip_tags($_POST['loginname']);
-			
+
 			if (!$loginname)
 			{
 				$sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
@@ -234,12 +234,12 @@ if (isset($_POST['updatesettings']))
 				$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
 				$new_username = "user_name = '{$username}', ";
 			}
-	
+
 			$_POST['signature'] = $tp->toDB($_POST['signature']);
 			$_POST['realname'] = $tp->toDB($_POST['realname']);
-	
+
 			$new_customtitle = "";
-	
+
 			if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
 			{
 				$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
@@ -250,7 +250,7 @@ if (isset($_POST['updatesettings']))
 					$extList["user_".$row['user_extended_struct_name']] = $row;
 				}
 			}
-		
+
 			$ue_fields = "";
 			foreach($_POST['ue'] as $key => $val)
 			{
@@ -334,7 +334,7 @@ if (isset($_POST['updatesettings']))
 					$sql->db_Update("user", "user_class='".$nid."' WHERE user_id='".intval($inp)."'");
 				}
 			}
-			
+
 			if($update_xup == TRUE)
 			{
 				require_once(e_HANDLER."login.php");
@@ -389,7 +389,7 @@ $tmp[] = e_UC_PUBLIC;
 if($curVal['user_admin'] == 1)
 {
 	$tmp[] = e_UC_ADMIN;
-}	
+}
 $curVal['userclass_list'] = implode(",", $tmp);
 
 if($_POST)
