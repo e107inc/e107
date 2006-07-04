@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.129 $
-|   $Date: 2006-06-30 02:43:41 $
+|   $Revision: 1.130 $
+|   $Date: 2006-07-04 21:52:08 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -228,7 +228,7 @@ if ($action == "create") {
 			$_POST['news_class'] = $news_class;
 			$_POST['news_summary'] = $news_summary;
 			$_POST['news_sticky'] = $news_sticky;
-			$_POST['news_datestamp'] = $news_datestamp;
+			$_POST['news_datestamp'] = ($_POST['news_datestamp']) ? $_POST['news_datestamp'] : $news_datestamp;
 
 			$_POST['cat_id'] = $news_category;
 			$_POST['news_start'] = $news_start;
@@ -624,7 +624,7 @@ class newspost {
 		<div style='display: none;'>";
 		$update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
 
-		$_update_datestamp = ($_POST['news_datestamp'] > 0) ? date("d/m/Y H:i:s", $_POST['news_datestamp']) : "";
+		$_update_datestamp = ($_POST['news_datestamp'] > 0 && !strpos($_POST['news_datestamp'],"/")) ? date("d/m/Y H:i:s", $_POST['news_datestamp']) : trim($_POST['news_datestamp']);
 		unset($cal_options);
 		unset($cal_attrib);
 		$cal_options['firstDay'] = 0;
