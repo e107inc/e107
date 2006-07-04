@@ -5,7 +5,7 @@ if (!defined('e107_INIT')) { exit; }
 // ##### LOGIN HEADER TABLE -----------------------------------------------------------------------
 if(!$LOGIN_TABLE_HEADER){
 	$LOGIN_TABLE_HEADER .= "
-	<div style='width:100%;text-align:center; margin-left: auto;margin-right: auto'>
+	<div style='width:100%;text-align:center; margin-left: auto;margin-right: auto'><br />
 		<div style='text-align:center;width:70%;margin-left: auto;margin-right: auto'>
 			".(file_exists(THEME."images/login_logo.png") ? "<img src='".THEME."images/login_logo.png' alt='' />\n" : "<img src='".e_IMAGE."logo.png' alt='' />\n" );
 }
