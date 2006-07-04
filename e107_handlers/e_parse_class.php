@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.155 $
-|     $Date: 2006-06-29 22:15:27 $
+|     $Revision: 1.156 $
+|     $Date: 2006-07-04 02:32:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -457,15 +457,16 @@ class e_parse
 		return $text;
 	}
 
-	function replaceConstants($text,$nonrelative = FALSE)
+	function replaceConstants($text,$nonrelative = "")
 	{
-		if($nonrelative !== FALSE){
+		if($nonrelative != ""){
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY;
-        	$replace = array($IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
-        	$search = array("{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}");
-            return str_replace($search,$replace,$text);
+        	$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
+            $replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY.SITEURL.$THEMES_DIRECTORY);
+			$search = array("{"."e_BASE"."}","{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}");
+            $replace = ($nonrelative == "full") ? $replace_absolute : $replace_relative;
+			return str_replace($search,$replace,$text);
 		}
-
 		$text = preg_replace_callback("#\{(e_[A-Z]*)\}#s", array($this, 'doReplace'), $text);
 		$text = str_replace("{THEME}",constant("THEME"),$text);
 		return $text;
@@ -483,7 +484,7 @@ class e_parse
     function createConstants($url,$mode=0){
         global $IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY;
 
-        if($mode == 0) // folder only.
+        if($mode == 0) // folder name only.
 		{
 			$tmp = array(
 				"{"."e_IMAGE"."}"=>$IMAGES_DIRECTORY,
@@ -525,6 +526,14 @@ class e_parse
 		}
 		return $text;
 	}
+
+    function toEmail($text)
+	{
+	  	$text = $this->replaceConstants($text,"full");
+    	$text = $this->toHTML($text,TRUE);
+        return $text;
+	}
+
 }
 
 ?>
