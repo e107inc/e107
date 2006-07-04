@@ -11,18 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-04-11 01:43:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-04 03:08:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 class notify {
-	
+
 	var $notify_prefs;
-	
+
 	function notify() {
 		global $sysprefs, $e_event, $eArrayStorage;
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
@@ -32,14 +32,14 @@ class notify {
 				$e_event -> register($id, 'notify_'.$id);
 			}
 		}
-		
+
 		if(defined("e_LANGUAGE") && is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php')) {
 			include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
 		} else {
 			include_once(e_LANGUAGEDIR.'English/lan_notify.php');
 		}
 	}
-	
+
 	function send($id, $subject, $message) {
 		global $sql;
 		e107_require_once(e_HANDLER.'mail.php');
@@ -127,7 +127,10 @@ function notify_newsdel($data) {
 
 if (isset($nt -> notify_prefs['plugins'])) {
 	foreach ($nt -> notify_prefs['plugins'] as $plugin_id => $plugin_settings) {
-		require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
+		if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
+		{
+			require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
+		}
 	}
 }
 
