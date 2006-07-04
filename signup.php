@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2006-07-04 07:34:33 $
+|     $Revision: 1.93 $
+|     $Date: 2006-07-04 07:35:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 // Resend Activation Email ------------------------------------------->
-if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1)
+if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
