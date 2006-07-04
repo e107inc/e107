@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.15 $
+|     $Date: 2006-07-04 02:32:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -119,16 +119,17 @@ if (isset($_POST['emailsubmit']))
 	}
 	else
 	{
-		$emailurl = SITEURL;
-		$message = "";
-		if($sql->db_Select("news", "*", "news_id='".intval($parms)."'"))
-		{
-			
-			list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
-			$message .= $tp->toHTML($news_title, TRUE)."\n".$tp->toHTML($news_body, TRUE)."\n".$tp->toHTML($news_extended, TRUE)."\n\n".SITEURL.e_BASE."comment.php?comment.news.".$parms;
-			$message = strip_tags($message);
-		}
-		
+
+		$emailurl = $_POST['referer'];
+        $message = "";
+        if($sql->db_Select("news", "*", "news_id='".intval($parms)."'"))
+        {
+            list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
+			$message = $news_title."<br /><br />".$news_body."<br />".$news_extended."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
+            $message = $tp->toEmail($message);
+
+        }
+
 		if($message == "")
 		{
 			header("location:".e_BASE."index.php");
@@ -138,8 +139,33 @@ if (isset($_POST['emailsubmit']))
 
 	if ($error == "")
 	{
+    // Prepare Email Headers.
+
+	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
+	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />\n";
+	$CSS = file_get_contents(THEME."style.css");
+	$HEAD .= "<style>\n".$CSS."\n</style>";
+	$HEAD .= "</head>\n";
+	$HEAD .= "<body>\n";
+	$FOOT = "\n</body>\n</html>\n";
+
+    // Load Email Template
+	if(is_readable(THEME."email_template.php"))
+	{
+    	require_once(THEME."email_template.php");
+	}
+	else
+	{
+    	require_once(e_THEME."templates/email_template.php");
+	}
+    $search = array("{BODY}","{COMMENTS}");
+	$replace = array($message,($tp->toHTML($comments)));
+	$email_body = str_replace($search,$replace,$DEFAULTEMAIL_TEMPLATE);
+	$email_body = $tp->parseTemplate($email_body);
+
 		require_once(e_HANDLER."mail.php");
-		if (sendemail($email_send, LAN_EMAIL_3.SITENAME, $message))
+		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$HEAD.$email_body.$FOOT))
 		{
 			$text = "<div style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
 		}
@@ -191,7 +217,7 @@ $text .= "</textarea>
 	</td>
 	</tr>
 	";
-	
+
 	if($use_imagecode)
 	{
 		$text .= "<tr><td>".LAN_EMAIL_8."</td><td>";
@@ -199,7 +225,7 @@ $text .= "</textarea>
 		$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>
 			<input type='hidden' name='rand_num' value='".$sec_img->random_number."'></td></tr>";
 	}
-	
+
 $text .= "
 	<tr style='vertical-align:top'>
 	<td style='width:25%'></td>

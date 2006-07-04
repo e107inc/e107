@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 19:28:53 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-07-04 02:32:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -25,9 +25,18 @@ $SIGNUPEMAIL_LINKSTYLE = ""; // css to use on links eg. color:red;
 $SIGNUPEMAIL_IMAGES =  e_IMAGE.$pref['sitebutton']; // comma separated paths to image to embed. referenced below with {IMAGE1} (IMAGE2} etc.
 $SIGNUPEMAIL_CC = "";  // comma separated email addresses to put in CC of the signup email.
 $SIGNUPEMAIL_BCC = "";   // comma separated email addresses to put in BCC of the signup email.
-$SIGNUPEMAIL_ATTACHMENTS = ""; // files-path array of attachments. eg. array(e_FILE."myfile.zip",e_FILE."myotherfile.zip"); 
+$SIGNUPEMAIL_ATTACHMENTS = ""; // files-path array of attachments. eg. array(e_FILE."myfile.zip",e_FILE."myotherfile.zip");
 $SIGNUPEMAIL_BACKGROUNDIMAGE = "";// relative path to a background image eg. e_IMAGE."mybackground.jpg";
 
+
+$DEFAULTEMAIL_TEMPLATE = "
+<div style='padding:10px'>
+{COMMENTS}
+<hr />
+{BODY}
+<br /><br />
+{SITENAME=link}
+</div>";
 
 
 $SIGNUPEMAIL_TEMPLATE = "
