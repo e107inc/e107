@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_submitnews.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
+|     $Revision: 1.2 $
+|     $Date: 2006-07-04 16:33:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("PAGE_NAME", "Submit News");
 define("LAN_7", "Login Name: ");
 define("LAN_62", "Subject: ");
 define("LAN_112", "Email Address: ");
-define("LAN_133", "Thankyou");
+define("LAN_133", "Thank you");
 define("LAN_134", "Your item has been submitted and will be reviewed by one of the site administrators in due course.");
 define("LAN_135", "News Item: ");
 define("LAN_136", "Submit News Item");

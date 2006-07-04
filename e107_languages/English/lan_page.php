@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_page.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-13 16:58:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-04 16:33:32 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -14,7 +14,7 @@ define("LAN_PAGE_1", "Page listing is turned off");
 define("LAN_PAGE_2", "There are no pages");
 define("LAN_PAGE_3", "Requested page does not exist");
 define("LAN_PAGE_4", "Rate this page");
-define("LAN_PAGE_5", "Thankyou for rating this page");
+define("LAN_PAGE_5", "Thank you for rating this page");
 define("LAN_PAGE_6", "You do not have permission to view this page");
 define("LAN_PAGE_7", "Incorrect password");
 define("LAN_PAGE_8", "Password Protected Page");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
+|     $Revision: 1.2 $
+|     $Date: 2006-07-04 16:33:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("LAN_96", "Link Description:");
 define("LAN_97", "URL to link button:");
 define("LAN_98", "Submit Link");
 
-define("LAN_99", "Thankyou");
+define("LAN_99", "Thank you");
 define("LAN_100", "Your link has been saved and will be reviewed by a site administrator.");
 define("LAN_101", "Please click here to submit a link");
 
