@@ -12,13 +12,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-06-16 19:08:36 $
+|     $Revision: 1.38 $
+|     $Date: 2006-07-04 17:40:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
 
 if (!e_QUERY || isset($_POST['userlogin'])) {
 	header("location: {$e107->base_path}");
@@ -368,8 +369,7 @@ function check_download_limits() {
 			$row=$sql->db_Fetch();
 			if($row['count'] >= $limits['gen_intdata']) {
 				// Exceeded download count limit
-				@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
-				@include_once(e_LANGUAGEDIR."English/lan_download.php");
+
 				require_once(HEADERF);
 				$ns->tablerender(LAN_dl_61, LAN_dl_62);
 				require(FOOTERF);
@@ -393,8 +393,6 @@ function check_download_limits() {
 			$row=$sql->db_Fetch();
 			if($row['total_bw'] / 1024 > $limit['gen_user_id']) {
 				//Exceed bandwith limit
-				@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
-				@include_once(e_LANGUAGEDIR."English/lan_download.php");
 				require(HEADERF);
 				$ns->tablerender(LAN_dl_61, LAN_dl_62);
 				require(FOOTERF);

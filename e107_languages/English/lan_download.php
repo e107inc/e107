@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-06-30 03:01:43 $
+|     $Revision: 1.13 $
+|     $Date: 2006-07-04 17:40:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ define("LAN_dl_52", "Guest");
 define("LAN_dl_53", "Click to view download");
 define("LAN_dl_54", "An administrator will be made aware of this download, please leave a message if you feel it necessary.");
 define("LAN_dl_55", "<b>Do not</b> use this form to contact the admin for any other reason.");
-// define("LAN_dl_56", "Report broken download");  already defined above. 
+// define("LAN_dl_56", "Report broken download");  already defined above.
 define("LAN_dl_57", "reported by");
 define("LAN_dl_58", "The following download has been reported as broken from site");
 define("LAN_dl_59", "Reported by: ");
@@ -80,7 +80,7 @@ define("LAN_dl_61", "Download Error");
 define("LAN_dl_62", "You have been prevented from downloading this file, you have exceeded your download quota");
 define("LAN_dl_63", "You do not have the correct permissions to download this file.");
 define("LAN_dl_64", "Back");
-define("LAN_dl_65", "Not Found");
+define("LAN_dl_65", "File Not Found");
 
 define("LAN_dl_66", "Select download mirror");
 

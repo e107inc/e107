@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-06-26 02:48:04 $
+|     $Revision: 1.14 $
+|     $Date: 2006-07-04 17:40:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -222,7 +222,7 @@ $DL_VIEW_CAPTION = "{DOWNLOAD_VIEW_CAPTION}";
 			</table>
 		</div>\n";
 
-// Only renders the following rows when data is present. 
+// Only renders the following rows when data is present.
 $sc_style['DOWNLOAD_VIEW_AUTHOR_LAN']['pre'] = "<tr><td style='width:20%' class='forumheader3'>";
 $sc_style['DOWNLOAD_VIEW_AUTHOR_LAN']['post'] = "</td>";
 
