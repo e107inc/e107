@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2006-07-04 08:42:17 $
-|     $Author: e107coders $
+|     $Revision: 1.67 $
+|     $Date: 2006-07-05 07:31:32 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -113,7 +113,7 @@ if(!USER && !$pref['anon_post']){
 }
 else
 {
-	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "100%");
+	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "");
 
 	if($pref['cb_layer'] == 2)
 	{
@@ -129,7 +129,7 @@ else
 
 	if(($pref['anon_post'] == "1" && USER == FALSE))
 	{
-		$texta .= "\n<input class='tbox' type='text' id='nick' name='nick' value='' maxlength='50' style='width: ".$cb_width.";' /><br />";
+		$texta .= "\n<input class='tbox chatbox' type='text' id='nick' name='nick' value='' maxlength='50' ".($cb_width ? "style='width: ".$cb_width.";'" : '')." /><br />";
 	}
 
 	if($pref['cb_layer'] == 2)
@@ -142,7 +142,7 @@ else
 		$oc = "";
 	}
 	$texta .= "
-	<textarea class='tbox chatbox' id='cmessage' name='cmessage' cols='20' rows='5' style='width:".$cb_width."; overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+	<textarea class='tbox chatbox' id='cmessage' name='cmessage' cols='20' rows='5' style='".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
 	<input class='button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
