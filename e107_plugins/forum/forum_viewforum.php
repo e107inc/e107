@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-06-02 00:32:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.56 $
+|     $Date: 2006-07-05 02:09:59 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -188,7 +188,7 @@ else
 	{
 		$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a> -> ";
 	}
-	$BREADCRUMB .= $forum_info['forum_name']."</b>";
+	$BREADCRUMB .= $forum_info['forum_name'];
 }
 
 
