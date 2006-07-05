@@ -2,11 +2,11 @@
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 $forum_post_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-	
+
 /*
 SC_BEGIN LATESTPOSTS
 global $thread_info, $action, $gen, $tp, $forum_shortcodes, $post_info;
-global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST; 
+global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST;
 $txt = $tp->parseTemplate($LATESTPOSTS_START, TRUE, $forum_shortcodes);
 for($i = count($thread_info)-2; $i>0; $i--)
 {
@@ -16,7 +16,7 @@ for($i = count($thread_info)-2; $i>0; $i--)
 $txt .= $tp->parseTemplate($LATESTPOSTS_END, TRUE, $forum_shortcodes);
 return $txt;
 SC_END
-	
+
 SC_BEGIN THREADTOPIC
 global $thread_info, $action, $gen, $tp, $post_info, $forum_shortcodes, $THREADTOPIC_REPLY;
 $post_info = $thread_info['head'];
@@ -52,8 +52,9 @@ SC_END
 
 SC_BEGIN POSTBOX
 global $post, $pref;
-$ret = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
-if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
+$rows = (e_WYSIWYG) ? 15 : 10;
+$ret = "<textarea class='tbox' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
+if(!e_WYSIWYG)
 {
 	$ret .= display_help('helpb', 2);
 }
@@ -123,7 +124,7 @@ if ($pref['email_notify'] && $action == "nt")
 		$chk = ($_POST['email_notify'] ? "checked = 'checked'" : "");
 	}
 	else
-	{ 
+	{
 		if(isset($thread_info))
 		{
 			$chk = ($thread_info['head']['thread_active'] == 99 ? "checked='checked'" : "");

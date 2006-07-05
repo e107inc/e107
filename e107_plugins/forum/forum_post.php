@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-02-20 14:18:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.66 $
+|     $Date: 2006-07-05 01:25:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -186,7 +186,8 @@ if (isset($_POST['fpreview']))
 	}
 	$ns->tablerender(LAN_323, $text);
 	$anonname = $tp->post_toHTML($_POST['anonname'], FALSE);
-	$post = $tp->post_toHTML($_POST['post'], false);
+
+	$post = $_POST['post']; // keep it the same for wysiwyg image posting.
 	$subject = $tp->post_toHTML($_POST['subject'], false);
 
 	if ($action == "edit")
@@ -399,7 +400,7 @@ if ($action == 'edit' || $action == 'quote')
 	$subject = $thread_info['0']['thread_name'];
 	$post = $tp->toForm($thread_info[0]['thread_thread']);
 	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
-	
+
 	if ($action == 'quote') {
 		$post = preg_replace("#\[hide].*?\[/hide]#s", "", $post);
 		$tmp = explode(chr(1), $thread_info[0]['user_name']);
@@ -559,7 +560,7 @@ function redirect($url)
 function process_upload()
 {
 	global $pref, $forum_info, $thread_info;
-	
+
 	if(isset($thread_info['head']['thread_id']))
 	{
 		$tid = $thread_info['head']['thread_id'];
@@ -568,7 +569,7 @@ function process_upload()
 	{
 		$tid = 0;
 	}
-	
+
 	if (isset($_FILES['file_userfile']['error']) && $_FILES['file_userfile']['error'] != 4)
 	{
 		require_once(e_HANDLER."upload_handler.php");
@@ -603,7 +604,7 @@ function process_upload()
 						}
 						else
 						{
-							//resize failed, show original 
+							//resize failed, show original
 							$parms = image_getsize(e_FILE."public/".$upload['name']);
 							$_POST['post'] .= "[br][img{$parms}]".e_FILE."public/".$upload['name']."[/img]";
 						}
@@ -621,7 +622,7 @@ function process_upload()
 					//echo "<pre>"; print_r($upload); echo "</pre>";
 					$_POST['post'] .= "[br][file=".e_FILE."public/".$upload['name']."]".$upload['name']."[/file]";
 				}
-				
+
 			}
 		}
 	}
