@@ -11,9 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpbb2.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-05-25 02:26:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-05 00:03:49 $
+|     $Author: e107coders $
+|
+|     31/1/2006  Changes by Albert Drent
+|                Aducom Software
+|                www.aducom.com
+|
+|	  20/4/2006  Tweaks by steved, based on information from Prodigal and forum thread:
+|					Processing routine made more generic
+|					BBCode processing options - strip, phpbb processing, mapping
+|					Allows setting of default for null field
+|					Forces null integer field to zero (required for mySQL5?)
+|					Sets forum_moderators to empty
+|					User last visit and reg. date added (may not be suitable format)
+|
+|	  17/5/2006  Tweak to bring across admins as well, other than user ID = 1 (which will be E107 main admin)
+|				 Include of mapper function moved to earlier in file to try and avoid error.
+|	  18/5/2006  Table added to convert IMG and URL bbcodes to lower case.
+|	  25/5/2006  Modifications to original script made by McFly (version 1.5) added where appropriate.
+|	  10/6/2006  Bug fix - user_join mapping line specified twice
+|				 BBCodes now decoded in signatures as well as forums
+|	  11/6/2006  zeronull code added to try and sort user_perms
+|
+| Note: Apparently no field in the phpbb database with which to populate 'last post' - but can
+|			be recalculated through E107.
+|
+| Note: Typically phpbb tables are prefixed '_phpbb_'
 +----------------------------------------------------------------------------+
 */
 
@@ -109,11 +134,18 @@ if(!$phpbb_res)
 	goError("Error! Unable to access ".$phpbb2Prefix."users table.");
 }
 
+require_once('import_mapper.php');
 
+
+//------------------------------------------------------
+//      Convert users
+//------------------------------------------------------
 while($user = mysql_fetch_array($phpbb_res))
 {
 	$userArray = convertUsers();
-	if($user['user_level'] != 1 && $user['user_id'] != -1)
+//	if($user['user_level'] != 1 && $user['user_id'] != -1)
+// Convert any user other than ID=1 (which will be E107 main admin)
+	if($user['user_id'] > 1)
 	{
 		$query = createQuery($userArray, $user, $mySQLprefix."user");		
 		echo (mysql_query($query, $e107Connection) ? "Successfully inserted user: ".$user['user_id'].": ".$user['username'] : "Unable to insert user: ".$user['user_id'].": ".$user['username']."<br />".mysql_errno() . ": " . mysql_error())."<br />";
@@ -122,7 +154,9 @@ while($user = mysql_fetch_array($phpbb_res))
 }
 
 
-// ### get phpbb categrories and inset them as forum parents
+//-----------------------------------------------------------
+// ### get phpbb categories and inset them as forum parents
+//-----------------------------------------------------------
 
 mysql_query("TRUNCATE TABLE {$mySQLprefix}forum", $e107Connection);
 
@@ -161,10 +195,15 @@ while($parent = mysql_fetch_array($phpbb_res))
 	$catcount ++;
 }
 
+
+//------------------------------------------------------
+//          Read in forum topics
+//------------------------------------------------------
+
 mysql_query("TRUNCATE TABLE {$mySQLprefix}forum_t", $e107Connection);
 mysql_query("TRUNCATE TABLE {$mySQLprefix}polls", $e107Connection);
 
-$query = "SELECT * FROM {$phpbb2Prefix}topics 
+$query = "SELECT * FROM {$phpbb2Prefix}topics
 LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}topics.topic_title = {$phpbb2Prefix}posts_text.post_subject)
 LEFT JOIN {$phpbb2Prefix}posts ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id)
 ORDER BY topic_time ASC";
@@ -186,7 +225,7 @@ while($topic = mysql_fetch_array($phpbb_res))
 		$query = "SELECT * FROM {$phpbb2Prefix}vote_desc WHERE topic_id=".$topic['topic_id'];
 		$phpbb_res3 = mysql_query($query, $phpbbConnection);
 		$pollQ = mysql_fetch_array($phpbb_res3);
-		
+
 		$query = "SELECT * FROM {$phpbb2Prefix}vote_results WHERE vote_id=".$pollQ['vote_id'];
 		$phpbb_res3 = mysql_query($query, $phpbbConnection);
 		$options = "";
@@ -198,8 +237,8 @@ while($topic = mysql_fetch_array($phpbb_res))
 		}
 
 		extract($pollQ);
-		$vote_text = $tp->toDB($vote_text);
-		$options = $tp->toDB($options);
+		$vote_text = $tp->toDB($vote_text);		// McFly added 25/5/06
+        $options = $tp->toDB($options);			// McFly added 25/5/06
 		$query = "INSERT INTO ".$mySQLprefix."polls VALUES ('0', {$vote_start}, {$vote_start}, 0, 0, '{$vote_text}', '{$options}', '{$votes}', '', 2, 0, 0, 0, 255, 0)";
 		echo (mysql_query($query, $e107Connection) ? "Poll successfully inserted" : "Unable to insert poll ({$query})")."<br />";
 	}
@@ -213,11 +252,11 @@ while($topic = mysql_fetch_array($phpbb_res))
 	if($topic['topic_poster'] == -1)
 	{
 		$poster = ($topic['post_username'] ? $topic['post_username'] : "Anonymous");
-		$topic['topic_poster'] = "0.".$poster;
+		$topic['topic_poster'] = "0.".$poster; 		// McFly moved, edited 25/5/06
 	}
 
-	$topicArray = convertTopics();
-	$query = createQuery($topicArray, $topic, $mySQLprefix."forum_t");	
+	$topicArray = convertTopics();					// McFly edited 25/5/06
+	$query = createQuery($topicArray, $topic, $mySQLprefix."forum_t");
 
 	if(!mysql_query($query, $e107Connection))
 	{
@@ -249,18 +288,21 @@ while($topic = mysql_fetch_array($phpbb_res))
 			if($post['poster_id'] == -1)
 			{
 				$poster = ($post['post_username'] ? $post['post_username'] : "Anonymous");
-				$post['poster_id'] = "0.".$poster;
+				$post['poster_id'] = "0.".$poster;		// McFly moved, edited 25/5/06
 			}
 	
 
 			$postArray = convertForumPosts($parent_id, $poster);
-			$query = createQuery($postArray, $post, $mySQLprefix."forum_t");	
+			$query = createQuery($postArray, $post, $mySQLprefix."forum_t",$mapdata);	
 			echo (mysql_query($query, $e107Connection) ? "Successfully inserted thread: ".$post['post_id'] : "Unable to insert thread: ".$parent['cat_id'].": ".$parent['cat_title']."<br />".mysql_errno() . ": " . mysql_error())."<br />";
 			flush();
 		}
 	}
 }
 
+//------------------------------------------------------
+//          Consider polls here later
+//------------------------------------------------------
 
 echo "</td></tr></table>";
 
@@ -274,38 +316,46 @@ function goError($error)
 	exit;
 }
 
+//-----------------------------------------------------------
+//     Table to convert selected bbcodes to lower case
+//-----------------------------------------------------------
+//$mapdata = array("URL" => "url","IMG" => "img");
+$mapdata = array();
 
 function convertUsers()
 {
 	$usersArray = array(
-		array("phpbb" => "user_id", "e107" => "user_id", "type" => "INT"),
-		array("phpbb" => "username", "e107" => "user_name", "type" => "STRING"),
-		array("phpbb" => "username", "e107" => "user_loginname", "type" => "STRING"),
-		array("phpbb" => "user_password", "e107" => "user_password", "type" => "STRING"),
-		array("phpbb" => "user_email", "e107" => "user_email", "type" => "STRING"),
-		array("phpbb" => "user_sig", "e107" => "user_signature", "type" => "STRING"),
-		array("phpbb" => "user_viewemail", "e107" => "user_hideemail", "type" => "INT"),
-		array("phpbb" => "user_regdate", "e107" => "user_join", "type" => "INT"), 
-		array("phpbb" => "user_posts", "e107" => "user_forums", "type" => "INT"), 
-		array("phpbb" => "user_level", "e107" => "user_admin", "type" => "INT"),
-		array("phpbb" => "xxx", "e107" => "user_prefs", "type" => "INT"),
-		array("phpbb" => "xxx", "e107" => "user_new", "type" => "INT"),
-		array("phpbb" => "xxx", "e107" => "user_realm", "type" => "INT"),
-		array("phpbb" => "xxx", "e107" => "user_class", "type" => "INT"),
-		array("phpbb" => "xxx", "e107" => "user_viewed", "type" => "INT"),
-		array("phpbb" => "xxx", "e107" => "user_perms", "type" => "INT"),
-	);
+		array("srcdata" => "user_id", "e107" => "user_id", "type" => "INT"),
+		array("srcdata" => "username", "e107" => "user_name", "type" => "STRING"),
+		array("srcdata" => "username", "e107" => "user_loginname", "type" => "STRING"),
+		array("srcdata" => "user_password", "e107" => "user_password", "type" => "STRING"),
+		array("srcdata" => "user_email", "e107" => "user_email", "type" => "STRING"),
+		array("srcdata" => "user_sig", "e107" => "user_signature", "type" => "STRING", "sproc" => "usebb,phpbb,bblower"),
+		array("srcdata" => "user_viewemail", "e107" => "user_hideemail", "type" => "INT"),
+		array("srcdata" => "user_regdate", "e107" => "user_join", "type" => "INT"),
+		array("srcdata" => "user_posts", "e107" => "user_forums", "type" => "INT"),
+		array("srcdata" => "user_level", "e107" => "user_admin", "type" => "INT"),
+		array("srcdata" => "user_lastvisit","e107" => "user_lastvisit", "type" => "INT"),
+// Rest of these added by McFly 
+		array("srcdata" => "null", "e107" => "user_prefs", "type" => "INT", "value" => 0),
+        array("srcdata" => "null", "e107" => "user_new", "type" => "INT", "value" => 0),
+        array("srcdata" => "null", "e107" => "user_realm", "type" => "INT", "value" => 0),
+        array("srcdata" => "null", "e107" => "user_class", "type" => "INT", "value" => 0),
+        array("srcdata" => "null", "e107" => "user_viewed", "type" => "INT", "value" => 0),
+// This one changed from McFly's code to try and get null string if non-admin
+        array("srcdata" => "user_level", "e107" => "user_perms", "type" => "INT", "sproc" => "zeronull")	);
 	return $usersArray;
 }
 
 function convertParents($catid)
 {
 	$parentArray = array(
-		array("phpbb" => "cat_id", "e107" => "forum_id", "type" => "INT", "value" => $catid),
-		array("phpbb" => "cat_title", "e107" => "forum_name", "type" => "STRING"),
-		array("phpbb" => "cat_order", "e107" => "forum_order", "type" => "INT"),
-		array("phpbb" => "cat_desc", "e107" => "forum_description", "type" => "STRING"),
-		array("phpbb" => "null", "e107" => "forum_moderators", "type" => "INT", "value" => 254)
+		array("srcdata" => "cat_id", "e107" => "forum_id", "type" => "INT", "value" => $catid),
+		array("srcdata" => "cat_title", "e107" => "forum_name", "type" => "STRING"),
+		array("srcdata" => "cat_order", "e107" => "forum_order", "type" => "INT"),
+// Rest of these added by McFly
+		array("srcdata" => "cat_desc", "e107" => "forum_description", "type" => "STRING"),
+        array("srcdata" => "null", "e107" => "forum_moderators", "type" => "INT", "value" => 254)
 	);
 	return $parentArray;
 }
@@ -313,32 +363,37 @@ function convertParents($catid)
 function convertForums($catid)
 {
 	$forumArray = array(
-		array("phpbb" => "forum_id", "e107" => "forum_id", "type" => "INT"),
-		array("phpbb" => "cat_id", "e107" => "forum_parent", "type" => "STRING", "value" => $catid),
-		array("phpbb" => "forum_name", "e107" => "forum_name", "type" => "STRING"),
-		array("phpbb" => "forum_desc", "e107" => "forum_description", "type" => "STRING"),
-		array("phpbb" => "forum_order", "e107" => "forum_order", "type" => "INT"),
-		array("phpbb" => "forum_topics", "e107" => "forum_threads", "type" => "INT"),
-		array("phpbb" => "forum_posts", "e107" => "forum_replies", "type" => "INT"),
-		array("phpbb" => "null", "e107" => "forum_moderators", "type" => "INT", "value" => 254)
+		array("srcdata" => "forum_id", "e107" => "forum_id", "type" => "INT"),
+		array("srcdata" => "cat_id", "e107" => "forum_parent", "type" => "STRING", "value" => $catid),
+		array("srcdata" => "forum_name", "e107" => "forum_name", "type" => "STRING"),
+		array("srcdata" => "forum_desc", "e107" => "forum_description", "type" => "STRING"),
+		array("srcdata" => "forum_order", "e107" => "forum_order", "type" => "INT"),
+		array("srcdata" => "forum_topics", "e107" => "forum_threads", "type" => "INT"),
+		array("srcdata" => "forum_posts", "e107" => "forum_replies", "type" => "INT"),
+//		array("srcdata" => "null", "e107" => "forum_moderators", "type" => "STRING")
+// Previous line replaced with this on the basis that McFly knows best
+		array("srcdata" => "null", "e107" => "forum_moderators", "type" => "INT", "value" => 254)
 	);
 	return $forumArray;
 }
 
 
+//function convertTopics($poster)
+// Changed by McFly
 function convertTopics()
 {
 	$topicArray = array(
-		array("phpbb" => "forum_id", "e107" => "thread_forum_id", "type" => "INT"),
-		array("phpbb" => "topic_title", "e107" => "thread_name", "type" => "STRING"),
-		array("phpbb" => "post_text", "e107" => "thread_thread", "type" => "STRING"),
-		array("phpbb" => "topic_poster", "e107" => "thread_user", "type" => "STRING"), 
-		array("phpbb" => "null", "e107" => "thread_active", "type" => "INT", "value" => 1), 
-		array("phpbb" => "topic_time", "e107" => "thread_datestamp", "type" => "INT"),
-		array("phpbb" => "topic_views", "e107" => "thread_views", "type" => "INT"),
-		array("phpbb" => "topic_replies", "e107" => "thread_total_replies", "type" => "INT"), 
-		array("phpbb" => "null", "e107" => "thread_parent", "type" => "INT", "value" => 0), 
-//		array("phpbb" => "null", "e107" => "thread_anon", "type" => "INT", "value" => $poster)
+		array("srcdata" => "forum_id", "e107" => "thread_forum_id", "type" => "INT"),
+		array("srcdata" => "topic_title", "e107" => "thread_name", "type" => "STRING"),
+		array("srcdata" => "post_text", "e107" => "thread_thread", "type" => "STRING", "default" => "", "sproc" => "usebb,phpbb,bblower"),
+//		array("srcdata" => "topic_poster", "e107" => "thread_user", "type" => "INT"),
+// Previous line replaced by next - GAT McFly
+		array("srcdata" => "topic_poster", "e107" => "thread_user", "type" => "STRING"),
+		array("srcdata" => "null", "e107" => "thread_active", "type" => "INT", "value" => 1),
+		array("srcdata" => "topic_time", "e107" => "thread_datestamp", "type" => "INT"),
+		array("srcdata" => "topic_views", "e107" => "thread_views", "type" => "INT"),
+		array("srcdata" => "topic_replies", "e107" => "thread_total_replies", "type" => "INT"),
+		array("srcdata" => "null", "e107" => "thread_parent", "type" => "INT", "value" => 0),
 	);
 	return $topicArray;
 }
@@ -349,53 +404,68 @@ function convertTopics()
 function convertForumPosts($parent_id, $poster)
 {
 	$postArray = array(
-		array("phpbb" => "post_text", "e107" => "thread_thread", "type" => "STRING"),
-		array("phpbb" => "forum_id", "e107" => "thread_forum_id", "type" => "INT"),
-		array("phpbb" => "post_time", "e107" => "thread_datestamp", "type" => "INT"),
-		array("phpbb" => "topic_views", "e107" => "thread_views", "type" => "INT"),
-		array("phpbb" => "post_time", "e107" => "thread_lastpost", "type" => "INT"),
-		array("phpbb" => "poster_id", "e107" => "thread_user", "type" => "STRING"), 
-		array("phpbb" => "post_subject", "e107" => "thread_name", "type" => "STRING"), 
-		array("phpbb" => "null", "e107" => "thread_parent", "type" => "INT", "value" => $parent_id), 
-//		array("phpbb" => "null", "e107" => "thread_anon", "type" => "INT", "value" => $poster)
+		array("srcdata" => "post_text", "e107" => "thread_thread", "type" => "STRING", "default" => "", "sproc" => "usebb,phpbb,bblower"),
+		array("srcdata" => "forum_id", "e107" => "thread_forum_id", "type" => "INT"),
+		array("srcdata" => "post_time", "e107" => "thread_datestamp", "type" => "INT"),
+		array("srcdata" => "topic_views", "e107" => "thread_views", "type" => "INT"),
+		array("srcdata" => "post_time", "e107" => "thread_lastpost", "type" => "INT"),
+//		array("srcdata" => "poster_id", "e107" => "thread_user", "type" => "INT"),
+// Previous line replaced by next - GAT McFly
+		array("srcdata" => "poster_id", "e107" => "thread_user", "type" => "STRING"),
+		array("srcdata" => "post_subject", "e107" => "thread_name", "type" => "STRING"),
+		array("srcdata" => "null", "e107" => "thread_parent", "type" => "INT", "value" => $parent_id),
 	);
 	return $postArray;
 }
 
 
+/*
+-- --------------------------------------------------------
+PHPBB uses three tables to record a poll. Looks wildly different to E107!
+-- 
+-- Table structure for table `_phpbb_vote_desc`
+-- 
 
+CREATE TABLE `_phpbb_vote_desc` (
+  `vote_id` mediumint(8) unsigned NOT NULL auto_increment,
+  `topic_id` mediumint(8) unsigned NOT NULL default '0',
+  `vote_text` text NOT NULL,
+  `vote_start` int(11) NOT NULL default '0',
+  `vote_length` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`vote_id`),
+  KEY `topic_id` (`topic_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=36 ;
 
+-- --------------------------------------------------------
 
+-- 
+-- Table structure for table `_phpbb_vote_results`
+-- 
 
-function createQuery($convertArray, $dataArray, $table)
-{
-	global $tp;
+CREATE TABLE `_phpbb_vote_results` (
+  `vote_id` mediumint(8) unsigned NOT NULL default '0',
+  `vote_option_id` tinyint(4) unsigned NOT NULL default '0',
+  `vote_option_text` varchar(255) NOT NULL default '',
+  `vote_result` int(11) NOT NULL default '0',
+  KEY `vote_option_id` (`vote_option_id`),
+  KEY `vote_id` (`vote_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-	$columns = "(";
-	$values = "(";
+-- --------------------------------------------------------
 
+-- 
+-- Table structure for table `_phpbb_vote_voters`
+-- 
 
-	foreach($convertArray as $convert)
-	{
-		if($convert['type'] == "STRING")
-		{
-			$dataArray[$convert['phpbb']] = preg_replace("#\[.*\]#", "", $tp -> toDB($dataArray[$convert['phpbb']]));
-		}
-		if($convert['type'] == "INT")
-		{
-			$dataArray[$convert['phpbb']] = intval($dataArray[$convert['phpbb']]);
-		}
-		$columns .= $convert['e107'].",";
-		$values .= (array_key_exists("value", $convert) ? "'".$convert['value']."'," : "'".$dataArray[$convert['phpbb']]."',");
-	}
-	
+CREATE TABLE `_phpbb_vote_voters` (
+  `vote_id` mediumint(8) unsigned NOT NULL default '0',
+  `vote_user_id` mediumint(8) NOT NULL default '0',
+  `vote_user_ip` char(8) NOT NULL default '',
+  KEY `vote_id` (`vote_id`),
+  KEY `vote_user_id` (`vote_user_id`),
+  KEY `vote_user_ip` (`vote_user_ip`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-	$columns = substr($columns, 0, -1).")";
-	$values = substr($values, 0, -1).")";
-
-
-	return "INSERT INTO $table $columns VALUES $values";
-	
-}	
+*/
 
 ?>
