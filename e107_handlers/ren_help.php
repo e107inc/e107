@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-06-29 22:15:27 $
+|     $Revision: 1.49 $
+|     $Date: 2006-07-05 03:47:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -107,9 +107,11 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	if ($mode == 'news') {
 		$code[14] = array("preimage", "[img][/img]", LANHELP_37);
 		$code[15] = array("prefile", "[file][/file]", LANHELP_39);
+		$code[16] = array("flash", "[flash=width,height][/flash]", LANHELP_47);
 	}
 	if ($mode == 'cpage') {
 		$code[14] = array("preimage", "[img][/img]", LANHELP_45);
+		$code[16] = array("flash", "[flash=width,height][/flash]", LANHELP_47);
 	}
 
 	//check emotes
@@ -119,7 +121,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	}
 
 	if($emotes===TRUE){
-		$code[16] = array("emotes", "", LANHELP_44);
+		$code[20] = array("emotes", "", LANHELP_44);
 	}
 
 	$img[0] = "newpage.png";
@@ -139,12 +141,14 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	if ($mode == 'news') {
 		$img[14] = "preimage.png";
 		$img[15] = "prefile.png";
+		$img[16] = "flash.png";
 	}
 	if ($mode == 'cpage') {
 		$img[14] = "preimage.png";
+		$img[16] = "flash.png";   
 	}
 	if($emotes===TRUE){
-		$img[16] = "emotes.png";
+		$img[20] = "emotes.png";
 	}
 
 	$imgpath = (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
@@ -159,7 +163,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('preimage_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else if($key == 15){
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('prefile_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
-		}else if($key == 16){
+		}else if($key == 20){
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('emoticon_selector_".$rand."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}else{
 		  $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
