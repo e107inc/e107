@@ -11,22 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-05-16 17:29:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2006-07-05 01:25:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 $sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29." ";
 $sc_style['LASTEDIT']['post'] = " ]</span>";
-	
+
 $sc_style['LEVEL']['pre'] = "<div class='spacer'>";
 $sc_style['LEVEL']['post'] = "</div>";
 
-$sc_style['ANON_IP']['pre'] = "<br /><span class='smalltext'>";
-$sc_style['ANON_IP']['post'] = "</span>";
+$sc_style['ANON_IP']['pre'] = "<br /><div class='smalltext'>";
+$sc_style['ANON_IP']['post'] = "</div>";
 
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
@@ -36,9 +36,9 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	{BACKLINK}
 	</td>
 	<td class='fcaption' style='text-align: right'>
-	<span class='smalltext'>&nbsp;
+	<div class='smalltext'>&nbsp;
 	{TRACK}
-	</span>
+	</div>
 	</td>
 	<td class='fcaption' style='text-align: right'>
 	<span class='smalltext'>
@@ -53,7 +53,7 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	</tr>
 	</table>
 	</div>
-	
+
 	<table style='width:95%'>
 	<tr>
 	<td style='width:60%; text-align: left'>
@@ -74,7 +74,7 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	</td>
 	</tr>
 	</table>
-	
+
 	<div class='spacer'>
 	<table style='width:95%' class='fborder'>
 	<tr>
@@ -109,14 +109,14 @@ $FORUMTHREADSTYLE = "<tr>
 	<td class='forumheader3' style='vertical-align:top'>
 	{CUSTOMTITLE}
 	{AVATAR}
-	<span class='smalltext'>
+	<div class='smalltext'>
 	{LEVEL=special}
 	{LEVEL=pic}
 	{LEVEL=userid}
 	{JOINED}
 	{EXTENDED=location.text}: {EXTENDED=location.value}<br />
 	{POSTS}
-	</span>
+	</div>
 	</td>
 	<td class='forumheader3' style='vertical-align:top'>{POLL}
 	{POST}
@@ -155,7 +155,7 @@ $FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>
 
 	<table style='width:95%'>
 	<tr>
-	<td style='width:80%'><span class='mediumtext'>{GOTOPAGES}</span>
+	<td style='width:80%'><span class='mediumtext'>{GOTOPAGES}&nbsp;</span>
 	</td>
 	<td style='width:20%; text-align: right; white-space: nowrap'>
 	{BUTTONS}
@@ -168,7 +168,7 @@ $FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>
 	</tr>
 	</table>
 	</div>
-	
+
 	<div style='text-align:center' class='spacer'>
 	<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a></div><div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>";
 
@@ -195,14 +195,14 @@ $FORUMREPLYSTYLE = "<tr>
 	<td class='forumheader3' style='vertical-align:top'>
 	{CUSTOMTITLE}
 	{AVATAR}
-	<span class='smalltext'>
+	<div class='smalltext'>
 	{LEVEL=special}
 	{LEVEL=pic}
 	{LEVEL=userid}
 	{JOINED}
 	{EXTENDED=location.text}: {EXTENDED=location.value}<br />
 	{POSTS}
-	</span>
+	</div>
 	</td>
 	<td class='forumheader3' style='vertical-align:top'>{POST}
 	{LASTEDIT}
@@ -249,5 +249,5 @@ $FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUB
 $FORUM_CRUMB['subparent']['sep'] = " :: ";
 
 $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' {FORUM_HREF}>{FORUM_TITLE}</a>";
-	
+
 ?>
