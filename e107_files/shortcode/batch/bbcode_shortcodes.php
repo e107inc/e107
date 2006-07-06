@@ -11,31 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-07-06 03:28:50 $
+|     $Revision: 1.2 $
+|     $Date: 2006-07-06 04:44:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
-if(!$BBCODE_TEMPLATE)
-{
-	if(is_readable(THEME."bbcode_template.php"))
-	{
-    	include_once(THEME."bbcode_template.php");
-	}
-	else
-	{
-		include_once(e_THEME."templates/bbcode_template.php");
-	}
-}
+
 include_once(e_HANDLER.'shortcode_handler.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
+global $register_bb;
 $bbcode_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 
 /*
 SC_BEGIN BB
 
-global $pref, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag;
+global $pref, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
 if(e_WYSIWYG){ return; }
 
@@ -72,6 +63,10 @@ $bbcode['fontcol'] = array("[color][/color]", LANHELP_21,"fontcol.png","Color_Se
 $bbcode['preimage'] = array("[img][/img]", LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
 $bbcode['prefile'] = array("[file][/file]", LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
 
+foreach($register_bb as $key=>$val) // allow themes to plug in to it.
+{
+	$bbcode[$key] = $val;
+}
 
 $iconpath =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
 $function = $bbcode[$parm][3];
