@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.130 $
-|   $Date: 2006-07-04 21:52:08 $
+|   $Revision: 1.131 $
+|   $Date: 2006-07-06 03:28:50 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -449,12 +449,7 @@ class newspost {
 		$_POST['data'] = $tp->toForm($_POST['data']);
 		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:100%' $insertjs>".(strstr($tp->post_toForm($_POST['data']), "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['data'])))."</textarea>
 		";
-
-		//Main news body textarea
-		if (!e_WYSIWYG) {
-			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
-			<br />". display_help("helpb", 'news');
-		} // end of htmlarea check.
+        $text .= display_help("helpb", 'news');
 
 		//Extended news form textarea
 		if(e_WYSIWYG){ $ff_expand = "tinyMCE.execCommand('mceResetDesignMode')";  } // Fixes Firefox issue with hidden wysiwyg textarea.
@@ -466,11 +461,8 @@ class newspost {
 		<td style='width:80%' class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);$ff_expand\">".NWSLAN_83."</a>
 		<div style='display:none'>
-		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."</textarea>";
-		if (!e_WYSIWYG) {
-			$text .="<br />". display_help("helpb", 'news');
-		}
-		$text .= "
+		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."
+		</textarea>". display_help("helpc", 'extended')."
 		</div>
 		</td>
 		</tr>
