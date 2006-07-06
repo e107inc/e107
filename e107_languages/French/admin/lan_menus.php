@@ -1,12 +1,12 @@
-<?php
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_menus.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-06 22:08:54 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("MENLAN_1", "Visible par tout le monde");
@@ -29,7 +29,7 @@
   define("MENLAN_18", "Déplacer vers le bas");
   define("MENLAN_19", "Déplacer en zone");
   define("MENLAN_20", "Visibilité");
-  //  define("MENLAN_21", "Visible par les invités uniquement");
+  //  define("MENLAN_21", "Visible par les visiteurs uniquement");
   define("MENLAN_22", "Menus inactifs");
   define("MENLAN_23", "Déplacer tout en bas");
   define("MENLAN_24", "Déplacer tout en haut");

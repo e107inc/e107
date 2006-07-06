@@ -1,12 +1,12 @@
-<?php
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-06 22:08:54 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("USRLAN_1", "Options Sauvegardées.");
@@ -21,16 +21,16 @@
   define("USRLAN_10", "Utilisateur supprimé.");
   define("USRLAN_11", "Suppression annulée.");
   define("USRLAN_12", "Vous ne pouvez pas surpprimer l'administrateur principal du site.");
-  define("USRLAN_13", "Veuillez confirmer la suppression de ce utilisateur");
-  //  define("USRLAN_14", "une fois supprimé, le utilisateur de pourra plus être retrouvé");
+  define("USRLAN_13", "Veuillez confirmer la suppression de cet utilisateur");
+  //  define("USRLAN_14", "une fois supprimé, l'utilisateur de pourra plus être retrouvé");
   //  define("USRLAN_15", "Annuler");
   define("USRLAN_16", "Confirmer la suppression");
-  define("USRLAN_17", "Confirmer la suppression du utilisateur");
+  define("USRLAN_17", "Confirmer la suppression de l'utilisateur");
   //  define("USRLAN_18", "Utilisateur activé.");
   //  define("USRLAN_19", "Rechercher");
   //  define("USRLAN_20", "Classer par");
-  //  define("USRLAN_21", "ID du utilisateur");
-  //  define("USRLAN_22", "Nom du utilisateur");
+  //  define("USRLAN_21", "ID de l'utilisateur");
+  //  define("USRLAN_22", "Nom de l'utilisateur");
   //  define("USRLAN_23", "Visites sur le site");
   //  define("USRLAN_24", "Statut de l'admin");
   //  define("USRLAN_25", "Statut");
@@ -58,7 +58,7 @@
   define("USRLAN_53", "Autoriser les utilisateurs à uploader une photographie ?");
   define("USRLAN_54", "Cliquer ici pour supprimer tous les utilisateurs non-activés");
   define("USRLAN_55", "Épurer");
-  define("USRLAN_56", "Effectuée"); // Au lieu de   define("USRLAN_56", "Supprimé"); Juan
+  define("USRLAN_56", "Effectuée"); // Au lieu de   define("USRLAN_56", "Supprimé"); Juan 
   define("USRLAN_57", "Suppression des utilisateurs non-activés ...");
   define("USRLAN_58", "l'upload de fichier est désactivé dans le fichier php.ini de votre serveur");
   define("USRLAN_59", "Ajout rapide d'un utilisateur");
@@ -79,14 +79,14 @@
   //  define("USRLAN_75", "Options");
   define("USRLAN_76", "Options des utilisateurs");
   define("USRLAN_77", "Utilisateurs existants");
-  define("USRLAN_78", "Nom du utilisateur");
+  define("USRLAN_78", "Nom de l'utilisateur");
   define("USRLAN_79", "Statut");
   define("USRLAN_80", "Infos");
-  //  define("USRLAN_82", "Êtes-vous sûr de vouloir supprimer ce utilisateur ?");
+  //  define("USRLAN_82", "Êtes-vous sûr de vouloir supprimer cet utilisateur ?");
   define("USRLAN_84", "Il y a");
   define("USRLAN_85", "utilisateurs qui n'ont pas activé leur compte - cliquer ci-dessous pour les supprimer.");
   define("USRLAN_86", "Utilisateur vérifié");
-  define("USRLAN_87", "Paramètres du utilisateur mis à jour");
+  define("USRLAN_87", "Paramètres de l'utilisateur mis à jour");
   define("USRLAN_88", "Appartenance(s) au(x) groupe(s) mise(s) à jour");
   define("USRLAN_90", "Rechercher un utilisateur");
   define("USRLAN_91", "Groupe");
@@ -94,7 +94,7 @@
   define("USRLAN_93", "Supprimer les utilisateurs non-vérifiés");
   define("USRLAN_94", "Supprimer l'inscription si elle n'est pas vérifiée avant un temps défini - laisser vide pour ne pas utiliser cette option");
   define("USRLAN_95", "minutes");
-
+  
   define("USRLAN_112", "Renvoyer le courriel");
   define("USRLAN_113", "Détails de l'inscription de");
   define("USRLAN_114", "Cher");
@@ -119,12 +119,12 @@
   define("USRLAN_135", "Aucune adresse IP n'a été trouvé dans les infos de l'utilisateur, IP non bannie");
   define("USRLAN_136", "Des utilisateurs Multiples ont été trouvés avec l'adresse IP {d'IP}, IP non bannie.");
   define("USRLAN_137", "Les utilisateurs de l'adresse IP {IP} sont exclus ou bannis.");
-
+  
   define("LAN_MAINADMIN", "Admin Principal");
   define("LAN_ADMIN", "Admin");
   define("LAN_NOTVERIFIED", "Non vérifié");
   define("LAN_BANNED", "Bannis");
-
+  
   define("DUSRLAN_1", "ID");
   define("DUSRLAN_2", "Nom d'affichage");
   define("DUSRLAN_3", "Nom d'utilisateur");
@@ -162,7 +162,7 @@
   define("DUSRLAN_35", "Image");
   define("DUSRLAN_36", "Mot de passe changé");
   define("DUSRLAN_37", "XUP");
-
+  
   define("USRLAN_138", "Utilisateurs non vérifiés");
   define("USRLAN_139", "Votre compte a été activé.\n\nVous pouvez visiter {SITEURL} et vous connecter au site en utilisant les informations de connexion avez fournies.");
   define("USRLAN_140", "Courriel réenvoyé à");
@@ -171,4 +171,5 @@
 define("LAN_BOUNCED","Rebondi");
 define("USRLAN_143", "Vérifier les rebonds");
 define("USRLAN_144", "Réenvoyer un dourriel de confirmation à Tous");
+define("USRLAN_145", "Utilisateurs rebondis");
   ?>

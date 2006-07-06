@@ -1,12 +1,12 @@
-<?php
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-06 22:08:54 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PRFLAN_1", "Informations sur le site");
@@ -38,14 +38,14 @@
   define("PRFLAN_29", "Activer le système d'inscription ?");
   define("PRFLAN_30", "permettre aux visiteurs de  s'inscrire sur votre site");
   define("PRFLAN_31", "Vérification par courriel");
-  define("PRFLAN_32", "Autoriser les invités à participer ?");
+  define("PRFLAN_32", "Autoriser les visiteurs à participer ?");
   define("PRFLAN_33", "Si désactivé, seuls les utilisateurs inscrits pourront poster des messages, etc ...");
-
+  
   define("PRFLAN_35", "Activer la protection anti-flood ? ");
   define("PRFLAN_36", "Temps d'attente minimum entre 2 envois consécutifs ");
   define("PRFLAN_37", "Bannir automatiquement ?");
   define("PRFLAN_38", "Temps en secondes requis entre 2 envois consécutifs dans la chatbox, le forum ... si un utilisateur envoie trop rapidement, il sera redirigé sur la page d'accueil");
-
+  
   define("PRFLAN_40", "Filtrer les mots grossiers ?");
   define("PRFLAN_41", "si activé, tous les mots grossiers seront remplacés par le mot suivant");
   define("PRFLAN_42", "Mot de censure");
@@ -61,25 +61,25 @@
   define("PRFLAN_53", "Préférences du site");
   define("PRFLAN_55", "Nom du Cookie (si le mode cookies est séléctionné)");
   define("PRFLAN_56", "Fuseau horaire");
-
+  
   define("PRFLAN_58", "Restreindre le site aux utilisateurs uniquement");
   define("PRFLAN_59", "Si activé, toutes les pages de votre site seront restreintes aux utilisateurs uniquement sauf la page d'accueil et d'inscription");
   define("PRFLAN_60", "Activer le mode SSL");
   define("PRFLAN_61", "Activer le mode SSL seulement <strong>si vous savez comment ça fonctionne !</strong>");
-
+  
   define("PRFLAN_76", "Activer la vérification du code-image durant l'inscription");
   define("PRFLAN_77", "Affichage de l'Administration");
   define("PRFLAN_78", "Laisser vide pour désactiver");
-
+  
   define("PRFLAN_80", "Cliquer ici pour voir");
   define("PRFLAN_81", "Activer la vérification du code-image durant l'identification des utilisateurs au site.");
   define("PRFLAN_83", "exemple");
-
+  
   define("PRFLAN_87", "Commentaires");
   define("PRFLAN_89", "Afficher une icône pour les nouveaux commentaires");
   define("PRFLAN_88", "Permettre d'emboîter les commentaires");
   define("PRFLAN_90", "Autoriser les auteurs à éditer leurs commentaires");
-
+  
   define("CUSTSIG_1", "Paramètres sauvegardés !");
   define("CUSTSIG_2", "Nom réel :");
   define("CUSTSIG_3", "Site Internet :");
@@ -88,7 +88,7 @@
   define("CUSTSIG_6", "Signature :");
   define("CUSTSIG_7", "Avatar:");
   define("CUSTSIG_8", "Fuseau horaire :");
-
+  
   define("CUSTSIG_12", "Cacher");
   define("CUSTSIG_13", "Champs");
   define("CUSTSIG_14", "Afficher");
@@ -97,11 +97,11 @@
   define("CUSTSIG_17", "Inscription aux groupes d'utilisateur");
   define("CUSTSIG_18", "Noms d'utilisateurs non acceptables");
   define("CUSTSIG_19", "les noms d'utilisateurs contenant le texte suivant seront rejetés, séparer les termes par des virgules");
-
+  
   define("PRFLAN_89", "En-tête du site :");
-
+  
   //  define("PRFLAN_90", "Cliquer ici pour forcer Internet Explorer à utiliser le mode Standard. Par défaut, c'est le mode quirks.");
-
+  
   define("PRFLAN_91", "Si quelqu'un est en train d'attaquer votre serveur par de multiples requêtes, son IP sera automatiquement bannie !");
   define("PRFLAN_92", "Sécuriser la vérification de l'inscription -- cacher le mot de passe dans le courriel ?");
   define("PRFLAN_93", "Clés de la Fonction strftime sur php.net");
@@ -111,9 +111,9 @@
   define("PRFLAN_97", "Menu unique 'd'information Extensions' :");
   define("PRFLAN_98", "Si désactivé, chaque extension éditera ses propres informations dans un menu individuel. Si activé, toute l'information sera affichée dans un menu.");
   define("PRFLAN_99", "http://www.php.net/manual/fr/function.strftime.php");
-
+  
   //  define("PRFLAN_100", "Prévisualisation des Images de Thème :");
-
+  
   define("PRFLAN_101", "Gestion du texte");
   define("PRFLAN_102", "Remplacer les liens");
   define("PRFLAN_103", "Si activé, les liens postés seront remplacés par le texte écrit dans la boîte à textes ci-dessous, bloquant l'affichage des liens trop longs pouvant détruire la présentation générale de vos pages");
@@ -135,7 +135,7 @@
   define("PRFLAN_121", "Si aucun langage n'est specifié dans le code bbtag, ce langage sera utilisé pour l'accentuation de la syntaxe");
   define("PRFLAN_122", "Mise en fonction de l'éditeur de Texte WYSIWYG ");
   define("PRFLAN_123", "Affichera un rédacteur de 'What-You-See-Is-What-You-Get (ce que vos voyez est ce que vous obtenez) dans les aires de texte si disponible.");
-
+  
   define("PRFLAN_124", "Utiliser le look 'classic' pour préc/suiv");
   define("PRFLAN_125", "Affichera les pages visualisable suivante comme 1 2 3 ... 21 22 23, au lieu du nouveau look avec liste déroulante.");
   define("PRFLAN_126", "Texte à afficher sur la page d'inscription");
@@ -154,7 +154,7 @@
   define("PRFLAN_139", "Afficher un avertissement lorsque le mot de passe de l'admin principal n'a pas été modifié depuis au moins 30 jours");
   define("PRFLAN_140", "Texte à afficher après que le formulaire d'inscription ait été envoyé.");
   define("PRFLAN_141", "Permettre l'enregistrement de Profils Utilisateurs par fichier XML");
-
+  
   define("PRFLAN_142", "Innondation (Flood) Seulement");
   define("PRFLAN_143", "Échec de connexion Seulement");
   define("PRFLAN_144", "Innondation (Flood) &amp; Échec de connexion");
@@ -173,8 +173,8 @@
   define("PRFLAN_157", "Tous les Noms d'Affichage ont été ajusté au Nom d'Utilisateur");
   define("PRFLAN_158", "Longueur maximum du Nom d'Affichage");
   define("PRFLAN_159", "vous regardez cette page depuis");
-  define("PRFLAN_160", "Vérifier les serveurs distants lors de la validation des adresses courriel.");
-  define("PRFLAN_161", "Désactiver tous les commentaires sur le site");
+  define("PRFLAN_160", "Vérifier les serveurs distants lors de la validation des adresses courriel.");   
+  define("PRFLAN_161", "Désactiver tous les commentaires sur le site"); 
   define("PRFLAN_162", "Informations de contact");
   define("PRFLAN_163", "eg. Nom de la compagnie, Addresse, Téléphone etc.");
   define("PRFLAN_164", "Permettre aux utilisateurs de s'envoyer une copie du courriel de contact");

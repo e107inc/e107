@@ -1,12 +1,12 @@
-<?php
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2006-07-06 22:08:54 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("ADLAN_0", "Actualités");
@@ -86,7 +86,7 @@
   define("ADLAN_77", "Vous avez une actualité en attente de validation - veuillez cliquer ici pour la vérifier.");
   define("ADLAN_78", "Champs étendus de profil");
   define("ADLAN_79", "Éditer les Champs étendus de profil");
-
+  
   define("ADLAN_86", "Mot de passe incorrect ");
   define("ADLAN_87", "Ce nom d'Administrateur est introuvable dans la base de données ");
   define("ADLAN_88", "Connexion impossible ");
@@ -112,7 +112,7 @@
   define("ADLAN_108", "Fichiers uploadés non vérifiés ");
   define("ADLAN_109", "Informations");
   define("ADLAN_110", "Utilisateurs inscrits ");
-  define("ADLAN_111", "Utilisateurs non activés ");
+  define("ADLAN_111", "Utilisateurs inactivés ");
   define("ADLAN_112", "Internautes bannis ");
   define("ADLAN_113", "Messages sur le forum ");
   define("ADLAN_114", "Commentaires ");
@@ -123,7 +123,7 @@
   define("ADLAN_119", "Liens proposés non vérifiés ");
   define("ADLAN_120", "Une mise à jour de votre base de données est disponible, veuillez cliquer sur le bouton de mise à jour ...");
   define("ADLAN_121", "Installer");
-
+  
   define("ADLAN_123", "Articles proposés non vérifiés ");
   define("ADLAN_124", "Chroniques proposées non vérifiées ");
   define("ADLAN_125", "Messages rapportés du forum non vérifiés ");
@@ -154,7 +154,7 @@
   define("ADLAN_150", "Recevoir des Alertes par Courriel");
   define("ADLAN_151", "Page principale");
   define("ADLAN_152", "Entrer le Code");
-
+  
   define("ADLAN_CL_1", "Paramètres");
   define("ADLAN_CL_2", "Utilisateurs");
   define("ADLAN_CL_3", "Contenus");
@@ -163,9 +163,9 @@
   define("ADLAN_CL_6", "Outils");
   define("ADLAN_CL_7", "Extensions");
   define("ADLAN_CL_8", "Docs");
-
+  
   define("ADLAN_LAT_1", "À approuver");
-
+  
   define("ADLAN_LAT_2", "Actualités proposés ");
   define("ADLAN_LAT_3", "Articles proposés");
   define("ADLAN_LAT_4", "Chroniques proposés");
@@ -173,11 +173,11 @@
   define("ADLAN_LAT_6", "Forums rapportés");
   define("ADLAN_LAT_7", "Fichiers uploadés");
   define("ADLAN_LAT_8", "Il y a un message administrateur non modéré ");
-
+  
   define("ADLAN_ERR_1", "Avertissement!");
   define("ADLAN_ERR_2", "Il y a des fichiers présents sur votre serveur qui sont connus comme faille exploitable. Ils doivent être enlevés <strong>immédiatement</strong>. Les fichiers sont en relation avec le système WYSIWYG employé dans les anciennes versions 0.6xx de e107 - htmlArea. Veuillez effacer les répertoires suivants et tous leur contenus:");
   define("ADLAN_ERR_3", "Il y a un ou plusieurs fichiers dans votre répertoire upload public qui ne sont pas d'un type que vous avez permis dans la liste filetypes. Ils peuvent avoir été mis là par un esprit malveillant et devraient en ce cas être enlevés <strong>immédiatement</strong>. Vous ne devriez <strong>pas</strong> ouvrir ces fichiers car ils peuvent éxécuter tout code malveillant que le fichier pourrait contenir. ie. ne les ouvrez pas avec votre browser (IE,firefox,etc.).<br /><br />Si vous reconnaissez la légitimité de ces fichiers, il est probable que dû aux récents changements apportés à la liste des types de fichier permis, le type de fichier que vous aviez permis n'est désormais plus dans le liste des types de fichier permis et vous devrez le re-rajouter (voir admin => uploads). Vous ne devriez pas permettre l'upload de .html, .txt, etc car un esprit malveillant pourrait uploader un fichier de ce type contenant du javascript malveillant. Vous ne devriez, évidemment, pas permettre l'upload de fichier.php ou tout autre type de script éxécutable.<br /><br />Liste des types de fichiers ayant le potentiel d'être malveillant pour votre site:");
-
+  
   // Common Terms
   define("LAN_EDIT","Éditer");
   define("LAN_DELETE","Supprimer");
@@ -196,13 +196,13 @@
   define("LAN_CREATED_FAILED","Échec lors de la création");
   define("LAN_DELETED_FAILED","Échec lors de la suppression");
   define("LAN_UPDATED_FAILED","Échec lors de la mise à jour");
-  define("LAN_NO_CHANGE", "Mise à jour non effectuée car aucun changement n'a été effectué");
-  define("LAN_TRY_AGAIN", "Essayez encore une fois");
-
+  define("LAN_NO_CHANGE", "Mise à jour non effectuée car il n'y a aucun changement");
+  define("LAN_TRY_AGAIN", "Essayez une nouvelle fois");
+  
   define("LAN_RESET","Réinitialisation");
   define("LAN_CLEAR","Effacer");
   define("LAN_OK","OK");
-
+  
   define("LAN_PRESET","Présélection");
   define("LAN_PRESET_SAVED","Présélection sauvegardée avec succès");
   define("LAN_PRESET_DELETED","Présélection supprimée avec succès");
@@ -214,12 +214,12 @@
   define("LAN_NO","Non");
   define("LAN_EMPTY","Il n'y pas encore d'entrée dans la base de données pour l'instant");
   define("LAN_EXISTING","Entrées éxistantes");
-
+  
   define("LAN_CANCEL","Annuler");
   define("LAN_CONFDELETE","Confirmer la suppression");
   define("LAN_PLUGIN","Extension");
   define("LAN_ORDER","Ordre");
-
+  
   define("LAN_SELECT","Sélectionner ...");
   define("LAN_ADMIN","Admin");
   define("LAN_DISPLAYOPT", "Éditer les options d'affichage");

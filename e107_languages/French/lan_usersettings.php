@@ -1,12 +1,12 @@
-<?php
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_usersettings.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-24 00:02:56 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-06 22:08:54 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Paramètres de l'utilisateur");
@@ -35,7 +35,7 @@
   define("LAN_152", "Nouveau mot de passe: ");
   define("LAN_153", "Retaper votre nouveau mot de passe: ");
   define("LAN_154", "Enregistrer les paramètres");
-  define("LAN_155", "Mettre à jour les paramètres de ce utilisateur");
+  define("LAN_155", "Mettre à jour les paramètres de cet utilisateur");
   define("LAN_185", "Vous avez laissé le champ 'mot de passe' vide ");
   define("LAN_308", "Nom réel : ");
   define("LAN_401", "Laisser vide pour conserver le mot de passe actuel");
@@ -88,8 +88,8 @@
   define("GIF_RESIZE", "Veuillez redimentionner votre image gif ou la convertir dans un format différent");
   define("RESIZE_NOT_SUPPORTED", "Cette méthode de redimensionnement n'est pas supportée par ce serveur. Veuillez redimensionner vous même votre image ou en choisir une autre. Le fichier a été supprimé.");
   // v0.7
-  define("LAN_USET_5", "Souhaite être utilisateur du groupe");
-  define("LAN_USET_6", "Cocher le(s) groupe(s) dont vous souhaitez être utilisateur. Vous pourrez accéder à des zones particulières du site et/ou recevoir des informations particulières.");
+  define("LAN_USET_5", "Souhaite être membre du groupe");
+  define("LAN_USET_6", "Cocher le(s) groupe(s) dont vous souhaitez être membre. Vous pourrez accéder à des zones particulières du site et/ou recevoir des informations particulières.");
   define("LAN_USET_7", "Divers");
   define("LAN_USET_8", "Signature / Fuseau Horaire");
   define("LAN_USET_9", "Certains champs requis (marqué par une *) manquent à vos paramètres.");

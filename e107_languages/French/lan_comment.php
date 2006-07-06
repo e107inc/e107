@@ -1,12 +1,12 @@
-<?php
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_comment.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-24 00:02:56 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2006-07-06 22:08:54 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Commentaires");
@@ -31,7 +31,7 @@
   define("COMLAN_104", "Chronique");
   define("COMLAN_105", "Contenu");
   define("COMLAN_145", "Enregistré : ");
-  define("COMLAN_194", "Invité");
+  define("COMLAN_194", "Visiteur");
   define("COMLAN_195", "Utilisateur enregistré");
   define("COMLAN_310", "Impossible d'accepter ce commentaire car ce nom d'utilisateur est enregistré - si c'est </br>votre nom d'utilisateur, merci de vous enregistrer pour poster.");
   define("COMLAN_312", "Message dupliqué - impossible d'accepter.");
@@ -65,4 +65,13 @@ define("COMLAN_327", "Évaluation");
 define("COMLAN_328", "Les commentaires sont verrouillés");
 define("COMLAN_329", "Non-autorisé");
 define("COMLAN_330", "IP:");
+
+define("COMLAN_TYPE_1", "actualité");
+define("COMLAN_TYPE_2", "télécharchement");
+define("COMLAN_TYPE_3", "faq");
+define("COMLAN_TYPE_4", "sondage");
+define("COMLAN_TYPE_5", "docs");
+define("COMLAN_TYPE_6", "bugtrack");
+define("COMLAN_TYPE_7", "idées");
+define("COMLAN_TYPE_8", "profil utilisateur");
   ?>

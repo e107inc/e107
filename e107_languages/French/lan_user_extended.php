@@ -1,12 +1,12 @@
-<?php
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user_extended.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-24 00:02:56 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-06 22:08:54 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("UE_LAN_1", "Cadre de texte");
@@ -22,7 +22,7 @@
   define("UE_LAN_11", "Utilise");
   define("UE_LAN_HIDE", "Cacher aux utilisateurs");
   define("UE_LAN_LOCATION", "Résidence");
-  define("UE_LAN_LOCATION_DESC", "Résidence du utilisateur");
+  define("UE_LAN_LOCATION_DESC", "Résidence de l'utilisateur");
   define("UE_LAN_AIM", "AIM");
   define("UE_LAN_AIM_DESC", "Adresse AIM");
   define("UE_LAN_ICQ", "ICQ");
@@ -32,7 +32,7 @@
   define("UE_LAN_MSN", "MSN");
   define("UE_LAN_MSN_DESC", "Adresse MSN");
   define("UE_LAN_HOMEPAGE", "Votre site Web");
-  define("UE_LAN_HOMEPAGE_DESC", "URL du site web du utilisateur");
+  define("UE_LAN_HOMEPAGE_DESC", "URL du site web de l'utilisateur");
   define("UE_LAN_BIRTHDAY", "Anniversaire");
   define("UE_LAN_BIRTHDAY_DESC", "Date de Naissance");
   define("UE_LAN_LANGUAGE", "Langage");
