@@ -11,18 +11,29 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-07-06 03:28:50 $
+|     $Revision: 1.2 $
+|     $Date: 2006-07-06 04:44:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+// How to register your own BBcode button.
+// Uncomment the 2 commented lines below to see it in action. (only applies to the user area)
 
+// $register_bb['blank'] = array("[blank][/blank]","Blank example helper text","template.png");
 
 $BBCODE_TEMPLATE = "
-{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 ";
 
+// $BBCODE_TEMPLATE .= "{BB=blank}";
 
-
+$BBCODE_TEMPLATE_NEWSPOST = "
+	{BB_HELP=$mode}<br />
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=emotes}
+	{BB_IMAGEDIR=".e_IMAGE."newspost_images/}
+	{BB=preimage}{BB=prefile}{BB=flash}
+";
 
 ?>

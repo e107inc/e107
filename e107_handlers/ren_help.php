@@ -11,64 +11,65 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-07-06 03:28:50 $
+|     $Revision: 1.51 $
+|     $Date: 2006-07-06 04:44:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-/*
-	You may also use only the shortcode instead:
 
-	require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
-	$text .= $tp->parseTemplate($BBCODE_TEMPLATE, true, $bbcode_shortcodes);
-
-*/
 
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
     // ren_help() is deprecated - use the shortcode or display_help().
     return display_help("helpb", $mode, $addtextfunc, $helpfunc = "help");
-
 }
 
-// display_help is deprecated - use shortcodes instead.
+/*
+	You may also use only the shortcode instead of display_help():
+    $BBCODE_TEMPLATE = "{BB_HELP=$mode}<br />{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}";
+	require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
+	$text .= $tp->parseTemplate($BBCODE_TEMPLATE, true, $bbcode_shortcodes);
+
+*/
+
 
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
-
-	global $tp, $bbcode_func, $bbcode_help, $bbcode_helpactive, $bbcode_helptag;
+	global $tp, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag;
 
 	$bbcode_func = $addtextfunc;
  	$bbcode_help = $helpfunc;
     $bbcode_helptag = $tagid;
 
-	$BBCODE_TEMPLATE = "
-		{BB=link}{BB=b}{BB=i}{BB=u}
-        {BB=img}{BB=center}{BB=left}
-        {BB=right}{BB=bq}{BB=code}
-        {BB=list}{BB=emotes}";
+    // load the template
+	if(is_readable(THEME."bbcode_template.php"))
+	{
+		include_once(THEME."bbcode_template.php");
+	}
+	else
+	{
+		include_once(e_THEME."templates/bbcode_template.php");
+	}
+
 
 	if($mode != 2)
 	{
     	$bbcode_helpactive = TRUE;
 	}
 
-    if($mode == TRUE)
-	{
-		$BBCODE_TEMPLATE .= "{BB=fontcol}{BB=fontsize}";
-	}
+/*
+    if($mode == TRUE)  // uncommenting this makes template customization less useful.
+    {
+        $BBCODE_TEMPLATE .= "{BB=fontcol}{BB=fontsize}";
+    }
+*/
 
 	if($mode == "news" || $mode == "extended")
 	{
-    	$BBCODE_TEMPLATE = "
-		{BB_HELP=$mode}<br />
-        {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-        {BB=right}{BB=bq}{BB=code}{BB=list}{BB=emotes}
-	    {BB_IMAGEDIR=".e_IMAGE."newspost_images/}
-        {BB=preimage}{BB=prefile}{BB=flash}";
+        $BBCODE_TEMPLATE = $BBCODE_TEMPLATE_NEWSPOST;
 	}
 
  	require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
