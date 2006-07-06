@@ -1,3 +1,3 @@
 <?php
-  define("LAN_GUEST", "Invité"); 
+  define("LAN_GUEST", "Visiteur"); 
   ?>

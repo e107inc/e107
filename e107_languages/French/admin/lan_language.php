@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 03:22:16 $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -25,4 +25,5 @@
   define("LANG_LAN_14", "Langage du site par défaut");
   define("LANG_LAN_15", "Cocher pour copier les données de la langue par défaut. (Utile pour les liens, catégories d'actualité, etc)");
   define("LANG_LAN_16", "Usage de la base de données multi-langages");  //Multi-language Database Usage
+define("LANG_LAN_17", "Langage par défaut - Aucunes tables supplémentaires ne sont requises.");
   ?>

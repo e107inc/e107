@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/menus.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -38,10 +38,10 @@
   Si vous trouvez que les menus ne sont pas mis à jour proprement cliquez sur le bouton rafraîchir.
   <br />
   <form method='post' id='menurefresh' action='".$_SERVER['PHP_SELF']."'>
-  <div><input type='submit' class='button' name='reset' value='Rafraîchir' /></div>
+  <div><center><input type='submit' class='button' name='reset' value='Rafraîchir' /></center></div>
   </form>
   <br />
-  <div class='indent'><span style='color:red'>*</span> les droits de lisibilité des menus ont été modifiés</div>
+  <div class='indent'><span style='color:red'>*</span> la visibilité de ce(s) menu(s) est conditionnelle à certains critères</div>
   ";
   
   $ns -> tablerender("Aide Menus ", $text);

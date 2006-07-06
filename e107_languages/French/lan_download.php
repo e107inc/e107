@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@
   define("LAN_dl_49", "Cliquez ici pour retourner au Descriptif du fichier");
   define("LAN_dl_50", "Signaler le téléchargement défectueux à un administrateur");
   define("LAN_dl_51", "Annonce sur téléchargement : ");
-  define("LAN_dl_52", "Invité");
+  define("LAN_dl_52", "Visiteur");
   define("LAN_dl_53", "Cliquez ici pour voir le téléchargement");
   define("LAN_dl_54", "Un administrateur prendra connaissance de ce problème. Veuillez laisser un message si en voyez la nécessité.");
   define("LAN_dl_55", "<strong>Ne pas</strong> utiliser ce formulaire pour contacter l'administrateur pour toute autre raison.");

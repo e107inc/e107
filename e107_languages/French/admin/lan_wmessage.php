@@ -4,12 +4,12 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_wmessage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-06 21:51:56 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("WMGLAN_1", "Message pour les invités");
+  define("WMGLAN_1", "Message pour les visiteurs");
   define("WMGLAN_2", "Message pour les utilisateurs");
   define("WMGLAN_3", "Message pour les administrateurs");
   define("WMGLAN_4", "Proposer");

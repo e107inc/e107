@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.8 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -621,4 +621,5 @@ define("CONTENT_ADMIN_OPT_LAN_162", "légente items de contenu (seulement utilis
 define("CONTENT_ADMIN_OPT_LAN_163", "afficher les liens de page précédente et suivante");
 define("CONTENT_ADMIN_OPT_LAN_164", "légende pour le lien de la page précédente<br />(utilisez {PAGETITLE} pour ajouter le titre de la page précédente)");
 define("CONTENT_ADMIN_OPT_LAN_165", "légende pour le lien de la page suivante<br />(utilisez {PAGETITLE} pour ajouter le titre de la page précédente)");
+define("CONTENT_ADMIN_OPT_LAN_166", "utiliser 'tout' pour afficher le texte en entier");
   ?>

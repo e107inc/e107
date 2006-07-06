@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/French/French_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-15 01:47:23 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@
   define("CHBLAN_2", "Moderée.");
   define("CHBLAN_3", "Pas de Messages postés pour le moment.");
   define("CHBLAN_4", "Utilisateur");
-  define("CHBLAN_5", "Invité");
+  define("CHBLAN_5", "Visiteur");
   define("CHBLAN_6", "débloquer");
   define("CHBLAN_7", "bloquer");
   define("CHBLAN_8", "Supprimé");

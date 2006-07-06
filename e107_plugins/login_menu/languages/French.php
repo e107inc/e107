@@ -1,11 +1,11 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.8 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@
   define("LOGIN_MENU_L19", "commentaires");
   define("LOGIN_MENU_L20", "message de forum");
   define("LOGIN_MENU_L21", "messages de forum");
-  define("LOGIN_MENU_L22", "nouveau utilisateur");
+  define("LOGIN_MENU_L22", "nouvel utilisateur");
   define("LOGIN_MENU_L23", "nouveaux utilisateurs");
   define("LOGIN_MENU_L24", "Voir la liste des nouveaut&eacute;s");
   define("LOGIN_MENU_L25", "Depuis votre dernière visite, <br />il y a eu :");

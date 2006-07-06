@@ -1,11 +1,11 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@
   define("POLLAN_28", "Anciens sondages");
   define("POLLAN_29", "proposé par");
   define("POLLAN_30", "Proposer");
-  define("POLLAN_31", "votes");
+  define("POLLAN_31", "Votes");
   define("POLLAN_32", "Cliquer ici pour voir les résultats");
   define("POLLAN_33", "Pas de sondages previsualisables en ce moment.");
   define("POLLAN_34", "Titre");

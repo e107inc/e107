@@ -4,9 +4,9 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_frontpage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-06 21:51:56 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("FRTLAN_1", "Les paramètres de la page d'accueil ont été mis à jour.");
@@ -23,7 +23,7 @@
   define("FRTLAN_20", "Catégorie Page Contenus");
   define("FRTLAN_21", "Page Contenus");
   define("FRTLAN_26", "tous les utilisateurs");
-  define("FRTLAN_27", "Invités");
+  define("FRTLAN_27", "Visiteurs");
   define("FRTLAN_28", "Utilisateurs");
   define("FRTLAN_29", "Administrateurs");
   define("FRTLAN_31", "Tous les utilisateurs");

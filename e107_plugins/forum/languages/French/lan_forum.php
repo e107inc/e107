@@ -1,11 +1,11 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@
   define("LAN_407", "Ce forum est restreint aux utilisateurs seulement");
   define("LAN_408", "Ce forum est en lecture seule");
   define("LAN_409", "Ce forum est restreint à un groupe seulement");
-  define("LAN_410", "Bienvenue cher invité");
+  define("LAN_410", "Bienvenue cher visiteur");
   define("LAN_411", "sujet");
   define("LAN_412", "réponse");
   define("LAN_413", "sujets");
@@ -70,9 +70,9 @@
   define("LAN_415", " utilisateur visite ce forum en ce moment");
   define("LAN_416", " utilisateurs visitent ce forum en ce moment");
   define("LAN_417", "utilisateur");
-  define("LAN_418", "invité");
+  define("LAN_418", "visiteur");
   define("LAN_419", "utilisateurs");
-  define("LAN_420", "invités");
+  define("LAN_420", "visiteurs");
   define("LAN_421", "Liste des nouveaux messages");
   define("LAN_422", "Nouveaux messages depuis votre dernière visite");
   define("LAN_423", "Posté par");
@@ -93,7 +93,7 @@
   define("LAN_438", "et s'identifier.");
   define("LAN_439", "ici");
   define("LAN_440", "pour aller à la page d'inscription.");
-  define("LAN_441", "Stats visualisations forum ");
+  define("LAN_441", "Voir les statistiques du forum ");
   define("FORLAN_441", "Pas de règles definies.");
   define("FORLAN_442", "Mes Uploads");
   define("FORLAN_443", "[utilisateur supprimé]");

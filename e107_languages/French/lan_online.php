@@ -4,12 +4,12 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_online.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-15 01:47:23 $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("ONLINE_EL1", "Invité(s): ");
+  define("ONLINE_EL1", "Visiteur(s): ");
   define("ONLINE_EL2", "Utilisateur(s): ");
   define("ONLINE_EL3", "Sur cette page : ");
   define("ONLINE_EL4", "En ligne");
@@ -18,7 +18,7 @@
   define("ONLINE_EL7", "regarde");
   define("ONLINE_EL8", "le plus d'utilisateurs en ligne : ");
   define("ONLINE_EL9", "le");
-  define("ONLINE_EL10", "Nom du utilisateur");
+  define("ONLINE_EL10", "Nom de l'utilisateur");
   define("ONLINE_EL11", "Page visitée");
   define("ONLINE_EL12", "Répond à ");
   define("ONLINE_EL13", "Forum");

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-15 01:47:23 $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@
   define("LAN_308", "Nom réel");
   define("LAN_400", "Ce n'est pas un utilisateur valide.");
   define("LAN_401", "aucune information");
-  define("LAN_402", "Profil du utilisateur");
+  define("LAN_402", "Profil de l'utilisateur");
   define("LAN_403", "Statistiques");
   define("LAN_404", "Dernière visite");
   define("LAN_405", "jours avant");
@@ -44,7 +44,7 @@
   define("LAN_409", "points");
   define("LAN_410", "Divers");
   define("LAN_411", "Cliquer ici pour mettre à jour votre profil");
-  define("LAN_412", "Cliquer ici pour éditer le profil de ce utilisateur");
+  define("LAN_412", "Cliquer ici pour éditer le profil de cet utilisateur");
   define("LAN_413", "Supprimer la photo");
   define("LAN_414", "utilisateur précédent");
   define("LAN_415", "utilisateur suivant");
@@ -55,8 +55,8 @@
   define("LAN_420", "Décr");
   define("LAN_421", "Croi");
   define("LAN_422", "Trier");
-  define("LAN_423", "Cliquer ici pour voir les commentaires de ce utilisateur");
-  define("LAN_424", "Cliquer ici pour voir les messages de ce utilisateur sur le Forum");
+  define("LAN_423", "Cliquer ici pour voir les commentaires de cet utilisateur");
+  define("LAN_424", "Cliquer ici pour voir les messages de cet utilisateur sur le Forum");
   define("LAN_425", "Envoyer un Message privé");
   define("LAN_426", "");
   define("USERLAN_1", "Évaluation des pairs");

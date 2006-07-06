@@ -1,11 +1,11 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -116,7 +116,7 @@ define("CONTENT_NOTIFY_LAN_3", "Contenu proposé");
   define("CONTENT_LAN_29", "inconnue");
   define("CONTENT_LAN_30", "Contenu ");
   define("CONTENT_LAN_31", "Contenus ");
-  define("CONTENT_LAN_32", "Contributions du utilisateur");
+  define("CONTENT_LAN_32", "Contributions de l'utilisateur");
   define("CONTENT_LAN_33", "Aller à la page");
   define("CONTENT_LAN_34", "Contenu");
   define("CONTENT_LAN_35", "Commentaires");
@@ -176,8 +176,9 @@ define("CONTENT_NOTIFY_LAN_3", "Contenu proposé");
   define("CONTENT_LAN_89", "sélectionner une page");
 define("CONTENT_LAN_90", "page précédente");
 define("CONTENT_LAN_91", "page suivante");
-  define("CONTENT_MENU_LAN_0", "contenu contenu  :");
-  define("CONTENT_MENU_LAN_1", "pas de contenu pour le moment");
+define("CONTENT_LAN_92", " - courante");
+  define("CONTENT_MENU_LAN_0", "Menu des contenus :");
+  define("CONTENT_MENU_LAN_1", "pas de contenu pour l'instant");
   define("CONTENT_MENU_LAN_2", "Nouveautés");
   define("CONTENT_MENU_LAN_3", "Catégories");
   define("CONTENT_MENU_LAN_4", "Liens contenu");

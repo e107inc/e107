@@ -1,15 +1,15 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/French.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("LAN_PM", "Messages Privés");
+  define("LAN_PM", "Messagerie Privée");
   define("LAN_PM_1", "Envoyer le Message Privé");
   define("LAN_PM_0", "Cette extension est un système complet de gestion de messagerie privé");
   define("LAN_PM_2", "À");
@@ -25,8 +25,8 @@
   define("LAN_PM_12", "vous n'êtes pas autorisé à utiliser le système de Messagerie Privée");
   define("LAN_PM_13", "Votre boîte d'envoi est en ce moment pleine à {PERCENT}%, vous n'êtes maintenant plus en mesure d'envoyer des messages privés sans en supprimer quelques uns");
   define("LAN_PM_14", "ERREUR: Duplicata possible de message, MP non envoyé");
-  define("LAN_PM_15", "Vous n'êtes pas autorisé à envoyer de messages aux groupes d'utilisateurs");
-  define("LAN_PM_16", "Doit être utilisateur de ce groupe d'utilisateur");
+  define("LAN_PM_15", "Vous n'êtes pas autorisé à envoyer de messages aux groupes");
+  define("LAN_PM_16", "Doit être membre de ce groupe");
   define("LAN_PM_17", "Utilisateur non trouvé");
   define("LAN_PM_18", "Vous n'êtes pas autorisé à envoyer de MP à : ");
   define("LAN_PM_19", "Votre boîte d'envoi est pleine, vous n'êtes pas autorisé à envoyer des messages pour l'instant. Veuillez la vider.");

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:28 $
+|     $Revision: 1.2 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -124,7 +124,7 @@
   define("LCLAN_OPT_86", "Menu de liens");
   define("LCLAN_OPT_87", "Afficher la somme des liens ");
   
-  define("LCLAN_ADMIN_1", "Mettre à jour");
+  define("LCLAN_ADMIN_1", "Mettre à jour");  //deprecated
   define("LCLAN_ADMIN_2", "Lien sauvegardé en base de donnée.");
   define("LCLAN_ADMIN_3", "Lien mis à jour en base de donnée.");
   define("LCLAN_ADMIN_4", "Catégorie de lien sauvegardée");
@@ -134,7 +134,7 @@
   define("LCLAN_ADMIN_8", "L'icône de liaison n'a pas été téléchargée!");
   define("LCLAN_ADMIN_9", "Ordre mis à jour");
   define("LCLAN_ADMIN_10", "Lien");
-  define("LCLAN_ADMIN_11", "supprimé");
+  define("LCLAN_ADMIN_11", "supprimé");  //deprecated
   define("LCLAN_ADMIN_12", "Catégorie de liens");
   define("LCLAN_ADMIN_13", "Lien proposé supprimé");
   define("LCLAN_ADMIN_14", "Liens");
@@ -225,7 +225,7 @@
   define("LCLAN_ITEM_36", "Envoyer");
   define("LCLAN_ITEM_37", "Voir tous les liens");
   define("LCLAN_ITEM_38", "Tous les liens");
-  //  define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_39", "Évaluation");
   define("LCLAN_ADMINMENU_1", "Options Liens");
   define("LCLAN_ADMINMENU_2", "Gestion des Catégories de liens");
   define("LCLAN_ADMINMENU_3", "Créer une catégorie de liens");
@@ -288,7 +288,7 @@
   define("LAN_LINKS_34", "Il n'y a aucun lien pour le moment");
   define("LAN_LINKS_35", "Gestionnaire de liens personnalisés");
   define("LAN_LINKS_36", "Commentaires sur les liens");
-  define("LAN_LINKS_37", "commentaires:");
+  define("LAN_LINKS_37", "Commentaires:");
   define("LAN_LINKS_38", "date");
   define("LAN_LINKS_39", "Liens");
   define("LAN_LINKS_40", "Catégorie");

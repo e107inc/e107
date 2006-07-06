@@ -4,9 +4,9 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_image.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-06 21:51:56 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("IMALAN_1", "Permettre de poster des images");
@@ -38,7 +38,7 @@
   define("IMALAN_28", "supprimée");
   define("IMALAN_29", "pas d'images");
   define("IMALAN_30", "Tous (public)");
-  define("IMALAN_31", "Invités uniquement");
+  define("IMALAN_31", "Visiteurs uniquement");
   define("IMALAN_32", "Utilisateur uniquement");
   define("IMALAN_33", "Admin uniquement");
   define("IMALAN_34", "Activer un cadre");

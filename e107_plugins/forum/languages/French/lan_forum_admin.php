@@ -1,11 +1,11 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -127,7 +127,7 @@
   define("FORLAN_121", "Aucun message rapporté");
   define("FORLAN_122", "Cliquer ici pour envoyer un courriel à un admin lorsque quelqu'un rapporte un message du forum");
   define("FORLAN_123", "Règles du Forum");
-  define("WMGLAN_1", "Règles pour les Invités");
+  define("WMGLAN_1", "Règles pour les Visiteurs");
   define("WMGLAN_2", "Règles pour les Utilisateurs");
   define("WMGLAN_3", "Règles pour les Administrateurs");
   define("WMGLAN_4", "Proposer");

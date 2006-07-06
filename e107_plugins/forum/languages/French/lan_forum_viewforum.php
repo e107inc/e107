@@ -1,11 +1,11 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_viewforum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-06 21:51:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -49,9 +49,9 @@
   define("LAN_405", "utilisateur visite ce forum en ce moment");
   define("LAN_406", "utilisateurs visitent ce forum en ce moment");
   define("LAN_407", "utilisateur");
-  define("LAN_408", "invité");
+  define("LAN_408", "visiteur");
   define("LAN_409", "utilisateurs");
-  define("LAN_410", "invités");
+  define("LAN_410", "visiteurs");
   //v.616
   define("LAN_411", "Sujets d'Importance");
   define("LAN_412", "Sujets communs");
