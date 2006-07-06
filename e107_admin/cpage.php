@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-06-29 22:19:50 $
+|     $Revision: 1.33 $
+|     $Date: 2006-07-06 03:28:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ $e_wysiwyg = "data";
 $page = new page;
 
 require_once("auth.php");
-require_once(e_HANDLER."ren_help.php");
+// require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."userclass_class.php");
 $custpage_lang = ($sql->mySQLlanguage) ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
@@ -196,8 +196,8 @@ class page
 		if($mode)
 		{
 			$text .= "<tr>
-			<td style='width:30%' class='forumheader3'>".CUSLAN_7."</td>
-			<td style='width:70%' class='forumheader3'>";
+			<td style='width:25%' class='forumheader3'>".CUSLAN_7."</td>
+			<td style='width:75%' class='forumheader3'>";
 
 			if($edit)
 			{
@@ -213,30 +213,36 @@ class page
 		}
 
 		$text .= "<tr>
-		<td style='width:30%' class='forumheader3'>".CUSLAN_8."</td>
-		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_title' size='50' value='".$page_title."' maxlength='250' /></td>
+		<td style='width:25%' class='forumheader3'>".CUSLAN_8."</td>
+		<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_title' size='50' value='".$page_title."' maxlength='250' /></td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".CUSLAN_9."</td>
-		<td style='width:70%' class='forumheader3'>";
+		<td style='width:25%' class='forumheader3'>".CUSLAN_9."</td>
+		<td style='width:75%' class='forumheader3'>";
 
-		$insertjs = (!$pref['wysiwyg'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
-		"rows='25' style='width:100%' ";
+		$insertjs = (!e_WYSIWYG)?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' style='width:100%' ";
 		$data = $tp->toForm($data);
 		$text .= "<textarea class='tbox' id='data' name='data' cols='80'  style='width:95%' $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 
-		if (!$pref['wysiwyg']) {
-			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
-			<br />".display_help("helpb","cpage");
-		}
+        $BBCODE_TEMPLATE = "
+        {BB_HELP}<br />
+		{BB=newpage}
+        {BB=links}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+		{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+        {BB_IMAGEDIR=".e_IMAGE."custom/}
+        {BB=preimage}{BB=prefile}{BB=flash}
+        ";
+
+  		require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
+		$text .= "<br />".$tp->parseTemplate($BBCODE_TEMPLATE, true, $bbcode_shortcodes);
 
 		$text .= "</td>
 		</tr>
 
 		<tr>
-			<td style='width:30%' class='forumheader3'>".LAN_UPLOAD_IMAGES."</td>
-			<td style='width:70%;' class='forumheader3'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
+			<td style='width:25%' class='forumheader3'>".LAN_UPLOAD_IMAGES."</td>
+			<td style='width:75%;' class='forumheader3'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
 		</tr>";
 
 		if(!$mode)
@@ -245,42 +251,42 @@ class page
 
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".CUSLAN_10."</td>
-			<td style='width:70%;' class='forumheader3'>
+			<td style='width:25%' class='forumheader3'>".CUSLAN_10."</td>
+			<td style='width:75%;' class='forumheader3'>
 			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
 			<input type='radio' name='page_rating_flag' value='0'".($page_rating_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".CUSLAN_13."</td>
-			<td style='width:70%;' class='forumheader3'>
+			<td style='width:25%' class='forumheader3'>".CUSLAN_13."</td>
+			<td style='width:75%;' class='forumheader3'>
 			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
 			<input type='radio' name='page_comment_flag' value='0'".($page_comment_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".CUSLAN_41."</td>
-			<td style='width:70%;' class='forumheader3'>
+			<td style='width:25%' class='forumheader3'>".CUSLAN_41."</td>
+			<td style='width:75%;' class='forumheader3'>
 			<input type='radio' name='page_display_authordate_flag' value='1'".($page_display_authordate_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
 			<input type='radio' name='page_display_authordate_flag' value='0'".($page_display_authordate_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".CUSLAN_14."<br /><span class='smalltext'>".CUSLAN_15."</span></td>
-			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_password' size='20' value='".$page_password."' maxlength='50' /></td>
+			<td style='width:25%' class='forumheader3'>".CUSLAN_14."<br /><span class='smalltext'>".CUSLAN_15."</span></td>
+			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_password' size='20' value='".$page_password."' maxlength='50' /></td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".CUSLAN_16."<br /><span class='smalltext'>".CUSLAN_17."</span></td>
-			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='50' /></td>
+			<td style='width:25%' class='forumheader3'>".CUSLAN_16."<br /><span class='smalltext'>".CUSLAN_17."</span></td>
+			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='50' /></td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".CUSLAN_18."</td>
-			<td style='width:70%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
+			<td style='width:25%' class='forumheader3'>".CUSLAN_18."</td>
+			<td style='width:75%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
 			</tr>";
 		}
 
