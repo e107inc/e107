@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-06-07 00:26:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.42 $
+|     $Date: 2006-07-07 03:55:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -66,6 +66,7 @@ class e_bbcode
 			unset($this->List[$c]);
 			array_unshift($this->List, "code");
 		}
+	
 	}
 
 	function parseBBCodes($text, $p_ID)
@@ -78,7 +79,7 @@ class e_bbcode
 		$done = false;
 		$single_bb = false;
 		$i=0;
-		
+
 		$tmplist = array();
 		foreach($this->List as $code)
 		{
@@ -117,7 +118,7 @@ class e_bbcode
 				$text = preg_replace_callback($pattern, array($this, 'doCode'), $text);
 				$leftover_code = $_matches[1].$_matches[2];
 				$text = str_replace("[{$leftover_code}", "&#091;{$leftover_code}", $text);
-				
+
 				if ($pos == ($i = strpos($text,"[{$code}")))
     			{
         			$pattern2 = "#\[({$code})(\d*)(.*?)\]#s";

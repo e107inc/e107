@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.54 $
-|   $Date: 2006-07-04 21:19:28 $
+|   $Revision: 1.55 $
+|   $Date: 2006-07-07 03:55:11 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -140,6 +140,17 @@ if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
 }else{
 	define("e_WYSIWYG",FALSE);
 }
+// load plugin header-data. 
+foreach($pref['e_meta_list'] as $val)
+{
+	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	{
+		require_once(e_PLUGIN.$val."/e_meta.php");
+	}
+}
+
+
+
 echo "</head>
 <body>\n";
 

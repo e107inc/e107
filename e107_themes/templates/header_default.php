@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2006-06-07 04:08:33 $
+|     $Revision: 1.84 $
+|     $Date: 2006-07-07 03:55:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -64,8 +64,12 @@ echo ($pref['meta_author'][e_LANGUAGE]) ? "<meta name=\"author\" content=\"".$pr
 echo ($pref['meta_tag'][e_LANGUAGE]) ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 unset($key_merge,$diz_merge);
 
-if(isset($pref['rss_feeds']) && $pref['rss_feeds'] && file_exists(e_PLUGIN."rss_menu/rss_meta.php")){
-	require_once(e_PLUGIN."rss_menu/rss_meta.php");
+foreach($pref['e_meta_list'] as $val)
+{
+	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	{
+		require_once(e_PLUGIN.$val."/e_meta.php");
+	}
 }
 
 if(isset($pref['trackbackEnabled'])){

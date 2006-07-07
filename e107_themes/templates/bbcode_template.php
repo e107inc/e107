@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-07-06 04:44:12 $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-07 03:55:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */

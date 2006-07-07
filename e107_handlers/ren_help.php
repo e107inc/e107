@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-07-06 04:44:12 $
+|     $Revision: 1.52 $
+|     $Date: 2006-07-07 03:55:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
-	global $tp, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag;
+	global $tp, $pref, $eplug_bb, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag;
 
 	$bbcode_func = $addtextfunc;
  	$bbcode_help = $helpfunc;
@@ -67,10 +67,22 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
     }
 */
 
+	foreach($pref['e_bb_list'] as $val)
+	{
+    	if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+		{
+        	require_once(e_PLUGIN.$val."/e_bb.php");
+		}
+	}
+
+
+
 	if($mode == "news" || $mode == "extended")
 	{
         $BBCODE_TEMPLATE = $BBCODE_TEMPLATE_NEWSPOST;
 	}
+
+
 
  	require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
   	return $tp->parseTemplate($BBCODE_TEMPLATE, FALSE, $bbcode_shortcodes);
