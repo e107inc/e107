@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-07 20:18:55 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-07 20:49:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -28,6 +28,22 @@ $BBCODE_TEMPLATE = "
 
 // $BBCODE_TEMPLATE .= "{BB=blank}";
 
+
+// $sc_style['BB_HELP']['pre'] = "<div style='text-align:center'>";
+// $sc_style['BB_HELP']['post'] = "</div>";
+
+
+
+// --------   Admin Templates ----------------------
+
+$BBCODE_TEMPLATE_ADMIN = "
+	{BB_HELP=admin}<br />
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=emotes}
+	{BB_IMAGEDIR=".e_IMAGE."}
+	{BB=preimage}{BB=prefile}{BB=flash}
+";
+
 $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB_HELP=$mode}<br />
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
@@ -36,12 +52,13 @@ $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB=preimage}{BB=prefile}{BB=flash}
 ";
 
-$BBCODE_TEMPLATE_ADMIN = "
-	{BB_HELP=admin}<br />
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=emotes}
-	{BB_IMAGEDIR=".e_IMAGE."}
-	{BB=preimage}{BB=prefile}{BB=flash}
+$BBCODE_TEMPLATE_CPAGE = "
+        {BB_HELP}<br />
+		{BB=newpage}
+        {BB=links}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+		{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+        {BB_IMAGEDIR=".e_IMAGE."custom/}
+        {BB=preimage}{BB=prefile}{BB=flash}
 ";
 
 

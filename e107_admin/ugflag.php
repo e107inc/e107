@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ugflag.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-07-07 20:18:55 $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-07 20:49:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -66,7 +66,7 @@ $text .= "</td>
 
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center' class='forumheader3'>
-	".display_help("","admin")."
+	".display_help("","maintenance")."
 	</td>
 	</tr>
 
