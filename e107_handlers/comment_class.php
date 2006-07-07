@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-06-22 19:13:41 $
-|     $Author: lisa_ $
+|     $Revision: 1.63 $
+|     $Date: 2006-07-07 21:09:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -130,8 +130,8 @@ class comment {
 				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".COMLAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='61' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= $rate."<tr> \n
-			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='tbox' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
-			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".display_help('helpb')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
+			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='tbox' id='comment' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
+			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".display_help('helpb',"comment")."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 
 			if($tablerender)
 			{
@@ -537,7 +537,7 @@ class comment {
 
 		return (!$return) ? "" : $ret;
 	}
-	
+
 	function delete_comments($table, $id)
 	{
 		global $sql, $tp;
@@ -571,7 +571,7 @@ class comment {
 		if($data!==FALSE){
 			return $data;
 		}
-		
+
 		require_once(e_HANDLER."file_class.php");
 		$fl = new e_file;
 
@@ -630,9 +630,9 @@ class comment {
 
 		//get all e_comment data
 		$e_comment = $this->get_e_comment();
-		
+
 		$qry1 = ($qry ? " AND ".$qry : "");
-		
+
 		//get 'amount' of records from comment db
 		/*
 		$query = $pref['nested_comments'] ?
@@ -662,7 +662,7 @@ class comment {
 
 				//date
 				$ret['comment_datestamp'] = $row['comment_datestamp'];
-				
+
 				//author
 				$comment_author_id = substr($row['comment_author'] , 0, strpos($row['comment_author'] , "."));
 				$comment_author_name = substr($row['comment_author'] , (strpos($row['comment_author'] , ".")+1));
@@ -678,7 +678,7 @@ class comment {
 				$ret['comment_subject'] = $tp->toHTML($row['comment_subject'], TRUE);
 
 				// news
-				if($row['comment_type'] == "0"){	
+				if($row['comment_type'] == "0"){
 					if($sql2 -> db_Select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' ")){
 						$row2 = $sql2 -> db_Fetch();
 
@@ -689,10 +689,10 @@ class comment {
 						$ret['comment_category_url']		= e_BASE."news.php";
 					}
 				//	article, review or content page
-				}elseif($row['comment_type'] == "1"){	
+				}elseif($row['comment_type'] == "1"){
 
 				//	downloads
-				}elseif($row['comment_type'] == "2"){	
+				}elseif($row['comment_type'] == "2"){
 					$mp = MPREFIX;
 					$qryd = "SELECT download_name, {$mp}download_category.download_category_class, {$mp}download_category.download_category_id, {$mp}download_category.download_category_name FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_id={$row['comment_item_id']} AND {$mp}download_category.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
 					if($sql2->db_Select_gen($qryd)){
@@ -706,7 +706,7 @@ class comment {
 					}
 				/*
 				//	faq (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "3"){	
+				}elseif($row['comment_type'] == "3"){
 					if($sql2 -> db_Select("faq", "faq_question", "faq_id='".$row['comment_item_id']."' ")){
 						$row2 = $sql2 -> db_Fetch();
 
@@ -716,7 +716,7 @@ class comment {
 					}
 				*/
 				//	poll
-				}elseif($row['comment_type'] == "4"){	
+				}elseif($row['comment_type'] == "4"){
 					if($sql2 -> db_Select("polls", "*", "poll_id='".$row['comment_item_id']."' ")){
 						$row2 = $sql2 -> db_Fetch();
 
@@ -726,12 +726,12 @@ class comment {
 					}
 				/*
 				//	docs (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "5"){	
+				}elseif($row['comment_type'] == "5"){
 					//$str .= $bullet." <b><a href='http://e107.org/docs/main.php?$comment_item_id'>Doc $comment_item_id</a></b><br />";
 					//$str .= ($recent_pref['comments_cat'] ? $style_pre."".LIST_31."<br />" : "").($recent_pref['comments_author'] ? $style_pre."".($comment_author_id == 0 ? $comment_author_name : "<a href='".e_BASE."user.php?id.".$comment_author_name."'>".$comment_author_name."</a>" )."<br />" : "").($recent_pref['comments_date'] ? $style_pre."".$datestamp."<br />" : "");
 
 				//	bugtracker (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "6"){	
+				}elseif($row['comment_type'] == "6"){
 					if($sql2 -> db_Select("bugtrack2_bugs", "bugtrack2_bugs_summary", "bugtrack2_bugs_id='".$row['comment_item_id']."' ")){
 						$row2 = $sql2 -> db_Fetch();
 
@@ -740,7 +740,7 @@ class comment {
 						$ret['comment_url']					= e_PLUGIN."bugtracker2/bugtracker2.php?0.bug.".$row['comment_item_id'];
 					}
 				//	ideas (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "ideas"){	
+				}elseif($row['comment_type'] == "ideas"){
 					if($sql2 -> db_Select("ideas", "ideas_summary", "ideas_id='".$row['comment_item_id']."' ")){
 						$row2 = $sql2 -> db_Fetch();
 
@@ -776,7 +776,7 @@ class comment {
 					//old method
 					}else{
 						if($sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' ")){
-							$row2 = $sql2 -> db_Fetch();								
+							$row2 = $sql2 -> db_Fetch();
 							$ret['comment_type']				= $var['plugin_name'];
 							$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE);
 							$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);

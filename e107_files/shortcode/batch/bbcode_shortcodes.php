@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-07 20:49:41 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-07 21:09:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -361,7 +361,7 @@ SC_END
 
 
 
-SC_BEGIN BB_IMAGEDIR
+SC_BEGIN BB_PREIMAGEDIR
 	if(e_WYSIWYG){	return;	}
 	global $bbcode_imagedir;
 	$bbcode_imagedir = $parm;

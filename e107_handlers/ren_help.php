@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-07-07 20:49:41 $
+|     $Revision: 1.55 $
+|     $Date: 2006-07-07 21:09:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	}
 
 
-	if($mode != 2)
+	if($mode != 2 && $mode != "forum")
 	{
     	$bbcode_helpactive = TRUE;
 	}
