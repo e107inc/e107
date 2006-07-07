@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-07-06 04:44:12 $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-07 03:55:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ $bbcode_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN BB
 
-global $pref, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
+global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
 if(e_WYSIWYG){ return; }
 
@@ -68,18 +68,31 @@ foreach($register_bb as $key=>$val) // allow themes to plug in to it.
 	$bbcode[$key] = $val;
 }
 
-$iconpath =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
+foreach($eplug_bb as $key=>$val)
+{
+	extract($val);
+ //	echo "$name $code $helptext $icon <Br />";
+    $bbcode[$name] = array($code,$helptext,$icon,$function,$function_var);
+	$iconpath[$name] = $icon;
+}
+
+if(!$iconpath[$parm])
+{
+	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
+    $iconpath[$parm] .= $bbcode[$parm][2];
+}
+
 $function = $bbcode[$parm][3];
 $formid = $bbcode[$parm][4];
 
 if($function)  // onclick call a function.
 {
-		$text = "<img class='bbcode' src='".$iconpath.$bbcode[$parm][2]."' alt='' title='".$bbcode[$parm][1]."' onclick=\"expandit('{$formid}')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$bbcode[$parm][1]."'{$bbcode_tag})\"" : "" )." />\n";
+		$text = "<img class='bbcode' src='".$iconpath[$parm]."' alt='' title='".$bbcode[$parm][1]."' onclick=\"expandit('{$formid}')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$bbcode[$parm][1]."'{$bbcode_tag})\"" : "" )." />\n";
 		$text .= $function($formid);
 }
 elseif($bbcode[$parm])  // default - insert text.
 {
-	$text = "\n<img class='bbcode' src='".$iconpath.$bbcode[$parm][2]."' alt='' title='".$bbcode[$parm][1]."' onclick=\"{$bbcode_func}('".$bbcode[$parm][0]."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$bbcode[$parm][1]."'{$bbcode_tag})\"" : "" )." />\n";
+	$text = "\n<img class='bbcode' src='".$iconpath[$parm]."' alt='' title='".$bbcode[$parm][1]."' onclick=\"{$bbcode_func}('".$bbcode[$parm][0]."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$bbcode[$parm][1]."'{$bbcode_tag})\"" : "" )." />\n";
 }
 
 return $text;
