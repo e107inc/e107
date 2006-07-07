@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-06-24 02:25:40 $
-|     $Author: e107coders $
+|     $Revision: 1.58 $
+|     $Date: 2006-07-07 01:34:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -70,7 +70,7 @@ City, State, Country
   'im_width' => '120',
   'im_height' => '100',
   'upload_enabled' => '0',
-  'upload_storagetype' => '2',
+  'upload_storagetype' => '1',
   'upload_maxfilesize' => '',
   'upload_class' => '255',
   'cachestatus' => '',
