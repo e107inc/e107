@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-06-20 20:13:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.44 $
+|     $Date: 2006-07-07 01:23:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,6 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class e107plugin
 {
+    var	$plugin_addons = array("e_rss", "e_notify", "e_linkgen", "e_list", "e_bb", "e_meta", "e_emailprint", "e_frontpage", "e_latest", "e_status", "e_search", "e_sc", "e_module", "e_comment");
 
 	/**
 	 * Returns an array containing details of all plugins in the plugin table - should noramlly use e107plugin::update_plugins_table() first to make sure the table is up to date.
@@ -34,6 +35,9 @@ class e107plugin
 		{
 			$ret = $sql->db_getList();
  		}
+
+
+
 		return ($ret) ? $ret : FALSE;
 	}
 
@@ -59,15 +63,24 @@ class e107plugin
 
 		 	include_once("{$p['path']}{$p['fname']}");
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
+
+			// scan for addons.
+			$eplug_addons = $this->getAddons($plugin_path);
+
+			if($eplug_addons && $sql->db_Select("plugin", "plugin_id", "plugin_path = '$plugin_path'"))
+			{
+				$sql->db_Update("plugin", "plugin_addons = '{$eplug_addons}' WHERE plugin_path = '$plugin_path'");
+			}
+
 			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($eplug_folder, true)."'")) && $eplug_name){
 				if (!$eplug_link_url && !$eplug_link && !$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status){
 					// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
-					$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', 1 ");
+					$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', 1, '$eplug_addons' ");
 				}
 				else
 				{
 					// new plugin, assign entry in plugin table, install is necessary
-					$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', 0 ");
+					$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', 0, '$eplug_addons' ");
 				}
 			}
 		}
@@ -373,7 +386,7 @@ class e107plugin
 
 			if (is_array($eplug_prefs)) {
 				$this->manage_prefs('add', $eplug_prefs);
-				$text .= EPL_ADLAN_20.'<br />';
+				$text .= EPL_ADLAN_8.'<br />';
 			}
 
 			if ($eplug_module === TRUE) {
@@ -417,7 +430,7 @@ class e107plugin
 				} else {
 					$sql->db_Insert("core", "'user_entended', '{$tmp}' ");
 				}
-				$text .= EPL_ADLAN_20."<br />";
+				$text .= EPL_ADLAN_8."<br />";
 			}
 
 			if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '') {
@@ -439,7 +452,9 @@ class e107plugin
 
 			$this -> manage_notify('add', $eplug_folder);
 
-			$sql->db_Update('plugin', "plugin_installflag = 1 WHERE plugin_id = '".intval($id)."'");
+			$eplug_addons = $this->getAddons($eplug_folder);
+
+			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = '".intval($id)."'");
             if($rssmess){ $text .= $rssmess; }
 			$text .= ($eplug_done ? "<br />{$eplug_done}" : "");
 		} else {
@@ -448,6 +463,55 @@ class e107plugin
 		if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".EPL_CONFIGURE."]</a>"; }
 		$ns->tablerender(EPL_ADLAN_33, $text);
 	}
+
+
+
+	function save_addon_prefs(){  // scan the plugin table and create path-array-prefs for each addon.
+		global $sql,$pref;
+        $query = "SELECT * FROM #plugin WHERE plugin_installflag = '1' AND plugin_addons !='' ORDER BY plugin_path ASC";
+
+		if ($sql -> db_Select_gen($query))
+		{
+			while($row = $sql-> db_Fetch())
+			{
+                $tmp = explode(",",$row['plugin_addons']);
+        		foreach($this->plugin_addons as $val)
+				{
+                	if(in_array($val,$tmp))
+					{
+						$path = $row['plugin_path'];
+						$pref[$val."_list"][$path] = $path;
+					}
+				}
+			}
+		}
+
+	  	save_prefs();
+		return $pref;
+
+	}
+
+    // return a list of available plugin addons for the specified plugin. e_xxx etc.
+	function getAddons($plugin_path,$debug=FALSE){
+
+		$p_addons = "";
+		foreach($this->plugin_addons as $e_xxx)
+		{
+			if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
+			{
+				$p_addons[] = $e_xxx;
+			}
+		}
+
+		if($debug)
+		{
+			echo $plugin_path." = ".implode(",",$p_addons)."<br />";
+		}
+
+		return implode(",",$p_addons);
+	}
+
+
 }
 
 ?>

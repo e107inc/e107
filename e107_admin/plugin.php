@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-06-30 04:16:39 $
+|     $Revision: 1.62 $
+|     $Date: 2006-07-07 01:23:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -174,6 +174,8 @@ if ($action == 'uninstall')
 			$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
 		}
 
+
+
 		if (is_array($eplug_array_pref))
 		{
 			foreach($eplug_array_pref as $key => $val)
@@ -241,11 +243,13 @@ if ($action == 'uninstall')
 		}
 		$ns->tablerender(EPL_ADLAN_1.' '.$eplug_name, $text);
 		$text = "";
+		$plugin -> save_addon_prefs();
 	}
 }
 
 if ($action == 'install') {
 	$plugin->install_plugin(intval($id));
+	$plugin ->save_addon_prefs();
 }
 
 if ($action == 'upgrade') {
@@ -345,12 +349,15 @@ if ($action == 'upgrade') {
 	}
 
 	$plugin -> manage_search('upgrade', $eplug_folder);
-
 	$plugin -> manage_notify('upgrade', $eplug_folder);
 
+    $eplug_addons = $plugin -> getAddons($eplug_folder);
+
 	$text .= '<br />'.$eplug_upgrade_done;
-	$sql->db_Update('plugin', "plugin_version ='{$eplug_version}' WHERE plugin_id='$id' ");
+	$sql->db_Update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$id' ");
 	$ns->tablerender(EPL_ADLAN_34, $text);
+
+	$plugin -> save_addon_prefs();
 }
 
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-06-20 20:13:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.48 $
+|     $Date: 2006-07-07 01:23:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -342,7 +342,9 @@ CREATE TABLE plugin (
   plugin_version varchar(10) NOT NULL default '',
   plugin_path varchar(100) NOT NULL default '',
   plugin_installflag tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY  (plugin_id)
+  plugin_addons text NOT NULL,
+  PRIMARY KEY  (plugin_id),
+  UNIQUE KEY plugin_path (plugin_path)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
