@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-03-11 21:08:26 $
-|     $Author: e107coders $
+|     $Revision: 1.38 $
+|     $Date: 2006-07-07 12:31:02 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 
@@ -312,7 +312,7 @@ class e107_user_extended
 				$order = ($choices[3]) ? "ORDER BY ".$tp -> toDB($choices[3], true) : "";
 
 				if($sql->db_Select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
-					$choiceList = $sql->db_getList('ALL',FALSE,300);
+					$choiceList = $sql->db_getList('ALL',FALSE);
 					$ret = "<select {$include} name='{$fname}'  >\n";
 					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 					foreach($choiceList as $cArray)
