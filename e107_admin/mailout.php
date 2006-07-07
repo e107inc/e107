@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-07-02 19:59:00 $
+|     $Revision: 1.55 $
+|     $Date: 2006-07-07 20:18:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -471,20 +471,29 @@ function show_mailform($foo=""){
 	$text .="
 	<tr>
 	<td style='width:100%' class='forumheader3' colspan='2'>
-	<div style='width:100%;text-align:center;vertical-align: middle;' >".display_help("helpb")
-	."<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'>";
-	if($pref['wysiwyg']) {
-		$text .="<input type='button' class='button' name='usrname' value=\"".MAILAN_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
+	<div style='width:100%;text-align:center;vertical-align: middle;' >";
+
+    global $eplug_bb;
+
+    $eplug_bb[] = array(
+			"name"		=> 'shortcode',
+			"onclick"	=> 'expandit',
+			"onclick_var" => "sc_selector",
+			"icon"		=> e_IMAGE."generic/bbcode/shortcode.png",
+			"helptext"	=> MAILAN_11,
+			"function"	=> "sc_Select",
+			"function_var"	=> "sc_selector"
+	);
+
+	$text .= display_help("helpb",'mailout');
+
+	if(e_WYSIWYG) {
+		$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'><input type='button' class='button' name='usrname' value=\"".MAILAN_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
 		<input type='button' class='button' name='usrlink' value=\"".MAILAN_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
-		<input type='button' class='button' name='usrid' value=\"".MAILAN_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
-	} else {
- 		$text .="<input type='button' class='button' name='usrname' value=\"".MAILAN_16."\" onclick=\"addtext('{USERNAME}')\" />
- 		<input type='button' class='button' name='usrlink' value=\"".MAILAN_17."\" onclick=\"addtext('{SIGNUP_LINK}')\" />
- 		<input type='button' class='button' name='usrid' value=\"".MAILAN_18."\" onclick=\"addtext('{USERID}')\" />";
+		<input type='button' class='button' name='usrid' value=\"".MAILAN_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" /></span>";
 	}
 
-
- 	$text .="</span>
+ 	$text .="
 	</div></td>
 	</tr>";
 
@@ -744,7 +753,34 @@ function mailout_adminmenu() {
 }
 
 
+function sc_Select($container='sc_selector') {
+	$text ="
+<!-- Start of Shortcode selector -->
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$container}'>
+	<div style='position:absolute; bottom:30px; right:125px'>
+	<table class='fborder' style='background-color: #fff'>
+	<tr><td class='forumheader3'>
+	<select class='tbox' name='sc_sel' onchange=\"addtext(this.value); expandit('{$container}')\">
+	<option value=''> -- </option>\n";
 
+	$sc = array(
+		"{USERNAME}" => MAILAN_16,
+        "{SIGNUP_LINK}" => MAILAN_17,
+        "{USERID}" => MAILAN_18
+	);
+
+	foreach($sc as $key=>$val){
+		$text .= "<option value='".$key."'>".$val."</option>\n";
+	}
+	$text .="
+	</select></td></tr>	\n </table></div>
+	</div>
+\n<!-- End of SC selector -->
+
+";
+
+	return $text;
+}
 
 
 

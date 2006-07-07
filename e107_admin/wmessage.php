@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-04-29 05:20:57 $
-|     $Author: sweetas $
+|     $Revision: 1.25 $
+|     $Date: 2006-07-07 20:18:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -144,9 +144,8 @@ if ($action == "create" || $action == "edit")
 		<textarea class='tbox' id='wm_text' name='wm_text' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
 		<br />";
 
-	if(!e_WYSIWYG){
-		$text .= "<br />".display_help("helpb", 2);
-	}
+		$text .= display_help("helpb", "admin");
+
 
 	$text .= "
 		</td>
