@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.179 $
-|     $Date: 2006-06-20 20:13:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.180 $
+|     $Date: 2006-07-07 01:23:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -120,20 +120,44 @@ function update_701_to_702($type='') {
 function update_70x_to_706($type='') {
 	global $sql;
 
-	if ($type == "do") {
-		//remove plugin_rss (new rss plugin no longer requires this field)
-		if($sql->db_Field("plugin",5) == "plugin_rss"){
-			mysql_query("ALTER TABLE `".MPREFIX."plugin` DROP `plugin_rss`;");
+	if ($type == "do")
+	{
+		//rename plugin_rss field
+		if($sql->db_Field("plugin",5) == "plugin_rss")
+		{
+			mysql_query("ALTER TABLE `".MPREFIX."plugin` CHANGE `plugin_rss` `plugin_addons` TEXT NOT NULL;");
+            mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);");  // should fix the duplicate entry issue.
 			catch_error();
 		}
+
+		if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one. 
+		{
+        	mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
+            mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);");  // should fix the duplicate entry issue.
+            catch_error();
+		}
+
+		// update new fields
+        require_once(e_HANDLER."plugin_class.php");
+		$ep = new e107plugin;
+		$ep->update_plugins_table();
+
 		return '';
 
-	} else {
+	}
+	else
+	{
 
-		if($sql->db_Field("plugin",5) == "plugin_rss"){
+		if($sql->db_Field("plugin",5) == "plugin_rss")
+		{
 			return update_needed();
 		}
-		
+
+		if(!$sql->db_Field("plugin",5))
+		{
+			return update_needed();
+		}
+
 		// No updates needed
 	 	return TRUE;
 	}
