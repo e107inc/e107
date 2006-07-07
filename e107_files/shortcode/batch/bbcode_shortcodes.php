@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-07 20:18:55 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-07 20:49:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */

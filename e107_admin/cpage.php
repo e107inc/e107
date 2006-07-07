@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-07-07 01:31:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2006-07-07 20:49:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -221,23 +221,12 @@ class page
 		<td style='width:25%' class='forumheader3'>".CUSLAN_9."</td>
 		<td style='width:75%' class='forumheader3'>";
 
+		require_once(e_HANDLER."ren_help.php");
 		$insertjs = (!e_WYSIWYG)?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' style='width:100%' ";
 		$data = $tp->toForm($data);
 		$text .= "<textarea class='tbox' id='data' name='data' cols='80'  style='width:95%' $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 
-        $BBCODE_TEMPLATE = "
-        {BB_HELP}<br />
-		{BB=newpage}
-        {BB=links}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-		{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
-        {BB_IMAGEDIR=".e_IMAGE."custom/}
-        {BB=preimage}{BB=prefile}{BB=flash}
-        ";
-
-  		require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
-		$text .= "<br />".$tp->parseTemplate($BBCODE_TEMPLATE, true, $bbcode_shortcodes);
-
-		$text .= "</td>
+		$text .= "<br />".display_help('',"cpage")."</td>
 		</tr>
 
 		<tr>
