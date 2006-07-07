@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-07-07 03:55:11 $
+|     $Revision: 1.53 $
+|     $Date: 2006-07-07 20:18:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
+    if(e_WYSIWYG){ return; }
 	global $tp, $pref, $eplug_bb, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag;
 
 	$bbcode_func = $addtextfunc;
@@ -47,11 +48,11 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
     // load the template
 	if(is_readable(THEME."bbcode_template.php"))
 	{
-		include_once(THEME."bbcode_template.php");
+		include(THEME."bbcode_template.php");
 	}
 	else
 	{
-		include_once(e_THEME."templates/bbcode_template.php");
+		include(e_THEME."templates/bbcode_template.php");
 	}
 
 
@@ -60,29 +61,24 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
     	$bbcode_helpactive = TRUE;
 	}
 
-/*
-    if($mode == TRUE)  // uncommenting this makes template customization less useful.
-    {
-        $BBCODE_TEMPLATE .= "{BB=fontcol}{BB=fontsize}";
-    }
-*/
-
+    // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
 	foreach($pref['e_bb_list'] as $val)
 	{
     	if(is_readable(e_PLUGIN.$val."/e_bb.php"))
 		{
-        	require_once(e_PLUGIN.$val."/e_bb.php");
+        	require(e_PLUGIN.$val."/e_bb.php");
 		}
 	}
 
+    $temp['news'] 		= $BBCODE_TEMPLATE_NEWSPOST;
+	$temp['extended']	= $BBCODE_TEMPLATE_NEWSPOST;
+	$temp['admin']		= $BBCODE_TEMPLATE_ADMIN;
+	$temp['mailout']	= $BBCODE_TEMPLATE_ADMIN."{BB=shortcode}";
 
-
-	if($mode == "news" || $mode == "extended")
+	if($temp[$mode])
 	{
-        $BBCODE_TEMPLATE = $BBCODE_TEMPLATE_NEWSPOST;
+        $BBCODE_TEMPLATE = $temp[$mode];
 	}
-
-
 
  	require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
   	return $tp->parseTemplate($BBCODE_TEMPLATE, FALSE, $bbcode_shortcodes);

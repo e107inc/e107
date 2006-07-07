@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-07-07 03:55:11 $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-07 20:18:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -42,57 +42,67 @@ if($parm == "emotes" && $pref['comments_emoticons'] && $pref['smiley_activate'] 
 	$bbcode['emotes'] = array('', LANHELP_44, "emotes.png", "Emoticon_Select", "emoticon_selector_".$rand);
 }
 
-// Format: bbcode[UNIQUE_ID] = array(INSERTTEXT,HELPTEXT,ICON,FUNCTION,FUNCTION-PARM);
+// Format: $bbcode['UNIQUE_NAME'] = array(ONCLICK_FUNC, ONCLICK_VAR, HELPTEXT, ICON, INCLUDE_FUNC, INCLUDE_FUNCTION_VAR);
 
-$bbcode['newpage'] = array("[newpage]", LANHELP_34, "newpage.png");
-$bbcode['link'] = array("[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
-$bbcode['b'] = array("[b][/b]", LANHELP_24,"bold.png");
-$bbcode['i'] = array("[i][/i]", LANHELP_25,"italic.png");
-$bbcode['u'] = array("[u][/u]", LANHELP_26,"underline.png");
-$bbcode['center'] = array("[center][/center]", LANHELP_28,"center.png");
-$bbcode['left'] = array("[left][/left]", LANHELP_29,"left.png");
-$bbcode['right'] = array("[right][/right]", LANHELP_30,"right.png");
-$bbcode['bq'] = array("[blockquote][/blockquote]", LANHELP_31,"blockquote.png");
-$bbcode['code'] = array("[code][/code]", LANHELP_32,"code.png");
-$bbcode['list'] = array("[list][/list]", LANHELP_36,"list.png");
-$bbcode['img'] = array("[img][/img]", LANHELP_27,"image.png");
-$bbcode['flash'] = array("[flash=width,height][/flash]", LANHELP_47,"flash.png");
+$bbcode['newpage'] = array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
+$bbcode['link'] = array($bbcode_func,"[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
+$bbcode['b'] = array($bbcode_func,"[b][/b]", LANHELP_24,"bold.png");
+$bbcode['i'] = array($bbcode_func,"[i][/i]", LANHELP_25,"italic.png");
+$bbcode['u'] = array($bbcode_func,"[u][/u]", LANHELP_26,"underline.png");
+$bbcode['center'] = array($bbcode_func,"[center][/center]", LANHELP_28,"center.png");
+$bbcode['left'] = array($bbcode_func,"[left][/left]", LANHELP_29,"left.png");
+$bbcode['right'] = array($bbcode_func,"[right][/right]", LANHELP_30,"right.png");
+$bbcode['bq'] = array($bbcode_func,"[blockquote][/blockquote]", LANHELP_31,"blockquote.png");
+$bbcode['code'] = array($bbcode_func,"[code][/code]", LANHELP_32,"code.png");
+$bbcode['list'] = array($bbcode_func,"[list][/list]", LANHELP_36,"list.png");
+$bbcode['img'] = array($bbcode_func,"[img][/img]", LANHELP_27,"image.png");
+$bbcode['flash'] = array($bbcode_func,"[flash=width,height][/flash]", LANHELP_47,"flash.png");
 
-$bbcode['fontsize'] = array("[size][/size]", LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
-$bbcode['fontcol'] = array("[color][/color]", LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
-$bbcode['preimage'] = array("[img][/img]", LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
-$bbcode['prefile'] = array("[file][/file]", LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
+$bbcode['fontsize'] = array("expandit","size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
+$bbcode['fontcol'] = array("expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
+$bbcode['preimage'] = array("expandit","preimage_selector_".$rand, LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
+$bbcode['prefile'] = array("expandit","prefile_selector_".$rand, LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
+
+if(!isset($iconpath[$parm]))
+{
+	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
+    $iconpath[$parm] .= $bbcode[$parm][3];
+}
 
 foreach($register_bb as $key=>$val) // allow themes to plug in to it.
 {
 	$bbcode[$key] = $val;
 }
 
+
 foreach($eplug_bb as $key=>$val)
 {
 	extract($val);
- //	echo "$name $code $helptext $icon <Br />";
-    $bbcode[$name] = array($code,$helptext,$icon,$function,$function_var);
+   //	echo "$onclick $onclick_var $helptext $icon <Br />";
+    $bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
 	$iconpath[$name] = $icon;
+
 }
 
-if(!$iconpath[$parm])
-{
-	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
-    $iconpath[$parm] .= $bbcode[$parm][2];
-}
 
-$function = $bbcode[$parm][3];
-$formid = $bbcode[$parm][4];
+$_onclick_func = ($bbcode[$parm][0]) ? $bbcode[$parm][0] : $bbcode_func;
+$_onclick_var = $bbcode[$parm][1];
+$_helptxt = $bbcode[$parm][2];
+$_function = $bbcode[$parm][4];
+$_function_var = $bbcode[$parm][5];
 
-if($function)  // onclick call a function.
+
+if($bbcode[$parm])  // default - insert text.
 {
-		$text = "<img class='bbcode' src='".$iconpath[$parm]."' alt='' title='".$bbcode[$parm][1]."' onclick=\"expandit('{$formid}')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$bbcode[$parm][1]."'{$bbcode_tag})\"" : "" )." />\n";
-		$text .= $function($formid);
+	$text = "\n<img class='bbcode' src='".$iconpath[$parm]."' alt='' title='".$helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />\n";
+
 }
-elseif($bbcode[$parm])  // default - insert text.
+if($_function)
 {
-	$text = "\n<img class='bbcode' src='".$iconpath[$parm]."' alt='' title='".$bbcode[$parm][1]."' onclick=\"{$bbcode_func}('".$bbcode[$parm][0]."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$bbcode[$parm][1]."'{$bbcode_tag})\"" : "" )." />\n";
+
+	$text .= ($bbcode_helpactive && $_helptxt && !$iconpath[$parm]) ? "<span onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\" >" : "";
+	$text .= $_function($_function_var);
+	$text .= ($bbcode_helpactive && $_helptxt && !$iconpath[$parm]) ? "</span>" : "";
 }
 
 return $text;
