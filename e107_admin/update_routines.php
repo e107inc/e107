@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.180 $
-|     $Date: 2006-07-07 01:23:18 $
+|     $Revision: 1.181 $
+|     $Date: 2006-07-07 04:56:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,7 @@ function update_check() {
 
 	if ($update_needed === TRUE) {
 		$txt = "<div style='text-align:center;'>".ADLAN_120;
-		$txt .= "<br /><form method='POST' action='".e_ADMIN."e107_update.php'>
+		$txt .= "<br /><form method='post' action='".e_ADMIN."e107_update.php'>
 		<input class='button' type='submit' value='".LAN_UPDATE."' />
 		</form></div>";
 		$ns->tablerender(LAN_UPDATE, $txt);
@@ -130,7 +130,7 @@ function update_70x_to_706($type='') {
 			catch_error();
 		}
 
-		if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one. 
+		if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
 		{
         	mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
             mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);");  // should fix the duplicate entry issue.
