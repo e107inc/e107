@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-07-06 03:28:50 $
-|     $Author: e107coders $
+|     $Revision: 1.34 $
+|     $Date: 2006-07-07 01:31:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -155,10 +155,10 @@ class page
 
 	function uploadPage()
 	{
-        $pref['upload_storagetype'] = "1";
+		global $pref;
+		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php");
 		$uploaded = file_upload(e_IMAGE."custom/");
-
 	}
 
 	function createPage($mode=FALSE)
