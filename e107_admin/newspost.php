@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.131 $
-|   $Date: 2006-07-06 03:28:50 $
+|   $Revision: 1.132 $
+|   $Date: 2006-07-08 22:16:04 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -56,7 +56,7 @@ $fl = new e_file;
 $rs = new form;
 $ix = new news;
 
-$deltest = array_flip($_POST);
+
 if (e_QUERY) {
 	list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
 	$id = intval($id);
@@ -74,11 +74,6 @@ if(isset($_POST['news_userclass']))
 	$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
 }
 
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches))
-{
-	$delete = $matches[1];
-	$del_id = $matches[2];
-}
 
 if(isset($_POST['delete']))
 {
@@ -461,8 +456,8 @@ class newspost {
 		<td style='width:80%' class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);$ff_expand\">".NWSLAN_83."</a>
 		<div style='display:none'>
-		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."
-		</textarea>". display_help("helpc", 'extended')."
+		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."</textarea>
+		". display_help("helpc", 'extended')."
 		</div>
 		</td>
 		</tr>
