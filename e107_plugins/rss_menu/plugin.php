@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-20 15:39:32 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-08 03:17:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ $eplug_author			= "e107dev";
 $eplug_logo				= "";
 $eplug_url				= "http://e107.org";
 $eplug_email			= "";
-$eplug_description		= RSS_PLUGIN_LAN_2;
+$eplug_description		= RSS_MENU_L2;
 $eplug_compatible		= "e107v0.7+";
 $eplug_readme			= "";		//leave blank if no readme file
 $eplug_latest			= FALSE;	//Show reported threads in admin (use latest.php)
@@ -46,7 +46,7 @@ $eplug_conffile			= "admin_prefs.php";
 // Icon image and caption text ------------------------------------------------
 $eplug_icon				= $eplug_folder."/images/rss_32.png";
 $eplug_icon_small		= $eplug_folder."/images/rss_16.png";
-$eplug_caption			= RSS_PLUGIN_LAN_3;
+$eplug_caption			= LAN_CONFIGURE;
 
 // List of preferences --------------------------------------------------------
 $eplug_prefs			= '';
@@ -76,8 +76,8 @@ $eplug_tables = array(
 	) TYPE=MyISAM;",
 
 	"INSERT INTO ".MPREFIX."rss VALUES
-	(0, '".RSS_PLUGIN_LAN_12."', 'News', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
-	(0, '".RSS_PLUGIN_LAN_13."', 'Downloads', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_12."', '".ADLAN_0."', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_13."', '".ADLAN_24."', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
 	(0, '".RSS_PLUGIN_LAN_14."', 'Comments', '', 'comments', '".RSS_PLUGIN_LAN_9."', '".time()."', 0, 9)
 	"
 );
@@ -88,7 +88,7 @@ $eplug_link_name		= '';
 $eplug_link_url			= '';
 
 // Text to display after plugin successfully installed ------------------------
-$eplug_done			= RSS_PLUGIN_LAN_4;
+$eplug_done			= LAN_INSTALL_SUCCESSFUL;
 
 // upgrading ------------------------------------------------------------------
 $upgrade_add_prefs		= "";
@@ -109,12 +109,12 @@ $upgrade_alter_tables	= array(
 	) TYPE=MyISAM;",
 
 	"INSERT INTO ".MPREFIX."rss VALUES
-	(0, '".RSS_PLUGIN_LAN_12."', 'News', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
-	(0, '".RSS_PLUGIN_LAN_13."', 'Downloads', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_12."', '".ADLAN_0."', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
+	(0, '".RSS_PLUGIN_LAN_13."', '".ADLAN_24."', '', 'download', '".RSS_PLUGIN_LAN_8."', '".time()."', 0, 9),
 	(0, '".RSS_PLUGIN_LAN_14."', 'Comments', '', 'comments', '".RSS_PLUGIN_LAN_9."', '".time()."', 0, 9)
 	"
 );
 
-$eplug_upgrade_done		= RSS_PLUGIN_LAN_5;
+$eplug_upgrade_done		= LAN_UPGRADE_SUCCESSFUL;
 
 ?>

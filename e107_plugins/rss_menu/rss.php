@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-06-20 15:39:32 $
+|     $Revision: 1.53 $
+|     $Date: 2006-07-08 03:17:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ if (intval($rss_type) == false) {
 			$text .= $tp -> parseTemplate($RSS_LIST_TABLE, FALSE, $rss_shortcodes);
 		}
 		$text .= $RSS_LIST_FOOTER;
-		$ns->tablerender(BACKEND_MENU_L2, $text);
+		$ns->tablerender(RSS_MENU_L2, $text);
 	}
 
  	require_once(FOOTERF);

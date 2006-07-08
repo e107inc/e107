@@ -4,35 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/languages/English.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-06-22 19:49:59 $
+|     $Revision: 1.12 $
+|     $Date: 2006-07-08 03:17:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
-//old deprecated lan definitions
-define("BACKEND_MENU_L1", " can be syndicated by using these rss feeds.");
-define("BACKEND_MENU_L2", "RSS Feeds");
-define("BACKEND_MENU_L3", "Our news");
-define("BACKEND_MENU_L4", "Our comments");
-define("BACKEND_MENU_L5", "Our forum threads");
-define("BACKEND_MENU_L6", "Our forum posts");
-define("BACKEND_MENU_L7", "Our chatbox posts");
-define("BACKEND_MENU_L8", "Our bugtracker reports");
-define("BACKEND_MENU_L9", "Our downloads");
-
-define("RSS_LAN01", "Enable separate feeds for each news category?");
-define("RSS_LAN02", "Enable separate feeds for each download category?");
-define("RSS_LAN03","Your e107_config.php file contains space before the &lt;? characters. You should remove this space if you wish to have a valid RSS feed.");
-define("RSS_LAN04","Include Other-news items in News Feed?");
 define("RSS_LAN05","Number of items (0=inactive)");
-define("RSS_LAN06","Enable");
-define("RSS_LAN07","view");
-define("RSS_LAN08","feed");
-define("RSS_LAN09","Available rss feeds for ".SITENAME);
-define("RSS_LAN11","This is not a valid rss feed<br /><br /><a href='".e_SELF."'><< return to rss feed list</a>");
-define("RSS_LAN12","caption");
-
 
 define("RSS_MENU_L1", " can be syndicated by using these rss feeds.");
 define("RSS_MENU_L2", "RSS Feeds");
@@ -56,18 +34,14 @@ define("RSS_FOR", "Forum");
 define("RSS_DL", "Downloads");
 
 define("RSS_PLUGIN_LAN_1", "RSS");
-define("RSS_PLUGIN_LAN_2", "RSS Feeds");
-define("RSS_PLUGIN_LAN_3", "Configure RSS Feeds");
-define("RSS_PLUGIN_LAN_4", "RSS has successfully installed.");
-define("RSS_PLUGIN_LAN_5", "RSS table structure updated");
+
 define("RSS_PLUGIN_LAN_6", "Feed Links");
 define("RSS_PLUGIN_LAN_7", "The rss feed of the news");
 define("RSS_PLUGIN_LAN_8", "The rss feed of the downloads");
 define("RSS_PLUGIN_LAN_9", "The rss feed of the comments");
 define("RSS_PLUGIN_LAN_10", "The rss feed of news category:");
 define("RSS_PLUGIN_LAN_11", "The rss feed of download category:");
-define("RSS_PLUGIN_LAN_12", "News");
-define("RSS_PLUGIN_LAN_13", "Download");
+
 define("RSS_PLUGIN_LAN_14", "Comments");
 
 define("RSS_LAN_ADMINMENU_1", "RSS Options");
@@ -101,7 +75,6 @@ define("RSS_LAN_ADMIN_15", "Tick links to mark them for import ...");
 define("RSS_LAN_ADMIN_16", "import?");
 define("RSS_LAN_ADMIN_17", "import ticked links");
 define("RSS_LAN_ADMIN_18", "rss feed(s) imported.");
-define("RSS_LAN_ADMIN_19", "Are you sure you want to delete this rss feed entry?");
 
 define("RSS_LAN_ADMIN_21", "active and visible in rss feed list");
 define("RSS_LAN_ADMIN_22", "active and not visible in rss feed list");
@@ -111,7 +84,6 @@ define("RSS_LAN_ADMIN_26", "Check All");
 define("RSS_LAN_ADMIN_27", "Uncheck All");
 
 define("RSS_LAN_ADMIN_31", "rss entries limit updated");
-
 
 define("RSS_LAN_0", "RSS");
 define("RSS_LAN_2", "@nospam.com");
