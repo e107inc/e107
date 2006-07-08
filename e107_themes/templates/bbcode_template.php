@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-07-08 02:21:51 $
+|     $Revision: 1.8 $
+|     $Date: 2006-07-08 02:27:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ $BBCODE_TEMPLATE = "
 	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 ";
 
- $BBCODE_TEMPLATE .= "{BB=spellcheck}{BB=blank}";
+// $BBCODE_TEMPLATE .= "{BB=blank}";
 
 
 // $sc_style['BB_HELP']['pre'] = "<div style='text-align:center'>";
