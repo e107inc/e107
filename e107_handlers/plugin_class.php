@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-07-08 03:19:30 $
+|     $Revision: 1.46 $
+|     $Date: 2006-07-08 21:52:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ class e107plugin
 			// scan for addons.
 			$eplug_addons = $this->getAddons($plugin_path);
 
-			if($eplug_addons && $sql->db_Select("plugin", "plugin_id", "plugin_path = '$plugin_path'"))
+			if($sql->db_Select("plugin", "plugin_id", "plugin_path = '$plugin_path'"))
 			{
 				$sql->db_Update("plugin", "plugin_addons = '{$eplug_addons}' WHERE plugin_path = '$plugin_path'");
 			}
@@ -389,17 +389,7 @@ class e107plugin
 				$text .= EPL_ADLAN_8.'<br />';
 			}
 
-			if ($eplug_module === TRUE) {
-				$this->manage_plugin_prefs('add', 'modules', $eplug_folder);
-			}
 
-			if ($eplug_status === TRUE) {
-				$this->manage_plugin_prefs('add', 'plug_status', $eplug_folder);
-			}
-
-			if ($eplug_latest === TRUE) {
-				$this->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
-			}
 
 			if (is_array($eplug_array_pref)){
 				foreach($eplug_array_pref as $key => $val){
