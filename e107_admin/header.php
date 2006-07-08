@@ -12,13 +12,15 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.55 $
-|   $Date: 2006-07-07 03:55:11 $
+|   $Revision: 1.56 $
+|   $Date: 2006-07-08 02:23:46 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+define("ADMIN_AREA",TRUE);
+define("USER_AREA",FALSE);
 
 // send the charset to the browser - overides spurious server settings with the lan pack settings.
 header("Content-type: text/html; charset=".CHARSET, true);
@@ -140,7 +142,7 @@ if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
 }else{
 	define("e_WYSIWYG",FALSE);
 }
-// load plugin header-data. 
+// load plugin header-data.
 foreach($pref['e_meta_list'] as $val)
 {
 	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
