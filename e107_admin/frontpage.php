@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-04-22 19:30:47 $
+|     $Revision: 1.23 $
+|     $Date: 2006-07-08 03:57:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ require_once(e_HANDLER.'userclass_class.php');
 
 $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
 $front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);
-$front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);   
+$front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
 if ($sql -> db_Select("page", "*", "page_theme=''")) {
 	$front_page['custom']['title'] = 'Custom Page';
@@ -39,17 +39,16 @@ if ($sql -> db_Select("page", "*", "page_theme=''")) {
 	}
 }
 
-if ($sql -> db_Select("plugin", "plugin_path", "plugin_installflag = '1'")) {
-	while ($row = $sql -> db_Fetch()) {
-		$frontpage_plugs[] = $row['plugin_path'];
+
+foreach($pref['e_frontpage_list'] as $val)
+{
+	if (is_readable(e_PLUGIN.$val."/e_frontpage.php"))
+	{
+		require_once(e_PLUGIN.$val."/e_frontpage.php");
 	}
 }
 
-foreach ($frontpage_plugs as $plugin_id) {
-	if (is_readable(e_PLUGIN.$plugin_id.'/e_frontpage.php')) {
-		require_once(e_PLUGIN.$plugin_id.'/e_frontpage.php');
-	}
-}
+
 
 if (isset($_POST['edit'])) {
 	$_POST['type'] = (isset($_POST['edit']['all'])) ? 'all_users' : 'user_class';
