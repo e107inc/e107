@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-20 08:12:25 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2006-07-08 03:17:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -203,14 +203,14 @@ class rss{
 
 	//import
 	function rssadminimport(){
-		global $sql, $ns, $i, $qs, $rs, $tp, $rss_shortcodes, $feed;
+		global $sql, $ns, $i, $qs, $rs, $tp, $rss_shortcodes, $feed, $pref;
 		global $RSS_ADMIN_IMPORT_HEADER, $RSS_ADMIN_IMPORT_TABLE, $RSS_ADMIN_IMPORT_FOOTER;
 
 		$sqli = new db;
 		$feedlist = array();
 
 		//news
-		$feed['name']		= RSS_PLUGIN_LAN_12;
+		$feed['name']		= ADLAN_0;
 		$feed['url']		= 'news';	//the identifier for the rss feed url
 		$feed['topic_id']	= '';		//the topic_id, empty on default (to select a certain category)
 		$feed['path']		= 'news';	//this is the plugin path location
@@ -222,7 +222,7 @@ class rss{
 		//news categories
 		if($sqli -> db_Select("news_category", "*","category_id!='' ORDER BY category_name ")){
 			while($rowi = $sqli -> db_Fetch()){
-				$feed['name']		= RSS_PLUGIN_LAN_12.' > '.$rowi['category_name'];
+				$feed['name']		= ADLAN_0.' > '.$rowi['category_name'];
 				$feed['url']		= 'news';
 				$feed['topic_id']	= $rowi['category_id'];
 				$feed['path']		= 'news';
@@ -234,7 +234,7 @@ class rss{
 		}
 
 		//download
-		$feed['name']		= RSS_PLUGIN_LAN_13;
+		$feed['name']		= ADLAN_24;
 		$feed['url']		= 'download';
 		$feed['topic_id']	= '';
 		$feed['path']		= 'download';
@@ -246,7 +246,7 @@ class rss{
 		//download categories
 		if($sqli -> db_Select("download_category", "*","download_category_id!='' ORDER BY download_category_order ")){
 			while($rowi = $sqli -> db_Fetch()){
-				$feed['name']		= RSS_PLUGIN_LAN_13.' > '.$rowi['download_category_name'];
+				$feed['name']		= ADLAN_24.' > '.$rowi['download_category_name'];
 				$feed['url']		= 'download';
 				$feed['topic_id']	= $rowi['download_category_id'];
 				$feed['path']		= 'download';
@@ -269,14 +269,22 @@ class rss{
 
 		//plugin rss feed, using e_rss.php in plugin folder
 		$plugin_feedlist = array();
-		if($sqli -> db_Select("plugin","plugin_path","plugin_installflag = '1' ORDER BY plugin_path ")){
-			while($rowi = $sqli -> db_Fetch()){
-				if (is_readable(e_PLUGIN.$rowi['plugin_path']."/e_rss.php")) {
-					require_once(e_PLUGIN.$rowi['plugin_path']."/e_rss.php");
-					$plugin_feedlist = $eplug_rss_feed;
-				}
+		foreach($pref['e_rss_list'] as $val)
+		{
+			if (is_readable(e_PLUGIN.$val."/e_rss.php")) {
+				require_once(e_PLUGIN.$val."/e_rss.php");
+				$plugin_feedlist = $eplug_rss_feed;
 			}
 		}
+
+/*        if($sqli -> db_Select("plugin","plugin_path","plugin_installflag = '1' ORDER BY plugin_path ")){
+            while($rowi = $sqli -> db_Fetch()){
+                if (is_readable(e_PLUGIN.$rowi['plugin_path']."/e_rss.php")) {
+                    require_once(e_PLUGIN.$rowi['plugin_path']."/e_rss.php");
+                    $plugin_feedlist = $eplug_rss_feed;
+                }
+            }
+        }*/
 
 		$feedlist = array_merge($feedlist, $plugin_feedlist);
 
