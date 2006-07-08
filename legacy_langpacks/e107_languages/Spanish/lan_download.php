@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-01 20:56:55 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-08 09:40:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -74,11 +74,11 @@ define("LAN_dl_61", "Error en la descarga");
 define("LAN_dl_62", "No ha podido descargar este archivo. Ha sobrepasado su quota de transferencia.");
 define("LAN_dl_63", "No tiene que corregir permisos para descargar este archivo.");
 define("LAN_dl_64", "Atrás");
-define("LAN_dl_65", "No encontrado");
+define("LAN_dl_65", "Fichero no encontrado");
 define("LAN_dl_66", "Selecciona zona de descarga");
 define("LAN_dl_67", "Por favor, seleccione la zona ...");
 define("LAN_dl_68", "Zona de descarga");
-//define("LAN_dl_69", "Descargar"); //duplicado
+//define("LAN_dl_69", "Descargar");  //Duplicado
 define("LAN_dl_70", "Lugar");
 define("LAN_dl_71", "Sobre...");
 define("LAN_dl_72", "Solicitando archivo: ");

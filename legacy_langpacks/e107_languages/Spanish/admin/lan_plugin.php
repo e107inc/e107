@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-01 20:56:55 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-08 09:40:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -55,17 +55,13 @@ define("EPL_ADLAN_42", "Ocurrió un error, no se pudo descomprimir el archivo");
 define("EPL_ADLAN_43", "Su plugin ha sido transferido y descomprimido, compruebe su plugin en la lista.");
 define("EPL_ADLAN_44", "La transferencia y extracción automática ha sido desactivada por falta de permisos en la carpeta - CHMOD la carpeta e107_plugins a 777.");
 define("EPL_ADLAN_45", "Su menú ha sido transferido y descomprimido, para activar ir a <a href='".e_ADMIN."menus.php'>su página de menús</a>.");
-define("EPL_ADLAN_46", "Parámetros RSS creados");
-define("EPL_ADLAN_47", "Parámetros RSS eliminados");
-define("EPL_ADLAN_48", "No se pueden crear los parámetros RSS");
-define("EPL_ADLAN_49", "No se pueden eliminar los parámetros RSS");
+
 define("EPL_ADLAN_50", "Comentarios eliminados con éxito");
-define("EPL_ADLAN_51", "No"); 
-define("EPL_ADLAN_52", "Si"); 
+
 define("EPL_ADLAN_53", "Directorio no escribible"); 
 define("EPL_ADLAN_54", "Por favor, seleccione la opción para desinstalar el plugin:"); 
 define("EPL_ADLAN_55", "Desinstalar plugin"); 
-define("EPL_ADLAN_56", "Si"); 
+
 define("EPL_ADLAN_57", "Eliminar tablas del plugin"); 
 define("EPL_ADLAN_58", "Si no se eliminan las tablas, el plugin puede ser reinstalado sin perder la información contenida. La creación de tablas durante la instalación  fallará. Las tablas deberásn ser eliminadas manualmente."); 
 define("EPL_ADLAN_59", "Eliminar archivos del plugin"); 
@@ -82,5 +78,7 @@ define("EPL_NOINSTALL", "No se requiere instalación, se activa desde el área de 
 define("EPL_DIRECTORY", " .");
 define("EPL_NOINSTALL_1", "No se requiere instalación, para desinstalar borre la carpeta ");
 define("EPL_UPGRADE", "Actualizar");
-define("EPL_CONFIGURE", "Configurar");
+define("LAN_UPGRADE_SUCCESSFUL", "Actualización exitosa"); 
+define("LAN_INSTALL_SUCCESSFUL", "Instalación exitosa"); 
+define("LAN_CONFIGURE", "Configurar"); 
 ?>

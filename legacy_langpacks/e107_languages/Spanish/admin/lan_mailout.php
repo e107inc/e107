@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-08 09:40:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -80,6 +80,15 @@ define("MAILAN_52", "Último mod");
 define("MAILAN_53", "Admins"); 
 define("MAILAN_54", "Propio"); 
 define("MAILAN_55", "Clase de usuario"); 
-define("MAILAN_56", "Enviar correo"); 
- 
+define("MAILAN_56", "Enviar correo");
+define("MAILAN_57", "Keep SMTP session alive"); 
+define("MAILAN_58", "Hay un problema con el archivo adjunto:"); 
+define("MAILAN_59", "Procesando correo"); 
+define("MAILAN_60", "Enviando..."); 
+define("MAILAN_61", "No hay correos pendientes de enviar."); 
+define("MAILAN_62", "Correos enviados:"); 
+define("MAILAN_63", "Correos fallidos:"); 
+define("MAILAN_64", "Tiempototal utilizado:"); 
+define("MAILAN_65", "segundos"); 
+define("MAILAN_66", "Cancelación exitosa"); 
 ?>

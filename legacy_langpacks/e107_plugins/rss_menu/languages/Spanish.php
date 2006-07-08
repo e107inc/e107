@@ -4,34 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/rss_menu/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-24 20:17:22 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-08 09:40:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-
-//definiciones antiguas
-define("BACKEND_MENU_L1", " pueden ser sindicalizadas usando RSS.");
-define("BACKEND_MENU_L2", "RSS Feeds");
-define("BACKEND_MENU_L3", "Nuestras noticias");
-define("BACKEND_MENU_L4", "Nuestros comentarios");
-define("BACKEND_MENU_L5", "Nuestros temas de foros");
-define("BACKEND_MENU_L6", "Nuestros envíos al foro");
-define("BACKEND_MENU_L7", "Nuestros mensajes de chat");
-define("BACKEND_MENU_L8", "Nuestros informes de bugs");
-define("BACKEND_MENU_L9", "Nuestras descargas");
-
-define("RSS_LAN01", "¿Activar Feeds separados para cada categoría de noticias?");
-define("RSS_LAN02", "¿Activar Feeds separados para cada categoría de descargas?");
-define("RSS_LAN03","Su archivo e107_config.php contiene un espacio antres de los carácteres &lt;? . Debe eliminar este espaciosi desea tener alimentación RSS funcionando correctamente.");
-define("RSS_LAN04","¿Incluir otras noticias en el alimentador de noticias?");
 define("RSS_LAN05","Número de elementos a mostrar (0=inactivo)");
-define("RSS_LAN06","Activar"); 
-define("RSS_LAN07","Ver"); 
-define("RSS_LAN08","Alimentador"); 
-define("RSS_LAN09","Disponible rss de ".SITENAME); 
-define("RSS_LAN11","No es un rss válido<br /><br /><a href='".e_SELF."'><< volver a la lista rss</a>"); 
-define("RSS_LAN12","Título"); 
 
 define("RSS_MENU_L1", " puede ser sindicalizado usando estos alimentadores rss.");
 define("RSS_MENU_L2", "RSS Alimentadores");
@@ -55,18 +33,14 @@ define("RSS_FOR","Foro");
 define("RSS_DL","Descargas");
 
 define("RSS_PLUGIN_LAN_1", "RSS"); 
-define("RSS_PLUGIN_LAN_2", "Alimentadores RSS"); 
-define("RSS_PLUGIN_LAN_3", "Configurar RSS"); 
-define("RSS_PLUGIN_LAN_4", "RSS instalado correctamente."); 
-define("RSS_PLUGIN_LAN_5", "RSS estructura de tablas actualizada"); 
+
 define("RSS_PLUGIN_LAN_6", "Enlaces alimantadores");
 define("RSS_PLUGIN_LAN_7", "El rss de noticias"); 
 define("RSS_PLUGIN_LAN_8", "El rss de descargas"); 
 define("RSS_PLUGIN_LAN_9", "El rss de comentarios"); 
 define("RSS_PLUGIN_LAN_10", "El rss de nuevas categorías:"); 
 define("RSS_PLUGIN_LAN_11", "El rss de categorías de descargas:"); 
-define("RSS_PLUGIN_LAN_12", "Noticias"); 
-define("RSS_PLUGIN_LAN_13", "Descargas"); 
+
 define("RSS_PLUGIN_LAN_14", "Comentarios"); 
  
 
@@ -101,7 +75,6 @@ define("RSS_LAN_ADMIN_15", "Marca enlaces a importar ...");
 define("RSS_LAN_ADMIN_16", "¿Importar?"); 
 define("RSS_LAN_ADMIN_17", "Importar enlaces marcados"); 
 define("RSS_LAN_ADMIN_18", "rss alimentador(es) importados."); 
-define("RSS_LAN_ADMIN_19", "¿Está seguro de eliminar esta estrada rss?"); 
 
 define("RSS_LAN_ADMIN_21", "Activo y visible en la lista de rss"); 
 define("RSS_LAN_ADMIN_22", "Avtivo e invisible en la lista de rss"); 

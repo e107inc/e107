@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_ren_help.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-01 20:56:55 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-08 09:40:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,7 @@ define("LANHELP_41", "Tamaño texto...");
 define("LANHELP_42", "Selecciona imagen..."); 
 define("LANHELP_43", "Selecciona archivo de descarga...");
 define("LANHELP_44", "Click para abrir el diálogo de emoticonos ...");
-define("LANHELP_45", "Insertar imagen desde la carpeta de e107_images/custom/");
+define("LANHELP_45", "Insertar imagen del directorio:");
 define("LANHELP_46", "* No se encontraron archivos en: ");
+define("LANHELP_47", "Insertar flash: [flash=ancho,alto]http://www.ejemplo.com/archivo.swf[/flash]");
 ?>

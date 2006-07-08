@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.26 $
+|     $Date: 2006-07-08 09:40:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -159,7 +159,8 @@ define("PRFLAN_162", "Información del sitio de contacto");
 define("PRFLAN_163", "ej. Nombre empresa, Dirección, Teléfono etc."); 
 define("PRFLAN_164", "Permitir a los usuarios enviarse copia del email de contacto"); 
 define("PRFLAN_165", "Posible aviso de permitir ventana spam, usar con precaución");
-define("PRFLAN_166", "¿Mostrar imágenes de emoticono en el formulario de comentario?"); 
+define("PRFLAN_166", "¿Mostrar imágenes de emoticono en el formulario de comentario?");
+define("PRFLAN_167", "Hacer opcional escribir dirección de correo"); // Posiblemente cabiará. 
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");
@@ -178,5 +179,4 @@ define("CUSTSIG_16", "Caracteres mínimos para la contraseña");
 define("CUSTSIG_17", "Suscríbase a los contenidos por correo");
 define("CUSTSIG_18", "No permitir nombres de usuario");
 define("CUSTSIG_19", "Los usuarios con el siguiente texto serán rechazados, separado entre comas");
-
 ?>

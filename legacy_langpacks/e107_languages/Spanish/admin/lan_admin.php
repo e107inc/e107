@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-07-01 20:56:55 $
+|     $Revision: 1.9 $
+|     $Date: 2006-07-08 09:40:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -235,4 +235,5 @@ define("LAN_UPLOAD_777","No existe la carpeta o no tiene permisos de escritura, 
 define("LAN_UPLOAD_SERVEROFF", "Opción desactivada ya que no tiene activa la transferencia de ficheros en su servidor"); 
 define("LAN_DISABLED","Desactivado"); 
 define("LAN_ENABLED", "Activado");
+define("LAN_PRESET_CONFIRMSAVE","¿Guardar valores del formulario como predeterminados en esta página?");
 ?>
