@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ugflag.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-07 20:49:41 $
+|     $Revision: 1.11 $
+|     $Date: 2006-07-08 02:21:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ if (!getperms("9")) {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
-$e_sub_cat = 'maintain';
+
 require_once(e_HANDLER."ren_help.php");
 
 if (isset($_POST['updatesettings'])) {
@@ -60,14 +60,8 @@ $text .= "</td>
 	<tr>
 	<td style='width:30%' class='forumheader3'>".UGFLAN_5."<br /><span class='smalltext'>".UGFLAN_6."</span></td>
 	<td style='width:70%' class='forumheader3'>
-	<textarea id='maintainance_text' class='tbox' name='maintainance_text' cols='59' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$pref['maintainance_text']."</textarea>
-	</td>
-	</tr>
-
-	<tr style='vertical-align:top'>
-	<td colspan='2'  style='text-align:center' class='forumheader3'>
-	".display_help("","maintenance")."
-	</td>
+	<textarea id='maintainance_text' class='tbox' name='maintainance_text' cols='63' style='max-width:80%' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$pref['maintainance_text']."</textarea>
+	<br />".display_help("","maintenance")."  </td>
 	</tr>
 
 
