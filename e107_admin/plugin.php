@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2006-07-08 02:23:46 $
+|     $Revision: 1.64 $
+|     $Date: 2006-07-08 03:19:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -523,8 +523,8 @@ function show_uninstall_confirm()
 	{
 		$del_text = "
 		<select class='tbox' name='delete_files'>
-		<option value='0'>".EPL_ADLAN_51."</option>
-		<option value='1'>".EPL_ADLAN_52."</option>
+		<option value='0'>".LAN_NO."</option>
+		<option value='1'>".LAN_YES."</option>
 		</select>
 		";
 	}
@@ -544,7 +544,7 @@ function show_uninstall_confirm()
 	</tr>
 	<tr>
 		<td class='forumheader3'>".EPL_ADLAN_55."</td>
-		<td class='forumheader3'>".EPL_ADLAN_52."</td>
+		<td class='forumheader3'>".LAN_YES."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>
@@ -552,8 +552,8 @@ function show_uninstall_confirm()
 		</td>
 		<td class='forumheader3'>
 			<select class='tbox' name='delete_tables'>
-			<option value='1'>".EPL_ADLAN_52."</option>
-			<option value='0'>".EPL_ADLAN_51."</option>
+			<option value='1'>".LAN_YES."</option>
+			<option value='0'>".LAN_NO."</option>
 			</select>
 		</td>
 	</tr>
