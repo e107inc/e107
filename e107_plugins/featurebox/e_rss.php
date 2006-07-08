@@ -5,7 +5,7 @@ if (!defined('e107_INIT')) { exit; }
 
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
-$feed['name']		= 'featurebox';
+$feed['name']		= 'Featurebox';
 $feed['url']		= 'featurebox';			//the identifier for the rss feed url
 $feed['topic_id']	= '';					//the topic_id, empty on default (to select a certain category)
 $feed['path']		= 'featurebox';			//this is the plugin path location

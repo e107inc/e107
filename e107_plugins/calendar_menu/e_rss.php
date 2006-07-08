@@ -3,7 +3,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
-$feed['name']		= 'calendar';
+$feed['name']		= 'Calendar';
 $feed['url']		= 'calendar';			//the identifier for the rss feed url
 $feed['topic_id']	= '';					//the topic_id, empty on default (to select a certain category)
 $feed['path']		= 'calendar_menu';		//this is the plugin path location
@@ -22,9 +22,9 @@ $current		= mktime(0,0,0,$current_month, $current_day, $current_year);
 
 $qry = "
 SELECT e.*, c.event_cat_name
-FROM #event AS e 
-LEFT JOIN #event_cat AS c ON c.event_cat_id = e.event_category 
-WHERE e.event_start>='$current' AND c.event_cat_class REGEXP '".e_CLASS_REGEXP."' 
+FROM #event AS e
+LEFT JOIN #event_cat AS c ON c.event_cat_id = e.event_category
+WHERE e.event_start>='$current' AND c.event_cat_class REGEXP '".e_CLASS_REGEXP."'
 ORDER BY e.event_start ASC LIMIT 0,".$this->limit;
 
 $rss = array();
