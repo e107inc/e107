@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-07-08 21:52:42 $
+|     $Revision: 1.17 $
+|     $Date: 2006-07-08 22:04:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -201,7 +201,7 @@ function pref_editor()
 			<input class='button' type='submit' title='".LAN_DELETE."' value=\"".DBLAN_21."\" name='delpref_checked' onclick=\"return jsconfirm('".LAN_CONFIRMDEL."')\" />
 			</tr>
 		</table></div></form>";
-
+        $text .= "<div style='text-align:center'><br /><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
         $ns -> tablerender(DBLAN_20, $text);
 
 		return $text;
@@ -227,7 +227,7 @@ global $tp;
 }
 
 function del_pref_val(){
-	global $pref,$ns;
+	global $pref,$ns,$e107cache;
 	$del = array_keys($_POST['delpref']);
 	$delpref = $del[0];
 
@@ -245,8 +245,10 @@ function del_pref_val(){
 		}
 	}
 
-	$message = "<div>".LAN_DELETED." : <br /><br /><ul>".$deleted_list."</ul></div>";
+	$message = "<div><br /><ul>".$deleted_list."</ul></div>
+	<div style='text-align:center'><br /><a href='".e_SELF."'>".DBLAN_13."</a></div>";
  	save_prefs();
+	$e107cache->clear();
     $ns -> tablerender(LAN_DELETED,$message);
 
 }

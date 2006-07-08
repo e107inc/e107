@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_db.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-07-08 21:52:42 $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-08 22:04:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,5 +29,5 @@ define("DBLAN_17", "Pref. Name");
 define("DBLAN_18", "Pref. Value");
 define("DBLAN_19", "Click button to open the preferences editor (for advanced users only)");
 define("DBLAN_20", "Preferences Editor");
-define("DBLAN_21", "Delete Checked");     
+define("DBLAN_21", "Delete Checked");
 ?>
