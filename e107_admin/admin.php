@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-02-17 23:35:38 $
-|     $Author: lisa_ $
+|     $Revision: 1.32 $
+|     $Date: 2006-07-08 21:53:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -21,21 +21,54 @@ $e_sub_cat = 'main';
 require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 
+// --- check for htmlarea.
 if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea')) {
 	$text = ADLAN_ERR_2."<br /><br />
 	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
 	$ns -> tablerender(ADLAN_ERR_1, $text);
 }
 
+// check for old modules.
+if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Field("plugin",5) == "plugin_addons"){
+
+	$mods=explode(",", $pref['modules']);
+	$thef = "e_module.php";
+	foreach ($mods as $mod)
+	{
+		if (is_readable(e_PLUGIN."{$mod}/module.php"))
+		{
+			$mod_found[] = e_PLUGIN."{$mod}/module.php";
+		}
+	}
+
+	if($mod_found)
+	{
+    	$text = ADLAN_ERR_5." <b>".$thef."</b>:<br /><br /><ul>";
+		foreach($mod_found as $val){
+			$text .= "<li>".str_replace("../","",$val)."</li>\n";
+		}
+		$text .="</ul><br />
+		<form method='post' action='".e_ADMIN."db.php' id='upd'>
+		<a href='#' onclick=\"document.getElementById('upd').submit()\">".ADLAN_ERR_6."</a>
+		<input type='hidden' name='plugin_scan' value='1' />
+		</form>";
+		$ns -> tablerender(ADLAN_ERR_4,$text);
+	}
+}
+
+// check for file-types;
 if (is_readable(e_ADMIN.'filetypes.php')) {
 	$a_types = trim(file_get_contents(e_ADMIN.'filetypes.php'));
 } else {
 	$a_types = 'zip, gz, jpg, png, gif';
 }
+
 $a_types = explode(',', $a_types);
 foreach ($a_types as $f_type) {
 	$allowed_types[] = '.'.trim(str_replace('.', '', $f_type));
 }
+
+// avatar check.
 $public = array(e_FILE.'public', e_FILE.'public/avatars');
 foreach ($public as $dir) {
 	if (is_dir($dir)) {
