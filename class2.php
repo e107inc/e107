@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.290 $
-|     $Date: 2006-07-02 21:57:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.291 $
+|     $Date: 2006-07-08 21:55:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -390,6 +390,14 @@ if (isset($pref['notify']) && $pref['notify'] == true) {
 
 $sql -> db_Mark_Time('Start: Init session');
 init_session();
+
+if(isset($pref['e_module_list']) && $pref['e_module_list']){
+	foreach ($pref['e_module_list'] as $mod){
+		if (is_readable(e_PLUGIN."{$mod}/e_module.php")) {
+			require_once(e_PLUGIN."{$mod}/e_module.php");
+		}
+	}
+}
 
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
