@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.181 $
-|     $Date: 2006-07-07 04:56:26 $
+|     $Revision: 1.182 $
+|     $Date: 2006-07-08 03:52:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -443,7 +443,6 @@ function update_617_to_700($type='') {
 				$sql->db_Insert("plugin", "0, 'Links Page', '1.0', 'links_page', 1");
 				$sql->db_Update("links", "link_url = '".$PLUGINS_DIRECTORY."links_page/links.php' WHERE link_url = 'links.php'");
 
-				$pref['plug_latest'] = $pref['plug_latest'].",links_page";
 				$s_prefs = TRUE;
 			}
 		// end links update -------------------------------------------------------------------------------------------
@@ -688,8 +687,6 @@ function update_617_to_700($type='') {
 			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 				$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
 				catch_error();
-				$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
-				$s_prefs = TRUE;
 			}
 		// end chatbox update -------------------------------------------------------------------------------------------
 

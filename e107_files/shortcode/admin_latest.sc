@@ -8,12 +8,11 @@ if (ADMIN) {
 			$text = "<div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?sn'>".ADLAN_LAT_2.": $submitted_news</a>" : " ".ADLAN_LAT_2.": 0")."</div>";
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : " ".ADLAN_LAT_7.": ".$active_uploads)."</div>";
 
-			if ($pref['plug_latest']) {
-				$lats = explode(",", $pref['plug_latest']);
-				foreach($lats as $lat) {
-					if (file_exists(e_PLUGIN.$lat."/e_latest.php")) {
-						include_once(e_PLUGIN.$lat."/e_latest.php");
-					}
+			foreach($pref['e_latest_list'] as $val)
+			{
+				if (is_readable(e_PLUGIN.$val."/e_latest.php"))
+				{
+				   		include_once(e_PLUGIN.$val."/e_latest.php");
 				}
 			}
 
