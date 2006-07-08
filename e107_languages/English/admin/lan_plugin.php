@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-06-30 04:16:39 $
+|     $Revision: 1.18 $
+|     $Date: 2006-07-08 02:23:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -66,7 +66,7 @@ define("EPL_NOINSTALL", "No install required, just activate from your menus scre
 define("EPL_DIRECTORY", "directory.");
 define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
 define("EPL_UPGRADE", "Upgrade");
-define("EPL_CONFIGURE", "Configure");
+
 
 define("EPL_ADLAN_46", "RSS settings successfully created");
 define("EPL_ADLAN_47", "RSS settings successfully deleted");
@@ -89,5 +89,8 @@ define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
 define("EPL_ADLAN_62", "Cancel uninstall");
 define("EPL_ADLAN_63", "Uninstall:");
 
+define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
+define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
+define("LAN_CONFIGURE", "Configure");  
 
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-20 20:13:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-08 02:23:46 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,7 +42,8 @@ $eplug_conffile = "admin_chatbox.php";
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/chatbox_32.png";
 $eplug_icon_small = $eplug_folder."/images/chatbox_16.png";
-$eplug_caption = "Configure Chatbox";
+
+$eplug_caption = LAN_CONFIGURE; // e107 generic term.
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
@@ -80,13 +81,13 @@ $eplug_link_name = '';
 $eplug_link_url = '';
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = "Chatbox has successfully installed. To configure, click on the link on the admin front page.";
+$eplug_done = LAN_INSTALL_SUCCESSFUL;  // e107 generic term.
 
 // upgrading ... //
 $upgrade_add_prefs = "";
 $upgrade_remove_prefs = "";
 $upgrade_alter_tables = "";
-$eplug_upgrade_done = "";
+$eplug_upgrade_done = LAN_UPGRADE_SUCCESSFUL;  // e107 generic term.        
 
 if (!function_exists('chatbox_menu_uninstall')) {
 	function chatbox_menu_uninstall() {

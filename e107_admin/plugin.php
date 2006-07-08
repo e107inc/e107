@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-07-07 01:23:18 $
+|     $Revision: 1.63 $
+|     $Date: 2006-07-08 02:23:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -430,7 +430,7 @@ function render_plugs($pluginList){
 
 		$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
 		if ($eplug_conffile && $plug['plugin_installflag'] == TRUE) {
-			$conf_title = EPL_CONFIGURE.' '.$eplug_name;
+			$conf_title = LAN_CONFIGURE.' '.$eplug_name;
 			$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."' >".$plugin_icon.'</a>';
 		}
 

@@ -11,13 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2006-07-07 03:55:11 $
+|     $Revision: 1.85 $
+|     $Date: 2006-07-08 02:23:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+define("USER_AREA",TRUE);
+define("ADMIN_AREA",FALSE);
+
 
 // send the charset to the browser - overides spurious server settings with the lan pack settings.
 header("Content-type: text/html; charset=".CHARSET, true);
