@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-07-08 02:23:46 $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-08 03:19:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -67,20 +67,12 @@ define("EPL_DIRECTORY", "directory.");
 define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
 define("EPL_UPGRADE", "Upgrade");
 
-
-define("EPL_ADLAN_46", "RSS settings successfully created");
-define("EPL_ADLAN_47", "RSS settings successfully deleted");
-define("EPL_ADLAN_48", "Unable to successfully create RSS settings");
-define("EPL_ADLAN_49", "Unable to successfully delete RSS settings");
-
 define("EPL_ADLAN_50", "Comments successfully deleted");
 
-define("EPL_ADLAN_51", "No");
-define("EPL_ADLAN_52", "Yes");
 define("EPL_ADLAN_53", "Directory not writable");
 define("EPL_ADLAN_54", "Please select the option for uninstalling the plugin:");
 define("EPL_ADLAN_55", "Uninstall plugin");
-define("EPL_ADLAN_56", "Yes");
+
 define("EPL_ADLAN_57", "Delete plugin tables");
 define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail. Tables will have to be manually deleted to remove.");
 define("EPL_ADLAN_59", "Delete plugin files");
@@ -91,6 +83,6 @@ define("EPL_ADLAN_63", "Uninstall:");
 
 define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
 define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
-define("LAN_CONFIGURE", "Configure");  
+define("LAN_CONFIGURE", "Configure");
 
 ?>

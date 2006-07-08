@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-07-07 01:23:18 $
+|     $Revision: 1.45 $
+|     $Date: 2006-07-08 03:19:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -460,7 +460,7 @@ class e107plugin
 		} else {
 			$text = EPL_ADLAN_21;
 		}
-		if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".EPL_CONFIGURE."]</a>"; }
+		if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".LAN_CONFIGURE."]</a>"; }
 		$ns->tablerender(EPL_ADLAN_33, $text);
 	}
 
