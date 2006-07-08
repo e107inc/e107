@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-07-04 03:02:56 $
+|     $Revision: 1.12 $
+|     $Date: 2006-07-08 04:18:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,30 +39,28 @@ class notify_config {
 	var $notify_prefs;
 
 	function notify_config() {
-		global $sysprefs, $eArrayStorage, $tp, $sql;
+		global $sysprefs, $eArrayStorage, $tp, $sql,$pref;
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 
-		$handle = opendir(e_PLUGIN);
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-				$plugin_handle = opendir(e_PLUGIN.$file."/");
-				while (false !== ($file2 = readdir($plugin_handle))) {
-					if ($file2 == "e_notify.php") {
-						if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
-							if (!isset($this -> notify_prefs['plugins'][$file])) {
-								$this -> notify_prefs['plugins'][$file] = TRUE;
-								require_once(e_PLUGIN.$file.'/e_notify.php');
-								foreach ($config_events as $event_id => $event_text) {
-									$this -> notify_prefs['event'][$event_id] = array('type' => 'off', 'class' => '254', 'email' => '');
-								}
-								$recalibrate = true;
-							}
+		// load every e_notify.php file. 
+        foreach($pref['e_notify_list'] as $val)
+		{
+				if (!isset($this -> notify_prefs['plugins'][$val]))
+				{
+					$this -> notify_prefs['plugins'][$val] = TRUE;
+					if (is_readable(e_PLUGIN.$val."/e_notify.php"))
+					{
+						require_once(e_PLUGIN.$val.'/e_notify.php');
+						foreach ($config_events as $event_id => $event_text)
+				   		{
+							$this -> notify_prefs['event'][$event_id] = array('type' => 'off', 'class' => '254', 'email' => '');
 						}
+						$recalibrate = true;
 					}
 				}
-			}
 		}
+
 
 		if ($recalibrate) {
 			$s_prefs = $tp -> toDB($this -> notify_prefs);
