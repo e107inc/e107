@@ -14,7 +14,7 @@ function get_forum_rss(){
 	$rss = array();
 
 	//forum threads (old url)
-	$feed['name']			= "forum / threads";
+	$feed['name']			= "Forum / threads";
 	$feed['url']			= '6';
 	$feed['topic_id']		= '';
 	$feed['path']			= 'forum|threads';
@@ -24,7 +24,7 @@ function get_forum_rss(){
 	$rss[] = $feed;
 
 	//forum threads (new url)
-	$feed['name']			= "forum / threads";
+	$feed['name']			= "Forum / threads";
 	$feed['url']			= 'forumthreads';
 	$feed['topic_id']		= '';
 	$feed['path']			= 'forum|threads';
@@ -34,7 +34,7 @@ function get_forum_rss(){
 	$rss[] = $feed;
 
 	//forum posts (old url)
-	$feed['name']			= "forum / posts";
+	$feed['name']			= "Forum / posts";
 	$feed['url']			= '7';
 	$feed['topic_id']		= '';
 	$feed['path']			= 'forum|posts';
@@ -44,7 +44,7 @@ function get_forum_rss(){
 	$rss[] = $feed;
 
 	//forum posts (new url)
-	$feed['name']			= "forum / posts";
+	$feed['name']			= "Forum / posts";
 	$feed['url']			= 'forumposts';
 	$feed['topic_id']		= '';
 	$feed['path']			= 'forum|posts';
@@ -54,7 +54,7 @@ function get_forum_rss(){
 	$rss[] = $feed;
 
 	//forum topic (old url)
-	$feed['name']			= "forum / topic";
+	$feed['name']			= "Forum / topic";
 	$feed['url']			= '8';
 	$feed['topic_id']		= '*';
 	$feed['path']			= 'forum|topic';
@@ -64,7 +64,7 @@ function get_forum_rss(){
 	$rss[] = $feed;
 
 	//forum topic (new url)
-	$feed['name']			= "forum / topic";
+	$feed['name']			= "Forum / topic";
 	$feed['url']			= 'forumtopic';
 	$feed['topic_id']		= '*';
 	$feed['path']			= 'forum|topic';
@@ -74,7 +74,7 @@ function get_forum_rss(){
 	$rss[] = $feed;
 
 	//forum name (old url)
-	$feed['name']			= "forum / name";
+	$feed['name']			= "Forum / name";
 	$feed['url']			= '11';
 	$feed['topic_id']		= '*';
 	$feed['path']			= 'forum|name';
@@ -84,7 +84,7 @@ function get_forum_rss(){
 	$rss[] = $feed;
 
 	//forum name (new url)
-	$feed['name']			= "forum / name";
+	$feed['name']			= "Forum / name";
 	$feed['url']			= 'forumname';
 	$feed['topic_id']		= '*';
 	$feed['path']			= 'forum|name';
