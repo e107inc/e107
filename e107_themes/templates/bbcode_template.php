@@ -11,22 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-07 21:09:21 $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-08 02:21:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // How to register your own BBcode button.
 // Uncomment the 2 commented lines below to see it in action. (only applies to the user area)
 
-// $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text","template.png");
+// $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text",e_IMAGE."generic/bbcode/template.png");
 
 $BBCODE_TEMPLATE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
 	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 ";
 
-// $BBCODE_TEMPLATE .= "{BB=blank}";
+ $BBCODE_TEMPLATE .= "{BB=spellcheck}{BB=blank}";
 
 
 // $sc_style['BB_HELP']['pre'] = "<div style='text-align:center'>";
@@ -43,6 +43,8 @@ $BBCODE_TEMPLATE_ADMIN = "
 	{BB_PREIMAGEDIR=".e_IMAGE."}
 	{BB=preimage}{BB=prefile}{BB=flash}
 ";
+
+// $BBCODE_TEMPLATE_ADMIN .= "{BB=blank}";
 
 $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB_HELP=$mode}<br />

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-07 21:09:21 $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-08 02:21:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -69,19 +69,24 @@ if(!isset($iconpath[$parm]))
     $iconpath[$parm] .= $bbcode[$parm][3];
 }
 
+
 foreach($register_bb as $key=>$val) // allow themes to plug in to it.
 {
+	if($val[0]=="")
+	{
+    	$val[0] = $bbcode_func;
+	}
 	$bbcode[$key] = $val;
+	$iconpath[$key] = $val[3];
 }
 
 
-foreach($eplug_bb as $key=>$val)
+foreach($eplug_bb as $key=>$val)  // allow plugins to plug into it.
 {
 	extract($val);
-   //	echo "$onclick $onclick_var $helptext $icon <Br />";
+   //	echo "$onclick $onclick_var $helptext $icon <br />";
     $bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
 	$iconpath[$name] = $icon;
-
 }
 
 
@@ -94,9 +99,9 @@ $_function_var = $bbcode[$parm][5];
 
 if($bbcode[$parm])  // default - insert text.
 {
-	$text = "\n<img class='bbcode' src='".$iconpath[$parm]."' alt='' title='".$helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />\n";
-
+	$text = "\n<img class='bbcode bbcode_buttons' style='cursor:pointer' src='".$iconpath[$parm]."' alt='' title='".$helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />\n";
 }
+
 if($_function)
 {
 
