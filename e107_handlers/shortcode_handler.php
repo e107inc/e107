@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.29 $
-| $Date: 2006-02-17 16:20:42 $
-| $Author: lisa_ $
+| $Revision: 1.30 $
+| $Date: 2006-07-09 07:18:42 $
+| $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,16 +33,20 @@ class e_shortcode {
 	function e_shortcode()
 	{
 		global $pref, $register_sc;
-		if($pref['plug_sc'] != '')
+
+		if($pref['shortcode_list'] != '')
 		{
-			$tmp = explode(',',$pref['plug_sc']);
-			foreach($tmp as $val)
+        	foreach($pref['shortcode_list'] as $path=>$namearray)
 			{
-				list($code, $path) = explode(':',$val);
-				$this->registered_codes[$code]['type'] = 'plugin';
-				$this->registered_codes[$code]['path'] = $path;
+				foreach($namearray as $code)
+				{
+					$code = strtoupper($code);
+					$this->registered_codes[$code]['type'] = 'plugin';
+                	$this->registered_codes[$code]['path'] = $path;
+				}
 			}
 		}
+
 		if(isset($register_sc) && is_array($register_sc))
 		{
 			foreach($register_sc as $code)
