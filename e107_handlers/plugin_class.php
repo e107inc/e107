@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-07-09 06:04:41 $
+|     $Revision: 1.48 $
+|     $Date: 2006-07-09 06:16:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -482,12 +482,12 @@ class e107plugin
 				{
                 	if(ereg("\.sc$",$adds))
 					{
-                    	$sc_array[] = $adds;
+                    	$sc_array[] = substr($adds, 0,-3); // remove the .sc
 					}
 
 					if(ereg("\.bb$",$adds))
 					{
-                    	$bb_array[] = $adds;
+                    	$bb_array[] = substr($adds, 0,-3); // remove the .bb
 					}
 				}
                 if(count($bb_array) > 0){
