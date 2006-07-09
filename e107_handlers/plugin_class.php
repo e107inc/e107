@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-07-09 06:16:44 $
+|     $Revision: 1.49 $
+|     $Date: 2006-07-09 07:21:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -494,13 +494,21 @@ class e107plugin
 					sort($bb_array);
                 	$pref['bbcode_list'][$path] = $bb_array;
 				}
+				else
+				{
+                    unset($pref['bbcode_list'][$path]);
+				}
 				if(count($sc_array) > 0){
 					sort($sc_array);
 					$pref['shortcode_list'][$path] = $sc_array;
                 }
+				else
+				{
+                    unset($pref['bbcode_list'][$path]);
+				}
 			}
 		}
-
+      
 	  	save_prefs();
 		return;
 
