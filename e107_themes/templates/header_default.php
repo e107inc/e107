@@ -1,20 +1,15 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
++ ----------------------------------------------------------------------------------------------+
+|     e107 website system  : http://e107.org
+|     Steve Dunstan 2001-2002 : jalist@e107.org
+|     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2006-07-08 02:23:46 $
+|     $Revision: 1.86 $
+|     $Date: 2006-07-09 19:50:25 $
 |     $Author: e107coders $
-+----------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -67,26 +62,7 @@ echo ($pref['meta_author'][e_LANGUAGE]) ? "<meta name=\"author\" content=\"".$pr
 echo ($pref['meta_tag'][e_LANGUAGE]) ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 unset($key_merge,$diz_merge);
 
-foreach($pref['e_meta_list'] as $val)
-{
-	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
-	{
-		require_once(e_PLUGIN.$val."/e_meta.php");
-	}
-}
-
-if(isset($pref['trackbackEnabled'])){
-	echo "<link rel='pingback' href='".SITEURLBASE.e_PLUGIN_ABS."trackback/xmlrpc.php' />\n";
-}
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
-}
-
-if(function_exists('core_head')){ echo core_head(); }
-
-if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
-if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='{$eplug_js}'></script>\n"; }
-
+echo "\n<!-- Theme -->\n";
 if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
@@ -139,6 +115,28 @@ if (file_exists(THEME."favicon.ico")) {
 	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
 }
 
+// --- Load plugin Meta files and eplug_ --------
+foreach($pref['e_meta_list'] as $val)
+{
+	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	{
+		echo "\n\n<!-- $val meta -->\n";
+		require_once(e_PLUGIN.$val."/e_meta.php");
+	}
+}
+
+if (isset($eplug_css) || isset($eplug_js)) { echo "\n<!-- eplug_css and eplug_js -->\n"; }
+if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
+if (isset($eplug_js) && $eplug_js) { echo "\n<script type='text/javascript' src='{$eplug_js}'></script>\n"; }
+
+// -------
+
+if(function_exists('core_head')){ echo core_head(); }
+
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
+	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
+}
+
 
 
 if (isset($theme_js_php) && $theme_js_php) {
@@ -157,14 +155,7 @@ if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && is
 }
 if (function_exists('headerjs')){echo headerjs();  }
 
-if (isset($pref['statActivate']) && $pref['statActivate']) {
-	if(!$pref['statCountAdmin'] && ADMIN) {
-		/* don't count admin visits */
-	} else {
-		require_once(e_PLUGIN."log/consolidate.php");
-		$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN_ABS."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
-	}
-}
+
 
 if ($pref['image_preload']) {
 	$ejs_listpics = '';
