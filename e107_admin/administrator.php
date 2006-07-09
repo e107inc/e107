@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-02-16 19:23:06 $
-|     $Author: whoisrich $
+|     $Revision: 1.28 $
+|     $Date: 2006-07-09 03:43:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -181,17 +181,17 @@ function edit_administrator($row){
 	<td style='width:25%;vertical-align:top' class='forumheader3'>".ADMSLAN_18.": <br /></td>
 	<td style='width:75%' class='forumheader3'>";
 
-	$text .= checkb("1", $a_perms).ADMSLAN_19."<br />";
-	$text .= checkb("2", $a_perms).ADMSLAN_20."<br />";
-	$text .= checkb("3", $a_perms).ADMSLAN_21."<br />";
+	$text .= checkb("1", $a_perms).ADMSLAN_19."<br />";  // Alter site preferences
+	$text .= checkb("2", $a_perms).ADMSLAN_20."<br />";  // Alter Menus
+	$text .= checkb("3", $a_perms).ADMSLAN_21."<br />";  // Add site administrators
 	$text .= checkb("4", $a_perms).ADMSLAN_22."<br />"; // Moderate users/bans etc
 	$text .= checkb("5", $a_perms).ADMSLAN_23."<br />"; // create/edit custom pages/menus
 	$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />"; // Manage download categories
 	$text .= checkb("6", $a_perms).ADMSLAN_25."<br />"; // Upload /manage files
 	$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />"; // file inspector
 	$text .= checkb("O", $a_perms).ADMSLAN_68."<br />"; // notify
-	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";
-	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";
+	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";   // Oversee news categories
+	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";  // Oversee link categories
 	$text .= checkb("C", $a_perms).ADMSLAN_64."<br />"; // Clear Cache - Previously moderate chatbox
 	$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";
 	$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";
