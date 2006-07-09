@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-06-22 19:13:41 $
-|     $Author: lisa_ $
+|     $Revision: 1.50 $
+|     $Date: 2006-07-09 17:52:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -41,7 +41,7 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
 		header("location: ".e_BASE."index.php");
 		exit;
 	}
-	
+
 	if($table == "poll") {
 		if (!$sql->db_Select("polls", "poll_title", "`poll_id` = {$id} AND `poll_comment` = 1")) {
 			header("location: ".e_BASE."index.php");
@@ -210,18 +210,18 @@ if ($action == "reply") {
 			if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
 				$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
-				LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id 
-				WHERE n.news_class IN (".USERCLASS_LIST.") 
-				AND n.news_id={$id} 
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+				LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
+				WHERE n.news_class IN (".USERCLASS_LIST.")
+				AND n.news_id={$id}
 				AND n.news_allow_comments=0
 				GROUP by n.news_id";
 			} else {
 				$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
-				WHERE n.news_class IN (".USERCLASS_LIST.") 
-				AND n.news_id={$id} 
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+				WHERE n.news_class IN (".USERCLASS_LIST.")
+				AND n.news_id={$id}
 				AND n.news_allow_comments=0";
 			}
 
@@ -235,7 +235,7 @@ if ($action == "reply") {
 				require_once(HEADERF);
 				ob_start();
 				$ix = new news;
-				$ix->render_newsitem($news, "default");
+				$ix->render_newsitem($news, "extend"); // extend so that news-title-only news text is displayed in full when viewing comments.
 				$field = $news['news_id'];
 				$comtype = 0;
 			}
