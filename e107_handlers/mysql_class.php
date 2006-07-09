@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-06-26 17:24:22 $
+|     $Revision: 1.59 $
+|     $Date: 2006-07-09 01:34:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.58 $
+* @version $Revision: 1.59 $
 * @author $Author: e107coders $
 */
 class db {
@@ -673,13 +673,43 @@ class db {
 		return ($error)? FALSE : TRUE;
 	}
 
-    function db_Field($table,$fieldid=""){
+	// Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
+    function db_Field($table,$fieldid="",$key=""){
 		if(!$this->mySQLdefaultdb){
 			global $mySQLdefaultdb;
 			$this->mySQLdefaultdb = $mySQLdefaultdb;
 		}
-		$fields = mysql_list_fields($this->mySQLdefaultdb, MPREFIX.$table);
-		return mysql_field_name($fields, $fieldid);
+        $convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
+        $key = ($convert[$key]) ? $convert[$key] : "OFF";
+
+        $result = mysql_query("SHOW COLUMNS FROM ".MPREFIX.$table);
+        if (mysql_num_rows($result) > 0) {
+            $c=0;
+   			while ($row = mysql_fetch_assoc($result)) {
+				if(is_numeric($fieldid))
+				{
+                	if($c == $fieldid)
+					{
+                       return $row['Field']; // field number matches.
+					}
+				}
+                else
+				{
+					if(($key == "") && ($fieldid == $row['Field']))
+					{
+                    	return TRUE;  // key not in use, but field matches.
+					}
+					elseif(($fieldid == $row['Field']) && $key == $row['Key'])
+					{
+                    	return TRUE;
+					}
+
+ 			    }
+				$c++;
+        	}
+		}
+
+		return FALSE;
 
 	}
 
