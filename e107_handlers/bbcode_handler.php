@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-07-07 03:55:11 $
+|     $Revision: 1.43 $
+|     $Date: 2006-07-09 07:18:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,15 +45,21 @@ class e_bbcode
 		{
 			$this->bbLocation[$c] = 'core';
 		}
-		if(isset($pref['plug_bb']) && $pref['plug_bb'] != '')
+
+
+		// grab list of plugin bbcodes. 
+		if(isset($pref['bbcode_list']) && $pref['bbcode_list'] != '')
 		{
-			$tmp = explode(',',$pref['plug_bb']);
-			foreach($tmp as $val)
+        	foreach($pref['bbcode_list'] as $path=>$namearray)
 			{
-				list($code, $location) = explode(':',$val);
-				$this->bbLocation[$code] = $location;
+				foreach($namearray as $code)
+				{
+                	$this->bbLocation[$code] = $path;
+				}
 			}
 		}
+
+
 		$this->bbLocation = array_diff($this->bbLocation, array(''));
 		krsort($this->bbLocation);
 		$this->List = array_keys($this->bbLocation);
@@ -66,7 +72,7 @@ class e_bbcode
 			unset($this->List[$c]);
 			array_unshift($this->List, "code");
 		}
-	
+
 	}
 
 	function parseBBCodes($text, $p_ID)
