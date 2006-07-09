@@ -11,13 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-07-08 22:04:33 $
+|     $Revision: 1.18 $
+|     $Date: 2006-07-09 03:43:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
+if (!getperms('0')) {
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
 $e_sub_cat = 'database';
 
 if (isset($_POST['db_update'])) {
@@ -60,12 +64,22 @@ if (isset($_POST['backup_core'])) {
 	message_handler("MESSAGE", DBLAN_1);
 }
 
+if(isset($_POST['delplug']))
+{
+	delete_plugin_entry();
 
-if (isset($_POST['plugin_scan'])) {
+}
+
+if (isset($_POST['plugin_scan']) || e_QUERY == "plugin" || $_POST['delplug']) {
 	plugin_viewscan();
 	require_once("footer.php");
 	exit;
 }
+
+
+
+
+
 
 
 $text = "<div style='text-align:center'>
@@ -151,20 +165,35 @@ function plugin_viewscan()
 
 		$ns -> tablerender("Plugin View and Scan", "<div style='text-align:center'>Scan Completed<br /><br /><a href='".e_SELF."'>".DBLAN_13."</a></div>");
 
-		$text = "<div style='text-align:center'>  <table class='fborder' style='".ADMIN_WIDTH."'>
+		$text = "<form method='post' action='".e_ADMIN."db.php' id='plug_edit'>
+				<div style='text-align:center'>  <table class='fborder' style='".ADMIN_WIDTH."'>
 				<tr><td class='fcaption'>Name</td>
-				<td class='fcaption'>Path</td>
-				<td class='fcaption'>Installed plugin addons</td>";
+				<td class='fcaption'>Folder</td>
+				<td class='fcaption'>Installed plugin addons</td>
+				<td class='fcaption'>Installed</td>";
 
-        $sql -> db_Select("plugin", "*", "plugin_installflag='1' order by plugin_name ASC");
+        $sql -> db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
 		while($row = $sql-> db_Fetch()){
 			$text .= "<tr>
 				<td class='forumheader3'>".$row['plugin_name']."</td>
                 <td class='forumheader3'>".$row['plugin_path']."</td>
 				<td class='forumheader3'>".str_replace(",","<br />",$row['plugin_addons'])."</td>
+				<td class='forumheader3' style='text-align:center'>";
+            if($previous == $row['plugin_path'])
+			{
+				$delid 	= $row['plugin_id'];
+				$delname = $row['plugin_name'];
+				$text .= "<input class='button' type='submit' title='".LAN_DELETE."' value='Delete Duplicate' name='delplug[$delid]' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." ID:$delid [$delname]')\" />\n";
+			}
+			else
+			{
+            	$text .= "Installed";
+			}
+			$text .= "</td>
 			</tr>";
+			$previous = $row['plugin_path'];
 		}
-        $text .= "</table></div>";
+        $text .= "</table></div></form>";
         $ns -> tablerender(ADLAN_CL_7, $text);
 
 }
@@ -251,6 +280,15 @@ function del_pref_val(){
 	$e107cache->clear();
     $ns -> tablerender(LAN_DELETED,$message);
 
+}
+
+function delete_plugin_entry()
+{
+	global $sql,$ns;
+	$del = array_keys($_POST['delplug']);
+	$message = ($sql -> db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1")) ? LAN_DELETED : LAN_DELETED_FAILED;
+    $caption = ($message == LAN_DELETED) ? LAN_DELETED : LAN_ERROR;
+    $ns -> tablerender($caption,$message);
 }
 
 require_once("footer.php");
