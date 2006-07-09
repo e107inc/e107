@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-07-09 03:43:42 $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-09 07:20:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -169,7 +169,7 @@ function plugin_viewscan()
 				<div style='text-align:center'>  <table class='fborder' style='".ADMIN_WIDTH."'>
 				<tr><td class='fcaption'>Name</td>
 				<td class='fcaption'>Folder</td>
-				<td class='fcaption'>Installed plugin addons</td>
+				<td class='fcaption'>Includes addons</td>
 				<td class='fcaption'>Installed</td>";
 
         $sql -> db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
@@ -201,7 +201,7 @@ function plugin_viewscan()
 
 function pref_editor()
 {
-		global $pref,$ns;
+		global $pref,$ns,$tp;
 		ksort($pref);
 
 		$text = "<form method='post' action='".e_ADMIN."db.php' id='pref_edit'>
@@ -216,11 +216,14 @@ function pref_editor()
 
          foreach($pref as $key=>$val)
 		{
+			$ptext = (is_array($val)) ? "<pre>".print_r($val,TRUE)."</pre>" : htmlspecialchars($val);
+            $ptext = $tp -> textclean($ptext, 80);
+
 			$text .= "
-			<tr>
+				<tr>
 				<td class='forumheader3' style='width:40px;text-align:center'><input type='checkbox' name='delpref2[$key]' value='1' /></td>
 				<td class='forumheader3'>".$key."</td>
-                <td class='forumheader3' style='width:50%'>".show_pref_val($val)."</td>
+                <td class='forumheader3' style='width:50%'>".$ptext."</td>
 				<td class='forumheader3' style='width:20px;text-align:center'>
 					<input type='image' title='".LAN_DELETE."' src='".ADMIN_DELETE_ICON_PATH."' name='delpref[$key]' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [$key]')\" />
        			</td>
@@ -237,23 +240,7 @@ function pref_editor()
 
 }
 
-function show_pref_val($val){
-global $tp;
-	if(is_array($val))
-	{
-		foreach($val as $k=>$v)
-		{
-          	$ptext .= $k ." => ".show_pref_val($v)."<br />";
-		}
-	}
-	else
-	{
-    	$ptext .= htmlspecialchars($val);
-	}
 
-	return $tp -> textclean($ptext, 80);
-
-}
 
 function del_pref_val(){
 	global $pref,$ns,$e107cache;
