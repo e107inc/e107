@@ -33,7 +33,7 @@ a:hover, a.visit:hover {
 	color: #000000;
 }
 
-img {	
+img {
 	border: 0px;
 }
 
@@ -234,7 +234,7 @@ ul {
 }
 
 .news_info {
-	width: *;
+	width: auto;
 	background-color: #f7f7f9;
 	border-collapse: collapse;
 	border-spacing: 0px;
