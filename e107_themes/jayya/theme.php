@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-04-26 13:41:54 $
-|     $Author: sweetas $
+|     $Revision: 1.54 $
+|     $Date: 2006-07-09 19:51:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -69,7 +69,7 @@ $HEADER = "<table class='top_section'>
 <table class='main_section'>
 <tr style='display: none'>
 <td style='width: 170px'></td>
-<td style='width: *'></td>
+<td style='width: auto'></td>
 <td style='width: 170px'></td>
 </tr>
 
@@ -141,9 +141,9 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
 {NEWSICON}
 </td>
 <td style='width: 100%; padding: 0px; padding-bottom: 0px; padding-left: 2px'>
-".LAN_THEME_5." 
+".LAN_THEME_5."
 {NEWSAUTHOR}
- ".LAN_THEME_6." 
+ ".LAN_THEME_6."
 {NEWSDATE}
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
 <img src='".THEME_ABS."images/comments_16.png' style='width: 16px; height: 16px' alt='' />
@@ -186,9 +186,9 @@ function tablestyle($caption, $text, $mode){
 		$bodybreak = '<br />';
 		$but_border = '';
 	}
-	
+
 	$menu .= ($style && $style != 'default') ? ' non_default' : '';
-	
+
 	echo "<div class='cap_border".$but_border."'>";
 	if ($style == 'leftmenu') {
 		echo "<div class='left_caption'><div class='bevel'>".$caption."</div></div>";
@@ -244,7 +244,7 @@ $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fbo
 <td style='width: 80%; vertical-align: top' class='forumheader3'>
 {COMMENT}
 {RATING}
-{SIGNATURE} 
+{SIGNATURE}
 </td>
 </tr>
 {COMMENTEDIT}
