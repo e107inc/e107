@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-07-08 21:52:42 $
+|     $Revision: 1.47 $
+|     $Date: 2006-07-09 06:04:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -465,24 +465,50 @@ class e107plugin
 			while($row = $sql-> db_Fetch())
 			{
                 $tmp = explode(",",$row['plugin_addons']);
+				$path = $row['plugin_path'];
+
         		foreach($this->plugin_addons as $val)
 				{
                 	if(in_array($val,$tmp))
 					{
-						$path = $row['plugin_path'];
-						$pref[$val."_list"][$path] = $path;
+ 						$pref[$val."_list"][$path] = $path;
 					}
 				}
+                // search for .bb and .sc files.
+				$sc_array = array();
+				$bb_array = array();
+
+                foreach($tmp as $adds)
+				{
+                	if(ereg("\.sc$",$adds))
+					{
+                    	$sc_array[] = $adds;
+					}
+
+					if(ereg("\.bb$",$adds))
+					{
+                    	$bb_array[] = $adds;
+					}
+				}
+                if(count($bb_array) > 0){
+					sort($bb_array);
+                	$pref['bbcode_list'][$path] = $bb_array;
+				}
+				if(count($sc_array) > 0){
+					sort($sc_array);
+					$pref['shortcode_list'][$path] = $sc_array;
+                }
 			}
 		}
 
 	  	save_prefs();
-		return $pref;
+		return;
 
 	}
 
     // return a list of available plugin addons for the specified plugin. e_xxx etc.
 	function getAddons($plugin_path,$debug=FALSE){
+        global $fl;
 
 		$p_addons = "";
 		foreach($this->plugin_addons as $e_xxx)
@@ -490,6 +516,35 @@ class e107plugin
 			if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
 			{
 				$p_addons[] = $e_xxx;
+			}
+		}
+
+
+		if(!is_object($fl)){
+			require_once(e_HANDLER.'file_class.php');
+ 			$fl = new e_file;
+		}
+
+		// Grab List of Shortcodes & BBcodes
+		$shortcodeList	 = $fl->get_files(e_PLUGIN.$plugin_path, ".sc$", "standard", 1);
+		$bbcodeList		 = $fl->get_files(e_PLUGIN.$plugin_path, ".bb$", "standard", 1);
+
+
+		// Search Shortcodes
+		foreach($shortcodeList as $sc)
+		{
+			if(is_readable(e_PLUGIN.$plugin_path."/".$sc['fname']))
+			{
+				$p_addons[] = $sc['fname'];
+			}
+		}
+
+        // Search Bbcodes.
+        foreach($bbcodeList as $bb)
+		{
+			if(is_readable(e_PLUGIN.$plugin_path."/".$bb['fname']))
+			{
+				$p_addons[] = $bb['fname'];
 			}
 		}
 
