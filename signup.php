@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2006-07-04 18:22:38 $
+|     $Revision: 1.95 $
+|     $Date: 2006-07-10 23:35:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -223,12 +223,13 @@ if(USER)
 	exit;
 }
 
+// After clicking the activation link -------------------------
 if (e_QUERY)
 {
 	$qs = explode(".", e_QUERY);
 	if ($qs[0] == "activate" && (count($qs) == 3 || count($qs) == 4) && $qs[2])
 	{
-
+        // return the message in the correct language.
 		if($qs[3] && strlen($qs[3]) == 2 )
 		{
 			require_once(e_HANDLER."language_class.php");
@@ -242,6 +243,10 @@ if (e_QUERY)
 			{
 				require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
  			}
+		}
+		else
+		{
+            include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
 		}
 
 
