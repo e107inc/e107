@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-07-02 19:59:00 $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-10 17:44:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -154,13 +154,13 @@ if($_POST['cancel_emails']){
 		$message_body = $mail_head;
 		$message_body .= "</head>\n<body>\n";
 		$message_body .= "<div style='padding:10px;width:97%'><div class='forumheader3'>\n";
-		$message_body .= $tp -> toHTML($_POST['email_body'],TRUE)."</div></div></body></html>";
+		$message_body .= $tp -> toEmail($_POST['email_body'])."</div></div></body></html>";
 	}
 	else
 	{
 		$message_body = $mail_head;
 		$message_body .= "</head>\n<body>\n";
-		$message_body .= $tp -> toHTML($_POST['email_body'],TRUE)."</body></html>";
+		$message_body .= $tp -> toEmail($_POST['email_body'])."</body></html>";
 		$message_body = str_replace("&quot;", '"', $message_body);
 		$message_body = str_replace('src="', 'src="'.SITEURL, $message_body);
     }
