@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-07-07 20:18:55 $
+|     $Revision: 1.26 $
+|     $Date: 2006-07-10 08:50:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -47,13 +47,13 @@ if (e_QUERY) {
 }
 
 if (isset($_POST['wm_update'])) {
-	$wm_text = $tp->toDB($_POST['wm_text']);
+	$data = $tp->toDB($_POST['data']);
 	$wm_title = $tp->toDB($_POST['wm_caption']);
-	$message = ($sql->db_Update("generic", "gen_chardata ='$wm_text',gen_ip ='$wm_title', gen_intdata='".$_POST['wm_active']."' WHERE gen_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+	$message = ($sql->db_Update("generic", "gen_chardata ='$data',gen_ip ='$wm_title', gen_intdata='".$_POST['wm_active']."' WHERE gen_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 }
 
 if (isset($_POST['wm_insert'])) {
-	$wmtext = $tp->toDB($_POST['wm_text']);
+	$wmtext = $tp->toDB($_POST['data']);
 	$wmtitle = $tp->toDB($_POST['wm_caption']);
 	$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 }
@@ -76,7 +76,7 @@ if (isset($message)) {
 
 // Show Existing -------
 if ($action == "main" || $action == "") {
-	if ($wm_total = $sql->db_Select("generic", "gen_id, gen_intdata, gen_chardata", "gen_type='wmessage' ORDER BY gen_id ASC")) {
+	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) {
 		$wmList = $sql->db_getList();
 		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
 		$text .= "<div style='text-align:center'>
@@ -91,7 +91,7 @@ if ($action == "main" || $action == "") {
 			$text .= "
 			<tr>
 				<td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
-				<td style='width:70%' class='forumheader3'>".strip_tags($tp->toHTML($row['gen_chardata']))."</td>
+				<td style='width:70%' class='forumheader3'>".strip_tags($tp->toHTML($row['gen_ip']))."</td>
 				<td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>
             	<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>
 					<a href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
@@ -141,7 +141,7 @@ if ($action == "create" || $action == "edit")
 	$text .= "<tr>
 		<td style='width:20%' class='forumheader3'>".WMLAN_04."</td>
 		<td style='width:60%' class='forumheader3'>
-		<textarea class='tbox' id='wm_text' name='wm_text' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
+		<textarea class='tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
 		<br />";
 
 		$text .= display_help("helpb", "admin");
