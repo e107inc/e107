@@ -3,8 +3,8 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-06-30 22:02:13 $
+|     $Revision: 1.35 $
+|     $Date: 2006-07-10 05:07:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@
 
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {
 		global $tp;
-		$cat_link = $tp -> replaceConstants($cat_link);
+
 		$cat_link = (strpos($cat_link, '://') === FALSE && strpos($cat_link, 'mailto:') !== 0 ? e_HTTP.$cat_link : $cat_link);
 
 		if ($cat_open == 4 || $cat_open == 5){
@@ -45,7 +45,7 @@
 
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $params, $cat_open=FALSE) {
 		global $tp;
-		$cat_link = $tp -> replaceConstants($cat_link);
+
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
 
 		if ($cat_open == 4 || $cat_open == 5){
@@ -103,7 +103,7 @@
 	// Loops thru parents.--------->
     global $tp;
     foreach ($linklist['head_menu'] as $lk) {
-        $lk['link_url'] = $tp -> replaceConstants($lk['link_url']);
+        $lk['link_url'] = $tp -> replaceConstants($lk['link_url'],TRUE);
 		if ($params[0] == 'no_icons') {
 			$link_icon = 'no_icons';
 		} else {

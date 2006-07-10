@@ -6,7 +6,7 @@ $r="1";
 while($row = $sql -> db_Fetch()){
 		if($r <= "8"){
 			extract($row);
-			$link_url = $tp->replaceConstants($link_url);
+			$link_url = $tp->replaceConstants($link_url,TRUE);
 			if(!preg_match("#(http:|mailto:|ftp:|https:)#",$link_url)){
 				$link_url = e_HTTP.$link_url;
 			}
