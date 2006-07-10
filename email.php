@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-07-10 05:21:44 $
+|     $Revision: 1.17 $
+|     $Date: 2006-07-10 08:49:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -49,6 +49,7 @@ $emailurl = ($source == "referer") ? $_SERVER['HTTP_REFERER'] : SITEURL;
 $comments = $tp->post_toHTML($_POST['comment'], TRUE, 'retain_nl');
 $author = $tp->post_toHTML($_POST['author_name']);
 $email_send = check_email($_POST['email_send']);
+
 
 if (isset($_POST['emailsubmit']))
 {
@@ -125,7 +126,7 @@ if (isset($_POST['emailsubmit']))
         if($sql->db_Select("news", "*", "news_id='".intval($parms)."'"))
         {
             list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
-			$message = "<h3>".$news_title."</h3><br />".$news_body."<br />".$news_extended."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
+			$message = "<h3 class='email_heading'>".$news_title."</h3><br />".$news_body."<br />".$news_extended."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
             $message = $tp->toEmail($message);
 
         }
@@ -225,7 +226,7 @@ $text .= "</textarea>
 
 	if($use_imagecode)
 	{
-		$text .= "<tr><td>".LAN_EMAIL_8."</td><td>";
+		$text .= "<tr><td>".LAN_EMAIL_190."</td><td>";
 		$text .= $sec_img->r_image();
 		$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>
 			<input type='hidden' name='rand_num' value='".$sec_img->random_number."'></td></tr>";

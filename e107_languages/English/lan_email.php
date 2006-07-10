@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_email.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-10 08:49:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Email");
@@ -32,5 +32,6 @@ define("LAN_EMAIL_186", "Send News Item");
 define("LAN_EMAIL_187", "Email address to send to");
 define("LAN_EMAIL_188", "I thought you might be interested in this news story from");
 define("LAN_EMAIL_189", "I thought you might be interested in this article from");
+define("LAN_EMAIL_190", "Enter visible code");
 
 ?>
