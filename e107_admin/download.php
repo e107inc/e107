@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2006-07-04 20:07:48 $
+|     $Revision: 1.83 $
+|     $Date: 2006-07-10 02:36:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -600,8 +600,12 @@ class download {
 
 	}
 
+
+// ---------------------------------------------------------------------------
+
+
 	function create_download($sub_action, $id) {
-		global $cal,$tp, $sql, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
+		global $cal,$tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
 		$download_status[0] = DOWLAN_122;
 		$download_status[1] = DOWLAN_123;
 		$download_status[2] = DOWLAN_124;
@@ -642,17 +646,17 @@ class download {
 		if ($sub_action == "dlm" && !$_POST['submit']) {
 			if ($sql->db_Select("upload", "*", "upload_id='$id' ")) {
 				$row = $sql->db_Fetch();
-				extract($row);
-				$download_category = $upload_category;
-				$download_name = $upload_name.($upload_version ? " v" . $upload_version : "");
-				$download_url = $upload_file;
-				$download_author_email = $upload_email;
-				$download_author_website = $upload_website;
-				$download_description = $upload_description;
-				$download_image = $upload_ss;
-				$download_filesize = $upload_filesize;
-				$image_array[] = $upload_ss;
-				$download_author = substr($upload_poster, (strpos($upload_poster, ".")+1));
+
+				$download_category = $row['upload_category'];
+				$download_name = $row['upload_name'].($row['upload_version'] ? " v" . $row['upload_version'] : "");
+				$download_url = $row['upload_file'];
+				$download_author_email = $row['upload_email'];
+				$download_author_website = $row['upload_website'];
+				$download_description = $row['upload_description'];
+				$download_image = $row['upload_ss'];
+				$download_filesize = $row['upload_filesize'];
+				$image_array[] = array("path" => "", "fname" => $row['upload_ss']);
+				$download_author = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
 			}
 		}
 
@@ -691,7 +695,7 @@ class download {
 			<td style='width:80%' class='forumheader3'><div style='padding-bottom:5px'>".DOWLAN_131."&nbsp;&nbsp;
 
 		   <select name='download_url' class='tbox'>
-			<option></option>
+			<option value=''>&nbsp;</option>
 			";
 
 		$counter = 0;
@@ -740,7 +744,7 @@ class download {
 
 		if(!$sql -> db_Select("download_mirror"))
 		{
-			$text .= DOWLAN_144."</tr></tr>";
+			$text .= DOWLAN_144."</tr>";
 		}
 		else
 		{
@@ -757,7 +761,7 @@ class download {
 				$opt = ($count==1) ? "id='mirror'" : "";
 				$text .="<span $opt>
 				<select name='download_mirror_name[]' class='tbox'>
-					<option></option>";
+					<option value=''>&nbsp;</option>";
 
 				foreach($mirrorList as $mirror)	{
 					extract($mirror);
@@ -818,16 +822,25 @@ class download {
 			<td style='width:20%' class='forumheader3'>".DOWLAN_19.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<select name='download_image' class='tbox'>
-			<option value=''></option>";
+			<option value=''>&nbsp;</option>";
 
-			foreach($image_array as $img){
+			foreach($image_array as $img)
+			{
 				$fpath = str_replace(e_FILE."downloadimages/","",$img['path'].$img['fname']);
             	$sel = ($download_image == $fpath) ? " selected='selected'" : "";
             	$text .= "<option value='".$fpath."' $sel>".$fpath."</option>\n";
 			}
 
 		$text .= "
-			</select>
+			</select>";
+
+			if($sub_action == "dlm" && $download_image)
+			{
+            	$text .= "
+				<input type='hidden' name='move_image' value='1' />\n";
+			}
+
+		$text .= "
 			</td>
 			</tr>
 
@@ -835,7 +848,7 @@ class download {
 			<td style='width:20%' class='forumheader3'>".DOWLAN_20.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<select name='download_thumb' class='tbox'>
-			<option></option>
+			<option value=''>&nbsp;</option>
 			";
 
 			foreach($thumb_array as $thm){
@@ -923,13 +936,42 @@ class download {
 			";
 
 		if ($sub_action == "dlm") {
-			$text .= "<tr>
+			$text .= "
+
+			<tr>
+				<td style='width:30%' class='forumheader3'>".DOWLAN_153.":<br /></td>
+				<td style='width:70%' class='forumheader3'>
+				<select name='move_file' class='tbox'>
+				<option value=''>".LAN_NO."</option>
+				";
+
+            	$dl_dirlist = $fl->get_dirs(e_DOWNLOAD);
+               	if($dl_dirlist){
+					sort($dl_dirlist);
+					$text .= "<option value='".e_DOWNLOAD."'>/</option>\n";
+					foreach($dl_dirlist as $dirs)
+					{
+        				$text .= "\t\t\t\t<option value='". e_DOWNLOAD.$dirs."/'>".$dirs."/</option>\n";
+					}
+				}
+				else
+				{
+                	$text .= "\t\t\t\t<option value='".e_DOWNLOAD."'>".LAN_YES."</option>\n";
+				}
+
+			$text .= "</select>
+				</td>
+			</tr>
+
+
+			<tr>
 				<td style='width:30%' class='forumheader3'>".DOWLAN_103.":<br /></td>
 				<td style='width:70%' class='forumheader3'>
 				<input type='checkbox' name='remove_upload' value='1' />
 				<input type='hidden' name='remove_id' value='$id' />
-				</td></tr>
-				";
+				</td>
+			</tr>
+            ";
 		}
 
 		$text .= "
@@ -951,10 +993,19 @@ class download {
 		$ns->tablerender(ADLAN_24, $text);
 	}
 
+
+// -----------------------------------------------------------------------------
+
+
 	function show_message($message) {
 		global $ns;
 		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
+
+
+// -----------------------------------------------------------------------------
+
+
 
 	function submit_download($sub_action, $id) {
 		global $tp, $sql, $DOWNLOADS_DIRECTORY, $e_event;
@@ -1001,6 +1052,45 @@ class download {
 			}
 		}
 
+		//  ----   Move Images and Files ------------
+
+		if($_POST['move_image'])
+		{
+			if($_POST['download_thumb'])
+			{
+				$oldname = e_FILE."public/".$_POST['download_thumb'];
+				$newname = e_FILE."downloadthumbs/".$_POST['download_thumb'];
+				if(!$this -> move_file($oldname,$newname))
+				{
+            		return;
+				}
+			}
+			if($_POST['download_image'])
+			{
+				$oldname = e_FILE."public/".$_POST['download_image'];
+				$newname = e_FILE."downloadimages/".$_POST['download_image'];
+				if(!$this -> move_file($oldname,$newname))
+				{
+            		return;
+				}
+			}
+		}
+
+        if($_POST['move_file'] && $_POST['download_url'])
+		{
+        	$oldname = e_FILE."public/".$_POST['download_url'];
+			$newname = $_POST['move_file'].$_POST['download_url'];
+			if(!$this -> move_file($oldname,$newname))
+			{
+            	return;
+			}
+            $durl = str_replace(e_DOWNLOAD,"",$newname);
+		}
+
+
+       // ------------------------------------------
+
+
 		$_POST['download_description'] = $tp->toDB($_POST['download_description']);
 		$_POST['download_name'] = $tp->toDB($_POST['download_name']);
 		$_POST['download_author'] = $tp->toDB($_POST['download_author']);
@@ -1044,6 +1134,9 @@ class download {
 			}
 		}
 	}
+
+
+// -----------------------------------------------------------------------------
 
 	function show_categories($sub_action, $id)
 	{
@@ -1493,7 +1586,46 @@ class download {
 		}
 	}
 
-}
+ // ---------------------------------------------------------------------------
+
+    function move_file($oldname,$newname)
+	{
+		global $ns;
+		if(file_exists($newname))
+		{
+        	return TRUE;
+		}
+
+		if(!file_exists($oldname) || is_dir($oldname))
+		{
+			$ns -> tablerender(LAN_ERROR,DOWLAN_68 . " : ".$oldname);
+        	return FALSE;
+		}
+
+		$directory = dirname($newname);
+		if(is_writable($directory))
+		{
+			if(!rename($oldname,$newname))
+			{
+				$ns -> tablerender(LAN_ERROR,DOWLAN_152." ".$oldname ." -> ".$newname);
+				return FALSE;
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+		else
+		{
+            $ns -> tablerender(LAN_ERROR,$directory ." ".LAN_NOTWRITABLE);
+			return FALSE;
+		}
+	}
+
+// -------------------------------------------------------------------------
+
+
+} // end class.
 
 
 function download_adminmenu($parms) {
@@ -1501,6 +1633,7 @@ function download_adminmenu($parms) {
 	global $action;
 	$download->show_options($action);
 }
+
 
 
 

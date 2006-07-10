@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-07-04 20:07:48 $
+|     $Revision: 1.16 $
+|     $Date: 2006-07-10 02:36:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -132,4 +132,7 @@ define("DOWLAN_149", "Or click here to use an external file");
 
 define("DOWLAN_150", "Email admin when broken download reported");
 define("DOWLAN_151", "Broken-download reporting available to");
+
+define("DOWLAN_152", "Couldn't move file");
+define("DOWLAN_153", "Move file into download folder");   
 ?>
