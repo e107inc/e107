@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-07-04 02:32:05 $
+|     $Revision: 1.16 $
+|     $Date: 2006-07-10 05:21:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ if (isset($_POST['emailsubmit']))
         if($sql->db_Select("news", "*", "news_id='".intval($parms)."'"))
         {
             list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
-			$message = $news_title."<br /><br />".$news_body."<br />".$news_extended."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
+			$message = "<h3>".$news_title."</h3><br />".$news_body."<br />".$news_extended."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
             $message = $tp->toEmail($message);
 
         }
@@ -180,6 +180,11 @@ if (isset($_POST['emailsubmit']))
 		$ns->tablerender(LAN_EMAIL_12, "<div style='text-align:center'>".$error."</div>");
 	}
 }
+
+
+// --------------------- Form -------------------------------------------------
+
+
 
 $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 	<table>";
