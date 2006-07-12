@@ -11,14 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-07-02 18:07:58 $
+|     $Revision: 1.34 $
+|     $Date: 2006-07-12 08:15:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+	if(is_readable(THEME."email_template.php"))
+	{
+    	require_once(THEME."email_template.php");
+	}
+	else
+	{
+    	require_once(e_THEME."templates/email_template.php");
+	}
+
+    if(isset($EMAIL_HEADER) && isset($EMAIL_FOOTER) && is_object($tp)){
+		$EMAIL_HEADER = $tp->parseTemplate($EMAIL_HEADER);
+		$EMAIL_FOOTER = $tp->parseTemplate($EMAIL_FOOTER);
+	}
 /*
 Please note that mailed attachments have been found to be corrupted using php 4.3.3
 php 4.3.6 does NOT have this problem.

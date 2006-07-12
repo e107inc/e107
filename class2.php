@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.291 $
-|     $Date: 2006-07-08 21:55:09 $
+|     $Revision: 1.292 $
+|     $Date: 2006-07-12 08:15:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -391,13 +391,7 @@ if (isset($pref['notify']) && $pref['notify'] == true) {
 $sql -> db_Mark_Time('Start: Init session');
 init_session();
 
-if(isset($pref['e_module_list']) && $pref['e_module_list']){
-	foreach ($pref['e_module_list'] as $mod){
-		if (is_readable(e_PLUGIN."{$mod}/e_module.php")) {
-			require_once(e_PLUGIN."{$mod}/e_module.php");
-		}
-	}
-}
+
 
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
@@ -624,6 +618,19 @@ if(!defined("THEME")){
 	}
 }
 
+// Load e_modules after all the constants, but before the themes, so they can be put to use.
+
+if(isset($pref['e_module_list']) && $pref['e_module_list']){
+	foreach ($pref['e_module_list'] as $mod){
+		if (is_readable(e_PLUGIN."{$mod}/e_module.php")) {
+			require_once(e_PLUGIN."{$mod}/e_module.php");
+		}
+	}
+}
+
+// --------------------------------------------------------------
+
+
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin") !== FALSE || (isset($eplug_admin) && $eplug_admin == TRUE))) {
 	if (file_exists(THEME.'admin_theme.php')) {
 		require_once(THEME.'admin_theme.php');
@@ -685,6 +692,10 @@ if (!class_exists('convert'))
 {
 	require_once(e_HANDLER."date_handler.php");
 }
+
+
+
+
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");

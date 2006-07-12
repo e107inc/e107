@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-07-10 08:49:15 $
+|     $Revision: 1.18 $
+|     $Date: 2006-07-12 08:15:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -140,33 +140,14 @@ if (isset($_POST['emailsubmit']))
 
 	if ($error == "")
 	{
-    // Prepare Email Headers.
 
-	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
-	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />\n";
-	$CSS = file_get_contents(THEME."style.css");
-	$HEAD .= "<style>\n".$CSS."\n</style>";
-	$HEAD .= "</head>\n";
-	$HEAD .= "<body>\n";
-	$FOOT = "\n</body>\n</html>\n";
-
-    // Load Email Template
-	if(is_readable(THEME."email_template.php"))
-	{
-    	require_once(THEME."email_template.php");
-	}
-	else
-	{
-    	require_once(e_THEME."templates/email_template.php");
-	}
-    $search = array("{BODY}","{COMMENTS}");
-	$replace = array($message,($tp->toHTML($comments)));
-	$email_body = str_replace($search,$replace,$DEFAULTEMAIL_TEMPLATE);
-	$email_body = $tp->parseTemplate($email_body);
-
+	    // Load Mail Handler and Email Template.
 		require_once(e_HANDLER."mail.php");
-		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$HEAD.$email_body.$FOOT))
+	    $email_body = $EMAIL_HEADER;
+		$email_body .= (trim($comments) != "") ? $tp->toEmail($comments)."<hr />" : "";
+		$email_body .= $tp->toEmail($message).$EMAIL_FOOTER;
+
+		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$email_body))
 		{
 			$text = "<div style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
 		}
