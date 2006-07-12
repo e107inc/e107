@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-07-04 02:32:05 $
+|     $Revision: 1.9 $
+|     $Date: 2006-07-12 08:15:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,14 +29,24 @@ $SIGNUPEMAIL_ATTACHMENTS = ""; // files-path array of attachments. eg. array(e_F
 $SIGNUPEMAIL_BACKGROUNDIMAGE = "";// relative path to a background image eg. e_IMAGE."mybackground.jpg";
 
 
-$DEFAULTEMAIL_TEMPLATE = "
+$EMAIL_HEADER = "
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+<html xmlns='http://www.w3.org/1999/xhtml' >
+<head><meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+{STYLESHEET}
+</head>
+<body>
 <div style='padding:10px'>
-{COMMENTS}
-<hr />
-{BODY}
+";
+
+
+$EMAIL_FOOTER = "
 <br /><br />
 {SITENAME=link}
-</div>";
+</div>
+</body>
+</html>";
+
 
 
 $SIGNUPEMAIL_TEMPLATE = "
