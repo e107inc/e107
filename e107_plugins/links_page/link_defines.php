@@ -11,15 +11,15 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_defines.php,v $
-|    $Revision: 1.4 $
-|    $Date: 2006-06-02 15:53:14 $
-|    $Author: lisa_ $
+|    $Revision: 1.5 $
+|    $Date: 2006-07-12 16:14:55 $
+|    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$imagedir = e_IMAGE."/admin_images/";
+$imagedir = e_IMAGE."admin_images/";
 if (!defined("IMAGE_NEW")){ define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/".IMODE."/new.png")); }
 if (!defined('LINK_ICON_EDIT')) { define("LINK_ICON_EDIT", "<img src='".$imagedir."edit_16.png' alt='' style='border:0; cursor:pointer;' />"); }
 if (!defined('LINK_ICON_DELETE')) { define("LINK_ICON_DELETE", "<img src='".$imagedir."delete_16.png' alt='' style='border:0; cursor:pointer;' />"); }
