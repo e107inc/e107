@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.292 $
-|     $Date: 2006-07-12 08:15:58 $
+|     $Revision: 1.293 $
+|     $Date: 2006-07-12 16:09:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -391,13 +391,31 @@ if (isset($pref['notify']) && $pref['notify'] == true) {
 $sql -> db_Mark_Time('Start: Init session');
 init_session();
 
+// for multi-language these definitions needs to come after the language loaded.
+define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs no_make_clickable")));
+define("SITEBUTTON", $pref['sitebutton']);
+define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
+define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
+define("SITEADMIN", $pref['siteadmin']);
+define("SITEADMINEMAIL", $pref['siteadminemail']);
+define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
+define("SITECONTACTINFO", $tp->toHTML($pref['sitecontactinfo'], TRUE, "emotes_off defs"));
 
-
+// legacy module.php file loading. 
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
 	foreach ($mods as $mod) {
 		if (is_readable(e_PLUGIN."{$mod}/module.php")) {
 			require_once(e_PLUGIN."{$mod}/module.php");
+		}
+	}
+}
+
+// Load e_modules after all the constants, but before the themes, so they can be put to use.
+if(isset($pref['e_module_list']) && $pref['e_module_list']){
+	foreach ($pref['e_module_list'] as $mod){
+		if (is_readable(e_PLUGIN."{$mod}/e_module.php")) {
+			require_once(e_PLUGIN."{$mod}/e_module.php");
 		}
 	}
 }
@@ -506,15 +524,6 @@ if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "in
 
 $sql->db_Delete("tmp", "tmp_time < '".(time() - 300)."' AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
 
-// for multi-language these definitions needs to come after the language loaded.
-define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs no_make_clickable")));
-define("SITEBUTTON", $pref['sitebutton']);
-define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
-define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
-define("SITEADMIN", $pref['siteadmin']);
-define("SITEADMINEMAIL", $pref['siteadminemail']);
-define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
-define("SITECONTACTINFO", $tp->toHTML($pref['sitecontactinfo'], TRUE, "emotes_off defs"));
 
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
@@ -618,15 +627,7 @@ if(!defined("THEME")){
 	}
 }
 
-// Load e_modules after all the constants, but before the themes, so they can be put to use.
 
-if(isset($pref['e_module_list']) && $pref['e_module_list']){
-	foreach ($pref['e_module_list'] as $mod){
-		if (is_readable(e_PLUGIN."{$mod}/e_module.php")) {
-			require_once(e_PLUGIN."{$mod}/e_module.php");
-		}
-	}
-}
 
 // --------------------------------------------------------------
 
