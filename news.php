@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2006-06-24 02:51:03 $
+|     $Revision: 1.104 $
+|     $Date: 2006-07-12 20:20:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -289,7 +289,8 @@ if($tmp_cache = checkCache($cacheString))
 		}
 
 	}
-	renderCache($tmp_cache, TRUE);
+
+  	renderCache($tmp_cache, TRUE);
 }
 
 
@@ -405,6 +406,9 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 		$ix->render_newsitem($news);
 		$i++;
 	}
+	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
+	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 
 	$cache_data = ob_get_clean();
 	require_once(HEADERF);
@@ -468,9 +472,9 @@ if ($action != "item") {
 	if (is_numeric($action)){
 		$action = "";
 	}
-	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
-	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
+ //	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
+ //	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+ //	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 }
 
 if(is_dir("remotefile")) {
