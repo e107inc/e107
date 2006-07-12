@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-07-10 17:36:02 $
+|     $Revision: 1.58 $
+|     $Date: 2006-07-12 07:30:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -75,9 +75,15 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	{
         $BBCODE_TEMPLATE = $temp[$mode];
 	}
-
- 	require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
-  	return $tp->parseTemplate($BBCODE_TEMPLATE, FALSE, $bbcode_shortcodes);
+    if(is_readable(e_FILE."shortcode/batch/bbcode_shortcodes.php"))
+	{
+  		require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
+  		return $tp->parseTemplate($BBCODE_TEMPLATE, FALSE, $bbcode_shortcodes);
+	}
+	else
+	{
+    	return "ERROR: ".e_FILE."shortcode/batch/bbcode_shortcodes.php IS NOT READABLE.";
+	}
 
 }
 
