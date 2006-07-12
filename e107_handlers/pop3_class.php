@@ -1,6 +1,6 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
-// $Id: pop3_class.php,v 1.2 2006-06-04 08:55:21 e107coders Exp $
+// $Id: pop3_class.php,v 1.3 2006-07-12 07:41:44 e107coders Exp $
 // Main ReciveMail Class File - Version 1.0 (01-03-2006)
 /*
  * File: recivemail.class.php
@@ -10,6 +10,9 @@ if (!defined('e107_INIT')) { exit; }
  * Author: Mitul Koradia
  * Email: mitulkoradia@gmail.com
  * Cell : +91 9879697592
+
+Modified by CaMer0n (www.e107coders.org)
+
  */
 class receiveMail
 {
@@ -58,7 +61,8 @@ class receiveMail
 					'toNameOth'=>$sender_replyto->personal,
 					'subject'=>$mail_header->subject,
 					'to'=>strtolower($mail_header->toaddress),
-					'bounce'=>$stat
+					'bounce'=>$stat,
+					'date'=>$mail_header->date
 				);
 
 		return $mail_details;
@@ -121,7 +125,7 @@ class receiveMail
 		$headers=imap_headers($this->marubox);
 		return count($headers);
 	}
-	function GetAttech($mid,$path) // Get Atteced File from Mail
+	function GetAttach($mid,$path) // Get Atteced File from Mail
 	{
 		$struckture = imap_fetchstructure($this->marubox,$mid);
 		$ar="";
@@ -153,10 +157,13 @@ class receiveMail
 		$ar=substr($ar,0,(strlen($ar)-1));
 		return $ar;
 	}
-	function getBody($mid) // Get Message Body
+	function getBody($mid,$mode="") // Get Message Body
 	{
-		$body = $this->get_part($this->marubox, $mid, "TEXT/HTML");
-		if ($body == "")
+		if($mode != "plain")
+		{
+			$body = $this->get_part($this->marubox, $mid, "TEXT/HTML");
+		}
+		if (($body == "") || $mode == 'plain')
 			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN");
 		if ($body == "") {
 			return "";
