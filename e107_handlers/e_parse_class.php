@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.157 $
-|     $Date: 2006-07-04 16:25:23 $
+|     $Revision: 1.158 $
+|     $Date: 2006-07-12 07:55:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -530,7 +530,7 @@ class e_parse
     function toEmail($text)
 	{
 	  	$text = $this->replaceConstants($text,"full");
-    	$text = $this->toHTML($text,TRUE);
+    	$text = $this->toHTML($text,TRUE,"parse_sc");
         return $text;
 	}
 
