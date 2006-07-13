@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-22 19:53:06 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-13 21:14:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -40,8 +40,6 @@ $eplug_menu_name = "newsfeed_menu";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
-
-$eplug_sc = array("");
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/newsfeed_32.png";

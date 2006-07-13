@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-13 21:14:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,6 @@ $eplug_menu_name = "poll_menu";
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
 
-$eplug_sc = array("");
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/polls_32.png";

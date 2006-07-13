@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-20 20:13:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-13 21:14:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,6 @@ $eplug_menu_name = "";
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
 
-$eplug_sc = array("");
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/featurebox_32.png";

@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-13 21:14:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_PLUGIN."newsletter/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."newsletter/languages/English.php");
-	
+
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = NLLAN_01;
 $eplug_version = "1.0";
@@ -31,29 +31,27 @@ $eplug_email = "jalist@e107.org";
 $eplug_description = NLLAN_02;
 $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";
-	
+
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "newsletter";
-	
+
 // Name of menu item for plugin ----------------------------------------------------------------------------------
 $eplug_menu_name = "newsletter_menu";
-	
+
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
-	
-$eplug_sc = array("");
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/nl_32.png";
 $eplug_icon_small = $eplug_folder."/images/nl_16.png";
 $eplug_caption = NLLAN_03;
-	
+
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
-	
+
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array("newsletter");
-	
+
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
 
@@ -71,13 +69,13 @@ $eplug_tables = array(
   PRIMARY KEY  (newsletter_id)
   ) TYPE=MyISAM;");
 
-	
+
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = FALSE;
 $eplug_link_name = "";
 $eplug_link_url = "";
-	
+
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = NLLAN_04;
-	
+
 ?>

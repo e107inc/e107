@@ -49,11 +49,6 @@ $eplug_caption = CONTENT_PLUGIN_LAN_3;
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
 
-// List of comment_type ids used by this plugin. ----------------------------- 
-$eplug_comment_ids = array("pcontent");
-
-// List of bbcode -----------------------------------------------------------------------------------------------
-//$eplug_bb = array('pcontent');
 
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
@@ -87,8 +82,8 @@ $eplug_tables = array(
 	content_layout varchar(255) NOT NULL default '',
 	PRIMARY KEY  (content_id)
 	) TYPE=MyISAM;",
-	"INSERT INTO ".MPREFIX."pcontent VALUES (1, 'content', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1', '0', '', '')", 
-	"INSERT INTO ".MPREFIX."pcontent VALUES (2, 'article', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '2', '0', '', '')", 
+	"INSERT INTO ".MPREFIX."pcontent VALUES (1, 'content', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1', '0', '', '')",
+	"INSERT INTO ".MPREFIX."pcontent VALUES (2, 'article', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '2', '0', '', '')",
 	"INSERT INTO ".MPREFIX."pcontent VALUES (3, 'review', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '3', '0', '', '')"
 );
 

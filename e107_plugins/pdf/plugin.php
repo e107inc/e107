@@ -28,7 +28,6 @@ $eplug_description = PDF_PLUGIN_LAN_2;
 $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";        // leave blank if no readme file
 
-$eplug_sc = array('PDF');
 
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "pdf";
@@ -46,9 +45,6 @@ $eplug_caption = PDF_PLUGIN_LAN_3;
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = "";
-
-// List of bbcode -----------------------------------------------------------------------------------------------
-//$eplug_bb = array('pcontent');
 
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = "";

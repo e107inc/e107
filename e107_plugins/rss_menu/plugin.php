@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-08 03:17:43 $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-13 21:14:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -50,12 +50,6 @@ $eplug_caption			= LAN_CONFIGURE;
 
 // List of preferences --------------------------------------------------------
 $eplug_prefs			= '';
-
-// List of comment_type ids used by this plugin. ------------------------------
-$eplug_comment_ids		= '';
-
-// List of bbcode -------------------------------------------------------------
-$eplug_bb				= '';
 
 // List of table names --------------------------------------------------------
 $eplug_table_names		= array("rss");
