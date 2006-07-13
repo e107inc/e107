@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-07-09 07:18:42 $
+|     $Revision: 1.44 $
+|     $Date: 2006-07-13 20:37:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -47,12 +47,12 @@ class e_bbcode
 		}
 
 
-		// grab list of plugin bbcodes. 
+		// grab list of plugin bbcodes.
 		if(isset($pref['bbcode_list']) && $pref['bbcode_list'] != '')
 		{
         	foreach($pref['bbcode_list'] as $path=>$namearray)
 			{
-				foreach($namearray as $code)
+				foreach($namearray as $code=>$uclass)
 				{
                 	$this->bbLocation[$code] = $path;
 				}

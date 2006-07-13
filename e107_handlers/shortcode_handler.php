@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.30 $
-| $Date: 2006-07-09 07:18:42 $
+| $Revision: 1.31 $
+| $Date: 2006-07-13 20:37:40 $
 | $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,11 +38,12 @@ class e_shortcode {
 		{
         	foreach($pref['shortcode_list'] as $path=>$namearray)
 			{
-				foreach($namearray as $code)
+				foreach($namearray as $code=>$uclass)
 				{
 					$code = strtoupper($code);
 					$this->registered_codes[$code]['type'] = 'plugin';
                 	$this->registered_codes[$code]['path'] = $path;
+                  //  $this->registered_codes[$code]['perms'] = $uclass;
 				}
 			}
 		}
