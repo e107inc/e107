@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.109 $
-|		$Date: 2006-06-21 06:55:39 $
+|		$Revision: 1.110 $
+|		$Date: 2006-07-13 10:01:10 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1984,17 +1984,10 @@ class contentform{
 			$array		= $aa -> getCategoryTree("", "", TRUE);
 			$catarray	= array_keys($array);
 			$content_contentmanager_table_string = "";
-			//$content_pref = '';
 			foreach($catarray as $catid){
 				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".intval($catid)."' ")){
 					$row = $sql -> db_Fetch();
 					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
-
-					//$content_pref["content_manager_approve"]
-					//$content_pref["content_manager_personal"]
-					//$content_pref["content_manager_category"]
-
-					//echo $row['content_heading']." - ".$content_pref["content_manager_approve"]." - ".$content_pref["content_manager_personal"]." - ".$content_pref["content_manager_category"]."<br />";
 					if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
 						$personalmanagercheck = TRUE;
 						$content_contentmanager_table_string .= $tp -> parseTemplate($CONTENT_CONTENTMANAGER_TABLE, FALSE, $content_shortcodes);

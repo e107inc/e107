@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.61 $
-|		$Date: 2006-05-31 21:29:59 $
+|		$Revision: 1.62 $
+|		$Date: 2006-07-13 10:01:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -469,8 +469,10 @@ function admin_content_config_adminmenu(){
 				$var['option']['text']			= CONTENT_ADMIN_MENU_LAN_6;
                 $var['option']['link']			= e_SELF."?option";
 
-				$var['manager']['text']			= CONTENT_ADMIN_MENU_LAN_17;
-                $var['manager']['link']			= e_SELF."?manager";
+				if(getperms("0")){ 
+					$var['manager']['text']			= CONTENT_ADMIN_MENU_LAN_17;
+					$var['manager']['link']			= e_SELF."?manager";
+				}
 
                 if($submittedcontents = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer ='sa' ")){
                         $var['submitted']['text']	= CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";

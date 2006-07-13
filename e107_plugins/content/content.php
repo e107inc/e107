@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.99 $
-|		$Date: 2006-06-21 18:29:51 $
+|		$Revision: 1.100 $
+|		$Date: 2006-07-13 10:01:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -139,10 +139,12 @@ if(!e_QUERY){
 		show_content_cat_all();
 
 	//category of parent='2' and content_id='5'
-	}elseif( $qs[0] == "cat" && is_numeric($qs[1]) && (!isset($qs[2]) || $qs[2] == "comment" || substr($qs[2],0,5) == "order") ){
+	}elseif( $qs[0] == "cat" && is_numeric($qs[1]) && (!isset($qs[2]) || $qs[2] == "view" || $qs[2] == "comment" || substr($qs[2],0,5) == "order") ){
 		
 		if( isset($qs[2]) && $qs[2] == "comment" ){
 			show_content_cat("comment");
+		}elseif( isset($qs[2]) && $qs[2] == "view" ){
+			show_content_cat('view');
 		}else{
 			show_content_cat();
 		}
@@ -373,18 +375,15 @@ function show_content(){
 						if(isset($row['content_pref']) && $row['content_pref']){
 							$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 						}
-						//assign new preferences
+						/*
 						if(getperms("0") ){
 							$personalmanagercheck = TRUE;
 							break;
 						}
-						$contentid = $row['content_id'];
-						if(isset($content_pref["content_manager_allowed"]) ){
-							$pcm = explode(",", $content_pref["content_manager_allowed"]);
-							if(in_array(USERID, $pcm)){
-								$personalmanagercheck = TRUE;
-								break;
-							}
+						*/
+						if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
+							$personalmanagercheck = TRUE;
+							break;
 						}
 					}
 				}
@@ -724,6 +723,10 @@ function show_content_cat($mode=""){
 			if(!$resultparent = $sql -> db_Select($plugintable, "*", $qry )){
 				header("location:".e_SELF."?cat.list.".$mainparent); exit;
 			}else{
+				//if 'view' override the items pref to show only limited text adn show full catetgory text instead
+				if($mode=='view'){
+					$content_pref['content_cat_text_char'] = 'all';
+				}
 				$row = $sql -> db_Fetch();
 				$date	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_DATE}', FALSE, $content_shortcodes);
 				$auth	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
@@ -745,7 +748,7 @@ function show_content_cat($mode=""){
 			echo $cachecheck;
 			return;
 		}
-		if(!$mode || $mode == ""){
+		if(!$mode || $mode == "" || $mode='view'){
 
 			$check			= (isset($qs[1]) && is_numeric($qs[1]) ? intval($qs[1]) : intval($mainparent));
 			$array1			= $aa -> getCategoryTree("", $check, TRUE);
