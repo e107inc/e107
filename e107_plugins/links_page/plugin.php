@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-06-25 05:30:05 $
+|     $Revision: 1.18 $
+|     $Date: 2006-07-13 21:14:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -50,10 +50,6 @@ $eplug_caption = LCLAN_PLUGIN_LAN_3;
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
-
-// List of comment_type ids used by this plugin. -----------------------------
-$eplug_comment_ids = array("links_page");
-
 
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
