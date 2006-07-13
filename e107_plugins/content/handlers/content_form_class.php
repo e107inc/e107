@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.110 $
-|		$Date: 2006-07-13 10:01:10 $
+|		$Revision: 1.111 $
+|		$Date: 2006-07-13 11:43:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -544,9 +544,9 @@ class contentform{
 						$hidden = "";
 						if($mode == "contentmanager"){
 							if($qs[1] == "edit"){
-								$hidden = $rs -> form_hidden("parent", $row['content_parent']);
+								$hidden .= $rs -> form_hidden("parent", $row['content_parent']);
 							}else{
-								$hidden = $rs -> form_hidden("parent", intval($qs[2]));
+								$hidden .= $rs -> form_hidden("parent", intval($qs[2]));
 							}
 						}else{
 							if($mode == "submit"){
@@ -564,7 +564,7 @@ class contentform{
 						//heading
 						$row['content_heading'] = (isset($row['content_heading']) ? $row['content_heading'] : "");
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_11;
-						$TOPIC_FIELD = $rs -> form_text("content_heading", 74, $row['content_heading'], 250).$hidden;
+						$TOPIC_FIELD = $rs -> form_text("content_heading", 74, $row['content_heading'], 250);
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 						if($checksubheading){
