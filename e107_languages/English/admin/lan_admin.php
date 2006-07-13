@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-07-08 21:53:58 $
+|     $Revision: 1.48 $
+|     $Date: 2006-07-13 08:04:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -264,7 +264,7 @@ define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
 
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
-
+define("LAN_CONFIGURE", "Configure");   
 
 
 ?>
