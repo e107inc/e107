@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2006-05-31 21:29:59 $
+|		$Revision: 1.19 $
+|		$Date: 2006-07-13 10:01:10 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -69,12 +69,13 @@ if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
 }
 // ##### DB ---------------------------------------------------------------------------------------
 
-require_once(HEADERF);
 
 //include js
 function headerjs(){
 	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
 }
+
+require_once(HEADERF);
 
 if(isset($_POST['create_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){

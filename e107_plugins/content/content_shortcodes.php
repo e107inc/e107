@@ -365,7 +365,7 @@ SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_HEADING
 global $CONTENT_CAT_LIST_TABLE_HEADING, $tp, $row, $totalparent, $tp;
-return ($totalparent > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
+return ($totalparent > 0 ? "<a href='".e_SELF."?cat.".$row['content_id'].".view'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_SUMMARY
@@ -387,7 +387,7 @@ if($row['content_text'] && isset($content_pref["content_cat_text"]) && $content_
 		$words = explode(" ", $rowtext);
 		$CONTENT_CAT_LIST_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_cat_text_char"]));
 		if($content_pref["content_cat_text_link"]){
-			$CONTENT_CAT_LIST_TABLE_TEXT .= " <a href='".e_SELF."?cat.".$row['content_id']."'>".$content_pref["content_cat_text_post"]."</a>";
+			$CONTENT_CAT_LIST_TABLE_TEXT .= " <a href='".e_SELF."?cat.".$row['content_id'].".view'>".$content_pref["content_cat_text_post"]."</a>";
 		}else{
 			$CONTENT_CAT_LIST_TABLE_TEXT .= " ".$content_pref["content_cat_text_post"];
 		}
