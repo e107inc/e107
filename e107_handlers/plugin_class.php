@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-07-09 07:21:39 $
+|     $Revision: 1.50 $
+|     $Date: 2006-07-13 20:37:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -482,33 +482,38 @@ class e107plugin
 				{
                 	if(ereg("\.sc$",$adds))
 					{
-                    	$sc_array[] = substr($adds, 0,-3); // remove the .sc
+						$sc_name = substr($adds, 0,-3);  // remove the .sc
+                    	$sc_array[$sc_name] = "0"; // default userclass.
 					}
 
 					if(ereg("\.bb$",$adds))
 					{
-                    	$bb_array[] = substr($adds, 0,-3); // remove the .bb
+						$bb_name = substr($adds, 0,-3); // remove the .bb
+                    	$bb_array[$bb_name] = "0"; // default userclass.
 					}
 				}
-                if(count($bb_array) > 0){
-					sort($bb_array);
+
+                if(count($bb_array) > 0)
+				{
+					ksort($bb_array);
                 	$pref['bbcode_list'][$path] = $bb_array;
+
 				}
 				else
 				{
                     unset($pref['bbcode_list'][$path]);
 				}
 				if(count($sc_array) > 0){
-					sort($sc_array);
+					ksort($sc_array);
 					$pref['shortcode_list'][$path] = $sc_array;
                 }
 				else
 				{
-                    unset($pref['bbcode_list'][$path]);
+                    unset($pref['shortcode_list'][$path]);
 				}
 			}
 		}
-      
+
 	  	save_prefs();
 		return;
 
