@@ -11,13 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-25 20:17:09 $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-16 19:41:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $sc_style['LM_SIGNUP_LINK']['pre'] = "<br />[ ";
 $sc_style['LM_SIGNUP_LINK']['post'] = " ]";
+
+    $sc_style['LM_REMEMBERME']['pre'] = "<br />";
+	$sc_style['LM_REMEMBERME']['post'] = "";
+
 if (!isset($LOGIN_MENU_FORM)){
 
 	$LOGIN_MENU_FORM = "
@@ -39,5 +43,22 @@ if (!isset($LOGIN_MENU_FORM)){
 	[ {LM_FPW_LINK} ]
 	</div>
 	";
+}
+
+if (!isset($LOGIN_MENU_LOGGED)){
+    $sc_style['LM_ADMINLINK']['pre'] = "";
+	$sc_style['LM_ADMINLINK']['post'] = "<br />";
+
+	$LOGIN_MENU_LOGGED = "
+		{LM_MAINTENANCE}
+		{LM_ADMINLINK_BULLET} {LM_ADMINLINK}
+		{LM_BULLET} {LM_USERSETTINGS}<br />
+		{LM_BULLET}	{LM_PROFILE}<br />
+		{LM_BULLET} {LM_LOGOUT}
+	";
+}
+
+if (!isset($LOGIN_MENU_MESSAGE)){
+	$LOGIN_MENU_MESSAGE = '<div style="text-align: center;">{LM_MESSAGE}</div>';
 }
 ?>

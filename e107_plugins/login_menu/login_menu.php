@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-05-14 04:05:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.47 $
+|     $Date: 2006-07-16 19:41:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,11 +24,22 @@ if(defined("FPW_ACTIVE"))
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
 
-global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY;
+global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY,$bullet;
 require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
 $ip = $e107->getip();
 
-$bullet = (defined("BULLET") ? "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
+	if(defined("BULLET"))
+	{
+   		$bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />";
+	}
+	elseif(file_exists(THEME."images/bullet2.gif"))
+	{
+		$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />";
+	}
+	else
+	{
+		$bullet = "";
+	}
 
 if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
 {
@@ -47,24 +58,19 @@ if ($use_imagecode)
 $text = '';
 if (USER == TRUE || ADMIN == TRUE)
 {
-	if (ADMIN == TRUE)
-	{
-		$text = ($pref['maintainance_flag'] == 1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
-		if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE) 
-		{
-			$text .= $bullet.' <a class="login_menu_link" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
+	if (!$LOGIN_MENU_LOGGED) {
+		if (file_exists(THEME."login_menu_template.php")){
+	   		require(THEME."login_menu_template.php");
+		}else{
+			require(e_PLUGIN."login_menu/login_menu_template.php");
 		}
-		else
-		{
-			$text .= $bullet.' <a class="login_menu_link" href="'.e_BASE.'index.php">'.LOGIN_MENU_L39.'</a><br />';
-		}
-			
 	}
-	$text .= $bullet.' <a class="login_menu_link" href="'.e_HTTP.'usersettings.php">'.LOGIN_MENU_L12.'</a>
-	<br />
-	'.$bullet.' <a class="login_menu_link" href="'.e_HTTP.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
-	<br />
-	'.$bullet.' <a class="login_menu_link" href="'.e_HTTP.'index.php?logout">'.LOGIN_MENU_L8.'</a>';
+
+	if(!$LOGIN_MENU_LOGGED){ // if still doesn't exist in the user template.
+    	require(e_PLUGIN."login_menu/login_menu_template.php");
+	}
+
+    $text = $tp->parseTemplate($LOGIN_MENU_LOGGED, true, $login_menu_shortcodes);
 
 	if (!$sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
 	{
@@ -190,17 +196,22 @@ if (USER == TRUE || ADMIN == TRUE)
 	}
 	$ns->tablerender($caption, $text, 'login');
 } else {
-	if (!$LOGIN_MENU_FORM) {
+	if (!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE) {
 		if (file_exists(THEME."login_menu_template.php")){
 	   		require_once(THEME."login_menu_template.php");
 		}else{
 			require_once(e_PLUGIN."login_menu/login_menu_template.php");
 		}
 	}
-	if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE) 
+	if(!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE){
+    	require(e_PLUGIN."login_menu/login_menu_template.php");
+	}
+
+	if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE)
 	{
+
 		if (LOGINMESSAGE != '') {
-			$text = '<div style="text-align: center;">'.LOGINMESSAGE.'</div>';
+			$text = $tp->parseTemplate($LOGIN_MENU_MESSAGE, true, $login_menu_shortcodes);
 		}
 
 		$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
