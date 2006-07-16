@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.158 $
-|     $Date: 2006-07-12 07:55:20 $
+|     $Revision: 1.159 $
+|     $Date: 2006-07-16 18:11:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -424,10 +424,14 @@ class e_parse
 	}
 
 	function toJS($stringarray) {
-		$stringarray = str_replace("\r\n", "\\n", $stringarray);
-		$stringarray = str_replace("\r", "", $stringarray);
+		$search = array("\r\n","\r","<br />","'");
+		$replace = array("\\n","","\\n","\'");
+		$stringarray = str_replace($search, $replace, $stringarray);
+        $stringarray = strip_tags($stringarray);
+
 		$trans_tbl = get_html_translation_table (HTML_ENTITIES);
 		$trans_tbl = array_flip ($trans_tbl);
+
 		return strtr ($stringarray, $trans_tbl);
 	}
 
