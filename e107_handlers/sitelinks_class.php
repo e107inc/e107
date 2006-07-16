@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2006-07-04 23:33:34 $
+|     $Revision: 1.96 $
+|     $Date: 2006-07-16 03:48:45 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -200,9 +200,11 @@ class sitelinks
 			// Only check if its highlighted if it has an URL
 			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
 				$linkstart = $style['linkstart_hilite'];
+				$highlighted = TRUE;
 			}
 			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) {
 				$linkadd = " class='".$style['linkclass_hilite']."'";
+				$highlighted = TRUE;
 			}
 
 			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
@@ -224,7 +226,7 @@ class sitelinks
 
 		// If its a link.. make a link
 		$_link = "";
-		if (!empty($href)){
+		if (!empty($href) && (($style['hilite_nolink'] && $highlighted)!=TRUE)){
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook")."</a>";
 		// If its not a link, but has a class or screentip do span:
 		}elseif (!empty($linkadd) || !empty($screentip)){
