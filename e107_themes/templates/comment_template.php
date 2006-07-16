@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/comment_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-01-13 02:58:23 $
+|     $Revision: 1.7 $
+|     $Date: 2006-07-16 19:40:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:100%"); }
 
 global $sc_style, $comment_shortcodes;
 global $pref, $comrow, $row2, $tp, $NEWIMAGE, $USERNAME, $RATING;
@@ -63,7 +64,7 @@ $sc_style['SIGNATURE']['post'] = "<br />";
 
 
 $COMMENTSTYLE = "
-<table class='fborder' style='width:100%;'>
+<table class='fborder' style='".USER_WIDTH."'>
 <tr>
 	<td colspan='2' class='forumheader'>
 		{SUBJECT} {USERNAME} {TIMEDATE} {REPLY} {COMMENTEDIT}
