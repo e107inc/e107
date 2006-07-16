@@ -14,9 +14,10 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 $FORUMPOLLPOSTED =
-"<table style='width:95%' class='fborder'>
+"<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
@@ -28,7 +29,7 @@ $FORUMPOLLPOSTED =
 </td></tr></table>";
 
 $FORUMTHREADPOSTED = "
-<table style='width:95%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
@@ -42,7 +43,7 @@ $FORUMTHREADPOSTED = "
 
 
 $FORUMREPLYPOSTED = "
-<table style='width:95%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>

@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-05-16 17:29:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2006-07-16 21:57:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 if (!$FORUM_VIEW_START)
 {
@@ -24,7 +25,7 @@ $FORUM_VIEW_START = "
 
 	<div style='text-align:center'>
 	<div class='spacer'>
-	<table style='width:95%' class='fborder' >
+	<table style='".USER_WIDTH."' class='fborder' >
 	<tr>
 	<td class='fcaption'>{BREADCRUMB}</td>
 	</tr>
@@ -35,8 +36,8 @@ $FORUM_VIEW_START = "
 	</tr>
 	</table>
 	</div>
-	
-	<table style='width: 95%'>
+
+	<table style='".USER_WIDTH."'>
 	<tr>
 	<td style='width:80%'>
 	<span class='mediumtext'>{THREADPAGES}</span>
@@ -48,7 +49,7 @@ $FORUM_VIEW_START = "
 	</table>
 
 	<div class='spacer'>
-	<table style='width:95%' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder'>
 	<tr>
 	<td style='width:3%' class='fcaption'>&nbsp;</td>
 	<td style='width:47%' class='fcaption'>{THREADTITLE}</td>
@@ -64,7 +65,7 @@ if(!$FORUM_VIEW_START_CONTAINER)
 	$FORUM_VIEW_START_CONTAINER = "
 	<div style='text-align:center'>
 	<div class='spacer'>
-	<table style='width:95%' class='fborder' >
+	<table style='".USER_WIDTH."' class='fborder' >
 	<tr>
 	<td class='fcaption'>{BREADCRUMB}</td>
 	</tr>
@@ -72,7 +73,7 @@ if(!$FORUM_VIEW_START_CONTAINER)
 	</table>
 	</div>
 	";
-}	
+}
 
 
 if (!$FORUM_VIEW_FORUM) {
@@ -145,8 +146,8 @@ if (!$FORUM_VIEW_END) {
 	$FORUM_VIEW_END = "
 		</table>
 		</div>
-		
-		<table style='width:95%'>
+
+		<table style='".USER_WIDTH."'>
 		<tr>
 		<td style='width:80%'><span class='mediumtext'>{THREADPAGES}</span>
 		</td>
@@ -162,16 +163,16 @@ if (!$FORUM_VIEW_END) {
 		</table>
 
 		<div class='spacer'>
-		<table class='fborder' style='width:95%'>
+		<table class='fborder' style='".USER_WIDTH."'>
 		<tr>
 		<td style='vertical-align:center; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
 		<td style='vertical-align:center; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
 		</tr>
 		</table>
 		</div>
-		
+
 		<div class='spacer'>
-		<table class='fborder' style='width:95%'>
+		<table class='fborder' style='".USER_WIDTH."'>
 		<tr>
 		<td style='vertical-align:center; width:50%' class='forumheader3'>{ICONKEY}</td>
 		<td style='vertical-align:center; text-align:center; width:50%' class='forumheader3'><span class='smallblacktext'>{PERMS}</span><br /><br />{SEARCH}
@@ -182,8 +183,8 @@ if (!$FORUM_VIEW_END) {
 		</div>
 		<div class='spacer'>
 		<div style='text-align:center;'>
-		<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a> 
-		<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a> 
+		<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a>
+		<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a>
 		<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 		</div>
 		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div></div>
@@ -194,7 +195,7 @@ if (!$FORUM_VIEW_END) {
 if(!$FORUM_VIEW_END_CONTAINER)
 {
 	$FORUM_VIEW_END_CONTAINER = "
-		<table style='width:95%'>
+		<table style='".USER_WIDTH."'>
 		<tr>
 		<td colspan ='2'>
 		{FORUMJUMP}
@@ -203,7 +204,7 @@ if(!$FORUM_VIEW_END_CONTAINER)
 		</table>
 		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div></div>
 ";
-}	
+}
 
 
 if (!$FORUM_VIEW_SUB_START)

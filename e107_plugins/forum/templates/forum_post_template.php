@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-06-11 08:58:55 $
-|     $Author: lisa_ $
+|     $Revision: 1.21 $
+|     $Date: 2006-07-16 21:57:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 // the user box and subject box are not always displayed, therefore we need to define them /in case/ they are, if not they'll be ignored.
 
@@ -93,7 +94,7 @@ $FORUMPOST = "
 <div style='text-align:center'>
 <div class='spacer'>
 {FORMSTART}
-<table style='width:95%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 <td colspan='2' class='fcaption'>{BACKLINK}
 </td>
@@ -119,7 +120,7 @@ $FORUMPOST = "
 </table>
 {FORMEND}
 
-<table style='width:95%'>
+<table style='".USER_WIDTH."'>
 <tr>
 <td>
 {FORUMJUMP}
@@ -136,7 +137,7 @@ $FORUMPOST_REPLY = "
 <div style='text-align:center'>
 <div class='spacer'>
 {FORMSTART}
-<table style='width:95%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 <td colspan='2' class='fcaption'>{BACKLINK}
 </td>
@@ -162,7 +163,7 @@ $FORUMPOST_REPLY = "
 </table>
 {FORMEND}
 
-<table style='width:95%'>
+<table style='".USER_WIDTH."'>
 <tr>
 <td>
 {FORUMJUMP}
@@ -180,7 +181,7 @@ $FORUMPOST_REPLY = "
 if(!$LATESTPOSTS_START)
 {
 $LATESTPOSTS_START = "
-<table style='width:100%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".
 LAN_101."{LATESTPOSTSCOUNT}".LAN_102."
@@ -211,7 +212,7 @@ $LATESTPOSTS_END = "
 if(!$THREADTOPIC_REPLY)
 {
 $THREADTOPIC_REPLY = "
-<table style='width:100%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_100."</td>
 </tr>
