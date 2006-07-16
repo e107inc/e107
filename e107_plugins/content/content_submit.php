@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.22 $
-|		$Date: 2006-07-13 11:43:43 $
+|		$Revision: 1.23 $
+|		$Date: 2006-07-16 10:35:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -42,13 +42,15 @@ $e_wysiwyg	= "content_text";
 if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
+	$tiny = wysiwyg($e_wysiwyg);
 }else{
 	define("e_WYSIWYG",FALSE);
 }
+
 //include js
 function headerjs(){
-	global $e_wysiwyg;
-	echo wysiwyg($e_wysiwyg);
+	global $tiny;
+	echo $tiny;
 }
 
 global $tp;
