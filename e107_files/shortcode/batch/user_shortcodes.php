@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-06-13 17:39:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-16 10:23:44 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -461,7 +461,7 @@ if($pref['profile_comments'])
 			$ret .= $cobj->render_comment($row);
 		}
 	}
-	return $ns->tablerender(LAN_5, $ret, 'profile_comments', TRUE);
+	return $ns->tablerender(COMLAN_5, $ret, 'profile_comments', TRUE);
 }
 return "";
 SC_END
@@ -475,7 +475,7 @@ if($pref['profile_comments'])
 	$ret = "";
 	if(ADMIN === TRUE)
 	{
-		$ret .= "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$user['user_id']}'>".LAN_314."</a><br /><br />";
+		$ret .= "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$user['user_id']}'>".COMLAN_314."</a><br /><br />";
 	}
 	$ret .= $cobj->form_comment("comment", "profile", $user['user_id'], "", "", TRUE);
 	return $ret;
