@@ -1,12 +1,13 @@
 <?php
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:96%"); }
 
 // ##### ONLINE TABLE -----------------------------------------------------------------------------
 if(!$ONLINE_TABLE_START){
 		$ONLINE_TABLE_START = "
 		<div style='text-align:center'>
-		<table class='fborder' style='width:96%'>
+		<table class='fborder' style='".USER_WIDTH."'>
 		<tr>
 			<td class='forumheader' style='width:3%'>&nbsp;</td>
 			<td class='forumheader' style='width:43%'>".ONLINE_EL10."</td>
@@ -26,7 +27,7 @@ if(!$ONLINE_TABLE_END){
 		</table>
 		</div>
 		<br />
-		".ONLINE_EL1.GUESTS_ONLINE.", 
+		".ONLINE_EL1.GUESTS_ONLINE.",
 		".ONLINE_EL2.MEMBERS_ONLINE." ...<br />
 		<br />{ONLINE_TABLE_MOST_EVER_ONLINE}
 		<br />({ONLINE_TABLE_MOST_MEMBERS_ONLINE}, {ONLINE_TABLE_MOST_GUESTS_ONLINE}) ".ONLINE_EL9." {ONLINE_TABLE_DATESTAMP}<br />

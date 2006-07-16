@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-05-16 03:11:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-16 19:56:46 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -120,7 +120,7 @@ global $curVal;
 parse_str($parm);
 $cols = (isset($cols) ? $cols : 58);
 $rows = (isset($rows) ? $rows : 4);
-return "<textarea class='tbox' name='signature' cols='{$cols}' rows='{$rows}' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$curVal['user_signature']."</textarea>";
+return "<textarea class='tbox signature' name='signature' cols='{$cols}' rows='{$rows}' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$curVal['user_signature']."</textarea>";
 SC_END
 
 SC_BEGIN SIGNATURE_HELP

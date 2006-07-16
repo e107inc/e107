@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-04 18:22:38 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-16 19:56:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -95,13 +95,13 @@ if(isset($_POST['send-contactus'])){
 
 if(SITECONTACTINFO && $CONTACT_INFO){
 	$text = $tp->toHTML($CONTACT_INFO,"","parse_sc");
-	$ns -> tablerender(LANCONTACT_01, $text);
+	$ns -> tablerender(LANCONTACT_01, $text,"contact");
 }
 
 $text = $CONTACT_FORM;
 
 if(trim($text) != ""){
-	$ns -> tablerender(LANCONTACT_02, $text);
+	$ns -> tablerender(LANCONTACT_02, $text,"contact");
 }
 require_once(FOOTERF);
 exit;

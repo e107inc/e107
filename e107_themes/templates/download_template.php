@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-07-04 17:40:42 $
+|     $Revision: 1.15 $
+|     $Date: 2006-07-16 19:56:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
+
 
 /* set style of download image and thumbnail */
 define("DL_IMAGESTYLE","border:0px");
@@ -25,7 +27,7 @@ define("DL_IMAGESTYLE","border:0px");
 if(!$DOWNLOAD_CAT_TABLE_START){
                 $DOWNLOAD_CAT_TABLE_START = "
                 <div style='text-align:center'>
-                <table class='fborder' style='width:95%'>\n
+                <table class='fborder' style='".USER_WIDTH."'>\n
                 <tr>
                 <td style='width:3%; text-align:center' class='fcaption'>&nbsp;</td>
                 <td style='width:60%; text-align:center' class='fcaption'>".LAN_dl_19."</td>
@@ -128,7 +130,7 @@ if(!$DOWNLOAD_LIST_TABLE_START){
                 $DOWNLOAD_LIST_TABLE_START = "
                 <div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>
-                <table class='fborder' style='width:95%'>\n
+                <table class='fborder' style='".USER_WIDTH."'>\n
                 <tr>
         <td colspan='7' style='text-align:center' class='forumheader'>
                         <span class='defaulttext'>".LAN_dl_37."</span>
@@ -213,7 +215,7 @@ $DL_VIEW_CAPTION = "{DOWNLOAD_VIEW_CAPTION}";
 
 		$DL_VIEW_NEXTPREV = "
 		<div style='text-align:center'>
-			<table style='width:95%'>
+			<table style='".USER_WIDTH."'>
 			<tr>
 			<td style='width:40%;'>{DOWNLOAD_VIEW_PREV}</td>
 			<td style='width:20%; text-align: center;'>{DOWNLOAD_BACK_TO_LIST}</td>
@@ -244,7 +246,7 @@ $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['post'] = "</td></tr>";
 if(!$DOWNLOAD_VIEW_TABLE){
 		$DOWNLOAD_VIEW_TABLE .= "
         <div style='text-align:center'>
-		<table class='fborder' style='width:95%'>\n
+		<table class='fborder' style='".USER_WIDTH."'>\n
 		<tr>
 		<td colspan='2' class='fcaption' style='text-align:left;'>
 		{DOWNLOAD_VIEW_NAME}
@@ -299,7 +301,7 @@ if(!$DOWNLOAD_VIEW_TABLE){
 		<td style='width:20%' class='forumheader3' colspan='2'>{DOWNLOAD_REPORT_LINK}</td>
 		</tr>
 		</table>
-		<div style='text-align:right; width: 95%; margin-left: auto; margin-right: auto'>{DOWNLOAD_ADMIN_EDIT}</div>
+		<div style='text-align:right; ".USER_WIDTH."; margin-left: auto; margin-right: auto'>{DOWNLOAD_ADMIN_EDIT}</div>
 		</div>\n";
 }
 
@@ -311,7 +313,7 @@ if(!$DOWNLOAD_MIRROR_START)
 {
 	$DOWNLOAD_MIRROR_START = "
 	<div style='text-align:center'>
-	<table class='fborder' style='width:100%'>
+	<table class='fborder' style='".USER_WIDTH."'>
 	<tr>
 	<td class='fcaption' colspan='4'>{DOWNLOAD_MIRROR_REQUEST}</td>
 	</tr>

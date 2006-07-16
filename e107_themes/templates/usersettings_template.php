@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-02-20 18:34:14 $
-|     $Author: whoisrich $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-16 19:56:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
-
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:auto"); }
 global $usersettings_shortcodes, $pref;
 
 
@@ -76,13 +76,13 @@ $USEREXTENDED_FIELD = "
 <td style='width:60%' class='forumheader3'>
 {FIELDVAL} {HIDEFIELD}
 </td>
-</tr> 
+</tr>
 ";
 $REQUIRED_FIELD = "{FIELDNAME}<span style='text-align:right;font-size:15px; color:red'> *</span>";
 
 $USERSETTINGS_EDIT = "
 <div style='text-align:center'>
-	<table style='width:auto' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder'>
 
 	<tr>
 	<td colspan='2' class='forumheader'>".LAN_418."</td>
@@ -182,7 +182,7 @@ $USERSETTINGS_EDIT = "
 	{AVATAR_CHOOSE}
 	</td>
 	</tr>
-	
+
 	{AVATAR_UPLOAD}
 	{PHOTO_UPLOAD}
 	{XUP}
@@ -193,6 +193,6 @@ $USERSETTINGS_EDIT = "
 	</table>
 	</div>
 	";
-	
+
 
 ?>
