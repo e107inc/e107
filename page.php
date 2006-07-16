@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-06-15 14:19:06 $ - mods to make password protected pages work
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2006-07-16 19:52:05 $ - mods to make password protected pages work
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -101,7 +101,20 @@ class pageClass
 		$tmp = explode(".", e_QUERY);
 		$this -> pageID = intval($tmp[0]);
 		$this -> pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
-		$this -> bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
+		if(defined("BULLET"))
+		{
+        	$this -> bullet = "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />";
+		}
+		elseif(file_exists(THEME."images/bullet2.gif"))
+		{
+        	$this -> bullet = "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />";
+
+		}
+		else
+		{
+        	$this -> bullet = "";
+		}
+
 		$this -> debug = $debug;
 
 		if($this -> debug)
@@ -133,7 +146,7 @@ class pageClass
 					extract($page);
 					$text .= $this -> bullet." <a href='".e_BASE."page.php?".$page_id."'>".$page_title."</a><br />";
 				}
-				$ns -> tablerender(LAN_PAGE_11, $text);
+				$ns -> tablerender(LAN_PAGE_11, $text,"cpage_list");
 			}
 		}
 	}
