@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-07-10 17:36:02 $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-16 19:56:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ SC_BEGIN BB_HELP
 	global $bbcode_helpactive,$bbcode_helptag;
 	$bbcode_helptag = ($parm) ? $parm : "helpb";
 	$bbcode_helpactive = TRUE;
-	return "<input id='{$bbcode_helptag}' class='helpbox' type='text' name='{$bbcode_helptag}' size='100' style='width:95%'/>\n";
+	return "<input id='{$bbcode_helptag}' class='helpbox' type='text' name='{$bbcode_helptag}' size='100'  />\n";
 SC_END
 
 

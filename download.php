@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.67 $ - with modifications
-|     $Date: 2006-07-04 20:07:48 $
+|     $Revision: 1.68 $ - with modifications
+|     $Date: 2006-07-16 19:56:45 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -28,6 +28,8 @@ unset($text);
 $agreetext = $tp->toJS($pref['agree_text']);
 $cobj = new comment;
 global $tp;
+
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:100%"); }
 
 // To prevent display of sub-categories on the main display, un-comment the following line
 //$pref['download_subsub'] = '0';
@@ -384,7 +386,7 @@ if ($action == "view") {
 	{
     	$DL_VIEW_NEXTPREV = "
 		<div style='text-align:center'>
-			<table style='width:95%'>
+			<table style='".USER_WIDTH."'>
 			<tr>
 			<td style='width:40%;'>{DOWNLOAD_VIEW_PREV}</td>
 			<td style='width:20%; text-align: center;'>{DOWNLOAD_BACK_TO_LIST}</td>
@@ -433,7 +435,7 @@ if ($action == "report" && check_class($pref['download_reportbroken'])) {
 		$download_name = $tp -> toDB($download_name);
 		$user = USER ? USERNAME : LAN_dl_52;
 
-		if ($pref['download_email']) {    // this needs to be moved into the NOTIFY, with an event. 
+		if ($pref['download_email']) {    // this needs to be moved into the NOTIFY, with an event.
 			require_once(e_HANDLER."mail.php");
 			$subject = LAN_dl_60." ".SITENAME;
 			$report = LAN_dl_58." ".SITENAME.":\n".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?view.".$download_id."\n
@@ -454,7 +456,7 @@ if ($action == "report" && check_class($pref['download_reportbroken'])) {
 		require_once(HEADERF);
 
 		$text = "<form action='".e_SELF."?report.{$download_id}' method='post'>
-		<table style='width:100%'>
+		<table style='".USER_WIDTH."'>
 			<tr>
 			<td  style='width:50%' >
 			".LAN_dl_32.": ".$download_name."<br />

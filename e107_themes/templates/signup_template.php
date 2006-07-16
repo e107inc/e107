@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-04 17:57:31 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-16 19:56:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:100%"); }
+
 
 define("REQUIRED_FIELD_MARKER", "<span style='text-align:right;font-size:15px; color:red'> *</span>");
 
@@ -49,7 +51,7 @@ $USERCLASS_SUBSCRIBE_START = "
 <td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USET_5." ".req($pref['signup_option_class'])."
 <br /><span class='smalltext'>".LAN_USET_6."</span></td>
 <td class='forumheader3' style='width:70%'>
-<table style='width:100%'>
+<table style='".USER_WIDTH."'>
 ";
 }
 
@@ -112,7 +114,7 @@ $SIGNUP_SIGNATURE_START = "
 
 $SIGNUP_SIGNATURE_END = "
 </textarea><br />
-	<div style='width:99%'>{REN_HELP}</div>
+	<div style='".USER_WIDTH."'>{REN_HELP}</div>
 	</td></tr>
 ";
 
@@ -180,7 +182,7 @@ $SIGNUP_XUP_FORM = "
 	</div>
 
 	<div id='xup' style='display:none' >
-	<table style='width: 100%;'>
+	<table style='".USER_WIDTH."'>
 	<tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_31."
 	</td>
@@ -231,7 +233,7 @@ if(!defined($SIGNUP_BEGIN))
 {
 $SIGNUP_BEGIN = "
 {SIGNUP_FORM_OPEN}
-<div style='text-align:center;width:100%'>
+<div style='text-align:center;".USER_WIDTH."'>
 {SIGNUP_SIGNUP_TEXT}
 <br />
 ".LAN_400."<br /><br /></div>";
@@ -242,7 +244,7 @@ if(!defined($SIGNUP_BODY))
 $SIGNUP_BODY = "
 {SIGNUP_XUP}
 <div id='default'>
-<table class='fborder' style='width:99%'>
+<table class='fborder' style='".USER_WIDTH."'>
 {SIGNUP_DISPLAYNAME}
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>

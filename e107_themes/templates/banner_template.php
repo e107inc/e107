@@ -1,6 +1,7 @@
 <?php
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:98%"); }
 
 // ##### LOGIN TABLE -------------------------------------------------------------------------------
 if(!$BANNER_LOGIN_TABLE){
@@ -30,7 +31,7 @@ if(!$BANNER_LOGIN_TABLE){
 // ##### BANNER TABLE -----------------------------------------------------------------------------
 if(!$BANNER_TABLE_START){
 		$BANNER_TABLE_START = "
-		<table class='fborder' style='width:98%; border:1px solid #000' border='1'>
+		<table class='fborder' style='".USER_WIDTH."; border:1px solid #000' border='1'>
 		<tr><td colspan='7' style='text-align:center' class='fcaption'>".BANNERLAN_21."</td></tr>
 		<tr>
 			<td class='forumheader' style='text-align:center'>".BANNERLAN_22."</td>

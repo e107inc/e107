@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-01-10 19:22:30 $
+|     $Revision: 1.13 $
+|     $Date: 2006-07-16 19:56:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,8 @@ if (!$pref['upload_enabled'] || $pref['upload_class'] == 255) {
 }
 
 require_once(HEADERF);
+
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
 
 if (!check_class($pref['upload_class'])) {
 	$text = "<div style='text-align:center'>".LAN_403."</div>";
@@ -75,7 +77,7 @@ if (isset($message)) {
 
 $text = "<div style='text-align:center'>
 	<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
-	<table style='width:97%' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder'>
 	<tr>
 	<td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
 	<td style='width:80%' class='forumheader3'>";

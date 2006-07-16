@@ -1,11 +1,12 @@
 <?php
-// $Id: contact_template.php,v 1.3 2006-05-01 23:58:47 mcfly_e107 Exp $
+// $Id: contact_template.php,v 1.4 2006-07-16 19:56:47 e107coders Exp $
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
 
 if(!$CONTACT_INFO){
   $CONTACT_INFO = "
-	<table style='width:97%' cellpadding='1' cellspacing='7'>
+	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	<tr>
 		<td>{SITECONTACTINFO}
 		<br />
@@ -23,12 +24,12 @@ if(!$CONTACT_EMAIL_COPY)
 	".LANCONTACT_07."
 	</td></tr>
 	";
-}	
+}
 
 if(!$CONTACT_FORM){
   $CONTACT_FORM = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
-	<table style='width:97%' cellpadding='1' cellspacing='7'>
+	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	<tr><td>".LANCONTACT_03."<br />
 	<input type='text' name='author_name' size='30' class='tbox' value='' />
 	</td></tr>

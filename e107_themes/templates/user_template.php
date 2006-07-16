@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-05-18 15:20:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2006-07-16 19:56:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 global $user_shortcodes, $pref;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
@@ -34,7 +35,7 @@ $EXTENDED_CATEGORY_TABLE = "
 		<td style='width:60%' class='forumheader3'>{EXTENDED_VALUE}</td>
 	</tr>
 	";
-	
+
 $EXTENDED_END = "";
 //		$datestamp = $gen->convert_date($user_join, "forum");
 
@@ -75,7 +76,7 @@ else
 	$user_picture =  "";
 	$colspan = "";
 	$main_colspan = " colspan = '2' ";
-}	
+}
 
 $sc_style['USER_SENDPM']['pre'] = "<tr><td colspan='2' style='width:100%' class='forumheader3'><span style='float:left'>";
 $sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425."</span></td></tr>";
@@ -95,7 +96,7 @@ $sc_style['USER_PICTURE']['post']="</td>";
 
 $USER_FULL_TEMPLATE = "
 <div style='text-align:center'>
-<table style='width:95%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
 </tr>

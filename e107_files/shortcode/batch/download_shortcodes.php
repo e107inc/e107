@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-07-04 20:07:48 $
+|     $Revision: 1.12 $
+|     $Date: 2006-07-16 19:56:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -143,13 +143,34 @@ global $dl;
 return $dl['download_category_name'];
 SC_END
 
+SC_BEGIN DOWNLOAD_CATEGORY_ICON
+global $dl;
+list($present,$missing) = explode(chr(1),$dl['download_category_icon']);
+if($present)
+{
+	return "<img class='dl_cat_icon' src='".e_IMAGE."icons/".$present."' alt='' />";
+}
+
+SC_END
+
 SC_BEGIN DOWNLOAD_CATEGORY_DESCRIPTION
 global $tp,$dl;
-return $tp -> toHTML($dl['download_category_description'], TRUE);
+$text = $tp -> toHTML($dl['download_category_description'], TRUE);
+if($parm){
+	return substr($text,0,$parm);
+}else{
+	return $text;
+}
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_NAME
 global $dl;
+$link['view'] = "<a href='".e_BASE."download.php?view.".$dl['download_id']."'>".$dl['download_name']."</a>";
+$link['request'] = "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+
+if($parm){
+	return $link[$parm];
+}
 return $dl['download_name'];
 SC_END
 
@@ -178,7 +199,13 @@ SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_DESCRIPTION
 global $tp,$dl;
-return ($dl['download_description']) ?  $tp->toHTML($dl['download_description'], TRUE) : "";
+$text = ($dl['download_description']) ?  $tp->toHTML($dl['download_description'], TRUE) : "";
+if($parm){
+	return substr($text,0,$parm);
+}else{
+	return $text;
+}
+return $text;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_DATE

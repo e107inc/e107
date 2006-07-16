@@ -1,13 +1,15 @@
 <?php
 
+
 if (!defined('e107_INIT')) { exit; }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:70%"); }
 
 // ##### FPW TABLE -----------------------------------------------------------------------------
 if(!$FPW_TABLE){
 		$FPW_TABLE = "
 		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
-		<table style='width:70%' class='fborder'>
+		<table style='".USER_WIDTH."' class='fborder'>
 
 		<tr>
 		<td class='fcaption' colspan='2'>".LAN_05."</td>

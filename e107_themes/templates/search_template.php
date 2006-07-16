@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('e107_INIT')) { exit; }
-
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 /*
 if (!defined('SEARCH_SHORTCODE_REF')) {
 	define('SEARCH_SHORTCODE_REF',"");
@@ -26,7 +26,7 @@ if (!isset($SEARCH_SHORTCODE)) {
 if (!isset($SEARCH_TOP_TABLE)) {
 	$SEARCH_TOP_TABLE = "<div style='text-align: center'>
 	<form id='searchform' name='searchform' method='get' action='".e_SELF."'>
-	<table style='width: 95%' class='fborder'><tr>
+	<table style='".USER_WIDTH."' class='fborder'><tr>
 	<td class='forumheader3' style='width: 40%'>".LAN_199."</td>
 	<td class='forumheader3' style='width: 60%; white-space: nowrap'>
 	{SEARCH_MAIN_SEARCHFIELD}&nbsp;{SEARCH_MAIN_SUBMIT}&nbsp;{ENHANCED_ICON}
