@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-06-21 16:56:16 $
-|     $Author: asperon $
+|     $Revision: 1.37 $
+|     $Date: 2006-07-16 23:01:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -43,6 +43,8 @@ else
 }
 
 require_once(HEADERF);
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
+
 
 if (!USER) {
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_416."</div>");
@@ -176,7 +178,7 @@ if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $f
 } else {
 	$userList = $sql->db_getList();
 	$text .= "
-	<table style='width:95%' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder'>
 	<tr>
 	<td class='fcaption' style='width:2%'>&nbsp;</td>
 	<td class='fcaption' style='width:20%'>".LAN_142."</td>

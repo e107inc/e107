@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-07-04 17:04:58 $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-16 23:01:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,8 @@ require_once(HEADERF);
 require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
 $gen = new convert;
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
+
 
 @include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 @include(e_PLUGIN."poll/languages/English.php");
@@ -53,7 +55,7 @@ if(e_QUERY)
 		$start_datestamp = $gen->convert_date($poll_datestamp, "long");
 		$end_datestamp = $gen->convert_date($poll_end_datestamp, "long");
 
-		$text = "<table style='width:100%'>
+		$text = "<table style='".USER_WIDTH."'>
 		<tr>
 		<td colspan='2' class='mediumtext' style='text-align:center'>
 		<b>".$tp -> toHTML($poll_title)."</b>
@@ -119,7 +121,7 @@ if(!count($oldpollArray))
 	exit;
 }
 
-$text = "<table class='fborder' style='width: 95%;'>
+$text = "<table class='fborder' style='".USER_WIDTH."'>
 <tr>
 <td class='fcaption' style='width: 55%;'>".POLLAN_34."</td>
 <td class='fcaption' style='width: 15%;'>".POLLAN_35."</td>
