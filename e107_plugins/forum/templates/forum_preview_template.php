@@ -11,16 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_preview_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-16 21:57:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
 
 $FORUM_PREVIEW = "<div style='text-align:center'>
-<table style='width:100%' class='fborder'>
+<table style='".USER_WIDTH."' class='fborder'>
 <tr>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_323.
 ($action != "nt" ? "</td>" : " ( ".LAN_62.$tsubject." )</td>")."
@@ -31,5 +32,5 @@ $FORUM_PREVIEW = "<div style='text-align:center'>
 </tr>
 </table>
 </div>";
-	
+
 ?>

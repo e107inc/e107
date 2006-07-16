@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-07-05 01:25:07 $
+|     $Revision: 1.23 $
+|     $Date: 2006-07-16 21:57:03 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
+
 
 $sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29." ";
 $sc_style['LASTEDIT']['post'] = " ]</span>";
@@ -30,7 +32,7 @@ $sc_style['ANON_IP']['post'] = "</div>";
 
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
-	<table style='width:95%' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder'>
 	<tr>
 	<td class='fcaption'>
 	{BACKLINK}
@@ -54,7 +56,7 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	</table>
 	</div>
 
-	<table style='width:95%'>
+	<table style='".USER_WIDTH."'>
 	<tr>
 	<td style='width:60%; text-align: left'>
 	{GOTOPAGES}
@@ -76,7 +78,7 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	</table>
 
 	<div class='spacer'>
-	<table style='width:95%' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder'>
 	<tr>
 	<td style='width:20%; text-align:center' class='fcaption'>
 	".LAN_402."
@@ -153,7 +155,7 @@ $FORUMTHREADSTYLE = "<tr>
 
 $FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>{QUICKREPLY}</td></tr></table></div>
 
-	<table style='width:95%'>
+	<table style='".USER_WIDTH."'>
 	<tr>
 	<td style='width:80%'><span class='mediumtext'>{GOTOPAGES}&nbsp;</span>
 	</td>
