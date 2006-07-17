@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.68 $ - with modifications
-|     $Date: 2006-07-16 19:56:45 $
+|     $Revision: 1.69 $ - with modifications
+|     $Date: 2006-07-17 05:55:40 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -265,6 +265,7 @@ if ($action == "list") {
 	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
 	if (!check_class($download_category_class))
 	{
+
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
 		require_once(FOOTERF);
 		exit;
@@ -347,6 +348,7 @@ if ($action == "view") {
 		LIMIT 1";
 
 	if(!$sql -> db_Select_gen($query)){
+		require_once(HEADERF);
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
 		require_once(FOOTERF);
 		exit;
