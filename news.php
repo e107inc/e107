@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2006-07-12 20:20:56 $
+|     $Revision: 1.105 $
+|     $Date: 2006-07-17 00:07:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -273,7 +273,7 @@ else
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 
-if($tmp_cache = checkCache($cacheString))
+if($tmp_cache = checkCache($cacheString)) // normal news front-page - with cache.
 {
 	require_once(HEADERF);
 
@@ -291,6 +291,7 @@ if($tmp_cache = checkCache($cacheString))
 	}
 
   	renderCache($tmp_cache, TRUE);
+
 }
 
 
@@ -529,7 +530,7 @@ function checkCache($cacheString){
 }
 
 function renderCache($cache, $nfp = FALSE){
-	global $pref,$tp,$sql;
+	global $pref,$tp,$sql,$CUSTOMFOOTER, $FOOTER,$cust_footer,$ph;
 	echo $cache;
 	if ($nfp && $pref['nfp_display'] == 2) {
 		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
