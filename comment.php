@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-07-09 17:52:09 $
+|     $Revision: 1.51 $
+|     $Date: 2006-07-18 20:57:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."comment_class.php");
+define("PAGE_NAME", COMLAN_99);
 
 if (!e_QUERY) {
 	header("location:".e_BASE."index.php");
