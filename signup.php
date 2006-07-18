@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2006-07-10 23:35:34 $
+|     $Revision: 1.96 $
+|     $Date: 2006-07-18 06:08:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -126,7 +126,6 @@ if(!$_POST)   // Notice Removal.
 	$password1 = "";
 	$password2 = "";
 	$email = "";
-	$name = "";
 	$loginname = "";
 	$realname = "";
 	$user_timezone = "";
@@ -336,7 +335,12 @@ if (isset($_POST['register']))
 	{
 		$error_message .= LAN_103."\\n";
 		$error = TRUE;
-		$name = "";
+	}
+
+	// Use LoginName for DisplayName if restricted   **** MOVED FORWARD ****
+	if (!check_class($pref['displayname_class']))
+	{
+		$_POST['name'] = $_POST['loginname'];
 	}
 
 	// Check for disallowed names.
@@ -348,7 +352,6 @@ if (isset($_POST['register']))
 			if( strstr($_POST['name'], $disallow) || strstr($_POST['loginname'], $disallow) ){
 				$error_message .= LAN_103."\\n";
 				$error = TRUE;
-				$name = "";
 			}
 		}
 	}
@@ -362,16 +365,14 @@ if (isset($_POST['register']))
 	// Display Name exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
-		$error_message .= LAN_411."\\n";
+		$error_message .= LAN_411.": ".$tp -> toDB($_POST['name'])."\\n";
 		$error = TRUE;
-		$name = "";
 	}
 	// Login Name exists
 	if ($sql->db_Select("user", "*", "user_loginname='".$tp -> toDB($_POST['loginname'])."' "))
 	{
-		$error_message .= LAN_104."\\n";
+		$error_message .= LAN_104.": ".$tp -> toDB($_POST['loginname'])."\\n";
 		$error = TRUE;
-		$name = "";
 	}
 
 	// check for multiple signups from the same IP address.
@@ -409,12 +410,6 @@ if (isset($_POST['register']))
 		$error = TRUE;
 		$password1 = "";
 		$password2 = "";
-	}
-
-	// Use LoginName for DisplayName if restricted
-	if (!check_class($pref['displayname_class']))
-	{
-		$_POST['name'] = $_POST['loginname'];
 	}
 
 	// Check for emtpy fields
