@@ -4,13 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-22 19:13:41 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-18 20:57:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-
-define("PAGE_NAME", "Comments");
 
 define("COMLAN_0", "[blocked by admin]");
 define("COMLAN_1", "Unblock");
