@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2006-07-17 00:07:27 $
+|     $Revision: 1.106 $
+|     $Date: 2006-07-18 20:46:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -531,6 +531,7 @@ function checkCache($cacheString){
 
 function renderCache($cache, $nfp = FALSE){
 	global $pref,$tp,$sql,$CUSTOMFOOTER, $FOOTER,$cust_footer,$ph;
+	global $db_debug,$ns,$eTraffic,$eTimingStart, $error_handler, $db_time, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb,$e107;
 	echo $cache;
 	if ($nfp && $pref['nfp_display'] == 2) {
 		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
