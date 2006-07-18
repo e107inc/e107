@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.159 $
-|     $Date: 2006-07-16 18:11:23 $
+|     $Revision: 1.160 $
+|     $Date: 2006-07-18 04:50:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -417,6 +417,7 @@ class e_parse
 
 	function toAttribute($text) {
 		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) {
+			$text = $this->replaceConstants($text);
 			return $text;
 		} else {
 			return '';
