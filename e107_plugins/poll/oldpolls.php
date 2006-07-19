@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-16 23:01:20 $
+|     $Revision: 1.11 $
+|     $Date: 2006-07-19 23:13:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -85,7 +85,10 @@ if(e_QUERY)
 
 		}
 
-		if($comment_total = $sql -> db_Select("comments", "*", "comment_item_id=".intval($poll_id)." AND comment_type=4 ORDER BY comment_datestamp"))
+		$query = "SELECT c.*, u.* FROM #comments AS c
+		LEFT JOIN #user AS u ON FLOOR(SUBSTR(c.comment_author,1,INSTR(c.comment_author,'.')-1))=u.user_id
+		WHERE comment_item_id=".intval($poll_id)." AND comment_type=4 ORDER BY comment_datestamp";
+		if ($comment_total = $sql->db_Select_gen($query) !== FALSE)
 		{
 			$text .= "<tr><td colspan='2'><br /><br />";
 			while ($row = $sql->db_Fetch()) {
