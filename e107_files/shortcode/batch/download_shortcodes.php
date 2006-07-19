@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-07-16 19:56:46 $
+|     $Revision: 1.13 $
+|     $Date: 2006-07-19 23:22:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -288,10 +288,10 @@ global $dl;
 
 	if ($ratearray = $rater->getrating("download", $dl['download_id'])) {
 		for($c = 1; $c <= $ratearray[1]; $c++) {
-			$text .= "<img src='".e_IMAGE."rate/".IMODE."/star.png' alt=''>";
+			$text .= "<img src='".e_IMAGE."rate/".IMODE."/star.png' alt='' />";
 		}
 		if ($ratearray[2]) {
-			$text .= "<img src='".e_IMAGE."rate/".IMODE."/".$ratearray[2].".png'  alt=''>";
+			$text .= "<img src='".e_IMAGE."rate/".IMODE."/".$ratearray[2].".png'  alt='' />";
 		}
 		if ($ratearray[2] == "") {
 			$ratearray[2] = 0;
