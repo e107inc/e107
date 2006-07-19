@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2006-07-10 02:36:59 $
+|     $Revision: 1.84 $
+|     $Date: 2006-07-19 18:14:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -102,12 +102,14 @@ if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", "",$reject,2)){
 
 if (isset($_POST['add_category'])) {
 	$download->create_category($sub_action, $id);
+	$e107cache->clear("download_cat");
 }
 
 if (isset($_POST['submit_download'])) {
 	$download->submit_download($sub_action, $id);
 	$action = "main";
 	unset($sub_action, $id);
+	$e107cache->clear("download_cat");
 }
 
 
@@ -118,6 +120,7 @@ if(isset($_POST['update_catorder'])){
 	  	}
 	}
    	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
+    $e107cache->clear("download_cat");
 }
 
 if (isset($_POST['updateoptions']))
@@ -133,6 +136,7 @@ if (isset($_POST['updateoptions']))
 	$pref['download_reportbroken'] = $_POST['download_reportbroken'];
 	save_prefs();
 	$message = DOWLAN_65;
+	$e107cache->clear("download_cat");
 }
 
 if(isset($_POST['addlimit']))
@@ -188,6 +192,7 @@ if(isset($_POST['updatelimits']))
 if(isset($_POST['submit_mirror']))
 {
 	$download->submit_mirror($sub_action, $id);
+	$e107cache->clear("download_cat");
 }
 
 if($action == "mirror")
@@ -205,12 +210,14 @@ if ($action == "dlm")
 
 if ($action == "create") {
 	$download->create_download($sub_action, $id);
+	$e107cache->clear("download_cat");
 }
 
 if ($delete == 'category') {
 	if (admin_update($sql->db_Delete("download_category", "download_category_id='$del_id' "), 'delete', DOWLAN_49." #".$del_id." ".DOWLAN_36)) {
 		$sql->db_Delete("download_category", "download_category_parent='{$del_id}' ");
 	}
+	$e107cache->clear("download_cat");
 }
 
 if ($action == "cat") {
@@ -225,6 +232,7 @@ if ($delete == 'main') {
 		admin_purge_related("download", $del_id);
 	}
 	unset($sub_action, $id);
+	$e107cache->clear("download_cat");  
 }
 
 

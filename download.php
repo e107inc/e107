@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.69 $ - with modifications
-|     $Date: 2006-07-17 05:55:40 $
+|     $Revision: 1.70 $ - with modifications
+|     $Date: 2006-07-19 18:14:44 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -45,6 +45,14 @@ if (!e_QUERY || $_GET['elan'])
 {
 	require_once(HEADERF);
 	// no qs - render categories ...
+
+	if($cacheData = $e107cache->retrieve("download_cat"))
+	{
+		echo $cacheData;
+		require_once(FOOTERF);
+		exit;
+	}
+
 
 	if (!$DOWNLOAD_CAT_PARENT_TABLE)
 	{
@@ -122,11 +130,18 @@ if (!e_QUERY || $_GET['elan'])
 	$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
 	$text .= $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
 
+
+	ob_start();
+
 	if($DOWNLOAD_CAT_TABLE_RENDERPLAIN) {
 		echo $text;
 	} else {
 		$ns->tablerender(LAN_dl_18.$type, $text);
 	}
+
+	$cache_data = ob_get_flush();
+	$e107cache->set("download_cat", $cache_data);
+
 	require_once(FOOTERF);
 	exit;
 }
