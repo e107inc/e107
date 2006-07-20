@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2006-07-19 18:14:44 $
+|     $Revision: 1.85 $
+|     $Date: 2006-07-20 00:02:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -232,7 +232,7 @@ if ($delete == 'main') {
 		admin_purge_related("download", $del_id);
 	}
 	unset($sub_action, $id);
-	$e107cache->clear("download_cat");  
+	$e107cache->clear("download_cat");
 }
 
 
@@ -1190,7 +1190,7 @@ class download {
 				}
 
 				$text .= "<tr>
-					<td style='width:5%; text-align:center' class='forumheader'>".($parent['download_category_icon'] ? "<img src='".e_IMAGE."icons/{$main['download_category_icon']}' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+					<td style='width:5%; text-align:center' class='forumheader'>".($parent['download_category_icon'] ? "<img src='".e_IMAGE."icons/{$parent['download_category_icon']}' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 					<td colspan='2' style='width:70%' class='forumheader'><b>{$parent['download_category_name']}</b></td>
 					<td class='forumheader3'>
 					 <input class='tbox' type='text' name='catorder[{$parent['download_category_id']}]' value='{$parent['download_category_order']}' size='3' />
