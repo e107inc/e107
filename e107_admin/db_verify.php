@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-20 01:17:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -258,7 +258,7 @@ global $table_list;
 if(isset($_POST['do_fix'])){
 	$text = "<div><table class='fborder' style='width:100%'>";
 	foreach( $_POST['fix_active'] as $key=>$val){
-		
+
 		if (MAGIC_QUOTES_GPC == TRUE) {
 			$table = stripslashes($_POST['fix_table'][$key][0]);
 			$newval = stripslashes($_POST['fix_newval'][$key][0]);
@@ -270,7 +270,8 @@ if(isset($_POST['do_fix'])){
 			$mode = $_POST['fix_mode'][$key][0];
 			$after = $_POST['fix_after'][$key][0];
 		}
-		
+
+
 		$field= $key;
 
 		if($mode == "alter"){
@@ -286,7 +287,7 @@ if(isset($_POST['do_fix'])){
 		}
 
 		if($mode == "index"){
-			$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX (`$field`) ";
+			$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX `$field` (`$newval`)";
 		}
 
 		if($mode == "create"){
