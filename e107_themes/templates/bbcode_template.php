@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-07-08 02:27:29 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2006-07-20 06:54:22 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // How to register your own BBcode button.
