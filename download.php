@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.70 $ - with modifications
-|     $Date: 2006-07-19 18:14:44 $
+|     $Revision: 1.71 $ - with modifications
+|     $Date: 2006-07-20 21:13:39 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -701,12 +701,12 @@ function parse_download_cat_child_table($row, $subList)
 			$DOWNLOAD_CAT_SUBSUB_DOWNLOADED = intval($subrow['d_requests']);
 
 			if(USER && $subrow['d_last'] > USERLV)	{
-				$new = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
+				$subsub_new = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
 			}else {
-				$new = "";
+				$subsub_new = "";
 			}
-			$DOWNLOAD_CAT_SUBSUB_NEW_ICON = $new;
-			$DOWNLOAD_CAT_SUBSUB_NAME = $new.($subrow['d_count'] ? "<a href='".e_SELF."?list.".$subrow['download_category_id']."'>".$tp->toHTML($subrow['download_category_name'])."</a>" : $tp->toHTML($subrow['download_category_name']));
+			$DOWNLOAD_CAT_SUBSUB_NEW_ICON = $subsub_new;
+			$DOWNLOAD_CAT_SUBSUB_NAME = ($subrow['d_count'] ? "<a href='".e_SELF."?list.".$subrow['download_category_id']."'>".$tp->toHTML($subrow['download_category_name'])."</a>" : $tp->toHTML($subrow['download_category_name']));
 			$DOWNLOAD_CAT_SUBSUB .= preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_SUBSUB_TABLE);
 		}
 	}
