@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.132 $
-|   $Date: 2006-07-08 22:16:04 $
+|   $Revision: 1.133 $
+|   $Date: 2006-07-20 00:53:41 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -90,6 +90,8 @@ if ($delete == "main" && $del_id)
 		{
 			$newspost->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
 			$e107cache->clear("news.php");
+			$e107cache->clear("othernews");
+			$e107cache->clear("othernews2");
 
 			admin_purge_related("news", $del_id);
 		}
@@ -110,6 +112,8 @@ if($delete == "sn" && $del_id)
 	{
 		$newspost->show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
 		$e107cache->clear("news.php");
+		$e107cache->clear("othernews");
+		$e107cache->clear("othernews2");
 		unset($delete, $del_id);
 	}
 }
@@ -146,6 +150,8 @@ if (isset($_POST['preview'])) {
 if (isset($_POST['submit_news'])) {
 
 	$newspost->submit_item($sub_action, $id);
+	$e107cache->clear("othernews");
+	$e107cache->clear("othernews2");
 	$action = "main";
 	unset($sub_action, $id);
 }
@@ -175,6 +181,9 @@ if (isset($_POST['update_category'])) {
 		$sql->db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
 		$newspost->show_message(NWSLAN_36);
 	}
+	$e107cache->clear("news.php"); 
+	$e107cache->clear("othernews");
+	$e107cache->clear("othernews2");
 }
 
 if (isset($_POST['save_prefs'])) {
@@ -202,6 +211,8 @@ if (isset($_POST['save_prefs'])) {
 
 	save_prefs();
 	$e107cache->clear("news.php");
+	$e107cache->clear("othernews");
+	$e107cache->clear("othernews2");
 	$newspost->show_message(NWSLAN_119);
 }
 

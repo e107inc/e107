@@ -11,14 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news2_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-20 00:53:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-// require_once("othernews_parser.php");
+global $e107cache;
+
+// Load Data
+if($cacheData = $e107cache->retrieve("othernews2"))
+{
+	echo $cacheData;
+	return;
+}
+
+
 require_once(e_HANDLER."news_class.php");
 unset($text);
 global $OTHERNEWS2_STYLE;
@@ -112,10 +121,21 @@ $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_na
 		$text .= "<td style='width:$wid'>&nbsp;</td>\n";
 		$text .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
 		$t++;
+
 	}
 	$text .= "</table>";
 
+
+        // Save Data
+		ob_start();
+
 	$ns->tablerender(TD_MENU_L1, $text, 'other_news2');
+
+$cache_data = ob_get_flush();
+		$e107cache->set("othernews2", $cache_data);
+
+
+
 }
 
 ?>

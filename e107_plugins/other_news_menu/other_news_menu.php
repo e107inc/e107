@@ -11,21 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2006-07-20 00:53:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-// require_once("othernews_parser.php");
+global $e107cache;
+
+// Load Data
+if($cacheData = $e107cache->retrieve("othernews"))
+{
+	echo $cacheData;
+  	return;
+}
+
+
 require_once(e_HANDLER."news_class.php");
 unset($text);
 global $OTHERNEWS_STYLE;
 $ix = new news;
 
- if(!$OTHERNEWS_STYLE){
-$OTHERNEWS_STYLE = "
+if(!$OTHERNEWS_STYLE)
+{
+	$OTHERNEWS_STYLE = "
 			<div style='padding:3px;width:100%'>
 			<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
 			<tr>
@@ -35,7 +45,9 @@ $OTHERNEWS_STYLE = "
 			{NEWSTITLELINK}
 			</td></tr></table>
 			</div>\n";
- }
+}
+
+
 if(!defined("OTHERNEWS_LIMIT")){
 	define("OTHERNEWS_LIMIT",10);
 }
@@ -107,7 +119,17 @@ $nbr_cols = OTHERNEWS_COLS;
 		}
 	$text .= "</table>";
 
+
+        // Save Data
+		ob_start();
+
 		$ns->tablerender(TD_MENU_L1, $text, 'other_news');
+
+		$cache_data = ob_get_flush();
+		$e107cache->set("othernews", $cache_data);
+
+
+
 	}
 
 ?>
