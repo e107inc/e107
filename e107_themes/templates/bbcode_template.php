@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-07-20 06:54:22 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2006-07-20 20:44:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // How to register your own BBcode button.
@@ -39,7 +39,7 @@ $BBCODE_TEMPLATE = "
 $BBCODE_TEMPLATE_ADMIN = "
 	{BB_HELP=admin}<br />
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=emotes}
+	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."}
 	{BB=preimage}{BB=prefile}{BB=flash}
 ";
@@ -49,7 +49,7 @@ $BBCODE_TEMPLATE_ADMIN = "
 $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB_HELP=$mode}<br />
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=emotes}
+	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."newspost_images/}
 	{BB=preimage}{BB=prefile}{BB=flash}
 ";
