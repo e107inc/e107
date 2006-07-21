@@ -184,7 +184,7 @@ if($qs[0] == "text"){
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_10."</td><td>".$rs -> form_text("text_size", 3, $_POST['text_size'], 3)."</td></tr>
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_11."</td><td>".$rs -> form_text("text_maxsize", 3, $_POST['text_maxsize'], 3)."</td></tr>
 	";
-	$example = CONTENT_PRESET_LAN_32."<br /><br />".$rs -> form_text("extext", 40, "".CONTENT_PRESET_LAN_9."=".CONTENT_PRESET_LAN_32.", ".CONTENT_PRESET_LAN_10."=40, ".CONTENT_PRESET_LAN_11."=10", 10);
+	$example = CONTENT_PRESET_LAN_32."<br /><br />".$rs -> form_text("extext", 40, CONTENT_PRESET_LAN_9."=".CONTENT_PRESET_LAN_32.", ".CONTENT_PRESET_LAN_10."=40, ".CONTENT_PRESET_LAN_11."=10", 100);
 }
 
 if($qs[0] == "area"){
