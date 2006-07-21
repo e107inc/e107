@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-07-10 08:50:01 $
+|     $Revision: 1.27 $
+|     $Date: 2006-07-21 21:14:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -44,6 +44,11 @@ if (e_QUERY) {
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
 	unset($tmp);
+}
+
+if($_POST)
+{
+	$e107cache->clear("wmessage");
 }
 
 if (isset($_POST['wm_update'])) {
