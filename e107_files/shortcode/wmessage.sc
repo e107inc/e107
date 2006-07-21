@@ -1,10 +1,18 @@
-// $Id: wmessage.sc,v 1.12 2006-05-30 01:47:46 e107coders Exp $
+// $Id: wmessage.sc,v 1.13 2006-07-21 21:14:16 e107coders Exp $
 
 if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $parm !='header') ){
 	return;
 }
 
-	global $e107;
+	global $e107,$e107cache;
+
+
+	if($cacheData = $e107cache->retrieve("wmessage"))
+	{
+		echo $cacheData;
+   		return;
+	}
+
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
 		$full_url = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['all'];
 		list($front_url,$front_qry) = explode("?",$full_url);
@@ -51,6 +59,8 @@ if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $pa
 
 			if (isset($wmessage) && $wmessage)
 			{
+				ob_start();
+
 				if ($pref['wm_enclose'])
 				{
 					$ns->tablerender($wmcaption, $wmessage, "wm");
@@ -60,6 +70,9 @@ if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $pa
 					echo ($wmcaption) ? $wmcaption."<br />" : "";
 					echo $wmessage;
 				}
+
+				$cache_data = ob_get_flush();
+				$e107cache->set("wmessage", $cache_data);
 			}
 		}
 	}
