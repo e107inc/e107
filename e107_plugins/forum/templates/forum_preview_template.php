@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_preview_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-07-16 21:57:03 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-21 10:05:19 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,7 +26,7 @@ $FORUM_PREVIEW = "<div style='text-align:center'>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_323.
 ($action != "nt" ? "</td>" : " ( ".LAN_62.$tsubject." )</td>")."
 <tr>
-<td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$poster."</b></td>
+<td class='forumheader3' style='width:20%; vertical-align:top'><b>".$poster."</b></td>
 <td class='forumheader3' style='width:80%'>
 <div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322.$postdate."</div>".$tpost."</td>
 </tr>
