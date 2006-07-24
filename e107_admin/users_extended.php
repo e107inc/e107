@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-04-29 06:53:08 $
-|     $Author: e107coders $
+|     $Revision: 1.38 $
+|     $Date: 2006-07-24 06:55:02 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -890,7 +890,7 @@ function field_activate()
 		$tmp[$f]['parms'] = $tp->toDB($tmp[$f]['parms']);
 		if($ue->user_extended_add($tmp[$f]))
 		{
-			$ret .= "Field: $f has been activated <br />";
+			$ret .= EXTLAN_68." $f ".EXTLAN_69."<br />";
 
 			if($tmp[$f]['type']=="db field" && is_readable(e_ADMIN."sql/extended_".$f.".php")){
              	$ret .= (process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
@@ -898,7 +898,7 @@ function field_activate()
 		}
 		else
 		{
-			$ret .= "ERROR!!  Field: $f was not activated! <br />";
+			$ret .= EXTLAN_70." $f ".EXTLAN_71."<br />";
 		}
 	}
 	return $ret;
@@ -912,14 +912,14 @@ function field_deactivate()
 	{
 		if($ue->user_extended_remove($f, $f))
 		{
-			$ret .= "Field: $f has been deactivated <br />";
+			$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
 			if(is_readable(e_ADMIN."sql/extended_".$f.".php")){
              	$ret .= (mysql_query("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
 			}
 		}
 		else
 		{
-			$ret .= "ERROR!!  Field: $f was not deactivated! <br />";
+			$ret .= EXTLAN_70." $f ".EXTLAN_73."<br />";
 		}
 	}
 	return $ret;

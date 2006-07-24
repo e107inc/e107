@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-01-15 01:08:04 $
-|     $Author: streaky $
+|     $Revision: 1.15 $
+|     $Date: 2006-07-24 06:55:02 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -79,6 +79,13 @@ define("EXTLAN_64", "Display Value");
 define("EXTLAN_65", "No - Will not show on signup page");
 define("EXTLAN_66", "Yes - Will show on signup page");
 define("EXTLAN_67", "No - Show on signup page");
+
+define("EXTLAN_68", "Field:");
+define("EXTLAN_69", "has been activated");
+define("EXTLAN_70", "ERROR!! Field:");
+define("EXTLAN_71", "was not activated!");
+define("EXTLAN_72", "has been deactivated");
+define("EXTLAN_73", "was not deactivated!");
 
 
 //textbox
