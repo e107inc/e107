@@ -3,8 +3,8 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-07-10 05:07:29 $
+|     $Revision: 1.36 $
+|     $Date: 2006-07-24 23:50:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -47,6 +47,7 @@
 		global $tp;
 
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
+        $cat_link = $tp->replaceConstants($cat_link,TRUE);
 
 		if ($cat_open == 4 || $cat_open == 5){
 			$dimen = ($cat_open == 4) ? "600,400" : "800,600";
