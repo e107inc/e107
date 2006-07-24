@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-07-13 21:14:05 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2006-07-24 06:47:36 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
+@include_once(e_PLUGIN.'links_page/languages/'.e_LANGUAGE.'.php');
+@include_once(e_PLUGIN.'links_page/languages/English.php');
 
 $eplug_name = LCLAN_PLUGIN_LAN_1;
 $eplug_version = "1.12";
