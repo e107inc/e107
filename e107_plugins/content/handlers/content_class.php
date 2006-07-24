@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.95 $
-|		$Date: 2006-06-26 08:16:38 $
+|		$Revision: 1.96 $
+|		$Date: 2006-07-24 09:51:41 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -649,6 +649,17 @@ class content{
 		}
 
 
+		function getCategoryHeading($id){
+			global $plugintable, $sql;
+			$qry = "
+			SELECT c.*, p.*
+			FROM pcontent as c
+			LEFT JOIN pcontent as p ON p.content_id = c.content_parent
+			WHERE c.content_id = '".intval($id)."' ";
+			$sql -> db_Select_gen($qry);
+			$row2 = $sql -> db_Fetch();
+			return $row2['content_heading'];
+		}
 		function getPageHeading($id){
 			global $plugintable, $sql;
 			$sql -> db_Select($plugintable, "content_heading", "content_id='".intval($id)."' ");
@@ -675,14 +686,14 @@ class content{
 
 					//item
 					}elseif($qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) ){
-						$page .= " / ".$this -> getPageHeading($qs[1]);
+						$page .= " / ".$this -> getCategoryHeading($qs[1])." / ".$this -> getPageHeading($qs[1]);
 
 					//all categories of parent='2'
 					}elseif($qs[0] == "cat" && $qs[1] == "list" && is_numeric($qs[2])){
 						$page .= " / ".$this -> getPageHeading($qs[2])." / ".CONTENT_PAGETITLE_LAN_13;
 
 					//category of parent='2' and content_id='5'
-					}elseif($qs[0] == "cat" && is_numeric($qs[1]) && !isset($qs[2])){
+					}elseif($qs[0] == "cat" && is_numeric($qs[1]) && (!isset($qs[2]) || isset($qs[2]) && $qs[2]=='view') ){
 						$page .= " / ".CONTENT_PAGETITLE_LAN_3." / ".$row['content_heading'];
 
 					//top rated of parent='2'
