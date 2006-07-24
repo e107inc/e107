@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-07-08 03:17:43 $
+|     $Revision: 1.54 $
+|     $Date: 2006-07-24 23:15:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -387,13 +387,18 @@ class rssCreate {
 						<lastBuildDate>".$itemdate = date("r", ($time + $this -> offset))."</lastBuildDate>
 						<docs>http://backend.userland.com/rss092</docs>\n";
 
-					foreach($this -> rssItems as $value) {
+					foreach($this -> rssItems as $value)
+					{
+
+                    	// Multi-language rss links.
+						$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+
 						echo "
 							<item>
 							<title>".$tp->toRss($value['title'])."</title>
 							<description>".$tp->toRss(substr($value['description'],0,150))."</description>
 							<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>
-							<link>".$value['link']."</link>
+							<link>".$link."</link>
 							</item>";
 					}
 					echo "
@@ -438,19 +443,24 @@ class rssCreate {
 				<name>query</name>
 				<link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
 				</textInput>";
-				foreach($this -> rssItems as $value) {
+				foreach($this -> rssItems as $value)
+				{
+                    // Multi-language rss links.
+					$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+                    $catlink	= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['category_link']) : $value['category_link'];
+
 					echo "
 						<item>
 						<title>".$tp->toRss($value['title'])."</title>\n";
 
-					if($value['link']){
-						echo "<link>".$value['link']."</link>\n";
+					if($link){
+						echo "<link>".$link."</link>\n";
 					}
 
 					echo "<description>".$tp->toRss($value['description'])."</description>\n";
 
-					if($value['category_name'] && $value['category_link']){
-						echo "<category domain='".$value['category_link']."'>".$tp -> toRss($value['category_name'])."</category>\n";
+					if($value['category_name'] && $catlink){
+						echo "<category domain='".$catlink."'>".$tp -> toRss($value['category_name'])."</category>\n";
 					}
 
 					if($value['comment']){
@@ -469,8 +479,8 @@ class rssCreate {
 
 					echo "<pubDate>".date("r", ($value['pubdate'] + $this -> offset))."</pubDate>\n";
 
-					if($value['link']){
-						echo "<guid isPermaLink=\"true\">".$value['link']."</guid>\n";
+					if($link){
+						echo "<guid isPermaLink=\"true\">".$link."</guid>\n";
 					}
 
 					echo "</item>";
@@ -500,9 +510,14 @@ class rssCreate {
 				<items>
 				<rdf:Seq>";
 
-				foreach($this -> rssItems as $value) {
+				foreach($this -> rssItems as $value)
+				{
+
+                    // Multi-language rss links.
+					$link = (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+
 					echo "
-						<rdf:li rdf:resource=\"".$value['link']."\" />";
+						<rdf:li rdf:resource=\"".$link."\" />";
 				}
 
 				echo "
@@ -511,11 +526,17 @@ class rssCreate {
 				</channel>";
 
 				reset($this -> rssItems);
-				foreach($this -> rssItems as $value) {
+				unset($link);
+				foreach($this -> rssItems as $value)
+				{
+
+                    // Multi-language rss links.
+					$link = (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+
 					echo "
-						<item rdf:about=\"".$value['link']."\">
+						<item rdf:about=\"".$link."\">
 						<title>".$tp->toRss($value['title'])."</title>
-						<link>".$value['link']."</link>
+						<link>".$link."</link>
 						<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
 						<dc:creator>".$value['author']."</dc:creator>
 						<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
