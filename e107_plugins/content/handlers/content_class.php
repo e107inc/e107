@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.96 $
-|		$Date: 2006-07-24 09:51:41 $
+|		$Revision: 1.97 $
+|		$Date: 2006-07-24 09:53:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -755,7 +755,7 @@ class content{
 					}
 				}
 			}
-			define("e_PAGETITLE", strtolower($page));
+			define("e_PAGETITLE", $page);
 
 		}
 
