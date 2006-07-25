@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/message.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-25 01:26:59 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-25 01:18:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -70,6 +70,7 @@ if($amount = $sql -> db_Select("generic", "*", $queryString))
 		{
 			case "Broken Download":
 				$link = "<a href='".e_BASE."download.php?view.$gen_intdata' rel='external' title='".MESSLAN_11."'>$gen_ip</a>";
+                $link .= " [<a href='".e_ADMIN."download.php?create.edit.".$gen_intdata."'>".LAN_EDIT."</a>]";
 			break;
 			case "Dev Team Message":
 				$link = "";
@@ -81,7 +82,7 @@ if($amount = $sql -> db_Select("generic", "*", $queryString))
 <td style='width: 100%;' class='forumheader3'><b>".MESSLAN_8."</b>: $gen_type<br />
 <b>".MESSLAN_9."</b>: ".$gen->convert_date($gen_datestamp, 'long')."<br />
 <b>".MESSLAN_10."</b>: $user<br />
-<b>".MESSLAN_13."</b>: $link".
+<b>".MESSLAN_13."</b>: $link ";
 ($gen_chardata ? "<br /><b>".MESSLAN_12."</b>: $gen_chardata" : "")."<br /><input class='button' type='submit' name='delete_message' value='".MESSLAN_2." $gen_id' />
 </td>\n</tr>\n";
 	}
@@ -101,7 +102,7 @@ else
 	$text = MESSLAN_7;
 }
 $ns->tablerender(MESSLAN_1, $text);
-	
+
 require_once("footer.php");
 
 
@@ -144,7 +145,7 @@ if ($action != "edit") {
 	$text .= "</div></div>".$rs->form_close();
 	$ns->tablerender(BANLAN_3, $text);
 }
-	
+
 if ($action == "edit") {
 	$sql2->db_Select("banlist", "*", "banlist_ip='$sub_action'");
 	$row = $sql2->db_Fetch();
@@ -158,33 +159,33 @@ if ($action == "edit") {
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
-	 
+
 	<tr>
 	<td style='width:30%' class='forumheader3'>".BANLAN_5.": </td>
 	<td style='width:70%' class='forumheader3'>
 	<input class='tbox' type='text' name='ban_ip' size='40' value='".$banlist_ip."' maxlength='200' />
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:20%' class='forumheader3'>".BANLAN_7.": </td>
 	<td style='width:80%' class='forumheader3'>
 	<textarea class='tbox' name='ban_reason' cols='50' rows='4'>$banlist_reason</textarea>
 	</td>
 	</tr>
-	 
+
 	<tr style='vertical-align:top'>
-	<td colspan='2' style='text-align:center' class='forumheader'>".  
+	<td colspan='2' style='text-align:center' class='forumheader'>".
 ($action == "edit" ? "<input type='hidden' name='old_ip' value='$banlist_ip' /><input class='button' type='submit' name='update_ban' value='".BANLAN_13."' />" : "<input class='button' type='submit' name='add_ban' value='".BANLAN_8."' />")."
-	 
+
 	</td>
 	</tr>
 	</table>
 	</form>
 	</div>";
-	
+
 $ns->tablerender(BANLAN_9, $text);
-	
+
 require_once("footer.php");
 */
 ?>
