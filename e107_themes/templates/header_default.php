@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2006-07-09 19:50:25 $
+|     $Revision: 1.87 $
+|     $Date: 2006-07-25 00:19:58 $
 |     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -115,6 +115,18 @@ if (file_exists(THEME."favicon.ico")) {
 	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
 }
 
+// Wysiwyg on or off.
+if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
+	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+	define("e_WYSIWYG",TRUE);
+	echo wysiwyg($e_wysiwyg);
+}else{
+	define("e_WYSIWYG",FALSE);
+}
+
+
+
+
 // --- Load plugin Meta files and eplug_ --------
 foreach($pref['e_meta_list'] as $val)
 {
@@ -146,13 +158,7 @@ if (isset($theme_js_php) && $theme_js_php) {
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
-if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
-	define("e_WYSIWYG",TRUE);
-	echo wysiwyg($e_wysiwyg);
-}else{
-	define("e_WYSIWYG",FALSE);
-}
+
 if (function_exists('headerjs')){echo headerjs();  }
 
 
