@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-07-16 23:01:20 $
+|     $Revision: 1.38 $
+|     $Date: 2006-07-25 19:56:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,12 +45,21 @@ else
 require_once(HEADERF);
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
+if (isset($pref['memberlist_access']) && !check_class($pref['memberlist_access'])) {
+	$ns->tablerender(LAN_20, "<div style='text-align:center'>".USERLAN_2."</div>");
+	require_once(FOOTERF);
+	exit;
+}
 
 if (!USER) {
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_416."</div>");
 	require_once(FOOTERF);
 	exit;
 }
+
+
+
+
 
 if (isset($_POST['records'])) {
 	$records = intval($_POST['records']);
