@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.293 $
-|     $Date: 2006-07-12 16:09:40 $
+|     $Revision: 1.294 $
+|     $Date: 2006-07-25 20:25:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -63,6 +63,8 @@ ini_set('magic_quotes_sybase',      0);
 ini_set('arg_separator.output',     '&amp;');
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid',    0);
+
+define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
 //  Ensure thet '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
@@ -363,7 +365,7 @@ if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref
 	define("e_LANQRY", FALSE);
 }
 
-define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
+
 
 // online user tracking class
 $e_online = new e_online();
@@ -401,7 +403,7 @@ define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
 define("SITECONTACTINFO", $tp->toHTML($pref['sitecontactinfo'], TRUE, "emotes_off defs"));
 
-// legacy module.php file loading. 
+// legacy module.php file loading.
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
 	foreach ($mods as $mod) {
