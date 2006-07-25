@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2006-07-04 07:28:08 $
+|     $Revision: 1.81 $
+|     $Date: 2006-07-25 19:56:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,8 @@ $user = new users;
 require_once("auth.php");
 
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."userclass_class.php");
+
 
 $rs = new form;
 
@@ -123,6 +125,7 @@ if (isset($_POST['update_options'])) {
 	$pref['profile_comments'] = $_POST['profile_comments'];
 	$pref['track_online'] = $_POST['track_online'];
 	$pref['force_userupdate'] = $_POST['force_userupdate'];
+	$pref['memberlist_access'] = $_POST['memberlist_access'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
@@ -819,6 +822,13 @@ class users{
 			<td style='width:50%' class='forumheader3'>".USRLAN_130."<br /><span class='smalltext'>".USRLAN_131."</span></td>
 			<td style='width:50%' class='forumheader3'>&nbsp;
 			<input type='checkbox' name='track_online' value='1'".($pref['track_online'] ? " checked='checked'" : "")." /> ".USRLAN_132."&nbsp;&nbsp;
+			</td>
+			</tr>
+
+
+			<tr>
+			<td style='width:50%' class='forumheader3'>".USRLAN_146.":</td>
+			<td style='width:50%' class='forumheader3'>".r_userclass("memberlist_access",$pref['memberlist_access'])."
 			</td>
 			</tr>
 
