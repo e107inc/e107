@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2006-07-05 01:25:07 $
+|     $Revision: 1.67 $
+|     $Date: 2006-07-25 20:25:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -187,7 +187,7 @@ if (isset($_POST['fpreview']))
 	$ns->tablerender(LAN_323, $text);
 	$anonname = $tp->post_toHTML($_POST['anonname'], FALSE);
 
-	$post = $_POST['post']; // keep it the same for wysiwyg image posting.
+  	$post = $tp->post_toForm($_POST['post']); 
 	$subject = $tp->post_toHTML($_POST['subject'], false);
 
 	if ($action == "edit")
