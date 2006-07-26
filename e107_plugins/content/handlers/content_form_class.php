@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.111 $
-|		$Date: 2006-07-13 11:43:43 $
+|		$Revision: 1.112 $
+|		$Date: 2006-07-26 15:45:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1579,14 +1579,14 @@ class contentform{
 			}
 			$content_pref	= $eArrayStorage->ReadArray($row['content_pref']);
 			$qs[1] = intval($qs[1]);
-			
+
 			$text = "
 			<div style='text-align:center'>
 			".$rs -> form_open("post", e_SELF."?".e_QUERY, "managerform", "", "enctype='multipart/form-data'")."
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 				<td class='forumheader3' style='text-align:left'>
-					approve submitted<br />users with this class are able to approve submitted content items<br />
+					".CONTENT_ADMIN_MANAGER_LAN_0."<br />".CONTENT_ADMIN_MANAGER_LAN_1."<br />
 				</td>
 				<td class='forumheader3' style='text-align:left'>
 					".r_userclass("content_manager_approve", $content_pref["content_manager_approve"], 'off', "public,guest,nobody,member,admin,classes")."
@@ -1594,7 +1594,7 @@ class contentform{
 			</tr>
 			<tr>
 				<td class='forumheader3' style='text-align:left'>
-					personal manager<br />users with this class are able to manage only their personal content items<br />
+					".CONTENT_ADMIN_MANAGER_LAN_2."<br />".CONTENT_ADMIN_MANAGER_LAN_3."<br />
 				</td>
 				<td class='forumheader3' style='text-align:left'>
 					".r_userclass("content_manager_personal", $content_pref["content_manager_personal"], 'off', "public,guest,nobody,member,admin,classes")."
@@ -1602,7 +1602,7 @@ class contentform{
 			</tr>
 			<tr>
 				<td class='forumheader3' style='text-align:left'>
-					category manager<br />users with this class are able to manage all content items in this category<br />
+					".CONTENT_ADMIN_MANAGER_LAN_4."<br />".CONTENT_ADMIN_MANAGER_LAN_5."<br />
 				</td>
 				<td class='forumheader3' style='text-align:left'>
 					".r_userclass("content_manager_category", $content_pref["content_manager_category"], 'off', "public,guest,nobody,member,admin,classes")."
@@ -1610,7 +1610,7 @@ class contentform{
 			</tr>
 			<tr>
 				<td colspan='2' class='fcaption' style='text-align:center'>
-					".$rs -> form_button("submit", "update_manager", 'save')."
+					".$rs -> form_button("submit", "update_manager", LAN_SAVE)."
 					".$rs -> form_hidden("options_type", $qs[1])."
 				</td>
 			</tr>
@@ -2275,7 +2275,7 @@ class contentform{
 			<td class='fcaption' style='width:15%'>".CONTENT_ADMIN_CAT_LAN_18."</td>
 			<td class='fcaption' style='width:65%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
 			<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
-			<td class='fcaption' style='width:10%'>inherit</td>
+			<td class='fcaption' style='width:10%'>".CONTENT_ADMIN_OPT_LAN_167."</td>
 			</tr>";
 
 			$content_pref					= $aa -> getContentPref(0);
