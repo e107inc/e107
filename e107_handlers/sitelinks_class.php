@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2006-07-16 03:48:45 $
+|     $Revision: 1.97 $
+|     $Date: 2006-07-26 00:36:17 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -337,6 +337,8 @@ function hilite($link,$enabled=''){
 			list($q_custom,$q_page) = explode(".",e_QUERY);
 			if($custom == $q_custom){
             	return TRUE;
+			}else{
+              	return FALSE;
 			}
 		}
 
