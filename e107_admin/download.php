@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2006-07-20 00:02:23 $
+|     $Revision: 1.86 $
+|     $Date: 2006-07-26 02:21:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1128,6 +1128,8 @@ class download {
 		if ($id)
 		{
 			admin_update($sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".intval($_POST['download_category'])."', download_active='".intval($_POST['download_active'])."', download_datestamp='".intval($_POST['download_datestamp'])."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".intval($_POST['download_comment'])."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type='".intval($_POST['download_mirror_type'])."' , download_visible='".$_POST['download_visible']."' WHERE download_id=".intval($id)), 'update', DOWLAN_2);
+            $dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );                                             
+			$e_event->trigger("dlupdate", $dlinfo);
 		} else {
 			if (admin_update($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".intval($_POST['download_category'])."', '".intval($_POST['download_active'])."', '".intval($_POST['download_datestamp'])."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".intval($_POST['download_comment'])."', '{$_POST['download_class']}', '$mirrorStr', '".intval($_POST['download_mirror_type'])."', '".$_POST['download_visible']."' "), 'insert', DOWLAN_1)) {
 				$dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
