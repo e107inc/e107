@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-16 19:41:11 $
+|     $Revision: 1.5 $
+|     $Date: 2006-07-26 00:46:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,9 @@ SC_END
 
 SC_BEGIN LM_REMEMBERME
 global $pref;
+if($parm == "hidden"){
+	return "<input type='hidden' name='autologin' value='1' />";
+}
 if($pref['user_tracking'] != "session")
 {
 	return "<input type='checkbox' name='autologin' value='1' checked='checked' />".LOGIN_MENU_L6;
