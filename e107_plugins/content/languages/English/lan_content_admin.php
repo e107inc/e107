@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-06-22 19:49:56 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2006-07-26 15:45:46 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -92,7 +92,12 @@ define("CONTENT_ADMIN_CAT_LAN_61", "upload a new icon");
 define("CONTENT_ADMIN_CAT_LAN_62", "After you have uploaded a new category icon, you can assign this icon in the below 'icon' area<br />If you upload a new icon, this icon will be scaled to 48 pixels, and additionally a small 16 pixels icon will be created as well<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "upload icon");
 
-
+define("CONTENT_ADMIN_MANAGER_LAN_0", "approve submitted");
+define("CONTENT_ADMIN_MANAGER_LAN_1", "users with this class are able to approve submitted content items");
+define("CONTENT_ADMIN_MANAGER_LAN_2", "personal manager");
+define("CONTENT_ADMIN_MANAGER_LAN_3", "users with this class are able to manage only their personal content items");
+define("CONTENT_ADMIN_MANAGER_LAN_4", "category manager");
+define("CONTENT_ADMIN_MANAGER_LAN_5", "users with this class are able to manage all content items in this category");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "required field(s) left blank");
 define("CONTENT_ADMIN_ITEM_LAN_1", "content item created");
@@ -690,5 +695,6 @@ define("CONTENT_ADMIN_OPT_LAN_163", "show next and previous page links");
 define("CONTENT_ADMIN_OPT_LAN_164", "caption for previous page link<br />(use {PAGETITLE} to add the title of the previous page)");
 define("CONTENT_ADMIN_OPT_LAN_165", "caption for next page link<br />(use {PAGETITLE} to add the title of the next page)");
 define("CONTENT_ADMIN_OPT_LAN_166", "use 'all' to show full text");
+define("CONTENT_ADMIN_OPT_LAN_167", "inherit");
 
 ?>
