@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2006-07-25 00:19:58 $
-|     $Author: e107coders $
+|     $Revision: 1.88 $
+|     $Date: 2006-07-27 08:28:04 $
+|     $Author: lisa_ $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -124,8 +124,13 @@ if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && is
 	define("e_WYSIWYG",FALSE);
 }
 
-
-
+if (isset($theme_js_php) && $theme_js_php) {
+	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
+} else {
+	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
+	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
+	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+}
 
 // --- Load plugin Meta files and eplug_ --------
 foreach($pref['e_meta_list'] as $val)
@@ -149,19 +154,7 @@ if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tru
 	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
 }
 
-
-
-if (isset($theme_js_php) && $theme_js_php) {
-	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
-} else {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
-	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
-	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
-}
-
 if (function_exists('headerjs')){echo headerjs();  }
-
-
 
 if ($pref['image_preload']) {
 	$ejs_listpics = '';
