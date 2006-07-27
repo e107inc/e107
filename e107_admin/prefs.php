@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2006-06-29 06:53:06 $
+|     $Revision: 1.93 $
+|     $Date: 2006-07-27 01:42:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -167,39 +167,45 @@ $text = "<script type=\"text/javascript\">
 	$text .= "
 		</td>
 	</tr>
-	<tr>
 
+	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_5."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='sitetag' cols='59' rows='3'>".$pref['sitetag']."</textarea>
 	</td>
 	</tr>
-	<tr>
 
+	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_6."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='sitedescription' cols='59' rows='6'>".$pref['sitedescription']."</textarea>
 	</td>
 	</tr>
-	<tr>
 
+	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_7."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input class='tbox' type='text' name='siteadmin' size='50' value='".SITEADMIN."' maxlength='100' />
 	</td>
 	</tr>
-	<tr>
 
+	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_8."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input class='tbox' type='text' name='siteadminemail' size='50' value='".SITEADMINEMAIL."' maxlength='100' />
 	</td>
 	</tr>
-	<tr>
 
+	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_162."<br /><span class='smalltext'>".PRFLAN_163."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='sitecontactinfo' cols='59' rows='6'>".$pref['sitecontactinfo']."</textarea>
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_168."<br /><span class='smalltext'>".PRFLAN_169."</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>".r_userclass("sitecontacts",$pref['sitecontacts'],"off","nobody main admin userclasses")."
 	</td>
 	</tr>
 
@@ -211,6 +217,7 @@ $text = "<script type=\"text/javascript\">
 	</td>
 	</tr>
 
+	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_9."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='sitedisclaimer' cols='59' rows='6'>".$pref['sitedisclaimer']."</textarea>

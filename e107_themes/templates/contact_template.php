@@ -1,5 +1,5 @@
 <?php
-// $Id: contact_template.php,v 1.4 2006-07-16 19:56:47 e107coders Exp $
+// $Id: contact_template.php,v 1.5 2006-07-27 01:42:22 e107coders Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
@@ -15,21 +15,17 @@ if(!$CONTACT_INFO){
 	</table>";
 }
 
-// This must be defined outside $CONTACT_FORM so it can be turned off depending on the $pref
-if(!$CONTACT_EMAIL_COPY)
-{
-	$CONTACT_EMAIL_COPY = "
-	<tr><td>
-	<input type='checkbox' name='email_copy'  value='1'  />
-	".LANCONTACT_07."
-	</td></tr>
-	";
-}
+$sc_style['CONTACT_EMAIL_COPY']['pre'] = "<tr><td>";
+$sc_style['CONTACT_EMAIL_COPY']['post'] = LANCONTACT_07."</td></tr>";
+
+$sc_style['CONTACT_PERSON']['pre'] = "<tr><td>".LANCONTACT_14."<br />   ";
+$sc_style['CONTACT_PERSON']['post'] = "</td></tr>";
 
 if(!$CONTACT_FORM){
   $CONTACT_FORM = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
 	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
+	{CONTACT_PERSON}
 	<tr><td>".LANCONTACT_03."<br />
 	<input type='text' name='author_name' size='30' class='tbox' value='' />
 	</td></tr>
@@ -39,7 +35,8 @@ if(!$CONTACT_FORM){
 	<tr><td>
 	".LANCONTACT_05."<br />
 	<input type='text' name='subject' size='30' class='tbox' value='' />
-	</td></tr>{$CONTACT_EMAIL_COPY}
+	</td></tr>
+	{CONTACT_EMAIL_COPY}
 	<tr><td>
     ".LANCONTACT_06."<br />
 	<textarea cols='50' rows='10' name='body' class='tbox'></textarea>

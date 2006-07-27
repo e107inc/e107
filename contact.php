@@ -11,18 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-16 19:56:45 $
+|     $Revision: 1.6 $
+|     $Date: 2006-07-27 01:42:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
-require_once(HEADERF);
 
-if(!isset($pref['contact_emailcopy']) || !$pref['contact_emailcopy'])
+if(isset($pref['sitecontacts']) && $pref['sitecontacts'] == 255)
 {
-	$CONTACT_EMAIL_COPY = " ";
+	header("location:".e_BASE."index.php");
+	exit;
 }
+
+require_once(HEADERF);
 
 if (!$CONTACT_FORM) {
 	if (file_exists(THEME."contact_template.php")) {
@@ -78,30 +80,67 @@ if(isset($_POST['send-contactus'])){
 		$body .= "\n\nIP:\t".USERIP."\n";
 		$body .= "User:\t#".USERID." ".USERNAME."\n";
 
+		if(!$_POST['contact_person'] && isset($pref['sitecontacts'])) // only 1 person, so contact_person not posted.
+		{
+    		if($pref['sitecontacts'] == e_UC_MAINADMIN)
+			{
+        		$query = "user_perms = '0' OR user_perms = '0.' ";
+			}
+			elseif($pref['sitecontacts'] == e_UC_ADMIN)
+			{
+				$query = "user_admin = 1 ";
+			}
+			else
+			{
+        		$query = $pref['sitecontacts'] . " IN (user_class) ";
+			}
+		}
+		else
+		{
+      		$query = "user_id = ".$_POST['contact_person'];
+		}
+
+    	if($sql -> db_Select("user", "user_name,user_email",$query." LIMIT 1"))
+		{
+    		$row = $sql -> db_Fetch();
+    		$send_to = $row['user_email'];
+			$send_to_name = $row['user_name'];
+		}
+    	else
+		{
+		    $send_to = SITEADMINEMAIL;
+			$send_to_name = ADMIN;
+		}
+
     	require_once(e_HANDLER."mail.php");
- 		$message =  (sendemail(SITEADMINEMAIL,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
+ 		$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
     	if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $_POST['email_copy'] == 1){
 			sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
     	}
     	$ns -> tablerender('', $message);
 		require_once(FOOTERF);
 		exit;
-    } else {
+    }
+	else
+	{
 		require_once(e_HANDLER."message_handler.php");
 		message_handler("ALERT", $error);
 	}
 
 }
 
-if(SITECONTACTINFO && $CONTACT_INFO){
+if(SITECONTACTINFO && $CONTACT_INFO)
+{
 	$text = $tp->toHTML($CONTACT_INFO,"","parse_sc");
 	$ns -> tablerender(LANCONTACT_01, $text,"contact");
 }
 
-$text = $CONTACT_FORM;
+	require_once(e_FILE."shortcode/batch/contact_shortcodes.php");
+	$text = $tp->parseTemplate($CONTACT_FORM, TRUE, $contact_shortcodes);
+
 
 if(trim($text) != ""){
-	$ns -> tablerender(LANCONTACT_02, $text,"contact");
+	$ns -> tablerender(LANCONTACT_02, $text, "contact");
 }
 require_once(FOOTERF);
 exit;
