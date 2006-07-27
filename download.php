@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.71 $ - with modifications
-|     $Date: 2006-07-20 21:13:39 $
+|     $Revision: 1.72 $ - with modifications
+|     $Date: 2006-07-27 14:21:24 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -210,7 +210,8 @@ if ($action == "list") {
 	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
 
 // Next three lines extract page title
-	$sql->db_Select("download_category", "*", "download_category_id='{$id}'");
+	if ($sql->db_Select("download_category", "*", "(download_category_id='{$id}') AND (download_category_class IN (".USERCLASS_LIST."))") )
+	{
 	$row = $sql->db_Fetch();
 	extract($row);
 
@@ -218,6 +219,15 @@ if ($action == "list") {
 
 	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
 	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
+	}
+	else
+	{  // No access to this category
+	  define("e_PAGETITLE", PAGE_NAME);
+	  require_once(HEADERF);
+	  $ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
+	  require_once(FOOTERF);
+	  exit;
+	}
 
 	require_once(HEADERF);
 
