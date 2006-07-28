@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.97 $
-|		$Date: 2006-07-24 09:53:54 $
+|		$Revision: 1.98 $
+|		$Date: 2006-07-28 14:07:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ class content{
 			$content_pref['content_file_path'] = "{e_PLUGIN}content/images/file/";				//default path to item file attachments
 			$content_pref['content_file_path_tmp'] = "{e_PLUGIN}content/images/file/tmp/";		//default tmp path to item file attachments
 			
-			$content_pref['content_theme'] = "default";											//choose theme for main parent
+			$content_pref['content_theme'] = "{e_PLUGIN}content/templates/default/";			//choose theme for main parent
 			$content_pref['content_layout'] = "content_content_template.php";					//choose default layout scheme
 
 			//GENERAL
@@ -582,8 +582,8 @@ class content{
 					if(!$content_pref["content_theme"]){
 						require_once($plugindir."templates/default/content_np_template.php");
 					}else{
-						if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_np_template.php")){
-							require_once($plugindir."templates/".$content_pref["content_theme"]."/content_np_template.php");
+						if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_np_template.php")){
+							require_once($tp->replaceConstants($content_pref["content_theme"])."content_np_template.php");
 						}else{
 							require_once($plugindir."templates/default/content_np_template.php");
 						}

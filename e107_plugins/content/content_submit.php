@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.23 $
-|		$Date: 2006-07-16 10:35:46 $
+|		$Revision: 1.24 $
+|		$Date: 2006-07-28 14:07:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -96,9 +96,12 @@ if(!isset($qs[0])){
 	if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_pref", "content_parent = '0' AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_heading")){
 		$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_SUBMIT_LAN_0."</div>";
 	}else{
-		
 		if(!isset($CONTENT_SUBMIT_TYPE_TABLE)){
-			require_once($plugindir."templates/content_submit_type_template.php");
+			if(is_readable(e_THEME.$pref['sitetheme']."/content/content_submit_type_template.php")){
+				require_once(e_THEME.$pref['sitetheme']."/content/content_submit_type_template.php");
+			}else{
+				require_once(e_PLUGIN."content/templates/content_submit_type_template.php");
+			}
 		}
 		$sql2 = "";
 		$content_submit_type_table_string = "";

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-07-26 15:45:46 $
+|     $Revision: 1.15 $
+|     $Date: 2006-07-28 14:07:15 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -423,7 +423,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_64", "Content Management Plugin table struc
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "Content Management Plugin : content_author updated");
 define("CONTENT_ADMIN_CONVERSION_LAN_66", "Content Management Plugin : content_preferences and menus updated");
 define("CONTENT_ADMIN_CONVERSION_LAN_67", "Content Management Plugin : content_preferences updated");
-define("CONTENT_ADMIN_CONVERSION_LAN_68", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "Content Management Plugin : content_theme updated");
 define("CONTENT_ADMIN_CONVERSION_LAN_69", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_70", "");
 

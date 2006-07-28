@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.20 $
-|		$Date: 2006-06-19 07:48:07 $
+|		$Revision: 1.21 $
+|		$Date: 2006-07-28 14:07:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -61,9 +61,9 @@ class content_convert{
 				while($row = $sql -> db_Fetch()){
 					if(is_numeric($row['content_author'])){
 					}else{
-						$upgrade = TRUE;
 						$tmp = explode("^", $row['content_author']);
 						if($tmp[0] == "0"){
+							$upgrade = TRUE;
 							$newauthor = $tmp[1].($tmp[2] ? "^".$tmp[2] : "");
 							$sql1 -> db_Update("pcontent", " content_author = '".$newauthor."' WHERE content_id='".$row['content_id']."' ");
 						}
@@ -81,7 +81,7 @@ class content_convert{
 		function upgrade_1_22(){
 			global $sql, $sql2, $eArrayStorage, $tp, $aa;
 
-			$upgrade = FALSE;
+			$upgrade = TRUE;
 
 			$sqlc = new db;
 			$sqld = new db;
@@ -102,11 +102,15 @@ class content_convert{
 						$content_pref[$k] = $tp->toDB($v);
 					}
 				}
-				//add new options to the preferences
-				$content_pref = $this->upgrade_1_22_prefs($content_pref);
+				if(!isset($content_pref['content_admin_subheading'])){
+					//add new options to the preferences
+					$content_pref = $this->upgrade_1_22_prefs($content_pref);
 
-				$tmp1 = $eArrayStorage->WriteArray($content_pref);
-				$sqld -> db_Update("core", "e107_value = '{$tmp1}' WHERE e107_name = 'pcontent' ");
+					$tmp1 = $eArrayStorage->WriteArray($content_pref);
+					$sqld -> db_Update("core", "e107_value = '{$tmp1}' WHERE e107_name = 'pcontent' ");
+				}else{
+					$upgrade=FALSE;
+				}
 			}
 
 			//convert preferences for all main parents
@@ -128,10 +132,14 @@ class content_convert{
 						}
 					}
 					//add new options to the preferences
-					$content_pref = $this->upgrade_1_22_prefs($content_pref);
+					if(!isset($content_pref['content_admin_subheading'])){
+						$content_pref = $this->upgrade_1_22_prefs($content_pref);
 
-					$tmp1 = $eArrayStorage->WriteArray($content_pref);
-					$sqld -> db_Update("pcontent", "content_pref='{$tmp1}' WHERE content_id='$id' ");
+						$tmp1 = $eArrayStorage->WriteArray($content_pref);
+						$sqld -> db_Update("pcontent", "content_pref='{$tmp1}' WHERE content_id='$id' ");
+					}else{
+						$upgrade=FALSE;
+					}
 
 					//update menus
 					$plugintable	= "pcontent";
@@ -149,7 +157,9 @@ class content_convert{
 				}
 			}
 
-			return CONTENT_ADMIN_CONVERSION_LAN_66."<br />";
+			if($upgrade===TRUE){
+				return CONTENT_ADMIN_CONVERSION_LAN_66."<br />";
+			}
 		}
 
 		//add new preferences that come with this upgrade
@@ -191,7 +201,7 @@ class content_convert{
 		function upgrade_1_23(){
 			global $sql, $sql2, $eArrayStorage, $tp, $aa;
 
-			$upgrade = FALSE;
+			$upgrade = TRUE;
 
 			$sqlc = new db;
 			$sqld = new db;
@@ -202,27 +212,37 @@ class content_convert{
 				$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 
 				//add new options to the preferences
-				$content_pref = $this->upgrade_1_23_prefs($content_pref);
+				if(!isset($content_pref['content_admin_subheading'])){
+					$content_pref = $this->upgrade_1_23_prefs($content_pref);
 
-				$tmp1 = $eArrayStorage->WriteArray($content_pref);
-				$sqld -> db_Update("core", "e107_value = '{$tmp1}' WHERE e107_name = 'pcontent' ");
+					$tmp1 = $eArrayStorage->WriteArray($content_pref);
+					$sqld -> db_Update("core", "e107_value = '{$tmp1}' WHERE e107_name = 'pcontent' ");
+				}else{
+					$upgrade=FALSE;
+				}
 			}
 
 			//add new preferences for each main parent
-			if($sqlc -> db_Select("pcontent", "content_id, content_heading, content_pref", "LEFT(content_parent, 1) = '0' ")){
+			if($sqlc -> db_Select("pcontent", "content_id, content_heading, content_pref", "content_parent = '0' ")){
 				while($row=$sqlc->db_Fetch()){
 
 					$id = $row['content_id'];
 					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 
-					//add new options to the preferences
-					$content_pref = $this->upgrade_1_23_prefs($content_pref);
+					if(!isset($content_pref['content_admin_subheading'])){
+						//add new options to the preferences
+						$content_pref = $this->upgrade_1_23_prefs($content_pref);
 
-					$tmp1 = $eArrayStorage->WriteArray($content_pref);
-					$sqld -> db_Update("pcontent", "content_pref='{$tmp1}' WHERE content_id='$id' ");
+						$tmp1 = $eArrayStorage->WriteArray($content_pref);
+						$sqld -> db_Update("pcontent", "content_pref='{$tmp1}' WHERE content_id='$id' ");
+					}else{
+						$upgrade=FALSE;
+					}
 				}
 			}
-			return CONTENT_ADMIN_CONVERSION_LAN_67."<br />";
+			if($upgrade===TRUE){
+				return CONTENT_ADMIN_CONVERSION_LAN_67."<br />";
+			}
 		}
 		//add new preferences that come with this upgrade
 		function upgrade_1_23_prefs($content_pref){
@@ -246,6 +266,50 @@ class content_convert{
 			$content_pref['content_score_caption_append_name'] = '1';		//append category heading to caption
 
 			return $content_pref;
+		}
+
+		//update custom theme
+		function upgrade_1_24(){
+			global $sql, $sql2, $eArrayStorage, $tp, $aa;
+
+			$upgrade = TRUE;
+
+			$sqlc = new db;
+			$sqld = new db;
+			//add new preferences in core
+			if($sqlc -> db_Select("core", "*", "e107_name='pcontent' ")){
+				$row = $sqlc -> db_Fetch();
+
+				$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
+
+				//update theme
+				if(strpos($content_pref['content_theme'], "{e_")!==FALSE){
+				}else{
+					$content_pref['content_theme'] = "{e_PLUGIN}content/templates/".$content_pref['content_theme']."/";
+				}
+
+				$tmp1 = $eArrayStorage->WriteArray($content_pref);
+				$sqld -> db_Update("core", "e107_value = '{$tmp1}' WHERE e107_name = 'pcontent' ");
+			}
+
+			//add new preferences for each main parent
+			if($sqlc -> db_Select("pcontent", "content_id, content_heading, content_pref", "content_parent = '0' ")){
+				while($row=$sqlc->db_Fetch()){
+
+					$id = $row['content_id'];
+					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
+
+					//update theme
+					if(strpos($content_pref['content_theme'], "{e_")!==FALSE){
+					}else{
+						$content_pref['content_theme'] = "{e_PLUGIN}content/templates/".$content_pref['content_theme']."/";
+					}
+
+					$tmp1 = $eArrayStorage->WriteArray($content_pref);
+					$sqld -> db_Update("pcontent", "content_pref='{$tmp1}' WHERE content_id='$id' ");
+				}
+			}
+			return CONTENT_ADMIN_CONVERSION_LAN_68."<br />";
 		}
 
 		//convert rows
