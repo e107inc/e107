@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-06-03 10:42:46 $
+|     $Revision: 1.17 $
+|     $Date: 2006-07-28 14:07:14 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -277,6 +277,9 @@ $text .= $ac -> upgrade_1_22();
 //upgrade to 1.23 (update preference storage method)
 $text .= $ac -> upgrade_1_23();
 
+//upgrade to 1.24 (update custom theme)
+$text .= $ac -> upgrade_1_24();
+
 //render message
 if(isset($text)){
 	//only output detailed information if developer mode is set
@@ -352,7 +355,7 @@ function showlink()
 function set_content_version()
 {
 	global $sql, $pref;
-	$new_version = "1.23";
+	$new_version = "1.24";
 	$sql->db_Update('plugin',"plugin_version = '{$new_version}' WHERE plugin_path='content'");
 	$text = '';
 	//only output detailed information if developer mode is set

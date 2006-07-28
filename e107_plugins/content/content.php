@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.100 $
-|		$Date: 2006-07-13 10:01:09 $
+|		$Revision: 1.101 $
+|		$Date: 2006-07-28 14:07:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -187,8 +187,8 @@ function show_content_search_menu($mode, $mainparent){
 				if(!$content_pref["content_theme"]){
 					require_once($plugindir."templates/default/content_search_template.php");
 				}else{
-					if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_search_template.php")){
-						require_once($plugindir."templates/".$content_pref["content_theme"]."/content_search_template.php");
+					if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_search_template.php")){
+						require_once($tp->replaceConstants($content_pref["content_theme"])."content_search_template.php");
 					}else{
 						require_once($plugindir."templates/default/content_search_template.php");
 					}
@@ -238,8 +238,8 @@ function show_content_search_result($searchkeyword){
 				if(!$content_pref["content_theme"]){
 					require_once($plugindir."templates/default/content_searchresult_template.php");
 				}else{
-					if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_searchresult_template.php")){
-						require_once($plugindir."templates/".$content_pref["content_theme"]."/content_searchresult_template.php");
+					if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_searchresult_template.php")){
+						require_once($tp->replaceConstants($content_pref["content_theme"])."content_searchresult_template.php");
 					}else{
 						require_once($plugindir."templates/default/content_searchresult_template.php");
 					}
@@ -303,7 +303,9 @@ function CachePost($cachestring=''){
 function show_content(){
 		global $qs, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $datequery, $content_icon_path, $eArrayStorage, $contenttotal, $row;
 
-		if(!isset($CONTENT_TYPE_TABLE)){
+		if(is_readable(e_THEME.$pref['sitetheme']."/content/content_type_template.php")){
+			require_once(e_THEME.$pref['sitetheme']."/content/content_type_template.php");
+		}else{
 			require_once(e_PLUGIN."content/templates/content_type_template.php");
 		}
 
@@ -325,7 +327,6 @@ function show_content(){
 			{
 				if(!is_object($sql2)){ $sql2 = new db; }
 
-				//$content_pref = unserialize(stripslashes($row['content_pref']));
 				$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 				$content_pref["content_cat_icon_path_large"] = ($content_pref["content_cat_icon_path_large"] ? $content_pref["content_cat_icon_path_large"] : "{e_PLUGIN}content/images/cat/48/" );
 				$content_pref["content_cat_icon_path_small"] = ($content_pref["content_cat_icon_path_small"] ? $content_pref["content_cat_icon_path_small"] : "{e_PLUGIN}content/images/cat/16/" );
@@ -375,12 +376,6 @@ function show_content(){
 						if(isset($row['content_pref']) && $row['content_pref']){
 							$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 						}
-						/*
-						if(getperms("0") ){
-							$personalmanagercheck = TRUE;
-							break;
-						}
-						*/
 						if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
 							$personalmanagercheck = TRUE;
 							break;
@@ -417,8 +412,8 @@ function show_content_archive(){
 			if(!$content_pref["content_theme"]){
 				require_once($plugindir."templates/default/content_archive_template.php");
 			}else{
-				if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_archive_template.php")){
-					require_once($plugindir."templates/".$content_pref["content_theme"]."/content_archive_template.php");
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_archive_template.php")){
+					require_once($tp->replaceConstants($content_pref["content_theme"])."content_archive_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_archive_template.php");
 				}
@@ -530,8 +525,8 @@ function displayPreview($qry){
 			if(!$content_pref["content_theme"]){
 				require_once($plugindir."templates/default/content_recent_template.php");
 			}else{
-				if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_recent_template.php")){
-					require_once($plugindir."templates/".$content_pref["content_theme"]."/content_recent_template.php");
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_recent_template.php")){
+					require_once($tp->replaceConstants($content_pref["content_theme"])."content_recent_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_recent_template.php");
 				}
@@ -592,7 +587,6 @@ function show_content_recent(){
 		$recentqry			= "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery;
 		$text				= displayPreview($recentqry);
 		$text				= $aa -> getCrumbPage("recent", $array, $mainparent).$text;
-		//$caption			= CONTENT_LAN_23;
 		$caption			= $content_pref['content_list_caption'];
 		if(isset($content_pref['content_list_caption_append_name']) && $content_pref['content_list_caption_append_name']){
 			$caption .= " ".$array[intval($qs[1])][1];
@@ -620,8 +614,8 @@ function show_content_cat_all(){
 			if(!$content_pref["content_theme"]){
 				require_once($plugindir."templates/default/content_cat_template.php");
 			}else{
-				if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_cat_template.php")){
-					require_once($plugindir."templates/".$content_pref["content_theme"]."/content_cat_template.php");
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php")){
+					require_once($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_cat_template.php");
 				}
@@ -672,7 +666,6 @@ function show_content_cat_all(){
 		}
 		$text		= $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
 		$text		= $aa -> getCrumbPage("catall", $array, $mainparent).$text;
-		//$caption	= CONTENT_LAN_25;
 		$caption	= $content_pref['content_catall_caption'];
 		$ns -> tablerender($caption, $text);
 		$cachecheck = CachePost($cachestr);
@@ -697,8 +690,8 @@ function show_content_cat($mode=""){
 			if(!$content_pref["content_theme"]){
 				require_once($plugindir."templates/default/content_cat_template.php");
 			}else{
-				if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_cat_template.php")){
-					require_once($plugindir."templates/".$content_pref["content_theme"]."/content_cat_template.php");
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php")){
+					require_once($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_cat_template.php");
 				}
@@ -712,7 +705,6 @@ function show_content_cat($mode=""){
 		$number							= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
 		$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$capqs							= array_reverse($array[intval($qs[1])]);
-		//$caption						= CONTENT_LAN_26." : ".$capqs[0];
 		$caption	= $content_pref['content_cat_caption'];
 		if(isset($content_pref['content_cat_caption_append_name']) && $content_pref['content_cat_caption_append_name']){
 			$caption .= " ".$capqs[0];
@@ -774,7 +766,6 @@ function show_content_cat($mode=""){
 							$content_cat_listsub_table_string .= $tp -> parseTemplate($CONTENT_CAT_LISTSUB_TABLE, FALSE, $content_shortcodes);
 						}
 						$textsubparent = $CONTENT_CAT_LISTSUB_TABLE_START.$content_cat_listsub_table_string.$CONTENT_CAT_LISTSUB_TABLE_END;
-						//$captionsubparent = CONTENT_LAN_28;
 						$captionsubparent = $content_pref['content_cat_sub_caption'];
 					}
 				}
@@ -794,7 +785,6 @@ function show_content_cat($mode=""){
 			$contenttotal		= $sql -> db_Count($plugintable, "(*)", "WHERE ".$qrycat);
 			$childqry			= $qrycat." ".$order." ".$nextprevquery;
 			$textchild			= displayPreview($childqry);
-			//$captionchild		= CONTENT_LAN_31;
 			$captionchild		= $content_pref['content_cat_item_caption'];
 
 			$crumbpage = $aa -> getCrumbPage("cat", $array, $qs[1]);
@@ -871,8 +861,8 @@ function show_content_author_all(){
 			if(!$content_pref["content_theme"]){
 				require_once($plugindir."templates/default/content_author_template.php");
 			}else{
-				if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_author_template.php")){
-					require_once($plugindir."templates/".$content_pref["content_theme"]."/content_author_template.php");
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_author_template.php")){
+					require_once($tp->replaceConstants($content_pref["content_theme"])."content_author_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_author_template.php");
 				}
@@ -973,7 +963,6 @@ function show_content_author_all(){
 			$text = $CONTENT_AUTHOR_TABLE_START.$content_author_table_string.$CONTENT_AUTHOR_TABLE_END;
 			$text = $aa -> getCrumbPage("authorall", $array, $mainparent).$text;
 		}
-		//$caption = CONTENT_LAN_32;
 		$caption	= $content_pref['content_author_index_caption'];
 		$ns -> tablerender($caption, $text);
 		$aa -> ShowNextPrev("author", $from, $number, $contenttotal);
@@ -1023,7 +1012,6 @@ function show_content_author(){
 			$authorqry		= $qry." ".$order." ".$nextprevquery;
 			$text			= displayPreview($authorqry);
 			$text			= $aa -> getCrumbPage("author", $array, $mainparent).$text;
-			//$caption		= CONTENT_LAN_32." : ".$authordetails[1];
 			$caption		= $content_pref['content_author_caption'];
 			if(isset($content_pref['content_author_caption_append_name']) && $content_pref['content_author_caption_append_name']){
 				$caption .= " ".$authordetails[1];
@@ -1049,8 +1037,8 @@ function show_content_top(){
 			if(!$content_pref["content_theme"]){
 				require_once($plugindir."templates/default/content_top_template.php");
 			}else{
-				if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_top_template.php")){
-					require_once($plugindir."templates/".$content_pref["content_theme"]."/content_top_template.php");
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_top_template.php")){
+					require_once($tp->replaceConstants($content_pref["content_theme"])."content_top_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_top_template.php");
 				}
@@ -1087,7 +1075,6 @@ function show_content_top(){
 			}
 			$content_top_table_string		= $aa -> getCrumbPage("top", $array, $mainparent).$content_top_table_string;
 			$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
-			//$caption	= CONTENT_LAN_38;
 			$caption	= $content_pref['content_top_caption'];
 			if(isset($content_pref['content_top_caption_append_name']) && $content_pref['content_top_caption_append_name']){
 				$caption .= " ".$array[intval($qs[1])][1];
@@ -1113,8 +1100,8 @@ function show_content_score(){
 			if(!$content_pref["content_theme"]){
 				require_once($plugindir."templates/default/content_score_template.php");
 			}else{
-				if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_score_template.php")){
-					require_once($plugindir."templates/".$content_pref["content_theme"]."/content_score_template.php");
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_score_template.php")){
+					require_once($tp->replaceConstants($content_pref["content_theme"])."content_score_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_score_template.php");
 				}
@@ -1145,7 +1132,6 @@ function show_content_score(){
 		}
 		$content_score_table_string = $aa -> getCrumbPage("score", $array, $mainparent).$content_score_table_string;
 		$text		= $CONTENT_SCORE_TABLE_START.$content_score_table_string.$CONTENT_SCORE_TABLE_END;
-		//$caption	= CONTENT_LAN_87;
 		$caption	= $content_pref['content_score_caption'];
 		if(isset($content_pref['content_score_caption_append_name']) && $content_pref['content_score_caption_append_name']){
 			$caption .= " ".$array[intval($qs[1])][1];
@@ -1363,12 +1349,12 @@ function show_content_item(){
 					//if custom layout is set
 					if($row['content_layout']){
 						//if custom layout file exists
-						if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/".$row['content_layout'])){
-							require_once($plugindir."templates/".$content_pref["content_theme"]."/".$row['content_layout']);
+						if(is_readable($tp->replaceConstants($content_pref["content_theme"]).$row['content_layout'])){
+							require_once($tp->replaceConstants($content_pref["content_theme"]).$row['content_layout']);
 						}else{
 							//if default layout from the set theme exists
-							if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_content_template.php")){
-								require_once($plugindir."templates/".$content_pref["content_theme"]."/content_content_template.php");
+							if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php")){
+								require_once($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php");
 							//else use default theme, default layout
 							}else{
 								require_once($plugindir."templates/default/content_content_template.php");
@@ -1377,8 +1363,8 @@ function show_content_item(){
 					//if no custom layout is set
 					}else{
 						//if default layout from the set theme exists
-						if(is_readable($plugindir."templates/".$content_pref["content_theme"]."/content_content_template.php")){
-							require_once($plugindir."templates/".$content_pref["content_theme"]."/content_content_template.php");
+						if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php")){
+							require_once($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php");
 						//else use default theme, default layout
 						}else{
 							require_once($plugindir."templates/default/content_content_template.php");

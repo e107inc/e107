@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.112 $
-|		$Date: 2006-07-26 15:45:46 $
+|		$Revision: 1.113 $
+|		$Date: 2006-07-28 14:07:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1978,8 +1978,12 @@ class contentform{
 			global $CONTENT_CONTENTMANAGER_CATEGORY, $CONTENT_CONTENTMANAGER_TABLE, $CONTENT_CONTENTMANAGER_TABLE_START, $CONTENT_CONTENTMANAGER_TABLE_END, $content_pref;
 			$personalmanagercheck = FALSE;
 
-			if(!$CONTENT_CONTENTMANAGER_TABLE){
-				require_once($plugindir."templates/content_manager_template.php");
+			if(!isset($CONTENT_CONTENTMANAGER_TABLE)){
+				if(is_readable(e_THEME.$pref['sitetheme']."/content/content_manager_template.php")){
+					require_once(e_THEME.$pref['sitetheme']."/content/content_manager_template.php");
+				}else{
+					require_once(e_PLUGIN."content/templates/content_manager_template.php");
+				}
 			}
 			$array		= $aa -> getCategoryTree("", "", TRUE);
 			$catarray	= array_keys($array);
@@ -2698,7 +2702,14 @@ class contentform{
 			".$rs -> form_select_open("content_theme");
 			$counter = 0;
 			foreach($dirlist as $themedir){
-				$TOPIC_FIELD .= $rs -> form_option($themedir, ($themedir == $content_pref['content_theme'] ? "1" : "0"), $themedir);
+				$path = "{e_PLUGIN}content/templates/".$themedir."/";
+				$TOPIC_FIELD .= $rs -> form_option($path, ($path == $content_pref['content_theme'] ? "1" : "0"), $path);
+				$counter++;
+			}
+			global $THEMES_DIRECTORY;
+			if(is_readable(e_THEME.$pref['sitetheme']."/content/")){
+				$path = "{e_THEME}".$pref['sitetheme']."/content/";
+				$TOPIC_FIELD .= $rs -> form_option($path, ($path == $content_pref['content_theme'] ? "1" : "0"), $path);
 				$counter++;
 			}
 			$TOPIC_FIELD .= $rs -> form_select_close();
