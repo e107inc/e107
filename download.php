@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.72 $ - with modifications
-|     $Date: 2006-07-27 14:21:24 $
+|     $Revision: 1.73 $ - with modifications
+|     $Date: 2006-07-29 19:39:35 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -25,7 +25,7 @@ require_once("class2.php");
 require_once(e_HANDLER."comment_class.php");
 require_once(e_FILE."shortcode/batch/download_shortcodes.php");
 unset($text);
-$agreetext = $tp->toJS($pref['agree_text']);
+$agreetext = $tp->toHTML($pref['agree_text'],TRUE,"parse_sc");
 $cobj = new comment;
 global $tp;
 
