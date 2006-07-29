@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.113 $
-|		$Date: 2006-07-28 14:07:15 $
+|		$Revision: 1.114 $
+|		$Date: 2006-07-29 10:49:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -296,15 +296,15 @@ class contentform{
 						
 						//check submit permissions
 						if($mode == 'submit'){
-							//get current item
+							//check if current item exists (item is a (sub)category)
 							if($sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_pref", " content_id='".intval($qs[2])."' ")){
-								$rowsub = $sql -> db_Fetch();
-								$sub_pref = $eArrayStorage->ReadArray($rowsub['content_pref']);
-								
-								if($sub_pref["content_submit"] && check_class($sub_pref["content_submit_class"])){
+								//check submit perms from main parent
+								if($content_pref["content_submit"] && check_class($content_pref["content_submit_class"])){
 								}else{
 									header("location:".$plugindir."content_submit.php"); exit;
 								}
+							}else{
+								header("location:".$plugindir."content_submit.php"); exit;
 							}
 						}
 						
