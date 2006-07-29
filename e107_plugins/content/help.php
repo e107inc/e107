@@ -66,7 +66,7 @@ if(!e_QUERY){
 			//$text = CONTENT_ADMIN_HELP_OPTION_2;
 			$text .= "
 			<div id='creationhelp'>".CONTENT_ADMIN_HELP_OPTION_DIV_1."</div>
-			<div id='catcreationhelp'>".CONTENT_ADMIN_HELP_OPTION_DIV_14."</div>
+			<div id='catcreationhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_14."</div>
 			<div id='submissionhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_2."</div>
 			<div id='paththemehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_3."</div>
 			<div id='generalhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_4."</div>
