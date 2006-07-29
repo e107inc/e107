@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-07-19 23:22:40 $
+|     $Revision: 1.14 $
+|     $Date: 2006-07-29 19:39:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ if($parm == "nolink"){
 }
 if($parm == "request"){
 
-	$agreetext = $tp->toJS($pref['agree_text']);
+	$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"));
 	if($row['download_mirror_type']){
 		$text = ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."' title='".LAN_dl_32."'>");
 	}else{
@@ -115,7 +115,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_LIST_LINK
 global $tp,$row,$pref;
-$agreetext = $tp->toJS($pref['agree_text']);
+$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"));
 	if($row['download_mirror_type']){
 		return ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."' >");
 	}else{
@@ -250,7 +250,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_LINK
 global $pref,$dl,$tp;
 if ($pref['agree_flag'] == 1) {
-	$dnld_link = "<a href='request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($pref['agree_text'])."');\">";
+	$dnld_link = "<a href='request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"))."');\">";
 } else {
 	$dnld_link = "<a href='request.php?".$dl['download_id']."'>";
 }
