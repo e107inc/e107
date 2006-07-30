@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.62 $
-|		$Date: 2006-07-13 10:01:09 $
+|		$Revision: 1.63 $
+|		$Date: 2006-07-30 13:14:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -435,6 +435,9 @@ function admin_content_config_adminmenu(){
 
                 global $sql, $plugintable, $aa;
 
+				//toggle to show categories in admin right hand menu
+				$showadmincat = TRUE;
+
 				if(e_QUERY){
 					$qs		=	explode(".", e_QUERY);
 				}
@@ -509,45 +512,48 @@ function admin_content_config_adminmenu(){
 					show_admin_menu(CONTENT_ADMIN_MENU_LAN_21.": ".$content_heading."", $act, $var, TRUE);
 				
 				}else{
-						$sql2 = new db;
-						if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
-							while($row = $sql2 -> db_Fetch()){
+						
+						if($showadmincat){
+							$sql2 = new db;
+							if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
+								while($row = $sql2 -> db_Fetch()){
 
-								unset($var);
-								$var=array();
+									unset($var);
+									$var=array();
 
-								$array		= $aa -> getCategoryTree("", $row['content_id'], FALSE);	//get all categories from each main parent
-								$newarray	= array_merge_recursive($array);
+									$array		= $aa -> getCategoryTree("", $row['content_id'], FALSE);	//get all categories from each main parent
+									$newarray	= array_merge_recursive($array);
 
-								$newparent=array();
-								for($a=0;$a<count($newarray);$a++){
-									for($b=0;$b<count($newarray[$a]);$b++){
-										$newparent[$newarray[$a][$b]] = $newarray[$a][$b+1];
-										$b++;
+									$newparent=array();
+									for($a=0;$a<count($newarray);$a++){
+										for($b=0;$b<count($newarray[$a]);$b++){
+											$newparent[$newarray[$a][$b]] = $newarray[$a][$b+1];
+											$b++;
+										}
 									}
-								}
 
-								foreach($newparent as $key => $value){
-									$var['c'.$key]['text']	= $value;
-									$var['c'.$key]['link']	= e_SELF."?content.".$key;
-								}
-								if( isset($qs[0]) && $qs[0] == "content" && isset($qs[1]) && $qs[1] == "create"){
-									$act = "";
-								}elseif( isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && ($qs[1] == "create" || $qs[1] == "edit") ){
-									$act = "";
-								}elseif( isset($qs[0]) && $qs[0] == "order" ){
-									$act = "";
-								}elseif( isset($qs[0]) && $qs[0] == "manager" ){
-									$act = "";
-								}else{
-									if(isset($qs[0]) && isset($qs[1]) ){
-										$act = "c".$qs[1];
+									foreach($newparent as $key => $value){
+										$var['c'.$key]['text']	= $value;
+										$var['c'.$key]['link']	= e_SELF."?content.".$key;
+									}
+									if( isset($qs[0]) && $qs[0] == "content" && isset($qs[1]) && $qs[1] == "create"){
+										$act = "";
+									}elseif( isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && ($qs[1] == "create" || $qs[1] == "edit") ){
+										$act = "";
+									}elseif( isset($qs[0]) && $qs[0] == "order" ){
+										$act = "";
+									}elseif( isset($qs[0]) && $qs[0] == "manager" ){
+										$act = "";
 									}else{
-										$act = "c";
+										if(isset($qs[0]) && isset($qs[1]) ){
+											$act = "c".$qs[1];
+										}else{
+											$act = "c";
+										}
 									}
-								}
 
-								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", $act, $var);
+									show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", $act, $var);
+								}
 							}
 						}
 				}
@@ -555,52 +561,6 @@ function admin_content_config_adminmenu(){
 }
 // ##### End --------------------------------------------------------------------------------------
 
-
 require_once(e_ADMIN."footer.php");
-
-function headerjs(){
-	global $tp, $plugindir;
-
-	$script = "
-	<script type='text/javascript' src='".$plugindir."content.js'></script>\n
-	<script type=\"text/javascript\">
-
-	function confirm2_(mode, number, name){
-	if(mode == 'image'){
-	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_2." [".CONTENT_ADMIN_JS_LAN_4.": \" + name + \"] \");
-	}
-	if(mode == 'icon'){
-	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_7." [".CONTENT_ADMIN_JS_LAN_8.": \" + name + \"] \");
-	}
-	if(mode == 'file'){
-	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_3." [".CONTENT_ADMIN_JS_LAN_5.": \" + name + \"] \");
-	}
-	var i;
-	var imagemax = 10;
-	if(x){
-	if(mode == 'image'){
-	for (i = 0; i < imagemax; i++){
-	if(number == i){
-	document.getElementById('content_images' + i).value = '';
-	}
-	}
-	}
-	if(mode == 'icon'){
-	document.getElementById('content_icon').value = '';
-	}
-	if(mode == 'file'){
-	for (i = 0; i < imagemax; i++){
-	if(number == i){
-	document.getElementById('content_files' + i).value = '';
-	}
-	}
-	}
-	}
-	}
-	</script>";
-
-	return $script;
-
-}
 
 ?>
