@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-16 15:18:42 $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-30 21:20:47 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -24,4 +24,5 @@ define("LANG_LAN_12", "Activeren Multi-Language tabellen");
 define("LANG_LAN_13", "Multi-Language voorkeuren");
 define("LANG_LAN_14", "Standaard sitetaal");
 define("LANG_LAN_15", "Aankruisen om gegevens van de standaardtaal te kopiëren (nuttig voor links, nieuwscategorieën enz.) ");
+define("LANG_LAN_16", "Meertalig database gebruik"); 
 ?>

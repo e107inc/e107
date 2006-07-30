@@ -39,4 +39,11 @@ define("LANHELP_33", "HTML - verwijdert regeleinden uit de tekst: [html]<table><
 define("LANHELP_34", "Invoegen pagina einde, splitst een artikel op in meerdere pagina &rsquo; s");
 define("LANHELP_35", "hyperlink url");
 define("LANHELP_36", "Ongesorteerd: [list]line1*line2*line3[/list] Gesorteerd: [list=type]line1*line2*line3[/list]");
+define("LANHELP_37", "Invoegen afbeelding vanuit e107_images/newspost_images/ directory");
+define("LANHELP_38", "link naar de volledige afbeelding wordt gegenereerd");
+define("LANHELP_39", "Invoegen download link vanaf de bestaande downloads");
+define("LANHELP_40", "Er bestaan nu geen downloads");
+define("LANHELP_41", "Font grootte...");
+define("LANHELP_42", "Kies afbeelding...");
+define("LANHELP_43", "Kies downloadbestand...");
 ?>

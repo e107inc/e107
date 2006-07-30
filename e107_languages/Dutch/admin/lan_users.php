@@ -105,6 +105,11 @@ define("USRLAN_136", "Meerdere gebruikers gevonden met het IP adres {IP}, IP nie
 define("USRLAN_137", "Gebruikers met IP adres {IP} geblokkeerd.");
 define("USRLAN_138", "Nog niet goedgekeurde aanmeldingen");
 define("USRLAN_139", "Je account is geactiveerd.\n\nJe kunt {SITEURL} nu bezoeken en inloggen met de inloggegevens die je bij je aanmelding hebt opgegeven.");
+define("USRLAN_140", "E-mail nogmaals verzonden aan");
+define("USRLAN_141", "Kon geen e-mail opnieuw versturen aan");
+define("USRLAN_142", "met de volgende activeringslink");
+define("USRLAN_143", "Controle op bounce");
+define("USRLAN_144", "Verstuur iedereen een bevestigingse-mail");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Weergavenaam");
@@ -148,4 +153,5 @@ define("LAN_MAINADMIN","Hoofdbeheerder");
 define("LAN_ADMIN","Beheerder");
 define("LAN_NOTVERIFIED","Niet geverifieerd");
 define("LAN_BANNED","Geblokkeerd"); 
+define("LAN_BOUNCED","Gebounced");
 ?>

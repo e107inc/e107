@@ -206,6 +206,7 @@ define("LAN_INACTIVE","Inactief");
 define("LAN_NO_CHANGE","Update mislukt omdat er geen wijzigingen zijn aangebracht.");
 define("LAN_TRY_AGAIN","Probeer het nogmaals.");
 define("LAN_BAN","Blokkeren");
+define("LAN_RATING", "Waardering");
 
 define('ADLAN_CL_1', "Instellingen");
 define('ADLAN_CL_2', "Leden");

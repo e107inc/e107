@@ -145,6 +145,11 @@ define("PRFLAN_157", "Alle weergavenamen zijn teruggezet naar de inlognaam");
 define("PRFLAN_158", "Maximum lengte weergavenaam");
 define("PRFLAN_159", "bekijkt deze pagina met");
 define("PRFLAN_160", "Controleer externe servers bij het valideren van e-mailadressen.");   
+define("PRFLAN_161", "Deactiveer commentaarfunctie op de site");
+define("PRFLAN_162", "Site contact informatie");
+define("PRFLAN_163", "bijv.  bedrijfsnaam, adres, telefoon etc.");
+define("PRFLAN_164", "Sta leden toe om zichzelf een kopie van e-mailberichten te sturen");
+define("PRFLAN_165", "Dit kan spam mogelijk maken, pas dus op");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");

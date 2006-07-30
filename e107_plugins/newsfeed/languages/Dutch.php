@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Dutch.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-03 06:37:39 $
+|     $Revision: 1.3 $
+|     $Date: 2006-07-30 21:20:47 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -80,5 +80,7 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Naam:</u>
 	<br /><br />Voor een overzicht van beschikbare feeds, zie <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> of <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Newsfeed help");
 define("NFLAN_44", "klikken om te bekijken");
-
+define("NFLAN_45", "Aantal in menu te tonen onderwerpen");
+define("NFLAN_46", "Aantal op hoofdpagina te tonen onderwerpen");
+define("NFLAN_47", "0 of blanco om alles te tonen");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-formal/admin/lan_mailout.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-18 15:59:23 $
+|     $Revision: 1.4 $
+|     $Date: 2006-07-30 21:20:46 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -48,5 +48,16 @@ define("MAILAN_21","Massa-mail berichten");
 define("MAILAN_22","Er zijn nu geen opgeslagen berichten");
 define("MAILAN_23","ledenklasse: ");
 define("MAILAN_24", "email(s) klaar voor verzending");
-
+define("MAILAN_25", "Onderbreken");
+define("MAILAN_26", "Onderbreek massa-mailing na");
+define("MAILAN_27", "e-mails");
+define("MAILAN_28", "Duur onderbreking");
+define("MAILAN_29", "seconden");
+define("MAILAN_30", "Meer dan 30 seconden kan leiden tot een browser time-out");
+define("MAILAN_31", "Verwerking gebouncte e-mails");
+define("MAILAN_32", "E-mailadres");
+define("MAILAN_33", "Inkomend bericht");
+define("MAILAN_34", "Accountnaam");
+define("MAILAN_35", "Wachtwoord");
+define("MAILAN_36", "Verwijder gebouncede e-mails na controle");  
 ?>

@@ -26,4 +26,8 @@ define("UE_LAN_YAHOO_DESC", "Yahoo!-adres");
 define("UE_LAN_MSN_DESC", "MSN Messenger-adres");
 define("UE_LAN_HOMEPAGE_DESC", "Homepage-adres");
 define("UE_LAN_BIRTHDAY_DESC", "Geboortedatum");
+define("UE_LAN_LANGUAGE", "Taal");
+define("UE_LAN_LANGUAGE_DESC", "Ledentaal");
+define("UE_LAN_COUNTRY", "Land");
+define("UE_LAN_COUNTRY_DESC", "Land lid (inclusief db tabel)");
 ?>
