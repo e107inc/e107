@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2006-07-27 01:42:22 $
-|     $Author: e107coders $
+|     $Revision: 1.94 $
+|     $Date: 2006-07-30 09:58:20 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -558,6 +558,9 @@ if(!isset($pref['post_html']))
 
 $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
+	<tr>
+	<td class='fcaption' style='text-align:left;' colspan='2'>".PRFLAN_101."</td>
+	</tr>
 
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_127.":  <div class='smalltext'>".PRFLAN_128."</div></td>
