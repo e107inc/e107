@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.101 $
-|		$Date: 2006-07-28 14:07:14 $
+|		$Revision: 1.102 $
+|		$Date: 2006-07-30 13:14:10 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -716,7 +716,7 @@ function show_content_cat($mode=""){
 				header("location:".e_SELF."?cat.list.".$mainparent); exit;
 			}else{
 				//if 'view' override the items pref to show only limited text adn show full catetgory text instead
-				if($mode=='view'){
+				if($mode=='view' || $mode=='comment'){
 					$content_pref['content_cat_text_char'] = 'all';
 				}
 				$row = $sql -> db_Fetch();
@@ -740,8 +740,8 @@ function show_content_cat($mode=""){
 			echo $cachecheck;
 			return;
 		}
-		if(!$mode || $mode == "" || $mode='view'){
 
+		if(!$mode || $mode == "" || $mode=='view'){
 			$check			= (isset($qs[1]) && is_numeric($qs[1]) ? intval($qs[1]) : intval($mainparent));
 			$array1			= $aa -> getCategoryTree("", $check, TRUE);
 			$newarray		= array_merge_recursive($array1);
@@ -825,7 +825,7 @@ function show_content_cat($mode=""){
 
 		if($mode == "comment"){
 			$textparent = $aa -> getCrumbPage("cat", $array, $mainparent).$textparent;
-			if(isset($textparent)){ $ns -> tablerender($captionparent, $textparent); }
+			if(isset($textparent)){ $ns -> tablerender($caption, $textparent); }
 
 			if($resultitem = $sql -> db_Select($plugintable, "*", $qry )){
 				$row = $sql -> db_Fetch();
