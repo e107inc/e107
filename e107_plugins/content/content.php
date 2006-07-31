@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.102 $
-|		$Date: 2006-07-30 13:14:10 $
+|		$Revision: 1.103 $
+|		$Date: 2006-07-31 09:15:45 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -126,20 +126,20 @@ if(isset($_POST['searchsubmit']) || isset($_POST[$searchfieldname]) || isset($_P
 if(!e_QUERY){
 	show_content();
 }else{
-	//recent of parent='2'
-	if( $qs[0] == "recent" && is_numeric($qs[1]) && ( !isset($qs[2]) || substr($qs[2],0,5) == "order" ) ){
+	//recent of parent='X'
+	if( $qs[0] == "recent" && is_numeric($qs[1]) && intval($qs[1])>0 && ( !isset($qs[2]) || substr($qs[2],0,5) == "order" ) ){
 		show_content_recent();
 
 	//item
-	}elseif( $qs[0] == "content" && is_numeric($qs[1]) ){
+	}elseif( $qs[0] == "content" && is_numeric($qs[1]) && intval($qs[1])>0 ){
 		show_content_item();
 
-	//all categories of parent='2'
-	}elseif( $qs[0] == "cat" && $qs[1] == "list" && is_numeric($qs[2]) && !isset($qs[3]) ){
+	//all categories of parent='X'
+	}elseif( $qs[0] == "cat" && $qs[1] == "list" && is_numeric($qs[2]) && intval($qs[2])>0 && !isset($qs[3]) ){
 		show_content_cat_all();
 
-	//category of parent='2' and content_id='5'
-	}elseif( $qs[0] == "cat" && is_numeric($qs[1]) && (!isset($qs[2]) || $qs[2] == "view" || $qs[2] == "comment" || substr($qs[2],0,5) == "order") ){
+	//category of parent='X'
+	}elseif( $qs[0] == "cat" && is_numeric($qs[1]) && intval($qs[1])>0 && (!isset($qs[2]) || $qs[2] == "view" || $qs[2] == "comment" || substr($qs[2],0,5) == "order") ){
 		
 		if( isset($qs[2]) && $qs[2] == "comment" ){
 			show_content_cat("comment");
@@ -149,28 +149,29 @@ if(!e_QUERY){
 			show_content_cat();
 		}
 
-	//top rated of parent='2'
-	}elseif( $qs[0] == "top" && is_numeric($qs[1]) && !isset($qs[2]) ){
+	//top rated of parent='X'
+	}elseif( $qs[0] == "top" && is_numeric($qs[1]) && intval($qs[1])>0 && !isset($qs[2]) ){
 		show_content_top();
 
-	//top score of parent='2'
-	}elseif( $qs[0] == "score" && is_numeric($qs[1]) ){
+	//top score of parent='X'
+	}elseif( $qs[0] == "score" && is_numeric($qs[1]) && intval($qs[1])>0 ){
 		// && !isset($qs[2])
 		show_content_score();
 
-	//authorlist of parent='2'
-	}elseif( $qs[0] == "author" && $qs[1] == "list" && is_numeric($qs[2]) && ( !isset($qs[3]) || substr($qs[3],0,5) == "order" ) ){
+	//authorlist of parent='X'
+	}elseif( $qs[0] == "author" && $qs[1] == "list" && is_numeric($qs[2]) && intval($qs[2])>0 && ( !isset($qs[3]) || substr($qs[3],0,5) == "order" ) ){
 		show_content_author_all();
 
-	//authorlist of parent='2' and content_id='5'
-	}elseif( $qs[0] == "author" && is_numeric($qs[1]) && (!isset($qs[2]) || substr($qs[2],0,5) == "order")  ){
+	//authorlist of content_id='X'
+	}elseif( $qs[0] == "author" && is_numeric($qs[1]) && intval($qs[1])>0 && (!isset($qs[2]) || substr($qs[2],0,5) == "order")  ){
 		show_content_author();
 
-	//archive of parent='2'
-	}elseif( $qs[0] == "list" && is_numeric($qs[1])  ){
+	//archive of parent='X'
+	}elseif( $qs[0] == "list" && is_numeric($qs[1]) && intval($qs[1])>0  ){
 		show_content_archive();
 	}else{
-		js_location(e_SELF);
+		//js_location(e_SELF);
+		header("location:".e_SELF);
 	}
 }
 // ##### ------------------------------------------------------------------------------
