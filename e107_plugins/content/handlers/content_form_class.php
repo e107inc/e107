@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.114 $
-|		$Date: 2006-07-29 10:49:00 $
+|		$Revision: 1.115 $
+|		$Date: 2006-07-31 15:45:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1975,7 +1975,7 @@ class contentform{
 
 		function show_contentmanager($mode, $userid="", $username=""){
 			global $content_shortcodes, $row, $tp, $sql, $ns, $rs, $plugintable, $plugindir, $aa, $eArrayStorage;
-			global $CONTENT_CONTENTMANAGER_CATEGORY, $CONTENT_CONTENTMANAGER_TABLE, $CONTENT_CONTENTMANAGER_TABLE_START, $CONTENT_CONTENTMANAGER_TABLE_END, $content_pref;
+			global $CONTENT_CONTENTMANAGER_CATEGORY, $CONTENT_CONTENTMANAGER_TABLE, $CONTENT_CONTENTMANAGER_TABLE_START, $CONTENT_CONTENTMANAGER_TABLE_END, $content_pref, $pref;
 			$personalmanagercheck = FALSE;
 
 			if(!isset($CONTENT_CONTENTMANAGER_TABLE)){
@@ -2706,7 +2706,7 @@ class contentform{
 				$TOPIC_FIELD .= $rs -> form_option($path, ($path == $content_pref['content_theme'] ? "1" : "0"), $path);
 				$counter++;
 			}
-			global $THEMES_DIRECTORY;
+			global $THEMES_DIRECTORY, $pref;
 			if(is_readable(e_THEME.$pref['sitetheme']."/content/")){
 				$path = "{e_THEME}".$pref['sitetheme']."/content/";
 				$TOPIC_FIELD .= $rs -> form_option($path, ($path == $content_pref['content_theme'] ? "1" : "0"), $path);
