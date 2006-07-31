@@ -375,7 +375,7 @@ SC_END
 
 SC_BEGIN EVENT_THREAD
 	global $EVENT_THREAD, $thisevent;
-	return ($thisevent['event_thread'] ? "<a href='{$thisevent['event_thread']}'><img src='".e_PLUGIN."forum/images/e.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /> ".EC_LAN_39."</a>" : "");
+	return ($thisevent['event_thread'] ? "<a href='{$thisevent['event_thread']}'><img src='".e_PLUGIN."forum/images/".IMODE."/e.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /> ".EC_LAN_39."</a>" : "");
 SC_END
 
 SC_BEGIN EVENT_OPTIONS
