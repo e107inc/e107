@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-formal/lan_page.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-03-01 06:12:22 $
+|     $Revision: 1.2 $
+|     $Date: 2006-08-01 13:35:42 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -21,5 +21,6 @@ define("LAN_PAGE_8", "Wachtwoord beveiligde pagina");
 define("LAN_PAGE_9", "Wachtwoord");
 define("LAN_PAGE_10", "Aanmelden");
 define("LAN_PAGE_11", "Paginaoverzicht");
+define("LAN_PAGE_12", "Ongeldige pagina");
 
 ?>

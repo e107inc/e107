@@ -207,6 +207,16 @@ define("LAN_NO_CHANGE","Update mislukt omdat er geen wijzigingen zijn aangebrach
 define("LAN_TRY_AGAIN","Probeert u het nogmaals.");
 define("LAN_BAN","Blokkeren");
 define("LAN_RATING", "Waardering");
+define("LAN_UPLOAD_IMAGES","Upload afbeeldingen");
+define("LAN_UPLOAD_FILES","Upload bestanden");
+define("LAN_UPLOAD_ADDFILE","Nog een bestand toevoegen");
+define("LAN_UPLOAD_CONFIRM","Niet opgeslagen wijzigingen aan deze pagina gaan verloren. Doorgaan?");
+define("LAN_UPLOAD_777","De map ontbreekt of is niet beschrijfbaar. U moet voor het uploaden de volgende map aanpassen als CHMOD 777:");
+define("LAN_UPLOAD_SERVEROFF", "Deze mogelijkheid is niet beschikbaar, omdat bestandsupload op de server niet is ingesteld");
+define("LAN_DISABLED","Gedeactiveerd");
+define("LAN_ENABLED", "Geactiveerd");
+define("LAN_PRESET_CONFIRMSAVE","De huidige formulierwaarden als standaard voor deze pagina opslaan?");
+define("LAN_CONFIGURE", "Configureren");   
 
 define('ADLAN_CL_1', "Instellingen");
 define('ADLAN_CL_2', "Leden");
@@ -228,4 +238,7 @@ define("ADLAN_LAT_8", "Er zijn nog niet beoordeelde beheerboodschappen");
 define("ADLAN_ERR_1", "Waarschuwing!");
 define("ADLAN_ERR_2", "Er staan bestanden op uw server waarin bekende kwetsbaarheden zitten. Die moeten <b>onmiddellijk</b> worden verwijderd. De bestanden hebben te maken met het WYSIWYG systeem dat in de oudere 0.6xx versies van e107 - htmlArea werd gebruikt. Verwijdert u de volgende directories en alle bestanden daarbinnen:");
 define("ADLAN_ERR_3", "Er zijn een of meer bestanden in de openbare upload directories die niet in de toegestane upload bestandsformaat lijst staan. Ze kunnen daar zijn neergezet door een aanvaller en als dat zo is, moeten ze  <b>onmiddelijk</b> worden verwijderd. U moet de bestanden <b>niet</b> openen, omdat ze kwaadaardige code zouden kunnen bevatten. Open ze hoe dan ook niet met een browser.<br /><br />Als u deze bestanden legitiem vindt, dan kunnen ze worden getoond omdat u recent de lijst met niet toegestane bestandsformaten hebt gewijzigd. Vult u de lijst dan aan met dit bestandsformaat (in beheer => uploads). U moet upload van .html,  .txt, etc. nooit toestaan, omdat een aanvaller een bestand van een dergelijk type via kwaadaardige javascripts zou kunnen uploaden. U moet ook nooit upload van .php of andere uitvoerbare scripts toestaan.<br /><br />Hieronder staan de mogelijk schadelijke bestanden opgesomd:");
+define("ADLAN_ERR_4", "Verouderde plugin bestand(en) gevonden");
+define("ADLAN_ERR_5", "De volgende bestanden moeten worden hernoemd naar");
+define("ADLAN_ERR_6", "Klik daarna hier om de pluginmappen opnieuw te scannen.");
 ?>

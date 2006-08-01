@@ -8,4 +8,5 @@ define("LAN_UPDATE_8", "Update van");
 define("LAN_UPDATE_9", "naar");
 define("LAN_UPDATE_10", "Beschikbare updates");
 define("LAN_UPDATE_11", ".617 naar .7 update voortgezet");
+define("LAN_UPDATE_12", "Eén van de tabellen bevat dubbele records.");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-01-06 10:54:49 $
+|     $Revision: 1.13 $
+|     $Date: 2006-08-01 13:35:43 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -173,6 +173,9 @@ define("CONTENT_LAN_86", "bekijk hoogst scorende onderwerpen");
 define("CONTENT_LAN_87", "Hoogst scorende content");
 define("CONTENT_LAN_88", "er is nog geen contentonderwerp met een score");
 define("CONTENT_LAN_89", "selecteer pagina");
+define("CONTENT_LAN_90", "voorgaande pagina");
+define("CONTENT_LAN_91", "volgende pagina");
+define("CONTENT_LAN_92", " - huidige");
 
 define("CONTENT_MENU_LAN_0", "content Menu :");
 define("CONTENT_MENU_LAN_1", "nog geen content onderwerpen");
@@ -180,4 +183,7 @@ define("CONTENT_MENU_LAN_2", "recente onderwerpen");
 define("CONTENT_MENU_LAN_3", "categorieën");
 define("CONTENT_MENU_LAN_4", "content links");
 
+define("CONTENT_NOTIFY_LAN_1", "Contentgebeurtenissen");
+define("CONTENT_NOTIFY_LAN_2", "Contentonderwerp aangemeld door gebruiker");
+define("CONTENT_NOTIFY_LAN_3", "Content aangemeld");
 ?>

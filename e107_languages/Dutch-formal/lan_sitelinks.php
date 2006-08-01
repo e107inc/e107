@@ -16,8 +16,8 @@
 +---------------------------------------------------------------+
 */
 
-define("LAN_183", "Hoofdmenu");
-define("LAN_502", "Beheerscherm");
+define("LAN_SITELINKS_183", "Hoofdmenu");
+define("LAN_SITELINKS_502", "Beheerscherm");
 
 
 ?>

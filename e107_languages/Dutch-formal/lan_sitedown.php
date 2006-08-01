@@ -17,8 +17,8 @@
 */
 
 define("PAGE_NAME", "Site is tijdelijk gesloten");
-define("LAN_00", "is tijdelijk gesloten");
-define("LAN_01", "We hebben deze site tijdelijk gesloten om het nodige onderhoud uit te kunnen voeren. Dit zal niet lang duren, dus komt u binnenkort terug. Onze excuses voor het ongemak!");
+define("LAN_SITEDOWN_00", "is tijdelijk gesloten");
+define("LAN_SITEDOWN_01", "We hebben deze site tijdelijk gesloten om het nodige onderhoud uit te kunnen voeren. Dit zal niet lang duren, dus komt u binnenkort terug. Onze excuses voor het ongemak!");
 
 ?>
 

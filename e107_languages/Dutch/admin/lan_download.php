@@ -123,4 +123,7 @@ define("DOWLAN_147", "Pictogram voor lege categorie");
 define("DOWLAN_148", "Aankruisen om datum en tijd in huidige te veranderen");
 define("DOWLAN_149", "Of klik hier om een extern bestand te gebruiken");
 define("DOWLAN_150", "Verstuur een e-mail aan de beheerder als een verkeerde downloadlink wordt gemeld");
+define("DOWLAN_151", "Verbroken-download rapportage beschikbaar voor");
+define("DOWLAN_152", "Kon bestand niet verplaatsen");
+define("DOWLAN_153", "Verplaats bestand naar download map");   
 ?>

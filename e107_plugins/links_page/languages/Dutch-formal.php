@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch-formal.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-02-22 10:24:21 $
+|     $Revision: 1.4 $
+|     $Date: 2006-08-01 13:35:43 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -227,6 +227,7 @@ define("LCLAN_ITEM_35", "beheren persoonlijke links");
 define("LCLAN_ITEM_36", "ga");
 define("LCLAN_ITEM_37", "bekijk alle links");
 define("LCLAN_ITEM_38", "Alle Links");
+define("LCLAN_ITEM_39", "Waardering");
 
 define("LCLAN_ADMINMENU_1", "Link opties");
 define("LCLAN_ADMINMENU_2", "Beheren linkcategorieën");

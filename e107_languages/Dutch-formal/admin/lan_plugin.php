@@ -86,7 +86,6 @@ define("EPL_DIRECTORY", "directorie.");
 define("EPL_NOINSTALL_1", "Voor de-installatie, verwijder de ");
 define("EPL_UPGRADE", "Upgrade");
 define("EPL_CONFIGURE", "Configureren");
-
-
-
+define("LAN_UPGRADE_SUCCESSFUL", "Upgrade geslaagd");
+define("LAN_INSTALL_SUCCESSFUL", "Installatie geslaagd");
 ?>

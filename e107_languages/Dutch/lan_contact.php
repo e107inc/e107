@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/lan_contact.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-07-30 21:20:47 $
+|     $Revision: 1.2 $
+|     $Date: 2006-08-01 13:35:42 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -23,5 +23,5 @@ define("LANCONTACT_10", "Er was een probleem bij het versturen.");
 define("LANCONTACT_11", "Je e-mailadres lijkt niet juist.\\nControleer het en probeer het nogmaals.");
 define("LANCONTACT_12", "Het bericht is te kort.");
 define("LANCONTACT_13", "Geef een onderwerp op."); 
-
+define("LANCONTACT_14", "Stuur bericht aan:");
 ?>

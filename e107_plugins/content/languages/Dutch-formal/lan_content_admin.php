@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-formal/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-03-27 21:07:38 $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-01 13:35:43 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -296,6 +296,7 @@ define("CONTENT_ADMIN_MENU_LAN_19", "Content Beheerder");
 define("CONTENT_ADMIN_MENU_LAN_20", "Hoogst gewaardeerde pagina");
 define("CONTENT_ADMIN_MENU_LAN_21", "Pagina's");
 define("CONTENT_ADMIN_MENU_LAN_22", "Hoogst scorende pagina");
+define("CONTENT_ADMIN_MENU_LAN_23", "Beheren : Aanmaken categorie");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Weet je zeker dat je deze categorie wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_1", "Weet je zeker dat je dit onderwerp wilt verwijderen?");
@@ -383,7 +384,11 @@ define("CONTENT_ADMIN_CONVERSION_LAN_60", "standaard creëren");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "creëren nieuwe categorie");
 define("CONTENT_ADMIN_CONVERSION_LAN_62", "Content beheer plugin versie bijgewerkt naar versie:");
 define("CONTENT_ADMIN_CONVERSION_LAN_63", "upgrade");
-
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "Content Management Plugin tabel structuur bijgewerkt");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "Content Management Plugin : content_author bijgewerkt");
+define("CONTENT_ADMIN_CONVERSION_LAN_66", "Content Management Plugin : content_preferences en menu´s bijgewerkt");
+define("CONTENT_ADMIN_CONVERSION_LAN_67", "Content Management Plugin : content_preferences bijgewerkt");
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "Content Management Plugin : content_theme bijgewerkt");
 
 define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Opties:");
 define("CONTENT_ADMIN_OPT_LAN_MENU_2", "Pagina's:");
@@ -405,6 +410,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_17", "bekijk de categoriepagina (hoofdonderwe
 define("CONTENT_ADMIN_OPT_LAN_MENU_18", "categorieën");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "recente onderwerpenlijst");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "links naar pagina's");
+define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Beheren : Aanmaken categorie");
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "secties");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "kies wat wordt getoond");
@@ -438,6 +444,13 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_28", "van de onderwerpcategorie");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_29", "van de lijst met subcategorieën");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_30", "geactiveerd");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "gedeactiveerd");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_32", "subkop");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_33", "start datum");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_34", "eind datum");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_35", "upload pictogram");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_36", "toewijzen pictogram");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_37", "Beheren : Aanmaken categorie");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_38", "samenvatting");
 
 define("CONTENT_PRESET_LAN_0", "fout : veldnaam niet ingevuld");
 define("CONTENT_PRESET_LAN_1", "fout : niet alle velden juist ingevuld<br />alle velden moeten worden ingevuld");
@@ -614,9 +627,43 @@ define("CONTENT_ADMIN_OPT_LAN_136", "");
 define("CONTENT_ADMIN_OPT_LAN_137", "");
 define("CONTENT_ADMIN_OPT_LAN_138", "");
 define("CONTENT_ADMIN_OPT_LAN_139", "");
+define("CONTENT_ADMIN_OPT_LAN_140", "Beheren categorie");
+define("CONTENT_ADMIN_OPT_LAN_141", "Aanmaken categorie");
+define("CONTENT_ADMIN_OPT_LAN_142", "Volgorde");
+define("CONTENT_ADMIN_OPT_LAN_143", "Opties");
+define("CONTENT_ADMIN_OPT_LAN_144", "Personlijk contentbeheer");
+define("CONTENT_ADMIN_OPT_LAN_145", "Recent");
+define("CONTENT_ADMIN_OPT_LAN_146", "Alle Categorieën");
+define("CONTENT_ADMIN_OPT_LAN_147", "Eén categorie");
+define("CONTENT_ADMIN_OPT_LAN_148", "Contentonderwerp");
+define("CONTENT_ADMIN_OPT_LAN_149", "Auteurspagina");
+define("CONTENT_ADMIN_OPT_LAN_150", "Archiefpagina");
+define("CONTENT_ADMIN_OPT_LAN_151", "Hoogstgewaardeerd pagina");
+define("CONTENT_ADMIN_OPT_LAN_152", "Topscore pagina");
+define("CONTENT_ADMIN_OPT_LAN_153", "Aanmeld pagina");
+define("CONTENT_ADMIN_OPT_LAN_154", "Beheerpagina");
+define("CONTENT_ADMIN_OPT_LAN_155", "titel");
+define("CONTENT_ADMIN_OPT_LAN_156", "titel index pagina");
+define("CONTENT_ADMIN_OPT_LAN_157", "titel auteurspagina");
+define("CONTENT_ADMIN_OPT_LAN_158", "toevoegen auterusnaam aan titel");
+define("CONTENT_ADMIN_OPT_LAN_159", "titel categoriepagina");
+define("CONTENT_ADMIN_OPT_LAN_160", "toevoegen categoriekop aan titel");
+define("CONTENT_ADMIN_OPT_LAN_161", "titel ouder subcategorieë (alleen wanneer weergavetype is ingesteld op afzonderlijke menu's)");
+define("CONTENT_ADMIN_OPT_LAN_162", "titel contentonderwerpen (alleen wanneer weergavetype is ingesteld op afzonderlijke menu's)");
+define("CONTENT_ADMIN_OPT_LAN_163", "toon volgende en voorgaande paginalinks");
+define("CONTENT_ADMIN_OPT_LAN_164", "titel voor voorgaande paginalink<br />(gebruik {PAGETITLE} om de titel van de voorgaande pagina toe te voegen)");
+define("CONTENT_ADMIN_OPT_LAN_165", "titel voor volgende paginalink<br />(gebruik {PAGETITLE} om de titel van de volgende pagina toe te voegen)");
+define("CONTENT_ADMIN_OPT_LAN_166", "gebruik 'alles' om de volledige tekst te tonen");
+define("CONTENT_ADMIN_OPT_LAN_167", "overerven");
 
+define("CONTENT_LATEST_LAN_1", "Aangemelde contentonderwerpen:");
 
-
+define("CONTENT_ADMIN_MANAGER_LAN_0", "goedkeuren aangemeld");
+define("CONTENT_ADMIN_MANAGER_LAN_1", "leden met deze klasse mogen aangemelde contentonderwerpen goedkeuren");
+define("CONTENT_ADMIN_MANAGER_LAN_2", "persoonlijk beheer");
+define("CONTENT_ADMIN_MANAGER_LAN_3", "leden met deze klasse mogen hun eigen contentonderwerpen beheren");
+define("CONTENT_ADMIN_MANAGER_LAN_4", "categoriebeheerder");
+define("CONTENT_ADMIN_MANAGER_LAN_5", "leden met deze klasse mogen contentonderwerpen binnen deze categorie beheren");
 
 
 ?>

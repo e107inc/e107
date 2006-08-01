@@ -34,7 +34,7 @@ define("EPL_ADLAN_15", "Lees het README bestand voor meer informatie");
 define("EPL_ADLAN_16", "Plugin informatie");
 define("EPL_ADLAN_17", "Meer info...");
 define("EPL_ADLAN_18", "Kon de tabel(len) voor deze plugin NIET succesvol aanmaken.");
-define("EPL_ADLAN_19", "Database tabellen succesvol gecreëerd.");
+define("EPL_ADLAN_19", "Databasetabellen succesvol gecreëerd.");
 define("EPL_ADLAN_20", "Voorkeursinstellingen succesvol gecreëerd.");
 define("EPL_ADLAN_21", "Plugin is al geïnstalleerd.");
 define("EPL_ADLAN_22", "Geïnstalleerd");
@@ -43,7 +43,7 @@ define("EPL_ADLAN_24", "Upgrade beschikbaar");
 define("EPL_ADLAN_25", "Geen installatie nodig");
 define("EPL_ADLAN_26", "... klik dan hier om de de-installatie te starten");
 define("EPL_ADLAN_27", "Kon niet succesvol verwijderen ");
-define("EPL_ADLAN_28", "Database tabellen succesvol verwijderd.");
+define("EPL_ADLAN_28", "Databasetabellen succesvol verwijderd.");
 define("EPL_ADLAN_29", "Voorkeursinstellingen succesvol verwijderd.");
 define("EPL_ADLAN_30", "verwijder dit handmatig.");
 define("EPL_ADLAN_31", "Verwijder nu de map ");
@@ -86,7 +86,6 @@ define("EPL_DIRECTORY", "directorie.");
 define("EPL_NOINSTALL_1", "Voor de-installatie, verwijder de ");
 define("EPL_UPGRADE", "Upgrade");
 define("EPL_CONFIGURE", "Configureren");
-
-
-
+define("LAN_UPGRADE_SUCCESSFUL", "Upgrade geslaagd");
+define("LAN_INSTALL_SUCCESSFUL", "Installatie geslaagd");
 ?>

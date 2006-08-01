@@ -27,5 +27,6 @@ define("METLAN_8", "Meta tags");
 define("METLAN_9", "omschrijving");
 define("METLAN_10", "sleutelwoorden");
 define("METLAN_11", "auteursrecht");
-
+define("METLAN_12", "Gebruik de nieuwstitel en samenvatting als meta-beschrijving op nieuwspagina's.");
+define("METLAN_13", "Auteur");
 ?>

@@ -68,4 +68,5 @@ define("LAN_425", "Zend gebruiker persoonlijk bericht");
 define("LAN_426", "geleden");
 
 define("USERLAN_1", "Waardering medegebruiker");
+define("USERLAN_2", "Je hebt niet het recht om deze pagina te zien.");
 ?>

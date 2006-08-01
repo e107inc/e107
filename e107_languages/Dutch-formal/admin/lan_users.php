@@ -95,7 +95,6 @@ define("USRLAN_125", "Van");
 define("USRLAN_126", "Toestaan om leden elkaar te laten beoordelen");
 define("USRLAN_127", "Toestaan reacties in ledenprofiel");
 define("USRLAN_128", "Inlognaam");
-
 define("USRLAN_130", "Activeren online gebruikersweergave");
 define("USRLAN_131", "U moet deze optie activeren om online gebruikersweergave, zoals online.php, forum online info en online menu's te kunnen gebruiken");
 define("USRLAN_132", "Activeren");
@@ -111,6 +110,8 @@ define("USRLAN_141", "Kon geen e-mail opnieuw versturen aan");
 define("USRLAN_142", "met de volgende activeringslink");
 define("USRLAN_143", "Controle op bounce");
 define("USRLAN_144", "Verstuur iedereen een bevestigingse-mail");
+define("USRLAN_145", "Gebouncde leden");
+define("USRLAN_146", "Ledeninformatie is beschikbaar voor");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Weergavenaam");

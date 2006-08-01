@@ -22,4 +22,6 @@ define("CM_L7", "Tonen originele nieuwstitel in menu?");
 define("CM_L8", "Nieuwe reacties menu configuratie");
 define("CM_L9", "Bijwerken menu instellingen");
 define("CM_L10", "Reacties menu configuratie opgeslagen");
+define("CM_L11", "op");
+define("CM_L12", "Over:")
 ?>

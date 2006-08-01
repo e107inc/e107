@@ -16,13 +16,7 @@
 */
 
 define("PAGE_NAME", "Nieuws");
-define("LAN_82", "Nieuws - categorie");
-define("LAN_83", "Geen nieuwe berichten op dit moment- kom binnenkort terug.");
-define("LAN_84", "Nieuwsberichten");
-define("LAN_99", "Reacties");
-define("LAN_100", "Op");
-define("LAN_307", "Aantal berichten in deze categorie: ");
-define("LAN_462", "Geen nieuwsberichten in de opgegeven maand");
+
 define("LAN_NEWS_1", "Nieuws uitsluitend voor bepaalde leden");
 define("LAN_NEWS_2", "Je mag dit bericht niet lezen");
 define("LAN_NEWS_3", "Verwijder install.php van je server");
@@ -47,5 +41,13 @@ define("LAN_NEWS_21", "Nieuws bijgewerkt in de database.");
 define("LAN_NEWS_22", "Ga naar pagina: ");
 define("LAN_NEWS_23", "Nieuwscategorieën");
 define("LAN_NEWS_24", "genereer een pdf van dit bericht");
+
+define("LAN_NEWS_82", "Nieuws - categorie");
+define("LAN_NEWS_83", "Geen nieuwe berichten op dit moment- kom binnenkort terug.");
+define("LAN_NEWS_84", "Nieuwsberichten");
+define("LAN_NEWS_99", "Reacties");
+define("LAN_NEWS_100", "Op");
+define("LAN_NEWS_307", "Aantal berichten in deze categorie: ");
+define("LAN_NEWS_462", "Geen nieuwsberichten in de opgegeven maand");
 
 ?>

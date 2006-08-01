@@ -18,14 +18,14 @@
 
 define("PAGE_NAME", "Printervriendelijk");
 define("LAN_PRINT_1", "printervriendelijk");
-define("LAN_86", "Categorie:");
-define("LAN_87", "door ");
-define("LAN_94", "Geplaatst door");
-define("LAN_135", "Nieuwsbericht: ");
-define("LAN_303", "Dit nieuwsbericht is van ");
-define("LAN_304", "Titel van het artikel: ");
-define("LAN_305", "Onderkop: ");
-define("LAN_306", "Dit artikel is van ");
-define("LAN_307", "Druk deze pagina af");
+define("LAN_PRINT_86", "Categorie:");
+define("LAN_PRINT_87", "door ");
+define("LAN_PRINT_94", "Geplaatst door");
+define("LAN_PRINT_135", "Nieuwsbericht: ");
+define("LAN_PRINT_303", "Dit nieuwsbericht is van ");
+define("LAN_PRINT_304", "Titel van het artikel: ");
+define("LAN_PRINT_305", "Onderkop: ");
+define("LAN_PRINT_306", "Dit artikel is van ");
+define("LAN_PRINT_307", "Druk deze pagina af");
 
 ?>

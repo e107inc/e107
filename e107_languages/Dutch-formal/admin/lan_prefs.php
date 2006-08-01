@@ -150,6 +150,10 @@ define("PRFLAN_162", "Site contact informatie");
 define("PRFLAN_163", "bijv.  bedrijfsnaam, adres, telefoon etc.");
 define("PRFLAN_164", "Sta leden toe om zichzelf een kopie van e-mailberichten te sturen");
 define("PRFLAN_165", "Dit kan spam mogelijk maken, pas dus op");
+define("PRFLAN_166", "Toon emoticon afbeeldingen op het reactieformulier?");
+define("PRFLAN_167", "Het invoeren van e-mailadresses is optioneel"); // subject to change.
+define("PRFLAN_168", "Site contactperso(o)n(en)");
+define("PRFLAN_169", "Als de gekozen groep meer dan één persoon bevat, wordt gevraagd om één persoon uit deze groep te kiezen.");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");

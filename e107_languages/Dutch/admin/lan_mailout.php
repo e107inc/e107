@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_mailout.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-30 21:20:47 $
+|     $Revision: 1.11 $
+|     $Date: 2006-08-01 13:35:42 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -60,4 +60,35 @@ define("MAILAN_33", "Inkomend bericht");
 define("MAILAN_34", "Accountnaam");
 define("MAILAN_35", "Wachtwoord");
 define("MAILAN_36", "Verwijder gebouncede e-mails na controle");  
+
+define("MAILAN_37", "Verder");
+define("MAILAN_38", "Annuleren");
+define("MAILAN_39", "Verzenden");
+define("MAILAN_40", "Het bestand <b>e107.htaccess</b> moet worden hernoemd als <b>.htaccess</b> in");
+define("MAILAN_41", "voordat het verzenden van mail vanaf deze pagina mogelijk is.");
+define("MAILAN_42", "Waarschuwing");
+define("MAILAN_43", "Gebruikersnaam");
+define("MAILAN_44", "Inlognaam");
+define("MAILAN_45", "E-mailadres");
+define("MAILAN_46", "User-Match");
+define("MAILAN_47", "bevat");
+define("MAILAN_48", "komt overeen met");
+define("MAILAN_49", "Id");
+define("MAILAN_50", "Auteur");
+define("MAILAN_51", "Onderwerp");
+define("MAILAN_52", "Lastmod");
+define("MAILAN_53", "Beheerders");
+define("MAILAN_54", "Zelf");
+define("MAILAN_55", "Ledenklasse");
+define("MAILAN_56", "Verstuur mail");
+define("MAILAN_57", "Houd SMTP sessie open");
+define("MAILAN_58", "Er is een probleem met de bijlage:");
+define("MAILAN_59", "Voortgang verzending");
+define("MAILAN_60", "Versturen...");
+define("MAILAN_61", "Er zijn geen overgebleven mailtjes te versturen.");
+define("MAILAN_62", "Emails verzonden:");
+define("MAILAN_63", "Emails mislukt:");
+define("MAILAN_64", "Totaal verstreken tijd:");
+define("MAILAN_65", "seconden");
+define("MAILAN_66", "Succesvol geannuleerd");
 ?>

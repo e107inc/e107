@@ -59,5 +59,5 @@ define("BANNER_MENU_L10", "Weergave type");
 define("BANNER_MENU_L12", "gewoon");
 define("BANNER_MENU_L13", "in box met titel");
 define("BANNER_MENU_L18", "Bijwerken menu instellingen");
-
+define("BANNER_MENU_L19", "aantal te tonen banners:<br />dit geldt alleen als er meerdere campagnes zijn geselecteerd");
 ?>

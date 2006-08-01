@@ -46,4 +46,8 @@ define("LANHELP_40", "Er bestaan nu geen downloads");
 define("LANHELP_41", "Font grootte...");
 define("LANHELP_42", "Kies afbeelding...");
 define("LANHELP_43", "Kies downloadbestand...");
+define("LANHELP_44", "Klik om het emoticon dialoogvenster te openen...");
+define("LANHELP_45", "Invoegen afbeelding vanuit directorie: ");
+define("LANHELP_46", "* Geen bestanden gevonden in: ");
+define("LANHELP_47", "Invoegen flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
 ?>

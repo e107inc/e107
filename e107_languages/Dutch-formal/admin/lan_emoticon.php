@@ -30,4 +30,9 @@ define("EMOLAN_13", "Verwijderen");
 define("EMOLAN_14", "Bewaren configuratie");
 define("EMOLAN_15", "Bewerken/configureren smileys");
 define("EMOLAN_16", "Smiley configuratie opgeslagen");
+define("EMOLAN_17", "Er is een emoticon pack met spaties aanwezig, die zijn niet toegestaan !");
+define("EMOLAN_18", "hernoem de onderstaande objecten, zodat ze geen spaties bevatten:");
+define("EMOLAN_19", "Naam");
+define("EMOLAN_20", "Locatie");
+define("EMOLAN_21", "Fout");
 ?>

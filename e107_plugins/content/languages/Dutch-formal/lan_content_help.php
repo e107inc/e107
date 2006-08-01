@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-formal/lan_content_help.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-06 10:54:49 $
+|     $Revision: 1.6 $
+|     $Date: 2006-08-01 13:35:43 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -101,4 +101,5 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "De pagina Hoogstgewaardeerd toont al
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "De Topscore pagina toont alle contentonderwerpen die door de auteur zijn beoordeeld.<br /><br />U kunt instellen welke secties getoond moeten worden door het aan- en uitkruisen van de vakjes.<br /><br />U kunt het e-mailadres van een auteur/niet-lid laten zien.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "deze pagina maakt het mogelijk om opties voor de beherpagina voor het aanmaken van categorieën in te stellen.<br /><br />Je kunt bepalen welke secteis beschikbaar zijn wanneer een beheerder (of een persoonlijke contentbeheerder) een nieuwe contentcatagorie aanmaakt.");
 ?>
