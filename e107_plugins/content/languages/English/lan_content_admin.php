@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-07-28 14:07:15 $
+|     $Revision: 1.16 $
+|     $Date: 2006-08-02 21:47:32 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -696,5 +696,8 @@ define("CONTENT_ADMIN_OPT_LAN_164", "caption for previous page link<br />(use {P
 define("CONTENT_ADMIN_OPT_LAN_165", "caption for next page link<br />(use {PAGETITLE} to add the title of the next page)");
 define("CONTENT_ADMIN_OPT_LAN_166", "use 'all' to show full text");
 define("CONTENT_ADMIN_OPT_LAN_167", "inherit");
+define("CONTENT_ADMIN_OPT_LAN_168", "first page");
+define("CONTENT_ADMIN_OPT_LAN_169", "last page");
+define("CONTENT_ADMIN_OPT_LAN_170", "where should custom and preset tags be rendered in a multipage content item ?");
 
 ?>
