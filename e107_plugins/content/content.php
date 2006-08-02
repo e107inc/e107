@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.103 $
-|		$Date: 2006-07-31 09:15:45 $
+|		$Revision: 1.104 $
+|		$Date: 2006-08-02 21:47:32 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1282,8 +1282,16 @@ function show_content_item(){
 					}else{
 						$CONTENT_CONTENT_TABLE_SUMMARY = "";
 					}
-					if($idp == count($pages)){
-						$lastpage = TRUE;
+					//render custom/preset on first page
+					if(isset($content_pref['content_content_multipage_preset']) && $content_pref['content_content_multipage_preset']){
+						if($idp == '1'){
+							$lastpage = TRUE;
+						}
+					//render custom/preset on last page
+					}else{
+						if($idp == count($pages)){
+							$lastpage = TRUE;
+						}
 					}
 				}
 				if($content_pref["content_content_pagenames_rendertype"] == "1"){

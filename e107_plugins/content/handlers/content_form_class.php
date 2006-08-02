@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.115 $
-|		$Date: 2006-07-31 15:45:33 $
+|		$Revision: 1.116 $
+|		$Date: 2006-08-02 21:47:32 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -3297,6 +3297,14 @@ class contentform{
 			$TOPIC_FIELD = "
 			".$rs -> form_radio("content_content_pagenames_rendertype", "0", ($content_pref['content_content_pagenames_rendertype'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_75."
 			".$rs -> form_radio("content_content_pagenames_rendertype", "1", ($content_pref['content_content_pagenames_rendertype'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_76."
+			";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_content_multipage_preset
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_170;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_content_multipage_preset", "1", ($content_pref['content_content_multipage_preset'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_168."
+			".$rs -> form_radio("content_content_multipage_preset", "0", ($content_pref['content_content_multipage_preset'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_169."
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
