@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.49 $
-|		$Date: 2006-07-19 13:41:51 $
+|		$Revision: 1.50 $
+|		$Date: 2006-08-02 21:38:31 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -249,6 +249,8 @@ class contentdb{
 			//preset additional data tags
 			if(isset($_POST['content_custom_preset_key']) && $_POST['content_custom_preset_key']){
 				$custom['content_custom_presettags'] = $tp->toDB($_POST['content_custom_preset_key']);
+			}
+			if($custom){
 				$contentprefvalue = $eArrayStorage->WriteArray($custom);
 			}else{
 				$contentprefvalue = "";
