@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/ldap_auth.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-08-03 13:46:17 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
+*/
 
 class auth_login
 {
@@ -14,6 +31,7 @@ class auth_login
 	var $result;
 	var $ldapVersion;
 	var $Available;
+	var $filter;
 
 	function auth_login()
 	{
@@ -30,6 +48,7 @@ class auth_login
 		$this->usr = $ldap['ldap_user'];
 		$this->pwd = $ldap['ldap_passwd'];
 		$this->ldapVersion = $ldap['ldap_version'];
+		$this->filter = (isset($ldap['ldap_edirfilter']) ? $ldap['ldap_edirfilter'] : "");
 
 		if(!function_exists('ldap_connect'))
 		{
@@ -101,7 +120,9 @@ class auth_login
 
 			if($this->serverType == "eDirectory")
 			{
-				$query = ldap_search($this->connection, $this->dn, "cn=".$uname);
+				$_filter = (isset($ldap['ldap_edirfilter']) ? $ldap['ldap_edirfilter'] : "");
+				$current_filter = "(&(cn={$uname})".$this->filter.")";
+				$query = ldap_search($this->connection, $this->dn, $current_filter);
 			}
 			else
 			{
