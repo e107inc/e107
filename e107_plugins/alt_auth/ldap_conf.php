@@ -1,12 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/ldap_conf.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).	
-+---------------------------------------------------------------+
+|     Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/ldap_conf.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-03 13:46:17 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
 require_once("../../class2.php");
@@ -50,11 +58,14 @@ if($message)
 	$ns->tablerender("","<div style='text-align:center;'>".$message."</div>");
 }
 
+$ldap['ldap_edirfilter'] == "";
 $sql -> db_Select("alt_auth", "*", "auth_type = 'ldap' ");
 while($row = $sql->db_Fetch())
 {
 	$ldap[$row['auth_parmname']] = $row['auth_parmval'];
 }
+
+$current_filter = "(&(cn=[USERNAME]){$ldap['ldap_edirfilter']})";
 
 $frm = new form;
 $text = $frm -> form_open("POST",e_SELF);
@@ -96,6 +107,10 @@ foreach($ldap_ver as $v)
 
 $text .= $frm -> form_select_close();
 $text .= "</td></tr>";
+
+$text .= "<tr><td class='forumheader3'>".LDAPLAN_7."<br /><span class='smalltext'>".LDAPLAN_8."</span></td><td class='forumheader3'>";
+$text .= $frm -> form_text("ldap_edirfilter", 35, $ldap['ldap_edirfilter'], 120);
+$text .= "<br /><span class='smalltext'>".LDAPLAN_9."<br />{$current_filter}</span></td></tr>";
 
 $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
 $text .= $frm -> form_button("submit", "update", "Update settings");

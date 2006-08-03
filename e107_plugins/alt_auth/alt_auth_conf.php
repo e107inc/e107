@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/alt_auth_conf.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-08-03 13:46:17 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
+*/
 $eplug_admin = true;
 require_once("../../class2.php");
 if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
