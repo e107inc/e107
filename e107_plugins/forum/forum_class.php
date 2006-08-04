@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-07-04 08:42:17 $
-|     $Author: e107coders $
+|     $Revision: 1.56 $
+|     $Date: 2006-08-04 01:47:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -521,9 +521,11 @@ class e107forum
 		$sortdir = "ASC";
 
 		$qry = "
-		SELECT t.*, u.* FROM #forum_t as t
+		SELECT t.*, u.*, ue.* FROM #forum_t as t
 		LEFT JOIN #user AS u
 		ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+		LEFT JOIN #user_extended AS ue
+		ON SUBSTRING_INDEX(t.thread_user,'.',1) = ue.user_extended_id
 		WHERE t.thread_parent = $thread_id
 		ORDER by t.thread_datestamp {$sortdir}
 		LIMIT ".intval($start).",".intval($limit);
