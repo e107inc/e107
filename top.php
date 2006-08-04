@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-02-24 13:54:22 $
-|     $Author: whoisrich $
+|     $Revision: 1.11 $
+|     $Date: 2006-08-04 01:26:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -40,12 +40,23 @@ require_once(HEADERF);
 if ($action == "active") {
 	require_once(e_HANDLER."userclass_class.php");
 	 
-	$query = "SELECT t.*, f.forum_name, u.user_name from #forum_t as t
-			LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id 
-			LEFT JOIN #user AS u ON t.thread_user = u.user_id
-			WHERE  t.thread_parent = 0
-			ORDER BY t.thread_views DESC 
-			LIMIT {$from}, {$view}";
+	$query = "
+			SELECT 
+				t.*, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t
+			LEFT JOIN #forum AS f 
+				ON t.thread_forum_id = f.forum_id 
+			LEFT JOIN #user AS u 
+				ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+			LEFT JOIN #forum AS fp 
+				ON fp.forum_id = f.forum_parent
+			WHERE  
+				t.thread_parent = 0
+				AND fp.forum_class IN (".USERCLASS_LIST.")
+				AND f.forum_class IN (".USERCLASS_LIST.")
+			ORDER BY 
+				t.thread_views DESC 
+			LIMIT 
+				{$from}, {$view}";
 
 	if ($sql->db_Select_gen($query)) {
 		$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
