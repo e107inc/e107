@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-07-16 19:56:47 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2006-08-04 00:19:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,6 +38,30 @@ $EXTENDED_CATEGORY_TABLE = "
 
 $EXTENDED_END = "";
 //		$datestamp = $gen->convert_date($user_join, "forum");
+
+$USER_SHORT_TEMPLATE_START = "
+	<div style='text-align:center'>".LAN_138." {TOTAL_USERS}
+	<br />
+	<br />
+	{USER_FORM_START}
+	<p>".LAN_419.": {USER_FORM_RECORDS} ".LAN_139." {USER_FORM_ORDER}
+	{USER_FORM_SUBMIT}
+	{USER_FORM_END}
+	</p>
+	</div>
+	<br />
+	<br />
+	<table style='".USER_WIDTH."' class='fborder'>
+	<tr>
+	<td class='fcaption' style='width:2%'>&nbsp;</td>
+	<td class='fcaption' style='width:20%'>".LAN_142."</td>
+	<td class='fcaption' style='width:20%'>".LAN_112."</td>
+	<td class='fcaption' style='width:20%'>".LAN_145."</td>
+	</tr>
+";
+$USER_SHORT_TEMPLATE_END = "
+</table>
+";
 
 $USER_SHORT_TEMPLATE = "
 <tr>
