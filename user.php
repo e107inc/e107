@@ -11,20 +11,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-07-25 19:56:01 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2006-08-04 00:19:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_FILE."shortcode/batch/user_shortcodes.php");
+require_once(e_HANDLER."form_handler.php");
 
-if (isset($_POST['delp'])) {
+if (isset($_POST['delp']))
+{
 	$tmp = explode(".", e_QUERY);
-	if ($tmp[0]=="self") {
+	if ($tmp[0]=="self")
+	{
 		$tmp[1]=USERID;
 	}
-	if (USERID == $tmp[1] || (ADMIN && getperms("4"))) {
+	if (USERID == $tmp[1] || (ADMIN && getperms("4")))
+	{
 		$sql->db_Select("user", "user_sess", "user_id='". USERID."'");
 		@unlink(e_FILE."public/avatars/".$row['user_sess']);
 		$sql->db_Update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
@@ -41,43 +45,51 @@ else
 {
 	require_once(e_BASE.$THEMES_DIRECTORY."templates/user_template.php");
 }
-
+$user_frm = new form;
 require_once(HEADERF);
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-if (isset($pref['memberlist_access']) && !check_class($pref['memberlist_access'])) {
+if (isset($pref['memberlist_access']) && !check_class($pref['memberlist_access']))
+{
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".USERLAN_2."</div>");
 	require_once(FOOTERF);
 	exit;
 }
 
-if (!USER) {
+if (!USER)
+{
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_416."</div>");
 	require_once(FOOTERF);
 	exit;
 }
 
-
-
-
-
-if (isset($_POST['records'])) {
+if (isset($_POST['records']))
+{
 	$records = intval($_POST['records']);
 	$order = ($_POST['order'] == 'ASC' ? 'ASC' : 'DESC');
 	$from = 0;
 }
-else if(!e_QUERY) {
+else if(!e_QUERY)
+{
 	$records = 20;
 	$from = 0;
 	$order = "DESC";
-} else {
+}
+else
+{
 	$qs = explode(".", e_QUERY);
-	if ($qs[0] == "self") {
+	if ($qs[0] == "self")
+	{
 		$id = USERID;
-	} else {
-		if ($qs[0] == "id") {
+	}
+	else
+	{
+		if ($qs[0] == "id")
+		{
 			$id = $qs[1];
-		} else {
+		}
+		else
+		{
 			$qs = explode(".", e_QUERY);
 			$from = intval($qs[0]);
 			$records = intval($qs[1]);
@@ -85,13 +97,15 @@ else if(!e_QUERY) {
 		}
 	}
 }
-if ($records > 30) {
+if ($records > 30)
+{
 	$records = 30;
 }
 
 if (isset($id))
 {
-	if ($id == 0) {
+	if ($id == 0)
+	{
 		$text = "<div style='text-align:center'>".LAN_137." ".SITENAME."</div>";
 		$ns->tablerender(LAN_20, $text);
 		require_once(FOOTERF);
@@ -101,7 +115,8 @@ if (isset($id))
 	$loop_uid = $id;
 
 	$ret = $e_event->trigger("showuser", $id);
-	if ($ret!='') {
+	if ($ret!='')
+	{
 		$text = "<div style='text-align:center'>".$ret."</div>";
 		$ns->tablerender(LAN_20, $text);
 		require_once(FOOTERF);
@@ -135,79 +150,27 @@ if (isset($id))
 }
 
 $users_total = $sql->db_Count("user","(*)", "WHERE user_ban = 0");
-$text = "<div style='text-align:center'>
-".LAN_138." ".$users_total."<br /><br />
-<form method='post' action='".e_SELF."'>
-<p>
-".LAN_419.": ";
 
-if ($records == 10) {
-	$text .= "<select name='records' class='tbox'>
-	<option value='10' selected='selected'>10</option>
-	<option value='20'>20</option>
-	<option value='30'>30</option>
-	</select>  ";
-}
-else if($records == 20) {
-	$text .= "<select name='records' class='tbox'>
-	<option value='10'>10</option>
-	<option value='20' selected='selected'>20</option>
-	<option value='30'>30</option>
-	</select>  ";
-} else {
-	$text .= "<select name='records' class='tbox'>
-	<option value='10'>10</option>
-	<option value='20'>20</option>
-	<option value='30' selected='selected'>30</option>
-	</select>  ";
-}
-$text .= LAN_139;
-
-if ($order == "ASC") {
-	$text .= "<select name='order' class='tbox'>
-	<option value='DESC'>".LAN_420."</option>
-	<option value='ASC' selected='selected'>".LAN_421."</option>
-	</select>";
-} else {
-	$text .= "<select name='order' class='tbox'>
-	<option value='DESC' selected='selected'>".LAN_420."</option>
-	<option value='ASC'>".LAN_421."</option>
-	</select>";
-}
-
-$text .= " <input class='button' type='submit' name='submit' value='".LAN_422."' />
-<input type='hidden' name='from' value='$from' />
-</p>
-</form>\n\n<br /><br />";
-
-
-
-if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records")) {
+if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
+{
 	echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
-} else {
+}
+else
+{
 	$userList = $sql->db_getList();
-	$text .= "
-	<table style='".USER_WIDTH."' class='fborder'>
-	<tr>
-	<td class='fcaption' style='width:2%'>&nbsp;</td>
-	<td class='fcaption' style='width:20%'>".LAN_142."</td>
-	<td class='fcaption' style='width:20%'>".LAN_112."</td>
-	<td class='fcaption' style='width:20%'>".LAN_145."</td>
-	</tr>";
 
+	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
 	foreach ($userList as $row)
 	{
 		$text .= renderuser($row, "short");
 	}
-	$text .= "</table>\n</div>";
+	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
 }
 
 $ns->tablerender(LAN_140, $text);
 
- 	$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
-	echo "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
-
-
+$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
+echo "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
 
 function renderuser($uid, $mode = "verbose")
@@ -239,5 +202,4 @@ function renderuser($uid, $mode = "verbose")
 }
 
 require_once(FOOTERF);
-
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-07-16 10:23:44 $
-|     $Author: lisa_ $
+|     $Revision: 1.20 $
+|     $Date: 2006-08-04 00:19:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -481,5 +481,61 @@ if($pref['profile_comments'])
 	return $ret;
 }
 SC_END
+
+SC_BEGIN TOTAL_USERS
+global $users_total;
+return $users_total;
+SC_END
+
+SC_BEGIN USER_FORM_RECORDS
+global $records, $user_frm;
+$ret = $user_frm->form_select_open("records");
+for($i=10; $i<=30; $i+=10)
+{
+	$sel = ($i == $records ? true: false);
+	$ret .= $user_frm->form_option($i, $sel, $i);
+}
+$ret .= $user_frm->form_select_close();
+return $ret;
+SC_END
+
+
+SC_BEGIN USER_FORM_ORDER
+global $order;
+if ($order == "ASC")
+{
+	$ret = "<select name='order' class='tbox'>
+	<option value='DESC'>".LAN_420."</option>
+	<option value='ASC' selected='selected'>".LAN_421."</option>
+	</select>";
+}
+else
+{
+	$ret = "<select name='order' class='tbox'>
+	<option value='DESC' selected='selected'>".LAN_420."</option>
+	<option value='ASC'>".LAN_421."</option>
+	</select>";
+}
+return $ret;
+SC_END
+
+
+SC_BEGIN USER_FORM_START
+global $from;
+return "
+<form method='post' action='".e_SELF."'>
+<input type='hidden' name='from' value='$from' />
+";
+SC_END
+
+SC_BEGIN USER_FORM_END
+return "</form>";
+SC_END
+
+SC_BEGIN USER_FORM_SUBMIT
+return "<input class='button' type='submit' name='submit' value='".LAN_422."' />";
+SC_END
+
+
 */
 ?>
