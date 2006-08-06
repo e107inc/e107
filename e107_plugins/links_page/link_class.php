@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.32 $
-|    $Date: 2006-07-03 07:17:22 $
-|    $Author: e107coders $
+|    $Revision: 1.33 $
+|    $Date: 2006-08-06 10:20:11 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -111,7 +111,7 @@ class linkclass {
         return $linkspage_pref;
     }
 
-    function UpdateLinksPagePref($_POST){
+    function UpdateLinksPagePref(){
         global $sql, $eArrayStorage, $tp;
 
         $num_rows = $sql -> db_Select("core", "*", "e107_name='links_page' ");
@@ -136,16 +136,18 @@ class linkclass {
     }
 
 	function ShowNextPrev($from='0', $number, $total){
-		global $linkspage_pref, $qs, $tp, $link_shortcodes, $LINK_NEXTPREV, $LINK_NP_TABLE;
+		global $linkspage_pref, $qs, $tp, $link_shortcodes, $LINK_NEXTPREV, $LINK_NP_TABLE, $pref;
 
-		if(isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
+		$number = (e_PAGE == 'admin_linkspage_config.php' ? '20' : $number);
+		if(e_PAGE == 'admin_linkspage_config.php' || (isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"])){
 			$np_querystring = e_SELF."?[FROM]".(isset($qs[0]) ? ".".$qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 			$parms = $total.",".$number.",".$from.",".$np_querystring."";
 			$LINK_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
 
 			if(!isset($LINK_NP_TABLE)){
-				if(is_readable(THEME."links_template.php")){
-					require_once(THEME."links_template.php");
+				$template = (e_PAGE == 'admin_linkspage_config.php' ? e_THEME.$pref['sitetheme']."/" : THEME)."links_template.php";
+				if(is_readable($template)){
+					require_once($template);
 				}else{
 					require_once(e_PLUGIN."links_page/links_template.php");
 				}
@@ -365,7 +367,7 @@ class linkclass {
         $ns->tablerender($caption, "<div style='text-align:center'><b>".$message."</b></div>");
     }
 
-    function uploadLinkIcon($_POST){
+    function uploadLinkIcon(){
         global $ns, $pref;
         $pref['upload_storagetype'] = "1";
         require_once(e_HANDLER."upload_handler.php");
@@ -384,7 +386,7 @@ class linkclass {
         $this -> show_message($msg);
     }
 
-    function uploadCatLinkIcon($_POST){
+    function uploadCatLinkIcon(){
         global $ns, $pref;
         $pref['upload_storagetype'] = "1";
         require_once(e_HANDLER."upload_handler.php");
@@ -403,13 +405,13 @@ class linkclass {
         $this -> show_message($msg);
     }
 
-    function dbCategoryCreate($_POST) {
+    function dbCategoryCreate() {
         global $sql, $tp;
         $link_t = $sql->db_Count("links_page_cat", "(*)");
         $sql->db_Insert("links_page_cat", " '0', '".$tp -> toDB($_POST['link_category_name'])."', '".$tp -> toDB($_POST['link_category_description'])."', '".$tp -> toDB($_POST['link_category_icon'])."', '".($link_t+1)."', '".$tp -> toDB($_POST['link_category_class'])."', '".time()."' ");
         $this->show_message(LCLAN_ADMIN_4);
     }
-    function dbCategoryUpdate($_POST) {
+    function dbCategoryUpdate() {
         global $sql, $tp;
         $time = ($_POST['update_datestamp'] ? time() : ($_POST['link_category_datestamp'] != "0" ? $_POST['link_category_datestamp'] : time()) );
         $sql->db_Update("links_page_cat", "link_category_name ='".$tp -> toDB($_POST['link_category_name'])."', link_category_description='".$tp -> toDB($_POST['link_category_description'])."', link_category_icon='".$tp -> toDB($_POST['link_category_icon'])."', link_category_order='".$tp -> toDB($_POST['link_category_order'])."', link_category_class='".$tp -> toDB($_POST['link_category_class'])."', link_category_datestamp='".intval($time)."'   WHERE link_category_id='".intval($_POST['link_category_id'])."'");
@@ -478,7 +480,8 @@ class linkclass {
             $link_url = "http://".$link_url;
         }
 
-        if(isset($mode) && $mode == "submit"){
+        //create link, submit area, tmp table
+		if(isset($mode) && $mode == "submit"){
             if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
                 $username           = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 
@@ -496,26 +499,27 @@ class linkclass {
             $link_t = $sql->db_Count("links_page", "(*)", "WHERE link_category='".intval($_POST['cat_id'])."'");
             $time   = ($_POST['update_datestamp'] ? time() : ($_POST['link_datestamp'] != "0" ? $_POST['link_datestamp'] : time()) );
 
-            if (is_numeric($qs[2]) && $qs[1] != "sn") {
-                if($qs[1] == "manage"){
+            //update link
+			if (is_numeric($qs[2]) && $qs[1] != "sn") {
+				$link_class = $_POST['link_class'];
+				if($qs[1] == "manage"){
                     $link_author = USERID;
-                    //$link_class = ($linkspage_pref['link_directpost'] ? $_POST['link_class'] : "255");
-                    $link_class = $_POST['link_class'];
                 }else{
                     $link_author = ($_POST['link_author'] ? $tp -> toDB($_POST['link_author']) : USERID);
-                    $link_class = $_POST['link_class'];
                 }
 
                 $sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".intval($_POST['cat_id'])."', link_open='".intval($_POST['linkopentype'])."', link_class='".intval($link_class)."', link_datestamp='".intval($time)."', link_author='".$link_author."' WHERE link_id='".intval($qs[2])."'");
                 $e107cache->clear("sitelinks");
                 $this->show_message(LCLAN_ADMIN_3);
-            } else {
+            //create link
+			} else {
 
                 $sql->db_Insert("links_page", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".intval($_POST['cat_id'])."', '".($link_t+1)."', '0', '".intval($_POST['linkopentype'])."', '".intval($_POST['link_class'])."', '".time()."', '".USERID."' ");
                 $e107cache->clear("sitelinks");
                 $this->show_message(LCLAN_ADMIN_2);
             }
-            if (is_numeric($qs[2]) && $qs[1] == "sn") {
+            //delete from tmp table after approval
+			if (is_numeric($qs[2]) && $qs[1] == "sn") {
                 $sql->db_Delete("tmp", "tmp_time='".intval($qs[2])."' ");
             }
         }
