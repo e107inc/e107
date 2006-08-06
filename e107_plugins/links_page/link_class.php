@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.33 $
-|    $Date: 2006-08-06 10:20:11 $
+|    $Revision: 1.34 $
+|    $Date: 2006-08-06 10:24:36 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -139,6 +139,9 @@ class linkclass {
 		global $linkspage_pref, $qs, $tp, $link_shortcodes, $LINK_NEXTPREV, $LINK_NP_TABLE, $pref;
 
 		$number = (e_PAGE == 'admin_linkspage_config.php' ? '20' : $number);
+		if($total<=$number){
+			return;
+		}
 		if(e_PAGE == 'admin_linkspage_config.php' || (isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"])){
 			$np_querystring = e_SELF."?[FROM]".(isset($qs[0]) ? ".".$qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 			$parms = $total.",".$number.",".$from.",".$np_querystring."";
