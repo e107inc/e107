@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-08-06 10:20:11 $
+|     $Revision: 1.40 $
+|     $Date: 2006-08-06 11:03:34 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -322,7 +322,7 @@ function displayPersonalManager(){
 
 //comments on links
 function displayLinkComment(){
-	global $qs, $cobj, $tp, $sql, $lc, $rowl, $link_shortcodes, $ns, $linkspage_pref, $LINK_TABLE_START, $LINK_TABLE, $LINK_TABLE_END, $LINK_APPEND;
+	global $qs, $cobj, $tp, $sql, $linkbutton_count, $lc, $rowl, $link_shortcodes, $ns, $linkspage_pref, $LINK_TABLE_START, $LINK_TABLE, $LINK_TABLE_END, $LINK_APPEND;
 	if(!(isset($linkspage_pref["link_comment"]) && $linkspage_pref["link_comment"])){
 		js_location(e_SELF);
 	}else{
@@ -337,9 +337,12 @@ function displayLinkComment(){
 			js_location(e_SELF);
 		}else{
 			$rowl = $sql->db_Fetch();
+			$linkbutton_count   = ($rowl['link_button']) ?  $linkbutton_count + 1 : $linkbutton_count;
 			$LINK_APPEND	= $lc -> parse_link_append($rowl);
 			$subject		= $rowl['link_name'];
-			$text = $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
+			$text = $tp -> parseTemplate($LINK_TABLE_START, FALSE, $link_shortcodes);
+			$text .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
+			$text .= $tp -> parseTemplate($LINK_TABLE_END, FALSE, $link_shortcodes);
 			$ns->tablerender(LAN_LINKS_36, $text);
 
 			$cobj->compose_comment("links_page", "comment", $qs[1], $width, $subject, $showrate=FALSE);
@@ -450,8 +453,10 @@ function displayCategoryLinks($mode=''){
 	if (!$sql2->db_Select_gen($qry)){
 		$lc -> show_message(LAN_LINKS_34, LAN_LINKS_39);
 	}else{
+		$linkbutton_count = 0;
 		$list = $sql2 -> db_getList();
   	    foreach($list as $rowl) {
+			$linkbutton_count   = ($rowl['link_button']) ?  $linkbutton_count + 1 : $linkbutton_count;
 			if($mode){
 				$cat_name			= $rowl['link_category_name'];
 				$cat_desc			= $rowl['link_category_description'];
@@ -481,7 +486,7 @@ function displayCategoryLinks($mode=''){
 				for($i=0;$i<count($value);$i++){
 					$rowl				= $value[$i];
 
-					$linkbutton_count   = ($rowl['link_button']) ?  $linkicon_count + 1 : $linkicon_count;
+					$linkbutton_count   = ($rowl['link_button']) ?  $linkbutton_count + 1 : $linkbutton_count;
 					$cat_name			= $rowl['link_category_name'];
 					$cat_desc			= $rowl['link_category_description'];
 				 	$LINK_APPEND		= $lc -> parse_link_append($rowl);

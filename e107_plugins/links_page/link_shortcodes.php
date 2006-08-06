@@ -231,7 +231,7 @@ SC_END
 // LINK_TABLE ------------------------------------------------
 SC_BEGIN LINK_BUTTON
 global $LINK_BUTTON, $linkspage_pref, $rowl, $LINK_NAME, $LINK_APPEND;
-$LINK_BUTTON = "";
+$LINK_BUTTON = "&nbsp;";
 if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 	if ($rowl['link_button']) {
 		if (strpos($rowl['link_button'], "http://") !== FALSE) {
