@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-07-03 06:51:52 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2006-08-06 10:20:11 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -106,7 +106,11 @@ if (isset($_POST['add_link'])) {
 	}
 	if($qs[0] == "manage"){
 		if(check_class($linkspage_pref['link_manager_class'])){
-			$lc -> dbLinkCreate();
+			if(isset($linkspage_pref['link_directpost']) && $linkspage_pref['link_directpost']){
+				$lc -> dbLinkCreate();
+			}else{
+				$lc -> dbLinkCreate("submit");
+			}
 		}else{
 			js_location(e_SELF);
 		}
