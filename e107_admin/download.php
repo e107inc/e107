@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2006-07-31 00:20:29 $
-|     $Author: e107coders $
+|     $Revision: 1.89 $
+|     $Date: 2006-08-06 11:27:37 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -1501,8 +1501,8 @@ class download {
 
 		if($sub_action == "edit" && !defined("SUBMITTED"))
 		{
-			$sql -> db_Select("download_mirror", "*", "mirror_id=".$id);
-			$row = $sql -> db_Fetch();
+			$sql -> db_Select("download_mirror", "*", "mirror_id='".intval($id)."' ");
+			$mirror = $sql -> db_Fetch();
 			extract($mirror);
 			$edit = TRUE;
 		}
@@ -1511,8 +1511,6 @@ class download {
 			unset($mirror_name, $mirror_url, $mirror_image, $mirror_location, $mirror_description);
 			$edit = FALSE;
 		}
-
-
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>\n
