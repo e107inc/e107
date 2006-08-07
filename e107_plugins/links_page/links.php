@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-08-06 11:03:34 $
+|     $Revision: 1.41 $
+|     $Date: 2006-08-07 14:34:38 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -429,7 +429,7 @@ function displayNavigator($mode=''){
 }
 
 function displayCategoryLinks($mode=''){
-	global $sql2, $ns, $lc, $tp, $cobj, $rowl, $qs, $linkspage_pref, $from, $link_shortcodes;
+	global $sql2, $ns, $lc, $tp, $cobj, $rowl, $qs, $linkspage_pref, $from, $link_shortcodes, $link_category_total;
 	global $LINK_TABLE_START,$linkbutton_count, $LINK_TABLE,$link_category_total, $LINK_TABLE_CAPTION, $LINK_TABLE_END, $LINK_APPEND;
 
 	$order			= $lc -> getOrder();
@@ -467,6 +467,7 @@ function displayCategoryLinks($mode=''){
 			}
 		}
 		if($mode){
+			$link_category_total	= $link_total;
 			$link_table_start		= $tp -> parseTemplate($LINK_TABLE_START, FALSE, $link_shortcodes);
 			$link_table_end			= $tp -> parseTemplate($LINK_TABLE_END, FALSE, $link_shortcodes);
 			$text = $link_table_start.$link_table_string.$link_table_end;
