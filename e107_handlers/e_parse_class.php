@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.161 $
-|     $Date: 2006-07-19 20:01:31 $
-|     $Author: e107coders $
+|     $Revision: 1.162 $
+|     $Date: 2006-08-08 19:31:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -462,17 +462,19 @@ class e_parse
 		return $text;
 	}
 
-	function replaceConstants($text,$nonrelative = "")
+	function replaceConstants($text, $nonrelative = "", $all = false)
 	{
-		if($nonrelative != ""){
+		if($nonrelative != "")
+		{
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY;
-        	$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
-            $replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY.SITEURL.$THEMES_DIRECTORY);
+			$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
+			$replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY.SITEURL.$THEMES_DIRECTORY);
 			$search = array("{"."e_BASE"."}","{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}");
-            $replace = ($nonrelative == "full" && !is_bool($nonrelative)) ? $replace_absolute : $replace_relative;
+			$replace = ($nonrelative == "full" && !is_bool($nonrelative)) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
 		}
-	 	$text = preg_replace_callback("#\{(e_[A-Z]*)\}#s", array($this, 'doReplace'), $text);
+		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
+	 	$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
 		$theme_path = (defined("THEME")) ? constant("THEME") : "";
 		$text = str_replace("{THEME}",$theme_path,$text);
 
