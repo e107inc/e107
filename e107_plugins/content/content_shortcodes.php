@@ -21,6 +21,19 @@ $row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
 return ($contenttotal != "0" ? "<a href='".e_SELF."?recent.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
 SC_END
 
+SC_BEGIN CONTENT_TYPE_TABLE_LINK
+global $row, $tp;
+$text = "
+[<a href='".e_PLUGIN."content/content.php?cat.list.".$row['content_id']."'>".CONTENT_TYPE_LAN_0."</a>] 
+[<a href='".e_PLUGIN."content/content.php?author.list.".$row['content_id']."'>".CONTENT_TYPE_LAN_1."</a>] 
+[<a href='".e_PLUGIN."content/content.php?list.".$row['content_id']."'>".CONTENT_TYPE_LAN_2."</a>] 
+[<a href='".e_PLUGIN."content/content.php?top.".$row['content_id']."'>".CONTENT_TYPE_LAN_3."</a>] 
+[<a href='".e_PLUGIN."content/content.php?score.".$row['content_id']."'>".CONTENT_TYPE_LAN_4."</a>] 
+[<a href='".e_PLUGIN."content/content.php?recent.".$row['content_id']."'>".CONTENT_TYPE_LAN_5."</a>]";
+return $text;
+SC_END
+
+
 SC_BEGIN CONTENT_TYPE_TABLE_SUBHEADING
 global $CONTENT_TYPE_TABLE_SUBHEADING, $contenttotal, $row, $tp;
 $row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
