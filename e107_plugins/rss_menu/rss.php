@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-07-24 23:15:18 $
+|     $Revision: 1.55 $
+|     $Date: 2006-08-09 03:10:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -457,7 +457,7 @@ class rssCreate {
 						echo "<link>".$link."</link>\n";
 					}
 
-					echo "<description>".$tp->toRss($value['description'])."</description>\n";
+					echo "<description>".$tp->toRss($value['description'],TRUE)."</description>\n";
 
 					if($value['category_name'] && $catlink){
 						echo "<category domain='".$catlink."'>".$tp -> toRss($value['category_name'])."</category>\n";

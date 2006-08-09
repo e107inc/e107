@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.162 $
-|     $Date: 2006-08-08 19:31:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.163 $
+|     $Date: 2006-08-09 03:10:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -439,16 +439,21 @@ class e_parse
 	function toRss($text,$tags=FALSE)
 	{
 
-		if($tags != TRUE){
+		if($tags != TRUE)
+		{
 			$text = $this -> toHTML($text,TRUE);
 			$text = strip_tags($text);
 		}
 
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ",);
-		$replace = array("'", '$', "'", '$',' &amp; ' );
-		$text = str_replace($search, $replace, $text);
+		$text = $this->toEmail($text);
+   		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ", e_BASE, "href='request.php");
+   		$replace = array("'", '$', "'", '$',' &amp; ', SITEURL, "href='".SITEURL."request.php" );
+   		$text = str_replace($search, $replace, $text);
 
-		//$text = htmlspecialchars($text);
+		if($tags == TRUE && ($text))
+		{
+        	$text = "<![CDATA[".$text."]]>";
+		}
 
 		return $text;
 	}
