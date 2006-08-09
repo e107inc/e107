@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-03-13 21:53:47 $
+|     $Revision: 1.18 $
+|     $Date: 2006-08-09 17:14:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,9 +23,14 @@ if(USER){
 	exit;
 }
 
+if($pref['fpwcode'] && extension_loaded("gd")){
+	define("USE_IMAGECODE",TRUE);
+}else{
+	define("USE_IMAGECODE",FALSE);
+}
 
-$use_imagecode = ($pref['fpwcode'] && extension_loaded("gd"));
-if ($use_imagecode) {
+
+if (USE_IMAGECODE) {
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 }
@@ -54,7 +59,7 @@ function fpw_error($txt) {
 }
 
 if (e_QUERY) {
-	define("FPW_ACTIVE","TRUE");    
+	define("FPW_ACTIVE","TRUE");
 	$tmp = explode(".", e_QUERY);
 	$tmpinfo = preg_replace("#[\W_]#", "", $tp -> toDB($tmp[0], true));
 	if ($sql->db_Select("tmp", "*", "tmp_info LIKE '%.{$tmpinfo}' ")) {
@@ -142,7 +147,8 @@ if (isset($_POST['pwsubmit'])) {
 }
 
 
-if ($use_imagecode) {
+if (USE_IMAGECODE) {
+
 	$FPW_TABLE_SECIMG_LAN = LAN_FPW2;
 	$FPW_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img->random_number."'>";
 	$FPW_TABLE_SECIMG_SECIMG = $sec_img->r_image();
