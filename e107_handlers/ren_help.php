@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-07-16 19:40:07 $
+|     $Revision: 1.60 $
+|     $Date: 2006-08-09 03:10:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -295,11 +295,11 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
 
 					if($file['id'])
 					{
-						$text .= "<option value=\"[file=request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
+						$text .= "<option value=\"[file={e_BASE}request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
 											}
 					else
 					{
-						$text .= "<option value=\"[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
+						$text .= "<option value=\"[file={e_BASE}request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
 					}
 
 		}
