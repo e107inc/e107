@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-07-16 21:57:03 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2006-08-09 13:46:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -84,7 +84,7 @@ if (!$FORUM_VIEW_FORUM) {
 
 		<table style='width:100%'>
 		<tr>
-		<td style='width:90%'><span class='mediumtext'><b>{THREADTYPE}{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
+		<td style='width:90%'><span class='mediumtext'><b>{THREADTYPE}{THREADNAME}</b></span><br /><span class='smalltext'>{PAGES}</span></td>
 		<td style='width:10%; white-space:nowrap;'>{ADMIN_ICONS}</td>
 		</tr>
 		</table>
