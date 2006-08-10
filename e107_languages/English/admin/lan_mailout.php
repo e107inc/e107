@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-07-02 19:59:00 $
+|     $Revision: 1.14 $
+|     $Date: 2006-08-10 16:11:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -93,7 +93,7 @@ define("MAILAN_63", "Emails failed:");
 define("MAILAN_64", "Total time elapsed:");
 define("MAILAN_65", "seconds");
 define("MAILAN_66", "Cancelled Successfully");
-
+define("MAILAN_67", "Use 'POP before SMTP' authentication"); 
 
 
 

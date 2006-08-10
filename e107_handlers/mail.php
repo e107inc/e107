@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-07-12 08:15:58 $
+|     $Revision: 1.35 $
+|     $Date: 2006-08-10 16:11:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -51,11 +51,19 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
     }
 
 	if ($pref['mailer']== 'smtp') {
+
+		if(isset($pref['smtp_pop3auth']) && $pref['smtp_pop3auth']){
+			// http://www.corephp.co.uk/archives/18-POP-before-SMTP-Authentication-for-PHPMailer.html
+			require_once(e_HANDLER."phpmailer/class.pop3.php");
+			$pop = new POP3();
+			$pop->Authorise($pref['smtp_server'], 110, 30, $pref['smtp_username'], $pref['smtp_password'], 1);
+        }
+
 		$mail->Mailer = "smtp";
 	 	$mail->SMTPKeepAlive = FALSE;
 		$mail->Host = $pref['smtp_server'];
 		if($pref['smtp_username'] && $pref['smtp_password']){
-			$mail->SMTPAuth = TRUE;
+			$mail->SMTPAuth = (isset($pref['smtp_pop3auth']) && $pref['smtp_pop3auth']) ? FALSE : TRUE;
 			$mail->Username = $pref['smtp_username'];
 			$mail->Password = $pref['smtp_password'];
 			$mail->PluginDir = e_HANDLER."phpmailer/";
@@ -77,6 +85,8 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	$mail->SetLanguage("en",e_HANDLER."phpmailer/language/");
 
 	$lb = "\n";
+
+
 	// Clean up the HTML. ==
 
 	if (preg_match('/<(font|br|a|img|b)/i', $message)) {
@@ -99,7 +109,13 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	$mail->Body = $Html; //Main message is HTML
 	$mail->IsHTML(TRUE);
  	$mail->AltBody = $text; //Include regular plaintext as well
-	$mail->AddAddress($send_to, $to_name);
+
+
+	$tmp = explode(",",$send_to);
+    foreach($tmp as $adr){
+		$mail->AddAddress($adr, $to_name);
+    }
+
 
 		if ($attachments){
 			if (is_array($attachments))	{
