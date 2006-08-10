@@ -3,6 +3,10 @@ global $pref;
 $parm     = trim($parm);
 $external = ($pref['links_new_window'] || strpos($parm, 'external') === 0) ? " rel='external'" : "";
 
+if(strpos($parm,"{e_")!==FALSE){
+	$external = "";
+}
+
 if(substr($parm,0,6) == "mailto")
 {
 	list($pre,$email) = explode(":",$parm);
