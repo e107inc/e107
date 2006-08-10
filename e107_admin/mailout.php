@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-07-07 20:18:54 $
+|     $Revision: 1.56 $
+|     $Date: 2006-08-10 16:11:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -252,6 +252,8 @@ if (isset($_POST['updateprefs'])) {
 	$pref['smtp_username'] = $tp->toDB($_POST['smtp_username']);
 	$pref['smtp_password'] = $tp->toDB($_POST['smtp_password']);
 	$pref['smtp_keepalive'] = $_POST['smtp_keepalive'];
+	$pref['smtp_pop3auth'] = $_POST['smtp_pop3auth'];
+
 	$pref['mail_pause'] = $_POST['mail_pause'];
 	$pref['mail_pausetime'] = $_POST['mail_pausetime'];
 	$pref['mail_bounce_email'] = $_POST['mail_bounce_email'];
@@ -543,7 +545,11 @@ $text = "
 		$text .= "<option value='$opt' $sel>$opt</option>\n";
 	}
 	$text .="</select><br />";
+
+
 // SMTP. -------------->
+
+
 	$smtpdisp = ($pref['mailer'] != "smtp") ? "display:none;" : "";
 	$text .= "<div id='smtp' style='$smtpdisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "	<tr>
@@ -575,9 +581,21 @@ $text = "
 	</td>
 	</tr>
 
+	<tr>
+	<td colspan='2' style='text-align:right' >".MAILAN_67.":&nbsp;
+	";
+	$checked = (isset($pref['smtp_pop3auth']) && $pref['smtp_pop3auth']==1) ? "checked='checked'" : "";
+	$text .= "<input type='checkbox' name='smtp_pop3auth' value='1' {$checked} />
+	</td>
+	</tr>
+
+
+
 	</table></div>";
 
 // Sendmail. -------------->
+
+
 	$senddisp = ($pref['mailer'] != "sendmail") ? "display:none;" : "";
 	$text .= "<div id='sendmail' style='$senddisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "
