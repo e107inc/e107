@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.294 $
-|     $Date: 2006-07-25 20:25:34 $
+|     $Revision: 1.295 $
+|     $Date: 2006-08-11 13:11:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -665,6 +665,8 @@ if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pre
 if ($pref['antiflood1'] == 1) {
 	define('FLOODPROTECT', TRUE);
 	define('FLOODTIMEOUT', $pref['antiflood_timeout']);
+}else{
+	define('FLOODPROTECT', FALSE);
 }
 
 $layout = isset($layout) ? $layout : '_default';
