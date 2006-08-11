@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_contact.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-07-27 01:42:22 $
+|     $Revision: 1.4 $
+|     $Date: 2006-08-11 16:50:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,9 @@ define("LANCONTACT_12", "Your message is too short.");
 define("LANCONTACT_13", "Please include a subject.");
 
 define("LANCONTACT_14", "Send message to:");
+define("LANCONTACT_15", "Incorrect code entered");
+define("LANCONTACT_16", "Enter Code");
+
 
 
 

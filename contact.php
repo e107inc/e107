@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-27 01:42:22 $
+|     $Revision: 1.7 $
+|     $Date: 2006-08-11 16:50:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,11 @@ if(isset($pref['sitecontacts']) && $pref['sitecontacts'] == 255)
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+    // may be disabled by removing the appropriate shortcodes from the template.
+	require_once(e_HANDLER."secure_img_handler.php");
+	$sec_img = new secure_image;
+
 
 require_once(HEADERF);
 
@@ -43,6 +48,12 @@ if(isset($_POST['send-contactus'])){
 	$subject = $tp->post_toHTML($_POST['subject']);
 	$body = $tp->post_toHTML($_POST['body']);
 
+// Check Image-Code
+    if (isset($_POST['rand_num']) && !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
+	{
+		$error .= LANCONTACT_15."\\n";
+	}
+
 // Check message body.
 	if(strlen(trim($_POST['body'])) < 15)
 	{
@@ -53,6 +64,11 @@ if(isset($_POST['send-contactus'])){
 	if(strlen(trim($_POST['subject'])) < 2)
 	{
 		$error .= LANCONTACT_13."\\n";
+    }
+
+	if(!strpos(trim($_POST['email_send']),"@"))
+	{
+		$error .= LANCONTACT_11."\\n";
     }
 
 
@@ -124,7 +140,7 @@ if(isset($_POST['send-contactus'])){
 	else
 	{
 		require_once(e_HANDLER."message_handler.php");
-		message_handler("ALERT", $error);
+		message_handler("P_ALERT", $error);
 	}
 
 }
