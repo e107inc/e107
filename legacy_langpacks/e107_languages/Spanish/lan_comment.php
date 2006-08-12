@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-24 20:17:22 $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-12 17:23:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Comentarios");
 define("COMLAN_0", "[bloqueado por el administrador]");
 define("COMLAN_1", "Desbloquear");
 define("COMLAN_2", "Bloquear");

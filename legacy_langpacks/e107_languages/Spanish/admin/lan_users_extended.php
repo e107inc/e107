@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-19 08:48:14 $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-12 17:23:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -75,8 +75,14 @@ define("EXTLAN_63", "Campo ID");
 define("EXTLAN_64", "Mostrar valor");
 define("EXTLAN_65", "No - No se mostrará en la página de registro"); 
 define("EXTLAN_66", "Yes - Se mostrará en la página de registro"); 
-define("EXTLAN_67", "No - Mostrar en la página de registro"); 
-
+define("EXTLAN_67", "No - Mostrar en la página de registro");
+define("EXTLAN_68", "Campo:"); 
+define("EXTLAN_69", "ha sido activado"); 
+define("EXTLAN_70", "ERROR!! Campo:"); 
+define("EXTLAN_71", "no fué activado!"); 
+define("EXTLAN_72", "Ha sido desactivado"); 
+define("EXTLAN_73", "no fué desactivado!"); 
+ 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parámetros:</i></b><br />size - tamaño del campo<br />maxlength - longitud máx del campo<br />class - css clase del campo<br />");
 //radio buttons
@@ -91,5 +97,4 @@ define("EXTLAN_HELP_5", "Éste será el texto de ayuda del área de texto");
 define("EXTLAN_HELP_6", "Éste será el texto de ayuda de los enteros");
 //date
 define("EXTLAN_HELP_7", "Éste será el texto ayuda de la fecha");
-
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.8 $
+|     $Date: 2006-08-12 17:23:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -137,6 +137,7 @@ define("USRLAN_142", "con el siguiente enlace de activación");
 define("USRLAN_143", "Comprobar saltos"); 
 define("USRLAN_144", "Reenviar confirmación de mail a todos");
 define("USRLAN_145", "Usuarios rechazados");
+define("USRLAN_146", "La información del miembro está disponible a");
 
 define("LAN_BOUNCED","Saltado");
 define("LAN_MAINADMIN","Admin principal"); 

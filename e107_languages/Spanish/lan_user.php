@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.12 $
+|     $Date: 2006-08-12 17:23:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -67,5 +67,5 @@ define("LAN_425", "Enviar Mensaje Privado a");
 define("LAN_426", "");
 
 define("USERLAN_1", "Valoración del Peer");
-
+define("USERLAN_2", "No tiene permisos para ver esta página.");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-08-12 17:23:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,4 +25,9 @@ define("DBLAN_13", "Volver");
 define("DBLAN_14", "Hecho");
 define("DBLAN_15", "Ver actualizaciones disponibles");
 define("DBLAN_16", "Buscar actualizaciones");
+define("DBLAN_17", "Pref. Nombre"); 
+define("DBLAN_18", "Pref. Valor"); 
+define("DBLAN_19", "Haga click en el botón para abrir las preferencias del editor (solo ususarios avanzados)"); 
+define("DBLAN_20", "Preferencias Editor"); 
+define("DBLAN_21", "Eliminar marcados"); 
 ?>

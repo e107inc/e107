@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-08 09:40:54 $
+|     $Revision: 1.7 $
+|     $Date: 2006-08-12 17:23:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -79,6 +79,5 @@ define("EPL_DIRECTORY", " .");
 define("EPL_NOINSTALL_1", "No se requiere instalación, para desinstalar borre la carpeta ");
 define("EPL_UPGRADE", "Actualizar");
 define("LAN_UPGRADE_SUCCESSFUL", "Actualización exitosa"); 
-define("LAN_INSTALL_SUCCESSFUL", "Instalación exitosa"); 
-define("LAN_CONFIGURE", "Configurar"); 
+define("LAN_INSTALL_SUCCESSFUL", "Instalación exitosa");
 ?>

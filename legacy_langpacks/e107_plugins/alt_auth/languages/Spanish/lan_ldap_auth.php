@@ -4,5 +4,8 @@ define("LDAPLAN_2", "Base DN o Dominio<br />If LDAP - Escriba BaseDN<br />If AD 
 define("LDAPLAN_3", "LDAP mostrar usuarios<br />Contenido de texto del usuario que será capaz de buscar en el directorio.");
 define("LDAPLAN_4", "LDAP mostrar contraseña<br />Contraseña para el usuario LDAP.");
 define("LDAPLAN_5", "Versión LDAP ");
-define("LDAPLAN_6", "Configure LDAP aut.");
+define("LDAPLAN_6", "Configurar LDAP aut.");
+define("LDAPLAN_7", "Filtro de búsqueda de sDirectory:"); 
+define("LDAPLAN_8", "Se utilizará para asegurar que el usuario esta en el árbol correcto, <br />pe '(objectclass=inetOrgPerson)'"); 
+define("LDAPLAN_9", "El filtro actual de búsqueda será:"); 
 ?>

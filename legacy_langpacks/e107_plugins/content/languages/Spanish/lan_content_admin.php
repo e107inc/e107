@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-24 20:17:22 $
+|     $Revision: 1.7 $
+|     $Date: 2006-08-12 17:23:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -391,7 +391,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "Plugin gestor de contenidos : autor de contenido actualizado"); 
 define("CONTENT_ADMIN_CONVERSION_LAN_66", "Plugin gestor de contenidos : preferencias de contenido y menus actualizado"); 
 define("CONTENT_ADMIN_CONVERSION_LAN_67", "Plugin gestor de contenidos : preferencias de contenido actualizado"); 
-define("CONTENT_ADMIN_CONVERSION_LAN_68", ""); 
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "Plugin gestor de contenidos : actualizado el tema de contenido");
 define("CONTENT_ADMIN_CONVERSION_LAN_69", ""); 
 define("CONTENT_ADMIN_CONVERSION_LAN_70", ""); 
 
@@ -659,4 +659,8 @@ define("CONTENT_ADMIN_OPT_LAN_163", "Mostrar enlaces de anterior siguiente págin
 define("CONTENT_ADMIN_OPT_LAN_164", "Título para enlace página anterior<br />(use {PAGETITLE} para añadir el título de página anterior)");
 define("CONTENT_ADMIN_OPT_LAN_165", "Título para enlace de página siguiente<br />(use {PAGETITLE} para añadir el título de página siguiente)");
 define("CONTENT_ADMIN_OPT_LAN_166", "use 'todo' para mostrar texto completo");
+define("CONTENT_ADMIN_OPT_LAN_167", "inherit");
+define("CONTENT_ADMIN_OPT_LAN_168", "primera página"); 
+define("CONTENT_ADMIN_OPT_LAN_169", "última página"); 
+define("CONTENT_ADMIN_OPT_LAN_170", "¿Donde se renderizarán los tags personalizados y predefinidos de un contenido multipágina?"); 
 ?>

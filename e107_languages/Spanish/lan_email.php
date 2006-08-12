@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_email.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.15 $
+|     $Date: 2006-08-12 17:23:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -34,4 +34,5 @@ define("LAN_EMAIL_186", "Enviar noticia");
 define("LAN_EMAIL_187", "Email del destinatario");
 define("LAN_EMAIL_188", "Espero que le guste esta noticia de");
 define("LAN_EMAIL_189", "Espero que le guste este artículo de");
+define("LAN_EMAIL_190", "Entre código visible");
 ?>
