@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/lan_signup.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 15:13:34 $
+|     $Revision: 1.2 $
+|     $Date: 2006-08-14 16:02:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,7 @@ define("LAN_405", "שלב הרשמה זה הושלם. בקרוב תקבל אי-�
 define("LAN_406", "תודה לך!");
 define("LAN_407", "שמור על אי-מייל זה למידע אישי שלך. סיסמתך מוצפנת ולא ניתן לשחזר אותה אם שכחת. למרות זאת, אם שכחת סיסמתך תוכל ליצור סיסמא חדשה.\n\nתודה לך על ההרשמה לאתר\n\nמ");
 define('LAN_408', 'משתמש עם כתובת אי-מייל זו כבר קיים. השתמש בדף ה"שכחתי סיסמא" כדי לשחזר סיסמתך.');
+
 define("LAN_SIGNUP_1", "מינימום.");
 define("LAN_SIGNUP_2", "תוים.");
 define("LAN_SIGNUP_3", "אישור קוד נכשל.");
@@ -57,7 +58,7 @@ define("LAN_SIGNUP_11", ".");
 
 define("LAN_409", "תוים שאינם תקינים בשם המשתמש");
 define("LAN_410", "הכנס קוד שנראה בתמונה");
-
+define("LAN_411", "That display name already exists in the database, please choose a different display name");
 define("LAN_SIGNUP_12", "אנא שמור את שם המשתמש והסיסמא שלך במקום בטוח, מאחר ולא ניתן לשחזר אותם במקרה ששכחת.");
 define('LAN_SIGNUP_13', 'אתה יכול עכשיו להתחבר מתפריט ההתחברות (תחת הכותרת "ברוך הבא") ,או מ <a href="".e_BASE."login.php">כאן</a>.');
 define("LAN_SIGNUP_14", "כאן");
@@ -83,7 +84,7 @@ define("LAN_SIGNUP_32", "What's an XUP file?");
 define("LAN_SIGNUP_33", "Type path or choose avatar");
 define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 define("LAN_SIGNUP_35", "Click here to register using an XUP file");
-define("LAN_SIGNUP_36", "An error has occured creating your user information, please contact the site admin");
+define("LAN_SIGNUP_36", "An error has occurred creating your user information, please contact the site admin");
 
 define("LAN_LOGINNAME", "Login Name");
 define("LAN_PASSWORD", "Password");
@@ -93,4 +94,7 @@ define("LAN_EMAIL_04", "Please keep this email for your own information.");
 define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.");
 define("LAN_EMAIL_06", "Thanks for your registration.");
 
+define("LAN_SIGNUP_37", "This stage of registration is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
+define("LAN_SIGNUP_38", "You entered two different email addresses. Please enter a valid email address in the two fields provided");
+define("LAN_SIGNUP_39", "Re-type Email Address:");
 ?>
