@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-formal/lan_content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-08-01 13:35:42 $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-18 19:55:40 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -176,6 +176,13 @@ define("CONTENT_LAN_89", "selecteer pagina");
 define("CONTENT_LAN_90", "voorgaande pagina");
 define("CONTENT_LAN_91", "volgende pagina");
 define("CONTENT_LAN_92", " - huidige");
+
+define("CONTENT_TYPE_LAN_0", "categorieën");
+define("CONTENT_TYPE_LAN_1", "auteurs");
+define("CONTENT_TYPE_LAN_2", "archief");
+define("CONTENT_TYPE_LAN_3", "hoogst gewaardeerd");
+define("CONTENT_TYPE_LAN_4", "topscore");
+define("CONTENT_TYPE_LAN_5", "recent");
 
 define("CONTENT_MENU_LAN_0", "content Menu :");
 define("CONTENT_MENU_LAN_1", "nog geen content onderwerpen");

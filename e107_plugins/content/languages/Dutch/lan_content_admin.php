@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-08-01 13:35:43 $
+|     $Revision: 1.15 $
+|     $Date: 2006-08-18 19:55:40 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -655,7 +655,9 @@ define("CONTENT_ADMIN_OPT_LAN_164", "titel voor voorgaande paginalink<br />(gebr
 define("CONTENT_ADMIN_OPT_LAN_165", "titel voor volgende paginalink<br />(gebruik {PAGETITLE} om de titel van de volgende pagina toe te voegen)");
 define("CONTENT_ADMIN_OPT_LAN_166", "gebruik 'alles' om de volledige tekst te tonen");
 define("CONTENT_ADMIN_OPT_LAN_167", "overerven");
-
+define("CONTENT_ADMIN_OPT_LAN_168", "eerste pagina");
+define("CONTENT_ADMIN_OPT_LAN_169", "laatste pagina");
+define("CONTENT_ADMIN_OPT_LAN_170", "waar moeten de maatwerk en presest tags voor een meervoudig pagina onderwerp worden weergegeven ?");
 
 define("CONTENT_LATEST_LAN_1", "Aangemelde contentonderwerpen:");
 define("CONTENT_ADMIN_MANAGER_LAN_0", "goedkeuren aangemeld");

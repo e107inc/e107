@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_mailout.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-08-01 13:35:42 $
+|     $Revision: 1.12 $
+|     $Date: 2006-08-18 19:55:40 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -91,4 +91,5 @@ define("MAILAN_63", "Emails mislukt:");
 define("MAILAN_64", "Totaal verstreken tijd:");
 define("MAILAN_65", "seconden");
 define("MAILAN_66", "Succesvol geannuleerd");
+define("MAILAN_67", "Gebruik 'POP voor SMTP' authenticatie"); 
 ?>
