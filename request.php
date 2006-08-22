@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-07-04 17:40:42 $
+|     $Revision: 1.39 $
+|     $Date: 2006-08-22 16:10:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -168,7 +168,7 @@ if ($type == "file")
 				echo $binary_data;
 				exit();
 			}
-			if (strstr($download_url, "http://") || strstr($download_url, "ftp://" || strstr($download_url, "https://"))) {
+			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://")) {
 				header("Location: {$download_url}");
 				exit();
 			} else {
