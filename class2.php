@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.295 $
-|     $Date: 2006-08-11 13:11:23 $
+|     $Revision: 1.296 $
+|     $Date: 2006-08-24 23:10:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -63,6 +63,7 @@ ini_set('magic_quotes_sybase',      0);
 ini_set('arg_separator.output',     '&amp;');
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid',    0);
+
 
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
@@ -264,6 +265,19 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
 
+
+// let the subdomain determine the language (when enabled).
+if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session")){
+		ini_set("session.cookie_domain",$pref['multilanguage_subdomain']);
+		require_once(e_HANDLER."language_class.php");
+		$lng = new language;
+		$srvtmp = explode(".",$_SERVER['HTTP_HOST']);
+		if($eln = $lng->convert($srvtmp[0])){
+          	$_GET['elan'] = $eln;
+		}
+}
+
+
 // if a cookie name pref isn't set, make one :)
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
@@ -273,6 +287,7 @@ if (!$pref['cookie_name']) {
 if ($pref['user_tracking'] == "session") {
 	session_start();
 }
+
 
 define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
