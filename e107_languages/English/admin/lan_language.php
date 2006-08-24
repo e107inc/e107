@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_language.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-17 03:07:59 $
+|     $Revision: 1.11 $
+|     $Date: 2006-08-24 23:10:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,5 +27,9 @@ define("LANG_LAN_14", "Default Site Language");
 define("LANG_LAN_15", "Tick to copy data from the default language.(useful for links, news-categories etc) ");
 define("LANG_LAN_16", "Multi-language Database Usage");
 define("LANG_LAN_17", "Default Language - No additional tables required.");
+define("LANG_LAN_18", "Use Parked Subdomains to set Language:");
+define("LANG_LAN_19", "eg. fr.mydomain.com to set the language to French.");
+define("LANG_LAN_20", "Enter the main domain name to enable. eg. mydomain.com");
+
 
 ?>
