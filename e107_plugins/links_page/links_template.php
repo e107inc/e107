@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-07-03 06:51:52 $
+|     $Revision: 1.24 $
+|     $Date: 2006-08-24 14:50:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 global $sc_style, $link_shortcodes;
+if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
 
 // ##### NEXT PREV --------------------------------------------------
 if(!isset($LINK_NP_TABLE)){
@@ -153,7 +154,7 @@ $LINK_TABLE_CAPTION = LCLAN_ITEM_24."{NAVIGATOR}" ;
 
 $LINK_TABLE_START = "
 	<div style='text-align:center'>
-	<table class='fborder' style='width:97%; margin-bottom:20px;'>
+	<table class='fborder' style='".USER_WIDTH.";margin-bottom:20px;'>
 	<tr>
 	<td colspan='{BUTTON_COLUMN}' class='fcaption'>".LAN_LINKS_32." {LINK_CAT_NAME} {LINK_CAT_TOTAL} {LINK_CAT_DESC} </td>
    	{LINK_RATING_LAN}
