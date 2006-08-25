@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-07-08 03:19:30 $
+|     $Revision: 1.65 $
+|     $Date: 2006-08-25 15:42:37 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -440,7 +440,7 @@ function render_plugs($pluginList){
 		<table style='width:100%'><tr><td style='text-align:left;width:40px;vertical-align:top'>
 		".$plugin_icon."
 		</td><td>
-		$img <b>{$plug['plugin_name']}</b><br />".EPL_ADLAN_11." {$plug['plugin_version']}
+		$img <b>".$tp->toHTML($plug['plugin_name'],FALSE,"defs")."</b><br />".EPL_ADLAN_11." {$plug['plugin_version']}
 		<br />";
 
 		$text .="</td>
