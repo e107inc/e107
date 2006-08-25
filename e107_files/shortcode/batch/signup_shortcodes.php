@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-10 13:18:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2006-08-25 15:14:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -34,7 +34,7 @@ else
 <input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_200."
 <input type='radio' name='coppa' value='1' /> ".LAN_201."<br />
 <br />
-<input class='button' type='submit' name='newver' value='".LAN_399."' />
+<input class='button' type='submit' name='newver' value=\"".LAN_399."\" />
 </div></form>
 ";
 }
