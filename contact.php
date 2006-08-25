@@ -11,20 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-08-11 16:50:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-08-25 21:03:37 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
-if(isset($pref['sitecontacts']) && $pref['sitecontacts'] == 255)
-{
-	header("location:".e_BASE."index.php");
-	exit;
-}
-
-    // may be disabled by removing the appropriate shortcodes from the template.
+    // security image may be disabled by removing the appropriate shortcodes from the template.
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 
@@ -151,12 +145,15 @@ if(SITECONTACTINFO && $CONTACT_INFO)
 	$ns -> tablerender(LANCONTACT_01, $text,"contact");
 }
 
+if(isset($pref['sitecontacts']) && $pref['sitecontacts'] != 255)
+{
 	require_once(e_FILE."shortcode/batch/contact_shortcodes.php");
 	$text = $tp->parseTemplate($CONTACT_FORM, TRUE, $contact_shortcodes);
 
-
-if(trim($text) != ""){
-	$ns -> tablerender(LANCONTACT_02, $text, "contact");
+	if(trim($text) != "")
+	{
+		$ns -> tablerender(LANCONTACT_02, $text, "contact");
+	}
 }
 require_once(FOOTERF);
 exit;
