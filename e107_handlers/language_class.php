@@ -4,8 +4,8 @@
 |     e107 website system - Language Class.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/language_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-08-24 16:48:46 $
+|     $Revision: 1.4 $
+|     $Date: 2006-08-25 16:03:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -196,33 +196,34 @@ class language{
 	function toNative($lang){
 
 		$name = array(
-			"Arabic" => "العربية",
-			"Bulgarian" => "Български",
-			"Croatian" => "Hrvatski",
-			"Dutch" => "Nederlands",
-			"English" => "English",
-			"Farsi" => "فارسي",
-			"French" => "Français",
-			"German" => "Deutsch",
-			"Greek" => "Ελληνικά",
-			"Hebrew" => "עִבְרִית",
-			"Hungarian" => "Magyar",
-			"Italian" => "Italiano",
-			"Japanese" => "日本語",
-			"Korean" => "한국어",
-			"Mongolian" => "монгол",
-		    "Portuguese" => "Português",
-			"Polish" => "Polski",
-			"Romanian" => "Romanesc",
-			"Russian" => "Pусский",
-			"Serbian" => "Srpski",
-			"Spanish" => "Español",
-			"Slovenian" => "Slovensko",
-			"Slovakian" => "Slovensky",
-			"Slovak" => "Slovensky",
-			"Swedish" => "Svenska",
-			"Thai" => "� าษาไทย",
-			"Turkish" => "Türkçe"
+			"Arabic" 		=> "العربية",
+			"Bulgarian"		=> "Български",
+			"Croatian"		=> "Hrvatski",
+			"Dutch"			=> "Nederlands",
+			"English"		=> "English",
+			"Farsi"			=> "فارسي",
+			"French"		=> "Français",
+			"German"		=> "Deutsch",
+			"Greek"			=> "Ελληνικά",
+			"Hebrew"		=> "עִבְרִית",
+			"Hungarian"		=> "Magyar",
+			"Italian"		=> "Italiano",
+			"Japanese"		=> "日本語",
+			"Korean"		=> "한국어",
+			"Mongolian"		=> "монгол",
+			"Nepali"		=> "नेपाली",
+		    "Portuguese"	=> "Português",
+			"Polish"		=> "Polski",
+			"Romanian"		=> "Romanesc",
+			"Russian"		=> "Pусский",
+			"Serbian"		=> "Srpski",
+			"Spanish"		=> "Español",
+			"Slovenian"		=> "Slovensko",
+			"Slovakian"		=> "Slovensky",
+			"Slovak"		=> "Slovensky",
+			"Swedish"		=> "Svenska",
+			"Thai"			=> "� าษาไทย",
+			"Turkish"		=> "Türkçe"
 		);
 
        return ($name[$lang]) ? $name[$lang] : $lang;
