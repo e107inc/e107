@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-16 19:56:47 $
+|     $Revision: 1.7 $
+|     $Date: 2006-08-25 15:14:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -178,7 +178,7 @@ if(!defined($SIGNUP_XUP_FORM))
 {
 $SIGNUP_XUP_FORM = "
 	<div style='padding:10px;text-align:center'>
-	<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_35."' onclick=\"expandit('xup','default')\" />
+	<input class='button' type ='button' style='cursor:hand' size='30' value=\"".LAN_SIGNUP_35."\" onclick=\"expandit('xup','default')\" />
 	</div>
 
 	<div id='xup' style='display:none' >
@@ -220,7 +220,7 @@ $SIGNUP_XUP_FORM = "
 
 	<tr>
 	<td class='forumheader' colspan='2'  style='text-align:center'>
-	<input class='button' type='submit' name='register' value='".LAN_123."' />
+	<input class='button' type='submit' name='register' value=\"".LAN_123."\" />
 	</td>
 	</tr>
 
@@ -295,7 +295,7 @@ $SIGNUP_BODY = "
 {SIGNUP_IMAGECODE}
 <tr style='vertical-align:top'>
 <td class='forumheader' colspan='2'  style='text-align:center'>
-<input class='button' type='submit' name='register' value='".LAN_123."' />
+<input class='button' type='submit' name='register' value=\"".LAN_123."\" />
 <br />
 </td>
 </tr>
