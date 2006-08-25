@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-07-24 06:37:38 $
-|     $Author: lisa_ $
+|     $Revision: 1.9 $
+|     $Date: 2006-08-25 15:37:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -22,7 +22,7 @@ $lan_file = e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php";
 require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."rss_menu/languages/English.php");
 
 // Plugin info ----------------------------------------------------------------
-$eplug_name				= RSS_PLUGIN_LAN_1;
+$eplug_name				= "RSS_PLUGIN_LAN_1";
 $eplug_version			= "1.1";
 $eplug_author			= "e107dev";
 $eplug_logo				= "";

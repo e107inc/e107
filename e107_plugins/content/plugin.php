@@ -20,7 +20,7 @@ global $PLUGINS_DIRECTORY;
 @include_once(e_PLUGIN.'content/languages/English/lan_content_admin.php');
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = CONTENT_PLUGIN_LAN_1;
+$eplug_name = "CONTENT_PLUGIN_LAN_1";
 $eplug_version = "1.24";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
