@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.296 $
-|     $Date: 2006-08-24 23:10:35 $
+|     $Revision: 1.297 $
+|     $Date: 2006-08-25 10:43:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -273,7 +273,7 @@ if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] &
 		$lng = new language;
 		$srvtmp = explode(".",$_SERVER['HTTP_HOST']);
 		if($eln = $lng->convert($srvtmp[0])){
-          	$_GET['elan'] = $eln;
+          	$GLOBALS['elan'] = $eln;
 		}
 }
 
@@ -306,10 +306,14 @@ $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
 // sort out the users language selection
-if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
+if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan'])) {
 	if($_GET['elan'])  // query support, for language selection splash pages. etc
 	{
 		$_POST['sitelanguage'] = $_GET['elan'];
+	}
+	if($GLOBALS['elan'])
+	{
+    	$_POST['sitelanguage'] = $GLOBALS['elan'];
 	}
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
