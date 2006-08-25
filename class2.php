@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.297 $
-|     $Date: 2006-08-25 10:43:51 $
+|     $Revision: 1.298 $
+|     $Date: 2006-08-25 15:15:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -264,15 +264,16 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
-
+$srvtmp = explode(".",$_SERVER['HTTP_HOST']);
+define("e_SUBDOMAIN", ($srvtmp[2] ? $srvtmp[0] : FALSE));
 
 // let the subdomain determine the language (when enabled).
 if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session")){
 		ini_set("session.cookie_domain",$pref['multilanguage_subdomain']);
 		require_once(e_HANDLER."language_class.php");
 		$lng = new language;
-		$srvtmp = explode(".",$_SERVER['HTTP_HOST']);
-		if($eln = $lng->convert($srvtmp[0])){
+
+		if($eln = $lng->convert(e_SUBDOMAIN)){
           	$GLOBALS['elan'] = $eln;
 		}
 }
@@ -311,7 +312,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 	{
 		$_POST['sitelanguage'] = $_GET['elan'];
 	}
-	if($GLOBALS['elan'])
+	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
 	{
     	$_POST['sitelanguage'] = $GLOBALS['elan'];
 	}
