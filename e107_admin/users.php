@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2006-07-25 19:56:01 $
+|     $Revision: 1.82 $
+|     $Date: 2006-08-25 16:02:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -191,13 +191,13 @@ if (isset($_POST['adduser'])) {
 
 		$username = strip_tags($_POST['name']);
 		$loginname = strip_tags($_POST['loginname']);
-		$ip = $e107->getip();
+
 //		extract($_POST);
 //		for($a = 0; $a <= (count($_POST['userclass'])-1); $a++) {
 //			$svar .= $userclass[$a].".";
 //		}
 		$svar = implode(",", $_POST['userclass']);
-		admin_update($sql -> db_Insert("user", "0, '$username', '$loginname',  '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '".time()."', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '0', '0', '".$_POST['realname']."', '".$svar."', '', '', '".time()."', ''"), 'insert', USRLAN_70);
+		admin_update($sql -> db_Insert("user", "0, '$username', '$loginname',  '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '".time()."', '".time()."', '0', '0', '0', '0', '0', '0', '0', '', '', '0', '0', '".$_POST['realname']."', '".$svar."', '', '', '".time()."', ''"), 'insert', USRLAN_70);
 	}
 }
 
