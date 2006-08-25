@@ -18,7 +18,7 @@ $lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = PDF_PLUGIN_LAN_1;
+$eplug_name = "PDF_PLUGIN_LAN_1";
 $eplug_version = "1.0";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";

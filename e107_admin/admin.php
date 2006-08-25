@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-07-08 21:53:58 $
+|     $Revision: 1.33 $
+|     $Date: 2006-08-25 15:37:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -160,7 +160,7 @@ if(!defined("ADLINK_COLS")){
 	define("ADLINK_COLS",5);
 }
 function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE) {
-	global $td;
+	global $td,$tp;
 	$text = '';
 	if (getperms($perms)) {
 		if ($mode == 'adminb') {
@@ -178,15 +178,15 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			}
 			if ($mode == 'default') {
 				$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
-					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$title."</td>";
+					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs")."</td>";
 			}
 			else if ($mode == 'classis') {
 				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='$description'>".$icon."</a><br />
-					<a href='".$link."' title='$description'><b>".$title."</b></a><br /><br /></td>";
+					<a href='".$link."' title='$description'><b>".$tp->toHTML($title,FALSE,"defs")."</b></a><br /><br /></td>";
 			}elseif ($mode == 'beginner'){
                 $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a href='".$link."' >".$icon."</a>
 					<div style='padding:5px'>
-					<a href='".$link."' title='".$description."' style='text-decoration:none'><b>".$title."</b></a></div><br /><br /><br /></td>";
+					<a href='".$link."' title='".$description."' style='text-decoration:none'><b>".$tp->toHTML($title,FALSE,"defs")."</b></a></div><br /><br /><br /></td>";
 			}
 			$td++;
 		}

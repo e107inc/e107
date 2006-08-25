@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-07-24 06:47:36 $
-|     $Author: lisa_ $
+|     $Revision: 1.20 $
+|     $Date: 2006-08-25 15:37:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,7 +23,7 @@ if (!defined('e107_INIT')) { exit; }
 @include_once(e_PLUGIN.'links_page/languages/'.e_LANGUAGE.'.php');
 @include_once(e_PLUGIN.'links_page/languages/English.php');
 
-$eplug_name = LCLAN_PLUGIN_LAN_1;
+$eplug_name = "LCLAN_PLUGIN_LAN_1";
 $eplug_version = "1.12";
 $eplug_author = "e107devs";
 $eplug_url = "http://e107.org";
