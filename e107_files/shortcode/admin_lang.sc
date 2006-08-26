@@ -57,7 +57,7 @@ if (ADMIN) {
 			$text .= implode("<br />",$aff);
 			$text .= "</span>";
 		}
-		elseif($sql->mySQLlanguage)
+		elseif($sql->mySQLlanguage && ($sql->mySQLlanguage != $pref['sitelanguage']))
 		{
 			$text .= $sql->mySQLlanguage;
 			$text .= " (".$lng->convert($sql->mySQLlanguage)."): ".LAN_INACTIVE;
