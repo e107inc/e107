@@ -11,7 +11,7 @@
 | GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-	
+
 define("CM_L1", "No comments yet.");
 define("CM_L2", "");
 define("CM_L3", "Caption");
@@ -23,6 +23,6 @@ define("CM_L8", "New Comments Menu Configuration");
 define("CM_L9", "Update Menu Settings");
 define("CM_L10", "Comments menu configuration saved");
 define("CM_L11", "on");
-define("CM_L12", "Re:")
-	
+define("CM_L12", "Re:");
+
 ?>
