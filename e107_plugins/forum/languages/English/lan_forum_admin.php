@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-06-22 19:49:58 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2006-08-27 02:24:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -32,7 +32,7 @@ define("FORLAN_20", "Delete");
 define("FORLAN_21", "tick to confirm");
 define("FORLAN_22", "Parent");
 define("FORLAN_23", "Viewable by");
-define("FORLAN_24", "Indicates who can can view the forum");
+define("FORLAN_24", "Indicates who can view the forum");
 define("FORLAN_25", "Update Parent");
 define("FORLAN_26", "Create Parent");
 define("FORLAN_27", "You need to define at least one forum parent before creating a forum.");
@@ -196,7 +196,7 @@ define("FORLAN_174", "Reported by user");
 define("FORLAN_175", "Report submitted");
 define("FORLAN_176", "Report");
 
-define("FORLAN_177", "email nofication ON by default");
+define("FORLAN_177", "email notification ON by default");
 define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
 
 define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for sub-forums only.  The forum theme must support this option also.)");

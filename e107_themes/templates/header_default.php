@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2006-07-27 08:28:04 $
-|     $Author: lisa_ $
+|     $Revision: 1.89 $
+|     $Date: 2006-08-27 02:24:45 $
+|     $Author: mcfly_e107 $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -17,7 +17,7 @@ define("USER_AREA",TRUE);
 define("ADMIN_AREA",FALSE);
 
 
-// send the charset to the browser - overides spurious server settings with the lan pack settings.
+// send the charset to the browser - overrides spurious server settings with the lan pack settings.
 header("Content-type: text/html; charset=".CHARSET, true);
 
 if (!function_exists("parseheader")) {

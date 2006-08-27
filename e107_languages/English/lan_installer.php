@@ -87,7 +87,7 @@ Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_
 Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
 Themes: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
 
-Thank you for trying e107, we hope it fulfills your website needs.
+Thank you for trying e107, we hope it fulfils your website needs.
 (You can delete this message from your admin section.)");
 
 define("LANINS_063", "Welcome to e107");
@@ -96,7 +96,7 @@ define("LANINS_069", "e107 has been successfully installed!
 
 For security reasons you should now set the file permissions on the <b>e107_config.php</b> file back to 644.
 
-Also please delete install.php and the e107_install directory from your server after you have clicked the button below
+Also please delete install.php from your server after you have clicked the button below.
 ");
 define("LANINS_070", "e107 was unable to save the main config file to your server.
 

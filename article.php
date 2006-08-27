@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/article.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-27 01:45:02 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-// This file is now depracated and remains in core for backward compatibilty reasons.
+// This file is now deprecated and remains in core for backward compatibility reasons.
 	
 $tmp = explode(".", $_SERVER['QUERY_STRING']);
 $action = $tmp[0];

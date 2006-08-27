@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpbb2.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-05 00:03:49 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 |
 |     31/1/2006  Changes by Albert Drent
 |                Aducom Software
@@ -155,7 +155,7 @@ while($user = mysql_fetch_array($phpbb_res))
 
 
 //-----------------------------------------------------------
-// ### get phpbb categories and inset them as forum parents
+// ### get phpbb categories and insert them as forum parents
 //-----------------------------------------------------------
 
 mysql_query("TRUNCATE TABLE {$mySQLprefix}forum", $e107Connection);

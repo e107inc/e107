@@ -9,10 +9,10 @@ Q>	What's the client login and client password for?
 A>	You can define a login and password for your banner clients, they can then use these to access information about how their banners are performing by going to http://yoursite.com/banner.php and entering the name and pass.
 
 Q>	How can I have a 'tower' type banner in a menu item?
-A>	First you need to define the campaign for the tower type banners (this will keep them seperate from bar type banners) ...
+A>	First you need to define the campaign for the tower type banners (this will keep them separate from bar type banners) ...
 	1. Go to your admin area and click on banners.
 	2. Enter your tower-type banner(s), make sure you use a new campaign name, for example 'towers'.
 	3. Now go to your Menus area, and activate the Banner_menu into one of your menu areas.
 	4. Click on the 'Configure' link in the menu item.
-	5. Enter the caption title (by default it's 'Advertisment'), and enter the campaign name you defined before.
+	5. Enter the caption title (by default it's 'Advertisement'), and enter the campaign name you defined before.
 	6. Leave your admin area and you'll see your tower-type banner(s) in the area you assigned them to.

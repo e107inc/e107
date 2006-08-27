@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-06-30 04:16:39 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("LCLAN_1", "Options Saved");
@@ -23,7 +23,7 @@ define("LCLAN_18", "Link Button / Icon");
 define("LCLAN_19", "Link Open Type");
 define("LCLAN_20", "Opens in same window");
 define("LCLAN_23", "Opens in new window");
-define("LCLAN_24", "Opens in 600x400 miniwindow");
+define("LCLAN_24", "Opens in 600x400 mini-window");
 define("LCLAN_25", "Link Class");
 define("LCLAN_26", "Ticking will make the link visible to only users in that class");
 define("LCLAN_27", "Update Link");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-07-13 08:04:19 $
-|     $Author: e107coders $
+|     $Revision: 1.49 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -193,7 +193,7 @@ define("ADLAN_LAT_8", "There are unmoderated administrator messages");
 
 define("ADLAN_ERR_1", "Warning!");
 define("ADLAN_ERR_2", "There are files on your server that are known to be exploitable. These must be removed <b>immediately</b>. The files are related to the older 0.6xx branch of e107. Please delete the following directories and all their contents:");
-define("ADLAN_ERR_3", "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed <b>immediately</b>. You should <b>not</b> open these files as this may execute any malicious code the file might contain. ie. do not open them with your browser.<br /><br />If you recognise these files as being legitimate, it is likely that due to the recent allowed filetypes changes, the filetype you allowed is no longer in the allowed filetypes list and you will need to re-add it (see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or any other type of executable script.<br /><br />Below is the list of files that could potentially be malicious:");
+define("ADLAN_ERR_3", "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed <b>immediately</b>. You should <b>not</b> open these files as this may execute any malicious code the file might contain; i.e. do not open them with your browser.<br /><br />If you recognise these files as being legitimate, it is likely that due to the recent allowed filetypes changes, the filetype you allowed is no longer in the allowed filetypes list and you will need to re-add it (see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or any other type of executable script.<br /><br />Below is the list of files that could potentially be malicious:");
 define("ADLAN_ERR_4", "Deprecated plugin file(s) found");
 define("ADLAN_ERR_5", "The following files need to be renamed to");
 define("ADLAN_ERR_6", "Then, click here to re-scan your plugin folders.");
@@ -246,7 +246,7 @@ define("LAN_SELECT","Select ...");
 define("LAN_ADMIN","Admin");
 define("LAN_DISPLAYOPT", "Edit Display Options");
 define("LAN_GOPAGE", "Go to page:");
-define("LAN_DATESTAMP","Datestamp");
+define("LAN_DATESTAMP","Date stamp");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
 

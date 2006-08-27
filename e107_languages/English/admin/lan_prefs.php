@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-07-27 01:42:22 $
-|     $Author: e107coders $
+|     $Revision: 1.57 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,7 +57,7 @@ define("PRFLAN_40", "Filter profanities?");
 define("PRFLAN_41", "if checked swearing will be replaced with string below");
 define("PRFLAN_42", "Replace string");
 define("PRFLAN_43", "Filter words");
-define("PRFLAN_44", "words to censor, seperate with a comma");
+define("PRFLAN_44", "words to censor, separate with a comma");
 define("PRFLAN_45", "Use COPPA on signup page?");
 define("PRFLAN_46", "for more info on COPPA see");
 define("PRFLAN_47", "Security &amp; Protection");
@@ -98,7 +98,7 @@ define("CUSTSIG_15", "Required");
 define("CUSTSIG_16", "Minimum Length for Passwords");
 define("CUSTSIG_17", "Subscribe to content/mailouts");
 define("CUSTSIG_18", "Disallow usernames");
-define("CUSTSIG_19", "usernames containing the following text will be rejected, seperate entries by commas");
+define("CUSTSIG_19", "usernames containing the following text will be rejected, separate entries by commas");
 
 define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Don't replace a correct server config !!!");
 define("PRFLAN_92", "Secure signup verification -- hide password in email?");
@@ -144,7 +144,7 @@ define("PRFLAN_135", "for example, if your site URL above is set http://foo.com,
 define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
 define("PRFLAN_137", "Display Memory Usage");
 define("PRFLAN_138", "Enable Image-code verification during forgotten password.");
-define("PRFLAN_139", "Display warning when main administrator password hasnt changed for at least 30 days");
+define("PRFLAN_139", "Display warning when main administrator password hasn't changed for at least 30 days");
 define("PRFLAN_140", "Text to display after signup form has been submitted.");
 define("PRFLAN_141", "Allow registration using XML User Profiles");
 define("PRFLAN_142", "Flood Only");
@@ -173,7 +173,7 @@ define("PRFLAN_160", "Check remote servers when validating email addresses.");
 define("PRFLAN_161", "Disable all comments on the site");
 
 define("PRFLAN_162", "Site Contact Information");
-define("PRFLAN_163", "eg. Company Name, Address, Phone etc.");
+define("PRFLAN_163", "e.g. Company Name, Address, Phone, etc.");
 
 define("PRFLAN_164", "Allow users to email copy of contact email to self");
 define("PRFLAN_165", "Possible opening for allowing spam, use with caution");

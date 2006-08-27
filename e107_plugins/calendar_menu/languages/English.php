@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.11 2005-07-06 10:04:18 lisa_ Exp $
+// $Id: English.php,v 1.12 2006-08-27 02:24:45 mcfly_e107 Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -148,7 +148,7 @@ define('EC_LAN_59', "Contact email:");
 define('EC_LAN_60', "Update Event");
 define('EC_LAN_61', "Go");
 define('EC_LAN_62', "Next -NUM- Events ...");
-define('EC_LAN_63', "Check this if event happens on same day every year, ie birthday");
+define('EC_LAN_63', "Check this if event happens on same day every year, i.e. birthday");
 define('EC_LAN_64', "Check for an all-day event");
 define('EC_LAN_65', "Recurring:");
 define('EC_LAN_66', "Edit Event");
@@ -221,7 +221,7 @@ define('EC_LAN_113', "Event form already submitted.");
 define('EC_LAN_114', "Week starts with:");
 define('EC_LAN_115', "Sunday");
 define('EC_LAN_116', "Monday");
-define('EC_LAN_117', "Length of daynames (characters)");
+define('EC_LAN_117', "Length of day names (characters)");
 define('EC_LAN_118', "Date format in calendar header.");
 define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");

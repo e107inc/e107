@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2006-05-14 04:05:13 $
+|		$Revision: 1.12 $
+|		$Date: 2006-08-27 02:24:45 $
 |		$Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -115,7 +115,7 @@ class listclass {
 		return;
 	}
 
-	//content needs this to split each main parent into seperate sections
+	//content needs this to split each main parent into separate sections
 	function getContentSections($mode)
 	{
 		global $sql, $sections, $titles, $content_types, $content_name;

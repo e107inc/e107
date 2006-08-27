@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-21 17:03:51 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("UPLLAN_1", "Upload removed from list.");
@@ -64,8 +64,7 @@ define("UPLAN_COPYTODLS", "Copy to Downloads");
 
 define("UPLLAN_48", "For security reasons allowed file types has been moved out of the database into a 
 flatfile located in your admin directory. To use, rename the file e107_admin/filetypes_.php to e107_admin/filetypes.php 
-and add a comma delimited list of file type extensions to it. You should not allow the upload of .html, .txt, etc 
-as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow 
+and add a comma delimited list of file type extensions to it. You should not allow the upload of .html, .txt, etc., as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow 
 the upload of .php files or any other type of executable script.");
 
 

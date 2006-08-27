@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-07-25 19:56:01 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -38,7 +38,7 @@ define("USRLAN_17", "Confirm Delete User");
 // define("USRLAN_28", "Sort");
 
 define("USRLAN_30", "Ban");
-// define("USRLAN_31", "Ban -unactivated-");
+// define("USRLAN_31", "Ban -inactivated-");
 define("USRLAN_32", "Activate");
 define("USRLAN_33", "Unban");
 define("USRLAN_34", "Remove admin status");
@@ -59,7 +59,7 @@ define("USRLAN_50", "default is 100");
 define("USRLAN_51", "Update Options");
 define("USRLAN_52", "Member Options");
 define("USRLAN_53", "Allow members to upload a photograph?");
-define("USRLAN_54", "Click here to delete all un-activated users");
+define("USRLAN_54", "Click here to delete all inactivated users");
 define("USRLAN_55", "Prune");
 define("USRLAN_56", "Deleted");
 define("USRLAN_57", "Deleting un-activated members ...");

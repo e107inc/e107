@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 18:19:25 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -18,7 +18,7 @@ define("NT_LAN_5", "Class");
 define("NT_LAN_6", "Email");
 
 define("NU_LAN_1", "User Events");
-define("NU_LAN_2", "User sign up");
+define("NU_LAN_2", "User signup");
 define("NU_LAN_3", "User account verification");
 define("NU_LAN_4", "User login");
 define("NU_LAN_5", "User logout");

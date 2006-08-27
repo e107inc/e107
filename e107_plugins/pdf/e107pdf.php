@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 //extend fpdf class from package with custom functions
 class e107PDF extends UFPDF{
@@ -134,7 +134,7 @@ class e107PDF extends UFPDF{
 		$this->SetAuthor($text[2]);					//name of author
 		$this->SetTitle($text[3]);					//title
 		$this->SetSubject($text[4]);				//subject
-		$this->SetKeywords($text[5]);				//space/comma seperated
+		$this->SetKeywords($text[5]);				//space/comma separated
 		$file = $text[3].".pdf";					//name of the file
 		$this->Output($file, 'D');					//Save PDF to file (D = output to download window)
 		return;
