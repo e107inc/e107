@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/forum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 17:37:43 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,9 +26,9 @@ Use this screen to create or edit your forums<br />
 <b>Parents/Forums</b><br />
 A parent is a heading that other forums are displayed under, this makes layout simpler and makes navigating around your forums much simpler for visitors.
 <br /><br />
-<b>Accessability</b>
+<b>Accessibility</b>
 <br />
-You can set your forums to only be accessable to certain visitors. Once you have set the 'class' of the visitors you can tick the 
+You can set your forums to only be accessible to certain visitors. Once you have set the 'class' of the visitors you can tick the 
 class to only allow those visitors access to the forum. You can set parents or individual forums up in this way.
 <br /><br />
 <b>Moderators</b>
@@ -37,7 +37,7 @@ Tick the names of the listed administrators to give them moderator status on the
 <br /><br />
 <b>Ranks</b>
 <br />
-Set your user ranks from here. If the image fields are filled in, images will be used, to use rank names enter the names and make sure the corrosponding rank image field is blank.<br />The threshold is the number of points the user needs to gain before his level changes.";
+Set your user ranks from here. If the image fields are filled in, images will be used, to use rank names enter the names and make sure the corresponding rank image field is blank.<br />The threshold is the number of points the user needs to gain before his level changes.";
 $ns -> tablerender($caption, $text);
 unset($text);
 ?>

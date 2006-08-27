@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-07-24 06:55:02 $
-|     $Author: lisa_ $
+|     $Revision: 1.16 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -89,7 +89,7 @@ define("EXTLAN_73", "was not deactivated!");
 
 
 //textbox
-define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex valiation code<br />regexfail - validation fail text");
+define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
 //radio buttons
 define("EXTLAN_HELP_2", "This will be the radio buttons help text");
 //dropdown

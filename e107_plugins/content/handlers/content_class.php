@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.99 $
-|		$Date: 2006-08-02 21:47:32 $
-|		$Author: lisa_ $
+|		$Revision: 1.100 $
+|		$Date: 2006-08-27 02:24:45 $
+|		$Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -144,7 +144,7 @@ class content{
 			$content_pref['content_ordering_item'] = "0";					//show ordering on content item page
 			$content_pref['content_ordering_top'] = "0";					//show ordering on top rated page
 			$content_pref['content_ordering_archive'] = "0";				//show ordering on archive page
-			$content_pref['content_searchmenu_rendertype'] = "1";			//rendertype for searchmenu (1=echo, 2=in seperate menu)
+			$content_pref['content_searchmenu_rendertype'] = "1";			//rendertype for searchmenu (1=echo, 2=in separate menu)
 			$content_pref['content_nextprev'] = "1";						//use nextprev buttons
 			$content_pref['content_nextprev_number'] = "10";				//how many items on a page
 			$content_pref['content_defaultorder'] = "orderddate";			//default sort and order method

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_fpw.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-03-27 05:01:53 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Password Reset");
@@ -15,7 +15,7 @@ define("LAN_02", "Sorry, unable to send email - please contact the main site adm
 define("LAN_03", "Password Reset");
 define("LAN_05", "To reset your password please enter the following information");
 define("LAN_06", "Attempted password reset");
-define("LAN_07", "Someone with ip address ");
+define("LAN_07", "Someone with IP address ");
 define("LAN_08", "attempted to reset the main admin password.");
 define("LAN_09", "Password reset from ");
 define("LAN_112", "Email address used when signing up");

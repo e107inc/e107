@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_ren_help.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-07-06 03:28:50 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("LANHELP_1", "Black");
@@ -58,7 +58,7 @@ define("LANHELP_40", "There are currently no existing downloads");
 define("LANHELP_41", "Font Size...");
 define("LANHELP_42", "Select Image...");
 define("LANHELP_43", "Select Download File...");
-define("LANHELP_44", "Click to open emoticon dialog ...");
+define("LANHELP_44", "Click to open/close emoticon dialog ...");
 define("LANHELP_45", "Insert image from directory: ");
 define("LANHELP_46", "* No files found in: ");
 

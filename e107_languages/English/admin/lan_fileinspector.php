@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-01-15 01:08:03 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,7 +44,7 @@ define("FR_LAN_9", "Core files failed");
 define("FR_LAN_10", "Possible reasons for files to fail");
 define("FR_LAN_11", "The file is corrupted");
 define("FR_LAN_12", "This could be for a number of reasons such as the file being corrupted in the zip, got corrupted during 
-extraction or got corrupted during file upload via FTP. You should try reuploading the file to your server 
+extraction or got corrupted during file upload via FTP. You should try re-uploading the file to your server 
 and re-run the scan to see if this resolves the error.");
 define("FR_LAN_13", "The file is out of date");
 define("FR_LAN_14", "If the file is from an older release of e107 to the version you are 
@@ -64,7 +64,7 @@ define("FR_LAN_21", "none");
 define("FR_LAN_22", "Missing core files");
 define("FR_LAN_23", "No matches found.");
 define("FR_LAN_24", "Old core files");
-define("FR_LAN_25", "Integrity uncalculable");
+define("FR_LAN_25", "Integrity incalculable");
 
 define("FR_LAN_26", "Warning! Known Insecurity Detected!");
 define("FR_LAN_27", "There are files on your server that are known to be exploitable and must be removed immediately.");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/newspost.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 17:37:43 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-08-27 02:24:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $caption = "Newspost Help";
 $text = "<b>General</b><br />
-Body will be displayed on the main page, extended will be readable by clicking a 'Read More' link.
+Body will be displayed on the main page; extended will be readable by clicking a 'Read More' link.
 <br />
 <br />
 <b>Show title only</b>

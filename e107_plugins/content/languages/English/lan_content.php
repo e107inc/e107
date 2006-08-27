@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2006-08-08 07:09:35 $
-|     $Author: lisa_ $
+|     $Revision: 1.71 $
+|     $Date: 2006-08-27 02:24:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,7 +38,7 @@ define("CONTENT_ICON_LAN_10", "error");
 define("CONTENT_ICON_LAN_11", "order items in category");
 define("CONTENT_ICON_LAN_12", "order items in main parent");
 define("CONTENT_ICON_LAN_13", "personal admin");
-define("CONTENT_ICON_LAN_14", "personal contentmanager");
+define("CONTENT_ICON_LAN_14", "personal content manager");
 define("CONTENT_ICON_LAN_15", "view");
 
 define("CONTENT_ADMIN_DATE_LAN_0", "January");

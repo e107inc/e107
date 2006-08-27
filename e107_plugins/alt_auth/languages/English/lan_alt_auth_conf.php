@@ -1,7 +1,7 @@
 <?php
 define("LAN_ALT_1", "Current authorization type");
 define("LAN_ALT_2", "Update settings");
-define("LAN_ALT_3", "Choose Alternate Authorizaion Type");
+define("LAN_ALT_3", "Choose Alternate Authorization Type");
 define("LAN_ALT_4", "Configure parameters for");
 define("LAN_ALT_5", "Configure authorization parameters");
 define("LAN_ALT_6", "Failed connection action");

@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_mail_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-define("LANMAILH_1", "Produced By e107 website system");
+define("LANMAILH_1", "Produced by e107 website system");
 define("LANMAILH_2", "This is a multi-part message in MIME format.");
 define("LANMAILH_3", " is not properly formatted");
 define("LANMAILH_4", "Server rejected address");

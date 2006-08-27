@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 17:37:43 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = "You can add a normal page to your site using this feature. A link to the new page will be created in your main site navigation box. For example if you create a new page with the Link Name 'Test', a link called 'Test' will appear in your links box after submitting the new page.<br />
+$text = "You can add a normal page to your site using this feature. A link to the new page will be created in your main site navigation box. For example, if you create a new page with the Link Name 'Test', a link called 'Test' will appear in your links box after submitting the new page.<br />
 If you want your content page to have a caption, enter it in the Page Heading box.";
 $ns -> tablerender("Content Help", $text);
 ?>

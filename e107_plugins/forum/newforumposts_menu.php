@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-06-27 23:06:38 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2006-08-27 02:24:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -54,7 +54,7 @@ else
 	foreach($forumArray as $fi)
 	{
 		$datestamp = $gen->convert_date($fi['thread_datestamp'], "short");
-		$topic = ($fi['parent_name'] ? "re: <i>{$fi['parent_name']}</i>" : "<i>{$fi['thread_name']}</i>");
+		$topic = ($fi['parent_name'] ? "Re: <i>{$fi['parent_name']}</i>" : "<i>{$fi['thread_name']}</i>");
 		$topic = strip_tags($tp->toHTML($topic, TRUE, "emotes_off, no_make_clickable, parse_bb", "", $pref['menu_wordwrap']));
 		$id = $fi['thread_id'];
 

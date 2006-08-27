@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|	$Revision: 1.16 $
-|	$Date: 2006-04-29 06:00:37 $
-|	$Author: sweetas $
+|	$Revision: 1.17 $
+|	$Date: 2006-08-27 02:24:45 $
+|	$Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
 |	Photo Credits
@@ -212,7 +212,7 @@ $CUSTOMFOOTER['No_Right_Menu_Area'] = "</td>
 
 
  // Uncomment the below line (remove the // ) and enter in the filenames (or part of) for 
- // those pages you wish to use the custom page layout defined above (seperate with spaces).
+ // those pages you wish to use the custom page layout defined above (separate with spaces).
 
  // $CUSTOMPAGES['No_Right_Menu_Area'] = "forum.php forum_post.php forum_viewtopic.php";
 

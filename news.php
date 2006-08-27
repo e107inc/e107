@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2006-07-18 20:46:57 $
-|     $Author: e107coders $
+|     $Revision: 1.107 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -421,7 +421,7 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
-	// do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
+	// do not show the news archive on the news.php?item.X page (but only on the news mainpage)
 	require_once(e_FILE.'shortcode/batch/news_archives.php');
 
 	$i = $interval + 1;

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-08-02 21:47:32 $
-|     $Author: lisa_ $
+|     $Revision: 1.17 $
+|     $Date: 2006-08-27 02:24:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,7 +62,7 @@ define("CONTENT_ADMIN_CAT_LAN_38", "content items check: no items found");
 define("CONTENT_ADMIN_CAT_LAN_39", "category check: no subcategories found");
 define("CONTENT_ADMIN_CAT_LAN_40", "Below you see a list of the main category and all subcategories if present.<br />");
 
-define("CONTENT_ADMIN_CAT_LAN_41", "The personal manager of content categories allows you to assign certain other admins to a category. With this privilege these admins can manage their own, and only their own, personal content items in this specified category, without the need to have control over the full content manager plugin. From the normal content page outside of the admin area they will see a personalmanager icon which redirects them to the personal manager page.");
+define("CONTENT_ADMIN_CAT_LAN_41", "The personal manager of content categories allows you to assign certain other admins to a category. With this privilege these admins can manage their own, and only their own, personal content items in this specified category, without the need to have control over the full content manager plugin. From the normal content page outside of the admin area they will see a personal manager icon which redirects them to the personal manager page.");
 define("CONTENT_ADMIN_CAT_LAN_42", "to re-edit the same category");
 
 define("CONTENT_ADMIN_CAT_LAN_43", "click here");
@@ -154,7 +154,7 @@ define("CONTENT_ADMIN_ITEM_LAN_51", "author details");
 define("CONTENT_ADMIN_ITEM_LAN_52", "submit content item");
 define("CONTENT_ADMIN_ITEM_LAN_53", "meta keywords");
 define("CONTENT_ADMIN_ITEM_LAN_54", "additional data");
-define("CONTENT_ADMIN_ITEM_LAN_55", "Go back to the <a href='".e_SELF."'>main contentmanager page</a> to manage more of your personal content<br />or<br />Go to the <a href='".e_PLUGIN."content/content.php'>content main page</a> to view content items.");
+define("CONTENT_ADMIN_ITEM_LAN_55", "Go back to the <a href='".e_SELF."'>main content manager page</a> to manage more of your personal content<br />or<br />Go to the <a href='".e_PLUGIN."content/content.php'>content main page</a> to view content items.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "personal content manager");
 define("CONTENT_ADMIN_ITEM_LAN_57", "category");
 define("CONTENT_ADMIN_ITEM_LAN_58", "items");
@@ -412,7 +412,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "create a default set of parent catego
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin : conversion options");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "click the button to go to the Content Create New Category page.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "choose parent");
-define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade succesfull<br /><br /><b>Please note:<br />you need to reconfigure the options for each main parent<br />and you need to delete the menus you've created in your content/menus folder, and recreate them by updating the options for the specific main parents you want to use menus for.</b>");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade successful<br /><br /><b>Please note:<br />you need to reconfigure the options for each main parent<br />and you need to delete the menus you've created in your content/menus folder, and recreate them by updating the options for the specific main parents you want to use menus for.</b>");
 
 define("CONTENT_ADMIN_CONVERSION_LAN_59", "convert table");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "create defaults");

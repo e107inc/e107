@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-06-30 02:43:41 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $
+|     $Date: 2006-08-27 02:24:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -99,9 +99,9 @@ define("NWSLAN_90", "News Preferences");
 define("NWSLAN_100", "Enable Image uploading on Submit News page");
 define("NWSLAN_101", "Automatic resizing of submitted image");
 define("NWSLAN_102", "width in pixels<br /> or leave blank to disable.");
-define("NWSLAN_103", "re-Post");
+define("NWSLAN_103", "re-post");
 define("NWSLAN_104", "by");
-define("NWSLAN_105", "Check box to update datestamp of news item to current time");
+define("NWSLAN_105", "Check box to update date stamp of news item to current time");
 define("NWSLAN_106", "Submit-News maybe accessed by:");
 define("NWSLAN_107", "Enable WYSIWYG editor on Submit-News page.");
 
@@ -112,8 +112,8 @@ define("NWSLAN_113", "Use non-standard template for news layout");
 define("NWSLAN_114", "if the theme you're using has a news layout template, use this instead of the generic layout");
 
 define("NWSLAN_115", "News posts to display in archive ?");
-define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 is un-activated)");
-define("NWSLAN_117", "set the title for the newsarchive");
+define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the news archive preference. (0 is un-activated)");
+define("NWSLAN_117", "set the title for the news archive");
 // define("NWSLAN_118", "View Images"); already defined above.
 define("NWSLAN_119", "Settings Saved");
 define("NWSLAN_120", "Text to show at the top of Submit News");
@@ -145,8 +145,8 @@ define("LAN_NEWS_28", "Sticky");
 define("LAN_NEWS_29", "Select if news item will be sticky");
 define("LAN_NEWS_30", "If selected, news item will appear above all others");
 define("LAN_NEWS_31", "This news post is <b>sticky</b> (it will be shown above all other items). ");
-define("LAN_NEWS_32", "Datestamp");
-define("LAN_NEWS_33", "Set the datestamp for the current news item");
+define("LAN_NEWS_32", "Date stamp");
+define("LAN_NEWS_33", "Set the date stamp for the current news item");
 
 define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Add trackback url's");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-22 19:49:58 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2006-08-27 02:24:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,7 +71,7 @@ define("NLLAN_45", "Create Newsletter");
 define("NLLAN_46", "Create mailing");
 define("NLLAN_47", "Newsletter Options");
 
-define("NLLAN_48", "you are subscribed to this newsletter - if you wish to un-subscribe please click the button below.");
+define("NLLAN_48", "you are subscribed to this newsletter - if you wish to unsubscribe please click the button below.");
 define("NLLAN_49", "Are you sure you want to un-subscribe from this newsletter?");
 define("NLLAN_50", "Click button to subscribe ( your subscription address is");
 define("NLLAN_51", "Unsubscribe");

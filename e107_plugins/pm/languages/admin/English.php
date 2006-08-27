@@ -46,7 +46,7 @@ define('ADLAN_PM_43', "Add New Limit");
 define('ADLAN_PM_44', "seconds");
 define('ADLAN_PM_45', "Limit PM By: ");
 define('ADLAN_PM_46', "PM Conversion");
-define('ADLAN_PM_47', "You do not appear to have any old messages from previous vesions, it is safe to uninstall the old plugin");
+define('ADLAN_PM_47', "You do not appear to have any old messages from previous versions, it is safe to uninstall the old plugin");
 define('ADLAN_PM_48', "You have {OLDCOUNT} messages from the older version, please decide what you would like to do with these messages<br /><br />If converting messages, any message successfully converted will be removed from old system.");
 define('ADLAN_PM_49', "Convert to new PM");
 define('ADLAN_PM_50', "Discard old messages");
