@@ -4,8 +4,8 @@
 |     e107 website system - Language Class.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/language_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-08-25 16:03:53 $
+|     $Revision: 1.5 $
+|     $Date: 2006-09-02 15:19:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,7 @@ class language{
 			"cs" => "Czech",
 			"ch" => "Chamorro",
 			"ce" => "Chechen",
+			"cn" => "Chinese-Simp",
 
 			"cv" => "Chuvash",
 			"kw" => "Cornish",
@@ -161,7 +162,7 @@ class language{
 	        "ts" => "Tsonga",
 	        "tk" => "Turkmen",
 	        "tr" => "Turkish",
-	        "tw" => "Twi",
+			"tw" => "Chinese-Trad",
 	        "ug" => "Uighur",
 	        "uk" => "Ukrainian",
 	        "ur" => "Urdu",
