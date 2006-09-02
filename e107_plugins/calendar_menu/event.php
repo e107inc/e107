@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-06-22 11:07:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.27 $
+|     $Date: 2006-09-02 21:41:18 $
+|     $Author: e107coders $
 |
 | 25.02.06 - Extra comments to try and sort out listing problem.
 | 26.02.06 - Bug fix - didn't list events where end date before start date (0.6175 legacy?)
@@ -22,6 +22,7 @@
 | 19.03.06 - Bug - if displaying item from a single date, 'next 10 events' starts from beginning of following month.
 |					- mod in line 620 or so - fixed
 | 15.06.06 - Bug - recurring events always displayed using current year - cal_landate modified
+| 26.08.06 - Bug - 'next 10 events' didn't show everything to calendar admin
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -751,6 +752,18 @@ if (!isset($next10_start)){
     $next10_start = $nextmonth;
 }
 
+if ($cal_super)
+{
+$qry = "
+SELECT e.* FROM #event AS e
+LEFT JOIN #event_cat AS ec ON e.event_category = ec.event_cat_id
+WHERE e.event_start > '".intval($next10_start)."' 
+ORDER BY e.event_start ASC
+LIMIT 0, 10
+";
+}
+else
+{
 $qry = "
 SELECT e.* FROM #event AS e
 LEFT JOIN #event_cat AS ec ON e.event_category = ec.event_cat_id
@@ -758,6 +771,7 @@ WHERE e.event_start > '".intval($next10_start)."' AND ec.event_cat_class IN (".U
 ORDER BY e.event_start ASC
 LIMIT 0, 10
 ";
+}
 $num = $sql->db_Select_gen($qry);
 if ($num != 0){
 	$gen = new convert;
