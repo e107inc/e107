@@ -11,9 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-04-07 15:31:47 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-09-02 21:41:18 $
+|     $Author: e107coders $
+|
+| 08.07.06 Modified with extra page for 'Forthcoming Events' menu by steved
+| 09.07.06 - Extra option to select level of mailout logging
+| 10.07.06 - Add selection of categories for 'forthcoming events' menu
+| 12.07.06 - Forthcoming event admin should return to same option page
+| 02.08.06 - Optional category icon display added
+|
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -21,6 +28,7 @@ require_once(e_HANDLER."userclass_class.php");
 if (!getperms("P")) {
 	header("location:".e_BASE."index.php");
 }
+	
 	
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
@@ -41,10 +49,27 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_mailfrom'] = $_POST['eventpost_mailfrom'];		
 	$pref['eventpost_mailaddress'] = $_POST['eventpost_mailaddress'];
 	$pref['eventpost_asubs'] = $_POST['eventpost_asubs'];
+	$pref['eventpost_emaillog'] = $_POST['eventpost_emaillog'];
 	save_prefs();
 	$message = EC_LAN_75; // "Calendar settings updated.";
 }
-	
+
+// ****************** UPDATE HERE ******************
+if (isset($_POST['updateforthcoming']))
+{
+  $pref['eventpost_menuheading'] = $_POST['eventpost_fe_menuheading'];
+  $pref['eventpost_daysforward'] = $_POST['eventpost_fe_daysforward'];
+  $pref['eventpost_numevents'] = $_POST['eventpost_fe_numevents'];
+  $pref['eventpost_checkrecur'] = $_POST['eventpost_fe_checkrecur'];
+  $pref['eventpost_linkheader'] = $_POST['eventpost_fe_linkheader'];
+  $pref['eventpost_fe_set'] =  implode(",", $_POST['fe_eventclass']);
+  $pref['eventpost_showcaticon'] = $_POST['eventpost_showcaticon'];
+  save_prefs();
+  $message = EC_ADLAN_A109; // "Forthcoming Events settings updated.";
+}
+// ****************** UPDATE ENDS HERE ******************
+
+
 require_once(e_ADMIN."auth.php");
 
 if (isset($message)) {
@@ -56,14 +81,17 @@ if (e_QUERY) {
 }
 
 //category
-if(isset($qs[0]) && $qs[0] == "cat"){
+if(isset($qs[0]) && $qs[0] == "cat")
+{
 	$calendarmenu_db = new DB;
 	$calendarmenu_action = $_POST['calendarmenu_action'];
 	$calendarmenu_edit = FALSE;
 	// * If we are updating then update or insert the record
-	if ($calendarmenu_action == 'update'){
+	if ($calendarmenu_action == 'update')
+	{
 		$calendarmenu_id = $_POST['calendarmenu_id'];
-		if ($calendarmenu_id == 0){ 
+		if ($calendarmenu_id == 0)
+		{ 
 			// New record so add it
 			$calendarmenu_args = "
 			'0',
@@ -83,7 +111,9 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 			}else{
 				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A27."</strong></td></tr>";
 			} 
-		}else{ 
+		}
+		else
+		{ 
 			// Update existing
 			$calendarmenu_args = "
 			event_cat_name='".$_POST['event_cat_name']."',
@@ -107,7 +137,8 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 		} 
 	} 
 	// We are creating, editing or deleting a record
-	if ($calendarmenu_action == 'dothings'){
+	if ($calendarmenu_action == 'dothings')
+	{
 		$calendarmenu_id = $_POST['calendarmenu_selcat'];
 		$calendarmenu_do = $_POST['calendarmenu_recdel'];
 		$calendarmenu_dodel = false;
@@ -208,6 +239,8 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 				<option value='1' ".($event_cat_notify == 1?" selected='selected'":"")." >".EC_ADLAN_A88."</option>
 				<option value='2' ".($event_cat_notify == 2?" selected='selected'":"")." >".EC_ADLAN_A89."</option>
 				<option value='3' ".($event_cat_notify == 3?" selected='selected'":"")." >".EC_ADLAN_A90."</option>
+				<option value='4' ".($event_cat_notify == 4?" selected='selected'":"")." >".EC_ADLAN_A110."</option>
+				<option value='5' ".($event_cat_notify == 5?" selected='selected'":"")." >".EC_ADLAN_A111."</option>
 				</select>		
 				</td>
 			</tr>
@@ -225,7 +258,7 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 				<td class='forumheader3'><textarea rows='5' cols='60' class='tbox' name='event_cat_msg1' >".$event_cat_msg1."</textarea></td>
 			</tr>
 			<tr>
-				<td class='forumheader3' style='width:20%;vertical-align:top;'>".EC_ADLAN_A85."</td>
+				<td class='forumheader3' style='width:20%;vertical-align:top;'>".EC_ADLAN_A117."</td>
 				<td class='forumheader3'><textarea rows='5' cols='60' class='tbox' name='event_cat_msg2' >".$event_cat_msg2."</textarea></td>
 			</tr>			
 			<tr><td colspan='2' class='fcaption'><input type='submit' name='submits' value='".EC_ADLAN_A25."' class='tbox' /></td></tr>
@@ -233,15 +266,19 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 			</form>";
 		} 
 	} 
-	if (!$calendarmenu_edit){ 
+	if (!$calendarmenu_edit)
+	{ 
 		// Get the category names to display in combo box then display actions available
 		$calendarmenu2_db = new DB;
-		if ($calendarmenu2_db->db_Select("event_cat", "event_cat_id,event_cat_name", " order by event_cat_name", "nowhere")){
+		if ($calendarmenu2_db->db_Select("event_cat", "event_cat_id,event_cat_name", " order by event_cat_name", "nowhere"))
+		{
 			while ($row = $calendarmenu2_db->db_Fetch()){
 				//extract($calendarmenu_row);
 				$calendarmenu_catopt .= "<option value='".$row['event_cat_id']."' ".($calendarmenu_id == $row['event_cat_id'] ?" selected='selected'":"")." >".$row['event_cat_name']."</option>";
 			} 
-		}else{
+		}
+		else
+		{
 			$calendarmenu_catopt .= "<option value=0'>".EC_ADLAN_A33."</option>";
 		} 
 
@@ -272,11 +309,95 @@ if(isset($qs[0]) && $qs[0] == "cat"){
 		</table>
 		</form>";
 	}
-	if(isset($calendarmenu_text)){
-		$ns->tablerender(EC_ADLAN_A19, $calendarmenu_text);
+	if(isset($calendarmenu_text))
+	{
+	  $ns->tablerender(EC_ADLAN_A19, $calendarmenu_text);
 	}
 }
 
+// *************** EDIT STARTS HERE ****************
+
+if((isset($qs[0]) && $qs[0] == "forthcoming"))
+{
+
+if (!isset($pref['eventpost_menuheading'])) $pref['eventpost_menuheading'] = EC_ADLAN_A100;
+if (!isset($pref['eventpost_daysforward'])) $pref['eventpost_daysforward'] = 30;
+if (!isset($pref['eventpost_numevents']))   $pref['eventpost_numevents'] = 3;
+if (!isset($pref['eventpost_checkrecur']))  $pref['eventpost_checkrecur'] = '1';
+if (!isset($pref['eventpost_linkheader']))  $pref['eventpost_linkheader'] = '0';
+
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?forthcoming'>
+	<table style='width:97%' class='fborder'>
+	<tr><td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_ADLAN_A100." </td></tr>
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A108."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_fe_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
+		</td>
+	</tr>
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A101."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_fe_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
+		</td>
+	</tr>
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A102."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_fe_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
+		</td>
+	</tr>
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A103."<br /><span class='smalltext'><em>".EC_ADLAN_A107."</em></span></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fe_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
+	</tr>
+	
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A104."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fe_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
+		</td>
+	</tr>
+	
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A120."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($pref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
+		</td>
+	</tr>
+	
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A118."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>";
+
+// Now display all the current categories as checkboxes
+	$cal_fe_prefs = array();
+    if (isset($pref['eventpost_fe_set'])) $cal_fe_prefs = array_flip(explode(",",$pref['eventpost_fe_set']));
+	if (!is_object($calendarmenu2_db)) $calendarmenu2_db = new DB;
+	if ($calendarmenu2_db->db_Select("event_cat", "event_cat_id,event_cat_name", " order by event_cat_name", "nowhere"))
+	{
+	  while ($row = $calendarmenu2_db->db_Fetch())
+	  {
+	    $selected = isset($cal_fe_prefs[$row['event_cat_id']]);
+		$text .= "<input type='checkbox' name='fe_eventclass[]' value='".$row['event_cat_id'].($selected == 1?"' checked='checked'":"'")." />".$row['event_cat_name']."<br /> ";
+	  } 
+	}
+	else
+	{
+	  $text .= EC_ADLAN_A119;		// No categories, or error
+	} 
+  
+	$text .= "</td>
+	</tr>
+	
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updateforthcoming' value='".EC_LAN_77."' /></td></tr>
+	</table>
+	</form>
+	</div>";
+	
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A100."</div>", $text);
+}   // End of Forthcoming Events Menu Options
+
+// ************** EDIT ENDS HERE ********************
 
 
 if(!isset($qs[0]) || (isset($qs[0]) && $qs[0] == "config")){
@@ -381,7 +502,18 @@ if(!isset($qs[0]) || (isset($qs[0]) && $qs[0] == "config")){
 		</td>
 	</tr>  
 
-	<tr><td colspan='2'  style='text-align:left' class='fcaption'><input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' /></td></tr>
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A114."<br /></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+			<select name='eventpost_emaillog' class='tbox'>
+			<option value='0' ".($pref['eventpost_emaillog']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A87." </option>
+			<option value='1' ".($pref['eventpost_emaillog']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A115."  </option>
+			<option value='2' ".($pref['eventpost_emaillog']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A116." </option>
+			</select>
+		</td>
+	</tr>
+
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' /></td></tr>
 	</table>
 	</form>
 	</div>";
@@ -390,7 +522,8 @@ if(!isset($qs[0]) || (isset($qs[0]) && $qs[0] == "config")){
 }
 
 
-function admin_config_adminmenu(){
+function admin_config_adminmenu()
+{
 		if (e_QUERY) {
 			$tmp = explode(".", e_QUERY);
 			$action = $tmp[0];
@@ -402,8 +535,10 @@ function admin_config_adminmenu(){
 		$var['config']['link'] = "admin_config.php";
 			
 		$var['cat']['text'] = EC_ADLAN_A11;
-		//$var['cat']['link'] ="admin_cat.php?cat";
 		$var['cat']['link'] ="admin_config.php?cat";
+		
+		$var['forthcoming']['text'] = EC_ADLAN_A100;
+		$var['forthcoming']['link'] ="admin_config.php?forthcoming";
 
 		show_admin_menu(EC_ADLAN_A12, $action, $var);
 }

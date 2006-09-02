@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.12 2006-08-27 02:24:45 mcfly_e107 Exp $
+// $Id: English.php,v 1.13 2006-09-02 21:41:18 e107coders Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -148,7 +148,7 @@ define('EC_LAN_59', "Contact email:");
 define('EC_LAN_60', "Update Event");
 define('EC_LAN_61', "Go");
 define('EC_LAN_62', "Next -NUM- Events ...");
-define('EC_LAN_63', "Check this if event happens on same day every year, i.e. birthday");
+define('EC_LAN_63', "Check this if event happens on same day every year, ie birthday");
 define('EC_LAN_64', "Check for an all-day event");
 define('EC_LAN_65', "Recurring:");
 define('EC_LAN_66', "Edit Event");
@@ -221,7 +221,7 @@ define('EC_LAN_113', "Event form already submitted.");
 define('EC_LAN_114', "Week starts with:");
 define('EC_LAN_115', "Sunday");
 define('EC_LAN_116', "Monday");
-define('EC_LAN_117', "Length of day names (characters)");
+define('EC_LAN_117', "Length of daynames (characters)");
 define('EC_LAN_118', "Date format in calendar header.");
 define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");
@@ -239,6 +239,11 @@ define('EC_LAN_131', "Return");
 define('EC_LAN_132', "Expand details");
 define('EC_LAN_133', "[read more]");
 define('EC_LAN_134', "You have to provide a category name");
+
+// Added 12.07.06 for next_event_menu.php
+define('EC_LAN_140', "Forthcoming Events");
+define('EC_LAN_141', "No forthcoming events");
+
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");
@@ -287,5 +292,31 @@ define('EC_ADLAN_A94', "Add new event class");
 define('EC_ADLAN_A95', "Enable subscriptions");
 define('EC_ADLAN_A96', "Disabling this removes the subscriptions button and overrides the category subscription setting.");
 define('EC_ADLAN_A97', "If set to force subscriptions this category will not be displayed in the available subscription list for the user.");
+
+// Added from here 12.07.06 for forthcoming events and mailout upgrades
+define('EC_ADLAN_A100', "Forthcoming Events");
+define('EC_ADLAN_A101', "Days to look forward:");
+define('EC_ADLAN_A102', "Number of events to display:");
+define('EC_ADLAN_A103', "Include recurring events:");
+define('EC_ADLAN_A104', "Title is link to events list:");
+define('EC_ADLAN_A105', "Configure Forthcoming Events Menu");
+define('EC_ADLAN_A106', "Menu has to be enabled on the 'Menu' page");
+define('EC_ADLAN_A107', "Will not work reliably if looking forward more than 59 days");
+define('EC_ADLAN_A108', "Menu Heading");
+define('EC_ADLAN_A109', "Forthcoming Events preferences updated");
+
+define('EC_ADLAN_A110', "Only on previous day");
+define('EC_ADLAN_A111', "Advanced and previous day");
+define('EC_ADLAN_A112', "Previous day and on the day");
+define('EC_ADLAN_A113', "Advanced, previous day and on the day");
+
+define('EC_ADLAN_A114', "Logging of Emails");
+define('EC_ADLAN_A115', "Summary");
+define('EC_ADLAN_A116', "Detailed");
+define('EC_ADLAN_A117', "Message on the day or the previous day");
+define('EC_ADLAN_A118', "Categories to display");
+define('EC_ADLAN_A119', "No categories defined, or error reading database");
+define('EC_ADLAN_A120', "Show category icon in menu");
+
 
 ?>

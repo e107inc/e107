@@ -11,9 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-01-22 19:53:06 $
+|     $Revision: 1.12 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2006-09-02 21:41:18 $
 |     $Author: e107coders $
+|
+| 22.07.06 - Mods for V3.6 upgrade, including log directory
+| 02.08.06 - Support for category icon display added
 +----------------------------------------------------------------------------+
 */
 
@@ -23,10 +26,16 @@ if (!defined('e107_INIT')) { exit; }
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 @require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
 $eplug_name = "Event Calendar";
-$eplug_version = "3.5";
-$eplug_author = "jalist / cameron / McFly / Barry / Lisa_";
+$eplug_version = "3.6";
+$eplug_author = "jalist / cameron / McFly / Barry / Lisa_ / steved";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
+
+$ecalSQL = new db;
+$ecalSQL->db_Select("plugin", "plugin_version", "plugin_name='Event Calendar' AND plugin_installflag > 0");
+list($ecalVer) = $ecalSQL->db_Fetch();
+$ecalVer = preg_replace("/[a-zA-z\s]/", '', $ecalVer);
+
 $eplug_description = EC_LAN_107;
 $eplug_compatible = "e107v7";
 $eplug_readme = "readme.rtf";
@@ -61,7 +70,15 @@ $eplug_prefs = array(
 "eventpost_mailaddress" => "calendar@yoursite.com",
 "eventpost_lenday" => 1,
 "eventpost_asubs" => 1,
-"eventpost_weekstart" => "sun" );
+"eventpost_weekstart" => "sun",
+"eventpost_menuheading" => "Forthcoming Events",
+"eventpost_daysforward" => 30,
+"eventpost_numevents" => 3,
+"eventpost_checkrecur" => 1,
+"eventpost_linkheader" => 0,
+"eventpost_showcaticon" => 0,
+"eventpost_emaillog" => 1
+ );
 
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array("event","event_cat","event_subs" );
@@ -124,11 +141,55 @@ $eplug_link_perms = "Everyone"; // Everyone, Guest, Member, Admin
 $eplug_done = EC_LAN_82; // "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.";
 
 
+
 // upgrading ... //
-
 $upgrade_add_prefs = "";
-
 $upgrade_remove_prefs = "";
+$upgrade_alter_tables = array();
+$version_notes = "";
+
+
+if (!function_exists(create_ec_log_dir))
+{
+function create_ec_log_dir()
+{
+global $eplug_folder;
+
+$response = "";
+$cal_log_dir = e_PLUGIN.$eplug_folder.'/log';
+  if (!is_dir($cal_log_dir))
+  {  // Need to create log directory
+    if (!mkdir($cal_log_dir,0666))
+	{
+	  $response = "Could not create log directory<br />";
+	}
+  }
+  if (!is_dir($cal_log_dir))
+  {
+    $response .= "Log directory must be created manually - create a subdirectory 'log' off your event calendar plugin directory, with '666' access rights";
+	return $response;
+  }
+  
+// Now check directory permissions
+  if (!is_writable($cal_log_dir."/"))
+  {
+    if (!chmod($cal_log_dir,0666))
+	{
+	  $response = "Could not change log directory permissions<br />";
+	}
+    if (!is_writable($cal_log_dir."/"))
+    {
+      $response .= "Log directory permissions may require manual update to 0666 or 0766, although depending on your server setup they may work";
+    }
+  }
+  return $response;
+}
+}
+
+
+if ($ecalVer < 3.5)
+{
+// To version 3.5
 
 $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."event_cat ADD event_cat_class int(10) unsigned NOT NULL default '0'",
@@ -149,10 +210,26 @@ $upgrade_alter_tables = array(
 	PRIMARY KEY  (event_subid)
 	) TYPE=MyISAM;"
 );
+$version_notes .= "<u>3.5</u><br />Database upgraded<br />";
+}
+// To version 3.6 - just need to create log directory and a few preferences
+if ($ecalVer < 3.6)
+{
+  $verprefs = array(
+	"eventpost_menuheading" => "Forthcoming Events",
+	"eventpost_daysforward" => 30,
+	"eventpost_numevents" => 3,
+	"eventpost_checkrecur" => 1,
+	"eventpost_linkheader" => 0,
+	"eventpost_showcaticon" => 0,
+	"eventpost_emaillog" => 1
+	);
+	$upgrade_add_prefs += $verPrefs;
+	$version_notes .= "<u>3.6</u><br />".create_ec_log_dir()."<br />
+	                   <a href='".e_PLUGIN_ABS.$eplug_folder."/".$eplug_conffile."'>Configure</a><br />";
+}
 
-$eplug_upgrade_done = EC_LAN_108;
-
-
+$eplug_upgrade_done = EC_LAN_108."<br />".$version_notes;
 
 
 
