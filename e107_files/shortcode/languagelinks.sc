@@ -1,4 +1,4 @@
-// $Id: languagelinks.sc,v 1.3 2006-09-02 23:35:02 e107coders Exp $
+// $Id: languagelinks.sc,v 1.4 2006-09-02 23:49:27 e107coders Exp $
 global $pref;
 $sep = (defined("LANGLINKS_SEPARATOR")) ? LANGLINKS_SEPARATOR : "|&nbsp;";
 $cursub = explode(".",$_SERVER['HTTP_HOST']);
@@ -23,14 +23,18 @@ $lng = new language;
 
 	foreach($tmp as $val)
 	{
-		$code = ($val != $pref['sitelanguage']) ? $lng->convert($val) : "www";
+		$code = $lng->convert($val);
 		$name = $lng->toNative($val);
 		$subdom = (isset($cursub[2])) ? $cursub[0] : "";
 
 		if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain']){
-        	$link = (e_QUERY) ? str_replace($subdom,$code,e_SELF)."?".e_QUERY : str_replace($subdom,$code,e_SELF);
-		}else{
+        	$link = (e_QUERY) ? str_replace($_SERVER['HTTP_HOST'],$code.$pref['multilanguage_subdomain'],e_SELF)."?".e_QUERY : str_replace($_SERVER['HTTP_HOST'],$code.$pref['multilanguage_subdomain'],e_SELF);
+		}
+		else{
 			$link = (e_QUERY) ? e_SELF."?[".$code."]".e_QUERY : e_SELF."?[".$code."]";
+		}
+		if(isset($pref['multilanguage_subdomain']) && $val == $pref['sitelanguage']){
+        	$link = str_replace($code,"www",$link);
 		}
 		$class = ($val == e_LANGUAGE) ? "languagelink_active" : "languagelink";
     	$ret[] =  "<a class='{$class}' href='{$link}' title=\"".$name."\">".$name."</a>\n";
