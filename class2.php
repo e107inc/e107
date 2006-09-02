@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.298 $
-|     $Date: 2006-08-25 15:15:30 $
+|     $Revision: 1.299 $
+|     $Date: 2006-09-02 23:53:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -66,6 +66,8 @@ ini_set('session.use_trans_sid',    0);
 
 
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
+$srvtmp = explode(".",$_SERVER['HTTP_HOST']);
+define("e_SUBDOMAIN", ($srvtmp[2] ? $srvtmp[0] : FALSE)); // needs to be available to e107_config.
 
 //  Ensure thet '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
@@ -264,8 +266,7 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
-$srvtmp = explode(".",$_SERVER['HTTP_HOST']);
-define("e_SUBDOMAIN", ($srvtmp[2] ? $srvtmp[0] : FALSE));
+
 
 // let the subdomain determine the language (when enabled).
 if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session")){
