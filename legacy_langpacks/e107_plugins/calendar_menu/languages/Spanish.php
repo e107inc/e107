@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/calendar_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-09-03 11:46:09 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -245,6 +245,10 @@ define('EC_LAN_132', "Detalles expandidos");
 define('EC_LAN_133', "[Leer más]");
 define('EC_LAN_134', "Necesita proporcionar un nombre de categoría");
 
+// Added 12.07.06 for next_event_menu.php 
+define('EC_LAN_140', "Próximos eventos"); 
+define('EC_LAN_141', "Eventos no próximos"); 
+
 define('EC_ADLAN_A10', "Configuración");
 define('EC_ADLAN_A11', "Categorias");
 define('EC_ADLAN_A12', "Calendario");
@@ -291,5 +295,27 @@ define('EC_ADLAN_A94', "Añadir nueva clase de enevto");
 define('EC_ADLAN_A95', "Activar suscripciones");
 define('EC_ADLAN_A96', "Desactivandolo elimina el botón de las suscripciones y sobreescribe la configuración de la suscripción de la categoría");
 define('EC_ADLAN_A97', " Si fija forzar suscripciones esta categoría no se mostrará en la lista de suscripciones disponibles para el usuario.");
-
+ 
+ // Added from here 12.07.06 for forthcoming events and mailout upgrades 
+define('EC_ADLAN_A100', "Eventos próximos"); 
+define('EC_ADLAN_A101', "¿Cuantos días a incluir en eventos próximos?"); 
+define('EC_ADLAN_A102', "Número de eventos a mostrar:"); 
+define('EC_ADLAN_A103', "Incluir eventos periódicos:"); 
+define('EC_ADLAN_A104', "El título es el enlace a la lista de eventos:"); 
+define('EC_ADLAN_A105', "Configurar menu de eventos próximos"); 
+define('EC_ADLAN_A106', "El menu tiene que estar activado en la página 'Menu'"); 
+define('EC_ADLAN_A107', "No funcionará corrrectamente si los días a incluir son mas de 59"); 
+define('EC_ADLAN_A108', "MCabecera del menú"); 
+define('EC_ADLAN_A109', "Preferencias de eventos próximos actualizadas"); 
+define('EC_ADLAN_A110', "Solo el día anterior"); 
+define('EC_ADLAN_A111', "Posterior y anterior día"); 
+define('EC_ADLAN_A112', "Día anterior al día"); 
+define('EC_ADLAN_A113', "Posterior, anterior y el mismo día"); 
+define('EC_ADLAN_A114', "Registro de correos"); 
+define('EC_ADLAN_A115', "Sumario"); 
+define('EC_ADLAN_A116', "Detalle"); 
+define('EC_ADLAN_A117', "Mensaje en el día o día anterior"); 
+define('EC_ADLAN_A118', "Categorías a mostrar"); 
+define('EC_ADLAN_A119', "No hay categorías definidas, o fallo al leer la abse de datos"); 
+define('EC_ADLAN_A120', "Mostrar icono de categoría en el menú"); 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_language.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.5 $
+|     $Date: 2006-09-03 11:46:09 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -27,4 +27,7 @@ define("LANG_LAN_14", "Idioma por defecto");
 define("LANG_LAN_15", "Para copiar los datos del idioma predeterminado.(útil para enlaces, nuevas categorías, etc...) ");
 define("LANG_LAN_16", "Uso de la base de datos multi-idioma");
 define("LANG_LAN_17", "Idioma por defecto - No se necesitan tablas adicionales.");
+define("LANG_LAN_18", "Usar subdominios aparcados para fijar el idioma:"); 
+define("LANG_LAN_19", "ej. es.midomino.com para fijar el dominio a Español."); 
+define("LANG_LAN_20", "Escriba el dominio principal para activar. ej. midominio.com");
 ?>
