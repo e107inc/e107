@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-02 15:53:14 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2006-09-03 13:43:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
@@ -56,10 +56,10 @@ class emailprint {
 		}
 		if ($look == 0 || $look == 2) {
 			$ico_print = (file_exists(THEME."images/printer.png") ? THEME."images/printer.png" : e_IMAGE."generic/".IMODE."/printer.png");
-			$text_emailprint .= "<a href='".e_BASE."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='".LAN_PRINT_1."' title='".LAN_PRINT_1."'/></a>";
+			$text_emailprint .= "<a href='".e_BASE."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='".LAN_PRINT_1."' title='".LAN_PRINT_1."' /></a>";
 		}
 		return $text_emailprint;
 	}
 }
-	
+
 ?>
