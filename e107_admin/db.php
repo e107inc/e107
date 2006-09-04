@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-07-09 07:20:26 $
+|     $Revision: 1.20 $
+|     $Date: 2006-09-04 16:34:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -102,8 +102,8 @@ $text = "<div style='text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:70%' class='forumheader3'>Click button to scan plugin directories for changes (experimental)</td>
-	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='plugin_scan' value='Scan plugin directories' /></td>
+	<td style='width:70%' class='forumheader3'>".DBLAN_28."</td>
+	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='plugin_scan' value=\"".DBLAN_29."\" /></td>
 	</tr>
 
 	<tr>
@@ -155,22 +155,20 @@ function optimizesql($mySQLdefaultdb) {
 
 function plugin_viewscan()
 {
-		// experimental - don't expect LANs yet.
-
 		global $sql, $pref, $ns;
 		require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
 		$ep->update_plugins_table(); // scan for e_xxx changes and save to plugin table.
 		$ep->save_addon_prefs();  // generate global e_xxx_list prefs from plugin table.
 
-		$ns -> tablerender("Plugin View and Scan", "<div style='text-align:center'>Scan Completed<br /><br /><a href='".e_SELF."'>".DBLAN_13."</a></div>");
+		$ns -> tablerender(DBLAN_22, "<div style='text-align:center'>".DBLAN_23."<br /><br /><a href='".e_SELF."'>".DBLAN_13."</a></div>");
 
 		$text = "<form method='post' action='".e_ADMIN."db.php' id='plug_edit'>
 				<div style='text-align:center'>  <table class='fborder' style='".ADMIN_WIDTH."'>
-				<tr><td class='fcaption'>Name</td>
-				<td class='fcaption'>Folder</td>
-				<td class='fcaption'>Includes addons</td>
-				<td class='fcaption'>Installed</td>";
+				<tr><td class='fcaption'>".DBLAN_24."</td>
+				<td class='fcaption'>".DBLAN_25."</td>
+				<td class='fcaption'>".DBLAN_26."</td>
+				<td class='fcaption'>".DBLAN_27."</td>";
 
         $sql -> db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
 		while($row = $sql-> db_Fetch()){
@@ -187,7 +185,7 @@ function plugin_viewscan()
 			}
 			else
 			{
-            	$text .= "Installed";
+            	$text .= DBLAN_27; // "Installed";
 			}
 			$text .= "</td>
 			</tr>";
