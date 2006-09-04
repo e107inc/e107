@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2006-08-25 16:02:27 $
+|     $Revision: 1.83 $
+|     $Date: 2006-09-04 16:40:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -828,7 +828,7 @@ class users{
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_146.":</td>
-			<td style='width:50%' class='forumheader3'>".r_userclass("memberlist_access",$pref['memberlist_access'])."
+			<td style='width:50%' class='forumheader3'>".r_userclass("memberlist_access",$pref['memberlist_access'], "off", "public,member,guest,admin,main,classes,nobody")."
 			</td>
 			</tr>
 
