@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-04-29 00:16:22 $
-|     $Author: sweetas $
+|     $Revision: 1.47 $
+|     $Date: 2006-09-04 16:10:56 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -151,7 +151,7 @@ if ($menu_act == "adv") {
 	<td>
 	<input type='hidden' name='menuAct[$menu_id]' value='sv.$menu_id' />
 	".MENLAN_4." ".
-	r_userclass('menu_class', $menu_class, "off", "public,member,guest,admin,classes,nobody")."
+	r_userclass('menu_class', $menu_class, "off", "public,member,guest,admin,main,classes,nobody")."
 	</td>
 	</tr>
 	<tr><td><br />";
