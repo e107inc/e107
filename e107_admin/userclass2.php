@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-06-01 10:47:41 $
-|     $Author: lisa_ $
+|     $Revision: 1.20 $
+|     $Date: 2006-09-04 15:58:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -216,7 +216,7 @@ $text .= "
 $text .= "
 	<tr>
 	<td class='forumheader3'>".UCSLAN_24."</td>
-	<td class='forumheader3'>".r_userclass("userclass_editclass", $userclass_editclass, "off", "admin,classes,matchclass,public,nobody")."</td>
+	<td class='forumheader3'>".r_userclass("userclass_editclass", $userclass_editclass, "off", "main,admin,classes,matchclass,public,nobody")."</td>
 	</tr>
 	";
 
