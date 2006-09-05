@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.299 $
-|     $Date: 2006-09-02 23:53:31 $
+|     $Revision: 1.300 $
+|     $Date: 2006-09-05 00:26:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -313,9 +313,15 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 	{
 		$_POST['sitelanguage'] = $_GET['elan'];
 	}
-	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
-	{
-    	$_POST['sitelanguage'] = $GLOBALS['elan'];
+	if($GLOBALS['elan']){
+		if(!isset($_POST['sitelanguage'])){
+    		$_POST['sitelanguage'] = $GLOBALS['elan'];
+		} else {   // switches URL when subdomain language switching is active.
+			$code = $lng->convert($_POST['sitelanguage']);
+           	$codelnk = ($_POST['sitelanguage']=="") ? "www" : $code;
+			$newloco = (e_QUERY) ? str_replace($_SERVER['HTTP_HOST'],$codelnk.$pref['multilanguage_subdomain'],e_SELF)."?".e_QUERY : str_replace($_SERVER['HTTP_HOST'],$codelnk.$pref['multilanguage_subdomain'],e_SELF);
+    		header("Location:".$newloco);
+		}
 	}
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
