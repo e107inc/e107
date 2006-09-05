@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2006-09-04 16:40:31 $
+|     $Revision: 1.84 $
+|     $Date: 2006-09-05 02:26:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -727,7 +727,8 @@ class users{
 
 
 // ======================
-		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $users)";
+		$total_cap = (isset($_POST['searchquery'])) ? $user_total : $users;
+		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $total_cap)";
 		$ns->tablerender($caption, $text);
 
 	}
