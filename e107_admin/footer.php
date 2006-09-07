@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-07-21 22:43:45 $
+|     $Revision: 1.21 $
+|     $Date: 2006-09-07 22:46:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-global $ADMIN_FOOTER, $footer_js;
+global $ADMIN_FOOTER, $footer_js, $sql;
 
 if (ADMIN == TRUE) {
 	if ($pref['cachestatus']) {
