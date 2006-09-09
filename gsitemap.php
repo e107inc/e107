@@ -11,22 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/gsitemap.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-07 22:27:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-09-09 17:43:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
-
-if (file_exists(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php"))
-{
-	include_once(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php");
-}
-else
-{
-	include_once(e_PLUGIN."gsitemap/languages/gsitemap_English.php");
-}
-
+include_lan(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php");
 
 if(e_QUERY == "show")
 {
@@ -38,7 +29,7 @@ if(e_QUERY == "show")
 
 	foreach($nfArray as $nfa)
 	{
-		$url = (substr($nfa['gsitemap_url'],0,4)== "http")? $nfa['gsitemap_url'] : SITEURL.$nfa['gsitemap_url'];
+		$url = (substr($nfa['gsitemap_url'],0,4)== "http")? $nfa['gsitemap_url'] : SITEURL.$tp->replaceConstants($nfa['gsitemap_url'],TRUE);
 		$text .= "<li>".$tp->toHTML($nfa['gsitemap_cat'],"","defs").": <a href='".$url."'>".$tp->toHTML($nfa['gsitemap_name'],"","defs")."</a><br />\n";
 	}
 	$text .= "</ul>";
@@ -59,10 +50,10 @@ $sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ");
 $smArray = $sql -> db_getList();
 foreach($smArray as $sm)
 {
-	$loc = (substr($sm['gsitemap_url'],0,4)== "http")? $sm['gsitemap_url'] : SITEURL.$sm['gsitemap_url'];
+	$loc = (substr($sm['gsitemap_url'],0,4)== "http")? $sm['gsitemap_url'] : SITEURL.$tp->replaceConstants($sm['gsitemap_url'],TRUE);
 	$xml .= "
 	<url>
-		<loc>".$tp->toRSS($loc,TRUE)."</loc>
+		<loc>".$loc."</loc>
 		<lastmod>".get_iso_8601_date($sm['gsitemap_lastmod'])."</lastmod>
     		<changefreq>".$sm['gsitemap_freq']."</changefreq>
     		<priority>".$sm['gsitemap_priority']."</priority>
