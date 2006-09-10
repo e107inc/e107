@@ -1,4 +1,4 @@
-// $Id: languagelinks.sc,v 1.5 2006-09-02 23:56:47 e107coders Exp $
+// $Id: languagelinks.sc,v 1.6 2006-09-10 23:59:55 e107coders Exp $
 global $pref;
 $sep = (defined("LANGLINKS_SEPARATOR")) ? LANGLINKS_SEPARATOR : "|&nbsp;";
 $cursub = explode(".",$_SERVER['HTTP_HOST']);
@@ -34,7 +34,7 @@ $lng = new language;
 			$link = (e_QUERY) ? e_SELF."?[".$code."]".e_QUERY : e_SELF."?[".$code."]";
 		}
 		if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && $val == $pref['sitelanguage']){
-        	$link = str_replace($code,"www",$link);
+        	$link = str_replace($code.$pref['multilanguage_subdomain'],"www".$pref['multilanguage_subdomain'],$link);
 		}
 		$class = ($val == e_LANGUAGE) ? "languagelink_active" : "languagelink";
     	$ret[] =  "<a class='{$class}' href='{$link}' title=\"".$name."\">".$name."</a>\n";

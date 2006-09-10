@@ -44,13 +44,13 @@ if (ADMIN) {
 			}
 		}
 		require_once(e_HANDLER."language_class.php");
-		$lng = new language;
+		$slng = new language;
 
 		$text .= "<div><img src='".e_IMAGE."admin_images/language_16.png' alt='' />&nbsp;";
 		if(isset($aff))
 		{
 			$text .= $sql->mySQLlanguage;
-			$text .= " (".$lng->convert($sql->mySQLlanguage).")
+			$text .= " (".$slng->convert($sql->mySQLlanguage).")
 			: <span class='button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
@@ -60,7 +60,7 @@ if (ADMIN) {
 		elseif($sql->mySQLlanguage && ($sql->mySQLlanguage != $pref['sitelanguage']))
 		{
 			$text .= $sql->mySQLlanguage;
-			$text .= " (".$lng->convert($sql->mySQLlanguage)."): ".LAN_INACTIVE;
+			$text .= " (".$slng->convert($sql->mySQLlanguage)."): ".LAN_INACTIVE;
 		}
 		else
 		{
@@ -68,23 +68,43 @@ if (ADMIN) {
 		}
 		$text .= "<br /><br /></div>";
 
-		$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
-		<div>
-		<select name='sitelanguage' class='tbox'>";
 
-		foreach($lanperms as $lng)
+
+		if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 		{
-			$langval = ($lng == $pref['sitelanguage']) ? "" : $lng;
-			$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
-			$text .= "<option value='".$langval."' $selected>$lng</option>\n";
+        	$text .= "<div style='text-align:center'>
+			<select class='tbox' name='lang_select' style='width:95%' onchange=\"location.href=this.options[selectedIndex].value\">";
+			foreach($lanperms as $lng)
+			{
+				$codelnk = ($lng == $pref['sitelanguage']) ? "www" : $slng->convert($lng);
+				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
+                $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.$pref['multilanguage_subdomain'],e_SELF);
+				$text .= "<option value='".$urlval."' $selected>$lng</option>\n";
+			}
+			$text .= "</select></div>";
+
 		}
-		$text .= "</select>
-		<br /><br />
-		<input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
-		</div>
-		</form>
-		</div>";
+        else
+		{
+
+			$text .= "<div style='text-align:center'>
+			<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
+			<div>
+			<select name='sitelanguage' class='tbox'>";
+
+			foreach($lanperms as $lng)
+			{
+				$langval = ($lng == $pref['sitelanguage']) ? "" : $lng;
+				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
+				$text .= "<option value='".$langval."' $selected>$lng</option>\n";
+			}
+			$text .= "</select>
+			<br /><br />
+	   		<input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
+			</div>
+				</form>
+			</div>";
+		}
 
 		return $ns -> tablerender(UTHEME_MENU_L2, $text, '', TRUE);
 	}

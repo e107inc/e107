@@ -11,15 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.300 $
-|     $Date: 2006-09-05 00:26:24 $
+|     $Revision: 1.301 $
+|     $Date: 2006-09-10 23:59:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
-if(strlen($_SERVER['HTTP_USER_AGENT']) < 5 && (basename($_SERVER['SCRIPT_NAME'])) != "rss.php"){
- exit;
-}
 
 while (@ob_end_clean());  // destroy all ouput buffering
 ob_start();             // start our own.
@@ -273,8 +270,11 @@ if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] &
 		ini_set("session.cookie_domain",$pref['multilanguage_subdomain']);
 		require_once(e_HANDLER."language_class.php");
 		$lng = new language;
-
-		if($eln = $lng->convert(e_SUBDOMAIN)){
+        if(e_SUBDOMAIN == "www"){
+        	$GLOBALS['elan'] = $pref['sitelanguage'];
+		}
+		elseif($eln = $lng->convert(e_SUBDOMAIN))
+		{
           	$GLOBALS['elan'] = $eln;
 		}
 }
@@ -313,15 +313,9 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 	{
 		$_POST['sitelanguage'] = $_GET['elan'];
 	}
-	if($GLOBALS['elan']){
-		if(!isset($_POST['sitelanguage'])){
-    		$_POST['sitelanguage'] = $GLOBALS['elan'];
-		} else {   // switches URL when subdomain language switching is active.
-			$code = $lng->convert($_POST['sitelanguage']);
-           	$codelnk = ($_POST['sitelanguage']=="") ? "www" : $code;
-			$newloco = (e_QUERY) ? str_replace($_SERVER['HTTP_HOST'],$codelnk.$pref['multilanguage_subdomain'],e_SELF)."?".e_QUERY : str_replace($_SERVER['HTTP_HOST'],$codelnk.$pref['multilanguage_subdomain'],e_SELF);
-    		header("Location:".$newloco);
-		}
+	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
+	{
+   		$_POST['sitelanguage'] = $GLOBALS['elan'];
 	}
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
@@ -445,9 +439,11 @@ if(isset($pref['e_module_list']) && $pref['e_module_list']){
 	foreach ($pref['e_module_list'] as $mod){
 		if (is_readable(e_PLUGIN."{$mod}/e_module.php")) {
 			require_once(e_PLUGIN."{$mod}/e_module.php");
-		}
+ 		}
 	}
 }
+
+
 
 //###########  Module redefinable functions ###############
 if (!function_exists('checkvalidtheme')) {
