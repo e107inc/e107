@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-08-12 17:23:20 $
+|     $Revision: 1.9 $
+|     $Date: 2006-09-10 22:17:50 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -29,5 +29,13 @@ define("DBLAN_17", "Pref. Nombre");
 define("DBLAN_18", "Pref. Valor"); 
 define("DBLAN_19", "Haga click en el botón para abrir las preferencias del editor (solo ususarios avanzados)"); 
 define("DBLAN_20", "Preferencias Editor"); 
-define("DBLAN_21", "Eliminar marcados"); 
+define("DBLAN_21", "Eliminar marcados");
+define("DBLAN_22", "Plugin: Ver y escanear"); 
+define("DBLAN_23", "Escaneado completado"); 
+define("DBLAN_24", "Nombre"); 
+define("DBLAN_25", "Directorio"); 
+define("DBLAN_26", "Complementos incluídos"); 
+define("DBLAN_27", "Instalado"); 
+define("DBLAN_28", "Click en el botón para escanear cambios en los directorios"); 
+define("DBLAN_29", "Escanear directorios de los plugins"); 
 ?>
