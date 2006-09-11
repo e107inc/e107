@@ -1,23 +1,25 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/Russian.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:47 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'ru_RU.utf8');
+
+setlocale(LC_ALL, 'ru_RU.utf8'); //// Варианты: 'ru', 'ru_RU.UTF-8'
 define("CORE_LC", 'ru');
-define("CORE_LC2", 'rus');
-define("CHARSET", 'utf-8');
-define("CORE_LAN1","Ошибка: тема не найдена.\\n\\nИзмените используемую тему в настройках сайта (админцентр) или загрузите недостающие файлы темы на сервер.");
+define("CORE_LC2", 'rus'); // Варианты: 'ru'
+// define("TEXTDIRECTION","rtl");
+define("CHARSET", "utf-8");  // for a true multi-language site. :)
+define("CORE_LAN1","Ошибка : тема отсутствует.\\n\\nЗамените используемую тему в ваших настройках (Области администратора) или загрузите файлы текущей темы на сервер.");
 
-define("CORE_LAN2"," \\1 пишет:");// "\\1" заменяет имя пользователя.
-define("CORE_LAN3","приложение файлов запрещенно");
+//v.616
+define("CORE_LAN2"," \\1 написал:");// "\\1" represents the username.
+define("CORE_LAN3","прикрепление файлов отключено");  //file attachment disabled
 
+//v0.7+
+define("CORE_LAN4", "Пожалуйста, удалите install.php с вашего сервера");
+define("CORE_LAN5", "если вы этого не сделаете, существует потенциальный риск безопасности для вашего вебсайта");
 ?>

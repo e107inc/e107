@@ -1,20 +1,45 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_user_extended.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:48 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
-define("UE_LAN_1", "Текстовая строка");
-define("UE_LAN_2", "Кнопка");
+
+define("UE_LAN_1", "Текстовое поле");
+define("UE_LAN_2", "Радио-кнопки");
 define("UE_LAN_3", "Выпадающее меню");
-define("UE_LAN_4", "Таблица в БД");
-define("UE_LAN_5", "Текстовое поле");
-define("UE_LAN_6", "Integer");
+define("UE_LAN_4", "Поле таблицы БД");
+define("UE_LAN_5", "Область текста");
+define("UE_LAN_6", "Целое число");
+define("UE_LAN_7", "Дата");
+define("UE_LAN_8", "Язык");
+
+define("UE_LAN_9", "Имя");
+define("UE_LAN_10", "Тип");
+define("UE_LAN_11", "Использовать"); //Use   ?????
+
+define("UE_LAN_HIDE", "Скрыть от пользователей");
+
+define("UE_LAN_LOCATION", "Местонахождение");
+define("UE_LAN_LOCATION_DESC", "Местонахождение пользователя");
+define("UE_LAN_AIM", "AIM адрес");
+define("UE_LAN_AIM_DESC", "AIM адрес");
+define("UE_LAN_ICQ", "ICQ номер");
+define("UE_LAN_ICQ_DESC", "ICQ номер");
+define("UE_LAN_YAHOO", "Yahoo! адрес");
+define("UE_LAN_YAHOO_DESC", "Yahoo! адрес");
+define("UE_LAN_MSN", "MSN");
+define("UE_LAN_MSN_DESC", "MSN адрес");
+define("UE_LAN_HOMEPAGE", "Домашняя страница");
+define("UE_LAN_HOMEPAGE_DESC", "Адрес домашней страницы пользователя (url)");
+define("UE_LAN_BIRTHDAY", "День рождения");
+define("UE_LAN_BIRTHDAY_DESC", "День рождения");
+define("UE_LAN_LANGUAGE", "Язык");
+define("UE_LAN_LANGUAGE_DESC", "Язык пользователя");
+define("UE_LAN_COUNTRY", "Страна");
+define("UE_LAN_COUNTRY_DESC", "Страна пользователя (включает таблицу db)");
+
 ?>

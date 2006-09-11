@@ -1,35 +1,37 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:47 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
+*/
 
-## Russian Language Pack for e107 Version 0.700
-##      Copyright © 2005 - Russian e107
-##	     	  http://e107.org.ru
-##
-##	Last updated - 31.03.2005 - 16:05:35 GMT+2
+define("PAGE_NAME", "Баннеры");
 
-define("PAGE_NAME", "Баннерная сеть");
-
-define("LAN_16", "Имя пользователя: ");
-define("LAN_17", "Пароль: ");
-define("LAN_18", "Продолжить");
-define("LAN_19", "Пожалуйста введите Ваш логин клиента и пароль для продолжения");
-define("LAN_20", "К сожалению, невозможно найти подробности в базе данных. Свяжитесь с администратором сайта для выяснения причин.");
-define("LAN_21", "Статистика баннеров");
-define("LAN_22", "Клиент");
-define("LAN_23", "ID баннера");
-define("LAN_24", "Переходов");
-define("LAN_25", "Кликов %");
-define("LAN_26", "Показы");
-define("LAN_27", "Купленные показы");
-define("LAN_28", "Оставшиеся показы");
-define("LAN_29", "Нет баннеров");
-define("LAN_30", "Неограниченно");
-define("LAN_31", "Неприменимо");
-define("LAN_32", "Да");
-define("LAN_33", "Нет");
-define("LAN_34", "Конец");
-define("LAN_35", "Переходов с IP адресов");
-define("LAN_36", "Активный:");
-define("LAN_37", "Запуски:");
-define("LAN_37", "Ошибка");
+define("BANNERLAN_16", "Логин: ");
+define("BANNERLAN_17", "Пароль: ");
+define("BANNERLAN_18", "Продолжить");
+define("BANNERLAN_19", "Введите логин и пароль клиента для продолжения");
+define("BANNERLAN_20", "Извините, такие данные в БД не обнаружены. Пожалуйста, свяжитесь с администратором сайта для более конкретной информации.");
+define("BANNERLAN_21", "Статистика Баннеров");
+define("BANNERLAN_22", "Клиент");
+define("BANNERLAN_23", "ID баннера");
+define("BANNERLAN_24", "Переходов");
+define("BANNERLAN_25", "Нажатий %");
+define("BANNERLAN_26", "Показов");
+define("BANNERLAN_27", "Показов приобретено");
+define("BANNERLAN_28", "Показов истрачено");
+define("BANNERLAN_29", "Нет баннеров");
+define("BANNERLAN_30", "Неограниченно");
+define("BANNERLAN_31", "Неприменимо");
+define("BANNERLAN_32", "Да");
+define("BANNERLAN_33", "Нет");
+define("BANNERLAN_34", "Окончание:");
+define("BANNERLAN_35", "Переходов с IP-адресов");
+define("BANNERLAN_36", "Активно:");
+define("BANNERLAN_37", "Начало:");
+define("BANNERLAN_38", "Ошибка");
 
 ?>

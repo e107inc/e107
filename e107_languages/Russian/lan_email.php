@@ -1,39 +1,37 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_email.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:47 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Электронная почта");
 
-define("LAN_5", "Отправить статью другу на email");
-define("LAN_6", "Отправить новость другу на email");
-define("LAN_7", "Логин: ");
-define("LAN_8", "Комментарий");
-define("LAN_9", "К сожалению, произошла ошибка и письмо не было отправлено");
-define("LAN_10", "Письмо отправлено на");
-define("LAN_11", "Письмо отправлено");
-define("LAN_12", "Ошибка");
-define("LAN_106", "Введен неправильный адрес эл. почты ");
-define("LAN_185", "Отправить статью");
-define("LAN_186", "Отправить новость");
-define("LAN_187", "Адрес эл. почты для отправки");
-define("LAN_188", "Я думаю, что Вас заинтересует эта новость от");
-define("LAN_189", "Я думаю, что Вас заинтересует эта статья на сайте ");
+define("PAGE_NAME", "Электронная почта"); 
 
-define("LAN_email_1", "От:");
-define("LAN_email_2", "IP отправителя:");
-define("LAN_email_3", "Новости от ");
-define("LAN_email_4", "Отправить письмо");
-define("LAN_email_5", "Отправить другу");
-define("LAN_email_6", "Думаю, ты можешь заинтересоваться этой информацией на ");
+define("LAN_EMAIL_1", "От:");
+define("LAN_EMAIL_2", "IP отправителя:");
+define("LAN_EMAIL_3", "Emailed item from ");
+define("LAN_EMAIL_4", "Отправить Email");
+define("LAN_EMAIL_5", "Отправить другу с помощью Email");
+define("LAN_EMAIL_6", "Я подумал, что Вас заинтересует эта информация с"); //I thought you might be interested in this item from
+define("LAN_EMAIL_7", "отпавить с помощью email кому-нибудь");
+define("LAN_EMAIL_8", "Комментарий");
+define("LAN_EMAIL_9", "К сожалению, произошла ошибка, и письмо не было отправлено");
+define("LAN_EMAIL_10", "Письмо отправлено на");
+define("LAN_EMAIL_11", "Письмо отправлено");
+define("LAN_EMAIL_12", "Ошибка");
+define("LAN_EMAIL_13", "Отпавить статью другу с помощью Email");
+define("LAN_EMAIL_14", "Отправить новость другу с помощью Email");
+define("LAN_EMAIL_15", "Логин: ");
+define("LAN_EMAIL_106", "Введен неправильный адрес эл. почты");
+define("LAN_EMAIL_185", "Отправить статью");
+define("LAN_EMAIL_186", "Отправить новость");
+define("LAN_EMAIL_187", "Адрес Email для отправки");
+define("LAN_EMAIL_188", "Я думаю, что Вас заинтересует эта новость с сайта");
+define("LAN_EMAIL_189", "Я думаю, что Вас заинтересует эта статья на сайте");
+define("LAN_EMAIL_190", "Введите изображенный код");
 
 
 ?>

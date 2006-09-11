@@ -1,16 +1,13 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_links.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:47 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
+
 define("PAGE_NAME", "Ссылки");
 
 define("LAN_61", "Категории ссылок");
@@ -37,16 +34,18 @@ define("LAN_97", "URL на кнопку:");
 define("LAN_98", "Добавить ссылку");
 
 define("LAN_99", "Спасибо");
-define("LAN_100", "Ваша ссылка добавлена. После проверки администрацией она, возможно, бдет опубликована.");
+define("LAN_100", "Ваша ссылка добавлена. После проверки администрацией она, возможно, будет опубликована.");
 define("LAN_101", "Нажмите для добавления ссылки");
 
 define("LAN_102", "Всего");
-define("LAN_103", "");
-define("LAN_104", "");
+define("LAN_103", ""); //is
+define("LAN_104", ""); //are
 define("LAN_105", "всего в");
+
 define("LAN_106", "Подчёркнутые поля обязательны для заполнения.");
 
 define("LAN_Links_1", "Всего ссылок");
 define("LAN_Links_2", "Всего активных ссылок");
 define("LAN_LINKS_3", "Гость");
+
 ?>

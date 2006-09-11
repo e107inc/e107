@@ -1,16 +1,13 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_ren_help.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:48 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
+
 define("LANHELP_1", "Чёрный");
 define("LANHELP_2", "Голубой");
 define("LANHELP_3", "Коричневый");
@@ -33,8 +30,8 @@ define("LANHELP_18", "Большой");
 define("LANHELP_19", "Крупный");
 define("LANHELP_20", "Очень большой");
 
-define("LANHELP_21", "Цвет ..");
-define("LANHELP_22", "Размер ..");
+define("LANHELP_21", "Нажмите, чтобы открыть диалог выбора цвета ...");
+define("LANHELP_22", "Нажмите, чтобы открыть диалог выбора размера ...");
 
 define("LANHELP_23", "Вставить ссылку: [link]http://example.com[/link] или  [link=http://example.com]Перейти к сайту[/link]");
 define("LANHELP_24", "Жирный текст: [b]Этот текст будет жирным[/b]", "font-weight:bold; width: 20px");
@@ -47,8 +44,26 @@ define("LANHELP_30", "Разместить справа: [right]Этот тек�
 define("LANHELP_31", "Цитировать текст: [blockquote]Этот текст будет процитирован (indented)[/blockquote]");
 define("LANHELP_32", "Код - предформированный код: [code]\$foo = bah;[/code]");
 define("LANHELP_33", "HTML - удаляет пробелы между строчками: [html]<table><tr><td> etc[/html]");
-define("LANHELP_34", "Разместить статью более, чем на одну страницу");
-define("LANHELP_35", "Гиперссылка ");
-define("LANHELP_36", "Не сортированный: [list]строка1*строка2*строка3[/list] Сортированный: [list=type]строка1*строка2*строка3[/list]");
+define("LANHELP_34", "Вставить разделитель страницы");
+
+define("LANHELP_35", "адрес гиперссылки");
+define("LANHELP_36", "Несортированный список: [list]line1*line2*line3[/list] Сортированный список: [list=type]line1*line2*line3[/list]");
+
+//Not translated yet:
+define("LANHELP_37", "Insert image from e107_images/newspost_images/ directory");
+define("LANHELP_38", "link to full image will be generated");
+
+define("LANHELP_39", "Insert download link from existing downloads");
+define("LANHELP_40", "There are currently no existing downloads");
+
+define("LANHELP_41", "Размер шрифта...");
+define("LANHELP_42", "Выберите изображение...");
+define("LANHELP_43", "Выберите файл...");
+define("LANHELP_44", "Click to open/close emoticon dialog ...");
+define("LANHELP_45", "Insert image from directory: ");
+define("LANHELP_46", "* No files found in: ");
+
+define("LANHELP_47", "Insert flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
+
 
 ?>

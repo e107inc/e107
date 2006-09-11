@@ -1,26 +1,25 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_upload_handler.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:48 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
+
 define("LANUPLOAD_1", "Тип файла ");
 define("LANUPLOAD_2", "не разрешён и был уничтожен");
 define("LANUPLOAD_3", "Удачно загружен");
-define("LANUPLOAD_4", "Указанная папка не существует или недоступна для чтения.");
-define("LANUPLOAD_5", "Загружаемы файл превысил максимальный размер.");
-define("LANUPLOAD_6", "Загружаемы файл превысил максимальный размер.");
+define("LANUPLOAD_4", "Указанная папка не существует или недоступна для записи. (chmod 777)");
+define("LANUPLOAD_5", "Загружаемый файл превысил максимальный размер, указанный в upload_max_filesize directive файла php.ini.");
+define("LANUPLOAD_6", "Загружаемый файл превысил максимальный размер, указанный в MAX_FILE_SIZE html-формы.");
 define("LANUPLOAD_7", "Файл загружен частично.");
-define("LANUPLOAD_8", "Файл не загружен.");
-define("LANUPLOAD_9", "Загружаемый файл пуст");
-define("LANUPLOAD_10", "Загрузка прервана [Duplicate filename] - Файл с таким названием уже есть.");
+define("LANUPLOAD_8", "Файл не был загружен.");
+define("LANUPLOAD_9", "Загружаемый файл имеет размер 0 байт");
+
+define("LANUPLOAD_10", "Загрузка прервана [Дубликат имени файла] - Файл с таким названием уже существует.");
 define("LANUPLOAD_11", "Файл не загружен. Имя файла: ");
 define("LANUPLOAD_12", "Ошибка");
+
 ?>

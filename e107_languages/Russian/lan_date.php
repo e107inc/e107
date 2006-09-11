@@ -1,30 +1,33 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright Â© 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_date.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:47 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
-define("LANDT_01", "ãîä");
-define("LANDT_02", "ìåñÿö");
-define("LANDT_03", "íåäåëÿ");
-define("LANDT_04", "äåíü");
-define("LANDT_05", "÷àñ");
-define("LANDT_06", "ìèíóòà");
-define("LANDT_07", "ñåêóíäà");
-define("LANDT_01s", "ëåò");
-define("LANDT_02s", "ìåñÿö(åâ)");
-define("LANDT_03s", "íåäåëÿ(ü)");
-define("LANDT_04s", "äíåé");
-define("LANDT_05s", "÷àñ(îâ)");
-define("LANDT_06s", "ìèíóò(û)");
-define("LANDT_07s", "ñåêóíä(û)");
+
+define("LANDT_01", "Ð³Ð¾Ð´");
+define("LANDT_02", "Ð¼ÐµÑÑÑ†");
+define("LANDT_03", "Ð½ÐµÐ´ÐµÐ»Ñ");
+define("LANDT_04", "Ð´ÐµÐ½ÑŒ");
+define("LANDT_05", "Ñ‡Ð°Ñ");
+define("LANDT_06", "Ð¼Ð¸Ð½ÑƒÑ‚Ð°");
+define("LANDT_07", "ÑÐµÐºÑƒÐ½Ð´Ð°");
+define("LANDT_01s", "Ð»ÐµÑ‚");
+define("LANDT_02s", "Ð¼ÐµÑÑÑ†ÐµÐ²");
+define("LANDT_03s", "Ð½ÐµÐ´ÐµÐ»ÑŒ");
+define("LANDT_04s", "Ð´Ð½ÐµÐ¹");
+define("LANDT_05s", "Ñ‡Ð°ÑÐ¾Ð²");
+define("LANDT_06s", "Ð¼Ð¸Ð½ÑƒÑ‚");
+define("LANDT_07s", "ÑÐµÐºÑƒÐ½Ð´");
+
+define("LANDT_08", "Ð¼Ð¸Ð½");
+define("LANDT_08s", "Ð¼Ð¸Ð½");
+define("LANDT_09", "ÑÐµÐº");
+define("LANDT_09s", "ÑÐµÐº");
+define("LANDT_AGO", "Ð½Ð°Ð·Ð°Ð´");
 
 
 ?>

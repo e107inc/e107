@@ -1,16 +1,14 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_online.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:48 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
+
+//v.616
 define("ONLINE_EL1", "Гостей: ");
 define("ONLINE_EL2", "Пользователей: ");
 define("ONLINE_EL3", "На этой странице: ");
@@ -18,7 +16,7 @@ define("ONLINE_EL4", "В сети: ");
 define("ONLINE_EL5", "Пользователей");
 define("ONLINE_EL6", "Новый пользователь");
 define("ONLINE_EL7", "просмотр");
-define("ONLINE_EL8", "рекорд посетилелей в сети: ");
+define("ONLINE_EL8", "рекорд посетителей: ");
 define("ONLINE_EL9", "Дата: ");
 define("ONLINE_EL10", "Имя пользователя");
 define("ONLINE_EL11", "Просмотр страницы");
@@ -30,7 +28,7 @@ define("CLASSRESTRICTED", "Страница только для определё
 define("ARTICLEPAGE", "Статьи/Обзоры");
 define("CHAT", "Чат");
 define("COMMENT", "Комментарии");
-define("DOWNLOAD", "Файлы");
+define("DOWNLOAD", "Загрузки");
 define("EMAIL", "email.php");
 define("FORUM", "Главная страница форума");
 define("LINKS", "Ссылки");
@@ -38,27 +36,26 @@ define("NEWS", "Новости");
 define("OLDPOLLS", "Старые опросы");
 define("POLLCOMMENT", "Опрос");
 define("PRINTPAGE", "Печатать");
-define("LOGIN", "Войти в");
+define("LOGIN", "Войти в"); //Logging In
 define("SEARCH", "Поиск");
 define("STATS", "Статистика");
 define("SUBMITNEWS", "Добавить новость");
 define("UPLOAD", "Загрузки");
-define("USERPAGE", "Профиль");
-define("USERSETTINGS", "Настройки");
+define("USERPAGE", "Профили пользователей");
+define("USERSETTINGS", "Настройки пользователей");
 define("ONLINE", "Пользователи в сети");
 define("LISTNEW", "Посмотреть обновления");
 define("USERPOSTS", "Сообщения пользователя");
-define("SUBCONTENT", "Разместить статью\обзор");
-define("TOP", "Активные пользователи\интересные темы");
-define("ADMINAREA", "Админка");
-define("BUGTRACKER", "Сообщения об ошибках");
+define("SUBCONTENT", "Разместить статью/обзор");
+define("TOP", "Самые активные отправители/наиболее интересные цепочки");
+define("ADMINAREA", "Область администратора");
+define("BUGTRACKER", "Bugtracker");
 define("EVENT", "Список событий");
 define("CALENDAR", "Календарь событий");
-define("FAQ", "ЧАВО");
-define("PM", "Приват");
+define("FAQ", "Faq");
+define("PM", "Личные сообщения"); //Private Messaging
 define("SURVEY", "Форма опроса");
 define("ARTICLE", "Статья");
 define("CONTENT", "Страница с содержанием");
 define("REVIEW", "Обзор");
-
 ?>

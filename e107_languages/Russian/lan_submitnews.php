@@ -1,34 +1,33 @@
 <?php
 /*
-	Russian Language Pack for e107 Version 0.700
-	Copyright © 2005 - Russian e107
-	http://e107.org.ru
-
-	Last updated - 31.03.2005 - 16:05:35 GMT+2
-	$Source: /cvs_backup/e107_langpacks/e107_languages/Russian/lan_submitnews.php,v $
-	$Revision: 1.2 $
-	$Date: 2005-07-06 22:03:43 $
-	$Author: e107coders $
-	Encoding: utf-8
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.3 $
+|     $Date: 2006-09-11 04:57:48 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Добавить новость");
-define("LAN_7", "Логин: ");
+
+define("PAGE_NAME", "Сообщить новость");
+
+define("LAN_7", "Имя пользователя: ");
 define("LAN_62", "Тема: ");
-define("LAN_112", "email адрес: ");
+define("LAN_112", "email-адрес: ");
 define("LAN_133", "Спасибо");
 define("LAN_134", "Ваша новость отправлена на проверку и, возможно, будет опубликована после проверки администрацией сайта.");
 define("LAN_135", "Текст новости: ");
 define("LAN_136", "Разместить новость");
-define("NWSLAN_6", "Категории");
+define("NWSLAN_6", "Категория");
 define("NWSLAN_10", "Нет категорий новостей");
+
 define("NWSLAN_11", "У вас нет прав для просмотра.");
 define("NWSLAN_12", "Доступ запрещён.");
 
 define("SUBNEWSLAN_1", "Вы должны включить заголовок.\\n");
 define("SUBNEWSLAN_2", "Вы должны заполнить содержание новости.\\n");
 define("SUBNEWSLAN_3", "Загружаемые файлы должны быть в формате jpg, gif или png");
-define("SUBNEWSLAN_4", "Очень большой файл");
-define("SUBNEWSLAN_5", "Графический файл");
-define("SUBNEWSLAN_6", "(jpg, gif или png)");
+define("SUBNEWSLAN_4", "Слишком большой файл");
 
+define("SUBNEWSLAN_5", "Файл изображения");
+define("SUBNEWSLAN_6", "(jpg, gif или png)");
 ?>
