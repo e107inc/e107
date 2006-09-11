@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.301 $
-|     $Date: 2006-09-10 23:59:55 $
+|     $Revision: 1.302 $
+|     $Date: 2006-09-11 13:55:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -376,7 +376,7 @@ define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
-if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage']){
+if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage'] && !$pref['multilanguage_subdomain']){
 	list($clc) = explode("_",CORE_LC);
 	define("e_LAN", strtolower($clc));
 	define("e_LANQRY", "[".e_LAN."]");
