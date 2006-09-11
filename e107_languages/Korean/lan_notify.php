@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Korean/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-10 05:02:15 $
+|     $Revision: 1.2 $
+|     $Date: 2006-09-11 22:07:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ define("NT_LAN_FL_2", "차단된 IP 주소");
 define("NT_LAN_SN_1", "뉴스 아이템 등록됨");
 
 define("NT_LAN_NU_1", "갱신됨");
-템
+
 define("NT_LAN_ND_1", "뉴스 아이템 삭제됨");
 define("NT_LAN_ND_2", "삭제된 아이템 id");
 
