@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.1 $
-|     $Date: 2006-09-11 14:35:52 $
+|     $Revision: 1.2 $
+|     $Date: 2006-09-12 08:00:40 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -152,7 +152,7 @@ define("DUSRLAN_11", "MSN");
 define("DUSRLAN_12", "Местоположение");
 define("DUSRLAN_13", "День рождения");
 define("DUSRLAN_14", "Подпись");
-define("DUSRLAN_15", "Картинка");
+define("DUSRLAN_15", "Изображение");
 define("DUSRLAN_16", "Временная зона");
 define("DUSRLAN_17", "Скрыть Email");
 define("DUSRLAN_18", "Дата регистрации");
@@ -172,7 +172,7 @@ define("DUSRLAN_31", "Админ");
 define("DUSRLAN_32", "Настоящее имя");
 define("DUSRLAN_33", "Класс пользователя");
 define("DUSRLAN_34", "Perms");
-define("DUSRLAN_35", "Картинка");
+define("DUSRLAN_35", "Изображение");
 define("DUSRLAN_36", "Сменить пароль");
 define("DUSRLAN_37", "XUP");
 
