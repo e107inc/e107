@@ -4,8 +4,8 @@
 |     e107 website system - Language Class.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/language_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-09-02 15:19:46 $
+|     $Revision: 1.6 $
+|     $Date: 2006-09-12 01:53:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -229,6 +229,15 @@ class language{
 
        return ($name[$lang]) ? $name[$lang] : $lang;
 
+	}
+
+
+	function subdomainUrl($language)
+	{
+		global $pref;
+		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $this->convert($language);
+        $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.$pref['multilanguage_subdomain'],e_SELF);
+        return $urlval;
 	}
 
 }

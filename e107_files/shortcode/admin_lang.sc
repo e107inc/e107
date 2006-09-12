@@ -21,12 +21,19 @@ if (ADMIN) {
 			}
 		}
 
+		require_once(e_HANDLER."language_class.php");
+		$slng = new language;
+
+
 		if(!getperms($sql->mySQLlanguage) && $lanperms)
 		{
 			$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
 			if ($pref['user_tracking'] == "session")
 			{
 				$_SESSION['e107language_'.$pref['cookie_name']] = $lanperms[0];
+				if($pref['multilanguage_subdomain']){
+					header("Location:".$slng->subdomainUrl($lanperms[0]));
+				}
 			}
 			else
 			{
@@ -43,8 +50,7 @@ if (ADMIN) {
 				$aff[] = str_replace(MPREFIX."lan_".$clang."_","",$tabs);
 			}
 		}
-		require_once(e_HANDLER."language_class.php");
-		$slng = new language;
+
 
 		$text .= "<div><img src='".e_IMAGE."admin_images/language_16.png' alt='' />&nbsp;";
 		if(isset($aff))
@@ -76,9 +82,8 @@ if (ADMIN) {
 			<select class='tbox' name='lang_select' style='width:95%' onchange=\"location.href=this.options[selectedIndex].value\">";
 			foreach($lanperms as $lng)
 			{
-				$codelnk = ($lng == $pref['sitelanguage']) ? "www" : $slng->convert($lng);
 				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
-                $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.$pref['multilanguage_subdomain'],e_SELF);
+                $urlval = $slng->subdomainUrl($lng);
 				$text .= "<option value='".$urlval."' $selected>$lng</option>\n";
 			}
 			$text .= "</select></div>";
