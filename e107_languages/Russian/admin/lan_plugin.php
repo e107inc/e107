@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.1 $
-|     $Date: 2006-09-11 14:35:51 $
+|     $Revision: 1.2 $
+|     $Date: 2006-09-12 09:12:27 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -69,21 +69,20 @@ define("EPL_UPGRADE", "Апгрейд");
 
 define("EPL_ADLAN_50", "Комментарии успешно удалены");
 
-// Not translated yet:
-define("EPL_ADLAN_53", "Directory not writable");
-define("EPL_ADLAN_54", "Please select the option for uninstalling the plugin:");
-define("EPL_ADLAN_55", "Uninstall plugin");
+define("EPL_ADLAN_53", "Каталог не открыт на запись"); //Directory not writable
+define("EPL_ADLAN_54", "Пожалуйста, выберите свойства для деинсталляции плагина:");
+define("EPL_ADLAN_55", "Деинсталлировать плагин");
 
-define("EPL_ADLAN_57", "Delete plugin tables");
-define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail. Tables will have to be manually deleted to remove.");
-define("EPL_ADLAN_59", "Delete plugin files");
-define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
+define("EPL_ADLAN_57", "Удалить таблицы плагина");
+define("EPL_ADLAN_58", "Если таблицы не будут удалены, плагин может быть установлен заново без потери данных.  Создания таблиц во время повторной установки не произойдет. Таблицы нужно будет удалять вручную.");
+define("EPL_ADLAN_59", "Удалить файлы плагина");
+define("EPL_ADLAN_60", "e107 попытается удалить все файлы, связанные с плагином.");
 // define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
-define("EPL_ADLAN_62", "Cancel uninstall");
-define("EPL_ADLAN_63", "Uninstall:");
+define("EPL_ADLAN_62", "Отменить деинсталляцию");
+define("EPL_ADLAN_63", "Деинсталлировать:");
 
-define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
-define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
+define("LAN_UPGRADE_SUCCESSFUL", "Апгрейд успешно произведен"); //Upgrade Successful
+define("LAN_INSTALL_SUCCESSFUL", "Установка успешно произведена"); //Installation Successful
 
 
 ?>

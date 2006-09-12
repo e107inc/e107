@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-09-12 08:00:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-09-12 09:12:27 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -157,26 +157,25 @@ define("PRFLAN_152", "Без подтверждения");
 define("PRFLAN_153", "Одобрение Админом");
 define("PRFLAN_154", "Новый метод проверки пользователей <br />Если выбрано 'Одобрение Админом', рекомендуется включить уведомление Админа по Email о регистрации новых пользователей <a href='".e_ADMIN."notify.php'>здесь</a>.");
 
-//Not translated yet:
-define("PRFLAN_155", "Display Name available to");
-define("PRFLAN_156", "Reset ALL Display Names");
-define("PRFLAN_157", "All Display Names have been reset to the Login Name");
-define("PRFLAN_158", "Display Name maximum length");
-define("PRFLAN_159", "viewing this page with");
+define("PRFLAN_155", "Отображаемое имя доступно для");
+define("PRFLAN_156", "Сбросить ВСЕ отображаемые имена"); //Reset ALL Display Names
+define("PRFLAN_157", "Все отображаемые имена были сброшены и теперь совпадают с именем пользователя (login)");
+define("PRFLAN_158", "Максимальная длина отображаемого имени");
+define("PRFLAN_159", "просматривает эту страницу с помощью"); //viewing this page with
 
-define("PRFLAN_160", "Check remote servers when validating email addresses.");
-define("PRFLAN_161", "Disable all comments on the site");
+define("PRFLAN_160", "Проверять удаленные сервера при подтверждении email-адресов.");
+define("PRFLAN_161", "Отключить все комментарии на этом сайте");
 
-define("PRFLAN_162", "Site Contact Information");
-define("PRFLAN_163", "eg. Company Name, Address, Phone etc.");
+define("PRFLAN_162", "Контактная информация сайта");
+define("PRFLAN_163", "например, Имя компании, адрес, телефон и т.д.");
 
-define("PRFLAN_164", "Allow users to email copy of contact email to self");
-define("PRFLAN_165", "Possible opening for allowing spam, use with caution");
-define("PRFLAN_166", "Show emoticon images on comment form?");
+define("PRFLAN_164", "Разрешать пользователям посылать копию контактного email себе"); //???? Allow users to email copy of contact email to self
+define("PRFLAN_165", "Возможно открывает доступ к спаму, использовать с осторожностью"); //Possible opening for allowing spam, use with caution
+define("PRFLAN_166", "Показывать смайлики на форме комментариев?"); //Show emoticon images on comment form?
 
-define("PRFLAN_167", "Make entering an email addresses optional"); // subject to change.
-define("PRFLAN_168", "Site Contact Person(s)");
-define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
+define("PRFLAN_167", "Сделать ввод email-адреса необязательным"); // subject to change.
+define("PRFLAN_168", "Контактное лицо(а) сайта");
+define("PRFLAN_169", "Если выбранная группа содержит более одного лица, пользователю будет предоставлен выбор лица из группы.");
 
 
 

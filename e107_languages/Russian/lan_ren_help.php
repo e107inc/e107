@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-09-11 04:57:48 $
+|     $Revision: 1.4 $
+|     $Date: 2006-09-12 09:12:02 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -49,21 +49,20 @@ define("LANHELP_34", "Вставить разделитель страницы")
 define("LANHELP_35", "адрес гиперссылки");
 define("LANHELP_36", "Несортированный список: [list]line1*line2*line3[/list] Сортированный список: [list=type]line1*line2*line3[/list]");
 
-//Not translated yet:
-define("LANHELP_37", "Insert image from e107_images/newspost_images/ directory");
-define("LANHELP_38", "link to full image will be generated");
+define("LANHELP_37", "Вставить изображение из каталога e107_images/newspost_images/");
+define("LANHELP_38", "ссылка на полное изображение будет сгенерирована");
 
-define("LANHELP_39", "Insert download link from existing downloads");
-define("LANHELP_40", "There are currently no existing downloads");
+define("LANHELP_39", "Вставить ссылку загрузки из существующих загрузок");
+define("LANHELP_40", "В настоящее время нет существующих загрузок");
 
 define("LANHELP_41", "Размер шрифта...");
 define("LANHELP_42", "Выберите изображение...");
 define("LANHELP_43", "Выберите файл...");
-define("LANHELP_44", "Click to open/close emoticon dialog ...");
-define("LANHELP_45", "Insert image from directory: ");
-define("LANHELP_46", "* No files found in: ");
+define("LANHELP_44", "Кликните, чтобы открыть/закрыть диалог смайликов ...");
+define("LANHELP_45", "Вставить изображении из каталога: ");
+define("LANHELP_46", "* Не найдено файлов в: ");
 
-define("LANHELP_47", "Insert flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
+define("LANHELP_47", "Вставить flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
 
 
 ?>

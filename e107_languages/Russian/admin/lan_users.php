@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-09-12 08:00:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-09-12 09:12:27 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -180,14 +180,13 @@ define("USRLAN_138", "Непроверенные пользователи");
 define("USRLAN_139", "Ваша учетная запись была активирована.\n\nПосетите {SITEURL} и войдите используя информацию доступа, которую вы дали.");
 
 define("USRLAN_140", "Email переслан на");
-//Not translated yet
-define("USRLAN_141", "Failed to Re-send email to");
-define("USRLAN_142", "with the following activation link");
+define("USRLAN_141", "Неудача при пересылке письма для");
+define("USRLAN_142", "со следующей ссылкой активации");
 
-define("LAN_BOUNCED","Bounced");
-define("USRLAN_143", "Check For Bounces");
-define("USRLAN_144", "Resend Confirmation Email to All");
-define("USRLAN_145", "Bounced users");
-define("USRLAN_146", "Member information is available to");
+define("LAN_BOUNCED","Возвращено"); //Bounces
+define("USRLAN_143", "Проверить на возвраты"); //Check For Bounces
+define("USRLAN_144", "Переслать письмо подтверждения всем");
+define("USRLAN_145", "Возвращенные (bounced) пользователи"); //????? (better translation need) "Bounced users"
+define("USRLAN_146", "Информация о пользователе доступна для");
 
 ?>

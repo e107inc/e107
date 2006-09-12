@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.1 $
-|     $Date: 2006-09-11 14:35:51 $
+|     $Revision: 1.2 $
+|     $Date: 2006-09-12 09:12:26 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -11,7 +11,7 @@
 define("PRFLAN_52", "Сохранить изменения");
 define("PRFLAN_63", "Отправить тестовое сообщение");
 define("PRFLAN_64", "Нажмите кнопку, чтобы послать тестовое сообщение на адрес Админа");
-define("PRFLAN_65", "Нажмите, чтобы послать email ");
+define("PRFLAN_65", "Нажмите, чтобы послать email на");
 define("PRFLAN_66", "Тестовое сообщение от");
 define("PRFLAN_67", "Это тестовое сообщение, если ты его читаешь, значит у тебя все в порядке!\n\nПрими Поздравления\nот e107 website system.");
 define("PRFLAN_68", "Сообщение не было отослано. Это означает, что ваш сервер не настроен на отправку почтовых сообщений, попробуйте еще раз, используя SMTP, или свяжитесь с админами хостинга, пусть они вам все настраивают, гады.");
@@ -49,50 +49,49 @@ define("MAILAN_22","Сохраненных сообщений нет");
 define("MAILAN_23","Класс пользователей: ");
 define("MAILAN_24", "сообщение(я) готовы к отправке");
 
-// Not translated yet:
-define("MAILAN_25", "Pause");
-define("MAILAN_26", "Pause mass-mailing every");
-define("MAILAN_27", "emails");
-define("MAILAN_28", "Pause Length");
-define("MAILAN_29", "seconds");
-define("MAILAN_30", "More than 30 seconds may cause the browser to time-out");
-define("MAILAN_31", "Bounced Email Processing");
-define("MAILAN_32", "Email address");
-define("MAILAN_33", "Incoming Mail");
-define("MAILAN_34", "Account Name");
-define("MAILAN_35", "Password");
-define("MAILAN_36", "Delete Bounced Mails after checking");
+define("MAILAN_25", "Пауза");
+define("MAILAN_26", "Приостановить массовую рассылку каждое");
+define("MAILAN_27", "сообщение");
+define("MAILAN_28", "Пауза длиной");
+define("MAILAN_29", "секунд");
+define("MAILAN_30", "Более 30-секундная пауза может вызвать тайм-аут бразуера");
+define("MAILAN_31", "Обработка возвращенный сообщений"); // Bounced Email Processing
+define("MAILAN_32", "Email-адрес");
+define("MAILAN_33", "Входящее сообщение"); //Incoming Mail
+define("MAILAN_34", "Имя пользователя"); //Account Name
+define("MAILAN_35", "Пароль");
+define("MAILAN_36", "Удалить возвращенные сообщения после проверки"); //Delete Bounced Mails after checking
 
-define("MAILAN_37", "Proceed");
-define("MAILAN_38", "Cancel");
-define("MAILAN_39", "Emailing");
-define("MAILAN_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
-define("MAILAN_41", "before sending mail from this page.");
-define("MAILAN_42", "Warning");
-define("MAILAN_43", "Username");
-define("MAILAN_44", "User Login");
-define("MAILAN_45", "User Email");
-define("MAILAN_46", "User-Match");
-define("MAILAN_47", "contains");
-define("MAILAN_48", "equals");
+define("MAILAN_37", "Продолжить"); //Proceed
+define("MAILAN_38", "Отменить"); //Cancel
+define("MAILAN_39", "Отправка сообщений"); //Emailing
+define("MAILAN_40", "Вам нужно переименовать <b>e107.htaccess</b> на <b>.htaccess</b> в");
+define("MAILAN_41", "перед отправкой почты с этой страницы.");
+define("MAILAN_42", "Предупреждение"); //Warning
+define("MAILAN_43", "Имя пользователя"); //Username
+define("MAILAN_44", "Имя пользователя (логин)"); //User Login
+define("MAILAN_45", "Email пользователя");
+define("MAILAN_46", "Соответствие-пользователь"); //User-Match
+define("MAILAN_47", "содержит"); //contains
+define("MAILAN_48", "равен"); //equals
 define("MAILAN_49", "Id");
-define("MAILAN_50", "Author");
-define("MAILAN_51", "Subject");
-define("MAILAN_52", "Lastmod");
-define("MAILAN_53", "Admins");
-define("MAILAN_54", "Self");
-define("MAILAN_55", "Userclass");
-define("MAILAN_56", "Send Mail");
-define("MAILAN_57", "Keep SMTP session alive");
-define("MAILAN_58", "There is a problem with the attachment:");
-define("MAILAN_59", "Mailing Progress");
-define("MAILAN_60", "Sending...");
-define("MAILAN_61", "There are no remaining emails to be sent.");
-define("MAILAN_62", "Emails sent:");
-define("MAILAN_63", "Emails failed:");
-define("MAILAN_64", "Total time elapsed:");
-define("MAILAN_65", "seconds");
-define("MAILAN_66", "Cancelled Successfully");
-define("MAILAN_67", "Use 'POP before SMTP' authentication"); 
+define("MAILAN_50", "Автор");
+define("MAILAN_51", "Тема");
+define("MAILAN_52", "Lastmod"); //Not translated yet
+define("MAILAN_53", "Администраторы"); //Admins
+define("MAILAN_54", "Себе");
+define("MAILAN_55", "Класс пользователя");
+define("MAILAN_56", "Отпавить письмо");
+define("MAILAN_57", "Сохранять живой сессию SMTP");
+define("MAILAN_58", "Обнаружены проблемы с прикреплением:"); //There is a problem with the attachment:
+define("MAILAN_59", "Прогресс отправки"); //Mailing Progress
+define("MAILAN_60", "Отправляю..."); //Sending...
+define("MAILAN_61", "Больше нет оставшихся для отправки сообщений."); //There are no remaining emails to be sent.
+define("MAILAN_62", "Послано сообщений:");
+define("MAILAN_63", "Неудачных отправок:"); //Emails failed:
+define("MAILAN_64", "Всего заняло:");
+define("MAILAN_65", "секунд");
+define("MAILAN_66", "Отменено успешно");
+define("MAILAN_67", "Использовать 'POP before SMTP' authentication");  //Not translated yet
 
 ?>
