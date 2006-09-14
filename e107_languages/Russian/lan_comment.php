@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-09-11 04:57:47 $
+|     $Revision: 1.4 $
+|     $Date: 2006-09-14 09:25:51 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ define("COMLAN_329", 'Неавторизован'); //Unauthorized
 define("COMLAN_330", 'IP:');
 
 define("COMLAN_TYPE_1", "новости");
-define("COMLAN_TYPE_2", "загрузки");
+define("COMLAN_TYPE_2", "загрузки"); //download
 define("COMLAN_TYPE_3", "faq");
 define("COMLAN_TYPE_4", "опрос");
 define("COMLAN_TYPE_5", "документы");

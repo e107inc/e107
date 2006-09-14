@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.5 $
-|     $Date: 2006-09-12 09:12:02 $
+|     $Revision: 1.6 $
+|     $Date: 2006-09-14 09:25:51 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("CLASSRESTRICTED", "Страница только для определё
 define("ARTICLEPAGE", "Статьи/Обзоры");
 define("CHAT", "Чат");
 define("COMMENT", "Комментарии");
-define("DOWNLOAD", "Загрузки");
+define("DOWNLOAD", "Загрузки"); //Downloads
 define("EMAIL", "email.php");
 define("FORUM", "Главная страница форума");
 define("LINKS", "Ссылки");
@@ -40,7 +40,7 @@ define("LOGIN", "Войти в"); //Logging In
 define("SEARCH", "Поиск");
 define("STATS", "Статистика");
 define("SUBMITNEWS", "Добавить новость");
-define("UPLOAD", "Загрузки");
+define("UPLOAD", "Загрузки на сервер"); //Uploads
 define("USERPAGE", "Профили пользователей");
 define("USERSETTINGS", "Настройки пользователей");
 define("ONLINE", "Пользователи в сети");

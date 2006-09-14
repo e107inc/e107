@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-09-11 04:57:48 $
+|     $Revision: 1.4 $
+|     $Date: 2006-09-14 09:25:51 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -104,8 +104,8 @@ define("LAN_SEARCH_67", "Все детали загрузки");
 define("LAN_SEARCH_68", "Дата");
 define("LAN_SEARCH_69", "Релевантность");
 
-define("LAN_SEARCH_70", "Сообщения загрузок");
-define("LAN_SEARCH_71", "Отправлено в ответ на новость");
+define("LAN_SEARCH_70", "Отправлено о загруке"); //Posted to download item
+define("LAN_SEARCH_71", "Отправлено в ответ на новость"); //Posted in reply to news item
 define("LAN_SEARCH_72", "Подпись");
 define("LAN_SEARCH_73", "Нет подписи.");
 define("LAN_SEARCH_74", "Присоединение");
