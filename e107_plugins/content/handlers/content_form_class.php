@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.116 $
-|		$Date: 2006-08-02 21:47:32 $
+|		$Revision: 1.117 $
+|		$Date: 2006-09-15 06:52:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -3223,6 +3223,11 @@ class contentform{
 			//content_cat_item_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_162;
 			$TOPIC_FIELD = $rs -> form_text("content_cat_item_caption", 25, $tp->toHTML($content_pref['content_cat_item_caption'],"","defs"), 50);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_subcat_levels_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_171;
+			$TOPIC_FIELD = CONTENT_ADMIN_OPT_LAN_172."<br />".$rs -> form_text("content_cat_levels", 10, $content_pref['content_cat_levels'], 3);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
