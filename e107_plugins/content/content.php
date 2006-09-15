@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.104 $
-|		$Date: 2006-08-02 21:47:32 $
+|		$Revision: 1.105 $
+|		$Date: 2006-09-15 06:52:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -746,6 +746,18 @@ function show_content_cat($mode=""){
 			$check			= (isset($qs[1]) && is_numeric($qs[1]) ? intval($qs[1]) : intval($mainparent));
 			$array1			= $aa -> getCategoryTree("", $check, TRUE);
 			$newarray		= array_merge_recursive($array1);
+			$levels = 0;
+			if(isset($content_pref['content_cat_levels']) && is_numeric($content_pref['content_cat_levels']) && $content_pref['content_cat_levels']>0){
+				$levels = intval($content_pref['content_cat_levels']) + 1;
+			}
+			if($levels>0){
+				for($a=0;$a<count($newarray);$a++){
+					if( count($newarray[$a]) <= (2*$levels) ){
+						$newarray2[] = $newarray[$a];
+					}
+				}
+				$newarray = $newarray2;
+			}
 			for($a=0;$a<count($newarray);$a++){
 				for($b=0;$b<count($newarray[$a]);$b++){
 					$subparent[$newarray[$a][$b]] = $newarray[$a][$b+1];

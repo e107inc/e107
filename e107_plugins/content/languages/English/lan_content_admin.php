@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-08-27 02:24:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.18 $
+|     $Date: 2006-09-15 06:52:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -699,5 +699,7 @@ define("CONTENT_ADMIN_OPT_LAN_167", "inherit");
 define("CONTENT_ADMIN_OPT_LAN_168", "first page");
 define("CONTENT_ADMIN_OPT_LAN_169", "last page");
 define("CONTENT_ADMIN_OPT_LAN_170", "where should custom and preset tags be rendered in a multipage content item ?");
+define("CONTENT_ADMIN_OPT_LAN_171", "amount of levels");
+define("CONTENT_ADMIN_OPT_LAN_172", "numeric value to show that amount of levels of subcategories of the category tree. leave blank to show all levels.");
 
 ?>
