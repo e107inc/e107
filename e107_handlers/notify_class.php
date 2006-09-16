@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-07-04 04:03:08 $
+|     $Revision: 1.12 $
+|     $Date: 2006-09-16 18:18:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -123,6 +123,13 @@ function notify_newsupd($data) {
 function notify_newsdel($data) {
 	global $nt;
 	$nt -> send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
+}
+
+
+function notify_fileupload($data) {
+	global $nt;
+	$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
+	$nt -> send('fileupload', $data['upload_name'], $message);
 }
 
 if (isset($nt -> notify_prefs['plugins'])) {

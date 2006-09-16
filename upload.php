@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-07-16 19:56:46 $
+|     $Revision: 1.14 $
+|     $Date: 2006-09-16 18:18:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,10 @@ if (isset($_POST['upload'])) {
 				$poster = (USER ? USERID.".".USERNAME : "0".$_POST['file_poster']);
 				$_POST['file_email'] = ($_POST['file_email'] ? $_POST['file_email'] : USEREMAIL);
 				$_POST['file_description'] = $tp->toDB($_POST['file_description']);
-				$sql->db_Insert("upload", "0, '".$tp -> toDB($poster)."', '".$tp -> toDB(check_email($_POST['file_email']))."', '".$tp -> toDB($_POST['file_website'])."', '".time()."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$tp -> toDB($_POST['download_category'])."'");
+				$file_time = time();
+				$sql->db_Insert("upload", "0, '".$tp -> toDB($poster)."', '".$tp -> toDB(check_email($_POST['file_email']))."', '".$tp -> toDB($_POST['file_website'])."', '".$file_time."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$tp -> toDB($_POST['download_category'])."'");
+                $edata_fu = array("upload_user" => $poster, "upload_email" => $_POST['file_email'], "upload_name" => $tp -> toDB($_POST['file_name']),"upload_file" => $file, "upload_version" => $_POST['file_version'], "upload_description" => $tp -> toDB($_POST['file_description']), "upload_size" => $filesize, "upload_category" => $tp -> toDB($_POST['download_category']), "upload_website" => $tp -> toDB($_POST['file_website']), "upload_image" => $image, "upload_demo" => $tp -> toDB($_POST['file_demo']), "upload_time" => $file_time);
+				$e_event->trigger("fileupload", $edata_fu);
 				$message .= "<br />".LAN_404;
 			}
 		}
