@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-07-08 04:18:32 $
+|     $Revision: 1.13 $
+|     $Date: 2006-09-16 18:18:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ class notify_config {
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 
-		// load every e_notify.php file. 
+		// load every e_notify.php file.
         foreach($pref['e_notify_list'] as $val)
 		{
 				if (!isset($this -> notify_prefs['plugins'][$val]))
@@ -103,6 +103,12 @@ class notify_config {
 		$text .= $this -> render_event('newspost', NN_LAN_3);
 		$text .= $this -> render_event('newsupd', NN_LAN_4);
 		$text .= $this -> render_event('newsdel', NN_LAN_5);
+
+		$text .= "<tr>
+		<td colspan='2' class='forumheader'>".NF_LAN_1."</td>
+		</tr>";
+
+		$text .= $this -> render_event('fileupload', NF_LAN_2);
 
 		foreach ($this -> notify_prefs['plugins'] as $plugin_id => $plugin_settings) {
             if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
