@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.8 $
-|     $Date: 2006-09-15 10:30:27 $
+|     $Revision: 1.9 $
+|     $Date: 2006-09-16 14:20:17 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -178,7 +178,7 @@ define('ADLAN_CL_4', 'Coms');
 define('ADLAN_CL_5', 'Файлы');
 define('ADLAN_CL_6', 'Инструменты');
 define('ADLAN_CL_7', 'Плагины');
-define('ADLAN_CL_8', 'FAQ'); // In main menu
+define('ADLAN_CL_8', 'FAQ'); // In main menu English: "Docs"
 
 define("ADLAN_LAT_1", "Самое последнее"); //Latest ????
 
