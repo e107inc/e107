@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-09-02 21:41:18 $
+|     $Revision: 1.28 $
+|     $Date: 2006-09-16 23:20:24 $
 |     $Author: e107coders $
 |
 | 25.02.06 - Extra comments to try and sort out listing problem.
@@ -757,7 +757,7 @@ if ($cal_super)
 $qry = "
 SELECT e.* FROM #event AS e
 LEFT JOIN #event_cat AS ec ON e.event_category = ec.event_cat_id
-WHERE e.event_start > '".intval($next10_start)."' 
+WHERE e.event_start > '".intval($next10_start)."'
 ORDER BY e.event_start ASC
 LIMIT 0, 10
 ";
@@ -803,7 +803,7 @@ function show_event($day_events)
         $gen = new convert;
         if ( ( !isset($_POST['do']) || (isset($_POST['do']) && $_POST['do'] == null)) || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == "all") || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == $thisevent['event_cat_id']) )
         {
-            $lp = explode(".", $thisevent['event_author']);
+            $lp = explode(".", $thisevent['event_author'],2);
             if (preg_match("/[0-9]+/", $lp[0]))
             {
                 $event_author_id = $lp[0];
