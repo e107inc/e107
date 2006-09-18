@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/search/search_parser.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-09-18 08:57:42 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,13 +46,38 @@ $ps = $sch -> parsesearch('pcontent', $return_fields, $search_fields, $weights, 
 $text .= $ps['text'];
 $results = $ps['results'];
 
+
 function search_content($row) {
-	global $con;
+	global $con, $sql;
 	$res['link'] = e_PLUGIN."content/content.php?content.".$row['content_id'];
 	$res['pre_title'] = "";
 	$res['title'] = $row['content_heading'];
 	$res['summary'] = $row['content_summary'].' '.$row['content_text'];
-	$res['detail'] = LAN_SEARCH_3.$con -> convert_date($row['content_datestamp'], "long");
+	
+	//get category heading
+	if($row['content_parent'] == '0'){
+		$qry = "
+		SELECT c.content_heading
+		FROM pcontent as c
+		WHERE c.content_id = '".$row['content_id']."' ";
+	}elseif(strpos($row['content_parent'], "0.") !== FALSE){
+		$tmp = explode(".", $row['content_parent']);
+		$qry = "
+		SELECT c.content_heading
+		FROM pcontent as c
+		WHERE c.content_id = '".intval($tmp[1])."' ";
+	}else{
+		$qry = "
+		SELECT c.*, p.*
+		FROM pcontent as c
+		LEFT JOIN pcontent as p ON p.content_id = c.content_parent
+		WHERE c.content_id = '".$row['content_id']."' ";
+	}
+	
+	$sql -> db_Select_gen($qry);
+	$cat = $sql -> db_Fetch();
+
+	$res['detail'] = LAN_SEARCH_3.$con -> convert_date($row['content_datestamp'], "long")." ".CONT_SCH_LAN_4." ".$cat['content_heading'];
 	return $res;
 }
 
