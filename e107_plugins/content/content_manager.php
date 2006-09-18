@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2006-07-16 10:35:46 $
+|		$Revision: 1.22 $
+|		$Date: 2006-09-18 07:17:45 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -53,9 +53,14 @@ if(e_QUERY){
 // define e_pagetitle
 $aa -> setPageTitle();
 
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS("delete")],$matches)){
-	$delete = $matches[1];
-	$del_id = $matches[2];
+//if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS("delete")],$matches)){
+//	$delete = $matches[1];
+//	$del_id = $matches[2];
+//}
+
+if(isset($_POST['delete'])){
+	$tmp = array_pop(array_flip($_POST['delete']));
+	list($delete, $del_id) = explode("_", $tmp);
 }
 
 //these have to be set for the tinymce wysiwyg
