@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.22 $
-|		$Date: 2006-09-18 07:17:45 $
+|		$Revision: 1.23 $
+|		$Date: 2006-09-18 07:40:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -65,7 +65,8 @@ if(isset($_POST['delete'])){
 
 //these have to be set for the tinymce wysiwyg
 $e_wysiwyg	= "content_text";
-if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
+//if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
+if($pref['wysiwyg'] && $e_wysiwyg == TRUE){
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
 	$tiny = wysiwyg($e_wysiwyg);
