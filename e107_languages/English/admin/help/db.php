@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/db.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 17:37:43 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-09-20 14:04:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = "This collection of tools allows you to manage your database.";
+$text = "These collection of tools allow you to manage your database.";
 $ns -> tablerender("Database Tools", $text);
 ?>

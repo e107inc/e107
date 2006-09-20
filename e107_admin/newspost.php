@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.133 $
-|   $Date: 2006-07-20 00:53:41 $
+|   $Revision: 1.134 $
+|   $Date: 2006-09-20 14:04:31 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -181,7 +181,7 @@ if (isset($_POST['update_category'])) {
 		$sql->db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
 		$newspost->show_message(NWSLAN_36);
 	}
-	$e107cache->clear("news.php"); 
+	$e107cache->clear("news.php");
 	$e107cache->clear("othernews");
 	$e107cache->clear("othernews2");
 }
@@ -189,7 +189,7 @@ if (isset($_POST['update_category'])) {
 if (isset($_POST['save_prefs'])) {
 	$pref['newsposts'] = $_POST['newsposts'];
 
-	// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
+	// ##### ADDED FOR NEWS ARCHIVE --------------------------------------------------------------------
 	$pref['newsposts_archive'] = $_POST['newsposts_archive'];
 	$pref['newsposts_archive_title'] = $tp->toDB($_POST['newsposts_archive_title']);
 	// ##### END --------------------------------------------------------------------------------------
@@ -964,7 +964,7 @@ class newspost {
 
 
 
-		// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
+		// ##### ADDED FOR NEWS ARCHIVE --------------------------------------------------------------------
 		// the possible archive values are from "0" to "< $pref['newsposts']"
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
 		$text .= "

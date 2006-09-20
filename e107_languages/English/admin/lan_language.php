@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_language.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2006-09-20 14:04:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,12 +24,12 @@ define("LANG_LAN_11", "Delete unchecked tables above (if they exist).");
 define("LANG_LAN_12", "Enable Multi-Language Tables");
 define("LANG_LAN_13", "Language Preferences");
 define("LANG_LAN_14", "Default Site Language");
-define("LANG_LAN_15", "Tick to copy data from the default language.(useful for links, news-categories, etc.) ");
+define("LANG_LAN_15", "Tick to copy data from the default language. (Useful for links, news-categories, etc.)");
 define("LANG_LAN_16", "Multi-language Database Usage");
 define("LANG_LAN_17", "Default Language - No additional tables required.");
 define("LANG_LAN_18", "Use Parked Subdomains to set Language:");
-define("LANG_LAN_19", "eg. fr.mydomain.com to set the language to French.");
-define("LANG_LAN_20", "Enter the main domain name to enable. eg. mydomain.com");
+define("LANG_LAN_19", "e.g. fr.mydomain.com to set the language to French.");
+define("LANG_LAN_20", "Enter the main domain name to enable. e.g. mydomain.com");
 
 
 ?>
