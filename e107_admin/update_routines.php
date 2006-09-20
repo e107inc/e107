@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.183 $
-|     $Date: 2006-07-09 03:43:42 $
+|     $Revision: 1.184 $
+|     $Date: 2006-09-20 14:54:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -747,12 +747,20 @@ function update_617_to_700($type='') {
 		}
 
 
+
+         // fix for the the moving of the stats.php file in 0.7.
+			if($sql -> db_Select("links", "*", "link_url = 'stats.php'")){
+				$sql -> db_Update("links", "link_url='{"."e_PLUGIN"."}log/stats.php' WHERE link_url='stats.php' ");
+				catch_error();
+			}
+
 		// Missing Forum upgrade stuff by Cam.
+
 			global $PLUGINS_DIRECTORY;
 			if($sql -> db_Select("links", "*", "link_url = 'forum.php'")){
 				$sql -> db_Insert("plugin", "0, 'Forum', '1.1', 'forum', '1' ");
 				catch_error();
-				$sql -> db_Update("links", "link_url='".$PLUGINS_DIRECTORY."forum/forum.php' WHERE link_url='forum.php' ");
+				$sql -> db_Update("links", "link_url='{"."e_PLUGIN"."}forum/forum.php' WHERE link_url='forum.php' ");
 				catch_error();
 			}
 
@@ -1299,7 +1307,7 @@ function update_617_to_700($type='') {
 		return '';
 
 	} else {
-
+   
 		// Check if update is needed to 0.7. -----------------------------------------------
 		global $pref;
 		if (!$sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended")) {
