@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2006-09-20 14:04:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Downloads");
@@ -77,7 +77,7 @@ define("LAN_dl_59", "Reported by: ");
 define("LAN_dl_60", "Broken download report from");
 
 define("LAN_dl_61", "Download Error");
-define("LAN_dl_62", "You have been prevented from downloading this file, you have exceeded your download quota");
+define("LAN_dl_62", "You have been prevented from downloading this file; you have exceeded your download quota");
 define("LAN_dl_63", "You do not have the correct permissions to download this file.");
 define("LAN_dl_64", "Back");
 define("LAN_dl_65", "File Not Found");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/fileinspector.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-14 17:37:43 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-09-20 14:04:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,7 +28,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_fail.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Core File (Integrity Fail)</div>
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
-<img src='".e_IMAGE."fileinspector/file_uncalc.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Core File (Uncalculable)</div>
+<img src='".e_IMAGE."fileinspector/file_uncalc.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Core File (Incalculable)</div>
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_missing.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Missing Core File</div>
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
@@ -37,13 +37,13 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Non Core File</div>";
 $ns -> tablerender("File Key", $text);
 
-$text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters 
-an e107 core file it checks it for file consistency to make sure it isnt corrupted.";
+$text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters
+an e107 core file, it checks it for file consistency to make sure it isn't corrupted.";
 
 if ($pref['developer']) {
 $text .= "<br /><br />
-The additional string matching tool (developer mode only) enables you to scan the files on your server for text strings 
-using regular expressions. The regex engine in use is PHP's <a href='http://php.net/pcre'>PCRE</a> 
+The additional string matching tool (developer mode only) enables you to scan the files on your server for text strings
+using regular expressions. The regex engine in use is PHP's <a href='http://php.net/pcre'>PCRE</a>
 (the preg_* functions), so enter your query as #pattern#modifiers in the fields provided.";
 }
 
