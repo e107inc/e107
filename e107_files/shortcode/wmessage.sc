@@ -1,4 +1,4 @@
-// $Id: wmessage.sc,v 1.13 2006-07-21 21:14:16 e107coders Exp $
+// $Id: wmessage.sc,v 1.14 2006-09-20 14:29:45 e107coders Exp $
 
 if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $parm !='header') ){
 	return;
@@ -7,11 +7,6 @@ if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $pa
 	global $e107,$e107cache;
 
 
-	if($cacheData = $e107cache->retrieve("wmessage"))
-	{
-		echo $cacheData;
-   		return;
-	}
 
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
 		$full_url = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['all'];
@@ -41,6 +36,15 @@ if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $pa
 
 	if (e_SELF == $front_url && e_QUERY == $front_qry) {
 		global $sql, $pref, $tp, $ns;
+
+
+		if($cacheData = $e107cache->retrieve("wmessage"))
+		{
+			echo $cacheData;
+   			return;
+		}
+
+
 		if (!defined("WMFLAG")) {
 			$qry = "
 			SELECT * FROM #generic
