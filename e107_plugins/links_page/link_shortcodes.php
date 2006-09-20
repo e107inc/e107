@@ -231,6 +231,10 @@ SC_END
 // LINK_TABLE ------------------------------------------------
 SC_BEGIN LINK_BUTTON
 global $LINK_BUTTON, $linkspage_pref, $rowl, $LINK_NAME, $LINK_APPEND;
+
+if(!$linkspage_pref['link_icon']){
+	return FALSE;
+}
 $LINK_BUTTON = "&nbsp;";
 if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 	if ($rowl['link_button']) {
