@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-09-16 18:18:04 $
+|     $Revision: 1.13 $
+|     $Date: 2006-09-21 00:08:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -68,8 +68,22 @@ $nt = new notify;
 
 function notify_usersup($data) {
 	global $nt;
-	foreach ($data as $key => $value) {
-		$message .= $key.': '.$value.'<br />';
+	foreach ($data as $key => $value)
+	{
+		if($key != "password1" && $key != "password2" && $key != "email_confirm" && $key != "register")
+		{
+			if(is_array($value))  // show user-extended values.
+			{
+            	foreach($value as $k => $v)
+				{
+                	$message .= str_replace("user_","",$k).': '.$v.'<br />';
+				}
+			}
+			else
+			{
+				$message .=  $key.': '.$value.'<br />';
+			}
+		}
 	}
 	$nt -> send('usersup', NT_LAN_US_1, $message);
 }

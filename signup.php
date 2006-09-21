@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2006-07-18 06:08:09 $
+|     $Revision: 1.97 $
+|     $Date: 2006-09-21 00:08:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -590,8 +590,8 @@ if (isset($_POST['register']))
 				}
 			}
 
-			$edata_su = array("username" => $username, "email" => $_POST['email'], "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname'], "xup" => $_POST['xupexist']);
-			$e_event->trigger("usersup", $edata_su);
+            $_POST['ip'] = $ip;
+			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			require_once(HEADERF);
 			if($pref['signup_text_after'])
@@ -646,9 +646,8 @@ if (isset($_POST['register']))
 			}
 
 			// ==========================================================
-
-			$edata_su = array("username" => $username, "email" => $_POST['email'], "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname'], "xup" => $_POST['xupexist']);
-			$e_event->trigger("usersup", $edata_su);
+            $_POST['ip'] = $ip;
+			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			if($pref['signup_text_after'])
 			{
