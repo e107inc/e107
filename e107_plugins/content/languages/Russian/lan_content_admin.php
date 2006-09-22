@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.1 $
-|     $Date: 2006-09-20 14:45:54 $
+|     $Revision: 1.2 $
+|     $Date: 2006-09-22 12:58:08 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -698,5 +698,7 @@ define("CONTENT_ADMIN_OPT_LAN_167", "inherit");
 define("CONTENT_ADMIN_OPT_LAN_168", "first page");
 define("CONTENT_ADMIN_OPT_LAN_169", "last page");
 define("CONTENT_ADMIN_OPT_LAN_170", "where should custom and preset tags be rendered in a multipage content item ?");
+define("CONTENT_ADMIN_OPT_LAN_171", "amount of levels");
+define("CONTENT_ADMIN_OPT_LAN_172", "numeric value to show that amount of levels of subcategories of the category tree. leave blank to show all levels.");
 
 ?>
