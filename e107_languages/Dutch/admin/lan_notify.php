@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_notify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-30 07:37:50 $
+|     $Revision: 1.4 $
+|     $Date: 2006-09-25 13:37:44 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -32,4 +32,6 @@ define("NN_LAN_3", "Nieuwsbericht geplaatst door beheerder");
 define("NN_LAN_4", "Nieuwsbericht bewerkt door beheerder");
 define("NN_LAN_5", "Nieuwsbericht verwijderd door beheerder");
 
+define("NF_LAN_1", "Bestanden gebeurtenissen");
+define("NF_LAN_2", "bestand ge-upload door gebruiker");
 ?>

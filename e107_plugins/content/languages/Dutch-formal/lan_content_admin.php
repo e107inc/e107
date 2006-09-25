@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-formal/lan_content_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-08-18 19:55:40 $
+|     $Revision: 1.7 $
+|     $Date: 2006-09-25 13:37:59 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -658,6 +658,9 @@ define("CONTENT_ADMIN_OPT_LAN_167", "overerven");
 define("CONTENT_ADMIN_OPT_LAN_168", "eerste pagina");
 define("CONTENT_ADMIN_OPT_LAN_169", "laatste pagina");
 define("CONTENT_ADMIN_OPT_LAN_170", "waar moeten de maatwerk en presest tags voor een meervoudig pagina onderwerp worden weergegeven ?");
+define("CONTENT_ADMIN_OPT_LAN_171", "aantal niveaus");
+define("CONTENT_ADMIN_OPT_LAN_172", "het aantal subcategorieniveaus dat wordt getoond in de boomstructuur.  Niet invullen om alles te tonen.");
+
 define("CONTENT_LATEST_LAN_1", "Aangemelde contentonderwerpen:");
 
 define("CONTENT_ADMIN_MANAGER_LAN_0", "goedkeuren aangemeld");
