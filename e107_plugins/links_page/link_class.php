@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.34 $
-|    $Date: 2006-08-06 10:24:36 $
-|    $Author: lisa_ $
+|    $Revision: 1.35 $
+|    $Date: 2006-09-26 18:31:27 $
+|    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -220,7 +220,7 @@ class linkclass {
             $lappend = "<a class='linkspage_url' href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."' rel='external'>";
             break;
             case 2:
-            $lappend = "<a class='linkspage_url'href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
+            $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
             break;
             case 3:
             $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
