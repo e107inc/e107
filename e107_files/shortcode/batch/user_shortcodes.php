@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-08-04 00:19:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.21 $
+|     $Date: 2006-09-26 21:17:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -64,6 +64,12 @@ SC_END
 SC_BEGIN USER_CHATPOSTS
 global $user;
 return $user['user_chats'];
+SC_END
+
+SC_BEGIN USER_DOWNLOADS
+global $sql,$user;
+$downloads = $sql->db_Count("download_requests","(*)","where download_request_userid=".$user['user_id']);
+return $downloads;
 SC_END
 
 SC_BEGIN USER_CHATPER
@@ -178,7 +184,7 @@ SC_END
 
 SC_BEGIN USER_EMAIL
 global $user,$tp;
-return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->toHTML($user['user_email'],"no_replace"); 
+return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->toHTML($user['user_email'],"no_replace");
 SC_END
 
 SC_BEGIN USER_ICON
