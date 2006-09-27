@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-08-24 23:10:36 $
+|     $Revision: 1.33 $
+|     $Date: 2006-09-27 19:54:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,16 +34,16 @@ $lanlist = explode(",",e_LANLIST);
 $message = "";
 
 
-if (isset($_POST['submit_prefs']) ) {
+if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
 
-	$pref['multilanguage'] 				= $_POST['multilanguage'];
+	$pref['multilanguage']	= $_POST['multilanguage'];
 	if($_POST['multilanguage_subdomain']){
     	$pref['multilanguage_subdomain'] = ".".$_POST['multilanguage_subdomain'];
 	}else{
     	$pref['multilanguage_subdomain'] = "";
 	}
 
-	$pref['sitelanguage'] 				= $_POST['sitelanguage'];
+	$pref['sitelanguage'] = $_POST['mainsitelanguage'];
 
 	save_prefs();
 	$ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
@@ -232,7 +232,7 @@ function multilang_prefs() {
 
 
 	$text .= "
-		<select name='sitelanguage' class='tbox'>\n";
+		<select name='mainsitelanguage' class='tbox'>\n";
 		$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
 		foreach($lanlist as $lan){
 			$sel =  ($lan == $sellan) ? "selected='selected'" : "";
