@@ -9,12 +9,12 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.6 $Date: 2004/10/04
+// $Revision: 1.7 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.6 $
-// $Date: 2006-09-06 23:35:34 $
+// $Revision: 1.7 $
+// $Date: 2006-09-28 22:43:31 $
 // $Author: e107coders $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
@@ -28,7 +28,7 @@ unset($tinyMCE_imglib_include);
 // include image library config settings
 include 'config.php';
 
-$request_uri = urldecode(empty($HTTP_POST_VARS['request_uri'])?(empty($HTTP_GET_VARS['request_uri'])?'':$HTTP_GET_VARS['request_uri']):$HTTP_POST_VARS['request_uri']);
+$request_uri = urldecode(empty($_POST['request_uri'])?(empty($_GET['request_uri'])?'':$_GET['request_uri']):$_POST['request_uri']);
 
 // if set include file specified in $tinyMCE_imglib_include
 if (!empty($tinyMCE_imglib_include))
@@ -37,8 +37,8 @@ if (!empty($tinyMCE_imglib_include))
 }
 
 
-$imglib = isset($HTTP_POST_VARS['lib'])?$HTTP_POST_VARS['lib']:'';
-if (empty($imglib) && isset($HTTP_GET_VARS['lib'])) $imglib = $HTTP_GET_VARS['lib'];
+$imglib = isset($_POST['lib'])?$_POST['lib']:'';
+if (empty($imglib) && isset($_GET['lib'])) $imglib = $_GET['lib'];
 
 $value_found = false;
 // callback function for preventing listing of non-library directory
@@ -59,7 +59,7 @@ if (!$value_found || empty($imglib))
 $lib_options = liboptions($tinyMCE_imglibs,'',$imglib);
 
 
-$img = isset($HTTP_POST_VARS['imglist'])?$HTTP_POST_VARS['imglist']:'';
+$img = isset($_POST['imglist'])? $_POST['imglist']:'';
 
 $preview = e_IMAGE."generic/blank.gif";
 
@@ -262,7 +262,7 @@ $errors = array();
 <script type="text/javascript">
     window.name = 'imglibrary';
 </script>
-<form name="libbrowser" method="post" action="ibrowser.php?request_uri=<?php echo $HTTP_GET_VARS['request_uri']?>" enctype="multipart/form-data" target="imglibrary">
+<form name="libbrowser" method="post" action="ibrowser.php?request_uri=<?php echo $_GET['request_uri']?>" enctype="multipart/form-data" target="imglibrary">
   <input type="hidden" name="request_uri" value="<?php echo urlencode($request_uri)?>">
   <input type="hidden" name="lib_action" value="">
   <fieldset style= "padding: 5 5 5 5; margin-top: -5px;">
@@ -289,11 +289,11 @@ $errors = array();
           </tr>
           <tr>
             <td><?php
-    if (!preg_match('#/$#', $HTTP_SERVER_VARS['DOCUMENT_ROOT'])){
-    //  $_root = $HTTP_SERVER_VARS['DOCUMENT_ROOT'].'/';
+    if (!preg_match('#/$#', $_SERVER['DOCUMENT_ROOT'])){
+    //  $_root = $_SERVER['DOCUMENT_ROOT'].'/';
 		$_root = e_BASE;
    } else {
-   //   $_root = $HTTP_SERVER_VARS['DOCUMENT_ROOT'];
+   //   $_root = $_SERVER['DOCUMENT_ROOT'];
       $_root = e_BASE;
 	}
   //  $d = @dir($_root.$imglib);
