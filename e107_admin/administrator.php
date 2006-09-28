@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-07-09 03:43:42 $
+|     $Revision: 1.29 $
+|     $Date: 2006-09-28 22:44:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ function show_admins(){
 
 		$text .= "<tr>
 		<td style='width:5%' class='forumheader3'>".$row['user_id']."</td>
-		<td style='width:20%' class='forumheader3'>".$row['user_name']."</td>
+		<td style='width:20%' class='forumheader3'><a href='".e_BASE."user.php?id.".$row['user_id']."'>".$row['user_name']."</a></td>
 		<td style='width:65%' class='forumheader3'>";
 
 		$permtxt = "";
