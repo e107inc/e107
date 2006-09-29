@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2006-07-30 09:58:20 $
-|     $Author: lisa_ $
+|     $Revision: 1.95 $
+|     $Date: 2006-09-29 00:54:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -82,7 +82,7 @@ if($sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' AND plugin_p
 if ($authlist) {
 	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
 	foreach($authlist as $a) {
-		$s = ($pref['auth_method'] == $a ? " selected='selected'>" : "");
+		$s = ($pref['auth_method'] == $a ? " selected='selected' " : "");
 		$auth_dropdown .= "<option {$s}>".$a."</option>\n";
 	}
 	$auth_dropdown .= "</select>\n";
