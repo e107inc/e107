@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpbb2.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-08-27 02:24:44 $
+|     $Revision: 1.8 $
+|     $Date: 2006-09-29 00:48:11 $
 |     $Author: mcfly_e107 $
 |
 |     31/1/2006  Changes by Albert Drent
@@ -116,13 +116,13 @@ flush();
 $phpbbConnection = mysql_connect($phpbb2Host, $phpbb2Username, $phpbb2Password, TRUE);
 if(!mysql_select_db($phpbb2Database, $phpbbConnection))
 {
-	goError("Error! Cound not connect to phpBB database. Please go back to the previous page and check your settings");
+	goError("Error! Could not connect to phpBB database. Please go back to the previous page and check your settings");
 }
 
 $e107Connection = mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword, TRUE);
 if(!mysql_select_db($mySQLdefaultdb, $e107Connection))
 {
-	goError("Error! Cound not connect to e107 database.");
+	goError("Error! Could not connect to e107 database.");
 }
 
 echo "Successfully connected to phpBB and e107 databases ...<br><br />";
