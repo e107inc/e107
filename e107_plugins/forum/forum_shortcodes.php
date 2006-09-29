@@ -151,7 +151,7 @@ SC_END
 SC_BEGIN WEBSITE
 global $post_info, $tp;
 if ($post_info['user_homepage']) {
-return LAN_08.": ".$post_info['user_homeapage']."<br />";
+return LAN_08.": ".$post_info['user_homepage']."<br />";
 }
 SC_END
 	

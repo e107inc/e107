@@ -8,7 +8,7 @@ else
 }
 $parms = explode("^",$parm);
 
-//core		//return "<a href='".e_BASE."pdf.php?{$parms[1]}'><img src='".$icon."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}'/></a>";
-//plugin	//return "<a href='".e_PLUGIN."pdf/pdf.php?{$parms[1]}'><img src='".$icon."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}'/></a>";
+//core		//return "<a href='".e_BASE."pdf.php?{$parms[1]}'><img src='".$icon."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' /></a>";
+//plugin	//return "<a href='".e_PLUGIN."pdf/pdf.php?{$parms[1]}'><img src='".$icon."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' /></a>";
 
-return "<a href='".e_PLUGIN."pdf/pdf.php?{$parms[1]}'><img src='".$icon."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}'/></a>";
+return " <a href='".e_PLUGIN."pdf/pdf.php?{$parms[1]}'><img src='".$icon."' style='border:0' alt='{$parms[0]}' title='{$parms[0]}' /></a>";
