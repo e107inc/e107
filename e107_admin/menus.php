@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-09-04 16:10:56 $
-|     $Author: e107coders $
+|     $Revision: 1.48 $
+|     $Date: 2006-09-30 20:08:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -391,7 +391,7 @@ function parseheader($LAYOUT, $check = FALSE) {
 	for ($c = 0; $c < count($tmp); $c++) {
 		if (preg_match("/[\{|\}]/", $tmp[$c])) {
 			if ($check) {
-				if (strstr($tmp[$c], "MENU")) {
+				if (strstr($tmp[$c], "{MENU=")) {
 					$str[] = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $tmp[$c]);
 				}
 			} else {
