@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2006-08-27 02:24:45 $
+|     $Revision: 1.90 $
+|     $Date: 2006-09-30 19:59:39 $
 |     $Author: mcfly_e107 $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -160,7 +160,7 @@ if ($pref['image_preload']) {
 	$ejs_listpics = '';
 	$handle=opendir(THEME.'images');
 	while ($file = readdir($handle)) {
-		if (!strstr($file, "._") && strstr($file,".") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store") {
+		if(preg_match("#(jpg|jpeg|gif|bmp|png)$#i", $file)) {
 			$ejs_listpics .= $file.",";
 		}
 	}
