@@ -91,7 +91,9 @@ foreach($eMenuList[$tmp[0]] as $row)
 				include_once(e_LANGUAGEDIR."English/plugins/lan_{$row['menu_path']}.php");
 			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English.php")) {
 				include_once(e_PLUGIN.$row['menu_path']."/languages/English.php");
-			} 
+			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English/English.php")) {
+				include_once(e_PLUGIN.$row['menu_path']."/languages/English/English.php");
+			}
 			
 			if(file_exists(e_PLUGIN.$row['menu_path']."/".$mname.".php"))
 			{
