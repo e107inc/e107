@@ -1,10 +1,13 @@
-﻿<?php
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     Russian Language Pack for e107 0.7
+|     $Revision: 1.2 $
+|     $Date: 2006-10-03 14:33:10 $
+|     $Author: verant $
++----------------------------------------------------------------------------+
+*/
 
-## Russian Language Pack for e107 Version 0.700
-##      Copyright © 2005 - Russian e107
-##	     	  http://e107.org.ru
-
-
-define("CB_SCH_LAN_1", "Мини-чат");
+define("CB_SCH_LAN_1", "Чат"); //Chatbox
 
 ?>
