@@ -4,41 +4,48 @@
 |        e107 website system  Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_comment.php,v $
-|        $Revision: 1.4 $
-|        $Date: 2005-11-14 22:11:13 $
+|        $Revision: 1.5 $
+|        $Date: 2006-10-03 15:30:54 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "Kommentarer");
 
-define("LAN_0", "[blokeret af admin]");
-define("LAN_1", "Fjern blokering");
-define("LAN_2", "Bloker");
-define("LAN_3", "Slet");
-define("LAN_4", "Info");
-define("LAN_5", "Kommentarer ...");
-define("LAN_6", "Du skal være logget på for at kunne skrive kommentarer  - Log på, eller hvis du ikke er medlem klik ");
-define("LAN_7", "Hovedadministrator");
-define("LAN_8", "Kommentar");
-define("LAN_9", "Send kommentar");
-define("LAN_10", "Administrator");
-define("LAN_11", "Ikke muligt at tilføje kommentar - prøv igen og brug ikke specielle tegn. ");
-define("LAN_16", "Brugernavn: ");
-define("LAN_99", "Kommentarer");
-define("LAN_100", "Nyheder");
-define("LAN_101", "Afstemning");
-define("LAN_102", "Svarer på: ");
-define("LAN_103", "Artikel");
-define("LAN_104", "Anmeldelse");
-define("LAN_105", "Indhold");
-define("LAN_145", "Registreret: ");
-define("LAN_194", "Gæst");
-define("LAN_195", "Registeret medlem");
-define("LAN_310", "Ikke muligt at acceptere indlæg fra det brugernavn - hvis det er dit brugernavn skal du logge på for at skrive.");
-define("LAN_312", "Dobbelt postering - tillades ikke.");
-define("LAN_313", "Placering");
-define("LAN_314", "administrer kommentarer");
+define("COMLAN_0", "[blokeret af admin]");
+define("COMLAN_1", "Fjern blokering");
+define("COMLAN_2", "Bloker");
+define("COMLAN_3", "Slet");
+define("COMLAN_4", "Info");
+define("COMLAN_5", "Kommentarer ...");
+define("COMLAN_6", "Du skal være logget på for at kunne skrive kommentarer  - Log på, eller hvis du ikke er medlem klik ");
+define("COMLAN_7", "Hovedadministrator");
+define("COMLAN_8", "Kommentar");
+define("COMLAN_9", "Send kommentar");
+define("COMLAN_10", "Administrator");
+define("COMLAN_11", "Ikke muligt at tilføje kommentar - prøv igen og brug ikke specielle tegn. ");
+define("COMLAN_16", "Brugernavn: ");
+define("COMLAN_99", "Kommentarer");
+define("COMLAN_100", "Nyheder");
+define("COMLAN_101", "Afstemning");
+define("COMLAN_102", "Svarer på: ");
+define("COMLAN_103", "Artikel");
+define("COMLAN_104", "Anmeldelse");
+define("COMLAN_105", "Indhold");
+define("COMLAN_145", "Registreret: ");
+define("COMLAN_194", "Gæst");
+define("COMLAN_195", "Registeret medlem");
+define("COMLAN_310", "Ikke muligt at acceptere indlæg fra det brugernavn - hvis det er dit brugernavn skal du logge på for at skrive.");
+define("COMLAN_312", "Dobbelt postering - tillades ikke.");
+define("COMLAN_313", "Placering");
+define("COMLAN_314", "administrer kommentarer");
+define("COMLAN_315", "Trackbacks");
+define("COMLAN_316", "Ingen trackbacks for denne nyhed.");
+define("COMLAN_317", "Håndter trackbacks");
+define("COMLAN_318", "Rediger kommentar");
+define("COMLAN_319", "redigeret");
+define("COMLAN_320", "Opdater kommentar");
+/*
 define("COMLAN_1", "her");
 define("COMLAN_2", "for at tilmelde");
 define("COMLAN_3", "Fejl!");
@@ -47,13 +54,18 @@ define("COMLAN_5", "Sv:");
 define("COMLAN_6", "Svar på dette");
 define("COMLAN_7", 'Bedømmelse');
 define("COMLAN_8", 'Kommentarer er låst');
+define("COMLAN_9", 'Uautoriseret');
+*/
+define("COMLAN_321", "her");
+define("COMLAN_322", "for at tilmelde");
+define("COMLAN_323", "Fejl!");
+define("COMLAN_324", 'Emne');
+define("COMLAN_325", 'Sv:');
+define("COMLAN_326", 'Svar på dette');
+define("COMLAN_327", 'Bedømmelse');
+define("COMLAN_328", 'Kommentarer er låst');
+define("COMLAN_329", 'Uautoriseret');
+define("COMLAN_330", 'IP:');
 
-define("LAN_315", "Trackbacks");
-define("LAN_316", "Ingen trackbacks for denne nyhed.");
-define("LAN_317", "Håndter trackbacks");
-
-define("LAN_318", "Rediger kommentar");
-define("LAN_319", "redigeret");
-define("LAN_320", "Opdater kommentar");
 
 ?>
