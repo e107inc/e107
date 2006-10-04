@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.12 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2006-09-02 21:41:18 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2006-10-04 17:53:33 $
+|     $Author: sweetas $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added
@@ -224,7 +224,7 @@ if ($ecalVer < 3.6)
 	"eventpost_showcaticon" => 0,
 	"eventpost_emaillog" => 1
 	);
-	$upgrade_add_prefs += $verPrefs;
+	$upgrade_add_prefs = $verPrefs;
 	$version_notes .= "<u>3.6</u><br />".create_ec_log_dir()."<br />
 	                   <a href='".e_PLUGIN_ABS.$eplug_folder."/".$eplug_conffile."'>Configure</a><br />";
 }
