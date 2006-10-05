@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.302 $
-|     $Date: 2006-09-11 13:55:40 $
-|     $Author: e107coders $
+|     $Revision: 1.303 $
+|     $Date: 2006-10-05 22:34:27 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -632,7 +632,14 @@ if(!is_array($menu_data)) {
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
 if(!defined("THEME")){
-	if ((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin") !== FALSE || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+	// any plugin file starting with 'admin_' is assumed to use admin theme
+	// this test: (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0)
+	// alternate test: match ANY file starting with 'admin_'...
+	//   strpos(e_PAGE, "admin_") === 0 
+	//
+	// here we TEST the theme (see below for deciding what theme to USE)
+	//
+	if ((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0) || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 
 		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 			checkvalidtheme($pref['sitetheme']);
@@ -656,8 +663,8 @@ if(!defined("THEME")){
 
 // --------------------------------------------------------------
 
-
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin") !== FALSE || (isset($eplug_admin) && $eplug_admin == TRUE))) {
+	// here we USE the theme
+	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0) || (isset($eplug_admin) && $eplug_admin == TRUE))) {
 	if (file_exists(THEME.'admin_theme.php')) {
 		require_once(THEME.'admin_theme.php');
 	} else {
