@@ -8,4 +8,9 @@ define("LDAPLAN_6", "Configureren LDAP auth");
 define("LDAPLAN_7", "eDirectory zoek filter:");
 define("LDAPLAN_8", "Dit wordt gebruikt om er zeker van te zijn dan de gebruikersnaam zich in de juiste tree bevindt, <br />bijv '(objectclass=inetOrgPerson)'");
 define("LDAPLAN_9", "Het gebruikte zoekfilter wordt:");
+define("LDAPLAN_10", "Instellingen bijgewerkt");
+define("LDAPLAN_11", "WAARSCHUWING:  het lijkt erop dat de ldap module niet beschikbaar is. Het instellen van de authenticatiemethode naar LDAP zal vermoedelijk dan ook niet werken!");
+define("LDAPLAN_12", "Server type");
+define("LDAPLAN_13", "Bijwerken instellingen");
+define("LDAPLAN_14", "Terug naar hoofd alt_auth config");
 ?>
