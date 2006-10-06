@@ -11,14 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/override_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-06 23:43:03 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 	
 if (!defined('e107_INIT')) { exit; }
 
+/*
+ * USAGE
+ * In user code, to override an existing function...
+ *
+ * $override->override_function('original_func_name','mynew_function_name',['optional_include_file_from_root']);
+ *
+ * In e107 code...
+ * if ($over_func_name = $override->override_check('original_func_name')) {
+ *	$result=call_user_func($over_func_name, params...);
+ * }
+ *
+ */
+ 
 class override {
 	var $functions = array();
 	var $includes = array();
