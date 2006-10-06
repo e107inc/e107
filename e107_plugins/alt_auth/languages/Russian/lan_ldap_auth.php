@@ -2,21 +2,26 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-10-05 14:38:48 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-06 15:49:11 $
 |     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
 define("LDAPLAN_1", "Адрес сервера");
-define("LDAPLAN_2", "BaseDN или Domain<br />Если LDAP - введите BaseDN<br />Если AD - введите Domain");
-define("LDAPLAN_3", "LDAP Browsing user<br />Полный контекст пользователя, который может искать в директории"); //Full context of the user who is able to search the directory.
-define("LDAPLAN_4", "LDAP Browsing password<br />Пароль для LDAP Browsing user.");
+define("LDAPLAN_2", "BaseDN или Domain<br />Для LDAP - введите BaseDN<br />Для AD - введите Domain");
+define("LDAPLAN_3", "LDAP пользователь<br />Полный контекст пользователя имеющего права на поиск в директории"); //Full context of the user who is able to search the directory.
+define("LDAPLAN_4", "Пароль LDAP пользователя<br />Пароль для LDAP пользователя имеющего права на поиск в директории.");
 define("LDAPLAN_5", "Версия LDAP");
 define("LDAPLAN_6", "Настроить LDAP авторизацию");
 
 define("LDAPLAN_7", "eDirectory фильтр поиска:");
-define("LDAPLAN_8", "Будет использоваться, чтобы убедиться, что имя пользователя в правильном дереве<br />т. е. '(objectclass=inetOrgPerson)'"); //This will be used to ensure the username is in the correct tree, <br />ie '(objectclass=inetOrgPerson)'
+define("LDAPLAN_8", "Будет использоваться, чтобы убедиться, что имя пользователя находится в правильном дереве<br />т. е. '(objectclass=inetOrgPerson)'"); //This will be used to ensure the username is in the correct tree, <br />ie '(objectclass=inetOrgPerson)'
 define("LDAPLAN_9", "Текущий фильтр поиска будет:"); //Current search filter will be
 
+define("LDAPLAN_10", "Настройки обновлены");
+define("LDAPLAN_11", "ВНИМАНИЕ:  Похоже что модуль ldap недоступен, установленный вами метод авторизации LDAP скорее всего не будет работать!");
+define("LDAPLAN_12", "Тип сервера");
+define("LDAPLAN_13", "Обновить настройки");
+define("LDAPLAN_14", "Вернуться к основному конфигу alt_auth");
 ?>
