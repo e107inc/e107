@@ -10,4 +10,10 @@ define("LDAPLAN_7", "eDirectory search filter:");
 define("LDAPLAN_8", "This will be used to ensure the username is in the correct tree, <br />ie '(objectclass=inetOrgPerson)'");
 define("LDAPLAN_9", "Current search filter will be:");
 
+define("LDAPLAN_10", "Settings Updated");
+define("LDAPLAN_11", "WARNING:  It appears as if the ldap module is not currently available, setting your auth method to LDAP will probably not work!");
+define("LDAPLAN_12", "Server Type");
+define("LDAPLAN_13", "Update settings");
+define("LDAPLAN_14", "Return to main alt_auth config");
+
 ?>

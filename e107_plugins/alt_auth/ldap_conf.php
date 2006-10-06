@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/ldap_conf.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-08-03 13:46:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-06 08:09:50 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
@@ -45,12 +45,12 @@ if($_POST['update'])
 			}
 		}
 	}
-	$message = "Settings Updated";
+	$message = LDAPLAN_10;
 }
 
 if(!function_exists('ldap_connect'))
 {
-	$message = "<div style='color:#f00; font-weight:bold'>WARNING:  It appears as if the ldap module is not currently available, setting your auth method to LDAP will probably not work!</div>";
+	$message = "<div style='color:#f00; font-weight:bold'>".LDAPLAN_11."</div>";
 }
 
 if($message)
@@ -70,7 +70,7 @@ $current_filter = "(&(cn=[USERNAME]){$ldap['ldap_edirfilter']})";
 $frm = new form;
 $text = $frm -> form_open("POST",e_SELF);
 $text .= "<table style='width:96%'>";
-$text .= "<tr><td class='forumheader3'>Server Type</td><td class='forumheader3'>";
+$text .= "<tr><td class='forumheader3'>".LDAPLAN_12."</td><td class='forumheader3'>";
 $text .= $frm -> form_select_open("ldap_servertype");
 foreach($server_types as $v)
 {
@@ -113,13 +113,13 @@ $text .= $frm -> form_text("ldap_edirfilter", 35, $ldap['ldap_edirfilter'], 120)
 $text .= "<br /><span class='smalltext'>".LDAPLAN_9."<br />{$current_filter}</span></td></tr>";
 
 $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
-$text .= $frm -> form_button("submit", "update", "Update settings");
+$text .= $frm -> form_button("submit", "update", LDAPLAN_13);
 $text .= "</td></tr>";
 
 $text .= "</table>";
 $text .= $frm -> form_close();
 
 $ns -> tablerender(LDAPLAN_6,$text);
-$ns -> tablerender(" ","<div style='text-align:center'><a href='".e_PLUGIN."alt_auth/alt_auth_conf.php'>Return to main alt_auth config</a></div>");
+$ns -> tablerender(" ","<div style='text-align:center'><a href='".e_PLUGIN."alt_auth/alt_auth_conf.php'>".LDAPLAN_14."</a></div>");
 require_once(e_ADMIN."footer.php");
 ?>
