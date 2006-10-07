@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/np_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-07 00:19:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,9 +42,7 @@ class nextprev {
 	 */
 	function nextprev($url, $from, $view, $total, $td, $qs = "", $return = false) {
 		if ($total > $view) {
-			$a = $total / $view;
-			$r = explode(".", $a);
-			if (isset($r[1]) && $r[1] != 0 ? $pages = ($r[0] + 1) : $pages = $r[0]);
+			$pages = ceil($total / $view);
 		} else {
 			$pages = FALSE;
 		}
