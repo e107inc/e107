@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-07-03 17:11:29 $
-|     $Author: e107coders $
+|     $Revision: 1.61 $
+|     $Date: 2006-10-07 15:03:37 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -177,6 +177,7 @@ exit;
 class links
 {
 	var $link_total;
+	var $aIdOptPrep, $aIdOptVals, $aIdOptText;
 
 	function getLinks()
 	{
@@ -249,16 +250,26 @@ class links
 		global $sql, $rs, $ns, $tp, $linkArray;
 		if (count($linkArray))
 		{
+			
+			$this->prepIdOpts(); // Prepare the options list for all links
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
 			$text .= "<div style='text-align:center'>
 				<table class='fborder' style='".ADMIN_WIDTH."'>
+				<colgroup>
+      		<col width=\"5%\">
+      		<col width=\"60%\">
+      		<col width=\"15%\">
+      		<col width=\"10%\">
+      		<col width=\"5%\">
+      		<col width=\"5%\">
+				</colgroup>
 				<tr>
-				<td class='fcaption' style='width:5%'>".LCLAN_89."</td>
-				<td class='fcaption' style='width:60%'>".LCLAN_15."</td>
-				<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
-				<td class='fcaption' style='width:10%'>".LCLAN_95."</td>
-				<td class='fcaption' style='width:5%'>".LCLAN_91."</td>
-				<td class='fcaption' style='width:5%'>".LAN_ORDER."</td>
+				<td class='fcaption'>".LCLAN_89."</td>
+				<td class='fcaption'>".LCLAN_15."</td>
+				<td class='fcaption'>".LAN_OPTIONS."</td>
+				<td class='fcaption'>".LCLAN_95."</td>
+				<td class='fcaption'>".LCLAN_91."</td>
+				<td class='fcaption'>".LAN_ORDER."</td>
 				</tr>";
 				$text .= $this->existing(0);
 
@@ -273,21 +284,21 @@ class links
 		$ns->tablerender(LCLAN_8, $text);
 	}
 
+	function prepIdOpts() {
+		global $aIdOptPrep, $aIdOptVals;
+		for($a = 1; $a <= $this->link_total; $a++) {
+			$this->aIdOptVals[$a] = '|||.'.$a;	// Later, ||| becomes Id
+			$this->aIdOptText[$a] = $a;
+		}
+		$this->aIdOptPrep = $this->prepOpts($this->aIdOptVals,$this->aIdOptText);
+	}
 
 	function display_row($row2, $indent = FALSE) {
 		global $sql, $rs, $ns, $tp, $linkArray;
 		extract($row2);
 		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0)
 		{
-			if(substr($link_name,0,8) == "submenu.")
-			{
-				$tmp = explode(".",$link_name);
-				$sublinkname = $tmp[2];
-			}
-			else
-			{
-				$sublinkname = $link_name;
-			}
+			$sublinkname = $this->linkName( $link_name );
 			$link_name = $sublinkname;
 		}
 
@@ -297,10 +308,10 @@ class links
 			$subindent = "<td".$subspacer.">".$subimage."</td>";
 		}
 
-				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle' title='".$link_description."'>";
+				$text .= "<tr><td class='forumheader3'; text-align: center; vertical-align: middle' title='".$link_description."'>";
 				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
 				"";
-				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'>
+				$text .= "</td><td class='forumheader3' title='".$link_description."'>
 				<table cellspacing='0' cellpadding='0' border='0' style='width: 100%'>
 				<tr>
 				".$subindent."
@@ -308,22 +319,19 @@ class links
 				</tr>
 				</table>
 				</td>";
-				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
+				$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= "<a href='".e_SELF."?create.sub.{$link_id}'><img src='".e_IMAGE."admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;";
 				$text .= "<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;";
 				$text .= "<input type='image' title='".LAN_DELETE."' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."') \" />";
 				$text .= "</td>";
-				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
-				$text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
+				$text .= "<td style='text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
+				$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= "<input type='image' src='".e_IMAGE."admin_images/up.png' title='".LCLAN_30."' value='".$link_id.".".$link_order."' name='inc' />";
 				$text .= "<input type='image' src='".e_IMAGE."admin_images/down.png' title='".LCLAN_31."' value='".$link_id.".".$link_order."' name='dec' />";
 				$text .= "</td>";
-				$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
+				$text .= "<td style='text-align:center' class='forumheader3'>";
 				$text .= "<select name='link_order[]' class='tbox'>\n";
-				for($a = 1; $a <= $this->link_total; $a++) {
-					$selected = ($link_order == $a) ? "selected='selected'" : "";
-					$text .= "<option value='".$link_id.".".$a."' $selected>".$a."</option>\n";
-				}
+				$text .= $this->genOpts( $this->aIdOptPrep, $this->aIdOptText, $link_order, $link_id );
 				$text .= "</select>";
 				$text .= "</td>";
 				$text .= "</tr>";
@@ -661,6 +669,54 @@ function sublink_list($name=""){
 	return $sublink_type;
 
 }
+
+function prepOpts($aVals, $aText)
+{
+//
+// Preapare an array that can rapidly (no looping)
+// generate an HTML option string, with one item possibly selected.
+// prepOpts returns a prepared array containing the possible values in this form:
+//
+// <option value="xxxxx"
+// >text for zero</option<option value="yyyy"
+// >text for one</option>
+//
+
+$i=0;
+	foreach($aVals as $sVal)
+	{
+		$sOut="";
+		if ($i) $sOut = '>'.$aText[$i-1].'</option>';
+		$sOut .= '<option value="'.$sVal.'"';
+		$aPrep[$i++] = $sOut;
+	}
+	
+	return $aPrep;
+}
+
+function genOpts($aPrep, $aTest,$sSelected, $sId)
+{
+//
+// Generate an HTML option string, with one item possibly selected.
+// aGen is a prepared array containing the possible values in this form.
+// if sSelected matches an aTest entry, that entry is selected.
+// aTest can be any array that matches one-for-one with the options
+//
+// if $sId is nonblank, a global search/replace is done to change all "|||" to $sId.
+
+  $iKey = array_search( $sSelected, $aTest);
+  if ($iKey !== FALSE) {
+  	$aNew = $aPrep;
+  	$aNew[$iKey] .= " selected='selected'";
+  	$sOut = implode($aNew);
+  }
+  else {
+		$sOut = implode($aPrep);
+	}
+	if (strlen($sId)) $sOut = str_replace("|||",$sId,$sOut);
+	return $sOut;
+}
+
 
 }
 
