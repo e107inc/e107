@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.117 $
-|		$Date: 2006-09-15 06:52:39 $
+|		$Revision: 1.118 $
+|		$Date: 2006-10-11 16:32:03 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -734,9 +734,9 @@ class contentform{
 								$TOPIC_FIELD .= "<br />
 								<input class='tbox' type='file' name='file_userfile[]'  size='36' /> 
 									".$rs -> form_select_open("uploadtype")."
-									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_114, "0", "1")."
-									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_115, "0", "2")."
-									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_116, "0", "3")."
+									".($checkicon ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_114, "0", "1") : '')."
+									".($checkattach ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_115, "0", "2") : '')."
+									".($checkimages ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_116, "0", "3") : '')."
 									".$rs -> form_select_close()."
 								<input type='hidden' name='tmppathicon' value='".$content_tmppath_icon."' />
 								<input type='hidden' name='tmppathfile' value='".$content_tmppath_file."' />
