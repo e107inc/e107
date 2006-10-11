@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-10-11 12:40:05 $
-|     $Author: mrpete $
+|     $Revision: 1.63 $
+|     $Date: 2006-10-11 14:30:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -195,7 +195,11 @@ class links
 
 	function linkName($text)
 	{
-		if(substr($text, 0, 8) == "submenu.")
+		// This function is deprecated.
+		// Please use only the link_parent and not submenu.parent.name or any other method
+		// which involves changing the link's name.
+
+		if(substr($text, 0, 8) == "submenu.") // for backwards compatibility only.
 		{
 			$tmp = explode(".",$text);
 			switch (count($tmp)) {
@@ -261,7 +265,7 @@ class links
 		global $sql, $rs, $ns, $tp, $linkArray;
 		if (count($linkArray))
 		{
-			
+
 			$this->prepIdOpts(); // Prepare the options list for all links
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
 			$text .= "<div style='text-align:center'>
@@ -307,7 +311,7 @@ class links
 	function display_row($row2, $indent = FALSE) {
 		global $sql, $rs, $ns, $tp, $linkArray;
 		extract($row2);
-		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0)
+		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0) // for backwards compatibility only. submenu. is deprecated.
 		{
 			$link_name = $this->linkName( $link_name );
 		}
@@ -377,7 +381,7 @@ class links
 			$link_parent = $id;
 		}
 
-		if(strpos($link_name, "submenu.") !== FALSE){
+		if(strpos($link_name, "submenu.") !== FALSE){  // for backwards compatibility only. submenu. is deprecated.           
 			$link_name = $this->linkName( $link_name );
 		}
 
@@ -699,7 +703,7 @@ $i=0;
 		$sOut .= '<option value="'.$sVal.'"';
 		$aPrep[$i++] = $sOut;
 	}
-	
+
 	return $aPrep;
 }
 
