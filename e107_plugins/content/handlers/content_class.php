@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.100 $
-|		$Date: 2006-08-27 02:24:45 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.101 $
+|		$Date: 2006-10-11 21:21:43 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -598,39 +598,49 @@ class content{
 			global $qs, $ns, $content_pref;
 
 			if(isset($content_pref["content_breadcrumb_{$mode}"]) && $content_pref["content_breadcrumb_{$mode}"]){
+				$crumb = '';
 				if(array_key_exists($parent, $arr)){
 					$sep = (isset($content_pref["content_breadcrumb_seperator"]) ? $content_pref["content_breadcrumb_seperator"] : ">");
-					$crumb = "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." <a href='".e_SELF."'>".CONTENT_LAN_59."</a>";
+					if($content_pref["content_breadcrumb_base"] && isset($content_pref["content_breadcrumb_base"])){
+						$crumb .= "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." ";
+					}
+					if($content_pref["content_breadcrumb_self"] && isset($content_pref["content_breadcrumb_self"])){
+						$crumb .= "<a href='".e_SELF."'>".CONTENT_LAN_59."</a> ".$sep." ";
+					}
 					for($i=0;$i<count($arr[$parent]);$i++){
-						$crumb .= " ".$sep." <a href='".e_SELF."?cat.".$arr[$parent][$i]."'>".$arr[$parent][$i+1]."</a>";
+						$crumb .= "<a href='".e_SELF."?cat.".$arr[$parent][$i]."'>".$arr[$parent][$i+1]."</a> ".$sep." ";
 						$i++;
 					}
 				}
 				if($qs[0] == "recent"){
-					$crumb .= " ".$sep." <a href='".e_SELF."?recent.".$arr[$parent][0]."'>".CONTENT_LAN_60."</a>";
+					$crumb .= "<a href='".e_SELF."?recent.".$arr[$parent][0]."'>".CONTENT_LAN_60."</a>";
 				}
 				if($qs[0] == "author"){
-					$crumb .= " ".$sep." <a href='".e_SELF."?author.list.".$arr[$parent][0]."'>".CONTENT_LAN_85."</a>";
+					$crumb .= "<a href='".e_SELF."?author.list.".$arr[$parent][0]."'>".CONTENT_LAN_85."</a>";
 				}
 				if($qs[0] == "list"){
-					$crumb .= " ".$sep." <a href='".e_SELF."?list.".$arr[$parent][0]."'>list</a>";
+					$crumb .= "<a href='".e_SELF."?list.".$arr[$parent][0]."'>list</a>";
 				}
 				if($qs[0] == "top"){
-					$crumb .= " ".$sep." <a href='".e_SELF."?top.".$arr[$parent][0]."'>".CONTENT_LAN_8."</a>";
+					$crumb .= "<a href='".e_SELF."?top.".$arr[$parent][0]."'>".CONTENT_LAN_8."</a>";
 				}
 				if($qs[0] == "score"){
-					$crumb .= " ".$sep." <a href='".e_SELF."?score.".$arr[$parent][0]."'>".CONTENT_LAN_12."</a>";
+					$crumb .= "<a href='".e_SELF."?score.".$arr[$parent][0]."'>".CONTENT_LAN_12."</a>";
+				}
+				if($qs[0] == "content"){
+					global $row;
+					$crumb .= $row['content_heading'];
 				}
 
-				$margin = "<br /><br />";
+				$crumb = "<div class='breadcrumb'>".$crumb."</div>";
 				if(isset($content_pref["content_breadcrumb_rendertype"]) && $content_pref["content_breadcrumb_rendertype"] == "1"){
-					echo $crumb.$margin;
+					echo $crumb;
 					return "";
 				}elseif(isset($content_pref["content_breadcrumb_rendertype"]) && $content_pref["content_breadcrumb_rendertype"] == "2"){
-					$ns -> tablerender(CONTENT_LAN_24, $crumb.$margin);
+					$ns -> tablerender(CONTENT_LAN_24, $crumb);
 					return "";
 				}else{
-					return $crumb.$margin;
+					return $crumb;
 				}
 			}else{
 				return "";

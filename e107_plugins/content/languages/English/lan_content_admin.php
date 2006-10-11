@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-09-15 06:52:39 $
+|     $Revision: 1.19 $
+|     $Date: 2006-10-11 21:21:43 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -701,5 +701,6 @@ define("CONTENT_ADMIN_OPT_LAN_169", "last page");
 define("CONTENT_ADMIN_OPT_LAN_170", "where should custom and preset tags be rendered in a multipage content item ?");
 define("CONTENT_ADMIN_OPT_LAN_171", "amount of levels");
 define("CONTENT_ADMIN_OPT_LAN_172", "numeric value to show that amount of levels of subcategories of the category tree. leave blank to show all levels.");
-
+define("CONTENT_ADMIN_OPT_LAN_173", "include 'home' in the breadcrumb");
+define("CONTENT_ADMIN_OPT_LAN_174", "include the content start page in the breadcrumb");
 ?>

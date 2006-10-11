@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.118 $
-|		$Date: 2006-10-11 16:32:03 $
+|		$Revision: 1.119 $
+|		$Date: 2006-10-11 21:21:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2794,6 +2794,20 @@ class contentform{
 			//content_breadcrumb_seperator
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_36;
 			$TOPIC_FIELD = $rs -> form_text("content_breadcrumb_seperator", 10, $content_pref['content_breadcrumb_seperator'], 3);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_breadcrumb_base
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_173;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_breadcrumb_base", "1", ($content_pref['content_breadcrumb_base'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_breadcrumb_base", "0", ($content_pref['content_breadcrumb_base'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_breadcrumb_self
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_174;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_breadcrumb_self", "1", ($content_pref['content_breadcrumb_self'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_breadcrumb_self", "0", ($content_pref['content_breadcrumb_self'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_breadcrumb_rendertype_
