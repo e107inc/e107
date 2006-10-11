@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.184 $
-|     $Date: 2006-09-20 14:54:24 $
-|     $Author: e107coders $
+|     $Revision: 1.185 $
+|     $Date: 2006-10-11 12:40:05 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -977,20 +977,36 @@ function update_617_to_700($type='') {
 				$sql -> db_Select("links", "link_id,link_name", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
 				while($row = $sql-> db_Fetch()){
 					$name = $row['link_name'];
-					$parent[$name] = $row['link_id'];
-				}
-        			if(!is_object($sql2)){
-        				$sql2 = new db;
+					$parent[$name] = $row['link_id']; // Possible top level parents
 				}
 				$sql -> db_Select("links", "link_id,link_name", "link_name LIKE 'submenu.%' ORDER BY link_name");
 				while($row = $sql-> db_Fetch()){
 					$tmp = explode(".",$row['link_name']);
-            				$nm = $tmp[1];
+					if (count($tmp) == 3) {
+						$name = $tmp[2]; // submenu.topname.midname
+						$parent[$name] = $row['link_id']; // Possible mid-level parents
+					}
+				}
+        if(!is_object($sql2)){
+        	$sql2 = new db;
+				}
+				$sql -> db_Select("links", "link_id,link_name", "link_name LIKE 'submenu.%' ORDER BY link_name");
+				while($row = $sql-> db_Fetch()){
+					$tmp = explode(".",$row['link_name']);
+					$nm = $tmp[1];
 					$id = $row['link_id'];
-			   		$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
+					$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
 					catch_error();
 				}
-        		}
+				$sql -> db_Select("links", "link_id,link_name", "link_name LIKE '%.child.%' ORDER BY link_name");
+				while($row = $sql-> db_Fetch()){
+					$tmp = explode(".",$row['link_name']);
+					$nm = $tmp[2]; // submenu.topname.midname.child.finalname
+					$id = $row['link_id'];
+					$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
+					catch_error();
+				}
+      }
 
 		//20050626 : update links_page_cat and links_page
 			$field1 = $sql->db_Field("links_page_cat",4);
