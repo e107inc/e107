@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-10-07 15:03:37 $
+|     $Revision: 1.62 $
+|     $Date: 2006-10-11 12:40:05 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -198,7 +198,17 @@ class links
 		if(substr($text, 0, 8) == "submenu.")
 		{
 			$tmp = explode(".",$text);
-			return $tmp[2];
+			switch (count($tmp)) {
+			case 3: // submenu.parent.node
+				$tmp = $tmp[2]; break;
+			case 5: // submenu.parent.midlev.child.node
+				$tmp = $tmp[4]; break;
+			case 2: // submenu.parent (invalid?)
+			default:
+				$parentLen = strlen($tmp[1]);
+				$tmp = substr($text,8+$parentLen+1); // Skip submenu.parent.
+			}
+			return $tmp;
 		}
 		else
 		{
@@ -214,11 +224,12 @@ class links
 		foreach($linkArray[$lid] as $l)
 		{
 			$s = ($l['link_id'] == $curval ? " selected='selected' " : "" );
+			$thename = $this->linkName($l['link_name']);
 			 // prevent making self the parent.
-            $thename = ($l['link_id'] != $id) ? $l['link_name'] : "(".$l['link_name'].")";
+			if ($l['link_id'] == $id) { $thename = "(".$thename.")"; }
 			$thelink = ($l['link_id'] != $id) ? $l['link_id'] : $l['link_parent'] ;
 
-			$ret .= "<option value='".$thelink."' {$s}>".str_pad("", $indent*36, "&nbsp;").$this->linkName($thename)."</option>\n";
+			$ret .= "<option value='".$thelink."' {$s}>".str_pad("", $indent*36, "&nbsp;").$thename."</option>\n";
 
 			if(array_key_exists($l['link_id'], $linkArray))
 			{
@@ -298,8 +309,7 @@ class links
 		extract($row2);
 		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0)
 		{
-			$sublinkname = $this->linkName( $link_name );
-			$link_name = $sublinkname;
+			$link_name = $this->linkName( $link_name );
 		}
 
 		if ($indent) {
@@ -368,8 +378,7 @@ class links
 		}
 
 		if(strpos($link_name, "submenu.") !== FALSE){
-			$tmp = explode(".",$link_name);
-			$link_name = $tmp[2];
+			$link_name = $this->linkName( $link_name );
 		}
 
         require_once(e_HANDLER."file_class.php");
