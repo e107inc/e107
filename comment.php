@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-07-18 20:57:22 $
-|     $Author: e107coders $
+|     $Revision: 1.52 $
+|     $Date: 2006-10-12 13:44:28 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -213,7 +213,7 @@ if ($action == "reply") {
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-				WHERE n.news_class IN (".USERCLASS_LIST.")
+				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
 				AND n.news_id={$id}
 				AND n.news_allow_comments=0
 				GROUP by n.news_id";
@@ -221,7 +221,7 @@ if ($action == "reply") {
 				$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.")
+				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
 				AND n.news_id={$id}
 				AND n.news_allow_comments=0";
 			}
