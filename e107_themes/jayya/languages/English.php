@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-23 17:46:30 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-12 13:46:33 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,8 +21,8 @@ define("LAN_THEME_1", "Comments are turned off for this item");
 define("LAN_THEME_2", "Read/Post Comment: ");
 define("LAN_THEME_3", "Read the rest...");
 define("LAN_THEME_4", "Trackbacks: ");
-define("LAN_THEME_5", "Posted by");
-define("LAN_THEME_6", "on");
+define("LAN_THEME_5", "Posted by ");
+define("LAN_THEME_6", "on ");
 
 
 ?>
