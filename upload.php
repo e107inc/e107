@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-09-16 18:18:04 $
+|     $Revision: 1.15 $
+|     $Date: 2006-10-13 13:22:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -85,17 +85,11 @@ $text = "<div style='text-align:center'>
 	<td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
 	<td style='width:80%' class='forumheader3'>";
 
-$sql->db_Select("download_category", "*", "download_category_parent !=0");
-$text .= "<select name='download_category' class='tbox'>\n";
-while ($row = $sql->db_Fetch()) {
-	extract($row);
-	if ($download_category_id == $download_category) {
-		$text .= "<option value='$download_category_id' selected>".$tp->toHTML($download_category_name)."</option>\n";
-	} else {
-		$text .= "<option value='$download_category_id'>".$tp->toHTML($download_category_name)."</option>\n";
-	}
-}
-$text .= "</select>
+	require_once(e_FILE."shortcode/batch/download_shortcodes.php");
+	$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$download_category}}",true,$download_shortcodes);
+
+
+$text .= "
 	</td>
 	</tr>
 
