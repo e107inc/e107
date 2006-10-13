@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.119 $
-|		$Date: 2006-10-11 21:21:43 $
+|		$Revision: 1.120 $
+|		$Date: 2006-10-13 19:12:08 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -939,8 +939,8 @@ class contentform{
 							if(!isset($content_pref["content_theme"])){
 								$dir = $plugindir."templates/default";
 							}else{
-								if(file_exists($plugindir."templates/".$content_pref["content_theme"]."/content_content_template.php")){
-									$dir = $plugindir."templates/".$content_pref["content_theme"];
+								if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php")){
+									$dir = $tp->replaceConstants($content_pref["content_theme"]);
 								}else{
 									$dir = $plugindir."templates/default";
 								}
@@ -2719,8 +2719,8 @@ class contentform{
 			if(!isset($content_pref['content_theme'])){
 				$dir = $plugindir."templates/default";
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref['content_theme']."/content_content_template.php")){
-					$dir = $plugindir."templates/".$content_pref['content_theme'];
+				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php")){
+					$dir = $tp->replaceConstants($content_pref["content_theme"]);
 				}else{
 					$dir = $plugindir."templates/default";
 				}
