@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.102 $
-|		$Date: 2006-10-13 18:28:44 $
+|		$Revision: 1.103 $
+|		$Date: 2006-10-13 18:54:50 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -595,7 +595,7 @@ class content{
 		}
 
 		function getCrumbPage($mode, $arr, $parent){
-			global $qs, $ns, $content_pref;
+			global $qs, $ns, $content_pref, $plugintable;
 
 			if(isset($content_pref["content_breadcrumb_{$mode}"]) && $content_pref["content_breadcrumb_{$mode}"]){
 				$crumb = '';
@@ -617,6 +617,13 @@ class content{
 				}
 				if($qs[0] == "author"){
 					$crumb .= "<a href='".e_SELF."?author.list.".$arr[$parent][0]."'>".CONTENT_LAN_85."</a>";
+					if(is_numeric($qs[1])){
+						global $sql;
+						$sql->db_Select($plugintable, "content_author","content_id='".$qs[1]."'");
+						$row=$sql->db_Fetch();
+						$au = $this->getAuthor($row['content_author']);
+						$crumb .= " ".$sep." <a href='".e_SELF."?author.".$qs[1]."'>".$au[1]."</a>";
+					}
 				}
 				if($qs[0] == "list"){
 					$crumb .= "<a href='".e_SELF."?list.".$arr[$parent][0]."'>list</a>";
