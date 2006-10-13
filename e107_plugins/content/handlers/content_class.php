@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.101 $
-|		$Date: 2006-10-11 21:21:43 $
+|		$Revision: 1.102 $
+|		$Date: 2006-10-13 18:28:44 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -630,6 +630,9 @@ class content{
 				if($qs[0] == "content"){
 					global $row;
 					$crumb .= $row['content_heading'];
+				}
+				if(trim(substr($crumb,-strlen($sep))) == trim($sep) ){
+					$crumb = substr($crumb,0,-(strlen($sep)));
 				}
 
 				$crumb = "<div class='breadcrumb'>".$crumb."</div>";
