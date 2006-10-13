@@ -18,7 +18,7 @@ SC_END
 SC_BEGIN CONTENT_TYPE_TABLE_HEADING
 global $CONTENT_TYPE_TABLE_HEADING, $contenttotal, $row, $tp;
 $row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
-return ($contenttotal != "0" ? "<a href='".e_SELF."?recent.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
+return ($contenttotal != "0" ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
 SC_END
 
 SC_BEGIN CONTENT_TYPE_TABLE_LINK
@@ -43,7 +43,7 @@ SC_END
 SC_BEGIN CONTENT_TYPE_TABLE_ICON
 global $CONTENT_TYPE_TABLE_ICON, $contenttotal, $row, $aa, $content_cat_icon_path_large, $content_pref;
 if($contenttotal != "0"){
-	$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "recent.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
+	$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "cat.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
 }else{
 	$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon"]);
 }
