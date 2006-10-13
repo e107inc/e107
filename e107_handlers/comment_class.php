@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-07-16 19:40:07 $
-|     $Author: e107coders $
+|     $Revision: 1.65 $
+|     $Date: 2006-10-13 11:11:05 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,7 +72,12 @@ class comment {
 				$text2 = "<input type='hidden' name='subject' value='".$tp -> toForm($subject)."'  />\n";
 			}
 
-			if(strstr(e_QUERY, "edit"))
+			if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
+			{
+				$eaction = 'edit';
+				$id = $_GET['comment_id'];
+			}
+			else if (strstr(e_QUERY, "edit"))
 			{
 				$eaction = "edit";
 				$tmp = explode(".", e_QUERY);
@@ -309,7 +314,12 @@ class comment {
         	return;
 		}
 
-		if(strstr(e_QUERY, "edit"))
+		if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
+		{
+			$eaction = 'edit';
+			$editpid = $_GET['comment_id'];
+		}
+		else if (strstr(e_QUERY, "edit"))
 		{
 			$eaction = "edit";
 			$tmp = explode(".", e_QUERY);
