@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-07-29 19:39:35 $
+|     $Revision: 1.15 $
+|     $Date: 2006-10-13 13:11:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -413,6 +413,89 @@ SC_BEGIN DOWNLOAD_BACK_TO_LIST
 global $dl;
 return "<a href='".e_SELF."?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
 SC_END
+
+
+//  ---------------   Download - Admin  -----------------------------------
+
+SC_BEGIN DOWNLOAD_CATEGORY_SELECT
+	global $sql;
+	$cdc = $parm;
+
+      	$boxinfo = "\n";
+	  	$qry = "
+	  	SELECT dc.download_category_name, dc.download_category_order, dc.download_category_id, dc.download_category_parent,
+	  	dc1.download_category_parent AS d_parent1
+	  	FROM #download_category AS dc
+	  	LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent
+		 ORDER by dc.download_category_parent, dc.download_category_order";
+
+  	  	if (!$sql->db_Select_gen($qry))
+	  	{
+	    	return "Error reading categories<br />";
+	    	exit;
+	  	}
+
+	  	$boxinfo .= "<select name='download_category' class='tbox'>
+					<option value=''>&nbsp;</option>\n";
+
+		// Its a structured display option - need a 2-step process to create a tree
+	    $catlist = array();
+	    while ($row = $sql->db_Fetch())
+	    {
+			$tmp = $row['download_category_parent'];
+	      	if ($tmp == '0')
+	      	{
+		    	$row['subcats'] = array();
+	        	$catlist[$row['download_category_id']] = $row;
+	      	}
+	      	else
+	      	{
+	        	if (isset($catlist[$tmp]))
+		    	{  // Sub-Category
+		      		$catlist[$tmp]['subcats'][$row['download_category_id']] = $row;
+		      		$catlist[$tmp]['subcats'][$row['download_category_id']]['subsubcats'] = array();
+		    	}
+		    	else
+		    	{  // Its a sub-sub category
+		      		if (isset($catlist[$row['d_parent1']]['subcats'][$tmp]))
+		      		{
+		        		$catlist[$row['d_parent1']]['subcats'][$tmp]['subsubcats'][$row['download_category_id']] = $row;
+		      		}
+		    	}
+	      	}
+	    }
+
+		// Now generate the options
+	    foreach ($catlist as $thiscat)
+	    {  // Main categories
+			// Could add a display class to the group, but the default looked OK
+			$boxinfo .= "<optgroup label='".htmlspecialchars($thiscat['download_category_name'])."'>\n";
+		  	$scprefix = '';
+
+	      	foreach ($thiscat['subcats'] as $sc)
+	      	{  // Sub-categories
+		    	$sscprefix = '--> ';
+		    	$boxinfo .= "<option value='".$sc['download_category_id']."'";
+		    	if ($cdc == $sc['download_category_id']) { $boxinfo .= " selected='selected'"; }
+		   		$boxinfo .= ">".$scprefix.htmlspecialchars($sc['download_category_name'])."</option>\n";
+		    	foreach ($sc['subsubcats'] as $ssc)
+		    	{  // Sub-sub categories
+		      		$boxinfo .= "<option value='".$ssc['download_category_id']."'";
+		      		if ($cdc == $ssc['download_category_id']) { $boxinfo .= " selected='selected'"; }
+		      		$boxinfo .= ">".htmlspecialchars($sscprefix.$ssc['download_category_name'])."</option>\n";
+		    	}
+	      	}
+			$boxinfo .= "</optgroup>\n";
+	    }
+
+	  $boxinfo .= "</select>\n";
+	  return $boxinfo;
+
+SC_END
+
+
+
+
 
 
 */
