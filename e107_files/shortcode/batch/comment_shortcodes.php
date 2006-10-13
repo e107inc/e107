@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.17 $
+|     $Date: 2006-10-13 09:37:54 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -97,7 +97,7 @@ SC_END
 
 SC_BEGIN COMMENTEDIT
 global $COMMENTEDIT, $pref, $comrow;
-return ($pref['allowCommentEdit'] && (ADMIN || (USER && $comrow['user_id'] == USERID && $comrow['comment_lock'] != "1")) && !strstr(e_QUERY, "edit") ? "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>" : "");
+return ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow['comment_lock'] != "1" && !strstr(e_QUERY, "edit") ? "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>" : "");
 SC_END
 
 SC_BEGIN RATING
