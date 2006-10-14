@@ -18,7 +18,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 	if($row['menu_pages']) {
 		list($listtype,$listpages) = explode("-",$row['menu_pages']);
 		$pagelist = explode("|",$listpages);
-		$check_url = e_SELF."?".e_QUERY;
+		$check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
 
 		if($listtype == '1')  //show menu
 		{
