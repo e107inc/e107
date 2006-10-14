@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-07-07 01:23:18 $
+|     $Revision: 1.49 $
+|     $Date: 2006-10-14 14:18:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -431,7 +431,8 @@ CREATE TABLE submitnews (
 CREATE TABLE tmp (
   tmp_ip varchar(20) NOT NULL default '',
   tmp_time int(10) unsigned NOT NULL default '0',
-  tmp_info text NOT NULL
+  tmp_info text NOT NULL,
+  KEY tmp_ip (tmp_ip)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -454,7 +455,8 @@ CREATE TABLE upload (
   upload_filesize int(10) unsigned NOT NULL default '0',
   upload_active tinyint(3) unsigned NOT NULL default '0',
   upload_category tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (upload_id)
+  PRIMARY KEY  (upload_id),
+  KEY upload_active (upload_active)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -560,6 +562,7 @@ CREATE TABLE generic (
   gen_ip varchar(80) NOT NULL default '',
   gen_intdata int(10) unsigned NOT NULL default '0',
   gen_chardata text NOT NULL,
-  PRIMARY KEY  (gen_id)
+  PRIMARY KEY  (gen_id),
+  KEY gen_type (gen_type)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
