@@ -8,9 +8,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/contact_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-08-11 16:50:41 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-14 13:37:17 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -33,7 +33,7 @@ if($pref['sitecontacts'] == e_UC_ADMIN){
 }elseif($pref['sitecontacts'] == e_UC_MAINADMIN){
     $query = "user_admin = 1 AND (user_perms = '0' OR user_perms = '0.') ";
 }else{
-	$query = $pref['sitecontacts'] . " IN (user_class) ";
+	$query = "FIND_IN_SET(".$pref['sitecontacts'].",user_class) ";
 }
 
 $text = "<select name='contact_person' class='tbox contact_person'>\n";
