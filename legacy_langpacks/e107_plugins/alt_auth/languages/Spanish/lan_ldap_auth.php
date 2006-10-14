@@ -7,5 +7,10 @@ define("LDAPLAN_5", "Versión LDAP ");
 define("LDAPLAN_6", "Configurar LDAP aut.");
 define("LDAPLAN_7", "Filtro de búsqueda de sDirectory:"); 
 define("LDAPLAN_8", "Se utilizará para asegurar que el usuario esta en el árbol correcto, <br />pe '(objectclass=inetOrgPerson)'"); 
-define("LDAPLAN_9", "El filtro actual de búsqueda será:"); 
+define("LDAPLAN_9", "El filtro actual de búsqueda será:");
+define("LDAPLAN_10", "Ajustes actualizados"); 
+define("LDAPLAN_11", "ATENCION:  ¡Parece que el modulo ldap no está disponible, fijando el método de autentificación a LDAP no podría funcionar!"); 
+define("LDAPLAN_12", "Tipo de servidor"); 
+define("LDAPLAN_13", "Actualizar ajustes"); 
+define("LDAPLAN_14", "Volver a la configuración de alt_auth"); 
 ?>

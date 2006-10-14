@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-09-18 19:53:16 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-14 20:13:51 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -665,4 +665,6 @@ define("CONTENT_ADMIN_OPT_LAN_169", "última página");
 define("CONTENT_ADMIN_OPT_LAN_170", "¿Donde se renderizarán los tags personalizados y predefinidos de un contenido multipágina?");
 define("CONTENT_ADMIN_OPT_LAN_171", "cantidad de niveles"); 
 define("CONTENT_ADMIN_OPT_LAN_172", "valor numérico para mostrar la cantidad de niveles de las subcategorías. En blanco para mostrar todos los niveles.");
+define("CONTENT_ADMIN_OPT_LAN_173", "incluir 'inicio' en el señuelo"); 
+define("CONTENT_ADMIN_OPT_LAN_174", "incluir la página de comienzo de contenido en el señuelo"); 
 ?>
