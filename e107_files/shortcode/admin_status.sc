@@ -22,7 +22,7 @@ if (ADMIN) {
 			}
 
 
-			if($flo = $sql -> db_Select("generic", "*", "gen_type='failed_login' "))
+			if($flo = $sql -> db_Count("generic", "(*)", "WHERE gen_type='failed_login'"))
 			{
 				$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
 			}
