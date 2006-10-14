@@ -1,3 +1,4 @@
+/* $Id: menu.sc,v 1.27 2006-10-14 13:13:45 lisa_ Exp $ */
 global $sql;
 global $ns;
 global $eMenuList;
