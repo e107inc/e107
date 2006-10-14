@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.103 $
-|		$Date: 2006-10-13 18:54:50 $
+|		$Revision: 1.104 $
+|		$Date: 2006-10-14 12:45:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -619,7 +619,7 @@ class content{
 					$crumb .= "<a href='".e_SELF."?author.list.".$arr[$parent][0]."'>".CONTENT_LAN_85."</a>";
 					if(is_numeric($qs[1])){
 						global $sql;
-						$sql->db_Select($plugintable, "content_author","content_id='".$qs[1]."'");
+						$sql->db_Select($plugintable, "content_author","content_id='".intval($qs[1])."'");
 						$row=$sql->db_Fetch();
 						$au = $this->getAuthor($row['content_author']);
 						$crumb .= " ".$sep." <a href='".e_SELF."?author.".$qs[1]."'>".$au[1]."</a>";
@@ -638,8 +638,9 @@ class content{
 					global $row;
 					$crumb .= $row['content_heading'];
 				}
-				if(trim(substr($crumb,-strlen($sep))) == trim($sep) ){
-					$crumb = substr($crumb,0,-(strlen($sep)));
+				$crumb = trim($crumb);
+				if(substr($crumb,-strlen(trim($sep))) == trim($sep)){
+					$crumb = substr($crumb,0,-strlen(trim($sep)));
 				}
 
 				$crumb = "<div class='breadcrumb'>".$crumb."</div>";
