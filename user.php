@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-08-04 00:19:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.40 $
+|     $Date: 2006-10-14 21:36:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -49,7 +49,7 @@ $user_frm = new form;
 require_once(HEADERF);
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-if (isset($pref['memberlist_access']) && !check_class($pref['memberlist_access']))
+if (isset($pref['memberlist_access']) && !check_class($pref['memberlist_access']) && ($tmp[1] != USERID))
 {
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".USERLAN_2."</div>");
 	require_once(FOOTERF);
