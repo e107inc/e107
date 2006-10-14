@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-09-26 21:17:37 $
+|     $Revision: 1.22 $
+|     $Date: 2006-10-14 23:41:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -395,15 +395,18 @@ if (USERID == $user['user_id'] || (ADMIN && getperms("4")))
 SC_END
 
 SC_BEGIN USER_EXTENDED_ALL
+
 global $user, $tp, $sql;
 global $EXTENDED_CATEGORY_START, $EXTENDED_CATEGORY_END, $EXTENDED_CATEGORY_TABLE;
-$qry = "
-	SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
+$qry = "SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
 	LEFT JOIN #user_extended_struct as c ON f.user_extended_struct_parent = c.user_extended_struct_id
 	ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
 ";
 
+
+
 require_once(e_HANDLER."user_extended_class.php");
+
 $ue = new e107_user_extended;
 $ueCatList = $ue->user_extended_get_categories();
 $ueFieldList = $ue->user_extended_get_fields();
@@ -412,21 +415,22 @@ $ueCatList[0][0] = array('user_extended_struct_name' => LAN_410);
 foreach($ueCatList as $catnum => $cat)
 {
 	$key = $cat[0]['user_extended_struct_name'];
-	$cat_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user['user_id']}}", TRUE);
+	$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$user['user_id']}}", TRUE);
 	if($cat_name != FALSE && count($ueFieldList[$catnum]))
 	{
+
 		$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
 		foreach($ueFieldList[$catnum] as $f)
 		{
 			$key = $f['user_extended_struct_name'];
-			if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user['user_id']}}", TRUE))
+			if($ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$user['user_id']}}", TRUE))
 			{
-				$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
+				$extended_record = str_replace("EXTENDED_ICON","USER_EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
 			 	$extended_record = str_replace("{EXTENDED_NAME}", $tp->toHTML($ue_name,"","defs"), $extended_record);
-				$extended_record = str_replace("EXTENDED_VALUE","EXTENDED={$key}.value.{$user['user_id']}", $extended_record);
+				$extended_record = str_replace("EXTENDED_VALUE","USER_EXTENDED={$key}.value.{$user['user_id']}", $extended_record);
 				if(HIDE_EMPTY_FIELDS === TRUE)
 				{
-					$this_value = $tp->parseTemplate("{EXTENDED={$key}.value.{$user['user_id']}}", TRUE);
+					$this_value = $tp->parseTemplate("{USER_EXTENDED={$key}.value.{$user['user_id']}}", TRUE);
 					if($this_value != "")
 					{
 						$ret .= $tp->parseTemplate($extended_record, TRUE);
