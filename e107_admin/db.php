@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-09-04 16:34:11 $
+|     $Revision: 1.21 $
+|     $Date: 2006-10-14 15:53:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,7 @@ function optimizesql($mySQLdefaultdb) {
 
 function plugin_viewscan()
 {
-		global $sql, $pref, $ns;
+		global $sql, $pref, $ns, $tp;
 		require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
 		$ep->update_plugins_table(); // scan for e_xxx changes and save to plugin table.
@@ -173,7 +173,7 @@ function plugin_viewscan()
         $sql -> db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
 		while($row = $sql-> db_Fetch()){
 			$text .= "<tr>
-				<td class='forumheader3'>".$row['plugin_name']."</td>
+				<td class='forumheader3'>".$tp->toHtml($row['plugin_name'],FALSE,"defs")."</td>
                 <td class='forumheader3'>".$row['plugin_path']."</td>
 				<td class='forumheader3'>".str_replace(",","<br />",$row['plugin_addons'])."</td>
 				<td class='forumheader3' style='text-align:center'>";
@@ -185,7 +185,7 @@ function plugin_viewscan()
 			}
 			else
 			{
-            	$text .= DBLAN_27; // "Installed";
+            	$text .= ($row['plugin_installflag'] == 1) ? DBLAN_27 : " "; // "Installed and not installed";
 			}
 			$text .= "</td>
 			</tr>";
