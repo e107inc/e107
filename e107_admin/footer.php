@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-09-07 22:46:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2006-10-14 13:01:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -54,12 +54,27 @@ echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div
 
 if($error_handler->debug == true) {
 	echo "
-	<br /><br />
+	<br /><br />";
+
+	echo "
 	<div>
 		<h3>PHP Errors:</h3><br />
 		".$error_handler->return_errors()."
 	</div>
 	";
+	$tmp = $eTraffic->Display();
+	if (strlen($tmp)) {
+		$ns->tablerender('Traffic Counters', $tmp);
+	}
+
+	$tmp = $db_debug->Show_Performance();
+	if (strlen($tmp)) {
+		$ns->tablerender('Time Analysis', $tmp);
+	}
+	$tmp = $db_debug->Show_SQL_Details();
+	if (strlen($tmp)) {
+		$ns->tablerender('SQL Analysis', $tmp);
+	}
 }
 
 if (function_exists('theme_foot'))
