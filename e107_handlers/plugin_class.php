@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2006-07-13 20:37:40 $
+|     $Revision: 1.51 $
+|     $Date: 2006-10-14 15:52:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -458,7 +458,9 @@ class e107plugin
 
 	function save_addon_prefs(){  // scan the plugin table and create path-array-prefs for each addon.
 		global $sql,$pref;
-        $query = "SELECT * FROM #plugin WHERE plugin_installflag = '1' AND plugin_addons !='' ORDER BY plugin_path ASC";
+        $query = "SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_addons !='' ORDER BY plugin_path ASC";
+
+		unset($pref['shortcode_list'],$pref['bbcode_list']);
 
 		if ($sql -> db_Select_gen($query))
 		{
