@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.1 $
-|     $Date: 2006-09-20 14:47:14 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-15 09:33:15 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -137,7 +137,7 @@ define("LIST_MENU_2", " ");
 define("LIST_MENU_3", "на");
 define("LIST_MENU_4", "в");
 define("LIST_MENU_5", "дней");
-define("LIST_MENU_6", "За сколько прошедших дней можно просмотреть содержимое сайта?");
+define("LIST_MENU_6", "за сколько дней смотреть контент сайта?"); //view content for how may days?
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
@@ -162,7 +162,7 @@ define("LIST_COMMENT_4", "faq");
 define("LIST_COMMENT_5", "голосование");
 define("LIST_COMMENT_6", "доки");
 define("LIST_COMMENT_7", "bugtrack");
-define("LIST_COMMENT_8", "содержание");
+define("LIST_COMMENT_8", "контент");
 define("LIST_COMMENT_9", "загрузка");
 define("LIST_COMMENT_10", "идеи");
 
@@ -174,9 +174,9 @@ define("LIST_DOWNLOAD_2", "нет загрузок");
 define("LIST_MEMBER_1", "пользователи");
 define("LIST_MEMBER_2", "нет пользователей");
 
-define("LIST_CONTENT_1", "содержание");
-define("LIST_CONTENT_2", "нет содержания в");
-define("LIST_CONTENT_3", "нет категорий содержания");
+define("LIST_CONTENT_1", "контент");
+define("LIST_CONTENT_2", "нет контента в");
+define("LIST_CONTENT_3", "нет категорий контента");
 
 
 define("LIST_CHATBOX_1", "миничат");
