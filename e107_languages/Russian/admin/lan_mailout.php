@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-09-12 09:12:26 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-15 06:34:31 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ define("MAILAN_48", "равен"); //equals
 define("MAILAN_49", "Id");
 define("MAILAN_50", "Автор");
 define("MAILAN_51", "Тема");
-define("MAILAN_52", "Lastmod"); //Not translated yet
+define("MAILAN_52", "Посл. изм."); //Lastmod
 define("MAILAN_53", "Администраторы"); //Admins
 define("MAILAN_54", "Себе");
 define("MAILAN_55", "Класс пользователя");
@@ -92,6 +92,6 @@ define("MAILAN_63", "Неудачных отправок:"); //Emails failed:
 define("MAILAN_64", "Всего заняло:");
 define("MAILAN_65", "секунд");
 define("MAILAN_66", "Отменено успешно");
-define("MAILAN_67", "Использовать 'POP before SMTP' authentication");  //Not translated yet
+define("MAILAN_67", "Использовать авторизацию 'POP перед SMTP'");
 
 ?>
