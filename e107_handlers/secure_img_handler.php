@@ -11,22 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-28 20:01:21 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-16 22:46:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 class secure_image {
 	var $random_number;
-	 
+
 	function secure_image() {
 		list($usec, $sec) = explode(" ", microtime());
 		$this->random_number = str_replace(".", "", $sec.$usec);
 	}
-	 
+
 	function create_code() {
 		global $pref, $sql, $IMAGES_DIRECTORY, $HANDLERS_DIRECTORY;
 
@@ -41,14 +41,14 @@ class secure_image {
 		$maxran = 1000000;
 		$rand_num = mt_rand(0, $maxran);
 		$datekey = date("r");
-		$rcode = hexdec(md5($_SERVER[HTTP_USER_AGENT] . serialize($pref). $rand_num . $datekey));
+		$rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey));
 		$code = substr($rcode, 2, 6);
 		$recnum = $this->random_number;
 		$del_time = time()+1200;
 		$sql->db_Insert("tmp", "'{$recnum}',{$del_time},'{$code},{$imgp}'");
 		return $recnum;
 	}
-	 
+
 	function verify_code($rec_num, $checkstr) {
 		global $sql, $tp;
 		if ($sql->db_Select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'")) {
@@ -59,7 +59,7 @@ class secure_image {
 		}
 		return FALSE;
 	}
-	 
+
 	function r_image() {
 		global $HANDLERS_DIRECTORY;
 		$code = $this->create_code();

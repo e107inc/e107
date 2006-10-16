@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-04-05 12:03:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.52 $
+|     $Date: 2006-10-16 22:47:44 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -84,33 +84,36 @@ class e107{
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $path;
 
-		define("e_HTTP", $this->server_path);
-		define("e_BASE", $this->relative_base_path);
-		define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
-		define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
-		define("e_THEME", e_BASE.$THEMES_DIRECTORY);
-		define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
-		define("e_FILE", e_BASE.$FILES_DIRECTORY);
-		define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
-		define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
+		if(!defined("e_HTTP") || !defined("e_ADMIN") )
+		{
+			define("e_HTTP", $this->server_path);
+			define("e_BASE", $this->relative_base_path);
+			define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
+			define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
+			define("e_THEME", e_BASE.$THEMES_DIRECTORY);
+			define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
+			define("e_FILE", e_BASE.$FILES_DIRECTORY);
+			define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
+			define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
 
-		define("e_ADMIN_ABS", e_HTTP.$ADMIN_DIRECTORY);
-		define("e_IMAGE_ABS", e_HTTP.$IMAGES_DIRECTORY);
-		define("e_THEME_ABS", e_HTTP.$THEMES_DIRECTORY);
-		define("e_PLUGIN_ABS", e_HTTP.$PLUGINS_DIRECTORY);
-		define("e_FILE_ABS", e_HTTP.$FILES_DIRECTORY);
-		define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
-		define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
+			define("e_ADMIN_ABS", e_HTTP.$ADMIN_DIRECTORY);
+			define("e_IMAGE_ABS", e_HTTP.$IMAGES_DIRECTORY);
+			define("e_THEME_ABS", e_HTTP.$THEMES_DIRECTORY);
+			define("e_PLUGIN_ABS", e_HTTP.$PLUGINS_DIRECTORY);
+			define("e_FILE_ABS", e_HTTP.$FILES_DIRECTORY);
+			define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
+			define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
 
-		define("e_DOCS", e_BASE.$HELP_DIRECTORY);
-		define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
+			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
+			define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
 
-		define("e_DOCS_ABS", e_HTTP.$HELP_DIRECTORY);
+			define("e_DOCS_ABS", e_HTTP.$HELP_DIRECTORY);
 
-		if ($DOWNLOADS_DIRECTORY{0} == "/") {
-			define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
-		} else {
-			define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
+			if ($DOWNLOADS_DIRECTORY{0} == "/") {
+				define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
+			} else {
+				define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
+			}
 		}
 	}
 
