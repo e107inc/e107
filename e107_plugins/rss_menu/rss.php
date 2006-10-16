@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-08-09 03:10:58 $
-|     $Author: e107coders $
+|     $Revision: 1.56 $
+|     $Date: 2006-10-16 18:35:06 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -422,8 +422,8 @@ class rssCreate {
 
 				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
 				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
-				<managingEditor>".$pref['siteadmin']." - ".$pref['siteadminemail']."</managingEditor>
-				<webMaster>".$pref['siteadminemail']."</webMaster>
+				<managingEditor>".$pref['siteadmin']." - ".$this->nospam($pref['siteadminemail'])."</managingEditor>
+				<webMaster>".$this->nospam($pref['siteadminemail'])."</webMaster>
 				<pubDate>".date("r",($time + $this -> offset))."</pubDate>
 				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
@@ -501,9 +501,9 @@ class rssCreate {
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
 				<dc:date>".$this->get_iso_8601_date($time + $this -> offset). "</dc:date>
-				<dc:creator>".$pref['siteadminemail']."</dc:creator>
+				<dc:creator>".$this->nospam($pref['siteadminemail'])."</dc:creator>
 				<admin:generatorAgent rdf:resource=\"http://e107.org\" />
-				<admin:errorReportsTo rdf:resource=\"mailto:".$pref['siteadminemail']."\" />
+				<admin:errorReportsTo rdf:resource=\"mailto:".$this->nospam($pref['siteadminemail'])."\" />
 				<sy:updatePeriod>hourly</sy:updatePeriod>
 				<sy:updateFrequency>1</sy:updateFrequency>
 				<sy:updateBase>2000-01-01T12:00+00:00</sy:updateBase>
@@ -585,7 +585,7 @@ class rssCreate {
 					//<icon>/icon.jpg</icon>\n
 					echo "
 					<logo>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</logo>\n
-					<rights type='html'>".$pref['siteadmin']." - ".$pref['siteadminemail']."</rights>\n";
+					<rights type='html'>".$pref['siteadmin']." - ".$this->nospam($pref['siteadminemail'])."</rights>\n";
 					if($pref['sitedescription']){
 					echo "
 					<subtitle type='text'>".$pref['sitedescription']."</subtitle>\n";
