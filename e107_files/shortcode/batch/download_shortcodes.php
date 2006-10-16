@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-13 13:11:33 $
+|     $Revision: 1.16 $
+|     $Date: 2006-10-16 18:07:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ if($parm == "request"){
 
 	$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"));
 	if($row['download_mirror_type']){
-		$text = ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."' title='".LAN_dl_32."'>");
+		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' title='".LAN_dl_32."'>");
 	}else{
 		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."' title='".LAN_dl_32."'>");
 	}
@@ -37,7 +37,7 @@ if($parm == "request"){
 	return $text;
 }
 
-return  "<a href='".e_SELF."?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'])."</a>";
+return  "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'])."</a>";
 SC_END
 
 
@@ -57,7 +57,7 @@ SC_BEGIN DOWNLOAD_LIST_ICON
 global $row;
 $img = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' title='".LAN_dl_32."' />";
 if($parm == "link"){
-	return "<a href='".e_SELF."?view.".$row['download_id']."' >".$img."</a>";
+	return "<a href='".e_BASE."download.php?view.".$row['download_id']."' >".$img."</a>";
 }else{
 	return $img;
 }
@@ -88,7 +88,7 @@ SC_BEGIN DOWNLOAD_LIST_THUMB
 global $row;
 $img = ($row['download_thumb']) ? "<img src='".e_FILE."downloadthumbs/".$row['download_thumb']."' alt='' style='".DL_IMAGESTYLE."' />" : "";
 if($parm == "link" && $row['download_thumb']){
-	return "<a href='".e_SELF."?view.".$row['download_id']."'>".$img."</a>";
+	return "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$img."</a>";
 }else{
 	return $img;
 }
@@ -117,7 +117,7 @@ SC_BEGIN DOWNLOAD_LIST_LINK
 global $tp,$row,$pref;
 $agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"));
 	if($row['download_mirror_type']){
-		return ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."' >");
+		return ($pref['agree_flag'] ? "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' >");
 	}else{
 		return ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."' >");
 	}
@@ -250,16 +250,16 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_LINK
 global $pref,$dl,$tp;
 if ($pref['agree_flag'] == 1) {
-	$dnld_link = "<a href='request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"))."');\">";
+	$dnld_link = "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"))."');\">";
 } else {
-	$dnld_link = "<a href='request.php?".$dl['download_id']."'>";
+	$dnld_link = "<a href='".e_BASE."request.php?".$dl['download_id']."'>";
 }
 
 if($dl['download_mirror'])
 {
 	if($dl['download_mirror_type'])
 	{
-		return "<a href='".e_SELF."?mirror.".$dl['download_id']."'>".LAN_dl_66."</a>";
+		return "<a href='".e_BASE."download.php?mirror.".$dl['download_id']."'>".LAN_dl_66."</a>";
 	}
 	else
 	{
@@ -317,7 +317,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_REPORT_LINK
 global $dl,$pref;
-return (check_class($pref['download_reportbroken'])) ? "<a href='".e_SELF."?report.".$dl['download_id']."'>".LAN_dl_45."</a>" : "";
+return (check_class($pref['download_reportbroken'])) ? "<a href='".e_BASE."download.php?report.".$dl['download_id']."'>".LAN_dl_45."</a>" : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_CAPTION
@@ -390,7 +390,7 @@ global $dl,$sql;
 
 	if ($sql->db_Select("download", "*", "download_category='".intval($dl['download_category_id'])."' AND download_id < {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp DESC LIMIT 1")) {
 		$row = $sql->db_Fetch();
-		return "<a href='".e_SELF."?view.".$row['download_id']."'>&lt;&lt; ".LAN_dl_33." [".$row['download_name']."]</a>\n";
+		return "<a href='".e_BASE."download.php?view.".$row['download_id']."'>&lt;&lt; ".LAN_dl_33." [".$row['download_name']."]</a>\n";
 	} else {
 		return "&nbsp;";
 	}
@@ -402,7 +402,7 @@ $dl_id = intval($dl['download_id']);
 	if ($sql->db_Select("download", "*", "download_category='".intval($dl['download_category_id'])."' AND download_id > {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp ASC LIMIT 1")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
-		return "<a href='".e_SELF."?view.".$row['download_id']."'>[".$row['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
+		return "<a href='".e_BASE."download.php?view.".$row['download_id']."'>[".$row['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
 	} else {
 		return "&nbsp;";
 	}
@@ -411,7 +411,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_BACK_TO_LIST
 global $dl;
-return "<a href='".e_SELF."?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
+return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
 SC_END
 
 
