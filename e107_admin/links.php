@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2006-10-11 14:30:40 $
-|     $Author: e107coders $
+|     $Revision: 1.64 $
+|     $Date: 2006-10-17 03:35:10 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -76,7 +76,7 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 	while($row = $sql-> db_Fetch()){
 		$subcat = $row[($sublink['fieldid'])];
 		$name = $row[($sublink['fieldname'])];
-		$subname = $name;  // use of sublink.parent.name is deprecated.
+		$subname = $name;  // eliminate old embedded hierarchy from names. (e.g. 'submenu.TopName.name')
 		$suburl = str_replace("#",$subcat,$sublink['url']);
 		$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $link_button;
 		$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
@@ -177,7 +177,7 @@ exit;
 class links
 {
 	var $link_total;
-	var $aIdOptPrep, $aIdOptVals, $aIdOptText;
+	var $aIdOptPrep, $aIdOptData, $aIdOptTest;
 
 	function getLinks()
 	{
@@ -195,9 +195,10 @@ class links
 
 	function linkName($text)
 	{
-		// This function is deprecated.
-		// Please use only the link_parent and not submenu.parent.name or any other method
-		// which involves changing the link's name.
+		// This function is ONLY needed for link databases that have been upgraded from
+		// before 0.7+ -- all new link collections make use of link_parent instead
+		// of hierarchy embedded in the link_name. (Unfortunately, the upgraded
+		// data still includes embedded coding.)
 
 		if(substr($text, 0, 8) == "submenu.") // for backwards compatibility only.
 		{
@@ -271,12 +272,12 @@ class links
 			$text .= "<div style='text-align:center'>
 				<table class='fborder' style='".ADMIN_WIDTH."'>
 				<colgroup>
-      		<col width=\"5%\">
-      		<col width=\"60%\">
-      		<col width=\"15%\">
-      		<col width=\"10%\">
-      		<col width=\"5%\">
-      		<col width=\"5%\">
+      		<col width=\"5%\" />
+      		<col width=\"60%\" />
+      		<col width=\"15%\" />
+      		<col width=\"10%\" />
+      		<col width=\"5%\" />
+      		<col width=\"5%\" />
 				</colgroup>
 				<tr>
 				<td class='fcaption'>".LCLAN_89."</td>
@@ -300,18 +301,18 @@ class links
 	}
 
 	function prepIdOpts() {
-		global $aIdOptPrep, $aIdOptVals;
 		for($a = 1; $a <= $this->link_total; $a++) {
-			$this->aIdOptVals[$a] = '|||.'.$a;	// Later, ||| becomes Id
-			$this->aIdOptText[$a] = $a;
+			$sTxt = "".$a;
+			$this->aIdOptData[] = array('val'=>'|||.'.$a, 'txt'=>$sTxt);	// Later, ||| becomes Id
+			$this->aIdOptTest[] = $sTxt;
 		}
-		$this->aIdOptPrep = $this->prepOpts($this->aIdOptVals,$this->aIdOptText);
+		$this->aIdOptPrep = $this->prepOpts($this->aIdOptData);
 	}
 
 	function display_row($row2, $indent = FALSE) {
 		global $sql, $rs, $ns, $tp, $linkArray;
 		extract($row2);
-		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0) // for backwards compatibility only. submenu. is deprecated.
+		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0) // 'submenu' for upgrade compatibility only.
 		{
 			$link_name = $this->linkName( $link_name );
 		}
@@ -322,7 +323,7 @@ class links
 			$subindent = "<td".$subspacer.">".$subimage."</td>";
 		}
 
-				$text .= "<tr><td class='forumheader3'; text-align: center; vertical-align: middle' title='".$link_description."'>";
+				$text .= "<tr><td class='forumheader3' style='text-align: center; vertical-align: middle' title='".$link_description."'>";
 				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
 				"";
 				$text .= "</td><td class='forumheader3' title='".$link_description."'>
@@ -345,7 +346,7 @@ class links
 				$text .= "</td>";
 				$text .= "<td style='text-align:center' class='forumheader3'>";
 				$text .= "<select name='link_order[]' class='tbox'>\n";
-				$text .= $this->genOpts( $this->aIdOptPrep, $this->aIdOptText, $link_order, $link_id );
+				$text .= $this->genOpts( $this->aIdOptPrep, $this->aIdOptTest, $link_order, $link_id );
 				$text .= "</select>";
 				$text .= "</td>";
 				$text .= "</tr>";
@@ -381,7 +382,7 @@ class links
 			$link_parent = $id;
 		}
 
-		if(strpos($link_name, "submenu.") !== FALSE){  // for backwards compatibility only. submenu. is deprecated.           
+		if(strpos($link_name, "submenu.") !== FALSE){  // 'submenu' for upgrade compatibility only.          
 			$link_name = $this->linkName( $link_name );
 		}
 
@@ -519,8 +520,8 @@ class links
 		$link_t = $sql->db_Count("links", "(*)");
 		if ($id) {
 			$sql->db_Update("links", "link_parent='$parent_id', link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['linkrender']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
-			//rename all sublinks
-		    // renaming sublink names is deprecated. link_parent is used instead.
+			//rename all sublinks to eliminate old embedded 'submenu' etc hierarchy.
+		    // this is for upgrade compatibility only. Current hierarchy uses link_parent.
 
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_3);
@@ -683,25 +684,36 @@ function sublink_list($name=""){
 
 }
 
-function prepOpts($aVals, $aText)
+function prepOpts($aData)
 {
 //
-// Preapare an array that can rapidly (no looping)
+// Prepare an array that can rapidly (no looping)
 // generate an HTML option string, with one item possibly selected.
 // prepOpts returns a prepared array containing the possible values in this form:
 //
 // <option value="xxxxx"
-// >text for zero</option<option value="yyyy"
-// >text for one</option>
+// >text for first</option><option value="yyyy"
+// >text for next</option>
+//
+// $aData is an array containing value/text pairs:
+// each entry is array( 'val'=>value, 'txt'=>text )
 //
 
 $i=0;
-	foreach($aVals as $sVal)
+	foreach($aData as $aVal)
 	{
+		$sVal = $aVal['val'];
+		$sTxt = $aVal['txt'];
 		$sOut="";
-		if ($i) $sOut = '>'.$aText[$i-1].'</option>';
+		
+		if ($i) $sOut = '>'.$sTxtPrev.'</option>';
 		$sOut .= '<option value="'.$sVal.'"';
+		
 		$aPrep[$i++] = $sOut;
+		$sTxtPrev = $sTxt;
+	}
+	if ($i) {  // terminate final option
+		$aPrep[$i] = '>'.$sTxtPrev.'</option>';
 	}
 
 	return $aPrep;
