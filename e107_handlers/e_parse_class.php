@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.164 $
-|     $Date: 2006-10-13 07:00:48 $
-|     $Author: sweetas $
+|     $Revision: 1.165 $
+|     $Date: 2006-10-18 21:48:41 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -49,7 +49,7 @@ class e_parse
 			if ($no_encode === TRUE && $mod != 'no_html')
 			{
 				$search = array('$', '"', "'", '\\', '<?');
-				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt?');
+				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt;?');
 				$ret = str_replace($search, $replace, $data);
 			} else {
 				$data = htmlspecialchars($data, ENT_QUOTES, CHARSET);
@@ -283,7 +283,7 @@ class e_parse
 		$fromadmin = strpos($modifiers, "fromadmin");
 		//$text = str_replace(array("&#092;&quot;", "&#092;&#039;", "&#092;&#092;"), array("&quot;", "&#039;", "&#092;"), $text);
 
-		// support for converting defines(constants) within text. eg. Lan_XXXX
+		// support for converting defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
 		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 25 && defined(trim($text))){
 			return constant(trim($text));
 		}
@@ -297,12 +297,14 @@ class e_parse
        if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
         $text = " ".$text;
 
+			// Prepare for line-break compression. Avoid compressing newlines in embedded scripts and CSS
         if (strpos($modifiers, 'nobreak') === FALSE) {
             $text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
             preg_match_all("#<(script|style)[^>]+>.*?</(script|style)>#is", $text, $embeds);
             $text = preg_replace("#<(script|style)[^>]+>.*?</(script|style)>#is", "<|>", $text);
         }
 
+			// Convert URL's to clickable links, unless modifiers or prefs override
         if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
             if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
                 $_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
@@ -321,6 +323,7 @@ class e_parse
             }
         }
 
+			// Convert emoticons to graphical icons, unless modifiers override
         if (strpos($modifiers, 'emotes_off') === FALSE) {
             if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
                 if (!is_object($this->e_emote)) {
@@ -331,6 +334,7 @@ class e_parse
             }
         }
 
+			// Reduce multiple newlines in all forms to a single newline character, except for embedded scripts and CSS
         if (strpos($modifiers, 'nobreak') === FALSE) {
             $text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
             foreach ($embeds[0] as $embed) {
@@ -338,6 +342,7 @@ class e_parse
             }
         }
 
+		// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
 		if (strpos($modifiers, 'value') === FALSE) { // output not used for attribute values.
 	       	$text = str_replace($this -> search, $this -> replace, $text);
         }else{   									// output used for attribute values.
@@ -354,6 +359,7 @@ class e_parse
         }
         // End parse [bb][/bb] codes
 
+				// profanity filter
         if ($pref['profanity_filter']) {
             if (!is_object($this->e_pf)) {
                 require_once(e_HANDLER."profanity_filter.php");
@@ -362,6 +368,7 @@ class e_parse
             $text = $this->e_pf->filterProfanities($text);
         }
 
+			// Optional short-code conversion
         if (strpos($modifiers,'parse_sc') !== FALSE)
         {
             $text = $this->parseTemplate($text, TRUE);
@@ -471,10 +478,10 @@ class e_parse
 	{
 		if($nonrelative != "")
 		{
-			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY;
-			$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
-			$replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY.SITEURL.$THEMES_DIRECTORY);
-			$search = array("{"."e_BASE"."}","{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}");
+			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
+			$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY);
+			$replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY,SITEURL.$THEMES_DIRECTORY,SITEURL.$DOWNLOADS_DIRECTORY,SITEURL.$ADMIN_DIRECTORY);
+			$search = array("{"."e_BASE"."}","{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}","{"."e_DOWNLOADS"."}","{"."e_ADMIN"."}");
 			$replace = ($nonrelative == "full" && !is_bool($nonrelative)) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
 		}
@@ -496,7 +503,7 @@ class e_parse
 	}
 
     function createConstants($url,$mode=0){
-        global $IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY;
+        global $IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
 
         if($mode == 0) // folder name only.
 		{
@@ -505,7 +512,8 @@ class e_parse
 				"{"."e_PLUGIN"."}"=>$PLUGINS_DIRECTORY,
 				"{"."e_FILE"."}"=>$FILES_DIRECTORY,
 				"{"."e_THEME"."}"=>$THEMES_DIRECTORY,
-				"{"."e_DOWNLOAD"."}"=>$DOWNLOADS_DIRECTORY
+				"{"."e_DOWNLOAD"."}"=>$DOWNLOADS_DIRECTORY,
+				"{"."e_ADMIN"."}"=>$ADMIN_DIRECTORY,
   			);
         }
 		elseif($mode == 1)  // relative path
@@ -515,7 +523,8 @@ class e_parse
 				"{"."e_PLUGIN"."}"=>e_PLUGIN,
 				"{"."e_FILE"."}"=>e_FILE,
 				"{"."e_THEME"."}"=>e_THEME,
-				"{"."e_DOWNLOAD"."}"=>e_DOWNLOAD
+				"{"."e_DOWNLOAD"."}"=>e_DOWNLOAD,
+				"{"."e_ADMIN"."}"=>e_ADMIN
 			);
 		}
 		foreach($tmp as $key=>$val)
