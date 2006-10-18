@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-07-16 19:56:46 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2006-10-18 16:34:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -58,17 +58,29 @@ return $rs->form_text("realname", 20, $curVal['user_login'], 100, "tbox");
 SC_END
 
 SC_BEGIN PASSWORD1
-global $rs, $curVal;
+global $rs, $curVal, $pref;
+if(!isset($pref['auth_method']) || ($pref['auth_method'] != 'e107' && $pref['auth_method'] != '>e107'))
+{
+	return "";
+}
 return $rs->form_password("password1", 40, "", 20);
 SC_END
 
 SC_BEGIN PASSWORD2
-global $rs, $curVal;
+global $rs, $curVal, $pref;
+if(!isset($pref['auth_method']) || ($pref['auth_method'] != 'e107' && $pref['auth_method'] != '>e107'))
+{
+	return "";
+}
 return $rs->form_password("password2", 40, "", 20);
 SC_END
 
 SC_BEGIN PASSWORD_LEN
 global $pref;
+if(!isset($pref['auth_method']) || ($pref['auth_method'] != 'e107' && $pref['auth_method'] != '>e107'))
+{
+	return "";
+}
 return $pref['signup_pass_len'];
 SC_END
 
