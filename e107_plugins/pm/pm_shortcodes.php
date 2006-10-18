@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-03-05 06:04:02 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2006-10-18 21:18:18 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -318,7 +318,7 @@ if(is_numeric($pm_info['pm_to']))
 }
 else
 {
-	return "class: ".$pm_info['pm_to'];
+	return LAN_PM_63." ".$pm_info['pm_to'];
 }
 SC_END
 
