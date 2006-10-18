@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/ldap_conf.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-06 08:09:50 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-18 15:24:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
@@ -21,6 +21,9 @@ require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 include_lan("languages/".e_LANGUAGE."/lan_ldap_auth.php");
+define("ALT_AUTH_ACTION", "ldap");
+require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
+
 
 $server_types[1]="LDAP";
 $server_types[2]="ActiveDirectory";
@@ -120,6 +123,11 @@ $text .= "</table>";
 $text .= $frm -> form_close();
 
 $ns -> tablerender(LDAPLAN_6,$text);
-$ns -> tablerender(" ","<div style='text-align:center'><a href='".e_PLUGIN."alt_auth/alt_auth_conf.php'>".LDAPLAN_14."</a></div>");
 require_once(e_ADMIN."footer.php");
+
+function ldap_conf_adminmenu()
+{
+	alt_auth_adminmenu();
+}
+
 ?>
