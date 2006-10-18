@@ -9,4 +9,6 @@ define("OTHERDB_LAN_7", "Username Field:");
 define("OTHERDB_LAN_8", "Password Field:");
 define("OTHERDB_LAN_9", "Password Method:");
 define("OTHERDB_LAN_10", "Configure otherdb auth");
+define("OTHERDB_LAN_11", "** The following fields are not required if using an e107 database");
+
 ?>

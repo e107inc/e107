@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/otherdb_auth.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-10-18 15:24:06 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-18 16:58:28 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,6 @@ class auth_login
 			return AUTH_NOCONNECT;
 		}
 	}
-	
 
 	function login($uname, $pword, &$newvals)
 	{
