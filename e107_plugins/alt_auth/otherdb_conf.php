@@ -124,7 +124,7 @@ function update_otherdb_prefs()
 		{
 			if($sql -> db_Select("alt_auth", "*", "auth_type='otherdb' AND auth_parmname='{$k}' "))
 			{
-				$sql -> db_Update("alt_auth", "auth_parmval='{$v}' WHERE  auth_type='e107db' AND auth_parmname='{$k}' ");
+				$sql -> db_Update("alt_auth", "auth_parmval='{$v}' WHERE  auth_type='otherdb' AND auth_parmname='{$k}' ");
 			}
 			else
 			{

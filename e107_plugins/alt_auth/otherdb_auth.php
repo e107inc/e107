@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/otherdb_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-10-18 16:58:28 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-18 17:22:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -96,15 +96,17 @@ class otherdb_mysql_class
 		if($this->conf['otherdb_dbtype'] == 'mysql')
 		{
 			$sel_fields = $this->conf['otherdb_password_field'];
+			$user_field = $this->conf['otherdb_user_field'];
 		}
 		else
 		{
 			$sel_fields = 'user_password, user_email, user_join';
+			$user_field = "user_loginname";
 		}
 		
 
 		//Get record containing supplied login name
-		$qry = "SELECT {$sel_fields} FROM {$this->conf['otherdb_table']} WHERE {$this->conf['otherdb_user_field']} = '{$uname}'";
+		$qry = "SELECT {$sel_fields} FROM {$this->conf['otherdb_table']} WHERE {$user_field} = '{$uname}'";
 		if(!$r1 = mysql_query($qry))
 		{
 			mysql_close($res);
