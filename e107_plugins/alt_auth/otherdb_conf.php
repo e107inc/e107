@@ -80,6 +80,8 @@ function show_otherdb_form()
 	$text .= $frm -> form_text("otherdb_table", 35, $parm['otherdb_table'], 120);
 	$text .= "</td></tr>";
 
+	$text .= "<tr><td class='forumheader2' colspan='2'>".OTHERDB_LAN_11."</td></tr>";
+
 	$text .= "<tr><td class='forumheader3'>".OTHERDB_LAN_7."</td><td class='forumheader3'>";
 	$text .= $frm -> form_text("otherdb_user_field", 35, $parm['otherdb_user_field'], 120);
 	$text .= "</td></tr>";
