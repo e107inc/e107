@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2006-07-04 18:22:38 $
-|     $Author: e107coders $
+|     $Revision: 1.75 $
+|     $Date: 2006-10-18 16:34:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,6 +80,12 @@ require_once(HEADERF);
 
 if (isset($_POST['updatesettings']))
 {
+	if(isset($pref['auth_method']) && ($pref['auth_method'] == 'e107' || $pref['auth_method'] == '>e107'))
+	{
+		$_POST['password1'] = '';
+		$_POST['password2'] = '';
+	}
+
 	if ($_uid && ADMIN)
 	{
 		$inp = $_uid;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/alt_auth_conf.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-18 15:24:06 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-18 16:34:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -40,8 +40,8 @@ $authlist = alt_auth_get_authlist();
 $auth_dropdown = "<select class='tbox' name='auth_method'>\n";
 foreach($authlist as $a)
 {
-	$s = ($pref['auth_method'] == $a) ? " SELECTED" : "";
-	$auth_dropdown .= "<option {$s}>".$a."</option>\n";
+	$s = ($pref['auth_method'] == $a) ? "selected='selected'" : "";
+	$auth_dropdown .= "<option value='{$a}' {$s}>".$a."</option>\n";
 }
 $auth_dropdown .= "</select>\n";
 

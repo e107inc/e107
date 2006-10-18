@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-16 19:56:47 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-18 16:34:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,6 +28,25 @@ $sc_style['CUSTOMTITLE']['pre'] = "
 <td style='width:60%' class='forumheader2'>
 ";
 $sc_style['CUSTOMTITLE']['post'] = "</td></tr>";
+
+$sc_style['PASSWORD1']['pre'] = "
+	<tr>
+	<td style='width:40%' class='forumheader3'>".LAN_152."<br /><span class='smalltext'>".LAN_401."</span></td>
+	<td style='width:60%' class='forumheader2'>
+";
+
+$sc_style['PASSWORD2']['pre'] = "
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:40%' class='forumheader3'>".LAN_153."<br /><span class='smalltext'>".LAN_401."</span></td>
+	<td style='width:60%' class='forumheader2'>
+";
+$sc_style['PASSWORD2']['post'] = "
+	</td>
+	</tr>
+";
 
 $sc_style['PASSWORD_LEN']['pre'] = "<br /><span class='smalltext'>  (".LAN_SIGNUP_1." ";
 $sc_style['PASSWORD_LEN']['post'] = " ".LAN_SIGNUP_2.")</span>";
@@ -111,20 +130,9 @@ $USERSETTINGS_EDIT = "
 
 	{CUSTOMTITLE}
 
-	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_152."<br /><span class='smalltext'>".LAN_401."</span></td>
-	<td style='width:60%' class='forumheader2'>
 	{PASSWORD1}
 	{PASSWORD_LEN}
-	</td>
-	</tr>
-
-	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_153."<br /><span class='smalltext'>".LAN_401."</span></td>
-	<td style='width:60%' class='forumheader2'>
 	{PASSWORD2}
-	</td>
-	</tr>
 
 	<tr>
 	<td style='width:40%' class='forumheader3'>".LAN_112."</td>
