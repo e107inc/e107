@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-08-04 02:13:06 $
+|     $Revision: 1.42 $
+|     $Date: 2006-10-18 15:53:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+$eplug_admin = true;
 require_once("../../class2.php");
 @include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php';
 @include_once e_PLUGIN.'forum/languages/English/lan_forum_admin.php';
