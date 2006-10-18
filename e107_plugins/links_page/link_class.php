@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.36 $
-|    $Date: 2006-09-26 18:34:32 $
-|    $Author: e107coders $
+|    $Revision: 1.37 $
+|    $Date: 2006-10-18 16:23:18 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -508,7 +508,7 @@ class linkclass {
 				if($qs[1] == "manage"){
                     $link_author = USERID;
                 }else{
-                    $link_author = ($_POST['link_author'] ? $tp -> toDB($_POST['link_author']) : USERID);
+                    $link_author = ($_POST['link_author'] && $_POST['link_author']!='' ? $tp -> toDB($_POST['link_author']) : USERID);
                 }
 
                 $sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".intval($_POST['cat_id'])."', link_open='".intval($_POST['linkopentype'])."', link_class='".intval($link_class)."', link_datestamp='".intval($time)."', link_author='".$link_author."' WHERE link_id='".intval($qs[2])."'");
@@ -681,7 +681,8 @@ class linkclass {
         if (isset($qs[2]) && $qs[2] && $qs[1] == "edit") {
             $text .= $rs -> form_hidden("link_datestamp", $row['link_datestamp']);
             $text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".LCLAN_ITEM_21."<br /><br />";
-            $text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_22, "", "", "").$rs -> form_hidden("link_id", $row['link_id']);
+            $text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_22, "", "", "").$rs -> form_hidden("link_id", $row['link_id']).$rs -> form_hidden("link_author", $row['link_author']);
+			
         } else {
             $text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_23, "", "", "");
         }
