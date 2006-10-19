@@ -4,8 +4,8 @@
 |     e107 website system - Norwegian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Norwegian/lan_news.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-09-26 19:03:25 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-19 17:08:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,8 +21,8 @@ define("LAN_307", "Totalt antall postinger i denne kategorien: ");
 define("LAN_NEWS_1", "Kun nyheter for bestemte medlemmer");
 define("LAN_NEWS_2", "Du har ikke tilgang til å se denne nyheten");
 
-//define("LAN_NEWS_3", "Please delete install.php from your server");
-//define("LAN_NEWS_4", "if you do not there is a potential security risk to your website");
+//define("LAN_NEWS_3", "Vennligst slett install.php fra din server");
+//define("LAN_NEWS_4", "om du ikke gjør det, utsetter du nettsiden for en potensiell risiko");
 
 define("LAN_NEWS_5", "<b>Feil!</b> Var ikke i stand til å oppdatere saken i databasen!");
 define("LAN_NEWS_6", "Saken er lagt inn i databasen.");

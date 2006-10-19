@@ -4,8 +4,8 @@
 |     e107 website system - Norwegian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Norwegian/lan_contact.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-09-26 19:03:25 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-19 17:08:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("LANCONTACT_09", "Din melding er sendt.");
 define("LANCONTACT_10", "Det oppstod et problem ved sending av din melding.");
 define("LANCONTACT_11", "Din e-mail adresse ser ikke ut til å være gyldig.\\nVennligst kontroller denne og prøv på nytt.");
 define("LANCONTACT_12", "Din melding er for kort.");
-define("LANCONTACT_13", "Vennligst skriv inn et emne.");
+define("LANCONTACT_13", "Vennligst skriv inn et emne."); 
 
 
 

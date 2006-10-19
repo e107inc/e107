@@ -1,40 +1,40 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Norwegian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Norwegian/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-09-26 19:03:25 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-19 17:08:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Upload");
+define("PAGE_NAME", "Opplasting");
 
-define("LAN_20", "Error");
-define("LAN_61", "Your Name: ");
-define("LAN_112", "Email Address: ");
-define("LAN_144", "Website URL: ");
-define("LAN_402", "You must be a registered member to upload files to this server.");
-define("LAN_403", "You do not have the correct permissions to upload files to this server.");
-define("LAN_404", "Thank you. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
-define("LAN_405", "File exceeds specified maximum size limit - deleted.");
-define("LAN_406", "Please note");
-define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
-define("LAN_408", "Underlined");
-define("LAN_409", "Name of file");
-define("LAN_410", "Version");
-define("LAN_411", "File");
-define("LAN_412", "Screenshot");
-define("LAN_413", "Description");
-define("LAN_414", "Working demo");
-define("LAN_415", "enter URL to site where demo can be viewed");
-define("LAN_416", "Submit and Upload");
-define("LAN_417", "Upload File");
-define("LAN_418", "Maximum file size: ");
-define("DOWLAN_11", "Category");
-define("LAN_419", "Allowed filetypes");
-define("LAN_420", "fields are required");
+define("LAN_20", "Feil");
+define("LAN_61", "Ditt navn: ");
+define("LAN_112", "Emailadresse: ");
+define("LAN_144", "Webside URL: ");
+define("LAN_402", "Du må være registrert som medlem for å laste opp filer til denne serveren.");
+define("LAN_403", "Du har ikke tilgang til å laste opp filer til denne serveren.");
+define("LAN_404", "Tusen takk. Din opplasting vil bli vurdert av administrator og deretter bli publisert.");
+define("LAN_405", "Flien er større enn maksimum tillatt størrelse - slettet.");
+define("LAN_406", "Vær oppmerksom på");
+define("LAN_407", "Alle andre filetyper som lastes opp vil bli øyeblikkelig slettet.");
+define("LAN_408", "Understreket");
+define("LAN_409", "Navn på fil");
+define("LAN_410", "Versjon");
+define("LAN_411", "Fil");
+define("LAN_412", "Skjermbilde");
+define("LAN_413", "Beskrivelse");
+define("LAN_414", "Under arbeid demostrasjon");
+define("LAN_415", "skriv inn URL til siden hvor demostrasjon kan bli sett");
+define("LAN_416", "Send og last opp");
+define("LAN_417", "Last opp fil");
+define("LAN_418", "Maksimum filstørrelse: ");
+define("DOWLAN_11", "Kategori");
+define("LAN_419", "Tillatte filtyper");
+define("LAN_420", "felt er påkrevd");
 
 
 
