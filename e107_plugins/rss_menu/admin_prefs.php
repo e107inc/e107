@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-07-08 03:17:43 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-19 02:49:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -75,9 +75,10 @@ if(isset($_POST['updatesettings'])){
 }
 
 //config check
-if($rss->e107_config_check()){
+if($rss->file_check()){
 	$message = RSS_LAN_ERROR_2; // space found in file.
 }
+
 
 //render message
 if(isset($message)){
@@ -150,12 +151,14 @@ function admin_prefs_adminmenu(){
 class rss{
 
 	//check for config
-	function e107_config_check(){
+	function file_check(){
 		$arrays = file_get_contents(e_BASE."e107_config.php");
-		if($arrays[0] != "<"){
+		$arrays2 = file_get_contents(e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php");
+		if($arrays[0] != "<" || $arrays2[0] != "<"){
 			return TRUE;
 		}
 	}
+
 
 	//admin : list : existing rss feeds
 	function rssadminlist(){
