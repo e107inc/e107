@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/languages/English.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-07-08 03:17:43 $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-19 02:49:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ define("RSS_LAN_ADMINMENU_2", "Listing");
 define("RSS_LAN_ADMINMENU_4", "Import");
 
 define("RSS_LAN_ERROR_1", "This is not a valid rss feed<br /><br /><a href='".e_SELF."'><< return to rss feed list</a>");
-define("RSS_LAN_ERROR_2", "Your e107_config.php file contains space before the &lt;? characters. You should remove this space if you wish to have a valid RSS feed.");
+define("RSS_LAN_ERROR_2", "Your e107_config.php file or your langauge files contain spaces or ﻿ characters before the &lt;? characters. You should remove this with a non-utf8 text-editor if you wish to have a valid RSS feed.");
 define("RSS_LAN_ERROR_3", "No rss feeds are present yet<br />please use the import feature to import available rss feeds or create a rss feed manually.");
 define("RSS_LAN_ERROR_4", "No rss feeds are available yet");
 define("RSS_LAN_ERROR_5", "This rss entry does not exist");
