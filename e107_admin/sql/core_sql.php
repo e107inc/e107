@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-10-14 14:18:23 $
-|     $Author: e107coders $
+|     $Revision: 1.50 $
+|     $Date: 2006-10-19 21:17:06 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -309,6 +309,7 @@ CREATE TABLE online (
   online_ip varchar(15) NOT NULL default '',
   online_location varchar(100) NOT NULL default '',
   online_pagecount tinyint(3) unsigned NOT NULL default '0'
+  online_active int(10) unsigned NOT NULL default '0',
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 

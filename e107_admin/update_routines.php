@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.185 $
-|     $Date: 2006-10-11 12:40:05 $
+|     $Revision: 1.186 $
+|     $Date: 2006-10-19 21:16:47 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -149,6 +149,12 @@ function update_70x_to_706($type='') {
         require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
 		$ep->update_plugins_table();
+		
+		if(!$sql->db_Field("online",6)) // online_active field
+		{
+			mysql_query("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
+			catch_error();
+		}
 
 		return '';
 
@@ -171,7 +177,11 @@ function update_70x_to_706($type='') {
 		{
             return update_needed();
 		}
-
+		
+		if(!$sql->db_Field("online",6)) // online_active field
+		{
+			return update_needed();
+		}
 
 		// No updates needed
 	 	return TRUE;
@@ -561,7 +571,7 @@ function update_617_to_700($type='') {
 					$parms = explode("|", $val);
 					$ext_name['ue_'.$key] = 'user_'.preg_replace("#\W#","",$parms[0]);
 					$new_field['name'] = preg_replace("#\W#","",$parms[0]);
-					$new_field['text'] = $parms[0];
+					$new_field['text'] = str_replace('_',' ',$parms[0]); // Spaces are ok now
 					$new_field['type'] = $new_types[$parms[1]];
 					$new_field['values'] = $parms[2];
 					$new_field['default'] = $parms[3];
