@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.165 $
-|     $Date: 2006-10-18 21:48:41 $
-|     $Author: mrpete $
+|     $Revision: 1.166 $
+|     $Date: 2006-10-19 02:30:44 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -259,8 +259,10 @@ class e_parse
 	function text_truncate($text, $len = 200, $more = "[more]") {
 		if(strlen($text) <= $len) {
 			return $text;
-		} else {
-			return substr($text, 0, $len).$more;
+		} else { // utf-8 compatible substr()
+            return preg_replace('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,0}'.
+					'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'}).*#s',
+					'$1',$text).$more;
 		}
 	}
 
