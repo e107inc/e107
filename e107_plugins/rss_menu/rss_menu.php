@@ -11,31 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-06-20 08:12:25 $
-|     $Author: lisa_ $
+|     $Revision: 1.15 $
+|     $Date: 2006-10-19 23:12:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-global $FILES_DIRECTORY,$pref;
+global $FILES_DIRECTORY,$pref,$sql;
 $path = e_PLUGIN."rss_menu/";
 
 $des = "";
 
-if(strstr(e_SELF, "comment.php")) {
+if(strstr(e_SELF, "comment.php") && $sql -> db_Select("rss", "rss_path", " rss_path = 'comments' LIMIT 1")) {
 	$type = 5;
 	$des = RSS_MENU_L4;
 }
-if(strstr(e_SELF, "/forum")) {
+if(strstr(e_SELF, "/forum")&& $sql -> db_Select("rss", "rss_path", " rss_path = 'forum|name' LIMIT 1") ) {
 	$type = 6;
 	$des = RSS_MENU_L5;
 }
-if(strstr(e_SELF, "forum_viewtopic")) {
+if(strstr(e_SELF, "forum_viewtopic") && $sql -> db_Select("rss", "rss_path", " rss_path = 'forum|topic' LIMIT 1")) {
 	$type = 7;
 	$des = RSS_MENU_L6;
 }
-if(strstr(e_SELF, "chat.php")) {
+if(strstr(e_SELF, "chat.php")&& $sql -> db_Select("rss", "rss_path", " rss_path = 'chatbox_menu' LIMIT 1")) {
 	$type = 9;
 	$des = RSS_MENU_L7;
 }
@@ -45,7 +45,7 @@ if(strstr(e_SELF, "/bugtracker")) {
 	$des = RSS_MENU_L8;
 }
 
-if(strstr(e_SELF, "download.php")) {
+if(strstr(e_SELF, "download.php") && $sql -> db_Select("rss", "rss_path", " rss_path = 'download' LIMIT 1")) {
 	$type = 12;
 	$des = RSS_MENU_L9;
 }
