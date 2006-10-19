@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-10-16 18:07:24 $
+|     $Revision: 1.17 $
+|     $Date: 2006-10-19 02:07:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -426,8 +426,9 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	  	SELECT dc.download_category_name, dc.download_category_order, dc.download_category_id, dc.download_category_parent,
 	  	dc1.download_category_parent AS d_parent1
 	  	FROM #download_category AS dc
-	  	LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent
-		 ORDER by dc.download_category_parent, dc.download_category_order";
+	  	LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent AND dc1.download_category_class IN (".USERCLASS_LIST.")";
+        $qry .= " WHERE dc.download_category_class IN (".USERCLASS_LIST.") ";
+	 	$qry .= " ORDER by dc.download_category_parent, dc.download_category_order";
 
   	  	if (!$sql->db_Select_gen($qry))
 	  	{
