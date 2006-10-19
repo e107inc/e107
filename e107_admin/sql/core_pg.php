@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_pg.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-25 01:33:05 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-19 21:17:06 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -244,6 +244,8 @@ CREATE TABLE online (
   online_ip varchar(15) DEFAULT '' NOT NULL,
   online_location varchar(100) DEFAULT '' NOT NULL,
   online_pagecount tinyint(3) int2 DEFAULT '0' NOT NULL,
+  online_active int4 DEFAULT '0' NOT NULL,
+  
 );
 
 CREATE TABLE plugin (
