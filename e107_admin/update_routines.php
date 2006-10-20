@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.186 $
-|     $Date: 2006-10-19 21:16:47 $
+|     $Revision: 1.187 $
+|     $Date: 2006-10-20 21:02:42 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -1622,7 +1622,7 @@ function update_extended_616() {
 function update_needed()
 {
 	global $ns;
-	if(E107_DEBUG_LEVEL > 0)
+	if(E107_DEBUG_LEVEL)
 	{
 		$tmp = debug_backtrace();
 		$ns->tablerender("", "<div style='text-align:center'>Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']."</div>");
@@ -1638,7 +1638,7 @@ function mysql_table_exists($table){
 
 
 function catch_error(){
-	if (mysql_error()!='' && E107_DEBUG_LEVEL > 0) {
+	if (mysql_error()!='' && E107_DEBUG_LEVEL != 0) {
 		$tmp2 = debug_backtrace();
 		$tmp = mysql_error();
 		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
