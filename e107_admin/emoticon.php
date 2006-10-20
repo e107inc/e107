@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-06-13 16:16:12 $
-|     $Author: lisa_ $
+|     $Revision: 1.34 $
+|     $Date: 2006-10-20 17:21:01 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -138,10 +138,10 @@ class emotec
 			{
 				$text .= "<img src='".$emote['path']."/".$emote['fname']."' alt='' /> ";
 			}
-			
+
 			$text .= "</td>
-			<td class='forumheader3' style='width: 10%; text-align: center;'>".($pref['emotepack'] == $pack ? EMOLAN_10 : "<input class='button' type='submit' name='defPack_".$pack."' value='".EMOLAN_11." />")."</td>
-			<td class='forumheader3' style='width: 20%; text-align: center;'><input class='button' type='submit' name='subPack_".$pack."' value='".EMOLAN_12."' /></td>
+			<td class='forumheader3' style='width: 10%; text-align: center;'>".($pref['emotepack'] == $pack ? EMOLAN_10 : "<input class='button' type='submit' name='defPack_".$pack."' value=\"".EMOLAN_11."\" />")."</td>
+			<td class='forumheader3' style='width: 20%; text-align: center;'><input class='button' type='submit' name='subPack_".$pack."' value=\"".EMOLAN_12."\" /></td>
 			</tr>
 			";
 		}
@@ -194,14 +194,14 @@ class emotec
 			<td class='forumheader3' style='width: 20%; text-align: center;'><img src='".$emote['path'].$ename."' alt='' /></td>
 			<td class='forumheader3' style='width: 60%;'><input style='width: 80%' class='tbox' type='text' name='$evalue' value='".$tp -> toForm($emotecode[$evalue])."' maxlength='200' /></td>
 			</tr>
-			";	
+			";
 		}
 
 		$text .= "
 		<tr>
 		<td style='text-align: center;' colspan='3' class='forumheader'><input class='button' type='submit' name='sub_conf' value='".EMOLAN_14."' /></td>
 		</tr>
-		
+
 		</table>
 		<input type='hidden' name='packID' value='$packID' />
 		</form>";
@@ -302,8 +302,8 @@ class emotec
 				{
 					$filename = e_IMAGE."emotes/".$value."/".$confFile['file'];
 
-					$handle = fopen ($filename, "r"); 
-					$contents = fread ($handle, filesize ($filename)); 
+					$handle = fopen ($filename, "r");
+					$contents = fread ($handle, filesize ($filename));
 					fclose ($handle);
 
 					preg_match_all("#\<emoticon file=\"(.*?)\"\>(.*?)\<\/emoticon\>#si", $contents, $match);
@@ -342,7 +342,7 @@ class emotec
 					echo "<div style='text-align: center;'><b>New emote php found: '</b> ".$value."'</div>";
 				}
 				/* end ----------------------------------------------------------------------------------------------------------------------------------------- */
-				
+
 			}
 		}
 	}
