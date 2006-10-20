@@ -11,16 +11,51 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.304 $
-|     $Date: 2006-10-19 21:16:30 $
+|     $Revision: 1.305 $
+|     $Date: 2006-10-20 20:58:03 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
-// Find out if register globals is enabled and destroy them if so
+//
+// *** Code sequence for startup ***
+// IMPORTANT: These items are in a carefully constructed order. DO NOT REARRANGE
+// without checking with experienced devs! Various subtle things WILL break.
+//
+// A Get the current CPU time so we know how long all of this takes
+// B Remove output buffering so we are in control of text sent to user
+// C Remove registered globals (SECURITY for all following code)
+// D Setup PHP error handling (now we can see php errors ;))
+// E Setup other PHP essentials
+// F Grab e107_config to get directory paths
+// G Retrieve Query from URI (i.e. what are the request parameters?!)
+// H Initialize debug handling (NOTE: A-G cannot use debug tools!)
+// I: Sanity check to ensure e107_config is ok
+// J: MYSQL setup (NOTE: A-I cannot use database!)
+// K: Compatibility mode
+// L: Retrieve core prefs
+// M: Subdomain and language selection
+// N: Other misc setups (NOTE: Put most 'random' things here that don't require user session or theme
+// O: Start user session
+// P: Load theme
+// Q: Other setups 
 
+//
+// A: Honest global beginning point for processing time
+//
+$eTimingStart = microtime();
+$pre_start_ob_level = ob_get_level();
+
+//
+// B: Remove all output buffering
+//
 while (@ob_end_clean());  // destroy all ouput buffering
 ob_start();             // start our own.
+$start_ob_level = ob_get_level();
 
+//
+// C: Find out if register globals is enabled and destroy them if so
+// (DO NOT use the value of any variables before this point! They could have been set by the user)
+//
 $register_globals = true;
 if(function_exists('ini_get')) {
 	$register_globals = ini_get('register_globals');
@@ -36,22 +71,16 @@ if($register_globals == true){
 	unset($global);
 }
 
-if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
-	foreach ($retrieve_prefs as $key => $pref_name) {
-		 $retrieve_prefs[$key] = preg_replace("/\W/", '', $pref_name);
-	}
-} else {
-	unset($retrieve_prefs);
-}
-
-// setup error handling first of all.
+//
+// D: Setup PHP error handling
+//    (Now we can see PHP errors)
+//
 $error_handler = new error_handler();
 set_error_handler(array(&$error_handler, "handle_error"));
 
-// Honest global beginning point for processing time
-$eTimingStart = microtime();
-$start_ob_level = ob_get_level();
-
+//
+// E: Setup other essential PHP parameters
+//
 define("e107_INIT", TRUE);
 
 // setup some php options
@@ -62,9 +91,17 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid',    0);
 
 
+if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
+	foreach ($retrieve_prefs as $key => $pref_name) {
+		 $retrieve_prefs[$key] = preg_replace("/\W/", '', $pref_name);
+	}
+} else {
+	unset($retrieve_prefs);
+}
+
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 $srvtmp = explode(".",$_SERVER['HTTP_HOST']);
-define("e_SUBDOMAIN", ($srvtmp[2] ? $srvtmp[0] : FALSE)); // needs to be available to e107_config.
+define("e_SUBDOMAIN", (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : FALSE)); // needs to be available to e107_config.
 
 //  Ensure thet '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
@@ -75,14 +112,18 @@ if($inc_path[0] != ".") {
 }
 unset($inc_path);
 
-// Grab e107_config, get directory paths, and create the $e107 object
+//
+// F: Grab e107_config, get directory paths and create $e107 object
+//
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 if(!isset($ADMIN_DIRECTORY)){
 	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
 	header("Location: install.php");
 }
 
+//
 // clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
+//
 e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, realpath(dirname(__FILE__)));
@@ -96,6 +137,10 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 	}
 }
 
+//
+// G: Retrieve Query data from URI
+//    (Until this point, we have no idea what the user wants to do)
+//
 if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	$e_QUERY = $matches[2];
@@ -113,6 +158,10 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	$e_QUERY = $_SERVER['QUERY_STRING'];
   	define("e_LANCODE", "");
 }
+
+//
+// Start the parser; use it to grab the full query string
+//
 
 e107_require_once(e_HANDLER.'e_parse_class.php');
 $tp = new e_parse;
@@ -135,24 +184,30 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
+//
+// H: Initialize debug handling
+// (NO E107 DEBUG CONSTANTS OR CODE ARE AVAILABLE BEFORE THIS POINT)
 // All debug objects and constants are defined in the debug handler
-if (strpos(e_MENU, 'debug') !== FALSE || isset($_COOKIE['e107_debug_level'])) {
+// i.e. from here on you can use E107_DEBUG_LEVEL or any
+// E107_DBG_* constant for debug testing.
+//
 	require_once(e_HANDLER.'debug_handler.php');
-	$db_debug = new e107_db_debug;
-} else {
-	define('E107_DEBUG_LEVEL',0);
-}
 
-if(isset($db_debug) && is_object($db_debug)) {
+if(E107_DEBUG_LEVEL && isset($db_debug) && is_object($db_debug)) {
 	$db_debug->Mark_Time('Start: Init ErrHandler');
 }
 
-// e107_config.php upgrade check
+//
+// I: Sanity check on e107_config.php
+//     e107_config.php upgrade check
 if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY) {
 	message_handler("CRITICAL_ERROR", 8, ": generic, ", "e107_config.php");
 	exit;
 }
 
+//
+// J: MYSQL INITIALIZATION
+//
 @require_once(e_HANDLER.'traffic_class.php');
 $eTraffic=new e107_traffic; // We start traffic counting ASAP
 $eTraffic->Calibrate($eTraffic);
@@ -182,22 +237,26 @@ else if ($merror == "e2") {
 	exit;
 }
 
-/* New compatabilty mode.
-At a later date add a check to load e107 compat mode by $pref
+//
+// K: Load compatability mode.
+//
+/* At a later date add a check to load e107 compat mode by $pref
 PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER."php_compatibility_handler.php");
 e107_require_once(e_HANDLER."e107_Compat_handler.php");
 $aj = new textparse; // required for backwards compatibility with 0.6 plugins.
 
+//
+// L: Extract core prefs from the database
+//
+$sql->db_Mark_Time('Start: Extract Core Prefs');
 e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
 
-// Extract core prefs from the database
 e107_require_once(e_HANDLER.'cache_handler.php');
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
-$sql->db_Mark_Time('Start: Extracting Core Prefs');
 $PrefCache = ecache::retrieve('SitePrefs', 24 * 60, true);
 if(!$PrefCache){
 	// No cache of the prefs array, going for the db copy..
@@ -261,9 +320,12 @@ $menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
+
+//
+// M: Subdomain and Language Selection
+//
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
-
 
 // let the subdomain determine the language (when enabled).
 if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session")){
@@ -365,9 +427,6 @@ if(!$tmplan = getcachedvars("language-list")){
 
 define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
 
-
-$sql->db_Mark_Time('(Start: Pref/multilang done)');
-
 $language=(isset($_COOKIE['e107language_'.$pref['cookie_name']]) ? $_COOKIE['e107language_'.$pref['cookie_name']] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
 
 define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
@@ -385,15 +444,16 @@ if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref
     define("e_LAN", FALSE);
 	define("e_LANQRY", FALSE);
 }
+$sql->db_Mark_Time('(Start: Pref/multilang done)');
 
-
-
-// online user tracking class
+//
+// N: misc setups: online user tracking, cache
+//
+$sql -> db_Mark_Time('Start: Misc resources. Online user tracking, cache');
 $e_online = new e_online();
 
 // cache class
 $e107cache = new ecache;
-
 
 
 if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2) {
@@ -411,6 +471,9 @@ if (isset($pref['notify']) && $pref['notify'] == true) {
 	e107_require_once(e_HANDLER.'notify_class.php');
 }
 
+//
+// O: Start user session
+//
 $sql -> db_Mark_Time('Start: Init session');
 init_session();
 
@@ -443,7 +506,11 @@ if(isset($pref['e_module_list']) && $pref['e_module_list']){
 	}
 }
 
+//
+// P: THEME LOADING
+//
 
+$sql->db_Mark_Time('Start: Load Theme');
 
 //###########  Module redefinable functions ###############
 if (!function_exists('checkvalidtheme')) {
@@ -491,7 +558,12 @@ if (!function_exists('checkvalidtheme')) {
 	}
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//
+// Q: ALL OTHER SETUP CODE
+//
+$sql->db_Mark_Time('Start: Misc Setup');
+
+//------------------------------------------------------------------------------------------------------------------------------------//
 if (!class_exists('e107_table')) {
 	class e107table {
 		function tablerender($caption, $text, $mode = "default", $return = false) {
