@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.166 $
-|     $Date: 2006-10-19 02:30:44 $
-|     $Author: e107coders $
+|     $Revision: 1.167 $
+|     $Date: 2006-10-20 17:34:49 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -476,15 +476,29 @@ class e_parse
 		return $text;
 	}
 
+//
+// $nonrelative:
+//   "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
+//   TRUE = produce truncated URL path, e.g. e107plugins/etc
+//   "" (default) = URL's get relative path e.g. ../e107_plugins/etc
+//                  AND all other e107 constants are replaced
+//
+// only an ADMIN user can convert {e_ADMIN}
+//
 	function replaceConstants($text, $nonrelative = "", $all = false)
 	{
 		if($nonrelative != "")
 		{
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
-			$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY);
-			$replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY,SITEURL.$THEMES_DIRECTORY,SITEURL.$DOWNLOADS_DIRECTORY,SITEURL.$ADMIN_DIRECTORY);
-			$search = array("{"."e_BASE"."}","{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}","{"."e_DOWNLOADS"."}","{"."e_ADMIN"."}");
-			$replace = ($nonrelative == "full" && !is_bool($nonrelative)) ? $replace_absolute : $replace_relative;
+			$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY);
+			$replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY,SITEURL.$THEMES_DIRECTORY,SITEURL.$DOWNLOADS_DIRECTORY);
+			$search = array("{e_BASE}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOADS}");
+			if (ADMIN) {
+				$replace_relative[] = $ADMIN_DIRECTORY;
+				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
+				$search[] = "{e_ADMIN}";
+			}
+			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
 		}
 		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
