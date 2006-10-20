@@ -11,13 +11,72 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-02-01 14:19:15 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-10-20 21:00:03 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
+//
+// IMPORTANT Info for devs who want to add to and/or use debug definitions!
+//
+// MAKING NEW DEBUG DEFS
+// The debug levels are Single Bit Binary Values. i.e, 1,2,4,8,16...
+// In the table below, if you want to define a new value, pick one of
+// the "FILLIN" items and give it the name and definition you need
+//
+// USING DEBUG DEFINITIONS
+// Since these are Bit Values, **never** test using < or > comparisons. Always
+// test using boolean operations, such as
+//    if (E107_DBG_PATH)
+//    if (E107_DBG_SQLQUERIES | E107_DBG_SQLDETAILS)
+// Since constants are defined for all possible bits, you should never need to use a number value like
+//    if (E107_DEBUG_LEVEL & 256)
+// And there's never a reason to use
+//    if (E107_DEBUG_LEVEL > 254)
+
 if (!defined('e107_INIT')) { exit; }
+
+//
+// If debugging enabled, set it all up
+// If no debugging, then E107_DEBUG_LEVEL will be zero
+//
+if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) {
+	$e107_debug = new e107_debug;
+	require_once(e_HANDLER.'db_debug_class.php');
+	$db_debug = new e107_db_debug;
+	$e107_debug->set_error_reporting();
+	$e107_debug_level = $e107_debug->debug_level;
+	define('E107_DEBUG_LEVEL', $e107_debug_level);
+} else {
+	define('E107_DEBUG_LEVEL', 0);
+}
+
+// 
+// Define all debug constants -- each one will be zero or a value
+// They all have different values and can be 'or'ed together
+//
+
+// Basic levels
+define('E107_DBG_BASIC',		(E107_DEBUG_LEVEL & 1));       // basics: worst php errors, sql errors, etc
+define('E107_DBG_SQLQUERIES',	(E107_DEBUG_LEVEL & 2));       // display all sql queries
+define('E107_DBG_TRAFFIC',		(E107_DEBUG_LEVEL & 4));       // display traffic counters
+define('E107_DBG_FILLIN8',		(E107_DEBUG_LEVEL & 8));       // fill in what it is
+define('E107_DBG_FILLIN16',		(E107_DEBUG_LEVEL & 16));      // fill in what it is
+define('E107_DBG_FILLIN32',		(E107_DEBUG_LEVEL & 32));      // fill in what it is
+define('E107_DBG_FILLIN64',		(E107_DEBUG_LEVEL & 64));      // fill in what it is
+define('E107_DBG_FILLIN128',	(E107_DEBUG_LEVEL & 128));     // fill in what it is
+
+// Gory detail levels
+define('E107_DBG_TIMEDETAILS',(E107_DEBUG_LEVEL &   256));    // detailed time profile
+define('E107_DBG_SQLDETAILS',	(E107_DEBUG_LEVEL &   512));    // detailed sql analysis
+define('E107_DBG_PATH',     	(E107_DEBUG_LEVEL &  1024));    // show e107 predefined paths
+define('E107_DBG_BBSC',     	(E107_DEBUG_LEVEL &  2048));    // Show BBCode/ Shortcode usage in postings
+define('E107_DBG_FILLIN4096',	(E107_DEBUG_LEVEL &  4096));    // fill in what it is
+define('E107_DBG_FILLIN8192',	(E107_DEBUG_LEVEL &  8192));    // fill in what it is
+define('E107_DBG_FILLIN16384',(E107_DEBUG_LEVEL & 16384));    // fill in what it is
+define('E107_DBG_DEPRECIATED',	(E107_DEBUG_LEVEL & 32766));   // show used deprecated funcs
+define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));   // show ALL errors//...
 
 class e107_debug {
 
@@ -26,22 +85,23 @@ class e107_debug {
 	// DEBUG SHORTCUTS
 	//
 	var $aDebugShortcuts = array(
-		'all'		 	=> 255,     // all basics
+		'all'		 	  => 255,     // all basics
 		'basic'			=> 255,     // all basics
-		'b'				=> 255,     // all basics
+		'b'				  => 255,     // all basics
 		'depreciated'	=> 32766,   // show if code is using depreciated functions
+		'warn'			=> 1,       // just warnings, parse errrors, etc
 		'showsql'		=> 2,       // sql basics
 		'counts'		=> 4,       // traffic counters
+		'sc'			  => 8,   		// Shortcode paths only.
+
 		'detail'		=> 32767,   // all details
-		'd' 			=> 32767,   // all details
+		'd' 			  => 32767,   // all details
 		'time' 			=> 256,     // time details
 		'sql' 			=> 512,     // sql details
-		'warn'			=> 1,       // just warnings, parse errrors, etc
-		'notice'		=> 32768,   // you REALLY don't want all this, do you?
-		'everything' 	=> 65535,
-		'bbsc' 			=> 65536,
 		'paths' 		=> 131072,
-		'sc'			=> 5		// Shortcode paths only.
+		'notice'		=> 32768,   // you REALLY don't want all this, do you?
+		'everything'=> 65535,
+		'bbsc' 			=> 65536,
 	);
 
 	function e107_debug() {
@@ -72,36 +132,4 @@ class e107_debug {
 	function set_error_reporting() {
 	}
 }
-
-if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) {
-	$e107_debug = new e107_debug;
-	require_once(e_HANDLER.'db_debug_class.php');
-	$db_debug = new e107_db_debug;
-	$e107_debug->set_error_reporting();
-	$e107_debug_level = $e107_debug->debug_level;
-	define('E107_DEBUG_LEVEL', $e107_debug_level);
-} else {
-	define('E107_DEBUG_LEVEL', 0);
-}
-
-// Basic levels
-define('E107_DBG_BASIC',		(E107_DEBUG_LEVEL & 1));       // basics: worst php errors, sql errors, etc
-define('E107_DBG_SQLQUERIES',	(E107_DEBUG_LEVEL & 2));       // display all sql queries
-define('E107_DBG_TRAFFIC',		(E107_DEBUG_LEVEL & 4));       // display traffic counters
-define('E107_DBG_FILLIN8',		(E107_DEBUG_LEVEL & 8));       // fill in what it is
-define('E107_DBG_FILLIN16',		(E107_DEBUG_LEVEL & 16));      // fill in what it is
-define('E107_DBG_FILLIN32',		(E107_DEBUG_LEVEL & 32));      // fill in what it is
-define('E107_DBG_FILLIN64',		(E107_DEBUG_LEVEL & 64));      // fill in what it is
-define('E107_DBG_FILLIN128',	(E107_DEBUG_LEVEL & 128));     // fill in what it is
-
-// Gory detail levels
-define('E107_DBG_TIMEDETAILS',	(E107_DEBUG_LEVEL & 256));     // detailed time profile
-define('E107_DBG_SQLDETAILS',	(E107_DEBUG_LEVEL & 512));     // detailed sql analysis
-define('E107_DBG_FILLIN1024',	(E107_DEBUG_LEVEL & 1024));    // fill in what it is
-define('E107_DBG_FILLIN2048',	(E107_DEBUG_LEVEL & 2048));    // fill in what it is
-define('E107_DBG_DEPRECIATED',	(E107_DEBUG_LEVEL & 32766));   // show used depricated funcs
-define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));   // show ALL errors//...
-define('E107_DBG_BBSC',			(E107_DEBUG_LEVEL & 65536));   // BBCode / Shortcode
-define('E107_DBG_PATH',			(E107_DEBUG_LEVEL & 131072));
-
 ?>
