@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2006-07-26 00:36:17 $
-|     $Author: e107coders $
+|     $Revision: 1.98 $
+|     $Date: 2006-10-20 21:00:54 $
+|     $Author: mrpete $
 +---------------------------------------------------------------+
 */
 
@@ -200,9 +200,6 @@ class sitelinks
 			// Only check if its highlighted if it has an URL
 			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
 				$linkstart = $style['linkstart_hilite'];
-				$highlighted = TRUE;
-			}
-			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) {
 				$linkadd = " class='".$style['linkclass_hilite']."'";
 				$highlighted = TRUE;
 			}
