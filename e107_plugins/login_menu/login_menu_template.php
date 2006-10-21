@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-16 19:41:11 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-21 15:06:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,8 @@ if (!isset($LOGIN_MENU_FORM)){
 	{LM_SIGNUP_LINK}
 	<br />
 	[ {LM_FPW_LINK} ]
+	<br />
+	[ {LM_RESEND_LINK} ]
 	</div>
 	";
 }
