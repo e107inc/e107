@@ -11,16 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-21 15:06:48 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-21 17:23:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $sc_style['LM_SIGNUP_LINK']['pre'] = "<br />[ ";
 $sc_style['LM_SIGNUP_LINK']['post'] = " ]";
 
-    $sc_style['LM_REMEMBERME']['pre'] = "<br />";
-	$sc_style['LM_REMEMBERME']['post'] = "";
+$sc_style['LM_FPW_LINK']['pre'] = "<br />[ ";
+$sc_style['LM_FPW_LINK']['post'] = " ]";
+
+$sc_style['LM_RESEND_LINK']['pre'] = "<br />[ ";
+$sc_style['LM_RESEND_LINK']['post'] = " ]";
+
+$sc_style['LM_REMEMBERME']['pre'] = "<br />";
+$sc_style['LM_REMEMBERME']['post'] = "";
 
 if (!isset($LOGIN_MENU_FORM)){
 
@@ -39,10 +45,8 @@ if (!isset($LOGIN_MENU_FORM)){
   {LM_REMEMBERME}
 	<br />
 	{LM_SIGNUP_LINK}
-	<br />
-	[ {LM_FPW_LINK} ]
-	<br />
-	[ {LM_RESEND_LINK} ]
+	{LM_FPW_LINK}
+	{LM_RESEND_LINK}
 	</div>
 	";
 }

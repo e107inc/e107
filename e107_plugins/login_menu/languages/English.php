@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-21 03:42:45 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-21 17:23:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ define('LOGIN_MENU_L38', 'Settings Updated');
 
 define('LOGIN_MENU_L39', 'Leave Admin');
 
-define("LOGIN_MENU_L40", "Re-Send Activation Email");
+define("LOGIN_MENU_L40", "Resend Activation Email");
 
 
 ?>
