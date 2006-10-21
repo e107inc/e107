@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-10-20 21:00:03 $
+|     $Revision: 1.19 $
+|     $Date: 2006-10-21 11:05:49 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -72,10 +72,9 @@ define('E107_DBG_TIMEDETAILS',(E107_DEBUG_LEVEL &   256));    // detailed time p
 define('E107_DBG_SQLDETAILS',	(E107_DEBUG_LEVEL &   512));    // detailed sql analysis
 define('E107_DBG_PATH',     	(E107_DEBUG_LEVEL &  1024));    // show e107 predefined paths
 define('E107_DBG_BBSC',     	(E107_DEBUG_LEVEL &  2048));    // Show BBCode/ Shortcode usage in postings
-define('E107_DBG_FILLIN4096',	(E107_DEBUG_LEVEL &  4096));    // fill in what it is
+define('E107_DBG_SC',       	(E107_DEBUG_LEVEL &  4096));    // Dump (inline) SC filenames as used
 define('E107_DBG_FILLIN8192',	(E107_DEBUG_LEVEL &  8192));    // fill in what it is
-define('E107_DBG_FILLIN16384',(E107_DEBUG_LEVEL & 16384));    // fill in what it is
-define('E107_DBG_DEPRECIATED',	(E107_DEBUG_LEVEL & 32766));   // show used deprecated funcs
+define('E107_DBG_DEPRECATED', (E107_DEBUG_LEVEL & 16384));    // Show use of deprecated functions
 define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));   // show ALL errors//...
 
 class e107_debug {
@@ -88,20 +87,20 @@ class e107_debug {
 		'all'		 	  => 255,     // all basics
 		'basic'			=> 255,     // all basics
 		'b'				  => 255,     // all basics
-		'depreciated'	=> 32766,   // show if code is using depreciated functions
 		'warn'			=> 1,       // just warnings, parse errrors, etc
 		'showsql'		=> 2,       // sql basics
 		'counts'		=> 4,       // traffic counters
-		'sc'			  => 8,   		// Shortcode paths only.
 
 		'detail'		=> 32767,   // all details
 		'd' 			  => 32767,   // all details
 		'time' 			=> 256,     // time details
 		'sql' 			=> 512,     // sql details
-		'paths' 		=> 131072,
+		'paths' 		=> 1024,		// dump path strings
+		'bbsc' 			=> 2048,		// show bb and sc details
+		'sc'			  => 4096,   		// Shortcode paths dumped inline
+		'deprecated'	=> 16384,   // show if code is using deprecated functions
 		'notice'		=> 32768,   // you REALLY don't want all this, do you?
 		'everything'=> 65535,
-		'bbsc' 			=> 65536,
 	);
 
 	function e107_debug() {

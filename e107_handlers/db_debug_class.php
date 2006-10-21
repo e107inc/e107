@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-10-20 21:00:03 $
+|     $Revision: 1.14 $
+|     $Date: 2006-10-21 11:05:49 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ class e107_db_debug {
 	var $aBadQueries = array();
 	var $scbbcodes = array();
 	var $scbcount;
-	var $depreciated_funcs = array();
+	var $deprecated_funcs = array();
 
 	function e107_db_debug() {
 		global $eTimingStart;
@@ -49,30 +49,30 @@ class e107_db_debug {
 	}
 
 	function Mark_Time($sMarker) { // Should move to traffic_class?
-	$timeNow=microtime();
-	$nMarks=++$this->nTimeMarks;
-
-	if (!strlen($sMarker)) {
-		$sMarker = "Mark not set";
-	}
-
-	$this->aTimeMarks[$nMarks]=array(
-	'Index' => ($this->nTimeMarks),
-	'What' => $sMarker,
-	'%Time' => 0,
-	'%DB Time' => 0,
-	'%DB Count' => 0,
-	'Time' => $timeNow,
-	'DB Time' => 0,
-	'DB Count' => 0
-	);
-
-	$this->aOBMarks[$nMarks]=ob_get_level().'('.ob_get_length().')';
-	$this->curTimeMark=$sMarker;
-
-	// Add any desired notes to $aMarkNotes[$nMarks]... e.g.
-	//global $eTimingStart;
-	//$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart."<br/>";
+		$timeNow=microtime();
+		$nMarks=++$this->nTimeMarks;
+	
+		if (!strlen($sMarker)) {
+			$sMarker = "Mark not set";
+		}
+	
+		$this->aTimeMarks[$nMarks]=array(
+		'Index' => ($this->nTimeMarks),
+		'What' => $sMarker,
+		'%Time' => 0,
+		'%DB Time' => 0,
+		'%DB Count' => 0,
+		'Time' => $timeNow,
+		'DB Time' => 0,
+		'DB Count' => 0
+		);
+	
+		$this->aOBMarks[$nMarks]=ob_get_level().'('.ob_get_length().')';
+		$this->curTimeMark=$sMarker;
+	
+		// Add any desired notes to $aMarkNotes[$nMarks]... e.g.
+		//global $eTimingStart;
+		//$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart."<br/>";
 	}
 
 	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable) {
@@ -332,13 +332,13 @@ class e107_db_debug {
 		return $text;
 	}
 
-	function aDeprecatiated(){
+	function logDeprecated(){
 
 		$back_trace = debug_backtrace();
 
 		print_r($back_trace);
 
-		$this->depreciated_funcs[] =	array (
+		$this->deprecated_funcs[] =	array (
 		'func'	=> ($back_trace[1]['type'] == '::' || $back_trace[1]['type'] == '->' ? $back_trace[1]['class'].$back_trace[1]['type'].$back_trace[1]['function'] : $back_trace[1]['function']),
 		'file'	=> $back_trace[1]['file'],
 		'line'	=> $back_trace[1]['line']
@@ -365,7 +365,7 @@ class e107_db_debug {
 		{
 			return FALSE;
 		}
-		$text .= "<table class='fborder' style='width: 100%'>
+		$text = "<table class='fborder' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>Shortcode / BBCode</b></td></tr>
 			<tr>
 			<td class='fcaption' style='width: 10%;'>Type</td>
@@ -415,9 +415,9 @@ class e107_db_debug {
 	}
 
 
-	function Show_DEPRECIATED(){
+	function Show_DEPRECATED(){
 		$text = '';
-		if (!E107_DBG_DEPRECIATED){
+		if (!E107_DBG_DEPRECATED){
 			return FALSE;
 		} else {
 			$text .= "<table class='fborder' style='width: 100%'>
@@ -428,7 +428,7 @@ class e107_db_debug {
 			<td class='fcaption' style='width: 10%;'>Line</td>
 			</tr>\n";
 
-			foreach($this->depreciated_funcs as $funcs)
+			foreach($this->deprecated_funcs as $funcs)
 			{
 				$text .= "<tr>
 				<td class='forumheader3' style='width: 10%;'>{$funcs['func']}()</td>
