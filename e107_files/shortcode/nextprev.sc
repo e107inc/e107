@@ -4,7 +4,7 @@ global $pref;
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
 @include_once(e_LANGUAGEDIR."English/lan_np.php");
 
-list($total_items, $perpage, $current_start, $url, $caption) = explode(",", $parm, 5);
+list($total_items, $perpage, $current_start, $url, $caption) = explode(",", $parm.",,,", 5);
 
 if($total_items < $perpage){
 	return "";
