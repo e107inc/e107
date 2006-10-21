@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English/English.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-10-18 04:42:12 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-21 11:22:03 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -35,7 +35,7 @@ define("CHATBOX_L15", "Post too long, or empty post submitted");
 define("CHATBOX_L16", "Anonymous");
 define("CHATBOX_L17", "Duplicate post");
 define("CHATBOX_L18", "Chatbox messages moderated");
-define("CHATBOX_L19", "You may only post once every ".FLOODTIMEOUT." seconds");
+define("CHATBOX_L19", "You may only post once every ".(FLOODPROTECT ? FLOODTIMEOUT : 'n/a')." seconds");
 
 define("CHATBOX_L20", "Chatbox (all posts)");
 define("CHATBOX_L21", "Chat Posts");

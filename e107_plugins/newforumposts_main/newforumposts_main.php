@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-07-04 08:42:17 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2006-10-21 11:24:55 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -29,7 +29,7 @@ global $sql, $ns;
 if (file_exists(THEME."newforumpost.php")) {
 	require_once(THEME."newforumpost.php");
 }
-else if(!$NEWFORUMPOSTSTYLE_HEADER) {
+else if(!isset($NEWFORUMPOSTSTYLE_HEADER)) {
 	// no template found - use default ...
 	$NEWFORUMPOSTSTYLE_HEADER = "
 		<!-- newforumposts -->
@@ -71,7 +71,7 @@ ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 
 $forumArray = $sql->db_getList();
 
-if (!is_object($gen)) {
+if (!isset($gen) || !is_object($gen)) {
 	$gen = new convert;
 }
 
