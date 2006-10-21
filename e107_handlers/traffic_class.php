@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/traffic_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-28 20:44:18 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-21 11:18:00 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,7 +72,7 @@ class e107_traffic {
 		// ~15 usec err: $eTraffic->Bump('foo',$b,microtime());
 		// ~25 usec err: $eTraffic->Bump('foo',$b);
 
-		if (!defined("E107_DBG_TRAFFIC")) {
+		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC) {
 			return;
 		}
 
@@ -123,7 +123,7 @@ class e107_traffic {
 	*/
 	function BumpWho($sWhat, $level = 0, $tStart = 0, $tFinish = 0) {
 		$x = microtime();
-		if (!defined("E107_DBG_TRAFFIC")) {
+		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC) {
 			return;
 		}
 
@@ -143,7 +143,7 @@ class e107_traffic {
 	}
 
 	function Calibrate($tObject, $count = 10 ) {
-		if (!defined("E107_DBG_TRAFFIC")) {
+		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC) {
 			return;
 		}
 		if ($tObject != $this) {
@@ -167,7 +167,9 @@ class e107_traffic {
 	}
 
 	function Display() {
-		if (!E107_DBG_TRAFFIC) return '';
+		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC) {
+			return '';
+		}
 
 		$text = '';
 		@include_once(e_HANDLER.'traffic_class_display.php');
