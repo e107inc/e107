@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2006-07-25 20:25:34 $
-|     $Author: e107coders $
+|     $Revision: 1.68 $
+|     $Date: 2006-10-21 04:15:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -331,10 +331,14 @@ if (isset($_POST['update_thread']))
 			require_once(FOOTERF);
 			exit;
 		}
+
 		$newvals['thread_edit_datestamp'] = time();
 		$newvals['thread_thread'] = $_POST['post'];
 		$newvals['thread_name'] = $_POST['subject'];
-		$newvals['thread_active'] = ($_POST['email_notify']) ? '99' : '1';
+		if(isset($_POST['email_notify']))
+		{
+			$newvals['thread_active'] = '99';
+		}
 		if (isset($_POST['threadtype']) && MODERATOR)
 		{
 			$newvals['thread_s'] = $_POST['threadtype'];
