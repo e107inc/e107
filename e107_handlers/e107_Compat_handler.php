@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_Compat_handler.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-21 20:48:43 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-10-21 11:05:49 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,9 +29,9 @@ if (!defined('e107_INIT')) { exit; }
  * @return string
  */
 function retrieve_cache($query) {
-	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+	if (E107_DBG_DEPRECATED) {
 		global $db_debug;
-		$db_debug->aDeprecatiated();
+		$db_debug->logDeprecated();
 	}
 	global $e107cache, $e107_debug;
 	if (!is_object($e107cache)) {
@@ -55,9 +55,9 @@ function retrieve_cache($query) {
  * @return string
  */
 function set_cache($query, $text) {
-	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+	if (E107_DBG_DEPRECATED) {
 		global $db_debug;
-		$db_debug->aDeprecatiated();
+		$db_debug->logDeprecated();
 	}
 	global $e107cache;
 	if (!is_object($e107cache)) {
@@ -79,9 +79,9 @@ function set_cache($query, $text) {
  * @return bool
  */
 function clear_cache($query) {
-	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+	if (E107_DBG_DEPRECATED) {
 		global $db_debug;
-		$db_debug->aDeprecatiated();
+		$db_debug->logDeprecated();
 	}
 	global $e107cache;
 	if (!is_object($e107cache)) {
@@ -97,9 +97,9 @@ function clear_cache($query) {
  * @deprecated deprecated since v.700
  */
 function ban() {
-	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+	if (E107_DBG_DEPRECATED) {
 		global $db_debug;
-		$db_debug->aDeprecatiated();
+		$db_debug->logDeprecated();
 	}
 	global $e107;
 	$e107->ban();
@@ -112,9 +112,9 @@ function ban() {
  * @deprecated deprecated since v.700
  */
 function getip() {
-	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+	if (E107_DBG_DEPRECATED) {
 		global $db_debug;
-		$db_debug->aDeprecatiated();
+		$db_debug->logDeprecated();
 	}
 	global $e107;
 	return $e107->getip();
@@ -123,44 +123,44 @@ function getip() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class textparse {
 	function editparse($text, $mode = "off") {
-		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		if (E107_DBG_DEPRECATED) {
 			global $db_debug;
-			$db_debug->aDeprecatiated();
+			$db_debug->logDeprecated();
 		}
 		global $tp;
 		return $tp->toForm($text);
 	}
 
 	function tpa($text, $mode = '', $referrer = '', $highlight_search = FALSE, $poster_id = '') {
-		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		if (E107_DBG_DEPRECATED) {
 			global $db_debug;
-			$db_debug->aDeprecatiated();
+			$db_debug->logDeprecated();
 		}
 		global $tp;
 		return $tp->toHTML($text, TRUE, $mode, $poster_id);
 	}
 
 	function tpj($text) {
-		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		if (E107_DBG_DEPRECATED) {
 			global $db_debug;
-			$db_debug->aDeprecatiated();
+			$db_debug->logDeprecated();
 		}
 		return $text;
 	}
 
 	function formtpa($text, $mode = '') {
-		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		if (E107_DBG_DEPRECATED) {
 			global $db_debug;
-			$db_debug->aDeprecatiated();
+			$db_debug->logDeprecated();
 		}
 		global $tp;
 		return $tp->toDB($text);
 	}
 
 	function formtparev($text) {
-		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		if (E107_DBG_DEPRECATED) {
 			global $db_debug;
-			$db_debug->aDeprecatiated();
+			$db_debug->logDeprecated();
 		}
 		global $tp;
 		return $tp->toFORM($text);
