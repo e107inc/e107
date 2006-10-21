@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2006-10-06 23:40:56 $
+|     $Revision: 1.92 $
+|     $Date: 2006-10-21 11:08:17 $
 |     $Author: mrpete $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -47,19 +47,34 @@ echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' /
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
-echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : "";
-echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : "";
 
-if (isset($pref['meta_description'][e_LANGUAGE])) {
-	echo ($pref['meta_description'][e_LANGUAGE] && !defined("META_DESCRIPTION") ) ? "<meta name=\"description\" content=\"".$pref['meta_description'][e_LANGUAGE]."\" />\n" : "";
-}
-if (isset($pref['meta_keywords'][e_LANGUAGE])) {
-	echo ($pref['meta_keywords'][e_LANGUAGE] && !defined("META_KEYWORDS") ) ? "<meta name=\"keywords\" content=\"".$pref['meta_keywords'][e_LANGUAGE]."\" />\n" : "";
+function echometapref($type) {
+	global $pref,$tp;
+	// Almost all meta_xyzzy output is identical other than the tag name. Here's the common code:
+	if (!isset($pref['meta_'.$type][e_LANGUAGE])) return;
+	if (!$pref['meta_'.$type][e_LANGUAGE]) return;
+	
+	switch ($type) {
+	case 'tag':
+		echo str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n";
+		break;
+	default:
+		echo '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
+	}
 }
 
-echo ($pref['meta_copyright'][e_LANGUAGE]) ? "<meta name=\"copyright\" content=\"".$pref['meta_copyright'][e_LANGUAGE]."\" />\n" : "";
-echo ($pref['meta_author'][e_LANGUAGE]) ? "<meta name=\"author\" content=\"".$pref['meta_author'][e_LANGUAGE]."\" />\n" : "";
-echo ($pref['meta_tag'][e_LANGUAGE]) ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
+if (defined("META_DESCRIPTION")) {
+	echo "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n";
+} else echometapref('description');
+
+if (defined("META_KEYWORDS")) {
+	echo "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n";
+} else echometapref('keywords');
+
+echometapref('copyright');
+echometapref('author');
+echometapref('tag');
+
 unset($key_merge,$diz_merge);
 
 echo "\n<!-- Theme -->\n";
@@ -168,6 +183,7 @@ if ($pref['image_preload']) {
 	$ejs_listpics = substr($ejs_listpics, 0, -1);
 	closedir($handle);
 
+	if (!isset($script_text)) $script_text = '';
 	$script_text .= "ejs_preload('".THEME_ABS."images/','".$ejs_listpics."');\n";
 }
 if (isset($script_text) && $script_text) {
