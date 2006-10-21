@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2006-09-21 00:08:00 $
+|     $Revision: 1.98 $
+|     $Date: 2006-10-21 03:42:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -46,74 +46,122 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 	require_once(HEADERF);
-	$clean_email = check_email($tp -> toDB($_POST['resend_email']));
+
+    if(!$clean_email = check_email($tp -> toDB($_POST['resend_email'])))
+	{
+		$clean_email = "xxx";
+	}
+
+    if(!$new_email = check_email($tp -> toDB($_POST['resend_newemail'])))
+	{
+    	$new_email = FALSE;
+	}
+
 
 	if($_POST['submit_resend'])
 	{
-		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($clean_email)."\" AND user_ban=0"))
+		if($_POST['resend_email'] && !$new_email && $sql->db_Select_gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (user_loginname= \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) "))
 		{
-			$ns -> tablerender("Activation not necessary","Your account is already activated.<br />");
+			$ns -> tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
 			require_once(FOOTERF);
 			exit;
 		}
 
-		if($sql->db_Select("user", "*", "user_email = \"".$tp->toDB($clean_email)."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
-		$row = $sql -> db_Fetch();
-
-		$_POST['password1'] = "xxxxxxxx";
-		$_POST['loginname'] = $row['user_loginname'];
-		$_POST['name'] = $row['user_name'];
-		$nid = $row['user_id'];
-		$u_key = $row['user_sess'];
-
-		$eml = render_email();
-        $mailheader_e107id = $nid;
-		require_once(e_HANDLER."mail.php");
-		if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
+		if(trim($_POST['resend_password']) !="" && $new_email)
 		{
-			$ns -> tablerender("Error","There was a problem, the registration mail was not sent, please contact the website administrator.");
-			require_once(FOOTERF);
-			exit;
-		}
-		else
-		{
-			$ns -> tablerender("Email Sent","Activation email sent to: ".$row['user_email']." - Please check your inbox.<br /><br />");
-			require_once(FOOTERF);
-			exit;
+        	if($sql->db_Select("user", "*", "user_password = \"".md5($_POST['resend_password'])."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
+			{
+            	if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_password ='".md5($_POST['resend_password'])."' AND user_ban=2 AND user_sess !='' LIMIT 1 "))
+				{
+                	$clean_email = $new_email;
+				}
+			}
+			else
+			{
+			   	require_once(e_HANDLER."message_handler.php");
+			   	message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
+			}
 		}
 
+		if($sql->db_Select("user", "*", "(user_loginname = \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) AND user_ban=2 AND user_sess !='' LIMIT 1"))
+		{
+			$row = $sql -> db_Fetch();
+
+			$_POST['password1'] = "xxxxxxxxx";
+			$_POST['loginname'] = $row['user_loginname'];
+			$_POST['name'] = $row['user_name'];
+			$nid = $row['user_id'];
+			$u_key = $row['user_sess'];
+
+			$eml = render_email();
+        	$mailheader_e107id = $nid;
+			require_once(e_HANDLER."mail.php");
+
+            /*
+            echo "Sending to: ".$row['user_email'];
+            require_once(FOOTERF);
+            exit;
+			*/
+
+            if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
+            {
+                $ns -> tablerender(LAN_ERROR,LAN_SIGNUP_42);
+                require_once(FOOTERF);
+                exit;
+            }
+            else
+            {
+                $ns -> tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
+                require_once(FOOTERF);
+                exit;
+            }
+         }
+		exit;
 	}
-	else
+	elseif(!$_POST['submit_resend'])
 	{
-		$text = "<div style='text-align:center'>
+
+		$text .= "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?resend' name='resend_form'>
 		<table style='width:99%' class='fborder'>
 		<tr>
-		<td class='forumheader3'>
-		If you have already registered but did not receive an email to activate your account, please enter the email address you used during registration below. A new activation email will be resent to you at that address.
+			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_48."</td>
+        <td class='forumheader3'>
+		<input type='text' name='resend_email' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' />
 		</td>
 		</tr>
-		<tr><td class='forumheader3'>".LAN_112."
-		<input type='text' name='resend_email' class='tbox' style='width:80%' value='' />
+
+		<tr>
+			<td class='forumheader3' colspan='2'>".LAN_SIGNUP_49."</td>
+		</tr>
+		<tr>
+			<td class='forumheader3' style='text-align:right;width:30%'>".LAN_SIGNUP_50."</td>
+			<td class='forumheader3'><input type='text' name='resend_newemail' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' />
+		</tr>
+		<tr>
+			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_51."</td>
+			<td class='forumheader3'><input type='text' name='resend_password' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' />
+
 		</td>
 		</tr>
+
 		";
 
 		$text .="<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>";
-		$text .= "<input class='button' type='submit' name='submit_resend' value='Send Activation Email' />";
+		$text .= "<input class='button' type='submit' name='submit_resend' value=\"".LAN_SIGNUP_47."\" />";  // resend activation email.
 		$text .= "</td>
 		</tr>
 		</table>
 		</form>
 		</div>";
 
-		$ns -> tablerender("Resend Activation Email", $text);
+		$ns -> tablerender(LAN_SIGNUP_47, $text);
 		require_once(FOOTERF);
 		exit;
 	}
 
-
+    exit;
 }
 
 // ------------------------------------------------------------------
@@ -178,12 +226,11 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 
 		if(!sendemail(USEREMAIL, $subj, $message, USERNAME, "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
 		{
-			//	if(!sendemail(USEREMAIL, $subj, $message, USERNAME)) {
-			echo "<br /><br /><br /><br >&nbsp;&nbsp;>> There was a problem, the registration mail was not sent, please contact the website administrator.";
+			echo "<br /><br /><br /><br >&nbsp;&nbsp;>> ".LAN_SIGNUP_42; // there was a problem.
 		}
 		else
 		{
-			echo "<br /><br />&nbsp;&nbsp;>> Email Sent to: ".USEREMAIL." - Check your inbox!";
+			echo "<br /><br />&nbsp;&nbsp;>> ".LAN_SIGNUP_43." [ ".USEREMAIL." ] - ".LAN_SIGNUP_45;
 		}
 	}
 	exit;
@@ -586,7 +633,7 @@ if (isset($_POST['register']))
 
 				if(!sendemail($_POST['email'], $eml['subject'], $eml['message'], "", "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], "", "", $eml['inline-images']))
 				{
-					$error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
+					$error_message = LAN_SIGNUP_42; // There was a problem, the registration mail was not sent, please contact the website administrator.
 				}
 			}
 
