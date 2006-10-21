@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-04-27 06:02:46 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-21 03:42:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 define("LOGIN_MENU_L1", "Username: ");
 define("LOGIN_MENU_L2", "Password: ");
 define("LOGIN_MENU_L3", "Signup");
@@ -45,10 +45,10 @@ define("LOGIN_MENU_L25", "Since your last visit there have been");
 define("LOGIN_MENU_L26", "no");
 define("LOGIN_MENU_L27", "and");
 define("LOGIN_MENU_L28", "Login");
-	
+
 define("LOGIN_MENU_L29", "new article");
 define("LOGIN_MENU_L30", "new articles");
-	
+
 // New config options
 define('LOGIN_MENU_L31', 'Show New News Posts');
 define('LOGIN_MENU_L32', 'Show New Article Posts');
@@ -61,5 +61,8 @@ define('LOGIN_MENU_L38', 'Settings Updated');
 
 
 define('LOGIN_MENU_L39', 'Leave Admin');
-	
+
+define("LOGIN_MENU_L40", "Re-Send Activation Email");
+
+
 ?>

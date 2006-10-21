@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-07-04 16:33:32 $
+|     $Revision: 1.20 $
+|     $Date: 2006-10-21 03:42:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -98,4 +98,21 @@ define("LAN_EMAIL_06", "Thanks for your registration.");
 define("LAN_SIGNUP_37", "This stage of registration is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
 define("LAN_SIGNUP_38", "You entered two different email addresses. Please enter a valid email address in the two fields provided");
 define("LAN_SIGNUP_39", "Re-type Email Address:");
+
+// 0.7.6
+define("LAN_SIGNUP_40", "Activation not necessary");
+define("LAN_SIGNUP_41", "Your account is already activated.");
+define("LAN_SIGNUP_42", "There was a problem, the registration mail was not sent, please contact the website administrator.");
+define("LAN_SIGNUP_43", "Email Sent");
+define("LAN_SIGNUP_44", "Activation email sent to:");
+define("LAN_SIGNUP_45", "Please check your inbox.");
+define("LAN_SIGNUP_47", "Re-Send Activation Email");
+define("LAN_SIGNUP_48", "Username or Email");
+define("LAN_SIGNUP_49", "If you registered with the wrong email address, type a new one and your password here:");
+define("LAN_SIGNUP_50", "New Email");
+define("LAN_SIGNUP_51", "Old Password");
+define("LAN_SIGNUP_52", "Incorrect Password");
+
+
+
 ?>
