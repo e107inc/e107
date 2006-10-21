@@ -1,6 +1,6 @@
-// $Id: wmessage.sc,v 1.14 2006-09-20 14:29:45 e107coders Exp $
-
-if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $parm !='header') ){
+// $Id: wmessage.sc,v 1.15 2006-10-21 11:03:49 mrpete Exp $
+$prefwmsc = isset($pref['wmessage_sc']) && $pref['wmessage_sc'];
+if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 	return;
 }
 
@@ -10,29 +10,25 @@ if (($pref['wmessage_sc'] && $parm == "header") || (!$pref['wmessage_sc'] && $pa
 
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
 		$full_url = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['all'];
-		list($front_url,$front_qry) = explode("?",$full_url);
 	} else if (ADMIN) {
 		$full_url = ((strpos($pref['frontpage']['254'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['254'];
-        list($front_url,$front_qry) = explode("?",$full_url);
 	} else if (USER) {
 		require_once(e_HANDLER.'userclass_class.php');
 		$class_list = get_userclass_list();
 		foreach ($class_list as $fp_class) {
 			if (check_class($fp_class['userclass_id'])) {
 				$full_url = ((strpos($pref['frontpage'][$fp_class['userclass_id']], 'http') === FALSE) ? SITEURL : '').$pref['frontpage'][$fp_class['userclass_id']];
-                list($front_url,$front_qry) = explode("?",$full_url);
-				$class_match = true;
+        $class_match = true;
 				break;
 			}
 		}
 		if (!$class_match) {
 			$full_url = ((strpos($pref['frontpage']['253'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['253'];
-            list($front_url,$front_qry) = explode("?",$full_url);
 		}
 	} else {
 		$full_url = ((strpos($pref['frontpage']['252'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['252'];
-        list($front_url,$front_qry) = explode("?",$full_url);
 	}
+	list($front_url,$front_qry) = explode("?",$full_url."?"); // extra '?' ensure the array is filled
 
 	if (e_SELF == $front_url && e_QUERY == $front_qry) {
 		global $sql, $pref, $tp, $ns;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.107 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.108 $
+|     $Date: 2006-10-21 11:01:31 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -333,7 +333,7 @@ changes by jalist 03/02/2005:
 news page templating
 
 */
-if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
+if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	// theme specific template required ...
 	require_once(THEME."news_template.php");
 
@@ -505,8 +505,8 @@ require_once(FOOTERF);
 function setNewsCache($cache_tag, $cache_data) {
 	global $e107cache;
 	$e107cache->set($cache_tag, $cache_data);
-	$e107cache->set($cache_tag."_title", e_PAGETITLE);
-	$e107cache->set($cache_tag."_diz", META_DESCRIPTION);
+	$e107cache->set($cache_tag."_title", defined("e_PAGETITLE") ? e_PAGETITLE : '');
+	$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
 }
 
 function checkCache($cacheString){
