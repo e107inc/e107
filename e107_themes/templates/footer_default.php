@@ -11,14 +11,37 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-02-19 00:08:26 $
-|     $Author: sweetas $
+|     $Revision: 1.39 $
+|     $Date: 2006-10-21 11:11:39 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
+
+//
+// SHUTDOWN SEQUENCE
+//
+// The following items have been carefully designed so page processing will finish properly
+// Please DO NOT re-order these items without asking first! You WILL break something ;)
+//
+// A Ensure sql and traffic objects exist 
+// [Next few ONLY if a regular page; not done for popups]
+// B Send the footer templated data
+// C Dump any/all traffic and debug information
+// [end of regular-page-only items]
+// D Close the database connection
+// E Themed footer code
+// F Configured footer scripts
+// G Browser-Server time sync script (must be the last one generated/sent)
+// H Final HTML (/body, /html)
+// I collect and send buffered page, along with needed headers
+// 
+
+//
+// A Ensure sql and traffic objects exist
+//
 
 if(!is_object($sql)){
 	// reinstigate db connection if another connection from third-party script closed it ...
@@ -31,8 +54,17 @@ if (!is_object($eTraffic)) {
 }
 
 unset($fh);
+
+
 if($e107_popup!=1){
+	//
+	// B Send footer template
+	//
 	parseheader(($ph ? $cust_footer : $FOOTER));
+	
+	//
+	// C Dump all debug and traffic information
+	//
 	$eTimingStop = microtime();
 	global $eTimingStart;
 	$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
@@ -44,6 +76,8 @@ if($e107_popup!=1){
 	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory Usage: ".$e107->get_memory_usage(); }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
+
+
 	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
 		global $db_debug,$ns;
 		echo "\n<!-- DEBUG -->\n";
@@ -72,61 +106,51 @@ if($e107_popup!=1){
 		if (strlen($tmp)) {
 			$ns->tablerender('Paths', $tmp);
 		}
-		$tmp = $db_debug->Show_DEPRECIATED();
+		$tmp = $db_debug->Show_DEPRECATED();
 		if (strlen($tmp)) {
-			$ns->tablerender('Paths', $tmp);
+			$ns->tablerender('Deprecated Function Usage', $tmp);
 		}
 	}
-}
-
-$sql -> db_Close();
-$sql2 -> db_Close();
-
-/*
-changes by jalist 24/01/2005:
-show sql queries
-usage: add ?showsql to query string, must be admin
-*/
-
-if(is_array($queryinfo) && ADMIN)
-{
-	$c=1;
-	$mySQLInfo = $sql->mySQLinfo;
-	echo "<table class='fborder' style='width: 100%;'>
-	<tr>
-	<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
-	foreach ($queryinfo as $infovalue)
-	{
-		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
-		$c++;
-	}
-	echo "</table>";
-}
-
-//
-// Just before we quit: dump quick timer if there is any
-// Works any time we get this far. Not calibrated, but it is quick and simple to use.
-// To use: eQTimeOn(); eQTimeOff();
-//
-$tmp = eQTimeElapsed();
-if (strlen($tmp)) {
-	global $ns;
-	$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
-}
-
-// Provide a way to sync user and server time -- see e107.js and class2.php
-// This should be done as late as possible in page processing.
-$_serverTime=time();
-$lastSet = isset($_COOKIE['e107_tdSetTime']) ? $_COOKIE['e107_tdSetTime'] : 0;
-if (abs($_serverTime - $lastSet) > 120) {
-	/* update time delay every couple of minutes.
-	* Benefit: account for user time corrections and changes in internet delays
-	* Drawback: each update may cause all server times to display a bit different
+	
+	/*
+	changes by jalist 24/01/2005:
+	show sql queries
+	usage: add ?showsql to query string, must be admin
 	*/
-	echo "<script type='text/javascript'>\n";
-	echo "SyncWithServerTime('{$_serverTime}');
-       </script>\n";
-}
+	
+	if(is_array($queryinfo) && ADMIN)
+	{
+		$c=1;
+		$mySQLInfo = $sql->mySQLinfo;
+		echo "<table class='fborder' style='width: 100%;'>
+		<tr>
+		<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
+		foreach ($queryinfo as $infovalue)
+		{
+			echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
+			$c++;
+		}
+		echo "</table>";
+	}
+
+//
+// D Close DB connection. We're done talking to underlying MySQL
+//
+	$sql -> db_Close();  // Only one is needed; the db is only connected once even with several $sql objects
+
+	//
+	// Just before we quit: dump quick timer if there is any
+	// Works any time we get this far. Not calibrated, but it is quick and simple to use.
+	// To use: eQTimeOn(); eQTimeOff();
+	//
+	$tmp = eQTimeElapsed();
+	if (strlen($tmp)) {
+		global $ns;
+		$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
+	}
+	
+} // End of regular-page footer (the above NOT done for popups)
+
 
 global $start_ob_level;
 if (ob_get_level() != $start_ob_level && $pref['developer']) {
@@ -145,10 +169,16 @@ if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
 	";
 }
 
+//
+// E Last themed footer code, usually JS
+//
 if (function_exists('theme_foot')) {
 	echo theme_foot();
 }
 
+//
+// F any included JS footer scripts
+//
 if(isset($footer_js) && is_array($footer_js))
 {
 	$footer_js = array_unique($footer_js);
@@ -158,8 +188,33 @@ if(isset($footer_js) && is_array($footer_js))
 		$js_included[] = $fname;
 	}
 }
+
+//
+// G final JS script keeps user and server time in sync.
+//   It must be the last thing created before sending the page to the user.
+//
+// see e107.js and class2.php
+// This must be done as late as possible in page processing.
+$_serverTime=time();
+$lastSet = isset($_COOKIE['e107_tdSetTime']) ? $_COOKIE['e107_tdSetTime'] : 0;
+if (abs($_serverTime - $lastSet) > 120) {
+	/* update time delay every couple of minutes.
+	* Benefit: account for user time corrections and changes in internet delays
+	* Drawback: each update may cause all server times to display a bit different
+	*/
+	echo "<script type='text/javascript'>\n";
+	echo "SyncWithServerTime('{$_serverTime}');
+       </script>\n";
+}
+
+//
+// H Final HTML
+//
 echo "</body></html>";
 
+//
+// I Send the buffered page data, along with appropriate headers
+//
 $page = ob_get_clean();
 
 $etag = md5($page);
