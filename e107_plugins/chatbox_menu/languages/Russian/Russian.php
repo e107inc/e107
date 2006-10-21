@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-10-03 14:33:10 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-21 16:32:31 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ define("CHATBOX_L15", "Посланное сообщение либо слишк
 define("CHATBOX_L16", "Анонимный"); //Anonymous
 define("CHATBOX_L17", "Дубликат сообщения"); //Duplicate post
 define("CHATBOX_L18", "Произведено управление сообщениями чата"); //Chatbox messages moderated
-define("CHATBOX_L19", "Вы можете отправлять сообщения только каждые ".FLOODTIMEOUT." секунд");
+define("CHATBOX_L19", "Вы можете отправлять сообщения только каждые ".(FLOODPROTECT ? FLOODTIMEOUT : '(не указано)')." секунд");
 
 define("CHATBOX_L20", "Чат (все сообщения)");
 define("CHATBOX_L21", "Сообщения чата");

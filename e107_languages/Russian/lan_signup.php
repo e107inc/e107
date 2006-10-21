@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.7 $
-|     $Date: 2006-10-15 09:28:56 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-21 16:32:01 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -96,5 +96,19 @@ define("LAN_EMAIL_06", "Спасибо за регистрацию.");
 define("LAN_SIGNUP_37", "Эта стадия регистрации закончена. Администратору сайта нужно одобрить вашу учетную запись.  Как только это будет сделано, Вы получите подтверждение по электронной почты о внесении вас в список пользователей.");
 define("LAN_SIGNUP_38", "Вы ввели два различных адреса электронной почты. Пожалуйста, введите правильный адрес электронной почты в следующих двух полях");
 define("LAN_SIGNUP_39", "Повторите email адрес:");
+
+// 0.7.6
+define("LAN_SIGNUP_40", "Активация не требуется"); //Activation not necessary
+define("LAN_SIGNUP_41", "Ваша учетная запись уже активирована."); //Your account is already activated.
+define("LAN_SIGNUP_42", "Возникла проблема, регистрационное письмо не было отправлено, пожалуйста, обратитесь к администратору веб-сайта.");
+define("LAN_SIGNUP_43", "Письмо отправлено");  //Email Sent
+define("LAN_SIGNUP_44", "Письмо активации отправлено для:"); //Activation email sent to:
+define("LAN_SIGNUP_45", "Пожалуйста, проверьте ваш почтовый ящик."); //Please check your inbox.
+define("LAN_SIGNUP_47", "Отправить вновь письмо активации"); //Re-Send Activation Email
+define("LAN_SIGNUP_48", "Имя пользователя или Email"); //Username or Email
+define("LAN_SIGNUP_49", "Если вы зарегистрировались с неправильным email-адресом, введите здесь новый адрес и пароль:"); //If you registered with the wrong email address, type a new one and your password here:
+define("LAN_SIGNUP_50", "Новый email-адрес"); //New Email
+define("LAN_SIGNUP_51", "Старый пароль"); //Old Password
+define("LAN_SIGNUP_52", "Неправильный пароль"); //Incorrect Password
 
 ?>
