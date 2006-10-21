@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-19 23:12:19 $
+|     $Revision: 1.16 $
+|     $Date: 2006-10-21 13:06:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ global $FILES_DIRECTORY,$pref,$sql;
 $path = e_PLUGIN."rss_menu/";
 
 $des = "";
+$topic = "";
 
 if(strstr(e_SELF, "comment.php") && $sql -> db_Select("rss", "rss_path", " rss_path = 'comments' LIMIT 1")) {
 	$type = 5;
@@ -57,6 +58,7 @@ if(!$des) {
 
 if(e_PAGE == "news.php" && $pref['rss_newscats'])
 {
+
 	$qry = explode(".",e_QUERY);
 	if($qry[0] == "cat" || $qry[0] == "list")
 	{
