@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.305 $
-|     $Date: 2006-10-20 20:58:03 $
+|     $Revision: 1.306 $
+|     $Date: 2006-10-21 10:59:46 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ if(function_exists('ini_get')) {
 // Destroy! (if we need to)
 if($register_globals == true){
 	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs|eplug_admin)$/', $global)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs|eplug_admin|eTimingStart)$/', $global)) {
 			unset($$global);
 		}
 	}
