@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2006-10-21 15:33:42 $
+|     $Revision: 1.100 $
+|     $Date: 2006-10-21 17:49:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -69,9 +69,10 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 
 		if(trim($_POST['resend_password']) !="" && $new_email)
 		{
-        	if($sql->db_Select("user", "*", "user_password = \"".md5($_POST['resend_password'])."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
+        	if($sql->db_Select("user", "user_id", "user_password = \"".md5($_POST['resend_password'])."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
 			{
-            	if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_password ='".md5($_POST['resend_password'])."' AND user_ban=2 AND user_sess !='' LIMIT 1 "))
+				$row = $sql -> db_Fetch();
+            	if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
 				{
                 	$clean_email = $new_email;
 				}
@@ -97,11 +98,11 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
         	$mailheader_e107id = $nid;
 			require_once(e_HANDLER."mail.php");
 
-            /*
-            echo "Sending to: ".$row['user_email'];
+
+/*            echo "Sending to: ".$row['user_email'];
             require_once(FOOTERF);
             exit;
-			*/
+*/
 
             if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
             {
