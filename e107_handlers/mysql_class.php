@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-07-09 01:34:25 $
-|     $Author: e107coders $
+|     $Revision: 1.60 $
+|     $Date: 2006-10-21 11:07:06 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.59 $
-* @author $Author: e107coders $
+* @version $Revision: 1.60 $
+* @author $Author: mrpete $
 */
 class db {
 
@@ -82,6 +82,8 @@ class db {
 	* @access public
 	*/
 	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
+		global $eTraffic;
+		$eTraffic->BumpWho('db Connect', 1);
 
 		$this->mySQLserver = $mySQLserver;
 		$this->mySQLuser = $mySQLuser;
@@ -397,6 +399,8 @@ class db {
 	* @access public
 	*/
 	function db_Close() {
+		global $eTraffic;
+		$eTraffic->BumpWho('db Close', 1);
 		mysql_close();
 		$this->dbError('dbClose');
 	}
