@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-08-09 13:46:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.58 $
+|     $Date: 2006-10-21 11:22:30 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php';
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
 
 if (isset($_POST['fjsubmit'])) {
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);

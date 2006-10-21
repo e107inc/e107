@@ -11,23 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/admin_menu/admin_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 17:37:43 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-21 11:21:04 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 if (ADMIN == TRUE) {
-	@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
-	@include(e_LANGUAGEDIR."English/admin/lan_admin.php");
+	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
+	@include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");
 	
 	require_once(e_HANDLER."userclass_class.php");
 	require_once(e_ADMIN."ad_links.php");
 	require_once(e_HANDLER.'admin_handler.php');
 	
-	$array_functions[] = array(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z");
+	$array_functions[] = array(e_ADMIN."plugin.php", ADLAN_98, "Z");
 	
 	if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) {
 		while ($row = $sql->db_Fetch()) {
@@ -45,7 +45,7 @@ if (ADMIN == TRUE) {
 	<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
 	<option>".LAN_SELECT."</option>\n";
 	foreach ($array_functions as $link_value) {
-		$amtext .= render_admin_links($link_value[0], $link_value[1], $link_value[3]);
+		$amtext .= render_admin_links($link_value[0], $link_value[1], $link_value[2]);
 	}
 
 	$amtext .= "</select>

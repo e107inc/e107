@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-08-25 15:37:54 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2006-10-21 11:22:57 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // Plugin info -------------------------------------------------------------------------------------------------------
+@include_once(e_PLUGIN.'links_page/link_defines.php');
 @include_once(e_PLUGIN.'links_page/languages/'.e_LANGUAGE.'.php');
 @include_once(e_PLUGIN.'links_page/languages/English.php');
 

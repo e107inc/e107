@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-07-04 08:13:47 $
-|     $Author: e107coders $
+|     $Revision: 1.47 $
+|     $Date: 2006-10-21 11:25:20 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -300,6 +300,7 @@ class poll
 		   	require(e_PLUGIN."poll/templates/poll_template.php");
 		}
 
+		$preview = FALSE;
 		if ($type == "preview")
 		{
 			$POLLMODE = "notvoted";
@@ -326,7 +327,7 @@ class poll
 				//	$MODE = ($mode) ? $mode : "";		/* debug */
 					$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
 					$OPTION = $tp->toHTML($option, TRUE);
-					if($POLL_NOTVOTED_LOOP_ALT && $type != "forum"){ // alternating style
+					if(isset($POLL_NOTVOTED_LOOP_ALT) && $POLL_NOTVOTED_LOOP_ALT && $type != "forum"){ // alternating style
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
 						$alt = ($alt ==0) ? 1 : 0;
 					}else{

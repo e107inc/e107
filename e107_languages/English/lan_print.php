@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_print.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-21 11:20:27 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Printer Friendly");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Printer Friendly"); }
 
 define("LAN_PRINT_86", "Category:");
 define("LAN_PRINT_87", "by ");

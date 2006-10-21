@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_uploads.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-25 03:35:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-21 11:22:30 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -24,7 +24,7 @@ if(!USER)
 	exit;
 }
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_uploads.php';
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_uploads.php');
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_uploads.php');
 
 if(is_array($_POST['delete']))
 {

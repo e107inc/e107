@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-24 17:36:38 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-21 11:24:08 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 	
@@ -53,8 +53,8 @@ define("ADSTAT_L29", "Page Name");
 define("ADSTAT_L30", "Check to remove");
 define("ADSTAT_L31", "Remove selected pages");
 define("ADSTAT_L32", "Page Tidy");
-define("ADSTAT_L10", "Referrers");
-define("ADSTAT_L10", "Referrers");
+//define("ADSTAT_L10", "Referrers");
+//define("ADSTAT_L10", "Referrers");
 
 
 
