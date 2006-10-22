@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.105 $
-|		$Date: 2006-10-19 20:49:31 $
+|		$Revision: 1.106 $
+|		$Date: 2006-10-22 20:38:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -632,7 +632,7 @@ class content{
 					}
 				}
 				if($qs[0] == "list"){
-					$crumb .= "<a href='".e_SELF."?list.".$arr[$parent][0]."'>list</a>";
+					$crumb .= "<a href='".e_SELF."?list.".$arr[$parent][0]."'>".CONTENT_LAN_13."</a>";
 				}
 				if($qs[0] == "top"){
 					$crumb .= "<a href='".e_SELF."?top.".$arr[$parent][0]."'>".CONTENT_LAN_8."</a>";
@@ -1139,7 +1139,7 @@ class content{
 				}
 			}
 			if($newparent){
-				$emptystring = "-- categories --";
+				$emptystring = CONTENT_LAN_14;
 				$catarray = $rs -> form_option($emptystring, "0", "none");
 			}
 			foreach($newparent as $key => $value){
