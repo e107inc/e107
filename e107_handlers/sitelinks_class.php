@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2006-10-20 21:00:54 $
-|     $Author: mrpete $
+|     $Revision: 1.99 $
+|     $Date: 2006-10-22 14:15:24 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -221,10 +221,15 @@ class sitelinks
 			$linkstart .= "<img src='".e_IMAGE_ABS."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
 		}
 
+		// mobile phone support.
+		$accesskey = ($style['accesskey']===TRUE) ? " accesskey='".$linkInfo['link_order']."' " : "";
+        $accessdigit = ($style['accessdigit']===TRUE && $style['accesskey']===TRUE) ? $linkInfo['link_order'].". " : "";
+
 		// If its a link.. make a link
 		$_link = "";
+		$_link .= $accessdigit;
 		if (!empty($href) && (($style['hilite_nolink'] && $highlighted)!=TRUE)){
-			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook")."</a>";
+			$_link .= "<a".$linkadd.$screentip.$href.$link_append.$accesskey.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook")."</a>";
 		// If its not a link, but has a class or screentip do span:
 		}elseif (!empty($linkadd) || !empty($screentip)){
 			$_link .= "<span".$linkadd.$screentip.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook")."</span>";
