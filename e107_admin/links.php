@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-10-17 03:35:10 $
-|     $Author: mrpete $
+|     $Revision: 1.65 $
+|     $Date: 2006-10-22 14:13:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -182,7 +182,7 @@ class links
 	function getLinks()
 	{
 		global $sql;
-		if($this->link_total = $sql->db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere"))
+		if($this->link_total = $sql->db_Select("links", "*", "ORDER BY link_category,link_order, link_id ASC", "nowhere"))
 		{
 			while($row = $sql->db_Fetch())
 			{
@@ -310,8 +310,24 @@ class links
 	}
 
 	function display_row($row2, $indent = FALSE) {
-		global $sql, $rs, $ns, $tp, $linkArray;
+		global $sql, $rs, $ns, $tp, $linkArray,$previous_cat;
 		extract($row2);
+
+		// 
+		if($link_category > 1 && $link_category != $previous_cat)
+		{
+        	$text .= "
+				<tr>
+					<td class='fcaption'>".LCLAN_89."</td>
+					<td class='fcaption'>".LCLAN_15." (".LCLAN_12.": ".$link_category.")</td>
+					<td class='fcaption'>".LAN_OPTIONS."</td>
+					<td class='fcaption'>".LCLAN_95."</td>
+					<td class='fcaption'>".LCLAN_91."</td>
+					<td class='fcaption'>".LAN_ORDER."</td>
+				</tr>";
+			$previous_cat = $link_category;
+		}
+
 		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0) // 'submenu' for upgrade compatibility only.
 		{
 			$link_name = $this->linkName( $link_name );
@@ -382,7 +398,7 @@ class links
 			$link_parent = $id;
 		}
 
-		if(strpos($link_name, "submenu.") !== FALSE){  // 'submenu' for upgrade compatibility only.          
+		if(strpos($link_name, "submenu.") !== FALSE){  // 'submenu' for upgrade compatibility only.
 			$link_name = $this->linkName( $link_name );
 		}
 
@@ -705,10 +721,10 @@ $i=0;
 		$sVal = $aVal['val'];
 		$sTxt = $aVal['txt'];
 		$sOut="";
-		
+
 		if ($i) $sOut = '>'.$sTxtPrev.'</option>';
 		$sOut .= '<option value="'.$sVal.'"';
-		
+
 		$aPrep[$i++] = $sOut;
 		$sTxtPrev = $sTxt;
 	}
