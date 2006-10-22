@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-10-21 11:05:49 $
+|     $Revision: 1.15 $
+|     $Date: 2006-10-22 19:46:28 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -226,9 +226,8 @@ class e107_db_debug {
 
 		if (!E107_DBG_TIMEDETAILS) return '';
 
-		$text='';
 		$totTime=$eTraffic->TimeDelta($eTimingStart, $eTimingStop);
-		$text .= "\n<table class='fborder'>\n";
+		$text = "\n<table class='fborder'>\n";
 		$bRowHeaders=FALSE;
 		reset($this->aTimeMarks);
 		$aSum=$this->aTimeMarks[0]; // create a template from the 'real' array
@@ -260,30 +259,37 @@ class e107_db_debug {
 			}
 
 			if ($tMarker['What'] == 'Stop') {
-				break; // We're on the 'stop' mark
+				$tMarker['Time']='&nbsp;';
+				$tMarker['%Time']='&nbsp;';
+				$tMarker['%DB Count']='&nbsp;';
+				$tMarker['%DB Time']='&nbsp;';
+				$tMarker['DB Time']='&nbsp;';
+				$tMarker['OB Lev']=$this->aOBMarks[$tKey];
+				$tMarker['DB Count']='&nbsp;';
+			} else {
+				// Convert from start time to delta time, i.e. from now to next entry
+				$nextMarker=current($this->aTimeMarks);
+				$aNextT=$nextMarker['Time'];
+				$aThisT=$tMarker['Time'];
+	
+				$thisDelta=$eTraffic->TimeDelta($aThisT, $aNextT);
+				$aSum['Time'] += $thisDelta;
+				$aSum['DB Time'] += $tMarker['DB Time'];
+				$aSum['DB Count'] += $tMarker['DB Count'];
+				$tMarker['Time']=number_format($thisDelta*1000.0, 1);
+				$tMarker['%Time']=$totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
+				$tMarker['%DB Count']=number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
+				$tMarker['%DB Time']=$db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
+				$tMarker['DB Time']=number_format($tMarker['DB Time']*1000.0, 1);
+				$tMarker['OB Lev']=$this->aOBMarks[$tKey];
 			}
-
-			// Convert from start time to delta time, i.e. from now to next entry
-			$nextMarker=current($this->aTimeMarks);
-			$aNextT=$nextMarker['Time'];
-			$aThisT=$tMarker['Time'];
-
-			$thisDelta=$eTraffic->TimeDelta($aThisT, $aNextT);
-			$aSum['Time'] += $thisDelta;
-			$aSum['DB Time'] += $tMarker['DB Time'];
-			$aSum['DB Count'] += $tMarker['DB Count'];
-			$tMarker['Time']=number_format($thisDelta*1000.0, 1);
-			$tMarker['%Time']=$totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
-			$tMarker['%DB Count']=number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
-			$tMarker['%DB Time']=$db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
-			$tMarker['DB Time']=number_format($tMarker['DB Time']*1000.0, 1);
-			$tMarker['OB Lev']=$this->aOBMarks[$tKey];
 			$text .= "<tr><td class='forumheader3' >".implode("&nbsp;</td><td class='forumheader3'  style='text-align:right'>", array_values($tMarker))."&nbsp;</td></tr>\n";
 
 			if (isset($this->aMarkNotes[$tKey])) {
 				$text .= "<tr><td class='forumheader3' >&nbsp;</td><td class='forumheader3' colspan='4'>";
 				$text .= $this->aMarkNotes[$tKey]."</td></tr>\n";
 			}
+			if ($tMarker['What'] == 'Stop') break;
 		}
 
 		$aSum['%Time']=$totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
@@ -302,6 +308,12 @@ class e107_db_debug {
 		$text .= "\n<table class='fborder'>\n";
 
 		$bRowHeaders=FALSE;
+		$aSum=$this->aDBbyTable['core']; // create a template from the 'real' array
+		$aSum['Table']='Total';
+		$aSum['%DB Count']=0;
+		$aSum['%DB Time']=0;
+		$aSum['DB Time']=0;
+		$aSum['DB Count']=0;
 
 		foreach ($this->aDBbyTable as $curTable) {
 			if (!$bRowHeaders) {
@@ -321,12 +333,18 @@ class e107_db_debug {
 				$text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits)."</b>&nbsp;</td></tr>\n";
 			}
 
+			$aSum['DB Time'] += $curTable['DB Time'];
+			$aSum['DB Count'] += $curTable['DB Count'];
 			$curTable['%DB Count']=number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
 			$curTable['%DB Time']=number_format(100.0 * $curTable['DB Time'] / $db_time, 0);
-			$curTable['DB Time']=number_format($curTable['DB Time'], 4);
+			$curTable['DB Time']=number_format($curTable['DB Time']*1000.0, 1);
 			$text .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3' style='text-align:right'>", array_values($curTable))."&nbsp;</td></tr>\n";
 		}
 
+		$aSum['%DB Time']=$db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
+		$aSum['%DB Count']=($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
+		$aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
+		$text .= "<tr><td class='fcaption'>".implode("&nbsp;</td><td class='fcaption' style='text-align:right'>", array_values($aSum))."&nbsp;</td></tr>\n";
 		$text .= "\n</table><br/>\n";
 
 		return $text;
@@ -394,7 +412,7 @@ class e107_db_debug {
 			return FALSE;
 		}
 		global $e107;
-		$text .= "<table class='fborder' style='width: 100%'>
+		$text = "<table class='fborder' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>Paths</b></td></tr>
 			<tr>
 			<td class='forumheader3'>\n";
@@ -416,11 +434,10 @@ class e107_db_debug {
 
 
 	function Show_DEPRECATED(){
-		$text = '';
 		if (!E107_DBG_DEPRECATED){
 			return FALSE;
 		} else {
-			$text .= "<table class='fborder' style='width: 100%'>
+			$text = "<table class='fborder' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>The following deprecated functions were used:</b></td></tr>
 			<tr>
 			<td class='fcaption' style='width: 10%;'>Function</td>
