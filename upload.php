@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-13 13:22:24 $
+|     $Revision: 1.16 $
+|     $Date: 2006-10-22 22:57:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,8 @@ $text = "<div style='text-align:center'>
 	<td style='width:80%' class='forumheader3'>";
 
 	require_once(e_FILE."shortcode/batch/download_shortcodes.php");
-	$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$download_category}}",true,$download_shortcodes);
+	$dlparm = (isset($download_category)) ? $download_category : "";
+	$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$dlparm}}",true,$download_shortcodes);
 
 
 $text .= "
