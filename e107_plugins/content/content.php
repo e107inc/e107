@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.105 $
-|		$Date: 2006-09-15 06:52:39 $
+|		$Revision: 1.106 $
+|		$Date: 2006-10-22 08:53:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1308,7 +1308,7 @@ function show_content_item(){
 				}
 				if($content_pref["content_content_pagenames_rendertype"] == "1"){
 					$selectjs	= "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
-					$CONTENT_CONTENT_TABLE_PAGENAMES = $rs -> form_select_open("pagenames", $selectjs).$rs -> form_option("select page", "1", "none" , "").$options.$rs -> form_select_close();
+					$CONTENT_CONTENT_TABLE_PAGENAMES = $rs -> form_select_open("pagenames", $selectjs).$rs -> form_option(CONTENT_LAN_89, "1", "none" , "").$options.$rs -> form_select_close();
 				}else{
 					$CONTENT_CONTENT_TABLE_PAGENAMES = $options;
 				}
