@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.306 $
-|     $Date: 2006-10-21 10:59:46 $
-|     $Author: mrpete $
+|     $Revision: 1.307 $
+|     $Date: 2006-10-22 04:09:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -37,7 +37,7 @@
 // N: Other misc setups (NOTE: Put most 'random' things here that don't require user session or theme
 // O: Start user session
 // P: Load theme
-// Q: Other setups 
+// Q: Other setups
 
 //
 // A: Honest global beginning point for processing time
@@ -707,7 +707,7 @@ if(!defined("THEME")){
 	// any plugin file starting with 'admin_' is assumed to use admin theme
 	// this test: (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0)
 	// alternate test: match ANY file starting with 'admin_'...
-	//   strpos(e_PAGE, "admin_") === 0 
+	//   strpos(e_PAGE, "admin_") === 0
 	//
 	// here we TEST the theme (see below for deciding what theme to USE)
 	//
@@ -1473,7 +1473,7 @@ class error_handler {
 			break;
 			case E_USER_ERROR:
 			if ($this->debug == true) {
-				$error['short'] = "Internal Error Message: {$message}, Line {$line} of {$file}<br />\n";
+				$error['short'] = "&nbsp;&nbsp;&nbsp;&nbsp;Internal Error Message: {$message}, Line {$line} of {$file}<br />\n";
 				$trace = debug_backtrace();
 				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
 				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
