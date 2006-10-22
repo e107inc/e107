@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-10-14 15:52:56 $
+|     $Revision: 1.52 $
+|     $Date: 2006-10-22 15:48:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ class e107plugin
 	function getall($flag)
 	{
 		global $sql;
-		if ($sql->db_Select("plugin","*","plugin_installflag = '".intval($flag)."' ORDER BY plugin_name ASC"))
+		if ($sql->db_Select("plugin","*","plugin_installflag = '".intval($flag)."' ORDER BY plugin_path ASC"))
 		{
 			$ret = $sql->db_getList();
  		}
@@ -446,7 +446,7 @@ class e107plugin
 
 			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = '".intval($id)."'");
             if($rssmess){ $text .= $rssmess; }
-			$text .= ($eplug_done ? "<br />{$eplug_done}" : "");
+			$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 		} else {
 			$text = EPL_ADLAN_21;
 		}

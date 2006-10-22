@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-08 02:23:46 $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-22 15:48:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -80,14 +80,12 @@ $eplug_link = FALSE;
 $eplug_link_name = '';
 $eplug_link_url = '';
 
-// Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = LAN_INSTALL_SUCCESSFUL;  // e107 generic term.
 
 // upgrading ... //
 $upgrade_add_prefs = "";
 $upgrade_remove_prefs = "";
 $upgrade_alter_tables = "";
-$eplug_upgrade_done = LAN_UPGRADE_SUCCESSFUL;  // e107 generic term.        
+
 
 if (!function_exists('chatbox_menu_uninstall')) {
 	function chatbox_menu_uninstall() {
