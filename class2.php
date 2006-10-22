@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.308 $
-|     $Date: 2006-10-22 19:44:14 $
-|     $Author: mrpete $
+|     $Revision: 1.309 $
+|     $Date: 2006-10-22 22:36:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -304,6 +304,9 @@ if(!$PrefCache){
 	ecache::set('SitePrefs', $PrefCache);
 } else {
 	// cache of core prefs was found, so grab all the useful core rows we need
+	if(!isset($sysprefs->DefaultIgnoreRows)){
+    	$sysprefs->DefaultIgnoreRows = "";
+	}
 	$sysprefs->DefaultIgnoreRows .= '|SitePrefs';
 	$sysprefs->prefVals['core']['SitePrefs'] = $PrefCache;
 	if(isset($retrieve_prefs))
@@ -404,7 +407,7 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
 		$sql2->mySQLlanguage = $sql->mySQLlanguage;
 	} else {
-		$user_language=$_COOKIE['e107language_'.$pref['cookie_name']];
+		$user_language= (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : "";
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
 		$sql2->mySQLlanguage = $sql->mySQLlanguage;
 	}
@@ -1272,7 +1275,7 @@ function init_session() {
 				save_prefs("user");
 			}
 
-			define("USERTHEME", ($user_pref['sitetheme'] && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
+			define("USERTHEME", (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
 			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
 			if ($result['user_admin']) {
 				define("ADMIN", TRUE);

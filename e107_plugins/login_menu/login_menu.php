@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-07-16 19:41:11 $
+|     $Revision: 1.48 $
+|     $Date: 2006-10-22 22:36:03 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ if ($use_imagecode)
 $text = '';
 if (USER == TRUE || ADMIN == TRUE)
 {
-	if (!$LOGIN_MENU_LOGGED) {
+	if (!isset($LOGIN_MENU_LOGGED)) {
 		if (file_exists(THEME."login_menu_template.php")){
 	   		require(THEME."login_menu_template.php");
 		}else{

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-07-21 21:12:47 $
+|     $Revision: 1.16 $
+|     $Date: 2006-10-22 22:36:03 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,7 @@ if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['tr
 		$tmp = addslashes(serialize($menu_pref));
 		$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
 	}
-
+    global $gen;
 	if (!is_object($gen)) {
 		$gen = new convert;
 	}
