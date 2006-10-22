@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.307 $
-|     $Date: 2006-10-22 04:09:48 $
-|     $Author: e107coders $
+|     $Revision: 1.308 $
+|     $Date: 2006-10-22 19:44:14 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 //
@@ -42,15 +42,15 @@
 //
 // A: Honest global beginning point for processing time
 //
-$eTimingStart = microtime();
-$pre_start_ob_level = ob_get_level();
+$eTimingStart = microtime();					// preserve these when destroying globals in step C
+$oblev_before_start = ob_get_level();
 
 //
 // B: Remove all output buffering
 //
 while (@ob_end_clean());  // destroy all ouput buffering
 ob_start();             // start our own.
-$start_ob_level = ob_get_level();
+$oblev_at_start = ob_get_level(); 	// preserve when destroying globals in step C
 
 //
 // C: Find out if register globals is enabled and destroy them if so
@@ -64,7 +64,7 @@ if(function_exists('ini_get')) {
 // Destroy! (if we need to)
 if($register_globals == true){
 	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs|eplug_admin|eTimingStart)$/', $global)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs|eplug_admin|eTimingStart)|oblev_.*$/', $global)) {
 			unset($$global);
 		}
 	}

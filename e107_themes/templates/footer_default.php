@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-10-21 11:11:39 $
+|     $Revision: 1.40 $
+|     $Date: 2006-10-22 19:44:54 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -151,12 +151,17 @@ if($e107_popup!=1){
 	
 } // End of regular-page footer (the above NOT done for popups)
 
-
-global $start_ob_level;
-if (ob_get_level() != $start_ob_level && $pref['developer']) {
-	$oblev = ob_get_level();
-	$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end.</div>";
-	echo $obdbg;
+if ($pref['developer']) {
+	global $oblev_at_start,$oblev_before_start;
+	if (ob_get_level() != $oblev_at_start) {
+		$oblev = ob_get_level();
+		$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start).</div>";
+		echo $obdbg;
+	}
+	if ($oblev_before_start != 0) {
+		$obdbg = "<div style='text-align:center' class='smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
+		echo $obdbg;
+	}
 }
 
 if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
