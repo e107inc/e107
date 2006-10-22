@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-10-21 03:42:45 $
+|     $Revision: 1.21 $
+|     $Date: 2006-10-22 00:14:37 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -106,7 +106,7 @@ define("LAN_SIGNUP_42", "There was a problem, the registration mail was not sent
 define("LAN_SIGNUP_43", "Email Sent");
 define("LAN_SIGNUP_44", "Activation email sent to:");
 define("LAN_SIGNUP_45", "Please check your inbox.");
-define("LAN_SIGNUP_47", "Re-Send Activation Email");
+define("LAN_SIGNUP_47", "Resend Activation Email");
 define("LAN_SIGNUP_48", "Username or Email");
 define("LAN_SIGNUP_49", "If you registered with the wrong email address, type a new one and your password here:");
 define("LAN_SIGNUP_50", "New Email");
