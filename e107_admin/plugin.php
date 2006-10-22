@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-08-25 15:42:37 $
+|     $Revision: 1.66 $
+|     $Date: 2006-10-22 15:48:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -353,7 +353,7 @@ if ($action == 'upgrade') {
 
     $eplug_addons = $plugin -> getAddons($eplug_folder);
 
-	$text .= '<br />'.$eplug_upgrade_done;
+	$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
 	$sql->db_Update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$id' ");
 	$ns->tablerender(EPL_ADLAN_34, $text);
 
