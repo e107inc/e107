@@ -2,23 +2,23 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-10-21 16:32:14 $
-|     $Author: verant $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-23 13:20:54 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
 //Not translated yet:
-define("OTHERDB_LAN_1", "Database Type:");
-define("OTHERDB_LAN_2", "Server:");
-define("OTHERDB_LAN_3", "Username:");
-define("OTHERDB_LAN_4", "Password:");
-define("OTHERDB_LAN_5", "Database");
-define("OTHERDB_LAN_6", "Table");
-define("OTHERDB_LAN_7", "Username Field:");
-define("OTHERDB_LAN_8", "Password Field:");
-define("OTHERDB_LAN_9", "Password Method:");
-define("OTHERDB_LAN_10", "Configure otherdb auth");
-define("OTHERDB_LAN_11", "** The following fields are not required if using an e107 database");
+define("OTHERDB_LAN_1", "Тип базы данных:");
+define("OTHERDB_LAN_2", "Сервер:");
+define("OTHERDB_LAN_3", "Имя пользователя:");
+define("OTHERDB_LAN_4", "Пароль:");
+define("OTHERDB_LAN_5", "База данных");
+define("OTHERDB_LAN_6", "Таблица");
+define("OTHERDB_LAN_7", "Поле имени пользователя:");
+define("OTHERDB_LAN_8", "Поле пароля:");
+define("OTHERDB_LAN_9", "Метод пароля:");
+define("OTHERDB_LAN_10", "Настроить авторизацию другой базы данных");
+define("OTHERDB_LAN_11", "** Следующие поля опциональны, если вы используете базу данных e107");
 
 ?>
