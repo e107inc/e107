@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-08-09 17:14:21 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2006-10-23 22:35:22 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -150,9 +150,9 @@ if (isset($_POST['pwsubmit'])) {
 if (USE_IMAGECODE) {
 
 	$FPW_TABLE_SECIMG_LAN = LAN_FPW2;
-	$FPW_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img->random_number."'>";
+	$FPW_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />";
 	$FPW_TABLE_SECIMG_SECIMG = $sec_img->r_image();
-	$FPW_TABLE_SECIMG_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>";
+	$FPW_TABLE_SECIMG_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";
 }
 
 if (!$FPW_TABLE) {
