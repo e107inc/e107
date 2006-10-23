@@ -8,8 +8,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/contact_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-10-14 13:37:17 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-23 22:33:18 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -53,11 +53,11 @@ SC_END
 
 SC_BEGIN CONTACT_IMAGECODE
 global $sec_img;
-return "<input type='hidden' name='rand_num' value='".$sec_img->random_number."'>".$sec_img->r_image();
+return "<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />".$sec_img->r_image();
 SC_END
 
 SC_BEGIN CONTACT_IMAGECODE_INPUT
-return "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>";
+return "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";
 SC_END
 
 */
