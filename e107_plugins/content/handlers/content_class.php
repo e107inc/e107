@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.106 $
-|		$Date: 2006-10-22 20:38:07 $
+|		$Revision: 1.107 $
+|		$Date: 2006-10-23 15:55:19 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1375,7 +1375,7 @@ class content{
 			$data .= "		\$checkid = substr(\$checkid,0,-3);\n";
 			$data .= "		if(!is_object(\$sql)){ \$sql = new db; }\n";
 			
-			$data .= "		if(\$sql -> db_Select(\$plugintable, \"*\", \" \".\$checkid.\" ORDER BY content_order \")){\n";
+			$data .= "		if(\$sql -> db_Select(\$plugintable, \"*\", \" \".\$checkid.\" ORDER BY SUBSTRING_INDEX(content_order, '.', 1)+0 \")){\n";
 			$data .= "			while(\$row = \$sql -> db_Fetch()){\n";
 			$data .= "\n";
 			$data .= "				//define icon\n";
