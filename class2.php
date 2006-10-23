@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.309 $
-|     $Date: 2006-10-22 22:36:03 $
-|     $Author: e107coders $
+|     $Revision: 1.310 $
+|     $Date: 2006-10-23 11:36:01 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 //
@@ -359,14 +359,37 @@ if ($pref['user_tracking'] == "session") {
 define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
 
-// if the option to force users to use a particular url for the site is enabled, redirect users there
+// if the option to force users to use a particular url for the site is enabled, redirect users there as needed
+// Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
+// And, this is robust against hack attacks. Malignant users can put **anything** in HTTP_HOST!
 if($pref['redirectsiteurl'] && $pref['siteurl']) {
-	$siteurl = SITEURLBASE."/";
-	if (strpos($pref['siteurl'], $siteurl) === FALSE && strpos(e_SELF, ADMINDIR) === FALSE) {
-		$location = str_replace($siteurl, $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
+	// Find domain and port from user and from pref
+	list($urlbase,$urlport) = explode(':',$_SERVER['HTTP_HOST'].':');
+	if (!$urlport) { $urlport = $_SERVER['SERVER_PORT']; }
+	if (!$urlport) { $urlport = 80; }
+	$aPrefURL = explode('/',$pref['siteurl'],4);
+	if (count($aPrefURL) > 2) { // we can do this -- there's at least http[s]://dom.ain/whatever
+		$PrefRoot = $aPrefURL[2];
+		list($PrefSiteBase,$PrefSitePort) = explode(':',$PrefRoot.':');
+		if (!$PrefSitePort) {
+			$PrefSitePort = ( $aPrefURL[0] == "https" ) ? 443 : 80;	// no port so set port based on 'scheme'
+		}
+		
+		// Redirect only if
+		// -- ports do not match (http <==> https)
+		// -- base domain does not match (case-insensitive)
+		// -- NOT admin area
+		if (($urlport != $PrefSitePort || stripos($PrefSiteBase, $urlbase) === FALSE) && strpos(e_SELF, ADMINDIR) === FALSE) 		{
+			$aeSELF = explode('/',e_SELF,4);
+			$aeSELF[0] = $aPrefURL[0];	// Swap in correct type of query (http, https)
+			$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
+			$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
+			$location = implode('/',$aeSELF).(e_QUERY ? "?".e_QUERY : "");
+			echo "<pre>$location</pre>\n";exit();
 		header("Location: {$location}", true, 301); // send 301 header, not 302
 		exit();
 	}
+}
 }
 
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
@@ -1307,6 +1330,42 @@ if(isset($pref['track_online']) && $pref['track_online']) {
 
 function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
 	setcookie($name, $value, $expire, $path, $domain, $secure);
+}
+
+//
+// Use these to combine isset() and use of the set value. or defined and use of a constant
+// i.e. to fix  if($pref['foo']) ==> if ( varset($pref['foo']) ) will use the pref, or ''.
+// Can set 2nd param to any other default value you like (e.g. false, 0, or whatever)
+// $testvalue adds additional test of the value (not just isset())
+// Examples:
+// $something = pref;  // Bug if pref not set         ==> $something = varset(pref);
+// $something = isset(pref) ? pref : "";              ==> $something = varset(pref);
+// $something = isset(pref) ? pref : default;         ==> $something = varset(pref,default);
+// $something = isset(pref) && pref ? pref : default; ==> $something = varset(pref,default, true);
+//
+function varset(&$val,$default='',$testvalue=false) {
+	if (isset($val)) {
+		return (!$testvalue || $val) ? $val : $default;
+	}
+	return $default;
+}
+function defset($str,$default='',$testvalue=false) {
+	if (defined($str)) {
+		return (!$testvalue || constant($str)) ? constant($str) : $default;
+	}
+	return $default;
+}
+
+//
+// These variants are like the above, but only return the value if both set AND 'true' 
+//
+function varsettrue(&$val,$default='') {
+	if (isset($val) && $val) return $val;
+	return $default;
+}
+function defsettrue($str,$default='') {
+	if (defined($str) && constant($str)) return constant($str);
+	return $default;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
