@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_log.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-05 20:02:15 $
-|     $Author: lisa_ $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-24 17:02:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -55,7 +55,7 @@ while ($row = $sql -> db_Fetch()) {
 	$text .= "  <tr>\n";
 	$text .= "    <td style='width: 16px;'>{$image}</td>\n";
 	$text .= "    <td>{$datestamp}</td>\n";
-	$text .= "    <td>{$row['dblog_query']}</td>\n";
+	$text .= "    <td>{$row['dblog_title']}</td>\n";
 	$text .= "    <td>{$row['dblog_remarks']}</td>\n";
 	$text .= "    <td>{$row['dblog_ip']}</td>\n";
 	$text .= ($row['user_name']) ? "    <td><a href='".e_BASE."user.php?id.{$row['dblog_user_id']}'>{$row['user_name']}</a></td>\n" : "    <td>{$row['dblog_user_id']}</td>\n";
@@ -83,6 +83,8 @@ function get_log_img($log_type) {
 		case E_LOG_FATAL:
 			return "<img src='".e_IMAGE_ABS."admin_images/nopreview_16.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";
 		break;
+		case E_LOG_PLUGIN;
+			return "<img src='".e_IMAGE_ABS."admin_images/plugins_16.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";                    
 	}
 	return $log_type;
 }
