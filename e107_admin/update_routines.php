@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.187 $
-|     $Date: 2006-10-20 21:02:42 $
-|     $Author: mrpete $
+|     $Revision: 1.188 $
+|     $Date: 2006-10-24 17:02:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -135,6 +135,14 @@ function update_70x_to_706($type='') {
 			catch_error();
 		}
 
+		if($sql->db_Field("dblog",5) == "dblog_query")
+		{
+			mysql_query("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL;");
+			catch_error();
+			mysql_query("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_remarks` `dblog_remarks` TEXT NOT NULL;");
+			catch_error();
+		}
+
 		if(!$sql->db_Field("plugin","plugin_path","UNIQUE"))
 		{
             if(!mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);"))
@@ -149,7 +157,7 @@ function update_70x_to_706($type='') {
         require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
 		$ep->update_plugins_table();
-		
+
 		if(!$sql->db_Field("online",6)) // online_active field
 		{
 			mysql_query("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
@@ -167,9 +175,13 @@ function update_70x_to_706($type='') {
 			return update_needed();
 		}
 
+		if($sql->db_Field("dblog",5) == "dblog_query")
+		{
+        	return update_needed();
+		}
+
 		if(!$sql->db_Field("plugin",5))
 		{
-
 			return update_needed();
 		}
 
@@ -177,7 +189,7 @@ function update_70x_to_706($type='') {
 		{
             return update_needed();
 		}
-		
+
 		if(!$sql->db_Field("online",6)) // online_active field
 		{
 			return update_needed();
@@ -1333,7 +1345,7 @@ function update_617_to_700($type='') {
 		return '';
 
 	} else {
-   
+
 		// Check if update is needed to 0.7. -----------------------------------------------
 		global $pref;
 		if (!$sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended")) {

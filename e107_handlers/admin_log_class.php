@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-04-13 14:33:06 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-24 17:02:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -71,6 +71,12 @@ class e_admin_log {
 		 *
 		 */
 		define("E_LOG_FATAL", 3);
+
+		/*
+		 * 	Plugin Information.
+		 */
+
+		define("E_LOG_PLUGIN", 4);
 	}
 
 	/**
@@ -92,7 +98,7 @@ class e_admin_log {
 			if($this->_options['backtrace'] == true) {
 				$event_detail .= "\n\n".debug_backtrace();
 			}
-			$sql->db_Insert('dblog', "'', '{$event_type}', {$time_stamp}, {$uid}, '{$ip}', '{$event_title}', '{$event_detail}'");
+			$sql->db_Insert('dblog', "'', '{$event_type}', {$time_stamp}, {$uid}, '{$ip}', '{$event_title}', '{$event_detail}' ");
 		}
 	}
 

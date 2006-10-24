@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-10-20 23:58:32 $
+|     $Revision: 1.52 $
+|     $Date: 2006-10-24 17:02:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -109,8 +109,8 @@ CREATE TABLE dblog (
   dblog_datestamp int(10) unsigned NOT NULL default '0',
   dblog_user_id int(10) unsigned NOT NULL default '0',
   dblog_ip varchar(80) NOT NULL default '',
-  dblog_query text NOT NULL,
-  dblog_remarks varchar(255) NOT NULL default '',
+  dblog_title varchar(255) NOT NULL default '',
+  dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
