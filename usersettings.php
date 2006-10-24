@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2006-10-18 16:34:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.76 $
+|     $Date: 2006-10-24 10:41:46 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -95,7 +95,6 @@ if (isset($_POST['updatesettings']))
 	{
 		$inp = USERID;
 	}
-
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
 
@@ -107,15 +106,16 @@ if (isset($_POST['updatesettings']))
 		$pref['im_width'] = ($pref['im_width']) ? $pref['im_width'] : 120;
 		$pref['im_height'] = ($pref['im_height']) ? $pref['im_height'] : 100;
 		if ($avwidth > $pref['im_width']) {
-			$avmsg .= LAN_USET_1."<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
+			$avmsg .= LAN_USET_1." ($avwidth)<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
 		}
 		if ($avheight > $pref['im_height']) {
-			$avmsg .= LAN_USET_3."<br />".LAN_USET_4.": {$pref['im_height']}";
+			$avmsg .= LAN_USET_3." ($avheight)<br />".LAN_USET_4.": {$pref['im_height']}";
 		}
 		if ($avmsg) {
 			$_POST['image'] = "";
-			$messsage = $avmsg;
+			$error = $avmsg;
 		}
+
 	}
 
 	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_USET_6);
@@ -294,7 +294,6 @@ if (isset($_POST['updatesettings']))
 				}
 				$ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
 			}
-
 
 			$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
 			// If user has changed display name, update the record in the online table
