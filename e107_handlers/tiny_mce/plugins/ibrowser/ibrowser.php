@@ -9,13 +9,13 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.7 $Date: 2004/10/04
+// $Revision: 1.8 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.7 $
-// $Date: 2006-09-28 22:43:31 $
-// $Author: e107coders $
+// $Revision: 1.8 $
+// $Date: 2006-10-24 13:39:45 $
+// $Author: mrpete $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
 
@@ -263,8 +263,8 @@ $errors = array();
     window.name = 'imglibrary';
 </script>
 <form name="libbrowser" method="post" action="ibrowser.php?request_uri=<?php echo $_GET['request_uri']?>" enctype="multipart/form-data" target="imglibrary">
-  <input type="hidden" name="request_uri" value="<?php echo urlencode($request_uri)?>">
-  <input type="hidden" name="lib_action" value="">
+  <input type="hidden" name="request_uri" value="<?php echo urlencode($request_uri)?>" />
+  <input type="hidden" name="lib_action" value="" />
   <fieldset style= "padding: 5 5 5 5; margin-top: -5px;">
   <legend>{$lang_ibrowser_img_sel}</legend>
   <table width="440" border="0" cellspacing="0" cellpadding="0">
@@ -339,10 +339,10 @@ $errors = array();
             <td colspan="3"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td width="40%"><?php if ($tinyMCE_img_delete_allowed) { ?>
-                    <input type="button" value="{$lang_ibrowser_delete}" class="bt" onClick="deleteClick();">
+                    <input type="button" value="{$lang_ibrowser_delete}" class="bt" onClick="deleteClick();" />
                     <?php } ?></td>
-                  <td align="right"><input type="button" name="selectbt" value="{$lang_ibrowser_select}" class="bt" onClick="selectClick();">
-                    <input type="button" value="{$lang_ibrowser_cancel}" class="bt" onClick="window.close();"></td>
+                  <td align="right"><input type="button" name="selectbt" value="{$lang_ibrowser_select}" class="bt" onClick="selectClick();" />
+                    <input type="button" value="{$lang_ibrowser_cancel}" class="bt" onClick="window.close();" /></td>
                 </tr>
               </table></td>
           </tr>
@@ -357,11 +357,11 @@ $errors = array();
       <td><table style='width:440px;border:0px' cellpadding="2" cellspacing="0">
           <tr>
             <td style='width:80px'>{$lang_ibrowser_src}:</td>
-            <td colspan="5"><input name="src" type="text" id="src" value="" style="width: 100%;" ></td>
+            <td colspan="5"><input name="src" type="text" id="src" value="" style="width: 100%;" /></td>
           </tr>
           <tr>
             <td>{$lang_ibrowser_alt}:</td>
-            <td colspan="5"><input name="alt" type="text" id="alt" value="" style="width: 100%;" onChange="updateStyle()"></td>
+            <td colspan="5"><input name="alt" type="text" id="alt" value="" style="width: 100%;" onChange="updateStyle()" /></td>
           </tr>
           <tr>
             <td>{$lang_ibrowser_align}:</td>
@@ -388,19 +388,19 @@ $errors = array();
           </tr>
           <tr>
             <td>{$lang_ibrowser_size}:</td>
-            <td colspan="3"><input name="size" type="text" id="size" value="" readonly="true" style="width: 100%;"></td>
+            <td colspan="3"><input name="size" type="text" id="size" value="" readonly="true" style="width: 100%;" /></td>
             <td>&nbsp;</td>
           </tr>
           <tr>
             <td>{$lang_ibrowser_height}:</td>
-            <td width="40"><input name="height" type="text" id="height" value="" size="5" maxlength="4" style="text-align: right;" onChange="changeDim(0)"></td>
+            <td width="40"><input name="height" type="text" id="height" value="" size="5" maxlength="4" style="text-align: right;" onChange="changeDim(0)" /></td>
             <td width="25" rowspan="2" align="left" valign="middle"><a href="#" onClick="resetDim();" ><img src="images/constrain.gif" alt="{$lang_ibrowser_reset}" width="22" height="29" border="0"></a></td>
             <td rowspan="2">&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
           <tr>
             <td>{$lang_ibrowser_width}:</td>
-            <td><input name="width" type="text" id="width" value="" size="5" maxlength="4" style="text-align: right;" onChange="changeDim(1)"></td>
+            <td><input name="width" type="text" id="width" value="" size="5" maxlength="4" style="text-align: right;" onChange="changeDim(1)" /></td>
             <td>&nbsp;</td>
           </tr>
           <tr>

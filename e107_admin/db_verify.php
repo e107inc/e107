@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-07-20 01:17:35 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2006-10-24 13:34:38 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -320,10 +320,10 @@ if (!$_POST) {
 		<table border=0 align='center'>
 		<tr><td>".DBLAN_14."<br /><br />";
 	foreach(array_keys($tables) as $x) {
-		$text .= "<input type='checkbox' name='table_".$x."'>".$x."<br />";
+		$text .= "<input type='checkbox' name='table_".$x."' />".$x."<br />";
 	}
 	$text .= "
-		<br /><input class='button' type='submit' value='".DBLAN_15."'>
+		<br /><input class='button' type='submit' value='".DBLAN_15."' />
 		</td></tr></table></form>";
 	$ns->tablerender(DBLAN_16, $text);
 } else {

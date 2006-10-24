@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/message.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-25 01:18:43 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-24 13:34:38 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -90,7 +90,7 @@ if($amount = $sql -> db_Select("generic", "*", $queryString))
 $text .= "
 <tr>
 <td><br /><input class='button' type='submit' name='delete_all' value='".MESSLAN_4."' />
-<input type='checkbox' name='deleteconfirm' value='1'> ".MESSLAN_5."
+<input type='checkbox' name='deleteconfirm' value='1' /> ".MESSLAN_5."
 </td>
 </tr>
 

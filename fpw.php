@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-10-23 22:35:22 $
-|     $Author: lisa_ $
+|     $Revision: 1.20 $
+|     $Date: 2006-10-24 13:34:20 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");

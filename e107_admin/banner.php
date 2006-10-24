@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-06-14 22:12:07 $
-|     $Author: lisa_ $
+|     $Revision: 1.28 $
+|     $Date: 2006-10-24 13:34:38 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -107,7 +107,7 @@ if ($action == "delete" && $sub_action) {
 		<form method='post' action='".e_SELF."'>
 		<input class='button' type='submit' name='cancel' value='".LAN_CANCEL."' />
 		<input class='button' type='submit' name='confirm' value='".LAN_CONFDELETE."' />
-		<input type='hidden' name='id' value='".$sub_action."'>
+		<input type='hidden' name='id' value='".$sub_action."' />
 		</form>
 		</div>";
 	$ns->tablerender(BNRLAN_5, $text);
@@ -509,7 +509,7 @@ if ($action == "menu")
 
 	$text .= "</select><br /><br />
 	<input class='button' type='button' value='".BANNER_MENU_L9."' onclick='removeMe();' />
-	<input type='hidden' name='catid' id='catid' value='".$catidvalues."'>
+	<input type='hidden' name='catid' id='catid' value='".$catidvalues."' />
 	</td>
 	</tr>
 	</table>

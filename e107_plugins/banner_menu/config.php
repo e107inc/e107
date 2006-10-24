@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-10-30 13:58:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-24 13:41:21 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
@@ -115,7 +115,7 @@ for($a = 0; $a <= ($c-1); $a++) {
 $catidvalues = substr($catidvalues, 0, -1);
 $text .= "</select><br /><br />
 	<input class='button' type='button' value='".BANNER_MENU_L9."' onclick='removeMe();' />
-	<input type='hidden' name='catid' id='catid' value='".$catidvalues."'>
+	<input type='hidden' name='catid' id='catid' value='".$catidvalues."' />
 	</td>
 	</tr>
 	</table>

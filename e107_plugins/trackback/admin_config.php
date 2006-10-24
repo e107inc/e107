@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-19 08:37:54 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-24 13:44:55 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -55,7 +55,7 @@ $text = "
 <tr>
 <td style='width:50%' class='forumheader3'>".TRACKBACK_L8."</td>
 <td style='width:50%; text-align:right' class='forumheader3'>
-<input  size='50' class='tbox' type='text' name='trackbackString' value='".$pref['trackbackString']."'>
+<input  size='50' class='tbox' type='text' name='trackbackString' value='".$pref['trackbackString']."' />
 </td>
 </tr>
 

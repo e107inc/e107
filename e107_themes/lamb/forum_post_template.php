@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_post_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-11 08:58:55 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-24 13:45:10 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -49,7 +49,7 @@ $fileattach = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post']
 <br />
 
 <div id='fiupsection'>
-<span id='fiupopt'><input class='tbox' name='file_userfile[]' type='file' size='47'></span>
+<span id='fiupopt'><input class='tbox' name='file_userfile[]' type='file' size='47' /></span>
 </div>
 <input class='button' type='button' name='addoption' value='".LAN_417."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
 </td>

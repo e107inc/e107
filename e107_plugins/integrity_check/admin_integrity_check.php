@@ -406,7 +406,7 @@ if ($core_array[0]) {
 	$text .= "<b><u>".Integ_19.":</u></b><br />";
 	reset($core_array);
 	foreach($core_array as $v) {
-		$text .= "<input type='radio' name='input_files' value='".$v."' >".str_replace(array(e_BASE, e_PLUGIN, $o_path), array("", "", ""), $v)."<br />";
+		$text .= "<input type='radio' name='input_files' value='".$v."' />".str_replace(array(e_BASE, e_PLUGIN, $o_path), array("", "", ""), $v)."<br />";
 	}
 } else {
 	$text .= "<b>".Integ_16."</b><br />";
@@ -415,14 +415,14 @@ if ($file_array[0]) {
 	$text .= "<hr><b><u>".Integ_20.":</u></b><br />";
 	reset($file_array);
 	foreach($file_array as $v) {
-		$text .= "<input type='radio' name='input_files' value='".$v."' >".str_replace(array(e_BASE, e_PLUGIN, $PLUGINS_DIRECTORY), array("", "", ""), $v)."<br />";
+		$text .= "<input type='radio' name='input_files' value='".$v."' />".str_replace(array(e_BASE, e_PLUGIN, $PLUGINS_DIRECTORY), array("", "", ""), $v)."<br />";
 	}
 } else {
 	$text .= "<b>".Integ_17."</b><br />";
 }
 if ($core_array[0]) {
 	$text .= "<br /><hr>
-		<input type='checkbox' name='theme_folders' value='on'>".Integ_23."<br />";
+		<input type='checkbox' name='theme_folders' value='on' />".Integ_23."<br />";
 }
 if ($err_1 || $err_2 || !is_writeable($o_path)) {
 	$err_m = Integ_35."<br />";

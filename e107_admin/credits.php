@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-04-18 08:37:54 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2006-10-24 13:34:38 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -254,7 +254,7 @@ echo $fadejs;
 echo "
 <div style='text-align: center; margin-left: auto; margin-right: auto;'>
 <form>".
-(e_QUERY && e_QUERY == "stps" ? "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php'\" value='Show e107 Dev Team'>" : "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php?stps'\" value='Show third party scripts'>")."
+(e_QUERY && e_QUERY == "stps" ? "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php'\" value='Show e107 Dev Team' />" : "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php?stps'\" value='Show third party scripts' />")."
 </form>
 </div>
 ";
