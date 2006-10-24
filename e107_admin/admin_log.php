@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_log.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-24 17:02:57 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-24 17:23:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,8 @@ function get_log_img($log_type) {
 			return "<img src='".e_IMAGE_ABS."admin_images/nopreview_16.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";
 		break;
 		case E_LOG_PLUGIN;
-			return "<img src='".e_IMAGE_ABS."admin_images/plugins_16.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";                    
+			return "<img src='".e_IMAGE_ABS."admin_images/plugins_16.png' alt='".LAN_ADMINLOG_6."' title='".LAN_ADMINLOG_6."' />";
+        break;
 	}
 	return $log_type;
 }

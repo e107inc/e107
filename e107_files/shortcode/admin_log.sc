@@ -14,7 +14,7 @@ if (ADMIN) {
 			$gen = new convert;
 			while ($row = $sql -> db_Fetch()) {
 				$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
-				$text .= "<li>{$datestamp} - {$row['dblog_remarks']}</li>";
+				$text .= "<li>{$datestamp} - {$row['dblog_title']}</li>";
 			}
 			$text .= ($cnt ? "</ul>" : "");
 
