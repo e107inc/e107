@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-04-17 13:23:41 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-24 11:52:25 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -107,7 +107,7 @@ if (isset($_POST['show_avatars'])) {
 				<td class='fcaption'>$image_name</td>
 				</tr>
 				<tr>
-				<td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /></a><br />
+				<td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /><br />
 				<input type='hidden' name='filename' value='".$image_name."' />
 				<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
 				</td>
