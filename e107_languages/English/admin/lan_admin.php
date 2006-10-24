@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.50 $
+|     $Date: 2006-10-24 10:42:31 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -207,7 +207,6 @@ define("LAN_UPDATE","Update");
 define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
 define("LAN_SETSAVED","Your settings have been saved");
-define("LAN_ERROR","Error");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
 define("LAN_OPTIONS","Options");
 define("LAN_PREFS","Preferences");
