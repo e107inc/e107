@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-07-12 08:15:58 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2006-10-24 13:34:14 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -209,8 +209,8 @@ $text .= "</textarea>
 	{
 		$text .= "<tr><td>".LAN_EMAIL_190."</td><td>";
 		$text .= $sec_img->r_image();
-		$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>
-			<input type='hidden' name='rand_num' value='".$sec_img->random_number."'></td></tr>";
+		$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />
+			<input type='hidden' name='rand_num' value='".$sec_img->random_number."' /></td></tr>";
 	}
 
 $text .= "

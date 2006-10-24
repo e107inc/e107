@@ -3,7 +3,7 @@
 +----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-08-08 09:27:17 $
-|     $Author: lisa_ $
+|     $Revision: 1.53 $
+|     $Date: 2006-10-24 13:34:28 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -271,7 +271,7 @@ class e_install {
 			    <tr>
 			      <td class='row-border'><label for='db'>".LANINS_027."</label></td>
 			      <td class='row-border'><input type='text' name='db' id='db' size='20' value='{$this->previous_steps['mysql']['db']}' maxlength='100' />
-			        <label class='defaulttext'><input type='checkbox' name='createdb'".($this->previous_steps['mysql']['createdb'] == 1 ? " checked='checked'" : "")." value='1'>".LANINS_028."</lebel></td>
+			        <label class='defaulttext'><input type='checkbox' name='createdb'".($this->previous_steps['mysql']['createdb'] == 1 ? " checked='checked'" : "")." value='1' />".LANINS_028."</label></td>
 				  <td class='row-border'>".LANINS_033."</td>
 			    </tr>
 			    <tr>
@@ -501,7 +501,7 @@ class e_install {
 |   e107 website system
 |   e107_config.php
 |
-|   ©Steve Dunstan 2001-2002
+|   Â©Steve Dunstan 2001-2002
 |   http://e107.org
 |   jalist@e107.org
 |

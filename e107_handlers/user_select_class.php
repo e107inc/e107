@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-10-13 06:49:56 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-24 13:35:06 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -169,7 +169,7 @@ class user_select {
 			<table style='width:100%' class='fborder'>
 			<tr>
 			<td class='forumheader3' style='text-align: center'><input type='text' name='srch' class='tbox' value='".$tp -> post_toForm($_POST['srch'])."' size='40'>
-			<input class='button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."'></td>
+			<input class='button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."' /></td>
 			</tr>
 			</table>
 			</form>
@@ -197,7 +197,7 @@ class user_select {
 			}
 			$text .= "
 			</select>
-			<input type='button' class='button' value='".US_LAN_1."' onClick='SelectUser()'>
+			<input type='button' class='button' value='".US_LAN_1."' onClick='SelectUser()' />
 			</td>
 		 
 			</tr>

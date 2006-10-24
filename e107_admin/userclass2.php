@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-09-04 15:58:35 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2006-10-24 13:34:38 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -288,7 +288,7 @@ if(isset($_POST['edit']))
 	$text .= "</select><br /><br />
 		<input class='button' type='button' value='".UCSLAN_17."' onclick='removeMe();' />
 		<input class='button' type='button' value='".UCSLAN_18."' onclick='clearMe($userclass_id);' />
-		<input type='hidden' name='class_id' value='$userclass_id'>
+		<input type='hidden' name='class_id' value='$userclass_id' />
 
 		</td></tr></table>
 		</td></tr>

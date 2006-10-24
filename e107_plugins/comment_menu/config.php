@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-25 09:43:25 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-24 13:41:56 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
@@ -85,7 +85,7 @@ $text = "<div style='text-align:center'>
 if ($menu_pref['comment_title']) {
 	$text .= " checked ";
 }
-$text .= ">
+$text .= " />
 	</td>
 	</tr>
 	 

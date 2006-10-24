@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-02-02 06:37:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-24 13:34:38 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -117,7 +117,7 @@ class auth
 			<td style='text-align:center'>
 			<input type='hidden' name='rand_num' value='".$sec_img->random_number."'>".
 			$sec_img->r_image().
-			"<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'></td>
+			"<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20' /></td>
 			</tr>
 			";
 		}
