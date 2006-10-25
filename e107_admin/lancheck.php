@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-10-25 01:10:10 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-25 02:31:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -52,6 +52,13 @@ function show_comparison($language, $filename)
 		$ret .= "</tr>";
 	}
 	$ret .= "</table>";
+
+	$ret .= "<form method='post' action='".e_SELF."'>
+			<div style='text-align:center'><br />
+			<input type='submit' name='check_lang' class='button' value=\"".LAN_BACK."\" />
+			<input type='hidden' name='language' value='".$language."' />
+			</div>
+			</form>";
 	return $ret;
 }
 
@@ -215,5 +222,36 @@ if ($_POST['check_lang'])
 
 $ns->tablerender("", show_languages());
 require_once("footer.php");
+
+
+function lancheck_adminmenu() {
+
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_language.php");
+
+	global $action,$pref;
+	if ($action == "") {
+		$action = "tools";
+	}
+
+	if($action == "modify"){
+    	$action = "db";
+	}
+	$var['main']['text'] = LAN_PREFS;
+	$var['main']['link'] = e_ADMIN."language.php";
+
+	if(isset($pref['multilanguage']) && $pref['multilanguage']){
+		$var['db']['text'] = LANG_LAN_03;
+		$var['db']['link'] = e_ADMIN."language.php?db";
+	}
+
+	$var['tools']['text'] = ADLAN_CL_6;
+	$var['tools']['link'] = e_ADMIN."language.php?tools";
+
+
+	show_admin_menu(ADLAN_132, $action, $var);
+}
+
+
+
 
 ?>
