@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-08-10 16:11:50 $
+|     $Revision: 1.57 $
+|     $Date: 2006-10-25 23:59:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,16 +34,17 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
 
 if (isset($_POST['testemail'])) {
-    if(SITEADMINEMAIL == ""){
+    if(trim($_POST['testaddress']) == ""){
 		$message = MAILAN_19;
 	}else{
 		$mailheader_e107id = USERID;
 		require_once(e_HANDLER."mail.php");
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
-		if (!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME.$add, PRFLAN_67)) {
+		$sendto = trim($_POST['testaddress']);
+		if (!sendemail($sendto, PRFLAN_66." ".SITENAME.$add, PRFLAN_67,USERNAME)) {
 			$message = ($pref['mailer'] == "smtp")  ? PRFLAN_75 : PRFLAN_68;
 		} else {
-			$message = PRFLAN_69;
+			$message = PRFLAN_69. "(".$sendto.")";
 		}
 	}
 }
@@ -531,7 +532,8 @@ $text = "
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
 	<td style='width:30%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."</span><br /></td>
-	<td style='width:70%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value=\"".PRFLAN_65." ".SITEADMINEMAIL."\" />
+	<td style='width:70%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value=\"".PRFLAN_65."\" />
+	<input name='testaddress' class='tbox' type='text' value=\"".SITEADMINEMAIL."\" />
 	</td>
 	</tr>
 
