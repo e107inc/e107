@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_error.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-25 16:57:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Error");
@@ -34,5 +34,16 @@ define("LAN_ERROR_21", "The requested URL could not be found on this server. The
 define("LAN_ERROR_22", "Please click here to go to this site's search page");
 define("LAN_ERROR_23", "Your attempt to access ");
 define("LAN_ERROR_24", " was unsuccessful.");
+
+// 0.7.6
+define("LAN_ERROR_25", "[1]: Unable to read core settings from database - Core settings exist but cannot be unserialized. Attempting to restore core backup ...");
+define("LAN_ERROR_26", "[2]: Unable to read core settings from database - non-existant core settings.");
+define("LAN_ERROR_27", "[3]: Core settings saved - backup made active.");
+define("LAN_ERROR_28", "[4]: No core backup found. Please run the <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.");
+define("LAN_ERROR_29", "[5]: Field(s) have been left blank. Please resubmit the form and fill in the required fields.");
+define("LAN_ERROR_30", "[6]: Unable to form a valid connection to mySQL. Please check that your e107_config.php contains the correct information.");
+define("LAN_ERROR_31", "[7]: mySQL is running but database ({$mySQLdefaultdb}) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.");
+define("LAN_ERROR_32", "To complete the upgrade, copy the following text into your e107_config.php file:");
+
 
 ?>
