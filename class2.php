@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.311 $
-|     $Date: 2006-10-25 16:26:44 $
+|     $Revision: 1.312 $
+|     $Date: 2006-10-25 21:13:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -265,7 +265,7 @@ if(!$PrefCache){
 	$PrefData = $sysprefs->get('SitePrefs');
 	$pref = $eArrayStorage->ReadArray($PrefData);
 	if(!$pref){
-		$admin_log->log_event("Core Prefs Error", "Core is attempting to restore prefs from automatic backup.", E_LOG_WARNING);
+		$admin_log->log_event("CORE_LAN8", "CORE_LAN7", E_LOG_WARNING); // Core prefs error, core is attempting to
 		// Try for the automatic backup..
 		$PrefData = $sysprefs->get('SitePrefs_Backup');
 		$pref = $eArrayStorage->ReadArray($PrefData);
@@ -277,7 +277,7 @@ if(!$PrefCache){
 				message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
 				// No old system, so point in the direction of resetcore :(
 				message_handler("CRITICAL_ERROR", 4, __LINE__, __FILE__);
-				$admin_log->log_event("Core Prefs Error", "Core could not restore from automatic backup. Execution halted.", E_LOG_FATAL);
+				$admin_log->log_event("CORE_LAN8", "CORE_LAN9", E_LOG_FATAL); // Core could not restore from automatic backup. Execution halted.
 				exit;
 			} else {
 				// old prefs found, remove old system, and update core with new system
@@ -1155,7 +1155,7 @@ class e_online {
 				exit;
 			}
 			if ($row['online_pagecount'] >= $online_warncount && $row['online_ip'] != "127.0.0.1") {
-				echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
+				echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>".LAN_WARNING."</b><br /><br />".CORE_LAN6."<br /></div>";
 				exit;
 			}
 
@@ -1252,7 +1252,7 @@ function init_session() {
 			define("ADMIN", FALSE);
 			define("USER", FALSE);
 			define("USERCLASS", "");
-			define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
+			define("LOGINMESSAGE",CORE_LAN10."<br /><br />");
 			return (FALSE);
 		}
 

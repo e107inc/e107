@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_log.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-24 17:23:18 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-25 21:13:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -55,8 +55,8 @@ while ($row = $sql -> db_Fetch()) {
 	$text .= "  <tr>\n";
 	$text .= "    <td style='width: 16px;'>{$image}</td>\n";
 	$text .= "    <td>{$datestamp}</td>\n";
-	$text .= "    <td>{$row['dblog_title']}</td>\n";
-	$text .= "    <td>{$row['dblog_remarks']}</td>\n";
+	$text .= "    <td>".$tp->toHtml($row['dblog_title'],FALSE,"defs")."</td>\n";
+	$text .= "    <td>".$tp->toHtml($row['dblog_remarks'],FALSE,"defs")."</td>\n";
 	$text .= "    <td>{$row['dblog_ip']}</td>\n";
 	$text .= ($row['user_name']) ? "    <td><a href='".e_BASE."user.php?id.{$row['dblog_user_id']}'>{$row['user_name']}</a></td>\n" : "    <td>{$row['dblog_user_id']}</td>\n";
 	$text .= "  </tr>\n";
@@ -78,10 +78,10 @@ function get_log_img($log_type) {
 			return "<img src='".e_IMAGE_ABS."admin_images/notice_16.png' alt='".LAN_ADMINLOG_8."' title='".LAN_ADMINLOG_9."' />";
 		break;
 		case E_LOG_WARNING:
-			return "<img src='".e_IMAGE_ABS."admin_images/blocked_16.png' alt='".LAN_ADMINLOG_10."' title='".LAN_ADMINLOG_11."' />";
+			return "<img src='".e_IMAGE_ABS."admin_images/blocked.png' alt='".LAN_ADMINLOG_10."' title='".LAN_ADMINLOG_11."' style='width:16p;height:16px'  />";
 		break;
 		case E_LOG_FATAL:
-			return "<img src='".e_IMAGE_ABS."admin_images/nopreview_16.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";
+			return "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";
 		break;
 		case E_LOG_PLUGIN;
 			return "<img src='".e_IMAGE_ABS."admin_images/plugins_16.png' alt='".LAN_ADMINLOG_6."' title='".LAN_ADMINLOG_6."' />";
