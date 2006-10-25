@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-08-25 15:37:54 $
+|     $Revision: 1.34 $
+|     $Date: 2006-10-25 23:50:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -74,9 +74,9 @@ foreach ($public as $dir) {
 	if (is_dir($dir)) {
 		if ($dh = opendir($dir)) {
 			while (($file = readdir($dh)) !== false) {
-				if (is_dir($dir."/".$file) == FALSE && $file != '.' && $file != '..' && $file != '/' && $file != 'CVS' && $file != 'avatars' && $file != 'Thumbs.db') {
+				if (is_dir($dir."/".$file) == FALSE && $file != '.' && $file != '..' && $file != '/' && $file != 'CVS' && $file != 'avatars' && $file != 'Thumbs.db' && $file !=".htaccess" && $file !="php.ini") {
 					$fext = substr(strrchr($file, "."), 0);
-					if (!in_array($fext, $allowed_types)) {
+					if (!in_array($fext, $allowed_types) ) {
 						if ($file == 'index.html' || $file == "null.txt") {
 							if (filesize($dir.'/'.$file)) {
 								$potential[] = str_replace('../', '', $dir).'/'.$file;
