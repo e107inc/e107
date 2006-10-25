@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_lancheck.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:31:57 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-25 02:31:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("LAN_CHECK_1", "Select Language to verify");
+define("LAN_CHECK_1", "Verify Language Files"); // modified in 0.7.6
 define("LAN_CHECK_2", "Begin Verify");
 define("LAN_CHECK_3", "Verification of");
 define("LAN_CHECK_4", "File missing!");
