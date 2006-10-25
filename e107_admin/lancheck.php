@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-25 01:10:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -24,13 +24,13 @@ if (!getperms("0")) {
 $e_sub_cat = 'language';
 require_once("auth.php");
 
-			
+
 function show_comparison($language, $filename)
 {
 	global $LANGUAGES_DIRECTORY;
 	$English = get_lan_phrases("English");
 	$check = get_lan_phrases($language);
-	 
+
 	$keys = array_keys($English[$filename]);
 	natsort($keys);
 	$ret .= "<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -54,8 +54,8 @@ function show_comparison($language, $filename)
 	$ret .= "</table>";
 	return $ret;
 }
-	
-	
+
+
 function get_lan_phrases($lang)
 {
 	$ret = array();
@@ -72,7 +72,7 @@ function get_lan_phrases($lang)
 				foreach($data as $line)
 				{
 					if (preg_match("#\"(.*?)\".*?\"(.*)\"#", $line, $matches)) {
-						$ret[$file][$matches[1]] = htmlentities($matches[2]);
+						$ret[$file][$matches[1]] = ($matches[2]);
 					}
 				}
 			}
@@ -102,12 +102,12 @@ function get_lan_phrases($lang)
 	}
 	return $ret;
 }
-	
+
 function check_core_lanfiles($checklan) {
-	 
+
 	$English = get_lan_phrases("English");
 	$check = get_lan_phrases($checklan);
-	 
+
 	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>";
 	$keys = array_keys($English);
 	sort($keys);
@@ -135,38 +135,30 @@ function check_core_lanfiles($checklan) {
 		}
 	}
 	$text .= "</table>";
-	 
+
 	return $text;
 }
-	
+
 function show_languages()
 {
-	if ($r = opendir(e_LANGUAGEDIR))
-	{
-		while ($file = readdir($r))
-		{
-			$fname = e_LANGUAGEDIR.$file;
-			if (is_dir($fname) && $file != "English" && $file != "CVS" && $file != "." && $file != "..")
-			{
-				$languages[] = $file;
-			}
-		}
 		$text .= "
-			<form name='lancheck' method='POST'>
+			<form name='lancheck' method='post' action='".e_SELF."'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 			<td class='fcaption'>".LAN_CHECK_1."</td></tr>
-			<tr><td class='forumheader3'>";
+			<tr><td class='forumheader3' style='text-align:center'>
+			<select name='language' class='tbox'>
+			<option value=''>&nbsp;</option>";
+		$languages = explode(",",e_LANLIST);
+		sort($languages);
 		foreach($languages as $lang)
 		{
-			$text .= "<input type='radio' name='language' value='{$lang}' /> {$lang}<br />";
+			$text .= "<option value='{$lang}' >{$lang}</option>\n";
 		}
-		$text .= "</td></tr>
-			<tr><td class='forumheader' style='text-align:center;'><input type='submit' name='check_lang' value='".LAN_CHECK_2."' class='button' />
+		$text .= "</select>	<input type='submit' name='check_lang' value='".LAN_CHECK_2."' class='button' />
 			</td></tr>
 			</table></form>";
 		return $text;
-	}
 }
 
 function find_plugins($path)
@@ -212,7 +204,7 @@ if (e_QUERY)
 	require_once("footer.php");
 	exit;
 }
-	
+
 if ($_POST['check_lang'])
 {
 	$text = check_core_lanfiles($_POST['language']);
@@ -220,8 +212,8 @@ if ($_POST['check_lang'])
 	require_once("footer.php");
 	exit;
 }
-	
+
 $ns->tablerender("", show_languages());
 require_once("footer.php");
-	
+
 ?>
