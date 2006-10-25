@@ -4,8 +4,8 @@
 |     e107 website system - Norwegian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Norwegian/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-10-19 17:08:20 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-25 02:44:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */

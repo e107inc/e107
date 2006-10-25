@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Norwegian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-10-19 17:08:21 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-25 02:44:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
