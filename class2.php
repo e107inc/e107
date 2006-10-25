@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.310 $
-|     $Date: 2006-10-23 11:36:01 $
-|     $Author: mrpete $
+|     $Revision: 1.311 $
+|     $Date: 2006-10-25 16:26:44 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -374,7 +374,7 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 		if (!$PrefSitePort) {
 			$PrefSitePort = ( $aPrefURL[0] == "https" ) ? 443 : 80;	// no port so set port based on 'scheme'
 		}
-		
+
 		// Redirect only if
 		// -- ports do not match (http <==> https)
 		// -- base domain does not match (case-insensitive)
@@ -1357,7 +1357,7 @@ function defset($str,$default='',$testvalue=false) {
 }
 
 //
-// These variants are like the above, but only return the value if both set AND 'true' 
+// These variants are like the above, but only return the value if both set AND 'true'
 //
 function varsettrue(&$val,$default='') {
 	if (isset($val) && $val) return $val;
@@ -1552,7 +1552,7 @@ class error_handler {
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
 		$ret = "<table class='fborder'>\n";
 		foreach ($this->errors as $key => $value) {
-			$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></t>\n\t</tr>\n";
+			$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></td>\n\t</tr>\n";
 			$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
 			if($index == 0) { $index = 1; } else { $index = 0; }
 		}
