@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-07-04 08:42:17 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-26 13:10:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,8 @@ $fp = $sql -> db_Fetch();
 $open_ds = $fp['thread_datestamp'];
 $open_date = $gen->convert_date($open_ds, "long");
 $open_since = $gen -> computeLapse($open_ds);
-$postsperday = round($total_posts / ((time()-$open_ds) / 86400));
+$open_days = floor((time()-$open_ds) / 86400);
+$postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days));
 
 $query = "SHOW TABLE STATUS FROM $mySQLdefaultdb";
 $sql -> db_Select_gen($query);
