@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-10-22 01:51:04 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-26 12:35:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -102,15 +102,18 @@ if(ADMIN==TRUE && $bullet !='bullet'){
 SC_END
 
 SC_BEGIN LM_ADMINLINK
-global $ADMIN_DIRECTORY;
-if(ADMIN == TRUE){
-		if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE)
+global $ADMIN_DIRECTORY, $eplug_admin;
+
+//die(e_PAGE);
+
+if(ADMIN == TRUE) {
+		if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || $eplug_admin == true || substr(e_PAGE, 0, 6) == 'admin_')
 		{
-			return '<a class="login_menu_link" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a>';
+			return '<a class="login_menu_link" href="'.e_BASE.'index.php">'.LOGIN_MENU_L39.'</a>';
 		}
 		else
 		{
-			return '<a class="login_menu_link" href="'.e_BASE.'index.php">'.LOGIN_MENU_L39.'</a>';
+			return '<a class="login_menu_link" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a>';
 		}
 }
 SC_END
