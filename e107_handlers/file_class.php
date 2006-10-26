@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-01-31 19:36:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-26 23:36:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -39,7 +39,7 @@ class e_file
 		}
 		if($omit == 'standard')
 		{
-			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$');
+			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
 		}
 		else
 		{
