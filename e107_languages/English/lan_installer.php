@@ -85,7 +85,7 @@ Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_
 
 [b]Downloads[/b]
 Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
-Themes: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+Themes: [link=http://e107themes.org]http://e107themes.org[/link]
 
 Thank you for trying e107, we hope it fulfils your website needs.
 (You can delete this message from your admin section.)");
