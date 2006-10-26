@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2006-10-25 23:58:02 $
+|     $Revision: 1.93 $
+|     $Date: 2006-10-26 23:36:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -77,24 +77,12 @@ if(isset($_POST['delete']))
 $from = ($from ? $from : 0);
 $amount = 50;
 
-// get allowed file types.
-if (!$file_types = getcachedvars("file-types") && is_readable(e_ADMIN.'filetypes.php')) {
-	$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
-	$a_filetypes = explode(',', $a_filetypes);
-	foreach ($a_filetypes as $ftype) {
-		$sa_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
-	}
-	$file_types = implode('|', $sa_filetypes);
-    cachevars("file-types", $file_types);
-}
 
-$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*',".htaccess");
-
-if($file_array = $fl->get_files(e_DOWNLOAD,"",$reject,2)){
+if($file_array = $fl->get_files(e_DOWNLOAD, "","standard",2)){
 		sort($file_array);
 }
 
-if($public_array = $fl->get_files(e_FILE."public/",$file_types)){
+if($public_array = $fl->get_files(e_FILE."public/")){
 	foreach($public_array as $key=>$val){
     	$file_array[] = str_replace(e_FILE."public/","",$val);
 	}
@@ -111,11 +99,11 @@ if ($sql->db_Select("rbinary")){
 
 
 
-if($image_array = $fl->get_files(e_FILE."downloadimages/", ".gif|.jpg|.png|.GIF|.JPG|.PNG",$reject,2)){
+if($image_array = $fl->get_files(e_FILE."downloadimages/", ".gif|.jpg|.png|.GIF|.JPG|.PNG","standard",2)){
 	sort($image_array);
 }
 
-if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", ".gif|.jpg|.png|.GIF|.JPG|.PNG",$reject,2)){
+if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", ".gif|.jpg|.png|.GIF|.JPG|.PNG","standard",2)){
 	sort($thumb_array);
 }
 
