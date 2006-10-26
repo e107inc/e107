@@ -132,9 +132,6 @@ $FOOTERBASE = "
 	<a href='http://www.e107coders.org' rel='external' style=\"color:silver;\">e107coders.org</a></td>
 	<td>
 	<a href='http://www.e107themes.org' rel='external' style=\"color:silver;\">e107themes.org</a></td>
-	<td>
-	<a href='http://www.e107styles.org'  style=\"color:silver;\">e107styles.org</a>
-	</td>
 
 	</tr>
 </table>
