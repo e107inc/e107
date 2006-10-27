@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2006-07-05 01:25:07 $
-|     $Author: e107coders $
+|     $Revision: 1.68 $
+|     $Date: 2006-10-27 00:48:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -191,7 +191,8 @@ if ($from === 'last') {
 }
 $gen = new convert;
 $thread_info = $forum->thread_get($thread_id, $from-1, $pref['forum_postspage']);
-if($thread_info['head']['thread_forum_id'] == "")
+
+if(intval($thread_info['head']['thread_forum_id']) == 0)
 {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_01, FORLAN_104, array('forum_viewtopic', '104'));
