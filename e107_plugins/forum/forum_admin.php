@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-10-18 15:53:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.43 $
+|     $Date: 2006-10-27 02:07:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
@@ -1277,19 +1277,19 @@ class forum
 		$text .= "<tr>
 		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_main_admin' size='30' value='".($pref['rank_main_admin'] ? $pref['rank_main_admin'] : FORLAN_101)."' maxlength='30' /></td>
 		<td class='forumheader3' style='width:40%'>&nbsp;</td>
-		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_main_admin_image' size='30' value='".($pref['rank_main_admin_image'] ? $pref['rank_main_admin_image'] : "main_admin.png")."' maxlength='30' /></td>
+		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_main_admin_image' size='30' value='".($pref['rank_main_admin_image'] ? $pref['rank_main_admin_image'] : e_LANGUAGE."_main_admin.png")."' maxlength='30' /></td>
 		</tr>
 
 		<tr>
 		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin' size='30' value='".($pref['rank_admin'] ? $pref['rank_admin'] : FORLAN_103)."' maxlength='30' /></td>
 		<td class='forumheader3' style='width:40%'>&nbsp;</td>
-		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin_image' size='30' value='".($pref['rank_admin_image'] ? $pref['rank_admin_image'] : "admin.png")."' maxlength='30' /></td>
+		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin_image' size='30' value='".($pref['rank_admin_image'] ? $pref['rank_admin_image'] : e_LANGUAGE."_admin.png")."' maxlength='30' /></td>
 		</tr>
 
 		<tr>
 		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_moderator' size='30' value='".($pref['rank_moderator'] ? $pref['rank_moderator'] : FORLAN_105)."' maxlength='30' /></td>
 		<td class='forumheader3' style='width:40%'>&nbsp;</td>
-		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_moderator_image' size='30' value='".($pref['rank_moderator_image'] ? $pref['rank_moderator_image'] : "moderator.png")."' maxlength='30' /></td>
+		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_moderator_image' size='30' value='".($pref['rank_moderator_image'] ? $pref['rank_moderator_image'] : e_LANGUAGE."_moderator.png")."' maxlength='30' /></td>
 		</tr>";
 
 		for($a = 0; $a <= 9; $a++)

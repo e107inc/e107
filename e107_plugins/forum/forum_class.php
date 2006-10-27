@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-10-27 00:48:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.58 $
+|     $Date: 2006-10-27 02:07:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -876,50 +876,49 @@ class e107forum
 *
 * @access public
 */
-function img_path($filename, $eMLANG_folder = FALSE, $eMLANG_pref = FALSE)
+function img_path($filename)
 {
 	global $pref;
-	if ($eMLANG_folder)
-	{
-		return eMLANG_path($filename, $eMLANG_folder);
-	}
-	else
-	{
-		if(file_exists(THEME.'forum/'.$filename))
+
+	$multilang = array("reply.png","newthread.png","moderator.png","main_admin.png","admin.png");
+	$ML = (in_array($filename,$multilang)) ? TRUE : FALSE;
+
+		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE."_".$filename))
 		{
-			$image = THEME.'forum/'.$filename;
+			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE."_".$filename)) ? THEME.'forum/'.e_LANGUAGE."_".$filename :  THEME.'forum/'.$filename;
 		}
 		else
 		{
 			if(defined("IMODE"))
 			{
-				$image = e_PLUGIN."forum/images/".IMODE."/".$filename;
+				if($ML)
+				{
+                	$image = (is_readable(e_PLUGIN."forum/images/".IMODE."/".e_LANGUAGE."_".$filename)) ? e_PLUGIN."forum/images/".IMODE."/".e_LANGUAGE."_".$filename : e_PLUGIN."forum/images/".IMODE."/English_".$filename;
+				}
+				else
+				{
+                	$image = e_PLUGIN."forum/images/".IMODE."/".$filename;
+				}
 			}
 			else
 			{
-				$image = e_PLUGIN."forum/images/lite/".$filename;
+				if($ML)
+				{
+					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE."_".$filename)) ? e_PLUGIN."forum/images/lite/".e_LANGUAGE."_".$filename : e_PLUGIN."forum/images/lite/English_".$filename;
+				}
+				else
+                {
+           			$image = e_PLUGIN."forum/images/lite/".$filename;
+				}
+
 			}
 		}
-	}
+
 	return $image;
 }
 
-function eMLANG_path($file_name, $sub_folder)
-{
-	if (file_exists(THEME.$sub_folder."/".e_LANGUAGE."/".$file_name))
-	{
-		return THEME.$sub_folder."/".e_LANGUAGE."/".$file_name;
-	}
-	if (file_exists(THEME.$sub_folder."/".$file_name))
-	{
-		return THEME.$sub_folder."/".$file_name;
-	}
-	if (file_exists(e_IMAGE.$sub_folder."/".e_LANGUAGE."/".$file_name))
-	{
-		return e_IMAGE.$sub_folder."/".e_LANGUAGE."/".$file_name;
-	}
-	return e_PLUGIN.$sub_folder."/images/".$file_name;
-}
+
+
 
 if (file_exists(THEME.'forum/forum_icons_template.php'))
 {
