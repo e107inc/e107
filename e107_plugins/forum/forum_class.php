@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-08-04 01:47:38 $
+|     $Revision: 1.57 $
+|     $Date: 2006-10-27 00:48:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -148,10 +148,10 @@ class e107forum
 		return FALSE;
 	}
 
-	function forum_getmods($uclass)
+	function forum_getmods($uclass = e_UC_ADMIN)
 	{
 		global $sql;
-		if($uclass == e_UC_ADMIN)
+		if($uclass == e_UC_ADMIN || trim($uclass) == '')
 		{
 			$sql->db_Select('user', 'user_id, user_name',"user_admin = 1");
 		}
