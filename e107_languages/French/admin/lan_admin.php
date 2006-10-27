@@ -2,17 +2,17 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-07-06 22:08:54 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("ADLAN_0", "Actualités");
-  define("ADLAN_1", "Ajouter/Éditer/Supprimer des actualités");
-  define("ADLAN_2", "Catégories des Actualités");
-  define("ADLAN_3", "Ajouter/Éditer/Supprimer des catégories d'actualité");
+  define("ADLAN_0", "".GLOBAL_LAN_NEWS_2."s");
+  define("ADLAN_1", "Ajouter/Éditer/Supprimer des ".GLOBAL_LAN_NEWS_1."s");
+  define("ADLAN_2", "Catégories des ".GLOBAL_LAN_NEWS_2."s");
+  define("ADLAN_3", "Ajouter/Éditer/Supprimer des catégories d'".GLOBAL_LAN_NEWS_1."");
   define("ADLAN_4", "Préférences");
   define("ADLAN_5", "Éditer les Préférences du Site");
   define("ADLAN_6", "Menus");
@@ -39,8 +39,8 @@
   define("ADLAN_29", "Configurer les messages de bienvenue");
   define("ADLAN_30", "Gestionnaire de Fichiers");
   define("ADLAN_31", "Gérer/Uploader des fichiers");
-  define("ADLAN_32", "Actualités proposées");
-  define("ADLAN_33", "Voir les Actualités proposées");
+  define("ADLAN_32", "".GLOBAL_LAN_NEWS_2."s proposées");
+  define("ADLAN_33", "Voir les ".GLOBAL_LAN_NEWS_2."s proposées");
   define("ADLAN_34", "Liste des bannis");
   define("ADLAN_35", "Bannir un visiteur");
   define("ADLAN_36", "Utilisateurs");
@@ -69,8 +69,8 @@
   define("ADLAN_59", "Configurer les Émoticônes");
   define("ADLAN_60", "Page d'Accueil");
   define("ADLAN_61", "Configurer le contenu de la page d'accueil");
-  define("ADLAN_62", "Actualités d'autres Sites");
-  define("ADLAN_63", "Configurer les actualités d'autres sites");
+  define("ADLAN_62", "".GLOBAL_LAN_NEWS_2."s d'autres Sites");
+  define("ADLAN_63", "Configurer les ".GLOBAL_LAN_NEWS_1."s d'autres sites");
   define("ADLAN_64", "Statistiques");
   define("ADLAN_65", "Activer/Désactiver/Configurer les statistiques");
   define("ADLAN_66", "Méta Tags");
@@ -83,7 +83,7 @@
   define("ADLAN_73", "Configurer l'upload public de fichiers");
   define("ADLAN_74", "Système Cache");
   define("ADLAN_75", "Statut du système Cache");
-  define("ADLAN_77", "Vous avez une actualité en attente de validation - veuillez cliquer ici pour la vérifier.");
+  define("ADLAN_77", "Vous avez une ".GLOBAL_LAN_NEWS_1." en attente de validation - veuillez cliquer ici pour la vérifier.");
   define("ADLAN_78", "Champs étendus de profil");
   define("ADLAN_79", "Éditer les Champs étendus de profil");
   
@@ -108,7 +108,7 @@
   define("ADLAN_104", "Sécurité");
   define("ADLAN_105", "Images");
   define("ADLAN_106", "Paramètres des Images");
-  define("ADLAN_107", "Actualités non vérifiées ");
+  define("ADLAN_107", "".GLOBAL_LAN_NEWS_2."s non vérifiées ");
   define("ADLAN_108", "Fichiers uploadés non vérifiés ");
   define("ADLAN_109", "Informations");
   define("ADLAN_110", "Utilisateurs inscrits ");
@@ -139,7 +139,7 @@
   define("ADLAN_135", "Journal d'Admin");
   define("ADLAN_136", "Courriel");
   define("ADLAN_137", "Paramètres Courriel et Envoi de Courriel");
-  define("ADLAN_138", "Liens du site");
+  define("ADLAN_138", "Liens internes");
   define("ADLAN_139", "Ajouter/Éditer/Supprimer les liens");
   define("ADLAN_140", "Gestionnaire de Thème ");
   define("ADLAN_141", "Installer /Établir des thèmes etc");
@@ -166,7 +166,7 @@
   
   define("ADLAN_LAT_1", "À approuver");
   
-  define("ADLAN_LAT_2", "Actualités proposés ");
+  define("ADLAN_LAT_2", "".GLOBAL_LAN_NEWS_2."s proposés ");
   define("ADLAN_LAT_3", "Articles proposés");
   define("ADLAN_LAT_4", "Chroniques proposés");
   define("ADLAN_LAT_5", "Liens proposés");
@@ -177,6 +177,9 @@
   define("ADLAN_ERR_1", "Avertissement!");
   define("ADLAN_ERR_2", "Il y a des fichiers présents sur votre serveur qui sont connus comme faille exploitable. Ils doivent être enlevés <strong>immédiatement</strong>. Les fichiers sont en relation avec le système WYSIWYG employé dans les anciennes versions 0.6xx de e107 - htmlArea. Veuillez effacer les répertoires suivants et tous leur contenus:");
   define("ADLAN_ERR_3", "Il y a un ou plusieurs fichiers dans votre répertoire upload public qui ne sont pas d'un type que vous avez permis dans la liste filetypes. Ils peuvent avoir été mis là par un esprit malveillant et devraient en ce cas être enlevés <strong>immédiatement</strong>. Vous ne devriez <strong>pas</strong> ouvrir ces fichiers car ils peuvent éxécuter tout code malveillant que le fichier pourrait contenir. ie. ne les ouvrez pas avec votre browser (IE,firefox,etc.).<br /><br />Si vous reconnaissez la légitimité de ces fichiers, il est probable que dû aux récents changements apportés à la liste des types de fichier permis, le type de fichier que vous aviez permis n'est désormais plus dans le liste des types de fichier permis et vous devrez le re-rajouter (voir admin => uploads). Vous ne devriez pas permettre l'upload de .html, .txt, etc car un esprit malveillant pourrait uploader un fichier de ce type contenant du javascript malveillant. Vous ne devriez, évidemment, pas permettre l'upload de fichier.php ou tout autre type de script éxécutable.<br /><br />Liste des types de fichiers ayant le potentiel d'être malveillant pour votre site:");
+define("ADLAN_ERR_4", "Fichier(s) d'extension obsolète trouvé(s)");
+define("ADLAN_ERR_5", "Les fichiers suivants doivent être renommés comme");
+define("ADLAN_ERR_6", "Ensuite, cliquez ici pour re-scanner les répertoires de vos extensions.");
   
   // Common Terms
   define("LAN_EDIT","Éditer");
@@ -187,7 +190,7 @@
   define("LAN_SAVED","Sauvegardé");
   define("LAN_SETSAVED","Vos Paramètres ont été sauvegardé");
   define("LAN_ERROR","Erreur");
-  define("LAN_CONFIRMDEL","SVP confirmer que vous souhaitez supprimer");
+  define("LAN_CONFIRMDEL","Veuillez confirmer que vous souhaitez supprimer");
   define("LAN_OPTIONS","Options");
   define("LAN_PREFS","Préférences");
   define("LAN_DELETED","Supprimé avec succès");
@@ -229,5 +232,18 @@
   define("LAN_INACTIVE", "Désactivé");
   define("LAN_BAN","Bannir");
 define("LAN_RATING", "Évaluation");
+
+define("LAN_UPLOAD_IMAGES","Uploader des images");
+define("LAN_UPLOAD_FILES","Uploader des fichiers");
+define("LAN_UPLOAD_ADDFILE","Ajouter un autre fichier");
+define("LAN_UPLOAD_CONFIRM","Tout le contenu non sauvegardé de cette page sera perdu. Continuer?");
+define("LAN_UPLOAD_777","Le répertoire n'existe pas ou n'est pas inscriptible, vous devez mettre l'accès CHMOD à 777 pour les répertoires suivants avant d'uploader :");
+define("LAN_UPLOAD_SERVEROFF", "Cette option est désactivée puisque l'upload de fichiers n'est pas activé sur votre serveur");
+
+define("LAN_DISABLED","Désactivé");
+define("LAN_ENABLED", "Activé");
+
+define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
+define("LAN_CONFIGURE", "Configurer");   
 
 ?>

@@ -2,14 +2,14 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-27 14:43:46 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("LOGIN_MENU_L1", "Nom d'utilisateur: ");
+  define("LOGIN_MENU_L1", "Identifiant: ");
   define("LOGIN_MENU_L2", "Mot de passe: ");
   define("LOGIN_MENU_L3", "S'inscrire");
   define("LOGIN_MENU_L4", "Mot de passe oublié?");
@@ -22,8 +22,8 @@
   define("LOGIN_MENU_L11", "Zone Admin");
   define("LOGIN_MENU_L12", "Paramètres");
   define("LOGIN_MENU_L13", "Profil");
-  define("LOGIN_MENU_L14", "actualité");
-  define("LOGIN_MENU_L15", "actualités");
+  define("LOGIN_MENU_L14", "".GLOBAL_LAN_NEWS_1."");
+  define("LOGIN_MENU_L15", "".GLOBAL_LAN_NEWS_1."s");
   define("LOGIN_MENU_L16", "message chatbox");
   define("LOGIN_MENU_L17", "messages chatbox");
   define("LOGIN_MENU_L18", "commentaire");
@@ -40,7 +40,7 @@
   define("LOGIN_MENU_L29", "article");
   define("LOGIN_MENU_L30", "articles");
   // New config options
-  define("LOGIN_MENU_L31", "Afficher les nouvelles actualités");
+  define("LOGIN_MENU_L31", "Afficher les nouvelles ".GLOBAL_LAN_NEWS_1."s");
   define("LOGIN_MENU_L32", "Afficher les nouveaux articles");
   define("LOGIN_MENU_L33", "Afficher les nouveaux messages de Chatbox");
   define("LOGIN_MENU_L34", "Afficher les nouveaux commentaires");
@@ -49,4 +49,6 @@
   define("LOGIN_MENU_L37", "Mettre à jour les réglages");
   define("LOGIN_MENU_L38", "Réglages mis à jour");
   define("LOGIN_MENU_L39", "Quitter l'administration");
+
+define("LOGIN_MENU_L50", "Pas de nouveautés");
   ?>

@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_menus.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-07-06 22:08:54 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@
   define("MENLAN_29", "Sélectioner une composition graphique");
   define("MENLAN_30", "Pour voir les sections de menus leur position dans une diposition personnalisée, sélectionner la disposition ici:");
   define("MENLAN_31", "Disposition par défaut");
-  define("MENLAN_32", "Disposition en manchettes d'actualités ");
+  define("MENLAN_32", "Disposition en manchettes d'".GLOBAL_LAN_NEWS_1."s ");
   define("MENLAN_33", "Disposition personnalisée");
   define("MENLAN_34", "Emboîtée");
   define("MENLAN_35", "Configurer les menus");

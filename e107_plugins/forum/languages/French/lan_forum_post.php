@@ -1,11 +1,11 @@
-﻿<?php 
+<?php 
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_post.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 14:43:46 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@
   define("LAN_9", "Autoriser seulement les utilisateurs à voter");
   define("LAN_10", "Identification");
   define("LAN_11", "Connexion automatique");
-  define("LAN_16", "Nom d'utilisateur: ");
+  define("LAN_16", "Identifiant: ");
   define("LAN_17", "Mot de passe: ");
   define("LAN_20", "Erreur");
   define("LAN_27", "Vous avez laissé vide un/des champ(s) obligatoire(s)");
@@ -51,7 +51,7 @@
   define("LAN_174", "Enregistrement");
   define("LAN_175", "Identification");
   define("LAN_212", "Mot de passe oublié ?");
-  define("LAN_310", "Impossible d'accepter ce message car le nom d'utilisateur est enregistré - si c'est votre nom d'utilisateur, merci de vous identifier pour poster.");
+  define("LAN_310", "Impossible d'accepter ce message car cet identifiant existe déjà - si c'est votre identifiant, merci de vous connecter pour poster.");
   define("LAN_311", "Anonyme");
   define("LAN_322", "Posté: ");
   define("LAN_323", "Prévisualiser");

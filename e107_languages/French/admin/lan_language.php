@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_language.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -23,7 +23,10 @@
   define("LANG_LAN_12", "Installer les tables multi-langages");
   define("LANG_LAN_13", "Préférences multi-langages");
   define("LANG_LAN_14", "Langage du site par défaut");
-  define("LANG_LAN_15", "Cocher pour copier les données de la langue par défaut. (Utile pour les liens, catégories d'actualité, etc)");
+  define("LANG_LAN_15", "Cocher pour copier les données de la langue par défaut. (Utile pour les liens, catégories d'".GLOBAL_LAN_NEWS_1.", etc)");
   define("LANG_LAN_16", "Usage de la base de données multi-langages");  //Multi-language Database Usage
 define("LANG_LAN_17", "Langage par défaut - Aucunes tables supplémentaires ne sont requises.");
+define("LANG_LAN_18", "Utiliser le Sous-domaine Fixé pour déterminer le langage :");
+define("LANG_LAN_19", "ex. fr.mydomain.com pour régler le langage en French.");
+define("LANG_LAN_20", "Entrez le nom principal du site pour activer. ex. mydomain.com");
   ?>

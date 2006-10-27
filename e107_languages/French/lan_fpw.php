@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_fpw.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,20 +19,20 @@
   define("LAN_09", "Mot de passe changé de ");
   define("LAN_112", "Adresse courriel utilisée lors de l'enregistrement ");
   define("LAN_156", "Envoyer");
-  define("LAN_213", "Ce nom d'utilisateur ou bien cette adresse courriel n'a pas été trouvé dans la base de données.");
+  define("LAN_213", "Cet identifiant ou bien cette adresse courriel n'a pas été trouvé dans la base de données.");
   define("LAN_214", "Impossible de changer le mot de passe");
   define("LAN_216", "Pour valider votre nouveau mot de passe, veuillez cliquer sur le lien suivant ...");
   define("LAN_217", "Votre nouveau mot de passe est désormais validé, vous pouvez vous identifier avec votre nouveau mot de passe.");
-  define("LAN_218", "Votre nom d'utilisateur est :");
+  define("LAN_218", "Votre identifiant est :");
   define("LAN_219", "Le mot de passe associé à cette adresse courriel a déjà été changé et ne peut pas être changé de nouveau. Veuillez contacter l'administrateur du site pour avoir plus de détails.");
-  define("LAN_FPW1","Nom d'utilisateur");
+  define("LAN_FPW1","Identifiant");
   define("LAN_FPW2","Entrer le code");
   define("LAN_FPW3","Le code entré est incorrect");
   define("LAN_FPW4","Une demande a déjà été envoyé pour changer ce mot de passe, si vous n'avez pas reçu de courriel, veuillez contacter l'administrateur.");
   define("LAN_FPW5","Une demande pour changer votre mot de passe sur le site");
   define("LAN_FPW6","Un courriel vous a été envoyé avec un lien qui vous permettra de changer votre mot de passe.");
   define("LAN_FPW7","Ce n'est pas un lien valide pour changer votre mot de passe.<br />Veuillez contacter un administrateur pour plus de détails.");
-  define("LAN_FPW8","Le mot de passe pour le nom d'utilisateur");
+  define("LAN_FPW8","Le mot de passe pour l'identifiant");
   define("LAN_FPW9","a été changé avec succès.<br /><br />Le nouveau mot de passe est :");
   define("LAN_FPW10","Veuillez vous");
   define("LAN_FPW11","identifier maintenant");

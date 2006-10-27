@@ -2,16 +2,16 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("FBLAN_01", "Boîte d'Affichage");
-  define("FBLAN_02", "Cette extension vous permet d'afficher au-dessus de vos actualités une boîte possédant des fonctions précises/ celles vous que vous souhaitez. Les messages peuvent s'alterner aléatoirement ou s'effacer dynamiquement. ");
-  define("FBLAN_03", "Configurer la Boîte d'affichage");
+  define("FBLAN_02", "Cette extension vous permet d'afficher au-dessus de vos ".GLOBAL_LAN_NEWS_1."s une boîte possédant des fonctions précises/ celles vous que vous souhaitez. Les messages peuvent s'alterner aléatoirement ou s'effacer dynamiquement. ");
+  define("FBLAN_03", "Configurer la Boîte Affichage");
   define("FBLAN_04", "L'extension Boîte d'affichage a été installé avec succès. Pour ajouter des messages et les configurer, retourner à la page principale d'admin et cliquer sur l'icône de Boîte d'affichage dans la section extension.");
   define("FBLAN_05", "Aucun message défini dans la Boîte d'affichage pour l'instant");
   define("FBLAN_06", "Messages Existants de la Boîte d'affichage");

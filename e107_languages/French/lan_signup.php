@@ -2,21 +2,21 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-24 00:02:56 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-27 14:43:41 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Inscription");
   define("LAN_7", "Nom affiché: ");
   define("LAN_8", "C'est le nom qui sera affiché sur le site");
-  define("LAN_9", " Nom de connexion utilisateur");
+  define("LAN_9", "Identifiant");
   define("LAN_10", "C'est le nom que vous utilisez pour vous connecter");
   define("LAN_17", "Mot de passe: ");
-  define("LAN_103", "Ce nom d'utilisateur n'est pas valide, veuillez choisir un autre nom d'utilisateur");
-  define("LAN_104", "Ce nom d'utilisateur existe déjà dans la base de données, veuillez en choisir un autre");
+  define("LAN_103", "Cet identifiant n'est pas valide, veuillez choisir un autre identifiant");
+  define("LAN_104", "Cet identifiant existe déjà dans la base de données, veuillez en choisir un autre");
   define("LAN_105", "Les deux mots de passe sont différents");
   define("LAN_106", "Cette adresse courriel semble être invalide");
   define("LAN_107", "Félicitations ! Vous êtes désormais utilisateur du site");
@@ -34,7 +34,7 @@
   define("LAN_202", "Vous avez déjà un compte. Si vous avez oublié votre mot de passe, veuillez cliquer sur le lien \'Mot de passe oublié?\' .");
   define("LAN_309", "Veuillez entrer les informations ci-dessous.");
   define("LAN_399", "Continuer");
-  define("LAN_400", "Votre nom d'utilisateur et votre mot de passe seront enregistrés <strong>avec les MAJUSCULES et les minuscules</strong>.");
+  define("LAN_400", "Votre identifiant et votre mot de passe seront enregistrés <strong>avec les MAJUSCULES et les minuscules</strong>.");
   define("LAN_401", "Votre compte est désormais activé, veuillez");
   define("LAN_402", "Votre compte est activé");
   define("LAN_403", "Bienvenue sur le site");
@@ -54,19 +54,19 @@
   define("LAN_SIGNUP_9", "Impossible de continuer.");
   define("LAN_SIGNUP_10", "Oui");
   define("LAN_SIGNUP_11", ".");
-  define("LAN_409", "Votre nom d'utilisateur comporte des caractères invalides");
+  define("LAN_409", "Votre identifiant comporte des caractères invalides");
   define("LAN_410", "Entrer le code visible dans l'image");
-  define("LAN_411", "Ce nom affichable existe actuellement dans la base de donnée, svp choisissez un autre nom");
-  define("LAN_SIGNUP_12", "Veuillez écrire votre nom d'utilisateur et votre mot de passe dans un endroit sûr car si vous les perdez, vous ne pourrez pas les retrouver.");
+  define("LAN_411", "Ce nom d'affichage existe déjà dans la base de donnée, veuillez choisir un autre nom");
+  define("LAN_SIGNUP_12", "Veuillez écrire votre identifiant et votre mot de passe dans un endroit sûr car si vous les perdez, vous ne pourrez pas les retrouver.");
   define("LAN_SIGNUP_13", "Vous pouvez désormais vous identifier via le formulaire d'identification.");
   define("LAN_SIGNUP_14", "ici");
   define("LAN_SIGNUP_15", "Veuillez contacter l'administrateur principal du site");
   define("LAN_SIGNUP_16", "si vous souhaitez avoir de l'aide.");
   define("LAN_SIGNUP_17", "Veuillez certifier sur l'honneur que vous avez 13 ans ou plus.");
-  define("LAN_SIGNUP_18", "Votre inscription a bien été prise en compte et créée avec le nom d'utilisateur et le mot de passe suivant ...");
-  define("LAN_SIGNUP_19", "Nom d'utilisateur :");
+  define("LAN_SIGNUP_18", "Votre inscription a bien &eacute;t&eacute; prise en compte et cr&eacute;&eacute;e avec l'identifiant et le mot de passe suivant");
+  define("LAN_SIGNUP_19", "Identifiant :");
   define("LAN_SIGNUP_20", "Mot de passe :");
-  define("LAN_SIGNUP_21", "Votre compte est actuellement marqué comme étant inactif, veuillez l'activer en vous rendant sur le lien suivant ...");
+  define("LAN_SIGNUP_21", "Votre compte est actuellement marqu&eacute; comme &eacute;tant inactif, veuillez l'activer en vous rendant sur le lien suivant ");
   define("LAN_SIGNUP_22", "cliquer ici");
   define("LAN_SIGNUP_23", "pour vous identifier.");
   define("LAN_SIGNUP_24", "Merci de vous être inscrit sur");
@@ -82,14 +82,14 @@
   define("LAN_SIGNUP_34", "Attention: toute image téléchargée sur ce serveur et considérée comme inapproprié par les administrateurs sera supprimée immédiatement.");
   define("LAN_SIGNUP_35", "Cliquez ici pour enregistrer l'utilisation d'un fichier XUP");
   define("LAN_SIGNUP_36", "Une erreur s'est produite lors de la création de vos paramètres utilisateur. Veuillez contacter l'administrateur du site");
-  define("LAN_LOGINNAME", "Nom de connexion");
+  define("LAN_LOGINNAME", "Identifiant");
   define("LAN_PASSWORD", "Mot de passe");
   define("LAN_USERNAME", "Nom affiché");
   define("LAN_EMAIL_01", "Cher");
 
-  define("LAN_EMAIL_04", "Veuillez conserver ce courriel comme aide-mémoire.");
-  define("LAN_EMAIL_05", "Votre mot de passe a été encrypté et ne pourra vous être restitué en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas échéant.");
-  define("LAN_EMAIL_06", "Merci de vous être enregistré.");
+  define("LAN_EMAIL_04", "Veuillez conserver ce courriel comme aide-m&eacute;moire.");
+  define("LAN_EMAIL_05", "Votre mot de passe a &eacute;t&eacute; encrypt&eacute; et ne pourra vous &ecirc;tre restitu&eacute; en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas &eacute;ch&eacute;ant.");
+  define("LAN_EMAIL_06", "Merci de vous &ecirc;tre enregistr&eacute;.");
   define("LAN_SIGNUP_37","Cette étape de l'enregistrement est terminée. L'administateur du site devra approuver votre adhésion. Lorsque cela aura été fait, vous recevrez un courriel de confirmation vous informant que votre adhésion a été approuvée.");¨
 
   //   define("LAN_SIGNUP_38", "Vous avez entré deux adresses courriel différentes. Veuillez indiquer une adresse courriel identique dans les deux champs fournis");

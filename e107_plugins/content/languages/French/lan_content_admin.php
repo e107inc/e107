@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -80,6 +80,14 @@ define("CONTENT_LATEST_LAN_1", "Contenu proposé:");
   define("CONTENT_ADMIN_CAT_LAN_61", "Envoyer une nouvelle icône");
   define("CONTENT_ADMIN_CAT_LAN_62", "Après avoir téléchargé une nouvelle icône de catégorie vous pouvez assigner cette icône dans le secteur ci-dessous nommé 'icône'<br />Si vous télécharchez une nouvelle icône, cette icône sera dimentionnée à 48 Pixel, et en plus une petite icône de 16 Pixel sera aussi créée<br /><br />");
   define("CONTENT_ADMIN_CAT_LAN_63", "Envoyer une icône");
+
+define("CONTENT_ADMIN_MANAGER_LAN_0", "approuver les propositions");
+define("CONTENT_ADMIN_MANAGER_LAN_1", "membres de ce groupe peuvent approuver les contenus proposés");
+define("CONTENT_ADMIN_MANAGER_LAN_2", "gestionnaire personnel");
+define("CONTENT_ADMIN_MANAGER_LAN_3", "membres de ce groupe peuvent gérer uniquement leurs items de contenu");
+define("CONTENT_ADMIN_MANAGER_LAN_4", "gestionnaire de catégorie");
+define("CONTENT_ADMIN_MANAGER_LAN_5", "membres de ce groupe peuvent gérer tous les items de contenus de cette catégorie");
+
   define("CONTENT_ADMIN_ITEM_LAN_0", "champ(s) requis laissé blanc");
   define("CONTENT_ADMIN_ITEM_LAN_1", "Contenu créé");
   define("CONTENT_ADMIN_ITEM_LAN_2", "Liste de contenu mise à jour");
@@ -87,7 +95,7 @@ define("CONTENT_LATEST_LAN_1", "Contenu proposé:");
   define("CONTENT_ADMIN_ITEM_LAN_4", "Pas de contenu pour le moment");
   define("CONTENT_ADMIN_ITEM_LAN_5", "Contenus dans cette catégorie");
   define("CONTENT_ADMIN_ITEM_LAN_6", "Premières lettres");
-  define("CONTENT_ADMIN_ITEM_LAN_7", "SVP selectionnez un lettre ci-dessus.");
+  define("CONTENT_ADMIN_ITEM_LAN_7", "Veuillez sélectionner une lettre ci-dessus.");
   define("CONTENT_ADMIN_ITEM_LAN_8", "Id");
   define("CONTENT_ADMIN_ITEM_LAN_9", "Icône");
   define("CONTENT_ADMIN_ITEM_LAN_10", "Auteur");
@@ -135,7 +143,7 @@ define("CONTENT_LATEST_LAN_1", "Contenu proposé:");
   define("CONTENT_ADMIN_ITEM_LAN_52", "Proposer du contenu");
   define("CONTENT_ADMIN_ITEM_LAN_53", "Méta mots clefs");
   define("CONTENT_ADMIN_ITEM_LAN_54", "donnée additionelle ");
-  define("CONTENT_ADMIN_ITEM_LAN_55", "Retour vers la <a href='".e_SELF."'>page principale de gestion personnel de contenu</a> pour gérer de manière plus exaustive le contenu qui vous est accessible<br />ou<br />Aller à la <a href='".e_PLUGIN."contenu/contenu.php'>page principale des contenus</a> pour voir tous les items de contenu.");
+  define("CONTENT_ADMIN_ITEM_LAN_55", "Retour vers la <a href='".e_SELF."'>page principale de gestion personnel de contenu</a> pour gérer de manière plus exaustive le contenu qui vous est accessible<br />ou<br />Aller à la <a href='".e_PLUGIN."content/content.php'>page principale des contenus</a> pour voir tous les items de contenu.");
   define("CONTENT_ADMIN_ITEM_LAN_56", "Gestion de votre contenu accessible");
   define("CONTENT_ADMIN_ITEM_LAN_57", "Catégorie");
   define("CONTENT_ADMIN_ITEM_LAN_58", "article");
@@ -338,7 +346,7 @@ define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Créer une catégorie");
   define("CONTENT_ADMIN_CONVERSION_LAN_43", "Appuyez sur le bouton pour convertir l'ancienne table de contenus");
   define("CONTENT_ADMIN_CONVERSION_LAN_44", "La nouvelle table contenu contient déjà des données! !<br /> êtes-vous sûrs de vouloir convertir l'ancienne table de contenu en une nouvelle table de contenus ?<br /><br /> si vous voulez toujours convertir la table, les anciennes données de contenu seront ajoutés à la nouvelle table de contenus déjà existante, Mais il n'y aura aucune garantie permettant de vous assurer que tous les articles seront ajoutés de façon correcte aux nouvelles catégories déjà existantes !");
   define("CONTENT_ADMIN_CONVERSION_LAN_45", "L'insertion a échoué : élément principal non inséré");
-  define("CONTENT_ADMIN_CONVERSION_LAN_46", "Commencez par gérer votre contenu en allant à  <a href='".e_PLUGIN."contenu/admin_contenu_config.php'> la page principale de l'extension Gestion de contenus</a>!");
+  define("CONTENT_ADMIN_CONVERSION_LAN_46", "Commencez par gérer votre contenu en allant à  <a href='".e_PLUGIN."content/admin_content_config.php'> la page principale de l'extension Gestion de contenus</a>!");
   define("CONTENT_ADMIN_CONVERSION_LAN_47", "conversion completée");
   define("CONTENT_ADMIN_CONVERSION_LAN_48", "cliquer ici pourles détails");
   define("CONTENT_ADMIN_CONVERSION_LAN_49", "conversion de pages");
@@ -350,7 +358,7 @@ define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Créer une catégorie");
   define("CONTENT_ADMIN_CONVERSION_LAN_55", "Extension Gestion de Contenus : options de conversion");
   define("CONTENT_ADMIN_CONVERSION_LAN_56", "Cliquez le bouton pour aller au contenu Créer une nouvelle page de catégorie.");
   define("CONTENT_ADMIN_CONVERSION_LAN_57", "choisissez un élément mère");
-  define("CONTENT_ADMIN_CONVERSION_LAN_58", "Mise à jour couronnée de succès <br /><br /><strong>Notez S'il vous plaît :<br />vous devez reconfigurer les options pour chaque élément mère principal <br />et vous devez supprimer les menus que vous avez créés dans votre dossier contenu/menus et les recréez en mettant à jour les options pour les éléments mères principaux spécifiques pour lesquels vous voulez utiliser des menus.</strong>");
+  define("CONTENT_ADMIN_CONVERSION_LAN_58", "Mise à jour couronnée de succès <br /><br /><strong>Notez S'il vous plaît :<br />vous devez reconfigurer les options pour chaque élément mère principal <br />et vous devez supprimer les menus que vous avez créés dans votre dossier content/menus et les recréez en mettant à jour les options pour les éléments mères principaux spécifiques pour lesquels vous voulez utiliser des menus.</strong>");
   define("CONTENT_ADMIN_CONVERSION_LAN_59", "table de convertion");
   define("CONTENT_ADMIN_CONVERSION_LAN_60", "créer des éléments 'par défaut'");
   define("CONTENT_ADMIN_CONVERSION_LAN_61", "Créer une nouvelle catégorie ");
@@ -360,7 +368,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_64", "Structure de la table de l'extension 
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "Extension Gestionnaire de Contenu : content_author mis à jour");
 define("CONTENT_ADMIN_CONVERSION_LAN_66", "Extension Gestionnaire de Contenu : content_preferences et menus mis à jour");
 define("CONTENT_ADMIN_CONVERSION_LAN_67", "Extension Gestionnaire de Contenu : content_preferences mis à jour");
-define("CONTENT_ADMIN_CONVERSION_LAN_68", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "Extension Gestionnaire de Contenu : content_theme mis à jour");
 define("CONTENT_ADMIN_CONVERSION_LAN_69", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_70", "");
   define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Options:");
@@ -405,7 +413,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin : Créer une catégorie");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_18", "Auteur : lien vers le profil de l'auteur");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_19", "Auteur : lien vers liste des contributions");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_20", "Icône Courriel/Impresion/Pdf ");
-  define("CONTENT_ADMIN_OPT_LAN_SECTION_21", "parent breadcrumb (?<a href=mailto:dc@arcur.asso.fr>expliquer au traducteur</a>?)");
+  define("CONTENT_ADMIN_OPT_LAN_SECTION_21", "Liste des catégories parentes (fil d'Ariane)");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_22", "Nb de visionnement (seulement si activé)");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_23", "Somme d'articles");
   define("CONTENT_ADMIN_OPT_LAN_SECTION_24", "Derniers articles pour chaque auteur");
@@ -622,4 +630,12 @@ define("CONTENT_ADMIN_OPT_LAN_163", "afficher les liens de page précédente et 
 define("CONTENT_ADMIN_OPT_LAN_164", "légende pour le lien de la page précédente<br />(utilisez {PAGETITLE} pour ajouter le titre de la page précédente)");
 define("CONTENT_ADMIN_OPT_LAN_165", "légende pour le lien de la page suivante<br />(utilisez {PAGETITLE} pour ajouter le titre de la page précédente)");
 define("CONTENT_ADMIN_OPT_LAN_166", "utiliser 'tout' pour afficher le texte en entier");
+define("CONTENT_ADMIN_OPT_LAN_167", "hériter");
+define("CONTENT_ADMIN_OPT_LAN_168", "première page");
+define("CONTENT_ADMIN_OPT_LAN_169", "dernière page");
+define("CONTENT_ADMIN_OPT_LAN_170", "où devrait apparaître les étiquettes de données (prédéfinies & personnalisées) dans un item de contenu multipage ?");
+define("CONTENT_ADMIN_OPT_LAN_171", "nombre de niveaux");
+define("CONTENT_ADMIN_OPT_LAN_172", "valeur numérique pour afficher le nombre de niveaux des sous-catégories de l'arborescence des catégories. Laisser vide pour afficher tous les niveaux.");
+define("CONTENT_ADMIN_OPT_LAN_173", "inclure 'accueil' dans l'arnorescence");
+define("CONTENT_ADMIN_OPT_LAN_174", "inclure la page d'entrée du gestionnaire de contenu dans l'arborescence");
   ?>

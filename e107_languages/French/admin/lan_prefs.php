@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-06 22:08:54 $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -95,8 +95,8 @@
   define("CUSTSIG_15", "Requis");
   define("CUSTSIG_16", "Taille minimale des mots de passe");
   define("CUSTSIG_17", "Inscription aux groupes d'utilisateur");
-  define("CUSTSIG_18", "Noms d'utilisateurs non acceptables");
-  define("CUSTSIG_19", "les noms d'utilisateurs contenant le texte suivant seront rejetés, séparer les termes par des virgules");
+  define("CUSTSIG_18", "Identifiants non acceptables");
+  define("CUSTSIG_19", "les identifiants contenant le texte suivant seront rejetés, séparer les termes par des virgules");
   
   define("PRFLAN_89", "En-tête du site :");
   
@@ -142,7 +142,7 @@
   define("PRFLAN_127", "Rendre les liens postés cliquables");
   define("PRFLAN_128", "Activer cela convertira les liens postés en hyperliens");
   define("PRFLAN_129", "Désactiver les connexions multiples");
-  define("PRFLAN_130", "L'activation de cela empêchera la connexion multiple des personnes avec le même nom d'utilisateur/mot de passe (connexion partagée)");
+  define("PRFLAN_130", "L'activation de cela empêchera la connexion multiple des personnes avec le même identifiant/mot de passe (connexion partagée)");
   define("PRFLAN_131", "Permettre l'utilisation des [php] bbcode");
   define("PRFLAN_132", "Activer ceci donnera l'autorisation aux utilisateurs de se servir du [php] code dans leurs messages dans certaines sections");
   define("PRFLAN_133", "Extension GD requise, pas trouvée");
@@ -168,7 +168,7 @@
   define("PRFLAN_152", "Pas de vérification");
   define("PRFLAN_153", "Approbation Admin");
   define("PRFLAN_154", "Méthode de vérification des nouveaux utilisateurs<br />Si 'Approbation Admin' est sélectionné, il est recommandé que vous activiez également l'alerte par courriel lors d'inscriptions en cliquant <a href='".e_ADMIN."notify.php'>ici</a>.");
-  define("PRFLAN_155", "Nom d'Affichage utilisable pour");
+  define("PRFLAN_155", "Permission d'utiliser un <strong>Nom d'Affichage</strong> différent de l'identifiant sur l'ensemble du site");
   define("PRFLAN_156", "Réinitialiser TOUS les Noms d Affichage");
   define("PRFLAN_157", "Tous les Noms d'Affichage ont été ajusté au Nom d'Utilisateur");
   define("PRFLAN_158", "Longueur maximum du Nom d'Affichage");
@@ -180,4 +180,8 @@
   define("PRFLAN_164", "Permettre aux utilisateurs de s'envoyer une copie du courriel de contact");
   define("PRFLAN_165", "Faille possible de spam, utilisez avec précaution");
 define("PRFLAN_166", "Montrer les images émoticônes dans les formulaires de commentaires?");
+
+define("PRFLAN_167", "Rendre optionnel l'entrée d'une adresse électronique"); // subject to change. 
+define("PRFLAN_168", "Personne(s) à contacter concernant le site");
+define("PRFLAN_169", "Si le groupe choisi contient plus d'une personne, l'utilisateur se verra demandé de sélectionner un membre du groupe.");
   ?>

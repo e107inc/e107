@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -37,16 +37,16 @@
   define("LCLAN_58", "Êtes-vous sûr de vouloir supprimer  ce lien ?");
   define("LCLAN_61", "Aucun Lien");
   define("LCLAN_62", "Page Principale des Liens");
-  define("LCLAN_63", "Créer un Nouveau Lien");
+  define("LCLAN_63", "Créer un nouveau lien");
   define("LCLAN_68", "Options des Liens");
   define("LCLAN_78", "Afficher la description en Info-bulle");
   define("LCLAN_79", "La description sera affichée lorsque la souris de l'utilisateur passera sur le lien");
   define("LCLAN_80", "Les sous-menus demandent une action");
   define("LCLAN_81", "les sous-menus s'afficheront seulement après avoir cliqué sur leur lien supérieur.");
   define("LCLAN_83", "Générateur de sous-menus");
-  define("LCLAN_88", "Options Liens du Site");
+  define("LCLAN_88", "Options des Liens internes");
   define("LCLAN_89", "Image");
-  define("LCLAN_90", "Nom de Lien");
+
   define("LCLAN_91", "Déplaçer");
   define("LCLAN_95", "Vu par :");
   
@@ -59,7 +59,7 @@
   define("LINKLAN_5", "Générer des sous-liens");
   define("LINKLAN_6", "Créer des sous-liens depuis");
   define("LINKLAN_7", "Créer des sous-liens sous quel lien ?");
-  define("LINKLAN_8", "Catégorie d'Actualité");
+  define("LINKLAN_8", "Catégorie d'".GLOBAL_LAN_NEWS_2."");
   define("LINKLAN_9", "Catégorie Téléchargements");
   define("LINKLAN_10", "Créer un sous-lien");
   ?>

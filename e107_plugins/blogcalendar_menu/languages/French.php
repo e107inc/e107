@@ -2,14 +2,14 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/blogcalendar_menu/languages/French.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("BLOGCAL_L1", "Actualités pour ");
+  define("BLOGCAL_L1", "".GLOBAL_LAN_NEWS_2."s pour ");
   define("BLOGCAL_L2", "Archive");
   
   define("BLOGCAL_D1", "Lu");
@@ -33,7 +33,7 @@
   define("BLOGCAL_M11", "Novembre");
   define("BLOGCAL_M12", "Décembre");
   
-  define("BLOGCAL_1", "Actualités");
+  define("BLOGCAL_1", "".GLOBAL_LAN_NEWS_2."s");
   
   define("BLOGCAL_CONF1", "Mois/ligne");
   define("BLOGCAL_CONF2", "Espacement cellule");

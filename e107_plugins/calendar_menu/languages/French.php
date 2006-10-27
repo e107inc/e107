@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -211,6 +211,10 @@
   define("EC_LAN_133", "[En lire plus]");
   define("EC_LAN_134", "Vous devez fournir un nom de catégorie");
   
+// Added 12.07.06 for next_event_menu.php
+define('EC_LAN_140', "Prochains événements");
+define('EC_LAN_141', "Pas d'événements prévus");
+
   define("EC_ADLAN_A10", "Configuration");
   define("EC_ADLAN_A11", "Catégories");
   define("EC_ADLAN_A12", "Calendrier");
@@ -257,4 +261,30 @@
   define("EC_ADLAN_A95", "Permettre les abonnements");
   define("EC_ADLAN_A96", "Mis hors service, le bouton Abonnements sera enlevé et les paramètres d'abonnement des catégories seront ignorés.");
   define("EC_ADLAN_A97", "Si un abonnement forcé est coché, cette catégorie ne sera pas affichée dans la liste d'abonnements disponibles.");
+// Added from here 12.07.06 for forthcoming events and mailout upgrades
+define('EC_ADLAN_A100', "Prochains événements");
+define('EC_ADLAN_A101', "Afficher les événements se produisant jusqu'à combien de jours :");
+define('EC_ADLAN_A102', "Nombre d'événements à afficher :");
+define('EC_ADLAN_A103', "Inclure les événements récurrents :");
+define('EC_ADLAN_A104', "Le titre est relié à la liste des événements :");
+define('EC_ADLAN_A105', "Configurer le menu des Prochains Événements");
+define('EC_ADLAN_A106', "Le menu n'a pas été activé dans la page de configuration 'Menu'");
+define('EC_ADLAN_A107', "Ne fonctionnera pas de façon fiable s'il affiche des événements se produisant à plus de 59 jours");
+define('EC_ADLAN_A108', "Légende du menu");
+define('EC_ADLAN_A109', "Préférences des Prochains Événements mises à jour");
+
+define('EC_ADLAN_A110', "Seulement le jour précédent");
+define('EC_ADLAN_A111', "D'avance et jour précédent");
+define('EC_ADLAN_A112', "Jour précédent et le jour même");
+define('EC_ADLAN_A113', "D'avance, jour précédent et le jour même");
+
+define('EC_ADLAN_A114', "Enregistrement des courriels");
+define('EC_ADLAN_A115', "Sommaire");
+define('EC_ADLAN_A116', "Détaillé");
+define('EC_ADLAN_A117', "Message le jour même ou le jour précédent");
+define('EC_ADLAN_A118', "Catégories à afficher");
+define('EC_ADLAN_A119', "Aucune catégorie définie, ou erreur de lecture de la base de données");
+define('EC_ADLAN_A120', "Montrer l'icône de la catégorie dans le menu");
+
+
   ?>

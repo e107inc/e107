@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -25,9 +25,11 @@
   define("NS_LAN_1", "Événements de Sécurité");
   define("NS_LAN_2", "IP bannie pour flood du site");
   
-  define("NN_LAN_1", "Événements des Actualités");
-  define("NN_LAN_2", "Actualité proposée par un utilisateur");
-  define("NN_LAN_3", "Actualité postée par un admin");
-  define("NN_LAN_4", "Actualité éditée par un admin");
-  define("NN_LAN_5", "Actualité supprimée par un admin");
+  define("NN_LAN_1", "Événements des ".GLOBAL_LAN_NEWS_2."s");
+  define("NN_LAN_2", "".GLOBAL_LAN_NEWS_2." proposée par un utilisateur");
+  define("NN_LAN_3", "".GLOBAL_LAN_NEWS_2." postée par un admin");
+  define("NN_LAN_4", "".GLOBAL_LAN_NEWS_2." éditée par un admin");
+  define("NN_LAN_5", "".GLOBAL_LAN_NEWS_2." supprimée par un admin");
+define("NF_LAN_1", "Événements des fichiers");
+define("NF_LAN_2", "Fichier uploadé par un utilisateur");
   ?>

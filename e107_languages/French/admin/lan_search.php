@@ -2,18 +2,18 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-27 14:43:42 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("SEALAN_1", "Paramètres des recherches");
   define("SEALAN_2", "Nombre de caractères affichables dans le sommaire de résultats de recherche:");
   define("SEALAN_3", "Méthode de triage des recherches:");
   //  define("SEALAN_4", "Aire de recherche:");
-  //  define("SEALAN_5", "Actualités");
+  //  define("SEALAN_5", "".GLOBAL_LAN_NEWS_2."s");
   define("SEALAN_6", "Commentaires");
   define("SEALAN_7", "Utilisateurs enregistrés");
   //  define("SEALAN_8", "Téléchargements");
@@ -48,7 +48,7 @@
   define("SEALAN_37", "Case à choisir ");
   define("SEALAN_38", "Bouton Radio");
   define("SEALAN_39", "Page Personnifiées");
-  define("LAN_98", "Actualités");
+  define("LAN_98", "".GLOBAL_LAN_NEWS_2."s");
   define("LAN_197", "Téléchargements");
   define("LAN_418", "Page personnifiée");
   define("SEALAN_40", "Options de Recherche");

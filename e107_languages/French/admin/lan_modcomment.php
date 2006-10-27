@@ -2,15 +2,15 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_modcomment.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-06 22:08:54 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("MDCLAN_1", "Modéré.");
-  define("MDCLAN_2", "Aucun commentaire pour cette actualité");
+  define("MDCLAN_2", "Aucun commentaire pour cette ".GLOBAL_LAN_NEWS_1."");
   define("MDCLAN_3", "Utilisateur");
   define("MDCLAN_4", "Visiteur");
   define("MDCLAN_5", "débloquer");

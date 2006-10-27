@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/French.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 14:43:46 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -335,7 +335,7 @@ define("LCLAN_ITEM_39", "Évaluation");
   Ces options sont utilisées dans les pages Top Évaluations Liens.<br />
   ");
   
-  define("LAN_ADMIN_HELP_7", "<i>La page Catégorie Lien d'édition vous permet d'éditer une catégorie existante</i><br /><br />Vous pouvez télécharger une actualité icône et ensuite assigner l'icône téléchargée à la catégorie.<br />Vous pouvez mettre à jour l'horodatage du lien en cliquant la boîte.");
+  define("LAN_ADMIN_HELP_7", "<i>La page Catégorie Lien d'édition vous permet d'éditer une catégorie existante</i><br /><br />Vous pouvez télécharger une ".GLOBAL_LAN_NEWS_1." icône et ensuite assigner l'icône téléchargée à la catégorie.<br />Vous pouvez mettre à jour l'horodatage du lien en cliquant la boîte.");
   
   define("LAN_ADMIN_HELP_8", "<i>Cette affiche tous les liens existants de la catégorie selectionnée.</i><br /><br /><strong>Liste détaillée</strong><br />Vous pouver voir une liste des liens avec leur image, nom, des options et des options de tri.<br /><br /><strong>Explication des icônes</strong><br />
   ".LINK_ICON_LINK." : lien vers le site web<br /><br />

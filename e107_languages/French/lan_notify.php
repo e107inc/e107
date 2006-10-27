@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_notify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 03:22:16 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -24,10 +24,10 @@
   define("NT_LAN_FL_1", "Exclusion pour cause de flood");
   define("NT_LAN_FL_2", "Adresse IP exclue pour cause de flood");
   
-  define("NT_LAN_SN_1", "Actualité proposée");
+  define("NT_LAN_SN_1", "".GLOBAL_LAN_NEWS_2." proposée");
   
   define("NT_LAN_NU_1", "Mis à jour");
   
-  define("NT_LAN_ND_1", "Actualité supprimée");
-  define("NT_LAN_ND_2", "Identifiant de l'actualité supprimée");
+  define("NT_LAN_ND_1", "".GLOBAL_LAN_NEWS_2." supprimée");
+  define("NT_LAN_ND_2", "Identifiant de l'".GLOBAL_LAN_NEWS_1." supprimée");
   ?>

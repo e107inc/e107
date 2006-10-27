@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_ren_help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -53,5 +53,9 @@
   define("LANHELP_41", "Taille des caractères...");
   define("LANHELP_42", "Choisir une image...");
   define("LANHELP_43", "Choisir le fichier de téléchargement...");
-define("LANHELP_44", "Cliquer pour ouvrir le dialogue des émoticônes ...");
+define("LANHELP_44", "Cliquer pour ouvrir/fermer le dialogue des émoticônes ...");
+define("LANHELP_45", "Insérer l'image provenant du répertoire: ");
+define("LANHELP_46", "* Aucun fichier trouvé dans: ");
+
+define("LANHELP_47", "Insérer une animation flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
   ?>

@@ -25,9 +25,9 @@ tinyMCELang['lang_ibrowser_uploadtxt'] = 'Fichier';
 tinyMCELang['lang_ibrowser_uploadbt'] = 'Upload';
 // error messages
 tinyMCELang['lang_ibrowser_error'] = 'Erreur';
-tinyMCELang['lang_ibrowser_errornoimg'] = 'SVP selectionner une image';
+tinyMCELang['lang_ibrowser_errornoimg'] = 'Veuillez s&eacute;lectionner une image';
 tinyMCELang['lang_ibrowser_errornodir'] = 'la librairie n&#39existe pas physiquement';
-tinyMCELang['lang_ibrowser_errorupload'] = 'Une erreur est apparue lors de l&#39upload du fichier.\nSVP r&eacute;esayer plus tard';
+tinyMCELang['lang_ibrowser_errorupload'] = 'Une erreur est apparue lors de l&#39upload du fichier.\nVeuillez r&eacute;esayer plus tard';
 tinyMCELang['lang_ibrowser_errortype'] = 'Erreur de type de fichier image';
 tinyMCELang['lang_ibrowser_errordelete'] = 'Supression en echec';
 tinyMCELang['lang_ibrowser_confirmdelete'] = 'Cliquer OK poursupprimer l&#39image!';

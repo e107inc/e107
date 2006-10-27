@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@
   define("LAN_dl_53", "Cliquez ici pour voir le téléchargement");
   define("LAN_dl_54", "Un administrateur prendra connaissance de ce problème. Veuillez laisser un message si en voyez la nécessité.");
   define("LAN_dl_55", "<strong>Ne pas</strong> utiliser ce formulaire pour contacter l'administrateur pour toute autre raison.");
-  define("LAN_dl_56", "Signaler un téléchargement défectueux");
+//  define("LAN_dl_56", "Signaler un téléchargement défectueux"); //déjà défini
   define("LAN_dl_57", "signalé par");
   define("LAN_dl_58", "Le téléchargement suivant à été signalé comme défectueux du site ");
   define("LAN_dl_59", "Message de: ");
@@ -74,7 +74,7 @@
   define("LAN_dl_62", "Vous n'avez pas pu télécharger ce fichier car vous avez dépassé le quota de téléchargement qui vous a été alloué");
   define("LAN_dl_63", "vous n'avez pas les permissions nécessaires pour télécharger ce fichier.");
   define("LAN_dl_64", "Retour");
-  define("LAN_dl_65", "Non trouvé");
+  define("LAN_dl_65", "Fichier non trouvé");
   define("LAN_dl_66", "Sélectionner un site miroir de téléchargement");
   define("LAN_dl_67", "Veuillez sélectionner un site miroir ' utiliser...");
   define("LAN_dl_68", "Hébergeur du site miroir");

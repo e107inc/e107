@@ -2,11 +2,11 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_mailout.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:42 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PRFLAN_52", "Sauvegarder les Modifications");
@@ -20,7 +20,7 @@
   define("PRFLAN_70", "Activer le SMTP");
   define("PRFLAN_71", "cocher permettra d'utiliser le serveur SMTP pour envoyer des courriels");
   define("PRFLAN_72", "Serveur SMTP ");
-  define("PRFLAN_73", "Nom d'utilisateur SMTP ");
+  define("PRFLAN_73", "Identifiant SMTP ");
   define("PRFLAN_74", "Mot de Passe SMTP");
   define("PRFLAN_75", "Le courriel n'as pas pu être envoyé.. Veuillez passer en revue vos paramètres SMTP, ou désactiver le SMTP et essayez de nouveau.");
 
@@ -39,7 +39,7 @@
   define("MAILAN_13", "Tous les Utilisateurs non vérifiés ");
   define("MAILAN_14", "Il est recommandé d'activer le <a href='prefs.php'>SMTP</a> pour des envois massifs de courriels. <br /><br />");
   define("MAILAN_15", "Envoi de Courriels");
-  define("MAILAN_16", "Nom d'utilisateur");
+  define("MAILAN_16", "Identifiant");
   define("MAILAN_17", "Lien d'enregistrement");
   define("MAILAN_18", "Id utilisateur");
   define("MAILAN_19", "Il n'y a aucune adresse électronique pour l'admin du site. Vérifiez vos préférences et essayez à nouveau.");
@@ -66,8 +66,8 @@ define("MAILAN_39", "Envoi de courriel(s)");
 define("MAILAN_40", "Vous devez renommer le fichier <b>e107.htaccess</b> pour <b>.htaccess</b> dans");
 define("MAILAN_41", "avant d'envoyer des courriels de cette page.");
 define("MAILAN_42", "Avertissement");
-define("MAILAN_43", "Nom d'utilisateur");
-define("MAILAN_44", "Nom de connexion");
+define("MAILAN_43", "Identifiant");
+define("MAILAN_44", "Nom réel");
 define("MAILAN_45", "Courriel");
 define("MAILAN_46", "Correspondance utilisateur");
 define("MAILAN_47", "contient");
@@ -80,4 +80,15 @@ define("MAILAN_53", "Admins");
 define("MAILAN_54", "Soi-même");
 define("MAILAN_55", "Groupe d'utilisateurs");
 define("MAILAN_56", "Envoyer le courriel");
+define("MAILAN_57", "Conserver la session SMTP active");
+define("MAILAN_58", "Il y a un problème avec le(s) fichier(s) attaché(s) :");
+define("MAILAN_59", "Progression de l'envoi de courriel");
+define("MAILAN_60", "Envoi...");
+define("MAILAN_61", "Il n'y a plus de courriels à envoyer.");
+define("MAILAN_62", "Courriels envoyés:");
+define("MAILAN_63", "Courriels échoués:");
+define("MAILAN_64", "Durée total:");
+define("MAILAN_65", "secondes");
+define("MAILAN_66", "Annulation réussie");
+define("MAILAN_67", "Utiliser identification 'POP avant SMTP'"); 
 ?>

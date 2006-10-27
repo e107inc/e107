@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/French.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-15 01:47:24 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:46 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -117,7 +117,7 @@
   define("LIST_MENU_3", "le");
   define("LIST_MENU_4", "dans");
   define("LIST_MENU_5", "jours");
-  define("LIST_MENU_6", "Visualisation de contenu pour combien de jours possible?");
+  define("LIST_MENU_6", "Voir le nouveau contenu depuis combien de jours?");
   define("LIST_MENU_7", "");
   define("LIST_MENU_8", "");
   define("LIST_MENU_9", "");
@@ -132,12 +132,12 @@
   define("LIST_MENU_18", "");
   define("LIST_MENU_19", "");
   
-  define("LIST_NEWS_1", "Actualités");
-  define("LIST_NEWS_2", "Aucune Actualité");
+  define("LIST_NEWS_1", "".GLOBAL_LAN_NEWS_2."s");
+  define("LIST_NEWS_2", "Aucune ".GLOBAL_LAN_NEWS_2."");
   
   define("LIST_COMMENT_1", "Commentaires");
   define("LIST_COMMENT_2", "Aucun commentaires");
-  define("LIST_COMMENT_3", "Actualités");
+  define("LIST_COMMENT_3", "".GLOBAL_LAN_NEWS_2."s");
   define("LIST_COMMENT_4", "Faq");
   define("LIST_COMMENT_5", "sondages");
   define("LIST_COMMENT_6", "Docs");

@@ -4,24 +4,27 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_contact.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-16 21:30:07 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 14:43:41 $
+|     $Author: daddycool78 $
 +----------------------------------------------------------------------------+
 */
 
-define("LANCONTACT_01", "Contact");
-define("LANCONTACT_02", "Formulaire Contact");
+define("LANCONTACT_01", "Détails de contact");
+define("LANCONTACT_02", "Formulaire de contact");
 define("LANCONTACT_03", "Entrez votre nom:");
-define("LANCONTACT_04", "Email:");
-define("LANCONTACT_05", "Sujet du message:");
+define("LANCONTACT_04", "Adresse électronique:");
+define("LANCONTACT_05", "Sujet:");
 define("LANCONTACT_06", "Votre message:");
-define("LANCONTACT_07", "Recevoir une copie du mail à votre adresse ");
+define("LANCONTACT_07", "Recevoir une copie du courriel ");
 define("LANCONTACT_08", "Envoyer");
 define("LANCONTACT_09", "Message envoyé.");
 define("LANCONTACT_10", "Erreur, votre message n'a pas pu nous parvenir.");
-define("LANCONTACT_11", "Votre adresse email ne semble pas être valide.\\nVeuillez vérifier et recommencer.");
-define("LANCONTACT_12", "Message trop court.");
-define("LANCONTACT_13", "Aucun sujet !? Veuillez le présicer.");
+define("LANCONTACT_11", "Votre adresse électronique ne semble pas valide.\\nVeuillez vérifier et recommencer.");
+define("LANCONTACT_12", "Votre message est trop court.");
+define("LANCONTACT_13", "Veuillez inclure un sujet.");
+define("LANCONTACT_14", "Envoyer le message à :");
+define("LANCONTACT_15", "Code entré incorrect");
+define("LANCONTACT_16", "Entrez le Code");
 
 ?>

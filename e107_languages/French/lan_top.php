@@ -2,15 +2,15 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_top.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-24 00:02:56 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-27 14:43:41 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("TOP_LAN_0", "Les utilisateurs postant le plus sur le Forum");
-  define("TOP_LAN_1", "Nom d'utilisateur");
+  define("TOP_LAN_1", "Identifiant");
   define("TOP_LAN_2", "Messages");
   define("TOP_LAN_3", "Les utilisateurs postant le plus de commentaires");
   define("TOP_LAN_4", "Commentaires");

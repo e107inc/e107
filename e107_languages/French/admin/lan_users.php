@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-06 22:08:54 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@
   define("USRLAN_3", "a maintenant le statut d'Administrateur - pour configurer ses permissions veuillez aller à la");
   define("USRLAN_4", "page des Administrateurs");
   define("USRLAN_5", "Vous ne pouvez pas enlever le statut d'administrateur à l'administrateur principal du site");
-  define("USRLAN_6", "a eu perdu son statut d'administrateur.");
+  define("USRLAN_6", "n'a plus le statut d'administrateur.");
   define("USRLAN_7", "Vous ne pouvez pas bannir l'administrateur principal du site");
   define("USRLAN_8", "Utilisateur banni.");
   define("USRLAN_9", "Utilisateur débanni.");
@@ -25,7 +25,7 @@
   //  define("USRLAN_14", "une fois supprimé, l'utilisateur de pourra plus être retrouvé");
   //  define("USRLAN_15", "Annuler");
   define("USRLAN_16", "Confirmer la suppression");
-  define("USRLAN_17", "Confirmer la suppression de l'utilisateur");
+  define("USRLAN_17", "Je confirme la suppression de cet utilisateur");
   //  define("USRLAN_18", "Utilisateur activé.");
   //  define("USRLAN_19", "Rechercher");
   //  define("USRLAN_20", "Classer par");
@@ -63,17 +63,17 @@
   define("USRLAN_58", "l'upload de fichier est désactivé dans le fichier php.ini de votre serveur");
   define("USRLAN_59", "Ajout rapide d'un utilisateur");
   define("USRLAN_60", "Ajouter un utilisateur");
-  define("USRLAN_61", "Nom d'utilisateur");
+  define("USRLAN_61", "Nom d'affichage");
   define("USRLAN_62", "Mot de passe");
   define("USRLAN_63", "Re-taper le Mot de passe");
   define("USRLAN_64", "Adresse Courriel");
-  define("USRLAN_65", "Ce nom d'utilisateur ne peut être accepté comme valide, veuillez choisir un nom d'utilisateur différent");
-  define("USRLAN_66", "Ce nom d'utilisateur existe déja dans la base de données, veuillez choisir un nom d'utilisateur différent");
+  define("USRLAN_65", "Cet identifiant n'est pas valide, veuillez choisir un identifiant différent");
+  define("USRLAN_66", "Cet identifiant existe déja dans la base de données, veuillez choisir un identifiant différent");
   define("USRLAN_67", "Les deux mots de passe ne sont pas identiques");
   define("USRLAN_68", "Vous avez laissé un ou plusieurs champ(s) requis vide(s)");
   define("USRLAN_69", "L'adresse courriel semble être invalide");
   define("USRLAN_70", "Utilisateur créé");
-  define("USRLAN_71", "Page Principale des Utilisateurs");
+  define("USRLAN_71", "Liste des utilisateurs");
   define("USRLAN_72", "Ajout rapide d'un utilisateur");
   define("USRLAN_73", "Épuration des utilisateurs");
   //  define("USRLAN_75", "Options");
@@ -90,7 +90,7 @@
   define("USRLAN_88", "Appartenance(s) au(x) groupe(s) mise(s) à jour");
   define("USRLAN_90", "Rechercher un utilisateur");
   define("USRLAN_91", "Groupe");
-  define("USRLAN_92", "Des caractères sont invalides dans le nom d'utilisateur");
+  define("USRLAN_92", "Des caractères sont invalides dans l'identifiant");
   define("USRLAN_93", "Supprimer les utilisateurs non-vérifiés");
   define("USRLAN_94", "Supprimer l'inscription si elle n'est pas vérifiée avant un temps défini - laisser vide pour ne pas utiliser cette option");
   define("USRLAN_95", "minutes");
@@ -110,7 +110,7 @@
   define("USRLAN_125", "De");
   define("USRLAN_126", "Autoriser l'évaluation d'utilisateur par les utilisateurs eux-mêmes");
   define("USRLAN_127", "Autoriser les commentaires dans le profil utilisateur");
-  define("USRLAN_128", "Nom de connexion");
+  define("USRLAN_128", "Identifiant");
   define("USRLAN_130", "Activer le suivi des utilisateurs en ligne");
   define("USRLAN_131", "Vous devez activer cette option pour utiliser les options de suivi des utilisateurs en ligne, comme online.php, forum online info et online menus");
   define("USRLAN_132", "Activer");
@@ -127,7 +127,7 @@
   
   define("DUSRLAN_1", "ID");
   define("DUSRLAN_2", "Nom d'affichage");
-  define("DUSRLAN_3", "Nom d'utilisateur");
+  define("DUSRLAN_3", "Identifiant");
   define("DUSRLAN_4", "Titre personnalisé");
   define("DUSRLAN_5", "Mot de passe");
   define("DUSRLAN_6", "Session");
@@ -170,6 +170,7 @@
   define("USRLAN_142", "avec le lien d'activation suivant");
 define("LAN_BOUNCED","Rebondi");
 define("USRLAN_143", "Vérifier les rebonds");
-define("USRLAN_144", "Réenvoyer un dourriel de confirmation à Tous");
+define("USRLAN_144", "Réenvoyer un courriel de confirmation à Tous");
 define("USRLAN_145", "Utilisateurs rebondis");
+define("USRLAN_146", "Informations concernant l'utilisateur sont accessible par");
   ?>

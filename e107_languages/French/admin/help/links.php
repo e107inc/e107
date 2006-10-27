@@ -2,15 +2,15 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-08 19:49:11 $
+|     $Revision: 1.2 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   $caption = "Aide Liens";
-  $text = "Entrer tous les liens du site ici.<br /> Pour les liens principaux du site (ceux affichés dans votre barre de navigation, ou menu principal) sélectionner la catégorie 'Principale', Tous les autres seront affichés dans la page Liens (Links). Vous pouvez séparer ces liens en différentes catégories.
+  $text = "Entrer tous les liens internes au site ici.<br /> Pour les liens principaux du site (ceux affichés dans votre barre de navigation, ou menu principal) sélectionner la catégorie 'Principale', Tous les autres seront affichés dans la page Liens (Links). Vous pouvez séparer ces liens en différentes catégories.
   <br />
   <br />
   Le générateur de sous-menus est à utiliser seulement pour les menus DHTML e107  (TreeMenu, UltraTreeMenu, eDynamicMenu, ypSlideMenu...).pour les autres liens svp utiliser l'extension Links Page.

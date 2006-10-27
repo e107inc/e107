@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@
   define("LAN_143", "[Caché sur demande]");
   define("LAN_144", "Site Internet");
   define("LAN_145", "Inscrit le");
-  define("LAN_146", "Nombre de visites depuis son inscription");
+  define("LAN_146", "Visites depuis l'inscription");
   define("LAN_147", "Messages dans la Chatbox");
   define("LAN_148", "Commentaires postés");
   define("LAN_149", "Messages sur le Forum");
@@ -60,4 +60,5 @@
   define("LAN_425", "Envoyer un Message privé");
   define("LAN_426", "");
   define("USERLAN_1", "Évaluation des pairs");
+define("USERLAN_2", "Vous n'avez pas les permissions requises pour voir cette page.");
   ?>

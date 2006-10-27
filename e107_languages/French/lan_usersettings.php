@@ -2,19 +2,19 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_usersettings.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-06 22:08:54 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Paramètres de l'utilisateur");
   define("LAN_7", "Nom affiché: ");
   define("LAN_8", "votre nom affiché sur ce site");
-  define("LAN_9", "Nom d'utilisateur: ");
-  define("LAN_10", "le nom que vous utiliserez pour vous connecter sur le site");
-  define("LAN_11", "le nom que vous utiliserez pour vous connecter sur le site - Celui ci ne pourra être modifié par vos soins, veuillez contacter un administrateur si vous avez besoin de le changer pour des raisons de sécurité");
+  define("LAN_9", "Identifiant: ");
+  define("LAN_10", "nom utilisé pour se connecter au site");
+  define("LAN_11", "nom utilisé pour se connecter au site - Celui ci ne pourra être modifié par vos soins, veuillez contacter un administrateur si vous avez besoin de le changer pour des raisons de sécurité");
   define("LAN_20", "Erreur");
   define("LAN_105", "Les deux mots de passe sont différents");
   define("LAN_106", "Cette adresse courriel semble être invalide");
@@ -35,7 +35,7 @@
   define("LAN_152", "Nouveau mot de passe: ");
   define("LAN_153", "Retaper votre nouveau mot de passe: ");
   define("LAN_154", "Enregistrer les paramètres");
-  define("LAN_155", "Mettre à jour les paramètres de cet utilisateur");
+  define("LAN_155", "Mettre à jour les paramètres utilisateur");
   define("LAN_185", "Vous avez laissé le champ 'mot de passe' vide ");
   define("LAN_308", "Nom réel : ");
   define("LAN_401", "Laisser vide pour conserver le mot de passe actuel");
@@ -60,7 +60,7 @@
   define("LAN_425", "Photographie");
   define("LAN_426", "Elle sera affichée dans votre profil");
   define("LAN_427", "Proposer ...");
-  define("LAN_428", "Actualité");
+  define("LAN_428", "".GLOBAL_LAN_NEWS_2."");
   define("LAN_429", "Lien");
   define("LAN_430", "Téléchargement");
   define("LAN_431", "Article");
@@ -94,5 +94,5 @@
   define("LAN_USET_8", "Signature / Fuseau Horaire");
   define("LAN_USET_9", "Certains champs requis (marqué par une *) manquent à vos paramètres.");
   define("LAN_USET_10", "Veuillez les mettre à jour maintenant pour continuer.");
-  define("LAN_USET_11", "Ce nom d'utilisateur ne peut être accepté comme valide, veuillez choisir un autre nom d'utilisateur");
+  define("LAN_USET_11", "Cet identifiant ne peut être accepté comme valide, veuillez choisir un autre identifiant");
   ?>

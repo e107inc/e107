@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_db.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-12 08:48:19 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -25,4 +25,17 @@
   define("DBLAN_14", "Fait");
   define("DBLAN_15", "Cliquer sur ce bouton pour vérifier si une ou plusieurs mise(s) à jour de votre base de données est/sont disponible(s)");
   define("DBLAN_16", "Vérifier");
+define("DBLAN_17", "Préf. Nom");
+define("DBLAN_18", "Préf. Valeur");
+define("DBLAN_19", "Cliquer le bouton pour ouvrir l'éditeur de préférences (utilisateurs avancés seulement)");
+define("DBLAN_20", "Éditeur des Préférences");
+define("DBLAN_21", "Supression vérifiée");
+define("DBLAN_22", "Extension: Voir et Scanner");
+define("DBLAN_23", "Scan Complété");
+define("DBLAN_24", "Nom");
+define("DBLAN_25", "Répertoire");
+define("DBLAN_26", "Rajouts inclus");
+define("DBLAN_27", "Installé");
+define("DBLAN_28", "Clicker le bouton pour scanner les changements des répertoires des extensions");
+define("DBLAN_29", "Scanner les répertoires des extensions");
   ?>

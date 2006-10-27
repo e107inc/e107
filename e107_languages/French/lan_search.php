@@ -2,17 +2,17 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-07-06 22:08:54 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("PAGE_NAME", "Recherche");
   
   define("LAN_20", "Erreur");
-  define("LAN_98", "Actualités");
+  define("LAN_98", "".GLOBAL_LAN_NEWS_2."s");
   define("LAN_99", "Commentaires");
   define("LAN_140", "Utilisateurs");
   define("LAN_180", "Chercher");
@@ -33,9 +33,9 @@
   define("LAN_SEARCH_1", "TOUT Sélectionner");
   define("LAN_SEARCH_2", "TOUT Désélectionner");
   define("LAN_SEARCH_3", "Occurence posté le ");
-  define("LAN_SEARCH_4", "Occurence trouvée dans le titre d'une actualité");
-  define("LAN_SEARCH_5", "Occurence trouvée dans le texte d'une actualité");
-  define("LAN_SEARCH_6", "Occurence trouvée dans l'extension du texte d'une actualité");
+  define("LAN_SEARCH_4", "Occurence trouvée dans le titre d'une ".GLOBAL_LAN_NEWS_1."");
+  define("LAN_SEARCH_5", "Occurence trouvée dans le texte d'une ".GLOBAL_LAN_NEWS_1."");
+  define("LAN_SEARCH_6", "Occurence trouvée dans l'extension du texte d'une ".GLOBAL_LAN_NEWS_1."");
   define("LAN_SEARCH_7", "Posté par ");
   define("LAN_SEARCH_8", " le ");
   define("LAN_SEARCH_9", "Sans titre");
@@ -84,8 +84,8 @@
   define("LAN_SEARCH_52", "Trouvé dans");
   define("LAN_SEARCH_53", "Occurence complète ");
   define("LAN_SEARCH_54", "Titre seulement");
-  define("LAN_SEARCH_55", "Rechercher dans les catégories d'actualité");
-  define("LAN_SEARCH_56", "Toutes les catégories d'actualité");
+  define("LAN_SEARCH_55", "Rechercher dans les catégories d'".GLOBAL_LAN_NEWS_1."");
+  define("LAN_SEARCH_56", "Toutes les catégories d'".GLOBAL_LAN_NEWS_1."");
   define("LAN_SEARCH_57", "Commentaires postés à ");
   define("LAN_SEARCH_58", "Tous les secteurs");
   define("LAN_SEARCH_59", "Tous les commentaires");
@@ -100,7 +100,7 @@
   define("LAN_SEARCH_68", "Date");
   define("LAN_SEARCH_69", "Pertinence");
   define("LAN_SEARCH_70", "Posté vers une occurence téléchargement item");
-  define("LAN_SEARCH_71", "Posté dans les commentaires des actualités ");
+  define("LAN_SEARCH_71", "Posté dans les commentaires des ".GLOBAL_LAN_NEWS_1."s ");
   define("LAN_SEARCH_72", "Signature");
   define("LAN_SEARCH_73", "Pas de Signature.");
   define("LAN_SEARCH_74", "Incrit(e) le");

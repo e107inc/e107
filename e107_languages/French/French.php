@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/French.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -16,9 +16,14 @@
   define("CHARSET", "utf-8");
   define("CORE_LAN1","Erreur : le thème requis est manquant.\\n\\nChangez le thème utilisé dans les préférences (administration) ou uploadez les fichiers du thème actuel sur le serveur.");
   //v.616
-  define("CORE_LAN2"," \\1 inscrit:"); // "\\1" représente le nom d'utilisateur.
+  define("CORE_LAN2"," \\1 inscrit:"); // "\\1" représente l'identifiant.
   define("CORE_LAN3","fichier attaché désactivé");
   //v0.7+
   define("CORE_LAN4", "Veuillez effacer le fichier install.php de votre serveur");
   define("CORE_LAN5", "si vous ne le faites pas, il y aura un risque de sécurité potentiel pour votre site web");
+
+//***** Changez les termes de cette section pour voir ces termes changer sur tous le site *****
+  define("GLOBAL_LAN_NEWS_1", "actualité");
+  define("GLOBAL_LAN_NEWS_2", "Actualité");
+//**************************************************************
   ?>

@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-27 14:43:46 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */

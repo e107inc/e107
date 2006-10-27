@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-06-15 01:47:23 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@
   define("EXTLAN_50", "Établir sur OUI autorisera l'utilisateur à cacher cette valeur aux non-administrateurs du site.");
   define("EXTLAN_51", "Tous les paramètres w3c valides peuvent être introduits ici<br />ie <i><strong>class='tbox' size='40' maxlength='80'</i></strong>");
   define("EXTLAN_52", "code validation regex");
-  define("EXTLAN_53", "Entrer le code regex that will need to be matched to make it a valid entry.<br />**regex delimiters are required**");
+  define("EXTLAN_53", "Entrer le code de l'Expression Régulière (<i>REGEX</i>) auquel l'entrée devra correspondre pour être valide.<br />**les délimiteurs regex sont requis**");
   define("EXTLAN_54", "Texte d'échec regex");
   define("EXTLAN_55", "Entrer un message d'erreur. Cela s'affichera si la validation regex a échouée.");
   define("EXTLAN_56", "Champs prédéfinis");
@@ -76,14 +76,20 @@
   define("EXTLAN_65", "Non - Ne sera pas affiché sur la page d'inscription");
   define("EXTLAN_66", "Oui - Sera affiché sur la page d'inscription");
   define("EXTLAN_67", "Non - Sera affiché sur la page d'inscription");
+define("EXTLAN_68", "Champ:");
+define("EXTLAN_69", "a été activé");
+define("EXTLAN_70", "ERREUR!! Champ:");
+define("EXTLAN_71", "n'a pas été activé!");
+define("EXTLAN_72", "a été désactivé");
+define("EXTLAN_73", "n'a pas été désactivé!");
   //textbox
-  define("EXTLAN_HELP_1", "<strong><i>Paramètres:</i></strong><br />Taille - Taille du champs<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
+  define("EXTLAN_HELP_1", "<strong><i>Paramètres:</i></strong><br />size - Taille du champs<br />maxlength - longueur maximum du champs<br /><br />class - css class du champs<br />style - css style string<br /><br />regex - code de validation regex<br />regexfail - texte d'échec de validation");
   //radio buttons
   define("EXTLAN_HELP_2", "Ce sera le texte d'aide des boutons radio");
   //dropdown
   define("EXTLAN_HELP_3", "Ce sera le texte d'aide des listes déroulante");
   //db field
-  define("EXTLAN_HELP_4", "<strong><i>Valeurs:</i></strong><br />Il devrait y avoir TOUJOURS trois valeurs à donner :<br /><ol><li>dbtable</li><li>field containing id</li><li>field containing value</li></ol><br />");
+  define("EXTLAN_HELP_4", "<strong><i>Valeurs:</i></strong><br />Il devrait TOUJOURS y avoir trois valeurs à donner :<br /><ol><li>dbtable</li><li>field containing id</li><li>field containing value</li></ol><br />");
   //textarea
   define("EXTLAN_HELP_5", "Ce sera le texte d'aide des zones de texte");
   //integer

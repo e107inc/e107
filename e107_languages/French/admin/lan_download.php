@@ -2,11 +2,11 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-06-24 00:10:47 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:42 $
+|     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("DOWLAN_1", "Téléchargement ajouté dans la base de données.");
@@ -40,7 +40,7 @@
   define("DOWLAN_32", "Options Téléchargements");
   define("DOWLAN_33", "êtes-vous sûr de vouloir supprimer ce téléchargement ?");
   define("DOWLAN_34", "êtes-vous sûr de vouloir supprimer cette catégorie de téléchargement ?");
-  define("DOWLAN_35", "Téléchargement");
+
   define("DOWLAN_36", "Supprimé");
   define("DOWLAN_37", "Catégorie");
   define("DOWLAN_38", "Aucune catégorie n'existe");
@@ -64,7 +64,6 @@
   define("DOWLAN_56", "Tri par ");
 
   define("DOWLAN_59", "Nom du fichier");
-  define("DOWLAN_60", "Auteur");
 
   define("DOWLAN_62", "Croissant");
   define("DOWLAN_63", "Décroissant");
@@ -107,7 +106,7 @@
   define("DOWLAN_129", "laisser en blanc si vous n'utilisez pas les miroirs");
   define("DOWLAN_130", "Ajouter un autre miroir");
   define("DOWLAN_131", "Sélectionner le fichier local");
-  define("DOWLAN_132", "SVP entrer un miroir à utiliser, puis l'adresse de téléchargement");
+  define("DOWLAN_132", "Veuillez entrer un miroir à utiliser, puis l'adresse de téléchargement");
 
   define("DOWLAN_133", "Miroir mis à jour en base de données");
   define("DOWLAN_134", "Miroir sauvegarder en base de données");
@@ -129,4 +128,7 @@
   define("DOWLAN_148", "Cocher pour mettre la date à aujourd'hui");
   define("DOWLAN_149", "Ou cliquez ici pour utiliser un fichier externe");
   define("DOWLAN_150", "Prévenir l'admin lorsqu'un téléchargement est annoncé comme déféctueux");
+define("DOWLAN_151", "Le rapport de téléchargement défectueux est disponible pour");
+define("DOWLAN_152", "Le fichier n'a pas pu être déplacé");
+define("DOWLAN_153", "Déplacer le fichier dans le répertoire des téléchargements");   
   ?>

@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -13,6 +13,14 @@
 define("CONTENT_NOTIFY_LAN_1", "Événements du gestionnaire de contenu");
 define("CONTENT_NOTIFY_LAN_2", "Item de contenu proposé par un utilisateur");
 define("CONTENT_NOTIFY_LAN_3", "Contenu proposé");
+
+define("CONTENT_TYPE_LAN_0", "catégories");
+define("CONTENT_TYPE_LAN_1", "auteurs");
+define("CONTENT_TYPE_LAN_2", "archive");
+define("CONTENT_TYPE_LAN_3", "meilleur évaluation");
+define("CONTENT_TYPE_LAN_4", "meilleure qualité");
+define("CONTENT_TYPE_LAN_5", "récent");
+
   define("CONTENT_ICON_LAN_0", "Éditer");
   define("CONTENT_ICON_LAN_1", "Supprimer");
   define("CONTENT_ICON_LAN_2", "Options");

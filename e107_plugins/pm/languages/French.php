@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/French.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 14:43:47 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
   define("LAN_PM_9", "Confirmation de réception");
   define("LAN_PM_10", "Cocher pour recevoir un courriel lorsque le message sera lu");
   define("LAN_PM_11", "Ajouter un autre fichier");
-  define("LAN_PM_12", "vous n'êtes pas autorisé à utiliser le système de Messagerie Privée");
+  define("LAN_PM_12", "Vous n'êtes pas autorisé à utiliser le système de Messagerie Privée");
   define("LAN_PM_13", "Votre boîte d'envoi est en ce moment pleine à {PERCENT}%, vous n'êtes maintenant plus en mesure d'envoyer des messages privés sans en supprimer quelques uns");
   define("LAN_PM_14", "ERREUR: Duplicata possible de message, MP non envoyé");
   define("LAN_PM_15", "Vous n'êtes pas autorisé à envoyer de messages aux groupes");

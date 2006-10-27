@@ -2,14 +2,14 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/French/French.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-27 13:23:44 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("CHATBOX_L1", "Impossible d'accepter le message car ce nom d'utilisateur est enregistré. Si c'est votre nom d'utilisateur, veuillez vous identifier puis poster.");  // On utilisera "message" pour "post" ici pour réserver "post" pour les forums
+  define("CHATBOX_L1", "Impossible d'accepter le message car cet identifiant existe déjà. Si c'est votre identifiant, veuillez vous connecter pour poster.");  // On utilisera "message" pour "post" ici pour réserver "post" pour les forums
   define("CHATBOX_L2", "Chatbox");
   define("CHATBOX_L3", "Vous devez être identifié pour poster des commentaires sur ce site. Veuillez vous identifier ou vous <a href='".e_BASE."signup.php'>inscrire</a> si vous n'êtes pas enregistré.");
   define("CHATBOX_L4", "Envoyer");

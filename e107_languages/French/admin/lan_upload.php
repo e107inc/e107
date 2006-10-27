@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-04-19 00:53:55 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 14:43:42 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
   define("UPLLAN_12", "Copie d'écran");
   define("UPLLAN_13", "Description");
   define("UPLLAN_14", "Démonstration");
-  define("UPLLAN_16", "installer dans une nouvelle actualité");
+  define("UPLLAN_16", "installer dans une nouvelle ".GLOBAL_LAN_NEWS_1."");
   define("UPLLAN_17", "supprimer l'upload de la liste");
   define("UPLLAN_18", "Voir les détails");
   define("UPLLAN_19", "Il n'y a aucun upload public non vérifié");

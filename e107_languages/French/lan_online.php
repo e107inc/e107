@@ -2,10 +2,10 @@
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
-| Traducteurs: communauté française e107
+| Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_online.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-07-06 21:51:56 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-27 14:43:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -32,14 +32,14 @@
   define("EMAIL", "Courriel");
   define("FORUM", "Index du forum principal");
   define("LINKS", "Liens");
-  define("NEWS", "Actualités");
+  define("NEWS", "".GLOBAL_LAN_NEWS_2."s");
   define("OLDPOLLS", "Anciens sondages");
   define("POLLCOMMENT", "Sondage");
   define("PRINTPAGE", "Page déimpression");
   define("LOGIN", "Page déidentification");
   define("SEARCH", "Recherche");
   define("STATS", "Statistiques du site");
-  define("SUBMITNEWS", "Proposition d'actualités");
+  define("SUBMITNEWS", "Proposition d'".GLOBAL_LAN_NEWS_1."s");
   define("UPLOAD", "Uploads public");
   define("USERPAGE", "Profil déun utilisateur");
   define("USERSETTINGS", "Paramètres de son compte");
