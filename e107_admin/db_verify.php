@@ -11,61 +11,49 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-10-24 13:34:38 $
-|     $Author: mrpete $
+|     $Revision: 1.21 $
+|     $Date: 2006-10-27 22:25:50 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 $e_sub_cat = 'database';
 require_once("auth.php");
 
+
 $filename = "sql/core_sql.php";
-@$fd = fopen ($filename, "r");
+$fd = fopen ($filename, "r");
 $sql_data = @fread($fd, filesize($filename));
-@fclose ($fd);
+fclose ($fd);
 
 if (!$sql_data) {
 	echo DBLAN_1."<br /><br />";
 	exit;
 }
 
-$tables["core"] = $sql_data;
+ $tables["core"] = $sql_data;
 
 if (!getperms("0")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
 
-//Get installed plugins
-if($sql->db_Select("plugin","plugin_path","plugin_installflag = '1'")){
-	while($row = $sql->db_Fetch()){
-		$pluginList[] = $row['plugin_path'];
-	}
-}
-
 //Get any plugin _sql.php files
-$handle = opendir(e_PLUGIN);
-$c = 1;
-while (false !== ($file = readdir($handle))) {
-	if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file) && in_array($file, $pluginList))
-	{
-		$plugin_handle = opendir(e_PLUGIN.$file."/");
-		while (false !== ($file2 = readdir($plugin_handle)))
-		{
-			if (preg_match("/(.*?)_sql.php/", $file2, $matches))
-			{
-				$filename = e_PLUGIN.$file."/".$file2;
-				@$fd = fopen ($filename, "r");
-				$sql_data = @fread($fd, filesize($filename));
-				@fclose ($fd);
-				$tables[$matches[1]] = $sql_data;
-			}
+
+    foreach($pref['e_sql_list'] as $path => $file)
+    {
+        $filename = e_PLUGIN.$path."/".$file.".php";
+		if(is_readable($filename)){
+        	$fd = fopen($filename, "r");
+        	$sql_data = fread($fd, filesize($filename));
+        	fclose ($fd);
+			$id = str_replace("_sql","",$file);
+        	$tables[$id] = $sql_data;
+		}else{
+        	echo $filename." is not readable<br />";
 		}
-		closedir($plugin_handle);
-	}
-}
-closedir($handle);
+    }
+
 
 
 function read_tables($tab) {
@@ -135,7 +123,7 @@ function check_tables($what) {
 	$table_list = "";
 	read_tables($what);
 
-	$text = "<form method='POST' action='".e_SELF."' id='checktab'>
+	$text = "<form method='post' action='".e_SELF."' id='checktab'>
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
@@ -303,7 +291,7 @@ if(isset($_POST['do_fix'])){
 	}
 		$text .= "</table></div>";
 		$text .="<div style='text-align:center'><br />
-				<form method='POST' action='db.php'>
+				<form method='post' action='db.php'>
 				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
 				</form>
 				</div>";
@@ -314,16 +302,16 @@ if(isset($_POST['do_fix'])){
 
 
 // ---------------------- Main Form and Submit. ------------------------
-if (!$_POST) {
+if (!$_POST['db_verify'] && !$_POST['do_fix']) {
 	$text = "
-		<form method='POST' action='".e_SELF."'>
+		<form method='post' action='".e_SELF."'>
 		<table border=0 align='center'>
 		<tr><td>".DBLAN_14."<br /><br />";
 	foreach(array_keys($tables) as $x) {
 		$text .= "<input type='checkbox' name='table_".$x."' />".$x."<br />";
 	}
 	$text .= "
-		<br /><input class='button' type='submit' value='".DBLAN_15."' />
+		<br /><input class='button' name='db_verify' type='submit' value='".DBLAN_15."' />
 		</td></tr></table></form>";
 	$ns->tablerender(DBLAN_16, $text);
 } else {
@@ -332,7 +320,7 @@ if (!$_POST) {
 			$xx = $match[1];
 			$str = "<br />
 				<div style='text-align:center'>
-				<form method='POST' action='db.php'>
+				<form method='post' action='db.php'>
 				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
 				</form>
 				</div>";

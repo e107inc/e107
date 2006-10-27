@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-10-22 15:48:02 $
+|     $Revision: 1.53 $
+|     $Date: 2006-10-27 22:25:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class e107plugin
 {
-    var	$plugin_addons = array("e_rss", "e_notify", "e_linkgen", "e_list", "e_bb", "e_meta", "e_emailprint", "e_frontpage", "e_latest", "e_status", "e_search", "e_sc", "e_module", "e_comment");
+    var	$plugin_addons = array("e_rss", "e_notify", "e_linkgen", "e_list", "e_bb", "e_meta", "e_emailprint", "e_frontpage", "e_latest", "e_status", "e_search", "e_sc", "e_module", "e_comment", "e_sql");
 
 	/**
 	 * Returns an array containing details of all plugins in the plugin table - should noramlly use e107plugin::update_plugins_table() first to make sure the table is up to date.
@@ -460,7 +460,7 @@ class e107plugin
 		global $sql,$pref;
         $query = "SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_addons !='' ORDER BY plugin_path ASC";
 
-		unset($pref['shortcode_list'],$pref['bbcode_list']);
+		unset($pref['shortcode_list'],$pref['bbcode_list'],$pref['e_sql_list']);
 
 		if ($sql -> db_Select_gen($query))
 		{
@@ -479,22 +479,29 @@ class e107plugin
                 // search for .bb and .sc files.
 				$sc_array = array();
 				$bb_array = array();
+				$sql_array = array();
 
                 foreach($tmp as $adds)
 				{
-                	if(ereg("\.sc$",$adds))
+                	if(substr($adds,-3) == ".sc")
 					{
 						$sc_name = substr($adds, 0,-3);  // remove the .sc
                     	$sc_array[$sc_name] = "0"; // default userclass.
 					}
 
-					if(ereg("\.bb$",$adds))
+					if(substr($adds,-3) == ".bb")
 					{
 						$bb_name = substr($adds, 0,-3); // remove the .bb
                     	$bb_array[$bb_name] = "0"; // default userclass.
 					}
+
+					if(substr($adds,-4) == "_sql")
+					{
+						$pref['e_sql_list'][$path] = $adds;
+					}
 				}
 
+                // Build Bbcode list
                 if(count($bb_array) > 0)
 				{
 					ksort($bb_array);
@@ -505,6 +512,8 @@ class e107plugin
 				{
                     unset($pref['bbcode_list'][$path]);
 				}
+
+                // Build shortcode list
 				if(count($sc_array) > 0){
 					ksort($sc_array);
 					$pref['shortcode_list'][$path] = $sc_array;
@@ -513,6 +522,7 @@ class e107plugin
 				{
                     unset($pref['shortcode_list'][$path]);
 				}
+
 			}
 		}
 
@@ -534,16 +544,15 @@ class e107plugin
 			}
 		}
 
-
 		if(!is_object($fl)){
 			require_once(e_HANDLER.'file_class.php');
  			$fl = new e_file;
 		}
 
 		// Grab List of Shortcodes & BBcodes
-		$shortcodeList	 = $fl->get_files(e_PLUGIN.$plugin_path, ".sc$", "standard", 1);
-		$bbcodeList		 = $fl->get_files(e_PLUGIN.$plugin_path, ".bb$", "standard", 1);
-
+		$shortcodeList	= $fl->get_files(e_PLUGIN.$plugin_path, ".sc$", "standard", 1);
+		$bbcodeList		= $fl->get_files(e_PLUGIN.$plugin_path, ".bb$", "standard", 1);
+        $sqlList		= $fl->get_files(e_PLUGIN.$plugin_path, "_sql.php$", "standard", 1);
 
 		// Search Shortcodes
 		foreach($shortcodeList as $sc)
@@ -562,6 +571,16 @@ class e107plugin
 				$p_addons[] = $bb['fname'];
 			}
 		}
+
+        // Search _sql files.
+        foreach($sqlList as $esql)
+		{
+			if(is_readable(e_PLUGIN.$plugin_path."/".$esql['fname']))
+			{
+				$p_addons[] = str_replace(".php","",$esql['fname']);
+			}
+		}
+
 
 		if($debug)
 		{
