@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.8 $
-|     $Date: 2006-10-21 16:32:01 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-27 11:04:54 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -104,7 +104,7 @@ define("LAN_SIGNUP_42", "Возникла проблема, регистраци
 define("LAN_SIGNUP_43", "Письмо отправлено");  //Email Sent
 define("LAN_SIGNUP_44", "Письмо активации отправлено для:"); //Activation email sent to:
 define("LAN_SIGNUP_45", "Пожалуйста, проверьте ваш почтовый ящик."); //Please check your inbox.
-define("LAN_SIGNUP_47", "Отправить вновь письмо активации"); //Re-Send Activation Email
+define("LAN_SIGNUP_47", "Отправить вновь письмо активации"); //ReSend Activation Email
 define("LAN_SIGNUP_48", "Имя пользователя или Email"); //Username or Email
 define("LAN_SIGNUP_49", "Если вы зарегистрировались с неправильным email-адресом, введите здесь новый адрес и пароль:"); //If you registered with the wrong email address, type a new one and your password here:
 define("LAN_SIGNUP_50", "Новый email-адрес"); //New Email

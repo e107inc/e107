@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.13 $
-|     $Date: 2006-10-15 09:28:18 $
+|     $Revision: 1.14 $
+|     $Date: 2006-10-27 11:05:11 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -206,7 +206,7 @@ define("LAN_UPDATE","Обновить");
 define("LAN_SAVE","Сохранить");
 define("LAN_SAVED","Сохранено");
 define("LAN_SETSAVED","Ваши настройки были сохранены");
-define("LAN_ERROR","Ошибка");
+
 define("LAN_CONFIRMDEL","Подтвердите желание удалить");
 define("LAN_OPTIONS","Настройки"); //Options
 define("LAN_PREFS","Свойства"); //Preferences
@@ -263,6 +263,8 @@ define("LAN_DISABLED","Выключено"); //Disabled
 define("LAN_ENABLED", "Включено");  //Enabled
 
 define("LAN_PRESET_CONFIRMSAVE","Сохранить текущие значения формы как значения по умолччанию для этой страницы?");
-define("LAN_CONFIGURE", "Конфигурировать");   
+define("LAN_CONFIGURE", "Конфигурировать");
+
+define("LAN_BACK","Назад"); //Back
 
 ?>
