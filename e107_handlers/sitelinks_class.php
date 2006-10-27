@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2006-10-22 14:15:24 $
+|     $Revision: 1.100 $
+|     $Date: 2006-10-27 15:45:42 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -199,8 +199,8 @@ class sitelinks
 
 			// Only check if its highlighted if it has an URL
 			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
-				$linkstart = $style['linkstart_hilite'];
-				$linkadd = " class='".$style['linkclass_hilite']."'";
+				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
+				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
 			}
 
@@ -222,8 +222,8 @@ class sitelinks
 		}
 
 		// mobile phone support.
-		$accesskey = ($style['accesskey']===TRUE) ? " accesskey='".$linkInfo['link_order']."' " : "";
-        $accessdigit = ($style['accessdigit']===TRUE && $style['accesskey']===TRUE) ? $linkInfo['link_order'].". " : "";
+		$accesskey = (isset($style['accesskey']) && $style['accesskey']==TRUE) ? " accesskey='".$linkInfo['link_order']."' " : "";
+        $accessdigit = (isset($style['accessdigit'],$style['accesskey']) && $style['accessdigit']==TRUE && $style['accesskey']==TRUE) ? $linkInfo['link_order'].". " : "";
 
 		// If its a link.. make a link
 		$_link = "";
@@ -253,8 +253,8 @@ function hilite($link,$enabled=''){
 
     $link = $tp->replaceConstants($link,TRUE);
   	$tmp = explode("?",$link);
-    $link_qry = $tmp[1];
-    $link_slf = $tmp[0];
+    $link_qry = (isset($tmp[1])) ? $tmp[1] : "";
+    $link_slf = (isset($tmp[0])) ? $tmp[0] : "";
 	$link_pge = basename($link_slf);
 	$link_match = strpos(e_SELF,$tmp[0]);
 
@@ -278,7 +278,7 @@ function hilite($link,$enabled=''){
 
 // --------------- highlighting for 'HOME'. ----------------
 	global $pref;
-	list($fp,$fp_q) = explode("?",$pref['frontpage']['all']);
+ 	list($fp,$fp_q) = explode("?",$pref['frontpage']['all']."?");
 	if(strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $tmp[1] && $link == e_HTTP."index.php"){
 	  	return TRUE;
 	}
