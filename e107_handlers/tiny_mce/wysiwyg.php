@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-07-04 06:17:11 $
+|     $Revision: 1.26 $
+|     $Date: 2006-10-27 22:36:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -53,14 +53,14 @@ $text .= ",plugins : 'table,contextmenu";
 
 $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
 $text .= (ADMIN) ? ",ibrowser" : ",image";
-$text .= ",iespell,zoom,flash,forecolor";
+$text .= ",iespell,zoom,media,forecolor";
 $text .= "'\n"; // end of plugins list.
 
 $text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
 
 $text .= ",theme_advanced_buttons2   : 'tablecontrols,separator,undo,redo,separator,link,unlink";
 $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
-$text .= ",charmap,iespell,flash";
+$text .= ",charmap,iespell,media";
 $text .= (ADMIN) ? ",ibrowser," : ",image";
 $text .= (ADMIN) ? ",code" : "";
 $text .= "'"; // end of buttons 2
@@ -115,7 +115,10 @@ function tinymce_html_bbcode_control(type, source) {
 */
 
             }
-            // Convert e107 paths.
+
+				source = source.replace(/<a href=\"(.*?)\"(.*?)>(.*?)<\/a>/gi,'[link=$1 $2]$3[/link]');
+
+		// Convert e107 paths.
 
 				source = source.replace('\"".$IMAGES_DIRECTORY."','\"{e_IMAGE}');
 				source = source.replace('\"".$PLUGINS_DIRECTORY."','\"{e_PLUGIN}');
@@ -142,7 +145,7 @@ function tinymce_html_bbcode_control(type, source) {
             }
 /*
 			source = source.replace(/\[b\]/gi,'<strong>');
-			source = source.replace(/\[\/b\]/gi,'</strong>');
+			source = source.replace(/\[\/b\]/gi,'<\/strong>');
 */
 			source = source.replace(/\{e_IMAGE\}/gi,'".$IMAGES_DIRECTORY."');
 			source = source.replace(/\{e_PLUGIN\}/gi,'".$PLUGINS_DIRECTORY."');

@@ -1,10 +1,10 @@
 // Import theme specific language pack
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/editor_plugin.js,v $
-// $Revision: 1.3 $
-// $Date: 2006-04-05 05:37:10 $
+// $Revision: 1.4 $
+// $Date: 2006-10-27 22:36:57 $
 // $Author: e107coders $
 
-tinyMCE.importPluginLanguagePack('ibrowser', 'en,es,da,de,fr,nl,pl,sv');
+tinyMCE.importPluginLanguagePack('ibrowser', 'en,es,da,de,fr,nl,pl,sv,ru');
 
 // Returns the HTML contents of the ibrowser control.
 
