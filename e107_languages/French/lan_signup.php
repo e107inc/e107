@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-10-27 14:43:41 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-27 20:07:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -92,6 +92,20 @@
   define("LAN_EMAIL_06", "Merci de vous &ecirc;tre enregistr&eacute;.");
   define("LAN_SIGNUP_37","Cette étape de l'enregistrement est terminée. L'administateur du site devra approuver votre adhésion. Lorsque cela aura été fait, vous recevrez un courriel de confirmation vous informant que votre adhésion a été approuvée.");¨
 
-  //   define("LAN_SIGNUP_38", "Vous avez entré deux adresses courriel différentes. Veuillez indiquer une adresse courriel identique dans les deux champs fournis");
-  //   define("LAN_SIGNUP_39", "Re-tapez l'adresse courriel:");
+   define("LAN_SIGNUP_38", "Vous avez entré deux adresses courriel différentes. Veuillez indiquer une adresse courriel identique dans les deux champs fournis");
+   define("LAN_SIGNUP_39", "Re-tapez l'adresse courriel:");
+// 0.7.6
+define("LAN_SIGNUP_40", "Activation non nécessaire");
+define("LAN_SIGNUP_41", "Votre compte est déjà activé.");
+define("LAN_SIGNUP_42", "Il y a eu un problème, le courriel d'enregistrement n'a pas été envoyé, veuillez contacter l'administrateur du site web.");
+define("LAN_SIGNUP_43", "Courriel envoyé");
+define("LAN_SIGNUP_44", "Courriel d'enregistrement envoyé à :");
+define("LAN_SIGNUP_45", "Veuillez consulter votre boîte de réception.");
+define("LAN_SIGNUP_47", "Ré-envoyer le Courriel d'enregistrement");
+define("LAN_SIGNUP_48", "Identifiant ou Courriel");
+define("LAN_SIGNUP_49", "Si vous vous êtes enregistré avec la mauvaise adresse électronique, écrivez une nouvelle adresse et votre mot de passe ici :");
+define("LAN_SIGNUP_50", "Nouveau Courriel");
+define("LAN_SIGNUP_51", "Ancien mot de passe");
+define("LAN_SIGNUP_52", "Mot de passe incorrect");
+
   ?>

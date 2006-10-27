@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/French.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-27 14:43:41 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-27 20:07:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -21,8 +21,20 @@
   //v0.7+
   define("CORE_LAN4", "Veuillez effacer le fichier install.php de votre serveur");
   define("CORE_LAN5", "si vous ne le faites pas, il y aura un risque de sécurité potentiel pour votre site web");
+// v0.7.6
+define("CORE_LAN6", "La protection contre les flood est activée sur ce site et vous êtes prévenu que si vous continuez à demander des pages, vous pourrez être banni.");
+define("CORE_LAN7", "Le noyau essait de restaurer les prefs d'une sauvegarde automatique.");
+define("CORE_LAN8", "Erreur des Prefs du Noyau");
+define("CORE_LAN9", "Le noyau n'a pas pu restaurer d'une sauvegarde automatique. Éxécution du script stoppé.");
+define("CORE_LAN10", "Cookie corrompu détecté - déconnexion.");
 
-//***** Changez les termes de cette section pour voir ces termes changer sur tous le site *****
+
+define("LAN_WARNING", "Avertissement!");
+define("LAN_ERROR", "Erreur");
+
+
+
+//***** Changez les termes de cette section pour voir ces termes changer sur tout le site *****
   define("GLOBAL_LAN_NEWS_1", "actualité");
   define("GLOBAL_LAN_NEWS_2", "Actualité");
 //**************************************************************

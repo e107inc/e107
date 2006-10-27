@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_error.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-27 14:43:41 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-27 20:07:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -34,4 +34,14 @@
   define("LAN_ERROR_22", "Veuillez cliquer ici pour vous rendre à la page de recherche de ce site");
   define("LAN_ERROR_23", "Votre tentative d'accès à ");
   define("LAN_ERROR_24", " a échoué.");
+// 0.7.6
+define("LAN_ERROR_25", "[1]: Incapable de lire les réglages du noyau dans la base de données - Les réglages du noyau existent mais ne peuvent être sésérialisés. Tentative de restauration de la sauvegarde du noyau ...");
+define("LAN_ERROR_26", "[2]: Incapable de lire les réglages du noyau dans la base de données - les réglages du noyau sont non-existants.");
+define("LAN_ERROR_27", "[3]: Réglages du noyau sauvegardés - la sauvegarde est active.");
+define("LAN_ERROR_28", "[4]: Pas de sauvegarde du noyau trouvée. Veuillez lancer l'outil <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> pour reconstruire vos réglages du noyau. <br />After rebuilding your core please save a backup from the admin/sql screen.");
+define("LAN_ERROR_29", "[5]: Un(des) champ(s) a été laissé vide. Veuillez resoumettre le formulaire et remplir les champs requis.");
+define("LAN_ERROR_30", "[6]: Incapable de former une connexion valide à mySQL. Veuillez vérifier que votre fichier e107_config.php contient les informations correctes.");
+define("LAN_ERROR_31", "[7]: mySQL fonctionne mais la base de données ({$mySQLdefaultdb}) n'a pu être connectée.<br />Veuillez vérifier qu'elle existe et que votre fichier e107_config.php contient les informations correctes.");
+define("LAN_ERROR_32", "Pour compléter la mise à jour, copiez le texte suivant dans votre fichier e107_config.php :");
+
   ?>

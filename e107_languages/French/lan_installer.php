@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_installer.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-27 14:43:41 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 20:07:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -94,7 +94,7 @@
 
   [b]Téléchargements[/b]
   Extensions: [link=http://e107coders.org]http://e107coders.org[/link]
-  Themes: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+  Thèmes: [link=http://e107themes.org]http://e107themes.org[/link]
 
   Merci d'essayer le portail web e107, l'équipe de développement espère qu'il saura satisfaire aux exigences de votre site Web.
   (Vous pourrez supprimer ce message de votre section d'administration.)");

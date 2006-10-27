@@ -4,12 +4,12 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_email.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-27 14:43:41 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-27 20:07:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-   define("PAGE_NAME", "Courriel");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Courriel"); }
    define("LAN_EMAIL_1", "De :");
    define("LAN_EMAIL_2", "Adresse IP de l'expéditeur :");
    define("LAN_EMAIL_3", "Item envoyée de ");

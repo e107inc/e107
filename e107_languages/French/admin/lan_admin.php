@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-10-27 14:43:42 $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-27 20:07:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -243,7 +243,8 @@ define("LAN_UPLOAD_SERVEROFF", "Cette option est désactivée puisque l'upload d
 define("LAN_DISABLED","Désactivé");
 define("LAN_ENABLED", "Activé");
 
-define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
+define("LAN_PRESET_CONFIRMSAVE","Sauvegarder par défaut les valeurs courantes des champs pour cette page ?");
 define("LAN_CONFIGURE", "Configurer");   
+define("LAN_BACK","Retour");
 
 ?>

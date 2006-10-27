@@ -4,12 +4,12 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_lancheck.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-10-27 14:43:42 $
+|     $Revision: 1.3 $
+|     $Date: 2006-10-27 20:07:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("LAN_CHECK_1", "Sélectionner le langage à vérifier");
+  define("LAN_CHECK_1", "Vérifier le fichiers du langage");
   define("LAN_CHECK_2", "Commencer la vérification");
   define("LAN_CHECK_3", "Vérification de");
   define("LAN_CHECK_4", "Fichier manquant !");
