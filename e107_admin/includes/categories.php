@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/categories.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-27 23:06:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 $text = "<div style='text-align:center'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>";
-	
+
 foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 	$text_check = FALSE;
 	$text_cat = "<tr><td class='fcaption' colspan='2'>".$admin_cat['title'][$cat_key]."</td></tr>
@@ -49,6 +49,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 				extract($row);
 				include(e_PLUGIN.$plugin_path."/plugin.php");
 				if ($eplug_conffile) {
+					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs");  
 					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
 					$plugin_array[ucfirst($eplug_name)] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
 					//$text_rend = render_links(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, $plugin_icon, 'default');
@@ -72,11 +73,11 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 		$text .= $text_cat;
 	}
 }
-	
+
 $text .= "</table></div>";
-	
+
 $ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
-	
+
 echo admin_info();
-	
+
 ?>

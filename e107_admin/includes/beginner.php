@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/beginner.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-27 23:06:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -54,6 +54,7 @@ if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) {
 		extract($row);
 		include(e_PLUGIN.$plugin_path."/plugin.php");
 		if ($eplug_conffile) {
+			$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs");  
 			$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
 			$plugin_array[ucfirst($eplug_name)] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
 		}
