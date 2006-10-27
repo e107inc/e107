@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/French/French.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-27 14:43:42 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-27 20:09:26 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@
   define("CHATBOX_L16", "Anonyme");
   define("CHATBOX_L17", "Message doublon");   // Duplicate post
   define("CHATBOX_L18", "Messages Chatbox modérés");
-  define("CHATBOX_L19", "Vous pouvez seulement poster une fois toutes les ".FLOODTIMEOUT."secondes");
+  define("CHATBOX_L19", "Vous pouvez seulement poster une fois toutes les ".(FLOODPROTECT ? FLOODTIMEOUT : 'n/a')."secondes");
   define("CHATBOX_L20", "Chatbox (tous les messages)");
   define("CHATBOX_L21", "Messages Chat ");
   define("CHATBOX_L22", "le");

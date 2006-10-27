@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/French.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-27 14:43:47 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-27 20:09:26 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ define("RSS_LAN_ADMINMENU_2", "Lister");
 define("RSS_LAN_ADMINMENU_4", "Importer");
 
 define("RSS_LAN_ERROR_1", "Ceci n'est pas une ressource rss valide<br /><br /><a href='".e_SELF."'><< retourner à la liste de ressources rss</a>");
-define("RSS_LAN_ERROR_2", "Votre fichier e107_config.php contient des espaces avant les caractères &lt;? . Vous devriez enlever ces espaces si vous désirez avoir un source RSS valide.");
+define("RSS_LAN_ERROR_2", "Votre fichier e107_config.php ou vos fichiers de langage contient des espaces ou des caractères avant les caractères &lt;? . Vous devriez enlever ces espaces à l'aide d'un éditeur de texte non-utf8 si vous désirez avoir une source RSS valide.");
 define("RSS_LAN_ERROR_3", "Aucune ressource rss ne sont encore présentes<br />veuillez utiliser la fonction d'importation pour importer des ressources rss disponibles ou créez un ressource rss manuellement.");
 define("RSS_LAN_ERROR_4", "Aucune ressource rss n'est disponible pour l'instant");
 define("RSS_LAN_ERROR_5", "Cette entrée rss n'existe pas");

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/alt_auth/languages/French/lan_ldap_auth.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-10-27 14:43:42 $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-27 20:09:26 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -25,4 +25,5 @@ define("LDAPLAN_11", "ATTENTION: Il semble que le module ldap n'est pas disponib
 define("LDAPLAN_12", "Type de serveur");
 define("LDAPLAN_13", "Mettre à jour les réglages");
 define("LDAPLAN_14", "Retourner aux réglages principaux de alt_auth");
+
   ?>

@@ -4,12 +4,12 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/French.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-27 14:43:46 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-27 20:09:26 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  define("PAGE_NAME", "Liste des nouveautés");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Liste des nouveautés"); }
   
   define("LIST_PLUGIN_1", "Nouveautés");
   define("LIST_PLUGIN_2", "Cette extension vous permet d'afficher une liste des ajouts récents de toutes les catégories d'e107. Vous pouvez soit visualiser la liste des données depuis votre dernière visite, ou bien regarder les dernières ajouts généraux. Sans compter que la page contient un menu également. Chaque extension est configurable dans l'espace Administration.");

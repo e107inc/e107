@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-27 14:43:42 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-27 20:09:26 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -104,8 +104,8 @@ define("CONTENT_TYPE_LAN_5", "récent");
   define("CONTENT_LAN_10", "le");
   define("CONTENT_LAN_11", "par");
   define("CONTENT_LAN_12", "Meilleure qualité");
-  //  define("CONTENT_LAN_13", "");
-  //  define("CONTENT_LAN_14", "");
+define("CONTENT_LAN_13", "liste");
+define("CONTENT_LAN_14", "-- catégories --");
   //  define("CONTENT_LAN_15", "");
   //  define("CONTENT_LAN_16", "");
   //  define("CONTENT_LAN_17", "");

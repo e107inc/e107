@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-10-27 14:43:46 $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-27 20:09:26 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -49,6 +49,8 @@
   define("LOGIN_MENU_L37", "Mettre à jour les réglages");
   define("LOGIN_MENU_L38", "Réglages mis à jour");
   define("LOGIN_MENU_L39", "Quitter l'administration");
+define("LOGIN_MENU_L40", "Ré-envoyer le courriel d'activation");
 
 define("LOGIN_MENU_L50", "Pas de nouveautés");
+
   ?>
