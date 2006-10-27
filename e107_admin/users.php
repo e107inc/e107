@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2006-09-05 02:26:49 $
+|     $Revision: 1.85 $
+|     $Date: 2006-10-27 02:40:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1003,7 +1003,7 @@ class users{
         	$sql3 = new db;
 		}
 
-        $sql3 -> db_Select_gen($query,TRUE);
+        $sql3 -> db_Select_gen($query);
 			while($row = $sql3-> db_Fetch()){
 				  	echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
                     $this->resend($row['user_id'],$row['user_sess'],$row['user_name'],$row['user_email'],$row['user_language']);
