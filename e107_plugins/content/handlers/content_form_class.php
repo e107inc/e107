@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.120 $
-|		$Date: 2006-10-13 19:12:08 $
+|		$Revision: 1.121 $
+|		$Date: 2006-10-28 10:27:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@ class contentform{
 
 				$TRPRE = "<tr>";
 				$TRPOST = "</tr>";
-				$TDPRE1 = "<td class='forumheader3' style='white-space:nowrap;vertical-align:top;'>";
+				$TDPRE1 = "<td class='forumheader3' style='vertical-align:top;'>";
 				$TDPRE2 = "<td class='forumheader3' style='vertical-align:top;'>";
 				$TDPOST = "</td>";
 				$CONTENT_CONTENT_PREVIEW = "
@@ -1460,7 +1460,7 @@ class contentform{
 						<td class='".$class."' style='width:5%; text-align:left'>".$catid."</td>
 						<td class='".$class."' style='width:5%; text-align:center'>".($row['content_icon'] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
 						<td class='".$class."' style='width:15%'>".($authordetails[0] != "0" ? "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".CONTENT_ICON_USER."</a>" : "")." ".$authordetails[1]."</td>
-						<td class='".$class."' style='width:65%; white-space:nowrap;'>
+						<td class='".$class."' style='width:65%;'>
 							 <a href='".$plugindir."content.php?cat.".$row['content_id']."'>".CONTENT_ICON_LINK."</a> 
 							".$pre.$row['content_heading']." ".($row['content_subheading'] ? "[".$row['content_subheading']."]" : "")."
 						</td>
@@ -1544,7 +1544,7 @@ class contentform{
 						".($row['content_parent'] == 0 ? "<tr><td colspan='3' $stylespacer></td></tr>" : "")."
 						<tr>
 							<td class='".$class."' style='width:5%; text-align:left'>".$catid."</td>
-							<td class='forumheader' style='width:65%; white-space:nowrap;'>
+							<td class='forumheader' style='width:65%;'>
 								 <a href='".$plugindir."content.php?cat.".$row['content_id']."'>".CONTENT_ICON_LINK."</a> 
 								".$pre.$row['content_heading']." ".($row['content_subheading'] ? "[".$row['content_subheading']."]" : "")."
 							</td>
@@ -1669,7 +1669,7 @@ class contentform{
 				<div style='text-align:center'>
 				<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
 				<tr>
-					<td class='forumheader3' rowspan='3' style='width:5%; white-space:nowrap; vertical-align:top;'><img src='".$content_cat_icon_path_large.$_POST['cat_icon']."' style='border:0' alt='' /></td>
+					<td class='forumheader3' rowspan='3' style='width:5%; vertical-align:top;'><img src='".$content_cat_icon_path_large.$_POST['cat_icon']."' style='border:0' alt='' /></td>
 					<td class='fcaption'>".$cat_heading."</td>
 				</tr>
 				<tr><td class='forumheader3'>".$cat_subheading."</td></tr>
@@ -2116,7 +2116,7 @@ class contentform{
 							<td class='".$class."' style='width:5%; text-align:left'>".$catid."</td>
 							<td class='".$class."' style='width:5%; text-align:center'>".($row['content_icon'] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
 							<td class='".$class."' style='width:15%'>".($authordetails[0] != "0" ? "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".CONTENT_ICON_USER."</a>" : "")." ".$authordetails[1]."</td>
-							<td class='".$class."' style='width:50%; white-space:nowrap;'>
+							<td class='".$class."' style='width:50%;'>
 								<a href='".$plugindir."content.php?cat.".$row['content_id']."'>".CONTENT_ICON_LINK."</a> 
 								".$pre.$row['content_heading']." ".($row['content_subheading'] ? "[".$row['content_subheading']."]" : "")." ".$amount."
 							</td>
@@ -2315,7 +2315,7 @@ class contentform{
 						<td class='forumheader3' style='width:5%; text-align:left'>".$row['content_id']."</td>
 						<td class='forumheader3' style='width:5%; text-align:center'>".($row['content_icon'] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
 						<td class='forumheader3' style='width:15%'>".($authordetails[0] != "0" ? "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".CONTENT_ICON_USER."</a>" : "")." ".$authordetails[1]."</td>
-						<td class='forumheader3' style='width:65%; white-space:nowrap;'>
+						<td class='forumheader3' style='width:65%;'>
 							<a href='".$plugindir."content.php?cat.".$row['content_id']."'>".CONTENT_ICON_LINK."</a> 
 							".$row['content_heading']." ".($row['content_subheading'] ? "[".$row['content_subheading']."]" : "")."
 						</td>
@@ -2385,7 +2385,7 @@ class contentform{
 
 			$TOPIC_ROW = "
 			<tr>
-				<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+				<td class='forumheader3' style='width:20%; vertical-align:top;'>{TOPIC_TOPIC}</td>
 				<td class='forumheader3' style='vertical-align:top;'>
 					<a style='cursor: pointer;' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 					<div style='display: none;'>
