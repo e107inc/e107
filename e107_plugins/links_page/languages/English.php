@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-10-28 09:29:29 $
+|     $Revision: 1.28 $
+|     $Date: 2006-10-28 20:22:18 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -309,7 +309,7 @@ define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Link Category");
 define("LAN_LINKS_46", "Link Subcategories");
 define("LAN_LINKS_47", "link navigator...");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_48", "-- view category --");
 define("LAN_LINKS_49", "");
 
 define("LAN_ADMIN_HELP_0", "linkspage help area");
