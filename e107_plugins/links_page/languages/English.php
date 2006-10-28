@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-06-25 05:30:05 $
-|     $Author: e107coders $
+|     $Revision: 1.27 $
+|     $Date: 2006-10-28 09:29:29 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
@@ -144,6 +144,7 @@ define("LCLAN_ADMIN_11", "deleted"); // deprecated
 define("LCLAN_ADMIN_12", "Link Category");
 define("LCLAN_ADMIN_13", "Submitted link deleted");
 define("LCLAN_ADMIN_14", "Links");
+define("LCLAN_ADMIN_15", "This category still contains links, please (re)move them first");
 
 define("LCLAN_SL_1", "Submitted Links");
 define("LCLAN_SL_2", "No submitted links");

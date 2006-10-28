@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.6 $
-|    $Date: 2006-08-06 10:20:11 $
+|    $Revision: 1.7 $
+|    $Date: 2006-10-28 09:29:29 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -107,9 +107,15 @@ if (isset($delete) && $delete == 'main') {
 }
 //delete category
 if (isset($delete) && $delete == 'category') {
-	if ($sql->db_Delete("links_page_cat", "link_category_id='$del_id' ")) {
-		$lc->show_message(LCLAN_ADMIN_12." #".$del_id." ".LCLAN_ADMIN_11);
-		unset($id);
+	//check if links are present for this category
+	if($sql->db_Select("links_page", "*", "link_category='$del_id' ")) {
+		$lc->show_message(LCLAN_ADMIN_12." #".$del_id." ".LAN_DELETED_FAILED."<br />".LCLAN_ADMIN_15);
+	//no? then we can safely remove this category
+	}else{
+		if ($sql->db_Delete("links_page_cat", "link_category_id='$del_id' ")) {
+			$lc->show_message(LCLAN_ADMIN_12." #".$del_id." ".LCLAN_ADMIN_11);
+			unset($id);
+		}
 	}
 }
 //delete submitted link
@@ -118,7 +124,6 @@ if (isset($delete) && $delete == 'sn') {
 		$lc->show_message(LCLAN_ADMIN_13);
 	}
 }
-
 
 
 //show link categories (cat edit)
