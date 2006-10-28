@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.314 $
-|     $Date: 2006-10-28 14:17:18 $
+|     $Revision: 1.315 $
+|     $Date: 2006-10-28 14:47:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -78,6 +78,8 @@ if(($pos = strpos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URL
 	$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url."?".$_SERVER['QUERY_STRING'] : $new_url;
 	Header("Location: ".$new_loc);
 }
+// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
+$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], ".php")) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 
 //
 // D: Setup PHP error handling
