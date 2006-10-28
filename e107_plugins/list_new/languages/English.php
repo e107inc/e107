@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-21 11:23:35 $
-|     $Author: mrpete $
+|     $Revision: 1.16 $
+|     $Date: 2006-10-28 09:02:43 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -138,6 +138,10 @@ define("LIST_ADMIN_LAN_35", "days");
 define("LIST_ADMIN_LAN_36", "timelapse");
 define("LIST_ADMIN_LAN_37", "display a select box with number of days to look back?");
 define("LIST_ADMIN_LAN_38", "");
+
+define("LIST_ADMIN_LAN_39", "open if records exist");
+define("LIST_ADMIN_LAN_40", "should sections that contain records be opened by default?");
+define("LIST_ADMIN_LAN_41", "");
 
 define("LIST_MENU_1", "recent additions");
 define("LIST_MENU_2", "by");

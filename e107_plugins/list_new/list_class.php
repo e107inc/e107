@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2006-08-27 02:24:45 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.13 $
+|		$Date: 2006-10-28 09:02:43 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -257,6 +257,7 @@ class listclass {
 		$list_pref['new_menu_datestyle']			= "%d %b";
 		$list_pref['new_menu_datestyletoday']		= "%H:%M";
 		$list_pref['new_menu_showempty']			= "1";
+		$list_pref['new_menu_openifrecords']		= "";
 
 		//new page preferences
 		$list_pref['new_page_caption']				= LIST_ADMIN_15;
@@ -271,6 +272,7 @@ class listclass {
 		$list_pref['new_page_welcometext']			= LIST_ADMIN_16;
 		$list_pref['new_page_timelapse']			= "1";
 		$list_pref['new_page_timelapse_days']		= "30";
+		$list_pref['new_page_openifrecords']		= "";
 
 		//recent menu preferences
 		$list_pref['recent_menu_caption']			= LIST_ADMIN_14;
@@ -281,6 +283,7 @@ class listclass {
 		$list_pref['recent_menu_datestyle']			= "%d %b";
 		$list_pref['recent_menu_datestyletoday']	= "%H:%M";
 		$list_pref['recent_menu_showempty']			= "";
+		$list_pref['recent_menu_openifrecords']		= "";
 
 		//recent page preferences
 		$list_pref['recent_page_caption']			= LIST_ADMIN_14;
@@ -293,6 +296,7 @@ class listclass {
 		$list_pref['recent_page_showempty']			= "";
 		$list_pref['recent_page_colomn']			= "1";
 		$list_pref['recent_page_welcometext']		= LIST_ADMIN_13;
+		$list_pref['recent_page_openifrecords']		= "";
 
 		return $list_pref;
 	}
@@ -402,6 +406,10 @@ class listclass {
 		}
 
 		if($LIST_DATA != ""){
+
+			//open sections if content exists ? yes if true, else use individual setting of section
+			$LIST_DISPLAYSTYLE = ($list_pref[$mode."_openifrecords"] ? "" : $LIST_DISPLAYSTYLE);
+
 			if($mode == "recent_menu"){
 				if($list_pref[$mode."_showempty"] || $menutext){
 					$start = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_RECENT_START);

@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-09-15 08:16:00 $
+|		$Revision: 1.7 $
+|		$Date: 2006-10-28 09:02:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -358,6 +358,16 @@ function parse_menu_options($type){
 	";
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
+	//menu preference : open section if content exists? this will override the individual setting of the section
+	$TOPIC_TOPIC = LIST_ADMIN_LAN_39;
+	$TOPIC_HEADING = LIST_ADMIN_LAN_40;
+	$TOPIC_HELP = LIST_ADMIN_LAN_41;
+	$TOPIC_FIELD = "
+		".$rs -> form_radio($type."_openifrecords", "1", ($list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."
+		".$rs -> form_radio($type."_openifrecords", "0", ($list_pref[$type."_openifrecords"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+	";
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
 	$text .= $TOPIC_ROW_SPACER;
 	$text .= $TOPIC_TABLE_END;
 
@@ -489,6 +499,16 @@ function parse_page_options($type){
 		$TOPIC_FIELD = $rs -> form_text($type."_timelapse_days", "3", $list_pref[$type."_timelapse_days"], "3", "tbox")." ".LIST_ADMIN_LAN_35;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 	}
+
+	//page preference : open section if content exists? this will override the individual setting of the section
+	$TOPIC_TOPIC = LIST_ADMIN_LAN_39;
+	$TOPIC_HEADING = LIST_ADMIN_LAN_40;
+	$TOPIC_HELP = LIST_ADMIN_LAN_41;
+	$TOPIC_FIELD = "
+		".$rs -> form_radio($type."_openifrecords", "1", ($list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."
+		".$rs -> form_radio($type."_openifrecords", "0", ($list_pref[$type."_openifrecords"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+	";
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 	$text .= $TOPIC_ROW_SPACER;
 	$text .= $TOPIC_TABLE_END;
