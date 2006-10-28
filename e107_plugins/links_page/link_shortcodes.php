@@ -57,7 +57,7 @@ if(isset($linkspage_pref['link_navigator_allcat']) && $linkspage_pref['link_navi
 	$sqlc = new db;
 	if ($sqlc->db_Select("links_page_cat", "link_category_id, link_category_name", "link_category_class REGEXP '".e_CLASS_REGEXP."' ORDER BY link_category_name")){
 		$mains .= $rs -> form_option("&nbsp;", "0", "", "");
-		$mains .= $rs -> form_option("-- view category --", "0", "", "");
+		$mains .= $rs -> form_option(LAN_LINKS_48, "0", "", "");
 		while ($rowc = $sqlc->db_Fetch()){
 			$mains .= $rs -> form_option($rowc['link_category_name'], "0", $baseurl."?cat.".$rowc['link_category_id'], "");
 		}
