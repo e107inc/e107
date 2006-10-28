@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userinfo.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-08-04 09:56:38 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-28 10:09:17 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -34,6 +34,8 @@ if (!e_QUERY) {
 }
 
 if (isset($ipd)) {
+	if(!defined("BULLET")) define("BULLET", "bullet2.gif");
+
 	$obj = new convert;
 	$sql->db_Select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
 	$host = $e107->get_host_name($ipd);
@@ -51,8 +53,6 @@ if (isset($ipd)) {
 	}
 
 	$text .= "<hr />";
-
-	if(!defined("BULLET"))	 define("BULLET", "bullet2.gif");
 
 	$sql->db_Select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
 	while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->db_Fetch()) {
