@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-08-07 14:34:38 $
+|     $Revision: 1.42 $
+|     $Date: 2006-10-28 09:29:29 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -287,7 +287,7 @@ function displayPersonalManager(){
 	}
 	//upload link icon
 	if(isset($_POST['uploadlinkicon'])){
-		$lc -> uploadLinkIcon($_POST);
+		$lc -> uploadLinkIcon();
 	}
 
 	//show existing links
