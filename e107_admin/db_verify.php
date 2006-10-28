@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-10-27 22:25:50 $
+|     $Revision: 1.22 $
+|     $Date: 2006-10-28 17:39:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -278,6 +278,10 @@ if(isset($_POST['do_fix'])){
 			$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX `$field` (`$newval`)";
 		}
 
+		if($mode == "indexdrop"){
+			$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
+		}
+
 		if($mode == "create"){
 			$query = "CREATE TABLE ".MPREFIX.$table." ($newval) TYPE=MyISAM;";
 		}
@@ -336,7 +340,7 @@ function fix_form($table,$field, $newvalue,$mode,$after =''){
 
 	if(stristr($field, "KEY ") !== FALSE){
 		$field = chop(str_replace("KEY ","",$field));
-		$mode = "index";
+		$mode = ($mode == "drop") ? "indexdrop" : "index";
 		$search = array("(",")");
 		$newvalue = str_replace($search,"",$newvalue);
 	}
