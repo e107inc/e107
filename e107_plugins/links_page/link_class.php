@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.37 $
-|    $Date: 2006-10-18 16:23:18 $
+|    $Revision: 1.38 $
+|    $Date: 2006-10-28 09:12:57 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -485,7 +485,9 @@ class linkclass {
 
         //create link, submit area, tmp table
 		if(isset($mode) && $mode == "submit"){
-            if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
+			if (!$_POST['link_name'] || !$_POST['link_url'] || !$_POST['link_description']) {
+				 message_handler("ALERT", 5);
+			} else {
                 $username           = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 
                 $submitted_link     = intval($_POST['cat_id'])."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
@@ -495,8 +497,6 @@ class linkclass {
                 $e_event->trigger("linksub", $edata_ls);
                 //header("location:".e_SELF."?s");
                 js_location(e_SELF."?s");
-            } else {
-                message_handler("ALERT", 5);
             }
         }else{
             $link_t = $sql->db_Count("links_page", "(*)", "WHERE link_category='".intval($_POST['cat_id'])."'");
