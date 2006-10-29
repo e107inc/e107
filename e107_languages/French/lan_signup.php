@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-10-27 20:07:21 $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-29 22:21:50 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -90,7 +90,8 @@
   define("LAN_EMAIL_04", "Veuillez conserver ce courriel comme aide-m&eacute;moire.");
   define("LAN_EMAIL_05", "Votre mot de passe a &eacute;t&eacute; encrypt&eacute; et ne pourra vous &ecirc;tre restitu&eacute; en cas d'oubli ou de perte. Vous pourrez cependant demander un nouveau mot de passe le cas &eacute;ch&eacute;ant.");
   define("LAN_EMAIL_06", "Merci de vous &ecirc;tre enregistr&eacute;.");
-  define("LAN_SIGNUP_37","Cette étape de l'enregistrement est terminée. L'administateur du site devra approuver votre adhésion. Lorsque cela aura été fait, vous recevrez un courriel de confirmation vous informant que votre adhésion a été approuvée.");¨
+
+define("LAN_SIGNUP_37","Cette étape de l'enregistrement est terminée. L'administrateur du site devra approuver votre adhésion. Lorsque cela aura été fait, vous recevrez un courriel de confirmation vous informant que votre adhésion a été approuvée.");
 
    define("LAN_SIGNUP_38", "Vous avez entré deux adresses courriel différentes. Veuillez indiquer une adresse courriel identique dans les deux champs fournis");
    define("LAN_SIGNUP_39", "Re-tapez l'adresse courriel:");
