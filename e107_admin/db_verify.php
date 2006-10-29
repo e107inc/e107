@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-10-28 17:39:38 $
+|     $Revision: 1.23 $
+|     $Date: 2006-10-29 01:00:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -133,7 +133,7 @@ function check_tables($what) {
 		<td class='fcaption' style='text-align:center'>".DBLAN_7."</td>
 		</tr>";
 	foreach(array_keys($table_list) as $k) {
-		$text .= "<tr>";
+
 		$prefix = MPREFIX;
 		$current_tab = get_current($k, $prefix);
 		unset($fields);
@@ -244,7 +244,7 @@ global $table_list;
 // -------------------- Table Fixing ------------------------------
 
 if(isset($_POST['do_fix'])){
-	$text = "<div><table class='fborder' style='width:100%'>";
+	$text = "<div><table class='fborder' style='".ADMIN_WIDTH."'>";
 	foreach( $_POST['fix_active'] as $key=>$val){
 
 		if (MAGIC_QUOTES_GPC == TRUE) {
@@ -351,9 +351,9 @@ function fix_form($table,$field, $newvalue,$mode,$after =''){
 
 	$text .= "<input type='checkbox'  name=\"fix_active[$field][]\" value='1' /> ".DBLAN_19."\n"; // 'attempt to fix'
 	$text .= "<input type='hidden' name=\"fix_newval[$field][]\" value=\"$newvalue\" />\n";
-	$text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" / >\n";
-	$text .= "<input type='hidden'  name=\"fix_mode[$field][]\" value=\"$mode\" / >\n";
-	$text .= ($after) ? "<input type='hidden'  name=\"fix_after[$field][]\" value=\"$after\" / >\n" : "";
+	$text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" />\n";
+	$text .= "<input type='hidden'  name=\"fix_mode[$field][]\" value=\"$mode\" />\n";
+	$text .= ($after) ? "<input type='hidden'  name=\"fix_after[$field][]\" value=\"$after\" />\n" : "";
 
 	return $text;
 }

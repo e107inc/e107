@@ -1,8 +1,22 @@
 <?php
-// e107 Language File.
-// $Id: English.php,v 1.13 2006-09-02 21:41:18 e107coders Exp $
-	
-	
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dun.an 2001-2002
+|     http://e107.org
+|     jali.@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/languages/English.php,v $
+|     $Revision: 1.14 $
+|     $Date: 2006-10-29 01:00:21 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+
 define('EC_ADLAN_1', "Event Calendar");
 define('EC_ADLAN_2', "Configure Event Calendar");
 define('EC_INSTALL', "Install Event Calendar");
@@ -184,8 +198,7 @@ define('EC_LAN_80', "Event List");
 define('EC_LAN_81', "Configure Event Calendar");
 define('EC_LAN_82', "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.");
 define('EC_LAN_83', "Calendar");
-	
-	
+
 define('EC_LAN_84', "Css element to use for day header");
 define('EC_LAN_85', "Default is 'forumheader'");
 define('EC_LAN_86', "Css element to use for day list");
@@ -318,5 +331,13 @@ define('EC_ADLAN_A118', "Categories to display");
 define('EC_ADLAN_A119', "No categories defined, or error reading database");
 define('EC_ADLAN_A120', "Show category icon in menu");
 
+define('EC_ADLAN_A121', "e107 Web Site");
+define('EC_ADLAN_A122', "calendar@yoursite.com");
+
+define('EC_ADLAN_A123', "Log directory must be created manually - create a subdirectory 'log' off your event calendar plugin directory, with '666' access rights");
+define('EC_ADLAN_A124', "Could not change log directory permissions");
+define('EC_ADLAN_A125', "Log directory permissions may require manual update to 0666 or 0766, although depending on your server setup they may work");
+define('EC_ADLAN_A126', "Database upgraded");
+define('EC_ADLAN_A127', "this is the rss feed for the calendar entries");
 
 ?>

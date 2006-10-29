@@ -11,105 +11,105 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-24 13:34:38 $
-|     $Author: mrpete $
+|     $Revision: 1.16 $
+|     $Date: 2006-10-29 01:00:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+
 require_once("../class2.php");
 $e_sub_cat = 'credits';
 include(e_ADMIN.'ver.php');
 
 
-
 $creditsArray = array(
 	array(	"name" => "MagpieRSS",
 				"url" => "http://magpierss.sourceforge.net/",
-				"description" => "MagpieRSS provides an XML-based (expat) RSS parser in PHP.",
+				"description" => CRELAN_10,
 				"version" => "0.71.1",
-				"licence" => "GPL, permission granted"
+				"licence" => "GPL, ".CRELAN_8
 			),
 	array(	"name" => "PCLZip",
 				"url" => "http://www.phpconcept.net/pclzip/",
-				"description" => "PclZip library offers compression and extraction functions for Zip formatted archives (WinZip, PKZIP).",
+				"description" => CRELAN_11,
 				"version" => "2.3",
 				"licence" => "GPL"
 			),
 	array(	"name" => "PCLTar",
 				"url" => "http://www.phpconcept.net/pcltar/",
-				"description" => "PclTar offer the ability to archive a list of files or directories with or without compression. The archives created by PclTar are readeable by most of gzip/tar applications and by the Windows WinZip application.",
+				"description" => CRELAN_12,
 				"version" => "1.3",
 				"licence" => "GPL"
 			),
 	array(	"name" => "TinyMCE",
 				"url" => "http://tinymce.moxiecode.com/",
-				"description" => "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB. It has the ability to convert HTML TEXTAREA fields or other HTML elements to editor instances.",
-				"version" => "2.01",
+				"description" => CRELAN_13,
+				"version" => "2.08",
 				"licence" => "GPL"
 			),
 	array(	"name" => "Nuvolo Icons",
 				"url" => "http://www.icon-king.com",
-				"description" => "Icons used in e107",
+				"description" => CRELAN_14,
 				"version" => "1.0",
 				"licence" => "GPL"
 			),
 	array(	"name" => "PHPMailer",
 				"url" => "http://phpmailer.sourceforge.net/",
-				"description" => "Full featured email transfer class for PHP",
+				"description" => CRELAN_15,
 				"version" => "1.72",
 				"licence" => "GPL"
 			),
 	array(	"name" => "Brainjar DHTML Menu",
 				"url" => "http://www.brainjar.com/dhtml/menubar/",
-				"description" => "Menu system used in Jayya theme",
+				"description" => CRELAN_16,
 				"version" => "0.1",
-				"licence" => "GPL, permission granted"
+				"licence" => "GPL, ".CRELAN_8
 			),
 	array(	"name" => "DHTML / JavaScript Calendar",
 				"url" => "http://www.dynarch.com/projects/",
-				"description" => "Popup calendar widget",
+				"description" => CRELAN_17,
 				"version" => "1.0",
 				"licence" => "GPL"
 			),
 	array(	"name" => "FPDF",
 				"url" => "http://www.fpdf.org/",
-				"description" => "PDF support",
+				"description" => CRELAN_18,
 				"version" => "1.53",
 				"licence" => "Freeware"
 			),
 	array(	"name" => "UFPDF",
 				"url" => "http://www.acko.net/node/56",
-				"description" => "UTF-8 PDF support",
+				"description" => CRELAN_19,
 				"version" => "0.1",
 				"licence" => "GPL"
 			),
 	);
 
 $contentA = array(
-	"<h3>e107 v0.7 was brought to you by ...</h3>",
-	"<h1>Carl Cedergren</h1>[ asperon ]<br /><br /><br />",
-	"<h1>Cameron Hanly</h1>[ CaMer0n ]<br /><br /><br />Always a pressure..err..pleasure!",
-	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />yarrrrrr! wtf matey!\"",
-	"<h1>Eric Vanderfeesten</h1> [ lisa ]<br /><br /><br />",
-	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />",
-	"<h1>William Moffett</h1>[ que ]<br /><br /><br />",
-	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />",
-	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot? No tea?? 0_0\"",
-	"<h1>Pete Holzmann</h1>[ MrPete ]<br /><br /><br />"
+	"<h3>".CRELAN_6."<\/h3>",
+	"<h1>Carl Cedergren<\/h1>[ asperon ]<br /><br /><br />".CRELAN_20,
+	"<h1>Cameron Hanly<\/h1>[ CaMer0n ]<br /><br /><br />".CRELAN_21,
+	"<h1>Steve Dunstan<\/h1>[ jalist ]<br /><br /><br />".CRELAN_22,
+	"<h1>Eric Vanderfeesten<\/h1> [ lisa ]<br /><br /><br />".CRELAN_23,
+	"<h1>Thom Michelbrink<\/h1>[ McFly ]<br /><br /><br />".CRELAN_24,
+	"<h1>William Moffett<\/h1>[ que ]<br /><br /><br />".CRELAN_25,
+	"<h1>Martin Nicholls<\/h1>[ streaky ]<br /><br /><br />".CRELAN_26,
+	"<h1>James Currie<\/h1>[ SweetAs ]<br /><br /><br />".CRELAN_27,
+	"<h1>Pete Holzmann<\/h1>[ MrPete ]<br /><br /><br />".CRELAN_28
 );
 
-echo "<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+echo "<?xml version='1.0' encoding='".CHARSET."' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
-<title>e107 Credits</title>
-<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+<title>".PAGE_NAME."</title>
+<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />
 <link rel='stylesheet' href='".e_THEME."lamb/style.css' type='text/css' />
 </head>
 <body style='padding: 0; margin: 0; background-color: #e8e8e8; color: #8E8E8E'>
 
-<img src='".e_IMAGE."generic/cred.png' alt='' />
-<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>version ".$e107info['e107_version'].", build ".($e107info['e107_build'] ? $e107info['e107_build'] : "zero")."</b><br />&copy; 2002-2006, all rights reserved</div>
+<div><img src='".e_IMAGE."generic/cred.png' alt='' />
+<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>".CRELAN_7." ".$e107info['e107_version'].", build ".($e107info['e107_build'] ? $e107info['e107_build'] : "zero")."</b><br />&copy; 2002-2006, ".CRELAN_3."</div>
 
 ";
 
@@ -126,8 +126,6 @@ var endcolor=new Array(0,0,0);
 var fcontent=new Array();
 ";
 
-
-
 if(e_QUERY && e_QUERY == "stps")
 {
 	$count=1;
@@ -135,7 +133,7 @@ if(e_QUERY && e_QUERY == "stps")
 	foreach($creditsArray as $credits)
 	{
 		extract($credits);
-		$fadejs .= "fcontent[$count] = '<br /><br /><h1>$name</h1>version $version<br /><br />$description<br /><br />[ <a href=\"$url\" rel=\"external\">$url</a> ]';
+		$fadejs .= "fcontent[$count] = '<br /><br /><h1>$name<\/h1>".CRELAN_7." $version<br /><br />$description<br /><br />[ <a href=\"$url\" rel=\"external\">$url<\/a> ]<br /><br />".CRELAN_9." - $licence';
 		";
 		$count++;
 	}
@@ -151,8 +149,6 @@ else
 	}
 }
 
-
-
 $fadejs .= <<<TEXT
 begintag='';
 closetag='';
@@ -163,14 +159,12 @@ var fadelinks=1;
 var fwidth='95%';
 var fheight='220px;'
 
-
 ///No need to edit below this line/////////////////
 
 var ie4=document.all&&!document.getElementById;
 var DOM2=document.getElementById;
 var faderdelay=0;
 var index=0;
-
 
 /*Rafael Raposo edited function*/
 //function to change content
@@ -233,32 +227,31 @@ function getstepcolor(step) {
 }
 
 if (ie4||DOM2)
-  document.write('<div id="fscroller" style="text-align: center; width:'+fwidth+';height:'+fheight+'"></div>');
+  document.write('<div id="fscroller" style="text-align: center; width:'+fwidth+';height:'+fheight+'"><\/div>');
 
 if (window.addEventListener)
 window.addEventListener("load", changecontent, false)
 else if (window.attachEvent)
 window.attachEvent("onload", changecontent)
 else if (document.getElementById)
-window.onload=changecontent
+window.onload=changecontent;
+//-->
 </script>
-<ilayer id="fscrollerns" width=&{fwidth}; height=&{fheight};><layer id="fscrollerns_sub" width=&{fwidth}; height=&{fheight}; left=0 top=0></layer></ilayer>
 
 TEXT;
 
-
-
 echo $fadejs;
-
 
 echo "
 <div style='text-align: center; margin-left: auto; margin-right: auto;'>
-<form>".
-(e_QUERY && e_QUERY == "stps" ? "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php'\" value='Show e107 Dev Team' />" : "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php?stps'\" value='Show third party scripts' />")."
+<form method='get' action=''><div>".
+(e_QUERY && e_QUERY == "stps" ? "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php'\" value='".CRELAN_4."' />" : "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php?stps'\" value='".CRELAN_5."' />")."</div>
 </form>
 </div>
+
+</div>
+</body>
+</html>
 ";
 
 ?>
-
-

@@ -3,11 +3,11 @@
 if (!defined('e107_INIT')) { exit; }
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
-$feed['name']		= 'Calendar';
+$feed['name']		= EC_ADLAN_A12;
 $feed['url']		= 'calendar';			//the identifier for the rss feed url
 $feed['topic_id']	= '';					//the topic_id, empty on default (to select a certain category)
 $feed['path']		= 'calendar_menu';		//this is the plugin path location
-$feed['text']		= 'this is the rss feed for the calendar entries';
+$feed['text']		= EC_ADLAN_A127;
 $feed['class']		= '0';
 $feed['limit']		= '9';
 //##### ------------------------------------------------------------------------------------
