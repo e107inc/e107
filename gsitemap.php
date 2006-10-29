@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/gsitemap.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-09-09 17:43:47 $
+|     $Revision: 1.9 $
+|     $Date: 2006-10-29 17:48:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,14 +25,14 @@ if(e_QUERY == "show")
 
 	$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ");
 	$nfArray = $sql -> db_getList();
-	$text = "<ul>";
+	$text = "<div style='text-align:left'><ul>";
 
 	foreach($nfArray as $nfa)
 	{
 		$url = (substr($nfa['gsitemap_url'],0,4)== "http")? $nfa['gsitemap_url'] : SITEURL.$tp->replaceConstants($nfa['gsitemap_url'],TRUE);
 		$text .= "<li>".$tp->toHTML($nfa['gsitemap_cat'],"","defs").": <a href='".$url."'>".$tp->toHTML($nfa['gsitemap_name'],"","defs")."</a><br />\n";
 	}
-	$text .= "</ul>";
+	$text .= "</ul></div>";
 
 	$ns -> tablerender(SITENAME." : ".GSLAN_Name."", $text);
 
