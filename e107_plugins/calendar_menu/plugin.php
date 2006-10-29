@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.13 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2006-10-04 17:53:33 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2006-10-29 01:00:21 $
+|     $Author: e107coders $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added
@@ -25,7 +25,8 @@ if (!defined('e107_INIT')) { exit; }
 // Plugin info -------------------------------------------------------------------------------------------------------
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 @require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
-$eplug_name = "Event Calendar";
+
+$eplug_name = "EC_ADLAN_1";
 $eplug_version = "3.6";
 $eplug_author = "jalist / cameron / McFly / Barry / Lisa_ / steved";
 $eplug_url = "http://e107.org";
@@ -65,13 +66,13 @@ $eplug_prefs = array(
 "eventpost_addcat" => 0,
 "eventpost_forum" => 1,
 "eventpost_evtoday" => "indent",
-"eventpost_mailsubject" => "Calendar",
-"eventpost_mailfrom" => "e107 Web Site",
-"eventpost_mailaddress" => "calendar@yoursite.com",
+"eventpost_mailsubject" => EC_ADLAN_A12,
+"eventpost_mailfrom" => EC_ADLAN_A121,
+"eventpost_mailaddress" => EC_ADLAN_A122,
 "eventpost_lenday" => 1,
 "eventpost_asubs" => 1,
 "eventpost_weekstart" => "sun",
-"eventpost_menuheading" => "Forthcoming Events",
+"eventpost_menuheading" => EC_LAN_140,
 "eventpost_daysforward" => 30,
 "eventpost_numevents" => 3,
 "eventpost_checkrecur" => 1,
@@ -130,11 +131,11 @@ $eplug_tables = array(
 
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
-$ec_dir = e_PLUGIN."calendar_menu/";
+$ec_dir = "{e_PLUGIN}calendar_menu/";
 $eplug_link = TRUE;
 $eplug_link_name = EC_LAN_83; // "Calendar";
 $eplug_link_url = "".$ec_dir."calendar.php";
-$eplug_link_perms = "Everyone"; // Everyone, Guest, Member, Admin 
+$eplug_link_perms = "Everyone"; // Everyone, Guest, Member, Admin
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
@@ -166,20 +167,20 @@ $cal_log_dir = e_PLUGIN.$eplug_folder.'/log';
   }
   if (!is_dir($cal_log_dir))
   {
-    $response .= "Log directory must be created manually - create a subdirectory 'log' off your event calendar plugin directory, with '666' access rights";
+    $response .= EC_ADLAN_A123;
 	return $response;
   }
-  
+
 // Now check directory permissions
   if (!is_writable($cal_log_dir."/"))
   {
     if (!chmod($cal_log_dir,0666))
 	{
-	  $response = "Could not change log directory permissions<br />";
+	  $response = EC_ADLAN_A124."<br />";
 	}
     if (!is_writable($cal_log_dir."/"))
     {
-      $response .= "Log directory permissions may require manual update to 0666 or 0766, although depending on your server setup they may work";
+      $response .= EC_ADLAN_A125;
     }
   }
   return $response;
@@ -210,13 +211,13 @@ $upgrade_alter_tables = array(
 	PRIMARY KEY  (event_subid)
 	) TYPE=MyISAM;"
 );
-$version_notes .= "<u>3.5</u><br />Database upgraded<br />";
+$version_notes .= "<u>3.5</u><br />".EC_ADLAN_A126."<br />";
 }
 // To version 3.6 - just need to create log directory and a few preferences
 if ($ecalVer < 3.6)
 {
   $verprefs = array(
-	"eventpost_menuheading" => "Forthcoming Events",
+	"eventpost_menuheading" => EC_LAN_140,
 	"eventpost_daysforward" => 30,
 	"eventpost_numevents" => 3,
 	"eventpost_checkrecur" => 1,
