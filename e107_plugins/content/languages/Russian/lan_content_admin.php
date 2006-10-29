@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.5 $
-|     $Date: 2006-10-29 08:08:40 $
-|     $Author: yarodin $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-29 09:13:22 $
+|     $Author: verant $
 +----------------------------------------------------------------------------+
 */
 
@@ -662,8 +662,8 @@ define("CONTENT_ADMIN_OPT_LAN_133", "значок : ширина");
 define("CONTENT_ADMIN_OPT_LAN_134", "если выбрано 'значок контента', определите ширину значка для использования");
 define("CONTENT_ADMIN_OPT_LAN_135", "заголовок списка недавних элементов");
 
-define("CONTENT_ADMIN_OPT_LAN_136", "Внутренний"); // Not translated yet: внутренний интерфейс? //Back End
-define("CONTENT_ADMIN_OPT_LAN_137", "Внешний");  // Not translated yet: внешний интерфейс? //Front End
+define("CONTENT_ADMIN_OPT_LAN_136", "Внутренний"); // CheckIt: Check translation: внутренний интерфейс? //Back End
+define("CONTENT_ADMIN_OPT_LAN_137", "Внешний");  // CheckIt: Check translation: внешний интерфейс? //Front End
 define("CONTENT_ADMIN_OPT_LAN_138", "Управлять контентом");
 define("CONTENT_ADMIN_OPT_LAN_139", "Создать контент");
 define("CONTENT_ADMIN_OPT_LAN_140", "Управлять категорией");
@@ -677,8 +677,8 @@ define("CONTENT_ADMIN_OPT_LAN_147", "Одна категория"); //One Catego
 define("CONTENT_ADMIN_OPT_LAN_148", "Элемент контента"); //Content Item
 define("CONTENT_ADMIN_OPT_LAN_149", "Написать страницу"); //Author Page
 define("CONTENT_ADMIN_OPT_LAN_150", "Архивировать страницу"); //Archive Page
-define("CONTENT_ADMIN_OPT_LAN_151", "Высший рейтинг страницы"); //Not translated yet: Top Rated Page
-define("CONTENT_ADMIN_OPT_LAN_152", "Высший счет страницы"); //Not translated yet: Top Score Page
+define("CONTENT_ADMIN_OPT_LAN_151", "Высший рейтинг страницы"); //CheckIt: Check translation: Top Rated Page
+define("CONTENT_ADMIN_OPT_LAN_152", "Высший счет страницы"); //CheckIt: Check translation: Top Score Page
 define("CONTENT_ADMIN_OPT_LAN_153", "Отправить страницу"); //Submit Page
 define("CONTENT_ADMIN_OPT_LAN_154", "Страница управления"); //Manager Page
 define("CONTENT_ADMIN_OPT_LAN_155", "заголовок"); //caption
@@ -699,7 +699,7 @@ define("CONTENT_ADMIN_OPT_LAN_169", "последняя страница"); //la
 define("CONTENT_ADMIN_OPT_LAN_170", "где должны отображаться персональные и текущие теги в многостраничном элементе контента ?"); //where should custom and preset tags be rendered in a multipage content item ?
 define("CONTENT_ADMIN_OPT_LAN_171", "количество уровней"); //amount of levels
 define("CONTENT_ADMIN_OPT_LAN_172", "числовое значение для отображения количества уровней подкатегорий дерева категорий. оставьте пустым, чтобы показывать все уровни."); //numeric value to show that amount of levels of subcategories of the category tree. leave blank to show all levels.
-define("CONTENT_ADMIN_OPT_LAN_173", "включить 'начало' в мякиш"); //Not translated: include 'home' in the breadcrumb
-define("CONTENT_ADMIN_OPT_LAN_174", "включить начальную страницу контента в мякиш"); //Not translated: include the content start page in the breadcrumb
+define("CONTENT_ADMIN_OPT_LAN_173", "включить 'начало' в мякиш"); //CheckIt: Check translation: include 'home' in the breadcrumb
+define("CONTENT_ADMIN_OPT_LAN_174", "включить начальную страницу контента в мякиш"); //CheckIt: Check translation: include the content start page in the breadcrumb
 
 ?>
