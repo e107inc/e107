@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.74 $ - with modifications
-|     $Date: 2006-10-16 18:07:24 $
+|     $Revision: 1.75 $ - with modifications
+|     $Date: 2006-10-29 01:08:50 $
 |     $Author: e107coders $
 |
 | Modifications by steved:
@@ -46,7 +46,7 @@ if (!e_QUERY || $_GET['elan'])
 	require_once(HEADERF);
 	// no qs - render categories ...
 
-	if($cacheData = $e107cache->retrieve("download_cat"))
+	if($cacheData = $e107cache->retrieve("download_cat",720)) // expires every 12 hours.
 	{
 		echo $cacheData;
 		require_once(FOOTERF);
