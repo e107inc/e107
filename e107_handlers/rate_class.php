@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-05-13 18:18:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2006-10-29 02:30:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,14 +32,14 @@ class rater {
 		if ($_SERVER['QUERY_STRING']) {
 			$self .= "?".$_SERVER['QUERY_STRING'];
 		}
-		
+
 		$jump = "";
 		$url = "";
 		if($mode==FALSE){
 			$jump = "onchange='urljump(this.options[selectedIndex].value)'";
 			$url = e_BASE."rate.php?";
 		}
-		
+
 		$str = $text."
 			<select name='rateindex' ".$jump." class='tbox'>
 			<option selected='selected'  value='0'>".RATELAN_5."</option>
@@ -124,13 +124,13 @@ class rater {
 					}else{
 						$rating[0] = 0;		//number of votes, not relevant in users rating
 						$rating[1] = 0;		//the rating by this user
-						$rating[2] = 0;		//no remainder is present, because we have a single users rating							
+						$rating[2] = 0;		//no remainder is present, because we have a single users rating
 					}
 				}
 			}else{
 				$rating[0] = $rowgr['rate_votes']; // $rating[0] == number of votes
 				$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
-				$tmp = explode(".", $tmp);
+				$tmp = (strpos($tmp,",")) ? explode(",", $tmp) : explode(".", $tmp);
 				$rating[1] = $tmp[0];
 				if(isset($tmp[1])){
 					$rating[2] = substr($tmp[1], 0, 1);
@@ -147,12 +147,12 @@ class rater {
 		global $sql, $tp;
 
 		$qs = explode("^", $rateindex);
-			
+
 		if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1) {
 			header("location:".e_BASE."index.php");
 			exit;
 		}
-			
+
 		$table = $tp -> toDB($qs[0], true);
 		$itemid = intval($qs[1]);
 		$rate = intval($qs[3]);
@@ -206,7 +206,7 @@ class rater {
 			}
 			if(!$this -> checkrated($table, $id) && USER){
 				$rate .= $this -> rateselect(RATELAN_2, $table, $id, $nojump);
-				
+
 			}else if(USER){
 				$rate .= RATELAN_3;
 			}
