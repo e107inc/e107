@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-10-24 11:52:25 $
-|     $Author: mrpete $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-29 03:10:02 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,7 +38,7 @@ if (isset($_POST['delete'])) {
 if (isset($_POST['deleteall'])) {
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
-		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') { 
+		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
 			$dirlist[] = $file;
 		}
 	}
@@ -57,11 +57,11 @@ if (isset($_POST['deleteall'])) {
 if (isset($_POST['update_options'])) {
 	$pref['image_post'] = $_POST['image_post'];
 	$pref['resize_method'] = $_POST['resize_method'];
-	$pref['im_path'] = $_POST['im_path'];
+	$pref['im_path'] = $tp->toDB($_POST['im_path']);
 	$pref['image_post_class'] = $_POST['image_post_class'];
 	$pref['image_post_disabled_method'] = $_POST['image_post_disabled_method'];
 	$pref['enable_png_image_fix'] = $_POST['enable_png_image_fix'];
-	
+
 	save_prefs();
 	$message = IMALAN_9;
 }
@@ -75,7 +75,7 @@ if (isset($_POST['show_avatars'])) {
 
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
-		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file)) { 
+		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file)) {
 			$dirlist[] = $file;
 		}
 	}
@@ -202,7 +202,7 @@ $text .= "</select>
 	<tr>
 	<td style='width:75%' class='forumheader3'>".IMALAN_5."<br /><span class='smalltext'>".IMALAN_6."</span></td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
-	<input class='tbox' type='text' name='im_path' size='40' value='".$pref['im_path']."' maxlength='200' />
+	<input class='tbox' type='text' name='im_path' size='40' value=\"".$pref['im_path']."\" maxlength='200' />
 	</td></tr>
 
 	<tr>
@@ -212,7 +212,7 @@ $text .= "</select>
 	<td style='width:25%;text-align:center' class='forumheader3' >".($pref['enable_png_image_fix'] ? "<input type='checkbox' name='enable_png_image_fix' value='1' checked='checked' />" : "<input type='checkbox' name='enable_png_image_fix' value='1' />")."
 	</td>
 	</tr>
-	
+
 	<tr>
 	<td style='width:75%' class='forumheader3'>".IMALAN_16."</td>
 	<td style='width:25%;text-align:center' class='forumheader3'  >
@@ -224,8 +224,8 @@ $text .= "</select>
 	<input class='button' type='submit' name='update_options' value='".IMALAN_8."' />
 	</td>
 	</tr>
-	
-	
+
+
 
 
 	</table></form></div>";
