@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-07-17 01:13:12 $
+|     $Revision: 1.14 $
+|     $Date: 2006-10-29 03:26:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ switch($type)
                 break;
 }
 
-if($secureimg['color'])
+if(isset($secureimg['color']))
 {
 	$tmp = explode(",",$secureimg['color']);
 	$text_color = ImageColorAllocate($image,$tmp[0],$tmp[1],$tmp[2]);
@@ -112,7 +112,7 @@ else
 header("Content-type: image/".$type);
 
 
-if($secureimg['font'] && is_readable($path.$secureimg['font'])){
+if(isset($secureimg['font']) && is_readable($path.$secureimg['font'])){
 	imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color,$path.$secureimg['font'], $code);
 }else{
 	ImageString ($image, 5, 12, 2, $code, $text_color);
