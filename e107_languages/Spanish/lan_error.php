@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_error.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-29 12:57:42 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -34,4 +34,12 @@ define("LAN_ERROR_21", "La URL no se puede encontrar en este servidor. El enlace
 define("LAN_ERROR_22", "Por favor, haga click aquí para ir a la página de búsqueda de este sitio");
 define("LAN_ERROR_23", "Su intento de acceso a ");
 define("LAN_ERROR_24", " no tuvo éxito.");
+define("LAN_ERROR_25", "[1]: Imposible leer los ajustes del núcleo de la base de datos - Existen pero están mal codificados. Probando de recuperar la copia del núcleo ..."); 
+define("LAN_ERROR_26", "[2]: Imposible leer los ajustes del núcleo de la base de datos - no existen ajustes en el núcleo."); 
+define("LAN_ERROR_27", "[3]: Ajustes del núcleo guardados - backup queda activo."); 
+define("LAN_ERROR_28", "[4]: No hay copias de resguardo del núcleo. Por favor, ejecute <a href='".e_FILE."resetcore/resetcore.php'>Resetear Núcleo</a> para reconstruir el núcleo. <br />Después de reconstruir su núcleo, por favor guarde una copia de seguridad."); 
+define("LAN_ERROR_29", "[5]: Campo(s) en blanco. Por favor, reenvíe el formulario rellenando los campos obligatorios."); 
+define("LAN_ERROR_30", "[6]: Imposible validar la conexión a MySQL. Por favor, compruebe que su archivo e107_config.php contiene la información correcta."); 
+define("LAN_ERROR_31", "[7]: MySQL se está ejecutando pero la base de datos ({$mySQLdefaultdb}) no puede conectarese.<br />Por favor, compruebe que su archivo e107_config.php contiene la información correcta."); 
+define("LAN_ERROR_32", "Para completar la actualización, copie el siguiente texto en su archivo e107_config.php:"); 
 ?>

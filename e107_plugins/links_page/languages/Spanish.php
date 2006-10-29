@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-06-25 07:54:26 $
+|     $Revision: 1.28 $
+|     $Date: 2006-10-29 12:57:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -139,6 +139,7 @@ define("LCLAN_ADMIN_11", "Eliminado");//Antiguo
 define("LCLAN_ADMIN_12", "Categoría de enlace");
 define("LCLAN_ADMIN_13", "Enlace enviado eliminado");
 define("LCLAN_ADMIN_14", "Enlaces");
+define("LCLAN_ADMIN_15", "Esta categoría todavía contiene enlaces, por favor, eliminelos primero");
 
 
 define("LCLAN_SL_1", "Enlaces enviados");
@@ -304,7 +305,7 @@ define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Categoría de enlace");
 define("LAN_LINKS_46", "Subcategorías de enlace");
 define("LAN_LINKS_47", "Navegador de enlaces...");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_48", "-- ver categoría --");
 define("LAN_LINKS_49", "");
 define("LAN_LINKS_50", "");
 define("LAN_LINKS_51", "");

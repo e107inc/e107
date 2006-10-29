@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/Spanish.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-02-16 00:09:50 $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-29 12:57:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -71,6 +71,7 @@ define('LAN_PM_59', "Ir a la página: ");
 define('LAN_PM_60', "No está autorizado para ver este mensaje"); 
 define('LAN_PM_61', "Sin asunto"); 
 define('LAN_PM_62', "Archivo: [{FILENAME}] excede el límite de tamaño - No se ha adjuntado");
+define('LAN_PM_63', "Clase:");
 
 define("LAN_PM_100", "Nuevo MP de "); 
 define("LAN_PM_101", "Ha recibido un nuevo Mensaje Privado de "); 

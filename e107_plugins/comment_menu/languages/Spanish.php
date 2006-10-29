@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/comment_menu/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-29 12:57:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -20,5 +20,6 @@ define("CM_L8", "Configuración");
 define("CM_L9", "Actualizar configuración");
 define("CM_L10", "Configuración guardada");
 define("CM_L11", "el"); 
-define("CM_L12", "Re:") 
+define("CM_L12", "Re:")
+define("CM_L13", "Enviado por");
 ?>

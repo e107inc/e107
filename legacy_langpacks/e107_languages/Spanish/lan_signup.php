@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-05 20:21:57 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-29 12:57:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -101,4 +101,18 @@ define("LAN_EMAIL_01", "Sr.");
 define("LAN_EMAIL_04", "Por favor, guarde este email para su propia información.");
 define("LAN_EMAIL_05", "Su contraseña ha sido encriptada y no podrá ser recuperada si la pierde u olvida. Sin embargo, puede solicitar una nueva contraseña si esto ocurriese.");
 define("LAN_EMAIL_06", "Gracias por su registro.");
+
+// 0.7.6 
+define("LAN_SIGNUP_40", "Activación no necesaria"); 
+define("LAN_SIGNUP_41", "Su cuenta acaba de activarse."); 
+define("LAN_SIGNUP_42", "Hubo un problema, el email de registro no fue enviado, por favor, contacte con el administrador."); 
+define("LAN_SIGNUP_43", "Email enviado"); 
+define("LAN_SIGNUP_44", "Activación de email enviado a:"); 
+define("LAN_SIGNUP_45", "Por favor, comprueba su carpeta de entrada."); 
+define("LAN_SIGNUP_47", "Re-enviar activación de email"); 
+define("LAN_SIGNUP_48", "Usuario o email"); 
+define("LAN_SIGNUP_49", "Si se registró con un email equivocado, escriba uno nuevo y su contraseña aquí:"); 
+define("LAN_SIGNUP_50", "Nuevo email"); 
+define("LAN_SIGNUP_51", "Vieja contraseña"); 
+define("LAN_SIGNUP_52", "Contraseña incorrecta"); 
 ?>

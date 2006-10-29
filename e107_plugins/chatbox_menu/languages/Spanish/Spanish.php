@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Spanish/Spanish.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-29 12:57:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("CHATBOX_L15", "Mensaje demasiado largo, o enviaste un mensaje vacio");
 define("CHATBOX_L16", "Anónimo");
 define("CHATBOX_L17", "Mensaje duplicado");
 define("CHATBOX_L18", "Mensajes de ChatBox moderados");
-define("CHATBOX_L19", "Solo puedes enviar un mensaje cada ".FLOODTIMEOUT." segundos");
+define("CHATBOX_L19", "Solo puedes enviar un mensaje cada ".(FLOODPROTECT ? FLOODTIMEOUT : 'n/a')." segundos");
 define("CHATBOX_L20", "Chatbox (todos los envíos)");
 define("CHATBOX_L21", "Envíos Chat");
 define("CHATBOX_L22", "on");

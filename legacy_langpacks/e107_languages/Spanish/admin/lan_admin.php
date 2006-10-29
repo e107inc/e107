@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-08-12 17:23:20 $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-29 12:57:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -191,7 +191,6 @@ define("LAN_UPDATE","Actualizar");
 define("LAN_SAVE","Guardar");
 define("LAN_SAVED","Guardado");
 define("LAN_SETSAVED","Su configuración ha sido guardada");
-define("LAN_ERROR","Error");
 define("LAN_CONFIRMDEL","Confirme que desea eliminar");
 define("LAN_OPTIONS","Opciones");
 define("LAN_PREFS","Preferencias");
@@ -240,4 +239,6 @@ define("LAN_DISABLED","Desactivado");
 define("LAN_ENABLED", "Activado");
 define("LAN_PRESET_CONFIRMSAVE","¿Guardar valores del formulario como predeterminados en esta página?");
 define("LAN_CONFIGURE", "Configurar");
+define("LAN_CREDITS","Créditos");
+define("LAN_BACK","Atrás");
 ?>

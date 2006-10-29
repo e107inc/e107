@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_print.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-29 12:57:42 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Vista para Impresión");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Vista de impresión"); }
 
 define("LAN_PRINT_86", "Categoría:");
 define("LAN_PRINT_87", "por ");

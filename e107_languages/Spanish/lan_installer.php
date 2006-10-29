@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-02-15 23:44:16 $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-29 12:57:42 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -95,7 +95,7 @@ Foros: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_p
   	 
 [b]Descargas[/b]
 Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
-Temas: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+Themas: [link=http://e107themes.org]http://e107themes.org[/link]
   	 
 Gracias por probar e107, esperamos que cubra sus necesidades.
 (Puede eliminar este mensaje desde la sección de administración.)");

@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_email.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-08-12 17:23:20 $
+|     $Revision: 1.16 $
+|     $Date: 2006-10-29 12:57:42 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Email");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Email"); }
 
 define("LAN_EMAIL_1", "Desde:");
 define("LAN_EMAIL_2", "Dirección IP del remitente:");

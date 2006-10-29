@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-31 11:12:38 $
+|     $Revision: 1.17 $
+|     $Date: 2006-10-29 12:57:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Listar nuevos datos");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Listar nuevos datos"); }
 
 define("LIST_PLUGIN_1", "Lista");
 define("LIST_PLUGIN_2", "Este plugin le permite ver las últimas entradas añadidas en las categorías de e107. Puede ver la lista de datos desde su última visita o ver las últimas entradas generales. Cada sección es configurable desde el área del administrador.");
@@ -111,6 +111,10 @@ define("LIST_ADMIN_LAN_35", "Días");
 define("LIST_ADMIN_LAN_36", "Laspsodetiempo");
 define("LIST_ADMIN_LAN_37", "¿Mostrar una caja de selección con el número de diías a volver a mirar?");
 define("LIST_ADMIN_LAN_38", "");
+define("LIST_ADMIN_LAN_39", "Abrir si existe el registro"); 
+define("LIST_ADMIN_LAN_40", "¿Debe abrir las secciones que contienen registros por defecto?"); 
+define("LIST_ADMIN_LAN_41", ""); 
+
  	 
 define("LIST_MENU_1", "Añadidos recientes");
 define("LIST_MENU_2", "por");
