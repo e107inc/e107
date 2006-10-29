@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.134 $
-|   $Date: 2006-09-20 14:04:31 $
+|   $Revision: 1.135 $
+|   $Date: 2006-10-29 02:53:02 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -201,7 +201,7 @@ if (isset($_POST['save_prefs'])) {
 	$pref['subnews_class'] = $_POST['subnews_class'];
 	$pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
 	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
-	$pref['news_subheader'] = $_POST['news_subheader'];
+	$pref['news_subheader'] = $tp->toDB($_POST['news_subheader']);
 	/*
 	changes by jalist 22/01/2005:
 	added pref to render new date header
