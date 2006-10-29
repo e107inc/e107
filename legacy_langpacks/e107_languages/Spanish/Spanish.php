@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-29 12:57:43 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-29 14:31:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'es_ES');
+setlocale(LC_ALL, 'SP');
 define("CORE_LC", 'es');
 define("CORE_LC2", 'es');
-define("CHARSET", "utf-8");
+define("CHARSET", "iso-8859-1");
 define("CORE_LAN1","Error : tema no encontrado.\\n\\nCambie el tema usado en preferencias (administración) o copie los archivos del tema seleccionado al servidor.");
 define("CORE_LAN2"," \\1 escribió:");// "\\1" representa el nombre de usuario.
 define("CORE_LAN3","archivo adjunto desactivado");
