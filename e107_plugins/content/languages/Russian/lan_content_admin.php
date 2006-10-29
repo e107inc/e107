@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.6 $
-|     $Date: 2006-10-29 09:13:22 $
-|     $Author: verant $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-29 16:48:34 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,11 +40,11 @@ define("CONTENT_ADMIN_CAT_LAN_20", "опции");
 define("CONTENT_ADMIN_CAT_LAN_21", "очистить форму");
 define("CONTENT_ADMIN_CAT_LAN_22", "опции обновлены");
 define("CONTENT_ADMIN_CAT_LAN_23", "категория удалена");
-define("CONTENT_ADMIN_CAT_LAN_24", "id");
+define("CONTENT_ADMIN_CAT_LAN_24", "ид");
 define("CONTENT_ADMIN_CAT_LAN_25", "значок");
 define("CONTENT_ADMIN_CAT_LAN_26", "новая главная категория");
 define("CONTENT_ADMIN_CAT_LAN_27", "категория");
-define("CONTENT_ADMIN_CAT_LAN_28", "Назначьте пользователей из левого окна для Менджера личного контента для этой категории");
+define("CONTENT_ADMIN_CAT_LAN_28", "Назначьте пользователей из левого окна для Менджера личного контента в этой категории");
 define("CONTENT_ADMIN_CAT_LAN_29", "Щелкните для перемещения ... ");
 define("CONTENT_ADMIN_CAT_LAN_30", "Менеджер личного контента");
 define("CONTENT_ADMIN_CAT_LAN_31", "удалить");
@@ -63,8 +63,8 @@ define("CONTENT_ADMIN_CAT_LAN_42", "для перередактирования 
 
 define("CONTENT_ADMIN_CAT_LAN_43", "нажмите здесь");
 define("CONTENT_ADMIN_CAT_LAN_44", "чтобы создать подкатегорию в Главной категории");
-define("CONTENT_ADMIN_CAT_LAN_45", "позволить комментарии?");
-define("CONTENT_ADMIN_CAT_LAN_46", "позволить оценивание?");
+define("CONTENT_ADMIN_CAT_LAN_45", "разрешить комментарии?");
+define("CONTENT_ADMIN_CAT_LAN_46", "разрешить оценивание?");
 define("CONTENT_ADMIN_CAT_LAN_47", "показать значки печати/email?");
 define("CONTENT_ADMIN_CAT_LAN_48", "Выберите пользователей, которым будет виден этот элемент");
 define("CONTENT_ADMIN_CAT_LAN_49", "выберите значок категории");
@@ -103,7 +103,7 @@ define("CONTENT_ADMIN_ITEM_LAN_4", "элементов контента еще �
 define("CONTENT_ADMIN_ITEM_LAN_5", "существующие элементы контента");
 define("CONTENT_ADMIN_ITEM_LAN_6", "первая запись");
 define("CONTENT_ADMIN_ITEM_LAN_7", "пожалуйста выберите запись выше.");
-define("CONTENT_ADMIN_ITEM_LAN_8", "id");
+define("CONTENT_ADMIN_ITEM_LAN_8", "ид");
 define("CONTENT_ADMIN_ITEM_LAN_9", "значок");
 define("CONTENT_ADMIN_ITEM_LAN_10", "автор");
 define("CONTENT_ADMIN_ITEM_LAN_11", "заголовок");
@@ -662,19 +662,19 @@ define("CONTENT_ADMIN_OPT_LAN_133", "значок : ширина");
 define("CONTENT_ADMIN_OPT_LAN_134", "если выбрано 'значок контента', определите ширину значка для использования");
 define("CONTENT_ADMIN_OPT_LAN_135", "заголовок списка недавних элементов");
 
-define("CONTENT_ADMIN_OPT_LAN_136", "Внутренний"); // CheckIt: Check translation: внутренний интерфейс? //Back End
-define("CONTENT_ADMIN_OPT_LAN_137", "Внешний");  // CheckIt: Check translation: внешний интерфейс? //Front End
+define("CONTENT_ADMIN_OPT_LAN_136", "Внутренний"); 
+define("CONTENT_ADMIN_OPT_LAN_137", "Внешний");  
 define("CONTENT_ADMIN_OPT_LAN_138", "Управлять контентом");
 define("CONTENT_ADMIN_OPT_LAN_139", "Создать контент");
 define("CONTENT_ADMIN_OPT_LAN_140", "Управлять категорией");
 define("CONTENT_ADMIN_OPT_LAN_141", "Создать категорию");
-define("CONTENT_ADMIN_OPT_LAN_142", "Сортировка"); //Order
-define("CONTENT_ADMIN_OPT_LAN_143", "Свойства"); //Options
-define("CONTENT_ADMIN_OPT_LAN_144", "Менеджер личного контента"); //Personal Content Manager
-define("CONTENT_ADMIN_OPT_LAN_145", "Последние"); //Recent
+define("CONTENT_ADMIN_OPT_LAN_142", "Сортировка"); 
+define("CONTENT_ADMIN_OPT_LAN_143", "Свойства"); 
+define("CONTENT_ADMIN_OPT_LAN_144", "Менеджер личного контента"); 
+define("CONTENT_ADMIN_OPT_LAN_145", "Последние"); 
 define("CONTENT_ADMIN_OPT_LAN_146", "Все категории");
-define("CONTENT_ADMIN_OPT_LAN_147", "Одна категория"); //One Category
-define("CONTENT_ADMIN_OPT_LAN_148", "Элемент контента"); //Content Item
+define("CONTENT_ADMIN_OPT_LAN_147", "Одна категория"); 
+define("CONTENT_ADMIN_OPT_LAN_148", "Элемент контента"); 
 define("CONTENT_ADMIN_OPT_LAN_149", "Написать страницу"); //Author Page
 define("CONTENT_ADMIN_OPT_LAN_150", "Архивировать страницу"); //Archive Page
 define("CONTENT_ADMIN_OPT_LAN_151", "Высший рейтинг страницы"); //CheckIt: Check translation: Top Rated Page
