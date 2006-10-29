@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.5 $
-|     $Date: 2006-09-17 07:00:18 $
-|     $Author: verant $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-29 04:47:14 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
@@ -20,34 +20,34 @@ define("USRLAN_10", "Пользователь удалён.");
 define("USRLAN_11", "Удаление отменено.");
 define("USRLAN_12", "Вы не можете удалить главного администратора сайта.");
 define("USRLAN_13", "Пожалуйста, подтвердите удаление пользователя");
-// define("USRLAN_14", "once deleted the record cannot be retrieved");
-// define("USRLAN_15", "Cancel");
+// define("USRLAN_14", "однажды удаленная запись не может быть восстановлена");
+// define("USRLAN_15", "Отмена");
 define("USRLAN_16", "Подтверждение удаления");
 define("USRLAN_17", "Подтверждение удаления пользователя");
-// define("USRLAN_18", "User activated.");
-// define("USRLAN_19", "Search");
-// define("USRLAN_20", "Order by");
-// define("USRLAN_21", "User ID");
-// define("USRLAN_22", "User name");
-// define("USRLAN_23", "Visits to site");
-// define("USRLAN_24", "Admin status");
-// define("USRLAN_25", "Status");
-// define("USRLAN_26", "Descending");
-// define("USRLAN_27", "Ascending");
-// define("USRLAN_28", "Sort");
+// define("USRLAN_18", "Пользователь активирован.");
+// define("USRLAN_19", "Поиск");
+// define("USRLAN_20", "Расположить по");
+// define("USRLAN_21", "ИД Пользователя");
+// define("USRLAN_22", "Имя пользователя");
+// define("USRLAN_23", "Посещений на сайт");
+// define("USRLAN_24", "Статус администратора");
+// define("USRLAN_25", "Статус");
+// define("USRLAN_26", "Убывание");
+// define("USRLAN_27", "Возрастание");
+// define("USRLAN_28", "Сортировка");
 
 define("USRLAN_30", "Запрет"); //Ban
-// define("USRLAN_31", "Ban -inactivated-");
+// define("USRLAN_31", "Запрет -деактивирован-");
 define("USRLAN_32", "Активировать");
 define("USRLAN_33", "Снять запрет"); //Unban
 define("USRLAN_34", "Удалить статус администратора");
 define("USRLAN_35", "Сделать админом");
 define("USRLAN_36", "Установить класс");
 
-// define("USRLAN_37", "Members");
-// define("USRLAN_38", "Search returned");
-// define("USRLAN_39", "result(s)");
-// define("USRLAN_40", "None defined");
+// define("USRLAN_37", "Члены");
+// define("USRLAN_38", "Результаты поиска");
+// define("USRLAN_39", "результат(ы)");
+// define("USRLAN_40", "Не определено");
 
 define("USRLAN_44", "Позволить пользователям загружать на сервер аватары?");
 
@@ -78,14 +78,14 @@ define("USRLAN_70", "Пользователь создан");
 define("USRLAN_71", "Пользователи");
 define("USRLAN_72", "Быстрое добавление пользователя");
 define("USRLAN_73", "Очистить от неактивных");
-// define("USRLAN_75", "Options");
+// define("USRLAN_75", "Опции");
 define("USRLAN_76", "Настройки пользователя");
 define("USRLAN_77", "Существующие пользователи");
 define("USRLAN_78", "Имя");
 define("USRLAN_79", "Статус");
 define("USRLAN_80", "Инфо");
 
-// define("USRLAN_82", "Are you sure you want to delete this user?");
+// define("USRLAN_82", "Вы действительно хотите удалить этого пользователя?");
 define("USRLAN_84", "Имеется");
 define("USRLAN_85", "Неактивированные пользователи - кликните здесь, чтобы удалить");
 define("USRLAN_86", "Пользователь проверен");
@@ -184,8 +184,8 @@ define("USRLAN_142", "со следующей ссылкой активации"
 
 define("LAN_BOUNCED","Возвращено"); //Bounces
 define("USRLAN_143", "Проверить на возвраты"); //Check For Bounces
-define("USRLAN_144", "Переслать письмо подтверждения всем");
-define("USRLAN_145", "Возвращенные (bounced) пользователи"); //????? (better translation need) "Bounced users"
+define("USRLAN_144", "Переслать всем письмо подтверждения");
+define("USRLAN_145", "Возвращенные пользователи"); //Bounced users"
 define("USRLAN_146", "Информация о пользователе доступна для");
 
 ?>

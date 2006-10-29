@@ -2,17 +2,15 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-10-26 16:08:00 $
-|     $Author: verant $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-29 04:46:51 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+$text = "Обзоры похожи на статьи, но они находятся в отдельном пункте меню.<br />
+ Для создания многостраничных обзоров отделите каждую страницу текстом [newpage], т.е. <br /><code>Тест1 [newpage] Тест2</code><br /> создаст двухстраничный обзор с 'Тест1' на странице 1 и 'Тест2' на странице 2.";
 
-//Not translated yet: obsolete?
-$text = "Reviews are similar to articles but they will be listed in their own menu item.<br />
- For a multi-page review separate each page with the text [newpage], i.e. <br /><code>Test1 [newpage] Test2</code><br /> would create a two page review with 'Test1' on page 1 and 'Test2' on page 2.";
-$ns -> tablerender("Review Help", $text);
-
+$ns -> tablerender("Обзоры: Справка", $text);
 ?>
