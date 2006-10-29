@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-02-24 18:36:35 $
-|     $Author: whoisrich $
+|     $Revision: 1.37 $
+|     $Date: 2006-10-29 04:08:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -165,7 +165,38 @@ class userlogin {
 					$$value = $tp -> toDB($match[2][$count]);
 					$count++;
 				}
-				$sql -> db_Update("user", "user_login='{$FN}', user_homepage='{$URL}', user_icq='{$ICQ}', user_aim='{$AIM}', user_msn='{$MSN}', user_location='{$GEO}', user_birthday='{$BDAY}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
+
+				$sql -> db_Update("user", "user_login='{$FN}', user_hideemail='{EMAILHIDE}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
+
+				$ue_fields = "";
+				$fields = array("URL" => "homepage",
+					"ICQ" => "icq",
+					"AIM" => "aim",
+					"MSN" => "msn",
+					"YAHOO" => "yahoo",
+					"GEO" => "location",
+					"BDAY" => "birthday");
+					include_once(e_HANDLER."user_extended_class.php");
+					$usere = new e107_user_extended;
+					$extList = $usere->user_extended_get_fieldList();
+					$extName = array();
+					foreach($extList as $ext)
+					{
+						$extName[] = $ext['user_extended_struct_name'];
+					}
+					foreach($fields as $keyxup => $keydb)
+					{
+						if (in_array($keydb, $extName))
+						{
+							$key = "user_".$keydb;
+							$key = $tp->toDB($key);
+							$val = $tp->toDB($$keyxup);
+							$ue_fields .= ($ue_fields) ? ", " : "";
+							$ue_fields .= $key."='".$val."'";
+						}
+					}
+					$sql -> db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('".intval($user_id)."')");
+					$sql -> db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".intval($user_id)."'");
 			}
 		}
 	}
