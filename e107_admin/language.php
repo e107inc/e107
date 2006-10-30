@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-10-25 02:31:29 $
+|     $Revision: 1.35 $
+|     $Date: 2006-10-30 18:16:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -422,7 +422,7 @@ function show_tools()
 
 	$text .= "
 	</select>
-	<input type='submit' name='check_lang' value=\"".LAN_CHECK_2."\" class='button' />
+	<input type='submit' name='language_sel' value=\"".LAN_CHECK_2."\" class='button' />
 	</td></tr>
 	</table></form>";
 
