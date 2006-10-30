@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/core_image.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-10-30 16:43:44 $
+|     $Revision: 1.41 $
+|     $Date: 2006-10-30 16:50:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@ $core_image = array (
     'comment.php' => '96f04e71003de6b6a6ea3a0f2ede285d',
     'compact.php' => '20bccea2ef81cc86a86782fa4841e45f',
     'content.php' => 'bf2239404990afed185913002429e682',
-    'core_image.php' => '2aa5ccfd25f662f85e94917366e02da0',
+    'core_image.php' => '38e1ce0e30cb9647120a43ef18b46df1',
     'cpage.php' => '17f479ec41af4c456e57dcb768566c65',
     'credits.php' => '322fe1169cd992db88624e84d7f51288',
     'db.php' => 'a48795e26302b874c1fe397689f01d9f',
