@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.106 $
-|		$Date: 2006-10-22 08:53:47 $
+|		$Revision: 1.107 $
+|		$Date: 2006-10-30 17:21:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -897,43 +897,56 @@ function show_content_author_all(){
 
 		$sql1 = new db; $sql2 = new db;
 		$contenttotal = $sql1 -> db_Select($plugintable." AS p", "DISTINCT(p.content_author)", "p.content_refer !='sa' AND ".$qry." ".$datequery." AND p.content_class REGEXP '".e_CLASS_REGEXP."'");					
-		
-		$qry = "
-		SELECT DISTINCT(p.content_author), p.content_heading, p.content_datestamp, p.content_id, u.user_id, u.user_name, u.user_email, SUBSTRING_INDEX(p.content_author, '^', 0) AS user_name2, COUNT(i.content_id) as amount 
+
+		$query = "
+		SELECT DISTINCT(p.content_author)
 		FROM #$plugintable AS p
-		LEFT JOIN #$plugintable AS i ON i.content_author = p.content_author  
-		LEFT JOIN #user AS u ON (u.user_id = p.content_author || p.content_author = u.user_name || SUBSTRING_INDEX(p.content_author, '^', 1) REGEXP 'u.user_name') 
-		WHERE p.content_refer !='sa' AND ".$qry." ".$dateqry." AND p.content_class REGEXP '".e_CLASS_REGEXP."' AND i.content_class REGEXP '".e_CLASS_REGEXP."'
-		GROUP BY i.content_id
-		ORDER BY p.content_datestamp ASC, p.content_author";
+		WHERE p.content_refer !='sa' AND ".$qry." ".$dateqry." AND p.content_class REGEXP '".e_CLASS_REGEXP."' 
+		ORDER BY p.content_author";
 
-		$author = array();
-		$options = "";
-		if ($sql1->db_Select_gen($qry)){
+		$arr = array();
+		$arr2 = array();
+		if (!$sql1->db_Select_gen($query)){
+			$text = "no authors yet";
+		}else{
 			while($row1 = $sql1 -> db_Fetch()){
-				$row = $row1;
-				
-				if(is_numeric($row['content_author'])){
-					$name = ($row['user_name'] ? $row['user_name'] : CONTENT_LAN_29);
-				}else{
-					if(strpos($row['content_author'], "^")){
-						$tmp = explode("^", $row['content_author']);
-						if(is_numeric($tmp[0])){
-							$name = $tmp[1];
-						}else{
-							$name = $tmp[0];
-						}
-					}else{
-						$name = $row['content_author'];
-					}
-					$name = ($name ? $name : CONTENT_LAN_29);
-				}
-				if(is_array($author)){
-					if(!in_array($name, $author)){
+				//parse db field and retrieve user info -> array($author_id, $author_name, $author_email, $content_author);
+				$arr[] = $aa->getAuthor($row1['content_author']);
+			}
+			//combine unique authors
+			for($i=0;$i<count($arr);$i++){
+				$arr2[$arr[$i][1]][] = $arr[$i];
+			}
 
-						$display = (strlen($name) > 29 ? substr($name,0,29)."..." : $name);
-						$arrData[] = array($name, $row['content_id'], $row['content_heading'], $row['content_datestamp'], $row['amount']);
-						$author[] = $name;
+			$arr3 = array();
+			foreach($arr2 as $key=>$value){
+				$db='';
+				//prepare db field for author comparison
+				if(count($arr2[$key])==1){
+					$db = " p.content_author='".$arr2[$key][0][3]."' ";
+				}else{
+					for($k=0;$k<count($arr2[$key]);$k++){
+						$db[] = " p.content_author='".$arr2[$key][$k][3]."' ";
+					}
+					if($db!=''){
+						$db = implode(" || ", $db);
+					}
+				}
+				if($db!=''){
+					//count items
+					$amount = $sql2->db_Count($plugintable." as p", "(*)", "WHERE ".$db );
+
+					$query = "
+					SELECT p.content_id, p.content_heading, p.content_datestamp
+					FROM #$plugintable AS p
+					WHERE (".$db.") AND p.content_refer !='sa' AND ".$qry." ".$dateqry." AND p.content_class REGEXP '".e_CLASS_REGEXP."'
+					ORDER BY p.content_datestamp ASC, p.content_author LIMIT 0,1";
+
+					//query to retrieve last created item for each author
+					if ($sql2->db_Select_gen($query)){
+						while($row2 = $sql2 -> db_Fetch()){
+							$arr3[] = array($key, $row2['content_id'], $row2['content_heading'], $row2['content_datestamp'], $amount);
+						}
 					}
 				}
 			}
@@ -959,21 +972,23 @@ function show_content_author_all(){
 				}
 				return strcasecmp ($la, $lb);
 			}
-			usort($arrData, "cmp");
+			//do an alpha ordering on the author (if 'firstname lastname', lastname is the comparison factor)
+			usort($arr3, "cmp");
 
-			$content_author_table_string = "";
+			$string = "";
+			//only display number of records for nextprev
 			$max = $from+$number;
 			for($i=$from;$i<$max;$i++){
-				if(is_array($arrData[$i])){
-					$authordetails[$i][1] = $arrData[$i][0];
-					$row['content_id'] = $arrData[$i][1];
-					$row['content_heading'] = $arrData[$i][2];
-					$row['content_datestamp'] = $arrData[$i][3];
-					$totalcontent = $arrData[$i][4];
-					$content_author_table_string .= $tp -> parseTemplate($CONTENT_AUTHOR_TABLE, FALSE, $content_shortcodes);
+				if(is_array($arr3[$i])){
+					$authordetails[$i][1] = $arr3[$i][0];
+					$row['content_id'] = $arr3[$i][1];
+					$row['content_heading'] = $arr3[$i][2];
+					$row['content_datestamp'] = $arr3[$i][3];
+					$totalcontent = $arr3[$i][4];
+					$string .= $tp -> parseTemplate($CONTENT_AUTHOR_TABLE, FALSE, $content_shortcodes);
 				}
 			}
-			$text = $CONTENT_AUTHOR_TABLE_START.$content_author_table_string.$CONTENT_AUTHOR_TABLE_END;
+			$text = $CONTENT_AUTHOR_TABLE_START.$string.$CONTENT_AUTHOR_TABLE_END;
 			$text = $aa -> getCrumbPage("authorall", $array, $mainparent).$text;
 		}
 		$caption	= $content_pref['content_author_index_caption'];
