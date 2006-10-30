@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-10-29 10:28:43 $
-|     $Author: lisa_ $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-30 14:01:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 global $sc_style;
 
-define("PM_READ_ICON", "<img src='".e_PLUGIN."/pm/images/read.png' style='height:16px;width:16px;border:0' />");
-define("PM_UNREAD_ICON", "<img src='".e_PLUGIN."/pm/images/unread.png' style='height:16px;width:16px;border:0' />");
+define("PM_READ_ICON", "<img src='".e_PLUGIN."/pm/images/read.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_111."' />");
+define("PM_UNREAD_ICON", "<img src='".e_PLUGIN."/pm/images/unread.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_27."' />");
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 
@@ -172,7 +172,7 @@ $PM_SHOW =
 	<td class='fcaption' colspan='2'>{PM_SUBJECT}</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:20%;vertical-align:top'>
+	<td class='forumheader3' style='width:20%; vertical-align:top'>
 		{PM_FROM_TO}
 		<br />
 		<br />
@@ -184,7 +184,7 @@ $PM_SHOW =
 		<br />
 		{PM_DELETE}
 	</td>
-	<td class='forumheader3' style='width:80%;vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
+	<td class='forumheader3' style='width:80%; vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
 </tr>
 {PM_REPLY}
 </table>

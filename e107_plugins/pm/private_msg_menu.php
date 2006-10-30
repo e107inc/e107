@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-01-22 15:38:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2006-10-30 14:01:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -26,8 +26,8 @@ if(!isset($pm_prefs['perpage']))
 require_once(e_PLUGIN."pm/pm_func.php");
 pm_getInfo('clear');
 
-define("PM_INBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_get.png' style='height:16;width:16;border:0' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
-define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_send.png' style='height:16;width:16;border:0' alt='".LAN_PM_26."' title='".LAN_PM_26."' />");
+define("PM_INBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_get.png' style='height:16px; width:16px; border:0px;' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
+define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_send.png' style='height:16px; width:16px; border:0px;' alt='".LAN_PM_26."' title='".LAN_PM_26."' />");
 define("PM_SEND_LINK", LAN_PM_35);
 define("NEWPM_ANIMATION", "<img src='".e_PLUGIN."pm/images/newpm.gif' alt='' style='border:0' />");
 
@@ -85,13 +85,13 @@ function pm_show_popup()
 			<title>".$pm_inbox['inbox']['new']." ".LAN_PM_109."</title>
 			<link rel=stylesheet href=" . THEME . "style.css>
 		</head>
-		<body style=\'padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;text-align:center\' marginheight=0 marginleft=0 topmargin=0 leftmargin=0>
-		<table style=\'width:100%;text-align:center;height:99%;padding-bottom:2px\' class=\'bodytable\'>
+		<body style='padding-left:2px;padding-right:2px; padding:2px; padding-bottom:2px; margin:0px; text-align:center' marginheight='0' marginleft='0' topmargin='0' leftmargin='0'>
+		<table style='width:100%; text-align:center; height:99%; padding-bottom:2px' class='bodytable'>
 			<tr>
 				<td width=100% >
 					<center><b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new']." ".LAN_PM_109."<br />".$pm_inbox['inbox']['unread']." ".LAN_PM_37."<br /><br />
 					<form>
-						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_PM_110."\' />
+						<input class='button' type='submit' onclick='self.close();' value = \"".LAN_PM_110."\" />
 					</form>
 					</center>
 				</td>

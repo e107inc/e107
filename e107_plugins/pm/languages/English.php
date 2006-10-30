@@ -76,5 +76,5 @@ define("LAN_PM_107", "The Private Message you sent to {UNAME} was read on ");
 define("LAN_PM_108", "Message sent on: ");
 define("LAN_PM_109", "New Message(s)");
 define("LAN_PM_110", "ok");
-
+define("LAN_PM_111", "Read");
 ?>
