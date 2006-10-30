@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-11-10 20:35:17 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2006-10-30 13:46:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -32,15 +32,15 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 
 define("LOGPATH", e_PLUGIN."log/");
-	
-@include_once(LOGPATH."languages/admin/".e_LANGUAGE.".php");
-@include_once(LOGPATH."languages/admin/English.php");
 
-if(IsSet($_POST['openRemPageD']))
+include_lan(LOGPATH."languages/admin/".e_LANGUAGE.".php");
+
+
+if(isset($_POST['openRemPageD']))
 {
 	rempage();
 }
-if(IsSet($_POST['remSelP']))
+if(isset($_POST['remSelP']))
 {
 	rempagego();
 }
@@ -85,7 +85,7 @@ if(IsSet($_POST['wipeSubmit']))
 if(!is_writable(LOGPATH."logs")) {
 	$message = "<b>You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)</b>";
 }
-	
+
 if (isset($_POST['updatesettings'])) {
 	$pref['statActivate'] = $_POST['statActivate'];
 	$pref['statCountAdmin'] = $_POST['statCountAdmin'];
@@ -102,11 +102,11 @@ if (isset($_POST['updatesettings'])) {
 	$message = ADSTAT_L17;
 }
 
-	
+
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -131,7 +131,7 @@ $text = "<div style='text-align:center'>
 	<input type='radio' name='statCountAdmin' value='0'".(!$pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:50%' class='forumheader3'>".ADSTAT_L21."</td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>
@@ -173,9 +173,9 @@ $text = "<div style='text-align:center'>
 
 	</td>
 	</tr>
-	
+
 	<tr>
-	<td style='width:50%' class='forumheader3'>".ADSTAT_L12."<br /><span class='smalltext'>".ADSTAT_L13."</td>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L12."<br /><span class='smalltext'>".ADSTAT_L13."</span></td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>
 	".ADSTAT_L14."<input type='checkbox' name='wipe[statWipePage]' value='1' /><br />
 	".ADSTAT_L6."<input type='checkbox' name='wipe[statWipeBrowser]' value='1' /><br />
@@ -189,17 +189,17 @@ $text = "<div style='text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".ADSTAT_L26."<br /><span class='smalltext'>".ADSTAT_L27."</td>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L26."<br /><span class='smalltext'>".ADSTAT_L27."</span></td>
 	<td style='width:50%; text-align: right;' class='forumheader3'><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' />
 	</td>
 	</tr>
-	
+
 	";
 
 	$text .= "
-	
 
-	 
+
+
 	<tr>
 	<td colspan='2'  style='text-align:center' class='forumheader'>
 	<input class='button' type='submit' name='updatesettings' value='".ADSTAT_L15."' />
@@ -208,7 +208,7 @@ $text = "<div style='text-align:center'>
 	</table>
 	</form>
 	</div>";
-	
+
 $ns->tablerender(ADSTAT_L16, $text);
 require_once(e_ADMIN."footer.php");
 
@@ -298,7 +298,7 @@ function rempagego()
 	{
 		$sql -> db_Insert("logstats", "0, 'pageTotal', '$pagetotal' ");
 	}
-	
+
 	$varStart = chr(36);
 	$quote = chr(34);
 
@@ -326,7 +326,7 @@ function rempagego()
 
 	$data .= "\n);\n\n?".  chr(62);
 
-	if ($handle = fopen($logfile, 'w')) { 
+	if ($handle = fopen($logfile, 'w')) {
 		fwrite($handle, $data);
 	}
 	fclose($handle);
