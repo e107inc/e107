@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-03-03 23:36:47 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-30 03:58:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -110,7 +110,7 @@ else
 		$host = $e107->get_host_name(getenv($gen_ip));
 		$text .= "<tr>
 		<td style='width: 20%;' class='forumheader3'>".$gen->convert_date($gen_datestamp, "forum")."</td>
-		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", htmlentities($gen_chardata))."</td>
+		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", htmlentities($gen_chardata, ENT_QUOTES, CHARSET))."</td>
 		<td style='width: 20%;' class='forumheader'>".$fa['gen_ip']."<br />{$host}</td>
 		<td style='width: 10%; text-align: left;' class='forumheader3'>
 		<input type='checkbox' name='fladelete[]' value='$gen_id' /> ".LAN_DELETE."<br />
