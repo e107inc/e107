@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/Spanish.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-10-29 12:57:43 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-30 15:55:32 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -84,6 +84,5 @@ define("LAN_PM_107", "El mensaje privado enviado a {UNAME} fué leído ");
 define("LAN_PM_108", "Mensaje enviado el: ");
 define("LAN_PM_109", "Nuevo(s) Mensaje(s)");
 define("LAN_PM_110", "Ok");
-
-
+define("LAN_PM_111", "Leído");
 ?>
