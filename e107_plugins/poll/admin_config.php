@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-18 18:12:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2006-10-30 16:12:20 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -67,7 +67,7 @@ if (isset($_POST['submit']))
 	}
 	else
 	{
-		$message = "Field(s) left blank";
+		$message = POLLAN_46;
 	}
 }
 
