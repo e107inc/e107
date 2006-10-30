@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-10-25 23:50:39 $
+|     $Revision: 1.35 $
+|     $Date: 2006-10-30 03:43:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Fiel
 
 // check for file-types;
 if (is_readable(e_ADMIN.'filetypes.php')) {
-	$a_types = trim(file_get_contents(e_ADMIN.'filetypes.php'));
+	$a_types = strtolower(trim(file_get_contents(e_ADMIN.'filetypes.php')));
 } else {
 	$a_types = 'zip, gz, jpg, png, gif';
 }
@@ -76,7 +76,7 @@ foreach ($public as $dir) {
 			while (($file = readdir($dh)) !== false) {
 				if (is_dir($dir."/".$file) == FALSE && $file != '.' && $file != '..' && $file != '/' && $file != 'CVS' && $file != 'avatars' && $file != 'Thumbs.db' && $file !=".htaccess" && $file !="php.ini") {
 					$fext = substr(strrchr($file, "."), 0);
-					if (!in_array($fext, $allowed_types) ) {
+					if (!in_array(strtolower($fext), $allowed_types) ) {
 						if ($file == 'index.html' || $file == "null.txt") {
 							if (filesize($dir.'/'.$file)) {
 								$potential[] = str_replace('../', '', $dir).'/'.$file;
