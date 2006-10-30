@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-10-30 02:16:58 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-30 02:46:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -427,11 +427,19 @@ class gsitemap
 
 		<select class='tbox' name='import_freq' >\n";
 
-		$freq_list = array(GSLAN_11, GSLAN_12, GSLAN_13,GSLAN_14,GSLAN_15,GSLAN_16,GSLAN_17);
+		$freq_list = array(
+			"always"=>GSLAN_11,
+			"hourly"=>GSLAN_12,
+			"daily"=>GSLAN_13,
+			"weekly"=>GSLAN_14,
+			"monthly"=>GSLAN_15,
+			"yearly"=>GSLAN_16,
+			"never"=>GSLAN_17
+		);
 
-		foreach($freq_list as $fq){
-			$sel = ($editArray['gsitemap_freq'] == $fq)? "selected='selected'" : "";
-			$text .= "<option value='$fq' $sel>$fq</option>\n";
+		foreach($freq_list as $k=>$fq){
+			$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
+			$text .= "<option value='$k' $sel>$fq</option>\n";
 		}
 
 		$text.="</select> <br /><br />
