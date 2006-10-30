@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-08-27 02:24:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2006-10-30 16:12:20 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,13 +64,11 @@ define("POLLAN_37", "active from");
 define("POLLAN_38", "to");
 define("POLLAN_39", "Thank you for voting!");
 define("POLLAN_40", "Click here to see results");
-
 define("POLLAN_41", "This poll is restricted to members only");
 define("POLLAN_42", "This poll is restricted to administrators only");
 define("POLLAN_43", "You do not have the permission to vote in this poll");
-
 define("POLLAN_44", "Delete this poll?");
-
 define("POLLAN_45", "Poll successfully updated");
+define("POLLAN_46", "Field(s) left blank");
 
 ?>
