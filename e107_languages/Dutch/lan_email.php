@@ -1,7 +1,6 @@
 <?php
 
-define("PAGE_NAME", "E-mail"); 
-
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "E-mail"); }
 define("LAN_EMAIL_1", "Van:");
 define("LAN_EMAIL_2", "IP-adres van afzender:");
 define("LAN_EMAIL_3", "Nieuwsbericht van ");

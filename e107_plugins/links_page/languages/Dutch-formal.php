@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch-formal.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-08-01 13:35:43 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-30 22:19:52 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -139,6 +139,7 @@ define("LCLAN_ADMIN_11", "verwijderd");
 define("LCLAN_ADMIN_12", "Linkcategorie");
 define("LCLAN_ADMIN_13", "Aangemelde link verwijderd");
 define("LCLAN_ADMIN_14", "Links");
+define("LCLAN_ADMIN_15", "Deze categorie bevat nog links, verwijder of verplaats die eerst");
 
 define("LCLAN_SL_1", "Aangemelde links");
 define("LCLAN_SL_2", "Geen aangemelde links");
@@ -299,6 +300,7 @@ define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Link categorie");
 define("LAN_LINKS_46", "Link subcategorieën");
 define("LAN_LINKS_47", "link navigator...");
+define("LAN_LINKS_48", "-- bekijk categorie --");
 
 define("LAN_ADMIN_HELP_0", "linkspage helpfunctie");
 

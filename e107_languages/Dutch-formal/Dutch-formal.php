@@ -27,4 +27,11 @@ define("CORE_LAN2"," \\1 schreef:");       // "\\1" representeert de gebruikersn
 define("CORE_LAN3","bestandbijlage gedeactiveerd");
 define("CORE_LAN4", "Verwijder install.php van uw server");
 define("CORE_LAN5", "Als u dat niet doet, bestaat er mogelijk een beveiligingsrisico voor uw website");
+define("CORE_LAN6", "De 'flood'-bescherming op deze site is geactiveerd en u wordt gewaarschuwd dat u kunt worden geblokkeerd als je doorgaat pagina's op te vragen.");
+define("CORE_LAN7", "Core probeert de voorkeuren vanuit de automatische backup te herstellen.");
+define("CORE_LAN8", "Core voorkeuren FOUT");
+define("CORE_LAN9", "Core kon niet herstellen vanaf de automatische backup. Uitvoering gestopt.");
+define("CORE_LAN10", "Corrupt cookie gedetecteerd - uitgelogd.");
+define("LAN_WARNING", "Waarschuwing!");
+define("LAN_ERROR", "Fout");
 ?>

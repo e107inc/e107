@@ -41,4 +41,12 @@ define("LAN_ERROR_21", "De opgevraagde URL kon niet worden gevonden op deze serv
 define("LAN_ERROR_22", "Klik hier om naar de zoekpagina op deze site te gaan");
 define("LAN_ERROR_23", "Je poging tot het benaderen van ");
 define("LAN_ERROR_24", " is niet geslaagd.");
+define("LAN_ERROR_25", "[1]: Kon de core instellingen niet lezen vanuit de database - Core instellingen bestaan wel maar kunnen niet worden ingelezen. Poging ondernomen de core backup te herstellen...");
+define("LAN_ERROR_26", "[2]: Kon de core instellingen niet lezen vanuit de  database - niet bestaande core instellingen.");
+define("LAN_ERROR_27", "[3]: Core instellingen bewaard - backup geactiveerd.");
+define("LAN_ERROR_28", "[4]: Geen core backup gevonden. Draai het <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> reparatieprogramma om de core instellingen opnieuw op te bouwen. <br />maak na herstel direct een backup via het beheer/sql scherm.");
+define("LAN_ERROR_29", "[5]: Veld(en) niet ingevuld. Biedt het scherm nogmaals aan en vul de verplichte velden aan.");
+define("LAN_ERROR_30", "[6]: Kon een geldige verbinding maken met mySQL. Controleer of e107_config.php de juiste informatie bevat.");
+define("LAN_ERROR_31", "[7]: mySQL draait, maar database ({$mySQLdefaultdb}) kon niet worden aangekoppeld.<br />Controleer dat de database bestaat en dat e107_config.php de juiste informatie bevat.");
+define("LAN_ERROR_32", "Kopieer de volgende tekst in het e107_config.php bestand om de upgrade af te ronden:");
 ?>

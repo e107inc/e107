@@ -15,8 +15,7 @@
 +---------------------------------------------------------------+
 */
 
-define("PAGE_NAME", "Reacties");
-define("COMLAN_0", "[geblokkeerd door admin]");
+define("COMLAN_0", "[geblokkeerd door beheerder]");
 define("COMLAN_1", "Deblokkeren");
 define("COMLAN_2", "Blokkeren");
 define("COMLAN_3", "Verwijder");

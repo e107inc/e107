@@ -19,8 +19,6 @@ define("PAGE_NAME", "Nieuws");
 
 define("LAN_NEWS_1", "Nieuws uitsluitend voor bepaalde leden");
 define("LAN_NEWS_2", "U mag dit bericht niet lezen");
-define("LAN_NEWS_3", "Verwijder install.php van je server");
-define("LAN_NEWS_4", "als u dat niet doet, bestaat er een beveiligingsrisico voor uw website");
 define("LAN_NEWS_5", "<b>Fout!</b> Het was niet mogelijk het nieuwsbericht in de database bij te werken!</b>");
 define("LAN_NEWS_6", "Nieuws ingevoerd in de database.");
 define("LAN_NEWS_7", "<b>Fout!</b> Het was niet mogelijk het nieuwsbericht in de database in te voeren!</b>");
@@ -38,7 +36,6 @@ define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19", "Nu");
 define("LAN_NEWS_20", "Nieuws in de database bijgewerkt in de volgende taal: ");
 define("LAN_NEWS_21", "Nieuws bijgewerkt in de database.");
-define("LAN_NEWS_22", "Ga naar pagina: ");
 define("LAN_NEWS_23", "Nieuwscategorieën");
 define("LAN_NEWS_24", "genereer een pdf van dit bericht");
 

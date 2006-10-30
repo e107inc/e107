@@ -162,6 +162,8 @@ define("ADLAN_152", "Invoeren code");
 
 define("LAN_SELECT","Selecteer ...");
 define("LAN_ADMIN","Beheer");
+define("LAN_BACK","Terug");
+define("LAN_CREDITS","Verantwoording");
 
 define("LAN_EDIT","Bewerken");
 define("LAN_DELETE","Verwijderen");
@@ -170,7 +172,6 @@ define("LAN_UPDATE","Bijwerken");
 define("LAN_SAVE","Opslaan");
 define("LAN_SAVED","Opgeslagen");
 define("LAN_SETSAVED","Uw instellingen zijn opgeslagen");
-define("LAN_ERROR","Fout");
 define("LAN_CONFIRMDEL","Bevestig het verwijderen van");
 define("LAN_OPTIONS","Opties");
 define("LAN_PREFS","Voorkeuren");

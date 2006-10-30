@@ -52,7 +52,6 @@ define("LCLAN_81", "Sub-menu's worden alleen getoond na het klikken op het hoger
 define("LCLAN_83", "Submenu generator");
 define("LCLAN_88", "Site links opties");
 define("LCLAN_89", "Afbeelding");
-define("LCLAN_90", "Naam");
 define("LCLAN_91", "Verplaats");
 define("LCLAN_95", "Klasse");
 define("LCLAN_96", "In je thema getoond als");

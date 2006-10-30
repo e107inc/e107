@@ -93,6 +93,18 @@ define("LAN_SIGNUP_36", "Er is een fout opgetreden bij het aanmaken van je gebru
 define("LAN_SIGNUP_37", "Deze fase van de aanmelding is afgerond. De beheerder moet nu eerst je aanmelding goedkeuren. Als dat is gebeurd, ontvang je een e-mail ter bevestiging.");
 define("LAN_SIGNUP_38", "Je hebt twee verschillende e-mailadressen opgegeven. Geef hetzelfde geldige e-mailadres op in beide daarvoor bestemde velden.");
 define("LAN_SIGNUP_39", "Nogmaals je e-mailadres:");
+define("LAN_SIGNUP_40", "Activatering niet nodig");
+define("LAN_SIGNUP_41", "Je account is al geactiveerd.");
+define("LAN_SIGNUP_42", "Er is een probleem opgetreden. Het registratie e-mailbericht is niet verstuurd. Neem cpontact op met de webmaster.");
+define("LAN_SIGNUP_43", "E-mail verstuurd");
+define("LAN_SIGNUP_44", "Activerings e-mailbericht verstuurd aan:");
+define("LAN_SIGNUP_45", "Controleer je inbox.");
+define("LAN_SIGNUP_47", "Activerings e-mailbericht");
+define("LAN_SIGNUP_48", "gebruikersnaam of e-mailadres");
+define("LAN_SIGNUP_49", "Als je registreerde met een onjuist e-mailadres, voer dan nu een nieuw in en geef hier je wachtwoord op:");
+define("LAN_SIGNUP_50", "Nieuw e-mailadres");
+define("LAN_SIGNUP_51", "Oude wachtwoord");
+define("LAN_SIGNUP_52", "Onjuist wachtwoord");
 
 define("LAN_LOGINNAME", "Inlognaam");
 define("LAN_PASSWORD", "Wachtwoord");

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Dutch.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-29 06:59:02 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-30 22:20:12 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -69,4 +69,5 @@ define("POLLAN_42", "Deze peiling is alleen voor beheerders");
 define("POLLAN_43", "Je mag niet stemmen in deze peiling");
 define("POLLAN_44", "Peiling verwijderen?");
 define("POLLAN_45", "Peiling succesvol bijgewerkt");
+define("POLLAN_46", "Veld(en) niet ingevuld");
 ?>

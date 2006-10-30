@@ -35,7 +35,6 @@ define("EPL_ADLAN_16", "Plugin informatie");
 define("EPL_ADLAN_17", "Meer info...");
 define("EPL_ADLAN_18", "Kon de tabel(len) voor deze plugin NIET succesvol aanmaken.");
 define("EPL_ADLAN_19", "Databasetabellen succesvol gecreëerd.");
-define("EPL_ADLAN_20", "Voorkeursinstellingen succesvol gecreëerd.");
 define("EPL_ADLAN_21", "Plugin is al geïnstalleerd.");
 define("EPL_ADLAN_22", "Geïnstalleerd");
 define("EPL_ADLAN_23", "Niet geïnstalleerd");
@@ -61,22 +60,14 @@ define("EPL_ADLAN_42", "Er is een fout opgetreden, kan het bestand niet uitpakke
 define("EPL_ADLAN_43", "De plugin is geupload en uitgepakt, blader omlaag om de plugin in de lijst te zien.");
 define("EPL_ADLAN_44", "Auto plugin upload en uitpakken is gedeactiveerd omdat de plugins directory niet de juiste permissies heeft. Wijzig de rechten op de e107_plugins directory in CHMOD 777."); 
 define("EPL_ADLAN_45", "Het menuscript is geupload en uitgepakt. Ga naar <a href='".e_ADMIN."menu.php'>je beheerpagina</a> om te activeren.");
-define("EPL_ADLAN_46", "RSS instellingen succesvol gecreëerd");
-define("EPL_ADLAN_47", "RSS instellingen succesvol verwijderd");
-define("EPL_ADLAN_48", "Kon de RSS instellingen niet aanmaken");
-define("EPL_ADLAN_49", "Kon de RSS instellingen niet verwijderen");
 define("EPL_ADLAN_50", "Reacties succesvol verwijderd");
-define("EPL_ADLAN_51", "Nee");
-define("EPL_ADLAN_52", "Ja");
 define("EPL_ADLAN_53", "Directorie niet beschrijfbaar");
 define("EPL_ADLAN_54", "Select de optie voor de-installeren van de plugin:");
 define("EPL_ADLAN_55", "De-installeren plugin");
-define("EPL_ADLAN_56", "Ja");
 define("EPL_ADLAN_57", "Verwijderen plugin tabellen");
 define("EPL_ADLAN_58", "Als de tabellen niet worden verwijderd, kan de plugin later opnieuw zonder verlies van de gegevens worden geinstalleerd. Het bij installatie aanmaken van de  tabellen zal mislukken. Tabellen zullen later handmatig moeten worden verwijderd.");
 define("EPL_ADLAN_59", "Verwijderen plugin bestanden");
 define("EPL_ADLAN_60", "e107 zal proberen alle plugin gerelateerde bestanden te verwijderen.");
-define("EPL_ADLAN_61", "Bevestig de-installatie");
 define("EPL_ADLAN_62", "Annuleren de-installatie");
 define("EPL_ADLAN_63", "De-installeren:");
 
@@ -85,7 +76,6 @@ define("EPL_NOINSTALL", "Geen installatie nodig, activeer de plugin in het menub
 define("EPL_DIRECTORY", "directorie.");
 define("EPL_NOINSTALL_1", "Voor de-installatie, verwijder de ");
 define("EPL_UPGRADE", "Upgrade");
-define("EPL_CONFIGURE", "Configureren");
 define("LAN_UPGRADE_SUCCESSFUL", "Upgrade geslaagd");
 define("LAN_INSTALL_SUCCESSFUL", "Installatie geslaagd");
 ?>

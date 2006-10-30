@@ -302,5 +302,12 @@ define('EC_ADLAN_A117', "Melding op de dag of voorgaande dag");
 define('EC_ADLAN_A118', "Te tonen ceategorieën");
 define('EC_ADLAN_A119', "Geen categorieën gedefineerd, of fout bij lezen database");
 define('EC_ADLAN_A120', "Toon categorie pictogram menu");
+define('EC_ADLAN_A121', "e107 Website");
+define('EC_ADLAN_A122', "kalender@jouwsite.com");
+define('EC_ADLAN_A123', "Log map moet handmatig worden gecreëerd - maak een subdirectory 'log' binnen je kalender plugin directory, met '666' permissies");
+define('EC_ADLAN_A124', "Kon de rechten van de logging map niet wijzigen");
+define('EC_ADLAN_A125', "Log map rechten vereisen handmatig instellen op 0666 of 0766, al zouden ze afhankelijk van je server instellingen wel kunnen werken");
+define('EC_ADLAN_A126', "Database bijgewerkt");
+define('EC_ADLAN_A127', "dit is de rss feed voor de kalender acties");
 
 ?>

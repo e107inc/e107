@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-formal/admin/lan_language.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-09-25 13:37:38 $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-30 22:19:16 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -29,4 +29,5 @@ define("LANG_LAN_17", "Standaardtaal - geen extra tabellen nodig.");
 define("LANG_LAN_18", "Gebuik een gereserveerd subdomein on de taal in te stellen:");
 define("LANG_LAN_19", "bij. nl.mijndomein.com om de taal in te stellen op Nederlands.");
 define("LANG_LAN_20", "Voer de hoofd domeinnaam in om te activeren. Bijv. mijndomein.com");
+define("LANG_LAN_21", "Taaltools");
 ?>

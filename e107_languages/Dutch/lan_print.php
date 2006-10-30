@@ -15,8 +15,7 @@
 |        Translation Updated by: koot on the 13th Sep 2004
 +---------------------------------------------------------------+
 */
-
-define("PAGE_NAME", "Printervriendelijk");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Printervriendelijk"); }
 define("LAN_PRINT_1", "printervriendelijk");
 define("LAN_PRINT_86", "Categorie:");
 define("LAN_PRINT_87", "door ");

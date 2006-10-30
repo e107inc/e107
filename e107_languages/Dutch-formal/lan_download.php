@@ -71,7 +71,6 @@ define("LAN_dl_52", "Gast");
 define("LAN_dl_53", "Klik hier om de download te zien");
 define("LAN_dl_54", "Een beheerder wordt gewaarschuwd over deze download. Laat eventueel ook een bericht achter.");
 define("LAN_dl_55", "Gebruik dit formulier <b>NIET</b> om voor andere zaken contact op te nemen met een beheerder.");
-define("LAN_dl_56", "Meld ontbrekende download");
 define("LAN_dl_57", "gemeld door");
 define("LAN_dl_58", "Dit bericht is afkomstig van site ");
 define("LAN_dl_59", "Bericht van: ");

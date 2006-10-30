@@ -12,6 +12,8 @@
 +---------------------------------------------------------------+
 */
 
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "List New Items"); }
+
 define("LIST_PLUGIN_1", "List");
 define("LIST_PLUGIN_2", "Deze plugin laat een overzicht met recente aanvullingen in alle e107 categorieën zien. U kunt een overzicht met gegevens zien sinds uw vorige bezoek, of een algemeen overzicht met alle laatste aanvullingen. Behalve een pagina is ook een menu beschikbaar. Iedere sectie is configureerbaar in het beheerscherm.");
 define("LIST_PLUGIN_3", "Configureren hoofdmenu");
@@ -137,6 +139,8 @@ define("LIST_ADMIN_LAN_35", "dagen");
 define("LIST_ADMIN_LAN_36", "tijdsduur");
 define("LIST_ADMIN_LAN_37", "tonen selectiefunctie met aantal terugkijkdagen?");
 define("LIST_ADMIN_LAN_38", "");
+define("LIST_ADMIN_LAN_39", "openen als er records zijn");
+define("LIST_ADMIN_LAN_40", "moeten secties met records standaard worden geopend?");
 
 define("LIST_MENU_1", "recente toevoegingen");
 define("LIST_MENU_2", "door");
