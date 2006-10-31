@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_db.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-09-04 16:34:11 $
+|     $Revision: 1.6 $
+|     $Date: 2006-10-31 21:16:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("DBLAN_22", "Plugin: View and Scan");
 define("DBLAN_23", "Scan Completed");
 define("DBLAN_24", "Name");
 define("DBLAN_25", "Directory");
-define("DBLAN_26", "Included addons");
+define("DBLAN_26", "Included add-ons");
 define("DBLAN_27", "Installed");
 define("DBLAN_28", "Click button to scan plugin directories for changes");
 define("DBLAN_29", "Scan plugin directories");

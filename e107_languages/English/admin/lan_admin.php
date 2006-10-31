@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-10-31 03:27:57 $
+|     $Revision: 1.54 $
+|     $Date: 2006-10-31 21:16:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -76,7 +76,7 @@ define("ADLAN_65", "Log stats/counter etc");
 define("ADLAN_66", "Meta Tags");
 define("ADLAN_67", "Add/Edit site meta tags");
 define("ADLAN_68", "PHP Info");
-define("ADLAN_69", "PHPInfo page");
+define("ADLAN_69", "PHP Info page");
 define("ADLAN_70", "Polls");
 define("ADLAN_71", "Add/Edit Polls");
 define("ADLAN_72", "Public Uploads");
@@ -101,7 +101,7 @@ define("ADLAN_95", "Plugin Management");
 define("ADLAN_96", "None");
 define("ADLAN_97", "Click here for FAQ");
 define("ADLAN_98", "Plugin Manager");
-define("ADLAN_99", "Install/upgrade etc plugins");
+define("ADLAN_99", "Install/upgrade etc. plugins");
 define("ADLAN_100", "Theme Layout");
 define("ADLAN_101", "Template Creator");
 define("ADLAN_102", "It has been more than 30 days since you changed the main administrator password - ");

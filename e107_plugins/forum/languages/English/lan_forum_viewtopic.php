@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-02-03 19:57:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-31 21:16:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
-	
+
 define("LAN_01", "Forums");
 define("LAN_02", "Go to page");
 define("LAN_03", "Go");
@@ -23,7 +23,7 @@ define("LAN_09", "Visits to site since registration");
 define("LAN_10", "Back to top");
 define("LAN_65", "Jump");
 define("LAN_66", "This thread is now closed");
-define("LAN_67", "posts");
+define("LAN_67", "Posts");
 define("LAN_194", "Guest");
 define("LAN_195", "Registered Member");
 define("LAN_321", "Moderators: ");
@@ -40,19 +40,19 @@ define("LAN_398", "Profile");
 define("LAN_399", "Private Message");
 define("LAN_400", "Edit");
 define("LAN_401", "Quote");
-	
+
 define("LAN_402", "Author");
 define("LAN_403", "Post");
 define("LAN_404", "No previous thread");
 define("LAN_405", "No next thread");
-	
+
 define("LAN_406", "Moderator: Edit");
 define("LAN_435", "Moderator: Delete");
 define("LAN_408", "Moderator: Move");
 define("LAN_409", "Are you sure you want to delete this thread and any replies?");
 define("LAN_410", "Are you sure you want to delete this reply?");
 define("LAN_411", "posted by ");
-	
+
 //v.616
 define("LAN_412", "Title");
 define("LAN_413", "Report");
@@ -80,7 +80,7 @@ define("LAN_29", "Edited");
 define("LAN_431", "Syndicate this thread: rss 0.92");
 define("LAN_432", "Syndicate this thread: rss 2.0");
 define("LAN_433", "Syndicate this thread: RDF");
-	
+
 define("FORLAN_101", "Email Thread");
 define("FORLAN_102", "Print View");
 define('FORLAN_103', '[user deleted]');

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-21 17:23:39 $
+|     $Revision: 1.7 $
+|     $Date: 2006-10-31 21:16:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ define("LOGIN_MENU_L3", "Signup");
 define("LOGIN_MENU_L4", "Forgot password?");
 define("LOGIN_MENU_L5", "Welcome");
 define("LOGIN_MENU_L6", "Remember me");
-define("LOGIN_MENU_L7", "Unique user id not recognised (possible corrupted cookie).<br />Please <a href=\"".e_BASE."index.php?logout\">click here</a> to destroy cookie.");
+define("LOGIN_MENU_L7", "Unique user ID not recognised (possible corrupted cookie).<br />Please <a href=\"".e_BASE."index.php?logout\">click here</a> to destroy cookie.");
 define("LOGIN_MENU_L8", "Logout");
 define("LOGIN_MENU_L9", "Login Error");
 define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.");

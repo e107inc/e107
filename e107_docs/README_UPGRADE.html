@@ -4,8 +4,8 @@
 <!-- Version Info:
 
 $Source: /cvs_backup/e107_0.7/e107_docs/README_UPGRADE.html,v $
-$Revision: 1.4 $
-$Date: 2006-10-29 01:00:20 $
+$Revision: 1.5 $
+$Date: 2006-10-31 21:16:29 $
 $Author: e107coders $
 
 -->
@@ -32,7 +32,7 @@ Essential Points
     * If you are upgrading an English site from .617 you will need the separate English iso-8859-1 language pack, as the
       default core English language pack is now in the UTF character set. If you do not do this some characters in your
       database content will display corrupted.
-    * If your .617 site is non English you will need to make sure the .7 lan pack in your language is both available and in the same 
+    * If your .617 site is non English you will need to make sure the .7 lan pack in your language is both available and in the same
       character set as your current .617 language pack. If it is not in the same character set as your original,
       some characters in your content, if not all, will display corrupted.
     * The plugins you currently use on your .617 site may not work with .7 so you must check this before upgrading your site.
@@ -44,7 +44,7 @@ Essential Points
 
 
 Warning!
-There are files related to htmlArea, the WYSIWYG system in the 0.6xx branch of e107 that are known to be exploitable. These must be 
+There are files related to htmlArea, the WYSIWYG system in the 0.6xx branch of e107 that are known to be exploitable. These must be
 removed immediately. Please delete the following directories and all their contents from your server:
 e107_handlers/htmlarea/
 e107_admin/htmlarea/
@@ -58,10 +58,10 @@ Upgrade process
       any errors do not continue with the upgrade process as these must be fixed first.
    4. Go back to your admin area frontpage.
    5. Extract the contents of the core zip and upload the files to your server - overwriting the existing .617 files.
-   6. Extract the contents of the language pack (in this release its just one file - English.php) and upload the file(s) to 
+   6. Extract the contents of the language pack (in this release its just one file - English.php) and upload the file(s) to
       your server - overwriting the existing one(s).
    7. Refresh your admin front page in your browser and you will see an update available button appear.
-      Click this to take to you to the update page (Alternatively you can reach the update page through Admin =>Database => 
+      Click this to take to you to the update page (Alternatively you can reach the update page through Admin =>Database =>
       Check For Updates).
    8. Click the .617 to .7 core update button. This will run the first step in the upgrade process.
       When it finishes you will see several new buttons appear for the upgrade routines for forum, content
@@ -133,18 +133,18 @@ If you have any problems with the upgrade such as being locked out of your site 
 the php files in e107_files/cache/.
 
 CVS Users
-If you have upgraded your 0.6xx install to 0.7 using a CVS nightly build or downloading directly from the CVS 
-repository, you need to check what character set you are currently using. You will find this information displayed 
-on your admin area front page under the 'Site Info' menu where it says 'Charset'. If under Charset it says you are 
-using 'utf-8' then you need only download the main core zip and upgrade with that. Your charset is the default that 
-0.7 runs with and so is included in the main zip. However, if the Charset says iso-8859-1 and you run an English site 
-then you must download the separate English iso-8858-1 language pack alongside the main core zip and overwrite the 
-language files in the core zip with those you find in the iso-8858-1 zip. For non English sites make sure to get your 
+If you have upgraded your 0.6xx install to 0.7 using a CVS nightly build or downloading directly from the CVS
+repository, you need to check what character set you are currently using. You will find this information displayed
+on your admin area front page under the 'Site Info' menu where it says 'Charset'. If under Charset it says you are
+using 'utf-8' then you need only download the main core zip and upgrade with that. Your charset is the default that
+0.7 runs with and so is included in the main zip. However, if the Charset says iso-8859-1 and you run an English site
+then you must download the separate English iso-8858-1 language pack alongside the main core zip and overwrite the
+language files in the core zip with those you find in the iso-8858-1 zip. For non English sites make sure to get your
 language in the same Charset as is listed on the admin area frontpage under Site Info.
 </pre>
   <a id='disclaimer'></a><span class="headertext">Disclaimer</span><br />
   <br />
-  This software is free and as such comes without warranty as stated in the GNU GPL License  (included in this package). Any problems encountered due to deficiencies in this software are not the responsibility of the author. <br />
+  This software is free and as such comes without warranty as stated in the GNU GPL License (included in this package). Any problems encountered due to deficiencies in this software are not the responsibility of the author. <br />
 </div>
 </body>
 </html>

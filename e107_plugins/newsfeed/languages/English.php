@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/languages/English.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-06-22 19:49:58 $
+|     $Revision: 1.8 $
+|     $Date: 2006-10-31 21:16:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -76,7 +76,7 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
 	The amount of seconds that elapse before the feed is updated, for example, 1800: 30 minutes, 3600: an hour.
 	<br /><br />
 	<b>&raquo;</b> <u>Activation:</u>
-	where you want the feed results to be displayed, to see menu feeds you will need to activate the newsfeeds menu on the <a href='".e_ADMIN."menus.php'>menus page</a>.
+	Where you want the feed results to be displayed, to see menu feeds you will need to activate the newsfeeds menu on the <a href='".e_ADMIN."menus.php'>menus page</a>.
 	<br /><br />For a good list of available feeds, see <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> or <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Newsfeed help");
 define("NFLAN_44", "click to view");

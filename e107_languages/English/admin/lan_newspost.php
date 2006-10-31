@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2006-10-31 21:16:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -67,7 +67,7 @@ define("NWSLAN_56", "Create News Category");
 define("NWSLAN_57", "Item");
 define("NWSLAN_58", "Post");
 define("NWSLAN_59", "No submitted news");
-// define("NWSLAN_60", "Submitted News"); //already defined above. 
+// define("NWSLAN_60", "Submitted News"); //already defined above.
 
 define("NWSLAN_62", "Go to page: ");
 define("NWSLAN_63", "Search newsposts");
@@ -149,9 +149,9 @@ define("LAN_NEWS_32", "Date stamp");
 define("LAN_NEWS_33", "Set the date stamp for the current news item");
 
 define("LAN_NEWS_34", "Trackback");
-define("LAN_NEWS_35", "Add trackback url's");
-define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all url's in this post)");
-define("LAN_NEWS_37", "<b>Trackback url's:</b> (one url per line)");
+define("LAN_NEWS_35", "Add trackback URLs");
+define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all URLs in this post)");
+define("LAN_NEWS_37", "<b>Trackback URLs:</b> (one URL per line)");
 define("LAN_NEWS_38", "Insert images");
 
 define("LAN_NEWS_39", "click on file to insert at cursor position");
