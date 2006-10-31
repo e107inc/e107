@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.27 $
+|     $Date: 2006-10-31 21:16:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -129,8 +129,8 @@ define("USRLAN_132", "Enable");
 define("USRLAN_133", "Force user to update settings");
 define("USRLAN_134", "Enabling this option will automatically send the user to their user-settings if a required user field is not filled.");
 
-define("USRLAN_135", "No IP address found in user's info, IP not banned");
-define("USRLAN_136", "Multiple users found with IP address of {IP}, IP not banned.");
+define("USRLAN_135", "No IP address found in user's info; IP not banned");
+define("USRLAN_136", "Multiple users found with IP address of {IP}; IP not banned.");
 define("USRLAN_137", "Users IP address of {IP} banned.");
 
 define("LAN_MAINADMIN","Main Admin");

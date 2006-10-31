@@ -20,7 +20,7 @@ define('ADLAN_PM_17', "Show new PM animation");
 define('ADLAN_PM_18', "Show user dropdown");
 define('ADLAN_PM_19', "READ message timeout");
 define('ADLAN_PM_20', "UNREAD message timeout");
-define('ADLAN_PM_21', "popup notification on new PM");
+define('ADLAN_PM_21', "Popup notification on new PM");
 define('ADLAN_PM_22', "Popup delay timeout");
 define('ADLAN_PM_23', "Restrict PM use to");
 define('ADLAN_PM_24', "Number of PMs to show per page");

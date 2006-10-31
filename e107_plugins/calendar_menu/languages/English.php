@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-10-29 01:00:21 $
+|     $Revision: 1.15 $
+|     $Date: 2006-10-31 21:16:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -162,7 +162,7 @@ define('EC_LAN_59', "Contact email:");
 define('EC_LAN_60', "Update Event");
 define('EC_LAN_61', "Go");
 define('EC_LAN_62', "Next -NUM- Events ...");
-define('EC_LAN_63', "Check this if event happens on same day every year, ie birthday");
+define('EC_LAN_63', "Check this if event happens on same day every year, e.g. birthday");
 define('EC_LAN_64', "Check for an all-day event");
 define('EC_LAN_65', "Recurring:");
 define('EC_LAN_66', "Edit Event");
@@ -199,47 +199,47 @@ define('EC_LAN_81', "Configure Event Calendar");
 define('EC_LAN_82', "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.");
 define('EC_LAN_83', "Calendar");
 
-define('EC_LAN_84', "Css element to use for day header");
+define('EC_LAN_84', "CSS element to use for day header");
 define('EC_LAN_85', "Default is 'forumheader'");
-define('EC_LAN_86', "Css element to use for day list");
+define('EC_LAN_86', "CSS element to use for day list");
 define('EC_LAN_87', "Default is 'forumheader3'");
-define('EC_LAN_88', "Css element to use for selected day");
+define('EC_LAN_88', "CSS element to use for selected day");
 define('EC_LAN_89', "Default is 'indent'");
 
-//  *BK* Corrections to hard coding by Barry 
-define('EC_LAN_90', "Choose");	
-define('EC_LAN_91', "None defined");	
-define('EC_LAN_92', "View Category");		
-define('EC_LAN_93', "View Events List");		
-define('EC_LAN_94', "Enter New Event");			
-define('EC_LAN_95', "Today");	
-define('EC_LAN_96', "View Calendar");	
-define('EC_LAN_97', "All");		
-define('EC_LAN_98', "Required fields left blank");		
-define('EC_LAN_99', "Event must either be an all day event or finish after it starts");			
-define('EC_LAN_100', "Categories can be added by");			
-define('EC_LAN_101', "Set to inactive to disable on the new event form.");	
-define('EC_LAN_102', "Show link to forum thread");	
-define('EC_LAN_103', "On new event entry form.");	
-define('EC_LAN_104', "Calendar Administrator Class");		
-define('EC_LAN_105', "* Required Field");		
-define('EC_LAN_106', "Events");		
-define('EC_LAN_107', "This plugin is a fully featured event calendar with calendar menu.");		
-define('EC_LAN_108', "Event Calendar Upgraded.  Now check the new options.");	
-define('EC_LAN_109', "Unable to delete this event.");	
-define('EC_LAN_110', "Event Number ");	
-define('EC_LAN_111', "All the events on ");	
-define('EC_LAN_112', "All the Events in ");	
+//  *BK* Corrections to hard coding by Barry
+define('EC_LAN_90', "Choose");
+define('EC_LAN_91', "None defined");
+define('EC_LAN_92', "View Category");
+define('EC_LAN_93', "View Events List");
+define('EC_LAN_94', "Enter New Event");
+define('EC_LAN_95', "Today");
+define('EC_LAN_96', "View Calendar");
+define('EC_LAN_97', "All");
+define('EC_LAN_98', "Required fields left blank");
+define('EC_LAN_99', "Event must either be an all day event or finish after it starts");
+define('EC_LAN_100', "Categories can be added by");
+define('EC_LAN_101', "Set to inactive to disable on the new event form.");
+define('EC_LAN_102', "Show link to forum thread");
+define('EC_LAN_103', "On new event entry form.");
+define('EC_LAN_104', "Calendar Administrator Class");
+define('EC_LAN_105', "* Required Field");
+define('EC_LAN_106', "Events");
+define('EC_LAN_107', "This plugin is a fully featured event calendar with calendar menu.");
+define('EC_LAN_108', "Event Calendar Upgraded.  Now check the new options.");
+define('EC_LAN_109', "Unable to delete this event.");
+define('EC_LAN_110', "Event Number ");
+define('EC_LAN_111', "All the events on ");
+define('EC_LAN_112', "All the Events in ");
 define('EC_LAN_113', "Event form already submitted.");
 define('EC_LAN_114', "Week starts with:");
 define('EC_LAN_115', "Sunday");
 define('EC_LAN_116', "Monday");
-define('EC_LAN_117', "Length of daynames (characters)");
+define('EC_LAN_117', "Length of day names (characters)");
 define('EC_LAN_118', "Date format in calendar header.");
 define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");
-define('EC_LAN_121', "Show Calendar");	
-define('EC_LAN_122', "Css element to show events on this day (menu)");	
+define('EC_LAN_121', "Show Calendar");
+define('EC_LAN_122', "CSS element to show events on this day (menu)");
 define('EC_LAN_123', "Subscriptions");
 define('EC_LAN_124', "Calendar Subscriptions");
 define('EC_LAN_125', "Categories available for subscription");
