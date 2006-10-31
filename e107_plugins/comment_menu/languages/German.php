@@ -21,8 +21,11 @@ define("CM_L5", "Anzahl der Zeichen die angezeigt werden sollen?");
 define("CM_L6", "Postfix für zu lange Kommentare?");
 define("CM_L7", "Den orginalen Newstitel im Menü anzeigen?");
 define("CM_L8", "Neue Kommentare Menü Konfiguration");
-define("CM_L9", "Menüeinstellungen aktualisiert");
+define("CM_L9", "Menüeinstellungen aktualisieren");
 define("CM_L10", "Kommentarmenü Konfiguration gespeichert");
+define("CM_L11", "am");
+define("CM_L12", "Re:");
+define("CM_L13", "Geschrieben von");
 
 
 ?>

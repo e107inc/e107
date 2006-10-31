@@ -11,53 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/German.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-27 09:19:25 $
-|     $Author: gatowlion $
+|     $Revision: 1.5 $
+|     $Date: 2006-10-31 14:06:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
-define("PAGE_NAME", "Liste neuer Einträge");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Liste neuer Einträge"); }
 
-//all benaeth will be deprecated sometime
-define("LIST_1", "News Einträge");
-define("LIST_2", "ohne Titel");
-define("LIST_3", "Neu seit Ihrem letzten Besuch ...");
-define("LIST_4", "Keine Neuigkeiten gefunden.");
-define("LIST_5", "Chatbox Einträge");
-define("LIST_6", "Vom Admin geblockt");
-define("LIST_7", "Forum Einträge");
-define("LIST_8", "Neue Mitglieder");
-define("LIST_9", "Kommentare");
-define("LIST_10", "Ideen");
-define("LIST_11", "Downloads");
-define("LIST_12", "News");
-define("LIST_13", "Bugtracker");
-define("LIST_14", "Umfrage");
-define("LIST_15", "FAQ");
-define("LIST_16", "Bugs");
-define("LIST_17", "Ideen");
-
-define("LIST_13", "Profile");
-define("LIST_14", "Artikel");
-define("LIST_15", "Inhalt");
-
-define("LIST_18", "FAQ");
-define("LIST_18", "Umfrage");
-define("LIST_19", "Docs");
-define("LIST_20", "Bugtracker");
-	
-define("LIST_21", "Artikel");
-define("LIST_22", "Ideen");
-//all above will be deprecated sometime
-
-define("LIST_23", "Diese Plugin ist nicht installiert.");
 
 define("LIST_PLUGIN_1", "Neues auflisten");
 define("LIST_PLUGIN_2", "Diese Plugin gib Ihnen eine Übersicht neuer Einträge vieler e107- Kategorien. Sie können entweder eine Liste neuer Einträge seit Ihrem letzen Besuch, oder einer generelle Liste neuer Einträge aufrufen. Obendrein könne Sie sich dieses auch in einem Menü anzeigen lassen. Jeder Bereich ist via Admin-Screen konfigurierbar.");
 define("LIST_PLUGIN_3", "Hauptmenü konfigurieren");
 define("LIST_PLUGIN_4", "Das List-New Plugin ist nun einsatzbereit.");
 define("LIST_PLUGIN_5", "Auflisten");
+define("LIST_PLUGIN_6", "Dieses Plugin ist nicht installiert.");
 
 define("LIST_ADMIN_1", "Letzte");
 define("LIST_ADMIN_2", "Einstellungen aktualisieren");
@@ -173,6 +141,9 @@ define("LIST_ADMIN_LAN_36", "Zeitspanne");
 define("LIST_ADMIN_LAN_37", "Eine Auswahlbox anzeigen lassen, wieviele Tage rückliegend aufgelistet werden sollen?");
 define("LIST_ADMIN_LAN_38", "");
 
+define("LIST_ADMIN_LAN_39", "Offen, falls Einträge bestehen");
+define("LIST_ADMIN_LAN_40", "Sollten Bereiche die Einträge enthalten von vorneherein offen sein?");
+define("LIST_ADMIN_LAN_41", "");
 
 
 

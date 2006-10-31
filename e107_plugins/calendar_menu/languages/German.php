@@ -1,7 +1,22 @@
-﻿<?php
-// e107 Language File.
-// $Id: German.php,v 1.3 2005-07-26 14:58:46 gatowlion Exp $
-// $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dun.an 2001-2002
+|     http://e107.org
+|     jali.@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/German.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-31 14:06:36 $
+|     $Author: e107coders $
+|    $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
++----------------------------------------------------------------------------+
+*/
 
 define(EC_ADLAN_1,"Kalender");
 define(EC_ADLAN_2,"Kalender konfigurieren");
@@ -128,6 +143,7 @@ define(EC_LAN_37, "Keines aufgeführt.");
 define(EC_LAN_38, "Nicht spezifiziert");
 define(EC_LAN_39, "Hier klicken um im Forum darüber zu diskutieren");
 define(EC_LAN_40, "Jetziger Monat");
+
 define(EC_LAN_41, "Neue Kategorie erstellt.");
 define(EC_LAN_42, "Ereignis kann nicht beendet sein bevor es angefangen hat.");
 define(EC_LAN_43, "Sie haben erforderliche Felder frei gelassen.");
@@ -242,6 +258,10 @@ define('EC_LAN_132', "Details aufklappen/anzeigen");
 define('EC_LAN_133', "[mehr]");
 define('EC_LAN_134', "Sie müssen einen Kategorienamen angeben");
 
+// Added 12.07.06 for next_event_menu.php
+define('EC_LAN_140', "Bevorstehende Ereignisse");
+define('EC_LAN_141', "Keine bevorstehenden Ereignisse");
+
 define('EC_ADLAN_A10', "Konfiguration");
 define('EC_ADLAN_A11', "Kategorien");
 define('EC_ADLAN_A12', "Kalender");
@@ -260,8 +280,8 @@ define('EC_ADLAN_A24', "Kategorie erstellen");
 define('EC_ADLAN_A25', "Speichern");
 define('EC_ADLAN_A26', "Kategorie erstellt");
 define('EC_ADLAN_A27', "Kategorie konnte nicht erstellt werden");
-define('EC_ADLAN_A28', "Änderungen gespeichert");
-define('EC_ADLAN_A29', "Änderungen konnten nicht gespeichert werden");
+define('EC_ADLAN_A28', "Ã„nderungen gespeichert");
+define('EC_ADLAN_A29', "Ã„nderungen konnten nicht gespeichert werden");
 
 define('EC_ADLAN_A30', "Kategorie gelöscht");
 define('EC_ADLAN_A31', "Bitte hier markieren um Löschung zu bestätigen");
@@ -289,6 +309,39 @@ define('EC_ADLAN_A94', "Neue Ereignisklasse hinzufügen");
 define('EC_ADLAN_A95', "Anmeldung erlauben");
 define('EC_ADLAN_A96', "Hier , -- nicht erlaubt -- , wird der Anmeldebutton nicht angezeigt und die Kategorievoreinstellungen für die Anmeldungen werden überschrieben.");
 define('EC_ADLAN_A97', "Hier auf -- Anmeldungen erlaubt --- gesetzt, wird diese Kategorie nicht in den verfügbaren Anmeldelisten für die Benutzer angezeigt.");
+
+// Added from here 12.07.06 for forthcoming events and mailout upgrades
+define('EC_ADLAN_A100', "Bevorstehende Ereignisse");
+define('EC_ADLAN_A101', "Wieviele Tage soll nach vorne geschaut werden?:");
+define('EC_ADLAN_A102', "Anzahl der Ereignisse die angezeigt werden sollen:");
+define('EC_ADLAN_A103', "Wiederkehrende Ereignisse mit einschliessen:");
+define('EC_ADLAN_A104', "Der Titel stellt den Link zur Ereignisliste dar:");
+define('EC_ADLAN_A105', "Das - bevorstehende Ereignis Menü konfigurieren");
+define('EC_ADLAN_A106', "Das Menü muss auf der 'Menü' Seite aktiviert werden");
+define('EC_ADLAN_A107', "Wird nicht zuverlässig arbeiten falls Sie mehr als 59 Tage nach vorne schauen");
+define('EC_ADLAN_A108', "Menü Ãœberschrift");
+define('EC_ADLAN_A109', "Voreinstellungen für bevorstehende Ereignisse aktualisiert");
+
+define('EC_ADLAN_A110', "Nur am vorherigen Tag");
+define('EC_ADLAN_A111', "Erweitert und am vorherigen Tag");
+define('EC_ADLAN_A112', "Vorheriger Tag und heutiger Tag");
+define('EC_ADLAN_A113', "Erweitert, vorheriger Tag und heutiger Tag");
+
+define('EC_ADLAN_A114', "Emails loggen");
+define('EC_ADLAN_A115', "Zusammenfassung");
+define('EC_ADLAN_A116', "Detailiert");
+define('EC_ADLAN_A117', "Nachricht vom heutigen und vorherigen Tag");
+define('EC_ADLAN_A118', "Kategorien die angezeigt werden sollen");
+define('EC_ADLAN_A119', "Keine Kategorien angelegt bis jetzt, oder Fehler beim lesen der Datenbank");
+define('EC_ADLAN_A120', "Kategorie-Icon im Menü anzeigen");
+define('EC_ADLAN_A121', "e107 Webseite");
+define('EC_ADLAN_A122', "Kalender@ihreSeite.com");
+
+define('EC_ADLAN_A123', "Log Verzeichnis muss manuell erstellt werden - bitte erstellen Sie ein Unterverzeichnis 'log' im calendar plugin Verzeichnis, mit '666' Zugriffsrechten");
+define('EC_ADLAN_A124', "Log-Verzeichnis Berechtigungen können nicht geändert werden");
+define('EC_ADLAN_A125', "Log-Verzeichnis Berechtigungen scheinen manuell auf 0666 oder 0766 gesetzt werden zu müssen, abh&auml;ngig Ihrer Serverkonfiguration");
+define('EC_ADLAN_A126', "Datenbank aktualisiert");
+define('EC_ADLAN_A127', "dies ist der Rss Feed für den Kalendereintrag");
 
 
 

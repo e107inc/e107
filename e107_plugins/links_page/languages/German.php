@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/German.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:05:26 $
-|     $Author: gatowlion $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-31 14:06:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
@@ -140,6 +140,7 @@ define("LCLAN_ADMIN_11", "Gelöscht");
 define("LCLAN_ADMIN_12", "Link Kategorie");
 define("LCLAN_ADMIN_13", "Übermittelter Link gelöscht");
 define("LCLAN_ADMIN_14", "Links");
+define("LCLAN_ADMIN_15", "Diese Kategorie beinhaltet noch links, bitte entfernen/verschieben Sie diese zuerst");
 
 
 define("LCLAN_SL_1", "Übermittelte Links");
@@ -229,7 +230,7 @@ define("LCLAN_ITEM_35", "Persönliche Links managen");
 define("LCLAN_ITEM_36", "gehe zu");
 define("LCLAN_ITEM_37", "Alle Links ansehen");
 define("LCLAN_ITEM_38", "Alle Links");
-define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_39", "Berwertung");
 
 
 define("LCLAN_ADMINMENU_1", "Link Optionen");
@@ -251,6 +252,7 @@ define("LNK_SCH_LAN_2", "Alle Link Kategorien");
 define("LNK_SCH_LAN_3", "Alle Link Details");
 
 define("LAN_LINKS_MANAGER_0", "Icon");
+
 define("LAN_LINKS_MANAGER_1", "Link");
 define("LAN_LINKS_MANAGER_2", "Optionen");
 define("LAN_LINKS_MANAGER_3", "Neuen Link erstellen");
@@ -310,8 +312,8 @@ define("LAN_LINKS_43", "Alle Kategorien ansehen");
 define("LAN_LINKS_44", "Id");
 define("LAN_LINKS_45", "Link Kategorie");
 define("LAN_LINKS_46", "Link Unterkategorien");
-define("LAN_LINKS_47", "");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_47", "Link Navigator");
+define("LAN_LINKS_48", "-- Kategorie ansehen --");
 
 
 define("LAN_ADMIN_HELP_0", "Linksseite Hilfebereich");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Revision: 1.4 $
+|     $Date: 2006-10-31 14:06:36 $
+|     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ define("ADLAN_38", "Benutzerklassen");
 define("ADLAN_39", "Anlegen/Bearbeiten von Benutzerklassen");
 define("ADLAN_40", "Wartung");
 define("ADLAN_41", "Seite vom Netz nehmen für Wartungsarbeiten");
-define("ADLAN_42", "Eigene Menüs");
+define("ADLAN_42", "Eigene Menüs/Seiten");
 define("ADLAN_43", "Erstelle eigene Menüeinträge");
 define("ADLAN_44", "Datenbank");
 define("ADLAN_45", "Datenbank Werkzeuge");
@@ -163,6 +163,7 @@ define("ADLAN_148", "Seitenfiles scannen");
 define("ADLAN_149", "Benachrichtigung");
 define("ADLAN_150", "Admin E-mail Benachrichtigung");
 define("ADLAN_151", "Main");
+define("ADLAN_152", "Code eingeben");
 
 define('ADLAN_CL_1', 'Einstellungen');
 define('ADLAN_CL_2', 'Benutzer');
@@ -182,6 +183,13 @@ define("ADLAN_LAT_5", "Übermittelte Links");
 define("ADLAN_LAT_6", "Gemeldete Forumeinträge");
 define("ADLAN_LAT_7", "Datei Uploads");
 define("ADLAN_LAT_8", "Es gibt unmoderierte Administratornachrichten");
+
+define("ADLAN_ERR_1", "Warnung!");
+define("ADLAN_ERR_2", "Es gibt Dateien auf Ihrem Sever die ausführbar sind. Diese sollten <b>sofort</b> gelöscht werden. Die Dateien kommen vom WYSIWYG System, welche in der älteren Version 0.6xx in der e107 - htmlArea benutzt wurden. Bitte löschen Sie folgendes Verzeichnis und sämtlichen Inhalt:");
+define("ADLAN_ERR_3", "Es gibt ein oder mehrere Dateien in Ihrem Public Upload Verzeichnis, die nicht die erlaubten Dateiendungen aufweisen die in Ihrer Filytypenliste angegeben sind. Es könnte sein, daß sie von einer Attacke herrühren und falls dies der Fall ist, sollten sie die Datein <b>sofort löschen</b>. Sie sollten obendrein diese Datein <b>nicht</b> öffnen da sie eventuel dann Code ausführen können die Ihnen schaden.Öffnen Sie diese auch nicht mit dem Browser.<br /><br />Falls Sie aber bemerken, daß diese Files dort Ihre Berechtigung haben, liegt dies an den letzten Änderungen über erlaubte Filetypen. Die Filetypen die Sie erlauben können ist nicht mehr in der Liste über erlaubte Filetypen list und sie müssen sie nochmals neu hinzufügen (sehen Sie hierfür bitte admin => uploads). Sie sollten folgende Filetypen nicht erlauben -  .html, .txt, da ein Hacker mittles dieser Datein Javascripte ausführen kann, die Ihnen Schaden zufügen können. Außerdem sollten Sie es nicht erlauben .php files oder sonstige Art an Files, die ausführbar sind, hochzuladen.<br /><br />Folgende Liste beinhaltet Filetypen, die eventuell eine Gefahr darstellen können:");
+define("ADLAN_ERR_4", "Nicht akzeptable Plugin Datei(en) gefunden");
+define("ADLAN_ERR_5", "Folgende Datein müssen umbenannt werden nach");
+define("ADLAN_ERR_6", "Danach, hier klicken um das Pluginverzeichnis nochmals zu scannen.");
 
 
 
@@ -203,6 +211,8 @@ define("LAN_CREATED","Erfolgreich erstellt");
 define("LAN_CREATED_FAILED","Erstellung fehlgeschlagen");
 define("LAN_DELETED_FAILED","Löschen fehlgeschlagen");
 define("LAN_UPDATED_FAILED","Aktualisierung fehlgeschlagen");
+define("LAN_NO_CHANGE","Aktualisierung fehlgeschlagen, da keine Änderungen gemacht wurden.");
+define("LAN_TRY_AGAIN","Bitte versuchen Sie es erneut.");
 
 define("LAN_RESET","Zurüchsetzen");
 define("LAN_CLEAR","Bereinigen");
@@ -234,5 +244,22 @@ define("LAN_DATESTAMP","Datumsstempel");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inaktiv");
 
+define("LAN_BAN","Bannen");
+define("LAN_RATING", "Bewertung/Abstimmung");
+
+define("LAN_UPLOAD_IMAGES","Bilder hochladen");
+define("LAN_UPLOAD_FILES","Datein hochladen");
+define("LAN_UPLOAD_ADDFILE","Eine andere Datei hinzufügen");
+define("LAN_UPLOAD_CONFIRM","Jegliche ungespeicherte Änderungen werden verloren gehen. Trotzdem fortfahren?");
+define("LAN_UPLOAD_777","Ordner fehlt oder ist nicht beschreibbar, - Sie müssen zuerst folgendem Ordner CHMOD 777 geben bevor Sie Bilder hochladen:");
+define("LAN_UPLOAD_SERVEROFF", "Diese Option ist abgeschalten, da auf Ihrem Server - Datei hochladen - nicht freigeschalten ist.");
+
+define("LAN_DISABLED","Nicht freigeschalten");
+define("LAN_ENABLED", "Freigeschalten");
+define("LAN_PRESET_CONFIRMSAVE","Momentane Forumularwerte als gesetzt für diese Seite speichern?");
+define("LAN_CONFIGURE", "Konfiguration");
+
+define("LAN_BACK","Zurück");
+define("LAN_CREDITS","Credits/Danksagung");
 
 ?>
