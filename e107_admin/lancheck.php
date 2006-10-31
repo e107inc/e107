@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-10-31 03:27:57 $
+|     $Revision: 1.12 $
+|     $Date: 2006-10-31 21:32:07 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -75,8 +75,8 @@ if(isset($_POST['submit']))
 		$input .= "|        GNU General Public License (http://gnu.org).\n";
 		$input .= "|\n";
 		$input .= "|        \$Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $writeit $\n";
-		$input .= "|        \$Revision: 1.11 $\n";
-		$input .= "|        \$Date: 2006-10-31 03:27:57 $\n";
+		$input .= "|        \$Revision: 1.12 $\n";
+		$input .= "|        \$Date: 2006-10-31 21:32:07 $\n";
 		$input .= "|        \$Author: e107coders $\n";
 		$input .= "+---------------------------------------------------------------+\n";
 		$input .= "*".chr(47)."\n\n";
