@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2006-10-22 15:48:02 $
+|     $Revision: 1.67 $
+|     $Date: 2006-10-31 18:13:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -241,7 +241,7 @@ if ($action == 'uninstall')
 		{
 			$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
 		}
-		$ns->tablerender(EPL_ADLAN_1.' '.$eplug_name, $text);
+		$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($eplug_name,"","defs"), $text);
 		$text = "";
 		$plugin -> save_addon_prefs();
 	}
@@ -430,7 +430,7 @@ function render_plugs($pluginList){
 
 		$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
 		if ($eplug_conffile && $plug['plugin_installflag'] == TRUE) {
-			$conf_title = LAN_CONFIGURE.' '.$eplug_name;
+			$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($eplug_name,"","defs");
 			$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."' >".$plugin_icon.'</a>';
 		}
 
@@ -540,7 +540,7 @@ function show_uninstall_confirm()
 	<form action='".e_SELF."?".e_QUERY."' method='post'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-		<td colspan='2' class='forumheader'>".EPL_ADLAN_54." $eplug_name </td>
+		<td colspan='2' class='forumheader'>".EPL_ADLAN_54." ".$tp->toHtml($eplug_name,"","defs")."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3'>".EPL_ADLAN_55."</td>
@@ -567,7 +567,7 @@ function show_uninstall_confirm()
 	</table>
 	</form>
 	";
-	$ns->tablerender(EPL_ADLAN_63." {$eplug_name}", $text);
+	$ns->tablerender(EPL_ADLAN_63." ".$tp->toHtml($eplug_name,"","defs"), $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
