@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-10-08 14:43:20 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-01 13:54:57 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -19,21 +19,22 @@ define("GSLAN_7", "Импортировать ссылки");
 define("GSLAN_8", "Импортировать с:"); //Import with
 define("GSLAN_9", "Приоритет");
 define("GSLAN_10", "Частота");
-//Bug in gsitemap prevents from using russian names for this terms:
-define("GSLAN_11", "always");
+//Was bug in gsitemap preventing from using russian names for this terms:
+/*define("GSLAN_11", "always");
 define("GSLAN_12", "hourly");
 define("GSLAN_13", "daily");
 define("GSLAN_14", "weekly");
 define("GSLAN_15", "monthly");
 define("GSLAN_16", "yearly");
-define("GSLAN_17", "never");
-/*define("GSLAN_11", "всегда");
+define("GSLAN_17", "never");*/
+//Now testing russian values:
+define("GSLAN_11", "всегда");
 define("GSLAN_12", "ежечасно");
 define("GSLAN_13", "ежедневно");
 define("GSLAN_14", "еженедельно");
 define("GSLAN_15", "ежемесячно");
 define("GSLAN_16", "ежегодно");
-define("GSLAN_17", "никогда");*/
+define("GSLAN_17", "никогда");
 define("GSLAN_18", "Импортировать отмеченные галочкой ссылки");
 define("GSLAN_19", "Google Sitemap"); //Google Sitemap
 define("GSLAN_20", "Список"); //Listing

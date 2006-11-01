@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-10-27 11:05:25 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-01 13:54:39 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -101,8 +101,8 @@ define("CONTENT_LAN_6", "все категории");
 define("CONTENT_LAN_7", "все авторы");
 define("CONTENT_LAN_8", "лучшие по рейтингу");
 define("CONTENT_LAN_9", "категория ");
-define("CONTENT_LAN_10", "");
-define("CONTENT_LAN_11", "автор: ");
+define("CONTENT_LAN_10", ""); //CheckIt: on
+define("CONTENT_LAN_11", "автор: "); //CheckIt: by
 define("CONTENT_LAN_12", "лучшие по очкам");
 define("CONTENT_LAN_13", "список");
 define("CONTENT_LAN_14", "-- категории --");

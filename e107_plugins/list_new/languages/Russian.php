@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-10-21 16:32:42 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-01 13:55:33 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -131,6 +131,9 @@ define("LIST_ADMIN_LAN_36", "Прошедшее время");
 define("LIST_ADMIN_LAN_37", "отображать список с числом прошедших дней, для выбора пользователем давности просмотра?");
 define("LIST_ADMIN_LAN_38", "");
 
+define("LIST_ADMIN_LAN_39", "открыть, если существуют записи"); //open if records exist
+define("LIST_ADMIN_LAN_40", "должны ли секции, которые содержат записи, быть открыми по умолчанию?"); //should sections that contain records be opened by default?
+define("LIST_ADMIN_LAN_41", "");
 
 define("LIST_MENU_1", "недавние добавления");
 define("LIST_MENU_2", " ");

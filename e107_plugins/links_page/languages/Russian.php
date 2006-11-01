@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.2 $
-|     $Date: 2006-10-15 06:36:38 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-01 13:55:19 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -138,6 +138,7 @@ define("LCLAN_ADMIN_11", "удалена");
 define("LCLAN_ADMIN_12", "Категория ссылок");
 define("LCLAN_ADMIN_13", "Сообщенная ссылка удалена");
 define("LCLAN_ADMIN_14", "Ссылки");
+define("LCLAN_ADMIN_15", "Эта категоря все еще содержит ссылки, пожалуйста, вначале удалите или переместите их");
 
 define("LCLAN_SL_1", "Сообщенные ссылки");
 define("LCLAN_SL_2", "Нет сообщенных ссылок");
@@ -302,7 +303,7 @@ define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Категория ссылок");
 define("LAN_LINKS_46", "Подкатегория ссылок");
 define("LAN_LINKS_47", "");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_48", "-- категория просмотра --"); //CheckIt: -- view category --
 define("LAN_LINKS_49", "");
 
 define("LAN_ADMIN_HELP_0", "Страница ссылок: Справка");
