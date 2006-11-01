@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_usersettings.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-31 11:12:38 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-01 21:16:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -15,6 +15,7 @@ define("LAN_7", "Nombre a mostrar: ");
 define("LAN_8", "El nombre que se mostrará en el sitio");
 define("LAN_9", "Nombre usuario: ");
 define("LAN_10", "El nombre para conectarse al sitio");
+define("LAN_11", "El nombre que usará para conectarse a este sitio - no podrá cambiarse. Por favor, contacte con el administrador si necesita cambiarlo por temas de seguridad");
 
 define("LAN_20", "Error");
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db_verify.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-01 21:16:19 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -27,4 +27,7 @@ define("DBLAN_15", "Comenzar verificación");
 define("DBLAN_16", "SQL Verificación - Versión");
 define("DBLAN_17", "Volver");
 define("DBLAN_18", "Tablas");
+define("DBLAN_19", "Intento de reparación");
+define("DBLAN_20", "Intentando reparar tablas");
+define("DBLAN_21", "Reparar elementos seleccionados");
 ?>

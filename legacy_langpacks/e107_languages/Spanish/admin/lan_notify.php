@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-01 21:16:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -31,4 +31,6 @@ define("NN_LAN_3", "Nuevos eleventos enviados por Admin");
 define("NN_LAN_4", "Nuevos elementos editados por Admin");
 define("NN_LAN_5", "Nuevos elementos eliminados por Admin");
 
+define("NF_LAN_1", "Eventos de archivo");
+define("NF_LAN_2", "Archivo transferido por el usuario");
 ?>
