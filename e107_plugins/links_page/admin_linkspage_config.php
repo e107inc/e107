@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.7 $
-|    $Date: 2006-10-28 09:29:29 $
+|    $Revision: 1.8 $
+|    $Date: 2006-11-01 18:48:46 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ if(e_QUERY){
 	}
 }
 if(isset($_POST['delete'])){
-	$tmp = array_pop(array_flip($_POST['delete']));
+	$tmp = array_pop($tmp = array_flip($_POST['delete']));
 	list($delete, $del_id) = explode("_", $tmp);
 }
 if (isset($_POST['create_category'])) {
