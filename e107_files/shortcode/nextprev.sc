@@ -10,8 +10,8 @@ if($total_items < $perpage){
 	return "";
 }
 
-$caption = (!$caption && $caption != "off") ? NP_3."&nbsp;" : $caption;
-if($caption == "off"){
+$caption = (!$caption && $caption != "off,") ? NP_3."&nbsp;" : $caption;
+if($caption == "off,"){
  $caption = "";
 }
 while(substr($url, -1) == ".")
