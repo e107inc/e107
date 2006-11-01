@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2006-10-27 00:48:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.69 $
+|     $Date: 2006-11-01 19:31:24 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -151,7 +151,7 @@ if ($action == "report") {
 		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$thread_id.".post'>".LAN_429."</a";
 		$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
 	} else {
-		$thread_name = $tp -> toHTML($thread_info['head']['thread_name'], TRUE);
+		$thread_name = $tp -> toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off');
 		define("e_PAGETITLE", LAN_01." / ".LAN_426." ".$thread_name);
 		require_once(HEADERF);
 		$text = "<form action='".e_PLUGIN."forum/forum_viewtopic.php?".e_QUERY."' method='post'> <table style='width:100%'>
@@ -209,7 +209,7 @@ if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent
 
 $forum->thread_incview($thread_id);
 
-define("e_PAGETITLE", LAN_01." / ".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook')." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE));
+define("e_PAGETITLE", LAN_01." / ".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook, emotes_off')." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off'));
 //define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
 define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
