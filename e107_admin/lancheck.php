@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-10-31 21:32:07 $
+|     $Revision: 1.13 $
+|     $Date: 2006-11-02 17:50:19 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -75,8 +75,8 @@ if(isset($_POST['submit']))
 		$input .= "|        GNU General Public License (http://gnu.org).\n";
 		$input .= "|\n";
 		$input .= "|        \$Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $writeit $\n";
-		$input .= "|        \$Revision: 1.12 $\n";
-		$input .= "|        \$Date: 2006-10-31 21:32:07 $\n";
+		$input .= "|        \$Revision: 1.13 $\n";
+		$input .= "|        \$Date: 2006-11-02 17:50:19 $\n";
 		$input .= "|        \$Author: e107coders $\n";
 		$input .= "+---------------------------------------------------------------+\n";
 		$input .= "*".chr(47)."\n\n";
@@ -90,8 +90,9 @@ if(isset($_POST['submit']))
 		$notdef_start = "";
 		$notdef_end = "\n";
 		$deflang = stripslashes($_POST['newlang'][$i]);
+		$func = "define";
 
-		if (strpos($_POST['newdef'][$i],"ndef++") !== False )
+		if (strpos($_POST['newdef'][$i],"ndef++") !== FALSE )
 		{
       		$defvar = str_replace("ndef++","",$_POST['newdef'][$i]);
       		$notdef_start = "if (!defined(".chr(34).$defvar.chr(34).")) {";
@@ -102,8 +103,13 @@ if(isset($_POST['submit']))
       		$defvar = $_POST['newdef'][$i];
     	}
 
-		$message .= $notdef_start.'define("'.htmlentities($defvar).'","'.$deflang.'");<br />'.$notdef_end;
-		$input .= $notdef_start."define(".chr(34).$defvar.chr(34).", ".chr(34).$deflang.chr(34).");".$notdef_end;
+		if($_POST['newdef'][$i] == "LC_ALL" && isset($_POST['root']))
+		{
+        	$func = "setlocale";
+		}
+
+		$message .= $notdef_start.$func.'("'.htmlentities($defvar).'","'.$deflang.'");<br />'.$notdef_end;
+		$input .= $notdef_start.$func."(".chr(34).$defvar.chr(34).", ".chr(34).$deflang.chr(34).");".$notdef_end;
 	}
 
 	$message .="<br />";
@@ -262,8 +268,6 @@ function check_core_lanfiles($checklan,$subdir=''){
 	$English = get_lan_phrases("English".$subdir);
 	$check = get_lan_phrases($checklan.$subdir);
 
-
-
 	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='fcaption'>".LAN_CHECK_16."</td>
@@ -305,9 +309,9 @@ function check_core_lanfiles($checklan,$subdir=''){
 				<td class='forumheader' style='width:50%'>".LAN_CHECK_4."</td>"; // file missing.
     	}
     	// Leave in EDIT button for all entries - to allow re-translation of bad entries.
-
+        $subpath = ($subdir!='') ? $subdir.'/'.$k : $k;
     	$text .="<td class='forumheader3' style='width:5%;text-align:center'>
-    	<input class='tbox' type='button' style='width:60px' name='but_$i' value=\"".LAN_EDIT."\" onclick=\"window.location='".e_SELF."?".$k."|".$_POST['language']."'\" /> ";
+    	<input class='tbox' type='button' style='width:60px' name='but_$i' value=\"".LAN_EDIT."\" onclick=\"window.location='".e_SELF."?".$subpath."|".$_POST['language']."'\" /> ";
     	$text .="</td></tr>";
   	}
 	$text .= "</table>";
@@ -589,29 +593,62 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 
 }
 
-    function fill_phrases_array($data,$type) {
+function fill_phrases_array($data,$type) {
 
-      $retloc = array();
+	$retloc = array();
 
-      foreach($data as $line){
+	foreach($data as $line){
         //echo "line--> ".$line."<br />";
-        if (strpos($line,"define(") !== False &&
-            strpos($line,");") === False) {$indef=1;$bigline="";/*echo "big1 -->".$line."<br />";*/}
-        if ($indef) {$bigline.=str_replace("\n","",$line);/*echo "big2 -->".$line."<br />";*/}
-        if (strpos($line,"define(") === False &&
-            strpos($line,");") !== False) {$indef=0;$we_have_bigline=1;/*echo "big3 -->".$line."<br />";*/}
-        if ((strpos($line,"define(") !== False &&
-            strpos($line,");") !== False &&
-            substr(ltrim($line),0,2) != "//") ||
-            $we_have_bigline ) {
-          if ($we_have_bigline) {$we_have_bigline=0;$line=$bigline;/*echo "big -->".$line."<br />";*/}
-          $ndef = "";
-          //echo "_ndefline -->".$line."<br />";
-          if (strpos($line,"defined(") !== False ) {
-            $ndef = "ndef++";
-            $line = substr($line,strpos($line,"define("));}
-            //echo "ndefline -->".$line."<br />";
-          if(preg_match("#\"(.*?)\".*?\"(.*)\"#",$line,$matches) ||
+		if (strpos($line,"define(") !== FALSE && strpos($line,");") === FALSE)
+		{
+			$indef=1;
+			$bigline="";
+			// echo "big1 -->".$line."<br />";
+		}
+        if ($indef)
+		{
+			$bigline.=str_replace("\n","",$line);
+			// echo "big2 -->".$line."<br />";
+		}
+        if (strpos($line,"define(") === FALSE && strpos($line,");") !== FALSE)
+		{
+			$indef=0;
+			$we_have_bigline=1;
+			// echo "big3 -->".$line."<br />";
+		}
+
+		if(strpos($line,"setlocale(") !== FALSE)
+		{
+			$indef=1;
+			$we_have_bigline=0;
+		}
+
+        if ((strpos($line,"define(") !== FALSE && strpos($line,");") !== FALSE && substr(ltrim($line),0,2) != "//") || $we_have_bigline || strpos($line,"setlocale(") !== FALSE)
+		{
+
+			if ($we_have_bigline)
+			{
+				$we_have_bigline=0;
+				$line=$bigline;
+				// echo "big -->".$line."<br />";
+			}
+			$ndef = "";
+			//echo "_ndefline -->".$line."<br />";
+			if (strpos($line,"defined(") !== FALSE )
+			{
+            	$ndef = "ndef++";
+            	$line = substr($line,strpos($line,"define("));
+			}
+
+			if(strpos($line,"setlocale(") !== FALSE)
+			{
+              	$ndef = "";
+				$line = substr($line,strpos($line,"setlocale("));
+			}
+
+            //echo "ndefline: ".$line."<br />";
+
+          	if(preg_match("#\"(.*?)\".*?\"(.*)\"#",$line,$matches) ||
              preg_match("#\'(.*?)\'.*?\"(.*)\"#",$line,$matches) ||
              preg_match("#\"(.*?)\".*?\'(.*)\'#",$line,$matches) ||
              preg_match("#\'(.*?)\'.*?\'(.*)\'#",$line,$matches) ||
