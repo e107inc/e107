@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-10-30 18:16:54 $
+|     $Revision: 1.36 $
+|     $Date: 2006-11-02 22:17:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -417,7 +417,10 @@ function show_tools()
 
 	foreach($languages as $lang)
 	{
-		$text .= "<option value='{$lang}' >{$lang}</option>\n";
+		if($lang != "English")
+		{
+	   		$text .= "<option value='{$lang}' >{$lang}</option>\n";
+		}
 	}
 
 	$text .= "
