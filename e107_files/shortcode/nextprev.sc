@@ -4,16 +4,26 @@ global $pref;
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
 @include_once(e_LANGUAGEDIR."English/lan_np.php");
 
-list($total_items, $perpage, $current_start, $url, $caption) = explode(",", $parm.",", 5);
+$parm_count = substr_count($parm, ",");
 
-if($total_items < $perpage){
-	return "";
+while($parm_count < 4)
+{
+	$parm .= ",";
+	$parm_count++;
 }
 
-$caption = (!$caption && $caption != "off,") ? NP_3."&nbsp;" : $caption;
-if($caption == "off,"){
- $caption = "";
-}
+$p = explode(",", $parm, 5);
+
+$total_items = intval($p[0]);
+$perpage = intval($p[1]);
+$current_start = intval($p[2]);
+$url = trim($p[3]);
+$caption = trim($p[4]);
+
+if($total_items < $perpage) {	return ""; }
+
+$caption = (!$caption || $caption == "off") ? NP_3."&nbsp;" : $caption;
+
 while(substr($url, -1) == ".")
 {
 	$url=substr($url, 0, -1);
@@ -38,7 +48,7 @@ if($total_pages > 1)
 		}
 
 
-		//	Use OLD nextprev metod
+		//	Use OLD nextprev method
 		$nppage = '';
 		$nppage .= "\n\n<!-- Start of Next/Prev -->\n\n";
 		if ($total_pages > 10)
