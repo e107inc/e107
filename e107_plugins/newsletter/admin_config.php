@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-02-20 15:13:15 $
-|     $Author: whoisrich $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-04 18:28:51 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -423,7 +423,7 @@ class newsletter
 
 				$mail->AddAddress($memail, $mname);
 
-				echo "<b>Sending</b> ".$mname." ( ".$memail." ) <br />";
+				echo "<b>".NLLAN_54."</b> ".$mname." ( ".$memail." ) <br />";
 
 				$mail->Send();
 				$sent_counter ++;
