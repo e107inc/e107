@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-04-14 14:09:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2006-11-04 18:26:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -60,7 +60,7 @@ if($action == "show")
 
 		if(!is_object($rss))
 		{
-			$text = "Unable to unserialize rss data - uses non-standard syntax";
+			$text = NFLAN_49;
 			$ns->tablerender(NFLAN_01, $text);
 			require_once(FOOTERF);
 			exit;

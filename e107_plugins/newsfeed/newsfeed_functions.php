@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-06-08 02:32:33 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-04 18:26:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ if(!function_exists("checkUpdate"))
 
 						if(!$sql->db_Update('newsfeed', "newsfeed_data='{$serializedArray}', newsfeed_timestamp=".time().($newsfeed_des ? ", newsfeed_description='{$newsfeed_des}'": "")." WHERE newsfeed_id=".intval($newsfeed_id)))
 						{
-							echo "Unable to save raw data in database.<br /><br />".$serializedArray;
+							echo NFLAN_48."<br /><br />".$serializedArray;
 						}
 					}
 					else
