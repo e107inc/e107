@@ -57,4 +57,6 @@ define('ADLAN_PM_53', "No records found to convert.");
 define('ADLAN_PM_54', "Main settings");
 define('ADLAN_PM_55', "Limits");
 define('ADLAN_PM_56', "Conversion");
+
+define('ADLAN_PM_57', "This plugin is a fully featured Private Messaging system.");
 ?>
