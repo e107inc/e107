@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.316 $
-|     $Date: 2006-10-29 02:08:05 $
+|     $Revision: 1.317 $
+|     $Date: 2006-11-04 15:45:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -393,7 +393,7 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 			$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
 			$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
 			$location = implode('/',$aeSELF).(e_QUERY ? "?".e_QUERY : "");
-			echo "<pre>$location</pre>\n";exit();
+
 		header("Location: {$location}", true, 301); // send 301 header, not 302
 		exit();
 	}
