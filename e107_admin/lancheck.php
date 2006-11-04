@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-11-02 22:37:58 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-04 17:34:09 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -64,23 +64,27 @@ if(isset($_POST['submit']))
 	if ($old_kom == "")
 	{
 		// create CVS compatible description.
-		$input .= chr(47)."*\n";
-		$input .= "+---------------------------------------------------------------+\n";
-		$input .= "|        e107 website system Language File\n";
-		$input .= "|        Released under the terms and conditions of the\n";
-		$input .= "|        GNU General Public License (http://gnu.org).\n";
-		$input .= "|\n";
-		$input .= "|        \$Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $writeit $\n";
-		$input .= "|        \$Revision: 1.15 $\n";
-		$input .= "|        \$Date: 2006-11-02 22:37:58 $\n";
-		$input .= "|        \$Author: e107coders $\n";
-		$input .= "+---------------------------------------------------------------+\n";
-		$input .= "*".chr(47)."\n\n";
+		$diz = chr(47)."*\n";
+		$diz .= "+---------------------------------------------------------------+\n";
+		$diz .= "|        e107 website system ".$lan." Language File\n";
+		$diz .= "|        Released under the terms and conditions of the\n";
+		$diz .= "|        GNU General Public License (http://gnu.org).\n";
+		$diz .= "|\n";
+		$diz .= "|        \$Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $writeit." $\n";
+		$diz .= "|        \$Revision: 1.16 $\n";
+		$diz .= "|        \$Date: 2006-11-04 17:34:09 $\n";
+		$diz .= "|        \$Author: e107coders $\n";
+		$diz .= "+---------------------------------------------------------------+\n";
+		$diz .= "*".chr(47)."\n\n";
 	}
 	else
 	{
-		$input.=$old_kom;
+		$diz = $old_kom;
 	}
+
+	$input .= $diz;
+	$message .= str_replace("\n","<br />",$diz);
+
 	for ($i=0; $i<count($_POST['newlang']); $i++)
 	{
 		$notdef_start = "";
@@ -254,7 +258,7 @@ function check_core_lanfiles($checklan,$subdir=''){
 
       			foreach($subkeys as $sk)
 				{
-        	   		if(!array_key_exists($sk,$check[$k]) || $check[$k][$sk] == "" ){
+        	   		if(!array_key_exists($sk,$check[$k]) || ($check[$k][$sk] == "" && $English[$k][$sk] != "")){
           	   			$er .= ($er) ? "<br />" : "";
           				$er .= $sk." ".LAN_CHECK_5;
         			}
@@ -289,7 +293,7 @@ function get_lan_file_phrases($dir1,$dir2,$file1,$file2){
 
 	$ret = array();
 	$fname = $dir1.$file1;
-	$type='oryg';
+	$type='orig';
 
 	if(is_file($fname))
 	{
@@ -392,7 +396,7 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 
         		foreach($subkeys as $sk)
 				{
-          			if(!array_key_exists($sk,$check[$k_check]) || $check[$k_check][$sk] == "" )
+          			if(!array_key_exists($sk,$check[$k_check]) || ($check[$k_check][$sk] == "" && $baselang[$k_check][$sk] != ""))
 					{
             			$er .= ($er) ? "<br />" : "";
             			$er .= $sk." ".LAN_CHECK_5;
@@ -460,26 +464,26 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 	<form method='post' action='".e_SELF."?".e_QUERY."' id='transform'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
 
-	$subkeys = array_keys($trans['oryg']);
+	$subkeys = array_keys($trans['orig']);
 	foreach($subkeys as $sk)
 	{
-    	$rowamount = round(strlen($trans['oryg'][$sk])/34)+1;
+    	$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
     	$hglt1=""; $hglt2="";
-    	if ($trans['tran'][$sk] == "") {
+    	if ($trans['tran'][$sk] == "" && $trans['orig'][$sk]!="") {
 			$hglt1="<span style='font-style:italic;font-weight:bold;color:red'>";
 			$hglt2="</span>";
 		}
     	$text .="<tr>
     	<td class='forumheader3' style='width:10%;vertical-align:top'>".$hglt1.htmlentities($sk).$hglt2."</td>
-    	<td class='forumheader3' style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['oryg'][$sk])) ."</td>";
+    	<td class='forumheader3' style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['orig'][$sk])) ."</td>";
     	$text .= "<td class='forumheader3' style='width:50%;vertical-align:top'>";
     	$text .= ($writable) ? "<textarea  class='tbox' name='newlang[]' rows='$rowamount' cols='45' style='height:100%'>" : "";
 		$text .= str_replace("ndef++","",$trans['tran'][$sk]);
 		$text .= ($writable) ? "</textarea>" : "";
-    	//echo "oryg --> ".$trans['oryg'][$sk]."<br />";
-    	if (strpos($trans['oryg'][$sk],"ndef++") !== False)
+    	//echo "orig --> ".$trans['orig'][$sk]."<br />";
+    	if (strpos($trans['orig'][$sk],"ndef++") !== False)
 		{
-      		//echo "+oryg --> ".$trans['oryg'][$sk]." <> ".strpos($trans['oryg'][$sk],"ndef++")."<br />";
+      		//echo "+orig --> ".$trans['orig'][$sk]." <> ".strpos($trans['orig'][$sk],"ndef++")."<br />";
       		$text .= "<input type='hidden' name='newdef[]' value='ndef++".$sk."' />";
     	}
     	else
