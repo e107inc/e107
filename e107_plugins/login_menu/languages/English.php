@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-31 21:16:29 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-04 19:09:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -56,13 +56,10 @@ define('LOGIN_MENU_L33', 'Show New Chatbox Posts');
 define('LOGIN_MENU_L34', 'Show New Comment Posts');
 define('LOGIN_MENU_L35', 'Show New Forum Posts');
 define('LOGIN_MENU_L36', 'Show New Members');
-define('LOGIN_MENU_L37', 'Update Settings');
-define('LOGIN_MENU_L38', 'Settings Updated');
 
 
 define('LOGIN_MENU_L39', 'Leave Admin');
-
 define("LOGIN_MENU_L40", "Resend Activation Email");
-
+define("LOGIN_MENU_L41", "Login Menu Settings");
 
 ?>
