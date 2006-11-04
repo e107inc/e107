@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-07-19 23:13:45 $
+|     $Revision: 1.12 $
+|     $Date: 2006-11-04 18:33:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -78,7 +78,7 @@ if(e_QUERY)
 			<td class='smalltext'>
 
 
-			<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 95)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>".$percentage[$count]."% [Votes: ".$voteArray[$count]."]</div>
+			<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 95)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>".$percentage[$count]."% [".POLLAN_31.": ".$voteArray[$count]."]</div>
 			</td>
 			</tr>\n";
 			$count++;

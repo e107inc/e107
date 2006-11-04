@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-08-25 15:37:54 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-04 18:33:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN."pm/languages/admin/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."pm/languages/admin/English.php");
+include_lan(e_PLUGIN."pm/languages/admin/".e_LANGUAGE.".php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "ADLAN_PM";
@@ -28,7 +27,7 @@ $eplug_version = "3.0";
 $eplug_author = "McFly";
 $eplug_url = "";
 $eplug_email = "mcfly@e107.org";
-$eplug_description = "This plugin is a fully featured Private Messaging system.";
+$eplug_description = ADLAN_PM_57;
 $eplug_compatible = "e107v.7+";
 // leave blank if no readme file
 

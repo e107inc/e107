@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-01-09 17:09:01 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2006-11-04 18:33:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $retrieve_prefs[] = 'pm_prefs';
@@ -196,7 +196,7 @@ function show_options()
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_28."</td>
-		<td class='forumheader3' style='width:25%'>".form::form_text('option[attach_size]', 8, $pm_prefs['attach_size'], 8)." kb</td>
+		<td class='forumheader3' style='width:25%'>".form::form_text('option[attach_size]', 8, $pm_prefs['attach_size'], 8)." kB</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_29."</td>

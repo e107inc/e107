@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-07-13 21:14:06 $
+|     $Revision: 1.7 $
+|     $Date: 2006-11-04 18:33:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."poll/languages/English.php");
+include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = POLL_ADLAN01;
