@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/languages/English.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-10-31 21:16:29 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-04 18:26:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -84,5 +84,8 @@ define("NFLAN_44", "click to view");
 define("NFLAN_45", "Number of items to show in menu");
 define("NFLAN_46", "Number of items to show on main page");
 define("NFLAN_47", "0 or blank to show all");
+
+define("NFLAN_48", "Unable to save raw data in database.");
+define("NFLAN_49", "Unable to unserialize rss data - uses non-standard syntax");
 
 ?>
