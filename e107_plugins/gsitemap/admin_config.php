@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-10-30 02:46:44 $
+|     $Revision: 1.13 $
+|     $Date: 2006-11-04 18:09:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,10 +20,7 @@ require_once("../../class2.php");
 if(!getperms("P")){ header("location:".e_BASE."index.php"); }
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
-
-$ec_dir = e_PLUGIN."gsitemap/";
-$lan_file = $ec_dir."languages/gsitemap_".e_LANGUAGE.".php";
-e107_include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."gsitemap/languages/gsitemap_English.php");
+include_lan(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php");
 
 $gsm = new gsitemap;
 
@@ -33,12 +30,24 @@ class gsitemap
 {
 
 	var $message;
+    var $freq_list = array();
 
 /*+----------------------#######################################################################################---------------------+*/
 
 	function gsitemap()
 	{
 		/* constructor */
+
+		$this->freq_list = array
+		(
+			"always"	=>	GSLAN_11,
+			"hourly"	=>	GSLAN_12,
+			"daily"		=>	GSLAN_13,
+			"weekly"	=>	GSLAN_14,
+			"monthly"	=>	GSLAN_15,
+			"yearly"	=>	GSLAN_16,
+			"never"		=>	GSLAN_17
+		);
 
 		if(isset($_POST['edit']))
 		{
@@ -110,7 +119,6 @@ class gsitemap
 		}
 		else
 		{
-
 			$text .= "
 
 			<form action='".e_SELF."' id='display' method='post'>
@@ -130,7 +138,6 @@ class gsitemap
 			$glArray = $sql -> db_getList();
 			foreach($glArray as $row2)
 			{
-
 				$datestamp = $gen->convert_date($row2['gsitemap_lastmod'], "short");
 
 				$text .= "<tr>
@@ -138,7 +145,7 @@ class gsitemap
 				<td class='forumheader3'>".$tp->toHTML($row2['gsitemap_name'],"","defs")."</td>
 				<td class='forumheader3'>".$row2['gsitemap_url']."</td>
 				<td class='forumheader3' style='; text-align: center;'>".$datestamp."</td>
-				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_freq'] ."</td>
+				<td class='forumheader3' style='; text-align: center;'>".$this->freq_list[($row2['gsitemap_freq'])]."</td>
 				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_priority'] ."</td>
 
 				<td style='width:50px;white-space:nowrap' class='forumheader3'>
@@ -207,17 +214,7 @@ class gsitemap
 		<td class='forumheader3'>
 		<select class='tbox' name='gsitemap_freq' >\n";
 
-		$freq_list = array(
-			"always"=>GSLAN_11,
-			"hourly"=>GSLAN_12,
-			"daily"=>GSLAN_13,
-			"weekly"=>GSLAN_14,
-			"monthly"=>GSLAN_15,
-			"yearly"=>GSLAN_16,
-			"never"=>GSLAN_17
-		);
-
-		foreach($freq_list as $k=>$fq){
+		foreach($this->freq_list as $k=>$fq){
 			$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
 			$text .= "<option value='$k' $sel>".$fq."</option>\n";
 		}
@@ -427,17 +424,7 @@ class gsitemap
 
 		<select class='tbox' name='import_freq' >\n";
 
-		$freq_list = array(
-			"always"=>GSLAN_11,
-			"hourly"=>GSLAN_12,
-			"daily"=>GSLAN_13,
-			"weekly"=>GSLAN_14,
-			"monthly"=>GSLAN_15,
-			"yearly"=>GSLAN_16,
-			"never"=>GSLAN_17
-		);
-
-		foreach($freq_list as $k=>$fq){
+		foreach($this->freq_list as $k=>$fq){
 			$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
 			$text .= "<option value='$k' $sel>$fq</option>\n";
 		}
