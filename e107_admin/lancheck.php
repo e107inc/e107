@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-11-04 17:34:09 $
+|     $Revision: 1.17 $
+|     $Date: 2006-11-04 18:58:14 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -70,10 +70,10 @@ if(isset($_POST['submit']))
 		$diz .= "|        Released under the terms and conditions of the\n";
 		$diz .= "|        GNU General Public License (http://gnu.org).\n";
 		$diz .= "|\n";
-		$diz .= "|        \$Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $writeit." $\n";
-		$diz .= "|        \$Revision: 1.16 $\n";
-		$diz .= "|        \$Date: 2006-11-04 17:34:09 $\n";
-		$diz .= "|        \$Author: e107coders $\n";
+		$diz .= "|        \$Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $writeit." \$ \n";
+		$diz .= "|        \$Revision: 1.17 $ \n";
+		$diz .= "|        \$Date: 2006-11-04 18:58:14 $ \n";
+		$diz .= "|        \$Author: e107coders $ \n";
 		$diz .= "+---------------------------------------------------------------+\n";
 		$diz .= "*".chr(47)."\n\n";
 	}
