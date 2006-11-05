@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/reline/languages/Russian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-11-05 07:15:54 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-05 07:25:24 $
 |     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
 define("LAN_THEME_1", "Комментарии выключены");
-define("LAN_THEME_2", "Читать/добавить комментарии: ");
+define("LAN_THEME_2", "Читать/Добавить комментарии: ");
 define("LAN_THEME_3", "Читать далее ...");
 define("LAN_THEME_4", "Ссылок: ");
 define("LAN_THEME_5", "Добавил");
