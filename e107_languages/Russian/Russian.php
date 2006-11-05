@@ -2,13 +2,13 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.8 $
-|     $Date: 2006-10-27 11:04:54 $
-|     $Author: verant $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-05 05:14:14 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
-setlocale(LC_ALL, 'ru_RU.utf8'); //// Варианты: 'ru', 'ru_RU.UTF-8'
+setlocale("LC_ALL", 'ru_RU.utf8'); //// Варианты: 'ru', 'ru_RU.UTF-8'
 define("CORE_LC", 'ru');
 define("CORE_LC2", 'rus'); // Варианты: 'ru'
 // define("TEXTDIRECTION","rtl");
