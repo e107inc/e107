@@ -12,7 +12,7 @@
 +---------------------------------------------------------------+
 */
 
-define("LOGIN_MENU_L1", "Gebruikersnaam: ");
+define("LOGIN_MENU_L1", "Inlognaam: ");
 define("LOGIN_MENU_L2", "Wachtwoord: ");
 define("LOGIN_MENU_L3", "Aanmelden");
 define("LOGIN_MENU_L4", "Wachtwoord vergeten?");
