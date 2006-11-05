@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-11-04 21:27:12 $
+|     $Revision: 1.19 $
+|     $Date: 2006-11-05 03:38:00 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -29,7 +29,6 @@ if (!getperms("0")) {
 	$f = $qry[0];
 	$lan = $qry[1];
 	$mode = $qry[2];
-
 
 // Write the language file.
 if(isset($_POST['submit']))
@@ -255,19 +254,28 @@ function check_core_lanfiles($checklan,$subdir=''){
 
       			sort($subkeys);
       	   		$er="";
+                $utf_error = "";
+
+				$bomkey = str_replace(".php","",$k_check);
+       			$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
 
       			foreach($subkeys as $sk)
 				{
+                   	if($utf_error == "" && !is_utf8($check[$k][$sk]))
+					{
+						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
+					}
+
         	   		if(!array_key_exists($sk,$check[$k]) || ($check[$k][$sk] == "" && $English[$k][$sk] != "")){
           	   			$er .= ($er) ? "<br />" : "";
           				$er .= $sk." ".LAN_CHECK_5;
         			}
       			}
+
 				$style = ($er) ? "forumheader2" : "forumheader3";
        			$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
-				$bomkey = str_replace(".php","",$k_check);
-       			$text .= ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br /><br />" : ""; // illegal chars
-				$text .= ($er) ? $er : LAN_OK;
+				$text .= $bom_error . $utf_error;
+				$text .= (!$er && !$bom_error && !utf_error) ? LAN_OK : $er."<br />";
 				$text .= "</div></td>";
     		}
 			else
@@ -393,9 +401,18 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 
 				$subkeys = array_keys($baselang[$k]);
         		$er="";
+                $utf_error = "";
+
+				$bomkey = str_replace(".php","",$k_check);
+       			$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
 
         		foreach($subkeys as $sk)
 				{
+                   	if($utf_error == "" && !is_utf8($check[$k_check][$sk]))
+					{
+						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
+					}
+
           			if(!array_key_exists($sk,$check[$k_check]) || ($check[$k_check][$sk] == "" && $baselang[$k_check][$sk] != ""))
 					{
             			$er .= ($er) ? "<br />" : "";
@@ -405,9 +422,8 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 
 				$style = ($er) ? "forumheader2" : "forumheader3";
        			$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
-				$bomkey = str_replace(".php","",$k_check);
-       			$text .= ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br /><br />" : ""; // illegal chars
-				$text .= ($er) ? $er : LAN_OK;
+				$text .= $bom_error . $utf_error;
+         		$text .= (!$er && !$bom_error && !utf_error) ? LAN_OK : $er."<br />";
 				$text .= "</div></td>";
       		}
 			else
@@ -595,6 +611,27 @@ function fill_phrases_array($data,$type) {
       }
       return $retloc;
     }
+
+
+function is_utf8($string) {
+   // From http://w3.org/International/questions/qa-forms-utf-8.html
+	if(strtolower(CHARSET) != "utf-8" || $string == "")
+	{
+		return TRUE;
+	}
+
+	return preg_match('%^(?:
+         [\x09\x0A\x0D\x20-\x7E]            # ASCII
+       | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+       |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+       | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+       |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+       |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+       | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+       |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+	)*$%xs', $string);
+
+}
 
 
 function lancheck_adminmenu() {
