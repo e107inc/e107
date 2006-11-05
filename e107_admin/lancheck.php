@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-11-05 03:38:00 $
+|     $Revision: 1.20 $
+|     $Date: 2006-11-05 03:50:19 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -266,7 +266,8 @@ function check_core_lanfiles($checklan,$subdir=''){
 						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
 					}
 
-        	   		if(!array_key_exists($sk,$check[$k]) || ($check[$k][$sk] == "" && $English[$k][$sk] != "")){
+        	   		if(!array_key_exists($sk,$check[$k]) || ($check[$k][$sk] == "" && $English[$k][$sk] != ""))
+					{
           	   			$er .= ($er) ? "<br />" : "";
           				$er .= $sk." ".LAN_CHECK_5;
         			}
@@ -275,7 +276,7 @@ function check_core_lanfiles($checklan,$subdir=''){
 				$style = ($er) ? "forumheader2" : "forumheader3";
        			$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
 				$text .= $bom_error . $utf_error;
-				$text .= (!$er && !$bom_error && !utf_error) ? LAN_OK : $er."<br />";
+				$text .= (!$er && !$bom_error && !$utf_error) ? LAN_OK : $er."<br />";
 				$text .= "</div></td>";
     		}
 			else
@@ -423,7 +424,7 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 				$style = ($er) ? "forumheader2" : "forumheader3";
        			$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
 				$text .= $bom_error . $utf_error;
-         		$text .= (!$er && !$bom_error && !utf_error) ? LAN_OK : $er."<br />";
+         		$text .= (!$er && !$bom_error && !$utf_error) ? LAN_OK : $er."<br />";
 				$text .= "</div></td>";
       		}
 			else
