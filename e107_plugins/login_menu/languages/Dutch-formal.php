@@ -56,4 +56,5 @@ define('LOGIN_MENU_L37', "Bijwerken instellingen");
 define('LOGIN_MENU_L38', "Instellingen bijgewerkt");
 define('LOGIN_MENU_L39', 'Verlaat beheerfunctie');
 define("LOGIN_MENU_L40", "Activerings e-mail nogmaals verzenden");
+define("LOGIN_MENU_L41", "Login menu instellingen");
 ?>

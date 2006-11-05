@@ -32,4 +32,5 @@ define("LAN_CHECK_15", "Onjuiste tekens gevonden voor '&lt;?php'");
 define("LAN_CHECK_16", "Originele bestand");
 define("LAN_CHECK_17", "Er bestaat een schrijfprobleem bij het opslaan van het bestand.");
 define("LAN_CHECK_18", "Taalbestanden in het standaardformaat zijn voor deze plugin/dit theme niet beschikbaar.");
+define("LAN_CHECK_19", "Non-UTF-8 tekens aangetroffen!");
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/Dutch-formal.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-29 06:59:02 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-05 19:01:45 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -77,10 +77,7 @@ define("NLLAN_50", "Klik om te abonneren (uw adres luidt");
 define("NLLAN_51", "Afmelden");
 define("NLLAN_52", "Abonneren");
 define("NLLAN_53", "Wil u uzelf aanmelden voor deze nieuwsbrief?");
-
-
-
-
+define("NLLAN_54", "Versturen");
 
 
 ?>
