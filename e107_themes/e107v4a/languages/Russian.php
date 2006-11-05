@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_themes/e107v4a/languages/Russian.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-05 07:02:23 $
+|     $Author: yarodin $
++----------------------------------------------------------------------------+
+*/
 
 define("LAN_THEME_1", "Читать/лрбавить комментарии: ");
 define("LAN_THEME_2", "Комментарии выключенны");
