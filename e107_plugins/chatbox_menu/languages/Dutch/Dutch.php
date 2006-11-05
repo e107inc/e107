@@ -35,7 +35,7 @@ define("CHATBOX_L19", "Je kunt slechts één keer in de ".FLOODTIMEOUT." seconde
 
 define("CHATBOX_L20", "Chatbox (alle berichten)");
 define("CHATBOX_L21", "Chat berichten");
-define("CHATBOX_L22", "aan");
+define("CHATBOX_L22", "op");
 define("CHATBOX_L23", "Fout!");
 define("CHATBOX_L24", "Je bezit niet de juiste rechten om deze pagina te bekijken.");
 define("CHATBOX_L25", "[ dit bericht is door een beheerder geblokkeerd ]");
