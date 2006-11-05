@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-11-01 16:32:14 $
-|     $Author: yarodin $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-05 09:30:40 $
+|     $Author: verant $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,7 +26,7 @@ define("CRELAN_10", "MagpieRSS реализует основанный на XML 
 define("CRELAN_11", "PclZip библиотека содержит функции предназначенные для работы с Zip архивами (WinZip, PKZIP).");
 define("CRELAN_12", "PCLTar предоставляет возможность архивирования файлов или директорий без сжатия. Архивы создаваемые PclTar поддерживаются большинством gzip/tar приложений, а также Windows WinZip'ом.");
 define("CRELAN_13", "TinyMCE платформо независимый Javascript HTML WYSIWYG веб-редактор, выпущенный как Open Source под лицензией LGPL компанией Moxiecode Systems AB. В нем есть возможность использовать HTML текстовые поля или другие HTML элементы для редактирования текста.");
-define("CRELAN_14", "Иконки используемые в e107");
+define("CRELAN_14", "Иконки, используемые в e107");
 define("CRELAN_15", "Многофункциональный PHP класc для работы с электронной почтой.");
 define("CRELAN_16", "Система меню, используемая в теме Jaya.");
 define("CRELAN_17", "Виджет всплывающего календаря.");
@@ -39,7 +39,7 @@ define("CRELAN_19", "Поддержка UTF-8 в PDF");
 
 define("CRELAN_20", ""); // asperon
 define("CRELAN_21", "Всегда давление..ээээээ..наслаждение!"); // CaMer0n
-define("CRELAN_22", "\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />Йо-хо-хо! что за хуйня, дружок!\""); // jalist
+define("CRELAN_22", "\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />Йо-хо-хо! чзх, дружок!\""); // jalist
 define("CRELAN_23", ""); // lisa
 define("CRELAN_24", ""); // McFly
 define("CRELAN_25", ""); // que
