@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.4 $
-|     $Date: 2006-11-01 13:55:41 $
-|     $Author: verant $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-05 06:09:52 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
@@ -14,7 +14,7 @@ define("LOGIN_MENU_L3", "Регистрация");
 define("LOGIN_MENU_L4", "Забыли пароль?");
 define("LOGIN_MENU_L5", "Добро пожаловать, ");
 define("LOGIN_MENU_L6", "Запомнить");
-define("LOGIN_MENU_L7", "Уникальный ID пользователя не опознан (возможно, повреждены cookies).<br />Нажмите <a href=\"".e_BASE."index.php?logout\">сюда</a> для удаления cookie.");
+define("LOGIN_MENU_L7", "Уникальный ИД пользователя не опознан (возможно, повреждены cookies).<br />Нажмите <a href=\"".e_BASE."index.php?logout\">сюда</a> для удаления cookie.");
 define("LOGIN_MENU_L8", "Выйти");
 define("LOGIN_MENU_L9", "Ошибка входа");
 define("LOGIN_MENU_L10", "Сайт закрыт на техническое обслуживание. Это означает, что все пользователи будут перенаправлены на страницу sitedown.php. Для активации сайта перейдите в Админцентр/Техническое обслуживание");
@@ -55,6 +55,6 @@ define('LOGIN_MENU_L38', 'Настройки обновлены');
 define('LOGIN_MENU_L39', 'Покинуть Админцентр'); //Leave Admin
 
 define("LOGIN_MENU_L40", "Отправить заново письмо активации"); //ReSend Activation Email
-
+define("LOGIN_MENU_L41", "Настройки Меню Входа");
 	
 ?>
