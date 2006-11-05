@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.15 $
-|     $Date: 2006-11-01 13:53:46 $
-|     $Author: verant $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-05 12:58:45 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
@@ -74,12 +74,12 @@ define("ADLAN_64", "Статистика логов");
 define("ADLAN_65", "Статистика/счетчики логов и т.д.");
 define("ADLAN_66", "Мета-теги");
 define("ADLAN_67", "Доб/ред мета-теги сайта");
-define("ADLAN_68", "Информация PHP"); //CheckIt: может, "PHP Info"?
-define("ADLAN_69", "Страница информации PHP"); //CheckIt: может, "Страница PHP Info"?
+define("ADLAN_68", "Информация PHP"); 
+define("ADLAN_69", "Страница информации PHP"); 
 define("ADLAN_70", "Опросы");
 define("ADLAN_71", "Доб/ред опросов");
-define("ADLAN_72", "Загрузки на сервер"); //Public Uploads. Слово Public не переведено.
-define("ADLAN_73", "Настройка загрузки файлов на сервер"); //Configure public file uploads. Слово Public не переведено.
+define("ADLAN_72", "Общедоступные загрузки на сервер"); 
+define("ADLAN_73", "Настройка общедоступной загрузки файлов на сервер");
 define("ADLAN_74", "Кеш");
 define("ADLAN_75", "Установка статуса кеша");
 define("ADLAN_77", "Пользователь добавил новость - пожалуйста, нажмите здесь, чтобы проверить.");
@@ -223,7 +223,7 @@ define("LAN_RESET","Сброс");
 define("LAN_CLEAR","Очистить");
 define("LAN_OK","OK");
 
-define("LAN_PRESET","Предустановки"); // Preset
+define("LAN_PRESET","Пред установки"); // Preset
 define("LAN_PRESET_SAVED","Предустановки успешно сохранены");
 
 define("LAN_PRESET_DELETED","Предустановки успешно удалены");
