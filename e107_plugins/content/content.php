@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.107 $
-|		$Date: 2006-10-30 17:21:23 $
+|		$Revision: 1.108 $
+|		$Date: 2006-11-06 10:43:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -48,29 +48,7 @@ if(e_QUERY){
 
 $aa -> setPageTitle();
 
-
-//if viewing a content item, parse meta keywords
-if(isset($qs[0]) && $qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) ){
-	if($sql -> db_Select($plugintable, "content_meta", "content_id='".intval($qs[1])."'")){
-		list($row['content_meta']) = $sql -> db_Fetch();
-		$exmeta = $row['content_meta'];
-		if($exmeta != ""){
-			$exmeta = str_replace(", ", ",", $exmeta);
-			$exmeta = str_replace(" ", ",", $exmeta);
-			$exmeta = str_replace(",", ", ", $exmeta);
-			define("META_MERGE", TRUE);
-			define("META_KEYWORDS", " ".$exmeta);
-		}
-	}
-}
-
 require_once(HEADERF);
-
-
-//include js
-function headerjs(){
-	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
-}
 
 //post comment
 if(isset($_POST['commentsubmit'])){
