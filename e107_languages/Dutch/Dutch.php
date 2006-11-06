@@ -34,4 +34,5 @@ define("CORE_LAN9", "Core kon niet herstellen vanaf de automatische backup. Uitv
 define("CORE_LAN10", "Corrupt cookie gedetecteerd - uitgelogd.");
 define("LAN_WARNING", "Waarschuwing!");
 define("LAN_ERROR", "Fout");
+define("LAN_ANONYMOUS", "Anoniem");
 ?>

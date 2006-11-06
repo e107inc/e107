@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Dutch-formal.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-05 19:01:38 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-06 20:28:25 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -84,5 +84,5 @@ define("NFLAN_45", "Aantal in menu te tonen onderwerpen");
 define("NFLAN_46", "Aantal op hoofdpagina te tonen onderwerpen");
 define("NFLAN_47", "0 of blanco om alles te tonen");
 define("NFLAN_48", "Kon de ruwe data niet in de database opslaan.");
-define("NFLAN_49", "Kon de rss data niet unserialize (?) - er wordt geen standaard syntax gebruikt ");
+define("NFLAN_49", "Kon de rss data niet omzetten in html - er wordt geen standaard syntax gebruikt");
 ?>
