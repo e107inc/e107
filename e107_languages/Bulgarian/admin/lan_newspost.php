@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -162,5 +162,11 @@ define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback not enabled.");
 
 define("LAN_NEWS_45", "ID");
+
+define("LAN_NEWS_46", "News item not updated as no changes were made.");
+define("LAN_NEWS_47", "Image");
+define("LAN_NEWS_48", "No Image");
+
+define("LAN_NEWS_49", "Render-type");
 
 ?>

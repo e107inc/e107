@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@ define("LAN_102", "");
 define("LAN_103", "Има");
 define("LAN_104", "Има");
 define("LAN_105", "общо в");
-define("LAN_106", "Подчертаниет полета са задължителни.");
+define("LAN_106", "Подчертаните полета са задължителни.");
 
 define("LAN_Links_1", "Общо линкове");
 define("LAN_Links_2", "Общо активни линка");

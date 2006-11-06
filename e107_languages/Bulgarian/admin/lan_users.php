@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ define("USRLAN_91", "Class");
 define("USRLAN_92", "Invalid characters in username");
 
 define("USRLAN_93", "Delete unverified users");
-define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option");
+define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option <br />This option is ignored if user signups are admin moderated");
 define("USRLAN_95", "minutes");
 
 
@@ -122,18 +122,21 @@ define("USRLAN_127", "Allow comments in user profile");
 
 define("USRLAN_128", "Login name");
 
-define("LAN_MAINADMIN","Main Admin");
-define("LAN_ADMIN","Admin");
-define("LAN_NOTVERIFIED","Not Verified");
-define("LAN_BANNED","Banned");
-
-
 define("USRLAN_130", "Enable online user tracking");
 define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
 define("USRLAN_132", "Enable");
 
 define("USRLAN_133", "Force user to update settings");
 define("USRLAN_134", "Enabling this option will automatically send the user to their user-settings if a required user field is not filled.");
+
+define("USRLAN_135", "No IP address found in user's info, IP not banned");
+define("USRLAN_136", "Multiple users found with IP address of {IP}, IP not banned.");
+define("USRLAN_137", "Users IP address of {IP} banned.");
+
+define("LAN_MAINADMIN","Main Admin");
+define("LAN_ADMIN","Admin");
+define("LAN_NOTVERIFIED","Not Verified");
+define("LAN_BANNED","Banned");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Display Name");
@@ -173,4 +176,10 @@ define("DUSRLAN_35", "Picture");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
 
+define("USRLAN_138", "Unverified users");
+define("USRLAN_139", "Your account has been activated.\n\nYou can visit {SITEURL} and log into the site using the login information you provided.");
+
+define("USRLAN_140", "Email Re-sent to");
+define("USRLAN_141", "Failed to Re-send email to");
+define("USRLAN_142", "with the following activation link");
 ?>

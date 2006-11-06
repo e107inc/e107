@@ -8,15 +8,15 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_ren_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("LANHELP_1", "Черен");
 define("LANHELP_2", "Син");
 define("LANHELP_3", "Кафяв");
-define("LANHELP_4", "Синьо-Зелен");
+define("LANHELP_4", "Синьо-зелен");
 define("LANHELP_5", "Тъмно син");
 define("LANHELP_6", "Тъмно червен");
 define("LANHELP_7", "Зелен");
@@ -53,5 +53,13 @@ define("LANHELP_34", "[newpage] или [newpage=title] Вмъква таг за 
 define("LANHELP_35", "хиперлинк url");
 define("LANHELP_36", "Неномериран списък: [list]line1*line2*line3[/list] Номериран списък: [list=type]line1*line2*line3[/list]");
 
+define("LANHELP_37", "Вмъкни картинка от директория e107_images/newspost_images/");
+define("LANHELP_38", "ще бъде генериран линк към оригиналната картинка");
 
+define("LANHELP_39", "Вмъкни линк за сваляне на файл от съществуващите файлове");
+define("LANHELP_40", "Все още няма файлове за сваляне");
+
+define("LANHELP_41", "Големина на шрифт...");
+define("LANHELP_42", "Избор на картинка...");
+define("LANHELP_43", "Избор на файл...");
 ?>

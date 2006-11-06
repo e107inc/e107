@@ -4,26 +4,26 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_footer.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("FOOTLAN_1", "Site");
-define("FOOTLAN_2", "Head Admin");
-define("FOOTLAN_3", "Version");
+define("FOOTLAN_1", "Сайт");
+define("FOOTLAN_2", "Главен Админ");
+define("FOOTLAN_3", "Версия");
 define("FOOTLAN_4", "build");
-define("FOOTLAN_5", "Theme");
-define("FOOTLAN_6", "by");
-define("FOOTLAN_7", "Info");
-define("FOOTLAN_8", "Install date");
-define("FOOTLAN_9", "Server");
-define("FOOTLAN_10", "host");
-define("FOOTLAN_11", "PHP Version");
+define("FOOTLAN_5", "Тема");
+define("FOOTLAN_6", "от");
+define("FOOTLAN_7", "Инфо");
+define("FOOTLAN_8", "Дата на инсталация");
+define("FOOTLAN_9", "Сървър");
+define("FOOTLAN_10", "хост");
+define("FOOTLAN_11", "PHP Версия");
 define("FOOTLAN_12", "mySQL");
-define("FOOTLAN_13", "Site Info");
-define("FOOTLAN_14", "Show Docs");
-define("FOOTLAN_15", "Documentation");
-define("FOOTLAN_16", "Database");
-
+define("FOOTLAN_13", "Инфо за сайта");
+define("FOOTLAN_14", "Покажи Документация");
+define("FOOTLAN_15", "Документация");
+define("FOOTLAN_16", "База Данни");
+define("FOOTLAN_17", "Чарсет");
 ?>

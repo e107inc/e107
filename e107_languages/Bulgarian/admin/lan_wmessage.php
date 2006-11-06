@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_wmessage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -29,5 +29,6 @@ define("WMLAN_07","Override standard system to use {WMESSAGE} shortcode:");
 // define("WMLAN_08","Preferences");
 
 define("WMLAN_09","No welcome messages set yet");
+define("WMLAN_10","Message Caption");    
 
 ?>

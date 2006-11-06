@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_usersettings.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ define("LAN_114", "Това ще забрани показването на ва
 define("LAN_115", "ICQ Номер: ");
 define("LAN_116", "AIM Адрес: ");
 define("LAN_117", "MSN Messenger: ");
-define("LAN_118", "Рожденна дата: ");
+define("LAN_118", "Рождена дата: ");
 define("LAN_119", "Местоположение: ");
 define("LAN_120", "Подпис: ");
 define("LAN_121", "Аватар: ");

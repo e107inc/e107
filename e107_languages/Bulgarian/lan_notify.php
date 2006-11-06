@@ -8,24 +8,26 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
 define("NT_LAN_US_1", "Регистрация на потребител");
 
-define("NT_LAN_UV_1", "Активирана регистрация");
-define("NT_LAN_UV_2", "String на потребителска сесия");
+define("NT_LAN_UV_1", "Регистрацията е потвърдена");
+define("NT_LAN_UV_2", "Потребителско ID: ");
+define("NT_LAN_UV_3", "Име за вход на потребителя: ");
+define("NT_LAN_UV_4", "Потребителско IP: ");
 
 define("NT_LAN_LI_1", "Логнат Потребител");
 
 define("NT_LAN_LO_1", "Потребител - Изход");
-define("NT_LAN_LO_2", " излезна от сайта");
+define("NT_LAN_LO_2", " излезе  от сайта");
 
-define("NT_LAN_FL_1", "Flood Ban");
-define("NT_LAN_FL_2", "IP адрес бан за flooding");
+define("NT_LAN_FL_1", "Забрана поради Flood");
+define("NT_LAN_FL_2", "Забрана на IP адрес за flooding");
 
 define("NT_LAN_SN_1", "Записана е новина");
 

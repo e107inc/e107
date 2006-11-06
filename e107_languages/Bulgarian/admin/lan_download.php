@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -121,7 +121,7 @@ define("DOWLAN_140", "Upload local images to e107_files/downloadimages to show t
 define("DOWLAN_141", "Location");
 define("DOWLAN_142", "Update Mirror");
 define("DOWLAN_143", "Create Mirror");
-define("DOWLAN_144", "No mirrors defined, go to mirror section to add them.");
+define("DOWLAN_144", "No mirrors defined in mirror section.");
 
 define("DOWLAN_145", "Download visible to");
 define("DOWLAN_146", "Custom Download-denial message or URL");
@@ -130,5 +130,7 @@ define("DOWLAN_146", "Custom Download-denial message or URL");
 define("DOWLAN_147", "Icon for empty category");
 define("DOWLAN_148", "Check to update datestamp to current time");
 define("DOWLAN_149", "Or click here to use an external file");
+
+define("DOWLAN_150", "Email admin when broken download reported");
 
 ?>

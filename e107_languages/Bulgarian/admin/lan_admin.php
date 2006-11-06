@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -36,80 +36,80 @@ define("ADLAN_25", "Управление на Файлове");
 define("ADLAN_26", "Категории Файлове");
 define("ADLAN_27", "Добавяне/Редакция/Изтриване на категории файлове");
 define("ADLAN_28", "Начално съобщение");
-define("ADLAN_29", "Съсавяне на начално съобщение");
-define("ADLAN_30", "Файлов менаджер");
+define("ADLAN_29", "Съставяне на начално съобщение");
+define("ADLAN_30", "Файлов мениджър");
 define("ADLAN_31", "Управление/Добавяне на файлове");
 define("ADLAN_32", "Добавени Новини");
-define("ADLAN_33", "Review user submitted news items");
+define("ADLAN_33", "Преглед на предложени от потребители новини");
 define("ADLAN_34", "Блокирани");
-define("ADLAN_35", "Ban visitors");
+define("ADLAN_35", "Блокирай посетители");
 define("ADLAN_36", "Потребители");
-define("ADLAN_37", "Moderate site members");
+define("ADLAN_37", "Контрол над потребителите на сайта");
 define("ADLAN_38", "Класове потребители");
-define("ADLAN_39", "Create/edit user classes");
-define("ADLAN_40", "Обновяване");
+define("ADLAN_39", "Създаване/Редакция потребителски класове");
+define("ADLAN_40", "Затваряне за Обновяване");
 define("ADLAN_41", "Затваряне на сайта за обновяване");
 define("ADLAN_42", "Съставяне на Менюта/Странници");
-define("ADLAN_43", "Create custom menu items");
-define("ADLAN_44", "База с данни");
-define("ADLAN_45", "Database utilities");
+define("ADLAN_43", "Създаване на потребителски страници / менюта");
+define("ADLAN_44", "База данни");
+define("ADLAN_45", "Инструменти за Базата данни");
 define("ADLAN_46", "Изход");
 define("ADLAN_47", "Привет");
 define("ADLAN_48", "Логнат като");
 define("ADLAN_49", "собственик на сайта");
 define("ADLAN_50", "достъп");
-define("ADLAN_51", "Please log in to gain access to administration area");
-define("ADLAN_52", "Admin Front Page");
-define("ADLAN_53", "Изход от Админ.зоната");
+define("ADLAN_51", "Моля логнете се за достъп до администрация");
+define("ADLAN_52", "Администрация - Начало");
+define("ADLAN_53", "Към сайта");
 define("ADLAN_54", "Банери");
-define("ADLAN_55", "Configure banners");
+define("ADLAN_55", "Конфигуриране на банери");
 define("ADLAN_56", "Чат");
-define("ADLAN_57", "Configure chatbox");
+define("ADLAN_57", "Конфигуриране на Чат");
 define("ADLAN_58", "Икони на Емоции");
-define("ADLAN_59", "Configure emoticons");
-define("ADLAN_60", "Първа странница");
-define("ADLAN_61", "Configure front page content");
+define("ADLAN_59", "Конфигуриране на емоции");
+define("ADLAN_60", "Входна странница");
+define("ADLAN_61", "Конфигуриране на съдържанието на входна страница");
 define("ADLAN_62", "Новини от други сайтове");
-define("ADLAN_63", "Configure news feeds");
+define("ADLAN_63", "Конфигуриране на новини от други сайтове");
 define("ADLAN_64", "Статистика и логове");
-define("ADLAN_65", "Log stats/counter etc");
+define("ADLAN_65", "Запазване на статистика/броячи и т.н.");
 define("ADLAN_66", "Мета тагове");
-define("ADLAN_67", "Add/Edit site meta tags");
+define("ADLAN_67", "Добавяне/Редакция на мета тагове за сайта");
 define("ADLAN_68", "PHP Информация");
-define("ADLAN_69", "PHPInfo page");
+define("ADLAN_69", "Страница с PHPInfo");
 define("ADLAN_70", "Анкети");
-define("ADLAN_71", "Add/Edit Polls");
-define("ADLAN_72", "Публично добавяне");
-define("ADLAN_73", "Configure public file uploads");
-define("ADLAN_74", "Cache");
-define("ADLAN_75", "Set cache status");
-define("ADLAN_77", "You have had a news item submitted - please click here to check.");
-define("ADLAN_78", "Допълнителни полета за потребителите");
-define("ADLAN_79", "Edit extended user fields");
+define("ADLAN_71", "Добавяне/Редакция на Анкети");
+define("ADLAN_72", "Публично качване на файл");
+define("ADLAN_73", "Конфигуриране на публично качване на файл");
+define("ADLAN_74", "Кеш");
+define("ADLAN_75", "Настройка на кеш статуса");
+define("ADLAN_77", "Имате предложени от потребители новини - кликнете тук за преглед");
+define("ADLAN_78", "Доп. потребителски полета");
+define("ADLAN_79", "Редакция на допълнителни полета за потребителите");
 
 
 define("ADLAN_86", "Паролата е грешна ");
-define("ADLAN_87", "Administrator name not found in database ");
-define("ADLAN_88", "Unable to login ");
-define("ADLAN_89", "Admin Name ");
-define("ADLAN_90", "Admin Password ");
+define("ADLAN_87", "Администратор с такова име не е намерен ");
+define("ADLAN_88", "Логването е невъзможно ");
+define("ADLAN_89", "Админ име ");
+define("ADLAN_90", "Админ парола ");
 define("ADLAN_91", "Логнат като");
-define("ADLAN_92", "Please log in to proceed to administration area ...");
-define("ADLAN_93", "Show Admin Functions");
-define("ADLAN_94", "Show Installed Plugins");
-define("ADLAN_95", "Plugin Management");
-define("ADLAN_96", "None");
-define("ADLAN_97", "Click here for FAQ");
-define("ADLAN_98", "Plugin Manager");
-define("ADLAN_99", "Install/upgrade etc plugins");
-define("ADLAN_100", "Theme Layout");
-define("ADLAN_101", "Template Creator");
-define("ADLAN_102", "It has been more than 30 days since you changed the main administrator password - ");
-define("ADLAN_103", "Click here to change it now");
-define("ADLAN_104", "Security");
+define("ADLAN_92", "Моля логнете се за да продължите към администрация ...");
+define("ADLAN_93", "Покажи Админ Функциите");
+define("ADLAN_94", "Покажи Инсталираните Модули");
+define("ADLAN_95", "Управление на Модулите");
+define("ADLAN_96", "Празно");
+define("ADLAN_97", "Кликни тук за FAQ");
+define("ADLAN_98", "Модул Мениджър");
+define("ADLAN_99", "Инсталиране/актуализиране и т.н. на модули");
+define("ADLAN_100", "Тема - изглед");
+define("ADLAN_101", "Създаване Шаблони");
+define("ADLAN_102", "Минали са повече от 30 дни от смяната на основната администраторска парола - ");
+define("ADLAN_103", "кликни тук за смяна на паролата");
+define("ADLAN_104", "Сигурност");
 
-define("ADLAN_105", "Изображения");
-define("ADLAN_106", "Настройки на Изображения");
+define("ADLAN_105", "Картинки");
+define("ADLAN_106", "Настройки на Картинките на сайта");
 
 define("ADLAN_107", "Непроверени добавени новини");
 define("ADLAN_108", "Непроверени добавени файлове");
@@ -126,57 +126,58 @@ define("ADLAN_118", "Изчисти лога");
 
 define("ADLAN_119", "Непроверени добавени линкове");
 
-define("ADLAN_120", "There is a database update available, please click button to install ...");
-define("ADLAN_121", "Install");
+define("ADLAN_120", "Има актуализация за базата данни, моля натиснете бутона за инсталиране ...");
+define("ADLAN_121", "Инсталирай");
 
 
 define("ADLAN_123", "Непроверени добавени статии");
 define("ADLAN_124", "Непроверени добавени рецензии");
 
-define("ADLAN_125", "Непроверени докладвани съобщения от форумаа");
+define("ADLAN_125", "Непроверени докладвани съобщения от форума");
 
-define("ADLAN_126", "Главни настройки");
+define("ADLAN_126", "Основни настройки");
 define("ADLAN_127", "Потребители");
 define("ADLAN_128", "Публикации");
-define("ADLAN_129", "Communication");
+define("ADLAN_129", "Комуникация");
 define("ADLAN_130", "Управление на файловете");
-define("ADLAN_131", "Other tools");
+define("ADLAN_131", "Други инструменти");
 
 define("ADLAN_132", "Езици");
-define("ADLAN_133", "default");
+define("ADLAN_133", "по подразбиране");
 
 define("ADLAN_134", "Статус");
 define("ADLAN_135", "Админ. Лог");
 
 define("ADLAN_136", "Имейл");
-define("ADLAN_137", "Email Settings And Mailout");
+define("ADLAN_137", "Имейл Настройки и изпращане не имейл");
 
-define("ADLAN_138", "Линкове на сайта");
-define("ADLAN_139", "Add/edit/delete links");
+define("ADLAN_138", "Линкове в сайта");
+define("ADLAN_139", "Добавяне/Редакция/Изтриване на линкове");
 
-define("ADLAN_140", "Управление на Изгледите");
-define("ADLAN_141", "Install / set themes etc");
+define("ADLAN_140", "Теми");
+define("ADLAN_141", "Инсталиране, настройка на теми и т.н.");
 
 define("ADLAN_142", "Търсене");
-define("ADLAN_143", "Search Configuration");
-define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
-define("ADLAN_145", "click here");
+define("ADLAN_143", "Конфигуриране за търсене на сайта");
+define("ADLAN_144", "Намирате се в опростен вариант на тази зона, за превключване към разширен вариант ");
+define("ADLAN_145", "кликнете тук");
 
-define("ADLAN_146", "Грешни опити за логване");
-define("ADLAN_147", "Файлов инспектор");
-define("ADLAN_148", "Scan site files");
+define("ADLAN_146", "Неуспешни опити за логване");
+define("ADLAN_147", "Файл инспектор");
+define("ADLAN_148", "Сканиране на файловете на сайта");
 
-define("ADLAN_149", "Осведомяване");
-define("ADLAN_150", "Admin Email Notifications");
+define("ADLAN_149", "Уведомяване");
+define("ADLAN_150", "Известяване по имейл на администратора");
 
-define("ADLAN_151", "Главна странница");
+define("ADLAN_151", "Начало");
+define("ADLAN_152", "Вкарай код");
 
 define('ADLAN_CL_1', 'Настройки');
 define('ADLAN_CL_2', 'Потребители');
 define('ADLAN_CL_3', 'Съдържание');
-define('ADLAN_CL_4', 'Coms');
-define('ADLAN_CL_5', 'Files');
-define('ADLAN_CL_6', 'Инстроменти');
+define('ADLAN_CL_4', 'Комуникации');
+define('ADLAN_CL_5', 'Файлове');
+define('ADLAN_CL_6', 'Инструменти');
 define('ADLAN_CL_7', 'Модули');
 define('ADLAN_CL_8', 'Документация');
 
@@ -188,55 +189,57 @@ define("ADLAN_LAT_4", "Добавени Рецензии");
 define("ADLAN_LAT_5", "Добавени Линкове");
 define("ADLAN_LAT_6", "Докладвани съобщения от Форума");
 define("ADLAN_LAT_7", "Добавени Файлове");
-define("ADLAN_LAT_8", "There are unmoderated administrator messages");
+define("ADLAN_LAT_8", "Има непрегледани съобщения за администраторите");
 
 // Common Terms
-define("LAN_EDIT","Edit");
-define("LAN_DELETE","Delete");
-define("LAN_CREATE","Create");
-define("LAN_UPDATE","Update");
-define("LAN_SAVE","Save");
-define("LAN_SAVED","Saved");
-define("LAN_SETSAVED","Your settings have been saved");
-define("LAN_ERROR","Error");
-define("LAN_CONFIRMDEL","Please confirm you wish to delete");
-define("LAN_OPTIONS","Options");
-define("LAN_PREFS","Preferences");
-define("LAN_DELETED","Successfully deleted");
-define("LAN_UPDATED","Successfully updated");
-define("LAN_CREATED","Successfully created");
-define("LAN_CREATED_FAILED","Creation Unsuccessful");
-define("LAN_DELETED_FAILED","Deletion Unsuccessful");
-define("LAN_UPDATED_FAILED","Update Unsuccessful");
+define("LAN_EDIT","Редакция");
+define("LAN_DELETE","Изтриване");
+define("LAN_CREATE","Създаване");
+define("LAN_UPDATE","Обновяване");
+define("LAN_SAVE","Записване");
+define("LAN_SAVED","Записано");
+define("LAN_SETSAVED","Настройките бяха успешно записани");
+define("LAN_ERROR","Грешка");
+define("LAN_CONFIRMDEL","Моля потвърдете изтриването");
+define("LAN_OPTIONS","Опции");
+define("LAN_PREFS","Настройки");
+define("LAN_DELETED","Успешно изтрито");
+define("LAN_UPDATED","Успешно актуализирано");
+define("LAN_CREATED","Успешно създадено");
+define("LAN_CREATED_FAILED","Създаването е неуспешно");
+define("LAN_DELETED_FAILED","Изтриването е неуспешно");
+define("LAN_UPDATED_FAILED","Обновяването е неуспешно");
+define("LAN_NO_CHANGE","Не бяха направени промени.");
+define("LAN_TRY_AGAIN","Моля опитайте отново.");
 
-define("LAN_RESET","Reset");
-define("LAN_CLEAR","Clear");
+define("LAN_RESET","Изчисти");
+define("LAN_CLEAR","Изчисти");
 define("LAN_OK","OK");
 
-define("LAN_PRESET","Preset");
-define("LAN_PRESET_SAVED","Preset saved successfully");
-define("LAN_PRESET_DELETED","Preset successfully deleted");
-define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
-define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the folder first.");
-define("LAN_DATE","Date");
-define("LAN_TIME","Time");
-define("LAN_YES","Yes");
-define("LAN_NO","No");
-define("LAN_EMPTY","There are no entries in the database yet");
-define("LAN_EXISTING","Existing Entries");
+define("LAN_PRESET","Пресет");
+define("LAN_PRESET_SAVED","Пресета е записан успешно");
+define("LAN_PRESET_DELETED","Пресета е изтрит успешно");
+define("LAN_PRESET_CONFIRMDEL","Сигурен ли сте, че искате изтриването на този пресет?");
+define("LAN_NOTWRITABLE"," няма права за писане, необходимо е изпълнение на CHMOD 777 за тази директория.");
+define("LAN_DATE","Дата");
+define("LAN_TIME","Част");
+define("LAN_YES","Да");
+define("LAN_NO","Не");
+define("LAN_EMPTY","Все още няма записи в базата");
+define("LAN_EXISTING","Съществуващи записи");
 
-define("LAN_CANCEL","Cancel");
-define("LAN_CONFDELETE","Confirm Delete");
-define("LAN_PLUGIN","Plugin");
-define("LAN_ORDER","Order");
+define("LAN_CANCEL","Отказ");
+define("LAN_CONFDELETE","Потвърждаване за изтриване");
+define("LAN_PLUGIN","Модул");
+define("LAN_ORDER","Подреждане");
 
-define("LAN_SELECT","Select ...");
-define("LAN_ADMIN","Admin");
-define("LAN_DISPLAYOPT", "Edit Display Options");
-define("LAN_GOPAGE", "Go to page:");
-define("LAN_DATESTAMP","Datestamp");
-define("LAN_OPTIONAL", "optional");
-define("LAN_INACTIVE","Inactive");
+define("LAN_SELECT","Избор ...");
+define("LAN_ADMIN","Администратор");
+define("LAN_DISPLAYOPT", "Редакция на опции за визуализация");
+define("LAN_GOPAGE", "Отиди на страница:");
+define("LAN_DATESTAMP","Дата");
+define("LAN_OPTIONAL", "незадължително");
+define("LAN_INACTIVE","Неактивно");
 
 
 ?>

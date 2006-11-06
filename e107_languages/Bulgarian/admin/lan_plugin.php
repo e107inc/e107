@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Инсталирай");
 define("EPL_ADLAN_1", "Деинсталирай");
 define("EPL_ADLAN_2", "Are you certain you want to uninstall this plugin?");
-define("EPL_ADLAN_3", "Порвърди деинсталирането");
+define("EPL_ADLAN_3", "Потвърди деинсталирането");
 define("EPL_ADLAN_4", "Деинсталирането отказано.");
 define("EPL_ADLAN_5", "The install procedure will create new preference entries.");
 define("EPL_ADLAN_6", "... then click here to begin install procedure");
@@ -72,4 +72,27 @@ define("EPL_ADLAN_46", "RSS settings successfully created");
 define("EPL_ADLAN_47", "RSS settings successfully deleted");
 define("EPL_ADLAN_48", "Unable to successfully create RSS settings");
 define("EPL_ADLAN_49", "Unable to successfully delete RSS settings");
+
+define("EPL_ADLAN_50", "Comments successfully deleted");
+
+define("EPL_ADLAN_51", "No");
+define("EPL_ADLAN_52", "Yes");
+define("EPL_ADLAN_53", "Directory not writable");
+define("EPL_ADLAN_54", "Please select the option for uninstalling the plugin:");
+define("EPL_ADLAN_55", "Uninstall plugin");
+define("EPL_ADLAN_56", "Yes");
+define("EPL_ADLAN_57", "Delete plugin tables");
+define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail. Tables will have to be manually deleted to remove.");
+define("EPL_ADLAN_59", "Delete plugin files");
+define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
+define("EPL_ADLAN_61", "Confirm uninstall");
+define("EPL_ADLAN_62", "Cancel uninstall");
+define("EPL_ADLAN_63", "Uninstall:");
+define("EPL_ADLAN_64", "");
+define("EPL_ADLAN_65", "");
+define("EPL_ADLAN_66", "");
+define("EPL_ADLAN_67", "");
+define("EPL_ADLAN_68", "");
+define("EPL_ADLAN_69", "");
+
 ?>

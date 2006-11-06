@@ -8,12 +8,12 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Downloads");
+define("PAGE_NAME", "Файлове");
 
 define("LAN_dl_1", "(Ограничен)");
 define("LAN_dl_2", "Все още няма качени файлове");

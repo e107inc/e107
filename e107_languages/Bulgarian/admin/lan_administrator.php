@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:08:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("ADMSLAN_0", "New user/admin entry created for");
-define("ADMSLAN_1", "now has admin status.");
-define("ADMSLAN_2", "updated in database.");
+define("ADMSLAN_0", "Нов потребител/админ е създаден");
+define("ADMSLAN_1", "сега има статус на администратор.");
+define("ADMSLAN_2", "обновено в базата данни.");
 define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
 define("ADMSLAN_4", "Continue");
 define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
