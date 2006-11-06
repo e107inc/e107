@@ -18,7 +18,7 @@ define("NWSLAN_15", "Reacties");
 define("NWSLAN_16", "Geactiveerd");
 define("NWSLAN_17", "Gedeactiveerd");
 define("NWSLAN_18", "Toestaan om te reageren op dit bericht");
-define("NWSLAN_19", "Activateren");
+define("NWSLAN_19", "Activeren");
 define("NWSLAN_20", "Niet invullen om auto-activatie uit te zetten");
 define("NWSLAN_21", "Activeren tussen");
 define("NWSLAN_22", "Zichtbaarheid");
