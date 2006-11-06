@@ -1,11 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright T? 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/integrity_check/languages/Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:30 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -36,6 +40,7 @@ define("Integ_23", "Провери само инсталираните теми"
 define("Integ_24", "Администрация - Начало");
 define("Integ_25", "Излез от Администрация");
 define("Integ_26", "Зареди сайта с нормален header");
+define("Integ_27", "USE THE FILE INSPECTOR FOR CHECKING CORE FILES");
 
 // define("Integ_29", "<br /><br /><b>*<u>CRC-ERRORS:</u></b><br />These are checksum errors and there are two possible reasons for this:<br />-You changed something within the mentioned file, so it isn't longer the same as the original.<br />-The mentioned file is corrupt, you should reupload it!");
 // language file should contain NO html.

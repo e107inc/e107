@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_newforumposts_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:22 $
 |     $Author: secretr $
 |     $Превод:
 |     $e107BG Team
@@ -30,5 +30,6 @@ define("NFP_7", "Постфикс за дълги съобщения?");
 define("NFP_8", "Показване на заглавите на темата в менюто?");
 define("NFP_9", "Обнови настройките");
 define("NFP_10", "Настройка на меню Ново от Форума");
+define("NFP_11", "Публикувано от: ");
 
 ?>

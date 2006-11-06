@@ -1,15 +1,16 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright ┬⌐ 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_forum_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:22 $
 |     $Author: secretr $
-|     $Превод:
-|     $e107BG Team 
-|     $http://e107bg.org
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_5", "Анкетата е изтрита.");
@@ -36,5 +37,12 @@ define("FORLAN_25", "Премести темата");
 define("FORLAN_26", "Отговора е изтрит");
     
 define("FORLAN_27", "преместен");
-    
+
+define("FORLAN_28", "Не преименувай заглавието на темата");
+define("FORLAN_29", "Добави");
+define("FORLAN_30", "към заглавието");
+define("FORLAN_31", "Преименувай на:");
+define("FORLAN_32", "Опции за преименуване на заглавието на темата:");
+
+	
 ?>

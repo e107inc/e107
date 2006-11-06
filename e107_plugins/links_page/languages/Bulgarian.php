@@ -1,15 +1,18 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright T? 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:46 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-if(!defined("PAGE_NAME")){define("PAGE_NAME", "Линкове");}
 
 define("LCLAN_PLUGIN_LAN_1", "Сайт Линкове (Линкове)");
 define("LCLAN_PLUGIN_LAN_2", "Страница за показване на външни Уеб Сайт линкове");

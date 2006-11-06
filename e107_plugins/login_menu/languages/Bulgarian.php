@@ -1,18 +1,18 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright T? 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8 
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:41 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:54:24 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -41,8 +41,8 @@ define("LOGIN_MENU_L21", "мнения във форума");
 define("LOGIN_MENU_L22", "нов регистриран");
 define("LOGIN_MENU_L23", "нови регистрирани");
 define("LOGIN_MENU_L24", "Покажи всичко ново");
-define("LOGIN_MENU_L25", "От последната Ви визита има");
-define("LOGIN_MENU_L26", "не");
+define("LOGIN_MENU_L25", "От последното ви посещение има");
+define("LOGIN_MENU_L26", "Няма");
 define("LOGIN_MENU_L27", "и");
 define("LOGIN_MENU_L28", "Вход");
 
@@ -50,7 +50,7 @@ define("LOGIN_MENU_L29", "нова статия");
 define("LOGIN_MENU_L30", "нови статии");
 
 // New config options
-define('LOGIN_MENU_L31', 'Покажи новите Новини');
+define('LOGIN_MENU_L31', 'Покажи последни Новини');
 define('LOGIN_MENU_L32', 'Покажи новите Статии');
 define('LOGIN_MENU_L33', 'Покажи новите съобщения в Раговори');
 define('LOGIN_MENU_L34', 'Покажи новите Коментари');
@@ -58,5 +58,7 @@ define('LOGIN_MENU_L35', 'Покажи новите съобщения във Ф
 define('LOGIN_MENU_L36', 'Покажи новите Регистрирани');
 define('LOGIN_MENU_L37', 'Обнови настройките');
 define('LOGIN_MENU_L38', 'Настройките са обновени');
+
+define('LOGIN_MENU_L39', 'Админ Изход');
 
 ?>

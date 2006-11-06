@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Bulgarian/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:52:48 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -106,12 +106,12 @@ define("CONTENT_LAN_19", "търсене");
 define("CONTENT_LAN_20", "резултати от търсене в публикации");
 define("CONTENT_LAN_21", "все още няма публикации.");
 define("CONTENT_LAN_22", "тип съдържание");
-define("CONTENT_LAN_23", "Съществуващи публикации");
-define("CONTENT_LAN_24", "обобщено");
+define("CONTENT_LAN_23", "Настоящи публикации");
+define("CONTENT_LAN_24", "Намирате се:");
 define("CONTENT_LAN_25", "Категории публикации");
 define("CONTENT_LAN_26", "Категория публикации");
 define("CONTENT_LAN_27", "подкатегории");
-define("CONTENT_LAN_28", "по-горни подкатегории");
+define("CONTENT_LAN_28", "Подкатегории");
 define("CONTENT_LAN_29", "неизвестно");
 define("CONTENT_LAN_30", "публикация");
 define("CONTENT_LAN_31", "публикации");
@@ -124,9 +124,9 @@ define("CONTENT_LAN_37", "все още няма коментари");
 define("CONTENT_LAN_38", "Най-високо оценена публикация");
 define("CONTENT_LAN_39", "публикации на автора");
 define("CONTENT_LAN_40", "подробности за автора");
-define("CONTENT_LAN_41", "прикрепени");
-define("CONTENT_LAN_42", "файл");
-define("CONTENT_LAN_43", "файлове");
+define("CONTENT_LAN_41", "");
+define("CONTENT_LAN_42", "прикрепен файл");
+define("CONTENT_LAN_43", "прикрепени файлове");
 define("CONTENT_LAN_44", "преглеждано:");
 define("CONTENT_LAN_45", "присъдени точки на автора:");
 define("CONTENT_LAN_46", "архив");
@@ -139,11 +139,11 @@ define("CONTENT_LAN_52", "не е намерен този автор");
 define("CONTENT_LAN_53", "публикация");
 define("CONTENT_LAN_54", "публикации");
 define("CONTENT_LAN_55", "последна публикация от");
-define("CONTENT_LAN_56", "преглед по");
+define("CONTENT_LAN_56", "Преглед на:");
 define("CONTENT_LAN_57", "коментари:");
 define("CONTENT_LAN_58", "Начало");
 define("CONTENT_LAN_59", "Публикации");
-define("CONTENT_LAN_60", "последен");
+define("CONTENT_LAN_60", "Последни");
 define("CONTENT_LAN_61", "преглеждания");
 define("CONTENT_LAN_62", "виж всички категории");
 define("CONTENT_LAN_63", "виж всички автори");
@@ -161,10 +161,10 @@ define("CONTENT_LAN_74", "");
 define("CONTENT_LAN_75", "добавяне на публикация");
 define("CONTENT_LAN_76", "създаване на pdf файл за");
 define("CONTENT_LAN_77", "търсене в публикации");
-define("CONTENT_LAN_78", "Начало");
-define("CONTENT_LAN_79", "страница");
-define("CONTENT_LAN_80", "последни публикации: ");
-define("CONTENT_LAN_81", "категории");
+define("CONTENT_LAN_78", "Без заглавие");
+define("CONTENT_LAN_79", "Страница");
+define("CONTENT_LAN_80", "Последни публикации: ");
+define("CONTENT_LAN_81", "Категории");
 define("CONTENT_LAN_82", "все още няма нищо в архива");
 define("CONTENT_LAN_83", "архив");
 define("CONTENT_LAN_84", "Архив на Публикации");

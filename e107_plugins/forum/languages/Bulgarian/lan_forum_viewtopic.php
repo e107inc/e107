@@ -1,15 +1,16 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright ┬⌐ 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:22 $
 |     $Author: secretr $
-|     $Превод:
-|     $e107BG Team
-|     $http://e107bg.org
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Форум");
@@ -84,9 +85,10 @@ define("LAN_431", "Публикувайте тази тема: rss 0.92");
 define("LAN_432", "Публикувайте тази тема: rss 2.0");
 define("LAN_433", "Публикувайте тази тема: RDF");
     
-define("FORLAN_101", "Прати на приятел тази Тема");
-define("FORLAN_102", "Принтирай");
+define("FORLAN_101", "Прати Темата на приятел");
+define("FORLAN_102", "Разпечатай");
 define('FORLAN_103', '[изтрит потребител]');
 define('FORLAN_104', 'Темата не е намерена');
+define("FORLAN_HIDDEN", "HIDDEN - LOGIN AND REPLY TO REVEAL");
 
 ?>

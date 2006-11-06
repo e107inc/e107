@@ -1,31 +1,31 @@
 <?php
-define(SLAN_0, "Íÿìà ñúâïàäåíèÿ.");//98
-define(SLAN_1, "Íîâîñòè");//99
-define(SLAN_2, "Êîìåíòàðè");//100
-define(SLAN_3, "Ñòàòèè");//101
-define(SLAN_4, "×àò");//102
-define(SLAN_5, "Ëèíêîâå");//103
-define(SLAN_6, "Ôîðóì");//104
-define(SLAN_7, "Ðåöåíçèè");//190
-define(SLAN_8, "Ïóáëèêàöèè");
+define(SLAN_0, "ÐÑÐ¼Ð° ÑÑŠÐ²Ð¿Ð°Ð´ÐµÐ½Ð¸Ñ.");//98
+define(SLAN_1, "ÐÐ¾Ð²Ð¾ÑÑ‚Ð¸");//99
+define(SLAN_2, "ÐšÐ¾Ð¼ÐµÐ½Ñ‚Ð°Ñ€Ð¸");//100
+define(SLAN_3, "Ð¡Ñ‚Ð°Ñ‚Ð¸Ð¸");//101
+define(SLAN_4, "Ð§Ð°Ñ‚");//102
+define(SLAN_5, "Ð›Ð¸Ð½ÐºÐ¾Ð²Ðµ");//103
+define(SLAN_6, "Ð¤Ð¾Ñ€ÑƒÐ¼");//104
+define(SLAN_7, "Ð ÐµÑ†ÐµÐ½Ð·Ð¸Ð¸");//190
+define(SLAN_8, "ÐŸÑƒÐ±Ð»Ð¸ÐºÐ°Ñ†Ð¸Ð¸");
 define(SLAN_9, "Registered members");//140
-define(SLAN_10, "×åñòî Çàäàâàíè Âúïðîñè");
-define(SLAN_11, "Âñè÷êè êàòåãîðèè");
-define(SLAN_12, "Òúðñåíå íà ");
-define(SLAN_13, "Íîâèíè");
-define(SLAN_14, "Êîìåíòàðè");
-define(SLAN_15, "Ñòàòèè");
-define(SLAN_16, "Ðåöåíçèè");
-define(SLAN_17, "×àò");
-define(SLAN_18, "Ëèíêîâå");
-define(SLAN_19, "Ôîðóì");
-define(SLAN_20, "Ïîòðåáèòåëè");
+define(SLAN_10, "Ð§ÐµÑÑ‚Ð¾ Ð—Ð°Ð´Ð°Ð²Ð°Ð½Ð¸ Ð’ÑŠÐ¿Ñ€Ð¾ÑÐ¸");
+define(SLAN_11, "Ð’ÑÐ¸Ñ‡ÐºÐ¸ ÐºÐ°Ñ‚ÐµÐ³Ð¾Ñ€Ð¸Ð¸");
+define(SLAN_12, "Ð¢ÑŠÑ€ÑÐµÐ½Ðµ Ð½Ð° ");
+define(SLAN_13, "ÐÐ¾Ð²Ð¸Ð½Ð¸");
+define(SLAN_14, "ÐšÐ¾Ð¼ÐµÐ½Ñ‚Ð°Ñ€Ð¸");
+define(SLAN_15, "Ð¡Ñ‚Ð°Ñ‚Ð¸Ð¸");
+define(SLAN_16, "Ð ÐµÑ†ÐµÐ½Ð·Ð¸Ð¸");
+define(SLAN_17, "Ð§Ð°Ñ‚");
+define(SLAN_18, "Ð›Ð¸Ð½ÐºÐ¾Ð²Ðµ");
+define(SLAN_19, "Ð¤Ð¾Ñ€ÑƒÐ¼");
+define(SLAN_20, "ÐŸÐ¾Ñ‚Ñ€ÐµÐ±Ð¸Ñ‚ÐµÐ»Ð¸");
 define(SLAN_21, "FAQ");
-define(SLAN_22, "Êàëåíäàð");
-define(SLAN_23, "Òúðñåíå");//180
-define(SLAN_24, "Òúðñåíå ");
-define(SLAN_25, "Òúðñåíå ");
-define(SLAN_26, " :: ñúâïàäåíèÿ: ");
+define(SLAN_22, "ÐšÐ°Ð»ÐµÐ½Ð´Ð°Ñ€");
+define(SLAN_23, "Ð¢ÑŠÑ€ÑÐµÐ½Ðµ");//180
+define(SLAN_24, "Ð¢ÑŠÑ€ÑÐµÐ½Ðµ ");
+define(SLAN_25, "Ð¢ÑŠÑ€ÑÐµÐ½Ðµ ");
+define(SLAN_26, " :: ÑÑŠÐ²Ð¿Ð°Ð´ÐµÐ½Ð¸Ñ: ");
 
 
 

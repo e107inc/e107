@@ -1,18 +1,18 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     В©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright T? 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8 
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:41 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:54:46 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -80,5 +80,9 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
 	<br /><br />For a good list of available feeds, see <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> or <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Newsfeed help");
 define("NFLAN_44", "click to view");
+
+define("NFLAN_45", "Number of items to show in menu");
+define("NFLAN_46", "Number of items to show on main page");
+define("NFLAN_47", "0 or blank to show all");
 
 ?>

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:14 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -21,24 +21,24 @@ define("FBLAN_01", "Feature Box");
 define("FBLAN_02", "This plugin allows you to display a box above your news items with features / whatever you like in it. The messages can either be revolved randomly or dynamically faded.");
 define("FBLAN_03", "Configure feature box");
 define("FBLAN_04", "Feature Box plugin has been successfully installed. To add messages and configure, return to the main admin page and click on the feature box icon in the plugin section.");
-define("FBLAN_05", "No feature box messages defined yet");
-define("FBLAN_06", "Existing Feature Box Messages");
-define("FBLAN_07", "Title / Caption");
-define("FBLAN_08", "Message text");
-define("FBLAN_09", "Visibility of message");
-define("FBLAN_10", "Create Feature Box Message");
-define("FBLAN_11", "Update Feature Box Message");
-define("FBLAN_12", "Mode");
-define("FBLAN_13", "Randomly revolve messages");
-define("FBLAN_14", "Show this message only");
-define("FBLAN_15", "Message added to database.");
-define("FBLAN_16", "Message updated in database.");
-define("FBLAN_17", "Field(s) left blank");
-define("FBLAN_18", "Feature Box Message deleted");
-define("FBLAN_19", "Options");
-define("FBLAN_20", "Edit");
-define("FBLAN_21", "Delete");
-define("FBLAN_22", "Render type");
+define("FBLAN_05", "Все още няма съобщения");
+define("FBLAN_06", "Съществуващи съобщения");
+define("FBLAN_07", "Заглавие");
+define("FBLAN_08", "Текст на съобщението");
+define("FBLAN_09", "Да се вижда от");
+define("FBLAN_10", "Създаване на съобщение");
+define("FBLAN_11", "Обновяване на съобщението");
+define("FBLAN_12", "Показване");
+define("FBLAN_13", "Произволно въртящи се съобщения");
+define("FBLAN_14", "Показване само на това съобщение");
+define("FBLAN_15", "Съобщението е добавено в базата данни.");
+define("FBLAN_16", "Съобщението е обновено в базата данни.");
+define("FBLAN_17", "Задължително поле е оставено празно");
+define("FBLAN_18", "Съобщението е изтрито");
+define("FBLAN_19", "Възможности");
+define("FBLAN_20", "Редактиране");
+define("FBLAN_21", "Изтриване");
+define("FBLAN_22", "Позиция");
 define("FBLAN_23", "In theme box");
 define("FBLAN_24", "Plain");
 define("FBLAN_25", "Template");

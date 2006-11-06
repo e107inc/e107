@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_forum_post.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:22 $
 |     $Author: secretr $
 |     $Превод:
 |     $e107BG Team
@@ -51,7 +51,7 @@ define("LAN_100", "Заглавие");
 define("LAN_101", "Последни ");
 define("LAN_102", " отговора");
 define("LAN_103", "Review complete thread. (Will open a new window.)");
-define("LAN_133", "Благодатя");
+define("LAN_133", "Благодаря");
 define("LAN_174", "Включи се");
 define("LAN_175", "Вход");
 define("LAN_212", "Забравена парола?");

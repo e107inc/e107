@@ -1,15 +1,16 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright ┬⌐ 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:32:40 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 21:53:22 $
 |     $Author: secretr $
-|     $Превод: 
-|     $e107BG Team
-|     $http://e107bg.org
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -135,7 +136,7 @@ define("FORLAN_115", "Tick this to allow users to change their Custom Title");
 define("FORLAN_116", "Reported Posts");
 define("FORLAN_117", "This will delete the record of the reported post. Not the post itself.");
 define("FORLAN_118", "Reported post deleted");
-define("FORLAN_119", "Clicking links will open forum in a new window.");
+//define("FORLAN_119", "Clicking links will open forum in a new window.");
 define("FORLAN_120", "Tick this to allow users to change their Custom Title");
 define("FORLAN_121", "No reported posts");
 define("FORLAN_122", "Click here to email admin when someone reports a forum post");
@@ -146,8 +147,6 @@ define("WMGLAN_3", "Rules for Administrators");
 define("WMGLAN_4", "Submit");
 define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
-define("FORLAN_124", "Links in new window");
-define("FORLAN_125", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
 define("FORLAN_126", "Show Tooltips");
 define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
 define("FORLAN_128", "Length of tooltip");
@@ -193,10 +192,19 @@ define("FORLAN_166", "Forum Tools");
 define("FORLAN_167", "Counts updated for forum");
 define("FORLAN_168", "Lastpost info updated for forum");
 define("FORLAN_169", "User forum counts updated");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
+define("FORLAN_170", "Reports");
+define("FORLAN_171", "Report on forum post");
+define("FORLAN_172", "Delete This Report");
+define("FORLAN_173", "Thread title");
+define("FORLAN_174", "Reported by user");
+define("FORLAN_175", "Report submitted");
+define("FORLAN_176", "Report");
 
+define("FORLAN_177", "email nofication ON by default");
+define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
 
+define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for subforums only.  The forum theme must support this option also.)");
+define("FORLAN_180", "Confirm delete operation");
+define("FORLAN_181", "Confirm Delete");
 
 ?>
