@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-11-05 03:50:19 $
+|     $Revision: 1.21 $
+|     $Date: 2006-11-06 10:46:23 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -621,15 +621,15 @@ function is_utf8($string) {
 		return TRUE;
 	}
 
-	return preg_match('%^(?:
-         [\x09\x0A\x0D\x20-\x7E]            # ASCII
-       | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-       |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-       | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-       |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-       |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-       | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-       |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+    return preg_match('%^(?:
+         [\x09\x0A\x0D\x20-\x7E]
+       | [\xC2-\xDF][\x80-\xBF]
+       |  \xE0[\xA0-\xBF][\x80-\xBF]
+       | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}
+       |  \xED[\x80-\x9F][\x80-\xBF]
+       |  \xF0[\x90-\xBF][\x80-\xBF]{2}
+       | [\xF1-\xF3][\x80-\xBF]{3}
+       |  \xF4[\x80-\x8F][\x80-\xBF]{2}     
 	)*$%xs', $string);
 
 }

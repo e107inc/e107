@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-11-02 22:17:36 $
+|     $Revision: 1.37 $
+|     $Date: 2006-11-06 10:46:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -452,9 +452,12 @@ function language_adminmenu() {
 		$var['db']['link'] = e_SELF."?db";
 	}
 
-	$var['tools']['text'] = ADLAN_CL_6;
-	$var['tools']['link'] = e_SELF."?tools";
-
+	$lcnt = explode(",",e_LANLIST);
+    if(count($lcnt) > 1)
+	{
+		$var['tools']['text'] = ADLAN_CL_6;
+		$var['tools']['link'] = e_SELF."?tools";
+    }
 
 	show_admin_menu(ADLAN_132, $action, $var);
 }
