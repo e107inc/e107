@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.317 $
-|     $Date: 2006-11-04 15:45:49 $
+|     $Revision: 1.318 $
+|     $Date: 2006-11-06 09:16:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -739,13 +739,16 @@ $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
 if(!defined("THEME")){
 	// any plugin file starting with 'admin_' is assumed to use admin theme
+	// any plugin file in a folder called admin/ is assumed to use admin theme.
+	// any file that specifies $eplug_admin = TRUE;
 	// this test: (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0)
 	// alternate test: match ANY file starting with 'admin_'...
 	//   strpos(e_PAGE, "admin_") === 0
 	//
 	// here we TEST the theme (see below for deciding what theme to USE)
 	//
-	if ((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0) || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+
+	if ((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && (strpos(e_PAGE,"admin_") === 0 || strpos(e_SELF, "admin/") !== FALSE)) || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 
 		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 			checkvalidtheme($pref['sitetheme']);
