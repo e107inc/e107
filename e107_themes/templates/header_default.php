@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2006-10-22 03:43:22 $
+|     $Revision: 1.94 $
+|     $Date: 2006-11-06 10:05:43 $
 |     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -45,6 +45,18 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+
+// --- Load plugin Meta files and eplug_ before others --------
+foreach($pref['e_meta_list'] as $val)
+{
+	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	{
+		echo "\n\n<!-- $val meta -->\n";
+		require_once(e_PLUGIN.$val."/e_meta.php");
+	}
+}
+
+
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 
@@ -65,6 +77,7 @@ function render_meta($type)
 	}
 }
 
+echo "\n\n<!-- Core Meta Tags -->\n";
 echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
 echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
 echo render_meta('copyright');
@@ -141,16 +154,6 @@ if (isset($theme_js_php) && $theme_js_php) {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
-}
-
-// --- Load plugin Meta files and eplug_ --------
-foreach($pref['e_meta_list'] as $val)
-{
-	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
-	{
-		echo "\n\n<!-- $val meta -->\n";
-		require_once(e_PLUGIN.$val."/e_meta.php");
-	}
 }
 
 if (isset($eplug_css) || isset($eplug_js)) { echo "\n<!-- eplug_css and eplug_js -->\n"; }
