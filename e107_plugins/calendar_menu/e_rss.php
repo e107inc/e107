@@ -1,5 +1,7 @@
 <?php
 
+// Reflects updates to CVS version 1.3 made 29.10.2006
+
 if (!defined('e107_INIT')) { exit; }
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
@@ -7,17 +9,18 @@ $feed['name']		= EC_ADLAN_A12;
 $feed['url']		= 'calendar';			//the identifier for the rss feed url
 $feed['topic_id']	= '';					//the topic_id, empty on default (to select a certain category)
 $feed['path']		= 'calendar_menu';		//this is the plugin path location
-$feed['text']		= EC_ADLAN_A127;
+$feed['text']		= EC_ADLAN_A157;
 $feed['class']		= '0';
 $feed['limit']		= '9';
 //##### ------------------------------------------------------------------------------------
 
+require_once('ecal_class.php');
+$ecal_class = new ecal_class;
 
 //##### create rss data, return as array $eplug_rss_data -----------------------------------
-$todayarray		= getdate();
-$current_day	= $todayarray['mday'];
-$current_month	= $todayarray['mon'];
-$current_year	= $todayarray['year'];
+$current_day	= $ecal_class->cal_date['mday'];
+$current_month	= $ecal_class->cal_date['mon'];
+$current_year	= $ecal_class->cal_date['year'];
 $current		= mktime(0,0,0,$current_month, $current_day, $current_year);
 
 $qry = "

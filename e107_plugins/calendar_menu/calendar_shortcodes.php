@@ -1,9 +1,27 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
+|     $Revision: 1.12 $
+|     $Date: 2006-11-06 22:30:22 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 // 13.02.06 - EVENT_CONTACT modified to allow BBCode.
 // 27.02.06 - EVENT_HEADING_DATE added for better display
 // 25.03.06 - EVENT_DISPLAY_STYLE expands events for single day
 // 26.03.06 - CALENDAR_CALENDAR_DAY_EVENT_HEADING displays events expanded
 // 17.04.06 - SHOWEVENT_HEADING modified to reflect current CVS - as released 0.7.4
+// 20.10.06 - NAV_BUT_SUBSCRIPTION only available to users
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 $calendar_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
@@ -68,7 +86,8 @@ SC_END
 
 SC_BEGIN NAV_BUT_SUBSCRIPTION
 	global $NAV_BUT_SUBSCRIPTION, $pref;
-	if ($pref['eventpost_asubs']>0) {
+	if (($pref['eventpost_asubs']>0) && USER)
+	{
 		$NAV_BUT_SUBSCRIPTION = "<input class='button' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' />";
 	}
 	return $NAV_BUT_SUBSCRIPTION;
@@ -85,9 +104,9 @@ SC_BEGIN NAV_BUT_ENTEREVENT
 SC_END
 
 SC_BEGIN NAV_LINKCURRENTMONTH
-	global $NAV_LINKCURRENTMONTH, $month, $nowmonth, $year, $nowyear, $current;
+	global $NAV_LINKCURRENTMONTH, $month, $nowmonth, $year, $nowyear, $current, $ds;
 	$NAV_LINKCURRENTMONTH = "";
-	if ($month != $nowmonth || $year != $nowyear){
+	if ($month != $nowmonth || $year != $nowyear || $ds == 'one'){
 		$NAV_LINKCURRENTMONTH = "<input class='button' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."?$current'\" />";
 	}
 	return $NAV_LINKCURRENTMONTH;
@@ -184,7 +203,8 @@ SC_END
 SC_BEGIN EVENTLIST_CAPTION
 	global $EVENTLIST_CAPTION, $ds, $months, $selected_mon, $dayslo, $selected_day, $monthstart;
 	if ($ds == 'one'){
-		$EVENTLIST_CAPTION = EC_LAN_111.$months[$selected_mon-1]." ".$dayslo[$selected_day-1];
+//		$EVENTLIST_CAPTION = EC_LAN_111.$months[$selected_mon-1]." ".$dayslo[$selected_day-1];
+		$EVENTLIST_CAPTION = EC_LAN_111.$months[$selected_mon-1]." ".$selected_day;
 	} elseif ($ds != 'event'){
 		$EVENTLIST_CAPTION = EC_LAN_112.$months[date("m", $monthstart)-1];
 	}
@@ -275,12 +295,9 @@ SC_END
 SC_BEGIN EVENT_HEADING_DATE
 	global $EVENT_HEADING_DATE, $thisevent;
 	// Combination of EVENT_DATE_START and EVENT_HEADING
-	if ($thisevent['event_allday'] == 0)
+	if (($thisevent['event_allday'] == 0) && ($thisevent['event_start'] > $thisevent['event_end']))
 	{
-	  if ($thisevent['event_start'] > $thisevent['event_end'])
-	  {
-	    $thisevent['event_end'] = $thisevent['event_start'];
-	  }
+	  $thisevent['event_end'] = $thisevent['event_start'];
 	}
 	$startds	= cal_landate($thisevent['event_start'], $thisevent['event_recurring'], $thisevent['event_allday']);
 	if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']))
@@ -296,16 +313,18 @@ SC_END
 
 SC_BEGIN EVENT_DATE_END
 	global $EVENT_DATE_END, $thisevent;
-	if ($thisevent['event_allday'] == 0){
-	if ($thisevent['event_start'] > $thisevent['event_end']){
-	$thisevent['event_end'] = $thisevent['event_start'];
-	}
+	if (($thisevent['event_allday'] == 0) && ($thisevent['event_start'] > $thisevent['event_end']))
+	{
+	  $thisevent['event_end'] = $thisevent['event_start'];
 	}
 	$startds	= cal_landate($thisevent['event_start'], $thisevent['event_recurring'], $thisevent['event_allday']);
 	$endds		= cal_landate($thisevent['event_end'], $thisevent['event_recurring'], $thisevent['event_allday']);
-	if ($thisevent['event_allday'] || $startds == $endds){
+	if ($thisevent['event_allday'] || $startds == $endds)
+	{
 		$EVENT_DATE_END = "";
-	}else{
+	}
+	else
+	{
 		$EVENT_DATE_END = "<b>".EC_LAN_69."</b> ".$endds;
 	}
 	return $EVENT_DATE_END;
@@ -344,7 +363,6 @@ SC_END
 SC_BEGIN EVENT_LOCATION
 	global $EVENT_LOCATION, $thisevent;
 	if ($thisevent['event_location'] == ""){
-		//$EVENT_LOCATION = EC_LAN_38;
 		$EVENT_LOCATION = "";
 	}else{
 		$EVENT_LOCATION = $thisevent['event_location'];
@@ -375,7 +393,7 @@ SC_END
 
 SC_BEGIN EVENT_THREAD
 	global $EVENT_THREAD, $thisevent;
-	return ($thisevent['event_thread'] ? "<a href='{$thisevent['event_thread']}'><img src='".e_PLUGIN."forum/images/".IMODE."/e.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /> ".EC_LAN_39."</a>" : "");
+	return (isset($thisevent['event_thread']) && ($thisevent['event_thread'] != "")) ? "<a href='{$thisevent['event_thread']}'><img src='".e_PLUGIN."forum/images/".IMODE."/e.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /> ".EC_LAN_39."</a>" : "";
 SC_END
 
 SC_BEGIN EVENT_OPTIONS
@@ -385,6 +403,57 @@ SC_BEGIN EVENT_OPTIONS
 	}
 	return $EVENT_OPTIONS;
 SC_END
+
+
+SC_BEGIN NEXT_EVENT_TIME
+  global $NEXT_EVENT_TIME, $event_start_time, $cal_row;
+  if ($cal_row['event_allday'] != 1) return $event_start_time; else return '';
+SC_END
+
+SC_BEGIN NEXT_EVENT_DATE
+  global $cal_row;
+  return strftime("%d %B",$cal_row['event_start']);
+SC_END
+
+SC_BEGIN NEXT_EVENT_TITLE
+  global $pref, $cal_row;
+  if (($pref['eventpost_namelink'] == '2') && (isset($cal_row['event_thread']) && ($cal_row['event_thread'] != "")))
+	  {
+	    $fe_event_title = "<a href='".$cal_row['event_thread']."'>";
+	  }
+	  else
+	  {
+	    $fe_event_title = "<a href='".e_PLUGIN."calendar_menu/event.php?".$cal_row['event_start'].".event.".$cal_row['event_id']."'>";
+	  }
+	$fe_event_title .= $cal_row['event_title']."</a>";
+  return $fe_event_title;
+SC_END
+
+SC_BEGIN NEXT_EVENT_ICON
+  global $pref, $cal_row, $ecal_dir;
+  if ($pref['eventpost_showcaticon'] == 1)
+  {
+	if($cal_row['event_cat_icon'] && file_exists($ecal_dir."images/".$cal_row['event_cat_icon']))
+	{
+	  $fe_icon_file = $ecal_dir."images/".$cal_row['event_cat_icon'];
+	}
+	else
+	{
+	  $fe_icon_file = THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif");
+	}
+	return "<img style='border:0' src='".$fe_icon_file."' alt='' />";
+  }
+  else
+  {
+    return "";
+  }
+SC_END
+
+SC_BEGIN NEXT_EVENT_GAP
+  global $cal_totev;
+  if ($cal_totev) return "<br /><br />"; else return "";
+SC_END
+
 
 */
 ?>

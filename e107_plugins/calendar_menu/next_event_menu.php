@@ -11,28 +11,42 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/next_event_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-09-02 21:41:18 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-06 22:30:22 $
 |     $Author: e107coders $
 |
 | 12.07.06 - Initial release for beta testing
 | 26.07.06 - First release
 | 02.08.06 - Optional display of category icon added
 | 03.08.06 - Height/width of category icons removed
+|------------------------> To here in CVS
+| 04.10.06 - Handles optional link to forum URL
+|			- uses calendar time options and other helpers from class object
 |
-| Note: Recurring events nominally supported, but not tested. Query looks OK.
 | The 'days ahead' value must be less than 59 for this to work reliably
+|
+| 30.10.06 - Templating for this menu
+| 03.11.06 - Reordering of file access to address a few issues
+| 06.11.06 - Uses different template and shortcode file (same underlying code)
 +----------------------------------------------------------------------------+
 */
 
+
 if (!defined('e107_INIT')) { exit; }
+
+global $ecal_dir, $tp;
+$ecal_dir	= e_PLUGIN . "calendar_menu/";
+
+require_once($ecal_dir."ecal_class.php");
+$ecal_class = new ecal_class;
+
+include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
 
 // Values defined through admin pages
 $menu_title = $pref['eventpost_menuheading'];
 $days_ahead = $pref['eventpost_daysforward'];
 $show_count = $pref['eventpost_numevents'];
 $show_recurring = $pref['eventpost_checkrecur'];
-$show_cat_icon = $pref['eventpost_showcaticon'];
 $link_in_heading = $pref['eventpost_linkheader'];
 
 // Now set defaults for anything not defined
@@ -40,38 +54,32 @@ if (!$menu_title) $menu_title = EC_LAN_140;
 if (!$days_ahead) $days_ahead = 30;		// Number of days ahead to go
 if (!$show_count) $show_count = 3;		// Number of events to show
 if (!$show_recurring) $show_recurring = 1;	// Zero to exclude recurring events
-if (!$show_cat_icon) $show_cat_icon = 0;		// Zero to turn off
 if (!$link_in_heading) $link_in_heading = 0;	// Zero for simple heading, 1 to have clickable link
 
 
-$ec_dir		= e_PLUGIN . "calendar_menu/";
-// We don't actually need language file
-//$lan_file	= $ec_dir . "languages/" . e_LANGUAGE . ".php";
-//require_once((file_exists($lan_file) ? $lan_file : $ec_dir. "languages/English.php"));
+require($ecal_dir."calendar_shortcodes.php");
+if (is_readable(THEME."calendar_template.php")) 
+{  // Needs to be require in case second
+  require(THEME."calendar_template.php");
+}
+else 
+{
+  require($ecal_dir."calendar_template.php");
+}
 
-$time_now = time();
-$site_time = $time_now + ($pref['time_offset'] * 3600);			// Check sign of offset
+$site_time = $ecal_class->cal_timedate;
 $end_time = $site_time + (86400 * $days_ahead);
 
-if (USER)
-{
-    $cal_class = e_UC_PUBLIC.", ".e_UC_MEMBER.", " . USERCLASS;
-} 
-else
-{
-    $cal_class = e_UC_PUBLIC.", ".e_UC_GUEST;
-} 
 
 // Build up query bit by bit
-
-    $cal_qry = "SELECT e.event_id, e.event_rec_m, e.event_rec_y, e.event_start, e.event_title, e.event_recurring, e.event_allday, ec.*
+    $cal_qry = "SELECT e.event_id, e.event_rec_m, e.event_rec_y, e.event_start, e.event_thread, e.event_title, e.event_recurring, e.event_allday, ec.*
 	FROM #event as e LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
 	WHERE (((e.event_start >= {$site_time} AND e.event_start < {$end_time}))";
 
 if ($show_recurring > 0)
 {  // This won't work properly under some circumstances if $days_ahead is greater than the number of days in the current month plus next month.
    // If that matters, need another test on event_rec_y (which is actually the month) - plus the calculation to generate the values
-	$cal_datearray		= getdate($site_time);
+	$cal_datearray		= $ecal_class->cal_date;
 	$first_day			= $cal_datearray['mday'];
 	$first_month		= $cal_datearray['mon'];
 
@@ -100,49 +108,30 @@ if ($show_recurring > 0)
 	}
 }
 
-$cal_qry .= ')';
-
-if (!check_class($pref['eventpost_super']))
-{
-	$cal_qry .= " AND find_in_set(ec.event_cat_class,'" . $cal_class . "')";
-}
+$cal_qry .= ')'.$ecal_class->extra_query;	   // Puts in class filter if not calendar admin
 
 if (isset($pref['eventpost_fe_set']))
 {
    $cal_qry .= " AND find_in_set(ec.event_cat_id,'".$pref['eventpost_fe_set']."')";
 }
 	
-	$cal_qry .= " order by e.event_start LIMIT {$show_count}";
-
+$cal_qry .= " order by e.event_start LIMIT {$show_count}";
 
 $cal_totev = 0;
 $cal_text = '';
+$cal_row = array();
+global $cal_row, $event_start_time, $cal_totev;
 
 $cal_totev = $sql->db_Select_gen($cal_qry);
+
 
 if ($cal_totev > 0)
 {
     while ($cal_row = $sql->db_Fetch())
     {
-	  if ($show_cat_icon == 1)
-	  {
-	    if($cal_row['event_cat_icon'] && file_exists($ec_dir."images/".$cal_row['event_cat_icon']))
-		{
-		  $cal_text .= "<img style='border:0' src='".$ec_dir."images/".$cal_row['event_cat_icon']."' alt='' />";
-		}
-		else
-		{
-		  $cal_text .= "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
-		}
-	  }
-	  if ($cal_row['event_allday'] == 1)
-	    $cal_text .= strftime("%d %B",$cal_row['event_start']);
-	  else
-	    $cal_text .= strftime("%d %B, %H%M",$cal_row['event_start']);
-	  $cal_text .= "<br />
-<a href=".e_PLUGIN."calendar_menu/event.php?".$cal_row['event_start'].".event.".$cal_row['event_id'].">
-<strong>".$cal_row['event_title']."</strong></a><br />
-";	
+	  $cal_totev --;    // Can use this to modify inter-event gap
+	  $event_start_time = $ecal_class->time_string($cal_row['event_start']);
+	  $cal_text .= $tp->parseTemplate($EVENT_CAL_FE_LINE,FALSE,$calendar_shortcodes);
 	}
 }
 else
