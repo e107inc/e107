@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.14 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2006-10-29 01:00:21 $
+|     $Revision: 1.15 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2006-11-06 22:30:22 $
 |     $Author: e107coders $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added
+| 29.09.06 - prefs, db field added for next batch of mods
+| 03.10.06 - forced subs fields changed
+| 04.10.06 - db field order changed to avoid confusing update routines
+| 29.10.06 - Language mods to reflect CVS update to V1.14
 +----------------------------------------------------------------------------+
 */
 
@@ -25,18 +29,11 @@ if (!defined('e107_INIT')) { exit; }
 // Plugin info -------------------------------------------------------------------------------------------------------
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 @require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
-
-$eplug_name = "EC_ADLAN_1";
+$eplug_name = EC_ADLAN_1;
 $eplug_version = "3.6";
 $eplug_author = "jalist / cameron / McFly / Barry / Lisa_ / steved";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
-
-$ecalSQL = new db;
-$ecalSQL->db_Select("plugin", "plugin_version", "plugin_name='Event Calendar' AND plugin_installflag > 0");
-list($ecalVer) = $ecalSQL->db_Fetch();
-$ecalVer = preg_replace("/[a-zA-z\s]/", '', $ecalVer);
-
 $eplug_description = EC_LAN_107;
 $eplug_compatible = "e107v7";
 $eplug_readme = "readme.rtf";
@@ -46,7 +43,7 @@ $eplug_compliant = TRUE;
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "calendar_menu";
 
-// Mane of menu item for plugin ----------------------------------------------------------------------------------
+// Name of menu item for plugin ----------------------------------------------------------------------------------
 $eplug_menu_name = "calendar_menu";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
@@ -57,29 +54,39 @@ $eplug_icon = $eplug_folder."/images/calendar_32.png";
 $eplug_icon_small = $eplug_folder."/images/calendar_16.png";
 $eplug_caption = EC_LAN_81; // "Configure Event Calendar";
 
+$ecalSQL = new db;
+$ecalSQL->db_Select("plugin", "plugin_version", "plugin_name='Event Calendar' AND plugin_installflag > 0");
+list($ecalVer) = $ecalSQL->db_Fetch();
+$ecalVer = preg_replace("/[a-zA-z\s]/", '', $ecalVer);
+
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
 "eventpost_admin" => 0,
-"eventpost_headercss" => "forumheader",
-"eventpost_daycss" => "forumheader3",
-"eventpost_todaycss" => "indent",
-"eventpost_addcat" => 0,
+"eventpost_adminlog" => 0,
+"eventpost_showeventcount" => 1,
 "eventpost_forum" => 1,
-"eventpost_evtoday" => "indent",
-"eventpost_mailsubject" => EC_ADLAN_A12,
-"eventpost_mailfrom" => EC_ADLAN_A121,
-"eventpost_mailaddress" => EC_ADLAN_A122,
-"eventpost_lenday" => 1,
-"eventpost_asubs" => 1,
+"eventpost_super" => 0,
+"eventpost_dateformat" => 1,
+"eventpost_fivemins" => 0,
 "eventpost_weekstart" => "sun",
+"eventpost_lenday" => 1,
+"eventpost_caltime" => 0,
+"eventpost_datedisplay" => 1,
+"eventpost_timedisplay" => 0,
+"eventpost_timecustom" => "%H%M",
+"eventpost_mailsubject" => EC_ADLAN_12,
+"eventpost_mailfrom" => EC_ADLAN_A151,
+"eventpost_mailaddress" => EC_ADLAN_A152,
+"eventpost_asubs" => 1,
+"eventpost_emaillog" => 1,
 "eventpost_menuheading" => EC_LAN_140,
 "eventpost_daysforward" => 30,
 "eventpost_numevents" => 3,
 "eventpost_checkrecur" => 1,
 "eventpost_linkheader" => 0,
+"eventpost_fe_set" => "",
 "eventpost_showcaticon" => 0,
-"eventpost_emaillog" => 1
- );
+"eventpost_namelink" => 1 );
 
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array("event","event_cat","event_subs" );
@@ -110,7 +117,6 @@ $eplug_tables = array(
 	event_cat_icon varchar(100) NOT NULL default '',
 	event_cat_class int(10) unsigned NOT NULL default '0',
 	event_cat_subs tinyint(3) unsigned NOT NULL default '0',
-	event_cat_force tinyint(3) unsigned NOT NULL default '0',
 	event_cat_ahead tinyint(3) unsigned NOT NULL default '0',
 	event_cat_msg1 text,
 	event_cat_msg2 text,
@@ -119,6 +125,8 @@ $eplug_tables = array(
 	event_cat_today int(10) unsigned NOT NULL default '0',
 	event_cat_lastupdate int(10) unsigned NOT NULL default '0',
 	event_cat_addclass int(10) unsigned NOT NULL default '0',
+	event_cat_description text,
+	event_cat_force_class int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_cat_id)
 	) TYPE=MyISAM;"
 	,
@@ -131,11 +139,11 @@ $eplug_tables = array(
 
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
-$ec_dir = "{e_PLUGIN}calendar_menu/";
+$ec_dir = e_PLUGIN."calendar_menu/";
 $eplug_link = TRUE;
 $eplug_link_name = EC_LAN_83; // "Calendar";
 $eplug_link_url = "".$ec_dir."calendar.php";
-$eplug_link_perms = "Everyone"; // Everyone, Guest, Member, Admin
+$eplug_link_perms = "Everyone"; // Everyone, Guest, Member, Admin 
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
@@ -150,7 +158,7 @@ $upgrade_alter_tables = array();
 $version_notes = "";
 
 
-if (!function_exists(create_ec_log_dir))
+if (!function_exists('create_ec_log_dir'))
 {
 function create_ec_log_dir()
 {
@@ -162,25 +170,25 @@ $cal_log_dir = e_PLUGIN.$eplug_folder.'/log';
   {  // Need to create log directory
     if (!mkdir($cal_log_dir,0666))
 	{
-	  $response = "Could not create log directory<br />";
+	  $response = EC_ADLAN_A158."<br />";
 	}
   }
   if (!is_dir($cal_log_dir))
   {
-    $response .= EC_ADLAN_A123;
+    $response .= EC_ADLAN_A153;
 	return $response;
   }
-
+  
 // Now check directory permissions
   if (!is_writable($cal_log_dir."/"))
   {
     if (!chmod($cal_log_dir,0666))
 	{
-	  $response = EC_ADLAN_A124."<br />";
+	  $response = EC_ADLAN_A154."<br />";
 	}
     if (!is_writable($cal_log_dir."/"))
     {
-      $response .= EC_ADLAN_A125;
+      $response .= EC_ADLAN_A155;
     }
   }
   return $response;
@@ -211,27 +219,48 @@ $upgrade_alter_tables = array(
 	PRIMARY KEY  (event_subid)
 	) TYPE=MyISAM;"
 );
-$version_notes .= "<u>3.5</u><br />".EC_ADLAN_A126."<br />";
+$version_notes .= "<u>3.5</u><br />".EC_ADLAN_A156."<br />";
 }
-// To version 3.6 - just need to create log directory and a few preferences
+// To version 3.6 - fair number of tweaks overall
 if ($ecalVer < 3.6)
 {
+$upgrade_alter_tables = array(
+"ALTER TABLE ".MPREFIX."event_cat DROP event_cat_force",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_description text",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force_class int(10) unsigned NOT NULL default '0'"
+);
   $verprefs = array(
+	"eventpost_adminlog" => 0,
+	"eventpost_showeventcount" => 1,
 	"eventpost_menuheading" => EC_LAN_140,
 	"eventpost_daysforward" => 30,
 	"eventpost_numevents" => 3,
 	"eventpost_checkrecur" => 1,
 	"eventpost_linkheader" => 0,
 	"eventpost_showcaticon" => 0,
-	"eventpost_emaillog" => 1
-	);
-	$upgrade_add_prefs = $verPrefs;
-	$version_notes .= "<u>3.6</u><br />".create_ec_log_dir()."<br />
+	"eventpost_dateformat" => 1,
+	"eventpost_fivemins" => 0,
+	"eventpost_emaillog" => 1,
+	"eventpost_caltime" => 0,
+	"eventpost_datedisplay" => 1,
+	"eventpost_timedisplay" => 0,
+	"eventpost_timecustom" => "%H%M",
+	"eventpost_fe_set" => "",
+	"eventpost_namelink" => 1	);
+	$upgrade_add_prefs .= $verprefs;
+	$version_notes .= "<u>3.6</u><br />".EC_ADLAN_A156."<br />".create_ec_log_dir()."<br />
 	                   <a href='".e_PLUGIN_ABS.$eplug_folder."/".$eplug_conffile."'>Configure</a><br />";
+					   
+  $upgrade_remove_prefs = array(
+    "eventpost_addcat",
+	"eventpost_evtoday",
+	"eventpost_headercss",
+	"eventpost_daycss",
+	"eventpost_todaycss"
+	);
 }
 
 $eplug_upgrade_done = EC_LAN_108."<br />".$version_notes;
-
 
 
 ?>

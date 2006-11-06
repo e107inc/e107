@@ -2,17 +2,21 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-	if(!$calendar_install = $sql -> db_Select("plugin", "*", "plugin_path = 'calendar_menu' AND plugin_installflag = '1' ")){
+	if(!$calendar_install = $sql -> db_Select("plugin", "*", "plugin_path = 'calendar_menu' AND plugin_installflag = '1' "))
+	{
 		return;
 	}
 
 	$LIST_CAPTION = $arr[0];
 	$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
-	$todayarray		= getdate();
-	$current_day	= $todayarray['mday'];
-	$current_month	= $todayarray['mon'];
-	$current_year	= $todayarray['year'];
+require_once('ecal_class.php');
+$ecal_class = new ecal_class;
+
+$current_day	= $ecal_class->cal_date['mday'];
+$current_month	= $ecal_class->cal_date['mon'];
+$current_year	= $ecal_class->cal_date['year'];
+
 	$current		= mktime(0,0,0,$current_month, $current_day, $current_year);
 
 	if($mode == "new_page" || $mode == "new_menu" ){

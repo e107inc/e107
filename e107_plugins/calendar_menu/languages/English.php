@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dun.an 2001-2002
+|     ?Steve Dun.an 2001-2002
 |     http://e107.org
 |     jali.@e107.org
 |
@@ -11,12 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-31 21:16:29 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-06 22:30:23 $
 |     $Author: e107coders $
+|
+| Various mods by steved:
+|	a) To reflect updates
+|	b) To reflect CVS update to version 1.14 made 29.10.06
 +----------------------------------------------------------------------------+
 */
-
+	
+	
 define('EC_ADLAN_1', "Event Calendar");
 define('EC_ADLAN_2', "Configure Event Calendar");
 define('EC_INSTALL', "Install Event Calendar");
@@ -54,39 +59,7 @@ define('EC_LAN_DAY_28', "28");
 define('EC_LAN_DAY_29', "29");
 define('EC_LAN_DAY_30', "30");
 define('EC_LAN_DAY_31', "31");
-/*
-define('EC_LAN_DAY_1', "1st");
-define('EC_LAN_DAY_2', "2nd");
-define('EC_LAN_DAY_3', "3rd");
-define('EC_LAN_DAY_4', "4th");
-define('EC_LAN_DAY_5', "5th");
-define('EC_LAN_DAY_6', "6th");
-define('EC_LAN_DAY_7', "7th");
-define('EC_LAN_DAY_8', "8th");
-define('EC_LAN_DAY_9', "9th");
-define('EC_LAN_DAY_10', "10th");
-define('EC_LAN_DAY_11', "11th");
-define('EC_LAN_DAY_12', "12th");
-define('EC_LAN_DAY_13', "13th");
-define('EC_LAN_DAY_14', "14th");
-define('EC_LAN_DAY_15', "15th");
-define('EC_LAN_DAY_16', "16th");
-define('EC_LAN_DAY_17', "17th");
-define('EC_LAN_DAY_18', "18th");
-define('EC_LAN_DAY_19', "19th");
-define('EC_LAN_DAY_20', "20th");
-define('EC_LAN_DAY_21', "21st");
-define('EC_LAN_DAY_22', "22nd");
-define('EC_LAN_DAY_23', "23rd");
-define('EC_LAN_DAY_24', "24th");
-define('EC_LAN_DAY_25', "25th");
-define('EC_LAN_DAY_26', "26th");
-define('EC_LAN_DAY_27', "27th");
-define('EC_LAN_DAY_28', "28th");
-define('EC_LAN_DAY_29', "29th");
-define('EC_LAN_DAY_30', "30th");
-define('EC_LAN_DAY_31', "31st");
-*/
+
 define('EC_LAN_0', "January");
 define('EC_LAN_1', "February");
 define('EC_LAN_2', "March");
@@ -198,48 +171,48 @@ define('EC_LAN_80', "Event List");
 define('EC_LAN_81', "Configure Event Calendar");
 define('EC_LAN_82', "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.");
 define('EC_LAN_83', "Calendar");
+	
+//define('EC_LAN_84', "Css element to use for day header");
+//define('EC_LAN_85', "Default is 'forumheader'");
+//define('EC_LAN_86', "Css element to use for day list");
+//define('EC_LAN_87', "Default is 'forumheader3'");
+//define('EC_LAN_88', "Css element to use for selected day");
+//define('EC_LAN_89', "Default is 'indent'");
 
-define('EC_LAN_84', "CSS element to use for day header");
-define('EC_LAN_85', "Default is 'forumheader'");
-define('EC_LAN_86', "CSS element to use for day list");
-define('EC_LAN_87', "Default is 'forumheader3'");
-define('EC_LAN_88', "CSS element to use for selected day");
-define('EC_LAN_89', "Default is 'indent'");
-
-//  *BK* Corrections to hard coding by Barry
-define('EC_LAN_90', "Choose");
-define('EC_LAN_91', "None defined");
-define('EC_LAN_92', "View Category");
-define('EC_LAN_93', "View Events List");
-define('EC_LAN_94', "Enter New Event");
-define('EC_LAN_95', "Today");
-define('EC_LAN_96', "View Calendar");
-define('EC_LAN_97', "All");
-define('EC_LAN_98', "Required fields left blank");
-define('EC_LAN_99', "Event must either be an all day event or finish after it starts");
-define('EC_LAN_100', "Categories can be added by");
-define('EC_LAN_101', "Set to inactive to disable on the new event form.");
-define('EC_LAN_102', "Show link to forum thread");
-define('EC_LAN_103', "On new event entry form.");
-define('EC_LAN_104', "Calendar Administrator Class");
-define('EC_LAN_105', "* Required Field");
-define('EC_LAN_106', "Events");
-define('EC_LAN_107', "This plugin is a fully featured event calendar with calendar menu.");
-define('EC_LAN_108', "Event Calendar Upgraded.  Now check the new options.");
-define('EC_LAN_109', "Unable to delete this event.");
-define('EC_LAN_110', "Event Number ");
-define('EC_LAN_111', "All the events on ");
-define('EC_LAN_112', "All the Events in ");
+//  *BK* Corrections to hard coding by Barry 
+define('EC_LAN_90', "Choose");	
+define('EC_LAN_91', "None defined");	
+define('EC_LAN_92', "View Category");		
+define('EC_LAN_93', "View Events List");		
+define('EC_LAN_94', "Enter New Event");			
+define('EC_LAN_95', "Today");	
+define('EC_LAN_96', "View Calendar");	
+define('EC_LAN_97', "All");		
+define('EC_LAN_98', "Required fields left blank");		
+define('EC_LAN_99', "Event must either be an all day event or finish after it starts");			
+//define('EC_LAN_100', "Categories can be added by");			
+//define('EC_LAN_101', "Set to inactive to disable on the new event form.");	
+define('EC_LAN_102', "Show link to 'more information' with events");
+//define('EC_LAN_103', "On new event entry form.");	
+define('EC_LAN_104', "Calendar Administrator Class");		
+define('EC_LAN_105', "* Required Field");		
+define('EC_LAN_106', "Events");		
+define('EC_LAN_107', "This plugin is a fully featured event calendar with calendar menu.");		
+define('EC_LAN_108', "Event Calendar Upgraded.  See the 'readme.pdf' file for detailed information.");	
+define('EC_LAN_109', "Unable to delete this event.");	
+define('EC_LAN_110', "Event Number ");	
+define('EC_LAN_111', "All the events on ");	
+define('EC_LAN_112', "All the Events in ");	
 define('EC_LAN_113', "Event form already submitted.");
 define('EC_LAN_114', "Week starts with:");
 define('EC_LAN_115', "Sunday");
 define('EC_LAN_116', "Monday");
-define('EC_LAN_117', "Length of day names (characters)");
-define('EC_LAN_118', "Date format in calendar header.");
+define('EC_LAN_117', "Length of daynames (characters)");
+define('EC_LAN_118', "Date format in calendar header:");
 define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");
-define('EC_LAN_121', "Show Calendar");
-define('EC_LAN_122', "CSS element to show events on this day (menu)");
+define('EC_LAN_121', "Show Calendar");	
+//define('EC_LAN_122', "Css element to show events on this day (menu)");	
 define('EC_LAN_123', "Subscriptions");
 define('EC_LAN_124', "Calendar Subscriptions");
 define('EC_LAN_125', "Categories available for subscription");
@@ -252,10 +225,14 @@ define('EC_LAN_131', "Return");
 define('EC_LAN_132', "Expand details");
 define('EC_LAN_133', "[read more]");
 define('EC_LAN_134', "You have to provide a category name");
+define('EC_LAN_135', "Event");
+define('EC_LAN_136', "Category Description");
 
 // Added 12.07.06 for next_event_menu.php
 define('EC_LAN_140', "Forthcoming Events");
 define('EC_LAN_141', "No forthcoming events");
+define('EC_LAN_142', "Only registered and logged in users can subscribe to events");
+define('EC_LAN_143', "Facility not available");
 
 
 define('EC_ADLAN_A10', "Configuration");
@@ -289,7 +266,7 @@ define('EC_ADLAN_A59', "Category is in use. Can not delete.");
 
 define('EC_ADLAN_A80', "Visible to");
 define('EC_ADLAN_A81', "Allow subscription");
-define('EC_ADLAN_A82', "Force notification to this class");
+define('EC_ADLAN_A82', "Forced notification class");
 define('EC_ADLAN_A83', "Days ahead to notify of event");
 define('EC_ADLAN_A84', "Advanced message");
 define('EC_ADLAN_A85', "Message on the day");
@@ -302,9 +279,9 @@ define('EC_ADLAN_A91', "Email Subject");
 define('EC_ADLAN_A92', "Email from (name)");
 define('EC_ADLAN_A93', "Email from email address");
 define('EC_ADLAN_A94', "Add new event class");
-define('EC_ADLAN_A95', "Enable subscriptions");
-define('EC_ADLAN_A96', "Disabling this removes the subscriptions button and overrides the category subscription setting.");
-define('EC_ADLAN_A97', "If set to force subscriptions this category will not be displayed in the available subscription list for the user.");
+define('EC_ADLAN_A95', "Enable manual subscriptions");
+define('EC_ADLAN_A96', "Disabling this removes the subscriptions button and overrides the category manual subscription setting.");
+//define('EC_ADLAN_A97', "If set to force subscriptions this category will not be displayed in the available subscription list for the user.");
 
 // Added from here 12.07.06 for forthcoming events and mailout upgrades
 define('EC_ADLAN_A100', "Forthcoming Events");
@@ -330,14 +307,45 @@ define('EC_ADLAN_A117', "Message on the day or the previous day");
 define('EC_ADLAN_A118', "Categories to display");
 define('EC_ADLAN_A119', "No categories defined, or error reading database");
 define('EC_ADLAN_A120', "Show category icon in menu");
+define('EC_ADLAN_A121', "Category Description");
+define('EC_ADLAN_A122', "Calendar time reference");
+define('EC_ADLAN_A123', "Calendar time format");
+define('EC_ADLAN_A124', "Current server time: ");
+define('EC_ADLAN_A125', "Current site time: ");
+define('EC_ADLAN_A126', "Current user time: ");
+define('EC_ADLAN_A127', "Determines time display format for event calendar.");
+define('EC_ADLAN_A128', "Custom time uses the format in the box on the right");
+define('EC_ADLAN_A129', '"Site Time" uses the offset defined in preferences');
+define('EC_ADLAN_A130', "Event name is link to:");
+define('EC_ADLAN_A131', "Calendar Event");
+define('EC_ADLAN_A132', "Source Info URL");
+define('EC_ADLAN_A133', "Date format for event entry: ");
+define('EC_ADLAN_A134', "Level of logging to main admin log:");
+define('EC_ADLAN_A135', "Edit/delete");
+define('EC_ADLAN_A136', "All changes");
+define('EC_ADLAN_A137', "Can cover additions, updates to and deletions from the event list");
+define('EC_ADLAN_A138', "Event start/end times on 5-minute boundaries");
+define('EC_ADLAN_A139', "(Reduces number of entries in drop-down list)");
+define('EC_ADLAN_A140', "Show number of events for this month in Calendar Menu");
+define('EC_ADLAN_A141', "Maintenance");
+define('EC_ADLAN_A142', "Remove past events ending more than x months ago");
+define('EC_ADLAN_A143', "timed from beginning of current month");
+define('EC_ADLAN_A144', "Event Calendar Maintenance");
+define('EC_ADLAN_A145', "Delete old entries");
+define('EC_ADLAN_A146', "Events older than ");
+define('EC_ADLAN_A147', " deleted");
+define('EC_ADLAN_A148', "Parameter error - nothing deleted");
+define('EC_ADLAN_A149', "No old events to delete, or delete of past events failed");
+define('EC_ADLAN_A150', "Confirm delete events older than ");
 
-define('EC_ADLAN_A121', "e107 Web Site");
-define('EC_ADLAN_A122', "calendar@yoursite.com");
+define('EC_ADLAN_A151', "e107 Web Site");
+define('EC_ADLAN_A152', "calendar@yoursite.com");
+define('EC_ADLAN_A153', "Log directory must be created manually - create a subdirectory 'log' off your event calendar plugin directory, with '666' access rights");
+define('EC_ADLAN_A154', "Could not change log directory permissions");
+define('EC_ADLAN_A155', "Log directory permissions may require manual update to 0666 or 0766, although depending on your server setup they may work");
+define('EC_ADLAN_A156', "Database upgraded");
+define('EC_ADLAN_A157', "this is the rss feed for the calendar entries");
+define('EC_ADLAN_A158', "Could not create log directory");
 
-define('EC_ADLAN_A123', "Log directory must be created manually - create a subdirectory 'log' off your event calendar plugin directory, with '666' access rights");
-define('EC_ADLAN_A124', "Could not change log directory permissions");
-define('EC_ADLAN_A125', "Log directory permissions may require manual update to 0666 or 0766, although depending on your server setup they may work");
-define('EC_ADLAN_A126', "Database upgraded");
-define('EC_ADLAN_A127', "this is the rss feed for the calendar entries");
 
 ?>
