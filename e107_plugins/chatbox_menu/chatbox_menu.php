@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2006-10-21 11:21:40 $
-|     $Author: mrpete $
+|     $Revision: 1.69 $
+|     $Date: 2006-11-06 10:00:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -192,6 +192,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			else
 			{
 				$cb_nick = $tp -> toHTML($cb_nick);
+				$cb_nick = str_replace("Anonymous", LAN_ANONYMOUS, $cb_nick);
 			}
 
 			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");

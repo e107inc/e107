@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-10-13 11:11:05 $
-|     $Author: sweetas $
+|     $Revision: 1.19 $
+|     $Date: 2006-11-06 10:00:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -38,6 +38,7 @@ if (isset($comrow['user_id']) && $comrow['user_id']) {
 }else{
 	$comrow['user_id'] = 0;
 	$USERNAME = preg_replace("/[0-9]+\./", '', $comrow['comment_author']);
+	$USERNAME = str_replace("Anonymous", LAN_ANONYMOUS, $USERNAME);
 }
 return $USERNAME;
 SC_END
