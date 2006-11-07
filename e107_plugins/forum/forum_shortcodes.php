@@ -31,7 +31,9 @@ SC_END
 	
 SC_BEGIN PRIVMESSAGE
 global $post_info, $tp;
-return $tp->parseTemplate("{SENDPM={$post_info['user_id']}}");
+if($post_info['user_id'] > 0){
+	return $tp->parseTemplate("{SENDPM={$post_info['user_id']}}");
+}
 SC_END
 	
 SC_BEGIN AVATAR
