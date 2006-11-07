@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2006-10-27 02:40:14 $
-|     $Author: e107coders $
+|     $Revision: 1.86 $
+|     $Date: 2006-11-07 20:16:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -44,7 +44,6 @@ require_once("auth.php");
 
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
-
 
 $rs = new form;
 
@@ -125,7 +124,8 @@ if (isset($_POST['update_options'])) {
 	$pref['profile_comments'] = $_POST['profile_comments'];
 	$pref['track_online'] = $_POST['track_online'];
 	$pref['force_userupdate'] = $_POST['force_userupdate'];
-	$pref['memberlist_access'] = $_POST['memberlist_access'];
+	unset($pref['memberlist_access']);
+//	$pref['memberlist_access'] = $_POST['memberlist_access'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
@@ -766,6 +766,7 @@ class users{
 
 	function show_prefs() {
 		global $ns, $pref;
+		$pref['memberlist_access'] = varset($pref['memberlist_access'], e_UC_MEMBER);
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
