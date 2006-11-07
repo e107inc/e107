@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2006-11-07 14:17:16 $
-|     $Author: mrpete $
+|     $Revision: 1.97 $
+|     $Date: 2006-11-07 17:01:16 $
+|     $Author: mcfly_e107 $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -18,7 +18,7 @@ define("ADMIN_AREA",FALSE);
 $sql->db_Mark_Time('(Header Top)');
 
 //
-// *** Code sequence for headers ***
+// z*** Code sequence for headers ***
 // IMPORTANT: These items are in a carefully constructed order. DO NOT REARRANGE
 // without checking with experienced devs! Various subtle things WILL break.
 //
@@ -74,11 +74,12 @@ if (!function_exists("parseheader")) {
 header("Content-type: text/html; charset=".CHARSET, true);
 
 
-echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-
 //
 // C: Send start of HTML
 //
+
+echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+
 
 <html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
