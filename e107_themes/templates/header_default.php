@@ -6,19 +6,51 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2006-11-06 14:19:23 $
-|     $Author: lisa_ $
+|     $Revision: 1.96 $
+|     $Date: 2006-11-07 14:17:16 $
+|     $Author: mrpete $
 +-----------------------------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 define("USER_AREA",TRUE);
 define("ADMIN_AREA",FALSE);
+$sql->db_Mark_Time('(Header Top)');
 
+//
+// *** Code sequence for headers ***
+// IMPORTANT: These items are in a carefully constructed order. DO NOT REARRANGE
+// without checking with experienced devs! Various subtle things WILL break.
+//
+// We realize this is a bit (!) of a mess and hope to make further cleanups in a future release.
+//
+// A: Define themable header parsing
+// B: Send HTTP headers that come before any html
+// C: Send start of HTML
+// D: Send JS
+// E: Send CSS
+// F: Send Meta Tags and Icon links
+// G: Send final theme headers (theme_head() function)
+// H: Generate JS for image preloading (setup for onload)
+// I: Calculate onload() JS functions to be called
+// J: Send end of html <head> and start of <body>
+// K: (The rest is ignored for popups, which have no menus)
+// L: (optional) Body JS to disable right clicks
+// M: Send top of body for custom pages and for news
+// N: Send other top-of-body HTML
+//
+// Load order notes for devs
+// * Browsers wait until ALL HTML has loaded before executing ANY JS
+// * The last CSS tag downloaded supercedes earlier CSS tags
+// * Browsers don't care when Meta tags are loaded. We load last due to
+//   a quirk of e107's log subsystem.
+// * Multiple external <link> file references slow down page load. Each one requires
+//   browser-server interaction even when cached.
+//
 
-// send the charset to the browser - overrides spurious server settings with the lan pack settings.
-header("Content-type: text/html; charset=".CHARSET, true);
+//
+// A: Define themeable header parsing
+//
 
 if (!function_exists("parseheader")) {
 	function parseheader($LAYOUT){
@@ -33,58 +65,61 @@ if (!function_exists("parseheader")) {
 		}
 	}
 }
-$sql->db_Mark_Time('(Header Top)');
+
+//
+// B: Send HTTP headers (these come before ANY html)
+//
+
+// send the charset to the browser - overrides spurious server settings with the lan pack settings.
+header("Content-type: text/html; charset=".CHARSET, true);
+
 
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+
+//
+// C: Send start of HTML
+//
+
 <html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 
-// Multi-Language meta-tags with merge and override option.
+//
+// D: Send JS
+//
 
-echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
-<meta http-equiv='content-style-type' content='text/css' />\n";
-echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
-
-// --- Load plugin Meta files and eplug_ before others --------
-foreach($pref['e_meta_list'] as $val)
-{
-	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
-	{
-		echo "\n\n<!-- $val meta -->\n";
-		require_once(e_PLUGIN.$val."/e_meta.php");
-	}
+// Wysiwyg JS support on or off.
+if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
+	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+	define("e_WYSIWYG",TRUE);
+	echo wysiwyg($e_wysiwyg);
+}else{
+	define("e_WYSIWYG",FALSE);
 }
 
-
-$diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
-$key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
-
-function render_meta($type)
-{
-	global $pref,$tp;
-
-	if (!isset($pref['meta_'.$type][e_LANGUAGE])){ return;}
-	if (!$pref['meta_'.$type][e_LANGUAGE]){ return; }
-
-	if($type == "tag")
-	{
-		return str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n";
-	}
-	else
-	{
-		return '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
-	}
+if (isset($theme_js_php) && $theme_js_php) {
+	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
+} else {
+	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
+	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
+	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
 
-echo "\n\n<!-- Core Meta Tags -->\n";
-echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
-echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
-echo render_meta('copyright');
-echo render_meta('author');
-echo render_meta('tag');
+if (isset($eplug_js) && $eplug_js) {
+	echo "\n<!-- eplug_js -->\n";
+	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+}
 
-unset($key_merge,$diz_merge);
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
+	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
+}
+
+if (function_exists('headerjs')){echo headerjs();  }
+
+//
+// E: Send CSS
+//
+
 
 if (isset($eplug_css) && $eplug_css) {
 	echo "\n<!-- eplug_css -->\n";
@@ -133,9 +168,59 @@ if(defined("PREVIEWTHEME")) {
 	}
 }
 
-if(function_exists('theme_head')){
-	echo theme_head();
+if(function_exists('core_CSShead')){ echo core_CSShead(); }
+
+
+//
+// F: Send Meta Tags and Icon links
+//
+
+// Multi-Language meta-tags with merge and override option.
+
+echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<meta http-equiv='content-style-type' content='text/css' />\n";
+
+echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+
+// --- Load plugin Meta files and eplug_ before others --------
+foreach($pref['e_meta_list'] as $val)
+{
+	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	{
+		echo "\n\n<!-- $val meta -->\n";
+		require_once(e_PLUGIN.$val."/e_meta.php");
+	}
 }
+
+
+$diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
+$key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
+
+function render_meta($type)
+{
+	global $pref,$tp;
+
+	if (!isset($pref['meta_'.$type][e_LANGUAGE])){ return;}
+	if (!$pref['meta_'.$type][e_LANGUAGE]){ return; }
+
+	if($type == "tag")
+	{
+		return str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n";
+	}
+	else
+	{
+		return '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
+	}
+}
+
+echo "\n\n<!-- Core Meta Tags -->\n";
+echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
+echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
+echo render_meta('copyright');
+echo render_meta('author');
+echo render_meta('tag');
+
+unset($key_merge,$diz_merge);
 
 // ---------- Favicon ---------
 if (file_exists(THEME."favicon.ico")) {
@@ -144,38 +229,26 @@ if (file_exists(THEME."favicon.ico")) {
 	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
 }
 
-// Wysiwyg on or off.
-if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
-	define("e_WYSIWYG",TRUE);
-	echo wysiwyg($e_wysiwyg);
-}else{
-	define("e_WYSIWYG",FALSE);
+//
+// G: Send Theme Headers
+//
+
+
+if(function_exists('theme_head')){
+	echo theme_head();
 }
 
-if (isset($theme_js_php) && $theme_js_php) {
-	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
-} else {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
-	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
-	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
-}
-
-if (isset($eplug_js) && $eplug_js) {
-	echo "\n<!-- eplug_js -->\n";
-	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
-}
-
-// -------
+//
+// DEPRECATED!!! Remove this as soon as we are confident it is not used
+// by any important user plugins, etc
 
 if(function_exists('core_head')){ echo core_head(); }
 
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
-}
+// -------
 
-if (function_exists('headerjs')){echo headerjs();  }
-
+//
+// H: Generate JS for image preloads
+//
 if ($pref['image_preload']) {
 	$ejs_listpics = '';
 	$handle=opendir(THEME.'images');
@@ -191,6 +264,7 @@ if ($pref['image_preload']) {
 	if (!isset($script_text)) $script_text = '';
 	$script_text .= "ejs_preload('".THEME_ABS."images/','".$ejs_listpics."');\n";
 }
+
 if (isset($script_text) && $script_text) {
 	echo "<script type='text/javascript'>\n";
 	echo "<!--\n";
@@ -198,6 +272,11 @@ if (isset($script_text) && $script_text) {
 	echo "// -->\n";
 	echo "</script>\n";
 }
+
+
+//
+// I: Calculate JS onload() functions for the BODY tag
+//
 
 $fader_onload='';
 if(in_array('fader_menu', $eMenuActive))
@@ -210,8 +289,16 @@ $theme_onload = (defined('THEME_ONLOAD') ? THEME_ONLOAD : '');
 $body_onload = ($fader_onload != '' || $links_onload != '' || $theme_onload != '' ? " onload='".$fader_onload.$links_onload.$theme_onload."'" : "");
 $body_onload = ($fader_onload != '' || $links_onload != '') ? " onload='".$fader_onload.$links_onload."'" : "";
 
+//
+// J: Send end of <HEAD> and start of <BODY>
+//
 echo "</head>
 <body".$body_onload.">\n";
+$sql->db_Mark_Time("Main Page Body");
+
+//
+// K: (The rest is ignored for popups, which have no menus)
+//
 //echo "XX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
 if(!isset($e107_popup))
@@ -219,6 +306,10 @@ if(!isset($e107_popup))
 	$e107_popup = 0;
 }
 if ($e107_popup != 1) {
+	
+//
+// L: (optional) Body JS to disable right clicks
+//
 	if (isset($pref['no_rightclick']) && $pref['no_rightclick']) {
 		echo "<script language='javascript'>\n";
 		echo "<!--\n";
@@ -245,6 +336,9 @@ if ($e107_popup != 1) {
 		echo "</script>\n";
 	}
 
+//
+// M: Send top of body for custom pages and for news
+//
 	if(isset($CUSTOMPAGES))
 	{
 		if (is_array($CUSTOMPAGES))
@@ -285,13 +379,15 @@ if ($e107_popup != 1) {
 		}
 		parseheader(($ph ? $cust_header : $HEADER));
 	}
-	$sql->db_Mark_Time("Main Page Body");
 
+
+//
+// N: Send other top-of-body HTML
+//
 
 	if(ADMIN){
 		if(file_exists(e_BASE.'install.php')){ echo "<div class='installe' style='text-align:center'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
 	}
-
 
 // Display Welcome Message when old method activated.
 
