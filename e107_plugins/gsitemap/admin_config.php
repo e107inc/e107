@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-11-04 18:09:17 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2006-11-07 14:59:18 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -100,7 +100,7 @@ class gsitemap
 	{
 		global $sql,$ns,$tp;
 		$gen = new convert;
-		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
+		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
 
 		$text = "<div style='text-align:center'>
 
@@ -244,7 +244,7 @@ class gsitemap
 		<td class='forumheader3'><select name='gsitemap_order' class='tbox'>";
 
 		for($i=0;$i<$count;$i++){
-			$text .= $meet_order == $i ? "<option value='".$i."' selected='selected'>".$i."</option>" : "<option value='".$i."'>".$i."</option>";
+			$text .= $editArray['gsitemap_order'] == $i ? "<option value='".$i."' selected='selected'>".$i."</option>" : "<option value='".$i."'>".$i."</option>";
 		}
 		$text .="
 		</select>

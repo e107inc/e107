@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/gsitemap.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-10-29 17:48:44 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-07 14:59:18 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -23,7 +23,7 @@ if(e_QUERY == "show")
 {
 	require_once(HEADERF);
 
-	$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ");
+	$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ");
 	$nfArray = $sql -> db_getList();
 	$text = "<div style='text-align:left'><ul>";
 
@@ -46,7 +46,7 @@ $xml = "<?xml version='1.0' encoding='UTF-8'?>
 xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'	xsi:schemaLocation='http://www.google.com/schemas/sitemap/0.84
 http://www.google.com/schemas/sitemap/0.84/sitemap.xsd'>";
 
-$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ");
+$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ");
 $smArray = $sql -> db_getList();
 foreach($smArray as $sm)
 {
