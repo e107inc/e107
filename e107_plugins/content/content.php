@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.108 $
-|		$Date: 2006-11-06 10:43:35 $
+|		$Revision: 1.109 $
+|		$Date: 2006-11-07 22:09:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -885,7 +885,7 @@ function show_content_author_all(){
 		$arr = array();
 		$arr2 = array();
 		if (!$sql1->db_Select_gen($query)){
-			$text = "no authors yet";
+			$text = CONTENT_LAN_15;
 		}else{
 			while($row1 = $sql1 -> db_Fetch()){
 				//parse db field and retrieve user info -> array($author_id, $author_name, $author_email, $content_author);
