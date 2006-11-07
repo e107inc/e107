@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2006-10-21 17:49:21 $
-|     $Author: e107coders $
+|     $Revision: 1.101 $
+|     $Date: 2006-11-07 23:57:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -540,7 +540,7 @@ if (isset($_POST['register']))
 	}
 
 	// Check email address on remote server (if enabled).
-	if ($pref['signup_remote_emailcheck'] && $error != TRUE)
+	if (varsettrue($pref['signup_remote_emailcheck']) && $error != TRUE)
 	{
 		require_once(e_HANDLER."mail_validation_class.php");
 		list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
