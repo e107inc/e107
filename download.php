@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.75 $ - with modifications
-|     $Date: 2006-10-29 01:08:50 $
-|     $Author: e107coders $
+|     $Revision: 1.76 $ - with modifications
+|     $Date: 2006-11-07 00:22:45 $
+|     $Author: mcfly_e107 $
 |
 | Modifications by steved:
 |	1. Can display sub-categories which contain sub-sub categories and files
@@ -268,7 +268,7 @@ if ($action == "list") {
 		if(strstr($row['parent_icon'], chr(1)))	{
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $row['parent_icon']);
 		}
-		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;");
+		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($row['parent_name']);
 		$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
 		$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
@@ -300,7 +300,7 @@ if ($action == "list") {
 	{
 		list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 	}
-	$DOWNLOAD_CATEGORY_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;");
+	$DOWNLOAD_CATEGORY_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 
 	$DOWNLOAD_CATEGORY = $tp->toHTML($download_category_name);
 	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE);
@@ -637,7 +637,7 @@ function parse_download_cat_parent_table($row) {
 		{
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 		}
-		$DOWNLOAD_CAT_MAIN_ICON .= ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;");
+		$DOWNLOAD_CAT_MAIN_ICON .= ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 		$DOWNLOAD_CAT_MAIN_NAME .= $tp->toHTML($download_category_name);
 	} else {
 		$parent_status == "closed";
@@ -668,11 +668,11 @@ function parse_download_cat_child_table($row, $subList)
 
 	if(!$row['d_count'] && !$row['d_subcount'])
 	{
-		$download_icon = "<img src='".e_IMAGE."icons/{$download_category_icon_empty}' alt='' style='float-left' />";
+		$download_icon = "<img src='".e_IMAGE."icons/{$download_category_icon_empty}' alt='' style='float: left' />";
 	}
 	else
 	{
-		$download_icon = "<img src='".e_IMAGE."icons/{$download_category_icon}' alt='' style='float-left' />";
+		$download_icon = "<img src='".e_IMAGE."icons/{$download_category_icon}' alt='' style='float: left' />";
 	}
 
 	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? $download_icon : "&nbsp;");
@@ -697,11 +697,11 @@ function parse_download_cat_child_table($row, $subList)
 
 			if(!$row['d_count'] && !$row['d_subcount'])
 			{
-				$sub_download_icon = "<img src='".e_IMAGE."icons/{$sub_download_category_icon_empty}' alt='' style='float-left' />";
+				$sub_download_icon = "<img src='".e_IMAGE."icons/{$sub_download_category_icon_empty}' alt='' style='float: left' />";
 			}
 			else
 			{
-				$sub_download_icon = "<img src='".e_IMAGE."icons/{$sub_download_category_icon}' alt='' style='float-left' />";
+				$sub_download_icon = "<img src='".e_IMAGE."icons/{$sub_download_category_icon}' alt='' style='float: left' />";
 			}
 
 			$DOWNLOAD_CAT_SUBSUB_ICON = ($subrow['download_category_icon'] ? "$sub_download_icon" : "&nbsp;");
