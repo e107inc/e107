@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-07-07 01:34:12 $
+|     $Revision: 1.59 $
+|     $Date: 2006-11-07 20:16:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -154,7 +154,8 @@ City, State, Country
   'admincss' => 'style.css',
   'developer' => '0',
   'download_email' => '0',
-  'comments_disabled' => '0'
+  'comments_disabled' => '0',
+  'memberlist_access' => '253'
 );
 
 ?>
