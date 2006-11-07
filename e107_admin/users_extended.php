@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-07-24 06:55:02 $
-|     $Author: lisa_ $
+|     $Revision: 1.39 $
+|     $Date: 2006-11-07 23:46:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -91,12 +91,20 @@ if (isset($_POST['catdown_x']))
 
 if (isset($_POST['add_field']))
 {
-	if($_POST['user_type']==4){
+	if($_POST['user_type']==4)
+	{
     	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 	}
 	$new_values = make_delimited($_POST['user_values']);
 	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	admin_update($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
+	$result = admin_update($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
+	if(!$result)
+	{
+		if($ue->user_extended_reserved($_POST['user_field']))
+		{
+			$message = "[user_".$tp->toHTML($_POST['user_field'])."] ".EXTLAN_74;
+		}
+	}
 }
 
 if (isset($_POST['update_field'])) {
