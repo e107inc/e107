@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-07-16 19:52:05 $ - mods to make password protected pages work
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2006-11-07 00:15:58 $ - mods to make password protected pages work
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -251,7 +251,7 @@ class pageClass
 		foreach($this -> pageTitles as $title)
 		{
 			$titlep = preg_replace("/\[newpage=(.*?)\]/", "\\1", $title);
-			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? "Page ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'parse_sc, constants'));
+			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? LAN_PAGE_13." ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'parse_sc, constants'));
 			$count++;
 		}
 
