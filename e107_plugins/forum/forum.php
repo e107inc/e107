@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-01-15 19:07:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.39 $
+|     $Date: 2006-11-07 16:19:10 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e107_INIT")) {
 	require_once("../../class2.php");
 }
 
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum.php';
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
