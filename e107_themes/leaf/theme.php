@@ -11,8 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-01-12 09:52:21 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-07 15:02:19 $
 |     $Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -205,7 +205,7 @@ $NEWSLISTSTYLE = "";
 define("ICONSTYLE", "border:0");
 define("COMMENTLINK", LAN_THEME_1);
 define("COMMENTOFFSTRING", LAN_THEME_2);
-define("EXTENDEDSTRING", LAN_THEME_3);
+define("EXTENDEDSTRING", LAN_THEME_4);
 
 // [linkstyle]
 define(PRELINK, "");
