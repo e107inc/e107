@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2006-11-07 17:01:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.98 $
+|     $Date: 2006-11-07 18:23:14 $
+|     $Author: mrpete $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -18,7 +18,7 @@ define("ADMIN_AREA",FALSE);
 $sql->db_Mark_Time('(Header Top)');
 
 //
-// z*** Code sequence for headers ***
+// *** Code sequence for headers ***
 // IMPORTANT: These items are in a carefully constructed order. DO NOT REARRANGE
 // without checking with experienced devs! Various subtle things WILL break.
 //
@@ -74,20 +74,20 @@ if (!function_exists("parseheader")) {
 header("Content-type: text/html; charset=".CHARSET, true);
 
 
+echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+
 //
 // C: Send start of HTML
 //
 
-echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-
-
-<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
+echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 
 //
 // D: Send JS
 //
+echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
 if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
@@ -120,14 +120,14 @@ if (function_exists('headerjs')){echo headerjs();  }
 //
 // E: Send CSS
 //
-
+echo "<!-- *CSS* -->\n";
 
 if (isset($eplug_css) && $eplug_css) {
 	echo "\n<!-- eplug_css -->\n";
 	echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 }
 
-echo "\n<!-- Theme -->\n";
+echo "<!-- Theme css -->\n";
 if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
@@ -169,12 +169,16 @@ if(defined("PREVIEWTHEME")) {
 	}
 }
 
-if(function_exists('core_CSShead')){ echo core_CSShead(); }
+//
+// DEPRECATED!!! This is used in log/stats.php to generate some css. We'll clean this up in a future release.
+//
 
+if(function_exists('core_head')){ echo core_head(); }
 
 //
 // F: Send Meta Tags and Icon links
 //
+echo "<!-- *META* -->\n";
 
 // Multi-Language meta-tags with merge and override option.
 
@@ -188,7 +192,7 @@ foreach($pref['e_meta_list'] as $val)
 {
 	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
 	{
-		echo "\n\n<!-- $val meta -->\n";
+		echo "<!-- $val meta -->\n";
 		require_once(e_PLUGIN.$val."/e_meta.php");
 	}
 }
@@ -214,7 +218,7 @@ function render_meta($type)
 	}
 }
 
-echo "\n\n<!-- Core Meta Tags -->\n";
+echo "\n<!-- Core Meta Tags -->\n";
 echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
 echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
 echo render_meta('copyright');
@@ -236,20 +240,15 @@ if (file_exists(THEME."favicon.ico")) {
 
 
 if(function_exists('theme_head')){
+	echo "\n<!-- *THEME HEAD* -->\n";
 	echo theme_head();
 }
 
-//
-// DEPRECATED!!! Remove this as soon as we are confident it is not used
-// by any important user plugins, etc
-
-if(function_exists('core_head')){ echo core_head(); }
-
-// -------
 
 //
 // H: Generate JS for image preloads
 //
+echo "\n<!-- *PRELOAD* -->\n";
 if ($pref['image_preload']) {
 	$ejs_listpics = '';
 	$handle=opendir(THEME.'images');
@@ -288,13 +287,12 @@ if(in_array('fader_menu', $eMenuActive))
 $links_onload = 'externalLinks();';
 $theme_onload = (defined('THEME_ONLOAD') ? THEME_ONLOAD : '');
 $body_onload = ($fader_onload != '' || $links_onload != '' || $theme_onload != '' ? " onload='".$fader_onload.$links_onload.$theme_onload."'" : "");
-$body_onload = ($fader_onload != '' || $links_onload != '') ? " onload='".$fader_onload.$links_onload."'" : "";
 
 //
 // J: Send end of <HEAD> and start of <BODY>
 //
-echo "</head>
-<body".$body_onload.">\n";
+echo "</HEAD>
+<BODY".$body_onload.">\n";
 $sql->db_Mark_Time("Main Page Body");
 
 //
