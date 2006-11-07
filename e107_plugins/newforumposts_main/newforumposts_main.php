@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-10-21 11:24:55 $
-|     $Author: mrpete $
+|     $Revision: 1.25 $
+|     $Date: 2006-11-07 03:26:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -50,7 +50,7 @@ else if(!isset($NEWFORUMPOSTSTYLE_HEADER)) {
 		<td style='width:15%; text-align:center' class='forumheader3'>{POSTER}</td>
 		<td style='width:5%; text-align:center' class='forumheader3'>{VIEWS}</td>
 		<td style='width:5%; text-align:center' class='forumheader3'>{REPLIES}</td>
-		<td style='width:25%; text-align:center' class='forumheader3'>{LASTPOST}<br /><span class='smalltext'>{LASTPOSTDATE}</span></td>
+		<td style='width:25%; text-align:center' class='forumheader3'>{LASTPOST}<br /><span class='smalltext'>{LASTPOSTDATE}&nbsp;</span></td>
 		</tr>\n";
 
 	$NEWFORUMPOSTSTYLE_FOOTER = "<tr>\n<td colspan='6' style='text-align:center' class='forumheader2'>
