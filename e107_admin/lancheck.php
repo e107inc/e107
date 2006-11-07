@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-11-06 10:46:23 $
+|     $Revision: 1.22 $
+|     $Date: 2006-11-07 04:37:32 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -88,8 +88,9 @@ if(isset($_POST['submit']))
 	{
 		$notdef_start = "";
 		$notdef_end = "\n";
-		$deflang = stripslashes($_POST['newlang'][$i]);
+		$deflang = (MAGIC_QUOTES_GPC === TRUE) ? stripslashes($_POST['newlang'][$i]) : $_POST['newlang'][$i];
 		$func = "define";
+		$quote = chr(34);
 
 		if (strpos($_POST['newdef'][$i],"ndef++") !== FALSE )
 		{
@@ -105,10 +106,11 @@ if(isset($_POST['submit']))
 		if($_POST['newdef'][$i] == "LC_ALL" && isset($_POST['root']))
 		{
         	$func = "setlocale";
+			$quote = "";
 		}
-
-		$message .= $notdef_start.$func.'("'.htmlentities($defvar).'","'.$deflang.'");<br />'.$notdef_end;
-		$input .= $notdef_start.$func."(".chr(34).$defvar.chr(34).", ".chr(34).$deflang.chr(34).");".$notdef_end;
+        
+		$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
+		$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
 	}
 
 	$message .="<br />";
@@ -606,7 +608,7 @@ function fill_phrases_array($data,$type) {
              preg_match("#\((.*?)\,.*?\"(.*)\"#",$line,$matches) ||
              preg_match("#\((.*?)\,.*?\'(.*)\'#",$line,$matches)){
             //echo "get_lan -->".$matches[1]." :: ".$ndef.$matches[2]."<br />";
-            $retloc[$type][$matches[1]]=stripslashes($ndef.$matches[2]);
+            $retloc[$type][$matches[1]]= $ndef.$matches[2];
             }
          }
       }
@@ -629,7 +631,7 @@ function is_utf8($string) {
        |  \xED[\x80-\x9F][\x80-\xBF]
        |  \xF0[\x90-\xBF][\x80-\xBF]{2}
        | [\xF1-\xF3][\x80-\xBF]{3}
-       |  \xF4[\x80-\x8F][\x80-\xBF]{2}     
+       |  \xF4[\x80-\x8F][\x80-\xBF]{2}
 	)*$%xs', $string);
 
 }
