@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-08-27 02:24:44 $
+|     $Revision: 1.17 $
+|     $Date: 2006-11-07 23:46:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -86,6 +86,7 @@ define("EXTLAN_70", "ERROR!! Field:");
 define("EXTLAN_71", "was not activated!");
 define("EXTLAN_72", "has been deactivated");
 define("EXTLAN_73", "was not deactivated!");
+define("EXTLAN_74", "is a reserved field name and can not be used.");
 
 
 //textbox
