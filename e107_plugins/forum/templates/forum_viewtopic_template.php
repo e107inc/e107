@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-07-16 21:57:03 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2006-11-08 01:49:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,6 +29,8 @@ $sc_style['LEVEL']['post'] = "</div>";
 
 $sc_style['ANON_IP']['pre'] = "<br /><div class='smalltext'>";
 $sc_style['ANON_IP']['post'] = "</div>";
+
+$location_tpl = (array_key_exists('user_location', $currentUser) ? "{EXTENDED=location.text}: {EXTENDED=location.value}" : "");
 
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
@@ -116,7 +118,7 @@ $FORUMTHREADSTYLE = "<tr>
 	{LEVEL=pic}
 	{LEVEL=userid}
 	{JOINED}
-	{EXTENDED=location.text}: {EXTENDED=location.value}<br />
+	{$location_tpl}<br />
 	{POSTS}
 	</div>
 	</td>
@@ -202,7 +204,7 @@ $FORUMREPLYSTYLE = "<tr>
 	{LEVEL=pic}
 	{LEVEL=userid}
 	{JOINED}
-	{EXTENDED=location.text}: {EXTENDED=location.value}<br />
+	{$location_tpl}<br />
 	{POSTS}
 	</div>
 	</td>
