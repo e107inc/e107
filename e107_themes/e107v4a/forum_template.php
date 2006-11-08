@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-07-05 02:09:59 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2006-11-08 01:49:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,6 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $sc_style['ANON_IP']['pre'] = "<br /><span class='smalltext'>";
 $sc_style['ANON_IP']['post'] = "</span>";
+$location_tpl = (array_key_exists('user_location', $currentUser) ? "{EXTENDED=location.text}: {EXTENDED=location.value}" : "");
 
 $FORUMSTART = "
 <table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
@@ -69,7 +70,7 @@ $FORUMTHREADSTYLE = "
 </td>
 </tr>
 <tr>
-<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<div class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{EXTENDED=location.text}: {EXTENDED=location.value}<br />\n{POSTS}\n</div>\n</td>
+<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<div class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{$location_tpl}<br />\n{POSTS}\n</div>\n</td>
 <td class='nforumthread' style='vertical-align:top'>{POLL}\n{POST}\n{SIGNATURE}\n</td>
 </tr>
 <tr>
@@ -101,7 +102,7 @@ $FORUMREPLYSTYLE = "
 </td>
 </tr>
 <tr>
-<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{EXTENDED=location.text}: {EXTENDED=location.value}<br />\n{POSTS}\n</span>\n</td>
+<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{$location_tpl}<br />\n{POSTS}\n</span>\n</td>
 <td class='nforumthread' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>
 </tr>
 <tr>
