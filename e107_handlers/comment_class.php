@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-10-13 11:11:05 $
-|     $Author: sweetas $
+|     $Revision: 1.66 $
+|     $Date: 2006-11-08 16:27:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -414,22 +414,24 @@ class comment {
 	 * @param unknown_type $table
 	 * @return unknown
 	 */
-	function getCommentType($table){
-			switch($table) {
-				case "news"		: $type = 0; break;
+	function getCommentType($table)
+	{
+			if(is_numeric($table)) { return $table;	}
+
+			switch($table)
+			{
+				case "news"			: $type = 0; break;
 				case "content"	: $type = 1; break;
 				case "download"	: $type = 2; break;
-				case "faq"		: $type = 3; break;
-				case "poll"		: $type = 4; break;
-				case "docs"		: $type = 5; break;
+				case "faq"			: $type = 3; break;
+				case "poll"			: $type = 4; break;
+				case "docs"			: $type = 5; break;
 				case "bugtrack"	: $type = 6; break;
+				default					: $type = $table; break;
 				/****************************************
 				Add your comment type here in same format as above, ie ...
 				case "your_comment_type"; $type = your_type_id; break;
 				****************************************/
-			}
-			if (!isset($type)) {
-				$type = $table;
 			}
 			return $type;
 	}
@@ -441,14 +443,10 @@ class comment {
 	 * @param unknown_type $id
 	 * @return unknown
 	 */
-	function count_comments($table, $id){
+	function count_comments($table, $id)
+	{
 		global $sql, $tp;
-
-		if(is_numeric($table)){
-			$type = $table;
-		}else{
-			$type = $this -> getCommentType($table);
-		}
+		$type = $this -> getCommentType($table);
 		$count_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp -> toDB($type, true)."' ORDER BY comment_item_id");
 		return $count_comments;
 	}
@@ -548,21 +546,59 @@ class comment {
 		return (!$return) ? "" : $ret;
 	}
 
+	function recalc_user_comments($id)
+	{
+		global $sql;
+	
+		if(is_array($id))
+		{
+			foreach($id as $_id)
+			{
+				$this->recalc_user_comments($_id);
+			}
+		}
+		$qry = "
+		SELECT COUNT(*) AS count
+		FROM #comments
+		WHERE SUBSTRING_INDEX(comment_author,'.',1) = '{$id}'
+		";
+		if($sql->db_Select_gen($qry))
+		{
+			$row = $sql->db_Fetch();
+			$sql->db_Update("user","user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
+		}
+	}
+	
+	function get_author_list($id, $comment_type)
+	{
+		global $sql;
+		$authors = array();
+		$qry = "
+		SELECT DISTINCT(SUBSTRING_INDEX(comment_author,'.',1)) AS author 
+		FROM #comments
+		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}' 
+		GROUP BY author
+		";
+		if($sql->db_Select_gen($qry))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$authors[] = $row['author'];
+			}
+		}
+		return $authors;
+	}
+
 	function delete_comments($table, $id)
 	{
 		global $sql, $tp;
 
-		if(is_numeric($table))
-		{
-			$type = $table;
-		}
-		else
-		{
-			$type = $this -> getCommentType($table);
-		}
+		$type = $this -> getCommentType($table);
 		$type = $tp -> toDB($type, true);
 		$id = intval($id);
+		$author_list = $this->get_author_list($id, $type);
 		$num_deleted = $sql -> db_Delete("comments", "comment_item_id='{$id}' AND comment_type='{$type}'");
+		$this->recalc_user_comments($author_list);
 		return $num_deleted;
 	}
 
