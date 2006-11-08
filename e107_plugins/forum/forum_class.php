@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-10-27 02:07:13 $
-|     $Author: e107coders $
+|     $Revision: 1.59 $
+|     $Date: 2006-11-08 18:25:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -85,7 +85,8 @@ class e107forum
 			else
 			{
 				$id = intval($id);
-				$forum_lpinfo = "";
+				$forum_lp_user = '';
+				$forum_lp_info = '';
 				if($update_threads == TRUE)
 				{
 					if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
@@ -103,8 +104,8 @@ class e107forum
 					$forum_lp_user = $tmp[0];
 					$last_id = $row['thread_parent'] ? $row['thread_parent'] : $row['thread_id'];
 					$forum_lp_info = $row['thread_datestamp'].".".$last_id;
-					$sql->db_Update('forum', "forum_lastpost_user = '{$forum_lp_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id={$id}");
 				}
+				$sql->db_Update('forum', "forum_lastpost_user = '{$forum_lp_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id={$id}");
 			}
 		}
 	}
