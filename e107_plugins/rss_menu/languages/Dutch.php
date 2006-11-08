@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Dutch.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-08-01 13:35:43 $
+|     $Revision: 1.6 $
+|     $Date: 2006-11-08 16:54:36 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("RSS_LAN05","Aantal onderwerpen: 0=inactief");
 
 define("RSS_PLUGIN_LAN_1", "RSS");
 define("RSS_PLUGIN_LAN_6", "Feed Links");
-define("RSS_PLUGIN_LAN_7", "De rss feed van het niews");
+define("RSS_PLUGIN_LAN_7", "De rss feed van het nieuws");
 define("RSS_PLUGIN_LAN_8", "De rss feed van de downloads");
 define("RSS_PLUGIN_LAN_9", "De rss feed van de reacties");
 define("RSS_PLUGIN_LAN_10", "De rss feed van de nieuwscategorieèn:");
