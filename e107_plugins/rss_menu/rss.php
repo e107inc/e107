@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-10-16 18:35:06 $
-|     $Author: lisa_ $
+|     $Revision: 1.57 $
+|     $Date: 2006-11-08 06:51:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -288,13 +288,16 @@ class rssCreate {
 			case download:
 			case 12:
 				if($topic_id && is_numeric($topic_id)){
-					$topic = "download_category='".intval($topic_id)."' AND ";
+					$topic = "d.download_category='".intval($topic_id)."' AND ";
 				}else{
 					$topic = "";
 				}
 				$path='';
 				$class_list = "0,251,252,253";
-				$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,".$this -> limit);
+                $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".$class_list.") ORDER BY d.download_datestamp DESC LIMIT 0,".$this -> limit;
+                $sql -> db_Select_gen($query);
+
+			 //	$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,".$this -> limit);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
@@ -307,6 +310,8 @@ class rssCreate {
 					$this -> rssItems[$loop]['title'] = $value['download_name'];
 					$this -> rssItems[$loop]['link'] = $e107->base_path."download.php?view.".$value['download_id'];
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $value['download_description'] : $value['download_description']);
+                    $this -> rssItems[$loop]['category_name'] = $value['download_category_name'];
+                    $this -> rssItems[$loop]['category_link'] = $e107->base_path."download.php?list.".$value['download_category_id'];
 					$this -> rssItems[$loop]['enc_url'] = $e107->base_path."request.php?".$value['download_id'];
 					$this -> rssItems[$loop]['enc_leng'] = $value['download_filesize'];
 					$this -> rssItems[$loop]['enc_type'] = $this->getmime($value['download_url']);
