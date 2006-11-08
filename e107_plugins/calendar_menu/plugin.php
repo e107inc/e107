@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.15 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2006-11-06 22:30:22 $
+|     $Revision: 1.16 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2006-11-08 21:45:01 $
 |     $Author: e107coders $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
@@ -36,7 +36,7 @@ $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = EC_LAN_107;
 $eplug_compatible = "e107v7";
-$eplug_readme = "readme.rtf";
+$eplug_readme = "readme.pdf";
 // leave blank if no readme file
 $eplug_compliant = TRUE;
 
