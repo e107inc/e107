@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2006-11-07 18:23:14 $
-|     $Author: mrpete $
+|     $Revision: 1.99 $
+|     $Date: 2006-11-08 16:32:06 $
+|     $Author: mcfly_e107 $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -289,10 +289,10 @@ $theme_onload = (defined('THEME_ONLOAD') ? THEME_ONLOAD : '');
 $body_onload = ($fader_onload != '' || $links_onload != '' || $theme_onload != '' ? " onload='".$fader_onload.$links_onload.$theme_onload."'" : "");
 
 //
-// J: Send end of <HEAD> and start of <BODY>
+// J: Send end of <head> and start of <body>
 //
-echo "</HEAD>
-<BODY".$body_onload.">\n";
+echo "</head>
+<body".$body_onload.">\n";
 $sql->db_Mark_Time("Main Page Body");
 
 //
