@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2006-10-21 04:15:21 $
+|     $Revision: 1.69 $
+|     $Date: 2006-11-08 00:27:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -194,7 +194,7 @@ if (isset($_POST['fpreview']))
 	{
 		if ($_POST['subject'])
 		{
-			$action = "nt";
+			$action = "edit";
 		}
 		else
 		{
