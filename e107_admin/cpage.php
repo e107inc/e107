@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-07-07 20:49:41 $
+|     $Revision: 1.36 $
+|     $Date: 2006-11-08 20:47:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -222,9 +222,9 @@ class page
 		<td style='width:75%' class='forumheader3'>";
 
 		require_once(e_HANDLER."ren_help.php");
-		$insertjs = (!e_WYSIWYG)?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' style='width:100%' ";
+		$insertjs = (!e_WYSIWYG)?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
 		$data = $tp->toForm($data);
-		$text .= "<textarea class='tbox' id='data' name='data' cols='80'  style='width:95%' $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
+		$text .= "<textarea class='tbox' id='data' name='data' cols='80'   $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 
 		$text .= "<br />".display_help('',"cpage")."</td>
 		</tr>
