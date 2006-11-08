@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-10-27 22:36:57 $
+|     $Revision: 1.27 $
+|     $Date: 2006-11-08 22:20:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -112,11 +112,10 @@ function tinymce_html_bbcode_control(type, source) {
                 source = source.replace(/<\/strong>/gi,'[/b]');
                 source = source.replace(/<img/gi,'[img');
                 source = source.replace(/<\/strong>/gi,'[/b]');
+				source = source.replace(/<a href=\"(.*?)\"(.*?)>(.*?)<\/a>/gi,'[link=$1 $2]$3[/link]');
 */
 
             }
-
-				source = source.replace(/<a href=\"(.*?)\"(.*?)>(.*?)<\/a>/gi,'[link=$1 $2]$3[/link]');
 
 		// Convert e107 paths.
 
