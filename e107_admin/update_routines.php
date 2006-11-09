@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.188 $
-|     $Date: 2006-10-24 17:02:57 $
+|     $Revision: 1.189 $
+|     $Date: 2006-11-09 22:45:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1285,7 +1285,7 @@ function update_617_to_700($type='') {
 			if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'calendar_menu' AND plugin_installflag='1' ")) {
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_class int(10) unsigned NOT NULL default '0';");
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_subs tinyint(3) unsigned NOT NULL default '0';");
-				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force tinyint(3) unsigned NOT NULL default '0';");
+				// mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force tinyint(3) unsigned NOT NULL default '0';");
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_ahead tinyint(3) unsigned NOT NULL default '0';");
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg1 text;");
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg2 text;");
@@ -1294,6 +1294,9 @@ function update_617_to_700($type='') {
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_today int(10) unsigned NOT NULL default '0';");
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_lastupdate int(10) unsigned NOT NULL default '0';");
 				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_addclass int(10) unsigned NOT NULL default '0';");
+// 2 lines added for V3.6 event calendar
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_description text");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force_class int(10) unsigned NOT NULL default '0';");
 
 				mysql_query("CREATE TABLE ".MPREFIX."event_subs (
 					event_subid int(10) unsigned NOT NULL auto_increment,
