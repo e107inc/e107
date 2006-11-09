@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-11-09 07:25:10 $
+|     $Revision: 1.31 $
+|     $Date: 2006-11-09 07:31:46 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -308,12 +308,12 @@ function renderperms($perm,$id){
     	$pt["1"] = ADMSLAN_19;
 		$pt["2"] = ADMSLAN_20;
 		$pt["3"] = ADMSLAN_21;
-		$pt["4"] = ADMSLAN_22;// Moderate users/bans etc
-		$pt["5"] = ADMSLAN_23;// create/edit custom pages/menus
-		$pt["Q"] = ADMSLAN_24;// Manage download categories
-		$pt["6"] = ADMSLAN_25; //Upload /manage files
-		$pt["Y"] = ADMSLAN_67;// file inspector
-		$pt["O"] = ADMSLAN_68;// notify
+		$pt["4"] = ADMSLAN_22;	// Moderate users/bans etc
+		$pt["5"] = ADMSLAN_23;	// create/edit custom pages/menus
+		$pt["Q"] = ADMSLAN_24;	// Manage download categories
+		$pt["6"] = ADMSLAN_25;	// Upload /manage files
+		$pt["Y"] = ADMSLAN_67;	// file inspector
+		$pt["O"] = ADMSLAN_68;	// notify
 		$pt["7"] = ADMSLAN_26;
 		$pt["8"] = ADMSLAN_27;
 		$pt["C"] = ADMSLAN_64;
@@ -327,6 +327,7 @@ function renderperms($perm,$id){
 		$pt["T"] = ADMSLAN_34;
 		$pt["V"] = ADMSLAN_35;
 		$pt["X"] = ADMSLAN_66;
+		$pt["A"] = ADMSLAN_36;	// Configure Image Settings
 		$pt["B"] = ADMSLAN_37;
 		$pt["H"] = ADMSLAN_39;
 		$pt["I"] = ADMSLAN_40;
@@ -336,6 +337,7 @@ function renderperms($perm,$id){
 		$pt["M"] = ADMSLAN_46;
 		$pt["N"] = ADMSLAN_47;
 		$pt["Z"] = ADMSLAN_62;
+		
 
   //		foreach($lanlist as $lan){
   //      	$pt[$lan] = $lan;
