@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-11-09 14:09:13 $
+|     $Revision: 1.55 $
+|     $Date: 2006-11-09 14:10:58 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -40,14 +40,18 @@ if(isset($_GET['object'])) {
 define("e107_INIT", TRUE);
 error_reporting(E_ALL);
 
-// setup some php options
-if (function_exists('ini_set')){
-	ini_set('magic_quotes_runtime',     0);
-	ini_set('magic_quotes_sybase',      0);
-	ini_set('arg_separator.output',     '&amp;');
-	ini_set('session.use_only_cookies', 1);
-	ini_set('session.use_trans_sid',    0);
+function e107_ini_set($var, $value){
+	if (function_exists('ini_set')){
+		ini_set($var, $value);
+	}
 }
+
+// setup some php options
+e107_ini_set('magic_quotes_runtime',     0);
+e107_ini_set('magic_quotes_sybase',      0);
+e107_ini_set('arg_separator.output',     '&amp;');
+e107_ini_set('session.use_only_cookies', 1);
+e107_ini_set('session.use_trans_sid',    0);
 
 
 if(!function_exists("file_get_contents")) {
@@ -55,13 +59,11 @@ if(!function_exists("file_get_contents")) {
 }
 
 //  Ensure that '.' is the first part of the include path
-$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
+$inc_path = explode(PATH_SEPARATOR, e107_ini_set('include_path'));
 if($inc_path[0] != ".") {
 	array_unshift($inc_path, ".");
 	$inc_path = implode(PATH_SEPARATOR, $inc_path);
-	if (function_exists('ini_set')){
-		ini_set("include_path", $inc_path);
-	}
+	e107_ini_set("include_path", $inc_path);
 }
 unset($inc_path);
 
