@@ -40,6 +40,7 @@ define("ADMSLAN_32", "Configureren inhoud startpagina");
 define("ADMSLAN_33", "Configureren logs/stats");
 define("ADMSLAN_34", "Configureren meta tags");
 define("ADMSLAN_35", "Configureren openbare bestanduploads");
+define("ADMSLAN_36", "Configureren afbeeldingsinstellingen");
 // define("ADMSLAN_36", "Modereren forums");
 define("ADMSLAN_37", "Modereren reacties");
 // define("ADMSLAN_38", "Modereren/configureren chatbox");
