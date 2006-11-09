@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-10-22 19:44:54 $
+|     $Revision: 1.41 $
+|     $Date: 2006-11-09 17:23:53 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -158,7 +158,11 @@ if ($pref['developer']) {
 		$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start).</div>";
 		echo $obdbg;
 	}
-	if ($oblev_before_start != 0) {
+	// 061109 PHP 5 has a bug such that the starting level might be zero or one.
+	// Until they work that out, we'll disable this message.
+	// Devs can re-enable for testing as needed.
+	//
+	if (0 && $oblev_before_start != 0) {
 		$obdbg = "<div style='text-align:center' class='smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
 		echo $obdbg;
 	}
