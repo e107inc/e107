@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-07-16 21:57:03 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2006-11-09 16:56:30 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -225,5 +225,22 @@ $THREADTOPIC_REPLY = "
 </table>
 ";
 }
+
+$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
+$FORUM_CRUMB['sitename']['sep'] = " :: ";
+
+$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' {FORUMS_HREF}>{FORUMS_TITLE}</a>";
+$FORUM_CRUMB['forums']['sep'] = " :: ";
+
+$FORUM_CRUMB['parent']['value'] = "{PARENT_TITLE}";
+$FORUM_CRUMB['parent']['sep'] = " :: ";
+
+$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUBPARENT_TITLE}</a>";
+$FORUM_CRUMB['subparent']['sep'] = " :: ";
+
+$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' {FORUM_HREF}>{FORUM_TITLE}</a>";
+$FORUM_CRUMB['forum']['sep'] = " :: ";
+
+$FORUM_CRUMB['thread']['value'] = "{THREAD_TITLE}";
 
 ?>

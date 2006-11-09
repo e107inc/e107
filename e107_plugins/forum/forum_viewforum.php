@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-10-21 11:22:30 $
+|     $Revision: 1.59 $
+|     $Date: 2006-11-09 16:55:31 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -148,49 +148,7 @@ if(substr($forum_info['sub_parent'], 0, 1) == "*")
 	$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
 }
 
-if(is_array($FORUM_CRUMB))
-{
-	$search 	= array("{SITENAME}", "{SITENAME_HREF}");
-	$replace 	= array(SITENAME, "href='".e_BASE."index.php'");
-	$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
-
-	$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
-	$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
-	$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
-
-	$search 	= array("{PARENT_TITLE}");
-	$replace 	= array($tp->toHTML($forum_info['parent_name']));
-	$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
-
-	if($forum_info['sub_parent'])
-	{
-		$search 	= array("{SUBPARENT_TITLE}", "{SUBPARENT_HREF}");
-		$replace 	= array($forum_info['sub_parent'], "href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'");
-		$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
-	}
-	else
-	{
-		$FORUM_CRUMB['subparent']['value'] = "";
-	}
-
-	$search 	= array("{FORUM_TITLE}");
-	$replace 	= array($forum_info['forum_name']);
-	$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
-	$FORUM_CRUMB['fieldlist'] = "sitename,forums,parent,subparent,forum";
-
-	$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
-
-}
-else
-{
-	$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> ";
-	if($forum_info['sub_parent'])
-	{
-		$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a> -> ";
-	}
-	$BREADCRUMB .= $forum_info['forum_name'];
-}
-
+$forum->set_crumb(); // set $BREADCRUMB (and $BACKLINK)
 
 $FORUMTITLE = $forum_info['forum_name'];
 //$MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];

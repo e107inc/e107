@@ -110,9 +110,9 @@ return "";
 SC_END
 
 SC_BEGIN BACKLINK
-global $forum_info, $thread_info, $eaction, $action;
-return "<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_405."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>->".
-($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406." ".$thread_info['head']['thread_name']));
+global $forum, $thread_info,$eaction, $action,$BREADCRUMB;
+$forum->set_crumb(TRUE,($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406." ".$thread_info['head']['thread_name'])));
+return $BREADCRUMB;
 SC_END
 
 SC_BEGIN EMAILNOTIFY

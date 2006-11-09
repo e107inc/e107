@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2006-11-01 19:31:24 $
-|     $Author: lisa_ $
+|     $Revision: 1.70 $
+|     $Date: 2006-11-09 16:55:31 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,8 +23,6 @@ require_once('../../class2.php');
 @include_once e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php';
 @require_once(e_PLUGIN.'forum/forum_class.php');
 
-
-global $FORUM_CRUMB;
 
 if (file_exists(THEME.'forum_design.php'))
 {
@@ -263,50 +261,7 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if(is_array($FORUM_CRUMB))
-{
-	$search 	= array("{SITENAME}", "{SITENAME_HREF}");
-	$replace 	= array(SITENAME, "href='".e_BASE."index.php'");
-	$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
-
-	$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
-	$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
-	$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
-
-	$search 	= array("{PARENT_TITLE}");
-	$replace 	= array($tp->toHTML($forum_info['parent_name']));
-	$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
-
-	if($forum_info['sub_parent'])
-	{
-		$search 	= array("{SUBPARENT_TITLE}", "{SUBPARENT_HREF}");
-		$replace 	= array($forum_info['sub_parent'], "href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'");
-		$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
-	}
-	else
-	{
-		$FORUM_CRUMB['subparent']['value'] = "";
-	}
-
-	$search 	= array("{FORUM_TITLE}", "{FORUM_HREF}");
-	$replace 	= array($forum_info['forum_name'],"href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'");
-	$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
-	$FORUM_CRUMB['fieldlist'] = "sitename,forums,parent,subparent,forum";
-
-	$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
-
-}
-else
-{
-	$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> ";
-	if($forum_info['sub_parent'])
-	{
-		$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a> -> ";
-	}
-	$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook')."</a>";
-}
-
-$BACKLINK = $BREADCRUMB;
+$forum->set_crumb(TRUE); // Set $BREADCRUMB (and BACKLINK)
 $THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off');
 $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.prev'>".LAN_389."</a>";
 $NEXTPREV .= " | ";

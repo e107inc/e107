@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-11-08 18:25:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.60 $
+|     $Date: 2006-11-09 16:55:31 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -856,6 +856,85 @@ class e107forum
 			return $ret;
 		}
 		return FALSE;
+	}
+	
+	/*
+	 * set bread crumb
+	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
+	 * $thread_title is needed for post-related breadcrumbs
+	 */
+	function set_crumb($forum_href=FALSE,$thread_title="")
+	{
+		global $FORUM_CRUMB,$forum_info,$thread_info,$tp;
+		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
+		
+		if(is_array($FORUM_CRUMB))
+		{
+			$search 	= array("{SITENAME}", "{SITENAME_HREF}");
+			$replace 	= array(SITENAME, "href='".e_BASE."index.php'");
+			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
+		
+			$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
+			$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
+			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
+		
+			$search 	= array("{PARENT_TITLE}");
+			$replace 	= array($tp->toHTML($forum_info['parent_name']));
+			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
+
+			if($forum_info['sub_parent'])
+			{
+				$search 	= array("{SUBPARENT_TITLE}", "{SUBPARENT_HREF}");
+				$replace 	= array($forum_info['sub_parent'], "href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'");
+				$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
+			}
+			else
+			{
+				$FORUM_CRUMB['subparent']['value'] = "";
+			}
+
+			$search 	= array("{FORUM_TITLE}", "{FORUM_HREF}");
+			$replace 	= array($forum_info['forum_name'],"href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'");
+			$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
+
+			if(strlen($thread_title))
+			{
+				$search 	= array("{THREAD_TITLE}");
+				$replace 	= array($thread_title);
+				$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
+			}
+			else
+			{
+				$FORUM_CRUMB['thread']['value'] = "";
+			}
+
+			$FORUM_CRUMB['fieldlist'] = "sitename,forums,parent,subparent,forum,thread";
+			$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
+
+		}
+		else
+		{
+			$dfltsep = " :: ";
+			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>".$dfltsep;
+			if($forum_info['sub_parent'])
+			{
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a>".$dfltsep;
+			}
+			
+			if ($forum_href)
+			{
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook')."</a>";
+			} else
+			{
+				$BREADCRUMB .= $forum_info['forum_name'];
+			}
+
+			if(strlen($thread_title))
+			{
+				$BREADCRUMB .= $dfltsep.$thread_title;
+			}
+		}
+		$BACKLINK = $BREADCRUMB;
 	}
 }
 
