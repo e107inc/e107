@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-07-02 21:57:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.55 $
+|     $Date: 2006-11-09 20:48:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -493,19 +493,26 @@ function parsesearch($text, $match) {
 }
 
 function headerjs() {
-	global $search_count, $google_id, $search_prefs, $js_adv;
+	global $search_count, $google_id, $search_prefs, $js_adv, $search_info;
 	if ($search_prefs['selector'] == 1) {
+		
+		$types = array_keys($search_info);
+		$types = implode("', '", $types);
+		
 		$script = "<script type='text/javascript'>
 		<!--
+		var i;
+		var stypes = new Array('".$types."');
+		
 		function checkAll(allbox) {
-			for (var i = 0; i < ".$search_count."; i++)
-			document.getElementById('searchform')[\"t[\" + i + \"]\"].checked = true ;
+			for (var i in stypes)
+			document.getElementById('searchform')[\"t[\" + stypes[i] + \"]\"].checked = true ;
 			uncheckG();
 		}
 
 		function uncheckAll(allbox) {
-			for (var i = 0; i < ".$search_count."; i++)
-			document.getElementById('searchform')[\"t[\" + i + \"]\"].checked = false ;
+			for (var i in stypes)
+			document.getElementById('searchform')[\"t[\" + stypes[i] + \"]\"].checked = false ;
 		}\n";
 
 		if (check_class($search_prefs['google'])) {
