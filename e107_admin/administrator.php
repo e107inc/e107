@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-11-09 07:31:46 $
+|     $Revision: 1.32 $
+|     $Date: 2006-11-09 07:49:16 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -183,7 +183,7 @@ function edit_administrator($row){
 
 	$text .= checkb("1", $a_perms).ADMSLAN_19."<br />";			// Alter site preferences
 	$text .= checkb("2", $a_perms).ADMSLAN_20."<br />";			// Alter Menus
-	$text .= checkb("3", $a_perms).ADMSLAN_21."<br />";			// Add site administrators
+	$text .= checkb("3", $a_perms).ADMSLAN_21."<br />";			// Modify administrator permissions
 	$text .= checkb("4", $a_perms).ADMSLAN_22."<br />";			// Moderate users/bans etc
 	$text .= checkb("5", $a_perms).ADMSLAN_23."<br />";			// create/edit custom pages/menus
 	$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";			// Manage download categories
