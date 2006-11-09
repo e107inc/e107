@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/session_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-01-03 15:53:12 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2006-11-09 09:28:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -92,7 +92,7 @@ function get_full_ip() {
 
 session_set_save_handler("sess_open", "sess_close", "sess_read", "sess_write", "sess_destroy", "sess_gc");
 
-ini_set ("session.save_handler", "user" );
+e107_ini_set ("session.save_handler", "user" );
 $session_cookie_lifetime = 0;
 $session_cookie_path = '/';
 $session_cookie_domain = '';
@@ -104,9 +104,9 @@ if ($_SERVER["HTTPS"] == "on") {
 	$session_cookie_secure = true;
 }
 session_set_cookie_params($session_cookie_lifetime, $session_cookie_path, $session_cookie_domain, $session_cookie_secure);
-if (version_compare(phpversion(), "4.3.0", ">=")) ini_set ("session.use_only_cookies", $session_use_only_cookies );
+if (version_compare(phpversion(), "4.3.0", ">=")) e107_ini_set ("session.use_only_cookies", $session_use_only_cookies );
 if (version_compare(phpversion(), "4.2.0", ">=")) session_cache_expire ($session_cache_expire);
-ini_set ("session.url_rewriter.tags", 'a=href,area=href,frame=src,input=src,form=fakeentry');
+e107_ini_set ("session.url_rewriter.tags", 'a=href,area=href,frame=src,input=src,form=fakeentry');
 
 if ($sql->db_Select("session", "session_id", "session_ip='".get_full_ip()."' ")) {
 	$row = $sql->db_Fetch();

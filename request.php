@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-08-22 16:10:25 $
-|     $Author: e107coders $
+|     $Revision: 1.40 $
+|     $Date: 2006-11-09 09:28:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -282,7 +282,7 @@ function send_file($file) {
 		exit();
 	}
 	@set_time_limit(10 * 60);
-	@ini_set("max_execution_time", 10 * 60);
+	@e107_ini_set("max_execution_time", 10 * 60);
 	while (@ob_end_clean()); // kill all output buffering else it eats server resources
 	$filename = $file;
 	$file = basename($file);

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-08-10 16:11:50 $
-|     $Author: e107coders $
+|     $Revision: 1.36 $
+|     $Date: 2006-11-09 09:28:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,7 +37,7 @@ Please note that mailed attachments have been found to be corrupted using php 4.
 php 4.3.6 does NOT have this problem.
 */
 // Comment out the line below if you have trouble with some people not receiving emails.
-// ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
+// e107_ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline ="") {
 	global $pref,$mailheader_e107id;

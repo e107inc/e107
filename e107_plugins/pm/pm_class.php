@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-04-24 14:23:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-09 09:28:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -382,7 +382,7 @@ class private_message
 			return FALSE;
 		}
 		@set_time_limit(10 * 60);
-		@ini_set("max_execution_time", 10 * 60);
+		@e107_ini_set("max_execution_time", 10 * 60);
 		while (@ob_end_clean()); // kill all output buffering else it eats server resources
 		if (connection_status() == 0)
 		{

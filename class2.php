@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.318 $
-|     $Date: 2006-11-06 09:16:20 $
-|     $Author: e107coders $
+|     $Revision: 1.319 $
+|     $Date: 2006-11-09 09:28:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 //
@@ -94,11 +94,11 @@ set_error_handler(array(&$error_handler, "handle_error"));
 define("e107_INIT", TRUE);
 
 // setup some php options
-ini_set('magic_quotes_runtime',     0);
-ini_set('magic_quotes_sybase',      0);
-ini_set('arg_separator.output',     '&amp;');
-ini_set('session.use_only_cookies', 1);
-ini_set('session.use_trans_sid',    0);
+e107_ini_set('magic_quotes_runtime',     0);
+e107_ini_set('magic_quotes_sybase',      0);
+e107_ini_set('arg_separator.output',     '&amp;');
+e107_ini_set('session.use_only_cookies', 1);
+e107_ini_set('session.use_trans_sid',    0);
 
 
 if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
@@ -118,7 +118,7 @@ $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
 if($inc_path[0] != ".") {
 	array_unshift($inc_path, ".");
 	$inc_path = implode(PATH_SEPARATOR, $inc_path);
-	ini_set("include_path", $inc_path);
+	e107_ini_set("include_path", $inc_path);
 }
 unset($inc_path);
 
@@ -342,7 +342,7 @@ define("SITEURL", SITEURLBASE.e_HTTP);
 
 // let the subdomain determine the language (when enabled).
 if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session")){
-		ini_set("session.cookie_domain",$pref['multilanguage_subdomain']);
+		e107_ini_set("session.cookie_domain",$pref['multilanguage_subdomain']);
 		require_once(e_HANDLER."language_class.php");
 		$lng = new language;
         if(e_SUBDOMAIN == "www"){
@@ -1601,5 +1601,12 @@ function array_stripslashes($data) {
 }
 
 $sql->db_Mark_Time('(After class2)');
+
+
+function e107_ini_set($var, $value){
+	if (function_exists('ini_set')){
+		ini_set($var, $value);
+	}
+}
 
 ?>

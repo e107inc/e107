@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/usersession_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-28 14:03:36 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-09 09:28:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,13 +57,13 @@ class eUserSession {
 		define('LOGINRESULT_NOTLOGGEDIN', 5);
 
 		// Session handler options - adjust to taste
-		ini_set('session.auto_start', 0);
-		ini_set('session.serialize_handler', 'php');
-		ini_set('session.cookie_lifetime', 0);
-		ini_set('session.use_cookies', 1);
-		ini_set('session.use_only_cookies', 1);
-		ini_set('url_rewriter.tags', '');
-		ini_set('session.use_trans_sid', 0);
+		e107_ini_set('session.auto_start', 0);
+		e107_ini_set('session.serialize_handler', 'php');
+		e107_ini_set('session.cookie_lifetime', 0);
+		e107_ini_set('session.use_cookies', 1);
+		e107_ini_set('session.use_only_cookies', 1);
+		e107_ini_set('url_rewriter.tags', '');
+		e107_ini_set('session.use_trans_sid', 0);
 
 		$this->_SessionName = session_name();
 		$this->_UserTrackingType = $pref['user_tracking'];
