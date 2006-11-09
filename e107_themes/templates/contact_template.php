@@ -1,5 +1,5 @@
 <?php
-// $Id: contact_template.php,v 1.6 2006-08-11 16:50:41 e107coders Exp $
+// $Id: contact_template.php,v 1.7 2006-11-09 19:57:47 e107coders Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
@@ -49,7 +49,7 @@ if(!$CONTACT_FORM){
 	{CONTACT_EMAIL_COPY}
 	<tr><td>
     ".LANCONTACT_06."<br />
-	<textarea cols='50' rows='10' name='body' class='tbox'>".$_POST['body']."</textarea>
+	<textarea cols='50' rows='10' name='body' class='tbox'>".stripslashes($_POST['body'])."</textarea>
 	</td></tr>
 	{CONTACT_IMAGECODE}
 	{CONTACT_IMAGECODE_INPUT}
