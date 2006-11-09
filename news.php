@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2006-10-21 11:01:31 $
-|     $Author: mrpete $
+|     $Revision: 1.109 $
+|     $Date: 2006-11-09 22:35:44 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -290,8 +290,18 @@ if($tmp_cache = checkCache($cacheString)) // normal news front-page - with cache
 
 	}
 
-  	renderCache($tmp_cache, TRUE);
-
+	//news archive
+	if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
+		if ($sql->db_Select_gen($query)) {
+			$newsAr = $sql -> db_getList();
+			if($newsarchive = checkCache('newsarchive')){
+				$tmp_cache = $tmp_cache.$newsarchive;
+			}else{
+				newsarchive($newsAr);
+			}
+		}
+	}
+	renderCache($tmp_cache, TRUE);
 }
 
 
@@ -419,11 +429,14 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 
 // ##### --------------------------------------------------------------------------------------------------------------
 
-// #### new: news archive ---------------------------------------------------------------------------------------------
-if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
+function newsarchive($newsAr){
+	global $ns, $gen, $interval, $pref, $tp, $news_archive_shortcodes, $NEWSARCHIVE, $news2;
+
 	// do not show the news archive on the news.php?item.X page (but only on the news mainpage)
 	require_once(e_FILE.'shortcode/batch/news_archives.php');
 
+	ob_start();
+	
 	$i = $interval + 1;
 	while(isset($newsAr[$i]))
 	{
@@ -466,6 +479,14 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 		$i++;
 	}
 	$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive, 'news_archive');
+	$newsarchive = ob_get_contents();
+	ob_end_flush(); // dump collected data
+	setNewsCache('newsarchive', $newsarchive);
+}
+
+// #### new: news archive ---------------------------------------------------------------------------------------------
+if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
+	newsarchive($newsAr);
 }
 // #### END -----------------------------------------------------------------------------------------------------------
 
