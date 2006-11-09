@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-11-09 07:25:10 $
+|     $Revision: 1.15 $
+|     $Date: 2006-11-09 07:49:16 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("ADMSLAN_17", "Admin Password");
 define("ADMSLAN_18", "Permissions");
 define("ADMSLAN_19", "Alter site preferences");
 define("ADMSLAN_20", "Alter Menus");
-define("ADMSLAN_21", "Add site administrators");
+define("ADMSLAN_21", "Modify administrator permissions");
 define("ADMSLAN_22", "Moderate users/bans etc");
 define("ADMSLAN_23", "Create/edit custom pages/menus");
 define("ADMSLAN_24", "Manage download categories");
