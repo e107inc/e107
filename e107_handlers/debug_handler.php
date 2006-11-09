@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-10-21 11:05:49 $
+|     $Revision: 1.20 $
+|     $Date: 2006-11-09 16:50:32 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -111,13 +111,16 @@ class e107_debug {
 			if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU)) {
 				$dVal = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
 			}
-			if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
+			if (isset($debug_param[3]))
 			{
-				cookie('e107_debug_level', 'level='.$dVal, time() + 86400);
-			}
-			if ($debug_param[3] == '-' || $debug_param[3] == 'unstick')
-			{
-				cookie('e107_debug_level', '', time() - 3600);
+				if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
+				{
+					cookie('e107_debug_level', 'level='.$dVal, time() + 86400);
+				}
+				if ($debug_param[3] == '-' || $debug_param[3] == 'unstick')
+				{
+					cookie('e107_debug_level', '', time() - 3600);
+				}
 			}
 
 			if (isset($this->aDebugShortcuts[$dVal])) {
