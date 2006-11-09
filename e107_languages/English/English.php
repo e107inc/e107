@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/English.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-09 09:37:11 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-09 18:58:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,5 @@ define("CORE_LAN10", "Corrupted cookie detected - logged out.");
 define("LAN_WARNING", "Warning!");
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anonymous");
-
-define("POPUP_LAN_1", "click to enlarge image");
 
 ?>
