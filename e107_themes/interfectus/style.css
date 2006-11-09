@@ -209,6 +209,10 @@ ul, ol {
 img {
 	vertical-align: middle;
 }
+.linkspage_button{
+	vertical-align: middle;
+	border:0px;
+}
 
 .smalltext {
 	font: 7pt Tahoma, Verdana, Arial, Helvetica, sans-serif;

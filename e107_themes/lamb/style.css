@@ -169,6 +169,11 @@ img {
 	vertical-align: middle;
 }
 
+.linkspage_button{
+	vertical-align: middle;
+	border:0px;
+}
+
 .dlmain {
 	font: 20px tahoma, verdana, helvetica, arial, sans-serif;
 	color: #000;

@@ -15,6 +15,10 @@ img{
 	border: none;
 }
 
+.linkspage_button{
+	border:0px;
+}
+
 td{
 	text-align:left;
 }

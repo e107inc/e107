@@ -371,3 +371,7 @@ a.forumlink{
 	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
 	color: #3A4F6C;
 }
+
+.linkspage_button{
+	border:0px;
+}

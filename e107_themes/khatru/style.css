@@ -474,3 +474,8 @@ hr {
 	width: 99%;
 	text-align:center;
 }
+
+.linkspage_button{
+	vertical-align: middle;
+	border:0px;
+}
