@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-11-09 14:10:58 $
-|     $Author: lisa_ $
+|     $Revision: 1.56 $
+|     $Date: 2006-11-09 22:52:52 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -69,6 +69,27 @@ unset($inc_path);
 
 if(!function_exists("mysql_connect")) {
 	die("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
+}
+
+# Check for the realpath(). Some hosts (I'm looking at you, Awardspace) are totally dumb and
+# they think that disabling realpath() will somehow (I'm assuming) help improve their pathetic
+# local security. Fact is, it just prevents apps from doing their proper local inclusion security
+# checks. So, we refuse to work with these people.
+$functions_ok = true;
+$disabled_functions = ini_get('disable_functions');
+if (trim($disabled_functions) != '') {
+	$disabled_functions = explode( ',', $disabled_functions );
+	foreach ($disabled_functions as $function) {
+		if(trim($function) == "realpath") {
+			$functions_ok = false;
+		}
+	}
+}
+if($functions_ok == true && function_exists("realpath") == false) {
+	$functions_ok = false;
+}
+if($functions_ok == false) {
+	die("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and <b>There is NO workaround</b>. Please contact your host for more information.");
 }
 
 if(!function_exists("print_a")) {
@@ -248,7 +269,7 @@ class e_install {
 		$this->previous_steps['mysql']['user'] = $_POST['name'];
 		$this->previous_steps['mysql']['password'] = $_POST['password'];
 		$this->previous_steps['mysql']['db'] = $_POST['db'];
-		$this->previous_steps['mysql']['createdb'] = $_POST['createdb'];
+		$this->previous_steps['mysql']['createdb'] = (isset($_POST['createdb']) && $_POST['createdb'] == true ? true : false);
 		$this->previous_steps['mysql']['prefix'] = $_POST['prefix'];
 		if($this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "" | $this->previous_steps['mysql']['db'] == "") {
 			$this->stage = 3;
@@ -463,7 +484,17 @@ class e_install {
 		$this->previous_steps['admin']['email'] = $_POST['email'];
 		$this->previous_steps['admin']['password'] = $_POST['pass1'];
 
-		if($_POST['pass1'] != $_POST['pass2']) {
+		if(trim($_POST['u_name']) == "" || trim($_POST['email']) == "" || trim($_POST['pass1']) == "") {
+			$this->template->SetTag("installation_heading", LANINS_001);
+			$this->template->SetTag("stage_num", LANINS_046);
+			$this->template->SetTag("stage_pre", LANINS_002);
+			$this->template->SetTag("stage_title", LANINS_047);
+			$e_forms->start_form("admin_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+			$page = LANINS_086."<br />".($_SERVER['QUERY_STRING'] == "debug" ? print_a($_POST, true) : "")."<br />";
+
+			$this->finish_form(5);
+			$e_forms->add_button("submit", LANINS_048);
+		} elseif($_POST['pass1'] != $_POST['pass2']) {
 			$this->template->SetTag("installation_heading", LANINS_001);
 			$this->template->SetTag("stage_num", LANINS_046);
 			$this->template->SetTag("stage_pre", LANINS_002);
