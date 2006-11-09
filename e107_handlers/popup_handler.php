@@ -11,15 +11,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/popup_handler.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2006-06-06 18:43:59 $
+|		$Revision: 1.6 $
+|		$Date: 2006-11-09 09:37:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
-
-define("POPUP_LAN_1", "click to enlarge image");
 
 class popup{
 
