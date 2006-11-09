@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-11-08 01:49:18 $
+|     $Revision: 1.25 $
+|     $Date: 2006-11-09 18:19:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ $sc_style['LEVEL']['post'] = "</div>";
 $sc_style['ANON_IP']['pre'] = "<br /><div class='smalltext'>";
 $sc_style['ANON_IP']['post'] = "</div>";
 
-$location_tpl = (array_key_exists('user_location', $currentUser) ? "{EXTENDED=location.text}: {EXTENDED=location.value}" : "");
+$location_tpl = (array_key_exists('user_location', $currentUser) ? "{USER_EXTENDED=location.text}: {USER_EXTENDED=location.value}" : "");
 
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
