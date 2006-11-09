@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-02-19 16:08:44 $
-|     $Author: lisa_ $
+|     $Revision: 1.15 $
+|     $Date: 2006-11-09 22:03:18 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -115,17 +115,17 @@ if ($handle = fopen($logIfile, 'w')) {
 fclose($handle);
 
 function getBrowser($agent) {
+	
+	//
+	// All "root" browsers must come at the end of the list, unfortunately.
+	// Otherwise, browsers based on them will never be seen.
+	//(But #1997)
+	//
 	$browsers = array(
 		"netcaptor"    => array('name' => 'Netcaptor',         'rule' => 'netcaptor[ /]([0-9.]{1,10})'),
-		"explorer"     => array('name' => 'Internet Explorer', 'rule' => '\(compatible; MSIE[ /]([0-9.]{1,10})'),
-		"firefox"      => array('name' => 'Firefox',           'rule' => 'Firefox/([0-9.+]{1,10})'),
 		"opera"        => array('name' => 'Opera',             'rule' => 'opera[ /]([0-9.]{1,10})'),
 		"aol"          => array('name' => 'AOL',               'rule' => 'aol[ /\-]([0-9.]{1,10})'),
 		"aol2"         => array('name' => 'AOL',               'rule' => 'aol[ /\-]?browser'),
-		"netscape"     => array('name' => 'Netscape',          'rule' => 'netscape[0-9]?/([0-9.]{1,10})'),
-		"netscape2"    => array('name' => 'Netscape',          'rule' => '^mozilla/([0-4]\.[0-9.]{1,10})'),
-		"mozilla"      => array('name' => 'Mozilla',           'rule' => '^mozilla/[5-9]\.[0-9.]{1,10}.+rv:([0-9a-z.+]{1,10})'),
-		"mozilla2"     => array('name' => 'Mozilla',           'rule' => '^mozilla/([5-9]\.[0-9a-z.]{1,10})'),
 		"mosaic"       => array('name' => 'Mosaic',            'rule' => 'mosaic[ /]([0-9.]{1,10})'),
 		"k-meleon"     => array('name' => 'K-Meleon',          'rule' => 'K-Meleon[ /]([0-9.]{1,10})'),
 		"konqueror"    => array('name' => 'Konqueror',         'rule' => 'konqueror/([0-9.]{1,10})'),
@@ -152,7 +152,6 @@ function getBrowser($agent) {
 		"doris"        => array('name' => 'Doris',             'rule' => 'Doris/([0-9.]{1,10})'),
 		"elinks"       => array('name' => 'ELinks',            'rule' => 'ELinks[ /][(]*([0-9.]{1,10})'),
 		"epiphany"     => array('name' => 'Epiphany',          'rule' => 'Epiphany/([0-9.]{1,10})'),
-		"firebird"     => array('name' => 'Firebird',          'rule' => 'Firebird/([0-9.+]{1,10})'),
 		"ibrowse"      => array('name' => 'IBrowse',           'rule' => 'ibrowse[ /]([0-9.]{1,10})'),
 		"icab"         => array('name' => 'iCab',              'rule' => 'icab[/ ]([0-9.]{1,10})'),
 		"ice"          => array('name' => 'ICEbrowser',        'rule' => 'ICEbrowser/v?([0-9._]{1,10})'),
@@ -180,6 +179,13 @@ function getBrowser($agent) {
 		"w3m"          => array('name' => 'w3m',               'rule' => 'w3m/([0-9.]{1,10})'),
 		"webtv"        => array('name' => 'Webtv',             'rule' => 'webtv[ /]([0-9.]{1,10})'),
 		"xiino"        => array('name' => 'Xiino',             'rule' => '^Xiino[ /]([0-9a-z.]{1,10})'),
+		"explorer"     => array('name' => 'Internet Explorer', 'rule' => '\(compatible; MSIE[ /]([0-9.]{1,10})'),
+		"firefox"      => array('name' => 'Firefox',           'rule' => 'Firefox/([0-9.+]{1,10})'),
+		"netscape"     => array('name' => 'Netscape',          'rule' => 'netscape[0-9]?/([0-9.]{1,10})'),
+		"netscape2"    => array('name' => 'Netscape',          'rule' => '^mozilla/([0-4]\.[0-9.]{1,10})'),
+		"mozilla"      => array('name' => 'Mozilla',           'rule' => '^mozilla/[5-9]\.[0-9.]{1,10}.+rv:([0-9a-z.+]{1,10})'),
+		"mozilla2"     => array('name' => 'Mozilla',           'rule' => '^mozilla/([5-9]\.[0-9a-z.]{1,10})'),
+		"firebird"     => array('name' => 'Firebird',          'rule' => 'Firebird/([0-9.+]{1,10})'),
 	);
 	$browser = "";
 	foreach($browsers as $info) {
