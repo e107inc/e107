@@ -121,4 +121,4 @@ define("LANINS_083", "MySQL Reported Error:");
 define("LANINS_084", "The installer could not establish a connection to the database");
 define("LANINS_085", "The installer could not select database:");
 
-?>
+define("LANINS_086", "Admin Username, Admin Password and Admin Email are <b>required</b> fields. Please return to the last page and ensure the information is correctly entered.");
