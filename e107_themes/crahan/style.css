@@ -466,7 +466,7 @@ a.forumlink:hover {
 	border: #5e5d63 1px solid;
 	color: #000000;
 	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
-	padding: 2px -2px 2px 2px;
+	padding: 2px 0px 2px 2px;
 }
 
 .treeclass2 {
@@ -474,7 +474,7 @@ a.forumlink:hover {
 	border: #000 1px solid;
 	color: #000000;
 	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
-	padding: 2px -2px 2px 2px;
+	padding: 2px 0px 2px 2px;
 }
 
 .treeclass3 {
