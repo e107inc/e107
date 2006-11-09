@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-10-24 13:34:28 $
-|     $Author: mrpete $
+|     $Revision: 1.54 $
+|     $Date: 2006-11-09 14:09:13 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,11 +41,13 @@ define("e107_INIT", TRUE);
 error_reporting(E_ALL);
 
 // setup some php options
-ini_set('magic_quotes_runtime',     0);
-ini_set('magic_quotes_sybase',      0);
-ini_set('arg_separator.output',     '&amp;');
-ini_set('session.use_only_cookies', 1);
-ini_set('session.use_trans_sid',    0);
+if (function_exists('ini_set')){
+	ini_set('magic_quotes_runtime',     0);
+	ini_set('magic_quotes_sybase',      0);
+	ini_set('arg_separator.output',     '&amp;');
+	ini_set('session.use_only_cookies', 1);
+	ini_set('session.use_trans_sid',    0);
+}
 
 
 if(!function_exists("file_get_contents")) {
@@ -57,7 +59,9 @@ $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
 if($inc_path[0] != ".") {
 	array_unshift($inc_path, ".");
 	$inc_path = implode(PATH_SEPARATOR, $inc_path);
-	ini_set("include_path", $inc_path);
+	if (function_exists('ini_set')){
+		ini_set("include_path", $inc_path);
+	}
 }
 unset($inc_path);
 
