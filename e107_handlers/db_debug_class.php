@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-22 19:46:28 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-09 16:50:23 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -357,7 +357,7 @@ class e107_db_debug {
 		print_r($back_trace);
 
 		$this->deprecated_funcs[] =	array (
-		'func'	=> ($back_trace[1]['type'] == '::' || $back_trace[1]['type'] == '->' ? $back_trace[1]['class'].$back_trace[1]['type'].$back_trace[1]['function'] : $back_trace[1]['function']),
+		'func'	=> (isset($back_trace[1]['type']) && ($back_trace[1]['type'] == '::' || $back_trace[1]['type'] == '->') ? $back_trace[1]['class'].$back_trace[1]['type'].$back_trace[1]['function'] : $back_trace[1]['function']),
 		'file'	=> $back_trace[1]['file'],
 		'line'	=> $back_trace[1]['line']
 		);
