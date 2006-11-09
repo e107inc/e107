@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.319 $
-|     $Date: 2006-11-09 09:28:58 $
-|     $Author: lisa_ $
+|     $Revision: 1.320 $
+|     $Date: 2006-11-09 09:54:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -462,7 +462,7 @@ if(!$tmplan = getcachedvars("language-list")){
 define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
 
 $language=(isset($_COOKIE['e107language_'.$pref['cookie_name']]) ? $_COOKIE['e107language_'.$pref['cookie_name']] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
-
+$language = preg_replace("#\W#", "", $language);
 define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
