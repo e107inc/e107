@@ -268,3 +268,8 @@ td {
 img {
 	vertical-align: middle;
 }
+
+.linkspage_button{
+	vertical-align: middle;
+	border:0px;
+}

@@ -362,3 +362,8 @@ hr {
 	font-family: tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 9px;
 }
+
+.linkspage_button{
+	vertical-align: middle;
+	border:0px;
+}

@@ -84,6 +84,10 @@ a img {
 	border: none;
 	}
 
+.linkspage_button{
+	border:0px;
+}
+
 .hidden{
 	display:none;
 }
