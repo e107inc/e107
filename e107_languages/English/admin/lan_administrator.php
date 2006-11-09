@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2006-11-09 07:25:10 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "New user/admin entry created for");
@@ -39,7 +39,7 @@ define("ADMSLAN_32", "Configure front page content");
 define("ADMSLAN_33", "Configure log/stats");
 define("ADMSLAN_34", "Configure meta tags");
 define("ADMSLAN_35", "Configure public file uploads");
-// define("ADMSLAN_36", "Moderate forums");
+define("ADMSLAN_36", "Configure Image Settings");
 define("ADMSLAN_37", "Moderate comments");
 // define("ADMSLAN_38", "Moderate/configure chatbox");
 define("ADMSLAN_39", "Post news");
