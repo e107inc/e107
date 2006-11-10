@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-10-31 21:16:29 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2006-11-10 06:54:18 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -104,6 +104,7 @@ define("NWSLAN_104", "by");
 define("NWSLAN_105", "Check box to update date stamp of news item to current time");
 define("NWSLAN_106", "Submit-News maybe accessed by:");
 define("NWSLAN_107", "Enable WYSIWYG editor on Submit-News page.");
+define("NWSLAN_108", "on");
 
 define("NWSLAN_111", "Show new date header");
 define("NWSLAN_112", "If this box is ticked, a box containing the date will be displayed above news items posted on a new day, useful for distinguishing posts on different days");
