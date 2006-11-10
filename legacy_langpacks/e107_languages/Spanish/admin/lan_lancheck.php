@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_lancheck.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-01 21:16:20 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-10 19:17:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,5 +26,6 @@ define("LAN_CHECK_14", "¡Todos los archivos son válidos!");
 define("LAN_CHECK_15", "Encontrados caácteres ilegales antes de '&lt;?php'"); 
 define("LAN_CHECK_16", "Archivo Original"); 
 define("LAN_CHECK_17", "Hubo un problema de escritura al intentar guardar el archivo."); 
-define("LAN_CHECK_18", "No están disponibles los archivos de idiomas estandar para este plugin/tema."); 
+define("LAN_CHECK_18", "No están disponibles los archivos de idiomas estandar para este plugin/tema.");
+define("LAN_CHECK_19", "Encontrados carácteres No-UTF8");
 ?>

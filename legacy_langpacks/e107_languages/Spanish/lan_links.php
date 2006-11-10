@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -38,8 +38,8 @@ define("LAN_99", "Gracias");
 define("LAN_100", "Su enlace ha sido guardado y será revisado por un administrador.");
 define("LAN_101", "Pulse aquí si desea enviar un enlace.");
 define("LAN_102", "Hay");
-define("LAN_103", "");
-define("LAN_104", "");
+define("LAN_103", "es");
+define("LAN_104", "son");
 define("LAN_105", "en total");
 define("LAN_106", "Los campos subrayados son obligatorios.");
 

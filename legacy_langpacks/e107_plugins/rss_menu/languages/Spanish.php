@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/rss_menu/languages/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-29 12:57:44 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-10 19:17:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ define("RSS_LAN_ADMINMENU_2", "Listados");
 define("RSS_LAN_ADMINMENU_4", "Importar"); 
   
 define("RSS_LAN_ERROR_1", "No es un rss válido<br /><br /><a href='".e_SELF."'><< volver a la lista rss</a>"); 
-define("RSS_LAN_ERROR_2", "Su archivo e107_config.php o sua archivos de idiomas contienen un espacio o caracteres antes de los carácteres &lt;? . Debe eliminar estos caracteres con un editor non-utf8 para que su RSS siga funcionando correctamente.");
+define("RSS_LAN_ERROR_2", "Su archivo e107_config.php o sua archivos de idiomas contienen un espacio o caracteres ï»¿ antes de los carácteres &lt;? . Debe eliminar estos caracteres con un editor non-utf8 para que su RSS siga funcionando correctamente.");
 define("RSS_LAN_ERROR_3", "No hay rss existentes todavía<br />por favor, actualice usando el importador de rss o cree un alimentador rss manualmente."); 
 define("RSS_LAN_ERROR_4", "No existen rss disponibles actualmente"); 
 define("RSS_LAN_ERROR_5", "Esta entrada rss no existe"); 

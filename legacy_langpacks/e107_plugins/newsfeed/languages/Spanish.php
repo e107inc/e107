@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newsfeed/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-05-13 16:12:46 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-10 19:17:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -72,5 +72,7 @@ define("NFLAN_43", "Ayuda Newsfeed");
 define("NFLAN_44", "Click para ver");
 define("NFLAN_45", "Número de elementos a mostrar en el menú"); 
 define("NFLAN_46", "Número de elementos a mostrar en la página principal"); 
-define("NFLAN_47", "0 o en blanco para mostrar todos"); 
+define("NFLAN_47", "0 o en blanco para mostrar todos");
+define("NFLAN_48", "Imposible guardar datos raw en la base de datos.");
+define("NFLAN_49", "Imposible extender datos rss - usa sintaxis no-estandar");
 ?>

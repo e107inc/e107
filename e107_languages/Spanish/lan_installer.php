@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-10-29 12:57:42 $
+|     $Revision: 1.11 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -126,4 +126,5 @@ define("LANINS_082", "usuario@susitio.com");
 define("LANINS_083", "MySQL Informe error:");
 define("LANINS_084", "El instalador no puede conectarse con la base de datos");
 define("LANINS_085", "El instalador no puede seleccionar la base de datos:");
+define("LANINS_086", "Usuario Admin, Contraseña Admin y Correo Admin son campos <b>necesarios</b>. Por favor, vuelva a la última página y asegúrese de escribir la información correcta.");
 ?>

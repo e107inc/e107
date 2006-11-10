@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.6 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -66,6 +66,5 @@ define('ADLAN_PM_53', "No se encontraron registros a convertir.");
 define('ADLAN_PM_54', "Ajustes principales"); 
 define('ADLAN_PM_55', "Límites"); 
 define('ADLAN_PM_56', "Conversión"); 
-
-
+define('ADLAN_PM_57', "Este plugin es un completo sistema de mensajería privada.");
 ?>

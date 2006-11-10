@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-29 14:31:00 $
+|     $Revision: 1.6 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -30,4 +30,5 @@ define("CORE_LAN10", "Detectada cookie corrupta - desconectando.");
 define("LAN_WARNING", "¡Atención!"); 
 
 define("LAN_ERROR", "Error");
+define("LAN_ANONYMOUS", "Anónimo");
 ?>

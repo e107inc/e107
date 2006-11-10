@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-08-12 17:23:21 $
+|     $Revision: 1.6 $
+|     $Date: 2006-11-10 19:17:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,8 @@ define("EXTLAN_70", "ERROR!! Campo:");
 define("EXTLAN_71", "no fué activado!"); 
 define("EXTLAN_72", "Ha sido desactivado"); 
 define("EXTLAN_73", "no fué desactivado!"); 
- 
+define("EXTLAN_74", "es un campo reservado y no puede ser usado.");
+
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parámetros:</i></b><br />size - tamaño del campo<br />maxlength - longitud máx del campo<br />class - css clase del campo<br />");
 //radio buttons

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("ADMSLAN_17", "Contraseña Admin");
 define("ADMSLAN_18", "Permisos");
 define("ADMSLAN_19", "Cambiar preferencias del sitio");
 define("ADMSLAN_20", "Cambiar menús y páginas personales");
-define("ADMSLAN_21", "Añadir administradores");
+define("ADMSLAN_21", "Modificar permisos de administrador");
 define("ADMSLAN_22", "Moderar usuarios/expulsiones etc");
 define("ADMSLAN_23", "Crear/editar foros");
 define("ADMSLAN_24", "Gestionar categorías de descargas");
@@ -39,7 +39,7 @@ define("ADMSLAN_32", "Configurar página de inicio");
 define("ADMSLAN_33", "Configurar estadísticas");
 define("ADMSLAN_34", "Configurar meta tags");
 define("ADMSLAN_35", "Configurar transferencia de archivos");
-//define("ADMSLAN_36", "Moderar foros");
+define("ADMSLAN_36", "Configurar ajustes de imagen");
 define("ADMSLAN_37", "Moderar comentarios");
 //define("ADMSLAN_38", "Moderar/configurar chatbox");
 define("ADMSLAN_39", "Añadir Noticias");
@@ -74,5 +74,4 @@ define("ADMSLAN_68", "Configurar notificación email");
 define("ADMSLAN_69", "Es ya un Administrador y debe ser editado.");
 define("ADMSLAN_70", "Volver a la lista de Administradores"); 
 define("ADMSLAN_71", "Click aquí para ver los privilegios"); 
-
 ?>

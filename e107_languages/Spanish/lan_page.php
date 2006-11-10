@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_page.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -22,4 +22,5 @@ define("LAN_PAGE_9", "Contraseña");
 define("LAN_PAGE_10", "Enviar");
 define("LAN_PAGE_11", "Lista de página");
 define("LAN_PAGE_12", "Página inválida");
+define("LAN_PAGE_13", "Página");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-29 12:57:43 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -46,8 +46,8 @@ define('LOGIN_MENU_L33', 'Mostrar nuevos envíos del chat');
 define('LOGIN_MENU_L34', 'Mostrar nuevos comentarios');
 define('LOGIN_MENU_L35', 'Mostrar nuevos envíos del foro');
 define('LOGIN_MENU_L36', 'Mostrar nuevos miembros');
-define('LOGIN_MENU_L37', 'Actualizar parámetros');
-define('LOGIN_MENU_L38', 'Parámetros actualizados');
+
 define('LOGIN_MENU_L39', 'Salir ADM');
 define("LOGIN_MENU_L40", "Re-Enviar activación Email");
+define("LOGIN_MENU_L41", "Ajuste del menú de acceso");
 ?>

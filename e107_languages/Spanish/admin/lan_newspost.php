@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-07-01 20:56:55 $
+|     $Revision: 1.14 $
+|     $Date: 2006-11-10 19:17:11 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -103,6 +103,7 @@ define("NWSLAN_104", "Por");
 define("NWSLAN_105", "Marque para cambiar la fecha de las noticias a la actual");
 define("NWSLAN_106", "Enviar-Noticias puede ser accedido por:");
 define("NWSLAN_107", "Activar WYSIWYG en Enviar-Noticia.");
+define("NWSLAN_108", "activo");
 
 define("NWSLAN_111", "Mostrar nueva fecha en cabecera-");
 define("NWSLAN_112", "Si está activo, la fecha se mostrará encima de las noticias enviadas en un nuevo día, útil para diferencias de envíos en diferentes días");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newsletter/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-10 19:17:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -65,5 +65,5 @@ define("NLLAN_50", "Click en el botón para suscribirse ( su dirección de suscrip
 define("NLLAN_51", "Eliminar suscripción");
 define("NLLAN_52", "Suscribirse");
 define("NLLAN_53", "¿Está seguro de suscribirse a este boletín?");
-
+define("NLLAN_54", "Enviando");
 ?>
