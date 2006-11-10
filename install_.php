@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-11-09 22:52:52 $
-|     $Author: streaky $
+|     $Revision: 1.57 $
+|     $Date: 2006-11-10 15:46:37 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -59,7 +59,7 @@ if(!function_exists("file_get_contents")) {
 }
 
 //  Ensure that '.' is the first part of the include path
-$inc_path = explode(PATH_SEPARATOR, e107_ini_set('include_path'));
+$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
 if($inc_path[0] != ".") {
 	array_unshift($inc_path, ".");
 	$inc_path = implode(PATH_SEPARATOR, $inc_path);
