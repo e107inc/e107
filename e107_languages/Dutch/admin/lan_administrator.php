@@ -18,6 +18,7 @@ define("ADMSLAN_1", "heeft nu beheerdersrechten.");
 define("ADMSLAN_2", "bijgewerkt in de database.");
 define("ADMSLAN_3", "is de hoofdbeheerder en kan niet worden gewijzigd.");
 define("ADMSLAN_4", "Ga verder");
+define("ADMSLAN_5", "Fout!");
 define("ADMSLAN_6", "is de hoofdbeheerder en kan niet worden verwijderd.");
 define("ADMSLAN_13", "Aangestelde beheerders");
 define("ADMSLAN_16", "Naam beheerder");

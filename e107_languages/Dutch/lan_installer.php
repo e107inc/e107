@@ -98,7 +98,7 @@ define("LANINS_069", "e107 is succesvol geïnstalleerd!
 
 Omwille van beveiliging moet je nu de bestandpermissies op het <b>e107_config.php</b> bestand terugzetten naar 644.
 
-En verwijder ook het bestand install.php en de e107_install directory van je server nadat je op de knop hieronder hebt gedrukt
+En verwijder ook het bestand install.php van je server nadat je op de knop hieronder hebt gedrukt
 ");
 define("LANINS_070", "e107 kon het hoofdconfiguratiebestand niet wegschrijven op je server.
 
@@ -119,5 +119,6 @@ define("LANINS_082", "gebruiker@jouwsite.net");
 define("LANINS_083", "MySQL foutmelding:");
 define("LANINS_084", "De installer kon geen verbinding maken met de database");
 define("LANINS_085", "De installer kon deze database niet vinden:");
+define("LANINS_086", "Admin gebruikersnaam, Admin wachtwoord en Admin e-mail adres zijn <b>verplichte</b> velden. Ga terug naar de vorige pagina en controleer of de informatie goed is ingevuld.");
 
 ?>
