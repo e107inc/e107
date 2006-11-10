@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-11-09 07:49:16 $
-|     $Author: lisa_ $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-10 15:59:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "New user/admin entry created for");
@@ -14,6 +14,7 @@ define("ADMSLAN_1", "now has admin status.");
 define("ADMSLAN_2", "updated in database.");
 define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
 define("ADMSLAN_4", "Continue");
+define("ADMSLAN_5", "Error!");
 define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
 
 define("ADMSLAN_13", "Existing Administrators");

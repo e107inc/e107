@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-11-09 07:49:16 $
-|     $Author: lisa_ $
+|     $Revision: 1.33 $
+|     $Date: 2006-11-10 15:59:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -84,7 +84,7 @@ if (isset($_POST['del_admin']))
 	$sql->db_Select("user", "*", "user_id= ".$delid[0]);
 	$row = $sql->db_Fetch();
 
-	if ($row['user_perms'] == "0")
+	if ($row['user_id'] == 1)
 	{
 		$text = "<div style='text-align:center'>".$row['user_name']." ".ADMSLAN_6."
 		<br /><br />
