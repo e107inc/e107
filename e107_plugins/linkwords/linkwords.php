@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-10 00:44:24 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,6 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 class e_linkwords
 {
 	var $linkwords = array();
+	var $linkhold  = array();  // Placeholders in case url's contain linkwords
 	var $linkurls = array();
 
 	function e_linkwords()
@@ -31,13 +32,17 @@ class e_linkwords
 		if($sql -> db_Select("linkwords", "*", "linkword_active=0"))
 		{
 			$linkWords = $sql -> db_getList();
+			$placeprefix="|*#!|"; // A highly unusual string
+			$iPlace = 1;
 			foreach($linkWords as $words)
 			{
 				$word = $words['linkword_word'];
 				$this -> linkwords[] = $word;
 				$this -> linkurls[] = " <a href='".$words['linkword_link']."' rel='external'>$word</a>";
+				$this -> linkhold[] = $placeprefix.$iPlace++.$placeprefix;
 				$word2 = substr_replace($word, strtoupper($word[0]), 0, 1);
 				$this -> linkwords[] = $word2;
+				$this -> linkhold[] = $placeprefix.$iPlace++.$placeprefix;
 				$this -> linkurls[] = " <a href='".$words['linkword_link']."' rel='external'>$word2</a>";
 
 			}
@@ -50,7 +55,14 @@ class e_linkwords
 		$ptext = "";
 		foreach($content as $cont)
 		{
-			$ptext .= (strstr($cont, "<") ? $cont : str_replace($this -> linkwords, $this -> linkurls, $cont));
+			if (strstr($cont, "<"))
+			{
+				$ptext .= $cont;
+			} else {
+				$cont2=str_replace($this -> linkwords, $this -> linkhold, $cont);
+				$cont2=str_replace($this -> linkhold, $this -> linkurls, $cont2);
+				$ptext .= $cont2;
+			}
 		}
 		return $ptext;
 	}
