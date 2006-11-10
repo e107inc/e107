@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.135 $
-|   $Date: 2006-10-29 02:53:02 $
-|   $Author: e107coders $
+|   $Revision: 1.136 $
+|   $Date: 2006-11-10 06:54:18 $
+|   $Author: lisa_ $
 +---------------------------------------------------------------+
 
 */
@@ -1074,7 +1074,7 @@ class newspost {
 				<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
 				<td style='width:70%' class='forumheader3'>";
 				$text .= ($submitnews_auth == 0)? "<b>".$tp->toHTML($submitnews_title)."</b>": $tp->toHTML($submitnews_title);
-				$text .= " [ ".NWSLAN_104." $submitnews_name on ".date("D dS M y, g:ia", $submitnews_datestamp)."]<br />".$tp->toHTML($submitnews_item)."</td>
+				$text .= " [ ".NWSLAN_104." ".$submitnews_name." ".NWSLAN_108." ".date("D dS M y, g:ia", $submitnews_datestamp)."]<br />".$tp->toHTML($submitnews_item)."</td>
 				<td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
 				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :	NWSLAN_103;
 				$text .= $rs->form_open("post", e_SELF."?sn", "myform__{$submitnews_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_38." [ID: $submitnews_id ]")."')\"   ")
