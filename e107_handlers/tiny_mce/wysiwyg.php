@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-11-10 00:11:22 $
-|     $Author: mrpete $
+|     $Revision: 1.29 $
+|     $Date: 2006-11-10 07:06:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -69,7 +69,7 @@ $text .= ",theme_advanced_buttons3 : ''";
 $text .= ",theme_advanced_toolbar_location : 'top'";
 $text .= ",extended_valid_elements : 'p[style],a[name|href|target|rel|title|style|class],img[class|src|style|alt|title|name],hr[class],span[align|class|style],div[align|class|style|height|width] ,table[class|style|cellpadding|cellspacing|background|height|width],td[background|style|class|valign|align|height|width]'";
 $text .= ",invalid_elements: 'p,font,align,script,applet,iframe'\n";
-// $text .= ",auto_cleanup_word: true\n";
+$text .= ",auto_cleanup_word: true\n";
 $text .= ",convert_fonts_to_spans : true\n";
 $text .= ",trim_span_elements: true\n";
 $text .= ",inline_styles: true\n";
