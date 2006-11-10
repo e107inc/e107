@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.171 $
-|     $Date: 2006-11-10 17:27:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.172 $
+|     $Date: 2006-11-10 21:35:22 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -28,7 +28,8 @@ class e_parse
 	var $e_hook;
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
-	var $e_query;
+	var $e_highlighting;		// Set to TRUE or FALSE once it has been calculated
+	var $e_query;			// Highlight query
 
 	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
@@ -286,6 +287,36 @@ class e_parse
 		/* we can remove any linebreaks added by htmlwrap function as any \n's will be converted later anyway */
 		return $text;
 	}
+	
+	//
+	// Test for text highlighting, and determine the text highlighting transformation
+	// Returns TRUE if highlighting is active for this page display
+	//
+	function checkHighlighting()
+	{
+		global $pref;
+		
+		if (!defined('e_SELF'))
+		{
+			return FALSE;	// Still in startup, so can't calculate highlighting
+		}
+		
+		if (!isset($this->e_highlighting))
+		{
+			$this->e_highlighting = FALSE;
+			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
+			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) 
+			{
+				$this->e_highlighting = TRUE;
+				if (!isset($this -> e_query)) 
+				{
+					$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
+					$this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
+				}
+			}
+		}
+		return $this->e_highlighting;
+	}
 
 	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE) {
 		if ($text == '')
@@ -412,15 +443,11 @@ class e_parse
 
         // Search Highlight
         if (strpos($modifiers, 'emotes_off') === FALSE) {
-            $shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
-            if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) {
-                if (!isset($this -> e_query)) {
-                    $query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
-                    $this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
-                }
-                $text = $this -> e_highlight($text, $this -> e_query);
-            }
-        }
+        	if ($this->checkHighlighting())
+        	{
+						$text = $this -> e_highlight($text, $this -> e_query);
+					}
+				}
 
         $nl_replace = "<br />";
         if (strpos($modifiers, 'nobreak') !== FALSE)
