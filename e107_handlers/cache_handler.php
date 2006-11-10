@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-10-19 20:36:32 $
+|     $Revision: 1.30 $
+|     $Date: 2006-11-10 21:35:21 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.29 $
+* @version     $Revision: 1.30 $
 * @author      $Author: mrpete $
 */
 class ecache {
@@ -60,8 +60,8 @@ class ecache {
 	* @scope public
 	*/
 	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false) {
-		global $pref, $FILES_DIRECTORY;
-		if ($pref['cachestatus'] || $ForcedCheck == true) {
+		global $pref, $FILES_DIRECTORY, $tp;
+		if (($pref['cachestatus'] || $ForcedCheck == true) && !$tp->checkHighlighting()) {
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag) : ecache::cache_fname($CacheTag));
 			if (file_exists($cache_file)) {
 				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
@@ -76,6 +76,7 @@ class ecache {
 				return false;
 			}
 		}
+		return false;
 	}
 
 	/**
@@ -88,8 +89,8 @@ class ecache {
 	* @scope public
 	*/
 	function set($CacheTag, $Data, $ForceCache = false, $bRaw=0) {
-		global $pref, $FILES_DIRECTORY;
-		if ($pref['cachestatus'] || $ForceCache == true) {
+		global $pref, $FILES_DIRECTORY, $tp;
+		if (($pref['cachestatus'] || $ForceCache == true) && !$tp->checkHighlighting()) {
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag) : ecache::cache_fname($CacheTag));
 			file_put_contents($cache_file, ($bRaw? $Data : '<?php'.$Data) );
 			@chmod($cache_file, 0777);
