@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.189 $
-|     $Date: 2006-11-09 22:45:31 $
+|     $Revision: 1.190 $
+|     $Date: 2006-11-10 00:53:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -153,10 +153,18 @@ function update_70x_to_706($type='') {
 			}
 
 		}
+
+		// still needs a check, so it doesn't happen twice.
+        mysql_query("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
+		mysql_query("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
+		mysql_query("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
+
+
 		// update new fields
         require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
 		$ep->update_plugins_table();
+		$ep->save_addon_prefs();
 
 		if(!$sql->db_Field("online",6)) // online_active field
 		{
