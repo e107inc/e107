@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.33 $
-| $Date: 2006-10-21 11:04:44 $
-| $Author: mrpete $
+| $Revision: 1.34 $
+| $Date: 2006-11-10 21:16:49 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -68,7 +68,7 @@ class e_shortcode {
 		$tmp = explode("\n", $text);
 		foreach($tmp as $line) {
 			if (preg_match("/{.+?}/", $line, $match)) {
-				$ret .= preg_replace_callback("/\{(.*?)\}/", array($this, 'doCode'), $line);
+				$ret .= preg_replace_callback("#\{(\S[^\x02]*?\S)\}#", array($this, 'doCode'), $line);
 			} else {
 				$ret .= $line;
 			}
@@ -79,6 +79,12 @@ class e_shortcode {
 	function doCode($matches)
 	{
 		global $pref, $e107cache, $menu_pref, $sc_style, $parm;
+
+		if(strpos($matches[1], E_NL) !== false)
+		{
+			return $matches[0];
+		}
+		
 		if (strpos($matches[1], '='))
 		{
 			list($code, $parm) = explode("=", $matches[1], 2);
