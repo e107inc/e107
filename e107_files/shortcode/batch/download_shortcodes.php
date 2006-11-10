@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-10-19 02:07:42 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2006-11-10 07:32:30 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -23,7 +23,7 @@ $download_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 SC_BEGIN DOWNLOAD_LIST_NAME
 global $row,$tp,$pref;
 if($parm == "nolink"){
-	return $tp->toHTML($row['download_name']);
+	return $tp->toHTML($row['download_name'],TRUE,"no_hook");
 }
 if($parm == "request"){
 
@@ -37,7 +37,7 @@ if($parm == "request"){
 	return $text;
 }
 
-return  "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'])."</a>";
+return  "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'],TRUE,"no_hook")."</a>";
 SC_END
 
 
