@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-11-09 16:55:31 $
-|     $Author: mrpete $
+|     $Revision: 1.60 $
+|     $Date: 2006-11-10 19:17:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -35,17 +35,13 @@ else
 {
 	$tmp = explode(".", e_QUERY);
 	$forum_id = intval($tmp[0]);
-	$from = intval($tmp[1]);
-	if (!$from)
-	{
-		$from = 0;
-	}
+	$thread_from = (isset($tmp[1]) ? intval($tmp[1]) : 0);
 }
 $view = 25;
 
 if(is_numeric(e_MENU))
 {
-	$from = (intval(e_MENU)-1)*$view;
+	$thread_from = (intval(e_MENU)-1)*$view;
 }
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
@@ -123,7 +119,7 @@ if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== FALSE || strpos($FORUM_VIEW_END, 'THREADPAGES') !== FALSE)
 	{
-		$parms = "{$topics},{$view},{$from},".e_SELF.'?'.$forum_id.'.[FROM],off';
+		$parms = "{$topics},{$view},{$thread_from},".e_SELF.'?'.$forum_id.'.[FROM],off';
 		$THREADPAGES = LAN_316." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 	}
 }
@@ -203,7 +199,7 @@ $stuck = FALSE;
 $reg_threads = 0;
 $unstuck = FALSE;
 
-$thread_list = $forum->forum_get_topics($forum_id, $from, $view);
+$thread_list = $forum->forum_get_topics($forum_id, $thread_from, $view);
 $sub_list = $forum->forum_getsubs($forum_id);
 //print_a($sub_list);
 $gen = new convert;
