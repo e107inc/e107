@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-11 12:36:15 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-11 12:53:57 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -44,8 +44,8 @@ define("IMALAN_33", "Admin only");
 define("IMALAN_34", "Enable Sleight");
 define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
 
-define("IMALAN_36", "Check all avatar sizes");
-define("IMALAN_37", "Avatar Size Check");
+define("IMALAN_36", "Validate avatar size and access");
+define("IMALAN_37", "Avatar Validation");
 define("IMALAN_38", "Maximum allowable width");
 define("IMALAN_39", "Maximum allowable height");
 define("IMALAN_40", "Too wide");
