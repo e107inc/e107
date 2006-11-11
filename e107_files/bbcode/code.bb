@@ -24,14 +24,14 @@ if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
 		$CodeCache = $geshi->parse_code();
 		$e107cache->set('GeshiParsed_'.$code_md5, $CodeCache);
 	}
-	$ret = "<div class='code_highlight'>".str_replace("&amp;", "&", $CodeCache)."</div>";
+	$ret = "<div class='code_highlight' style='unicode-bidi: embed; direction: ltr'>".str_replace("&amp;", "&", $CodeCache)."</div>";
 }
 else
 {
 	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
 	$highlighted_text = highlight_string($code_text, TRUE);
 	$divClass = ($parm) ? $parm : 'code_highlight';
-	$ret = "<div class='".$tp -> toAttribute($divClass)."'>{$highlighted_text}</div>";
+	$ret = "<div class='".$tp -> toAttribute($divClass)."' style='unicode-bidi: embed; direction: ltr'>{$highlighted_text}</div>";
 }
 $ret = str_replace("[", "&#091;", $ret);
 return $ret;
