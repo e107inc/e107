@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-10-21 11:25:20 $
+|     $Revision: 1.48 $
+|     $Date: 2006-11-11 14:35:59 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -258,9 +258,9 @@ class poll
 		{
 			@include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 			@include_once(e_PLUGIN."poll/languages/English.php");
-			$pollArray['poll_allow_multiple'] = $pollArray['multipleChoice'];
 			if(isset($_POST['fpreview']))
 			{
+				$pollArray['poll_allow_multiple'] = $pollArray['multipleChoice'];
 				$optionArray = $pollArray['poll_option'];
 			}
 			else
