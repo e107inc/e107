@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-11-09 07:25:10 $
-|     $Author: lisa_ $
+|     $Revision: 1.15 $
+|     $Date: 2006-11-11 12:36:48 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -53,6 +53,25 @@ if (isset($_POST['deleteall'])) {
 	$message = $count." ".IMALAN_26;
 }
 
+if (isset($_POST['avdelete'])) {
+	require_once(e_HANDLER."avatar_handler.php");
+	foreach($_POST['avdelete'] as $key => $val)
+	{
+		$key = $tp->toDB($key); // We only need the key
+		if ($sql->db_Select("user", "*", "user_id='$key'")) {
+			$row = $sql->db_Fetch();
+			extract($row);
+			$avname=avatar($user_image);
+			if (strpos($avname,"http://")===FALSE) 
+			{ // Internal file, so unlink it
+				@unlink($avname);
+			}
+			$sql->db_Update("user","user_image='' WHERE user_id='$key'");
+			$message = IMALAN_51.$user_name." ".IMALAN_28;
+		}
+	}
+	$_POST['check_avatar_sizes'] = TRUE;	// Force size recheck after doing one or more deletes
+}
 
 if (isset($_POST['update_options'])) {
 	$pref['image_post'] = $_POST['image_post'];
@@ -139,6 +158,123 @@ if (isset($_POST['show_avatars'])) {
 	$ns->tablerender(IMALAN_18, $text);
 }
 
+if (isset($_POST['check_avatar_sizes'])) {
+	//
+	// Set up to track what we've done
+	//
+	$iUserCount  = 0;
+	$iAVinternal = 0;
+	$iAVexternal = 0;
+	$iAVnotfound = 0;
+	$iAVtoobig   = 0;
+	require_once(e_HANDLER."avatar_handler.php");
+	$text = "<div style='text-align:center'>\n";
+	$text .= "<div class='spacer'>
+		<form method='post' action='".e_SELF."'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<tr>
+		<td class='forumheader3'>".$pref['im_width']."</td>
+		<td class='forumheader3'>".IMALAN_38."</td>
+		</tr>
+		<tr>
+		<td class='forumheader3'>".$pref['im_height']."</td>
+		<td class='forumheader3'>".IMALAN_39."</td>
+		</tr>";
+	
+	//
+	// Loop through avatar field for every user
+	//
+	$iUserCount = $sql->db_Count("user");
+	if ($sql->db_Select("user", "*", "user_image!=''")) {
+		while ($row = $sql->db_Fetch()) {
+			extract($row);
+	
+	//
+	// Check size
+	//
+			$avname=avatar($user_image);
+			if (strpos($avname,"http://")!==FALSE) 
+			{
+				$iAVexternal++;
+				$bAVext=TRUE;
+			} else {
+				$iAVinternal++;
+				$bAVext=FALSE;
+			}
+			$image_stats = getimagesize($avname);
+			$sBadImage="";
+			if (!$image_stats)
+			{
+				$iAVnotfound++;
+				// allow delete
+				$sBadImage=IMALAN_42;
+			} else {
+				$imageWidth = $image_stats[0];
+				$imageHeight = $image_stats[1];
+				if ( ($imageHeight > $pref['im_height']) || ($imageWidth>$pref['im_width']) )
+				{ // Too tall or too wide
+					$iAVtoobig++;
+					if ($imageWidth > $pref['im_width']) {
+						$sBadImage = IMALAN_40." ($imageWidth)";
+					}
+					if ($imageHeight > $pref['im_height']) {
+						if (strlen($sBadImage))
+						{
+							$sBadImage .= ", ";
+						}
+						$sBadImage .= IMALAN_41." ($imageHeight)";
+					}
+				}
+			}
+	
+	// 
+	// If not found or too big, allow delete
+	//
+			if (strlen($sBadImage))
+			{
+				$sBadImage .=" [".$avname."]"; // Show all files that have a problem
+				$text .= "
+				<tr>
+				<td class='forumheader3'>
+				<input class='button' type='submit' name='avdelete[$user_id]' value='".($bAVext ? IMALAN_44 : IMALAN_43)."' />
+				</td>
+				<td class='forumheader3'>".IMALAN_51."<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a> ".$sBadImage."</td>
+				</tr>";
+			}
+		}
+	}
+	//
+	// Done, so show stats
+	//
+	$text .= "
+		<tr>
+		<td class='forumheader3'>".$iAVnotfound."</td>
+		<td class='forumheader3'>".IMALAN_45."</td>
+		</tr>
+		<tr>
+		<td class='forumheader3'>".$iAVtoobig."</td>
+		<td class='forumheader3'>".IMALAN_46."</td>
+		</tr>
+		<tr>
+		<td class='forumheader3'>".$iAVinternal."</td>
+		<td class='forumheader3'>".IMALAN_47."</td>
+		</tr>
+		<tr>
+		<td class='forumheader3'>".$iAVexternal."</td>
+		<td class='forumheader3'>".IMALAN_48."</td>
+		</tr>
+		<tr>
+		<td class='forumheader3'>".($iAVexternal+$iAVinternal)." (".(int)(100.0*(($iAVexternal+$iAVinternal)/$iUserCount)).'%, '.$iUserCount." ".IMALAN_50.")</td>
+		<td class='forumheader3'>".IMALAN_49."</td>
+		</tr>
+		</table>
+		</form>
+		</div>";
+
+	$text .= "</div>";
+
+	$ns->tablerender(IMALAN_37, $text);
+}
 
 
 $text = "<div style='text-align:center'>
@@ -217,6 +353,12 @@ $text .= "</select>
 	<td style='width:75%' class='forumheader3'>".IMALAN_16."</td>
 	<td style='width:25%;text-align:center' class='forumheader3'  >
 	<input class='button' type='submit' name='show_avatars' value='".IMALAN_17."' />
+	</td></tr>
+
+	<tr>
+	<td style='width:75%' class='forumheader3'>".IMALAN_36."</td>
+	<td style='width:25%;text-align:center' class='forumheader3'  >
+	<input class='button' type='submit' name='check_avatar_sizes' value='".IMALAN_17."' />
 	</td></tr>
 
 	<tr>
