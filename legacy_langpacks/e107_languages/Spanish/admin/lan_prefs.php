@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-08-12 17:23:21 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-11 11:02:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -160,7 +160,8 @@ define("PRFLAN_163", "ej. Nombre empresa, Dirección, Teléfono etc.");
 define("PRFLAN_164", "Permitir a los usuarios enviarse copia del email de contacto"); 
 define("PRFLAN_165", "Posible aviso de permitir ventana spam, usar con precaución");
 define("PRFLAN_166", "¿Mostrar imágenes de emoticono en el formulario de comentario?");
-define("PRFLAN_167", "Hacer opcional escribir dirección de correo"); // Posiblemente cabiará. 
+define("PRFLAN_167", "Hacer opcional escribir dirección de correo");
+define("PRFLAN_168", "Persona(s) de Contacto de la web"); 
 define("PRFLAN_169", "Si el grupo escogido contiene mas de una persona, el usuario será preguntado para seleccionar una persona del grupo."); 
 
 define("CUSTSIG_1", "¡Configuración Guardada!");

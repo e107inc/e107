@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_themes/reline/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-30 11:24:31 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-11 11:02:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-
 define("LAN_THEME_1", "Comentarios desactivados para este elemento");
-define("LAN_THEME_2", "Leer el resto...");
+define("LAN_THEME_2", "Leer/Enviar comentario:");
+define("LAN_THEME_3", "Leer el resto...");
 define("LAN_THEME_4", "Trackbacks: ");
 define("LAN_THEME_5", "Enviado por");
 define("LAN_THEME_6", "el");

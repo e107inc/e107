@@ -4,11 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Spanish.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-11 11:02:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
+define("PAGE_NAME","Estadísticas");
+
 define("ADSTAT_L1", "Este plugin registrará todas las visitas de su página, y creará varias pantallas con la información obtenida.");
 define("ADSTAT_L2", "El registro de estadísticas se instaló exitosamente.");
 define("ADSTAT_L3", "Registro estadístico");

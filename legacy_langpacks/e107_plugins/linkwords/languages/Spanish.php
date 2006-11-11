@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/linkwords/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-11 11:02:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -29,10 +29,11 @@ define("LWLAN_17", "Eliminar");
 define("LWLAN_18", "¿Esta seguro de eliminar esta palabra enlazada?");
 define("LWLAN_19", "Palabra enlazada eliminada.");
 define("LWLAN_20", "No encuentro la entrada de la palabra enlazada.");
+define("LWLAN_21", "Palabra a autoenlace.");
+define("LWLAN_22", "¿Activar?.");
 
 define("LWLANINS_1", "Palabras enlazadas");
 define("LWLANINS_2", "Este plugin enlaza palabras a un enlace determinado");
 define("LWLANINS_3", "Configurar palabras enlazadas");
 define("LWLANINS_4", "Para configurar, haga click en la seccion de plugins del menú del administrador");
-
 ?>

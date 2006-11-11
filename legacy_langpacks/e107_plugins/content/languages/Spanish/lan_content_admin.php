@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-11-10 19:17:12 $
+|     $Revision: 1.11 $
+|     $Date: 2006-11-11 11:02:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -86,6 +86,13 @@ define("CONTENT_ADMIN_CAT_LAN_60", "Asigne un icono");
 define("CONTENT_ADMIN_CAT_LAN_61", "Transfiera un nuevo icono");
 define("CONTENT_ADMIN_CAT_LAN_62", "Después de transferir un nuevo icono de categoría, puede asignar este icono arriba en en área 'icono'<br />Si transfiere un nuevo icono, este icono debe ser a 48 pixels, y adicionalmente se creará un icono a 16 pixels<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "Transferir icono");
+
+define("CONTENT_ADMIN_MANAGER_LAN_0","Aprobación enviada");
+define("CONTENT_ADMIN_MANAGER_LAN_1","Usuarios con esta clase pueden aprobar contenidos");
+define("CONTENT_ADMIN_MANAGER_LAN_2","Gestor personal");
+define("CONTENT_ADMIN_MANAGER_LAN_3","Usuarios con esta clase solo pueden gestionar sus contenidos");
+define("CONTENT_ADMIN_MANAGER_LAN_4","Gestor de categorías");
+define("CONTENT_ADMIN_MANAGER_LAN_5","Usuarios con esta clase pueden gestionar todos los contenidos en esta categoría");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Campos obligatorios en blanco");
 define("CONTENT_ADMIN_ITEM_LAN_1", "Contenido creado");
@@ -234,6 +241,7 @@ define("CONTENT_ADMIN_MAIN_LAN_13", "Puede crear nuevos contenidos en esta págin
 define("CONTENT_ADMIN_MAIN_LAN_14", "Puede fijar el orden de los contenidos en esta página. Click en el botón de las categorías principales mostradas abajo para comenzar a ordenar contenidos de la categoría principal seleccionada.");
 define("CONTENT_ADMIN_MAIN_LAN_15", "Puede gestionar categorías en esta página. Escoja la categoría principal en los botones listados debajo para mostrar una vista de todas la categorías y subcategorías de esta categoría principal.");
 define("CONTENT_ADMIN_MAIN_LAN_16", "Puede crear nuevas categorías en esta página. Por defecto, el formulario de creación para una nueva categoría principal se mostrará. Si quiere crear una subcategoría para una categoría principal existente, haga click en uno de los botones listados debajo para mostrar el formulario de creación de una subcategoría de la categoría principal seleccionada.");
+define("CONTENT_ADMIN_MAIN_LAN_17", "Por favor, cree una nueva categoría en la página <a href='".e_SELF."?type.0.cat.create'>Crear Nueva Categoría</a>");
 define("CONTENT_ADMIN_MAIN_LAN_18", "Convertir registros");
 define("CONTENT_ADMIN_MAIN_LAN_19", "
 Lo primero que debe hacer es una copia de su tabla de contenidos existentes así como su tabla de valoraciones y comentarios.<br />

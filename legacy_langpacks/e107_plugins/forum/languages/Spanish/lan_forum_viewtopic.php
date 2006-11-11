@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-02-14 21:30:55 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-11 11:02:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -51,7 +51,7 @@ define("LAN_403", "Mensaje");
 define("LAN_404", "No hay temas previos");
 define("LAN_405", "No hay más temas");
 define("LAN_406", "Moderador: Editar");
-define("LAN_407", "Moderador: Borrar");
+
 define("LAN_408", "Moderador: Mover");
 define("LAN_409", "¿Está seguro de querer borrar este tema con todas sus respuestas?");
 define("LAN_410", "¿Está seguro de querer borrar esta respuesta?");
@@ -79,6 +79,8 @@ define("LAN_430", "Encuesta");
 define("LAN_431", "Sindicalizar este hilo: rss 0.92");
 define("LAN_432", "Sindicalizar este hilo: rss 2.0");
 define("LAN_433", "Sindicalizar este hilo: RDF");
+
+define("LAN_435", "Moderador: Eliminar");
 
 define("FORLAN_26", "Respuesta borrada");
 define("FORLAN_10", "Comenzar nuevo tema");

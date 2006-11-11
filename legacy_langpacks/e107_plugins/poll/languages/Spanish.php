@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/poll/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-31 06:40:18 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-11 11:02:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -15,18 +15,19 @@ define("POLL_ADLAN03", "Configure las encuestas");
 define("POLL_ADLAN04", "El plugin encuestas se instaló correctamente. Para añadir encuestas, click en el icono de encuestas en el menu del Administrador->sección plugins, y recuerde de activar el bloque menú en la sección menús.");
 
 define("POLLAN_MENU_CAPTION", "Encuesta");
-define("POLL_1", "Encuestas existentes");
-define("POLL_2", "Crear/Editar encuestas");
-define("POLL_3", "Pregunta encuesta");
-define("POLL_4", "Opciones");
-define("POLL_5", "Editar");
-define("POLL_6", "Eliminar");
-define("POLL_7", "Sin encuestas todavía");
-define("POLL_8", "Añadir otra opción");
-define("POLL_9", "¿Permitir varias opciones?");
-define("POLL_10", "Si");
-define("POLL_11", "No");
-define("POLL_12", "Mostrar resultados");
+
+define("POLLAN_1", "Encuestas existentes");
+define("POLLAN_2", "Crear/Editar encuestas");
+define("POLLAN_3", "Pregunta encuesta");
+define("POLLAN_4", "Opciones");
+define("POLLAN_5", "Editar");
+define("POLLAN_6", "Eliminar");
+define("POLLAN_7", "Sin encuestas todavía");
+define("POLLAN_8", "Añadir otra opción");
+define("POLLAN_9", "¿Permitir varias opciones?");
+define("POLLAN_10", "Si");
+define("POLLAN_11", "No");
+define("POLLAN_12", "Mostrar resultados");
 define("POLLAN_13", "Después de votar");
 define("POLLAN_14", "Pulsando en el enlace de resultados - Los comentarios deben estar activos para usar esta opción");
 define("POLLAN_15", "Permitir votar en esta encuesta");
