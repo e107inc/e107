@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2006-11-08 16:44:58 $
+|     $Revision: 1.78 $
+|     $Date: 2006-11-11 03:41:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -229,7 +229,8 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
-
+			$udata = get_user_data($inp);
+			$peer = ($inp == USERID ? false : true);
 			$loginname = strip_tags($_POST['loginname']);
 
 			if (!$loginname)
@@ -238,6 +239,13 @@ if (isset($_POST['updatesettings']))
 				$row = $sql -> db_Fetch();
 				$loginname = $row['user_loginname'];
 			}
+			else
+			{
+				if(!check_class($pref['displayname_class'], $udata['user_class'], $peer))
+				{
+					$new_username = "user_name = '{$loginname}', ";
+				}
+			}
 
 			if (isset($_POST['username']) && check_class($pref['displayname_class']))
 			{
@@ -245,6 +253,7 @@ if (isset($_POST['updatesettings']))
 				$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
 				$new_username = "user_name = '{$username}', ";
 			}
+			
 
 			$_POST['signature'] = $tp->toDB($_POST['signature']);
 			$_POST['realname'] = $tp->toDB($_POST['realname']);
