@@ -17,7 +17,7 @@ SC_END
 
 SC_BEGIN CONTENT_TYPE_TABLE_HEADING
 global $CONTENT_TYPE_TABLE_HEADING, $contenttotal, $row, $tp;
-$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
+$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "emotes_off, no_make_clickable");
 return ($contenttotal != "0" ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
 SC_END
 
@@ -36,7 +36,7 @@ SC_END
 
 SC_BEGIN CONTENT_TYPE_TABLE_SUBHEADING
 global $CONTENT_TYPE_TABLE_SUBHEADING, $contenttotal, $row, $tp;
-$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
+$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "emotes_off, no_make_clickable");
 return ($row['content_subheading'] ? $row['content_subheading'] : "");
 SC_END
 

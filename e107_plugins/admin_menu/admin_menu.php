@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/admin_menu/admin_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-10-31 18:13:32 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-12 04:06:17 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,7 @@ if (ADMIN == TRUE) {
 		while ($row = $sql->db_Fetch()) {
 			include(e_PLUGIN.$row['plugin_path']."/plugin.php");
 			if ($eplug_conffile) {
-				$array_functions[] = array(e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, $tp->toHtml($eplug_name,"","defs"), "P".$row['plugin_id']);
+				$array_functions[] = array(e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, $tp->toHtml($eplug_name,"","defs,emotes_off, no_make_clickable"), "P".$row['plugin_id']);
 			}
 			unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
 		}

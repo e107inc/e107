@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.136 $
-|   $Date: 2006-11-10 06:54:18 $
-|   $Author: lisa_ $
+|   $Revision: 1.137 $
+|   $Date: 2006-11-12 04:03:44 $
+|   $Author: mrpete $
 +---------------------------------------------------------------+
 
 */
@@ -308,7 +308,7 @@ class newspost {
 
 				$text .= "<tr>
 				<td style='width:5%' class='forumheader3'>$news_id</td>
-				<td style='width:55%' class='forumheader3'><a href='".e_BASE."news.php?item.$news_id.$news_category'>".($news_title ? $tp->toHTML($news_title,"","no_make_clickable") : "[".NWSLAN_42."]")."</a></td>
+				<td style='width:55%' class='forumheader3'><a href='".e_BASE."news.php?item.$news_id.$news_category'>".($news_title ? $tp->toHTML($news_title,"","no_hook,emotes_off,no_make_clickable") : "[".NWSLAN_42."]")."</a></td>
 				<td style='20%' class='forumheader3'>";
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
@@ -757,7 +757,7 @@ class newspost {
 
 
 		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
-		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
+		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
 		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
 		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
 		$_PR['news_file'] = $_POST['news_file'];
@@ -1073,7 +1073,7 @@ class newspost {
 				$text .= "<tr>
 				<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
 				<td style='width:70%' class='forumheader3'>";
-				$text .= ($submitnews_auth == 0)? "<b>".$tp->toHTML($submitnews_title)."</b>": $tp->toHTML($submitnews_title);
+				$text .= ($submitnews_auth == 0)? "<b>".$tp->toHTML($submitnews_title,FALSE,"emotes_off, no_make_clickable")."</b>": $tp->toHTML($submitnews_title,FALSE,"emotes_off, no_make_clickable");
 				$text .= " [ ".NWSLAN_104." ".$submitnews_name." ".NWSLAN_108." ".date("D dS M y, g:ia", $submitnews_datestamp)."]<br />".$tp->toHTML($submitnews_item)."</td>
 				<td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
 				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :	NWSLAN_103;

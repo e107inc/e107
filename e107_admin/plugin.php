@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2006-10-31 18:13:32 $
-|     $Author: e107coders $
+|     $Revision: 1.68 $
+|     $Date: 2006-11-12 04:03:44 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -241,7 +241,7 @@ if ($action == 'uninstall')
 		{
 			$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
 		}
-		$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($eplug_name,"","defs"), $text);
+		$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($eplug_name,"","defs,emotes_off, no_make_clickable"), $text);
 		$text = "";
 		$plugin -> save_addon_prefs();
 	}
@@ -430,7 +430,7 @@ function render_plugs($pluginList){
 
 		$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
 		if ($eplug_conffile && $plug['plugin_installflag'] == TRUE) {
-			$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($eplug_name,"","defs");
+			$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($eplug_name,"","defs,emotes_off, no_make_clickable");
 			$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."' >".$plugin_icon.'</a>';
 		}
 
@@ -440,7 +440,7 @@ function render_plugs($pluginList){
 		<table style='width:100%'><tr><td style='text-align:left;width:40px;vertical-align:top'>
 		".$plugin_icon."
 		</td><td>
-		$img <b>".$tp->toHTML($plug['plugin_name'],FALSE,"defs")."</b><br />".EPL_ADLAN_11." {$plug['plugin_version']}
+		$img <b>".$tp->toHTML($plug['plugin_name'],FALSE,"defs,emotes_off, no_make_clickable")."</b><br />".EPL_ADLAN_11." {$plug['plugin_version']}
 		<br />";
 
 		$text .="</td>
@@ -540,7 +540,7 @@ function show_uninstall_confirm()
 	<form action='".e_SELF."?".e_QUERY."' method='post'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-		<td colspan='2' class='forumheader'>".EPL_ADLAN_54." ".$tp->toHtml($eplug_name,"","defs")."</td>
+		<td colspan='2' class='forumheader'>".EPL_ADLAN_54." ".$tp->toHtml($eplug_name,"","defs,emotes_off, no_make_clickable")."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3'>".EPL_ADLAN_55."</td>
@@ -567,7 +567,7 @@ function show_uninstall_confirm()
 	</table>
 	</form>
 	";
-	$ns->tablerender(EPL_ADLAN_63." ".$tp->toHtml($eplug_name,"","defs"), $text);
+	$ns->tablerender(EPL_ADLAN_63." ".$tp->toHtml($eplug_name,"","defs,emotes_off, no_make_clickable"), $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
