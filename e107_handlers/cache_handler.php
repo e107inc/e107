@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-11-11 23:43:36 $
+|     $Revision: 1.32 $
+|     $Date: 2006-11-12 22:14:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.31 $
+* @version     $Revision: 1.32 $
 * @author      $Author: mcfly_e107 $
 */
 class ecache {
@@ -42,7 +42,11 @@ class ecache {
 	function cache_fname($CacheTag) 
 	{
 		global $FILES_DIRECTORY;
-		if (isset($this)) 
+		if(strpos($CacheTag, "nomd5_") === 0)
+		{
+		  $CheckTag = '_nomd5';						// Add 'nomd5' to indicate we are not calculating an md5
+		}
+		elseif (isset($this)) 
 		{
 		  if (defined("THEME"))
 		  {
@@ -53,10 +57,6 @@ class ecache {
 				$this->CachenqMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
 			  }
 			  $CheckTag = '_nq_'.$this->CachenqMD5;	// Add 'nq' to indicate we are not using e_QUERY
-			}
-			elseif(strpos($CacheTag, "nomd5_") === 0)
-			{
-				$CheckTag = '_nomd5_';						// Add 'nomd5' to indicate we are not calculating an md5
 			}
 			else
 			{  // It's a page - need the query in the hash
