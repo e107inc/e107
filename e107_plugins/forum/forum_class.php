@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-11-12 04:07:19 $
-|     $Author: mrpete $
+|     $Revision: 1.62 $
+|     $Date: 2006-11-12 05:47:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -878,14 +878,15 @@ class e107forum
 			$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 		
-			$search 	= array("{PARENT_TITLE}");
-			$replace 	= array($tp->toHTML($forum_info['parent_name']));
+			$search 	= "{PARENT_TITLE}";
+			$replace 	= $tp->toHTML($forum_info['parent_name']);
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
 
 			if($forum_info['sub_parent'])
 			{
 				$search 	= array("{SUBPARENT_TITLE}", "{SUBPARENT_HREF}");
-				$replace 	= array($forum_info['sub_parent'], "href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'");
+				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == "*" ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
+				$replace 	= array($forum_sub_parent, "href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'");
 				$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
 			}
 			else
@@ -920,7 +921,8 @@ class e107forum
 			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>".$dfltsep;
 			if($forum_info['sub_parent'])
 			{
-				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a>".$dfltsep;
+				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == "*" ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 			
 			$tmpFname = $forum_info['forum_name'];
