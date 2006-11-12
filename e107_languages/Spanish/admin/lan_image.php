@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_image.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-12 10:45:57 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -43,4 +43,20 @@ define("IMALAN_32", "Solo Miembros");
 define("IMALAN_33", "Solo Administradores");
 define("IMALAN_34", "Activar Sleight");
 define("IMALAN_35", "Repara la transparencia PNG-24's con transparencia alfa en IE 5 / 6 (Aplicado Sitewide)");
+define("IMALAN_36", "Validar tamaño y acceso del avatar"); 
+define("IMALAN_37", "Validación de Avatar"); 
+define("IMALAN_38", "Ancho máx permitido"); 
+define("IMALAN_39", "Alto máx permitido"); 
+define("IMALAN_40", "Demasiado ancho");
+define("IMALAN_41", "Demasiado alto"); 
+define("IMALAN_42", "No encontrado"); 
+define("IMALAN_43", "Eliminar avatar transferido"); 
+define("IMALAN_44", "Eliminar referencias externas"); 
+define("IMALAN_45", "No encontrado"); 
+define("IMALAN_46", "Demasiado grande"); 
+define("IMALAN_47", "Total avatares transferidos"); 
+define("IMALAN_48", "Total avatares externos"); 
+define("IMALAN_49", "Usuarios con avatares"); 
+define("IMALAN_50", "Total"); 
+define("IMALAN_51", "Avatar para ");
 ?>
