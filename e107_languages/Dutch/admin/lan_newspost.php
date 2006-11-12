@@ -92,7 +92,7 @@ define("NWSLAN_103", "her-plaatsen");
 define("NWSLAN_104", "door");
 define("NWSLAN_105", "Aankruisen om het tijdstempel van het bericht in te stellen op de huidige tijd");
 define("NWSLAN_106", "Aanmelden nieuws beschikbaar voor:");
-define("NWSLAN_107", "Activeren HtmlArea op de nieuws aanmeld pagina.");
+define("NWSLAN_107", "Activeren tiny_mce op de nieuws aanmeld pagina.");
 define("NWSLAN_108", "op");
 define("NWSLAN_111", "Toon nieuwe datum koptekst");
 define("NWSLAN_112", "als dit veld is aangekruist, wordt een veld met de datum getoond boven de nieuwsberichten die op een nieuwe dag zijn geplaatst. Dit is nuttig om berichten van verschillende dagen te herkennen");

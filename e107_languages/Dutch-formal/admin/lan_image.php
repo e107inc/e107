@@ -48,4 +48,22 @@ define("IMALAN_32", "Alleen voor leden");
 define("IMALAN_33", "Alleen voor beheerders");
 define("IMALAN_34", "Mogelijk maken kunstgreep");
 define("IMALAN_35", "Herstelt transparente PNG-24's met alpha transparentie in IE 5 / 6 (geldt voor de hele site)");
+
+define("IMALAN_36", "Controleren avatar afmetingen en rechten");
+define("IMALAN_37", "Avatar controle");
+define("IMALAN_38", "Maximaal toegestane breedte");
+define("IMALAN_39", "Maximaal toegestane hoogte");
+define("IMALAN_40", "Te breed");
+define("IMALAN_41", "Te hoog");
+define("IMALAN_42", "Niet gevonden");
+define("IMALAN_43", "Verwijder ge-uploade avatar");
+define("IMALAN_44", "verwijder externe referentie");
+define("IMALAN_45", "Niet gevonden");
+define("IMALAN_46", "To groot");
+define("IMALAN_47", "Totaal ge-uploade avatars");
+define("IMALAN_48", "Totaal externe avatars");
+define("IMALAN_49", "Gebruikers met avatar");
+define("IMALAN_50", "Totaal");
+define("IMALAN_51", "Avatar voor ");
+
 ?>

@@ -146,6 +146,7 @@ define('EC_LAN_140', "Toekomstige gebeurtenissen");
 define('EC_LAN_141', "Geen toekomstige gebeurtenissen");
 define('EC_LAN_142', "Alleen geregistreerde en ingelogde gebruikers kunnen zich abonneren op gebeurtenissen");
 define('EC_LAN_143', "Functie niet beschikbaar");
+define('EC_LAN_144', " om ");
 
 define('EC_ADLAN_A10', "Configuratie");
 define('EC_ADLAN_A11', "Categorieën");
