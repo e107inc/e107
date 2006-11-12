@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-10-16 22:47:44 $
-|     $Author: e107coders $
+|     $Revision: 1.53 $
+|     $Date: 2006-11-12 22:14:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -199,15 +199,15 @@ class e107{
 		if(function_exists("memory_get_usage")){
 			$memusage = memory_get_usage();
 			$memunit = 'b';
-			if ($memusage > 1024){
+			if ($memusage > 1048576){
 				$memusage = $memusage / 1024;
 				$memunit = 'kb';
 			}
-			if ($memusage > 1024){
+			if ($memusage > 1048576){
 				$memusage = $memusage / 1024;
 				$memunit = 'mb';
 			}
-			if ($memusage > 1024){
+			if ($memusage > 1048576){
 				$memusage = $memusage / 1024;
 				$memunit = 'gb';
 			}
