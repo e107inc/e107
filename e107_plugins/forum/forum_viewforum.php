@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-11-10 19:17:35 $
+|     $Revision: 1.61 $
+|     $Date: 2006-11-12 05:47:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -80,7 +80,8 @@ if (!$FORUM_VIEW_START) {
 $forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook, emotes_off');
 $forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE, 'no_hook');
 
-define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
+$_forum_name = (substr($forum_info['forum_name'], 0, 1) == "*" ? substr($forum_info['forum_name'], 1) : $forum_info['forum_name']);
+define("e_PAGETITLE", LAN_01." / ".$_forum_name);
 define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 $message = "";
