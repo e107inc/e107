@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2006-11-09 16:55:31 $
+|     $Revision: 1.71 $
+|     $Date: 2006-11-12 04:07:19 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -257,7 +257,7 @@ if (!$FORUMSTART) {
 	}
 }
 
-$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
+$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE,'no_hook,emotes_off');
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

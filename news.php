@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.110 $
-|     $Date: 2006-11-11 14:16:25 $
+|     $Revision: 1.111 $
+|     $Date: 2006-11-12 04:10:29 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -568,7 +568,7 @@ function renderCache($cache, $nfp = FALSE){
 function render_newscats(){  // --  CNN Style Categories. ----
 	global $pref,$ns,$tp;
 	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
-		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak');
+		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak,emotes_off,no_make_clickable');
 		$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
 	}
 }

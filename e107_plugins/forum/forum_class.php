@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-11-09 16:55:31 $
+|     $Revision: 1.61 $
+|     $Date: 2006-11-12 04:07:19 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -894,7 +894,9 @@ class e107forum
 			}
 
 			$search 	= array("{FORUM_TITLE}", "{FORUM_HREF}");
-			$replace 	= array($forum_info['forum_name'],"href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'");
+			$tmpFname = $forum_info['forum_name'];
+			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
+			$replace 	= array($tmpFname,"href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'");
 			$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
 
 			if(strlen($thread_title))
@@ -921,12 +923,14 @@ class e107forum
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a>".$dfltsep;
 			}
 			
+			$tmpFname = $forum_info['forum_name'];
+			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
 			if ($forum_href)
 			{
-				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook')."</a>";
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$tp->toHTML($tmpFname, TRUE, 'no_hook,emotes_off')."</a>";
 			} else
 			{
-				$BREADCRUMB .= $forum_info['forum_name'];
+				$BREADCRUMB .= $tmpFname;
 			}
 
 			if(strlen($thread_title))

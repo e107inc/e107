@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-10-30 16:12:20 $
-|     $Author: lisa_ $
+|     $Revision: 1.14 $
+|     $Date: 2006-11-12 04:14:44 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -138,7 +138,7 @@ if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) {
 		extract($row);
 		$text .= "<tr>
 			<td style='width:5%' class='forumheader3'>$poll_id</td>
-			<td style='width:75%' class='forumheader3'>".$tp -> toHTML($poll_title, TRUE,"emotes_off defs")."</td>
+			<td style='width:75%' class='forumheader3'>".$tp -> toHTML($poll_title, TRUE,"no_hook emotes_off defs")."</td>
 			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$poll_id}", POLLAN_5, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\""). $rs->form_button("submit", "main_delete_{$poll_id}", POLLAN_6, "onclick=\"confirm_($poll_id)\"")."
 			</div></td>
 			</tr>";

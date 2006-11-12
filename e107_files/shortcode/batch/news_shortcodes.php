@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-07-06 03:28:50 $
-|     $Author: e107coders $
+|     $Revision: 1.25 $
+|     $Date: 2006-11-12 04:04:59 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -24,7 +24,7 @@ SC_BEGIN NEWSTITLE
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return $tp -> toHTML($news_item['news_title'], TRUE, 'parse_sc');
+return $tp -> toHTML($news_item['news_title'], TRUE, 'parse_sc,no_hook,emotes_off, no_make_clickable');
 SC_END
 
 SC_BEGIN NEWSBODY
@@ -203,7 +203,7 @@ SC_BEGIN CAPTIONCLASS
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_title = $tp -> toHTML($news_item['news_title'], TRUE);
+$news_title = $tp -> toHTML($news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
 return "<div class='category".$news_item['news_category']."'>".($news_item['news_render_type'] == 1 ? "<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 SC_END
 
@@ -211,7 +211,7 @@ SC_BEGIN ADMINCAPTION
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_title = $tp -> toHTML($news_item['news_title'], TRUE);
+$news_title = $tp -> toHTML($news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
 return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($news_item['news_render_type'] == 1 ? "<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 SC_END
 

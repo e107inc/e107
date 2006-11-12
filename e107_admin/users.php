@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2006-11-07 20:16:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.87 $
+|     $Date: 2006-11-12 04:03:44 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -444,7 +444,7 @@ class users{
 		if ($sql->db_Select("userclass_classes")) {
 			while ($row = $sql->db_Fetch())
 			{
-				$class[$row['userclass_id']] = $tp->toHTML($row['userclass_name'],"","defs");
+				$class[$row['userclass_id']] = $tp->toHTML($row['userclass_name'],"","defs,emotes_off, no_make_clickable");
 			}
 		}
 

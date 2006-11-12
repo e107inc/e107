@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2006-11-08 16:27:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.67 $
+|     $Date: 2006-11-12 04:04:27 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -729,7 +729,7 @@ class comment {
 						$row2 = $sql2 -> db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_1;
-						$ret['comment_title']				= $tp -> toHTML($row2['news_title'], TRUE);
+						$ret['comment_title']				= $tp -> toHTML($row2['news_title'], TRUE,'emotes_off, no_make_clickable');
 						$ret['comment_url']					= e_BASE."comment.php?comment.news.".$row['comment_item_id'];
 						$ret['comment_category_heading']	= COMLAN_TYPE_1;
 						$ret['comment_category_url']		= e_BASE."news.php";
@@ -745,7 +745,7 @@ class comment {
 						$row2 = $sql2->db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_2;
-						$ret['comment_title']				= $tp -> toHTML($row2['download_name'], TRUE);
+						$ret['comment_title']				= $tp -> toHTML($row2['download_name'], TRUE,'emotes_off, no_make_clickable');
 						$ret['comment_url']					= e_BASE."download.php?view.".$row['comment_item_id'];
 						$ret['comment_category_heading']	= $row2['download_category_name'];
 						$ret['comment_category_url']		= e_BASE."download.php?list.".$row2['download_category_id'];
@@ -757,7 +757,7 @@ class comment {
 						$row2 = $sql2 -> db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_3;
-						$ret['comment_title']				= $tp -> toHTML($row2['faq_question'], TRUE);
+						$ret['comment_title']				= $tp -> toHTML($row2['faq_question'], TRUE,'emotes_off, no_make_clickable');
 						$ret['comment_url']					= e_PLUGIN."faq/faq.php?view.".$row2['comment_item_id'];
 					}
 				*/
@@ -767,7 +767,7 @@ class comment {
 						$row2 = $sql2 -> db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_4;
-						$ret['comment_title']				= $tp -> toHTML($row2['poll_title'], TRUE);
+						$ret['comment_title']				= $tp -> toHTML($row2['poll_title'], TRUE,'emotes_off, no_make_clickable');
 						$ret['comment_url']					= e_BASE."comment.php?comment.poll.".$row['comment_item_id'];
 					}
 				/*
@@ -782,7 +782,7 @@ class comment {
 						$row2 = $sql2 -> db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_6;
-						$ret['comment_title']				= $tp -> toHTML($row2['bugtrack2_bugs_summary'], TRUE);
+						$ret['comment_title']				= $tp -> toHTML($row2['bugtrack2_bugs_summary'], TRUE,'emotes_off, no_make_clickable');
 						$ret['comment_url']					= e_PLUGIN."bugtracker2/bugtracker2.php?0.bug.".$row['comment_item_id'];
 					}
 				//	ideas (should use an e_comment.php file)
@@ -791,7 +791,7 @@ class comment {
 						$row2 = $sql2 -> db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_7;
-						$ret['comment_title']				= $tp -> toHTML($row2['ideas_summary'], TRUE);
+						$ret['comment_title']				= $tp -> toHTML($row2['ideas_summary'], TRUE,'emotes_off, no_make_clickable');
 						$ret['comment_url']					= e_PLUGIN."ideas/ideas.php?show.".$row['comment_item_id'];
 					}
 				*/
@@ -813,7 +813,7 @@ class comment {
 							if($sql2 -> db_Select_gen($qryp)){
 								$row2 = $sql2 -> db_Fetch();
 								$ret['comment_type']				= $var['plugin_name'];
-								$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE);
+								$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
 								$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 								$ret['comment_category_heading']	= $var['plugin_name'];
 								$ret['comment_category_url']		= $var['plugin_name'];
@@ -824,7 +824,7 @@ class comment {
 						if($sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' ")){
 							$row2 = $sql2 -> db_Fetch();
 							$ret['comment_type']				= $var['plugin_name'];
-							$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE);
+							$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
 							$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 							$ret['comment_category_heading']	= $var['plugin_name'];
 							$ret['comment_category_url']		= $var['plugin_name'];

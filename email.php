@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-10-24 13:34:14 $
+|     $Revision: 1.20 $
+|     $Date: 2006-11-12 04:10:22 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -46,8 +46,8 @@ $parms = $qs[1];
 
 $emailurl = ($source == "referer") ? $_SERVER['HTTP_REFERER'] : SITEURL;
 
-$comments = $tp->post_toHTML($_POST['comment'], TRUE, 'retain_nl');
-$author = $tp->post_toHTML($_POST['author_name']);
+$comments = $tp->post_toHTML($_POST['comment'], TRUE, 'retain_nl emotes_off no_make_clickable');
+$author = $tp->post_toHTML($_POST['author_name'],FALSE,"emotes_off, no_make_clickable");
 $email_send = check_email($_POST['email_send']);
 
 
