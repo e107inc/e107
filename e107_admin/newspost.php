@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.137 $
-|   $Date: 2006-11-12 04:03:44 $
-|   $Author: mrpete $
+|   $Revision: 1.138 $
+|   $Date: 2006-11-12 18:48:14 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -388,12 +388,12 @@ class newspost {
 				if (e_WYSIWYG)
 				{
 					$_POST['data'] .= "<br /><b>".NWSLAN_49." ".$submitnews_name."</b>";
-					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":	"";
+					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='{e_IMAGE}newspost_images/".$submitnews_file."' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":	"";
 				}
 				else
 				{
 					$_POST['data'] .= "\n[[b]".NWSLAN_49." ".$submitnews_name."[/b]]";
-					$_POST['data'] .= ($submitnews_file)?"\n\n[img]{E_IMAGE}newspost_images/".$submitnews_file."[/img]": "";
+					$_POST['data'] .= ($submitnews_file)?"\n\n[img]{e_IMAGE}newspost_images/".$submitnews_file."[/img]": "";
 				}
 				$_POST['cat_id'] = $submitnews_category;
 			}
