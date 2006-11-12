@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-10-22 14:13:38 $
+|     $Revision: 1.66 $
+|     $Date: 2006-11-12 02:24:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -223,7 +223,7 @@ class links
 
 	function dropdown($curval="", $lid=0, $indent=0)
 	{   // Drop-down list using on the parent_id. :)
-		global $linkArray,$id;
+		global $linkArray,$id,$sub_action;
 
 		if(0 == $indent) {$ret = "<option value=''>".LINKLAN_3."</option>\n";}
 		foreach($linkArray[$lid] as $l)
@@ -232,9 +232,15 @@ class links
 			$thename = $this->linkName($l['link_name']);
 			 // prevent making self the parent.
 			if ($l['link_id'] == $id) { $thename = "(".$thename.")"; }
-			$thelink = ($l['link_id'] != $id) ? $l['link_id'] : $l['link_parent'] ;
-
-			$ret .= "<option value='".$thelink."' {$s}>".str_pad("", $indent*36, "&nbsp;").$thename."</option>\n";
+			if($sub_action == "sub")
+			{
+				$thelink = ($l['link_id'] != $lid) ? $l['link_id'] : $l['link_parent'] ;
+            }
+			else
+			{
+            	$thelink = ($l['link_id'] != $id) ? $l['link_id'] : $l['link_parent'] ;
+			}
+			$ret .= "<option value='".$thelink."' {$s}>".str_pad("", $indent*36, "&nbsp;").$thename." </option>\n";
 
 			if(array_key_exists($l['link_id'], $linkArray))
 			{
@@ -313,7 +319,7 @@ class links
 		global $sql, $rs, $ns, $tp, $linkArray,$previous_cat;
 		extract($row2);
 
-		// 
+		//
 		if($link_category > 1 && $link_category != $previous_cat)
 		{
         	$text .= "

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2006-10-30 03:53:20 $
+|     $Revision: 1.102 $
+|     $Date: 2006-11-12 02:24:21 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -178,7 +178,10 @@ class sitelinks
 			}
 			$indent = ($style['linkdisplay'] != 3) ? $style['subindent'] : "";
 		}
-
+		if(strpos($linkInfo['link_url'],"{")) // support for shortcodes in URLs (dynamic urls).
+		{
+        	$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE);
+		}
 		// By default links are not highlighted.
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
