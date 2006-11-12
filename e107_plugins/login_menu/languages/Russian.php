@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.6 $
-|     $Date: 2006-11-12 08:59:28 $
+|     $Revision: 1.7 $
+|     $Date: 2006-11-12 09:02:28 $
 |     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ define('LOGIN_MENU_L38', 'Настройки обновлены');
 
 define('LOGIN_MENU_L39', 'Покинуть Админцентр'); //Leave Admin
 
-define("LOGIN_MENU_L40", "Активация"); //ReSend Activation Email
+define("LOGIN_MENU_L40", "Повторная активация"); //ReSend Activation Email
 define("LOGIN_MENU_L41", "Настройки Меню Входа");
 	
 ?>
