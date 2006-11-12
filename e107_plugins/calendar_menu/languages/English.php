@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-11-06 22:30:23 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2006-11-12 13:34:57 $
+|     $Author: mrpete $
 |
 | Various mods by steved:
 |	a) To reflect updates
@@ -234,6 +234,7 @@ define('EC_LAN_141', "No forthcoming events");
 define('EC_LAN_142', "Only registered and logged in users can subscribe to events");
 define('EC_LAN_143', "Facility not available");
 
+define('EC_LAN_144', " at ");
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");

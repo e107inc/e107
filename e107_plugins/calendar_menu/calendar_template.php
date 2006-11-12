@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-11-06 22:30:22 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-12 13:35:17 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -228,7 +228,7 @@ $CALENDAR_MENU_DAY_END['4'] = "</td>";
 
 //============================================================================
 // Next event menu template
-$sc_style['NEXT_EVENT_TIME']['pre'] = " at ";
+$sc_style['NEXT_EVENT_TIME']['pre'] = EC_LAN_144;
 $sc_style['NEXT_EVENT_TIME']['post'] = "";
 $sc_style['NEXT_EVENT_ICON']['pre'] = "";
 $sc_style['NEXT_EVENT_ICON']['post'] = "&nbsp;";
