@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_menu_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-11-13 10:43:48 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-13 10:48:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ $NEWSFEED_MENU_START = "\n\n<!-- Start NewsFeed Menu -->
 ";
 
 $NEWSFEED_MENU = "
-<tr><td class='newsfeed_menu_cell' style='vertical-align:top;width:5%'><b>&raquo;</b></td><td>{FEEDITEMLINK}<br /><span class='smalltext'>{FEEDITEMTEXT}</span></td></tr>\n";
+<tr><td style='vertical-align:top;width:5%'><b>&raquo;</b></td><td class='newsfeed_menu_cell' >{FEEDITEMLINK}<br /><span class='smalltext'>{FEEDITEMTEXT}</span></td></tr>\n";
 
 $NEWSFEED_MENU_END = "</table><br />
 
