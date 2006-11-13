@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2006-11-12 02:24:21 $
+|     $Revision: 1.103 $
+|     $Date: 2006-11-13 13:23:26 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -178,9 +178,11 @@ class sitelinks
 			}
 			$indent = ($style['linkdisplay'] != 3) ? $style['subindent'] : "";
 		}
-		if(strpos($linkInfo['link_url'],"{")) // support for shortcodes in URLs (dynamic urls).
-		{
-        	$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE);
+
+		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'],TRUE); // replace {e_xxxx}
+
+		if(strpos($linkInfo['link_url'],"{") !== FALSE){
+			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
 		// By default links are not highlighted.
 		$linkstart = $style['linkstart'];
@@ -209,9 +211,9 @@ class sitelinks
 
 			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
-				$href = " href=\"javascript:open_window('".$tp -> replaceConstants($linkInfo['link_url'],TRUE)."',{$dimen})\"";
+				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."',{$dimen})\"";
 			} else {
-				$href = " href='".$tp -> replaceConstants($linkInfo['link_url'],TRUE)."'";
+				$href = " href='".$linkInfo['link_url']."'";
 			}
 
 			// Open link in a new window.  (equivalent of target='_blank' )
