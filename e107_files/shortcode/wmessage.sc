@@ -1,4 +1,4 @@
-// $Id: wmessage.sc,v 1.16 2006-11-13 09:37:14 e107coders Exp $
+// $Id: wmessage.sc,v 1.17 2006-11-13 10:21:17 e107coders Exp $
 $prefwmsc = isset($pref['wmessage_sc']) && $pref['wmessage_sc'];
 if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 	return;
@@ -53,7 +53,8 @@ if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 			$qry = "
 			SELECT * FROM #generic
 			WHERE gen_type ='wmessage' AND gen_intdata IN (".USERCLASS_LIST.")";
-
+            $wmessage = "";
+			$wmcaption = "";
 			if($sql->db_Select_gen($qry))
 			{
 				while ($row = $sql->db_Fetch())
