@@ -1,11 +1,10 @@
-// $Id: wmessage.sc,v 1.15 2006-10-21 11:03:49 mrpete Exp $
+// $Id: wmessage.sc,v 1.16 2006-11-13 09:37:14 e107coders Exp $
 $prefwmsc = isset($pref['wmessage_sc']) && $pref['wmessage_sc'];
 if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 	return;
 }
 
 	global $e107,$e107cache;
-
 
 
 	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
@@ -29,6 +28,15 @@ if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 		$full_url = ((strpos($pref['frontpage']['252'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['252'];
 	}
 	list($front_url,$front_qry) = explode("?",$full_url."?"); // extra '?' ensure the array is filled
+
+	if($parm == "ignore_query"){
+    	$front_qry = e_QUERY;
+	}
+
+	if($parm == "force"){
+    	$front_url = e_SELF;
+		$front_qry = e_QUERY;
+	}
 
 	if (e_SELF == $front_url && e_QUERY == $front_qry) {
 		global $sql, $pref, $tp, $ns;
