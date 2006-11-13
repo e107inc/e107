@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-11-04 18:26:47 $
+|     $Revision: 1.17 $
+|     $Date: 2006-11-13 10:43:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -184,11 +184,11 @@ if(!function_exists("newsfeed_info"))
 
 		if($which == 'all')
 		{
-			$ret['title'] = NFLAN_38;
+			$ret['title'] = $NEWSFEED_MENU_CAPTION;
 		}
 		else
 		{
-			$ret['title'] = $newsfeed_name." ".NFLAN_38;
+			$ret['title'] = $newsfeed_name." ".$NEWSFEED_MAIN_CAPTION;
 		}
 		$ret['text'] = $text;
 
