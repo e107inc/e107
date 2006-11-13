@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Dutch-formal.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-30 22:20:12 $
+|     $Revision: 1.6 $
+|     $Date: 2006-11-13 20:23:37 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ define("POLLAN_23", "Opstellen peiling");
 define("POLLAN_24", "Voorvertoning");
 define("POLLAN_25", "Schonen formulier");
 define("POLLAN_26", "stemmen");
-define("POLLAN_27", "reacties");
+define("POLLAN_27", "Reacties");
 define("POLLAN_28", "Voorgaande peilingen");
 define("POLLAN_29", "geplaatst door");
 define("POLLAN_30", "Stem uitbrengen");
