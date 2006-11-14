@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/calendar_menu/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-10 19:17:12 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-14 07:05:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -221,6 +221,7 @@ define('EC_LAN_140', "Próximos eventos");
 define('EC_LAN_141', "Eventos no próximos");
 define('EC_LAN_142', "Solo usuarios registrados y conectados pueden suscribirse a los eventos"); 
 define('EC_LAN_143', "Facilidad no disponible"); 
+define('EC_LAN_144', " en ");
 
 define('EC_ADLAN_A10', "Configuración");
 define('EC_ADLAN_A11', "Categorias");
