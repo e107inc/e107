@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-07-09 19:51:06 $
-|     $Author: e107coders $
+|     $Revision: 1.55 $
+|     $Date: 2006-11-14 18:45:22 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -47,7 +47,11 @@ $no_core_css = TRUE;
 
 $layout = "_default";
 
-$HEADER = "<table class='top_section'>
+$HEADER = "<table class='page_container'>
+<tr>
+<td>
+
+<table class='top_section'>
 <tr>
 <td class='top_section_left' style='width: 190px; padding-left: 5px; padding-right: 5px'>
 {LOGO}
@@ -101,6 +105,9 @@ $FOOTER = "<br />
 {SITEDISCLAIMER}
 <br /><br />
 </div>
+</td>
+</tr>
+</table>
 ";
 
 
