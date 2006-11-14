@@ -37,7 +37,7 @@ define("LAN_123", "Aanmelden");
 define("LAN_185", "Je hebt een verplicht veld niet ingevuld");
 define("LAN_201", "Ja");
 define("LAN_200", "Nee");
-define("LAN_202", "Aanmelding mislukt");
+define("LAN_202", "Je hebt al een account. Als je je wachtwoord niet meer weet, klik dan op de 'Wachtwoord vergeten' link.");
 define("LAN_309", "Vul je gegevens hieronder in. ");
 define("LAN_399", "Ga verder");
 define("LAN_400", "Gebruikersnamen en wachtwoorden zijn <b>hoofdlettergevoelig</b>");
@@ -105,6 +105,7 @@ define("LAN_SIGNUP_49", "Als je registreerde met een onjuist e-mailadres, voer d
 define("LAN_SIGNUP_50", "Nieuw e-mailadres");
 define("LAN_SIGNUP_51", "Oude wachtwoord");
 define("LAN_SIGNUP_52", "Onjuist wachtwoord");
+define("LAN_SIGNUP_53", "validatie van het veld is mislukt");
 
 define("LAN_LOGINNAME", "Inlognaam");
 define("LAN_PASSWORD", "Wachtwoord");
