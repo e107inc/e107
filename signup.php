@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2006-11-07 23:57:08 $
+|     $Revision: 1.102 $
+|     $Date: 2006-11-14 14:55:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -503,12 +503,32 @@ if (isset($_POST['register']))
 	{
 		if(isset($_POST['ue']['user_'.$ext['user_extended_struct_name']]))
 		{
-			$newval = $_POST['ue']['user_'.$ext['user_extended_struct_name']];
-			if($ext['user_extended_struct_required'] == 1 && trim($newval) == "" )
+
+			$newval = trim($_POST['ue']['user_'.$ext['user_extended_struct_name']]);
+			if($ext['user_extended_struct_required'] == 1 && $newval == "" )
 			{
 				$_ftext = (defined($ext['user_extended_struct_text']) ? constant($ext['user_extended_struct_text']) : $ext['user_extended_struct_text']);
 				$error_message .= LAN_SIGNUP_6.$_ftext.LAN_SIGNUP_7."\\n";
 				$error = TRUE;
+			}
+			$parms = explode("^,^", $ext['user_extended_struct_parms']);
+			$regex = (isset($parms[1]) ? $tp->toText($parms[1]) : "");
+			$regexfail = (isset($parms[2]) ? trim($tp->toText($parms[2])) : "");
+
+			if($regexfail == "")
+			{
+				$regexfail = $ext['user_extended_struct_name']." ".LAN_SIGNUP_53;
+			}
+	
+			if(defined($regexfail)) {$regexfail = constant($regexfail);}
+
+			if($regex != "" && $newval != "")
+			{
+				if(!preg_match($regex, $newval))
+				{
+					$error_message .= $regexfail."\\n";
+					$error = TRUE;
+				}
 			}
 		}
 	}
