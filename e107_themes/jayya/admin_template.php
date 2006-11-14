@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-12-14 19:28:52 $
+|     $Revision: 1.19 $
+|     $Date: 2006-11-14 18:45:22 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,11 @@ $style = "default";
 
 // [layout]
 
-$ADMIN_HEADER = "<table class='top_section'>
+$ADMIN_HEADER = "<table class='page_container'>
+<tr>
+<td>
+
+<table class='top_section'>
 <tr>
 <td class='top_section_left' style='padding-left: 5px; padding-right: 5px'>
 {ADMIN_LOGO}
@@ -131,6 +135,9 @@ $ADMIN_FOOTER .= "</tr>
 {ADMIN_CREDITS}
 <br />
 </div>
+</td>
+</tr>
+</table>
 ";
 
 

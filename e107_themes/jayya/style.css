@@ -125,6 +125,12 @@ ul {
 
 /* Theme Specific Classes */
 
+.page_container {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
 .top_section, .main_section {
 	width: 100%;
 	background-color: #fff;
