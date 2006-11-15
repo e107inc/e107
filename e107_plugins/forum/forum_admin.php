@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-10-27 02:07:13 $
-|     $Author: e107coders $
+|     $Revision: 1.44 $
+|     $Date: 2006-11-15 01:06:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
@@ -83,7 +83,7 @@ if(isset($_POST['tools']))
 	{
 		if(isset($_POST['counts']))
 		{
-			$for->forum_update_counts($fid);
+			$for->forum_update_counts($fid, $_POST['counts_threads']);
 			$msg .= FORLAN_167.": $fid <br />";
 		}
 		if(isset($_POST['lastpost']))
@@ -942,7 +942,7 @@ class forum
 			{
 				$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
 			}
-			$txt .= "<input type='checkbox' name='forum_all' value='1' /> ".FORLAN_157;
+			$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".FORLAN_157."</strong>";
 		}
 		$txt .= "
 		</td>
@@ -961,7 +961,8 @@ class forum
 		</tr>
 		<tr>
 		<td class='forumheader3'>
-		<input type='checkbox' name='counts' value='1' /> ".FORLAN_162."<br />
+			<input type='checkbox' name='counts' value='1' /> ".FORLAN_162."<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='counts_threads' value='1' /><span style='text-align: center'> ".FORLAN_182."<br />".FORLAN_183."</span><br />
 		</td>
 		</tr>
 		<tr>
