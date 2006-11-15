@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2006-11-15 02:11:47 $
+|     $Revision: 1.65 $
+|     $Date: 2006-11-15 12:57:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -565,7 +565,7 @@ class e107forum
 	{
 		$thread_id = intval($thread_id);
 		global $sql;
-		return $sql->db_Count('forum_t', '(*)', "WHERE thread_parent = $thread_id", true)+1;
+		return $sql->db_Count('forum_t', '(*)', "WHERE thread_parent = $thread_id")+1;
 	}
 
 	function thread_count_list($thread_list)
