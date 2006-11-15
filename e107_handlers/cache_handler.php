@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-11-12 22:14:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.33 $
+|     $Date: 2006-11-15 09:04:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,14 +24,14 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.32 $
-* @author      $Author: mcfly_e107 $
+* @version     $Revision: 1.33 $
+* @author      $Author: streaky $
 */
 class ecache {
 
 	var $CachePageMD5;
 	var $CachenqMD5;
-	
+
 	/**
 	* @return string
 	* @param string $query
@@ -39,37 +39,31 @@ class ecache {
 	* @scope private
 	* If the tag begins 'menu_', e_QUERY is not included in the hash which creates the file name
 	*/
-	function cache_fname($CacheTag) 
-	{
+	function cache_fname($CacheTag) {
 		global $FILES_DIRECTORY;
-		if(strpos($CacheTag, "nomd5_") === 0)
-		{
-		  $CheckTag = '_nomd5';						// Add 'nomd5' to indicate we are not calculating an md5
+		if(strpos($CacheTag, "nomd5_") === 0) {
+			// Add 'nomd5' to indicate we are not calculating an md5
+			$CheckTag = '_nomd5';
 		}
-		elseif (isset($this)) 
-		{
-		  if (defined("THEME"))
-		  {
-			if (strpos($CacheTag, "nq_") === 0)
-			{  // We do not care about e_QUERY, so don't use it in the md5 calculation
-			  if (!$this->CachenqMD5) 
-			  {  
-				$this->CachenqMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
-			  }
-			  $CheckTag = '_nq_'.$this->CachenqMD5;	// Add 'nq' to indicate we are not using e_QUERY
+		elseif (isset($this)) {
+			if (defined("THEME")) {
+				if (strpos($CacheTag, "nq_") === 0)	{
+					// We do not care about e_QUERY, so don't use it in the md5 calculation
+					if (!$this->CachenqMD5) {
+						$this->CachenqMD5 = md5(e_BASE.(is_defined("ADMIN") && ADMIN == true ? "admin" : "").e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
+					}
+					// Add 'nq' to indicate we are not using e_QUERY
+					$CheckTag = '_nq_'.$this->CachenqMD5;
+					
+				} else {
+					// It's a page - need the query in the hash
+					if (!$this->CachePageMD5) {
+						$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.e_QUERY.filemtime(THEME.'theme.php'));
+					}
+					$CheckTag = '_'.$this->CachePageMD5;
+				}
 			}
-			else
-			{  // It's a page - need the query in the hash
-			  if (!$this->CachePageMD5) 
-			  {
-				$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.e_QUERY.filemtime(THEME.'theme.php'));
-			  }
-			  $CheckTag = '_'.$this->CachePageMD5;
-			}
-		  }
-		}
-		else 
-		{
+		} else {
 			$CheckTag = '';
 		}
 		$q = preg_replace("#\W#", "_", $CacheTag);
