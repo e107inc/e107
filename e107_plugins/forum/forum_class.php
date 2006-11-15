@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2006-11-15 01:06:17 $
+|     $Revision: 1.64 $
+|     $Date: 2006-11-15 02:11:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -836,12 +836,12 @@ class e107forum
 		$sql->db_Update("forum", "forum_threads='$threads', forum_replies='$replies' WHERE forum_id='$forumID'");
 		if($recalc_threads == true)
 		{
-			$sql->db_Select('forum_t', 'thread_id', "thread_forum_id = $forumID AND thread_parent = 0");
+			$sql->db_Select("forum_t", "thread_parent, count(*) as replies", "thread_forum_id = $forumID GROUP BY thread_parent");
 			$tlist = $sql->db_getList();
 			foreach($tlist as $t)
 			{
-				$tid = $t['thread_id'];
-				$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_parent = {$tid}");
+				$tid = $t['thread_parent'];
+				$replies = intval($t['replies']);
 				$sql->db_Update("forum_t", "thread_total_replies='$replies' WHERE thread_id='$tid'");
 			}
 		}
