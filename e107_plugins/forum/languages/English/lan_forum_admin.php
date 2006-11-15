@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-08-27 02:24:45 $
+|     $Revision: 1.22 $
+|     $Date: 2006-11-15 01:06:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -202,5 +202,7 @@ define("FORLAN_178", "Tick this to allow make the email notification checkbox be
 define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for sub-forums only.  The forum theme must support this option also.)");
 define("FORLAN_180", "Confirm delete operation");
 define("FORLAN_181", "Confirm Delete");
+define("FORLAN_182", "also recalculate replies for all threads in selected forum");
+define("FORLAN_183", "(this function is not allowed when selecting 'all forums' due to the number of queries it will generate)");
 
 ?>

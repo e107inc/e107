@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-11-12 05:47:19 $
+|     $Revision: 1.63 $
+|     $Date: 2006-11-15 01:06:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -565,7 +565,7 @@ class e107forum
 	{
 		$thread_id = intval($thread_id);
 		global $sql;
-		return $sql->db_Count('forum_t', '(*)', "WHERE thread_parent = $thread_id")+1;
+		return $sql->db_Count('forum_t', '(*)', "WHERE thread_parent = $thread_id", true)+1;
 	}
 
 	function thread_count_list($thread_list)
@@ -817,7 +817,7 @@ class e107forum
 		}
 	}
 
-	function forum_update_counts($forumID)
+	function forum_update_counts($forumID, $recalc_threads = false)
 	{
 		global $sql;
 		if($forumID == 'all')
@@ -834,6 +834,17 @@ class e107forum
 		$threads = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent = 0");
 		$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent != 0");
 		$sql->db_Update("forum", "forum_threads='$threads', forum_replies='$replies' WHERE forum_id='$forumID'");
+		if($recalc_threads == true)
+		{
+			$sql->db_Select('forum_t', 'thread_id', "thread_forum_id = $forumID AND thread_parent = 0");
+			$tlist = $sql->db_getList();
+			foreach($tlist as $t)
+			{
+				$tid = $t['thread_id'];
+				$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_parent = {$tid}");
+				$sql->db_Update("forum_t", "thread_total_replies='$replies' WHERE thread_id='$tid'");
+			}
+		}
 	}
 
 	function get_user_counts()
