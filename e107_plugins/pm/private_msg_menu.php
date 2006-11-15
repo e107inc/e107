@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-10-30 14:01:47 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2006-11-15 20:48:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -85,13 +85,13 @@ function pm_show_popup()
 			<title>".$pm_inbox['inbox']['new']." ".LAN_PM_109."</title>
 			<link rel=stylesheet href=" . THEME . "style.css>
 		</head>
-		<body style='padding-left:2px;padding-right:2px; padding:2px; padding-bottom:2px; margin:0px; text-align:center' marginheight='0' marginleft='0' topmargin='0' leftmargin='0'>
-		<table style='width:100%; text-align:center; height:99%; padding-bottom:2px' class='bodytable'>
+		<body style=\'padding-left:2px;padding-right:2px; padding:2px; padding-bottom:2px; margin:0px; text-align:center\' marginheight=\'0\' marginleft=\'0\' topmargin=\'0\' leftmargin=\'0\'>
+		<table style=\'width:100%; text-align:center; height:99%; padding-bottom:2px\' class=\'bodytable\'>
 			<tr>
 				<td width=100% >
 					<center><b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new']." ".LAN_PM_109."<br />".$pm_inbox['inbox']['unread']." ".LAN_PM_37."<br /><br />
 					<form>
-						<input class='button' type='submit' onclick='self.close();' value = \"".LAN_PM_110."\" />
+						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_PM_110."\' />
 					</form>
 					</center>
 				</td>
@@ -106,7 +106,7 @@ function pm_show_popup()
 	winl=(screen.width-200)/2;
 	wint = (screen.height-100)/2;
 	winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
-	window.open('javascript:document.write(\"".$popuptext."\");', \"pm_popup\", winProp);
+	window.open('javascript:document.write(\"".$popuptext."\");', 'pm_popup', winProp);
 	</script >";
 	return $text;
 }
