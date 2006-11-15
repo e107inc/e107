@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-11-15 09:04:42 $
+|     $Revision: 1.34 $
+|     $Date: 2006-11-15 09:12:32 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.33 $
+* @version     $Revision: 1.34 $
 * @author      $Author: streaky $
 */
 class ecache {
@@ -50,7 +50,7 @@ class ecache {
 				if (strpos($CacheTag, "nq_") === 0)	{
 					// We do not care about e_QUERY, so don't use it in the md5 calculation
 					if (!$this->CachenqMD5) {
-						$this->CachenqMD5 = md5(e_BASE.(is_defined("ADMIN") && ADMIN == true ? "admin" : "").e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
+						$this->CachenqMD5 = md5(e_BASE.(defined("ADMIN") && ADMIN == true ? "admin" : "").e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
 					}
 					// Add 'nq' to indicate we are not using e_QUERY
 					$CheckTag = '_nq_'.$this->CachenqMD5;
