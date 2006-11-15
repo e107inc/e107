@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.121 $
-|		$Date: 2006-10-28 10:27:47 $
+|		$Revision: 1.122 $
+|		$Date: 2006-11-15 15:47:58 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ $TOPIC_ROW_SPACER = "";
 
 class contentform{
 
-		function ContentItemPreview($_POST){
+		function ContentItemPreview(){
 				global $ns, $sql, $aa, $qs, $tp, $mainparent;
 
 				$TRPRE = "<tr>";
@@ -115,16 +115,17 @@ class contentform{
 				$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
 				$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
 				$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
+				$content_text		= $_POST['content_text'];
 				if(e_WYSIWYG){
-					$_POST['content_text'] = $tp->createConstants($_POST['content_text']); // convert e107_images/ to {e_IMAGE} etc.
+					$content_text = $tp->createConstants($content_text); // convert e107_images/ to {e_IMAGE} etc.
 				}
 
 				//the problem with tiny_mce is it's storing e_HTTP with an image path, while it should only use the {e_xxx} variables
 				//this small check resolves this, and stores the paths correctly
-				if(strstr($_POST['content_text'],e_HTTP."{e_")){
-					$_POST['content_text'] = str_replace(e_HTTP."{e_", "{e_", $_POST['content_text']);
+				if(strstr($content_text,e_HTTP."{e_")){
+					$content_text = str_replace(e_HTTP."{e_", "{e_", $content_text);
 				}
-				$content_text = $tp->post_toHTML($_POST['content_text'],TRUE);
+				$content_text = $tp->post_toHTML($content_text,TRUE);
 
 				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_HEADING = ($content_heading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$content_heading.$TDPOST.$TRPOST : "");
@@ -471,7 +472,7 @@ class contentform{
 						}
 
 						if(isset($_POST['preview_content'])){
-							$this -> ContentItemPreview($_POST);
+							$this -> ContentItemPreview();
 						}
 
 						//re-prepare the posted fields for the form (after preview)
@@ -481,15 +482,7 @@ class contentform{
 								$row['content_heading']				= $tp -> post_toForm($_POST['content_heading']);
 								$row['content_subheading']			= $tp -> post_toForm($_POST['content_subheading']);
 								$row['content_summary']				= $tp -> post_toForm($_POST['content_summary']);
-								/*
-								if(e_WYSIWYG){
-									$row['content_text'] = $tp->toHTML($_POST['content_text'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
-									$row['content_text'] = $tp->replaceConstants($_POST['content_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
-								}else{
-									$row['content_text'] = $_POST['content_text'];
-								}
-								*/
-								$row['content_text']				= $tp -> toForm($_POST['content_text']);
+								$row['content_text']				= $tp -> post_toForm($_POST['content_text']);
 								$authordetails[0]					= $_POST['content_author_id'];
 								$authordetails[1]					= $_POST['content_author_name'];
 								$authordetails[2]					= $_POST['content_author_email'];
