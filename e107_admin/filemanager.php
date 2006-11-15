@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-10-18 22:32:08 $
+|     $Revision: 1.21 $
+|     $Date: 2006-11-15 15:55:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -108,7 +108,7 @@ if (isset($message)) {
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
-if (strpos(e_QUERY, ".")) {
+if (strpos(e_QUERY, ".") && !is_dir(realpath(e_BASE.$path))){
 	echo "<iframe style=\"width:100%\" src=\"".e_BASE.e_QUERY."\" height=\"300\" scrolling=\"yes\"></iframe><br /><br />";
 	if (!strpos(e_QUERY, "/")) {
 		$path = "";
