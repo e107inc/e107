@@ -191,6 +191,8 @@ define("FORLAN_178", "Aankruisen om de keuze voor melding per e-mail standaard o
 define("FORLAN_179", "(Door de forumnaam te beginnen met een  *, wordt dit een container voor uitsluitend subforums.  Het forum theme moet dit wel ondersteunen.)");
 define("FORLAN_180", "Bevestig verwijderactie");
 define("FORLAN_181", "Bevestig verwijderen");
+define("FORLAN_182", "herbereken ook het aantal antwoorden binnen alle discussies in het geselecteerde forum");
+define("FORLAN_183", "(deze functie is niet toegestaan bij de keuze 'alle forums' vanwege het grote aantal queries dat hiervoor nodig is)");
 
 define("WMGLAN_1", "Regels voor gasten");
 define("WMGLAN_2", "Regels voor leden");
