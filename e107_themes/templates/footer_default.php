@@ -1,4 +1,4 @@
-z<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,8 +11,8 @@ z<?php
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-11-16 16:38:56 $
+|     $Revision: 1.43 $
+|     $Date: 2006-11-16 16:48:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
