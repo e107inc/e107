@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-18 21:18:18 $
-|     $Author: lisa_ $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-16 16:55:10 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -166,7 +166,7 @@ SC_END
 
 SC_BEGIN INBOX_FILLED
 $pm_inbox = pm_getInfo('inbox');
-return $pm_inbox['inbox']['filled'];
+return (intval($pm_inbox['inbox']['filled']) > 0 ? $pm_inbox['inbox']['filled'] : "");
 SC_END
 
 SC_BEGIN OUTBOX_TOTAL
@@ -181,7 +181,7 @@ SC_END
 
 SC_BEGIN OUTBOX_FILLED
 $pm_outbox = pm_getInfo('outbox');
-return $pm_outbox['outbox']['filled'];
+return (intval($pm_outbox['outbox']['filled']) > 0 ? $pm_outbox['outbox']['filled'] : "");
 SC_END
 
 SC_BEGIN PM_DATE
