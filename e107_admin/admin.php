@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-10-30 03:43:28 $
+|     $Revision: 1.36 $
+|     $Date: 2006-11-16 10:41:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -178,15 +178,15 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			}
 			if ($mode == 'default') {
 				$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
-					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs")."</td>";
+					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs emotes_off")."</td>";
 			}
 			else if ($mode == 'classis') {
 				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='$description'>".$icon."</a><br />
-					<a href='".$link."' title='$description'><b>".$tp->toHTML($title,FALSE,"defs")."</b></a><br /><br /></td>";
+					<a href='".$link."' title='$description'><b>".$tp->toHTML($title,FALSE,"defs emotes_off")."</b></a><br /><br /></td>";
 			}elseif ($mode == 'beginner'){
                 $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a href='".$link."' >".$icon."</a>
 					<div style='padding:5px'>
-					<a href='".$link."' title='".$description."' style='text-decoration:none'><b>".$tp->toHTML($title,FALSE,"defs")."</b></a></div><br /><br /><br /></td>";
+					<a href='".$link."' title='".$description."' style='text-decoration:none'><b>".$tp->toHTML($title,FALSE,"defs emotes_off")."</b></a></div><br /><br /><br /></td>";
 			}
 			$td++;
 		}
