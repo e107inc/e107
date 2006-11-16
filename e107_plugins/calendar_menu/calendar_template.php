@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-12 13:35:17 $
-|     $Author: mrpete $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-16 10:24:14 $
+|     $Author: e107coders $
+|
+| 10.11.06 steved - mods for next CVS release
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
-
-// 06.11.06 - Templates for next_event_menu, calendar_menu added
-// 27.02.06 - Template EVENT_EVENT_TABLE adjusted to show date (uses new shortcode EVENT_HEADING_DATE
 
 // TIME SWITCH BUTTONS ------------------------------------------------------------
 $sc_style['PREV_MONTH']['pre'] = "<span class='defaulttext'>";
@@ -75,6 +74,8 @@ $CALENDAR_NAVIGATION_TABLE = "
 </form>
 </div>";
 
+
+
 // EVENT LIST ------------------------------------------------------------
 $sc_style['EVENTLIST_CAPTION']['pre'] = "<tr><td class='fcaption' colspan='2'>";
 $sc_style['EVENTLIST_CAPTION']['post'] = ":<br /><br /></td></tr>\n";
@@ -91,7 +92,7 @@ $sc_style['EVENTARCHIVE_CAPTION']['post'] = "</td></tr>\n";
 $EVENT_ARCHIVE_TABLE_START = "<br /><table style='width:100%' class='fborder'>{EVENTARCHIVE_CAPTION}";
 $EVENT_ARCHIVE_TABLE = "
 <tr>
-	<td style='width:35%; vertical-align:top' class='forumheader3'>{EVENTARCHIVE_DATE}</td>
+	<td style='width:35%; vertical-align:top' class='forumheader3'>{EVENT_RECENT_ICON}{EVENTARCHIVE_DATE}</td>
 	<td style='width:65%' class='forumheader3'>{EVENTARCHIVE_HEADING}</td>
 </tr>\n";
 //<br />{EVENTARCHIVE_DETAILS}
@@ -103,6 +104,9 @@ $EVENT_ARCHIVE_TABLE_END = "</table>";
 // EVENT SHOW EVENT ------------------------------------------------------------
 $EVENT_EVENT_TABLE_START = "<table style='width:100%' class='fborder' cellspacing='0' cellpadding='0'>";
 $EVENT_EVENT_TABLE_END = "</table>";
+
+$sc_style['EVENT_HEADING_DATE']['pre'] = "";
+$sc_style['EVENT_HEADING_DATE']['post'] = "";
 
 $sc_style['EVENT_DETAILS']['pre'] = "<tr><td colspan='2' class='forumheader3'>";
 $sc_style['EVENT_DETAILS']['post'] = "</td></tr>\n";
@@ -122,20 +126,26 @@ $sc_style['EVENT_THREAD']['post'] = "</span></td></tr>\n";
 $sc_style['EVENT_CATEGORY']['pre'] = "<b>".EC_LAN_30."</b> ";
 $sc_style['EVENT_CATEGORY']['post'] = "&nbsp;";
 
-$sc_style['EVENT_DATE_START']['pre'] = "";
+$sc_style['EVENT_DATE_START']['pre'] = (isset($thisevent['event_allday']) && $thisevent['event_allday']) ? "<b>".EC_LAN_68."</b> " : "<b>".EC_LAN_29."</b> ";
 $sc_style['EVENT_DATE_START']['post'] = "";
 
-$sc_style['EVENT_DATE_END']['pre'] = "";
+$sc_style['EVENT_TIME_START']['pre'] = EC_LAN_144;
+$sc_style['EVENT_TIME_START']['post'] = "";
+
+$sc_style['EVENT_DATE_END']['pre'] = "<b>".EC_LAN_69."</b> ";
 $sc_style['EVENT_DATE_END']['post'] = "";
+
+$sc_style['EVENT_TIME_END']['pre'] = EC_LAN_144;
+$sc_style['EVENT_TIME_END']['post'] = "";
 
 $EVENT_EVENT_TABLE = "
 <tr>
 	<td >
-		<div title='".EC_LAN_132."' class='fcaption' style='cursor:pointer; text-align:left; border:0px solid #000;' onclick=\"expandit('{EVENT_ID}')\">{EVENT_HEADING_DATE}</div>
+		<div title='".EC_LAN_132."' class='fcaption' style='cursor:pointer; text-align:left; border:0px solid #000;' onclick=\"expandit('{EVENT_ID}')\">{EVENT_RECENT_ICON}{EVENT_CAT_ICON}{EVENT_HEADING_DATE}{EVENT_TIME_START}&nbsp;-&nbsp;{EVENT_TITLE}</div>
 		<div id='{EVENT_ID}' style='display:{EVENT_DISPLAYSTYLE}; padding-top:10px; padding-bottom:10px; text-align:left;'>
 			<table style='width:100%;'  cellspacing='0' cellpadding='0'>
-				<tr><td colspan='2' class='forumheader3'>{EVENT_AUTHOR} {EVENT_CATEGORY} {EVENT_CONTACT} {EVENT_OPTIONS}</td></tr>
-				<tr><td colspan='2' class='forumheader3'>{EVENT_DATE_START} {EVENT_DATE_END}</td></tr>\n
+				<tr><td colspan='2' class='forumheader3'>{EVENT_AUTHOR} {EVENT_CAT_ICON} {EVENT_CATEGORY} {EVENT_CONTACT} {EVENT_OPTIONS}</td></tr>
+				<tr><td colspan='2' class='forumheader3'>{EVENT_DATE_START}{EVENT_TIME_START} {EVENT_DATE_END}{EVENT_TIME_END}</td></tr>\n
 				<tr><td colspan='2' class='forumheader3'>{EVENT_LOCATION}</td></tr>
 				{EVENT_DETAILS}
 				{EVENT_THREAD}
@@ -147,7 +157,9 @@ $EVENT_EVENT_TABLE = "
 
 
 // CALENDAR SHOW EVENT ------------------------------------------------------------
-$CALENDAR_SHOWEVENT = "<table cellspacing='0' cellpadding='0' style='width:100%;'><tr><td style='vertical-align:top; width:10px;'>{SHOWEVENT_IMAGE}</td><td style='vertical-align:top; width:2%;'>{SHOWEVENT_INDICAT}</td><td style='vertical-align:top;'>{SHOWEVENT_HEADING}</td></tr>\n</table>";
+$sc_style['CALENDAR_CALENDAR_RECENT_ICON']['pre'] = "<td style='vertical-align:top; color: #0; background-color: #ff00; width:10px;'>";
+$sc_style['CALENDAR_CALENDAR_RECENT_ICON']['post'] = "</td>";
+$CALENDAR_SHOWEVENT = "<table cellspacing='0' cellpadding='0' style='width:100%;'><tr>{CALENDAR_CALENDAR_RECENT_ICON}<td style='vertical-align:top; width:10px;'>{SHOWEVENT_IMAGE}</td><td style='vertical-align:top; width:2%;'>{SHOWEVENT_INDICAT}</td><td style='vertical-align:top;'>{SHOWEVENT_HEADING}</td></tr>\n</table>";
 
 
 
@@ -205,12 +217,14 @@ $CALENDAR_MENU_HEADER_END = "</tr>\n<tr>";
 
 $CALENDAR_MENU_WEEKSWITCH = "</tr>\n<tr>";
 
-// Start and end CSS for date cells - four cases to decode, determined by array index:
+// Start and end CSS for date cells - six cases to decode, determined by array index:
 //     	1 - Today, no events
 //		2 - Some other day, no events (or no icon defined)
 //		3 - Today with events (and icon defined)
 //		4 - Some other day with events (and icon defined)
-
+//		5 - today with events, one or more of which has recently been added/updated (and icon defined)
+//		6 - Some other day with events, one or more of which has recently been added/updated (and icon defined)
+ 
 //today, no events
 $CALENDAR_MENU_DAY_START['1'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center; '>";
 
@@ -219,23 +233,35 @@ $CALENDAR_MENU_DAY_START['2'] = "<td class='forumheader3' style='width:14.28%; p
 
 //day has events - same whether its today or not
 $CALENDAR_MENU_DAY_START['3'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center; '>";
-$CALENDAR_MENU_DAY_START['4'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center; '>";
+$CALENDAR_MENU_DAY_START['4'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center;'>";
+// day has events, one which is recently added/updated
+$CALENDAR_MENU_DAY_START['5'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center; '>";
+$CALENDAR_MENU_DAY_START['6'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center;'>";
+// Example highlight using background colour:
+//$CALENDAR_MENU_DAY_START['5'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center; background-color: #FF8000;'>";
+//$CALENDAR_MENU_DAY_START['6'] = "<td class='indent' style='width:14.28%; padding:1px; text-align:center; background-color: #FF0000; '>";
 
 $CALENDAR_MENU_DAY_END['1'] = "</td>";
 $CALENDAR_MENU_DAY_END['2'] = "</td>";
 $CALENDAR_MENU_DAY_END['3'] = "</td>";
 $CALENDAR_MENU_DAY_END['4'] = "</td>";
+$CALENDAR_MENU_DAY_END['5'] = "</td>";
+$CALENDAR_MENU_DAY_END['6'] = "</td>";
 
 //============================================================================
 // Next event menu template
 $sc_style['NEXT_EVENT_TIME']['pre'] = EC_LAN_144;
 $sc_style['NEXT_EVENT_TIME']['post'] = "";
-$sc_style['NEXT_EVENT_ICON']['pre'] = "";
-$sc_style['NEXT_EVENT_ICON']['post'] = "&nbsp;";
+// Following are original styles
+//$sc_style['NEXT_EVENT_ICON']['pre'] = "<img style='border:0px' src='";
+//$sc_style['NEXT_EVENT_ICON']['post'] = "' alt='' />&nbsp;";
+// Following to 'float right' on a larger icon
+$sc_style['NEXT_EVENT_ICON']['pre'] = "<img style='clear: right; float: left; margin: 0px 3px 0px 0px; padding:1px; border: 0px;' src='";
+$sc_style['NEXT_EVENT_ICON']['post'] = "' alt='' />";
 
 
 if (!isset($EVENT_CAL_FE_LINE))
-{
+{  
   $EVENT_CAL_FE_LINE = "{NEXT_EVENT_ICON}{NEXT_EVENT_DATE}{NEXT_EVENT_TIME}<br /><strong>{NEXT_EVENT_TITLE}</strong>{NEXT_EVENT_GAP}";
 }
 

@@ -11,25 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-11-06 22:30:22 $
+|     $Revision: 1.30 $
+|     $Date: 2006-11-16 10:24:14 $
 |     $Author: e107coders $
 |
-| 25.02.06 - Extra comments to try and sort out listing problem.
-| 26.02.06 - Bug fix - didn't list events where end date before start date (0.6175 legacy?)
-| 02.03.06 - Bug - sometimes lists an event from next month (due to end date before start date) - can't easily fix
-|                - doesn't display some multi-day events (those straddling two months) - fixed
-| 19.03.06 - Bug - if displaying item from a single date, 'next 10 events' starts from beginning of following month.
-|					- mod in line 620 or so - fixed
-| 15.06.06 - Bug - recurring events always displayed using current year - cal_landate modified
-| 26.08.06 - Bug - 'next 10 events' didn't show everything to calendar admin
-| 17.09.06 - Bug - handles period in user names
-|
-| 22.10.06 - Various updates to simplify event entry
-| 25.10.06 - Various cleanups and bug fixes relating to recurring events
-|			 Database query optimised to not read unwanted records
-| 04.11.06 - User rights on edit corrected
-| 06.11.06 - Mods to reflect combining of shortcode and template files
+| 09.11.06 - Started next batch of mods
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -53,7 +39,8 @@ if (isset($_POST['subs']))
 @include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
 define("PAGE_NAME", EC_LAN_80);
 
-require_once('ecal_class.php');
+require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
+global $ecal_class;
 $ecal_class = new ecal_class;
 $cal_super = $ecal_class->cal_super;
 
@@ -81,77 +68,57 @@ if (isset($_POST['ne_cat_create']))
     }
 }
 */
-// enter new event into db
-if (isset($_POST['ne_insert']) && USER == true)
-{
-    if ($_POST['ne_event'] == "")
+// Event to add or update
+if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && USER == true)
+{  
+  if (($_POST['ne_event'] == "") || !isset($_POST['qs']))
+  {	// Problem - tell user to go away
+	header("location:event.php?".$ev_start.".m3");
+  }
+  else
+  {
+	$ev_start		= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
+	$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
+    $ev_title		= $tp->toDB($_POST['ne_title']);
+    $ev_location	= $tp->toDB($_POST['ne_location']);
+    $ev_event		= $tp->toDB($_POST['ne_event']);
+	$temp_date 		= getdate($ecal_class->make_date(0,0,$_POST['start_date']));
+    if ($_POST['recurring'] == 1)
 	{
-		header("location:event.php?".$ev_start.".m3");
-	}
+	  $rec_m = $temp_date['mday'];		// Day of month
+      $rec_y = $temp_date['mon'];			// Month number
+    }
 	else
 	{
-		$ev_start		= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
-		$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
-        $ev_title		= $tp->toDB($_POST['ne_title']);
-        $ev_location	= $tp->toDB($_POST['ne_location']);
-        $ev_event		= $tp->toDB($_POST['ne_event']);
-
-        if ($_POST['recurring'] == 1)
-		{
-		  $temp_date = getdate($ecal_class->make_date(0,0,$_POST['start_date']));
-		  $rec_m = $temp_date['mday'];		// Day of month
-          $rec_y = $temp_date['mon'];			// Month number
-        }
-		else
-		{
-          $rec_m = "";
-          $rec_y = "";
-        }
-
+      $rec_m = "";
+      $rec_y = "";
+    }
+	
+	$report_msg = '.m3';
+    if (isset($_POST['ne_insert']))
+	{  // Bits specific to inserting a new event
 		$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".intval($_POST['allday'])."', '".intval($_POST['recurring'])."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$tp -> toDB($_POST['ne_email'])."', '".intval($_POST['ne_category'])."', '".$tp -> toDB($_POST['ne_thread'])."', '".intval($rec_m)."', '".intval($rec_y)."' ";
         $sql->db_Insert("event", $qry);
-		$ecal_class->cal_log(1,'db_Insert',$qry);
-        $qs = preg_replace("/ne./i", "", $_POST['qs']);
-        header("location:event.php?".$qs.".m4");
-    }
-}
-
-// update event in db
-if (isset($_POST['ne_update']) && USER == true)
-{
-    if ($_POST['ne_event'] == "")
-	{
-		header("location:event.php?".$_POST['qs'].".m3");
+		$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start);
+        $qs = preg_replace("/ne./i", "", $_POST['qs']);	
+		$report_msg = '.m4';
 	}
-	else
-	{
-		$ev_start		= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_REQUEST['start_date']);
-		$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
-        $ev_title		= $tp->toDB($_POST['ne_title']);
-        $ev_location	= $tp->toDB($_POST['ne_location']);
-        $ev_event		= $tp->toDB($_POST['ne_event']);
-
-        if ($_POST['recurring'] == 1)
-		{
-		  $temp_date = getdate($ecal_class->make_date(0,0,$_POST['start_date']));
-		  $rec_m = $temp_date['mday'];		// Day of month
-          $rec_y = $temp_date['mon'];			// Month number
-        }
-		else
-		{
-            $rec_m = "";
-            $rec_y = "";
-        }
-
+	
+	if (isset($_POST['ne_update']))
+	{  // Bits specific to updating an existing event
 		$qry = "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".intval($_POST['allday'])."', event_recurring='".intval($_POST['recurring'])."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$tp -> toDB($_POST['ne_email'])."', event_category='".intval($_POST['ne_category'])."', event_thread='".$tp -> toDB($_POST['ne_thread'])."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id='".intval($_POST['id'])."' ";
         $sql->db_Update("event", $qry);
-		$ecal_class->cal_log(2,'db_Update',$qry);
+		$ecal_class->cal_log(2,'db_Update',$qry, $ev_start);
         $qs = preg_replace("/ed./i", "", $_POST['qs']);
-
-        header("location:event.php?".$ev_start.".".$qs.".m5");
-    }
+		$report_msg = '.m5';
+	}
+	// Now clear cache  - just do the lot for now - get clever later
+	$e107cache->clear('nq_event_cal');
+    header("location:event.php?".$ev_start.".".$qs.$report_msg);
+  }
 }
 
+$action = "";		// Remove notice
 
 require_once(HEADERF);
 
@@ -191,7 +158,7 @@ if (isset($_POST['confirm']))
     if ($sql->db_Delete("event", $qry))
     {
         $message = EC_LAN_51; //Event Deleted
-		$ecal_class->cal_log(3,'db_Delete',$qry);
+		$ecal_class->cal_log(3,'db_Delete',$qry,$ev_start);
     }
     else
     {
@@ -242,28 +209,7 @@ $months		= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_
 
 // Messages acknowledging actions
 $poss_message = array('m1' => EC_LAN_41, 'm2' => EC_LAN_42, 'm3' => EC_LAN_43, 'm4' => EC_LAN_44, 'm5' => EC_LAN_45);
-if (isset($qs[1])) if (isset($poss_message[$qs[1]])) $message = $poss_message[$qs[1]];
-/*
-if (isset($qs[2]) && $qs[2] == "m1")
-{
-    $message = EC_LAN_41; //"New category created.";
-}
-else if (isset($qs[2]) && $qs[2] == "m2")
-{
-    $message = EC_LAN_42; //"Event cannot end before it starts.";
-}
-else if (isset($qs[2]) && $qs[2] == "m3")
-{
-    $message = EC_LAN_43; //"You left required field(s) blank.";
-}
-else if (isset($qs[2]) && $qs[2] == "m4")
-{
-    $message = EC_LAN_44; //"New event created and entered into database.";
-} elseif (isset($qs[2]) && $qs[2] == "m5")
-{
-    $message = EC_LAN_45; //"Event updated in database.";
-}
-*/
+if (isset($qs[2])) if (isset($poss_message[$qs[2]])) $message = $poss_message[$qs[2]];
 
 if (isset($message))
 {
@@ -551,7 +497,7 @@ function make_hourmin($boxname,$cur_hour,$cur_minute)
         // * *BK*
         // * *BK* If the user is logged in and has their email set plus the field is empty then put in
         // * *BK* their email address.  They can always take it out if they want, its not a required field
-        if (empty($ne_email) && defined('USEREMAIL'))
+        if (empty($ne_email) && ($action == "ne") && defined('USEREMAIL'))
         {
             $ne_email = USEREMAIL;
         }
@@ -812,7 +758,8 @@ if ($num != 0)
 {
 	$gen = new convert;
 	$archive_events = "";
-	while ($events = $sql->db_Fetch())
+//	while ($events = $sql->db_Fetch())
+	while ($thisevent = $sql->db_Fetch())
 	{
 		$archive_events .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calendar_shortcodes);
 	}
@@ -852,24 +799,6 @@ function show_event($day_events)
     return $text2;
 }
 
-function cal_landate($dstamp, $recurring = false, $allday = false)
-{
-	global $ecal_class;
-    $long_month_start = 0;
-    $long_day_start = 12;
-    $now = getdate($dstamp);
-
-    if ($now['wday'] == 0)
-	{
-      $now['wday'] = 7;
-    }
-    $dow = constant("EC_LAN_".($long_day_start + $now['wday']-1));
-    $moy = constant("EC_LAN_".($long_month_start + $now['mon']-1));
-
-	$retstr =  sprintf("%s %02d %s %d", $dow, $now['mday'], $moy, $now['year']);
-    if (($allday != TRUE) && !($now['hours'] == 0 && $now['minutes'] == 0)) $retstr .= ' - '.$ecal_class->time_string($dstamp);
-	return $retstr;
-}
 
 function headerjs()
 {

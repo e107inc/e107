@@ -11,23 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-11-06 22:30:22 $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-16 10:24:14 $
 |     $Author: e107coders $
 |
-| 08.07.06 Modified with extra page for 'Forthcoming Events' menu by steved
-| 09.07.06 - Extra option to select level of mailout logging
-| 10.07.06 - Add selection of categories for 'forthcoming events' menu
-| 12.07.06 - Forthcoming event admin should return to same option page
-| 02.08.06 - Optional category icon display added
-| -------------------->Added to CVS here
-| 04.10.06 - Extra options for site time, time format, category fields
-| 22.10.06 - Admin logging option
-| 24.10.06 - Maintenance menu added
-|
-***** TO DO ******
-1. Check DB fields list in complete update in line 143 - may need quotes round them
-2. Uncomment query that actually deletes back events
+| 02.11.06 - Cache clear option added
+| 10.11.06 - Support for updated templates etc
 |
 +----------------------------------------------------------------------------+
 */
@@ -41,8 +30,6 @@ if (!getperms("P")) {
 	
 include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
 
-require_once('ecal_class.php');
-$ecal_class = new ecal_class;
 
 $message = "";
 $calendarmenu_text = '';	// Notice removal
@@ -53,7 +40,9 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_adminlog'] = $_POST['eventpost_adminlog'];
 	$pref['eventpost_showeventcount'] = $_POST['eventpost_showeventcount'];
 	$pref['eventpost_forum'] = $_POST['eventpost_forum'];	
+	$pref['eventpost_recentshow'] = $_POST['eventpost_recentshow'];
 	$pref['eventpost_super'] = $_POST['eventpost_super'];
+	$pref['eventpost_menulink'] = $_POST['eventpost_menulink'];
 	$pref['eventpost_dateformat'] = $_POST['eventpost_dateformat'];	
 	$pref['eventpost_fivemins'] = $_POST['eventpost_fivemins'];
 	$pref['eventpost_weekstart'] = $_POST['eventpost_weekstart'];
@@ -62,12 +51,17 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_datedisplay'] = $_POST['eventpost_datedisplay'];
 	$pref['eventpost_timedisplay']	= $_POST['eventpost_timedisplay'];
 	$pref['eventpost_timecustom'] = $_POST['eventpost_timecustom'];
+	$pref['eventpost_dateevent'] = $_POST['eventpost_dateevent'];
+	$pref['eventpost_datenext'] = $_POST['eventpost_datenext'];
+	$pref['eventpost_eventdatecustom'] = $_POST['eventpost_eventdatecustom'];
+	$pref['eventpost_nextdatecustom'] = $_POST['eventpost_nextdatecustom'];
 	$pref['eventpost_mailsubject'] = $_POST['eventpost_mailsubject'];			
 	$pref['eventpost_mailfrom'] = $_POST['eventpost_mailfrom'];		
 	$pref['eventpost_mailaddress'] = $_POST['eventpost_mailaddress'];
 	$pref['eventpost_asubs'] = $_POST['eventpost_asubs'];
 	$pref['eventpost_emaillog'] = $_POST['eventpost_emaillog'];
 	save_prefs();
+	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
 	$message = EC_LAN_75; // "Calendar settings updated.";
 }
 
@@ -83,6 +77,7 @@ if (isset($_POST['updateforthcoming']))
   $pref['eventpost_showcaticon'] = $_POST['eventpost_showcaticon'];
   $pref['eventpost_namelink'] = $_POST['eventpost_namelink'];
   save_prefs();
+  $e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
   $message = EC_ADLAN_A109; // "Forthcoming Events settings updated.";
 }
 
@@ -90,6 +85,9 @@ if (e_QUERY)
 {
   $qs = explode(".", e_QUERY);
 }
+
+require_once('ecal_class.php');
+$ecal_class = new ecal_class;
 
 
 // ****************** MAINTENANCE ******************
@@ -108,6 +106,11 @@ if (isset($_POST['deleteold']) && isset($_POST['eventpost_deleteoldmonths']))
     $message = EC_ADLAN_A148;
 }
 
+
+if (isset($_POST['cache_clear']))
+{
+  $qs[0] = "confcache";
+}
 
 require_once(e_ADMIN."auth.php");
 
@@ -137,8 +140,17 @@ if (isset($_POST['confirmdeleteold']) && isset($qs[0]) && ($qs[0] == "backdel"))
 }
 
 
+// Actually empty cache
+if (isset($_POST['confirmdelcache']) && isset($qs[0]) &&($qs[0] == "cachedel"))
+{
+  $e107cache->clear('nq_event_cal');
+  $message = EC_ADLAN_A163;
+  $qs[0] = "maint";			// Re-display maintenance menu
+}
+
+
 // Prompt to delete back events
-if(isset($qs[0]) && $qs[0] == "confdel")
+if(isset($qs[0]) && ($qs[0] == "confdel"))
 {
 	$old_string = strftime("%d %B %Y",$qs[1]);
 	$text = "<div style='text-align:center'>
@@ -148,6 +160,22 @@ if(isset($qs[0]) && $qs[0] == "confdel")
 		<td class='forumheader3' style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A150.$old_string." </td>
 	</tr>
 	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdeleteold' value='".EC_LAN_50."' /></td></tr>
+	</table></form></div>";
+	
+	$ns->tablerender("<div style='text-align:center'>".EC_LAN_50."</div>", $text);
+}
+
+
+// Prompt to clear cache
+if (isset($qs[0]) && ($qs[0] == "confcache"))
+{
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?cachedel'>
+	<table style='width:97%' class='fborder'>
+	<tr>
+		<td class='forumheader3' style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A162." </td>
+	</tr>
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdelcache' value='".EC_LAN_50."' /></td></tr>
 	</table></form></div>";
 	
 	$ns->tablerender("<div style='text-align:center'>".EC_LAN_50."</div>", $text);
@@ -540,9 +568,19 @@ if((isset($qs[0]) && $qs[0] == "maint"))
 		</td>
 	</tr>
 	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='deleteold' value='".EC_ADLAN_A145."' /></td></tr>
-	</table></form></div>";
+	</table></form></div><br /><br />";
 	
 	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A144."</div>", $text);
+
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?maint'>
+	<table style='width:97%' class='fborder'>
+	<tr><td style='vertical-align:top; text-align:center;' colspan='2' class='smalltext'><em>".EC_ADLAN_A160."</em> </td></tr>
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='cache_clear' value='".EC_ADLAN_A161."' /></td></tr>
+	</table></form></div>";
+	
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A159."</div>", $text);
+
 }
 
 // ========================================================
@@ -567,6 +605,7 @@ $text .= "
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_super", $pref['eventpost_super'], "off",  'public, nobody, member, admin, classes')."
 		</td>
 	</tr>
+
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A134."</td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>
@@ -580,6 +619,16 @@ $text .= "
 	</tr>
 
 	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A165."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+			<select name='eventpost_menulink' class='tbox'>
+			<option value='0' ".($pref['eventpost_menulink']=='0'?" selected='selected' ":"")." >".EC_LAN_80." </option>
+			<option value='1' ".($pref['eventpost_menulink']=='1'?" selected='selected' ":"")." >".EC_LAN_83." </option>
+			</select>
+		</td>
+	</tr>
+
+	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A140."</td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_showeventcount' value='1' ".($pref['eventpost_showeventcount']==1?" checked='checked' ":"")." /></td>
 	</tr>
@@ -588,6 +637,13 @@ $text .= "
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_102."</td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($pref['eventpost_forum']==1?" checked='checked' ":"")." /></td>
 	</tr>
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A171."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_recentshow' size='10' value='".$pref['eventpost_recentshow']."' maxlength='5' />
+		<span class='smalltext'><em>".EC_ADLAN_A172."</em></span>
+		</td>
+	</tr>  
 
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_114."</td>
@@ -663,6 +719,39 @@ $text .= "
 			</select>
             <input class='tbox' type='text' name='eventpost_timecustom' size='20' value='".$pref['eventpost_timecustom']."' maxlength='30' />
 			<br /><span class='smalltext'><em>".EC_ADLAN_A128."</em></span>
+		</td>
+	</tr>
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A166."<br />
+		<span class='smalltext'><em>".EC_ADLAN_A169."</em></span>
+		</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+			<select name='eventpost_dateevent' class='tbox'>
+			<option value='1' ".($pref['eventpost_dateevent']=='1'?" selected='selected' ":"")." > dayofweek day month yyyy </option>
+			<option value='2' ".($pref['eventpost_dateevent']=='2'?" selected='selected' ":"")." > dyofwk day mon yyyy </option>
+			<option value='3' ".($pref['eventpost_dateevent']=='3'?" selected='selected' ":"")." > dyofwk dd-mm-yy </option>
+			<option value='0' ".($pref['eventpost_dateevent']=='0'?" selected='selected' ":"")." > Custom </option>
+			</select>
+            <input class='tbox' type='text' name='eventpost_eventdatecustom' size='20' value='".$pref['eventpost_eventdatecustom']."' maxlength='30' />
+			<br /><span class='smalltext'><em>".EC_ADLAN_A168."</em></span>
+		</td>
+	</tr>
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A167."<br />
+		<span class='smalltext'><em>".EC_ADLAN_A170."</em></span>
+		</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+			<select name='eventpost_datenext' class='tbox'>
+			<option value='1' ".($pref['eventpost_datenext']=='1'?" selected='selected' ":"")." > dd month </option>
+			<option value='2' ".($pref['eventpost_datenext']=='2'?" selected='selected' ":"")." > dd mon </option>
+			<option value='3' ".($pref['eventpost_datenext']=='3'?" selected='selected' ":"")." > month dd </option>
+			<option value='4' ".($pref['eventpost_datenext']=='4'?" selected='selected' ":"")." > mon dd </option>
+			<option value='0' ".($pref['eventpost_datenext']=='0'?" selected='selected' ":"")." > Custom </option>
+			</select>
+            <input class='tbox' type='text' name='eventpost_nextdatecustom' size='20' value='".$pref['eventpost_nextdatecustom']."' maxlength='30' />
+			<br /><span class='smalltext'><em>".EC_ADLAN_A168."</em></span>
 		</td>
 	</tr>
 
