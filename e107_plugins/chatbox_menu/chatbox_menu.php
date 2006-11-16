@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2006-11-12 04:13:35 $
-|     $Author: mrpete $
+|     $Revision: 1.71 $
+|     $Date: 2006-11-16 16:36:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -88,7 +88,7 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
 						$edata_cb = array("cmessage" => $cmessage, "ip" => $ip);
 						$e_event -> trigger("cboxpost", $edata_cb);
-						$e107cache->clear("chatbox");
+						$e107cache->clear("nq_chatbox");
 					}
 				}
 			}
@@ -161,7 +161,7 @@ if($emessage != ""){
 	$texta .= "<div style='text-align:center'><b>".$emessage."</b></div>";
 }
 
-if(!$text = $e107cache->retrieve("chatbox"))
+if(!$text = $e107cache->retrieve("nq_chatbox"))
 {
 	global $pref,$tp;
 	$pref['chatbox_posts'] = ($pref['chatbox_posts'] ? $pref['chatbox_posts'] : 10);
@@ -234,7 +234,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	{
 		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN."chatbox_menu/chat.php'>".(CB_MOD ? CHATBOX_L13 : CHATBOX_L12)."</a> (".$total_chats.")</div>";
 	}
-	$e107cache->set("chatbox", $text);
+	$e107cache->set("nq_chatbox", $text);
 }
 
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME_ABS."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);

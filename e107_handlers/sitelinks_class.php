@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2006-11-13 13:23:26 $
-|     $Author: e107coders $
+|     $Revision: 1.104 $
+|     $Date: 2006-11-16 16:36:29 $
+|     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -56,8 +56,9 @@ class sitelinks
 	function get($cat=1, $style='', $css_class = false)
 	{
 		global $pref, $ns, $e107cache, $linkstyle;
+		$usecache = ((trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != "") ? false : true);
 
-		if (($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY))) && !strpos(e_SELF,e_ADMIN) ) {
+		if ($usecache && !strpos(e_SELF, e_ADMIN) & ($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY)))) {
 			return $data;
 		}
 
@@ -159,7 +160,10 @@ class sitelinks
 			}
 		}
 		$text .= "\n\n\n<!--- end Site Links -->\n\n\n";
-		$e107cache->set('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY), $text);
+		if($usecache)
+		{
+			$e107cache->set('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY), $text);
+		}
 	 	return $text;
 	}
 
