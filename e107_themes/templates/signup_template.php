@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-08-25 15:14:13 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-16 19:50:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -170,7 +170,7 @@ $COPPA_FAIL = "<div style='text-align:center'>".LAN_SIGNUP_9."</div>";
 if(!defined($SIGNUP_TEXT))
 {
 $SIGNUP_TEXT =
-LAN_309." <b>".LAN_SIGNUP_29."</b><br />".LAN_SIGNUP_30."<br />
+LAN_309." <b>".LAN_SIGNUP_29."</b><br /><br />".LAN_SIGNUP_30."<br />
 ";
 }
 

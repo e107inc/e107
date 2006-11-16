@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-11-14 14:55:56 $
+|     $Revision: 1.23 $
+|     $Date: 2006-11-16 19:50:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("LAN_8", "the name that will be displayed on site");
 define("LAN_9", "Login Name: ");
 define("LAN_10", "the name that you use to login");
 define("LAN_17", "Password: ");
-define("LAN_103", "That user name cannot be accepted as valid, please choose a different user name");
+define("LAN_103", "That username cannot be accepted as valid, please choose a different user name");
 define("LAN_104", "That login name already exists in the database, please choose a different login name");
 define("LAN_105", "The two passwords do not match");
 define("LAN_106", "That doesn't appear to be a valid email address");
@@ -34,7 +34,7 @@ define("LAN_200", "No");
 define("LAN_202", "You already have an account. If you have forgotten your password, please click the 'forgot password' link.");
 define("LAN_309", "Please enter your details below.");
 define("LAN_399", "Continue");
-define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
+define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>.");
 define("LAN_401", "Your account has now been activated, please");
 define("LAN_402", "Registration activated");
 define("LAN_403", "Welcome to");
