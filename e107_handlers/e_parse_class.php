@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.172 $
-|     $Date: 2006-11-10 21:35:22 $
-|     $Author: mrpete $
+|     $Revision: 1.173 $
+|     $Date: 2006-11-16 04:00:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -75,8 +75,10 @@ class e_parse
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
-		return html_entity_decode($text, $mode);
+		$text = html_entity_decode($text, $mode,CHARSET);
+		return str_replace(chr(160),"&amp;nbsp;",$text);  // fix for utf-8 issue with html_entity_decode("&nbsp;");
 	}
+
 
 	function post_toForm($text) {
 		if (defined("MAGIC_QUOTES_GPC") && (MAGIC_QUOTES_GPC == TRUE)) {
@@ -85,6 +87,7 @@ class e_parse
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
 	}
+
 
 	function post_toHTML($text, $modifier = true, $extra = '') {
 		/*
@@ -287,7 +290,7 @@ class e_parse
 		/* we can remove any linebreaks added by htmlwrap function as any \n's will be converted later anyway */
 		return $text;
 	}
-	
+
 	//
 	// Test for text highlighting, and determine the text highlighting transformation
 	// Returns TRUE if highlighting is active for this page display
@@ -295,20 +298,20 @@ class e_parse
 	function checkHighlighting()
 	{
 		global $pref;
-		
+
 		if (!defined('e_SELF'))
 		{
 			return FALSE;	// Still in startup, so can't calculate highlighting
 		}
-		
+
 		if (!isset($this->e_highlighting))
 		{
 			$this->e_highlighting = FALSE;
 			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
-			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) 
+			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE)))
 			{
 				$this->e_highlighting = TRUE;
-				if (!isset($this -> e_query)) 
+				if (!isset($this -> e_query))
 				{
 					$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
 					$this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
