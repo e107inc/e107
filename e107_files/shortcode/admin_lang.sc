@@ -99,7 +99,7 @@ if (ADMIN) {
 
 			foreach($lanperms as $lng)
 			{
-				$langval = ($lng == $pref['sitelanguage']) ? "" : $lng;
+				$langval = ($lng == $pref['sitelanguage'] && $lng == 'English') ? "" : $lng;
 				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
 				$text .= "<option value='".$langval."' $selected>$lng</option>\n";
 			}
