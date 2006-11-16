@@ -11,11 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-11-06 22:30:22 $
+|     $Revision: 1.19 $
+|     $Date: 2006-11-16 10:24:14 $
 |     $Author: e107coders $
 |
-| 15.06.06 - bug fix for recurring events - Bug ref 2911
+| 11.11.06 - steved - mods for next CVS release
 |
 +----------------------------------------------------------------------------+
 */ 
@@ -162,6 +162,7 @@ if ($sql->db_Select_gen($qry))
 		$eve	= getdate($row['event_end']);
 		$tmp2	= $eve['mday'];		// Day of month for end
 		$tmp3	= date("t", $monthstart); // number of days in this month
+		if ((($ecal_class->max_recent_show != 0) && (time() - $row['event_datestamp']) <= $ecal_class->max_recent_show)) $row['is_recent'] = TRUE; 
 
 		//1) start in month, end in month
 		if(($row['event_start']>=$monthstart && $row['event_start']<=$monthend) && $row['event_end']<=$monthend)
@@ -244,7 +245,7 @@ for ($c = 1; $c <= $numberdays; $c++)
     $dayarray	= getdate($start + (($c-1) * 86400));
     $stopp		= mktime(24, 0, 0, $calmonth, $c, $calyear);
     $startt		= mktime(0, 0, 0, $calmonth, $c, $calyear); 
-    // Highlight the current day.
+   // Highlight the current day.
     if ($dayarray['mon'] == $calmonth)
     {
         if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear)

@@ -11,23 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/next_event_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:30:22 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-16 10:24:14 $
 |     $Author: e107coders $
 |
-| 12.07.06 - Initial release for beta testing
-| 26.07.06 - First release
-| 02.08.06 - Optional display of category icon added
-| 03.08.06 - Height/width of category icons removed
-|------------------------> To here in CVS
-| 04.10.06 - Handles optional link to forum URL
-|			- uses calendar time options and other helpers from class object
-|
-| The 'days ahead' value must be less than 59 for this to work reliably
-|
-| 30.10.06 - Templating for this menu
-| 03.11.06 - Reordering of file access to address a few issues
-| 06.11.06 - Uses different template and shortcode file (same underlying code)
+| 09.11.06 - Cache support added, templating/shortcode tweaks
 +----------------------------------------------------------------------------+
 */
 
@@ -37,8 +25,18 @@ if (!defined('e107_INIT')) { exit; }
 global $ecal_dir, $tp;
 $ecal_dir	= e_PLUGIN . "calendar_menu/";
 
+global $ecal_class;
 require_once($ecal_dir."ecal_class.php");
 $ecal_class = new ecal_class;
+
+	$cache_tag = "nq_event_cal_next";
+
+// See if the page is already in the cache
+	if($cacheData = $e107cache->retrieve($cache_tag, $ecal_class->max_cache_time))
+	{
+		echo $cacheData;
+		return;
+	}
 
 include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
 
@@ -117,10 +115,11 @@ if (isset($pref['eventpost_fe_set']))
 	
 $cal_qry .= " order by e.event_start LIMIT {$show_count}";
 
+
 $cal_totev = 0;
 $cal_text = '';
 $cal_row = array();
-global $cal_row, $event_start_time, $cal_totev;
+global $cal_row, $cal_totev;
 
 $cal_totev = $sql->db_Select_gen($cal_qry);
 
@@ -130,7 +129,6 @@ if ($cal_totev > 0)
     while ($cal_row = $sql->db_Fetch())
     {
 	  $cal_totev --;    // Can use this to modify inter-event gap
-	  $event_start_time = $ecal_class->time_string($cal_row['event_start']);
 	  $cal_text .= $tp->parseTemplate($EVENT_CAL_FE_LINE,FALSE,$calendar_shortcodes);
 	}
 }
@@ -145,6 +143,11 @@ if ($link_in_heading == 1)
   $calendar_title = "<a class='forumlink' href='" . e_PLUGIN . "calendar_menu/event.php' >" . $menu_title . "</a>";
 }
 
+// Now handle the data, cache as well
+ob_start();					// Set up a new output buffer
 $ns->tablerender($calendar_title, $cal_text, 'next_event_menu');
+$cache_data = ob_get_flush();			// Get the page content, and display it
+$e107cache->set($cache_tag, $cache_data);	// Save to cache
+	
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.16 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2006-11-08 21:45:01 $
+|     $Revision: 1.17 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2006-11-16 10:24:15 $
 |     $Author: e107coders $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
@@ -21,6 +21,7 @@
 | 03.10.06 - forced subs fields changed
 | 04.10.06 - db field order changed to avoid confusing update routines
 | 29.10.06 - Language mods to reflect CVS update to V1.14
+| 10.11.06 - Mods for next release to CVS
 +----------------------------------------------------------------------------+
 */
 
@@ -65,7 +66,9 @@ $eplug_prefs = array(
 "eventpost_adminlog" => 0,
 "eventpost_showeventcount" => 1,
 "eventpost_forum" => 1,
+"eventpost_recentshow" => 0,
 "eventpost_super" => 0,
+"eventpost_menulink" => 0,
 "eventpost_dateformat" => 1,
 "eventpost_fivemins" => 0,
 "eventpost_weekstart" => "sun",
@@ -74,6 +77,10 @@ $eplug_prefs = array(
 "eventpost_datedisplay" => 1,
 "eventpost_timedisplay" => 0,
 "eventpost_timecustom" => "%H%M",
+"eventpost_dateevent"  => 1,
+"eventpost_datenext"   => 1,
+"eventpost_eventdatecustom" => "&A %d %B %Y",
+"eventpost_nextdatecustom"   => "%d %b",
 "eventpost_mailsubject" => EC_ADLAN_12,
 "eventpost_mailfrom" => EC_ADLAN_A151,
 "eventpost_mailaddress" => EC_ADLAN_A152,
@@ -246,7 +253,13 @@ $upgrade_alter_tables = array(
 	"eventpost_timedisplay" => 0,
 	"eventpost_timecustom" => "%H%M",
 	"eventpost_fe_set" => "",
-	"eventpost_namelink" => 1	);
+	"eventpost_namelink" => 1,
+	"eventpost_recentshow" => 0,
+	"eventpost_dateevent"  => 1,
+	"eventpost_datenext"   => 1,
+	"eventpost_eventdatecustom" => "&A %d %B %Y",
+	"eventpost_nextdatecustom"   => "%d %b",
+    "eventpost_menulink" => 0 );
 	$upgrade_add_prefs .= $verprefs;
 	$version_notes .= "<u>3.6</u><br />".EC_ADLAN_A156."<br />".create_ec_log_dir()."<br />
 	                   <a href='".e_PLUGIN_ABS.$eplug_folder."/".$eplug_conffile."'>Configure</a><br />";
@@ -259,6 +272,7 @@ $upgrade_alter_tables = array(
 	"eventpost_todaycss"
 	);
 }
+
 
 $eplug_upgrade_done = EC_LAN_108."<br />".$version_notes;
 

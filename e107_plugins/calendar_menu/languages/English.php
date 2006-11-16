@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-11-12 13:34:57 $
-|     $Author: mrpete $
+|     $Revision: 1.18 $
+|     $Date: 2006-11-16 10:24:15 $
+|     $Author: e107coders $
 |
 | Various mods by steved:
 |	a) To reflect updates
@@ -140,23 +140,23 @@ define('EC_LAN_64', "Check for an all-day event");
 define('EC_LAN_65', "Recurring:");
 define('EC_LAN_66', "Edit Event");
 define('EC_LAN_67', "Start:");
-define('EC_LAN_68', "All day event");
-define('EC_LAN_69', "Ends");
+define('EC_LAN_68', "All day event:");
+define('EC_LAN_69', "Ends:");
 define('EC_LAN_70', "Event Title:");
 define('EC_LAN_71', "Event Time:");
 define('EC_LAN_72', "Event Date:");
 define('EC_LAN_73', "End:");
-define('edesc_LAN_0', "Count Down");
-define('edesc_LAN_1', "Still ");
-define('edesc_LAN_2', "before event on ".SITENAME);
-define('edesc_LAN_3', "sec");
-define('edesc_LAN_4', "secs");
-define('edesc_LAN_5', "min");
-define('edesc_LAN_6', "mins");
-define('edesc_LAN_7', "h");
-define('edesc_LAN_8', "h");
-define('edesc_LAN_9', "day");
-define('edesc_LAN_10', "days");
+//define('edesc_LAN_0', "Count Down");
+//define('edesc_LAN_1', "Still ");
+//define('edesc_LAN_2', "before event on ".SITENAME);
+//define('edesc_LAN_3', "sec");
+//define('edesc_LAN_4', "secs");
+//define('edesc_LAN_5', "min");
+//define('edesc_LAN_6', "mins");
+//define('edesc_LAN_7', "h");
+//define('edesc_LAN_8', "h");
+//define('edesc_LAN_9', "day");
+//define('edesc_LAN_10', "days");
 define('EC_LAN_VIEWCALENDAR', "View Calendar");
 define('EC_LAN_VIEWALLEVENTS', "View all events");
 define('EC_LAN_ALLEVENTS', "All events");
@@ -227,14 +227,15 @@ define('EC_LAN_133', "[read more]");
 define('EC_LAN_134', "You have to provide a category name");
 define('EC_LAN_135', "Event");
 define('EC_LAN_136', "Category Description");
+define('EC_LAN_137', "Future Events");
 
 // Added 12.07.06 for next_event_menu.php
 define('EC_LAN_140', "Forthcoming Events");
 define('EC_LAN_141', "No forthcoming events");
 define('EC_LAN_142', "Only registered and logged in users can subscribe to events");
 define('EC_LAN_143', "Facility not available");
-
 define('EC_LAN_144', " at ");
+
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");
@@ -314,7 +315,7 @@ define('EC_ADLAN_A123', "Calendar time format");
 define('EC_ADLAN_A124', "Current server time: ");
 define('EC_ADLAN_A125', "Current site time: ");
 define('EC_ADLAN_A126', "Current user time: ");
-define('EC_ADLAN_A127', "Determines time display format for event calendar.");
+define('EC_ADLAN_A127', "Determines time display format throughout event calendar.");
 define('EC_ADLAN_A128', "Custom time uses the format in the box on the right");
 define('EC_ADLAN_A129', '"Site Time" uses the offset defined in preferences');
 define('EC_ADLAN_A130', "Event name is link to:");
@@ -347,6 +348,33 @@ define('EC_ADLAN_A155', "Log directory permissions may require manual update to 
 define('EC_ADLAN_A156', "Database upgraded");
 define('EC_ADLAN_A157', "this is the rss feed for the calendar entries");
 define('EC_ADLAN_A158', "Could not create log directory");
+
+define('EC_ADLAN_A159', "Cache Management");
+define('EC_ADLAN_A160', "(Only relevant if cache enabled)");
+define('EC_ADLAN_A161', "Empty Calendar Cache");
+define('EC_ADLAN_A162', "Confirm Empty Cache");
+define('EC_ADLAN_A163', "Cache emptied");
+
+define('EC_ADLAN_A164', "Update completed");
+define('EC_ADLAN_A165', "Calendar menu header links to:");
+define('EC_ADLAN_A166', "Date display in Event List:");
+define('EC_ADLAN_A167', "Date display in Forthcoming Events:");
+define('EC_ADLAN_A168', "Custom date uses the format in the box on the right");
+define('EC_ADLAN_A169', "Determines date display format for event listings");
+define('EC_ADLAN_A170', "Determines date display format for forthcoming events menu");
+define('EC_ADLAN_A171', "Flag recently added/updated events");
+define('EC_ADLAN_A172', "Value is time from update in hours; zero to disable");
+
+
+// Notify
+define("NT_LAN_EC_1", "Event Calendar Events");
+define("NT_LAN_EC_2", "Event Updated");
+define("NT_LAN_EC_3", "Update by");
+define("NT_LAN_EC_4", "IP Address");
+define("NT_LAN_EC_5", "Message");
+define("NT_LAN_EC_6", "Event Calendar - Event added");
+define("NT_LAN_EC_7", "New event posted");
+define("NT_LAN_EC_8", "Event Calendar - Event modified");
 
 
 ?>
