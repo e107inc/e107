@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/cascade.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-10-27 23:06:55 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-16 10:41:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) {
 		extract($row);
 		include(e_PLUGIN.$plugin_path."/plugin.php");
 		if ($eplug_conffile) {
-			$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs");  
+			$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs emotes_off");
 			$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
 			$plugin_array[ucfirst($eplug_name)] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
 		}
