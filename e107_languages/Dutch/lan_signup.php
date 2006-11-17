@@ -40,7 +40,7 @@ define("LAN_200", "Nee");
 define("LAN_202", "Je hebt al een account. Als je je wachtwoord niet meer weet, klik dan op de 'Wachtwoord vergeten' link.");
 define("LAN_309", "Vul je gegevens hieronder in. ");
 define("LAN_399", "Ga verder");
-define("LAN_400", "Gebruikersnamen en wachtwoorden zijn <b>hoofdlettergevoelig</b>");
+define("LAN_400", "Gebruikersnamen en wachtwoorden zijn <b>hoofdlettergevoelig</b>.");
 define("LAN_401", "Je aanmelding is geldig, ");
 define("LAN_402", "Aanmelding geactiveerd");
 define("LAN_403", "Welkom bij ");
