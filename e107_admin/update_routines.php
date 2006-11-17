@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.191 $
-|     $Date: 2006-11-17 17:04:51 $
+|     $Revision: 1.192 $
+|     $Date: 2006-11-17 18:17:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -137,7 +137,7 @@ function update_70x_to_706($type='') {
 
 		if($sql->db_Field("dblog",5) == "dblog_query")
 		{
-			mysql_query("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL;");
+			mysql_query("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL DEFAULT '';");
 			catch_error();
 			mysql_query("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_remarks` `dblog_remarks` TEXT NOT NULL;");
 			catch_error();
