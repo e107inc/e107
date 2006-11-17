@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-10-25 23:59:58 $
-|     $Author: e107coders $
+|     $Revision: 1.58 $
+|     $Date: 2006-11-17 09:23:20 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -465,9 +465,7 @@ function show_mailform($foo=""){
 
 	<tr>
 	<td colspan='2'  class='forumheader3'>
-	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>
-	$email_body
-	</textarea>
+	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$email_body."</textarea>
 	</td>
 	</tr>";
 
