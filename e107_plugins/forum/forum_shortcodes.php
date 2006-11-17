@@ -243,6 +243,7 @@ global $post_info, $gen;
 if ($post_info['thread_edit_datestamp']) {
 return $gen->convert_date($post_info['thread_edit_datestamp'],'forum');
 }
+return "";
 SC_END
 
 SC_BEGIN POLL
