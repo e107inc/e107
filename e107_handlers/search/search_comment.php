@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_comment.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-28 14:50:24 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-17 14:49:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -39,10 +39,13 @@ $return_fields = 'c.comment_item_id, c.comment_author, c.comment_datestamp, c.co
 foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
 	if (check_class($value['class'])) {
 		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$h_key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
-		require_once($path);
-		$in[] = "'".$value['id']."'";
-		$join[] = $comments_table[$h_key];
-		$return_fields .= ', '.$comments_return[$h_key];
+		if (is_readable($path)) {
+			require_once($path);
+			$in[] = "'".$value['id']."'";
+			$join[] = $comments_table[$h_key];
+			$return_fields .= ', '.$comments_return[$h_key];
+		}
+		
 	}
 }
 
@@ -58,8 +61,10 @@ $text .= $ps['text'];
 $results = $ps['results'];
 
 function search_comment($row) {	
-	$res = call_user_func('com_search_'.$row['comment_type'], $row);
-	return $res;
+	if (is_callable('com_search_'.$row['comment_type'])) {
+		$res = call_user_func('com_search_'.$row['comment_type'], $row);
+		return $res;
+	}
 }
 
 ?>
