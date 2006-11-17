@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-11-17 13:27:51 $
+|     $Revision: 1.45 $
+|     $Date: 2006-11-17 15:27:45 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -118,7 +118,7 @@ if(varset($e107_popup)!=1){
 	usage: add ?showsql to query string, must be admin
 	*/
 	
-	if(is_array($queryinfo) && ADMIN)
+	if(ADMIN && isset($queryinfo) && is_array($queryinfo))
 	{
 		$c=1;
 		$mySQLInfo = $sql->mySQLinfo;
