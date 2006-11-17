@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.190 $
-|     $Date: 2006-11-10 00:53:52 $
-|     $Author: e107coders $
+|     $Revision: 1.191 $
+|     $Date: 2006-11-17 17:04:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -154,10 +154,15 @@ function update_70x_to_706($type='') {
 
 		}
 
-		// still needs a check, so it doesn't happen twice.
-        mysql_query("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
-		mysql_query("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
-		mysql_query("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
+		if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp")) 
+		{
+			$row = $sql -> db_Fetch();
+			if (!in_array('tmp_ip', $row)) {
+				mysql_query("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
+				mysql_query("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
+				mysql_query("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
+			}
+		}
 
 
 		// update new fields
@@ -201,6 +206,14 @@ function update_70x_to_706($type='') {
 		if(!$sql->db_Field("online",6)) // online_active field
 		{
 			return update_needed();
+		}
+		
+		if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp")) 
+		{
+			$row = $sql -> db_Fetch();
+			if (!in_array('tmp_ip', $row)) {
+				return update_needed();
+			}
 		}
 
 		// No updates needed
