@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-09-21 00:08:00 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2006-11-17 20:23:13 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,7 +45,7 @@ class notify {
 		e107_require_once(e_HANDLER.'mail.php');
 		$subject = SITENAME.': '.$subject;
 		if ($this -> notify_prefs['event'][$id]['type'] == 'main') {
-			sendemail(SITEADMINEMAIL, $subject, $tp->toEmail($message));
+			sendemail(SITEADMINEMAIL, $tp->toEmail($subject), $tp->toEmail($message));
 		} else if ($this -> notify_prefs['event'][$id]['type'] == 'class') {
 			if ($this -> notify_prefs['event'][$id]['class'] == '254') {
 				$sql -> db_Select('user', 'user_email', "user_admin = 1");
@@ -55,10 +55,10 @@ class notify {
 				$sql -> db_Select('user', 'user_email', "user_class REGEXP '(^|,)(".$this -> notify_prefs['event'][$id]['class'].")(,|$)'");
 			}
 			while ($email = $sql -> db_Fetch()) {
-				sendemail($email['user_email'], $subject, $tp->toEmail($message));
+				sendemail($email['user_email'], $tp->toEmail($subject), $tp->toEmail($message));
 			}
 		} else if ($this -> notify_prefs['event'][$id]['type'] == 'email') {
-			sendemail($this -> notify_prefs['event'][$id]['email'], $subject, $tp->toEmail($message));
+			sendemail($this -> notify_prefs['event'][$id]['email'], $tp->toEmail($subject), $tp->toEmail($message));
 		}
 	}
 }
