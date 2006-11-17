@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-11-16 16:48:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.44 $
+|     $Date: 2006-11-17 13:27:51 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -56,7 +56,7 @@ if (!is_object($eTraffic)) {
 unset($fh);
 
 
-if($e107_popup!=1){
+if(varset($e107_popup)!=1){
 	//
 	// B Send footer template
 	//

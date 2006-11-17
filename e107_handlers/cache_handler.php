@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-11-15 09:12:32 $
-|     $Author: streaky $
+|     $Revision: 1.35 $
+|     $Date: 2006-11-17 13:26:38 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.34 $
-* @author      $Author: streaky $
+* @version     $Revision: 1.35 $
+* @author      $Author: mrpete $
 */
 class ecache {
 
@@ -62,6 +62,8 @@ class ecache {
 					}
 					$CheckTag = '_'.$this->CachePageMD5;
 				}
+			} else {
+				$CheckTag = '';
 			}
 		} else {
 			$CheckTag = '';
