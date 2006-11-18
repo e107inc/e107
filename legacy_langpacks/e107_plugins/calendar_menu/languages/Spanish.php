@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/calendar_menu/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-14 07:05:00 $
+|     $Revision: 1.6 $
+|     $Date: 2006-11-18 21:03:01 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -127,24 +127,24 @@ define('EC_LAN_64', "Haz click para un evento todo el día");
 define('EC_LAN_65', "Repetición:");
 define('EC_LAN_66', "Editar evento");
 define('EC_LAN_67', "Comienzo:");
-define('EC_LAN_68', "Todo el día");
-define('EC_LAN_69', "Finaliza");
+define('EC_LAN_68', "Todo el día:");
+define('EC_LAN_69', "Finaliza:");
 define('EC_LAN_70', "Título evento:");
 define('EC_LAN_71', "Hora evento:");
 define('EC_LAN_72', "Fecha evento:");
 define('EC_LAN_73', "Finaliza:");
 
-define('edesc_LAN_0', "Cuenta atrás");
-define('edesc_LAN_1', "Aún ");
-define('edesc_LAN_2', "antes del evento en ".SITENAME);
-define('edesc_LAN_3', "seg");
-define('edesc_LAN_4', "segs");
-define('edesc_LAN_5', "min");
-define('edesc_LAN_6', "mins");
-define('edesc_LAN_7', "h");
-define('edesc_LAN_8', "h");
-define('edesc_LAN_9', "día");
-define('edesc_LAN_10', "días");
+//define('edesc_LAN_0', "Cuenta atrás");
+//define('edesc_LAN_1', "Aún ");
+//define('edesc_LAN_2', "antes del evento en ".SITENAME);
+//define('edesc_LAN_3', "seg");
+//define('edesc_LAN_4', "segs");
+//define('edesc_LAN_5', "min");
+//define('edesc_LAN_6', "mins");
+//define('edesc_LAN_7', "h");
+//define('edesc_LAN_8', "h");
+//define('edesc_LAN_9', "día");
+//define('edesc_LAN_10', "días");
 
 define('EC_LAN_VIEWCALENDAR', "Ver calendario");
 define('EC_LAN_VIEWALLEVENTS', "Ver todos los eventos");
@@ -214,7 +214,7 @@ define('EC_LAN_133', "[Leer más]");
 define('EC_LAN_134', "Necesita proporcionar un nombre de categoría");
 define('EC_LAN_135', "Evento"); 
 define('EC_LAN_136', "Descripción de la categoría"); 
-
+define('EC_LAN_137', "Eventos futuros");
 
 // Added 12.07.06 for next_event_menu.php 
 define('EC_LAN_140', "Próximos eventos"); 
@@ -330,4 +330,29 @@ define('EC_ADLAN_A155', "Los permisos del directorio de registro puede requerir 
 define('EC_ADLAN_A156', "Base de datos actualizada"); 
 define('EC_ADLAN_A157', "este es el alimentador rss de las entradas del calendario"); 
 define('EC_ADLAN_A158', "No es posible crear el directorio de registro"); 
+
+define('EC_ADLAN_A159', "Gestor de caché"); 
+define('EC_ADLAN_A160', "(Solo relevante si se activa la cache)"); 
+define('EC_ADLAN_A161', "Vaciar la Cache de Calendario"); 
+define('EC_ADLAN_A162', "Confirme vaciar la Cache"); 
+define('EC_ADLAN_A163', "Cache vaciada"); 
+define('EC_ADLAN_A164', "Actualización completada"); 
+define('EC_ADLAN_A165', "La cabecera del menu de calendario enlaza a:"); 
+define('EC_ADLAN_A166', "Mostrar fecha en lista de Eventos:"); 
+define('EC_ADLAN_A167', "Mostrar fecha en Eventos próximos:"); 
+define('EC_ADLAN_A168', "Fechas personalizadas usan el formato en la caja a la derecha"); 
+define('EC_ADLAN_A169', "Determina el formato a mostrar la fecha para listas de eventos"); 
+define('EC_ADLAN_A170', "Determina el formato a mostrar la fecha en el menú de eventos próximos"); 
+define('EC_ADLAN_A171', "Bandera añadida/actualizada en eventos recientes"); 
+define('EC_ADLAN_A172', "Valor en el tiempo de la actualización en horas; cero para desactivar"); 
+    
+// Notify 
+define("NT_LAN_EC_1", "Eventos del Calendario"); 
+define("NT_LAN_EC_2", "Eventos actualizados"); 
+define("NT_LAN_EC_3", "Actualizado por"); 
+define("NT_LAN_EC_4", "Dirección IP"); 
+define("NT_LAN_EC_5", "Mensaje"); 
+define("NT_LAN_EC_6", "Evento de Calendario - Evento añadido"); 
+define("NT_LAN_EC_7", "Nuevo evento publicado"); 
+define("NT_LAN_EC_8", "Evento de Calendario - Evento modificado"); 
 ?>

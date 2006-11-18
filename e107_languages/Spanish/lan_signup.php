@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-10-29 12:57:42 $
+|     $Revision: 1.17 $
+|     $Date: 2006-11-18 21:03:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ define("LAN_185", "Ha dejado campos obligatorios en blanco");
 
 define("LAN_201", "Si");
 define("LAN_200", "No");
-define("LAN_202", "Ya dispone de una cuenta. Si olvidó el password, haga click en el enlace \'¿Olvidó contraseña?\'.");
+define("LAN_202", "Ya dispone de una cuenta. Si olvidó el password, haga click en el enlace '¿Olvidó contraseña?'.");
 
 define("LAN_309", "Por favor rellene los detalles que se solicitan a continuación.<br> - <b>Recibirá un email de verificación, asegúrese de escribir una dirección de email válida.</b> -");
 
@@ -114,5 +114,6 @@ define("LAN_SIGNUP_48", "Usuario o email");
 define("LAN_SIGNUP_49", "Si se registró con un email equivocado, escriba uno nuevo y su contraseña aquí:"); 
 define("LAN_SIGNUP_50", "Nuevo email"); 
 define("LAN_SIGNUP_51", "Vieja contraseña"); 
-define("LAN_SIGNUP_52", "Contraseña incorrecta"); 
+define("LAN_SIGNUP_52", "Contraseña incorrecta");
+define("LAN_SIGNUP_53", "falló la prueba de validación");
 ?>
