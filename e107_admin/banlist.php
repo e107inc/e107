@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-11-18 02:29:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2006-11-18 03:09:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -65,10 +65,7 @@ if ($action == "edit") {
 }
 
 $text = "";
-if(!varsettrue($pref['enable_rdns']))
-{
-	$text .= "<div style='text-align:left'>".BANLAN_12."</div><br />";
-}
+
 
 
 $text .= "<div style='text-align:center'>
@@ -98,6 +95,11 @@ $text .= "<div style='text-align:center'>
 	</table>
 	</form>
 	</div>";
+
+if(!varsettrue($pref['enable_rdns']))
+{
+	$text .= "<div style='text-align:center'><br />".BANLAN_12."</div>";
+}
 
 $ns->tablerender(BANLAN_9, $text);
 
