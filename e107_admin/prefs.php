@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2006-09-29 00:54:20 $
+|     $Revision: 1.96 $
+|     $Date: 2006-11-18 02:29:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -825,6 +825,13 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	$text .="</select></td>
 	</tr>
 
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_170."<br /><span class='smalltext'>".PRFLAN_171."</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='enable_rdns' value='1'".(varsettrue($pref['enable_rdns']) ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='enable_rdns' value='0'".(!varsettrue($pref['enable_rdns']) ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_139.":</td>
@@ -832,7 +839,8 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<input type='radio' name='adminpwordchange' value='1'".($pref['adminpwordchange'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='adminpwordchange' value='0'".(!$pref['adminpwordchange'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
-	</tr>";
+	</tr>
+	";
 
 $text .= pref_submit();
 

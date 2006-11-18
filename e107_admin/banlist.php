@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-04-07 15:24:12 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-11-18 02:29:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -64,13 +64,19 @@ if ($action == "edit") {
 	}
 }
 
+$text = "";
+if(!varsettrue($pref['enable_rdns']))
+{
+	$text .= "<div style='text-align:left'>".BANLAN_12."</div><br />";
+}
 
-$text = "<div style='text-align:center'>
+
+$text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".BANLAN_5.": </td>
+	<td style='width:30%' class='forumheader3'>".BANLAN_5.": {$rdns_warn}</td>
 	<td style='width:70%' class='forumheader3'>
 	<input class='tbox' type='text' name='ban_ip' size='40' value='".$banlist_ip."' maxlength='200' />
 	</td>
