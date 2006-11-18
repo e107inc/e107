@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/print.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-05 14:30:07 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-18 18:42:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 $HEADER="";
 $FOOTER="";
 require_once(HEADERF);
+
 $qs = explode(".", e_QUERY);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
