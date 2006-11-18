@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-10-26 12:35:38 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-18 22:40:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -63,6 +63,7 @@ if ($pref['user_reg'])
 		return "<a class='login_menu_link signup' href='".e_SIGNUP."' title=\"".LOGIN_MENU_L3."\">".LOGIN_MENU_L3."</a>";
 	}
 }
+return "";
 SC_END
 
 SC_BEGIN LM_FPW_LINK
@@ -74,6 +75,7 @@ if ($pref['user_reg'])
 		return "<a class='login_menu_link fpw' href='".e_BASE."fpw.php' title=\"".LOGIN_MENU_L4."\">".LOGIN_MENU_L4."</a>";
 	}
 }
+return "";
 SC_END
 
 SC_BEGIN LM_RESEND_LINK
@@ -84,7 +86,7 @@ if(isset($pref['user_reg_veri']) && $pref['user_reg_veri'] == 1){
 		return "<a class='login_menu_link resend' href='".e_SIGNUP."?resend' title=\"".LOGIN_MENU_L40."\">".LOGIN_MENU_L40."</a>";
 	}
 }
-
+return "";
 SC_END
 
 SC_BEGIN LM_MAINTENANCE
