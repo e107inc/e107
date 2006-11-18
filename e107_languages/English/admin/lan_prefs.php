@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-08-27 02:24:44 $
+|     $Revision: 1.58 $
+|     $Date: 2006-11-18 02:29:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -182,6 +182,9 @@ define("PRFLAN_166", "Show emoticon images on comment form?");
 define("PRFLAN_167", "Make entering an email addresses optional"); // subject to change.
 define("PRFLAN_168", "Site Contact Person(s)");
 define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
+
+define("PRFLAN_170", "Use reverse DNS to allow host banning");
+define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
 
 
 ?>

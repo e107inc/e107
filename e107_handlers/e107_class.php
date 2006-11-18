@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-11-12 22:14:19 $
+|     $Revision: 1.54 $
+|     $Date: 2006-11-18 02:29:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -128,21 +128,30 @@ class e107{
 	 *
 	 */
 	function ban() {
-		global $sql, $e107, $tp;
+		global $sql, $e107, $tp, $pref;
 		$ban_count = $sql->db_Count("banlist");
-		if($ban_count){
+		if($ban_count)
+		{
 			$ip = $this->getip();
 			$tmp = explode(".",$ip);
 			$wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
 			$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
 
-			$tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
+			if(varsettrue($pref['enable_rdns']))
+			{
+				$tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
+				preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
+				$bhost = (isset($match[0]) ? " OR banlist_ip='".$tp -> toDB($match[0], true)."'" : "");
+			}
+			else
+			{
+				$bhost = "";
+			}
 
-			preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-			$bhost = (isset($match[0]) ? " OR banlist_ip='".$tp -> toDB($match[0], true)."'" : "");
-
-			if ($ip != '127.0.0.1') {
-				if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}")) {
+			if ($ip != '127.0.0.1')
+			{
+				if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}"))
+				{
 				  header("HTTP/1.1 403 Forbidden", true);
 					// enter a message here if you want some text displayed to banned users ...
 					exit();
