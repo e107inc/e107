@@ -11,26 +11,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2006-11-12 04:07:19 $
-|     $Author: mrpete $
+|     $Revision: 1.72 $
+|     $Date: 2006-11-19 22:41:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once('../../class2.php');
 
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php';
-@require_once(e_PLUGIN.'forum/forum_class.php');
+include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php';
+include_once e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php';
+include_once(e_PLUGIN.'forum/forum_class.php');
 
 
 if (file_exists(THEME.'forum_design.php'))
 {
-	@include_once(THEME.'forum_design.php');
+	include_once(THEME.'forum_design.php');
 }
 
 $forum = new e107forum;
-if (IsSet($_POST['fjsubmit']))
+if (isset($_POST['fjsubmit']))
 {
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
 	exit;
@@ -50,13 +50,9 @@ if (!e_QUERY)
 else
 {
 	$tmp = explode(".", e_QUERY);
-	$thread_id = $tmp[0];
-	$from = $tmp[1];
-	$action = $tmp[2];
-	if (!$from)
-	{
-		$from = 0;
-	}
+	$thread_id = varset($tmp[0]);
+	$topic_from = varset($tmp[1], 0);
+	$action = varset($tmp[2]);
 	if (!$thread_id || !is_numeric($thread_id))
 	{
 		header("Location:".e_PLUGIN."forum/forum.php");
@@ -64,16 +60,16 @@ else
 	}
 }
 
-if($from === 'post')
+if($topic_from === 'post')
 {
 	if($thread_id)
 	{
 		$post_num = $forum->thread_postnum($thread_id);
 		$pages = ceil(($post_num['post_num']+1)/$pref['forum_postspage']);
-		$from = ($pages-1) * $pref['forum_postspage'];
+		$topic_from = ($pages-1) * $pref['forum_postspage'];
 		if($post_num['parent'] != $thread_id)
 		{
-			header("location: ".e_SELF."?{$post_num['parent']}.{$from}#post_{$thread_id}");
+			header("location: ".e_SELF."?{$post_num['parent']}.{$topic_from}#post_{$thread_id}");
 			exit;
 		}
 	}
@@ -86,24 +82,23 @@ if($from === 'post')
 
 require_once(e_PLUGIN.'forum/forum_shortcodes.php');
 
-
 if ($action == "track" && USER)
 {
 	$forum->track($thread_id);
-	header("location:".e_SELF."?{$thread_id}.{$from}");
+	header("location:".e_SELF."?{$thread_id}.{$topic_from}");
 	exit;
 }
 
 if ($action == "untrack" && USER)
 {
 	$forum->untrack($thread_id);
-	header("location:".e_SELF."?{$thread_id}.{$from}");
+	header("location:".e_SELF."?{$thread_id}.{$topic_from}");
 	exit;
 }
 
 if ($action == "next")
 {
-	$next = $forum->thread_getnext($thread_id, $from);
+	$next = $forum->thread_getnext($thread_id, $topic_from);
 	if ($next)
 	{
 		header("location:".e_SELF."?{$next}");
@@ -119,7 +114,7 @@ if ($action == "next")
 }
 
 if ($action == "prev") {
-	$prev = $forum->thread_getprev($thread_id, $from);
+	$prev = $forum->thread_getprev($thread_id, $topic_from);
 	if ($prev) {
 		header("location:".e_SELF."?{$prev}");
 		exit;
@@ -182,13 +177,13 @@ if ($action == "report") {
 $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
 
 $replies = $forum->thread_count($thread_id)-1;
-if ($from === 'last') {
+if ($topic_from === 'last') {
 	$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 	$pages = ceil(($replies+1)/$pref['forum_postspage']);
-	$from = ($pages-1) * $pref['forum_postspage'];
+	$topic_from = ($pages-1) * $pref['forum_postspage'];
 }
 $gen = new convert;
-$thread_info = $forum->thread_get($thread_id, $from-1, $pref['forum_postspage']);
+$thread_info = $forum->thread_get($thread_id, $topic_from-1, $pref['forum_postspage']);
 
 if(intval($thread_info['head']['thread_forum_id']) == 0)
 {
@@ -219,7 +214,7 @@ if (MODERATOR)
 	{
 		require_once(e_PLUGIN.'forum/forum_mod.php');
 		$message = forum_thread_moderate($_POST);
-		$thread_info = $forum->thread_get($thread_id, $from-1, $pref['forum_postspage']);
+		$thread_info = $forum->thread_get($thread_id, $topic_from-1, $pref['forum_postspage']);
 	}
 }
 
@@ -280,7 +275,7 @@ $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] 
 $pages = ceil(($replies+1)/$pref['forum_postspage']);
 if ($pages > 1)
 {
-	$parms = ($replies+1).",{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM],off';
+	$parms = ($replies+1).",{$pref['forum_postspage']},{$topic_from},".e_SELF.'?'.$thread_id.'.[FROM],off';
 	$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
@@ -403,7 +398,7 @@ function showmodoptions()
 
 	$ret .= "
 		<div>
-		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$from}'>".IMAGE_admin_edit."</a>
+		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$topic_from}'>".IMAGE_admin_edit."</a>
 		<input type='image' ".IMAGE_admin_delete." name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('{$type}', {$forum_id}, {$thread_id}, '{$post_info['user_name']}')\" />
 		";
 	if ($type == 'thread')
