@@ -53,8 +53,9 @@ define('ADLAN_PM_50', "Verwijder oude berichten");
 define('ADLAN_PM_51', "PM #{PMNUM} niet geconverteerd");
 define('ADLAN_PM_52', "berichten geconverteerd");
 define('ADLAN_PM_53', "Geen berichten gevonden om te converteren.");
-
 define('ADLAN_PM_54', "Instellingen");
 define('ADLAN_PM_55', "Limieten");
 define('ADLAN_PM_56', "Conversie");
+
+define('ADLAN_PM_57', "Deze plugin biedt een volledig uitgevoerde Private Messaging functie.");
 ?>

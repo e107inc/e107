@@ -154,6 +154,8 @@ define("PRFLAN_166", "Toon emoticon afbeeldingen op het reactieformulier?");
 define("PRFLAN_167", "Het invoeren van e-mailadresses is optioneel"); // subject to change.
 define("PRFLAN_168", "Site contactperso(o)n(en)");
 define("PRFLAN_169", "Als de gekozen groep meer dan één persoon bevat, wordt gevraagd om één persoon uit deze groep te kiezen.");
+define("PRFLAN_170", "Gebruik van reverse DNS voor blokkade van hosts");
+define("PRFLAN_171", "Het inschakelen van deze optie maakt het mogelijk om gebruikers op hostnaam te blokkeren in plaats van alleen maar IP-adres of e-mailadres.  <br />LET OP: dit kan resulteren in verminderde prestaties voor sommige hosts");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");
