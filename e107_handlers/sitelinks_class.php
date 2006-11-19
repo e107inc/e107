@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2006-11-17 18:51:37 $
-|     $Author: sweetas $
+|     $Revision: 1.106 $
+|     $Date: 2006-11-19 23:27:31 $
+|     $Author: mrpete $
 +---------------------------------------------------------------+
 */
 
@@ -97,15 +97,15 @@ class sitelinks
     // Sublink styles.- replacing the tree-menu.
         if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink'])){
 			foreach($style as $key=>$val){
-			  	$substyle[$key] = ($style["sub".$key]) ? $style["sub".$key] : $style[$key];
+			  	$aSubStyle[$key] = ($style["sub".$key]) ? $style["sub".$key] : $style[$key];
 			}
         }else{
 				$style['subindent'] = "&nbsp;&nbsp;";
-				$substyle = $style;
+				$aSubStyle = $style;
 		}
 
 		$text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
-
+		$sublinkdiv_class = varsettrue($aSubStyle['linkclass'],'d_sublink');
 		if ($style['linkdisplay'] != 3)	{
 			foreach ($this->eLinkList['head_menu'] as $key => $link){
 				$main_linkid = "sub_".$link['link_id'];
@@ -120,9 +120,9 @@ class sitelinks
 					// if there's a submenu. :
 					if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
 						$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "compact" : "none";   // expanding sub-menus.
-						$render_link[$key] .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
+						$render_link[$key] .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='$sublinkdiv_class'>\n";
 						foreach ($this->eLinkList[$main_linkid] as $sub){
-							$render_link[$key] .= $this->makeLink($sub, TRUE, $style, $css_class);
+							$render_link[$key] .= $this->makeLink($sub, TRUE, $aSubStyle, $css_class);
 						}
 						$render_link[$key] .= "\n</div>\n\n";
 					}
