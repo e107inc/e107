@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.320 $
-|     $Date: 2006-11-09 09:54:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.321 $
+|     $Date: 2006-11-19 20:32:11 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 //
@@ -380,7 +380,7 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 		$PrefRoot = $aPrefURL[2];
 		list($PrefSiteBase,$PrefSitePort) = explode(':',$PrefRoot.':');
 		if (!$PrefSitePort) {
-			$PrefSitePort = ( $aPrefURL[0] == "https" ) ? 443 : 80;	// no port so set port based on 'scheme'
+			$PrefSitePort = ( $aPrefURL[0] == "https:" ) ? 443 : 80;	// no port so set port based on 'scheme'
 		}
 
 		// Redirect only if
