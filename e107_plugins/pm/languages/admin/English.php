@@ -59,4 +59,5 @@ define('ADLAN_PM_55', "Limits");
 define('ADLAN_PM_56', "Conversion");
 
 define('ADLAN_PM_57', "This plugin is a fully featured Private Messaging system.");
+define('ADLAN_PM_58', "Private Messenger");
 ?>
