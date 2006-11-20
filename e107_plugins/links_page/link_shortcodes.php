@@ -233,7 +233,7 @@ SC_BEGIN LINK_BUTTON
 global $LINK_BUTTON, $linkspage_pref, $rowl, $LINK_NAME, $LINK_APPEND;
 
 if(!$linkspage_pref['link_icon']){
-	return FALSE;
+	return "";
 }
 $LINK_BUTTON = "&nbsp;";
 if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
@@ -291,7 +291,7 @@ SC_BEGIN LINK_URL
 global $LINK_URL, $linkspage_pref, $rowl;
 if(!$linkspage_pref['link_url'])
 {
-	return;
+	return "";
 }
 return ($parm == "link") ? "<a class='linkspage_url' href=\"".$rowl['link_url']."\" rel='external' title=\"".$rowl['link_description']."\">".$rowl['link_url']."</a>" : $rowl['link_url'];
 SC_END
@@ -357,8 +357,9 @@ SC_END
 SC_BEGIN LINK_RATING_LAN
 global $linkspage_pref;
 if(isset($linkspage_pref['link_rating']) && $linkspage_pref['link_rating']){
-	return LCLAN_ITEM_39;
+    return LCLAN_ITEM_39;
 }
+return "";
 SC_END
 
 SC_BEGIN NAVIGATOR
