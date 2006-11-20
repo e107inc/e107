@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_news.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-02 13:59:40 $
+|     $Revision: 1.11 $
+|     $Date: 2006-11-20 07:58:27 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -16,9 +16,9 @@ define("LAN_NEWS_1", "News for specific members only");
 define("LAN_NEWS_2", "You are not allowed to see this news");
 //define("LAN_NEWS_3", "Please delete install.php from your server");
 //define("LAN_NEWS_4", "if you do not there is a potential security risk to your website");
-define("LAN_NEWS_5", "<b>Error!</b> Was unable to update news item into database!</b>");
+define("LAN_NEWS_5", "Error! Was unable to update news item into database!");
 define("LAN_NEWS_6", "News entered into database.");
-define("LAN_NEWS_7", "<b>Error!</b> Was unable to enter news item into database!</b>");
+define("LAN_NEWS_7", "Error! Was unable to enter news item into database!");
 define("LAN_NEWS_8", "News entered into database for all languages. ID: ");
 define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b><br />");
 define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
