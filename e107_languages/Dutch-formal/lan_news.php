@@ -19,9 +19,9 @@ define("PAGE_NAME", "Nieuws");
 
 define("LAN_NEWS_1", "Nieuws uitsluitend voor bepaalde leden");
 define("LAN_NEWS_2", "U mag dit bericht niet lezen");
-define("LAN_NEWS_5", "<b>Fout!</b> Het was niet mogelijk het nieuwsbericht in de database bij te werken!</b>");
+define("LAN_NEWS_5", "Fout! Het was niet mogelijk het nieuwsbericht in de database bij te werken!</b>");
 define("LAN_NEWS_6", "Nieuws ingevoerd in de database.");
-define("LAN_NEWS_7", "<b>Fout!</b> Het was niet mogelijk het nieuwsbericht in de database in te voeren!</b>");
+define("LAN_NEWS_7", "Fout! Het was niet mogelijk het nieuwsbericht in de database in te voeren!</b>");
 define("LAN_NEWS_8", "Nieuws voor alle talen ingevoerd in de database. ID: ");
 define("LAN_NEWS_9", "Uitsluitend titel ingevoerd - <b>uitsluitend de titel van het bericht wordt getoond</b><br />");
 define("LAN_NEWS_10", "Dit nieuwsbericht is <b>niet actief</b> (het wordt niet getoond op de voorpagina). ");

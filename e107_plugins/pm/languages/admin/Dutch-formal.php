@@ -56,5 +56,6 @@ define('ADLAN_PM_53', "Geen berichten gevonden om te converteren.");
 define('ADLAN_PM_54', "Instellingen");
 define('ADLAN_PM_55', "Limieten");
 define('ADLAN_PM_56', "Conversie");
-define('ADLAN_PM_57', "Deze plugin biedt een volledig uitgevoerde Private Messaging functie.");
+define('ADLAN_PM_57', "Deze plugin biedt een volledig uitgevoerde Privé Messaging functie.");
+define('ADLAN_PM_58', "Privé Messenger");
 ?>
