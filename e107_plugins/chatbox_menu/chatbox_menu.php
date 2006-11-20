@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2006-11-16 16:36:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.72 $
+|     $Date: 2006-11-20 12:49:40 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -104,7 +104,6 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 	}
 }
 
-$pref['cb_linkc'] = str_replace("e107_images/", e_IMAGE, $pref['cb_linkc']);
 if(!USER && !$pref['anon_post']){
 	if($pref['user_reg'])
 	{

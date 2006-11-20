@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-11-18 02:29:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.59 $
+|     $Date: 2006-11-20 12:52:37 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -109,13 +109,13 @@ define("PRFLAN_96", "Will display info on all admin pages for each plugin suppor
 define("PRFLAN_97", "Unique 'Plugins info' menu:");
 define("PRFLAN_98", "If unchecked, each plugin will display its own info in an individual menu. If checked all info will be displayed in one menu.");
 define("PRFLAN_101", "Text rendering");
-define("PRFLAN_102", "Replace links");
-define("PRFLAN_103", "If ticked, posted links will be replaced by the text entered in the textbox below, will stop very long links breaking layout");
-define("PRFLAN_104", "Link replace text");
-define("PRFLAN_105", "text to replace links with, image can be used by using &lt;img tag, with full path to image");
+define("PRFLAN_102", "Replace clickable URLs");
+define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs are displayed as a hyperlink using text from the textbox below. This keeps very long URLs from breaking layout.");
+define("PRFLAN_104", "URL replacement text");
+define("PRFLAN_105", "Replacement visible text for clickable URLs. Image can be used by using &lt;img&gt; tag, with full path to image");
 define("PRFLAN_106", "Core preferences saved to database.");
 define("PRFLAN_107", "Email link replace text");
-define("PRFLAN_108", "text to replace email links with, image can be used by using &lt;img tag, with full path to image");
+define("PRFLAN_108", "text to replace email links with, image can be used by using &lt;img&gt; tag, with full path to image");
 define("PRFLAN_109", "Wrap long words in main text");
 define("PRFLAN_110", "words longer than the length entered will be wrapped onto a new line");
 define("PRFLAN_111", "Wrap long words in menu text");
@@ -132,8 +132,8 @@ define("PRFLAN_123", "Will display a what-you-see-is-what-you-get editor in text
 define("PRFLAN_124", "Use 'classic' nextprev look");
 define("PRFLAN_125", "Turning this on will show the nextprev pages as 1 2 3 ... 21 22 23, instead of the new look with the dropdown.");
 define("PRFLAN_126", "Text to display on signup page");
-define("PRFLAN_127", "Make posted links clickable");
-define("PRFLAN_128", "Turning this on will convert posted links to hyperlinks");
+define("PRFLAN_127", "Make URLs clickable");
+define("PRFLAN_128", "Turning this on will convert posted URLs to hyperlinks");
 define("PRFLAN_129", "Disallow multiple logins");
 define("PRFLAN_130", "Activating this will prevent more than one person logging in with the same username/password (login detail sharing)");
 define("PRFLAN_131", "Activate use of [php] bbcode");
