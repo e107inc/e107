@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-07-04 08:42:17 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2006-11-20 12:49:40 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -29,8 +29,6 @@ require_once(e_HANDLER."userclass_class.php");
 if (isset($_POST['updatesettings'])) {
 
 	$pref['chatbox_posts'] = $_POST['chatbox_posts'];
-	$pref['cb_linkc'] = $tp->toDB($_POST['cb_linkc']);
-	$pref['cb_linkreplace'] = $_POST['cb_linkreplace'];
 	$pref['cb_layer'] = $_POST['cb_layer'];
 	$pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
 	$pref['cb_emote'] = $_POST['cb_emote'];
@@ -76,8 +74,6 @@ if (isset($message)) {
 }
 
 $chatbox_posts = $pref['chatbox_posts'];
-$cb_linkreplace = $pref['cb_linkreplace'];
-$cb_linkc = $pref['cb_linkc'];
 
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='cbform'>
