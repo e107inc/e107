@@ -11,13 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-11-18 14:58:59 $
-|     $Author: streaky $
+|     $Revision: 1.16 $
+|     $Date: 2006-11-20 11:48:44 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
 while (@ob_end_clean());
+
+function e107_ini_set($var, $value){
+	if (function_exists('ini_set')){
+		ini_set($var, $value);
+	}
+}
 
 // setup some php options
 e107_ini_set('magic_quotes_runtime',     0);
@@ -136,3 +142,4 @@ switch($type) {
 }
 
 imagedestroy($image);
+?>
