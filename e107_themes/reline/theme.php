@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|	$Revision: 1.17 $
-|	$Date: 2006-08-27 02:24:45 $
-|	$Author: mcfly_e107 $
+|	$Revision: 1.18 $
+|	$Date: 2006-11-21 19:30:27 $
+|	$Author: lisa_ $
 |
 +----------------------------------------------------------------------------+
 |	Photo Credits
@@ -353,7 +353,7 @@ $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fbo
 
 // Search shortcode style
 $SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' value='' maxlength='50' />
-<input type='image' name='s' src='".THEME_ABS."images/search.png'  value='' style='width: 16px; height: 16px; border: 0px; vertical-align: middle'  />";
+<input type='image' name='s' src='".THEME_ABS."images/search.png'  value='".LAN_THEME_7."' title='".LAN_THEME_7."' style='width: 16px; height: 16px; border: 0px; vertical-align: middle'  />";
 
 
 // Chatbox post style
