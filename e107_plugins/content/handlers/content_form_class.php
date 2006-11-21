@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.122 $
-|		$Date: 2006-11-15 15:47:58 $
+|		$Revision: 1.123 $
+|		$Date: 2006-11-21 19:26:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2328,7 +2328,7 @@ class contentform{
 			<tr>
 				<td class='forumheader3' colspan='5'></td>
 				<td class='forumheader3'>
-					<input class='button' type='submit' name='updateinherit' value='update' />
+					<input class='button' type='submit' name='updateinherit' value='".CONTENT_ADMIN_CAT_LAN_7."' />
 				</td>
 			</tr>
 			</table>
