@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2006-11-11 03:41:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.79 $
+|     $Date: 2006-11-21 21:39:15 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,7 +80,7 @@ require_once(HEADERF);
 
 if (isset($_POST['updatesettings']))
 {
-	if(!isset($pref['auth_method']) || $pref['auth_method'] == '>e107')
+	if(!varsettrue($pref['auth_method']) || $pref['auth_method'] == '>e107')
 	{
 		$pref['auth_method'] = 'e107';
 	}
