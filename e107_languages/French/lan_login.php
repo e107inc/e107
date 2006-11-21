@@ -4,13 +4,13 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_login.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-27 14:43:41 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-21 05:46:19 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
   define("LAN_27", "Vous avez laissé un (ou plusieurs) champ(s) obligatoire(s) vide(s)");
-  define("LAN_300", "Connexion incorrecte. Les données entrées ne correspondent pas à celles de l'utilisateur tel qu'il les a enregistré. Vérifiez que votre clavier ne soit pas bloqué sur majuscule car les données de connexion doivent être précises.");
+  define("LAN_300", "Connexion incorrecte. Les données ne correspondent pas à celles de l'utilisateur tel qu'il les a enregistré. Vérifiez que votre clavier ne soit pas bloqué en Majuscule car les détails de connexion sont sensibles à la cAsSe.");
   define("LAN_302", "Vous n'avez pas activé votre compte. Vous avez dû recevoir un courriel avec les instructions vous permettant de confirmer votre inscription. Si ce n'est pas le cas, veuillez cliquer <a href='".e_BASE."signup.php?resend'>ici</a>.");
   define("LAN_303", "Le code entré est incorrect.");
   define("LAN_304", "Cette combinaison identifiant/mot de passe existe déjà.");
