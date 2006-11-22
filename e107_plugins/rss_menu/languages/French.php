@@ -4,14 +4,14 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/French.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-10-27 20:09:26 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-22 12:16:02 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
 define("RSS_LAN05","Nombre d'items (0=inactif)");
 
-define("RSS_MENU_L1", " peut être syndiqué en utilisant ces ressources d'".GLOBAL_LAN_NEWS_1."s.");
+define("RSS_MENU_L1", " peuvent être syndiqué en utilisant ces ressources.");
 define("RSS_MENU_L2", "Ressources RSS");
 define("RSS_MENU_L3", "Nos ".GLOBAL_LAN_NEWS_1."s");
 define("RSS_MENU_L4", "Nos commentaires");

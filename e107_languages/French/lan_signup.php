@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-10-29 22:27:00 $
+|     $Revision: 1.12 $
+|     $Date: 2006-11-22 12:13:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -108,5 +108,6 @@ define("LAN_SIGNUP_49", "Si vous vous êtes enregistré avec la mauvaise adresse
 define("LAN_SIGNUP_50", "Nouveau Courriel");
 define("LAN_SIGNUP_51", "Ancien mot de passe");
 define("LAN_SIGNUP_52", "Mot de passe incorrect");
+define("LAN_SIGNUP_53", "le champ a échoué le test de validation");
 
   ?>

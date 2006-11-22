@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-27 14:43:42 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-22 12:13:44 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -82,6 +82,7 @@ define("EXTLAN_70", "ERREUR!! Champ:");
 define("EXTLAN_71", "n'a pas été activé!");
 define("EXTLAN_72", "a été désactivé");
 define("EXTLAN_73", "n'a pas été désactivé!");
+define("EXTLAN_74", "est un nom de champ réservé et ne peut être utilisé.");
   //textbox
   define("EXTLAN_HELP_1", "<strong><i>Paramètres:</i></strong><br />size - Taille du champs<br />maxlength - longueur maximum du champs<br /><br />class - css class du champs<br />style - css style string<br /><br />regex - code de validation regex<br />regexfail - texte d'échec de validation");
   //radio buttons
