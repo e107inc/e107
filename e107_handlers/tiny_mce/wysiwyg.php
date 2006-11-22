@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-11-10 07:06:57 $
+|     $Revision: 1.30 $
+|     $Date: 2006-11-22 23:47:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -118,12 +118,10 @@ function tinymce_html_bbcode_control(type, source) {
             }
 
 		// Convert e107 paths.
-
-				source = source.replace('\"".$IMAGES_DIRECTORY."','\"{e_IMAGE}');
-				source = source.replace('\"".$PLUGINS_DIRECTORY."','\"{e_PLUGIN}');
-				source = source.replace('\'".$IMAGES_DIRECTORY."','\'{e_IMAGE}');
-				source = source.replace('\'".$PLUGINS_DIRECTORY."','\'{e_PLUGIN}');
-
+                source = source.replace(/\"".str_replace("/","\/",$IMAGES_DIRECTORY)."/g,'\"{e_IMAGE}');
+				source = source.replace(/\"".str_replace("/","\/",$PLUGINS_DIRECTORY)."/g,'\"{e_PLUGIN}');
+				source = source.replace(/\'".str_replace("/","\/",$IMAGES_DIRECTORY)."/g,'\'{e_IMAGE}');
+				source = source.replace(/\'".str_replace("/","\/",$PLUGINS_DIRECTORY)."/g,'\'{e_PLUGIN}');
 
             break;
 
