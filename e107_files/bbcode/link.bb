@@ -1,7 +1,7 @@
 global $pref;
 
 $parm     = trim($parm);
-$external = ($pref['links_new_window'] || strpos($parm, 'external') === 0) ? " rel='external'" : "";
+$external = (($pref['links_new_window'] || strpos($parm, 'external') === 0) && substr($parm,0,1) != "#") ? " rel='external'" : "";
 
 if(strpos($parm,"{e_")!==FALSE){
 	$external = "";
