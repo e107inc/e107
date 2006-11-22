@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.173 $
-|     $Date: 2006-11-16 04:00:35 $
+|     $Revision: 1.174 $
+|     $Date: 2006-11-22 23:47:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -76,7 +76,11 @@ class e_parse
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
 		$text = html_entity_decode($text, $mode,CHARSET);
-		return str_replace(chr(160),"&amp;nbsp;",$text);  // fix for utf-8 issue with html_entity_decode("&nbsp;");
+		if(e_WYSIWYG !== TRUE){
+		  	$text = str_replace(chr(160),"&amp;nbsp;",$text); // fix for utf-8 issue with html_entity_decode("&nbsp;");  
+		}
+
+		return $text;
 	}
 
 
