@@ -1,6 +1,6 @@
 <?php
 
-define('EC_LAN_TODAY', "today");
+define('EC_LAN_TODAY', "vandaag");
 
 define('EC_LAN_0', "Januari");
 define('EC_LAN_1', "Februari");
