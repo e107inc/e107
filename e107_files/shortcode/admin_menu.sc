@@ -8,6 +8,7 @@ if (ADMIN) {
 		if (!$parm) {
 			call_user_func($adminmenu_func,$adminmenu_parms);
 		} else {
+			ob_end_clean();
 			return 'pre';
 		}
 	}
@@ -17,6 +18,7 @@ if (ADMIN) {
 		if (!$parm) {
 			@require_once($plugpath);
 		} else {
+			ob_end_clean();
 			return 'pre';
 		}
 	}
