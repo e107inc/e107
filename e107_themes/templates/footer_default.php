@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-11-17 15:27:45 $
+|     $Revision: 1.46 $
+|     $Date: 2006-11-22 05:15:47 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,10 @@ if ($pref['developer']) {
 	global $oblev_at_start,$oblev_before_start;
 	if (ob_get_level() != $oblev_at_start) {
 		$oblev = ob_get_level();
-		$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start).</div>";
+		$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start). POPPING EXTRA BUFFERS!</div>";
+		while (ob_get_level() > $oblev_at_start) {
+			ob_end_flush();
+		}
 		echo $obdbg;
 	}
 	// 061109 PHP 5 has a bug such that the starting level might be zero or one.
