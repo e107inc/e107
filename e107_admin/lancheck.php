@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-11-22 21:43:15 $
+|     $Revision: 1.24 $
+|     $Date: 2006-11-22 23:20:14 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -105,12 +105,14 @@ if(isset($_POST['submit']))
 
 		if($_POST['newdef'][$i] == "LC_ALL" && isset($_POST['root']))
 		{
-        	$func = "setlocale";
-			$quote = "";
+			$message .= $notdef_start.'setlocale('.htmlentities($defvar).','.$deflang.');<br />'.$notdef_end;
+			$input .= $notdef_start."setlocale(".$defvar.",".$deflang.");".$notdef_end;
 		}
-
-		$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
-		$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
+		else
+		{
+			$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
+			$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
+        }
 	}
 
 	$message .="<br />";
@@ -242,7 +244,8 @@ function check_core_lanfiles($checklan,$subdir=''){
 
 	$keys = array_keys($English);
 
-	sort($keys);
+ 	sort($keys);
+
 	foreach($keys as $k)
 	{
 		if($k != "bom")
@@ -254,7 +257,6 @@ function check_core_lanfiles($checklan,$subdir=''){
 	 			$text .= "<tr><td class='forumheader3' style='width:45%'>{$lnk}</td>";
       			$subkeys = array_keys($English[$k]);
 
-      			sort($subkeys);
       	   		$er="";
                 $utf_error = "";
 
@@ -268,8 +270,13 @@ function check_core_lanfiles($checklan,$subdir=''){
 						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
 					}
 
-        	   		if(!array_key_exists($sk,$check[$k]) || ($check[$k][$sk] == "" && $English[$k][$sk] != ""))
+					if($sk == "LC_ALL"){
+                    	$check[$k][$sk] = str_replace(chr(34).chr(34),"",$check[$k][$sk]);
+					}
+
+					if((!array_key_exists($sk,$check[$k]) && $English[$k][$sk] != "") || (trim($check[$k][$sk]) == "" && $English[$k][$sk] != ""))
 					{
+
           	   			$er .= ($er) ? "<br />" : "";
           				$er .= $sk." ".LAN_CHECK_5;
         			}
@@ -415,7 +422,7 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 					{
 						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
 					}
-    
+
           			if(!array_key_exists($sk,$check[$k_check]) || (trim($check[$k_check][$sk]) == "" && $baselang[$k][$sk] != ""))
 					{
             			$er .= ($er) ? "<br />" : "";
@@ -595,23 +602,29 @@ function fill_phrases_array($data,$type) {
 
 			if(strpos($line,"setlocale(") !== FALSE)
 			{
-              	$ndef = "";
-				$line = substr($line,strpos($line,"setlocale("));
+				$pos = substr(strstr($line,","),1);
+				$rep = array(");","\n",'""');
+				$val = str_replace($rep,"",$pos);
+				$retloc[$type]['LC_ALL']= $val;
+				$retloc['orig']['LC_ALL']= "'en'";
 			}
+			else
+			{
 
             //echo "ndefline: ".$line."<br />";
-
-          	if(preg_match("#\"(.*?)\".*?\"(.*)\"#",$line,$matches) ||
-             preg_match("#\'(.*?)\'.*?\"(.*)\"#",$line,$matches) ||
-             preg_match("#\"(.*?)\".*?\'(.*)\'#",$line,$matches) ||
-             preg_match("#\'(.*?)\'.*?\'(.*)\'#",$line,$matches) ||
-             preg_match("#\((.*?)\,.*?\"(.*)\"#",$line,$matches) ||
-             preg_match("#\((.*?)\,.*?\'(.*)\'#",$line,$matches)){
-            //echo "get_lan -->".$matches[1]." :: ".$ndef.$matches[2]."<br />";
-            $retloc[$type][$matches[1]]= $ndef.$matches[2];
-            }
+          		if(preg_match("#\"(.*?)\".*?\"(.*)\"#",$line,$matches) ||
+             	preg_match("#\'(.*?)\'.*?\"(.*)\"#",$line,$matches) ||
+             	preg_match("#\"(.*?)\".*?\'(.*)\'#",$line,$matches) ||
+             	preg_match("#\'(.*?)\'.*?\'(.*)\'#",$line,$matches) ||
+             	preg_match("#\((.*?)\,.*?\"(.*)\"#",$line,$matches) ||
+             	preg_match("#\((.*?)\,.*?\'(.*)\'#",$line,$matches)){
+            	//echo "get_lan -->".$matches[1]." :: ".$ndef.$matches[2]."<br />";
+            	$retloc[$type][$matches[1]]= $ndef.$matches[2];
+            	}
+			}
          }
       }
+
       return $retloc;
     }
 
