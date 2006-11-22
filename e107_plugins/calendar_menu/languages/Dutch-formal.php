@@ -280,7 +280,7 @@ define('EC_ADLAN_A114', "Logging van e-mails");
 define('EC_ADLAN_A115', "Samenvatting");
 define('EC_ADLAN_A116', "Gedetaileerd");
 define('EC_ADLAN_A117', "Melding op de dag of voorgaande dag");
-define('EC_ADLAN_A118', "Te tonen ceategorieën");
+define('EC_ADLAN_A118', "Te tonen categorieën");
 define('EC_ADLAN_A119', "Geen categorieën gedefineerd, of fout bij lezen database");
 define('EC_ADLAN_A120', "Toon categorie pictogram menu");
 

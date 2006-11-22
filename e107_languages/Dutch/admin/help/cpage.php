@@ -3,7 +3,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 $text = "In dit scherm kun je maatwerkmenu's en maatwerkpagina's maken waarin je je eigen content opvoert.<br /><br />
-Zie <a href='http://e107.org/e107_plugins/docs/docs.php?133'>http://e107.org/e107_plugins/docs/docs.php?133</a> voor een uitleg van alle functies.";
+Zie <a href='http://docs.e107.org/Using Custom Pages and Custom Menus'>http://docs.e107.org/Using Custom Pages and Custom Menus</a> voor een uitleg van alle functies.";
 
 $ns -> tablerender(CUSLAN_18, $text);
 ?>
