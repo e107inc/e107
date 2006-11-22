@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-11-07 04:37:32 $
+|     $Revision: 1.23 $
+|     $Date: 2006-11-22 21:43:15 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -108,7 +108,7 @@ if(isset($_POST['submit']))
         	$func = "setlocale";
 			$quote = "";
 		}
-        
+
 		$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
 		$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
 	}
@@ -415,8 +415,8 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 					{
 						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
 					}
-
-          			if(!array_key_exists($sk,$check[$k_check]) || ($check[$k_check][$sk] == "" && $baselang[$k_check][$sk] != ""))
+    
+          			if(!array_key_exists($sk,$check[$k_check]) || (trim($check[$k_check][$sk]) == "" && $baselang[$k][$sk] != ""))
 					{
             			$er .= ($er) ? "<br />" : "";
             			$er .= $sk." ".LAN_CHECK_5;
