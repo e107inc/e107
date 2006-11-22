@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-11-18 21:14:48 $
+|     $Revision: 1.30 $
+|     $Date: 2006-11-22 18:09:39 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -95,13 +95,13 @@ define("PRFLAN_97", "Menú único 'Menú Plugins':");
 define("PRFLAN_98", "<b>Off:</b> Cada plugin mostrará su propia información en un menú individual. <b>On:</b> Toda la información se mostrará en un menú");
 
 define("PRFLAN_101", "Renderizado texto");
-define("PRFLAN_102", "Reemplazar enlaces");
-define("PRFLAN_103", "<b>On:</b> los enlaces serán substituídos por el texto escrito, para los enlaces largos que rompen la distribución");
-define("PRFLAN_104", "Texto de enlace a reemplazar");
-define("PRFLAN_105", "Se puede usar con: imagen usando el tag <img , con la ruta completa a la imagen");
+define("PRFLAN_102", "Reemplazar URLs clicables");
+define("PRFLAN_103", "Si está marcado junto con 'Hacer URLs clicables' (arriba), las URLs enviadas se mostrarán como hiperenlaces usando el texto de abajo. Esto permitirá tener URls largas sin romper el esquema de la página.");
+define("PRFLAN_104", "Texto a reemplazar la URL");
+define("PRFLAN_105", "Texto visible a reemplazar para URLs clicables. Pueden usarse imágenes usando &lt;img&gt; tag, con la ruta completa de la imagen");
 define("PRFLAN_106", "Preferencias guardadas en la BD.");
 define("PRFLAN_107", "Texto para reemplazar enlace email");
-define("PRFLAN_108", "Se puede usar con: imagen usando el tag <img , con la ruta completa a la imagen");
+define("PRFLAN_108", "Texto a reemplazar los enlaces de correo, puede usarse una imagen usando &lt;img&gt; tag, con la ruta completa a la imagen");
 define("PRFLAN_109", "Palabras largas cortadas en el texto principal");
 define("PRFLAN_110", "Las palabras más largas de la longitud especificada se cortarán en una nueva línea");
 define("PRFLAN_111", "Palabras largas cortadas en el texto principal");
@@ -119,8 +119,8 @@ define("PRFLAN_123", "Mostrará un editor tipo 'Word' en las áreas que lo permi
 define("PRFLAN_124", "Usar apariencia 'Clasica' en Anterior/Próximo");
 define("PRFLAN_125", "On: mostrará las páginas Anterior/Próximo como 1 2 3 ... 21 22 23, en vez del nuevo aspecto de lista desplegable.");
 define("PRFLAN_126", "Texto a mostrar en la página de registro");
-define("PRFLAN_127", "Habilitar enlaces enviados");
-define("PRFLAN_128", "On: Cambiará los enlaces enviados por hiperenlaces");
+define("PRFLAN_127", "Hacer URLs clicables");
+define("PRFLAN_128", "Activándolo convertirá las URLs enviadas en hiperenlaces");
 define("PRFLAN_129", "No permitir conexiones múltiples");
 define("PRFLAN_130", "On: Evitará que se hagan más de una conexión con el mismo usuario y contraseña (compartir detalle de conexión)");
 define("PRFLAN_131", "Activar el uso de bbcode [php]");
