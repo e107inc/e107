@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.74 $
-| $Date: 2006-07-12 07:54:09 $
+| $Revision: 1.75 $
+| $Date: 2006-11-22 21:16:14 $
 | $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -164,7 +164,7 @@ class news {
 			} else if ($NEWSLISTSTYLE) {
 				$NEWS_PARSE = $NEWSLISTSTYLE;
 			} else {
-				$NEWS_PARSE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} ".LAN_100." {NEWSDATE} | {NEWSCOMMENTS}</div>";
+				$NEWS_PARSE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} ".LAN_NEWS_100." {NEWSDATE} | {NEWSCOMMENTS}</div>";
 			}
 		} else {
 			if ($NEWS_TEMPLATE) {
