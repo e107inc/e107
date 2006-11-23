@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news2_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-20 00:53:41 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2006-11-23 14:53:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 global $e107cache;
 
 // Load Data
-if($cacheData = $e107cache->retrieve("othernews2"))
+if($cacheData = $e107cache->retrieve("nq_othernews2"))
 {
 	echo $cacheData;
 	return;
@@ -33,7 +33,7 @@ unset($text);
 global $OTHERNEWS2_STYLE;
 $ix = new news;
 
-if(!$OTHERNEWS2_STYLE){
+if(!$OTHERNEWS2_STYLE) {
 	$OTHERNEWS2_STYLE = "
 	<table class='forumheader3' cellpadding='0' cellspacing='0' style='width:100%'>
 	<tr><td class='caption2' colspan='2' style='padding:3px;text-decoration:none;'>
@@ -91,33 +91,31 @@ $style = OTHERNEWS2_CELL;
 $nbr_cols = OTHERNEWS2_COLS;
 
 $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-		LEFT JOIN #user AS u ON n.news_author = u.user_id
-		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type=3  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS2_LIMIT;
+LEFT JOIN #user AS u ON n.news_author = u.user_id
+LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type=3  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS2_LIMIT;
 
-	if ($sql->db_Select_gen($query)){
-    $text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS2_SPACING."'>";
-    $t = 0;
+if ($sql->db_Select_gen($query)) {
+	$text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS2_SPACING."'>";
+	$t = 0;
 	$wid = floor(100/$nbr_cols);
 	while ($row = $sql->db_Fetch()) {
 		$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text .= "\n<td style='$style ; width:$wid%;'>\n";
 
-
 		$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
 
-
-    	$text .= "\n</td>\n";
+		$text .= "\n</td>\n";
 		if (($t+1) % $nbr_cols == 0) {
 			$text .= "</tr>";
 			$t++;
-		} else {
+		}
+		else {
 			$t++;
 		}
 	}
 
-
-    while ($t % $nbr_cols != 0){
+	while ($t % $nbr_cols != 0){
 		$text .= "<td style='width:$wid'>&nbsp;</td>\n";
 		$text .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
 		$t++;
@@ -126,15 +124,13 @@ $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_na
 	$text .= "</table>";
 
 
-        // Save Data
-		ob_start();
+	// Save Data
+	ob_start();
 
-	$ns->tablerender(TD_MENU_L1, $text, 'other_news2');
+	$ns->tablerender(TD_MENU_L2, $text, 'other_news2');
 
-$cache_data = ob_get_flush();
-		$e107cache->set("othernews2", $cache_data);
-
-
+	$cache_data = ob_get_flush();
+	$e107cache->set("nq_othernews2", $cache_data);
 
 }
 
