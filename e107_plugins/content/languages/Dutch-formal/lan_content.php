@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-formal/lan_content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-09 22:49:27 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-23 21:51:39 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ define("CONTENT_ADMIN_DATE_LAN_11", "December");
 define("CONTENT_ADMIN_DATE_LAN_12", "dag");
 define("CONTENT_ADMIN_DATE_LAN_13", "maand");
 define("CONTENT_ADMIN_DATE_LAN_14", "jaar");
-define("CONTENT_ADMIN_DATE_LAN_15", "installen maatwerk startdatum");
+define("CONTENT_ADMIN_DATE_LAN_15", "instellen maatwerk startdatum");
 define("CONTENT_ADMIN_DATE_LAN_16", "instellen einddatum");
 define("CONTENT_ADMIN_DATE_LAN_17", "U kunt een startdatum voor dit onderwerp opgeven. niet invullen voor de huidige tijd");
 define("CONTENT_ADMIN_DATE_LAN_18", "U kunt een einddatum voor dit onderwerp opgeven. niet invullen voor onbepaalde duur");
