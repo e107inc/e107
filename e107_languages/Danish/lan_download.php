@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_download.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2006-01-17 15:27:37 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-23 00:02:40 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ define("LAN_dl_52", "Gæst");
 define("LAN_dl_53", "Klik for at vise download");
 define("LAN_dl_54", "En administrator vil blive gjort opmærksom på dette download, skriv en besked hvis du føler det nødvendigt.");
 define("LAN_dl_55", "<b>Brug Ikke</b> denne form til at kontakte administrator for til andre formål.");
-define("LAN_dl_56", "Rapporter fejlet download");
+//define("LAN_dl_56", "Rapporter fejlet download");
 define("LAN_dl_57", "rapporteret af");
 define("LAN_dl_58", "Denne post er blevet rapporteret fra websted ");
 define("LAN_dl_59", "Besked fra: ");

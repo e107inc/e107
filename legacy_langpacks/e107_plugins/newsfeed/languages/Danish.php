@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newsfeed/languages/Danish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-05-15 13:50:06 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-23 00:06:46 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -76,5 +76,8 @@ define("NFLAN_44", "klik for at se");
 define("NFLAN_45", "Antal emner der skal vises i menuen");
 define("NFLAN_46", "Antal emner der skal vises p&aring; hovedsiden");
 define("NFLAN_47", "0 eller tom for at vise alt");
+
+define("NFLAN_48", "Kan ikke gemme r&aring; data i databasen.");
+define("NFLAN_49", "Kan ikke afvikle rss data - bruger ikke-standard syntax");
 
 ?>

@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_email.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2006-10-03 15:30:54 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-23 00:05:11 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
-define("PAGE_NAME", "E-mail");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Email"); }
 
 define("LAN_EMAIL_1", "Fra:");
 define("LAN_EMAIL_2", "afsender IP adresse:");
@@ -32,7 +32,7 @@ define("LAN_EMAIL_186", "Send Nyhed");
 define("LAN_EMAIL_187", "E-mail-adresse der skal sendes til");
 define("LAN_EMAIL_188", "Jeg tror du m&aring;ske er interesseret i denne nyhed fra");
 define("LAN_EMAIL_189", "Jeg tror du m&aring;ske er interesseret i denne artikel fra");
-
+define("LAN_EMAIL_190", "Skriv Vist Kode");
 
 
 

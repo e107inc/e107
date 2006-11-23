@@ -4,8 +4,8 @@
 |        e107 website system  Danish Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_users_extended.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-11-21 15:11:11 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("EXTLAN_18", "Kr&aelig;vet");
 define("EXTLAN_19", "Brugerene skal udfylde en v&aelig;rdi i dette felt n&aring;r de opdaterer deres indstillinger.");
 define("EXTLAN_20", "Afg&oslash;r hvilke brugere dette felt g&aelig;lder for.");
 define("EXTLAN_21", "Dette afg&oslash;r hvem der kan se dette felt i deres brugerindstillinger.");
-define("EXTLAN_22", "Dette afg&oslash;r hvem der kan se denne v&aelig;rdi p&aring; profil siden. <br />BEM&AELIG;RK: Ved at indstille denne til 'Skrivebeskyttet' vil g&oslash;re at den kun er synlig for Admin og medlemmet.");
+define("EXTLAN_22", "Dette afg&oslash;r hvem der kan se denne v&aelig;rdi p&aring; profil siden. <br />BEM&AElig;RK: Ved at indstille denne til 'Skrivebeskyttet' vil g&oslash;re at den kun er synlig for Admin og medlemmet.");
 define("EXTLAN_23", "Tilf&oslash;j udvidet felt");
 define("EXTLAN_24", "Opdater udvidet felt");
 define("EXTLAN_25", "flyt ned");
@@ -79,6 +79,14 @@ define("EXTLAN_64", "V&aelig;lg vis v&aelig;rdi");
 define("EXTLAN_65", "Nej - Vil ikke blive vist p&aring; tilmeldings siden");
 define("EXTLAN_66", "Ja - Vil blive vist p&aring; tilmeldings siden");
 define("EXTLAN_67", "Nej - Vis p&aring; tilmeldings siden");
+
+define("EXTLAN_68", "Felt:");
+define("EXTLAN_69", "er blevet aktiveret");
+define("EXTLAN_70", "FEJL!! Felt:");
+define("EXTLAN_71", "var ikke aktiveret!");
+define("EXTLAN_72", "er blevet deaktiveret");
+define("EXTLAN_73", "er ikke blevet deaktiveret!");
+define("EXTLAN_74", "er et reserveret felt navn og kan ikke benyttes.");
 
 
 //textbox

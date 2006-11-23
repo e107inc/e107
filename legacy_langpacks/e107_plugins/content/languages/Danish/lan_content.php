@@ -4,13 +4,27 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Danish/lan_content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-08 15:27:07 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-23 00:05:53 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
 
+
 define("CONTENT_EMAILPRINT_LAN_1", "dette indholds emne fra");
+
+define("POPUP_LAN_1", "klik for at forst&oslash;rre billede");
+
+define("CONTENT_NOTIFY_LAN_1", "Indhold Begivenheder");
+define("CONTENT_NOTIFY_LAN_2", "Indholds emne tilf&oslash;jet af bruger");
+define("CONTENT_NOTIFY_LAN_3", "Indhold Tilf&oslash;jet");
+
+define("CONTENT_TYPE_LAN_0", "kategorier");
+define("CONTENT_TYPE_LAN_1", "forfattere");
+define("CONTENT_TYPE_LAN_2", "arkiv");
+define("CONTENT_TYPE_LAN_3", "h&oslash;js bed&oslash;mt");
+define("CONTENT_TYPE_LAN_4", "top score");
+define("CONTENT_TYPE_LAN_5", "seneste");
 
 define("CONTENT_ICON_LAN_0", "rediger");
 define("CONTENT_ICON_LAN_1", "slet");
@@ -172,6 +186,9 @@ define("CONTENT_LAN_86", "vis top scorer emner");
 define("CONTENT_LAN_87", "Top Scorer Indhold");
 define("CONTENT_LAN_88", "ingen indholds emner har en score endnu");
 define("CONTENT_LAN_89", "v&aelig;lg side");
+define("CONTENT_LAN_90", "forrige side");
+define("CONTENT_LAN_91", "n&aelig;ste side");
+define("CONTENT_LAN_92", " - nuv&aelig;rrende");
 
 define("CONTENT_MENU_LAN_0", "indholds Menu :");
 define("CONTENT_MENU_LAN_1", "ingen indhold emner endnu");

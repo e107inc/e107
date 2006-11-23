@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_installer.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-03-23 16:01:00 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-23 00:02:40 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -130,4 +130,5 @@ define("LANINS_083", "MySQL Rapoterede Fejl:");
 define("LANINS_084", "Installationen kunne ikke etablere en forbindelse til databasen");
 define("LANINS_085", "Installationen kunne ikke vælge database:");
 
+define("LANINS_086", "Admin Brugernavn, Admin Kodeord og Admin Email er <b>krævede</b> felter. Gå venligst tilbage til forrige side og sikker dig at informationerne er korrekt udfyldt.");
 ?>

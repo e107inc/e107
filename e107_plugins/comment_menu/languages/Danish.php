@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/comment_menu/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-07-06 22:12:02 $
+|        $Revision: 1.2 $
+|        $Date: 2006-11-23 00:03:20 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -22,6 +22,9 @@ define("CM_L7", "Vis original nyhedstitel i menuen?");
 define("CM_L8", "Nye kommentarer menu konfiguration");
 define("CM_L9", "Opdater menu indstillinger");
 define("CM_L10", "Kommentar menu konfiguration gemt");
+define("CM_L11", "d");
+define("CM_L12", "Sv:");
+define("CM_L13", "Skrevet af");
 
 
 ?>

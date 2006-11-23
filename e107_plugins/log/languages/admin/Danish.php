@@ -4,8 +4,8 @@
 |     e107 website system  Language File
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Danish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-11 15:16:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-23 00:04:09 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,8 @@ define("ADSTAT_L29", "Side Navn");
 define("ADSTAT_L30", "Marker for at fjerne");
 define("ADSTAT_L31", "Fjern valgte sider");
 define("ADSTAT_L32", "Side Trim");
-
+//define("ADSTAT_L10", "Referrers");
+//define("ADSTAT_L10", "Referrers");
 
 
 

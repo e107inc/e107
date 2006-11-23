@@ -4,11 +4,23 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/calendar_menu/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:52:21 $
+|        $Revision: 1.2 $
+|        $Date: 2006-11-23 00:05:28 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
+
+
+
+
+
+
+
+
+
+
+
+
 
 define('EC_ADLAN_1',"Aktivitets kalender");
 define('EC_ADLAN_2',"Konfigurer begivenheds kalender");
@@ -166,17 +178,17 @@ define('EC_LAN_70', "begivenhed Titel:");
 define('EC_LAN_71', "begivenhed Tid:");
 define('EC_LAN_72', "begivenhed Dato:");
 define('EC_LAN_73', "Slutter:");
-define('edesc_LAN_0', "Nedt&aelig;lling");
-define('edesc_LAN_1', "Stadig ");
-define('edesc_LAN_2', "f&oslash;r begivenhed den ".SITENAME);
-define('edesc_LAN_3', "sec");
-define('edesc_LAN_4', "sec");
-define('edesc_LAN_5', "min");
-define('edesc_LAN_6', "min");
-define('edesc_LAN_7', "t");
-define('edesc_LAN_8', "t");
-define('edesc_LAN_9', "dag");
-define('edesc_LAN_10', "dage");
+//define('edesc_LAN_0', "Nedt&aelig;lling");
+//define('edesc_LAN_1', "Stadig ");
+//define('edesc_LAN_2', "f&oslash;r begivenhed den ".SITENAME);
+//define('edesc_LAN_3', "sec");
+//define('edesc_LAN_4', "sec");
+//define('edesc_LAN_5', "min");
+//define('edesc_LAN_6', "min");
+//define('edesc_LAN_7', "t");
+//define('edesc_LAN_8', "t");
+//define('edesc_LAN_9', "dag");
+//define('edesc_LAN_10', "dage");
 define('EC_LAN_VIEWCALENDAR', "Vis Kalender");
 define('EC_LAN_VIEWALLEVENTS', "Vis alle begivenheder");
 define('EC_LAN_ALLEVENTS', "Alle begivenheder");
@@ -192,13 +204,12 @@ define('EC_LAN_81', "Konfigurer Begivenheds Kalender");
 define('EC_LAN_82', "For at aktivere g&aring; til din menu side og v&aelig;lg calendar_menu ind i et af dine menu omr&aring;der.");
 define('EC_LAN_83', "Kalender");
 	
-	
-define('EC_LAN_84', "Css element til brug for dag header");
-define('EC_LAN_85', "Standard er 'forumheader'");
-define('EC_LAN_86', "Css element til brug for dag liste");
-define('EC_LAN_87', "Standard er 'forumheader3'");
-define('EC_LAN_88', "Css element til brug for valgt dag");
-define('EC_LAN_89', "Standard er 'indent'");
+//define('EC_LAN_84', "Css element til brug for dag header");
+//define('EC_LAN_85', "Standard er 'forumheader'");
+//define('EC_LAN_86', "Css element til brug for dag liste");
+//define('EC_LAN_87', "Standard er 'forumheader3'");
+//define('EC_LAN_88', "Css element til brug for valgt dag");
+//define('EC_LAN_89', "Standard er 'indent'");
 
 //  *BK* Corrections to hard coding by Barry 
 define('EC_LAN_90', "V&aelig;lg");	
@@ -211,10 +222,10 @@ define('EC_LAN_96', "Vis Kalender");
 define('EC_LAN_97', "Alle");		
 define('EC_LAN_98', "Kr&aelig;vede felter ej udfyldt");		
 define('EC_LAN_99', "Begivenhed skal enten v&aelig;re en heldags begivenhed eller slutte efter den starter");			
-define('EC_LAN_100', "Kategorier kan blive tilf&oslash;jet af");			
-define('EC_LAN_101', "S&aelig;t til inaktiv for at sl&aring; fra p&aring; ny begivenhed formularen.");	
+//define('EC_LAN_100', "Kategorier kan blive tilf&oslash;jet af");
+//define('EC_LAN_101', "S&aelig;t til inaktiv for at sl&aring; fra p&aring; ny begivenhed formularen.");
 define('EC_LAN_102', "Vis link til forum tr&aring;d");	
-define('EC_LAN_103', "P&aring; ny begivenheds post formularen.");	
+//define('EC_LAN_103', "P&aring; ny begivenheds post formularen.");
 define('EC_LAN_104', "Kalender Administrator Gruppe");		
 define('EC_LAN_105', "* Kravet Felt");		
 define('EC_LAN_106', "Begivenheder");		
@@ -233,7 +244,7 @@ define('EC_LAN_118', "Dato format i kalender header.");
 define('EC_LAN_119', "m&aring;ned/&aring;r");
 define('EC_LAN_120', "&aring;r/m&aring;ned");
 define('EC_LAN_121', "Vis Kalender");	
-define('EC_LAN_122', "Css element til at vise begivenheder p&aring; denne dag (menu)");	
+//define('EC_LAN_122', "Css element til at vise begivenheder p&aring; denne dag (menu)");
 define('EC_LAN_123', "Abonnementer");
 define('EC_LAN_124', "Kalender Abonnementer");
 define('EC_LAN_125', "Kategorier tilg&aelig;ngelige for abonnering");
@@ -246,6 +257,17 @@ define('EC_LAN_131', "Retur");
 define('EC_LAN_132', "Udvid detaljer");
 define('EC_LAN_133', "[l&aelig;s mere]");
 define('EC_LAN_134', "Du skal angive et kategori navn");
+define('EC_LAN_135', "Begivenhed");
+define('EC_LAN_136', "Kategori Beskrivelse");
+define('EC_LAN_137', "Fremtidige Begivenheder");
+
+// Added 12.07.06 for next_event_menu.php
+define('EC_LAN_140', "Snarligt kommende Begivenheder");
+define('EC_LAN_141', "Ingen Snarligt kommende Begivenheder");
+define('EC_LAN_142', "Kun registrede og loggede ind brugere kan abonnere p&aring; begivenheder");
+define('EC_LAN_143', "Facilitet ikke tilg&aelig;ngelig");
+define('EC_LAN_144', " p&aring; ");
+
 
 define('EC_ADLAN_A10', "Konfiguration");
 define('EC_ADLAN_A11', "Kategorier");
@@ -265,7 +287,7 @@ define('EC_ADLAN_A24', "Rediger kategori");
 define('EC_ADLAN_A25', "Gem");
 define('EC_ADLAN_A26', "Kategori oprettet");
 define('EC_ADLAN_A27', "Kan ikke oprette kategori");
-define('EC_ADLAN_A28', "&AELIG;ndringer Gemt");
+define('EC_ADLAN_A28', "&AElig;ndringer Gemt");
 define('EC_ADLAN_A29', "Kan ikke gemme &aelig;ndringer");
 
 define('EC_ADLAN_A30', "Kategori Slettet");
@@ -293,6 +315,98 @@ define('EC_ADLAN_A93', "Email fra email adresse");
 define('EC_ADLAN_A94', "Opret ny begivenheds gruppe");
 define('EC_ADLAN_A95', "Benyt abonnering");
 define('EC_ADLAN_A96', "Sl&aring;s dette fra fjernes tilmeldings knappen og gennemtvinger kategori tilmeldings indstilling.");
-define('EC_ADLAN_A97', "Hvis sat til gennemtving abonnementer vil denne kategori ikke blive vist i tilg&aelig;ngelige abonnementers liste for brugeren.");
+//define('EC_ADLAN_A97', "Hvis sat til gennemtving abonnementer vil denne kategori ikke blive vist i tilg&aelig;ngelige abonnementers liste for brugeren.");
+
+// Added from here 12.07.06 for forthcoming events and mailout upgrades
+define('EC_ADLAN_A100', "Snarligt kommende Begivenheder");
+define('EC_ADLAN_A101', "Dage at frem:");
+define('EC_ADLAN_A102', "Antal begivenheder der skal vises:");
+define('EC_ADLAN_A103', "Inkluder tilbagevenende begivenheder:");
+define('EC_ADLAN_A104', "Titel er link til begivenheds liste:");
+define('EC_ADLAN_A105', "Konfigurer Snarligt kommende Begivenheds Menu");
+define('EC_ADLAN_A106', "Menu skal sl&aring;s til p&aring; 'Menu' siden");
+define('EC_ADLAN_A107', "Vil ikke virke ordentligt hvis der ses mere end 59 dage frem");
+define('EC_ADLAN_A108', "Menu Overskrift");
+define('EC_ADLAN_A109', "Snarligt kommende Begivenheder indstillinger opdateret");
+
+define('EC_ADLAN_A110', "Kun forg&aring;ende dag");
+define('EC_ADLAN_A111', "Advanceret og forrige dag");
+define('EC_ADLAN_A112', "Forrige dag og for dagen");
+define('EC_ADLAN_A113', "Advanceret, previous forrige dag og for dagen");
+
+define('EC_ADLAN_A114', "Logning af Emails");
+define('EC_ADLAN_A115', "Opsummering");
+define('EC_ADLAN_A116', "Detaljeret");
+define('EC_ADLAN_A117', "Besked p&aring; dagen eller den forrige dag");
+define('EC_ADLAN_A118', "Kategorier der skal vises");
+define('EC_ADLAN_A119', "Ingen Kategorier defineret, eller fejl ved l&aelig;sning af database");
+define('EC_ADLAN_A120', "Vis kategori ikon i menuen");
+define('EC_ADLAN_A121', "Kategori Beskrivelse");
+define('EC_ADLAN_A122', "Kalender tids reference");
+define('EC_ADLAN_A123', "Kalender tids format");
+define('EC_ADLAN_A124', "Nuv&aelig;rrende server tid: ");
+define('EC_ADLAN_A125', "Nuv&aelig;rrende site tid: ");
+define('EC_ADLAN_A126', "Nuv&aelig;rrende user time: ");
+define('EC_ADLAN_A127', "Bestemmer tid visnings formatet gennem hele kalenderen.");
+define('EC_ADLAN_A128', "Speciel tid bruger formatet i boksen til h&oslash;jre");
+define('EC_ADLAN_A129', '"Site Tid" bruger den i indstillinger definerede tid');
+define('EC_ADLAN_A130', "Begivenheds navn er link til:");
+define('EC_ADLAN_A131', "Kalender Begivenhed");
+define('EC_ADLAN_A132', "Kilde Info URL");
+define('EC_ADLAN_A133', "Dato format for begivenheds post: ");
+define('EC_ADLAN_A134', "Niveau for logning to admin log:");
+define('EC_ADLAN_A135', "Rediger/slet");
+define('EC_ADLAN_A136', "Alle &aelig;ndringer");
+define('EC_ADLAN_A137', "Kan d&aelig;kke tilf&oslash;jelser, opdateringer til og sletninger fra begivenheds listen");
+define('EC_ADLAN_A138', "Begivenhed start/slut tider p&aring; 5-minuts gr&aelig;nser");
+define('EC_ADLAN_A139', "(Reducerer antal poster i rullegardinet)");
+define('EC_ADLAN_A140', "Vis antal begivenheder for denne m&aring;ned i Kalender Menu");
+define('EC_ADLAN_A141', "Vedligeholdelse");
+define('EC_ADLAN_A142', "Fjern tidligere begivenheder der sluttede mere end x m&aring;neder siden");
+define('EC_ADLAN_A143', "timet fra begyndelsen af den nuv&aelig;rende m&aring;ned");
+define('EC_ADLAN_A144', "Begivenheds Kalender Vedligeholdelse");
+define('EC_ADLAN_A145', "Slet gamle poster");
+define('EC_ADLAN_A146', "Begivenheder &aelig;ldre end ");
+define('EC_ADLAN_A147', " slettet");
+define('EC_ADLAN_A148', "Parameter fejl - intet slettet");
+define('EC_ADLAN_A149', "Ingen gamle begivenheder, eller sletning af tidligere begivenheder fejlet");
+define('EC_ADLAN_A150', "Bekr&aelig;ft sletning af begivenheder &aelig;ldre end ");
+
+define('EC_ADLAN_A151', "e107 Web Site");
+define('EC_ADLAN_A152', "kalender@ditsite.dk");
+define('EC_ADLAN_A153', "Log mappe skal oprettes manuelt - opret en under mappe 'log' i din kalender plugin mappe, med '666' adgangs rettigheder");
+define('EC_ADLAN_A154', "Kunne ikke &aelig;ndre log mappe tilladelser");
+define('EC_ADLAN_A155', "Log mappe tilladelser kan kr&aelig;ve manuel opdatering til 0666 eller 0766, alt efter din server setup kan de virke");
+define('EC_ADLAN_A156', "Database opgraderet");
+define('EC_ADLAN_A157', "dette er rss feed for kalender poster");
+define('EC_ADLAN_A158', "Kunne ikke oprette log mappe");
+
+define('EC_ADLAN_A159', "Cache H&aring;ndtering");
+define('EC_ADLAN_A160', "(Kun relavant hvis cache er anvendt)");
+define('EC_ADLAN_A161', "Tom Kalender Cache");
+define('EC_ADLAN_A162', "Bekr&aelig;ft T&oslash;m Cache");
+define('EC_ADLAN_A163', "Cache t&oslash;mt");
+
+define('EC_ADLAN_A164', "Opdatering fuldf&oslash;rt");
+define('EC_ADLAN_A165', "Kalender menu top linker til:");
+define('EC_ADLAN_A166', "Dato visning i Begivenheds Liste:");
+define('EC_ADLAN_A167', "Dato visning i Snarligt kommende Begivenheder:");
+define('EC_ADLAN_A168', "Specielt dato format bruger formatet i boksen til h&oslash;jre");
+define('EC_ADLAN_A169', "Afg&oslash;rer dato visnings format for begivenheds listinger");
+define('EC_ADLAN_A170', "Afg&oslash;rer dato visnings format for snarligt kommende begivenheds menu");
+define('EC_ADLAN_A171', "Flag nyligt tilf&oslash;jet/opdaterede begivenheder");
+define('EC_ADLAN_A172', "V&aelig;rdi er tide fra opdatering i timer; nul for at sl&aring; fra");
+
+
+// Notify
+define("NT_LAN_EC_1", "Begivenheds Kalender Begivenheder");
+define("NT_LAN_EC_2", "Begivenhed Opdateret");
+define("NT_LAN_EC_3", "Opdateret af");
+define("NT_LAN_EC_4", "IP Adresse");
+define("NT_LAN_EC_5", "Besked");
+define("NT_LAN_EC_6", "Begivenheds Kalender - Begivenhed tilf&oslash;jet");
+define("NT_LAN_EC_7", "Ny Begivenhed postet");
+define("NT_LAN_EC_8", "Begivenheds Kalender - Begivenhed modificeret");
+
 
 ?>

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_links.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-12-04 16:20:39 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -46,14 +46,14 @@ define("LCLAN_81", "Undermenuer vil kun blive vist ved klik p&aring; deres for&a
 define("LCLAN_83", "Undermenu generator");
 define("LCLAN_88", "Site Links Egenskaber");
 define("LCLAN_89", "Billede");
-define("LCLAN_90", "Link Navn");
+
 define("LCLAN_91", "Flyt");
 define("LCLAN_95", "Gruppe");
 
 define("LCLAN_96", "Vist i dit tema som");
 
 
-define("LINKLAN_1", "&ARING;bner i et 800x600 vindue");
+define("LINKLAN_1", "&Aring;bner i et 800x600 vindue");
 define("LINKLAN_2", "For&aelig;lder");
 define("LINKLAN_3", "Ingen For&aelig;lder (Normalt Link)");
 define("LINKLAN_4", "Underlink Generator");

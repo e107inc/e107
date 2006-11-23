@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Danish/lan_forum_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-05-15 13:50:06 $
+|     $Revision: 1.8 $
+|     $Date: 2006-11-23 00:03:40 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -202,5 +202,7 @@ define("FORLAN_178", "Marker dette for at tillade email bekræftelse tjekboksen 
 define("FORLAN_179", "(Ved at tilføjelse af en * til begyndelsen af forum navnet vil gøre dette forum til beholder kun for underforums.  Forum temaet skal også understøtte denne egenskab.)");
 define("FORLAN_180", "Bekræft slet handling");
 define("FORLAN_181", "Bekræft Slet");
+define("FORLAN_182", "rekalkuler også svar for alle tråde i det valgte forum");
+define("FORLAN_183", "(denne funktion er ikke tilgængelig ved valg af 'alle forums' pga. antallet af forspørgsler det vil generere)");
 
 ?>

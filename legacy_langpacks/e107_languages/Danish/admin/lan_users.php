@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_users.php,v $
-|        $Revision: 1.6 $
-|        $Date: 2006-05-15 15:26:23 $
+|        $Revision: 1.7 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -186,5 +186,7 @@ define("USRLAN_142", "med det f&oslash;lgende aktiverings link");
 define("LAN_BOUNCED","Tilbagesendt");
 define("USRLAN_143", "Kontroller for Tilbagesendinger");
 define("USRLAN_144", "Gensend Bekr&aelig;ftigelses Email til Alle");
+define("USRLAN_145", "Reflekterede brugere");
+define("USRLAN_146", "Medlem information er tilg&aelig;ngelig til");
 
 ?>

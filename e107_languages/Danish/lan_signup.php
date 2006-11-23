@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_signup.php,v $
-|        $Revision: 1.6 $
-|        $Date: 2006-01-17 14:50:45 $
+|        $Revision: 1.7 $
+|        $Date: 2006-11-23 00:02:40 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -98,4 +98,22 @@ define("LAN_EMAIL_06", "Tak for din tilmelding.");
 define("LAN_SIGNUP_37", "Denne del af registreringen er fuldført. Site admin skal godkende dit medlemskab.  Når dette er sket vil du modtage en bekræftelses email der oplyser at dit medlemskab er godkendt.");
 define("LAN_SIGNUP_38", "Du skrev to forskellige email adresser. Skriv venligst en gyldig email adresse i de to felter");
 define("LAN_SIGNUP_39", "Gen-skriv Email Adresse:");
+
+// 0.7.6
+define("LAN_SIGNUP_40", "Aktivering ikke nødvendig");
+define("LAN_SIGNUP_41", "Din konto er allerede aktiveret.");
+define("LAN_SIGNUP_42", "Der var et problem, registrerings mailen blev ikke sendt, kontact venligst website administratoren.");
+define("LAN_SIGNUP_43", "Email Sendt");
+define("LAN_SIGNUP_44", "Aktiverings email sendt til:");
+define("LAN_SIGNUP_45", "Kontroller venligst din inbakke.");
+define("LAN_SIGNUP_47", "Gensend Aktiverings Email");
+define("LAN_SIGNUP_48", "Brugernavn eller Email");
+define("LAN_SIGNUP_49", "Hvis du har registreret med en forkert email adresse, skriv en ny og dit kodeord her:");
+define("LAN_SIGNUP_50", "Ny Email");
+define("LAN_SIGNUP_51", "Gammelt Kodeord");
+define("LAN_SIGNUP_52", "Forkert Kodeord");
+define("LAN_SIGNUP_53", "felt fejlede validerings testen");
+
+
+
 ?>

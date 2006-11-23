@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_error.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2006-10-03 15:30:54 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:05:11 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -34,5 +34,16 @@ define("LAN_ERROR_21", "Den forspurgte URL kunne ikke findes p&aring; denne serv
 define("LAN_ERROR_22", "Klik venligst her for at g&aring; til dette sites s&oslash;geside");
 define("LAN_ERROR_23", "Dit fors&oslash;g p&aring; at f&aring; adgang ");
 define("LAN_ERROR_24", " slog fejl.");
+
+// 0.7.6
+define("LAN_ERROR_25", "[1]: Kan ikke l&aelig;se kerne indstillinger fra databasen - Kerne indstillinger eksistere men kan ikke benyttes. Fors&oslash;ger at genoprette kerne backup ...");
+define("LAN_ERROR_26", "[2]: Kan ikke l&aelig;se kerne indstillinger fra databasen - ikke-eksisterende kerne indstillinger.");
+define("LAN_ERROR_27", "[3]: Kerne indstillinger gemt - backup gjort aktiv.");
+define("LAN_ERROR_28", "[4]: Ingen Kerne backup fundet. K&oslash;r venligst <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> v&aelig;rkt&oslash;jet for at genopbygge dine kerne indstillinger. <br />Efter genopbygningen af din kerne gem en backup fra admin/sql siden.");
+define("LAN_ERROR_29", "[5]: Felt(er) er tomme. Gen udfyld venligst formularen og udfyld de manglende felter.");
+define("LAN_ERROR_30", "[6]: Kan ikke oprette en gyldig forbindelse til mySQL. Kontroller venligst at din e107_config.php indeholder de korrekte oplysninger.");
+define("LAN_ERROR_31", "[7]: mySQL k&oslash;rer men der kunne ikke oprettes forbindelse til ({$mySQLdefaultdb}) databasen.<br />Kontroller venligst at den eksisterer og at din e107_config.php indeholder de korrekte oplysninger.");
+define("LAN_ERROR_32", "For at fuldf&oslash;re opgraderingen, kopier den flg. tekst over i din e107_config.php fil:");
+
 
 ?>

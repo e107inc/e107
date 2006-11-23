@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/Danish.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-23 00:04:39 $
+|     $Author: e107dk $
++----------------------------------------------------------------------------+
+*/
 define('LAN_PM', "Privat Besked");
 define('LAN_PM_1', "Send Privat Besked");
 define('LAN_PM_2', "Til");
@@ -63,6 +72,7 @@ define('LAN_PM_59', "Gå til side: ");
 define('LAN_PM_60', "Du har ikke tilladelse til at se denne besked");
 define('LAN_PM_61', "Intet emne");
 define('LAN_PM_62', "Fil: [{FILENAME}] overskrider størrelses grænsen - ikke vedhæftet");
+define('LAN_PM_63', "gruppe:");
 
 define("LAN_PM_100", "Ny PB fra ");
 define("LAN_PM_101", "Du har modtaget en ny Privat Besked fra ");
@@ -75,5 +85,5 @@ define("LAN_PM_107", "Den Private Besked du sendte til {UNAME} blev læst ");
 define("LAN_PM_108", "Besked sendt: ");
 define("LAN_PM_109", "Ny(e) Besked(er)");
 define("LAN_PM_110", "ok");
-
+define("LAN_PM_111", "Læs");
 ?>

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_plugin.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2006-03-23 16:01:00 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ define("EPL_ADLAN_16", "Plugin information");
 define("EPL_ADLAN_17", "Mere info...");
 define("EPL_ADLAN_18", "Det var ikke muligt at oprette tabel for plugin.");
 define("EPL_ADLAN_19", "Database tabeller oprettet.");
-define("EPL_ADLAN_20", "Indstillinger oprettet.");
+//define("EPL_ADLAN_20", "Indstillinger oprettet.");
 
 define("EPL_ADLAN_21", "Plugin er allerede installeret.");
 define("EPL_ADLAN_22", "Installeret");
@@ -66,33 +66,23 @@ define("EPL_NOINSTALL", "Ingen installation kr&aelig;vet, bare aktiver fra menu 
 define("EPL_DIRECTORY", "mappen.");
 define("EPL_NOINSTALL_1", "Ingen installation kr&aelig;vet, for at fjerne slet");
 define("EPL_UPGRADE", "Opgrader");
-define("EPL_CONFIGURE", "Konfigurer");
-              
-define("EPL_ADLAN_46", "RSS indstillinger oprettet med succes");
-define("EPL_ADLAN_47", "RSS indstillinger slettet med succes");
-define("EPL_ADLAN_48", "Er ikke i stand til at oprette RSS indstillinger");
-define("EPL_ADLAN_49", "Er ikke i stand til at slette RSS indstillinger");
 
 define("EPL_ADLAN_50", "Kommentarer slettet med succes");
 
-define("EPL_ADLAN_51", "Nej");
-define("EPL_ADLAN_52", "Ja");
 define("EPL_ADLAN_53", "Mappe er skrivebeskyttet");
 define("EPL_ADLAN_54", "V&aelig;lg venligst muligheden til at af-installere pluginen:");
 define("EPL_ADLAN_55", "Af-installer plugin");
-define("EPL_ADLAN_56", "Ja");
+
 define("EPL_ADLAN_57", "Slet plugin tabeller");
 define("EPL_ADLAN_58", "Hvis tabellerne ikke fjernes, kan pluginen gen-installeres uden tab af data.  Oprettelsen af tabellen under gen-installationen vil fejle. Tabellerne skal s&aring; slettesmanuelt for at fjerne.");
 define("EPL_ADLAN_59", "Slet plugin filer");
 define("EPL_ADLAN_60", "e107 vil fors&oslash;ge at fjerne alle plugin relaterede filer.");
-define("EPL_ADLAN_61", "Bekr&aelig;ft af-installation");
+//define("EPL_ADLAN_61", "Bekr&aelig;ft af-installation");
 define("EPL_ADLAN_62", "Annuller af-installation");
 define("EPL_ADLAN_63", "af-installer:");
-define("EPL_ADLAN_64", "");
-define("EPL_ADLAN_65", "");
-define("EPL_ADLAN_66", "");
-define("EPL_ADLAN_67", "");
-define("EPL_ADLAN_68", "");
-define("EPL_ADLAN_69", "");
+
+define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
+define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
+
 
 ?>

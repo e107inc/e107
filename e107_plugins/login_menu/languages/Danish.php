@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Danish.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2006-05-15 13:50:06 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-23 00:04:18 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ define("LOGIN_MENU_L3", "Tilmelding");
 define("LOGIN_MENU_L4", "Glemt kodeord?");
 define("LOGIN_MENU_L5", "Velkommen");
 define("LOGIN_MENU_L6", "Husk mig");
-define("LOGIN_MENU_L7", "Unik bruger ID er ikke genkendt (muligvis ødelagt cookie).<br />Prøv at <a href=\"index.php?logout\">klikke her</a> for at slette cookie.");
+define("LOGIN_MENU_L7", "Unik bruger ID er ikke genkendt (muligvis ødelagt cookie).<br />Prøv at <a href=\"".e_BASE."index.php?logout\">klik her</a> destruere cookien.");
 define("LOGIN_MENU_L8", "Logud");
 define("LOGIN_MENU_L9", "Login Fejl");
 define("LOGIN_MENU_L10", "Siden vises som værende ude af drift - dette betyder at besøgende bliver henvist til sitedown.php. For at nulstille denne henvisning gå til admin/Vedligeholdelse.");
@@ -56,10 +56,10 @@ define('LOGIN_MENU_L33', 'Vis Nye Chatbox Indlæg');
 define('LOGIN_MENU_L34', 'Vis Nye Kommentarer');
 define('LOGIN_MENU_L35', 'Vis Nye Forum Indlæg');
 define('LOGIN_MENU_L36', 'Vis Nye Medlemmer');
-define('LOGIN_MENU_L37', 'Opdater Indstillinger');
-define('LOGIN_MENU_L38', 'Indstillinger Opdateret');
 
 
 define('LOGIN_MENU_L39', 'Forlad Admin');
+define("LOGIN_MENU_L40", "Gensend Aktiverings Email");
+define("LOGIN_MENU_L41", "Login Menu Indstillinger");
 
 ?>

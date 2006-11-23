@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/links_page/languages/Danish.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-10-05 15:53:30 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:06:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -83,9 +83,9 @@ define("LCLAN_OPT_39", "");
 define("LCLAN_OPT_40", "navn");
 define("LCLAN_OPT_41", "id");
 define("LCLAN_OPT_42", "brug individuel link indstilling");
-define("LCLAN_OPT_43", "&ARING;bner i samme vindue");
-define("LCLAN_OPT_44", "&ARING;bner i nyt vindue");
-define("LCLAN_OPT_45", "&ARING;bner i et 600x400 minivindue");
+define("LCLAN_OPT_43", "&Aring;bner i samme vindue");
+define("LCLAN_OPT_44", "&Aring;bner i nyt vindue");
+define("LCLAN_OPT_45", "&Aring;bner i et 600x400 minivindue");
 define("LCLAN_OPT_46", "hvem kan h&aring;ndtere links");
 define("LCLAN_OPT_47", "disse brugere kan tilf&oslash;je/redigere deres egne personlige links");
 define("LCLAN_OPT_48", "tillad direkte postering");
@@ -144,6 +144,7 @@ define("LCLAN_ADMIN_11", "slettet");
 define("LCLAN_ADMIN_12", "Link Kategori");
 define("LCLAN_ADMIN_13", "Tilf&oslash;jet link slettet");
 define("LCLAN_ADMIN_14", "Links");
+define("LCLAN_ADMIN_15", "Denne kategori indeholder stadig links, (gen)fjern dem venligst");
 
 define("LCLAN_SL_1", "Tilf&oslash;jede Links");
 define("LCLAN_SL_2", "Ingen tilf&oslash;jede links");
@@ -209,10 +210,10 @@ define("LCLAN_ITEM_12", "px");
 define("LCLAN_ITEM_13", "upload");
 define("LCLAN_ITEM_14", "V&aelig;lg et ikon:");
 define("LCLAN_ITEM_15", "Vis Billeder");
-define("LCLAN_ITEM_16", "&ARING;ben Type:");
-define("LCLAN_ITEM_17", "&ARING;bner i samme vindue");
-define("LCLAN_ITEM_18", "&ARING;bner i nyt vindue");
-define("LCLAN_ITEM_19", "&ARING;bner i et 600x400 minivindue");
+define("LCLAN_ITEM_16", "&Aring;ben Type:");
+define("LCLAN_ITEM_17", "&Aring;bner i samme vindue");
+define("LCLAN_ITEM_18", "&Aring;bner i nyt vindue");
+define("LCLAN_ITEM_19", "&Aring;bner i et 600x400 minivindue");
 define("LCLAN_ITEM_20", "Synligt for:");
 define("LCLAN_ITEM_21", "marker for at opdatere tidsstempel til nuv&aelig;rrende tidspunkt");
 define("LCLAN_ITEM_22", "Opdater Link");
@@ -232,7 +233,7 @@ define("LCLAN_ITEM_35", "h&aring;ndter personlige links");
 define("LCLAN_ITEM_36", "go");
 define("LCLAN_ITEM_37", "vis alle links");
 define("LCLAN_ITEM_38", "Alle Links");
-define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_39", "Bed&oslash;mmelse");
 
 define("LCLAN_ADMINMENU_1", "Link Egenskaber");
 define("LCLAN_ADMINMENU_2", "H&aring;ndter Link Kategorier");
@@ -307,8 +308,8 @@ define("LAN_LINKS_43", "vis alle kategorier");
 define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Link Kategori");
 define("LAN_LINKS_46", "Link Underkategorier");
-define("LAN_LINKS_47", "");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_47", "link navigator...");
+define("LAN_LINKS_48", "-- vis kategori --");
 define("LAN_LINKS_49", "");
 
 define("LAN_ADMIN_HELP_0", "linksside hj&aelig;lp omr&aring;de");

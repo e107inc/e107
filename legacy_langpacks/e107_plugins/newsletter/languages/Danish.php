@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newsletter/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:52:22 $
+|        $Revision: 1.2 $
+|        $Date: 2006-11-23 00:06:53 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("NLLAN_MENU_CAPTION", "Nyhedsbrev");
 define("NLLAN_01", "Nyhedsbrev");
 define("NLLAN_02", "En hurtig og nem m&aring;de at lave og sende nyhedsbreve");
 define("NLLAN_03", "Konfigurer nyhedsbreve");
-define("NLLAN_04", "Plugin nyhedsbrev er installeret. Konfigurer gennem 'Plugins' p&aring; admin forsiden.");
+define("NLLAN_04", "Plugin nyhedsbrev er installeret. Konfigurer ved at g&aring; til admin forsiden og kilkke p&aring; 'Nyhedsbrev' i Plugins sektionen.");
 define("NLLAN_05", "endnu ingen nyhedsbreve");
 
 define("NLLAN_06", "Navn");
@@ -33,7 +33,7 @@ define("NLLAN_10", "Eksisterende nyhedsbreve");
 
 define("NLLAN_11", "Endnu ingen nyhedsbreve");
 define("NLLAN_12", "Udgaver");
-define("NLLAN_13", "[ Forælder ID ] emne/titel");
+define("NLLAN_13", "[ For&aelig;lder ID ] emne/titel");
 define("NLLAN_14", "Sendt?");
 define("NLLAN_15", "Indstillinger");
 define("NLLAN_16", "ja");
@@ -77,5 +77,10 @@ define("NLLAN_50", "Klik p&aring; knappen for at tilmelde ( din abonnere address
 define("NLLAN_51", "Afmeld");
 define("NLLAN_52", "Tilmeld");
 define("NLLAN_53", "Sikker p&aring; at du vil tilmelde dig nyhedsbrev?");
+
+define("NLLAN_54", "Sender");
+
+
+
 
 ?>

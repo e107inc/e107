@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_administrator.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-10-21 11:04:26 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -14,6 +14,7 @@ define("ADMSLAN_1", "har nu administrator rettigheder.");
 define("ADMSLAN_2", "er opdateret");
 define("ADMSLAN_3", "er hovedadministrator, og kan ikke &aelig;ndres.");
 define("ADMSLAN_4", "Forts&aelig;t");
+define("ADMSLAN_5", "Fejl!");
 define("ADMSLAN_6", "er hovedadministrator, og kan ikke slettes.");
 
 define("ADMSLAN_13", "Eksisterende administratorer");
@@ -39,7 +40,7 @@ define("ADMSLAN_32", "Konfigurere forside");
 define("ADMSLAN_33", "Konfigurere statistik");
 define("ADMSLAN_34", "Konfigurere meta tags");
 define("ADMSLAN_35", "Konfigurere filuploads");
-// define("ADMSLAN_36", "H&aring;ndtere forum");
+define("ADMSLAN_36", "Konfigurere Billede indstillinger");
 define("ADMSLAN_37", "H&aring;ndtere kommentarer");
 // define("ADMSLAN_38", "H&aring;ndtere/konfigurere chatboks");
 define("ADMSLAN_39", "Oprette nyheder");

@@ -4,13 +4,11 @@
 |        e107 website system  Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_comment.php,v $
-|        $Revision: 1.5 $
-|        $Date: 2006-10-03 15:30:54 $
+|        $Revision: 1.6 $
+|        $Date: 2006-11-23 00:02:40 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
-
-define("PAGE_NAME", "Kommentarer");
 
 define("COMLAN_0", "[blokeret af admin]");
 define("COMLAN_1", "Fjern blokering");
@@ -67,5 +65,13 @@ define("COMLAN_328", 'Kommentarer er låst');
 define("COMLAN_329", 'Uautoriseret');
 define("COMLAN_330", 'IP:');
 
+define("COMLAN_TYPE_1", "nyheder");
+define("COMLAN_TYPE_2", "download");
+define("COMLAN_TYPE_3", "faq");
+define("COMLAN_TYPE_4", "afstemning");
+define("COMLAN_TYPE_5", "doks");
+define("COMLAN_TYPE_6", "fejlfinder");
+define("COMLAN_TYPE_7", "ideer");
+define("COMLAN_TYPE_8", "brugerprofil");
 
 ?>

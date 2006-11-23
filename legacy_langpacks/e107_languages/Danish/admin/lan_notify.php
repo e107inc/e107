@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:29:27 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-23 00:05:12 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -31,5 +31,8 @@ define("NN_LAN_2", "Nyhed indsendt af bruger");
 define("NN_LAN_3", "Nyhed oprettet af admin");
 define("NN_LAN_4", "Nyhed redigeret af admin");
 define("NN_LAN_5", "Nyhed slettet af admin");
+
+define("NF_LAN_1", "Fil Begivenheder");
+define("NF_LAN_2", "Fil uploadet af bruger");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/poll/languages/Danish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-10-05 15:53:30 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-23 00:07:10 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -64,13 +64,11 @@ define("POLLAN_37", "aktiv fra");
 define("POLLAN_38", "til");
 define("POLLAN_39", "Tak for din stemme!");
 define("POLLAN_40", "Klik her for at se resultater");
-
 define("POLLAN_41", "Denne afstemning er begr&aelig;nset til medlemmer");
 define("POLLAN_42", "Denne afstemning er begr&aelig;nset til administratorer");
 define("POLLAN_43", "Du har ikke tilladelse til at stemme i denne afstemning");
-
 define("POLLAN_44", "Slet afstemning?");
-
 define("POLLAN_45", "Afstemning opdateret med succes");
+define("POLLAN_46", "Felt(er) blank(e)");
 
 ?>

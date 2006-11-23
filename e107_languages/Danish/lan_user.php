@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_user.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:02:40 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -60,6 +60,8 @@ define("LAN_423", "Brugerkommentarer");
 define("LAN_424", "Forumindlæg");
 define("LAN_425", "Send privatbesked");
 define("LAN_426", "siden");
+
 define("USERLAN_1", "Ligemand bedømmelse");
+define("USERLAN_2", "Du har ikke adgang til at se denne side.");
 
 ?>

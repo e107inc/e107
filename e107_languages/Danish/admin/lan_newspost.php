@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_newspost.php,v $
-|        $Revision: 1.5 $
-|        $Date: 2006-05-15 13:50:06 $
+|        $Revision: 1.6 $
+|        $Date: 2006-11-23 00:02:41 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -23,8 +23,8 @@ define("NWSLAN_12", "Titel");
 define("NWSLAN_13", "Tekst");
 define("NWSLAN_14", "Udvidet");
 define("NWSLAN_15", "Kommentarer");
-define("NWSLAN_16", "Slået til");
-define("NWSLAN_17", "Slået fra");
+//define("NWSLAN_16", "Slået til");
+//define("NWSLAN_17", "Slået fra");
 define("NWSLAN_18", "Tillad kommentarer i denne nyhed");
 define("NWSLAN_19", "Aktivering");
 
@@ -67,7 +67,7 @@ define("NWSLAN_56", "Opret nyheds kategori");
 define("NWSLAN_57", "Emne");
 define("NWSLAN_58", "Post");
 define("NWSLAN_59", "Ingen tilføjede nyheder");
-define("NWSLAN_60", "Tilføjede nyheder");
+//define("NWSLAN_60", "Tilføjede nyheder");
 
 define("NWSLAN_62", "Gå til side: ");
 define("NWSLAN_63", "Søg i nyheder");
@@ -76,8 +76,8 @@ define("NWSLAN_66", "Upload");
 define("NWSLAN_67", "Billede");
 define("NWSLAN_68", "Fil");
 define("NWSLAN_69", "Upload et billede eller en fil der skal bruges i nyheden");
-define("NWSLAN_70", "Mappen e107_files/downloads er skrivebeskyttet, du skal CHMOD 777 mappen før du uploader");
-define("NWSLAN_71", "Mappen ");
+//define("NWSLAN_70", "Mappen e107_files/downloads er skrivebeskyttet, du skal CHMOD 777 mappen før du uploader");
+//define("NWSLAN_71", "Mappen ");
 define("NWSLAN_72", "Fremvis kun nyheder mellem bestemte datoer");
 define("NWSLAN_73", "Fremvisningstype");
 define("NWSLAN_74", "Vælg hvor og hvordan nyheden vises");
@@ -85,7 +85,7 @@ define("NWSLAN_75", "Standard - vis på forsiden");
 define("NWSLAN_76", "Kun titel - på forsiden");
 define("NWSLAN_77", "Vis på anden nyhedsmenu");
 
-define("NWSLAN_78", "Denne mulighed er slået fra eftersom fil upload er slået fra på din server");
+//define("NWSLAN_78", "Denne mulighed er slået fra eftersom fil upload er slået fra på din server");
 define("NWSLAN_79", "Nulstil formular");
 
 define("NWSLAN_83", "Udvidet nyhed");
@@ -115,7 +115,7 @@ define("NWSLAN_115", "Antal nyheder der skal vises i arkivet ?");
 define("NWSLAN_116", "Først opdater indstillingerne med den ændrede vis pr. side indstilling, opdater igen efter tilpasning af nyhedsarkiv indstillingen. (0 er slået fra)");
 
 define("NWSLAN_117", "indstil titlen for nyhedsarkivet");
-define("NWSLAN_118", "Fremvis billeder");
+//define("NWSLAN_118", "Fremvis billeder");
 define("NWSLAN_119", "Indstillinger gemt");
 define("NWSLAN_120", "Tekst der skal vises i toppen af Tilføj Nyheder");
 
@@ -158,15 +158,14 @@ define("LAN_NEWS_38", "Indsæt billeder");
 define("LAN_NEWS_39", "klik på filen for at indsætte ved markør position");
 define("LAN_NEWS_40", "Indsæt download links");
 
-define("LAN_NEWS_41", "Miniature / Ikon");
 define("LAN_NEWS_42", "Filer");
-define("LAN_NEWS_43", "(ingen billeder i /e107_images/newspost_images)");
+//define("LAN_NEWS_43", "(ingen billeder i /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback ikke slået til.");
 
 define("LAN_NEWS_45", "ID");
 
 define("LAN_NEWS_46", "Nyhed ikke opdateret da der ingen ændringer er lavet.");
-define("LAN_NEWS_47", "Billede");
+//define("LAN_NEWS_47", "Billede");
 define("LAN_NEWS_48", "Intet Billede");
 
 define("LAN_NEWS_49", "Visnings-type");

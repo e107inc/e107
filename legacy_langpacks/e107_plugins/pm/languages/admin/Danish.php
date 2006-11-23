@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/admin/Danish.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2006-05-24 16:49:05 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-23 00:07:00 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -29,8 +29,8 @@ define('ADLAN_PM_15', "Tilf&oslash;j PB Gr&aelig;nse");
 define('ADLAN_PM_16', "Plugin Titel");
 define('ADLAN_PM_17', "Vis ny PB animation");
 define('ADLAN_PM_18', "Vis bruger rullegardin");
-define('ADLAN_PM_19', "L&aelig;st besked tidsudl&oslash;b");
-define('ADLAN_PM_20', "Ul&aelig;st besked tidsudl&oslash;b");
+define('ADLAN_PM_19', "L&AElig;ST besked tidsudl&oslash;b");
+define('ADLAN_PM_20', "UL&AElig;ST besked tidsudl&oslash;b");
 define('ADLAN_PM_21', "popup besked ved ny PB");
 define('ADLAN_PM_22', "Popup forsinkelse tidsudl&oslash;b");
 define('ADLAN_PM_23', "Begr&aelig;ns PB brug til");
@@ -68,4 +68,7 @@ define('ADLAN_PM_53', "Ingen poster fundet til konvertering.");
 define('ADLAN_PM_54', "Hoved indstillinger");
 define('ADLAN_PM_55', "Gr&aelig;nser");
 define('ADLAN_PM_56', "Konvertering");
+
+define('ADLAN_PM_57', "Dette plugin er et komplet Privat Besked system.");
+define('ADLAN_PM_58', "Private Beskeder");
 ?>

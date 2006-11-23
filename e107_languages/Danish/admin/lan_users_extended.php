@@ -4,8 +4,8 @@
 |        e107 website system  Danish Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_users_extended.php,v $
-|        $Revision: 1.4 $
-|        $Date: 2005-11-21 15:11:11 $
+|        $Revision: 1.5 $
+|        $Date: 2006-11-23 00:02:41 $
 |        $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -79,6 +79,14 @@ define("EXTLAN_64", "Vælg vis værdi");
 define("EXTLAN_65", "Nej - Vil ikke blive vist på tilmeldings siden");
 define("EXTLAN_66", "Ja - Vil blive vist på tilmeldings siden");
 define("EXTLAN_67", "Nej - Vis på tilmeldings siden");
+
+define("EXTLAN_68", "Felt:");
+define("EXTLAN_69", "er blevet aktiveret");
+define("EXTLAN_70", "FEJL!! Felt:");
+define("EXTLAN_71", "var ikke aktiveret!");
+define("EXTLAN_72", "er blevet deaktiveret");
+define("EXTLAN_73", "er ikke blevet deaktiveret!");
+define("EXTLAN_74", "er et reserveret felt navn og kan ikke benyttes.");
 
 
 //textbox

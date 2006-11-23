@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_admin.php,v $
-|        $Revision: 1.5 $
-|        $Date: 2006-05-15 15:26:23 $
+|        $Revision: 1.6 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -194,6 +194,9 @@ define("ADLAN_LAT_8", "Der er uredigerede administrator beskeder");
 define("ADLAN_ERR_1", "Advarsel!");
 define("ADLAN_ERR_2", "Der er filer p&aring; din server der er kendt for at v&aelig;re s&aring;rbare. Disse skal fjernes <b>&oslash;jeblikkeligt</b>. Filerne h&oslash;rer til den &aelig;ldre 0.6xx version i e107. Slet venligst de f&oslash;lgende mapper og alt deres indhold:");
 define("ADLAN_ERR_3", "Der er en eller flere filer i din offentlige upload mapper der ikke er blandt dine tilladte upload filtyper. Disse kan v&aelig;re placeret der af en angriber er det tilf&aelig;ldet b&oslash;r de fjernes <b>jeblikkeligt</b>. Du b&oslash;r <b>ikke</b> &aring;bne disse filer da de kan eksekvere en ondsindet kode filen kan indeholde. eks. &aring;ben dem ikke med din browser.<br /><br />Hvis du genkender disse filer som v&aelig;rende ok, er det sikkert p&aring; grund af nylige &aelig;ndringer i tilladte filtyper, den filtype du tillod er ikke l&aelig;ngere i de tilladte filtypers liste og du er n&oslash;d til at gen-tilf&oslash;je den (se admin => uploads). Du b&oslash;r ikke tillade upload af .html, .txt, osv. da en angriber kan uploade en fil af denne type der indeholder ondsindet javascript. Du b&oslash;r selvf&oslash;lgelig heller ikke, tillade upload af .php filer eller andre former for eksekverbart script.<br /><br />Nedenfor er en liste over filer der potiencielt kan v&aelig;re ondsindet:");
+define("ADLAN_ERR_4", "For&aelig;ldede plugin file(er) fundet");
+define("ADLAN_ERR_5", "De flg. filer skal omd&oslash;bes til");
+define("ADLAN_ERR_6", "Derefter, klik her for at gen-scanne dine plugin mapper.");
 
 // Almindelige udtryk
 define("LAN_EDIT","Rediger");
@@ -222,6 +225,7 @@ define("LAN_OK","OK");
 
 define("LAN_PRESET","Forudindstilt");
 define("LAN_PRESET_SAVED","Indstilling gemt");
+
 define("LAN_PRESET_DELETED","Indstilling slettet");
 define("LAN_PRESET_CONFIRMDEL","Er du sikker p&aring; du vil slette denne indstilling?");
 define("LAN_NOTWRITABLE"," er skrivebeskyttet, du skal CHMOD 777 mappen f&oslash;rst.");
@@ -248,6 +252,21 @@ define("LAN_INACTIVE","Inaktiv");
 define("LAN_BAN","Ban");
 define("LAN_RATING", "Bed&oslash;mmelse");
 
+define("LAN_UPLOAD_IMAGES","Upload Billeder");
+define("LAN_UPLOAD_FILES","Upload Filer");
+define("LAN_UPLOAD_ADDFILE","Tilf&oslash;j En Anden Fil");
+define("LAN_UPLOAD_CONFIRM","Evt. ugemte &aelig;ndringer p&aring; denne side vil blive tabt. Forts&aelig;t?");
+define("LAN_UPLOAD_777","Mappe mangler eller er skrivebeskyttet, du skal CHMOD 777 den flg. mappe f&oslash;r upload:");
+define("LAN_UPLOAD_SERVEROFF", "Deen indstilling er sl&aring;et fra da fil upload ikke er sl&aring;et til p&aring; din server");
 
+define("LAN_DISABLED","Sl&aring;et fra");
+define("LAN_ENABLED", "Sl&aring;et til");
+
+define("LAN_PRESET_CONFIRMSAVE","Gem disse formular v&aelig;rdier som standard for denne side?");
+define("LAN_CONFIGURE", "Konfigurer");
+
+define("LAN_BACK","Tilbage");
+
+define("LAN_CREDITS","Bidragydere");
 
 ?>

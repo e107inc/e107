@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.9 $
-|        $Date: 2006-05-15 13:50:06 $
+|        $Revision: 1.10 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -177,4 +177,14 @@ define("PRFLAN_163", "eks. Firmanavn, Adresse, Telefon osv.");
 
 define("PRFLAN_164", "Tillad brugere at emaile en kopi af indholdet i kontakt emailen til dem selv");
 define("PRFLAN_165", "Mulig &aring;bning for spam, benyt med omtanke");
+define("PRFLAN_166", "Vis Smiley billeder i kommentar form?");
+
+define("PRFLAN_167", "G&oslash;r intastning af email adresser frivillig"); // subject to change.
+define("PRFLAN_168", "Site Kontakt Person(er)");
+define("PRFLAN_169", "Hvis en valgt gruppe indeholder mere end en person, vil brugeren blive bedt om at v&aelig;lge er person derfra.");
+
+define("PRFLAN_170", "Brug omvendt DNS for at tillade host banlysning");
+define("PRFLAN_171", "Ved at bruge denne mulighed kan du banlyse alle brugerene fra hostnavn, end blot en IP eller email adresse.  <br />OBS: Dette kan p&aring;virke side indl&aelig;snings tiden hos nogle hosts");
+
+
 ?>

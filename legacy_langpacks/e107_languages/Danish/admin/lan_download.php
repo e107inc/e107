@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_download.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-12-04 16:20:39 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -132,5 +132,8 @@ define("DOWLAN_148", "Marker for at opdatere datostempel til nuv&aelig;rrende ti
 define("DOWLAN_149", "Eller klik her for at bruge en extern fil");
 
 define("DOWLAN_150", "Email admin n&aring;r n&aring;r et fejlet download raporteres");
+define("DOWLAN_151", "Fejl-download raportering tilg&aelig;ngelig til");
 
+define("DOWLAN_152", "Kunne ikke flytte fil");
+define("DOWLAN_153", "Flyt fil til download mappe");
 ?>

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_image.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("IMALAN_15", "Vis ingenting");
 define("IMALAN_16", "Vis uploadede profil logoer");
 define("IMALAN_17", "Klik her");
 define("IMALAN_18", "Uploadede billeder");
-define("IMALAN_19", "Billed navn");
+
 define("IMALAN_20", "Billede");
 define("IMALAN_21", "Bruges af");
 define("IMALAN_22", "Billede ikke i brug");
@@ -35,7 +35,7 @@ define("IMALAN_23", "Profillogo");
 define("IMALAN_24", "Fotografi");
 define("IMALAN_25", "Slet alle ubrugte billeder");
 define("IMALAN_26", "billeder slettet");
-define("IMALAN_27", "slet");
+
 define("IMALAN_28", "slettet");
 define("IMALAN_29", "Ingen billeder");
 define("IMALAN_30", "Alle (offentlig)");
@@ -44,5 +44,23 @@ define("IMALAN_32", "Kun medlemmer");
 define("IMALAN_33", "Kun admin");
 define("IMALAN_34", "Aktiver spinkel");
 define("IMALAN_35", "Fix transparent PNG-24's med alpha transparency i IE 5/6 (g&aelig;lder hele webstedet)");
+
+define("IMALAN_36", "Valider avatar st&oslash;rrelse og adgang");
+define("IMALAN_37", "Avatar Validering");
+define("IMALAN_38", "Maksimalt tilladt bredde");
+define("IMALAN_39", "Maksimalt tilladt h&oslash;jde");
+define("IMALAN_40", "For bred");
+define("IMALAN_41", "For h&oslash;j");
+define("IMALAN_42", "Ikke fundet");
+define("IMALAN_43", "Slet uploadet avatar");
+define("IMALAN_44", "Slet ekstern reference");
+define("IMALAN_45", "Ikke fundet");
+define("IMALAN_46", "For stor");
+define("IMALAN_47", "Total uploadede avatarer");
+define("IMALAN_48", "Total eksterne avatarer");
+define("IMALAN_49", "Brugere med avatarer");
+define("IMALAN_50", "Total");
+define("IMALAN_51", "Avatar for ");
+
 
 ?>

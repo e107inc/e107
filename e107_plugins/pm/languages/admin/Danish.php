@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/Danish.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-10-02 10:08:30 $
+|        $Revision: 1.3 $
+|        $Date: 2006-11-23 00:04:39 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -68,4 +68,7 @@ define('ADLAN_PM_53', "Ingen poster fundet til konvertering.");
 define('ADLAN_PM_54', "Hoved indstillinger");
 define('ADLAN_PM_55', "Grænser");
 define('ADLAN_PM_56', "Konvertering");
+
+define('ADLAN_PM_57', "Dette plugin er et komplet Privat Besked system.");
+define('ADLAN_PM_58', "Private Beskeder");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Danish/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-01 13:00:27 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-23 00:05:53 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -17,6 +17,8 @@ define("CONTENT_PLUGIN_LAN_3", "Konfigurer Indholds H&aring;ndtering");
 define("CONTENT_PLUGIN_LAN_4", "Dette plugin er nu klar til at blive brugt.");
 define("CONTENT_PLUGIN_LAN_5", "indhold");
 define("CONTENT_PLUGIN_LAN_6", "Indholds H&aring;ndterings Plugin tabel struktur opdateret");
+
+define("CONTENT_LATEST_LAN_1", "Tilf&oslash;jede Indholds Emner:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "opret indholds kategori");
 define("CONTENT_ADMIN_CAT_LAN_1", "rediger indholds kategori");
@@ -90,7 +92,12 @@ define("CONTENT_ADMIN_CAT_LAN_61", "upload et nyt ikon");
 define("CONTENT_ADMIN_CAT_LAN_62", "Efter du har uploadet et nyt kategori ikon, kan du tildele dette ikon i det nedenst&aring;ende 'ikon' omr&aring;de<br />Hvis du uploader et nyt ikon, vil dette ikon blive skaleret til 48 pixels, og herudover oprettes ogs&aring; et lille 16 pixels ikon<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "upload ikon");
 
-
+define("CONTENT_ADMIN_MANAGER_LAN_0", "godkend tilf&oslash;jet");
+define("CONTENT_ADMIN_MANAGER_LAN_1", "brugere fra denne gruppe kan godkende tilf&oslash;jede indholds emner");
+define("CONTENT_ADMIN_MANAGER_LAN_2", "personlig h&aring;ndtering");
+define("CONTENT_ADMIN_MANAGER_LAN_3", "brugere fra denne gruppe kan h&aring;ndtere deres personlige indholds emner");
+define("CONTENT_ADMIN_MANAGER_LAN_4", "kategori h&aring;ndtering");
+define("CONTENT_ADMIN_MANAGER_LAN_5", "brugere fra denne gruppe kan h&aring;ndtere alle indholds emner i denne kategori");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "kr&aelig;vet felt(er) ej udfyldt");
 define("CONTENT_ADMIN_ITEM_LAN_1", "indholds emne oprettet");
@@ -308,8 +315,7 @@ define("CONTENT_ADMIN_MENU_LAN_19", "Indholds H&aring;ndtering");
 define("CONTENT_ADMIN_MENU_LAN_20", "Top Bed&oslash;mmelse Side");
 define("CONTENT_ADMIN_MENU_LAN_21", "Sider");
 define("CONTENT_ADMIN_MENU_LAN_22", "Top Score Side");
-
-
+define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Opret Kategori");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Er du sikker p&aring; du vil slette denne kategori?");
 define("CONTENT_ADMIN_JS_LAN_1", "Er du sikker p&aring; du vil slette indhold?");
@@ -413,10 +419,13 @@ define("CONTENT_ADMIN_CONVERSION_LAN_60", "opret standard");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "opret ny kategori");
 define("CONTENT_ADMIN_CONVERSION_LAN_62", "Indholds H&aring;ndterings Plugin Version opdateret til version:");
 define("CONTENT_ADMIN_CONVERSION_LAN_63", "opgrader");
-define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
-
-
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "Indholds H&aring;ndterings Plugin tabel struktur opdateret");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "Indholds H&aring;ndterings Plugin : content_author opdateret");
+define("CONTENT_ADMIN_CONVERSION_LAN_66", "Indholds H&aring;ndterings Plugin : content_preferences og menuer opdateret");
+define("CONTENT_ADMIN_CONVERSION_LAN_67", "Indholds H&aring;ndterings Plugin : content_preferences opdateret");
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "Indholds H&aring;ndterings Plugin : content_theme opdateret");
+define("CONTENT_ADMIN_CONVERSION_LAN_69", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_70", "");
 
 define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Egenskaber:");
 define("CONTENT_ADMIN_OPT_LAN_MENU_2", "Sider:");
@@ -438,6 +447,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_17", "vis kategori side (for&aelig;lder emne,
 define("CONTENT_ADMIN_OPT_LAN_MENU_18", "kategorier");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "seneste emners liste");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "links til sider");
+define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin : Opret Kategori");
 
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "sektioner");
@@ -673,6 +683,24 @@ define("CONTENT_ADMIN_OPT_LAN_151", "Top Bed&oslash;mte Side");
 define("CONTENT_ADMIN_OPT_LAN_152", "Top Score Side");
 define("CONTENT_ADMIN_OPT_LAN_153", "Tilf&oslash;j Side");
 define("CONTENT_ADMIN_OPT_LAN_154", "H&aring;ndter Side");
-
-
+define("CONTENT_ADMIN_OPT_LAN_155", "titel");
+define("CONTENT_ADMIN_OPT_LAN_156", "titel indeks side");
+define("CONTENT_ADMIN_OPT_LAN_157", "titel forfatter side");
+define("CONTENT_ADMIN_OPT_LAN_158", "tilf&oslash;j forfatter navn til titel");
+define("CONTENT_ADMIN_OPT_LAN_159", "titel kategori side");
+define("CONTENT_ADMIN_OPT_LAN_160", "tilf&oslash;j kategori overskrift til titel");
+define("CONTENT_ADMIN_OPT_LAN_161", "titel for&aelig;lder underkategorier (bruges kun hvis afviklings type er sat til seperate menuer)");
+define("CONTENT_ADMIN_OPT_LAN_162", "titel indholds emner (bruges kun hvis afviklings type er sat til seperate menuer)");
+define("CONTENT_ADMIN_OPT_LAN_163", "vis n&aelig;ste og forrige side links");
+define("CONTENT_ADMIN_OPT_LAN_164", "titel for forrige side link<br />(brug {PAGETITLE} til at tilf&oslash;je titlen fra den forrige side)");
+define("CONTENT_ADMIN_OPT_LAN_165", "titel for n&aelig;ste side link<br />(brug {PAGETITLE} til at tilf&oslash;je titlen fra den forrige side)");
+define("CONTENT_ADMIN_OPT_LAN_166", "brug 'all' for at vise hele teksten");
+define("CONTENT_ADMIN_OPT_LAN_167", "nedarv");
+define("CONTENT_ADMIN_OPT_LAN_168", "f&oslash;rste side");
+define("CONTENT_ADMIN_OPT_LAN_169", "sidste side");
+define("CONTENT_ADMIN_OPT_LAN_170", "hvor skal egne og forud indstilte tags afvikles p&aring; et flersidet indholds emne ?");
+define("CONTENT_ADMIN_OPT_LAN_171", "antal niveauer");
+define("CONTENT_ADMIN_OPT_LAN_172", "numerisk v&aelig;rdi til at vise antallet af niveauer af underkategorier i kategori tr&aelig;et. lad v&aelig;re tom for at vise alle niveauer.");
+define("CONTENT_ADMIN_OPT_LAN_173", "inkluder 'home' i breadcrumb");
+define("CONTENT_ADMIN_OPT_LAN_174", "inkluder indholds startsiden i breadcrumb");
 ?>

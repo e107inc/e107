@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_newspost.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2006-05-15 13:50:06 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-23 00:05:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("NWSLAN_1", "Nyhed slettet");
 define("NWSLAN_2", "Marker for at slette denne nyhed");
 define("NWSLAN_3", "Pt. ingen nyheder.");
 define("NWSLAN_4", "Eksisterende nyheder");
-define("NWSLAN_5", "&ARING;ben HTML redigering");
+define("NWSLAN_5", "&Aring;ben HTML redigering");
 define("NWSLAN_6", "Kategori");
 
 define("NWSLAN_9", "klik for at bekr&aelig;fte");
@@ -23,8 +23,8 @@ define("NWSLAN_12", "Titel");
 define("NWSLAN_13", "Tekst");
 define("NWSLAN_14", "Udvidet");
 define("NWSLAN_15", "Kommentarer");
-define("NWSLAN_16", "Sl&aring;et til");
-define("NWSLAN_17", "Sl&aring;et fra");
+//define("NWSLAN_16", "Sl&aring;et til");
+//define("NWSLAN_17", "Sl&aring;et fra");
 define("NWSLAN_18", "Tillad kommentarer i denne nyhed");
 define("NWSLAN_19", "Aktivering");
 
@@ -67,7 +67,7 @@ define("NWSLAN_56", "Opret nyheds kategori");
 define("NWSLAN_57", "Emne");
 define("NWSLAN_58", "Post");
 define("NWSLAN_59", "Ingen tilf&oslash;jede nyheder");
-define("NWSLAN_60", "Tilf&oslash;jede nyheder");
+//define("NWSLAN_60", "Tilf&oslash;jede nyheder");
 
 define("NWSLAN_62", "G&aring; til side: ");
 define("NWSLAN_63", "S&oslash;g i nyheder");
@@ -76,8 +76,8 @@ define("NWSLAN_66", "Upload");
 define("NWSLAN_67", "Billede");
 define("NWSLAN_68", "Fil");
 define("NWSLAN_69", "Upload et billede eller en fil der skal bruges i nyheden");
-define("NWSLAN_70", "Mappen e107_files/downloads er skrivebeskyttet, du skal CHMOD 777 mappen f&oslash;r du uploader");
-define("NWSLAN_71", "Mappen ");
+//define("NWSLAN_70", "Mappen e107_files/downloads er skrivebeskyttet, du skal CHMOD 777 mappen f&oslash;r du uploader");
+//define("NWSLAN_71", "Mappen ");
 define("NWSLAN_72", "Fremvis kun nyheder mellem bestemte datoer");
 define("NWSLAN_73", "Fremvisningstype");
 define("NWSLAN_74", "V&aelig;lg hvor og hvordan nyheden vises");
@@ -85,7 +85,7 @@ define("NWSLAN_75", "Standard - vis p&aring; forsiden");
 define("NWSLAN_76", "Kun titel - p&aring; forsiden");
 define("NWSLAN_77", "Vis p&aring; anden nyhedsmenu");
 
-define("NWSLAN_78", "Denne mulighed er sl&aring;et fra eftersom fil upload er sl&aring;et fra p&aring; din server");
+//define("NWSLAN_78", "Denne mulighed er sl&aring;et fra eftersom fil upload er sl&aring;et fra p&aring; din server");
 define("NWSLAN_79", "Nulstil formular");
 
 define("NWSLAN_83", "Udvidet nyhed");
@@ -113,8 +113,9 @@ define("NWSLAN_114", "hvis det tema du bruger har en nyheds layout skabelon, bru
 
 define("NWSLAN_115", "Antal nyheder der skal vises i arkivet ?");
 define("NWSLAN_116", "F&oslash;rst opdater indstillingerne med den &aelig;ndrede vis pr. side indstilling, opdater igen efter tilpasning af nyhedsarkiv indstillingen. (0 er sl&aring;et fra)");
+
 define("NWSLAN_117", "indstil titlen for nyhedsarkivet");
-define("NWSLAN_118", "Fremvis billeder");
+//define("NWSLAN_118", "Fremvis billeder");
 define("NWSLAN_119", "Indstillinger gemt");
 define("NWSLAN_120", "Tekst der skal vises i toppen af Tilf&oslash;j Nyheder");
 
@@ -157,15 +158,14 @@ define("LAN_NEWS_38", "Inds&aelig;t billeder");
 define("LAN_NEWS_39", "klik p&aring; filen for at inds&aelig;tte ved mark&oslash;r position");
 define("LAN_NEWS_40", "Inds&aelig;t download links");
 
-define("LAN_NEWS_41", "Miniature / Ikon");
 define("LAN_NEWS_42", "Filer");
-define("LAN_NEWS_43", "(ingen billeder i /e107_images/newspost_images)");
+//define("LAN_NEWS_43", "(ingen billeder i /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback ikke sl&aring;et til.");
 
 define("LAN_NEWS_45", "ID");
 
 define("LAN_NEWS_46", "Nyhed ikke opdateret da der ingen &aelig;ndringer er lavet.");
-define("LAN_NEWS_47", "Billede");
+//define("LAN_NEWS_47", "Billede");
 define("LAN_NEWS_48", "Intet Billede");
 
 define("LAN_NEWS_49", "Visnings-type");

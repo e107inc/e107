@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Danish.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2006-01-17 14:50:45 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-23 00:03:58 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@
 
 
 
-define("PAGE_NAME", "Nyhedsliste");
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Nyhedsliste"); }
 
 define("LIST_PLUGIN_1", "Liste");
 define("LIST_PLUGIN_2", "Denne plugin lader dig se en liste over seneste tilføjelser i alle e107 kategorier. Du kan enten se listen med data siden dit sidste besøg, eller se en generel seneste tilføjelser liste. Udover siden er der også en menu tilstede. Hver sektion er kkan konfigureres i admin området.");
@@ -138,6 +138,10 @@ define("LIST_ADMIN_LAN_35", "dage");
 define("LIST_ADMIN_LAN_36", "varighed");
 define("LIST_ADMIN_LAN_37", "vis en valgboks med antal dage der skal ses tilbage?");
 define("LIST_ADMIN_LAN_38", "");
+
+define("LIST_ADMIN_LAN_39", "åben hvis hvis poster eksisterer");
+define("LIST_ADMIN_LAN_40", "skal sektioner der indeholder poster åbnes som standard?");
+define("LIST_ADMIN_LAN_41", "");
 
 define("LIST_MENU_1", "seneste tilføjelser");
 define("LIST_MENU_2", "af");

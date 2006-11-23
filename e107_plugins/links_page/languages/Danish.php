@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Danish.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-10-05 15:53:30 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-23 00:03:49 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -144,6 +144,7 @@ define("LCLAN_ADMIN_11", "slettet");
 define("LCLAN_ADMIN_12", "Link Kategori");
 define("LCLAN_ADMIN_13", "Tilføjet link slettet");
 define("LCLAN_ADMIN_14", "Links");
+define("LCLAN_ADMIN_15", "Denne kategori indeholder stadig links, (gen)fjern dem venligst");
 
 define("LCLAN_SL_1", "Tilføjede Links");
 define("LCLAN_SL_2", "Ingen tilføjede links");
@@ -232,7 +233,7 @@ define("LCLAN_ITEM_35", "håndter personlige links");
 define("LCLAN_ITEM_36", "go");
 define("LCLAN_ITEM_37", "vis alle links");
 define("LCLAN_ITEM_38", "Alle Links");
-define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_39", "Bedømmelse");
 
 define("LCLAN_ADMINMENU_1", "Link Egenskaber");
 define("LCLAN_ADMINMENU_2", "Håndter Link Kategorier");
@@ -307,8 +308,8 @@ define("LAN_LINKS_43", "vis alle kategorier");
 define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Link Kategori");
 define("LAN_LINKS_46", "Link Underkategorier");
-define("LAN_LINKS_47", "");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_47", "link navigator...");
+define("LAN_LINKS_48", "-- vis kategori --");
 define("LAN_LINKS_49", "");
 
 define("LAN_ADMIN_HELP_0", "linksside hjælp område");
