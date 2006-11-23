@@ -1,9 +1,9 @@
-ï»¿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ï¿½Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-11-18 02:29:09 $
+|     $Revision: 1.55 $
+|     $Date: 2006-11-23 01:31:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
