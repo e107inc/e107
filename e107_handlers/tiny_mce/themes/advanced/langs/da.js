@@ -1,4 +1,4 @@
-// UK lang variables
+// DA_DK lang variables by Jesper Olesen e107.dk
 
 tinyMCE.addToLang('',{
 theme_style_select : '-- Stil --',
@@ -38,6 +38,11 @@ theme_h3 : 'Overskrift 3',
 theme_h4 : 'Overskrift 4',
 theme_h5 : 'Overskrift 5',
 theme_h6 : 'Overskrift 6',
+theme_blockquote : 'Blokcitat',
+theme_code : 'Kode',
+theme_samp : 'Kode test',
+theme_dt : 'Defination term ',
+theme_dd : 'Defination beskrivelse',
 theme_colorpicker_title : 'V&#230;lg en farve',
 theme_colorpicker_apply : 'Anvend',
 theme_forecolor_desc : 'V&#230;lg tekst farve',
@@ -73,4 +78,5 @@ help : 'Hj&#230;lp',
 not_set : '-- Ikke defineret --',
 close : 'Luk',
 toolbar_focus : 'G&#229; til v&#230;rkt&#248;jsknapperne - Alt+Q, G&#229; til editor - Alt-Z, G&#229; til element sti - Alt-X'
+invalid_data : 'Fejl: Ugyldige v&#230;rdier intastet, disse er markeret med r&#248;dt.'
 });
