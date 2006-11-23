@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-11-22 23:47:35 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2006-11-23 17:26:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -15,24 +15,25 @@ define("ADMIN","");
 global $pref,$HANDLERS_DIRECTORY,$PLUGINS_DIRECTORY,$IMAGES_DIRECTORY;
 $lang = e_LANGUAGE;
 $tinylang = array(
-	"Arabic" => "ar",
-	"Danish" => "da",
-	"Dutch" => "nl",
-	"English" => "en",
-	"Farsi" => "fa",
-	"French" => "fr",
-	"Greek" => "el",
-	"Hebrew" => " ",
+	"Arabic" 	=> "ar",
+	"Danish" 	=> "da",
+	"Dutch" 		=> "nl",
+	"English" 	=> "en",
+	"Farsi" 		=> "fa",
+	"French" 	=> "fr",
+	"Greek" 		=> "el",
+	"Hebrew" 	=> " ",
 	"Hungarian" => "hu",
-	"Italian" => "it",
-	"Japanese" => "ja",
-	"Korean" => "ko",
+	"Italian" 	=> "it",
+	"Japanese" 	=> "ja",
+	"Korean" 	=> "ko",
 	"Norwegian" => "nb",
-	"Polish" => "pl",
-	"Russian" => "ru",
-	"Slovak" => "sk",
-	"Spanish" => "es",
-	"Swedish" => "sv"
+	"Polish" 	=> "pl",
+	"Russian" 	=> "ru",
+	"Slovak" 	=> "sk",
+	"Spanish" 	=> "es",
+	"Swedish" 	=> "sv",
+	"German"		=> "de" 
 );
 
 if(!$tinylang[$lang]){
