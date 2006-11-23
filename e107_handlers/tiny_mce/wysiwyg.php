@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-11-23 17:26:01 $
+|     $Revision: 1.32 $
+|     $Date: 2006-11-23 17:36:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,7 @@ $tinylang = array(
 	"English" 	=> "en",
 	"Farsi" 		=> "fa",
 	"French" 	=> "fr",
+	"German"		=> "de", 
 	"Greek" 		=> "el",
 	"Hebrew" 	=> " ",
 	"Hungarian" => "hu",
@@ -32,8 +33,7 @@ $tinylang = array(
 	"Russian" 	=> "ru",
 	"Slovak" 	=> "sk",
 	"Spanish" 	=> "es",
-	"Swedish" 	=> "sv",
-	"German"		=> "de" 
+	"Swedish" 	=> "sv"
 );
 
 if(!$tinylang[$lang]){
