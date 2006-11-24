@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_download.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_download.php rev. 1.13
+|     Zgodne z: /e107_languages/English/admin/lan_download.php rev. 1.17
 +-----------------------------------------------------------------------------+
 */
  
@@ -46,7 +46,7 @@ define("DOWLAN_31", "Kategorie");
 define("DOWLAN_32", "Opcje downloadu");
 define("DOWLAN_33", "Czy na pewno chcesz usunąć wskazany plik?");
 define("DOWLAN_34", "Czy na pewno chcesz usunąć wskazaną kategorię downloadu?");
-define("DOWLAN_35", "Usunięto plik o numerze ID");
+// define("DOWLAN_35", "Usunięto plik o numerze ID");
 define("DOWLAN_36", "."); // w oryginale "deleted", lecz ze względu na poprawność i gramatyke polską zastosowałem zmiane szyku. Dotyczy to pozyvji: DOWLAN_35 oraz DOWLAN_49
 define("DOWLAN_37", "Dział");
 define("DOWLAN_38", "Nie ma jeszcze żadnych kategorii");
@@ -71,7 +71,7 @@ define("DOWLAN_56", "Sortuj według ");
 
 
 define("DOWLAN_59", "Nazwa pliku");
-define("DOWLAN_60", "Autor");
+// define("DOWLAN_60", "Autor");
 
 define("DOWLAN_62", "Rosnąco");
 define("DOWLAN_63", "Malejąco");
@@ -136,5 +136,9 @@ define("DOWLAN_147", "Ikona dla pustej kategorii");
 define("DOWLAN_148", "Zaznacz, aby zaktualizować datę dodania do aktualnego czasu");  // Check to update datestamp to current time
 define("DOWLAN_149", "Albo kliknij tutaj, aby użyć pliku umieszczonego na zewnętrznym serwerze");
 define("DOWLAN_150", "Wiadomość email do administratora, gdy zgłoszono uszkodzony plik"); // Email admin when broken download reported
+define("DOWLAN_151", "Zgłaszanie uszkodzonych plików do pobrania dostępne dla");
+
+define("DOWLAN_152", "Nie mogę przenieść pliku");
+define("DOWLAN_153", "Przenieś plik do folderu downloads");
 
 ?>

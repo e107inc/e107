@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:27:16 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:40:37 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_newforumposts_menu.php,v $
 +-----------------------------------------------------------------------------+
@@ -25,6 +25,6 @@ define("NFP_7", "Przyrostek dla zbyt długich wypowiedzi?");
 define("NFP_8", "Pokazywać oryginalne tematy w menu?");
 define("NFP_9", "Aktualizuj ustawienia menu");
 define("NFP_10", "Konfiguracja menu Nowych Postów na Forum");
-define("NFP_11", "Napisał(a)");
+define("NFP_11", "Autor");
 
 ?>

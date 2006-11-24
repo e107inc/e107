@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_prefs.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_prefs.php rev. 1.50
+|     Zgodne z: /e107_languages/English/admin/lan_prefs.php rev. 1.59
 +-----------------------------------------------------------------------------+
 */
  
@@ -45,7 +45,7 @@ define("PRFLAN_29", "Aktywować system rejestracji użytkowników?");
 define("PRFLAN_30", "pozwala użytkownikom na rejestrację na Twojej stronie");
 // define("PRFLAN_31", "Używać weryfikacji emailem dla zarejestrowanych?");
 define("PRFLAN_32", "Zezwolić na anonimowe publikacje?");
-define("PRFLAN_33", "wyłączenie tego spowoduje, że tylko zarejestrowani użytkownicy będą mogli pisać komentarze etc");
+define("PRFLAN_33", "wyłączenie opcji spowoduje, że tylko zarejestrowani użytkownicy będą mogli pisać komentarze etc");
 define("PRFLAN_35", "Włączyć zabezpieczenie przeciwko atakom typu flood?");
 define("PRFLAN_36", "Restrykcje czasu dla ataku typu flood"); // Flood timeout
 define("PRFLAN_37", "Auto-blokowanie");
@@ -99,20 +99,20 @@ define("CUSTSIG_19", "nazwy użytkowników zawierające następujące wyrażenia
 
 define("PRFLAN_91", "Jeśli ktoś będzie atakował Twoją stronę poprzez wielokrotne zapytania/odwołania do twojego serwera, jego IP zostanie automatycznie zablokowane! Nie zmieniaj prawidłowej konfiguracji serwera!!!");
 define("PRFLAN_92", "Zabezpieczenie procesu weryfikacji rejestracji -- ukryć hasło w mailu?");
-define("PRFLAN_93", "funkcji <i>strftime</i> na stronie php.net");
+define("PRFLAN_93", "funkcję <i>strftime</i> na stronie php.net</a> - <a href='http://pl.php.net/manual/pl/function.strftime.php'>pl.php.net");
 define("PRFLAN_94", "tutaj");
 define("PRFLAN_95", "Wyświetl informację o pluginach:");
 define("PRFLAN_96", "Będą wyświetlane informacje na wszystkich stronach administracyjnych dla każdego pluginu wspierającego ten rodzaj funkcji");
 define("PRFLAN_97", "Unikalne menu 'Informacje o pluginach':");
 define("PRFLAN_98", "Jeśli odznaczysz, każdy plugin będzie wyświetlał swoje informacje w indywidualnym menu. Jeśli zaznaczysz wszystkie informacje będą wyświetlane w tym samym menu.");
-define("PRFLAN_101", "Opcje wyświetlania teksu");
-define("PRFLAN_102", "Zastąpić linki");
-define("PRFLAN_103", "Jeśli zaznaczysz, wpisane linki zostaną zastąpione przez tekst zdefiniowany w poniższych polach tekstowych, unikniesz dzięki temu naruszeń struktur składowych strony");
-define("PRFLAN_104", "Zastąp linki tekstem");
-define("PRFLAN_105", "tekst do zastąpienia linków, możesz użyć obrazu wykorzystując znaczniki &lt;img&gt; wraz z pełną ścieżką dostępu do grafiki");
+define("PRFLAN_101", "Opcje wyświetlania tekstu");
+define("PRFLAN_102", "Zastępowanie adresów URL tekstem");
+define("PRFLAN_103", "Jeśli ta opcja oraz powyższa będzie aktywna, wówczas wstawione adresy URL zostaną wyświetlone jako hyperlinki z wykorzystaniem tekstu z poniższych pól tekstowych. Włączenie tego zapobiega naruszeniu struktury strony przez zbyt długie adresy URL.");
+define("PRFLAN_104", "Zastąp adresy URL tekstem");
+define("PRFLAN_105", "Tekst do zastąpienia w tekscie adresów URL. Możesz użyć dowolnej grafiki wykorzystując znaczniki &lt;img&gt; wraz z pełną ścieżką dostępu do obrazka");
 define("PRFLAN_106", "Ustawienia jądra zostały zapisane w bazie danych.");
 define("PRFLAN_107", "Zastąp linki email tekstem");
-define("PRFLAN_108", "tekst do zastąpienia linków email, możesz użyć obrazu wykorzystując znaczniki &lt;img&gt; wraz z pełną ścieżką dostępu do grafiki");
+define("PRFLAN_108", "Tekst do zastąpienia adresów email, Możesz użyć dowolnej grafiki wykorzystując znaczniki &lt;img&gt; wraz z pełną ścieżką dostępu do obrazka");
 define("PRFLAN_109", "Zawijaj długie słowa w tekście");
 define("PRFLAN_110", "słowa dłuższe niż zdefiniowanej długości będą zawijane do nowej linii");
 define("PRFLAN_111", "Zawijaj długie słowa w menu");
@@ -129,8 +129,8 @@ define("PRFLAN_123", "Funkcja edytora tekstu zgodna z zasadą to-co-widzisz-będ
 define("PRFLAN_124", "Używaj 'klasycznego' wyglądu dla funkcji następny/poprzedni");
 define("PRFLAN_125", "Włączenie tego przedstawi strony następne/poprzednie w postaci 1 2 3 ... 21 22 23, zamiast nowego wyglądu z rozwijalną listą.");
 define("PRFLAN_126", "Treść do wyświetlenia na stronie rejestracyjnej");
-define("PRFLAN_127", "Twórz klikalne linki we wpisach");
-define("PRFLAN_128", "Włączenie tego spowoduje zmianę linków na hyperlinki");
+define("PRFLAN_127", "Zamieniaj adresy URL na klikalne linki");
+define("PRFLAN_128", "Włączenie tego spowoduje zamianę wstawionych adresów URL na hyperlinki");
 define("PRFLAN_129", "Nie zezwalaj na wielokrotne logowanie");
 define("PRFLAN_130", "Aktywowanie tej opcji uniemożliwi więcej niż jednej osobie na logowanie z użyciem tej samej nazwy użytkownika/hasła (specyfikacja systemu logowania)");
 define("PRFLAN_131", "Aktywuj używanie bbcode [php]");
@@ -169,9 +169,16 @@ define("PRFLAN_160", "Sprawdzaj serwery zdalne, kiedy walidujesz adresy email.")
 define("PRFLAN_161", "Wyłącz wszystkie komentarze na tej stronie");
 
 define("PRFLAN_162", "Strona - Dane kontaktowe");
-define("PRFLAN_163", "np. Nazwa Firmy, Adres, Telefon itp.");
+define("PRFLAN_163", "np. nazwa firmy, adres, telefon itp.");
 
 define("PRFLAN_164", "Zezwól użytkownikom na wysyłanie kopii emaila kontaktowego na własny adres pocztowy");
 define("PRFLAN_165", "Może stać się przyczyną spamowania, używaj z rozwagą");
+define("PRFLAN_166", "Wyświetlaj obrazki emotikon w formularzu wystawianego komentarza");
+
+define("PRFLAN_167", "Wprowadź opcjonalne adresy email"); // subject to change.
+define("PRFLAN_168", "Strona kontaktowa"); //Site Contact Person(s)
+define("PRFLAN_169", "Jeśli wybrana grupa zawiera więcej niż jedną osobę, użytkownik zostanie poproszony o wybranie odpowiedniej osoby z grupy.");
+define("PRFLAN_170", "Używaj rDNS, aby umożliwić blokowanie hostów");
+define("PRFLAN_171", "Zmiana tej opcji umożliwi Ci blokowanie użytkowników ze względu na nazwę hosta, prędzej niż tylko adres IP lub adres email. <br />UWAGA: Może wpłynąć na czas ładowania strony na niektórych hostach.");
 
 ?>

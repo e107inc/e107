@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_language.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_language.php rev. 1.9
+|     Zgodne z: /e107_languages/English/admin/lan_language.php rev. 1.14
 +-----------------------------------------------------------------------------+
 */
  
@@ -31,5 +31,11 @@ define("LANG_LAN_13", "Preferencje języka");
 define("LANG_LAN_14", "Domyślny język strony");
 define("LANG_LAN_15", "Zaznacz, aby skopiować dane z domyślnego języka (przydatne dla linków, kategorii aktualności itp).");
 define("LANG_LAN_16", "Używanie wielojęzycznej bazy danych"); 
+define("LANG_LAN_17", "Domyślny język - Nie wymaga dodatkowych tabel.");
+define("LANG_LAN_18", "Używaj zaparkowanych subdomen dla ustawionego języka:");
+define("LANG_LAN_19", "np. fr.mojadomena.com, aby ustawić język na francuski.");
+define("LANG_LAN_20", "Wprowadź nazwę głównej domeny w celu skorzystania z tej opcji. np. mojadomena.com");
+
+define("LANG_LAN_21", "Narzędzia językowe");
 
 ?>

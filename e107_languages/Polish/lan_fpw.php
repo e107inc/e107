@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:06:43 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:37:42 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_fpw.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_fpw.php rev. 1.4
+|     Zgodne z: /e107_languages/English/lan_fpw.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -19,12 +19,12 @@ define("PAGE_NAME", "Zmiana hasła");
 
 define("LAN_02", "Przepraszam, wysłanie emaila jest niemożliwe - proszę skontaktować się z głównym administratorem strony.");
 define("LAN_03", "Zmiana hasła");
-define("LAN_05", "Aby zresetować hasło proszę postępować zgodnie ze wskazówkami");
+define("LAN_05", "Aby zresetować hasło, proszę postępować zgodnie ze wskazówkami");
 define("LAN_06", "Próba zresetowania hasła");
 define("LAN_07", "Ktoś o adresie IP ");
 define("LAN_08", "usiłował zresetować główne hasło administratora.");
 define("LAN_09", "Resetowanie hasła z ");
-define("LAN_112", "Adres email użyty przy rejestracji ");
+define("LAN_112", "Adres email użyty przy rejestracji");
 define("LAN_156", "Wyślij");
 define("LAN_213", "Podany login/adres email nie został odnaleziony w bazie danych.");
 define("LAN_214", "Nie mogę zresetować hasła");
@@ -35,7 +35,7 @@ define("LAN_219", "Hasło skojarzone z tym adresem emailowym było już resetowa
 define("LAN_FPW1","Login");
 define("LAN_FPW2","Wpisz kod");
 define("LAN_FPW3","Wpisany kod jest niepoprawny");
-define("LAN_FPW4","Prośba w celu zresetowania hasła została już wysłana, jeśli nie otrzymałeś emaila, proszę skontaktować się z administratorem strony w celu uzyskania pomocy.");
+define("LAN_FPW4","Prośba w celu zresetowania hasła została już wysłana. Jeśli nie otrzymałeś emaila, proszę skontaktować się z administratorem strony w celu uzyskania pomocy.");
 define("LAN_FPW5","Prośba o zresetowanie hasła dla");
 define("LAN_FPW6","Email został wysłany wraz z linkiem, który pozwoli Ci zresetować twoje hasło.");
 define("LAN_FPW7","Link do zresetowania hasła jest nieaktualny.<br />Proszę skontaktować się z administratorem strony w celu uzyskania dokładniejszych informacji.");

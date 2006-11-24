@@ -1,41 +1,92 @@
-// UK lang variables
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:37:21 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/plugins/table/langs/pl.js,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_handlers/tiny_mce/plugins/table/langs/en.php rev. 1.8
++-----------------------------------------------------------------------------+
+*/
 
-tinyMCELang['lang_table_desc'] = 'Inserts a new table';
-tinyMCELang['lang_table_insert_row_before_desc'] = 'Insert row before';
-tinyMCELang['lang_table_insert_row_after_desc'] = 'Insert row after';
-tinyMCELang['lang_table_delete_row_desc'] = 'Delete row';
-tinyMCELang['lang_table_insert_col_before_desc'] = 'Insert column before';
-tinyMCELang['lang_table_insert_col_after_desc'] = 'Insert column after';
-tinyMCELang['lang_table_delete_col_desc'] = 'Remove col';
-tinyMCELang['lang_insert_table_title'] = 'Insert/Modify table';
-tinyMCELang['lang_insert_table_width'] = 'Width';
-tinyMCELang['lang_insert_table_height'] = 'Height';
-tinyMCELang['lang_insert_table_cols'] = 'Columns';
-tinyMCELang['lang_insert_table_rows'] = 'Rows';
-tinyMCELang['lang_insert_table_cellspacing'] = 'Cellspacing';
-tinyMCELang['lang_insert_table_cellpadding'] = 'Cellpadding';
-tinyMCELang['lang_insert_table_border'] = 'Border';
-tinyMCELang['lang_insert_table_align'] = 'Alignment';
-tinyMCELang['lang_insert_table_align_default'] = 'Default';
-tinyMCELang['lang_insert_table_align_left'] = 'Left';
-tinyMCELang['lang_insert_table_align_right'] = 'Right';
-tinyMCELang['lang_insert_table_align_middle'] = 'Center';
-tinyMCELang['lang_insert_table_class'] = 'Class';
-tinyMCELang['lang_table_row_title'] = 'Table row properties';
-tinyMCELang['lang_table_cell_title'] = 'Table cell properties';
-tinyMCELang['lang_table_row_desc'] = 'Table row properties';
-tinyMCELang['lang_table_cell_desc'] = 'Table cell properties';
-tinyMCELang['lang_insert_table_valign'] = 'Vertical alignment';
-tinyMCELang['lang_insert_table_align_top'] = 'Top';
-tinyMCELang['lang_insert_table_align_bottom'] = 'Bottom';
-tinyMCELang['lang_table_props_desc'] = 'Table properties';
-tinyMCELang['lang_table_bordercolor'] = 'Border color';
-tinyMCELang['lang_table_bgcolor'] = 'Bg color';
-tinyMCELang['lang_table_merge_cells_title'] = 'Merge table cells';
-tinyMCELang['lang_table_split_cells_desc'] = 'Split table cells';
-tinyMCELang['lang_table_merge_cells_desc'] = 'Merge table cells';
-tinyMCELang['lang_table_cut_row_desc'] = 'Cut table row';
-tinyMCELang['lang_table_copy_row_desc'] = 'Copy table row';
-tinyMCELang['lang_table_paste_row_before_desc'] = 'Paste table row before';
-tinyMCELang['lang_table_paste_row_after_desc'] = 'Paste table row after';
-tinyMCELang['lang_table_insert_desc'] = 'Insert a new table';
+tinyMCE.addToLang('table',{
+general_tab : 'Główne ustawienia',
+advanced_tab : 'Zaawansowane',
+general_props : 'Główne ustawienia',
+advanced_props : 'Zaawansowane ustawienia',
+desc : 'Wstawia nową tabelę',
+row_before_desc : 'Wstaw wiersz przed',
+row_after_desc : 'Wstaw wiersz za',
+delete_row_desc : 'Usuń wiersz',
+col_before_desc : 'Wstaw kolumnę przed',
+col_after_desc : 'Wstaw kolumnę za',
+delete_col_desc : 'Usuń kolumnę',
+rowtype : 'Wiersz w części tabeli',
+title : 'Wstaw/Zmień tabelę',
+width : 'Szerokość',
+height : 'Wysokość',
+cols : 'Kolumn',
+rows : 'Wierszy',
+cellspacing : 'Odstępy między komórkami',
+cellpadding : 'Margines wewnątrz komórek',
+border : 'Ramka',
+align : 'Wyrównanie',
+align_default : 'Domyślne',
+align_left : 'Lewo',
+align_right : 'Prawo',
+align_middle : 'Środek',
+row_title : 'Właściwości wiersza',
+cell_title : 'Właściwości komórki',
+cell_type : 'Typ komórki',
+row_desc : 'Właściwości wiersza',
+cell_desc : 'Właściwości komórki',
+valign : 'Wyrównanie pionowe',
+align_top : 'Do góry',
+align_bottom : 'Do dołu',
+props_desc : 'Właściwości tabeli',
+bordercolor : 'Kolor ramki',
+bgcolor : 'Kolor tła',
+merge_cells_title : 'Połącz komórki',
+split_cells_desc : 'Rozdziel komórki',
+merge_cells_desc : 'Połącz komórki',
+cut_row_desc : 'Wytnij wiersz',
+copy_row_desc : 'Kopiuj wiersz',
+paste_row_before_desc : 'Wklej wiersz przed',
+paste_row_after_desc : 'Wklej wiersz za',
+id : 'Id',
+style: 'Styl',
+langdir : 'Kierunek tekstu',
+langcode : 'Kod języka',
+mime : 'Docelowy typ MIME',
+ltr : 'Lewy do prawego',
+rtl : 'Prawy do lewego',
+bgimage : 'Obrazek tła',
+summary : 'Podsumowanie',
+td : "Dane",
+th : "Nagłówek",
+cell_cell : 'Aktualizuj bieżącą komórkę',
+cell_row : 'Aktualizuj wszystkie komórki w wierszu',
+cell_all : 'Aktualizuj wszystkie komórki w tabeli',
+row_row : 'Aktualizuj bieżącą komórkę',
+row_odd : 'Aktualizuj nieparzyste komórki w tabeli',
+row_even : 'Aktualizuj parzyste komórki w tabeli',
+row_all : 'Aktualizuj wszystkie komórki w tabeli',
+thead : 'Nagłówek tabeli',
+tbody : 'Ciało tabeli',
+tfoot : 'Stopka tabeli',
+del : 'Usuń tabelę',
+scope : 'Zasięg',
+row : 'Wiersz',
+col : 'Kolumna',
+rowgroup : 'Grupa wiersza',
+colgroup : 'Grupa kolumny',
+col_limit : 'Przekroczyłeś maksymalną ilość kolumn {$cols}.',
+row_limit : 'Przekroczyłeś maksymalną ilość  wierszy {$rows}.',
+cell_limit : 'Przekroczyłeś maksymalną ilość komórek {$cells}.',
+missing_scope: 'Czy jesteś pewien, że chcesz kontynuować bez sprecyzowania zasięgu dla nagłówka tej tabeli? Bez tego, niektórzy użytkownicy mogą mieć problem ze zrozumieniem zawartości tej tabeli, jeżeli mają włączone jakieś ograniczenia w przeglądarkach.',
+});

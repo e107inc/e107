@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:27:16 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:40:37 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_viewtopic.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_viewtopic.php rev. 1.11
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_viewtopic.php rev. 1.12
 +-----------------------------------------------------------------------------+
 */
  
@@ -53,7 +53,7 @@ define("LAN_404", "Brak wcześniejszych tematu");
 define("LAN_405", "Brak kolejnych tematu");
 
 define("LAN_406", "Moderator: Redaguj");
-define("LAN_407", "Moderator: Usuń");
+define("LAN_435", "Moderator: Usuń");
 define("LAN_408", "Moderator: Przesuń");
 define("LAN_409", "Czy na pewno chcesz usunąć ten temat oraz tyczące się niego odpowiedzi?");
 define("LAN_410", "Czy na pewno chcesz usunąć tego posta?");

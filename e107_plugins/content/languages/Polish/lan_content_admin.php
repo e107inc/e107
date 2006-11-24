@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.1 $
-|     $Date: 2006-05-21 16:25:17 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:39:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Polish/lan_content_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/content/languages/English/lan_content_admin.php rev. 1.7
+|     Zgodne z: /e107_plugins/content/languages/English/lan_content_admin.php rev. 1.19
 +-----------------------------------------------------------------------------+
 */
  
@@ -21,6 +21,8 @@ define("CONTENT_PLUGIN_LAN_3", "Konfiguracja plugina Zarządzanie publikacjami")
 define("CONTENT_PLUGIN_LAN_4", "Plugin jest gotowy do użycia.");
 define("CONTENT_PLUGIN_LAN_5", "Publikacje");
 define("CONTENT_PLUGIN_LAN_6", "Struktura tabel plugina do zarządzania publikacjami została zaktualizowana.");
+
+define("CONTENT_LATEST_LAN_1", "Nadesłane publikacje:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "Tworzenie kategorii publikacji");
 define("CONTENT_ADMIN_CAT_LAN_1", "Edycja kategorii publikacji");
@@ -40,7 +42,7 @@ define("CONTENT_ADMIN_CAT_LAN_14", "Komentarze");
 define("CONTENT_ADMIN_CAT_LAN_15", "Ocena");
 define("CONTENT_ADMIN_CAT_LAN_16", "Ikony: drukuj, email...");
 define("CONTENT_ADMIN_CAT_LAN_17", "Widoczne dla grupy:");
-define("CONTENT_ADMIN_CAT_LAN_18", "Autor");
+define("CONTENT_ADMIN_CAT_LAN_18", "Autor:");
 define("CONTENT_ADMIN_CAT_LAN_19", "Kategoria publikacji");
 define("CONTENT_ADMIN_CAT_LAN_20", "Opcje");
 define("CONTENT_ADMIN_CAT_LAN_21", "Wyczyść formularz");
@@ -50,12 +52,12 @@ define("CONTENT_ADMIN_CAT_LAN_24", "ID");
 define("CONTENT_ADMIN_CAT_LAN_25", "Ikona");
 define("CONTENT_ADMIN_CAT_LAN_26", "Nowa kategoria główna");
 define("CONTENT_ADMIN_CAT_LAN_27", "Kategoria");
-define("CONTENT_ADMIN_CAT_LAN_28", "Przydziel użytkowników z lewego okna do Osobistego menadżera publikacji dla tej kategorii");
+define("CONTENT_ADMIN_CAT_LAN_28", "Przydziel użytkowników z lewego okna do Osobistego menedżera publikacji dla tej kategorii");
 define("CONTENT_ADMIN_CAT_LAN_29", "Administratorzy - kliknij, aby przenieść... ");
-define("CONTENT_ADMIN_CAT_LAN_30", "Osobisty menadżer publikacji");
+define("CONTENT_ADMIN_CAT_LAN_30", "Osobisty menedżer publikacji");
 define("CONTENT_ADMIN_CAT_LAN_31", "Usuń");
 define("CONTENT_ADMIN_CAT_LAN_32", "Wyczyść");
-define("CONTENT_ADMIN_CAT_LAN_33", "Przydziel menadżerów publikacji");
+define("CONTENT_ADMIN_CAT_LAN_33", "Przydziel menedżerów publikacji");
 define("CONTENT_ADMIN_CAT_LAN_34", "Administratorzy zostali pomyślnie przydzieleni do wskazanej kategorii");
 define("CONTENT_ADMIN_CAT_LAN_35", "Publikacje podkategorii zostały usunięte");
 define("CONTENT_ADMIN_CAT_LAN_36", "Sprawdzanie kategorii: Zostały wykryte podkategorie, kategoria NIE została usunięta. Najpierw usuń wszystkie podkategorie, a następnie spróbuj ponownie.");
@@ -64,7 +66,7 @@ define("CONTENT_ADMIN_CAT_LAN_38", "Sprawdzanie publikacji: nie odnaleziono żad
 define("CONTENT_ADMIN_CAT_LAN_39", "Sprawdzanie kategorii: nie odnaleziono żadnej podkategorii.");
 define("CONTENT_ADMIN_CAT_LAN_40", "Poniżej zobaczysz wykaz głównych kategorii oraz wszystkich dostępnych podkategorii.<br />");
 
-define("CONTENT_ADMIN_CAT_LAN_41", "Osobisty menedżer kategorii publikacji umożliwia przyporządkowanie określonych administratorów do danej kategorii. Z tym przywilejem wskazani administratorzy mogą zarządzać swoimi własnymi i tylko swoimi własnymi publikacjami z określonej kategorii, bez potrzeby posiadania kontroli nad całym pluginem <i>Zarządzanie publikacjami</i>. Z poziomu normalnej strony publikacji poza panelem admina zobaczą ikonę osobistego menadżera, która przekieruje ich do strony <i>Osobisty menadżer</i>.");
+define("CONTENT_ADMIN_CAT_LAN_41", "Osobisty menedżer kategorii publikacji umożliwia przyporządkowanie określonych administratorów do danej kategorii. Z tym przywilejem wskazani administratorzy mogą zarządzać swoimi własnymi i tylko swoimi własnymi publikacjami z określonej kategorii, bez potrzeby posiadania kontroli nad całym pluginem <i>Zarządzanie publikacjami</i>. Z poziomu normalnej strony publikacji poza panelem admina zobaczą ikonę osobistego menedżera, która przekieruje ich do strony <i>Osobisty menedżer</i>.");
 define("CONTENT_ADMIN_CAT_LAN_42", "Aby przeredagować tą samą kategorię, ");
 
 define("CONTENT_ADMIN_CAT_LAN_43", "kliknij tutaj.");
@@ -94,6 +96,12 @@ define("CONTENT_ADMIN_CAT_LAN_61", "Ładowanie nowej ikony");
 define("CONTENT_ADMIN_CAT_LAN_62", "Po załadowaniu nowej ikony dla danej kategorii, możesz przydzielić tą ikonę przy pomocy poniższej sekcji <i>Ikona</i><br />Jeśli załadujesz nową ikonę, zostanie ona przeskalowana do rozmiaru 48 pikseli, równocześnie dodatkowo zostanie utworzona ikona o rozmiarze 16 pikseli.<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "Załaduj ikonę");
 
+define("CONTENT_ADMIN_MANAGER_LAN_0", "Zatwierdzanie publikacji");
+define("CONTENT_ADMIN_MANAGER_LAN_1", "Użytkownicy z tej grupy, będą w stanie zatwierdzać nadesłane publikacje");
+define("CONTENT_ADMIN_MANAGER_LAN_2", "Menedżer osobisty");
+define("CONTENT_ADMIN_MANAGER_LAN_3", "Użytkownicy z tej grupy będą w stanie zarządzać tylko swoimi własnymi publikacjami");
+define("CONTENT_ADMIN_MANAGER_LAN_4", "Menedżer katagorii");
+define("CONTENT_ADMIN_MANAGER_LAN_5", "Użytkownicy z tej grupy będą w stanie zarządzać wszystkimi publikacjami we wskazanej kategorii");
 
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Wymagane pola pozostały puste");
@@ -106,7 +114,7 @@ define("CONTENT_ADMIN_ITEM_LAN_6", "Indeks alfabetyczny");
 define("CONTENT_ADMIN_ITEM_LAN_7", "Proszę wybrać jedną z wyżej wymienionych liter");
 define("CONTENT_ADMIN_ITEM_LAN_8", "ID");
 define("CONTENT_ADMIN_ITEM_LAN_9", "Ikona");
-define("CONTENT_ADMIN_ITEM_LAN_10", "Autor");
+define("CONTENT_ADMIN_ITEM_LAN_10", "Autor:");
 define("CONTENT_ADMIN_ITEM_LAN_11", "Temat");
 define("CONTENT_ADMIN_ITEM_LAN_12", "Opcje");
 define("CONTENT_ADMIN_ITEM_LAN_13", "Wybierz główną kategorię");
@@ -151,7 +159,7 @@ define("CONTENT_ADMIN_ITEM_LAN_51", "Informacje o autorze");
 define("CONTENT_ADMIN_ITEM_LAN_52", "Wyślij publikację");
 define("CONTENT_ADMIN_ITEM_LAN_53", "Słowa kluczowe<br />dla znacznika <i>meta</i>");
 define("CONTENT_ADMIN_ITEM_LAN_54", "Dodatkowe dane");
-define("CONTENT_ADMIN_ITEM_LAN_55", "Powróć do <a href='".e_SELF."'>głównej strony menadżera publikacji</a>, aby zarządzać dalej swoimi publikacjami<br />lub<br />Przejdź do <a href='".e_PLUGIN."content/content.php'>głównej strony publikacji</a>, aby przejrzeć publikacje.");
+define("CONTENT_ADMIN_ITEM_LAN_55", "Powróć do <a href='".e_SELF."'>głównej strony menedżera publikacji</a>, aby zarządzać dalej swoimi publikacjami<br />lub<br />Przejdź do <a href='".e_PLUGIN."content/content.php'>głównej strony publikacji</a>, aby przejrzeć publikacje.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "Osobisty menedżer publikacji");
 define("CONTENT_ADMIN_ITEM_LAN_57", "Kategoria");
 define("CONTENT_ADMIN_ITEM_LAN_58", "Pozycje");
@@ -230,7 +238,7 @@ define("CONTENT_ADMIN_ITEM_LAN_121", "Nie załadowano jeszcze żadnej nowej ikon
 define("CONTENT_ADMIN_ITEM_LAN_122", "Nie załadowano jeszcze żadnego nowego załącznika");
 define("CONTENT_ADMIN_ITEM_LAN_123", "Nie załadowano jeszcze żadnego nowego obrazka");
 
-define("CONTENT_ADMIN_ITEM_LAN_124", "Aby przeglądnąć opublikowaną pozycję, ");
+define("CONTENT_ADMIN_ITEM_LAN_124", "Aby obejrzeć opublikowaną pozycję, ");
 
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Kolejność została zwiększona");
@@ -306,13 +314,13 @@ define("CONTENT_ADMIN_MENU_LAN_13", "Strona publikacji");
 define("CONTENT_ADMIN_MENU_LAN_14", "Menu");
 define("CONTENT_ADMIN_MENU_LAN_15", "Kolejność");
 define("CONTENT_ADMIN_MENU_LAN_16", "Strona archiwum");
-define("CONTENT_ADMIN_MENU_LAN_17", "Osobisty menadżer publikacji");
+define("CONTENT_ADMIN_MENU_LAN_17", "Osobisty menedżer publikacji");
 define("CONTENT_ADMIN_MENU_LAN_18", "Strona autorów");
-define("CONTENT_ADMIN_MENU_LAN_19", "Menadżer publikacji");
+define("CONTENT_ADMIN_MENU_LAN_19", "Menedżer publikacji");
 define("CONTENT_ADMIN_MENU_LAN_20", "Najlepiej oceniane strony");
 define("CONTENT_ADMIN_MENU_LAN_21", "Strony");
 define("CONTENT_ADMIN_MENU_LAN_22", "Najlepiej punktowane strony");
-
+define("CONTENT_ADMIN_MENU_LAN_23", "Admin: Tworzenie kategorii");
 
 
 define("CONTENT_ADMIN_JS_LAN_0", "Czy na pewno chcesz usunąć wskazaną kategorię?");
@@ -332,9 +340,9 @@ define("CONTENT_ADMIN_JS_LAN_10", "Czy na pewno chcesz usunąć nadesłaną publ
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "W tym momencie nie ma żadnych udostępnionych kategorii publikacji dla użytkowników.");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "Rodzaj publikacji");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Dziękuję, Twoja publikacja została wysłana.");
-define("CONTENT_ADMIN_SUBMIT_LAN_3", "Dziękuję, Twoja publikacja została wysłana i w najbliższym czasie zostanie ponownie przeglądnięta przez administratora w celu dalszej publikacji.");
+define("CONTENT_ADMIN_SUBMIT_LAN_3", "Dziękuję, Twoja publikacja została wysłana i w najbliższym czasie zostanie zweryfikowana przez administratora w celu dalszej publikacji.");
 define("CONTENT_ADMIN_SUBMIT_LAN_4", "Wymagane pola pozostały puste");
-define("CONTENT_ADMIN_SUBMIT_LAN_5", "Powróć do strony wyboru <a href='".e_SELF."'>rodzaju publikacji</a>, aby wysłać kolejne publikacje<br />lub<br />Przejdź do <a href='".e_PLUGIN."content/content.php'>strony głównej publikacji</a>, aby przeglądnąć publikacje.");
+define("CONTENT_ADMIN_SUBMIT_LAN_5", "Powróć do strony wyboru <a href='".e_SELF."'>rodzaju publikacji</a>, aby wysłać kolejne publikacje<br />lub<br />Przejdź do <a href='".e_PLUGIN."content/content.php'>strony głównej</a>, aby przeglądnąć publikacje.");
 define("CONTENT_ADMIN_SUBMIT_LAN_6", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_7", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_8", "Nadesłana publikacja została usunięta");
@@ -416,9 +424,14 @@ define("CONTENT_ADMIN_CONVERSION_LAN_59", "Konwersja tabeli");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "Utwórz domyślne");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "Utwórz nową kategorię");
 define("CONTENT_ADMIN_CONVERSION_LAN_62", "Wersja plugina Zarządzanie Publikacjami została zaktualizowana do wersji:");
-define("CONTENT_ADMIN_CONVERSION_LAN_63", "Dokonaj upgrade-u");
-define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "Dokonaj upgrade'u");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "Struktura tabel pluginu Zarządzanie publikacjami została zaktualizowana");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "Plugin Zarządzanie publikacjami : content_author - zaktualizowano");
+define("CONTENT_ADMIN_CONVERSION_LAN_66", "Plugin Zarządzanie publikacjami : content_preferences oraz menus - zaktualizowano");
+define("CONTENT_ADMIN_CONVERSION_LAN_67", "Plugin Zarządzanie publikacjami : content_preferences - zaktualizowano");
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "Plugin Zarządzanie publikacjami : content_theme - zaktualizowano");
+define("CONTENT_ADMIN_CONVERSION_LAN_69", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_70", "");
 
 
 
@@ -428,7 +441,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_3", "Admin: Tworzenie publikacji");
 define("CONTENT_ADMIN_OPT_LAN_MENU_4", "Nadsyłanie publikacji");
 define("CONTENT_ADMIN_OPT_LAN_MENU_5", "Lokalizacja ścieżek dostępu i ustawienia wyglądu");
 define("CONTENT_ADMIN_OPT_LAN_MENU_6", "Ogólne");
-define("CONTENT_ADMIN_OPT_LAN_MENU_7", "Menadżer publikacji");
+define("CONTENT_ADMIN_OPT_LAN_MENU_7", "Menedżer publikacji");
 define("CONTENT_ADMIN_OPT_LAN_MENU_8", "Właściwości menu");
 define("CONTENT_ADMIN_OPT_LAN_MENU_9", "Podgląd publikacji");
 define("CONTENT_ADMIN_OPT_LAN_MENU_10", "Strony kategorii");
@@ -442,7 +455,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_17", "Strona przeglądanej kategorii (dział,
 define("CONTENT_ADMIN_OPT_LAN_MENU_18", "Kategorie");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "Lista ostatnio dodanych");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "Linki do stron");
-
+define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin: Tworzenie kategorii");
 
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "Sekcje");
@@ -477,7 +490,14 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_28", "z kategorią");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_29", "z listą podkategorii");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_30", "Włączone");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "Wyłączone");
-
+define("CONTENT_ADMIN_OPT_LAN_SECTION_32", "Podtytuł");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_33", "Data rozpoczęcia");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_34", "Data zakończenia");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_35", "Ładowanie ikon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_36", "Przydzielanie ikon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_37", "Admin: Tworzenie kategorii");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_38", "Streszczenie");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_39", "");
 
 
 define("CONTENT_PRESET_LAN_0", "Błąd : Nazwa pola nie została wypełniona.");
@@ -577,8 +597,8 @@ define("CONTENT_ADMIN_OPT_LAN_58", "Maksymalna szerokość ikony");
 define("CONTENT_ADMIN_OPT_LAN_59", "Zdefiniuj maksymalną szerokość dla ładowanych ikon");
 define("CONTENT_ADMIN_OPT_LAN_60", "Jeśli ładowana ikona będzie większa niż podanej wartości, to zostanie zmniejszona zgodnie z tą wartością. Ikony będą również wyświetlane zgodnie z podaną poniżej wartością");
 define("CONTENT_ADMIN_OPT_LAN_61", "pikseli");
-define("CONTENT_ADMIN_OPT_LAN_62", "Wybierz grupę użytkowników do zarządzania menadżerem");
-define("CONTENT_ADMIN_OPT_LAN_63", "Lista użytkowników w strefie administracyjnej menedżera publikacji będzie zawierać tylko użytkowników z wybranej grupy. Wciąż jednak będziesz musiał wyznaczyć użytkowników do poszczególnych kategorii! Grupa, którą wybierzesz, stanowi tylko zawężenie listy użytkowników przeznaczonych do wyboru.");
+define("CONTENT_ADMIN_OPT_LAN_62", "Wybierz grupę użytkowników do zarządzania menedżerem");
+define("CONTENT_ADMIN_OPT_LAN_63", "Możesz zdefiniować dla kilku obszarów, która grupa użytkowników będzie w stanie przeglądać określone strony. Używając tej opcji możesz ograniczyć dostęp do pewnych obszarów oraz stron dla określonych grup użytkowników.");
 define("CONTENT_ADMIN_OPT_LAN_64", "Wyświetlaj adres email niezarejestrowanych autorów");
 define("CONTENT_ADMIN_OPT_LAN_65", "Wyświetlaj literowy indeks");
 define("CONTENT_ADMIN_OPT_LAN_66", "Literowy indeks jest zbiorem przycisków utworzonym z pierwszych liter poszczególnych publikacji. Możesz zawęzić listę archiwum poprzez kliknięcie na określoną literę, w ten sposób spowodujesz, że tylko publikacje rozpoczynające się od wskazanej litery zostaną wyświetlone na ekranie.");
@@ -651,9 +671,43 @@ define("CONTENT_ADMIN_OPT_LAN_132", "Ikona dla ostatnio dodanych publikacji");
 define("CONTENT_ADMIN_OPT_LAN_133", "Ikona : szerokość");
 define("CONTENT_ADMIN_OPT_LAN_134", "Jeśli wybrałeś 'Ikona publikacji', zdefiniuj szerokość dla wykorzystywanych ikon.");
 define("CONTENT_ADMIN_OPT_LAN_135", "Nagłówek ostatnio dodanych publikacji");
-define("CONTENT_ADMIN_OPT_LAN_136", "");
-define("CONTENT_ADMIN_OPT_LAN_137", "");
-define("CONTENT_ADMIN_OPT_LAN_138", "");
-define("CONTENT_ADMIN_OPT_LAN_139", "");
-
+define("CONTENT_ADMIN_OPT_LAN_136", "Back End");
+define("CONTENT_ADMIN_OPT_LAN_137", "Front End");
+define("CONTENT_ADMIN_OPT_LAN_138", "Zarządzanie publikacjami");
+define("CONTENT_ADMIN_OPT_LAN_139", "Tworzenie publikacji");
+define("CONTENT_ADMIN_OPT_LAN_140", "Zarządzanie kategoriami");
+define("CONTENT_ADMIN_OPT_LAN_141", "Tworzenie kategorii");
+define("CONTENT_ADMIN_OPT_LAN_142", "Kolejność");
+define("CONTENT_ADMIN_OPT_LAN_143", "Opcje");
+define("CONTENT_ADMIN_OPT_LAN_144", "Osobisty menedżer publikacji");
+define("CONTENT_ADMIN_OPT_LAN_145", "Ostatnio dodane");
+define("CONTENT_ADMIN_OPT_LAN_146", "Wszystkie kategorie");
+define("CONTENT_ADMIN_OPT_LAN_147", "Pojedyncza kategoria");
+define("CONTENT_ADMIN_OPT_LAN_148", "Publikacje");
+define("CONTENT_ADMIN_OPT_LAN_149", "Strona autorów");
+define("CONTENT_ADMIN_OPT_LAN_150", "Strona archiwum");
+define("CONTENT_ADMIN_OPT_LAN_151", "Najlepiej ocenione strone");
+define("CONTENT_ADMIN_OPT_LAN_152", "Najlepiej punktowane strony");
+define("CONTENT_ADMIN_OPT_LAN_153", "Strona nadsyłania");
+define("CONTENT_ADMIN_OPT_LAN_154", "Strona zarządzania");
+define("CONTENT_ADMIN_OPT_LAN_155", "Nagłówek");
+define("CONTENT_ADMIN_OPT_LAN_156", "Nagłówek strony indeksowej");
+define("CONTENT_ADMIN_OPT_LAN_157", "Nagłówek strony autorów");
+define("CONTENT_ADMIN_OPT_LAN_158", "Dołączaj nazwę autora do nagłówka");
+define("CONTENT_ADMIN_OPT_LAN_159", "Nagłówek strony kategorii");
+define("CONTENT_ADMIN_OPT_LAN_160", "Dołączaj nazwę kategorii do nagłówka");
+define("CONTENT_ADMIN_OPT_LAN_161", "Nagłówek działu podkategorii (używane tylko, jeśli metoda prezentacji jest ustawiona na oddzielne menu)");
+define("CONTENT_ADMIN_OPT_LAN_162", "Nagłówek publikacji (używane tylko, jeśli metoda prezentacji jest ustawiona na oddzielne menu)");
+define("CONTENT_ADMIN_OPT_LAN_163", "Wyświetlaj linki do następnej oraz poprzedniej strony");
+define("CONTENT_ADMIN_OPT_LAN_164", "Nagłówek dla linka - poprzednia strona<br />(użyj {PAGETITLE}, aby dodać tytuł poprzedniej strony)");
+define("CONTENT_ADMIN_OPT_LAN_165", "Nagłówek dla linka - następna strona<br />(użyj {PAGETITLE}, aby dodać tytuł następnej strony)");
+define("CONTENT_ADMIN_OPT_LAN_166", "Użyj wszystkich ('all'), aby wyświetlić pełny tekst");
+define("CONTENT_ADMIN_OPT_LAN_167", "dziedziczenie");
+define("CONTENT_ADMIN_OPT_LAN_168", "Pierwsza strona");
+define("CONTENT_ADMIN_OPT_LAN_169", "Ostatnia strona");
+define("CONTENT_ADMIN_OPT_LAN_170", "Gdzie na wielostronicowych publikacjach powinny byc przedstawione własne oraz wcześniej zdefiniowane tagi?");
+define("CONTENT_ADMIN_OPT_LAN_171", "Ilość poziomów");
+define("CONTENT_ADMIN_OPT_LAN_172", "Liczbowa wartość do wyświetlenia ilości podkategorii drzewa kategorii. Pozostaw puste, aby pokazać wszystkie poziomy.");
+define("CONTENT_ADMIN_OPT_LAN_173", "Uwzględniaj 'Stronę domową' w ścieżkach dla 'Aktualnie jesteś w dziale'");
+define("CONTENT_ADMIN_OPT_LAN_174", "Uwzględniaj 'Stronę publikacji' w ścieżkach dla 'Aktualnie jesteś w dziale'");
 ?>

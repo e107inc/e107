@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_plugin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_plugin.php rev. 1.16
+|     Zgodne z: /e107_languages/English/admin/lan_plugin.php rev. 1.2
 +-----------------------------------------------------------------------------+
 */
  
@@ -35,7 +35,7 @@ define("EPL_ADLAN_16", "Informacje o pluginach");
 define("EPL_ADLAN_17", "Więcej informacji...");
 define("EPL_ADLAN_18", "Nie mogę utworzyć tabel(i) dla tego pluginu.");
 define("EPL_ADLAN_19", "Tabele bazy danych zostały utworzone.");
-define("EPL_ADLAN_20", "Ustawienia preferencji zostały utworzone.");
+// define("EPL_ADLAN_20", "Ustawienia preferencji zostały utworzone."); // duplicate of EPL_ADLAN_8;
 
 define("EPL_ADLAN_21", "Plugin jest już zainstalowany.");
 define("EPL_ADLAN_22", "Zainstalowane");
@@ -72,33 +72,22 @@ define("EPL_NOINSTALL", "Nie wymaga instalacji, wystarczy aktywować menu. Aby o
 define("EPL_DIRECTORY", "katalog.");
 define("EPL_NOINSTALL_1", "Nie wymaga instalacji, aby usunąć skasuj ");
 define("EPL_UPGRADE", "Aktualizuj");
-define("EPL_CONFIGURE", "Konfiguracja");
-
-define("EPL_ADLAN_46", "Ustawienia RSS zostały utworzone");
-define("EPL_ADLAN_47", "Ustawienia RSS zostały usunięte");
-define("EPL_ADLAN_48", "Nie mogę utworzyć ustawień RSS");
-define("EPL_ADLAN_49", "Nie mogę usunąć ustawień RSS");
 
 define("EPL_ADLAN_50", "Komentarze zostały pomyślnie usunięte");
 
-define("EPL_ADLAN_51", "Nie");
-define("EPL_ADLAN_52", "Tak");
 define("EPL_ADLAN_53", "Wskazany katalog jest niezapisywalny");
 define("EPL_ADLAN_54", "Proszę wybrać opcję deinstalacji plugina:");
 define("EPL_ADLAN_55", "Odinstalowanie plugina");
-define("EPL_ADLAN_56", "Tak");
+
 define("EPL_ADLAN_57", "Usunięcie tabel plugina");
 define("EPL_ADLAN_58", "Jeśli tabele nie zostaną usunięte, plugin będzie mógł być przeinstalowany bez utraty danych. Utworzenie tabel podczas ponownej instalacji będzie niemożliwe. Usunięcie tabel będzie możliwe tylko poprzez ręczne wykasowanie.");
 define("EPL_ADLAN_59", "Usunięcie plików plugina");
 define("EPL_ADLAN_60", "e107 będzie usiłował usunąć wszystkie pliki składowe wybranego plugina.");
-define("EPL_ADLAN_61", "Potwierdź deinstalację");
+// define("EPL_ADLAN_61", "Potwierdź deinstalację"); // duplicated. can be deleted.
 define("EPL_ADLAN_62", "Anuluj deinstalację");
 define("EPL_ADLAN_63", "Deinstalacja:");
-define("EPL_ADLAN_64", "");
-define("EPL_ADLAN_65", "");
-define("EPL_ADLAN_66", "");
-define("EPL_ADLAN_67", "");
-define("EPL_ADLAN_68", "");
-define("EPL_ADLAN_69", "");
+
+define("LAN_UPGRADE_SUCCESSFUL", "Aktualizacja została zakończona pomyślnie");
+define("LAN_INSTALL_SUCCESSFUL", "Instalacja została zakończona pomyślnie");
 
 ?>

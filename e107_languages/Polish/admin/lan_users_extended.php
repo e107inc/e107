@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:24 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users_extended.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.14
+|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.17
 +-----------------------------------------------------------------------------+
 */
  
@@ -67,10 +67,10 @@ define("EXTLAN_48", "Dodaj nową wartość");
 define("EXTLAN_49", "Zezwól użytkownikowi na ukrycie");
 define("EXTLAN_50", "Ustawienie na tak, pozwoli użytkownikowi ukryć tą wartość przed innymi użytkownikami (nie dotyczy administracji)");
 define("EXTLAN_51", "Tu możesz wpisywać ważne parametry zgodne ze standardem w3c<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>");
-define("EXTLAN_52", "Walidacja kodu regex");
-define("EXTLAN_53", "Wprowadź kod regex, który będzie potrzebny do wykonania porównania poprawności zapisu <br />**ograniczniki regex są wymagane**");  // Enter the regex code that will need to be matched to make it a valid entry <br />**regex delimiters are required**");
-define("EXTLAN_54", "Komunikat niepowodzenia regex");
-define("EXTLAN_55", "Wpisz komunikat błędu, który będzie pokazywany, jeśli walidacja regex zawiedzie.");
+define("EXTLAN_52", "Walidacja kodu wyrażeń regularnych");
+define("EXTLAN_53", "Wprowadź kod wyrażeń regularnych, który będzie potrzebny do wykonania porównania poprawności zapisu <br />**ograniczniki wyrażeń regularnych są wymagane**");  // Enter the regex code that will need to be matched to make it a valid entry <br />**regex delimiters are required**");
+define("EXTLAN_54", "Komunikat niepowodzenia wyrażeń regularnych");
+define("EXTLAN_55", "Wpisz komunikat błędu, który będzie pokazywany, jeśli walidacja wyrażeń regularnych zawiedzie.");
 define("EXTLAN_56", "Wcześniej zdefiniowane pola");
 define("EXTLAN_57", "Aktywowane");
 define("EXTLAN_58", "Nie aktywowane");
@@ -86,8 +86,16 @@ define("EXTLAN_65", "Nie - Nie będzie wyświetlana na stronie rejestracyjnej");
 define("EXTLAN_66", "Tak - Będzie wyświetlana na stronie rejestracyjnej");
 define("EXTLAN_67", "Nie - Wyświetl na stronie rejestracyjnej");
 
+define("EXTLAN_68", "Pole:");
+define("EXTLAN_69", "zostało aktywowane");
+define("EXTLAN_70", "BŁĄD!! Pole:");
+define("EXTLAN_71", "nie zostało aktywowane!");
+define("EXTLAN_72", "zostało deaktywowane");
+define("EXTLAN_73", "nie zostało deaktywowane!");
+define("EXTLAN_74", "jest zarezerwowaną nazwą pola i nie może być urzyta.");
+
 //textbox
-define("EXTLAN_HELP_1", "<b><i>Parametry:</i></b><br />size - rozmiar pola<br />maxlength - maksymalna długość pola<br /><br />class - klasa stylu css<br />style - string stylu css<br /><br />regex - walidacja kodu regex<br />regexfail - treść nieudanej walidacji"); // style - css style string
+define("EXTLAN_HELP_1", "<b><i>Parametry:</i></b><br />size - rozmiar pola<br />maxlength - maksymalna długość pola<br /><br />class - klasa stylu css<br />style - string stylu css<br /><br />regex - walidacja kodu wyrażeń regularnych<br />regexfail - treść nieudanej walidacji"); // style - css style string
 //radio buttons
 define("EXTLAN_HELP_2", "Tu będzie treść pomocy dla przycisków");
 //dropdown

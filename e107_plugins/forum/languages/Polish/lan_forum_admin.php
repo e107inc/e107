@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:27:16 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:40:37 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_admin.php rev rev. 1.19
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_admin.php rev rev. 1.22
 +-----------------------------------------------------------------------------+
 */
  
@@ -185,7 +185,7 @@ define("FORLAN_155", "Kategorie forum");
 define("FORLAN_156", "Wybierz forum, aby wykonać na nim działanie");
 define("FORLAN_157", "Wszystkie fora");
 define("FORLAN_158", "Przeliczanie informacji o ostatnich postach na forum");
-define("FORLAN_159", "Wybierz. aby przeliczyć informację o ostatnich postach.");
+define("FORLAN_159", "Wybierz, aby przeliczyć informację o ostatnich postach.");
 define("FORLAN_160", "Wybierz, aby wykonać to zadanie tylko na forach, pomijając tematy.");
 define("FORLAN_161", "Przeliczanie ilości postów");
 define("FORLAN_162", "Wybierz, aby przeliczyć ilość postów i tematów na forum.");
@@ -210,5 +210,7 @@ define("FORLAN_178", "Zaznacz to, aby pole powiadomień email było domyślnie z
 define("FORLAN_179", "(Dodanie * do początku nazwy forum spowoduje, że forum będzie zawierało tylko subfora. Temat forum musi również wspierać tą opcję.)");
 define("FORLAN_180", "Potwierdź operację usuwania");
 define("FORLAN_181", "Potwierdź usuwanie");
+define("FORLAN_182", "również przelicza odpowiedzi dla wszystkich tematów w wybranym forum");
+define("FORLAN_183", "(ta funkcja nie jest dozwolona, kiedy jest wybrana opcja 'wszystkie fora dyskusyjne' ze względu na ilość zapytań jaką ta funkcja wygeneruje)");
 
 ?>

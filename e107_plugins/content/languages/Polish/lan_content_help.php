@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:25:17 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:39:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Polish/lan_content_help.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/content/languages/English/lan_content_help.php rev. 1.14
+|     Zgodne z: /e107_plugins/content/languages/English/lan_content_help.php rev. 1.16
 +-----------------------------------------------------------------------------+
 */
 
@@ -42,20 +42,21 @@ define("CONTENT_ADMIN_HELP_ORDER_3", "<i>Na tej stronie są wyświetlone wszystk
 define("CONTENT_ADMIN_HELP_OPTION_1", "Na tej stronie możesz wybrać dział głównej kategorii, dla którego następnie będziesz mógł ustawić opcje, albo możesz wybrać również edycję domyślnych preferencji.<br /><br /><b>Objaśnienie ikon</b><br />".CONTENT_ICON_USER." : informacje o autorze<br />".CONTENT_ICON_LINK." : link do kategorii<br />".CONTENT_ICON_OPTIONS." : edycja opcji<br /><br /><br />
 Domyślne preferencje są tylko stosowane podczas tworzenia nowego głównego działu. Tak więc gdy tworzysz nowy główny dział, domyślne preferencje zostają zapisane do jego pamięci. Możesz je zmienić, aby się upewnić, że niedawno co utworzony główny dział posiada już ustawione określone opcje.
 <br /><br />
-Poszczególne działy główne mają własne ustawienia opcji, które są unikalne dla określonych głównych działów kategorii.");
+Poszczególne działy główne mają własne ustawienia opcji, które są unikalne dla określonych głównych działów kategorii.<br /><br />
+<b>Dziedziczenie</b><br />Pole wyboru opcji - dziedziczenie - umożliwi Ci pominięcie indywidualnych opcji działów głównych, a dokładniej zastosuje domyślne preferencje dla zaznaczonych działów.");
 
 //define("CONTENT_ADMIN_HELP_OPTION_2", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />");
 //<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
 
-define("CONTENT_ADMIN_HELP_MANAGER_1", "Na tej stronie wyświetlone są wszystkie kategorie. Możesz administrować 'osobistymi menadżerami publikacji' poszczególnych kategorii poprzez kliknięcie w odpowiednią ikonę.<br /><br /><b>Objaśnienie ikon</b><br />".CONTENT_ICON_USER." : informacje o autorze<br />".CONTENT_ICON_LINK." : link do kategorii<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : edycja osobistego menadżera publikacji<br />");
+define("CONTENT_ADMIN_HELP_MANAGER_1", "Na tej stronie wyświetlone są wszystkie kategorie. Możesz administrować 'osobistymi menedżerami publikacji' poszczególnych kategorii poprzez kliknięcie w odpowiednią ikonę.<br /><br /><b>Objaśnienie ikon</b><br />".CONTENT_ICON_USER." : informacje o autorze<br />".CONTENT_ICON_LINK." : link do kategorii<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : edycja osobistego menedżera publikacji<br />");
 
-define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>Na tej stronie możesz przydzielić użytkowników do wybranej kategorii.</i><br /><br /><b>Osobisty menadżer</b><br />Z poziomu tej strony możesz wyznaczyć użytkowników do określonych kategorii. Robiąc tak, nadasz tym użytkownikom uprawnienia do zarządzania swoimi własnymi publikacjami z poziomu strony administracyjnej (content_manager.php).<br /><br />Przydziel użytkowników z lewej kolumny poprzez kliknięcie na ich nazwie. Po wykonaniu tego zobaczysz, że wybrana nazwa została przeniesiona do prawej kolumny. Gdy już skończysz przydzielać użytkowników, kliknij na przycisk 'Przydziel menadżerów publikacji', aby wybrani użytkownicy z prawej kolumny zostali na stałe przypisani do wybranej kategorii.");
+define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>Na tej stronie możesz przydzielić określoną grupę użytkowników do wybranej kategorii.</i><br /><br /><b>Osobisty menedżer</b><br />Z poziomu tej strony możesz zdefiniować grupy użytkowników dla różnego typu osobistych menedżerów, obecnie są trzy typy menedżerów, które możesz określić. <br /><br />Zatwierdzanie publikacji: użytkownicy z tej grupy będą w stanie zatwierdzić nadesłane publikacje<br /><br />Osobisty menedżer: użytkownicy z tej grupy będą w stanie zarządzać tylko swoimi własnymi publikacjami<br /><br />Menedżer kategorii: użytkownicy z tej grupy będą w stanie zarządzać wszystkimi publikacjami w danej kategorii<br />");
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>Na tej stronie wyświetlona jest lista wszystkich publikacji nadesłanych w ostatnim czasie przez użytkowników.</i><br /><br /><b>Szczegółowy wykaz</b><br />Na stronie są wyświetlone wszystkie nadesłane publikacje wraz z ich numerem ID, ikoną, działem głównym, tematem [podtematem], autorem oraz opcjami.<br /><br /><b>Opcje</b><br />Możesz opublikować lub usunąć daną publikację używając pokazanych przycisków.");
 
 
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "Ta strona umożliwi Ci ustawienie opcji dla strony tworzenia nowych publikacji.<br /><br />Możesz zdefiniować, które sekcje będą dostępne, kiedy administrator (lub menadżer osobistych publikacji) będzie tworzył nową publikację.<br /><br /><b>Własne tagi danych</b><br />Poprzez użycie własnych tagów danych możesz zezwolić użytkownikom lub administratorom na dodawanie opcjonalnych pól dla danej publikacji. Opcjonalne pola są parą identyfikatora (key)=>wartości (value). Na przykład: Mógłbyś dodać pole identyfikatora nazwane 'fotograf' i określić wartość pola przy pomocy wyrażenia 'wszystkie zdjęcia zostały wykonane przze mnie'. Zarówno identyfikator, jak i pole wartości są pustymi polami tekstowymi i zostaną one wyświetlone w formularzu tworzenia.<br /><br /><b>Wstępne ustawienie tagów danych</b><br />Oprócz własnych tagów danych możesz określić wstępnie ustawione tagi danych. Różnica jest taka, że w wstępnie ustawionych tagach danych, pole identyfikatora jest już podane i użytkownik musi tylko określić pole wartości dla wstępnego ustawienia. Na podstawie tego samego przykładu jak powyżej 'fotograf' może już być wcześniej zdefiniowany, a użytkownik będzie musiał tylko dostarczyć 'wszystkie zdjęcia zostały wykonane przze mnie'. Możesz wybrać rodzaj elementu poprzez wybór jednej z opcji z listy wyboru. W okienku, które się otworzy, możesz dostarczyć wszystkie informacje dla wstępnego ustawienia wybranego tagu danych.<br />");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "Ta strona umożliwi Ci ustawienie opcji dla strony tworzenia nowych publikacji.<br /><br />Możesz zdefiniować, które sekcje będą dostępne, kiedy administrator (lub menedżer osobistych publikacji) będzie tworzył nową publikację.<br /><br /><b>Własne tagi danych</b><br />Poprzez użycie własnych tagów danych możesz zezwolić użytkownikom lub administratorom na dodawanie opcjonalnych pól dla danej publikacji. Opcjonalne pola są parą identyfikatora (key)=>wartości (value). Na przykład: Mógłbyś dodać pole identyfikatora nazwane 'fotograf' i określić wartość pola przy pomocy wyrażenia 'wszystkie zdjęcia zostały wykonane przze mnie'. Zarówno identyfikator, jak i pole wartości są pustymi polami tekstowymi i zostaną one wyświetlone w formularzu tworzenia.<br /><br /><b>Wstępne ustawienie tagów danych</b><br />Oprócz własnych tagów danych możesz określić wstępnie ustawione tagi danych. Różnica jest taka, że w wstępnie ustawionych tagach danych, pole identyfikatora jest już podane i użytkownik musi tylko określić pole wartości dla wstępnego ustawienia. Na podstawie tego samego przykładu jak powyżej 'fotograf' może już być wcześniej zdefiniowany, a użytkownik będzie musiał tylko dostarczyć 'wszystkie zdjęcia zostały wykonane przze mnie'. Możesz wybrać rodzaj elementu poprzez wybór jednej z opcji z listy wyboru. W okienku, które się otworzy, możesz dostarczyć wszystkie informacje dla wstępnego ustawienia wybranego tagu danych.<br />");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "Opcje nadsyłania publikacji są tylko stosowane dla formularza nadsyłania publikacji przez użytkowników.<br /><br />Z poziomu tej strony możesz określić, które sekcje będą dostępne dla użytkowników wysyłających publikacje.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
 
@@ -63,7 +64,7 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "Na stronie opcji ścieżek dostępu i
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "Opcje ogólne stanowią zbiór opcji stosowanych na wszystkich stronach publikacji plugina Zarządzanie publikacjami.");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "Opcje na tej stronie mają tylko zastosowanie dla obszaru 'Osobistego menadżera publikacji' na stronie administracyjnej zarządzania publikacjami.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "Opcje na tej stronie są używane przez 'menu' określonego działu głównego, jeśli zostało ono aktywowane.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
 
@@ -80,5 +81,7 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "Strona archiwum wyświetla wszystkie
 define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "Strona Lista Top : Najlepiej ocenione wyświetla wszystkie publikacje, które zostały ocenione przez użytkowników.<br /><br />Możesz określić sekcje, które zostaną wyświetlone, poprzez zaznaczenie (odznaczenie) określonych pól wyboru.<br /><br />Z poziomu tej strony możesz również określić czy adresy email niezarejestrowanych autorów mają zostać wyświetlone.");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "Strona Lista Top : Najlepsze wyniki wyświetla wszystkie publikacje, które mają przyznany wynik przez autora danej publikacji.<br /><br />Możesz określić sekcje, które zostaną wyświetlone, poprzez zaznaczenie (odznaczenie) określonych pól wyboru.<br /><br />Z poziomu tej strony możesz również określić czy adresy email niezarejestrowanych autorów mają zostać wyświetlone.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "Ta strona umożliwi Ci ustawienie opcji dla strony administracyjnej tworzenia kategorii.<br /><br />Możesz określić sekcje, które będą dostępne, kiedy administrator (lub menedżer osobistych publikacji) będzie tworzył nową kategorię publikacji.");
 
 ?>

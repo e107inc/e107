@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.8 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-24 15:41:50 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/log/languages/admin/English.php rev. 1.10
+|     Zgodne z: /e107_plugins/log/languages/admin/English.php rev. 1.11
 +-----------------------------------------------------------------------------+
 */
  
@@ -51,5 +51,8 @@ define("ADSTAT_L29", "Nazwa strony");
 define("ADSTAT_L30", "Zaznacz, aby usunąć");
 define("ADSTAT_L31", "Usuń wybrane strony");
 define("ADSTAT_L32", "Porządkowanie stron");
+
+//define("ADSTAT_L10", "Strony odsyłające");
+//define("ADSTAT_L10", "Strony odsyłające");
 
 ?>

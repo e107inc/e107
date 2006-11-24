@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.8 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-24 15:42:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/newsfeed/languages/English.php rev. 1.6
+|     Zgodne z: /e107_plugins/newsfeed/languages/English.php rev. 1.9
 +-----------------------------------------------------------------------------+
 */
  
@@ -81,5 +81,9 @@ define("NFLAN_44", "aby wyświetlić kliknij");
 define("NFLAN_45", "Ilość pozycji wyświetlanych w menu");
 define("NFLAN_46", "Ilość pozycji wyświetlanych na stronie głównej");
 define("NFLAN_47", "0 lub puste pole oznacza wszystkie");
+
+define("NFLAN_48", "Nie mogę zapisać danych w bazie danych.");
+define("NFLAN_49", "Nie mogę wyodrębnić danych RSS - użyta jest niestandardowa składnia");
+
 
 ?>

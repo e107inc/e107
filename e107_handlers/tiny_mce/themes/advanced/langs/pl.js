@@ -1,62 +1,96 @@
-// UK lang variables
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:37:30 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/themes/advanced/langs/pl.js,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_handlers/tiny_mce/themes/advanced/langs/en.php rev. 1.8
++-----------------------------------------------------------------------------+
+*/
 
-tinyMCELang['lang_theme_style_select'] = '-- Styles --';
-tinyMCELang['lang_theme_code_desc'] = 'Edit HTML Source';
-tinyMCELang['lang_theme_code_title'] = 'HTML Source Editor';
-tinyMCELang['lang_theme_code_wordwrap'] = 'Word wrap';
-tinyMCELang['lang_theme_sub_desc'] = 'Subscript';
-tinyMCELang['lang_theme_sup_desc'] = 'Superscript';
-tinyMCELang['lang_theme_hr_desc'] = 'Insert horizontal ruler';
-tinyMCELang['lang_theme_removeformat_desc'] = 'Remove formatting';
-tinyMCELang['lang_theme_custom1_desc'] = 'Your custom description here';
-tinyMCELang['lang_insert_image_border'] = 'Border';
-tinyMCELang['lang_insert_image_dimensions'] = 'Dimensions';
-tinyMCELang['lang_insert_image_vspace'] = 'VSpace';
-tinyMCELang['lang_insert_image_hspace'] = 'HSpace';
-tinyMCELang['lang_insert_image_align'] = 'Alignment';
-tinyMCELang['lang_insert_image_align_default'] = 'Default';
-tinyMCELang['lang_insert_image_align_baseline'] = 'Baseline';
-tinyMCELang['lang_insert_image_align_top'] = 'Top';
-tinyMCELang['lang_insert_image_align_middle'] = 'Middle';
-tinyMCELang['lang_insert_image_align_bottom'] = 'Bottom';
-tinyMCELang['lang_insert_image_align_texttop'] = 'TextTop';
-tinyMCELang['lang_insert_image_align_absmiddle'] = 'Absolute Middle';
-tinyMCELang['lang_insert_image_align_absbottom'] = 'Absolute Bottom';
-tinyMCELang['lang_insert_image_align_left'] = 'Left';
-tinyMCELang['lang_insert_image_align_right'] = 'Right';
-tinyMCELang['lang_theme_font_size'] = 'Font size';
-tinyMCELang['lang_theme_fontdefault'] = '-- Font family --';
-tinyMCELang['lang_theme_block'] = '-- Format --';
-tinyMCELang['lang_theme_paragraph'] = 'Paragraph';
-tinyMCELang['lang_theme_div'] = 'Div';
-tinyMCELang['lang_theme_address'] = 'Address';
-tinyMCELang['lang_theme_pre'] = 'Preformatted';
-tinyMCELang['lang_theme_h1'] = 'Heading 1';
-tinyMCELang['lang_theme_h2'] = 'Heading 2';
-tinyMCELang['lang_theme_h3'] = 'Heading 3';
-tinyMCELang['lang_theme_h4'] = 'Heading 4';
-tinyMCELang['lang_theme_h5'] = 'Heading 5';
-tinyMCELang['lang_theme_h6'] = 'Heading 6';
-tinyMCELang['lang_theme_colorpicker_title'] = 'Select a color';
-tinyMCELang['lang_theme_colorpicker_apply'] = 'Apply';
-tinyMCELang['lang_theme_forecolor_desc'] = 'Select text color';
-tinyMCELang['lang_theme_backcolor_desc'] = 'Select background color';
-tinyMCELang['lang_theme_charmap_title'] = 'Select custom character';
-tinyMCELang['lang_theme_charmap_desc'] = 'Insert custom character';
-tinyMCELang['lang_theme_visualaid_desc'] = 'Toggle guidelines/invisible elements';
-tinyMCELang['lang_insert_anchor_title'] = 'Insert/edit anchor';
-tinyMCELang['lang_insert_anchor_name'] = 'Anchor name';
-tinyMCELang['lang_theme_anchor_desc'] = 'Insert/edit anchor';
-tinyMCELang['lang_theme_insert_link_titlefield'] = 'Title';
-tinyMCELang['lang_theme_clipboard_msg'] = 'Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?';
-tinyMCELang['lang_theme_path'] = 'Path';
-tinyMCELang['lang_cut_desc'] = 'Cut';
-tinyMCELang['lang_copy_desc'] = 'Copy';
-tinyMCELang['lang_paste_desc'] = 'Paste';
-tinyMCELang['lang_link_list'] = 'Link list';
-tinyMCELang['lang_image_list'] = 'Image list';
-tinyMCELang['lang_browse'] = 'Browse';
-tinyMCELang['lang_image_props_desc'] = 'Image properties';
-tinyMCELang['lang_newdocument_desc'] = 'New document';
-tinyMCELang['lang_class'] = 'Class';
-tinyMCELang['lang_newdocument'] = 'Are you sure you want clear all contents?';
+tinyMCE.addToLang('',{
+theme_style_select : 'Styl',
+theme_code_desc : 'Edytuj źródło html',
+theme_code_title : 'Edytor źródła html',
+theme_code_wordwrap : 'Zawijanie wierszy',
+theme_sub_desc : 'Nadpisywanie',
+theme_sup_desc : 'Podpisywanie',
+theme_hr_desc : 'Wstaw poziomą linię',
+theme_removeformat_desc : 'Usuń formatowanie',
+theme_custom1_desc : 'Wstaw własny opis',
+insert_image_border : 'Ramka',
+insert_image_dimensions : 'Wymiary',
+insert_image_vspace : 'Pionowy odstęp',
+insert_image_hspace : 'Poziomy odstęp',
+insert_image_align : 'Otaczanie',
+insert_image_align_default : 'Domyślne',
+insert_image_align_baseline : 'Do linii bazowej',
+insert_image_align_top : 'Górne',
+insert_image_align_middle : 'Środkowe',
+insert_image_align_bottom : 'Dolne',
+insert_image_align_texttop : 'Tekst powyżej',
+insert_image_align_absmiddle : 'Absolutny środek',
+insert_image_align_absbottom : 'Absolutny dół',
+insert_image_align_left : 'Lewe',
+insert_image_align_right : 'Prawe',
+theme_font_size : '-- Rozmiar czcionki --',
+theme_fontdefault : '-- Rodzina czcionki --',
+theme_block : '-- Format --',
+theme_paragraph : 'Paragraf',
+theme_div : 'Div',
+theme_address : 'Adres',
+theme_pre : 'Preformatowanie',
+theme_h1 : 'Nagłówek 1',
+theme_h2 : 'Nagłówek 2',
+theme_h3 : 'Nagłówek 3',
+theme_h4 : 'Nagłówek 4',
+theme_h5 : 'Nagłówek 5',
+theme_h6 : 'Nagłówek 6',
+theme_blockquote : 'Cytat',
+theme_code : 'Kod',
+theme_samp : 'Przykładowy kod',
+theme_dt : 'Termin definicji ',
+theme_dd : 'Opis definicji',
+theme_colorpicker_title : 'Wybierz kolor',
+theme_colorpicker_apply : 'Wybierz',
+theme_forecolor_desc : 'Wybierz kolor tekstu',
+theme_backcolor_desc : 'Wybierz kolor tła',
+theme_charmap_title : 'Wybierz znak',
+theme_charmap_desc : 'Wstaw znak',
+theme_visualaid_desc : 'Przełącz linie prowadzące/niewidoczne elementy',
+insert_anchor_title : 'Kotwica',
+insert_anchor_name : 'Nazwa kotwicy',
+theme_anchor_desc : 'Wstaw/Edytuj kotwicę',
+theme_insert_link_titlefield : 'Tytuł',
+theme_clipboard_msg : 'Kopiuj/Edytuj/Wklej nie jest dostępne w przeglądarkach Mozilla i Firefox.\nPotrzebujesz więcej informacji na ten temat?',
+theme_path : 'Ścieżka',
+cut_desc : 'Wytnij',
+copy_desc : 'Kopiuj',
+paste_desc : 'Wklej',
+link_list : 'Lista linków',
+image_list : 'Lista obrazków',
+browse : 'Przeglądaj',
+image_props_desc : 'Właściwości obrazka',
+newdocument_desc : 'Nowy dokument',
+class_name : 'Klasa',
+newdocument : 'Czy jesteś pewien, że chcesz wyczyścić zawartość tego dokumentu?',
+about_title : 'O TinyMCE...',
+about : 'O ...',
+license : 'Licencja',
+plugins : 'Pluginy',
+plugin : 'Plugin',
+author : 'Autor',
+version : 'Wersja',
+loaded_plugins : 'Załadowane pluginy',
+help : 'Pomoc',
+not_set : '-- Nie wybrano --',
+close : 'Zamknij',
+toolbar_focus : 'Skocz do przycisków narzędzi - Alt+Q, Skocz do edytora - Alt-Z, Skocz do ścieżki elementu - Alt-X',
+invalid_data : 'Błąd: Wprowadzono niepoprawne wartości - oznaczone są na czerwono.'
+});

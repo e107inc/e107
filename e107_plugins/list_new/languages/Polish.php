@@ -6,16 +6,16 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.3 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-24 15:41:31 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/list_new/languages/English.php rev. 1.13
+|     Zgodne z: /e107_plugins/list_new/languages/English.php rev. 1.16
 +-----------------------------------------------------------------------------+
 */
- 
-define("PAGE_NAME", "Lista nowości");
+
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Lista nowości"); }
 
 define("LIST_PLUGIN_1", "Lista nowości");
 define("LIST_PLUGIN_2", "Plugin Lista nowości pozwoli Ci przeglądać wykaz ostatnich zmian we wszystkich kategoriach e107. Możesz przeglądać listę ze zmianami od Twojej ostatniej wizyty, albo przejrzeć listę ogólną ostatnich zmian. Oprócz strony do prezentacji zmian jest również dostępne menu. Każda sekcja jest konfigurowalna z poziomu panelu admina.");
@@ -137,8 +137,12 @@ define("LIST_ADMIN_LAN_36", "Okres czasu wstecz");
 define("LIST_ADMIN_LAN_37", "Wyświetlić pole wyboru z ilością dni do przeglądania wstecz?");
 define("LIST_ADMIN_LAN_38", "");
 
+define("LIST_ADMIN_LAN_39", "Otwórz, jeśli istnieje rekord");
+define("LIST_ADMIN_LAN_40", "Czy sekcje, które zawierają rekordy, powinny być otwarte domyślnie?"); // should sections that contain records be opened by default?
+define("LIST_ADMIN_LAN_41", "");
+
 define("LIST_MENU_1", "Ostatnio dodane");
-define("LIST_MENU_2", "dodał(a)");
+define("LIST_MENU_2", "autor");
 define("LIST_MENU_3", "dnia");
 define("LIST_MENU_4", "w dziale");
 define("LIST_MENU_5", "dni");
@@ -163,10 +167,10 @@ define("LIST_NEWS_2", "Brak nowych pozycji");
 define("LIST_COMMENT_1", "Komentarze");
 define("LIST_COMMENT_2", "Brak komentarzy");
 define("LIST_COMMENT_3", "Aktualności");
-define("LIST_COMMENT_4", "Faq");
+define("LIST_COMMENT_4", "FAQ");
 define("LIST_COMMENT_5", "Ankieta");
 define("LIST_COMMENT_6", "Dokumentacja");
-define("LIST_COMMENT_7", "Bugtrack");
+define("LIST_COMMENT_7", "Bugtracker");
 define("LIST_COMMENT_8", "Publikacje");
 define("LIST_COMMENT_9", "Download");
 define("LIST_COMMENT_10", "Pomysły");

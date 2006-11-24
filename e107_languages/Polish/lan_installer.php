@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:06:43 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:37:42 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_installer.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.10
+|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.14
 +-----------------------------------------------------------------------------+
 */
  
@@ -97,19 +97,23 @@ System e107 został pomyślnie zainstalowany i jest gotowy do aktualizacji zawar
 Oficjalna strona e107: [link=http://e107.org]http://e107.org[/link], znajdziesz tutaj FAQ najczęściej zadawane pytania) oraz dokumentację.
 Forum: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
 
+[b]Strony polskiego wsparcia[/b]
+Serwis e107poland.org: [link=http://e107poland.org]http://e107poland.org[/link] - download, newsy, FAQ, forum i inne.
+Serwis e107.org.pl: [link=http://e107.org.pl]http://e107.org.pl[/link] - strona zespołu [i]e107pl Dev Team[/i] - newsy, download, forum, bugtracker, dokumentacja e107 itp.
+
 [b]Download[/b]
 Pluginy: [link=http://e107coders.org]http://e107coders.org[/link]
-Tematy: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+Tematy: [link=http://e107themes.org]http://e107themes.org[/link]
 
 Dziękujemy za korzystanie z e107, mamy nadzieję, że spełni on Twoje potrzeby i będziesz zadowolony z jego użytkowania.
-(Możesz usunąć tą wiadomość za pomocą panelu administracyjnego.)");
+(Możesz usunąć tego newsa za pomocą panelu administracyjnego.)");
 
 define("LANINS_063", "Witaj w e107");
 define("LANINS_069", "e107 został pomyślnie zainstalowany!
 
-Ze względu na bezpieczeństwo powinieneś teraz przywrócić uprawnienia pliku <b>e107_config.php</b> do wartości 644.
+Ze względu na bezpieczeństwo przywróć uprawnienia pliku <b>e107_config.php</b> do wartości 644 (CHMOD 644).
 
-Proszę również usunąć plik <i>install.php</i> oraz folder <i>e107_install</i> z serwera po kliknięciu na poniższy przycisk
+Proszę również, po kliknięciu na poniższy przycisk, usunąć z serwera plik <i>install.php</i>
 ");
 define("LANINS_070", "e107 nie mógł zapisać głównego pliku konfiguracyjnego na obecnym serwerze.
 
@@ -133,5 +137,7 @@ define("LANINS_082", "nazwa@twojastrona.pl");
 define("LANINS_083", "Zgłoszenie błędu MySQL:");
 define("LANINS_084", "Instalator nie mógł nawiązać połączenia z bazą danych");
 define("LANINS_085", "Instalator nie mógł wybrać bazy danych:");
+
+define("LANINS_086", "Pola - nazwa administratora, hasło administratora oraz adres email administratora - są <b>wymagane</b>. Proszę powrócić do ostatniej strony i upewnić się, że informacje zostały poprawnie wprowadzone.");
 
 ?>

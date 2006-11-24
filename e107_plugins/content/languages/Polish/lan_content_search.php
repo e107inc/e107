@@ -6,17 +6,18 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:25:17 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:39:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Polish/lan_content_search.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/content/languages/English/lan_content_search.php rev. 1.2
+|     Zgodne z: /e107_plugins/content/languages/English/lan_content_search.php rev. 1.3
 +-----------------------------------------------------------------------------+
 */
 
 define("CONT_SCH_LAN_1", "Publikacje");
 define("CONT_SCH_LAN_2", "Wszystkie kategorie publikacji");
 define("CONT_SCH_LAN_3", "W odpowiedziach na daną publikację");
+define("CONT_SCH_LAN_4", "w");
 
 ?>

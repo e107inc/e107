@@ -6,25 +6,25 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:42:01 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/login_menu/languages/English.php rev. 1.4
+|     Zgodne z: /e107_plugins/login_menu/languages/English.php rev. 1.8
 +-----------------------------------------------------------------------------+
 */
  
 define("LOGIN_MENU_L1", "Login: ");
 define("LOGIN_MENU_L2", "Hasło: ");
 define("LOGIN_MENU_L3", "Rejestracja");
-define("LOGIN_MENU_L4", "Zapomniałem hasła");
+define("LOGIN_MENU_L4", "Zmiana hasła");
 define("LOGIN_MENU_L5", "Witaj");
 define("LOGIN_MENU_L6", "Zapamiętaj mnie");
-define("LOGIN_MENU_L7", "Unikalne id użytkownika nie zostało rozpoznane (prawdopodobnie jest uszkodzony plik cookie).<br />Proszę <a href=\"".e_BASE."index.php?logout\">kliknąć tutaj</a>, aby usunąć wadliwy plik cookie.");
+define("LOGIN_MENU_L7", "Unikalne ID użytkownika nie zostało rozpoznane (prawdopodobnie uszkodzony jest plik <o>cookie</i>).<br />Proszę <a href=\"".e_BASE."index.php?logout\">kliknąć tutaj</a>, aby usunąć wadliwy plik <i>cookie</i>.");
 define("LOGIN_MENU_L8", "Wyloguj");
 define("LOGIN_MENU_L9", "Błąd logowania");
-define("LOGIN_MENU_L10", "Strona jest w trybie konserwacji - to oznacza, że osoby odwiedzające Twoją stronę zostaną przekierowane do strony sitedown.php. Aby przywrócić normalne funkcjonowanie strony przejdź do panelu administratora i zmień odpowiednie opcje na stronie konserwacja.");
+define("LOGIN_MENU_L10", "Strona jest w trybie konserwacji - to oznacza, że osoby odwiedzające Twoją stronę zostaną przekierowane do strony sitedown.php. Aby przywrócić normalne funkcjonowanie witryny przejdź do panelu administratora i zmień odpowiednie opcje w dziale <i>Konserwacja</i>.");
 define("LOGIN_MENU_L11", "Panel admina");
 define("LOGIN_MENU_L12", "Ustawienia");
 define("LOGIN_MENU_L13", "Profil");
@@ -50,13 +50,14 @@ define("LOGIN_MENU_L30", "nowe artykuły");
 // New config options
 define('LOGIN_MENU_L31', 'Pokaż nowe aktualności');
 define('LOGIN_MENU_L32', 'Pokaż nowe artykuły');
-define('LOGIN_MENU_L33', 'Pokaż nowe pozty na czacie');
+define('LOGIN_MENU_L33', 'Pokaż nowe posty na czacie');
 define('LOGIN_MENU_L34', 'Pokaż nowe komentarze');
 define('LOGIN_MENU_L35', 'Pokaż nowe posty na forum');
-define('LOGIN_MENU_L36', 'Pokaż nowo zarejstrowanych użytkowników');
-define('LOGIN_MENU_L37', 'Aktualizuj ustawienia');
-define('LOGIN_MENU_L38', 'Ustawienia zostały zaktualizowane');
+define('LOGIN_MENU_L36', 'Pokaż nowo zarejestrowanych użytkowników');
 
 define('LOGIN_MENU_L39', 'Opuść panel');
+
+define("LOGIN_MENU_L40", "Ponów aktywację");
+define("LOGIN_MENU_L41", "Ustawienia - Login Menu");
 
 ?>

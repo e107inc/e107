@@ -6,15 +6,15 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2006-05-24 16:46:46 $
+|     $Revision: 1.12 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.43
+|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.54
 +-----------------------------------------------------------------------------+
 */
- 
+
 define("ADLAN_0", "Aktualności");
 define("ADLAN_1", "Dodawanie/edytowanie/usuwanie aktualności");
 define("ADLAN_2", "Kategorie aktualności");
@@ -43,7 +43,7 @@ define("ADLAN_26", "Kategorie downloadu");
 define("ADLAN_27", "Dodawanie nowej/edytowanie/usuwanie kategorii plików do pobrania");
 define("ADLAN_28", "Wiadomość powitalna");
 define("ADLAN_29", "Ustawienia wiadomości powitalnej");
-define("ADLAN_30", "Menadżer plików");
+define("ADLAN_30", "Menedżer plików");
 define("ADLAN_31", "Zarządzanie plikami oraz ładowanie ich na serwer");
 define("ADLAN_32", "Otrzymane aktualności");
 define("ADLAN_33", "Przeglądanie nadesłanych wiadomości od użytkowników");
@@ -85,10 +85,10 @@ define("ADLAN_68", "Informacje PHP");
 define("ADLAN_69", "Zestawienie informacji o konfiguracji PHP");
 define("ADLAN_70", "Ankiety");
 define("ADLAN_71", "Dodawanie/edytowanie ankiet");
-define("ADLAN_72", "Upload");
+define("ADLAN_72", "Publiczny upload");
 define("ADLAN_73", "Konfiguracja ładowania plików na serwer przez użytkowników");
-define("ADLAN_74", "Cache");
-define("ADLAN_75", "Ustawianie statusu cache");
+define("ADLAN_74", "Pamięć podręczna");
+define("ADLAN_75", "Ustawiania statusu pamięci podręcznej");
 define("ADLAN_77", "Masz nową wiadomość - proszę tutaj kliknąć, aby ją sprawdzić.");
 define("ADLAN_78", "Dodatkowe pola userów");
 define("ADLAN_79", "Edycja dodatkowych pól użytkowników");
@@ -106,7 +106,7 @@ define("ADLAN_94", "Pokaż zainstalowane pluginy");
 define("ADLAN_95", "Zarządzanie pluginami");
 define("ADLAN_96", "Brak");
 define("ADLAN_97", "Kliknij tutaj, aby przejść do FAQ");
-define("ADLAN_98", "Menadżer pluginów");
+define("ADLAN_98", "Menedżer pluginów");
 define("ADLAN_99", "Instalacja/aktualizacja pluginów etc");
 define("ADLAN_100", "Układ tematu");
 define("ADLAN_101", "Kreator szablonów");
@@ -160,7 +160,7 @@ define("ADLAN_137", "Ustawienia emaila oraz wysyłanie maili");
 define("ADLAN_138", "Linki");
 define("ADLAN_139", "Dodawanie/edytowanie/usuwanie linków");
 
-define("ADLAN_140", "Menadżer tematów");
+define("ADLAN_140", "Menedżer tematów");
 define("ADLAN_141", "Instalacja/ustawienia tematów etc");
 
 define("ADLAN_142", "Wyszukiwanie");
@@ -173,7 +173,7 @@ define("ADLAN_147", "Inspektor plików");
 define("ADLAN_148", "Skanowanie plików strony");
 
 define("ADLAN_149", "Powiadomienia");
-define("ADLAN_150", "Powiadomienia emailowe administratora");
+define("ADLAN_150", "System powiadomień email o wydarzeniach w serwisie");
 
 define("ADLAN_151", "Panel");
 define("ADLAN_152", "Wpisz kod");
@@ -198,8 +198,12 @@ define("ADLAN_LAT_7", "Załadowane pliki");
 define("ADLAN_LAT_8", "Niesprawdzone wiadomości");
 
 define("ADLAN_ERR_1", "Ostrzeżenie!");
-define("ADLAN_ERR_2", "Na Twoim serwerze znajdują się pliki znane jako exploity. Muszą być one <b>natychmiast</b> usunięte. Pliki te są związane z poprzednia wersją 0.6xx systemu e107. Proszę usunąć następujące katalogi oraz całą ich zawartość:");
-define("ADLAN_ERR_3", "W katalogach uploadu znajduje się jeden lub więcej plików, które nie występują na wykazie dozwolonych typów plików do nadsyłania. Wspomniane pliki mogły być umieszczone w katalogach przez osobą chcącą zaatakować Twoją stronę w związku z czym powinny one być <b>natychmiast</b> usunięte. <b>Nie</b> powinieneś otwierac tych plików, jako że mogą one wykonać jakiś złośliwy kod zawarty w nich. Nie otwieraj ich w Twojej przeglądarce internetowej.<br /><br />Jeśli rozpoznajesz te pliki jako zaufane, to jest prawdopodobnie tak ze względu na ostanie zmiany dozwolonych typów plików, typ pliku, który dopuściłeś nie występuje juz na wykazie dozwolonych typów plików i w związku z czym musisz ponownie go dodać do listy (zobacz Panel administracyjny => Upload). Nie powinieneś zezwolić na nadsyłanie plików takich jak .html, .txt, etc jako że osoba atakująca może nadesłać pliki tego typu z zawartym w nich niebezpiecznym kodem javascript. Powinieneś również, jeśli to możliwe, nie zezwolić na nadsyłanie plików .php lub innego typu wykonywalnych skryptów.<br /><br />Poniżej znajduje się lista plików, które potencjalnie mogą być niebezpieczne:");
+define("ADLAN_ERR_2", "Na Twoim serwerze znajdują się pliki znane jako exploity. Muszą być one <b>natychmiast</b> usunięte. Pliki te są związane z poprzednią wersją 0.6xx systemu e107. Proszę usunąć następujące katalogi oraz całą ich zawartość:");
+define("ADLAN_ERR_3", "W katalogach uploadu znajduje się jeden lub więcej plików, które nie występują na wykazie dozwolonych typów plików do nadsyłania. Wspomniane pliki mogły być umieszczone w katalogach przez osobę chcącą zaatakować Twoją stronę w związku z czym powinny one być <b>natychmiast</b> usunięte. <b>Nie</b> powinieneś otwierać tych plików, jako że mogą one wykonać jakiś złośliwy kod zawarty w nich. Nie otwieraj ich w Twojej przeglądarce internetowej.<br /><br />Jeśli rozpoznajesz te pliki jako zaufane, to jest prawdopodobnie tak ze względu na ostanie zmiany dozwolonych typów plików, typ pliku, który dopuściłeś nie występuje juz na wykazie dozwolonych typów plików i w związku z czym musisz ponownie go dodać do listy (zobacz Panel administracyjny => Publiczny upload). Nie powinieneś zezwolić na nadsyłanie plików takich jak .html, .txt, etc jako że osoba atakująca może nadesłać pliki tego typu z zawartym w nich niebezpiecznym kodem javascript. Powinieneś również, jeśli to możliwe, nie zezwolić na nadsyłanie plików .php lub innego typu wykonywalnych skryptów.<br /><br />Poniżej znajduje się lista plików, które potencjalnie mogą być niebezpieczne:");
+define("ADLAN_ERR_4", "Znaleziono pliki, które wyszły z użycia"); // 
+define("ADLAN_ERR_5", "Dla następujących plików musi zostać zmieniona nazwa na");
+define("ADLAN_ERR_6", "Następnie kliknij tutaj, aby ponownie przeskanować swoje foldery pluginów.");
+
 
 // Common Terms
 define("LAN_EDIT", "Edytuj");
@@ -209,7 +213,6 @@ define("LAN_UPDATE", "Aktualizacja");
 define("LAN_SAVE", "Zapisz");
 define("LAN_SAVED", "Zapisane");
 define("LAN_SETSAVED", "Twoje ustawienia zostały zapisane");
-define("LAN_ERROR", "Błąd");
 define("LAN_CONFIRMDEL", "Proszę potwierdzić chęć usunięcia");
 define("LAN_OPTIONS", "Opcje");
 define("LAN_PREFS", "Preferencje");
@@ -228,9 +231,10 @@ define("LAN_OK", "OK");
 
 define("LAN_PRESET", "Wstępne ustawienia");
 define("LAN_PRESET_SAVED", "Wstępne ustawienia zostały zapisane pomyślnie");
+
 define("LAN_PRESET_DELETED", "Wstępne ustawienia zostały usunięte pomyślnie");
 define("LAN_PRESET_CONFIRMDEL", "Czy jesteś pewien, że chcesz usunąć wstępne ustawienia?");
-define("LAN_NOTWRITABLE", " jest niezapisywalny, musisz ustawić CHMOD na wartość 777 dla tego folderu.");
+define("LAN_NOTWRITABLE", " jest niezapisywalny, musisz najpierw ustawić CHMOD na wartość 777 dla wskazanego pliku lub folderu.");
 define("LAN_DATE", "Data");
 define("LAN_TIME", "Czas");
 define("LAN_YES", "Tak");
@@ -248,10 +252,27 @@ define("LAN_ADMIN", "Administrator");
 define("LAN_DISPLAYOPT", "Edytuj opcje wyświetlania");
 define("LAN_GOPAGE", "Idź do strony:");
 define("LAN_DATESTAMP", "Data");
-define("LAN_OPTIONAL", "opcjonalnie");
+define("LAN_OPTIONAL", "opcja");
 define("LAN_INACTIVE", "Nieaktywny");
 
 define("LAN_BAN", "Zablokuj");
 define("LAN_RATING", "Ocena");
+
+define("LAN_UPLOAD_IMAGES", "Załaduj obrazek");
+define("LAN_UPLOAD_FILES", "Załaduj plik");
+define("LAN_UPLOAD_ADDFILE", "Dodaj kolejny plik");
+define("LAN_UPLOAD_CONFIRM", "Wszystkie niezapisane zmiany wprowadzone na tej stronie zostaną utracone. Kontynuować?");
+define("LAN_UPLOAD_777", "Wskazany katalog nie istnieje lub jest niezapisywalny, przed ładowanie musisz ustawić uprawnienia plików (CHMOD) na wartości 777 dla następujących folderów:");
+define("LAN_UPLOAD_SERVEROFF", "Ta opcja jest nieaktywna, jako że ładowanie plików jest wyłączone na Twoim serwerze");
+
+define("LAN_DISABLED", "Wyłączone");
+define("LAN_ENABLED", "Włączone");
+
+define("LAN_PRESET_CONFIRMSAVE", "Zapisać bieżące wartości formularza jako domyślne dla tej strony?");
+define("LAN_CONFIGURE", "Konfiguracja");
+
+define("LAN_BACK", "Powróć");
+
+define("LAN_CREDITS", "Podziękowania");
 
 ?>

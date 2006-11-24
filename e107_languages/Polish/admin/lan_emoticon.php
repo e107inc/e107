@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_emoticon.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_emoticon.php rev. 1.7
+|     Zgodne z: /e107_languages/English/admin/lan_emoticon.php rev. 1.8
 +-----------------------------------------------------------------------------+
 */
  
@@ -35,11 +35,11 @@ define("EMOLAN_13", "Zainstalowane zestawy");
 define("EMOLAN_14", "Zapisz konfigurację");
 define("EMOLAN_15", "Edycja/konfiguracja emotikon");
 define("EMOLAN_16", "Konfiguracja emotikon została zapisana");
-define("EMOLAN_2", "Nazwa");
-define("EMOLAN_2", "Nazwa");
-define("EMOLAN_2", "Nazwa");
-define("EMOLAN_2", "Nazwa");
-define("EMOLAN_2", "Nazwa");
-define("EMOLAN_2", "Nazwa");
+define("EMOLAN_17", "Obecnie posiadasz zestaw emotikon, który zawiera w nazwie niedozwolone odstępy!");
+define("EMOLAN_18", "Proszę zmienić nazwę wymienionych poniżej przypadków tak, aby nie zawierały w nazwie odstępów:");
+define("EMOLAN_19", "Nazwa");
+define("EMOLAN_20", "Lokalizacja");
+define("EMOLAN_21", "Błąd");
+//define("EMOLAN_2", "Nazwa");
 
 ?>

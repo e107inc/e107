@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.1 $
-|     $Date: 2006-05-21 16:14:29 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:38:38 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/alt_auth/languages/Polish/lan_alt_auth_conf.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/alt_auth/languages/English/lan_alt_auth_conf.php rev. 1.1 (11 Feb 2006)
+|     Zgodne z: /e107_plugins/alt_auth/languages/English/lan_alt_auth_conf.php rev. 1.3
 +-----------------------------------------------------------------------------+
 */
  

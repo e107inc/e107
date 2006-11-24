@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.1 $
-|     $Date: 2006-05-21 16:06:44 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:37:42 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_prefs.php,v $
 +-----------------------------------------------------------------------------+
@@ -17,7 +17,7 @@
  
 define("LAN_PREF_1", "e107 Powered Website");
 define("LAN_PREF_2", "e107 Website System");
-define("LAN_PREF_3", "Ten serwis jest oparta na systemie <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a>, który jest rozpowszechniany zgodnie z warunkami licencji <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> GPL.");
+define("LAN_PREF_3", "Serwis ten oparty jest na systemie <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a>, który rozpowszechniany jest zgodnie z warunkami licencji <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> GPL.");
 define("LAN_PREF_4", "ocenzurowano");
 define("LAN_PREF_5", "Forum");
 

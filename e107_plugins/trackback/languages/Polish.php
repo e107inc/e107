@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.8 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-24 15:44:26 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/trackback/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
@@ -16,7 +16,7 @@
 */
  
 define("TRACKBACK_L1", "Konfiguracja powiązań");
-define("TRACKBACK_L2", "Ten plugin pozwoli Ci na używanie powiązań pomiędzy Twoim aktualnościami."); // This plugin enables you to use trackback in your news posts.
+define("TRACKBACK_L2", "Wtyczka pozwoli Ci na używanie powiązań pomiędzy Twoimi aktualnościami."); // This plugin enables you to use trackback in your news posts.
 define("TRACKBACK_L3", "Trackback jest zainstalowany i gotowy do użytku.");
 define("TRACKBACK_L4", "Ustawienia powiązań zostały zapisane.");
 define("TRACKBACK_L5", "Włączone");

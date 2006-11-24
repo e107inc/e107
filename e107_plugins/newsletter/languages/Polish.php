@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.1 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:42:31 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/newsletter/languages/English.php rev. 1.1
+|     Zgodne z: /e107_plugins/newsletter/languages/English.php rev. 1.4
 +-----------------------------------------------------------------------------+
 */
  
@@ -20,8 +20,8 @@ define("NLLAN_MENU_CAPTION", "Newsletter");
 define("NLLAN_01", "Newsletter");
 define("NLLAN_02", "Pozwala w prosty i szybki sposób tworzyć i wysyłać e-biuletyny, newslettery itp.");
 define("NLLAN_03", "Konfiguruj Newsletter");
-define("NLLAN_04", "Plugin Newsletter (e-Biuletyn) został pomyślnie zainstalowany. Aby go skonfigurować powróć do 'Panelu Administratora' i kliknij w sekcji pluginów na 'Newsletter'");
-
+define("NLLAN_04", "Plugin Newsletter został pomyślnie zainstalowany. Aby go skonfigurować powróć do 'Panelu Administratora' i kliknij w sekcji pluginów na 'Newsletter'");
+define("NLLAN_05", "Nie ma jeszcze nesletterów");
 define("NLLAN_06", "Nazwa");
 define("NLLAN_07", "Prenumeratorów");
 define("NLLAN_08", "Opcje");
@@ -74,5 +74,7 @@ define("NLLAN_50", "Aby się zapisać kliknij w poniższy przycisk (adres na kt�
 define("NLLAN_51", "Wypisz mnie");
 define("NLLAN_52", "Zapisz mnie");
 define("NLLAN_53", "Czy na pewno chcesz się zapisać do tego newslettera?");
+
+define("NLLAN_54", "Wysłano"); // sprawdzić czy na pewno tak :) 
 
 ?>

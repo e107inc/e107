@@ -6,39 +6,39 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:43 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:37:42 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_banner.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_banner.php rev. 1.2
+|     Zgodne z: /e107_languages/English/lan_banner.php rev. 1.3
 +-----------------------------------------------------------------------------+
 */
  
 define("PAGE_NAME", "Reklamy");
 
-define("LAN_16", "Klient: ");
-define("LAN_17", "Hasło: ");
-define("LAN_18", "Kontynuuj");
-define("LAN_19", "Aby kontynuować, proszę wpisać nazwę klienta i hasło.");
-define("LAN_20", "Przepraszam, nie mogę odnaleźć wskazanych informacji w bazie danych. Proszę skontaktować się z administratorem strony w celu wyjaśnienia.");
-define("LAN_21", "Statystyki reklam");
-define("LAN_22", "Klient");
-define("LAN_23", "ID reklamy");
-define("LAN_24", "Klikających");
-define("LAN_25", "% kliknięć");
-define("LAN_26", "Wyświetleń");
-define("LAN_27", "Kupionych wyświetleń");
-define("LAN_28", "Pozostało wyświetleń");
-define("LAN_29", "Brak reklam");
-define("LAN_30", "Bez limitu");
-define("LAN_31", "Nie dotyczy");
-define("LAN_32", "Tak");
-define("LAN_33", "Nie");
-define("LAN_34", "Zakończenie:");
-define("LAN_35", "Adresy IP klikających");
-define("LAN_36", "Aktywny:");
-define("LAN_37", "Rozpoczęcie:");
-define("LAN_38", "Błąd");
+define("BANNERLAN_16", "Klient: ");
+define("BANNERLAN_17", "Hasło: ");
+define("BANNERLAN_18", "Kontynuuj");
+define("BANNERLAN_19", "Aby kontynuować, proszę wpisać nazwę klienta i hasło.");
+define("BANNERLAN_20", "Przepraszam, nie mogę odnaleźć wskazanych informacji w bazie danych. Proszę skontaktować się z administratorem strony w celu wyjaśnienia.");
+define("BANNERLAN_21", "Statystyki reklam");
+define("BANNERLAN_22", "Klient");
+define("BANNERLAN_23", "ID reklamy");
+define("BANNERLAN_24", "Klikających");
+define("BANNERLAN_25", "% kliknięć");
+define("BANNERLAN_26", "Wyświetleń");
+define("BANNERLAN_27", "Kupionych wyświetleń");
+define("BANNERLAN_28", "Pozostało wyświetleń");
+define("BANNERLAN_29", "Brak reklam");
+define("BANNERLAN_30", "Bez limitu");
+define("BANNERLAN_31", "Nie dotyczy");
+define("BANNERLAN_32", "Tak");
+define("BANNERLAN_33", "Nie");
+define("BANNERLAN_34", "Zakończenie:");
+define("BANNERLAN_35", "Adresy IP klikających");
+define("BANNERLAN_36", "Aktywny:");
+define("BANNERLAN_37", "Rozpoczęcie:");
+define("BANNERLAN_38", "Błąd");
 
 ?>

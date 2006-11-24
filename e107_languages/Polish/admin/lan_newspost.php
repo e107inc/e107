@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_newspost.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_newspost.php rev. 1.26
+|     Zgodne z: /e107_languages/English/admin/lan_newspost.php rev. 1.31
 +-----------------------------------------------------------------------------+
 */
  
@@ -29,8 +29,8 @@ define("NWSLAN_12", "Tytuł");
 define("NWSLAN_13", "Treść");
 define("NWSLAN_14", "Rozszerzenie");
 define("NWSLAN_15", "Komentarze");
-define("NWSLAN_16", "Włączone");
-define("NWSLAN_17", "Wyłączone");
+// define("NWSLAN_16", "Włączone"); // deprecated see lan_admin.php
+// define("NWSLAN_17", "Wyłączone"); // deprecated see lan_admin.php
 define("NWSLAN_18", "Pozwól zamieszczać komentarze dla tej wiadomości");
 define("NWSLAN_19", "Aktywacja");
 
@@ -73,7 +73,7 @@ define("NWSLAN_56", "Utwórz kategorię aktualności");
 define("NWSLAN_57", "Pozycja");
 define("NWSLAN_58", "Wyślij");
 define("NWSLAN_59", "Brak nadesłanych aktualności");
-define("NWSLAN_60", "Nadesłane aktualności");
+// define("NWSLAN_60", "Nadesłane aktualności"); //already defined above.
 
 define("NWSLAN_62", "Idź do strony: ");
 define("NWSLAN_63", "Wyszukaj wiadomość");
@@ -82,8 +82,8 @@ define("NWSLAN_66", "Załaduj plik");
 define("NWSLAN_67", "Obraz");
 define("NWSLAN_68", "Plik");
 define("NWSLAN_69", "Załaduj obraz albo plik, aby go użyć w redagowanej wiadomości");
-define("NWSLAN_70", "Folder ".e_FILE."downloads nie jest zapisywalny, przed ładowaniem plików ustaw CHMOD wskazanego folderu na wartości 777.");
-define("NWSLAN_71", "Folder ".e_IMAGE."newspost_images nie jest zapisywalny, przed ładowaniem obrazków ustaw CHMOD wskazanego folderu na wartości 777.");
+// define("NWSLAN_70", "Folder ".e_FILE."downloads nie jest zapisywalny, przed ładowaniem plików ustaw CHMOD wskazanego folderu na wartości 777."); // deprecated see lan_admin.php
+// define("NWSLAN_71", "Folder ".e_IMAGE."newspost_images nie jest zapisywalny, przed ładowaniem obrazków ustaw CHMOD wskazanego folderu na wartości 777."); // deprecated see lan_admin.php
 define("NWSLAN_72", "Wyświetlaj wiadomość tylko pomiędzy wskazanymi datami");
 define("NWSLAN_73", "Metoda prezentacji");
 define("NWSLAN_74", "Wybierz jak i gdzie ma być wyświetlana wiadomość");
@@ -91,7 +91,7 @@ define("NWSLAN_75", "Domyślnie - publikacja na pierwszej stronie");
 define("NWSLAN_76", "Tylko tytuł - publikacja na pierwszej stronie");
 define("NWSLAN_77", "Publikacja w menu aktualności");
 
-define("NWSLAN_78", "Ta opcja jest nieaktywna, ponieważ zapisywanie plików na Twoim serwerze jest wyłączone");
+// define("NWSLAN_78", "Ta opcja jest nieaktywna, ponieważ zapisywanie plików na Twoim serwerze jest wyłączone"); // deprecated see lan_admin.php
 define("NWSLAN_79", "Wyczyść formularz");
 
 define("NWSLAN_83", "Rozszerzona wiadomość");
@@ -110,17 +110,18 @@ define("NWSLAN_104", "przez");
 define("NWSLAN_105", "Zaznacz, aby data publikacji była zastąpiona aktualną");
 define("NWSLAN_106", "Nadsyłanie aktualności jest możliwe przez:");
 define("NWSLAN_107", "Włącz edytor WYSIWYG na stronie do nadsyłania wiadomości.");
+define("NWSLAN_108", "dnia");
 
 define("NWSLAN_111", "Pokaż datę nowego nagłówka");
 define("NWSLAN_112", "jeśli pole będzie odznaczone, wiadomości zawierające datę będą wyświetlane ponad wiadomościami wystawionymi w nowym dniu, przydatne dla oddzielenia wiadomości pisanych w innym dniu");
 
-define("NWSLAN_113", "Używaj niestandardowego szablony dla układu aktualności");
-define("NWSLAN_114", "jeśli temat, którego używasz posiada własny szablon wyświetlania aktualności, użyj tej opcji aby go aktywować");
+define("NWSLAN_113", "Używaj niestandardowego szablonu dla układu aktualności");
+define("NWSLAN_114", "jeśli temat, którego używasz posiada własny szablon wyświetlania aktualności, użyj tej opcji, aby go aktywować");
 
 define("NWSLAN_115", "Ile aktualności ma być wyświetlanych w archiwum?");
 define("NWSLAN_116", "Najpierw zaktualizuj zmiany w ustawieniach wyświetlania wiadomości na stronie głównej, następnie ponownie zaktualizuj ustawienia preferencji wyświetlania wiadomości w archiwum"); // First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 oznacza nieaktywne)
 define("NWSLAN_117", "Wpisz nazwę dla archiwum aktualności");
-define("NWSLAN_118", "Zobacz obrazki");
+// define("NWSLAN_118", "Zobacz obrazki"); // already defined above.
 define("NWSLAN_119", "Ustawienia zostały zapisane");
 define("NWSLAN_120", "Wiadomość dla osób nasyłających newsy"); // Text to show at the top of Submit News
 
@@ -156,21 +157,21 @@ define("LAN_NEWS_33", "Ustaw znacznik czasu dla bieżącej wiadomości");
 
 define("LAN_NEWS_34", "Powiązania");
 define("LAN_NEWS_35", "Dodaj adres powiązania");
-define("LAN_NEWS_36", "<b><i>Pingback</i></b> (wyślij <i>pingback</i> do wszystkich adresów w tym wpisie)");
-define("LAN_NEWS_37", "<b>Adresy powiązań:</b> (jeden adres w każdej linii)");
+define("LAN_NEWS_36", "<b><i>Pingback</i></b> (wyślij <i>pingback</i> do wszystkich adresów URL w tym wpisie)");
+define("LAN_NEWS_37", "<b>Adresy powiązań:</b> (jeden adres URL w każdej linii)");
 define("LAN_NEWS_38", "Dołącz obrazki");
 
 define("LAN_NEWS_39", "kliknij na pliku, aby umieścić znacznik pozycji");
 define("LAN_NEWS_40", "Dołącz pliki do pobrania");
 
 define("LAN_NEWS_42", "Pliki");
-define("LAN_NEWS_43", "(brak obrazków w ".e_IMAGE."/newspost_images)");
+// define("LAN_NEWS_43", "(brak obrazków w ".e_IMAGE."/newspost_images)"); // deprecated see lan_admin.php
 define("LAN_NEWS_44", "Powiązania nieaktywne.");
 
 define("LAN_NEWS_45", "ID");
 
 define("LAN_NEWS_46", "Pozycja nie została zaktualizowana, ponieważ żadne zmiany nie zostały wprowadzone."); // News item not updated as no changes were made
-define("LAN_NEWS_47", "Obrazek");
+// define("LAN_NEWS_47", "Obrazek"); // already defined above.
 define("LAN_NEWS_48", "Brak obrazka");
 
 define("LAN_NEWS_49", "Metoda prezentacji");

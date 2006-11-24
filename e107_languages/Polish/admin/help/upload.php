@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:37:55 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/upload.php,v $
 +-----------------------------------------------------------------------------+
@@ -18,6 +18,6 @@
 if (!defined('e107_INIT')) { exit; }
 
 $text = "Na tej stronie możesz odebrać lub przyznać uprawnienia dla użytkowników do nadsyłania plików oraz zarządzania tymi plikami, które zostały już nadesłane.";
-$ns -> tablerender("Upload", $text);
+$ns -> tablerender("Publiczny upload", $text);
 
 ?>

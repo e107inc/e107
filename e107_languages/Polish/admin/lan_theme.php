@@ -6,16 +6,16 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:24 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_theme.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_theme.php rev. 1.7
+|     Zgodne z: /e107_languages/English/admin/lan_theme.php rev. 1.
 +-----------------------------------------------------------------------------+
 */
  
-define("TPVLAN_1", "Oglądasz podgląd tematu <b>'".PREVIEWTHEMENAME."'</b>. Nie jest on ustawiony jako główny temat strony, lecz został aktywowany, aby zapewnić podgląd wyglądu tematu.<br />Aby ustawić ten temat jako główny wygląd strony, <a href='".e_ADMIN."theme.php'>powróć do menadżera tematów</a> i wybierz 'Ustaw jako główny temat strony'.<br />Aby zobaczyć więcej tematów proszę <a href='".e_ADMIN."theme.php'>kliknąć tutaj</a>");
+define("TPVLAN_1", "Oglądasz podgląd tematu <b>'".PREVIEWTHEMENAME."'</b>. Nie jest on ustawiony jako główny temat strony, lecz został aktywowany, aby zapewnić podgląd wyglądu tematu.<br />Aby ustawić ten temat jako główny wygląd strony, <a href='".e_ADMIN."theme.php'>powróć do menedżera tematów</a> i wybierz 'Ustaw jako główny temat strony'.<br />Aby zobaczyć więcej tematów proszę <a href='".e_ADMIN."theme.php'>kliknąć tutaj</a>");
 define("TPVLAN_2", "Podgląd tematu");
 define("TPVLAN_3", "Główny temat strony został ustawiony na");
 define("TPVLAN_4", "Autor");
@@ -44,7 +44,7 @@ define("TPVLAN_23", "Domyślny zestaw styli"); //  stylesheet
 define("TPVLAN_24", "Brak informacji");
 define("TPVLAN_25", "Aby wybrać któryś ze zestawów styli proszę przejść do <a href='".e_ADMIN."prefs.php'>ustawień</a> i kliknąć na 'Theme'.");
 
-define("TPVLAN_26", "Menadżer tematów");
+define("TPVLAN_26", "Menedżer tematów");
 define("TPVLAN_27", "Proszę wybrać zestaw stylu do użycia");
 define("TPVLAN_28", "Włączone");
 define("TPVLAN_29", "Wyłączone");

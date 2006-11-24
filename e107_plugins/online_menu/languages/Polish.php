@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:42:51 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_menu/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/online_menu/languages/English.php rev. 1.4
+|     Zgodne z: /e107_plugins/online_menu/languages/English.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -20,7 +20,7 @@ define("ONLINE_L2", "Użytkowników: ");
 define("ONLINE_L3", "Na tej stronie: ");
 define("ONLINE_L4", "Online");
 define("ONLINE_L5", "Użytkowników");
-define("ONLINE_L6", "najnowszy");
-define("TRACKING_MESSAGE", "Śledzenie użytkowników online jest obecnie wyłączone, proszę odblokować tą opcję <a href='".e_ADMIN."users.php?options'>tutaj</a><br />");
+define("ONLINE_L6", "Najnowszy");
+define("TRACKING_MESSAGE", "Śledzenie użytkowników online jest obecnie wyłączone. Proszę odblokować tę opcję <a href='".e_ADMIN."users.php?options'>tutaj</a><br />");
 
 ?>

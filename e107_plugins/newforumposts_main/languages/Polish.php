@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:42:14 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newforumposts_main/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
@@ -24,7 +24,7 @@ define("NFPM_LAN_6", "Tematów");
 define("NFPM_LAN_7", "przez");
 
 define("NFPM_L1", "Ten plugin wyświetla na stronie głównej listę nowych postów na forum.");
-define("NFPM_L2", "Nowe psoty na forum");
+define("NFPM_L2", "Nowe posty na forum");
 define("NFPM_L3", "Aby skonfigurować plugin kliknij na linku w sekcji pluginów na stronie Panel Administratora");
 define("NFPM_L4", "W której strefie aktywować?");
 define("NFPM_L5", "Nieaktywny");

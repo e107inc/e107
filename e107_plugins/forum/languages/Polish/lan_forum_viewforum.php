@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:27:16 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:40:37 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_viewforum.php,v $
 +-----------------------------------------------------------------------------+
@@ -54,7 +54,7 @@ define("LAN_400", "Odblokuj temat");
 define("LAN_401", "Przyklej");
 define("LAN_402", "Przenieś temat");
 define("LAN_403", "Przejdź do forum");
-define("LAN_404", "Moderatorzy foeum");
+define("LAN_404", "Moderatorzy forum");
 	
 define("LAN_405", "użytkownik aktualnie przegląda to forum");
 define("LAN_406", "użytkowników aktualnie przegląda to forum");

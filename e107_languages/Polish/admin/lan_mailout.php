@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-05-24 16:46:46 $
+|     $Revision: 1.11 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_mailout.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_mailout.php rev. 1.11
+|     Zgodne z: /e107_languages/English/admin/lan_mailout.php rev. 1.14
 +-----------------------------------------------------------------------------+
 */
  
@@ -26,7 +26,7 @@ define("PRFLAN_69", "Wiadomość email została wysłana pomyślnie, proszę spr
 define("PRFLAN_70", "Metoda wysyłania emaili");
 define("PRFLAN_71", "Jeśli nie wiesz, pozostaw jako php");
 define("PRFLAN_72", "Serwer SMTP");
-define("PRFLAN_73", "Użytkownik SMTP");
+define("PRFLAN_73", "Użytk. SMTP");
 define("PRFLAN_74", "Hasło SMTP");
 define("PRFLAN_75", "Email nie został wysłany. Proszę wykonać przegląd ustawień SMTP lub odblokować protokół SMTP i sprawdzić ponownie.");
 
@@ -68,5 +68,37 @@ define("MAILAN_33", "Skrzynka odbiorcza");
 define("MAILAN_34", "Nazwa konta");
 define("MAILAN_35", "Hasło");
 define("MAILAN_36", "Usuń maile zwrotne po sprawdzeniu");
+
+define("MAILAN_37", "Dalej");
+define("MAILAN_38", "Anuluj");
+define("MAILAN_39", "Korespondencja elektroniczna");
+define("MAILAN_40", "Musisz zmienić nazwę pliku <b>e107.htaccess</b> na <b>.htaccess</b> w katalogu");
+define("MAILAN_41", "przed wysyłaniem poczty z tej strony.");
+define("MAILAN_42", "Ostrzeżenie");
+define("MAILAN_43", "Nazwa użytkownika");
+define("MAILAN_44", "Login użytkownika");
+define("MAILAN_45", "Email użytkownika");
+define("MAILAN_46", "Dobierz użytkowników według reguły<br />");
+define("MAILAN_47", "zawiera");
+define("MAILAN_48", "równa się");
+define("MAILAN_49", "Id");
+define("MAILAN_50", "Autor");
+define("MAILAN_51", "Temat");
+define("MAILAN_52", "Ostatnia modyfikacja");
+define("MAILAN_53", "Administratorzy");
+define("MAILAN_54", "Do siebie");
+define("MAILAN_55", "Grupa użytkowników");
+define("MAILAN_56", "Wyślij pocztę");
+define("MAILAN_57", "Utrzymaj sesję SMTP w działaniu");
+define("MAILAN_58", "Wystąpił problem z załącznikiem:");
+define("MAILAN_59", "Postęp wysyłania poczty");
+define("MAILAN_60", "Wysyłanie...");
+define("MAILAN_61", "Nie ma oczekujących emaili do wysłania."); // There are no remaining emails to be sent
+define("MAILAN_62", "Emaile wysłane:");
+define("MAILAN_63", "Emaile niewysłane:");
+define("MAILAN_64", "Całkowity czas wysyłania:"); // Total time elapsed
+define("MAILAN_65", "sekundy");
+define("MAILAN_66", "Anulowanie zostało zakończone pomyślnie");
+define("MAILAN_67", "Używaj 'POP przed uwierzytelnianiem SMTP'");
 
 ?>

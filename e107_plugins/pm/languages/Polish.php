@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.1 $
-|     $Date: 2006-05-21 16:44:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:43:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/pm/languages/English.php rev. 1.11 (09 Dec 2005)
+|     Zgodne z: /e107_plugins/pm/languages/English.php rev. 1.13, Mon Oct 30 14:01:47 2006 UTC
 +-----------------------------------------------------------------------------+
 */
  
@@ -78,6 +78,7 @@ define('LAN_PM_59', "Idź do strony: ");
 define('LAN_PM_60', "Nie masz uprawnień do wyświetlenia tej wiadomości");
 define('LAN_PM_61', "Bez tematu");
 define('LAN_PM_62', "Plik: [{FILENAME}] przekracza limit wielkości - nie dołączono");
+define('LAN_PM_63', "Grupa:");
 
 define("LAN_PM_100", "Nowa wiadomość prywatna od ");
 define("LAN_PM_101", "Otrzymałeś nową wiadomość prywatną od ");
@@ -90,5 +91,6 @@ define("LAN_PM_107", "Wiadomość prywatna, którą wysłałeś do {UNAME}, zost
 define("LAN_PM_108", "Wiadomość wysłana dnia: ");
 define("LAN_PM_109", "Nowa wiadomość");
 define("LAN_PM_110", "OK");
+define("LAN_PM_111", "Czytaj");
 
 ?>

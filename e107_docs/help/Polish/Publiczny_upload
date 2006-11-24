@@ -1,0 +1,6 @@
+
+Q>	Chciałbym zezwolić użytkownikom na nadsyłanie i ładowaniu plików do mojego serwisu, lecz martwię się o bezpieczeństwo...
+A>	Jest kilka sposobów na polepszenie bezpieczeństwa. Pierwszy, użyj binarnego przechowywania, załadowane pliki będą wówczas przechowywane w bazie danych MySQL i nie będą dostępne dla nikogo samodzielnie do pobrania. Ponadto, ustaw listę dozwolonych typów pliku. Jeśli ktoś spróbuje załadować plik o rozszerzeniu innym niż zdefiniowanych typów, to zostanie on natychmiast usunięty z serwera.
+
+Q>	Mam już kilka załadowanych plików, co mogę teraz zrobić?
+A>	Masz możliwość skopiowania plików do menedżera plików, aby pozwolić innym na ich pobranie, oraz skopiowania informacji o załadowanych plikach do sekcji aktualność w celu dodania newsa na ich temat.

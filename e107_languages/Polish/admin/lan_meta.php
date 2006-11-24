@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_meta.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_meta.php rev. 1.3
+|     Zgodne z: /e107_languages/English/admin/lan_meta.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -27,5 +27,7 @@ define("METLAN_8", "Znaczniki meta");
 define("METLAN_9", "Opis");
 define("METLAN_10", "Słowa kluczowe");
 define("METLAN_11", "Prawa autorskie");
+define("METLAN_12", "Używaj tytułu oraz streszczenia aktualności jako opisu dla znacznika meta na stronie aktualności.");
+define("METLAN_13", "Autor");
 
 ?>

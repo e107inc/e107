@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:27:16 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:40:37 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_conf.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_conf.php rev rev. 1.3
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_conf.php rev rev. 1.4
 +-----------------------------------------------------------------------------+
 */
  
@@ -27,7 +27,7 @@ define("FORLAN_13", "Czy na pewno chcesz usunąć wskazaną ankietę?<br /> Cofn
 define("FORLAN_14", "Anuluj");
 define("FORLAN_15", "Potwierdź usuniecie wypowiedzi z forum");
 define("FORLAN_16", "Potwierdź usuniecie ankiety");
-define("FORLAN_17", "napisał(a)");
+define("FORLAN_17", "autor");
 define("FORLAN_18", "Czy na pewno chcesz usunąć wskazane forum");
 define("FORLAN_19", "a także wszystkie tematy i posty z nimi związane?");
 define("FORLAN_20", "Ankiety zostaną również usunięte");

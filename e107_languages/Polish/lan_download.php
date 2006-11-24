@@ -6,19 +6,19 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:43 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:37:42 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_download.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_download.php rev. 1.11
+|     Zgodne z: /e107_languages/English/lan_download.php rev. 1.15
 +-----------------------------------------------------------------------------+
 */
  
 define("PAGE_NAME", "Download");
 
 define("LAN_dl_1", "(Dostęp ograniczony)");
-define("LAN_dl_2", "W tej chwili nie ma żadnych plików do pobrania, zapraszamy wkrótce.");
+define("LAN_dl_2", "W tej chwili nie ma żadnych plików do pobrania. Zapraszamy wkrótce.");
 define("LAN_dl_3", "Nie ma jeszcze plików do pobrania w tej kategorii.");
 define("LAN_dl_4", "Dostępne pliki: ");
 define("LAN_dl_5", "Całkowity rozmiar plików: ");
@@ -34,7 +34,7 @@ define("LAN_dl_14", "Oceń ten plik");
 define("LAN_dl_15", "Dziękujemy za ocenę");
 define("LAN_dl_16", "pobrań z obecnych");
 define("LAN_dl_17", " plików");
-define("LAN_dl_18", "Download");
+define("LAN_dl_18", "Pobrań");
 define("LAN_dl_19", "Kategoria");
 define("LAN_dl_20", "Plików");
 define("LAN_dl_21", "Rozmiar");
@@ -76,7 +76,7 @@ define("LAN_dl_52", "Gość");
 define("LAN_dl_53", "Kliknij, aby zobaczyć plik");
 define("LAN_dl_54", "Administrator zostanie poinformowany o tym pliku, proszę zostawić wiadomość jeśli uważasz to za konieczne.");
 define("LAN_dl_55", "<b>Nie</b> używaj tej formy kontaktu z administratorem w innych celach.");
-define("LAN_dl_56", "Zgłoś uszkodzony plik");
+// define("LAN_dl_56", "Zgłoś uszkodzony plik"); // already defined above.
 define("LAN_dl_57", "zgłoszone przez");
 define("LAN_dl_58", "Następujący plik został zgłoszony jako uszkodzony na stronie ");
 define("LAN_dl_59", "Zgłoszone przez: ");
@@ -86,7 +86,7 @@ define("LAN_dl_61", "Błąd pobierania pliku");
 define("LAN_dl_62", "Pobieranie pliku zostało zablokowane. Twój limit na pobierane pliki został przekroczony.");
 define("LAN_dl_63", "Nie masz uprawnień do pobierania tego pliku.");
 define("LAN_dl_64", "Wróć");
-define("LAN_dl_65", "Nie znaleziono");
+define("LAN_dl_65", "Plik nie został odnaleziony");
 
 define("LAN_dl_66", "Wybierz mirror, z którego pobierzesz plik");
 

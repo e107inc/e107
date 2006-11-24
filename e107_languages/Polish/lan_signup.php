@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.4 $
-|     $Date: 2006-05-21 16:06:44 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-24 15:37:42 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_signup.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.17
+|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.23
 +-----------------------------------------------------------------------------+
 */
  
@@ -23,22 +23,22 @@ define("LAN_9", "Login: ");
 define("LAN_10", "ta nazwa będzie używana do logowania");
 define("LAN_17", "Hasło: ");
 define("LAN_103", "Podana wyświetlana nazwa lub login nie może być zaakceptowana, proszę zmienić te dane na jakieś inne.");
-define("LAN_104", "Podany login już istnieje w bazie danych, proszę zmienić go na jakiś inny.");
+define("LAN_104", "Podany login już istnieje w bazie danych. Proszę zmienić go na jakiś inny.");
 define("LAN_105", "Podane hasła różnią się. Proszę wprowadzić je ponownie.");
 define("LAN_106", "Podany adres email jest błędny. Wprowadź go ponownie.");
 define("LAN_107", "Dziękujemy! Jesteś teraz zarejestrowanym użytkownikiem ");
 define("LAN_108", "Proces rejestracji został ukończony");
-define("LAN_109", "Ten serwis przestrzega The Children's Online Privacy Protection Act (COPPA) z 1998 roku w związku z czym nie może zaakceptować rejestracji od użytkowników poniżej 13 roku życia bez pisemnego upoważnienia ich rodziców lub opiekunów. Aby uzyskać więcej informacji możesz przeczytać akt prawny (legislację) ");
+define("LAN_109", "Serwis ten przestrzega The Children's Online Privacy Protection Act (COPPA) z 1998 roku, w związku z czym nie może zaakceptować rejestracji użytkowników poniżej 13 roku życia bez pisemnego upoważnienia ich rodziców lub opiekunów. Aby uzyskać więcej informacji, możesz przeczytać akt prawny (legislację) ");
 define("LAN_110", "Rejestracja");
 define("LAN_111", "Powtórz hasło: ");
 define("LAN_112", "Adres email: ");
-define("LAN_113", "Ukryć adres email?: ");
+define("LAN_113", "Ukryć adres email ?: ");
 define("LAN_114", "Ta opcja pozwala ukryć adresu email na wyświetlanych stronach");
 define("LAN_123", "Rejestracja");
 define("LAN_185", "Nie wypełniłeś wszystkich wymaganych pól");
 define("LAN_201", "Tak");
 define("LAN_200", "Nie");
-define("LAN_202", "Posiadasz już konto. Jeśli zapomniałeś swoje hasło, proszę kliknąć w link \'Zapomniałem hasła\'");
+define("LAN_202", "Posiadasz już konto. Jeśli nie pamiętasz swojego hasła, proszę kliknąć w link 'Zmiana hasła'");
 define("LAN_309", "Poniżej proszę wpisać swoje dane rejestracyjne. ");
 define("LAN_399", "Dalej");
 define("LAN_400", "Login oraz hasło są <b>rozróżniane pod względem wielkości liter</b>");
@@ -97,12 +97,26 @@ define("LAN_LOGINNAME", "Login");
 define("LAN_PASSWORD", "Hasło");
 define("LAN_USERNAME", "Wyświetlana nazwa");
 define("LAN_EMAIL_01", "Drogi(a)");
-define("LAN_EMAIL_04", "Proszę zachować tą wiadomość emaila dla własnej wiadomości.");
+define("LAN_EMAIL_04", "Proszę zachować treść emaila dla własnej wiadomości.");
 define("LAN_EMAIL_05", "Twoje hasło zostało zaszyfrowane, w związku z czym jeśli je zgubisz lub zapomnisz nie będziemy mogli go odzyskać. Jednakże, jeśli dojdzie do takiej sytuacji będziesz mógł(mogła) otrzymać nowe hasło.");
 define("LAN_EMAIL_06", "Dziękujemy za Twoją rejestrację.");
 
 define("LAN_SIGNUP_37", "Ten etap rejestracji został zakończony. Administrator strony wkrótce dokona akceptacji Twojego nowego konta. Po zatwierdzeniu, otrzymasz emaila potwierdzającego, że Twoje nowe konto zostało zaakceptowane.");
 define("LAN_SIGNUP_38", "Wpisałeś dwa różniące się od siebie adresy email. Proszę wpisać poprawny adres email w dwóch wymaganych polach.");
 define("LAN_SIGNUP_39", "Powtórz adres email:");
+
+define("LAN_SIGNUP_40", "Aktywacja nie jest wymagana");
+define("LAN_SIGNUP_41", "Twoje konto zostało juz aktywowane.");
+define("LAN_SIGNUP_42", "Wystąpił problem, email rejestracyjny nie został wysłany, proszę skontaktować się z administratorem strony.");
+define("LAN_SIGNUP_43", "Email został wysłany");
+define("LAN_SIGNUP_44", "Email aktywacyjny został wysłany na adres:");
+define("LAN_SIGNUP_45", "Proszę sprawdzić swoją skrzynkę odbiorczą.");
+define("LAN_SIGNUP_47", "Ponowne wysyłanie emaila aktywacyjnego");
+define("LAN_SIGNUP_48", "Login lub adres email");
+define("LAN_SIGNUP_49", "Jeśli rejestracja została dokonana z niewłaściwym adresem email, to wprowadź poniżej poprawny i potwierdź wpisując swoje stare hasło:");
+define("LAN_SIGNUP_50", "Nowy adres email");
+define("LAN_SIGNUP_51", "Stare hasło");
+define("LAN_SIGNUP_52", "Niepoprawne hasło");
+define("LAN_SIGNUP_53", "pole nie przeszło testu walidacji");
 
 ?>

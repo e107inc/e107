@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_banner.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_banner.php rev. 1.10
+|     Zgodne z: /e107_languages/English/admin/lan_banner.php rev. 1.11
 +-----------------------------------------------------------------------------+
 */
  
@@ -65,7 +65,6 @@ define("BNRLAN_64", "Reklama została zaktualizowana");
 define("BANNER_MENU_L1", "Reklama");
 define("BANNER_MENU_L2", "Konfiguracja menu reklam została zapisana");
 
-//v.617
 define("BANNER_MENU_L3", "Nagłówek");
 define("BANNER_MENU_L5", "Konfiguracja reklam"); 
 define("BANNER_MENU_L6", "Wybierz kampanie do pokazania w menu");
@@ -76,5 +75,6 @@ define("BANNER_MENU_L10", "Metoda wyświetlania");
 define("BANNER_MENU_L12", "Prosta");
 define("BANNER_MENU_L13", "Z nagłówkiem menu");
 define("BANNER_MENU_L18", "Aktualizuj ustawienia");
+define("BANNER_MENU_L19", "Ilość reklam do wyświetlenia:<br />Ta opcja zostanie użyta tylko wówczas, gdy zostanie wybrana wielokrotność kampanii.");
 
 ?>

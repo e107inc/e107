@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:06:43 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:37:42 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_links.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_links.php rev. 1.1
+|     Zgodne z: /e107_languages/English/lan_links.php rev. 1.2
 +-----------------------------------------------------------------------------+
 */
  
@@ -33,7 +33,7 @@ define("LAN_90", "Dodaj nowy link w tej kategorii");
 define("LAN_91", "Dodaj nową kategorię");
 
 define("LAN_92", "Wyślij link");
-define("LAN_93", "Po wysłaniu, Twój link zostanie sprawdzony przez administratora i jeśli będzie odpowiedni zostanie dodany do działu linków.");
+define("LAN_93", "Po wysłaniu Twój link zostanie sprawdzony przez administratora i jeśli będzie odpowiedni zostanie dodany do działu linków.");
 define("LAN_94", "Nazwa:");
 define("LAN_95", "Adres URL:");
 define("LAN_96", "Opis:");

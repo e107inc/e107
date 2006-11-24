@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_db.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_db.php rev. 1.2
+|     Zgodne z: /e107_languages/English/admin/lan_db.php rev. 1.6
 +-----------------------------------------------------------------------------+
 */
  
@@ -29,7 +29,20 @@ define("DBLAN_11", "Baza danych MySQL");
 define("DBLAN_12", "została zoptymalizowana");
 define("DBLAN_13", "Cofnij");
 define("DBLAN_14", "Gotowe");
-define("DBLAN_15", "Kliknij w przycisk, aby sprawdzić czy są dostępne jakieś uaktualnienia BD");
+define("DBLAN_15", "Kliknij w przycisk, aby sprawdzić czy są dostępne uaktualnienia BD");
 define("DBLAN_16", "Sprawdź uaktualnienia");
+define("DBLAN_17", "Nazwa preferencji");
+define("DBLAN_18", "Wartość preferencji");
+define("DBLAN_19", "Kliknij w przycisk, aby otworzyć edytor preferencji (tylko dla zaawansowanych użytkowników)");
+define("DBLAN_20", "Edytor preferencji");
+define("DBLAN_21", "Usuń zaznaczone"); // Delete Checked
+define("DBLAN_22", "Pluginy: Analiza i przegląd");
+define("DBLAN_23", "Skanowanie zostało zakończone pomyślnie");
+define("DBLAN_24", "Nazwa");
+define("DBLAN_25", "Katalog");
+define("DBLAN_26", "Zawarte dodatki");
+define("DBLAN_27", "Zainstalowany");
+define("DBLAN_28", "Kliknij w przycisk, aby przeskanować katalogi pluginów w poszukiwaniu zmian");
+define("DBLAN_29", "Skanowanie katalogów pluginów");
 
 ?>

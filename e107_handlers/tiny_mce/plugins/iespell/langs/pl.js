@@ -1,4 +1,20 @@
-// UK lang variables
+/*
++-----------------------------------------------------------------------------+
+|     e107 website system - Language File.
++-----------------------------------------------------------------------------+
+|     Spolszczenie systemu e107 v0.7
+|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:37:11 $
+|     $Author: marcelis_pl $
+|     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/plugins/iespell/langs/pl.js,v $
++-----------------------------------------------------------------------------+
+|     Zgodne z: /e107_handlers/tiny_mce/plugins/iespell/langs/en.php rev. 1.2
++-----------------------------------------------------------------------------+
+*/
 
-tinyMCELang['lang_iespell_desc'] = 'Run spell checking';
-tinyMCELang['lang_iespell_download'] = "ieSpell not detected. Click OK to go to download page."
+tinyMCE.addToLang('',{
+iespell_desc : 'Uruchom sprawdzanie pisowni',
+iespell_download : "Nie wykryto pluginu, kliknij aby przejść do strony z pluginami."
+});

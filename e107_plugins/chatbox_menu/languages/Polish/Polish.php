@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.1 $
-|     $Date: 2006-05-21 16:20:10 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-24 15:39:12 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Polish/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/chatbox_menu/languages/English/English.php rev. 1.6
+|     Zgodne z: /e107_plugins/chatbox_menu/languages/English/English.php rev. 1.7
 +-----------------------------------------------------------------------------+
 */
  
@@ -33,7 +33,7 @@ define("CHATBOX_L15", "Wysłana wiadomość jest za długa lub nie zawiera żadn
 define("CHATBOX_L16", "Anonim");
 define("CHATBOX_L17", "Wykryto duplikat postu");
 define("CHATBOX_L18", "Wiadomość zmoderowana");
-define("CHATBOX_L19", "Możesz pisać tylko jeden post co każde ".FLOODTIMEOUT." sekund");
+define("CHATBOX_L19", "Możesz pisać tylko jeden post co każde ".(FLOODPROTECT ? FLOODTIMEOUT : 'n/a')." sekund");
 
 define("CHATBOX_L20", "Czat (wszystkie posty)");
 define("CHATBOX_L21", "Posty na czacie");

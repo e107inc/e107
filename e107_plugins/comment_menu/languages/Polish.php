@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-05-21 16:21:24 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-24 15:39:35 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/comment_menu/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/comment_menu/languages/English.php rev. 1.2 (27 Jan 2005)
+|     Zgodne z: /e107_plugins/comment_menu/languages/English.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -25,5 +25,8 @@ define("CM_L7", "Pokazywać oryginalny nagłówek wiadomości w menu?");
 define("CM_L8", "Konfiguracja menu Ostatnie komentarze");
 define("CM_L9", "Aktualizuj ustawienia");
 define("CM_L10", "Konfiguracja została zapisana");
+define("CM_L11", "dnia");
+define("CM_L12", "Odp:");
+define("CM_L13", "Autor:");
 
 ?>

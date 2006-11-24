@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:06:45 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:38:23 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_image.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_image.php rev. 1.3
+|     Zgodne z: /e107_languages/English/admin/lan_image.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -49,5 +49,22 @@ define("IMALAN_32", "Zarejestrowani użytkownicy");
 define("IMALAN_33", "Administratorzy");
 define("IMALAN_34", "Uaktywnij Sleight");
 define("IMALAN_35", "Naprawia przezroczystość kanału alpha dla plików PNG-24 w przeglądarce internetowej IE 5/6 (stosuje <i>Sitewide</i>)"); // Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)
+
+define("IMALAN_36", "Walidacja rozmiaru oraz dostępu awatarów");
+define("IMALAN_37", "Walidacja awatarów");
+define("IMALAN_38", "Maksymalna dopuszczalna szerokość");
+define("IMALAN_39", "Maksymalna dopuszczalna wysokość");
+define("IMALAN_40", "Za szeroki");
+define("IMALAN_41", "Za wysoki");
+define("IMALAN_42", "Nie znaleziono");
+define("IMALAN_43", "Usuń załadowane awatary");
+define("IMALAN_44", "Usuń odsyłacze do zewnętrznych awatarów");
+define("IMALAN_45", "Nie znaleziono");
+define("IMALAN_46", "Za duży");
+define("IMALAN_47", "Wszystkie załadowane awatary");
+define("IMALAN_48", "Wszystkie zewnętrzne awatary");
+define("IMALAN_49", "Użytkowników z awatarami");
+define("IMALAN_50", "Wszystkich");
+define("IMALAN_51", "Awatar dla ");
 
 ?>

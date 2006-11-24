@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.9 $
-|     $Date: 2006-05-21 16:27:16 $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-24 15:40:37 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum.php,v $
 +-----------------------------------------------------------------------------+
@@ -34,8 +34,8 @@ define("LAN_46", "Forum");
 define("LAN_47", "Tematy");
 define("LAN_48", "Posty");
 define("LAN_49", "Ostatni post");
-define("LAN_51", "W tej chwili nie ma jeszcze żadnych dyskusji, zapraszamy wkrótce.");
-define("LAN_52", "Obecnie w tym dziale nie ma jeszcze żadnych tematów, zapraszamy wkrótce.");
+define("LAN_51", "W tej chwili nie ma jeszcze żadnych dyskusji. Zapraszamy wkrótce.");
+define("LAN_52", "Obecnie w tym dziale nie ma jeszcze żadnych tematów. Zapraszamy wkrótce.");
 define("LAN_79", "Nowe posty");
 define("LAN_80", "Brak nowych postów");
 define("LAN_81", "Temat zamknięty");
@@ -88,7 +88,7 @@ define("LAN_420", "gości");
 	
 define("LAN_421", "Pokaż nowe posty");
 define("LAN_422", "Nowe posty od Twojej ostatniej wizyty");
-define("LAN_423", "Napisał(a)");
+define("LAN_423", "Autor");
 define("LAN_424", "Nowe tematy");
 define("LAN_425", "Odp:");
 	
