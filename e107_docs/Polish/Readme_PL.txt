@@ -1,4 +1,4 @@
-Polskie tłumaczenie systemu CMS e107 Website System v0.7.6
+﻿Polskie tłumaczenie systemu CMS e107 Website System v0.7.6
 
 Wersja tłumaczenia: v0.7.6
 wersja kodowa: UTF-8
@@ -9,7 +9,7 @@ Tłumaczenie wykonał zespół - e107pl Dev Team - http://e107.org.pl
 
 Skład zespołu:
 
-Maksymilian Wencelis - Administrator projektu (Project Admin/Developer/Translator)
+Maksymilian Wencelis - Administrator projektu e107pl (Project Admin - e107pl/Developer/Translator)
 Mateusz (Prozac) Gola - Deweloper/Tłumacz (Developer/Translator)
 
 Spis treści:
