@@ -1,8 +1,8 @@
-﻿<?php
+<?php
 
 //extend fpdf class from package with custom functions
 class e107PDF extends UFPDF{
-	
+
 	//variables of html parser
 	var $B;
 	var $I;
@@ -18,7 +18,7 @@ class e107PDF extends UFPDF{
 	var $issetfont;
 	var $issetcolor;
 	var $iminfo=array(0,0);
-	
+
 	function e107PDF($orientation='P',$unit='mm',$format='A4'){
 		global $pdfpref;
 		//Call parent constructor
@@ -120,7 +120,7 @@ class e107PDF extends UFPDF{
 		foreach($text as $k=>$v){
 			$text[$k] = $tp->toHTML($v, TRUE);
 		}
-		
+
 		//set some variables
 		$this->SetMargins($pdfpref['pdf_margin_left'],$pdfpref['pdf_margin_top'],$pdfpref['pdf_margin_right']);
 		//$this->SetAutoPageBreak(true,25);
@@ -148,7 +148,7 @@ class e107PDF extends UFPDF{
 		$this->SetY(15);
 		$y0 = $this->GetY();
 		if($pdfpref['pdf_show_logo']){
-			$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);			
+			$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 			$this->PutImage(PDFLOGO, '1');
 			$x1 = $this->GetX();
 			$y1 = $this->GetY();
@@ -440,7 +440,7 @@ class e107PDF extends UFPDF{
 				$this->issetfont=true;
 				$this->SetStyle('B',true);
                 break;
-            
+
 		}
 	}
 
