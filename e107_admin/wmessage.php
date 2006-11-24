@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-07-21 21:14:16 $
-|     $Author: e107coders $
+|     $Revision: 1.28 $
+|     $Date: 2006-11-24 07:08:00 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,7 +22,7 @@ if (!getperms("M")) {
 	 exit;
 }
 $e_sub_cat = 'wmessage';
-$e_wysiwyg = "wm_text";
+$e_wysiwyg = "data";
 
 require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;
