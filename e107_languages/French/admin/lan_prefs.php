@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-11-22 12:13:44 $
+|     $Revision: 1.13 $
+|     $Date: 2006-11-24 19:25:11 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ define("PRFLAN_81", "Activer la vérification du code-image durant l'identificat
 define("PRFLAN_83", "exemple");
 define("PRFLAN_87", "Commentaires");
 define("PRFLAN_88", "Permettre d'emboîter les commentaires");
-define("PRFLAN_89", "En-tête du site :");
+define("PRFLAN_89", "En-tête du site ");
 define("PRFLAN_90", "Autoriser les auteurs à éditer leurs commentaires");
 define("CUSTSIG_1", "Paramètres sauvegardés !");
 define("CUSTSIG_2", "Nom réel :");
@@ -155,7 +155,7 @@ define("PRFLAN_157", "Tous les Noms d'Affichage ont été ajusté au Nom d'Utili
 define("PRFLAN_158", "Longueur maximum du Nom d'Affichage");
 define("PRFLAN_159", "vous regardez cette page depuis");
 define("PRFLAN_160", "Vérifier les serveurs distants lors de la validation des adresses courriel.");
-define("PRFLAN_161", "Désactiver tous les commentaires sur le site");
+define("PRFLAN_161", "Permettre la rédaction de commentaires sur tout le site");
 define("PRFLAN_162", "Informations de contact");
 define("PRFLAN_163", "eg. Nom de la compagnie, Addresse, Téléphone etc.");
 define("PRFLAN_164", "Permettre aux utilisateurs de s'envoyer une copie du courriel de contact");
