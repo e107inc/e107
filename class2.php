@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.321 $
-|     $Date: 2006-11-19 20:32:11 $
-|     $Author: mrpete $
+|     $Revision: 1.322 $
+|     $Date: 2006-11-25 03:38:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -748,7 +748,7 @@ if(!defined("THEME")){
 	// here we TEST the theme (see below for deciding what theme to USE)
 	//
 
-	if ((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && (strpos(e_PAGE,"admin_") === 0 || strpos(e_SELF, "admin/") !== FALSE)) || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+	if((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && (strpos(e_PAGE,"admin_") === 0 || strpos(str_replace($e107->base_path, "", e_SELF), "admin/") !== FALSE)) || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 
 		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 			checkvalidtheme($pref['sitetheme']);
