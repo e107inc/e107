@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-10-24 13:34:38 $
-|     $Author: mrpete $
+|     $Revision: 1.14 $
+|     $Date: 2006-11-25 05:34:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -55,13 +55,13 @@ else
 			header("location: ../index.php");
 			exit;
 		} else {
-			 
+
 			$userpass = md5($_POST['authpass']);
 			$cookieval = $row['user_id'].".".md5($userpass);
-			 
+
 			$sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['authname'])."'");
 			list($user_id, $user_name, $userpass) = $sql->db_Fetch();
-			if ($pref['tracktype'] == "session") {
+			if ($pref['user_tracking'] == "session") {
 				$_SESSION[$pref['cookie_name']] = $cookieval;
 			} else {
 				cookie($pref['cookie_name'], $cookieval, (time()+3600 * 24 * 30));
@@ -69,10 +69,10 @@ else
 			echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
 		}
 	}
-	 
+
 	$e_sub_cat = 'logout';
 	require_once(e_ADMIN."header.php");
-	 
+
 	if (ADMIN == FALSE) {
 		$obj = new auth;
 		$obj->authform();
@@ -80,11 +80,11 @@ else
 		exit;
 	}
 }
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class auth
 {
-	 
+
 	function authform()
 	{
 		/*
@@ -94,9 +94,9 @@ class auth
 		# - return		null
 		# - scope		public
 		*/
-		 
+
 		global $use_imagecode, $sec_img;
-		
+
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."'>\n
 			<table style='width:50%' class='fborder'>
@@ -125,18 +125,18 @@ class auth
 		$text .= "
 			<tr>
 			<td colspan='2' style='text-align:center' class='forumheader'>
-			 
+
 			<input class='button' type='submit' name='authsubmit' value='".ADLAN_91."' />
 			</td>
 			</tr>
 			</table>
 			</form>
 			</div>";
-		 
+
 		$au = new e107table;
 		$au->tablerender(ADLAN_92, $text);
 	}
-	 
+
 	function authcheck($authname, $authpass)
 	{
 		/*
@@ -170,6 +170,6 @@ class auth
 		return array("authfail");
 	}
 }
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ?>
