@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-07-03 02:06:25 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2006-11-25 15:39:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -127,6 +127,7 @@ foreach($mainLinkArray as $links) {
 }
 
 function setlink($link_name, $link_url, $link_open, $link_description) {
+	global $tp;
 	switch ($link_open) {
 		case 1:
 		$link_append = "rel='external'";
@@ -140,9 +141,12 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 		default:
 		$link_append = '';
 	}
+	
 	if (!strstr($link_url, "http:") && !strstr($link_url, "void") && strpos($link_url, "mailto:") !== 0) {
 		$link_url = e_BASE.$link_url;
 	}
+	$link_url =	$tp->replaceConstants($link_url, $nonrelative = TRUE, $all = false);
+
 	if ($link_open == 4) {
 		$link = "<a style='text-decoration:none' title='".$link_description."' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
 	} else {
