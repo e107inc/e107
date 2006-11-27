@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-10-24 17:02:57 $
+|     $Revision: 1.53 $
+|     $Date: 2006-11-27 08:48:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -476,7 +476,7 @@ CREATE TABLE user (
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,
   user_image varchar(100) NOT NULL default '',
-  user_timezone char(3) NOT NULL default '',
+  user_timezone varchar(3) NOT NULL default '',
   user_hideemail tinyint(3) unsigned NOT NULL default '0',
   user_join int(10) unsigned NOT NULL default '0',
   user_lastvisit int(10) unsigned NOT NULL default '0',
