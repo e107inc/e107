@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2006-11-08 00:27:19 $
+|     $Revision: 1.70 $
+|     $Date: 2006-11-27 13:37:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -401,8 +401,11 @@ if ($action == 'edit' || $action == 'quote')
 	}
 
 	$thread_info[0]['user_name'] = $forum->thread_user($thread_info[0]);
-	$subject = $thread_info['0']['thread_name'];
-	$post = $tp->toForm($thread_info[0]['thread_thread']);
+	if (!isset($_POST['fpreview']))
+	{
+		$subject = $thread_info['0']['thread_name'];
+		$post = $tp->toForm($thread_info[0]['thread_thread']);
+	}
 	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
 
 	if ($action == 'quote') {
