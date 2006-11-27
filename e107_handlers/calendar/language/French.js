@@ -79,49 +79,49 @@ Calendar._SMN = new Array
 
 // tooltips
 Calendar._TT = {};
-Calendar._TT["INFO"] = "Au sujet du calendier";
+Calendar._TT["INFO"] = "A propos du calendrier";
 
-Calendar._TT["À Propos"] =
-"DHTML Date/Time Selector\n" +
+Calendar._TT["ABOUT"] =
+"Sélecteur Date/Heure DHTML\n" +
 "(c) dynarch.com 2002-2005 / Auteur: Mihai Bazon\n" + // don't translate this ;-)
 "Pour obtenir la dernière version, visitez: http://www.dynarch.com/projects/calendar/\n" +
 "Distribué sous GNU LGPL.  Voir http://gnu.org/licenses/lgpl.html pour les détails." +
 "\n\n" +
 "Sélection de la date:\n" +
-"- Use the \xab, \xbb buttons to select year\n" +
-"- Use the " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " buttons to select month\n" +
-"- Hold mouse button on any of the above buttons for faster selection.";
+"- Utiliser les boutons \xab, \xbb pour sélectionner l&#39;année\n" +
+"- Utiliser les boutons " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " pour sélectionner le mois\n" +
+"- maintenir le bouton de la souris enfoncé ou appuyer n&#39;importe quel boutons ci-dessus pour une sélection rapide.";
 Calendar._TT["ABOUT_TIME"] = "\n\n" +
-"Time selection:\n" +
-"- Click on any of the time parts to increase it\n" +
-"- or Shift-click to decrease it\n" +
-"- or click and drag for faster selection.";
+"Sélection de l&#39;heure:\n" +
+"- Cliquer sur heures ou minutes pour incrémenter\n" +
+"- ou Maj-clic pour décrémenter\n" +
+"- ou cliquer et glisser-déplacer pour une sélection plus rapide";
 
-Calendar._TT["PREV_YEAR"] = "Prev. year (hold for menu)";
-Calendar._TT["PREV_MONTH"] = "Prev. month (hold for menu)";
-Calendar._TT["GO_TODAY"] = "Go Today";
-Calendar._TT["NEXT_MONTH"] = "Next month (hold for menu)";
-Calendar._TT["NEXT_YEAR"] = "Next year (hold for menu)";
-Calendar._TT["SEL_DATE"] = "Select date";
-Calendar._TT["DRAG_TO_MOVE"] = "Drag to move";
-Calendar._TT["PART_TODAY"] = " (today)";
+Calendar._TT["PREV_YEAR"] = "Année précédente (maintenir pour le menu)";
+Calendar._TT["PREV_MONTH"] = "Mois précédent (maintenir pour le menu)";
+Calendar._TT["GO_TODAY"] = "Aller à aujourd&#39;hui";
+Calendar._TT["NEXT_MONTH"] = "Mois suivant (maintenir pour le menu)";
+Calendar._TT["NEXT_YEAR"] = "Année suivante (maintenir pour le menu)";
+Calendar._TT["SEL_DATE"] = "Sélectionner la date";
+Calendar._TT["DRAG_TO_MOVE"] = "Glisser pour déplacer";
+Calendar._TT["PART_TODAY"] = " (aujourd'hui)";
 
 // the following is to inform that "%s" is to be the first day of week
 // %s will be replaced with the day name.
-Calendar._TT["DAY_FIRST"] = "Display %s first";
+Calendar._TT["DAY_FIRST"] = "Afficher %s en premier";
 
 // This may be locale-dependent.  It specifies the week-end days, as an array
 // of comma-separated numbers.  The numbers are from 0 to 6: 0 means Sunday, 1
 // means Monday, etc.
 Calendar._TT["WEEKEND"] = "0,6";
 
-Calendar._TT["CLOSE"] = "Ferm&eacute;";
-Calendar._TT["TODAY"] = "Aujourd&#39ui";
-Calendar._TT["TIME_PART"] = "(Shift-)Click or drag to change value";
+Calendar._TT["CLOSE"] = "Fermer";
+Calendar._TT["TODAY"] = "Aujourd&#39hui";
+Calendar._TT["TIME_PART"] = "(Maj-)Clic ou glisser pour changer la valeur";
 
 // date formats
 Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
 Calendar._TT["TT_DATE_FORMAT"] = "%a %e %b ";
 
-Calendar._TT["WK"] = "sem";
+Calendar._TT["WK"] = "Sem.";
 Calendar._TT["TIME"] = "Heure:";

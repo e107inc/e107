@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-11-24 19:25:11 $
+|     $Revision: 1.14 $
+|     $Date: 2006-11-27 03:07:13 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -157,7 +157,7 @@ define("PRFLAN_159", "vous regardez cette page depuis");
 define("PRFLAN_160", "Vérifier les serveurs distants lors de la validation des adresses courriel.");
 define("PRFLAN_161", "Permettre la rédaction de commentaires sur tout le site");
 define("PRFLAN_162", "Informations de contact");
-define("PRFLAN_163", "eg. Nom de la compagnie, Addresse, Téléphone etc.");
+define("PRFLAN_163", "eg. Nom de la compagnie, Adresse, Téléphone etc.");
 define("PRFLAN_164", "Permettre aux utilisateurs de s'envoyer une copie du courriel de contact");
 define("PRFLAN_165", "Faille possible de spam, utilisez avec précaution");
 define("PRFLAN_166", "Montrer les images émoticônes dans les formulaires de commentaires?");

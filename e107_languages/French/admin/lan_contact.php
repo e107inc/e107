@@ -4,15 +4,15 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_contact.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-10-27 14:43:42 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-27 03:07:13 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
 define("LANCONTACT_01", "Détails du contact");
 define("LANCONTACT_02", "Formulaire de contact");
 define("LANCONTACT_03", "Entrez votre nom:");
-define("LANCONTACT_04", "Addresse courriel:");
+define("LANCONTACT_04", "Adresse courriel:");
 define("LANCONTACT_05", "Sujet du message:");
 define("LANCONTACT_06", "Entrez votre message:");
 define("LANCONTACT_07", "Envoyez une copie de ce message à votre propre adresse ");

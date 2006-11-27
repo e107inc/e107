@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/French.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-22 12:14:01 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-27 03:07:22 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -196,7 +196,7 @@ define("EC_LAN_144", "à ");
 define("EC_ADLAN_A10", "Configuration");
 define("EC_ADLAN_A11", "Catégories");
 define("EC_ADLAN_A12", "Calendrier");
-define("EC_ADLAN_A13", "Editer");
+define("EC_ADLAN_A13", "Éditer");
 define("EC_ADLAN_A14", "Nouvelle");
 define("EC_ADLAN_A15", "Supprimer");
 define("EC_ADLAN_A16", "Confirmer");
@@ -206,7 +206,7 @@ define("EC_ADLAN_A19", "Administrer les catégories");
 define("EC_ADLAN_A20", "Catégories calendrier");
 define("EC_ADLAN_A21", "Nom de la catégorie ");
 define("EC_ADLAN_A23", "Créer une catégorie");
-define("EC_ADLAN_A24", "Editer catégorie");
+define("EC_ADLAN_A24", "Éditer la catégorie");
 define("EC_ADLAN_A25", "Sauvegarder");
 define("EC_ADLAN_A26", "Catégorie créée");
 define("EC_ADLAN_A27", "Impossible de créer une catégorie");

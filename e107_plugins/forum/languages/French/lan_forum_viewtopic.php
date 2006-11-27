@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_viewtopic.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-27 14:43:46 $
+|     $Revision: 1.7 $
+|     $Date: 2006-11-27 03:07:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@
   define("LAN_397", "Courriel");
   define("LAN_398", "Profil");
   define("LAN_399", "Message Privé");
-  define("LAN_400", "Editer");
+  define("LAN_400", "Éditer");
   define("LAN_401", "Citer");
   define("LAN_402", "Auteur");
   define("LAN_403", "Message");

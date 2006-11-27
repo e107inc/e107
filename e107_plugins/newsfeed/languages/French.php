@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/French.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-22 12:15:28 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-27 03:07:47 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("NFLAN_01", "Ressources d'".GLOBAL_LAN_NEWS_2."s");
 define("NFLAN_02", "Cette extension récupérera les ressources d'".GLOBAL_LAN_NEWS_1."s d'autres sites Web et les affichera selon vos préférences");
 define("NFLAN_03", "Configurer les Ressources d'".GLOBAL_LAN_NEWS_2."s");
 define("NFLAN_04", "L'extension Ressources d'".GLOBAL_LAN_NEWS_2."s a été installé avec succès. Pour ajouter une ressource d'".GLOBAL_LAN_NEWS_1." et configurer l'extension, retournez sur la page principale d'administration et cliquez sur l'icône ressources d'".GLOBAL_LAN_NEWS_1." de votre section Extension.");
-define("NFLAN_05", "Editer");
+define("NFLAN_05", "Éditer");
 define("NFLAN_06", "Supprimer");
 define("NFLAN_07", "Ressources d'".GLOBAL_LAN_NEWS_2."s existantes");
 define("NFLAN_08", "Page d'accueil des Ressources d'".GLOBAL_LAN_NEWS_2."s");

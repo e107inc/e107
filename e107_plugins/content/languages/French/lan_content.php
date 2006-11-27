@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-22 12:14:22 $
+|     $Revision: 1.9 $
+|     $Date: 2006-11-27 03:07:31 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@ define("CONTENT_PAGETITLE_LAN_2", "Nouveauté");
 define("CONTENT_PAGETITLE_LAN_3", "Catégorie");
 define("CONTENT_PAGETITLE_LAN_4", "Top Évaluation");
 define("CONTENT_PAGETITLE_LAN_5", "Auteur");
-define("CONTENT_PAGETITLE_LAN_6", "Archive");
+define("CONTENT_PAGETITLE_LAN_6", "Archives");
 define("CONTENT_PAGETITLE_LAN_7", "Proposer");
 define("CONTENT_PAGETITLE_LAN_8", "Créer un contenu");
 define("CONTENT_PAGETITLE_LAN_9", "Gestionnaire personnel de contenu");
@@ -154,13 +154,13 @@ define("CONTENT_LAN_65", "Proposer un contenu");
 define("CONTENT_LAN_66", "Cliquez ici pour ajouter un contenu sur ce site, vous choisirez sa catégorie d'appartenance lors de sa création.");
 define("CONTENT_LAN_67", "Gestionnaire personnel de contenu");
 define("CONTENT_LAN_68", "Cliquer ici pour gérer le contenu auquel vous avez accès.");
-define("CONTENT_LAN_69", "Courrieler la");
+define("CONTENT_LAN_69", "Poster la");
 define("CONTENT_LAN_70", "Imprimer la");
 define("CONTENT_LAN_71", "page");
 define("CONTENT_LAN_72", "Catégorie ");
 define("CONTENT_LAN_73", "Pas de contenu pour le moment");
 define("CONTENT_LAN_74", "");
-define("CONTENT_LAN_75", "Envoyer un contenu");
+define("CONTENT_LAN_75", "Proposer un contenu");
 define("CONTENT_LAN_76", "Créer un fichier pdf de la");
 define("CONTENT_LAN_77", "Recherche de contenu");
 define("CONTENT_LAN_78", "page sans titre");
@@ -168,8 +168,8 @@ define("CONTENT_LAN_79", "page");
 define("CONTENT_LAN_80", "contenus récents  : ");
 define("CONTENT_LAN_81", "catégories");
 define("CONTENT_LAN_82", "Pas de contenu pour le moment dans");
-define("CONTENT_LAN_83", "Archive");
-define("CONTENT_LAN_84", "Contenus de l'Archive");
+define("CONTENT_LAN_83", "Archives");
+define("CONTENT_LAN_84", "Contenus des Archives");
   define("CONTENT_LAN_85", "liste d&#39;auteur");
 define("CONTENT_LAN_86", "Aperçu Top Qualité ");
 define("CONTENT_LAN_87", "Top Qualité Contenu");

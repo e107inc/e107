@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-11-22 12:14:22 $
+|     $Revision: 1.11 $
+|     $Date: 2006-11-27 03:07:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ define("CONTENT_ADMIN_ITEM_LAN_42", "cocher pour mettre à jour l'horodateur au 
 define("CONTENT_ADMIN_ITEM_LAN_43", "Publier le contenu proposé");
 define("CONTENT_ADMIN_ITEM_LAN_44", "Créer un contenu ");
 define("CONTENT_ADMIN_ITEM_LAN_45", "Mettre à jour un contenu ");
-define("CONTENT_ADMIN_ITEM_LAN_46", "Pré-aperçu ");
+define("CONTENT_ADMIN_ITEM_LAN_46", "Aperçu de : ");
 define("CONTENT_ADMIN_ITEM_LAN_47", "Nouveau pré-aperçu ");
 define("CONTENT_ADMIN_ITEM_LAN_48", "Catégorie mère principale");
 define("CONTENT_ADMIN_ITEM_LAN_49", "contenus proposés");
@@ -260,7 +260,7 @@ define("CONTENT_ADMIN_MENU_LAN_12", "Pages des Catégories");
 define("CONTENT_ADMIN_MENU_LAN_13", "Pages de Contenu");
 define("CONTENT_ADMIN_MENU_LAN_14", "Menu");
 define("CONTENT_ADMIN_MENU_LAN_15", "Ordre");
-define("CONTENT_ADMIN_MENU_LAN_16", "Page Archive ");
+define("CONTENT_ADMIN_MENU_LAN_16", "Page des Archives ");
 define("CONTENT_ADMIN_MENU_LAN_17", "Gestionnaire personnel");
 define("CONTENT_ADMIN_MENU_LAN_18", "Page Auteur");
 define("CONTENT_ADMIN_MENU_LAN_19", "Gestionnaire personnel");
@@ -382,7 +382,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_9", "Aperçu des contenus <i>pour cette caté
 define("CONTENT_ADMIN_OPT_LAN_MENU_10", "Affichage des Pages de Catégorie <i>pour cette catégorie</i>");
 define("CONTENT_ADMIN_OPT_LAN_MENU_11", "Pages de Contenu <i>pour cette catégorie</i>");
 define("CONTENT_ADMIN_OPT_LAN_MENU_12", "Page Auteur <i>pour cette catégorie</i>");
-define("CONTENT_ADMIN_OPT_LAN_MENU_13", "Page Archive <i>pour cette catégorie</i>");
+define("CONTENT_ADMIN_OPT_LAN_MENU_13", "Page Archives <i>pour cette catégorie</i>");
 define("CONTENT_ADMIN_OPT_LAN_MENU_14", "Page des meilleures évaluations <i>pour cette catégorie</i>");
 define("CONTENT_ADMIN_OPT_LAN_MENU_15", "Page des meilleurs qualités <i>pour cette catégorie</i>");
 define("CONTENT_ADMIN_OPT_LAN_MENU_16", "Page liste des catégories (Toutes les catégories dans la catégorie principale).");
@@ -496,7 +496,7 @@ define("CONTENT_ADMIN_OPT_LAN_30", "Page d'un Auteur");
 define("CONTENT_ADMIN_OPT_LAN_31", "Nouveauté");
 define("CONTENT_ADMIN_OPT_LAN_32", "Page de Contenu");
 define("CONTENT_ADMIN_OPT_LAN_33", "Meilleures évaluations");
-define("CONTENT_ADMIN_OPT_LAN_34", "Archive");
+define("CONTENT_ADMIN_OPT_LAN_34", "Archives");
 define("CONTENT_ADMIN_OPT_LAN_35", "Qualité");
 define("CONTENT_ADMIN_OPT_LAN_36", "Caractère de séparation de l'arborescence");
 define("CONTENT_ADMIN_OPT_LAN_37", "Définir comment s'affiche l'arborescence");
@@ -559,7 +559,7 @@ define("CONTENT_ADMIN_OPT_LAN_93", "Titre");
 define("CONTENT_ADMIN_OPT_LAN_94", "Ajouter une boîte de recherche");
 define("CONTENT_ADMIN_OPT_LAN_95", "Ajouter une boîte de triage");
 define("CONTENT_ADMIN_OPT_LAN_96", "Montrer les liens de navigation");
-define("CONTENT_ADMIN_OPT_LAN_97", "si désactivé toutes les liens ci-dessous sont négligées");
+define("CONTENT_ADMIN_OPT_LAN_97", "si désactivé tous les liens ci-dessous seront négligées");
 define("CONTENT_ADMIN_OPT_LAN_98", "Lien : toutes les catégories");
 define("CONTENT_ADMIN_OPT_LAN_99", "Lien : tous les auteurs");
 define("CONTENT_ADMIN_OPT_LAN_100", "Lien : tous les articles de contenu ");
@@ -612,7 +612,7 @@ define("CONTENT_ADMIN_OPT_LAN_146", "Toutes les Catégories");
 define("CONTENT_ADMIN_OPT_LAN_147", "Une Catégorie");
 define("CONTENT_ADMIN_OPT_LAN_148", "Item de Contenu");
 define("CONTENT_ADMIN_OPT_LAN_149", "Page de l'auteur");
-define("CONTENT_ADMIN_OPT_LAN_150", "Page d'Archive");
+define("CONTENT_ADMIN_OPT_LAN_150", "Page des Archives");
 define("CONTENT_ADMIN_OPT_LAN_151", "Page des Meilleures Évaluations");
 define("CONTENT_ADMIN_OPT_LAN_152", "Page des Meilleures Qualités");
 define("CONTENT_ADMIN_OPT_LAN_153", "Page des Propositions");
@@ -635,8 +635,8 @@ define("CONTENT_ADMIN_OPT_LAN_169", "dernière page");
 define("CONTENT_ADMIN_OPT_LAN_170", "où devrait apparaître les étiquettes de données (prédéfinies & personnalisées) dans un item de contenu multipage ?");
 define("CONTENT_ADMIN_OPT_LAN_171", "nombre de niveaux");
 define("CONTENT_ADMIN_OPT_LAN_172", "valeur numérique pour afficher le nombre de niveaux des sous-catégories de l'arborescence des catégories. Laisser vide pour afficher tous les niveaux.");
-define("CONTENT_ADMIN_OPT_LAN_173", "inclure 'accueil' dans l'arnorescence");
-define("CONTENT_ADMIN_OPT_LAN_174", "inclure la page d'entrée du gestionnaire de contenu dans l'arborescence");
+define("CONTENT_ADMIN_OPT_LAN_173", "Inclure 'accueil' dans l'arborescence");
+define("CONTENT_ADMIN_OPT_LAN_174", "Inclure la page d'entrée du gestionnaire de contenu dans l'arborescence");
 
 
 ?>
