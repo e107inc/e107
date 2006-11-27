@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.174 $
-|     $Date: 2006-11-22 23:47:35 $
+|     $Revision: 1.175 $
+|     $Date: 2006-11-27 08:29:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ class e_parse
 		$text = str_replace($search, $replace, $text);
 		$text = html_entity_decode($text, $mode,CHARSET);
 		if(e_WYSIWYG !== TRUE){
-		  	$text = str_replace(chr(160),"&amp;nbsp;",$text); // fix for utf-8 issue with html_entity_decode("&nbsp;");  
+		  	$text = str_replace(chr(160),"&amp;nbsp;",$text); // fix for utf-8 issue with html_entity_decode("&nbsp;");
 		}
 
 		return $text;
@@ -471,6 +471,8 @@ class e_parse
 	}
 
 	function toAttribute($text) {
+		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
+		$text = htmlspecialchars($text); // Xhtml compliance.
 		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) {
 			$text = $this->replaceConstants($text);
 			return $text;
