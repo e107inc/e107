@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-11-27 02:53:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2006-11-27 09:38:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,7 @@ class e_bbcode
 		global $pref;
 		$core_bb = array(
 		'blockquote', 'img', 'i', 'u', 'center',
-		'*br', 'color', 'size', 'code',
+		'_br', 'color', 'size', 'code',
 		'html', 'flash', 'link', 'email',
 		'url', 'quote', 'left', 'right',
 		'b', 'justify', 'file', 'stream',
@@ -63,7 +63,7 @@ class e_bbcode
 		$this->bbLocation = array_diff($this->bbLocation, array(''));
 		krsort($this->bbLocation);
 		$this->List = array_keys($this->bbLocation);
-		while($this->List[count($this->List)-1]{0} == "*")
+		while($this->List[count($this->List)-1]{0} == "_")
 		{
 			array_unshift($this->List, array_pop($this->List));
 		}
@@ -89,7 +89,7 @@ class e_bbcode
 		$tmplist = array();
 		foreach($this->List as $code)
 		{
-			if("*" == $code[0])
+			if("_" == $code[0])
 			{
 				if(strpos($text, "[".substr($code, 1)) !== FALSE)
 				{
@@ -107,7 +107,7 @@ class e_bbcode
 
 		foreach($tmplist as $code)
 		{
-			if("*" == $code{0})
+			if("_" == $code{0})
 			{
 				$code = substr($code, 1);
 				$this->single_bb = true;
@@ -148,7 +148,7 @@ class e_bbcode
 		$code_text = $tp->replaceConstants($matches[4]);
 		if($this->single_bb == true)
 		{
-			$code = '*'.$code;
+			$code = '_'.$code;
 		}
 		if (E107_DEBUG_LEVEL)
 		{
@@ -164,12 +164,12 @@ class e_bbcode
 		{
 			if ($this->bbLocation[$code] == 'core')
 			{
-				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('*', '', $code)).'.bb';
+				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('_', '', $code)).'.bb';
 			}
 			else
 			{
 				// Add code to check for plugin bbcode addition
-				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower(str_replace('*', '', $code)).'.bb';
+				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower($code).'.bb';
 			}
 			if (file_exists($bbFile))
 			{
