@@ -13,5 +13,6 @@
 */
 
 define("TD_MENU_L1", "Ander nieuws");
+define("TD_MENU_L2", "Ander nieuws");
 
 ?>
