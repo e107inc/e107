@@ -108,9 +108,9 @@ define("USRLAN_139", "Uw account is geactiveerd.\n\nU kunt {SITEURL} nu bezoeken
 define("USRLAN_140", "E-mail nogmaals verzonden aan");
 define("USRLAN_141", "Kon geen e-mail opnieuw versturen aan");
 define("USRLAN_142", "met de volgende activeringslink");
-define("USRLAN_143", "Controle op bounce");
+define("USRLAN_143", "Controle op bouncen");
 define("USRLAN_144", "Verstuur iedereen een bevestigingse-mail");
-define("USRLAN_145", "Gebouncde leden");
+define("USRLAN_145", "Gebouncte leden");
 define("USRLAN_146", "Ledeninformatie is beschikbaar voor");
 
 define("DUSRLAN_1", "ID");
@@ -155,5 +155,5 @@ define("LAN_MAINADMIN","Hoofdbeheerder");
 define("LAN_ADMIN","Beheerder");
 define("LAN_NOTVERIFIED","Niet geverifieerd");
 define("LAN_BANNED","Geblokkeerd"); 
-define("LAN_BOUNCED","Gebounced");
+define("LAN_BOUNCED","Gebouncet");
 ?>
