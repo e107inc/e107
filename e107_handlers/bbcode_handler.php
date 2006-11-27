@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2006-10-21 11:04:44 $
-|     $Author: mrpete $
+|     $Revision: 1.47 $
+|     $Date: 2006-11-27 02:53:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -124,6 +124,7 @@ class e_bbcode
 				$text = preg_replace_callback($pattern, array($this, 'doCode'), $text);
 				$leftover_code = $_matches[1].$_matches[2];
 				$text = str_replace("[{$leftover_code}", "&#091;{$leftover_code}", $text);
+				if ($i == strpos($text, "[{$code}")) { break; }
 
 				if ($pos == ($i = strpos($text,"[{$code}")))
     			{
