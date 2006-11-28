@@ -16,7 +16,7 @@ switch($custom_query[0])
 						$ret .= ($custom_query[0] != "login noprofile") ? "<a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n.:. ":"";
 						$ret .= "<a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a> .:. <a href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a> .:.</span>";
 				} else {
-						$ret .= "<form method='post' action='".e_SELF."'>\n<div class='loginc_div'>\n".LOGIN_MENU_L1."<input class='tbox loginc user' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button loginc' type='submit' name='userlogin' value='Login' />";
+						$ret .= "<form method='post' action='".e_SELF."'>\n<div class='loginc_div'>\n".LOGIN_MENU_L1."<input class='tbox loginc user' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button loginc' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />";
 						if($pref['user_reg'])
 						{
 							$ret .= "&nbsp;&nbsp;<a href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";
