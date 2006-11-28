@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2006-11-12 04:03:44 $
-|     $Author: mrpete $
+|     $Revision: 1.88 $
+|     $Date: 2006-11-28 18:16:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -124,8 +124,7 @@ if (isset($_POST['update_options'])) {
 	$pref['profile_comments'] = $_POST['profile_comments'];
 	$pref['track_online'] = $_POST['track_online'];
 	$pref['force_userupdate'] = $_POST['force_userupdate'];
-	unset($pref['memberlist_access']);
-//	$pref['memberlist_access'] = $_POST['memberlist_access'];
+	$pref['memberlist_access'] = $_POST['memberlist_access'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
