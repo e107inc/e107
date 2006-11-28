@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2006-10-20 17:21:01 $
+|     $Revision: 1.35 $
+|     $Date: 2006-11-28 08:43:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -136,7 +136,7 @@ class emotec
 
 			foreach($emoteArray as $emote)
 			{
-				$text .= "<img src='".$emote['path']."/".$emote['fname']."' alt='' /> ";
+				$text .= "<img src='".$emote['path'].$emote['fname']."' alt='' /> ";
 			}
 
 			$text .= "</td>
