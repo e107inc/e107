@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.21 $
-|   $Date: 2006-06-20 00:23:06 $
-|   $Author: e107coders $
+|   $Revision: 1.22 $
+|   $Date: 2006-11-28 23:41:23 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -93,7 +93,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 		if ($files['size'][$key])
 		{
 			$filesize[] = $files['size'][$key];
-			$name = preg_replace("/[^a-z0-9._]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
+			$name = preg_replace("/[^a-z0-9._-]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
 			if ($avatar == "attachment") {
 				$name = time()."_".USERID."_".$fileinfo.$name;
 			}
