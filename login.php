@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-07-04 19:02:09 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2006-11-28 18:01:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -61,7 +61,7 @@ if (!USER) {
 	echo preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE_HEADER);
 
 	$login_message = LAN_LOGIN_3." | ".SITENAME;
-	$ns->tablerender($login_message, $text);
+	$ns->tablerender($login_message, $text, 'login_page');
 
 	if ($pref['user_reg'])
 	{
