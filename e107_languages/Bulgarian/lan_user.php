@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -66,5 +66,6 @@ define("LAN_425", "Изпрати лично съобщение");
 define("LAN_426", "по-рано");
 
 define("USERLAN_1", "Peer Rating");
+define("USERLAN_2", "Нямате достъп за преглед на тази страница.");
 
 ?>

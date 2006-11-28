@@ -1,15 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File
-|     Bulgarian Language Pack for e107 Version 0.7
-|     Copyright © 2005 - Bulgarian e107
-|     http://www.e107bg.org
-|     Encoding: utf-8
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_ren_help.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -62,4 +58,9 @@ define("LANHELP_40", "Все още няма файлове за сваляне"
 define("LANHELP_41", "Големина на шрифт...");
 define("LANHELP_42", "Избор на картинка...");
 define("LANHELP_43", "Избор на файл...");
+define("LANHELP_44", "Клик за отваряне на прозорец на емоции ...");
+define("LANHELP_45", "Вмъкване на картинка от директория: ");
+define("LANHELP_46", "* Не са намерени файлове в: ");
+
+define("LANHELP_47", "Вмъкни flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
 ?>

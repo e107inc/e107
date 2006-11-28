@@ -4,46 +4,46 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("UPLLAN_1", "Upload removed from list.");
-define("UPLLAN_2", "Settings saved in database");
-define("UPLLAN_3", "Upload ID");
+define("UPLLAN_1", "Добавения файл е премахнат от списъка.");
+define("UPLLAN_2", "Настройките са запазени в базата данни");
+define("UPLLAN_3", "ID на добавения файл");
 // define("UPLLAN_4", "Date");
-define("UPLLAN_5", "Poster");
-define("UPLLAN_6", "Email");
-define("UPLLAN_7", "Website");
-define("UPLLAN_8", "File Name");
+define("UPLLAN_5", "Добавил");
+define("UPLLAN_6", "Имейл");
+define("UPLLAN_7", "Сайт");
+define("UPLLAN_8", "Име на файла");
 
-define("UPLLAN_9", "Version");
-define("UPLLAN_10", "File");
-define("UPLLAN_11", "File Size");
-define("UPLLAN_12", "Screenshot");
-define("UPLLAN_13", "Description");
-define("UPLLAN_14", "Demo");
+define("UPLLAN_9", "Версия");
+define("UPLLAN_10", "Файл");
+define("UPLLAN_11", "Големина на файла");
+define("UPLLAN_12", "Снимка за преглед");
+define("UPLLAN_13", "Описание");
+define("UPLLAN_14", "Демо изглед");
 // define("UPLLAN_15", "Options");
-define("UPLLAN_16", "copy to newspost");
-define("UPLLAN_17", "remove upload from list");
-define("UPLLAN_18", "View details");
-define("UPLLAN_19", "There are no unmoderated public uploads");
-define("UPLLAN_20", "There");
-define("UPLLAN_21", "unmoderated public upload");
+define("UPLLAN_16", "копране в новините");
+define("UPLLAN_17", "премахване от листа на добавените");
+define("UPLLAN_18", "Виж подробности");
+define("UPLLAN_19", "В момента няма непрегледани добавени файлове");
+define("UPLLAN_20", "В момента има");
+define("UPLLAN_21", "непрегледани добавени файлове");
 define("UPLLAN_22", "ID");
-define("UPLLAN_23", "Name");
-define("UPLLAN_24", "Filetype");
-define("UPLLAN_25", "Uploads Enabled?");
-define("UPLLAN_26", "No public uploads will be permitted if disabled");
-// define("UPLLAN_27", "Yes");
-// define("UPLLAN_28", "No");
+define("UPLLAN_23", "Име");
+define("UPLLAN_24", "Вид на файла");
+define("UPLLAN_25", "Разрешаване на публично добавяне?");
+define("UPLLAN_26", "Няма да могат да се добавят файлове от потребителите ако е забранено");
+// define("UPLLAN_27", "Да");
+// define("UPLLAN_28", "Не");
 
 define("UPLLAN_29", "Storage type");
 define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> binary is only suitable for smaller files under approximately 500kb");
 define("UPLLAN_31", "Flatfile");
 define("UPLLAN_32", "Binary");
-define("UPLLAN_33", "Maximum file size");
+define("UPLLAN_33", "Максимална големина на файловете");
 define("UPLLAN_34", "Maximum upload size in bytes - leave blank to conform to php.ini setting ( php.ini setting is");
 define("UPLLAN_35", "Allowed file types");
 define("UPLLAN_36", "Please enter one type per line");

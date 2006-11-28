@@ -1,18 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File
-|     Bulgarian Language Pack for e107 Version 0.7
-|     Copyright © 2005 - Bulgarian e107
-|     http://www.e107bg.org
-|     Encoding: utf-8
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_parser_functions.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("LAN_GUEST", "Гост");
+define("LAN_WROTE", "написа"); // as in John wrote.."  ";
 
 ?>

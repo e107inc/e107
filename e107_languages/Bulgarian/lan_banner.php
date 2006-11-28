@@ -8,35 +8,35 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_banner.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Реклама");
 
-define("LAN_16", "Потребител: ");
-define("LAN_17", "Парола: ");
-define("LAN_18", "Продължи");
-define("LAN_19", "Моля въведете вашето клиентско име и парола за да продължите");
-define("LAN_20", "Съжаляваме не е възможно намирането на въведените данни в клиентската база. Моля, свържете се с администратора на сайта за повече информация.");
-define("LAN_21", "Статистика");
-define("LAN_22", "Клиент");
-define("LAN_23", "Банер ID");
-define("LAN_24", "Кликове");
-define("LAN_25", "% Клик");
-define("LAN_26", "Показвания");
-define("LAN_27", "Закупени показвания");
-define("LAN_28", "Оставащи показвания");
-define("LAN_29", "Няма банери");
-define("LAN_30", "Неограничен");
-define("LAN_31", "Неизвестно");
-define("LAN_32", "Да");
-define("LAN_33", "Не");
-define("LAN_34", "Изтича:");
-define("LAN_35", "Кликове - IP адреси");
-define("LAN_36", "Активно:");
-define("LAN_37", "Начало:");
-define("LAN_38", "Error");
+define("BANNERLAN_16", "Потребител: ");
+define("BANNERLAN_17", "Парола: ");
+define("BANNERLAN_18", "Продължи");
+define("BANNERLAN_19", "Моля въведете вашето клиентско име и парола за да продължите");
+define("BANNERLAN_20", "Съжаляваме не е възможно намирането на въведените данни в клиентската база. Моля, свържете се с администратора на сайта за повече информация.");
+define("BANNERLAN_21", "Статистика");
+define("BANNERLAN_22", "Клиент");
+define("BANNERLAN_23", "Банер ID");
+define("BANNERLAN_24", "Кликове");
+define("BANNERLAN_25", "% Клик");
+define("BANNERLAN_26", "Показвания");
+define("BANNERLAN_27", "Закупени показвания");
+define("BANNERLAN_28", "Оставащи показвания");
+define("BANNERLAN_29", "Няма банери");
+define("BANNERLAN_30", "Неограничен");
+define("BANNERLAN_31", "Неизвестно");
+define("BANNERLAN_32", "Да");
+define("BANNERLAN_33", "Не");
+define("BANNERLAN_34", "Изтича:");
+define("BANNERLAN_35", "Кликове - IP адреси");
+define("BANNERLAN_36", "Активно:");
+define("BANNERLAN_37", "Начало:");
+define("BANNERLAN_38", "Error");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Bulgarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 21:55:00 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:52:05 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -27,4 +27,6 @@ define("ONLINE_EL7", "преглежда");
 
 define("ONLINE_EL8", "най-много онлайн: ");
 define("ONLINE_EL9", "на");
+
+define("TRACKING_MESSAGE", "Статистиката за онлайн потребителите е изключена - включване от <a href='".e_ADMIN."users.php?options'>тук</a></span><br />");
 ?>

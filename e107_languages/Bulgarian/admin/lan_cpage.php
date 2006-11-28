@@ -4,52 +4,52 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_cpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("CUSLAN_1", "Title");
-define("CUSLAN_2", "Type");
-define("CUSLAN_3", "Options");
-define("CUSLAN_4", "Delete this page?");
-define("CUSLAN_5", "Existing Pages");
-define("CUSLAN_7", "Menu Name");
-define("CUSLAN_8", "Title / Caption");
-define("CUSLAN_9", "Text");
-define("CUSLAN_10", "Allow page to be rated");
-define("CUSLAN_11", "Front page");
-define("CUSLAN_12", "Create page");
-define("CUSLAN_13", "Allow comments");
-define("CUSLAN_14", "Password protect page");
-define("CUSLAN_15", "enter password to protect page");
-define("CUSLAN_16", "Create link in main menu");
-define("CUSLAN_17", "enter link name to create");
-define("CUSLAN_18", "Page / link visible to");
-define("CUSLAN_19", "Update Page");
-define("CUSLAN_20", "Create Page");
-define("CUSLAN_21", "Update Menu");
-define("CUSLAN_22", "Create Menu");
-define("CUSLAN_23", "Edit page");
-define("CUSLAN_24", "Create new page");
-define("CUSLAN_25", "Edit menu");
-define("CUSLAN_26", "Create new menu");
-define("CUSLAN_27", "Page saved to database.");
-define("CUSLAN_28", "Page deleted");
-define("CUSLAN_29", "List pages if no page selected");
-define("CUSLAN_30", "Expiry time for cookie (in seconds)");
-define("CUSLAN_31", "Create menu");
-define("CUSLAN_32", "Convert old pages/menus");
-define("CUSLAN_33", "Page Options");
-define("CUSLAN_34", "Beginning conversion");
-define("CUSLAN_35", "Finished custom page update - updated");
+define("CUSLAN_1", "Заглавие");
+define("CUSLAN_2", "Вид");
+define("CUSLAN_3", "Опции");
+define("CUSLAN_4", "Изтриване на страницата?");
+define("CUSLAN_5", "Съществуващи страници");
+define("CUSLAN_7", "Име на менюто");
+define("CUSLAN_8", "Заглавие");
+define("CUSLAN_9", "Текст");
+define("CUSLAN_10", "Позволете страницата да се оценява");
+define("CUSLAN_11", "Начална страница");
+define("CUSLAN_12", "Създайте страница");
+define("CUSLAN_13", "Позволете коментарите");
+define("CUSLAN_14", "Защитена с парола страница");
+define("CUSLAN_15", "моля въведете парола");
+define("CUSLAN_16", "Създаване на линк в главното меню");
+define("CUSLAN_17", "моля напишете име на линка");
+define("CUSLAN_18", "Страницара / линка да се вижда от");
+define("CUSLAN_19", "Обновете страницата");
+define("CUSLAN_20", "Създайте страница");
+define("CUSLAN_21", "Обновете менюто");
+define("CUSLAN_22", "Създайте меню");
+define("CUSLAN_23", "Редакция на страницата");
+define("CUSLAN_24", "Създайте нова страница");
+define("CUSLAN_25", "Редакция на менюто");
+define("CUSLAN_26", "Създайте ново меню");
+define("CUSLAN_27", "Страницата е запазена в базата данни.");
+define("CUSLAN_28", "Страницата е изтрита");
+define("CUSLAN_29", "Списък на страниците ако няма избрана страница");
+define("CUSLAN_30", "Време за изтичане на cookie (в секунди)");
+define("CUSLAN_31", "Създайте меню");
+define("CUSLAN_32", "Преработване на стари менюта/страници");
+define("CUSLAN_33", "Настройки на страницата");
+define("CUSLAN_34", "Начало на обработката");
+define("CUSLAN_35", "Обновяването на страниците е завършено успешно");
 define("CUSLAN_36", "To set your preferences for each page, please return to front page and edit the pages.");
-define("CUSLAN_37", "Custom Page Update");
-define("CUSLAN_38", "on");
-define("CUSLAN_39", "off");
-define("CUSLAN_40", "Save Options");
+define("CUSLAN_37", "Обновяване на страниците");
+define("CUSLAN_38", "да");
+define("CUSLAN_39", "не");
+define("CUSLAN_40", "Запазване на настройките");
 
-define("CUSLAN_41", "Display author and date information");
-define("CUSLAN_42", "No pages defined yet");
+define("CUSLAN_41", "Показване на информация за автора и датата");
+define("CUSLAN_42", "Все още няма страници или меюта");
 
 ?>

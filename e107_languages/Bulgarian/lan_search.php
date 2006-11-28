@@ -1,15 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File
-|     Bulgarian Language Pack for e107 Version 0.7
-|     Copyright © 2005 - Bulgarian e107
-|     http://www.e107bg.org
-|     Encoding: utf-8
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -117,5 +113,7 @@ define("LAN_SEARCH_73", "Без сигнатури");
 define("LAN_SEARCH_74", "Регистрирани на");
 
 define("LAN_SEARCH_75", "Вид търсене");
+define("LAN_SEARCH_76", "Публикувано на страница");
+define("LAN_SEARCH_77", "Публикувано на профил страницата на");
 
 ?>

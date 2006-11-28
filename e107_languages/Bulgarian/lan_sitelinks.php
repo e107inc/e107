@@ -8,12 +8,12 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_sitelinks.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("LAN_183", "Меню");
-define("LAN_502", "Администриране");
+define("LAN_SITELINKS_183", "Меню");
+define("LAN_SITELINKS_502", "Администриране");
 
 ?>

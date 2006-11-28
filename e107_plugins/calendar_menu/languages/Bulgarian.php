@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: Bulgarian.php,v 1.2 2006-11-06 21:51:41 secretr Exp $
+// $Id: Bulgarian.php,v 1.3 2006-11-28 21:49:11 secretr Exp $
 
 
 define('EC_ADLAN_1', "Календар на събитията");

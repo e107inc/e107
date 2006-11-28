@@ -4,36 +4,36 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_emoticon.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("EMOLAN_1", "Emote activation");
-define("EMOLAN_2", "Name");
-define("EMOLAN_3", "Emotes");
-define("EMOLAN_4", "Activate emoticons?");
+define("EMOLAN_1", "Активиране на емоциите");
+define("EMOLAN_2", "Име");
+define("EMOLAN_3", "Емоции");
+define("EMOLAN_4", "Активиране на емоциите?");
 
-define("EMOLAN_5", "Image");
-define("EMOLAN_6", "Emote Code");
-define("EMOLAN_7", "seperate multiple entries with spaces");
+define("EMOLAN_5", "Иконка");
+define("EMOLAN_6", "Код за показване");
+define("EMOLAN_7", "разделете с разтояние ако искате да полазвате иконата при повече от един код");
 
-define("EMOLAN_8", "Status");
-define("EMOLAN_9", "Options");
-define("EMOLAN_10", "Active");
-define("EMOLAN_11", "Activate pack'");
+define("EMOLAN_8", "Статус");
+define("EMOLAN_9", "Опции");
+define("EMOLAN_10", "Активни");
+define("EMOLAN_11", "Активиране на пакета'");
 
-define("EMOLAN_12", "Edit / configure this pack");
-define("EMOLAN_13", "Installed packs");
+define("EMOLAN_12", "Редакция / настройки на този пакет");
+define("EMOLAN_13", "Налични капети");
 
-define("EMOLAN_14", "Save configuration");
-define("EMOLAN_15", "Edit / configure emotes");
-define("EMOLAN_16", "Emote configuration saved");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
+define("EMOLAN_14", "Запазване на настройките");
+define("EMOLAN_15", "Редакция / настройки на емоциите");
+define("EMOLAN_16", "Настройките са запомнени");
+define("EMOLAN_17", "Имате пакет емотикони, в който са намерени празни места (space), което не е позволено!");
+define("EMOLAN_18", "моля преименувайте всичко от списъка по-долу така че да няма празно място:");
+define("EMOLAN_19", "Име");
+define("EMOLAN_20", "Местоположение");
+define("EMOLAN_21", "Грешка");
+//define("EMOLAN_2", "Name");
 
 ?>

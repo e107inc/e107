@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/Bulgarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 21:54:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:51:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -78,9 +78,5 @@ define("NLLAN_51", "Unsubscribe");
 define("NLLAN_52", "Subscribe");
 define("NLLAN_53", "Are you sure you want to subscribe to this newsletter?");
 
-
-
-
-
-
+define("NLLAN_54", "Изпращане");
 ?>

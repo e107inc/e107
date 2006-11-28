@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_wmessage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -17,18 +17,18 @@
 // define("WMGLAN_6", "Activate?");
 // define("WMGLAN_7", "Welcome message settings updated.");
 
-define("WMLAN_00","Welcome Messages");
-define("WMLAN_01","Create New Message");
-define("WMLAN_02","Message");
-define("WMLAN_03","Visibility");
-define("WMLAN_04","Message Text");
+define("WMLAN_00","Начално съобщение");
+define("WMLAN_01","Създаване на ново");
+define("WMLAN_02","Съобщение");
+define("WMLAN_03","Ще се вижда от");
+define("WMLAN_04","Текст на съобщението");
 
-define("WMLAN_05","Enclose");
-define("WMLAN_06","If ticked, the message will be rendered inside box");
-define("WMLAN_07","Override standard system to use {WMESSAGE} shortcode:");
+define("WMLAN_05","Ограждане");
+define("WMLAN_06","Ако отметнете, съобщението ще бъде оградено");
+define("WMLAN_07","Отменте полазването на стандартнив кратък код {WMESSAGE}:");
 // define("WMLAN_08","Preferences");
 
-define("WMLAN_09","No welcome messages set yet");
-define("WMLAN_10","Message Caption");    
+define("WMLAN_09","Все още няма начални съобщения");
+define("WMLAN_10","Заглавие на съобщението");    
 
 ?>

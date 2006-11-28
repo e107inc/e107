@@ -4,20 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_cache.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("CACLAN_1", "Cache System Status");
-define("CACLAN_2", "Set cache status");
-define("CACLAN_3", "Cache System");
-define("CACLAN_4", "Cache status set");
-define("CACLAN_5", "Empty Cache");
-define("CACLAN_6", "Cache Emptied");
+define("CACLAN_1", "Статус на кеша");
+define("CACLAN_2", "Определете статуса на кеша");
+define("CACLAN_3", "Кешираща система");
+define("CACLAN_4", "Статус на кеш");
+define("CACLAN_5", "Изчистване на кеша");
+define("CACLAN_6", "Кеша е изчистен");
 
-define("CACLAN_7", "Cache Disabled");
+define("CACLAN_7", "Кеширането е спряно");
 // define("CACLAN_8", "Cache data saved to MySQL");
-define("CACLAN_9", "Cache data saved to disk file");
-define("CACLAN_10", "The cache directory is not writable. Please ensure this directory is set CHMOD 0777");
+define("CACLAN_9", "Кешираните данни са запазени във файл");
+define("CACLAN_10", "Директорията кадете се съхраняват кешираните данни няма права за писане. Моля променете тази директория със следните права: CHMOD 0777");
 ?>

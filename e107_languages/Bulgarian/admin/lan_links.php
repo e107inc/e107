@@ -4,63 +4,64 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("LCLAN_1", "Options Saved");
-define("LCLAN_2", "Link saved to database.");
-define("LCLAN_3", "Link updated in database.");
+define("LCLAN_1", "Настройките са запомнени");
+define("LCLAN_2", "Линка е запазен в базата данни.");
+define("LCLAN_3", "Линка е обновен в базата данни.");
 // define("LCLAN_4", "Link deleted.");
-define("LCLAN_6", "Order updated.");
-define("LCLAN_8", "Existing Links");
-define("LCLAN_12", "Link Rendertype");
-define("LCLAN_15", "Link Name");
-define("LCLAN_16", "Link URL");
-define("LCLAN_17", "Link Description");
-define("LCLAN_18", "Link Button / Icon");
-define("LCLAN_19", "Link Open Type");
-define("LCLAN_20", "Opens in same window");
-define("LCLAN_23", "Opens in new window");
-define("LCLAN_24", "Opens in 600x400 miniwindow");
-define("LCLAN_25", "Link Class");
-define("LCLAN_26", "Ticking will make the link visible to only users in that class");
-define("LCLAN_27", "Update Link");
-define("LCLAN_28", "Create link");
-define("LCLAN_29", "Links");
-define("LCLAN_30", "move up");
-define("LCLAN_31", "move down");
-define("LCLAN_39", "View Images");
-define("LCLAN_53", "Link");
-define("LCLAN_54", "deleted");
-define("LCLAN_58", "Are you sure you want to delete this link?");
-define("LCLAN_61", "No links");
-define("LCLAN_62", "Links Front Page");
-define("LCLAN_63", "Create New Link");
-define("LCLAN_68", "Links Options");
-define("LCLAN_78", "Show Description as Screen-Tip");
-define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
-define("LCLAN_80", "Activate expanding sub-menus");
-define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Link parent is disabled)");
-define("LCLAN_83", "Submenus Generator");
-define("LCLAN_88", "Site Links Options");
-define("LCLAN_89", "Image");
-define("LCLAN_90", "Link Name");
-define("LCLAN_91", "Move");
-define("LCLAN_95", "Class");
+define("LCLAN_6", "Подредбата е обновена.");
+define("LCLAN_8", "Съществуващи линкове");
+define("LCLAN_12", "Показване на линка");
+define("LCLAN_15", "Име на линка");
+define("LCLAN_16", "URL на линка");
+define("LCLAN_17", "Описание на линка");
+define("LCLAN_18", "Икона / бутон на линка");
+define("LCLAN_19", "Начин на отваряне на линка");
+define("LCLAN_20", "В същият прозорец");
+define("LCLAN_23", "В нов прозорец");
+define("LCLAN_24", "Отваряне в 600x400 мини-прозорец");
+define("LCLAN_25", "Линка ще се вижда от");
+define("LCLAN_26", "Определете кой клас потребители ще може да вижда линка");
+define("LCLAN_27", "Обновяване на линка");
+define("LCLAN_28", "Създаване на линк");
+define("LCLAN_29", "Линкове");
+define("LCLAN_30", "премести на горе");
+define("LCLAN_31", "премести на доло");
+define("LCLAN_39", "Виж иконите");
+define("LCLAN_53", "Линк");
+define("LCLAN_54", "изтрит");
+define("LCLAN_58", "Сигурни ли сте, че искате да изтриете този линк?");
+define("LCLAN_61", "Няма линкове");
+define("LCLAN_62", "Всички линкове");
+define("LCLAN_63", "Създаване на нов линк");
+define("LCLAN_68", "Настройки на линковете");
+define("LCLAN_78", "Показване на описанието на линка");
+define("LCLAN_79", "Описанието ще се показва когато мишката минава върху линка");
+define("LCLAN_80", "Активиране на подменюта");
+define("LCLAN_81", "Подменютата ще се показват при натискане на главния линк (Линка към който води главния линк се блокира)");
+define("LCLAN_83", "Генератор на под-линкове");
+define("LCLAN_88", "Настройки на линковете на сайта");
+define("LCLAN_89", "Икона");
+define("LCLAN_90", "Име на линка");
+define("LCLAN_91", "Премести");
+define("LCLAN_95", "Клас потребители");
 
-define("LCLAN_96", "Shown in your theme as");
+define("LCLAN_96", "Показване в темата на сайта като");
 
 
-define("LINKLAN_1", "Opens in 800x600 window");
-define("LINKLAN_2", "Parent");
-define("LINKLAN_3", "No Parent (Normal Link)");
-define("LINKLAN_4", "Sublink Generator");
-define("LINKLAN_5", "Generate Sublinks");
-define("LINKLAN_6", "Create sublinks from:");
-define("LINKLAN_7", "Create sublinks under which link?");
-define("LINKLAN_8", "News Categories");
-define("LINKLAN_9", "Download Categories");
+define("LINKLAN_1", "Отваряне в 800x600 прозорец");
+define("LINKLAN_2", "Под-линк");
+define("LINKLAN_3", "Не е под-линк (Главен линк)");
+define("LINKLAN_4", "Генератор на под-линкове");
+define("LINKLAN_5", "Генирирай под-линковете");
+define("LINKLAN_6", "Създаване на под-линкове на:");
+define("LINKLAN_7", "Създаване на под-линкове към линк?");
+define("LINKLAN_8", "Категории новини");
+define("LINKLAN_9", "Категории файлове");
+define("LINKLAN_10", "Създаване на под-линк");
 
 ?>

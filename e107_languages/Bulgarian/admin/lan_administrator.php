@@ -4,75 +4,79 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "Нов потребител/админ е създаден");
 define("ADMSLAN_1", "сега има статус на администратор.");
 define("ADMSLAN_2", "обновено в базата данни.");
-define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
-define("ADMSLAN_4", "Continue");
-define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
+define("ADMSLAN_3", "е главен администратор и не може да бъде редактиран.");
+define("ADMSLAN_4", "Продължение");
+define("ADMSLAN_5", "Грешка!");
+define("ADMSLAN_6", "е главен администратор и не може да бъде изтрит.");
 
-define("ADMSLAN_13", "Existing Administrators");
+define("ADMSLAN_13", "Съществуващи администратори");
 
 
-define("ADMSLAN_16", "Admin Name");
-define("ADMSLAN_17", "Admin Password");
-define("ADMSLAN_18", "Permissions");
-define("ADMSLAN_19", "Alter site preferences");
-define("ADMSLAN_20", "Alter Menus");
-define("ADMSLAN_21", "Add site administrators");
-define("ADMSLAN_22", "Moderate users/bans etc");
+define("ADMSLAN_16", "Име на админа");
+define("ADMSLAN_17", "Парола на админа");
+define("ADMSLAN_18", "Достъп");
+define("ADMSLAN_19", "Промяна настройките на сайта");
+define("ADMSLAN_20", "Промяна на менютат");
+define("ADMSLAN_21", "Добавяне на администратори");
+define("ADMSLAN_22", "Редактиране на потребителите/блокираните");
 // define("ADMSLAN_23", "Create/edit forums");
-define("ADMSLAN_24", "Manage download categories");
-define("ADMSLAN_25", "Upload /manage files");
-define("ADMSLAN_26", "Oversee news categories");
-define("ADMSLAN_27", "Oversee link categories");
-define("ADMSLAN_28", "Take site down for maintenance");
-define("ADMSLAN_29", "Manage banners");
-define("ADMSLAN_30", "Configure news feed headlines");
-define("ADMSLAN_31", "Configure emoticons");
-define("ADMSLAN_32", "Configure front page content");
-define("ADMSLAN_33", "Configure log/stats");
-define("ADMSLAN_34", "Configure meta tags");
-define("ADMSLAN_35", "Configure public file uploads");
+define("ADMSLAN_24", "Редактиране на категориите файлове");
+define("ADMSLAN_25", "Добавяне и управление на файловете");
+define("ADMSLAN_26", "Управление на категориите новини");
+define("ADMSLAN_27", "Управление на категориите линкове");
+define("ADMSLAN_28", "Затваряне на сайта за обновяване");
+define("ADMSLAN_29", "Управление на банерите");
+define("ADMSLAN_30", "Настройка на заглавните новини");
+define("ADMSLAN_31", "Настройка на емоциите");
+define("ADMSLAN_32", "Настройка съдържанието на началната страница");
+define("ADMSLAN_33", "Настройка на статистиката и логовете");
+define("ADMSLAN_34", "Настройка на мета таговете");
+define("ADMSLAN_35", "Настройка на буличното добавяне на файлове");
 // define("ADMSLAN_36", "Moderate forums");
-define("ADMSLAN_37", "Moderate comments");
+define("ADMSLAN_37", "Редактиране на коментарите");
 // define("ADMSLAN_38", "Moderate/configure chatbox");
-define("ADMSLAN_39", "Post news");
-define("ADMSLAN_40", "Post links");
-define("ADMSLAN_41", "Post articles");
-define("ADMSLAN_42", "Post reviews");
-define("ADMSLAN_43", "Post content pages");
-define("ADMSLAN_44", "Post downloads");
-define("ADMSLAN_45", "Post polls");
-define("ADMSLAN_46", "Welcome message");
-define("ADMSLAN_47", "Moderate submitted news");
+define("ADMSLAN_39", "Публикуване новини");
+define("ADMSLAN_40", "Публикуване на линкове");
+define("ADMSLAN_41", "Публикуване на статии");
+define("ADMSLAN_42", "Публикуване на рецензии");
+define("ADMSLAN_43", "Публикуване на заглавни страници");
+define("ADMSLAN_44", "Публикуване на файлове");
+define("ADMSLAN_45", "Публикуване на анкети");
+define("ADMSLAN_46", "Начално съобщение");
+define("ADMSLAN_47", "Управление на добавените новини");
 
-define("ADMSLAN_49", "Check All");
-define("ADMSLAN_51", "Uncheck All");
-define("ADMSLAN_52", "Update administrator");
-define("ADMSLAN_53", "Add administrator");
-define("ADMSLAN_54", "Site Administrators");
+define("ADMSLAN_49", "Маркирай всички");
+define("ADMSLAN_51", "Размаркирай всички");
+define("ADMSLAN_52", "Обнови администратора");
+define("ADMSLAN_53", "Добави администратор");
+define("ADMSLAN_54", "Администратори на сайта");
 
-define("ADMSLAN_55", "Field(s) left blank");
+define("ADMSLAN_55", "Задължително поле е оставено празно");
 
-define("ADMSLAN_56", "Site Administrator");
+define("ADMSLAN_56", "Администратор на сайта");
 
-define("ADMSLAN_58", "Main Site Administrator");
-define("ADMSLAN_59", "Remove Admin Status");
-define("ADMSLAN_60", "Are you sure you want to remove admin status from");
-define("ADMSLAN_61", "Administrator deleted");
+define("ADMSLAN_58", "Главен администратор на сайта");
+define("ADMSLAN_59", "Премахване на админския статус");
+define("ADMSLAN_60", "Сигурни ли сте, че искате да махнете админския статус на");
+define("ADMSLAN_61", "Администратора е изтрит");
 
-define("ADMSLAN_62", "Plugin Manager");
+define("ADMSLAN_62", "Управление на модулите");
 
-define("ADMSLAN_64", "Clear the system cache");
-define("ADMSLAN_65", "Configure mail settings and mailout");
-define("ADMSLAN_66", "Configure Search");
-define("ADMSLAN_67", "Scan with file inspector");
-define("ADMSLAN_68", "Configure email notification");
-define("ADMSLAN_69", "is already an administrator and must be edited.");
+define("ADMSLAN_64", "Изчистване на кеша");
+define("ADMSLAN_65", "Настройка на имейла и изпращането на имейли");
+define("ADMSLAN_66", "Настройка на търсенето");
+define("ADMSLAN_67", "Сканиране с файловия инспектор");
+define("ADMSLAN_68", "Настройка на имейл известяванията");
+define("ADMSLAN_69", "е вече администратор и трябва да бъде редактиран.");
+
+define("ADMSLAN_70", "Връщане към списъка с администратори");
+define("ADMSLAN_71", "Клик за показване на правата"); 
 ?>

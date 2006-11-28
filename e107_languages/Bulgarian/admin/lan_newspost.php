@@ -4,168 +4,170 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_newspost.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("NWSLAN_1", "News story deleted.");
-define("NWSLAN_2", "Please tick the confirm box to delete this news item.");
-define("NWSLAN_3", "No news items yet.");
-define("NWSLAN_4", "Existing News");
-define("NWSLAN_5", "Open HTML Editor");
-define("NWSLAN_6", "Category");
+define("NWSLAN_1", "Новината е изтрита.");
+define("NWSLAN_2", "Моля сложете отметка за да потвърдите изтриването.");
+define("NWSLAN_3", "Все още няма новини.");
+define("NWSLAN_4", "Съществуващи новини");
+define("NWSLAN_5", "Отвори HTML редактора");
+define("NWSLAN_6", "Категория");
 
-define("NWSLAN_9", "tick to confirm");
-define("NWSLAN_10", "No news categories");
-define("NWSLAN_11", "Add/Edit Categories");
-define("NWSLAN_12", "Title");
-define("NWSLAN_13", "Body");
-define("NWSLAN_14", "Extended");
-define("NWSLAN_15", "Comments");
-define("NWSLAN_16", "Enabled");
-define("NWSLAN_17", "Disabled");
-define("NWSLAN_18", "Allow comments to be posted to this news item");
-define("NWSLAN_19", "Activation");
+define("NWSLAN_9", "сложете отметка за порвърждение");
+define("NWSLAN_10", "Няма категории новини");
+define("NWSLAN_11", "Добавяне/редакция на категории");
+define("NWSLAN_12", "Заглавие");
+define("NWSLAN_13", "Новина");
+define("NWSLAN_14", "Подробно");
+define("NWSLAN_15", "Коментари");
+//define("NWSLAN_16", "Позволено");
+//define("NWSLAN_17", "забранено");
+define("NWSLAN_18", "Позволете коментарите към тази новина");
+define("NWSLAN_19", "Активиране между дата");
 
-define("NWSLAN_21", "Activate between");
-define("NWSLAN_22", "Visibility");
+define("NWSLAN_21", "Активиране между");
+define("NWSLAN_22", "Да се вижда от");
 
-define("NWSLAN_24", "Preview again");
-define("NWSLAN_25", "Update news in database");
-define("NWSLAN_26", "Post news to database");
-define("NWSLAN_27", "Preview");
+define("NWSLAN_24", "Прегледай отново");
+define("NWSLAN_25", "Обновяване в базата данни");
+define("NWSLAN_26", "Записване в базата данни");
+define("NWSLAN_27", "Преглед");
 
-define("NWSLAN_29", "News Post");
+define("NWSLAN_29", "Новини");
 
-define("NWSLAN_31", "News item");
-define("NWSLAN_32", "deleted");
-define("NWSLAN_33", "News Category");
-define("NWSLAN_34", "Submitted news item");
-define("NWSLAN_35", "News Category Saved");
-define("NWSLAN_36", "News Category Updated");
-define("NWSLAN_37", "Are you sure you want to delete this category?");
-define("NWSLAN_38", "Are you sure you want to delete this submitted news item?");
-define("NWSLAN_39", "Are you sure you want to delete this news item?");
-define("NWSLAN_40", "Title");
+define("NWSLAN_31", "Новини");
+define("NWSLAN_32", "изтрито");
+define("NWSLAN_33", "Категории новини");
+define("NWSLAN_34", "Добавени новини");
+define("NWSLAN_35", "Категорията новини е запазена");
+define("NWSLAN_36", "Категорията новини е обновена");
+define("NWSLAN_37", "Сигурни ли сте, че искате да изтриете тази категория?");
+define("NWSLAN_38", "Сигурни ли сте, че искате да изтриете тази добавена новини?");
+define("NWSLAN_39", "Сигурни ли сте, че искате да изтриете тази новина?");
+define("NWSLAN_40", "Заглавие");
 
-define("NWSLAN_42", "Untitled");
-define("NWSLAN_43", "No news items");
-define("NWSLAN_44", "News Front Page");
-define("NWSLAN_45", "Create News Item");
-define("NWSLAN_46", "Categories");
-define("NWSLAN_47", "Submitted News");
-define("NWSLAN_48", "News Options");
+define("NWSLAN_42", "Без заглавие");
+define("NWSLAN_43", "Няма новини");
+define("NWSLAN_44", "Начална страница");
+define("NWSLAN_45", "Създайте новина");
+define("NWSLAN_46", "Категории");
+define("NWSLAN_47", "Добавени новини");
+define("NWSLAN_48", "Настройки на новините");
 define("NWSLAN_49", "Публикувано от");
 
-define("NWSLAN_51", "Existing News Categories");
-define("NWSLAN_52", "Category Name");
-define("NWSLAN_53", "Category Icon");
-define("NWSLAN_54", "View Images");
-define("NWSLAN_55", "Update News Category");
-define("NWSLAN_56", "Create News Category");
-define("NWSLAN_57", "Item");
-define("NWSLAN_58", "Post");
-define("NWSLAN_59", "No submitted news");
-define("NWSLAN_60", "Submitted News");
+define("NWSLAN_51", "Съществуващи категории новини");
+define("NWSLAN_52", "Име на категорията");
+define("NWSLAN_53", "Икона на категорията");
+define("NWSLAN_54", "Виж иконите");
+define("NWSLAN_55", "Обновяване на категорията");
+define("NWSLAN_56", "Създаване на категория");
+define("NWSLAN_57", "Новина");
+define("NWSLAN_58", "Публикуване");
+define("NWSLAN_59", "Няма добавени новини");
+//define("NWSLAN_60", "Добавени новини");
 
-define("NWSLAN_62", "Go to page: ");
-define("NWSLAN_63", "Search newsposts");
+define("NWSLAN_62", "Иди на страници: ");
+define("NWSLAN_63", "Търсене на новина");
 
 define("NWSLAN_66", "Добавен файл");
-define("NWSLAN_67", "Image");
-define("NWSLAN_68", "File");
-define("NWSLAN_69", "Upload an image or file for use in the news item");
-define("NWSLAN_70", "The ".e_FILE."downloads folder is not writable, you need to CHMOD 777 the folder before uploading and files.");
-define("NWSLAN_71", "The ".e_IMAGE."newspost_images folder is not writable.  You need to CHMOD 777 the folder before uploading any images.");
-define("NWSLAN_72", "Only show news item between certain dates");
-define("NWSLAN_73", "Render type");
-define("NWSLAN_74", "Select how and where news item is posted");
-define("NWSLAN_75", "Default - post to front page");
-define("NWSLAN_76", "Title only - post to front page");
-define("NWSLAN_77", "Post to other news menu");
+define("NWSLAN_67", "Снимка");
+define("NWSLAN_68", "Файл");
+define("NWSLAN_69", "Добавете снимка или файл към тази новина");
+//define("NWSLAN_70", "Директорията ".e_FILE."downloads няма необходимите права за писане. Трябва да ги промените на CHMOD 777 преди да добавите файл.");
+//define("NWSLAN_71", "Директорията ".e_IMAGE."newspost_images няма необходимите права за писане. Трябва да ги промените на CHMOD 777 преди да добавите снимка.");
+define("NWSLAN_72", "Показване на новината само между избраните дати");
+define("NWSLAN_73", "Начин на показване");
+define("NWSLAN_74", "Изберете как и каде ще бъде показана новината");
+define("NWSLAN_75", "Стандартно - ще се показва в началната страница");
+define("NWSLAN_76", "Само заглавието - ще се показва в началната страница");
+define("NWSLAN_77", "Публикуване в меню други новини");
 
-define("NWSLAN_78", "This option is disabled as file uploading is not enabled on your server");
-define("NWSLAN_79","Clear Form");
+//define("NWSLAN_78", "Тази възможност не е разрешена, зашото добавянето на файлове не е разрешено на Вашият сървър");
+define("NWSLAN_79","Изчисти всичко");
 
-define("NWSLAN_83","Extended news post");
-define("NWSLAN_84","Choose which visitors will see news item");
+define("NWSLAN_83","Разшерено съдържание на новината");
+define("NWSLAN_84","Изберете кои потребители ще виждат новината");
 
-define("NWSLAN_86", "Show News-Category Footer Menu");
-define("NWSLAN_87", "News Category Columns?");
-define("NWSLAN_88", "News posts to display per page?");
-define("NWSLAN_89", "Save News Preferences");
-define("NWSLAN_90", "News Preferences");
-define("NWSLAN_100", "Enable Image uploading on Submit News page");
-define("NWSLAN_101", "Automatic resizing of submitted image");
-define("NWSLAN_102", "width in pixels<br /> or leave blank to disable.");
-define("NWSLAN_103", "re-Post");
-define("NWSLAN_104", "by");
-define("NWSLAN_105", "Check box to update datestamp of news item to current time");
-define("NWSLAN_106", "Submit-News maybe accessed by:");
-define("NWSLAN_107", "Enable WYSIWYG editor on Submit-News page.");
+define("NWSLAN_86", "Показване на категориите новини в долната част на сайта Ви");
+define("NWSLAN_87", "Брой колони на категориите новини?");
+define("NWSLAN_88", "Брой новини за показване на страница?");
+define("NWSLAN_89", "Запазване на настройките");
+define("NWSLAN_90", "Нстройки на новините");
+define("NWSLAN_100", "Позволете добавяне на снимки рпи добавянето на новини от потребителите");
+define("NWSLAN_101", "Автоматично оразмеряване на добавените снимки");
+define("NWSLAN_102", "дължина в пиксели<br /> или оставете празно за да не ги оразмерява.");
+define("NWSLAN_103", "Повротно публикуване");
+define("NWSLAN_104", "от");
+define("NWSLAN_105", "Сложете отметка за да обновите датата на новината на днешната");
+define("NWSLAN_106", "Имащи право да добавят новини:");
+define("NWSLAN_107", "Позволяване на WYSIWYG редактора при публикуването на новини.");
+define("NWSLAN_108", "on");
 
 define("NWSLAN_111", "Show new date header");
 define("NWSLAN_112", "If this box is ticked, a box containing the date will be displayed above news items posted on a new day, useful for distinguishing posts on different days");
 
-define("NWSLAN_113", "Use non-standard template for news layout");
+define("NWSLAN_113", "Използване на нестандартен темплейт за новините");
 define("NWSLAN_114", "if the theme you're using has a news layout template, use this instead of the generic layout");
 
-define("NWSLAN_115", "News posts to display in archive ?");
-define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 is un-activated)");
-define("NWSLAN_117", "set the title for the newsarchive");
-define("NWSLAN_118", "View Images");
-define("NWSLAN_119", "Settings Saved");
+define("NWSLAN_115", "Колко новини да се показват в архива?");
+define("NWSLAN_116", "Първо обновете настройките за брой показвани новини, после обновете отново настройките за показвани новинив архива. (при 0 е неактивно)");
+define("NWSLAN_117", "напишете заглавие на архива на новините");
+//define("NWSLAN_118", "Виж снимките");
+define("NWSLAN_119", "Настройките са запазени");
+define("NWSLAN_120", "Текст за показване в началото на Добавяне на новина");
 
-define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
-define("LAN_NEWS_6", "News entered into database.");
-define("LAN_NEWS_7", "Error! - Was unable to enter news item into database!");
-define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b>");
-define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
-define("LAN_NEWS_11", "This news post is <b>active</b> (it will be shown on front page). ");
-define("LAN_NEWS_12", "Comments are turned <b>on</b>.");
-define("LAN_NEWS_13", "Comments are turned <b>off</b>.");
-define("LAN_NEWS_14", "<br />Activation period: ");
+define("LAN_NEWS_5", "Грешка! - Обновяването на новината не беше успешно!");
+define("LAN_NEWS_6", "Новината е добавена в базата данни.");
+define("LAN_NEWS_7", "Грешка! - Добавянето на новината не беше успешно!");
+define("LAN_NEWS_9", "Само заглавието - <b>ще бъде показано само заглавието</b>");
+define("LAN_NEWS_10", "Тази новина е <b>неактивна</b> (няма да бъде показвана). ");
+define("LAN_NEWS_11", "Тазни новина е <b>активна</b> (ще бъде показвана). ");
+define("LAN_NEWS_12", "Коментарите са <b>позволени</b>.");
+define("LAN_NEWS_13", "Коментарите са <b>забранени</b>.");
+define("LAN_NEWS_14", "<br />Период на активност на новината: ");
 define("LAN_NEWS_15", "Body length: ");
 define("LAN_NEWS_16", "b. Extended length: ");
 define("LAN_NEWS_17", "b.");
 define("LAN_NEWS_18", "Info");
 define("LAN_NEWS_19",  "Now");
-define("LAN_NEWS_21", "News updated in database.");
+define("LAN_NEWS_21", "Новината е обновена в базата данни.");
 
-define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose a thumbnail image / icon for this news item");
-define("LAN_NEWS_24", "Image + Auto-Thumbnail");
-define("LAN_NEWS_25", "Auto-Thumbnail size");
-define("LAN_NEWS_26", "add new upload");
-define("LAN_NEWS_27", "Summary");
+define("LAN_NEWS_22", "Оразмерени снимки");
+define("LAN_NEWS_23", "Изберете оразмерена снимка / икона за тази новина");
+define("LAN_NEWS_24", "Снимка + Автоматично оразмеряване");
+define("LAN_NEWS_25", "Големина на автоматичното оразмеряване");
+define("LAN_NEWS_26", "добави ново");
+define("LAN_NEWS_27", "Подробно заглавие");
 
-define("LAN_NEWS_28", "Sticky");
-define("LAN_NEWS_29", "Select if news item will be sticky");
-define("LAN_NEWS_30", "If selected, news item will appear above all others");
-define("LAN_NEWS_31", "This news post is <b>sticky</b> (it will be shown above all other items). ");
-define("LAN_NEWS_32", "Datestamp");
-define("LAN_NEWS_33", "Set the datestamp for the current news item.");
+define("LAN_NEWS_28", "Важна новина");
+define("LAN_NEWS_29", "Изберете дали новината да бъде маркирана като важна.");
+define("LAN_NEWS_30", "Ако маркирате всяка следваща новина ще бъде публикувана под тази!");
+define("LAN_NEWS_31", "Тази новина е <b>Важна</b> (ще бъде показвана преди всички останали новини). ");
+define("LAN_NEWS_32", "Дата на публикуване на новината");
+define("LAN_NEWS_33", "Изберете дата на публикуване на новината.");
 
-define("LAN_NEWS_34", "Trackback");
-define("LAN_NEWS_35", "Add trackback url's");
+define("LAN_NEWS_34", "Подобни теми");
+define("LAN_NEWS_35", "Добавете url на подоните новини");
 define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all url's in this post)");
 define("LAN_NEWS_37", "<b>Trackback url's:</b> (one url per line)");
-define("LAN_NEWS_38", "Insert images");
+define("LAN_NEWS_38", "Добавете снимка");
 
 define("LAN_NEWS_39", "click on file to insert at cursor position");
-define("LAN_NEWS_40", "Insert download links");
+define("LAN_NEWS_40", "Добавете линк от Файлове");
 
 define("LAN_NEWS_41", "Thumbnail / Icon");
-define("LAN_NEWS_42", "Files");
-define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
+define("LAN_NEWS_42", "Файлове");
+//define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback not enabled.");
 
 define("LAN_NEWS_45", "ID");
 
 define("LAN_NEWS_46", "News item not updated as no changes were made.");
-define("LAN_NEWS_47", "Image");
-define("LAN_NEWS_48", "No Image");
+//define("LAN_NEWS_47", "Снима");
+define("LAN_NEWS_48", "Без снимка");
 
 define("LAN_NEWS_49", "Render-type");
 

@@ -8,36 +8,45 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_error.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Грешка");
 
-define("LAN_1", "Грешка 401 - Достъпът е отказан");
-define("LAN_2", "Нямате права за преглед на заявения от вас линк или URL адрес.");
-define("LAN_3", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
-define("LAN_4", "Грешка 403 - Неауторизиран достъп");
-define("LAN_5", "Заявения от вас URL адрес изисква коректно потребителско име и парола. Или сте задали неправилни потребителско име/парола, или вашия браузър не поддържа тази опция.");
-define("LAN_6", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
-define("LAN_7", "Грешка 404 - Документът не е намерен");
-define("LAN_9", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
-define("LAN_10", "Грешка 500 - Некоректен заглавен блок (header)");
-define("LAN_11", "Сървърът откри неочаквана грешка или неправилно конфигуриране. Изпълнението на вашата заявка беше невъзможно.");
-define("LAN_12", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
-define("LAN_13", "Грешка - Неизвестна");
-define("LAN_14", "Сървърът откри грешка");
-define("LAN_15", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
-define("LAN_16", "Несполучливият ви опит за достъп");
-define("LAN_17", "беше записан.");
-define("LAN_18", "Както изглежда, вие идвате от");
-define("LAN_19", "За съжаление този линк е вече извън употреба.");
-define("LAN_20", "Моля кликнете тук за заглавната страница на този сайт");
+define("LAN_ERROR_1", "Грешка 401 - Достъпът е отказан");
+define("LAN_ERROR_2", "Нямате права за преглед на заявения от вас линк или URL адрес.");
+define("LAN_ERROR_3", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_ERROR_4", "Грешка 403 - Неауторизиран достъп");
+define("LAN_ERROR_5", "Заявения от вас URL адрес изисква коректно потребителско име и парола. Или сте задали неправилни потребителско име/парола, или вашия браузър не поддържа тази опция.");
+define("LAN_ERROR_6", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_ERROR_7", "Грешка 404 - Документът не е намерен");
+define("LAN_ERROR_9", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_ERROR_10", "Грешка 500 - Некоректен заглавен блок (header)");
+define("LAN_ERROR_11", "Сървърът откри неочаквана грешка или неправилно конфигуриране. Изпълнението на вашата заявка беше невъзможно.");
+define("LAN_ERROR_12", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_ERROR_13", "Грешка - Неизвестна");
+define("LAN_ERROR_14", "Сървърът откри грешка");
+define("LAN_ERROR_15", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_ERROR_16", "Несполучливият ви опит за достъп");
+define("LAN_ERROR_17", "беше записан.");
+define("LAN_ERROR_18", "Както изглежда, вие идвате от");
+define("LAN_ERROR_19", "За съжаление този линк е вече извън употреба.");
+define("LAN_ERROR_20", "Моля кликнете тук за заглавната страница на този сайт");
+define("LAN_ERROR_21", "Заявеният URL адрес не може да бъде намерен на този сървър. Линкът, който ползвате е най-вероятно вече извън употреба.");
+define("LAN_ERROR_22", "Моля кликнете тук за страница за търсене на този сайт");
+define("LAN_ERROR_23", "Опитът ви за достъп до ");
+define("LAN_ERROR_24", " беше несполучлив.");
 
-define("LAN_ERROR_01", "Заявеният URL адрес не може да бъде намерен на този сървър. Линкът, който ползвате е най-вероятно вече извън употреба.");
-define("LAN_ERROR_02", "Моля кликнете тук за страница за търсене на този сайт");
-define("LAN_ERROR_03", "Опитът ви за достъп до ");
-define("LAN_ERROR_04", " беше несполучлив.");
+// 0.7.6
+define("LAN_ERROR_25", "[1]: Unable to read core settings from database - Core settings exist but cannot be unserialized. Attempting to restore core backup ...");
+define("LAN_ERROR_26", "[2]: Unable to read core settings from database - non-existent core settings.");
+define("LAN_ERROR_27", "[3]: Core settings saved - backup made active.");
+define("LAN_ERROR_28", "[4]: No core backup found. Please run the <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.");
+define("LAN_ERROR_29", "[5]: Field(s) have been left blank. Please resubmit the form and fill in the required fields.");
+define("LAN_ERROR_30", "[6]: Unable to form a valid connection to mySQL. Please check that your e107_config.php contains the correct information.");
+define("LAN_ERROR_31", "[7]: mySQL is running but database ({$mySQLdefaultdb}) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.");
+define("LAN_ERROR_32", "To complete the upgrade, copy the following text into your e107_config.php file:");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("EXTLAN_18", "Required");
 define("EXTLAN_19", "Users will be required to enter a value in this field when updating their settings.");
 define("EXTLAN_20", "Determines which users this field will apply to.");
 define("EXTLAN_21", "This will determine who will see this field in their usersettings.");
-define("EXTLAN_22", "This will determine who can see the value in the user page.");
+define("EXTLAN_22", "This will determine who can see the value in the user page <br />NOTE: Setting this to 'Read Only' will make it visible to Admin and the member only.");
 define("EXTLAN_23", "Add Extended Field");
 define("EXTLAN_24", "Update Extended Field");
 define("EXTLAN_25", "move down");
@@ -76,10 +76,21 @@ define("EXTLAN_62", "Table");
 define("EXTLAN_63", "Field Id");
 define("EXTLAN_64", "Display Value");
 
+define("EXTLAN_65", "No - Will not show on signup page");
+define("EXTLAN_66", "Yes - Will show on signup page");
+define("EXTLAN_67", "No - Show on signup page");
+
+define("EXTLAN_68", "Field:");
+define("EXTLAN_69", "has been activated");
+define("EXTLAN_70", "ERROR!! Field:");
+define("EXTLAN_71", "was not activated!");
+define("EXTLAN_72", "has been deactivated");
+define("EXTLAN_73", "was not deactivated!");
+define("EXTLAN_74", "is a reserved field name and can not be used.");
 
 
 //textbox
-define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex valiation code<br />regexfail - validateion fail text");
+define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
 //radio buttons
 define("EXTLAN_HELP_2", "This will be the radio buttons help text");
 //dropdown

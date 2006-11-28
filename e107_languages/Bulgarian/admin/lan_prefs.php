@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -177,4 +177,13 @@ define("PRFLAN_163", "eg. Company Name, Address, Phone etc.");
 
 define("PRFLAN_164", "Allow users to email copy of contact email to self");
 define("PRFLAN_165", "Possible opening for allowing spam, use with caution");
+define("PRFLAN_166", "Show emoticon images on comment form?");
+
+define("PRFLAN_167", "Make entering an email addresses optional"); // subject to change.
+define("PRFLAN_168", "Site Contact Person(s)");
+define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
+
+define("PRFLAN_170", "Use reverse DNS to allow host banning");
+define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
+
 ?>

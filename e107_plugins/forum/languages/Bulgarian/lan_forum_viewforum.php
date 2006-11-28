@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_forum_viewforum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 21:53:22 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:50:20 $
 |     $Author: secretr $
 |     $Превод:
 |     $e107BG Team

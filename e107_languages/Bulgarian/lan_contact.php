@@ -1,15 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File
-|     Bulgarian Language Pack for e107 Version 0.7
-|     Copyright © 2005 - Bulgarian e107
-|     http://www.e107bg.org
-|     Encoding: utf-8
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_contact.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +24,9 @@ define("LANCONTACT_11", "Вашият имейл адрес изглежда н�
 define("LANCONTACT_12", "Съобщението Ви е твърде кратко.");
 define("LANCONTACT_13", "Моля напишете заглавие."); 
 
-
+define("LANCONTACT_14", "Изпрати съобщение до:");
+define("LANCONTACT_15", "Въведен е неправилен код");
+define("LANCONTACT_16", "Въведи код");
 
 
 

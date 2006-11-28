@@ -4,71 +4,72 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("BNRLAN_1", "Banner deleted.");
-define("BNRLAN_2", "Please confirm you wish to delete this banner - once deleted it cannot be retrieved");
-define("BNRLAN_5", "Confirm Delete Banner");
-define("BNRLAN_6", "Delete cancelled.");
-define("BNRLAN_7", "Existing Banners");
-define("BNRLAN_8", "Banner ID");
-define("BNRLAN_9", "Client");
-define("BNRLAN_10", "Clickthroughs");
-define("BNRLAN_11", "Click %");
-define("BNRLAN_12", "Impressions");
-define("BNRLAN_13", "Impressions Left");
-define("BNRLAN_15", "No banners yet.");
-define("BNRLAN_16", "Unlimited");
-define("BNRLAN_17", "None");
-define("BNRLAN_21", "Ends");
-define("BNRLAN_22", "Update Banner");
-define("BNRLAN_23", "Add New Banner");
-define("BNRLAN_24", "Campaign");
-define("BNRLAN_25", "choose existing campaign");
-define("BNRLAN_26", "enter new campaign");
-define("BNRLAN_27", "Client");
-define("BNRLAN_28", "choose existing client");
-define("BNRLAN_29", "enter new client");
-define("BNRLAN_30", "Client Login");
-define("BNRLAN_31", "Client Password");
-define("BNRLAN_32", "Banner Image");
-define("BNRLAN_33", "Click URL");
-define("BNRLAN_34", "Impressions Purchased");
-define("BNRLAN_35", "unlimited");
-define("BNRLAN_36", "Start Date");
-define("BNRLAN_37", "End Date");
-define("BNRLAN_38", "blank = no limit");
-define("BNRLAN_39", "visibility class");
-define("BNRLAN_40", "Update Banner");
-define("BNRLAN_41", "Create New Banner");
-define("BNRLAN_42", "Banner Rotation System");
-define("BNRLAN_43", "Choose banner image");
-define("BNRLAN_45", "Starts");
-define("BNRLAN_46", "Code");
-define("BNRLAN_58", "banner front page");
-define("BNRLAN_59", "create new banner");
-define("BNRLAN_60", "campaigns");
-define("BNRLAN_61", "banner menu ");
-define("BNRLAN_62", "banner options");
-define("BNRLAN_63", "Banner Created");
-define("BNRLAN_64", "Banner Updated");
+define("BNRLAN_1", "Банера е изтрит.");
+define("BNRLAN_2", "Моля потвърдете изтриването на банера - веднъж изтрит не може да се възтанови");
+define("BNRLAN_5", "Потвърдете изтриването на банера");
+define("BNRLAN_6", "Изтриването е отказано.");
+define("BNRLAN_7", "Съществуващи банери");
+define("BNRLAN_8", "Банер ID");
+define("BNRLAN_9", "Клиент");
+define("BNRLAN_10", "Преглеждания");
+define("BNRLAN_11", "Преглеждания %");
+define("BNRLAN_12", "Показвания");
+define("BNRLAN_13", "Оставащи показвания");
+define("BNRLAN_15", "Все още няма банери.");
+define("BNRLAN_16", "Неограничено");
+define("BNRLAN_17", "Никога");
+define("BNRLAN_21", "Завършване");
+define("BNRLAN_22", "Обновете банера");
+define("BNRLAN_23", "Добавяне на нов банер");
+define("BNRLAN_24", "Банер кампания");
+define("BNRLAN_25", "Изберете съществуваща кампания");
+define("BNRLAN_26", "въведете нова кампания");
+define("BNRLAN_27", "Клиент");
+define("BNRLAN_28", "изберете съществуващ клиент");
+define("BNRLAN_29", "въведете нов клиент");
+define("BNRLAN_30", "Логин на клиента");
+define("BNRLAN_31", "Парола на клиента");
+define("BNRLAN_32", "Картинка на банера");
+define("BNRLAN_33", "URL на банера");
+define("BNRLAN_34", "Закупени показвания");
+define("BNRLAN_35", "неограничено");
+define("BNRLAN_36", "Дата на стартиране");
+define("BNRLAN_37", "Дата на завършване");
+define("BNRLAN_38", "при празно = без лимит");
+define("BNRLAN_39", "Клас потребители които ще виждат банера");
+define("BNRLAN_40", "Обновяване на банера");
+define("BNRLAN_41", "Създаване на нов банер");
+define("BNRLAN_42", "Банер система");
+define("BNRLAN_43", "Изберете снимка на банера");
+define("BNRLAN_45", "Стартиране");
+define("BNRLAN_46", "Код");
+define("BNRLAN_58", "начална страница на банерите");
+define("BNRLAN_59", "създайте нов банер");
+define("BNRLAN_60", "кампании");
+define("BNRLAN_61", "меню Банери ");
+define("BNRLAN_62", "Настройка на банерите");
+define("BNRLAN_63", "Банера е създаден");
+define("BNRLAN_64", "Банера е обновен");
 
-define("BANNER_MENU_L1", "Advertisement");
-define("BANNER_MENU_L2", "Banner menu configuration saved");
+define("BANNER_MENU_L1", "Реклама");
+define("BANNER_MENU_L2", "Настройките на менюто банери са запазени");
 
 //v.617
-define("BANNER_MENU_L3", "Caption");
-define("BANNER_MENU_L5", "Banner Configuration"); 
-define("BANNER_MENU_L6", "choose campaigns to show in menu");
-define("BANNER_MENU_L7", "available campaigns");
-define("BANNER_MENU_L8", "selected campaigns");
-define("BANNER_MENU_L9", "remove selection");
-define("BANNER_MENU_L10", "Render type");
-define("BANNER_MENU_L12", "plain");
-define("BANNER_MENU_L13", "in captioned box");
-define("BANNER_MENU_L18", "Update Menu Settings");
+define("BANNER_MENU_L3", "Заглавие");
+define("BANNER_MENU_L5", "Настройки на банерите"); 
+define("BANNER_MENU_L6", "изберете кампания която да се показва в менюто");
+define("BANNER_MENU_L7", "съществуващи кампании");
+define("BANNER_MENU_L8", "избрани кампании");
+define("BANNER_MENU_L9", "премахни избраните");
+define("BANNER_MENU_L10", "Място на показване");
+define("BANNER_MENU_L12", "в началната страница");
+define("BANNER_MENU_L13", "в менюто");
+define("BANNER_MENU_L18", "Обновяване на настройките на менюто");
+define("BANNER_MENU_L19", "Брой банери за показване:<br />използва се само, когато са избрани повече от една кампании");
 
 ?>

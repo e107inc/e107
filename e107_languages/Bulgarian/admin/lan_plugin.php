@@ -4,95 +4,92 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Инсталирай");
 define("EPL_ADLAN_1", "Деинсталирай");
-define("EPL_ADLAN_2", "Are you certain you want to uninstall this plugin?");
+define("EPL_ADLAN_2", "Сигурни ли сте, че искате да деинсталирате този модул?");
 define("EPL_ADLAN_3", "Потвърди деинсталирането");
 define("EPL_ADLAN_4", "Деинсталирането отказано.");
-define("EPL_ADLAN_5", "The install procedure will create new preference entries.");
-define("EPL_ADLAN_6", "... then click here to begin install procedure");
-define("EPL_ADLAN_7", "Database tables successfully upgraded.");
-define("EPL_ADLAN_8", "Preference settings successfully created.");
-define("EPL_ADLAN_9", "SQL commands failed. Check to be sure all upgrade changes are ok.");
+define("EPL_ADLAN_5", "Инсталирането че създаде нови възможности за настройки.");
+define("EPL_ADLAN_6", "... тогава натиснете тук за да продължите инсталацията");
+define("EPL_ADLAN_7", "Таблиците в базата данни са обновени успешно.");
+define("EPL_ADLAN_8", "Настройките са създадени успешно.");
+define("EPL_ADLAN_9", "SQL командата е неуспешна. Проверете за да бъдете сигурни, че всички промени по обновяването са наред.");
 define("EPL_ADLAN_10", "Име");
 define("EPL_ADLAN_11", "Версия");
 define("EPL_ADLAN_12", "Автор");
 define("EPL_ADLAN_13", "Съвместим");
 define("EPL_ADLAN_14", "Описание");
-define("EPL_ADLAN_15", "Read the README file for more information");
+define("EPL_ADLAN_15", "Прочетете README файла за повече информация");
 define("EPL_ADLAN_16", "Информация за модулите");
-define("EPL_ADLAN_17", "More info...");
-define("EPL_ADLAN_18", "Unable to successfully create table(s) for this plugin.");
-define("EPL_ADLAN_19", "Database tables successfully created.");
-define("EPL_ADLAN_20", "Preference settings successfully created.");
+define("EPL_ADLAN_17", "Още информация ...");
+define("EPL_ADLAN_18", "Не са създадени успено таблиците за този модул.");
+define("EPL_ADLAN_19", "Таблиците са съзаддени успешно в базата данни.");
+//define("EPL_ADLAN_20", "Новите настройки са създадени успешно.");
 
-define("EPL_ADLAN_21", "Plugin is already installed.");
-define("EPL_ADLAN_22", "Installed");
-define("EPL_ADLAN_23", "Not installed");
-define("EPL_ADLAN_24", "Upgrade available");
-define("EPL_ADLAN_25", "No install required");
-define("EPL_ADLAN_26", "... then click here to begin uninstall procedure");
-define("EPL_ADLAN_27", "Unable to successfully delete ");
-define("EPL_ADLAN_28", "Database tables successfully deleted.");
-define("EPL_ADLAN_29", "Preference settings successfully deleted.");
-define("EPL_ADLAN_30", "please delete it manually.");
-define("EPL_ADLAN_31", "Please now delete the folder ");
-define("EPL_ADLAN_32", "and all files inside it to complete the uninstall process.");
-define("EPL_ADLAN_33", "Plugin successfully installed.");
-define("EPL_ADLAN_34", "Plugin successfully updated.");
-define("EPL_ADLAN_35", "Parser settings successfully added.");
+define("EPL_ADLAN_21", "Модула е вече инсталиран.");
+define("EPL_ADLAN_22", "Инсталиран");
+define("EPL_ADLAN_23", "Не е инсталиран");
+define("EPL_ADLAN_24", "Има по-нова версия");
+define("EPL_ADLAN_25", "Инсталирането не е задължително");
+define("EPL_ADLAN_26", "... натоснете тук за да продължите процедурата по деинсталиране");
+define("EPL_ADLAN_27", "Не е възможно пълното изтриване на ");
+define("EPL_ADLAN_28", "Таблиците на базата данни са успешно изтрити.");
+define("EPL_ADLAN_29", "Настройките са успешно изтрити.");
+define("EPL_ADLAN_30", "моля изтрийте го ръчно.");
+define("EPL_ADLAN_31", "Моля сега изтрийте папката ");
+define("EPL_ADLAN_32", "и всички файлове в нея за завършване напълно на процедурата по деинсталиране.");
+define("EPL_ADLAN_33", "Модула е успешно инсталиран.");
+define("EPL_ADLAN_34", "Модула е успешно обновен.");
+define("EPL_ADLAN_35", "Parser настройки са успешно добавени.");
 define("EPL_ADLAN_36", "Parser code insert failed, incorrectly formatted.");
 
 define("EPL_ADLAN_37", "Добави модул (.zip или .tar.gz формат)");
 define("EPL_ADLAN_38", "Добави модула");
-define("EPL_ADLAN_39", "The file could not be uploaded as the ".e_PLUGIN." folder does not have the correct permissions - please CHMOD to 777 and reupload the file.");
-define("EPL_ADLAN_40", "Admin Message");
-define("EPL_ADLAN_41", "That file does not appear to be a valid .zip or .tar archive.");
-define("EPL_ADLAN_42", "An error has occurred, unable to un-archive the file");
-define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped, please scroll down to see your plugin in the list.");
-define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as your plugins folder does not have the correct permissions - please CHMOD your e107_plugins folder to 777.");
-define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menus.php'>your menus page</a>.");
+define("EPL_ADLAN_39", "РФайла не може да бъде качен в ".e_PLUGIN.". Папката няма необходимите права за писане - моля сменете CHMOD на 777 и опитайте отново.");
+define("EPL_ADLAN_40", "Съобщение до админа");
+define("EPL_ADLAN_41", "Изглежда файла не е валиден .zip или .tar архив.");
+define("EPL_ADLAN_42", "Поради грешка не може да се разархивира файла");
+define("EPL_ADLAN_43", "Модула бе качен и разархивиран, моля потърсете го в списъла с модули.");
+define("EPL_ADLAN_44", "Автоматичното качване и разархивиране не е разрешено понеже Вашата директория с модули няма нужните права за достъп - моля CHMOD e107_plugins директория на 777.");
+define("EPL_ADLAN_45", "Менюто е качено и разархивирано, за да го активирате идете в <a href='".e_ADMIN."menus.php'>страницата на меютата</a>.");
 
 // define("EPL_CANCEL", "Отказ"); use LAN_CANCEL instead !!
 // define("EPL_EMAIL", "email");
 define("EPL_WEBSITE", "Уебсайт");
 // define("EPL_OPTIONS", "Options"); use LAN_OPTIONS instead!
-define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
-define("EPL_DIRECTORY", "directory.");
-define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
-define("EPL_UPGRADE", "Upgrade");
-define("EPL_CONFIGURE", "Configure");
+define("EPL_NOINSTALL", "Не е нужна инсталация просто го активирайте от страницата на менютата. За деинсталация - изтрийте го. ");
+define("EPL_DIRECTORY", "директория.");
+define("EPL_NOINSTALL_1", "Не е нужна инсталация, за да го махнете изтрийте ");
+define("EPL_UPGRADE", "Обновяване");
+define("EPL_CONFIGURE", "Настройки");
               
-define("EPL_ADLAN_46", "RSS settings successfully created");
-define("EPL_ADLAN_47", "RSS settings successfully deleted");
-define("EPL_ADLAN_48", "Unable to successfully create RSS settings");
-define("EPL_ADLAN_49", "Unable to successfully delete RSS settings");
+define("EPL_ADLAN_46", "RSS настройките са създадени успешно");
+define("EPL_ADLAN_47", "RSS настройките са изтрити успешно");
+define("EPL_ADLAN_48", "Не е възможно да се създадат RSS настройките");
+define("EPL_ADLAN_49", "Не е възможно да се изтрият RSS настройките");
 
-define("EPL_ADLAN_50", "Comments successfully deleted");
+define("EPL_ADLAN_50", "Коментарите са изтрити успешно");
 
-define("EPL_ADLAN_51", "No");
-define("EPL_ADLAN_52", "Yes");
-define("EPL_ADLAN_53", "Directory not writable");
-define("EPL_ADLAN_54", "Please select the option for uninstalling the plugin:");
-define("EPL_ADLAN_55", "Uninstall plugin");
-define("EPL_ADLAN_56", "Yes");
-define("EPL_ADLAN_57", "Delete plugin tables");
-define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail. Tables will have to be manually deleted to remove.");
-define("EPL_ADLAN_59", "Delete plugin files");
-define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
-define("EPL_ADLAN_61", "Confirm uninstall");
-define("EPL_ADLAN_62", "Cancel uninstall");
-define("EPL_ADLAN_63", "Uninstall:");
-define("EPL_ADLAN_64", "");
-define("EPL_ADLAN_65", "");
-define("EPL_ADLAN_66", "");
-define("EPL_ADLAN_67", "");
-define("EPL_ADLAN_68", "");
-define("EPL_ADLAN_69", "");
+define("EPL_ADLAN_51", "Не");
+define("EPL_ADLAN_52", "Да");
+define("EPL_ADLAN_53", "Директорията няма права за писане");
+define("EPL_ADLAN_54", "Моля изберете възможностите за деинсталация на модула:");
+define("EPL_ADLAN_55", "Деинсталиране на модул");
+define("EPL_ADLAN_56", "Да");
+define("EPL_ADLAN_57", "Изтриване на таблиците на модула");
+define("EPL_ADLAN_58", "Ако таблиците не се изтрият модула може да се инсталира на ново без загуба на данни. При нова инсталация създаването на таблиците няма да бъде успешно. Таблиците ще трябва да се премахнат ръчно.");
+define("EPL_ADLAN_59", "Изтриване на файловете на модула");
+define("EPL_ADLAN_60", "e107 ще се опита да премахне файловете на модула.");
+//define("EPL_ADLAN_61", "Потвърдете деинсталацията");
+define("EPL_ADLAN_62", "Откажете деинсталацията");
+define("EPL_ADLAN_63", "Деинсталация:");
+
+define("LAN_UPGRADE_SUCCESSFUL", "Актуализирането завърши успешно");
+define("LAN_INSTALL_SUCCESSFUL", "Инсталацията завърши успешно");
 
 ?>

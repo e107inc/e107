@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_image.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -43,5 +43,23 @@ define("IMALAN_32", "Members only");
 define("IMALAN_33", "Admin only");
 define("IMALAN_34", "Enable Sleight");
 define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
+
+define("IMALAN_36", "Validate avatar size and access");
+define("IMALAN_37", "Avatar Validation");
+define("IMALAN_38", "Maximum allowable width");
+define("IMALAN_39", "Maximum allowable height");
+define("IMALAN_40", "Too wide");
+define("IMALAN_41", "Too high");
+define("IMALAN_42", "Not found");
+define("IMALAN_43", "Delete uploaded avatar");
+define("IMALAN_44", "Delete external reference");
+define("IMALAN_45", "Not found");
+define("IMALAN_46", "Too large");
+define("IMALAN_47", "Total uploaded avatars");
+define("IMALAN_48", "Total external avatars");
+define("IMALAN_49", "Users with avatars");
+define("IMALAN_50", "Total");
+define("IMALAN_51", "Avatar for ");
+
 
 ?>

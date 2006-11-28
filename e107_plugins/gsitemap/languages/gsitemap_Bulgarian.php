@@ -1,0 +1,61 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright T? 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/gsitemap/languages/gsitemap_Bulgarian.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006-11-28 21:53:37 $
+|     $Author: secretr $
++----------------------------------------------------------------------------+
+*/
+define("GSLAN_Name", "Карта на сайта");
+define("GSLAN_1", "Линк");
+define("GSLAN_2", "Добавяне?");
+define("GSLAN_3", "Вид");
+define("GSLAN_4", "Име");
+define("GSLAN_5", "Url");
+define("GSLAN_6", "Tick links to mark them for import ...");
+define("GSLAN_7", "Import Links");
+define("GSLAN_8", "Import with:");
+define("GSLAN_9", "Priority");
+define("GSLAN_10", "Frequency");
+define("GSLAN_11", "always");
+define("GSLAN_12", "hourly");
+define("GSLAN_13", "daily");
+define("GSLAN_14", "weekly");
+define("GSLAN_15", "monthly");
+define("GSLAN_16", "yearly");
+define("GSLAN_17", "never");
+define("GSLAN_18", "Import ticked links");
+define("GSLAN_19", "Google Sitemap");
+define("GSLAN_20", "Listing");
+define("GSLAN_21", "Instructions");
+define("GSLAN_22", "Create New Entry");
+define("GSLAN_23", "Import");
+define("GSLAN_24", "Google Sitemap Entries");
+define("GSLAN_25", "Name");
+define("GSLAN_26", "URL");
+define("GSLAN_27", "Lastmod");
+define("GSLAN_28", "Freq.");
+define("GSLAN_29", "Google Sitemap Configuration");
+define("GSLAN_30", "Display Order");
+define("GSLAN_31", "Visible to");
+define("GSLAN_32", "How to use Google Sitemaps");
+define("GSLAN_33", "GSiteMap Instructions");
+define("GSLAN_34", "First, create the links you wish to have listed in your sitemap. You can import most of your links by clicking the 'Import' button on the right");
+define("GSLAN_35", "If you've chosen to import your links, click 'Import' and then check the links you wish to import");
+define("GSLAN_36", "You can also enter individual links manually by clicking 'Create New Entry'");
+define("GSLAN_37", "Once you have some entries, go to <a href='https://www.google.com/webmasters/sitemaps/stats'>https://www.google.com/webmasters/sitemaps/stats</a> and enter the following URL -> <b>".SITEURL."gsitemap.php</b> - if this url doesn't look right to you, please make sure your site url is correct in admin -> preferences");
+define("GSLAN_38", "For more information on Google Sitemap protocol, go to <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>.");
+define("GSLAN_39", "No links in sitemap - import sitelinks?");
+define("GSLAN_40", "Google Sitemap Entries");
+
+?>

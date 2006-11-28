@@ -1,15 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File
-|     Bulgarian Language Pack for e107 Version 0.7
-|     Copyright ┬⌐ 2005 - Bulgarian e107
-|     http://www.e107bg.org
-|     Encoding: utf-8
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 21:53:22 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:50:19 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -206,5 +202,7 @@ define("FORLAN_178", "Tick this to allow make the email notification checkbox be
 define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for subforums only.  The forum theme must support this option also.)");
 define("FORLAN_180", "Confirm delete operation");
 define("FORLAN_181", "Confirm Delete");
+define("FORLAN_182", "also recalculate replies for all threads in selected forum");
+define("FORLAN_183", "(this function is not allowed when selecting 'all forums' due to the number of queries it will generate)");
 
 ?>

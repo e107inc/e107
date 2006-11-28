@@ -11,12 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Bulgarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 21:55:15 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:52:25 $
 |     $Author: secretr $
-|     $Превод:
-|     $e107BG Team
-|     $http://e107bg.org
 +----------------------------------------------------------------------------+
 */
 
@@ -67,11 +64,11 @@ define("POLLAN_37", "активна от");
 define("POLLAN_38", "до");
 define("POLLAN_39", "Благодарим за гласуването!");
 define("POLLAN_40", "Натисни тук за да видиш резултатите");
-
 define("POLLAN_41", "Тази анкета е ограничена само за регистрирани потребители");
 define("POLLAN_42", "Тази анкета е ограничена само за администратори");
 define("POLLAN_43", "Нямате права да гласувате в тази анкета");
-
 define("POLLAN_44", "Изтриване на анкетата?");
+define("POLLAN_45", "Анкетата е успешно актуализирана");
+define("POLLAN_46", "Оставени са празни полета");
 
 ?>

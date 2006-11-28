@@ -4,22 +4,22 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_frontpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
-define("FRTLAN_1", "Front Page settings updated.");
-define("FRTLAN_2", "Set front page for");
-define("FRTLAN_6", "Links");
+define("FRTLAN_1", "Настройките на входната страница са запазени.");
+define("FRTLAN_2", "Изберете входната страница за");
+define("FRTLAN_6", "Линкове");
 // define("FRTLAN_7", "Content Page");
-define("FRTLAN_12", "Update Front Page Settings");
-define("FRTLAN_13", "Front Page Settings");
-define("FRTLAN_15", "Other (enter url):");
-define("FRTLAN_16", "error: no content main parent selected");
-define("FRTLAN_17", "error: no content sub category selected");
-define("FRTLAN_18", "error: no content item selected");
+define("FRTLAN_12", "Обновяване на настройките");
+define("FRTLAN_13", "Настройки на входната страница");
+define("FRTLAN_15", "Друго (напишете url):");
+define("FRTLAN_16", "грешка: no content main parent selected");
+define("FRTLAN_17", "грешка: no content sub category selected");
+define("FRTLAN_18", "грешка: no content item selected");
 define("FRTLAN_19", "content main parent");
 define("FRTLAN_20", "content category");
 define("FRTLAN_21", "content item");
@@ -28,13 +28,13 @@ define("FRTLAN_21", "content item");
 // define("FRTLAN_24", "");
 // define("FRTLAN_25", "");
 
-define("FRTLAN_26", "all users");
-define("FRTLAN_27", "Guests");
-define("FRTLAN_28", "Members");
-define("FRTLAN_29", "Administrators");
-define("FRTLAN_31", "All Users");
-define("FRTLAN_32", "User Class");
-define("FRTLAN_33", "Current Settings");
-define("FRTLAN_34", "Page");
+define("FRTLAN_26", "всички");
+define("FRTLAN_27", "Гости");
+define("FRTLAN_28", "Региистрирани потребители");
+define("FRTLAN_29", "Администратори");
+define("FRTLAN_31", "Всички потребители");
+define("FRTLAN_32", "Клас потребители");
+define("FRTLAN_33", "Текущи настройки");
+define("FRTLAN_34", "Страница");
 
 ?>

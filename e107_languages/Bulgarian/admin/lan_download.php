@@ -4,133 +4,136 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("DOWLAN_1", "Download added to database.");
-define("DOWLAN_2", "Download updated in database.");
-define("DOWLAN_3", "Download deleted.");
-define("DOWLAN_4", "Please tick the confirm box to delete the download");
-define("DOWLAN_5", "There are no download categories defined yet, until you define some you cannot enter any downloads.");
-define("DOWLAN_6", "No existing downloads");
-define("DOWLAN_7", "Existing Downloads");
+define("DOWLAN_1", "Файлът е добавен в базата данни.");
+define("DOWLAN_2", "Файлът е обновен в базата данни.");
+define("DOWLAN_3", "Файлът е изтрит.");
+define("DOWLAN_4", "Моля сложете отметка за потвърждение на изтриването на файла");
+define("DOWLAN_5", "Все още няма категории файлове, до като не създадете катогории не можете да добавяте файлове.");
+define("DOWLAN_6", "Все още няма файлове");
+define("DOWLAN_7", "Съществуващи файлове");
 
-define("DOWLAN_11", "Category");
-define("DOWLAN_12", "Name");
-define("DOWLAN_13", "File");
-define("DOWLAN_14", "Enter address if download is an external file");
-define("DOWLAN_15", "Author");
-define("DOWLAN_16", "Author Email");
-define("DOWLAN_17", "Author Website");
-define("DOWLAN_18", "Description");
-define("DOWLAN_19", "Main image");
-define("DOWLAN_20", "Thumbnail image");
-define("DOWLAN_21", "Status");
+define("DOWLAN_11", "Катогория");
+define("DOWLAN_12", "Име");
+define("DOWLAN_13", "Файл");
+define("DOWLAN_14", "Напишете URL адрес, ако файла е външен");
+define("DOWLAN_15", "Автор");
+define("DOWLAN_16", "Имейл на автора");
+define("DOWLAN_17", "Сайт на автора");
+define("DOWLAN_18", "Описание");
+define("DOWLAN_19", "Главна картинка");
+define("DOWLAN_20", "Умалена картинка");
+define("DOWLAN_21", "Статус");
 
-define("DOWLAN_24", "Update Download");
-define("DOWLAN_25", "Submit Download");
+define("DOWLAN_24", "Обновяване");
+define("DOWLAN_25", "Добавяне");
 
-define("DOWLAN_27", "Download");
+define("DOWLAN_27", "Файлове");
 
-define("DOWLAN_29", "Downloads Front Page");
-define("DOWLAN_30", "Create Download");
-define("DOWLAN_31", "Categories");
-define("DOWLAN_32", "Downloads Options");
-define("DOWLAN_33", "Are you sure you want to delete this download?");
-define("DOWLAN_34", "Are you sure you want to delete this download category?");
-define("DOWLAN_35", "Download");
-define("DOWLAN_36", "deleted");
-define("DOWLAN_37", "Parent");
-define("DOWLAN_38", "No existing categories");
-define("DOWLAN_39", "Download categories");
-define("DOWLAN_40", "None - main parent");
-define("DOWLAN_41", "Icon");
-define("DOWLAN_42", "View Images");
-define("DOWLAN_43", "Visible to");
-define("DOWLAN_44", "Ticking will make the category visible to only users in that class");
-define("DOWLAN_45", "Create Category");
-define("DOWLAN_46", "Update Category");
-define("DOWLAN_47", "Category created");
-define("DOWLAN_48", "Category Updated");
-define("DOWLAN_49", "Download Category");
+define("DOWLAN_29", "Начална страница");
+define("DOWLAN_30", "Създаване на нов");
+define("DOWLAN_31", "Категории");
+define("DOWLAN_32", "Настройка на файлове");
+define("DOWLAN_33", "Сигурни ли сте, че искате да изтриете този файл?");
+define("DOWLAN_34", "Сигурни ли сте, че искате да изтриете тази категория?");
+define("DOWLAN_35", "Файлове 1");
+define("DOWLAN_36", "изтрит");
+define("DOWLAN_37", "Главна катогория");
+define("DOWLAN_38", "Няма категории");
+define("DOWLAN_39", "Категории файлове");
+define("DOWLAN_40", "Нищо - НОВА ГЛАВНА КАТЕГОРИЯ");
+define("DOWLAN_41", "Икона");
+define("DOWLAN_42", "Виж иконите");
+define("DOWLAN_43", "Да се вижда от");
+define("DOWLAN_44", "Изберете от кой клас потребители ще имат достъп до тази категория");
+define("DOWLAN_45", "Създаване");
+define("DOWLAN_46", "Обновяване");
+define("DOWLAN_47", "Категорията е създадена");
+define("DOWLAN_48", "Категорията е обновена");
+define("DOWLAN_49", "Категория файлове");
 
-define("DOWLAN_51", "Search/Refresh downloads");
-define("DOWLAN_52", "Files");
-define("DOWLAN_53", "Subcategory");
-define("DOWLAN_54", "Download Options");
-define("DOWLAN_55", "Number of downloads to display per page");
-define("DOWLAN_56", "Sort by ");
+define("DOWLAN_51", "Търсене/Обновяване на файловете");
+define("DOWLAN_52", "Файлове");
+define("DOWLAN_53", "Под категория");
+define("DOWLAN_54", "Настройки на файлове");
+define("DOWLAN_55", "Брой файлове за показване на страница");
+define("DOWLAN_56", "Подредба по ");
 
 
-define("DOWLAN_59", "Filename");
-define("DOWLAN_60", "Author");
+define("DOWLAN_59", "Име на файла");
+define("DOWLAN_60", "Автор");
 
-define("DOWLAN_62", "Ascending");
-define("DOWLAN_63", "Descending");
-define("DOWLAN_64", "Update Options");
-define("DOWLAN_65", "Options Updated");
-define("DOWLAN_66", "Enter filesize");
+define("DOWLAN_62", "Възходящо");
+define("DOWLAN_63", "Низходящо");
+define("DOWLAN_64", "Обновяване на настройките");
+define("DOWLAN_65", "Настройките са обновени");
+define("DOWLAN_66", "Големина на файла");
 define("DOWLAN_67", "ID");
-define("DOWLAN_68", "File Missing!");
+define("DOWLAN_68", "Файлът липсва!");
 define("DOWLAN_69", "Downloads handled by PHP");
-define("DOWLAN_70", "Checking this will send all download requests through PHP.");
-define("DOWLAN_100", "Activate Download Agreement");
-define("DOWLAN_101", "Agreement Text");
-define("DOWLAN_102", "Allow Comments?");
-define("DOWLAN_103", "Remove from Uploads");
-define("DOWLAN_104", "was removed from public uploads");
-define("DOWLAN_105", "Back to Public Uploads");
-define("DOWLAN_106", "May be download by");
-define("DOWLAN_107", "Limit download count");
-define("DOWLAN_108", "Limit download bandwidth");
-define("DOWLAN_109", "every");
-define("DOWLAN_110", "days");
+define("DOWLAN_70", "Избирането на тази опция ще контролира всички заявки за сваляне чрез PHP.");
+define("DOWLAN_100", "Активиране на споразумението за изтегляне");
+define("DOWLAN_101", "Текст на споразомението");
+define("DOWLAN_102", "Позволете коментарите?");
+define("DOWLAN_103", "Премахване от публично одбавените");
+define("DOWLAN_104", "бе премахнат от публично добавените файлове");
+define("DOWLAN_105", "Обратно в публично добавените файлове");
+define("DOWLAN_106", "Може да се изтегля от");
+define("DOWLAN_107", "Лимит на брой тегления");
+define("DOWLAN_108", "Лимит на трафик");
+define("DOWLAN_109", "всеки");
+define("DOWLAN_110", "ден");
 define("DOWLAN_111", "kb");
-define("DOWLAN_112", "Limits");
-define("DOWLAN_113", "Userclass");
-define("DOWLAN_114", "Add New Limit");
-define("DOWLAN_115", "Update limits");
-define("DOWLAN_116", "Limit for that userclass already exists");
-define("DOWLAN_117", "Limit successfully added");
-define("DOWLAN_118", "Limit not added - unknown error");
-define("DOWLAN_119", "Limit successfully removed");
-define("DOWLAN_120", "Limit not removed - unknown error");
-define("DOWLAN_121", "Limit successfully updated");
-define("DOWLAN_122", "Inactive");
-define("DOWLAN_123", "Active - File is subject to download limits");
-define("DOWLAN_124", "Active - File is NOT subject to download limits");
-define("DOWLAN_125", "Download limits active");
-define("DOWLAN_126", "Activation status updated");
-define("DOWLAN_127", "Only enter filesize if the download is an external file");
-define("DOWLAN_128", "Mirrors");
-define("DOWLAN_129", "leave blank if not using mirrors");
-define("DOWLAN_130", "Add another mirror");
-define("DOWLAN_131", "Select local file");
-define("DOWLAN_132", "Please enter mirror to use, then address to download");
+define("DOWLAN_112", "Лимити");
+define("DOWLAN_113", "потребителски класове");
+define("DOWLAN_114", "Добавяне на нов лимит");
+define("DOWLAN_115", "Обновяване на лимитите");
+define("DOWLAN_116", "Лимита за този клас потребители вече съществува");
+define("DOWLAN_117", "Лимита е добаве успешно");
+define("DOWLAN_118", "Лимита не е добавен - непозната грешка");
+define("DOWLAN_119", "Лимита е премахнат успешно");
+define("DOWLAN_120", "Лимита не е премахнат - непозната грешка");
+define("DOWLAN_121", "Лимита е обновен успешно");
+define("DOWLAN_122", "Неактивен");
+define("DOWLAN_123", "Активирай - Файлът е обект на лимит");
+define("DOWLAN_124", "Активирай - Файлът НЕ Е обект на лимит");
+define("DOWLAN_125", "Активиране на лимитите за изтегляне");
+define("DOWLAN_126", "Активиранете бе успешно");
+define("DOWLAN_127", "Напишете само големината на файла, ако той е външен");
+define("DOWLAN_128", "Прозорци за изтегляне");
+define("DOWLAN_129", "оставете празно ако не ползвате прозорци за изтегляне");
+define("DOWLAN_130", "Добавяне на нов прозорец");
+define("DOWLAN_131", "Избор на локален файл");
+define("DOWLAN_132", "Моля изберете прозорец за изтегляне, после пълен URL до файла");
 
-define("DOWLAN_133", "Mirror updated in database");
-define("DOWLAN_134", "Mirror saved in database");
-define("DOWLAN_135", "Mirror deleted");
-define("DOWLAN_136", "image");
-define("DOWLAN_137", "Are you sure you want to delete this mirror?");
-define("DOWLAN_138", "Existing Mirrors");
-define("DOWLAN_139", "Address");
-define("DOWLAN_140", "Upload local images to e107_files/downloadimages to show them here, or enter full address if image is remote");
-define("DOWLAN_141", "Location");
-define("DOWLAN_142", "Update Mirror");
-define("DOWLAN_143", "Create Mirror");
-define("DOWLAN_144", "No mirrors defined in mirror section.");
+define("DOWLAN_133", "Прозореца за изтегляне е обновен");
+define("DOWLAN_134", "Прозореца за изтегляне е запазен");
+define("DOWLAN_135", "Прозореца за изтегляне е изтрит");
+define("DOWLAN_136", "снимка");
+define("DOWLAN_137", "Сигурни ли сте, че искате да изтриете този прозорец за изтегляне?");
+define("DOWLAN_138", "Съществуващи прозорци за изтегляне");
+define("DOWLAN_139", "URL на прозореца");
+define("DOWLAN_140", "Качете снимката в e107_files/downloadimages за да се покаже тук, или напишете пълен URL адрес");
+define("DOWLAN_141", "Местонамиране");
+define("DOWLAN_142", "Обновяване");
+define("DOWLAN_143", "Създаване");
+define("DOWLAN_144", "Няма създадени прозорци за изтегляне.");
 
-define("DOWLAN_145", "Download visible to");
+define("DOWLAN_145", "Файлът ще се вижда от");
 define("DOWLAN_146", "Custom Download-denial message or URL");
 
 
-define("DOWLAN_147", "Icon for empty category");
-define("DOWLAN_148", "Check to update datestamp to current time");
-define("DOWLAN_149", "Or click here to use an external file");
+define("DOWLAN_147", "Икона при празна категория");
+define("DOWLAN_148", "Отметнете тук за да обновите датата на създаване на файла");
+define("DOWLAN_149", "Или натиснете тук ако използвате външен файл");
 
-define("DOWLAN_150", "Email admin when broken download reported");
+define("DOWLAN_150", "Пращане на имейл на админнистратор при намиране на грешен файл");
+define("DOWLAN_151", "Доклад за невалиден файл до");
 
+define("DOWLAN_152", "Невъзможно преместването на файла");
+define("DOWLAN_153", "Преместване на файла в директорията за сваляне");   
 ?>

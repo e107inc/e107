@@ -4,32 +4,35 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
-define("NT_LAN_1", "Notify");
-define("NT_LAN_2", "Receive email notification on");
-define("NT_LAN_3", "Off");
-define("NT_LAN_4", "Head admin");
-define("NT_LAN_5", "Class");
-define("NT_LAN_6", "Email");
+define("NT_LAN_1", "Уведомяване");
+define("NT_LAN_2", "Получаване на имейли за уведомяване при");
+define("NT_LAN_3", "Изключено");
+define("NT_LAN_4", "Главни администратори");
+define("NT_LAN_5", "Клас");
+define("NT_LAN_6", "Имейл");
 
-define("NU_LAN_1", "User Events");
-define("NU_LAN_2", "User sign up");
-define("NU_LAN_3", "User account verification");
-define("NU_LAN_4", "User login");
-define("NU_LAN_5", "User logout");
+define("NU_LAN_1", "Потребители");
+define("NU_LAN_2", "Регистрация на потребител");
+define("NU_LAN_3", "Порвърждение на регистрацията на потребител");
+define("NU_LAN_4", "Логване на потребител");
+define("NU_LAN_5", "Излизане на потребител");
 
-define("NS_LAN_1", "Security Events");
-define("NS_LAN_2", "IP banned for flooding site");
+define("NS_LAN_1", "Сигурност");
+define("NS_LAN_2", "Блокиране на IP");
 
-define("NN_LAN_1", "News Events");
-define("NN_LAN_2", "News item submitted by user");
-define("NN_LAN_3", "News item posted by admin");
-define("NN_LAN_4", "News item edited by admin");
-define("NN_LAN_5", "News item deleted by admin");
+define("NN_LAN_1", "Новини");
+define("NN_LAN_2", "Нова добавена новина");
+define("NN_LAN_3", "Новина публикувана от админ");
+define("NN_LAN_4", "Новина редактирана от админ");
+define("NN_LAN_5", "Новина изтрита от админ");
+
+define("NF_LAN_1", "File Events");
+define("NF_LAN_2", "Файлове качени от потребител");
 
 ?>

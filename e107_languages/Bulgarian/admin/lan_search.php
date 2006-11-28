@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("SEALAN_26", "Pre-Title Text");
 define("SEALAN_30", "Highlight keywords on referred to page:");
 define("SEALAN_31", "PHP limited to");
 define("SEALAN_32", "results (leave blank for no limit)");
-define("SEALAN_33", "Could not switch to MySql sort method as this requires at least version 4.0.1 of MySql.");
+define("SEALAN_33", "Could not switch to MySQL sort method as this requires at least version 4.0.1 of MySQL.");
 define("SEALAN_34", "Your version is currently");
 define("SEALAN_35", "Searchable areas selection method:");
 define("SEALAN_36", "Dropdown");
@@ -57,7 +57,7 @@ define("SEALAN_46", "Number of characters in search result summary");
 
 define("SEALAN_47", "Only match whole words:");
 define("SEALAN_48", "This setting only applies when the search sort method is PHP. If your site includes Ideographic languages such as Chinese and Japanese you must have this set to off.");
-define("SEALAN_49", "If your site includes Ideographic languages such as Chinese and Japanese you must use the PHP sort method.");
+define("SEALAN_49", "If your site includes Ideographic languages, such as Chinese and Japanese, you must use the PHP sort method.");
 
 
 ?>

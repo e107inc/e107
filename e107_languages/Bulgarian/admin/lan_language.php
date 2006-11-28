@@ -4,27 +4,32 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-28 21:46:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
-define("LANG_LAN_00","could not be created.(already exists)");
-define("LANG_LAN_01","was deleted(if existing) and created.");
-define("LANG_LAN_02","couldn't be deleted");
-define("LANG_LAN_03","Tables");
+define("LANG_LAN_00","не може да бъде създадена.(вече съществува)");
+define("LANG_LAN_01","бе зитрита(ако е съществувала) из съдадена на ново.");
+define("LANG_LAN_02","не може да бъде изтрита");
+define("LANG_LAN_03","Таблици");
 
-define("LANG_LAN_05","Not Installed");
-define("LANG_LAN_06", "Create tables");
-define("LANG_LAN_07", "Drop existing tables?");
-define("LANG_LAN_08", "Replace existing tables (data will be lost).");
-define("LANG_LAN_10", "Confirm delete");
-define("LANG_LAN_11", "Delete unchecked tables above (if they exist).");
-define("LANG_LAN_12", "Enable Multi-Language Tables");
-define("LANG_LAN_13", "Language Preferences");
-define("LANG_LAN_14", "Default Site Language");
-define("LANG_LAN_15", "Tick to copy data from the default language.(useful for links, news-categories etc) ");
-define("LANG_LAN_16", "Multi-language Database Usage"); 
+define("LANG_LAN_05","Не е инсталиран");
+define("LANG_LAN_06", "Създаване на таблици");
+define("LANG_LAN_07", "Премахване на съществуващите таблици?");
+define("LANG_LAN_08", "Замяна на съществуващите таблици (информацията ще бъде загубена).");
+define("LANG_LAN_10", "Потвърдете изтриването");
+define("LANG_LAN_11", "Изтриване на не маркираните по-горе таблици (ако съществуват).");
+define("LANG_LAN_12", "Разрешете многоезичните таблици");
+define("LANG_LAN_13", "Настройки на езиците");
+define("LANG_LAN_14", "Стандартен език на сайта");
+define("LANG_LAN_15", "Маркирайте за да копира инфрмацията от стандартния език (полезно е при линкове, новини и др.) ");
+define("LANG_LAN_16", "Използват се таблици за многоезичност"); 
+define("LANG_LAN_17", "Език по подразбиране - не се изискват допълнителни таблици.");
+define("LANG_LAN_18", "Изполване на Parked под-домейни за друг език:");
+define("LANG_LAN_19", "напр. en.mydomain.com за показване с езикови настройки English.");
+define("LANG_LAN_20", "Въведете основния домейн за да включите опцията - напр.: mydomain.com");
 
+define("LANG_LAN_21", "Езикови инструменти");
 ?>

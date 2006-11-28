@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-06 22:08:52 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-28 21:46:22 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -99,4 +99,5 @@ define("LAN_dl_73", "Файлове от този mirror: ");
 define("LAN_dl_74", "Общо файлове от този mirror: ");
 
 define("LAN_dl_75", "няма снимка ");
+define("LAN_dl_76", "Към страница");
 ?>
