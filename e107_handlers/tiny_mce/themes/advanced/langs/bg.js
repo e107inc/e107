@@ -1,4 +1,4 @@
-// UK lang variables
+// BG lang variables
 
 tinyMCE.addToLang('',{
 theme_style_select : '-- Styles --',
@@ -38,6 +38,11 @@ theme_h3 : 'Heading 3',
 theme_h4 : 'Heading 4',
 theme_h5 : 'Heading 5',
 theme_h6 : 'Heading 6',
+theme_blockquote : 'Blockquote',
+theme_code : 'Код',
+theme_samp : 'Примерен код',
+theme_dt : 'Definition term ',
+theme_dd : 'Definition description',
 theme_colorpicker_title : 'Избор на цвят',
 theme_colorpicker_apply : 'Приеми',
 theme_forecolor_desc : 'Избор на цвят за текст',
