@@ -35,6 +35,10 @@ img {
 	border: 0px;
 }
 
+.linkspage_button {
+	border: 0px;
+}
+
 form {
 	margin: 0px;
 }
@@ -113,7 +117,17 @@ ul {
 	margin-bottom: 0px;
 }
 
+.helpbox {
+	border: 0px;
+}
+
 /* Theme Specific Classes */
+
+.page_container {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
 
 .top_section, .main_section {
 	width: 100%;
