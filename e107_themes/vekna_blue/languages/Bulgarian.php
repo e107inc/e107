@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/vekna_blue/languages/Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-11-29 10:44:51 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-29 15:40:20 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

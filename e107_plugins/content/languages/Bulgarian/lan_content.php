@@ -4,14 +4,27 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Bulgarian/lan_content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:49:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:35:33 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
 
 define("CONTENT_EMAILPRINT_LAN_1", "това са публикации за");
+
+define("POPUP_LAN_1", "клик за увеличаване на снимката");
+
+define("CONTENT_NOTIFY_LAN_1", "Content Events");
+define("CONTENT_NOTIFY_LAN_2", "Content item submitted by user");
+define("CONTENT_NOTIFY_LAN_3", "Content Submitted");
+
+define("CONTENT_TYPE_LAN_0", "categories");
+define("CONTENT_TYPE_LAN_1", "authors");
+define("CONTENT_TYPE_LAN_2", "archive");
+define("CONTENT_TYPE_LAN_3", "top rated");
+define("CONTENT_TYPE_LAN_4", "top score");
+define("CONTENT_TYPE_LAN_5", "recent");
 
 define("CONTENT_ICON_LAN_0", "редакция");
 define("CONTENT_ICON_LAN_1", "изтриване");
@@ -173,6 +186,9 @@ define("CONTENT_LAN_86", "преглед на най-високо оценени
 define("CONTENT_LAN_87", "Най-високо оценени");
 define("CONTENT_LAN_88", "няма все още оценени публикации");
 define("CONTENT_LAN_89", "избери странница");
+define("CONTENT_LAN_90", "предишна страница");
+define("CONTENT_LAN_91", "следваща страница");
+define("CONTENT_LAN_92", " - настояща страница");
 
 define("CONTENT_MENU_LAN_0", "Публикаци");
 define("CONTENT_MENU_LAN_1", "все още няма публикации");

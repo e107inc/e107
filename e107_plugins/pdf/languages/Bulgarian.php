@@ -8,8 +8,8 @@
 |     Encoding: utf-8  
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pdf/languages/Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-11-28 21:53:51 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-29 15:37:45 $
 |     $Author: secretr $
 +-----------------------------------------------------------------------------+
 */

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Bulgarian/lan_content_help.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:49:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:35:33 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -75,4 +75,5 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "Страницата Най-висо
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "Страницата с Най-много точки показва всички публикации, на които има зададени точки от авторите на публикации.<br /><br />Можете да определите кои секции да се показват с отмятане на всяка една опция.<br /><br />Също така можете да покажете имейл адреса на автор, който не е потребител на сайта.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "this page allows you to set options for the admin create category page.<br /><br />You can define which sections are available when an admin (or personal content manager) creates a new content category.");
 ?>

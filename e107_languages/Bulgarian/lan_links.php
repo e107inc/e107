@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-28 21:46:22 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-29 15:33:52 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ define("LAN_99", "Благодарим");
 define("LAN_100", "Вашият линк беше записан и ще бъде разгледан от администратор на сайта.");
 define("LAN_101", "Моля натиснете тук за добавяне на линк");
 
-define("LAN_102", "");
+define("LAN_102", " ");
 define("LAN_103", "Има");
 define("LAN_104", "Има");
 define("LAN_105", "общо в");

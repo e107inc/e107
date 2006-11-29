@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Bulgarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:51:23 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:37:01 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -60,5 +60,7 @@ define('LOGIN_MENU_L37', 'Обнови настройките');
 define('LOGIN_MENU_L38', 'Настройките са обновени');
 
 define('LOGIN_MENU_L39', 'Админ Изход');
+define("LOGIN_MENU_L40", "Повторна заявка за активиране");
+define("LOGIN_MENU_L41", "Настройки на меню Вход");
 
 ?>

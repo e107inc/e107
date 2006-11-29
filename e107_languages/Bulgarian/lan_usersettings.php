@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_usersettings.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-28 21:46:22 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-29 15:33:54 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,7 @@ define("LAN_SIGNUP_2", "симв.");
 define("LAN_SIGNUP_4", "Паролата ви трябва да е дълга най-малко ");
 define("LAN_SIGNUP_5", " символа.");
 define("LAN_SIGNUP_6", "Необходим е вашия ");
-define("LAN_SIGNUP_7", "");
+define("LAN_SIGNUP_7", " ");
 
 define("LAN_USET_1", "Аватарът ви е прекалено голям");
 define("LAN_USET_2", "Максималната позволена дължина е");

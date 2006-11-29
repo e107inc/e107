@@ -10,8 +10,8 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Revision: 1.1 $
-|     $Date: 2006-11-28 21:56:09 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-29 15:40:11 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

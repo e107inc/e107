@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_signup.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-28 21:46:22 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-29 15:33:53 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ define("LAN_SIGNUP_3", "Неодобрен код.");
 define("LAN_SIGNUP_4", "Паролата Ви трябва да е дълга най-малко ");
 define("LAN_SIGNUP_5", " символа.");
 define("LAN_SIGNUP_6", "Необходимо е Вашето ");
-define("LAN_SIGNUP_7", "");
+define("LAN_SIGNUP_7", " ");
 define("LAN_SIGNUP_8", "Благодарим Ви!");
 define("LAN_SIGNUP_9", "Невъзможно е продължаването.");
 define("LAN_SIGNUP_10", "Да");

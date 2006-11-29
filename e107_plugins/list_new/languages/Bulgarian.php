@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Bulgarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:51:04 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:36:44 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -176,6 +176,9 @@ define("LIST_ADMIN_LAN_36", "максимално време");
 define("LIST_ADMIN_LAN_37", "показване на падащо меню с избор на брой дни назад?");
 define("LIST_ADMIN_LAN_38", "");
 
+define("LIST_ADMIN_LAN_39", "отвори ако съществуват записи");
+define("LIST_ADMIN_LAN_40", "трябва ли секцията, която съдържа записи да бъде отворена по подразбиране?");
+define("LIST_ADMIN_LAN_41", " ");
 
 define("LIST_MENU_1", "Последно добавени");
 define("LIST_MENU_2", "от");

@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_userclass.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-28 21:46:22 $
+|     $Revision: 1.5 $
+|     $Date: 2006-11-29 15:33:54 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

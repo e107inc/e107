@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Bulgarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:52:25 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:37:58 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

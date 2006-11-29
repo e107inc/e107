@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Bulgarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:50:54 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:36:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -144,6 +144,7 @@ define("LCLAN_ADMIN_11", "изтрит");
 define("LCLAN_ADMIN_12", "Категория линкове");
 define("LCLAN_ADMIN_13", "Добавеният линк е изтрит");
 define("LCLAN_ADMIN_14", "Линкове");
+define("LCLAN_ADMIN_15", "В тази категория има линкове. Моля преместете/изтрийте линковете и опитайте отново.");
 
 define("LCLAN_SL_1", "Добавени линкове");
 define("LCLAN_SL_2", "Няма добавени линкове");

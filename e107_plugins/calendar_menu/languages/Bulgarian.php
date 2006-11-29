@@ -1,6 +1,25 @@
 <?php
-// e107 Language File.
-// $Id: Bulgarian.php,v 1.3 2006-11-28 21:49:11 secretr Exp $
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ?Steve Dun.an 2001-2002
+|     http://e107.org
+|     jali.@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Bulgarian.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:34:45 $
+|     $Author: secretr $
+|
+| Various mods by steved:
+|	a) To reflect updates
+|	b) To reflect CVS update to version 1.14 made 29.10.06
++----------------------------------------------------------------------------+
+*/
 
 
 define('EC_ADLAN_1', "Календар на събитията");
@@ -40,39 +59,7 @@ define('EC_LAN_DAY_28', "28");
 define('EC_LAN_DAY_29', "29");
 define('EC_LAN_DAY_30', "30");
 define('EC_LAN_DAY_31', "31");
-/*
-define('EC_LAN_DAY_1', "1-ви");
-define('EC_LAN_DAY_2', "2-ри");
-define('EC_LAN_DAY_3', "3-ти");
-define('EC_LAN_DAY_4', "4-ти");
-define('EC_LAN_DAY_5', "5-ти");
-define('EC_LAN_DAY_6', "6-ти");
-define('EC_LAN_DAY_7', "7-и");
-define('EC_LAN_DAY_8', "8-и");
-define('EC_LAN_DAY_9', "9-и");
-define('EC_LAN_DAY_10', "10-и");
-define('EC_LAN_DAY_11', "11-и");
-define('EC_LAN_DAY_12', "12-и");
-define('EC_LAN_DAY_13', "13-и");
-define('EC_LAN_DAY_14', "14-и");
-define('EC_LAN_DAY_15', "15-и");
-define('EC_LAN_DAY_16', "16-и");
-define('EC_LAN_DAY_17', "17-и");
-define('EC_LAN_DAY_18', "18-и");
-define('EC_LAN_DAY_19', "19-и");
-define('EC_LAN_DAY_20', "20-и");
-define('EC_LAN_DAY_21', "21-и");
-define('EC_LAN_DAY_22', "22-и");
-define('EC_LAN_DAY_23', "23-и");
-define('EC_LAN_DAY_24', "24-и");
-define('EC_LAN_DAY_25', "25-и");
-define('EC_LAN_DAY_26', "26-и");
-define('EC_LAN_DAY_27', "27-и");
-define('EC_LAN_DAY_28', "28-и");
-define('EC_LAN_DAY_29', "29-и");
-define('EC_LAN_DAY_30', "30-и");
-define('EC_LAN_DAY_31', "31-и");
-*/
+
 define('EC_LAN_0', "Януари");
 define('EC_LAN_1', "Февруари");
 define('EC_LAN_2', "Март");
@@ -159,6 +146,7 @@ define('EC_LAN_70', "Заглавие на Събитието:");
 define('EC_LAN_71', "Час на Събитието:");
 define('EC_LAN_72', "Дата на Събитието:");
 define('EC_LAN_73', "Край:");
+
 define('edesc_LAN_0', "Премести на долу");
 define('edesc_LAN_1', "Все още ");
 define('edesc_LAN_2', "преди началото на събитието ".SITENAME);
@@ -170,6 +158,7 @@ define('edesc_LAN_7', "час");
 define('edesc_LAN_8', "часа");
 define('edesc_LAN_9', "ден");
 define('edesc_LAN_10', "дни");
+
 define('EC_LAN_VIEWCALENDAR', "Виж календара");
 define('EC_LAN_VIEWALLEVENTS', "Виж всички събития");
 define('EC_LAN_ALLEVENTS', "Всички събития");
@@ -186,12 +175,12 @@ define('EC_LAN_82', "За активиране, моля отидете на е�
 define('EC_LAN_83', "Календар");
 
 
-define('EC_LAN_84', "Css елемент за ползване в заглавната лента за ден");
-define('EC_LAN_85', "По подразбиране е 'forumheader'");
-define('EC_LAN_86', "Css елемент за ползване за списъка с дни");
-define('EC_LAN_87', "По подразбиране е 'forumheader3'");
-define('EC_LAN_88', "Css елемент за ползване за избрания ден");
-define('EC_LAN_89', "По подразбиране е 'indent'");
+//define('EC_LAN_84', "Css елемент за ползване в заглавната лента за ден");
+//define('EC_LAN_85', "По подразбиране е 'forumheader'");
+//define('EC_LAN_86', "Css елемент за ползване за списъка с дни");
+//define('EC_LAN_87', "По подразбиране е 'forumheader3'");
+//define('EC_LAN_88', "Css елемент за ползване за избрания ден");
+//define('EC_LAN_89', "По подразбиране е 'indent'");
 
 //  *BK* Corrections to hard coding by Barry
 define('EC_LAN_90', "Избери");
@@ -204,10 +193,10 @@ define('EC_LAN_96', "Виж Календара");
 define('EC_LAN_97', "Всички");
 define('EC_LAN_98', "Задължително поле е оставено празно");
 define('EC_LAN_99', "Събитието трябва да бъде за цял ден или да свършва след започването му");
-define('EC_LAN_100', "Категории могат да се добавят от");
-define('EC_LAN_101', "Избери неактивно за спиране на формата за ново събитие.");
+//define('EC_LAN_100', "Категории могат да се добавят от");
+//define('EC_LAN_101', "Избери неактивно за спиране на формата за ново събитие.");
 define('EC_LAN_102', "Покжи линк към форум тема");
-define('EC_LAN_103', "На формата за ново събитие.");
+//define('EC_LAN_103', "На формата за ново събитие.");
 define('EC_LAN_104', "Клас Администратори на Календар");
 define('EC_LAN_105', "* - задължителни полета");
 define('EC_LAN_106', "Събития");
@@ -226,7 +215,7 @@ define('EC_LAN_118', "Формат за датата в горната част 
 define('EC_LAN_119', "месец/година");
 define('EC_LAN_120', "година/месец");
 define('EC_LAN_121', "Покажи Календара");
-define('EC_LAN_122', "Css елемент за показване на събитията за този ден (меню)");
+//define('EC_LAN_122', "Css елемент за показване на събитията за този ден (меню)");
 define('EC_LAN_123', "Абонамент");
 define('EC_LAN_124', "Абонамент за Клаендара");
 define('EC_LAN_125', "Категории достъпни за абонамент");
@@ -239,6 +228,16 @@ define('EC_LAN_131', "Назад");
 define('EC_LAN_132', "Детайли");
 define('EC_LAN_133', "[прочети още]");
 define('EC_LAN_134', "Трябва да посочите име на категорията");
+define('EC_LAN_135', "Събитие");
+define('EC_LAN_136', "Описание категория");
+define('EC_LAN_137', "Бъдещи събития");
+
+// Added 12.07.06 for next_event_menu.php
+define('EC_LAN_140', "Предстоящи събития");
+define('EC_LAN_141', "Няма предстоящи събития");
+define('EC_LAN_142', "Само регистрирани и логнати потребители могат да се запишат за съобщения за събития");
+define('EC_LAN_143', "Facility not available");
+define('EC_LAN_144', " at ");
 
 define('EC_ADLAN_A10', "Настройки");
 define('EC_ADLAN_A11', "Категории");
@@ -286,6 +285,96 @@ define('EC_ADLAN_A93', "Имейл от (имейл адрес)");
 define('EC_ADLAN_A94', "Добави нов клас за");
 define('EC_ADLAN_A95', "Активирай абониране");
 define('EC_ADLAN_A96', "Деактивиране на тази опция премахва бутона за абониране и отменя настройката за абониране за категория.");
-define('EC_ADLAN_A97', "Ако е избрано тази категория няма да бъде показвана в списъка с абонаменти на потребителя.");
+//define('EC_ADLAN_A97', "Ако е избрано тази категория няма да бъде показвана в списъка с абонаменти на потребителя.");
 
+// Added from here 12.07.06 for forthcoming events and mailout upgrades
+define('EC_ADLAN_A100', "Forthcoming Events");
+define('EC_ADLAN_A101', "Days to look forward:");
+define('EC_ADLAN_A102', "Number of events to display:");
+define('EC_ADLAN_A103', "Include recurring events:");
+define('EC_ADLAN_A104', "Title is link to events list:");
+define('EC_ADLAN_A105', "Configure Forthcoming Events Menu");
+define('EC_ADLAN_A106', "Menu has to be enabled on the 'Menu' page");
+define('EC_ADLAN_A107', "Will not work reliably if looking forward more than 59 days");
+define('EC_ADLAN_A108', "Menu Heading");
+define('EC_ADLAN_A109', "Forthcoming Events preferences updated");
+
+define('EC_ADLAN_A110', "Only on previous day");
+define('EC_ADLAN_A111', "Advanced and previous day");
+define('EC_ADLAN_A112', "Previous day and on the day");
+define('EC_ADLAN_A113', "Advanced, previous day and on the day");
+
+define('EC_ADLAN_A114', "Logging of Emails");
+define('EC_ADLAN_A115', "Summary");
+define('EC_ADLAN_A116', "Detailed");
+define('EC_ADLAN_A117', "Message on the day or the previous day");
+define('EC_ADLAN_A118', "Categories to display");
+define('EC_ADLAN_A119', "No categories defined, or error reading database");
+define('EC_ADLAN_A120', "Show category icon in menu");
+define('EC_ADLAN_A121', "Category Description");
+define('EC_ADLAN_A122', "Calendar time reference");
+define('EC_ADLAN_A123', "Calendar time format");
+define('EC_ADLAN_A124', "Current server time: ");
+define('EC_ADLAN_A125', "Current site time: ");
+define('EC_ADLAN_A126', "Current user time: ");
+define('EC_ADLAN_A127', "Determines time display format throughout event calendar.");
+define('EC_ADLAN_A128', "Custom time uses the format in the box on the right");
+define('EC_ADLAN_A129', '"Site Time" uses the offset defined in preferences');
+define('EC_ADLAN_A130', "Event name is link to:");
+define('EC_ADLAN_A131', "Calendar Event");
+define('EC_ADLAN_A132', "Source Info URL");
+define('EC_ADLAN_A133', "Date format for event entry: ");
+define('EC_ADLAN_A134', "Level of logging to main admin log:");
+define('EC_ADLAN_A135', "Edit/delete");
+define('EC_ADLAN_A136', "All changes");
+define('EC_ADLAN_A137', "Can cover additions, updates to and deletions from the event list");
+define('EC_ADLAN_A138', "Event start/end times on 5-minute boundaries");
+define('EC_ADLAN_A139', "(Reduces number of entries in drop-down list)");
+define('EC_ADLAN_A140', "Show number of events for this month in Calendar Menu");
+define('EC_ADLAN_A141', "Maintenance");
+define('EC_ADLAN_A142', "Remove past events ending more than x months ago");
+define('EC_ADLAN_A143', "timed from beginning of current month");
+define('EC_ADLAN_A144', "Event Calendar Maintenance");
+define('EC_ADLAN_A145', "Delete old entries");
+define('EC_ADLAN_A146', "Events older than ");
+define('EC_ADLAN_A147', " deleted");
+define('EC_ADLAN_A148', "Parameter error - nothing deleted");
+define('EC_ADLAN_A149', "No old events to delete, or delete of past events failed");
+define('EC_ADLAN_A150', "Confirm delete events older than ");
+
+define('EC_ADLAN_A151', "e107 Web Site");
+define('EC_ADLAN_A152', "calendar@yoursite.com");
+define('EC_ADLAN_A153', "Log directory must be created manually - create a subdirectory 'log' off your event calendar plugin directory, with '666' access rights");
+define('EC_ADLAN_A154', "Could not change log directory permissions");
+define('EC_ADLAN_A155', "Log directory permissions may require manual update to 0666 or 0766, although depending on your server setup they may work");
+define('EC_ADLAN_A156', "Database upgraded");
+define('EC_ADLAN_A157', "this is the rss feed for the calendar entries");
+define('EC_ADLAN_A158', "Could not create log directory");
+
+define('EC_ADLAN_A159', "Cache Management");
+define('EC_ADLAN_A160', "(Only relevant if cache enabled)");
+define('EC_ADLAN_A161', "Empty Calendar Cache");
+define('EC_ADLAN_A162', "Confirm Empty Cache");
+define('EC_ADLAN_A163', "Cache emptied");
+
+define('EC_ADLAN_A164', "Update completed");
+define('EC_ADLAN_A165', "Calendar menu header links to:");
+define('EC_ADLAN_A166', "Date display in Event List:");
+define('EC_ADLAN_A167', "Date display in Forthcoming Events:");
+define('EC_ADLAN_A168', "Custom date uses the format in the box on the right");
+define('EC_ADLAN_A169', "Determines date display format for event listings");
+define('EC_ADLAN_A170', "Determines date display format for forthcoming events menu");
+define('EC_ADLAN_A171', "Flag recently added/updated events");
+define('EC_ADLAN_A172', "Value is time from update in hours; zero to disable");
+
+
+// Notify
+define("NT_LAN_EC_1", "Event Calendar Events");
+define("NT_LAN_EC_2", "Event Updated");
+define("NT_LAN_EC_3", "Update by");
+define("NT_LAN_EC_4", "IP Address");
+define("NT_LAN_EC_5", "Message");
+define("NT_LAN_EC_6", "Event Calendar - Event added");
+define("NT_LAN_EC_7", "New event posted");
+define("NT_LAN_EC_8", "Event Calendar - Event modified");
 ?>

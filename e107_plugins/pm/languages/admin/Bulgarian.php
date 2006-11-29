@@ -57,4 +57,7 @@ define('ADLAN_PM_53', "No records found to convert.");
 define('ADLAN_PM_54', "Main settings");
 define('ADLAN_PM_55', "Limits");
 define('ADLAN_PM_56', "Conversion");
+
+define('ADLAN_PM_57', "Този модул е многофункционална система за лични съобщения.");
+define('ADLAN_PM_58', "Лични съобщения");
 ?>

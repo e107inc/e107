@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/gsitemap/languages/gsitemap_Bulgarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-11-28 21:53:37 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-29 15:36:14 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

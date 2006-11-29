@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Bulgarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:51:32 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:37:11 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -85,4 +85,6 @@ define("NFLAN_45", "Number of items to show in menu");
 define("NFLAN_46", "Number of items to show on main page");
 define("NFLAN_47", "0 or blank to show all");
 
+define("NFLAN_48", "Unable to save raw data in database.");
+define("NFLAN_49", "Unable to unserialize rss data - uses non-standard syntax");
 ?>

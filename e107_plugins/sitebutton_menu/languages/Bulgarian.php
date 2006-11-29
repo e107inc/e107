@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/sitebutton_menu/languages/Bulgarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:53:06 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:38:32 $
 |     $Author: secretr $
 |     $Превод:
 |     $e107BG Team

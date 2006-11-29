@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Bulgarian/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:49:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:35:33 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -17,6 +17,8 @@ define("CONTENT_PLUGIN_LAN_3", "Configure Content Management");
 define("CONTENT_PLUGIN_LAN_4", "This plugin is now ready to be used.");
 define("CONTENT_PLUGIN_LAN_5", "Content");
 define("CONTENT_PLUGIN_LAN_6", "Content Management Plugin table structure updated");
+
+define("CONTENT_LATEST_LAN_1", "Submitted Content Items:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "create content category");
 define("CONTENT_ADMIN_CAT_LAN_1", "edit content category");
@@ -90,7 +92,12 @@ define("CONTENT_ADMIN_CAT_LAN_61", "upload a new icon");
 define("CONTENT_ADMIN_CAT_LAN_62", "After you have uploaded a new category icon, you can assign this icon in the below 'icon' area<br />If you upload a new icon, this icon will be scaled to 48 pixels, and additionally a small 16 pixels icon will be created as well<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "upload icon");
 
-
+define("CONTENT_ADMIN_MANAGER_LAN_0", "approve submitted");
+define("CONTENT_ADMIN_MANAGER_LAN_1", "users with this class are able to approve submitted content items");
+define("CONTENT_ADMIN_MANAGER_LAN_2", "personal manager");
+define("CONTENT_ADMIN_MANAGER_LAN_3", "users with this class are able to manage only their personal content items");
+define("CONTENT_ADMIN_MANAGER_LAN_4", "category manager");
+define("CONTENT_ADMIN_MANAGER_LAN_5", "users with this class are able to manage all content items in this category");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "required field(s) left blank");
 define("CONTENT_ADMIN_ITEM_LAN_1", "content item created");
@@ -308,7 +315,7 @@ define("CONTENT_ADMIN_MENU_LAN_19", "Content Manager");
 define("CONTENT_ADMIN_MENU_LAN_20", "Top Rated Page");
 define("CONTENT_ADMIN_MENU_LAN_21", "Pages");
 define("CONTENT_ADMIN_MENU_LAN_22", "Top Score Page");
-
+define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Create Category");
 
 
 define("CONTENT_ADMIN_JS_LAN_0", "Are you sure you want to delete this category?");
@@ -415,7 +422,11 @@ define("CONTENT_ADMIN_CONVERSION_LAN_62", "Content Management Plugin Version upd
 define("CONTENT_ADMIN_CONVERSION_LAN_63", "upgrade");
 define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
-
+define("CONTENT_ADMIN_CONVERSION_LAN_66", "Content Management Plugin : content_preferences and menus updated");
+define("CONTENT_ADMIN_CONVERSION_LAN_67", "Content Management Plugin : content_preferences updated");
+define("CONTENT_ADMIN_CONVERSION_LAN_68", "Content Management Plugin : content_theme updated");
+define("CONTENT_ADMIN_CONVERSION_LAN_69", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_70", "");
 
 
 define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Options:");
@@ -438,7 +449,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_17", "view category page (parent item, subcat
 define("CONTENT_ADMIN_OPT_LAN_MENU_18", "категории");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "recent items list");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "links to pages");
-
+define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin : Create Category");
 
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "sections");
@@ -473,7 +484,14 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_28", "of the category item");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_29", "of the list of subcategories");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_30", "enabled");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_31", "disabled");
-
+define("CONTENT_ADMIN_OPT_LAN_SECTION_32", "subheading");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_33", "start date");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_34", "end date");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_35", "upload icon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_36", "assign icon");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_37", "Admin : Create Category");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_38", "summary");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_39", "");
 
 
 define("CONTENT_PRESET_LAN_0", "error : fieldname not filled in");
@@ -648,9 +666,44 @@ define("CONTENT_ADMIN_OPT_LAN_132", "icon for recent items");
 define("CONTENT_ADMIN_OPT_LAN_133", "icon : width");
 define("CONTENT_ADMIN_OPT_LAN_134", "if chosen 'content icon', define the width of the icon to use");
 define("CONTENT_ADMIN_OPT_LAN_135", "caption recent item list");
-define("CONTENT_ADMIN_OPT_LAN_136", "");
-define("CONTENT_ADMIN_OPT_LAN_137", "");
-define("CONTENT_ADMIN_OPT_LAN_138", "");
-define("CONTENT_ADMIN_OPT_LAN_139", "");
+define("CONTENT_ADMIN_OPT_LAN_136", "Back End");
+define("CONTENT_ADMIN_OPT_LAN_137", "Front End");
+define("CONTENT_ADMIN_OPT_LAN_138", "Manage Content");
+define("CONTENT_ADMIN_OPT_LAN_139", "Create Content");
+define("CONTENT_ADMIN_OPT_LAN_140", "Manage Category");
+define("CONTENT_ADMIN_OPT_LAN_141", "Create Category");
+define("CONTENT_ADMIN_OPT_LAN_142", "Order");
+define("CONTENT_ADMIN_OPT_LAN_143", "Options");
+define("CONTENT_ADMIN_OPT_LAN_144", "Personal Content Manager");
+define("CONTENT_ADMIN_OPT_LAN_145", "Recent");
+define("CONTENT_ADMIN_OPT_LAN_146", "All Categories");
+define("CONTENT_ADMIN_OPT_LAN_147", "One Category");
+define("CONTENT_ADMIN_OPT_LAN_148", "Content Item");
+define("CONTENT_ADMIN_OPT_LAN_149", "Author Page");
+define("CONTENT_ADMIN_OPT_LAN_150", "Archive Page");
+define("CONTENT_ADMIN_OPT_LAN_151", "Top Rated Page");
+define("CONTENT_ADMIN_OPT_LAN_152", "Top Score Page");
+define("CONTENT_ADMIN_OPT_LAN_153", "Submit Page");
+define("CONTENT_ADMIN_OPT_LAN_154", "Manager Page");
+define("CONTENT_ADMIN_OPT_LAN_155", "caption");
+define("CONTENT_ADMIN_OPT_LAN_156", "caption index page");
+define("CONTENT_ADMIN_OPT_LAN_157", "caption author page");
+define("CONTENT_ADMIN_OPT_LAN_158", "append author name to caption");
+define("CONTENT_ADMIN_OPT_LAN_159", "caption category page");
+define("CONTENT_ADMIN_OPT_LAN_160", "append category heading to caption");
+define("CONTENT_ADMIN_OPT_LAN_161", "caption parent subcategories (only used if rendertype is set to separate menus)");
+define("CONTENT_ADMIN_OPT_LAN_162", "caption content items (only used if rendertype is set to separate menus)");
+define("CONTENT_ADMIN_OPT_LAN_163", "show next and previous page links");
+define("CONTENT_ADMIN_OPT_LAN_164", "caption for previous page link<br />(use {PAGETITLE} to add the title of the previous page)");
+define("CONTENT_ADMIN_OPT_LAN_165", "caption for next page link<br />(use {PAGETITLE} to add the title of the next page)");
+define("CONTENT_ADMIN_OPT_LAN_166", "use 'all' to show full text");
+define("CONTENT_ADMIN_OPT_LAN_167", "inherit");
+define("CONTENT_ADMIN_OPT_LAN_168", "first page");
+define("CONTENT_ADMIN_OPT_LAN_169", "last page");
+define("CONTENT_ADMIN_OPT_LAN_170", "where should custom and preset tags be rendered in a multipage content item ?");
+define("CONTENT_ADMIN_OPT_LAN_171", "amount of levels");
+define("CONTENT_ADMIN_OPT_LAN_172", "numeric value to show that amount of levels of subcategories of the category tree. leave blank to show all levels.");
+define("CONTENT_ADMIN_OPT_LAN_173", "include 'home' in the breadcrumb");
+define("CONTENT_ADMIN_OPT_LAN_174", "include the content start page in the breadcrumb");
 
 ?>

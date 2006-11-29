@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_sitelinks.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-28 21:46:22 $
+|     $Revision: 1.4 $
+|     $Date: 2006-11-29 15:33:53 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
