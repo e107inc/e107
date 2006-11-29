@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-09-16 23:27:26 $
+|     $Revision: 1.12 $
+|     $Date: 2006-11-29 22:27:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -210,7 +210,7 @@ if($_POST['cancel_emails']){
 		$activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'] : SITEURL."/signup.php?activate.".$row['user_id'].".".$row['user_sess']);
         $signup_link = ($row['user_sess']) ? "<a href='$activator'>$activator</a>" : "";
 
-		$search = array("{USERNAME}","{USERID}","{SIGNUP_LINK}");
+		$search = array("|USERNAME|","|USERID|","|SIGNUP_LINK|");
 		$replace = array($row['user_name'],$row['user_id'],$signup_link);
 
         $mes_body = str_replace($search,$replace,$message_body);

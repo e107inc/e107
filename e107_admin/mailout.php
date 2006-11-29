@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-11-17 09:23:20 $
-|     $Author: lisa_ $
+|     $Revision: 1.59 $
+|     $Date: 2006-11-29 22:27:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -489,9 +489,9 @@ function show_mailform($foo=""){
 	$text .= display_help("helpb",'mailout');
 
 	if(e_WYSIWYG) {
-		$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'><input type='button' class='button' name='usrname' value=\"".MAILAN_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
-		<input type='button' class='button' name='usrlink' value=\"".MAILAN_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
-		<input type='button' class='button' name='usrid' value=\"".MAILAN_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" /></span>";
+		$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'><input type='button' class='button' name='usrname' value=\"".MAILAN_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERNAME|')\" />
+		<input type='button' class='button' name='usrlink' value=\"".MAILAN_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|SIGNUP_LINK|')\" />
+		<input type='button' class='button' name='usrid' value=\"".MAILAN_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERID|')\" /></span>";
 	}
 
  	$text .="
@@ -782,9 +782,9 @@ function sc_Select($container='sc_selector') {
 	<option value=''> -- </option>\n";
 
 	$sc = array(
-		"{USERNAME}" => MAILAN_16,
-        "{SIGNUP_LINK}" => MAILAN_17,
-        "{USERID}" => MAILAN_18
+		"|USERNAME|" => MAILAN_16,
+        "|SIGNUP_LINK|" => MAILAN_17,
+        "|USERID|" => MAILAN_18
 	);
 
 	foreach($sc as $key=>$val){
