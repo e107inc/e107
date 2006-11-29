@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-11-07 23:46:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.40 $
+|     $Date: 2006-11-29 05:11:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -84,14 +84,14 @@ class e107_user_extended
 		'visits', 'admin', 'login', 'class', 'perms', 'realm', 'pwchange',
 		'xup'
 		);
-	
+
 	}
 
 	function user_extended_reserved($name)
 	{
 		return (in_array($name, $this->reserved_names));
 	}
-	
+
 	function user_extended_get_categories($byID = TRUE)
 	{
 		global $sql;
@@ -199,7 +199,7 @@ class e107_user_extended
 		{
 			$type = $this->typeArray[$type];
 		}
-		
+
 		if (!$this->user_extended_field_exist($name) && !$this->user_extended_reserved($name))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
@@ -370,7 +370,7 @@ class e107_user_extended
 				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 				sort($lanlist);
             $ret = "<select {$include} name='{$fname}'>\n";
-				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
+				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 				foreach($lanlist as $choice)
 				{
 					$choice = trim($choice);
