@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-10-22 22:36:03 $
-|     $Author: e107coders $
+|     $Revision: 1.49 $
+|     $Date: 2006-11-29 01:48:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -93,34 +93,13 @@ if (USER == TRUE || ADMIN == TRUE)
 			$NewItems[] = $new_news.' '.($new_news == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15);
 		}
 
-		// ------------ Article Stats -----------
+		// ------------ Comments Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_comments'] == true)
+		if (varset($menu_pref['login_menu']['new_comments'], false, true) == true)
 		{
 			$new_comments = 0;
-			$new_comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
+			$new_comments = $sql->db_Count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
 
-			$handle = opendir(e_PLUGIN);
-			while (false !== ($file = readdir($handle)))
-			{
-				if ($file != '.' && $file != '..' && is_dir(e_PLUGIN.$file))
-				{
-					$plugin_handle = opendir(e_PLUGIN.$file."/");
-					while (false !== ($file2 = readdir($plugin_handle)))
-					{
-						if ($file2 == 'e_comment.php')
-						{
-							require_once(e_PLUGIN.$file.'/'.$file2);
-							if ($comment_type == $e_plug_table)
-							{
-								$new_comments++;
-								break 2;
-							}
-						}
-					}
-				}
-			}
-			$new_total += $new_comments;
 			if (!$new_comments)
 			{
 				$new_comments = LOGIN_MENU_L26;
