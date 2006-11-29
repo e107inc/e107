@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/leaf/languages/Dutch-formal.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-18 16:57:43 $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-29 20:29:52 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,6 @@ define("LAN_THEME_3", "reactie(s) ");
 define("LAN_THEME_4", "Lees verder ...");
 define("LAN_THEME_5", "Trackbacks: ");
 define("LAN_THEME_6", "Reactie door");
-
+define("LAN_THEME_7", "Nieuws");
 
 ?>
