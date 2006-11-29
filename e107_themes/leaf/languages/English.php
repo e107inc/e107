@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-27 06:19:47 $
-|     $Author: qnome $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-29 06:17:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,6 +23,8 @@ define("LAN_THEME_3", "comment(s) ");
 define("LAN_THEME_4", "Read the rest ...");
 define("LAN_THEME_5", "Trackbacks: ");
 define("LAN_THEME_6", "Comment by");
+define("LAN_THEME_7", "News");
+
 
 
 ?>

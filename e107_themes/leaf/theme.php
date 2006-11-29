@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-11-07 15:02:19 $
-|     $Author: lisa_ $
+|     $Revision: 1.17 $
+|     $Date: 2006-11-29 06:17:57 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -108,7 +108,7 @@ $HEADER = "
     <div class='contentdiv'><!--Start Contentdiv-->
         <div class='div".e_PAGECLASS."'>
         <!--Database Generated Content-->
-	".(e_PAGECLASS == "news" ? "<h2>".PAGE_NAME."</h2>" : "")."";
+	".(e_PAGECLASS == "news" ? "<h2>".LAN_THEME_7."</h2>" : "")."";
 
 
 $FOOTER = "<!--End Database Generated Content-->
@@ -190,10 +190,10 @@ function news_style($news) {
 	        <div class='itemdetails'>
 	          <span class='item1'>{NEWSAUTHOR}</span>&nbsp;
 	          <span class='item2'>{NEWSCATEGORY}</span>&nbsp;
-	          <span class='item3'>{NEWSCOMMENTS}</span>
-	          <span class='item4'>{EMAILICON}</span>
-	          <span class='item5'>{PRINTICON}</span>
-	          <span class='item5'>{PDFICON}</span>
+	          <span class='item3'>{NEWSCOMMENTS}&nbsp;</span>
+	          <span class='item4'>{EMAILICON}&nbsp;</span>
+	          <span class='item5'>{PRINTICON}&nbsp;</span>
+	          <span class='item5'>{PDFICON}&nbsp;</span>
 	        </div>
 	        </div><!-- end news item -->";
 	return $NEWSSTYLE;
