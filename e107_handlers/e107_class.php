@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-11-23 01:31:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.56 $
+|     $Date: 2006-11-29 23:32:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,7 +34,6 @@ class e107{
 	var $relative_base_path;
 	var $_ip_cache;
 	var $_host_name_cache;
-
 	/**
 	 * e107 class constructor
 	 *
