@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2006-11-21 21:39:15 $
-|     $Author: mrpete $
+|     $Revision: 1.80 $
+|     $Date: 2006-11-29 05:11:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -78,13 +78,15 @@ require_once(HEADERF);
 
 // Save Form Data  --------------------------------------->
 
+$error = "";
+
 if (isset($_POST['updatesettings']))
 {
 	if(!varsettrue($pref['auth_method']) || $pref['auth_method'] == '>e107')
 	{
 		$pref['auth_method'] = 'e107';
 	}
-	
+
 	if($pref['auth_method'] != 'e107')
 	{
 		$_POST['password1'] = '';
@@ -101,6 +103,7 @@ if (isset($_POST['updatesettings']))
 		$inp = USERID;
 	}
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyways, so why allow them? (XSS Fix)
+
 	// check prefs for required fields =================================.
 
 	if ($_POST['image'] && $size = getimagesize($_POST['image'])) {
@@ -212,6 +215,48 @@ if (isset($_POST['updatesettings']))
 		$sesschange = "user_sess = '".$tp->toDB($user_sess)."', ";
 	}
 
+    // Validate Extended User Fields.
+	if($_POST['ue'])
+	{
+		if($sql->db_Select('user_extended_struct'))	{
+			while($row = $sql->db_Fetch())
+			{
+				$extList["user_".$row['user_extended_struct_name']] = $row;
+			}
+		}
+
+		$ue_fields = "";
+		foreach($_POST['ue'] as $key => $val)
+		{
+			$err = false;
+			$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
+			$regex = $tp->toText($parms[1]);
+			$regexfail = $tp->toText($parms[2]);
+    		if(defined($regexfail)) {$regexfail = constant($regexfail);}
+	  		if($val == '' && $extList[$key]['user_extended_struct_required'] == 1 && !$_uid)
+			{
+         		$error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
+	    		$err = TRUE;
+			}
+			if($regex != "" && $val != "")
+			{
+				if(!preg_match($regex, $val))
+				{
+               		$error .= $regexfail."\\n";
+         			$err = TRUE;
+	         	}
+			}
+			if(!$err)
+			{
+				$val = $tp->toDB($val);
+				$ue_fields .= ($ue_fields) ? ", " : "";
+				$ue_fields .= $key."='".$val."'";
+				}
+		}
+    }
+
+
+
 	if (!$error)
 	{
 		unset($_POST['password1']);
@@ -253,7 +298,7 @@ if (isset($_POST['updatesettings']))
 				$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
 				$new_username = "user_name = '{$username}', ";
 			}
-			
+
 
 			$_POST['signature'] = $tp->toDB($_POST['signature']);
 			$_POST['realname'] = $tp->toDB($_POST['realname']);
@@ -265,40 +310,7 @@ if (isset($_POST['updatesettings']))
 				$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
 			}
 
-			if($sql->db_Select('user_extended_struct'))	{
-				while($row = $sql->db_Fetch()) {
-					$extList["user_".$row['user_extended_struct_name']] = $row;
-				}
-			}
 
-			$ue_fields = "";
-			foreach($_POST['ue'] as $key => $val)
-			{
-				$err = false;
-				$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
-				$regex = $tp->toText($parms[1]);
-				$regexfail = $tp->toText($parms[2]);
-				if(defined($regexfail)) {$regexfail = constant($regexfail);}
-				if($val == '' && $extList[$key]['user_extended_struct_required'] == 1 && !$_uid)
-				{
-					$error .= LAN_SIGNUP_6.substr($key,5)." ".LAN_SIGNUP_7."\\n";
-					$err = TRUE;
-				}
-				if($regex != "" && $val != "")
-				{
-					if(!preg_match($regex, $val))
-					{
-						$error .= $regexfail."\\n";
-						$err = TRUE;
-					}
-				}
-				if(!$err)
-				{
-					$val = $tp->toDB($val);
-					$ue_fields .= ($ue_fields) ? ", " : "";
-					$ue_fields .= $key."='".$val."'";
-				}
-			}
 			if($ue_fields)
 			{
 				$hidden_fields = implode("^", array_keys($_POST['hide']));
@@ -376,6 +388,13 @@ if (isset($_POST['updatesettings']))
 		unset($_POST);
 	}
 }
+
+if ($error)
+{
+	require_once(e_HANDLER."message_handler.php");
+	message_handler("P_ALERT", $error);
+	$adref = $_POST['adminreturn'];
+}
 // -------------------
 
 if(isset($message))
@@ -384,12 +403,7 @@ if(isset($message))
 }
 
 // ---------------------
-if ($error)
-{
-	require_once(e_HANDLER."message_handler.php");
-	message_handler("P_ALERT", $error);
-	$adref = $_POST['adminreturn'];
-}
+
 
 $uuid = ($_uid) ? $_uid : USERID;
 
