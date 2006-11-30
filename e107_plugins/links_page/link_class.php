@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.38 $
-|    $Date: 2006-10-28 09:12:57 $
-|    $Author: lisa_ $
+|    $Revision: 1.39 $
+|    $Date: 2006-11-30 00:24:42 $
+|    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -204,6 +204,9 @@ class linkclass {
         define("e_PAGETITLE", $page);
     }
 
+
+
+
     function parse_link_append($rowl){
 
         global $tp;
@@ -217,7 +220,7 @@ class linkclass {
 
         switch ($link_open_type) {
             case 1:
-            $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" rel='external'>"; // Googlebot won't see it any other way. 
+            $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."','full');return false;\" >"; // Googlebot won't see it any other way.
             break;
             case 2:
             $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
@@ -226,13 +229,17 @@ class linkclass {
             $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
             break;
             case 4:
-            $lappend = "<a class='linkspage_url' href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."')\">";
+            $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."');return false\">"; // Googlebot won't see it any other way.
             break;
             default:
             $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"location.href='".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."';return false\" >";  // Googlebot won't see it any other way.
         }
         return $lappend;
     }
+
+
+
+
 
     function showLinkSort($mode=''){
         global $rs, $ns, $qs, $linkspage_pref;
@@ -682,7 +689,7 @@ class linkclass {
             $text .= $rs -> form_hidden("link_datestamp", $row['link_datestamp']);
             $text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".LCLAN_ITEM_21."<br /><br />";
             $text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_22, "", "", "").$rs -> form_hidden("link_id", $row['link_id']).$rs -> form_hidden("link_author", $row['link_author']);
-			
+
         } else {
             $text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_23, "", "", "");
         }
