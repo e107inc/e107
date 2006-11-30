@@ -39,6 +39,7 @@ define("UPLLAN_23", "Naam");
 define("UPLLAN_24", "Bestandstype");
 define("UPLLAN_25", "Uploads toegestaan?");
 define("UPLLAN_26", "publieke uploads zijn niet toegestaan indien uitgezet");
+define("UPLLAN_27", "ongemodereerde openbare uploads");
 define("UPLLAN_29", "Soort opslag");
 define("UPLLAN_30", "bepaal op welke manier de geuploade bestanden worden opgeslagen: als normaal bestand op de server of als binaire code in de database<br><b>Let op</b> binair is alleen bruikbaar voor bestanden kleiner dan ongeveer 500kb");
 define("UPLLAN_31", "Plat bestand");

@@ -124,4 +124,8 @@ define("DOWLAN_150", "Verstuur een e-mail aan de beheerder als een verkeerde dow
 define("DOWLAN_151", "Verbroken-download rapportage beschikbaar voor");
 define("DOWLAN_152", "Kon bestand niet verplaatsen");
 define("DOWLAN_153", "Verplaats bestand naar download map");   
+define("DOWLAN_154", "als je mirrors gebruikt, kies dan hoe ze worden getoond");
+define("DOWLAN_155", "Mirror weergave type:");
+define("DOWLAN_156", "toon mirror lijst, sta gebruiker toe zelf een mirror te kiezen");
+define("DOWLAN_157", "gebruik een willekeurige mirror - gebruiker kan niet kiezen");
 ?>
