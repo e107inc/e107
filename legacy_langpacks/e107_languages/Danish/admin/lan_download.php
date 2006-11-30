@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_download.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2006-11-23 00:05:12 $
+|        $Revision: 1.4 $
+|        $Date: 2006-11-30 19:23:47 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ define("DOWLAN_31", "Kategorier");
 define("DOWLAN_32", "Indstillinger");
 define("DOWLAN_33", "Er du sikker p&aring; du vil slette download?");
 define("DOWLAN_34", "Er du sikker p&aring; du vil slette download kategori?");
-define("DOWLAN_35", "Download");
+
 define("DOWLAN_36", "slettet");
 define("DOWLAN_37", "Gruppe");
 define("DOWLAN_38", "Ingen eksisterende kategorier");
@@ -65,7 +65,6 @@ define("DOWLAN_56", "Sortering ");
 
 
 define("DOWLAN_59", "Filnavn");
-define("DOWLAN_60", "Forfatter");
 
 define("DOWLAN_62", "Stigende");
 define("DOWLAN_63", "Faldende");
@@ -136,4 +135,9 @@ define("DOWLAN_151", "Fejl-download raportering tilg&aelig;ngelig til");
 
 define("DOWLAN_152", "Kunne ikke flytte fil");
 define("DOWLAN_153", "Flyt fil til download mappe");
+
+define("DOWLAN_154", "hvis du bruger filspejle, v&aelig;lg hvordan de skal vises");
+define("DOWLAN_155", "Filspejl visnings type:");
+define("DOWLAN_156", "vis filspejl liste, tillad bruger at bruge et filspejl");
+define("DOWLAN_157", "brug tilf&aelig;ldigt filspejl - ingen brugervalg");
 ?>

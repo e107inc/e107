@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_upload.php,v $
-|        $Revision: 1.4 $
-|        $Date: 2006-01-17 14:50:45 $
+|        $Revision: 1.5 $
+|        $Date: 2006-11-30 19:23:16 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -36,6 +36,7 @@ define("UPLLAN_23", "Navn");
 define("UPLLAN_24", "Filtype");
 define("UPLLAN_25", "Uploads aktiv?");
 define("UPLLAN_26", "Ingen offentlige uploads vil blive tilladt hvis det er slået fra");
+define("UPLLAN_27", "ukontrollerede offentlige uploads");
 
 define("UPLLAN_29", "Opbevarings type");
 define("UPLLAN_30", "Vælg hvordan uploadede filer skal gemmes, enten som normale filer på serveren eller som binære i databasen<br /><b>OBS</b> binære er kun egnet til mindre filer mindre end ca. 500kb");

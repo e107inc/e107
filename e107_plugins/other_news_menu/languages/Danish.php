@@ -1,17 +1,16 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system - Danish Language File.
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
-|
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/other_news_menu/languages/Danish.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-11-30 19:23:32 $
+|     $Author: e107dk $
++----------------------------------------------------------------------------+
 */
 
 define("TD_MENU_L1", "Andre Nyheder");
+define("TD_MENU_L2", "Andre Nyheder");
 
 ?>
