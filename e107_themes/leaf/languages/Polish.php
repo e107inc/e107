@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-11-24 15:46:16 $
+|     $Revision: 1.3 $
+|     $Date: 2006-11-30 23:40:35 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/leaf/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_themes/leaf/languages/English.php rev. 1.1
+|     Zgodne z: /e107_themes/leaf/languages/English.php rev. 1.2
 +-----------------------------------------------------------------------------+
 */
  
@@ -21,5 +21,6 @@ define("LAN_THEME_3", "Czytaj resztę...");
 define("LAN_THEME_4", "Czytaj resztę...");
 define("LAN_THEME_5", "Powiązania: ");
 define("LAN_THEME_6", "Autor");
+define("LAN_THEME_7", "Newsy");
 
 ?>

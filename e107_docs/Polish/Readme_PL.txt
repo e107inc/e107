@@ -1,9 +1,9 @@
-﻿Polskie tłumaczenie systemu CMS e107 Website System v0.7.6
+Polskie tłumaczenie systemu CMS e107 Website System v0.7.7
 
-Wersja tłumaczenia: v0.7.6
+Wersja tłumaczenia: v0.7.7
 wersja kodowa: UTF-8
 
-Data: 24.11.2006
+Data: 30.11.2006
 
 Tłumaczenie wykonał zespół - e107pl Dev Team - http://e107.org.pl
 
@@ -30,7 +30,7 @@ Spis treści:
 
 3. Aktualizacja
 
-- Z e107 v0.7.4 do e107 v0.7.6+
+- Z e107 v0.7.4 do e107 v0.7.7+
 
   Należy postępować identycznie jak przy instalacji, czyli najpierw rozpakować archiwum, a następnie wysłać na serwer i zatwierdzić wszystkie zmiany.
 
