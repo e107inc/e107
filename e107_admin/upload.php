@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-02-20 19:29:52 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2006-11-30 16:07:08 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -220,7 +220,7 @@ if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY 
 
 	$activeUploads = $sql -> db_getList();
 
-	$text .= UPLLAN_20." ".($active_uploads == 1 ? UPLAN_IS : UPLAN_ARE).$active_uploads." ".UPLLAN_21.($active_uploads == 1 ? "" : "s")." ...";
+	$text .= UPLLAN_20." ".($active_uploads == 1 ? UPLAN_IS : UPLAN_ARE).$active_uploads." ".($active_uploads == 1 ? UPLLAN_21 : UPLLAN_27)." ...";
 
 	$text .= "</td></tr>";
 
