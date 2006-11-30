@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2006-11-30 16:07:08 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("UPLLAN_1", "Upload removed from list.");
@@ -36,6 +36,7 @@ define("UPLLAN_23", "Name");
 define("UPLLAN_24", "Filetype");
 define("UPLLAN_25", "Uploads Enabled?");
 define("UPLLAN_26", "No public uploads will be permitted if disabled");
+define("UPLLAN_27", "unmoderated public uploads");
 
 define("UPLLAN_29", "Storage type");
 define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> binary is only suitable for smaller files under approximately 500kb");
