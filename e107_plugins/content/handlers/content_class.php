@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.107 $
-|		$Date: 2006-10-23 15:55:19 $
+|		$Revision: 1.108 $
+|		$Date: 2006-11-30 16:10:50 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -172,7 +172,7 @@ class content{
 			$content_pref['content_list_summary_char'] = "100";				//how many summary characters
 			$content_pref['content_list_summary_post'] = "[...]";			//use a postfix for too long summary
 			$content_pref['content_list_text_char'] = "60";					//how many text words
-			$content_pref['content_list_text_post'] = "[read more]";		//use a postfix for too long text
+			$content_pref['content_list_text_post'] = CONTENT_LAN_16;		//use a postfix for too long text
 			$content_pref['content_list_text_link'] = "1";					//show link to content item on postfix
 			$content_pref['content_list_authoremail_nonmember'] = "0";		//show email non member author
 			$content_pref['content_list_peicon_all'] = "0";					//override printemail icons
@@ -197,7 +197,7 @@ class content{
 			$content_pref['content_catall_comment'] = "1";					//show amount of comments
 			$content_pref['content_catall_amount'] = "0";					//show amount of items
 			$content_pref['content_catall_text_char'] = "65";				//define amount of words of text to display
-			$content_pref['content_catall_text_post'] = "[read more]";		//define postfix is text is too long
+			$content_pref['content_catall_text_post'] = CONTENT_LAN_16;		//define postfix is text is too long
 			$content_pref['content_catall_text_link'] = "1";				//define if link to category should be added on postfix
 			$content_pref['content_catall_caption'] = CONTENT_LAN_25;		//caption for all categories page
 			//sections of content category in 'view category' page
@@ -228,7 +228,7 @@ class content{
 			$content_pref['content_cat_menuorder'] = "1";					//order of parent and child items
 			$content_pref['content_cat_rendertype'] = "2";					//render method of the menus
 			$content_pref['content_cat_text_char'] = "65";					//define amount of words of text to display
-			$content_pref['content_cat_text_post'] = "[read more]";			//define postfix is text is too long
+			$content_pref['content_cat_text_post'] = CONTENT_LAN_16;			//define postfix is text is too long
 			$content_pref['content_cat_text_link'] = "1";					//define if link to category should be added on postfix
 			$content_pref['content_cat_authoremail_nonmember'] = "0";		//define if the email of a non-member will be displayed
 			$content_pref['content_cat_peicon_all'] = "0";					//override printemail icons
