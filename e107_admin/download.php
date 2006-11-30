@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2006-10-26 23:36:27 $
-|     $Author: e107coders $
+|     $Revision: 1.94 $
+|     $Date: 2006-11-30 16:16:49 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -786,16 +786,14 @@ class download {
 			</tr>
 
 			<tr>
-			<td style='width:20%' class='forumheader3' ><span style='cursor:help' title='if using mirrors, select how they will be displayed'>Mirror display type:</span></td>
+			<td style='width:20%' class='forumheader3' ><span style='cursor:help' title='".DOWLAN_154."'>".DOWLAN_155."</span></td>
 			<td style='width:80%' class='forumheader3'>
 
-			<input type='radio' name='download_mirror_type' value='1'".($download_mirror_type ? " checked='checked'" : "")." /> show mirror list, allow user to choose mirror<br />
-			<input type='radio' name='download_mirror_type' value='0'".(!$download_mirror_type ? " checked='checked'" : "")." /> use random mirror - no user choice
+			<input type='radio' name='download_mirror_type' value='1'".($download_mirror_type ? " checked='checked'" : "")." /> ".DOWLAN_156."<br />
+			<input type='radio' name='download_mirror_type' value='0'".(!$download_mirror_type ? " checked='checked'" : "")." /> ".DOWLAN_157."
 			</td>
 			</tr>";
 		}
-
-
 
 			$text .= "<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_15.":</td>

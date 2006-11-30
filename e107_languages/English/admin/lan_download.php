@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.18 $
+|     $Date: 2006-11-30 16:16:49 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -134,5 +134,10 @@ define("DOWLAN_150", "Email admin when broken download reported");
 define("DOWLAN_151", "Broken-download reporting available to");
 
 define("DOWLAN_152", "Couldn't move file");
-define("DOWLAN_153", "Move file into download folder");   
+define("DOWLAN_153", "Move file into download folder");
+
+define("DOWLAN_154", "if using mirrors, select how they will be displayed");
+define("DOWLAN_155", "Mirror display type:");
+define("DOWLAN_156", "show mirror list, allow user to choose mirror");
+define("DOWLAN_157", "use random mirror - no user choice");
 ?>
