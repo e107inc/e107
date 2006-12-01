@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-11-10 19:17:11 $
+|     $Revision: 1.26 $
+|     $Date: 2006-12-01 21:56:48 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -110,7 +110,7 @@ define("CONTENT_LAN_12", "Elementos más puntuados");
 define("CONTENT_LAN_13", "lista");
 define("CONTENT_LAN_14", "-- categorías --");
 define("CONTENT_LAN_15", "Sin autores todavía");
-define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_16", "[leer mas]");
 define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "Buscar por clave");
 define("CONTENT_LAN_19", "Buscar");

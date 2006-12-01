@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-08-12 17:23:20 $
+|     $Revision: 1.8 $
+|     $Date: 2006-12-01 21:56:48 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -128,5 +128,9 @@ define("DOWLAN_149", "O click aquí para usar un archivo externo");
 define("DOWLAN_150", "Enviar email al Admin cuando se informe de una descarga rota");
 define("DOWLAN_151", "Informe de descarga corrupta disponible a");
 define("DOWLAN_152", "No puedo mover el archivo"); 
-define("DOWLAN_153", "Mover el archivo a la carpeta de descargas"); 
+define("DOWLAN_153", "Mover el archivo a la carpeta de descargas");
+define("DOWLAN_154", "Si usa zonas, seleccione cuales se mostraran"); 
+define("DOWLAN_155", "Tipo de presentar la zona:"); 
+define("DOWLAN_156", "Mostrar lista de zonas, permite al usuario escojer la zona");
+define("DOWLAN_157", "Usar zona aleatoria - no permite eleccion de usuario");  
 ?>

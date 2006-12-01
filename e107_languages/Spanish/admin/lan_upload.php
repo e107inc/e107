@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_upload.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-21 23:26:27 $
+|     $Revision: 1.8 $
+|     $Date: 2006-12-01 21:56:48 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,8 @@ define("UPLLAN_23", "Nombre");
 define("UPLLAN_24", "Tipo de fichero");
 define("UPLLAN_25", "¿Permitir transferencia de ficheros?");
 define("UPLLAN_26", "No se permitirá transferir ningún fichero si está deshabilitado");
+define("UPLLAN_27", "Transferencias publicas sin moderar");
+
 define("UPLLAN_29", "Tipo de almacenamiento");
 define("UPLLAN_30", "Elige cómo almacenar ficheros transferidos, tanto como ficheros normales transferidos al servidor o como información binaria en base de datos");
 define("UPLLAN_31", "Fichero plano<br>");
