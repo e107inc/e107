@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-02-16 21:51:39 $
-|     $Author: whoisrich $
+|     $Revision: 1.37 $
+|     $Date: 2006-12-01 06:41:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -442,7 +442,7 @@ $array_functions = array(
 	8 => array(e_ADMIN."emoticon.php", ADLAN_58, ADLAN_59, "F", 1, E_16_EMOTE, E_32_EMOTE),
 	9 => array(e_ADMIN."filemanager.php", ADLAN_30, ADLAN_31, "6", 4, E_16_FILE, E_32_FILE),
 	10 => array(e_ADMIN."frontpage.php", ADLAN_60, ADLAN_61, "G", 1, E_16_FRONT, E_32_FRONT),
-	11 => array(e_ADMIN."image.php", ADLAN_105, ADLAN_106, "5", 1, E_16_IMAGES, E_32_IMAGES),
+	11 => array(e_ADMIN."image.php", ADLAN_105, ADLAN_106, "A", 1, E_16_IMAGES, E_32_IMAGES),
 	12 => array(e_ADMIN."links.php", ADLAN_138, ADLAN_139, "I", 1, E_16_LINKS, E_32_LINKS),
 	13 => array(e_ADMIN."wmessage.php", ADLAN_28, ADLAN_29, "M", 3, E_16_WELCOME, E_32_WELCOME),
 	14 => array(e_ADMIN."ugflag.php", ADLAN_40, ADLAN_41, "9", 4, E_16_MAINTAIN, E_32_MAINTAIN),
