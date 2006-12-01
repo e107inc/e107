@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-12-01 03:56:09 $
+|     $Revision: 1.38 $
+|     $Date: 2006-12-01 05:23:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -211,27 +211,30 @@ require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
 
 function admin_info() {
 	global $tp;
-	$text = "<div style='text-align:center'>
+
+	$width = (getperms('0')) ? "33%" : "50%";
+
+	$ADMIN_INFO_TEMPLATE = "
+	<div style='text-align:center'>
 		<table style='width: 100%; border-collapse:collapse; border-spacing:0px;'>
 		<tr>
-		<td style='width: 33%; vertical-align: top'>";
+			<td style='width: ".$width."; vertical-align: top'>
+			{ADMIN_STATUS}
+			</td>
+			<td style='width:".$width."; vertical-align: top'>
+			{ADMIN_LATEST}
+			</td>";
 
-	$text .= $tp->parseTemplate('{ADMIN_STATUS}');
+    	if(getperms('0'))
+		{
+			$ADMIN_INFO_TEMPLATE .= "
+			<td style='width:".$width."; vertical-align: top'>{ADMIN_LOG}</td>";
+    	}
 
-	$text .= "</td>
-		<td style='width: 33%; vertical-align: top'>";
-
-	$text .= $tp->parseTemplate('{ADMIN_LATEST}');
-
-	$text .= "</td>
-		<td style='width: 33%; vertical-align: top'>";
-
-	$text .= $tp->parseTemplate('{ADMIN_LOG}');
-
-	$text .= "</td>
+   	$ADMIN_INFO_TEMPLATE .= "
 		</tr></table></div>";
 
-	return $text;
+	return $tp->parseTemplate($ADMIN_INFO_TEMPLATE);
 }
 
 function status_request() {
