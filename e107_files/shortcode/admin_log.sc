@@ -1,4 +1,5 @@
-if (ADMIN) {
+if (getperms('0'))
+{
 	if (!function_exists('admin_log')) {
 		function admin_log() {
 			global $sql, $ns;
@@ -17,8 +18,11 @@ if (ADMIN) {
 				$text .= "<li>{$datestamp} - {$row['dblog_title']}</li>";
 			}
 			$text .= ($cnt ? "</ul>" : "");
+			$text .= "[ <a href='".e_ADMIN."admin_log.php?logall'>".ADLAN_117."</a> ]";
 
-			$text .= "[ <a href='".e_ADMIN."admin_log.php?logall'>".ADLAN_117."</a> ][ <a href='".e_ADMIN."admin_log.php?purge'>".ADLAN_118."</a> ]\n</div>";
+			$text .= "[ <a href='".e_ADMIN."admin_log.php?purge'>".ADLAN_118."</a> ]\n";
+
+			$text .= "</div>";
 
 			return $ns -> tablerender(ADLAN_135, $text, '', TRUE);
 		}
