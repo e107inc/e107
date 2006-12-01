@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-11-16 10:41:46 $
+|     $Revision: 1.37 $
+|     $Date: 2006-12-01 03:56:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -151,7 +151,7 @@ if ('0' == ADMINPERMS) {
 }
 // end auto db update
 
-if (e_QUERY == 'purge') {
+if (e_QUERY == 'purge' && getperms('0')) {
 	$admin_log->purge_log_events(false);
 }
 
