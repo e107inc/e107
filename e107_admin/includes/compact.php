@@ -11,20 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/compact.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-11-16 10:41:46 $
+|     $Revision: 1.12 $
+|     $Date: 2006-12-01 05:23:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
-
+$buts = "";
 $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."'>";
 
 while (list($key, $funcinfo) = each($newarray)) {
-	$text .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
+	$buts .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 }
+$text .= $buts;
 
 $text_cat = '';
 while ($td <= 5) {
@@ -35,8 +36,9 @@ $td = 1;
 
 $text .= "</tr></table></div>";
 
-$ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
-
+if($buts !=""){
+	$ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
+}
 
 $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."'>";

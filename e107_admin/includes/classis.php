@@ -11,27 +11,29 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/classis.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-11-16 10:41:46 $
+|     $Revision: 1.11 $
+|     $Date: 2006-12-01 05:23:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = "<div style='text-align:center'>
-	<table style='".ADMIN_WIDTH."'>";
+$buts = "";
 
-while (list($key, $funcinfo) = each($newarray)) {
-	$text .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
+while (list($key, $funcinfo) = each($newarray))
+{
+	$buts .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
 }
-
-$text .= render_clean();
-
-$text .= "</table></div>";
-
-$ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
-
+if($buts != "")
+{
+    $text = "<div style='text-align:center'>
+			<table style='".ADMIN_WIDTH."'>";
+	$text .= $buts;
+ 	$text .= render_clean();
+ 	$text .= "</table></div>";
+	$ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
+}
 $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."'>";
 
