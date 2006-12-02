@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-11 12:53:57 $
-|     $Author: mrpete $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_image.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("IMALAN_1", "Enable image posting");

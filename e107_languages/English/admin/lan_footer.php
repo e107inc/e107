@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_footer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-24 16:29:02 $
-|     $Author: streaky $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_footer.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FOOTLAN_1", "Site");

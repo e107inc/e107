@@ -2,10 +2,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-07-24 23:50:13 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/sitelinks_alt.sc,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

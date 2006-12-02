@@ -1,4 +1,4 @@
-// $Id: imageselector.sc,v 1.4 2006-05-31 06:33:28 e107coders Exp $
+// $Id: imageselector.sc,v 1.1.1.1 2006-12-02 04:33:39 mcfly_e107 Exp $
 
 global $sql,$parm;
 

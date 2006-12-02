@@ -1,8 +1,8 @@
 // Import theme specific language pack
-// $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/editor_plugin.js,v $
-// $Revision: 1.4 $
-// $Date: 2006-10-27 22:36:57 $
-// $Author: e107coders $
+// $Source: /cvs_backup/e107_0.8/e107_handlers/tiny_mce/plugins/ibrowser/editor_plugin.js,v $
+// $Revision: 1.1.1.1 $
+// $Date: 2006-12-02 04:34:14 $
+// $Author: mcfly_e107 $
 
 tinyMCE.importPluginLanguagePack('ibrowser', 'en,es,da,de,fr,nl,pl,sv,ru');
 

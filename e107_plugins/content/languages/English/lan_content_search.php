@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-09-18 08:57:42 $
-|     $Author: lisa_ $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_search.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

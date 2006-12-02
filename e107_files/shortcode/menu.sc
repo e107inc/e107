@@ -1,4 +1,4 @@
-/* $Id: menu.sc,v 1.27 2006-10-14 13:13:45 lisa_ Exp $ */
+/* $Id: menu.sc,v 1.1.1.1 2006-12-02 04:33:39 mcfly_e107 Exp $ */
 global $sql;
 global $ns;
 global $eMenuList;

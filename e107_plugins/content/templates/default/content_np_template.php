@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_np_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-06-02 12:25:36 $
-|     $Author: lisa_ $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_np_template.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

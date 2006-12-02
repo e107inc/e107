@@ -11,9 +11,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2006-12-02 03:21:53 $
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.62 $
+* @version $Revision: 1.1.1.1 $
 * @author $Author: mcfly_e107 $
 */
 class db {

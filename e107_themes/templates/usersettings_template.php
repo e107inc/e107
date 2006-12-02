@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-18 16:34:48 $
+|     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:36:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */

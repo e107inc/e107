@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-12 23:50:17 $
+|     $Source: /cvs_backup/e107_0.8/e107_themes/lamb/languages/English.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */

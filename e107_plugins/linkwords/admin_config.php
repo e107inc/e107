@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-06 21:41:31 $
-|     $Author: stevedunstan $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");

@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/override_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-06 23:43:03 $
-|     $Author: mrpete $
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/override_class.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	

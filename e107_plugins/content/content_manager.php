@@ -11,10 +11,10 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.23 $
-|		$Date: 2006-09-18 07:40:00 $
-|		$Author: lisa_ $
+|		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_manager.php,v $
+|		$Revision: 1.1.1.1 $
+|		$Date: 2006-12-02 04:34:54 $
+|		$Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 

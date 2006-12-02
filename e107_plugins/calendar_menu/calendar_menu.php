@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-11-24 22:27:18 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:46 $
+|     $Author: mcfly_e107 $
 |
 | 22.10.06 steved - Various tidying up, additional options supported
 | 24.10.06 steved - templated, various cleaning up

@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/membersonly.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-06 18:11:26 $
+|     $Source: /cvs_backup/e107_0.8/membersonly.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:07 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */

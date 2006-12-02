@@ -1,4 +1,4 @@
-// $Id: languagelinks.sc,v 1.6 2006-09-10 23:59:55 e107coders Exp $
+// $Id: languagelinks.sc,v 1.1.1.1 2006-12-02 04:33:39 mcfly_e107 Exp $
 global $pref;
 $sep = (defined("LANGLINKS_SEPARATOR")) ? LANGLINKS_SEPARATOR : "|&nbsp;";
 $cursub = explode(".",$_SERVER['HTTP_HOST']);

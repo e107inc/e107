@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English/English_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-06 01:06:09 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/languages/English/English_config.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:51 $
 |     $Author: mcfly_e107 $
 |     Encoding:
 +----------------------------------------------------------------------------+

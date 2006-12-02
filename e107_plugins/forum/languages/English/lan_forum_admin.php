@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-11-15 01:06:17 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */

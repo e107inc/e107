@@ -10,9 +10,9 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.20 $
-|   $Date: 2006-01-27 02:30:59 $
-|   $Author: qnome $
+|   $Revision: 1.1.1.1 $
+|   $Date: 2006-12-02 04:35:56 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 

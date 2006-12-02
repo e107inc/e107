@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-11-09 22:03:18 $
-|     $Author: mrpete $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/loginfo.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-13 07:25:04 $
-|     $Author: stevedunstan $
+|     $Source: /cvs_backup/e107_0.8/e107_themes/khatru/languages/English.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
