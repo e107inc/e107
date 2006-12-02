@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_emoticon.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-02 11:31:18 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("EMOLAN_1", "Emote activation");
@@ -35,5 +35,7 @@ define("EMOLAN_19", "Name");
 define("EMOLAN_20", "Location");
 define("EMOLAN_21", "Error");
 //define("EMOLAN_2", "Name");
-
+define("EMOLAN_22", "New emote pak found:");
+define("EMOLAN_23", "New emote xml pak found:");
+define("EMOLAN_24", "New emote php found:");
 ?>

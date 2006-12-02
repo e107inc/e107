@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-02 11:31:17 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -293,7 +293,7 @@ class emotec
 					}
 					$tmp = addslashes(serialize($confArray));
 					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
-					echo "<div style='text-align: center;'><b>New emote pak found: '</b> ".$value."'</div>";
+					echo "<div style='text-align: center;'><b>".EMOLAN_22." '</b> ".$value."'</div>";
 				}
 				/* end ----------------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -331,7 +331,7 @@ class emotec
 
 					$tmp = addslashes(serialize($confArray));
 					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
-					echo "<div style='text-align: center;'><b>New emote xml pak found: '</b> ".$value."'</div>";
+					echo "<div style='text-align: center;'><b>".EMOLAN_23." '</b> ".$value."'</div>";
 				}
 
 				if($confFile['type'] == "php")
@@ -339,7 +339,7 @@ class emotec
 					echo "<b>.conf file found</b>: installing '".$value."'<br />";
 					include_once(e_IMAGE."emotes/".$value."/".$confFile['file']);
 					$sql->db_Insert("core", "'emote_".$value."', '$_emoteconf' ");
-					echo "<div style='text-align: center;'><b>New emote php found: '</b> ".$value."'</div>";
+					echo "<div style='text-align: center;'><b>".EMOLAN_24." '</b> ".$value."'</div>";
 				}
 				/* end ----------------------------------------------------------------------------------------------------------------------------------------- */
 
