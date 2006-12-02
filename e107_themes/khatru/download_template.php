@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/download_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-02 03:37:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -45,7 +45,7 @@ $DOWNLOAD_CAT_PARENT_TABLE .= "
 $DOWNLOAD_CAT_CHILD_TABLE .= "
 <tr>
 <td class='forumheader3' style='width: 5%;'>{DOWNLOAD_CAT_SUB_ICON}</td>
-<td class='forumheader3' style='width: 75%;'>{DOWNLOAD_CAT_SUB_NAME_LINKED}</td>
+<td class='forumheader3' style='width: 75%;'>{DOWNLOAD_CAT_SUB_NAME}</td>
 <td class='forumheader3' style='width: 20%; text-align: center; vertical-align: middle;'>{DOWNLOAD_CAT_SUB_COUNT} ({DOWNLOAD_CAT_SUB_SIZE})<br /><span class='smalltext'>".LAN_dl_6." {DOWNLOAD_CAT_SUB_DOWNLOADED}</span></td>
 </tr>
 ";
