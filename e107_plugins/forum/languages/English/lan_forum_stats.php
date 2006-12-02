@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_stats.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-25 11:38:50 $
-|     $Author: stevedunstan $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_stats.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Forum Statistics");

@@ -8,7 +8,7 @@ if (!defined('e107_INIT')) { exit; }
 *   copyright            : (C) 2001 The phpBB Group
 *   email                : support@phpbb.com
 *
-*   $Id: smtp.php,v 1.4 2005-12-14 17:37:34 sweetas Exp $
+*   $Id: smtp.php,v 1.1.1.1 2006-12-02 04:33:58 mcfly_e107 Exp $
 *
 ***************************************************************************/
 	

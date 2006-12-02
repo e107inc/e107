@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.192 $
-|     $Date: 2006-11-17 18:17:38 $
-|     $Author: sweetas $
+|     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

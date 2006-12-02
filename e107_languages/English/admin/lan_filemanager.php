@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_filemanager.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-14 23:35:15 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_filemanager.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FMLAN_1", "Uploaded");

@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language Class.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/language_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-09-12 01:53:11 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/language_class.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

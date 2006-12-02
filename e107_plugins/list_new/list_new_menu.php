@@ -10,10 +10,10 @@
 |       Released under the terms and conditions of the
 |       GNU General Public License (http://gnu.org).
 |
-|		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_new_menu.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-12-14 19:28:44 $
-|		$Author: sweetas $
+|		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_new_menu.php,v $
+|		$Revision: 1.1.1.1 $
+|		$Date: 2006-12-02 04:35:26 $
+|		$Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 

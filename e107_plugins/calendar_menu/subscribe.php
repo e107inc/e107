@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/subscribe.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-06 22:30:22 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subscribe.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:49 $
+|     $Author: mcfly_e107 $
 |
 | 05.10.06 - Mods started
 | 06.11.06 - Reflect updated shortcodes and template directories

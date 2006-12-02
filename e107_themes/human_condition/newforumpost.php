@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/newforumpost.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-13 13:27:22 $
-|     $Author: lisa_ $
+|     $Source: /cvs_backup/e107_0.8/e107_themes/human_condition/newforumpost.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

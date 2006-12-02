@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-06-25 18:11:41 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

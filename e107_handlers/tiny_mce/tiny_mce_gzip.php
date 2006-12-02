@@ -1,8 +1,8 @@
 <?php
 /**
  * $RCSfile: tiny_mce_gzip.php,v $
- * $Revision: 1.2 $
- * $Date: 2006-03-03 05:07:11 $
+ * $Revision: 1.1.1.1 $
+ * $Date: 2006-12-02 04:34:08 $
  *
  * @version 1.07
  * @author Moxiecode

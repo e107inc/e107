@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_db_verify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-02 18:29:48 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_db_verify.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("DBLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/admin/sql</b> directory.");

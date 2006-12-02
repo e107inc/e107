@@ -9,13 +9,13 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.8 $Date: 2004/10/04
+// $Revision: 1.1.1.1 $Date: 2004/10/04
 // ================================================
 //
-// $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.8 $
-// $Date: 2006-10-24 13:39:45 $
-// $Author: mrpete $
+// $Source: /cvs_backup/e107_0.8/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
+// $Revision: 1.1.1.1 $
+// $Date: 2006-12-02 04:34:14 $
+// $Author: mcfly_e107 $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
 

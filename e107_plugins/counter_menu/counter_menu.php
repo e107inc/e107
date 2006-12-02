@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-12-28 20:44:18 $
-|     $Author: streaky $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/counter_menu/counter_menu.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

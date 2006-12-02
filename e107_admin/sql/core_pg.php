@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_pg.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-19 21:17:06 $
-|     $Author: mrpete $
+|     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_pg.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");

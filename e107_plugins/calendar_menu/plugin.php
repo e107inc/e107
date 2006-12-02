@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.17 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2006-11-16 10:24:15 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/plugin.php,v $
+|     $Revision: 1.1.1.1 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2006-12-02 04:34:48 $
+|     $Author: mcfly_e107 $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added

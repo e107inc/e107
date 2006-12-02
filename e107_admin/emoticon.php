@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-11-28 08:43:02 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

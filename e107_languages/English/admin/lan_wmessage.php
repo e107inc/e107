@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_wmessage.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-04-22 19:30:47 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_wmessage.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // define("WMGLAN_1", "Message for Guests");

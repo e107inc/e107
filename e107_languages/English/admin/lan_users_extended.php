@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-11-07 23:46:20 $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users_extended.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */

@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-25 09:43:25 $
-|     $Author: sweetas $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/blogcalendar_menu/config.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;

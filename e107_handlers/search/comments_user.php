@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/search/comments_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-28 14:47:20 $
-|     $Author: sweetas $
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/search/comments_user.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

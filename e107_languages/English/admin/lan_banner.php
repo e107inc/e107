@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-06-14 22:12:07 $
-|     $Author: lisa_ $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_banner.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("BNRLAN_1", "Banner deleted.");

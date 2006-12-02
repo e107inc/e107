@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Tiny MCE controller file.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-11-23 17:36:29 $
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/tiny_mce/wysiwyg.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */

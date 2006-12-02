@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.77 $ - with modifications
-|     $Date: 2006-11-12 04:10:15 $
-|     $Author: mrpete $
+|     $Source: /cvs_backup/e107_0.8/download.php,v $
+|     $Revision: 1.1.1.1 $ - with modifications
+|     $Date: 2006-12-02 04:33:03 $
+|     $Author: mcfly_e107 $
 |
 | Modifications by steved:
 |	1. Can display sub-categories which contain sub-sub categories and files

@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-13 10:49:03 $
-|     $Author: lisa_ $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/pdf.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");

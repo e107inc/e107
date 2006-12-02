@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-04-01 11:03:59 $
-|     $Author: stevedunstan $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/languages/English.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:10 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

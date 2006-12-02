@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/backend.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-27 01:45:02 $
-|     $Author: streaky $
+|     $Source: /cvs_backup/e107_0.8/backend.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");

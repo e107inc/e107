@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_sitelinks.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_sitelinks.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("LAN_SITELINKS_183", "Main Menu");

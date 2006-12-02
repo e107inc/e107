@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_upload_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-05 06:58:21 $
-|     $Author: sweetas $
+|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_upload_handler.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("LANUPLOAD_1", "The filetype");

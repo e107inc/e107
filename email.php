@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-11-12 04:10:22 $
-|     $Author: mrpete $
+|     $Source: /cvs_backup/e107_0.8/email.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");

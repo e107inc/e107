@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_conf.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-22 19:49:58 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_conf.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_5", "Poll deleted.");

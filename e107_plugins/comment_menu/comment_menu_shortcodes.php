@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-07-04 17:30:38 $
-|     $Author: lisa_ $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:34:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

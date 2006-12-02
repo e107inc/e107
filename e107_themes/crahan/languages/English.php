@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_themes/crahan/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-21 11:49:22 $
-|     $Author: stevedunstan $
+|     $Source: /cvs_backup/e107_0.8/e107_themes/crahan/languages/English.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:35:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 

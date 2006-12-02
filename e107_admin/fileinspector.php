@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-05-16 13:29:26 $
+|     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
+|     $Revision: 1.1.1.1 $
+|     $Date: 2006-12-02 04:33:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -612,9 +612,9 @@ class file_inspector {
 		$data .= "|     Released under the terms and conditions of the\n";
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
-		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.37 $\n";
-		$data .= "|     \$Date: 2006-05-16 13:29:26 $\n";
+		$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
+		$data .= "|     \$Revision: 1.1.1.1 $\n";
+		$data .= "|     \$Date: 2006-12-02 04:33:21 $\n";
 		$data .= "|     \$Author: mcfly_e107 $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
