@@ -1,0 +1,1 @@
+return "<em class='bbcode italic'>$code_text</em>";

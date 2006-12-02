@@ -1,0 +1,9 @@
+
+Q>	What's this section for?
+A>	Setting Cache Status to on will save certain areas of your site in your database. This reduces calls to MySQL, and vastly speeds up your site.
+
+Q>	I made some alterations to the theme I'm using but it hasn't changed - is it because it's cached.
+A>	Most probably. When you change themes the cache is cleared but altering code in your theme.php won't clear the cache. Set Cache Status to off until you're finished.
+
+Q>	Can I save the cache to files on the hard drive?
+A>	Yes. Just make sure that your e107_files/cache directory is writable (chmod 777). And then click the option on the cache page.

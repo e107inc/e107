@@ -1,0 +1,11 @@
+/*THIS IS THE STYLESHEET FOR LARGE SIZED TEXT SIZE*/
+/*Increase font sizes +2px from original CSS*/
+body, h4, .formfield, .formbutton{
+	font-size: 13px;
+}
+h3{
+	font-size: 16px;
+}
+#credits, .c_commentinfo{
+	font-size: 12px;
+}

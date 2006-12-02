@@ -1,0 +1,15 @@
+
+Q>	What are forum parents?
+A>	A parent is a heading to group other forums under, this makes it easier to navigate your forums.
+
+Q>	I want to make a certain administrator a forum moderator but his name isn't in the list - why?
+A>	Administrators will only be listed if they have the correct permission set to be a forum moderator. Go to the Administrators section and edit the admin in question, and make sure 'Moderate forums' is ticked.
+
+Q>	What's tracking?
+A>	If you have this enabled, it allows users to track a forum thread; they will receive an email when someone replies to the thread.
+
+Q>	What's pruning?
+A>	This allows you to remove old threads that haven't received a reply in a certain time. Please be careful with this function, once threads are deleted they cannot be retrieved.
+
+Q>	What are reported posts?
+A>	Users can report posts that they find to contain objectionable material. You can open the reported thread and moderate as you wish.

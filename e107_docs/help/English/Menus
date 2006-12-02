@@ -1,0 +1,12 @@
+
+Q>	What are menus?
+A>	They are items that appear in the menu areas (or columns) of your site. These can contain text, links, anything.
+
+Q>	How do I activate a menu item?
+A>	Go to your admin area and click on Menus. You'll see the main layout of your site with a list of the menus in their respective areas. The menu items in the center of the page are inactive; you can move them into an active area by clicking on Activate this menu. You can also move the area the menu is in or move it up and down the column once it's activated.
+
+Q>	I need to put some text inside a menu item, how can I do this?
+A>	Go to the admin area and click on Custom Menus. From here you can enter any text you like to a menu and it will be saved and available like any other menu.
+
+Q>	How can I change the options for a menu item?
+A>	If a config panel is available you will see a link to it (called 'Configure') in the menu box once activated.

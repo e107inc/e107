@@ -1,0 +1,6 @@
+
+Q>	What's this section for?
+A>	This screen allows you to make your site inaccessible to visitors, use it when you are upgrading your site or need to take it down for any reason. Only the main site administrator can access the site when in maintenance mode, you'll know this as a message is displayed on every page.
+
+Q>	Help! I set the Maintenance Flag and accidentally logged out, how do I get back in to my admin section to put the site back up?
+A>	Go to http://yoursite.com/e107_admin/admin.php and log in from there.

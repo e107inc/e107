@@ -1,0 +1,2 @@
+global $style;
+$style = $parm;
