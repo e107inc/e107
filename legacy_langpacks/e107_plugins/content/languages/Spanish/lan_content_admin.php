@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-11-11 11:02:27 $
+|     $Revision: 1.12 $
+|     $Date: 2006-12-02 10:35:56 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -59,7 +59,7 @@ define("CONTENT_ADMIN_CAT_LAN_37", "Comprobación contenidos: existen contenidos,
 define("CONTENT_ADMIN_CAT_LAN_38", "Comprobación contenidos: no hay contenidos");
 define("CONTENT_ADMIN_CAT_LAN_39", "Comprobación categoría: no hay categorías");
 define("CONTENT_ADMIN_CAT_LAN_40", "Debajo verá una lista de las categorías principales y sus subcategorías, si esxisten.<br />");
-define("CONTENT_ADMIN_CAT_LAN_41", "El gestor personal de las categorías de contenidos le permite asignar otros admins a una categoría. Con este privilegio, estos administradores su/s propio/s, y solo su/s propio/s contenido/s en su categoría correspondiente, sin la necesidad de tener control sobre el plugin de contenidos. Desde la página de contenidos fuera del área de administración, verá un icono que redirijirá a su página personal de configuración.");
+define("CONTENT_ADMIN_CAT_LAN_41","El gestor personal de las categorías de contenidos le permite asignar otros administradores a una categoría. Con este privilegio, esos administardores pueden gestionar sus propios contenidos y solo sus elementos de esa categoría, sin necesidad de tener el control de todo el gestor de contenidos. Desde la página general de contenidos, verán sus iconos que le llevarán a su página de gestión de contenidos ");
 define("CONTENT_ADMIN_CAT_LAN_41", "");
 define("CONTENT_ADMIN_CAT_LAN_42", "Para re-editar la misma categoría");
 define("CONTENT_ADMIN_CAT_LAN_43", "pulsar aquí");

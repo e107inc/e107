@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newforumposts_main/languages/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-01-14 10:37:10 $
+|     $Revision: 1.8 $
+|     $Date: 2006-12-02 10:35:56 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -17,9 +17,9 @@ define("NFPM_LAN_5", "Último");
 define("NFPM_LAN_6", "Temas");
 define("NFPM_LAN_7", "por");
 
-define("NFPM_L1", "Este Plugin muestra una lista de nuevos mensajes en los foros en la página principal");
+define("NFPM_L1", "Este plugin muestra una lista de nuevos mensajes en los foros en la página principal");
 define("NFPM_L2", "Últimos mensajes en los foros");
-define("NFPM_L3", "");
+define("NFPM_L3", "Para configurar, haga click en el enlace de la sección de plugins en la administración");
 define("NFPM_L4", "¿Activar en el área?");
 define("NFPM_L5", "Inactivo");
 define("NFPM_L6", "Superior");

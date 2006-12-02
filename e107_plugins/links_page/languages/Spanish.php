@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-10-29 12:57:43 $
+|     $Revision: 1.29 $
+|     $Date: 2006-12-02 10:35:56 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -279,8 +279,8 @@ define("LAN_LINKS_18", "Enlaces");
 define("LAN_LINKS_19", "Categorías");
 define("LAN_LINKS_20", "Categoría");
 define("LAN_LINKS_21", "Hay");
-define("LAN_LINKS_22", "");
-define("LAN_LINKS_23", "");
+define("LAN_LINKS_22", "es");
+define("LAN_LINKS_23", "son");
 define("LAN_LINKS_24", " en total en");
 define("LAN_LINKS_25", "Mostrar todos los enlaces");
 define("LAN_LINKS_26", "Referentes");

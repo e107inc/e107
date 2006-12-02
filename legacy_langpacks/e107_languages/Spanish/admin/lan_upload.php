@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_upload.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-01 21:56:48 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-02 10:35:56 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -53,8 +53,8 @@ define("UPLLAN_44", "Transferir");
 define("UPLLAN_45", "¿Esta seguro de eliminar el siguiente archivo...");
 
 define("UPLAN_COPYTODLM", "Copiar a descargas");
-define("UPLAN_IS", " ");
-define("UPLAN_ARE", " ");
+define("UPLAN_IS", "es");
+define("UPLAN_ARE", "son");
 define("UPLAN_COPYTODLS", "Copiar a descargas");
 
 define("UPLLAN_48", "Por razones de seguridad, los archivos permitidos has sido eliminados de la base de datos a un archivo planoque se encuentra en el directorio admin. Para usarlo, renombra el archivo e107_admin/filetypes_.php a e107_admin/filetypes.php
