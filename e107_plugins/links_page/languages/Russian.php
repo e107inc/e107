@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-11-01 13:55:19 $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-02 16:12:07 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -302,7 +302,7 @@ define("LAN_LINKS_43", "смотреть все категории");
 define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Категория ссылок");
 define("LAN_LINKS_46", "Подкатегория ссылок");
-define("LAN_LINKS_47", "");
+define("LAN_LINKS_47", "навигатор ссылок..."); //link navigator...
 define("LAN_LINKS_48", "-- категория просмотра --"); //CheckIt: -- view category --
 define("LAN_LINKS_49", "");
 
