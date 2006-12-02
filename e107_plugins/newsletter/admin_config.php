@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-04 18:28:51 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2006-12-02 11:53:28 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -368,7 +368,7 @@ class newsletter
 		if ($pref['mailer'] == "smtp")
 		{
 			$mail->Mailer = "smtp";
-			$mail->SMTPKeepAlive = TRUE;
+			$mail->SMTPKeepAlive = (isset($pref['smtp_keepalive']) && $pref['smtp_keepalive']==1) ? TRUE : FALSE;
 			$mail->SMTPAuth = TRUE;
 			$mail->Username = $pref['smtp_username'];
 			$mail->Password = $pref['smtp_password'];
