@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.6 $
-|     $Date: 2006-11-10 13:59:51 $
-|     $Author: yarodin $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-02 16:00:28 $
+|     $Author: verant $
 +----------------------------------------------------------------------------+
 */
 
@@ -108,8 +108,8 @@ define("CONTENT_LAN_11", "добавил: "); //by
 define("CONTENT_LAN_12", "лучшие по очкам");
 define("CONTENT_LAN_13", "список");
 define("CONTENT_LAN_14", "-- категории --");
-define("CONTENT_LAN_15", "нет авторов");
-define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_15", "пока нет авторов");
+define("CONTENT_LAN_16", "[читать далее]"); //[read more]
 define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "искать по ключевым словам");
 define("CONTENT_LAN_19", "поиск");

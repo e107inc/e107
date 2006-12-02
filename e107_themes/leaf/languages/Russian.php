@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/leaf/languages/Russian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-05 07:24:50 $
-|     $Author: yarodin $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-02 16:02:39 $
+|     $Author: verant $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,5 +23,6 @@ define("LAN_THEME_3", "Комментарии: ");
 define("LAN_THEME_4", "Читать далее...");
 define("LAN_THEME_5", "Ссылок: ");
 define("LAN_THEME_6", "Комментарий от");
+define("LAN_THEME_7", "Новости");
 
 ?>
