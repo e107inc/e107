@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:59 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-03 02:10:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -76,11 +76,10 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 		$classList = get_userclass_list();
 		foreach($classList as $row)
 		{
-			extract($row);
 			if (strpos($optlist, "matchclass") === FALSE || getperms("0") || check_class($userclass_id))
 			{
-				$s = ($userclass_id == $curval) ? "selected='selected'" : "";
-				$text .= "<option value='$userclass_id' ".$s.">".$userclass_name ."</option>\n";
+				$s = ($row['userclass_id'] == $curval) ? "selected='selected'" : "";
+				$text .= "<option value='{$row['userclass_id']}' ".$s.">".$r['userclass_name'] ."</option>\n";
 			}
 		}
 	}
@@ -118,20 +117,22 @@ function r_userclass_radio($fieldname, $curval = '')
 	$classList = get_userclass_list();
 	foreach($classList as $row)
 	{
-		extract($row);
 		($row['userclass_id'] == $curval) ? $c = " checked" : $c = "";
 		$text .= "<input type='radio' name='{$fieldname}' value='{$row['userclass_id']}' ".$c." />{$row['userclass_name']}<br />";
 	}
 	return $text;
 }
 
-function r_userclass_check($fieldname, $curval = '', $optlist = "")
+function r_userclass_check($fieldname, $curval = '', $optlist = "", $divheight = 58)
 {
 	global $pref;
 	$sql = new db;
 	$curArray = explode(",", $curval);
 	$ret = "";
-	$ret .= "<div class='tbox' style='margin-left:0px;margin-right:auto;width:60%;height:58px;overflow:auto'>";
+	if($divheight > 0)
+	{
+		$ret .= "<div class='tbox' style='margin-left:0px;margin-right:auto;width:60%;height:{$divheight}px;overflow:auto'>";
+	}
 	if (!$optlist || strpos($optlist, "public") !== FALSE)
 	{
 		$c = (in_array(e_UC_PUBLIC, $curArray)) ? " checked='checked' " : "";
@@ -188,10 +189,11 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
         		$ret .= "<label><input type='checkbox' name='{$fieldname}[{$lang}]'  value='1' {$c} /> {$lang}</label><br />";
 		}
 	}
-
-
-
-	$ret .= "</div>";
+	
+	if($divheight > 0)
+	{
+		$ret .= "</div>";
+	}
 	return $ret;
 }
 
