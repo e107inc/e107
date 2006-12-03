@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-03 02:10:58 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-03 02:13:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 			if (strpos($optlist, "matchclass") === FALSE || getperms("0") || check_class($userclass_id))
 			{
 				$s = ($row['userclass_id'] == $curval) ? "selected='selected'" : "";
-				$text .= "<option value='{$row['userclass_id']}' ".$s.">".$r['userclass_name'] ."</option>\n";
+				$text .= "<option value='{$row['userclass_id']}' ".$s.">".$row['userclass_name'] ."</option>\n";
 			}
 		}
 	}
