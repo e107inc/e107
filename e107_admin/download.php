@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-03 15:12:48 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -1473,7 +1473,7 @@ class download {
 				<tr>
 				<td style='width: 10%; text-align: center;' class='forumheader3'>$mirror_id</td>
 				<td style='width: 30%;' class='forumheader3'>".$tp -> toHTML($mirror_name)."</td>
-				<td style='width: 30%;' class='forumheader3'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt='' />" : "None")."</td>
+				<td style='width: 30%;' class='forumheader3'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt='' />" : DOWLAN_28)."</td>
 				<td style='width: 30%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?mirror.edit.{$mirror_id}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='delete[mirror_{$mirror_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".DOWLAN_137." [ID: $mirror_id ]')\"/>

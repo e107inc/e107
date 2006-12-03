@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-03 15:12:48 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -33,7 +33,7 @@ define("DOWLAN_24", "Update Download");
 define("DOWLAN_25", "Submit Download");
 
 define("DOWLAN_27", "Download");
-
+define("DOWLAN_28", "None");
 define("DOWLAN_29", "Downloads Front Page");
 define("DOWLAN_30", "Create Download");
 define("DOWLAN_31", "Categories");
