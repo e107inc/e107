@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:02 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-03 03:26:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1332,6 +1332,7 @@ function init_session() {
 
 	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
+	define('e_NOBODY_REGEXP', "(^|,)".e_UC_NOBODY."(,|$)");
 }
 
 $sql->db_Mark_Time('Start: Go online');
