@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.1.1.1 $
-| $Date: 2006-12-02 04:33:57 $
+| $Revision: 1.2 $
+| $Date: 2006-12-03 07:03:22 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -159,43 +159,68 @@ class e_shortcode {
 		return $ret;
 	}
 
-	function parse_scbatch($fname, $type = 'file') {
-		$ret = array();
+	function parse_scbatch($fname, $type = 'file')
+	{
+		global $e107cache, $eArrayStorage;
+		$cur_shortcoces = array();
 		if($type == 'file')
 		{
-			$sc_batch = file($fname);
+			$batch_cachefile = "nomd5_".md5($fname);
+//			$cache_filename = $e107cache->cache_fname("nomd5_{$batchfile_md5}");
+			$sc_cache = $e107cache->retrieve($batch_cachefile);
+			if(!$sc_cache)
+			{
+				$sc_batch = file($fname);
+			}
+			else
+			{
+				$cur_shortcodes = $eArrayStorage->ReadArray($sc_cache);
+				$sc_batch = "";
+			}
 		}
 		else
 		{
 			$sc_batch = $fname;
 		}
-		$cur_sc = '';
-		foreach($sc_batch as $line) {
-			if (trim($line) == 'SC_END') {
-				$cur_sc = '';
+
+		if($sc_batch)
+		{
+			foreach($sc_batch as $line)
+			{
+				if (trim($line) == 'SC_END')
+				{
+					$cur_sc = '';
+				}
+				if ($cur_sc)
+				{
+					$cur_shortcodes[$cur_sc] .= $line;
+				}
+				if (preg_match("#^SC_BEGIN (\w*).*#", $line, $matches))
+				{
+					$cur_sc = $matches[1];
+				}
 			}
-			if ($cur_sc && !$override) {
-				$ret[$cur_sc] .= $line;
+			if($type == 'file')
+			{
+				$sc_cache = $eArrayStorage->WriteArray($cur_shortcodes, false);
+				$e107cache->set($batch_cachefile, $sc_cache);
 			}
-			if (preg_match("#^SC_BEGIN (\w*).*#", $line, $matches)) {
-				$cur_sc = $matches[1];
-				$ret[$cur_sc]='';
-				if (is_array($this -> registered_codes) && array_key_exists($cur_sc, $this -> registered_codes)) {
-					if ($this -> registered_codes[$cur_sc]['type'] == 'plugin') {
-						$scFile = e_PLUGIN.strtolower($this -> registered_codes[$cur_sc]['path']).'/'.strtolower($cur_sc).'.sc';
-					} else {
-						$scFile = THEME.strtolower($cur_sc).'.sc';
-					}
-					if (is_readable($scFile)) {
-						$ret[$cur_sc] = file_get_contents($scFile);
-					}
-					$override = TRUE;
+		}
+
+		foreach(array_keys($cur_shortcodes) as $cur_sc)
+		{
+			if (is_array($this -> registered_codes) && array_key_exists($cur_sc, $this -> registered_codes)) {
+				if ($this -> registered_codes[$cur_sc]['type'] == 'plugin') {
+					$scFile = e_PLUGIN.strtolower($this -> registered_codes[$cur_sc]['path']).'/'.strtolower($cur_sc).'.sc';
 				} else {
-					$override = FALSE;
+					$scFile = THEME.strtolower($cur_sc).'.sc';
+				}
+				if (is_readable($scFile)) {
+					$cur_shortcodes[$cur_sc] = file_get_contents($scFile);
 				}
 			}
 		}
-		return $ret;
+		return $cur_shortcodes;
 	}
 }
 
