@@ -2,6 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+include_lan(THEME."languages/".e_LANGUAGE.".php");
 $themename = "newsroom";
 $themeversion = "1.02";
 $themeauthor = "CaMer0n";
@@ -181,14 +182,14 @@ $NEWSSTYLE = "
 	</table>
 	<table style='width:100%;border:0px' cellpadding='0' cellspacing='0' >
 	<tr>
-	<td style='padding:3px'>Posted on
+	<td style='padding:3px'>".LAN_THEME_4."
 	{NEWSDATE}
 	 |
 	{EMAILICON}
 	{PRINTICON}
 	{PDFICON}
-	{ADMINOPTIONS}
-
+	{ADMINOPTIONS}<br />
+	{NEWSCOMMENTS}
 	</td>
 	</tr>
 	</table><br /></div>
@@ -265,10 +266,10 @@ $OTHERNEWS2_STYLE = "
 
 // [News]
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", "Comments");
-define("COMMENTOFFSTRING", "Comments Off");
+define("COMMENTLINK", LAN_THEME_1.": ");
+define("COMMENTOFFSTRING", LAN_THEME_2);
 define("PRE_EXTENDEDSTRING", "<span style='font-size:13px'> ");
-define("EXTENDEDSTRING", "<br /><br /><b>FULL STORY</b>");
+define("EXTENDEDSTRING", "<br /><br /><b>".LAN_THEME_3."</b>");
 define("POST_EXTENDEDSTRING", "</span><br />");
 define("ICONMAIL", "iconmail.png"); // Usable since e107v615
 define("ICONPRINT", "iconprint.png"); // Usable since e107v615
