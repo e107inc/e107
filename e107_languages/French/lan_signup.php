@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.14 $
+|     $Date: 2006-12-04 21:48:39 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -80,7 +80,7 @@ define("LAN_SIGNUP_31", "URL de votre fichier XUP ");
 define("LAN_SIGNUP_32", "Qu'est ce qu'un fichier XUP ?");
 define("LAN_SIGNUP_33", "Entrez l'URL ou choisissez une image proposée");
 define("LAN_SIGNUP_34", "Attention: toute image téléchargée sur ce serveur et considérée comme inappropriée par les administrateurs sera supprimée immédiatement.");
-define("LAN_SIGNUP_35", "Cliquez ici pour enregistrer l'utilisation d'un fichier XUP");
+define("LAN_SIGNUP_35", "Cliquez ici pour vous enregistrer via l'utilisation d'un fichier XUP");
 define("LAN_SIGNUP_36", "Une erreur s'est produite lors de la création de vos paramètres utilisateur. Veuillez contacter l'administrateur du site");
 define("LAN_LOGINNAME", "Identifiant");
 define("LAN_PASSWORD", "Mot de passe");
