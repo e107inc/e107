@@ -1,2 +1,5 @@
-Русская версия UTF-8 расположена по адресу
+Р СѓСЃСЃРєСѓСЋ РІРµСЂСЃРёСЋ РІ РєРѕРґРёСЂРѕРІРєРµ UTF-8 РјРѕР¶РЅРѕ РЅР°Р№С‚Рё РЅР°
 http://sourceforge.net/projects/e107russian/
+
+РџРѕРґРїРёСЃРєР° РЅР° СЂР°СЃСЃС‹Р»РєСѓ:
+http://lists.sourceforge.net/mailman/listinfo/e107russian-support
