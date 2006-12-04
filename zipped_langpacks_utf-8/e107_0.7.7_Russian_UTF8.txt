@@ -1,0 +1,2 @@
+Русская версия UTF-8 расположена по адресу
+http://sourceforge.net/projects/e107russian/
