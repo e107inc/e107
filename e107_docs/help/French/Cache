@@ -1,8 +1,13 @@
-<div class='forumheader4'>Q>	A quoi sert cette section ?
-A>	Régler le système de cache sur on (activé) sauvegardera certains secteurs du site dans votre base de données.Cela réduit les appels à mySQL, et accélère énormément votre site.
-</div><div class='forumheader4'>Q>	J'ai apporter quelques modification au thème du site que j'emploie mais elles n'ont pas été prises en compte, le thème reste inchangé - Est-ce parce qu'il fait partie du cache ?
-A>	Très probablement. Quand vous modifiez un thème le cache se vide mais altère le code dans votre script theme.php.
-		Ne videz pas le cache mais réglez le système de cache sur off (desactivé) jusqu'à ce que vous ayez fini. 
-</div><div class='forumheader4'>Q>	Can I save the cache to files on the hardrive?
-A>	Yes. Just make sure that your e107_files/cache directory is writable (chmod 777). And then click the option on the cache page.
+<div class='forumheader4'>
+Q>	A quoi sert cette section ?
+A>	Activer le système de cache sauvegardera certaines parties du site dans votre base de données. Cela réduit les appels à MySQL, et accélère considérablement votre site.
+</div>
+<div class='forumheader4'>
+Q>	J'ai apporté quelques modification au thème du site que j'emploie mais elles n'ont pas été prises en compte, le thème reste inchangé - Est-ce parce qu'il fait partie du cache?
+A>	Très probablement. Quand vous changez un thème le cache se vide, mais modifier le code dans votre script theme.php ne vide pas le cache.
+Ne videz pas le cache mais désactivez le système de cache jusqu'à ce que vous ayez fini.
+</div>
+<div class='forumheader4'>
+Q>	Puis-je sauvegarder le cache en fichiers sur le disque dur du serveur ?
+A>	Oui. Assurez vous seulement que votre répertoire e107_files/cache soit accessible en écriture (chmod 777). Sélectionnez ensuite l'option 'Sauvegarder le cache dans un fichier du disque dur'.
 </div>

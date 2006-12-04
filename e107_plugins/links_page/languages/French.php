@@ -1,22 +1,21 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/French.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-22 12:14:39 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-04 21:36:01 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  if(!defined("PAGE_NAME")){  define("PAGE_NAME", "Liens");}
 define("LCLAN_PLUGIN_LAN_1", "Page de liens");
 define("LCLAN_PLUGIN_LAN_2", "Page de liens pour l'affichage des Liens Web Externe  ");
 define("LCLAN_PLUGIN_LAN_3", "Configurer la Page de liens");
 define("LCLAN_PLUGIN_LAN_4", "liens");
-define("LCLAN_PLUGIN_LAN_5", "La page de liens a été installé avec succès , configurez-la s'il vous plaît depuis le lien en première page d'administration vers la Page de Liens .");
+define("LCLAN_PLUGIN_LAN_5", "La page de liens a été installé avec succès , veuillez la configurer depuis le lien en première page d'administration vers la Page de Liens .");
 define("LCLAN_PLUGIN_LAN_6", "La page de liens a été mise à jour avec succès, utiliser maintenant cette nouvelle version");
-define("LCLAN_OPT_MENU_1", "Options générales ");
+define("LCLAN_OPT_MENU_1", "Options générales");
 define("LCLAN_OPT_MENU_2", "Gérants personnels de liens");
 define("LCLAN_OPT_MENU_3", "page catégorie ");
 define("LCLAN_OPT_MENU_4", "liens affichable");
@@ -56,8 +55,8 @@ define("LCLAN_OPT_20", "lien vers le top référants");
 define("LCLAN_OPT_21", "lien vers le top évaluants");
 define("LCLAN_OPT_22", "Afficher l'icône par défaut si aucune n'est présente");
 define("LCLAN_OPT_23", "Méthode de tri par défaut ");
-define("LCLAN_OPT_24", "Méthode d'ordenancement par défaut");
-define("LCLAN_OPT_25", "Valeur de redimentionnement par défaut ");
+define("LCLAN_OPT_24", "Méthode d'ordonnancement par défaut");
+define("LCLAN_OPT_25", "Valeur de redimensionnement par défaut ");
 define("LCLAN_OPT_26", "page de liens");
 define("LCLAN_OPT_27", "Autoriser les utilisateurs à noter les liens ");
 define("LCLAN_OPT_28", "Afficher par l'icône par défaut si aucune n'est présente");
@@ -65,7 +64,7 @@ define("LCLAN_OPT_29", "Afficher le menu tri et ordre ");
 define("LCLAN_OPT_30", "ascendant");
 define("LCLAN_OPT_31", "descendant");
 define("LCLAN_OPT_32", "L'utilisation ignore de la méthode de lien ouvert");
-define("LCLAN_OPT_33", "Valeur redimentionnement par défaut ");
+define("LCLAN_OPT_33", "Valeur redimensionnement par défaut ");
 define("LCLAN_OPT_34", "nom");
 define("LCLAN_OPT_35", "url");
 define("LCLAN_OPT_36", "ordre");
@@ -81,7 +80,7 @@ define("LCLAN_OPT_45", "Ouvrir dans une minifenêtre de 600x400");
 define("LCLAN_OPT_46", "Qui peut géré les liens");
 define("LCLAN_OPT_47", "Ces utilisateurs peuvent ajouter/éditer leurs liens personnels propres");
 define("LCLAN_OPT_48", "Autoriser la publication directe");
-define("LCLAN_OPT_49", "Établir l'acceptation direct des liens, dans le cas contraire ils devont être approuvés par un admin");
+define("LCLAN_OPT_49", "Établir l'acceptation direct des liens, dans le cas contraire ils devront être approuvés par un admin");
 define("LCLAN_OPT_50", "Autoriser la suppression directe");
 define("LCLAN_OPT_51", "Si mis en place, les gérants de liens personnels pourront supprimer leurs propres liens");
 define("LCLAN_OPT_52", "Gestion des liens personnels");
@@ -92,8 +91,8 @@ define("LCLAN_OPT_56", "Valeur de référence minimum");
 define("LCLAN_OPT_57", "Seul les liens ayant un compte de référence égal ou supérieur à  la valeur donnée seront affichés (0 ou vide = Tous)");
 define("LCLAN_OPT_58", "Lien de proposition de lien");
 define("LCLAN_OPT_59", "lien vers la gestion individuelle (si autorisé)");
-define("LCLAN_OPT_60", "Lien vers un lien d'établisement en page d'accueil");
-define("LCLAN_OPT_61", "Lien vers toutes les categories");
+define("LCLAN_OPT_60", "Lien vers un lien d'établissement en page d'accueil");
+define("LCLAN_OPT_61", "Lien vers toutes les catégories");
 define("LCLAN_OPT_62", "Afficher ces liens de navigateur");
 define("LCLAN_OPT_63", "Valeur d'évaluation minimum");
 define("LCLAN_OPT_64", "Seul les liens avec le quotient d'évaluation égal ou supérieur à  la valeur donnée seront affichés(0 ou vide = Tous)");
@@ -108,7 +107,7 @@ define("LCLAN_OPT_72", "Voir les liens récents");
 define("LCLAN_OPT_73", "afficher quelle donnée");
 define("LCLAN_OPT_74", "Combien de liens récents sont affichés");
 define("LCLAN_OPT_75", "Hyperliens");
-define("LCLAN_OPT_76", "Boite de selection");
+define("LCLAN_OPT_76", "Boite de sélection");
 define("LCLAN_OPT_77", "Catégorie");
 define("LCLAN_OPT_78", "Description");
 define("LCLAN_OPT_79", "Légende navigateur");
@@ -143,7 +142,7 @@ define("LCLAN_SL_5", "Options");
 define("LCLAN_SL_6", "Posté");
 define("LCLAN_SL_7", "Supprimer");
 define("LCLAN_SL_8", "Êtes vous sûr de vouloir supprimer cette proposition de lien?");
-define("LCLAN_SL_9", "Votre lien sera évalué par un administateur et s'il est considéré comme approprié, il sera ajouté à la page des liens. Merci.");
+define("LCLAN_SL_9", "Votre lien sera évalué par un administrateur et s'il est considéré comme approprié, il sera ajouté à la page des liens. Merci.");
 define("LCLAN_SL_10", "Catégorie:");
 define("LCLAN_SL_11", "nom");
 define("LCLAN_SL_12", "url");
@@ -156,7 +155,7 @@ define("LCLAN_SL_18", "");
 define("LCLAN_CAT_1", "Image");
 define("LCLAN_CAT_2", "Catégorie");
 define("LCLAN_CAT_3", "Options");
-define("LCLAN_CAT_4", "Déplaçer");
+define("LCLAN_CAT_4", "Déplacer");
 define("LCLAN_CAT_5", "Ordre");
 define("LCLAN_CAT_6", "Éditer");
 define("LCLAN_CAT_7", "sont");
@@ -174,7 +173,7 @@ define("LCLAN_CAT_18", "le dossier ");
 define("LCLAN_CAT_19", " n'est pas ouvert en écriture, vous devez le CHMODer à 777 avant d'effectuer un téléchargement vers votre serveur");
 define("LCLAN_CAT_20", "px");
 define("LCLAN_CAT_21", "uploader");
-define("LCLAN_CAT_22", "Choisisser une icône:");
+define("LCLAN_CAT_22", "Choisissez une icône:");
 define("LCLAN_CAT_23", "Voir les images");
 define("LCLAN_CAT_24", "Visible pour:");
 define("LCLAN_CAT_25", "Cocher pour mettre à jour le cachet de publication à l'heure en cours");
@@ -188,7 +187,7 @@ define("LCLAN_ITEM_3", "Pas de catégories pour le moment");
 define("LCLAN_ITEM_4", "Nom:");
 define("LCLAN_ITEM_5", "Url:");
 define("LCLAN_ITEM_6", "Description:");
-define("LCLAN_ITEM_7", "Uploder une icône:");
+define("LCLAN_ITEM_7", "Uploader une icône:");
 define("LCLAN_ITEM_8", "Taille de la vignette Automatique:");
 define("LCLAN_ITEM_9", "Cette option est déactivée tant que le téléchargement vers votre serveur n'est pas activé");
 define("LCLAN_ITEM_10", "Le dossier");
@@ -295,43 +294,44 @@ define("LAN_LINKS_48", "-- voir la catégorie --");
 define("LAN_LINKS_49", "");
 define("LAN_ADMIN_HELP_0", "Aire d'aide des pages de liens ");
 define("LAN_ADMIN_HELP_1", "<i>La page de gestion des catégories de lien affiche toutes les catégories présentes.</i><br /><br /><strong>Liste détaillée</strong><br />Vous voyez une liste de toutes les catégories avec leur icône, nom et la description, les options et les options de tri.<br /><br /><strong>Explication des icônes</strong><br />
-  ".LINK_ICON_LINK." : lien vers la catégorie<br /><br />
-  ".LINK_ICON_EDIT." : éditer la catégorie<br /><br />
-  ".LINK_ICON_DELETE." : supprimer la catégorie<br /><br />
-  ".LINK_ICON_ORDER_UP." : le bouton avec la flèche vers le haut vous permet de déplacer une catégorie dans l'ordre d'une unité vers le haut.<br /><br />
-  ".LINK_ICON_ORDER_DOWN." : le bouton avec la flèche vers le bas vous permet de déplacer une catégorie dans l'ordre d'une unité vers le bas.<br />
-  <br />
-  <strong>Ordre</strong><br />Ici vous pouvez manuellement établir un ordre pour toutes les catégories. Vous devez changer les valeurs dans les boîtes de sélection pour établir l'ordre de votre choix et appuyer sur le bouton 'réordoner' en dessous et ainsi sauvegarder le nouvel ordonnancement.<br />");
+".LINK_ICON_LINK." : lien vers la catégorie<br /><br />
+".LINK_ICON_EDIT." : éditer la catégorie<br /><br />
+".LINK_ICON_DELETE." : supprimer la catégorie<br /><br />
+".LINK_ICON_ORDER_UP." : le bouton avec la flèche vers le haut vous permet de déplacer une catégorie dans l'ordre d'une unité vers le haut.<br /><br />
+".LINK_ICON_ORDER_DOWN." : le bouton avec la flèche vers le bas vous permet de déplacer une catégorie dans l'ordre d'une unité vers le bas.<br />
+<br />
+<strong>Ordre</strong><br />Ici vous pouvez manuellement établir un ordre pour toutes les catégories. Vous devez changer les valeurs dans les boîtes de sélection pour établir l'ordre de votre choix et appuyer sur le bouton 'réordoner' en dessous et ainsi sauvegarder le nouvel ordonnancement.<br />");
 define("LAN_ADMIN_HELP_2", "<i>La page Création de Catégorie de Lien vous permet d'ajouter de nouvelles catégories</i><br /><br />Vous pouvez télécharger une nouvelle icône et ensuite assigner l'icône téléchargée à la catégorie.");
 define("LAN_ADMIN_HELP_3", "<i>La page de Gestion des liens affiche d'abord toutes les catégories.</i><br /><br />".LINK_ICON_LINK." : lien vers la catégorie<br /><br />".LINK_ICON_EDIT." : cliquer sur l'icône pour voir tous les liens de cette catégorie<br />");
 define("LAN_ADMIN_HELP_4", "<i>La page Création des liens vous permet d'ajouter de nouveaux liens</i><br /><br />Vous pouvez télécharger une nouvelle icône et ensuite assigner l'icône téléchargée à ce lien.<br /><br />Le type d'ouverture vous permet de définir le mode d'ouverture de la fenêtre lors du clic d'utilisateur sur le lien");
-define("LAN_ADMIN_HELP_5", "<i>La page de liens proposés affiche tous les liens qui sont soumis par des utilisateurs</i><br /><br /><strong>liste détaillée</strong><br />Vous pouvez voir le lien url, le nom de l'utilisateur qui a soumis ce lien et les options.<br /><br /><strong>Explication des icônes</strong><br />
-  ".LINK_ICON_EDIT." : Postez le lien proposé vers le formulaire de création de lien<br /><br />
-  ".LINK_ICON_DELETE." : Supprimer le lien proposé <br />
-  ");
+define("LAN_ADMIN_HELP_5", "<i>La page de liens proposés affiche tous les liens qui sont proposés par des utilisateurs</i><br /><br /><strong>liste détaillée</strong><br />Vous pouvez voir le lien url, le nom de l'utilisateur qui a proposé ce lien et les options.<br /><br /><strong>Explication des icônes</strong><br />
+".LINK_ICON_EDIT." : Postez le lien proposé vers le formulaire de création de lien<br /><br />
+".LINK_ICON_DELETE." : Supprimer le lien proposé <br />
+");
 define("LAN_ADMIN_HELP_6", "<i>La page d'options vous permet de changer le comportement de l'extension Page de lien</i><br /><br />
-  options générales<br />
-  Ces options sont généralement utilisées dans les pages de liens.<br /><br />
-  Gérants de liens personnels<br />
-  Les gérants de liens personnels sont les utilisateurs privilégiés qui peuvent gérer leurs propres ajouts de liens personnels.<br /><br />
-  Page Catégorie<br />
-  Ici vous pouvez changer les options de la page Catégorie.<br /><br />
-  Page Lien<br />
-  Ces options sont utilisées dans les pages de liens.<br /><br />
-  Page Référants<br />
-  Ces options sont utilisées dans les pages Top Liens Référants.<br /><br />
-  Page Évaluations<br />
-  Ces options sont utilisées dans les pages Top Évaluations Liens.<br />
-  ");
-define("LAN_ADMIN_HELP_7", "<i>La page Catégorie Lien d'édition vous permet d'éditer une catégorie existante</i><br /><br />Vous pouvez télécharger une ".GLOBAL_LAN_NEWS_1." icône et ensuite assigner l'icône téléchargée à la catégorie.<br />Vous pouvez mettre à jour l'horodatage du lien en cliquant la boîte.");
-define("LAN_ADMIN_HELP_8", "<i>Cette affiche tous les liens existants de la catégorie selectionnée.</i><br /><br /><strong>Liste détaillée</strong><br />Vous pouver voir une liste des liens avec leur image, nom, des options et des options de tri.<br /><br /><strong>Explication des icônes</strong><br />
-  ".LINK_ICON_LINK." : lien vers le site web<br /><br />
-  ".LINK_ICON_EDIT." : éditer le lien<br /><br />
-  ".LINK_ICON_DELETE." : suprimer le lien<br /><br />
-  ".LINK_ICON_ORDER_UP." : le bouton avec la flèche vers le haut vous permet de déplacer un lien dans l'ordre d'une unité vers le haut.<br /><br />
-  ".LINK_ICON_ORDER_DOWN." : le bouton avec la flèche vers le bas vous permet de déplacer un lien dans l'ordre d'une unité vers le bas.<br />
-  <br />
-  <strong>Ordre</strong><br />Ici vous pouvez manuellement établir un ordre pour tous les liens. Vous devez changer les valeurs dans les boîtes de sélection pour établir l'ordre de votre choix et appuyer sur le bouton 'réordoner' en dessous et ainsi sauvegarder le nouvel ordonnancement.<br />");
+options générales<br />
+Ces options sont généralement utilisées dans les pages de liens.<br /><br />
+Gérants de liens personnels<br />
+Les gérants de liens personnels sont les utilisateurs privilégiés qui peuvent gérer leurs propres ajouts de liens personnels.<br /><br />
+Page Catégorie<br />
+Ici vous pouvez changer les options de la page Catégorie.<br /><br />
+Page Lien<br />
+Ces options sont utilisées dans les pages de liens.<br /><br />
+Page Référants<br />
+Ces options sont utilisées dans les pages Top Liens Référants.<br /><br />
+Page Évaluations<br />
+Ces options sont utilisées dans les pages Top Évaluations Liens.<br />
+");
+
+define("LAN_ADMIN_HELP_7", "<i>La page Catégorie Lien d'édition vous permet d'éditer une catégorie existante</i><br /><br />Vous pouvez télécharger une nouvelle icône et ensuite assigner l'icône téléchargée à la catégorie.<br />Vous pouvez mettre à jour l'horodatage du lien en cliquant la boîte.");
+define("LAN_ADMIN_HELP_8", "<i>Cette affiche tous les liens existants de la catégorie sélectionnée.</i><br /><br /><strong>Liste détaillée</strong><br />Vous pouver voir une liste des liens avec leur image, nom, des options et des options de tri.<br /><br /><strong>Explication des icônes</strong><br />
+".LINK_ICON_LINK." : lien vers le site web<br /><br />
+".LINK_ICON_EDIT." : éditer le lien<br /><br />
+".LINK_ICON_DELETE." : suprimer le lien<br /><br />
+".LINK_ICON_ORDER_UP." : le bouton avec la flèche vers le haut vous permet de déplacer un lien dans l'ordre d'une unité vers le haut.<br /><br />
+".LINK_ICON_ORDER_DOWN." : le bouton avec la flèche vers le bas vous permet de déplacer un lien dans l'ordre d'une unité vers le bas.<br />
+<br />
+<strong>Ordre</strong><br />Ici vous pouvez manuellement établir un ordre pour tous les liens. Vous devez changer les valeurs dans les boîtes de sélection pour établir l'ordre de votre choix et appuyer sur le bouton 'réordoner' en dessous et ainsi sauvegarder le nouvel ordonnancement.<br />");
 define("LAN_ADMIN_HELP_9", "<i>la page d'édition des lien vous permet d'éditer un lien existant</i><br /><br />Vous pouvez télécharger une nouvelle icône et ensuite assigner l'icône téléchargée à ce lien.<br /><br />Le type d'ouverture vous permet de définir le mode d'ouverture de la fenêtre lors du clic d'utilisateur sur le lien");
 define("LAN_ADMIN_HELP_10", "<i>la page des envois de liens proposés vous permet d'ajouter un lien proposé aux liens existants</i><br /><br />Un petit texte proposé peut être ajouté dans le champ Description.<br /><br />Vous pouvez télécharger une nouvelle icône et ensuite assigner l'icône téléchargée à ce lien.<br /><br />Le type d'ouverture vous permet de définir le mode d'ouverture de la fenêtre lors du clic d'utilisateur sur le lien");
 

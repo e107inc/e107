@@ -1,19 +1,19 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_userclass2.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-22 12:13:44 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-04 21:32:33 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-define("UCSLAN_1", "Ce groupe à été vidé des membres qu'il contient.");
-define("UCSLAN_2", "Groupe d'utilisateurs Mis à jour.");
+define("UCSLAN_1", "Ce groupe à été vidé des membres qu'il contenait.");
+define("UCSLAN_2", "Groupe d'utilisateurs mis à jour.");
 define("UCSLAN_3", "Groupe supprimé.");
 define("UCSLAN_4", "Veuillez cocher la case de confirmation pour supprimer ce groupe d'utilisateurs");
-define("UCSLAN_5", "Groupe Mis à jour.");
+define("UCSLAN_5", "Groupe mis à jour.");
 define("UCSLAN_6", "Groupe sauvegardé dans la base de données.");
 define("UCSLAN_7", "Aucun groupe d'utilisateurs pour le moment.");
 define("UCSLAN_8", "Groupes existants");

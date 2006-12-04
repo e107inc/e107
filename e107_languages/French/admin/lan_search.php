@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_search.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-22 12:13:44 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-04 21:32:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("SEALAN_26", "Texte de Pré-Titre ");
 define("SEALAN_30", "Mots-clés soulignés dans les pages retournés :");
 define("SEALAN_31", "PHP limité à ");
 define("SEALAN_32", "résultats (laisser en blanc si non limités)");
-define("SEALAN_33", "Ne peut pas utiliser la méthode de tri de MySql car cela exige au moins la version 4.0.1 de MySql.");
+define("SEALAN_33", "Ne peut pas utiliser la méthode de tri de MySQL car cela exige au moins la version 4.0.1 de MySQL.");
 define("SEALAN_34", "Votre version en cours est");
 define("SEALAN_35", "Méthode de sélection des secteurs de recherche :");
 define("SEALAN_36", "Liste déroulante");

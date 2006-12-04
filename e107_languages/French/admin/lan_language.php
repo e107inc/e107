@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_language.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-22 12:13:44 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-04 21:32:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-define("LANG_LAN_00", "ne peuvent pas être créé (elles existent déjà )");
+define("LANG_LAN_00", "ne peut pas être créée (elle existe déjà)");
 define("LANG_LAN_01", "a été supprimée (si existante) et recréée");
 define("LANG_LAN_02", "n'a pas pu être supprimée");
 define("LANG_LAN_03", "Tables");
@@ -25,8 +25,8 @@ define("LANG_LAN_14", "Langage du site par défaut");
 define("LANG_LAN_15", "Cocher pour copier les données de la langue par défaut. (Utile pour les liens, catégories d'".GLOBAL_LAN_NEWS_1.", etc)");
 define("LANG_LAN_16", "Usage de la base de données multi-langages");
 define("LANG_LAN_17", "Langage par défaut - Aucunes tables supplémentaires ne sont requises.");
-define("LANG_LAN_18", "Utiliser le Sous-domaine Fixé pour déterminer le langage :");
-define("LANG_LAN_19", "ex. fr.mydomain.com pour régler le langage en French.");
+define("LANG_LAN_18", "Utiliser le sous-domaine préfixé pour déterminer le langage :");
+define("LANG_LAN_19", "ex. en.mydomain.com pour régler automatiquement le langage en 'English'.");
 define("LANG_LAN_20", "Entrez le nom principal du site pour activer. ex. mydomain.com");
 define("LANG_LAN_21", "Outils Langage");
 

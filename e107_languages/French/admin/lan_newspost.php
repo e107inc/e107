@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_newspost.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-22 12:13:44 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-04 21:32:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("NWSLAN_1", "".GLOBAL_LAN_NEWS_2." supprimée");
 define("NWSLAN_2", "Veuillez cocher la case de confirmation pour supprimer cette ".GLOBAL_LAN_NEWS_1.".");
 define("NWSLAN_3", "Aucune ".GLOBAL_LAN_NEWS_1." pour le moment.");
 define("NWSLAN_4", "".GLOBAL_LAN_NEWS_2."s Existantes");
-define("NWSLAN_5", "Ouvrir l&#39;Editeur HTML");
+define("NWSLAN_5", "Ouvrir l&#39;éditeur HTML");
 define("NWSLAN_6", "Catégorie");
 define("NWSLAN_9", "cocher pour confirmer");
 define("NWSLAN_10", "Aucune catégorie d&#39;".GLOBAL_LAN_NEWS_2."");
@@ -66,7 +66,7 @@ define("NWSLAN_68", "Fichier");
 define("NWSLAN_69", "Uploader une image ou un fichier pour l&#39;utiliser dans l&#39;".GLOBAL_LAN_NEWS_1."");
 define("NWSLAN_72", "Montrer uniquement les ".GLOBAL_LAN_NEWS_1."s entre certaines dates");
 define("NWSLAN_73", "Type d&#39;affichage");
-define("NWSLAN_74", "Sélectionner comment et où; les ".GLOBAL_LAN_NEWS_1."s sont postées");
+define("NWSLAN_74", "Sélectionner comment et où les ".GLOBAL_LAN_NEWS_1."s sont postées");
 define("NWSLAN_75", "Par défaut - sur la page principale");
 define("NWSLAN_76", "Titre uniquement - sur la page principale");
 define("NWSLAN_77", "Poster dans le menu autres ".GLOBAL_LAN_NEWS_1."s");
@@ -81,18 +81,18 @@ define("NWSLAN_90", "Préférences");
 define("NWSLAN_100", "Activer l&#39;upload d&#39;images lors de la proposition d'".GLOBAL_LAN_NEWS_1."s par les visiteurs");
 define("NWSLAN_101", "Redimensionnement automatique lors de la réception d'images");
 define("NWSLAN_102", "largeur en pixels<br /> ou laisser vide pour désactiver.");
-define("NWSLAN_103", "re-Post");
+define("NWSLAN_103", "re-poster");
 define("NWSLAN_104", "par");
 define("NWSLAN_105", "Cocher cette case pour mettre à jour l'heure de l'".GLOBAL_LAN_NEWS_1."");
 define("NWSLAN_106", "Groupe autorisé à proposer des ".GLOBAL_LAN_NEWS_1."s :");
 define("NWSLAN_107", "Activer l'éditeur WYSIWYG dans la page de proposition d'".GLOBAL_LAN_NEWS_1."s.");
-define("NWSLAN_108", "dans");
+define("NWSLAN_108", "le");
 define("NWSLAN_111", "Affiche une nouvelle date en titre ");
 define("NWSLAN_112", "si la case est coché, un champ contenant la date sera affichée avec les informations postées chaque nouvelle journée, utile pour distinguer les publications des différents jours");
 define("NWSLAN_113", "Utiliser un modèle(template) non standard pour l'affichage des ".GLOBAL_LAN_NEWS_1."s");
 define("NWSLAN_114", "Si le thème que vous employez a un modèle(template) d'".GLOBAL_LAN_NEWS_1.", employez le au lieu de l'affichage générique");
 define("NWSLAN_115", "Nouvelles ".GLOBAL_LAN_NEWS_1."s à mettre dans les archives ?");
-define("NWSLAN_116", "Mettre d'abord à jour les préférences avec la modification de l'affichage par page, puis après réglage des préférences Archivages des ".GLOBAL_LAN_NEWS_1."s faire la mise à jour à nouveau.");
+define("NWSLAN_116", "Mettre d'abord à jour les préférences avec la modification de l'affichage par page, puis après régler les préférences d.archivages des ".GLOBAL_LAN_NEWS_1."s et finalement faire la mise à jour à nouveau.");
 define("NWSLAN_117", "Choisissez un titre pour l'archivage des ".GLOBAL_LAN_NEWS_2."s");
 define("NWSLAN_119", "Paramètres sauvegardés");
 define("NWSLAN_120", "Texte à afficher au début de la page de proposition d'".GLOBAL_LAN_NEWS_1."s");
@@ -102,12 +102,12 @@ define("LAN_NEWS_7", "Erreur ! - ".GLOBAL_LAN_NEWS_2." n'ayant pas pu être ins�
 define("LAN_NEWS_9", "Titre seul mis en place - <strong>Seul le titre de l'".GLOBAL_LAN_NEWS_2." sera affiché</strong>");
 define("LAN_NEWS_10", "Cet ajout d'".GLOBAL_LAN_NEWS_1." est <strong>inactivé</strong> (il ne sera pas affiché en page d'accueil).");
 define("LAN_NEWS_11", "Cet ajout d'".GLOBAL_LAN_NEWS_1." est <strong>activé</strong> (il sera affiché en page d'accueil).");
-define("LAN_NEWS_12", "Le système commentaires est <strong>Actif</strong>.");
-define("LAN_NEWS_13", "Le système commentaires est <strong>Inactif</strong>.");
+define("LAN_NEWS_12", "Le système de commentaires est <strong>Actif</strong>.");
+define("LAN_NEWS_13", "Le système de commentaires est <strong>Inactif</strong>.");
 define("LAN_NEWS_14", "<br /> Période d'activation : ");
 define("LAN_NEWS_15", "Longueur du corps : ");
-define("LAN_NEWS_16", "b.Longueur de l'extention  : ");
-define("LAN_NEWS_17", "b.");
+define("LAN_NEWS_16", "o. Longueur de l'extension: ");
+define("LAN_NEWS_17", "o.");
 define("LAN_NEWS_18", "Information:");
 define("LAN_NEWS_19", "Maintenant");
 define("LAN_NEWS_21", "".GLOBAL_LAN_NEWS_2." mise à jour en base de données.");
@@ -119,7 +119,7 @@ define("LAN_NEWS_26", "Ajouter un nouvel upload");
 define("LAN_NEWS_27", "Sommaire");
 define("LAN_NEWS_28", "Post-it");
 define("LAN_NEWS_29", "Sélectionner si l'".GLOBAL_LAN_NEWS_1." sera en post-it");
-define("LAN_NEWS_30", "Si selectionné, l'".GLOBAL_LAN_NEWS_1." apparaîtra au dessus de toutes les autres");
+define("LAN_NEWS_30", "Si sélectionné, l'".GLOBAL_LAN_NEWS_1." apparaîtra au dessus de toutes les autres");
 define("LAN_NEWS_31", "Cette ".GLOBAL_LAN_NEWS_1." est <strong> épinglée </strong> (il s'affichera au dessus de tous les autres articles). ");
 define("LAN_NEWS_32", "Date publication");
 define("LAN_NEWS_33", "Fixer la date pour l'".GLOBAL_LAN_NEWS_1." actuelle");

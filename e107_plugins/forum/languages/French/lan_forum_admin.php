@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-11-22 12:14:31 $
+|     $Revision: 1.10 $
+|     $Date: 2006-12-04 21:35:16 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -61,22 +61,22 @@ define("FORLAN_49", "Activer les sondages");
 define("FORLAN_50", "Cocher cette case pour autoriser les utilisateurs à créer des sondages dans le forum");
 define("FORLAN_51", "Activer le marquage");
 define("FORLAN_52", "Cocher cette case pour autoriser les utilisateurs à marquer les sujets afin de recevoir un courriel lorsque quelqu'un y répond");
-define("FORLAN_53", "Préfix des Courriels");
-define("FORLAN_54", "Le texte que vous entré précèdera le contenu de tous les courriels envoyés depuis le forum");
+define("FORLAN_53", "Préfixe des courriels");
+define("FORLAN_54", "Le texte que vous entrez précédera l'objet de tous les courriels envoyés depuis le forum");
 define("FORLAN_55", "Seuil de popularité des sujets");
 define("FORLAN_56", "Nombre de messages pour qu'un sujet soit marqué comme populaire");
 define("FORLAN_57", "Messages par page");
 define("FORLAN_58", "Nombre de messages affichés par page");
-define("FORLAN_59", "Purger");
+define("FORLAN_59", "Délester");
 define("FORLAN_60", "Cela supprimera tous les sujets n'ayant pas reçus de réponses depuis le nombre de jour que vous entrerez. <br /><strong>Veuillez être prudent en utilisant cette fonctionnalité !</strong>");
 define("FORLAN_61", "Mettre à jour les Options");
 define("FORLAN_62", "Options du Forum");
 define("FORLAN_63", "Rangs");
-define("FORLAN_64", "Entrer vos rangs ici, si laissé vide des étoiles génériques seront utilisées pour dénoter le rang. Séparer les rangs par des virgules. 10 rangs maximun, le plus petit en premier.");
+define("FORLAN_64", "Entrer vos rangs ici, si laissé vide des étoiles génériques seront utilisées pour dénoter le rang. Séparer les rangs par des virgules. 10 rangs maximum, le plus petit en premier.");
 define("FORLAN_65", "Titre du Forum");
 define("FORLAN_70", "Activer l'upload de fichiers / images");
-define("FORLAN_71", "Autoriser les utilisateurs à uploader un fichier ou une image afin de l'insérer dans leur message sur le forum, ");
-define("FORLAN_72", "Mettre à jour l'Ordre");
+define("FORLAN_71", "Autoriser les utilisateurs à uploader un fichier ou une image afin de l'insérer dans leur message sur le forum, <a href='".e_ADMIN."image.php'>cliquer ici</a> pour configurer la taille max des fichiers, types autorisés etc");
+define("FORLAN_72", "Mettre à jour l'ordre");
 define("FORLAN_73", "Ordre des forums mis à jour");
 define("FORLAN_75", "Catégories");
 define("FORLAN_76", "Page Principale des Forums");
@@ -113,16 +113,16 @@ define("FORLAN_106", "Type de délestage:");
 define("FORLAN_107", "Forum");
 define("FORLAN_108", " supprimé");
 define("FORLAN_109", "jours :");
-define("FORLAN_110", "Purger");
+define("FORLAN_110", "Délester");
 define("FORLAN_111", "désactiver");
 define("FORLAN_112", "Activer la redirection");
 define("FORLAN_113", "Cocher cette case pour rediriger l'utilisateur vers la page du forum après avoir répondu");
 define("FORLAN_114", "Titre personnalisable des utilisateurs");
-define("FORLAN_115", "Cocher cette case pour autoriser les utilisateurs à changer leur Titre personnalisable");
-define("FORLAN_116", "Messages Rapportés");
+define("FORLAN_115", "Cocher cette case pour autoriser les utilisateurs à changer leur Titre personnalisé");
+define("FORLAN_116", "Messages de modération");
 define("FORLAN_117", "Cela supprimera le rapport du message. Pas le message lui-même.");
 define("FORLAN_118", "Message rapporté supprimé");
-define("FORLAN_120", "Cocher cette case pour autoriser les utilisateurs à changer leur Titre personnalisable");
+define("FORLAN_120", "Cocher cette case pour autoriser les utilisateurs à changer leur Titre personnalisé");
 define("FORLAN_121", "Aucun message rapporté");
 define("FORLAN_122", "Cliquer ici pour envoyer un courriel à un admin lorsque quelqu'un rapporte un message du forum");
 define("FORLAN_123", "Règles du Forum");
@@ -141,9 +141,9 @@ define("FORLAN_131", "pour configurer la taille maximale des fichiers, types aut
 define("FORLAN_132", "Soulignez les messages en post-it");
 define("FORLAN_133", "Mettre un soulignement supplémentaire aux messages en post-it (sections de messages séparées et en-têtes)");
 define("FORLAN_134", "Taille Maximum d'image uploadée");
-define("FORLAN_135", "Laisser en blanc pour désactiver auto dimentionnement des images");
+define("FORLAN_135", "Laisser en blanc pour désactiver auto dimensionnement des images");
 define("FORLAN_136", "Créer un lien vers l'image de taille complète");
-define("FORLAN_137", "Établir cela redimentionnera en grand les images et donc créera un lien vers léimage dans sa taille originale complète. lorsque cela est désactivé, on renonce à léimage originale");
+define("FORLAN_137", "Établir cela redimensionnera en grand les images et donc créera un lien vers l'image dans sa taille originale complète. lorsque cela est désactivé, on renonce à l'image originale");
 define("FORLAN_138", "épurer ces forums");
 define("FORLAN_139", "Pour utiliser ce paramètres vous devez alors cocher Activer la publication image sur la page <a href='".e_ADMIN."image.php'>images</a>");
 define("FORLAN_140", "Visible pour ");
@@ -165,8 +165,8 @@ define("FORLAN_155", "Catégories de Forum");
 define("FORLAN_156", "Sélectionner le(s)forums(s) pour exécuter l'action sur");
 define("FORLAN_157", "Tous les Forums");
 define("FORLAN_158", "Réinitialiser le calcul infos sur les derniers messages forum");
-define("FORLAN_159", "Selectionner pour réinitialiser le calcul infos sur les derniers messages forum");
-define("FORLAN_160", "Selectionner pour l'exécuter sur les forum seulement, pas les sujets");
+define("FORLAN_159", "Sélectionner pour réinitialiser le calcul infos sur les derniers messages forum");
+define("FORLAN_160", "Sélectionner pour l'exécuter sur les forum seulement, pas les sujets");
 define("FORLAN_161", "Recalculez les messages/ les décomptes de réponses");
 define("FORLAN_162", "Sélectionner pour recalculer le nombre de sujets/réponses du Forum ");
 define("FORLAN_163", "Recalculez les comptes messages de forum d'utilisateur ");
@@ -188,7 +188,7 @@ define("FORLAN_178", "Cocher pour activer par défaut l'alerte par courriel");
 define("FORLAN_179", "(Ajouter un * au début du nom de forum fera de ce forum un conteneur pour des sous-forums seulement. Le thème de forum doit supporter cette option aussi.)");
 define("FORLAN_180", "Confirmez la Suppression");
 define("FORLAN_181", "Supprimer");
-define("FORLAN_182", "recalculer aussi les réponses pour tous les sujets des forum sélectionnés");
+define("FORLAN_182", "recalculer aussi les réponses pour tous les sujets des forums sélectionnés");
 define("FORLAN_183", "(cette fonction n'est pas permise lorsque vous choisissez 'tous les forums' en raison du nombre de requête que cela implique)");
 
 

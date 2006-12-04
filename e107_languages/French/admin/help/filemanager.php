@@ -1,14 +1,16 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/filemanager.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-10-27 14:43:41 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-04 21:32:31 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-  $text = "Vous êtes autorisé à gérer les fichiers dans le dossier /e107_files à partir de cette page. Si vous obtenez des erreurs au sujet de permissions, veuillez mettre un CHMOD de 777 sur le dossier oû vous voulez envoyer le fichier.";
-  $ns -> tablerender("Gestionnaire de fichiers", $text);
-  ?>
+if (!defined('e107_INIT')) { exit; }
+
+$text = "Vous avez la possibilité de gérer les fichiers dans le dossier ".e_FILE." depuis cette page. Si vous obtenez des erreurs au sujet de permissions en uploadant, veuillez faire un CHMOD 777 sur le dossier où vous voulez envoyer le fichier.";
+$ns -> tablerender("Gestionnaire de fichiers", $text);
+?>

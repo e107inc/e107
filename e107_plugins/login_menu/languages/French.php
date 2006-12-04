@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-11-22 12:15:05 $
+|     $Revision: 1.12 $
+|     $Date: 2006-12-04 21:36:48 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ define("LOGIN_MENU_L20", "message de forum");
 define("LOGIN_MENU_L21", "messages de forum");
 define("LOGIN_MENU_L22", "nouvel utilisateur");
 define("LOGIN_MENU_L23", "nouveaux utilisateurs");
-  define("LOGIN_MENU_L24", "Voir la liste des nouveaut&eacute;s");
+define("LOGIN_MENU_L24", "Voir la liste des nouveaut&eacute;s");
 define("LOGIN_MENU_L25", "Depuis votre dernière visite, <br />il y a eu :");
 define("LOGIN_MENU_L26", "aucun");
 define("LOGIN_MENU_L27", "et");
@@ -47,7 +47,7 @@ define("LOGIN_MENU_L35", "Afficher les nouveaux messages de forum");
 define("LOGIN_MENU_L36", "Afficher les nouveaux utilisateurs");
 define("LOGIN_MENU_L39", "Quitter l'administration");
 define("LOGIN_MENU_L40", "Ré-envoyer le courriel d'activation");
-define("LOGIN_MENU_L41", "Paramètres du Menu de connexion (login)");
+define("LOGIN_MENU_L41", "Paramètres du menu de connexion (login)");
 
 define("LOGIN_MENU_L50", "Pas de nouveautés");
 

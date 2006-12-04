@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_image.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-11-22 12:13:44 $
+|     $Revision: 1.8 $
+|     $Date: 2006-12-04 21:32:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -40,23 +40,23 @@ define("IMALAN_31", "Visiteurs uniquement");
 define("IMALAN_32", "Utilisateur uniquement");
 define("IMALAN_33", "Admin uniquement");
 define("IMALAN_34", "Activer un cadre");
-define("IMALAN_35", "Pose une image transparente PNG-24 avec transparence alpha dans IE 5/ 6 par-dessus les images (s'applique sur tout le site)");
+define("IMALAN_35", "Résout le problème des images PNG-24 avec transparence alpha dans IE 5/6 (S'applique sur tout le site)");
 define("IMALAN_36", "Valider la taille et l'accès aux avatars");
 define("IMALAN_37", "Validation des avatars");
-define("IMALAN_38", "Largeur maximum permise");
-define("IMALAN_39", "Hauteur maximum permise");
+define("IMALAN_38", "Largeur maximale autorisée");
+define("IMALAN_39", "Hauteur maximale autorisée");
 define("IMALAN_40", "Trop large");
 define("IMALAN_41", "Trop haut");
 define("IMALAN_42", "Non trouvé");
 define("IMALAN_43", "Supprimer l&#39;avatar uploadé");
 define("IMALAN_44", "Supprimer les références aux images externes");
 define("IMALAN_45", "Non trouvé");
-define("IMALAN_46", "Trop large");
-define("IMALAN_47", "Nb total des avatars uploadés");
-define("IMALAN_48", "Nb total d'avatars externes");
-define("IMALAN_49", "Utilisateurs avec avatars");
+define("IMALAN_46", "Trop grand");
+define("IMALAN_47", "Nombre d'avatars téléchargés");
+define("IMALAN_48", "Nombre d'avatars avec référence externe");
+define("IMALAN_49", "Utilisateurs possédant un avatar");
 define("IMALAN_50", "Total");
-define("IMALAN_51", "Avatar pour");
+define("IMALAN_51", "Avatar pour ");
 
 
 ?>

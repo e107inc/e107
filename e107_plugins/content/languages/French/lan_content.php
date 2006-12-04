@@ -1,16 +1,16 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-11-27 03:07:31 $
+|     $Revision: 1.10 $
+|     $Date: 2006-12-04 21:34:35 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
 define("CONTENT_EMAILPRINT_LAN_1", "Cet article provient du site web");
-define("POPUP_LAN_1", "clicker pour engrandir l&#39;image");
+define("POPUP_LAN_1", "cliquez pour agrandir l&#39;image");
 define("CONTENT_NOTIFY_LAN_1", "Événements du gestionnaire de contenu");
 define("CONTENT_NOTIFY_LAN_2", "Item de contenu proposé par un utilisateur");
 define("CONTENT_NOTIFY_LAN_3", "Contenu proposé");
@@ -23,13 +23,13 @@ define("CONTENT_TYPE_LAN_5", "récent");
 define("CONTENT_ICON_LAN_0", "Éditer");
 define("CONTENT_ICON_LAN_1", "Supprimer");
 define("CONTENT_ICON_LAN_2", "Options");
-  define("CONTENT_ICON_LAN_3", "Profil de l&#39;auteur");
+define("CONTENT_ICON_LAN_3", "Profil de l&#39;auteur");
 define("CONTENT_ICON_LAN_4", "Téléchargement en attaché");
 define("CONTENT_ICON_LAN_5", "Ajouter une page");
 define("CONTENT_ICON_LAN_6", "Contenu proposé");
-  define("CONTENT_ICON_LAN_7", "Contributions de l&#39;auteur");
+define("CONTENT_ICON_LAN_7", "Contributions de l&#39;auteur");
 define("CONTENT_ICON_LAN_8", "Mise en garde");
-define("CONTENT_ICON_LAN_9", "ok");
+define("CONTENT_ICON_LAN_9", "OK");
 define("CONTENT_ICON_LAN_10", "Erreur");
 define("CONTENT_ICON_LAN_11", "Ordre des items dans la catégorie");
 define("CONTENT_ICON_LAN_12", "Ordre des items dans la catégorie principale");
@@ -100,8 +100,8 @@ define("CONTENT_LAN_11", "par");
 define("CONTENT_LAN_12", "Meilleure qualité");
 define("CONTENT_LAN_13", "liste");
 define("CONTENT_LAN_14", "-- catégories --");
-define("CONTENT_LAN_15", "");
-define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_15", "Pas encore d'auteur");
+define("CONTENT_LAN_16", "[voir plus]");
 define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "mots-clés");
 define("CONTENT_LAN_19", "recherche");
@@ -124,24 +124,24 @@ define("CONTENT_LAN_35", "Commentaires");
 define("CONTENT_LAN_36", "Modérer les commentaires");
 define("CONTENT_LAN_37", "Pas d'évaluation du contenu pour le moment ");
 define("CONTENT_LAN_38", "Top Évaluation Contenu");
-  define("CONTENT_LAN_39", "liste d&#39;auteurs");
-  define("CONTENT_LAN_40", "Détails d&#39;utilisateur auteur");
+define("CONTENT_LAN_39", "liste d&#39;auteurs");
+define("CONTENT_LAN_40", "Détails d&#39;utilisateur auteur");
 define("CONTENT_LAN_41", "attaché");
 define("CONTENT_LAN_42", "fichier");
 define("CONTENT_LAN_43", "fichiers");
 define("CONTENT_LAN_44", "nb de lectures:");
-  define("CONTENT_LAN_45", "Qualité attribuée par l&#39;auteur:");
+define("CONTENT_LAN_45", "Qualité attribuée par l&#39;auteur:");
 define("CONTENT_LAN_46", "Index Article");
 define("CONTENT_LAN_47", "Auteur");
 define("CONTENT_LAN_48", "Contenus ");
 define("CONTENT_LAN_49", "Dernier contenu");
 define("CONTENT_LAN_50", "Date");
 define("CONTENT_LAN_51", "Liste Type");
-  define("CONTENT_LAN_52", "Pas d&#39;auteur valide trouvé");
+define("CONTENT_LAN_52", "Pas d&#39;auteur valide trouvé");
 define("CONTENT_LAN_53", "document");
 define("CONTENT_LAN_54", "documents");
 define("CONTENT_LAN_55", "Dernier contenu sur");
-  define("CONTENT_LAN_56", "Afficher une vue d&#39;ensemble de");
+define("CONTENT_LAN_56", "Afficher une vue d&#39;ensemble de");
 define("CONTENT_LAN_57", "Commentaires:");
 define("CONTENT_LAN_58", "Accueil");
 define("CONTENT_LAN_59", "Contenus");
@@ -170,7 +170,7 @@ define("CONTENT_LAN_81", "catégories");
 define("CONTENT_LAN_82", "Pas de contenu pour le moment dans");
 define("CONTENT_LAN_83", "Archives");
 define("CONTENT_LAN_84", "Contenus des Archives");
-  define("CONTENT_LAN_85", "liste d&#39;auteur");
+define("CONTENT_LAN_85", "liste d&#39;auteur");
 define("CONTENT_LAN_86", "Aperçu Top Qualité ");
 define("CONTENT_LAN_87", "Top Qualité Contenu");
 define("CONTENT_LAN_88", "Aucun contenu n'a de qualité défini pour le moment");
@@ -179,7 +179,7 @@ define("CONTENT_LAN_90", "page précédente");
 define("CONTENT_LAN_91", "page suivante");
 define("CONTENT_LAN_92", " - courante");
 define("CONTENT_MENU_LAN_0", "Menu des contenus :");
-define("CONTENT_MENU_LAN_1", "pas de contenu pour l'instant");
+define("CONTENT_MENU_LAN_1", "pas de contenu pour le moment");
 define("CONTENT_MENU_LAN_2", "Nouveautés");
 define("CONTENT_MENU_LAN_3", "Catégories");
 define("CONTENT_MENU_LAN_4", "Liens contenu");

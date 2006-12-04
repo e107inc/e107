@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/phpmailer/language/phpmailer.lang-fr.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-27 03:06:37 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-04 21:30:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -23,4 +23,4 @@ $PHPMAILER_LANG["connect_host"] = 'Erreur SMTP: Connexion impossible au serveur 
 $PHPMAILER_LANG["file_access"] = 'Impossible d\'accéder au fichier: ';
 $PHPMAILER_LANG["file_open"] = 'Erreur Fichier: Impossible d\'ouvrir le fichier: ';
 $PHPMAILER_LANG["encoding"] = 'Encodage inconnu: ';
-  ?>
+?>

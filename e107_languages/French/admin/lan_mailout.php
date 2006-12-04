@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_mailout.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-11-27 03:07:13 $
+|     $Revision: 1.10 $
+|     $Date: 2006-12-04 21:32:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -15,14 +15,14 @@ define("PRFLAN_64", "Cliquer le bouton enverra un courrier test à l'adresse cou
 define("PRFLAN_65", "Cliquer pour envoyer le courriel à");
 define("PRFLAN_66", "Test courriel de");
 define("PRFLAN_67", "Ceci est un test courriel, il apparaît que vos paramètres de courrier électronique fonctionnent correctement!\n\nSalutations\ndu système de site Web e107.");
-define("PRFLAN_68", "Le courriel n'a pas pu être envoyé. il semblerait que votre serveur ne soit pas correctement configuré pour envoyer des courriels, veuillez essayer d'utiliser le SMTP, ou contactez votre hébergeur et demander lui de vous envoyer leurs paramètres d'envoi de courriels / de serveur de courriel.");
+define("PRFLAN_68", "Le courriel n'a pas pu être envoyé. Il semblerait que votre serveur ne soit pas correctement configuré pour envoyer des courriels, veuillez essayer d'utiliser le SMTP, ou contacter votre hébergeur et demander lui de vous envoyer leurs paramètres d'envoi de courriels / de serveur de courriel.");
 define("PRFLAN_69", "Le courriel a été envoyé avec succès, veuillez contrôler votre boîte de réception courriel.");
 define("PRFLAN_70", "Méthode d'envoi du courriel");
 define("PRFLAN_71", "Si vous êtes incertain, laissez à PHP");
 define("PRFLAN_72", "Serveur SMTP ");
 define("PRFLAN_73", "Identifiant SMTP ");
 define("PRFLAN_74", "Mot de Passe SMTP");
-define("PRFLAN_75", "Le courriel n'as pas pu être envoyé.. Veuillez passer en revue vos paramètres SMTP, ou désactiver le SMTP et essayez de nouveau.");
+define("PRFLAN_75", "Le courriel n'as pas pu être envoyé.. Veuillez vérifier vos paramètres SMTP, ou désactiver le SMTP et essayer de nouveau.");
 define("MAILAN_01", "De (Pseudo): ");
 define("MAILAN_02", "De (Courriel): ");
 define("MAILAN_03", "À: ");
@@ -44,26 +44,26 @@ define("MAILAN_18", "Id utilisateur");
 define("MAILAN_19", "Il n'y a aucune adresse électronique pour l'admin du site. Vérifiez vos préférences et essayez à nouveau.");
 define("MAILAN_20", "Adresse envoi courrier ");
 define("MAILAN_21", "Entrées courriel en masse");
-define("MAILAN_22", "Il n'y a aucune sauvegarde d'entrée pour le moment.");
+define("MAILAN_22", "Il n'y a aucune sauvegarde de courriel pour le moment.");
 define("MAILAN_23", "Groupe d'utilisateurs: ");
 define("MAILAN_24", "courriel(s) prêt à être envoyé(s)");
 define("MAILAN_25", "Pauses");
 define("MAILAN_26", "Différer l'envoi massif de courriel tous les");
 define("MAILAN_27", "courriels");
-define("MAILAN_28", "Durée de la Pause");
+define("MAILAN_28", "Durée de la pause");
 define("MAILAN_29", "secondes");
-define("MAILAN_30", "Plus de 30 secondes peut causer une erreur de 'time-out' à votre explorateur");
+define("MAILAN_30", "Attention: une pause supérieure à 30 secondes pourraient conduire à une déconnexion et n'est donc pas recommandée");
 define("MAILAN_31", "Vérification des courriels rebondis");
 define("MAILAN_32", "Adresse courriel");
 define("MAILAN_33", "Réception des courriels ");
-define("MAILAN_34", "Nom du compte");
+define("MAILAN_34", "Identifiant du compte");
 define("MAILAN_35", "Mot de passe");
 define("MAILAN_36", "Effacer les courriels rebondis après vérification");
 define("MAILAN_37", "Procéder");
 define("MAILAN_38", "Annuler");
 define("MAILAN_39", "Envoi de courriel(s)");
 define("MAILAN_40", "Vous devez renommer le fichier <b>e107.htaccess</b> pour <b>.htaccess</b> dans");
-define("MAILAN_41", "avant d'envoyer des courriels de cette page.");
+define("MAILAN_41", "avant de pouvoir envoyer un message depuis cette page.");
 define("MAILAN_42", "Avertissement");
 define("MAILAN_43", "Identifiant");
 define("MAILAN_44", "Nom réel");
@@ -89,7 +89,7 @@ define("MAILAN_63", "Courriels échoués:");
 define("MAILAN_64", "Durée total:");
 define("MAILAN_65", "secondes");
 define("MAILAN_66", "Annulation réussie");
-define("MAILAN_67", "Utiliser identification 'POP avant SMTP'");
+define("MAILAN_67", "Utiliser l'authentification 'POP avant SMTP'");
 
 
 ?>

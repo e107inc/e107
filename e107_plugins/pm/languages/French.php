@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/French.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-11-22 12:15:46 $
+|     $Revision: 1.10 $
+|     $Date: 2006-12-04 21:38:02 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ define("LAN_PM_16", "Doit être membre de ce groupe");
 define("LAN_PM_17", "Utilisateur non trouvé");
 define("LAN_PM_18", "Vous n'êtes pas autorisé à envoyer de MP à : ");
 define("LAN_PM_19", "Votre boîte d'envoi est pleine, vous n'êtes pas autorisé à envoyer des messages pour l'instant. Veuillez la vider.");
-define("LAN_PM_21", "Ajouter ce MP excèdera la capacité maximum de votre boîte d'envoi. Message non posté");
+define("LAN_PM_21", "Ajouter ce MP excédera la capacité maximum de votre boîte d'envoi. Message non posté");
 define("LAN_PM_22", "Échec de téléchargement de fichier sur le serveur");
 define("LAN_PM_23", "Vous n'êtes pas autorisé à envoyer des fichiers joints");
 define("LAN_PM_24", "Suppression des MP");
@@ -50,7 +50,7 @@ define("LAN_PM_38", "MP envoyé au groupe d'utilisateur");
 define("LAN_PM_39", "Échec d'envoi d'un MP à ");
 define("LAN_PM_40", "MP envoyé à");
 define("LAN_PM_41", "Échec de publication d'un MP vers votre boîte d'envoi");
-define("LAN_PM_42", "MP supprimé de la boîte de reception");
+define("LAN_PM_42", "MP supprimé de la boîte de réception");
 define("LAN_PM_43", "MP supprimé de la boîte d'envoi");
 define("LAN_PM_44", "Bloquage supprimé: {UNAME} est maintenant autorisé à vous envoyer des MPs");
 define("LAN_PM_45", "ERREUR: Bloquage non supprimé, erreur inconnue");
@@ -80,10 +80,10 @@ define("LAN_PM_104", "Nombre de fichiers attachés: ");
 define("LAN_PM_105", "Vous pouvez voir ce MP à : ");
 define("LAN_PM_106", "MP lu par ");
 define("LAN_PM_107", "Le message privé que vous avez envoyé à {UNAME} à été lu le ");
-define("LAN_PM_108", "Message envoyé à : ");
+define("LAN_PM_108", "Message envoyé le: ");
 define("LAN_PM_109", "Nouveau(x) Message(s)");
-define("LAN_PM_110", "ok");
-define("LAN_PM_111", "Lire");
+define("LAN_PM_110", "OK");
+define("LAN_PM_111", "Lu");
 
 
 ?>

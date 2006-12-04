@@ -1,3 +1,3 @@
 <?php
-  define("POWEREDBY_L1", "Généré par");
-  ?>
+define("POWEREDBY_L1", "Généré par");
+?>

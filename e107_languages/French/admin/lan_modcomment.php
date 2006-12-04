@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_modcomment.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-22 12:13:44 $
+|     $Revision: 1.9 $
+|     $Date: 2006-12-04 21:32:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("MDCLAN_5", "débloquer");
 define("MDCLAN_6", "bloquer");
 define("MDCLAN_8", "Modérer les commentaires");
 define("MDCLAN_9", "Attention ! La suppression d'une catégorie de commentaires, supprimera tous les commentaires !");
-define("MDCLAN_10", "option");
+define("MDCLAN_10", "options");
 define("MDCLAN_11", "commentaire");
 define("MDCLAN_12", "commentaires");
 define("MDCLAN_13", "Bloqué(s)");

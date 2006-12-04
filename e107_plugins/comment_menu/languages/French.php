@@ -1,11 +1,11 @@
 <?php
 /*
 +---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). License GNU/PGL
+| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/comment_menu/languages/French.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-22 12:14:13 $
+|     $Revision: 1.6 $
+|     $Date: 2006-12-04 21:34:05 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */

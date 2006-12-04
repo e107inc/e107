@@ -1,7 +1,10 @@
-<div class='forumheader4'>Q>	Comment puis j'écrire un lien de sorte qu'il apparaisse dans mon menu principal de navigation?  
-A>	Tous les liens dans la catégorie principale apparaîtront dans votre menu principal de navigation.  
-    Toutes autres catégories apparaissent à la page des liens. 
-</div><div class='forumheader4'>Q>	Pour ce qu'est la boîte des textes de bouton de lien?
-A>	Ceci vous permet d'afficher le bouton prévu pour le lien à la page de liens.  
-    Si vous lui laissez le blanc un bouton blanc sera affiché.
+<div class='forumheader4'>
+Q>	Comment puis-je insérer un lien de sorte qu'il apparaisse dans mon menu de navigation principale?
+A>	Tous les liens dans la catégorie principale (Main) apparaîtront dans votre menu de navigation principale.
+Toutes les autres catégories apparaissent dans la page de liens.
+</div>
+<div class='forumheader4'>
+Q>	Qu'est-ce que l'icône?
+A>	Ceci vous permet d'afficher l'icône prévue pour ce lien dans la page de liens.
+Si vous le laissez vide (pas d'icône) un bouton blanc sera affiché.
 </div>
