@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.39 $
-| $Date: 2006-11-28 12:37:46 $
-| $Author: mcfly_e107 $
+| $Revision: 1.40 $
+| $Date: 2006-12-04 13:42:28 $
+| $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -78,7 +78,7 @@ class e_shortcode {
 
 	function doCode($matches)
 	{
-		global $pref, $e107cache, $menu_pref, $sc_style, $parm;
+		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
 
 		if(strpos($matches[1], E_NL) !== false)
 		{
@@ -96,9 +96,10 @@ class e_shortcode {
 		}
 		$parm = trim($parm);
 
-		if (E107_DEBUG_LEVEL)
+		if (E107_DBG_BBSC)
 		{
 			global $db_debug;
+			$sql->db_Mark_Time("SC $code");
 			$db_debug->logCode(2, $code, $parm, "");
 		}
 
@@ -155,6 +156,9 @@ class e_shortcode {
 					$ret = $ret.$sc_style[$code]['post'];
 				}
 			}
+		}
+		if (E107_DBG_SC) {
+			$sql->db_Mark_Time("(SC $code Done)");
 		}
 		return $ret;
 	}
