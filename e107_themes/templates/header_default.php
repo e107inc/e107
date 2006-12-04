@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2006-11-08 16:32:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.100 $
+|     $Date: 2006-12-04 14:39:02 $
+|     $Author: mrpete $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -74,7 +74,7 @@ if (!function_exists("parseheader")) {
 header("Content-type: text/html; charset=".CHARSET, true);
 
 
-echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 
 //
 // C: Send start of HTML
