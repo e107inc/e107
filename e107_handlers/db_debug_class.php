@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-12-04 13:37:19 $
+|     $Revision: 1.18 $
+|     $Date: 2006-12-04 14:30:23 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -203,8 +203,7 @@ class e107_db_debug {
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
 				if (!$cQuery['ok']) {
 					$text .= "<tr><td class='forumheader3' rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
-    	       	        <td class='forumheader3'>".$cQuery['query']."</td></tr>\n";
-    	       	      <tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
+    	       	        <td class='forumheader3'>".$cQuery['query']."</td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 				}
 			}
 			$text .= "\n</table><br/>\n";
