@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-12-04 14:30:23 $
+|     $Revision: 1.19 $
+|     $Date: 2006-12-05 09:54:57 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -124,7 +124,7 @@ class e107_db_debug {
 			$bExplained = TRUE;
 			}
 		} else {
-			$sQryRes = origQryRes;
+			$sQryRes = $origQryRes;
 			$bExplained = FALSE;
 			$nFields=0;
 		}
