@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-05 09:15:08 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -97,6 +97,7 @@ class themeHandler{
 								fclose($fp);
 								$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
 								preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
+								$match[1]=varset($match[1],'');
 								$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1], "nonadmin" => $nonadmin);
 								if($STYLESHEET)
 								{
@@ -113,19 +114,19 @@ class themeHandler{
 						$themeContents = fread ($fp, filesize(e_THEME.$file."/theme.php"));
 						fclose($fp);
 						preg_match('/themename(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
-						$themeArray[$file]['name'] = $match[3];
+						$themeArray[$file]['name'] = varset($match[3],'');
 						preg_match('/themeversion(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
-						$themeArray[$file]['version'] = $match[3];
+						$themeArray[$file]['version'] = varset($match[3],'');
 						preg_match('/themeauthor(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
-						$themeArray[$file]['author'] = $match[3];
+						$themeArray[$file]['author'] = varset($match[3],'');
 						preg_match('/themeemail(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
-						$themeArray[$file]['email'] = $match[3];
+						$themeArray[$file]['email'] = varset($match[3],'');
 						preg_match('/themewebsite(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
-						$themeArray[$file]['website'] = $match[3];
+						$themeArray[$file]['website'] = varset($match[3],'');
 						preg_match('/themedate(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
-						$themeArray[$file]['date'] = $match[3];
+						$themeArray[$file]['date'] = varset($match[3],'');
 						preg_match('/themeinfo(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
-						$themeArray[$file]['info'] = $match[3];
+						$themeArray[$file]['info'] = varset($match[3],'');
 
 						preg_match('/xhtmlcompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
 						$xhtml = strtolower($match[2]);
@@ -306,7 +307,7 @@ class themeHandler{
 		</td>
 		<td class='forumheader3' style='vertical-align:top'>";
 
-		$itext .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
+		$itext = $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$itext .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$itext .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
 		$itext .= $theme['info'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>" : "";

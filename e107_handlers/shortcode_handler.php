@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.2 $
-| $Date: 2006-12-03 07:03:22 $
-| $Author: mcfly_e107 $
+| $Revision: 1.3 $
+| $Date: 2006-12-05 09:15:05 $
+| $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,7 +34,7 @@ class e_shortcode {
 	{
 		global $pref, $register_sc;
 
-		if($pref['shortcode_list'] != '')
+		if(varset($pref['shortcode_list'],'') != '')
 		{
         	foreach($pref['shortcode_list'] as $path=>$namearray)
 			{
@@ -78,7 +78,7 @@ class e_shortcode {
 
 	function doCode($matches)
 	{
-		global $pref, $e107cache, $menu_pref, $sc_style, $parm;
+		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
 
 		if(strpos($matches[1], E_NL) !== false)
 		{
@@ -96,9 +96,10 @@ class e_shortcode {
 		}
 		$parm = trim($parm);
 
-		if (E107_DEBUG_LEVEL)
+		if (E107_DBG_BBSC)
 		{
 			global $db_debug;
+			$sql->db_Mark_Time("SC $code");
 			$db_debug->logCode(2, $code, $parm, "");
 		}
 
@@ -156,13 +157,16 @@ class e_shortcode {
 				}
 			}
 		}
+		if (E107_DBG_SC) {
+			$sql->db_Mark_Time("(SC $code Done)");
+		}
 		return $ret;
 	}
 
 	function parse_scbatch($fname, $type = 'file')
 	{
 		global $e107cache, $eArrayStorage;
-		$cur_shortcoces = array();
+		$cur_shortcodes = array();
 		if($type == 'file')
 		{
 			$batch_cachefile = "nomd5_".md5($fname);
@@ -185,6 +189,7 @@ class e_shortcode {
 
 		if($sc_batch)
 		{
+			$cur_sc = '';
 			foreach($sc_batch as $line)
 			{
 				if (trim($line) == 'SC_END')
@@ -198,6 +203,7 @@ class e_shortcode {
 				if (preg_match("#^SC_BEGIN (\w*).*#", $line, $matches))
 				{
 					$cur_sc = $matches[1];
+					$cur_shortcodes[$cur_sc] = varset($cur_shortcodes[$cur_sc],'');
 				}
 			}
 			if($type == 'file')

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-05 09:15:08 $
+|     $Author: mrpete $
 +---------------------------------------------------------------+
 */
 
@@ -114,7 +114,7 @@ class sitelinks
 
 				$render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
-				if(!defined("LINKSRENDERONLYMAIN") && $style['linkmainonly']!= TRUE)	/* if this is defined in theme.php only main links will be rendered */
+				if(!defined("LINKSRENDERONLYMAIN") && !varset($style['linkmainonly']))	/* if this is defined in theme.php only main links will be rendered */
 				{
 
 					// if there's a submenu. :
@@ -240,7 +240,7 @@ class sitelinks
 		// If its a link.. make a link
 		$_link = "";
 		$_link .= $accessdigit;
-		if (!empty($href) && (($style['hilite_nolink'] && $highlighted)!=TRUE)){
+		if (!empty($href) && ((varset($style['hilite_nolink']) && $highlighted)!=TRUE)){
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.$accesskey.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook")."</a>";
 		// If its not a link, but has a class or screentip do span:
 		}elseif (!empty($linkadd) || !empty($screentip)){
