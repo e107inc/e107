@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-03 02:13:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-05 09:24:46 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,7 +40,6 @@ language - list of languages.
 */
 
 function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
-	$sql = new db;
 	global $pref;
 
 	$text = "<select class='tbox' name='{$fieldname}'>\n";
@@ -105,7 +104,6 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 
 function r_userclass_radio($fieldname, $curval = '')
 {
-	$sql = new db;
 	($curval == e_UC_PUBLIC) ? $c = " checked" : $c = "";
 	$text = "<input type='radio' name='{$fieldname}' value='".e_UC_PUBLIC."' ".$c." />".UC_LAN_0."<br />";
 	($curval == e_UC_NOBODY) ? $c = " checked" : $c = "";
@@ -126,7 +124,6 @@ function r_userclass_radio($fieldname, $curval = '')
 function r_userclass_check($fieldname, $curval = '', $optlist = "", $divheight = 58)
 {
 	global $pref;
-	$sql = new db;
 	$curArray = explode(",", $curval);
 	$ret = "";
 	if($divheight > 0)
@@ -199,13 +196,13 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "", $divheight =
 
 function get_userclass_list()
 {
-	global $sql;
 	if($classList = getcachedvars('uclass_list'))
 	{
 		return $classList;
 	}
 	else
 	{
+		global $sql;
 		$sql->db_Select('userclass_classes', "*", "ORDER BY userclass_name", "nowhere");
 		$classList = $sql->db_getList();
 		cachevars('uclass_list', $classList);
@@ -214,10 +211,10 @@ function get_userclass_list()
 }
 
 function r_userclass_name($id) {
-	$sql = new db;
 	$class_names = getcachedvars('userclass_names');
 	if(!is_array($class_names))
 	{
+		$sql = new db;
 		$class_names[e_UC_PUBLIC] = UC_LAN_0;
 		$class_names[e_UC_GUEST] = UC_LAN_1;
 		$class_names[e_UC_NOBODY] = UC_LAN_2;
