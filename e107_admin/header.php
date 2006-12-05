@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.57 $
-|   $Date: 2006-12-04 14:15:31 $
+|   $Revision: 1.58 $
+|   $Date: 2006-12-05 10:50:24 $
 |   $Author: mrpete $
 +---------------------------------------------------------------+
 */
@@ -206,15 +206,17 @@ echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' /
 <meta http-equiv='content-style-type' content='text/css' />\n";
 
 // --- Load plugin Meta files and eplug_ before others --------
-foreach($pref['e_meta_list'] as $val)
+if (is_array($pref['e_meta_list']))
 {
-	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	foreach($pref['e_meta_list'] as $val)
 	{
-		echo "<!-- $val meta -->\n";
-		require_once(e_PLUGIN.$val."/e_meta.php");
+		if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+		{
+			echo "<!-- $val meta -->\n";
+			require_once(e_PLUGIN.$val."/e_meta.php");
+		}
 	}
 }
-
 
 
 // ---------- Favicon ---------

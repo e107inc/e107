@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.40 $
-| $Date: 2006-12-04 13:42:28 $
+| $Revision: 1.41 $
+| $Date: 2006-12-05 10:51:32 $
 | $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ class e_shortcode {
 	{
 		global $pref, $register_sc;
 
-		if($pref['shortcode_list'] != '')
+		if(varset($pref['shortcode_list'],'') != '')
 		{
         	foreach($pref['shortcode_list'] as $path=>$namearray)
 			{

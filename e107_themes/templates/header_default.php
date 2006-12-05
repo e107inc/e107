@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2006-12-04 14:39:02 $
+|     $Revision: 1.101 $
+|     $Date: 2006-12-05 10:52:47 $
 |     $Author: mrpete $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -188,15 +188,17 @@ echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' /
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 
 // --- Load plugin Meta files and eplug_ before others --------
-foreach($pref['e_meta_list'] as $val)
+if (is_array($pref['e_meta_list']))
 {
-	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	foreach($pref['e_meta_list'] as $val)
 	{
-		echo "<!-- $val meta -->\n";
-		require_once(e_PLUGIN.$val."/e_meta.php");
+		if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+		{
+			echo "<!-- $val meta -->\n";
+			require_once(e_PLUGIN.$val."/e_meta.php");
+		}
 	}
 }
-
 
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
