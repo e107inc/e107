@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ???Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-05 09:33:20 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
+$In_e107_Footer = TRUE;	// For registered shutdown function
 
 global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
 
@@ -25,6 +26,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuse
 //
 // The following items have been carefully designed so page processing will finish properly
 // Please DO NOT re-order these items without asking first! You WILL break something ;)
+// These letters match the USER footer (that's why there may be B.1,B.2)
 //
 // A Ensure sql and traffic objects exist 
 // [Next few ONLY if a regular page; not done for popups]
@@ -79,37 +81,9 @@ if(varset($e107_popup)!=1){
 
 
 	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
-		global $db_debug,$ns;
+		global $db_debug;
 		echo "\n<!-- DEBUG -->\n";
-		if (!isset($ns)) {
-			echo "Why did ns go away?<br/>";
-			$ns = new e107table;
-		}
-
-		$tmp = $eTraffic->Display();
-		if (strlen($tmp)) {
-			$ns->tablerender('Traffic Counters', $tmp);
-		}
-		$tmp = $db_debug->Show_Performance();
-		if (strlen($tmp)) {
-			$ns->tablerender('Time Analysis', $tmp);
-		}
-		$tmp = $db_debug->Show_SQL_Details();
-		if (strlen($tmp)) {
-			$ns->tablerender('SQL Analysis', $tmp);
-		}
-		$tmp = $db_debug->Show_SC_BB();
-		if (strlen($tmp)) {
-			$ns->tablerender('Shortcodes / BBCode',$tmp);
-		}
-		$tmp = $db_debug->Show_PATH();
-		if (strlen($tmp)) {
-			$ns->tablerender('Paths', $tmp);
-		}
-		$tmp = $db_debug->Show_DEPRECATED();
-		if (strlen($tmp)) {
-			$ns->tablerender('Deprecated Function Usage', $tmp);
-		}
+		$db_debug->Show_All();
 	}
 	
 	/*
@@ -184,7 +158,8 @@ if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
 //
 // E Last themed footer code, usually JS
 //
-if (function_exists('theme_foot')) {
+if (function_exists('theme_foot'))
+{
 	echo theme_foot();
 }
 
@@ -251,5 +226,8 @@ if($pref['compress_output'] == true && $server_support == true && $browser_suppo
 	header("Content-Length: ".strlen($page), true);
 	echo $page;
 }
+
+unset($In_e107_Footer);
+$e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
 
 ?>
