@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.323 $
-|     $Date: 2006-12-04 13:48:37 $
+|     $Revision: 1.324 $
+|     $Date: 2006-12-05 10:48:46 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -637,7 +637,7 @@ $ns=new e107table;
 
 $e107->ban();
 
-if($pref['force_userupdate'] && USER) {
+if(varset($pref['force_userupdate']) && USER) {
 	if(force_userupdate()) {
 		header("Location: ".e_BASE."usersettings.php?update");
 	}
