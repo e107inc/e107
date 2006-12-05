@@ -12,22 +12,66 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.1.1.1 $
-|   $Date: 2006-12-02 04:33:22 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.2 $
+|   $Date: 2006-12-05 09:28:02 $
+|   $Author: mrpete $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 define("ADMIN_AREA",TRUE);
 define("USER_AREA",FALSE);
+$sql->db_Mark_Time('(Header Top)');
 
-// send the charset to the browser - overides spurious server settings with the lan pack settings.
+//
+// *** Code sequence for headers ***
+// IMPORTANT: These items are in a carefully constructed order. DO NOT REARRANGE
+// without checking with experienced devs! Various subtle things WILL break.
+//
+// We realize this is a bit (!) of a mess and hope to make further cleanups in a future release.
+//
+// A: Admin Defines and Links
+// B: Send HTTP headers that come before any html
+// C: Send start of HTML
+// D: Send JS
+// E: Send CSS
+// F: Send Meta Tags and Icon links
+// G: Send final theme headers (theme_head() function)
+// H: Generate JS for image preloading (setup for onload)
+// I: Calculate onload() JS functions to be called
+// J: Send end of html <head> and start of <body>
+// K: (The rest is ignored for popups, which have no menus)
+// L: (optional) Body JS to disable right clicks
+// M: Send top of body for custom pages and for news
+// N: Send other top-of-body HTML
+//
+// Load order notes for devs
+// * Browsers wait until ALL HTML has loaded before executing ANY JS
+// * The last CSS tag downloaded supercedes earlier CSS tags
+// * Browsers don't care when Meta tags are loaded. We load last due to
+//   a quirk of e107's log subsystem.
+// * Multiple external <link> file references slow down page load. Each one requires
+//   browser-server interaction even when cached.
+//
+
+//
+// A: Admin Defines and Links
+//
+require_once(e_ADMIN.'ad_links.php');
+//
+// B: Send HTTP headers (these come before ANY html)
+//
+
+// send the charset to the browser - overrides spurious server settings with the lan pack settings.
 header("Content-type: text/html; charset=".CHARSET, true);
 
-require_once(e_ADMIN.'ad_links.php');
-echo defined('STANDARDS_MODE') ? "" :
- "<?xml version='1.0' encoding='".CHARSET."' ?>";
+
+echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+
+//
+// B.2: Include admin LAN defines
+//
+
 if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_header.php')) {
 	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
 } else {
@@ -69,49 +113,37 @@ if (!defined('ADMIN_DELETE_ICON'))
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
 }
 
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-	<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
+//
+// C: Send start of HTML
+//
+
+echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 	<head>
 	<title>".SITENAME." : ".LAN_head_4."</title>\n";
-echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
-	<meta http-equiv='content-style-type' content='text/css' />\n";
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
-	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? THEME_ABS.'admin_'.$pref['admincss'] : THEME_ABS.$pref['admincss'];
-	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-} else if (isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss'])) {
-	$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? THEME_ABS.'admin_'.$pref['themecss'] : THEME_ABS.$pref['themecss'];
-	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-} else {
-	$css_file = file_exists(THEME.'admin_style.css') ? THEME_ABS.'admin_style.css' : THEME_ABS.'style.css';
-	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+
+//
+// D: Send JS
+//
+echo "<!-- *JS* -->\n";
+
+// Wysiwyg JS support on or off.
+if (/* isset($WYSIWYG) && $WYSIWYG == TRUE && */ check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
+	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+	define("e_WYSIWYG",TRUE);
+	echo wysiwyg($e_wysiwyg);
+}else{
+	define("e_WYSIWYG",FALSE);
 }
 
-if (!isset($no_core_css) || !$no_core_css) {
-	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
-}
-
-// ---------- Favicon ---------
-if (file_exists(THEME."favicon.ico")) {
-	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
-}elseif (file_exists(e_BASE."favicon.ico")) {
-	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
-}
-
-
-if (function_exists('theme_head')) {
-   	echo theme_head();
-}
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
 }
-if (file_exists(THEME."theme.js")) {
-	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
-}
-if (filesize(e_FILE.'user.js')) {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n";
-}
-if (function_exists("headerjs")) {
-	echo headerjs();
+	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
+	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+
+if (isset($eplug_js) && $eplug_js) {
+	echo "\n<!-- eplug_js -->\n";
+	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
 if (isset($htmlarea_js) && $htmlarea_js) {
 	echo $htmlarea_js;
@@ -129,32 +161,115 @@ function savepreset(ps,pid){
 //-->
 </script>\n";
 }
-if (isset($eplug_js) && $eplug_js) {
-	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
-}
+
+if (function_exists('headerjs')){echo headerjs();  }
+
+//
+// E: Send CSS
+//
+echo "<!-- *CSS* -->\n";
+
 if (isset($eplug_css) && $eplug_css) {
-	echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
+	echo "\n<!-- eplug_css -->\n";
+	echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 }
-if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
-  	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
-	echo wysiwyg($e_wysiwyg);
-	define("e_WYSIWYG",TRUE);
-}else{
-	define("e_WYSIWYG",FALSE);
-}
-// load plugin header-data.
-foreach($pref['e_meta_list'] as $val)
+
+echo "<!-- Theme css -->\n";
+if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
+	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? THEME_ABS.'admin_'.$pref['admincss'] : THEME_ABS.$pref['admincss'];
+	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+} else if (isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
 {
-	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? THEME_ABS.'admin_'.$pref['themecss'] : THEME_ABS.$pref['themecss'];
+	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+
+
+} 
+else 
+{
+	$css_file = file_exists(THEME.'admin_style.css') ? THEME_ABS.'admin_style.css' : THEME_ABS.'style.css';
+	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+}
+if (!isset($no_core_css) || !$no_core_css) {
+	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
+}
+
+
+//
+// F: Send Meta Tags and Icon links
+//
+echo "<!-- *META* -->\n";
+
+// Multi-Language meta-tags with merge and override option.
+
+echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<meta http-equiv='content-style-type' content='text/css' />\n";
+
+// --- Load plugin Meta files and eplug_ before others --------
+if (is_array($pref['e_meta_list']))
+{
+	foreach($pref['e_meta_list'] as $val)
 	{
-		require_once(e_PLUGIN.$val."/e_meta.php");
+		if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+		{
+			echo "<!-- $val meta -->\n";
+			require_once(e_PLUGIN.$val."/e_meta.php");
+		}
 	}
 }
 
 
+// ---------- Favicon ---------
+if (file_exists(THEME."favicon.ico")) {
+	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
+}elseif (file_exists(e_BASE."favicon.ico")) {
+	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
+}
 
+//
+// G: Send Theme Headers
+//
+
+
+if(function_exists('theme_head')){
+	echo "\n<!-- *THEME HEAD* -->\n";
+	echo theme_head();
+}
+
+
+//
+// H: Generate JS for image preloads [user mode only]
+//
+echo "\n<!-- *PRELOAD* -->\n";
+
+//
+// I: Calculate JS onload() functions for the BODY tag [user mode only]
+//
+$body_onload = "";
+
+
+//
+// J: Send end of <head> and start of <body>
+//
 echo "</head>
-<body>\n";
+<body".$body_onload.">\n";
+$sql->db_Mark_Time("End Head, Start Body");
+
+//
+// K: (The rest is ignored for popups, which have no menus) [reserved; user mode]
+//
+
+//
+// L: (optional) Body JS to disable right clicks [reserved; user mode]
+//
+
+//
+// M: Send top of body for custom pages and for news [user mode only]
+//
+
+//
+// N: Send other top-of-body HTML
+//
 
 $ns = new e107table;
 $e107_var = array();
@@ -329,8 +444,10 @@ function admin_purge_related($table, $id)
 	}
 }
 
+$sql->db_Mark_Time('Parse Admin Header');
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_HEADER);
 }
+$sql->db_Mark_Time('(End: Parse Admin Header)');
 
 ?>
