@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-03 03:26:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-05 09:32:15 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 //
@@ -83,7 +83,7 @@ $_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], ".php")) !== false 
 
 //
 // D: Setup PHP error handling
-//    (Now we can see PHP errors)
+//    (Now we can see PHP errors) -- but note that DEBUG is not yet enabled!
 //
 $error_handler = new error_handler();
 set_error_handler(array(&$error_handler, "handle_error"));
@@ -637,7 +637,7 @@ $ns=new e107table;
 
 $e107->ban();
 
-if($pref['force_userupdate'] && USER) {
+if(varset($pref['force_userupdate']) && USER) {
 	if(force_userupdate()) {
 		header("Location: ".e_BASE."usersettings.php?update");
 	}
@@ -845,7 +845,13 @@ if (!class_exists('convert'))
 //@require_once(e_HANDLER."debug_handler.php");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function js_location($qry){
+	global $error_handler;
+	if (count($error_handler->errors)) {
+		echo $error_handler->return_errors();
+		exit;
+	} else {
 	echo "<script type='text/javascript'>document.location.href='{$qry}'</script>\n"; exit;
+}
 }
 
 function check_email($email) {
@@ -1515,6 +1521,9 @@ class error_handler {
 	var $debug = false;
 
 	function error_handler() {
+		//
+		// This is initialized before the current debug level is known
+		//
 		if ((isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'debug=') !== FALSE) || isset($_COOKIE['e107_debug_level'])) {
 			$this->debug = true;
 			error_reporting(E_ALL);
@@ -1524,9 +1533,10 @@ class error_handler {
 	}
 
 	function handle_error($type, $message, $file, $line, $context) {
+		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
 		switch($type) {
 			case E_NOTICE:
-			if ($this->debug == true) {
+			if ($startup_error || E107_DBG_ALLERRORS) {
 				$error['short'] = "Notice: {$message}, Line {$line} of {$file}<br />\n";
 				$trace = debug_backtrace();
 				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
@@ -1536,7 +1546,7 @@ class error_handler {
 			}
 			break;
 			case E_WARNING:
-			if ($this->debug == true) {
+			if ($startup_error || E107_DBG_BASIC) {
 				$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
 				$trace = debug_backtrace();
 				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
@@ -1563,10 +1573,18 @@ class error_handler {
 	function return_errors() {
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
 		$ret = "<table class='fborder'>\n";
+		if (E107_DBG_ERRBACKTRACE)
+		{
 		foreach ($this->errors as $key => $value) {
 			$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></td>\n\t</tr>\n";
 			$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
 			if($index == 0) { $index = 1; } else { $index = 0; }
+		}
+		} else {
+			foreach ($this->errors as $key => $value) 
+			{
+				$ret .= "<tr class='forumheader3'><td>{$value['short']}</td></tr>\n";
+			}
 		}
 		$ret .= "</table>";
 		return $ret;
