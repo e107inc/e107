@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_emoticon.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-06-17 10:47:07 $
+|     $Revision: 1.13 $
+|     $Date: 2006-12-05 06:49:32 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -30,5 +30,7 @@ define("EMOLAN_18", "por favor, renombre las instancias listadas debajo para que
 define("EMOLAN_19", "Nombre"); 
 define("EMOLAN_20", "Lugar"); 
 define("EMOLAN_21", "Error"); 
-//define("EMOLAN_2", "Name"); 
+define("EMOLAN_22", "Encontrado nuevo pack:"); 
+define("EMOLAN_23", "Encontrado nuevo pack xml:"); 
+define("EMOLAN_24", "Encontrado nuevo pack php:"); 
 ?>
