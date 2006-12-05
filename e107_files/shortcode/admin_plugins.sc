@@ -13,22 +13,24 @@ if (ADMIN) {
 				}
 			}
 		}
-		foreach(array_keys($e107_plug) as $xplug){
-			if (file_exists(e_PLUGIN.$e107_plug[$xplug]."/admin_info.php")) {
-				if ($pref['admin_alerts_uniquemenu'] == 1) {
-					$text .= "<b>".$xplug."</b><br />";
-				} else {
-					$text = "";
-				}
-				require_once(e_PLUGIN.$e107_plug[$xplug]."/admin_info.php");
-				$text .= "<br />";
-				if ($pref['admin_alerts_uniquemenu'] != 1) {
-					$caption = $xplug;
-					$ns -> tablerender($caption, $text);
-				} else {
+		if (is_array($e107_plug)) {
+			foreach(array_keys($e107_plug) as $xplug){
+				if (file_exists(e_PLUGIN.$e107_plug[$xplug]."/admin_info.php")) {
+					if ($pref['admin_alerts_uniquemenu'] == 1) {
+						$text .= "<b>".$xplug."</b><br />";
+					} else {
+						$text = "";
+					}
+					require_once(e_PLUGIN.$e107_plug[$xplug]."/admin_info.php");
 					$text .= "<br />";
+					if ($pref['admin_alerts_uniquemenu'] != 1) {
+						$caption = $xplug;
+						$ns -> tablerender($caption, $text);
+					} else {
+						$text .= "<br />";
+					}
+					$i++;
 				}
-				$i++;
 			}
 		}
     
