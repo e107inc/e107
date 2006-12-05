@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-05 09:27:15 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,7 +46,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin
 		include_once(e_PLUGIN.'forum/forum_update_check.php');
 	}
 }
-if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
+if (mysql_table_exists("stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
 	if(file_exists(e_PLUGIN.'log/log_update_check.php'))
 	{
 		include_once(e_PLUGIN.'log/log_update_check.php');
@@ -429,7 +429,7 @@ function update_617_to_700($type='') {
 
 
 		// start links update -------------------------------------------------------------------------------------------
-			if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
+			if (mysql_table_exists("link_category")) {
 				global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY;
 
 				$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
@@ -1189,7 +1189,7 @@ function update_617_to_700($type='') {
 				$ue->convert_old_fields();
 			}
 
-			if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
+			if (mysql_table_exists("links_page_cat") && $sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
 				while ($row = $sql -> db_Fetch()) {
 					if ($row['Field'] == 'link_category_order' && strpos($row['Type'], 'int') === FALSE) {
 						mysql_query("ALTER TABLE `".MPREFIX."links_page_cat` CHANGE `link_category_order` `link_category_order` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL;");
@@ -1269,7 +1269,7 @@ function update_617_to_700($type='') {
 			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumbnail` `news_thumbnail` TEXT NOT NULL;");
 
 			// Add forum indexes, remove any extras
-			if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."forum_t"))
+			if (mysql_table_exists('forum_t') && $sql -> db_Query("SHOW INDEX FROM ".MPREFIX."forum_t"))
 			{
 				$a = array("PRIMARY", "thread_id", "thread_parent", "thread_datestamp", "thread_forum_id");
 				while ($row = $sql -> db_Fetch())
@@ -1372,7 +1372,7 @@ function update_617_to_700($type='') {
 
 		// Check if update is needed to 0.7. -----------------------------------------------
 		global $pref;
-		if (!$sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended")) {
+		if (!mysql_table_exists("user_extended")) {
 			return update_needed();
 		}
 
@@ -1388,7 +1388,7 @@ function update_617_to_700($type='') {
 			return update_needed();
 		}
 
-		if ($sql->db_Query("SHOW INDEX FROM ".MPREFIX."forum_t"))
+		if (mysql_table_exists('forum_t') && $sql->db_Query("SHOW INDEX FROM ".MPREFIX."forum_t"))
 		{
 			$a = array("PRIMARY", "thread_parent", "thread_datestamp", "thread_forum_id");
 			while ($row = $sql->db_Fetch())
@@ -1405,7 +1405,7 @@ function update_617_to_700($type='') {
 			}
 		}
 
-		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."news")) {
+		if (mysql_table_exists('news') && $sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."news")) {
 			while ($row = $sql -> db_Fetch()) {
 				if ($row['Field'] == 'news_thumbnail' && strpos($row['Null'], 'YES') !== FALSE) {
 					return update_needed();
@@ -1413,7 +1413,7 @@ function update_617_to_700($type='') {
 			}
 		}
 
-		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
+		if (mysql_table_exists('links_page_cat') && $sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
 			while ($row = $sql -> db_Fetch()) {
 				if ($row['Field'] == 'link_category_order' && strpos($row['Type'], 'int') === FALSE) {
 					return update_needed();
@@ -1501,7 +1501,7 @@ function update_617_to_700($type='') {
 		 	return update_needed();
 		}
 
-		if($sql->db_Select("links_page") && $sql->db_Field("links_page",11) != "link_author"){
+		if(mysql_table_exists("links_page") && $sql->db_Field("links_page",11) != "link_author"){
 		  	return update_needed();
 		}
 
@@ -1612,7 +1612,7 @@ function update_603_to_604($type='') {
 		mysql_query("ALTER TABLE ".MPREFIX."content ADD content_pe_icon TINYINT( 1 ) UNSIGNED NOT NULL AFTER content_review_score");
 		} else {
    		global $mySQLdefaultdb;
-		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
+		if (mysql_table_exists("link_category")) {
 			$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."link_category");
 			$columns = mysql_num_fields($fields);
 			for ($i = 0; $i < $columns; $i++) {
