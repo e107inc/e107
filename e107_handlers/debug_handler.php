@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-05 09:24:18 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,7 +58,7 @@ if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) {
 //
 
 // Basic levels
-define('E107_DBG_BASIC',		(E107_DEBUG_LEVEL & 1));       // basics: worst php errors, sql errors, etc
+define('E107_DBG_BASIC',		(E107_DEBUG_LEVEL & 1));       // basics: worst php errors, sql errors, log, etc
 define('E107_DBG_SQLQUERIES',	(E107_DEBUG_LEVEL & 2));       // display all sql queries
 define('E107_DBG_TRAFFIC',		(E107_DEBUG_LEVEL & 4));       // display traffic counters
 define('E107_DBG_FILLIN8',		(E107_DEBUG_LEVEL & 8));       // fill in what it is
@@ -73,9 +73,9 @@ define('E107_DBG_SQLDETAILS',	(E107_DEBUG_LEVEL &   512));    // detailed sql an
 define('E107_DBG_PATH',     	(E107_DEBUG_LEVEL &  1024));    // show e107 predefined paths
 define('E107_DBG_BBSC',     	(E107_DEBUG_LEVEL &  2048));    // Show BBCode/ Shortcode usage in postings
 define('E107_DBG_SC',       	(E107_DEBUG_LEVEL &  4096));    // Dump (inline) SC filenames as used
-define('E107_DBG_FILLIN8192',	(E107_DEBUG_LEVEL &  8192));    // fill in what it is
+define('E107_DBG_ERRBACKTRACE',	(E107_DEBUG_LEVEL &  8192));    // show backtrace for php errors
 define('E107_DBG_DEPRECATED', (E107_DEBUG_LEVEL & 16384));    // Show use of deprecated functions
-define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));   // show ALL errors//...
+define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));   // show ALL php errors (including notices), not just fatal issues
 
 class e107_debug {
 
@@ -87,30 +87,45 @@ class e107_debug {
 		'all'		 	  => 255,     // all basics
 		'basic'			=> 255,     // all basics
 		'b'				  => 255,     // all basics
-		'warn'			=> 1,       // just warnings, parse errrors, etc
+		'warn'			=> 1,       // just php warnings, parse errrors, debug log, etc
 		'showsql'		=> 2,       // sql basics
 		'counts'		=> 4,       // traffic counters
 
 		'detail'		=> 32767,   // all details
 		'd' 			  => 32767,   // all details
-		'time' 			=> 256,     // time details
-		'sql' 			=> 512,     // sql details
+		'time' 			=> 257,     // time details and php errors
+		'sql' 			=> 513,     // sql details and php errors
 		'paths' 		=> 1024,		// dump path strings
 		'bbsc' 			=> 2048,		// show bb and sc details
 		'sc'			  => 4096,   		// Shortcode paths dumped inline
+		'backtrace' => 8192,		// show backtrace when PHP has errors
 		'deprecated'	=> 16384,   // show if code is using deprecated functions
 		'notice'		=> 32768,   // you REALLY don't want all this, do you?
-		'everything'=> 65535,
+		'everything'=> 61439,   //(65535-4096) everything we know, and the rumors too
+		                        // (but shortcode paths removed: inline debug breaks pages!
 	);
 
 	function e107_debug() {
 		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) {
+			$dVals=0;
 			if (isset($_COOKIE['e107_debug_level'])) {
-				$dVal = substr($_COOKIE['e107_debug_level'],6);
+				$dVals = substr($_COOKIE['e107_debug_level'],6);
 			}
 			if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU)) {
-				$dVal = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
+				$dVals = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
 			}
+			
+			$aDVal = explode('.',$dVals); // support multiple values, OR'd together
+			$dVal = 0;
+			foreach ($aDVal as $curDVal)
+			{
+				if (isset($this->aDebugShortcuts[$curDVal])) {
+					$dVal |= $this->aDebugShortcuts[$curDVal];
+				} else {
+					$dVal |= $curDVal;
+				}
+			}
+				
 			if (isset($debug_param[3]))
 			{
 				if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
@@ -123,13 +138,9 @@ class e107_debug {
 				}
 			}
 
-			if (isset($this->aDebugShortcuts[$dVal])) {
-				$this->debug_level = $this->aDebugShortcuts[$dVal];
-			} else {
 				$this->debug_level = $dVal;
 			}
 		}
-	}
 
 	function set_error_reporting() {
 	}

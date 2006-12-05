@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-05 09:23:54 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,6 +32,7 @@ class e107_db_debug {
 	var $scbbcodes = array();
 	var $scbcount;
 	var $deprecated_funcs = array();
+	var $aLog = array();	// Generalized debug log (only seen during debug)
 
 	function e107_db_debug() {
 		global $eTimingStart;
@@ -46,6 +47,38 @@ class e107_db_debug {
 		'DB Time' => 0,
 		'DB Count' => 0
 		);
+		
+		register_shutdown_function('e107_debug_shutdown');
+	}
+
+//
+// Add your new Show function here so it will display in debug output!
+//
+	function Show_All() 
+	{
+		global $eTraffic;
+		
+		$this->ShowIf('Debug Log', $this->Show_Log());
+		$this->ShowIf('Traffic Counters', $eTraffic->Display());
+		$this->ShowIf('Time Analysis', $this->Show_Performance());
+		$this->ShowIf('SQL Analysis', $this->Show_SQL_Details());
+		$this->ShowIf('Shortcodes / BBCode',$this->Show_SC_BB());
+		$this->ShowIf('Paths', $this->Show_PATH());
+		$this->ShowIf('Deprecated Function Usage', $this->Show_DEPRECATED());
+	}
+	
+	function ShowIf($title,$str)
+	{
+		global $ns;
+		
+		if (!isset($ns)) {
+			echo "Why did ns go away?<br/>";
+			$ns = new e107table;
+		}
+		
+		if (strlen($str)) {
+			$ns->tablerender($title, $str);
+		}
 	}
 
 	function Mark_Time($sMarker) { // Should move to traffic_class?
@@ -82,14 +115,17 @@ class e107_db_debug {
 		list($qtype,$args) = explode(" ", ltrim($query), 2);
 
 		$nFields=0;
-		if (!strcasecmp($qtype,'SELECT')) {
+		$bExplained = FALSE;
+		if (!strcasecmp($qtype,'SELECT') || !strcasecmp($qtype,'(SELECT')) {
 			$sQryRes=is_null($rli) ? mysql_query("EXPLAIN $query") : mysql_query("EXPLAIN $query", $rli);
 
 			if ($sQryRes) { // There's something to explain
 			$nFields = mysql_num_fields($sQryRes);
+			$bExplained = TRUE;
 			}
 		} else {
 			$sQryRes = $origQryRes;
+			$bExplained = FALSE;
 			$nFields=0;
 		}
 
@@ -106,7 +142,7 @@ class e107_db_debug {
 		$t['nFields']=$nFields;
 		$t['time']=$mytime;
 
-		if ($sQryRes != 1) {
+		if ($bExplained) {
 			$bRowHeaders=FALSE;
 			while ($row = @mysql_fetch_assoc($sQryRes)) {
 				if (!$bRowHeaders) {
@@ -162,12 +198,12 @@ class e107_db_debug {
 		if ($badCount) {
 			$text .= "\n<table class='fborder'>\n";
 			$text .= "<tr><td class='fcaption' colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
-			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query</b></td></tr>\n";
+			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query / Error</b></td></tr>\n";
 
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
 				if (!$cQuery['ok']) {
-					$text .= "<tr><td class='forumheader3' style='text-align:right'>{$idx}&nbsp;</td>
-    	       	        <td class='forumheader3'>".$cQuery['query']."</td></tr>\n";
+					$text .= "<tr><td class='forumheader3' rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
+    	       	        <td class='forumheader3'>".$cQuery['query']."</td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 				}
 			}
 			$text .= "\n</table><br/>\n";
@@ -457,6 +493,98 @@ class e107_db_debug {
 			return $text;
 		}
 	}
+	
+//
+// Simple debug-level 'console' log
+// Record a "nice" debug message with
+// $db_debug->log("message");
+//
+	function log($message,$TraceLev=1)
+	{
+		if (!E107_DBG_BASIC){
+			return FALSE;
+		}
+		if ($TraceLev)
+		{
+			$bt = debug_backtrace();
+			$this->aLog[] =	array (
+				'Message'   => $message,
+				'Function'	=> (isset($bt[$TraceLev]['type']) && ($bt[$TraceLev]['type'] == '::' || $bt[$TraceLev]['type'] == '->') ? $bt[$TraceLev]['class'].$bt[$TraceLev]['type'].$bt[$TraceLev]['function'].'()' : $bt[$TraceLev]['function']).'()',
+				'File'	=> $bt[$TraceLev]['file'],
+				'Line'	=> $bt[$TraceLev]['line']
+			);
+		} else {
+			$this->aLog[] =	array (
+				'Message'   => $message,
+				'Function' => '',
+				'File' => '',
+				'Line' => ''
+			);
+		}
+	}
+
+	function Show_Log(){
+		if (!E107_DBG_BASIC || !count($this->aLog)){
+			return FALSE;
+		}
+		//
+		// Dump the debug log
+		//
+
+		$text .= "\n<table class='fborder'>\n";
+
+		$bRowHeaders=FALSE;
+		
+		foreach ($this->aLog as $curLog) 
+		{
+			if (!$bRowHeaders) {
+				$bRowHeaders=TRUE;
+				$text .= "<tr class='fcaption'><td><b>".implode("</b></td><td><b>", array_keys($curLog))."</b></td></tr>\n";
+			}
+
+			$text .= "<tr class='forumheader3'><td>".implode("&nbsp;</td><td>", array_values($curLog))."&nbsp;</td></tr>\n";
+		}
+
+		$text .= "</table><br/>\n";
+
+		return $text;
+	}
+}
+
+function e107_debug_shutdown()
+{
+global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
+	if (isset($e107_Clean_Exit)) return;
+
+	if (!isset($In_e107_Footer))
+	{
+		if (defset('ADMIN_AREA'))
+		{
+			$filewanted=realpath(dirname(__FILE__)).'/../'.$ADMIN_DIRECTORY.'footer.php';
+			require_once($filewanted);
+		} else if (defset('USER_AREA'))
+		{
+			$filewanted=realpath(dirname(__FILE__)).'/../'.FOOTERF;
+			require_once($filewanted);
+		}
+	}
+// 
+// Error while in the footer, or during startup, or during above processing
+//
+	if (isset($e107_Clean_Exit)) return; // We've now sent a footer...
+	
+//	echo isset($In_e107_Footer) ? "In footer" : "In startup".'<br>';
+
+	while (ob_get_level() > 0) {
+		ob_end_flush();
+	}
+	if (isset($error_handler))
+	{		
+		echo "<br /><div><h3>PHP Errors:</h3><br />".$error_handler->return_errors()."</div>\n";
+	} else {
+		echo "<b>e107 Shutdown while no error_handler available!</b>";
+	}
+	echo "</body></html>";
 }
 
 ?>
