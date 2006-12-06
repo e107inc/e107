@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-06 20:19:03 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -99,7 +99,7 @@ if (USER == TRUE || ADMIN == TRUE)
 		{
 			$new_comments = 0;
 			$new_comments = $sql->db_Count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
-
+			$new_total += $new_comments;
 			if (!$new_comments)
 			{
 				$new_comments = LOGIN_MENU_L26;
