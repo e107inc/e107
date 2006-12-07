@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -98,7 +98,7 @@ class gsitemap
 
 	function showList()
 	{
-		global $sql,$ns,$tp;
+		global $sql, $ns, $tp, $imode;
 		$gen = new convert;
 		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
 
@@ -150,8 +150,8 @@ class gsitemap
 
 				<td style='width:50px;white-space:nowrap' class='forumheader3'>
 				<div>
-				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".e_IMAGE."packs/".$imode."/admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 				</div>
 				</td>
 				</tr>

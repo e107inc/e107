@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/docs.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -47,8 +47,8 @@ if (e_QUERY) {
 	fclose ($fd);
 	 
 	$text = $tp->toHTML($text, TRUE);
-	$text = preg_replace("/Q\>(.*?)A>/si", "<img src='".e_IMAGE."generic/".IMODE."/question.png' style='vertical-align: middle' /><b>\\1</b>A>", $text);
-	$text = str_replace("A>", "<img src='".e_IMAGE."generic/".IMODE."/answer.png' style='vertical-align: middle' />", $text);
+	$text = preg_replace("/Q\>(.*?)A>/si", "<img src='".e_IMAGE."packs/".$imode."/generic/question.png' style='vertical-align: middle' /><b>\\1</b>A>", $text);
+	$text = str_replace("A>", "<img src='".e_IMAGE."packs/".$imode."/generic/answer.png' style='vertical-align: middle' />", $text);
 	 
 	$ns->tablerender(str_replace("_", " ", $helplist[e_QUERY]), $text."<br />");
 	unset($text);

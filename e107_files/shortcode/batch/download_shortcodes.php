@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -281,7 +281,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_RATING
 	require_once(e_HANDLER."rate_class.php");
 	$rater = new rater;
-global $dl;
+	global $dl, $imode;
 	$text = "
 		<table style='width:100%'>
 		<tr>
@@ -289,10 +289,10 @@ global $dl;
 
 	if ($ratearray = $rater->getrating("download", $dl['download_id'])) {
 		for($c = 1; $c <= $ratearray[1]; $c++) {
-			$text .= "<img src='".e_IMAGE."rate/".IMODE."/star.png' alt='' />";
+			$text .= "<img src='".e_IMAGE."packs/".$imode."/rate/star.png' alt='' />";
 		}
 		if ($ratearray[2]) {
-			$text .= "<img src='".e_IMAGE."rate/".IMODE."/".$ratearray[2].".png'  alt='' />";
+			$text .= "<img src='".e_IMAGE."packs/".$imode."/rate/".$ratearray[2].".png'  alt='' />";
 		}
 		if ($ratearray[2] == "") {
 			$ratearray[2] = 0;

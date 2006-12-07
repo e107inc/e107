@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,335 +25,335 @@ if (file_exists(THEME.'admin_images/admin_images.php')) {
 
 // Small Category Images
 if (!defined('E_16_CAT_SETT')) {
-	define('E_16_CAT_SETT', e_IMAGE.'admin_images/cat_settings_16.png');
+	define('E_16_CAT_SETT', e_IMAGE.'packs/'.$imode.'/admin_images/cat_settings_16.png');
 }
 if (!defined('E_16_CAT_USER')) {
-	define('E_16_CAT_USER', e_IMAGE.'admin_images/cat_users_16.png');
+	define('E_16_CAT_USER', e_IMAGE.'packs/'.$imode.'/admin_images/cat_users_16.png');
 }
 if (!defined('E_16_CAT_CONT')) {
-	define('E_16_CAT_CONT', e_IMAGE.'admin_images/cat_content_16.png');
+	define('E_16_CAT_CONT', e_IMAGE.'packs/'.$imode.'/admin_images/cat_content_16.png');
 }
 if (!defined('E_16_CAT_FILE')) {
-	define('E_16_CAT_FILE', e_IMAGE.'admin_images/cat_files_16.png');
+	define('E_16_CAT_FILE', e_IMAGE.'packs/'.$imode.'/admin_images/cat_files_16.png');
 }
 if (!defined('E_16_CAT_TOOL')) {
-	define('E_16_CAT_TOOL', e_IMAGE.'admin_images/cat_tools_16.png');
+	define('E_16_CAT_TOOL', e_IMAGE.'packs/'.$imode.'/admin_images/cat_tools_16.png');
 }
 if (!defined('E_16_CAT_PLUG')) {
-	define('E_16_CAT_PLUG', e_IMAGE.'admin_images/cat_plugins_16.png');
+	define('E_16_CAT_PLUG', e_IMAGE.'packs/'.$imode.'/admin_images/cat_plugins_16.png');
 }
 
 // Large Category Images
 if (!defined('E_32_CAT_SETT')) {
-	define('E_32_CAT_SETT', "<img src='".e_IMAGE."admin_images/cat_settings_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_SETT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cat_settings_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_USER')) {
-	define('E_32_CAT_USER', "<img src='".e_IMAGE."admin_images/cat_users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_USER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cat_users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_CONT')) {
-	define('E_32_CAT_CONT', "<img src='".e_IMAGE."admin_images/cat_content_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_CONT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cat_content_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_FILE')) {
-	define('E_32_CAT_FILE', "<img src='".e_IMAGE."admin_images/cat_files_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_FILE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cat_files_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_TOOL')) {
-	define('E_32_CAT_TOOL', "<img src='".e_IMAGE."admin_images/cat_tools_32.png' alt='' style='border:0px; width:32px; height:32px' />");
+	define('E_32_CAT_TOOL', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cat_tools_32.png' alt='' style='border:0px; width:32px; height:32px' />");
 }
 if (!defined('E_32_CAT_PLUG')) {
-	define('E_32_CAT_PLUG', "<img src='".e_IMAGE."admin_images/cat_plugins_32.png' alt='' style='border:0px; width:32px; height:32px' />");
+	define('E_32_CAT_PLUG', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cat_plugins_32.png' alt='' style='border:0px; width:32px; height:32px' />");
 }
 
 // Small Nav Images
 if (!defined('E_16_NAV_MAIN')) {
-	define('E_16_NAV_MAIN', e_IMAGE.'admin_images/main_16.png');
+	define('E_16_NAV_MAIN', e_IMAGE.'packs/'.$imode.'/admin_images/main_16.png');
 }
 if (!defined('E_16_NAV_DOCS')) {
-	define('E_16_NAV_DOCS', e_IMAGE.'admin_images/docs_16.png');
+	define('E_16_NAV_DOCS', e_IMAGE.'packs/'.$imode.'/admin_images/docs_16.png');
 }
 if (!defined('E_16_NAV_LEAV')) {
-	define('E_16_NAV_LEAV', e_IMAGE.'admin_images/leave_16.png');
+	define('E_16_NAV_LEAV', e_IMAGE.'packs/'.$imode.'/admin_images/leave_16.png');
 }
 if (!defined('E_16_NAV_LGOT')) {
-	define('E_16_NAV_LGOT', e_IMAGE.'admin_images/logout_16.png');
+	define('E_16_NAV_LGOT', e_IMAGE.'packs/'.$imode.'/admin_images/logout_16.png');
 }
 if (!defined('E_16_NAV_ARROW')) {
-	define('E_16_NAV_ARROW', e_IMAGE.'admin_images/arrow_16.png');
+	define('E_16_NAV_ARROW', e_IMAGE.'packs/'.$imode.'/admin_images/arrow_16.png');
 }
 if (!defined('E_16_NAV_ARROW_OVER')) {
-	define('E_16_NAV_ARROW_OVER', e_IMAGE.'admin_images/arrow_over_16.png');
+	define('E_16_NAV_ARROW_OVER', e_IMAGE.'packs/'.$imode.'/admin_images/arrow_over_16.png');
 }
 
 // Large Nav Images
 if (!defined('E_32_NAV_MAIN')) {
-	define('E_32_NAV_MAIN', "<img src='".e_IMAGE."'admin_images/main_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NAV_MAIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/main_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_DOCS')) {
-	define('E_32_NAV_DOCS', "<img src='".e_IMAGE."'admin_images/docs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NAV_DOCS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/docs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_LEAV')) {
-	define('E_32_NAV_LEAV', "<img src='".e_IMAGE."'admin_images/leave_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NAV_LEAV', "<img src='".e_IMAGE."packs/".$imode."/admin_images/leave_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_LGOT')) {
-	define('E_32_NAV_LGOT', "<img src='".e_IMAGE."'admin_images/logout_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NAV_LGOT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/logout_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_ARROW')) {
-	define('E_32_NAV_ARROW', "<img src='".e_IMAGE."'admin_images/arrow_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NAV_ARROW', "<img src='".e_IMAGE."packs/".$imode."/admin_images/arrow_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_ARROW_OVER')) {
-	define('E_32_NAV_ARROW_OVER', "<img src='".e_IMAGE."'admin_images/arrow_over_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NAV_ARROW_OVER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/arrow_over_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 
 // Small Admin Main Link Images
 if (!defined('E_16_ADMIN')) {
-	define('E_16_ADMIN', "<img src='".e_IMAGE."admin_images/admins_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_ADMIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/admins_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_ADPASS')) {
-	define('E_16_ADPASS', "<img src='".e_IMAGE."admin_images/adminpass_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_ADPASS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/adminpass_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_BANLIST')) {
-	define('E_16_BANLIST', "<img src='".e_IMAGE."admin_images/banlist_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_BANLIST', "<img src='".e_IMAGE."packs/".$imode."/admin_images/banlist_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_BANNER')) {
-	define('E_16_BANNER', "<img src='".e_IMAGE."admin_images/banners_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_BANNER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/banners_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_CACHE')) {
-	define('E_16_CACHE', "<img src='".e_IMAGE."admin_images/cache_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_CACHE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cache_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_CREDITS')) {
-	define('E_16_CREDITS', "<img src='".e_IMAGE."admin_images/credits_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_CREDITS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/credits_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_CUST')) {
-	define('E_16_CUST', "<img src='".e_IMAGE."admin_images/custom_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_CUST', "<img src='".e_IMAGE."packs/".$imode."/admin_images/custom_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_DATAB')) {
-	define('E_16_DATAB', "<img src='".e_IMAGE."admin_images/database_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_DATAB', "<img src='".e_IMAGE."packs/".$imode."/admin_images/database_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_DOWNL')) {
-	define('E_16_DOWNL', "<img src='".e_IMAGE."admin_images/downloads_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_DOWNL', "<img src='".e_IMAGE."packs/".$imode."/admin_images/downloads_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_EMOTE')) {
-	define('E_16_EMOTE', "<img src='".e_IMAGE."admin_images/emoticons_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_EMOTE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/emoticons_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_FILE')) {
-	define('E_16_FILE', "<img src='".e_IMAGE."admin_images/filemanager_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_FILE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/filemanager_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_FORUM')) {
-	define('E_16_FORUM', "<img src='".e_IMAGE."admin_images/forums_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_FORUM', "<img src='".e_IMAGE."packs/".$imode."/admin_images/forums_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_FRONT')) {
-	define('E_16_FRONT', "<img src='".e_IMAGE."admin_images/frontpage_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_FRONT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/frontpage_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_IMAGES')) {
-	define('E_16_IMAGES', "<img src='".e_IMAGE."admin_images/images_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_IMAGES', "<img src='".e_IMAGE."packs/".$imode."/admin_images/images_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_INSPECT')) {
-	define('E_16_INSPECT', "<img src='".e_IMAGE."admin_images/fileinspector_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_INSPECT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/fileinspector_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_LINKS')) {
-	define('E_16_LINKS', "<img src='".e_IMAGE."admin_images/links_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_LINKS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/links_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_WELCOME')) {
-	define('E_16_WELCOME', "<img src='".e_IMAGE."admin_images/welcome_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_WELCOME', "<img src='".e_IMAGE."packs/".$imode."/admin_images/welcome_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_MAIL')) {
-	define('E_16_MAIL', "<img src='".e_IMAGE."admin_images/mail_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_MAIL', "<img src='".e_IMAGE."packs/".$imode."/admin_images/mail_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_MAINTAIN')) {
-	define('E_16_MAINTAIN', "<img src='".e_IMAGE."admin_images/maintain_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_MAINTAIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/maintain_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_MENUS')) {
-	define('E_16_MENUS', "<img src='".e_IMAGE."admin_images/menus_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_MENUS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/menus_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_META')) {
-	define('E_16_META', "<img src='".e_IMAGE."admin_images/meta_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_META', "<img src='".e_IMAGE."packs/".$imode."/admin_images/meta_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_NEWS')) {
-	define('E_16_NEWS', "<img src='".e_IMAGE."admin_images/news_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_NEWS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/news_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_NEWSFEED')) {
-	define('E_16_NEWSFEED', "<img src='".e_IMAGE."admin_images/newsfeeds_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_NEWSFEED', "<img src='".e_IMAGE."packs/".$imode."/admin_images/newsfeeds_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_NOTIFY')) {
-	define('E_16_NOTIFY', "<img src='".e_IMAGE."admin_images/notify_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_NOTIFY', "<img src='".e_IMAGE."packs/".$imode."/admin_images/notify_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_PHP')) {
-	define('E_16_PHP', "<img src='".e_IMAGE."admin_images/phpinfo_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_PHP', "<img src='".e_IMAGE."packs/".$imode."/admin_images/phpinfo_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_POLLS')) {
-	define('E_16_POLLS', "<img src='".e_IMAGE."admin_images/polls_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_POLLS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/polls_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_PREFS')) {
-	define('E_16_PREFS', "<img src='".e_IMAGE."admin_images/prefs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_PREFS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/prefs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_SEARCH')) {
-	define('E_16_SEARCH', "<img src='".e_IMAGE."admin_images/search_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_SEARCH', "<img src='".e_IMAGE."packs/".$imode."/admin_images/search_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_UPLOADS')) {
-	define('E_16_UPLOADS', "<img src='".e_IMAGE."admin_images/uploads_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_UPLOADS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/uploads_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_USER')) {
-	define('E_16_USER', "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_USER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/users_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_USER_EXTENDED')) {
-	define('E_16_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/extended_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_USER_EXTENDED', "<img src='".e_IMAGE."packs/".$imode."/admin_images/extended_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_USERCLASS')) {
-	define('E_16_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_USERCLASS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/userclass_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_LANGUAGE')) {
-	define('E_16_LANGUAGE', "<img src='".e_IMAGE."admin_images/language_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_LANGUAGE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/language_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 
 // Small Admin Other Link Images
 if (!defined('E_16_PLUGIN')) {
-	define('E_16_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_PLUGIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/plugins_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_PLUGMANAGER')) {
-	define('E_16_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_PLUGMANAGER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/plugmanager_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_DOCS')) {
-	define('E_16_DOCS', "<img src='".e_IMAGE."admin_images/docs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_DOCS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/docs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_THEMEMANAGER')) {
-	define('E_16_THEMEMANAGER', "<img src='".e_IMAGE."admin_images/themes_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_THEMEMANAGER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/themes_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 
 // Small Admin Other Images
 if (!defined('E_16_COMMENT')) {
-	define('E_16_COMMENT', "<img src='".e_IMAGE."admin_images/comments_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_COMMENT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/comments_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_ADMINLOG')) {
-	define('E_16_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_ADMINLOG', "<img src='".e_IMAGE."packs/".$imode."/admin_images/adminlogs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 
 // Large Admin Main Link Images
 if (!defined('E_32_ADMIN')) {
-	define('E_32_ADMIN', "<img src='".e_IMAGE."admin_images/admins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_ADMIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/admins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_ADPASS')) {
-	define('E_32_ADPASS', "<img src='".e_IMAGE."admin_images/adminpass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_ADPASS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/adminpass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_BANLIST')) {
-	define('E_32_BANLIST', "<img src='".e_IMAGE."admin_images/banlist_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_BANLIST', "<img src='".e_IMAGE."packs/".$imode."/admin_images/banlist_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_BANNER')) {
-	define('E_32_BANNER', "<img src='".e_IMAGE."admin_images/banners_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_BANNER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/banners_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CACHE')) {
-	define('E_32_CACHE', "<img src='".e_IMAGE."admin_images/cache_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CACHE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cache_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CREDITS')) {
-	define('E_32_CREDITS', "<img src='".e_IMAGE."admin_images/credits_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CREDITS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/credits_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CUST')) {
-	define('E_32_CUST', "<img src='".e_IMAGE."admin_images/custom_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CUST', "<img src='".e_IMAGE."packs/".$imode."/admin_images/custom_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_DATAB')) {
-	define('E_32_DATAB', "<img src='".e_IMAGE."admin_images/database_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_DATAB', "<img src='".e_IMAGE."packs/".$imode."/admin_images/database_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_DOWNL')) {
-	define('E_32_DOWNL', "<img src='".e_IMAGE."admin_images/downloads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_DOWNL', "<img src='".e_IMAGE."packs/".$imode."/admin_images/downloads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_EMOTE')) {
-	define('E_32_EMOTE', "<img src='".e_IMAGE."admin_images/emoticons_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_EMOTE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/emoticons_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_FILE')) {
-	define('E_32_FILE', "<img src='".e_IMAGE."admin_images/filemanager_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_FILE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/filemanager_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_FORUM')) {
-	define('E_32_FORUM', "<img src='".e_IMAGE."admin_images/forums_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_FORUM', "<img src='".e_IMAGE."packs/".$imode."/admin_images/forums_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_FRONT')) {
-	define('E_32_FRONT', "<img src='".e_IMAGE."admin_images/frontpage_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_FRONT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/frontpage_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_IMAGES')) {
-	define('E_32_IMAGES', "<img src='".e_IMAGE."admin_images/images_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_IMAGES', "<img src='".e_IMAGE."packs/".$imode."/admin_images/images_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_INSPECT')) {
-	define('E_32_INSPECT', "<img src='".e_IMAGE."admin_images/fileinspector_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_INSPECT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/fileinspector_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_LINKS')) {
-	define('E_32_LINKS', "<img src='".e_IMAGE."admin_images/links_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_LINKS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/links_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_WELCOME')) {
-	define('E_32_WELCOME', "<img src='".e_IMAGE."admin_images/welcome_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_WELCOME', "<img src='".e_IMAGE."packs/".$imode."/admin_images/welcome_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_MAIL')) {
-	define('E_32_MAIL', "<img src='".e_IMAGE."admin_images/mail_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_MAIL', "<img src='".e_IMAGE."packs/".$imode."/admin_images/mail_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_MAINTAIN')) {
-	define('E_32_MAINTAIN', "<img src='".e_IMAGE."admin_images/maintain_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_MAINTAIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/maintain_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_MENUS')) {
-	define('E_32_MENUS', "<img src='".e_IMAGE."admin_images/menus_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_MENUS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/menus_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_META')) {
-	define('E_32_META', "<img src='".e_IMAGE."admin_images/meta_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_META', "<img src='".e_IMAGE."packs/".$imode."/admin_images/meta_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NEWS')) {
-	define('E_32_NEWS', "<img src='".e_IMAGE."admin_images/news_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NEWS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/news_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NEWSFEED')) {
-	define('E_32_NEWSFEED', "<img src='".e_IMAGE."admin_images/newsfeeds_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NEWSFEED', "<img src='".e_IMAGE."packs/".$imode."/admin_images/newsfeeds_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NOTIFY')) {
-	define('E_32_NOTIFY', "<img src='".e_IMAGE."admin_images/notify_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_NOTIFY', "<img src='".e_IMAGE."packs/".$imode."/admin_images/notify_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_PHP')) {
-	define('E_32_PHP', "<img src='".e_IMAGE."admin_images/phpinfo_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_PHP', "<img src='".e_IMAGE."packs/".$imode."/admin_images/phpinfo_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_POLLS')) {
-	define('E_32_POLLS', "<img src='".e_IMAGE."admin_images/polls_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_POLLS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/polls_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_PREFS')) {
-	define('E_32_PREFS', "<img src='".e_IMAGE."admin_images/prefs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_PREFS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/prefs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_SEARCH')) {
-	define('E_32_SEARCH', "<img src='".e_IMAGE."admin_images/search_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_SEARCH', "<img src='".e_IMAGE."packs/".$imode."/admin_images/search_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_UPLOADS')) {
-	define('E_32_UPLOADS', "<img src='".e_IMAGE."admin_images/uploads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_UPLOADS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/uploads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_USER')) {
-	define('E_32_USER', "<img src='".e_IMAGE."admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_USER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_USER_EXTENDED')) {
-	define('E_32_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/extended_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_USER_EXTENDED', "<img src='".e_IMAGE."packs/".$imode."/admin_images/extended_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_USERCLASS')) {
-	define('E_32_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_USERCLASS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/userclass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_LANGUAGE')) {
-	define('E_32_LANGUAGE', "<img src='".e_IMAGE."admin_images/language_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_LANGUAGE', "<img src='".e_IMAGE."packs/".$imode."/admin_images/language_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 
 // Large Admin Other Link Images
 if (!defined('E_32_PLUGIN')) {
-	define('E_32_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_PLUGIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/plugins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_PLUGMANAGER')) {
-	define('E_32_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_PLUGMANAGER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/plugmanager_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_DOCS')) {
-	define('E_32_DOCS', "<img src='".e_IMAGE."admin_images/docs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_DOCS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/docs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_MAIN')) {
-	define('E_32_MAIN', "<img src='".e_IMAGE."admin_images/main_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_MAIN', "<img src='".e_IMAGE."packs/".$imode."/admin_images/main_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 
 if (!defined('E_32_THEMEMANAGER')) {
-	define('E_32_THEMEMANAGER', "<img src='".e_IMAGE."admin_images/themes_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_THEMEMANAGER', "<img src='".e_IMAGE."packs/".$imode."/admin_images/themes_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 
 // Large Admin Other Images
 if (!defined('E_32_COMMENT')) {
-	define('E_32_COMMENT', "<img src='".e_IMAGE."admin_images/comments_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_COMMENT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/comments_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_ADMINLOG')) {
-	define('E_32_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_ADMINLOG', "<img src='".e_IMAGE."packs/".$imode."/admin_images/adminlogs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_LOGOUT')) {
-	define('E_32_LOGOUT', "<img src='".e_IMAGE."admin_images/logout_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_LOGOUT', "<img src='".e_IMAGE."packs/".$imode."/admin_images/logout_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 
 $e_icon_array = array(

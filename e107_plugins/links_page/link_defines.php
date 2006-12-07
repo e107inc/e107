@@ -11,16 +11,18 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_defines.php,v $
-|    $Revision: 1.1.1.1 $
-|    $Date: 2006-12-02 04:35:22 $
-|    $Author: mcfly_e107 $
+|    $Revision: 1.2 $
+|    $Date: 2006-12-07 15:41:50 $
+|    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$imagedir = e_IMAGE."admin_images/";
-if (!defined("IMAGE_NEW")){ define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/".IMODE."/new.png")); }
+global $imode;
+
+$imagedir = e_IMAGE."packs/".$imode."/admin_images/";
+if (!defined("IMAGE_NEW")){ define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."packs/".$imode."/generic/new.png")); }
 if (!defined('LINK_ICON_EDIT')) { define("LINK_ICON_EDIT", "<img src='".$imagedir."edit_16.png' alt='' style='border:0; cursor:pointer;' />"); }
 if (!defined('LINK_ICON_DELETE')) { define("LINK_ICON_DELETE", "<img src='".$imagedir."delete_16.png' alt='' style='border:0; cursor:pointer;' />"); }
 if (!defined('LINK_ICON_DELETE_BASE')) { define("LINK_ICON_DELETE_BASE", $imagedir."delete_16.png"); }

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.2 $ - with modifications
-|     $Date: 2006-12-07 12:48:42 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $ - with modifications
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 |
 | Modifications by steved:
 |	1. Can display sub-categories which contain sub-sub categories and files
@@ -36,8 +36,8 @@ if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:100%"); }
 
 
 /* define images */
-define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
-define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/".IMODE."/new.png"));
+define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."packs/".$imode."/generic/download.png"));
+define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."packs/".$imode."/generic/new.png"));
 
 /* define image style */
 

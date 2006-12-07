@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -74,21 +74,22 @@ $ns->tablerender(LAN_ADMINLOG_0, $text);
 require_once("footer.php");
 
 function get_log_img($log_type) {
+	global $imode;
 	switch ($log_type) {
 		case E_LOG_INFORMATIVE:
-			return "<img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".LAN_ADMINLOG_6."' title='".LAN_ADMINLOG_7."' />";
+			return "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/docs_16.png' alt='".LAN_ADMINLOG_6."' title='".LAN_ADMINLOG_7."' />";
 		break;
 		case E_LOG_NOTICE:
-			return "<img src='".e_IMAGE_ABS."admin_images/notice_16.png' alt='".LAN_ADMINLOG_8."' title='".LAN_ADMINLOG_9."' />";
+			return "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/notice_16.png' alt='".LAN_ADMINLOG_8."' title='".LAN_ADMINLOG_9."' />";
 		break;
 		case E_LOG_WARNING:
-			return "<img src='".e_IMAGE_ABS."admin_images/blocked.png' alt='".LAN_ADMINLOG_10."' title='".LAN_ADMINLOG_11."' style='width:16p;height:16px'  />";
+			return "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/blocked.png' alt='".LAN_ADMINLOG_10."' title='".LAN_ADMINLOG_11."' style='width:16p;height:16px'  />";
 		break;
 		case E_LOG_FATAL:
-			return "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";
+			return "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/nopreview.png' alt='".LAN_ADMINLOG_12."' title='".LAN_ADMINLOG_13."' />";
 		break;
 		case E_LOG_PLUGIN;
-			return "<img src='".e_IMAGE_ABS."admin_images/plugins_16.png' alt='".LAN_ADMINLOG_6."' title='".LAN_ADMINLOG_6."' />";
+			return "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/plugins_16.png' alt='".LAN_ADMINLOG_6."' title='".LAN_ADMINLOG_6."' />";
         break;
 	}
 	return $log_type;

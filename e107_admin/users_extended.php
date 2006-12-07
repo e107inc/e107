@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -230,7 +230,7 @@ class users_ext
 
 	function show_extended($current)
 	{
-		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action;
+		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action, $imode;
 
 		$catList = $ue->user_extended_get_categories();
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
@@ -282,12 +282,12 @@ class users_ext
 						";
 						if($i > 0){
 							$text .= "
-							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
+							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 							";
 						}
 						if($i <= count($extendedList[$cn])-2)
 						{
-							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
 						}
 						$text .= "
 						</form>
@@ -605,7 +605,7 @@ class users_ext
 
 	function show_categories($current)
 	{
-		global $sql, $ns, $ue;
+		global $sql, $ns, $ue, $imode;
 
 		$text = "<div style='text-align:center'>";
 		$text .= "
@@ -639,12 +639,12 @@ class users_ext
 				if($i > 0)
 				{
 					$text .= "
-					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}' />
+					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}' />
 					";
 				}
 				if($i <= count($catList)-2)
 				{
-					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}' />";
+					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}' />";
 				}
 				$text .= "
 				</form>

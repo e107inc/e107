@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.3 $
-|   $Date: 2006-12-07 12:59:43 $
-|   $Author: mrpete $
+|   $Revision: 1.4 $
+|   $Date: 2006-12-07 15:41:49 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -101,16 +101,16 @@ if (!defined('ADMIN_FALSE_ICON'))
 
 if (!defined('ADMIN_EDIT_ICON'))
 {
-	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
+	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."packs/".$imode."/admin_images/edit_16.png");
 }
 
 
 
 if (!defined('ADMIN_DELETE_ICON'))
 {
-	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
+	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."packs/".$imode."/admin_images/delete_16.png");
 }
 
 //

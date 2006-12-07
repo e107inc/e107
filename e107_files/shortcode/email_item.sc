@@ -1,10 +1,12 @@
+global $imode;
+
 if (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL)) 
 {
 	$icon = THEME."images/".ICONMAIL;
 }
 else
 {
-	$icon = e_IMAGE."generic/".IMODE."/email.png";
+	$icon = e_IMAGE."packs/".$imode."/generic/email.png";
 }
 $parms = explode("^",$parm);
 // message^source^other_parms

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -97,16 +97,16 @@ return (isset($comrow['comment_blocked']) && $comrow['comment_blocked'] ? COMLAN
 SC_END
 
 SC_BEGIN COMMENTEDIT
-global $COMMENTEDIT, $pref, $comrow;
+global $COMMENTEDIT, $pref, $comrow, $imode;
 if ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow['comment_lock'] != "1")
 {
 	if (!strstr(e_QUERY, "."))
 	{
-		return "<a href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+		return "<a href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$comrow['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
 	}
 	else
 	{
-		return "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+		return "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
 	}
 }
 else

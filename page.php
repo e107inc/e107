@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:09 $ - mods to make password protected pages work
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:49 $ - mods to make password protected pages work
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -346,7 +346,7 @@ class pageClass
 
 	function pageCheckPerms($page_class, $page_password)
 	{
-		global $ns, $tp, $HEADER, $FOOTER, $sql;     // $tp added
+		global $ns, $tp, $HEADER, $FOOTER, $sql, $imode;
 
 		if (!check_class($page_class))
 		{
@@ -391,7 +391,7 @@ class pageClass
 		<tr>
 		<td class='forumheader3' style='width:20%;'>".LAN_PAGE_9.":</td>
 		<td class='forumheader3' style='width: 60%;'><input type='password' id='page_pw' name='page_pw' style='width: 90%;'/></td>
-		<td class='forumheader3' style='width:20%; vertical-align:middle; margin-left:auto; margin-right:auto; text-align:center;'><img src='".e_IMAGE."generic/".IMODE."/password.png' alt='' /></td>
+		<td class='forumheader3' style='width:20%; vertical-align:middle; margin-left:auto; margin-right:auto; text-align:center;'><img src='".e_IMAGE."packs/".$imode."/generic/password.png' alt='' /></td>
 		</tr>
 		<tr>
 		<td class='forumheader' colspan='3' style='text-align:center;'><input class='button' type='submit' name='submit_page_pw' value='".LAN_PAGE_10."' /></td>

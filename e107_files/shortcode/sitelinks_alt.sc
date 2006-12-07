@@ -3,18 +3,18 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-	global $sql, $pref;
+	global $sql, $pref, $imode;
 	$params = explode('+', $parm);
 	if (isset($params[0]) && $params[0] && $params[0] != 'no_icons' && $params[0] != 'default') {
 		$icon = $params[0];
 	} else {
-		$icon = e_IMAGE."generic/".IMODE."/arrow.png";
+		$icon = e_IMAGE."packs/".$imode."/generic/arrow.png";
 	}
 
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {

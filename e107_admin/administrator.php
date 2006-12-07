@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -104,7 +104,7 @@ if($_POST['edit_admin'] || $action == "edit"){
 }
 
 function show_admins(){
-    global $sql,$tp,$ns,$pref;
+    global $sql, $tp, $ns, $pref, $imode;
 
 	$sql->db_Select("user", "*", "user_admin='1'");
 
@@ -136,8 +136,8 @@ function show_admins(){
 		if($row['user_id'] != "1")
 		{
     		$text .= "
-			<input type='image' name='edit_admin[{$row['user_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' title='".LAN_EDIT."' />
-			<input type='image' name='del_admin[{$row['user_id']}]' value='del' src='".e_IMAGE."admin_images/delete_16.png' onclick=\"return jsconfirm('".$tp->toJS(ADMSLAN_59."? [".$row['user_name']."]")."') \"  title='".ADMSLAN_59."' style='border:0px' />";
+			<input type='image' name='edit_admin[{$row['user_id']}]' value='edit' src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' title='".LAN_EDIT."' />
+			<input type='image' name='del_admin[{$row['user_id']}]' value='del' src='".e_IMAGE."packs/".$imode."/admin_images/delete_16.png' onclick=\"return jsconfirm('".$tp->toJS(ADMSLAN_59."? [".$row['user_name']."]")."') \"  title='".ADMSLAN_59."' style='border:0px' />";
     	}
 		$text .= "&nbsp;</td>
 

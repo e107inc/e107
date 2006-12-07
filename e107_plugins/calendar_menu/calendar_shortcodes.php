@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 |
 | 10.11.06 - mods for next CVS release
 +----------------------------------------------------------------------------+
@@ -182,10 +182,10 @@ SC_BEGIN SHOWEVENT_HEADING
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_RECENT_ICON
-  global $ev;
+  global $ev, $imode;
   if (!isset($ev['is_recent'])) return "";
 //  $recent_icon = e_PLUGIN."calendar_menu/images/recent_icon.png";
-  $recent_icon = e_IMAGE."generic/".IMODE."/new.png";
+  $recent_icon = e_IMAGE."packs/".$imode."/generic/new.png";
   if (file_exists($recent_icon))
 	{
 	  return "<img style='border:0' src='".$recent_icon."' alt='' /> ";
@@ -291,10 +291,10 @@ SC_END
 // EVENT SHOWEVENT ------------------------------------------------------------
 
 SC_BEGIN EVENT_RECENT_ICON
-  global $thisevent, $ecal_class;
+  global $thisevent, $ecal_class, $imode;
   if (($ecal_class->max_recent_show == 0) || (time() - $thisevent['event_datestamp']) > $ecal_class->max_recent_show) return "";
 // Can use the generic icon, or a calendar-specific one  
-  $recent_icon = e_IMAGE."generic/".IMODE."/new.png";
+  $recent_icon = e_IMAGE."packs/".$imode."/generic/new.png";
 //  $recent_icon = e_PLUGIN."calendar_menu/images/recent_icon.png";
   if (file_exists($recent_icon))
 	{
@@ -416,9 +416,9 @@ SC_BEGIN EVENT_THREAD
 SC_END
 
 SC_BEGIN EVENT_OPTIONS
-	global $EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super;
+	global $EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super, $imode;
 	if (USERNAME == $event_author_name || $cal_super){
-		$EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+		$EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."packs/".$imode."/admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 	}
 	return $EVENT_OPTIONS;
 SC_END

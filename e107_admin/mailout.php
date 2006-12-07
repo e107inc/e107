@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -663,7 +663,7 @@ $text = "
 
 function showList()
 	{
-		global $sql,$ns,$tp;
+		global $sql, $ns, $tp, $imode;
 		$gen = new convert;
 		$qry ="SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type = 'massmail' ORDER BY g.gen_datestamp DESC";
 	 //	$count = $sql -> db_Select("generic", "*", "gen_type ='massmail' ORDER BY gen_datestamp DESC");
@@ -711,8 +711,8 @@ function showList()
 
 				<td style='width:50px;white-space:nowrap' class='forumheader3'>
 				<div>
-				<input type='image' name='edit[{$row2['gen_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-				<input type='image' name='delete[{$row2['gen_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \" src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				<input type='image' name='edit[{$row2['gen_id']}]' value='edit' src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+				<input type='image' name='delete[{$row2['gen_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \" src='".e_IMAGE."packs/".$imode."/admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 				</div>
 				</td>
 				</tr>

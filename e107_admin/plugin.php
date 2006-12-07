@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -405,7 +405,7 @@ $text .= render_plugs($uninstalled);
 
 
 function render_plugs($pluginList){
-	global $tp;
+	global $tp, $imode;
 
 	foreach($pluginList as $plug) {
 	//Unset any possible eplug_ variables set by last plugin.php
@@ -419,13 +419,13 @@ function render_plugs($pluginList){
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
  		if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
-			$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."admin_images/installed.png' alt='' />");
+			$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."packs/".$imode."/admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."packs/".$imode."/admin_images/installed.png' alt='' />");
 		} else {
-			$img = "<img src='".e_IMAGE."admin_images/noinstall.png' alt='' />";
+			$img = "<img src='".e_IMAGE."packs/".$imode."/admin_images/noinstall.png' alt='' />";
 		}
 
 		if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
-			$img = "<img src='".e_IMAGE."admin_images/upgrade.png' alt='' />";
+			$img = "<img src='".e_IMAGE."packs/".$imode."/admin_images/upgrade.png' alt='' />";
 		}
 
 		$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
@@ -496,10 +496,10 @@ return $text;
 
 $text .= "</table>
 	<div style='text-align:center'><br />
-	<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' /> ".EPL_ADLAN_23."&nbsp;&nbsp;
-	<img src='".e_IMAGE."admin_images/installed.png' alt='' /> ".EPL_ADLAN_22."&nbsp;&nbsp;
-	<img src='".e_IMAGE."admin_images/upgrade.png' alt='' /> ".EPL_ADLAN_24."&nbsp;&nbsp;
-	<img src='".e_IMAGE."admin_images/noinstall.png' alt='' /> ".EPL_ADLAN_25."</div></div>";
+	<img src='".e_IMAGE."packs/".$imode."/admin_images/uninstalled.png' alt='' /> ".EPL_ADLAN_23."&nbsp;&nbsp;
+	<img src='".e_IMAGE."packs/".$imode."/admin_images/installed.png' alt='' /> ".EPL_ADLAN_22."&nbsp;&nbsp;
+	<img src='".e_IMAGE."packs/".$imode."/admin_images/upgrade.png' alt='' /> ".EPL_ADLAN_24."&nbsp;&nbsp;
+	<img src='".e_IMAGE."packs/".$imode."/admin_images/noinstall.png' alt='' /> ".EPL_ADLAN_25."</div></div>";
 
 $ns->tablerender(EPL_ADLAN_16, $text);
 // ----------------------------------------------------------
