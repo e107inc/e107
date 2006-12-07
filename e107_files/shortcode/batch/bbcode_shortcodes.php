@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 16:49:28 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -26,7 +26,7 @@ $bbcode_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN BB
 
-global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
+global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb, $imode;
 
 if(e_WYSIWYG){ return; }
 
@@ -65,7 +65,7 @@ $bbcode['prefile'] = array("expandit","prefile_selector_".$rand, LANHELP_39,"pre
 
 if(!isset($iconpath[$parm]))
 {
-	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
+	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."packs/".$imode."/bbcode/");
     $iconpath[$parm] .= $bbcode[$parm][3];
 }
 

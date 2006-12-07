@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-07 16:49:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -134,8 +134,8 @@ SC_END
 
 
 SC_BEGIN DOWNLOAD_ADMIN_EDIT
-global $dl;
-return (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.".$dl['download_id']."' title='edit'><img src='".e_IMAGE."generic/lite/edit.png' alt='' style='padding:0px;border:0px' /></a>" : "";
+global $dl, $imode;
+return (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.".$dl['download_id']."' title='edit'><img src='".e_IMAGE."packs/".$imode."/generic/edit.png' alt='' style='padding:0px;border:0px' /></a>" : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY

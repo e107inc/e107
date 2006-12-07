@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:49 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-07 16:49:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -474,13 +474,13 @@ function show_mailform($foo=""){
 	<td style='width:100%' class='forumheader3' colspan='2'>
 	<div style='width:100%;text-align:center;vertical-align: middle;' >";
 
-    global $eplug_bb;
+    global $eplug_bb, $imode;
 
     $eplug_bb[] = array(
 			"name"		=> 'shortcode',
 			"onclick"	=> 'expandit',
 			"onclick_var" => "sc_selector",
-			"icon"		=> e_IMAGE."generic/bbcode/shortcode.png",
+			"icon"		=> e_IMAGE."packs/".$imode."/bbcode/shortcode.png",
 			"helptext"	=> MAILAN_11,
 			"function"	=> "sc_Select",
 			"function_var"	=> "sc_selector"
