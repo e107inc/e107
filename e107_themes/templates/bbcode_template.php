@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 16:49:28 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // How to register your own BBcode button.
 // Uncomment the 2 commented lines below to see it in action. (only applies to the user area)
 
-// $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text",e_IMAGE."generic/bbcode/template.png");
+// $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text",e_IMAGE."packs/".$imode."/bbcode/template.png");
 
 $BBCODE_TEMPLATE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
