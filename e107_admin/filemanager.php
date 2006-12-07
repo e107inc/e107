@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 16:18:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -28,7 +28,7 @@ require_once("auth.php");
 $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")) ? TRUE : FALSE;
 
 
-$imagedir = e_IMAGE."filemanager/";
+$imagedir = e_IMAGE."packs/".$imode."/filemanager/";
 
 	$dir_options[0] = FMLAN_47;
 	$dir_options[1] = FMLAN_35;
