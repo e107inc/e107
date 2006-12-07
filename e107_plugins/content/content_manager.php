@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:34:54 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2006-12-07 12:57:43 $
+|		$Author: mrpete $
 +---------------------------------------------------------------+
 */
 
@@ -65,20 +65,10 @@ if(isset($_POST['delete'])){
 
 //these have to be set for the tinymce wysiwyg
 $e_wysiwyg	= "content_text";
-//if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
-if($pref['wysiwyg'] && $e_wysiwyg == TRUE){
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
-	define("e_WYSIWYG",TRUE);
-	$tiny = wysiwyg($e_wysiwyg);
-}else{
-	define("e_WYSIWYG",FALSE);
-}
 
 //include js
 function headerjs(){
-	global $tiny;
 	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
-	echo $tiny;
 }
 // ##### DB ---------------------------------------------------------------------------------------
 
