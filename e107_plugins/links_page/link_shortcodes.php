@@ -373,20 +373,20 @@ SC_END
 
 // LINK_RATED_TABLE ------------------------------------------------
 SC_BEGIN LINK_RATED_RATING
-global $LINK_RATED_RATING, $rowl;
+global $LINK_RATED_RATING, $rowl, $imode;
 $tmp = explode(".", $rowl['rate_avg']);
 $one = $tmp[0];
 $two = round($tmp[1],1);
 $rating = $one.".".$two." ";
 for($c=1; $c<= $one; $c++){
-	$rating .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
+	$rating .= "<img src='".e_IMAGE."packs/".$imode."/rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
 }
 if($one < 10){
 	for($c=9; $c>=$one; $c--){
-		$rating .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+		$rating .= "<img src='".e_IMAGE."packs/".$imode."/rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
 	}
 }
-$rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
+$rating .= "<img src='".e_IMAGE."packs/".$imode."/rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
 return $rating;
 SC_END
 
