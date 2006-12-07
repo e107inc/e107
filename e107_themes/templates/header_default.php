@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-05 09:33:20 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-07 12:53:49 $
 |     $Author: mrpete $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -90,7 +90,7 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
-if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
 	echo wysiwyg($e_wysiwyg);
