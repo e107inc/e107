@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -84,7 +84,7 @@ class user_select {
 	}
 	
 	function select_form($type, $user_form, $user_value = '', $class_form = false, $class_value = '', $class = false) {
-		global $tp;
+		global $tp, $imode;
 		$text .= "<script type='text/javascript'>
 		<!--
 		function uc_switch(uctype) {
@@ -109,7 +109,7 @@ class user_select {
 			{
 				$text .= "<input class='tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$tp -> post_toForm($user_value)."'>&nbsp;";
 			}
-			$text .= "<img src='".e_IMAGE_ABS."generic/".IMODE."/user_select.png' 
+			$text .= "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/user_select.png' 
 			style='width: 16px; height: 16px; vertical-align: top' alt='".US_LAN_4."...' 
 			title='".US_LAN_4."...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
 		}

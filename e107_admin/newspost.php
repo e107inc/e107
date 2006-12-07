@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.1.1.1 $
-|   $Date: 2006-12-02 04:33:26 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.2 $
+|   $Date: 2006-12-07 15:41:49 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -276,7 +276,7 @@ class newspost {
 
 	function show_existing_items($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
-		global $sql, $rs, $ns, $tp;
+		global $sql, $rs, $ns, $tp, $imode;
 		$text = "<div style='text-align:center'>";
 
 		if (isset($_POST['searchquery'])) {
@@ -313,7 +313,7 @@ class newspost {
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
 				{
-					$sicon = (file_exists(THEME."images/sticky.png") ? THEME."images/sticky.png" : e_IMAGE."generic/".IMODE."/sticky.png");
+					$sicon = (file_exists(THEME."images/sticky.png") ? THEME."images/sticky.png" : e_IMAGE."packs/".$imode."/generic/sticky.png");
 					$text .= " <img src='".$sicon."' alt='' />";
 				}
 				$text .= "

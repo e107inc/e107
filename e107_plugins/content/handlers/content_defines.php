@@ -1,9 +1,9 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 
-global $plugindir;
+global $plugindir, $imode;
 $plugindir = e_PLUGIN."content/";
-$imagedir = e_IMAGE."admin_images/";
+$imagedir = e_IMAGE."packs/".$imode."/admin_images/";
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_admin.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content_admin.php');
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -149,6 +149,7 @@ return $gen -> computeLapse($user['user_join'])." ".LAN_426;
 SC_END
 
 SC_BEGIN USER_REALNAME_ICON
+global $imode;
 if(defined("USER_REALNAME_ICON"))
 {
 	return USER_REALNAME_ICON;
@@ -157,7 +158,7 @@ if(file_exists(THEME."images/user_realname.png"))
 {
 	return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."user_icons/user_realname_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -166,6 +167,7 @@ return $user['user_login'] ? $user['user_login'] : "<i>".LAN_401."</i>";
 SC_END
 
 SC_BEGIN USER_EMAIL_ICON
+global $imode;
 if(defined("USER_EMAIL_ICON"))
 {
 	return USER_EMAIL_ICON;
@@ -174,7 +176,7 @@ if(file_exists(THEME."images/email.png"))
 {
 	return "<img src='".THEME_ABS."images/email.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."generic/".IMODE."/email.png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/email.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_EMAIL_LINK
@@ -188,6 +190,7 @@ return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->toHTML(
 SC_END
 
 SC_BEGIN USER_ICON
+global $imode;
 if(defined("USER_ICON"))
 {
 	return USER_ICON;
@@ -196,11 +199,11 @@ if(file_exists(THEME."images/user.png"))
 {
 	return "<img src='".THEME_ABS."images/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_ICON_LINK
-global $user;
+global $user, $imode;
 if(defined("USER_ICON"))
 {
 	$icon = USER_ICON;
@@ -211,7 +214,7 @@ else if(file_exists(THEME."images/user.png"))
 }
 else
 {
-	$icon = "<img src='".e_IMAGE_ABS."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	$icon = "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
@@ -239,6 +242,7 @@ if(ADMIN && getperms("4")) {
 SC_END
 
 SC_BEGIN USER_BIRTHDAY_ICON
+global $imode;
 if(defined("USER_BIRTHDAY_ICON"))
 {
 	return USER_BIRTHDAY_ICON;
@@ -247,7 +251,7 @@ if(file_exists(THEME."images/user_birthday.png"))
 {
 	return "<img src='".THEME_ABS."images/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."user_icons/user_birthday_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_BIRTHDAY
@@ -283,7 +287,7 @@ return $tp->parseTemplate("{SENDPM={$user['user_id']}}");
 SC_END
 
 SC_BEGIN USER_RATING
-global $pref, $user;
+global $pref, $user, $imode;
 if($pref['profile_rate'] && USER)
 {
 	include_once(e_HANDLER."rate_class.php");
@@ -294,7 +298,7 @@ if($pref['profile_rate'] && USER)
 		$num = $rating[1];
 		for($i=1; $i<= $num; $i++)
 		{
-			$ret .= "<img src='".e_IMAGE_ABS."user_icons/user_star_".IMODE.".png' style='border:0' alt='' />";
+			$ret .= "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user_star.png' style='border:0' alt='' />";
 		}
 	}
 	if(!$rater->checkrated('user', $user['user_id']))

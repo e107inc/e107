@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:34:58 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2006-12-07 15:41:50 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -1076,9 +1076,11 @@ class content{
 			//$width	:	the width of the popup (uses a default width of 500)
 			//$title	:	the window title of the popup (uses a default title of ...)
 			//$text		:	the help text to show into the popup
+			
+			global $imode;
 
 			if(!$image || !file_exists($image)){
-				$image = e_IMAGE."admin_images/docs_16.png";
+				$image = e_IMAGE."packs/".$imode."/admin_images/docs_16.png";
 			}
 			if(!$width){ $width = "320"; }
 			if(!$title){ $title = "content management help area"; }

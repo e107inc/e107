@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
-| $Revision: 1.1.1.1 $
-| $Date: 2006-12-02 04:33:47 $
-| $Author: mcfly_e107 $
+| $Revision: 1.2 $
+| $Date: 2006-12-07 15:41:50 $
+| $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -108,7 +108,7 @@ class news {
 	}
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='') {
-		global $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid;
+		global $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode;
 		if ($override_newsitem = $override -> override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return') {
@@ -131,13 +131,13 @@ class news {
 
 		if (!$param) {
 			if (!defined("IMAGE_nonew_small")){
-				define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/nonew_comments.png' alt=''  />"));
+				define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/nonew_comments.png' alt=''  />"));
 			}
 			if (!defined("IMAGE_new_small"))	{
-				define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/new_comments.png' alt=''  /> "));
+				define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/new_comments.png' alt=''  /> "));
 			}
 			if (!defined("IMAGE_sticky")){
-				define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
+				define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
 			}
 
 			$param['image_nonew_small'] = IMAGE_nonew_small;

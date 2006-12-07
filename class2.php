@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-05 09:32:15 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 //
@@ -796,6 +796,14 @@ if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !=
 
 
 if(!defined("IMODE")) define("IMODE", "lite");
+
+if (IMODE == 'lite') {
+	$imode = 'nuvola_light';
+} else if (IMODE == 'dark') {
+	$imode = 'nuvola_dark';
+} else {
+	$imode = IMODE;
+}
 
 if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 

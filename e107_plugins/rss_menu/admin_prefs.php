@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -35,7 +35,7 @@ require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."rss_menu/languages/E
 
 require_once(e_ADMIN."auth.php");
 
-$imagedir = e_IMAGE."admin_images/";
+$imagedir = e_IMAGE."packs/".$imode."/admin_images/";
 $lan_file = e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'rss_menu/languages/English.php');
 require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');

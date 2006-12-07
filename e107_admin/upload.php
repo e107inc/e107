@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -239,8 +239,8 @@ if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY 
 		<td style='width:20%' class='forumheader3'>".$upload_file ."</td>
 		<td style='width:50px;white-space:nowrap' class='forumheader3'>
 		<form action='".e_SELF."?dis.$upload_id' id='uploadform_{$upload_id}' method='post'>
-		<div><a href='".e_SELF."?dlm.$upload_id'><img src='".e_IMAGE."admin_images/downloads_16.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
-		<a href='".e_SELF."?news.$upload_id'><img src='".e_IMAGE."admin_images/news_16.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
+		<div><a href='".e_SELF."?dlm.$upload_id'><img src='".e_IMAGE."packs/".$imode."/admin_images/downloads_16.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
+		<a href='".e_SELF."?news.$upload_id'><img src='".e_IMAGE."packs/".$imode."/admin_images/news_16.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
         <input type='image' title='".LAN_DELETE."' name='updelete[upload_{$upload_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(UPLLAN_45." [ $upload_name ]")."') \"/>
 		</div></form></td>
 		</tr>";

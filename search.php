@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -309,7 +309,7 @@ if ($search_prefs['selector'] == 1) {
 
 $SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
 
-$ENHANCED_ICON = "<img src='".e_IMAGE."generic/".IMODE."/search_enhanced.png' style='width: 16px; height: 16px; vertical-align: top'
+$ENHANCED_ICON = "<img src='".e_IMAGE."packs/".$imode."/generic/search_enhanced.png' style='width: 16px; height: 16px; vertical-align: top'
 alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
 
 $enhanced_types['in'] = LAN_SEARCH_24.':';

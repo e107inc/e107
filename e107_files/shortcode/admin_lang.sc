@@ -1,5 +1,5 @@
 if (ADMIN) {
-	global $ns, $sql, $pref;
+	global $ns, $sql, $pref, $imode;
 	if ($pref['multilanguage'])
 	{
 		$filepath = e_PLUGIN."userlanguage_menu/languages/".e_LANGUAGE.".php";
@@ -52,7 +52,7 @@ if (ADMIN) {
 		}
 
 
-		$text .= "<div><img src='".e_IMAGE."admin_images/language_16.png' alt='' />&nbsp;";
+		$text .= "<div><img src='".e_IMAGE."packs/".$imode."/admin_images/language_16.png' alt='' />&nbsp;";
 		if(isset($aff))
 		{
 			$text .= $sql->mySQLlanguage;

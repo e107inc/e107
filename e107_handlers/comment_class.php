@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 15:41:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -172,7 +172,7 @@ class comment {
 	 */
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) {
 		//addrating	: boolean, to show rating system in rendered comment
-		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
+		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen, $imode;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction, $thistable, $thisid;
 
@@ -196,10 +196,10 @@ class comment {
 			$width = 0;
 		}
 		if(!defined("IMAGE_nonew_comments")){
-			define("IMAGE_nonew_comments", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/nonew_comments.png' alt=''  />"));
+			define("IMAGE_nonew_comments", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/nonew_comments.png' alt=''  />"));
 		}
 		if(!defined("IMAGE_new_comments")){
-			define("IMAGE_new_comments", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/new_comments.png' alt=''  /> "));
+			define("IMAGE_new_comments", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/new_comments.png' alt=''  /> "));
 		}
 		$ns			= new e107table;
 		if(!$gen || !is_object($gen)){ $gen = new convert; }

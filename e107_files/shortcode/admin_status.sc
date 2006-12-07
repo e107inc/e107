@@ -1,7 +1,7 @@
 if (ADMIN) {
 	if (!function_exists('admin_status')) {
 		function admin_status() {
-			global $sql, $ns, $pref;
+			global $sql, $ns, $pref, $imode;
 			$members = $sql -> db_Count("user");
 			$unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban=2");
 			$banned = $sql -> db_Count("user", "(*)", "WHERE user_ban=1");
@@ -24,7 +24,7 @@ if (ADMIN) {
 
 			if($flo = $sql -> db_Count("generic", "(*)", "WHERE gen_type='failed_login'"))
 			{
-				$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
+				$text .= "<img src='".e_IMAGE."packs/".$imode."/admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
 			}
 
 
