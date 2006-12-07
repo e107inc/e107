@@ -11,14 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 12:55:12 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
-$WYSIWYG = $pref['wysiwyg'];
 $e_wysiwyg = "post";
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
