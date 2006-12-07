@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.4 $
-|   $Date: 2006-12-07 15:41:49 $
+|   $Revision: 1.5 $
+|   $Date: 2006-12-07 16:18:51 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -88,14 +88,14 @@ if (!defined('ADMIN_WIDTH')) {
 
 if (!defined('ADMIN_TRUE_ICON'))
 {
-	define("ADMIN_TRUE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_pass.png' alt='' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."fileinspector/integrity_pass.png");
+	define("ADMIN_TRUE_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/fileinspector/integrity_pass.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."packs/".$imode."/fileinspector/integrity_pass.png");
 }
 
 if (!defined('ADMIN_FALSE_ICON'))
 {
-	define("ADMIN_FALSE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_fail.png' alt='' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."fileinspector/integrity_fail.png");
+	define("ADMIN_FALSE_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/fileinspector/integrity_fail.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."packs/".$imode."/fileinspector/integrity_fail.png");
 }
 
 
