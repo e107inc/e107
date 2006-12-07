@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/error.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 17:20:13 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -33,12 +33,12 @@ $errTo = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 switch(e_QUERY) {
 	case 401:
 	header("HTTP/1.1 401 Unauthorized");
-	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_1."</div><br /><div class='installh'>".LAN_ERROR_2."</div><br /><div class='smalltext'>".LAN_ERROR_3."</div>
+	$text = "<div class='installe'><img src='".e_IMAGE_ABS."packs/".$imode."/generic/warning.png' alt='Error Icon'> ".LAN_ERROR_1."</div><br /><div class='installh'>".LAN_ERROR_2."</div><br /><div class='smalltext'>".LAN_ERROR_3."</div>
 		<br /><div class='installh'>".LAN_ERROR_2."<a href='index.php'>".LAN_ERROR_20."</a></div>";
 	break;
 	case 403:
 	header("HTTP/1.1 403 Forbidden");
-	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_4."</div><br /><div class='installh'>".LAN_ERROR_5."</div><br /><div class='smalltext'>".LAN_ERROR_6."</div>
+	$text = "<div class='installe'><img src='".e_IMAGE_ABS."packs/".$imode."/generic/warning.png' alt='Error Icon'> ".LAN_ERROR_4."</div><br /><div class='installh'>".LAN_ERROR_5."</div><br /><div class='smalltext'>".LAN_ERROR_6."</div>
 		<br /><div class='installh'>".LAN_ERROR_2."<a href='index.php'>".LAN_ERROR_20."</a></div>";
 	break;
 	default:
@@ -46,7 +46,7 @@ switch(e_QUERY) {
 
 	case 404:
 	header("HTTP/1.1 404 Not Found");
-	$text = "<h3><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_7."</h3><br />".LAN_ERROR_21."<br /><br />".LAN_ERROR_23."<b>{$errTo}</b>".LAN_ERROR_24."<br /><br />";
+	$text = "<h3><img src='".e_IMAGE_ABS."packs/".$imode."/generic/warning.png' alt='Error Icon'> ".LAN_ERROR_7."</h3><br />".LAN_ERROR_21."<br /><br />".LAN_ERROR_23."<b>{$errTo}</b>".LAN_ERROR_24."<br /><br />";
 
 	if (strlen($errFrom)) $text .= LAN_ERROR_9." ( <a href='{$errFrom}' rel='external'>{$errFrom}</a> ) -- ".LAN_ERROR_19."<br />";
 
@@ -60,7 +60,7 @@ switch(e_QUERY) {
 
 	case 500:
 	header("HTTP/1.1 500 Internal Server Error");
-	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_10."</div><br /><div class='installh'>".LAN_ERROR_11."</div><br /><div class='smalltext'>".LAN_ERROR_12."</div>
+	$text = "<div class='installe'><img src='".e_IMAGE_ABS."packs/".$imode."/generic/warning.png' alt='Error Icon'> ".LAN_ERROR_10."</div><br /><div class='installh'>".LAN_ERROR_11."</div><br /><div class='smalltext'>".LAN_ERROR_12."</div>
 		<br /><div class='installh'>".LAN_ERROR_2."<a href='index.php'>".LAN_ERROR_20."</a></div>";
 	break;
 	$text = "<div class='installe'>".LAN_ERROR_13." (".$_SERVER['QUERY_STRING'].")</div><br /><div class='installh'>".LAN_ERROR_14."</div><br /><div class='smalltext'>".LAN_ERROR_15."</div>
