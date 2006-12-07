@@ -25,4 +25,7 @@ define("NN_LAN_3", "Hírt beküldte Admin");
 define("NN_LAN_4", "Hírt szerkesztette Admin");
 define("NN_LAN_5", "Hírt törölte Admin");
 
+define("NF_LAN_1", "File Események");
+define("NF_LAN_2", "Felhasználó által feltöltött file");
+
 ?>

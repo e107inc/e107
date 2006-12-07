@@ -23,11 +23,11 @@ define("EMOLAN_13", "Telepített csomagok");
 define("EMOLAN_14", "Beállítások mentése");
 define("EMOLAN_15", "Emotikon módosítása / beállítása");
 define("EMOLAN_16", "Emotikon beállítások elmentve");
-define("EMOLAN_2", "Név");
-define("EMOLAN_2", "Név");
-define("EMOLAN_2", "Név");
-define("EMOLAN_2", "Név");
-define("EMOLAN_2", "Név");
-define("EMOLAN_2", "Név");
+define("EMOLAN_17", "Ha az emotikon csomag szóközt tartalmaz, akkor az nem lesz engedélyezve !");
+define("EMOLAN_18", "nevezd át az alábbi listában lévőket, hogy ne tartalmazzanak szóközt:");
+define("EMOLAN_19", "Név");
+define("EMOLAN_20", "Hely");
+define("EMOLAN_21", "Hiba");
+//define("EMOLAN_2", "Name");
 
 ?>

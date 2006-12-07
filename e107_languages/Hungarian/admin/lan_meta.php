@@ -15,4 +15,6 @@ define("METLAN_8", "Meta Tag-ek");
 define("METLAN_9", "Leírás");
 define("METLAN_10", "Kulcsszavak");
 define("METLAN_11", "Szerzői jog");
+define("METLAN_12", "Használd a Hírek címét és az összegzést meta-leírásként a hírek oldalon.");
+define("METLAN_13", "Szerző");
 ?>

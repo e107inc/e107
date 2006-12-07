@@ -12,8 +12,8 @@ define("LANINS_004", "Nyelv kiválasztása");
 define("LANINS_005", "Válaszd ki a telepítés folyamán használt nyelvet");
 define("LANINS_006", "Nyelv kiválasztása");
 define("LANINS_007", "4");
-define("LANINS_008", "PHP &amp; MySQL Verzió Ellenörzés / File Jogosultság Ellenörzés");
-define("LANINS_009", "File Jogosultság Újraellenörzése");
+define("LANINS_008", "PHP &amp; MySQL Verzió Ellenőrzés / File Jogosultság Ellenőrzés");
+define("LANINS_009", "File Jogosultság Újraellenőrzése");
 define("LANINS_010", "File nem írható: ");
 define("LANINS_010a", "Mappa nem írható: ");
 define("LANINS_011", "Hiba");
@@ -85,12 +85,12 @@ e107 telepítése sikeres, megkezdheted a tartalom feltöltését.<br />Az admin
 [b]Támogatás[/b]
 e107 főoldala: [link=http://e107.org]http://e107.org[/link], itt megtalálhatod a FAQ-t és a dokumentációt.
 e107 Magyarország főoldala: [link=http://e107hungary.org]http://e107hungary.org[/link], a magyar e107 TEAM oldala.
-GYIK (FAQ): [link=http://faq.e107hungary.org]http://faq.e107hungary.org[/link], itt sokmindenre választ kaphatsz.
+Source: [link=http://source.e107hungary.org]http://source.e107hungary.org[/link], Plugin-ok, theme-k, módosítások, ...
 Fórumok: [link=http://e107hungary.org/e107_plugins/forum/forum.php]http://e107hungary.org/e107_plugins/forum/forum.php[/link]
 
 [b]Letöltések[/b]
 Plugin-ok: [link=http://e107coders.org]http://e107coders.org[/link]
-Theme-ek: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+Theme-ek: [link=http://e107themes.org]http://e107themes.org[/link]
 
 Köszönjük, hogy kipróbálod az e107-t, bízunk benne, hogy mindent megtalálsz, amire szükséged van.
 (Törölheted ezt az üzenetet az admin felületen.)");
@@ -101,7 +101,7 @@ define("LANINS_069", "e107 sikeresen telepítve!
 
 A biztonság érdekében írd át a <b>e107_config.php</b> file jogosultságát 644-re.
 
-Ezenkívül, töröld az install.php file-t és az e107_install könyvtárat a szerverről a gomb megnyomása után
+Ezenkívül, töröld az install.php file-t a szerverről a lenti gomb megnyomása után
 ");
 define("LANINS_070", "e107 nem tudta elmenteni a fő beállításokat a szerverre.
 
@@ -125,5 +125,7 @@ define("LANINS_082", "user@yoursite.com");
 define("LANINS_083", "MySQL Jelentett hiba:");
 define("LANINS_084", "A telepítő nem tud kapcsolódni az adatbázishoz");
 define("LANINS_085", "A telepítő nem tudja kiválasztani az adatbázist:");
+
+define("LANINS_086", "Admin Felhasználónév, Admin Jelszó és Admin Email <b>kötelező</b> mezők. Lépj vissza az előző oldalra és írd be a megfelelő információkat.");
 
 ?>

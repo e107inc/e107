@@ -3,28 +3,30 @@
 # e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
-define("PAGE_NAME", "E-mail");
+if (!defined("PAGE_NAME")) {define("PAGE_NAME", "E-mail");}
 
-define("LAN_5", "Cikk küldése levélben");
-define("LAN_6", "Hír küldése levélben");
-define("LAN_7", "Felhasználónév: ");
-define("LAN_8", "Üzenet");
-define("LAN_9", "Hiba: e-mail küldése sikertelen");
-define("LAN_10", "Levél címzettje:");
-define("LAN_11", "E-mail elküldve");
-define("LAN_12", "Hiba");
-define("LAN_106", "Nem létező e-mail cím");
-define("LAN_185", "Cikk küldése");
-define("LAN_186", "Hír küldése");
-define("LAN_187", "Címzett e-mail címe");
-define("LAN_188", "Úgy gondoltam érdekelni fog ez a hír...");
-define("LAN_189", "Úgy gondoltam érdekelni fog ez a cikk...");
+define("LAN_EMAIL_1", "Feladó:");
+define("LAN_EMAIL_2", "Küldő IP címe:");
+define("LAN_EMAIL_3", "Új üzenet... ");
+define("LAN_EMAIL_4", "Email küldése");
+define("LAN_EMAIL_5", "Email küldése");
+define("LAN_EMAIL_6", "Úgy gondoltam érdekelni fog...");
+define("LAN_EMAIL_7", "email valakinek");
+define("LAN_EMAIL_8", "Üzenet");
+define("LAN_EMAIL_9", "Hiba: e-mail küldése sikertelen");
+define("LAN_EMAIL_10", "Levél címzettje");
+define("LAN_EMAIL_11", "E-mail elküldve");
+define("LAN_EMAIL_12", "Hiba");
+define("LAN_EMAIL_13", "Cikk küldése");
+define("LAN_EMAIL_14", "Hír küldése");
+define("LAN_EMAIL_15", "Felhasználónév: ");
+define("LAN_EMAIL_106", "Érvénytelen email cím");
+define("LAN_EMAIL_185", "Cikk küldése");
+define("LAN_EMAIL_186", "Hír küldése");
+define("LAN_EMAIL_187", "Címzett e-mail címe");
+define("LAN_EMAIL_188", "Úgy gondoltam érdekelni fog ez a hír...");
+define("LAN_EMAIL_189", "Úgy gondoltam érdekelni fog ez a cikk...");
+define("LAN_EMAIL_190", "Írd be a látható kódot");
 
-define("LAN_email_1", "Feladó:");
-define("LAN_email_2", "Küldő IP címe:");
-define("LAN_email_3", "Új üzenet... ");
-define("LAN_email_4", "E-mail küldése");
-define("LAN_email_5", "Küldés e-mailben");
-define("LAN_email_6", "Úgy gondoltam érdekelni fog...");
 
 ?>

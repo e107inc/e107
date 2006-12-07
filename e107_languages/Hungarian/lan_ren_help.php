@@ -42,4 +42,19 @@ define("LANHELP_33", "HTML - megszünteti a sortöréseket: [html]<table><tr><td
 define("LANHELP_34", "[newpage] vagy [newpage=cím] Newpage kód beszúrása, a cikket több oldalra osztja");
 define("LANHELP_35", "hiperlink url");
 define("LANHELP_36", "Sorszám nélkül: [list]line1*line2*line3[/list] Sorszámozva: [list=type]line1*line2*line3[/list]");
+
+define("LANHELP_37", "Kép beillesztése az e107_images/newspost_images/ könyvtárból");
+define("LANHELP_38", "A teljes képhez link generálódott");
+
+define("LANHELP_39", "Letöltés link beillesztése a meglévő letöltéstől");
+define("LANHELP_40", "Jelenleg nincs letöltés");
+
+define("LANHELP_41", "Betűméret...");
+define("LANHELP_42", "Kép kiválasztása...");
+define("LANHELP_43", "Letöltés kiválasztása...");
+define("LANHELP_44", "Katt az emotikonok megnyitásához ...");
+define("LANHELP_45", "Kép beillesztése az e107_images/custom/ könyvtárból");
+define("LANHELP_46", "* Nincs file itt: ");
+
+define("LANHELP_47", "Flash beillesztése: [flash=width,height]http://www.example.com/file.swf[/flash]");
 ?>

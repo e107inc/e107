@@ -40,7 +40,7 @@ define("LCLAN_81", "Az almenük a szülőjükre kattintás után lesznek láthat
 define("LCLAN_83", "Almenü generátor");
 define("LCLAN_88", "Főmenü linkek opciói");
 define("LCLAN_89", "Kép");
-define("LCLAN_90", "Link neve");
+
 define("LCLAN_91", "Áthelyezés");
 define("LCLAN_95", "Csoport");
 

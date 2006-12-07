@@ -56,4 +56,5 @@ define("LAN_425", "Privát üzenet küldése");
 define("LAN_426", "ezelőtt");
 
 define("USERLAN_1", "Felhasználói értékelés");
+define("USERLAN_2", "Nincs jogosultságod az oldal megtekintésére.");
 ?>

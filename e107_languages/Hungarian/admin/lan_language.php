@@ -18,4 +18,11 @@ define("LANG_LAN_12", "Többnyelvű táblák engedélyezése");
 define("LANG_LAN_13", "Többnyelvűség beállításai");
 define("LANG_LAN_14", "Az oldal alapértelmezett nyelve");
 define("LANG_LAN_15", "Jelöld be az adatok másolásához az alapértelmezett nyelvből. (hasznos a linkeknél, hírkategóriáknál stb.) ");
+define("LANG_LAN_16", "Több-nyelvű Adatbázis Használat"); 
+define("LANG_LAN_17", "Alapértelmezett nyelv - További táblák nem szükségesek.");
+define("LANG_LAN_18", "Használd az elhelyezett Subdomain-t a nyelv kiválasztásához:");
+define("LANG_LAN_19", "Pl.: fr.mydomain.com a francia nyelv kiválasztásához.");
+define("LANG_LAN_20", "Írd be a fő domain nevet az engedélyezéshez. Pl.: mydomain.com");
+
+define("LANG_LAN_21", "Nyelvi eszközök");
 ?>

@@ -9,4 +9,5 @@ define("UC_LAN_2", "Senki (inaktív)");
 define("UC_LAN_3", "Csak tagok");
 define("UC_LAN_4", "Csak olvasási jog");
 define("UC_LAN_5", "Csak adminok");
+define("UC_LAN_6", "Csak Főadmin");
 ?>

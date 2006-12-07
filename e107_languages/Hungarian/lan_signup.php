@@ -89,8 +89,22 @@ define("LAN_EMAIL_04", "Őrizd meg ezt a levelet, mivel az adataidat ez tartalma
 define("LAN_EMAIL_05", "Jelszavad titkosítva tárolódik, ezért nem kérhető ki, ha elfelejtetted. Ebben az esetben természetesen kérhetsz új jelszót.");
 define("LAN_EMAIL_06", "Regisztrációdat köszönjük!");
 
-
 define("LAN_SIGNUP_37", "A regisztráció ezen része kész. Az oldal Adminja jóvá fogja hagyni a tagságodat.  Ezzel egyidőben egy megerősítő email-t fogsz kapni, hogy tagságodat elfogadták.");
 define("LAN_SIGNUP_38", "Eltérő email címet írtál be. Add meg az érvényes email címet mindkét mezőben");
 define("LAN_SIGNUP_39", "Email cím újra:");
+
+// 0.7.6
+define("LAN_SIGNUP_40", "Aktiválás nem szükséges");
+define("LAN_SIGNUP_41", "Hozzáférésed már aktiválva van.");
+define("LAN_SIGNUP_42", "Probléma merült fel, az regisztrációs mail nem lett elküldve, lépj kapcsolatba az oldal adminisztrátorával.");
+define("LAN_SIGNUP_43", "Email Elküldve");
+define("LAN_SIGNUP_44", "Aktiváló email elküldve a következőnek:");
+define("LAN_SIGNUP_45", "Ellenőrizd a bejövő levelesládádat.");
+define("LAN_SIGNUP_47", "Aktiváló Email Újraküldése");
+define("LAN_SIGNUP_48", "Felhasználónév vagy Email");
+define("LAN_SIGNUP_49", "Ha érvénytelen email címmel regisztráltál, írj be egy újat és a jelszavadat ide:");
+define("LAN_SIGNUP_50", "Új Email");
+define("LAN_SIGNUP_51", "Régi jelszó");
+define("LAN_SIGNUP_52", "Érvénytelen jelszó");
+define("LAN_SIGNUP_53", "mező hibás érvényességi teszt");
 ?>

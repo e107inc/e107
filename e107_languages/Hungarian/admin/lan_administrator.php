@@ -8,6 +8,7 @@ define("ADMSLAN_1", "mostantól admin jogokkal rendelkezik.");
 define("ADMSLAN_2", "Frissítve.");
 define("ADMSLAN_3", "a fő adminisztrátor, adatai nem módosíthatóak.");
 define("ADMSLAN_4", "Tovább");
+define("ADMSLAN_5", "Hiba!");
 define("ADMSLAN_6", "fő adminisztrátor, így nem törölhető.");
 
 define("ADMSLAN_13", "Adminisztrátorok");
@@ -33,7 +34,7 @@ define("ADMSLAN_32", "Főoldal tartalmának beállítása");
 define("ADMSLAN_33", "Naplózás/statisztika beállítása");
 define("ADMSLAN_34", "Meta tag-ek beállítása");
 define("ADMSLAN_35", "Publikus feltöltés beállítása");
-//define("ADMSLAN_36", "Fórumok moderálása");
+define("ADMSLAN_36", "Képbeállítások beállítása");
 define("ADMSLAN_37", "Hozzászólások moderálása");
 //define("ADMSLAN_38", "Chatbox moderálása/beállítása");
 define("ADMSLAN_39", "Új hír közzététele");

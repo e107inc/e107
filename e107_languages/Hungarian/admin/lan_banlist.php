@@ -12,5 +12,6 @@ define("BANLAN_7", "Indoklás");
 define("BANLAN_8", "Felhasználó kitiltása");
 define("BANLAN_9", "Felhasználók kitiltása");
 define("BANLAN_10", "IP / E-mail cím / Indok");
-define("BANLAN_11", "Auto-ban: Több, mint 10 hibás bejelentkezési kisérlet");
+define("BANLAN_11", "Automatikus-Kitiltás: Több, mint 10 hibás bejelentkezési kisérlet");
+define("BANLAN_12", "Megjegyzés: A DNS megváltoztatása jelenleg letiltva, a host alapján történő kitiltáshoz engedélyezni kell. Az IP és email alapján történő kitiltás még normálisan műkődik.");
 ?>

@@ -74,6 +74,14 @@ define("EXTLAN_65", "Nem - Nem fog megjelenni a regisztrációs oldalon");
 define("EXTLAN_66", "Igen - Meg fog jelenni a regisztrációs oldalon");
 define("EXTLAN_67", "Nem - Megjelenik a regisztrációs oldalon");
 
+define("EXTLAN_68", "Mező:");
+define("EXTLAN_69", "Aktiválható");
+define("EXTLAN_70", "HIBA!! Mező:");
+define("EXTLAN_71", "Nem aktiválható!");
+define("EXTLAN_72", "Kikapcsolható");
+define("EXTLAN_73", "Nem lehet kikapcsolni!");
+define("EXTLAN_74", "ez egy védett mező és nem lehet használni.");
+
 
  //textbox
 define("EXTLAN_HELP_1", "<b><i>Paraméterek:</i></b><br />size - a mező mérete<br />maxlength - a mező maximális hossza<br />class - a mező css class definíciója<br />");

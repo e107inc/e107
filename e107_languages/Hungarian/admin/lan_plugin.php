@@ -23,7 +23,7 @@ define("EPL_ADLAN_16", "Plugin Információk");
 define("EPL_ADLAN_17", "Több info...");
 define("EPL_ADLAN_18", "Adatbázis táblák létrehozása sikertelen.");
 define("EPL_ADLAN_19", "Adatbázis sikeresen frissítve");
-define("EPL_ADLAN_20", "Beállítások sikeresen elmentve");
+// define("EPL_ADLAN_20", "Beállítások sikeresen elmentve");
 
 define("EPL_ADLAN_21", "A plugin már telepítve van");
 define("EPL_ADLAN_22", "Telepítve");
@@ -60,12 +60,21 @@ define("EPL_NOINSTALL", "Nincs szükség telepítésre, csak aktiváld az Admin 
 define("EPL_DIRECTORY", "könyvtárt");
 define("EPL_NOINSTALL_1", "Nincs szükség telepítésre, az eltávolításhoz töröld a(z) ");
 define("EPL_UPGRADE", "Frissítés");
-define("EPL_CONFIGURE", "Beállítás");
-
-define("EPL_ADLAN_46", "RSS beállítások sikeresen létrejöttek");
-define("EPL_ADLAN_47", "RSS beállítások törölve");
-define("EPL_ADLAN_48", "RSS beállítások létrehozása sikertelen");
-define("EPL_ADLAN_49", "RSS beállítások törlése sikertelen");
 
 define("EPL_ADLAN_50", "Hozzászólások törölve");
+
+define("EPL_ADLAN_53", "Könyvtár nem írható");
+define("EPL_ADLAN_54", "Válaszd ki a plugin törlési módszerét:");
+define("EPL_ADLAN_55", "Plugin törlése");
+
+define("EPL_ADLAN_57", "Plugin táblák törlése");
+define("EPL_ADLAN_58", "Ha a táblák nem kerülnek törlésre, a plugin-t újra tudod telepíteni adatvesztés nélkül.  Az újratelepítés során a táblák létrehozása hibát fog jelezni. A törléshez manuálisan kell eltávolítani.");
+define("EPL_ADLAN_59", "Plugin file-k törlése");
+define("EPL_ADLAN_60", "e107 megkisérli az összes, a plugin-hoz kapcsolódó file törlését.");
+// define("EPL_ADLAN_61", "Törlés megerősítése");
+define("EPL_ADLAN_62", "Kilépés");
+define("EPL_ADLAN_63", "Törlés:");
+
+define("LAN_UPGRADE_SUCCESSFUL", "Frissítés sikeres");
+define("LAN_INSTALL_SUCCESSFUL", "Telepítés sikeres");
 ?>

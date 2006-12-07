@@ -1,8 +1,27 @@
 <?php
-$text = "If your MySql server version supports it you can switch to the MySql sort method which is faster than the PHP sort method and 
-includes boolean search functionality.<br /><br />
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/search.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 21:49:18 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 
-<b>Chars</b> This is the number of text characters that will be displayed in the search result summary.<br /><br />
-<b>Results</b> This is the number of results that will show per page.";
-$ns -> tablerender("Search Help", $text);
+if (!defined('e107_INIT')) { exit; }
+
+$text = "Ha a MySQL szerver verziója támogatja, akkor beállíthatod 
+a MySQL rendezési módszerét, amely gyorsabb, mint a PHP rendezési módszere. Nézd meg a beállításokat.<br /><br />
+Ha az oldalad képírásos nyelvet használ, úgy mint Kínai vagy Japán, akkor mindenképpen 
+PHP rendezési módszert kell használni és ki kell kapcsolnod az egész szavak keresését.";
+$ns -> tablerender("Keresés - Súgó", $text);
 ?>

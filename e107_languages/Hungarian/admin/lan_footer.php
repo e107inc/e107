@@ -16,7 +16,7 @@ define("FOOTLAN_10", "Host");
 define("FOOTLAN_11", "PHP verzió");
 define("FOOTLAN_12", "mySQL");
 define("FOOTLAN_13", "Weboldal Info");
-define("FOOTLAN_14", "Dokumentáció");
+define("FOOTLAN_14", "Dokumentáció megtekintése");
 define("FOOTLAN_15", "Dokumentáció");
 define("FOOTLAN_16", "Adatbázis");
 define("FOOTLAN_17", "Karakterkészlet");

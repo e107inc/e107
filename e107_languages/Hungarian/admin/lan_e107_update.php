@@ -12,5 +12,5 @@ define("LAN_UPDATE_8", "Frissítés:");
 define("LAN_UPDATE_9", " -> ");
 define("LAN_UPDATE_10", "Elérhető frissítések");
 define("LAN_UPDATE_11", ".617 -> .7 frissítés folytatása");
-
+define("LAN_UPDATE_12", "Az egyik táblád duplikált bejegyzéseket tartalmaz.");
 ?>

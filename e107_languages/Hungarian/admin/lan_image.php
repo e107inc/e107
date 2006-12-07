@@ -38,4 +38,20 @@ define("IMALAN_33", "Csak adminok");
 define("IMALAN_34", "Enable Sleight");
 define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
 
+define("IMALAN_36", "Avatar méret és hozzáférés jóváhagyása");
+define("IMALAN_37", "Avatar Jóváhagyás");
+define("IMALAN_38", "Megengedett maximális szélesség");
+define("IMALAN_39", "Megengedett maximális magasság");
+define("IMALAN_40", "Túl széles");
+define("IMALAN_41", "Túl magas");
+define("IMALAN_42", "Nem találom");
+define("IMALAN_43", "Feltöltött avatar törlése");
+define("IMALAN_44", "Külső hivatkozás törlése");
+define("IMALAN_45", "Nem találom");
+define("IMALAN_46", "Túl nagy");
+define("IMALAN_47", "Összes feltöltött avatar");
+define("IMALAN_48", "Összes külső avatar");
+define("IMALAN_49", "Avatar-val rendelkező felhasználók");
+define("IMALAN_50", "Összes");
+define("IMALAN_51", "Avatar, kinek ");
 ?>

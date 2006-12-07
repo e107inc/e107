@@ -4,6 +4,6 @@
 # --------------------------------------------------------------------------
 
 define("PAGE_NAME", "Az oldal átmenetileg zárva");
-define("LAN_00", "átmenetileg zárva");
-define("LAN_01", "Karbantartás miatt az oldalt átmenetileg lezártuk. Nem tart sokáig - látogass vissza hamarosan, elnézést kérünk a kellemetlenségért.");
+define("LAN_SITEDOWN_00", "átmenetileg zárva");
+define("LAN_SITEDOWN_01", "Karbantartás miatt az oldalt átmenetileg lezártuk. Nem tart sokáig - látogass vissza hamarosan, elnézést kérünk a kellemetlenségért.");
 ?>

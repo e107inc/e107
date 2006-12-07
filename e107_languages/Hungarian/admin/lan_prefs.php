@@ -127,7 +127,7 @@ define("PRFLAN_133", "A GD bővítmény szükséges, nem található");
 define("PRFLAN_134", "Összes kérés átirányítása az oldal URL-re");
 define("PRFLAN_135", "például, ha az oldalad címe http://foo.com , és valaki a http://www.foo.com címet írja be, akkor át lesz irányítva a http://foo.com -ra");
 define("PRFLAN_136", "Azonos IP címről történő bejelentkezések maximális megengedett száma.");
-define("PRFLAN_137", "Display Memory Usage");
+define("PRFLAN_137", "Memória használat megjelenítése");
 define("PRFLAN_138", "Igazolókód engedélyezése elfelejtett jelszó esetén.");
 define("PRFLAN_139", "Figyelmeztetés megjelenítése, ha a Fő Admin már több, mint 30 napja nem változtatta meg a jelszavát");
 define("PRFLAN_140", "A regisztrációt követő megjelenő szöveg.");
@@ -147,5 +147,28 @@ define("PRFLAN_31", "Email Megerősítés");
 define("PRFLAN_152", "Nincs megerősítés");
 define("PRFLAN_153", "Admin Jóváhagyás");
 define("PRFLAN_154", "Új felhasználó megerősítési módszer <br />Ha az 'Admin Jóváhagyás' kiválasztva, ezt szükséges engedélyezni az email értesítéshez a felhasználó regisztrációjához <a href='".e_ADMIN."notify.php'>itt</a>.");
+
+define("PRFLAN_155", "A weboldalon megjelenő név engedélyezése");
+define("PRFLAN_156", "Összes megjelenő név törlése");
+define("PRFLAN_157", "Az összes megjelenő név a bejelentkező névre változik");
+define("PRFLAN_158", "Megjelenő név max. hossza");
+define("PRFLAN_159", "oldal megtekintése ezzel");
+
+define("PRFLAN_160", "Szerver ellenörzése az E-mail cím érvényességének ellenőrzésekor.");
+define("PRFLAN_161", "Összes hozzászólás letiltása");
+
+define("PRFLAN_162", "Kapcsolat információk");
+define("PRFLAN_163", "pl.: cég név, cím, telefon ...stb.");
+
+define("PRFLAN_164", "Kapcsolat Email másolat önmagának küldés engedélyezése");
+define("PRFLAN_165", "Engedélyezett spam megnyitás lehetősége, óvatosan használd");
+define("PRFLAN_166", "Megjelenítse az emotikonokat a hozzászólásoknál?");   
+
+define("PRFLAN_167", "Írj be egy email címet"); // subject to change.
+define("PRFLAN_168", "Oldal kapcsolattartó személyek");
+define("PRFLAN_169", "Ha a kiválasztott csoport egynél több személyt tartalmaz, a felhasználó kiválaszthatja a személyt a csoportból.");   
+
+define("PRFLAN_170", "Használd a DNS megváltoztatását a host kitiltáshoz");
+define("PRFLAN_171", "Ennek a beállításnak a bekapcsolásával engedélyezed a felhasználók kitiltását hostnév alapján, amely jobb, mint csak IP vagy email cím alapján történő kitiltás.  <br />Megjegyzés: Ez néhány kiszolgálónál befolyásolhatja az oldal betöltési idejét");
 
 ?>

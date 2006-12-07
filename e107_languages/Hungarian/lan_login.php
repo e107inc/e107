@@ -26,6 +26,6 @@ define("LAN_LOGIN_14", "Belépési kísérlet ismeretlen felhasználónévvel");
 define("LAN_LOGIN_15", "Belépési kísérlet hibás jelszóval");
 define("LAN_LOGIN_16", "Belépési kísérlet már használatban lévő felhasználónév/jelszó használatával");
 define("LAN_LOGIN_17", "Jelszó (hashed)");
-define("LAN_LOGIN_18", "Automatikus-kitíltás: Több, mint 10 hibás belépési kisérlet");
+define("LAN_LOGIN_18", "Automatikus-kitiltás: Több, mint 10 hibás belépési kisérlet");
 define("LAN_LOGIN_19", "> 10 hibás belépési kisérlet");
 ?>

@@ -14,10 +14,23 @@ define("DBLAN_8", "Alapbeállítások lementése");
 define("DBLAN_9", "Alapbeállítások lementése");
 define("DBLAN_10", "Adatbázis eszközök");
 define("DBLAN_11", "mySQL adatbázis");
-define("DBLAN_12", "optimalizálva");
+define("DBLAN_12", "Optimalizálva");
 define("DBLAN_13", "Vissza");
 define("DBLAN_14", "Kész");
 define("DBLAN_15", "Adatbázis frissítések keresése");
 define("DBLAN_16", "Frissítések keresése");
+define("DBLAN_17", "Beállított Név");
+define("DBLAN_18", "Beállított Érték");
+define("DBLAN_19", "Katt a gombra a tulajdonságszerkesztő megnyitásához (csak haladók részére)");
+define("DBLAN_20", "Tulajdonságszerkesztő");
+define("DBLAN_21", "Bejelöltek törlése");
+define("DBLAN_22", "Plugin: Megtekintés és Vizsgálat");
+define("DBLAN_23", "Vizsgálat kész");
+define("DBLAN_24", "Név");
+define("DBLAN_25", "Könyvtár");
+define("DBLAN_26", "Hozzáadott tartalom");
+define("DBLAN_27", "Telepítve");
+define("DBLAN_28", "Katt a gombra a plugin vizsgálatához a változtatás részére");
+define("DBLAN_29", "Plugin könyvtár vizsgálata");
 
 ?>

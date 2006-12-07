@@ -23,4 +23,5 @@ define("WMLAN_07","Az alaprendszer felülírása a {WMESSAGE} shortcode használ
 //define("WMLAN_08","Beállítások");
 
 define("WMLAN_09","Nincsenek üdvözlő üzenetek");
+define("WMLAN_10","Üzenet Fejléc");   
 ?>

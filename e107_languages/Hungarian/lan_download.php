@@ -64,7 +64,7 @@ define("LAN_dl_52", "Vendég");
 define("LAN_dl_53", "Letöltés megtekintése");
 define("LAN_dl_54", "Egy adminisztrátor értesülni fog e letöltésről, írj üzenetet, ha szükségesnek tartod.");
 define("LAN_dl_55", "<b>Ne</b> használd ezt a lehetőséget, ha más okból akarsz jelezni az admin-nak.");
-define("LAN_dl_56", "Nem működő letöltés jelentése");
+// define("LAN_dl_56", "Nem működő letöltés jelentése");
 define("LAN_dl_57", "küldő");
 define("LAN_dl_58", "Jelentés innét: ");
 define("LAN_dl_59", "Üzenet: ");

@@ -10,8 +10,8 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/content.php,v $
-|     $Revision: 1.2 $
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/db.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2006-12-07 21:49:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
@@ -19,7 +19,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = "Ezzel a lehetőséggel egy normál oldalt adhatsz a weboldaladhoz, amelyet a rendszer az adatbázisban fog tárolni. Az új oldalhoz egy link fog készülni az oldal főmenüjébe.<br />
-Ha fejlécet (címet) akarsz az oldalnak, írd be az oldal fejléce box-ba.";
-$ns -> tablerender("Tartalom súgó", $text);
+$text = "These collection of tools allow you to manage your database.";
+$ns -> tablerender("Database Tools", $text);
 ?>

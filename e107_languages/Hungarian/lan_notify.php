@@ -6,7 +6,10 @@
 define("NT_LAN_US_1", "Felhasználói regisztráció");
 
 define("NT_LAN_UV_1", "Felhasználói regisztráció ellenörzése");
-define("NT_LAN_UV_2", "Users session string");
+define("NT_LAN_UV_2", "Felhasználó ID: ");
+define("NT_LAN_UV_3", "Felhasználó Bejelentkező Név: ");
+define("NT_LAN_UV_4", "Felhasználó IP: ");
+
 
 define("NT_LAN_LI_1", "Felhasználó bejelentkezett");
 

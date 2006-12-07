@@ -34,7 +34,7 @@ define("DOWLAN_31", "Kategóriák");
 define("DOWLAN_32", "Beállítások");
 define("DOWLAN_33", "Biztosan törölni akarod ezt a letöltést?");
 define("DOWLAN_34", "Biztosan törölni akarod ezt a letöltés kategóriát?");
-define("DOWLAN_35", "Letöltés");
+
 define("DOWLAN_36", "törölve");
 define("DOWLAN_37", "Kezdő");
 define("DOWLAN_38", "Nincsenek kategóriák");
@@ -59,7 +59,6 @@ define("DOWLAN_56", "Sorrend");
 
 
 define("DOWLAN_59", "Filenév");
-define("DOWLAN_60", "Szerző");
 
 define("DOWLAN_62", "Növekvő");
 define("DOWLAN_63", "Csökkenő");
@@ -126,5 +125,8 @@ define("DOWLAN_148", "Jelöld be a jelenlegi időbélyegre frissítéshez");
 define("DOWLAN_149", "Vagy katt ide külső file használatához");
 
 define("DOWLAN_150", "Email küldése az admin részére hibás letöltés jelentéséhez");
+define("DOWLAN_151", "Hibás-letöltés jelentésének engedélyezése");
 
+define("DOWLAN_152", "Nem lehet a file-t mozgatni");
+define("DOWLAN_153", "File áthelyezése a letöltés mappába");   
 ?>

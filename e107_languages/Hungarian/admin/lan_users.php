@@ -130,7 +130,7 @@ define("USRLAN_137", "Users IP address of {IP} banned.");
 define("LAN_MAINADMIN","Fő Admin");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Nincs Ellenőrizve");
-define("LAN_BANNED","Kitíltva");
+define("LAN_BANNED","Kitiltva");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Megjelenő név");
@@ -173,4 +173,13 @@ define("DUSRLAN_37", "XUP");
 define("USRLAN_138", "Nem ellenőrzött felhasználók");
 define("USRLAN_139", "Hozzáférésed aktiválva.\n\nLátogass el a(z) {SITEURL} oldalra és lépj be az általad megadott felhasználói adatokkal.");
 
+define("USRLAN_140", "Email Újraküldve a következőnek");
+define("USRLAN_141", "E-mail újraküldése sikertelen a következőnek");
+define("USRLAN_142", "a következő aktiváló linkkel");
+
+define("LAN_BOUNCED","Visszadobott");
+define("USRLAN_143", "Visszadobott mail ellenőrzése");
+define("USRLAN_144", "Megerősítő Email újraküldése mindenkinek");
+define("USRLAN_145", "Visszautasított felhasználók");
+define("USRLAN_146", "Tag információk engedélyezése");
 ?>

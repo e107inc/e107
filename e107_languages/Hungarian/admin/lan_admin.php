@@ -140,7 +140,7 @@ define("ADLAN_132", "Nyelv");
 define("ADLAN_133", "Alapértelmezett");
 
 define("ADLAN_134", "Státusz");
-define("ADLAN_135", "Admin Log");
+define("ADLAN_135", "Admin Bejegyzések (Log)");
 
 define("ADLAN_136", "Mail");
 define("ADLAN_137", "E-mail beállítások és levélküldés");
@@ -185,6 +185,14 @@ define("ADLAN_LAT_6", "Jelentett fórumüzenet");
 define("ADLAN_LAT_7", "Feltöltött fájl");
 define("ADLAN_LAT_8", "Nem megtekintett adminisztrátor üzenetek vannak");
 
+define("ADLAN_ERR_1", "Figyelmeztetés!");
+define("ADLAN_ERR_2", "Olyan file-k vannak a szervereden, melyek rosszindulatúan kihasználhatóak. Ezeket <b>azonnal</b> törölnöd kell. Ezek az e107 0.6xx ágával összefüggő file-k. Töröld a következő könyvtárakat és tartalmukat:");
+define("ADLAN_ERR_3", "Egy vagy több file található a publikus feltöltések könyvtárban, melyek nincsennek az általad engedélyezett file tipusok listájában. Ezeket egy rosszindulatú felhasználó (támadó) helyezte ide és <b>azonnal</b> törölni kell. <b>Ne</b> nyisd meg ezeket a file-ket, mert képesek rosszindulatú kódokat futtatni, melyek a file-ben bújnak meg. Pl.: ne nyisd meg a böngészővel.<br /><br />Ha ezeket a file-ket jogosnak itéled meg és megfelelőnek tartod, akkor pontosítsd az engedélyezett file tipusokat. Ha egy általad engedélyezett file tipus a továbbiakban nem szerepel az engedélyezett file tipusok listájában, akkor hozzá kell adni (látsd admin => Feltöltések). Ne engedélyezd .html, .txt, ...stb. feltöltését, mert ezek tartalmazhatnak rosszindulatú javascript-et. És természetesen ne engedélyezd .php file feltöltését, mely egy másik tipusa a végrehajtó script-eknek.<br /><br />Lentebb láthatod azoknak a file-knek a listáját, melyek potenciálisan fenyegetőek:");
+define("ADLAN_ERR_4", "Helytelen plugin file-k");
+define("ADLAN_ERR_5", "A következő file-knek átnevezve kell lenniük következőre");
+define("ADLAN_ERR_6", "Utána katt ide a plugin mappa újraellenőrzéséhez.");
+
+
 // Common Terms
 define("LAN_EDIT","Módosítás");
 define("LAN_DELETE","Törlés");
@@ -193,7 +201,6 @@ define("LAN_UPDATE","Frissítés");
 define("LAN_SAVE","Mentés");
 define("LAN_SAVED","Elmentve");
 define("LAN_SETSAVED","A beállítások elmentve");
-define("LAN_ERROR","Hiba");
 define("LAN_CONFIRMDEL","Erősítsd meg a törlést");
 define("LAN_OPTIONS","Opciók");
 define("LAN_PREFS","Beállítások");
@@ -212,6 +219,7 @@ define("LAN_OK","OK");
 
 define("LAN_PRESET","Előbeállítás");
 define("LAN_PRESET_SAVED","Előbeállítás sikeresen elmentve");
+
 define("LAN_PRESET_DELETED","Előbeállítás sikeresen törölve");
 define("LAN_PRESET_CONFIRMDEL","Biztosan törölni akarod ezt a előbeállítást?");
 define("LAN_NOTWRITABLE"," nem írható, állítsd 777-re a könyvtár jogosultságait (CHMOD 777).");
@@ -236,4 +244,22 @@ define("LAN_OPTIONAL", "Opcionális");
 define("LAN_INACTIVE","Inaktív");
 
 define("LAN_BAN","Kitiltás");
+define("LAN_RATING", "Értékelés");
+
+define("LAN_UPLOAD_IMAGES","Képek feltöltése");
+define("LAN_UPLOAD_FILES","File-k feltöltése");
+define("LAN_UPLOAD_ADDFILE","További file-k hozzáadása");
+define("LAN_UPLOAD_CONFIRM","Az oldal nem mentett változtatásai elvesznek. Folytatod?");
+define("LAN_UPLOAD_777","Nincs meg a mappa vagy nem írható, a feltöltés előtt állítsd be a mappa jogosultságát CHMOD 777-re:");
+define("LAN_UPLOAD_SERVEROFF", "Ez az opció letiltva a szerveren, mint file feltöltési funkció");
+
+define("LAN_DISABLED","Letiltva");
+define("LAN_ENABLED", "Engedélyezve");
+
+define("LAN_PRESET_CONFIRMSAVE","Elmentse a jelenlegi értékeket alapértelmezetnek ehhez az oldalhoz?");
+define("LAN_CONFIGURE", "Beállítás"); 
+
+define("LAN_BACK","Vissza");
+
+define("LAN_CREDITS","Credits");  
 ?>

@@ -52,8 +52,6 @@ define("BNRLAN_64", "Reklámcsík frissítve");
 
 define("BANNER_MENU_L1", "Hirdetés");
 define("BANNER_MENU_L2", "Reklámcsík menü beállítás elmentve");
-
-//v.617
 define("BANNER_MENU_L3", "Címsor");
 define("BANNER_MENU_L5", "Reklámcsík beállítás");
 define("BANNER_MENU_L6", "a menüben megjelenítendő kampányok kiválasztása");
@@ -64,5 +62,6 @@ define("BANNER_MENU_L10", "Megjelenítés típusa");
 define("BANNER_MENU_L12", "egyszerű");
 define("BANNER_MENU_L13", "box-ban címsorral");
 define("BANNER_MENU_L18", "Menü beállítás frissítése");
+define("BANNER_MENU_L19", "megjelenített bannerek száma:<br />ez csak akkor használható, ha több reklámkampány van kiválasztva"); 
 
 ?>

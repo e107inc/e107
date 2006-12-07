@@ -1,6 +1,25 @@
 <?php
-$caption = "Karbantartás súgó";
-$text = "Ha frissíted az e107 portált, vagy csak egy időre ki akarod kapcsolni az oldalt, akkor itt bekapcsolhatod a karbantartás üzemmódot. Ilyenkor a látogatók egy magyarázatot tartalmazó oldalra lesznek irányítva. A frissítés végeztével bármikor kikapcsolható a karbantartás mód.<br />Ehhez a<br /> http://teoldalad.hu/".$ADMIN_DIRECTORY."admin.php oldalon keresztül kell belépned.";
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/ugflag.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-07 21:49:18 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 
-$ns -> tablerender($caption, $text);
+if (!defined('e107_INIT')) { exit; }
+
+$text = "If you are upgrading e107 or just need your site to be offline for a while just tick the maintenance box and your visitors will be redirected to a page explaining the site is down for repair. After you've finished un-tick the box to return site to normal.";
+
+$ns -> tablerender("Maintenance", $text);
 ?>

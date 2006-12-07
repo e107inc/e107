@@ -32,4 +32,8 @@ define("UE_LAN_HOMEPAGE", "Weboldal");
 define("UE_LAN_HOMEPAGE_DESC", "Felhasználó weboldala (url)");
 define("UE_LAN_BIRTHDAY", "Születésnap");
 define("UE_LAN_BIRTHDAY_DESC", "Születésnap");
+define("UE_LAN_LANGUAGE", "Nyelv");
+define("UE_LAN_LANGUAGE_DESC", "Felhasználó Nyelv");
+define("UE_LAN_COUNTRY", "Ország");
+define("UE_LAN_COUNTRY_DESC", "Felhasználó Ország (includes db table)");
 ?>
