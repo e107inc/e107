@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.1.1.1 $ - with modifications
-|     $Date: 2006-12-02 04:33:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $ - with modifications
+|     $Date: 2006-12-07 12:48:42 $
+|     $Author: mrpete $
 |
 | Modifications by steved:
 |	1. Can display sub-categories which contain sub-sub categories and files
@@ -679,7 +679,7 @@ function parse_download_cat_child_table($row, $subList)
 	$DOWNLOAD_CAT_SUB_NEW_ICON = $new;
 	$dcatname=$tp->toHTML($row['download_category_name'],FALSE,"emotes_off, no_make_clickable");
 	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>" : $dcatname);
-	$DOWNLOAD_CAT_SUB_NAME_LINKED = "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$$dcatname."</a>";
+	$DOWNLOAD_CAT_SUB_NAME_LINKED = "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>";
 	$DOWNLOAD_CAT_SUB_DESCRIPTION = $tp->toHTML($row['download_category_description']);
 	$DOWNLOAD_CAT_SUB_COUNT = ($row['d_subcount'] ? $row['d_subcount'] : $row['d_count']);
 	$DOWNLOAD_CAT_SUB_SIZE = parsesize(($row['d_subsize'] ? $row['d_subsize'] : $row['d_size']));
