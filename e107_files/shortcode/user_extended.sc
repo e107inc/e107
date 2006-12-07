@@ -2,7 +2,7 @@
 //EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
 include(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
-global $currentUser, $sql, $tp, $loop_uid, $e107;
+global $currentUser, $sql, $tp, $loop_uid, $e107, $imode;
 if(isset($loop_uid) && intval($loop_uid) == 0) { return ""; }
 $ueStruct = getcachedvars("user_extended_struct");
 if(!$ueStruct)
@@ -64,9 +64,9 @@ if ($parms[1] == 'icon')
 	{
 		return constant(strtoupper($parms[0])."_ICON");
 	}
-	elseif(file_exists(e_IMAGE."user_icons/{$parms[0]}.png"))
+	elseif(file_exists(e_IMAGE."packs/".$imode."/user_icons/{$parms[0]}.png"))
 	{
-		return "<img src='".e_IMAGE."user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
+		return "<img src='".e_IMAGE."packs/".$imode."/user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
 	}
 	return "";
 }
