@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.2 $
-|   $Date: 2006-12-05 09:28:02 $
+|   $Revision: 1.3 $
+|   $Date: 2006-12-07 12:59:43 $
 |   $Author: mrpete $
 +---------------------------------------------------------------+
 */
@@ -127,7 +127,8 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
-if (/* isset($WYSIWYG) && $WYSIWYG == TRUE && */ check_class($pref['post_html']) && isset($e_wysiwyg) && $e_wysiwyg != "") {
+// your code should run off e_WYSIWYG
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
 	echo wysiwyg($e_wysiwyg);
@@ -256,8 +257,16 @@ echo "</head>
 $sql->db_Mark_Time("End Head, Start Body");
 
 //
-// K: (The rest is ignored for popups, which have no menus) [reserved; user mode]
+// K: (The rest is ignored for popups, which have no menus)
 //
+
+// require $e107_popup =1; to use it as header for popup without menus
+if(!isset($e107_popup))
+{
+	$e107_popup = 0;
+}
+if ($e107_popup != 1) {
+	
 
 //
 // L: (optional) Body JS to disable right clicks [reserved; user mode]
@@ -449,5 +458,5 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_HEADER);
 }
 $sql->db_Mark_Time('(End: Parse Admin Header)');
-
+}
 ?>

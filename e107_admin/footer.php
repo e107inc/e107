@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-05 09:28:02 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-07 12:59:43 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -78,6 +78,8 @@ if (ADMIN == TRUE) {
 //
 // B.2 Send footer template
 //
+if(varset($e107_popup)!=1){
+
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_FOOTER);
 }
@@ -125,6 +127,8 @@ $rinfo = '';
 		}
 		echo "</table>";
 	}
+
+} // End of regular-page footer (the above NOT done for popups)
 
 //
 // D Close DB connection. We're done talking to underlying MySQL
