@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:49 $ - mods to make password protected pages work
+|     $Revision: 1.3 $
+|     $Date: 2006-12-07 17:47:20 $ - mods to make password protected pages work
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -285,6 +285,7 @@ class pageClass
 
 	function pageRating($page_rating_flag)
 	{
+		global $imode;
 		if($page_rating_flag)
 		{
 			require_once(e_HANDLER."rate_class.php");
@@ -297,7 +298,7 @@ class pageClass
 				{
 					$ratearray[2] = 0;
 				}
-				$rate_text .= "<img src='".e_IMAGE."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
+				$rate_text .= "<img src='".e_IMAGE."packs/".$imode."/rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
 				$rate_text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
 				$rate_text .= ($ratearray[0] == 1 ? "vote" : "votes");
 			}
