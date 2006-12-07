@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2006-12-04 14:39:02 $
+|     $Revision: 1.48 $
+|     $Date: 2006-12-07 12:52:43 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -107,6 +107,8 @@ if(varset($e107_popup)!=1){
 		echo "</table>";
 	}
 
+} // End of regular-page footer (the above NOT done for popups)
+
 //
 // D Close DB connection. We're done talking to underlying MySQL
 //
@@ -123,8 +125,6 @@ if(varset($e107_popup)!=1){
 		$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
 	}
 	
-} // End of regular-page footer (the above NOT done for popups)
-
 if ($pref['developer']) {
 	global $oblev_at_start,$oblev_before_start;
 	if (ob_get_level() != $oblev_at_start) {
