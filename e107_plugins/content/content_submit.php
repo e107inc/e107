@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.24 $
-|		$Date: 2006-07-28 14:07:14 $
-|		$Author: lisa_ $
+|		$Revision: 1.25 $
+|		$Date: 2006-12-07 12:57:01 $
+|		$Author: mrpete $
 +---------------------------------------------------------------+
 */
 
@@ -39,20 +39,6 @@ $eArrayStorage = new ArrayData();
 
 //these have to be set for the tinymce wysiwyg
 $e_wysiwyg	= "content_text";
-if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
-	define("e_WYSIWYG",TRUE);
-	$tiny = wysiwyg($e_wysiwyg);
-}else{
-	define("e_WYSIWYG",FALSE);
-}
-
-//include js
-function headerjs(){
-	global $tiny;
-	echo $tiny;
-}
-
 global $tp;
 
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
