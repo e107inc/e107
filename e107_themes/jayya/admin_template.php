@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-08 08:10:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -100,7 +100,7 @@ if (!ADMIN) {
 if ($prehelp!='') {
 	$ADMIN_HEADER .= $prehelp;
 } else {
-	$ADMIN_HEADER .= "{ADMIN_SITEINFO}";
+	$ADMIN_HEADER .= "{ADMIN_UPDATE} {ADMIN_SITEINFO}";
 }
 
 $ADMIN_HEADER .= "<br />
@@ -146,12 +146,12 @@ $ADMIN_FOOTER .= "</tr>
 $BUTTONS_START = "<table class='fborder' style='width: 100%'>";
 
 $BUTTON = "<tr><td class='link_button'><div class='emenuBar link_button'>
-<div class='menuButton link_button' onmouseover=\"eover(this, 'menuButton_over link_button')\" onmouseout=\"eover(this, 'menuButton link_button')\" {ONCLICK} 
+<div class='menuButton link_button' onmouseover=\"eover(this, 'menuButton_over link_button')\" onmouseout=\"eover(this, 'menuButton link_button')\" {ONCLICK}
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
 
 $BUTTON_OVER = "<tr><td class='link_button'><div class='emenuBar link_button'>
-<div class='menuButton link_button' onmouseover=\"eover(this, 'menuButton_over link_button')\" onmouseout=\"eover(this, 'menuButton link_button')\" {ONCLICK} 
+<div class='menuButton link_button' onmouseover=\"eover(this, 'menuButton_over link_button')\" onmouseout=\"eover(this, 'menuButton link_button')\" {ONCLICK}
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW_OVER."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
 
@@ -159,7 +159,7 @@ $BUTTONS_END = "</table>";
 
 $SUB_BUTTONS_START = "<table class='fborder' style='width:100%;'>
 <tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
-<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"expandit('{SUB_HEAD_ID}');\" 
+<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"expandit('{SUB_HEAD_ID}');\"
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{SUB_HEAD}</div></div></td></tr>
 <tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
