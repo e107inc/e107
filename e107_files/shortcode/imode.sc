@@ -1,0 +1,2 @@
+global $imode;
+$imode = $parm;
