@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-12-09 06:43:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,7 +27,7 @@ if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['tr
 	$text .= ONLINE_L2.MEMBERS_ONLINE.(MEMBERS_ONLINE ? ", ": "").MEMBER_LIST."<br />";
 	//}
 	$text .= ONLINE_L3.ON_PAGE;
-	
+
 	global $e107cache;
 	$members_totals = $e107cache->retrieve("online_menu_totals", 120);
 	if($members_totals == false) {
@@ -39,10 +39,11 @@ if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['tr
 		$e107cache->set("online_menu_totals", $members_totals);
 	}
 	$text .= $members_totals;
-	
+
 } else {
 	if(ADMIN) {
-		$text = TRACKING_MESSAGE;
+		global $tp;  
+		$text = $tp->toHtml(TRACKING_MESSAGE,TRUE);
 	} else {
 		return;
 	}

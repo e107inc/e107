@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-10-22 22:36:03 $
+|     $Revision: 1.17 $
+|     $Date: 2006-12-09 06:43:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -78,8 +78,9 @@ if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['tr
 		extract($row);
 		$text .= "<br />".ONLINE_EL5.": ".$total_members."<br />".ONLINE_EL6.": <a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
 	}
-} else {
-	$text = TRACKING_MESSAGE;
+} elseif(ADMIN) {
+	global $tp;
+	$text = $tp->toHtml(TRACKING_MESSAGE,TRUE);
 }
 
 

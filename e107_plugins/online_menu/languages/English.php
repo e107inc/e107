@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-16 19:50:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2006-12-09 06:43:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,5 +23,5 @@ define("ONLINE_L3", "On this page: ");
 define("ONLINE_L4", "Online");
 define("ONLINE_L5", "Members");
 define("ONLINE_L6", "Newest");
-define("TRACKING_MESSAGE", "Online user tracking is currently disabled, please enable it <a href='".e_ADMIN."users.php?options'>here</a><br />");
+define("TRACKING_MESSAGE", "Online user tracking is currently disabled, please enable it [link=".e_ADMIN."users.php?options]here[/link][br]");   
 ?>
