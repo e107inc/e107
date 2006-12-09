@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-07 12:59:43 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-09 06:53:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -230,8 +230,8 @@ $etag = md5($page);
 header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
-$pref['compression_level'] == 6;
-if(strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip") || strstr($_SERVER['HTTP_USER_AGENT'], "Mozilla")) {
+$pref['compression_level'] = 6;
+if(isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
 	$browser_support = true;
 }
 if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {
