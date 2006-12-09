@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-12-07 12:52:07 $
-|     $Author: mrpete $
+|     $Revision: 1.25 $
+|     $Date: 2006-12-09 06:46:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -27,7 +27,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // Please DO NOT re-order these items without asking first! You WILL break something ;)
 // These letters match the USER footer (that's why there is B.1,B.2)
 //
-// A Ensure sql and traffic objects exist 
+// A Ensure sql and traffic objects exist
 // B.1 Clear cache if over a week old
 // B.2 Send the footer templated data
 // C Dump any/all traffic and debug information
@@ -38,7 +38,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // G Browser-Server time sync script (must be the last one generated/sent)
 // H Final HTML (/body, /html)
 // I collect and send buffered page, along with needed headers
-// 
+//
 
 //
 // A Ensure sql and traffic objects exist
@@ -84,7 +84,7 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_FOOTER);
 }
 
-	
+
 //
 // C Dump all debug and traffic information
 //
@@ -106,13 +106,13 @@ $rinfo = '';
 		echo "\n<!-- DEBUG -->\n";
 		$db_debug->Show_All();
 	}
-	
+
 	/*
 	changes by jalist 24/01/2005:
 	show sql queries
 	usage: add ?showsql to query string, must be admin
 	*/
-	
+
 	if(ADMIN && isset($queryinfo) && is_array($queryinfo))
 	{
 		$c=1;
@@ -145,7 +145,7 @@ $rinfo = '';
 		global $ns;
 		$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
 	}
-	
+
 if ($pref['developer']) {
 	global $oblev_at_start,$oblev_before_start;
 	if (ob_get_level() != $oblev_at_start) {
@@ -230,8 +230,8 @@ $etag = md5($page);
 header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
-$pref['compression_level'] == 6;
-if(strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip") || strstr($_SERVER['HTTP_USER_AGENT'], "Mozilla")) {
+$pref['compression_level'] = 6;
+if(isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
 	$browser_support = true;
 }
 if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {

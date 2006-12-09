@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-12-07 12:52:43 $
-|     $Author: mrpete $
+|     $Revision: 1.49 $
+|     $Date: 2006-12-09 06:46:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -28,7 +28,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuse
 // Please DO NOT re-order these items without asking first! You WILL break something ;)
 // These letters match the USER footer (that's why there may be B.1,B.2)
 //
-// A Ensure sql and traffic objects exist 
+// A Ensure sql and traffic objects exist
 // [Next few ONLY if a regular page; not done for popups]
 // B Send the footer templated data
 // C Dump any/all traffic and debug information
@@ -39,7 +39,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuse
 // G Browser-Server time sync script (must be the last one generated/sent)
 // H Final HTML (/body, /html)
 // I collect and send buffered page, along with needed headers
-// 
+//
 
 //
 // A Ensure sql and traffic objects exist
@@ -63,7 +63,7 @@ if(varset($e107_popup)!=1){
 	// B Send footer template
 	//
 	parseheader(($ph ? $cust_footer : $FOOTER));
-	
+
 	//
 	// C Dump all debug and traffic information
 	//
@@ -85,13 +85,13 @@ if(varset($e107_popup)!=1){
 		echo "\n<!-- DEBUG -->\n";
 		$db_debug->Show_All();
 	}
-	
+
 	/*
 	changes by jalist 24/01/2005:
 	show sql queries
 	usage: add ?showsql to query string, must be admin
 	*/
-	
+
 	if(ADMIN && isset($queryinfo) && is_array($queryinfo))
 	{
 		$c=1;
@@ -124,7 +124,7 @@ if(varset($e107_popup)!=1){
 		global $ns;
 		$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
 	}
-	
+
 if ($pref['developer']) {
 	global $oblev_at_start,$oblev_before_start;
 	if (ob_get_level() != $oblev_at_start) {
@@ -209,8 +209,8 @@ $etag = md5($page);
 header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
-$pref['compression_level'] == 6;
-if(strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip") || strstr($_SERVER['HTTP_USER_AGENT'], "Mozilla")) {
+$pref['compression_level'] = 6;
+if(isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
 	$browser_support = true;
 }
 if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {
