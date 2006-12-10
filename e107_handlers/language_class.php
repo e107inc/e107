@@ -4,8 +4,8 @@
 |     e107 website system - Language Class.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/language_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-09-12 01:53:11 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-10 12:44:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,8 +39,7 @@ class language{
 			"cs" => "Czech",
 			"ch" => "Chamorro",
 			"ce" => "Chechen",
-			"cn" => "Chinese-Simp",
-
+			"cn" => "ChineseSimp",
 			"cv" => "Chuvash",
 			"kw" => "Cornish",
 			"co" => "Corsican",
@@ -162,7 +161,7 @@ class language{
 	        "ts" => "Tsonga",
 	        "tk" => "Turkmen",
 	        "tr" => "Turkish",
-			"tw" => "Chinese-Trad",
+			"tw" => "ChineseTrad",
 	        "ug" => "Uighur",
 	        "uk" => "Ukrainian",
 	        "ur" => "Urdu",
@@ -198,11 +197,13 @@ class language{
 
 		$name = array(
 			"Arabic" 		=> "العربية",
+			"Bosnian"		=> "Bosanski",
 			"Bulgarian"		=> "Български",
 			"Croatian"		=> "Hrvatski",
+			"ChineseTrad"  	=> "繁体中文",
+			"ChineseSimp"  	=> "简体中文",
 			"Dutch"			=> "Nederlands",
 			"English"		=> "English",
-			"Farsi"			=> "فارسي",
 			"French"		=> "Français",
 			"German"		=> "Deutsch",
 			"Greek"			=> "Ελληνικά",
@@ -211,8 +212,10 @@ class language{
 			"Italian"		=> "Italiano",
 			"Japanese"		=> "日本語",
 			"Korean"		=> "한국어",
+			"Lithuanian"	=> "Lietuvių",
 			"Mongolian"		=> "монгол",
 			"Nepali"		=> "नेपाली",
+			"Persian"	   	=> "فارسي",
 		    "Portuguese"	=> "Português",
 			"Polish"		=> "Polski",
 			"Romanian"		=> "Romanesc",
