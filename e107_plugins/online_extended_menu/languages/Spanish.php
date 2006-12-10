@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Spanish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-01-19 00:30:15 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-10 21:09:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -20,5 +20,5 @@ define("ONLINE_EL7", "viendo");
 define("ONLINE_EL8", "Máximo de visitas ");
 define("ONLINE_EL9", "el");
 
-define("TRACKING_MESSAGE", "Tracking online de usuario desactivado. Actívelo <a href='".e_ADMIN."users.php?options'>aquí</a></span><br />");
+define("TRACKING_MESSAGE", "El tracking online de usuario desactivado. Actívelo [link=".e_ADMIN."users.php?options]aquí[/link][br]");
 ?>
