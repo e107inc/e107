@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_notify.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.6 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -26,8 +26,8 @@ define("NT_LAN_FL_2", "Adresse IP exclue pour cause de flood");
   
 define("NT_LAN_SN_1", "".GLOBAL_LAN_NEWS_2." proposée");
   
-define("NT_LAN_NU_1", "Mis(e) à jour");
+define("NT_LAN_NU_1", "Mise &agrave; jour");
   
 define("NT_LAN_ND_1", "".GLOBAL_LAN_NEWS_2." supprimée");
-define("NT_LAN_ND_2", "Identifiant de l'".GLOBAL_LAN_NEWS_1." supprimée");
+define("NT_LAN_ND_2", "Identifiant de l".GLOBAL_LAN_L_PREFIX_NEWS.GLOBAL_LAN_NEWS_1." supprimée");
 ?>

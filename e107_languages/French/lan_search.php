@@ -4,15 +4,15 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.14 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
 define("PAGE_NAME", "Recherche");
   
 define("LAN_20", "Erreur");
-define("LAN_98", "".GLOBAL_LAN_NEWS_2."s");
+define("LAN_98", "".GLOBAL_LAN_NEWS_4."");
 define("LAN_99", "Commentaires");
 define("LAN_140", "Utilisateurs");
 define("LAN_180", "Chercher");
@@ -84,8 +84,8 @@ define("LAN_SEARCH_51", "Toutes les catégories");
 define("LAN_SEARCH_52", "Trouvé dans");
 define("LAN_SEARCH_53", "Occurrence complète"); //??? item
 define("LAN_SEARCH_54", "Titre seulement");
-define("LAN_SEARCH_55", "Rechercher dans les catégories d'".GLOBAL_LAN_NEWS_1."");
-define("LAN_SEARCH_56", "Toutes les catégories d'".GLOBAL_LAN_NEWS_1."");
+define("LAN_SEARCH_55", "Rechercher dans les catégories d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_1."");
+define("LAN_SEARCH_56", "Toutes les catégories d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_1."");
 define("LAN_SEARCH_57", "Commentaires postés pour");
 define("LAN_SEARCH_58", "Tous les secteurs");
 define("LAN_SEARCH_59", "Tous les commentaires");
@@ -100,7 +100,7 @@ define("LAN_SEARCH_67", "Tous les détails des téléchargements");
 define("LAN_SEARCH_68", "Date");
 define("LAN_SEARCH_69", "Pertinence");
 define("LAN_SEARCH_70", "Posté dans les commentaires du téléchargement");
-define("LAN_SEARCH_71", "Posté dans les commentaires des ".GLOBAL_LAN_NEWS_1."s ");
+define("LAN_SEARCH_71", "Posté dans les commentaires des ".GLOBAL_LAN_NEWS_3." ");
 define("LAN_SEARCH_72", "Signature");
 define("LAN_SEARCH_73", "Pas de Signature.");
 define("LAN_SEARCH_74", "Inscrit(e) le");

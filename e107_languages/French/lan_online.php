@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_online.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -32,14 +32,14 @@ define("DOWNLOAD", "Téléchargements");
 define("EMAIL", "Courriel");
 define("FORUM", "Index principal du forum");
 define("LINKS", "Liens");
-define("NEWS", "".GLOBAL_LAN_NEWS_2."s");
+define("NEWS", "".GLOBAL_LAN_NEWS_4."");
 define("OLDPOLLS", "Anciens sondages");
 define("POLLCOMMENT", "Sondage");
 define("PRINTPAGE", "Page d'impression");
 define("LOGIN", "Page d'identification");
 define("SEARCH", "Recherche");
 define("STATS", "Statistiques du site");
-define("SUBMITNEWS", "Proposition d'".GLOBAL_LAN_NEWS_1."s");
+define("SUBMITNEWS", "Proposition d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_3."");
 define("UPLOAD", "Uploads public");
 define("USERPAGE", "Profil des utilisateurs");
 define("USERSETTINGS", "Paramètres des comptes");

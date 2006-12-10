@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-12-04 21:36:48 $
+|     $Revision: 1.13 $
+|     $Date: 2006-12-10 08:44:00 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ define("LOGIN_MENU_L11", "Zone Admin");
 define("LOGIN_MENU_L12", "Paramètres");
 define("LOGIN_MENU_L13", "Profil");
 define("LOGIN_MENU_L14", "".GLOBAL_LAN_NEWS_1."");
-define("LOGIN_MENU_L15", "".GLOBAL_LAN_NEWS_1."s");
+define("LOGIN_MENU_L15", "".GLOBAL_LAN_NEWS_3."");
 define("LOGIN_MENU_L16", "message chatbox");
 define("LOGIN_MENU_L17", "messages chatbox");
 define("LOGIN_MENU_L18", "commentaire");
@@ -39,7 +39,7 @@ define("LOGIN_MENU_L27", "et");
 define("LOGIN_MENU_L28", "Connexion");
 define("LOGIN_MENU_L29", "article");
 define("LOGIN_MENU_L30", "articles");
-define("LOGIN_MENU_L31", "Afficher les nouvelles ".GLOBAL_LAN_NEWS_1."s");
+define("LOGIN_MENU_L31", "Afficher les nouvelles ".GLOBAL_LAN_NEWS_3."");
 define("LOGIN_MENU_L32", "Afficher les nouveaux articles");
 define("LOGIN_MENU_L33", "Afficher les nouveaux messages de Chatbox");
 define("LOGIN_MENU_L34", "Afficher les nouveaux commentaires");

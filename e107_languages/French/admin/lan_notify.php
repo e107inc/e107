@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("NU_LAN_5", "Déconnexion d'un utilisateur");
 define("NS_LAN_1", "Événements de Sécurité");
 define("NS_LAN_2", "IP bannie pour flood du site");
   
-define("NN_LAN_1", "Événements des ".GLOBAL_LAN_NEWS_2."s");
+define("NN_LAN_1", "Événements des ".GLOBAL_LAN_NEWS_4."");
 define("NN_LAN_2", "".GLOBAL_LAN_NEWS_2." proposée par un utilisateur");
 define("NN_LAN_3", "".GLOBAL_LAN_NEWS_2." postée par un admin");
 define("NN_LAN_4", "".GLOBAL_LAN_NEWS_2." éditée par un admin");

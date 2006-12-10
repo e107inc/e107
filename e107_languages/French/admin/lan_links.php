@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -59,7 +59,7 @@ define("LINKLAN_4", "Générateur de sous-liens");
 define("LINKLAN_5", "Générer des sous-liens");
 define("LINKLAN_6", "Créer des sous-liens depuis");
 define("LINKLAN_7", "Sous quel lien créer les sous-liens?");
-define("LINKLAN_8", "Catégorie d'".GLOBAL_LAN_NEWS_2."");
+define("LINKLAN_8", "Catégorie d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_2."");
 define("LINKLAN_9", "Catégorie de téléchargements");
 define("LINKLAN_10", "Créer un sous-lien");
 ?>

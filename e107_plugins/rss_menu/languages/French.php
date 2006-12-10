@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/French.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:40:10 $
+|     $Revision: 1.11 $
+|     $Date: 2006-12-10 08:44:39 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("RSS_LAN05","Nombre d'items (0=inactif)");
 
 define("RSS_MENU_L1", " peuvent être syndiqué en utilisant ces ressources.");
 define("RSS_MENU_L2", "Ressources RSS");
-define("RSS_MENU_L3", "Nos ".GLOBAL_LAN_NEWS_1."s");
+define("RSS_MENU_L3", "Nos ".GLOBAL_LAN_NEWS_3."");
 define("RSS_MENU_L4", "Nos commentaires");
 define("RSS_MENU_L5", "Nos sujets de forum");
 define("RSS_MENU_L6", "Les messages de notre forum");
@@ -21,7 +21,7 @@ define("RSS_MENU_L7", "Les messages de notre chatbox");
 define("RSS_MENU_L8", "Les bugs de notre traceur de bugs");
 define("RSS_MENU_L9", "Nos téléchargements");
 
-define("RSS_NEWS","".GLOBAL_LAN_NEWS_2."s");
+define("RSS_NEWS","".GLOBAL_LAN_NEWS_4."");
 define("RSS_COM","Commentaires"); 
 define("RSS_ART","Articles");
 define("RSS_REV", "Chroniques");
@@ -33,10 +33,10 @@ define("RSS_FOR","Forum");
 define("RSS_DL","Téléchargememts");
 define("RSS_PLUGIN_LAN_1", "RSS");
 define("RSS_PLUGIN_LAN_6", "Liens des Ressources");
-define("RSS_PLUGIN_LAN_7", "La ressource rss des ".GLOBAL_LAN_NEWS_1."s");
+define("RSS_PLUGIN_LAN_7", "La ressource rss des ".GLOBAL_LAN_NEWS_3."");
 define("RSS_PLUGIN_LAN_8", "La ressource rss des téléchargements");
 define("RSS_PLUGIN_LAN_9", "La ressource rss des commentaires");
-define("RSS_PLUGIN_LAN_10", "La ressource rss des catégories d'".GLOBAL_LAN_NEWS_1.":");
+define("RSS_PLUGIN_LAN_10", "La ressource rss des catégories d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_1.":");
 define("RSS_PLUGIN_LAN_11", "La ressource rss des catégories de téléchargement:");
 define("RSS_PLUGIN_LAN_14", "Commentaires");
 
@@ -65,7 +65,7 @@ define("RSS_LAN_ADMIN_10", "créer une entrée ressource rss");
 define("RSS_LAN_ADMIN_11", "importer des ressources rss");
 define("RSS_LAN_ADMIN_12", "Topic id");
 
-define("RSS_LAN_ADMIN_13", "Inclure les items des Autres-".GLOBAL_LAN_NEWS_1."s dans les Ressources d'".GLOBAL_LAN_NEWS_1."s?");
+define("RSS_LAN_ADMIN_13", "Inclure les items des Autres-".GLOBAL_LAN_NEWS_3." dans les Ressources d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_3."?");
 define("RSS_LAN_ADMIN_14", "Activer");
 define("RSS_LAN_ADMIN_15", "Cocher les liens afin de les marquer pour l'importation ...");
 define("RSS_LAN_ADMIN_16", "Importer?");

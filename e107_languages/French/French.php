@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/French.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:32:25 $
+|     $Revision: 1.11 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -28,11 +28,4 @@ define("CORE_LAN10", "Cookie corrompu détecté - déconnexion.");
 define("LAN_WARNING", "Avertissement!");
 define("LAN_ERROR", "Erreur");
 define("LAN_ANONYMOUS", "Anonyme");
-
-
-
-//***** Changez les termes de cette section pour voir ces termes changer sur tout le site *****
-define("GLOBAL_LAN_NEWS_1", "actualité");
-define("GLOBAL_LAN_NEWS_2", "Actualité");
-//**************************************************************
 ?>

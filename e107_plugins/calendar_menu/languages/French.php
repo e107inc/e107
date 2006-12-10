@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/French.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-12-04 21:33:30 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-10 08:43:33 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -192,7 +192,7 @@ define("EC_LAN_140", "Prochains événements");
 define("EC_LAN_141", "Pas d'événements prévus");
 define("EC_LAN_142", "Seul les utilisateurs enregistrés et connectés peuvent s'inscrire à ces événements");
 define("EC_LAN_143", "Option non disponible");
-define("EC_LAN_144", "à ");
+define("EC_LAN_144", " à ");
 define("EC_ADLAN_A10", "Configuration");
 define("EC_ADLAN_A11", "Catégories");
 define("EC_ADLAN_A12", "Calendrier");

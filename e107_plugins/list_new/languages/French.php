@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/French.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:36:24 $
+|     $Revision: 1.11 $
+|     $Date: 2006-12-10 08:43:53 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -127,11 +127,11 @@ define("LIST_MENU_16", "");
 define("LIST_MENU_17", "");
 define("LIST_MENU_18", "");
 define("LIST_MENU_19", "");
-define("LIST_NEWS_1", "".GLOBAL_LAN_NEWS_2."s");
+define("LIST_NEWS_1", "".GLOBAL_LAN_NEWS_4."");
 define("LIST_NEWS_2", "Aucune ".GLOBAL_LAN_NEWS_2."");
 define("LIST_COMMENT_1", "Commentaires");
 define("LIST_COMMENT_2", "Aucun commentaires");
-define("LIST_COMMENT_3", "".GLOBAL_LAN_NEWS_2."s");
+define("LIST_COMMENT_3", "".GLOBAL_LAN_NEWS_4."");
 define("LIST_COMMENT_4", "Faq");
 define("LIST_COMMENT_5", "sondages");
 define("LIST_COMMENT_6", "Docs");

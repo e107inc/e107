@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_filemanager.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ define("FMLAN_36", "Répertoire des menus personnalisables");
 define("FMLAN_37", "Répertoire des pages personnalisables");
 define("FMLAN_38", "Fichier déplacé avec succès vers ");
 define("FMLAN_39", "Impossible de déplacer le fichier vers");
-define("FMLAN_40", "Répertoire des Images-".GLOBAL_LAN_NEWS_2."s");
+define("FMLAN_40", "Répertoire des Images-".GLOBAL_LAN_NEWS_4."");
 define("FMLAN_41", "Déplacer vers le répertoire Téléchargements.");
 define("FMLAN_42", "Déplacer vers le répertoire Images-Téléchargements.");
 define("FMLAN_43", "Supprimer les fichiers sélectionnés");

@@ -4,13 +4,13 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/trackback/languages/French.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:44:28 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-10 08:44:45 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
 define("TRACKBACK_L1", "Configurer les Trackbacks");
-define("TRACKBACK_L2", "Cette extension vous permet d'utiliser le trackback dans les ".GLOBAL_LAN_NEWS_1."s publiées.");
+define("TRACKBACK_L2", "Cette extension vous permet d'utiliser le trackback dans les ".GLOBAL_LAN_NEWS_3." publiées.");
 define("TRACKBACK_L3", "Trackback est maintenant installé et activé.");
 define("TRACKBACK_L4", "Paramètres des trackbacks  sauvegardés.");
 define("TRACKBACK_L5", "Activer");

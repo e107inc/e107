@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_comment.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:32:25 $
+|     $Revision: 1.11 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ define("COMLAN_312", "Message dupliqué - impossible d'accepter.");
 define("COMLAN_313", "Emplacement");
 define("COMLAN_314", "Modérer les commentaires");
 define("COMLAN_315", "Références externes à votre contenu (Trackbacks)");
-define("COMLAN_316", "Pas de références externes à votre contenu (Trackback) pour cet apport d'".GLOBAL_LAN_NEWS_1.".");
+define("COMLAN_316", "Pas de références externes à votre contenu (Trackback) pour cet apport d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_1.".");
 define("COMLAN_317", "Modérer les références externes à votre contenu (Trackbacks)");
 define("COMLAN_318", "Éditer le commentaire");
 define("COMLAN_319", "édité");

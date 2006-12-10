@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.8 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ define("SEALAN_36", "Liste déroulante");
 define("SEALAN_37", "Cases à cocher");
 define("SEALAN_38", "Boutons Radio");
 define("SEALAN_39", "Pages Personnifiées");
-define("LAN_98", "".GLOBAL_LAN_NEWS_2."s");
+define("LAN_98", "".GLOBAL_LAN_NEWS_4."");
 define("LAN_197", "Téléchargements");
 define("LAN_418", "Page personnifiée");
 define("SEALAN_40", "Options de Recherche");

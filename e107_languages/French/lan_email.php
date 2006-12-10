@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_email.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-12-04 21:32:25 $
+|     $Revision: 1.8 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("LAN_EMAIL_8", "Commentaire");
  define("LAN_EMAIL_15", "Identifiant : ");
  define("LAN_EMAIL_106", "L'adresse courriel semble être invalide");
  define("LAN_EMAIL_185", "Envoyer l'article");
- define("LAN_EMAIL_186", "Envoyer l'".GLOBAL_LAN_NEWS_1."");
+ define("LAN_EMAIL_186", "Envoyer l".GLOBAL_LAN_L_PREFIX_NEWS.GLOBAL_LAN_NEWS_1."");
  define("LAN_EMAIL_187", "Courriel du destinataire");
  define("LAN_EMAIL_188", "J'ai pensé que tu pourrais être intéressé par cette ".GLOBAL_LAN_NEWS_1." de");
  define("LAN_EMAIL_189", "J'ai pensé que tu pourrais être intéressé par cet article de");

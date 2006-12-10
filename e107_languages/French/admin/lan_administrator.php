@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_administrator.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.9 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -27,11 +27,11 @@ define("ADMSLAN_22", "Modérer/Bannir/etc. les utilisateurs");
 define("ADMSLAN_23", "Créer/Éditer des menus/pages personnifiés");
 define("ADMSLAN_24", "Gérer les catégories de téléchargements");
 define("ADMSLAN_25", "Uploader/Gérer les fichiers");
-define("ADMSLAN_26", "Gérer les catégories d'".GLOBAL_LAN_NEWS_1."");
+define("ADMSLAN_26", "Gérer les catégories d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_1."");
 define("ADMSLAN_27", "Gérer les catégories de liens");
 define("ADMSLAN_28", "Désactiver le site pour effectuer une maintenance");
 define("ADMSLAN_29", "Configurer les bannières");
-define("ADMSLAN_30", "Configurer les ".GLOBAL_LAN_NEWS_1."s d'autres sites");
+define("ADMSLAN_30", "Configurer les ".GLOBAL_LAN_NEWS_3." d'autres sites");
 define("ADMSLAN_31", "Configurer les émoticônes");
 define("ADMSLAN_32", "Configurer la page d'accueil");
 define("ADMSLAN_33", "Activer/Désactiver/Configurer les statistiques");
@@ -39,7 +39,7 @@ define("ADMSLAN_34", "Ajouter/Éditer les méta-tags");
 define("ADMSLAN_35", "Configurer l'upload public de fichiers");
 define("ADMSLAN_36", "Configurer les paramètres image");
 define("ADMSLAN_37", "Modérer les commentaires");
-define("ADMSLAN_39", "Poster des ".GLOBAL_LAN_NEWS_1."s");
+define("ADMSLAN_39", "Poster des ".GLOBAL_LAN_NEWS_3."");
 define("ADMSLAN_40", "Poster des liens");
 define("ADMSLAN_41", "Poster des articles");
 define("ADMSLAN_42", "Poster des chroniques");
@@ -47,7 +47,7 @@ define("ADMSLAN_43", "Poster des pages de contenu");
 define("ADMSLAN_44", "Poster des fichiers à télécharger");
 define("ADMSLAN_45", "Poster des sondages");
 define("ADMSLAN_46", "Configurer les messages de bienvenue");
-define("ADMSLAN_47", "Gérer les ".GLOBAL_LAN_NEWS_1."s proposées");
+define("ADMSLAN_47", "Gérer les ".GLOBAL_LAN_NEWS_3." proposées");
 define("ADMSLAN_49", "Tout Cocher");
 define("ADMSLAN_51", "Tout Décocher");
 define("ADMSLAN_52", "Mettre à jour l&#039;administrateur");

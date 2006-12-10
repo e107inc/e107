@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_menus.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.10 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ define("MENLAN_28", "Entrer une page (un lien) par ligne. Entrez une partie suff
 define("MENLAN_29", "Sélectionner une composition graphique");
 define("MENLAN_30", "Pour voir l'organisation des menus dans une disposition personnalisée, veuillez sélectionner la disposition ici:");
 define("MENLAN_31", "Disposition par défaut");
-define("MENLAN_32", "Disposition en manchettes d'".GLOBAL_LAN_NEWS_1."s ");
+define("MENLAN_32", "Disposition en manchettes d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_3." ");
 define("MENLAN_33", "Disposition personnalisée");
 define("MENLAN_34", "Emboîtée");
 define("MENLAN_35", "Configurer les menus");

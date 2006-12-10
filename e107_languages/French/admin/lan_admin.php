@@ -4,15 +4,15 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.16 $
+|     $Date: 2006-12-10 08:43:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
-define("ADLAN_0", "".GLOBAL_LAN_NEWS_2."s");
-define("ADLAN_1", "Ajouter/Éditer/Supprimer des ".GLOBAL_LAN_NEWS_1."s");
-define("ADLAN_2", "Catégories des ".GLOBAL_LAN_NEWS_2."s");
-define("ADLAN_3", "Ajouter/Éditer/Supprimer des catégories d'".GLOBAL_LAN_NEWS_1."");
+define("ADLAN_0", "".GLOBAL_LAN_NEWS_4."");
+define("ADLAN_1", "Ajouter/Éditer/Supprimer des ".GLOBAL_LAN_NEWS_3."");
+define("ADLAN_2", "Catégories des ".GLOBAL_LAN_NEWS_4."");
+define("ADLAN_3", "Ajouter/Éditer/Supprimer des catégories d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_1."");
 define("ADLAN_4", "Préférences");
 define("ADLAN_5", "Éditer les préférences du site");
 define("ADLAN_6", "Menus");
@@ -39,8 +39,8 @@ define("ADLAN_28", "Message de Bienvenue");
 define("ADLAN_29", "Configurer les messages de bienvenue");
 define("ADLAN_30", "Gestionnaire de fichiers");
 define("ADLAN_31", "Gérer/Uploader des fichiers");
-define("ADLAN_32", "".GLOBAL_LAN_NEWS_2."s proposées");
-define("ADLAN_33", "Voir les ".GLOBAL_LAN_NEWS_2."s proposées");
+define("ADLAN_32", "".GLOBAL_LAN_NEWS_4." proposées");
+define("ADLAN_33", "Voir les ".GLOBAL_LAN_NEWS_4." proposées");
 define("ADLAN_34", "Liste des bannis");
 define("ADLAN_35", "Bannir un visiteur");
 define("ADLAN_36", "Utilisateurs");
@@ -69,8 +69,8 @@ define("ADLAN_58", "Emoticônes");
 define("ADLAN_59", "Configurer les émoticônes");
 define("ADLAN_60", "Page d'accueil");
 define("ADLAN_61", "Configurer la page Accueil en fonction des groupes");
-define("ADLAN_62", "".GLOBAL_LAN_NEWS_2."s d'autres sites");
-define("ADLAN_63", "Configurer les ".GLOBAL_LAN_NEWS_1."s d'autres sites");
+define("ADLAN_62", "".GLOBAL_LAN_NEWS_4." d'autres sites");
+define("ADLAN_63", "Configurer les ".GLOBAL_LAN_NEWS_3." d'autres sites");
 define("ADLAN_64", "Statistiques");
 define("ADLAN_65", "Activer/Désactiver/Configurer les statistiques");
 define("ADLAN_66", "Méta-Tags");
@@ -107,7 +107,7 @@ define("ADLAN_103", "Cliquer ici pour le changer maintenant");
 define("ADLAN_104", "Sécurité");
 define("ADLAN_105", "Images");
 define("ADLAN_106", "Paramètres des images");
-define("ADLAN_107", "".GLOBAL_LAN_NEWS_2."s non vérifiées ");
+define("ADLAN_107", "".GLOBAL_LAN_NEWS_4." non vérifiées ");
 define("ADLAN_108", "Fichiers uploadés non vérifiés ");
 define("ADLAN_109", "Informations");
 define("ADLAN_110", "Utilisateurs inscrits ");
@@ -161,7 +161,7 @@ define("ADLAN_CL_6", "Outils");
 define("ADLAN_CL_7", "Extensions");
 define("ADLAN_CL_8", "Docs");
 define("ADLAN_LAT_1", "À approuver");
-define("ADLAN_LAT_2", "".GLOBAL_LAN_NEWS_2."s proposées ");
+define("ADLAN_LAT_2", "".GLOBAL_LAN_NEWS_4." proposées ");
 define("ADLAN_LAT_3", "Articles proposés");
 define("ADLAN_LAT_4", "Chroniques proposées");
 define("ADLAN_LAT_5", "Liens proposés");
