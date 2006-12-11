@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/sitedown_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-09 17:03:50 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-11 07:48:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,8 @@ if(!$SITEDOWN_TABLE){
 	$SITEDOWN_TABLE .= "
     <html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 	<head>
+		<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+		<meta http-equiv='content-style-type' content='text/css' />\n
 		<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='all' /> 
 		<title>{SITEDOWN_TABLE_PAGENAME}</title>
 	</head>
