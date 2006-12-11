@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.138 $
-|   $Date: 2006-11-12 18:48:14 $
+|   $Revision: 1.139 $
+|   $Date: 2006-12-11 07:55:49 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -994,7 +994,7 @@ class newspost {
 		$text .= " <tr>
 		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_106."</span></td>
 		<td class='forumheader3' style='width:40%'>
-		".r_userclass("subnews_class", $pref['subnews_class']). "</td></tr>";
+		".r_userclass("subnews_class", $pref['subnews_class'],"off","nobody,public,guest,member,admin,classes"). "</td></tr>";
 
 
 		$text .= "
