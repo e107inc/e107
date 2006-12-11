@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-11 08:34:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,7 +57,6 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
     	$new_email = FALSE;
 	}
 
-
 	if($_POST['submit_resend'])
 	{
 		if($_POST['resend_email'] && !$new_email && $sql->db_Select_gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (user_loginname= \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) "))
@@ -84,6 +83,7 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 			}
 		}
 
+
 		if($sql->db_Select("user", "*", "(user_loginname = \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) AND user_ban=2 AND user_sess !='' LIMIT 1"))
 		{
 			$row = $sql -> db_Fetch();
@@ -98,8 +98,8 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
         	$mailheader_e107id = $nid;
 			require_once(e_HANDLER."mail.php");
 
-
-/*            echo "Sending to: ".$row['user_email'];
+/*
+            echo "Sending to: ".$row['user_email'];
             require_once(FOOTERF);
             exit;
 */
@@ -117,6 +117,9 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
                 exit;
             }
          }
+
+		require_once(e_HANDLER."message_handler.php");
+		message_handler("ALERT",LAN_106); // email not valid.
 		exit;
 	}
 	elseif(!$_POST['submit_resend'])
