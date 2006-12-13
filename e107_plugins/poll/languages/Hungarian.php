@@ -50,14 +50,11 @@ define("POLLAN_37", "aktív:");
 define("POLLAN_38", "-");
 define("POLLAN_39", "Köszönjük a szavazatot!");
 define("POLLAN_40", "Eredmények megtekintése");
-
 define("POLLAN_41", "A szavazás korlátozva csak tagoknak");
 define("POLLAN_42", "A szavazás korlátozva csak adminisztrátoroknak");
 define("POLLAN_43", "Nincs jogosultságod a szavazásra");
-
 define("POLLAN_44", "Szavazás törlése?");
-
 define("POLLAN_45", "Szavazás sikeresen frissítve");
-
+define("POLLAN_46", "Mező(k) maradtak üresen");
 
 ?>

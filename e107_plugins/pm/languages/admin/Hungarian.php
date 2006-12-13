@@ -61,4 +61,7 @@ define('ADLAN_PM_53', "Nincs konvertálandó üzenet.");
 define('ADLAN_PM_54', "Fő beállítások");
 define('ADLAN_PM_55', "Határértékek");
 define('ADLAN_PM_56', "Konverzió");
+
+define('ADLAN_PM_57', "Ez a plugin egy minden tulajdonsággal felruházott Privát Üzenetküldő Rendszer.");
+define('ADLAN_PM_58', "Privát Üzenetküldő");
 ?>

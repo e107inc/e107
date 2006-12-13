@@ -1,21 +1,9 @@
 <?php
-/*
-+---------------------------------------------------------------+
-|        e107 website system
-|        ../../cms_plugins/content/languages/Hungarian/lan_content_frontpage.php Hungarian language file
-|        Translated using translator plugin by Izydor (www.izydor.net)
-|
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.1 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
 
-define("CONT_FP_1", "Tartalom kategória");
-define("CONT_FP_2", "Kezdõlap");
-
+define("CONT_FP_1", "Tartalom kategÃ³ria");
+define("CONT_FP_2", "FÅ‘oldal");
 
 ?>

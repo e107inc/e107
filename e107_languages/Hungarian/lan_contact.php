@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_contact.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-07 21:49:18 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-13 20:44:36 $
+|     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
 

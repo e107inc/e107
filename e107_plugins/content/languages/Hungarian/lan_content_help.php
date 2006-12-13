@@ -1,135 +1,74 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Hungarian/lan_content_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-12 08:04:11 $
-|     $Author: spuri_hu $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.14 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
 
-define("CONTENT_ADMIN_HELP_ORDER_1", "
-<i>this page shows all categories and subcategories present.</i><br /><br />
-<b>detailed list</b><br />you see the category id and the category name. also you see several options to manage the order of the categories.<br />
-<br />
-<b>explanation of icons</b><br />
-".CONTENT_ICON_ORDERALL." manage the global order of content item regardless of category.<br />
-".CONTENT_ICON_ORDERCAT." manage the order of content items in the specific category.<br />
-<img src='".e_IMAGE."admin_images/up.png' alt='' /> the up button allow you to move a content item one up in order.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt='' /> the down button allow you to move a content item one down in order.<br />
-<br />
-<b>order</b><br />here you can manually set the order of all the categories in this each parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />
-");
-define("CONTENT_ADMIN_HELP_ORDER_2", "
-<i>this page shows all content items from the category you have selected.</i><br /><br />
-<b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br />
-<br />
-<b>explanation of icons</b><br />
-<img src='".e_IMAGE."admin_images/up.png' alt='' /> the up button allow you to move a content item one up in order.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt='' /> the down button allow you to move a content item one down in order.<br />
-<br />
-<b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />
-");
-define("CONTENT_ADMIN_HELP_ORDER_3", "
-<i>this page shows all content items from main parent category you have selected.</i><br /><br />
-<b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br />
-<br />
-<b>explanation of icons</b><br />
-<img src='".e_IMAGE."admin_images/up.png' alt='' /> the up button allow you to move a content item one up in order.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt='' /> the down button allow you to move a content item one down in order.<br />
-<br />
-<b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />
-");
+define("CONTENT_ADMIN_HELP_1", "Tartalomkezelő - Súgó");
+
+define("CONTENT_ADMIN_HELP_ITEM_1", "<i>Ha még nem hoztál létre Fő, Szülő Kategóriát, akkor lépj az <a href='".e_SELF."?cat.create'>Új kategória létrehozása</a> oldalra.</i><br /><br />A <b>kategóriát</b><br />kiválaszthatod egy legördülő menüből, a hozzá tartozó tartalmak karbantartásához.<br /><br />Egy fő, szülő kategória legördülő menüből történő kiválasztása esetén megjelenik az összes hozá tartozó tartalom.<br />Egy alkategória kiválasztása esetén csak azok a tartalmak jelennek meg, melyek az adott alkategóriához tartoznak.<br /><br />Ezenfelül használnod kell a jobboldali menüt egy adott kategória összes tartalmának megjelenítéséhez.");
+
+define("CONTENT_ADMIN_HELP_ITEM_2", "<b>Első betű</b><br />Ha egy összetett tartalom rendelkezik nagy kezdőbetűs címmel, akkor láthatsz egy kezdőbetűvel ellátott gombot, mely az azzal a kezdőbetűvel kezdődő tartalmak kiválasztására szolgál. Az 'Összes' gomb kiválasztása esetén megjelenik a kategóriához tartozó valamennyi tartalom.<br /><br /><b>Részletes lista</b><br />Láthatsz egy listát az összes tartalomról, mely tartalmazza a tartalom id, ikon, szerző, fejléc [alcím] információit és az opciókat.<br /><br /><b>Jelenlegi ikonok</b><br />".CONTENT_ICON_USER." : link a szerző profiljához<br />".CONTENT_ICON_LINK." : link a tartalomhoz<br />".CONTENT_ICON_EDIT." : tartalom módosítása<br />".CONTENT_ICON_DELETE." : tartalom törlése<br />");
+
+define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>Módosítás, szerkesztés</b><br />Itt módosíthatod a tartalom összes információját és jóváhagyhatod a változtatásokat.<br /><br />Ha szükséges a tartalomhoz a kategória megváltoztatása, először azt végezd el. Miután kiválasztottad a megfelelő kategóriát, változtasd meg vagy adj hozzá előre beállított mezőket, mielőtt jováhagyod a változásokat.");
+
+define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "<b>Kategória</b><br />Válassz egy kategóriát a legördülő választódobozból a tartalom létrehozása céljából.<br />");
+
+define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "<b>Létrehozás</b><br />Az összes szükséges információt meg kell adnod a tartalomhoz, majd jóvá kell hagyni.<br /><br />Vedd figyelembe, hogy a különböző Fő szülő kategóriák beállítása más és más lehet; különböző mezőket rendelhetsz hozzájuk. Ezért neked először mindig ki kell választanod egy kategóriát, mielőtt kitöltöd a mezőket !");
+
+define("CONTENT_ADMIN_HELP_CAT_1", "<i>Ez az oldal megjeleníti az összes kategóriát és alkategóriát.</i><br /><br /><b>Részletes lista</b><br />Itt láthatsz egy alkategória listát, mely tartalmazza az alkategória id, ikon, szerző, kategória [alcím] információkat és az opciókat.<br /><br /><b>Jelenlegi ikonok</b><br />".CONTENT_ICON_USER." : link a szerző profiljához<br />".CONTENT_ICON_LINK." : link a kategóriához<br />".CONTENT_ICON_EDIT." : kategória módosítása<br />".CONTENT_ICON_DELETE." : kategória törlése<br />");
+
+define("CONTENT_ADMIN_HELP_CAT_2", "<i>Ezen az oldalon új kategóriát hozhatsz létre</i><br /><br />Mindig válassz egy szülő kategóriát, mielőtt kitöltöd a többi mezőt !<br /><br />Ezt mindig meg kell csinálni, mivel számos egyedi kategória beállításokat kell betölteni a rendszerbe.<br /><br />Alapértelmezett esetben a kategória oldal az új Főkategória létrehozását jeleníti meg.");
+
+define("CONTENT_ADMIN_HELP_CAT_3", "<i>Ezen az oldalon a kategória szerkesztése, módosítása jelenik meg.</i><br /><br /><b>Kategória módosítása</b><br />Módosíthatod a kategória (alkategória) összes információját, majd jóváhagyhatod a változásokat.<br /><br />Ha meg akarod változtatni a kategória szülőhelyét, akkor először azt csináld. Miután kiválasztottad a megfelelő kategóriát, módosíthatod az összes egyéb mezőt.");
+
+define("CONTENT_ADMIN_HELP_ORDER_1", "<i>Ezen az oldalon megjelenik az összes, meglévő kategória és alkategória.</i><br /><br /><b>detailed list</b><br />Láthatod a kategória id-jét és a kategória nevét. Ezenfelül számos beállítási opciót találsz a kategóriák sorrendjének beállításához.<br /><br /><b>Jelenlegi ikonok</b><br />".CONTENT_ICON_USER." : link a szerző profiljához<br />".CONTENT_ICON_LINK." : link a kategóriához<br />".CONTENT_ICON_ORDERALL." : Beállíthatod a tartalmak általános sorrendjét, figyelmen kívül hagyva a kategóriákat.<br />".CONTENT_ICON_ORDERCAT." : Beállíthatod a tartalmak sorrenjét egy adott kategóriában.<br />".CONTENT_ICON_ORDER_UP." : A fel gomb lehetőséget biztosít a tartalom sorrendben történő felfelő mozgatására.<br />".CONTENT_ICON_ORDER_DOWN." : A le gomb lehetőséget biztosít a tartalom sorrendben történő lefelé mozgatására.<br /><br /><b>Sorrend</b><br />Itt manuálisan kiválaszthatod az összes kategória sorrendjét bármelyik szülő kategóriában. Meg kell változtatnod az értéket a kiválasztódobozban az általad választott sorrendhez, majd rányomni a frissítés gombra az új sorrend elmentéséhez.<br />");
+
+define("CONTENT_ADMIN_HELP_ORDER_2", "<i>Ezen az oldalon láthatod a kategóriából kiválasztott összes tartalmat.</i><br /><br /><b>Részletes lista</b><br />Láthatod a tartalom id-jét, a tartalom szerzőjét és a tartalom címét. Ezenkívül láthatsz még további beállítási lehetőségeket a tartalmak sorrendjének kialakításához.<br /><br /><b>Jelenlegi ikonok</b><br />".CONTENT_ICON_USER." : link a szerző profiljához<br />".CONTENT_ICON_LINK." : link a tartalomhoz<br />".CONTENT_ICON_ORDER_UP." : A fel gomb lehetőséget biztosít a tartalom sorrendben történő felfelé mozgatásra.<br />".CONTENT_ICON_ORDER_DOWN." : A le gomb lehetőséget biztosít a tartalom sorrendben történő lefelé mozgatásra.<br /><br /><b>Sorrend</b><br />Itt manuálisan kiválaszthatod az összes kategória sorrendjét, melyek ebben a főkategóriában vannak. Meg kell változtatnod az értéket a kiválasztódobozban az általad választott sorrendhez, majd rányomni a frissítés gombra az új sorrend elmentéséhez.<br />");
+
+define("CONTENT_ADMIN_HELP_ORDER_3", "<i>Ezen az oldalon láthatod a főkategóriából kiválasztott összes tartalmat.</i><br /><br /><b>Részletes lista</b><br />Láthatod a tartalom id-jét, a tartalom szerzőjét és a tartalom címét. Ezenkívül láthatsz még további beállítási lehetőségeket a tartalmak sorrendjének kialakításához.<br /><br /><b>Jelenlegi ikonok</b><br />".CONTENT_ICON_USER." : link a szerző profiljához<br />".CONTENT_ICON_LINK." : link a tartalomhoz<br />".CONTENT_ICON_ORDER_UP." : A fel gomb lehetőséget biztosít a tartalom sorrendben történő felfelé mozgatásra.<br />".CONTENT_ICON_ORDER_DOWN." : A le gomb lehetőséget biztosít a tartalom sorrendben történő lefelé mozgatásra.<br /><br /><b>Sorrend</b><br />Itt manuálisan kiválaszthatod az összes kategória sorrendjét, melyek ebben a főkategóriában vannak. Meg kell változtatnod az értéket a kiválasztódobozban az általad választott sorrendhez, majd rányomni a frissítés gombra az új sorrend elmentéséhez.<br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_1", "Ezen az oldalon kiválaszthatsz egy főkategóriát, melynek szeretnéd beállítani az opcióit vagy megváltoztatni az alapbeállításait.<br /><br /><b>Jelenlegi ikonok</b><br />".CONTENT_ICON_USER." : link a szerző profiljához<br />".CONTENT_ICON_LINK." : link a kategóriához<br />".CONTENT_ICON_OPTIONS." : beállítások módosítása<br /><br /><br />
+Az alapbeállítások csak akkor kerülnek alkalmazásra, mikor létrehozol egy főkategóriát. Tehát, mikor létrehozol egy új főkategóriát, akkor a főkategória ezekkel az alapbeállításokkal kerül elmentésre. Ezeket az előre definiált beállításokat bármikor megváltoztathatod.
+<br /><br />
+Bármelyik főkategória rendelkezhet saját beállításokkal, melyek egyedileg meghatározhatóak az adott sajátos főkategória számára<br /><br />
+<b>inherit</b><br />The inherit checkboxes allow you to overrride the main parents individual options, and use the default preferences for the checked main parents.");
+
+//define("CONTENT_ADMIN_HELP_OPTION_2", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />");
+//<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
+define("CONTENT_ADMIN_HELP_MANAGER_1", "Ezen az oldalon láthatod az összes kategória listáját. Karbantarthatod bármelyik kategóriát a 'Személyes tartalomkezelő' ikonra kattintva.<br /><br /><b>Jelenlegi ikonok</b><br />".CONTENT_ICON_USER." : link a szerző profiljához<br />".CONTENT_ICON_LINK." : link a kategóriához<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : személyes tartalomkezelő, módosítás<br />");
+
+define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>Ezen az oldalon hozzáadhatsz felhasználókat a kiválasztott kategóriához, ez csak egy kattintás.</i><br /><br /><b>Személyes karbantartás</b><br />Hozzáadhatsz felhasználókat az egyes kategóriákhoz. Ez tehát úgy működik, hogy ezek a felhasználók karbantarthatják a kategórián belüli saját személyes tartalmaikat, de mindez az admin oldalon kívül valósul meg (content_manager.php).<br /><br />A felhasználó hozzáadása a baloldali oszlopból valósul meg, csak rá kell kattintani a névre. Ezután, láthatod, hogy az adott név átkerül a jobboldali oszlopba. A felhasználó hozzáadása után, ezek a felhasználók bekerülnek ebbe a kategóriába.");
 
 
-
-define("CONTENT_ADMIN_HELP_SUBMIT_1", "
-<i>On this page you see a list of all content items that were submitted by users.</i><br /><br />
-<b>detailed list</b><br />You see a list of these content items with their id, icon, main parent, heading [subheading], author and options.<br /><br />
-<b>options</b><br />you can post or delete a content item using the buttons shown.
-");
+define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>Ezen az oldalon láthatod a felhasználók által beküldött tartalmak listáját.</i><br /><br /><b>Részletes lista</b><br />Láthatod ezeknek a tartalmaknak a listáját, a tartalmak id-jét, ikonját, fő szülöjét, címét [alcímét], szerzőjét és beállításait.<br /><br /><b>Beállítások</b><br />Lehetőséged van a tartalom közzétételére vagy törlésére a megfelelő gombra kattintva.");
 
 
 
-define("CONTENT_ADMIN_HELP_CAT_1", "
-<i>this page shows all categories and subcategories present.</i><br /><br />
-<b>detailed list</b><br />You see a list of all subcategories with their id, icon, author, category [subheading] and options.<br />
-<br />
-<b>explanation of icons</b><br />
-".CONTENT_ICON_EDIT." : for all categories you can click this button to edit the category.<br />
-".CONTENT_ICON_DELETE." : for all categories you can click this button to delete the category.<br />
-".CONTENT_ICON_OPTIONS." : for only the main category (at the top of the list) you can click this button to set and control all options.<br />
-");
-define("CONTENT_ADMIN_HELP_CAT_2", "
-".CONTENT_ICON_CONTENTMANAGER_SMALL." : (site admin only) for each subcategory you can click this button to manage the personalmanager for other admins.<br />
-<br />
-<b>personal manager</b><br />you can assign admins to certain categories. In doing so, these admins can manage their personal content items within these categories from outside of the admin page (content_manager.php).
-");
-define("CONTENT_ADMIN_HELP_CAT_3", "
-<i>this page allows you to create a new category</i><br /><br />
-ALWAYS CHOOSE A PARENT CATEGORY BEFORE YOU FILL IN THE OTHER FIELDS !<br /><br />
-This must be done, because some unique category preferences need to be loaded in the system.
-");
-define("CONTENT_ADMIN_HELP_CAT_4", "
-<i>this page shows the category edit form.</i><br /><br />
-<b>category edit form</b><br />you can now edit all information for this (sub)category and submit your changes.
-");
-define("CONTENT_ADMIN_HELP_CAT_5", "
-");
-define("CONTENT_ADMIN_HELP_CAT_6", "
-<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
-<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
-<b>division into eight sections</b><br />the options are divided into eight main sections. You see the different section in the right menu. you can click on them to go to the specific set of options for that section.<br /><br />
-<b>create</b><br />in this section you can specify options for the creation of content items on the admin pages on the admins end.<br /><br />
-<b>submit</b><br />in this section you can specify options for the submit form of content items.<br /><br />
-<b>path and theme</b><br />in this section you can set a theme for this main parent, and provide path locations to where you have stored your images for this main parent.<br /><br /><b>general</b><br />in this section you can specify general options to use throughout all the content pages.<br /><br />
-<b>list pages</b><br />in this section you can specify options pages, where content items are listed.<br /><br />
-<b>category pages</b><br />in this section you can specify options how to show the category pages.<br /><br />
-<b>content pages</b><br />in this section you can specify options how to show the content item page.<br /><br />
-<b>menu</b><br />in this section you can specify options for the menu of this main parent.<br /><br />
-");
-define("CONTENT_ADMIN_HELP_CAT_7", "
-<i>on this page you can assign admins to the selected category you have clicked</i><br /><br />
-Assign admin from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the admins in the right colomn are assigned to this category.
-");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "Ezen az oldalon beállíthatod az admin által létrehozott tartalom oldal opcióit.<br /><br />Meghatározhatod, melyik terület legyen engedélyezve, mikor az admin (vagy egy személyes tartalomkezelő) létrehoz egy új tartalmat<br /><br /><b>Egyedi adat tag-ek</b><br />Engedélyezheted az adminnak vagy a felhasználónak, hogy az egyedi adat tag-ek segítségével tetszőleges mezőket adjon hozzá a tartalomhoz. Ezek a tetszőleges mezők üres kulcs=>érték párosok. Pl.: hozzá akarsz adni a 'fényképész'-hez egy kulcs mezőt és el akarod látni egy 'általam készített képek' érték mezővel. Mindkettő, a kulcs és az érték mező üres szövegmezők, melyek előre kiválasztott mezők lesznek a létrehozás oldalon.<br /><br /><b>Előre beállított adat tag-ek</b><br />Függetlenül a szokásos adat tag-ektől, hozzáadhatsz előre beállított adat tag-eket. A különbség az, hogy az előre beállított adat tag-ben a kulcs mező már hozzá van adva és a felhasználónak csak az érték mezőt kell hozzáadnia a beállításhoz. A fenti 'fényképész' példában előre meg lehet határozni és a felhasználónak hozzá kell adnia az 'általam készített képek' értéket. A kiválasztódobozból történő opció kiválasztásával meghatározhatod az elem típusát. A felugró ablakban hozzáadhatod az összes információt az előre beállított adat tag-hez.<br />");
 
-define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "
-<b>category</b><br />please select a category from the select box to create your content item for.<br />
-");
-define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "
-always select a category before you fill in other fields !<br />
-this needs to be done, because each main parent category (and subcategories in it) can have different preferences.<br /><br />
-<b>creation form</b><br />you can now provide all information for this content item and submit it.<br /><br />
-Be aware of the fact that diffenent main parent categories can have a different set of preferences, and therefore can have more fields available for you to fill in.
-");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "A beküldés beállításai a tartalom beküldés felhasználói felületét befolyásolja.<br /><br />Meghatározhatod, milyen területek engedélyezel a felhasználóknak, mikor beüldenek egy tartalmat.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "Az Útvonal és theme beállításban meghatározhatod, hol vannak a képek és file-k tárolva.<br /><br />Meghatározhatod, melyik theme-t használja a főkategória. Létrehozhatsz további theme-ket az egész 'default' könyvtár átmásolásával (és átnevezésével) a templates mappában.<br /><br />Meghatározhatod az új tartalmak alapértelmezett elrendezését. Hozz létre a 'templates/default' mappában egy új elrendezési sémát egy content_content_template_XXX.php file segítségével. Ezek az elrendezések felhasználhatod bármelyik tartalomhoz ebben a főkategóriában.<br /><br />");
 
-define("CONTENT_ADMIN_HELP_ITEM_1", "
-<i>if you have not yet added main parent categories, please do so at the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.</i><br /><br />
-<b>category</b><br />select a category from the pulldown menu to manage content for that category.<br /><br />
-the main parents are shown in bold and have the (ALL) extenstion behind them. selecting one of these will show all items from this main parent.<br /><br />
-for each main parent all the subcategories are shown including the main parent category itself (these are all shown in plain text). Selecting on of these categories will shown all items from that category only.
-");
-define("CONTENT_ADMIN_HELP_ITEM_2", "
-<b>first letters</b><br />if multiple content item starting letters of the content_heading are present, you will see buttons to select only those content items starting with that letter. Selecting the 'all' button will show a list containing all content items in this category.<br /><br />
-<b>detailed list</b><br />You see a list of all content items with their id, icon, author, heading [subheading] and options.<br /><br />
-<b>explanation of icons</b><br />
-".CONTENT_ICON_EDIT." : edit the content item.<br />
-".CONTENT_ICON_DELETE." : delete the content item.<br />
-");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "Az általános beállítások azok a beállítások, melyeket a tartalomkezelő plugin tartalom oldalai mindenütt használnak.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "Ezekkel a beállításokkal befolyásolhatjuk a tartalomkezelő admin felület Személyes Tartalomkezelő felületét.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
 
-define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "
-<b>edit form</b><br />you can now edit all information for this content item and submit your changes.<br /><br />
-if you change the category of this content item to another main parent category, you probably want to re-edit this item after the category change.<br />Because you change the main parent category other preferences may be available to fill in.
-");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "Ezeket a beállításokat használhatod ennek a fő, szülő kategória Menüjében, ha aktiváltad a menüt.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
 
-define("CONTENT_ADMIN_HELP_1", "Content Management Help Area");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "A tartalom előnézet egy kis előnézeti képen megmutatja, hogyan fog kinézni a tartalom.<br /><br />Ez az előnézet jelenik meg számos oldalon, pl.: legújabb oldalon, a kategória tartalmak nézet oldalon és a szerző által készített tartalmak oldalon.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "A kategória oldalak megjeleníti az ebben a főkategóriában lévő tartalom kategóriák információit.<br /><br />Kettő különböző felület van:<br /><br />Összes kategória oldal:<br />Ez az oldal megjeleníti a fő, szülő kategóriában lévő összes kategóriát.<br /><br />Kategória oldal megtekintése:<br />Ez az oldal megjeleníti a kategória elemeket, feltételesen az alkategóriákat abban a kategóriában és a tartalmakat abban a kategóriában vagy azokat a kategóriákat.<br />");
 
-define("CONTENT_ADMIN_HELP_ITEM_LETTERS", "Below you see the distinct letters of the content heading for all items in this category.<br />By clicking on one of the letters you will see a list of all items starting with the selected letter. You can also choose the ALL button to display all items in this category.");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "A tartalom oldalak megjeleníti a tartalmat.<br /><br />Meghatározhatod, hogy melyik terület jelenjen meg (jelölődoboz bejelölése).<br /><br />Megjelenítheted a nem-tag szerző email címét is.<br /><br />Felülírhatod az email/nyomtató/pdf ikonok, értékelés és hozzászólások megjelenítését.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "A szerző oldal megjeleníti a fő, szülő kategóriában lévő tartalmak szerzőinek listáját.<br /><br />Meghatározhatod, melyik terület jelenjen meg (jelölődoboz bejelölése).<br /><br />Korlátozhatod az egy oldalon megjelenő tartalmak számát.<br />");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "Az archívum oldal megjeleníti a fő, szülő kategóriában meglévő összes tartalmat.<br /><br />Meghatározhatod, melyik terület jelenjen meg (jelölődoboz bejelölése).<br /><br />Megjelenítheted a nem-tag szerző email címét is.<br /><br />Korlátozhatod az egy oldalon megjelenő tartalmak számát.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "A legjobb értékelés oldal megjeleníti a felhasználók által értékelt összes tartalmat.<br /><br />Kiválaszthatod, hogy melyik terület jelenjen meg (jelölődoboz bejelölése).<br /><br />Ezenfelül, meghatározhatod, hogy megjelenjen-e a nem-tag szerző email címe.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "A legtöbb pontszám oldal megjeleníti az összes tartalmat, melyhez a tartalom szerzője pontszámot adott.<br /><br />Kiválaszthatod, hogy melyik terület jelenjen meg (jelölődoboz bejelölése).<br /><br />Ezenfelül, meghatározhatod, hogy megjelenjen-e a nem-tag szerző email címe.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_14", "Ez az oldal lehetőséget biztosít, hogy kiválaszd az admin kategória oldal létrehozása opciót.<br /><br />Meghatározhatod, hogy mely szekció legyen engedélyezve, amikor egy admin (vagy személyes tartalom karbantartó) létrehoz egy új tartalom kategóriát.");                                                                           
 ?>

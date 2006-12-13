@@ -66,6 +66,7 @@ define('LAN_PM_59', "Ugrás: ");
 define('LAN_PM_60', "Nincs jogosultságod az üzenet megtekintésére");
 define('LAN_PM_61', "Nincs az üzenetnek tárgya");
 define('LAN_PM_62', "File: [{FILENAME}] túllépte a megadott méretet - nem lehet csatolni");
+define('LAN_PM_63', "csoport:");
 
 define("LAN_PM_100", "Új Privát Üzenet a következőtől ");
 define("LAN_PM_101", "Új Privát Üzenetet kaptál a következőtől ");
@@ -78,4 +79,5 @@ define("LAN_PM_107", "A {UNAME} -nak(-nek) küldött PM elolvasási dátuma ");
 define("LAN_PM_108", "Üzenetküldés dátuma: ");
 define("LAN_PM_109", "Új üzenet(ek)");
 define("LAN_PM_110", "ok");
+define("LAN_PM_111", "Olvasás");
 ?>
