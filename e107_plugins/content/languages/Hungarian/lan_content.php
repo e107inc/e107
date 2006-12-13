@@ -1,180 +1,192 @@
 <?php
-/*
-+---------------------------------------------------------------+
-|        e107 website system
-|        ../../cms_plugins/content/languages/Hungarian/lan_content.php Hungarian language file
-|        Translated using translator plugin by Izydor (www.izydor.net)
-|
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.66 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
 
-define("CONTENT_EMAILPRINT_LAN_1", "Tartalom származási helye");
-define("CONTENT_ICON_LAN_0", "módosítás");
-define("CONTENT_ICON_LAN_1", "törlés");
-define("CONTENT_ICON_LAN_2", "opciók");
-define("CONTENT_ICON_LAN_3", "felhasználó adatai");
-define("CONTENT_ICON_LAN_4", "melléklet letöltése");
-define("CONTENT_ICON_LAN_5", "új");
-define("CONTENT_ICON_LAN_6", "beküldés");
-define("CONTENT_ICON_LAN_7", "szerzõk listája");
-define("CONTENT_ICON_LAN_8", "figyelmeztetés");
-define("CONTENT_ICON_LAN_9", "ok");
-define("CONTENT_ICON_LAN_10", "hiba");
-define("CONTENT_ICON_LAN_11", "tartalmak sorrendje a kategóriában");
-define("CONTENT_ICON_LAN_12", "kategóriák sorrendje");
-define("CONTENT_ICON_LAN_13", "személyes admin");
-define("CONTENT_ICON_LAN_14", "saját tartalom kezelõ");
-define("CONTENT_ICON_LAN_15", "nézet");
-define("CONTENT_ADMIN_DATE_LAN_0", "január");
-define("CONTENT_ADMIN_DATE_LAN_1", "február");
-define("CONTENT_ADMIN_DATE_LAN_2", "március");
-define("CONTENT_ADMIN_DATE_LAN_3", "április");
-define("CONTENT_ADMIN_DATE_LAN_4", "május");
-define("CONTENT_ADMIN_DATE_LAN_5", "június");
-define("CONTENT_ADMIN_DATE_LAN_6", "július");
-define("CONTENT_ADMIN_DATE_LAN_7", "augusztus");
-define("CONTENT_ADMIN_DATE_LAN_8", "szeptember");
-define("CONTENT_ADMIN_DATE_LAN_9", "október");
-define("CONTENT_ADMIN_DATE_LAN_10", "november");
-define("CONTENT_ADMIN_DATE_LAN_11", "december");
+define("CONTENT_EMAILPRINT_LAN_1", "ez a tartalom innen van");
+
+define("POPUP_LAN_1", "Katt ide a nagyobb kÃ©phez");
+
+define("CONTENT_NOTIFY_LAN_1", "Tartalom esemÃ©nyek");
+define("CONTENT_NOTIFY_LAN_2", "A tartalmat bekÃ¼ldte");
+define("CONTENT_NOTIFY_LAN_3", "Tartalom bekÃ¼ldve");
+
+define("CONTENT_TYPE_LAN_0", "categories");
+define("CONTENT_TYPE_LAN_1", "authors");
+define("CONTENT_TYPE_LAN_2", "archive");
+define("CONTENT_TYPE_LAN_3", "top rated");
+define("CONTENT_TYPE_LAN_4", "top score");
+define("CONTENT_TYPE_LAN_5", "recent");
+
+define("CONTENT_ICON_LAN_0", "MÃ³dosÃ­tÃ¡s");
+define("CONTENT_ICON_LAN_1", "TÃ¶rlÃ©s");
+define("CONTENT_ICON_LAN_2", "OpciÃ³k");
+define("CONTENT_ICON_LAN_3", "FelhasznÃ¡lÃ³ adatai");
+define("CONTENT_ICON_LAN_4", "MellÃ©klet letÃ¶ltÃ©se");
+define("CONTENT_ICON_LAN_5", "Ãšj");
+define("CONTENT_ICON_LAN_6", "BekÃ¼ldÃ©s");
+define("CONTENT_ICON_LAN_7", "SzerzÅ‘k listÃ¡ja");
+define("CONTENT_ICON_LAN_8", "FigyelmeztetÃ©s");
+define("CONTENT_ICON_LAN_9", "Ok");
+define("CONTENT_ICON_LAN_10", "Hiba");
+define("CONTENT_ICON_LAN_11", "Tartalmak sorrendje a kategÃ³riÃ¡ban");
+define("CONTENT_ICON_LAN_12", "KategÃ³riÃ¡k sorrendje");
+define("CONTENT_ICON_LAN_13", "SzemÃ©lyes admin");
+define("CONTENT_ICON_LAN_14", "SajÃ¡t tartalomkezelÅ‘");
+define("CONTENT_ICON_LAN_15", "MegtekintÃ©s");
+
+define("CONTENT_ADMIN_DATE_LAN_0", "JanuÃ¡r");
+define("CONTENT_ADMIN_DATE_LAN_1", "FebruÃ¡r");
+define("CONTENT_ADMIN_DATE_LAN_2", "MÃ¡rcius");
+define("CONTENT_ADMIN_DATE_LAN_3", "Ãprilis");
+define("CONTENT_ADMIN_DATE_LAN_4", "MÃ¡jus");
+define("CONTENT_ADMIN_DATE_LAN_5", "JÃºnius");
+define("CONTENT_ADMIN_DATE_LAN_6", "JÃºlius");
+define("CONTENT_ADMIN_DATE_LAN_7", "Augusztus");
+define("CONTENT_ADMIN_DATE_LAN_8", "Szeptember");
+define("CONTENT_ADMIN_DATE_LAN_9", "OktÃ³ber");
+define("CONTENT_ADMIN_DATE_LAN_10", "November");
+define("CONTENT_ADMIN_DATE_LAN_11", "December");
 define("CONTENT_ADMIN_DATE_LAN_12", "nap");
-define("CONTENT_ADMIN_DATE_LAN_13", "hónap");
-define("CONTENT_ADMIN_DATE_LAN_14", "év");
-define("CONTENT_ADMIN_DATE_LAN_15", "kezdõ dátum");
-define("CONTENT_ADMIN_DATE_LAN_16", "befejezõ dátum");
-define("CONTENT_ADMIN_DATE_LAN_17", "Meghatározhatod a tartalmi rész kezdõ idejét. Ha egy jövõbeli dátumot határozol meg, akkor attól az idõponttól lesz látható. Ha nem szükséges kezdõ dátum megadása, akkor hagyd úgy a mezõt, ahogy van.");
-define("CONTENT_ADMIN_DATE_LAN_18", "Megadhatod a tartalmi rész befejezési idejét. A befejezési idõvel meghatározod, meddig legyen látható a tartalmi rész. Ha nem szükséges befejezõ dátum megadása, akkor hagyd úgy a mezõt, ahogy van.");
+define("CONTENT_ADMIN_DATE_LAN_13", "hÃ³nap");
+define("CONTENT_ADMIN_DATE_LAN_14", "Ã©v");
+define("CONTENT_ADMIN_DATE_LAN_15", "kezdÅ‘ dÃ¡tum");
+define("CONTENT_ADMIN_DATE_LAN_16", "zÃ¡rÃ³ dÃ¡tum");
+define("CONTENT_ADMIN_DATE_LAN_17", "Megadhatsz a tartalomhoz egy kezdÅ‘ dÃ¡tumot. Ha jÃ¶vÅ‘beni dÃ¡tumot hasznÃ¡lsz, akkor a tartalom attÃ³l a dÃ¡tumtÃ³l kezdÅ‘dÅ‘en lesz lÃ¡thatÃ³. Ha szÃ¼ksÃ©gtelen kezdÅ‘ dÃ¡tum, akkor hagyd Ãºgy a mezÅ‘ket, ahogy vannak.");
+define("CONTENT_ADMIN_DATE_LAN_18", "Megadhatsz e tartalomhoz egy zÃ¡rÃ³ dÃ¡tumot. A zÃ¡rÃ³dÃ¡tummal meghatÃ¡rozhatod, meddig legyen lÃ¡thatÃ³ a tartalom. Ha szÃ¼ksÃ©gtelen zÃ¡rÃ³ dÃ¡tum, akkor hagyd Ãºgy a mezÅ‘ket, ahogy vannak.");
+
 define("CONTENT_PAGETITLE_LAN_0", "Tartalom");
-define("CONTENT_PAGETITLE_LAN_1", "Fõ");
-define("CONTENT_PAGETITLE_LAN_2", "Utóbbi");
-define("CONTENT_PAGETITLE_LAN_3", "Kategória");
-define("CONTENT_PAGETITLE_LAN_4", "");
-define("CONTENT_PAGETITLE_LAN_5", "Szerzõ");
-define("CONTENT_PAGETITLE_LAN_6", "Arhív");
-define("CONTENT_PAGETITLE_LAN_7", "Beküld");
-define("CONTENT_PAGETITLE_LAN_8", "Tartalom beküldése");
-define("CONTENT_PAGETITLE_LAN_9", "Személyi Tartalom Kezelõ");
-define("CONTENT_PAGETITLE_LAN_10", "Elemek megtekintése");
-define("CONTENT_PAGETITLE_LAN_11", "Elem szerkesztése");
-define("CONTENT_PAGETITLE_LAN_12", "Elem létrehozása");
-define("CONTENT_PAGETITLE_LAN_13", "Kategóriák");
-define("CONTENT_PAGETITLE_LAN_14", "Szerzõlista");
-define("CONTENT_PAGETITLE_LAN_15", "Csúcs pont");
-define("CONTENT_SEARCH_LAN_0", "nem található tartalom ehhez a kulcsszóhoz.");
-define("CONTENT_ORDER_LAN_0", "rendezés ...");
-define("CONTENT_ORDER_LAN_1", "fejléc (növ)");
-define("CONTENT_ORDER_LAN_2", "fejléc (csökk)");
-define("CONTENT_ORDER_LAN_3", "dátum (növ)");
-define("CONTENT_ORDER_LAN_4", "dátum (csök)");
-define("CONTENT_ORDER_LAN_5", "vonatkozás (növ)");
-define("CONTENT_ORDER_LAN_6", "vonatkozás (csök)");
-define("CONTENT_ORDER_LAN_7", "szülõ (növ)");
-define("CONTENT_ORDER_LAN_8", "szülõ (csök)");
-define("CONTENT_ORDER_LAN_9", "rendezés (növ)");
-define("CONTENT_ORDER_LAN_10", "rendezés (csök)");
-define("CONTENT_ORDER_LAN_11", "szerzõ (növ)");
-define("CONTENT_ORDER_LAN_12", "szerzõ (csök)");
-define("CONTENT_LAN_0", "tartalom");
-define("CONTENT_LAN_1", "Legújabbak listája");
-define("CONTENT_LAN_2", "Kategória lista");
-define("CONTENT_LAN_3", "Kategória");
-define("CONTENT_LAN_4", "Szerzõ lista");
-define("CONTENT_LAN_5", "Szerzõ");
-define("CONTENT_LAN_6", "minden kategória");
-define("CONTENT_LAN_7", "minden szerzõ");
-define("CONTENT_LAN_8", "legmagasabbra értékelt tartalmak");
-define("CONTENT_LAN_9", "rendezés ...");
-define("CONTENT_LAN_10", "cím emelkedõ");
-define("CONTENT_LAN_11", "cím csökkenõ");
-define("CONTENT_LAN_12", "dátum emelkedõ");
-define("CONTENT_LAN_13", "dátum csökkenõ");
-define("CONTENT_LAN_14", "hivatkozás emelkedõ");
-define("CONTENT_LAN_15", "hivatkozás csökkenõ");
-define("CONTENT_LAN_16", "szülõ emelkedõ");
-define("CONTENT_LAN_17", "szülõ csökkenõ");
-define("CONTENT_LAN_18", "keresés kulcsszó szerint");
-define("CONTENT_LAN_19", "keresés");
-define("CONTENT_LAN_20", "Tartalom keresés eredménye");
-define("CONTENT_LAN_21", "Nincsenek tartalom típusok.");
-define("CONTENT_LAN_22", "Tartalom típusok");
-define("CONTENT_LAN_23", "Legújabb tartalmak listája");
-define("CONTENT_LAN_24", "Navigáció");
-define("CONTENT_LAN_25", "Kategóriák");
-define("CONTENT_LAN_26", "Szülõ");
-define("CONTENT_LAN_27", "Alkategóriák");
-define("CONTENT_LAN_28", "Szülõ alkategóriák");
-define("CONTENT_LAN_29", "Ismeretlen");
+define("CONTENT_PAGETITLE_LAN_1", "FÅ‘");
+define("CONTENT_PAGETITLE_LAN_2", "LegÃºjabb");
+define("CONTENT_PAGETITLE_LAN_3", "KategÃ³ria");
+define("CONTENT_PAGETITLE_LAN_4", "Legjobb Ã©rtÃ©kelÃ©st kaptak");
+define("CONTENT_PAGETITLE_LAN_5", "SzerzÅ‘");
+define("CONTENT_PAGETITLE_LAN_6", "ArchÃ­vum");
+define("CONTENT_PAGETITLE_LAN_7", "Mehet");
+define("CONTENT_PAGETITLE_LAN_8", "Tartalom bekÃ¼ldÃ©se");
+define("CONTENT_PAGETITLE_LAN_9", "SzemÃ©lyes tartalomkezelÅ‘");
+define("CONTENT_PAGETITLE_LAN_10", "Tartalom megtekintÃ©se");
+define("CONTENT_PAGETITLE_LAN_11", "Tartalom mÃ³dosÃ­tÃ¡sa");
+define("CONTENT_PAGETITLE_LAN_12", "Tartalom lÃ©trehozÃ¡sa");
+define("CONTENT_PAGETITLE_LAN_13", "KategÃ³riÃ¡k");
+define("CONTENT_PAGETITLE_LAN_14", "SzerzÅ‘ lista");
+define("CONTENT_PAGETITLE_LAN_15", "LegtÃ¶bb pont");
+
+define("CONTENT_SEARCH_LAN_0", "Ezzel a kulcsszÃ³val nem talÃ¡ltam tartalmat.");
+
+define("CONTENT_ORDER_LAN_0", "rendezÃ©s ...");
+define("CONTENT_ORDER_LAN_1", "CÃ­m (nÃ¶vekvÅ‘)");
+define("CONTENT_ORDER_LAN_2", "CÃ­m (csÃ¶kkenÅ‘)");
+define("CONTENT_ORDER_LAN_3", "DÃ¡tum (nÃ¶vekvÅ‘)");
+define("CONTENT_ORDER_LAN_4", "DÃ¡tum (csÃ¶kkenÅ‘)");
+define("CONTENT_ORDER_LAN_5", "HivatkozÃ¡s (nÃ¶vekvÅ‘)");
+define("CONTENT_ORDER_LAN_6", "HivatkozÃ¡s (csÃ¶kkenÅ‘)");
+define("CONTENT_ORDER_LAN_7", "SzÃ¼lÅ‘ (nÃ¶vekvÅ‘)");
+define("CONTENT_ORDER_LAN_8", "SzÃ¼lÅ‘ (csÃ¶kkenÅ‘)");
+define("CONTENT_ORDER_LAN_9", "SorszÃ¡m (nÃ¶vekvÅ‘)");
+define("CONTENT_ORDER_LAN_10", "SorszÃ¡m (csÃ¶kkenÅ‘)");
+define("CONTENT_ORDER_LAN_11", "SzerzÅ‘ (nÃ¶vekvÅ‘)");
+define("CONTENT_ORDER_LAN_12", "SzerzÅ‘ (csÃ¶kkenÅ‘)");
+
+define("CONTENT_LAN_0", "Tartalom");
+define("CONTENT_LAN_1", "LegÃºjabb lista");
+define("CONTENT_LAN_2", "KategÃ³ria lista");
+define("CONTENT_LAN_3", "KategÃ³ria");
+define("CONTENT_LAN_4", "SzerzÅ‘ lista");
+define("CONTENT_LAN_5", "SzerzÅ‘");
+define("CONTENT_LAN_6", "Ã–sszes kategÃ³ria");
+define("CONTENT_LAN_7", "Ã–sszes szerzÅ‘");
+define("CONTENT_LAN_8", "Legjobb Ã©rtÃ©kelÃ©s");
+define("CONTENT_LAN_9", "kategÃ³ria:");
+define("CONTENT_LAN_10", "");
+define("CONTENT_LAN_11", "szerzÅ‘:");
+define("CONTENT_LAN_12", "LegtÃ¶bb pont tartalom");
+define("CONTENT_LAN_13", "");
+define("CONTENT_LAN_14", "");
+define("CONTENT_LAN_15", "");
+define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_17", "");
+define("CONTENT_LAN_18", "kulcsszÃ³ alapjÃ¡n");
+define("CONTENT_LAN_19", "KeresÃ©s");
+define("CONTENT_LAN_20", "KeresÃ©s eredmÃ©nye");
+define("CONTENT_LAN_21", "mÃ©g nincs tartalom tÃ­pus.");
+define("CONTENT_LAN_22", "Tartalom tÃ­pusok");
+define("CONTENT_LAN_23", "LegÃºjabb tartalmak listÃ¡ja");
+define("CONTENT_LAN_24", "breadcrumb");
+define("CONTENT_LAN_25", "Tartalom kategÃ³riÃ¡k");
+define("CONTENT_LAN_26", "Tartalom kategÃ³ria");
+define("CONTENT_LAN_27", "AlkategÃ³riÃ¡k");
+define("CONTENT_LAN_28", "SzÃ¼lÅ‘ alkategÃ³riÃ¡k");
+define("CONTENT_LAN_29", "ismeretlen");
 define("CONTENT_LAN_30", "Tartalom");
 define("CONTENT_LAN_31", "Tartalom");
-define("CONTENT_LAN_32", "Szerzõ lista");
-define("CONTENT_LAN_33", "Ugrás az oldalra");
+define("CONTENT_LAN_32", "SzerzÅ‘k listÃ¡ja");
+define("CONTENT_LAN_33", "UgrÃ¡s a kÃ¶vetkezÅ‘ oldalra");
 define("CONTENT_LAN_34", "Tartalom");
-define("CONTENT_LAN_35", "Hozzászólások");
-define("CONTENT_LAN_36", "Hozzászólások moderálása");
-define("CONTENT_LAN_37", "Nincsenek értékelt tartalmak");
-define("CONTENT_LAN_38", "Legmagasabbra értékelt tartalmak");
-define("CONTENT_LAN_39", "Szerzõ lista");
-define("CONTENT_LAN_40", "Szerzõ adatai");
-define("CONTENT_LAN_41", "Melléklet letöltése");
-define("CONTENT_LAN_42", "File");
-define("CONTENT_LAN_43", "File");
-define("CONTENT_LAN_44", "Olvasás:");
-define("CONTENT_LAN_45", "Szerzõnek ítélt pontszáma:");
-define("CONTENT_LAN_46", "Tartalom index");
-define("CONTENT_LAN_47", "Szerzõ");
-define("CONTENT_LAN_48", "Tartalmak");
-define("CONTENT_LAN_49", "Utolsó tartalom");
-define("CONTENT_LAN_50", "Dátum");
-define("CONTENT_LAN_51", "Típus lista");
-define("CONTENT_LAN_52", "Nem találtam szerzõket");
-define("CONTENT_LAN_53", "item");
-define("CONTENT_LAN_54", "items");
-define("CONTENT_LAN_55", "Utolsó");
-define("CONTENT_LAN_56", "Áttekintés mutatása");
-define("CONTENT_LAN_57", "Hozzászólások:");
-define("CONTENT_LAN_58", "Kezdõoldal");
+define("CONTENT_LAN_35", "HozzÃ¡szÃ³lÃ¡s");
+define("CONTENT_LAN_36", "HozzÃ¡szÃ³lÃ¡s moderÃ¡lÃ¡sa");
+define("CONTENT_LAN_37", "mÃ©g nincs Ã©rtÃ©kelve");
+define("CONTENT_LAN_38", "Legjobb Ã©rtÃ©kelÃ©st kapott tartalmak");
+define("CONTENT_LAN_39", "SzerzÅ‘k listÃ¡ja");
+define("CONTENT_LAN_40", "SzerzÅ‘ adatai");
+define("CONTENT_LAN_41", "MellÃ©klet");
+define("CONTENT_LAN_42", "file");
+define("CONTENT_LAN_43", "file-k");
+define("CONTENT_LAN_44", "MegtekintÃ©s:");
+define("CONTENT_LAN_45", "SzerzÅ‘nek odaitÃ©lt pontok:");
+define("CONTENT_LAN_46", "Cikk index");
+define("CONTENT_LAN_47", "SzerzÅ‘");
+define("CONTENT_LAN_48", "Tartalom");
+define("CONTENT_LAN_49", "LegÃºjabb tartalom");
+define("CONTENT_LAN_50", "DÃ¡tum");
+define("CONTENT_LAN_51", "TÃ­pus lista");
+define("CONTENT_LAN_52", "Nincs Ã©rvÃ©nyes szerzÅ‘ talÃ¡lat");
+define("CONTENT_LAN_53", "rÃ©sz");
+define("CONTENT_LAN_54", "rÃ©sz");
+define("CONTENT_LAN_55", "legÃºjabb rÃ©sz");
+define("CONTENT_LAN_56", "ÃttekintÃ©s");
+define("CONTENT_LAN_57", "HozzÃ¡szÃ³lÃ¡s:");
+define("CONTENT_LAN_58", "KezdÅ‘lap");
 define("CONTENT_LAN_59", "Tartalom");
-define("CONTENT_LAN_60", "Legújabb");
-define("CONTENT_LAN_61", "Legújabb tartalmak megtekintése");
-define("CONTENT_LAN_62", "Összes kategória megtekintése");
-define("CONTENT_LAN_63", "Összes szerzõ megtekintése");
-define("CONTENT_LAN_64", "Legmagasabbra értékelt tartalmak megtekintése");
-define("CONTENT_LAN_65", "Tartalom beküldése");
-define("CONTENT_LAN_66", "Tartalom beküldéséhez kattints ide, a kategóriát a beküldés oldalon tudod kiválasztani.");
-define("CONTENT_LAN_67", "Saját tartalom kezelõ");
-define("CONTENT_LAN_68", "Saját tartalmaid kezelése.");
-define("CONTENT_LAN_69", "Küldés e-mailben:");
-define("CONTENT_LAN_70", "Nyomtatás:");
-define("CONTENT_LAN_71", "Tartalom");
-define("CONTENT_LAN_72", "Kategória");
-define("CONTENT_LAN_73", "Emelkedõ sorrend");
-define("CONTENT_LAN_74", "Csökkenõ sorrend");
-define("CONTENT_LAN_75", "Tartalom beküldése");
-define("CONTENT_LAN_76", "pdf file készítése");
-define("CONTENT_LAN_77", "Tartalom keresése");
-define("CONTENT_LAN_78", "Cím nélküli oldal");
-define("CONTENT_LAN_79", "Oldal");
-define("CONTENT_LAN_80", "Legújabb tartalom : ");
-define("CONTENT_LAN_81", "Kategóriák");
-define("CONTENT_LAN_82", "Még nincs tartalom");
-define("CONTENT_LAN_83", "elem arhívum");
-define("CONTENT_LAN_84", "Arhív Tartalom");
-define("CONTENT_LAN_85", "szerzõlista");
-define("CONTENT_LAN_86", "view top score items");
-define("CONTENT_LAN_87", "Top Score Content");
-define("CONTENT_LAN_88", "no content items have a score yet");
-define("CONTENT_LAN_89", "oldal kiválasztása");
-define("CONTENT_MENU_LAN_0", "tartalom Menü :");
-define("CONTENT_MENU_LAN_1", "még nincs tartalom");
-define("CONTENT_MENU_LAN_2", "utóbbi elemek");
-define("CONTENT_MENU_LAN_3", "kategóriák");
-define("CONTENT_MENU_LAN_4", "tartalom linkek");
+define("CONTENT_LAN_60", "LegÃºjabb");
+define("CONTENT_LAN_61", "LegÃºjabb tartalom megtekintÃ©se");
+define("CONTENT_LAN_62", "Ã–sszes kategÃ³ria megtekintÃ©se");
+define("CONTENT_LAN_63", "Ã–sszes szerzÅ‘ megtekintÃ©se");
+define("CONTENT_LAN_64", "Legjobb Ã©rtÃ©kelÃ©st kapott tartalom megtekintÃ©se");
+define("CONTENT_LAN_65", "Tartalom bekÃ¼ldÃ©se");
+define("CONTENT_LAN_66", "Katt ide a tartalom bekÃ¼ldÃ©sÃ©hez, vÃ¡lassz kategÃ³riÃ¡t a bekÃ¼ldÃ©s oldalon.");
+define("CONTENT_LAN_67", "SzemÃ©lyes TartalomkezelÅ‘");
+define("CONTENT_LAN_68", "Katt ide a szemÃ©lyes tartalom karbantartÃ¡sÃ¡hoz.");
+define("CONTENT_LAN_69", "Email");
+define("CONTENT_LAN_70", "NyomtatÃ¡s");
+define("CONTENT_LAN_71", "tartalom");
+define("CONTENT_LAN_72", "kategÃ³ria");
+define("CONTENT_LAN_73", "jelenleg nincs tartalom");
+define("CONTENT_LAN_74", "");
+define("CONTENT_LAN_75", "Tartalom bekÃ¼ldÃ©se");
+define("CONTENT_LAN_76", "pdf file lÃ©trehozÃ¡sa");
+define("CONTENT_LAN_77", "KeresÃ©s");
+define("CONTENT_LAN_78", "CÃ­mnÃ©lkÃ¼li oldal");
+define("CONTENT_LAN_79", "oldal");
+define("CONTENT_LAN_80", "LegÃºjabb : ");
+define("CONTENT_LAN_81", "kategÃ³riÃ¡k");
+define("CONTENT_LAN_82", "Jelenleg nincs tartalom a(az)");
+define("CONTENT_LAN_83", "archÃ­v rÃ©szben");
+define("CONTENT_LAN_84", "ArchÃ­vum");
+define("CONTENT_LAN_85", "SzerzÅ‘k listÃ¡ja");
+define("CONTENT_LAN_86", "legtÃ¶bb pontot elÃ©rt rÃ©sz megtekintÃ©se");
+define("CONTENT_LAN_87", "LegtÃ¶bb pontot elÃ©rt Tartalom");
+define("CONTENT_LAN_88", "mÃ©g nincs tartalom pontozva");
+define("CONTENT_LAN_89", "oldal kivÃ¡lasztÃ¡sa");
+define("CONTENT_LAN_90", "elÅ‘zÅ‘ oldal");
+define("CONTENT_LAN_91", "kÃ¶vetkezÅ‘ oldal");
+define("CONTENT_LAN_92", " - aktuÃ¡lis");
+
+define("CONTENT_MENU_LAN_0", "Tartalom MenÃ¼ :");
+define("CONTENT_MENU_LAN_1", "Jelenleg nincs tartalom");
+define("CONTENT_MENU_LAN_2", "LegÃºjabb tartalmak");
+define("CONTENT_MENU_LAN_3", "KategÃ³riÃ¡k");
+define("CONTENT_MENU_LAN_4", "Tartalom linkek");
 define("CONTENT_MENU_LAN_5", "");
 define("CONTENT_MENU_LAN_6", "");
 define("CONTENT_MENU_LAN_7", "");
@@ -192,5 +204,8 @@ define("CONTENT_MENU_LAN_18", "");
 define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
 
-
 ?>
+
+
+
+
