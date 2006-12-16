@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:51 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-16 03:38:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 		{
 			if((strlen(trim($cmessage)) < 1000) && trim($cmessage) != "")
 			{
-				$cmessage = $tp -> toDB($cmessage, false, true);
+				$cmessage = $tp -> toDB($cmessage);
 				if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time()))
 				{
 					$emessage = CHATBOX_L17;
