@@ -1,16 +1,14 @@
-//USAGE:  {EXTENDED=<field_name>.[text|value|icon].<user_id>}
+//USAGE:  {EXTENDED=<field_name>.[text|value|icon|text_value].<user_id>}
 //EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
 include(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
-global $currentUser, $sql, $tp, $loop_uid, $e107, $imode;
+global $currentUser, $sql, $tp, $loop_uid, $e107, $imode, $sc_style;
 if(isset($loop_uid) && intval($loop_uid) == 0) { return ""; }
-$ueStruct = getcachedvars("user_extended_struct");
-if(!$ueStruct)
-{
-	require_once(e_HANDLER."user_extended_class.php");
-	$ueStruct = e107_user_extended::user_extended_getStruct();
-	cachevars("user_extended_struct", $ueStruct);
-}
+$key = $parms[0].".".$parms[1];
+$sc_style['USER_EXTENDED']['pre'] = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : "");
+$sc_style['USER_EXTENDED']['post'] = (isset($sc_style['USER_EXTENDED'][$key]['post']) ? $sc_style['USER_EXTENDED'][$key]['post'] : "");
+include_once(e_HANDLER."user_extended_class.php");
+$ueStruct = e107_user_extended::user_extended_getStruct();
 
 $uid = intval($parms[2]);
 if($uid == 0)
@@ -43,6 +41,20 @@ if (
 )
 {
 	return FALSE;
+}
+
+if($parms[1] == 'text_value')
+{
+	$_value = $tp->parseTemplate("{USER_EXTENDED={$parms[0]}.value}");
+	if($_value)
+	{
+		$__pre = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : "");
+		$__post = (isset($sc_style['USER_EXTENDED'][$key]['post']) ? $sc_style['USER_EXTENDED'][$key]['post'] : "");
+		$_text = $tp->parseTemplate("{USER_EXTENDED={$parms[0]}.text}");
+		$_mid = (isset($sc_style['USER_EXTENDED'][$key]['mid']) ? $sc_style['USER_EXTENDED'][$key]['mid'] : "");
+		return $__pre.$_text.$_mid.$_value.$__post;
+	}
+	return false;
 }
 
 if ($parms[1] == 'text')
