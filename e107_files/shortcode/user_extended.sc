@@ -1,9 +1,12 @@
 //USAGE:  {EXTENDED=<field_name>.[text|value|icon].<user_id>}
-//EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
+//EXAMPLE: {EXTENDED=gender.value.5}  will show the value of the extended field user_gender for user #5
 include(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
-global $currentUser, $sql, $tp, $loop_uid, $e107;
+global $currentUser, $sql, $tp, $loop_uid, $e107, $sc_style;
 if(isset($loop_uid) && intval($loop_uid) == 0) { return ""; }
+$key = $parms[0].".".$parms[1];
+$sc_style['USER_EXTENDED']['pre'] = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : "");
+$sc_style['USER_EXTENDED']['post'] = (isset($sc_style['USER_EXTENDED'][$key]['post']) ? $sc_style['USER_EXTENDED'][$key]['post'] : "");
 $ueStruct = getcachedvars("user_extended_struct");
 if(!$ueStruct)
 {
