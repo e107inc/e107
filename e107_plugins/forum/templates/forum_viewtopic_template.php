@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-12-16 03:06:45 $
+|     $Revision: 1.27 $
+|     $Date: 2006-12-16 14:07:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $sc_style['LEVEL']['post'] = "</div>";
 $sc_style['ANON_IP']['pre'] = "<br /><div class='smalltext'>";
 $sc_style['ANON_IP']['post'] = "</div>";
 
-$sc_style['USER_EXTENDED']['location.text']['post'] = ": ";
-$sc_style['USER_EXTENDED']['location.value']['post'] = "<br />";
+$sc_style['USER_EXTENDED']['location.text_value']['mid'] = ": ";
+$sc_style['USER_EXTENDED']['location.text_value']['post'] = "<br />";
 
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
@@ -119,7 +119,7 @@ $FORUMTHREADSTYLE = "<tr>
 	{LEVEL=pic}
 	{LEVEL=userid}
 	{JOINED}
-	{USER_EXTENDED=location.text}{USER_EXTENDED=location.value}
+	{USER_EXTENDED=location.text_value}
 	{POSTS}
 	</div>
 	</td>
@@ -205,7 +205,7 @@ $FORUMREPLYSTYLE = "<tr>
 	{LEVEL=pic}
 	{LEVEL=userid}
 	{JOINED}
-	{USER_EXTENDED=location.text}{USER_EXTENDED=location.value}
+	{USER_EXTENDED=location.text_value}
 	{POSTS}
 	</div>
 	</td>
