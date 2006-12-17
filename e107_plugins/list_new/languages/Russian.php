@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.6 $
-|     $Date: 2006-11-24 18:34:06 $
-|     $Author: yarodin $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-17 13:19:36 $
+|     $Author: verant $
 +----------------------------------------------------------------------------+
 */
 if (!defined("PAGE_NAME")) {define("PAGE_NAME", "Новое на сайте");}
@@ -144,8 +144,8 @@ define("LIST_MEMBER_2", "нет пользователей");
 define("LIST_CONTENT_1", "контент");
 define("LIST_CONTENT_2", "нет контента в");
 define("LIST_CONTENT_3", "нет категорий контента");
-define("LIST_CHATBOX_1", "миничат");
-define("LIST_CHATBOX_2", "нет сообщений миничата");
+define("LIST_CHATBOX_1", "чат"); //chatbox
+define("LIST_CHATBOX_2", "нет сообщений чата"); //no chatbox posts
 define("LIST_CALENDAR_1", "календарь");
 define("LIST_CALENDAR_2", "нет календарных событий");
 define("LIST_LINKS_1", "ссылки");
