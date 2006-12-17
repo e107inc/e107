@@ -1,6 +1,6 @@
 // USAGE: [flash=width,height]http://www.example.com/file.swf[/flash]
 
-$movie_path   = "http://".eregi_replace("http://", "",$code_text);
+$movie_path   = (substr($code_text,0,4) == "http") ? "http://".eregi_replace("http://", "",$code_text) : $code_text;
 $movie_path   = $tp -> toAttribute($movie_path);
 
 $parm_array   = explode(",",$parm);
@@ -19,3 +19,4 @@ return "<object type='application/x-shockwave-flash' data='$movie_path' width='$
 		<param name='quality' value='high' />
 		<param name='allowscriptaccess' value='samedomain' />
 		</object>";
+
