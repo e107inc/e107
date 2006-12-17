@@ -22,5 +22,5 @@ if ($parm && $parm != 'external' && strpos($parm, ' ') === FALSE)
 
 else
 {
-	return "<a class='bbcode' href='".$tp -> toAttribute($link_text)."'".$external.">".$code_text."</a>";
+	return "<a class='bbcode' href='".$tp -> toAttribute($code_text)."'".$external.">".$code_text."</a>";
 }
