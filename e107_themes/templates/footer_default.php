@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-09 06:53:06 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-17 11:01:05 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -210,13 +210,13 @@ header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
 $pref['compression_level'] = 6;
-if(isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
+if(strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
 	$browser_support = true;
 }
 if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {
 	$server_support = true;
 }
-if($pref['compress_output'] == true && $server_support == true && $browser_support == true) {
+if(isset($pref['compress_output']) && $pref['compress_output'] == true && $server_support == true && $browser_support == true) {
 	$level = intval($pref['compression_level']);
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
@@ -229,5 +229,3 @@ if($pref['compress_output'] == true && $server_support == true && $browser_suppo
 
 unset($In_e107_Footer);
 $e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
-
-?>
