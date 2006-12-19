@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 16:18:51 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-19 01:55:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,7 @@ class file_inspector {
 	var $parent;
 	var $count = array();
 	var $results = 0;
+	var $line_results = 0;
 	
 	function file_inspector() {
 		global $e107;
@@ -177,6 +178,15 @@ class file_inspector {
 			<input type='checkbox' name='line' value='1'".(($_POST['line'] || !isset($_POST['line'])) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
+			
+			$text .= "<tr>
+			<td class='forumheader3' style='width: 35%'>
+			".FC_LAN_22.":
+			</td>
+			<td colspan='2' class='forumheader3' style='width: 65%'>
+			<input type='checkbox' name='highlight' value='1'".(($_POST['highlight'] || !isset($_POST['highlight'])) ? " checked='checked'" : "")." />
+			</td>
+			</tr>";
 		}
 		
 		$text .= "<tr>
@@ -264,6 +274,7 @@ class file_inspector {
 										$dir_icon = 'fileinspector.png';
 										$parent_expand = TRUE;
 										$this -> results++;
+										$this -> line_results += count($this -> files[$dir_id][$fid]['lines']);
 									} else {
 										unset($this -> files[$dir_id][$fid]);
 										$known[$dir_id][$fid] = true;
@@ -421,7 +432,7 @@ class file_inspector {
 	}
 
 	function scan_results() {
-		global $ns, $rs, $core_image, $deprecated_image, $imode;
+		global $ns, $rs, $core_image, $deprecated_image, $imode, $tp;
 		$scan_text = $this -> inspect($core_image, $deprecated_image, 0, $this -> root_dir);
 
 		if ($_POST['type'] == 'tree') {
@@ -479,6 +490,11 @@ class file_inspector {
 		if ($_POST['core'] == 'all') {
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
+		if ($_POST['regex']) {
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_29.":&nbsp;".($this -> results)."&nbsp;</td><td class='s'>&nbsp;</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_30.":&nbsp;".($this -> line_results)."&nbsp;</td><td class='s'>&nbsp;</td></tr>";
+		}
+		
 		
 		if ($this -> count['warning']['num']) {
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
@@ -564,7 +580,11 @@ class file_inspector {
 								$text .= "[".($rkey + 1)."] ";
 							}
 							if ($_POST['line']) {
-								$text .= htmlspecialchars($rvalue)."<br />";
+								if ($_POST['highlight']) {
+									$text .= $tp -> e_highlight(htmlspecialchars($rvalue), $_POST['regex'])."<br />";
+								} else {
+									$text .= htmlspecialchars($rvalue)."<br />";
+								}
 							}
 						}
 						$text .= "<br />";
@@ -613,8 +633,8 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.2 $\n";
-		$data .= "|     \$Date: 2006-12-07 16:18:51 $\n";
+		$data .= "|     \$Revision: 1.3 $\n";
+		$data .= "|     \$Date: 2006-12-19 01:55:23 $\n";
 		$data .= "|     \$Author: sweetas $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
