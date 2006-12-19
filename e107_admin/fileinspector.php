@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-19 13:49:29 $
+|     $Revision: 1.6 $
+|     $Date: 2006-12-19 18:00:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -36,6 +36,20 @@ foreach ($maindirs as $maindirs_key => $maindirs_value) {
 }
 
 require_once('core_image.php');
+
+$handle = opendir(e_PLUGIN);
+while (false !== ($readdir = readdir($handle))) {
+	if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
+		if (is_dir(e_PLUGIN.$readdir)) {
+				if (is_readable(e_PLUGIN.$readdir.'/e_inspect.php')) {
+				include_once(e_PLUGIN.$readdir.'/e_inspect.php');
+			}
+		}
+	}
+}
+closedir($handle);
+
+ksort($core_image[$coredir['plugins']]);
 
 if (e_QUERY) {
 	$fi -> snapshot_interface();
@@ -287,7 +301,7 @@ class file_inspector {
 							} else {
 								//if (strpos($dir.'/'.$key, 'htmlarea') === false) {
 									if ($_POST['integrity']) {
-										if ($dir.'/'.$key != $this -> root_dir.'/'.$coredir['admin'].'/core_image.php' && $dir.'/'.$key != $this -> root_dir.'/e107_config.php') {
+										if ($dir.'/'.$key != $this -> root_dir.'/'.$coredir['admin'].'/core_image.php' && $key != 'e_inspect.php' && $dir.'/'.$key != $this -> root_dir.'/e107_config.php') {
 											if ($this -> checksum($path) != $value) {
 												$this -> count['fail']['num']++;
 												$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
@@ -615,8 +629,12 @@ class file_inspector {
 		$ns -> tablerender(FR_LAN_1.'...', $text);
 	}
 	
-	function create_image($dir) {
-		global $core_image, $deprecated_image, $coredir;
+	function create_image($dir, $plugin) {
+		global $core_image, $deprecated_image, $coredir, $plugin_image, $plugin_deprecated_image, $PLUGINS_DIRECTORY;
+		
+		if ($plugin && $plugin !='off') {
+			$dir = $dir.'/'.$PLUGINS_DIRECTORY.$plugin;
+		}
 		
 		foreach ($coredir as $trim_key => $trim_dirs) {
 			$search[$trim_key] = "'".$trim_dirs."'";
@@ -624,37 +642,56 @@ class file_inspector {
 		}
 		
 		$data = "<?php\n";
-		$data .= "/*\n";
-		$data .= "+ ----------------------------------------------------------------------------+\n";
-		$data .= "|     e107 website system\n";
-		$data .= "|\n";
-		$data .= "|     ©Steve Dunstan 2001-2002\n";
-		$data .= "|     http://e107.org\n";
-		$data .= "|     jalist@e107.org\n";
-		$data .= "|\n";
-		$data .= "|     Released under the terms and conditions of the\n";
-		$data .= "|     GNU General Public License (http://gnu.org).\n";
-		$data .= "|\n";
-		$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.5 $\n";
-		$data .= "|     \$Date: 2006-12-19 13:49:29 $\n";
-		$data .= "|     \$Author: sweetas $\n";
-		$data .= "+----------------------------------------------------------------------------+\n";
-		$data .= "*/\n\n";
+		
+		if (!$plugin || $plugin == 'off') {
+			$data .= "/*\n";
+			$data .= "+ ----------------------------------------------------------------------------+\n";
+			$data .= "|     e107 website system\n";
+			$data .= "|\n";
+			$data .= "|     ©Steve Dunstan 2001-2002\n";
+			$data .= "|     http://e107.org\n";
+			$data .= "|     jalist@e107.org\n";
+			$data .= "|\n";
+			$data .= "|     Released under the terms and conditions of the\n";
+			$data .= "|     GNU General Public License (http://gnu.org).\n";
+			$data .= "|\n";
+			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
+			$data .= "|     \$Revision: 1.6 $\n";
+			$data .= "|     \$Date: 2006-12-19 18:00:20 $\n";
+			$data .= "|     \$Author: sweetas $\n";
+			$data .= "+----------------------------------------------------------------------------+\n";
+			$data .= "*/\n\n";
+		}
 		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
+
+		if ($plugin && $plugin !='off') {
+			$scan_current = ($_POST['snaptype'] == 'current') ? $this -> scan($dir) : $core_image[$coredir['plugins']][$plugin];
+			$image_array = var_export($scan_current, true);
+			$data .= "\$core_image[\$coredir['plugins']]['".$plugin."'] = ".$image_array.";\n\n";
+		} else  {
+			$scan_current = ($_POST['snaptype'] == 'current') ? $this -> scan($dir) : $core_image;
+			$image_array = var_export($scan_current, true);
+			$image_array = str_replace($search, $replace, $image_array);
+			$data .= "\$core_image = ".$image_array.";\n\n";
+		}
 		
-		$scan_current = ($_POST['snaptype'] == 'current') ? $this -> scan($dir) : $core_image;
-		$image_array = var_export($scan_current, true);
-		$image_array = str_replace($search, $replace, $image_array);
-		$data .= "\$core_image = ".$image_array.";\n\n";
-		
-		$scan_deprecated = ($_POST['snaptype'] == 'deprecated') ? $this -> scan($dir, $core_image) : $deprecated_image;
-		$image_array = var_export($scan_deprecated, true);
-		$image_array = str_replace($search, $replace, $image_array);
-		$data .= "\$deprecated_image = ".$image_array.";\n\n";
+		if ($plugin && $plugin !='off') {
+			$scan_deprecated = ($_POST['snaptype'] == 'deprecated') ? $this -> scan($dir, $core_image) : $deprecated_image[$coredir['plugins']]['".$plugin."'];
+			$image_array = var_export($scan_deprecated, true);
+			$data .= "\$deprecated_image[\$coredir['plugins']]['".$plugin."'] = ".$image_array.";\n\n";
+		} else  {
+			$scan_deprecated = ($_POST['snaptype'] == 'deprecated') ? $this -> scan($dir, $core_image) : $deprecated_image;
+			$image_array = var_export($scan_deprecated, true);
+			$image_array = str_replace($search, $replace, $image_array);
+			$data .= "\$deprecated_image = ".$image_array.";\n\n";
+		}
 
 		$data .= "?>";
-		$fp = fopen(e_ADMIN.'core_image.php', 'w');
+		if ($plugin && $plugin !='off') {
+			$fp = fopen(e_PLUGIN.$plugin .'/e_inspect.php', 'w');
+		} else {
+			$fp = fopen(e_ADMIN.'core_image.php', 'w');
+		}
 		fwrite($fp, $data);
 	}
 	
@@ -662,7 +699,7 @@ class file_inspector {
 		global $ns, $rs;
 		$text = "";
 		if (isset($_POST['create_snapshot'])) {
-			$this -> create_image($_POST['snapshot_path']);
+			$this -> create_image($_POST['snapshot_path'], $_POST['plugin']);
 			$text = "<div style='text-align:center'>
 			<form action='".e_SELF."' method='post' id='main_page'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -672,7 +709,7 @@ class file_inspector {
 		
 			$text .= "<tr>
 			<td class='forumheader3' style='text-align:center'>
-			The snapshot (".e_ADMIN."core_image.php) was successfully created.
+			The snapshot was successfully created.
 			</td>
 			</tr>
 			<tr>
@@ -697,16 +734,42 @@ class file_inspector {
 		<td class='forumheader3' style='width:50%'>
 		<input class='tbox' type='text' name='snapshot_path' size='60' value='".(isset($_POST['snapshot_path']) ? $_POST['snapshot_path'] : $this -> root_dir)."' />
 		</td></tr>
+
+		<tr>
+		<td class='forumheader3' style='width: 35%'>
+		Create snapshot for plugin:
+		</td>
+		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<select name='plugin' class='tbox'>
+		<option value='off' ".($_POST['plugin'] == 'off' ? "selected='selected'" : "").">Select...</option>";
+		
+		$handle = opendir(e_PLUGIN);
+		while (false !== ($readdir = readdir($handle))) {
+			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
+				if (is_dir(e_PLUGIN.$readdir)) {
+					if (is_readable(e_PLUGIN.$readdir.'/e_inspect.php')) {
+						// $text .= e_PLUGIN.$readdir.'/e_inspect.php';
+						$text .= "<option value='".$readdir."' ".($_POST['plugin'] == $readdir ? "selected='selected'" : "").">".$readdir."</option>";
+					}
+				}
+			}
+		}
+		closedir($handle);
+		
+		$text .= "</select>
+		</td>
+		</tr>
 		
 		<tr>
 		<td class='forumheader3' style='width: 35%'>
-		Create snapshot of current or deprecated core files:
+		Create snapshot of current or deprecated files:
 		</td>
 		<td colspan='2' class='forumheader3' style='width: 65%'>
 		<input type='radio' name='snaptype' value='current'".($_POST['snaptype'] == 'current' || !isset($_POST['snaptype']) ? " checked='checked'" : "")." /> Current&nbsp;&nbsp;
 		<input type='radio' name='snaptype' value='deprecated'".($_POST['snaptype'] == 'deprecated' ? " checked='checked'" : "")." /> Deprecated&nbsp;&nbsp;
 		</td>
 		</tr>
+		
 		
 		<tr>
 		<td class='forumheader' style='text-align:center' colspan='2'>".$rs -> form_button('submit', 'create_snapshot', 'Create Snapshot')."</td>
