@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-11-14 18:45:22 $
-|     $Author: sweetas $
+|     $Revision: 1.20 $
+|     $Date: 2006-12-19 14:20:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -100,7 +100,7 @@ if (!ADMIN) {
 if ($prehelp!='') {
 	$ADMIN_HEADER .= $prehelp;
 } else {
-	$ADMIN_HEADER .= "{ADMIN_SITEINFO}";
+	$ADMIN_HEADER .= "{ADMIN_UPDATE} {ADMIN_SITEINFO}";
 }
 
 $ADMIN_HEADER .= "<br />

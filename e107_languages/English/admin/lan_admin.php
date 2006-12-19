@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-10-31 21:16:29 $
+|     $Revision: 1.55 $
+|     $Date: 2006-12-19 14:20:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -268,5 +268,7 @@ define("LAN_CONFIGURE", "Configure");
 define("LAN_BACK","Back");
 
 define("LAN_CREDITS","Credits");
+define("LAN_NEWVERSION","New Version Available");
+
 
 ?>

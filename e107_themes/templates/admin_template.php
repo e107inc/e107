@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-12-14 19:28:53 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2006-12-19 14:20:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,6 +46,7 @@ $ADMIN_FOOTER = "</td>
 <td style='width:17%; vertical-align:top'>
 {ADMIN_MENU}
 {ADMIN_PRESET}
+{ADMIN_UPDATE}
 {ADMIN_SITEINFO}
 {ADMIN_DOCS}
 </td>
