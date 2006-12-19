@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-12-19 18:00:20 $
+|     $Revision: 1.7 $
+|     $Date: 2006-12-19 21:33:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -374,7 +374,7 @@ class file_inspector {
 						$aid = strtolower($readdir);
 						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid]) {
 							if (strpos($dir.'/'.$readdir, 'htmlarea') === false) {
-								if (isset($deprecated[$readdir])) {
+								if (isset($deprecated[$readdir]) && $dir.'/'.$readdir != $this -> root_dir.'/'.$coredir['admin'].'/filetypes.php') {
 									if ($_POST['oldcore']) {
 										$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
 										$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
@@ -656,8 +656,8 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.6 $\n";
-			$data .= "|     \$Date: 2006-12-19 18:00:20 $\n";
+			$data .= "|     \$Revision: 1.7 $\n";
+			$data .= "|     \$Date: 2006-12-19 21:33:05 $\n";
 			$data .= "|     \$Author: sweetas $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
