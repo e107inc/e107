@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-19 02:07:09 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-19 13:49:29 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -166,7 +166,8 @@ class file_inspector {
 			".FC_LAN_19.":
 			</td>
 			<td colspan='2' class='forumheader3' style='width: 65%'>
-			<input type='checkbox' name='num' value='1'".(($_POST['num'] || $_POST['num'] === false) ? " checked='checked'" : "")." />
+			<input type='radio' name='num' value='1'".(($_POST['num'] == '1' || !isset($_POST['num'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
+			<input type='radio' name='num' value='0'".($_POST['num'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 			</td>
 			</tr>";
 			
@@ -175,7 +176,8 @@ class file_inspector {
 			".FC_LAN_20.":
 			</td>
 			<td colspan='2' class='forumheader3' style='width: 65%'>
-			<input type='checkbox' name='line' value='1'".(($_POST['line'] || $_POST['line'] === false) ? " checked='checked'" : "")." />
+			<input type='radio' name='line' value='1'".(($_POST['line'] == '1' || !isset($_POST['line'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
+			<input type='radio' name='line' value='0'".($_POST['line'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 			</td>
 			</tr>";
 			
@@ -184,7 +186,8 @@ class file_inspector {
 			".FC_LAN_22.":
 			</td>
 			<td colspan='2' class='forumheader3' style='width: 65%'>
-			<input type='checkbox' name='highlight' value='1'".(($_POST['highlight'] || $_POST['highlight'] === false) ? " checked='checked'" : "")." />
+			<input type='radio' name='highlight' value='1'".(($_POST['highlight'] == '1' || !isset($_POST['highlight'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
+			<input type='radio' name='highlight' value='0'".($_POST['highlight'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 			</td>
 			</tr>";
 		}
@@ -633,8 +636,8 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.4 $\n";
-		$data .= "|     \$Date: 2006-12-19 02:07:09 $\n";
+		$data .= "|     \$Revision: 1.5 $\n";
+		$data .= "|     \$Date: 2006-12-19 13:49:29 $\n";
 		$data .= "|     \$Author: sweetas $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
