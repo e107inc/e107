@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-19 10:03:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -39,7 +39,7 @@ php 4.3.6 does NOT have this problem.
 // Comment out the line below if you have trouble with some people not receiving emails.
 // e107_ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
-function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline ="") {
+function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") {
 	global $pref,$mailheader_e107id;
 
 	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
@@ -163,7 +163,11 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 		}
 	}
 
-	if($pref['mail_bounce_email'] !=''){
+	if (isset($returnpath) && ($returnpath != ""))
+	{  // Passed parameter overrides any system default
+	$mail->Sender = $returnpath;
+	}
+	elseif($pref['mail_bounce_email'] !=''){
 		$mail->Sender = $pref['mail_bounce_email'];
     }
 
