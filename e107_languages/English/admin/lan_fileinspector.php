@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-19 01:55:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,6 +31,7 @@ define("FC_LAN_18", "Regular expression");
 define("FC_LAN_19", "Show line numbers");
 define("FC_LAN_20", "Show matched lines");
 define("FC_LAN_21", "Old Core Files");
+define("FC_LAN_22", "Highlight matched text");
 
 define("FR_LAN_1", "Scanning");
 define("FR_LAN_2", "Scan Results");
@@ -69,5 +70,8 @@ define("FR_LAN_25", "Integrity incalculable");
 define("FR_LAN_26", "Warning! Known Insecurity Detected!");
 define("FR_LAN_27", "There are files on your server that are known to be exploitable and must be removed immediately.");
 define("FR_LAN_28", "Known insecure files");
+
+define("FR_LAN_29", "Total files matched");
+define("FR_LAN_30", "Total lines matched");
 
 ?>
