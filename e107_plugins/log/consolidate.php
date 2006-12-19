@@ -10,23 +10,24 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/consolidate.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-19 21:48:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 /* first thing to do is check if the log file is out of date ... */
 
-//require_once("../../class2.php");
-
 $pathtologs = e_PLUGIN."log/logs/";
 $date = date("z.Y", time());
+$yesterday = date("z.Y",(time() - 86400));		// This makes sure year wraps round OK
 $date2 = date("Y-m-j", (time() -86400));
 $date3 = date("Y-m");
-$day = date("z", time());
-$year = date("Y", time());
 
-$pfileprev = "logp_".($day-1).".".$year.".php";
-$pfile = "logp_".$date.".php";
-$ifileprev = "logi_".($day-1).".".$year.".php";
+$pfileprev = "logp_".$yesterday.".php";		// Yesterday's log file
+$pfile = "logp_".$date.".php";				// Today's log file
+$ifileprev = "logi_".$yesterday.".php";
 $ifile = "logi_".$date.".php";
 
 if(file_exists($pathtologs.$pfile)) {
