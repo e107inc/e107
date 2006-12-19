@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2006-12-19 20:25:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -30,7 +30,7 @@ function r_emote()
 	
 	foreach($tp->e_emote->emotes as $key => $value)
 	{
-		$key = str_replace("!", ".", $key);
+		$key = str_replace("!", "_", $key);
 		$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 		$key = e_IMAGE."emotes/" . $pref['emotepack'] . "/" .$key;
 
