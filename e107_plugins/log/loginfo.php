@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-19 14:28:51 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -198,6 +198,7 @@ function getBrowser($agent) {
 
 function getOs($agent) {
 	$os = array(
+		"windowsvista" => array('name' => 'Windows Vista', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.0'),
 		"windows2003" => array('name' => 'Windows 2003', 'rule' => 'wi(n|ndows)[ \-]?(2003|nt[ /]?5\.2)'),
 		"windowsxp"   => array('name' => 'Windows XP',   'rule' => 'Windows XP'),
 		"windowsxp2"  => array('name' => 'Windows XP',   'rule' => 'wi(n|ndows)[ \-]?nt[ /]?5\.1'),
