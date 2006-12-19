@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-19 01:55:23 $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-19 02:07:09 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -166,7 +166,7 @@ class file_inspector {
 			".FC_LAN_19.":
 			</td>
 			<td colspan='2' class='forumheader3' style='width: 65%'>
-			<input type='checkbox' name='num' value='1'".(($_POST['num'] || !isset($_POST['num'])) ? " checked='checked'" : "")." />
+			<input type='checkbox' name='num' value='1'".(($_POST['num'] || $_POST['num'] === false) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
 			
@@ -175,7 +175,7 @@ class file_inspector {
 			".FC_LAN_20.":
 			</td>
 			<td colspan='2' class='forumheader3' style='width: 65%'>
-			<input type='checkbox' name='line' value='1'".(($_POST['line'] || !isset($_POST['line'])) ? " checked='checked'" : "")." />
+			<input type='checkbox' name='line' value='1'".(($_POST['line'] || $_POST['line'] === false) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
 			
@@ -184,7 +184,7 @@ class file_inspector {
 			".FC_LAN_22.":
 			</td>
 			<td colspan='2' class='forumheader3' style='width: 65%'>
-			<input type='checkbox' name='highlight' value='1'".(($_POST['highlight'] || !isset($_POST['highlight'])) ? " checked='checked'" : "")." />
+			<input type='checkbox' name='highlight' value='1'".(($_POST['highlight'] || $_POST['highlight'] === false) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
 		}
@@ -633,8 +633,8 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.3 $\n";
-		$data .= "|     \$Date: 2006-12-19 01:55:23 $\n";
+		$data .= "|     \$Revision: 1.4 $\n";
+		$data .= "|     \$Date: 2006-12-19 02:07:09 $\n";
 		$data .= "|     \$Author: sweetas $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
