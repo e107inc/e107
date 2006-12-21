@@ -1,55 +1,62 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_ren_help.php Japanese-utf language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        �Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: Kei on the 1st Oct 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Japanese/lan_ren_help.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-21 15:43:44 $
+|     $Author: e107coders $
++-----Translation Updated by: difda on 2006/06/30---------------------------+
 */
-
-define("LANHELP_1", "黒");
-define("LANHELP_2", "青");
-define("LANHELP_3", "茶");
-define("LANHELP_4", "青緑");
-define("LANHELP_5", "ダークブルー");
-define("LANHELP_6", "ダークレッド");
-define("LANHELP_7", "緑");
-define("LANHELP_8", "紺");
+define("LANHELP_1", "ブラック");
+define("LANHELP_2", "ブルー");
+define("LANHELP_3", "ブラウン");
+define("LANHELP_4", "シアン");
+define("LANHELP_5", "ダーク ブルー");
+define("LANHELP_6", "ダーク レッド");
+define("LANHELP_7", "グリーン");
+define("LANHELP_8", "インディゴ");
 define("LANHELP_9", "オリーブ");
 define("LANHELP_10", "オレンジ");
-define("LANHELP_11", "赤");
-define("LANHELP_12", "紫");
-define("LANHELP_13", "白");
-define("LANHELP_14", "黄");
-define("LANHELP_15", "極小");
-define("LANHELP_16", "小");
-define("LANHELP_17", "普通");
-define("LANHELP_18", "大");
-define("LANHELP_19", "さらに大きく");
-define("LANHELP_20", "巨大");
-define("LANHELP_21", "色");
-define("LANHELP_22", "サイズ");
-define("LANHELP_23", "リンク先を挿入: [link]http://mysite.com[/link] か [link=http://yoursite.com]私のサイトを訪れます[/link]");
-define("LANHELP_24", "太字　: [b]このテキストは太字になります[/b]");
-define("LANHELP_25", "イタリック文字　: [i]Tこのテキストはイタリックになります[/i]");
-define("LANHELP_26", "下線テキスト　: [u]このテキストには下線がつきます[/u]");
-define("LANHELP_27", "イメージを挿入します: [img]mypicture.jpg[/img]");
-define("LANHELP_28", "中央に寄せます ：[center]このテキストは中央に寄せられます[/center]");
-define("LANHELP_29", "左に寄せます: [left]This このテキストは左に寄せられます[/left]");
-define("LANHELP_30", "右に寄せます: [right]このテキストは右に寄せられます[/right]");
-define("LANHELP_31", "引用テキスト: [blockquote]このテキストは引用文とされます(字下がり)[/blockquote]");
-define("LANHELP_32", "暗号　フォーマット済みテキスト ：[code]$foo = bah;[/code]");
-define("LANHELP_33", "HTMLーテキストから改行を取り除く: [html]&amp;lt;table&amp;gt;&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt; etc[/html]");
-define("LANHELP_34", "新ページのタグを挿入する、１ページ以上へ記事を分けます");
-define("LANHELP_35", "ハイパーリンクURL");
+define("LANHELP_11", "レッド");
+define("LANHELP_12", "バイオレット");
+define("LANHELP_13", "ホワイト");
+define("LANHELP_14", "イエロー");
 
+define("LANHELP_15", "極小");
+define("LANHELP_16", "小さい");
+define("LANHELP_17", "普通");
+define("LANHELP_18", "大きい");
+define("LANHELP_19", "より大きい");
+define("LANHELP_20", "極大");
+
+define("LANHELP_21", "クリックするとカラー・ダイアログが開きます ...");
+define("LANHELP_22", "クリックするとサイズ・ダイアログが開きます ...");
+
+define("LANHELP_23", "リンクの挿入：[link]http://mysite.com[/link] もしくは [link=http://yoursite.com]訪問サイト名[/link]");
+define("LANHELP_24", "太字：[b]ここにボルドの文書を書く[/b]", "font-weight:bold; width: 20px");
+define("LANHELP_25", "斜体：[i]ここにイタリックの文書を書く[/i]", "font-style:italic; width: 20px");
+define("LANHELP_26", "下線：[u]ここにアンダーラインの文書を書く[/u]", "text-decoration: underline; width: 20px");
+define("LANHELP_27", "画像の挿入：[img]mypicture.jpg[/img]");
+define("LANHELP_28", "中央寄り：[center]ここに中央寄りにする文書を書く[/center]");
+define("LANHELP_29", "左寄り：[left]ここに左寄りにする文書を書く[/left]");
+define("LANHELP_30", "右寄り：[right]ここに右寄りにする文書を書く[/right]");
+define("LANHELP_31", "引用文囲み: [blockquote]ここに引用文を書く (インデントされます)[/blockquote]");
+define("LANHELP_32", "コード - 整形済みテキスト: [code]\$foo = bah;[/code]");
+define("LANHELP_33", "HTML - 改行コードをはずします: [html]&lt;table&gt;&lt;tr&gt;&lt;td&gt; etc[/html]");
+define("LANHELP_34", "[newpage] や [newpage=title] 改ページタグの挿入, 複数のページへの分割");
+define("LANHELP_35", "ハイパーリンクURL");
+define("LANHELP_36", "箇条書き: [list]line1*line2*line3[/list] 段落番号: [list=type]line1*line2*line3[/list]");
+
+define("LANHELP_37", "e107_images/newspost_images/ディレクトリからの画像の挿入");
+define("LANHELP_38", "フル画像のリンクを貼ります");
+
+define("LANHELP_39", "既存ダウンロードからのダウンロードリンクを挿入します");
+define("LANHELP_40", "既存のダウンロードが現在ありません");
+
+define("LANHELP_41", "フォントサイズ...");
+define("LANHELP_42", "画像選択...");
+define("LANHELP_43", "ダウンロードファイル選択...");
 
 ?>

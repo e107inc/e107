@@ -1,34 +1,31 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_userposts.php Japanese-utf language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        �Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: Kei on the 1st Oct 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Japanese/lan_userposts.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-21 15:43:44 $
+|     $Author: e107coders $
++-----Translation Updated by: difda on 2005/12/03---------------------------+
 */
+define("PAGE_NAME", "ユーザー投稿");
 
-define("PAGE_NAME", "ユーザー　投稿");
-define("UP_LAN_0", "のための全てのフォーラム投稿");
-define("UP_LAN_1", "のための全てのコメント");
+define("UP_LAN_0", "全てのフォーラム投稿： ");
+define("UP_LAN_1", "全てのコメント： ");
 define("UP_LAN_2", "スレッド");
-define("UP_LAN_3", "閲覧");
-define("UP_LAN_4", "返事");
-define("UP_LAN_5", "最後に投稿したもの");
+define("UP_LAN_3", "閲覧数");
+define("UP_LAN_4", "返信数");
+define("UP_LAN_5", "最新投稿t");
 define("UP_LAN_6", "スレッド");
 define("UP_LAN_7", "コメントなし");
-define("UP_LAN_8", "投稿したものはなし");
-define("UP_LAN_9", "オン");
-define("UP_LAN_10", "再度");
-define("UP_LAN_11", "ここに投稿されました");
-define("UP_LAN_12", "サーチ");
-
-
+define("UP_LAN_8", "投稿なし");
+define("UP_LAN_9", " on ");
+define("UP_LAN_10", "Re");
+define("UP_LAN_11", "投稿者:");
+define("UP_LAN_12", "検索");
+define("UP_LAN_13", "コメント");
+define("UP_LAN_14", "フォーラム投稿");
+define("UP_LAN_15", "Re");
+define("UP_LAN_16", "IPアドレス");
 ?>
