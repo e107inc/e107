@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-10-29 12:57:43 $
+|     $Revision: 1.12 $
+|     $Date: 2006-12-21 06:44:01 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -241,4 +241,5 @@ define("LAN_PRESET_CONFIRMSAVE","¿Guardar valores del formulario como predetermi
 define("LAN_CONFIGURE", "Configurar");
 define("LAN_CREDITS","Créditos");
 define("LAN_BACK","Atrás");
+define("LAN_NEWVERSION","Nueva versión disponible");
 ?>
