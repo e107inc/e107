@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-22 21:01:36 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -86,7 +86,7 @@ if($_POST['cancel_emails']){
 
 	$mail->AddCC = ($_POST['email_cc']);
 	$mail->WordWrap = 50;
-	$mail->Charset = CHARSET;
+	$mail->CharSet = CHARSET;
 	$mail->Subject = $_POST['email_subject'];
 	$mail->IsHTML(TRUE);
 	$mail->SMTPDebug = (e_MENU == "debug") ? TRUE : FALSE;
