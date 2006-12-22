@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ŠSteve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/khatru/languages/Hungarian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-13 20:44:36 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-22 23:21:02 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
