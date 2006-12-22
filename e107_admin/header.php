@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2006-12-07 16:18:51 $
-|   $Author: sweetas $
+|   $Revision: 1.6 $
+|   $Date: 2006-12-22 18:47:10 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -129,9 +129,7 @@ echo "<!-- *JS* -->\n";
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG
 if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
-	echo wysiwyg($e_wysiwyg);
 }else{
 	define("e_WYSIWYG",FALSE);
 }
@@ -185,8 +183,8 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['
 	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 
 
-} 
-else 
+}
+else
 {
 	$css_file = file_exists(THEME.'admin_style.css') ? THEME_ABS.'admin_style.css' : THEME_ABS.'style.css';
 	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
@@ -266,7 +264,7 @@ if(!isset($e107_popup))
 	$e107_popup = 0;
 }
 if ($e107_popup != 1) {
-	
+
 
 //
 // L: (optional) Body JS to disable right clicks [reserved; user mode]
