@@ -11,9 +11,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-11-12 04:10:36 $ - mods to make password protected pages work
-|     $Author: mrpete $
+|     $Revision: 1.33 $
+|     $Date: 2006-12-22 20:50:44 $
+|     $Author: e107steved $
+|
 +----------------------------------------------------------------------------+
 */
 
@@ -52,7 +53,6 @@ else
 	}
 	else
 	{
-
 		$tmp = $page -> showPage();
 		define("e_PAGETITLE", $tmp['title']);
 		require_once(HEADERF);
@@ -62,12 +62,20 @@ else
 			require_once(FOOTERF);
 			exit;
 		}
+		if ($tmp['cachecontrol'] == TRUE)
+		{
 		ob_start();
 		$ns -> tablerender($tmp['title'], $tmp['text']);
 		$cache_data = ob_get_flush();
 		$e107cache->set($cacheString, $cache_data);
 		$e107cache->set($cachePageTitle, $tmp['title']."^".$tmp['comment_flag']);
 		$comment_flag = $tmp['comment_flag'];
+		}
+		else
+		{
+		  $ns -> tablerender($tmp['title'], $tmp['text']);
+		  $comment_flag = $tmp['comment_flag'];
+		}
 	}
 
 	if($com = $page -> pageComment($comment_flag))
@@ -83,15 +91,15 @@ require_once(FOOTERF);
 class pageClass
 {
 
-	var $bullet;																/* bullet image */
-	var $pageText;														/* main text of selected page, not parsed */
-	var $multipageFlag;												/* flag - true if multiple page page, false if not */
-	var $pageTitles;														/* array containing page titles */
-	var $pageID;															/* id number of page to be displayed */
-	var $pageSelected;												/* selected page of multiple page page */
-	var $pageToRender;												/* parsed page to be sent to screen */
-	var $debug;															/* temp debug flag */
-	var $title;																/* title of page, it if has one (as defined in [newpage=title] tag */
+	var $bullet;						/* bullet image */
+	var $pageText;						/* main text of selected page, not parsed */
+	var $multipageFlag;					/* flag - true if multiple page page, false if not */
+	var $pageTitles;					/* array containing page titles */
+	var $pageID;						/* id number of page to be displayed */
+	var $pageSelected;					/* selected page of multiple page page */
+	var $pageToRender;					/* parsed page to be sent to screen */
+	var $debug;							/* temp debug flag */
+	var $title;							/* title of page, it if has one (as defined in [newpage=title] tag */
 
 
 	function pageClass($debug=FALSE)
@@ -172,7 +180,7 @@ class pageClass
 
 		$this -> pageText = $page_text;
 
-		$this -> pageCheckPerms($page_class, $page_password);
+		$this -> pageCheckPerms($page_class, $page_password, $page_title);
 
 		if($this -> debug)
 		{
@@ -201,6 +209,7 @@ class pageClass
 		$ret['text'] = $text;
 		$ret['comment_flag'] = $page_comment_flag;
 		$ret['err'] = FALSE;
+		$ret['cachecontrol'] = (isset($page_password) && !$page_password);		// Don't cache password protected pages
 
 		return $ret;
 	}
@@ -344,9 +353,13 @@ class pageClass
 		}
 	}
 
-	function pageCheckPerms($page_class, $page_password)
+	function pageCheckPerms($page_class, $page_password, $page_title="&nbsp;")
 	{
 		global $ns, $tp, $HEADER, $FOOTER, $sql;     // $tp added
+
+		define("e_PAGETITLE", $page_title);
+		// HEADERF requires that $tp is defined - hence declared as global above.
+		require_once(HEADERF);		// Do header now in case wrong password was entered
 
 		if (!check_class($page_class))
 		{
@@ -374,11 +387,14 @@ class pageClass
 			{
 				return TRUE;
 			}
+			// Invalid/empty password here
 		}
 
+
+		// Need to prompt for password here
 		if ($_POST['submit_page_pw'])
 		{
-			message_handler("MESSAGE", LAN_PAGE_7);
+			message_handler("MESSAGE", LAN_PAGE_7);		// Invalid password
 		}
 
 		$pw_entry_text = "
@@ -402,9 +418,7 @@ class pageClass
 		";
 		// Mustn't return to higher level code here
 
-		// HEADERF requires that $tp is defined - hence declared as global above.
-		require_once(HEADERF);
-		$ns->tablerender("&nbsp;", $pw_entry_text);		// HEADERF also clears $text - hence different variable
+		$ns->tablerender($page_title, $pw_entry_text);		// HEADERF also clears $text - hence different variable
 		require_once(FOOTERF);
 		exit;
 	}
