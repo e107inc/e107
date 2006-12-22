@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/Hungarian.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-22 21:27:05 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 setlocale(LC_ALL, 'hu_HU.UTF-8', 'hu_HU@euro', 'hu_HU', 'hu', 'Hungarian');
 define("CORE_LC", 'hu');
 define("CORE_LC2", 'HU.utf-8');
