@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-02 11:54:09 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-22 21:01:42 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -381,7 +381,7 @@ class newsletter
 		}
 
 		$mail->WordWrap = 50;
-		$mail->Charset = CHARSET;
+		$mail->CharSet = CHARSET;
 		$mail->Subject = $newsletterParentInfo['newsletter_title'] . ": ".$newsletterInfo['newsletter_title'];
 		$mail->IsHTML(true);
 
