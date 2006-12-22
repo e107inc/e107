@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-22 20:53:59 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -121,7 +121,8 @@ SC_END
 
 SC_BEGIN SIGNUP_HIDE_EMAIL
 global $rs;
-return $rs->form_radio("hideemail", 0, 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0)." ".LAN_200;
+$default_email_setting = 1;   // Gives option of turning into a pref later if wanted
+return $rs->form_radio("hideemail", 1, $default_email_setting==1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." ".LAN_200;
 SC_END
 
 
