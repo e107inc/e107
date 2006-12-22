@@ -11,9 +11,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-22 20:46:53 $
+|     $Author: e107steved $
+|
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -49,15 +50,11 @@ class convert
 	}
 
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
-	{
-
-		/*
+	{	/*
 		$mode = TRUE :: return array
 		$mode = FALSE :: return string
 		*/
 
-		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
-		$since = $newer_date - $older_date;
 		if($format == 'short')
 		{
 			$sec = LANDT_09;
@@ -72,34 +69,66 @@ class convert
 			$min = LANDT_06;
 			$mins = LANDT_06s;
 		}
-
-		$timings = array(
-			array(31536000 , LANDT_01,LANDT_01s),
-			array(2592000 , LANDT_02, LANDT_02s),
-			array(604800, LANDT_03, LANDT_03s),
-			array(86400 , LANDT_04, LANDT_04s),
-			array(3600 , LANDT_05, LANDT_05s),
-			array(60 , $min, $mins)
-		);
-		if($show_secs)
-		{
-			$timings[] = array(1 , $sec, $secs);
-		}
+/*
+  If we want an absolutely accurate result, main problems arise from the varying numbers of days in a month.
+  If we go over a month boundary, then we need to add days to end of start month, plus days in 'end' month
+  If start day > end day, we cross a month boundary. Calculate last day of start date. Otherwise we can just do a simple difference.
+*/
 		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
-		$since = $newer_date - $older_date;
-
+		$new_date = getdate($newer_date);
+		$old_date = getdate($older_date);
+		$result   = array();
 		$outputArray = array();
-		$total = $since;
-		$value = FALSE;
-		foreach($timings as $time)
+
+		$params   = array(
+					  6 => array('seconds',60, $sec, $secs),
+					  5 => array('minutes',60, $min, $mins),
+					  4 => array('hours',24, LANDT_05, LANDT_05s),
+					  3 => array('mday', -1, LANDT_04, LANDT_04s),
+					  2 => array('',-3, LANDT_03, LANDT_03s),
+					  1 => array('mon',12, LANDT_02, LANDT_02s),
+					  0 => array('year', -2, LANDT_01,LANDT_01s)
+					);
+
+		$cy = 0;
+		foreach ($params as $parkey => $parval)
 		{
-			$seconds = floor($total / $time[0]);
-			if($seconds || $value)
-			{
-				$outputArray[] = $seconds." ".($seconds == 1 ? $time[1] : $time[2]);
-				$value = TRUE;
+		  if ($parkey == 2)
+		  {
+		    $result['2'] = floor($result['3']/7);
+			$result['3'] = fmod($result['3'],7);
+		  }
+		  else
+		  {
+		    $tmp = $new_date[$parval[0]] - $old_date[$parval[0]] - $cy;
+			$scy = $cy;
+		    $cy = 0;
+		    if ($tmp < 0)
+		    {
+		      switch ($parval[1])
+			  {
+			    case -1 :    // Wrapround on months - special treatment
+			      $tempdate = getdate(mktime(0,0,0,$old_date['mon']+1,1,$old_date['year']) - 1);  // Last day of month
+				  $tmp = $tempdate['mday'] - $old_date['mday'] + $new_date['mday'] - $scy;
+				  $cy = 1;
+			      break;
+			    case -2 :		// Year wraparound - shouldn't happen
+				case -3 : 		// Week processing - this shouldn't happen either
+				  echo "Code bug!<br />";
+			      break;
+			    default :
+		          $cy = 1;
+				  $tmp += $parval[1];
 			}
-			$total = fmod($total, $time[0]);
+		  }
+		  $result[$parkey] = $tmp;
+		  }
+		}
+
+		// Generate output array, add text
+		for ($i = 0; $i < ($show_secs ? 7 : 6); $i++)
+		{
+		  $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]);
 		}
 		return ($mode ? $outputArray : implode(", ", $outputArray));
 	}
