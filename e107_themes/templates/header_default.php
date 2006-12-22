@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-07 12:53:49 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-22 18:47:10 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -91,9 +91,7 @@ echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
 if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
-	echo wysiwyg($e_wysiwyg);
 }else{
 	define("e_WYSIWYG",FALSE);
 }
@@ -307,7 +305,7 @@ if(!isset($e107_popup))
 	$e107_popup = 0;
 }
 if ($e107_popup != 1) {
-	
+
 //
 // L: (optional) Body JS to disable right clicks
 //
