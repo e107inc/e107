@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/e_meta.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-08 05:43:14 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-22 12:53:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,7 @@ if(isset($pref['rss_feeds']) && $pref['rss_feeds'])
 	  		//wildcard topic_id's should not be listed
 	   		if(strpos($row['rss_url'], "*")===FALSE){
 		  		$url = SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants, no_hook, emotes_off').".2";
+				$url .= ($row['rss_topicid']) ? ".".$row['rss_topicid'] : "";
 		  		$name = $tp->toHTML($row['rss_name'], TRUE, 'no_hook, emotes_off');
 		   		echo "<link rel='alternate' type='application/rss+xml' title='".htmlspecialchars(SITENAME, ENT_QUOTES, CHARSET)." ".htmlspecialchars($name, ENT_QUOTES, CHARSET)."' href='".$url."' />\n";
 			}
