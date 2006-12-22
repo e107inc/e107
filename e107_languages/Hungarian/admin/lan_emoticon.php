@@ -29,5 +29,10 @@ define("EMOLAN_19", "Név");
 define("EMOLAN_20", "Hely");
 define("EMOLAN_21", "Hiba");
 //define("EMOLAN_2", "Name");
+define("EMOLAN_22", "Új emotikon csoport:");
+define("EMOLAN_23", "Új emotikon xml csoport:");
+define("EMOLAN_24", "Új emotikon php:");
+
+
 
 ?>

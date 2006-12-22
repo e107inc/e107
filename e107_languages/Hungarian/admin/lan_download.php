@@ -128,5 +128,10 @@ define("DOWLAN_150", "Email küldése az admin részére hibás letöltés jelen
 define("DOWLAN_151", "Hibás-letöltés jelentésének engedélyezése");
 
 define("DOWLAN_152", "Nem lehet a file-t mozgatni");
-define("DOWLAN_153", "File áthelyezése a letöltés mappába");   
+define("DOWLAN_153", "File áthelyezése a letöltés mappába"); 
+
+define("DOWLAN_154", "ha tükörszervert használsz, akkor válaszd ki, hogyan jelenjen meg");
+define("DOWLAN_155", "Tükörszerver megjelenési tipusa:");
+define("DOWLAN_156", "Tükörszerver lista megjelenítése, tükörszerver kiválasztása");
+define("DOWLAN_157", "Véletlenszerű tükörszerver használata - nem a felhasználó válassza ki");  
 ?>

@@ -3,7 +3,7 @@
 # e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
-if (!defined("PAGE_NAME")) {define("PAGE_NAME", "E-mail");}
+if (!defined("PAGE_NAME")) {define("PAGE_NAME", "E-mail"); }
 
 define("LAN_EMAIL_1", "Feladó:");
 define("LAN_EMAIL_2", "Küldő IP címe:");

@@ -30,6 +30,7 @@ define("UPLLAN_23", "Név");
 define("UPLLAN_24", "Fájltípus");
 define("UPLLAN_25", "Feltöltés engedélyezése?");
 define("UPLLAN_26", "Kikapcsolása esetén nem lesz publikus feltöltés");
+define("UPLLAN_27", "nem moderált publikus feltöltések");
 
 define("UPLLAN_29", "Tárolás típusa");
 define("UPLLAN_30", "Válaszd ki a feltöltött fájlok tárolásának módját: normál fájlként a szerveren, vagy bináris információként az adatbázisban<br /><b>Megjegyzés:</b> a bináris mód csak a kb. 500 kB alatti méretű fájlokhoz alkalmazható");
