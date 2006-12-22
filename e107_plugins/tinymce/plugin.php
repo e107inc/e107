@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-22 18:45:26 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-22 18:49:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,10 +58,5 @@ $eplug_tables = "";
 $eplug_link = FALSE;
 $eplug_link_name = "";
 $eplug_link_url = "";
-
-
-// Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = "";
-
 
 ?>
