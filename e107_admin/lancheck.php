@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2006-11-22 23:20:14 $
+|     $Revision: 1.25 $
+|     $Date: 2006-12-22 00:44:11 $
 |     $Author: e107coders $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -628,25 +628,19 @@ function fill_phrases_array($data,$type) {
       return $retloc;
     }
 
+//--------------------------------------------------------------------
 
-function is_utf8($string) {
-   // From http://w3.org/International/questions/qa-forms-utf-8.html
-	if(strtolower(CHARSET) != "utf-8" || $string == "")
+
+function is_utf8($str) {
+	/*
+	* @see http://hsivonen.iki.fi/php-utf8/   validation.php
+	*/
+	if(strtolower(CHARSET) != "utf-8" || $str == "")
 	{
 		return TRUE;
 	}
 
-    return preg_match('%^(?:
-         [\x09\x0A\x0D\x20-\x7E]
-       | [\xC2-\xDF][\x80-\xBF]
-       |  \xE0[\xA0-\xBF][\x80-\xBF]
-       | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}
-       |  \xED[\x80-\x9F][\x80-\xBF]
-       |  \xF0[\x90-\xBF][\x80-\xBF]{2}
-       | [\xF1-\xF3][\x80-\xBF]{3}
-       |  \xF4[\x80-\x8F][\x80-\xBF]{2}
-	)*$%xs', $string);
-
+    return (preg_match('/^.{1}/us',$str,$ar) == 1);
 }
 
 
