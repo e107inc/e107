@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/online_extended_menu/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-23 18:38:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-	
+
 define("ONLINE_EL1", "Guests: ");
 define("ONLINE_EL2", "Members: ");
 define("ONLINE_EL3", "On this page: ");
@@ -24,10 +24,10 @@ define("ONLINE_EL4", "Online");
 define("ONLINE_EL5", "Members");
 define("ONLINE_EL6", "Newest member");
 define("ONLINE_EL7", "viewing");
-	
+
 define("ONLINE_EL8", "most ever online: ");
 define("ONLINE_EL9", "on");
 
-define("TRACKING_MESSAGE", "Online user tracking is currently disabled, please enable it <a href='".e_ADMIN."users.php?options'>here</a></span><br />");
+define("ONLINE_TRACKING_MESSAGE", "Online user tracking is currently disabled, please enable it [link=".e_ADMIN."users.php?options]here[/link][br]");
 
 ?>
