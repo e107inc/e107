@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-23 12:15:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -24,7 +24,8 @@ if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 define("DL_IMAGESTYLE","border:0px");
 
 // ##### CAT TABLE --------------------------------------------------------------------------------
-if(!$DOWNLOAD_CAT_TABLE_START){
+if(!isset($DOWNLOAD_CAT_TABLE_START))
+{
                 $DOWNLOAD_CAT_TABLE_START = "
                 <div style='text-align:center'>
                 <table class='fborder' style='".USER_WIDTH."'>\n
@@ -36,9 +37,9 @@ if(!$DOWNLOAD_CAT_TABLE_START){
                 <td style='width:10%; text-align:center' class='fcaption'>".LAN_dl_18."</td>
                 </tr>";
 }
-if(!$DOWNLOAD_CAT_PARENT_TABLE){
-
-                $DOWNLOAD_CAT_PARENT_TABLE .= "
+if(!isset($DOWNLOAD_CAT_PARENT_TABLE))
+{
+                $DOWNLOAD_CAT_PARENT_TABLE = "
                 <tr>
                 <td colspan='5' class='forumheader' style='text-align:left; font-weight:bold;'>
                         {DOWNLOAD_CAT_MAIN_ICON} {DOWNLOAD_CAT_MAIN_NAME}
@@ -46,9 +47,9 @@ if(!$DOWNLOAD_CAT_PARENT_TABLE){
                 </tr>";
 }
 
-if(!$DOWNLOAD_CAT_CHILD_TABLE){
-
-                $DOWNLOAD_CAT_CHILD_TABLE .= "
+if(!isset($DOWNLOAD_CAT_CHILD_TABLE))
+{
+                $DOWNLOAD_CAT_CHILD_TABLE = "
                 <tr>
                 <td class='forumheader3'>
                         {DOWNLOAD_CAT_SUB_ICON}
@@ -74,10 +75,9 @@ if(!$DOWNLOAD_CAT_CHILD_TABLE){
 
 }
 
-if(!$DOWNLOAD_CAT_SUBSUB_TABLE)
+if(!isset($DOWNLOAD_CAT_SUBSUB_TABLE))
 {
-
-	$DOWNLOAD_CAT_SUBSUB_TABLE .= "
+	$DOWNLOAD_CAT_SUBSUB_TABLE = "
 	<tr>
 	<td class='forumheader3'>
 		&nbsp;
@@ -113,7 +113,8 @@ if(!$DOWNLOAD_CAT_SUBSUB_TABLE)
 	</tr>";
 }
 
-if(!$DOWNLOAD_CAT_TABLE_END){
+if(!isset($DOWNLOAD_CAT_TABLE_END))
+{
                 $DOWNLOAD_CAT_TABLE_END = "
                 <tr><td class='forumheader3' colspan='5' style='text-align:right;'>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</td></tr>
                 <tr><td class='forumheader3' colspan='5' style='text-align:right;'>{DOWNLOAD_CAT_SEARCH}</td></tr>
@@ -125,8 +126,8 @@ if(!$DOWNLOAD_CAT_TABLE_END){
 
 
 // ##### LIST TABLE -------------------------------------------------------------------------------
-if(!$DOWNLOAD_LIST_TABLE_START){
-
+if(!isset($DOWNLOAD_LIST_TABLE_START))
+{
                 $DOWNLOAD_LIST_TABLE_START = "
                 <div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>
@@ -171,8 +172,9 @@ if(!$DOWNLOAD_LIST_TABLE_START){
 
 }
 
-if(!$DOWNLOAD_LIST_TABLE){
-		$DOWNLOAD_LIST_TABLE .= "
+if(!isset($DOWNLOAD_LIST_TABLE))
+{
+		$DOWNLOAD_LIST_TABLE = "
 		<tr>
 		<td class='forumheader3' style='text-align:left;'>
 		{DOWNLOAD_LIST_NEWICON} {DOWNLOAD_LIST_NAME}
@@ -198,7 +200,8 @@ if(!$DOWNLOAD_LIST_TABLE){
 		</tr>";
 }
 
-if(!$DOWNLOAD_LIST_TABLE_END){
+if(!isset($DOWNLOAD_LIST_TABLE_END))
+{
 		$DOWNLOAD_LIST_TABLE_END = "
 		<tr><td class='forumheader3' colspan='7' style='text-align:right;'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</td></tr>
 		</table>
@@ -243,8 +246,9 @@ $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE_LAN']['post'] = "</td>";
 $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['pre'] = "<td style='width:80%' class='forumheader3'>";
 $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['post'] = "</td></tr>";
 
-if(!$DOWNLOAD_VIEW_TABLE){
-		$DOWNLOAD_VIEW_TABLE .= "
+if(!isset($DOWNLOAD_VIEW_TABLE))
+{
+		$DOWNLOAD_VIEW_TABLE = "
         <div style='text-align:center'>
 		<table class='fborder' style='".USER_WIDTH."'>\n
 		<tr>
@@ -309,7 +313,7 @@ if(!$DOWNLOAD_VIEW_TABLE){
 
 // ##### MIRROR LIST -------------------------------------------------------------------------------
 
-if(!$DOWNLOAD_MIRROR_START)
+if(!isset($DOWNLOAD_MIRROR_START))
 {
 	$DOWNLOAD_MIRROR_START = "
 	<div style='text-align:center'>
@@ -326,7 +330,7 @@ if(!$DOWNLOAD_MIRROR_START)
 	";
 }
 
-if(!$DOWNLOAD_MIRROR)
+if(!isset($DOWNLOAD_MIRROR))
 {
 	$DOWNLOAD_MIRROR = "
 	<tr>
@@ -338,7 +342,7 @@ if(!$DOWNLOAD_MIRROR)
 	";
 }
 
-if(!$DOWNLOAD_MIRROR_END)
+if(!isset($DOWNLOAD_MIRROR_END))
 {
 	$DOWNLOAD_MIRROR_END = "
 	</table>
