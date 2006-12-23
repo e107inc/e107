@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-22 20:46:53 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-23 15:44:31 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -75,6 +75,12 @@ class convert
   If start day > end day, we cross a month boundary. Calculate last day of start date. Otherwise we can just do a simple difference.
 */
 		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
+		if($older_date>$newer_date)
+		{  // Just in case the wrong way round
+		  $tmp=$newer_date; 
+		  $newer_date=$older_date; 
+		  $older_date=$tmp; 
+		}
 		$new_date = getdate($newer_date);
 		$old_date = getdate($older_date);
 		$result   = array();
