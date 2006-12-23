@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-23 18:38:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -557,7 +557,7 @@ function renderCache($cache, $nfp = FALSE){
 	global $pref,$tp,$sql,$CUSTOMFOOTER, $FOOTER,$cust_footer,$ph;
 	global $db_debug,$ns,$eTraffic,$eTimingStart, $error_handler, $db_time, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb,$e107;
 	echo $cache;
-	if ($nfp && $pref['nfp_display'] == 2) {
+	if (isset($nfp) && isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 	}
 	render_newscats();

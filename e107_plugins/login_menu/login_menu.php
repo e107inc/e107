@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-06 20:19:03 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-23 18:38:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -109,7 +109,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Chatbox Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_chatbox'] == true) {
+		if (isset($menu_pref['login_menu']['new_chatbox']) && $menu_pref['login_menu']['new_chatbox'] == true) {
 			$display_chats = TRUE;
 
 			if(in_array('chatbox_menu',$eMenuActive)){
@@ -129,7 +129,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Forum Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_forum'] == true) {
+		if (isset($menu_pref['login_menu']['new_forum']) && $menu_pref['login_menu']['new_forum'] == true) {
 			$qry = "
 			SELECT  count(*) as count FROM #forum_t  as t
 			LEFT JOIN #forum as f
@@ -150,7 +150,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Member Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_members'] == true) {
+		if (isset($menu_pref['login_menu']['new_members']) && $menu_pref['login_menu']['new_members'] == true) {
 			$new_users = $sql->db_Count('user', '(user_join)', 'WHERE user_join > '.$time);
 			$new_total += $new_users;
 			if (!$new_users) {
