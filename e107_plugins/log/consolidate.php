@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/consolidate.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-19 21:48:37 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-23 18:17:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -30,10 +30,13 @@ $pfile = "logp_".$date.".php";				// Today's log file
 $ifileprev = "logi_".$yesterday.".php";
 $ifile = "logi_".$date.".php";
 
-if(file_exists($pathtologs.$pfile)) {
+if(file_exists($pathtologs.$pfile)) 
+{
 	/* log file is up to date, no consolidation required */
 	return;
-}else if(!file_exists($pathtologs.$pfileprev)) {
+}
+else if(!file_exists($pathtologs.$pfileprev)) 
+{
 	/* no logfile found at all - create - this will only ever happen once ... */
 	createLog("blank");
 	return FALSE;
@@ -208,14 +211,16 @@ if(!unlink($pathtologs.$ifileprev))
 	fclose($handle);
 }
 
-/* and finally, we need to create a new logfiles for today ... */
+/* and finally, we need to create new logfiles for today ... */
 createLog();
 /* done! */
 
 
-function createLog($mode="default") {
+function createLog($mode="default") 
+{
 	global $pathtologs, $statTotal, $statUnique, $pageArray, $pfile, $ifile;
-	if(!is_writable($pathtologs)) {
+	if(!is_writable($pathtologs)) 
+	{
 		echo "Log directory is not writable - please CHMOD ".e_PLUGIN."log/logs to 777";
 		return FALSE;
 	}
@@ -234,7 +239,8 @@ function createLog($mode="default") {
 	$varStart."osInfo = array();\n".
 	$varStart."pageInfo = array(\n";
 
-	if($mode == "default") {
+	if($mode == "default") 
+	{
 		reset($pageArray);
 		$loop = FALSE;
 		foreach($pageArray as $key => $info) {
@@ -270,13 +276,30 @@ function createLog($mode="default") {
 	//	return FALSE;
 	}
 
-	if ($handle = fopen($pathtologs.$pfile, 'w')) { 
+	if ($handle = fopen($pathtologs.$pfile, 'w')) 
+	{ 
 		fwrite($handle, $data);
 	}
 	fclose($handle);
 
-	if ($handle = fopen($pathtologs.$ifile, 'w')) { 
-		fwrite($handle, "");
+
+$data = "<?php
+
+/* e107 website system: Log info file: ".date("z:Y", time())." */
+
+";
+$data .= '$domainInfo'." = array();\n\n";
+$data .= '$screenInfo'." = array();\n\n";
+$data .= '$browserInfo'." = array();\n\n";
+$data .= '$osInfo'." = array();\n\n";
+$data .= '$refInfo'." = array();\n\n";
+$data .= '$searchInfo'." = array();\n\n";
+$data .= '$visitInfo'." = array();\n\n";
+$data .= "?>";
+
+	if ($handle = fopen($pathtologs.$ifile, 'w')) 
+	{ 
+		fwrite($handle, $data);
 	}
 	fclose($handle);
 	return;
