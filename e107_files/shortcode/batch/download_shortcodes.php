@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-07 16:49:28 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-23 16:25:17 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -134,8 +134,8 @@ SC_END
 
 
 SC_BEGIN DOWNLOAD_ADMIN_EDIT
-global $dl, $imode;
-return (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.".$dl['download_id']."' title='edit'><img src='".e_IMAGE."packs/".$imode."/generic/edit.png' alt='' style='padding:0px;border:0px' /></a>" : "";
+global $dl;
+return (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.".$dl['download_id']."' title='edit'><img src='".e_IMAGE."generic/lite/edit.png' alt='' style='padding:0px;border:0px' /></a>" : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY
@@ -175,8 +175,12 @@ return $dl['download_name'];
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_NAME_LINKED
-global $dl;
-return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+global $pref,$dl,$tp;
+if ($pref['agree_flag'] == 1) {
+	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"))."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+} else {
+	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+}
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_AUTHOR
@@ -240,7 +244,6 @@ else
 {
 	return LAN_dl_75;
 }
-
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_IMAGEFULL
@@ -281,7 +284,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_RATING
 	require_once(e_HANDLER."rate_class.php");
 	$rater = new rater;
-	global $dl, $imode;
+global $dl;
 	$text = "
 		<table style='width:100%'>
 		<tr>
@@ -289,10 +292,10 @@ SC_BEGIN DOWNLOAD_VIEW_RATING
 
 	if ($ratearray = $rater->getrating("download", $dl['download_id'])) {
 		for($c = 1; $c <= $ratearray[1]; $c++) {
-			$text .= "<img src='".e_IMAGE."packs/".$imode."/rate/star.png' alt='' />";
+			$text .= "<img src='".e_IMAGE."rate/".IMODE."/star.png' alt='' />";
 		}
 		if ($ratearray[2]) {
-			$text .= "<img src='".e_IMAGE."packs/".$imode."/rate/".$ratearray[2].".png'  alt='' />";
+			$text .= "<img src='".e_IMAGE."rate/".IMODE."/".$ratearray[2].".png'  alt='' />";
 		}
 		if ($ratearray[2] == "") {
 			$ratearray[2] = 0;
