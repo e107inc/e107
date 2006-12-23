@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-11-27 02:23:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2006-12-23 16:24:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -175,8 +175,12 @@ return $dl['download_name'];
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_NAME_LINKED
-global $dl;
-return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+global $pref,$dl,$tp;
+if ($pref['agree_flag'] == 1) {
+	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc defs"))."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+} else {
+	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+}
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_AUTHOR
@@ -240,7 +244,6 @@ else
 {
 	return LAN_dl_75;
 }
-
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_IMAGEFULL
