@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.176 $
-|     $Date: 2006-11-29 04:22:40 $
-|     $Author: e107coders $
+|     $Revision: 1.177 $
+|     $Date: 2006-12-24 13:34:09 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -596,7 +596,7 @@ class e_parse
         	$len = strlen($val);
 			if(substr($url,0,$len) == $val)
 			{
-            	return str_replace($val,$key,$url);
+            	return substr_replace($url,$key,0,$len); // replace the first instance only
 			}
 		}
 
