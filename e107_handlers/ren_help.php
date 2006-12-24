@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-08-09 03:10:58 $
-|     $Author: e107coders $
+|     $Revision: 1.61 $
+|     $Date: 2006-12-24 13:35:32 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -163,7 +163,7 @@ function Color_Select($formid='col_selector') {
 			}
 		}
 	}
-	document.write('<table cellspacing=\'1\' cellpadding=\'0\' style=\'cursor: hand; cursor: pointer; background-color: #000; width: 100%; border: 0px\'><tr>');
+	document.write('<table cellspacing=\'1\' cellpadding=\'0\' style=\'cursor: pointer; background-color: #000; width: 100%; border: 0px\'><tr>');
 	document.write(td_render(coloursgrey[0]) + tdblk + rows1 + rows2);
 	document.write('<\/tr><\/table>');
 	//]]>
