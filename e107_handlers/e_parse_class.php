@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.177 $
-|     $Date: 2006-12-24 13:34:09 $
-|     $Author: mrpete $
+|     $Revision: 1.178 $
+|     $Date: 2006-12-24 23:31:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -68,18 +68,22 @@ class e_parse
 		return $ret;
 	}
 
-	function toForm($text, $single_quotes = FALSE)
+	function toForm($text, $single_quotes = FALSE, $convert_lt_gt = false)
 	{
 		if($text == "") { return ""; }
-		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
+		$mode = ($single_quotes ? ENT_QUOTES : ENT_COMPAT);
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
 		if(e_WYSIWYG !== TRUE){
 	   	  	$text = str_replace("&nbsp;"," ",$text); // fix for utf-8 issue with html_entity_decode();
 		}
-	  	$text = html_entity_decode($text, $mode,CHARSET);
-
+	  	$text = html_entity_decode($text, $mode, CHARSET);
+		if($convert_lt_gt)
+		{
+			//need to convert < > to entities if this text will be in a textarea, to prevent injection
+			$text = str_replace(array("<", ">"), array("&lt;", "&gt;"), $text);
+		}
 		return $text;
 	}
 
