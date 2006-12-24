@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.139 $
-|   $Date: 2006-12-11 07:55:49 $
-|   $Author: e107coders $
+|   $Revision: 1.140 $
+|   $Date: 2006-12-24 13:29:31 $
+|   $Author: mrpete $
 +---------------------------------------------------------------+
 
 */
@@ -913,7 +913,7 @@ class newspost {
 			}
 			$text .= "</table></form>";
 			} else {
-			$text .= "<div style='text-align:center'><div style='vertical-align:center'>".NWSLAN_10."</div>";
+			$text .= "<div style='text-align:center'><div style='vertical-align:middle'>".NWSLAN_10."</div>";
 		}
 		$text .= "</div>";
 		$ns->tablerender(NWSLAN_51, $text);
