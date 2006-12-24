@@ -21,8 +21,8 @@ $FORUMPOLLPOSTED =
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_413."<br />
 <span class='defaulttext'><a class='forumlink' href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id."'>".LAN_414."</a><br />
 <a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
@@ -33,8 +33,8 @@ $FORUMTHREADPOSTED = "
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_324."<br />
 ".(defined("F_MESSAGE") ? F_MESSAGE."<br />" : "")."
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />
@@ -47,8 +47,8 @@ $FORUMREPLYPOSTED = "
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_415."<br />
 ".(defined("F_MESSAGE") ? F_MESSAGE."<br />" : "")."
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />

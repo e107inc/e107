@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_post_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-10-24 13:45:10 $
+|     $Revision: 1.12 $
+|     $Date: 2006-12-24 13:55:37 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -95,8 +95,8 @@ $FORUMTHREADPOSTED = "
 <tr>
 <td class='nforumcaption2' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_324."<br />
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id."'>".LAN_325."</a><br />
 <a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
@@ -108,8 +108,8 @@ $FORUMREPLYPOSTED = "
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_324."<br />
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />
 <a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />

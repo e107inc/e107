@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/forum_post_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-24 13:36:10 $
+|     $Revision: 1.6 $
+|     $Date: 2006-12-24 13:51:15 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -90,8 +90,8 @@ $FORUMTHREADPOSTED =
 BOXOPEN.LAN_133.BOXMAIN."
 <table style='width:100%'>
 <tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_324."<br />
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id."'>".LAN_325."</a><br />
 <a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
@@ -102,8 +102,8 @@ $FORUMREPLYPOSTED =
 BOXOPEN.LAN_133.BOXMAIN."
 <table style='width:100%'>
 <tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_324."<br />
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />
 <a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
