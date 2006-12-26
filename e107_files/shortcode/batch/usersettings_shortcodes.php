@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-10-25 15:27:19 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2006-12-26 12:34:36 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -180,7 +180,7 @@ SC_END
 
 SC_BEGIN AVATAR_CHOOSE
 $ret = "
-<input class='button' type ='button' style=' cursor:hand' size='30' value='".LAN_403."' onclick='expandit(this)' />
+<input class='button' type ='button' style=' cursor:pointer' size='30' value='".LAN_403."' onclick='expandit(this)' />
 <div style='display:none' >";
 $avatarlist[0] = "";
 $handle = opendir(e_IMAGE."avatars/");

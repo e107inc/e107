@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-12-22 20:53:37 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2006-12-26 12:34:36 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -193,7 +193,7 @@ if($pref['signup_option_image'])
 	$text = "
 	<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 
-	<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_27."' onclick='expandit(this)' />
+	<input class='button' type ='button' style='cursor:pointer' size='30' value='".LAN_SIGNUP_27."' onclick='expandit(this)' />
 	<div style='display:none' >";
 	$avatarlist[0] = "";
 	$handle = opendir(e_IMAGE."avatars/");
