@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-12-24 13:31:38 $
+|     $Revision: 1.58 $
+|     $Date: 2006-12-26 15:49:25 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -67,13 +67,10 @@ class e107{
 		$http_path = explode("/", $http_path);
 		$http_path = array_reverse($http_path);
 		$j = 0;
-		$base_self='';
 		while ($j < $i) {
-			$base_self =$http_path[$j].'/'.$base_self;
 			unset($http_path[$j]);
 			$j++;
 		}
-		$base_self= $path.$base_self.substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 		$http_path = array_reverse($http_path);
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
@@ -90,7 +87,6 @@ class e107{
 		{
 			define("e_HTTP", $this->server_path);
 			define("e_BASE", $this->relative_base_path);
-			define("e_BASE_SELF",$base_self);
 			define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
 			define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
 			define("e_THEME", e_BASE.$THEMES_DIRECTORY);
