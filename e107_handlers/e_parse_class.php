@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.178 $
-|     $Date: 2006-12-24 23:31:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.179 $
+|     $Date: 2006-12-26 14:51:45 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -533,7 +533,10 @@ class e_parse
 //   "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
 //   TRUE = produce truncated URL path, e.g. e107plugins/etc
 //   "" (default) = URL's get relative path e.g. ../e107_plugins/etc
-//                  AND all other e107 constants are replaced
+//
+// $all - if TRUE, then
+//		when $nonrelative is "full" or TRUE, USERID is also replaced...
+//		when $nonrelative is "" (default), ALL other e107 constants are replaced
 //
 // only an ADMIN user can convert {e_ADMIN}
 //
@@ -549,6 +552,11 @@ class e_parse
 				$replace_relative[] = $ADMIN_DIRECTORY;
 				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
 				$search[] = "{e_ADMIN}";
+			}
+			if ($all) {
+				$replace_relative[] = USERID;
+				$replace_absolute[] = USERID;
+				$search[] = "{USERID}";
 			}
 			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
