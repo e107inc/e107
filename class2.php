@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.324 $
-|     $Date: 2006-12-05 10:48:46 $
+|     $Revision: 1.325 $
+|     $Date: 2006-12-26 14:49:45 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -1358,17 +1358,17 @@ function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) 
 // $something = pref;  // Bug if pref not set         ==> $something = varset(pref);
 // $something = isset(pref) ? pref : "";              ==> $something = varset(pref);
 // $something = isset(pref) ? pref : default;         ==> $something = varset(pref,default);
-// $something = isset(pref) && pref ? pref : default; ==> $something = varset(pref,default, true);
+// $something = isset(pref) && pref ? pref : default; ==> use varsettrue(pref,default)
 //
-function varset(&$val,$default='',$testvalue=false) {
+function varset(&$val,$default='') {
 	if (isset($val)) {
-		return (!$testvalue || $val) ? $val : $default;
+		return $val;
 	}
 	return $default;
 }
-function defset($str,$default='',$testvalue=false) {
+function defset($str,$default='') {
 	if (defined($str)) {
-		return (!$testvalue || constant($str)) ? constant($str) : $default;
+		return constant($str);
 	}
 	return $default;
 }
@@ -1574,11 +1574,11 @@ class error_handler {
 		$ret = "<table class='fborder'>\n";
 		if (E107_DBG_ERRBACKTRACE)
 		{
-		foreach ($this->errors as $key => $value) {
-			$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></td>\n\t</tr>\n";
-			$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
-			if($index == 0) { $index = 1; } else { $index = 0; }
-		}
+			foreach ($this->errors as $key => $value) {
+				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></td>\n\t</tr>\n";
+				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
+				if($index == 0) { $index = 1; } else { $index = 0; }
+			}
 		} else {
 			foreach ($this->errors as $key => $value) 
 			{
