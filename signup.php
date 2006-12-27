@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2006-12-11 08:31:17 $
-|     $Author: e107coders $
+|     $Revision: 1.104 $
+|     $Date: 2006-12-27 22:17:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -413,6 +413,13 @@ if (isset($_POST['register']))
 		exit;
 	}
 
+	// Check if display name exceeds maximum allowed length
+	if (isset($pref['displayname_maxlength']) && (strlen($_POST['name']) > $pref['displayname_maxlength']))
+	{
+	  $error_message .= LAN_SIGNUP_55."\\n";
+	  $error = TRUE;
+	}
+	
 	// Display Name exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{

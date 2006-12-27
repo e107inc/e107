@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-12-26 12:34:36 $
-|     $Author: mrpete $
+|     $Revision: 1.9 $
+|     $Date: 2006-12-27 22:17:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -64,6 +64,15 @@ global $pref, $tp, $SIGNUP_XUP_FORM, $signup_shortcodes;
 if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
 {
 	return $tp->parseTemplate($SIGNUP_XUP_FORM, TRUE, $signup_shortcodes);
+}
+SC_END
+
+SC_BEGIN SIGNUP_XUP_ACTION
+global $pref, $tp, $SIGNUP_XUP_BUTTON, $signup_shortcodes;
+if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
+{
+// Puts the button to allow XUP signup onto the 'normal' signup screen
+	return $tp->parseTemplate($SIGNUP_XUP_BUTTON, TRUE, $signup_shortcodes);
 }
 SC_END
 
