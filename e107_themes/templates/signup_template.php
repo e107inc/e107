@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-12-27 22:18:03 $
+|     $Revision: 1.10 $
+|     $Date: 2006-12-27 22:28:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -180,7 +180,7 @@ $SIGNUP_XUP_FORM = "
 	<div id='xup' style='display:none' >
 
 	<div style='padding:10px;text-align:center'>
-	<input class='button' type ='button' style='cursor:hand' size='30' value=\"".LAN_SIGNUP_54."\" onclick=\"expandit('default');expandit('xup')\" />
+	<input class='button' type ='button' style='cursor:pointer' size='30' value=\"".LAN_SIGNUP_54."\" onclick=\"expandit('default');expandit('xup')\" />
 	</div>
 
 	<table style='".USER_WIDTH."'>
@@ -233,7 +233,7 @@ $SIGNUP_XUP_FORM = "
 if (!defined($SIGNUP_XUP_BUTTON))
 {
 $SIGNUP_XUP_BUTTON = "	<div style='padding:10px;text-align:center'>
-	<input class='button' type ='button' style='cursor:hand' size='30' value=\"".LAN_SIGNUP_35."\" onclick=\"expandit('default');expandit('xup')\" />
+	<input class='button' type ='button' style='cursor:pointer' size='30' value=\"".LAN_SIGNUP_35."\" onclick=\"expandit('default');expandit('xup')\" />
 	</div>
 ";
 }
