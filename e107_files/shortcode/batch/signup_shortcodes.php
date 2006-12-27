@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-22 20:53:59 $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-27 22:26:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -64,6 +64,15 @@ global $pref, $tp, $SIGNUP_XUP_FORM, $signup_shortcodes;
 if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
 {
 	return $tp->parseTemplate($SIGNUP_XUP_FORM, TRUE, $signup_shortcodes);
+}
+SC_END
+
+SC_BEGIN SIGNUP_XUP_ACTION
+global $pref, $tp, $SIGNUP_XUP_BUTTON, $signup_shortcodes;
+if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
+{
+// Puts the button to allow XUP signup onto the 'normal' signup screen
+	return $tp->parseTemplate($SIGNUP_XUP_BUTTON, TRUE, $signup_shortcodes);
 }
 SC_END
 
@@ -193,7 +202,7 @@ if($pref['signup_option_image'])
 	$text = "
 	<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 
-	<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_27."' onclick='expandit(this)' />
+	<input class='button' type ='button' style='cursor:pointer' size='30' value='".LAN_SIGNUP_27."' onclick='expandit(this)' />
 	<div style='display:none' >";
 	$avatarlist[0] = "";
 	$handle = opendir(e_IMAGE."avatars/");

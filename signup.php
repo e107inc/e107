@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-11 08:34:43 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-27 22:26:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -413,6 +413,13 @@ if (isset($_POST['register']))
 		exit;
 	}
 
+	// Check if display name exceeds maximum allowed length
+	if (isset($pref['displayname_maxlength']) && (strlen($_POST['name']) > $pref['displayname_maxlength']))
+	{
+	  $error_message .= LAN_SIGNUP_55."\\n";
+	  $error = TRUE;
+	}
+	
 	// Display Name exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
@@ -522,7 +529,7 @@ if (isset($_POST['register']))
 			{
 				$regexfail = $ext['user_extended_struct_name']." ".LAN_SIGNUP_53;
 			}
-	
+
 			if(defined($regexfail)) {$regexfail = constant($regexfail);}
 
 			if($regex != "" && $newval != "")
