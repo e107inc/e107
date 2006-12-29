@@ -1,7 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - rev: 1.23 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Hungarian.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-29 22:21:52 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 
 //if(!defined("PAGE_NAME")){define("PAGE_NAME", "Linkek");} <--
 // Lisa, could you please move this out of the language file ?
@@ -303,8 +310,9 @@ define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Link Kategória");
 define("LAN_LINKS_46", "Link Alkategória");
 define("LAN_LINKS_47", "link navigátor...");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_48", "-- kategória --");
 define("LAN_LINKS_49", "");
+define("LAN_LINKS_50", "Nincs jogosultságod link beküldéséhez");
 
 define("LAN_ADMIN_HELP_0", "Linkoldal - Súgó");
 
