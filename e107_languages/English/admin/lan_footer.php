@@ -4,16 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_footer.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-29 17:45:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("FOOTLAN_1", "Site");
 define("FOOTLAN_2", "Head Admin");
 define("FOOTLAN_3", "Version");
 define("FOOTLAN_4", "build");
-define("FOOTLAN_5", "Theme");
+define("FOOTLAN_5", "Admin Theme");
 define("FOOTLAN_6", "by");
 define("FOOTLAN_7", "Info");
 define("FOOTLAN_8", "Install date");
@@ -26,5 +26,6 @@ define("FOOTLAN_14", "Show Docs");
 define("FOOTLAN_15", "Documentation");
 define("FOOTLAN_16", "Database");
 define("FOOTLAN_17", "Charset");
+define("FOOTLAN_18", "Site Theme");
 
 ?>
