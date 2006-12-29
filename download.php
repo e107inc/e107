@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.4 $ - with modifications
-|     $Date: 2006-12-23 12:15:09 $
+|     $Revision: 1.5 $ - with modifications
+|     $Date: 2006-12-29 13:38:55 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -67,7 +67,7 @@ if (!e_QUERY || $_GET['elan'])
 // Read in tree of categories which this user is allowed to see
     $dl = new down_cat_handler($pref['download_subsub']);
 
-	if (count($dl->cat_tree) == 0)
+	if ($dl->down_count == 0)
 	{
 	  $ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_2."</div>");
 	  require_once(FOOTERF);
@@ -694,6 +694,8 @@ define("SUBSUB_PREFIX","---->");		// Added in front of sub-sub categories
 class down_cat_handler
 {
   var $cat_tree;			// Initialised with all categories in a tree structure
+  var $cat_count;			// Count visible subcats and subsubcats
+  var $down_count;			// Counts total downloads
   
   function down_cat_handler($nest_level = 1, $load_class = USERCLASS_LIST)
   {  // Constructor - make a copy of the tree for re-use
@@ -712,6 +714,8 @@ class down_cat_handler
 	  global $sql2;
 
 	  $catlist = array();
+	  $cat_count = 0;
+	  $down_count = 0;
 	  $temp1 = "";
 	  $temp2 = "";
 	  if ($load_cat_class != "")
@@ -749,6 +753,8 @@ class down_cat_handler
 	    {
 	      if (isset($catlist[$tmp]))
 		  {  // Sub-Category
+		    $cat_count++;
+			$down_count += $row['d_count'];
 		    $catlist[$tmp]['subcats'][$row['download_category_id']] = $row;
 		    $catlist[$tmp]['subcats'][$row['download_category_id']]['subsubcats'] = array();
 		    $catlist[$tmp]['subcats'][$row['download_category_id']]['d_last_subs'] = 
@@ -758,6 +764,8 @@ class down_cat_handler
 		  {  // Its a sub-sub category
 		    if (isset($catlist[$row['d_parent1']]['subcats'][$tmp]))
 			{
+		      $cat_count++;
+			  $down_count += $row['d_count'];
 		      if ($nest_level == 0)
 			  {  // Add the counts into the subcategory values
 				$catlist[$row['d_parent1']]['subcats'][$tmp]['d_size'] += $row['d_size'];
