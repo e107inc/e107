@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_db_verify.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("DBLAN_1", "SQL adatfile beolvasása sikertelen<br /><br />Ellenőrizd, hogy a <b>core_sql.php</b> fájl megtalálható az <b>/admin/sql</b> könyvtárban");
 define("DBLAN_2", "Összes ellenőrzése");
 

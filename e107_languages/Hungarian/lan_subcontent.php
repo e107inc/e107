@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_subcontent.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-29 22:34:01 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("ARLAN_0", "Köszönjük, a cikked elmentve, az oldal adminisztrátora hamarosan megvizsgálja.");
 define("ARLAN_1", "Üresen maradt mező(k).");
 define("ARLAN_2", "Köszönjük, a leírásod elmentve, az oldal adminisztrátora hamarosan megvizsgálja.");

@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_menus.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-29 22:34:01 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("MENLAN_1", "Mindenki által látható");
 define("MENLAN_2", "Csak a tagok által látható");
 define("MENLAN_3", "Csak az adminok által látható");

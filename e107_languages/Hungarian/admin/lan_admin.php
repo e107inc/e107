@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.4 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_admin.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("ADLAN_0", "Hírek");
 define("ADLAN_1", "Hozzáadás/módosítás/törlés");
 define("ADLAN_2", "Hírkategóriák");
@@ -257,9 +263,9 @@ define("LAN_DISABLED","Letiltva");
 define("LAN_ENABLED", "Engedélyezve");
 
 define("LAN_PRESET_CONFIRMSAVE","Elmentse a jelenlegi értékeket alapértelmezetnek ehhez az oldalhoz?");
-define("LAN_CONFIGURE", "Beállítás"); 
+define("LAN_CONFIGURE", "Beállítás");
 
 define("LAN_BACK","Vissza");
 
-define("LAN_CREDITS","Credits");  
+define("LAN_CREDITS","Credits");
 ?>

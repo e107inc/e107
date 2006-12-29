@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_download.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("DOWLAN_1", "Letöltés hozzáadva");
 define("DOWLAN_2", "Letöltés frissítve");
 define("DOWLAN_3", "Letöltés törölve");
@@ -128,10 +134,10 @@ define("DOWLAN_150", "Email küldése az admin részére hibás letöltés jelen
 define("DOWLAN_151", "Hibás-letöltés jelentésének engedélyezése");
 
 define("DOWLAN_152", "Nem lehet a file-t mozgatni");
-define("DOWLAN_153", "File áthelyezése a letöltés mappába"); 
+define("DOWLAN_153", "File áthelyezése a letöltés mappába");
 
 define("DOWLAN_154", "ha tükörszervert használsz, akkor válaszd ki, hogyan jelenjen meg");
 define("DOWLAN_155", "Tükörszerver megjelenési tipusa:");
 define("DOWLAN_156", "Tükörszerver lista megjelenítése, tükörszerver kiválasztása");
-define("DOWLAN_157", "Véletlenszerű tükörszerver használata - nem a felhasználó válassza ki");  
+define("DOWLAN_157", "Véletlenszerű tükörszerver használata - nem a felhasználó válassza ki");
 ?>

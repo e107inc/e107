@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.2 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_newspost.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-29 22:34:01 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("NWSLAN_1", "Hír törölve.");
 define("NWSLAN_2", "Jelöld be a megerősítő box-ot a hír törléséhez.");
 define("NWSLAN_3", "Nincsenek hírek.");

@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.11 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_download.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-29 22:34:01 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Letöltések");
 
 define("LAN_dl_1", "(Korlátozott)");
@@ -89,5 +95,5 @@ define("LAN_dl_73", "Letöltések a tükörszerverről: ");
 define("LAN_dl_74", "Összes letöltés a tükörszerverről: ");
 
 define("LAN_dl_75", "nincs kép ");
-define("LAN_dl_76", "Ugrás"); 
+define("LAN_dl_76", "Ugrás");
 ?>

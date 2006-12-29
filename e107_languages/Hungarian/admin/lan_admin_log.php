@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_admin_log.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-22 21:27:05 $
-|     $Author: lisa_ 
+|     $Revision: 1.4 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: lisa_
 +----------------------------------------------------------------------------+
 */
 define("LAN_ADMINLOG_0", "Admin Napló (Log)");

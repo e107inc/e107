@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_wmessage.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 //define("WMGLAN_1", "Üzenet a vendégek számára");
 //define("WMGLAN_2", "Üzenet a tagok számára");
 //define("WMGLAN_3", "Üzenet az adminisztrátorok számára");
@@ -23,5 +29,5 @@ define("WMLAN_07","Az alaprendszer felülírása a {WMESSAGE} shortcode használ
 //define("WMLAN_08","Beállítások");
 
 define("WMLAN_09","Nincsenek üdvözlő üzenetek");
-define("WMLAN_10","Üzenet Fejléc");   
+define("WMLAN_10","Üzenet Fejléc");
 ?>

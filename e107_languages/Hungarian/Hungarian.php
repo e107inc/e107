@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/Hungarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-22 21:27:05 $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-29 22:34:01 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */

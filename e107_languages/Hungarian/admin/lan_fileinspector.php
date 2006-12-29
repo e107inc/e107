@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.11 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_fileinspector.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("FC_LAN_1", "File Ellenőr");
 define("FC_LAN_2", "Vizsgálat beállítások");
 define("FC_LAN_3", "Mutat");

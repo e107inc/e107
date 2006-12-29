@@ -1,8 +1,14 @@
 <?php
-# ---------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.46 - author: e107hungary.org team - 2006
-# ---------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_prefs.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("PRFLAN_1", "Oldal információk");
 define("PRFLAN_2", "Név");
 define("PRFLAN_3", "URL");
@@ -162,11 +168,11 @@ define("PRFLAN_163", "pl.: cég név, cím, telefon ...stb.");
 
 define("PRFLAN_164", "Kapcsolat Email másolat önmagának küldés engedélyezése");
 define("PRFLAN_165", "Engedélyezett spam megnyitás lehetősége, óvatosan használd");
-define("PRFLAN_166", "Megjelenítse az emotikonokat a hozzászólásoknál?");   
+define("PRFLAN_166", "Megjelenítse az emotikonokat a hozzászólásoknál?");
 
 define("PRFLAN_167", "Írj be egy email címet"); // subject to change.
 define("PRFLAN_168", "Oldal kapcsolattartó személyek");
-define("PRFLAN_169", "Ha a kiválasztott csoport egynél több személyt tartalmaz, a felhasználó kiválaszthatja a személyt a csoportból.");   
+define("PRFLAN_169", "Ha a kiválasztott csoport egynél több személyt tartalmaz, a felhasználó kiválaszthatja a személyt a csoportból.");
 
 define("PRFLAN_170", "Használd a DNS megváltoztatását a host kitiltáshoz");
 define("PRFLAN_171", "Ennek a beállításnak a bekapcsolásával engedélyezed a felhasználók kitiltását hostnév alapján, amely jobb, mint csak IP vagy email cím alapján történő kitiltás.  <br />Megjegyzés: Ez néhány kiszolgálónál befolyásolhatja az oldal betöltési idejét");

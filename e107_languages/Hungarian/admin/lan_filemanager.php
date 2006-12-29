@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_filemanager.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-29 22:34:01 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("FMLAN_1", "Feltöltve");
 define("FMLAN_2", "a");
 define("FMLAN_3", "könyvtárba");

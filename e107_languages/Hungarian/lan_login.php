@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_login.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-29 22:34:01 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("LAN_27", "Kötelezően megadandó mező(ke)t hagytál üresen");
 define("LAN_300", "Helytelen bejelentkezés. Nincs ilyen felhasználónév az adatbázisban. Ellenőrizd, hogy a CAPS-LOCK helyzetét.");
 define("LAN_302", "Nem aktiváltad a regisztrációdat. Kapnod kellett egy e-mailt, amiben le volt írva mit kell tenned. Ha nem kaptad meg, lépj kapcsolatba az oldal üzemeltetőjével.");

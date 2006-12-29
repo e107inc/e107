@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_theme.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-29 22:34:00 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("TPVLAN_1", "Ez a(z) <b>'".PREVIEWTHEMENAME."'</b> theme előnézete. Ez nem az oldalad theme-je, csak azt mutatja meg, hogy néz ki az oldalad e theme-vel.<br />A theme használatához lépj <a href='".e_ADMIN."theme.php'>a theme kezelőbe</a> és válaszd a 'Beállítás az oldal témájaként' opciót.<br /><a href='".e_ADMIN."theme.php'>További témák előnézete</a>");
 define("TPVLAN_2", "Theme előnézet");
 define("TPVLAN_3", "Az oldal témája:");
