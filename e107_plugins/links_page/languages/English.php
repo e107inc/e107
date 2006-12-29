@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-29 12:58:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 // if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
@@ -311,6 +311,7 @@ define("LAN_LINKS_46", "Link Subcategories");
 define("LAN_LINKS_47", "link navigator...");
 define("LAN_LINKS_48", "-- view category --");
 define("LAN_LINKS_49", "");
+define("LAN_LINKS_50", "You do not have permission to submit links at present");
 
 define("LAN_ADMIN_HELP_0", "linkspage help area");
 
