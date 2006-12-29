@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-10-28 09:29:29 $
-|     $Author: lisa_ $
+|     $Revision: 1.43 $
+|     $Date: 2006-12-29 12:58:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -165,9 +165,17 @@ if (isset($qs[0]) && $qs[0] == "comment" && isset($qs[1]) && is_numeric($qs[1]) 
 	displayLinkComment();
 }
 //submit link
-if (isset($qs[0]) && $qs[0] == "submit" && check_class($linkspage_pref['link_submit_class'])) {
+if (isset($qs[0]) && $qs[0] == "submit")
+{
+  if (check_class($linkspage_pref['link_submit_class'])) 
+  {
 	echo displayNavigator('');
 	displayLinkSubmit();
+  }
+  else
+  {
+	$lc->show_message(LAN_LINKS_50);
+  }
 }
 
 
