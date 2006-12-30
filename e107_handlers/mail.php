@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-12-19 10:02:28 $
-|     $Author: e107coders $
+|     $Revision: 1.38 $
+|     $Date: 2006-12-30 16:34:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -96,7 +96,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 		$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
 		$Html = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $Html);
 		$Html = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', $Html);
-		$Html = str_replace("\n", "<br>\n", $Html);
+		$Html = str_replace("\n", "<br />\n", $Html);
 	}
 	if (strpos($message,"</style>") !== FALSE){
     	$text = strstr($message,"</style>");
