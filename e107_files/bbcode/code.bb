@@ -1,6 +1,12 @@
 global $pref, $e107cache, $tp;
 
-if($pref['smiley_activate']) {
+if($pref['smiley_activate']) 
+{
+	if (!is_object($tp->e_emote))
+	{
+		require_once(e_HANDLER.'emote_filter.php');
+		$tp->e_emote = new e_emoteFilter;
+	}
 	$code_text = $tp->e_emote->filterEmotesRev($code_text);
 }
 
