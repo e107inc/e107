@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_usersettings.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:01 $
+|     $Revision: 1.4 $
+|     $Date: 2006-12-30 23:12:01 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -106,4 +106,5 @@ define("LAN_USET_8", "Aláírás / Időzóna");
 define("LAN_USET_9", "Valamelyik kötelező mező (*-al jelölve) hiányzik a beállításaidnál.");
 define("LAN_USET_10","Frissítsd a beállításaidat most, az eljárásnak megfelelően.");
 define("LAN_USET_11", "Ennek a felhasználónévnek a hozzáadása nem lehetséges, válassz másik felhasználónevet");
+define("LAN_USET_12", "Túl rövid megjelenő nevet adtál meg, válassz egy hosszabbat.");
 ?>
