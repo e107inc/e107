@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.5 $ - with modifications
-|     $Date: 2006-12-29 13:38:55 $
+|     $Revision: 1.6 $ - with modifications
+|     $Date: 2006-12-30 12:02:00 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -291,8 +291,9 @@ if ($action == "list") {
 	$gen = new convert;
 	require_once(e_HANDLER."rate_class.php");
 	$rater = new rater;
-	$sql = new db;
-	$sql2 = new db;
+// Shouldn't need these declarations now
+//	$sql = new db;
+//	$sql2 = new db;
 
 	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
@@ -714,8 +715,8 @@ class down_cat_handler
 	  global $sql2;
 
 	  $catlist = array();
-	  $cat_count = 0;
-	  $down_count = 0;
+	  $this->cat_count = 0;
+	  $this->down_count = 0;
 	  $temp1 = "";
 	  $temp2 = "";
 	  if ($load_cat_class != "")
@@ -753,8 +754,8 @@ class down_cat_handler
 	    {
 	      if (isset($catlist[$tmp]))
 		  {  // Sub-Category
-		    $cat_count++;
-			$down_count += $row['d_count'];
+		    $this->cat_count++;
+			$this->down_count += $row['d_count'];
 		    $catlist[$tmp]['subcats'][$row['download_category_id']] = $row;
 		    $catlist[$tmp]['subcats'][$row['download_category_id']]['subsubcats'] = array();
 		    $catlist[$tmp]['subcats'][$row['download_category_id']]['d_last_subs'] = 
@@ -764,8 +765,8 @@ class down_cat_handler
 		  {  // Its a sub-sub category
 		    if (isset($catlist[$row['d_parent1']]['subcats'][$tmp]))
 			{
-		      $cat_count++;
-			  $down_count += $row['d_count'];
+		      $this->cat_count++;
+			  $this->down_count += $row['d_count'];
 		      if ($nest_level == 0)
 			  {  // Add the counts into the subcategory values
 				$catlist[$row['d_parent1']]['subcats'][$tmp]['d_size'] += $row['d_size'];
