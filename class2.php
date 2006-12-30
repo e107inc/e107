@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-07 15:41:49 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-12-30 03:07:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -227,13 +227,13 @@ define("MPREFIX", $mySQLprefix);
 e107_require_once(e_HANDLER."mysql_class.php");
 
 $sql =& new db;
-$sql2 =& new db;
-
 $sql->db_SetErrorReporting(FALSE);
 
 $sql->db_Mark_Time('Start: SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+$sql2 =& new db; // create after the initial connection. 
 $sql->db_Mark_Time('Start: Prefs, misc tables');
+
 
 require_once(e_HANDLER.'admin_log_class.php');
 $admin_log = new e_admin_log();
@@ -1589,7 +1589,7 @@ class error_handler {
 			if($index == 0) { $index = 1; } else { $index = 0; }
 		}
 		} else {
-			foreach ($this->errors as $key => $value) 
+			foreach ($this->errors as $key => $value)
 			{
 				$ret .= "<tr class='forumheader3'><td>{$value['short']}</td></tr>\n";
 			}
