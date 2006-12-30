@@ -32,6 +32,8 @@ if (ADMIN) {
 	<br />
 	".FOOTLAN_3." ".$e107info['e107_version']."
 	<br /><br />
+	<b>".FOOTLAN_18."</b>
+	<br />".$pref['sitetheme']."<br /><br />
 	<b>".FOOTLAN_5."</b>
 	<br />
 	".$themename." v".$themeversion." ".($themeauthor ? FOOTLAN_6.' '.$themeauthor : '')." ".($themedate ? "(".$themedate.")" : "");
