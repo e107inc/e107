@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-05 09:24:18 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-30 01:11:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.2 $
-* @author $Author: mrpete $
+* @version $Revision: 1.3 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -96,7 +96,7 @@ class db {
 			if (!$this->mySQLaccess = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
 				return 'e1';
 			} else {
-				if (!@mysql_select_db($this->mySQLdefaultdb)) {
+				if (!@mysql_select_db($this->mySQLdefaultdb,$this->mySQLaccess)) {
 					return 'e2';
 				} else {
 					$this->dbError('dbConnect/SelectDB');
@@ -106,7 +106,7 @@ class db {
 			if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
 				return 'e1';
 			} else {
-				if (!@mysql_select_db($this->mySQLdefaultdb)) {
+				if (!@mysql_select_db($this->mySQLdefaultdb,$this->mySQLaccess)) {
 					return 'e2';
 				} else {
 					$this->dbError('dbConnect/SelectDB');
@@ -114,6 +114,7 @@ class db {
 			}
 		}
 	}
+
 
 	/**
 	* @return void
@@ -174,7 +175,7 @@ class db {
 		}
 
 		$b = microtime();
-		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query, $rli);
+		$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);
 		$e = microtime();
 
 		$eTraffic->Bump('db_Query', $b, $e);
@@ -284,7 +285,7 @@ class db {
 		}
 
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
-			$tmp = mysql_insert_id();
+			$tmp = mysql_insert_id($this->mySQLaccess);
 			return $tmp;
 		} else {
 			$this->dbError("db_Insert ($query)");
@@ -314,7 +315,7 @@ class db {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
-			$result = mysql_affected_rows();
+			$result = mysql_affected_rows($this->mySQLaccess);
 			return $result;
 		} else {
 			$this->dbError("db_Update ($query)");
@@ -400,7 +401,7 @@ class db {
 	function db_Close() {
 		global $eTraffic;
 		$eTraffic->BumpWho('db Close', 1);
-		mysql_close();
+		mysql_close($this->mySQLaccess);
 		$this->dbError('dbClose');
 	}
 
@@ -427,7 +428,7 @@ class db {
 			}
 		} else {
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.MPREFIX.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark)) {
-				$tmp = mysql_affected_rows();
+				$tmp = mysql_affected_rows($this->mySQLaccess);
 				return $tmp;
 			} else {
 				$this->dbError('db_Delete ('.$arg.')');
@@ -553,7 +554,7 @@ class db {
 		}
 
 		if (!$mySQLtablelist) {
-			$tablist = mysql_list_tables($this->mySQLdefaultdb);
+			$tablist = mysql_list_tables($this->mySQLdefaultdb,$this->mySQLaccess);
 			while (list($temp) = mysql_fetch_array($tablist)) {
 				$mySQLtablelist[] = $temp;
 			}
@@ -685,7 +686,7 @@ class db {
         $convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
         $key = ($convert[$key]) ? $convert[$key] : "OFF";
 
-        $result = mysql_query("SHOW COLUMNS FROM ".MPREFIX.$table);
+        $result = mysql_query("SHOW COLUMNS FROM ".MPREFIX.$table,$this->mySQLaccess);
         if (mysql_num_rows($result) > 0) {
             $c=0;
    			while ($row = mysql_fetch_assoc($result)) {
@@ -726,7 +727,7 @@ class db {
 		if ($strip) {
 			$data = strip_if_magic($data);
 		}
-		return mysql_real_escape_string($data);
+		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
 }
 
