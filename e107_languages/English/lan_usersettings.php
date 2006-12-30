@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-29 20:00:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2006-12-30 22:39:35 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
@@ -106,5 +106,6 @@ define("LAN_USET_8", "Signature / Timezone");
 define("LAN_USET_9", "Some of the required fields (marked with a *) are missing from your settings.");
 define("LAN_USET_10","Please update your settings now, in order to proceed.");
 define("LAN_USET_11", "That user name cannot be accepted as valid, please choose a different user name");
+define("LAN_USET_12", "That display name is too short. Please choose another");
 
 ?>

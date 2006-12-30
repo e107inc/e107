@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2006-11-29 05:11:16 $
-|     $Author: e107coders $
+|     $Revision: 1.81 $
+|     $Date: 2006-12-30 22:39:35 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -181,6 +181,12 @@ if (isset($_POST['updatesettings']))
 	}
 
 //	$username = strip_tags($_POST['username']);
+	// Impose a minimum length on display name
+	$_POST['username'] = trim($_POST['username']);
+	if (strlen($_POST['username']) < 2)
+	{
+	  $error .= LAN_USET_12."\\n";
+	}
 
 	$user_sess = "";
 	if ($file_userfile['error'] != 4)

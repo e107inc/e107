@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2006-12-27 22:17:48 $
+|     $Revision: 1.105 $
+|     $Date: 2006-12-30 22:39:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -394,6 +394,14 @@ if (isset($_POST['register']))
 		$_POST['name'] = $_POST['loginname'];
 	}
 
+	// Impose a minimum length on display name
+	$_POST['name'] = trim($_POST['name']);
+	if (strlen($_POST['name']) < 2)
+	{
+	  $error_message .= LAN_SIGNUP_56."\\n";
+	  $error = TRUE;
+	}
+	
 	// Check for disallowed names.
 	if(isset($pref['signup_disallow_text']))
 	{
