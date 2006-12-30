@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-30 12:41:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,7 +31,7 @@ $action = $qs[0];
 if($action == "") { $action = 'inbox'; }
 $pm_prefs = $sysprefs->getArray("pm_prefs");
 
-if(!check_class($pm_prefs['pm_class']))
+if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_PM, LAN_PM_12);
