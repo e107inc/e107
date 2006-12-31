@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2006-11-12 04:03:44 $
-|     $Author: mrpete $
+|     $Revision: 1.69 $
+|     $Date: 2006-12-31 15:06:59 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -195,7 +195,7 @@ if ($action == 'uninstall')
 		}
 
 		if (is_array($eplug_user_prefs)) {
-			$sql = new db;
+			if (!is_object($sql)){ $sql = new db; }
 			$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
 			$row = $sql->db_Fetch();
 			$user_entended = unserialize($row[0]);
@@ -318,7 +318,7 @@ if ($action == 'upgrade') {
 	}
 
 	if (is_array($upgrade_add_user_prefs)) {
-		$sql = new db;
+		if (!is_object($sql)){ $sql = new db; }
 		$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
 		$row = $sql->db_Fetch();
 		$user_entended = unserialize($row[0]);
@@ -335,7 +335,7 @@ if ($action == 'upgrade') {
 	}
 
 	if (is_array($upgrade_remove_user_prefs)) {
-		$sql = new db;
+		if (!is_object($sql)){ $sql = new db; }  
 		$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
 		$row = $sql->db_Fetch();
 		$user_entended = unserialize($row[0]);

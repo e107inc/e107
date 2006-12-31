@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2006-10-28 09:02:43 $
-|		$Author: lisa_ $
+|		$Revision: 1.14 $
+|		$Date: 2006-12-31 15:06:59 $
+|		$Author: e107coders $
 +---------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -47,7 +47,7 @@ class listclass {
 		global $sql,$eArrayStorage;
 
 		//check preferences from database
-		$sql = new db;
+		if (!is_object($sql)){ $sql = new db; }  
 		$num_rows = $sql -> db_Select("core", "*", "e107_name='list' ");
 		$row = $sql -> db_Fetch();
 

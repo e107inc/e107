@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-10-29 04:08:13 $
+|     $Revision: 1.38 $
+|     $Date: 2006-12-31 15:06:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,10 @@ class userlogin {
 		# - scope                                        public
 		*/
 		global $pref, $e_event, $sql, $e107, $tp;
+
+	 	if(!is_object($sql)){
 		$sql = new db;
+		}
 
 		$fip = $e107->getip();
 		if($sql -> db_Select("banlist", "*", "banlist_ip='{$fip}' ")) {
