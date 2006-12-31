@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:34:52 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2006-12-31 14:46:30 $
+|		$Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -168,9 +168,9 @@ if(isset($_POST['uploadcaticon'])){
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
 	$pathiconlarge = $_POST['iconpathlarge'];
-	$pathiconsmall = $_POST['iconpathsmall'];	
+	$pathiconsmall = $_POST['iconpathsmall'];
 	$uploaded = file_upload($pathiconlarge);
-	
+
 	$icon = "";
 	if($uploaded) {
 		$icon = $uploaded[0]['name'];
@@ -180,7 +180,7 @@ if(isset($_POST['uploadcaticon'])){
 		rename($pathiconsmall."thumb_".$icon , $pathiconsmall.$icon);
 	}
 	$message	= ($icon ? CONTENT_ADMIN_CAT_LAN_58 : CONTENT_ADMIN_CAT_LAN_59);
-	
+
 }
 
 if(isset($_POST['create_category'])){
@@ -256,7 +256,7 @@ if(!e_QUERY){																//show main categories
 			$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?content.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_124." <a href='".e_PLUGIN."content/content.php?content.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
-			
+
 			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 			require_once(e_ADMIN."footer.php");
 			exit;
@@ -318,7 +318,7 @@ if(!e_QUERY){																//show main categories
 	//order items with parent=2 or category='5'
 	}elseif($qs[0] == "order" && is_numeric($qs[1]) && is_numeric($qs[2]) && !isset($qs[3]) ){
 		$aform -> show_content_order("ci");
-	
+
 	//increase order of items in category
 	}elseif($qs[0] == "order" && is_numeric($qs[1]) && is_numeric($qs[2]) && $qs[3] == "inc" && isset($qs[4]) ){
 		$message = $adb -> dbSetOrder("inc", "ci", $qs[4]);
@@ -366,7 +366,7 @@ if(!e_QUERY){																//show main categories
 		if(!getperms("0")){ header("location:".e_SELF); exit; }
 		//$aform -> show_admin_contentmanager();
 		$aform -> manager();
-	
+
 	//category content manager : view contentmanager
 	}elseif($qs[0] == "manager" && isset($qs[1]) && is_numeric($qs[1]) ){
 		if(!getperms("0")){ header("location:".e_SELF); exit; }
@@ -418,7 +418,7 @@ if(!e_QUERY){																//show main categories
 	}elseif($qs[0] == "restrict" && !isset($qs[1]) ){
 		//if(!getperms("0")){ header("location:".e_SELF); exit; }
 		$aform -> restrict();
-	
+
 	//restrict : view restrict for main parent
 	}elseif($qs[0] == "restrict" && isset($qs[1]) && is_numeric($qs[1]) ){
 		//if(!getperms("0")){ header("location:".e_SELF); exit; }
@@ -472,7 +472,7 @@ function admin_content_config_adminmenu(){
 				$var['option']['text']			= CONTENT_ADMIN_MENU_LAN_6;
                 $var['option']['link']			= e_SELF."?option";
 
-				if(getperms("0")){ 
+				if(getperms("0")){
 					$var['manager']['text']			= CONTENT_ADMIN_MENU_LAN_17;
 					$var['manager']['link']			= e_SELF."?manager";
 				}
@@ -494,7 +494,7 @@ function admin_content_config_adminmenu(){
 					$var['general']['text']			= CONTENT_ADMIN_MENU_LAN_10;
 					$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
 
-					$sql = new db;
+					if (!is_object($sql)){ $sql = new db; }
 					$category_total			= $sql -> db_Select($plugintable, "content_heading", "content_id='".$qs[1]."' ");
 					list($content_heading)	= $sql -> db_Fetch();
 
@@ -510,11 +510,11 @@ function admin_content_config_adminmenu(){
 					$var['toppage']['text']			= CONTENT_ADMIN_MENU_LAN_20;
 					$var['scorepage']['text']		= CONTENT_ADMIN_MENU_LAN_22;
 					show_admin_menu(CONTENT_ADMIN_MENU_LAN_21.": ".$content_heading."", $act, $var, TRUE);
-				
+
 				}else{
-						
+
 						if($showadmincat){
-							$sql2 = new db;
+							if (!is_object($sql2)){ $sql2 = new db; }  
 							if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
 								while($row = $sql2 -> db_Fetch()){
 

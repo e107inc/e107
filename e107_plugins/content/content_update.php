@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-12-31 14:46:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -61,14 +61,14 @@ if(!$sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."pcontent")) {
 	content_datestamp int(10) unsigned NOT NULL default '0',
 	content_enddate int(10) unsigned NOT NULL default '0',
 	content_class varchar(255) NOT NULL default '',
-	content_pref text NOT NULL, 
+	content_pref text NOT NULL,
 	content_order varchar(10) NOT NULL default '0',
 	content_score tinyint(3) unsigned NOT NULL default '0',
 	content_meta text NOT NULL,
 	content_layout varchar(255) NOT NULL default '',
 	PRIMARY KEY  (content_id)
 	) TYPE=MyISAM;";
-	
+
 	$sql->db_Select_gen($query);
 }
 
@@ -90,7 +90,7 @@ if($newcontent == 0){
 	//article:			$content_type == "0" || $content_type == "15"
 
 	// ##### STAGE 1 : ANALYSE OLD CONTENT --------------------------------------------------------
-	$sql = new db;
+	if (!is_object($sql)){ $sql = new db; }  
 	$totaloldcontentrows		= $sql -> db_Count("content");
 	$totaloldrowscat_article	= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '6'");
 	$totaloldrowscat_review		= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '10'");
@@ -102,7 +102,7 @@ if($newcontent == 0){
 		$totaloldrowsitem_content	= "1";
 		$totaloldrowsitem_article	= "1";
 		$totaloldrowsitem_review	= "1";
-		
+
 		//if no old records exist, create a few default categories
 		$main_convert = create_defaults();
 	}else{
@@ -132,19 +132,19 @@ if($newcontent == 0){
 
 		//convert comments
 		$ac -> convert_comments();
-		
+
 		//convert rating
 		$ac -> convert_rating();
 
 		$conversion_analyses_rows_total		= $totaloldcontentrows;
-		
+
 		$conversion_analyses_rows_converted	= (count($article_cat_array[1]) + count($review_cat_array[1]) + count($content_array[2]) + count($article_array[2]) + count($review_array[2]));
-		
+
 		$conversion_analyses_rows_warning	= (count($content_array[4]) + count($content_array[5]) + count($article_array[4]) + count($article_array[5]) + count($review_array[4]) + count($review_array[5]));
-		
+
 		$conversion_analyses_rows_failed	= (count($article_cat_array[2]) + count($review_cat_array[2]) + count($content_array[3]) + count($article_array[3]) + count($review_array[3]) + count($unknown_array[1]));
-		
-		
+
+
 		//only output detailed information if developer mode is set
 		if ($pref['developer']) {
 			showlink();
@@ -193,7 +193,7 @@ if($newcontent == 0){
 					$text .= "
 					</div>
 				</td>
-			</tr>";		
+			</tr>";
 
 			$text .= $SPACER;
 
@@ -220,28 +220,28 @@ if($newcontent == 0){
 			$text .= "
 
 			".$SPACER."
-			
+
 			".$ac -> results_conversion_mainparent($content_mainarray, $review_mainarray, $article_mainarray)."
-			
-			".$SPACER."			
-			
+
+			".$SPACER."
+
 			<tr><td class='fcaption' colspan='2'>content : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
 			".$ac -> results_conversion_row("content", $content_array, $totaloldrowsitem_content)."
-			
-			".$SPACER."			
-			
+
+			".$SPACER."
+
 			<tr><td class='fcaption' colspan='2'>review : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
 			".$ac -> results_conversion_category("review", $review_cat_array, $totaloldrowscat_review)."
 			".$ac -> results_conversion_row("review", $review_array, $totaloldrowsitem_review)."
-			
-			".$SPACER."			
-			
+
+			".$SPACER."
+
 			<tr><td class='fcaption' colspan='2'>article : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
 			".$ac -> results_conversion_category("article", $article_cat_array, $totaloldrowscat_article)."
 			".$ac -> results_conversion_row("article", $article_array, $totaloldrowsitem_article)."
-			
+
 			".$SPACER."
-			
+
 			</table>";
 
 			$main_convert = array($caption, $text);
@@ -311,7 +311,7 @@ function create_defaults()
 	global $ns, $ac, $plugindir;
 
 	$plugindir		= e_PLUGIN."content/";
-	
+
 	if(!is_object($ac)){
 		require_once($plugindir."handlers/content_convert_class.php");
 		$ac = new content_convert;
@@ -320,12 +320,12 @@ function create_defaults()
 	$content_mainarray			= $ac -> create_mainparent("content", "1", "1");
 	$article_mainarray			= $ac -> create_mainparent("article", "1", "2");
 	$review_mainarray			= $ac -> create_mainparent("review", "1", "3");
-	
+
 	$main_convert = '';
 	//only output detailed information if developer mode is set
 	if ($pref['developer']) {
 		showlink();
-	
+
 		$text = "<table class='fborder' style='width:95%; padding:0px;'>";
 		$text .= $ac -> results_conversion_mainparent($content_mainarray, $review_mainarray, $article_mainarray);
 		$text .= "</table>";
@@ -363,6 +363,6 @@ function set_content_version()
 		$text = CONTENT_ADMIN_CONVERSION_LAN_62." $new_version <br />";
 	}
 	return $text;
-}	
+}
 
 ?>
