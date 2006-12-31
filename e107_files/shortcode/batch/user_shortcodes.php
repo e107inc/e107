@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-10-14 23:41:11 $
+|     $Revision: 1.23 $
+|     $Date: 2006-12-31 15:01:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -184,7 +184,7 @@ SC_END
 
 SC_BEGIN USER_EMAIL
 global $user,$tp;
-return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->toHTML($user['user_email'],"no_replace");
+return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->toHTML($user['user_email'],FALSE,"no_replace");
 SC_END
 
 SC_BEGIN USER_ICON
