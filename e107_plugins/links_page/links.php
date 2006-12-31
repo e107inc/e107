@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 12:58:37 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2006-12-31 14:46:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -167,7 +167,7 @@ if (isset($qs[0]) && $qs[0] == "comment" && isset($qs[1]) && is_numeric($qs[1]) 
 //submit link
 if (isset($qs[0]) && $qs[0] == "submit")
 {
-  if (check_class($linkspage_pref['link_submit_class'])) 
+  if (check_class($linkspage_pref['link_submit_class']))
   {
 	echo displayNavigator('');
 	displayLinkSubmit();
@@ -283,7 +283,7 @@ function displayPersonalManager(){
 		if (isset($delete) && $delete == 'main') {
 			$sql->db_Select("links_page", "link_order", "link_id='".intval($del_id)."'");
 			$row = $sql->db_Fetch();
-			$sql2 = new db;
+			if (!is_object($sql2)){ $sql2 = new db; }
 			$sql->db_Select("links_page", "link_id", "link_order>'".$row['link_order']."' && link_category='".intval($id)."'");
 			while ($row = $sql->db_Fetch()) {
 				$sql2->db_Update("links_page", "link_order=link_order-1 WHERE link_id='".$row['link_id']."'");
