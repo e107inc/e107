@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-01-01 10:27:38 $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-01 12:00:42 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -388,7 +388,7 @@ class pageClass
 		{
 			$cookiename = "e107page_".$this -> pageID;
 
-			if($_COOKIE[$cookiename] == md5($page_password.USERID))
+			if(isset($_COOKIE[$cookiename]) && ($_COOKIE[$cookiename] == md5($page_password.USERID)))
 			{
 				return TRUE;
 			}
