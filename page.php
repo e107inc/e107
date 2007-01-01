@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-22 20:51:32 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-01 10:27:38 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -136,7 +136,7 @@ class pageClass
 	{
 		global $pref, $sql, $ns;
 
-		if(!$pref['listPages'])
+		if(!isset($pref['listPages']) || !$pref['listPages'])
 		{
 			message_handler("MESSAGE", LAN_PAGE_1);
 		}
@@ -191,9 +191,11 @@ class pageClass
 
 		$gen = new convert;
 
+		$text = '';    // Notice removal
+		
 		if($page_author)
 		{
-			$text = "<div class='smalltext' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
+			$text .= "<div class='smalltext' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
 		}
 
 		if($this -> title)
@@ -217,6 +219,8 @@ class pageClass
 	function parsePage()
 	{
 		global $tp;
+		$this -> pageTitles = array();		// Notice removal
+
 		if(preg_match_all("/\[newpage.*?\]/si", $this -> pageText, $pt))
 		{
 			$pages = preg_split("/\[newpage.*?\]/si", $this -> pageText, -1, PREG_SPLIT_NO_EMPTY);
@@ -227,7 +231,7 @@ class pageClass
 			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'parse_sc, constants');
 			return;
 		}
-
+		
 		foreach($pt[0] as $title)
 		{
 			$this -> pageTitles[] = $title;
@@ -294,6 +298,7 @@ class pageClass
 
 	function pageRating($page_rating_flag)
 	{
+	  $rate_text = '';      // Notice removal
 		if($page_rating_flag)
 		{
 			require_once(e_HANDLER."rate_class.php");
@@ -357,12 +362,12 @@ class pageClass
 	{
 		global $ns, $tp, $HEADER, $FOOTER, $sql;     // $tp added
 
-		define("e_PAGETITLE", $page_title);
-		// HEADERF requires that $tp is defined - hence declared as global above.
-		require_once(HEADERF);		// Do header now in case wrong password was entered
 
 		if (!check_class($page_class))
 		{
+		define("e_PAGETITLE", $page_title);
+		// HEADERF requires that $tp is defined - hence declared as global above.
+		require_once(HEADERF);		// Do header now in case wrong password was entered
 			message_handler("MESSAGE", LAN_PAGE_6);
 			require_once(FOOTERF); exit;
 		}
@@ -372,7 +377,7 @@ class pageClass
 			return TRUE;
 		}
 
-		if($_POST['submit_page_pw'])
+		if(isset($_POST['submit_page_pw']))
 		{
 			if($_POST['page_pw'] == $page_password)
 			{
@@ -390,9 +395,12 @@ class pageClass
 			// Invalid/empty password here
 		}
 
+		define("e_PAGETITLE", $page_title);
+		// HEADERF requires that $tp is defined - hence declared as global above.
+		require_once(HEADERF);		// Do header now in case wrong password was entered
 
 		// Need to prompt for password here
-		if ($_POST['submit_page_pw'])
+		if (isset($_POST['submit_page_pw']))
 		{
 			message_handler("MESSAGE", LAN_PAGE_7);		// Invalid password
 		}
