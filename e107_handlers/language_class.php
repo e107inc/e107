@@ -4,19 +4,15 @@
 |     e107 website system - Language Class.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/language_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-12-10 12:47:47 $
+|     $Revision: 1.9 $
+|     $Date: 2007-01-01 15:31:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 class language{
 
-// Converts iso to language-name and visa-versa.
-
-	function convert($data){
-
-         $lang = array(
+	var $list = array(
             "aa" => "Afar",
 			"ab" => "Abkhazian",
 			"af" => "Afrikaans",
@@ -173,29 +169,11 @@ class language{
 	        "yi" => "Yiddish",
 	        "yo" => "Yoruba",
 	        "za" => "Zhuang",
-	        "zh" => "Chinese",
+           // "zh" => "Chinese",
 	        "zu" => "Zulu"
 		);
 
-		if(strlen($data) > 2)
-		{
-        	$tmp = array_flip($lang);
-			return $tmp[$data];
-		}
-		else
-		{
-			return $lang[$data];
-		}
-	}
-
-
-
-
-   // -------------------------------------------------------------------
-
-	function toNative($lang){
-
-		$name = array(
+		var $names = array(
 			"Arabic" 		=> "العربية",
 			"Bosnian"		=> "Bosanski",
 			"Bulgarian"		=> "Български",
@@ -226,12 +204,30 @@ class language{
 			"Slovakian"		=> "Slovensky",
 			"Slovak"		=> "Slovensky",
 			"Swedish"		=> "Svenska",
-			"Thai"			=> "� าษาไทย",
+			"Thai"			=> "ภาษาไทย",
 			"Turkish"		=> "Türkçe"
 		);
 
-       return ($name[$lang]) ? $name[$lang] : $lang;
+// ---  Converts iso to language-name and visa-versa. ----------------
 
+	function convert($data){
+
+		if(strlen($data) > 2)
+		{
+        	$tmp = array_flip($this->list);
+			return $tmp[$data];
+		}
+		else
+		{
+			return $this->list[$data];
+		}
+	}
+
+// -------------------------------------------------------------------
+
+	function toNative($lang)
+	{
+		return ($this->names[$lang]) ? $this->names[$lang] : $lang;
 	}
 
 
