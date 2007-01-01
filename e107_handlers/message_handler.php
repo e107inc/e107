@@ -11,9 +11,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-01 10:02:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,6 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 	if(is_numeric($message))
 	{
     	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
-	}
 	$emessage[1] = "<b>".LAN_ERROR_25."</b>";
 	$emessage[2] = "<b>".LAN_ERROR_26."</b>";
 	$emessage[3] = "<b>".LAN_ERROR_27."</b>";
@@ -44,6 +43,7 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		".chr(36)."HELP_DIRECTORY = \"e107_docs/help/\";  <br />
 		".chr(36)."DOWNLOADS_DIRECTORY =  \"e107_files/downloads/\";\n
 		</div>";
+	}
 
 	if (class_exists('e107table')) {
 		$ns = new e107table;
