@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-01 10:27:36 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -145,7 +145,7 @@ class e_bbcode
 		$full_text = $tp->replaceConstants($matches[0]);
 		$code = $matches[1];
 		$parm = substr($matches[3], 1);
-		$code_text = $tp->replaceConstants($matches[4]);
+		if (isset($matches[4])) $code_text = $tp->replaceConstants($matches[4]);
 		if($this->single_bb == true)
 		{
 			$code = '_'.$code;
