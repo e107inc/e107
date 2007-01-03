@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:00 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-03 18:53:55 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -170,7 +170,7 @@ define("PRFLAN_164", "Kapcsolat Email másolat önmagának küldés engedélyez�
 define("PRFLAN_165", "Engedélyezett spam megnyitás lehetősége, óvatosan használd");
 define("PRFLAN_166", "Megjelenítse az emotikonokat a hozzászólásoknál?");
 
-define("PRFLAN_167", "Írj be egy email címet"); // subject to change.
+define("PRFLAN_167", "Írj be egy email címet (opciónális)"); // subject to change.
 define("PRFLAN_168", "Oldal kapcsolattartó személyek");
 define("PRFLAN_169", "Ha a kiválasztott csoport egynél több személyt tartalmaz, a felhasználó kiválaszthatja a személyt a csoportból.");
 
