@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-11-10 00:44:24 $
-|     $Author: mrpete $
+|     $Revision: 1.9 $
+|     $Date: 2007-01-03 20:50:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -51,7 +51,7 @@ class e_linkwords
 
 	function linkwords($text)
 	{
-		$content = preg_split('#(<.*>)#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$content = preg_split('#(<.*?>)#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 		$ptext = "";
 		foreach($content as $cont)
 		{
