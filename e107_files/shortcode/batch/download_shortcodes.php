@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-23 16:25:17 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-03 20:29:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -430,9 +430,10 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	  	SELECT dc.download_category_name, dc.download_category_order, dc.download_category_id, dc.download_category_parent,
 	  	dc1.download_category_parent AS d_parent1
 	  	FROM #download_category AS dc
-	  	LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent AND dc1.download_category_class IN (".USERCLASS_LIST.")";
-        $qry .= " WHERE dc.download_category_class IN (".USERCLASS_LIST.") ";
-	 	$qry .= " ORDER by dc.download_category_parent, dc.download_category_order";
+	  	LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent AND dc1.download_category_class IN (".USERCLASS_LIST.")
+	    LEFT JOIN #download_category as dc2 ON dc2.download_category_id=dc1.download_category_parent ";
+        if (ADMIN === FALSE) $qry .= " WHERE dc.download_category_class IN (".USERCLASS_LIST.") ";
+	 	$qry .= " ORDER by dc2.download_category_order, dc1.download_category_order, dc.download_category_order";   // This puts main categories first, then sub-cats, then sub-sub cats
 
   	  	if (!$sql->db_Select_gen($qry))
 	  	{
