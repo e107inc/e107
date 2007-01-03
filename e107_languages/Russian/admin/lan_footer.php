@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.3 $
-|     $Date: 2006-09-12 09:12:26 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-03 01:54:49 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -12,7 +12,7 @@ define("FOOTLAN_1", "Сайт");
 define("FOOTLAN_2", "Главный Администратор");
 define("FOOTLAN_3", "Версия");
 define("FOOTLAN_4", "сборка");
-define("FOOTLAN_5", "Тема");
+define("FOOTLAN_5", "Тема администратора"); //Admin Theme
 define("FOOTLAN_6", "автор:");
 define("FOOTLAN_7", "Информация");
 define("FOOTLAN_8", "Дата установки");
@@ -25,5 +25,6 @@ define("FOOTLAN_14", "Показать документацию");
 define("FOOTLAN_15", "Документация");
 define("FOOTLAN_16", "База данных");
 define("FOOTLAN_17", "Кодировка");
+define("FOOTLAN_18", "Тема сайта"); //Site Theme
 
 ?>
