@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-04 13:11:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -83,17 +83,22 @@ $sc_style['CONTENT_CONTENT_TABLE_PREV_PAGE']['post'] = "</div>";
 $sc_style['CONTENT_CONTENT_TABLE_NEXT_PAGE']['pre'] = "<div style='float:right;'>";
 $sc_style['CONTENT_CONTENT_TABLE_NEXT_PAGE']['post'] = "</div></div>";
 
+$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA']['pre'] = "<td style='vertical-align:top;'>";
+$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA']['post'] = "";
+$sc_style['CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA']['pre'] = "";
+$sc_style['CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA']['post'] = "</td>";
+
 $CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>
 <div style='clear:both;'>
 
 	{CONTENT_CONTENT_TABLE_INFO_PRE}
 		{CONTENT_CONTENT_TABLE_ICON}
-		<td style='vertical-align:top;'>
-		{CONTENT_CONTENT_TABLE_SUBHEADING}
-		{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE} {CONTENT_CONTENT_TABLE_REFER}
-		{CONTENT_CONTENT_TABLE_RATING}
-		{CONTENT_CONTENT_TABLE_FILE}
-		</td>
+		{CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA}
+			{CONTENT_CONTENT_TABLE_SUBHEADING}
+			{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE} {CONTENT_CONTENT_TABLE_REFER}
+			{CONTENT_CONTENT_TABLE_RATING}
+			{CONTENT_CONTENT_TABLE_FILE}
+		{CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA}
 	{CONTENT_CONTENT_TABLE_INFO_POST}
 	<div style='clear:both;'><br /></div>
 	<table class='fborder' cellpadding='0' cellspacing='0' style='width:100%;'><tr><td class='forumheader3'>
