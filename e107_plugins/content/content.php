@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2007-01-04 08:37:00 $
+|		$Revision: 1.4 $
+|		$Date: 2007-01-04 13:11:52 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1334,12 +1334,11 @@ function show_content_item(){
 			$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = FALSE;
 			$CONTENT_CONTENT_TABLE_INFO_PRE = FALSE;
 			$CONTENT_CONTENT_TABLE_INFO_POST = FALSE;
-
-			if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="" || $sub!="" || $rat!="" || $fil!="") {
+			
+			//if any of these exist, pre/post activate the container table
+			if ($ico!="" || $date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="" || $sub!="" || $rat!="" || $fil!="") {
 				$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
 				$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
-			}
-			if($CONTENT_CONTENT_TABLE_INFO_PRE || $ico==''){
 				$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = TRUE;
 				$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = TRUE;
 			}
