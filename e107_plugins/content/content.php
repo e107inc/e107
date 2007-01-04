@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2006-12-31 14:46:30 $
-|		$Author: e107coders $
+|		$Revision: 1.3 $
+|		$Date: 2007-01-04 08:37:00 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -779,36 +779,36 @@ function show_content_cat($mode=""){
 			$captionchild		= $content_pref['content_cat_item_caption'];
 
 			$crumbpage = $aa -> getCrumbPage("cat", $array, $qs[1]);
-			if(isset($textparent)){
+			if(isset($textparent) && $textparent){ 
 				$textparent = $crumbpage.$textparent;
 			}else{
 				$textchild = $crumbpage.$textchild;
 			}
 			if(isset($content_pref["content_cat_menuorder"]) && $content_pref["content_cat_menuorder"] == "1"){
 				if(isset($content_pref["content_cat_rendertype"]) && $content_pref["content_cat_rendertype"] == "1"){
-					if(isset($textparent)){		$ns -> tablerender($caption, $textparent); }
-					if(isset($textsubparent)){	$ns -> tablerender($captionsubparent, $textsubparent); }
-					if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
+					if(isset($textparent) && $textparent){ $ns -> tablerender($caption, $textparent); }
+					if(isset($textsubparent) && $textsubparent){ $ns -> tablerender($captionsubparent, $textsubparent); }
+					if(isset($textchild) && $textchild){ $ns -> tablerender($captionchild, $textchild); }
 				}else{
-					$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : "").$textchild);
+					$ns -> tablerender($caption, (isset($textparent) && $textparent ? $textparent : "").(isset($textsubparent) && $textsubparent ? $textsubparent : "").$textchild);
 				}
 				if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
 					$aa->ShowNextPrev(FALSE, $from, $number, $contenttotal);
 				}
 			}else{
 				if(isset($content_pref["content_cat_rendertype"]) && $content_pref["content_cat_rendertype"] == "1"){
-					if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
+					if(isset($textchild) && $textchild){ $ns -> tablerender($captionchild, $textchild); }
 					if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
 						$aa->ShowNextPrev(FALSE, $from, $number, $contenttotal);
 					}
-					if(isset($textparent)){		$ns -> tablerender($caption, $textparent); }
-					if(isset($textsubparent)){	$ns -> tablerender($captionsubparent, $textsubparent); }
+					if(isset($textparent) && $textparent){ $ns -> tablerender($caption, $textparent); }
+					if(isset($textsubparent) && $textsubparent){ $ns -> tablerender($captionsubparent, $textsubparent); }
 				}else{
-					if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
+					if(isset($textchild) && $textchild){ $ns -> tablerender($captionchild, $textchild); }
 					if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
 						$aa->ShowNextPrev(FALSE, $from, $number, $contenttotal);
 					}
-					$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : ""));
+					$ns -> tablerender($caption, (isset($textparent) && $textparent ? $textparent : "").(isset($textsubparent) && $textsubparent ? $textsubparent : ""));
 				}
 			}
 		}
@@ -816,7 +816,7 @@ function show_content_cat($mode=""){
 
 		if($mode == "comment"){
 			$textparent = $aa -> getCrumbPage("cat", $array, $mainparent).$textparent;
-			if(isset($textparent)){ $ns -> tablerender($caption, $textparent); }
+			if(isset($textparent) && $textparent){ $ns -> tablerender($caption, $textparent); }
 
 			if($resultitem = $sql -> db_Select($plugintable, "*", $qry )){
 				$row = $sql -> db_Fetch();
