@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.325 $
-|     $Date: 2006-12-26 14:49:45 $
-|     $Author: mrpete $
+|     $Revision: 1.326 $
+|     $Date: 2007-01-04 23:42:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 //
@@ -552,7 +552,7 @@ if (!function_exists('checkvalidtheme')) {
 		// arg1 = theme to check
 		global $ADMIN_DIRECTORY, $tp, $e107;
 
-		if (strpos(e_QUERY, "themepreview") !== FALSE) {
+		if (ADMIN && strpos(e_QUERY, "themepreview") !== FALSE) {
 			list($action, $id) = explode('.', e_QUERY);
 			require_once(e_HANDLER."theme_handler.php");
 			$themeArray = themeHandler :: getThemes("id");
