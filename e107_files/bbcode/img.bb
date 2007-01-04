@@ -37,7 +37,7 @@ if (!$postID) {
 		$uc = substr($postID,6);
 	}
 	if ($pref['image_post']) {
-		if($uc == '') {
+		if(!isset($uc) || ($uc == '')) {
 			if (!function_exists('e107_userGetuserclass')) {
 				require_once(e_HANDLER.'user_func.php');
 			}
