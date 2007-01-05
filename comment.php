@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-05 09:00:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -145,9 +145,8 @@ if ($action == "reply") {
 	$query = "`comment_id` = '{$id}' LIMIT 0,1";
 	if ($sql->db_Select("comments", "comment_subject", "`comment_id` = '{$id}'")) {
 		list($comments['comment_subject']) = $sql->db_Fetch();
-		$not_parsed_subject = $comments['comment_subject'];
-		$subject = $tp->toHTML($comments['comment_subject']);
-
+		$subject = $comments['comment_subject'];
+		$subject_header = $tp->toHTML($comments['comment_subject']);
 	}
 	if ($subject == "") {
 		if ($table == "news") {
