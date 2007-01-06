@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.5 $
-|     $Date: 2007-01-03 01:55:18 $
-|     $Author: verant $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-06 17:58:06 $
+|     $Author: yarodin $
 +----------------------------------------------------------------------------+
 */
 
@@ -165,7 +165,7 @@ define("LCLAN_CAT_3", "Опции");
 define("LCLAN_CAT_4", "Переместить");
 define("LCLAN_CAT_5", "Порядок");
 define("LCLAN_CAT_6", "Удалить");
-define("LCLAN_CAT_7", " ");
+define("LCLAN_CAT_7", "&nbsp;");
 define("LCLAN_CAT_8", "Уверены, что хотите удалить эту категорию?");
 define("LCLAN_CAT_9", "Смотреть ссылки");
 define("LCLAN_CAT_10", "Упорядочить");
@@ -176,7 +176,7 @@ define("LCLAN_CAT_14", "Описание:");
 define("LCLAN_CAT_15", "Загрузить на сервер новый значок:");
 define("LCLAN_CAT_16", "Авто-изменение размера:");
 define("LCLAN_CAT_17", "Эта опция запрещена, т. к. загрузка файлов на сервер отключена на вашем сервере");
-define("LCLAN_CAT_18", " ");
+define("LCLAN_CAT_18", "&nbsp;");
 define("LCLAN_CAT_19", "каталог не открыт на запись, поставьте CHMOD 777 перед загрузкой на сервер");
 define("LCLAN_CAT_20", "px");
 define("LCLAN_CAT_21", "загрузить на сервер");
@@ -198,7 +198,7 @@ define("LCLAN_ITEM_6", "Описание:");
 define("LCLAN_ITEM_7", "Загрузить на сервер значок:");
 define("LCLAN_ITEM_8", "Авто-изменение размера:");
 define("LCLAN_ITEM_9", "Эта опция запрещена, т. к. загрузка файлов на сервер отключена на вашем сервере");
-define("LCLAN_ITEM_10", " ");
+define("LCLAN_ITEM_10", "&nbsp;");
 define("LCLAN_ITEM_11", "каталог не открыт на запись, поставьте CHMOD 777 перед загрузкой на сервер");
 define("LCLAN_ITEM_12", "px");
 define("LCLAN_ITEM_13", "загрузить на сервер");
@@ -276,9 +276,9 @@ define("LAN_LINKS_17", "ссылка");
 define("LAN_LINKS_18", "ссылки");
 define("LAN_LINKS_19", "категории");
 define("LAN_LINKS_20", "категория");
-define("LAN_LINKS_21", " ");
-define("LAN_LINKS_22", " ");
-define("LAN_LINKS_23", " ");
+define("LAN_LINKS_21", "&nbsp;");
+define("LAN_LINKS_22", "&nbsp;");
+define("LAN_LINKS_23", "&nbsp;");
 define("LAN_LINKS_24", "всего в");
 define("LAN_LINKS_25", "показать все ссылки");
 define("LAN_LINKS_26", "Рефералов");
