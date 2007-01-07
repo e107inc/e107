@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-07 15:59:42 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -322,7 +322,7 @@ if(!$fInfo)
 
 if($fInfo)
 {
-	$fname = $tp->toHTML($fInfo['user_extended_struct_text'], "", "emotes_off defs");
+	$fname = $tp->toHTML($fInfo['user_extended_struct_text'], "", "emotes_off, defs");
 	if($fInfo['user_extended_struct_required'] == 1)
 	{
 		$fname = str_replace("{FIELDNAME}", $fname, $REQUIRED_FIELD);

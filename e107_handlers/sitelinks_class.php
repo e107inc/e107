@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-05 09:15:08 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-07 15:59:42 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -195,7 +195,7 @@ class sitelinks
 
 		// Check for screentip regardless of URL.
 		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description']){
-			$screentip = " title = \"".$tp->toHTML($linkInfo['link_description'],"","value emotes_off defs no_hook")."\"";
+			$screentip = " title = \"".$tp->toHTML($linkInfo['link_description'],"","value, emotes_off, defs, no_hook")."\"";
 		}
 
 		// Check if its expandable first. It should override its URL.
@@ -241,13 +241,13 @@ class sitelinks
 		$_link = "";
 		$_link .= $accessdigit;
 		if (!empty($href) && ((varset($style['hilite_nolink']) && $highlighted)!=TRUE)){
-			$_link .= "<a".$linkadd.$screentip.$href.$link_append.$accesskey.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook")."</a>";
+			$_link .= "<a".$linkadd.$screentip.$href.$link_append.$accesskey.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook")."</a>";
 		// If its not a link, but has a class or screentip do span:
 		}elseif (!empty($linkadd) || !empty($screentip)){
-			$_link .= "<span".$linkadd.$screentip.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook")."</span>";
+			$_link .= "<span".$linkadd.$screentip.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook")."</span>";
 			// Else just the name:
 		}else {
-			$_link .= $tp->toHTML($linkInfo['link_name'],"","emotes_off defs no_hook");
+			$_link .= $tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook");
 		}
 
 		$_link = $linkstart.$indent.$_link;
