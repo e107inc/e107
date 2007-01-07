@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/combo.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-12-01 05:23:39 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2007-01-07 15:24:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,7 +46,7 @@ if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) {
 		extract($row);
 		include(e_PLUGIN.$plugin_path."/plugin.php");
 		if ($eplug_conffile) {
-			$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs emotes_off");
+			$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
 			$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
 			$plugin_array[ucfirst($eplug_name)] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
 		}

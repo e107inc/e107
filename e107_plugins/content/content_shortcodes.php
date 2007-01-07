@@ -395,7 +395,7 @@ if($row['content_text'] && isset($content_pref["content_cat_text"]) && $content_
 		$CONTENT_CAT_LIST_TABLE_TEXT = $tp->toHTML($row['content_text'], TRUE, "constants");
 	}else{
 		$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
-		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak constants");
+		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak, constants");
 		
 		$rowtext = strip_tags($rowtext);
 		$words = explode(" ", $rowtext);
