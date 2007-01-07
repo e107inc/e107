@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-27 22:26:41 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-07 15:59:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -172,7 +172,7 @@ foreach($extList as $ext)
 	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
 	{
 		$replace = array(
-			$tp->toHTML($ext['user_extended_struct_text'], '', 'emotes_off defs'),
+			$tp->toHTML($ext['user_extended_struct_text'], '', 'emotes_off, defs'),
 			($ext['user_extended_struct_required'] == 1 ? $EXTENDED_USER_FIELD_REQUIRED : ''),
 			$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])
 		);
