@@ -122,3 +122,18 @@ define("LANINS_084", "The installer could not establish a connection to the data
 define("LANINS_085", "The installer could not select database:");
 
 define("LANINS_086", "Admin Username, Admin Password and Admin Email are <b>required</b> fields. Please return to the last page and ensure the information is correctly entered.");
+
+define("LANINS_087", "Misc");
+define("LANINS_088", "Home");
+define("LANINS_089", "Downloads");
+define("LANINS_090", "Members");
+define("LANINS_091", "Submit News");
+define("LANINS_092", "Contact Us");
+define("LANINS_093", "Grants access to private menu items");
+define("LANINS_094", "Example private forum class");
+define("LANINS_095", "integrity_check");
+define("LANINS_096", "");
+define("LANINS_097", "");
+define("LANINS_098", "");
+define("LANINS_099", "");
+define("LANINS_100", "");
