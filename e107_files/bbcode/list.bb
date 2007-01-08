@@ -1,5 +1,3 @@
-
-
 /* Tag: unordered list [list]*line 1*line2*line 3*line 4*line5 etc[/list] */
 /* Tag: ordered list [list=<list type>]*line 1*line2*line 3*line 4*line5 etc[/list] */
 /* valid list types: 
@@ -14,35 +12,24 @@
 */
 
 
+$listitems = explode("*", $code_text);
 
-if(preg_match("#\[list\](.*?)\[/list\]#si", $full_text, $match))
-{
-	/* unordered list */
-	$listitems = explode("*", $match[1]);
-	$listtext = "<ul>";
-	foreach($listitems as $item)
-	{
-		if($item && $item != E_NL)
-		{
-			$listtext .= "<li>$item</li>";
-		}
-	}
-	$listtext .= "</ul>";
-	return $listtext;
+if ($parm == '')
+{	/* unordered list */
+  $listtext = "<ul>";
+  $trailer = "</ul>";
 }
-else if(preg_match("#\[list=(.*?)\](.*?)\[/list\]#si", $full_text, $match))
+else
 {
-	$type = $tp -> toAttribute($match[1]);
-	$listitems = $match[2];
-	$listitems = explode("*", $match[2]);
-	$listtext = "\n<ol style='list-style-type: $type'>";
-	foreach($listitems as $item)
-	{
-		if($item && $item != E_NL)
-		{
-			$listtext .= "<li>$item</li>";
-		}
-	}
-	$listtext .= "</ol>";
-	return $listtext;
+  $type = $tp -> toAttribute($parm);
+  $listtext = "\n<ol style='list-style-type: $type'>";
+  $trailer = "</ol>";
 }
+foreach($listitems as $item)
+{
+  if($item && $item != E_NL)
+  {
+	$listtext .= "<li>$item</li>";
+  }
+}
+return $listtext.$trailer;
