@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-09 20:32:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -65,7 +65,7 @@ else
 		list($a_id, $a_name) = $sql->db_Fetch();
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");
-	$text = "<font style=\"font-size: 11px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
+	$text = "<font style=\"font-size: 11px; color: black; background: white; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
 	<b>".LAN_PRINT_135.": ".$news_title."</b>
 	<br />
 	(".LAN_PRINT_86." ".$category_name.")
