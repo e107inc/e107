@@ -131,7 +131,7 @@ define("LANINS_091", "Submit News");
 define("LANINS_092", "Contact Us");
 define("LANINS_093", "Grants access to private menu items");
 define("LANINS_094", "Example private forum class");
-define("LANINS_095", "integrity_check");
+define("LANINS_095", "Integrity Check");
 define("LANINS_096", "");
 define("LANINS_097", "");
 define("LANINS_098", "");
