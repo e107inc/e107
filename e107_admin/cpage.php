@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-11-08 20:47:43 $
-|     $Author: e107coders $
+|     $Revision: 1.37 $
+|     $Date: 2007-01-09 20:28:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -223,7 +223,7 @@ class page
 
 		require_once(e_HANDLER."ren_help.php");
 		$insertjs = (!e_WYSIWYG)?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
-		$data = $tp->toForm($data);
+		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
 		$text .= "<textarea class='tbox' id='data' name='data' cols='80'   $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 
 		$text .= "<br />".display_help('',"cpage")."</td>
