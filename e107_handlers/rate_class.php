@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-10-29 02:30:31 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2007-01-10 21:30:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -162,10 +162,10 @@ class rater {
 		$sep = chr(1);
 		$voter = USERID.$sep.intval($qs[3]);
 
-		if ($sql->db_Select("rate", "*", "rate_table='$table' AND rate_itemid='$itemid' ")) {
+		if ($sql->db_Select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' ")) {
 			$row = $sql->db_Fetch();
 			$rate_voters = $row['rate_voters'].".".$voter.".";
-			$sql->db_Update("rate", "rate_votes=rate_votes+1, rate_rating=rate_rating+'$rate', rate_voters='$rate_voters' WHERE rate_itemid='$itemid' ");
+			$sql->db_Update("rate", "rate_votes=rate_votes+1, rate_rating=rate_rating+'{$rate}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' ");
 		} else {
 			$sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' ");
 		}
