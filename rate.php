@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/rate.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-10 21:31:12 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,7 @@ if ($sql -> db_Select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$ite
 	{
 		$rate_voters = $row['rate_voters'].".".USERID.".";
 		$new_rating = $row['rate_rating']+$rate;
-		$sql -> db_Update("rate", "rate_votes=rate_votes+1, rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_itemid='{$itemid}' ");
+		$sql -> db_Update("rate", "rate_votes=rate_votes+1, rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' ");
 	}
 	else
 	{
