@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-10 19:17:11 $
+|     $Revision: 1.7 $
+|     $Date: 2007-01-10 18:26:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -127,4 +127,18 @@ define("LANINS_083", "MySQL Informe error:");
 define("LANINS_084", "El instalador no puede conectarse con la base de datos");
 define("LANINS_085", "El instalador no puede seleccionar la base de datos:");
 define("LANINS_086", "Usuario Admin, Contraseña Admin y Correo Admin son campos <b>necesarios</b>. Por favor, vuelva a la última página y asegúrese de escribir la información correcta.");
+define("LANINS_087", "Varios");
+define("LANINS_088", "Inicio");
+define("LANINS_089", "Descargas");
+define("LANINS_090", "Miembros");
+define("LANINS_091", "Enviar noticias");
+define("LANINS_092", "Contactar");
+define("LANINS_093", "Dar permisos a menus privados");
+define("LANINS_094", "Ejemplo de clase de foro privada");
+define("LANINS_095", "Comprobación integridad");
+define("LANINS_096", "");
+define("LANINS_097", "");
+define("LANINS_098", "");
+define("LANINS_099", "");
+define("LANINS_100", "");
 ?>

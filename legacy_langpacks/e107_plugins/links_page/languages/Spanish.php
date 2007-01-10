@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-12-02 10:35:56 $
+|     $Revision: 1.8 $
+|     $Date: 2007-01-10 18:26:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -307,7 +307,7 @@ define("LAN_LINKS_46", "Subcategorías de enlace");
 define("LAN_LINKS_47", "Navegador de enlaces...");
 define("LAN_LINKS_48", "-- ver categoría --");
 define("LAN_LINKS_49", "");
-define("LAN_LINKS_50", "");
+define("LAN_LINKS_50", "En este momento no tiene permisos para enviar enlaces");
 define("LAN_LINKS_51", "");
 define("LAN_LINKS_52", "");
 define("LAN_LINKS_53", "");
@@ -367,5 +367,4 @@ define("LAN_ADMIN_HELP_8", "<i>Esta página muestra todos los enlaces en la categ
   	 
 define("LAN_ADMIN_HELP_9", "<i>La página de edición de enlaces le permite editar los enlaces</i><br /><br />Puede transferir un nuevo icono, y después asignarlo al enlace.<br /><br />El tipo de apertura le permite como se abrirá el enlace cuando se pulse sobre él.");
 define("LAN_ADMIN_HELP_10", "<i>La página de envío de enlaces le permite añadir un enlace a los enlaces existentes</i><br /><br />Se añadira un pequeño texto en el campo de descripción del envío.<br /><br />Puede transferir un nuevo icono, y después asignarlo al enlace.<br /><br />El tipo de apertura le permite como se abrirá el enlace cuando se pulse sobre él.");
-
 ?>
