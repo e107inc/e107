@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/alt_auth_login_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-08-03 13:46:17 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-11 18:35:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,14 @@ class alt_login
 		if($login_result === AUTH_SUCCESS )
 		{
 			$sql = new db;
-			if(!$sql -> db_Select("user","*","user_loginname='{$username}' "))
+			if (MAGIC_QUOTES_GPC == FALSE)
+			{
+				$username = mysql_real_escape_string($username);
+			}
+			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+			$username = substr($username, 0, 30);
+			
+			if(!$sql -> db_Select("user", "user_id", "user_loginname='{$username}' "))
 			{
 				// User not found in e107 database - add it now.
 				$qry = "INSERT INTO #user (user_id, user_loginname, user_name, user_join) VALUES ('0','{$username}','{$username}',".time().")";
@@ -52,7 +59,7 @@ class alt_login
 				$qry .= " ,user_{$key}='{$val}' ";
 			}
 			$qry.=" WHERE user_loginname='{$username}' ";
-			$sql -> db_Update("user", $qry);
+			$sql->db_Update("user", $qry);
 		}
 		else
 		{
