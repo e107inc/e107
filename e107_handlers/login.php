@@ -12,19 +12,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-31 14:46:30 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-12 02:49:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php")){
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
-}else{
-	@include_once(e_LANGUAGEDIR."English/lan_login.php");
-}
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
 
 class userlogin {
 	function userlogin($username, $userpass, $autologin) {
@@ -37,6 +33,14 @@ class userlogin {
 		# - scope                                        public
 		*/
 		global $pref, $e_event, $sql, $e107, $tp;
+
+		$username = trim($username);
+		$userpass = trim($userpass);
+		if($username == "" || $userpass == "")
+		{
+			define("LOGINMESSAGE", LAN_27."<br /><br />");
+			return FALSE;
+		}
 
 	 	if(!is_object($sql)){
    		  	$sql = new db;
@@ -65,83 +69,77 @@ class userlogin {
 				return FALSE;
 			}
 		}
-		if ($username != "" && $userpass != "") {
-			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
-			$ouserpass = $userpass;
-			$userpass = md5($ouserpass);
+		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+		$username = substr($username, 0, 30);
+		$ouserpass = $userpass;
+		$userpass = md5($ouserpass);
 
-			$username = substr($username, 0, 30);
+		// This is only required for upgrades and only for those not using utf-8 to begin with..
+		if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
+			$username = utf8_decode($username);
+			$userpass = md5(utf8_decode($ouserpass));
+		}
 
-			// This is only required for upgrades and only for those not using utf-8 to begin with..
-			if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
-				$username = utf8_decode($username);
-				$userpass = md5(utf8_decode($ouserpass));
-			}
-
-			if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) {
-				define("LOGINMESSAGE", LAN_300."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
+		if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) {
+			define("LOGINMESSAGE", LAN_300."<br /><br />");
+			$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
+			$this -> checkibr($fip);
+			return FALSE;
+		}
+		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}'")) {
+			define("LOGINMESSAGE", LAN_300."<br /><br />");
+			return FALSE;
+		}
+		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
+			define("LOGINMESSAGE", LAN_302."<br /><br />");
+               	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 				$this -> checkibr($fip);
-				return FALSE;
-			}
-			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}'")) {
-				define("LOGINMESSAGE", LAN_300."<br /><br />");
-				return FALSE;
-			}
-			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
-				define("LOGINMESSAGE", LAN_302."<br /><br />");
-                	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
-					$this -> checkibr($fip);
+			return FALSE;
+		} else {
+			$ret = $e_event->trigger("preuserlogin", $username);
+			if ($ret!='') {
+				define("LOGINMESSAGE", $ret."<br /><br />");
 				return FALSE;
 			} else {
-				$ret = $e_event->trigger("preuserlogin", $username);
-				if ($ret!='') {
-					define("LOGINMESSAGE", $ret."<br /><br />");
-					return FALSE;
-				} else {
-					$lode = $sql -> db_Fetch();
-					$user_id = $lode['user_id'];
-					$user_name = $lode['user_name'];
-					$user_xup = $lode['user_xup'];
+				$lode = $sql -> db_Fetch();
+				$user_id = $lode['user_id'];
+				$user_name = $lode['user_name'];
+				$user_xup = $lode['user_xup'];
 
-					/* restrict more than one person logging in using same us/pw */
-					if($pref['disallowMultiLogin']) {
-						if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
-							define("LOGINMESSAGE", LAN_304."<br /><br />");
-							$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
-							$this -> checkibr($fip);
-							return FALSE;
-						}
-					}
-
-					$cookieval = $user_id.".".md5($userpass);
-					if($user_xup) {
-						$this->update_xup($user_id, $user_xup);
-					}
-
-					if ($pref['user_tracking'] == "session") {
-						$_SESSION[$pref['cookie_name']] = $cookieval;
-					} else {
-						if ($autologin == 1) {
-							cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
-						} else {
-							cookie($pref['cookie_name'], $cookieval);
-						}
-					}
-					$edata_li = array("user_id" => $user_id, "user_name" => $username);
-					$e_event->trigger("login", $edata_li);
-					$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
-					if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
-						header("Location: ".$redir);
-						exit;
-					} else {
-						echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
+				/* restrict more than one person logging in using same us/pw */
+				if($pref['disallowMultiLogin']) {
+					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
+						define("LOGINMESSAGE", LAN_304."<br /><br />");
+						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+						$this -> checkibr($fip);
+						return FALSE;
 					}
 				}
+
+				$cookieval = $user_id.".".md5($userpass);
+				if($user_xup) {
+					$this->update_xup($user_id, $user_xup);
+				}
+
+				if ($pref['user_tracking'] == "session") {
+					$_SESSION[$pref['cookie_name']] = $cookieval;
+				} else {
+					if ($autologin == 1) {
+						cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
+					} else {
+						cookie($pref['cookie_name'], $cookieval);
+					}
+				}
+				$edata_li = array("user_id" => $user_id, "user_name" => $username);
+				$e_event->trigger("login", $edata_li);
+				$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
+				if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
+					header("Location: ".$redir);
+					exit;
+				} else {
+					echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
+				}
 			}
-		} else {
-			define("LOGINMESSAGE", LAN_27."<br /><br />");
-			return FALSE;
 		}
 	}
 
