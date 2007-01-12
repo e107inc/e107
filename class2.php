@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-01-07 15:59:41 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-01-12 02:36:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -867,107 +867,55 @@ function check_email($email) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE)
+function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 {
 	global $tp;
-	if($var == e_LANGUAGE){
-		return TRUE;
-	}
-
-	if (!$var || $var == "")
+	if($var == e_LANGUAGE)
 	{
 		return TRUE;
 	}
 
-	if(strpos($var, ",") !== FALSE)
+	// userid has been supplied, go build that user's class list
+	if(is_numeric($uid) && $uid > 0)
 	{
-		$lans = explode(",",e_LANLIST);
-		$varList = explode(",", $var);
-		rsort($varList); // check the language first.(ie. numbers come last)
-		foreach($varList as $v)
-		{
-			if (in_array($v,$lans) && strpos($v, e_LANGUAGE) === FALSE) {
-				return FALSE;
-			}
+		$userclass = class_list($uid);
+	}
 
-			if(check_class($v, $userclass, $debug))	{
-				return TRUE;
-			}
-		}
+	if ($userclass == "")
+	{
 		return FALSE;
 	}
 
-	if (preg_match("/^([0-9]+)$/", $var) && !$peer)
+	$class_array = explode(",", $userclass);
+
+	$lans = explode(",", e_LANLIST);
+	$varList = explode(",", trim($var));
+	
+	rsort($varList); // check the language first.(ie. numbers come last)
+	foreach($varList as $v)
 	{
-		if ($var == e_UC_MAINADMIN && getperms('0'))
+		if (in_array($v, $lans) && strpos($v, e_LANGUAGE) === FALSE)
 		{
-        	return TRUE;
-		}
-
-		if ($var == e_UC_MEMBER && USER == TRUE)
-		{
-			return TRUE;
-		}
-
-		if ($var == e_UC_GUEST && USER == FALSE) {
-			return TRUE;
-		}
-
-		if ($var == e_UC_PUBLIC) {
-			return TRUE;
-		}
-
-		if ($var == e_UC_NOBODY) {
 			return FALSE;
 		}
-
-		if ($var == e_UC_ADMIN && ADMIN) {
-			return TRUE;
-		}
-		if ($var == e_UC_READONLY) {
-			return TRUE;
-		}
-	}
-
-	if ($debug) {
-		echo "USERCLASS: ".$userclass.", \$var = $var : ";
-	}
-
-	if (!defined("USERCLASS") || $userclass == "") {
-		if ($debug) {
-			echo "FALSE<br />";
-		}
-		return FALSE;
-	}
-
-	// user has classes set - continue
-	if (preg_match("/^([0-9]+)$/", $var)) {
-		$tmp=explode(',', $userclass);
-		if (is_numeric(array_search($var, $tmp))) {
-			if ($debug) {
-				echo "TRUE<br />";
-			}
-			return TRUE;
-		}
-	} else {
-		// var is name of class ...
-		$sql=new db;
-		if ($sql->db_Select("userclass_classes", "*", "userclass_name='".$tp -> toDB($var)."' ")) {
-			$row=$sql->db_Fetch();
-			$tmp=explode(',', $userclass);
-			if (is_numeric(array_search($row['userclass_id'], $tmp))) {
-				if ($debug) {
-					echo "TRUE<br />";
+		else
+		{
+			if(!is_numeric($v))  //value to test is a userclass name, go get the id
+			{
+				$sql=new db;
+				$v = trim($v);
+				if($sql->db_Select("userclass_classes", "userclass_id", "userclass_name='".$tp->toDB($v)."' "))
+				{
+					$row = $sql->db_Fetch();
+					$v = $row['userclass_id'];
 				}
+			}
+			if(in_array($v, $class_array))
+			{
 				return TRUE;
 			}
 		}
 	}
-
-	if ($debug) {
-		echo "NOTNUM! FALSE<br />";
-	}
-
 	return FALSE;
 }
 
@@ -1418,28 +1366,60 @@ function table_exists($check) {
 	}
 }
 
-function class_list($uid = '') {
-	$clist=array();
+function class_list($uid = '')
+{
+	$clist = array();
 
-	if ($uid == '')
+	if (is_numeric($uid) || USER === true)
 	{
-		if (USER === TRUE)
+		if (is_numeric($uid))
 		{
-			if(USERCLASS)
+			if($ud = get_user_data($uid))
 			{
-				$clist=explode(',', USERCLASS);
+				$admin_status = $ud['user_admin'];
+				$class_list = $ud['user_class'];
+				$admin_perms = $ud['user_perms'];
 			}
-			$clist[]=e_UC_MEMBER;
-			if (ADMIN === TRUE) {
-				$clist[] = e_UC_ADMIN;
+			else
+			{
+				$admin_status = false;
+				$class_list = "";
+				$admin_perms = "";
 			}
-		} else {
-			$clist[] = e_UC_GUEST;
 		}
-		$clist[]=e_UC_READONLY;
-		$clist[]=e_UC_PUBLIC;
-		return implode(',', $clist);
+		else
+		{
+			$admin_status = ADMIN;
+			$class_list = USERCLASS;
+			$admin_perms = ADMINPERMS;
+		}
+
+		if ($class_list)
+		{
+			$clist = explode(',', $class_list);
+		}
+		
+		$clist[] = e_UC_MEMBER;
+		
+		if ($admin_status == true)
+		{
+			$clist[] = e_UC_ADMIN;
+		}
+
+		if ($admin_perms === '0')
+		{
+			$clist[] = e_UC_MAINADMIN;
+		}
 	}
+	else
+	{
+		$clist[] = e_UC_GUEST;
+	}
+	
+	$clist[] = e_UC_READONLY;
+	$clist[] = e_UC_PUBLIC;
+	
+	return implode(',', $clist);
 }
 
 // ---------------------------------------------------------------------------
