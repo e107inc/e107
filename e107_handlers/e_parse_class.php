@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-12 21:05:20 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -28,26 +28,37 @@ class e_parse
 	var $e_hook;
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
-	var $e_highlighting;		// Set to TRUE or FALSE once it has been calculated
-	var $e_query;			// Highlight query
+	var $e_highlighting;
+	var $e_query;
 
-	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
+	function toDB($data, $nostrip = false, $no_encode = false, $original_author = false, $mod = false)
 	{
+		/**
+		* $nostrip: toDB() assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless you indicate otherwise by setting this var to true.
+		* If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
+		* $no_encode: This var should nearly always be false. It is used by the save_prefs() function to preserve html content within prefs even when 
+		* the save_prefs() function has been called by a non admin user / user without html posting permissions.
+		* $mod: although not used in core, the 'no_html' and 'no_php' modifiers are available for plugins to blanket prevent html and php posting regardless 
+		* of posting permissions.
+		*/
 		global $pref;
 		if (is_array($data)) {
-			// recursively run toDB (for arrays)
 			foreach ($data as $key => $var) {
-				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode);
+				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $original_author, $mod);
 			}
 		} else {
-			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false) {
+			if (MAGIC_QUOTES_GPC == true && $nostrip == false) {
 				$data = stripslashes($data);
 			}
-			if(isset($pref['post_html']) && check_class($pref['post_html']))
+			if (isset($pref['post_html']) && check_class($pref['post_html']))
 			{
-				$no_encode = TRUE;
+				$no_encode = true;
 			}
-			if ($no_encode === TRUE && $mod != 'no_html')
+			if (is_numeric($original_author) && !check_class($pref['post_html'], '', $original_author))
+			{
+				$no_encode = false;
+			}
+			if ($no_encode === true && strpos($mod, 'no_html') === false)
 			{
 				$search = array('$', '"', "'", '\\', '<?');
 				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt;?');
@@ -57,8 +68,7 @@ class e_parse
 				$data = str_replace('\\', '&#092;', $data);
 				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 			}
-			//If user is not allowed to use [php] change to entities
-			if(!check_class($pref['php_bbcode']))
+			if (!check_class($pref['php_bbcode']) || (is_numeric($original_author) && !check_class($pref['php_bbcode'], '', $original_author)) || strpos($mod, 'no_php') !== false)
 			{
 				$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
 			}
@@ -68,84 +78,43 @@ class e_parse
 		return $ret;
 	}
 
-	function toForm($text, $single_quotes = FALSE)
-	{
-		if($text == "") { return ""; }
-		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
-		$search = array('&#036;', '&quot;');
-		$replace = array('$', '"');
-		$text = str_replace($search, $replace, $text);
-		if(e_WYSIWYG !== TRUE){
-	   	  	$text = str_replace("&nbsp;"," ",$text); // fix for utf-8 issue with html_entity_decode();
-		}
-	  	$text = html_entity_decode($text, $mode,CHARSET);
 
+	function toForm($text)
+	{
+		if ($text == '') { return ''; }
+		$search = array('&#036;', '&quot;', '<', '>');
+		$replace = array('$', '"', '&lt;', '&gt;');
+		$text = str_replace($search, $replace, $text);
+		if (e_WYSIWYG !== true){
+	   	  	$text = str_replace("&nbsp;", " ", $text); // fix for utf-8 issue with html_entity_decode();
+		}
 		return $text;
 	}
 
 
 	function post_toForm($text) {
-		if (defined("MAGIC_QUOTES_GPC") && (MAGIC_QUOTES_GPC == TRUE)) {
+		if (MAGIC_QUOTES_GPC == true) {
 			$text = stripslashes($text);
 		}
-		// ensure apostrophes are properly converted, or else the form item could break
-		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
+		return str_replace(array( "'", '"', "<", ">"), array("&#039;", "&quot;", "&lt;", "&gt;"), $text);
 	}
 
 
-	function post_toHTML($text, $modifier = true, $extra = '') {
-		/*
-		changes by jalist 30/01/2005:
-		description had to add modifier to /not/ send formatted text on to this->toHTML at end of method, this was causing problems when MAGIC_QUOTES_GPC == TRUE.
-		*/
-		global $pref;
-
-		if(isset($pref['post_html']) && check_class($pref['post_html'])) {
-			$no_encode = true;
-		}
-
-		if (ADMIN === true || $no_encode === true) {
-			$search = array('$', '"', "'", '\\', "'&#092;'");
-			$replace = array('&#036;','&quot;','&#039;','&#092;','&#039;');
-			$text = str_replace($search, $replace, $text);
-			/*
-			changes by jalist 30/01/2005:
-			description dirty fix for servers with magic_quotes_gpc == true
-			*/
-			if (MAGIC_QUOTES_GPC) {
-				$search = array('&#092;&#092;&#092;&#092;', '&#092;&#039;', '&#092;&quot;');
-				$replace = array('&#092;&#092;','&#039;', '&quot;');
-				$text = str_replace($search, $replace, $text);
-			}
-		} else {
-
-			if (MAGIC_QUOTES_GPC) {
-				$text = stripslashes($text);
-			}
-		  	$text = htmlentities($text, ENT_QUOTES, CHARSET);
-		}
-
-		$text = $this->replaceConstants($text);
-
-		//If user is not allowed to use [php] change to entities
-		if(!check_class($pref['php_bbcode']))
-		{
-			$text = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $text);
-		}
-
-		return ($modifier ? $this->toHTML($text, true, $extra) : $text);
+	function post_toHTML($text, $original_author = false, $extra = '', $mod = false) {
+		$text = $this -> toDB($text, false, false, $original_author, $mod);
+		return $this -> toHTML($text, true, $extra);
 	}
+
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
-		// Start parse {XXX} codes
 		if (!is_object($this->e_sc))
 		{
 			require_once(e_HANDLER."shortcode_handler.php");
 			$this->e_sc = new e_shortcode;
 		}
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
-		// End parse {XXX} codes
 	}
+
 
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
 	{
