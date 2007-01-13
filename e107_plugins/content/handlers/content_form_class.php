@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.123 $
-|		$Date: 2006-11-21 19:26:18 $
+|		$Revision: 1.124 $
+|		$Date: 2007-01-13 22:50:48 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -91,8 +91,9 @@ class contentform{
 					{CONTENT_CONTENT_PREVIEW_PAGENAMES}
 				</table>\n";
 
-				$_POST['parent'] = intval($_POST['parent']);
-				$mainparent						= $aa -> getMainParent( $_POST['parent'] );
+				$tmp = explode(".",$_POST['parent1']);
+				$_POST['parent1'] = $tmp[1];
+				$mainparent						= $aa -> getMainParent( $_POST['parent1'] );
 				$content_pref					= $aa -> getContentPref($mainparent);
 				$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
 				$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
@@ -108,7 +109,7 @@ class contentform{
 				$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
 				$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
 
-				if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent']."' ")){
+				if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent1']."' ")){
 					$row = $sql -> db_Fetch();
 					$PARENT = $row['content_heading'];
 				}
@@ -127,7 +128,7 @@ class contentform{
 				}
 				$content_text = $tp->post_toHTML($content_text,TRUE);
 
-				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent1'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_HEADING = ($content_heading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$content_heading.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($content_subheading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$content_subheading.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_SUMMARY = ($content_summary ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$content_summary.$TDPOST.$TRPOST : "");
@@ -233,7 +234,7 @@ class contentform{
 							<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>";
 
 							$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
-							$TOPIC_FIELD = $aa -> ShowOptionCat().$rs->form_hidden("parent", "");
+							$TOPIC_FIELD = $aa -> ShowOption('',"managecontent");
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 							$text .= "</table></form></div>";
 							$caption = CONTENT_ADMIN_MAIN_LAN_2;
@@ -478,7 +479,7 @@ class contentform{
 						//re-prepare the posted fields for the form (after preview)
 						if( isset($_POST['preview_content']) || isset($message) ){
 
-								$row['content_parent']				= $_POST['parent'];
+								$row['content_parent']				= $_POST['parent1'];
 								$row['content_heading']				= $tp -> post_toForm($_POST['content_heading']);
 								$row['content_subheading']			= $tp -> post_toForm($_POST['content_subheading']);
 								$row['content_summary']				= $tp -> post_toForm($_POST['content_summary']);
@@ -537,9 +538,9 @@ class contentform{
 						$hidden = "";
 						if($mode == "contentmanager"){
 							if($qs[1] == "edit"){
-								$hidden .= $rs -> form_hidden("parent", $row['content_parent']);
+								$hidden .= $rs -> form_hidden("parent1", $row['content_parent']);
 							}else{
-								$hidden .= $rs -> form_hidden("parent", intval($qs[2]));
+								$hidden .= $rs -> form_hidden("parent1", intval($qs[2]));
 							}
 						}else{
 							if($mode == "submit"){
@@ -549,7 +550,7 @@ class contentform{
 							}
 							//category parent
 							$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
-							$TOPIC_FIELD = $aa -> ShowOptionCat($parent).$rs->form_hidden("parent", "");
+							$TOPIC_FIELD = $aa -> ShowOption($parent, "createcontent");
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 							//$text .= $TOPIC_ROW_SPACER;
 						}
@@ -723,7 +724,6 @@ class contentform{
 								if(!is_writable($content_tmppath_image)){
 									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_image." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
 								}
-								$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
 								$TOPIC_FIELD .= "<br />
 								<input class='tbox' type='file' name='file_userfile[]'  size='36' /> 
 									".$rs -> form_select_open("uploadtype")."
@@ -734,7 +734,7 @@ class contentform{
 								<input type='hidden' name='tmppathicon' value='".$content_tmppath_icon."' />
 								<input type='hidden' name='tmppathfile' value='".$content_tmppath_file."' />
 								<input type='hidden' name='tmppathimage' value='".$content_tmppath_image."' />
-								<input class='button' type='submit' name='uploadfile' value='".CONTENT_ADMIN_ITEM_LAN_104."' $js />";
+								<input class='button' type='submit' name='uploadfile' value='".CONTENT_ADMIN_ITEM_LAN_104."' />";
 							}
 							$TOPIC_FIELD .= "<br />";
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
@@ -1050,20 +1050,18 @@ class contentform{
 						$text .= $TOPIC_ROW_SPACER."
 						<tr>
 							<td colspan='2' style='text-align:center' class='forumheader'>".($hidden ? $hidden : "");
-							
-							$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
 							if($qs[1] == "edit" || $qs[1] == "sa" || isset($_POST['editp']) ){
 								if($qs[1] == "sa"){
 								$text .= $rs -> form_hidden("content_refer", $row['content_refer']);
 								}
 								$text .= $rs -> form_hidden("content_datestamp", $row['content_datestamp']);
-								$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
-								$text .= $rs -> form_button("submit", "update_content", ($qs[1] == "sa" ? CONTENT_ADMIN_ITEM_LAN_43 : CONTENT_ADMIN_ITEM_LAN_45), $js );
+								$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
+								$text .= $rs -> form_button("submit", "update_content", ($qs[1] == "sa" ? CONTENT_ADMIN_ITEM_LAN_43 : CONTENT_ADMIN_ITEM_LAN_45));
 								$text .= $rs -> form_hidden("content_id", $qs[2]);
 								$text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".CONTENT_ADMIN_ITEM_LAN_42;
 							}else{
-								$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
-								$text .= $rs -> form_button("submit", "create_content", CONTENT_ADMIN_ITEM_LAN_44, $js);								
+								$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
+								$text .= $rs -> form_button("submit", "create_content", CONTENT_ADMIN_ITEM_LAN_44);								
 							}
 							$text .= "
 							</td>
@@ -1147,8 +1145,7 @@ class contentform{
 				//category parent
 				global $TOPIC_TOPIC, $TOPIC_FIELD, $TOPIC_ROW_NOEXPAND;
 				$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
-				$parent = (is_numeric($qs[1]) ? $qs[1] : "");
-				$TOPIC_FIELD = $aa -> ShowOptionCat($parent).$rs->form_hidden("parent", "");
+				$TOPIC_FIELD = $aa -> ShowOption( (is_numeric($qs[1]) ? $qs[1] : ""), "managecontent" );
 				$text = "<div style='text-align:center'><table style='".ADMIN_WIDTH."' class='fborder'>
 				<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>";
 				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
@@ -1745,7 +1742,7 @@ class contentform{
 					$parent	= ( strpos($row['content_parent'], ".") ? substr($row['content_parent'],2) : "");
 				}
 			}
-			$TOPIC_FIELD = $aa -> ShowOptionCat($parent).$rs->form_hidden("parent", "");
+			$TOPIC_FIELD = $aa -> ShowOption($parent, "category");
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 			$text .= $TOPIC_ROW_SPACER;
 
@@ -1943,15 +1940,13 @@ class contentform{
 			<tr>
 				<td class='forumheader' style='text-align:center' colspan='2'>".$hidden;
 				if($qs[1] == "edit" && is_numeric($qs[2]) ){
-					$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
-					$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
-					$text .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7, $js).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]).$rs -> form_hidden("menuheading", $menuheading);
+					$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
+					$text .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]).$rs -> form_hidden("menuheading", $menuheading);
 					
 					$caption = CONTENT_ADMIN_CAT_LAN_1;
 				}else{
-					$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
-					$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
-					$text .= $rs -> form_button("submit", "create_category", CONTENT_ADMIN_CAT_LAN_6, $js);
+					$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
+					$text .= $rs -> form_button("submit", "create_category", CONTENT_ADMIN_CAT_LAN_6);
 					$caption = CONTENT_ADMIN_CAT_LAN_0;
 				}
 				$text .= "
