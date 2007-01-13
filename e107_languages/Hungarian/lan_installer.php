@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_installer.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-29 22:34:01 $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-13 17:01:14 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -134,4 +134,18 @@ define("LANINS_085", "A telepítő nem tudja kiválasztani az adatbázist:");
 
 define("LANINS_086", "Admin Felhasználónév, Admin Jelszó és Admin Email <b>kötelező</b> mezők. Lépj vissza az előző oldalra és írd be a megfelelő információkat.");
 
+define("LANINS_087", "Egyéb");
+define("LANINS_088", "Kezdőlap");
+define("LANINS_089", "Letöltések");
+define("LANINS_090", "Tagok");
+define("LANINS_091", "Hír beküldése");
+define("LANINS_092", "Kapcsolat");
+define("LANINS_093", "Hozzáférés engedélyezése a privát menü részekhez");
+define("LANINS_094", "Privát fórum csoport");
+define("LANINS_095", "Integritás ellenőrző");
+define("LANINS_096", "");
+define("LANINS_097", "");
+define("LANINS_098", "");
+define("LANINS_099", "");
+define("LANINS_100", "");
 ?>
