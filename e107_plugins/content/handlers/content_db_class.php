@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2007-01-11 19:12:58 $
+|		$Revision: 1.3 $
+|		$Date: 2007-01-13 22:33:03 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -121,9 +121,29 @@ class contentdb{
 			}
 			
 			$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
-			$_POST['parent']				= ($_POST['parent'] ? intval($_POST['parent']) : "0");
 			$_POST['content_class']			= ($_POST['content_class'] ? intval($_POST['content_class']) : "0");
 			$_POST['content_meta']			= $tp -> toDB($_POST['content_meta']);
+			//$_POST['parent']				= ($_POST['parent'] ? intval($_POST['parent']) : "0");
+
+			//content create
+			if( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='create' || $qs[1]=='submit') && isset($qs[2]) && is_numeric($qs[2]) ){
+				$parent = intval($_POST['parent1']);
+
+			//content edit
+			}elseif( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='edit' || $qs[1]=='sa') && isset($qs[2]) && is_numeric($qs[2]) ){
+				if( isset($_POST['parent1']) && strpos($_POST['parent1'], ".") ){
+					$tmp = explode(".", $_POST['parent1']);
+					$parent = $tmp[1];
+				}else{
+					$parent = $_POST['parent1'];
+				}
+			}
+			$_POST['parent'] = $parent;
+
+
+
+
+
 
 			if(USER){
 				if($_POST['content_author_id']){
@@ -322,7 +342,7 @@ class contentdb{
 
 		//function dbCategoryUpdate($mode){
 		function dbCategory($mode){
-			global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $content_cat_icon_path_large, $content_cat_icon_path_small;
+			global $pref, $sql, $ns, $rs, $qs, $aa, $tp, $plugintable, $e107cache, $content_cat_icon_path_large, $content_cat_icon_path_small;
 
 			$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
 			$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
@@ -330,8 +350,39 @@ class contentdb{
 				$_POST['cat_text']		= $tp->createConstants($_POST['cat_text']); // convert e107_images/ to {e_IMAGE} etc.
 			}
 			$_POST['cat_text']			= $tp -> toDB($_POST['cat_text']);
-			$_POST['parent']			= ($_POST['parent'] == "0" || $_POST['parent']==$_POST['cat_id'] ? "0" : "0.".intval($_POST['parent']));
 			$_POST['cat_class']			= ($_POST['cat_class'] ? intval($_POST['cat_class']) : "0");
+
+			//category create
+			if( isset($qs[0]) && $qs[0]=='cat' && isset($qs[1]) && $qs[1]=='create' ){
+				if( isset($qs[2]) && is_numeric($qs[2]) ){
+					$parent = intval($qs[2]);
+				}else{
+					$parent = 0;
+				}
+
+			//category edit
+			}elseif( isset($qs[0]) && $qs[0]=='cat' && isset($qs[1]) && $qs[1]=='edit' ){
+				if( isset($qs[2]) && is_numeric($qs[2]) ){
+
+					if( isset($qs[3]) && is_numeric($qs[3]) ){
+						if(intval($qs[3]) == 0){
+							$parent = 0;
+						}elseif( $qs[2] == $qs[3] ){
+							$parent = 0;
+						}else{
+							$parent = "0.".intval($qs[3]);
+						}
+					}else{
+						if($qs[2]==$_POST['cat_id']){
+							$parent = 0;
+						}else{
+						}
+					}
+				}else{
+					$parent = 0;
+				}
+			}
+			$_POST['parent'] = $parent;
 
 			if( isset($_POST['ne_day']) && $_POST['ne_day']!='' && $_POST['ne_day'] != "none" 
 				&& isset($_POST['ne_month']) && $_POST['ne_month']!='' && $_POST['ne_month'] != "none" 

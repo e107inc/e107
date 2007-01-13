@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2006-12-31 14:46:30 $
-|		$Author: e107coders $
+|		$Revision: 1.3 $
+|		$Date: 2007-01-13 22:33:02 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -24,12 +24,10 @@ if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
 $e_wysiwyg = "content_text,cat_text";
 $plugindir = e_PLUGIN."content/";
+require_once($plugindir."content_shortcodes.php");
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
-
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
@@ -45,6 +43,12 @@ require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
+
+if(is_readable(e_THEME.$pref['sitetheme']."/content/content_admin_template.php")){
+	require_once(e_THEME.$pref['sitetheme']."/content/content_admin_template.php");
+}else{
+	require_once(e_PLUGIN."content/templates/content_admin_template.php");
+}
 
 global $tp;
 $deltest = array_flip($_POST);

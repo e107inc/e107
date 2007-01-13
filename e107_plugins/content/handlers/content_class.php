@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2006-12-07 15:41:50 $
-|		$Author: sweetas $
+|		$Revision: 1.3 $
+|		$Date: 2007-01-13 22:33:03 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -838,104 +838,94 @@ class content{
 		}
 
 
-
-		//admin
-		function ShowOptionCat($currentparent=""){
+		//$mode : managecontent, createcontent, category
+		function ShowOption($currentparent="", $mode=''){
 			global $qs, $sql, $rs, $plugintable, $tp, $content_pref, $stylespacer;
-			$string = "";
 
-			if($currentparent == "submit"){
+			if( ($mode=='managecontent' || $mode=='createcontent') && $currentparent == "submit"){
 				$mainparent		= $this -> getMainParent( intval($qs[2]) );
 				$catarray		= $this -> getCategoryTree("", intval($mainparent), FALSE);
 			}else{
-				$catarray		= $this -> getCategoryTree("", "", FALSE);
+				$catarray = $this -> getCategoryTree("", "", FALSE);
 			}
 			$array = array_keys($catarray);
 
+			$string = "";
 			foreach($array as $catid){
 				$category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_parent", "content_id='".intval($catid)."' ");
 				$row = $sql -> db_Fetch();
 
 				$pre = "";
-				if($row['content_parent'] == "0"){		//main parent level
-				}else{									//sub level
+				//sub level
+				if($row['content_parent'] != "0"){
 					for($b=0;$b<(count($catarray[$catid])/2)-1;$b++){
 						$pre .= "&nbsp;&nbsp;";
 					}
 				}
-				$emptystring = "----------------";
+				if($row['content_parent'] == 0){
+					$name	= $row['content_heading'];
+					$js		= "style='font-weight:bold;'";
+				}else{
+					$js		= "";
+					$name	= $pre.$row['content_heading'];
+				}
 
-				if($qs[0] == "cat"){
-
-					$js			= "";
-					$catstring	= "";
-					$name		= $pre.$row['content_heading'];
-					$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
-					$label		= $catid;
-					if($row['content_parent'] == 0){
-						$name	= $row['content_heading'];
-						$js		= "style='font-weight:bold;'";
+				if($mode=='managecontent'){
+					$checkid	= ($currentparent ? $currentparent : "");
+					if($qs[0] == 'content' && ($qs[1]=='create' || $qs[1]=='submit') ){
+						$value		= e_SELF."?content.".$qs[1].".".$catid;
+					}else{
+						$value		= e_SELF."?content.".$catid;
 					}
+				}elseif($mode=='createcontent'){
+					if($qs[1] == "create" || $qs[1] == "submit"){
+						$checkid	= (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "");
+						$value		= $catid;
+					}else{
+						$checkid	= ($currentparent ? $currentparent : "");
+						$value		= $qs[2].".".$catid;
+					}
+				}elseif($mode=='category'){
 					if($qs[1] == "create"){
 						$checkid	= (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "");
 						$value		= e_SELF."?cat.create.".$catid;
-						$sel		= ($catid == $checkid ? "1" : "0");
 					}elseif($qs[1] == "edit"){
 						$checkid	= ($currentparent ? $currentparent : "");
 						$value		= e_SELF."?cat.edit.".$qs[2].".".$catid;
-						$sel		= ($catid == $checkid ? "1" : "0");
-					}
-
-				//manage items
-				}elseif($qs[0] == "" || $qs[0] == "content"){
-
-					$catstring	= "";
-					$js			= "";
-					$label		= $catid;
-					$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
-					$name		= $pre.$row['content_heading'];
-					if($row['content_parent'] == 0){
-						$name	= $row['content_heading'];
-						$js		= "style='font-weight:bold;'";
-					}
-					if($qs[1] == "create" || $qs[1] == "submit"){
-						$checkid	= (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "");
-						$value		= e_SELF."?content.".$qs[1].".".$catid;
-						$sel		= ($catid == $checkid ? "1" : "0");
-					}else{
-						$checkid	= ($currentparent ? $currentparent : "");
-						$sel		= ($catid == $checkid ? "1" : "0");
-						if($qs[1] == "" || is_numeric($qs[1])){
-							$value	= e_SELF."?content.".$catid;
-						}else{
-							$value	= e_SELF."?content.".$qs[1].".".$qs[2].".".$catid;
-						}
 					}
 				}
-				$string	.= $rs -> form_option($name, $sel, $value, ($label ? "label='".$label."'" : "label='none'")." ".$js ).$catstring;
+				$sel = ($catid == $checkid ? "1" : "0");
+				$string	.= $rs -> form_option($name, $sel, $value, $js);
 			}
-			$selectjs	= " onchange=\" document.getElementById('parent').value=this.options[this.selectedIndex].label; ".$selectjs." \"";
-			$text		= $rs -> form_select_open("parent1", $selectjs);
 
-			if(!isset($qs[0])){
-				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
-			}elseif( $qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2]) ){
-				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
-			}elseif( $qs[0] == "content" && ($qs[1] == "create" || $qs[1] == "submit") ){
-				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
-			}elseif( $qs[0] == "content" && is_numeric($qs[1]) ){
-				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
-			}elseif($qs[0] == "cat" && $qs[1] == "create"){
-				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29."&nbsp;&nbsp;", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.create", "label='0' style='font-weight:bold;'");
-			}else{
-				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29."&nbsp;&nbsp;", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.edit.".$qs[2].".0", "label='0' style='font-weight:bold;'");
+			if($mode=='managecontent'){
+				$selectjs = " onchange=\" if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; } \"";
+				$text  = $rs -> form_select_open("parent1", $selectjs);
+				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none");
+				$text .= $string;
+				$text .= $rs -> form_select_close();
+
+			}elseif($mode=='createcontent'){
+				$redirecturl = e_SELF."?content.".$qs[1].".";
+				$selectjs = " onchange=\" if(this.options[this.selectedIndex].value != 'none'){ return document.location='".$redirecturl."'+this.options[this.selectedIndex].value; } \"";
+				$text  = $rs -> form_select_open("parent1", $selectjs);
+				$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none");
+				$text .= $string;
+				$text .= $rs -> form_select_close();
+
+			}elseif($mode=='category'){
+				$selectjs = " onchange=\" if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; } \"";
+				$text = $rs -> form_select_open("parent1", $selectjs);
+				if($qs[1] == "create"){
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29."&nbsp;&nbsp;", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.create", "style='font-weight:bold;'");
+				}else{
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29."&nbsp;&nbsp;", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.edit.".$qs[2].".0", "style='font-weight:bold;'");
+				}
+				$text .= $string;
+				$text .= $rs -> form_select_close();
 			}
-			$text .= $string;
-			$text .= $rs -> form_select_close();
-
 			return $text;
 		}
-
 
 
 		function getOrder(){
