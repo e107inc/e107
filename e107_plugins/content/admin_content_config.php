@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2007-01-13 22:33:02 $
+|		$Revision: 1.4 $
+|		$Date: 2007-01-13 23:18:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -188,7 +188,7 @@ if(isset($_POST['uploadcaticon'])){
 }
 
 if(isset($_POST['create_category'])){
-	if($_POST['cat_heading'] && $_POST['parent'] != "none"){
+	if($_POST['cat_heading'] && $_POST['parent1'] != "none"){
 		$adb -> dbCategory("create");
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
@@ -196,7 +196,7 @@ if(isset($_POST['create_category'])){
 }
 
 if(isset($_POST['update_category'])){
-	if($_POST['cat_heading'] && $_POST['parent'] != "none"){
+	if($_POST['cat_heading'] && $_POST['parent1'] != "none"){
 		$adb -> dbCategory("update");
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
@@ -204,7 +204,7 @@ if(isset($_POST['update_category'])){
 }
 
 if(isset($_POST['create_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['content_author_name'] && $_POST['parent'] != "none"){
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['content_author_name'] && $_POST['parent1'] != "none"){
 		//$adb -> dbContentCreate("admin");
 		$adb -> dbContent("create", "");
 	}else{
@@ -213,7 +213,7 @@ if(isset($_POST['create_content'])){
 }
 
 if(isset($_POST['update_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['content_author_name'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['content_author_name'] && $_POST['content_heading'] && $_POST['parent1'] != "none"){
 		//$adb -> dbContentUpdate("admin");
 		$adb -> dbContent("update", "");
 	}else{

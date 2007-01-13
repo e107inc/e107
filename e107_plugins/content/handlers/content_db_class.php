@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2007-01-13 22:33:03 $
+|		$Revision: 1.4 $
+|		$Date: 2007-01-13 23:18:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ if(isset($_POST['uploadfile'])){
 	if($_POST['uploadtype']){
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php");
-		$mainparent		= $aa -> getMainParent(intval($_POST['parent']));
+		$mainparent		= $aa -> getMainParent(intval($_POST['parent1']));
 		$content_pref	= $aa -> getContentPref($mainparent);
 
 		if($_POST['content_id']){
@@ -123,7 +123,6 @@ class contentdb{
 			$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
 			$_POST['content_class']			= ($_POST['content_class'] ? intval($_POST['content_class']) : "0");
 			$_POST['content_meta']			= $tp -> toDB($_POST['content_meta']);
-			//$_POST['parent']				= ($_POST['parent'] ? intval($_POST['parent']) : "0");
 
 			//content create
 			if( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='create' || $qs[1]=='submit') && isset($qs[2]) && is_numeric($qs[2]) ){
@@ -139,10 +138,6 @@ class contentdb{
 				}
 			}
 			$_POST['parent'] = $parent;
-
-
-
-
 
 
 			if(USER){
@@ -355,7 +350,7 @@ class contentdb{
 			//category create
 			if( isset($qs[0]) && $qs[0]=='cat' && isset($qs[1]) && $qs[1]=='create' ){
 				if( isset($qs[2]) && is_numeric($qs[2]) ){
-					$parent = intval($qs[2]);
+					$parent = "0.".intval($qs[2]);
 				}else{
 					$parent = 0;
 				}

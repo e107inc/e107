@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2007-01-13 22:33:03 $
+|		$Revision: 1.3 $
+|		$Date: 2007-01-13 23:18:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -91,8 +91,9 @@ class contentform{
 					{CONTENT_CONTENT_PREVIEW_PAGENAMES}
 				</table>\n";
 
-				$_POST['parent'] = intval($_POST['parent']);
-				$mainparent						= $aa -> getMainParent( $_POST['parent'] );
+				$tmp = explode(".",$_POST['parent1']);
+				$_POST['parent1'] = $tmp[1];
+				$mainparent						= $aa -> getMainParent( $_POST['parent1'] );
 				$content_pref					= $aa -> getContentPref($mainparent);
 				$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
 				$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
@@ -108,7 +109,7 @@ class contentform{
 				$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
 				$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
 
-				if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent']."' ")){
+				if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent1']."' ")){
 					$row = $sql -> db_Fetch();
 					$PARENT = $row['content_heading'];
 				}
@@ -127,7 +128,7 @@ class contentform{
 				}
 				$content_text = $tp->post_toHTML($content_text,TRUE);
 
-				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent1'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_HEADING = ($content_heading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$content_heading.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($content_subheading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$content_subheading.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_SUMMARY = ($content_summary ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$content_summary.$TDPOST.$TRPOST : "");
