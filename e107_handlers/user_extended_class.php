@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:59 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-13 05:04:12 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -117,7 +117,7 @@ class e107_user_extended
 	{
 		global $sql;
 		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
-		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 {$more} ORDER BY user_extended_struct_order ASC"))
+		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->db_Fetch())
 			{
@@ -186,6 +186,12 @@ class e107_user_extended
 	{
 		global $sql, $tp;
 		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
+	}
+
+	// For use by plugins to add extended user fields and won't be visible anywhere else
+	function user_extended_add_system($name, $type, $default = '')
+	{
+		return $this->user_extended_add($name, '_system_', $type, '', '', $default, 0, 255, 255, 255, 0, 0);
 	}
 
 	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent)
