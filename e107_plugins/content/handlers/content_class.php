@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2007-01-14 11:59:11 $
+|		$Revision: 1.5 $
+|		$Date: 2007-01-14 14:18:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -473,13 +473,31 @@ class content{
 					}
 				}
 			}
-
+print_a($_POST);
+			/*
 			//create array of custom preset tags
 			foreach($_POST['content_custom_preset_key'] as $ck => $cv){
 				if(!empty($cv)){
 					$string[] = $cv;
 				}
 			}
+			*/
+
+			//create array of custom preset tags
+			asort($_POST['content_custom_preset_key_order']);
+			$corder = array_keys($_POST['content_custom_preset_key_order']);
+			foreach($_POST['content_custom_preset_key'] as $ck => $cv){
+				if(!empty($cv)){
+					//next routine to keep 'order' of preset tags
+					if(isset($_POST['content_custom_preset_key_order'][$ck])){
+						$k = intval($corder[$ck]);
+						$string[$k] = $cv;
+					}else{
+						$string[] = $cv;
+					}
+				}
+			}
+
 			$_POST['content_custom_preset_key'] = $string;
 
 			//echo "<pre>"; print_r($_POST); echo "</pre>";

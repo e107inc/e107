@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2007-01-14 11:59:11 $
+|		$Revision: 1.5 $
+|		$Date: 2007-01-14 14:18:10 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1277,7 +1277,7 @@ class contentform{
 			$button = $hidden;
 			if($qs[1] == "edit" && is_numeric($qs[2]) ){
 				$button .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
-				$button .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]).$rs -> form_hidden("menuheading", $menuheading);
+				$button .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("parent_id", $parent).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]).$rs -> form_hidden("menuheading", $menuheading);
 			}else{
 				$button .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
 				$button .= $rs -> form_button("submit", "create_category", CONTENT_ADMIN_CAT_LAN_6);
@@ -1643,6 +1643,7 @@ class contentform{
 				if(!empty($content_pref['content_custom_preset_key'][$i])){
 					$TOPIC_FIELD .= "
 					<span style='white-space:nowrap;'>
+					".$rs -> form_text("content_custom_preset_key_order[$existing]", 3, $existing+1, 3)."
 					".$rs -> form_text("content_custom_preset_key[$existing]", 50, $content_pref['content_custom_preset_key'][$existing], 100)."
 					".$rs -> form_button("button", "x", "x", "onclick=\"document.getElementById('content_custom_preset_key[$existing]').value='';\"", "", "")."	
 					</span>";
