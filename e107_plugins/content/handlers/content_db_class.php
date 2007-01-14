@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.55 $
-|		$Date: 2007-01-14 14:15:43 $
+|		$Revision: 1.56 $
+|		$Date: 2007-01-14 14:24:41 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -335,7 +335,7 @@ class contentdb{
 
 		//function dbCategoryUpdate($mode){
 		function dbCategory($mode){
-			global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $content_cat_icon_path_large, $content_cat_icon_path_small;
+			global $pref, $sql, $ns, $qs, $rs, $aa, $tp, $plugintable, $e107cache, $content_cat_icon_path_large, $content_cat_icon_path_small;
 
 			$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
 			$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
