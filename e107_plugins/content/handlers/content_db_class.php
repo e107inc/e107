@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.54 $
-|		$Date: 2007-01-14 13:43:56 $
+|		$Revision: 1.55 $
+|		$Date: 2007-01-14 14:15:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -367,7 +367,8 @@ class contentdb{
 						}
 					}else{
 						if($qs[2]==$_POST['cat_id']){
-							$parent = 0;
+							$parent = intval($_POST['parent_id']);
+							$parent = ($parent!=0 ? "0.".$parent : 0);
 						}else{
 						}
 					}
@@ -377,17 +378,17 @@ class contentdb{
 			}
 			$_POST['parent'] = $parent;
 
-			if( isset($_POST['ne_day']) && $_POST['ne_day']!='' && $_POST['ne_day'] != "none" 
-				&& isset($_POST['ne_month']) && $_POST['ne_month']!='' && $_POST['ne_month'] != "none" 
-				&& isset($_POST['ne_year']) && $_POST['ne_year']!='' && $_POST['ne_year'] != "none" ){
+			if( isset($_POST['ne_day']) && $_POST['ne_day']!='' && $_POST['ne_day']!='0' && $_POST['ne_day'] != "none" 
+				&& isset($_POST['ne_month']) && $_POST['ne_month']!='' && $_POST['ne_month']!='0' && $_POST['ne_month'] != "none" 
+				&& isset($_POST['ne_year']) && $_POST['ne_year']!='' && $_POST['ne_year']!='0' && $_POST['ne_year'] != "none" ){
 				$starttime = mktime( 0, 0, 0, intval($_POST['ne_month']), intval($_POST['ne_day']), intval($_POST['ne_year']));
 			}else{
 				$starttime = time();
 			}
 
-			if( isset($_POST['end_day']) && $_POST['end_day']!='' && $_POST['end_day'] != "none" 
-				&& isset($_POST['end_month']) && $_POST['end_month']!='' && $_POST['end_month'] != "none" 
-				&& isset($_POST['end_year']) && $_POST['end_year']!='' && $_POST['end_year'] != "none" ){
+			if( isset($_POST['end_day']) && $_POST['end_day']!='' && $_POST['end_day']!='0' && $_POST['end_day'] != "none" 
+				&& isset($_POST['end_month']) && $_POST['end_month']!='' && $_POST['end_month']!='0' && $_POST['end_month'] != "none" 
+				&& isset($_POST['end_year']) && $_POST['end_year']!='' && $_POST['end_year']!='0' && $_POST['end_year'] != "none" ){
 				$endtime = mktime( 0, 0, 0, intval($_POST['end_month']), intval($_POST['end_day']), intval($_POST['end_year']));
 			}else{
 				$endtime = "0";

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.124 $
-|		$Date: 2007-01-13 22:50:48 $
+|		$Revision: 1.125 $
+|		$Date: 2007-01-14 14:15:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1730,7 +1730,7 @@ class contentform{
 			<div style='text-align:center'>
 			".$rs -> form_open("post", $formurl, "dataform", "", "enctype='multipart/form-data'")."
 			<table class='fborder' style='".ADMIN_WIDTH."'>";
-			
+
 			//category parent
 			$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
 			if($qs[1] == "create"){
@@ -1941,7 +1941,7 @@ class contentform{
 				<td class='forumheader' style='text-align:center' colspan='2'>".$hidden;
 				if($qs[1] == "edit" && is_numeric($qs[2]) ){
 					$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
-					$text .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]).$rs -> form_hidden("menuheading", $menuheading);
+					$text .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("parent_id", $parent).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]).$rs -> form_hidden("menuheading", $menuheading);
 					
 					$caption = CONTENT_ADMIN_CAT_LAN_1;
 				}else{
