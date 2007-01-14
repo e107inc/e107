@@ -11,15 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/content_admin_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-01-13 22:33:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-14 11:59:11 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $content_shortcodes;
-
-$stylespacer = "style='border:0; height:20px;'";
 
 // ##### CONTENT OPTIONS --------------------------------------------------
 if(!isset($CONTENT_ADMIN_OPTIONS_START)){
@@ -28,39 +26,56 @@ if(!isset($CONTENT_ADMIN_OPTIONS_START)){
 	".$rs -> form_open("post", e_SELF."?option", "optionsform","","", "")."
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_24."</td>
-	<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_25."</td>
-	<td class='fcaption' style='width:15%'>".CONTENT_ADMIN_CAT_LAN_18."</td>
-	<td class='fcaption' style='width:65%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
-	<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
-	<td class='fcaption' style='width:10%'>".CONTENT_ADMIN_OPT_LAN_167."</td>
+	<td class='fcaption' style='width:1%;'></td>
+	<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_25."</td>
+	<td class='fcaption' style='width:74%; text-align:left;'>".CONTENT_ADMIN_CAT_LAN_19."</td>
+	<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_20."</td>
+	<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_OPT_LAN_167."</td>
 	</tr>
-	<tr><td colspan='5' $stylespacer></td></tr>
+	<tr><td colspan='5' style='border:0; height:20px;'></td></tr>
 	<tr>
-		<td class='forumheader3' style='width:5%; text-align:left'></td>
-		<td class='forumheader3' style='width:5%; text-align:center'></td>
-		<td class='forumheader3' style='width:15%'></td>
-		<td class='forumheader3' style='width:65%; white-space:nowrap;'>".CONTENT_ADMIN_OPT_LAN_1."</td>
+		<td class='forumheader3' style='width:1%;'></td>
+		<td class='forumheader3' style='width:5%;'></td>
+		<td class='forumheader3' style='width:74%; white-space:nowrap;'>".CONTENT_ADMIN_OPT_LAN_1."</td>
 		<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
 			<a href='".e_SELF."?option.default'>".CONTENT_ICON_OPTIONS."</a>
 		</td>
-		<td class='forumheader3' style='width:10%'></td>
+		<td class='forumheader3' style='width:10%;'></td>
 	</tr>
-	<tr><td colspan='6' $stylespacer></td></tr>";
+	<tr><td colspan='5' style='border:0; height:20px;'></td></tr>";
 }
 if(!isset($CONTENT_ADMIN_OPTIONS_TABLE)){
 	$CONTENT_ADMIN_OPTIONS_TABLE = "
 	<tr>
-		<td class='forumheader3' style='width:5%; text-align:left'>{CONTENT_ID}</td>
-		<td class='forumheader3' style='width:5%; text-align:center'>{CONTENT_CAT_ICON}</td>
-		<td class='forumheader3' style='width:15%'>{CONTENT_AUTHOR}</td>
-		<td class='forumheader3' style='width:65%;'>
-			{CONTENT_LINK_CATEGORY} {CONTENT_HEADING} {CONTENT_SUBHEADING}
+		<td class='forumheader3' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
+		<td class='forumheader3' style='width:5%; text-align:center; vertical-align:top;'>{CONTENT_CAT_ICON}</td>
+		<td class='forumheader3' style='width:74%;'>
+			{CONTENT_HEADING}
+			<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
+			<table class='fborder' style='width:98%;'>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_1."</td>
+				<td>{CONTENT_ID}</td>
+			</tr>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_2."</td>
+				<td>{CONTENT_AUTHOR}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_3."</td>
+				<td>{CONTENT_LINK_CATEGORY}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_4."</td>
+				<td>{CONTENT_SUBHEADING}</td>
+			</tr>
+			</table>
+			</div>
 		</td>
-		<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
+		<td class='forumheader3' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_LINK_OPTION}
 		</td>
-		<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
+		<td class='forumheader3' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_INHERIT}
 		</td>
 	</tr>";
@@ -68,8 +83,8 @@ if(!isset($CONTENT_ADMIN_OPTIONS_TABLE)){
 if(!isset($CONTENT_ADMIN_OPTIONS_END)){
 	$CONTENT_ADMIN_OPTIONS_END = "
 	<tr>
-		<td class='forumheader3' colspan='5'></td>
-		<td class='forumheader3'>
+		<td class='forumheader3' colspan='4'></td>
+		<td class='forumheader3' style='text-align:center;'>
 			<input class='button' type='submit' name='updateinherit' value='".CONTENT_ADMIN_CAT_LAN_7."' />
 		</td>
 	</tr>
@@ -92,19 +107,42 @@ if(!isset($CONTENT_ADMIN_MANAGER_START)){
 	".$rs -> form_open("post", e_SELF."?".$qs[0], "catform","","", "")."
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-		<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_24."</td>
-		<td class='fcaption' style='width:65%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
-		<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
+		<td class='fcaption' style='width:1%;'></td>
+		<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_25."</td>
+		<td class='fcaption' style='width:84%;'>".CONTENT_ADMIN_CAT_LAN_19."</td>
+		<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_20."</td>
 	</tr>";
 }
 if(!isset($CONTENT_ADMIN_MANAGER_TABLE)){
 	$CONTENT_ADMIN_MANAGER_TABLE = "
+	{CONTENT_ADMIN_SPACER}
 	<tr>
-		<td class='forumheader3' style='width:5%; text-align:left'>{CONTENT_ID}</td>
-		<td class='forumheader3' style='width:65%;'>
-			{CONTENT_LINK_CATEGORY} {CONTENT_MANAGER_PRE}{CONTENT_HEADING} {CONTENT_SUBHEADING}
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center; vertical-align:top;'>{CONTENT_CAT_ICON}</td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:84%;'>
+			{CONTENT_MANAGER_PRE}{CONTENT_HEADING}
+			<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
+			<table class='fborder' style='width:98%;'>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_1."</td>
+				<td>{CONTENT_ID}</td>
+			</tr>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_2."</td>
+				<td>{CONTENT_AUTHOR}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_3."</td>
+				<td>{CONTENT_LINK_CATEGORY}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_4."</td>
+				<td>{CONTENT_SUBHEADING}</td>
+			</tr>
+			</table>
+			</div>
 		</td>
-		<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_LINK_MANAGER}
 		</td>
 	</tr>";
@@ -112,7 +150,7 @@ if(!isset($CONTENT_ADMIN_MANAGER_TABLE)){
 if(!isset($CONTENT_ADMIN_MANAGER_END)){
 	$CONTENT_ADMIN_MANAGER_END = "
 	</table>
-	".$rs -> form_close()."
+	</form>
 	</div>";
 }
 
@@ -158,6 +196,9 @@ if(!isset($CONTENT_ADMIN_MANAGER_CATEGORY)){
 }
 
 
+$sc_style['CONTENT_ADMIN_SPACER']['pre'] = "<tr><td class='forumheader3' colspan='7' style='height:15px; border:0;'>";
+$sc_style['CONTENT_ADMIN_SPACER']['post'] = "</td></tr>";
+
 // ##### CONTENT CATEGORY --------------------------------------------------
 if(!isset($CONTENT_ADMIN_CATEGORY_START)){
 	$CONTENT_ADMIN_CATEGORY_START = "
@@ -165,23 +206,42 @@ if(!isset($CONTENT_ADMIN_CATEGORY_START)){
 	".$rs -> form_open("post", e_SELF."?".$qs[0], "catform","","", "")."
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_24."</td>
-	<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_25."</td>
-	<td class='fcaption' style='width:15%'>".CONTENT_ADMIN_CAT_LAN_18."</td>
-	<td class='fcaption' style='width:65%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
+	<td class='fcaption' style='width:1%'></td>
+	<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_25."</td>
+	<td class='fcaption' style='width:84%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
 	<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
 	</tr>";
 }
 if(!isset($CONTENT_ADMIN_CATEGORY_TABLE)){
 	$CONTENT_ADMIN_CATEGORY_TABLE = "
+	{CONTENT_ADMIN_SPACER}
 	<tr>
-	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:left'>{CONTENT_ID}</td>
-	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center'>{CONTENT_CAT_ICON}</td>
-	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:15%'>{CONTENT_AUTHOR}</td>
-	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:65%;'>
-		 {CONTENT_LINK_CATEGORY} {CONTENT_MANAGER_PRE}{CONTENT_HEADING} {CONTENT_SUBHEADING}
+	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
+	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center; vertical-align:top;'>{CONTENT_CAT_ICON}</td>
+	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:84%;'>
+		{CONTENT_MANAGER_PRE}{CONTENT_HEADING}
+		<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
+		<table class='fborder' style='width:98%;'>
+		<tr>
+			<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_1."</td>
+			<td>{CONTENT_ID}</td>
+		</tr>
+		<tr>
+			<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_2."</td>
+			<td>{CONTENT_AUTHOR}</td>
+		</tr>
+		<tr>
+			<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_3."</td>
+			<td>{CONTENT_LINK_CATEGORY}</td>
+		</tr>
+		<tr>
+			<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_4."</td>
+			<td>{CONTENT_SUBHEADING}</td>
+		</tr>
+		</table>
+		</div>
 	</td>
-	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:left; white-space:nowrap;'>
+	<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; white-space:nowrap; vertical-align:top;'>
 		{CONTENT_ADMIN_OPTIONS}
 	</td>
 	</tr>";
@@ -239,33 +299,51 @@ if(!isset($CONTENT_ADMIN_ORDER_START)){
 	".$rs -> form_open("post", e_SELF."?order", "orderform")."
 	<table class='fborder' style='".ADMIN_WIDTH."'>							
 	<tr>
-		<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_24."</td>
-		<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_25."</td>
-		<td class='fcaption' style='width:15%'>".CONTENT_ADMIN_CAT_LAN_18."</td>
-		<td class='fcaption' style='width:50%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
-		<td class='fcaption' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_58."</td>
-		<td class='fcaption' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_59."</td>
-		<td class='fcaption' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_60."</td>
+		<td class='fcaption' style='width:1%'></td>
+		<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_25."</td>
+		<td class='fcaption' style='width:64%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
+		<td class='fcaption' style='width:10%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_58."</td>
+		<td class='fcaption' style='width:10%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_59."</td>
+		<td class='fcaption' style='width:10%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_60."</td>
 	</tr>";
 }
 if(!isset($CONTENT_ADMIN_ORDER_TABLE)){
 	$CONTENT_ADMIN_ORDER_TABLE = "
+	{CONTENT_ADMIN_SPACER}
 	<tr>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:left'>{CONTENT_ID}</td>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center'>{CONTENT_CAT_ICON}</td>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:15%'>{CONTENT_AUTHOR}</td>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:50%;'>
-			{CONTENT_LINK_CATEGORY}
-			{CONTENT_MANAGER_PRE}{CONTENT_HEADING} {CONTENT_SUBHEADING} {CONTENT_ADMIN_ORDER_AMOUNT}
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center; vertical-align:top;'>{CONTENT_CAT_ICON}</td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:64%;'>
+			{CONTENT_MANAGER_PRE}{CONTENT_HEADING} {CONTENT_ADMIN_ORDER_AMOUNT}
+			<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
+			<table class='fborder' style='width:98%;'>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_1."</td>
+				<td>{CONTENT_ID}</td>
+			</tr>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_2."</td>
+				<td>{CONTENT_AUTHOR}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_3."</td>
+				<td>{CONTENT_LINK_CATEGORY}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_4."</td>
+				<td>{CONTENT_SUBHEADING}</td>
+			</tr>
+			</table>
+			</div>
 		</td>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:left; white-space:nowrap;'>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_ADMIN_ORDER_CAT}
 			{CONTENT_ADMIN_ORDER_CATALL}
 		</td>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center; white-space:nowrap;'>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_ADMIN_ORDER_UPDOWN}
 		</td>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center; white-space:nowrap;'>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_ADMIN_ORDER_SELECT}
 		</td>
 	</tr>";
@@ -273,7 +351,7 @@ if(!isset($CONTENT_ADMIN_ORDER_TABLE)){
 if(!isset($CONTENT_ADMIN_ORDER_END)){
 	$CONTENT_ADMIN_ORDER_END = "
 	<tr>
-		<td class='fcaption' colspan='5'>&nbsp;</td>
+		<td class='fcaption' colspan='4'>&nbsp;</td>
 		<td class='fcaption' colspan='2' style='text-align:center'>
 			{CONTENT_ADMIN_BUTTON}
 		</td>
@@ -290,29 +368,44 @@ if(!isset($CONTENT_ADMIN_ORDER_CONTENT_START)){
 	<div style='text-align:center'>
 	".$rs -> form_open("post", "{CONTENT_ADMIN_FORM_TARGET}", "orderform")."
 	<table class='fborder' style='".ADMIN_WIDTH."'>
-	<tr><td class='fcaption' colspan='5'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>
 	<tr>
-		<td class='forumheader' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
-		<td class='forumheader' style='width:15%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_10."</td>
-		<td class='forumheader' style='width:70%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
-		<td class='forumheader' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_59."</td>
-		<td class='forumheader' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_60."</td>
+		<td class='fcaption' style='width:1%'></td>
+		<td class='fcaption' style='width:79%; text-align:left; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
+		<td class='fcaption' style='width:10%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_59."</td>
+		<td class='fcaption' style='width:10%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_60."</td>
 	</tr>";
 }
 if(!isset($CONTENT_ADMIN_ORDER_CONTENT_TABLE)){
 	$CONTENT_ADMIN_ORDER_CONTENT_TABLE = "
 	<tr>
-		<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>{CONTENT_ID}</td>
-		<td class='forumheader3' style='width:15%; text-align:left; white-space:nowrap;'>
-			{CONTENT_AUTHOR}
+		<td class='forumheader3' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
+		<td class='forumheader3' style='width:79%; text-align:left;'>
+			{CONTENT_HEADING} ({CONTENT_ORDER})
+			<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
+			<table class='fborder' style='width:98%;'>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_1."</td>
+				<td>{CONTENT_ID}</td>
+			</tr>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_2."</td>
+				<td>{CONTENT_AUTHOR}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_3."</td>
+				<td>{CONTENT_LINK_ITEM}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_4."</td>
+				<td>{CONTENT_SUBHEADING}</td>
+			</tr>
+			</table>
+			</div>
 		</td>
-		<td class='forumheader3' style='width:70%; text-align:left;'>
-			{CONTENT_LINK} {CONTENT_HEADING} ({CONTENT_ORDER})
-		</td>
-		<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
+		<td class='forumheader3' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_ADMIN_ORDER_UPDOWN}
 		</td>
-		<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
+		<td class='forumheader3' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_ADMIN_ORDER_SELECT}
 		</td>
 	</tr>";
@@ -320,7 +413,7 @@ if(!isset($CONTENT_ADMIN_ORDER_CONTENT_TABLE)){
 if(!isset($CONTENT_ADMIN_ORDER_CONTENT_END)){
 	$CONTENT_ADMIN_ORDER_CONTENT_END = "
 	<tr>
-		<td class='fcaption' colspan='3'>&nbsp;</td>
+		<td class='fcaption' colspan='2'>&nbsp;</td>
 		<td class='fcaption' colspan='2' style='text-align:center'>
 			{CONTENT_ADMIN_BUTTON}
 		</td>
@@ -352,21 +445,40 @@ if(!isset($CONTENT_ADMIN_CONTENT_LIST_START)){
 	".$rs -> form_open("post", e_SELF."?".e_QUERY, "deletecontentform","","", "")."
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
+	<td class='fcaption' style='width:1%'></td>
 	<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
-	<td class='fcaption' style='width:10%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_10."</td>
-	<td class='fcaption' style='width:70%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
+	<td class='fcaption' style='width:84%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
 	<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
 	</tr>";
 }
 if(!isset($CONTENT_ADMIN_CONTENT_LIST_TABLE)){
 	$CONTENT_ADMIN_CONTENT_LIST_TABLE = "
 	<tr>
-	<td class='forumheader3' style='width:5%; text-align:center'>{CONTENT_ID}</td>
-	<td class='forumheader3' style='width:5%; text-align:center'>{CONTENT_ICON}</td>
-	<td class='forumheader3' style='width:10%; text-align:left'>{CONTENT_AUTHOR}</td>
-	<td class='forumheader3' style='width:70%; text-align:left;'>
-		{CONTENT_LINK_ITEM} {CONTENT_HEADING} {CONTENT_SUBHEADING}</td>
+	<td class='forumheader3' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
+	<td class='forumheader3' style='width:5%; text-align:center; vertical-align:top;'>{CONTENT_ICON}</td>
+	<td class='forumheader3' style='width:84%; text-align:left;'>
+		{CONTENT_HEADING}
+		<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
+		<table class='fborder' style='width:98%;'>
+		<tr>
+			<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_1."</td>
+			<td>{CONTENT_ID}</td>
+		</tr>
+		<tr>
+			<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_2."</td>
+			<td>{CONTENT_AUTHOR}</td>
+		</tr>
+		<tr>
+			<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_3."</td>
+			<td>{CONTENT_LINK_ITEM}</td>
+		</tr>
+		<tr>
+			<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_4."</td>
+			<td>{CONTENT_SUBHEADING}</td>
+		</tr>
+		</table>
+		</div>
+	</td>
 	<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap; vertical-align:top;'>
 		{CONTENT_ADMIN_OPTIONS}
 	</td>

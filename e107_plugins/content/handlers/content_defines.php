@@ -29,5 +29,6 @@ if (!defined('CONTENT_ICON_CONTENTMANAGER')) { define("CONTENT_ICON_CONTENTMANAG
 if (!defined('CONTENT_ICON_CONTENTMANAGER_SMALL')) { define("CONTENT_ICON_CONTENTMANAGER_SMALL", "<img src='".$plugindir."images/manager_16.png' alt='".CONTENT_ICON_LAN_13."' title='".CONTENT_ICON_LAN_13."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_ORDER_UP')) { define("CONTENT_ICON_ORDER_UP", "<img src='".$imagedir."up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' title='".CONTENT_ADMIN_ITEM_LAN_63."' />"); }
 if (!defined('CONTENT_ICON_ORDER_DOWN')) { define("CONTENT_ICON_ORDER_DOWN", "<img src='".$imagedir."down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' title='".CONTENT_ADMIN_ITEM_LAN_64."' />"); }
+if (!defined('CONTENT_ICON_DETAILS')) { define("CONTENT_ICON_DETAILS", "<img src='".$imagedir."downloads_16.png' alt='".CONTENT_ICON_LAN_16."' title='".CONTENT_ICON_LAN_16."' style='border:0; cursor:pointer;' />"); }
 
 ?>

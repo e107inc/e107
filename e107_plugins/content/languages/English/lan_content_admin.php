@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-14 11:59:11 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -19,6 +19,11 @@ define("CONTENT_PLUGIN_LAN_5", "Content");
 define("CONTENT_PLUGIN_LAN_6", "Content Management Plugin table structure updated");
 
 define("CONTENT_LATEST_LAN_1", "Submitted Content Items:");
+
+define("CONTENT_TEMPLATE_LAN_1", "id:");
+define("CONTENT_TEMPLATE_LAN_2", "author:");
+define("CONTENT_TEMPLATE_LAN_3", "view item:");
+define("CONTENT_TEMPLATE_LAN_4", "subheading:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "create content category");
 define("CONTENT_ADMIN_CAT_LAN_1", "edit content category");
