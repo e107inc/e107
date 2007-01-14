@@ -1039,8 +1039,8 @@ SC_END
 SC_BEGIN CONTENT_CAT_ICON
 global $row, $content_pref, $tp;
 $content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-//$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-$caticon = $content_cat_icon_path_large.$row['content_icon'];
+$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
+$caticon = $content_cat_icon_path_small.$row['content_icon'];
 return ($row['content_icon'] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;");
 SC_END
 
@@ -1062,8 +1062,7 @@ SC_END
 
 SC_BEGIN CONTENT_SUBHEADING
 global $row, $tp;
-$row['content_subheading']	= $tp->toHTML($row['content_subheading'], TRUE, "");
-return ($row['content_subheading'] ? "[".$row['content_subheading']."]" : "");
+return $tp->toHTML($row['content_subheading'], TRUE, "");
 SC_END
 
 SC_BEGIN CONTENT_LINK_ITEM
@@ -1151,7 +1150,7 @@ SC_END
 
 SC_BEGIN CONTENT_ADMIN_SPACER
 global $CONTENT_ADMIN_SPACER;
-return $CONTENT_ADMIN_SPACER;
+return ($CONTENT_ADMIN_SPACER ? " " : "");
 SC_END
 
 SC_BEGIN CONTENT_ADMIN_FORM_TARGET

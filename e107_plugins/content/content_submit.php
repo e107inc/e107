@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2006-12-07 12:57:43 $
-|		$Author: mrpete $
+|		$Revision: 1.3 $
+|		$Date: 2007-01-14 11:59:11 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -41,8 +41,14 @@ $eArrayStorage = new ArrayData();
 $e_wysiwyg	= "content_text";
 global $tp;
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
+
+if(is_readable(e_THEME.$pref['sitetheme']."/content/content_admin_template.php")){
+	require_once(e_THEME.$pref['sitetheme']."/content/content_admin_template.php");
+}else{
+	require_once(e_PLUGIN."content/templates/content_admin_template.php");
+}
 
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);

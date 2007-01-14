@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2007-01-13 23:18:39 $
+|		$Revision: 1.4 $
+|		$Date: 2007-01-14 11:59:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1008,7 +1008,7 @@ class contentform{
 
 
 		function manage_cat(){
-			global $qs, $sql, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $stylespacer, $eArrayStorage, $CONTENT_ADMIN_CATEGORY_START, $CONTENT_ADMIN_CATEGORY_TABLE, $CONTENT_ADMIN_CATEGORY_END, $CONTENT_ADMIN_OPTIONS, $row, $catarray, $catid, $content_pref;
+			global $qs, $sql, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $stylespacer, $eArrayStorage, $CONTENT_ADMIN_CATEGORY_START, $CONTENT_ADMIN_CATEGORY_TABLE, $CONTENT_ADMIN_CATEGORY_END, $CONTENT_ADMIN_OPTIONS, $row, $catarray, $catid, $content_pref, $CONTENT_ADMIN_SPACER;
 
 			$catarray	= $aa -> getCategoryTree("", "", FALSE);
 			$array		= array_keys($catarray);
@@ -1028,6 +1028,7 @@ class contentform{
 						$content_pref					= $aa -> getContentPref($catarray[$catid][0]);
 						$delete_heading					= str_replace("&#39;", "\'", $row['content_heading']);
 
+						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
 						$CONTENT_ADMIN_OPTIONS = "<a href='".e_SELF."?cat.edit.".$catid."'>".CONTENT_ICON_EDIT."</a>
 						<input type='image' title='".CONTENT_ICON_LAN_1."' name='delete[cat_{$catid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$catid." : ".$delete_heading."]\\n\\n")."')\"/>";
 
@@ -1041,7 +1042,7 @@ class contentform{
 		}
 
 		function manager(){
-			global $qs, $sql, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $stylespacer, $eArrayStorage, $CONTENT_ADMIN_MANAGER_START, $CONTENT_ADMIN_MANAGER_TABLE, $CONTENT_ADMIN_MANAGER_END, $catarray, $catid, $row, $pre;
+			global $qs, $sql, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $content_pref, $stylespacer, $eArrayStorage, $CONTENT_ADMIN_MANAGER_START, $CONTENT_ADMIN_MANAGER_TABLE, $CONTENT_ADMIN_MANAGER_END, $catarray, $catid, $row, $pre, $CONTENT_ADMIN_SPACER;
 
 			$catarray	= $aa -> getCategoryTree("", "", FALSE);
 			$array		= array_keys($catarray);
@@ -1057,6 +1058,8 @@ class contentform{
 						$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
 					}else{
 						$row = $sql -> db_Fetch();
+						$content_pref = $aa -> getContentPref($catarray[$catid][0]);
+						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
 						$text .= $tp -> parseTemplate($CONTENT_ADMIN_MANAGER_TABLE, FALSE, $content_shortcodes);
 					}
 				}
@@ -1325,9 +1328,9 @@ class contentform{
 
 
 		function show_order(){
-			global $qs, $sql, $sql2, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $content_pref, $CONTENT_ADMIN_ORDER_START, $CONTENT_ADMIN_ORDER_TABLE, $CONTENT_ADMIN_ORDER_END, $CONTENT_ADMIN_ORDER_UPDOWN, $CONTENT_ADMIN_ORDER_SELECT, $stylespacer, $catarray, $catid, $CONTENT_ADMIN_ORDER_AMOUNT, $CONTENT_ADMIN_ORDER_CAT, $CONTENT_ADMIN_ORDER_CATALL, $CONTENT_ADMIN_BUTTON, $row;
+			global $qs, $sql, $sql2, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $content_pref, $CONTENT_ADMIN_ORDER_START, $CONTENT_ADMIN_ORDER_TABLE, $CONTENT_ADMIN_ORDER_END, $CONTENT_ADMIN_ORDER_UPDOWN, $CONTENT_ADMIN_ORDER_SELECT, $stylespacer, $catarray, $catid, $CONTENT_ADMIN_ORDER_AMOUNT, $CONTENT_ADMIN_ORDER_CAT, $CONTENT_ADMIN_ORDER_CATALL, $CONTENT_ADMIN_BUTTON, $row, $CONTENT_ADMIN_SPACER;
 
-			if(!getperms("0")){ header("location:".e_SELF); exit; }
+			//if(!getperms("0")){ header("location:".e_SELF); exit; }
 
 			$catarray	= $aa -> getCategoryTree("", "", FALSE);
 			$array		= array_keys($catarray);
@@ -1365,9 +1368,9 @@ class contentform{
 						//count items in category
 						if(!is_object($sql2)){ $sql2 = new db; }
 						$n = $sql2 -> db_Count($plugintable, "(*)", "WHERE content_parent='".intval($catid)."' AND content_refer != 'sa' ");
-						if($n > 1){
+						if($n > 1 || $row['content_parent'] == 0){
 							$CONTENT_ADMIN_ORDER_CAT = "<a href='".e_SELF."?order.".$catarray[$catid][0].".".$catid."'>".CONTENT_ICON_ORDERCAT."</a>";
-							$CONTENT_ADMIN_ORDER_CATALL = ($row['content_parent'] == 0 ? "<a href='".e_SELF."?order.".$catid."'>".CONTENT_ICON_ORDERALL."</a>" : "");
+							$CONTENT_ADMIN_ORDER_CATALL = ($row['content_parent'] == 0 ? "<a href='".e_SELF."?order.".$catid."'>".CONTENT_ICON_ORDERALL."</a>" : "&nbsp;&nbsp;&nbsp;&nbsp;");
 						}
 						$CONTENT_ADMIN_ORDER_AMOUNT = "(".($n == 1 ? $n." ".CONTENT_ADMIN_CAT_LAN_56 : $n." ".CONTENT_ADMIN_CAT_LAN_57).")";
 
@@ -1393,6 +1396,7 @@ class contentform{
 						$sel .= "</select>";
 						$CONTENT_ADMIN_ORDER_SELECT = $sel;
 
+						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
 						$text .= $tp -> parseTemplate($CONTENT_ADMIN_ORDER_TABLE, FALSE, $content_shortcodes);
 					}
 				}
@@ -1442,7 +1446,7 @@ class contentform{
 						if($ccheck != 1 && $ccheck != 0){
 							$up = "<a href='".e_SELF."?".$qrystring.".inc.".$cid."-".$corder."'>".CONTENT_ICON_ORDER_UP."</a> ";
 						}else{
-							$up = "&nbsp;&nbsp;&nbsp;";
+							$up = "&nbsp;&nbsp;&nbsp;&nbsp;";
 						}
 						//down arrow
 						if($ccheck != $content_total){

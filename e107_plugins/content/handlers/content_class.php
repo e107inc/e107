@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2007-01-13 22:33:03 $
+|		$Revision: 1.4 $
+|		$Date: 2007-01-14 11:59:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -507,8 +507,7 @@ class content{
 
 		function getCategoryTree($id, $parent, $classcheck=TRUE){
 			//id	:	content_parent of an item
-			global $plugintable, $datequery;
-			global $agc;
+			global $plugintable, $datequery, $agc;
 
 			if($parent){
 				$agc = "";
@@ -670,8 +669,16 @@ class content{
 			global $sqlcountitemsincat, $plugintable, $datequery;
 			//$id	:	category content_id
 
+			$cachestring = md5($id."_".$datequery."_".e_CLASS_REGEXP);
+			if($ret = getcachedvars("content_countcatitems_{$cachestring}"))
+			{
+				return $ret;
+			}
+
 			if(!is_object($sqlcountitemsincat)){ $sqlcountitemsincat = new db; }
 			$n = $sqlcountitemsincat -> db_Count($plugintable, "(*)", "WHERE content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent='".intval($id)."' AND content_refer != 'sa' ".$datequery." ");
+
+			cachevars("content_countcatitems_{$cachestring}", $n);
 
 			return $n;
 		}
@@ -792,6 +799,12 @@ class content{
 		function getAuthor($content_author) {
 			global $sql, $plugintable, $datequery;
 
+			$cachestring = md5($content_author);
+			if($ret = getcachedvars("content_getauthor_{$cachestring}"))
+			{
+				return $ret;
+			}
+
 			if(is_numeric($content_author)){
 				if(!$sql -> db_Select("user", "user_id, user_name, user_email", "user_id=$content_author")){
 					$author_id = "0";
@@ -814,6 +827,7 @@ class content{
 				}
 				$getauthor = array($author_id, $author_name, $author_email, $content_author);
 			}
+			cachevars("content_getauthor_{$cachestring}", $getauthor);
 			return $getauthor;
 		}
 
@@ -834,7 +848,8 @@ class content{
 				}
 				$mainparent = $this -> getMainParent( $newid );
 			}
-			return ($mainparent ? $mainparent : "0");
+			$val = ($mainparent ? $mainparent : "0");
+			return $val;
 		}
 
 
@@ -1034,15 +1049,11 @@ class content{
 					if(isset($content_pref["content_{$mode}_authoremail"]) && $authordetails[2]){
 						if($authordetails[0] == "0"){
 							if(isset($content_pref["content_{$mode}_authoremail_nonmember"]) && $content_pref["content_{$mode}_authoremail_nonmember"] && strpos($authordetails[2], "@") ){
-								//$authorinfo = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-								
 								$authorinfo = preg_replace("#([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\"; return true;' onmouseout='window.status=\"\";return true;'>".$authordetails[1]."</a>", $authordetails[2]);
 							}else{
 								$authorinfo = $authordetails[1];
 							}
 						}else{
-							//$authorinfo = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-
 							$authorinfo = preg_replace("#([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\"; return true;' onmouseout='window.status=\"\";return true;'>".$authordetails[1]."</a>", $authordetails[2]);
 						}
 					}else{
@@ -1060,6 +1071,7 @@ class content{
 		}
 
 
+		/*
 		//admin
 		function popupHelp($text, $image="", $width="320", $title=""){
 			//$image	:	full path to the image you want to show on screen (uses a default doc image)
@@ -1079,6 +1091,7 @@ class content{
 
 			return $popup;
 		}
+		*/
 
 
 
