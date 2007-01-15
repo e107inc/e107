@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-15 14:00:21 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-15 14:17:15 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -321,6 +321,8 @@ define("CONTENT_ADMIN_MENU_LAN_20", "Top Rated Page");
 define("CONTENT_ADMIN_MENU_LAN_21", "Pages");
 define("CONTENT_ADMIN_MENU_LAN_22", "Top Score Page");
 define("CONTENT_ADMIN_MENU_LAN_23", "Admin : Create Category");
+define("CONTENT_ADMIN_MENU_LAN_24", "Breadcrumb");
+define("CONTENT_ADMIN_MENU_LAN_25", "Navigator / Search / Order");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Are you sure you want to delete this category?");
 define("CONTENT_ADMIN_JS_LAN_1", "Are you sure you want to delete this content?");

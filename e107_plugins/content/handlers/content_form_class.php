@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2007-01-15 14:00:21 $
+|		$Revision: 1.7 $
+|		$Date: 2007-01-15 14:17:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1923,105 +1923,6 @@ class contentform{
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
-			//content_breadcrumb_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_26;
-			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
-			".$rs -> form_checkbox("content_breadcrumb_catall", 1, ($content_pref['content_breadcrumb_catall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_27."<br />
-			".$rs -> form_checkbox("content_breadcrumb_cat", 1, ($content_pref['content_breadcrumb_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
-			".$rs -> form_checkbox("content_breadcrumb_authorall", 1, ($content_pref['content_breadcrumb_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
-			".$rs -> form_checkbox("content_breadcrumb_author", 1, ($content_pref['content_breadcrumb_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
-			".$rs -> form_checkbox("content_breadcrumb_recent", 1, ($content_pref['content_breadcrumb_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
-			</td><td style='white-space:nowrap; vertical-align:top;'>
-			".$rs -> form_checkbox("content_breadcrumb_item", 1, ($content_pref['content_breadcrumb_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
-			".$rs -> form_checkbox("content_breadcrumb_archive", 1, ($content_pref['content_breadcrumb_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />
-			".$rs -> form_checkbox("content_breadcrumb_top", 1, ($content_pref['content_breadcrumb_top'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_33."<br />
-			".$rs -> form_checkbox("content_breadcrumb_score", 1, ($content_pref['content_breadcrumb_score'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_35."<br />
-			</td></tr></table>";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_breadcrumb_seperator
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_36;
-			$TOPIC_FIELD = $rs -> form_text("content_breadcrumb_seperator", 10, $content_pref['content_breadcrumb_seperator'], 3);
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_breadcrumb_base
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_173;
-			$TOPIC_FIELD = "
-			".$rs -> form_radio("content_breadcrumb_base", "1", ($content_pref['content_breadcrumb_base'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
-			".$rs -> form_radio("content_breadcrumb_base", "0", ($content_pref['content_breadcrumb_base'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_breadcrumb_self
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_174;
-			$TOPIC_FIELD = "
-			".$rs -> form_radio("content_breadcrumb_self", "1", ($content_pref['content_breadcrumb_self'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
-			".$rs -> form_radio("content_breadcrumb_self", "0", ($content_pref['content_breadcrumb_self'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_breadcrumb_rendertype_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_37;
-			$TOPIC_FIELD = "
-			".$rs -> form_select_open("content_breadcrumb_rendertype")."
-			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_39, ($content_pref['content_breadcrumb_rendertype'] == "1" ? "1" : "0"), "1")."
-			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_40, ($content_pref['content_breadcrumb_rendertype'] == "2" ? "1" : "0"), "2")."
-			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_41, ($content_pref['content_breadcrumb_rendertype'] == "3" ? "1" : "0"), "3")."
-			".$rs -> form_select_close();
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_navigator_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_43;
-			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
-			".$rs -> form_checkbox("content_navigator_catall", 1, ($content_pref['content_navigator_catall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_27."<br />
-			".$rs -> form_checkbox("content_navigator_cat", 1, ($content_pref['content_navigator_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
-			".$rs -> form_checkbox("content_navigator_authorall", 1, ($content_pref['content_navigator_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
-			".$rs -> form_checkbox("content_navigator_author", 1, ($content_pref['content_navigator_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
-			".$rs -> form_checkbox("content_navigator_recent", 1, ($content_pref['content_navigator_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
-			</td><td style='white-space:nowrap; vertical-align:top;'>
-			".$rs -> form_checkbox("content_navigator_item", 1, ($content_pref['content_navigator_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
-			".$rs -> form_checkbox("content_navigator_archive", 1, ($content_pref['content_navigator_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />
-			".$rs -> form_checkbox("content_navigator_top", 1, ($content_pref['content_navigator_top'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_33."<br />
-			".$rs -> form_checkbox("content_navigator_score", 1, ($content_pref['content_navigator_score'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_35."<br />
-			</td></tr></table>";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_search_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_44;
-			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
-			".$rs -> form_checkbox("content_search_catall", 1, ($content_pref['content_search_catall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_27."<br />
-			".$rs -> form_checkbox("content_search_cat", 1, ($content_pref['content_search_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
-			".$rs -> form_checkbox("content_search_authorall", 1, ($content_pref['content_search_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
-			".$rs -> form_checkbox("content_search_author", 1, ($content_pref['content_search_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
-			".$rs -> form_checkbox("content_search_recent", 1, ($content_pref['content_search_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
-			</td><td style='white-space:nowrap; vertical-align:top;'>
-			".$rs -> form_checkbox("content_search_item", 1, ($content_pref['content_search_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
-			".$rs -> form_checkbox("content_search_archive", 1, ($content_pref['content_search_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />
-			".$rs -> form_checkbox("content_search_top", 1, ($content_pref['content_search_top'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_33."<br />
-			".$rs -> form_checkbox("content_search_score", 1, ($content_pref['content_search_score'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_35."<br />
-			</td></tr></table>";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_ordering_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_46;
-			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
-			".$rs -> form_checkbox("content_ordering_cat", 1, ($content_pref['content_ordering_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
-			".$rs -> form_checkbox("content_ordering_authorall", 1, ($content_pref['content_ordering_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
-			".$rs -> form_checkbox("content_ordering_author", 1, ($content_pref['content_ordering_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
-			</td><td style='white-space:nowrap; vertical-align:top;'>
-			".$rs -> form_checkbox("content_ordering_recent", 1, ($content_pref['content_ordering_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
-			".$rs -> form_checkbox("content_ordering_item", 1, ($content_pref['content_ordering_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
-			".$rs -> form_checkbox("content_ordering_archive", 1, ($content_pref['content_ordering_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />			</td></tr></table>
-			";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_searchmenu_rendertype_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_48;
-			$TOPIC_FIELD = "
-			".$rs -> form_select_open("content_searchmenu_rendertype")."
-			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_39, ($content_pref['content_searchmenu_rendertype'] == "1" ? "1" : "0"), "1")."
-			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_40, ($content_pref['content_searchmenu_rendertype'] == "2" ? "1" : "0"), "2")."
-			".$rs -> form_select_close();
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
 			//content_nextprev_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_49;
 			$TOPIC_FIELD = "
@@ -2077,6 +1978,122 @@ class contentform{
 			$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_60;
 			$TOPIC_FIELD = $rs -> form_text("content_upload_icon_size", 10, $content_pref['content_upload_icon_size'], 3)." ".CONTENT_ADMIN_OPT_LAN_61;
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+			//spacer
+			$text .= "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
+
+			//caption
+			$TOPIC_CAPTION = CONTENT_ADMIN_MENU_LAN_24;
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
+
+			//content_breadcrumb_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_26;
+			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
+			".$rs -> form_checkbox("content_breadcrumb_catall", 1, ($content_pref['content_breadcrumb_catall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_27."<br />
+			".$rs -> form_checkbox("content_breadcrumb_cat", 1, ($content_pref['content_breadcrumb_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
+			".$rs -> form_checkbox("content_breadcrumb_authorall", 1, ($content_pref['content_breadcrumb_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
+			".$rs -> form_checkbox("content_breadcrumb_author", 1, ($content_pref['content_breadcrumb_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
+			".$rs -> form_checkbox("content_breadcrumb_recent", 1, ($content_pref['content_breadcrumb_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
+			</td><td style='white-space:nowrap; vertical-align:top;'>
+			".$rs -> form_checkbox("content_breadcrumb_item", 1, ($content_pref['content_breadcrumb_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
+			".$rs -> form_checkbox("content_breadcrumb_archive", 1, ($content_pref['content_breadcrumb_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />
+			".$rs -> form_checkbox("content_breadcrumb_top", 1, ($content_pref['content_breadcrumb_top'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_33."<br />
+			".$rs -> form_checkbox("content_breadcrumb_score", 1, ($content_pref['content_breadcrumb_score'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_35."<br />
+			</td></tr></table>";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_breadcrumb_seperator
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_36;
+			$TOPIC_FIELD = $rs -> form_text("content_breadcrumb_seperator", 10, $content_pref['content_breadcrumb_seperator'], 3);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_breadcrumb_base
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_173;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_breadcrumb_base", "1", ($content_pref['content_breadcrumb_base'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_breadcrumb_base", "0", ($content_pref['content_breadcrumb_base'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_breadcrumb_self
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_174;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_breadcrumb_self", "1", ($content_pref['content_breadcrumb_self'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_breadcrumb_self", "0", ($content_pref['content_breadcrumb_self'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_breadcrumb_rendertype_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_37;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_breadcrumb_rendertype")."
+			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_39, ($content_pref['content_breadcrumb_rendertype'] == "1" ? "1" : "0"), "1")."
+			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_40, ($content_pref['content_breadcrumb_rendertype'] == "2" ? "1" : "0"), "2")."
+			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_41, ($content_pref['content_breadcrumb_rendertype'] == "3" ? "1" : "0"), "3")."
+			".$rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//spacer
+			$text .= "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
+
+			//caption
+			$TOPIC_CAPTION = CONTENT_ADMIN_MENU_LAN_25;
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
+
+			//content_navigator_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_43;
+			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
+			".$rs -> form_checkbox("content_navigator_catall", 1, ($content_pref['content_navigator_catall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_27."<br />
+			".$rs -> form_checkbox("content_navigator_cat", 1, ($content_pref['content_navigator_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
+			".$rs -> form_checkbox("content_navigator_authorall", 1, ($content_pref['content_navigator_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
+			".$rs -> form_checkbox("content_navigator_author", 1, ($content_pref['content_navigator_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
+			".$rs -> form_checkbox("content_navigator_recent", 1, ($content_pref['content_navigator_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
+			</td><td style='white-space:nowrap; vertical-align:top;'>
+			".$rs -> form_checkbox("content_navigator_item", 1, ($content_pref['content_navigator_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
+			".$rs -> form_checkbox("content_navigator_archive", 1, ($content_pref['content_navigator_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />
+			".$rs -> form_checkbox("content_navigator_top", 1, ($content_pref['content_navigator_top'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_33."<br />
+			".$rs -> form_checkbox("content_navigator_score", 1, ($content_pref['content_navigator_score'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_35."<br />
+			</td></tr></table>";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_search_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_44;
+			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
+			".$rs -> form_checkbox("content_search_catall", 1, ($content_pref['content_search_catall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_27."<br />
+			".$rs -> form_checkbox("content_search_cat", 1, ($content_pref['content_search_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
+			".$rs -> form_checkbox("content_search_authorall", 1, ($content_pref['content_search_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
+			".$rs -> form_checkbox("content_search_author", 1, ($content_pref['content_search_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
+			".$rs -> form_checkbox("content_search_recent", 1, ($content_pref['content_search_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
+			</td><td style='white-space:nowrap; vertical-align:top;'>
+			".$rs -> form_checkbox("content_search_item", 1, ($content_pref['content_search_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
+			".$rs -> form_checkbox("content_search_archive", 1, ($content_pref['content_search_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />
+			".$rs -> form_checkbox("content_search_top", 1, ($content_pref['content_search_top'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_33."<br />
+			".$rs -> form_checkbox("content_search_score", 1, ($content_pref['content_search_score'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_35."<br />
+			</td></tr></table>";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_ordering_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_46;
+			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
+			".$rs -> form_checkbox("content_ordering_cat", 1, ($content_pref['content_ordering_cat'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_28."<br />
+			".$rs -> form_checkbox("content_ordering_authorall", 1, ($content_pref['content_ordering_authorall'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_29."<br />
+			".$rs -> form_checkbox("content_ordering_author", 1, ($content_pref['content_ordering_author'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_30."<br />
+			</td><td style='white-space:nowrap; vertical-align:top;'>
+			".$rs -> form_checkbox("content_ordering_recent", 1, ($content_pref['content_ordering_recent'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_31."<br />
+			".$rs -> form_checkbox("content_ordering_item", 1, ($content_pref['content_ordering_item'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_32."<br />
+			".$rs -> form_checkbox("content_ordering_archive", 1, ($content_pref['content_ordering_archive'] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_34."<br />			</td></tr></table>
+			";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_searchmenu_rendertype_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_48;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_searchmenu_rendertype")."
+			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_39, ($content_pref['content_searchmenu_rendertype'] == "1" ? "1" : "0"), "1")."
+			".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_40, ($content_pref['content_searchmenu_rendertype'] == "2" ? "1" : "0"), "2")."
+			".$rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//spacer
+			$text .= "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
 
 			$text .= $TOPIC_TABLE_END;
 
