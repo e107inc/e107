@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-14 11:59:11 $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-15 14:00:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -708,4 +708,5 @@ define("CONTENT_ADMIN_OPT_LAN_171", "amount of levels");
 define("CONTENT_ADMIN_OPT_LAN_172", "numeric value to show that amount of levels of subcategories of the category tree. leave blank to show all levels.");
 define("CONTENT_ADMIN_OPT_LAN_173", "include 'home' in the breadcrumb");
 define("CONTENT_ADMIN_OPT_LAN_174", "include the content start page in the breadcrumb");
+define("CONTENT_ADMIN_OPT_LAN_175", "show menu only on content pages of this top level category?");
 ?>
