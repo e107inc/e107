@@ -136,7 +136,7 @@ if(isset($linkspage_pref["link_menu_recent"]) && $linkspage_pref["link_menu_rece
 		$text .= "<br />".$cap."<br />";
 		while($row = $sql -> db_Fetch()){
 			
-			$append = $lc -> parse_link_append($row['link_open'], $row['link_id']);
+			$append = $lc -> parse_link_append($row);
 
 			$heading = $append.$tp->toHTML($row['link_name'],TRUE,"")."</a>";
 
