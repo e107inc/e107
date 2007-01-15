@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.39 $
-|    $Date: 2006-11-30 00:24:42 $
-|    $Author: e107coders $
+|    $Revision: 1.40 $
+|    $Date: 2007-01-15 10:41:47 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -209,9 +209,7 @@ class linkclass {
 
     function parse_link_append($rowl){
 
-        global $tp;
-
-        global $linkspage_pref, $rowl;
+        global $tp, $linkspage_pref;
         if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
             $link_open_type = $rowl['link_open'];
         }else{
