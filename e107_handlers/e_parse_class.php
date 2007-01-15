@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.179 $
-|     $Date: 2006-12-26 14:51:45 $
-|     $Author: mrpete $
+|     $Revision: 1.180 $
+|     $Date: 2007-01-15 20:29:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -633,7 +633,7 @@ class e_parse
 		}
 
 	  	$text = $this->replaceConstants($text,"full");
-    	$text = $this->toHTML($text,TRUE,"parse_sc");
+    	$text = $this->toHTML($text,TRUE,"parse_sc, no_make_clickable");
         return $text;
 	}
 
