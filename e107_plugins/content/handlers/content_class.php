@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2007-01-14 14:18:09 $
+|		$Revision: 1.6 $
+|		$Date: 2007-01-15 14:00:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -308,6 +308,7 @@ class content{
 			$content_pref['content_menu_caption'] = CONTENT_MENU_LAN_0;		//caption of menu
 			$content_pref['content_menu_search'] = "0";						//show search keyword
 			$content_pref['content_menu_sort'] = "0";						//show sorting methods
+			$content_pref["content_menu_visibilitycheck"] = '0';			//show menu only on content pages of this top level category?
 			$content_pref['content_menu_links'] = "1";						//show content links
 			$content_pref['content_menu_links_dropdown'] = "0";				//rendertype of content links (in dropdown or as normal links)
 			$content_pref['content_menu_links_icon'] = "0";					//define icon for content links (only with normallinks)
@@ -473,7 +474,7 @@ class content{
 					}
 				}
 			}
-print_a($_POST);
+
 			/*
 			//create array of custom preset tags
 			foreach($_POST['content_custom_preset_key'] as $ck => $cv){
@@ -1318,7 +1319,47 @@ print_a($_POST);
 			$data .= "\$content_icon_path				= \$tp -> replaceConstants(\$content_pref[\"content_icon_path\"]);\n";
 			$data .= "\$content_cat_icon_path_small	= \$tp -> replaceConstants(\$content_pref[\"content_cat_icon_path_small\"]);\n";
 			$data .= "\n";
-			$data .= "	\$break = FALSE;\n";
+			$data .= "//get category array\n";
+			$data .= "\$array = \$aa -> getCategoryTree(\"\", intval(\$menutypeid), TRUE);\n";
+			$data .= "\n";
+			$data .= "// menu visibility --------------------------------------------------\n";
+			$data .= "if(isset(\$content_pref[\"content_menu_visibilitycheck\"]) && \$content_pref[\"content_menu_visibilitycheck\"]){\n";
+			$data .= "	\$check='';\n";
+			$data .= "	//if url contains plugin/content\n";
+			$data .= "	if(strpos(e_SELF, e_PLUGIN_ABS.\"content/\")!==FALSE){\n";
+			$data .= "		//if current page is content.php\n";
+			$data .= "		if(e_PAGE == 'content.php'){\n";
+			$data .= "			if(e_QUERY){\n";
+			$data .= "				\$qs=explode(\".\",e_QUERY);\n";
+			$data .= "				if(isset(\$qs[0]) && in_array(\$qs[0], array('recent','cat','top','score','author','list','content')) ){\n";
+			$data .= "					if(isset(\$qs[1]) && is_numeric(\$qs[1])){\n";
+			$data .= "						\$check = intval(\$qs[1]);\n";
+			$data .= "					}elseif(isset(\$qs[1]) && \$qs[1]=='list'){\n";
+			$data .= "						if(isset(\$qs[2]) && is_numeric(\$qs[2])){\n";
+			$data .= "							\$check = intval(\$qs[2]);\n";
+			$data .= "						}\n";
+			$data .= "					}\n";
+			$data .= "					//content item\n";
+			$data .= "					if(isset(\$qs[0]) && \$qs[0]=='content' && is_numeric(\$qs[1])){\n";
+			$data .= "						if(\$sql -> db_Select('pcontent', \"content_parent\", \" content_id='\".intval(\$check).\"' \")){\n";
+			$data .= "							\$row = \$sql -> db_Fetch();\n";
+			$data .= "							\$check = \$row['content_parent'];\n";
+			$data .= "						}\n";
+			$data .= "					}\n";
+			$data .= "				}\n";
+			$data .= "			}\n";
+			$data .= "		}\n";
+			$data .= "	}\n";
+			$data .= "	if(is_numeric(\$check) && in_array(\$check, array_keys(\$array)) ){\n";
+			$data .= "		//continue\n";
+			$data .= "	}else{\n";
+			$data .= "		//do not show menu, so return empty\n";
+			$data .= "		return;\n";
+			$data .= "	}\n";
+			$data .= "}\n";
+			$data .= "// end menu visibility --------------------------------------------------\n";
+
+			$data .= "\$break = FALSE;\n";
 			$data .= "//##### SEARCH SELECT ORDER --------------------------------------------------\n";
 			$data .= "//show search box\n";
 			$data .= "if(\$content_pref[\"content_menu_search\"]){\n";
@@ -1374,9 +1415,6 @@ print_a($_POST);
 			$data .= "	}\n";
 			$data .= "	\$text .= \"<br />\";\n";
 			$data .= "}\n";
-			$data .= "\n";
-			$data .= "//get category array\n";
-			$data .= "\$array = \$aa -> getCategoryTree(\"\", intval(\$menutypeid), TRUE);\n";
 			$data .= "\n";
 			$data .= "//##### CATEGORY LIST --------------------------------------------------\n";
 			$data .= "if(!\$content_pref[\"content_menu_cat_dropdown\"]){\n";

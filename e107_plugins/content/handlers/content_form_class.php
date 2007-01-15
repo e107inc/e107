@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2007-01-14 14:18:10 $
+|		$Revision: 1.6 $
+|		$Date: 2007-01-15 14:00:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2730,6 +2730,16 @@ class contentform{
 			".$rs -> form_radio("content_menu_sort", "0", ($content_pref['content_menu_sort'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+
+			//content_menu_visibilitycheck
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_175;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_menu_visibilitycheck", "1", ($content_pref['content_menu_visibilitycheck'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_menu_visibilitycheck", "0", ($content_pref['content_menu_visibilitycheck'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."
+			";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
 
 			$text .= $TOPIC_ROW_SPACER;
 
