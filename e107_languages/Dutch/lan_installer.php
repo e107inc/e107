@@ -121,4 +121,13 @@ define("LANINS_084", "De installer kon geen verbinding maken met de database");
 define("LANINS_085", "De installer kon deze database niet vinden:");
 define("LANINS_086", "Admin gebruikersnaam, Admin wachtwoord en Admin e-mail adres zijn <b>verplichte</b> velden. Ga terug naar de vorige pagina en controleer of de informatie goed is ingevuld.");
 
+define("LANINS_087", "Div");
+define("LANINS_088", "Home");
+define("LANINS_089", "Downloads");
+define("LANINS_090", "Leden");
+define("LANINS_091", "Aanmelden nieuws");
+define("LANINS_092", "Contact");
+define("LANINS_093", "Verleent toegang to persoonlijke menu's");
+define("LANINS_094", "Voorbeeld besloten forum klasse");
+define("LANINS_095", "Integriteitscontrole");
 ?>

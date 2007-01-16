@@ -35,4 +35,7 @@ define("EMOLAN_18", "hernoem de onderstaande objecten, zodat ze geen spaties bev
 define("EMOLAN_19", "Naam");
 define("EMOLAN_20", "Locatie");
 define("EMOLAN_21", "Fout");
+define("EMOLAN_22", "Nieuw emote pak gevonden:");
+define("EMOLAN_23", "Nieuw emote xml pak gevonden:");
+define("EMOLAN_24", "Nieuw emote php gevonden:");
 ?>

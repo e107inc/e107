@@ -34,6 +34,7 @@ define("DOWLAN_21", "Actief?");
 define("DOWLAN_24", "Bijwerken download");
 define("DOWLAN_25", "Plaats download");
 define("DOWLAN_27", "Download");
+define("DOWLAN_28", "Geen");
 define("DOWLAN_29", "Downloads hoofdpagina");
 define("DOWLAN_30", "Aanmaken download");
 define("DOWLAN_31", "Categorieën");

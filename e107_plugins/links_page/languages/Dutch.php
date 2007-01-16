@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-10-30 22:19:52 $
+|     $Revision: 1.18 $
+|     $Date: 2007-01-16 18:44:22 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -301,6 +301,7 @@ define("LAN_LINKS_45", "Link categorie");
 define("LAN_LINKS_46", "Link subcategorieën");
 define("LAN_LINKS_47", "link navigator...");
 define("LAN_LINKS_48", "-- bekijk categorie --");
+define("LAN_LINKS_50", "Je hebt nu niet de autorisatie om links aan te melden");
 
 define("LAN_ADMIN_HELP_0", "linkspage helpfunctie");
 

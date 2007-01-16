@@ -106,6 +106,9 @@ define("LAN_SIGNUP_50", "Nieuw e-mailadres");
 define("LAN_SIGNUP_51", "Oude wachtwoord");
 define("LAN_SIGNUP_52", "Onjuist wachtwoord");
 define("LAN_SIGNUP_53", "validatie van het veld is mislukt");
+define("LAN_SIGNUP_54", "Klik hier om je gegevens te registreren");
+define("LAN_SIGNUP_55", "De weergavenaam is te lang. Kies een andere.");
+define("LAN_SIGNUP_56", "De weergavenaam is te kort. Kies een andere.");
 
 define("LAN_LOGINNAME", "Inlognaam");
 define("LAN_PASSWORD", "Wachtwoord");

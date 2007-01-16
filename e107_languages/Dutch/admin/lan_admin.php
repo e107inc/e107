@@ -218,6 +218,7 @@ define("LAN_DISABLED","Gedeactiveerd");
 define("LAN_ENABLED", "Geactiveerd");
 define("LAN_PRESET_CONFIRMSAVE","De huidige formulierwaarden als standaard voor deze pagina opslaan?");
 define("LAN_CONFIGURE", "Configureren");   
+define("LAN_NEWVERSION","Nieuwe versie beschikbaar");
 
 define('ADLAN_CL_1', "Instellingen");
 define('ADLAN_CL_2', "Leden");

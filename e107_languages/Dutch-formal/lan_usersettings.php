@@ -92,6 +92,7 @@ define("LAN_USET_8", "Ondertekening / tijdzone");
 define("LAN_USET_9", "Sommige verplichte informatie ontbreekt in uw instellingen (verplichte velden zijn gemarkeerd met een *).");
 define("LAN_USET_10","U moet deze gegevens eerst bijwerken voordat u verder kunt gaan.");
 define("LAN_USET_11", "Deze gebruikersnaam is niet acceptabel, kiest u een andere gebruikersnaam.");
+define("LAN_USET_12", "De weergavenaam is te kort. Kies een andere.");
 
 define("LAN_CUSTOMTITLE", "Maatwerk titel");
 define("LAN_ICQNUMBER", "ICQ nummer mag alleen bestaan uit cijfers");
