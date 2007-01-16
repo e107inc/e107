@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2007-01-07 15:24:49 $
-|     $Author: e107steved $
+|     $Revision: 1.24 $
+|     $Date: 2007-01-16 13:57:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -227,7 +227,7 @@ global $sql, $tp, $curVal, $usersettings_shortcodes;
 $qry = "
 SELECT * FROM #user_extended_struct
 WHERE user_extended_struct_applicable IN (".$tp -> toDB($curVal['userclass_list'], true).")
-AND user_extended_struct_write IN (".$tp -> toDB($curVal['userclass_list'], true).")
+AND user_extended_struct_write IN (".USERCLASS_LIST.")
 AND user_extended_struct_type = 0
 ORDER BY user_extended_struct_order ASC
 ";
