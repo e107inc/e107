@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-13 05:04:12 $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-16 01:43:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,11 +30,7 @@ to store its data and structural information.
 
 */
 
-if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php")) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
-} else {
-	@include_once(e_LANGUAGEDIR."English/lan_user_extended.php");
-}
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 
 class e107_user_extended
 {
@@ -489,6 +485,47 @@ class e107_user_extended
 		$dlist = "DROP ".$dlist;
 		$qry = "ALTER TABLE #user ".$dlist;
 		$sql->db_Select_gen($qry);
+	}
+	
+	/**
+	* Set the value of an extended field
+	*
+	*  $ue = new e107_user_extended;
+	*	$result = $ue->user_extended_setvalue(1, 'location', 'Pittsburgh');
+	*	
+	*	NOTE:  This function will return false if the field is already set to $newvalue
+	*	
+	*/
+	function user_extended_setvalue($uid, $field_name, $newvalue)
+	{
+		global $sql, $tp;
+		$uid = intval($uid);
+		$newvalue = $tp->toDB($newvalue);
+		if(substr($field_name, 0, 5) != 'user_')
+		{
+			$field_name = 'user_'.$field_name;
+		}
+		$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('{$uid}', '')");
+		return $sql->db_Update("user_extended", $field_name." = '{$newvalue}' WHERE user_extended_id = '{$uid}'");
+	}
+
+
+	/**
+	* Retrieve the value of an extended field
+	*
+	*  $ue = new e107_user_extended;
+	*	$value = $ue->user_extended_getvalue(2, 'location');
+	*	
+	*/
+	function user_extended_getvalue($uid, $field_name, $ifnotset=false)
+	{
+		$uid = intval($uid);
+		if(substr($field_name, 0, 5) != 'user_')
+		{
+			$field_name = 'user_'.$field_name;
+		}
+		$uinfo = get_user_data($uid);
+		return (isset($uinfo[$field_name]) ? $uinfo[$field_name] : $ifnotset);
 	}
 }
 ?>
