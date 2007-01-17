@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-17 13:12:09 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 define("LCLAN_1", "Options Saved");
@@ -16,6 +16,7 @@ define("LCLAN_3", "Link updated in database.");
 define("LCLAN_6", "Order updated.");
 define("LCLAN_8", "Existing Links");
 define("LCLAN_12", "Link Rendertype");
+define("LCLAN_13", "Render");
 define("LCLAN_15", "Link Name");
 define("LCLAN_16", "Link URL");
 define("LCLAN_17", "Link Description");
@@ -48,10 +49,16 @@ define("LCLAN_88", "Site Links Options");
 define("LCLAN_89", "Image");
 
 define("LCLAN_91", "Move");
+define("LCLAN_92", "Open");
+define("LCLAN_93", "URL");
 define("LCLAN_95", "Class");
 
 define("LCLAN_96", "Shown in your theme as");
 
+define("LCLAN_100", "Same window"); // Short version for column display
+define("LCLAN_101", "New window");
+define("LCLAN_102", "New 600x400");
+define("LCLAN_103", "New 800x600");
 
 define("LINKLAN_1", "Opens in 800x600 window");
 define("LINKLAN_2", "Parent");
