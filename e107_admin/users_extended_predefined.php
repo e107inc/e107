@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended_predefined.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-17 20:47:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -54,3 +54,4 @@ function get_extended_predefined()
 
 	return $ue_field;
 }
+?>
