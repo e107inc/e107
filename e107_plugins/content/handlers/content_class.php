@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2007-01-15 14:00:21 $
+|		$Revision: 1.7 $
+|		$Date: 2007-01-17 14:04:31 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -707,8 +707,8 @@ class content{
 			global $plugintable, $sql;
 			$qry = "
 			SELECT c.*, p.*
-			FROM pcontent as c
-			LEFT JOIN pcontent as p ON p.content_id = c.content_parent
+			FROM #pcontent as c
+			LEFT JOIN #pcontent as p ON p.content_id = c.content_parent
 			WHERE c.content_id = '".intval($id)."' ";
 			$sql -> db_Select_gen($qry);
 			$row2 = $sql -> db_Fetch();
