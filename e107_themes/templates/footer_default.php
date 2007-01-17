@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-17 11:01:05 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-17 13:43:14 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -28,7 +28,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuse
 // Please DO NOT re-order these items without asking first! You WILL break something ;)
 // These letters match the USER footer (that's why there may be B.1,B.2)
 //
-// A Ensure sql and traffic objects exist 
+// A Ensure sql and traffic objects exist
 // [Next few ONLY if a regular page; not done for popups]
 // B Send the footer templated data
 // C Dump any/all traffic and debug information
@@ -39,7 +39,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuse
 // G Browser-Server time sync script (must be the last one generated/sent)
 // H Final HTML (/body, /html)
 // I collect and send buffered page, along with needed headers
-// 
+//
 
 //
 // A Ensure sql and traffic objects exist
@@ -60,13 +60,10 @@ unset($fh);
 
 if(varset($e107_popup)!=1){
 	//
-	// B Send footer template
+	// B Send footer template, stop timing, send simple page stats
 	//
 	parseheader(($ph ? $cust_footer : $FOOTER));
 	
-	//
-	// C Dump all debug and traffic information
-	//
 	$eTimingStop = microtime();
 	global $eTimingStart;
 	$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
@@ -79,11 +76,17 @@ if(varset($e107_popup)!=1){
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
 
+} // End of regular-page footer (the above NOT done for popups)
 
+
+	//
+	// C Dump all debug and traffic information
+	//
 	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
 		global $db_debug;
-		echo "\n<!-- DEBUG -->\n";
+		echo "\n<!-- DEBUG -->\n<div class='e107_debug dbg_info'>";
 		$db_debug->Show_All();
+		echo "</div>\n";
 	}
 	
 	/*
@@ -96,7 +99,7 @@ if(varset($e107_popup)!=1){
 	{
 		$c=1;
 		$mySQLInfo = $sql->mySQLinfo;
-		echo "<table class='fborder' style='width: 100%;'>
+		echo "<div class='e107_debug qry_notice'><table class='fborder' style='width: 100%;'>
 		<tr>
 		<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
 		foreach ($queryinfo as $infovalue)
@@ -104,10 +107,8 @@ if(varset($e107_popup)!=1){
 			echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 			$c++;
 		}
-		echo "</table>";
+		echo "</table></div>";
 	}
-
-} // End of regular-page footer (the above NOT done for popups)
 
 //
 // D Close DB connection. We're done talking to underlying MySQL
@@ -129,7 +130,7 @@ if ($pref['developer']) {
 	global $oblev_at_start,$oblev_before_start;
 	if (ob_get_level() != $oblev_at_start) {
 		$oblev = ob_get_level();
-		$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start). POPPING EXTRA BUFFERS!</div>";
+		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start). POPPING EXTRA BUFFERS!</div>";
 		while (ob_get_level() > $oblev_at_start) {
 			ob_end_flush();
 		}
@@ -140,7 +141,7 @@ if ($pref['developer']) {
 	// Devs can re-enable for testing as needed.
 	//
 	if (0 && $oblev_before_start != 0) {
-		$obdbg = "<div style='text-align:center' class='smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
+		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
 		echo $obdbg;
 	}
 }
@@ -148,7 +149,7 @@ if ($pref['developer']) {
 if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
 	echo "
 	<br /><br />
-	<div>
+	<div class='e107_debug php_err'>
 		<h3>PHP Errors:</h3><br />
 		".$error_handler->return_errors()."
 	</div>
@@ -210,13 +211,13 @@ header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
 $pref['compression_level'] = 6;
-if(strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
+if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip")) {
 	$browser_support = true;
 }
 if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {
 	$server_support = true;
 }
-if(isset($pref['compress_output']) && $pref['compress_output'] == true && $server_support == true && $browser_support == true) {
+if(varset($pref['compress_output'],false) && $server_support == true && $browser_support == true) {
 	$level = intval($pref['compression_level']);
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
