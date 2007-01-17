@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-17 13:41:01 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-17 21:29:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -196,7 +196,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 
 			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
-			$emotes_active = $pref['cb_emote'] ? 'emotes_on' : 'emotes_off';
+			$emotes_active = $pref['cb_emote'] ? 'emotes_on, hook=content' : 'emotes_off, hook=content';
 
 			$cb_message = $tp -> toHTML($cb['cb_message'], FALSE, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
 

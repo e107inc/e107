@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-17 21:29:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -24,16 +24,16 @@ SC_BEGIN NEWSTITLE
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return $tp -> toHTML($news_item['news_title'], TRUE, 'parse_sc,no_hook,emotes_off, no_make_clickable');
+return $tp -> toHTML($news_item['news_title'], TRUE, 'parse_sc,no_hook,emotes_off, no_make_clickable,hook=title');
 SC_END
 
 SC_BEGIN NEWSBODY
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'parse_sc, fromadmin', $news_item['news_author']);
+$news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'parse_sc, fromadmin,hook=content', $news_item['news_author']);
 if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
-    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'parse_sc, fromadmin', $news_item['news_author']);
+    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'parse_sc, fromadmin,hook=content', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
 }
 return $news_body;
