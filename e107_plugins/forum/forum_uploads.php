@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_uploads.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-10-21 11:22:30 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-17 20:47:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -119,3 +119,4 @@ if(!$filecount) {
 $ns->tablerender(FRMUP_1, $txt);
 include_once(FOOTERF);
 
+?>

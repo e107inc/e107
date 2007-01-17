@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-12-05 10:51:33 $
-|     $Author: mrpete $
+|     $Revision: 1.33 $
+|     $Date: 2007-01-17 20:46:54 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -467,3 +467,4 @@ class themeHandler{
 	}
 
 }
+?>

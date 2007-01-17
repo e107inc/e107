@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/core_image.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-11-30 02:17:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.44 $
+|     $Date: 2007-01-17 20:46:54 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -5709,3 +5709,4 @@ $deprecated_image = array (
   'upgrade.php' => '5e74e594b56732d62183c0300e222f2a',
 );
 
+?>

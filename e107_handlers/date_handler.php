@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/date_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-12-23 15:44:09 $
+|     $Revision: 1.10 $
+|     $Date: 2007-01-17 20:46:54 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -138,5 +138,5 @@ class convert
 		}
 		return ($mode ? $outputArray : implode(", ", $outputArray));
 	}
-
 }
+?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/forum_mod.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-12-26 13:32:59 $
-|     $Author: mrpete $
+|     $Revision: 1.7 $
+|     $Date: 2007-01-17 20:46:54 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -98,4 +98,4 @@ function forum_delete_thread($thread_id) {
 		return FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
 	}
 }
-	
+?>
