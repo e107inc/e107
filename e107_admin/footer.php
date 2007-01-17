@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-09 06:53:05 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-17 13:03:53 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -27,7 +27,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // Please DO NOT re-order these items without asking first! You WILL break something ;)
 // These letters match the USER footer (that's why there is B.1,B.2)
 //
-// A Ensure sql and traffic objects exist 
+// A Ensure sql and traffic objects exist
 // B.1 Clear cache if over a week old
 // B.2 Send the footer templated data
 // C Dump any/all traffic and debug information
@@ -38,7 +38,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // G Browser-Server time sync script (must be the last one generated/sent)
 // H Final HTML (/body, /html)
 // I collect and send buffered page, along with needed headers
-// 
+//
 
 //
 // A Ensure sql and traffic objects exist
@@ -76,7 +76,7 @@ if (ADMIN == TRUE) {
 	
 
 //
-// B.2 Send footer template
+// B.2 Send footer template, stop timers and send basic page info
 //
 if(varset($e107_popup)!=1){
 
@@ -85,9 +85,6 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 }
 
 	
-//
-// C Dump all debug and traffic information
-//
 $eTimingStop = microtime();
 global $eTimingStart;
 $rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
@@ -100,7 +97,11 @@ $rinfo = '';
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
 
+} // End of regular-page footer (the above NOT done for popups)
 
+//
+// C Dump all debug and traffic information
+//
 	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
 		global $db_debug;
 		echo "\n<!-- DEBUG -->\n";
@@ -127,8 +128,6 @@ $rinfo = '';
 		}
 		echo "</table>";
 	}
-
-} // End of regular-page footer (the above NOT done for popups)
 
 //
 // D Close DB connection. We're done talking to underlying MySQL
@@ -169,7 +168,7 @@ if ($pref['developer']) {
 if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
 	echo "
 	<br /><br />
-	<div>
+	<div class='e107_debug php_err'>
 		<h3>PHP Errors:</h3><br />
 		".$error_handler->return_errors()."
 	</div>
