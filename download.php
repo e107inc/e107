@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.6 $ - with modifications
-|     $Date: 2006-12-30 12:02:00 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $ - with modifications
+|     $Date: 2007-01-17 13:39:28 $
+|     $Author: mrpete $
 |
 +----------------------------------------------------------------------------+
 */
@@ -189,9 +189,9 @@ if ($action == "list") {
 	$row = $sql->db_Fetch();
 	extract($row);
 
-	$type = $download_category_name;
+	$type = "<span class='dnld_cname'>".$download_category_name."</span>";
 
-	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
+	$type .= ($download_category_description) ? " <span class='dnld_cdesc'>[".$download_category_description."]</span>" : "";
 	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
 	}
 	else
@@ -294,6 +294,7 @@ if ($action == "list") {
 // Shouldn't need these declarations now
 //	$sql = new db;
 //	$sql2 = new db;
+	$tdownloads = 0;
 
 	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
@@ -318,7 +319,7 @@ if ($action == "list") {
 	}
 
 
-	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><a href='".e_SELF."'>".LAN_dl_9."</a><br /><br />";
+	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><div class='dl_ret2list'><a href='".e_SELF."'>".LAN_dl_9."</a></div><br /><br />";
 	$parms = $total_downloads.",".$view.",".$from.",".e_SELF."?[FROM].list.{$id}.{$view}.{$order}.{$sort}.";
 	echo ($total_downloads > $view) ? "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>" : "";
     echo "</div>";
