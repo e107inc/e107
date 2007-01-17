@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-01-17 13:36:57 $
-|     $Author: mrpete $
+|     $Revision: 1.8 $
+|     $Date: 2007-01-17 21:29:28 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -229,7 +229,7 @@ class pageClass
 		}
 		else
 		{
-			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'parse_sc, constants');
+			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'parse_sc, constants,hook=content');
 			return;
 		}
 		
@@ -265,11 +265,11 @@ class pageClass
 		foreach($this -> pageTitles as $title)
 		{
 			$titlep = preg_replace("/\[newpage=(.*?)\]/", "\\1", $title);
-			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? LAN_PAGE_13." ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'parse_sc, constants,emotes_off,no_make_clickable'));
+			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? LAN_PAGE_13." ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'parse_sc, constants,emotes_off,no_make_clickable,hook=title'));
 			$count++;
 		}
 
-		$this -> pageToRender = $tp -> toHTML($pages[$this -> pageSelected], TRUE, 'parse_sc, constants');
+		$this -> pageToRender = $tp -> toHTML($pages[$this -> pageSelected], TRUE, 'parse_sc,constants,hook=content');
 		$this -> title = (substr($this -> pageTitles[$this -> pageSelected], -1) == ";" ? "" : $this -> pageTitles[$this -> pageSelected]);
 
 		if($this -> debug)

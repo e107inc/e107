@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-15 22:06:18 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-17 21:29:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -300,34 +300,76 @@ class e_parse
 			return $text;
 		}
 		global $pref, $fromadmin;
+		
+		// Set defaults for options
+		$opts = array(
+				  'fromadmin' => FALSE,
+				  'defs' => FALSE,				// support for converting defines(constants) within text.
+				  'constants' => FALSE,			// replace all {e_XXX} constants with their e107 value
+				  'nobreak' => FALSE,			// Line break compression - TRUE removes multiple line breaks
+				  'retain_nl' => FALSE,			// Retain newlines - wraps to \n instead of <br /> if TRUE
+				  'no_make_clickable' => FALSE,	// URLs etc are clickable - TRUE disables
+				  'no_replace' => FALSE,		// Replace clickable links - TRUE disables (only if no_make_clickable not set)
+				  'do_hook' => FALSE,			// Tentative option to force hooking when TRUE (area is null string)
+				  'no_hook' => FALSE,			// Deprecated - TRUE disables hooked parsers
+				  'hook'	=> '',				// Generic 'set text area for hooked parser' option
+				  'emotes_off' => FALSE,		// Convert emoticons to graphical icons - TRUE disables conversion
+				  'emotes_on'  => FALSE,		// Force conversion to emotes if TRUE (overridden by 'emotes_off')
+				  'value'	=> FALSE,			// Restore entity form of quotes and such to single characters - TRUE disables
+				  'parse_sc' => FALSE			// Parse shortcodes - TRUE enables parsing
+		);
 
-		$fromadmin = strpos($modifiers, "fromadmin");
-		//$text = str_replace(array("&#092;&quot;", "&#092;&#039;", "&#092;&#092;"), array("&quot;", "&#039;", "&#092;"), $text);
+		// Now decode options from any modifiers set
+		foreach (explode(',',$modifiers) as $t)
+		{
+		  $t = trim($t);		// Allow for spaces after commas in the list
+		  $tval = TRUE;
+		  if (strpos($t,'=') !== FALSE) list($t,$tval) = explode('=',$t,2);
+		  if (array_key_exists($t,$opts)) $opts[$t] = $tval;
+		}
+
+	
+//		$fromadmin = strpos($modifiers, "fromadmin");
+		$fromadmin = $opts['fromadmin'];
 
 		// support for converting defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
-		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 25 && defined(trim($text))){
+//		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 25 && defined(trim($text)))
+		if ($opts['defs'] && (strlen($text) < 25) && defined(trim($text)))
+		{
+//		   echo "Modifiers: ".$modifiers."<br />";
 			return constant(trim($text));
 		}
 
+
 		// replace all {e_XXX} constants with their e107 value
-		if(strpos($modifiers, "constants") !== FALSE)
+//		if(strpos($modifiers, "constants") !== FALSE)
+		if ($opts['constants'])
 		{
 			$text = $this->replaceConstants($text);
 		}
 
+
        if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
         $text = " ".$text;
 
+
 			// Prepare for line-break compression. Avoid compressing newlines in embedded scripts and CSS
-        if (strpos($modifiers, 'nobreak') === FALSE) {
+//        if (strpos($modifiers, 'nobreak') === FALSE) 
+		if (!$opts['nobreak'])
+		{
             $text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
             preg_match_all("#<(script|style)[^>]+>.*?</(script|style)>#is", $text, $embeds);
             $text = preg_replace("#<(script|style)[^>]+>.*?</(script|style)>#is", "<|>", $text);
         }
 
+
 			// Convert URL's to clickable links, unless modifiers or prefs override
-        if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
-            if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
+//        if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) 
+        if ($pref['make_clickable'] && !$opts['no_make_clickable']) 
+		{
+//            if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) 
+            if ($pref['link_replace'] && !$opts['no_replace']) 
+			{
                 $_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
                 $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
                 $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
@@ -337,16 +379,23 @@ class e_parse
                     $email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2©\\3";
                 }
                 $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
-            } else {
+            }
+			else 
+			{
                 $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $text);
                 $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
                 $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>-email-</a>", $text);
             }
         }
 
+
 			// Convert emoticons to graphical icons, unless modifiers override
-        if (strpos($modifiers, 'emotes_off') === FALSE) {
-            if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
+//        if (strpos($modifiers, 'emotes_off') === FALSE) {
+        if (!$opts['emotes_off']) 
+		{
+//            if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
+            if ($pref['smiley_activate'] || $opts['emotes_on']) 
+			{
                 if (!is_object($this->e_emote)) {
                     require_once(e_HANDLER.'emote_filter.php');
                     $this->e_emote = new e_emoteFilter;
@@ -355,23 +404,33 @@ class e_parse
             }
         }
 
+
 			// Reduce multiple newlines in all forms to a single newline character, except for embedded scripts and CSS
-        if (strpos($modifiers, 'nobreak') === FALSE) {
+//        if (strpos($modifiers, 'nobreak') === FALSE) {
+        if (!$opts['nobreak']) 
+		{
             $text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
             foreach ($embeds[0] as $embed) {
                 $text = preg_replace("#<\|>#", $embed, $text, 1);
             }
         }
 
+
 		// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
-		if (strpos($modifiers, 'value') === FALSE) { // output not used for attribute values.
+//		if (strpos($modifiers, 'value') === FALSE) { // output not used for attribute values.
+		if (!$opts['value']) 
+		{ // output not used for attribute values.
 	       	$text = str_replace($this -> search, $this -> replace, $text);
-        }else{   									// output used for attribute values.
+        }
+		else
+		{   									// output used for attribute values.
             $text = str_replace($this -> replace, $this -> search, $text);
 		}
 
+
         // Start parse [bb][/bb] codes
-        if ($parseBB === TRUE) {
+        if ($parseBB === TRUE) 
+		{
             if (!is_object($this->e_bb)) {
                 require_once(e_HANDLER.'bbcode_handler.php');
                 $this->e_bb = new e_bbcode;
@@ -380,7 +439,8 @@ class e_parse
         }
         // End parse [bb][/bb] codes
 
-				// profanity filter
+
+		// profanity filter
         if ($pref['profanity_filter']) {
             if (!is_object($this->e_pf)) {
                 require_once(e_HANDLER."profanity_filter.php");
@@ -389,48 +449,57 @@ class e_parse
             $text = $this->e_pf->filterProfanities($text);
         }
 
+
 			// Optional short-code conversion
-        if (strpos($modifiers,'parse_sc') !== FALSE)
+//        if (strpos($modifiers,'parse_sc') !== FALSE)
+        if ($opts['parse_sc'])
         {
             $text = $this->parseTemplate($text, TRUE);
         }
 
+
         //Run any hooked in parsers
-        if(isset($pref['tohtml_hook']) && $pref['tohtml_hook'])
+		if ((($opts['hook'] != '') || $opts['do_hook']) && !$opts['no_hook'] && isset($pref['tohtml_hook']) && $pref['tohtml_hook'])
         {
-            foreach(explode(",",$pref['tohtml_hook']) as $hook)
+          foreach(explode(",",$pref['tohtml_hook']) as $hook)
+          {
+            if (!is_object($this->e_hook[$hook]))
             {
-                if (strpos($modifiers, 'no_hook') === FALSE)
-                {
-                    if (!is_object($this->e_hook[$hook]))
-                    {
-                        require_once(e_PLUGIN.$hook."/".$hook.".php");
-                        $hook_class = "e_".$hook;
-                        $this->e_hook[$hook] = new $hook_class;
-                    }
-                    $text = $this->e_hook[$hook]->$hook($text);
-                }
+              require_once(e_PLUGIN.$hook."/".$hook.".php");
+              $hook_class = "e_".$hook;
+              $this->e_hook[$hook] = new $hook_class;
             }
+          $text = $this->e_hook[$hook]->$hook($text,$opts['hook']);
+          }
         }
 
-        if (strpos($modifiers, 'nobreak') === FALSE) {
+
+//        if (strpos($modifiers, 'nobreak') === FALSE) 
+        if (!$opts['nobreak']) 
+		{
             $text = $this -> textclean($text, $wrap);
         }
 
+
         // Search Highlight
-        if (strpos($modifiers, 'emotes_off') === FALSE) {
-        	if ($this->checkHighlighting())
-        	{
-						$text = $this -> e_highlight($text, $this -> e_query);
-					}
-				}
+//        if (strpos($modifiers, 'emotes_off') === FALSE) 
+        if (!$opts['emotes_off']) 
+		{
+          if ($this->checkHighlighting())
+          {
+			$text = $this -> e_highlight($text, $this -> e_query);
+		  }
+		}
+
 
         $nl_replace = "<br />";
-        if (strpos($modifiers, 'nobreak') !== FALSE)
+//        if (strpos($modifiers, 'nobreak') !== FALSE)
+        if ($opts['nobreak'])
         {
             $nl_replace = '';
         }
-        elseif (strpos($modifiers, 'retain_nl') !== FALSE)
+//        elseif (strpos($modifiers, 'retain_nl') !== FALSE)
+        elseif ($opts['retain_nl'])
         {
             $nl_replace = "\n";
         }
@@ -438,6 +507,7 @@ class e_parse
 
 		return trim($text);
 	}
+
 
 	function toAttribute($text) {
 		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
