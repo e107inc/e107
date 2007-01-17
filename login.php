@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/login.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-17 13:37:25 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,9 +56,8 @@ if (!USER) {
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/login_template.php");
 		}
 	}
-	$text = preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE);
-
-	echo preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE_HEADER);
+	$text = preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE);
+	echo preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_HEADER);
 
 	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	$ns->tablerender($login_message, $text, 'login_page');
@@ -67,7 +66,7 @@ if (!USER) {
 	{
 		$LOGIN_TABLE_FOOTER_USERREG = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
 	}
-	echo preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE_FOOTER);
+		echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);
 
 }
 else
