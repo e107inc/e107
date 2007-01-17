@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/search/search_parser.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-09-18 08:57:42 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-17 14:05:41 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -58,19 +58,19 @@ function search_content($row) {
 	if($row['content_parent'] == '0'){
 		$qry = "
 		SELECT c.content_heading
-		FROM pcontent as c
+		FROM #pcontent as c
 		WHERE c.content_id = '".$row['content_id']."' ";
 	}elseif(strpos($row['content_parent'], "0.") !== FALSE){
 		$tmp = explode(".", $row['content_parent']);
 		$qry = "
 		SELECT c.content_heading
-		FROM pcontent as c
+		FROM #pcontent as c
 		WHERE c.content_id = '".intval($tmp[1])."' ";
 	}else{
 		$qry = "
 		SELECT c.*, p.*
-		FROM pcontent as c
-		LEFT JOIN pcontent as p ON p.content_id = c.content_parent
+		FROM #pcontent as c
+		LEFT JOIN #pcontent as p ON p.content_id = c.content_parent
 		WHERE c.content_id = '".$row['content_id']."' ";
 	}
 	
