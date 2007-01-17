@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-17 13:43:14 $
-|     $Author: mrpete $
+|     $Revision: 1.7 $
+|     $Date: 2007-01-17 20:47:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -230,3 +230,4 @@ if(varset($pref['compress_output'],false) && $server_support == true && $browser
 
 unset($In_e107_Footer);
 $e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
+?>
