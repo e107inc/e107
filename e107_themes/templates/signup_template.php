@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-27 22:26:56 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-17 13:43:40 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -35,7 +35,7 @@ $sc_style['SIGNUP_DISPLAYNAME']['post'] = "
 
 $sc_style['SIGNUP_REALNAME']['pre'] = "
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($pref['signup_option_realname'])."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($pref['signup_option_realname'])."<br /><span class='smalltext'>".LAN_310."</span></td>
 <td class='forumheader3' style='width:70%' >
 ";
 $sc_style['SIGNUP_REALNAME']['post'] = "
