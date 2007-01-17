@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2006-12-16 03:37:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.75 $
+|     $Date: 2007-01-17 21:29:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -148,7 +148,7 @@ else
 
 	if($pref['cb_emote'] && $pref['smiley_activate']){
 		$texta .= "
-		<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
+		<input class='button' type ='button' style='cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />
 		<div style='display:none' id='emote'>".r_emote()."
 		</div>\n";
 	}
@@ -196,7 +196,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 
 			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
-			$emotes_active = $pref['cb_emote'] ? 'emotes_on' : 'emotes_off';
+			$emotes_active = $pref['cb_emote'] ? 'emotes_on, hook=content' : 'emotes_off, hook=content';
 
 			$cb_message = $tp -> toHTML($cb['cb_message'], FALSE, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
 
