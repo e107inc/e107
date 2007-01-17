@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e107.js,v $
-|	$Revision: 1.1.1.1 $
-|	$Date: 2006-12-02 04:33:36 $
-|	$Author: mcfly_e107 $
+|	$Revision: 1.2 $
+|	$Date: 2007-01-17 13:04:50 $
+|	$Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -151,6 +151,15 @@ function textCounter(field,cntfield) {
 function openwindow() {
 	opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");
 	opener.focus();
+}
+
+function closeWindow(form){
+	if((window.opener!=null)&&(!window.opener.closed)){
+		window.opener.location.reload();
+	}
+	if(window.opener!=null) {
+		window.close();
+	}else{setWinType(form);form.whatAction.value="Close";form.submit();}
 }
 
 function setCheckboxes(the_form, do_check, the_cb){
