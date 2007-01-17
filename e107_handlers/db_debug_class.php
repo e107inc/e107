@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-05 09:23:54 $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-17 13:05:49 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -69,7 +69,8 @@ class e107_db_debug {
 	
 	function ShowIf($title,$str)
 	{
-		global $ns;
+		global $ns,$style;
+		$style='debug';
 		
 		if (!isset($ns)) {
 			echo "Why did ns go away?<br/>";
@@ -580,7 +581,7 @@ global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 	}
 	if (isset($error_handler))
 	{		
-		echo "<br /><div><h3>PHP Errors:</h3><br />".$error_handler->return_errors()."</div>\n";
+		echo "<br /><div 'e107_debug php_err'><h3>PHP Errors:</h3><br />".$error_handler->return_errors()."</div>\n";
 	} else {
 		echo "<b>e107 Shutdown while no error_handler available!</b>";
 	}
