@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-17 13:48:50 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -122,7 +122,7 @@ $USERSETTINGS_EDIT = "
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_308.req($pref['signup_option_realname'])."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_308.req($pref['signup_option_realname'])."<br /><span class='smalltext'>".LAN_310."</span>"."</td>
 	<td style='width:60%' class='forumheader2'>
 	{REALNAME}
 	</td>
