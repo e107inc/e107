@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/fpw.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-17 13:38:24 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -81,7 +81,7 @@ if (e_QUERY) {
 		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
 
-		$txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10." <a href='".e_BASE."index.php'>".LAN_FPW11."</a> ".LAN_FPW12;
+		$txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10." <a href='".e_BASE."login.php'>".LAN_FPW11."</a> ".LAN_FPW12;
 		fpw_error($txt);
 
 	} else {
