@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/consolidate.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-23 18:17:37 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-17 20:51:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
 $pathtologs = e_PLUGIN."log/logs/";
 $date = date("z.Y", time());
 $yesterday = date("z.Y",(time() - 86400));		// This makes sure year wraps round OK
-$date2 = date("Y-m-j", (time() -86400));
+$date2 = date("Y-m-j", (time() -86400));		// Yesterday's date for the database summary	
 $date3 = date("Y-m");
 
 $pfileprev = "logp_".$yesterday.".php";		// Yesterday's log file
@@ -36,10 +36,16 @@ if(file_exists($pathtologs.$pfile))
 	return;
 }
 else if(!file_exists($pathtologs.$pfileprev)) 
-{
-	/* no logfile found at all - create - this will only ever happen once ... */
+{  // See if any older log files
+//  echo "Checking for old files<br />";
+  if (($retvalue = check_for_old_files($pathtologs)) === FALSE)
+  { 	/* no logfile found at all - create - this will only ever happen once ... */
 	createLog("blank");
 	return FALSE;
+  }
+  // ... if we've got files
+  list($pfileprev,$ifileprev,$date2,$tstamp) = explode('|',$retvalue);
+//  echo "Files: {$pfileprev}, {$ifileprev}, First date: {$date2}, Time Stamp: ".$tstamp."<br />";
 }
 
 
@@ -303,6 +309,33 @@ $data .= "?>";
 	}
 	fclose($handle);
 	return;
+}
+
+// Called if both today's and yesterday's log files missing, to see
+// if there are any older files we could process. Return FALSE if nothing
+// Otherwise return a string of relevant information
+function check_for_old_files($pathtologs)
+{
+  $no_files = TRUE;
+  if ($dir_handle = opendir($pathtologs))
+  {
+    while (false !== ($file = readdir($dir_handle))) 
+	{
+	// Do match on #^logp_(\d{1,3})\.php$#i
+	  if (preg_match('#^logp_(\d{1,3}\.\d{4})\.php$#i',$file,$match) == 1)
+	  {  // got a matching file
+	    $yesterday = $match[1];						// Day of year - zero is 1st Jan
+		$pfileprev = "logp_".$yesterday.".php";		// Yesterday's log file
+		$ifileprev = "logi_".$yesterday.".php";
+		list($day,$year) = explode('.',$yesterday);
+		$tstamp = mktime(0,0,0,1,1,$year) + ($day*86400);
+		$date2 = date("Y-m-j", $tstamp);		// Yesterday's date for the database summary	
+		$temp = array($pfileprev,$ifileprev,$date2,$tstamp);
+		return implode('|',$temp);
+	  }
+	}
+  }
+  return FALSE;
 }
 
 ?>
