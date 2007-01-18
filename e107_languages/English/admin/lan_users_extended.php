@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-18 20:52:07 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -20,7 +20,7 @@ define("EXTLAN_8", "Action");
 define("EXTLAN_9", "Extended User Fields");
 
 define("EXTLAN_10", "Field name");
-define("EXTLAN_11", "This is the name of the field as stored in the table, it must be unique from any other");
+define("EXTLAN_11", "This is the name of the field as stored in the table, it must be unique from any other, and must not be used in the main user table");
 define("EXTLAN_12", "Field text");
 define("EXTLAN_13", "This is the displayed name of the field in rendered pages");
 define("EXTLAN_14", "Field Type");
@@ -87,21 +87,24 @@ define("EXTLAN_71", "was not activated!");
 define("EXTLAN_72", "has been deactivated");
 define("EXTLAN_73", "was not deactivated!");
 define("EXTLAN_74", "is a reserved field name and can not be used.");
+define("EXTLAN_75", "Error adding field to database.");
 
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
 //radio buttons
-define("EXTLAN_HELP_2", "This will be the radio buttons help text");
+define("EXTLAN_HELP_2", "Enter text for options in 'Values' box - one box per option. Add new boxes as needed");
 //dropdown
-define("EXTLAN_HELP_3", "This will be the dropdown help text");
+define("EXTLAN_HELP_3", "Enter text for options in 'Values' box - one box per option. Add new boxes as needed");
 //db field
 define("EXTLAN_HELP_4", "<b><i>Values:</i></b><br />There should be three values given ALWAYS:<br /><ol><li>dbtable</li><li>field containing id</li><li>field containing value</li></ol><br />");
 //textarea
-define("EXTLAN_HELP_5", "This will be the Textarea help text");
+define("EXTLAN_HELP_5", "Define an area for free-format text. (Set the size in the 'Field include text' box as required)");
 //integer
-define("EXTLAN_HELP_6", "This will be the Integer help text");
+define("EXTLAN_HELP_6", "Allow user to enter a numeric value");
 //date
-define("EXTLAN_HELP_7", "This will be the date help text");
+define("EXTLAN_HELP_7", "Require user to enter a date");
+// Language
+define("EXTLAN_HELP_8", "Allow user to select from installed languages");
 
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-18 20:52:00 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -97,13 +97,19 @@ if (isset($_POST['add_field']))
 	}
 	$new_values = make_delimited($_POST['user_values']);
 	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	$result = admin_update($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
-	if(!$result)
+	
+// Check to see if its a reserved field name before adding to database
+	if($ue->user_extended_reserved($_POST['user_field']))
+	{  // Reserved field name
+	  $message = "[user_".$tp->toHTML($_POST['user_field'])."] ".EXTLAN_74;
+	}
+	else
 	{
-		if($ue->user_extended_reserved($_POST['user_field']))
-		{
-			$message = "[user_".$tp->toHTML($_POST['user_field'])."] ".EXTLAN_74;
-		}
+	  $result = admin_update($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
+	  if(!$result)
+	  {
+		$message = EXTLAN_75;
+	  }
 	}
 }
 
@@ -976,7 +982,7 @@ function headerjs()
 		var ftype;
 		var helptext;
 		";
-		for($i=0; $i<=7; $i++)
+		for($i=1; $i<=8; $i++)
 		{
 			$type_const = "UE_LAN_{$i}";
 			$help_const = "EXTLAN_HELP_{$i}";
