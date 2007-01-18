@@ -13,9 +13,9 @@
 |	Modified to support new hooking scheme
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2007-01-17 21:29:09 $
-|     $Author: e107steved $
+|     $Revision: 1.37 $
+|     $Date: 2007-01-18 01:13:40 $
+|     $Author: mrpete $
 |
 +----------------------------------------------------------------------------+
 */
@@ -111,6 +111,7 @@ class pageClass
 		$tmp = explode(".", e_QUERY);
 		$this -> pageID = intval($tmp[0]);
 		$this -> pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
+		$this -> pageTitles = array();
 		if(defined("BULLET"))
 		{
         	$this -> bullet = "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />";
@@ -288,10 +289,10 @@ class pageClass
 
 	function pageIndex()
 	{
-		$itext = "<br /><br />";
 		$count = 0;
 		foreach($this -> pageTitles as $title)
 		{
+			if (!$count) { $itext = "<br /><br />"; }
 			$itext .= $this -> bullet." ".($count == $this -> pageSelected ? $title : "<a href='".e_SELF."?".$this -> pageID.".".$count."'>".$title."</a>")."<br />\n";
 			$count++;
 		}
