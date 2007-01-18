@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.82 $ 
-|     $Date: 2007-01-17 21:29:09 $
-|     $Author: e107steved $
+|     $Revision: 1.83 $ 
+|     $Date: 2007-01-18 01:12:30 $
+|     $Author: mrpete $
 |
 +----------------------------------------------------------------------------+
 */
@@ -294,6 +294,7 @@ if ($action == "list") {
 // Shouldn't need these declarations now
 //	$sql = new db;
 //	$sql2 = new db;
+	$tdownloads = 0;
 
 	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
