@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-24 12:44:19 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,6 @@ define("EXTLAN_6", "Läsrättigheter");
 define("EXTLAN_7", "Skrivrättigheter");
 define("EXTLAN_8", "Åtgärd");
 define("EXTLAN_9", "Utökade användarfält");
-
 define("EXTLAN_10", "Fältnamn");
 define("EXTLAN_11", "Detta är namnet på fältet som det sparas i tabellen, det måste vara unikt");
 define("EXTLAN_12", "Fälttext");
@@ -40,8 +39,6 @@ define("EXTLAN_27", "Bekräfta radering");
 define("EXTLAN_28", "Inga utökade fält definierade");
 define("EXTLAN_29", "Utökade användarfält sparade.");
 define("EXTLAN_30", "Utökat fält raderat");
-// define("EXTLAN_31", "Meny, utökade fält");
-// define("EXTLAN_32", "Utökad förstasida");
 define("EXTLAN_33", "Avbryt redigering");
 define("EXTLAN_34", "Utökade fält");
 define("EXTLAN_35", "Kategorier");
@@ -71,28 +68,26 @@ define("EXTLAN_58", "Ej aktiverad");
 define("EXTLAN_59", "Aktivera");
 define("EXTLAN_60", "Avaktivera");
 define("EXTLAN_61", "Ingen");
-
 define("EXTLAN_62", "Välj tabell");
 define("EXTLAN_63", "Välj fält-ID");
 define("EXTLAN_64", "Välj visat värde");
-
 define("EXTLAN_65", "Nej - Kommer ej att visas på registreringssidan");
 define("EXTLAN_66", "Ja - Kommer att visas på registreringssidan");
 define("EXTLAN_67", "Nej - Visas på registreringssidan");
-
-//textbox
+define("EXTLAN_68", "Fält:");
+define("EXTLAN_69", "blev aktiverad");
+define("EXTLAN_70", "Fel!, fält:");
+define("EXTLAN_71", "blev inte aktiverad!");
+define("EXTLAN_72", "har blivit deaktiverad");
+define("EXTLAN_73", "var inte deaktiverad!");
+define("EXTLAN_74", "är ett reserverat namn och får inte användas.");
 define("EXTLAN_HELP_1", "<b><i>Parametrar:</i></b><br />size - storlek på fält<br />maxlength - max fältlängd<br /><br />class - fältets css klass<br />style - css stilsträng<br /><br />regex - regex valideringskod<br />regexfail - validering feltext");
-//radio buttons
 define("EXTLAN_HELP_2", "Detta kommer att vara radioknappshjälptexten");
-//dropdown
 define("EXTLAN_HELP_3", "Detta kommer att vara rullgardinshjälptexten");
-//db field
 define("EXTLAN_HELP_4", "<b><i>Värden:</i></b><br />Det skall ALLTID finnas tre värden angivna:<br /><ol><li>dbtable</li><li>fält innehållande ID</li><li>fält innehållande värde</li></ol><br />");
-//textarea
 define("EXTLAN_HELP_5", "Detta kommer att vara textareahjälptexten");
-//integer
 define("EXTLAN_HELP_6", "Detta kommer att vara heltalshjälptexten");
-//date
 define("EXTLAN_HELP_7", "Detta kommer att vara datumhjälptexten");
+
 
 ?>

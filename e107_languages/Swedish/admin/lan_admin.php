@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-01-24 12:44:19 $
+|     $Revision: 1.8 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -86,8 +86,6 @@ define("ADLAN_75", "Sätt cache status");
 define("ADLAN_77", "Det har sänts in nyhetsämnen - klicka här för att se.");
 define("ADLAN_78", "Utökade användarfält");
 define("ADLAN_79", "Redigera utökade användarfält");
-
-
 define("ADLAN_86", "Felaktigt lösenord ");
 define("ADLAN_87", "Administratörsnamn ej funnet i databasen ");
 define("ADLAN_88", "Kan ej logga in ");
@@ -107,10 +105,8 @@ define("ADLAN_101", "Mallskapare");
 define("ADLAN_102", "Det har gått mer än 30 dagar sedan du ändrade ditt huvudadministratörslösenord - ");
 define("ADLAN_103", "Klicka här för att byta det nu");
 define("ADLAN_104", "Säkerhet");
-
 define("ADLAN_105", "Bilder");
 define("ADLAN_106", "Bildhantering");
-
 define("ADLAN_107", "Ej kontrollerade insända nyheter");
 define("ADLAN_108", "Ej kontrollerade filuppladdningar");
 define("ADLAN_109", "Information");
@@ -123,66 +119,48 @@ define("ADLAN_115", "Chattruteinlägg");
 define("ADLAN_116", "Admin logg ...");
 define("ADLAN_117", "Visa alla poster");
 define("ADLAN_118", "Rensa logg");
-
 define("ADLAN_119", "Ej kontrollerade insända länkar");
-
 define("ADLAN_120", "Det finns en databasuppdatering tillgänglig, klicka på knappen för att installera den ...");
 define("ADLAN_121", "Installera");
-
-
 define("ADLAN_123", "Ej kontrollerade insända artiklar");
 define("ADLAN_124", "Ej kontrollerade insända recensioner");
-
 define("ADLAN_125", "Ej kontrollerade rapporterade foruminlägg");
-
 define("ADLAN_126", "Huvudval");
 define("ADLAN_127", "Användare");
 define("ADLAN_128", "Innehåll");
 define("ADLAN_129", "Kommunikation");
 define("ADLAN_130", "Filhantering");
 define("ADLAN_131", "Andra verktyg");
-
 define("ADLAN_132", "Språk");
 define("ADLAN_133", "standard");
-
 define("ADLAN_134", "Status");
 define("ADLAN_135", "Admin logg");
-
 define("ADLAN_136", "E-post");
 define("ADLAN_137", "E-postinställningar och post ut");
-
 define("ADLAN_138", "Sajtlänkar");
 define("ADLAN_139", "Lägg till/redigera/radera länkar");
-
 define("ADLAN_140", "Temahantering");
 define("ADLAN_141", "Installera/sätt teman etc");
-
 define("ADLAN_142", "Sök");
 define("ADLAN_143", "Sök konfiguration");
 define("ADLAN_144", "Du är i enkel-vy läge, för att växla till avancerad-vy");
 define("ADLAN_145", "klicka här");
-
 define("ADLAN_146", "Misslyckade inloggningsförsök");
 define("ADLAN_147", "Filinspektör");
 define("ADLAN_148", "Skanna sajtfiler");
-
 define("ADLAN_149", "Notifiera");
 define("ADLAN_150", "Admin e-postnotifieringar");
-
 define("ADLAN_151", "Huvudsida");
 define("ADLAN_152", "Ange kod");
-
-define('ADLAN_CL_1', 'Inställningar');
-define('ADLAN_CL_2', 'Användare');
-define('ADLAN_CL_3', 'Innehåll');
-define('ADLAN_CL_4', 'Komment.');
-define('ADLAN_CL_5', 'Filer');
-define('ADLAN_CL_6', 'Verktyg');
-define('ADLAN_CL_7', 'Plugins');
-define('ADLAN_CL_8', 'Dokumentation');
-
+define("ADLAN_CL_1", "Inställningar");
+define("ADLAN_CL_2", "Användare");
+define("ADLAN_CL_3", "Innehåll");
+define("ADLAN_CL_4", "Komment.");
+define("ADLAN_CL_5", "Filer");
+define("ADLAN_CL_6", "Verktyg");
+define("ADLAN_CL_7", "Plugins");
+define("ADLAN_CL_8", "Dokumentation");
 define("ADLAN_LAT_1", "Senaste");
-
 define("ADLAN_LAT_2", "Insända nyheter");
 define("ADLAN_LAT_3", "Insända artiklar");
 define("ADLAN_LAT_4", "Insända recensioner");
@@ -190,8 +168,12 @@ define("ADLAN_LAT_5", "Insända länkar");
 define("ADLAN_LAT_6", "Rapporterade foruminlägg");
 define("ADLAN_LAT_7", "Filuppladdningar");
 define("ADLAN_LAT_8", "Det finns omodererade administratörsmeddelanden");
-
-// Common Terms
+define("ADLAN_ERR_1", "Varning!");
+define("ADLAN_ERR_2", "Det finns filer på din server som är kända som säkerhetsrisker. Dessa måste raderas <b>omedelbart</b>. Filerna är relaterade till en äldre version av e107 - version 0.6xx. Vänligen radera följande kataloger med dess innehåll: ");
+define("ADLAN_ERR_3", "Det finns en eller flera filer i dina allmänna uppladningskataloger som inte specificerade i listan över godkända filtyper. Filerna kan ha blivit placerade av en kracker och bör i sådanna fall raderas <b>omedelbart</b>. Du bör <b>inte</b> öppna dessa filer då dessa kan innehålla något slags virus, öppna inte heller filerna i din bläddrare.<br /><br />Om du vet att dessa filer är Ok beror denna varning troligen på att listan över godkända filtyper nyligen har ändrats, filtypen finns ej längre i listan över godkända filtyper. Du behöver återställa filtypen i lisan, (läs under admin => uppladdningar). Du bör inte tillåta uppladdning av .html, .txt etc då en kracker kan nyttja detta genom att ladda upp otrevliga javascript på din sajt. Du bör givetvis inte heller tillåta uppladdning av .php filer eller andra typer av exekveringsbara skript.<br /><br /> Nedan finns en lista över filtyper som kan tänkas innehålla otrevligheter:");
+define("ADLAN_ERR_4", "Hittade fil(er) tillhörande oaktuella plugin");
+define("ADLAN_ERR_5", "Följande filer måste också döpas om");
+define("ADLAN_ERR_6", "Klicka här sedan för att läsa om dina plugin-kataloger.");
 define("LAN_EDIT", "Redigera");
 define("LAN_DELETE", "Radera");
 define("LAN_CREATE", "Skapa");
@@ -199,7 +181,6 @@ define("LAN_UPDATE", "Uppdatera");
 define("LAN_SAVE", "Spara");
 define("LAN_SAVED", "Sparat");
 define("LAN_SETSAVED", "Dina inställningar har sparats");
-define("LAN_ERROR", "Fel");
 define("LAN_CONFIRMDEL", "Vänligen bekräfta att du vill radera");
 define("LAN_OPTIONS", "Val");
 define("LAN_PREFS", "Preferenser");
@@ -211,11 +192,9 @@ define("LAN_DELETED_FAILED", "Misslyckades att radera");
 define("LAN_UPDATED_FAILED", "Uppdatering misslyckades");
 define("LAN_NO_CHANGE", "Ingen uppdatering gjordes eftersom inget ändrats.");
 define("LAN_TRY_AGAIN", "Försök igen.");
-
 define("LAN_RESET", "Återställ");
 define("LAN_CLEAR", "Rensa");
 define("LAN_OK", "OK");
-
 define("LAN_PRESET", "Förinställning");
 define("LAN_PRESET_SAVED", "Förinställning sparad");
 define("LAN_PRESET_DELETED", "Förinställning raderad");
@@ -227,20 +206,31 @@ define("LAN_YES", "Ja");
 define("LAN_NO", "Nej");
 define("LAN_EMPTY", "Det finns inga poster i databasen ännu");
 define("LAN_EXISTING", "Befintliga poster");
-
 define("LAN_CANCEL", "Avbryt");
 define("LAN_CONFDELETE", "Bekräfta radering");
 define("LAN_PLUGIN", "Plugin");
 define("LAN_ORDER", "Ordning");
-
 define("LAN_SELECT", "Välj ...");
 define("LAN_ADMIN", "Admin");
 define("LAN_DISPLAYOPT", "Redigera visningsalternativ");
 define("LAN_GOPAGE", "Gå till sida:");
-define("LAN_DATESTAMP","Datumstämpel");
+define("LAN_DATESTAMP", "Datumstämpel");
 define("LAN_OPTIONAL", "Frivillig");
-define("LAN_INACTIVE","Inaktiv");
+define("LAN_INACTIVE", "Inaktiv");
+define("LAN_BAN", "Ban");
+define("LAN_RATING", "Poäng");
+define("LAN_UPLOAD_IMAGES", "Ladda upp bilder");
+define("LAN_UPLOAD_FILES", "Ladda up filer");
+define("LAN_UPLOAD_ADDFILE", "Lägg till annan fil");
+define("LAN_UPLOAD_CONFIRM", "Eventuella osparade ändringar på sidan kommer förloras. Fortsätta ?");
+define("LAN_UPLOAD_777", "Katalogen saknas eller är ej skrivbar, du behöver ändra följande kataloger med CHMOD 777 före uppladdning:");
+define("LAN_UPLOAD_SERVEROFF", "Detta val är avstängt eftersom filuppladdning inte är aktiverat på din server");
+define("LAN_DISABLED", "Avstängd");
+define("LAN_ENABLED", "Påslagen");
+define("LAN_PRESET_CONFIRMSAVE", "Spara aktuella formulärvärden som standardvärden för denna sida?");
+define("LAN_CONFIGURE", "Konfigurera");
+define("LAN_BACK", "Tillbaka");
+define("LAN_CREDITS", "Om e107:");
 
-define("LAN_BAN","Ban");
 
 ?>

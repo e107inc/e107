@@ -4,13 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-18 06:38:27 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Medlemmar");
-
 define("LAN_20", "Fel");
 define("LAN_112", "E-postadress");
 define("LAN_115", "ICQ-nummer");
@@ -60,7 +59,8 @@ define("LAN_423", "Klicka här för att se användarkommentarer");
 define("LAN_424", "Klicka här för att se foruminlägg");
 define("LAN_425", "Sänd privat meddelande");
 define("LAN_426", "sedan");
-
 define("USERLAN_1", "Peer nivå");
+define("USERLAN_2", "Du har inte rättigheter att visa denna sida.");
+
 
 ?>

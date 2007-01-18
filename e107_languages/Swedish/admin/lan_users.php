@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-01-24 12:44:19 $
+|     $Revision: 1.8 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -21,37 +21,15 @@ define("USRLAN_10", "Användare radera.");
 define("USRLAN_11", "Radering avbruten.");
 define("USRLAN_12", "Du kan inte radera sajtens huvudadministratör.");
 define("USRLAN_13", "Bekräfta att du vill radera denna medlem");
-// define("USRLAN_14", "väl raderad kan posten inte återfås");
-// define("USRLAN_15", "Avbryt");
 define("USRLAN_16", "Bekräfta radering");
 define("USRLAN_17", "Bekräfta radering av användare");
-// define("USRLAN_18", "Användare aktivaterad.");
-// define("USRLAN_19", "Sök");
-// define("USRLAN_20", "Sortera på");
-// define("USRLAN_21", "AnvändarID");
-// define("USRLAN_22", "Användarnamn");
-// define("USRLAN_23", "Besök på sajten");
-// define("USRLAN_24", "Admin status");
-// define("USRLAN_25", "Status");
-// define("USRLAN_26", "Fallande");
-// define("USRLAN_27", "Stigande");
-// define("USRLAN_28", "Sortering");
-
 define("USRLAN_30", "Spärra");
-// define("USRLAN_31", "Spärr -avaktivaterad-");
 define("USRLAN_32", "Aktivera");
 define("USRLAN_33", "Häv spärr");
 define("USRLAN_34", "Ta bort admin status");
 define("USRLAN_35", "Gör till admin");
 define("USRLAN_36", "Sätt klass");
-
-// define("USRLAN_37", "Medlemmar");
-// define("USRLAN_38", "Sökning returnerade");
-// define("USRLAN_39", "resultat");
-// define("USRLAN_40", "Inget definierat");
-
 define("USRLAN_44", "Tillåt att medlemmar laddar upp en figur?");
-
 define("USRLAN_47", "Maximal figurbredd (i pixlar)");
 define("USRLAN_48", "standard är 120");
 define("USRLAN_49", "Maximal figurhöjd (i pixlar)");
@@ -79,29 +57,22 @@ define("USRLAN_70", "Användare skapad");
 define("USRLAN_71", "Användares förstasida");
 define("USRLAN_72", "Snabbaddera användare");
 define("USRLAN_73", "Rensa användare");
-// define("USRLAN_75", "Alternativ");
 define("USRLAN_76", "Användaralternativ");
 define("USRLAN_77", "Befintliga användare");
 define("USRLAN_78", "Användarnamn");
 define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
-
-// define("USRLAN_82", "Är du säker på att du vill radera denna användare?");
 define("USRLAN_84", "Det finns");
 define("USRLAN_85", "användare som inte aktiverat sina konton - klicka nedan för att radera.");
 define("USRLAN_86", "Användare verifierad");
 define("USRLAN_87", "Användarinställningar uppdaterade");
 define("USRLAN_88", "Användarklasser uppdaterade");
-define("USRLAN_89", "Gå till sidan:");
 define("USRLAN_90", "Sök/Uppdatera");
 define("USRLAN_91", "Klass");
 define("USRLAN_92", "Ogiltiga tecken i användarnamn");
-
 define("USRLAN_93", "Radera ej verifierade användare");
 define("USRLAN_94", "Radera registreringar om de ej verifierats inom denna tid - lämna tomt om du inte vill använda denna funktion");
 define("USRLAN_95", "minuter");
-
-
 define("USRLAN_112", "Sänd e-post igen");
 define("USRLAN_113", "Registreringsdetaljer för");
 define("USRLAN_114", "Kära");
@@ -109,38 +80,27 @@ define("USRLAN_115", "Tack för din registrering.");
 define("USRLAN_116", "Vänligen bekräfta att du vill skicka ett nytt bekräftelsebrev till:");
 define("USRLAN_117", "Klicka på knappen nedan för att testa följande e-post:");
 define("USRLAN_118", "Testa e-post");
-
 define("USRLAN_120", "Sätt klasser");
 define("USRLAN_121", "Utskick");
 define("USRLAN_122", "Välkommen till");
 define("USRLAN_123", "Din registrering har tagits emot och konto skapats.");
 define("USRLAN_124", "Ditt konto är i nuläget markerat som inaktivt. För att aktivera kontot, gå till följande länk");
 define("USRLAN_125", "Från");
-
 define("USRLAN_126", "Tillåt användare att betygssätta andra användare");
 define("USRLAN_127", "Tillåt kommentarer i användarprofil");
-
 define("USRLAN_128", "Inloggningsnamn");
-
 define("USRLAN_130", "Aktivera användarspårning online");
 define("USRLAN_131", "Du måste aktivera denna funktion för att använda användarspårning online som online.php, forum online info och online menyer");
 define("USRLAN_132", "Aktivera");
-
 define("USRLAN_133", "Tvinga användare att uppdatera inställningar");
 define("USRLAN_134", "Aktivering av detta alternativ kommer att automatiskt skicka användaren till  sina användarinställningar om ett nödvändigt fält inte är ifyllt.");
-
 define("USRLAN_135", "Ingen IP adress hittades i användarens info, IP inte spärrad");
 define("USRLAN_136", "Flera användare hittades med IP adressen {IP}, IP inte spärrad.");
 define("USRLAN_137", "Användare med IP adressen {IP} spärrade.");
-define("USRLAN_138", "Ej verifierade användare");
-define("USRLAN_139", "Ditt konto har aktiverats.\n\nDu kan nu besöka {SITEURL} och logga in på sajten med den inloggningsinformation du angivit.");
-
-
 define("LAN_MAINADMIN", "Huvudadmin");
 define("LAN_ADMIN", "Admin");
 define("LAN_NOTVERIFIED", "Ej verifierad");
 define("LAN_BANNED", "Spärrad");
-
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Visat namn");
 define("DUSRLAN_3", "Användarnamn");
@@ -178,5 +138,16 @@ define("DUSRLAN_34", "Rättigheter");
 define("DUSRLAN_35", "Foto");
 define("DUSRLAN_36", "Ändta lösenord");
 define("DUSRLAN_37", "XUP");
+define("USRLAN_138", "Ej verifierade användare");
+define("USRLAN_139", "Ditt konto har aktiverats.\n\nDu kan nu besöka {SITEURL} och logga in på sajten med den inloggningsinformation du angivit.");
+define("USRLAN_140", "E-post återsänt till");
+define("USRLAN_141", "Kunde inte återsända E-post till");
+define("USRLAN_142", "med följande aktiveringslänk");
+define("LAN_BOUNCED", "ej godkänd");
+define("USRLAN_143", "Sök efter ej godkända");
+define("USRLAN_144", "Återsänd konfirmering till alla");
+define("USRLAN_145", "Ej godkända användare");
+define("USRLAN_146", "Medlemsinformation är tillgänglig för");
+
 
 ?>

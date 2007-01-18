@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-17 11:39:40 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Installera");
 define("EPL_ADLAN_1", "Avinstallera");
-define("EPL_ADLAN_2", "Är du skäer på att du vill avinstallera denna plugin?");
+define("EPL_ADLAN_2", "Är du säker på att du vill avinstallera denna plugin?");
 define("EPL_ADLAN_3", "Bekräfta avinstallation");
 define("EPL_ADLAN_4", "Avinstallation avbruten.");
 define("EPL_ADLAN_5", "Installationsprocessen kommer att skapa nya preferensinställningar.");
@@ -29,8 +29,6 @@ define("EPL_ADLAN_16", "Plugin information");
 define("EPL_ADLAN_17", "Mer info...");
 define("EPL_ADLAN_18", "Kunde inte skapa tabell(er) för denna plugin.");
 define("EPL_ADLAN_19", "Databastabeller skapades.");
-define("EPL_ADLAN_20", "Preferensinställningar skapades.");
-
 define("EPL_ADLAN_21", "Plugin är redan installerad.");
 define("EPL_ADLAN_22", "Installerad");
 define("EPL_ADLAN_23", "Ej installerad");
@@ -47,7 +45,6 @@ define("EPL_ADLAN_33", "Plugin installerad.");
 define("EPL_ADLAN_34", "Plugin uppdaterad.");
 define("EPL_ADLAN_35", "Tolkinställningar tillagda.");
 define("EPL_ADLAN_36", "Infogning av tolkkod misslyckades, felaktigt formatterad.");
-
 define("EPL_ADLAN_37", "Ladda upp plugin (.zip eller .tar.gz format)");
 define("EPL_ADLAN_38", "Ladda upp plugin");
 define("EPL_ADLAN_39", "Filen kunde inte laddas efterom ".e_PLUGIN." katalogen inte har korrekta rättigheter - ändra till CHMOD 777 och försök igen.");
@@ -57,22 +54,23 @@ define("EPL_ADLAN_42", "Ett fel har uppstått, kan inte packa upp arkivfilen");
 define("EPL_ADLAN_43", "Din plugin har laddats upp och packats upp, bläddra ner för att se din plugin i listan.");
 define("EPL_ADLAN_44", "Auto plugin uppladdning och extrahering är avaktiverat eftersom din pluginfolder inte har korekta rättigheter - ändra din e107_plugins katalog till CHMOD 777.");
 define("EPL_ADLAN_45", "Ditt menyobjekt har laddats upp och extraherats, gå till <a href='".e_ADMIN."menus.php'>din menysida</a> för att aktivera det.");
-
-// define("EPL_CANCEL", "Avbryt"); använd LAN_CANCEL istället!!
-// define("EPL_EMAIL", "e-post");
 define("EPL_WEBSITE", "Webbsajt");
-// define("EPL_OPTIONS", "Alternativ"); använd LAN_OPTIONS istället!
 define("EPL_NOINSTALL", "Ingen installation krävs, aktivera bara från din menysida. För att avinstallera, radera ");
 define("EPL_DIRECTORY", "katalogen.");
 define("EPL_NOINSTALL_1", "Ingen installation krävs. För att ta bort, radera ");
 define("EPL_UPGRADE", "Uppgradera");
-define("EPL_CONFIGURE", "Konfigurera");
-
-define("EPL_ADLAN_46", "RSS inställningar skapades");
-define("EPL_ADLAN_47", "RSS inställningar raderades");
-define("EPL_ADLAN_48", "Kan inte skapa RSS inställningar");
-define("EPL_ADLAN_49", "Kan inte radera RSS inställningar");
-
 define("EPL_ADLAN_50", "Kommentarer raderades.");
+define("EPL_ADLAN_53", "Kan ej skriva till katalogen");
+define("EPL_ADLAN_54", "Vänligen välj hur pluginen ska avinstalleras:");
+define("EPL_ADLAN_55", "Avinstallera plugin");
+define("EPL_ADLAN_57", "Radera pluginens tabeller i databasen");
+define("EPL_ADLAN_58", "Om tabellerna inte raderas kan pluginen bli återinstallerad utan dataförlust. Skapande av tabeller vid en återinstallation kommer ej lyckas. Tabeller kommer behövas raderas manuellt.");
+define("EPL_ADLAN_59", "Radera pluginens filer");
+define("EPL_ADLAN_60", "e107 kommer försöka radera alla filer relaterade till pluginen");
+define("EPL_ADLAN_62", "Avbryt avinstalleringen");
+define("EPL_ADLAN_63", "Avinstallera:");
+define("LAN_UPGRADE_SUCCESSFUL", "Uppgraderingen är färdig");
+define("LAN_INSTALL_SUCCESSFUL", "Installationen är färdig");
+
 
 ?>

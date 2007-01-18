@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_banner.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-27 17:57:02 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -55,11 +55,8 @@ define("BNRLAN_61", "bannermeny ");
 define("BNRLAN_62", "banneralternativ");
 define("BNRLAN_63", "Banner skapad");
 define("BNRLAN_64", "Banner uppdaterad");
-
 define("BANNER_MENU_L1", "Annons");
 define("BANNER_MENU_L2", "Banner menykonfiguration sparad");
-
-//v.617
 define("BANNER_MENU_L3", "Rubrik");
 define("BANNER_MENU_L5", "Bannerkonfiguration");
 define("BANNER_MENU_L6", "Välj kampanjer att visa i menyn");
@@ -70,5 +67,7 @@ define("BANNER_MENU_L10", "Renderingstyp");
 define("BANNER_MENU_L12", "enkel");
 define("BANNER_MENU_L13", "i rubricerad ruta");
 define("BANNER_MENU_L18", "Uppdatera menyinställningar");
+define("BANNER_MENU_L19", "Antal banners att visa:<br />detta används enbart när flera kampenjer körs samtidigt");
+
 
 ?>

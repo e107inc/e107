@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_search.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-01-24 12:44:19 $
+|     $Revision: 1.7 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,6 @@ define("SEALAN_23", "Alternativ:");
 define("SEALAN_24", "Typ");
 define("SEALAN_25", "Användarklass");
 define("SEALAN_26", "Titel prefix");
-
 define("SEALAN_30", "Framhäv nyckelord på refererar till sida:");
 define("SEALAN_31", "PHP begränsad till");
 define("SEALAN_32", "resultat (lämna tomt för obegränsat)");
@@ -42,10 +41,12 @@ define("SEALAN_36", "Rullgardinsmeny");
 define("SEALAN_37", "Kryssrutor");
 define("SEALAN_38", "Radioknappar");
 define("SEALAN_39", "Egna sidor");
+define("LAN_98", "Nyheter");
+define("LAN_197", "Nerladdningar");
+define("LAN_418", "Egna sidor");
 define("SEALAN_40", "Sökalternativ");
 define("SEALAN_41", "Huvudsida");
 define("SEALAN_42", "Preferenser");
-
 define("SEALAN_43", "Redigera sökinställningarna för");
 define("SEALAN_44", "Användarklass som tillåts söka i denna area");
 define("SEALAN_45", "Antal resultat att visa per sida");
@@ -53,5 +54,6 @@ define("SEALAN_46", "Antal tecken att visa i sökningens resultatsummering");
 define("SEALAN_47", "Matcha enbart hela ord:");
 define("SEALAN_48", "Denna inställning gäller enbart om sorteringsmetoden är PHP. Om din sajt innehåller Ideografiska språk som kinesiska eller japanska måste du lämna detta avaktiverat.");
 define("SEALAN_49", "Om din sajt innehåller Ideografiska språk som kinesiska eller japanska måste du använda PHP's sorteringsmetod.");
+
 
 ?>

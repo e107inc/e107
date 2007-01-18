@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-24 12:42:35 $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-18 06:38:27 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("LAN_112", "E-postadress: ");
 define("LAN_113", "Göm e-postaddress?: ");
 define("LAN_114", "Detta hindrar att din e-postadress visas på sajten");
 define("LAN_123", "Registrera");
-define("LAN_185", "Du har lämnat nödvändigt fält tomt");
+define("LAN_185", "Du har lämnat något nödvändigt fält tomt");
 define("LAN_201", "Ja");
 define("LAN_200", "Nej");
 define("LAN_202", "Du har redan ett konto. Om du har glömt ditt lösenord, klicka på \'Glömt lösenord\' länken.");
@@ -54,10 +54,9 @@ define("LAN_SIGNUP_8", "Tack!");
 define("LAN_SIGNUP_9", "Kan inte fortsätta.");
 define("LAN_SIGNUP_10", "Ja");
 define("LAN_SIGNUP_11", ".");
-
 define("LAN_409", "Ogiltiga tecken i användarnamnet");
 define("LAN_410", "Ange koden som visas i bilden");
-
+define("LAN_411", "Ditt val av visat namn finns redan i databasen, vänligen välj ett annat namn");
 define("LAN_SIGNUP_12", "vänligen ha ditt användarnamn och lösenord nerskrivet och sparat på ett säkert ställe, om du förlorar dem kan de ej återfås.");
 define("LAN_SIGNUP_13", "Nu kan du logga in från inloggningsrutan, eller <a href='".e_BASE."login.php'>härifrån</a>.");
 define("LAN_SIGNUP_14", "här");
@@ -77,13 +76,12 @@ define("LAN_SIGNUP_27", "Visa");
 define("LAN_SIGNUP_28", "val av innehåll/e-postlistor");
 define("LAN_SIGNUP_29", " Ett verifieringsbrev kommer att sändas till den e-postadress du anger här, så den måste vara giltig.");
 define("LAN_SIGNUP_30", "Om du inte vill visa din e-postadress på sajten, klicka då i rutan med 'Göm e-postadress'.");
-
 define("LAN_SIGNUP_31", "URL till din XUP fil");
 define("LAN_SIGNUP_32", "Vad är en XUP fil?");
 define("LAN_SIGNUP_33", "Ange sökväg eller välj figur");
 define("LAN_SIGNUP_34", "Observera: En bild som laddas upp till denna serveroch som anses tvivelaktig av administratörerna kommer att omedelbart raderas.");
 define("LAN_SIGNUP_35", "Klicka här för att registrera med en XUP fil");
-
+define("LAN_SIGNUP_36", "Ett fel uppstog när ditt användarkonto skulle skapas, vänligen kontakta sajtens administratör");
 define("LAN_LOGINNAME", "Inloggnginsnamn");
 define("LAN_PASSWORD", "Lösenord");
 define("LAN_USERNAME", "Visa namn");
@@ -91,9 +89,22 @@ define("LAN_EMAIL_01", "Kära");
 define("LAN_EMAIL_04", "Spara detta e-postbrev för din egen referens.");
 define("LAN_EMAIL_05", "Ditt lösenord har krypterats och kan inte återskapas om glömmer bort det. Du kan däremot begära ett nytt lösenord om det skulle hända.");
 define("LAN_EMAIL_06", "Tack för din registrering.");
-
 define("LAN_SIGNUP_37", "Detta steg i registreringen är nu klart. En sajtadministratör måste nu godkänna ditt medlemskap.  När det är gjort kommer du att få ett bekräftelsebrev med e-post som upplyser dig om att medlemskapet har godkänts.");
 define("LAN_SIGNUP_38", "Du angav två olika e-postadresser. Ange en korrekt e-postadress i de två fälten för detta.");
 define("LAN_SIGNUP_39", "Ange e-postadressen igen:");
+define("LAN_SIGNUP_40", "Aktivering är ej nödvändig");
+define("LAN_SIGNUP_41", "Ditt konto är redan aktivierat.");
+define("LAN_SIGNUP_42", "Det uppstog ett problem - ditt registreringsmeddelande blev ej avsänt, vänligen kontakta sajtens administratör.");
+define("LAN_SIGNUP_43", "E-post skickad");
+define("LAN_SIGNUP_44", "Aktiveringsmeddelande skickat till:");
+define("LAN_SIGNUP_45", "Vänligen kontrollera din inbox");
+define("LAN_SIGNUP_47", "Återsänd aktiveringsmeddelande");
+define("LAN_SIGNUP_48", "Användarnamn eller E-postadress");
+define("LAN_SIGNUP_49", "Om du registrerade dig med felaktig E-postadress, skriv den rätta adressen samt ditt lösenord här:");
+define("LAN_SIGNUP_50", "Ny E-postadress");
+define("LAN_SIGNUP_51", "Gammalt lösenord");
+define("LAN_SIGNUP_52", "Felaktigt lösenord");
+define("LAN_SIGNUP_53", "Felaktig validering av inmatade fält ");
+
 
 ?>

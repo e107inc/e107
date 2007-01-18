@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-24 12:44:19 $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -16,7 +16,6 @@ define("DOWLAN_4", "Markera i bekräftelserutan för att radera nerladdningen");
 define("DOWLAN_5", "Det finns inga nerladdningskategorier definierade ännu, innan du definierat någon kan du inte lägga till några nerladdningar.");
 define("DOWLAN_6", "Inga befintliga nerladdningar");
 define("DOWLAN_7", "Befintliga nerladdningar");
-
 define("DOWLAN_11", "Kategori");
 define("DOWLAN_12", "Namn");
 define("DOWLAN_13", "Fil");
@@ -28,19 +27,15 @@ define("DOWLAN_18", "Beskrivning");
 define("DOWLAN_19", "Huvudbild");
 define("DOWLAN_20", "Tumnagelbild");
 define("DOWLAN_21", "Status");
-
 define("DOWLAN_24", "Uppdatera nerladdning");
 define("DOWLAN_25", "Posta nerladdning");
-
 define("DOWLAN_27", "Nerladdning");
-
 define("DOWLAN_29", "Nerladdningars förstasida");
 define("DOWLAN_30", "Skapa nerladdning");
 define("DOWLAN_31", "Kategorier");
 define("DOWLAN_32", "Nerladdningsalternativ");
 define("DOWLAN_33", "Är du säker på att du vill radera denna nerladdning?");
 define("DOWLAN_34", "Är du säker på att du vill radera denna nerladdningskategori?");
-define("DOWLAN_35", "Nerladdning");
 define("DOWLAN_36", "raderad");
 define("DOWLAN_37", "Värd");
 define("DOWLAN_38", "Inga befintliga kategorier");
@@ -55,18 +50,13 @@ define("DOWLAN_46", "Uppdatera kategori");
 define("DOWLAN_47", "Kategori skapad");
 define("DOWLAN_48", "Kategori uppdaterad");
 define("DOWLAN_49", "Nerladdningskategori");
-
 define("DOWLAN_51", "Sök nerladdningar");
 define("DOWLAN_52", "Filer");
 define("DOWLAN_53", "Underkategori");
 define("DOWLAN_54", "Nerladdningsalternativ");
 define("DOWLAN_55", "Antal nerladdningar att visa per sida");
 define("DOWLAN_56", "Sortera på ");
-
-
 define("DOWLAN_59", "Filnamn");
-define("DOWLAN_60", "Författare");
-
 define("DOWLAN_62", "Stigande");
 define("DOWLAN_63", "Fallande");
 define("DOWLAN_64", "Uppdatera alternativ");
@@ -109,7 +99,6 @@ define("DOWLAN_129", "lämna tomt om spegling inte används");
 define("DOWLAN_130", "Lägg till ny spegling");
 define("DOWLAN_131", "Välj lokal fil");
 define("DOWLAN_132", "Ange spegel att använda, sedan nerladdningsadressen");
-
 define("DOWLAN_133", "Spegel uppdaterad i databasen");
 define("DOWLAN_134", "Spegel sparad i databasen");
 define("DOWLAN_135", "Spegel raderad");
@@ -122,15 +111,15 @@ define("DOWLAN_141", "Plats");
 define("DOWLAN_142", "Uppdatera spegel");
 define("DOWLAN_143", "Skapa spegel");
 define("DOWLAN_144", "Inga speglar definierade, gå till speglingssektionen för att lägga till dem.");
-
 define("DOWLAN_145", "Nerladdning synlig för");
 define("DOWLAN_146", "Eget 'Nekad Nerladdning' meddelande eller URL");
-
-
 define("DOWLAN_147", "Ikon för tom kategori");
 define("DOWLAN_148", "Markera för att uppdatera datumstämpeln till nuvarande tid");
 define("DOWLAN_149", "Eller klicka här för att använda en extern fil");
-
 define("DOWLAN_150", "E-posta admin vid rapport om trasig nerladdning");
+define("DOWLAN_151", "Rapportera avbrutna lerladdningar till");
+define("DOWLAN_152", "Kunde inte flytta filen");
+define("DOWLAN_153", "Flytta filen till nerladdningskatalogen");
+
 
 ?>

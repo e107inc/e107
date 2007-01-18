@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-04-19 11:23:10 $
+|     $Revision: 1.7 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,6 @@ define("PRFLAN_27", "T.ex. om du sätter detta till +2 kommer alla tider på din
 define("PRFLAN_28", "Användarregistrering/postning");
 define("PRFLAN_29", "Aktivera användarregistrering?");
 define("PRFLAN_30", "Tillåt användare att registrera sig som medlemmar på din sajt");
-// define("PRFLAN_31", "Använd e-postverifiering för nyregistrering?");
 define("PRFLAN_32", "Tillåt anonym postning?");
 define("PRFLAN_33", "Slå av detta för att enbart tillåta regsitrerade medlemmar att posta kommentarer etc");
 define("PRFLAN_35", "Använd flödningsskydd?");
@@ -73,7 +72,6 @@ define("PRFLAN_87", "Kommentarer");
 define("PRFLAN_88", "Slå på nästlade kommentarer");
 define("PRFLAN_89", "Visa ikon för ny kommentar");
 define("PRFLAN_90", "Tillåt att postare redigerar sina kommentarer");
-
 define("CUSTSIG_1", "Inställningar sparade!");
 define("CUSTSIG_2", "Riktigt namn:");
 define("CUSTSIG_3", "Webbsajt:");
@@ -90,8 +88,6 @@ define("CUSTSIG_16", "Minimum längd på lösenord");
 define("CUSTSIG_17", "Prenumerera på innehåll/e-postutskick");
 define("CUSTSIG_18", "Förbjud användarnamn");
 define("CUSTSIG_19", "Användarnamn innehållande följande text kommer att avslås, separera poster med kommatecken");
-
-define("PRFLAN_31", "E-postverifiering");
 define("PRFLAN_91", "Om någon attackerar din sajt med multipla förfrågningar till din server kommer dennes IP att spärras automatiskt! Ändra inte en fungerande serverkonfiguration!!!");
 define("PRFLAN_92", "Säker registreringsverifiering - dölj lösenord i e-post");
 define("PRFLAN_93", "strftime funktionens sida på php.net");
@@ -149,17 +145,27 @@ define("PRFLAN_148", "Aktivera utvecklarlägesfunktioner. Detta är enbart för 
 define("PRFLAN_149", "Avancerade funktioner");
 define("PRFLAN_150", "Välj e107 autentiseringsmetod");
 define("PRFLAN_151", "e107 - Inga alternativa autentiseringsmetoder installerade");
+define("PRFLAN_31", "E-postverifiering");
 define("PRFLAN_152", "Ingen verifiering");
 define("PRFLAN_153", "Admins godkännande");
 define("PRFLAN_154", "Verifieringsmetod för nya användare<br />Om 'Admins godkännande' är valt rekommenderas att du aktiverar e-postnotifiering vid användarregistrering <a href='".e_ADMIN."notify.php'>här</a>.");
+define("PRFLAN_155", "Visa namn är tillgängligt för");
+define("PRFLAN_156", "Återställ alla visade namn");
+define("PRFLAN_157", "Alla Visade namn har blivit återställda till respektive användarnamn");
+define("PRFLAN_158", "Maxläng på visat namn");
+define("PRFLAN_159", "visa denna sida tillsammans med");
+define("PRFLAN_160", "Kontrollera fjärrservrar när E-postadress verifieras");
+define("PRFLAN_161", "Stäng av alla kommentarer på denna sajt");
+define("PRFLAN_162", "Sajtens kontaktinformation");
+define("PRFLAN_163", "T ex. Företagsnamn, adress, telefon mm.");
+define("PRFLAN_164", "Tllåt användare att E-posta en kopia av kontaktsidan till sig själva");
+define("PRFLAN_165", "Använd detta med försiktighet då det innebär en möjlig öppning för spam");
+define("PRFLAN_166", "Visa smajlys på kommentarssidorna?");
+define("PRFLAN_167", "Gör det frivilligt att ange E-postadress");
+define("PRFLAN_168", "Sajtens kontaktperson(er)");
+define("PRFLAN_169", "Om den valda gruppen innehåller mer än en person blir användaren ombedd att välja en person i gruppen");
+define("PRFLAN_170", "Använd bakåtuppslag för tillåta avstänging på hostnivå");
+define("PRFLAN_171", "Detta val möjliggör för dig att stänga av användare på vårddatornamn- (host) nivå.<br />Not: Detta kan påverkar sidladdningstiden för vissa värdar");
 
-define("PRFLAN_155", "Visningsnamn synligt för");
-define("PRFLAN_156", "Nollställ ALLA visningsnamn");
-define("PRFLAN_157", "Alla visningsnamn är nu satta till samma som inloggningsnamnet.");
-define("PRFLAN_158", "Maximum längd på visningsnamn");
-define("PRFLAN_159", "läser denna sida med");
-
-define("PRFLAN_160", "Kontrollera med extern e-postserver vid validering av e-postadresser.");
-define("PRFLAN_161", "Avaktivera alla kommentarer på sajten");
 
 ?>

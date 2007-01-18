@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_banlist.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -19,5 +19,7 @@ define("BANLAN_8", "Spärra användare");
 define("BANLAN_9", "Spärra användare från sajten");
 define("BANLAN_10", "IP / E-post / Orsak");
 define("BANLAN_11", "Auto-spärra: Fler än 10 misslyckade inloggningsförsök");
+define("BANLAN_12", "Obs: Bakåtuppslag med namn (DNS) är avstängt, denna funktion måste slås på för att kunna spärra på värdnivå. Spärrning med IP och E-post fungerar som tidigare. ");
+
 
 ?>

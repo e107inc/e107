@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/userclass2.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-04-19 11:23:10 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-18 06:38:28 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */

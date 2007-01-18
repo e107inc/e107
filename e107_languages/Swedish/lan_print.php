@@ -4,21 +4,22 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_print.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-18 06:38:27 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Utskriftsvänlig");
+if (!defined("PAGE_NAME")) {define("PAGE_NAME", "Utskriftsvänlig");}
+define("LAN_PRINT_86", "Kategori:");
+define("LAN_PRINT_87", "av");
+define("LAN_PRINT_94", "Skriven av");
+define("LAN_PRINT_135", "Nyhetsartikel:");
+define("LAN_PRINT_303", "Denna nyhetsartikel är från");
+define("LAN_PRINT_304", "Tittel:");
+define("LAN_PRINT_305", "Underrubrik");
+define("LAN_PRINT_306", "Detta är ifrån:");
+define("LAN_PRINT_307", "Skriv ut denna sida");
+define("LAN_PRINT_1", "utskriftsvänlig");
 
-define("LAN_86", "Kategori:");
-define("LAN_87", "av ");
-define("LAN_94", "Postad av");
-define("LAN_135", "Nyhet: ");
-define("LAN_303", "Denna nyhet är från ");
-define("LAN_304", "Rubrik: ");
-define("LAN_305", "Underrubrik: ");
-define("LAN_306", "Detta är från: ");
-define("LAN_307", "Skriv ut sidan");
 
 ?>
