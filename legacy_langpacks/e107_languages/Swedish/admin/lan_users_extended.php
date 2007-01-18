@@ -4,95 +4,90 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 09:33:06 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-18 08:34:59 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Namn");
-define("EXTLAN_2", "F&ouml;rhandsgranska");
-define("EXTLAN_3", "V&auml;rden");
-define("EXTLAN_4", "Kr&auml;vs");
+define("EXTLAN_2", "Förhandsgranska");
+define("EXTLAN_3", "Värden");
+define("EXTLAN_4", "Krävs");
 define("EXTLAN_5", "Applicerbart");
-define("EXTLAN_6", "L&auml;sr&auml;ttigheter");
-define("EXTLAN_7", "Skrivr&auml;ttigheter");
-define("EXTLAN_8", "&Aring;tg&auml;rd");
-define("EXTLAN_9", "Ut&ouml;kade anv&auml;ndarf&auml;lt");
-
-define("EXTLAN_10", "F&auml;ltnamn");
-define("EXTLAN_11", "Detta &auml;r namnet p&aring; f&auml;ltet som det sparas i tabellen, det m&aring;ste vara unikt");
-define("EXTLAN_12", "F&auml;lttext");
-define("EXTLAN_13", "Detta &auml;r namnet p&aring; f&auml;tet som det visas p&aring; sidorna");
-define("EXTLAN_14", "F&auml;lttyp");
-define("EXTLAN_15", "F&auml;lt inkluderad text");
-define("EXTLAN_16", "Standardv&auml;rde");
-define("EXTLAN_17", "Ange varje m&ouml;jligt v&auml;rde p&aring; en egen rad<br />F&ouml;r DB tabell, se hj&auml;lp.");
-define("EXTLAN_18", "Kr&auml;vs");
-define("EXTLAN_19", "Anv&auml;ndare kommer att tvingas ange v&auml;rde i detta f&auml;lt n&auml;r de uppdaterar sina inst&auml;llningar.");
-define("EXTLAN_20", "Avg&ouml;r vilka anv&auml;ndare detta f&auml;lt &auml;r applicerbart p&aring;.");
-define("EXTLAN_21", "Detta avg&ouml;r vilka anv&auml;ndare som kommer att se detta f&auml;lt i sina inst&auml;llningar.");
-define("EXTLAN_22", "Detta avg&ouml;r vem som kan se v&auml;rdet p&aring; anv&auml;ndarsidan.<br />OBS: Att s&auml;tta detta till 'Endast l&auml;sning' g&ouml;r att det enbart &auml;r synligt f&ouml;r admin och medlemmen.");
-define("EXTLAN_23", "L&auml;gg till ut&ouml;kat f&auml;lt");
-define("EXTLAN_24", "Uppdatera ut&ouml;kat f&auml;lt");
+define("EXTLAN_6", "Läsrättigheter");
+define("EXTLAN_7", "Skrivrättigheter");
+define("EXTLAN_8", "Åtgärd");
+define("EXTLAN_9", "Utökade användarfält");
+define("EXTLAN_10", "Fältnamn");
+define("EXTLAN_11", "Detta är namnet på fältet som det sparas i tabellen, det måste vara unikt");
+define("EXTLAN_12", "Fälttext");
+define("EXTLAN_13", "Detta är namnet på fätet som det visas på sidorna");
+define("EXTLAN_14", "Fälttyp");
+define("EXTLAN_15", "Fält inkluderad text");
+define("EXTLAN_16", "Standardvärde");
+define("EXTLAN_17", "Ange varje möjligt värde på en egen rad<br />För DB tabell, se hjälp.");
+define("EXTLAN_18", "Krävs");
+define("EXTLAN_19", "Användare kommer att tvingas ange värde i detta fält när de uppdaterar sina inställningar.");
+define("EXTLAN_20", "Avgör vilka användare detta fält är applicerbart på.");
+define("EXTLAN_21", "Detta avgör vilka användare som kommer att se detta fält i sina inställningar.");
+define("EXTLAN_22", "Detta avgör vem som kan se värdet på användarsidan.<br />OBS: Att sätta detta till 'Endast läsning' gör att det enbart är synligt för admin och medlemmen.");
+define("EXTLAN_23", "Lägg till utökat fält");
+define("EXTLAN_24", "Uppdatera utökat fält");
 define("EXTLAN_25", "flytta ner");
 define("EXTLAN_26", "flytta upp");
-define("EXTLAN_27", "Bekr&auml;fta radering");
-define("EXTLAN_28", "Inga ut&ouml;kade f&auml;lt definierade");
-define("EXTLAN_29", "Ut&ouml;kade anv&auml;ndarf&auml;lt sparade.");
-define("EXTLAN_30", "Ut&ouml;kat f&auml;lt raderat");
-// define("EXTLAN_31", "Meny, ut&ouml;kade f&auml;lt");
-// define("EXTLAN_32", "Ut&ouml;kad f&ouml;rstasida");
+define("EXTLAN_27", "Bekräfta radering");
+define("EXTLAN_28", "Inga utökade fält definierade");
+define("EXTLAN_29", "Utökade användarfält sparade.");
+define("EXTLAN_30", "Utökat fält raderat");
 define("EXTLAN_33", "Avbryt redigering");
-define("EXTLAN_34", "Ut&ouml;kade f&auml;lt");
+define("EXTLAN_34", "Utökade fält");
 define("EXTLAN_35", "Kategorier");
 define("EXTLAN_36", "Ingen tilldelad kategori");
 define("EXTLAN_37", "Inga kategorier definierade");
 define("EXTLAN_38", "Kategorinamn");
-define("EXTLAN_39", "L&auml;gg till kategori");
+define("EXTLAN_39", "Lägg till kategori");
 define("EXTLAN_40", "Kategori skapad");
 define("EXTLAN_41", "Kategori raderad");
 define("EXTLAN_42", "Uppdatera kategori");
 define("EXTLAN_43", "Kategori uppdaterad");
 define("EXTLAN_44", "Kategori");
-define("EXTLAN_45", "L&auml;gg till nytt f&auml;lt");
-define("EXTLAN_46", "Hj&auml;lp");
-define("EXTLAN_47", "L&auml;gg till ny parameter");
-define("EXTLAN_48", "L&auml;gg till nytt v&auml;rde");
-define("EXTLAN_49", "Till&aring;t anv&auml;ndare att d&ouml;lja");
-define("EXTLAN_50", "S&auml;tt detta till ja f&ouml;r att l&aring;ta anv&auml;ndaren att d&ouml;lja detta v&auml;rde f&ouml;r icke-admins");
-define("EXTLAN_51", "Vilken giltig w3c parameter som helst kan anges h&auml;r<br />t.ex &lt;i&gt;&lt;b&gt;class='tbox' size='40' maxlength='80'&lt;/i&gt;&lt;/b&gt;");
+define("EXTLAN_45", "Lägg till nytt fält");
+define("EXTLAN_46", "Hjälp");
+define("EXTLAN_47", "Lägg till ny parameter");
+define("EXTLAN_48", "Lägg till nytt värde");
+define("EXTLAN_49", "Tillåt användare att dölja");
+define("EXTLAN_50", "Sätt detta till ja för att låta användaren att dölja detta värde för icke-admins");
+define("EXTLAN_51", "Vilken giltig w3c parameter som helst kan anges här<br />t.ex <i><b>class='tbox' size='40' maxlength='80'</i></b>");
 define("EXTLAN_52", "regex valideringskod");
-define("EXTLAN_53", "Ange den regex kod som m&aring;ste matchas f&ouml;r att g&ouml;ra det till en giltig inmatning<br />**regex skiljetecken kr&auml;vs**");
+define("EXTLAN_53", "Ange den regex kod som måste matchas för att göra det till en giltig inmatning<br />**regex skiljetecken krävs**");
 define("EXTLAN_54", "regex feltext");
 define("EXTLAN_55", "Ange felmeddelandet som skall visas om regex valideringen misslyckas.");
-define("EXTLAN_56", "F&ouml;rdefinierade f&auml;lt");
+define("EXTLAN_56", "Fördefinierade fält");
 define("EXTLAN_57", "Aktiverad");
 define("EXTLAN_58", "Ej aktiverad");
 define("EXTLAN_59", "Aktivera");
 define("EXTLAN_60", "Avaktivera");
 define("EXTLAN_61", "Ingen");
+define("EXTLAN_62", "Välj tabell");
+define("EXTLAN_63", "Välj fält-ID");
+define("EXTLAN_64", "Välj visat värde");
+define("EXTLAN_65", "Nej - Kommer ej att visas på registreringssidan");
+define("EXTLAN_66", "Ja - Kommer att visas på registreringssidan");
+define("EXTLAN_67", "Nej - Visas på registreringssidan");
+define("EXTLAN_68", "Fält:");
+define("EXTLAN_69", "blev aktiverad");
+define("EXTLAN_70", "Fel!, fält:");
+define("EXTLAN_71", "blev inte aktiverad!");
+define("EXTLAN_72", "har blivit deaktiverad");
+define("EXTLAN_73", "var inte deaktiverad!");
+define("EXTLAN_74", "är ett reserverat namn och får inte användas.");
+define("EXTLAN_HELP_1", "<b><i>Parametrar:</i></b><br />size - storlek på fält<br />maxlength - max fältlängd<br /><br />class - fältets css klass<br />style - css stilsträng<br /><br />regex - regex valideringskod<br />regexfail - validering feltext");
+define("EXTLAN_HELP_2", "Detta kommer att vara radioknappshjälptexten");
+define("EXTLAN_HELP_3", "Detta kommer att vara rullgardinshjälptexten");
+define("EXTLAN_HELP_4", "<b><i>Värden:</i></b><br />Det skall ALLTID finnas tre värden angivna:<br /><ol><li>dbtable</li><li>fält innehållande ID</li><li>fält innehållande värde</li></ol><br />");
+define("EXTLAN_HELP_5", "Detta kommer att vara textareahjälptexten");
+define("EXTLAN_HELP_6", "Detta kommer att vara heltalshjälptexten");
+define("EXTLAN_HELP_7", "Detta kommer att vara datumhjälptexten");
 
-define("EXTLAN_62", "V&auml;lj tabell");
-define("EXTLAN_63", "V&auml;lj f&auml;lt-ID");
-define("EXTLAN_64", "V&auml;lj visat v&auml;rde");
-
-define("EXTLAN_65", "Nej - Kommer ej att visas p&aring; registreringssidan");
-define("EXTLAN_66", "Ja - Kommer att visas p&aring; registreringssidan");
-define("EXTLAN_67", "Nej - Visas p&aring; registreringssidan");
-
-//textbox
-define("EXTLAN_HELP_1", "&lt;b&gt;&lt;i&gt;Parametrar:&lt;/i&gt;&lt;/b&gt;<br />size - storlek p&aring; f&auml;lt<br />maxlength - max f&auml;ltl&auml;ngd<br /><br />class - f&auml;ltets css klass<br />style - css stilstr&auml;ng<br /><br />regex - regex valideringskod<br />regexfail - validering feltext");
-//radio buttons
-define("EXTLAN_HELP_2", "Detta kommer att vara radioknappshj&auml;lptexten");
-//dropdown
-define("EXTLAN_HELP_3", "Detta kommer att vara rullgardinshj&auml;lptexten");
-//db field
-define("EXTLAN_HELP_4", "&lt;b&gt;&lt;i&gt;V&auml;rden:&lt;/i&gt;&lt;/b&gt;<br />Det skall ALLTID finnas tre v&auml;rden angivna:<br />&lt;ol&gt;&lt;li&gt;dbtable&lt;/li&gt;&lt;li&gt;f&auml;lt inneh&aring;llande ID&lt;/li&gt;&lt;li&gt;f&auml;lt inneh&aring;llande v&auml;rde&lt;/li&gt;&lt;/ol&gt;<br />");
-//textarea
-define("EXTLAN_HELP_5", "Detta kommer att vara textareahj&auml;lptexten");
-//integer
-define("EXTLAN_HELP_6", "Detta kommer att vara heltalshj&auml;lptexten");
-//date
-define("EXTLAN_HELP_7", "Detta kommer att vara datumhj&auml;lptexten");
 
 ?>

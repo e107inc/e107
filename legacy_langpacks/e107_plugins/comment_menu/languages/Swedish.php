@@ -4,20 +4,24 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/comment_menu/languages/Swedish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-04-19 09:33:06 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-18 08:35:06 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("CM_L1", "Inga kommentarer &auml;nnu.");
-define("CM_L2", "");
+define("CM_L1", "Inga kommentarer ännu.");
+define("CM_L2", " ");
 define("CM_L3", "Rubrik");
 define("CM_L4", "Antal kommentarer att visa?");
 define("CM_L5", "Antal tecken att visa?");
-define("CM_L6", "Postfix f&ouml;r f&ouml;r l&aring;nga kommentarer?");
+define("CM_L6", "Postfix för för långa kommentarer?");
 define("CM_L7", "Visa originaltitel i meny?");
-define("CM_L8", "Konfiguration f&ouml;r nya kommentarer");
-define("CM_L9", "Uppdatera menyinst&auml;llningar");
+define("CM_L8", "Konfiguration för nya kommentarer");
+define("CM_L9", "Uppdatera menyinställningar");
 define("CM_L10", "Kommentarsmeny konfiguration sparad");
+define("CM_L11", "på");
+define("CM_L12", "Sv:");
+define("CM_L13", "Postad av");
+
 
 ?>
