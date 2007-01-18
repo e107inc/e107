@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2007-01-07 15:24:48 $
-|     $Author: e107steved $
+|     $Revision: 1.107 $
+|     $Date: 2007-01-18 01:32:01 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -402,10 +402,12 @@ if (isset($_POST['register']))
 	  $error = TRUE;
 	}
 	
+global $db_debug;
 	// Check for disallowed names.
-	if(isset($pref['signup_disallow_text']))
+	if(varsettrue($pref['signup_disallow_text']))
 	{
 		$tmp = explode(",", $pref['signup_disallow_text']);
+		if (E107_DEBUG_LEVEL) $db_debug->log('disallowed ('.count($tmp).'), like "'.$tmp[0].'"');
 		foreach($tmp as $disallow)
 		{
 			if( strstr($_POST['name'], $disallow) || strstr($_POST['loginname'], $disallow) ){
