@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.327 $
-|     $Date: 2007-01-07 15:24:48 $
-|     $Author: e107steved $
+|     $Revision: 1.328 $
+|     $Date: 2007-01-18 01:37:46 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 //
@@ -717,6 +717,8 @@ $sql->db_Mark_Time('Start: Get menus');
 
 $menu_data = $e107cache->retrieve("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
 $menu_data = $eArrayStorage->ReadArray($menu_data);
+$eMenuList=array();
+$eMenuActive=array();
 if(!is_array($menu_data)) {
 	if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCLASS_LIST.") ORDER BY menu_order")) {
 		while ($row = $sql->db_Fetch()) {
