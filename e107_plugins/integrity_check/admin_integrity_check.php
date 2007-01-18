@@ -505,17 +505,16 @@ if (is_writable($o_path)) {
 		</tr></table></form></div>";
 }
 $text .= "<br /><br /><br /><a href='".e_SELF."?header'>".Integ_26."</a><br />";
-	
+$text .= "<script LANGUAGE=\"JavaScript\" type=\"text/javascript\">
+<!--
+function hex_strReplace(a, b, c){
+return a.split(b).join(c);
+}
+// -->
+</script>";	
 
 $ns->tablerender(Integ_13, $text);
 	
 require_once(e_ADMIN.'footer.php');
 ?>
 
-<script LANGUAGE="JavaScript" type="text/javascript">
-<!--
-function hex_strReplace(a, b, c){
-return a.split(b).join(c);
-}
-// -->
-</script>
