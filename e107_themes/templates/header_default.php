@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2006-12-07 12:52:43 $
+|     $Revision: 1.103 $
+|     $Date: 2007-01-18 00:36:16 $
 |     $Author: mrpete $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -279,7 +279,7 @@ if (isset($script_text) && $script_text) {
 //
 // I: Calculate JS onload() functions for the BODY tag
 //
-
+global $eMenuActive;
 $fader_onload='';
 if(in_array('fader_menu', $eMenuActive))
 {
