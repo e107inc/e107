@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2006-12-24 23:31:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.73 $
+|     $Date: 2007-01-18 01:35:13 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -436,9 +436,9 @@ if (!$FORUMPOST) {
 	if (is_readable(THEME."forum_post_template.php")) {
 		include_once(THEME."forum_post_template.php");
 	}
-}
+}else {
 include_once(e_PLUGIN."forum/templates/forum_post_template.php");
-
+}
 /* check post access (bugtracker #1424) */
 
 if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='$id'"))
