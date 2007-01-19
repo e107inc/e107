@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e107.js,v $
-|	$Revision: 1.2 $
-|	$Date: 2007-01-17 13:04:50 $
-|	$Author: mrpete $
+|	$Revision: 1.3 $
+|	$Date: 2007-01-19 20:47:04 $
+|	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -205,6 +205,17 @@ function mozWrap(txtarea, open, close){
 	return;
 }
 
+function mozSwap(txtarea, newtext){
+	var selLength = txtarea.textLength;
+	var selStart = txtarea.selectionStart;
+	var selEnd = txtarea.selectionEnd;
+	if (selEnd == 1 || selEnd == 2) selEnd = selLength;
+	var s1 = (txtarea.value).substring(0,selStart);
+	var s3 = (txtarea.value).substring(selEnd, selLength);
+	txtarea.value = s1 + newtext + s3;
+	return;
+}
+
 function storeCaret (textAr){
 	e107_selectedInputArea = textAr;
 	if (textAr.createTextRange){
@@ -212,20 +223,39 @@ function storeCaret (textAr){
 	}
 }
 
-function addtext(text, emote){
-	if (window.e107_selectedInputArea){
+function addtext(text, emote)
+{
+	if (window.e107_selectedInputArea)
+	{
 		var ta = e107_selectedInputArea;
-		if (emote != true){
+		if (emote != true)
+		{  // Split if its a paired bbcode
 			val = text.split('][');
-			}
-		else { val = text; }
+			if (val[0] == text) val[1] = '';
+		}
+		else 
+		{ 
+		val = text; 
+		}
 
-		if ((clientVer >= 4) && is_ie && is_win){
+		if ((clientVer >= 4) && is_ie && is_win)
+		{
 			theSelection = document.selection.createRange().text; /* wrap selected text */
-			if (theSelection) {
-				if (emote != true){
+			if (theSelection) 
+			{
+				if (emote != true)
+				{
+				  if (val[1] == '')
+				  {  // Single piece of text
+					document.selection.createRange().text = val[0];
+				  }
+				  else
+				  {  // bbcode
 					document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
-				} else {
+				  }
+				} 
+				else 
+				{
 					document.selection.createRange().text = val + theSelection;
 				}
 				ta.focus();
@@ -233,26 +263,45 @@ function addtext(text, emote){
 				return;
 			}
 
-		}else if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0)){
-			if (emote != true){
+		}
+		else 
+		  if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0))
+		  { // Selected text here
+			if (emote != true)
+			{
+			  if  (val[1] != '')
+			  {  // BBCode to wrap
 				mozWrap(ta, val[0] +']', '[' + val[1]); /* wrap selected text */
-			} else {
+			  }
+			  else
+			  {  // Single piece of text to insert, and delete any selected text
+				mozSwap(ta, text); /* wrap selected text */
+			  }
+			} 
+			else 
+			{
 				mozWrap(ta, val, ''); /* wrap selected text */
 			}
 			return;
-		}
+		  }
 		text = ' ' + text + ' ';
-		if (ta.createTextRange && e107_selectedRange) {
+		if (ta.createTextRange && e107_selectedRange) 
+		{
 			var caretPos = e107_selectedRange; /* IE */
 			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? caretPos.text + text + ' ' : caretPos.text + text;
-		} else if (ta.selectionStart || ta.selectionStart == '0') { /* Moz */
+		} 
+		else 
+		  if (ta.selectionStart || ta.selectionStart == '0') 
+		  { /* Moz */
 		   	var startPos = ta.selectionStart;
 			var endPos = ta.selectionEnd;
 			var charb4 = ta.value.charAt(endPos-1);
 			ta.value = ta.value.substring(0, endPos)+ text + ta.value.substring(endPos);
-		} else {
+		  } 
+		  else 
+		  {
 			ta.value  += text;
-		}
+		  }
 		ta.focus();
 	}
 }
