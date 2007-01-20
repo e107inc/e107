@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_contact.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-22 21:27:05 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-20 10:18:28 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
-
 define("LANCONTACT_01", "Kapcsolat részletei");
 define("LANCONTACT_02", "Kapcsolat");
 define("LANCONTACT_03", "Írd be a neved:");
@@ -24,12 +23,7 @@ define("LANCONTACT_11", "Az email címed érvénytelen.\\nEllenőrizd, majd pró
 define("LANCONTACT_12", "Az üzeneted nagyon rövid.");
 define("LANCONTACT_13", "Add meg az üzenet tárgyát.");
 
-
 define("LANCONTACT_14", "Üzenet küldése a következőnek:");
 define("LANCONTACT_15", "Érvénytelen kódot írtál be");
 define("LANCONTACT_16", "Kód beírása");
-
-
-
-
 ?>

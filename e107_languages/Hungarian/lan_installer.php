@@ -4,14 +4,12 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_installer.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-13 17:01:14 $
+|     $Revision: 1.7 $
+|     $Date: 2007-01-20 10:18:28 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
 define("LANINS_001", "e107 Telepítés");
-
-
 define("LANINS_002", "Szakasz ");
 define("LANINS_003", "1");
 define("LANINS_004", "Nyelv kiválasztása");
@@ -35,9 +33,7 @@ define("LANINS_020", "Telepítés folytatása");
 define("LANINS_021", "2");
 define("LANINS_022", "MySQL Szerver Adatok");
 define("LANINS_023", "Írd be a MySQL beállításokat.
-
 Ha root jogosultsággal rendelkezel, akkor létre tudsz hozni új adatbázist a jelölődoboz bejelölésével. Ha nem szükséges vagy már létezik, ne jelöld be.
-
 Ha csak egy adatbázissal rendelkezel, használd a prefix-et (előtag), hogy más script-ek is használhassák az adatbázist.
 Ha nem ismered a MySQL adatait, lépj kapcsolatba a kiszolgálóval.");
 define("LANINS_024", "MySQL Szerver:");
@@ -74,46 +70,33 @@ define("LANINS_054", " mielőtt folytatnád");
 define("LANINS_055", "Telepítés visszaigazolása");
 define("LANINS_056", "6");
 define("LANINS_057", " e107 rendelkezik a telepítéshez szükséges összes információval.
-
 Katt a gombra az adatbázis táblák létrehozásához és a beállítások mentéséhez.
-
 ");
 define("LANINS_058", "7");
 define("LANINS_060", "A sql adat file olvasása sikertelen
-
 Ellenőrizd a <b>core_sql.php</b> file létezését az <b>/e107_admin/sql</b> könyvtárban.");
 define("LANINS_061", "Az e107 nem tudta létrehozni az összes, szükséges adatbázis táblát.
 Töröld az adatbázist, az ismételt telepítés előtt javítani kell a problémát.");
-
 define("LANINS_062", "[b]Köszöntelek az új weboldaladon![/b]
 e107 telepítése sikeres, megkezdheted a tartalom feltöltését.<br />Az adminisztrációs felületed [link=e107_admin/admin.php]itt található[/link], katt a belépéshez. A bejelentkezéshez használd a telepítés folyamán megadott felhasználónevet és jelszót.
-
 [b]Támogatás[/b]
 e107 főoldala: [link=http://e107.org]http://e107.org[/link], itt megtalálhatod a FAQ-t és a dokumentációt.
 e107 Magyarország főoldala: [link=http://e107hungary.org]http://e107hungary.org[/link], a magyar e107 TEAM oldala.
 Source: [link=http://source.e107hungary.org]http://source.e107hungary.org[/link], Plugin-ok, theme-k, módosítások, ...
 Fórumok: [link=http://e107hungary.org/e107_plugins/forum/forum.php]http://e107hungary.org/e107_plugins/forum/forum.php[/link]
-
 [b]Letöltések[/b]
 Plugin-ok: [link=http://e107coders.org]http://e107coders.org[/link]
 Theme-ek: [link=http://e107themes.org]http://e107themes.org[/link]
-
 Köszönjük, hogy kipróbálod az e107-t, bízunk benne, hogy mindent megtalálsz, amire szükséged van.
 (Törölheted ezt az üzenetet az admin felületen.)");
-
 define("LANINS_063", "Köszöntelek az e107 rendszerében!");
-
 define("LANINS_069", "e107 sikeresen telepítve!
-
 A biztonság érdekében írd át a <b>e107_config.php</b> file jogosultságát 644-re.
-
 Ezenkívül, töröld az install.php file-t a szerverről a lenti gomb megnyomása után
 ");
 define("LANINS_070", "e107 nem tudta elmenteni a fő beállításokat a szerverre.
-
 Ellenőrizd az <b>e107_config.php</b> file megfelelő jogosultságát");
 define("LANINS_071", "Telepítés befejezése");
-
 define("LANINS_072", "Adminisztrátor Felhasználónév");
 define("LANINS_073", "Ezzel a névvel tudsz belépni az oldalra. Ha akarod megadhatod ugyanezt a nevet a megjelenítéshez is");
 define("LANINS_074", "Adminisztrátor Megjelenő név");
@@ -124,16 +107,12 @@ define("LANINS_078", "Adminisztrátor Jelszó Megerősítés");
 define("LANINS_079", "Írd be újra a jelszót");
 define("LANINS_080", "Adminisztrátor Email");
 define("LANINS_081", "Írd be az email címedet");
-
 define("LANINS_082", "user@yoursite.com");
-
 // Better table creation error reporting
 define("LANINS_083", "MySQL Jelentett hiba:");
 define("LANINS_084", "A telepítő nem tud kapcsolódni az adatbázishoz");
 define("LANINS_085", "A telepítő nem tudja kiválasztani az adatbázist:");
-
 define("LANINS_086", "Admin Felhasználónév, Admin Jelszó és Admin Email <b>kötelező</b> mezők. Lépj vissza az előző oldalra és írd be a megfelelő információkat.");
-
 define("LANINS_087", "Egyéb");
 define("LANINS_088", "Kezdőlap");
 define("LANINS_089", "Letöltések");
