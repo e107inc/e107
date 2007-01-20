@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/consolidate.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-01-18 21:48:49 $
+|     $Revision: 1.14 $
+|     $Date: 2007-01-20 15:32:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -243,7 +243,7 @@ function createLog($mode="default")
 	$varStart."screenInfo = array();\n".
 	$varStart."browserInfo = array();\n".
 	$varStart."osInfo = array();\n".
-	$varStart."pageInfo = array();\n";
+	$varStart."pageInfo = array(\n";
 
 	if($mode == "default") 
 	{
