@@ -11,9 +11,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.1.1.1 $
-| $Date: 2006-12-02 04:35:13 $
-| $Author: mcfly_e107 $
+| $Revision: 1.2 $
+| $Date: 2007-01-20 16:18:12 $
+| $Author: mrpete $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -58,7 +58,7 @@ if (isset($_POST['deletepollconfirm'])) {
 	$thread_name = str_replace("[poll] ", "", $thread_name);
 	$sql->db_Update("forum_t", "thread_name='$thread_name' WHERE thread_id='$thread_id' ");
 	$message = FORLAN_5;
-	$url = e_PLUGIN."forum/forum_viewtopic.php?".$forum_id.".".$thread_id;
+	$url = e_PLUGIN."forum/forum_viewtopic.php?".$thread_id;
 }
 	
 if (isset($_POST['move']))
