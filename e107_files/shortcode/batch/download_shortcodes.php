@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-01-17 21:29:28 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-01-20 16:09:53 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -155,7 +155,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY_DESCRIPTION
 global $tp,$dl;
-$text = $tp -> toHTML($dl['download_category_description'], TRUE,'hook=description');
+$text = $tp -> toHTML($dl['download_category_description'], TRUE,'description');
 if($parm){
 	return substr($text,0,$parm);
 }else{
@@ -204,7 +204,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_DESCRIPTION
 global $tp, $dl;
 $maxlen = ($parm ? intval($parm) : 0);
-$text = ($dl['download_description'] ?  $tp->toHTML($dl['download_description'], TRUE, 'hook=description') : "");
+$text = ($dl['download_description'] ?  $tp->toHTML($dl['download_description'], TRUE, 'description') : "");
 if($maxlen){
 	return substr($text, 0, $maxlen);
 }else{

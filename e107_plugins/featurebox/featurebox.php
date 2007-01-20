@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/featurebox.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-17 21:29:28 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-20 16:19:43 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,8 +50,8 @@ else
 }
 
 $fbcc = $fb_title;
-$fb_title = $tp -> toHTML($fb_title, TRUE,'hook=title');
-$fb_text = $tp -> toHTML($fb_text, TRUE,'hook=content');
+$fb_title = $tp -> toHTML($fb_title, TRUE,'title');
+$fb_text = $tp -> toHTML($fb_text, TRUE,'body');
 if(!$fb_rendertype)
 {
 	$ns -> tablerender($fb_title, $fb_text, 'featurebox');
