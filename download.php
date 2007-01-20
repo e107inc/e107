@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.8 $ - with modifications
-|     $Date: 2007-01-17 21:29:28 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $ - with modifications
+|     $Date: 2007-01-20 14:52:34 $
+|     $Author: mrpete $
 |
 +----------------------------------------------------------------------------+
 */
@@ -277,7 +277,7 @@ if ($action == "list") {
 	$DOWNLOAD_CATEGORY_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 
 	$DOWNLOAD_CATEGORY = $tp->toHTML($download_category_name,FALSE,"emotes_off, no_make_clickable");
-	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE,'hook=description');
+	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE,'description');
 
 	if (!$DOWNLOAD_LIST_TABLE) {
 		if (file_exists(THEME."download_template.php")) {
@@ -653,7 +653,7 @@ function parse_download_cat_child_table($row)
 	$dcatname=$tp->toHTML($row['download_category_name'],FALSE,"emotes_off, no_make_clickable");
 	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>" : $dcatname);
 	$DOWNLOAD_CAT_SUB_NAME_LINKED = "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>";
-	$DOWNLOAD_CAT_SUB_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'hook=description');
+	$DOWNLOAD_CAT_SUB_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'description');
 	$DOWNLOAD_CAT_SUB_COUNT = $row['d_count'];
 	$DOWNLOAD_CAT_SUB_SIZE = parsesize( $row['d_size']);
 	$DOWNLOAD_CAT_SUB_DOWNLOADED = intval( $row['d_requests']);
@@ -662,7 +662,7 @@ function parse_download_cat_child_table($row)
 	foreach($row['subsubcats'] as $subrow)
 	{
 	  $DOWNLOAD_CAT_SUBSUB_ICON = get_cat_icons($subrow['download_category_icon'],$subrow['d_count']);
-	  $DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $tp->toHTML($subrow['download_category_description'],TRUE,'hook=description');
+	  $DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $tp->toHTML($subrow['download_category_description'],TRUE,'description');
 	  $DOWNLOAD_CAT_SUBSUB_COUNT = intval($subrow['d_count']);
 	  $DOWNLOAD_CAT_SUBSUB_SIZE = parsesize($subrow['d_size']);
 	  $DOWNLOAD_CAT_SUBSUB_DOWNLOADED = intval($subrow['d_requests']);
