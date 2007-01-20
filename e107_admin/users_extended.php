@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-20 16:04:05 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-20 16:54:48 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -652,12 +652,12 @@ class users_ext
 				if($i > 0)
 				{
 					$text .= "
-					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}.{$i}' />
+					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}.{$i}' />
 					";
 				}
 				if($i <= count($catList)-2)
 				{
-					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}.{$i}' />";
+					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}.{$i}' />";
 				}
 				$text .= "
 				</form>
