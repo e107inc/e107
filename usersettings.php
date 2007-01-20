@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2006-12-31 18:49:19 $
-|     $Author: e107coders $
+|     $Revision: 1.83 $
+|     $Date: 2007-01-20 05:09:36 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -176,7 +176,7 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !=".USERID."' ")) {
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".USERID."' ")) {
 	  	$error .= LAN_408."\\n";
 	}
 
