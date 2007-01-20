@@ -215,7 +215,7 @@ $NEWSLISTSTYLE = "<table cellpadding='0' cellspacing='0' style='margin-bottom:3p
 
 $NEWSCAT = "\n\n\n\n<!-- News Category -->\n\n\n\n
 	<div style='padding:2px;padding-bottom:12px'>
-	<div class='leftcap' style='vertical-align:center'>
+	<div class='leftcap' style='vertical-align:middle'>
 	{NEWSCATICON}
 	&nbsp;<span style='vertical-align:top;margin-top:3px'>
 	{NEWSCATEGORY}
