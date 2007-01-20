@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-18 20:52:00 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-20 16:04:05 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -632,6 +632,13 @@ class users_ext
 			$i=0;
 			foreach($catList as $ext)
 			{
+				if ($ext['user_extended_struct_order'] != $i)
+				{
+					$ext['user_extended_struct_order'] = $i;
+					$xID=$ext['user_extended_struct_id'];
+					$sql->db_Update("user_extended_struct", "user_extended_struct_order=$i WHERE user_extended_struct_type = 0 AND user_extended_struct_id=$xID");
+				}
+
 				$text .= "
 				<td class='forumheader3'>{$ext['user_extended_struct_name']}</td>
 				</td>
@@ -645,12 +652,12 @@ class users_ext
 				if($i > 0)
 				{
 					$text .= "
-					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}' />
+					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}.{$i}' />
 					";
 				}
 				if($i <= count($catList)-2)
 				{
-					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}' />";
+					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}.{$i}' />";
 				}
 				$text .= "
 				</form>
