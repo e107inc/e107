@@ -1,4 +1,4 @@
-// $Id: wmessage.sc,v 1.19 2007-01-17 21:29:09 e107steved Exp $
+// $Id: wmessage.sc,v 1.20 2007-01-20 05:11:40 mrpete Exp $
 $prefwmsc = isset($pref['wmessage_sc']) && $pref['wmessage_sc'];
 if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 	return;
@@ -59,9 +59,9 @@ if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 			{
 				while ($row = $sql->db_Fetch())
 				{
-					$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc, defs, hook=content', 'admin')."<br />";
+					$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin')."<br />";
 					if(!$wmcaption){
-						$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'defs, hook=title');
+						$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
 					}
 				}
 			}

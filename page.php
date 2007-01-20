@@ -10,11 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|	Modified to support new hooking scheme
-|
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2007-01-18 01:13:40 $
+|     $Revision: 1.38 $
+|     $Date: 2007-01-20 05:10:45 $
 |     $Author: mrpete $
 |
 +----------------------------------------------------------------------------+
@@ -231,7 +229,7 @@ class pageClass
 		}
 		else
 		{
-			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'parse_sc, constants,hook=content');
+			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'BODY');
 			return;
 		}
 		
@@ -267,11 +265,11 @@ class pageClass
 		foreach($this -> pageTitles as $title)
 		{
 			$titlep = preg_replace("/\[newpage=(.*?)\]/", "\\1", $title);
-			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? LAN_PAGE_13." ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'parse_sc, constants,emotes_off,no_make_clickable,hook=title'));
+			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? LAN_PAGE_13." ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'TITLE'));
 			$count++;
 		}
 
-		$this -> pageToRender = $tp -> toHTML($pages[$this -> pageSelected], TRUE, 'parse_sc,constants,hook=content');
+		$this -> pageToRender = $tp -> toHTML($pages[$this -> pageSelected], TRUE, 'BODY');
 		$this -> title = (substr($this -> pageTitles[$this -> pageSelected], -1) == ";" ? "" : $this -> pageTitles[$this -> pageSelected]);
 
 		if($this -> debug)
