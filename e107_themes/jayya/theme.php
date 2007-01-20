@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-20 16:29:24 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,11 +71,11 @@ $HEADER = "<table class='page_container'>
 </div>
 
 <table class='main_section'>
-<tr style='display: none'>
-<td style='width: 170px'></td>
-<td style='width: auto'></td>
-<td style='width: 170px'></td>
-</tr>
+<colgroup>
+<col style='width: 170px' />
+<col style='width: auto' />
+<col style='width: 170px' />
+</colgroup>
 
 <tr>
 <td class='left_menu'>
