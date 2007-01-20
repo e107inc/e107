@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-20 16:26:28 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,10 +38,10 @@ define("LIST_ADMIN_9", "open");
 define("LIST_ADMIN_10", "closed");
 define("LIST_ADMIN_11", "update");
 define("LIST_ADMIN_12", "choose");
-define("LIST_ADMIN_13", "Welcome on the Recent page of ".SITENAME." ! This page shows for the most common sections of this site a list with the most recent additions in these sections.");
+define("LIST_ADMIN_13", "Welcome to the Recent page of ".SITENAME." ! This page shows, for the most common sections of this site, a list of the most recent additions in these sections.");
 define("LIST_ADMIN_14", "recent additions");
 define("LIST_ADMIN_15", "new since your last visit");
-define("LIST_ADMIN_16", "Welcome on the New page of ".SITENAME." ! This page shows for the most common sections of this site a list with the additions in these sections since your last visit.");
+define("LIST_ADMIN_16", "Welcome to the New page of ".SITENAME." ! This page shows, for the most common sections of this site, a list of the additions in these sections since your last visit.");
 
 define("LIST_ADMIN_SECT_1", "sections");
 define("LIST_ADMIN_SECT_2", "choose which sections to show");
