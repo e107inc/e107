@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/forum_mod.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-17 20:47:09 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-20 16:15:57 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,7 +80,7 @@ function forum_delete_thread($thread_id) {
 			$pages = ((ceil($replies / $pref['forum_postspage']) -1) * $pref['forum_postspage']);
 		}
 		 
-		$url = e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent.($pages ? ".$pages" : "");
+		$url = e_BASE."forum_viewtopic.php?".$thread_parent.($pages ? ".$pages" : "");
 		// set return url
 		return FORLAN_26;
 	} else {
@@ -98,4 +98,4 @@ function forum_delete_thread($thread_id) {
 		return FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
 	}
 }
-?>	
+?>
