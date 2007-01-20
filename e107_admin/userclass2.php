@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-20 15:59:42 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -294,14 +294,53 @@ if(isset($_POST['edit']))
 		</td></tr>
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>
 		<input class='button' type='button' value='".UCSLAN_19." ".$userclass_name." ".UCSLAN_20."' onclick='saveMe($userclass_id);' />
-		</tr>
 		</td>
+		</tr>
 		</table>";
 
 }
 
 $text .= "</form>
 	</div>";
+
+//
+// Show a table of all userclasses and who can manage them
+//
+// lazy get list again
+$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
+
+$text .= "<br /><div style='text-align:center'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
+	<tr>
+	<td class='fcaption'>".UCSLAN_12."</td>
+	<td class='fcaption'>".UCSLAN_24."</td>
+	<td class='fcaption'>".UCSLAN_13."</td>
+	</tr>\n";
+	
+if ($class_total == "0")
+{
+	$text .= "<tr><td colspan='3'>".UCSLAN_7."</td></tr>";
+}
+else
+{
+	while ($row = $sql->db_Fetch())
+	{
+		$rEditClass = $row['userclass_editclass'];
+		if (check_class($rEditClass) || getperms("0"))
+		{
+			if(!isset($rEditClass))
+			{
+				$rEditClass = e_UC_ADMIN;
+			}
+
+			$text .= "<tr>
+			<td class='forumheader3'>{$row['userclass_name']}</td>
+			<td class='forumheader3'>".r_userclass_name($rEditClass)."</td>
+			<td class='forumheader3'>{$row['userclass_description']}</td>\n";
+		}
+	}
+}
+$text .="</table>";
 
 $ns->tablerender(UCSLAN_21, $text);
 
