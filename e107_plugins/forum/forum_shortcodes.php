@@ -22,7 +22,7 @@ SC_END
 SC_BEGIN POST
 global $post_info, $tp, $iphost;
 $ret = "";
-$ret = $tp->toHTML($post_info["thread_thread"], TRUE, "hook=content", 'class:'.$post_info["user_class"]);
+$ret = $tp->toHTML($post_info["thread_thread"], TRUE, "BODY", 'class:'.$post_info["user_class"]);
 if (ADMIN && $iphost) {
 $ret .= "<br />".$iphost;
 }

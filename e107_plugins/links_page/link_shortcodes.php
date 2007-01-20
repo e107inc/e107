@@ -163,7 +163,7 @@ SC_END
 
 SC_BEGIN LINK_MAIN_DESC
 global $LINK_MAIN_DESC, $rowl, $linkspage_pref, $tp;
-return (isset($linkspage_pref['link_cat_desc']) && $linkspage_pref['link_cat_desc'] ? $tp->toHTML($rowl['link_category_description'], TRUE,'hook=description') : "");
+return (isset($linkspage_pref['link_cat_desc']) && $linkspage_pref['link_cat_desc'] ? $tp->toHTML($rowl['link_category_description'], TRUE,'description') : "");
 SC_END
 
 SC_BEGIN LINK_MAIN_NUMBER
@@ -308,7 +308,7 @@ SC_END
 
 SC_BEGIN LINK_DESC
 global $LINK_DESC, $linkspage_pref, $tp, $rowl;
-return (isset($linkspage_pref['link_desc']) && $linkspage_pref['link_desc'] ? $tp->toHTML($rowl['link_description'], TRUE,'hook=content') : "");
+return (isset($linkspage_pref['link_desc']) && $linkspage_pref['link_desc'] ? $tp->toHTML($rowl['link_description'], TRUE,'BODY') : "");
 SC_END
 
 SC_BEGIN LINK_RATING
