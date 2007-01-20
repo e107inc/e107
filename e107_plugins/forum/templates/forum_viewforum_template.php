@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-20 16:23:16 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -91,10 +91,10 @@ if (!$FORUM_VIEW_FORUM) {
 
 		</td>
 
-		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
-		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
-		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
-		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
+		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
+		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
 		</tr>";
 }
 
@@ -113,10 +113,10 @@ if (!$FORUM_VIEW_FORUM_STICKY) {
 
 		</td>
 
-		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
-		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
-		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
-		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
+		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
+		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
 		</tr>";
 }
 
@@ -135,10 +135,10 @@ if (!$FORUM_VIEW_FORUM_ANNOUNCE) {
 
 		</td>
 
-		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
-		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
-		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
-		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
+		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
+		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
 		</tr>";
 }
 
@@ -165,8 +165,8 @@ if (!$FORUM_VIEW_END) {
 		<div class='spacer'>
 		<table class='fborder' style='".USER_WIDTH."'>
 		<tr>
-		<td style='vertical-align:center; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
-		<td style='vertical-align:center; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
+		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
+		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
 		</tr>
 		</table>
 		</div>
@@ -174,8 +174,8 @@ if (!$FORUM_VIEW_END) {
 		<div class='spacer'>
 		<table class='fborder' style='".USER_WIDTH."'>
 		<tr>
-		<td style='vertical-align:center; width:50%' class='forumheader3'>{ICONKEY}</td>
-		<td style='vertical-align:center; text-align:center; width:50%' class='forumheader3'><span class='smallblacktext'>{PERMS}</span><br /><br />{SEARCH}
+		<td style='vertical-align:middle; width:50%' class='forumheader3'>{ICONKEY}</td>
+		<td style='vertical-align:middle; text-align:center; width:50%' class='forumheader3'><span class='smallblacktext'>{PERMS}</span><br /><br />{SEARCH}
 		</td>
 		</tr>
 		</table>

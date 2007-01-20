@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/lamb/forum_posted_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-20 16:31:55 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ $FORUMPOLLPOSTED =
 <tr>
 <td class='nforumcaption2' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_413."<br />
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id."'>".LAN_414."</a><br />
 <a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
@@ -36,8 +36,8 @@ $FORUMTHREADPOSTED = "
 <tr>
 <td class='nforumcaption2' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_324."<br />
 ".(defined("F_MESSAGE") ? F_MESSAGE."<br />" : "")."
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />
@@ -50,8 +50,8 @@ $FORUMREPLYPOSTED = "
 <tr>
 <td class='nforumcaption2' colspan='2'>".LAN_133."</td>
 </tr><tr>
-<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-<td style='vertical-align:center; width:80%' class='forumheader2'>
+<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:middle; width:80%' class='forumheader2'>
 <br />".LAN_415."<br />
 ".(defined("F_MESSAGE") ? F_MESSAGE."<br />" : "")."
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />

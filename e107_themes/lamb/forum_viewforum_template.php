@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/lamb/forum_viewforum_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-20 16:31:55 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,8 +62,8 @@ $FORUM_VIEW_FORUM = "
 </td>
 
 <td style='vertical-align:top; text-align:center; width:20%' class='nforumview2'><span class='smalltext'><b>{POSTER}</b><br />{THREADDATE}</span></td>
-<td style='vertical-align:center; text-align:center; width:5%' class='nforumview2'><span class='smalltext'>{REPLIES}</span></td>
-<td style='vertical-align:center; text-align:center; width:5%' class='nforumview2'><span class='smalltext'>{VIEWS}</span></td>
+<td style='vertical-align:middle; text-align:center; width:5%' class='nforumview2'><span class='smalltext'>{REPLIES}</span></td>
+<td style='vertical-align:middle; text-align:center; width:5%' class='nforumview2'><span class='smalltext'>{VIEWS}</span></td>
 <td style='vertical-align:top; text-align:center; width:20%' class='nforumview2'><span class='smalltext'>{LASTPOST}</span></td>
 </tr>";
 
@@ -84,13 +84,13 @@ $FORUM_VIEW_FORUM = "
 <div class='spacer'>
 <table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
 <tr>
-<td style='vertical-align:center; width:50%' class='nforumview3'><span class='smalltext'>{MODERATORS}</span></td>
-<td style='text-align:right; vertical-align:center; width:50%' class='nforumview3'><span class='smalltext'>{BROWSERS}</span></td>
+<td style='vertical-align:middle; width:50%' class='nforumview3'><span class='smalltext'>{MODERATORS}</span></td>
+<td style='text-align:right; vertical-align:middle; width:50%' class='nforumview3'><span class='smalltext'>{BROWSERS}</span></td>
 </tr>
 
 <tr>
-<td style='vertical-align:center; width:50%' class='nforumview4'>{ICONKEY}</td>
-<td style='vertical-align:center; text-align:center; width:50%' class='nforumview4'>{PERMS}<br /><br />{SEARCH}
+<td style='vertical-align:middle; width:50%' class='nforumview4'>{ICONKEY}</td>
+<td style='vertical-align:middle; text-align:center; width:50%' class='nforumview4'>{PERMS}<br /><br />{SEARCH}
 </td>
 </tr>
 </table>
