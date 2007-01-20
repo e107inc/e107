@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.6 $
-|   $Date: 2006-12-22 18:47:10 $
-|   $Author: e107coders $
+|   $Revision: 1.7 $
+|   $Date: 2007-01-20 15:57:53 $
+|   $Author: mrpete $
 +---------------------------------------------------------------+
 */
 
@@ -129,7 +129,9 @@ echo "<!-- *JS* -->\n";
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG
 if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
+	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
+	echo wysiwyg($e_wysiwyg);
 }else{
 	define("e_WYSIWYG",FALSE);
 }
