@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-01-17 13:39:54 $
+|     $Revision: 1.10 $
+|     $Date: 2007-01-20 14:55:06 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -1317,17 +1317,17 @@ function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) 
 // $something = pref;  // Bug if pref not set         ==> $something = varset(pref);
 // $something = isset(pref) ? pref : "";              ==> $something = varset(pref);
 // $something = isset(pref) ? pref : default;         ==> $something = varset(pref,default);
-// $something = isset(pref) && pref ? pref : default; ==> $something = varset(pref,default, true);
+// $something = isset(pref) && pref ? pref : default; ==> use varsettrue(pref,default)
 //
-function varset(&$val,$default='',$testvalue=false) {
+function varset(&$val,$default='') {
 	if (isset($val)) {
-		return (!$testvalue || $val) ? $val : $default;
+		return $val;
 	}
 	return $default;
 }
-function defset($str,$default='',$testvalue=false) {
+function defset($str,$default='') {
 	if (defined($str)) {
-		return (!$testvalue || constant($str)) ? constant($str) : $default;
+		return constant($str);
 	}
 	return $default;
 }
