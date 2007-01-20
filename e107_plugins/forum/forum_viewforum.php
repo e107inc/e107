@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-01-20 16:24:25 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,8 +28,7 @@ if (isset($_POST['fjsubmit'])) {
 
 if (!e_QUERY)
 {
-	header("Location:".e_PLUGIN."/forum/forum.php");
-	exit;
+	js_location(e_PLUGIN."forum/forum.php");
 }
 else
 {
@@ -155,23 +154,23 @@ $BROWSERS = $users." ".($users == 1 ? LAN_405 : LAN_406)." (".$member_users." ".
 $ICONKEY = "
 	<table style='width:100%'>
 	<tr>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_new_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_79."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_nonew_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_80."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_sticky_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_sticky_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_202."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_announce_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_announce_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_396."</td>
 	</tr>
 	<tr>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_new_popular_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_popular_small."</td>
 	<td style='width:2%' class='smallblacktext'>".LAN_79." ".LAN_395."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_nonew_popular_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_popular_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_80." ".LAN_395."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_stickyclosed_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_stickyclosed_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_203."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_closed_small."</td>
+	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_closed_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_81."</td>
 	</tr>
 	</table>";
