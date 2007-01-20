@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2007-01-17 21:29:28 $
-|		$Author: e107steved $
+|		$Revision: 1.6 $
+|		$Date: 2007-01-20 16:19:22 $
+|		$Author: mrpete $
 +---------------------------------------------------------------+
 */
 
@@ -1282,7 +1282,7 @@ function show_content_item(){
 					}
 
 					if($idp==1){
-						$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "hook=summary") : "");
+						$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
 						$CONTENT_CONTENT_TABLE_SUMMARY = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 					}else{
 						$CONTENT_CONTENT_TABLE_SUMMARY = "";
@@ -1307,13 +1307,13 @@ function show_content_item(){
 				}
 
 			}else{
-				$CONTENT_CONTENT_TABLE_SUMMARY	= (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "hook=summary") : "");
+				$CONTENT_CONTENT_TABLE_SUMMARY	= (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
 				$CONTENT_CONTENT_TABLE_SUMMARY	= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 				$lastpage = TRUE;
 			}
 
 			$CONTENT_CONTENT_TABLE_TEXT		= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_TEXT);
-			$CONTENT_CONTENT_TABLE_TEXT		= $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "hook=content");
+			$CONTENT_CONTENT_TABLE_TEXT		= $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "BODY");
 
 			$custom							= $eArrayStorage->ReadArray($row['content_pref']);
 

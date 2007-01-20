@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-17 21:29:28 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-20 16:12:51 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -28,9 +28,87 @@ class e_parse
 	var $e_hook;
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
-	var $e_highlighting;
-	var $e_query;
+	var $e_highlighting;		// Set to TRUE or FALSE once it has been calculated
+	var $e_query;			// Highlight query
 
+		// toHTML Action defaults. For now these match existing convention. 
+		// Let's reverse the logic on the first set ASAP; too confusing!
+	var $e_modSet = array();
+	var	$e_optDefault = array(
+			'context' => 'olddefault',				// default context: all "opt-out" conversions :(
+		  'fromadmin' => FALSE,
+
+			// Enabled by Default
+		  'value'	=> FALSE,							// Restore entity form of quotes and such to single characters - TRUE disables
+
+		  'nobreak' => FALSE,						// Line break compression - TRUE removes multiple line breaks
+		  'retain_nl' => FALSE,					// Retain newlines - wraps to \n instead of <br /> if TRUE
+
+		  'no_make_clickable' => FALSE,	// URLs etc are clickable - TRUE disables
+		  'no_replace' => FALSE,				// Replace clickable links - TRUE disables (only if no_make_clickable not set)
+		  
+	  	'emotes_off' => FALSE,				// Convert emoticons to graphical icons - TRUE disables conversion
+			'emotes_on'  => FALSE,				// FORCE conversion to emotes, even if syspref is disabled
+
+		  'no_hook' => FALSE,						// Hooked parsers (TRUE disables completely)
+			
+			// Disabled by Default
+			'defs' => FALSE,							// Convert defines(constants) within text.
+			'constants' => FALSE,					// replace all {e_XXX} constants with their e107 value
+			'parse_sc' => FALSE						// Parse shortcodes - TRUE enables parsing
+		);
+		
+		// Super modifiers adjust default option values
+		// First line of adjustments change default-ON options
+		// Second line changes default-OFF options
+	var	$e_SuperMods = array(
+				'title' =>				//text is part of a title (e.g. news title)
+					array( 
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
+						'defs'=>TRUE,'parse_sc'=>TRUE),
+
+				'summary' =>			// text is part of the summary of a longer item (e.g. content summary)
+					array( 
+						// no changes to default-on items
+						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
+
+				'description' =>	// text is the description of an item (e.g. download, link)
+					array( 
+						// no changes to default-on items
+						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
+
+				'body' =>					// text is 'body' or 'bulk' text (e.g. custom page body, content body)
+					array( 
+						// no changes to default-on items
+						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
+
+				'linktext' =>			// text is the 'content' of a link (A tag, etc)
+					array( 
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
+						'defs'=>TRUE,'parse_sc'=>TRUE),
+
+				'rawtext' =>			// text is used (for admin edit) without fancy conversions
+					array( 
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
+						// leave opt-in options off
+						)
+		);
+
+	function e_parse()
+	{
+		// Preprocess the supermods to be useful default arrays with all values
+		foreach ($this->e_SuperMods as $key=>$val)
+		{
+			$this->e_SuperMods[$key] = array_merge($this->e_optDefault,$this->e_SuperMods[$key]); // precalculate super defaults
+			$this->e_SuperMods[$key]['context']=$key;
+		}
+		foreach ($this->e_optDefault as $key=>$val)
+		{
+			$this->e_modSet[$key] = TRUE;
+		}
+
+	}
+	
 	function toDB($data, $nostrip = false, $no_encode = false, $original_author = false, $mod = false)
 	{
 		/**
@@ -301,38 +379,73 @@ class e_parse
 		}
 		global $pref, $fromadmin;
 		
-		// Set defaults for options
-		$opts = array(
-				  'fromadmin' => FALSE,
-				  'defs' => FALSE,				// support for converting defines(constants) within text.
-				  'constants' => FALSE,			// replace all {e_XXX} constants with their e107 value
-				  'nobreak' => FALSE,			// Line break compression - TRUE removes multiple line breaks
-				  'retain_nl' => FALSE,			// Retain newlines - wraps to \n instead of <br /> if TRUE
-				  'no_make_clickable' => FALSE,	// URLs etc are clickable - TRUE disables
-				  'no_replace' => FALSE,		// Replace clickable links - TRUE disables (only if no_make_clickable not set)
-				  'do_hook' => FALSE,			// Tentative option to force hooking when TRUE (area is null string)
-				  'no_hook' => FALSE,			// Deprecated - TRUE disables hooked parsers
-				  'hook'	=> '',				// Generic 'set text area for hooked parser' option
-				  'emotes_off' => FALSE,		// Convert emoticons to graphical icons - TRUE disables conversion
-				  'emotes_on'  => FALSE,		// Force conversion to emotes if TRUE (overridden by 'emotes_off')
-				  'value'	=> FALSE,			// Restore entity form of quotes and such to single characters - TRUE disables
-				  'parse_sc' => FALSE			// Parse shortcodes - TRUE enables parsing
-		);
+		// 
+		// SET MODIFIERS
+		//
+		
+		// Get modifier strings for toHTML
+		// "super" modifiers set a baseline. Recommend entering in UPPER CASE to highlight
+		// other modifiers override
+		// modifiers SHOULD be delimited with commas (eventually this will be 'MUST')
+		// modifiers MAY have spaces in between as desired
 
-		// Now decode options from any modifiers set
-		foreach (explode(',',$modifiers) as $t)
+		$opts = $this->e_optDefault;
+		if (strlen($modifiers)) 
 		{
-		  $t = trim($t);		// Allow for spaces after commas in the list
-		  $tval = TRUE;
-		  if (strpos($t,'=') !== FALSE) list($t,$tval) = explode('=',$t,2);
-		  if (array_key_exists($t,$opts)) $opts[$t] = $tval;
+			//
+			// Yes, the following code is strangely-written. It is one of the MOST used bits in
+			// all of e107. We "inlined" the assignments to optimize speed through 
+			// some careful testing (19 Jan 2007).
+			//
+			// Some alternatives that do NOT speed things up (they make it slower)
+			//  - use of array_intersect, array_walk, preg_replace, intermediate variables, etc etc etc.
+			//			
+	
+			if (1) // php 4 code
+			{
+				$opts = $this->e_optDefault;
+				$aMods = explode( ',',
+										// convert blanks to comma, then comma-comma (from blank-comma) to single comma
+										str_replace(array(' ', ',,'),	array(',', ',' ), 
+											// work with all lower case
+											strtolower($modifiers) 
+										)
+								 );
+		
+				foreach ($aMods as $mod)
+				{
+				  if (isset($this->e_SuperMods[$mod]))
+				  {	
+				  	$opts = $this->e_SuperMods[$mod];  
+				  }
+				}
+		
+				// Find any regular mods
+				foreach ($aMods as $mod)
+				{
+			  	$opts[$mod] = TRUE;  // Change mods as spec'd
+				}
+			}
+			if (0) // php 5 code - not tested, and may not be faster anyway
+			{
+				$aMods = array_flip(
+									explode( ',',
+										// convert blanks to comma, then comma-comma (from blank-comma) to single comma
+										str_replace(array(' ', ',,'),	array(',', ',' ), 
+											// work with all lower case
+											strtolower($modifiers) 
+										)
+									)
+								 );
+				$opts = array_merge($opts, array_intersect_key($this->e_SuperMods,$aMods)); // merge in any supermods found
+				$opts = array_merge($opts, array_intersect_key($this->modSet, $aMods)); // merge in any other mods found
+			}
 		}
-
 	
 //		$fromadmin = strpos($modifiers, "fromadmin");
 		$fromadmin = $opts['fromadmin'];
 
-		// support for converting defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
+		// Convert defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
 //		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 25 && defined(trim($text)))
 		if ($opts['defs'] && (strlen($text) < 25) && defined(trim($text)))
 		{
@@ -459,7 +572,7 @@ class e_parse
 
 
         //Run any hooked in parsers
-		if ((($opts['hook'] != '') || $opts['do_hook']) && !$opts['no_hook'] && isset($pref['tohtml_hook']) && $pref['tohtml_hook'])
+		if (!$opts['no_hook'] && varset($pref['tohtml_hook']))
         {
           foreach(explode(",",$pref['tohtml_hook']) as $hook)
           {
@@ -469,7 +582,7 @@ class e_parse
               $hook_class = "e_".$hook;
               $this->e_hook[$hook] = new $hook_class;
             }
-          $text = $this->e_hook[$hook]->$hook($text,$opts['hook']);
+          $text = $this->e_hook[$hook]->$hook($text,$opts['context']);
           }
         }
 
@@ -568,7 +681,10 @@ class e_parse
 //   "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
 //   TRUE = produce truncated URL path, e.g. e107plugins/etc
 //   "" (default) = URL's get relative path e.g. ../e107_plugins/etc
-//                  AND all other e107 constants are replaced
+//
+// $all - if TRUE, then
+//		when $nonrelative is "full" or TRUE, USERID is also replaced...
+//		when $nonrelative is "" (default), ALL other e107 constants are replaced
 //
 // only an ADMIN user can convert {e_ADMIN}
 //
@@ -584,6 +700,11 @@ class e_parse
 				$replace_relative[] = $ADMIN_DIRECTORY;
 				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
 				$search[] = "{e_ADMIN}";
+			}
+			if ($all) {
+				$replace_relative[] = USERID;
+				$replace_absolute[] = USERID;
+				$search[] = "{USERID}";
 			}
 			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
@@ -635,7 +756,7 @@ class e_parse
         	$len = strlen($val);
 			if(substr($url,0,$len) == $val)
 			{
-            	return str_replace($val,$key,$url);
+            	return substr_replace($url,$key,0,$len); // replace the first instance only
 			}
 		}
 
