@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.5 $
-|     $Date: 2006-11-08 14:31:28 $
-|     $Author: yarodin $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-21 08:39:12 $
+|     $Author: verant $
 +----------------------------------------------------------------------------+
 */
 
@@ -19,7 +19,7 @@ define("EXTLAN_8", "Действие");
 define("EXTLAN_9", "Расширенные поля пользователей");
 
 define("EXTLAN_10", "Имя поля");
-define("EXTLAN_11", "Это имя поля должно быть таким, каким будет запомнено в таблице, уникально от любого другого");
+define("EXTLAN_11", "Это имя поля, каким оно будет храниться в таблице, оно должно отличаться от любого другого и не должно использоваться в главной таблице пользователей");
 define("EXTLAN_12", "Текст поля");
 define("EXTLAN_13", "Это отображаемое имя поля в выполняемых страницах");
 define("EXTLAN_14", "Тип поля");
@@ -86,20 +86,24 @@ define("EXTLAN_71", "не было активировано!");
 define("EXTLAN_72", "было деактивировано");
 define("EXTLAN_73", "не было деактивировано!");
 define("EXTLAN_74", "это зарезервированное название поля и оно не может быть использовано.");
+define("EXTLAN_75", "Ошибка добавления поля в базу данных.");
+
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Параметры:</i></b><br />размер - размер поля<br />макс. длина - максимальная длина поля<br /><br />класс - css класс поля<br />стиль - css стиль строки<br /><br />regex - regex-код соответствия<br />regexfail - текст сбоя проверки соответствия");
 //radio buttons
-define("EXTLAN_HELP_2", "Это будет текст радио-кнопки");
+define("EXTLAN_HELP_2", "Введите текст для опций в поле 'Значения' - одно поле на каждую опцию. Добавьте новые поля при необходимости"); // Enter text for options in 'Values' box - one box per option. Add new boxes as needed
 //dropdown
-define("EXTLAN_HELP_3", "Это будет текст выпадающего списка");
+define("EXTLAN_HELP_3", "Введите текст для опций в поле 'Значения' - одно поле на каждую опцию. Добавьте новые поля при необходимости"); // Enter text for options in 'Values' box - one box per option. Add new boxes as needed
 //db field
 define("EXTLAN_HELP_4", "<b><i>Значения:</i></b><br /> ВСЕГДА должны быть предоставлены три значения,:<br /><ol><li>таблица БД</li><li>поле, содержащее id</li><li>поле, содержащее значение</li></ol><br />");
 //textarea
-define("EXTLAN_HELP_5", "Это будет область текста");
+define("EXTLAN_HELP_5", "Определите область для текста свободного формата. (Установите, если требуется, размер в блоке 'Поле включает текст')"); //Define an area for free-format text. (Set the size in the 'Field include text' box as required)
 //integer
-define("EXTLAN_HELP_6", "Здесь будет целочисленное значение");
+define("EXTLAN_HELP_6", "Позволяет пользователю ввести числовое значение"); //Allow user to enter a numeric value
 //date
-define("EXTLAN_HELP_7", "Это будет дата");
+define("EXTLAN_HELP_7", "Требует от пользователя ввести дату"); //Require user to enter a date
+// Language
+define("EXTLAN_HELP_8", "Разрешает пользователю выбрать из установленных языков"); //Allow user to select from installed languages
 
 ?>
