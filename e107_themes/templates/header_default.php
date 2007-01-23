@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-01-17 13:49:59 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-23 22:44:47 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -91,9 +91,7 @@ echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
 if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
-	echo wysiwyg($e_wysiwyg);
 }else{
 	define("e_WYSIWYG",FALSE);
 }
