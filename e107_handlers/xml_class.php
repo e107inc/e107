@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2007-01-24 21:21:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -189,7 +189,7 @@ class CXml
        $this->xml_parser = xml_parser_create( "UTF-8" );
   
        xml_parser_set_option( $this->xml_parser, XML_OPTION_CASE_FOLDING, false );
-       xml_set_object( $this->xml_parser, &$this );
+       xml_set_object( $this->xml_parser, $this );
        xml_set_element_handler( $this->xml_parser, "_startElement", "_endElement");
        xml_set_character_data_handler( $this->xml_parser, "_cData" );
       
