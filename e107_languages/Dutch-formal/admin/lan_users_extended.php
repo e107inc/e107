@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-formal/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-08 16:54:13 $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-24 18:40:39 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -83,6 +83,7 @@ define("EXTLAN_71", "was niet geactiveerd!");
 define("EXTLAN_72", "is gedeactiveerd");
 define("EXTLAN_73", "was niet gedeactiveerd!");
 define("EXTLAN_74", "is een gereserveerde veldnaam en kan niet worden gebruikt.");
+define("EXTLAN_75", "Fout bij toevoegen veld aan database.");
 
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - lengte van het veld<br />maxlength - max lengte van veld<br /><br />class - css klasse van veld<br />style - css style tekst<br /><br />regex - regex validatie code<br />regexfail - validatie foutboodschap ");
 define("EXTLAN_HELP_2", "Dit wordt de radioknop hulptekst");
@@ -91,4 +92,5 @@ define("EXTLAN_HELP_4", "<b><i>Waarden:</i></b><br />Er moeten ALTIJD drie waard
 define("EXTLAN_HELP_5", "Dit wordt de Textarea hulptekst");
 define("EXTLAN_HELP_6", "Dit wordt de Integer hulptekst");
 define("EXTLAN_HELP_7", "Dit wordt de datum hulptekst");
+define("EXTLAN_HELP_8", "Toestaan dat een gebruiker een geïnstalleerde taal kiest");
 ?>
