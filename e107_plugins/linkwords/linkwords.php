@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-01-20 05:21:43 $
-|     $Author: mrpete $
+|     $Revision: 1.12 $
+|     $Date: 2007-01-24 20:59:30 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -27,9 +27,9 @@ class e_linkwords
 	var $link_list = array();		// Corresponding list of links to apply
 	var $tip_list  = array();
 	var $area_opts = array(
-			'olddefault' => TRUE,
+			'olddefault' => FALSE,
 			'title' => FALSE,
-			'summary' => FALSE,
+			'summary' => TRUE,
 			'body' => TRUE,
 			'description' => TRUE,
 			'linktext' => FALSE,

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.182 $
-|     $Date: 2007-01-20 05:11:02 $
-|     $Author: mrpete $
+|     $Revision: 1.183 $
+|     $Date: 2007-01-24 20:59:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -104,7 +104,7 @@ class e_parse
 		}
 		foreach ($this->e_optDefault as $key=>$val)
 		{
-			$$this->e_modSet[$key] = TRUE;
+			$this->e_modSet[$key] = TRUE;
 		}
 
 	}
