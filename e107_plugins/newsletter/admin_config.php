@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-22 21:01:15 $
+|     $Revision: 1.11 $
+|     $Date: 2007-01-27 17:47:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -401,12 +401,12 @@ class newsletter
 		$mail_style .= "<div style='width:90%; padding-top:10px'>";
 		$mail_style .= "<div class='fcaption'><b>$message_subject<br />[ ".NLLAN_12." ".$newsletterInfo['newsletter_issue']." ]</b></div><br /><br />";
 		$mail_style .= "<div class='forumheader3'>";
-		$message_body = $mail_style.$newsletter_header."<hr />".$message_body."<br><br><hr />".$newsletter_footer."<br></div></div>";
+		$message_body = $mail_style.$newsletter_header."<hr />".$message_body."<br /><br /><hr />".$newsletter_footer."<br /></div></div>";
 
-		$message_body = str_replace("\n", "<br>", $message_body);
+		$message_body = str_replace("\n", "<br />", $message_body);
 
-		$mail->Body = $tp->toHTML($message_body, TRUE);
-		$mail->AltBody = strip_tags(str_replace("<br>", "\n", $message_body));
+		$mail->Body = $tp->toHTML($message_body, TRUE,'no_replace, emotes_off');
+		$mail->AltBody = strip_tags(str_replace("<br />", "\n", $message_body));
 
 		$sent_counter = 0;
 
