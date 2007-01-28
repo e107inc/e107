@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-20 16:16:42 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-28 11:01:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -67,7 +67,7 @@ if($_POST['moderate'] && CB_MOD)
 		}
 		$sql -> db_Select_gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
 	}
-	$e107cache->clear("chatbox");
+	$e107cache->clear("nq_chatbox");
 	$message = CHATBOX_L18;
 }
 
