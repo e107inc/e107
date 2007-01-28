@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2007-01-20 05:18:51 $
-|     $Author: mrpete $
+|     $Revision: 1.77 $
+|     $Date: 2007-01-28 14:08:11 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 global $tp, $e107cache, $e_event, $e107, $pref, $footer_js, $PLUGINS_DIRECTORY;
 
-if($pref['cb_layer'] || isset($_POST['chatbox_ajax']))
+if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 {
 	if(isset($_POST['chat_submit']))
 	{
@@ -125,7 +125,7 @@ else
 		$texta =  (e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>");
 	}
 	$texta .= "<div style='text-align:center; width:100%'>";
-
+	
 	if(($pref['anon_post'] == "1" && USER == FALSE))
 	{
 		$texta .= "\n<input class='tbox chatbox' type='text' id='nick' name='nick' value='' maxlength='50' ".($cb_width ? "style='width: ".$cb_width.";'" : '')." /><br />";
