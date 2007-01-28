@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2007-01-18 20:52:00 $
+|     $Revision: 1.42 $
+|     $Date: 2007-01-28 20:49:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -91,6 +91,9 @@ if (isset($_POST['catdown_x']))
 
 if (isset($_POST['add_field']))
 {
+  $ue_field_name = str_replace(' ','_',trim($_POST['user_field']));		// Replace space with underscore - better security
+  if (preg_match('#^\w+$#',$ue_field_name) === 1)						// Check for allowed characters, finite field length
+  {
 	if($_POST['user_type']==4)
 	{
     	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
@@ -99,18 +102,23 @@ if (isset($_POST['add_field']))
 	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	
 // Check to see if its a reserved field name before adding to database
-	if($ue->user_extended_reserved($_POST['user_field']))
+	if($ue->user_extended_reserved($ue_field_name))
 	{  // Reserved field name
-	  $message = "[user_".$tp->toHTML($_POST['user_field'])."] ".EXTLAN_74;
+	  $message = "[user_".$tp->toHTML($ue_field_name)."] ".EXTLAN_74;
 	}
 	else
 	{
-	  $result = admin_update($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
+	  $result = admin_update($ue->user_extended_add($ue_field_name, $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
 	  if(!$result)
 	  {
 		$message = EXTLAN_75;
 	  }
 	}
+  }
+  else
+  {
+    $message = EXTLAN_76." : ".$tp->toHTML($ue_field_name);
+  }
 }
 
 if (isset($_POST['update_field'])) {
