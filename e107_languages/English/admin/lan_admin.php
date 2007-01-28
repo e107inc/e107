@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-08 08:10:25 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2007-01-28 21:13:21 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -171,6 +171,8 @@ define("ADLAN_150", "Admin Email Notifications");
 
 define("ADLAN_151", "Main");
 define("ADLAN_152", "Enter Code");
+
+define("ADLAN_153", "Administration Area");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
