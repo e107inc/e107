@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-28 12:48:37 $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-28 13:51:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,6 @@ if (isset($_POST['updatesettings'])) {
 	$pref['cb_mod'] = $_POST['cb_mod'];
 	save_prefs();
 	$e107cache->clear("nq_chatbox");
-	$e107cache->clear("chatbox");
 	$message = CHBLAN_1;
 }
 
@@ -45,7 +44,6 @@ if (isset($_POST['prune'])) {
 
 	$sql->db_Delete("chatbox", "cb_datestamp < '$prunetime' ");
 	$e107cache->clear("nq_chatbox");
-	$e107cache->clear("chatbox");
 	$message = CHBLAN_28;
 }
 
