@@ -18,7 +18,7 @@ else
 
 $dimensions = getimagesize($path);
 
-$image = "<img class='logo admin_logo' src='".$logo."' style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' alt='Admin Area' />\n";
+$image = "<img class='logo admin_logo' src='".$logo."' style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' alt='".ADLAN_153."' />\n";
 
 if (isset($link) && $link) {
 	if ($link == 'index') {
