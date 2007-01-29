@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-17 13:34:30 $
-|     $Author: mrpete $
+|     $Revision: 1.5 $
+|     $Date: 2007-01-29 20:39:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -94,15 +94,15 @@ if (isset($_POST['updatesettings']))
 	}
 
 	if ($_uid && ADMIN)
-	{
+	{	// Admin logged in and editing another user's settings - so editing a different ID
 		$inp = $_uid;
 		$remflag = TRUE;
 	}
 	else
-	{
+	{	// Current user logged in - use their ID
 		$inp = USERID;
 	}
-	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyways, so why allow them? (XSS Fix)
+	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyway, so why allow them? (XSS Fix)
 
 	// check prefs for required fields =================================.
 
@@ -130,7 +130,7 @@ if (isset($_POST['updatesettings']))
 	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
 
 	foreach($signup_option_names as $key => $value)
-	{
+	{  // Check required signup fields 
 		if ($pref['signup_option_'.$value] == 2 && !$_POST[$value] && !$_uid)
 		{
 			$error .= LAN_SIGNUP_6.$signup_option_title[$key].LAN_SIGNUP_7."\\n";
@@ -176,7 +176,9 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".USERID."' ")) {
+	// Check for duplicate of email address
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".$inp."' ")) 
+	{
 	  	$error .= LAN_408."\\n";
 	}
 
