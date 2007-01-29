@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-04-05 12:19:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2007-01-29 20:23:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -175,3 +175,4 @@ class trackbackClass
 		}
 	}
 }
+?>
