@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-30 22:39:35 $
+|     $Revision: 1.11 $
+|     $Date: 2007-01-29 21:03:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -107,5 +107,6 @@ define("LAN_USET_9", "Some of the required fields (marked with a *) are missing 
 define("LAN_USET_10","Please update your settings now, in order to proceed.");
 define("LAN_USET_11", "That user name cannot be accepted as valid, please choose a different user name");
 define("LAN_USET_12", "That display name is too short. Please choose another");
+define("LAN_USET_13", "Invalid characters in login name. Please choose another");
 
 ?>
