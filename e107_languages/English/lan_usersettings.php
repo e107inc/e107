@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-17 13:12:44 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2007-01-29 21:03:53 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
@@ -40,7 +40,6 @@ define("LAN_154", "Save Settings");
 define("LAN_155", "Update User Settings");
 define("LAN_185", "You left the password field blank ");
 define("LAN_308", "Real Name: ");
-define("LAN_310", "your real name, including first and last name");
 define("LAN_401", "Leave blank to keep existing password");
 define("LAN_402", "Type path or choose avatar");
 define("LAN_403", "Choose avatar");
@@ -108,5 +107,6 @@ define("LAN_USET_9", "Some of the required fields (marked with a *) are missing 
 define("LAN_USET_10","Please update your settings now, in order to proceed.");
 define("LAN_USET_11", "That user name cannot be accepted as valid, please choose a different user name");
 define("LAN_USET_12", "That display name is too short. Please choose another");
+define("LAN_USET_13", "Invalid characters in login name. Please choose another");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-01-29 20:39:41 $
+|     $Revision: 1.6 $
+|     $Date: 2007-01-29 21:03:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -137,6 +137,16 @@ if (isset($_POST['updatesettings']))
 		}
     }
 
+	if (isset($_POST['loginname']))
+	{  // Only check if its been edited
+	  $temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
+	  if ($temp_name != $_POST['loginname'])
+	  {
+		$error .= LAN_USET_13."\\n";
+	  }
+	  $_POST['loginname'] = $temp_name;
+	}
+	
 	// ====================================================================
 
 	$pwreset = "";
