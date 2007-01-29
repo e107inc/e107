@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2006-11-12 04:04:27 $
-|     $Author: mrpete $
+|     $Revision: 1.68 $
+|     $Date: 2007-01-29 22:11:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -718,7 +718,7 @@ class comment {
 
 				//comment text
 				$comment = strip_tags(preg_replace("/\[.*\]/", "", $row['comment_comment'])); // remove bbcode
-				$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['menu_wordwrap']);
+				$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['main_wordwrap']);
 
 				//subject
 				$ret['comment_subject'] = $tp->toHTML($row['comment_subject'], TRUE);
