@@ -11,19 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/consolidate.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-01-30 21:05:59 $
+|     $Revision: 1.16 $
+|     $Date: 2007-01-30 21:43:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 /* first thing to do is check if the log file is out of date ... */
-
 $pathtologs = e_PLUGIN."log/logs/";
 $date = date("z.Y", time());
 $yesterday = date("z.Y",(time() - 86400));		// This makes sure year wraps round OK
 $date2 = date("Y-m-j", (time() -86400));		// Yesterday's date for the database summary	
-$date3 = date("Y-m");
+$date3 = date("Y-m");							// Current month's date for monthly summary
 
 $pfileprev = "logp_".$yesterday.".php";		// Yesterday's log file
 $pfile = "logp_".$date.".php";				// Today's log file
@@ -55,7 +54,7 @@ if($sql -> db_Select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' O
 	$infoArray = array();
 	while($row = $sql -> db_Fetch())
 	{
-		$row[1] = unserialize($row[2]);
+		$$row[1] = unserialize($row[2]);	// $row[1] is the stats type - save in a variable
 		if($row[1] == "statUnique") $statUnique = $row[2];
 		if($row[1] == "statTotal") $statTotal = $row[2];
 	}
