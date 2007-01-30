@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/consolidate.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-20 15:32:28 $
+|     $Revision: 1.7 $
+|     $Date: 2007-01-30 21:05:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,6 @@ if(file_exists($pathtologs.$pfile))
 }
 else if(!file_exists($pathtologs.$pfileprev)) 
 {  // See if any older log files
-//  echo "Checking for old files<br />";
   if (($retvalue = check_for_old_files($pathtologs)) === FALSE)
   { 	/* no logfile found at all - create - this will only ever happen once ... */
 	createLog("blank");
@@ -45,7 +44,6 @@ else if(!file_exists($pathtologs.$pfileprev))
   }
   // ... if we've got files
   list($pfileprev,$ifileprev,$date2,$tstamp) = explode('|',$retvalue);
-//  echo "Files: {$pfileprev}, {$ifileprev}, First date: {$date2}, Time Stamp: ".$tstamp."<br />";
 }
 
 
@@ -57,7 +55,7 @@ if($sql -> db_Select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' O
 	$infoArray = array();
 	while($row = $sql -> db_Fetch())
 	{
-		$$row[1] = unserialize($row[2]);
+		$row[1] = unserialize($row[2]);
 		if($row[1] == "statUnique") $statUnique = $row[2];
 		if($row[1] == "statTotal") $statTotal = $row[2];
 	}
