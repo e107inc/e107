@@ -11,11 +11,11 @@ if (!defined('e107_INIT')) { exit; }
 	}else{
 		$qry = " ";
 	}
-	$qry .= " user_ban='0' ORDER BY user_join DESC LIMIT 0,".intval($arr[7]);
+	$qry .= " user_ban=0 ORDER BY user_join DESC LIMIT 0,".intval($arr[7]);
 
 	$bullet = $this -> getBullet($arr[6], $mode);
 
-	if(!$sql -> db_Select("user", "*", $qry)){ 
+	if(!$sql -> db_Select("user", "user_id,user_name,user_join", $qry)){ 
 		$LIST_DATA = LIST_MEMBER_2;
 	}else{
 		while($row = $sql -> db_Fetch()){
