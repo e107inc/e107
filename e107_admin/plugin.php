@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-31 14:46:30 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-01 22:00:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -180,7 +180,7 @@ if ($action == 'uninstall')
 		{
 			foreach($eplug_array_pref as $key => $val)
 			{
-				$plugin->manage_plugin_prefs('remove', $key, $val);
+				$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
 			}
 		}
 
@@ -315,6 +315,22 @@ if ($action == 'upgrade') {
 
 	if (is_array($upgrade_remove_prefs)) {
 		$plugin->manage_prefs('remove', $upgrade_remove_prefs);
+	}
+
+	if (is_array($upgrade_add_array_pref))
+	{
+	  foreach($upgrade_add_array_pref as $key => $val)
+	  {
+		$plugin->manage_plugin_prefs('add', $key, $eplug_folder, $val);
+	  }
+	}
+
+	if (is_array($upgrade_remove_array_pref))
+	{
+	  foreach($upgrade_remove_array_pref as $key => $val)
+	  {
+		$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
+	  }
 	}
 
 	if (is_array($upgrade_add_user_prefs)) {
