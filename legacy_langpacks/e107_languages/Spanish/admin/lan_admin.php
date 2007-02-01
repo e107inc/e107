@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-12-21 06:44:01 $
+|     $Revision: 1.13 $
+|     $Date: 2007-02-01 06:59:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -156,6 +156,7 @@ define("ADLAN_149", "Notificación");
 define("ADLAN_150", "Notificaciones de email a Admin");
 define("ADLAN_151", "Principal");
 define("ADLAN_152", "Escriba el código");
+define("ADLAN_153", "Área de administración");
 
 define('ADLAN_CL_1', 'Parámetros');
 define('ADLAN_CL_2', 'Usuarios');

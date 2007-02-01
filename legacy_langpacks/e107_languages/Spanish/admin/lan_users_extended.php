@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-10 19:17:12 $
+|     $Revision: 1.7 $
+|     $Date: 2007-02-01 06:59:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@ define("EXTLAN_7", "Acceso escritura");
 define("EXTLAN_8", "Acción");
 define("EXTLAN_9", "Campos extras de usuario");
 define("EXTLAN_10", "Nombre del campo");
-define("EXTLAN_11", "Este es el nombre del campo que se guardará en la tabla, debe ser único del resto");
+define("EXTLAN_11", "Este es el nombre del campo que se guardará en la tabla, debe ser único del resto y no debe ser usado en la tabla principal de usuarios");
 define("EXTLAN_12", "Texto del campo");
 define("EXTLAN_13", "Este es el nombre del campo que se mostrará al renderizar las páginas");
 define("EXTLAN_14", "Tipo de campo");
@@ -83,19 +83,22 @@ define("EXTLAN_71", "no fué activado!");
 define("EXTLAN_72", "Ha sido desactivado"); 
 define("EXTLAN_73", "no fué desactivado!"); 
 define("EXTLAN_74", "es un campo reservado y no puede ser usado.");
-
+define("EXTLAN_75", "Error al añadir el campo en la base de datos.");
+define("EXTLAN_76", "Carácteres inválidos en el campo nombre - solo se permite A-Z, a-z, 0-9, '_'");
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parámetros:</i></b><br />size - tamaño del campo<br />maxlength - longitud máx del campo<br />class - css clase del campo<br />");
 //radio buttons
-define("EXTLAN_HELP_2", "Éste será el texto de ayuda de los botones radio");
+define("EXTLAN_HELP_2", "Escriba el texto para las opciones en la caja 'Valores' - una caja por opción. Añadir las cajas que se necesiten");
 //dropdown
-define("EXTLAN_HELP_3", "Éste será el texto de ayuda de la lista desplegable");
+define("EXTLAN_HELP_3", "Escriba el texto para las opciones en la caja 'Valores' - una caja por opción. Añadir las cajas que se necesiten");
 //db field
 define("EXTLAN_HELP_4", "<b><i>Valores:</i></b><br />SIEMPRE DEBEN HABER tres valores dados:<br /><ol><li>Tabla BD</li><li>Campo conteniendo el id</li><li>Campo conteniendo el valor</li></ol><br />");
 //textarea
-define("EXTLAN_HELP_5", "Éste será el texto de ayuda del área de texto");
+define("EXTLAN_HELP_5", "Defina un área para el texto con formato libre. (Fijar el tamaño en la caja 'Incluir campo de texto' como requerido)");
 //integer
-define("EXTLAN_HELP_6", "Éste será el texto de ayuda de los enteros");
+define("EXTLAN_HELP_6", "Permitir al usuario escribir un valor numérico");
 //date
-define("EXTLAN_HELP_7", "Éste será el texto ayuda de la fecha");
+define("EXTLAN_HELP_7", "Requerir al usuraio escribir una fecha");
+// Language 
+define("EXTLAN_HELP_8", "Permitir al usuario seleccionar desde los idiomas instalados"); 
 ?>
