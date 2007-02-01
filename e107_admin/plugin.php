@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2006-12-31 15:06:59 $
-|     $Author: e107coders $
+|     $Revision: 1.70 $
+|     $Date: 2007-02-01 22:00:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -180,7 +180,7 @@ if ($action == 'uninstall')
 		{
 			foreach($eplug_array_pref as $key => $val)
 			{
-				$plugin->manage_plugin_prefs('remove', $key, $val);
+				$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
 			}
 		}
 
@@ -317,6 +317,22 @@ if ($action == 'upgrade') {
 		$plugin->manage_prefs('remove', $upgrade_remove_prefs);
 	}
 
+	if (is_array($upgrade_add_array_pref))
+	{
+	  foreach($upgrade_add_array_pref as $key => $val)
+	  {
+		$plugin->manage_plugin_prefs('add', $key, $eplug_folder, $val);
+	  }
+	}
+
+	if (is_array($upgrade_remove_array_pref))
+	{
+	  foreach($upgrade_remove_array_pref as $key => $val)
+	  {
+		$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
+	  }
+	}
+
 	if (is_array($upgrade_add_user_prefs)) {
 		if (!is_object($sql)){ $sql = new db; }
 		$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -418,7 +434,8 @@ function render_plugs($pluginList){
 
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
- 		if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
+		// See whether plugin needs install - it does if any of the 'configuration' variables are set
+ 		if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_array_pref) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
 			$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."admin_images/installed.png' alt='' />");
 		} else {
 			$img = "<img src='".e_IMAGE."admin_images/noinstall.png' alt='' />";
