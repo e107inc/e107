@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-11-11 12:36:48 $
-|     $Author: mrpete $
+|     $Revision: 1.16 $
+|     $Date: 2007-02-03 03:10:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -62,7 +62,7 @@ if (isset($_POST['avdelete'])) {
 			$row = $sql->db_Fetch();
 			extract($row);
 			$avname=avatar($user_image);
-			if (strpos($avname,"http://")===FALSE) 
+			if (strpos($avname,"http://")===FALSE)
 			{ // Internal file, so unlink it
 				@unlink($avname);
 			}
@@ -180,7 +180,7 @@ if (isset($_POST['check_avatar_sizes'])) {
 		<td class='forumheader3'>".$pref['im_height']."</td>
 		<td class='forumheader3'>".IMALAN_39."</td>
 		</tr>";
-	
+
 	//
 	// Loop through avatar field for every user
 	//
@@ -188,12 +188,12 @@ if (isset($_POST['check_avatar_sizes'])) {
 	if ($sql->db_Select("user", "*", "user_image!=''")) {
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
-	
+
 	//
 	// Check size
 	//
 			$avname=avatar($user_image);
-			if (strpos($avname,"http://")!==FALSE) 
+			if (strpos($avname,"http://")!==FALSE)
 			{
 				$iAVexternal++;
 				$bAVext=TRUE;
@@ -226,8 +226,8 @@ if (isset($_POST['check_avatar_sizes'])) {
 					}
 				}
 			}
-	
-	// 
+
+	//
 	// If not found or too big, allow delete
 	//
 			if (strlen($sBadImage))
@@ -296,25 +296,7 @@ $text = "<div style='text-align:center'>
 	".IMALAN_10."<br />
 	<span class='smalltext'>".IMALAN_11."</span>
 	</td>
-	<td style='width:25%;text-align:center' class='forumheader3' >
-
-
-	<select class='tbox' name='image_post_class'>
-	<option value='".e_UC_PUBLIC."'".($pref['image_post_class'] == e_UC_PUBLIC ? " selected='selected'" : "").">".IMALAN_30."</option>
-	<option value='".e_UC_GUEST."'".($pref['image_post_class'] == e_UC_GUEST ? " selected='selected'" : "").">".IMALAN_31."</option>
-	<option value='".e_UC_MEMBER."'".($pref['image_post_class'] == e_UC_MEMBER ? " selected='selected'" : "").">".IMALAN_32."</option>
-	<option value='".e_UC_ADMIN."'".($pref['image_post_class'] == e_UC_ADMIN ? " selected='selected'" : "").">".IMALAN_33."</option>\n";
-
-
-if ($sql->db_Select("userclass_classes")) {
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		$text .= "<option value='".$userclass_id."'".($pref['image_post_class'] == $userclass_id ? " selected='selected'" : "").">$userclass_name</option>\n";
-	}
-}
-$text .= "</select>
-
-	</td>
+	<td style='width:25%;text-align:center' class='forumheader3' >".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."</td>
 	</tr>
 
 	<tr>
