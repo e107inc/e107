@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-23 12:15:09 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-03 14:21:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ if(!isset($DOWNLOAD_CAT_TABLE_START))
                 <td style='width:60%; text-align:center' class='fcaption'>".LAN_dl_19."</td>
                 <td style='width:10%; text-align:center' class='fcaption'>".LAN_dl_20."</td>
                 <td style='width:17%; text-align:center' class='fcaption'>".LAN_dl_21."</td>
-                <td style='width:10%; text-align:center' class='fcaption'>".LAN_dl_18."</td>
+                <td style='width:10%; text-align:center' class='fcaption'>".LAN_dl_77."</td>
                 </tr>";
 }
 if(!isset($DOWNLOAD_CAT_PARENT_TABLE))
@@ -146,7 +146,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_START))
                         <span class='defaulttext'>".LAN_dl_38."</span>
                         <select name='order' class='tbox'>".
                         ($order == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
-                        ($order == "download_requested" ? "<option value='download_requested' selected='selected'>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_18."</option>").
+                        ($order == "download_requested" ? "<option value='download_requested' selected='selected'>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_77."</option>").
                         ($order == "download_name" ? "<option value='download_name' selected='selected'>".LAN_dl_23."</option>" : "<option value='download_name'>".LAN_dl_23."</option>").
                         ($order == "download_author" ? "<option value='download_author' selected='selected'>".LAN_dl_24."</option>" : "<option value='download_author'>".LAN_dl_24."</option>")."
                         </select>
