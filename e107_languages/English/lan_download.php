@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-03 14:21:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Downloads");
@@ -28,7 +28,7 @@ define("LAN_dl_14", "Rate this download");
 define("LAN_dl_15", "Thanks for rating");
 define("LAN_dl_16", "download(s) from");
 define("LAN_dl_17", "files");
-define("LAN_dl_18", "Downloads");
+define("LAN_dl_18", "Downloads");			// Page title
 define("LAN_dl_19", "Category");
 define("LAN_dl_20", "Files");
 define("LAN_dl_21", "Size");
@@ -96,5 +96,6 @@ define("LAN_dl_74", "Total downloads from this mirror: ");
 
 define("LAN_dl_75", "no image available ");
 define("LAN_dl_76", "Go to page");
+define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
 
 ?>
