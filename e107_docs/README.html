@@ -4,9 +4,9 @@
 <!-- Version Info:
 
 $Source: /cvs_backup/e107_0.8/e107_docs/README.html,v $
-$Revision: 1.1.1.1 $
-$Date: 2006-12-02 04:33:35 $
-$Author: mcfly_e107 $
+$Revision: 1.2 $
+$Date: 2007-02-03 17:52:10 $
+$Author: e107steved $
 
 -->
 <title>e107 Readme</title>
@@ -18,14 +18,19 @@ $Author: mcfly_e107 $
 <div id='mainbox'> <a href="http://e107.org"><img src="../e107_images/logo.png" alt="Logo" style="border:0" /></a> <br />
   <br />
   <span class="smalltext">© Steve Dunstan 2002. See gpl.txt for license details.</span><br />
+  <hr />
   <br />
-  <br />
+  <a id='latest_info'></a><span class="headertext">Latest Information</span><br />  Please see the documentation at <a href="http://e107.org">e107.org</a> for the latest <a href="http://wiki.e107.org/?title=HOWTO:Install_e107">installation</a> and <a href="http://wiki.e107.org/?title=HOWTO:Upgrade_to_a_newer_version_of_e107_0.7xx">upgrade</a> documents. If you are upgrading from version 0.617 or earlier, there is a separate <a href="http://wiki.e107.org/?title=HOWTO:Upgrade_e107_from_0.6xx">upgrade guide</a>. The information on the web site supercedes any information in this file.
+  
+  There is also additional information on troubleshooting any problems which might arise, and on how to set up and use E107.
+  <br /><br />
+  <hr />
   <a href="#requirements">Requirements</a> | <a href="#installing">Installing</a> | <a href="#upgrading">Upgrading</a> | <a href="#security">Security</a> | <a href="#backup">Backing Up and Restoring Your Database</a> | <a href="#problems">Common Problems</a> | <a href="#support">Support</a> | <a href="#development">Development</a> | <a href="#thankyou">Thank You</a> | <a href="#disclaimer">Disclaimer</a><br />
   <br />
   <br />
   <a id='requirements'></a><span class="headertext">Requirements</span>
   <ul>
-    <li>e107 requires a webserver that has PHP 4.3 (or newer) and MySQL 3.22 (or newer), contact your host if you're not sure if you have these installed.</li>
+    <li>e107 requires a webserver that has PHP 4.3 (or newer) and MySQL 3.22 (or newer - 4.21 or newer preferred), contact your host if you're not sure if you have these installed.</li>
     <li>If you host your own site you can download <a href="http://php.net">PHP</a> and <a href="http://mysql.com">MySQL</a> and install them yourself, both are free.</li>
     <li>You will need your MySQL username and password, and a database for content storage. Don't worry if you only have one database, e107 is happy to share it's database with other applications.</li>
     <li>A complete e107 install requires approximately 9MB of disk space on your server, although this should be reduced dramatically for most users by removing the plugins and themes they won't be using, simply by removing the relevant folder.</li>
@@ -130,7 +135,7 @@ $Author: mcfly_e107 $
     </li>
     <li>Cut these lines from <span style="text-decoration: underline;">class2.php</span> and paste them into <span style="text-decoration: underline;">e107_config.php</span>. Now you can change the folder names from here.<br /><br /></li>
 
-    <li>If this is a <span style="text-decoration: underline;"><b>NEW INSTALL</b></span> the folder names are already in e107_config.php. They have been left in class2.php for backwards compatibility. They will be removed from there in the future.<br /><br /></li>
+    <li>If this is a <span style="text-decoration: underline;"><b>NEW INSTALL</b></span> the folder names are already in e107_config.php.<br /><br /></li>
 
     <li>This procedure depends on you completing the steps above and making sure the file paths are located in e107_config.php now.</li>
     <li>To rename your e107_admin directory (or any of your other directories), first rename the folder in the usual manner using your FTP client. Then open e107_config.php from the root directory of your e107 installation in a text editor, and find the following line near the top of the file ...<br />
@@ -155,7 +160,7 @@ $Author: mcfly_e107 $
     <li><b>e107 forums</b><br />
       <a href='http://e107.org/forum.php'>http://e107.org/forum.php</a></li>
     <li><b>e107 faq</b><br />
-      <a href='http://e107faq.bkwon.net'>http://e107faq.bkwon.net</a></li>
+      <a href='http://e107faq.bkwon.net'>http://e107faq.org</a></li>
     <li><b>IRC channel</b><br />
       #e107 on <a href='irc://freenode.net'>irc.freenode.net</a><br /></li>
 
