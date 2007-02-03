@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-01-20 14:55:06 $
-|     $Author: mrpete $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-03 12:43:53 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1012,32 +1012,34 @@ function get_user_data($uid, $extra = "")
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
-	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
-	if ($table == 'core') {
-		if ($row_val == '') {
-			// Save old version as a backup
-			if(!$sql->db_Update('core', "e107_value='".addslashes($PrefCache)."' WHERE e107_name='SitePrefs_Backup'")){
-				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefCache)."'");
-			}
+function save_prefs($table = 'core', $uid = USERID, $row_val = '') 
+{
+  global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
+  if ($table == 'core') 
+  {
+	if ($row_val == '') 
+	{		// Save old version as a backup first
+	  $msqlPrefCache=addslashes($PrefCache);
+	  $sql->db_Select_gen("INSERT INTO #core (e107_name,e107_value) values ('SitePrefs_Backup', '{$msqlPrefCache}') 
+		ON DUPLICATE KEY UPDATE e107_value='{$msqlPrefCache}'");
 
-			// traverse the pref array, with toDB on everything
-			$_pref = $tp -> toDB($pref, true, true);
-			// Create the data to be stored
-			$PrefCache1 = $eArrayStorage->WriteArray($_pref);
-			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'")){
-				$sql->db_Insert('core', "'SitePrefs', '{$PrefCache1}'");
-			}
-			ecache::clear('SitePrefs');
-		}
-	} else {
-
-		$_user_pref = $tp -> toDB($user_pref);
-
-		$tmp=addslashes(serialize($_user_pref));
-		$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=".intval($uid));
-		return $tmp;
+	  // Now save the updated values
+	  // traverse the pref array, with toDB on everything
+	  $_pref = $tp -> toDB($pref, true, true);
+	  // Create the data to be stored
+	  $msqlPrefCache = $eArrayStorage->WriteArray($_pref);
+	  $sql->db_Select_gen("INSERT INTO #core (e107_name,e107_value) values ('SitePrefs', '{$msqlPrefCache}') 
+		ON DUPLICATE KEY UPDATE e107_value='{$msqlPrefCache}'");
+	  ecache::clear('SitePrefs');
 	}
+  }
+  else 
+  {
+	$_user_pref = $tp -> toDB($user_pref);
+	$tmp=addslashes(serialize($_user_pref));
+	$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=".intval($uid));
+	return $tmp;
+  }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
