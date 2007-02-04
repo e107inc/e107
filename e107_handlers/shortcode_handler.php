@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.3 $
-| $Date: 2006-12-05 09:15:05 $
-| $Author: mrpete $
+| $Revision: 1.4 $
+| $Date: 2007-02-04 17:36:16 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -169,9 +169,9 @@ class e_shortcode {
 		$cur_shortcodes = array();
 		if($type == 'file')
 		{
-			$batch_cachefile = "nomd5_".md5($fname);
+			$batch_cachefile = "nomd5_scbatch_".md5($fname);
 //			$cache_filename = $e107cache->cache_fname("nomd5_{$batchfile_md5}");
-			$sc_cache = $e107cache->retrieve($batch_cachefile);
+			$sc_cache = $e107cache->retrieve_sys($batch_cachefile);
 			if(!$sc_cache)
 			{
 				$sc_batch = file($fname);
@@ -209,7 +209,7 @@ class e_shortcode {
 			if($type == 'file')
 			{
 				$sc_cache = $eArrayStorage->WriteArray($cur_shortcodes, false);
-				$e107cache->set($batch_cachefile, $sc_cache);
+				$e107cache->set_sys($batch_cachefile, $sc_cache);
 			}
 		}
 
