@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-17 20:47:09 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-04 21:42:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -193,9 +193,9 @@ class themeHandler{
 
 				if(!$unarc) {
 					if($fileType == "zip") {
-						$error = "PCLZIP extract error: '".$archive -> errorName(TRUE)."'";
-					} else {
-						$error = "PCLTAR extract error: ".PclErrorString().", code: ".intval(PclErrorCode());
+					$error = TPVLAN_46." '".$archive -> errorName(TRUE)."'";
+				} else {
+					$error = TPVLAN_47.PclErrorString().", ".TPVLAN_48.intval(PclErrorCode());
 					}
 					$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
 					require_once("footer.php");
