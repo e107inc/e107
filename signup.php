@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-17 13:35:46 $
-|     $Author: mrpete $
+|     $Revision: 1.7 $
+|     $Date: 2007-02-04 09:30:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -375,13 +375,15 @@ if (isset($_POST['register']))
 	if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
 	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
 
-	if (strstr($_POST['loginname'], "#") || strstr($_POST['loginname'], "=") || strstr($_POST['loginname'], "\\") || strstr($_POST['loginname'], "'") || strstr($_POST['loginname'], '"'))
+//	Strip most invalid characters now
+	$temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
+	if ($temp_name != $_POST['loginname'])
 	{
 		$error_message .= LAN_409."\\n";
 		$error = TRUE;
 	}
+	$_POST['loginname'] = $temp_name;
 
-	$_POST['loginname'] = trim(preg_replace("/&nbsp;|\#|\=/", "", $_POST['loginname']));
 	if ($_POST['loginname'] == "Anonymous")
 	{
 		$error_message .= LAN_103."\\n";
