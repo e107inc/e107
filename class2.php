@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.329 $
-|     $Date: 2007-02-03 12:43:41 $
+|     $Revision: 1.330 $
+|     $Date: 2007-02-04 15:25:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1427,6 +1427,9 @@ function class_list($uid = '') {
 			$clist[]=e_UC_MEMBER;
 			if (ADMIN === TRUE) {
 				$clist[] = e_UC_ADMIN;
+			}
+			if (getperms('0')) {
+			  $clist[] = e_UC_MAINADMIN;
 			}
 		} else {
 			$clist[] = e_UC_GUEST;
