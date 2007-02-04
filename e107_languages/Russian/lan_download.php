@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.7 $
-|     $Date: 2006-09-22 12:57:14 $
+|     $Revision: 1.8 $
+|     $Date: 2007-02-04 15:50:04 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("LAN_dl_14", "Оценить загрузку");
 define("LAN_dl_15", "Спасибо за оценку");
 define("LAN_dl_16", "загрузка(ок) с"); //download(s) from
 define("LAN_dl_17", "файлов");
-define("LAN_dl_18", "Загрузки");
+define("LAN_dl_18", "Загрузки");			// Page title
 define("LAN_dl_19", "Категория");
 define("LAN_dl_20", "Файлов");
 define("LAN_dl_21", "Размер");
@@ -95,4 +95,6 @@ define("LAN_dl_74", "Всего загрузок с этого зеркала: "
 
 define("LAN_dl_75", "изображение отсутствует ");
 define("LAN_dl_76", "Перейти на страницу");
+define("LAN_dl_77", "Загрузки"); //Downloads		// Intentional duplicate - some languages need it to be different. This is for number of townloads
+
 ?>
