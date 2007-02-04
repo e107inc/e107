@@ -27,7 +27,7 @@ switch($custom_query[0])
 				break;
 
 		case "search":
-				if(!USER && $pref['search_restrict'] == 1)
+				if(!check_class($pref['search_restrict']))
 				{
 						return "";
 				}
