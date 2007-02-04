@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2007-01-20 05:12:04 $
-|     $Author: mrpete $
+|     $Revision: 1.25 $
+|     $Date: 2007-02-04 15:27:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -376,7 +376,7 @@ return LAN_dl_7;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_REQUESTED_LAN
-return LAN_dl_18;
+return LAN_dl_77;
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_LINK_LAN
