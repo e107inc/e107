@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:49 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-04 18:58:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -199,16 +199,25 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 // forward user if searching in google
 $search_count = count($search_info);
 $google_id = $search_count + 1;
-if ($search_prefs['selector'] == 1) {
-	if ($perform_search && isset($_GET['t'][$google_id]) && $_GET['t'][$google_id]) {
+if ($perform_search)
+{
+  if ($search_prefs['selector'] == 1) 
+  {  // Care needed - with alpha strings on search of single area $_GET['t'][$google_id] returns a character on page > 1
+	if (isset($_GET['t'][$google_id]) && ($_GET['t']==$google_id) && $_GET['t'][$google_id]) 
+	{
+//	echo "We think google should be used using checkboxes<br />";
 		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
 	}
-} else {
-	if ($perform_search && isset($_GET['t']) && $_GET['t'] == $google_id) {
+  } 
+  else 
+  { 
+	if (isset($_GET['t']) && $_GET['t'] == $google_id) 
+	{
 		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
 	}
+  }
 }
 
 // determine areas being searched
