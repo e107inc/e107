@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-01 22:00:41 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-04 21:42:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -84,9 +84,9 @@ if (isset($_POST['upload'])) {
 			if(!$unarc) {
 				/* unarc failed ... */
 				if($fileType == "zip") {
-					$error = "PCLZIP extract error: '".$archive -> errorName(TRUE)."'";
+					$error = EPL_ADLAN_46." '".$archive -> errorName(TRUE)."'";
 				} else {
-					$error = "PCLTAR extract error: ".PclErrorString().", code: ".intval(PclErrorCode());
+					$error = EPL_ADLAN_47.PclErrorString().", ".EPL_ADLAN_48.intval(PclErrorCode());
 				}
 				$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
 				require_once("footer.php");

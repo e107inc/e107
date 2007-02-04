@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-04 21:42:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -57,6 +57,9 @@ define("EPL_ADLAN_42", "An error has occurred, unable to un-archive the file");
 define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped, please scroll down to see your plugin in the list.");
 define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as your plugins folder does not have the correct permissions - please CHMOD your e107_plugins folder to 777.");
 define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menus.php'>your menus page</a>.");
+define("EPL_ADLAN_46", "PCLZIP extract error:");
+define("EPL_ADLAN_47", "PCLTAR extract error: ");
+define("EPL_ADLAN_48", "code:");
 
 // define("EPL_CANCEL", "Cancel"); use LAN_CANCEL instead !!
 // define("EPL_EMAIL", "email");
