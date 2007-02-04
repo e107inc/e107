@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-09-30 20:08:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.49 $
+|     $Date: 2007-02-04 21:59:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -423,6 +423,8 @@ function checklayout($str) {
 	else if (strstr($str, "SITELINKS")) {
 		echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
 	}
+	else if (strstr($str, "LANGUAGELINKS")) {
+		echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";	}
 	else if (strstr($str, "CUSTOM")) {
 		$cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
 		echo "<div style='padding: 2px'>[".$cust."]</div>";
