@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:38 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-04 15:37:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -273,7 +273,7 @@ function show_limits()
 			</td>
 			<td class='forumheader3'>
 			".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> 
-			".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /> 
+			".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /> 
 			</td>
 			</tr>
 			";
