@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:42 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-04 17:36:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.1.1.1 $
+* @version     $Revision: 1.2 $
 * @author      $Author: mcfly_e107 $
 */
 class ecache {
@@ -39,7 +39,8 @@ class ecache {
 	* @scope private
 	* If the tag begins 'menu_', e_QUERY is not included in the hash which creates the file name
 	*/
-	function cache_fname($CacheTag) {
+	function cache_fname($CacheTag, $syscache = false)
+	{
 		global $FILES_DIRECTORY;
 		if(strpos($CacheTag, "nomd5_") === 0) {
 			// Add 'nomd5' to indicate we are not calculating an md5
@@ -68,8 +69,9 @@ class ecache {
 		} else {
 			$CheckTag = '';
 		}
-		$q = preg_replace("#\W#", "_", $CacheTag);
+		$q = ($syscache ? "S_" : "C_").preg_replace("#\W#", "_", $CacheTag);
 		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.$CheckTag.'.cache.php';
+		//echo "cache f_name = $fname <br />";
 		return $fname;
 	}
 
@@ -80,10 +82,11 @@ class ecache {
 	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
 	* @scope public
 	*/
-	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false) {
+	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false) {
 		global $pref, $FILES_DIRECTORY, $tp;
-		if (($pref['cachestatus'] || $ForcedCheck == true) && !$tp->checkHighlighting()) {
-			$cache_file = (isset($this) ? $this->cache_fname($CacheTag) : ecache::cache_fname($CacheTag));
+		if(($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
+		{
+			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			if (file_exists($cache_file)) {
 				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
@@ -101,6 +104,26 @@ class ecache {
 	}
 
 	/**
+	* @return string
+	* @param string $query
+	* @param int $MaximumAge the time in minutes before the cache file 'expires'
+	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
+	* @scope public
+	*/
+	function retrieve_sys($CacheTag, $MaximumAge = false, $ForcedCheck = false)
+	{
+		if(isset($this))
+		{
+			return $this->retrieve($CacheTag, $MaximumAge, $ForcedCheck, true);
+		}
+		else
+		{
+			return ecache::retrieve($CacheTag, $MaximumAge, $ForcedCheck, true);
+		}
+	}
+
+
+	/**
 	* @return void
 	* @param string $CacheTag - name of tag for future retrieval
 	* @param string $Data - data to be cached
@@ -109,10 +132,11 @@ class ecache {
 	* @desc Creates / overwrites the cache file for $query, $text is the data to store for $query.
 	* @scope public
 	*/
-	function set($CacheTag, $Data, $ForceCache = false, $bRaw=0) {
+	function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) {
 		global $pref, $FILES_DIRECTORY, $tp;
-		if (($pref['cachestatus'] || $ForceCache == true) && !$tp->checkHighlighting()) {
-			$cache_file = (isset($this) ? $this->cache_fname($CacheTag) : ecache::cache_fname($CacheTag));
+		if(($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
+		{
+			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			file_put_contents($cache_file, ($bRaw? $Data : '<?php'.$Data) );
 			@chmod($cache_file, 0777);
 			@touch($cache_file);
@@ -120,16 +144,55 @@ class ecache {
 	}
 
 	/**
+	* @return void
+	* @param string $CacheTag - name of tag for future retrieval
+	* @param string $Data - data to be cached
+	* @param bool   $ForceCache (optional, default false) - if TRUE, writes cache even when disabled
+	* @param bool   $bRaw (optional, default false) - if TRUE, writes data exactly as provided instead of prefacing with php leadin
+	* @desc Creates / overwrites the cache file for $query, $text is the data to store for $query.
+	* @scope public
+	*/
+	function set_sys($CacheTag, $Data, $ForceCache = false, $bRaw=0)
+	{
+		if(isset($this))
+		{
+			return $this->set($CacheTag, $Data, $ForceCache, $bRaw, true);
+		}
+		else
+		{
+			ecache::set($CacheTag, $Data, $ForceCache, $bRaw, true);
+		}
+	}
+
+
+	/**
 	* @return bool
 	* @param string $CacheTag
 	* @desc Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
 	*/
-	function clear($CacheTag = '') {
+	function clear($CacheTag = '', $syscache = false) {
 		global $pref, $FILES_DIRECTORY;
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
-		$ret = ecache::delete($dir, $file);
+		$ret = ecache::delete($dir, $file, $syscache);
 		return $ret;
+	}
+
+	/**
+	* @return bool
+	* @param string $CacheTag
+	* @desc Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
+	*/
+	function clear_sys($CacheTag = '')
+	{
+		if(isset($this))
+		{
+			return $this->clear($CacheTag, true);
+		}
+		else
+		{
+			ecache::clear($CacheTag, true);
+		}
 	}
 
 	/**
@@ -139,8 +202,9 @@ class ecache {
 	* @desc Internal class function to allow deletion of cache files using a pattern, default '*.*'
 	* @scope private
 	*/
-	function delete($dir, $pattern = "*.*") {
+	function delete($dir, $pattern = "*.*", $syscache = false) {
 		$deleted = false;
+		$pattern = ($syscache ? "S_" : "C_").$pattern;
 		$pattern = str_replace(array("\*", "\?"), array(".*", "."), preg_quote($pattern));
 		if (substr($dir, -1) != "/") {
 			$dir .= "/";

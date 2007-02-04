@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:12 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-04 17:36:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -27,54 +27,81 @@ require_once(e_HANDLER."cache_handler.php");
 $ec = new ecache;
 if ($pref['cachestatus'] == '2') {
 	$pref['cachestatus'] = '1';
+	save_prefs();
 }
-if (isset($_POST['submit_cache'])) {
-	if ($pref['cachestatus'] != $_POST['cachestatus']) {
+
+if(!is_writable(e_BASE.$FILES_DIRECTORY.'cache/'))
+{
+	$ns->tablerender(CACLAN_3, CACLAN_10);
+	require_once("footer.php");
+	exit;
+}
+
+if (isset($_POST['submit_cache']))
+{
+	if ($pref['cachestatus'] != $_POST['cachestatus'] || $pref['syscachestatus'] != $_POST['syscachestatus'])
+	{
 		$pref['cachestatus'] = $_POST['cachestatus'];
+		$pref['syscachestatus'] = $_POST['syscachestatus'];
 		save_prefs();
 		$ec->clear();
+		$ec->clear_sys();
 		$update = true;
+		admin_update($update, 'update', CACLAN_4);
 	}
-	admin_update($update, 'update', CACLAN_4);
 }
-	
+
+if (isset($_POST['empty_syscache'])) {
+	$ec->clear_sys();
+	$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_15."</b></div>");
+}
+
 if (isset($_POST['empty_cache'])) {
 	$ec->clear();
 	$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_6."</b></div>");
 }
 	
+$syscache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/S_*.*");
+$cache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/C_*.*");
+
+$syscache_files_num = count($syscache_files);
+$cache_files_num = count($cache_files);
+
+$sys_count = CACLAN_17." ".$syscache_files_num." ".($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+$nonsys_count = CACLAN_17." ".$cache_files_num." ".($cache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td class='fcaption'>".CACLAN_1."</td>
+	<td colspan='2' class='fcaption'>".CACLAN_1."</td>
 	</tr>
 	<tr>
-	<td class='forumheader3'>";
-$text .= (!$pref['cachestatus']) ? "<input type='radio' name='cachestatus' value='0' checked='checked' />" :
- "<input type='radio' name='cachestatus' value='0' />";
-$text .= CACLAN_7."
+
+	<tr>
+	<td class='forumheader3' style='width:50%;'>".CACLAN_11.":  <div class='smalltext'>".CACLAN_13."</div><br />{$nonsys_count}</td>
+	<td class='forumheader3' style='width:50%'>
+	<input type='radio' name='cachestatus' value='1'".($pref['cachestatus'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
+	<input type='radio' name='cachestatus' value='0'".(!$pref['cachestatus'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."&nbsp;&nbsp;
+	<input class='button' type='submit' name='empty_cache' value='".CACLAN_5."' />	
 	</td>
 	</tr>
-	 
+
 	<tr>
-	<td class='forumheader3'>";
-if (is_writable(e_FILE."cache")) {
-	$text .= ('1' == $pref['cachestatus']) ? "<input type='radio' name='cachestatus' value='1' checked='checked' />" :
-	 "<input type='radio' name='cachestatus' value='1' />";
-	$text .= CACLAN_9;
-} else {
-	$text .= CACLAN_9."<br /><br /><b>".CACLAN_10."</b>";
-}
-$text .= "</td>
+	<td class='forumheader3' style='width:50%;'>".CACLAN_12.":  <div class='smalltext'>".CACLAN_14."</div><br />{$sys_count}</td>
+	<td class='forumheader3' style='width:50%'>
+	<input type='radio' name='syscachestatus' value='1'".($pref['syscachestatus'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
+	<input type='radio' name='syscachestatus' value='0'".(!$pref['syscachestatus'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."&nbsp;&nbsp;
+	<input class='button' type='submit' name='empty_syscache' value='".CACLAN_16."' />	
+	</td>
 	</tr>
-	 
+
+ 
 	<tr style='vertical-align:top'>
-	<td style='text-align:center' class='forumheader'>
-	 
+	<td colspan='2' style='text-align:center' class='forumheader'>
+	<br />
 	<input class='button' type='submit' name='submit_cache' value='".CACLAN_2."' />
-	<input class='button' type='submit' name='empty_cache' value='".CACLAN_5."' />
-	 
+ 
 	</td>
 	</tr>
 	</table>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-02-03 12:43:53 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2007-02-04 17:36:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -267,7 +267,7 @@ e107_require_once(e_HANDLER.'cache_handler.php');
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
-$PrefCache = ecache::retrieve('SitePrefs', 24 * 60, true);
+$PrefCache = ecache::retrieve_sys('SitePrefs', 24 * 60, true);
 if(!$PrefCache){
 	// No cache of the prefs array, going for the db copy..
 	$retrieve_prefs[] = 'SitePrefs';
@@ -311,7 +311,7 @@ if(!$PrefCache){
 	// write pref cache array
 	$PrefCache = $eArrayStorage->WriteArray($pref, false);
 	// store the prefs in cache if cache is enabled
-	ecache::set('SitePrefs', $PrefCache);
+	ecache::set_sys('SitePrefs', $PrefCache);
 } else {
 	// cache of core prefs was found, so grab all the useful core rows we need
 	if(!isset($sysprefs->DefaultIgnoreRows)){
@@ -715,7 +715,7 @@ define("TIMEOFFSET", $e_deltaTime);
 
 $sql->db_Mark_Time('Start: Get menus');
 
-$menu_data = $e107cache->retrieve("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
+$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
 $menu_data = $eArrayStorage->ReadArray($menu_data);
 $eMenuList=array();
 $eMenuActive=array();
@@ -729,7 +729,7 @@ if(!is_array($menu_data)) {
 	$menu_data['menu_list'] = $eMenuList;
 	$menu_data['menu_active'] = $eMenuActive;
 	$menu_data = $eArrayStorage->WriteArray($menu_data, false);
-	$e107cache->set("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE), $menu_data);
+	$e107cache->set_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE), $menu_data);
 	unset($menu_data);
 } else {
 	$eMenuList = $menu_data['menu_list'];
@@ -1030,7 +1030,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 	  $msqlPrefCache = $eArrayStorage->WriteArray($_pref);
 	  $sql->db_Select_gen("INSERT INTO #core (e107_name,e107_value) values ('SitePrefs', '{$msqlPrefCache}') 
 		ON DUPLICATE KEY UPDATE e107_value='{$msqlPrefCache}'");
-	  ecache::clear('SitePrefs');
+	  ecache::clear_sys('SitePrefs');
 	}
   }
   else 
