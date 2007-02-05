@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2007-02-05 04:58:45 $
+|     $Revision: 1.113 $
+|     $Date: 2007-02-05 05:02:53 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
