@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-02-04 17:36:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2007-02-05 10:54:44 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 //
@@ -71,7 +71,7 @@ if($register_globals == true){
 	unset($global);
 }
 
-
+// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
 if(($pos = strpos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URLs to the correct one.
 {
 	$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
