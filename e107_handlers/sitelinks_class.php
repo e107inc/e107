@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-07 15:59:42 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-05 05:02:25 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -321,16 +321,23 @@ function hilite($link,$enabled=''){
 // eg. news.php, news.php?list.1 or news.php?cat.2 etc
 	if(substr(basename($link),0,8) == "news.php")
 	{
+
 		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")!==FALSE) {
 
 			$lnk = explode(".",$link_qry); // link queries.
 			$qry = explode(".",e_QUERY); // current page queries.
+
 
 			if($qry[0] == "item"){
 				return ($qry[2] == $lnk[1]) ? TRUE : FALSE;
      		}
 
 			if($lnk[0] == $qry[0] && $lnk[1] == $qry[1]){
+            	return TRUE;
+			}
+
+			if($qry[1] == "list" && $lnk[0] == "list" && $lnk[1] == $qry[2])
+			{
             	return TRUE;
 			}
 
