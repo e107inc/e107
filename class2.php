@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-02-05 10:54:44 $
-|     $Author: mrpete $
+|     $Revision: 1.14 $
+|     $Date: 2007-02-05 21:40:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1019,18 +1019,14 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
   {
 	if ($row_val == '') 
 	{		// Save old version as a backup first
-	  $msqlPrefCache=addslashes($PrefCache);
-	  $sql->db_Select_gen("INSERT INTO #core (e107_name,e107_value) values ('SitePrefs_Backup', '{$msqlPrefCache}') 
-		ON DUPLICATE KEY UPDATE e107_value='{$msqlPrefCache}'");
+	  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
 
 	  // Now save the updated values
 	  // traverse the pref array, with toDB on everything
 	  $_pref = $tp -> toDB($pref, true, true);
 	  // Create the data to be stored
-	  $msqlPrefCache = $eArrayStorage->WriteArray($_pref);
-	  $sql->db_Select_gen("INSERT INTO #core (e107_name,e107_value) values ('SitePrefs', '{$msqlPrefCache}') 
-		ON DUPLICATE KEY UPDATE e107_value='{$msqlPrefCache}'");
-	  ecache::clear_sys('SitePrefs');
+	  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
+	  ecache::clear('SitePrefs');
 	}
   }
   else 
