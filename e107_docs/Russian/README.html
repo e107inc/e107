@@ -4,9 +4,9 @@
 <!-- Version Info:
 
 $Source: /cvs_backup/e107_langpacks/e107_docs/Russian/README.html,v $
-$Revision: 1.6 $
-$Date: 2006-11-01 16:09:45 $
-$Author: yarodin $
+$Revision: 1.7 $
+$Date: 2007-02-06 17:15:12 $
+$Author: verant $
 
 -->
 <title>e107 Readme</title>
@@ -18,14 +18,19 @@ $Author: yarodin $
 <div id='mainbox'> <a href="http://e107.org"><img src="../e107_images/logo.png" alt="Logo" style="border:0" /></a> <br />
   <br />
   <span class="smalltext">© Steve Dunstan 2002. Текст лицензии находится в файле gpl.txt.</span><br />
+  <hr />
   <br />
-  <br />
+  <a id='latest_info'></a><span class="headertext">Последняя информация</span><br />  Пожалуйста, читайте документацию на <a href="http://e107.org">e107.org</a> с последней информацией об <a href="http://wiki.e107.org/?title=HOWTO:Install_e107">установке</a> и <a href="http://wiki.e107.org/?title=HOWTO:Upgrade_to_a_newer_version_of_e107_0.7xx">обновлении</a>. Если вы обновляетесь с версии 0.617 или более ранней, имеется отдельное <a href="http://wiki.e107.org/?title=HOWTO:Upgrade_e107_from_0.6xx">руководство по обновлению</a>. Информация на веб-сайте всегда свежее любой информации в этом файле.
+  
+  Имеется также дополнительная информация о решении пробем, которые могут появиться, а также о том, как настраивать и использовать E107.
+  <br /><br />
+  <hr />
   <a href="#requirements">Требования</a> | <a href="#installing">Установка</a> | <a href="#upgrading">Обновление</a> | <a href="#security">Безопасность</a> | <a href="#backup">Резервное копирование</a> | <a href="#problems">Проблемы</a> | <a href="#support">Поддержка</a> | <a href="#development">Разработка</a> | <a href="#thankyou">Благодарности</a> | <a href="#disclaimer">Предупреждение</a><br />
   <br />
   <br />
   <a id='requirements'></a><span class="headertext">Требования</span>
   <ul>
-    <li>Для работы e107 вам потребуется веб-сервер с установленными PHP версии 4.3 (или более поздней) и MySQL версии 3.22 (или более поздней). Если вы не уверены, что у вас установлены PHP и/или MYSQL, выясните это в службе поддержки вашего хостера.</li>
+    <li>Для работы e107 вам потребуется веб-сервер с установленными PHP версии 4.3 (или более поздней) и MySQL версии 3.22 (или более поздней - предпочтительнее версии 4.21). Если вы не уверены, что у вас установлены PHP и/или MYSQL, выясните это в службе поддержки вашего хостера.</li>
     <li>Если сайт размещен на вашем собственном сервере, то вы можете загрузить <a href="http://php.net">PHP</a> и <a href="http://mysql.com">MySQL</a>, а затем установить их самостоятельно, кстати обе программы бесплатны.</li>
     <li>Так же вам потребуются имя пользователя MySQL, пароль, и название базы данных. Не беспокойтесь если у вас есть доступ только к одной базе данных, e107 может использовать ее совместно с другими приложениями.</li>
     <li>Полная установка e107 требует примерно 9MB дискового пространства, тем не менее этот размер можно существенно уменьшить, удалив неиспользуемые плагины и темы (просто удалите соответствующие папки).</li>
@@ -127,7 +132,7 @@ $Author: yarodin $
       $HELP_DIRECTORY = "e107_docs/help/";<br />
       $DOWNLOADS_DIRECTORY = "e107_files/downloads/";</div><br />
     <li>Вырежьте эти строки из файла <span style="text-decoration: underline;">class2.php</span> и вставьте их в файл <span style="text-decoration: underline;">e107_config.php</span>. Теперь вы можете менять названия папок в переменных в главном файле конфигурации.<br /><br /></li>
-    <li>Если вы <span style="text-decoration: underline;"><b>УСТАНАВЛИВАЕТЕ e107 С НУЛЯ</b></span>, то переменные с именами папок уже находятся в файле e107_config.php. Они были оставлены в файле class2.php для обратной совместимости. В будущем они будут из него убраны.<br /><br /></li>
+    <li>Если вы <span style="text-decoration: underline;"><b>УСТАНАВЛИВАЕТЕ e107 С НУЛЯ</b></span>, то переменные с именами папок уже находятся в файле e107_config.php.<br /><br /></li>
     <li>Успешность дальнейших ваших действий зависит от того, сделали ли вы указанное ранее и убедились ли, что переменные с именами директорий находятся в файле e107_config.php.</li>
     <li>Чтобы переименовать директорию e107_admin (или любую другую директорию e107), во-первых, переименуйте директорию с помощью FTP клиента. Затем откройте в текстовом редакторе файл e107_config.php, который находится в корневой директории установленной e107, и найдите в нем следующую строку ...<br />
       <i>$ADMIN_DIRECTORY = "e107_admin/";</i><br />
@@ -151,7 +156,7 @@ $Author: yarodin $
     <li><b>Форумы e107 (Английский)</b></br >
       <a href='http://e107.org/forum.php'>http://e107.org/forum.php</a></li>
     <li><b>Часто Задаваемые Вопросы по e107 (Английский)</b></br >
-      <a href='http://e107faq.bkwon.net'>http://e107faq.bkwon.net</a></li>
+      <a href='http://e107faq.bkwon.net'>http://e107faq.org</a></li>
     <li><b>IRC канал (Английский)</b><br />
       #e107 на <a href='irc://freenode.net'>irc.freenode.net</a></li>
     <br />
