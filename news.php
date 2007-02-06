@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-23 18:38:27 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-06 22:55:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -96,7 +96,7 @@ if ($action == 'cat' || $action == 'all'){
 	}
 
 	if($category_name){
-		define("e_PAGETITLE", $category_name);
+		define("e_PAGETITLE", $tp->toHTML($category_name,FALSE,"defs"));
 	}
 
 	require_once(HEADERF);
@@ -140,7 +140,7 @@ if ($action == 'cat' || $action == 'all'){
 	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
     if(!$NEWSLISTTITLE){
-		$NEWSLISTTITLE = LAN_NEWS_82." '{$category_name}'";
+		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"defs")."'";
 	}
 
 	ob_start();
@@ -318,7 +318,7 @@ if (!$sql->db_Select_gen($query)) {
 }
 
 
-$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
+$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,"defs");
 
 if($action != "" && !is_numeric($action))
 {
