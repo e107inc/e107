@@ -79,7 +79,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 		$replace[0] = ($category_icon) ? "<a href='".e_BASE."news.php?cat.".$category_id."'><img src='".e_IMAGE."icons/".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
 
 		$search[1] = "/\{NEWSCATEGORY\}(.*?)/si";
-		$replace[1] = ($category_name) ? "<a href='".e_BASE."news.php?cat.".$category_id."' style='".$param['catlink']."' >".$tp->toHTML($category_name)."</a>" : "";
+		$replace[1] = ($category_name) ? "<a href='".e_BASE."news.php?cat.".$category_id."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
 
 		$text3 .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text3 .= "\n<td style='".NEWSCAT_CELL."; width:$wid%;'>\n";
