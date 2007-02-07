@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-30 03:07:50 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-07 21:25:11 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.4 $
-* @author $Author: e107coders $
+* @version $Revision: 1.5 $
+* @author $Author: e107steved $
 */
 class db {
 
@@ -336,6 +336,7 @@ class db {
 
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
 			$result = mysql_affected_rows($this->mySQLaccess);
+			if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
 			return $result;
 		} else {
 			$this->dbError("db_Update ($query)");
