@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.113 $
-|     $Date: 2007-02-06 22:51:38 $
+|     $Revision: 1.114 $
+|     $Date: 2007-02-07 00:24:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ if ($action == 'cat' || $action == 'all'){
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND NOT (news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
 		AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_sticky DESC,n.news_datestamp DESC LIMIT ".intval($from).",".NEWSALL_LIMIT;
 		$category_name = "All";
 	}
@@ -192,13 +192,13 @@ $order = $tp -> toDB($order, true);
 $interval = 10;
 if ($action == "list"){
 	$sub_action = intval($sub_action);
-	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class REGEXP '".e_CLASS_REGEXP."' AND news_render_type<2");
+	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
-		AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2
-		AND n.news_category={$sub_action} ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
+		AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
+
 }
 elseif($action == "item")
 {
@@ -422,7 +422,7 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 	}
 	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
 	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
+ 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 
 	$cache_data = ob_get_clean();
 	require_once(HEADERF);
