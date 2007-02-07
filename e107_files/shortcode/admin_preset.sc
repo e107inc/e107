@@ -1,4 +1,5 @@
-if(ADMIN){
+if(ADMIN && getperms("0"))
+{
 	global $sql,$pst,$ns,$tp,$e_wysiwyg,$pref;
 	if(isset($pst) && $pst->form && $pst->page){
 		$thispage = urlencode(e_SELF."?".e_QUERY);
