@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2007-02-07 18:48:27 $
-|   $Author: e107coders $
+|   $Revision: 1.6 $
+|   $Date: 2007-02-07 21:22:09 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 
 */
@@ -44,7 +44,7 @@ $pst->id = "admin_newspost";
 
 $newspost = new newspost;
 require_once("auth.php");
-$pst->save_preset(); // save and render result using unique name
+$pst->save_preset('news_datestamp'); // save and render result using unique name. Don't save item datestamp
 
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");

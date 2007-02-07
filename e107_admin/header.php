@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.8 $
-|   $Date: 2007-01-23 22:44:47 $
-|   $Author: e107coders $
+|   $Revision: 1.9 $
+|   $Date: 2007-02-07 21:22:09 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -147,7 +147,8 @@ if (isset($eplug_js) && $eplug_js) {
 if (isset($htmlarea_js) && $htmlarea_js) {
 	echo $htmlarea_js;
 }
-if (strpos(e_SELF, 'fileinspector.php') === FALSE) {
+if ((strpos(e_SELF, 'fileinspector.php') === FALSE) && getperms("0")) 
+{
 echo "<script type='text/javascript'>
 <!--
 function savepreset(ps,pid){
