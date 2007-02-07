@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-07 21:48:26 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "LWLANINS_1";
-$eplug_version = "1.0";
+$eplug_version = "1.1";
 $eplug_author = "jalist";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
@@ -51,6 +51,18 @@ $eplug_caption = LWLANINS_3;
 
 $eplug_array_pref = array(
 	'tohtml_hook' => 'linkwords'
+	);
+$eplug_prefs = array(
+	'lw_page_visibility'=>'',
+	'lw_context_visibility'=>array(			
+			'olddefault' => FALSE,
+			'title' => FALSE,
+			'summary' => TRUE,
+			'body' => TRUE,
+			'description' => TRUE,
+			'linktext' => FALSE,
+			'rawtext' => FALSE
+			)
 	);
 
 // List of table names -----------------------------------------------------------------------------------------------
@@ -83,7 +95,18 @@ $eplug_done = LWLANINS_4;
 
 // upgrading ... //
 
-$upgrade_add_prefs = "";
+$upgrade_add_prefs = array(
+	'lw_page_visibility'=>'', 
+	'lw_context_visibility'=>array(			
+			'olddefault' => FALSE,
+			'title' => FALSE,
+			'summary' => TRUE,
+			'body' => TRUE,
+			'description' => TRUE,
+			'linktext' => FALSE,
+			'rawtext' => FALSE
+			)
+);
 
 $upgrade_remove_prefs = "";
 
