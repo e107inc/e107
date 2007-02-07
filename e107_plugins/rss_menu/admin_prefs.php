@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-07 22:45:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -400,6 +400,7 @@ class rss{
 		global $tp, $pref;
 
 		$pref['rss_othernews'] = $_POST['rss_othernews'];
+		$pref['rss_summarydiz'] = $_POST['rss_summarydiz'];
 
 		save_prefs();
 		return LAN_SAVED;
