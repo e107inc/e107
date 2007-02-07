@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-06 22:55:17 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-07 01:20:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ if ($action == 'cat' || $action == 'all'){
 	if ($action == 'all'){
 		if(!defined("NEWSALL_LIMIT")){ define("NEWSALL_LIMIT",10); }
 		// show archive of all news items using list-style template.
-		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."'");
+		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -192,13 +192,13 @@ $order = $tp -> toDB($order, true);
 $interval = 10;
 if ($action == "list"){
 	$sub_action = intval($sub_action);
-	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class REGEXP '".e_CLASS_REGEXP."' AND news_render_type<2");
+	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
-		AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2
-		AND n.news_category={$sub_action} ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
+		AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
+
 }
 elseif($action == "item")
 {
