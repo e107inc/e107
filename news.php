@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.114 $
-|     $Date: 2007-02-07 00:24:05 $
+|     $Revision: 1.115 $
+|     $Date: 2007-02-07 00:37:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ if ($action == 'cat' || $action == 'all'){
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND NOT (news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
 		AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_sticky DESC,n.news_datestamp DESC LIMIT ".intval($from).",".NEWSALL_LIMIT;
 		$category_name = "All";
 	}
