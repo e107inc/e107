@@ -11,9 +11,9 @@
 |		GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_handlers/preset_class.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:33:56 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2007-02-07 21:22:09 $
+|		$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,28 +25,38 @@ class e_preset {
 	var $page;
 	var $id;
 
-	function save_preset(){
+	function save_preset($exclude_fields = '')    // Comma separated list of fields not to save
+	{
 	global $sql,$tp,$ns;
 	$qry = explode(".",e_QUERY);
 	$unique_id = is_array($this->id) ? $this->id : array($this->id);
 	$uid = $qry[1];
 
-		if($_POST && $qry[0] =="savepreset"){
-			foreach($_POST as $key => $value){
-				$value = $tp->toDB($value);
-			if ($sql -> db_Update("preset", "preset_value='$value'  WHERE preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' ")){
+	if($_POST && $qry[0] =="savepreset")
+	{
+	  $exclude_array = explode(',',$exclude_fields);
+	  foreach($_POST as $key => $value)
+	  {
+	    if (!in_array($key,$exclude_array))
+		{
+		  $value = $tp->toDB($value);
+		  if ($sql -> db_Update("preset", "preset_value='$value'  WHERE preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' "))
+		  {
 
-			} elseif ($value !="" && !$sql -> db_Select("preset","*","preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' ")){
-				$sql -> db_Insert("preset", "0, '".$unique_id[$uid]."', '$key', '$value' ");
-			}
+		  } 
+		  elseif ($value !="" && !$sql -> db_Select("preset","*","preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' "))
+		  {
+			$sql -> db_Insert("preset", "0, '".$unique_id[$uid]."', '$key', '$value' ");
+		  }
 
-			if($value == ""){
-				$sql -> db_Delete("preset", "preset_field ='".$key."' ");
-			}
-
-			}
-			$ns -> tablerender(LAN_SAVED, LAN_PRESET_SAVED);
+		  if($value == "")
+		  {
+			$sql -> db_Delete("preset", "preset_field ='".$key."' ");
+		  }
 		}
+	  }
+	  $ns -> tablerender(LAN_SAVED, LAN_PRESET_SAVED);
+	}
 
 		if ($_POST['delete_preset'] && e_QUERY=="clr_preset"){
 			$del = $_POST['del_id'];
