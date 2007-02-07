@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.140 $
-|   $Date: 2006-12-24 13:29:31 $
-|   $Author: mrpete $
+|   $Revision: 1.141 $
+|   $Date: 2007-02-07 18:47:09 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -419,15 +419,18 @@ class newspost {
 		<td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
 		<td style='width:80%' class='forumheader3'>";
 
-		if (!$sql->db_Select("news_category")) {
+		if (!$sql->db_Select("news_category"))
+		{
 			$text .= NWSLAN_10;
-			} else {
+		}
+		else
+		{
+			$text .= "\t<select name='cat_id' class='tbox'>\n";
 
-			$text .= "
-			<select name='cat_id' class='tbox'>";
-
-			while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch()) {
-				$text .= ($_POST['cat_id'] == $cat_id ? "<option value='$cat_id' selected='selected'>".$cat_name."</option>" : "<option value='$cat_id'>".$cat_name."</option>");
+			while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch())
+			{
+				$sel = ($_POST['cat_id'] == $cat_id) ? "selected='selected'" : "";
+				$text .= "<option value='$cat_id' {$sel}>".$tp->toHTML($cat_name,FALSE,"defs")."</option>\n";
 			}
 			$text .= "</select>";
 		}
