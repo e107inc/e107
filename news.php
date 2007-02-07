@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.115 $
-|     $Date: 2007-02-07 00:37:08 $
+|     $Revision: 1.116 $
+|     $Date: 2007-02-07 01:19:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ if ($action == 'cat' || $action == 'all'){
 	if ($action == 'all'){
 		if(!defined("NEWSALL_LIMIT")){ define("NEWSALL_LIMIT",10); }
 		// show archive of all news items using list-style template.
-		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."'");
+		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
