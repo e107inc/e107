@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-07 22:45:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -191,18 +191,19 @@ class rssCreate {
 				foreach($tmp as $value) {
 					$this -> rssItems[$loop]['title'] = $value['news_title'];
 					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
-                    if($value['news_summary']){
-                        	$this -> rssItems[$loop]['description'] = $value['news_summary'];
+					if($value['news_summary'] && $pref['rss_summarydiz'])
+					{
+						$this -> rssItems[$loop]['description'] = $value['news_summary'];
 					}else{
 						$this -> rssItems[$loop]['description'] = $value['news_body'];
-                    }
+					}
 					$this -> rssItems[$loop]['author'] = $value['user_name'];
-                    $this -> rssItems[$loop]['author_email'] = $value['user_email'];
+					$this -> rssItems[$loop]['author_email'] = $value['user_email'];
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 
 					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1){
 						$this -> rssItems[$loop]['comment'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['news_id'];
-                    }
+					}
 					$this -> rssItems[$loop]['pubdate'] = $value['news_datestamp'];
 
 					$loop++;

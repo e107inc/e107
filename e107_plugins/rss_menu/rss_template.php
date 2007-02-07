@@ -124,6 +124,12 @@ if(!isset($RSS_ADMIN_OPTIONS_TABLE)){
 			<input type='checkbox' name='rss_othernews' value='1' ".($pref['rss_othernews'] == 1 ? " checked='checked' " : "")." />
 		</td>
 	</tr>
+	<tr>
+		<td class='forumheader3'>".RSS_LAN_ADMIN_19."</td>
+		<td class='forumheader3'>
+			<input type='checkbox' name='rss_summarydiz' value='1' ".($pref['rss_summarydiz'] == 1 ? " checked='checked' " : "")." />
+		</td>
+	</tr>
 	<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>
 			<input class='button' type='submit' name='updatesettings' value='".LAN_SAVE."' />
