@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-01-24 20:58:50 $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-07 21:48:26 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -23,29 +23,41 @@ if (!defined('e107_INIT')) { exit; }
 
 class e_linkwords
 {
+	var $lw_enabled = FALSE;		// Default to disabled to start
 	var $word_list = array();		// List of link words/phrases
 	var $link_list = array();		// Corresponding list of links to apply
 	var $tip_list  = array();
-	var $area_opts = array(
-			'olddefault' => FALSE,
-			'title' => FALSE,
-			'summary' => TRUE,
-			'body' => TRUE,
-			'description' => TRUE,
-			'linktext' => FALSE,
-			'rawtext' => FALSE
-			);						// We can set this from prefs later
-	var $block_list = array(
-//			'page.php?3',
-//			'page.php?31!'
-			);
+	var $area_opts = array();		// Process flags for the various contexts
+	var $block_list = array();		// Array of 'blocked' pages
 	
 	function e_linkwords()
 	{
+	  global $pref;
 		/* constructor */
-		$link_sql = new db;
-		if($link_sql -> db_Select("linkwords", "*", "linkword_active=0"))
+	// See whether they should be active on this page - if not, no point doing anything!
+	  if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
+
+// Now see if disabled on specific pages
+	  $check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
+	  $this->block_list = explode("|",substr($pref['lw_page_visibility'],2));    // Knock off the 'show/hide' flag
+	  foreach ($this->block_list as $p)
+	  {
+		if(substr($p, -1) == '!')
 		{
+		  $p = substr($p, 0, -1);
+		  if(substr($check_url, strlen($p)*-1) == $p) return;
+		}
+		else 
+		{
+		  if(strpos($check_url, $p) !== FALSE) return;
+		}
+	  }
+
+	  // Will probably need linkwords on this page - so get the info
+	  $this->lw_enabled = TRUE;
+	  $link_sql = new db;
+	  if($link_sql -> db_Select("linkwords", "*", "linkword_active=0"))
+	  {
 		  while ($row = $link_sql->db_Fetch())
 		  {
 		    $lw = trim(strtolower($row['linkword_word']));
@@ -64,29 +76,15 @@ class e_linkwords
 			  $this->link_list[] = $row['linkword_link'];
 			}
 		  }
-		}
+	  }
+	  $this->area_opts = $pref['lw_context_visibility'];
 	}
 
 
-	function linkwords($text,$area = '')
+	function linkwords($text,$area = 'olddefault')
 	{
-	  if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return $text;   // No linkwords on admin directories
-	  if (($area != '') && (!array_key_exists($area,$this->area_opts) || !$this->area_opts[$area])) return $text;		// No linkwords in disabled areas
+	  if (!$this->lw_enabled || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
 
-// Now see if disabled on specific pages
-	  $check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
-	  foreach ($this->block_list as $p)
-	  {
-		if(substr($p, -1) == '!')
-		{
-		  $p = substr($p, 0, -1);
-		  if(substr($check_url, strlen($p)*-1) == $p) return $text;
-		}
-		else 
-		{
-		  if(strpos($check_url, $p) !== FALSE) return $text;
-		}
-	  }
 
 // Split up by HTML tags and process the odd bits here
 	  $ptext = "";
