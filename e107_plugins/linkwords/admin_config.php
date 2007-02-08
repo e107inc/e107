@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-07 21:48:26 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-08 20:18:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -26,14 +26,14 @@ require_once(e_ADMIN."auth.php");
 @include_once(e_PLUGIN."linkwords/languages/English.php");
 
 $lw_context_areas = array(
-			'title' => 'Title areas',
-			'summary' => 'Item summaries',
-			'body' => 'Body text',
-			'description' => 'Descriptions (links etc)'
+			'title' => LWLAN_33,
+			'summary' => LWLAN_34,
+			'body' => LWLAN_35,
+			'description' => LWLAN_36
 			// Don't do the next three - linkwords are meaningless on them
-//			'olddefault' => 'Legacy areas',
-//			'linktext' => 'Clickable links',
-//			'rawtext' => 'Unprocessed text'
+//			'olddefault' => LWLAN_37,
+//			'linktext' => LWLAN_38,
+//			'rawtext' => LWLAN_39'
 		);
 		
 $deltest = array_flip($_POST);
@@ -158,8 +158,8 @@ if (($action == 'words') || ($action == 'edit'))
 		<td class='forumheader' style='width: 40%;'>$linkword_link</td>
 		<td class='forumheader' style='width: 10%; text-align: center;'>".(!$linkword_active ? LWLAN_12 : LWLAN_13)."</td>
 		<td class='forumheader' style='width: 30%; text-align: center;'>
-		<input class='button' type='button' onclick=\"document.location='".e_SELF."?edit.$linkword_id'\" value='Edit' id='edit_$linkword_id' name='edit_linkword_id' />
-		<input class='button' type='submit'  value='Delete' id='delete_$linkword_id' name='delete_$linkword_id' />
+		<input class='button' type='button' onclick=\"document.location='".e_SELF."?edit.$linkword_id'\" value='".LWLAN_16."' id='edit_$linkword_id' name='edit_linkword_id' />
+		<input class='button' type='submit'  value='".LWLAN_17."' id='delete_$linkword_id' name='delete_$linkword_id' />
 		</td>
 		</tr>
 		</form>\n";
