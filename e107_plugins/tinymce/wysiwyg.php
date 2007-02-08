@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-22 18:45:26 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-08 04:42:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ $tinylang = array(
 	"English" 	=> "en",
 	"Farsi" 		=> "fa",
 	"French" 	=> "fr",
-	"German"		=> "de", 
+	"German"		=> "de",
 	"Greek" 		=> "el",
 	"Hebrew" 	=> " ",
 	"Hungarian" => "hu",
@@ -42,7 +42,7 @@ if(!$tinylang[$lang]){
 
 $thescript = (strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")) ? "tiny_mce_gzip.php" : "tiny_mce.js";
 
-$text = "<script type='text/javascript' src='".e_HANDLER."tiny_mce/".$thescript."'></script>\n";
+$text = "<script type='text/javascript' src='".e_PLUGIN."tinymce/".$thescript."'></script>\n";
 
 $text .= "<script type='text/javascript'>\n	tinyMCE.init({\n";
 
