@@ -1,4 +1,4 @@
-// $Id: admin_update.sc,v 1.2 2007-02-08 03:35:20 e107coders Exp $
+// $Id: admin_update.sc,v 1.3 2007-02-08 03:37:00 e107coders Exp $
 
 	global $e107cache,$ns;
 	if (is_readable(e_ADMIN."ver.php"))
@@ -11,7 +11,7 @@
 
     if($cacheData = $e107cache->retrieve("updatecheck",3600, TRUE))
     {
-   	 //	return $ns -> tablerender(LAN_NEWVERSION, $cacheData);
+   	 	return $ns -> tablerender(LAN_NEWVERSION, $cacheData);
     }
 
 	require_once(e_HANDLER."xml_class.php");
