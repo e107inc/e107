@@ -32,6 +32,14 @@ define("LWLAN_29", "Same format as menu visibility control. One match per line. 
 define("LWLAN_30", "Save options");
 define("LWLAN_31", "Add/edit linkword");
 define("LWLAN_32", "Linkword Options");
+define("LWLAN_33", 'Title areas');
+define("LWLAN_34", 'Item summaries');
+define("LWLAN_35", 'Body text');
+define("LWLAN_36", 'Descriptions (links etc)');
+define("LWLAN_37", 'Legacy areas');
+define("LWLAN_38", 'Clickable links');
+define("LWLAN_39", 'Unprocessed text');
+
 
 define("LWLANINS_1", "Linkwords");
 define("LWLANINS_2", "This plugin will link specified words with a defined link");
