@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-08 22:35:26 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -57,14 +57,15 @@ return $row['comment_author'];
 SC_END
 
 SC_BEGIN CM_COMMENT
-global $row, $menu_pref;
+global $row, $menu_pref, $pref, $tp;
 $COMMENT = '';
-if($menu_pref['comment_characters']>0){
-	$COMMENT = $row['comment_comment'];
-	if (strlen($COMMENT) > $menu_pref['comment_characters'])
-	{
-		$COMMENT = substr($COMMENT, 0, $menu_pref['comment_characters']).$menu_pref['comment_postfix'];
-	}
+if($menu_pref['comment_characters']>0)
+{
+  $COMMENT = strip_tags($tp->toHTML($row['comment_comment'], TRUE, "emotes_off, no_make_clickable", "", $pref['menu_wordwrap']));
+  if (strlen($COMMENT) > $menu_pref['comment_characters'])
+  {
+	$COMMENT = $tp->text_truncate($COMMENT, $menu_pref['comment_characters'],'').($row['comment_url'] ? " <a href='".$row['comment_url']."'>" : "").$menu_pref['comment_postfix'].($row['comment_url'] ? "</a>" : "");
+  }
 }
 return $COMMENT;
 SC_END
