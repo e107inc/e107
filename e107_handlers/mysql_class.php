@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-07 21:25:11 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-08 22:01:45 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.5 $
-* @author $Author: e107steved $
+* @version $Revision: 1.6 $
+* @author $Author: mrpete $
 */
 class db {
 
@@ -278,11 +278,8 @@ class db {
 		$this->mySQLcurTable = $table;
 		if(is_array($arg))
 		{
-			foreach($arg as $k => $v)
-			{
-				$keyList .= ($keyList ? ",`{$k}`" : "`{$k}`");
-				$valList .= ($valList ? ",'{$v}'" : "'{$v}'");
-			}
+			$keyList= "`".implode("`,`", array_keys($arg))."`";
+			$valList= "'".implode("','", $arg)."'";
 			$query = "INSERT INTO `".MPREFIX."{$table}` ({$keyList}) VALUES ({$valList})";
 		}
 		else
