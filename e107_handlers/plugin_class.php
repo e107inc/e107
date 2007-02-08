@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-01 22:00:41 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-08 20:09:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ class e107plugin
 	 */
 	function update_plugins_table() 
 	{
-		global $sql, $mySQLprefix, $menu_pref, $tp;
+		global $sql, $sql2, $mySQLprefix, $menu_pref, $tp;
 
 		require_once(e_HANDLER.'file_class.php');
 
@@ -97,6 +97,7 @@ class e107plugin
 		  }
 
 		  // We have to include here to set the variables, otherwise we only get uninstalled plugins
+		  // Would be nice to eval() the file contents to pick up errors better, but too many path issues
 		  include("{$p['path']}{$p['fname']}");
 		  $plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 
@@ -109,7 +110,7 @@ class e107plugin
 		  {
 		    if (isset($$check_var) && ($$check_var)) { $no_install_needed = 0; }
 		  }
-		
+				  
 		  if ($plugin_path == $eplug_folder)
 		  {
 			if($sql->db_Select("plugin", "plugin_id, plugin_version, plugin_installflag", "plugin_path = '$plugin_path'"))
@@ -134,10 +135,13 @@ class e107plugin
 		}
 
 		$sql->db_Select("plugin");
-		while ($row = $sql->db_fetch()) {
-			if (!is_dir(e_PLUGIN.$row['plugin_path'])) {
-				$sql->db_Delete('plugin', "plugin_path = '{$row['plugin_path']}'");
-			}
+		while ($row = $sql->db_fetch()) 
+		{	// Check for the actual plugin.php file - that's really the criterion for a 'proper' plugin
+		  if (!file_exists(e_PLUGIN.$row['plugin_path'].'/plugin.php')) 
+		  {
+//			  echo "Deleting: ".e_PLUGIN.$row['plugin_path'].'/plugin.php'."<br />";
+			$sql2->db_Delete('plugin', "plugin_path = '{$row['plugin_path']}'");
+		  }
 		}
 	}
 
