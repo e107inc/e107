@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-04 22:00:00 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-10 13:36:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -118,11 +118,16 @@ if($_POST['menuActivate'])
 }
 // =============
 
-foreach ($_POST['menuAct'] as $k => $v) {
-	if (trim($v)) {
-		$id = $k;
-		list($menu_act, $location, $position, $newloc) = explode(".", $_POST['menuAct'][$k]);
+if (isset($_POST['menuAct']))
+{
+  foreach ($_POST['menuAct'] as $k => $v) 
+  {
+	if (trim($v)) 
+	{
+	  $id = $k;
+	  list($menu_act, $location, $position, $newloc) = explode(".", $_POST['menuAct'][$k]);
 	}
+  }
 }
 
 if ($menu_act == 'config') {
@@ -224,29 +229,40 @@ if ($menu_act == "inc") {
 }
 
 if (strpos(e_QUERY, 'configure') === FALSE)
-{
+{  // Scan plugin directories to see if menus to add
 	$efile = new e_file;
 	$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
-	foreach($fileList as $file) {
-		list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
-		$file['path'] = str_replace(e_PLUGIN,"",$file['path']);
-		$file['fname'] = str_replace(".php","",$file['fname']);
-		if (!$sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'")) {
-			if (file_exists(e_PLUGIN.$parent_dir."/plugin.php")) {
-				include(e_PLUGIN.$parent_dir."/plugin.php");
-				if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' ")) {
-					$sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
-					$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
-				}
-			} else {
-				$sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
-				$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
-			}
+	foreach($fileList as $file) 
+	{
+	  list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
+	  $file['path'] = str_replace(e_PLUGIN,"",$file['path']);
+	  $file['fname'] = str_replace(".php","",$file['fname']);
+	  $valid_menu = FALSE;
+	  $existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
+	  if (file_exists(e_PLUGIN.$parent_dir."/plugin.php")) 
+	  {
+		include(e_PLUGIN.$parent_dir."/plugin.php");
+		if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' ")) 
+		{  // Its a 'new style' plugin with a plugin.php file - ionly include if plugin installed
+		  $valid_menu = TRUE;		// Whether new or existing, include in list
 		}
-		$menustr .= "&".str_replace(".php", "", $file['fname']);
+	  } 
+	  else 
+	  {  // Just add the menu anyway
+		  $valid_menu = TRUE;
+	  }
+	  if ($valid_menu) 
+	  {
+	    $menustr .= "&".str_replace(".php", "", $file['fname']);
+		if (!$existing_menu)
+		{  // New menu to add to list
+		  $sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
+		  $message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
+		}
+	  }
 	}
 
-$sql2 = new db;
+if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
 foreach ($menu_areas as $menu_act) {
 	if ($sql->db_Select("menus", "*", "menu_location='$menu_act' ORDER BY menu_order ASC")) {
 		$c = 1;
