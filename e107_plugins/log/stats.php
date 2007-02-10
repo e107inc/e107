@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-10 15:54:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -133,10 +133,10 @@ $country["arpa"] = "ARPANet";
 $country["com"] = "Commercial Users";
 $country["edu"] = "Education";
 $country["gov"] = "Government";
-$country["int"] = "Oganization established by an International Treaty";
+$country["int"] = "Organisation established by an International Treaty";
 $country["mil"] = "Military";
 $country["net"] = "Network";
-$country["org"] = "Organization";
+$country["org"] = "Organisation";
 $country["ad"] = "Andorra";
 $country["ae"] = "United Arab Emirates";
 $country["af"] = "Afghanistan";

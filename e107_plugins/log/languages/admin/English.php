@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-10 15:54:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 	
@@ -45,7 +45,7 @@ define("ADSTAT_L23", "logs from a previous version of e107 have been detected, u
 define("ADSTAT_L24", "Go to update script");
 define("ADSTAT_L25", "Selected stats reset");
 define("ADSTAT_L26", "Remove page entries");
-define("ADSTAT_L27", "if your stats have incorrect pages, you can remove them here");
+define("ADSTAT_L27", "If your stats have incorrect pages, you can remove them here");
 define("ADSTAT_L28", "Open page");
 
 
@@ -53,9 +53,8 @@ define("ADSTAT_L29", "Page Name");
 define("ADSTAT_L30", "Check to remove");
 define("ADSTAT_L31", "Remove selected pages");
 define("ADSTAT_L32", "Page Tidy");
-//define("ADSTAT_L10", "Referrers");
-//define("ADSTAT_L10", "Referrers");
 
+define("ADSTAT_L33", "Configure Statistics Logging");
 
 
 ?>
