@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/consolidate.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-01-30 21:43:27 $
+|     $Revision: 1.9 $
+|     $Date: 2007-02-10 15:54:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,8 @@ $ifileprev = "logi_".$yesterday.".php";
 $ifile = "logi_".$date.".php";
 
 if(file_exists($pathtologs.$pfile)) 
-{	/* log file is up to date, no consolidation required */
+{
+	/* log file is up to date, no consolidation required */
 	return;
 }
 else if(!file_exists($pathtologs.$pfileprev)) 
@@ -220,7 +221,7 @@ createLog();
 
 function createLog($mode="default") 
 {
-	global $pathtologs, $statTotal, $statUnique, $pageArray, $pfile, $ifile;
+	global $pathtologs, $statTotal, $statUnique, $pfile, $ifile;
 	if(!is_writable($pathtologs)) 
 	{
 		echo "Log directory is not writable - please CHMOD ".e_PLUGIN."log/logs to 777";
@@ -240,19 +241,6 @@ function createLog($mode="default")
 	$varStart."browserInfo = array();\n".
 	$varStart."osInfo = array();\n".
 	$varStart."pageInfo = array(\n";
-
-	if($mode == "default") 
-	{
-		reset($pageArray);
-		$loop = FALSE;
-		foreach($pageArray as $key => $info) {
-			if($loop) {
-				$data .= ",\n";
-			}
-			$data .= $quote.$key.$quote." => array('url' => '".$info['url']."', 'ttl' => 0, 'unq' => 0, 'ttlv' => ".$info['ttlv'].", 'unqv' => ".$info['unqv'].")";
-			$loop = TRUE;
-		}
-	}
 
 	$data .= "\n);\n\n?".  chr(62);
 
