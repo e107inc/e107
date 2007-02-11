@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-08-09 04:07:01 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2007-02-11 19:38:57 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -165,6 +165,10 @@ if ($pref['subnews_htmlarea'])
     require_once(e_HANDLER . "tiny_mce/wysiwyg.php");
     echo wysiwyg("item");
 }
+else
+{
+require_once(e_HANDLER."ren_help.php");
+}
 
 $insertjs = (!$pref['subnews_htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'" : "rows='25' ";
 $text .= "
@@ -172,8 +176,12 @@ $text .= "
 	<tr>
 	<td style='width:20%' class='forumheader3'>" . LAN_135 . "</td>
 	<td style='width:80%' class='forumheader3'>
-	<textarea class='tbox' id='item' name='item'  cols='80'  style='width:95%' $insertjs></textarea>
-	</td>
+	<textarea class='tbox' id='item' name='item'  cols='80'  style='width:95%' $insertjs></textarea>";
+if (!$pref['subnews_htmlarea'])
+{
+  $text .= display_help("helpb", 'news');
+}
+$text .= "	</td>
 	</tr>\n";
 if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS)
 {
