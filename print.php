@@ -11,14 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/print.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-01-24 22:34:29 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2007-02-11 18:25:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 $HEADER="";
 $FOOTER="";
+$CUSTOMHEADER = "";
+$CUSTOMFOOTER = "";
 
 
 $qs = explode(".", e_QUERY);
@@ -50,7 +52,7 @@ else
 {
 	$con = new convert;
 	$sql->db_Select("news", "*", "news_id='{$parms}'");
-	$row = $sql->db_Fetch(); 
+	$row = $sql->db_Fetch();
 	extract($row);
 	define("e_PAGETITLE", $news_title);
 	$news_body = $tp->toHTML($news_body, TRUE);
@@ -81,7 +83,7 @@ else
 	if ($news_extended != ""){ $print_text .= "<br /><br />".$news_extended; }
 	if ($news_source != ""){ $print_text .= "<br /><br />".$news_source; }
 	if ($news_url != ""){ $print_text .= "<br />".$news_url; }
-	 
+
 	$print_text .= "<br /><br /></font><hr />".
 	LAN_PRINT_303.SITENAME."
 	<br />
