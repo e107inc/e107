@@ -11,14 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-24 22:34:16 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-11 18:26:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 $HEADER="";
 $FOOTER="";
+$CUSTOMHEADER = "";
+$CUSTOMFOOTER = "";
 
 
 $qs = explode(".", e_QUERY);
