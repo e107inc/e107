@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-08 20:09:07 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-11 20:16:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -103,6 +103,7 @@ class e107plugin
 
 		  // scan for addons.
 		  $eplug_addons = $this->getAddons($plugin_path);
+//		  $eplug_addons = $this->getAddons($plugin_path,'check');		// Checks opening/closing tags on addon files
 
 		  // See whether the plugin needs installation - it does if one or more variables defined
 		  $no_install_needed = 1;
@@ -588,17 +589,26 @@ class e107plugin
 	}
 
     // return a list of available plugin addons for the specified plugin. e_xxx etc.
-	function getAddons($plugin_path,$debug=FALSE){
-        global $fl;
-
-		$p_addons = array();
-		foreach($this->plugin_addons as $e_xxx)
+	// $debug = TRUE - prints diagnostics
+	// $debug = 'check' - checks each file found for php tags - prints 'pass' or 'fail'
+	function getAddons($plugin_path,$debug=FALSE)
+	{
+      global $fl;
+	  $p_addons = array();
+	  foreach($this->plugin_addons as $e_xxx)
+	  {
+		if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
 		{
-			if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
-			{
-				$p_addons[] = $e_xxx;
-			}
+		  $passfail = '';
+		  if ($debug == 'check')
+		  {
+		    $file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
+			if ((substr($file_text,0,5) != '<'.'?php') || (substr($file_text,-2,2) !='?>')) $passfail = '<b>fail</b>'; else $passfail = 'pass';
+			echo $plugin_path."/".$e_xxx.".php - ".$passfail."<br />";
+		  }
+		  $p_addons[] = $e_xxx;
 		}
+	  }
 
 		if(!is_object($fl)){
 			require_once(e_HANDLER.'file_class.php');
@@ -638,7 +648,7 @@ class e107plugin
 		}
 
 
-		if($debug)
+		if($debug==TRUE)
 		{
 			echo $plugin_path." = ".implode(",",$p_addons)."<br />";
 		}
