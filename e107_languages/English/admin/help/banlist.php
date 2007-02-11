@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-11 10:33:36 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,6 +27,8 @@ Entering the IP address 123.123.123.123 will stop the user with that address vis
 Entering the IP address 123.123.123.* will stop anyone in that IP range from visiting your site.<br /><br />
 <b>Banning by email address</b><br />
 Entering the email address foo@bar.com will stop anyone using that email address from registering as a member on your site.<br />
-Entering the email address *@bar.com will stop anyone using that email domain from registering as a member on your site.";
+Entering the email address *@bar.com will stop anyone using that email domain from registering as a member on your site.<br /><br />
+<b>Banning by user name</b><br />
+This is done from the user administration page.";
 $ns -> tablerender($caption, $text);
 ?>
