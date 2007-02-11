@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/e_linkgen.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-11 20:09:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
