@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 16:49:28 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-11 10:40:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -99,7 +99,7 @@ $_function_var = $bbcode[$parm][5];
 
 if($bbcode[$parm])  // default - insert text.
 {
-	$text = "\n<img class='bbcode bbcode_buttons' style='cursor:pointer' src='".$iconpath[$parm]."' alt='' title='".$helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />\n";
+	$text = "\n<img class='bbcode bbcode_buttons' style='cursor:pointer' src='".$iconpath[$parm]."' alt='' title='".$_helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />\n";
 }
 
 if($_function)
