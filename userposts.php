@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-11 15:33:21 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -21,7 +21,8 @@ require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
 require_once(HEADERF);
 
-if (!USER) {
+if (!check_class(varset($pref['memberlist_access'], 253)))
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
