@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-02-05 21:40:40 $
+|     $Revision: 1.15 $
+|     $Date: 2007-02-12 20:04:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1115,7 +1115,7 @@ class e_online {
 					}
 					$sql->db_Update("online", $query);
 				} else {
-					$sql->db_Insert("online", " '".time()."', 'null', '0', '{$ip}', '{$page}', 1, 0");
+					$sql->db_Insert("online", " '".time()."', '0', '0', '{$ip}', '{$page}', 1, 0");
 				}
 			}
 
