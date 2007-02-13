@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-11 19:39:07 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-13 23:50:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -149,7 +149,8 @@ else
 		<select name='cat_id' class='tbox'>";
     while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch())
     {
-        $text .= ($_POST['cat_id'] == $cat_id ? "<option value='$cat_id' selected>" . $cat_name . "</option>" : "<option value='$cat_id'>" . $cat_name . "</option>");
+		$sel = ($_POST['cat_id'] == $cat_id) ? "selected='selected'" : "";
+        $text .= "<option value='$cat_id' $sel>" . $tp->toHTML($cat_name,FALSE,"defs") . "</option>";
     }
     $text .= "</select>";
 }
