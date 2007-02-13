@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-11 18:26:54 $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-13 22:27:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -70,10 +70,10 @@ else
 		list($a_id, $a_name) = $sql->db_Fetch();
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");
-	$print_text = "<font style=\"font-size: 11px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
+	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
 	<b>".LAN_PRINT_135.": ".$news_title."</b>
 	<br />
-	(".LAN_PRINT_86." ".$category_name.")
+	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
 	<br />
 	".LAN_PRINT_94." ".$a_name."<br />
 	".$news_datestamp."
@@ -84,10 +84,10 @@ else
 	if ($news_source != ""){ $print_text .= "<br /><br />".$news_source; }
 	if ($news_url != ""){ $print_text .= "<br />".$news_url; }
 	 
-	$print_text .= "<br /><br /></font><hr />".
+	$print_text .= "<br /><br /></span><hr />".
 	LAN_PRINT_303.SITENAME."
 	<br />
-	( http://".$_SERVER[HTTP_HOST].e_HTTP."comment.php?comment.news.".$news_id." )
+	( http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?extend.".$news_id." )
 	";
 }
 
@@ -102,10 +102,10 @@ if(defined("TEXTDIRECTION") && TEXTDIRECTION == "rtl"){
 require_once(HEADERF);
 
 echo "
-<div style='background:white'>
+<div style='background-color:white'>
 <div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
 <div style='text-align:".$align."'>".$print_text."</div><br /><br />
-<div style='text-align:".$align."'><form action=''><input type='button' value='".LAN_PRINT_307."' onClick='window.print()' /></form></div></div>";
+<form action=''><div style='text-align:center'><input type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
 
 require_once(FOOTERF);
 
