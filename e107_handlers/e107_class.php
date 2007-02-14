@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-14 22:15:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -169,14 +169,13 @@ class e107{
 			if (getenv('HTTP_X_FORWARDED_FOR')) {
 				$ip=$_SERVER['REMOTE_ADDR'];
 				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) {
-					$ip2 = array(
-					'/^0\./',
-					'/^127\.0\.0\.1/',
-					'/^192\.168\..*/',
-					'/^172\.16\..*/',
-					'/^10..*/',
-					'/^224..*/',
-					'/^240..*/'
+				$ip2 = array('#^0\..*#', 
+					'#^127\..*#', 							// Local loopbacks
+					'#^192\.168\..*#', 						// RFC1918 - Private Network
+					'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+					'#^10\..*#', 							// RFC1918 - Private Network
+					'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
+					'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
 					);
 					$ip = preg_replace($ip2, $ip, $ip3[1]);
 				}
