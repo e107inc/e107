@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-11 20:16:25 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-14 21:17:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -656,7 +656,16 @@ class e107plugin
 		return implode(",",$p_addons);
 	}
 
-
+	function checkAddon($plugin_path,$e_xxx)
+	{ // Return 0 = OK, 1 = Fail, 2 = inaccessible
+	  if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
+	  {
+		$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
+		if ((substr($file_text,0,5) != '<'.'?php') || (substr($file_text,-2,2) !='?>')) return 1;
+		return 0;
+		}
+	  return 2;
+	}
 }
 
 ?>
