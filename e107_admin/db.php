@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-14 21:17:03 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -153,8 +153,11 @@ function optimizesql($mySQLdefaultdb) {
 
 }
 
+
 function plugin_viewscan()
 {
+  $error_messages = array(0 => DBLAN_31, 1 =>"<b>".DBLAN_32."</b>", 2 =>"<strong>".DBLAN_33."</strong>", 3 => DBLAN_34);
+
 		global $sql, $pref, $ns, $tp;
 		require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
@@ -167,15 +170,34 @@ function plugin_viewscan()
 				<div style='text-align:center'>  <table class='fborder' style='".ADMIN_WIDTH."'>
 				<tr><td class='fcaption'>".DBLAN_24."</td>
 				<td class='fcaption'>".DBLAN_25."</td>
-				<td class='fcaption'>".DBLAN_26."</td>
+				<td class='fcaption'>".DBLAN_26."<br />".DBLAN_30."</td>
 				<td class='fcaption'>".DBLAN_27."</td>";
 
         $sql -> db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
-		while($row = $sql-> db_Fetch()){
+		while($row = $sql-> db_Fetch())
+		{
 			$text .= "<tr>
 				<td class='forumheader3'>".$tp->toHtml($row['plugin_name'],FALSE,"defs")."</td>
                 <td class='forumheader3'>".$row['plugin_path']."</td>
-				<td class='forumheader3'>".str_replace(",","<br />",$row['plugin_addons'])."</td>
+				<td class='forumheader3'>";
+				
+			if (trim($row['plugin_addons']))
+			{
+			  $nl_code = '';
+			  foreach(explode(',',$row['plugin_addons']) as $this_addon)
+			  {
+			    $ret_code = 3;		// Default to 'not checked
+			    if (strpos($this_addon,'e_') === 0)
+			    {
+//			      echo "Checking: ".$row['plugin_path'].":".$this_addon."<br />";
+			      $ret_code = $ep->checkAddon($row['plugin_path'],$this_addon);		// See whether spaces before opening tag or after closing tag
+			    }
+			    $text .= $nl_code.$this_addon." - ".$error_messages[$ret_code];	// $ret_code - 0=OK, 1=content error, 2=access error
+			    $nl_code = "<br />";
+			  }
+			}
+			
+			$text .= "</td>
 				<td class='forumheader3' style='text-align:center'>";
             if($previous == $row['plugin_path'])
 			{
@@ -191,6 +213,7 @@ function plugin_viewscan()
 			</tr>";
 			$previous = $row['plugin_path'];
 		}
+//		$text .= "<tr><td colspan='4' class='forumheader3'>".DBLAN_30."</td></tr>";
         $text .= "</table></div></form>";
         $ns -> tablerender(ADLAN_CL_7, $text);
 

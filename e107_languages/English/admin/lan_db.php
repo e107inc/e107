@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_db.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-14 21:17:15 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("DBLAN_1", "Core settings backed up in database.");
@@ -38,8 +38,11 @@ define("DBLAN_26", "Included add-ons");
 define("DBLAN_27", "Installed");
 define("DBLAN_28", "Click button to scan plugin directories for changes");
 define("DBLAN_29", "Scan plugin directories");
-
-
+define("DBLAN_30", " (If an addon shows an error, check for characters outside the PHP opening/closing tags)");
+define("DBLAN_31", "Pass");
+define("DBLAN_32", "Error");
+define("DBLAN_33", "Inaccessible");
+define("DBLAN_34", "Not checked");
 
 
 ?>
