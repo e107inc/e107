@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/e_linkgen.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-11 20:09:19 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-15 21:15:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,4 +34,3 @@ include_lan(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_forum_admin.php");
 
 
 ?>
-
