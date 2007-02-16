@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-16 01:13:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -46,13 +46,14 @@ if ($_POST['submit_resetdisplaynames'])
 
 if (isset($_POST['updateprefs']))
 {
-	unset($_POST['updateprefs']);
+	unset($_POST['updateprefs'],$_POST['sitelanguage']);
 
 	$_POST['cookie_name'] = str_replace(array(" ","."), "_", $_POST['cookie_name']);
 	$_POST['cookie_name'] = preg_replace("#[^a-zA-Z0-9_]#", "", $_POST['cookie_name']);
 
 	$_POST['siteurl']     = trim($_POST['siteurl']) ? trim($_POST['siteurl']) : SITEURL;
 	$_POST['siteurl']     = substr($_POST['siteurl'], -1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
+
 
 	foreach($_POST as $key => $value)
 	{
