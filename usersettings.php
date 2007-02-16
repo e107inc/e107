@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-29 21:03:53 $
+|     $Revision: 1.7 $
+|     $Date: 2007-02-16 20:36:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -306,6 +306,7 @@ if (isset($_POST['updatesettings']))
 				if(!check_class($pref['displayname_class'], $udata['user_class'], $peer))
 				{
 					$new_username = "user_name = '{$loginname}', ";
+					$username = $loginname;
 				}
 			}
 
