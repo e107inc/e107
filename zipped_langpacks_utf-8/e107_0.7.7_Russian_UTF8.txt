@@ -1,4 +1,6 @@
 Русскую версию в кодировке UTF-8 можно найти на
+http://e107russian.sourceforge.net/
+Проект Sourceforge:
 http://sourceforge.net/projects/e107russian/
 
 Подписка на рассылку:
