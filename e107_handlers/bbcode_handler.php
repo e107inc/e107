@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-15 21:37:22 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-16 22:44:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -203,12 +203,13 @@ class e_bbcode
 	switch ($code_stack[0]['type'])
 	{
 	  case 'text' :
-	    $stacktext .= $code_stack[0]['code'].$stacktext;   // Need to insert text at front
+	    $stacktext = $code_stack[0]['code'].$stacktext;   // Need to insert text at front
 		array_shift($code_stack);
 	    break;
 	  case 'bbcode' :
-		  array_shift($code_stack);  		// Just discard any unmatched bbcodes
-		  break;
+	    $stacktext = '['.$code_stack[0]['code'].']'.$stacktext;   // To discard unmatched codes, delete this line
+		array_shift($code_stack);  		// Just discard any unmatched bbcodes
+		break;
 	}
   }
   $result .= $stacktext; 
