@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-16 20:48:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -30,7 +30,7 @@ if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 if(e_QUERY)
 {
-	$query = "SELECT p.*, u.user_name FROM #polls AS p
+	$query = "SELECT p.*, u.user_id, u.user_name FROM #polls AS p
 	LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
 	WHERE p.poll_type=1 AND p.poll_id=".intval(e_QUERY);
 
