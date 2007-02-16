@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-11-04 18:33:58 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2007-02-16 20:48:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -30,7 +30,7 @@ if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 if(e_QUERY)
 {
-	$query = "SELECT p.*, u.user_name FROM #polls AS p
+	$query = "SELECT p.*, u.user_id, u.user_name FROM #polls AS p
 	LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
 	WHERE p.poll_type=1 AND p.poll_id=".intval(e_QUERY);
 
@@ -59,7 +59,7 @@ if(e_QUERY)
 		<tr>
 		<td colspan='2' class='mediumtext' style='text-align:center'>
 		<b>".$tp -> toHTML($poll_title)."</b>
-		<div class='smalltext'>".POLLAN_35." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>.<br /> ".POLLAN_37." ".$start_datestamp." ".POLLAN_38." ".$end_datestamp.".<br />".POLLAN_26.": $voteTotal</div>
+		<div class='smalltext'>".POLLAN_35." <a href='".e_BASE."user.php?id.{$user_id}'>".$user_name."</a>.<br /> ".POLLAN_37." ".$start_datestamp." ".POLLAN_38." ".$end_datestamp.".<br />".POLLAN_26.": {$voteTotal}</div>
 		<br />
 
 		</td>
