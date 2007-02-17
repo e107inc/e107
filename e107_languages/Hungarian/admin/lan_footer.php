@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_footer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:21:33 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-17 00:27:27 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("FOOTLAN_1", "Weboldal");
 define("FOOTLAN_2", "Fő admin");
 define("FOOTLAN_3", "Verzió");
 define("FOOTLAN_4", "build");
-define("FOOTLAN_5", "Admin Theme");
+define("FOOTLAN_5", "Theme");
 define("FOOTLAN_6", "-");
 define("FOOTLAN_7", "Info");
 define("FOOTLAN_8", "Telepítés dátuma");

@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/Hungarian.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-17 00:27:27 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define('ADLAN_PM', "Privát Üzenet");
 define('ADLAN_PM_1', "Az aktiváláshoz lépj a menük felületre és válaszd ki a private_msg majd helyezd valamelyik menüterületre. <br /><br />Ha szükséges az előző verzió üzeneteinek konvertálása, akkor lépj a plugin Fő beállítások oldalára és válaszd a 'Konvertálás' linket.");
 define('ADLAN_PM_2', "Privát Üzenet beállítása");

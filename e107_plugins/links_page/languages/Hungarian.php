@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Hungarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 22:21:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-17 00:27:27 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -310,9 +310,9 @@ define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Link Kategória");
 define("LAN_LINKS_46", "Link Alkategória");
 define("LAN_LINKS_47", "link navigátor...");
-define("LAN_LINKS_48", "-- kategória --");
+define("LAN_LINKS_48", "-- Kategória megtekintése --");
 define("LAN_LINKS_49", "");
-define("LAN_LINKS_50", "Nincs jogosultságod link beküldéséhez");
+define("LAN_LINKS_50", "Jelenleg nem rendelkezel link beküldés jogosultsággal");
 
 define("LAN_ADMIN_HELP_0", "Linkoldal - Súgó");
 

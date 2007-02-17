@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:00 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-17 00:27:27 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -87,21 +87,25 @@ define("EXTLAN_71", "Nem aktiválható!");
 define("EXTLAN_72", "Kikapcsolható");
 define("EXTLAN_73", "Nem lehet kikapcsolni!");
 define("EXTLAN_74", "ez egy védett mező és nem lehet használni.");
+define("EXTLAN_75", "Hiba, a mezőt nem sikerült hozzáadni az adatbázishoz.");
 
 
  //textbox
 define("EXTLAN_HELP_1", "<b><i>Paraméterek:</i></b><br />size - a mező mérete<br />maxlength - a mező maximális hossza<br />class - a mező css class definíciója<br />");
 //radio buttons
-define("EXTLAN_HELP_2", "Ez lesz a radio gomb súgó szöveg");
+define("EXTLAN_HELP_2", "Írd be a szöveget a beállítások részére az 'Értékek' szövegdobozba - egy szövegdoboz/beállítás. Adj hozzá új dobozt, ha szükséges");
 //dropdown
-define("EXTLAN_HELP_3", "Ez lesz a lenyíló lista súgó szöveg");
+define("EXTLAN_HELP_3", "Írd be a szöveget a beállítások részére az 'Értékek' szövegdobozba - egy szövegdoboz/beállítás. Adj hozzá új dobozt, ha szükséges");
 //db field
 define("EXTLAN_HELP_4", "<b><i>Értékek:</i></b><br />Itt három értéket kellene megadni MINDIG:<br /><ol><li>adatbázis tábla</li><li>azonosító mező </li><li>érték mező</li></ol><br />");
 //textarea
-define("EXTLAN_HELP_5", "Ez lesz a szövegdoboz súgó szöveg");
+define("EXTLAN_HELP_5", "Határozz meg egy területet a szabad-formájú szöveghez. (Válaszd ki a méretet a 'szöveget tartalmazó mező' szövegdobozban, ha szükséges)");
 //integer
-define("EXTLAN_HELP_6", "Ez lesz az egész súgó szöveg");
+define("EXTLAN_HELP_6", "Numerikus érték bevitelének engedélyezése");
 //date
-define("EXTLAN_HELP_7", "Ez lesz a dátum súgó szöveg");
+define("EXTLAN_HELP_7", "Kötelezi a felhasználót egy dátum megadására");
+// Language
+define("EXTLAN_HELP_8", "Telepített nyelv kiválasztásának engedélyezése");
+
 
 ?>
