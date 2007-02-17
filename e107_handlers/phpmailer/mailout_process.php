@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-22 21:01:36 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-17 18:18:50 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -202,7 +202,8 @@ if($_POST['cancel_emails']){
 
 	stopwatch();
 
-    while($row = $sql-> db_Fetch()){
+    while($row = $sql-> db_Fetch())
+	{
 
 
 // ---------------------- Mailing Part. -------------------------------------->
@@ -230,6 +231,7 @@ if($_POST['cancel_emails']){
 		}
 
 		$mail->ClearAddresses();
+   		$mail->ClearCustomHeaders();
 
 
 // --------- End of the mailing. --------------------------------------------->
