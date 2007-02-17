@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2007-01-18 20:43:21 $
-|     $Author: e107steved $
+|     $Revision: 1.75 $
+|     $Date: 2007-02-17 16:58:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -403,13 +403,11 @@ if ($action == 'edit' || $action == 'quote')
 	if (!isset($_POST['fpreview']))
 	{
 		$subject = $thread_info['0']['thread_name'];
+
+		$post = $tp->toForm($thread_info[0]['thread_thread'], false, true);
+		//Remove old 'edited by' message
+		$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
 	}
-
-
-	//Remove old 'edited by' messeage
-	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
-
-	$post = $tp->toForm($thread_info[0]['thread_thread'], false, true);
 	
 	if ($action == 'quote') {
 		$post = preg_replace("#\[hide].*?\[/hide]#s", "", $post);
