@@ -2,8 +2,8 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.6 $
-|     $Date: 2006-11-01 13:53:46 $
+|     $Revision: 1.7 $
+|     $Date: 2007-02-17 06:19:12 $
 |     $Author: verant $
 +----------------------------------------------------------------------------+
 */
@@ -37,5 +37,10 @@ define("DBLAN_26", "Выключенные add-ons"); //Included add-ons
 define("DBLAN_27", "Установлен"); //Installed
 define("DBLAN_28", "Нажмите кнопку, чтобы сканировать каталог плагинов на изменения"); //Click button to scan plugin directories for changes
 define("DBLAN_29", "Сканировать каталог плагинов"); //Scan plugin directories
+define("DBLAN_30", " (Если плагин выдает ошибку, проверьте символы вне тегов открытия/закрытия PHP)");
+define("DBLAN_31", "Пройдено"); //CheckIt: Pass
+define("DBLAN_32", "Ошибка");
+define("DBLAN_33", "Недоступно");
+define("DBLAN_34", "Не проверено");
 
 ?>
