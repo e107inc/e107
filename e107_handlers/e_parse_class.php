@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.183 $
-|     $Date: 2007-01-24 20:59:23 $
-|     $Author: e107steved $
+|     $Revision: 1.184 $
+|     $Date: 2007-02-18 01:13:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -26,12 +26,12 @@ class e_parse
 	var $e_pf;
 	var $e_emote;
 	var $e_hook;
-	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
-	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
+	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;', ' & ');
+	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"', ' &amp; ');
 	var $e_highlighting;		// Set to TRUE or FALSE once it has been calculated
 	var $e_query;			// Highlight query
 
-		// toHTML Action defaults. For now these match existing convention. 
+		// toHTML Action defaults. For now these match existing convention.
 		// Let's reverse the logic on the first set ASAP; too confusing!
 	var $e_modSet = array();
 	var	$e_optDefault = array(
@@ -46,49 +46,49 @@ class e_parse
 
 		  'no_make_clickable' => FALSE,	// URLs etc are clickable - TRUE disables
 		  'no_replace' => FALSE,				// Replace clickable links - TRUE disables (only if no_make_clickable not set)
-		  
+
 	  	'emotes_off' => FALSE,				// Convert emoticons to graphical icons - TRUE disables conversion
 			'emotes_on'  => FALSE,				// FORCE conversion to emotes, even if syspref is disabled
 
 		  'no_hook' => FALSE,						// Hooked parsers (TRUE disables completely)
-			
+
 			// Disabled by Default
 			'defs' => FALSE,							// Convert defines(constants) within text.
 			'constants' => FALSE,					// replace all {e_XXX} constants with their e107 value
 			'parse_sc' => FALSE						// Parse shortcodes - TRUE enables parsing
 		);
-		
+
 		// Super modifiers adjust default option values
 		// First line of adjustments change default-ON options
 		// Second line changes default-OFF options
 	var	$e_SuperMods = array(
 				'title' =>				//text is part of a title (e.g. news title)
-					array( 
+					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
 						'defs'=>TRUE,'parse_sc'=>TRUE),
 
 				'summary' =>			// text is part of the summary of a longer item (e.g. content summary)
-					array( 
+					array(
 						// no changes to default-on items
 						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
 
 				'description' =>	// text is the description of an item (e.g. download, link)
-					array( 
+					array(
 						// no changes to default-on items
 						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
 
 				'body' =>					// text is 'body' or 'bulk' text (e.g. custom page body, content body)
-					array( 
+					array(
 						// no changes to default-on items
 						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
 
 				'linktext' =>			// text is the 'content' of a link (A tag, etc)
-					array( 
+					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
 						'defs'=>TRUE,'parse_sc'=>TRUE),
 
 				'rawtext' =>			// text is used (for admin edit) without fancy conversions
-					array( 
+					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
 						// leave opt-in options off
 						)
@@ -413,11 +413,11 @@ class e_parse
 			return $text;
 		}
 		global $pref, $fromadmin;
-		
-		// 
+
+		//
 		// SET MODIFIERS
 		//
-		
+
 		// Get modifier strings for toHTML
 		// "super" modifiers set a baseline. Recommend entering in UPPER CASE to highlight
 		// other modifiers override
@@ -425,33 +425,33 @@ class e_parse
 		// modifiers MAY have spaces in between as desired
 
 		$opts = $this->e_optDefault;
-		if (strlen($modifiers)) 
+		if (strlen($modifiers))
 		{
 			//
 			// Yes, the following code is strangely-written. It is one of the MOST used bits in
-			// all of e107. We "inlined" the assignments to optimize speed through 
+			// all of e107. We "inlined" the assignments to optimize speed through
 			// some careful testing (19 Jan 2007).
 			//
 			// Some alternatives that do NOT speed things up (they make it slower)
 			//  - use of array_intersect, array_walk, preg_replace, intermediate variables, etc etc etc.
-			//			
-	
+			//
+
 			if (1) // php 4 code
 			{
 				$opts = $this->e_optDefault;
 				$aMods = explode( ',',
 										// convert blanks to comma, then comma-comma (from blank-comma) to single comma
-										str_replace(array(' ', ',,'),	array(',', ',' ), 
+										str_replace(array(' ', ',,'),	array(',', ',' ),
 											// work with all lower case
-											strtolower($modifiers) 
+											strtolower($modifiers)
 										)
 		);
 
 				foreach ($aMods as $mod)
 		{
 				  if (isset($this->e_SuperMods[$mod]))
-				  {	
-				  	$opts = $this->e_SuperMods[$mod];  
+				  {
+				  	$opts = $this->e_SuperMods[$mod];
 				  }
 		}
 
@@ -466,9 +466,9 @@ class e_parse
 				$aMods = array_flip(
 									explode( ',',
 										// convert blanks to comma, then comma-comma (from blank-comma) to single comma
-										str_replace(array(' ', ',,'),	array(',', ',' ), 
+										str_replace(array(' ', ',,'),	array(',', ',' ),
 											// work with all lower case
-											strtolower($modifiers) 
+											strtolower($modifiers)
 										)
 									)
 								 );
@@ -476,7 +476,7 @@ class e_parse
 				$opts = array_merge($opts, array_intersect_key($this->modSet, $aMods)); // merge in any other mods found
 			}
 		}
-	
+
 //		$fromadmin = strpos($modifiers, "fromadmin");
 		$fromadmin = $opts['fromadmin'];
 
@@ -502,7 +502,7 @@ class e_parse
 
 
 			// Prepare for line-break compression. Avoid compressing newlines in embedded scripts and CSS
-//        if (strpos($modifiers, 'nobreak') === FALSE) 
+//        if (strpos($modifiers, 'nobreak') === FALSE)
 		if (!$opts['nobreak'])
 		{
             $text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
@@ -512,11 +512,11 @@ class e_parse
 
 
 			// Convert URL's to clickable links, unless modifiers or prefs override
-//        if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) 
-        if ($pref['make_clickable'] && !$opts['no_make_clickable']) 
+//        if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE)
+        if ($pref['make_clickable'] && !$opts['no_make_clickable'])
 		{
-//            if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) 
-            if ($pref['link_replace'] && !$opts['no_replace']) 
+//            if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE)
+            if ($pref['link_replace'] && !$opts['no_replace'])
 			{
                 $_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
                 $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
@@ -528,7 +528,7 @@ class e_parse
                 }
                 $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
             }
-			else 
+			else
 			{
                 $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $text);
                 $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
@@ -539,10 +539,10 @@ class e_parse
 
 			// Convert emoticons to graphical icons, unless modifiers override
 //        if (strpos($modifiers, 'emotes_off') === FALSE) {
-        if (!$opts['emotes_off']) 
+        if (!$opts['emotes_off'])
 		{
 //            if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
-            if ($pref['smiley_activate'] || $opts['emotes_on']) 
+            if ($pref['smiley_activate'] || $opts['emotes_on'])
 			{
                 if (!is_object($this->e_emote)) {
                     require_once(e_HANDLER.'emote_filter.php');
@@ -555,7 +555,7 @@ class e_parse
 
 			// Reduce multiple newlines in all forms to a single newline character, except for embedded scripts and CSS
 //        if (strpos($modifiers, 'nobreak') === FALSE) {
-        if (!$opts['nobreak']) 
+        if (!$opts['nobreak'])
 		{
             $text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
             foreach ($embeds[0] as $embed) {
@@ -566,7 +566,7 @@ class e_parse
 
 		// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
 //		if (strpos($modifiers, 'value') === FALSE) { // output not used for attribute values.
-		if (!$opts['value']) 
+		if (!$opts['value'])
 		{ // output not used for attribute values.
 	       	$text = str_replace($this -> search, $this -> replace, $text);
         }
@@ -577,7 +577,7 @@ class e_parse
 
 
         // Start parse [bb][/bb] codes
-        if ($parseBB === TRUE) 
+        if ($parseBB === TRUE)
 		{
             if (!is_object($this->e_bb)) {
                 require_once(e_HANDLER.'bbcode_handler.php');
@@ -622,16 +622,16 @@ class e_parse
         }
 
 
-//        if (strpos($modifiers, 'nobreak') === FALSE) 
-        if (!$opts['nobreak']) 
+//        if (strpos($modifiers, 'nobreak') === FALSE)
+        if (!$opts['nobreak'])
 		{
             $text = $this -> textclean($text, $wrap);
         }
 
 
         // Search Highlight
-//        if (strpos($modifiers, 'emotes_off') === FALSE) 
-        if (!$opts['emotes_off']) 
+//        if (strpos($modifiers, 'emotes_off') === FALSE)
+        if (!$opts['emotes_off'])
 		{
           if ($this->checkHighlighting())
           {
