@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_db.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:00 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-18 00:00:17 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -38,5 +38,9 @@ define("DBLAN_26", "Hozzáadott tartalom");
 define("DBLAN_27", "Telepítve");
 define("DBLAN_28", "Katt a gombra a plugin vizsgálatához a változtatás részére");
 define("DBLAN_29", "Plugin könyvtár vizsgálata");
-
+define("DBLAN_30", " (Ha egy kiegészítőnél hibát találnál, ellenőrízd a PHP nyitó/záró tagein kivül álló karaktereket)");
+define("DBLAN_31", "Rendben");
+define("DBLAN_32", "Hiba");
+define("DBLAN_33", "Hozzáférhetetlen");
+define("DBLAN_34", "Nincs bejelölve");
 ?>

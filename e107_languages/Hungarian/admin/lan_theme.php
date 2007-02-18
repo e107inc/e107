@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 22:34:00 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-18 00:00:17 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -59,4 +59,8 @@ define("TPVLAN_40", "Beállítás admin theme-ként");
 define("TPVLAN_41", "Válaszd ki a használandó admin elrendezési stílust");
 define("TPVLAN_42", "Admin beállítások mentése");
 define("TPVLAN_43", "Admin beállítások elmentve");
+
+define("TPVLAN_46", "PCLZIP tömörítési hiba:");
+define("TPVLAN_47", "PCLTAR tömörítési hiba: ");
+define("TPVLAN_48", "kód:");
 ?>

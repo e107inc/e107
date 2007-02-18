@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:00 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-18 00:00:17 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -57,6 +57,9 @@ define("EPL_ADLAN_42", "Hiba: a file kicsomagolása nem sikerült");
 define("EPL_ADLAN_43", "A plugin feltöltve és kicsomagolva, görgesd lefelé az oldalt, ha látni akarod a plugint az elérhető plugin-ek listájában.");
 define("EPL_ADLAN_44", "Az automatikus modul feltöltés és kicsomagolás nem lehetséges, mert a(z) ".e_PLUGIN." könyvtár nem írható - adj rá írási jogot (CHMOD 777).");
 define("EPL_ADLAN_45", "A menü feltöltve és kicsomagolva, az aktiváláshoz lépj a <a href='".e_ADMIN."menu.php'>Menük oldalra</a>.");
+define("EPL_ADLAN_46", "PCLZIP tömörítési hiba: ");
+define("EPL_ADLAN_47", "PCLZIP tömörítési hiba: ");
+define("EPL_ADLAN_48", "code: ");
 
 //define("EPL_CANCEL", "Mégsem"); use LAN_CANCEL instead !!
 //define("EPL_EMAIL", "E-mail");

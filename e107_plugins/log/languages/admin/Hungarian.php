@@ -1,8 +1,14 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - rev: 1.10 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Hungarian.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-18 00:00:18 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("ADSTAT_ON", "Be");
 define("ADSTAT_OFF", "Ki");
 define("ADSTAT_L1", "A plugin minden látogatást naplózni fog, és részletes statisztikákat ad az összegyűjtött információk alapján.");
