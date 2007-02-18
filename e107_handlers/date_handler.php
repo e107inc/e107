@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-17 20:47:09 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-18 13:10:26 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -134,7 +134,10 @@ class convert
 		// Generate output array, add text
 		for ($i = 0; $i < ($show_secs ? 7 : 6); $i++)
 		{
-		  $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]);
+		  if (($i > 4) || ($result[$i] != 0))
+		  {  // Only show non-zero values, except always show minutes/seconds
+		    $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]);
+		  }
 		}
 		return ($mode ? $outputArray : implode(", ", $outputArray));
 	}
