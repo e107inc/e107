@@ -1,4 +1,14 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/list_menu_conf.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-18 01:59:50 $
+|     $Author: lisa_
++----------------------------------------------------------------------------+
+*/
 $text = "In this section you can configure 3 menus<br>
 <b> New Articles Menu</b> <br>
 Enter a number for example '5' in the first field to show the first 5 articles, leave empty to see all, You configure what the title of the link should be to the rest of the articles in the second field, when you leave this last option empty it won't create a link, for example: 'All articles'<br>

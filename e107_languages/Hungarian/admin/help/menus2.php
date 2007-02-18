@@ -1,22 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
+|     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/menus2.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-22 21:27:05 $
-|     $Author: e107hun-lac $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-18 01:59:51 $
+|     $Author: lisa_
 +----------------------------------------------------------------------------+
 */
-
 if (!defined('e107_INIT')) { exit; }
 
 $text .= "Itt beállíthatod, hogy hol és milyen sorrendben jelenjenek meg a menük. Használd a nyilakat a menük le- ill. fel-mozgatásához, amíg eléred a megfelelő pozíciót.<br />
