@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 |        e107 website system
@@ -38,8 +38,13 @@ define("DBLAN_22", "Plugin: Bekijk en Scan");
 define("DBLAN_23", "Scan klaar");
 define("DBLAN_24", "Naam");
 define("DBLAN_25", "Map");
-define("DBLAN_26", "Inbegrepen addons");
+define("DBLAN_26", "Inbegrepen plugins");
 define("DBLAN_27", "Geïnstalleerd");
 define("DBLAN_28", "Klik om de plugin mappen te controleren op wijzigingen");
 define("DBLAN_29", "Scannen plugin mappen");
+define("DBLAN_30", " (als een plugin een foutmelding geeft, controleer dan op tekens buiten de open en sluit PHP tags)");
+define("DBLAN_31", "OK");
+define("DBLAN_32", "Fout");
+define("DBLAN_33", "Niet toegankelijk");
+define("DBLAN_34", "Niet gecontroleerd");
 ?>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*
 +---------------------------------------------------------------+
@@ -159,6 +159,7 @@ define("ADLAN_149", "Waarschuwen");
 define("ADLAN_150", "Beheerderswaarschuwingen per e-mail");
 define("ADLAN_151", "Beheerscherm");
 define("ADLAN_152", "Invoeren code");
+define("ADLAN_153", "Beheerzone");
 
 define("LAN_SELECT","Selecteer ...");
 define("LAN_ADMIN","Beheer");

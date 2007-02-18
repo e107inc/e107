@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_theme.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-18 15:59:24 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-18 21:42:58 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -53,4 +53,7 @@ define("TPVLAN_40", "Beheerscherm theme ingesteld op");
 define("TPVLAN_41", "Kies de te gebruiken beheerscherm layout");
 define("TPVLAN_42", "Opslaan beheerscherm opties");
 define("TPVLAN_43", "Beheerscherm opties opgeslagen");
+define("TPVLAN_46", "PCLZIP extract fout:");
+define("TPVLAN_47", "PCLTAR extract fout: ");
+define("TPVLAN_48", "code:");
 ?>

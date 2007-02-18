@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 |        e107 website system
@@ -90,4 +90,5 @@ define("LAN_dl_73", "Downloads van deze mirror: ");
 define("LAN_dl_74", "Totaal aantal downloads van deze mirror: ");
 define("LAN_dl_75", "geen afbeelding beschikbaar ");
 define("LAN_dl_76", "Ga naar pagina");
+define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
 ?>

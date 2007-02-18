@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*
 +---------------------------------------------------------------+
@@ -24,4 +24,5 @@ define("BANLAN_9", "Blokkeer deze site voor gebruikers");
 define("BANLAN_10", "IP / E-mail");
 define("BANLAN_11", "Auto-blok: Meer dan 10 mislukte inlogpogingen");
 define("BANLAN_12", "Let op: Reverse DNS is op dit moment niet geactiveerd. Dat moet wel om blokkade voor hosts mogelijk te maken.  Blokkeren op IP-adres en op e-mailadres werkt wel.");
+define("BANLAN_13", "Let op: Om een gebruiker te blokkeren op gebruikersnaam, ga naar de leden beheerpagina: ");
 ?>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Dutch-formal.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-18 06:25:42 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-18 21:43:13 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -51,4 +51,5 @@ define("ADSTAT_L29", "Paginanaam");
 define("ADSTAT_L30", "Aankruisen om te verwijderen");
 define("ADSTAT_L31", "Verwijder geselecteerde pagina's");
 define("ADSTAT_L32", "Pagina schonen");
+define("ADSTAT_L33", "Configureren statistiek logging");
 ?>

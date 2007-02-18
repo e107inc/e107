@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 |        e107 website system
@@ -60,6 +60,9 @@ define("EPL_ADLAN_42", "Er is een fout opgetreden, kan het bestand niet uitpakke
 define("EPL_ADLAN_43", "De plugin is geupload en uitgepakt, blader omlaag om de plugin in de lijst te zien.");
 define("EPL_ADLAN_44", "Auto plugin upload en uitpakken is gedeactiveerd omdat de plugins directory niet de juiste permissies heeft. Wijzig de rechten op de e107_plugins directory in CHMOD 777."); 
 define("EPL_ADLAN_45", "Het menuscript is geupload en uitgepakt. Ga naar <a href='".e_ADMIN."menu.php'>je beheerpagina</a> om te activeren.");
+define("EPL_ADLAN_46", "PCLZIP extract fout:");
+define("EPL_ADLAN_47", "PCLTAR extract fout: ");
+define("EPL_ADLAN_48", "code:");
 define("EPL_ADLAN_50", "Reacties succesvol verwijderd");
 define("EPL_ADLAN_53", "Directorie niet beschrijfbaar");
 define("EPL_ADLAN_54", "Select de optie voor de-installeren van de plugin:");
