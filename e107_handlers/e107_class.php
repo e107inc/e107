@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-14 22:15:34 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-18 02:22:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -55,7 +55,9 @@ class e107{
 
 	function set_paths(){
 		global $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY,
-		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY;
+		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $CACHE_DIRECTORY,
+		$NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY, $UPLOADS_DIRECTORY;
+
 		$path = ""; $i = 0;
 		while (!file_exists("{$path}class2.php")) {
 			$path .= "../";
@@ -105,13 +107,41 @@ class e107{
 
 			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 			define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
-
 			define("e_DOCS_ABS", e_HTTP.$HELP_DIRECTORY);
+
+			if($CACHE_DIRECTORY) {
+            	define("e_CACHE", e_BASE.$CACHE_DIRECTORY);
+			} else {
+            	define("e_CACHE", e_BASE.$FILES_DIRECTORY."cache/");
+			}
+
+			if($NEWSIMAGES_DIRECTORY) {
+            	define("e_NEWSIMAGE", e_BASE.$NEWSIMAGES_DIRECTORY);
+			} else {
+            	define("e_NEWSIMAGE", e_IMAGE."newspost_images/");
+			}
+
+			if($CUSTIMAGES_DIRECTORY) {
+            	define("e_CUSTIMAGE", e_BASE.$CUSTIMAGES_DIRECTORY);
+			} else {
+            	define("e_CUSTIMAGE", e_IMAGE."custom/");
+			}
 
 			if ($DOWNLOADS_DIRECTORY{0} == "/") {
 				define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
 			} else {
 				define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
+			}
+
+			if(!$UPLOADS_DIRECTORY)
+			{
+            	$UPLOADS_DIRECTORY = e_FILE."public/";
+			}
+
+			if ($UPLOADS_DIRECTORY{0} == "/") {
+				define("e_UPLOAD", $UPLOADS_DIRECTORY);
+			} else {
+				define("e_UPLOAD", e_BASE.$UPLOADS_DIRECTORY);
 			}
 		}
 	}
@@ -169,12 +199,12 @@ class e107{
 			if (getenv('HTTP_X_FORWARDED_FOR')) {
 				$ip=$_SERVER['REMOTE_ADDR'];
 				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) {
-				$ip2 = array('#^0\..*#', 
+				$ip2 = array('#^0\..*#',
 					'#^127\..*#', 							// Local loopbacks
 					'#^192\.168\..*#', 						// RFC1918 - Private Network
 					'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
 					'#^10\..*#', 							// RFC1918 - Private Network
-					'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
+					'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP
 					'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
 					);
 					$ip = preg_replace($ip2, $ip, $ip3[1]);
