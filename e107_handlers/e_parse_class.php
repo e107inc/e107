@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-01-20 16:12:51 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-18 01:17:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -26,8 +26,8 @@ class e_parse
 	var $e_pf;
 	var $e_emote;
 	var $e_hook;
-	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
-	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
+	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;', ' & ');
+	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"', ' &amp; ');
 	var $e_highlighting;		// Set to TRUE or FALSE once it has been calculated
 	var $e_query;			// Highlight query
 
