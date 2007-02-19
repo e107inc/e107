@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.3 $
-|     $Date: 2006-11-24 15:37:42 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-19 20:38:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_installer.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.14
+|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.17
 +-----------------------------------------------------------------------------+
 */
  
@@ -139,5 +139,20 @@ define("LANINS_084", "Instalator nie mógł nawiązać połączenia z bazą dany
 define("LANINS_085", "Instalator nie mógł wybrać bazy danych:");
 
 define("LANINS_086", "Pola - nazwa administratora, hasło administratora oraz adres email administratora - są <b>wymagane</b>. Proszę powrócić do ostatniej strony i upewnić się, że informacje zostały poprawnie wprowadzone.");
+
+define("LANINS_087", "Różne");
+define("LANINS_088", "Strona główna");
+define("LANINS_089", "Download");
+define("LANINS_090", "Użytkownicy");
+define("LANINS_091", "Dodaj newsa");
+define("LANINS_092", "Kontakt");
+define("LANINS_093", "Nadaje dostęp do prywatnych menu");
+define("LANINS_094", "Przykładowa grupa użytkowników forum prywatnego");
+define("LANINS_095", "Sprawdzanie integralności");
+define("LANINS_096", "");
+define("LANINS_097", "");
+define("LANINS_098", "");
+define("LANINS_099", "");
+define("LANINS_100", "");
 
 ?>

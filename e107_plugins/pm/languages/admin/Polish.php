@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-11-24 15:43:31 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-19 20:43:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/pm/languages/admin/English.php rev. 1.9
+|     Zgodne z: /e107_plugins/pm/languages/admin/English.php rev. 1.11
 +-----------------------------------------------------------------------------+
 */
  
@@ -54,8 +54,8 @@ define('ADLAN_PM_35', "Rozmiar skrzynki");
 define('ADLAN_PM_36', "Grupa użytkowników");
 define('ADLAN_PM_37', "Ograniczenia ilości");
 define('ADLAN_PM_38', "Ograniczenie rozmiaru (w KB)");
-define('ADLAN_PM_39', "Skrzynka nadawcza :");
-define('ADLAN_PM_40', "Skrzynka odbiorcza :");
+define('ADLAN_PM_39', "Skrzynka nadawcza: ");
+define('ADLAN_PM_40', "Skrzynka odbiorcza: ");
 define('ADLAN_PM_41', "Aktualnie nie ma ustawionych żadnych ograniczeń.");
 define('ADLAN_PM_42', "Aktualizuj limity");
 define('ADLAN_PM_43', "Dodaj nowy limit");

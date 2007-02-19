@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2006-11-24 15:39:56 $
+|     $Revision: 1.12 $
+|     $Date: 2007-02-19 20:40:40 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Polish/lan_content.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/content/languages/English/lan_content.php rev. 1.74
+|     Zgodne z: /e107_plugins/content/languages/English/lan_content.php rev. 1.75
 +-----------------------------------------------------------------------------+
 */
  
@@ -116,7 +116,7 @@ define("CONTENT_LAN_12", "Najlepsze wyniki");
 define("CONTENT_LAN_13", "lista");
 define("CONTENT_LAN_14", "-- kategorie --");
 define("CONTENT_LAN_15", "Brak autorów");
-define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_16", "[czytaj więcej]");
 define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "Szukana fraza");
 define("CONTENT_LAN_19", "Szukaj");

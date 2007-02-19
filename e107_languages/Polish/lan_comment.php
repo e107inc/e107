@@ -1,13 +1,13 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:37:42 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_comment.php,v $
 +-----------------------------------------------------------------------------+
@@ -15,7 +15,7 @@
 +-----------------------------------------------------------------------------+
 */
 
-define("COMLAN_0", "[zablokowany przez administratora]");
+define("COMLAN_0", "[zablokowany przez admina]");
 define("COMLAN_1", "Odblokuj");
 define("COMLAN_2", "Zablokuj");
 define("COMLAN_3", "Usuń");
@@ -74,7 +74,7 @@ define("COMLAN_TYPE_2", "Download");
 define("COMLAN_TYPE_3", "FAQ");
 define("COMLAN_TYPE_4", "Ankieta");
 define("COMLAN_TYPE_5", "Dokumentacja");
-define("COMLAN_TYPE_6", "Bugtrack");
+define("COMLAN_TYPE_6", "Bugtracker");
 define("COMLAN_TYPE_7", "Pomysły");
 define("COMLAN_TYPE_8", "Profil użytkownika");
 

@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:23 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_emoticon.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_emoticon.php rev. 1.8
+|     Zgodne z: /e107_languages/English/admin/lan_emoticon.php rev. 1.9
 +-----------------------------------------------------------------------------+
 */
  
@@ -41,5 +41,8 @@ define("EMOLAN_19", "Nazwa");
 define("EMOLAN_20", "Lokalizacja");
 define("EMOLAN_21", "Błąd");
 //define("EMOLAN_2", "Nazwa");
+define("EMOLAN_22", "Znaleziono nowy zestaw emotikon:");
+define("EMOLAN_23", "Znaleziono nowy zestaw (xml) emotikon:");
+define("EMOLAN_24", "Znaleziono nowy zestaw (php) emotikon:"); // New emote php found - chyba chodzi o zestaw w standardzie php ale sam takiego nie widziałem - marcelis_pl
 
 ?>

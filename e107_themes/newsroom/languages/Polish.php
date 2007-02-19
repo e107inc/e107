@@ -6,20 +6,17 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2007-02-19 20:46:03 $
+|     $Revision: 1.1 $
+|     $Date: 2007-02-19 20:47:13 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_themes/jayya/languages/Polish.php,v $
+|     $Source: /cvs_backup/e107_langpacks/e107_themes/newsroom/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_themes/jayya/languages/English.php rev. 1.2
+|     Zgodne z: /e107_themes/newsroom/languages/English.php rev. 1.1
 +-----------------------------------------------------------------------------+
 */
  
-define("LAN_THEME_1", "Komentarze zostały wyłączone");
-define("LAN_THEME_2", "Komentarze: ");
-define("LAN_THEME_3", "Czytaj resztę...");
-define("LAN_THEME_4", "Powiązania: ");
-define("LAN_THEME_5", "Autor: ");
-define("LAN_THEME_6", "dnia: ");
-
+define("LAN_THEME_1", "Komentarze");
+define("LAN_THEME_2", "Komentarze wyłączone");
+define("LAN_THEME_3", "CZYTAJ WIĘCEJ");
+define("LAN_THEME_4", "Data dodania");
 ?>

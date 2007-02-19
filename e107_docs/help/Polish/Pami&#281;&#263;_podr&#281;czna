@@ -2,7 +2,7 @@
 Q>	Do czego służy ta sekcja?
 A>	Ustawienie status <i>Cache</i> na włączony spowoduje zapisanie niektórych obszarów Twojej strony w bazie danych. Dzięki aktywacji <i>Cache-u</i> zredukujesz odwołania do serwera SQL i znacznie przyspieszy działanie swojej strony.
 
-Q>	Wprowadziłem pewne zmiany do tematu, którego używam, lecz nic się nie zmieniło - Czy zachodzi to, ze względu na  włączone cache-owanie?
+Q>	Wprowadziłem pewne zmiany do tematu, którego używam, lecz nic się nie zmieniło - Czy zachodzi to, ze względu na włączone cache-owanie?
 A>	Najprawdopodobniej tak. Kiedy zmieniacz tematy pamięć podręczna (cache) jest czyszczona, lecz zmieniając kod pliku <i>theme.php</i> musisz mieć w zwyczaju czyszczenie pamięci podręcznej. Ustaw status cache na wyłączony dopóki nie zakończysz wprowadzać zmian.
 
 Q>	Czy mogę zapisać pliki pamięci podręcznej na dysku twardym?

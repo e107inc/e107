@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:24 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_theme.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_theme.php rev. 1.
+|     Zgodne z: /e107_languages/English/admin/lan_theme.php rev. 1.10
 +-----------------------------------------------------------------------------+
 */
  
@@ -65,5 +65,9 @@ define("TPVLAN_40", "Temat strony administracyjne został ustawiony na");
 define("TPVLAN_41", "Proszę wybrać styl układu strony administracyjnej");
 define("TPVLAN_42", "Zapisz opcje dla administracji");
 define("TPVLAN_43", "Opcje administracji zostały zapisane");
+
+define("TPVLAN_46", "PCLZIP - Błąd wypakowywania:");
+define("TPVLAN_47", "PCLTAR - Błąd wypakowywaniar: ");
+define("TPVLAN_48", "kod:");
 
 ?>

@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2006-11-24 15:38:23 $
+|     $Revision: 1.13 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.54
+|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.56
 +-----------------------------------------------------------------------------+
 */
 
@@ -177,6 +177,7 @@ define("ADLAN_150", "System powiadomień email o wydarzeniach w serwisie");
 
 define("ADLAN_151", "Panel");
 define("ADLAN_152", "Wpisz kod");
+define("ADLAN_153", "Panel administratora");
 
 define('ADLAN_CL_1', 'Ustawienia');
 define('ADLAN_CL_2', 'Użytkownicy');
@@ -274,5 +275,6 @@ define("LAN_CONFIGURE", "Konfiguracja");
 define("LAN_BACK", "Powróć");
 
 define("LAN_CREDITS", "Podziękowania");
+define("LAN_NEWVERSION", "Dostępna jest nowa wersja");
 
 ?>

@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-11-24 15:43:15 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-19 20:43:37 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pdf/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
@@ -30,11 +30,11 @@ define("PDF_LAN_7", "Górny margines strony");
 define("PDF_LAN_8", "Czcionka");
 define("PDF_LAN_9", "Domyślny rozmiar czcionki");
 define("PDF_LAN_10", "Rozmiar czcionki dla nazwy strony");
-define("PDF_LAN_11", "Rozmiar czcionki dla adresu url strony");
+define("PDF_LAN_11", "Rozmiar czcionki dla adresu URL strony");
 define("PDF_LAN_12", "Rozmiar czcionki dla numeru strony");
 define("PDF_LAN_13", "Wyświetlanie loga w pliku pdf");
 define("PDF_LAN_14", "Wyświetlanie nazwy strony w pliku pdf");
-define("PDF_LAN_15", "Wyświetlanie źródłowego adresu url w pliku pdf");
+define("PDF_LAN_15", "Wyświetlanie źródłowego adresu URL w pliku pdf");
 define("PDF_LAN_16", "Wyświetlanie numerów stron w pliku pdf");
 define("PDF_LAN_17", "Aktualizuj");
 define("PDF_LAN_18", "Preferencje PDF zostały pomyślnie zaktualizowane");

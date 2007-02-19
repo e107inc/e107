@@ -6,16 +6,16 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:23 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_db.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_db.php rev. 1.6
+|     Zgodne z: /e107_languages/English/admin/lan_db.php rev. 1.7
 +-----------------------------------------------------------------------------+
 */
  
-define("DBLAN_1", "Kopia bezpieczeństwa ustawienień jądra została zapisana w bazie danych.");
+define("DBLAN_1", "Kopia bezpieczeństwa ustawień jądra została zapisana w bazie danych.");
 define("DBLAN_2", "Kliknij w przycisk, aby zapisać kopię bezpieczeństwa bazy danych e107");
 define("DBLAN_3", "Wykonaj kopię bazy danych SQL");
 define("DBLAN_4", "Kliknij w przycisk, aby sprawdzić poprawność bazy danych e107");
@@ -42,7 +42,12 @@ define("DBLAN_24", "Nazwa");
 define("DBLAN_25", "Katalog");
 define("DBLAN_26", "Zawarte dodatki");
 define("DBLAN_27", "Zainstalowany");
-define("DBLAN_28", "Kliknij w przycisk, aby przeskanować katalogi pluginów w poszukiwaniu zmian");
-define("DBLAN_29", "Skanowanie katalogów pluginów");
+define("DBLAN_28", "Kliknij w przycisk, aby przeskanować katalogi wtyczek w poszukiwaniu zmian");
+define("DBLAN_29", "Skanowanie katalogów wtyczek");
+define("DBLAN_30", " (Jeśli dodatek pokazuje błąd, sprawdź czy na zewnątrz tagów otwarcia/zamknięcia kodu PHP występują jakieś znaki)");
+define("DBLAN_31", "OK");
+define("DBLAN_32", "Błąd");
+define("DBLAN_33", "Niedostępny");
+define("DBLAN_34", "Niesprawdzony");
 
 ?>

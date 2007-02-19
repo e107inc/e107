@@ -1,9 +1,9 @@
-Polskie tłumaczenie systemu CMS e107 Website System v0.7.7
+Polskie tłumaczenie systemu CMS e107 Website System v0.7.8
 
-Wersja tłumaczenia: v0.7.7
-wersja kodowa: UTF-8
+Wersja tłumaczenia: v0.7.8
+Wersja kodowa: UTF-8
 
-Data: 30.11.2006
+Data: 19.02.2007
 
 Tłumaczenie wykonał zespół - e107pl Dev Team - http://e107.org.pl
 
@@ -22,7 +22,7 @@ Spis treści:
 
 1. Wprowadzenie
 
-	Wszystkie pliki zawarte w archiwum stanowią zestaw polskich plików językowych przeznaczonych dla systemu CMS e107 v0.7.6. W archiwum zawarte są jedynie pliki językowe i nie ingerują on w strukturę systemu e107 w sposób bezpośredni.
+	Wszystkie pliki zawarte w archiwum stanowią zestaw polskich plików językowych przeznaczonych dla systemu CMS e107 v0.7.8. W archiwum zawarte są jedynie pliki językowe i nie ingerują on w strukturę systemu e107 w sposób bezpośredni.
 
 2. Instalacja
 
@@ -30,7 +30,7 @@ Spis treści:
 
 3. Aktualizacja
 
-- Z e107 v0.7.4 do e107 v0.7.7+
+- Z e107 v0.7.4 do e107 v0.7.8+
 
   Należy postępować identycznie jak przy instalacji, czyli najpierw rozpakować archiwum, a następnie wysłać na serwer i zatwierdzić wszystkie zmiany.
 
@@ -49,6 +49,7 @@ Po dokonaniu tego, postępuj identycznie, jak w przypadku instalacji spolszczeni
 Strony polskojęzyczne:
 
 http://e107.org.pl - strona zespołu e107pl Dev Team - newsy, download, forum, bugtracker, dokumentacja e107 itp.
+http://demo.e107.org.pl - polskie demo systemu CMS dla ostatniej stabilnej wersji
 http://e107poland.org - download, newsy, FAQ, forum i inne.
 
 Strony zagraniczne:
@@ -60,8 +61,5 @@ http://e107coders.org - pluginy, wtyczki, dodatki... [EN]
 http://e107themes.com - tematy do e107 [EN]
 http://e107faq.org - wsparcie ogólne [EN]
 http://e107tutorials.com - tutoriale [EN]
-http://e107hacks.org - wszelkiego rodzaju hack’i, nieoficjalne patche itp [EN]
-http://www.e107community.us/ - stronka społeczności e107, obecnie mało się tam dzieje, a szkoda [EN]
-http://e107help.com - wsparcie ogólne [EN]
+http://e107hacks.org - strona obecnie offline ze względu na problemy z hostingiem - wszelkiego rodzaju hack’i, nieoficjalne patche itp [EN]
 http://www.e107themes.de - tematy i pomoc ogólna {EN,GR]
-

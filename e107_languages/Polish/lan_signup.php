@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.5 $
-|     $Date: 2006-11-24 15:37:42 $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-19 20:38:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_signup.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.23
+|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.25
 +-----------------------------------------------------------------------------+
 */
  
@@ -118,5 +118,9 @@ define("LAN_SIGNUP_50", "Nowy adres email");
 define("LAN_SIGNUP_51", "Stare hasło");
 define("LAN_SIGNUP_52", "Niepoprawne hasło");
 define("LAN_SIGNUP_53", "pole nie przeszło testu walidacji");
+define("LAN_SIGNUP_54", "Kliknij tutaj, aby wypełnić formularz rejestracyjny."); // Click here to fill in your details to register
+define("LAN_SIGNUP_55", "Wyświetlana nazwa jest za długa. Proszę wybrać inną.");
+define("LAN_SIGNUP_56", "Wyświetlana nazwa jest za krótka. Proszę wybrać inną.");
+
 
 ?>

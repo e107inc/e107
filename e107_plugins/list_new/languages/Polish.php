@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.4 $
-|     $Date: 2006-11-24 15:41:31 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-19 20:42:18 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/list_new/languages/English.php rev. 1.16
+|     Zgodne z: /e107_plugins/list_new/languages/English.php rev. 1.17
 +-----------------------------------------------------------------------------+
 */
 

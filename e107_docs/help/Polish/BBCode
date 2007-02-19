@@ -6,7 +6,7 @@ Q>	Do czego służy?
 A>	Narzędzie to zaoszczędzi Ci czas podczas wpisywania znaczników HTML. Możesz używać normalnych znaczników HTML w polach przeznaczonych do tego, lecz używając BBCode rzeczywiście przyspieszysz wprowadzanie swojego tekstu.
 
 Q>	Kiedy klikam w jeden z przycisków znaczników BBCode, aby wprowadzić kod, to zostaje on umieszczony na końcu mojego tekstu, a nie tam gdzie jest aktualnie kursor - dlaczego tak się dzieje?
-A>	Jest to spowodowane błędem w działaniu Internet Explorer-a, który może ulec destabilizacji przy próbie wprowadzenia kody w miejscu kursora, w związku z czym w celu zachowania kompaatybilności kod jest umieszczany na końcu edytowanego tekstu.
+A>	Jest to spowodowane błędem w działaniu Internet Explorer&#39;a, który może ulec destabilizacji przy próbie wprowadzenia kody w miejscu kursora, w związku z czym w celu zachowania kompatybilności kod jest umieszczany na końcu edytowanego tekstu.
 
 Q>	Jakich znaczników BBCodes mogę używać?
-A>	Najeżdżając wskaźnikiem myszy na jeden z przycisków BBCode, ujrzysz krótkie wyjaśnienie pokazane tuż nad tymi przyciskami. Wśród znaczników są tagi dla linków url - &#91;url] &#91;/url] oraz email - &#91;email] &#91;/email], pomimo tego jednak używanie normalnych znaczników HTML jest możliwe i wskazane według konieczności. Wszystkie wprowadzone adresy internetowe oraz adresy email zostaną automatycznie przerobione na adresy klikalne (hiperłącza).
+A>	Najeżdżając wskaźnikiem myszy na jeden z przycisków BBCode, ujrzysz krótkie wyjaśnienie pokazane tuż nad tymi przyciskami. Wśród znaczników są tagi dla linków URL - &#91;url] &#91;/url] oraz email - &#91;email] &#91;/email]. Pomimo tego używanie normalnych znaczników HTML jest możliwe i wskazane według konieczności. Wszystkie wprowadzone adresy internetowe oraz adresy email zostaną automatycznie przerobione na klikalne linki (hiperłącza).

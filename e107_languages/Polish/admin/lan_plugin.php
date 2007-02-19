@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:23 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_plugin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_plugin.php rev. 1.2
+|     Zgodne z: /e107_languages/English/admin/lan_plugin.php rev. 1.22
 +-----------------------------------------------------------------------------+
 */
  
@@ -63,6 +63,9 @@ define("EPL_ADLAN_42", "Wystąpił błąd, nie mogę wyodrębnić pliku z archiw
 define("EPL_ADLAN_43", "Twój plugin został załadowany i rozpakowany, proszę przewinąć stronę w dół i poszukać tematu na liście.");
 define("EPL_ADLAN_44", "Automatyczne ładowanie i rozpakowanie pluginu jest niemożliwe, jeśli folder pluginów ma nie nieprawidłowe uprawnienia. Proszę ustawić CHMOD głównego folderu pluginów na wartość 777.");
 define("EPL_ADLAN_45", "Twoje menu zostało pomyślnie załadowane oraz rozpakowane, aby je aktywować proszę się udać do <a href='".e_ADMIN."menus.php'>strony ustawień menu</a>.");
+define("EPL_ADLAN_46", "PCLZIP - Błąd wypakowywania:");
+define("EPL_ADLAN_47", "PCLTAR - Bład wypakowywania: ");
+define("EPL_ADLAN_48", "kod:");
 
 // define("EPL_CANCEL", "Anuluj"); use LAN_CANCEL instead !!
 // define("EPL_EMAIL", "email");

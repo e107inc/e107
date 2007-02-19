@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:24 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_upload.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_upload.php rev. 1.
+|     Zgodne z: /e107_languages/English/admin/lan_upload.php rev. 1.6
 +-----------------------------------------------------------------------------+
 */
  
@@ -42,6 +42,7 @@ define("UPLLAN_23", "Nazwa");
 define("UPLLAN_24", "Rodzaj pliku");
 define("UPLLAN_25", "Włączyć dział uploadu?");
 define("UPLLAN_26", "Jeśli jest wyłączone, nadsyłane pliki będą odrzucane");
+define("UPLLAN_27", "Niezweryfikowane pliki"); //unmoderated public uploads - sprawdzić
 
 define("UPLLAN_29", "Sposób przechowywania");
 define("UPLLAN_30", "Wybierz jak przechowywać nadesłane pliki, czy jako normalne pliki na serwerze, lub też jako obiekty binarne w bazie danych<br /><b>Uwaga</b> sposób binarny jest tylko odpowiedni da bardzo małych plików w przybliżeniu do 500kb");
@@ -69,7 +70,7 @@ define("UPLAN_ARE", "są ");
 define("UPLAN_COPYTODLS", "Kopiuj do działu download");
 
 define("UPLLAN_48", "Ze względu na bezpieczeństwo dozwolone typy plików zostały usunięte z bazy danych do pliku 
-flatfile zlokalizowanego w katalogu administracyjnym ".e_ADMIN.". Aby użyć tej funkcji, zmień nazwę pliku ".e_ADMIN."filetypes_.php na ".e_FILE."filetypes.php 
+flatfile zlokalizowanego w katalogu administracyjnym ".e_ADMIN.". Aby użyć tej funkcji, zmień nazwę pliku ".e_ADMIN."filetypes_.php na ".e_ADMIN."filetypes.php 
 i dodaj do niego po przecinkach listę dozwolonych rozszerzeń typów plików. Nie powinieneś zezwalać na nadsyłanie plików .html, .txt, etc,
 jako że napastnik może załadować tego typu plik z zawartym w nim złośliwym kodem javascript. Powinieneś również, jeśli to możliwe, nie zezwalać 
 na nadsyłanie plików .php oraz innego typu wykonywalnych skryptów.");

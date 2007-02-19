@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-11-24 15:40:49 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-19 20:41:36 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/gsitemap/languages/gsitemap_Polish.php,v $
 +-----------------------------------------------------------------------------+
@@ -20,7 +20,7 @@ define("GSLAN_1", "Linki strony");
 define("GSLAN_2", "Import");
 define("GSLAN_3", "Rodzaj");
 define("GSLAN_4", "Nazwa");
-define("GSLAN_5", "Adres url");
+define("GSLAN_5", "Adres URL");
 define("GSLAN_6", "Odznacz linki, aby wyznaczyć je do importu...");
 define("GSLAN_7", "Importowanie linków");
 define("GSLAN_8", "Preferencje importu:");
@@ -52,7 +52,7 @@ define("GSLAN_33", "GSiteMap Wprowadzenie");
 define("GSLAN_34", "Najpierw utwórz linki, które będziesz chciał dodać do swojej mapy strony. Możesz importować część linków poprzez kliknięcie na przycisk 'Import' znajdujący się po prawej stronie.");
 define("GSLAN_35", "Jeśli wolisz importować linki, kliknij w 'Import' i zaznacz linki, które chcesz zaimportować.");
 define("GSLAN_36", "Możesz również wprowadzić poszczególne linki ręcznie poprzez kliknięcie na przycisk 'Dodaj nowy wpis'.");
-define("GSLAN_37", "Gdy już będziesz miał jakieś wpisy, przejdź do <a href='https://www.google.com/webmasters/sitemaps/stats'>https://www.google.com/webmasters/sitemaps/stats</a> i wprowadź następujący adres URL -> <b>".SITEURL."gsitemap.php</b> - jeśli ten adres url nie wygląda poprawnie, proszę się upewnić, że na stronie Panel admina -> Preferencje adres serwisu jest poprawnie wprowadzony.");
+define("GSLAN_37", "Gdy już będziesz miał jakieś wpisy, przejdź do <a href='https://www.google.com/webmasters/sitemaps/stats'>https://www.google.com/webmasters/sitemaps/stats</a> i wprowadź następujący adres URL -> <b>".SITEURL."gsitemap.php</b> - jeśli ten adres URL nie wygląda poprawnie, proszę się upewnić, że na stronie Panel admina -> Preferencje adres serwisu jest poprawnie wprowadzony.");
 define("GSLAN_38", "Aby uzyskać więcej informacji na temat protokołu Google Sitemap, przejdź do <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>.");
 define("GSLAN_39", "Obecnie nie ma linków w mapie strony - importować linki?");
 define("GSLAN_40", "Wpisy Google Sitemap");

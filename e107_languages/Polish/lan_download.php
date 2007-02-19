@@ -1,17 +1,17 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:37:42 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_download.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_download.php rev. 1.15
+|     Zgodne z: /e107_languages/English/lan_download.php rev. 1.16
 +-----------------------------------------------------------------------------+
 */
  
@@ -34,7 +34,7 @@ define("LAN_dl_14", "Oceń ten plik");
 define("LAN_dl_15", "Dziękujemy za ocenę");
 define("LAN_dl_16", "pobrań z obecnych");
 define("LAN_dl_17", " plików");
-define("LAN_dl_18", "Pobrań");
+define("LAN_dl_18", "Download");			// Page title
 define("LAN_dl_19", "Kategoria");
 define("LAN_dl_20", "Plików");
 define("LAN_dl_21", "Rozmiar");
@@ -102,5 +102,6 @@ define("LAN_dl_74", "Wszystkich pobrań z tego mirrora: ");
 
 define("LAN_dl_75", "brak");
 define("LAN_dl_76", "Przejdź do strony");
+define("LAN_dl_77", "Pobrań");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
 
 ?>

@@ -3,4 +3,4 @@ Q>	Do czego służy ta sekcja?
 A>	Z poziomu tej strony będziesz mógł wyłączyć swoją stronę w tryb niedostępny dla odwiedzających. Używaj tej funkcji, wówczas gdy aktualizujesz swoją stronę lub musisz ją z jakiegoś innego powodu wyłączyć na pewien czas. Tylko główny administrator serwisu ma dostęp do strony, gdy jest ona w trybie konserwacji. Będziesz wiedział o tym trybie, jako że odpowiedni komunikat będzie wyświetlany na każdej stronie.
 
 Q>	Pomocy! Ustawiłem tryb konserwacji i przypadkowo wylogowałem się, jak mam powrócić do panelu administracyjnego, aby przywrócić normalne funkcjonowanie mojej strony?
-A>	Przejdź do strony http://twojastrona.com/e107_admin/admin.php i zaloguj się stamtąd.
+A>	Przejdź do strony http://twojastrona.com/e107_admin/admin.php i zaloguj się z jej poziomu.

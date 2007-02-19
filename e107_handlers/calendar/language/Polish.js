@@ -1,12 +1,12 @@
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.3 $
-|     $Date: 2006-11-24 15:36:41 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-19 20:37:29 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/calendar/language/Polish.js,v $
 +-----------------------------------------------------------------------------+
@@ -101,7 +101,7 @@ Calendar._TT["ABOUT"] =
 "DHTML Date/Time Selector\n" +
 "(c) dynarch.com 2002-2005 / Autor: Mihai Bazon\n" + // don't translate this this ;-)
 "Najnowsza wersja dostępna jest pod adresem: http://www.dynarch.com/projects/calendar/\n" +
-"Skrypt rozpowszechniany zgodnie z licencją GNU LGPL. Odwiedź stronę http://gnu.org/licenses/lgpl.html , aby uzyskać więcj informacji." +
+"Skrypt rozpowszechniany zgodnie z licencją GNU LGPL. Odwiedź stronę http://gnu.org/licenses/lgpl.html, aby uzyskać więcj informacji." +
 "\n\n" +
 "Wybór daty:\n" +
 "- Użyj przycisków \xab, \xbb do wybrania roku\n" +
@@ -109,9 +109,9 @@ Calendar._TT["ABOUT"] =
 "- Przytrzymaj wciśnięty przycisk myszy nad jednym z wyżej wymienionych przycisków, aby uzyskać szybsze wybieranie.";
 Calendar._TT["ABOUT_TIME"] = "\n\n" +
 "Wybór czasu:\n" +
-"- Click on any of the time parts to increase it\n" +
-"- or Shift-click to decrease it\n" +
-"- or click and drag for faster selection.";
+"- Kliknij na której z części godziny, aby ją zwiększyć\n" +
+"- lub wciśnij Shift i jednoczenie kliknij, aby zmniejszyć\n" +
+"- lub kliknij i przytrzymaj dla szybszego wyboru.";
 
 Calendar._TT["PREV_YEAR"] = "Poprzedni rok";
 Calendar._TT["PREV_MONTH"] = "Poprzedni miesiąc";
@@ -119,7 +119,7 @@ Calendar._TT["GO_TODAY"] = "Dzisiaj";
 Calendar._TT["NEXT_MONTH"] = "Następny miesiąc";
 Calendar._TT["NEXT_YEAR"] = "Następny rok";
 Calendar._TT["SEL_DATE"] = "Wybierz datę";
-Calendar._TT["DRAG_TO_MOVE"] = "Złap, aby przenieść";
+Calendar._TT["DRAG_TO_MOVE"] = "Chwyć i upuć, aby przenieść";
 Calendar._TT["PART_TODAY"] = " (dzisiaj)";
 
 // the following is to inform that "%s" is to be the first day of week
@@ -137,7 +137,7 @@ Calendar._TT["TIME_PART"] = "(Shift-)kliknij aby zmienić wartość";
 
 // date formats
 Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
-Calendar._TT["TT_DATE_FORMAT"] = "%a, %b %e";
+Calendar._TT["TT_DATE_FORMAT"] = "%a, %e %b";
 
 Calendar._TT["WK"] = "wk";
 Calendar._TT["TIME"] = "Czas:";

@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:24 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users_extended.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.17
+|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.19
 +-----------------------------------------------------------------------------+
 */
  
@@ -26,7 +26,7 @@ define("EXTLAN_8", "Akcja");
 define("EXTLAN_9", "Dodatkowe pola userów");
 
 define("EXTLAN_10", "Nazwa pola");
-define("EXTLAN_11", "Ta nazwa pola zostanie przypisana tabeli, musi więc się różnić od pozostałych"); // This is the name of the field as stored in the table, it must be unique from any other
+define("EXTLAN_11", "Ta nazwa pola zostanie przypisana tabeli, musi więc się różnić od pozostałych i nie może być używane w głównej tabeli użytkowników."); // This is the name of the field as stored in the table, it must be unique from any other, and must not be used in the main user table
 define("EXTLAN_12", "Wyświetlana nazwa pola");
 define("EXTLAN_13", "Ta nazwa pola będzie wyświetlana na stronie");
 define("EXTLAN_14", "Typ pola");
@@ -93,20 +93,24 @@ define("EXTLAN_71", "nie zostało aktywowane!");
 define("EXTLAN_72", "zostało deaktywowane");
 define("EXTLAN_73", "nie zostało deaktywowane!");
 define("EXTLAN_74", "jest zarezerwowaną nazwą pola i nie może być urzyta.");
+define("EXTLAN_75", "Błąd dodawania pola do bazy danych.");
+define("EXTLAN_76", "Niedozwolone znaki w nazwie pola - tylko znaki A-Z, a-z, 0-9, '_' są dozwolone.");
 
 //textbox
-define("EXTLAN_HELP_1", "<b><i>Parametry:</i></b><br />size - rozmiar pola<br />maxlength - maksymalna długość pola<br /><br />class - klasa stylu css<br />style - string stylu css<br /><br />regex - walidacja kodu wyrażeń regularnych<br />regexfail - treść nieudanej walidacji"); // style - css style string
+define("EXTLAN_HELP_1", "<b><i>Parametry:</i></b><br />size - rozmiar pola<br />maxlength - maksymalna długość pola<br /><br />class - klasa stylu css<br />style - string stylu css<br /><br />regex - walidacja kodu wyrażeń regularnych<br />regexfail - komunikat nieudanej walidacji"); // style - css style string
 //radio buttons
-define("EXTLAN_HELP_2", "Tu będzie treść pomocy dla przycisków");
+define("EXTLAN_HELP_2", "Wprowadź tekst dla opcji w pole 'Wartość' - jedno pole na opcję. Dodaj nowe pola jeśli tego potrzebujesz.");
 //dropdown
-define("EXTLAN_HELP_3", "Tu będzie treść pomocy dla rozwijalnej listy");
+define("EXTLAN_HELP_3", "Wprowadź tekst dla opcji w pole 'Wartość' - jedno pole na opcję. Dodaj nowe pola jeśli tego potrzebujesz.");
 //db field
 define("EXTLAN_HELP_4", "<b><i>Wartości:</i></b><br />Tu powinny być ZAWSZE trzy ustalone wartości:<br /><ol><li>tabela BD</li><li>pole zawierające znacznik id</li><li>pole zawierające wartość</li></ol><br />");
 //textarea
-define("EXTLAN_HELP_5", "Tu będzie treść pomocy dla obszary tekstu");
+define("EXTLAN_HELP_5", "Definiuje obszar dla pola tekstowego (Ustaw wartość rozmiaru 'size' w polu 'Zawartość pola' jeśli tego wymagasz).");
 //integer
-define("EXTLAN_HELP_6", "Tu będzie treść pomocy dla pól liczbowych");
+define("EXTLAN_HELP_6", "Umożliwia użytkownikom wpisywanie wartości liczbowych.");
 //date
-define("EXTLAN_HELP_7", "Tu będzie treść pomocy dla pól z datą");
+define("EXTLAN_HELP_7", "Umożliwia podanie daty przez użytkownika.");
+// Language
+define("EXTLAN_HELP_8", "Umożliwia użytkownikowi wybów jednego z zainstalowanych języków.");
 
 ?>

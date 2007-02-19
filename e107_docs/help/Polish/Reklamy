@@ -12,7 +12,7 @@ Q>	Jak mogę utworzyć menu z reklamami typu pionowego (w postaci wieży)?
 A>	Pierwsze co musisz zrobić, to zdefiniować kampanię dla pionowych reklam (to oddzieli je od reklam typu poziomego) ...
 	1. Przejdź do panelu administracyjnego i kliknij na reklamy.
 	2. Wprowadź reklamy typu pionowego, upewnij się, że używasz nowej nazwy kampanii, na przykład 'kampania_pionowa'.
-	3. Następnie przejdź do działu Menu, i aktywuj menu Banner_menu w jednym z obszarów menu.
-	4. Kliknij na link 'Konfiguracja' znajdujący się na rozwijalnej liście w tym menu.
+	3. Następnie przejdź do działu Menu, i aktywuj menu 'banner' w jednym z obszarów menu.
+	4. Następnie kliknij na link 'Konfiguracja' znajdujący się na rozwijalnej liście wskazanego moduł.
 	5. Wpisz nazwę nagłówka (domyślnie jest to 'Reklama'), a następnie nazwę kampanii zdefiniowaną już wcześniej.
-	6. Opuść panel administracyjny, a zobaczysz swoje reklamy typu pionowego w obszarze, który do tego celu przeznaczyłeś.
+	6. Opuść panel administracyjny, a zobaczysz swoje reklamy typu pionowego w obszarze, który do tego celu został przeznaczony.

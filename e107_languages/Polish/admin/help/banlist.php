@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.3 $
-|     $Date: 2006-11-24 15:37:55 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-19 20:38:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/banlist.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/help/banlist.php rev. 1.2
+|     Zgodne z: /e107_languages/English/admin/help/banlist.php rev. 1.3
 +-----------------------------------------------------------------------------+
 */
  
@@ -25,7 +25,9 @@ Wpisanie adresu 123.123.123.123 zablokuje użytkowników odwiedzających Twoją 
 Wpisanie adresu 123.123.123.* zablokuje użytkowników odwiedzających Twoją stronę ze wskazanej puli adresów IP.<br /><br />
 <b>Blokowanie przez adres email:</b><br />
 Wpisanie adresu email foo@bar.com zablokuje każdego zarejestrowanego użytkownika używającego tego adresu na Twojej stronie.<br />
-Wpisanie adresu email *@bar.com zablokuje każdego zarejestrowanego użytkownika używającego adresu email pochodzącego ze wskazanej domeny.";
+Wpisanie adresu email *@bar.com zablokuje każdego zarejestrowanego użytkownika używającego adresu email pochodzącego ze wskazanej domeny.<br /><br />
+<b>Blokowanie przez nazwę użytkownika</b><br />
+Jest to wykonalne z podstrony 'Użytkownicy' w 'Panelu admina'.";
 $ns -> tablerender($caption, $text);
 
 ?>

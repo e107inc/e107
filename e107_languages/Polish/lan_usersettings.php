@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:37:42 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:58 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_usersettings.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_usersettings.php rev. 1.9
+|     Zgodne z: /e107_languages/English/lan_usersettings.php rev. 1.11
 +-----------------------------------------------------------------------------+
 */
  
@@ -112,5 +112,7 @@ define("LAN_USET_8", "Sygnatura oraz Strefa czasowa");
 define("LAN_USET_9", "Pewne wymagane pola (oznaczone znakiem *) zostały utracone.");
 define("LAN_USET_10","Aby przejść dalej, proszę uaktualnić swoje ustawienia.");
 define("LAN_USET_11", "Podany login nie może zostać zaakceptowany, proszę wybrać inną nazwę użytkownika");
+define("LAN_USET_12", "Wyświetlana nazwa jest za krótka. Proszę wybrać inną.");
+define("LAN_USET_13", "Wykryto niedozwolone znaki w loginie. Proszę wybrać inny.");
 
 ?>

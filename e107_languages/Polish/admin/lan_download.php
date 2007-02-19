@@ -1,17 +1,17 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:23 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_download.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_download.php rev. 1.17
+|     Zgodne z: /e107_languages/English/admin/lan_download.php rev. 1.19
 +-----------------------------------------------------------------------------+
 */
  
@@ -39,15 +39,15 @@ define("DOWLAN_24", "Aktualizuj plik");
 define("DOWLAN_25", "Wyślij plik");
 
 define("DOWLAN_27", "Plik");
-
+define("DOWLAN_28", "Uwaga");
 define("DOWLAN_29", "Aktualne pliki do pobrania");
 define("DOWLAN_30", "Dodaj nowy plik");
 define("DOWLAN_31", "Kategorie");
 define("DOWLAN_32", "Opcje downloadu");
 define("DOWLAN_33", "Czy na pewno chcesz usunąć wskazany plik?");
 define("DOWLAN_34", "Czy na pewno chcesz usunąć wskazaną kategorię downloadu?");
-// define("DOWLAN_35", "Usunięto plik o numerze ID");
-define("DOWLAN_36", "."); // w oryginale "deleted", lecz ze względu na poprawność i gramatyke polską zastosowałem zmiane szyku. Dotyczy to pozyvji: DOWLAN_35 oraz DOWLAN_49
+
+define("DOWLAN_36", "- usunięto."); 
 define("DOWLAN_37", "Dział");
 define("DOWLAN_38", "Nie ma jeszcze żadnych kategorii");
 define("DOWLAN_39", "Kategorie plików do pobrania");
@@ -60,7 +60,7 @@ define("DOWLAN_45", "Utwórz kategorię");
 define("DOWLAN_46", "Aktualizuj kategorię");
 define("DOWLAN_47", "Kategoria została utworzona");
 define("DOWLAN_48", "Kategoria została zaktualizowana");
-define("DOWLAN_49", "Usunięto kategorie plików o numerze ID");
+define("DOWLAN_49", "Kategorię plików o numerze ID");
 
 define("DOWLAN_51", "Szukaj/Odśwież pliki");
 define("DOWLAN_52", "Pliki");
@@ -140,5 +140,10 @@ define("DOWLAN_151", "Zgłaszanie uszkodzonych plików do pobrania dostępne dla
 
 define("DOWLAN_152", "Nie mogę przenieść pliku");
 define("DOWLAN_153", "Przenieś plik do folderu downloads");
+
+define("DOWLAN_154", "Jeśli używasz mirrorów, wybierz sposób w jaki mają być wyświetlone");
+define("DOWLAN_155", "Metoda wyświetlania mirrorów:");
+define("DOWLAN_156", "Pokaż listę mirrorów, umożliwia użytkownikowi wybór mirrora");
+define("DOWLAN_157", "Używaj losowego mirrora - brak możliwości wyboru przez użytkownika");
 
 ?>

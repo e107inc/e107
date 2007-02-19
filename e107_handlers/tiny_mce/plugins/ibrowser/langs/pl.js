@@ -1,12 +1,12 @@
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2006-11-24 15:36:57 $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-19 20:38:01 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/plugins/ibrowser/langs/pl.js,v $
 +-----------------------------------------------------------------------------+
@@ -43,7 +43,7 @@ tinyMCELang['lang_ibrowser_errornodir'] = 'Biblioteka fizycznie nie istnieje';
 tinyMCELang['lang_ibrowser_errorupload'] = 'Wyst&#261;pi&#322; b&#322;&#261;d podczas obs&#322;ugi &#322;adowania pliku.\n Prosz&#281; spr&#243;bowa&#263; p&#243;&#378;niej.';
 tinyMCELang['lang_ibrowser_errortype'] = 'Niew&#322;a&#347;ciwy typ pliku obrazka';
 tinyMCELang['lang_ibrowser_errordelete'] = 'Usuwanie nie powiod&#322;o si&#281;';
-tinyMCELang['lang_ibrowser_confirmdelete'] = 'Kliknij OK. aby usun&#261;&#263; obraz!';
+tinyMCELang['lang_ibrowser_confirmdelete'] = 'Kliknij OK, aby usun&#261;&#263; obraz!';
 tinyMCELang['lang_ibrowser_error_width_nan'] = 'Szeroko&#347;&#263; nie jest w postaci liczbowej!';
 tinyMCELang['lang_ibrowser_error_height_nan'] = 'Wysoko&#347;&#263; nie jest w postaci liczbowej!';
 tinyMCELang['lang_ibrowser_error_border_nan'] = 'Obramowanie nie jest w postaci liczbowej!';

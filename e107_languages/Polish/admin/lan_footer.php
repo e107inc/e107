@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2006-11-24 15:38:23 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-19 20:38:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_footer.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_footer.php rev. 1.3
+|     Zgodne z: /e107_languages/English/admin/lan_footer.php rev. 1.4
 +-----------------------------------------------------------------------------+
 */
  
@@ -19,7 +19,7 @@ define("FOOTLAN_1", "Strona");
 define("FOOTLAN_2", "Główny administrator");
 define("FOOTLAN_3", "Wersja");
 define("FOOTLAN_4", "build");
-define("FOOTLAN_5", "Temat");
+define("FOOTLAN_5", "Temat panelu admina");
 define("FOOTLAN_6", "wykonany przez");
 define("FOOTLAN_7", "Informacje");
 define("FOOTLAN_8", "Data instalacji");
@@ -32,5 +32,6 @@ define("FOOTLAN_14", "Pokaż dokumentację");
 define("FOOTLAN_15", "Dokumentacja");
 define("FOOTLAN_16", "Baza danych");
 define("FOOTLAN_17", "Strona kodowa");
+define("FOOTLAN_18", "Temat strony");
 
 ?>
