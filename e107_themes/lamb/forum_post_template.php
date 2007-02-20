@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/lamb/forum_post_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-19 22:26:00 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-20 19:10:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -204,26 +204,6 @@ $THREADTOPIC_REPLY = "
 ";
 }
 
-$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
-$FORUM_CRUMB['sitename']['sep'] = " :: ";
-
-$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' {FORUMS_HREF}>{FORUMS_TITLE}</a>";
-$FORUM_CRUMB['forums']['sep'] = " :: ";
-
-$FORUM_CRUMB['parent']['value'] = "{PARENT_TITLE}";
-$FORUM_CRUMB['parent']['sep'] = " :: ";
-
-$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUBPARENT_TITLE}</a>";
-$FORUM_CRUMB['subparent']['sep'] = " :: ";
-
-$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' {FORUM_HREF}>{FORUM_TITLE}</a>";
-$FORUM_CRUMB['forum']['sep'] = " :: ";
-
-$FORUM_CRUMB['thread']['value'] = "{THREAD_TITLE}";
-
-
-/*
-This lot not in the default template, so presumably redundant
 $FORUMTHREADPOSTED = "
 <table style='width:100%' class='fborder'>
 <tr>
@@ -249,6 +229,23 @@ $FORUMREPLYPOSTED = "
 <a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
 </td></tr></table>";
 
-*/
+
+$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
+$FORUM_CRUMB['sitename']['sep'] = " :: ";
+
+$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' {FORUMS_HREF}>{FORUMS_TITLE}</a>";
+$FORUM_CRUMB['forums']['sep'] = " :: ";
+
+$FORUM_CRUMB['parent']['value'] = "{PARENT_TITLE}";
+$FORUM_CRUMB['parent']['sep'] = " :: ";
+
+$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUBPARENT_TITLE}</a>";
+$FORUM_CRUMB['subparent']['sep'] = " :: ";
+
+$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' {FORUM_HREF}>{FORUM_TITLE}</a>";
+$FORUM_CRUMB['forum']['sep'] = " :: ";
+
+$FORUM_CRUMB['thread']['value'] = "{THREAD_TITLE}";
+
 
 ?>
