@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2007-02-07 21:24:58 $
-|     $Author: e107steved $
+|     $Revision: 1.66 $
+|     $Date: 2007-02-20 17:39:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.65 $
-* @author $Author: e107steved $
+* @version $Revision: 1.66 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -282,7 +282,7 @@ class db {
 
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
-			return $tmp;
+			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
 		} else {
 			$this->dbError("db_Insert ($query)");
 			return FALSE;
