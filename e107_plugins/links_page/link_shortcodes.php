@@ -274,7 +274,7 @@ SC_END
 
 SC_BEGIN BUTTON_COLUMN
 global $linkbutton_count,$linkspage_pref;
-return ($linkbutton_count >0 && $linkspage_pref['link_icon']) ? 2 : 1;
+return ($linkspage_pref['link_icon']) ? 2 : 1;
 SC_END
 
 SC_BEGIN LINK_APPEND
