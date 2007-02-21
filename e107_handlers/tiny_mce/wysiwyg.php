@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2007-02-20 21:08:43 $
+|     $Revision: 1.34 $
+|     $Date: 2007-02-21 20:30:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -59,7 +59,7 @@ $text .= "'\n"; // end of plugins list.
 
 $text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
 
-$text .= ",theme_advanced_buttons2   : 'tablecontrols,separator,undo,redo,separator,link,unlink'";
+$text .= ",theme_advanced_buttons2   : 'tablecontrols,separator,undo,redo,separator,link,unlink";
 $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
 $text .= ",charmap,iespell,media";
 $text .= (ADMIN) ? ",ibrowser," : ",image";
