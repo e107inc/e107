@@ -124,8 +124,8 @@ global $row;
 $vals = array(RSS_LAN_ADMIN_21,RSS_LAN_ADMIN_22,RSS_LAN_ADMIN_23);
 $text = "<select class='tbox' name='rss_class'>";
 foreach($vals as $key=>$val){
-	$sel = ($row['rss_class'] == $key) ? "selected='selected'" : "";
-	$text .= "<option value='$key'>$val</option>\n";
+	$sel = ($row['rss_class'] == $key) ? " selected='selected'" : "";
+	$text .= "<option value='{$key}'{$sel}>$val</option>\n";
 }
 $text .= "</select>";
 return $text;
