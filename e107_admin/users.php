@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-24 16:39:14 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -287,7 +287,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
 // ------- Delete User --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
-		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0'")) {
+		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'")) {
 		   $sql->db_Delete("user_extended", "user_extended_id='".$_POST['userid']."' ");
 			$user->show_message(USRLAN_10);
 		}
