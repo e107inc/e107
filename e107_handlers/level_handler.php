@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-24 09:38:06 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 	
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref, $fmod = "")
 {
 	 
-	global $tp, $imode;
+	global $tp;
 
 	if (!$user_id) {
 		return FALSE;
@@ -45,8 +45,8 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 			$data[0] = IMAGE_rank_admin_image."<br />";
 		}
 	}
-	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
-	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
+	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."</span><br />";
+	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."</span><br />";
  
 	$level_thresholds = ($pref['forum_thresholds'] ? explode(",", $pref['forum_thresholds']) : array(20, 100, 250, 410, 580, 760, 950, 1150, 1370, 1600));
  
@@ -95,7 +95,7 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 		$rank = 9;
 	}
 
-	$data['pic'] = (file_exists(THEME."forum/".$level_images[$rank]) ? THEME."forum/".$level_images[$rank] : e_IMAGE."packs/".$imode."/rate/".$level_images[$rank]);
+	$data['pic'] = (file_exists(THEME."forum/".$level_images[$rank]) ? THEME."forum/".$level_images[$rank] : e_IMAGE."rate/".IMODE."/".$level_images[$rank]);
 	$data['name'] = "[ ".$tp->toHTML($level_names[$rank], FALSE, 'defs')." ]";
 
 	if($level_names[$rank])
