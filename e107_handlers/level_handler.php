@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-04-29 01:27:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2007-02-24 09:38:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 	
@@ -45,8 +45,8 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 			$data[0] = IMAGE_rank_admin_image."<br />";
 		}
 	}
-	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
-	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
+	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."</span><br />";
+	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."</span><br />";
  
 	$level_thresholds = ($pref['forum_thresholds'] ? explode(",", $pref['forum_thresholds']) : array(20, 100, 250, 410, 580, 760, 950, 1150, 1370, 1600));
  
