@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/lamb/forum_post_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-20 19:10:31 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-24 09:40:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -116,7 +116,7 @@ $FORUMPOST_REPLY = "
 {FORMSTART}
 <table style='".USER_WIDTH."' class='fborder'>
 <tr>
-<td colspan='2' class='fcaption'>{BACKLINK}
+<td colspan='2' class='nforumcaption'>{BACKLINK}
 </td>
 </tr>
 {USERBOX}
@@ -161,7 +161,7 @@ if(!$LATESTPOSTS_START)
 $LATESTPOSTS_START = "
 <table style='".USER_WIDTH."' class='fborder'>
 <tr>
-<td colspan='2' class='fcaption' style='vertical-align:top'>".
+<td colspan='2' class='nforumcaption' style='vertical-align:top'>".
 LAN_101."{LATESTPOSTSCOUNT}".LAN_102."
 </td>
 </tr>";
@@ -192,7 +192,7 @@ if(!$THREADTOPIC_REPLY)
 $THREADTOPIC_REPLY = "
 <table style='".USER_WIDTH."' class='fborder'>
 <tr>
-	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_100."</td>
+	<td colspan='2' class='nforumcaption' style='vertical-align:top'>".LAN_100."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
@@ -203,6 +203,7 @@ $THREADTOPIC_REPLY = "
 </table>
 ";
 }
+
 
 $FORUMTHREADPOSTED = "
 <table style='width:100%' class='fborder'>
