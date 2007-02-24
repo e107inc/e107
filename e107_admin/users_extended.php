@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-28 20:49:28 $
+|     $Revision: 1.7 $
+|     $Date: 2007-02-24 14:45:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,11 @@ if (!getperms("4")) {
 if (isset($_POST['cancel']))
 {
 	header("location:".e_SELF);
+	exit;
+}
+if (isset($_POST['cancel_cat']))
+{
+	header("location:".e_SELF."?cat");
 	exit;
 }
 
@@ -244,7 +249,7 @@ class users_ext
 
 	function show_extended($current)
 	{
-		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action, $imode;
+		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action;
 
 		$catList = $ue->user_extended_get_categories();
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
@@ -296,12 +301,12 @@ class users_ext
 						";
 						if($i > 0){
 							$text .= "
-							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
+							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 							";
 						}
 						if($i <= count($extendedList[$cn])-2)
 						{
-							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
 						}
 						$text .= "
 						</form>
@@ -619,7 +624,7 @@ class users_ext
 
 	function show_categories($current)
 	{
-		global $sql, $ns, $ue, $imode;
+		global $sql, $ns, $ue;
 
 		$text = "<div style='text-align:center'>";
 		$text .= "
@@ -660,12 +665,12 @@ class users_ext
 				if($i > 0)
 				{
 					$text .= "
-					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}.{$i}' />
+					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}.{$i}' />
 					";
 				}
 				if($i <= count($catList)-2)
 				{
-					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}.{$i}' />";
+					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}.{$i}' />";
 				}
 				$text .= "
 				</form>
