@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-20 16:24:25 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2007-02-24 09:34:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -326,11 +326,6 @@ function parse_thread($thread_info)
 		}
 		$LASTPOST .= "<br />".$lastpost_datestamp;
 	}
-	else
-	{
-		$REPLIES = LAN_317;
-		$LASTPOST = " - ";
-	}
 
 	$newflag = FALSE;
 	if (USER)
@@ -343,8 +338,9 @@ function parse_thread($thread_info)
 
 	$THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
 	$ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
-	if ($REPLIES >= $pref['forum_popular'] && $REPLIES != "None") {
-		$ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
+	if ($REPLIES >= $pref['forum_popular']) 
+	{
+	  $ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
 	}
 
 	$THREADTYPE = '';
@@ -460,6 +456,12 @@ function parse_thread($thread_info)
 	if ($thread_info['thread_s'] == 2 && $FORUM_VIEW_FORUM_ANNOUNCE)
 	{
 		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_ANNOUNCE));
+	}
+
+	if (!$REPLIES)
+	{
+		$REPLIES = LAN_317;		// 'None' 
+		$LASTPOST = " - ";
 	}
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
