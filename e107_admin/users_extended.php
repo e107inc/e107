@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2007-01-28 20:49:45 $
+|     $Revision: 1.43 $
+|     $Date: 2007-02-24 14:45:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,11 @@ if (!getperms("4")) {
 if (isset($_POST['cancel']))
 {
 	header("location:".e_SELF);
+	exit;
+}
+if (isset($_POST['cancel_cat']))
+{
+	header("location:".e_SELF."?cat");
 	exit;
 }
 
