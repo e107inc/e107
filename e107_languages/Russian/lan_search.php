@@ -2,9 +2,9 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.5 $
-|     $Date: 2006-11-23 15:54:32 $
-|     $Author: yarodin $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-26 04:01:35 $
+|     $Author: verant $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,11 +33,11 @@ define("LAN_418", "Другие страницы");
 
 define("LAN_SEARCH_1", "Отметить все");
 define("LAN_SEARCH_2", "Снять все отметки");
-define("LAN_SEARCH_3", "Добавил ");
+define("LAN_SEARCH_3", "Добавлено "); //Posted on 
 define("LAN_SEARCH_4", "Соответствует найденным заголовкам новостей");
 define("LAN_SEARCH_5", "Соответствует найденному тексту новостей");
 define("LAN_SEARCH_6", "Соответствует найденной расширенной новости");
-define("LAN_SEARCH_7", "Добавил ");
+define("LAN_SEARCH_7", "Добавил "); //Posted by 
 define("LAN_SEARCH_8", " на ");
 define("LAN_SEARCH_9", "Без названия");
 define("LAN_SEARCH_10", "Перейти на страницу:");
