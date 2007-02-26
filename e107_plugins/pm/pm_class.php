@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-02-17 17:31:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2007-02-26 20:29:35 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -188,7 +188,7 @@ class private_message
 		$txt = LAN_PM_101.SITENAME."\n\n";
 		$txt .= LAN_PM_102.USERNAME."\n";
 		$txt .= LAN_PM_103.$pminfo['pm_subject']."\n";
-		if($attch_count > 0)
+		if($attach_count > 0)
 		{
 			$txt .= LAN_PM_104.$attach_count."\n";
 		}
