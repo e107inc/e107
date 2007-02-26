@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-16 22:44:39 $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-26 20:23:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -73,6 +73,14 @@ class e_bbcode
   $unmatch_stack = array();				// Stack for unmatched bbcodes
   $result = '';							// Accumulates fully processed text
   $stacktext = '';						// Accumulates text which might be subject to one or more bbcodes
+  $nopro = FALSE;						// Blocks processing within [code]...[/code] tags
+  $pattern = '#^\[(/?)([A-Za-z]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
+		// $matches[0] - same as the input text
+		// $matches[1] - '/' for a closing tag. Otherwise empty string
+		// $matches[2] - the bbcode word
+		// $matches[3] - any digits immediately following the bbcode word
+		// $matches[4] - '=' or ':' according to the separator used
+		// $matches[5] - any parameter
 
   $content = preg_split('#(\[(?:\w|/\w).*?\])#mis', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
   
@@ -84,19 +92,13 @@ class e_bbcode
 	  $oddtext = '';
       if ($cont[0] == '[')
 	  {  // We've got a bbcode - split it up and process it
-		$pattern = '#^\[(/?)([A-Za-z]+)(\d*)([=:]?)(.*?)]$#i';
-		// $matches[0] - same as the input text
-		// $matches[1] - '/' for a closing tag. Otherwise empty string
-		// $matches[2] - the bbcode word
-		// $matches[3] - any digits immediately following the bbcode word
-		// $matches[4] - '=' or ':' according to the separator used
-		// $matches[5] - any parameter
 		$match_count = preg_match($pattern,$cont,$matches);
 	    $bbparam = $matches[5];
         $bbword = $matches[2];
-	    if (($bbword) && ($bbword == trim($bbword)))
+		if ($force_lower) $bbword = strtolower($bbword);
+		if ($nopro && ($bbword == 'code') && ($matches[1] == '/')) $nopro = FALSE;		// End of code block
+	    if (($bbword) && ($bbword == trim($bbword)) && !$nopro)
 	    {  // Got a code to process here
-		  if ($force_lower) $bbword = strtolower($bbword);
 		  if ($matches[1] == '/')
 		  {  // Closing code to process
 		    $found = FALSE;
@@ -169,6 +171,7 @@ class e_bbcode
 			    $stacktext = '';
 			  }
 	          array_unshift($code_stack,array('type' => 'bbcode','code' => $bbword, 'numbers'=> $matches[3], 'param'=>$bbparam));
+			  if ($bbword == 'code') $nopro = TRUE;
 	          $is_proc = TRUE;
 		    }
 	      }
