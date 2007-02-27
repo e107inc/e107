@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-27 20:26:13 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,14 @@ require_once(HEADERF);
 $total_posts = $sql -> db_Count("forum_t");
 $total_topics = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent=0");
 $total_replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent!=0");
-$total_views = $sql->db_Count("SELECT sum(thread_views) FROM ".MPREFIX."forum_t", "generic");
+$total_views = 0;
+$query = "SELECT sum(thread_views) AS total FROM #forum_t ";		// Try this way - original way didn't work for some users
+if ($sql -> db_Select_gen($query))
+//if($sql->db_Select("forum_t", "sum(thread_views) AS total", '', 'nowhere'))
+{
+  $row = $sql->db_Fetch();
+  $total_views = $row['total'];
+}
 
 $firstpost = $sql -> db_Select("forum_t", "thread_datestamp", "thread_datestamp > 0 ORDER BY thread_datestamp ASC LIMIT 0,1");
 $fp = $sql -> db_Fetch();
@@ -44,9 +51,14 @@ $open_since = $gen -> computeLapse($open_ds);
 $open_days = floor((time()-$open_ds) / 86400);
 $postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days));
 
-$query = "SHOW TABLE STATUS FROM $mySQLdefaultdb";
+
+//$query = "SHOW TABLE STATUS FROM {$mySQLdefaultdb}";		// Original line - doesn't like DB names with a '-' - enclose in backticks
+//$query = "SHOW TABLE STATUS FROM `{$sql->mySQLdefaultdb}` LIKE '".MPREFIX."forum_t"."' ";	// This selects the one table we want (but didn't always work)
+$query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";		// Original line with backticks added
 $sql -> db_Select_gen($query);
 $array = $sql -> db_getList();
+//$table = $sql -> db_Fetch();
+//echo $query."<br />Elements: ".count($array)."<br />";
 foreach($array as $table)
 {
 	if($table['Name'] == MPREFIX."forum_t")
@@ -134,15 +146,15 @@ $text = "
 <tr>
 <td class='forumheader3'>
 	<table style='width: 100%;'>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_2.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$open_date</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_3.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$open_since</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_4.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_posts</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_5.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_topics</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_6.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_replies</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_7.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_views</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_24.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$postsperday</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_8.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$db_size</td></tr>
-	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_9.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$avg_row_len</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_2.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_date}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_3.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_since}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_4.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_posts}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_5.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_topics}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_6.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_replies}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_7.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_views}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_24.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$postsperday}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_8.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$db_size}</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_9.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
 
 	</tr>
 	</table>
