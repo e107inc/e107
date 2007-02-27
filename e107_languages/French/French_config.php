@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/French_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-02-27 01:57:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-02-27 02:06:12 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -50,6 +50,11 @@ if (isset($_POST['update_lan_submit'])){	//Mise à jour du fichier French_custom
 }
 
 //texte de base
+if(!is_writable(e_LANGUAGEDIR."French/French_custom.php")){
+	$text .= "<br /><div style='text-align:center;font-size:150%'><strong>Attention, vous ne pouvez pas modifier les termes pour le moment, le 
+				fichier ".e_LANGUAGEDIR."French/<span style='color:red;'>French_custom.php</span> n'est pas accessible en écriture.
+				Veuillez modifier ses attributs (CHMOD) avec un client FTP et les mettre à 666 ou 777.</strong></div><br /><br />";
+}
 $text .= "Ces termes seront modifier sur l'ensemble du site.<br />nb. Ceci n'affectera que les fichiers de langage, pas les données entrées manuellement par les usagers.<br /><br />
 	<form method='post' action='".e_SELF."'><ul>";
 foreach($termes_modifiables as $k){
@@ -98,15 +103,15 @@ function update_lan_file($termes_modifiables){
 		if (ereg ("^[aeiouyàáâäéèêëïôü]", $_POST[$terme])){ 	//crée les préfixes en fonction de la présence de voyelle en début du mot
 			$definition .= "define(\"GLOBAL_LAN_D_PREFIX_".strtoupper($terme)."\", \"&#39;\");\n";
 			$definition .= "define(\"GLOBAL_LAN_L_PREFIX_".strtoupper($terme)."\", \"&#39;\");\n";
-			$definition .= "define(\"GLOBAL_LAN_DU_PREFIX_".strtoupper($terme)."\", \"e l&#39;\");\n";
+			$definition .= "define(\"GLOBAL_LAN_DU_PREFIX_".strtoupper($terme)."\", \"de l&#39;\");\n";
 		}else{
 			$definition .= "define(\"GLOBAL_LAN_D_PREFIX_".strtoupper($terme)."\", \"e \");\n";
 			if ($_POST[$terme."_genre"] == 'f'){			//crée les préfixes en fonction du genre du mot
 				$definition .= "define(\"GLOBAL_LAN_L_PREFIX_".strtoupper($terme)."\", \"a \");\n";
-				$definition .= "define(\"GLOBAL_LAN_DU_PREFIX_".strtoupper($terme)."\", \"e la \");\n";
+				$definition .= "define(\"GLOBAL_LAN_DU_PREFIX_".strtoupper($terme)."\", \"de la \");\n";
 			}else{
 				$definition .= "define(\"GLOBAL_LAN_L_PREFIX_".strtoupper($terme)."\", \"e \");\n";
-				$definition .= "define(\"GLOBAL_LAN_DU_PREFIX_".strtoupper($terme)."\", \"u \");\n";
+				$definition .= "define(\"GLOBAL_LAN_DU_PREFIX_".strtoupper($terme)."\", \"du \");\n";
 	}	}	}
 	$definition .= "?>";
 	if(file_put_contents(e_LANGUAGEDIR."French/French_custom.php", $definition))
