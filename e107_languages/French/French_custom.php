@@ -17,7 +17,7 @@ define("GLOBAL_LAN_NEWS_3", "actualités");
 define("GLOBAL_LAN_NEWS_4", "Actualités");
 define("GLOBAL_LAN_D_PREFIX_NEWS", "&#39;");
 define("GLOBAL_LAN_L_PREFIX_NEWS", "&#39;");
-define("GLOBAL_LAN_DU_PREFIX_NEWS", "e l&#39;");
+define("GLOBAL_LAN_DU_PREFIX_NEWS", "de l&#39;");
 
 define("GLOBAL_LAN_CHATBOX_1", "mégaphone");
 define("GLOBAL_LAN_CHATBOX_2", "Mégaphone");
@@ -25,5 +25,5 @@ define("GLOBAL_LAN_CHATBOX_3", "mégaphones");
 define("GLOBAL_LAN_CHATBOX_4", "Mégaphones");
 define("GLOBAL_LAN_D_PREFIX_CHATBOX", "e ");
 define("GLOBAL_LAN_L_PREFIX_CHATBOX", "e ");
-define("GLOBAL_LAN_DU_PREFIX_CHATBOX", "u ");
+define("GLOBAL_LAN_DU_PREFIX_CHATBOX", "du ");
 ?>
