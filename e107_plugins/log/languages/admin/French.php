@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/French.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:36:36 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-27 01:57:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -43,4 +43,5 @@ define("ADSTAT_L29", "Nom de page");
 define("ADSTAT_L30", "Cocher pour enlever");
 define("ADSTAT_L31", "Supprimer les pages sélectionnées");
 define("ADSTAT_L32", "Page Nettoyée");
+define("ADSTAT_L33", "Configurer les Statistiques de Connexions");
 ?>

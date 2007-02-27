@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/French.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-12-10 08:44:39 $
+|     $Revision: 1.12 $
+|     $Date: 2007-02-27 01:58:06 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("RSS_MENU_L3", "Nos ".GLOBAL_LAN_NEWS_3."");
 define("RSS_MENU_L4", "Nos commentaires");
 define("RSS_MENU_L5", "Nos sujets de forum");
 define("RSS_MENU_L6", "Les messages de notre forum");
-define("RSS_MENU_L7", "Les messages de notre chatbox");
+define("RSS_MENU_L7", "Les messages de notre ".GLOBAL_LAN_CHATBOX_2."");
 define("RSS_MENU_L8", "Les bugs de notre traceur de bugs");
 define("RSS_MENU_L9", "Nos téléchargements");
 
@@ -30,7 +30,7 @@ define("RSS_FP","Messages Forum");
 define("RSS_FSP","Message spécifiques du Forum");
 define("RSS_BUG","Bugtracker");
 define("RSS_FOR","Forum");
-define("RSS_DL","Téléchargememts");
+define("RSS_DL","Téléchargements");
 define("RSS_PLUGIN_LAN_1", "RSS");
 define("RSS_PLUGIN_LAN_6", "Liens des Ressources");
 define("RSS_PLUGIN_LAN_7", "La ressource rss des ".GLOBAL_LAN_NEWS_3."");

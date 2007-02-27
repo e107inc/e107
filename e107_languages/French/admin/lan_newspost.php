@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_newspost.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-12-10 08:43:18 $
+|     $Revision: 1.7 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -134,7 +134,7 @@ define("LAN_NEWS_42", "Fichier");
 define("LAN_NEWS_44", "<strong>Trackback non activé.</strong>");
 define("LAN_NEWS_45", "ID");
 define("LAN_NEWS_46", "".GLOBAL_LAN_NEWS_2." non mise à jour car aucune modification n'a été faite");
-define("LAN_NEWS_48", "Pas d&#39;Image");
+define("LAN_NEWS_48", "Aucune Image");
 define("LAN_NEWS_49", "Type de rendu");
 
 

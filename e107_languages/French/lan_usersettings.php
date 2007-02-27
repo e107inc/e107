@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_usersettings.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.9 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -95,4 +95,6 @@ define("LAN_USET_8", "Signature / Fuseau Horaire");
 define("LAN_USET_9", "Certains champs requis (marqué par une *) manquent à vos paramètres.");
 define("LAN_USET_10", "Veuillez les mettre à jour avant de continuer.");
 define("LAN_USET_11", "Cet identifiant ne peut être accepté comme valide, veuillez choisir un autre identifiant");
+define("LAN_USET_12", "Ce nom d&#39;affichage est trop court, Veuillez en choisir un autre");
+define("LAN_USET_13", "Caractères invalides dans l&#39;identifiant. Veuillez en choisir un autre");
 ?>

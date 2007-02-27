@@ -1,47 +1,29 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/French_custom.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-10 08:43:18 $
-|     $Author: daddycool78 $
+| Créé automatiquement par le fichier e107_languages/French/French_config.php
+| Outil développé par Daddy Cool at e107educ.org
+| Modifié par: Daddy Cool
+| Date: 2006-12-15, 19:05h
 +---------------------------------------------------------------+
 */
-/***** Modifiez les termes de cette section pour voir ces termes changer sur tout le site *****
-Veillez à mettre les termes en minuscule et à éditer ce fichier avec Notepad++ ou autre éditeur UTF8 sans BOM.
-Vous pourrez ensuite utiliser les termes génériques "GLOBAL_LAN_LEMOT_1" pour remplacer le terme dans les fichiers de traduction
-"GLOBAL_LAN_LEMOT_1" => actualité
-"GLOBAL_LAN_LEMOT_2" => Actualité
-"GLOBAL_LAN_LEMOT_3" => actualités
-"GLOBAL_LAN_LEMOT_4" => Actualités
-Pour les détails linguistiques, utilisez simplement "GLOBAL_LAN_LEMOT"
-*/
-$custom_lan[news]		= "actualité";
-$custom_lan_sub[d_prefix_news]= "'"; //si vous employez un mot comme Manchette, mettez "e ".
-$custom_lan_sub[l_prefix_news]= "'"; //si vous employez un mot comme Manchette, mettez "a ".
-//**************************************************************
-//custom_lan non encore actif 
-/*
-$custom_lan[chatbox]	= "mégaphone";
-$custom_lan[upload]	= "téléversement";
-$custom_lan[uploaded]	= "téléversé";
-$custom_lan[to_upload]	= "téléverser";
-*/
+$custom_lan['news']	= array('f','actualité');
+$custom_lan['chatbox']	= array('m','mégaphone');
 
-//NE PAS MODIFIER LA SUITE !!!
-foreach($custom_lan as $k => $v){
-	define("GLOBAL_LAN_".strtoupper($k)."_1", $v);
-	define("GLOBAL_LAN_".strtoupper($k)."_2", ucfirst($v));
-	if (strrchr($v,'s') !== 's' || strrchr($v,'s') === false){
-		define("GLOBAL_LAN_".strtoupper($k)."_3", $v."s");
-		define("GLOBAL_LAN_".strtoupper($k)."_4", ucfirst($v)."s");
-	}else{
-		define("GLOBAL_LAN_".strtoupper($k)."_3", $v);
-		define("GLOBAL_LAN_".strtoupper($k)."_4", ucfirst($v));
-}	}
-foreach($custom_lan_sub as $k => $v){
-	define("GLOBAL_LAN_".strtoupper($k), $v);}
+define("GLOBAL_LAN_NEWS_1", "actualité");
+define("GLOBAL_LAN_NEWS_2", "Actualité");
+define("GLOBAL_LAN_NEWS_3", "actualités");
+define("GLOBAL_LAN_NEWS_4", "Actualités");
+define("GLOBAL_LAN_D_PREFIX_NEWS", "&#39;");
+define("GLOBAL_LAN_L_PREFIX_NEWS", "&#39;");
+define("GLOBAL_LAN_DU_PREFIX_NEWS", "e l&#39;");
 
+define("GLOBAL_LAN_CHATBOX_1", "mégaphone");
+define("GLOBAL_LAN_CHATBOX_2", "Mégaphone");
+define("GLOBAL_LAN_CHATBOX_3", "mégaphones");
+define("GLOBAL_LAN_CHATBOX_4", "Mégaphones");
+define("GLOBAL_LAN_D_PREFIX_CHATBOX", "e ");
+define("GLOBAL_LAN_L_PREFIX_CHATBOX", "e ");
+define("GLOBAL_LAN_DU_PREFIX_CHATBOX", "u ");
 ?>

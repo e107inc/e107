@@ -4,13 +4,13 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_image.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.9 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
 define("IMALAN_1", "Permettre de poster des images");
-define("IMALAN_2", "Afficher les images, cela s'appliquera partout sur le site (commentaires, chatbox etc)");
+define("IMALAN_2", "Afficher les images, cela s'appliquera partout sur le site (commentaires, ".GLOBAL_LAN_CHATBOX_1.", etc.)");
 define("IMALAN_3", "Méthode de redimensionnement");
 define("IMALAN_4", "Méthode utilisée pour redimensionner les images, GD1/2 ou ImageMagick");
 define("IMALAN_5", "Chemin vers ImageMagick (si sélectionné)");
@@ -34,7 +34,7 @@ define("IMALAN_24", "Photographie");
 define("IMALAN_25", "Cliquer ici pour supprimer toutes les images non utilisées");
 define("IMALAN_26", "image(s) supprimée(s)");
 define("IMALAN_28", "supprimée");
-define("IMALAN_29", "pas d'images");
+define("IMALAN_29", "pas d&#39;images");
 define("IMALAN_30", "Tous (public)");
 define("IMALAN_31", "Visiteurs uniquement");
 define("IMALAN_32", "Utilisateur uniquement");

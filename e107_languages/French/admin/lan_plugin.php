@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -55,6 +55,9 @@ define("EPL_ADLAN_42", "Il semble y avoir une erreur, il est impossible de désa
 define("EPL_ADLAN_43", "Votre extension a bien été téléchargée sur le serveur et dézipée, veuillez faire défiler la fenêtre vers le bas pour la voir dans la liste.");
 define("EPL_ADLAN_44", "Le téléchargement et l'extraction automatique d'extension est désactivé car votre répertoire d'extensions n'a pas les permissions correctes - veuillez CHMODER à 777 votre répertoire e107_plugins.");
 define("EPL_ADLAN_45", "Votre menu à bien été téléchargé et dézipé sur le serveur, pour l'activer allez sur<a href='".e_ADMIN."menu.php'> votre page de menus</a>.");
+define("EPL_ADLAN_46", "PCLZIP erreur d'extraction:");
+define("EPL_ADLAN_47", "PCLTAR erreur d'extraction: ");
+define("EPL_ADLAN_48", "code:");
 define("EPL_WEBSITE",   "Site Web");
 define("EPL_NOINSTALL", "Aucune installation n'est requise, il vous suffit d'activer cette extension depuis la gestion des menus. Pour désinstaller, supprimer le ");
 define("EPL_DIRECTORY", "répertoire.");

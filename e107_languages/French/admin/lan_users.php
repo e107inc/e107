@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-12-04 21:32:33 $
+|     $Revision: 1.9 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -147,7 +147,7 @@ define("DUSRLAN_18", "Date inscription");
 define("DUSRLAN_19", "Dernière visite");
 define("DUSRLAN_20", "Visite courante");
 define("DUSRLAN_21", "Dernier Message");
-define("DUSRLAN_22", "Dernier message Chatbox");
+define("DUSRLAN_22", "Dernier message ".GLOBAL_LAN_CHATBOX_2."");
 define("DUSRLAN_23", "Commentaire");
 define("DUSRLAN_24", "Messages Forum");
 define("DUSRLAN_25", "IP");

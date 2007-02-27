@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/banlist.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -19,6 +19,8 @@ Entrer l'adresse IP 123.123.123.123 bloquera tous les utilisateurs qui tenteront
 Entrer l'adresse IP 123.123.123.* bloquera l'accès au site de quiconque ayant une adresse comprise entre 123.123.123.0 et 123.123.123.255<br /><br />
 <strong>Bannir par adresse courriel</strong><br />
 Entrer l'adresse courriel foo@bar.com empêchera quiconque utilisant cette adresse de s'inscrire sur votre site.<br />
-Entrer l'adresse courriel *@bar.com empêchera quiconque utilisant une adresse courriel du domaine bar.com de s'inscrire sur votre site.";
+Entrer l'adresse courriel *@bar.com empêchera quiconque utilisant une adresse courriel du domaine bar.com de s'inscrire sur votre site.<br /><br />
+<b>Bannir par identifiant</b><br />
+Cela se fait à partir de la page d'administration des utilisateurs.";
 $ns -> tablerender($caption, $text);
 ?>

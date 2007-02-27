@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté française e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_db.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -39,4 +39,9 @@ define("DBLAN_26", "Rajouts inclus");
 define("DBLAN_27", "Installé");
 define("DBLAN_28", "Cliquer sur ce bouton pour scanner les répertoires des extensions");
 define("DBLAN_29", "Scanner les répertoires des extensions");
+define("DBLAN_30", " (Si un ajout montre une erreur, vérifiez qu'il n'y ait pas de caractères à l'extérieur des balises d'ouverture/fermeture PHP)");
+define("DBLAN_31", "Réussite");
+define("DBLAN_32", "Erreur");
+define("DBLAN_33", "Inaccessible");
+define("DBLAN_34", "Non vérifié");
 ?>

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.16 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ define("PRFLAN_33", "Si désactivé, seuls les utilisateurs inscrits pourront po
 define("PRFLAN_35", "Activer la protection anti-flood ? ");
 define("PRFLAN_36", "Temps d'attente minimum entre 2 envois consécutifs ");
 define("PRFLAN_37", "Bannir automatiquement ?");
-define("PRFLAN_38", "Temps en secondes requis entre 2 envois consécutifs dans la chatbox, le forum ... si un utilisateur envoie trop rapidement, il sera redirigé sur la page d'accueil");
+define("PRFLAN_38", "Temps en secondes requis entre 2 envois consécutifs dans l".GLOBAL_LAN_L_PREFIX_CHATBOX.GLOBAL_LAN_CHATBOX_1.", le forum ... si un utilisateur envoie trop rapidement, il sera redirigé sur la page d'accueil");
 define("PRFLAN_40", "Filtrer les mots grossiers ?");
 define("PRFLAN_41", "si activé, tous les mots grossiers listés seront remplacés par le mot suivant");
 define("PRFLAN_42", "Mot de censure");

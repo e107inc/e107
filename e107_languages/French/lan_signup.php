@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_signup.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-12-04 21:48:39 $
+|     $Revision: 1.15 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -109,5 +109,8 @@ define("LAN_SIGNUP_50", "Nouveau Courriel");
 define("LAN_SIGNUP_51", "Ancien mot de passe");
 define("LAN_SIGNUP_52", "Mot de passe incorrect");
 define("LAN_SIGNUP_53", "le test de validation du champ a échoué");
+define("LAN_SIGNUP_54", "Clicker ici pour remplir les détails de votre enregistrement");
+define("LAN_SIGNUP_55", "Ce nom d&#39;affichage est trop long, Veuillez en choisir un autre");
+define("LAN_SIGNUP_56", "Ce nom d&#39;affichage est trop court, Veuillez en choisir un autre");
 
 ?>

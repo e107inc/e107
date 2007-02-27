@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_top.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.7 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@ define("TOP_LAN_1", "Identifiant");
 define("TOP_LAN_2", "Messages");
 define("TOP_LAN_3", "Les utilisateurs postant le plus de commentaires");
 define("TOP_LAN_4", "Commentaires");
-define("TOP_LAN_5", "Les utilisateurs postant le plus dans la Chatbox");
+define("TOP_LAN_5", "Les utilisateurs postant le plus dans l".GLOBAL_LAN_L_PREFIX_CHATBOX.GLOBAL_LAN_CHATBOX_2."");
 define("TOP_LAN_6", "Évaluation du Site");
   //v.616
 define("LAN_1", "Discussion");

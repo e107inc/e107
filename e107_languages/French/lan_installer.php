@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_installer.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-12-04 21:32:26 $
+|     $Revision: 1.10 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -124,6 +124,21 @@ define("LANINS_083", "Erreur MySQL rapportée :");
 define("LANINS_084", "L'installeur n'a pas pu établir de connexion avec la base de données");
 define("LANINS_085", "L'installeur n'a pas pu sélectionner la base de données");
 define("LANINS_086", "e107 Page d'accueil: http://e107.org");
+define("LANINS_087", "Autres");
+define("LANINS_088", "Accueil");
+define("LANINS_089", "Téléchargements");
+define("LANINS_090", "Membres");
+define("LANINS_091", "Proposer une actualité");
+define("LANINS_092", "Nous contacter");
+define("LANINS_093", "Donne accès aux menus privés");
+define("LANINS_094", "Exemple de Groupe de Forum Privé");
+define("LANINS_095", "Vérification de l&#39;Intégrité");
+define("LANINS_096", "");
+define("LANINS_097", "");
+define("LANINS_098", "");
+define("LANINS_099", "");
+define("LANINS_100", "");
+/* old definitions... seems to have been removed..
 define("LANINS_087", "Forums: http://e107.org/forum.php");
 define("LANINS_088", "Téléchargements");
 define("LANINS_089", "Extensions: http://e107coders.org");
@@ -160,4 +175,5 @@ define("LANINS_117_2", "Oui lorsque... Non quand...");
 define("LANINS_118",  "Impossible de lire le fichier sql<br /><br />Svp assurez-vous que le fichier <strong>user_sql.php</strong> existe dans le répertoire <strong>/e107_admin/sql</strong>");
 define("LANINS_119", "UDLH n'a pas pu créer les tables d'utilisateurs de bases de données utilisateurs.<br />Svp Vider les tables de données and rectifier tous les problèmes avant de rééssayer.");
 define("LANINS_120", "Vous avez décidé de NE PAS INSTALLER les Tables d'UTILISATEURS. br/><strong>Les Tables d'Utilisateurs n'ont donc pas été créés</strong>");
+*/
 ?>

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_theme.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-10 08:43:18 $
+|     $Revision: 1.5 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -52,4 +52,7 @@ define("TPVLAN_40", "Thème de la zone Admin définie à ");
 define("TPVLAN_41", "Veuillez sélectionner la configuration de style Admin à utiliser");
 define("TPVLAN_42", "Sauvegarder les options admin");
 define("TPVLAN_43", "Options Admin sauvegardées");
+define("TPVLAN_46", "PCLZIP erreur d'extraction:");
+define("TPVLAN_47", "PCLTAR erreur d'extraction: ");
+define("TPVLAN_48", "code:");
 ?>

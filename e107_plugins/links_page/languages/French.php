@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/French.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-04 21:36:01 $
+|     $Revision: 1.6 $
+|     $Date: 2007-02-27 01:57:21 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -214,7 +214,7 @@ define("LCLAN_ITEM_30", "Réordonner");
 define("LCLAN_ITEM_31", "éditer");
 define("LCLAN_ITEM_32", "supprimer");
 define("LCLAN_ITEM_33", "Êtes vous sûr de vouloir supprimer ce lien?");
-define("LCLAN_ITEM_34", "Pas d'icône");
+define("LCLAN_ITEM_34", "Pas d&#39;icône");
 define("LCLAN_ITEM_35", "Gestion des lien personnels");
 define("LCLAN_ITEM_36", "Envoyer");
 define("LCLAN_ITEM_37", "Voir tous les liens");
@@ -292,6 +292,7 @@ define("LAN_LINKS_46", "Sous-catégorie de liens");
 define("LAN_LINKS_47", "Naviguer entre les liens");
 define("LAN_LINKS_48", "-- voir la catégorie --");
 define("LAN_LINKS_49", "");
+define("LAN_LINKS_50", "Vous n'avez pas les permissions requises pour proposer des liens");
 define("LAN_ADMIN_HELP_0", "Aire d'aide des pages de liens ");
 define("LAN_ADMIN_HELP_1", "<i>La page de gestion des catégories de lien affiche toutes les catégories présentes.</i><br /><br /><strong>Liste détaillée</strong><br />Vous voyez une liste de toutes les catégories avec leur icône, nom et la description, les options et les options de tri.<br /><br /><strong>Explication des icônes</strong><br />
 ".LINK_ICON_LINK." : lien vers la catégorie<br /><br />

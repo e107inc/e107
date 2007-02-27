@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/French.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-12-10 08:43:53 $
+|     $Revision: 1.12 $
+|     $Date: 2007-02-27 01:57:34 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -146,8 +146,8 @@ define("LIST_MEMBER_2", "Aucun utilisateur");
 define("LIST_CONTENT_1", "Contenu");
 define("LIST_CONTENT_2", "aucun contenu");
 define("LIST_CONTENT_3", "pas de catégorie de contenu valide");
-define("LIST_CHATBOX_1", "Chatbox");
-define("LIST_CHATBOX_2", "Aucun ajouts chatbox ");
+define("LIST_CHATBOX_1", "".GLOBAL_LAN_CHATBOX_2."");
+define("LIST_CHATBOX_2", "Aucun ajouts ".GLOBAL_LAN_CHATBOX_1." ");
 define("LIST_CALENDAR_1", "Calendrier");
 define("LIST_CALENDAR_2", "Aucun évènement calendrier");
 define("LIST_LINKS_1", "Liens");

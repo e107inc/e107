@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_footer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.4 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("FOOTLAN_3", "Version");
 define("FOOTLAN_3a", "0.7.1");
 define("FOOTLAN_4", "sortie le");
 define("FOOTLAN_4a", "17.01.06");
-define("FOOTLAN_5", "Thème");
+define("FOOTLAN_5", "Thème admin");
 define("FOOTLAN_6", "par");
 define("FOOTLAN_7", "Infos ");
 define("FOOTLAN_8", "Date d'installation");
@@ -28,4 +28,5 @@ define("FOOTLAN_14", "Afficher la documentation");
 define("FOOTLAN_15", "Documentation");
 define("FOOTLAN_16", "Base de données ");
 define("FOOTLAN_17", "Charset");
+define("FOOTLAN_18", "Thème du site");
 ?>

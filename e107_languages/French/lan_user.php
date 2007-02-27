@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("LAN_143", "[caché sur demande]");
 define("LAN_144", "Site Internet");
 define("LAN_145", "Inscrit(e) le");
 define("LAN_146", "Nombre de visites depuis son inscription");
-define("LAN_147", "Messages dans la Chatbox");
+define("LAN_147", "Messages dans l".GLOBAL_LAN_L_PREFIX_CHATBOX.GLOBAL_LAN_CHATBOX_2."");
 define("LAN_148", "Commentaires postés");
 define("LAN_149", "Messages sur le Forum");
 define("LAN_308", "Nom réel");

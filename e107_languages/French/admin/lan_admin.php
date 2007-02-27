@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-12-10 08:43:18 $
+|     $Revision: 1.17 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ define("ADLAN_24", "Téléchargements");
 define("ADLAN_25", "Gérer les téléchargements");
 define("ADLAN_26", "Catégories de téléchargements");
 define("ADLAN_27", "Ajouter/Éditer/Supprimer catégories de téléchargements");
-define("ADLAN_28", "Message de Bienvenue");
+define("ADLAN_28", "Messages de Bienvenue");
 define("ADLAN_29", "Configurer les messages de bienvenue");
 define("ADLAN_30", "Gestionnaire de fichiers");
 define("ADLAN_31", "Gérer/Uploader des fichiers");
@@ -63,8 +63,8 @@ define("ADLAN_52", "Accueil Administration");
 define("ADLAN_53", "Quitter");
 define("ADLAN_54", "Bannières");
 define("ADLAN_55", "Configurer des bannières");
-define("ADLAN_56", "Chatbox");
-define("ADLAN_57", "Configurer la chatbox");
+define("ADLAN_56", "".GLOBAL_LAN_CHATBOX_2."");
+define("ADLAN_57", "Configurer l".GLOBAL_LAN_L_PREFIX_CHATBOX.GLOBAL_LAN_CHATBOX_1."");
 define("ADLAN_58", "Emoticônes");
 define("ADLAN_59", "Configurer les émoticônes");
 define("ADLAN_60", "Page d'accueil");
@@ -115,7 +115,7 @@ define("ADLAN_111", "Utilisateurs inactivés ");
 define("ADLAN_112", "Internautes bannis ");
 define("ADLAN_113", "Messages sur le forum ");
 define("ADLAN_114", "Commentaires ");
-define("ADLAN_115", "Messages (Chatbox) ");
+define("ADLAN_115", "Messages (".GLOBAL_LAN_CHATBOX_2.") ");
 define("ADLAN_116", "Log d'administration ...");
 define("ADLAN_117", "Voir toutes les entrées");
 define("ADLAN_118", "Effacer les entrées");
@@ -152,6 +152,8 @@ define("ADLAN_149", "Alertes Courriel");
 define("ADLAN_150", "Recevoir des alertes par courriel");
 define("ADLAN_151", "Page principale");
 define("ADLAN_152", "Entrer le Code");
+define("ADLAN_153", "Zone d&#39;administration");
+
 define("ADLAN_CL_1", "Paramètres");
 define("ADLAN_CL_2", "Utilisateurs");
 define("ADLAN_CL_3", "Contenus");
@@ -231,6 +233,7 @@ define("LAN_PRESET_CONFIRMSAVE", "Sauvegarder par défaut les valeurs courantes 
 define("LAN_CONFIGURE", "Configurer");
 define("LAN_BACK", "Retour");
 define("LAN_CREDITS", "Crédits");
+define("LAN_NEWVERSION","Nouvelle version disponible");
 
 
 ?>

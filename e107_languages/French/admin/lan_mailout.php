@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_mailout.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:32:32 $
+|     $Revision: 1.11 $
+|     $Date: 2007-02-27 01:57:03 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ define("MAILAN_26", "Différer l'envoi massif de courriel tous les");
 define("MAILAN_27", "courriels");
 define("MAILAN_28", "Durée de la pause");
 define("MAILAN_29", "secondes");
-define("MAILAN_30", "Attention: une pause supérieure à 30 secondes pourraient conduire à une déconnexion et n'est donc pas recommandée");
+define("MAILAN_30", "Attention: une pause supérieure à 30 secondes pourrait conduire à une déconnexion et n'est donc pas recommandée");
 define("MAILAN_31", "Vérification des courriels rebondis");
 define("MAILAN_32", "Adresse courriel");
 define("MAILAN_33", "Réception des courriels ");
