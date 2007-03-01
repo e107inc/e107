@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.110 $
-|		$Date: 2007-01-17 14:04:06 $
+|		$Revision: 1.111 $
+|		$Date: 2007-03-01 09:34:49 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -445,8 +445,6 @@ class content{
 
 			if(!is_object($sql)){ $sql = new db; }
 
-//echo "update content pref : ".$id."<br />";
-
 			//insert default preferences into core
 			if($id == "0"){
 				$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
@@ -456,34 +454,53 @@ class content{
 					$row = $sql -> db_Fetch();
 				}
 
+				//prepare custom tags: use the posted value
+				$cp = $_POST['content_custom_preset_key'];
+
 			//insert category preferences into plugintable
 			}else{
-				$sql -> db_Select($plugintable, "content_pref", "content_id='".intval($id)."' ");
+				//first get the existing prefs and parent
+				$sql -> db_Select($plugintable, "content_pref, content_parent", "content_id='".intval($id)."' ");
 				$row = $sql -> db_Fetch();
 				$current = $eArrayStorage->ReadArray($row['content_pref']);
-				foreach($current as $k => $v){
-					if(isset($qs[0]) && $qs[0] == 'option' ){
+				$currentparent = $row['content_parent'];
+
+				//if we are updating options
+				if(isset($qs[0]) && $qs[0] == 'option' ){
+					//only use the manager prefs from the existing set
+					foreach($current as $k => $v){
 						if( strpos($k, "content_manager_") === 0 || strpos($k, "content_restrict_") === 0 ){
 							$content_pref[$k] = $tp->toDB($v);
 						}
-					}elseif(isset($qs[0]) && ($qs[0] == 'manager' || $qs[0] == 'restrict')){
-						if( strpos($k, "content_") === 0 ){
-							$content_pref[$k] = $tp->toDB($v);
-						}
 					}
+
+					//prepare custom tags: use the posted values
+					$cp = $_POST['content_custom_preset_key'];
+
+				//if we are updating manager
+				}elseif(isset($qs[0]) && ($qs[0] == 'manager' || $qs[0] == 'restrict')){
+					//if this is a top level category we need to keep all existing options
+					if($currentparent=='0'){
+						$content_pref = $current;
+					}
+
+					//prepare custom tags: use the existing content_pref values
+					$cp = $content_pref['content_custom_preset_key'];
 				}
 			}
 
-			//create array of custom preset tags
-			foreach($_POST['content_custom_preset_key'] as $ck => $cv){
+			//parse custom tags and covert them in $_POST values ($cp is derived above)
+			$string = array();
+			foreach($cp as $ck => $cv){
 				if(!empty($cv)){
 					$string[] = $cv;
 				}
 			}
-			$_POST['content_custom_preset_key'] = $string;
+			if(is_array($string) && !empty($string[0])){
+				$_POST['content_custom_preset_key'] = $string;
+			}
 
-			//echo "<pre>"; print_r($_POST); echo "</pre>";
-
+			//convert all $_POST to $content_pref for storage, and renew the existing stored prefs
 			foreach($_POST as $k => $v){
 				if(strpos($k, "content_") === 0){
 					$content_pref[$k] = $tp->toDB($v);
@@ -492,14 +509,18 @@ class content{
 
 			//create new array of preferences
 			$tmp = $eArrayStorage->WriteArray($content_pref);
+
+			//update core table
 			if($id == "0"){
 				$sql -> db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = '$plugintable' ");
+			//update plugin table
 			}else{
 				$sql -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='".intval($id)."' ");
 			}
 
 			return $content_pref;
 		}
+
 
 		function CONTENTREGEXP($var){
 			return "(^|,)(".str_replace(",", "|", $var).")(,|$)";
