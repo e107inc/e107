@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2007-01-13 23:18:39 $
+|		$Revision: 1.5 $
+|		$Date: 2007-03-01 09:32:28 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -492,9 +492,9 @@ function admin_content_config_adminmenu(){
 					unset($var);
 					$var=array();
 					$var['creation']['text']		= CONTENT_ADMIN_MENU_LAN_7;
-					$var['catcreation']['text']		= CONTENT_ADMIN_MENU_LAN_23;
+					//$var['catcreation']['text']		= CONTENT_ADMIN_MENU_LAN_23;
 					$var['submission']['text']		= CONTENT_ADMIN_MENU_LAN_8;
-					$var['paththeme']['text']		= CONTENT_ADMIN_MENU_LAN_9;
+					//$var['paththeme']['text']		= CONTENT_ADMIN_MENU_LAN_9;
 					$var['general']['text']			= CONTENT_ADMIN_MENU_LAN_10;
 					$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
 
