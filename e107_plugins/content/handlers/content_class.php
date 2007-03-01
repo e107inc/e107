@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2007-01-17 14:04:31 $
+|		$Revision: 1.8 $
+|		$Date: 2007-03-01 09:32:28 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -565,7 +565,7 @@ class content{
 					}else{
 						$agc[$row['content_id']] = array($row['content_id'], $row['content_heading']);
 					}
-					$this -> getCategoryTree($row['content_id'], "", $classcheck);
+					$this -> getCategoryTree($row['content_id'], "", $classcheck, $level+1);
 				}
 			}
 			return $agc;

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-15 14:17:15 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-01 09:32:28 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -304,7 +304,7 @@ define("CONTENT_ADMIN_MENU_LAN_3", "Create Category");
 define("CONTENT_ADMIN_MENU_LAN_4", "Submitted Content Items");
 define("CONTENT_ADMIN_MENU_LAN_5", "Category");
 define("CONTENT_ADMIN_MENU_LAN_6", "Options");
-define("CONTENT_ADMIN_MENU_LAN_7", "Admin : Create Item");
+define("CONTENT_ADMIN_MENU_LAN_7", "Admin : Create");
 define("CONTENT_ADMIN_MENU_LAN_8", "Submit Item");
 define("CONTENT_ADMIN_MENU_LAN_9", "Path And Theme");
 define("CONTENT_ADMIN_MENU_LAN_10", "General");
@@ -438,7 +438,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Options:");
 define("CONTENT_ADMIN_OPT_LAN_MENU_2", "Pages:");
 define("CONTENT_ADMIN_OPT_LAN_MENU_3", "Admin : Create Item");
 define("CONTENT_ADMIN_OPT_LAN_MENU_4", "Submit Item");
-define("CONTENT_ADMIN_OPT_LAN_MENU_5", "path locations and theme settings");
+define("CONTENT_ADMIN_OPT_LAN_MENU_5", "Path Locations");
 define("CONTENT_ADMIN_OPT_LAN_MENU_6", "General");
 define("CONTENT_ADMIN_OPT_LAN_MENU_7", "Content Manager");
 define("CONTENT_ADMIN_OPT_LAN_MENU_8", "Menu Properties");
@@ -455,7 +455,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_18", "categories");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "recent items list");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "links to pages");
 define("CONTENT_ADMIN_OPT_LAN_MENU_21", "Admin : Create Category");
-
+define("CONTENT_ADMIN_OPT_LAN_MENU_22", "Theme and Layout");
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "sections");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "choose what will be displayed");
