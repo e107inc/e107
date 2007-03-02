@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-24 09:34:09 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-02 21:13:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -488,10 +488,10 @@ function parse_sub($subInfo)
 		$tmp = explode(".", $subInfo['forum_lastpost_info']);
 		$lp_thread = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tmp[1]}.last'>".IMAGE_post2."</a>";
 		$lp_date = $gen->convert_date($tmp[0], 'forum');
-		$tmp = explode(".", $subInfo['forum_lastpost_user']);
+		$tmp = explode(".", $subInfo['forum_lastpost_user'],2);
 		if($subInfo['user_name'])
 		{
-			$lp_name = "<a href='".e_BASE."user.php?{$tmp[0]}'>{$subInfo['user_name']}</a>";
+			$lp_name = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>{$subInfo['user_name']}</a>";
 		}
 		else
 		{
