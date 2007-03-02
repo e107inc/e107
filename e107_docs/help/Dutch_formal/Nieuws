@@ -1,0 +1,12 @@
+
+Q>	Waar zijn de nieuwscategorieën voor?
+A>	U kunt nieuwsberchten onder verschillende categorieën rangschikken, waardoor ze met een verschillende pictogram worden getoond (als dat is ingesteld). Dat maakt het voor bezoekers makkelijk om over de site te navigeren en het interessante nieuws te vinden.
+
+Q>	Waar is het Uitgebreide tekstveld voor?
+A>	U zult op verschillende site wel eens gezien hebben dat er een korte inleiding staat waarna u via een linkje het hele artikel kunt lezen. U kunt dat doen door de intro in het hoofdveld te plaatsen en het hele artikel in het Uitgebreide tekstveld.
+
+Q>	Waar zijn de activeringsveldjes voor? 
+A>	U kunt instellen dat een bepaald bericht alleen gedurende een bepaalde periode zichtbaar is. Als u niets invult, is het bericht direct zichtbaar.
+
+Q>	Ik heb een nieuwsbericht ingevoerd en e107 zegt 'Nieuws opgeslagen in database' - wordt het nu op de site getoond?
+A>	Het betekent dat de tekst in de database is opgenomen. Als u de tekst niet gedeactiveerd hebt, wordt het bericht ook getoond.
