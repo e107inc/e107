@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-02-26 20:23:39 $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-03 19:40:53 $ 
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,9 @@ class e_bbcode
 
 
 
-  function parseBBCodes($value, $p_ID, $force_lower = 'default')
+// If $bb_strip is TRUE, all bbcodes are stripped. If FALSE, none are stripped.
+// If a comma separated (lower case) list is passed, only the listed codes are stripped (and the rest are processed)
+  function parseBBCodes($value, $p_ID, $force_lower = 'default', $bb_strip = FALSE)
   {
 	global $postID;
 	$postID = $p_ID;
@@ -74,6 +76,12 @@ class e_bbcode
   $result = '';							// Accumulates fully processed text
   $stacktext = '';						// Accumulates text which might be subject to one or more bbcodes
   $nopro = FALSE;						// Blocks processing within [code]...[/code] tags
+
+  $strip_array = array();
+  if (!is_bool($bb_strip))
+  {
+    $strip_array = explode(',',$bb_strip);
+  }
   $pattern = '#^\[(/?)([A-Za-z]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
 		// $matches[0] - same as the input text
 		// $matches[1] - '/' for a closing tag. Otherwise empty string
@@ -99,6 +107,13 @@ class e_bbcode
 		if ($nopro && ($bbword == 'code') && ($matches[1] == '/')) $nopro = FALSE;		// End of code block
 	    if (($bbword) && ($bbword == trim($bbword)) && !$nopro)
 	    {  // Got a code to process here
+		  if (($bb_strip === TRUE) || in_array($bbword,$strip_array))
+		  {
+		    $is_proc = TRUE;		// Just discard this bbcode
+		  }
+		  else
+		  {
+		  
 		  if ($matches[1] == '/')
 		  {  // Closing code to process
 		    $found = FALSE;
@@ -175,6 +190,8 @@ class e_bbcode
 	          $is_proc = TRUE;
 		    }
 	      }
+		  
+		  }
 	    }
 		// Next lines could be deleted - but gives better rejection of 'stray' opening brackets
 		if ((!$is_proc) && (($temp = strrpos($cont,"[")) !== 0)) 
