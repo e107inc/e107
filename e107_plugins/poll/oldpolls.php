@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-02-16 20:48:23 $
+|     $Revision: 1.14 $
+|     $Date: 2007-03-03 19:41:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ if(e_QUERY)
 		$text = "<table style='".USER_WIDTH."'>
 		<tr>
 		<td colspan='2' class='mediumtext' style='text-align:center'>
-		<b>".$tp -> toHTML($poll_title)."</b>
+		<b>".$tp -> toHTML($poll_title,TRUE,'TITLE')."</b>
 		<div class='smalltext'>".POLLAN_35." <a href='".e_BASE."user.php?id.{$user_id}'>".$user_name."</a>.<br /> ".POLLAN_37." ".$start_datestamp." ".POLLAN_38." ".$end_datestamp.".<br />".POLLAN_26.": {$voteTotal}</div>
 		<br />
 
@@ -137,10 +137,12 @@ foreach($oldpollArray as $oldpoll)
 	$from = $gen->convert_date($poll_datestamp, "short");
 	$to = $gen->convert_date($poll_end_datestamp, "short");
 
+	$poll_title = $tp->e_bb->parseBBCodes($poll_title, 0,TRUE,TRUE);		// Strip bbcodes
+	
 	$text .= "<tr>
-	<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?$poll_id'>$poll_title</a></td>
-	<td class='forumheader3' style='width: 15%;'><a href='".e_BASE."user.php?id.$poll_admin_id'>$user_name</a></td>
-	<td class='forumheader3' style='width: 30%;'>$from ".POLLAN_38." $to</td>
+	<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?{$poll_id}'>{$poll_title}</a></td>
+	<td class='forumheader3' style='width: 15%;'><a href='".e_BASE."user.php?id.{$poll_admin_id}'>{$user_name}</a></td>
+	<td class='forumheader3' style='width: 30%;'>{$from} ".POLLAN_38." {$to}</td>
 	</tr>\n";
 }
 
