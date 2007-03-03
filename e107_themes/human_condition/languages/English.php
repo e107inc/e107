@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-21 11:13:49 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-03 19:59:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 

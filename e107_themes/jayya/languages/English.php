@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-10-12 13:46:33 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-03 19:59:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,6 +23,5 @@ define("LAN_THEME_3", "Read the rest...");
 define("LAN_THEME_4", "Trackbacks: ");
 define("LAN_THEME_5", "Posted by ");
 define("LAN_THEME_6", "on ");
-
 
 ?>

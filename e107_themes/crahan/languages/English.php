@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/crahan/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-21 11:49:22 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-03 19:59:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,6 +23,5 @@ define("LAN_THEME_3", "comment(s): ");
 define("LAN_THEME_4", "Read the rest ...");
 define("LAN_THEME_5", "Trackbacks: ");
 define("LAN_THEME_6", "Comment by");
-
 
 ?>
