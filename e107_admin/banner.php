@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-04 17:53:51 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,8 +38,9 @@ if(e_QUERY)
 	list($action, $sub_action, $id) = explode(".", e_QUERY);
 }
 
-$reject = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', '.DS_Store');
-$images = $fl->get_files(e_IMAGE."banners/","",$reject);
+//$reject = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', '.DS_Store');
+//$images = $fl->get_files(e_IMAGE."banners/","",$reject);
+$images = $fl->get_files(e_IMAGE."banners/","","standard");
 
 if (isset($_POST['update_menu'])) {
 
