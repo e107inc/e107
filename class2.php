@@ -1,4 +1,4 @@
-<?php
+﻿﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-02-12 20:04:46 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2007-03-04 21:47:15 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 //
@@ -43,6 +43,7 @@
 // A: Honest global beginning point for processing time
 //
 $eTimingStart = microtime();					// preserve these when destroying globals in step C
+if ( function_exists( 'getrusage' ) ) { $eTimingStartCPU = getrusage(); }
 $oblev_before_start = ob_get_level();
 
 //
@@ -64,7 +65,7 @@ if(function_exists('ini_get')) {
 // Destroy! (if we need to)
 if($register_globals == true){
 	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs|eplug_admin|eTimingStart)|oblev_.*$/', $global)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|_SESSION|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs|eplug_admin|eTimingStart.*|oblev_.*)$/', $global)) {
 			unset($$global);
 		}
 	}
@@ -1017,24 +1018,24 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
   global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
   if ($table == 'core') 
   {
-	if ($row_val == '') 
-	{		// Save old version as a backup first
-	  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
+		if ($row_val == '') 
+		{		// Save old version as a backup first
+		  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
 
-	  // Now save the updated values
-	  // traverse the pref array, with toDB on everything
-	  $_pref = $tp -> toDB($pref, true, true);
-	  // Create the data to be stored
-	  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
-	  ecache::clear('SitePrefs');
-	}
+		  // Now save the updated values
+		  // traverse the pref array, with toDB on everything
+		  $_pref = $tp -> toDB($pref, true, true);
+		  // Create the data to be stored
+		  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
+		  ecache::clear('SitePrefs');
+		}
   }
   else 
   {
-	$_user_pref = $tp -> toDB($user_pref);
-	$tmp=addslashes(serialize($_user_pref));
-	$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=".intval($uid));
-	return $tmp;
+		$_user_pref = $tp -> toDB($user_pref);
+		$tmp=addslashes(serialize($_user_pref));
+		$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=".intval($uid));
+		return $tmp;
   }
 }
 
