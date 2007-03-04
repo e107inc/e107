@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-04 16:59:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 	
@@ -33,7 +33,7 @@ define("IMAGE_new_popular_small", "<img src='".img_path('new_popular_small.png')
 define("IMAGE_nonew_popular_small", "<img src='".img_path('nonew_popular_small.png')."' alt='".FORLAN_14."' title='".FORLAN_14."' style='border:0' />");
 define("IMAGE_sticky", "<img src='".img_path('sticky.png')."' alt='".FORLAN_15."' title='".FORLAN_15."' style='border:0' />");
 define("IMAGE_stickyclosed", "<img src='".img_path('sticky_closed.png')."' alt='".FORLAN_16."' title='".FORLAN_16."' style='border:0' />");
-define("IMAGE_sticky_small", "<img src='".img_path('sticky_small.png')."' alt='".FORLAN_16."' title='".FORLAN_16."' style='border:0' />");
+define("IMAGE_sticky_small", "<img src='".img_path('sticky_small.png')."' alt='".FORLAN_15."' title='".FORLAN_15."' style='border:0' />");
 define("IMAGE_stickyclosed_small", "<img src='".img_path('sticky_closed_small.png')."' alt='".FORLAN_16."' title='".FORLAN_16."' style='border:0' />");
 define("IMAGE_announce", "<img src='".img_path('announce.png')."' alt='".FORLAN_17."' title='".FORLAN_17."' style='border:0' />");
 define("IMAGE_announce_small", "<img src='".img_path('announce_small.png')."' alt='".FORLAN_17."' title='".FORLAN_17."' style='border:0' />");
