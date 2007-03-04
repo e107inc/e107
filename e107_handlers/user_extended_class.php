@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-16 01:43:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 13:53:37 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -505,7 +505,7 @@ class e107_user_extended
 		{
 			$field_name = 'user_'.$field_name;
 		}
-		$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('{$uid}', '')");
+	$sql->db_Select_gen("REPLACE INTO #user_extended (user_extended_id, user_hidden_fields) values ('{$uid}', '')");
 		return $sql->db_Update("user_extended", $field_name." = '{$newvalue}' WHERE user_extended_id = '{$uid}'");
 	}
 
