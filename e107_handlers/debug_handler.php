@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-05 09:24:18 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-04 13:40:33 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -22,8 +22,13 @@
 //
 // MAKING NEW DEBUG DEFS
 // The debug levels are Single Bit Binary Values. i.e, 1,2,4,8,16...
-// In the table below, if you want to define a new value, pick one of
-// the "FILLIN" items and give it the name and definition you need
+// In the table below, if you want to define a new value:
+// - If it is debug info ALL devs will often want, then pick one of
+//   the remaining "FILLIN" items and give it the name and definition you need
+// - If it is a detail item not often used, simply add yours to the end of the
+//   list, multiplying the previous value by 2 to get the the next 'bit' number
+// - In either case, create one or more shortcut/abbreviations in $aDebugShortcuts
+//   to make it easy for dev's to specify the new display item.
 //
 // USING DEBUG DEFINITIONS
 // Since these are Bit Values, **never** test using < or > comparisons. Always
@@ -75,7 +80,8 @@ define('E107_DBG_BBSC',     	(E107_DEBUG_LEVEL &  2048));    // Show BBCode/ Sho
 define('E107_DBG_SC',       	(E107_DEBUG_LEVEL &  4096));    // Dump (inline) SC filenames as used
 define('E107_DBG_ERRBACKTRACE',	(E107_DEBUG_LEVEL &  8192));    // show backtrace for php errors
 define('E107_DBG_DEPRECATED', (E107_DEBUG_LEVEL & 16384));    // Show use of deprecated functions
-define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));   // show ALL php errors (including notices), not just fatal issues
+define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));    // show ALL php errors (including notices), not just fatal issues
+define('E107_DBG_INCLUDES',   (E107_DEBUG_LEVEL & 65536));    // show included file list
 
 class e107_debug {
 
@@ -91,8 +97,8 @@ class e107_debug {
 		'showsql'		=> 2,       // sql basics
 		'counts'		=> 4,       // traffic counters
 
-		'detail'		=> 32767,   // all details
-		'd' 			  => 32767,   // all details
+		'detail'		=> 16740351,   // (0+0xfffff-32768-4096) all details, except notice and inline sc
+		'd' 			  => 16740351,   // all details, except notice and inline sc
 		'time' 			=> 257,     // time details and php errors
 		'sql' 			=> 513,     // sql details and php errors
 		'paths' 		=> 1024,		// dump path strings
@@ -100,9 +106,10 @@ class e107_debug {
 		'sc'			  => 4096,   		// Shortcode paths dumped inline
 		'backtrace' => 8192,		// show backtrace when PHP has errors
 		'deprecated'	=> 16384,   // show if code is using deprecated functions
-		'notice'		=> 32768,   // you REALLY don't want all this, do you?
-		'everything'=> 61439,   //(65535-4096) everything we know, and the rumors too
-		                        // (but shortcode paths removed: inline debug breaks pages!
+		'notice'		=> 32768,   // detailed notice error messages?
+		'inc'       =>  65536,  // include files
+		'everything'=> 16773119,   //(0+0xffffff-4096) 24 bits set, except shortcode paths 
+														// removed: inline debug breaks pages!
 	);
 
 	function e107_debug() {
@@ -138,11 +145,24 @@ class e107_debug {
 				}
 			}
 
-				$this->debug_level = $dVal;
-			}
+			$this->debug_level = $dVal;
 		}
+	}
 
 	function set_error_reporting() {
 	}
 }
+
+// Quick debug message logger
+// Example: e7debug(__FILE__.__LINE__.": myVar is ".print_r($myVar,TRUE));
+function e7debug($message,$TraceLev=1)
+{
+  if (!E107_DEBUG_LEVEL) return;
+	global $db_debug;
+	if (is_object($db_debug))
+	{
+		$db_debug->log($message,$TraceLev);
+	}
+}
+
 ?>
