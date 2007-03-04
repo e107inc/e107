@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Bulgarian/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:35:33 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:14:06 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -15,10 +15,10 @@ define("CONTENT_PLUGIN_LAN_1", "Content Management");
 define("CONTENT_PLUGIN_LAN_2", "A Complete Content Management Section.");
 define("CONTENT_PLUGIN_LAN_3", "Configure Content Management");
 define("CONTENT_PLUGIN_LAN_4", "This plugin is now ready to be used.");
-define("CONTENT_PLUGIN_LAN_5", "Content");
+define("CONTENT_PLUGIN_LAN_5", "Съдържание");
 define("CONTENT_PLUGIN_LAN_6", "Content Management Plugin table structure updated");
 
-define("CONTENT_LATEST_LAN_1", "Submitted Content Items:");
+define("CONTENT_LATEST_LAN_1", "Потребителски статии:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "create content category");
 define("CONTENT_ADMIN_CAT_LAN_1", "edit content category");
@@ -355,7 +355,7 @@ define("CONTENT_ADMIN_SUBMIT_LAN_19", "");
 
 
 
-define("CONTENT_ADMIN_CONVERSION_LAN_0", "content");
+define("CONTENT_ADMIN_CONVERSION_LAN_0", "публикации");
 define("CONTENT_ADMIN_CONVERSION_LAN_1", "review");
 define("CONTENT_ADMIN_CONVERSION_LAN_2", "article");
 define("CONTENT_ADMIN_CONVERSION_LAN_3", "категория");
@@ -420,14 +420,13 @@ define("CONTENT_ADMIN_CONVERSION_LAN_60", "create defaults");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "create new category");
 define("CONTENT_ADMIN_CONVERSION_LAN_62", "Content Management Plugin Version updated to version:");
 define("CONTENT_ADMIN_CONVERSION_LAN_63", "upgrade");
-define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "Content Management Plugin table structure updated");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "Content Management Plugin : content_author updated");
 define("CONTENT_ADMIN_CONVERSION_LAN_66", "Content Management Plugin : content_preferences and menus updated");
 define("CONTENT_ADMIN_CONVERSION_LAN_67", "Content Management Plugin : content_preferences updated");
 define("CONTENT_ADMIN_CONVERSION_LAN_68", "Content Management Plugin : content_theme updated");
 define("CONTENT_ADMIN_CONVERSION_LAN_69", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_70", "");
-
 
 define("CONTENT_ADMIN_OPT_LAN_MENU_1", "Options:");
 define("CONTENT_ADMIN_OPT_LAN_MENU_2", "Pages:");

@@ -11,72 +11,72 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:37:18 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:16:04 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
-define("NLLAN_MENU_CAPTION", "Newsletter");
+define("NLLAN_MENU_CAPTION", "Новинарски Бюлетин");
 
-define("NLLAN_01", "Newsletter");
-define("NLLAN_02", "Provides a quick and easy way to configure and send newsletters");
-define("NLLAN_03", "Configure Newsletters");
-define("NLLAN_04", "The newsletter plugin has been successfuly installed. To configure, return to your main admin page and click on 'Newsletter' in the plugin section.");
-define("NLLAN_05", "No newsletters defined yet");
+define("NLLAN_01", "Новинарски Бюлетин");
+define("NLLAN_02", "Осигурява бърз и лесен начин за настройка и изпращане на новинарски бюлетин");
+define("NLLAN_03", "Настройка на Новинарски Бюлетин");
+define("NLLAN_04", "Новинарският Бюлетин беше инсталиран успешно. За да направите необходимите настройки, върнете се на главната админ страница и кликнете на 'Новинарски Бюлетин' иконата в секцията с модули.");
+define("NLLAN_05", "Все още няма новини");
 
-define("NLLAN_06", "Name");
-define("NLLAN_07", "Subscribers");
-define("NLLAN_08", "Options");
-define("NLLAN_09", "Are you sure you want to delete this newsletter?");
-define("NLLAN_10", "Existing Newsletters");
+define("NLLAN_06", "Име");
+define("NLLAN_07", "Абонирани");
+define("NLLAN_08", "Настройки");
+define("NLLAN_09", "Сигурни ли сте, че искате да изтриете тази новина?");
+define("NLLAN_10", "Новини");
 
-define("NLLAN_11", "No newsletter issues yet");
-define("NLLAN_12", "Issue");
-define("NLLAN_13", "[ Parent ID ] Subject/Title");
-define("NLLAN_14", "Mailed?");
-define("NLLAN_15", "Options");
-define("NLLAN_16", "yes");
-define("NLLAN_17", "Not sent out - click to send");
-define("NLLAN_18", "Are you sure you want to mail this issue to subscribers?");
-define("NLLAN_19", "Are you sure you want to delete this newsletter issue?");
-define("NLLAN_20", "Existing Issues");
-define("NLLAN_21", "Title");
-define("NLLAN_22", "Description");
-define("NLLAN_23", "Header");
-define("NLLAN_24", "Footer");
-define("NLLAN_25", "Update Newsletter");
-define("NLLAN_26", "Create Newsletter");
-define("NLLAN_27", "Newsletter updated in database.");
-define("NLLAN_28", "Newsletter defined and saved in database.");
-define("NLLAN_29", "No newsletters defined yet.");
-define("NLLAN_30", "Newsletter");
-define("NLLAN_31", "Subject / Title");
-define("NLLAN_32", "Issue Number");
-define("NLLAN_33", "Text");
-define("NLLAN_34", "Update Mailing");
-define("NLLAN_35", "Create Mailing");
-define("NLLAN_36", "Update Newsletter Issue");
-define("NLLAN_37", "Create Newsletter Issue");
-define("NLLAN_38", "Newsletter updated in database.");
-define("NLLAN_39", "Newsletter issue saved in database - to send out, click the 'Release Issue' button in the Options menu.");
-define("NLLAN_40", "Mailout completed - issue sent to ");
+define("NLLAN_11", "Все още няма публикувани новини");
+define("NLLAN_12", "Публикуване");
+define("NLLAN_13", "[ Parent ID ] Относно/Заглавие");
+define("NLLAN_14", "Емайл?");
+define("NLLAN_15", "Настройки");
+define("NLLAN_16", "да");
+define("NLLAN_17", "Не е изпратено - кликни за изпращане");
+define("NLLAN_18", "Сигурни ли сте че искате да изпратите емайли с тази новина до абонираните?");
+define("NLLAN_19", "Сигурни ли сте че искате да изтриете тази новина?");
+define("NLLAN_20", "Новини");
+define("NLLAN_21", "Заглавие");
+define("NLLAN_22", "Описание");
+define("NLLAN_23", "Съобщение");
+define("NLLAN_24", "Долна част на съобщението");
+define("NLLAN_25", "Обнови новината");
+define("NLLAN_26", "Създай новина");
+define("NLLAN_27", "Новината е обновена в БД.");
+define("NLLAN_28", "Новината е записана в БД.");
+define("NLLAN_29", "Няма избрани новини.");
+define("NLLAN_30", "Новинарски бюлетин");
+define("NLLAN_31", "Относно / Заглавие");
+define("NLLAN_32", "Новина номер");
+define("NLLAN_33", "Текст");
+define("NLLAN_34", "Обнови Листата с Емайлите");
+define("NLLAN_35", "Създай Листа с Емайли");
+define("NLLAN_36", "Обнови новината");
+define("NLLAN_37", "Създай новина");
+define("NLLAN_38", "Новината е запазена в БД.");
+define("NLLAN_39", "Новината е запазена в БД - За да я изпратите кликнете на 'Release Issue' бутона в менюто с настройките.");
+define("NLLAN_40", "Новината е изпратена ");
 
-define("NLLAN_41", " subscriber(s).");
-define("NLLAN_42", "Newsletter deleted.");
-define("NLLAN_43", "Newsletter issue deleted.");
+define("NLLAN_41", " абонирани.");
+define("NLLAN_42", "Новината е изтрита.");
+define("NLLAN_43", "Новината е изтрита.");
 
-define("NLLAN_44", "Newsletter Front Page");
-define("NLLAN_45", "Create Newsletter");
-define("NLLAN_46", "Create mailing");
-define("NLLAN_47", "Newsletter Options");
+define("NLLAN_44", "Новинарски бюлетин - главна страница");
+define("NLLAN_45", "Създай новина");
+define("NLLAN_46", "Създай майл листа");
+define("NLLAN_47", "Новини Настройки");
 
-define("NLLAN_48", "you are subscribed to this newsletter - if you wish to un-subscribe please click the button below.");
-define("NLLAN_49", "Are you sure you want to un-subscribe from this newsletter?");
-define("NLLAN_50", "Click button to subscribe ( your subscription address is");
-define("NLLAN_51", "Unsubscribe");
-define("NLLAN_52", "Subscribe");
-define("NLLAN_53", "Are you sure you want to subscribe to this newsletter?");
+define("NLLAN_48", "вие сте абониран за тези новини - ако желаете да се откажете от абонамента  моля кликнете от долу.");
+define("NLLAN_49", "Сигурни ли сте че желаете да се отрегистрирате от тези новини?");
+define("NLLAN_50", "Натиснете бутона за абониране ( адреса ви за абониране е ");
+define("NLLAN_51", "Отрегистриране");
+define("NLLAN_52", "Абонамент");
+define("NLLAN_53", "Сигурни ли сте че желаете да се абонирате за тези новини?");
 
 define("NLLAN_54", "Изпращане");
 ?>

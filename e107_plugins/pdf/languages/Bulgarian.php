@@ -8,36 +8,36 @@
 |     Encoding: utf-8  
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pdf/languages/Bulgarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-29 15:37:45 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-04 22:16:33 $
 |     $Author: secretr $
 +-----------------------------------------------------------------------------+
 */
 
 define("PDF_PLUGIN_LAN_1", "PDF");
-define("PDF_PLUGIN_LAN_2", "PDF creation support");
+define("PDF_PLUGIN_LAN_2", "PDF поддръжка");
 define("PDF_PLUGIN_LAN_3", "PDF");
-define("PDF_PLUGIN_LAN_4", "This plugin is now ready to be used.");
+define("PDF_PLUGIN_LAN_4", "Този плъгин е готов за използване.");
 
 define("PDF_LAN_1", "PDF");
-define("PDF_LAN_2", "PDF preferences");
-define("PDF_LAN_3", "enabled");
-define("PDF_LAN_4", "disabled");
-define("PDF_LAN_5", "page margin left");
-define("PDF_LAN_6", "page margin right");
-define("PDF_LAN_7", "page margin top");
-define("PDF_LAN_8", "font family");
-define("PDF_LAN_9", "font size default");
-define("PDF_LAN_10", "font size sitename");
-define("PDF_LAN_11", "font size page url");
-define("PDF_LAN_12", "font size page number");
-define("PDF_LAN_13", "show logo on pdf?");
-define("PDF_LAN_14", "show sitename on pdf?");
-define("PDF_LAN_15", "show creator page url on pdf?");
-define("PDF_LAN_16", "show page numbers on pdf?");
-define("PDF_LAN_17", "update");
-define("PDF_LAN_18", "PDF preferences succesfully updated");
-define("PDF_LAN_19", "Page");
-define("PDF_LAN_20", "error reporting");
+define("PDF_LAN_2", "PDF настройки");
+define("PDF_LAN_3", "включено");
+define("PDF_LAN_4", "изключено");
+define("PDF_LAN_5", "страницата от ляво");
+define("PDF_LAN_6", "страницата от дясно");
+define("PDF_LAN_7", "страницата горе");
+define("PDF_LAN_8", "вид на шрифта");
+define("PDF_LAN_9", "размер на шрифта по подразбиране");
+define("PDF_LAN_10", "размер на шрифта на името на сайта");
+define("PDF_LAN_11", "размер на шрифта на url на страницата");
+define("PDF_LAN_12", "размер на шрифта на номер на страницата");
+define("PDF_LAN_13", "да покаже ли лого в pdf?");
+define("PDF_LAN_14", "да покаже ли името на сайта в pdf?");
+define("PDF_LAN_15", "да покаже ли автора на сайта url в pdf?");
+define("PDF_LAN_16", "да покаже ли номера на страницата в pdf?");
+define("PDF_LAN_17", "обнови");
+define("PDF_LAN_18", "PDF настройките са запазени успешно");
+define("PDF_LAN_19", "Страница");
+define("PDF_LAN_20", "рапорт за грешки");
 
 ?>

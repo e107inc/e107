@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:37:58 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:16:48 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
 define("POLL_ADLAN01", "Анкета");
-define("POLL_ADLAN02", "The poll plugin allows you to define polls in either a menu or forum post.");
+define("POLL_ADLAN02", "Модула Анкета ви позволява да публикувате анкети на сайта ви.");
 define("POLL_ADLAN03", "Настройка на модул Анкети");
-define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remeber to activate the menu item from your menus page.");
+define("POLL_ADLAN04", "Модула Анкета беше инсталиран успешно. За да добавите анкета, кликнете на иконата на Анкета в секцията модули на главната админ страница.");
 
 define("POLLAN_MENU_CAPTION", "Анкета");
 
@@ -41,8 +41,8 @@ define("POLLAN_14", "при кликане на линка за преглед �
 define("POLLAN_15", "Позволено да се гласува от");
 define("POLLAN_16", "Метод на записване на гласувалите");
 define("POLLAN_17", "cookie");
-define("POLLAN_18", "IP address");
-define("POLLAN_19", "UserID (only members can vote)");
+define("POLLAN_18", "IP адрес");
+define("POLLAN_19", "UserID (само потребители могат да гласуват)");
 define("POLLAN_20", "Позволете анкетите да се коментират?");
 define("POLLAN_21", "Прегледай отново");
 define("POLLAN_22", "Обнови анкетата");

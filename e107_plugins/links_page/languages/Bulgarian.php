@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:36:35 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:15:09 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -133,7 +133,7 @@ define("LCLAN_OPT_87", "show amount of links");
 define("LCLAN_ADMIN_1", "обнови");
 define("LCLAN_ADMIN_2", "Линка е запазен в базата данни.");
 define("LCLAN_ADMIN_3", "Линка е обновен в базата данни.");
-define("LCLAN_ADMIN_4", "Категорията Линкове е заназена");
+define("LCLAN_ADMIN_4", "Категорията Линкове е записана");
 define("LCLAN_ADMIN_5", "Категорията Линкове е обновена");
 define("LCLAN_ADMIN_6", "Настройките са запазени");
 define("LCLAN_ADMIN_7", "иконата на линка е добавена успешно!");
@@ -233,7 +233,7 @@ define("LCLAN_ITEM_35", "manage personal links");
 define("LCLAN_ITEM_36", "go");
 define("LCLAN_ITEM_37", "виж всички линкове");
 define("LCLAN_ITEM_38", "Всички линкове");
-define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_39", "Рейтинг");
 
 define("LCLAN_ADMINMENU_1", "Настройки на Линкове");
 define("LCLAN_ADMINMENU_2", "Управление на категориите");
@@ -308,9 +308,10 @@ define("LAN_LINKS_43", "виж всички категории");
 define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Категории Линкове");
 define("LAN_LINKS_46", "Подкатегории Линкове");
-define("LAN_LINKS_47", "");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_47", "линк навигатор...");
+define("LAN_LINKS_48", "-- категория --");
 define("LAN_LINKS_49", "");
+define("LAN_LINKS_50", "Нямате достатъчно права за качване на линк");
 
 define("LAN_ADMIN_HELP_0", "linkspage help area");
 

@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_newforumposts_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:36:04 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:14:36 $
 |     $Author: secretr $
 |     $Превод:
 |     $e107BG Team

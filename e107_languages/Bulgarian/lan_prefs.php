@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-04 21:39:35 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 22:09:38 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

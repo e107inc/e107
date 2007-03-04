@@ -4,7 +4,7 @@ define("NFPM_LAN_1", "Тема");
 define("NFPM_LAN_2", "Автор");
 define("NFPM_LAN_3", "Преглеждани");
 define("NFPM_LAN_4", "Отговори");
-define("NFPM_LAN_5", "Последен отговот");
+define("NFPM_LAN_5", "Последен отговор");
 define("NFPM_LAN_6", "Теми");
 define("NFPM_LAN_7", "от");
 

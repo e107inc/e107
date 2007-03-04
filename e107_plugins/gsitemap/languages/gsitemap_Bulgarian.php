@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/gsitemap/languages/gsitemap_Bulgarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-29 15:36:14 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-04 22:14:46 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -22,40 +22,40 @@ define("GSLAN_2", "Добавяне?");
 define("GSLAN_3", "Вид");
 define("GSLAN_4", "Име");
 define("GSLAN_5", "Url");
-define("GSLAN_6", "Tick links to mark them for import ...");
-define("GSLAN_7", "Import Links");
-define("GSLAN_8", "Import with:");
-define("GSLAN_9", "Priority");
-define("GSLAN_10", "Frequency");
-define("GSLAN_11", "always");
-define("GSLAN_12", "hourly");
-define("GSLAN_13", "daily");
-define("GSLAN_14", "weekly");
-define("GSLAN_15", "monthly");
-define("GSLAN_16", "yearly");
-define("GSLAN_17", "never");
-define("GSLAN_18", "Import ticked links");
-define("GSLAN_19", "Google Sitemap");
-define("GSLAN_20", "Listing");
-define("GSLAN_21", "Instructions");
-define("GSLAN_22", "Create New Entry");
-define("GSLAN_23", "Import");
-define("GSLAN_24", "Google Sitemap Entries");
-define("GSLAN_25", "Name");
+define("GSLAN_6", "Поставете отметка за да го маркирате за импорт ...");
+define("GSLAN_7", "Импорт на линкове");
+define("GSLAN_8", "Импорт със:");
+define("GSLAN_9", "Приоритет");
+define("GSLAN_10", "Честота");
+define("GSLAN_11", "винаги");
+define("GSLAN_12", "по часово");
+define("GSLAN_13", "дневно");
+define("GSLAN_14", "седмично");
+define("GSLAN_15", "месечно");
+define("GSLAN_16", "годишно");
+define("GSLAN_17", "никога");
+define("GSLAN_18", "Инпорт на маркираните линкове");
+define("GSLAN_19", "Гугъл Sitemap");
+define("GSLAN_20", "Списък");
+define("GSLAN_21", "Инструкции");
+define("GSLAN_22", "Създай нов линк");
+define("GSLAN_23", "Импорт");
+define("GSLAN_24", "Google Sitemap заявки");
+define("GSLAN_25", "Име");
 define("GSLAN_26", "URL");
-define("GSLAN_27", "Lastmod");
-define("GSLAN_28", "Freq.");
-define("GSLAN_29", "Google Sitemap Configuration");
-define("GSLAN_30", "Display Order");
-define("GSLAN_31", "Visible to");
-define("GSLAN_32", "How to use Google Sitemaps");
-define("GSLAN_33", "GSiteMap Instructions");
-define("GSLAN_34", "First, create the links you wish to have listed in your sitemap. You can import most of your links by clicking the 'Import' button on the right");
-define("GSLAN_35", "If you've chosen to import your links, click 'Import' and then check the links you wish to import");
-define("GSLAN_36", "You can also enter individual links manually by clicking 'Create New Entry'");
-define("GSLAN_37", "Once you have some entries, go to <a href='https://www.google.com/webmasters/sitemaps/stats'>https://www.google.com/webmasters/sitemaps/stats</a> and enter the following URL -> <b>".SITEURL."gsitemap.php</b> - if this url doesn't look right to you, please make sure your site url is correct in admin -> preferences");
-define("GSLAN_38", "For more information on Google Sitemap protocol, go to <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>.");
-define("GSLAN_39", "No links in sitemap - import sitelinks?");
-define("GSLAN_40", "Google Sitemap Entries");
+define("GSLAN_27", "Последна промяна");
+define("GSLAN_28", "Честота");
+define("GSLAN_29", "Гугъл Sitemap Настройки");
+define("GSLAN_30", "Покажи по");
+define("GSLAN_31", "Видими за");
+define("GSLAN_32", "Как да използвам Гугъл Sitemaps");
+define("GSLAN_33", "GSiteMap Инструкции");
+define("GSLAN_34", "Първо, създайте линковете които искате да са в картата на сайта ви. Можете да импортирате вашите линкове като кликнете на 'Импорт' бутона от дясно");
+define("GSLAN_35", "Ако сте избрали линковете си , кликнете на 'Импорт' и поставете отметка на линковете които искате да импортирате");
+define("GSLAN_36", "Можете да въвеждате също така и индивидуални линкове ръчно кликвайки върху 'Създай нов линк'");
+define("GSLAN_37", "След като вече имате въведени и избрани линковете, вървете в <a href='https://www.google.com/webmasters/sitemaps/stats'>https://www.google.com/webmasters/sitemaps/stats</a> и въведете следните URL -> <b>".SITEURL."gsitemap.php</b> - ако тези линкови не ви изглеждат правилните, моля убедете се че сте въвели вашият URL на сайта правилно в администрация -> настройки (admin -> preferences)");
+define("GSLAN_38", "За по вече информация относно Гугъл Sitemap протокола, вървете на <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>.");
+define("GSLAN_39", "Няма линкове в картата на сайта - да импортирам ли сайт линкове?");
+define("GSLAN_40", "Гугъл Sitemap Линкове");
 
 ?>

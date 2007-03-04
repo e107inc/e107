@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/help/search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-04 21:39:35 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:09:38 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

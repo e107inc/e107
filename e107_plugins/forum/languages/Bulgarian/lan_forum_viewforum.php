@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Bulgarian/lan_forum_viewforum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:36:04 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:14:36 $
 |     $Author: secretr $
 |     $Превод:
 |     $e107BG Team
@@ -29,8 +29,8 @@ define("LAN_80", " няма нови отговори");
 define("LAN_81", "Затворена тема");
 define("LAN_180", "Търси");
 define("LAN_199", "Има непрочетени теми");
-define("LAN_202", "Ограничена");
-define("LAN_203", "Ограничена/Затворена");
+define("LAN_202", "Важна");
+define("LAN_203", "Важна/Затворена");
 define("LAN_204", "Вие <b>можете</b> да стартирате нови теми");
 define("LAN_205", "Вие <b>не можете</b> да стартирате нови теми");
 define("LAN_206", "Вие <b>можете</b> да пускате мнения");
@@ -45,10 +45,10 @@ define("LAN_396", "Известие");
     
 define("LAN_397", "Този форум е само за четене");
     
-define("LAN_398", "Магни ограничението на тази тема");
+define("LAN_398", "Премахване на статус &quot;Важно&quot; от темата");
 define("LAN_399", "Заключи темата");
 define("LAN_400", "Отключи темата");
-define("LAN_401", "Ограничи темата");
+define("LAN_401", "Добавяне на статус &quot;Важно&quot; за темата");
 define("LAN_402", "Премести темата");
 define("LAN_403", "Иди на форум");
 define("LAN_404", "Този форум се редактира от");
@@ -73,8 +73,8 @@ define("LAN_435", "Изтриване на Тема");
 //v.617
 define("FORLAN_CLOSE", "Темата е затворена.");
 define("FORLAN_OPEN", "Темата е повторно отворена.");
-define("FORLAN_STICK", "Темата е направена ограничена.");
-define("FORLAN_UNSTICK", "Темата вече не е ограничена.");
+define("FORLAN_STICK", "Нов статус на темата - важна");
+define("FORLAN_UNSTICK", "Статусът на темата е премахнат");
 define("FORLAN_6", "Темата е изтрита");
 define("FORLAN_7", "отговорите са изтрити");
 define("FORLAN_8", "тук");

@@ -11,80 +11,80 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:37:11 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:15:54 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
 
-define("NFLAN_01", "Newsfeeds");
-define("NFLAN_02", "This plugin will retrieve rss feeds from other websites and display them according to your preferences");
-define("NFLAN_03", "Configure newsfeeds");
-define("NFLAN_04", "Newsfeeds plugin has been successfully installed. To add newsfeeds and configure, return to the main admin page and click on the newsfeeds icon in the plugin section.");
-define("NFLAN_05", "Edit");
-define("NFLAN_06", "Delete");
-define("NFLAN_07", "Existing Newsfeeds");
-define("NFLAN_08", "Newsfeeds front page");
-define("NFLAN_09", "Create newsfeed");
-define("NFLAN_10", "URL to rss feed");
-define("NFLAN_11", "Path to image");
-define("NFLAN_12", "Activation");
-define("NFLAN_13", "Nowhere (inactive)");
-define("NFLAN_14", "In menu only");
-define("NFLAN_15", "Create Newsfeed");
-define("NFLAN_16", "Update Newsfeed");
-define("NFLAN_17", "enter 'default' in box to use the image defined in the feed, to use your own image enter full path, leave blank for no image.");
-define("NFLAN_18", "Update interval in seconds");
-define("NFLAN_19", "ie, 3600: newsfeed will update every hour");
-define("NFLAN_20", "On newsfeed main page only");
-define("NFLAN_21", "In both menu and newsfeed page");
-define("NFLAN_22", "choose where you want the newsfeed displayed");
-define("NFLAN_23", "Newsfeed added to database.");
-define("NFLAN_24", "Required field(s) left blank.");
-define("NFLAN_25", "Newsfeed updated in database.");
-define("NFLAN_26", "Update Interval");
-define("NFLAN_27", "Options");
+define("NFLAN_01", "RSS Новини от други сайтове");
+define("NFLAN_02", "Този плъгин взема rss новини от други сайтове и ги показва на сайта ви според настройките ви");
+define("NFLAN_03", "Настройка на RSS новините от други сайтове");
+define("NFLAN_04", "Newsfeeds модула беше инсталиран успешно. За да добавите новини от други сайтове и да настроите модула, върнете се в главната админ страница и кликнете върху newsfeeds (RSS Новини от други сайтове) иконата в секцията с модули.");
+define("NFLAN_05", "Редактирай");
+define("NFLAN_06", "Изтрий");
+define("NFLAN_07", "Съществуващи фийдове");
+define("NFLAN_08", "Главна страница");
+define("NFLAN_09", "Създай RSS фийд");
+define("NFLAN_10", "URL до rss фийда");
+define("NFLAN_11", "Път до снимката");
+define("NFLAN_12", "Активиране");
+define("NFLAN_13", "Никъде (неактивен)");
+define("NFLAN_14", "Само в менюто");
+define("NFLAN_15", "Създай RSS фийд");
+define("NFLAN_16", "Обнови RSS фийд");
+define("NFLAN_17", "въведи 'по подразбиране' в кутийката за да използвате оригиналната снимка към RSS фийд, за да използвате ваша снимка въведете пълният път до нея, оставете празно ако не желаете снимка.");
+define("NFLAN_18", "Интервал за обновяване в секунди");
+define("NFLAN_19", "ie, 3600: RSS новината ще се обновява на всеки час");
+define("NFLAN_20", "Само на главната страница");
+define("NFLAN_21", "В двете менюта и RSS фийд страницата");
+define("NFLAN_22", "посочете къде искате RSS новините да се показват");
+define("NFLAN_23", "RSS фийда е добавен в дазата данни.");
+define("NFLAN_24", "Задължителни полета са празни.");
+define("NFLAN_25", "RSS фийд е обновен в БД.");
+define("NFLAN_26", "Интервал на обновяване");
+define("NFLAN_27", "Настройки");
 define("NFLAN_28", "URL");
-define("NFLAN_29", "Available newsfeeds");
-define("NFLAN_30", "Feed name");
-define("NFLAN_31", "Back to newsfeed list");
-define("NFLAN_32", "No feed with that identification number can be found.");
-define("NFLAN_33", "Date published: ");
-define("NFLAN_34", "not known");
-define("NFLAN_35", "posted by ");
-define("NFLAN_36", "Description");
-define("NFLAN_37", "short description of feed, enter 'default' to use the description defined in the feed");
-define("NFLAN_38", "Headlines");
-define("NFLAN_39", "Details");
-define("NFLAN_40", "Newsfeed deleted");
-define("NFLAN_41", "No newsfeeds defined yet");
+define("NFLAN_29", "Налични RSS фийдове");
+define("NFLAN_30", "Име на фийд");
+define("NFLAN_31", "Обратно в листата с фийдове");
+define("NFLAN_32", "Няма намерен фийд с този номер.");
+define("NFLAN_33", "Дата на публикуване: ");
+define("NFLAN_34", "не се знае");
+define("NFLAN_35", "публикувано от ");
+define("NFLAN_36", "Описание");
+define("NFLAN_37", "кратко описание на RSS фийда, въведете 'default' за да използвате описанието което е във фийда");
+define("NFLAN_38", "Заглавие");
+define("NFLAN_39", "Детайли");
+define("NFLAN_40", "RSS фийда е изтрит");
+define("NFLAN_41", "Все още няма RSS фийдове");
 
-define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
-	The identifying name of the feed, can be anything you like.
+define("NFLAN_42", "<b>&raquo;</b> <u>RSS фийд Име:</u>
+	Името на RSS фийда може да бъде каквото пожелаете.
 	<br /><br />
-	<b>&raquo;</b> <u>URL to rss feed:</u>
-	The address of the rss feed
+	<b>&raquo;</b> <u>URL до rss фийд:</u>
+	Адреса на rss фийда
 	<br /><br />
-	<b>&raquo;</b> <u>Path to image:</u>
-	If the feed has an image defined in it, enter 'default' to use it. To use your own image, enter the full path to it. Leave blank to use no image at all.
+	<b>&raquo;</b> <u>Път до снимката:</u>
+	Ако фийда има снимка към него, въведете 'default' за да я използвате. За да използвате ваша снимка, въведете пълният път до нея. Оставете празно ако не желаете да има снимка.
 	<br /><br />
-	<b>&raquo;</b> <u>Description:</u>
-	Enter a short description of the feed, or 'default' to use the description defined in the feed (if there is one).
+	<b>&raquo;</b> <u>Описание:</u>
+	Въведете кратко описание на RSS фийда,или въведете 'default' за да използвате описанието което е във фийда.
 	<br /><br />
-	<b>&raquo;</b> <u>Update interval in seconds:</u>
-	The amount of seconds that elapse before the feed is updated, for example, 1800: 30 minutes, 3600: an hour.
+	<b>&raquo;</b> <u>Интервал на обновяване в секунди:</u>
+	Сумата от секунди преди фийда да се обнови, например, 1800: 30 минути, 3600: един час.
 	<br /><br />
-	<b>&raquo;</b> <u>Activation:</u>
-	where you want the feed results to be displayed, to see menu feeds you will need to activate the newsfeeds menu on the <a href='".e_ADMIN."menus.php'>menus page</a>.
-	<br /><br />For a good list of available feeds, see <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> or <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
-define("NFLAN_43", "Newsfeed help");
-define("NFLAN_44", "click to view");
+	<b>&raquo;</b> <u>Активиране:</u>
+	къде желаете да се показват rss новините ви, за да видите менюто с фийдове трябва да го активирате от <a href='".e_ADMIN."menus.php'>менюто</a>.
+	<br /><br />За добра листа с налични фийдове, можете да проверите <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> или <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
+define("NFLAN_43", "RSS фийд помощ");
+define("NFLAN_44", "кликни за преглед");
 
-define("NFLAN_45", "Number of items to show in menu");
-define("NFLAN_46", "Number of items to show on main page");
-define("NFLAN_47", "0 or blank to show all");
+define("NFLAN_45", "Брой на новините в менюто");
+define("NFLAN_46", "Брой на новините показващи се на главната страница");
+define("NFLAN_47", "0 или празно за да показва всички");
 
-define("NFLAN_48", "Unable to save raw data in database.");
-define("NFLAN_49", "Unable to unserialize rss data - uses non-standard syntax");
+define("NFLAN_48", "Неуспех при записване на данните в БД.");
+define("NFLAN_49", "Неуспех при обновяване на rss данните - използва се нестандартен синтаксис");
 ?>

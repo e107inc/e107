@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:37:01 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:15:40 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ define("LOGIN_MENU_L6", "Помни ме");
 define("LOGIN_MENU_L7", "Неразпознато е уникално потребителско id (възможно е повредено cookie).<br />Моля <a href=\"".e_BASE."index.php?logout\">натиснете тук</a> за унищожаване на cookie.");
 define("LOGIN_MENU_L8", "Изход");
 define("LOGIN_MENU_L9", "Грешка при влизане");
-define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.");
+define("LOGIN_MENU_L10", "Включено е Затваряне за обновяване на сайта - това ще рече, че нормалните потребители на сайта ще бъдат пренасочвани към sitedown.php. За да изключите обновяването вървете в админ панела/Затваряне за обновяване.");
 define("LOGIN_MENU_L11", "Администриране");
 define("LOGIN_MENU_L12", "Настройки");
 define("LOGIN_MENU_L13", "Профил");

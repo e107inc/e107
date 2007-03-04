@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_menu/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:37:30 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:16:19 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,6 @@ define("ONLINE_L3", "На тази странница: ");
 define("ONLINE_L4", "Онлайн");
 define("ONLINE_L5", "Регистрирани");
 define("ONLINE_L6", "най-новият");
-//define("TRACKING_MESSAGE", (ADMIN ? "<br /><br /><span style='font-weight: bold'>Online user tracking is currently disabled, please enable it <a href='".e_ADMIN."users.php?options'>here</a></span><br />" : ""));
-define("TRACKING_MESSAGE", "Online user tracking is currently disabled, please enable it <a href='".e_ADMIN."users.php?options'>here</a></span><br />");
+//define("TRACKING_MESSAGE", (ADMIN ? "<br /><br /><span style='font-weight: bold'>Проследяване на потребителя е изключено, моля включете го от <a href='".e_ADMIN."users.php?options'>тук</a></span><br />" : ""));
+define("TRACKING_MESSAGE", "Проследяване на потребителя е изключено, моля включете го от <a href='".e_ADMIN."users.php?options'> тук</a></span><br />");
 ?>

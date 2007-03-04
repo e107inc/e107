@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:35:51 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:14:27 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
-define("FBLAN_01", "Feature Box");
-define("FBLAN_02", "This plugin allows you to display a box above your news items with features / whatever you like in it. The messages can either be revolved randomly or dynamically faded.");
-define("FBLAN_03", "Configure feature box");
-define("FBLAN_04", "Feature Box plugin has been successfully installed. To add messages and configure, return to the main admin page and click on the feature box icon in the plugin section.");
+define("FBLAN_01", "Новинарска кутия");
+define("FBLAN_02", "Този модул ви позволява да поставите кутия кратки новини / където пожелаете. Съобщенията могат да се сменят произволно или под определен ред.");
+define("FBLAN_03", "Настройки на Новинарска кутия");
+define("FBLAN_04", "'Новинарска кутия' модула беше инсталиран успешно. За да добавите съобщения и за настройки, върнете се на заглавната админ страница и кликнете върху 'Новинарска кутия' иконата в секцията с модули.");
 define("FBLAN_05", "Все още няма съобщения");
 define("FBLAN_06", "Съществуващи съобщения");
 define("FBLAN_07", "Заглавие");
@@ -39,9 +39,9 @@ define("FBLAN_19", "Възможности");
 define("FBLAN_20", "Редактиране");
 define("FBLAN_21", "Изтриване");
 define("FBLAN_22", "Позиция");
-define("FBLAN_23", "In theme box");
-define("FBLAN_24", "Plain");
-define("FBLAN_25", "Template");
-define("FBLAN_26", "you can use a different template for each message, add templates to e107_plugins/featurebox/templates/ folder");
+define("FBLAN_23", "В прозореца");
+define("FBLAN_24", "Празно");
+define("FBLAN_25", "Шаблон");
+define("FBLAN_26", "можете да използвате различен шаблон за всяко съобщение, добавете шаблони във e107_plugins/featurebox/templates/ папката");
 
 ?>

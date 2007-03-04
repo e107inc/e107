@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Bulgarian.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:36:54 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 22:15:33 $
 |     $Author: secretr $
 |     $Превод:
 |     $e107BG Team
@@ -22,8 +22,8 @@
 
 define("PAGE_NAME", "Статистика на сайта");
 	
-define("ADSTAT_L1", "This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.");
-define("ADSTAT_L2", "The statistics logger has been successfully installed. To convert your existing stats to the new system, please <a href='".e_PLUGIN."log/update_routine.php'>click here to run update routine</a>.");
+define("ADSTAT_L1", "Този плъгин записва всички визити на сайта ви, и изгражда детайлна статистика базирана на взетата информация.");
+define("ADSTAT_L2", "Статистиката за сайта ви беше успешно инсталирана. За да конвертирате съществуваща статистика за нова система, моля <a href='".e_PLUGIN."log/update_routine.php'>кликнете тук за да стартирате обновяванена статистиката</a>.");
 define("ADSTAT_L3", "Статистика на сайта");
 define("ADSTAT_L4", "Нямате права да видите тази странница.");
 define("ADSTAT_L5", "The features on this page have been disabled.");
@@ -52,15 +52,15 @@ define("ADSTAT_L27", "Операционни системи");
 define("ADSTAT_L28", "Страни / Домейни");
 define("ADSTAT_L29", "Разделителна способност на екрана");
 define("ADSTAT_L30", "Препратени от сайт");
-define("ADSTAT_L31", "Search Engine Query Strings");
-define("ADSTAT_L32", "Referred from");
+define("ADSTAT_L31", "Търсещи машини Куери Стрингове");
+define("ADSTAT_L32", "Препратено от");
 define("ADSTAT_L33", "Визити последно от");
 define("ADSTAT_L34", "Посещения");
 define("ADSTAT_L35", "Уникални визити последно от");
 define("ADSTAT_L36", "дни на странницата");
 define("ADSTAT_L37", "Посещения по месеци");
-define("ADSTAT_L38", "Unique visits by month");
-define("ADSTAT_L39", "remove this entry");
+define("ADSTAT_L38", "Уникални визити на месец");
+define("ADSTAT_L39", "изтрий тези данни");
 define("ADSTAT_L40", "дни");
 define("ADSTAT_L41", "Грешка");
 

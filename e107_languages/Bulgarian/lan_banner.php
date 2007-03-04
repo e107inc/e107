@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_banner.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-03-04 21:39:35 $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-04 22:09:38 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
