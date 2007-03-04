@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_footer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:33:55 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -26,4 +26,5 @@ define("FOOTLAN_14", "Покажи Документация");
 define("FOOTLAN_15", "Документация");
 define("FOOTLAN_16", "База Данни");
 define("FOOTLAN_17", "Чарсет");
+define("FOOTLAN_18", "Тема на сайта");
 ?>

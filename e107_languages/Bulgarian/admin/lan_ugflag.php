@@ -4,17 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_ugflag.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-24 16:35:23 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("UGFLAN_1", "maintenance setting updated");
-define("UGFLAN_2", "Activate maintenance flag");
-define("UGFLAN_3", "Update Maintenance Setting");
-define("UGFLAN_4", "Maintenance Setting");
+define("UGFLAN_1", "Настройките за обновяване са записани");
+define("UGFLAN_2", "Затвори сайта за обновяване");
+define("UGFLAN_3", "Актуализиране на настройките");
+define("UGFLAN_4", "Настройки за обновяване");
 
-define("UGFLAN_5", "Text to display when site down");
-define("UGFLAN_6", "Leave blank to display default message");
+define("UGFLAN_5", "Текст за показване, когато сайтът е затворен");
+define("UGFLAN_6", "Остави празно за ползване на съобщението по подразбиране");
 
 ?>

@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_admin_log.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-29 15:33:54 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: lisa_ 
 +----------------------------------------------------------------------------+
 */
-define("LAN_ADMINLOG_0", "Admin Log");
+define("LAN_ADMINLOG_0", "Админ лог");
 define("LAN_ADMINLOG_1", "Дата");
 define("LAN_ADMINLOG_2", "Заглавие");
 define("LAN_ADMINLOG_3", "Описание");

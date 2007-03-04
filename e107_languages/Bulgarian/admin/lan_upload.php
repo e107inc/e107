@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_upload.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-29 15:33:56 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -36,34 +36,35 @@ define("UPLLAN_23", "Име");
 define("UPLLAN_24", "Вид на файла");
 define("UPLLAN_25", "Разрешаване на публично добавяне?");
 define("UPLLAN_26", "Няма да могат да се добавят файлове от потребителите ако е забранено");
+define("UPLLAN_27", "непрегледани качени файлове");
 
-define("UPLLAN_29", "Storage type");
-define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> binary is only suitable for smaller files under approximately 500kb");
-define("UPLLAN_31", "Flatfile");
-define("UPLLAN_32", "Binary");
+define("UPLLAN_29", "Начин на съхранение");
+define("UPLLAN_30", "Избор за съхранение на качените файлове - като нормални файлове на сървъра или като бинарни данни в базата данни<br /><b>Внимание:</b> бинарно съхранение е подходящо само за малки файлове - под 500kb");
+define("UPLLAN_31", "Файл");
+define("UPLLAN_32", "Бинарно");
 define("UPLLAN_33", "Максимална големина на файловете");
-define("UPLLAN_34", "Maximum upload size in bytes - leave blank to conform to php.ini setting ( php.ini setting is");
-define("UPLLAN_35", "Allowed file types");
+define("UPLLAN_34", "Максимална големина за качване в байтове - остави празно за използване на настройките на php.ini ( стойността в php.ini е ");
+define("UPLLAN_35", "Разрешен тип файлове");
 define("UPLLAN_36", "Please enter one type per line");
-define("UPLLAN_37", "Permission");
-define("UPLLAN_38", "Select to allow only certain users to upload");
-define("UPLLAN_39", "Submit");
+define("UPLLAN_37", "Права");
+define("UPLLAN_38", "Избор на потребители имащи право да качват файлове");
+define("UPLLAN_39", "Запис");
 
-define("UPLLAN_41", "Please note - file uploads are disabled from your php.ini, it will not be possible to upload files until you set it to On.");
+define("UPLLAN_41", "Внимание - качване на файлове е забранено от php.ini, невъзможно е качване на файлове до промяна на php.ini настройките.");
 
-define("UPLLAN_42", "Actions");
-define("UPLLAN_43", "Uploads");
-define("UPLLAN_44", "Upload");
+define("UPLLAN_42", "Действия");
+define("UPLLAN_43", "Публично Качване на файлове");
+define("UPLLAN_44", "Качване на файл");
 
-define("UPLLAN_45", "Are you sure you want to delete the following file...");
+define("UPLLAN_45", "Сигурен ли сте, че искате да изтриете следния файл...");
 
-define("UPLAN_COPYTODLM", "copy to download manager");
-define("UPLAN_IS", "is ");
-define("UPLAN_ARE", "are ");
-define("UPLAN_COPYTODLS", "Copy to Downloads");
+define("UPLAN_COPYTODLM", "копиране в download manager");
+define("UPLAN_IS", "е ");
+define("UPLAN_ARE", "са ");
+define("UPLAN_COPYTODLS", "Копиране във Файлове");
 
-define("UPLLAN_48", "For security reasons allowed file types has been moved out of the database into a 
-flatfile located in your admin directory. To use, rename the file e107_admin/filetypes_.php to e107_admin/filetypes.php 
-and add a comma delimited list of file type extensions to it. You should not allow the upload of .html, .txt, etc., as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow 
-the upload of .php files or any other type of executable script.");
+define("UPLLAN_48", "Поради съображения за сигурност, позволените файл типове са преместени извън базата данни в обикновен файл, който се намира 
+в admin директорията (по подразбиране e107_admin). Преименувайте файл e107_admin/filetypes_.php в e107_admin/filetypes.php 
+и добавете в него списък разделен с запетаи с позволените разширения. Не би трябвало да позволявате качване на файлове с разширения .html, .txt, и т.н., поради риск от вмъкване на опасен javascript от хора атакуващи вашия сайт. Разбира се, не би трябвало да позволите 
+и качване на файлове от тип .php или друг вид изпълним скрипт.");
 ?>

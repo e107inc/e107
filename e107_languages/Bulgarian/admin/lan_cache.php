@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_cache.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-29 15:33:54 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("CACLAN_1", "Статус на кеша");
 define("CACLAN_2", "Определете статуса на кеша");
-define("CACLAN_3", "Кешираща система");
+define("CACLAN_3", "Система за кеширане на сървъра");
 define("CACLAN_4", "Статус на кеш");
 define("CACLAN_5", "Изчистване на кеша");
 define("CACLAN_6", "Кеша е изчистен");

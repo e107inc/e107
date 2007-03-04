@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_user.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-29 15:33:54 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ define("LAN_401", "няма информация");
 define("LAN_402", "Потребителски профил");
 define("LAN_403", "Статистики на сайта");
 define("LAN_404", "Последно посещение");
-define("LAN_405", " ");
+define("LAN_405", ""); //intentional empty constant
 define("LAN_406", "Рейтинг");
 define("LAN_407", "няма");
 define("LAN_408", "няма снимка");
@@ -65,7 +65,7 @@ define("LAN_424", "Натисни тук за преглед на съобщен
 define("LAN_425", "Изпрати лично съобщение");
 define("LAN_426", "по-рано");
 
-define("USERLAN_1", "Peer Rating");
+define("USERLAN_1", "По рейтинг");
 define("USERLAN_2", "Нямате достъп за преглед на тази страница.");
 
 ?>

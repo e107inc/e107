@@ -8,14 +8,14 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_equery_secure.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-29 15:33:51 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("EQSEC_LAN1", "Вие ще бъдете пренасочени към администраторска функция, възможно е да се направи промяна в базата данни");
 define("EQSEC_LAN2", "Моля, потвърдете:");
-define("EQSEC_LAN3", "No referer");
+define("EQSEC_LAN3", "Без пренасочване");
 define("EQSEC_LAN4", "Действие от:");
 define("EQSEC_LAN5", "Действие към:");
 define("EQSEC_LAN6", "Потвърждение");

@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_user_extended.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-29 15:33:54 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("UE_LAN_1", "Текстово поле");
 define("UE_LAN_2", "Радио бутони");
 define("UE_LAN_3", "Падащо Меню");
 define("UE_LAN_4", "Поле за таблица от БД");
-define("UE_LAN_5", "Textarea");
+define("UE_LAN_5", "Текст поле");
 define("UE_LAN_6", "Цяло число");
 define("UE_LAN_7", "Дата");
 define("UE_LAN_8", "Език");

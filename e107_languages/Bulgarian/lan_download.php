@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-29 15:33:51 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -100,4 +100,5 @@ define("LAN_dl_74", "Общо файлове от този mirror: ");
 
 define("LAN_dl_75", "няма снимка ");
 define("LAN_dl_76", "Към страница");
+define("LAN_dl_77", "Свалено");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
 ?>

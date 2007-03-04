@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:33:54 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("ADMSLAN_16", "Име на админа");
 define("ADMSLAN_17", "Парола на админа");
 define("ADMSLAN_18", "Достъп");
 define("ADMSLAN_19", "Промяна настройките на сайта");
-define("ADMSLAN_20", "Промяна на менютат");
+define("ADMSLAN_20", "Промяна на менюта");
 define("ADMSLAN_21", "Добавяне на администратори");
 define("ADMSLAN_22", "Редактиране на потребителите/блокираните");
 define("ADMSLAN_23", "Създаване/редакция на страници/менюта");
@@ -39,7 +39,7 @@ define("ADMSLAN_31", "Настройка на емоциите");
 define("ADMSLAN_32", "Настройка съдържанието на началната страница");
 define("ADMSLAN_33", "Настройка на статистиката и логовете");
 define("ADMSLAN_34", "Настройка на мета таговете");
-define("ADMSLAN_35", "Настройка на буличното добавяне на файлове");
+define("ADMSLAN_35", "Настройка за публичното добавяне на файлове");
 define("ADMSLAN_36", "Достъп до настройки за Картинки");
 define("ADMSLAN_37", "Редактиране на коментарите");
 // define("ADMSLAN_38", "Moderate/configure chatbox");

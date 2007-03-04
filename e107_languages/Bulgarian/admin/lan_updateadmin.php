@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_updateadmin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-29 15:33:56 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -16,6 +16,6 @@ define("UDALAN_4", "Име");
 define("UDALAN_5", "Парола");
 define("UDALAN_6", "Повторете паролата");
 define("UDALAN_7", "Смяна на парола");
-define("UDALAN_8", "Паролата е обновена за");
+define("UDALAN_8", "Смяна на парола за");
 
 ?>

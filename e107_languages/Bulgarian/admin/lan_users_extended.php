@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-29 15:33:57 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,8 @@ define("EXTLAN_71", "was not activated!");
 define("EXTLAN_72", "has been deactivated");
 define("EXTLAN_73", "was not deactivated!");
 define("EXTLAN_74", "is a reserved field name and can not be used.");
-
+define("EXTLAN_75", "Error adding field to database.");
+define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, '_' allowed.");
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
@@ -103,5 +104,7 @@ define("EXTLAN_HELP_5", "This will be the Textarea help text");
 define("EXTLAN_HELP_6", "This will be the Integer help text");
 //date
 define("EXTLAN_HELP_7", "This will be the date help text");
+// Language
+define("EXTLAN_HELP_8", "Allow user to select from installed languages");
 
 ?>

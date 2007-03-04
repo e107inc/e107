@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-29 15:33:56 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -58,4 +58,8 @@ define("TPVLAN_40", "Админ часта ползва тема");
 define("TPVLAN_41", "Моля изберете изгледа на админ часта");
 define("TPVLAN_42", "Запазване на админ настройките");
 define("TPVLAN_43", "Настройките на админ часта са запазени");
+
+define("TPVLAN_46", "PCLZIP грешка при извличане:");
+define("TPVLAN_47", "PCLTAR грешка при извличане: ");
+define("TPVLAN_48", "код:");
 ?>

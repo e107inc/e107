@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_comment.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-29 15:33:51 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -55,32 +55,32 @@ define("COMCOMLAN_7", 'Рейтинг');
 define("COMCOMLAN_8", 'Коментарите за забранени');
 */
 
-define("COMLAN_315", "Trackbacks");
-define("COMLAN_316", "No trackbacks for this newspost.");
-define("COMLAN_317", "Moderate trackbacks");
+define("COMLAN_315", "Проследяване");
+define("COMLAN_316", "Няма проследяване за тази публикация.");
+define("COMLAN_317", "Редактирай проследяване");
 
 define("COMLAN_318", "Редакция на коментар");
 define("COMLAN_319", "редактиран");
 define("COMLAN_320", "Обновяване на коментара");
-define("COMLAN_321", "here");
-define("COMLAN_322", "to signup");
-define("COMLAN_323", "Error!");
+define("COMLAN_321", "тук");
+define("COMLAN_322", "за регистрация");
+define("COMLAN_323", "Грешка!");
 
-define("COMLAN_324", 'Subject');
-define("COMLAN_325", 'Re:');
-define("COMLAN_326", 'Reply to this');
-define("COMLAN_327", 'Rating');
-define("COMLAN_328", 'Comments are locked');
-define("COMLAN_329", 'Unauthorized');
+define("COMLAN_324", 'Относно');
+define("COMLAN_325", 'Ре:');
+define("COMLAN_326", 'Отговори на това');
+define("COMLAN_327", 'Рейтинг');
+define("COMLAN_328", 'Коментарите са спрени');
+define("COMLAN_329", 'Неоторизиран');
 define("COMLAN_330", 'IP:');
 
-define("COMLAN_TYPE_1", "news");
-define("COMLAN_TYPE_2", "download");
-define("COMLAN_TYPE_3", "faq");
-define("COMLAN_TYPE_4", "poll");
-define("COMLAN_TYPE_5", "docs");
-define("COMLAN_TYPE_6", "bugtrack");
-define("COMLAN_TYPE_7", "ideas");
-define("COMLAN_TYPE_8", "userprofile");
+define("COMLAN_TYPE_1", "новини");
+define("COMLAN_TYPE_2", "файлове");
+define("COMLAN_TYPE_3", "чзв");
+define("COMLAN_TYPE_4", "анкета");
+define("COMLAN_TYPE_5", "документи");
+define("COMLAN_TYPE_6", "бъгове");
+define("COMLAN_TYPE_7", "идеи");
+define("COMLAN_TYPE_8", "потребителски профил");
 
 ?>

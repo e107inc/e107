@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_emoticon.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-29 15:33:55 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -21,10 +21,10 @@ define("EMOLAN_7", "разделете с разтояние ако искате
 define("EMOLAN_8", "Статус");
 define("EMOLAN_9", "Опции");
 define("EMOLAN_10", "Активни");
-define("EMOLAN_11", "Активиране на пакета'");
+define("EMOLAN_11", "Активиране на пакета");
 
 define("EMOLAN_12", "Редакция / настройки на този пакет");
-define("EMOLAN_13", "Налични капети");
+define("EMOLAN_13", "Налични пакети");
 
 define("EMOLAN_14", "Запазване на настройките");
 define("EMOLAN_15", "Редакция / настройки на емоциите");
@@ -35,5 +35,7 @@ define("EMOLAN_19", "Име");
 define("EMOLAN_20", "Местоположение");
 define("EMOLAN_21", "Грешка");
 //define("EMOLAN_2", "Name");
-
+define("EMOLAN_22", "Намерен нов пакет емоции:");
+define("EMOLAN_23", "Намерен нов xml пакет емоции:");
+define("EMOLAN_24", "Намерен нови php емоции:");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-29 15:33:53 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("LAN_105", "Двете пароли не съвпадат");
 define("LAN_106", "Това не изглежда да е валиден имейл адрес");
 define("LAN_107", "Благодарим Ви! Вече сте регистриран потребител на");
 define("LAN_108", "Регистрацията е завършена");
-define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
+define("LAN_109", "Този сайт поддържа Онлайн Детска Защита (The Children's Online Privacy Protection Act) от 1998 (COPPA) и не приема регистрация от потребители под 13 години без подписан от родителите или техни настойници документ. За по-вече информация можете да прочетете закона");
 define("LAN_110", "Регистрация");
 define("LAN_111", "Отново парола: ");
 define("LAN_112", "Имейл адрес: ");
@@ -49,7 +49,7 @@ define("LAN_SIGNUP_3", "Неодобрен код.");
 define("LAN_SIGNUP_4", "Паролата Ви трябва да е дълга най-малко ");
 define("LAN_SIGNUP_5", " символа.");
 define("LAN_SIGNUP_6", "Необходимо е Вашето ");
-define("LAN_SIGNUP_7", " ");
+define("LAN_SIGNUP_7", ""); //intentional empty constant
 define("LAN_SIGNUP_8", "Благодарим Ви!");
 define("LAN_SIGNUP_9", "Невъзможно е продължаването.");
 define("LAN_SIGNUP_10", "Да");
@@ -113,4 +113,7 @@ define("LAN_SIGNUP_51", "Стара парола");
 define("LAN_SIGNUP_52", "неправилна парола");
 define("LAN_SIGNUP_53", "- невалидна стойност");
 
+define("LAN_SIGNUP_54", "Кликни тук за попълване на информацията за регистрация");
+define("LAN_SIGNUP_55", "Избраното име за визуализиране е прекалено дълго. Моля изберете друго");
+define("LAN_SIGNUP_56", "Избраното име за визуализиране е прекалено кратко. Моля изберете друго");
 ?>

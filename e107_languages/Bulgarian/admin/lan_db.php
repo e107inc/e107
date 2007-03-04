@@ -4,39 +4,43 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/admin/lan_db.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-29 15:33:55 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 21:39:36 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("DBLAN_1", "Core settings backed up in database.");
-define("DBLAN_2", "Click button to save a backup of your e107 database");
-define("DBLAN_3", "Backup SQL database");
-define("DBLAN_4", "Click button to check validity of e107 database");
-define("DBLAN_5", "Check database validity");
-define("DBLAN_6", "Click button to optimize your e107 database");
-define("DBLAN_7", "Optimize SQL database");
-define("DBLAN_8", "Click button to backup your core settings");
-define("DBLAN_9", "Backup core");
-define("DBLAN_10", "Database Utilities");
-define("DBLAN_11", "mySQL database");
-define("DBLAN_12", "optimized");
-define("DBLAN_13", "Back");
-define("DBLAN_14", "Done");
-define("DBLAN_15", "Click button to check for any available db updates");
-define("DBLAN_16", "Check for Updates");
-define("DBLAN_17", "Pref. Name");
-define("DBLAN_18", "Pref. Value");
-define("DBLAN_19", "Click button to open the preferences editor (for advanced users only)");
-define("DBLAN_20", "Preferences Editor");
-define("DBLAN_21", "Delete Checked");
-define("DBLAN_22", "Plugin: View and Scan");
-define("DBLAN_23", "Scan Completed");
-define("DBLAN_24", "Name");
-define("DBLAN_25", "Directory");
-define("DBLAN_26", "Included add-ons");
-define("DBLAN_27", "Installed");
-define("DBLAN_28", "Click button to scan plugin directories for changes");
-define("DBLAN_29", "Scan plugin directories");
-
+define("DBLAN_1", "Резервно копие на системните настройки е записано в базата данни.");
+define("DBLAN_2", "Изполвай бутона за записване на резервно копие на БД на e107");
+define("DBLAN_3", "Архивиране на SQL данни");
+define("DBLAN_4", "Използвай бутона за проверка на валидността на базата данни на e107");
+define("DBLAN_5", "Проверка валидност на БД");
+define("DBLAN_6", "Използвай бутона за оптимизиране на базата данни на е107");
+define("DBLAN_7", "Оптимизиране на SQL БД");
+define("DBLAN_8", "Използвай бутона за записване на резервно копие на системните настройки на e107");
+define("DBLAN_9", "Архивиране системни настройки");
+define("DBLAN_10", "Инструменти за БД");
+define("DBLAN_11", "mySQL база данни");
+define("DBLAN_12", "оптимизирана");
+define("DBLAN_13", "Обратно");
+define("DBLAN_14", "Готово");
+define("DBLAN_15", "Използвай бутона за проверка на налични актуализации на е107 базата");
+define("DBLAN_16", "Проверка за актуализации");
+define("DBLAN_17", "Име на настройка");
+define("DBLAN_18", "Стойност на настройка");
+define("DBLAN_19", "Използвай бутона за отваряне на редактор на настройките (само за напреднали потребители)");
+define("DBLAN_20", "Редактор на настройките");
+define("DBLAN_21", "Изтриване на избраните");
+define("DBLAN_22", "Модули: Прелгед и сканиране");
+define("DBLAN_23", "Сканирането завършено");
+define("DBLAN_24", "Име");
+define("DBLAN_25", "Директория");
+define("DBLAN_26", "Включени системни модули");
+define("DBLAN_27", "Инсталирано");
+define("DBLAN_28", "Използвай бутона за сканиране на модул директориите за промени");
+define("DBLAN_29", "Сканиране на модул директориите");
+define("DBLAN_30", " (Ако системен модул генерира грешка, проверете за символи извън отварящите/затварящите PHP тагове)");
+define("DBLAN_31", "Ок");
+define("DBLAN_32", "Грешка");
+define("DBLAN_33", "Недостъпен");
+define("DBLAN_34", "Непроверен");
 ?>

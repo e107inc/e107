@@ -8,8 +8,8 @@
 |     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_usersettings.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-29 15:33:54 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-04 21:39:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,7 @@ define("LAN_SIGNUP_2", "симв.");
 define("LAN_SIGNUP_4", "Паролата ви трябва да е дълга най-малко ");
 define("LAN_SIGNUP_5", " символа.");
 define("LAN_SIGNUP_6", "Необходим е вашия ");
-define("LAN_SIGNUP_7", " ");
+define("LAN_SIGNUP_7", "");//intentional empty constant
 
 define("LAN_USET_1", "Аватарът ви е прекалено голям");
 define("LAN_USET_2", "Максималната позволена дължина е");
@@ -92,7 +92,7 @@ define("LAN_USET_3", "Аватарът ви е прекалено голям");
 define("LAN_USET_4", "Максималната позволена височина е");
 
 // v.616
-define("LAN_CUSTOMTITLE", "Custom Title");
+define("LAN_CUSTOMTITLE", "Име");
 define("LAN_ICQNUMBER", "ICQ номера трябва да съдържа само цифри");
 
 //v.617
@@ -110,5 +110,6 @@ define("LAN_USET_8", "Подпис / Времева зона");
 define("LAN_USET_9", "Някои от задължителните полета (маркирани с *) липсват във вашите настройки.");
 define("LAN_USET_10","Моля актуализирайте вашите настройки, за да продължите.");
 define("LAN_USET_11", "Това потребителско име не може да бъде прието за валидно, моля изберете друго");
-
+define("LAN_USET_12", "Избраното име за визуализиране е прекалено кратко. Моля изберете друго");
+define("LAN_USET_13", "Невалидни символи в името за вход (потребителско име). Моля изберете друго");
 ?>
