@@ -1,9 +1,9 @@
-<?php
+﻿﻿﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-24 18:45:31 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 14:59:28 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -89,6 +89,10 @@ class e107{
 		{
 			define("e_HTTP", $this->server_path);
 			define("e_BASE", $this->relative_base_path);
+
+//
+// HTTP relative paths
+//
 			define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
 			define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
 			define("e_THEME", e_BASE.$THEMES_DIRECTORY);
@@ -96,7 +100,10 @@ class e107{
 			define("e_FILE", e_BASE.$FILES_DIRECTORY);
 			define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
-
+			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
+//
+// HTTP absolute paths
+//
 			define("e_ADMIN_ABS", e_HTTP.$ADMIN_DIRECTORY);
 			define("e_IMAGE_ABS", e_HTTP.$IMAGES_DIRECTORY);
 			define("e_THEME_ABS", e_HTTP.$THEMES_DIRECTORY);
@@ -105,7 +112,6 @@ class e107{
 			define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
 
-			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 			if(isset($_SERVER['DOCUMENT_ROOT'])) 
 			{ 
 			  define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/"); 
@@ -243,19 +249,19 @@ class e107{
 		if(function_exists("memory_get_usage")){
 			$memusage = memory_get_usage();
 			$memunit = 'b';
-			if ($memusage > 1048576){
-				$memusage = $memusage / 1024;
+			if ($memusage > 65536){
+				$memusage = $memusage / 1024; // more than 64k, show in k
 				$memunit = 'kb';
 			}
-			if ($memusage > 1048576){
+			if ($memusage > 1024){ /* 1.002 mb, etc */
 				$memusage = $memusage / 1024;
 				$memunit = 'mb';
 			}
-			if ($memusage > 1048576){
+			if ($memusage > 1024){ /* show in GB if >1GB */
 				$memusage = $memusage / 1024;
 				$memunit = 'gb';
 			}
-			return (number_format($memusage, 0).$memunit);
+			return (number_format($memusage, ($memunit=='b'? 0 : 3)).$memunit);
 		} else {
 			return ('Unknown');
 		}
