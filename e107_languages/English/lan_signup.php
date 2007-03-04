@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-17 13:12:59 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-04 21:54:10 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("LAN_123", "Register");
 define("LAN_185", "You left required field(s) blank");
 define("LAN_201", "Yes");
 define("LAN_200", "No");
-define("LAN_202", "You already have an account. If you have forgotten your password, please click the 'forgot password' link.");
+define("LAN_202", "You have reached the site limit for account registrations. Please login using one of your other accounts.");
 define("LAN_309", "Please enter your details below.");
 define("LAN_310", "your real name, including first and last name");
 define("LAN_399", "Continue");
