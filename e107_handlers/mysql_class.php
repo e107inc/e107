@@ -1,10 +1,10 @@
-<?php
+ï»¿<?php
 
 /*
 +---------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-02-20 17:43:17 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2007-03-04 15:00:19 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.7 $
-* @author $Author: e107coders $
+* @version $Revision: 1.8 $
+* @author $Author: mrpete $
 */
 class db {
 
@@ -779,6 +779,23 @@ class db {
 
 		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
+
+	/*
+	 * Verify whether a table exists, without causing an error
+	 *
+	 * @param string $table
+	 * @return string
+	 *
+	 * NOTES: the 'official' way to do this uses SHOW TABLE STATUS, but that is 20x slower!
+	 *        LIMIT 0 is 3x slower than LIMIT 1
+	 */
+	function db_Table_exists($table){
+		$res = $this->db_Query("SELECT 1 FROM ".MPREFIX.$table." LIMIT 1"); // error if not there
+		if ($res) return TRUE;
+		return FALSE;
+	}
+
+
 }
 
 ?>
