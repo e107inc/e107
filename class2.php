@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.332 $
-|     $Date: 2007-02-12 20:04:38 $
-|     $Author: e107steved $
+|     $Revision: 1.333 $
+|     $Date: 2007-03-04 17:02:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -178,7 +178,7 @@ $tp = new e_parse;
 
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
-$e_QUERY = $tp->post_toForm($e_QUERY);
+$e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
 define("e_QUERY", $e_QUERY);
 //$e_QUERY = e_QUERY;
 
@@ -1056,12 +1056,12 @@ function get_user_data($uid, $extra = "")
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function save_prefs($table = 'core', $uid = USERID, $row_val = '') 
+function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
   global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
-  if ($table == 'core') 
+  if ($table == 'core')
   {
-	if ($row_val == '') 
+	if ($row_val == '')
 	{		// Save old version as a backup first
 	  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
 
@@ -1073,7 +1073,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 	  ecache::clear('SitePrefs');
 	}
   }
-  else 
+  else
   {
 	$_user_pref = $tp -> toDB($user_pref);
 	$tmp=addslashes(serialize($_user_pref));
@@ -1583,7 +1583,7 @@ class error_handler {
 				if($index == 0) { $index = 1; } else { $index = 0; }
 			}
 		} else {
-			foreach ($this->errors as $key => $value) 
+			foreach ($this->errors as $key => $value)
 			{
 				$ret .= "<tr class='forumheader3'><td>{$value['short']}</td></tr>\n";
 			}
