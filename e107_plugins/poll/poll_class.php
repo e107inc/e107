@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2007-01-07 15:24:49 $
-|     $Author: e107steved $
+|     $Revision: 1.50 $
+|     $Date: 2007-03-04 04:00:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -67,7 +67,7 @@ class poll
 
 		if(POLLACTION == "edit")
 		{
-			$sql -> db_Update("polls", "poll_title='$poll_title', poll_options='$poll_options', poll_type=$mode, poll_comment='".$tp -> toDB($poll_comment)."', poll_allow_multiple=".intval($multipleChoice).", poll_result_type=".intval($showResults).", poll_vote_userclass=".intval($pollUserclass).", poll_storage_method=".intval($storageMethod)." WHERE poll_id=".intval(POLLID));
+			$sql -> db_Update("polls", "poll_title='$poll_title', poll_options='$poll_options', poll_comment='".$tp -> toDB($poll_comment)."', poll_allow_multiple=".intval($multipleChoice).", poll_result_type=".intval($showResults).", poll_vote_userclass=".intval($pollUserclass).", poll_storage_method=".intval($storageMethod)." WHERE poll_id=".intval(POLLID));
 
 			/* update poll results - bugtracker #1124 .... */
 			$sql -> db_Select("polls", "poll_votes", "poll_id='".intval(POLLID)."' ");

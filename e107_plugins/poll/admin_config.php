@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-01-07 15:24:49 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2007-03-04 04:00:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -125,21 +125,29 @@ if (isset($message))
 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 	<form action='".e_SELF."' method='post' id='del_poll'>";
 
-if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) {
+if ($poll_total = $sql->db_Select("polls", "*", "1 ORDER BY poll_type")) {
 	$text .= "<table class='fborder' style='width:99%'>
 		<tr>
-		<td style='width:5%' class='fcaption'>ID
+		<td style='width:5%' class='fcaption' style='white-space:nowrap'>".POLL_ADLAN07."
 		<input type='hidden' name='del_poll_confirm' id='del_poll_confirm' value='1' />
 		</td>
 		<td style='width:75%' class='fcaption'>".POLLAN_3."</td>
 		<td style='width:20%' class='fcaption'>".POLLAN_4."</td>
 		</tr>";
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
+	while ($row = $sql->db_Fetch())
+	{
+		if($row['poll_type'] == 1)
+		{
+			$id_text = POLL_ADLAN05.$row['poll_id'];
+		}
+		else
+		{
+			$id_text = POLL_ADLAN06.$row['poll_datestamp'];
+		}
 		$text .= "<tr>
-			<td style='width:5%' class='forumheader3'>$poll_id</td>
-			<td style='width:75%' class='forumheader3'>".$tp -> toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>
-			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$poll_id}", POLLAN_5, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\""). $rs->form_button("submit", "main_delete_{$poll_id}", POLLAN_6, "onclick=\"confirm_($poll_id)\"")."
+			<td  style='white-space:nowrap' class='forumheader3'>{$id_text}</td>
+			<td style='width:75%' class='forumheader3'>".$tp -> toHTML($row['poll_title'], TRUE, "no_hook, emotes_off, defs")."</td>
+			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$row['poll_id']}", POLLAN_5, "onclick=\"document.location='".e_SELF."?edit.{$row['poll_id']}'\""). $rs->form_button("submit", "main_delete_{$row['poll_id']}", POLLAN_6, "onclick=\"confirm_({$row['poll_id']})\"")."
 			</div></td>
 			</tr>";
 	}
