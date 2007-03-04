@@ -1,10 +1,10 @@
-<?php
+ï»¿<?php
 
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-04 17:36:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-04 15:01:28 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.2 $
-* @author      $Author: mcfly_e107 $
+* @version     $Revision: 1.3 $
+* @author      $Author: mrpete $
 */
 class ecache {
 
@@ -138,7 +138,7 @@ class ecache {
 		{
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			file_put_contents($cache_file, ($bRaw? $Data : '<?php'.$Data) );
-			@chmod($cache_file, 0777);
+			@chmod($cache_file, 0755); //Cache should not be world-writeable
 			@touch($cache_file);
 		}
 	}
