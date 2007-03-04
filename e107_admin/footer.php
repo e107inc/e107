@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-01-17 13:03:53 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-04 21:50:28 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // These letters match the USER footer (that's why there is B.1,B.2)
 //
 // A Ensure sql and traffic objects exist
-// B.1 Clear cache if over a week old
+// B.1 Clear cache (if over a week old)
 // B.2 Send the footer templated data
 // C Dump any/all traffic and debug information
 // [end of regular-page-only items]
@@ -53,9 +53,11 @@ if (!is_object($eTraffic)) {
 	$eTraffic = new e107_traffic;
 	$eTraffic->Bump('Lost Traffic Counters');
 }
-//
-// B.1 Clear cache if over a week old
-//
+
+if(varset($e107_popup)!=1){
+	//
+	// B.1 Clear cache if over a week old
+	//
 if (ADMIN == TRUE) {
 	if ($pref['cachestatus']) {
 		if (!$sql->db_Select('generic', '*', "gen_type='empty_cache'"))
@@ -73,29 +75,67 @@ if (ADMIN == TRUE) {
 		}
 	}
 }
-	
 
-//
-// B.2 Send footer template, stop timers and send basic page info
-//
-if(varset($e107_popup)!=1){
+	//
+	// B.2 Send footer template, stop timing, send simple page stats
+	//
+	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
+		parse_admin($ADMIN_FOOTER);
+	}
 
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
-	parse_admin($ADMIN_FOOTER);
-}
+	$eTimingStop = microtime();
+	global $eTimingStart;
+	$clockTime = $eTraffic->TimeDelta( $eTimingStart, $eTimingStop );
+	$dbPercent = 100.0 * $db_time / $clockTime;
+	// Format for display or logging
+	$rendertime = number_format($clockTime, 2);	// Clock time during page render
+	$db_time    = number_format($db_time,2);		// Clock time in DB render
+	$dbPercent  = number_format($dbPercent,0);	// DB as percent of clock
+	$memuse     = $e107->get_memory_usage();		// Memory at end, in B/KB/MB/GB ;)
+	$rinfo = '';
 
-	
-$eTimingStop = microtime();
-global $eTimingStart;
-$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
-$db_time    = number_format($db_time,4);
-$rinfo = '';
+	if ( function_exists( 'getrusage' ) ) {
+		$ru = getrusage();
+		$cpuUTime = $ru['ru_utime.tv_sec'] + ($ru['ru_utime.tv_usec'] * 1e-6);
+		$cpuSTime = $ru['ru_stime.tv_sec'] + ($ru['ru_stime.tv_usec'] * 1e-6);
+		$cpuUStart = $eTimingStartCPU['ru_utime.tv_sec'] + ($eTimingStartCPU['ru_utime.tv_usec'] * 1e-6);
+		$cpuSStart = $eTimingStartCPU['ru_stime.tv_sec'] + ($eTimingStartCPU['ru_stime.tv_usec'] * 1e-6);
+		$cpuStart = $cpuUStart + $cpuSStart;
+		$cpuTot  = $cpuUTime + $cpuSTime;
+		$cpuTime = $cpuTot - $cpuStart;
+		$cpuPct = 100.0 * $cpuTime / $rendertime; /* CPU load during known clock time */
+		// Format for display or logging (Uncomment as needed for logging)
+		//$cpuUTime = number_format($cpuUTime, 3);		// User cpu
+		//$cpuSTime = number_format($cpuSTime, 3);		// System cpu
+		//$cpuTot = number_format($cpuTot, 3);				// Total (User+System)
+		$cpuStart = number_format($cpuStart, 3);		// Startup time (i.e. CPU used before class2.php)
+		$cpuTime = number_format($cpuTime, 3);			// CPU while we were measuring the clock (cpuTot-cpuStart)
+		$cpuPct = number_format($cpuPct,0);	// CPU Load (CPU/Clock)
+	}
+	//
+	// Here's a good place to log CPU usage in case you want graphs and/or your host cares about that
+	// e.g. (on a typical vhosted linux host)
+	// 
+	//	$logname = "/home/mysite/public_html/queryspeed.log";
+	//	$logfp = fopen($logname, 'a+'); fwrite($logfp, "$cpuTot,$cpuPct,$cpuStart,$rendertime,$db_time\n"); fclose($logfp);
 
-	if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
+	if($pref['displayrendertime']){ 
+		$rinfo .= "Render time: ";
+		if (isset($cpuTime)) {
+			$rinfo .= "{$cpuTime} cpu sec ({$cpuPct}% load, {$cpuStart} startup). Clock: ";
+		}
+		$rinfo .= "{$rendertime} sec ({$dbPercent}% for queries). "; 
+	}
 	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
-	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory Usage: ".$e107->get_memory_usage(); }
+	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory: ".$memuse; }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
-	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
+
+	if (function_exists('theme_renderinfo'))
+	{
+		theme_renderinfo($rinfo);
+	} else {
+		echo ($rinfo ? "\n<div style='text-align:center' class='e107_foot smalltext'>{$rinfo}</div>\n" : "");
+	}
 
 } // End of regular-page footer (the above NOT done for popups)
 
@@ -104,21 +144,22 @@ $rinfo = '';
 //
 	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
 		global $db_debug;
-		echo "\n<!-- DEBUG -->\n";
+		echo "\n<!-- DEBUG -->\n<div class='e107_debug dbg_info'>";
 		$db_debug->Show_All();
+		echo "</div>\n";
 	}
-	
+
 	/*
 	changes by jalist 24/01/2005:
 	show sql queries
 	usage: add ?showsql to query string, must be admin
 	*/
-	
+
 	if(ADMIN && isset($queryinfo) && is_array($queryinfo))
 	{
 		$c=1;
 		$mySQLInfo = $sql->mySQLinfo;
-		echo "<table class='fborder' style='width: 100%;'>
+		echo "<div class='e107_debug qry_notice'><table class='fborder' style='width: 100%;'>
 		<tr>
 		<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
 		foreach ($queryinfo as $infovalue)
@@ -126,7 +167,7 @@ $rinfo = '';
 			echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 			$c++;
 		}
-		echo "</table>";
+		echo "</table></div>";
 	}
 
 //
@@ -144,12 +185,12 @@ $rinfo = '';
 		global $ns;
 		$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
 	}
-	
+
 if ($pref['developer']) {
 	global $oblev_at_start,$oblev_before_start;
 	if (ob_get_level() != $oblev_at_start) {
 		$oblev = ob_get_level();
-		$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start). POPPING EXTRA BUFFERS!</div>";
+		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='e107_foot smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start). POPPING EXTRA BUFFERS!</div>";
 		while (ob_get_level() > $oblev_at_start) {
 			ob_end_flush();
 		}
@@ -160,12 +201,13 @@ if ($pref['developer']) {
 	// Devs can re-enable for testing as needed.
 	//
 	if (0 && $oblev_before_start != 0) {
-		$obdbg = "<div style='text-align:center' class='smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
+		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='e107_foot smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
 		echo $obdbg;
 	}
 }
 
-if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
+if((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $error_handler->debug == true) 
+{
 	echo "
 	<br /><br />
 	<div class='e107_debug php_err'>
@@ -230,13 +272,13 @@ header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
 $pref['compression_level'] = 6;
-if(isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
+if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip")) {
 	$browser_support = true;
 }
 if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {
 	$server_support = true;
 }
-if($pref['compress_output'] == true && $server_support == true && $browser_support == true) {
+if(varset($pref['compress_output'],false) && $server_support == true && $browser_support == true) {
 	$level = intval($pref['compression_level']);
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
