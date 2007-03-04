@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-02-07 21:48:26 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-04 21:55:15 $
+|     $Author: mrpete $
 |
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ class e_linkwords
 		}
 		else 
 		{
-		  if(strpos($check_url, $p) !== FALSE) return;
+		  if(strlen($p) && strpos($check_url, $p) !== FALSE) return;
 		}
 	  }
 
@@ -77,7 +77,10 @@ class e_linkwords
 			}
 		  }
 	  }
-	  $this->area_opts = $pref['lw_context_visibility'];
+	  if (is_array($pref['lw_context_visibility']))
+	  {
+		  $this->area_opts = $pref['lw_context_visibility'];
+		}
 	}
 
 
