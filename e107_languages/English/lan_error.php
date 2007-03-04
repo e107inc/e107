@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_error.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-04 21:53:15 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Error");
@@ -44,6 +44,9 @@ define("LAN_ERROR_29", "[5]: Field(s) have been left blank. Please resubmit the 
 define("LAN_ERROR_30", "[6]: Unable to form a valid connection to mySQL. Please check that your e107_config.php contains the correct information.");
 define("LAN_ERROR_31", "[7]: mySQL is running but database ({$mySQLdefaultdb}) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.");
 define("LAN_ERROR_32", "To complete the upgrade, copy the following text into your e107_config.php file:");
+
+define("LAN_ERROR_33", "Processing error! Normally, I would redirect to the home page.");
+define("LAN_ERROR_34", "Unknown error! Please inform the site administrator you saw this:");
 
 
 ?>
