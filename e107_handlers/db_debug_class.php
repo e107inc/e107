@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-17 13:05:49 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-04 13:42:01 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,8 @@ class e107_db_debug {
 		'%DB Count' => 0,
 		'Time' => ($eTimingStart),
 		'DB Time' => 0,
-		'DB Count' => 0
+		'DB Count' => 0,
+		'Memory'   => 0
 		);
 		
 		register_shutdown_function('e107_debug_shutdown');
@@ -65,6 +66,7 @@ class e107_db_debug {
 		$this->ShowIf('Shortcodes / BBCode',$this->Show_SC_BB());
 		$this->ShowIf('Paths', $this->Show_PATH());
 		$this->ShowIf('Deprecated Function Usage', $this->Show_DEPRECATED());
+		$this->ShowIf('Included Files', $this->Show_Includes());
 	}
 	
 	function ShowIf($title,$str)
@@ -98,7 +100,8 @@ class e107_db_debug {
 		'%DB Count' => 0,
 		'Time' => $timeNow,
 		'DB Time' => 0,
-		'DB Count' => 0
+		'DB Count' => 0,
+		'Memory'   => ((function_exists("memory_get_usage"))? memory_get_usage() : 0)
 		);
 	
 		$this->aOBMarks[$nMarks]=ob_get_level().'('.ob_get_length().')';
@@ -271,8 +274,9 @@ class e107_db_debug {
 		$aSum['Index']='';
 		$aSum['What']='Total';
 		$aSum['Time']=0;
-		$aSum['DB Count']=0;
 		$aSum['DB Time']=0;
+		$aSum['DB Count']=0;
+		$aSum['Memory']='';
 
 		while (list($tKey, $tMarker) = each($this->aTimeMarks)) {
 			if (!$bRowHeaders) {
@@ -292,9 +296,12 @@ class e107_db_debug {
 					}
 				}
 				$aUnits['OB Lev'] = 'lev(buf bytes)';
+				$aUnits['Memory'] = '(kb)';
 				$text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits)."</b>&nbsp;</td></tr>\n";
 			}
 
+			$tMem = $tMarker['Memory'];
+			$tMarker['Memory'] = ($tMem ? number_format($tMem/1024.0, 1) : '?'); // display if known
 			if ($tMarker['What'] == 'Stop') {
 				$tMarker['Time']='&nbsp;';
 				$tMarker['%Time']='&nbsp;';
@@ -303,7 +310,7 @@ class e107_db_debug {
 				$tMarker['DB Time']='&nbsp;';
 				$tMarker['OB Lev']=$this->aOBMarks[$tKey];
 				$tMarker['DB Count']='&nbsp;';
-			} else {
+				} else {
 				// Convert from start time to delta time, i.e. from now to next entry
 				$nextMarker=current($this->aTimeMarks);
 				$aNextT=$nextMarker['Time'];
@@ -318,8 +325,10 @@ class e107_db_debug {
 				$tMarker['%DB Count']=number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
 				$tMarker['%DB Time']=$db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
 				$tMarker['DB Time']=number_format($tMarker['DB Time']*1000.0, 1);
+				
 				$tMarker['OB Lev']=$this->aOBMarks[$tKey];
 			}
+
 			$text .= "<tr><td class='forumheader3' >".implode("&nbsp;</td><td class='forumheader3'  style='text-align:right'>", array_values($tMarker))."&nbsp;</td></tr>\n";
 
 			if (isset($this->aMarkNotes[$tKey])) {
@@ -550,8 +559,24 @@ class e107_db_debug {
 
 		return $text;
 	}
+	
+	function Show_Includes()
+	{
+		if (!E107_DBG_INCLUDES) return FALSE;
+
+		$aIncList = get_included_files();
+		$text = "<table class='fborder'>\n";
+		$text .= "<tr><td class='forumheader3'>".
+							implode("&nbsp;</td></tr>\n<tr><td class='forumheader3'>", $aIncList).
+							"&nbsp;</td></tr>\n";
+		$text .= "</table>\n";
+		return $text;
+	}
 }
 
+//
+// Helper functions (not part of the class)
+//
 function e107_debug_shutdown()
 {
 global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
