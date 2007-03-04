@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,26 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-01-17 20:47:41 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-03-04 22:04:18 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
-global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
+global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $FOOTER, $e107;
 
 //
 // SHUTDOWN SEQUENCE
 //
 // The following items have been carefully designed so page processing will finish properly
 // Please DO NOT re-order these items without asking first! You WILL break something ;)
-// These letters match the USER footer (that's why there may be B.1,B.2)
+// These letters match the ADMIN footer (that's why there is B.1,B.2)
 //
 // A Ensure sql and traffic objects exist
 // [Next few ONLY if a regular page; not done for popups]
-// B Send the footer templated data
+// B.1 Clear cache (if admin page, not here)
+// B.2 Send the footer templated data
 // C Dump any/all traffic and debug information
 // [end of regular-page-only items]
 // D Close the database connection
@@ -55,46 +56,89 @@ if (!is_object($eTraffic)) {
 	$eTraffic->Bump('Lost Traffic Counters');
 }
 
-unset($fh);
-
-
 if(varset($e107_popup)!=1){
 	//
-	// B Send footer template, stop timing, send simple page stats
+	// B.1 Clear cache (admin-only)
+	//
+
+	//
+	// B.2 Send footer template, stop timing, send simple page stats
 	//
 	parseheader(($ph ? $cust_footer : $FOOTER));
-	
+
 	$eTimingStop = microtime();
 	global $eTimingStart;
-	$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
-	$db_time    = number_format($db_time,4);
+	$clockTime = $eTraffic->TimeDelta( $eTimingStart, $eTimingStop );
+	$dbPercent = 100.0 * $db_time / $clockTime;
+	// Format for display or logging
+	$rendertime = number_format($clockTime, 2);	// Clock time during page render
+	$db_time    = number_format($db_time,2);		// Clock time in DB render
+	$dbPercent  = number_format($dbPercent,0);	// DB as percent of clock
+	$memuse     = $e107->get_memory_usage();		// Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
 
-	if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
+	if ( function_exists( 'getrusage' ) ) {
+		$ru = getrusage();
+		$cpuUTime = $ru['ru_utime.tv_sec'] + ($ru['ru_utime.tv_usec'] * 1e-6);
+		$cpuSTime = $ru['ru_stime.tv_sec'] + ($ru['ru_stime.tv_usec'] * 1e-6);
+		$cpuUStart = $eTimingStartCPU['ru_utime.tv_sec'] + ($eTimingStartCPU['ru_utime.tv_usec'] * 1e-6);
+		$cpuSStart = $eTimingStartCPU['ru_stime.tv_sec'] + ($eTimingStartCPU['ru_stime.tv_usec'] * 1e-6);
+		$cpuStart = $cpuUStart + $cpuSStart;
+		$cpuTot  = $cpuUTime + $cpuSTime;
+		$cpuTime = $cpuTot - $cpuStart;
+		$cpuPct = 100.0 * $cpuTime / $rendertime; /* CPU load during known clock time */
+		// Format for display or logging (Uncomment as needed for logging)
+		//$cpuUTime = number_format($cpuUTime, 3);		// User cpu
+		//$cpuSTime = number_format($cpuSTime, 3);		// System cpu
+		//$cpuTot = number_format($cpuTot, 3);				// Total (User+System)
+		$cpuStart = number_format($cpuStart, 3);		// Startup time (i.e. CPU used before class2.php)
+		$cpuTime = number_format($cpuTime, 3);			// CPU while we were measuring the clock (cpuTot-cpuStart)
+		$cpuPct = number_format($cpuPct,0);	// CPU Load (CPU/Clock)
+	}
+	//
+	// Here's a good place to log CPU usage in case you want graphs and/or your host cares about that
+	// e.g. (on a typical vhosted linux host)
+	// 
+	//	$logname = "/home/mysite/public_html/queryspeed.log";
+	//	$logfp = fopen($logname, 'a+'); fwrite($logfp, "$cpuTot,$cpuPct,$cpuStart,$rendertime,$db_time\n"); fclose($logfp);
+
+	if($pref['displayrendertime']){ 
+		$rinfo .= "Render time: ";
+		if (isset($cpuTime)) {
+			$rinfo .= "{$cpuTime} cpu sec ({$cpuPct}% load, {$cpuStart} startup). Clock: ";
+		}
+		$rinfo .= "{$rendertime} sec ({$dbPercent}% for queries). "; 
+	}
 	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
-	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory Usage: ".$e107->get_memory_usage(); }
+	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory: ".$memuse; }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
-	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
+
+	if (function_exists('theme_renderinfo'))
+	{
+		theme_renderinfo($rinfo);
+	} else {
+		echo ($rinfo ? "\n<div style='text-align:center' class='e107_foot smalltext'>{$rinfo}</div>\n" : "");
+	}
 
 } // End of regular-page footer (the above NOT done for popups)
 
 
-	//
-	// C Dump all debug and traffic information
-	//
+//
+// C Dump all debug and traffic information
+//
 	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
 		global $db_debug;
 		echo "\n<!-- DEBUG -->\n<div class='e107_debug dbg_info'>";
 		$db_debug->Show_All();
 		echo "</div>\n";
 	}
-	
+
 	/*
 	changes by jalist 24/01/2005:
 	show sql queries
 	usage: add ?showsql to query string, must be admin
 	*/
-	
+
 	if(ADMIN && isset($queryinfo) && is_array($queryinfo))
 	{
 		$c=1;
@@ -125,12 +169,12 @@ if(varset($e107_popup)!=1){
 		global $ns;
 		$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
 	}
-	
+
 if ($pref['developer']) {
 	global $oblev_at_start,$oblev_before_start;
 	if (ob_get_level() != $oblev_at_start) {
 		$oblev = ob_get_level();
-		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start). POPPING EXTRA BUFFERS!</div>";
+		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='e107_foot smalltext'>Software defect detected; ob_*() level {$oblev} at end instead of ($oblev_at_start). POPPING EXTRA BUFFERS!</div>";
 		while (ob_get_level() > $oblev_at_start) {
 			ob_end_flush();
 		}
@@ -141,12 +185,13 @@ if ($pref['developer']) {
 	// Devs can re-enable for testing as needed.
 	//
 	if (0 && $oblev_before_start != 0) {
-		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
+		$obdbg = "<div class='e107_debug ob_err' style='text-align:center' class='e107_foot smalltext'>Software warning; ob_*() level {$oblev_before_start} at start; this page not properly integrated into its wrapper.</div>";
 		echo $obdbg;
 	}
 }
 
-if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
+if((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $error_handler->debug == true) 
+{
 	echo "
 	<br /><br />
 	<div class='e107_debug php_err'>
