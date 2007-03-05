@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.41 $
-| $Date: 2006-12-05 10:51:32 $
-| $Author: mrpete $
+| $Revision: 1.42 $
+| $Date: 2007-03-05 21:24:39 $
+| $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -133,15 +133,22 @@ class e_shortcode {
 			}
 		}
 
-        if(E107_DBG_SC){
-			echo " sc= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />";
+		if (!isset($shortcode))
+		{
+		  if(E107_DBG_BBSC) trigger_error("shortcode not found:{".$code."}", E_USER_ERROR);
+		  return $matches[0];
+		}
+
+        if(E107_DBG_SC)
+		{
+		  echo " sc= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />";
 		}
 
 		if(E107_DBG_BBSC)
 		{
-			trigger_error("starting shortcode {".$code."}", E_USER_ERROR);
+		  trigger_error("starting shortcode {".$code."}", E_USER_ERROR);
 		}
-		$ret = (isset($shortcode) ? eval($shortcode) : "");
+		$ret = eval($shortcode);
 
 		if($ret != '' || is_numeric($ret))
 		{
