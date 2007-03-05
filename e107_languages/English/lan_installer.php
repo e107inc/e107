@@ -132,9 +132,17 @@ define("LANINS_092", "Contact Us");
 define("LANINS_093", "Grants access to private menu items");
 define("LANINS_094", "Example private forum class");
 define("LANINS_095", "Integrity Check");
-define("LANINS_096", "");
-define("LANINS_097", "");
-define("LANINS_098", "");
-define("LANINS_099", "");
-define("LANINS_100", "");
+
+define("LANINS_096", 'Latest Comments');
+define("LANINS_097", '[more ...]');
+define("LANINS_098", 'Articles');
+define("LANINS_099", 'Articles Front Page ...');
+define("LANINS_100", 'Latest Forum Posts');
+define("LANINS_101", 'Update menu Settings');
+define("LANINS_102", 'Date / Time');
+define("LANINS_103", 'Reviews');
+define("LANINS_104", 'Review Front Page ...');
+
+define("LANINS_105", '');
+define("LANINS_106", '');
 ?>
