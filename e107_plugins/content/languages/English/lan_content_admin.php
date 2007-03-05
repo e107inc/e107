@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-03-01 09:49:57 $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-05 08:18:27 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -339,7 +339,7 @@ define("CONTENT_ADMIN_JS_LAN_10", "Are you sure you want to delete this submitte
 
 
 
-define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point");
+define("CONTENT_ADMIN_SUBMIT_LAN_0", "you do not have enough permission or user submission is not enabled");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "content submit types");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Thank you, your content item has been submitted.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Thank you, your content item has been submitted and will be reviewed by a site administrator in due course.");
