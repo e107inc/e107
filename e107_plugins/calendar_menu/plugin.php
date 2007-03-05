@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.17 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2006-11-16 10:24:15 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2007-03-05 20:09:20 $
+|     $Author: e107steved $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added
@@ -81,7 +81,7 @@ $eplug_prefs = array(
 "eventpost_datenext"   => 1,
 "eventpost_eventdatecustom" => "&A %d %B %Y",
 "eventpost_nextdatecustom"   => "%d %b",
-"eventpost_mailsubject" => EC_ADLAN_12,
+"eventpost_mailsubject" => EC_ADLAN_A12,
 "eventpost_mailfrom" => EC_ADLAN_A151,
 "eventpost_mailaddress" => EC_ADLAN_A152,
 "eventpost_asubs" => 1,
