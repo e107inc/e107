@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/login.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-17 13:37:25 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-05 21:35:12 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,6 +62,7 @@ if (!USER) {
 	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	$ns->tablerender($login_message, $text, 'login_page');
 
+	$LOGIN_TABLE_FOOTER_USERREG = '&nbsp;';		// In case no registration system enabled
 	if ($pref['user_reg'])
 	{
 		$LOGIN_TABLE_FOOTER_USERREG = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
