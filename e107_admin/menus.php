@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-10 13:36:20 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-06 19:59:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -33,34 +33,44 @@ if($_POST) {
 
 $menus_equery = explode('.', e_QUERY);
 
-if (isset($_POST['custom_select'])) {
+if (isset($_POST['custom_select'])) 
+{
 	$menus_equery[1] = $_POST['custom_select'];
 	//header("location:".e_SELF."?".$_POST['custom_select']);
 	//exit;
-} else if (!isset($menus_equery[1])) {
+}
+ else if (!isset($menus_equery[1])) 
+{
 	$menus_equery[1] = '';
 }
 
-if ($menus_equery[1] == '' || $menus_equery[1] == 'default_layout') {
+
+if ($menus_equery[1] == '' || $menus_equery[1] == 'default_layout') 
+{
 	$menus_header = $HEADER;
 	$menus_footer = $FOOTER;
 }
-else if ($menus_equery[1] == 'custom_layout') {
+else if ($menus_equery[1] == 'custom_layout') 
+{
 	$menus_header = $CUSTOMHEADER ? $CUSTOMHEADER :
 	$HEADER;
 	$menus_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER :
 	$FOOTER;
 }
-else if ($menus_equery[1] == 'newsheader_layout') {
+else if ($menus_equery[1] == 'newsheader_layout') 
+{
 	$menus_header = $NEWSHEADER ? $NEWSHEADER :
 	$HEADER;
 	$menus_footer = $FOOTER;
-} else {
+} 
+else 
+{
 	$menus_header = $CUSTOMHEADER[$menus_equery[1]] ? $CUSTOMHEADER[$menus_equery[1]] :
 	$HEADER;
 	$menus_footer = $CUSTOMFOOTER[$menus_equery[1]] ? $CUSTOMFOOTER[$menus_equery[1]] :
 	$FOOTER;
 }
+
 
 $layouts_str = $HEADER.$FOOTER;
 if ($NEWSHEADER) {
@@ -424,53 +434,67 @@ function parseheader($LAYOUT, $check = FALSE) {
 	}
 }
 
-function checklayout($str) {
-	global $pref, $menu_areas, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style, $tp;
+function checklayout($str) 
+{	// Displays a basic representation of the theme
+	global $pref, $menu_areas, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style, $tp, $menus_equery;
 
-	if (strstr($str, "LOGO")) {
-		echo $tp -> parseTemplate("{LOGO}");
+	if (strstr($str, "LOGO")) 
+	{
+	  echo $tp -> parseTemplate("{LOGO}");
 	}
-	else if(strstr($str, "SITENAME")) {
-		echo "<div style='padding: 2px'>[SiteName]</div>";
+	else if(strstr($str, "SITENAME")) 
+	{
+	  echo "<div style='padding: 2px'>[SiteName]</div>";
 	}
-	else if (strstr($str, "SITETAG")) {
-		echo "<div style='padding: 2px'>[SiteTag]</div>";
+	else if (strstr($str, "SITETAG")) 
+	{
+	  echo "<div style='padding: 2px'>[SiteTag]</div>";
 	}
-	else if (strstr($str, "SITELINKS")) {
-		echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
+	else if (strstr($str, "SITELINKS")) 
+	{
+	  echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
 	}
-	else if (strstr($str, "LANGUAGELINKS")) {
-		echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";	}
-	else if (strstr($str, "CUSTOM")) {
-		$cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
-		echo "<div style='padding: 2px'>[".$cust."]</div>";
+	else if (strstr($str, "LANGUAGELINKS")) 
+	{
+	  echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";	
+	}
+	else if (strstr($str, "CUSTOM")) 
+	{
+	  $cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+	  echo "<div style='padding: 2px'>[".$cust."]</div>";
 	}
 	// Display embedded Plugin information.
-	else if (strstr($str, "PLUGIN")){
+	else if (strstr($str, "PLUGIN"))
+	{
 		$plug = preg_replace("/\{PLUGIN=(.*?)\}/si", "\\1", $str);
 		$plug = trim($plug);
-		if (file_exists((e_PLUGIN."{$plug}/{$plug}_config.php"))){
-			$link = e_PLUGIN."{$plug}/{$plug}_config.php";
+		if (file_exists((e_PLUGIN."{$plug}/{$plug}_config.php")))
+		{
+		  $link = e_PLUGIN."{$plug}/{$plug}_config.php";
 		}
 
-		if(file_exists((e_PLUGIN.$plug."/config.php"))){
-			$link = e_PLUGIN.$plug."/config.php";
+		if(file_exists((e_PLUGIN.$plug."/config.php")))
+		{
+		  $link = e_PLUGIN.$plug."/config.php";
 		}
 
 		$plugtext = ($link) ? "(".MENLAN_34.":<a href='$link' title='".MENLAN_16."'>".MENLAN_16."</a>)" : "(".MENLAN_34.")" ;
 		echo "<br />";
 		$ns -> tablerender($plug, $plugtext);
 	}
-	else if (strstr($str, "MENU")) {
+	else if (strstr($str, "MENU")) 
+	{
 		$ns = new e107table;
 		$menu = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $str);
-		if (isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false) {
-			echo $sc_style['MENU']['pre'];
+		if (isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false) 
+		{
+		  echo $sc_style['MENU']['pre'];
 		}
 		echo "<div style='text-align:center; font-size:14px' class='fborder'><div class='forumheader'><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
 		$text = "&nbsp;";
 		$sql9 = new db;
-		if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' ")) {
+		if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' ")) 
+		{
 			unset($text);
 			echo $frm->form_open("post", e_SELF."?configure.".$menus_equery[1], "frm_menu_".intval($menu));
 
@@ -487,12 +511,12 @@ function checklayout($str) {
 				$conf = '';
 				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu_config.php"))
 				{
-					$conf = "config.{$menu_path}.{$menu_name}_menu_config";
+				  $conf = "config.{$menu_path}.{$menu_name}_menu_config";
 				}
 
 				if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
 				{
-					$conf = "config.{$menu_path}.config";
+				  $conf = "config.{$menu_path}.config";
 				}
 
 				$text .= "<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
