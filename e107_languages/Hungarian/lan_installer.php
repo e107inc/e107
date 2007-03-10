@@ -134,10 +134,15 @@ define("LANINS_092", "Kapcsolat");
 define("LANINS_093", "Hozzáférés a Privát Üzenetküldés menühöz");
 define("LANINS_094", "Privát fórumcsoport példa");
 define("LANINS_095", "Integritás ellenörzés");
-define("LANINS_096", "");
-define("LANINS_097", "");
-define("LANINS_098", "");
-define("LANINS_099", "");
-define("LANINS_100", "");
-
+define("LANINS_096", "Legújabb hozzászólások");
+define("LANINS_097", "[több...]");
+define("LANINS_098", "Cikkek");
+define("LANINS_099", "Cikkek főoldal ...");
+define("LANINS_100", "Legújabb fórumüzenetek");
+define("LANINS_101", 'Menü beállítások frissitése');
+define("LANINS_102", 'Dátum / Idő');
+define("LANINS_103", 'Leírások');
+define("LANINS_104", 'Leírások főoldal ...');
+define("LANINS_105", '');
+define("LANINS_106", '');
 ?>

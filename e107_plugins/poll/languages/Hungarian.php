@@ -7,6 +7,9 @@ define("POLL_ADLAN01", "Szavazás");
 define("POLL_ADLAN02", "Szavazást hozhatsz létre önállóan, vagy a fórumban.");
 define("POLL_ADLAN03", "Szavazások beállítása");
 define("POLL_ADLAN04", "A szavazás plugin telepítve. Szavazás létrehozásához kattints a Szavazás ikonra az admin területen, és aktiváld a menüt a Menük részben.");
+define("POLL_ADLAN05", "Szavazás: ");
+define("POLL_ADLAN06", "Fórum téma: ");
+define("POLL_ADLAN07", "Típus");
 
 define("POLLAN_MENU_CAPTION", "Szavazás");
 

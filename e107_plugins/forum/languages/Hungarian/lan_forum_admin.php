@@ -68,6 +68,7 @@ define("FORLAN_62", "Fórum beállítások");
 define("FORLAN_63", "Rangok");
 define("FORLAN_64", "Add meg a használandó rangokat. Ha nem adsz meg semmit, akkor egyszerű csillagokkal dolgozik majd a rendszer. Max. 10 szint, vesszővel elválasztva, alacsonyabb rang előre.");
 define("FORLAN_65", "Fórum cím");
+define("FORLAN_66", "A szavazás plugin nincs még telepítve");
 
 define("FORLAN_70", "Fájl / kép csatolások engedélyezése");
 define("FORLAN_71", "A felhasználók feltölthetnek fájlt vagy képet a fórumüzenetekhez,");

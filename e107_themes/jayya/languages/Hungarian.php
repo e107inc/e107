@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/jayya/languages/Hungarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-22 23:21:02 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-10 20:56:32 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,4 @@ define("LAN_THEME_3", "Tovább...");
 define("LAN_THEME_4", "Trackback: ");
 define("LAN_THEME_5", "Írta");
 define("LAN_THEME_6", "-");
-
-
 ?>

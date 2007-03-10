@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_signup.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-02-17 00:27:27 $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-10 20:56:32 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ define("LAN_123", "Regisztráció");
 define("LAN_185", "Kötelező mező(ke)t hagytál üresen");
 define("LAN_201", "Igen");
 define("LAN_200", "Nem");
-define("LAN_202", "Sikertelen regisztráció");
+define("LAN_202", "Túllépted a felhasználói regisztrációs limitet. Kérlek csak az egyik felhasználónevedet használd belépéskor.");
 define("LAN_309", "Add meg az adataidat lentebb.");
 define("LAN_399", "Tovább");
 define("LAN_400", "Felhasználónév, jelszó: <b>case-sensitive</b>");

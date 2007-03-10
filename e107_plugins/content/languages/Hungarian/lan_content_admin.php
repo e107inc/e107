@@ -11,6 +11,7 @@ define("CONTENT_PLUGIN_LAN_5", "Tartalom");
 define("CONTENT_PLUGIN_LAN_6", "Tartalomkezelő Plugin tábla struktúra frissítve");
 
 define("CONTENT_LATEST_LAN_1", "Beküldött tartalom:");
+define("CONTENT_STATUS_LAN_1", "Beküldött tartalom:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "Kategória létrehozása");
 define("CONTENT_ADMIN_CAT_LAN_1", "Kategória módosítása");
