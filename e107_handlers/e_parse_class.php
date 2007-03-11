@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-02-18 01:17:25 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-11 20:52:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -372,6 +372,7 @@ class e_parse
 		return $this->e_highlighting;
 	}
 
+
 	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE) {
 		if ($text == '')
 		{
@@ -442,20 +443,16 @@ class e_parse
 			}
 		}
 	
-//		$fromadmin = strpos($modifiers, "fromadmin");
 		$fromadmin = $opts['fromadmin'];
 
 		// Convert defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
-//		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 25 && defined(trim($text)))
 		if ($opts['defs'] && (strlen($text) < 25) && defined(trim($text)))
 		{
-//		   echo "Modifiers: ".$modifiers."<br />";
 			return constant(trim($text));
 		}
 
 
 		// replace all {e_XXX} constants with their e107 value
-//		if(strpos($modifiers, "constants") !== FALSE)
 		if ($opts['constants'])
 		{
 			$text = $this->replaceConstants($text);
@@ -466,8 +463,7 @@ class e_parse
         $text = " ".$text;
 
 
-			// Prepare for line-break compression. Avoid compressing newlines in embedded scripts and CSS
-//        if (strpos($modifiers, 'nobreak') === FALSE) 
+		// Prepare for line-break compression. Avoid compressing newlines in embedded scripts and CSS
 		if (!$opts['nobreak'])
 		{
             $text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
@@ -477,15 +473,14 @@ class e_parse
 
 
 			// Convert URL's to clickable links, unless modifiers or prefs override
-//        if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) 
         if ($pref['make_clickable'] && !$opts['no_make_clickable']) 
 		{
-//            if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) 
             if ($pref['link_replace'] && !$opts['no_replace']) 
 			{
                 $_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
                 $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
-                $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
+//                $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
+			  $text = preg_replace("#(^|[\n ])((www|ftp)\.[\w+-]+?\.[\w+\-.]*(?(?=/)(/.+?(?=\s|,\s))|(?=\W)))#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
                 if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
                     $email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2&copy;\\3";
                 }else{
@@ -496,17 +491,16 @@ class e_parse
 			else 
 			{
                 $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $text);
-                $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
+//                $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
+			  $text = preg_replace("#(^|[\n ])((www|ftp)\.[\w+-]+?\.[\w+\-.]*(?(?=/)(/.+?(?=\s|,\s))|(?=\W)))#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
                 $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>-email-</a>", $text);
             }
         }
 
 
 			// Convert emoticons to graphical icons, unless modifiers override
-//        if (strpos($modifiers, 'emotes_off') === FALSE) {
         if (!$opts['emotes_off']) 
 		{
-//            if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
             if ($pref['smiley_activate'] || $opts['emotes_on']) 
 			{
                 if (!is_object($this->e_emote)) {
@@ -519,7 +513,6 @@ class e_parse
 
 
 			// Reduce multiple newlines in all forms to a single newline character, except for embedded scripts and CSS
-//        if (strpos($modifiers, 'nobreak') === FALSE) {
         if (!$opts['nobreak']) 
 		{
             $text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
@@ -530,7 +523,6 @@ class e_parse
 
 
 		// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
-//		if (strpos($modifiers, 'value') === FALSE) { // output not used for attribute values.
 		if (!$opts['value']) 
 		{ // output not used for attribute values.
 	       	$text = str_replace($this -> search, $this -> replace, $text);
@@ -564,7 +556,6 @@ class e_parse
 
 
 			// Optional short-code conversion
-//        if (strpos($modifiers,'parse_sc') !== FALSE)
         if ($opts['parse_sc'])
         {
             $text = $this->parseTemplate($text, TRUE);
@@ -587,7 +578,6 @@ class e_parse
         }
 
 
-//        if (strpos($modifiers, 'nobreak') === FALSE) 
         if (!$opts['nobreak']) 
 		{
             $text = $this -> textclean($text, $wrap);
@@ -595,7 +585,6 @@ class e_parse
 
 
         // Search Highlight
-//        if (strpos($modifiers, 'emotes_off') === FALSE) 
         if (!$opts['emotes_off']) 
 		{
           if ($this->checkHighlighting())
@@ -606,12 +595,10 @@ class e_parse
 
 
         $nl_replace = "<br />";
-//        if (strpos($modifiers, 'nobreak') !== FALSE)
         if ($opts['nobreak'])
         {
             $nl_replace = '';
         }
-//        elseif (strpos($modifiers, 'retain_nl') !== FALSE)
         elseif ($opts['retain_nl'])
         {
             $nl_replace = "\n";
