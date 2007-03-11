@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-04 18:58:56 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-11 17:43:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -462,6 +462,7 @@ if ($perform_search) {
 				$search_chars = $search_info[$key]['chars'];
 				$search_res = $search_info[$key]['results'];
 				@require_once($search_info[$key]['sfile']);
+				$_GET['q'] = rawurlencode($_GET['q']);
 				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
 				$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
 				foreach ($_GET as $pparm_key => $pparm_value) {
