@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2007-01-14 14:18:09 $
+|		$Revision: 1.6 $
+|		$Date: 2007-03-13 16:51:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -283,7 +283,9 @@ class contentdb{
 
 			if($mode == "create"){
 				if($type == "submit"){
-					$refer = ($content_pref["content_submit_directpost"] ? "" : "sa");
+					$refer = ($content_pref["content_manager_submit_directpost"] ? "" : "sa");
+				}elseif($type == "contentmanager"){
+					$refer = ($content_pref["content_manager_manager_directpost"] ? "" : "sa");
 				}else{
 					$refer = "";
 				}
@@ -300,7 +302,7 @@ class contentdb{
 				}elseif($type == "contentmanager"){
 					js_location(e_SELF."?c");
 				}elseif($type == "submit"){
-					if($content_pref["content_submit_directpost"]){
+					if($content_pref["content_manager_submit_directpost"]){
 						js_location(e_SELF."?s");
 					}else{
 						js_location(e_SELF."?d");
@@ -422,39 +424,6 @@ class contentdb{
 			}
 		}
 
-
-		function dbAssignAdmins($mode, $id, $value){
-			global $plugintable, $qs, $sql, $eArrayStorage;
-
-			if($mode == "admin"){
-				$id = intval($id);
-				$sql -> db_Select($plugintable, "content_pref", "content_id = '".intval($id)."' ");
-				$row = $sql -> db_Fetch();
-
-				//get current preferences
-				$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
-
-				//assign new preferences
-				if($value == "clear"){
-					$content_pref["content_manager_allowed"] = "";
-				}else{
-					$content_pref["content_manager_allowed"] = $value;
-				}
-				
-				//create new array of preferences
-				$tmp = $eArrayStorage->WriteArray($content_pref);
-
-				$sql -> db_Update($plugintable, "content_pref = '{$tmp}' WHERE content_id = '".intval($id)."' ");
-
-				$message = CONTENT_ADMIN_CAT_LAN_34;
-				return $message;
-			}else{
-				return FALSE;
-			}
-		}
-
-
-
 		function dbDelete($mode, $cat, $del_id){
 			global $plugintable, $sql, $_POST, $e107cache;
 
@@ -476,8 +445,6 @@ class contentdb{
 				return FALSE;
 			}						
 		}
-
-
 		
 		function dbSetOrder($mode, $type, $order){
 			global $plugintable, $sql, $aa, $qs, $_POST, $e107cache;

@@ -12,9 +12,7 @@ function print_item($id)
 		$aa = new content;
 
 		require_once(e_PLUGIN."content/content_shortcodes.php");
-
-		$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
-		include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+		include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
 
 		if(!is_object($sql)){ $sql = new db; }
 		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_image, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");

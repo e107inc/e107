@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2007-03-01 09:35:17 $
+|		$Revision: 1.10 $
+|		$Date: 2007-03-13 16:51:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -35,337 +35,346 @@ class content{
 			global $tp;
 
 			//ADMIN CREATE FORM
-			$content_pref['content_admin_subheading'] = "1";				//should subheading be available
-			$content_pref['content_admin_summary'] = "1";					//should summary be available
-			$content_pref['content_admin_startdate'] = "1";					//should start date be available
-			$content_pref['content_admin_enddate'] = "1";					//should end date be available
-			$content_pref['content_admin_icon'] = "0";						//should icon be available to add when creating an item
-			$content_pref['content_admin_attach'] = "0";					//should file be available to add when creating an item
-			$content_pref['content_admin_images'] = "0";					//should image be available to add when creating an item
-			$content_pref['content_admin_comment'] = "1";					//should comment be available to add when creating an item
-			$content_pref['content_admin_rating'] = "1";					//should rating be available to add when creating an item
-			$content_pref['content_admin_score'] = "1";						//should score be available to add when creating an item
-			$content_pref['content_admin_pe'] = "1";						//should printemailicons be available to add when creating an item
-			$content_pref['content_admin_visibility'] = "1";				//should visibility be available to add when creating an item
-			$content_pref['content_admin_meta'] = "0";						//should metatags be available to add when creating an item
-			$content_pref['content_admin_custom_number'] = "0";				//how many customtags should be available to add when creating an item
-			$content_pref['content_admin_images_number'] = "0";				//how many images should be available to add when creating an item
-			$content_pref['content_admin_files_number'] = "0";				//how many files should be available to add when creating an item
-			$content_pref['content_admin_layout'] = "0";					//should the option for choosing a layout template be shown
-			$content_pref['content_admin_customtags'] = "0";				//should options for adding additional data be shown
-			$content_pref['content_admin_presettags'] = "0";				//should preset data tags be shown
+			$cp['content_admin_subheading'] = '1';				//should subheading be available
+			$cp['content_admin_summary'] = '1';					//should summary be available
+			$cp['content_admin_startdate'] = '1';				//should start date be available
+			$cp['content_admin_enddate'] = '1';					//should end date be available
+			$cp['content_admin_icon'] = '';						//should icon be available to add when creating an item
+			$cp['content_admin_attach'] = '';					//should file be available to add when creating an item
+			$cp['content_admin_images'] = '';					//should image be available to add when creating an item
+			$cp['content_admin_comment'] = '1';					//should comment be available to add when creating an item
+			$cp['content_admin_rating'] = '1';					//should rating be available to add when creating an item
+			$cp['content_admin_score'] = '1';					//should score be available to add when creating an item
+			$cp['content_admin_pe'] = '1';						//should printemailicons be available to add when creating an item
+			$cp['content_admin_visibility'] = '1';				//should visibility be available to add when creating an item
+			$cp['content_admin_meta'] = '';						//should metatags be available to add when creating an item
+			$cp['content_admin_custom_number'] = '';			//how many customtags should be available to add when creating an item
+			$cp['content_admin_images_number'] = '2';			//how many images should be available to add when creating an item
+			$cp['content_admin_files_number'] = '1';			//how many files should be available to add when creating an item
+			$cp['content_admin_layout'] = '';					//should the option for choosing a layout template be shown
+			$cp['content_admin_customtags'] = '';				//should options for adding additional data be shown
+			$cp['content_admin_presettags'] = '';				//should preset data tags be shown
 
 			//ADMIN CREATE CATEGORY FORM
-			$content_pref['content_admincat_subheading'] = '1';				//should subheading be available
-			$content_pref['content_admincat_startdate'] = '1';				//should startdate be available
-			$content_pref['content_admincat_enddate'] = '1';				//should enddate be available
-			$content_pref['content_admincat_uploadicon'] = '1';				//should uploadicon be available
-			$content_pref['content_admincat_selecticon'] = '1';				//should selecticon be available
-			$content_pref['content_admincat_comment'] = '1';				//should comment be available
-			$content_pref['content_admincat_rating'] = '1';					//should rating be available
-			$content_pref['content_admincat_pe'] = '1';						//should print email icons be available
-			$content_pref['content_admincat_visibility'] = '1';				//should visibility be available
-
-			//SUBMIT FORM
-			$content_pref['content_submit'] = "0";							//should users be able to submit an item
-			$content_pref['content_submit_class'] = "0";					//define which userclass is able to submit an item
-			$content_pref['content_submit_directpost'] ="0";				//should submission be direclty posted as an item, or have them validated by admins
-			$content_pref['content_submit_subheading'] = '1';				//should subheading be available
-			$content_pref['content_submit_summary'] = '1';					//should summary be available
-			$content_pref['content_submit_startdate'] = '1';				//should startdate be available
-			$content_pref['content_submit_enddate'] = '1';					//should enddate be available
-			$content_pref['content_submit_icon'] = "0";						//should icon be available to add when submitting an item
-			$content_pref['content_submit_attach'] = "0";					//should file be available to add when submitting an item
-			$content_pref['content_submit_images'] = "0";					//should image be available to add when submitting an item
-			$content_pref['content_submit_comment'] = "0";					//should comment be available to add when submitting an item
-			$content_pref['content_submit_rating'] = "0";					//should rating be available to add when submitting an item
-			$content_pref['content_submit_score'] = "0";					//should score be available to add when submitting an item
-			$content_pref['content_submit_pe'] = "0";						//should printemailicons be available to add when submitting an item
-			$content_pref['content_submit_visibility'] = "0";				//should visibility be available to add when submitting an item
-			$content_pref['content_submit_meta'] = "0";						//should metatags be available to add when submitting an item
-			$content_pref['content_submit_custom_number'] = "0";			//how many customtags should be available to add when submitting an item
-			$content_pref['content_submit_images_number'] = "0";			//how many images should be available to add when submitting an item
-			$content_pref['content_submit_files_number'] = "0";				//how many files should be available to add when submitting an item
-			$content_pref['content_submit_layout'] = "0";					//should the option for choosing a layout template be shown
-			$content_pref['content_submit_customtags'] = "0";				//should options for adding additional data be shown
-			$content_pref['content_submit_presettags'] = "0";				//should preset data tags be shown
+			$cp['content_admincat_subheading'] = '1';			//should subheading be available
+			$cp['content_admincat_startdate'] = '1';			//should startdate be available
+			$cp['content_admincat_enddate'] = '1';				//should enddate be available
+			$cp['content_admincat_uploadicon'] = '1';			//should uploadicon be available
+			$cp['content_admincat_selecticon'] = '1';			//should selecticon be available
+			$cp['content_admincat_comment'] = '1';				//should comment be available
+			$cp['content_admincat_rating'] = '1';				//should rating be available
+			$cp['content_admincat_pe'] = '1';					//should print email icons be available
+			$cp['content_admincat_visibility'] = '1';			//should visibility be available
 
 			//PATH THEME CSS
-			$content_pref['content_cat_icon_path_large'] = "{e_PLUGIN}content/images/cat/48/";	//default path to large categry icons
-			$content_pref['content_cat_icon_path_small'] = "{e_PLUGIN}content/images/cat/16/";	//default path to small category icons
+			$cp['content_cat_icon_path_large'] = '{e_PLUGIN}content/images/cat/48/';	//default path to large categry icons
+			$cp['content_cat_icon_path_small'] = '{e_PLUGIN}content/images/cat/16/';	//default path to small category icons
 
-			$content_pref['content_icon_path'] = "{e_PLUGIN}content/images/icon/";				//default path to item icons
-			$content_pref['content_icon_path_tmp'] = "{e_PLUGIN}content/images/icon/tmp/";		//default tmp path to item icons
+			$cp['content_icon_path'] = '{e_PLUGIN}content/images/icon/';				//default path to item icons
+			$cp['content_icon_path_tmp'] = '{e_PLUGIN}content/images/icon/tmp/';		//default tmp path to item icons
 			
-			$content_pref['content_image_path'] = "{e_PLUGIN}content/images/image/";			//default path to item images
-			$content_pref['content_image_path_tmp'] = "{e_PLUGIN}content/images/image/tmp/";	//default tmp path to item images
+			$cp['content_image_path'] = '{e_PLUGIN}content/images/image/';				//default path to item images
+			$cp['content_image_path_tmp'] = '{e_PLUGIN}content/images/image/tmp/';		//default tmp path to item images
 			
-			$content_pref['content_file_path'] = "{e_PLUGIN}content/images/file/";				//default path to item file attachments
-			$content_pref['content_file_path_tmp'] = "{e_PLUGIN}content/images/file/tmp/";		//default tmp path to item file attachments
+			$cp['content_file_path'] = '{e_PLUGIN}content/images/file/';				//default path to item file attachments
+			$cp['content_file_path_tmp'] = '{e_PLUGIN}content/images/file/tmp/';		//default tmp path to item file attachments
 			
-			$content_pref['content_theme'] = "{e_PLUGIN}content/templates/default/";			//choose theme for main parent
-			$content_pref['content_layout'] = "content_content_template.php";					//choose default layout scheme
+			$cp['content_theme'] = '{e_PLUGIN}content/templates/default/';				//choose theme for main parent
+			$cp['content_layout'] = 'content_content_template.php';						//choose default layout scheme
 
 			//GENERAL
-			$content_pref['content_log'] = "0";								//activate log
-			$content_pref['content_blank_icon'] = "0";						//use blank icon if no icon present
-			$content_pref['content_blank_caticon'] = "0";					//use blank caticon if no caticon present
-			$content_pref['content_breadcrumb_catall'] = "0";				//show breadcrumb on all categories page
-			$content_pref['content_breadcrumb_cat'] = "0";					//show breadcrumb on single category page
-			$content_pref['content_breadcrumb_authorall'] = "0";			//show breadcrumb on all author page
-			$content_pref['content_breadcrumb_author'] = "0";				//show breadcrumb on single author page
-			$content_pref['content_breadcrumb_recent'] = "0";				//show breadcrumb on recent page
-			$content_pref['content_breadcrumb_item'] = "0";					//show breadcrumb on content item page
-			$content_pref['content_breadcrumb_top'] = "0";					//show breadcrumb on top rated page
-			$content_pref['content_breadcrumb_archive'] = "0";				//show breadcrumb on archive page
-			$content_pref['content_breadcrumb_seperator{$id}'] = ">";		//seperator character between breadcrumb
-			$content_pref['content_breadcrumb_rendertype'] = "2";			//how to render the breadcrumb
-			$content_pref['content_navigator_catall'] = "0";				//show navigator on all categories page
-			$content_pref['content_navigator_cat'] = "0";					//show navigator on single category page
-			$content_pref['content_navigator_authorall'] = "0";				//show navigator on all author page
-			$content_pref['content_navigator_author'] = "0";				//show navigator on single author page
-			$content_pref['content_navigator_recent'] = "0";				//show navigator on recent page
-			$content_pref['content_navigator_item'] = "0";					//show navigator on content item page
-			$content_pref['content_navigator_top'] = "0";					//show navigator on top rated page
-			$content_pref['content_navigator_archive'] = "0";				//show navigator on archive page
-			$content_pref['content_search_catall'] = "0";					//show search keyword on all categories page
-			$content_pref['content_search_cat'] = "0";						//show search keyword on single category page
-			$content_pref['content_search_authorall'] = "0";				//show search keyword on all author page
-			$content_pref['content_search_author'] = "0";					//show search keyword on single author page
-			$content_pref['content_search_recent'] = "0";					//show search keyword on recent page
-			$content_pref['content_search_item'] = "0";						//show search keyword on content item page
-			$content_pref['content_search_top'] = "0";						//show search keyword on top rated page
-			$content_pref['content_search_archive'] = "0";					//show search keyword on archive page
-			$content_pref['content_ordering_catall'] = "0";					//show ordering on all categories page
-			$content_pref['content_ordering_cat'] = "0";					//show ordering on single category page
-			$content_pref['content_ordering_authorall'] = "0";				//show ordering on all author page
-			$content_pref['content_ordering_author'] = "0";					//show ordering on single author page
-			$content_pref['content_ordering_recent'] = "0";					//show ordering on recent page
-			$content_pref['content_ordering_item'] = "0";					//show ordering on content item page
-			$content_pref['content_ordering_top'] = "0";					//show ordering on top rated page
-			$content_pref['content_ordering_archive'] = "0";				//show ordering on archive page
-			$content_pref['content_searchmenu_rendertype'] = "1";			//rendertype for searchmenu (1=echo, 2=in separate menu)
-			$content_pref['content_nextprev'] = "1";						//use nextprev buttons
-			$content_pref['content_nextprev_number'] = "10";				//how many items on a page
-			$content_pref['content_defaultorder'] = "orderddate";			//default sort and order method
+			$cp['content_log'] = '';							//activate log
+			$cp['content_blank_icon'] = '';						//use blank icon if no icon present
+			$cp['content_blank_caticon'] = '';					//use blank caticon if no caticon present
+			$cp['content_breadcrumb_catall'] = '';				//show breadcrumb on all categories page
+			$cp['content_breadcrumb_cat'] = '';					//show breadcrumb on single category page
+			$cp['content_breadcrumb_authorall'] = '';			//show breadcrumb on all author page
+			$cp['content_breadcrumb_author'] = '';				//show breadcrumb on single author page
+			$cp['content_breadcrumb_recent'] = '';				//show breadcrumb on recent page
+			$cp['content_breadcrumb_item'] = '';				//show breadcrumb on content item page
+			$cp['content_breadcrumb_top'] = '';					//show breadcrumb on top rated page
+			$cp['content_breadcrumb_archive'] = '';				//show breadcrumb on archive page
+			$cp['content_breadcrumb_seperator'] = '>';			//seperator character between breadcrumb
+			$cp['content_breadcrumb_rendertype'] = '2';			//how to render the breadcrumb
+			$cp['content_navigator_catall'] = '';				//show navigator on all categories page
+			$cp['content_navigator_cat'] = '';					//show navigator on single category page
+			$cp['content_navigator_authorall'] = '';			//show navigator on all author page
+			$cp['content_navigator_author'] = '';				//show navigator on single author page
+			$cp['content_navigator_recent'] = '';				//show navigator on recent page
+			$cp['content_navigator_item'] = '';					//show navigator on content item page
+			$cp['content_navigator_top'] = '';					//show navigator on top rated page
+			$cp['content_navigator_archive'] = '';				//show navigator on archive page
+			$cp['content_search_catall'] = '';					//show search keyword on all categories page
+			$cp['content_search_cat'] = '';						//show search keyword on single category page
+			$cp['content_search_authorall'] = '';				//show search keyword on all author page
+			$cp['content_search_author'] = '';					//show search keyword on single author page
+			$cp['content_search_recent'] = '';					//show search keyword on recent page
+			$cp['content_search_item'] = '';					//show search keyword on content item page
+			$cp['content_search_top'] = '';						//show search keyword on top rated page
+			$cp['content_search_archive'] = '';					//show search keyword on archive page
+			$cp['content_ordering_catall'] = '';				//show ordering on all categories page
+			$cp['content_ordering_cat'] = '';					//show ordering on single category page
+			$cp['content_ordering_authorall'] = '';				//show ordering on all author page
+			$cp['content_ordering_author'] = '';				//show ordering on single author page
+			$cp['content_ordering_recent'] = '';				//show ordering on recent page
+			$cp['content_ordering_item'] = '';					//show ordering on content item page
+			$cp['content_ordering_top'] = '';					//show ordering on top rated page
+			$cp['content_ordering_archive'] = '';				//show ordering on archive page
+			$cp['content_searchmenu_rendertype'] = '1';			//rendertype for searchmenu (1=echo, 2=in separate menu)
+			$cp['content_nextprev'] = '1';						//use nextprev buttons
+			$cp['content_nextprev_number'] = '10';				//how many items on a page
+			$cp['content_defaultorder'] = 'orderddate';			//default sort and order method
 			//upload icon/image size handling
-			$content_pref['content_upload_image_size'] = "500";				//resize size of uploaded image
-			$content_pref['content_upload_image_size_thumb'] = "100";		//resize size of created thumb on uploaded image
-			$content_pref['content_upload_icon_size'] = "100";				//resize size of uploaded icon
+			$cp['content_upload_image_size'] = '500';			//resize size of uploaded image
+			$cp['content_upload_image_size_thumb'] = '100';		//resize size of created thumb on uploaded image
+			$cp['content_upload_icon_size'] = '100';			//resize size of uploaded icon
 
 			//CONTENT ITEM PREVIEW
-			$content_pref['content_list_icon'] = "0";						//show icon
-			$content_pref['content_list_subheading'] = "1";					//show subheading
-			$content_pref['content_list_summary'] = "1";					//show summary
-			$content_pref['content_list_text'] = "0";						//show (part of) text
-			$content_pref['content_list_date'] = "0";						//show date
-			$content_pref['content_list_authorname'] = "0";					//show authorname
-			$content_pref['content_list_authorprofile'] = "0";				//show link to author profile
-			$content_pref['content_list_authoremail'] = "0";				//show authoremail
-			$content_pref['content_list_authoricon'] = "0";					//show link to author list
-			$content_pref['content_list_rating'] = "1";						//show rating system
-			$content_pref['content_list_peicon'] = "1";						//show printemailicons
-			$content_pref['content_list_parent'] = "0";						//show parent cat
-			$content_pref['content_list_refer'] = "0";						//show refer count
-			$content_pref['content_list_subheading_char'] = "100";			//how many subheading characters
-			$content_pref['content_list_subheading_post'] = "[...]";		//use a postfix for too long subheadings
-			$content_pref['content_list_summary_char'] = "100";				//how many summary characters
-			$content_pref['content_list_summary_post'] = "[...]";			//use a postfix for too long summary
-			$content_pref['content_list_text_char'] = "60";					//how many text words
-			$content_pref['content_list_text_post'] = CONTENT_LAN_16;		//use a postfix for too long text
-			$content_pref['content_list_text_link'] = "1";					//show link to content item on postfix
-			$content_pref['content_list_authoremail_nonmember'] = "0";		//show email non member author
-			$content_pref['content_list_peicon_all'] = "0";					//override printemail icons
-			$content_pref['content_list_rating_all'] = "0";					//override rating system
-			$content_pref['content_list_editicon'] = "0";					//show link to admin edit item
-			$content_pref['content_list_datestyle'] = "%d %b %Y";			//choose datestyle for given date
-			$content_pref['content_list_caption'] = CONTENT_LAN_23;			//caption for recent list
-			$content_pref['content_list_caption_append_name'] = '1';		//append category heading to caption
+			$cp['content_list_icon'] = '1';						//show icon
+			$cp['content_list_subheading'] = '1';				//show subheading
+			$cp['content_list_summary'] = '1';					//show summary
+			$cp['content_list_text'] = '';						//show (part of) text
+			$cp['content_list_date'] = '';						//show date
+			$cp['content_list_authorname'] = '';				//show authorname
+			$cp['content_list_authorprofile'] = '';				//show link to author profile
+			$cp['content_list_authoremail'] = '';				//show authoremail
+			$cp['content_list_authoricon'] = '';				//show link to author list
+			$cp['content_list_rating'] = '1';					//show rating system
+			$cp['content_list_peicon'] = '1';					//show printemailicons
+			$cp['content_list_parent'] = '';					//show parent cat
+			$cp['content_list_refer'] = '';						//show refer count
+			$cp['content_list_subheading_char'] = '100';		//how many subheading characters
+			$cp['content_list_subheading_post'] = '[...]';		//use a postfix for too long subheadings
+			$cp['content_list_summary_char'] = '100';			//how many summary characters
+			$cp['content_list_summary_post'] = '[...]';			//use a postfix for too long summary
+			$cp['content_list_text_char'] = '60';				//how many text words
+			$cp['content_list_text_post'] = CONTENT_LAN_16;		//use a postfix for too long text
+			$cp['content_list_text_link'] = '1';				//show link to content item on postfix
+			$cp['content_list_authoremail_nonmember'] = '';		//show email non member author
+			$cp['content_list_peicon_all'] = '';				//override printemail icons
+			$cp['content_list_rating_all'] = '';				//override rating system
+			$cp['content_list_editicon'] = '';					//show link to admin edit item
+			$cp['content_list_datestyle'] = '%d %b %Y';			//choose datestyle for given date
+			$cp['content_list_caption'] = CONTENT_LAN_23;		//caption for recent list
+			$cp['content_list_caption_append_name'] = '1';		//append category heading to caption
 
 			//CATEGORY PAGES
 			//sections of content category in 'view all categories page'
-			$content_pref['content_catall_icon'] = "1";						//show icon
-			$content_pref['content_catall_subheading'] = "1";				//show subheading
-			$content_pref['content_catall_text'] = "0";						//show text
-			$content_pref['content_catall_date'] = "0";						//show date
-			$content_pref['content_catall_rating'] = "1";					//show rating
-			$content_pref['content_catall_authorname'] = "0";				//show author name
-			$content_pref['content_catall_authoremail'] = "0";				//show author email
-			$content_pref['content_catall_authorprofile'] = "0";			//show link to author profile
-			$content_pref['content_catall_authoricon'] = "0";				//show link to author list
-			$content_pref['content_catall_peicon'] = "1";					//show pe icons
-			$content_pref['content_catall_comment'] = "1";					//show amount of comments
-			$content_pref['content_catall_amount'] = "0";					//show amount of items
-			$content_pref['content_catall_text_char'] = "65";				//define amount of words of text to display
-			$content_pref['content_catall_text_post'] = CONTENT_LAN_16;		//define postfix is text is too long
-			$content_pref['content_catall_text_link'] = "1";				//define if link to category should be added on postfix
-			$content_pref['content_catall_caption'] = CONTENT_LAN_25;		//caption for all categories page
+			$cp['content_catall_icon'] = '1';					//show icon
+			$cp['content_catall_subheading'] = '1';				//show subheading
+			$cp['content_catall_text'] = '';					//show text
+			$cp['content_catall_date'] = '';					//show date
+			$cp['content_catall_rating'] = '1';					//show rating
+			$cp['content_catall_authorname'] = '';				//show author name
+			$cp['content_catall_authoremail'] = '';				//show author email
+			$cp['content_catall_authorprofile'] = '';			//show link to author profile
+			$cp['content_catall_authoricon'] = '';				//show link to author list
+			$cp['content_catall_peicon'] = '1';					//show pe icons
+			$cp['content_catall_comment'] = '1';				//show amount of comments
+			$cp['content_catall_amount'] = '';					//show amount of items
+			$cp['content_catall_text_char'] = '65';				//define amount of words of text to display
+			$cp['content_catall_text_post'] = CONTENT_LAN_16;	//define postfix is text is too long
+			$cp['content_catall_text_link'] = '1';				//define if link to category should be added on postfix
+			$cp['content_catall_caption'] = CONTENT_LAN_25;		//caption for all categories page
 			//sections of content category in 'view category' page
-			$content_pref['content_cat_icon'] = "1";						//show icon
-			$content_pref['content_cat_subheading'] = "1";					//show subheading
-			$content_pref['content_cat_text'] = "0";						//show text
-			$content_pref['content_cat_date'] = "0";						//show date
-			$content_pref['content_cat_authorname'] = "0";					//show author name
-			$content_pref['content_cat_authoremail'] = "0";					//show author email
-			$content_pref['content_cat_authorprofile'] = "0";				//show link to author profile
-			$content_pref['content_cat_authoricon'] = "0";					//show link to author list
-			$content_pref['content_cat_rating'] = "1";						//show rating
-			$content_pref['content_cat_peicon'] = "1";						//show pe icons
-			$content_pref['content_cat_comment'] = "1";						//show amount of comments
-			$content_pref['content_cat_amount'] = "1";						//show amount of items
-			$content_pref['content_cat_caption'] = CONTENT_LAN_26;			//caption for single category page
-			$content_pref['content_cat_caption_append_name'] = '1';			//append category heading to caption
-			$content_pref['content_cat_sub_caption'] = CONTENT_LAN_28;		//caption for subcategories
-			$content_pref['content_cat_item_caption'] = CONTENT_LAN_31;		//caption for items in category
+			$cp['content_cat_icon'] = '1';						//show icon
+			$cp['content_cat_subheading'] = '1';				//show subheading
+			$cp['content_cat_text'] = '';						//show text
+			$cp['content_cat_date'] = '';						//show date
+			$cp['content_cat_authorname'] = '';					//show author name
+			$cp['content_cat_authoremail'] = '';				//show author email
+			$cp['content_cat_authorprofile'] = '';				//show link to author profile
+			$cp['content_cat_authoricon'] = '';					//show link to author list
+			$cp['content_cat_rating'] = '1';					//show rating
+			$cp['content_cat_peicon'] = '1';					//show pe icons
+			$cp['content_cat_comment'] = '1';					//show amount of comments
+			$cp['content_cat_amount'] = '1';					//show amount of items
+			$cp['content_cat_caption'] = CONTENT_LAN_26;		//caption for single category page
+			$cp['content_cat_caption_append_name'] = '1';		//append category heading to caption
+			$cp['content_cat_sub_caption'] = CONTENT_LAN_28;	//caption for subcategories
+			$cp['content_cat_item_caption'] = CONTENT_LAN_31;	//caption for items in category
 
 			//sections of subcategories in 'view category page'
-			$content_pref['content_catsub_icon'] = "1";						//show icon
-			$content_pref['content_catsub_subheading'] = "1";				//show subheading
-			$content_pref['content_catsub_amount'] = "1";					//show amount of items
-			$content_pref['content_cat_showparent'] = "1";					//show parent item in category page
-			$content_pref['content_cat_showparentsub'] = "1";				//show subcategories in category page
-			$content_pref['content_cat_listtype'] = "0";					//also show items from subategories
-			$content_pref['content_cat_menuorder'] = "1";					//order of parent and child items
-			$content_pref['content_cat_rendertype'] = "2";					//render method of the menus
-			$content_pref['content_cat_text_char'] = "65";					//define amount of words of text to display
-			$content_pref['content_cat_text_post'] = CONTENT_LAN_16;			//define postfix is text is too long
-			$content_pref['content_cat_text_link'] = "1";					//define if link to category should be added on postfix
-			$content_pref['content_cat_authoremail_nonmember'] = "0";		//define if the email of a non-member will be displayed
-			$content_pref['content_cat_peicon_all'] = "0";					//override printemail icons
-			$content_pref['content_cat_rating_all'] = "0";					//override rating system
+			$cp['content_catsub_icon'] = '1';					//show icon
+			$cp['content_catsub_subheading'] = '1';				//show subheading
+			$cp['content_catsub_amount'] = '1';					//show amount of items
+			$cp['content_cat_showparent'] = '1';				//show parent item in category page
+			$cp['content_cat_showparentsub'] = '1';				//show subcategories in category page
+			$cp['content_cat_listtype'] = '';					//also show items from subategories
+			$cp['content_cat_menuorder'] = '1';					//order of parent and child items
+			$cp['content_cat_rendertype'] = '2';				//render method of the menus
+			$cp['content_cat_text_char'] = '65';				//define amount of words of text to display
+			$cp['content_cat_text_post'] = CONTENT_LAN_16;		//define postfix is text is too long
+			$cp['content_cat_text_link'] = '1';					//define if link to category should be added on postfix
+			$cp['content_cat_authoremail_nonmember'] = '';		//define if the email of a non-member will be displayed
+			$cp['content_cat_peicon_all'] = '';					//override printemail icons
+			$cp['content_cat_rating_all'] = '';					//override rating system
 
 			//CONTENT PAGE
-			$content_pref['content_content_icon'] = "0";					//show icon
-			$content_pref['content_content_subheading'] = "1";				//show subheading
-			$content_pref['content_content_summary'] = "1";					//show summary
-			$content_pref['content_content_date'] = "0";					//show date
-			$content_pref['content_content_authorname'] = "1";				//show authorname
-			$content_pref['content_content_authorprofile'] = "0";			//show link to author profile
-			$content_pref['content_content_authoremail'] = "0";				//show suthoremail
-			$content_pref['content_content_authoricon'] = "0";				//show link to author list
-			$content_pref['content_content_parent'] = "0";					//show parent category
-			$content_pref['content_content_rating'] = "1";					//show rating system
-			$content_pref['content_content_peicon'] = "1";					//show printemailicons
-			$content_pref['content_content_refer'] = "0";					//show refer count
-			$content_pref['content_content_comment'] = "0";					//show amount of comments
-			$content_pref['content_content_authoremail_nonmember'] = "0";	//show email non member
-			$content_pref['content_content_peicon_all'] = "0";				//override printemail icons
-			$content_pref['content_content_rating_all'] = "0";				//override rating system
-			$content_pref['content_content_comment_all'] = "0";				//override comment system				
-			$content_pref['content_content_editicon'] = "0";				//show link in content page to admin edit item
-			$content_pref['content_content_customtags'] = "0";				//should additional data be shown
-			$content_pref['content_content_presettags'] = "0";				//should preset data tags be shown
-			$content_pref['content_content_attach'] = "0";					//show attachments
-			$content_pref['content_content_images'] = "0";					//show images
-			$content_pref['content_content_pagenames_rendertype'] = "0";	//rendertype for articleindex on multipage content items
-			$content_pref['content_content_multipage_preset'] = "0";		//render custom/preset in multipage item first/last page
+			$cp['content_content_icon'] = '';					//show icon
+			$cp['content_content_subheading'] = '1';			//show subheading
+			$cp['content_content_summary'] = '1';				//show summary
+			$cp['content_content_date'] = '1';					//show date
+			$cp['content_content_authorname'] = '1';			//show authorname
+			$cp['content_content_authorprofile'] = '';			//show link to author profile
+			$cp['content_content_authoremail'] = '';			//show suthoremail
+			$cp['content_content_authoricon'] = '';				//show link to author list
+			$cp['content_content_parent'] = '';					//show parent category
+			$cp['content_content_rating'] = '1';				//show rating system
+			$cp['content_content_peicon'] = '1';				//show printemailicons
+			$cp['content_content_refer'] = '';					//show refer count
+			$cp['content_content_comment'] = '1';				//show amount of comments
+			$cp['content_content_authoremail_nonmember'] = '';	//show email non member
+			$cp['content_content_peicon_all'] = '';				//override printemail icons
+			$cp['content_content_rating_all'] = '';				//override rating system
+			$cp['content_content_comment_all'] = '';			//override comment system				
+			$cp['content_content_editicon'] = '';				//show link in content page to admin edit item
+			$cp['content_content_customtags'] = '';				//should additional data be shown
+			$cp['content_content_presettags'] = '';				//should preset data tags be shown
+			$cp['content_content_attach'] = '';					//show attachments
+			$cp['content_content_images'] = '';					//show images
+			$cp['content_content_pagenames_rendertype'] = '';	//rendertype for articleindex on multipage content items
+			$cp['content_content_multipage_preset'] = '';		//render custom/preset in multipage item first/last page
+			$cp['content_content_pagenames_nextprev_prevhead'] = '< {PAGETITLE}';		//link to next page in multipage item
+			$cp['content_content_pagenames_nextprev_nexthead'] = '{PAGETITLE} >';		//link to prev page in multipage item
 
 			//AUTHOR PAGE
-			$content_pref['content_author_lastitem'] = "0";					//show last item reference
-			$content_pref['content_author_amount'] = "1";					//show amount of items from this author
-			$content_pref['content_author_nextprev'] = "1";					//use next prev buttons
-			$content_pref['content_author_nextprev_number'] = "20";			//amount of items per page
-			$content_pref['content_author_index_caption'] = CONTENT_LAN_32;	//caption for author index page
-			$content_pref['content_author_caption'] = CONTENT_LAN_32;		//caption for single author page
-			$content_pref['content_author_caption_append_name'] = '1';		//append author name to caption
+			$cp['content_author_lastitem'] = '';						//show last item reference
+			$cp['content_author_amount'] = '1';							//show amount of items from this author
+			$cp['content_author_nextprev'] = '1';						//use next prev buttons
+			$cp['content_author_nextprev_number'] = '20';				//amount of items per page
+			$cp['content_author_index_caption'] = CONTENT_LAN_32;		//caption for author index page
+			$cp['content_author_caption'] = CONTENT_LAN_32;				//caption for single author page
+			$cp['content_author_caption_append_name'] = '1';			//append author name to caption
 
 			//ARCHIVE PAGE
-			$content_pref['content_archive_nextprev'] = "1";				//archive : choose to show next/prev links
-			$content_pref['content_archive_nextprev_number'] = "30";		//archive : choose amount to use in next/prev
-			$content_pref['content_archive_letterindex'] = "0";				//archive : letter index
-			$content_pref['content_archive_datestyle'] = "%d %b %Y";		//archive : choose datestyle for given date
-			$content_pref['content_archive_date'] = "1";					//archive : section: show date
-			$content_pref['content_archive_authorname'] = "0";				//archive : section: show authorname
-			$content_pref['content_archive_authorprofile'] = "0";			//archive : section: show link to author profile
-			$content_pref['content_archive_authoricon'] = "0";				//archive : section: show link to author list
-			$content_pref['content_archive_authoremail'] = "0";				//archive : section: show author email
-			$content_pref['content_archive_authoremail_nonmember'] = "0";	//archive : show link to email of non-member author
-			$content_pref['content_archive_caption'] = CONTENT_LAN_84;		//caption for archive page
+			$cp['content_archive_nextprev'] = '1';						//archive : choose to show next/prev links
+			$cp['content_archive_nextprev_number'] = '30';				//archive : choose amount to use in next/prev
+			$cp['content_archive_letterindex'] = '1';					//archive : letter index
+			$cp['content_archive_datestyle'] = '%d %b %Y';				//archive : choose datestyle for given date
+			$cp['content_archive_date'] = '1';							//archive : section: show date
+			$cp['content_archive_authorname'] = '';						//archive : section: show authorname
+			$cp['content_archive_authorprofile'] = '';					//archive : section: show link to author profile
+			$cp['content_archive_authoricon'] = '';						//archive : section: show link to author list
+			$cp['content_archive_authoremail'] = '';					//archive : section: show author email
+			$cp['content_archive_authoremail_nonmember'] = '';			//archive : show link to email of non-member author
+			$cp['content_archive_caption'] = CONTENT_LAN_84;			//caption for archive page
 
 			//TOP RATED PAGE
-			$content_pref['content_top_icon'] = "0";						//top : section: show icon
-			$content_pref['content_top_authorname'] = "0";					//top : section: show authorname
-			$content_pref['content_top_authorprofile'] = "0";				//top : section: show link to author profile
-			$content_pref['content_top_authoricon'] = "0";					//top : section: show link to author list
-			$content_pref['content_top_authoremail'] = "0";					//top : section: show author email
-			$content_pref['content_top_authoremail_nonmember'] = "0";		//top : show link to email of non-member author
-			$content_pref['content_top_icon_width'] = '';					//use this size for icon
-			$content_pref['content_top_caption'] = CONTENT_LAN_38;			//caption for top rated page
-			$content_pref['content_top_caption_append_name'] = '1';			//append category heading to caption
+			$cp['content_top_icon'] = '';								//top : section: show icon
+			$cp['content_top_authorname'] = '';							//top : section: show authorname
+			$cp['content_top_authorprofile'] = '';						//top : section: show link to author profile
+			$cp['content_top_authoricon'] = '';							//top : section: show link to author list
+			$cp['content_top_authoremail'] = '';						//top : section: show author email
+			$cp['content_top_authoremail_nonmember'] = '';				//top : show link to email of non-member author
+			$cp['content_top_icon_width'] = '';							//use this size for icon
+			$cp['content_top_caption'] = CONTENT_LAN_38;				//caption for top rated page
+			$cp['content_top_caption_append_name'] = '1';				//append category heading to caption
 
 			//TOP SCORE PAGE
-			$content_pref['content_score_icon'] = "0";						//score : section: show icon
-			$content_pref['content_score_authorname'] = "0";				//score : section: show authorname
-			$content_pref['content_score_authorprofile'] = "0";				//score : section: show link to author profile
-			$content_pref['content_score_authoricon'] = "0";				//score : section: show link to author list
-			$content_pref['content_score_authoremail'] = "0";				//score : section: show author email
-			$content_pref['content_score_authoremail_nonmember'] = "0";		//score : show link to email of non-member author
-			$content_pref['content_score_icon_width'] = '';					//use this size for icon
-			$content_pref['content_score_caption'] = CONTENT_LAN_87;		//caption for top score page
-			$content_pref['content_score_caption_append_name'] = '1';		//append category heading to caption
+			$cp['content_score_icon'] = '';								//score : section: show icon
+			$cp['content_score_authorname'] = '';						//score : section: show authorname
+			$cp['content_score_authorprofile'] = '';					//score : section: show link to author profile
+			$cp['content_score_authoricon'] = '';						//score : section: show link to author list
+			$cp['content_score_authoremail'] = '';						//score : section: show author email
+			$cp['content_score_authoremail_nonmember'] = '';			//score : show link to email of non-member author
+			$cp['content_score_icon_width'] = '';						//use this size for icon
+			$cp['content_score_caption'] = CONTENT_LAN_87;				//caption for top score page
+			$cp['content_score_caption_append_name'] = '1';				//append category heading to caption
 
 			//MENU OPTIONS
-			$content_pref['content_menu_caption'] = CONTENT_MENU_LAN_0;		//caption of menu
-			$content_pref['content_menu_search'] = "0";						//show search keyword
-			$content_pref['content_menu_sort'] = "0";						//show sorting methods
-			$content_pref["content_menu_visibilitycheck"] = '0';			//show menu only on content pages of this top level category?
-			$content_pref['content_menu_links'] = "1";						//show content links
-			$content_pref['content_menu_links_dropdown'] = "0";				//rendertype of content links (in dropdown or as normal links)
-			$content_pref['content_menu_links_icon'] = "0";					//define icon for content links (only with normallinks)
-			$content_pref['content_menu_links_caption'] = CONTENT_MENU_LAN_4;	//define caption for link list (only is normallinks is selected)
-			$content_pref['content_menu_viewallcat'] = "1";					//menu: view link to all categories
-			$content_pref['content_menu_viewallauthor'] = "1";				//menu: view link to all authors
-			$content_pref['content_menu_viewallitems'] = "1";				//menu: view link to all items (archive)
-			$content_pref['content_menu_viewtoprated'] = "0";				//menu: view link to top rated items
-			$content_pref['content_menu_viewtopscore'] = "0";				//menu: view link to top score items
-			$content_pref['content_menu_viewrecent'] = "1";					//menu: view link to recent items
-			$content_pref['content_menu_viewsubmit'] = "0";					//view link to submit content item (only if it is allowed)
-			$content_pref['content_menu_viewicon'] = "0";					//choose icon to display for links
-			$content_pref['content_menu_cat'] = "1";						//view categories
-			$content_pref['content_menu_cat_main'] = "1";					//show main parent in the category list				
-			$content_pref['content_menu_cat_number'] = "1";					//show number of items in category				
-			$content_pref['content_menu_cat_icon'] = "0";					//choose icon to display for categories
-			$content_pref['content_menu_cat_icon_default'] = "0";			//choose default icon is no icon present (only if category_icon is selected)
-			$content_pref['content_menu_cat_caption'] = CONTENT_MENU_LAN_3;	//define caption for category list
-			$content_pref['content_menu_cat_dropdown'] = "0";				//rendertype of categories (in dropdown or as normal links)
-			$content_pref['content_menu_recent'] = "1";						//view recent list
-			$content_pref['content_menu_recent_caption'] = CONTENT_MENU_LAN_2;	//caption of recent list
-			$content_pref['content_menu_recent_number'] = "5";				//number of recent items to show
-			$content_pref['content_menu_recent_date'] = "0";				//show date in recent list
-			$content_pref['content_menu_recent_datestyle'] = "%d %b %Y";	//choose datestyle for given date
-			$content_pref['content_menu_recent_author'] = "0";				//show author in recent list
-			$content_pref['content_menu_recent_subheading'] = "0";			//show subheading in recent list
-			$content_pref['content_menu_recent_subheading_char'] = "80";	//number of characters of subheading to show
-			$content_pref['content_menu_recent_subheading_post'] = "[...]";	//postfix for too long subheadings
-			$content_pref['content_menu_recent_icon'] = "0";				//choose icon to display for recent items
-			$content_pref['content_menu_recent_icon_width'] = "50";			//specify width of icon (only if content_icon is set)
+			$cp['content_menu_caption'] = CONTENT_MENU_LAN_0;			//caption of menu
+			$cp['content_menu_search'] = '';							//show search keyword
+			$cp['content_menu_sort'] = '';								//show sorting methods
+			$cp['content_menu_visibilitycheck'] = '';					//show menu only on content pages of this top level category?
+			$cp['content_menu_links'] = '1';							//show content links
+			$cp['content_menu_links_dropdown'] = '';					//rendertype of content links (in dropdown or as normal links)
+			$cp['content_menu_links_icon'] = '';						//define icon for content links (only with normallinks)
+			$cp['content_menu_links_caption'] = CONTENT_MENU_LAN_4;		//define caption for link list (only is normallinks is selected)
+			$cp['content_menu_viewallcat'] = '1';						//menu: view link to all categories
+			$cp['content_menu_viewallauthor'] = '1';					//menu: view link to all authors
+			$cp['content_menu_viewallitems'] = '1';						//menu: view link to all items (archive)
+			$cp['content_menu_viewtoprated'] = '';						//menu: view link to top rated items
+			$cp['content_menu_viewtopscore'] = '';						//menu: view link to top score items
+			$cp['content_menu_viewrecent'] = '1';						//menu: view link to recent items
+			$cp['content_menu_viewsubmit'] = '1';						//view link to submit content item (only if it is allowed)
+			$cp['content_menu_viewicon'] = '';							//choose icon to display for links
+			$cp['content_menu_cat'] = '1';								//view categories
+			$cp['content_menu_cat_main'] = '1';							//show main parent in the category list				
+			$cp['content_menu_cat_number'] = '1';						//show number of items in category				
+			$cp['content_menu_cat_icon'] = '';							//choose icon to display for categories
+			$cp['content_menu_cat_icon_default'] = '';					//choose default icon is no icon present (only if category_icon is selected)
+			$cp['content_menu_cat_caption'] = CONTENT_MENU_LAN_3;		//define caption for category list
+			$cp['content_menu_cat_dropdown'] = '';						//rendertype of categories (in dropdown or as normal links)
+			$cp['content_menu_recent'] = '1';							//view recent list
+			$cp['content_menu_recent_caption'] = CONTENT_MENU_LAN_2;	//caption of recent list
+			$cp['content_menu_recent_number'] = '5';					//number of recent items to show
+			$cp['content_menu_recent_date'] = '';						//show date in recent list
+			$cp['content_menu_recent_datestyle'] = '%d %b %Y';			//choose datestyle for given date
+			$cp['content_menu_recent_author'] = '';						//show author in recent list
+			$cp['content_menu_recent_subheading'] = '';					//show subheading in recent list
+			$cp['content_menu_recent_subheading_char'] = '80';			//number of characters of subheading to show
+			$cp['content_menu_recent_subheading_post'] = '[...]';		//postfix for too long subheadings
+			$cp['content_menu_recent_icon'] = '';						//choose icon to display for recent items
+			$cp['content_menu_recent_icon_width'] = '50';				//specify width of icon (only if content_icon is set)
 
-			$content_pref['content_inherit'] = '0';							//inherit options from default preferences
+			$cp['content_inherit'] = '';								//inherit options from default preferences
 
 			//CONTENT MANAGER
-			$content_pref['content_manager_approve'] = '0';					//class for managers who can approve submitted items
-			$content_pref['content_manager_personal'] = '0';				//class for managers who can manage personal items
-			$content_pref['content_manager_category'] = '0';				//class for managers who can manage all items in a category
+			$cp['content_manager_submit'] = '255';						//class for managers who can submit items in a category
+			$cp['content_manager_approve'] = '255';						//class for managers who can approve submitted items
+			$cp['content_manager_personal'] = '255';					//class for managers who can manage personal items
+			$cp['content_manager_category'] = '255';					//class for managers who can manage all items in a category
+			$cp['content_manager_inherit'] = '';						//inherit options from default (manager) preferences
 
-			//PAGE RESTRICTION (NOT YET IN USE)
-			$content_pref['content_restrict_managecontent'] = '0';
-			$content_pref['content_restrict_createcontent'] = '0';
-			$content_pref['content_restrict_managecat'] = '0';
-			$content_pref['content_restrict_createcat'] = '0';
-			$content_pref['content_restrict_order'] = '0';
-			$content_pref['content_restrict_options'] = '0';
-			$content_pref['content_restrict_adminmanager'] = '0';
-			$content_pref['content_restrict_restrict'] = '0';
-			$content_pref['content_restrict_recent'] = '0';
-			$content_pref['content_restrict_allcat'] = '0';
-			$content_pref['content_restrict_onecat'] = '0';
-			$content_pref['content_restrict_contentitem'] = '0';
-			$content_pref['content_restrict_author'] = '0';
-			$content_pref['content_restrict_archive'] = '0';
-			$content_pref['content_restrict_toprated'] = '0';
-			$content_pref['content_restrict_topscore'] = '0';
-			$content_pref['content_restrict_submit'] = '0';
-			$content_pref['content_restrict_frontmanager'] = '0';
+			//manager : submit options
+			$cp['content_manager_submit_directpost'] ='';				//should submission be direclty posted as an item, or have them validated by admins
+			$cp['content_manager_submit_subheading'] = '';				//should subheading be available
+			$cp['content_manager_submit_summary'] = '';					//should summary be available
+			$cp['content_manager_submit_startdate'] = '';				//should startdate be available
+			$cp['content_manager_submit_enddate'] = '';					//should enddate be available
+			$cp['content_manager_submit_icon'] = '';					//should icon be available to add when submitting an item
+			$cp['content_manager_submit_attach'] = '';					//should file be available to add when submitting an item
+			$cp['content_manager_submit_images'] = '';					//should image be available to add when submitting an item
+			$cp['content_manager_submit_comment'] = '';					//should comment be available to add when submitting an item
+			$cp['content_manager_submit_rating'] = '';					//should rating be available to add when submitting an item
+			$cp['content_manager_submit_score'] = '';					//should score be available to add when submitting an item
+			$cp['content_manager_submit_pe'] = '';						//should printemailicons be available to add when submitting an item
+			$cp['content_manager_submit_visibility'] = '';				//should visibility be available to add when submitting an item
+			$cp['content_manager_submit_meta'] = '';					//should metatags be available to add when submitting an item
+			$cp['content_manager_submit_layout'] = '';					//should the option for choosing a layout template be shown
+			$cp['content_manager_submit_customtags'] = '';				//should options for adding additional data be shown
+			$cp['content_manager_submit_presettags'] = '';				//should preset data tags be shown
+			$cp['content_manager_submit_custom_number'] = '';			//how many customtags should be available to add when submitting an item
+			$cp['content_manager_submit_images_number'] = '';			//how many images should be available to add when submitting an item
+			$cp['content_manager_submit_files_number'] = '';			//how many files should be available to add when submitting an item
+
+			//manager : manager options
+			$cp['content_manager_manager_subheading'] = '';
+			$cp['content_manager_manager_summary'] = '';
+			$cp['content_manager_manager_startdate'] = '';
+			$cp['content_manager_manager_enddate'] = '';
+			$cp['content_manager_manager_icon'] = '';
+			$cp['content_manager_manager_attach'] = '';
+			$cp['content_manager_manager_images'] = '';
+			$cp['content_manager_manager_comment'] = '';
+			$cp['content_manager_manager_rating'] = '';
+			$cp['content_manager_manager_score'] = '';
+			$cp['content_manager_manager_pe'] = '';
+			$cp['content_manager_manager_visibility'] = '';
+			$cp['content_manager_manager_meta'] = '';
+			$cp['content_manager_manager_layout'] = '';
+			$cp['content_manager_manager_customtags'] = '';
+			$cp['content_manager_manager_presettags'] = '';
+			$cp['content_manager_manager_custom_number'] = '';
+			$cp['content_manager_manager_images_number'] = '2';
+			$cp['content_manager_manager_files_number'] = '1';
+
+			foreach($cp as $k => $v){
+				if( !empty($v) ){
+					$content_pref[$k] = $tp->toDB($v);
+				}
+			}
 
 			return $content_pref;
 		}
@@ -377,9 +386,8 @@ class content{
 
 			$plugintable = "pcontent";
 
-//echo "get content pref : ".$id."<br />";
-
-			if($id && $id!="0"){	//if $id; use prefs from content table
+			//if $id; use prefs from content table
+			if($id && $id!="0"){
 				$id = intval($id);
 				$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 				$row = $sql -> db_Fetch();
@@ -416,7 +424,7 @@ class content{
 				}
 				$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 
-				if(e_PAGE == "admin_content_config.php" && isset($qs[0]) && $qs[0] == 'option'){
+				if(e_PAGE == "admin_content_config.php" && isset($qs[0]) && ($qs[0] == 'option' || $qs[0] == 'manager') ){
 				}else{
 					//check inheritance, if set, get core prefs (default prefs)
 					if(isset($content_pref['content_inherit']) && $content_pref['content_inherit']!=''){
@@ -426,7 +434,8 @@ class content{
 					}
 				}
 
-			}else{					//if not $id; use prefs from default core table
+			//if not $id; use prefs from default core table
+			}else{
 				$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 				if ($num_rows == 0) {
 					$content_pref = $this -> ContentDefaultPrefs();
@@ -450,9 +459,35 @@ class content{
 			if($id == "0"){
 				$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 				if ($num_rows == 0) {
-					$sql -> db_Insert("core", "'$plugintable', '' ");
-				}else{
-					$row = $sql -> db_Fetch();
+					$content_pref = $this -> ContentDefaultPrefs();
+					$tmp = $eArrayStorage->WriteArray($content_pref);
+					$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
+					$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+				}
+				$row = $sql -> db_Fetch();
+				$current = $eArrayStorage->ReadArray($row['e107_value']);
+
+				//if we are updating options
+				if(isset($qs[0]) && $qs[0] == 'option' ){
+					//only retain the manager prefs from the existing set from getting overwritten
+					foreach($current as $k => $v){
+						if( strpos($k, "content_manager_") === 0 ){
+							$content_pref[$k] = $tp->toDB($v);
+						}
+					}
+
+					//prepare custom tags: use the posted values
+					$cp = $_POST['content_custom_preset_key'];
+
+				//if we are updating manager
+				}elseif(isset($qs[0]) && $qs[0] == 'manager'){
+					//if this is a top level category we need to retain all existing options
+					if($currentparent=='0'){
+						$content_pref = $current;
+					}
+
+					//prepare custom tags: use the existing content_pref values
+					$cp = $content_pref['content_custom_preset_key'];
 				}
 
 				//prepare custom tags: use the posted value
@@ -470,7 +505,7 @@ class content{
 				if(isset($qs[0]) && $qs[0] == 'option' ){
 					//only use the manager prefs from the existing set
 					foreach($current as $k => $v){
-						if( strpos($k, "content_manager_") === 0 || strpos($k, "content_restrict_") === 0 ){
+						if( strpos($k, "content_manager_") === 0 ){
 							$content_pref[$k] = $tp->toDB($v);
 						}
 					}
@@ -479,7 +514,7 @@ class content{
 					$cp = $_POST['content_custom_preset_key'];
 
 				//if we are updating manager
-				}elseif(isset($qs[0]) && ($qs[0] == 'manager' || $qs[0] == 'restrict')){
+				}elseif(isset($qs[0]) && $qs[0] == 'manager'){
 					//if this is a top level category we need to keep all existing options
 					if($currentparent=='0'){
 						$content_pref = $current;
@@ -573,8 +608,6 @@ class content{
 			}
 			return $agc;
 		}
-
-
 
 		function getCrumbItem($id, $arr){
 			//$id	:	content_parent of item
@@ -778,19 +811,6 @@ class content{
 					}
 				}
 
-			}elseif(e_PAGE == "content_submit.php"){
-				//submit page : view categories
-				if(!e_QUERY){
-					$page = CONTENT_PAGETITLE_LAN_0." / ".CONTENT_PAGETITLE_LAN_7;
-				}else{
-					$page = CONTENT_PAGETITLE_LAN_0;
-
-					//submit page : submit item
-					if($qs[0] == "content" && $qs[1] == "submit" && is_numeric($qs[2]) ){
-						$page = " / ".CONTENT_PAGETITLE_LAN_8;
-					}
-				}
-
 			}elseif(e_PAGE == "content_manager.php"){
 				//manager page : view categories
 				if(!e_QUERY){
@@ -798,7 +818,7 @@ class content{
 				}else{
 					$page = CONTENT_PAGETITLE_LAN_0." / ".CONTENT_PAGETITLE_LAN_9;
 
-					//manager page : view items
+					//manager page : list items
 					if($qs[0] == "content" && is_numeric($qs[1]) ){
 						$page .= " / ".CONTENT_PAGETITLE_LAN_10;
 
@@ -806,14 +826,25 @@ class content{
 					}elseif($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2]) ){
 						$page .= " / ".CONTENT_PAGETITLE_LAN_11;
 
-					//manager page : create new item
+					//manager page : create new item (manager)
 					}elseif($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2]) ){
 						$page .= " / ".CONTENT_PAGETITLE_LAN_12;
+
+					//manager page : create new item (submit)
+					}elseif($qs[0] == "content" && $qs[1] == "submit" && is_numeric($qs[2]) ){
+						$page .= " / ".CONTENT_PAGETITLE_LAN_8;
+
+					//manager page : approve submitted items (list items)
+					}elseif($qs[0] == "content" && $qs[1] == "approve" && is_numeric($qs[2]) ){
+						$page .= " / ".CONTENT_PAGETITLE_LAN_16;
+
+					//manager page : post submitted item (edit item)
+					}elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
+						$page .= " / ".CONTENT_PAGETITLE_LAN_17;
 					}
 				}
 			}
 			define("e_PAGETITLE", $page);
-
 		}
 
 
@@ -1092,31 +1123,6 @@ class content{
 			return $authorinfo;
 		}
 
-
-		/*
-		//admin
-		function popupHelp($text, $image="", $width="320", $title=""){
-			//$image	:	full path to the image you want to show on screen (uses a default doc image)
-			//$width	:	the width of the popup (uses a default width of 500)
-			//$title	:	the window title of the popup (uses a default title of ...)
-			//$text		:	the help text to show into the popup
-			
-			global $imode;
-
-			if(!$image || !file_exists($image)){
-				$image = e_IMAGE."packs/".$imode."/admin_images/docs_16.png";
-			}
-			if(!$width){ $width = "320"; }
-			if(!$title){ $title = "content management help area"; }
-
-			$popup = "<a href=\"javascript:openHelpPopup(".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='click for help on this page'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$image."' style='border:0;' alt='' /></a>";
-
-			return $popup;
-		}
-		*/
-
-
-
 		//search by keyword
 		function showOptionsSearch($mode, $searchtypeid=""){
 			global $plugindir, $plugintable, $qs, $rs;
@@ -1140,8 +1146,6 @@ class content{
 			}
 			return $CONTENT_SEARCH_TABLE_KEYWORD;
 		}
-
-
 
 		//redirection links in dropdown
 		function showOptionsSelect($mode, $searchtypeid=""){
@@ -1208,8 +1212,8 @@ class content{
 					if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewrecent"])){
 					   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_61, 0, $plugindir."content.php?recent.".$mainparent);
 					}
-					if( ($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewsubmit"]) && $content_pref["content_submit"] && check_class($content_pref["content_submit_class"]) ) ){
-						$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_75, 0, $plugindir."content_submit.php");
+					if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewsubmit"])){
+						$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_75, 0, $plugindir."content_manager.php");
 					}
 					$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option("&nbsp;", "0", "none");
 				}
@@ -1220,8 +1224,6 @@ class content{
 			}
 			return $CONTENT_SEARCH_TABLE_SELECT;
 		}
-
-
 
 		//ordering in dropdown
 		function showOptionsOrder($mode, $ordertypeid=""){
@@ -1274,8 +1276,7 @@ class content{
 			return $text;
 		}
 
-
-
+		//function to create the php menu file
 		function CreateParentMenu($parentid){
 			global $plugintable, $plugindir, $tp, $datequery;
 
@@ -1413,8 +1414,8 @@ class content{
 			$data .= "	if(\$content_pref[\"content_menu_viewrecent\"]){\n";
 			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content.php?recent.\".\$menutypeid.\"'>\".CONTENT_LAN_61.\"</a><br />\";\n";
 			$data .= "	}\n";
-			$data .= "	if( \$content_pref[\"content_menu_viewsubmit\"] && \$content_pref[\"content_submit\"] && check_class(\$content_pref[\"content_submit_class\"]) ){\n";
-			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content_submit.php'>\".CONTENT_LAN_75.\"</a><br />\";\n";
+			$data .= "	if(\$content_pref[\"content_menu_viewsubmit\"]){\n";
+			$data .= "		\$text .= \$linksicon.\" <a href='\".\$plugindir.\"content_manager.php'>\".CONTENT_LAN_75.\"</a><br />\";\n";
 			$data .= "	}\n";
 			$data .= "	\$text .= \"<br />\";\n";
 			$data .= "}\n";
