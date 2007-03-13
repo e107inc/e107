@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/content_admin_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-14 11:59:11 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-13 16:51:05 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -109,8 +109,19 @@ if(!isset($CONTENT_ADMIN_MANAGER_START)){
 	<tr>
 		<td class='fcaption' style='width:1%;'></td>
 		<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_25."</td>
-		<td class='fcaption' style='width:84%;'>".CONTENT_ADMIN_CAT_LAN_19."</td>
+		<td class='fcaption' style='width:74%;'>".CONTENT_ADMIN_CAT_LAN_19."</td>
 		<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_CAT_LAN_20."</td>
+		<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_OPT_LAN_167."</td>
+	</tr>
+	{CONTENT_ADMIN_SPACER=true}
+	<tr>
+		<td class='forumheader3' style='width:1%;'></td>
+		<td class='forumheader3' style='width:5%;'></td>
+		<td class='forumheader3' style='width:74%; white-space:nowrap;'>".CONTENT_ADMIN_OPT_LAN_1."</td>
+		<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
+			<a href='".e_SELF."?manager.default'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>
+		</td>
+		<td class='forumheader3' style='width:10%;'></td>
 	</tr>";
 }
 if(!isset($CONTENT_ADMIN_MANAGER_TABLE)){
@@ -119,7 +130,7 @@ if(!isset($CONTENT_ADMIN_MANAGER_TABLE)){
 	<tr>
 		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
 		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center; vertical-align:top;'>{CONTENT_CAT_ICON}</td>
-		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:84%;'>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:74%;'>
 			{CONTENT_MANAGER_PRE}{CONTENT_HEADING}
 			<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
 			<table class='fborder' style='width:98%;'>
@@ -145,10 +156,19 @@ if(!isset($CONTENT_ADMIN_MANAGER_TABLE)){
 		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
 			{CONTENT_LINK_MANAGER}
 		</td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
+			{CONTENT_MANAGER_INHERIT}
+		</td>
 	</tr>";
 }
 if(!isset($CONTENT_ADMIN_MANAGER_END)){
 	$CONTENT_ADMIN_MANAGER_END = "
+	<tr>
+		<td class='forumheader3' colspan='4'></td>
+		<td class='forumheader3' style='text-align:center;'>
+			<input class='button' type='submit' name='updatemanagerinherit' value='".CONTENT_ADMIN_CAT_LAN_7."' />
+		</td>
+	</tr>
 	</table>
 	</form>
 	</div>";
@@ -156,11 +176,31 @@ if(!isset($CONTENT_ADMIN_MANAGER_END)){
 
 
 // ##### CONTENT MANAGER CATEGORY --------------------------------------------------
+$CONTENT_ADMIN_MANAGER_ROW_TITLE	= "<tr><td colspan='2' class='fcaption'>{TOPIC_CAPTION}</td></tr>";
+$CONTENT_ADMIN_MANAGER_ROW_NOEXPAND = "
+<tr>
+	<td class='forumheader3' style='width:35%; vertical-align:top;'>{TOPIC_TOPIC}</td>
+	<td class='forumheader3'>{TOPIC_FIELD}</td>
+</tr>";
+
 if(!isset($CONTENT_ADMIN_MANAGER_CATEGORY)){
 	$CONTENT_ADMIN_MANAGER_CATEGORY = "
 	<div style='text-align:center'>
 	".$rs -> form_open("post", e_SELF."?".e_QUERY, "managerform", "", "enctype='multipart/form-data'")."
 	<table class='fborder' style='".ADMIN_WIDTH."'>
+	<tr>
+		<td colspan='2' class='fcaption'>
+			manage permissions
+		</td>
+	</tr>
+	<tr>
+		<td class='forumheader3' style='text-align:left'>
+			".CONTENT_ADMIN_MANAGER_LAN_6."<br />".CONTENT_ADMIN_MANAGER_LAN_7."<br />
+		</td>
+		<td class='forumheader3' style='text-align:left'>
+			{CONTENT_ADMIN_MANAGER_SUBMIT}
+		</td>
+	</tr>
 	<tr>
 		<td class='forumheader3' style='text-align:left'>
 			".CONTENT_ADMIN_MANAGER_LAN_0."<br />".CONTENT_ADMIN_MANAGER_LAN_1."<br />
@@ -185,6 +225,11 @@ if(!isset($CONTENT_ADMIN_MANAGER_CATEGORY)){
 			{CONTENT_ADMIN_MANAGER_CATEGORY}
 		</td>
 	</tr>
+	</table>
+	<br /><br />
+	{CONTENT_ADMIN_MANAGER_OPTIONS}
+	<br /><br />
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 		<td colspan='2' class='fcaption' style='text-align:center'>
 			{CONTENT_ADMIN_BUTTON}
@@ -255,16 +300,15 @@ if(!isset($CONTENT_ADMIN_CATEGORY_END)){
 
 
 // ##### CONTENT SUBMITTED --------------------------------------------------
+
 if(!isset($CONTENT_ADMIN_SUBMITTED_START)){
 	$CONTENT_ADMIN_SUBMITTED_START = "
 	<div style='text-align:center'>
 	".$rs -> form_open("post", e_SELF, "submittedform","","", "")."
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td style='width:5%; text-align:center;' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
+	<td class='fcaption' style='width:1%'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
 	<td style='width:5%; text-align:center;' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
-	<td style='width:15%; text-align:left;' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_48."</td>
-	<td style='width:15%; text-align:left;' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_10."</td>
 	<td style='width:50%; text-align:left;' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
 	<td style='width:10%; text-align:center;' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
 	</tr>";
@@ -272,18 +316,37 @@ if(!isset($CONTENT_ADMIN_SUBMITTED_START)){
 if(!isset($CONTENT_ADMIN_SUBMITTED_TABLE)){
 	$CONTENT_ADMIN_SUBMITTED_TABLE = "
 	<tr>
-	<td class='forumheader3' style='width:5%; text-align:center;'>{CONTENT_ID}</td>
-	<td class='forumheader3' style='width:5%; text-align:center;'>{CONTENT_ICON}</td>
-	<td class='forumheader3' style='width:15%; text-align:left;'>{CONTENT_ADMIN_CATEGORY}</td>
-	<td class='forumheader3' style='width:15%; text-align:left;'>{CONTENT_AUTHOR}</td>
-	<td class='forumheader3' style='width:75%; text-align:left;'>
-		{CONTENT_HEADING} {CONTENT_SUBHEADING}
-	</td>
-	<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-		{CONTENT_ADMIN_OPTIONS}
-	</td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:1%; text-align:left; vertical-align:top;'><a href='javascript:void(0);' onclick=\"expandit('ci_{CONTENT_ID}')\">".CONTENT_ICON_DETAILS."</a></td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:5%; text-align:center; vertical-align:top;'>{CONTENT_ICON}</td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:64%;'>
+			{CONTENT_HEADING}
+			<div id='ci_{CONTENT_ID}' style='display:none; vertical-align:top; margin-top:10px;'>
+			<table class='fborder' style='width:98%;'>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_1."</td>
+				<td>{CONTENT_ID}</td>
+			</tr>
+			<tr>
+				<td style='width:15%; white-space:nowrap; line-height:150%;'>".CONTENT_TEMPLATE_LAN_2."</td>
+				<td>{CONTENT_AUTHOR}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_5."</td>
+				<td>{CONTENT_ADMIN_CATEGORY}</td>
+			</tr>
+			<tr>
+				<td style='line-height:150%;'>".CONTENT_TEMPLATE_LAN_4."</td>
+				<td>{CONTENT_SUBHEADING}</td>
+			</tr>
+			</table>
+			</div>
+		</td>
+		<td class='{CONTENT_ADMIN_HTML_CLASS}' style='width:10%; text-align:center; vertical-align:top; white-space:nowrap;'>
+			{CONTENT_ADMIN_OPTIONS}
+		</td>
 	</tr>";
 }
+
 if(!isset($CONTENT_ADMIN_SUBMITTED_END)){
 	$CONTENT_ADMIN_SUBMITTED_END = "
 	</table>

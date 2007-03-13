@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/content_type_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-13 16:51:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,21 +45,13 @@ if(!isset($CONTENT_TYPE_TABLE)){
 	</tr>
 	<tr><td class='forumheader2' colspan='2'>{CONTENT_TYPE_TABLE_SUBHEADING}<br /></td></tr>\n";
 }
-if(!isset($CONTENT_TYPE_TABLE_SUBMIT)){
-	$CONTENT_TYPE_TABLE_SUBMIT = "
-	<tr>
-		<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_SUBMIT_ICON}</td>
-		<td class='fcaption' colspan='2'>{CONTENT_TYPE_TABLE_SUBMIT_HEADING}</td>
-	</tr>
-	<tr><td class='forumheader2' colspan='2'>{CONTENT_TYPE_TABLE_SUBMIT_SUBHEADING}</td></tr>\n";
-}
 if(!isset($CONTENT_TYPE_TABLE_MANAGER)){
 	$CONTENT_TYPE_TABLE_MANAGER = "
 	<tr>
 		<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_MANAGER_ICON}</td>
 		<td class='fcaption' colspan='2'>{CONTENT_TYPE_TABLE_MANAGER_HEADING}</td>
 	</tr>
-	<tr><td class='forumheader2' colspan='2'>{CONTENT_TYPE_TABLE_MANAGER_SUBHEADING}</td></tr>\n";
+	<tr><td class='forumheader2' colspan='2'>".CONTENT_LAN_68."</td></tr>\n";
 }
 if(!isset($CONTENT_TYPE_TABLE_LINE)){
 	$CONTENT_TYPE_TABLE_LINE = "";

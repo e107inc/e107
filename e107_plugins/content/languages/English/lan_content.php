@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-14 11:59:11 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-13 16:51:05 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -72,14 +72,16 @@ define("CONTENT_PAGETITLE_LAN_4", "Top Rated");
 define("CONTENT_PAGETITLE_LAN_5", "Author");
 define("CONTENT_PAGETITLE_LAN_6", "Archive");
 define("CONTENT_PAGETITLE_LAN_7", "Submit");
-define("CONTENT_PAGETITLE_LAN_8", "Submit Content Item");
-define("CONTENT_PAGETITLE_LAN_9", "Personal Content Manager");
+define("CONTENT_PAGETITLE_LAN_8", "Submit Item");
+define("CONTENT_PAGETITLE_LAN_9", "Submit And Content Manager");
 define("CONTENT_PAGETITLE_LAN_10", "View Items");
 define("CONTENT_PAGETITLE_LAN_11", "Edit Item");
 define("CONTENT_PAGETITLE_LAN_12", "Create Item");
 define("CONTENT_PAGETITLE_LAN_13", "Categories");
 define("CONTENT_PAGETITLE_LAN_14", "Authorlist");
 define("CONTENT_PAGETITLE_LAN_15", "Top Score");
+define("CONTENT_PAGETITLE_LAN_16", "Submitted Items");
+define("CONTENT_PAGETITLE_LAN_17", "Post Submitted Item");
 
 define("CONTENT_SEARCH_LAN_0", "no content items found with these keywords.");
 
@@ -164,8 +166,8 @@ define("CONTENT_LAN_63", "view all authors");
 define("CONTENT_LAN_64", "view top rated items");
 define("CONTENT_LAN_65", "submit content");
 define("CONTENT_LAN_66", "click here to submit content, you can choose the category on the submit page.");
-define("CONTENT_LAN_67", "personal content manager");
-define("CONTENT_LAN_68", "click here to manage your personal content.");
+define("CONTENT_LAN_67", "submit and manage content");
+define("CONTENT_LAN_68", "click here to submit or manage content.");
 define("CONTENT_LAN_69", "email the");
 define("CONTENT_LAN_70", "print the");
 define("CONTENT_LAN_71", "content item");
@@ -213,4 +215,8 @@ define("CONTENT_MENU_LAN_18", "");
 define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
 
+define("CONTENT_MANAGER_LAN_1", "create content");
+define("CONTENT_MANAGER_LAN_2", "edit content");
+define("CONTENT_MANAGER_LAN_3", "approve submitted ");
+define("CONTENT_MANAGER_LAN_4", "submit content");
 ?>

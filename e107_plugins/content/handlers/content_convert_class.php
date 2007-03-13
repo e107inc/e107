@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:34:59 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2007-03-13 16:51:05 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -24,10 +24,8 @@ $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 $datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php");
 
 require_once($plugindir."handlers/content_class.php");
 $aa = new content;

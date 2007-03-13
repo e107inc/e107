@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/content_update_check.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-13 16:51:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,7 +52,7 @@ function update_content_07($type='')
 			if($newcontent == 0 && !$exists){
 				return FALSE; //needed
 			}
-			
+
 			//if parent value is old style, return FALSE = needed
 			if($newcontent > 0){
 				if($thiscount = $sql -> db_Select("pcontent", "*", "ORDER BY content_id ", "mode=no_where" )){
@@ -79,7 +79,4 @@ function update_content_07($type='')
 	}
 }
 
-
-
-?>
-			
+?>	

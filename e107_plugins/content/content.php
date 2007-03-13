@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2007-01-20 16:19:22 $
-|		$Author: mrpete $
+|		$Revision: 1.7 $
+|		$Date: 2007-03-13 16:51:05 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -33,8 +33,7 @@ require_once($plugindir."handlers/content_class.php");
 $aa = new content;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
-$lan_file = $plugindir."languages/".e_LANGUAGE."/lan_content.php";
-include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English/lan_content.php");
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
 
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);
@@ -320,61 +319,45 @@ function show_content(){
 				$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE, FALSE, $content_shortcodes);
 			}
 
-			$SUBMIT_LINE = FALSE;
-			$submit = FALSE;
-			$sql3 = "";
-			if(!is_object($sql3)){ $sql3 = new db; }
-			if($sql3 -> db_Select($plugintable, "content_id, content_pref", "content_parent = '0' ".$datequery." ORDER BY content_parent")){
-				while($row = $sql3 -> db_Fetch()){
+			//check if user is allowed on the manager page
+			$personalmanagercheck = FALSE;
+			//get all categories
+			$array = $aa -> getCategoryTree("", "", TRUE);
+			$catarray = array_keys($array);
+			$qry = "";
+			foreach($catarray as $catid){
+				$qry .= " content_id='".$catid."' || ";
+			}
+			$qry = substr($qry,0,-3);
+			if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " ".$qry." ")){
+				while($row = $sql -> db_Fetch()){
 					if(isset($row['content_pref']) && $row['content_pref']){
 						$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 					}
-					if($content_pref["content_submit"] && check_class($content_pref["content_submit_class"])){
-						$submit = TRUE;
+					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+					//and use those preferences in the permissions check.
+					if(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']){
+						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$row2 = $sql2 -> db_Fetch();
+						$content_pref = $eArrayStorage->ReadArray($row2['e107_value']);
+					}
+					if( (isset($content_pref["content_manager_submit"]) && check_class($content_pref["content_manager_submit"])) ||
+						(isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
+						$personalmanagercheck = TRUE;
 						break;
 					}
 				}
-				if($submit === TRUE){
-					$content_type_table_string .= $CONTENT_TYPE_TABLE_LINE;
-					$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_SUBMIT, FALSE, $content_shortcodes);
-					$SUBMIT_LINE = TRUE;
-				}
+			}
+			if($personalmanagercheck == TRUE){
+				$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_MANAGER, FALSE, $content_shortcodes);
 			}
 
-			if(USERID){
-				$personalmanagercheck = FALSE;
-				$array = $aa -> getCategoryTree("", "", TRUE);
-				$catarray = array_keys($array);
-				$qry = "";
-				foreach($catarray as $catid){
-					$qry .= " content_id='".$catid."' || ";
-				}
-				$qry = substr($qry,0,-3);
-				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " ".$qry." ")){
-					while($row = $sql -> db_Fetch()){
-						if(isset($row['content_pref']) && $row['content_pref']){
-							$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
-						}
-						if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
-							$personalmanagercheck = TRUE;
-							break;
-						}
-					}
-				}
-				if($personalmanagercheck == TRUE){
-					if($SUBMIT_LINE != TRUE){
-						$content_type_table_string .= $CONTENT_TYPE_TABLE_LINE;
-					}
-					$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_MANAGER, FALSE, $content_shortcodes);
-				}
-			}
 			$text = $CONTENT_TYPE_TABLE_START.$content_type_table_string.$CONTENT_TYPE_TABLE_END;
 		}
 		$caption = CONTENT_LAN_22;
 		$ns -> tablerender($caption, $text);
 		$cachecheck = CachePost($cachestr);
 }
-
 // ##### CONTENT ARCHIVE ------------------------------------------
 function show_content_archive(){
 		global $row, $ns, $plugindir, $plugintable, $sql, $aa, $rs, $e107cache, $tp, $pref, $content_pref, $cobj;
@@ -487,7 +470,6 @@ function show_content_archive(){
 			$text .= $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
 		}
 		$text		= $aa -> getCrumbPage("archive", $array, $mainparent).$text;
-		//$caption	= CONTENT_LAN_84;
 		$caption	= $content_pref['content_archive_caption'];
 		$ns->tablerender($caption, $text);
 		$aa -> ShowNextPrev("archive", $from, $number, $contenttotal);
@@ -1074,20 +1056,22 @@ function show_content_top(){
 
 		if(!is_object($sql)){ $sql = new db; }
 		$total = $sql -> db_Select_gen($qry1);
-		if($sql->db_Select_gen($qry2)){
+		if(!$sql->db_Select_gen($qry2)){
+			$text = CONTENT_LAN_37;
+		}else{
 			while($row = $sql -> db_Fetch()){
 				$CONTENT_TOP_TABLE_AUTHOR	= $aa -> prepareAuthor("top", $row['content_author'], $row['content_id']);
 				$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
 			}
 			$content_top_table_string		= $aa -> getCrumbPage("top", $array, $mainparent).$content_top_table_string;
 			$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
-			$caption	= $content_pref['content_top_caption'];
-			if(isset($content_pref['content_top_caption_append_name']) && $content_pref['content_top_caption_append_name']){
-				$caption .= " ".$array[intval($qs[1])][1];
-			}
-			$ns -> tablerender($caption, $text);
-			$aa -> ShowNextPrev("", $from, $number, $total);
 		}
+		$caption	= $content_pref['content_top_caption'];
+		if(isset($content_pref['content_top_caption_append_name']) && $content_pref['content_top_caption_append_name']){
+			$caption .= " ".$array[intval($qs[1])][1];
+		}
+		$ns -> tablerender($caption, $text);
+		$aa -> ShowNextPrev("", $from, $number, $total);
 		$cachecheck = CachePost($cachestr);
 		unset($qry, $qry1, $qry2, $array, $validparent, $datequery);
 }
@@ -1307,7 +1291,7 @@ function show_content_item(){
 				}
 
 			}else{
-				$CONTENT_CONTENT_TABLE_SUMMARY	= (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
+				$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
 				$CONTENT_CONTENT_TABLE_SUMMARY	= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 				$lastpage = TRUE;
 			}

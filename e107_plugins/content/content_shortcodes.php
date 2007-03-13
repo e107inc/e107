@@ -16,7 +16,7 @@ return $contenttotal." ".($contenttotal == 1 ? CONTENT_LAN_53 : CONTENT_LAN_54);
 SC_END
 
 SC_BEGIN CONTENT_TYPE_TABLE_HEADING
-global $CONTENT_TYPE_TABLE_HEADING, $contenttotal, $row, $tp;
+global $contenttotal, $row, $tp;
 $row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "emotes_off, no_make_clickable");
 return ($contenttotal != "0" ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
 SC_END
@@ -35,65 +35,40 @@ SC_END
 
 
 SC_BEGIN CONTENT_TYPE_TABLE_SUBHEADING
-global $CONTENT_TYPE_TABLE_SUBHEADING, $contenttotal, $row, $tp;
+global $row, $tp;
 $row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "emotes_off, no_make_clickable");
 return ($row['content_subheading'] ? $row['content_subheading'] : "");
 SC_END
 
 SC_BEGIN CONTENT_TYPE_TABLE_ICON
-global $CONTENT_TYPE_TABLE_ICON, $contenttotal, $row, $aa, $content_cat_icon_path_large, $content_pref;
-if($contenttotal != "0"){
-	$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "cat.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
-}else{
-	$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon"]);
-}
-return $CONTENT_TYPE_TABLE_ICON;
-SC_END
-
-// CONTENT_TYPE_TABLE_SUBMIT ------------------------------------------------
-SC_BEGIN CONTENT_TYPE_TABLE_SUBMIT_ICON
-global $CONTENT_TYPE_TABLE_SUBMIT_ICON, $plugindir;
-return "<a href='".$plugindir."content_submit.php'>".CONTENT_ICON_SUBMIT."</a>";
-SC_END
-
-SC_BEGIN CONTENT_TYPE_TABLE_SUBMIT_HEADING
-global $CONTENT_TYPE_TABLE_SUBMIT_HEADING, $plugindir;
-return "<a href='".$plugindir."content_submit.php'>".CONTENT_LAN_65."</a>";
-SC_END
-
-SC_BEGIN CONTENT_TYPE_TABLE_SUBMIT_SUBHEADING
-global $CONTENT_TYPE_TABLE_SUBMIT_SUBHEADING;
-return CONTENT_LAN_66;
+global $row, $aa, $content_cat_icon_path_large, $content_pref;
+$qry = "cat.".$row['content_id'];
+return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $qry, "", $content_pref["content_blank_caticon"]);
 SC_END
 
 // CONTENT_TYPE_TABLE_MANAGER ------------------------------------------------
 SC_BEGIN CONTENT_TYPE_TABLE_MANAGER_ICON
-global $CONTENT_TYPE_TABLE_MANAGER_ICON, $plugindir;
+global $plugindir;
 return "<a href='".$plugindir."content_manager.php'>".CONTENT_ICON_CONTENTMANAGER."</a>";
 SC_END
 
 SC_BEGIN CONTENT_TYPE_TABLE_MANAGER_HEADING
-global $CONTENT_TYPE_TABLE_MANAGER_HEADING, $plugindir;
+global $plugindir;
 return "<a href='".$plugindir."content_manager.php'>".CONTENT_LAN_67."</a>";
-SC_END
-
-SC_BEGIN CONTENT_TYPE_TABLE_MANAGER_SUBHEADING
-global $CONTENT_TYPE_TABLE_MANAGER_SUBHEADING;
-return CONTENT_LAN_68;
 SC_END
 
 // CONTENT_TOP_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_TOP_TABLE_HEADING
-global $CONTENT_TOP_TABLE_HEADING, $row, $qs;
+global $row;
 return "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
 SC_END
 
 SC_BEGIN CONTENT_TOP_TABLE_ICON
-global $CONTENT_TOP_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
+global $aa, $row, $content_pref, $content_icon_path;
 if($content_pref["content_top_icon"]){
-$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
-$width = (isset($content_pref["content_top_icon_width"]) && $content_pref["content_top_icon_width"] ? $content_pref["content_top_icon_width"] : $width);
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
+	$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
+	$width = (isset($content_pref["content_top_icon_width"]) && $content_pref["content_top_icon_width"] ? $content_pref["content_top_icon_width"] : $width);
+	return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 }
 SC_END
 
@@ -103,7 +78,7 @@ return $CONTENT_TOP_TABLE_AUTHOR;
 SC_END
 
 SC_BEGIN CONTENT_TOP_TABLE_RATING
-global $CONTENT_TOP_TABLE_RATING, $row, $imode;
+global $row, $imode;
 $row['rate_avg'] = round($row['rate_avg'], 1);
 $row['rate_avg'] = (strlen($row['rate_avg'])>1 ? $row['rate_avg'] : $row['rate_avg'].".0");
 $tmp = explode(".", $row['rate_avg']);
@@ -123,16 +98,16 @@ SC_END
 
 // CONTENT_SCORE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SCORE_TABLE_HEADING
-global $CONTENT_SCORE_TABLE_HEADING, $row, $qs;
+global $row;
 return "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
 SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_ICON
-global $CONTENT_SCORE_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
+global $aa, $row, $content_pref, $content_icon_path;
 if(isset($content_pref["content_score_icon"]) && $content_pref["content_score_icon"]){
-$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
-$width = (isset($content_pref["content_score_icon_width"]) && $content_pref["content_score_icon_width"] ? $content_pref["content_score_icon_width"] : $width);
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
+	$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
+	$width = (isset($content_pref["content_score_icon_width"]) && $content_pref["content_score_icon_width"] ? $content_pref["content_score_icon_width"] : $width);
+	return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 }
 SC_END
 
@@ -142,7 +117,7 @@ return $CONTENT_SCORE_TABLE_AUTHOR;
 SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_SCORE
-global $CONTENT_SCORE_TABLE_SCORE, $row;
+global $row;
 $score = $row['content_score'];
 $height = "height:8px;";
 $img = "";
@@ -157,86 +132,76 @@ $img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$heig
 return $score."/100 ".$img;
 SC_END
 
-// CONTENT_SUBMIT_TYPE_TABLE ------------------------------------------------
-SC_BEGIN CONTENT_SUBMIT_TYPE_TABLE_HEADING
-global $CONTENT_SUBMIT_TYPE_TABLE_HEADING, $row;
-return "<a href='".e_SELF."?content.submit.".$row['content_id']."'>".$row['content_heading']."</a>";
-SC_END
-
-SC_BEGIN CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING
-global $CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING, $row;
-return ($row['content_subheading'] ? $row['content_subheading'] : "");
-SC_END
-
-SC_BEGIN CONTENT_SUBMIT_TYPE_TABLE_ICON
-global $CONTENT_SUBMIT_TYPE_TABLE_ICON, $aa, $row, $content_cat_icon_path_large, $content_pref;
-return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "content.submit.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
-SC_END
-
 // CONTENT_CONTENT_TABLEMANAGER ------------------------------------------------
 SC_BEGIN CONTENT_CONTENTMANAGER_CATEGORY
-global $CONTENT_CONTENTMANAGER_CATEGORY, $row, $content_pref;
-if( (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) || (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) ){
+global $row, $content_pref;
 return "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
-}
+SC_END
+
+SC_BEGIN CONTENT_CONTENTMANAGER_CATEGORY_SUBHEADING
+global $row, $tp;
+return $tp->toHTML($row['content_subheading'], TRUE);
 SC_END
 
 SC_BEGIN CONTENT_CONTENTMANAGER_ICONNEW
-global $CONTENT_CONTENTMANAGER_ICONNEW, $row, $content_pref;
-if( (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
-return "<a href='".e_SELF."?content.create.".$row['content_id']."'>".CONTENT_ICON_NEW."</a>";
-//return "<input type='button' onclick=\"document.location='".e_SELF."?content.create.".$row['content_id']."'\" value='new' title='new' />";
+global $row, $content_pref;
+if( (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) || (isset($content_pref["content_manager_submit"]) && check_class($content_pref["content_manager_submit"])) ){
+
+	//if(getperms('0')){
+	//	return "<a href='".e_SELF."?content.create.".$row['content_id']."'>".CONTENT_MANAGER_LAN_1."</a> | <a href='".e_SELF."?content.submit.".$row['content_id']."'>".CONTENT_MANAGER_LAN_4."</a>";
+	//}
+
+	if( (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
+		return "<a href='".e_SELF."?content.create.".$row['content_id']."'>".CONTENT_MANAGER_LAN_1."</a>";
+	}elseif( isset($content_pref["content_manager_submit"]) && check_class($content_pref["content_manager_submit"]) ){
+		return "<a href='".e_SELF."?content.submit.".$row['content_id']."'>".CONTENT_MANAGER_LAN_4."</a>";
+	}
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENTMANAGER_ICONEDIT
-global $CONTENT_CONTENTMANAGER_ICONEDIT, $row, $content_pref;
+global $row, $content_pref;
 if( (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
-return "<a href='".e_SELF."?content.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
-//return "<input type='button' onclick=\"document.location='".e_SELF."?content.".$row['content_id']."'\" value='edit' title='edit' />";
+	return "<a href='".e_SELF."?content.".$row['content_id']."'>".CONTENT_MANAGER_LAN_2."</a>";
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENTMANAGER_ICONSUBM
-global $CONTENT_CONTENTMANAGER_ICONSUBM, $row, $content_pref, $plugintable;
+global $row, $content_pref, $plugintable;
 if(isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])){
 	if(!is_object($sqls)){ $sqls = new db; }
 	$num = $sqls -> db_Count($plugintable, "(*)", "WHERE content_refer = 'sa' AND content_parent='".intval($row['content_id'])."' ");
-	if($num>0){
-		return "<a href='".e_SELF."?content.submitted.".$row['content_id']."'>".CONTENT_ICON_SUBMIT_SMALL."</a>";
-	}
+	return "<a href='".e_SELF."?content.approve.".$row['content_id']."'>".CONTENT_MANAGER_LAN_3." (".$num.")</a>";
 }
 SC_END
 
 
 // CONTENT_AUTHOR_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_AUTHOR_TABLE_NAME
-global $CONTENT_AUTHOR_TABLE_NAME, $authordetails, $i, $qs, $row;
+global $authordetails, $i, $row;
 $name = ($authordetails[$i][1] == "" ? "... ".CONTENT_LAN_29." ..." : $authordetails[$i][1]);
-$authorlink = "<a href='".e_SELF."?author.".$row['content_id']."'>".$name."</a>";
-return $authorlink;
+return "<a href='".e_SELF."?author.".$row['content_id']."'>".$name."</a>";
 SC_END
 
 SC_BEGIN CONTENT_AUTHOR_TABLE_ICON
-global $CONTENT_AUTHOR_TABLE_ICON, $qs, $row;
+global $row;
 return "<a href='".e_SELF."?author.".$row['content_id']."'>".CONTENT_ICON_AUTHORLIST."</a>";
 SC_END
 
 SC_BEGIN CONTENT_AUTHOR_TABLE_TOTAL
-global $CONTENT_AUTHOR_TABLE_TOTAL, $totalcontent, $mainparent, $content_pref;
+global $totalcontent, $content_pref;
 if($content_pref["content_author_amount"]){
-$CONTENT_AUTHOR_TABLE_TOTAL = $totalcontent." ".($totalcontent==1 ? CONTENT_LAN_53 : CONTENT_LAN_54);
-return $CONTENT_AUTHOR_TABLE_TOTAL;
+	return $totalcontent." ".($totalcontent==1 ? CONTENT_LAN_53 : CONTENT_LAN_54);
 }
 SC_END
 
 SC_BEGIN CONTENT_AUTHOR_TABLE_LASTITEM
-global $CONTENT_AUTHOR_TABLE_LASTITEM, $gen, $row, $mainparent, $content_pref;
+global $gen, $row, $content_pref;
 if($content_pref["content_author_lastitem"]){
 if(!is_object($gen)){ $gen = new convert; }
-$CONTENT_AUTHOR_TABLE_LASTITEM = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "short"));
-$CONTENT_AUTHOR_TABLE_LASTITEM .= " : <a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
-return $CONTENT_AUTHOR_TABLE_LASTITEM;
+	$CONTENT_AUTHOR_TABLE_LASTITEM = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "short"));
+	$CONTENT_AUTHOR_TABLE_LASTITEM .= " : <a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
+	return $CONTENT_AUTHOR_TABLE_LASTITEM;
 }
 SC_END
 
@@ -244,56 +209,51 @@ SC_END
 SC_BEGIN CONTENT_CAT_TABLE_INFO_PRE
 global $CONTENT_CAT_TABLE_INFO_PRE;
 if($CONTENT_CAT_TABLE_INFO_PRE === TRUE){
-$CONTENT_CAT_TABLE_INFO_PRE = " ";
-return $CONTENT_CAT_TABLE_INFO_PRE;
+	$CONTENT_CAT_TABLE_INFO_PRE = " ";
+	return $CONTENT_CAT_TABLE_INFO_PRE;
 }
 SC_END
 SC_BEGIN CONTENT_CAT_TABLE_INFO_POST
 global $CONTENT_CAT_TABLE_INFO_POST;
 if($CONTENT_CAT_TABLE_INFO_POST === TRUE){
-$CONTENT_CAT_TABLE_INFO_POST = " ";
-return $CONTENT_CAT_TABLE_INFO_POST;
+	$CONTENT_CAT_TABLE_INFO_POST = " ";
+	return $CONTENT_CAT_TABLE_INFO_POST;
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_ICON
-global $CONTENT_CAT_TABLE_ICON, $aa, $totalitems, $row, $content_pref, $qs, $content_cat_icon_path_large, $mainparent;
+global $aa, $row, $content_pref, $content_cat_icon_path_large;
 if(isset($content_pref["content_catall_icon"]) && $content_pref["content_catall_icon"]){
-	//$qry = ($totalitems > 0 ? "cat.".$row['content_id'] : "");
 	$qry = "cat.".$row['content_id'];
 	return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $qry, "", $content_pref["content_blank_caticon"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_HEADING
-global $CONTENT_CAT_TABLE_HEADING, $row, $totalitems, $tp;
-//return ($totalitems > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
+global $row, $tp;
 return "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>";
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_AMOUNT
-global $CONTENT_CAT_TABLE_AMOUNT, $aa, $row, $totalitems, $mainparent, $content_pref;
+global $row, $totalitems, $content_pref;
 if(isset($content_pref["content_catall_amount"]) && $content_pref["content_catall_amount"]){
-$n = $totalitems;
-$CONTENT_CAT_TABLE_AMOUNT = $n." ".($n == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
-return $CONTENT_CAT_TABLE_AMOUNT;
+	return $totalitems." ".($totalitems == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_SUBHEADING
-global $CONTENT_CAT_TABLE_SUBHEADING, $row, $tp, $mainparent, $content_pref;
+global $row, $tp, $content_pref;
 if(isset($content_pref["content_catall_subheading"]) && $content_pref["content_catall_subheading"]){
-return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
+	return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_DATE
-global $CONTENT_CAT_TABLE_DATE, $gen, $row, $mainparent, $content_pref, $gen;
+global $gen, $row, $content_pref;
 if(isset($content_pref["content_catall_date"]) && $content_pref["content_catall_date"]){
-if(!is_object($gen)){ $gen = new convert; }
-$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
-$DATE = ($datestamp != "" ? $datestamp : "");
-return $DATE;
+	if(!is_object($gen)){ $gen = new convert; }
+	$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
+	return ($datestamp != "" ? $datestamp : "");
 }
 SC_END
 
@@ -303,34 +263,33 @@ return $CONTENT_CAT_TABLE_AUTHORDETAILS;
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_EPICONS
-global $CONTENT_CAT_TABLE_EPICONS, $row, $tp, $mainparent, $content_pref;
+global $row, $tp, $content_pref;
 $EPICONS = "";
 if($row['content_pe'] && isset($content_pref["content_catall_peicon"]) && $content_pref["content_catall_peicon"]){
 	$EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 	$EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 	$EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-return $EPICONS;
+	return $EPICONS;
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_COMMENT
-global $CONTENT_CAT_TABLE_COMMENT, $row, $qs, $comment_total, $mainparent, $content_pref, $plugintable;
+global $row, $comment_total, $content_pref, $plugintable;
 if($row['content_comment'] && isset($content_pref["content_catall_comment"]) && $content_pref["content_catall_comment"]){
-$sqlc = new db;
-$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
-return "<a style='text-decoration:none;' href='".e_SELF."?cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
+	$sqlc = new db;
+	$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+	return "<a href='".e_SELF."?cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_TEXT
-global $CONTENT_CAT_TABLE_TEXT, $row, $tp, $mainparent, $content_pref;
+global $row, $tp, $content_pref;
 if($row['content_text'] && isset($content_pref["content_catall_text"]) && $content_pref["content_catall_text"] && ($content_pref["content_catall_text_char"] > 0 || $content_pref["content_catall_text_char"] == 'all')){
 	if($content_pref["content_catall_text_char"] == 'all'){
 		$CONTENT_CAT_TABLE_TEXT = $row['content_text'];
 	}else{
 		$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
 		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
-		
 		$rowtext = strip_tags($rowtext);
 		$words = explode(" ", $rowtext);
 		$CONTENT_CAT_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_catall_text_char"]));
@@ -340,63 +299,58 @@ if($row['content_text'] && isset($content_pref["content_catall_text"]) && $conte
 			$CONTENT_CAT_TABLE_TEXT .= " ".$content_pref["content_catall_text_post"];
 		}
 	}
-return $CONTENT_CAT_TABLE_TEXT;
+	return $CONTENT_CAT_TABLE_TEXT;
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_RATING
-global $CONTENT_CAT_TABLE_RATING, $row, $rater, $mainparent, $content_pref, $plugintable;
-$RATING = "";
+global $row, $rater, $content_pref, $plugintable;
 if($row['content_rate'] && isset($content_pref["content_catall_rating"]) && $content_pref["content_catall_rating"]){
-return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
+	return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 }
-return $RATING;
 SC_END
 
 // CONTENT_CAT_LIST_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_CAT_LIST_TABLE_INFO_PRE
 global $CONTENT_CAT_LIST_TABLE_INFO_PRE;
 if($CONTENT_CAT_LIST_TABLE_INFO_PRE === TRUE){
-$CONTENT_CAT_LIST_TABLE_INFO_PRE = " ";
-return $CONTENT_CAT_LIST_TABLE_INFO_PRE;
+	$CONTENT_CAT_LIST_TABLE_INFO_PRE = " ";
+	return $CONTENT_CAT_LIST_TABLE_INFO_PRE;
 }
 SC_END
 SC_BEGIN CONTENT_CAT_LIST_TABLE_INFO_POST
 global $CONTENT_CAT_LIST_TABLE_INFO_POST;
 if($CONTENT_CAT_LIST_TABLE_INFO_POST === TRUE){
-$CONTENT_CAT_LIST_TABLE_INFO_POST = " ";
-return $CONTENT_CAT_LIST_TABLE_INFO_POST;
+	$CONTENT_CAT_LIST_TABLE_INFO_POST = " ";
+	return $CONTENT_CAT_LIST_TABLE_INFO_POST;
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_ICON
-global $CONTENT_CAT_LIST_TABLE_ICON, $aa, $row, $qs, $content_pref, $content_cat_icon_path_large, $mainparent;
+global $aa, $row, $content_pref, $content_cat_icon_path_large;
 if(isset($content_pref["content_cat_icon"]) && $content_pref["content_cat_icon"]){
-return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon"]);;
+	return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_HEADING
-global $CONTENT_CAT_LIST_TABLE_HEADING, $tp, $row, $totalparent, $tp;
-//return ($totalparent > 0 ? "<a href='".e_SELF."?cat.".$row['content_id'].".view'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
+global $tp, $row;
 return "<a href='".e_SELF."?cat.".$row['content_id'].".view'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>";
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_SUMMARY
-global $CONTENT_CAT_LIST_TABLE_SUMMARY, $tp, $row, $mainparent;
+global $tp, $row;
 return ($row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_TEXT
-global $CONTENT_CAT_LIST_TABLE_TEXT, $tp, $row, $mainparent, $content_pref;
+global $tp, $row, $content_pref;
 if($row['content_text'] && isset($content_pref["content_cat_text"]) && $content_pref["content_cat_text"] && ($content_pref["content_cat_text_char"] > 0 || $content_pref["content_cat_text_char"] == 'all')){
 	if($content_pref["content_cat_text_char"] == 'all'){
-		//$CONTENT_CAT_LIST_TABLE_TEXT = $row['content_text'];
 		$CONTENT_CAT_LIST_TABLE_TEXT = $tp->toHTML($row['content_text'], TRUE, "constants");
 	}else{
 		$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
 		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak, constants");
-		
 		$rowtext = strip_tags($rowtext);
 		$words = explode(" ", $rowtext);
 		$CONTENT_CAT_LIST_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_cat_text_char"]));
@@ -406,32 +360,30 @@ if($row['content_text'] && isset($content_pref["content_cat_text"]) && $content_
 			$CONTENT_CAT_LIST_TABLE_TEXT .= " ".$content_pref["content_cat_text_post"];
 		}
 	}
-return $CONTENT_CAT_LIST_TABLE_TEXT;
+	return $CONTENT_CAT_LIST_TABLE_TEXT;
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_AMOUNT
-global $CONTENT_CAT_LIST_TABLE_AMOUNT, $aa, $row, $mainparent, $content_pref, $totalparent;
+global $row, $content_pref, $totalparent;
 if(isset($content_pref["content_cat_amount"]) && $content_pref["content_cat_amount"]){
-$n = $totalparent;
-$n = $n." ".($n == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
-return $n;
+	return $totalparent." ".($totalparent == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_SUBHEADING
-global $CONTENT_CAT_LIST_TABLE_SUBHEADING, $tp, $row, $mainparent, $content_pref;
+global $tp, $row, $content_pref;
 if(isset($content_pref["content_cat_subheading"]) && $content_pref["content_cat_subheading"]){
-return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
+	return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_DATE
-global $CONTENT_CAT_LIST_TABLE_DATE, $row, $gen, $mainparent, $content_pref, $gen;
+global $row, $gen, $content_pref;
 if(isset($content_pref["content_cat_date"]) && $content_pref["content_cat_date"]){
-if(!is_object($gen)){ $gen = new convert; }
-$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
-return ($datestamp != "" ? $datestamp : "");
+	if(!is_object($gen)){ $gen = new convert; }
+	$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
+	return ($datestamp != "" ? $datestamp : "");
 }
 SC_END
 
@@ -441,60 +393,55 @@ return $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS;
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_EPICONS
-global $CONTENT_CAT_LIST_TABLE_EPICONS, $row, $tp, $qs, $mainparent, $content_pref;
+global $row, $tp, $qs, $content_pref;
 $EPICONS = "";
 if( (isset($content_pref["content_cat_peicon"]) && $content_pref["content_cat_peicon"] && $row['content_pe']) || (isset($content_pref["content_cat_peicon_all"]) && $content_pref["content_cat_peicon_all"])){
 	$EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 	$EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 	$EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$qs[1]}");
-return $EPICONS;
+	return $EPICONS;
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_COMMENT
-global $CONTENT_CAT_LIST_TABLE_COMMENT, $qs, $row, $comment_total, $mainparent, $content_pref, $sql, $plugintable;
+global $qs, $row, $comment_total, $content_pref, $sql, $plugintable;
 if($row['content_comment'] && isset($content_pref["content_cat_comment"]) && $content_pref["content_cat_comment"]){
 	$comment_total = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".intval($qs[1])."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
-	return "<a style='text-decoration:none;' href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
+	return "<a href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_RATING
-global $CONTENT_CAT_LIST_TABLE_RATING, $row, $rater, $content_pref, $mainparent, $plugintable;
-$RATING = "";
+global $row, $rater, $content_pref, $plugintable;
 if( (isset($content_pref["content_cat_rating_all"]) && $content_pref["content_cat_rating_all"]) || (isset($content_pref["content_cat_rating"]) && $content_pref["content_cat_rating"] && $row['content_rate'])){
 	return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 }
-return $RATING;
 SC_END
 
 // CONTENT_CAT_LISTSUB ------------------------------------------------
 SC_BEGIN CONTENT_CAT_LISTSUB_TABLE_ICON
-global $CONTENT_CAT_LISTSUB_TABLE_ICON, $aa, $row, $content_pref, $qs, $mainparent, $content_cat_icon_path_small;
+global $aa, $row, $content_pref, $content_cat_icon_path_small;
 if(isset($content_pref["content_catsub_icon"]) && $content_pref["content_catsub_icon"]){
-return $aa -> getIcon("catsmall", $row['content_icon'], $content_cat_icon_path_small, "cat.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
+	return $aa -> getIcon("catsmall", $row['content_icon'], $content_cat_icon_path_small, "cat.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LISTSUB_TABLE_HEADING
-global $CONTENT_CAT_LISTSUB_TABLE_HEADING, $tp, $row, $totalsubcat, $tp;
-//return ($totalsubcat > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
+global $tp, $row;
 return "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>";
 SC_END
 
 SC_BEGIN CONTENT_CAT_LISTSUB_TABLE_AMOUNT
-global $CONTENT_CAT_LISTSUB_TABLE_AMOUNT, $aa, $row, $content_pref, $mainparent, $totalsubcat;
+global $row, $content_pref, $totalsubcat;
 if(isset($content_pref["content_catsub_amount"]) && $content_pref["content_catsub_amount"]){
-$n = $totalsubcat;
-$n = $n." ".($n == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
-return $n;
+	return $totalsubcat." ".($totalsubcat == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_LISTSUB_TABLE_SUBHEADING
-global $CONTENT_CAT_LISTSUB_TABLE_SUBHEADING, $row, $tp, $content_pref, $mainparent;
+global $row, $tp, $content_pref;
 if(isset($content_pref["content_catsub_subheading"]) && $content_pref["content_catsub_subheading"]){
-return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
+	return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
 }
 SC_END
 
@@ -516,23 +463,23 @@ SC_END
 
 // CONTENT_SEARCHRESULT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_ICON
-global $CONTENT_SEARCHRESULT_TABLE_ICON, $aa, $row, $content_icon_path, $qs, $content_pref, $mainparent;
+global $aa, $row, $content_icon_path, $content_pref;
 $width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_HEADING
-global $CONTENT_SEARCHRESULT_TABLE_HEADING, $row, $qs, $tp;
+global $row, $tp;
 return ($row['content_heading'] ? "<a href='".e_SELF."?content.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : "");
 SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_SUBHEADING
-global $CONTENT_SEARCHRESULT_TABLE_SUBHEADING, $row, $tp;
+global $row, $tp;
 return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
 SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS
-global $CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS, $qs, $aa, $row;
+global $aa, $row;
 $authordetails = $aa -> getAuthor($row['content_author']);
 $CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS = $authordetails[1];
 if(USER){
@@ -549,13 +496,13 @@ return $CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS;
 SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_DATE
-global $CONTENT_SEARCHRESULT_TABLE_DATE, $gen, $row;
+global $gen, $row;
 $datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "short"));
 return $datestamp;
 SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_TEXT
-global $CONTENT_SEARCHRESULT_TABLE_TEXT, $row, $tp;
+global $row, $tp;
 return ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
 SC_END
 
@@ -563,33 +510,33 @@ SC_END
 SC_BEGIN CONTENT_RECENT_TABLE_INFOPRE
 global $CONTENT_RECENT_TABLE_INFOPRE;
 if($CONTENT_RECENT_TABLE_INFOPRE === TRUE){
-$CONTENT_RECENT_TABLE_INFOPRE = " ";
-return $CONTENT_RECENT_TABLE_INFOPRE;
+	$CONTENT_RECENT_TABLE_INFOPRE = " ";
+	return $CONTENT_RECENT_TABLE_INFOPRE;
 }
 SC_END
 SC_BEGIN CONTENT_RECENT_TABLE_INFOPOST
 global $CONTENT_RECENT_TABLE_INFOPOST;
 if($CONTENT_RECENT_TABLE_INFOPOST === TRUE){
-$CONTENT_RECENT_TABLE_INFOPOST = " ";
-return $CONTENT_RECENT_TABLE_INFOPOST;
+	$CONTENT_RECENT_TABLE_INFOPOST = " ";
+	return $CONTENT_RECENT_TABLE_INFOPOST;
 }
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_ICON
-global $CONTENT_RECENT_TABLE_ICON, $aa, $row, $content_icon_path, $content_pref, $mainparent;
+global $aa, $row, $content_icon_path, $content_pref;
 if(isset($content_pref["content_list_icon"]) && $content_pref["content_list_icon"]){
-$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
+	$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
+	return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_HEADING
-global $CONTENT_RECENT_TABLE_HEADING, $row, $tp;
+global $row, $tp;
 return ($row['content_heading'] ? "<a href='".e_SELF."?content.".$row['content_id']."'>".$tp->toHTML($row['content_heading'], TRUE, "")."</a>" : "");
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_SUBHEADING
-global $CONTENT_RECENT_TABLE_SUBHEADING, $tp, $content_pref, $qs, $row, $mainparent;
+global $tp, $content_pref, $qs, $row;
 if (isset($content_pref["content_list_subheading"]) && $content_pref["content_list_subheading"] && $row['content_subheading'] && $content_pref["content_list_subheading_char"] && $content_pref["content_list_subheading_char"] != "" && $content_pref["content_list_subheading_char"] != "0"){
 	if(strlen($row['content_subheading']) > $content_pref["content_list_subheading_char"]) {
 		$row['content_subheading'] = substr($row['content_subheading'], 0, $content_pref["content_list_subheading_char"]).$content_pref["content_list_subheading_post"];
@@ -602,7 +549,7 @@ return $tp->toHTML($CONTENT_RECENT_TABLE_SUBHEADING, TRUE, "");
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_SUMMARY
-global $CONTENT_RECENT_TABLE_SUMMARY, $content_pref, $tp, $qs, $row, $mainparent;
+global $content_pref, $tp, $row;
 if (isset($content_pref["content_list_summary"]) && $content_pref["content_list_summary"]){
 	if($row['content_summary'] && $content_pref["content_list_summary_char"] && $content_pref["content_list_summary_char"] != "" && $content_pref["content_list_summary_char"] != "0"){
 		if(strlen($row['content_summary']) > $content_pref["content_list_summary_char"]) {
@@ -612,15 +559,14 @@ if (isset($content_pref["content_list_summary"]) && $content_pref["content_list_
 	}else{
 		$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] ? $row['content_summary'] : "");
 	}
-return $tp->toHTML($CONTENT_RECENT_TABLE_SUMMARY, TRUE, "");
+	return $tp->toHTML($CONTENT_RECENT_TABLE_SUMMARY, TRUE, "");
 }
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_TEXT
-global $CONTENT_RECENT_TABLE_TEXT, $content_pref, $qs, $row, $mainparent, $tp;
+global $content_pref, $row, $tp;
 if(isset($content_pref["content_list_text"]) && $content_pref["content_list_text"] && $content_pref["content_list_text_char"] > 0){
 	$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
-	//$rowtext = str_replace ("<br />", " ", $rowtext);
 	$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
 	$rowtext = strip_tags($rowtext);
 	$words = explode(" ", $rowtext);
@@ -637,15 +583,15 @@ return $CONTENT_RECENT_TABLE_TEXT;
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_DATE
-global $CONTENT_RECENT_TABLE_DATE, $content_pref, $qs, $row, $mainparent;
+global $content_pref, $row;
 if(isset($content_pref["content_list_date"]) && $content_pref["content_list_date"]){
-$datestyle = ($content_pref["content_list_datestyle"] ? $content_pref["content_list_datestyle"] : "%d %b %Y");
-return strftime($datestyle, $row['content_datestamp']);
+	$datestyle = ($content_pref["content_list_datestyle"] ? $content_pref["content_list_datestyle"] : "%d %b %Y");
+	return strftime($datestyle, $row['content_datestamp']);
 }
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_EPICONS
-global $CONTENT_RECENT_TABLE_EPICONS, $tp, $content_pref, $qs, $row, $mainparent;
+global $tp, $content_pref, $row;
 $CONTENT_RECENT_TABLE_EPICONS = "";
 if(isset($content_pref["content_list_peicon"]) && $content_pref["content_list_peicon"]){
 	if($row['content_pe'] || isset($content_pref["content_list_peicon_all"]) && $content_pref["content_list_peicon_all"]){
@@ -663,14 +609,14 @@ return $CONTENT_RECENT_TABLE_AUTHORDETAILS;
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_EDITICON
-global $CONTENT_RECENT_TABLE_EDITICON, $content_pref, $qs, $row, $mainparent, $plugindir;
+global $content_pref, $row, $plugindir;
 if(ADMIN && getperms("P") && isset($content_pref["content_list_editicon"]) && $content_pref["content_list_editicon"]){
-return $CONTENT_RECENT_TABLE_EDITICON = "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
+	return $CONTENT_RECENT_TABLE_EDITICON = "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 }
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_REFER
-global $CONTENT_RECENT_TABLE_REFER, $content_pref, $qs, $row, $mainparent;
+global $content_pref, $row;
 if($content_pref["content_log"] && $content_pref["content_list_refer"]){
 	$refercounttmp = explode("^", $row['content_refer']);
 	$CONTENT_RECENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "0");
@@ -681,7 +627,7 @@ if($content_pref["content_log"] && $content_pref["content_list_refer"]){
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_RATING
-global $CONTENT_RECENT_TABLE_RATING, $rater, $row, $qs, $content_pref, $plugintable, $mainparent;
+global $rater, $row, $content_pref, $plugintable;
 if($content_pref["content_list_rating"]){
 	if($content_pref["content_list_rating_all"] || $row['content_rate']){
 		return $rater->composerating($plugintable, $row['content_id'], $enter=FALSE, $userid=FALSE);
@@ -690,30 +636,30 @@ if($content_pref["content_list_rating"]){
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_PARENT
-global $CONTENT_RECENT_TABLE_PARENT, $content_pref, $mainparent, $row, $array, $aa;
+global $content_pref, $row, $array, $aa;
 if(isset($content_pref["content_list_parent"]) && $content_pref["content_list_parent"]){
-return $aa -> getCrumbItem($row['content_parent'], $array);
+	return $aa -> getCrumbItem($row['content_parent'], $array);
 }
 SC_END
 
 // CONTENT_ARCHIVE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_ARCHIVE_TABLE_LETTERS
-global $CONTENT_ARCHIVE_TABLE_LETTERS, $content_pref, $mainparent;
+global $content_pref;
 if($content_pref["content_archive_letterindex"]){
-return $CONTENT_ARCHIVE_TABLE_LETTERS;
+	return $CONTENT_ARCHIVE_TABLE_LETTERS;
 }
 SC_END
 
 SC_BEGIN CONTENT_ARCHIVE_TABLE_HEADING
-global $CONTENT_ARCHIVE_TABLE_HEADING, $row, $qs;
+global $row;
 return "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
 SC_END
 
 SC_BEGIN CONTENT_ARCHIVE_TABLE_DATE
-global $CONTENT_ARCHIVE_TABLE_DATE, $row, $content_pref, $qs, $mainparent;
+global $row, $content_pref;
 if(isset($content_pref["content_archive_date"]) && $content_pref["content_archive_date"]){
-$datestyle = ($content_pref["content_archive_datestyle"] ? $content_pref["content_archive_datestyle"] : "%d %b %Y");
-return strftime($datestyle, $row['content_datestamp']);
+	$datestyle = ($content_pref["content_archive_datestyle"] ? $content_pref["content_archive_datestyle"] : "%d %b %Y");
+	return strftime($datestyle, $row['content_datestamp']);
 }
 SC_END
 
@@ -726,85 +672,82 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_INFO_PRE
 global $CONTENT_CONTENT_TABLE_INFO_PRE;
 if($CONTENT_CONTENT_TABLE_INFO_PRE === TRUE){
-$CONTENT_CONTENT_TABLE_INFO_PRE = " ";
-return $CONTENT_CONTENT_TABLE_INFO_PRE;
+	$CONTENT_CONTENT_TABLE_INFO_PRE = " ";
+	return $CONTENT_CONTENT_TABLE_INFO_PRE;
 }
 SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_INFO_POST
 global $CONTENT_CONTENT_TABLE_INFO_POST;
 if($CONTENT_CONTENT_TABLE_INFO_POST === TRUE){
-$CONTENT_CONTENT_TABLE_INFO_POST = " ";
-return $CONTENT_CONTENT_TABLE_INFO_POST;
+	$CONTENT_CONTENT_TABLE_INFO_POST = " ";
+	return $CONTENT_CONTENT_TABLE_INFO_POST;
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA
 global $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA;
 if($CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA === TRUE){
-$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = " ";
-return $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA;
+	$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = " ";
+	return $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA;
 }
 SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA
 global $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
 if($CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA === TRUE){
-$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = " ";
-return $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
+	$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = " ";
+	return $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_PARENT
-global $CONTENT_CONTENT_TABLE_PARENT, $aa, $array, $row, $content_pref, $mainparent;
+global $aa, $array, $row, $content_pref;
 if(isset($content_pref["content_content_parent"]) && $content_pref["content_content_parent"]){
-return $aa -> getCrumbItem($row['content_parent'], $array);
+	return $aa -> getCrumbItem($row['content_parent'], $array);
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_ICON
-global $CONTENT_CONTENT_TABLE_ICON, $qs, $row, $aa, $content_pref, $content_icon_path, $mainparent;
+global $row, $aa, $content_pref, $content_icon_path;
 if(isset($content_pref["content_content_icon"]) && $content_pref["content_content_icon"]){
-$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", $width, $content_pref["content_blank_icon"]);
+	$width = (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
+	return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", $width, $content_pref["content_blank_icon"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_HEADING
-global $CONTENT_CONTENT_TABLE_HEADING, $row, $tp;
-$CONTENT_CONTENT_TABLE_HEADING = ($row['content_heading'] ? $tp -> toHTML($row['content_heading'], TRUE, "") : "");
-return $CONTENT_CONTENT_TABLE_HEADING;
+global $row, $tp;
+return ($row['content_heading'] ? $tp -> toHTML($row['content_heading'], TRUE, "") : "");
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_REFER
-global $CONTENT_CONTENT_TABLE_REFER, $sql, $qs, $content_pref, $plugintable, $mainparent;
+global $sql, $qs, $content_pref, $plugintable;
 if(isset($content_pref["content_content_refer"]) && $content_pref["content_content_refer"]){
 	$sql -> db_Select($plugintable, "content_refer", "content_id='".intval($qs[1])."' ");
 	list($content_refer) = $sql -> db_Fetch();
 	$refercounttmp = explode("^", $content_refer);
-	$CONTENT_CONTENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "");
-return $CONTENT_CONTENT_TABLE_REFER;
+	return ($refercounttmp[0] ? $refercounttmp[0] : "");
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_SUBHEADING
-global $CONTENT_CONTENT_TABLE_SUBHEADING, $row, $tp, $content_pref, $qs, $mainparent;
-$CONTENT_CONTENT_TABLE_SUBHEADING = ($content_pref["content_content_subheading"] && $row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
-return $CONTENT_CONTENT_TABLE_SUBHEADING;
+global $row, $tp, $content_pref;
+return ($content_pref["content_content_subheading"] && $row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_COMMENT
-global $CONTENT_CONTENT_TABLE_COMMENT, $cobj, $qs, $content_pref, $mainparent, $row, $plugintable;
+global $cobj, $qs, $content_pref, $row, $plugintable;
 if((isset($content_pref["content_content_comment"]) && $content_pref["content_content_comment"] && $row['content_comment']) || $content_pref["content_content_comment_all"] ){
-return $cobj -> count_comments($plugintable, $qs[1]);
+	return $cobj -> count_comments($plugintable, $qs[1]);
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_DATE
-global $CONTENT_CONTENT_TABLE_DATE, $gen, $row, $qs, $content_pref, $mainparent;
+global $gen, $row, $content_pref;
 if(isset($content_pref["content_content_date"]) && $content_pref["content_content_date"]){
 	$gen = new convert;
 	$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 	$CONTENT_CONTENT_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
-return $CONTENT_CONTENT_TABLE_DATE;
+	return $CONTENT_CONTENT_TABLE_DATE;
 }
 SC_END
 
@@ -814,59 +757,57 @@ return $CONTENT_CONTENT_TABLE_AUTHORDETAILS;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_EPICONS
-global $CONTENT_CONTENT_TABLE_EPICONS, $content_pref, $qs, $row, $tp, $mainparent;
+global $content_pref, $row, $tp;
 $CONTENT_CONTENT_TABLE_EPICONS = "";
 if(($content_pref["content_content_peicon"] && $row['content_pe']) || $content_pref["content_content_peicon_all"]){
 	$CONTENT_CONTENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 	$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 	$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-return $CONTENT_CONTENT_TABLE_EPICONS;
+	return $CONTENT_CONTENT_TABLE_EPICONS;
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_EDITICON
-global $CONTENT_CONTENT_TABLE_EDITICON, $content_pref, $qs, $row, $plugindir, $mainparent;
+global $content_pref, $row, $plugindir;
 if(ADMIN && getperms("P") && isset($content_pref["content_content_editicon"])){
-	$CONTENT_CONTENT_TABLE_EDITICON = "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
-return $CONTENT_CONTENT_TABLE_EDITICON;
+	return "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_RATING
-global $CONTENT_CONTENT_TABLE_RATING, $content_pref, $qs, $row, $rater, $plugintable, $mainparent;
+global $content_pref, $row, $rater, $plugintable;
 if(($content_pref["content_content_rating"] && $row['content_rate']) || $content_pref["content_content_rating_all"] ){
-return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
+	return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_FILE
-global $CONTENT_CONTENT_TABLE_FILE, $row, $content_file_path, $content_pref, $mainparent;
+global $row, $content_file_path, $content_pref;
 if($content_pref["content_content_attach"]){
-$filestmp = explode("[file]", $row['content_file']);
-foreach($filestmp as $key => $value) { 
-	if($value == "") { 
-		unset($filestmp[$key]); 
+	$filestmp = explode("[file]", $row['content_file']);
+	foreach($filestmp as $key => $value) { 
+		if($value == "") { 
+			unset($filestmp[$key]); 
+		} 
 	} 
-} 
-$files = array_values($filestmp);
-$content_files_popup_name = str_replace("'", "", $row['content_heading']);
-$file = "";
-$filesexisting = "0";
-for($i=0;$i<count($files);$i++){
-	if(file_exists($content_file_path.$files[$i])){
-		$filesexisting = $filesexisting+1;
-		$file .= "<a href='".$content_file_path.$files[$i]."' rel='external'>".CONTENT_ICON_FILE."</a> ";						
-	}else{
-		$file .= "&nbsp;";
+	$files = array_values($filestmp);
+	$content_files_popup_name = str_replace("'", "", $row['content_heading']);
+	$file = "";
+	$filesexisting = "0";
+	for($i=0;$i<count($files);$i++){
+		if(file_exists($content_file_path.$files[$i])){
+			$filesexisting = $filesexisting+1;
+			$file .= "<a href='".$content_file_path.$files[$i]."' rel='external'>".CONTENT_ICON_FILE."</a> ";						
+		}else{
+			$file .= "&nbsp;";
+		}
 	}
-}
-$CONTENT_CONTENT_TABLE_FILE = ($filesexisting == "0" ? "" : CONTENT_LAN_41." ".($filesexisting == 1 ? CONTENT_LAN_42 : CONTENT_LAN_43)." ".$file." ");
-return $CONTENT_CONTENT_TABLE_FILE;
+	return ($filesexisting == "0" ? "" : CONTENT_LAN_41." ".($filesexisting == 1 ? CONTENT_LAN_42 : CONTENT_LAN_43)." ".$file." ");
 }
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_SCORE
-global $CONTENT_CONTENT_TABLE_SCORE, $row;
+global $row;
 $score = $row['content_score'];
 if($score){
 	$height = "height:8px;";
@@ -894,38 +835,38 @@ return $CONTENT_CONTENT_TABLE_TEXT;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_IMAGES
-global $CONTENT_CONTENT_TABLE_IMAGES, $row, $content_image_path, $aa, $tp, $authordetails, $content_pref, $mainparent;
+global $row, $content_image_path, $aa, $tp, $authordetails, $content_pref;
 if($content_pref["content_content_images"]){
-$authordetails = $aa -> getAuthor($row['content_author']);
-$imagestmp = explode("[img]", $row['content_image']);
-foreach($imagestmp as $key => $value) { 
-	if($value == "") { 
-		unset($imagestmp[$key]); 
+	$authordetails = $aa -> getAuthor($row['content_author']);
+	$imagestmp = explode("[img]", $row['content_image']);
+	foreach($imagestmp as $key => $value) { 
+		if($value == "") { 
+			unset($imagestmp[$key]); 
+		} 
 	} 
-} 
-$images = array_values($imagestmp);
-$content_image_popup_name = $row['content_heading'];
-$CONTENT_CONTENT_TABLE_IMAGES = "";
-require_once(e_HANDLER."popup_handler.php");
-$pp = new popup;
-$gen = new convert;
-$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
-for($i=0;$i<count($images);$i++){		
-	$oSrc = $content_image_path.$images[$i];
-	$oSrcThumb = $content_image_path."thumb_".$images[$i];
+	$images = array_values($imagestmp);
+	$content_image_popup_name = $row['content_heading'];
+	$CONTENT_CONTENT_TABLE_IMAGES = "";
+	require_once(e_HANDLER."popup_handler.php");
+	$pp = new popup;
+	$gen = new convert;
+	$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
+	for($i=0;$i<count($images);$i++){		
+		$oSrc = $content_image_path.$images[$i];
+		$oSrcThumb = $content_image_path."thumb_".$images[$i];
 
-	$oIconWidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
-	
-	$oMaxWidth = (isset($content_pref["content_upload_image_size"]) && $content_pref["content_upload_image_size"] ? $content_pref["content_upload_image_size"] : "500");
-	
-	$subheading	= $tp -> toHTML($row['content_subheading'], TRUE);
-	$popupname	= $tp -> toHTML($content_image_popup_name, TRUE);
-	$author		= $tp -> toHTML($authordetails[1], TRUE);
-	$oTitle		= $popupname." ".($i+1);
-	$oText		= $popupname." ".($i+1)."<br />".$subheading."<br />".$author." (".$datestamp.")";
-	$CONTENT_CONTENT_TABLE_IMAGES .= $pp -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText);
-}
-return $CONTENT_CONTENT_TABLE_IMAGES;
+		$oIconWidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
+		
+		$oMaxWidth = (isset($content_pref["content_upload_image_size"]) && $content_pref["content_upload_image_size"] ? $content_pref["content_upload_image_size"] : "500");
+		
+		$subheading	= $tp -> toHTML($row['content_subheading'], TRUE);
+		$popupname	= $tp -> toHTML($content_image_popup_name, TRUE);
+		$author		= $tp -> toHTML($authordetails[1], TRUE);
+		$oTitle		= $popupname." ".($i+1);
+		$oText		= $popupname." ".($i+1)."<br />".$subheading."<br />".$author." (".$datestamp.")";
+		$CONTENT_CONTENT_TABLE_IMAGES .= $pp -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText);
+	}
+	return $CONTENT_CONTENT_TABLE_IMAGES;
 }
 SC_END
 
@@ -956,36 +897,36 @@ SC_END
 
 //content images (from uploaded area) used in the print page
 SC_BEGIN CONTENT_PRINT_IMAGES
-global $CONTENT_PRINT_IMAGES, $row, $content_image_path, $tp, $content_pref, $mainparent;
+global $row, $content_image_path, $tp, $content_pref;
 if($content_pref["content_content_images"]){
-$imagestmp = explode("[img]", $row['content_image']);
-foreach($imagestmp as $key => $value) { 
-	if($value == "") { 
-		unset($imagestmp[$key]); 
+	$imagestmp = explode("[img]", $row['content_image']);
+	foreach($imagestmp as $key => $value) { 
+		if($value == "") { 
+			unset($imagestmp[$key]); 
+		} 
 	} 
-} 
-$images = array_values($imagestmp);
-$CONTENT_PRINT_IMAGES = "";
-for($i=0;$i<count($images);$i++){		
-	$oSrc = $content_image_path.$images[$i];
-	$oSrcThumb = $content_image_path."thumb_".$images[$i];
+	$images = array_values($imagestmp);
+	$CONTENT_PRINT_IMAGES = "";
+	for($i=0;$i<count($images);$i++){		
+		$oSrc = $content_image_path.$images[$i];
+		$oSrcThumb = $content_image_path."thumb_".$images[$i];
 
-	$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
-	if($iconwidth){
-		$style = "style='width:".$iconwidth."px;'";
-	}
-	
-	//use $image if $thumb doesn't exist
-	if(file_exists($oSrc)){
-		if(!file_exists($oSrcThumb)){
-			$thumb = $oSrc;
-		}else{
-			$thumb = $oSrcThumb;
+		$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
+		if($iconwidth){
+			$style = "style='width:".$iconwidth."px;'";
 		}
-		$CONTENT_PRINT_IMAGES .= "<img src='".$thumb."' ".$style." alt='' /><br /><br />";
+		
+		//use $image if $thumb doesn't exist
+		if(file_exists($oSrc)){
+			if(!file_exists($oSrcThumb)){
+				$thumb = $oSrc;
+			}else{
+				$thumb = $oSrcThumb;
+			}
+			$CONTENT_PRINT_IMAGES .= "<img src='".$thumb."' ".$style." alt='' /><br /><br />";
+		}
 	}
-}
-return $CONTENT_PRINT_IMAGES;
+	return $CONTENT_PRINT_IMAGES;
 }
 SC_END
 
@@ -994,37 +935,37 @@ SC_END
 
 //content images (from uploaded area) used in the pdf creation
 SC_BEGIN CONTENT_PDF_IMAGES
-global $CONTENT_PDF_IMAGES, $row, $content_image_path, $tp, $content_pref, $mainparent;
+global $row, $content_image_path, $tp, $content_pref;
 if($content_pref["content_content_images"]){
-$imagestmp = explode("[img]", $row['content_image']);
-foreach($imagestmp as $key => $value) { 
-	if($value == "") { 
-		unset($imagestmp[$key]); 
+	$imagestmp = explode("[img]", $row['content_image']);
+	foreach($imagestmp as $key => $value) { 
+		if($value == "") { 
+			unset($imagestmp[$key]); 
+		} 
 	} 
-} 
-$images = array_values($imagestmp);
-$CONTENT_PDF_IMAGES = "";
-for($i=0;$i<count($images);$i++){		
-	$oSrc = $content_image_path.$images[$i];
-	$oSrcThumb = $content_image_path."thumb_".$images[$i];
+	$images = array_values($imagestmp);
+	$CONTENT_PDF_IMAGES = "";
+	for($i=0;$i<count($images);$i++){		
+		$oSrc = $content_image_path.$images[$i];
+		$oSrcThumb = $content_image_path."thumb_".$images[$i];
 
-	$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
-	if($iconwidth){
-		$style = "style='width:".$iconwidth."px;'";
-	}
-	
-	//use $image if $thumb doesn't exist
-	if(file_exists($oSrc)){
-		if(!file_exists($oSrcThumb)){
-			$thumb = $oSrc;
-		}else{
-			$thumb = $oSrcThumb;
+		$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
+		if($iconwidth){
+			$style = "style='width:".$iconwidth."px;'";
 		}
-		$thumb = $oSrc;
-		$CONTENT_PDF_IMAGES .= "<img src='".$thumb."' ".$style." alt='' />";
+		
+		//use $image if $thumb doesn't exist
+		if(file_exists($oSrc)){
+			if(!file_exists($oSrcThumb)){
+				$thumb = $oSrc;
+			}else{
+				$thumb = $oSrcThumb;
+			}
+			$thumb = $oSrc;
+			$CONTENT_PDF_IMAGES .= "<img src='".$thumb."' ".$style." alt='' />";
+		}
 	}
-}
-return $CONTENT_PDF_IMAGES;
+	return $CONTENT_PDF_IMAGES;
 }
 SC_END
 
@@ -1038,8 +979,8 @@ SC_END
 
 SC_BEGIN CONTENT_CAT_ICON
 global $row, $content_pref, $tp;
-$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
+$content_cat_icon_path_large = $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
+$content_cat_icon_path_small = $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
 $caticon = $content_cat_icon_path_small.$row['content_icon'];
 return ($row['content_icon'] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;");
 SC_END
@@ -1113,19 +1054,34 @@ if($row['content_parent'] == "0"){
 return $class;
 SC_END
 
+SC_BEGIN CONTENT_MANAGER_INHERIT
+global $row, $content_pref;
+return "<input type='checkbox' value='1' name='content_manager_inherit[".$row['content_id']."]' ".(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']=='1' ? "checked='checked'" : "")." /><input type='hidden' name='id[".$row['content_id']."]' value='1' />";
+SC_END
+
+SC_BEGIN CONTENT_ADMIN_MANAGER_SUBMIT
+global $row, $content_pref;
+return r_userclass("content_manager_submit", $content_pref["content_manager_submit"], 'off', "public,guest,nobody,member,admin,classes");
+SC_END
+
 SC_BEGIN CONTENT_ADMIN_MANAGER_APPROVE
-global $row;
+global $row, $content_pref;
 return r_userclass("content_manager_approve", $content_pref["content_manager_approve"], 'off', "public,guest,nobody,member,admin,classes");
 SC_END
 
 SC_BEGIN CONTENT_ADMIN_MANAGER_PERSONAL
-global $row;
-return r_userclass("content_manager_personal", $content_pref["content_manager_personal"], 'off', "public,guest,nobody,member,admin,classes");
+global $row, $content_pref;
+return r_userclass("content_manager_personal", $content_pref["content_manager_personal"], 'off', "nobody,member,admin,classes");
 SC_END
 
 SC_BEGIN CONTENT_ADMIN_MANAGER_CATEGORY
-global $row;
-return r_userclass("content_manager_category", $content_pref["content_manager_category"], 'off', "public,guest,nobody,member,admin,classes");
+global $row, $content_pref;
+return r_userclass("content_manager_category", $content_pref["content_manager_category"], 'off', "nobody,member,admin,classes");
+SC_END
+
+SC_BEGIN CONTENT_ADMIN_MANAGER_OPTIONS
+global $CONTENT_ADMIN_MANAGER_OPTIONS;
+return $CONTENT_ADMIN_MANAGER_OPTIONS;
 SC_END
 
 SC_BEGIN CONTENT_ORDER
@@ -1150,7 +1106,7 @@ SC_END
 
 SC_BEGIN CONTENT_ADMIN_SPACER
 global $CONTENT_ADMIN_SPACER;
-return ($CONTENT_ADMIN_SPACER ? " " : "");
+return ($parm==true || $CONTENT_ADMIN_SPACER ? " " : "");
 SC_END
 
 SC_BEGIN CONTENT_ADMIN_FORM_TARGET

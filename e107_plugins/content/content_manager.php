@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2007-01-13 22:33:03 $
+|		$Revision: 1.4 $
+|		$Date: 2007-03-13 16:51:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -55,30 +55,33 @@ if(e_QUERY){
 // define e_pagetitle
 $aa -> setPageTitle();
 
-if(isset($_POST['delete'])){
-	$tmp = array_pop(array_flip($_POST['delete']));
-	list($delete, $del_id) = explode("_", $tmp);
-}
-
 //these have to be set for the tinymce wysiwyg
 $e_wysiwyg	= "content_text";
 
-//include js
-function headerjs(){
-	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
-}
 // ##### DB ---------------------------------------------------------------------------------------
 
 require_once(HEADERF);
 
+//db : content create
 if(isset($_POST['create_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbContent("create", "contentmanager");
-	}else{
-		$message = CONTENT_ADMIN_ITEM_LAN_0;
+	//content submit
+	if(isset($qs[1]) && $qs[1] == "submit"){
+		if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none" && $_POST['content_author_name'] != "" && $_POST['content_author_email'] != ""){
+			$adb -> dbContent("create", "submit");
+		}else{
+			$message = CONTENT_ADMIN_SUBMIT_LAN_4;
+		}
+	//content create (manager)
+	}elseif(isset($qs[1]) && $qs[1] == "create"){
+		if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+			$adb -> dbContent("create", "contentmanager");
+		}else{
+			$message = CONTENT_ADMIN_ITEM_LAN_0;
+		}
 	}
 }
 
+//db : content update
 if(isset($_POST['update_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
 		$adb -> dbContent("update", "contentmanager");
@@ -87,6 +90,11 @@ if(isset($_POST['update_content'])){
 	}
 }
 
+//db : content delete
+if(isset($_POST['delete'])){
+	$tmp = array_pop(array_flip($_POST['delete']));
+	list($delete, $del_id) = explode("_", $tmp);
+}
 if($delete == 'content' && is_numeric($del_id)){
 	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
 		$message = CONTENT_ADMIN_ITEM_LAN_3;
@@ -94,11 +102,44 @@ if($delete == 'content' && is_numeric($del_id)){
 	}
 }
 
+//render message
 if(isset($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
+//db : returned messages
+
+	//content item submitted (with direct posting)
+	if(isset($qs[0]) && $qs[0] == "s"){
+		$message = CONTENT_ADMIN_SUBMIT_LAN_2."<br /><br />".CONTENT_ADMIN_SUBMIT_LAN_5;
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		require_once(FOOTERF);
+		exit;
+
+	//content item submitted and reviewed in due course (without direct posting)
+	}elseif(isset($qs[0]) && $qs[0] == "d"){
+		$message = CONTENT_ADMIN_SUBMIT_LAN_3."<br /><br />".CONTENT_ADMIN_SUBMIT_LAN_5;
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		require_once(FOOTERF);
+		exit;
+
+	//content item created (personal/category manager)
+	}elseif(isset($qs[0]) && $qs[0] == "c"){
+		$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		require_once(FOOTERF);
+		exit;
+
+	//content item updated (personal/category manager)
+	}elseif(isset($qs[0]) && $qs[0] == "u"){
+		$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		require_once(FOOTERF);
+		exit;
+	}
+
 if(!e_QUERY){
+	//show content manager/submit options
 	if(USERID){
 		$aform -> show_contentmanager("edit", USERID, USERNAME);
 		require_once(FOOTERF);
@@ -108,39 +149,86 @@ if(!e_QUERY){
 	}
 }else{
 
-	if($qs[0] == "c"){
-		$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
-		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-		require_once(FOOTERF);
-		exit;
+	//validate permissions
+	if(isset($qs[1]) && ($qs[1]=='edit' || $qs[1]=='sa') ){
+		//on the edit page, the query id holds the content item's id number
+		//we need to get the category (parent) of the content item first
+		//this is both on the 'edit' page as well as on the 'post submitted' page.
+		if(!$sql -> db_Select($plugintable, "content_id, content_parent", "content_id='".intval($qs[2])."' ")){
+			//not a valid item, so redirect
+			header("location: ".e_SELF); exit;
+		}else{
+			$row = $sql -> db_Fetch();
+			//parent can be '0' (top level) or '0.X (subcategory)
+			if(strpos($row['content_parent'], ".")){
+				$id = substr($row['content_parent'],2);
+			}else{
+				$id = $row['content_parent'];
+			}
+		}
 
-	}elseif($qs[0] == "u"){
-		$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
-		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-		require_once(FOOTERF);
-		exit;
+	}else{
+		//on other pages in the manager either $qs[2] or $qs[1] holds the category id number
+		if(isset($qs[2]) && is_numeric($qs[2]) ){
+			$id = intval($qs[2]);
+		}elseif(isset($qs[1]) && is_numeric($qs[1]) ){
+			$id = intval($qs[1]);
+		}
+	}
+	if(!isset($id)){
+		header("location: ".e_SELF); exit;
+	}
+
+	//get preferences for this category
+	$content_pref = $aa->getContentPref($id);
+
+	//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+	//and use those preferences in the permissions check.
+	if(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']){
+		$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+		$row = $sql -> db_Fetch();
+		$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
+	}
+
+	//now we can check the permissions for this user
+	$personalmanagercheck = FALSE;
+	if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || 
+		(isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || 
+		(isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) || 
+		(isset($content_pref["content_manager_submit"]) && check_class($content_pref["content_manager_submit"]))
+		){
+		$personalmanagercheck = TRUE;
+	//user is not allowed here, redirect to content frontpage
+	}else{
+		header("location:".$plugindir."content.php"); exit;
+	}
 
 	//show list of items in this category
-	}elseif($qs[0] == "content" && is_numeric($qs[1])){
+	if(isset($qs[0]) && $qs[0] == "content" && is_numeric($qs[1])){
 		$aform -> show_manage_content("contentmanager", USERID, USERNAME);
 
-	//create new item
-	}elseif($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2])){
+	//content create (manager)
+	}elseif(isset($qs[0]) && $qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2])){
 		$aform -> show_create_content("contentmanager", USERID, USERNAME);
 
-	//edit item
-	}elseif($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])){
+	//content create (submit)
+	}elseif(isset($qs[0]) && $qs[0]=="content" && $qs[1] == "submit" && is_numeric($qs[2]) && !isset($qs[3])){
+		$aform -> show_create_content("submit", USERID, USERNAME);
+
+	//content edit
+	}elseif(isset($qs[0]) && $qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])){
 		$aform -> show_create_content("contentmanager", USERID, USERNAME);
 
-	//manage submitted
-	}elseif($qs[0] == "content" && $qs[1] == "submitted" && is_numeric($qs[2])){
+	//display list of submitted content items
+	}elseif(isset($qs[0]) && $qs[0] == "content" && $qs[1] == "approve" && is_numeric($qs[2])){
 		//$aform -> show_submitted("contentmanager", USERID, USERNAME, $qs[2]);
 		$aform -> show_submitted($qs[2]);
 
-		//post submitted content item
-	}elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
+	//approve/post submitted content item
+	}elseif(isset($qs[0]) && $qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
 		$newqs = array_reverse($qs);
-		if($newqs[0] == "cu"){										//item; submit post / update redirect
+		//item; submit post / update redirect
+		if($newqs[0] == "cu"){
 			$mainparent = $aa -> getMainParent($qs[2]);
 			$message = CONTENT_ADMIN_ITEM_LAN_117."<br /><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";

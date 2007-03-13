@@ -11,14 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/e_notify.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-13 16:51:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
 
 $config_category = CONTENT_NOTIFY_LAN_1;
 $config_events = array('content' => CONTENT_NOTIFY_LAN_2);

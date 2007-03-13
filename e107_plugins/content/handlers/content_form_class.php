@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2007-03-01 09:32:28 $
+|		$Revision: 1.9 $
+|		$Date: 2007-03-13 16:51:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -30,14 +30,13 @@ if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
 $stylespacer = "style='border:0; height:20px;'";
 
-//only used in admin pages, for normal rows (+ in content_submit.php creation form)
+//only used in admin pages, for normal rows (+ in content_manager.php creation form)
 $TOPIC_ROW_NOEXPAND = "
 <tr>
 	<td class='forumheader3' style='width:20%; vertical-align:top;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3'>{TOPIC_FIELD}</td>
-</tr>
-";
-//only used in admin pages, for expanding rows (+ in content_submit.php creation form)
+</tr>";
+//only used in admin pages, for expanding rows (+ in content_manager.php creation form)
 $TOPIC_ROW = "
 <tr>
 	<td class='forumheader3' style='width:20%; vertical-align:top;'>{TOPIC_TOPIC}</td>
@@ -57,166 +56,166 @@ $TOPIC_ROW_SPACER = "";
 class contentform{
 
 		function ContentItemPreview(){
-				global $ns, $sql, $aa, $qs, $tp, $mainparent;
+			global $ns, $sql, $aa, $qs, $tp, $mainparent;
 
-				$TRPRE = "<tr>";
-				$TRPOST = "</tr>";
-				$TDPRE1 = "<td class='forumheader3' style='vertical-align:top;'>";
-				$TDPRE2 = "<td class='forumheader3' style='vertical-align:top;'>";
-				$TDPOST = "</td>";
-				$CONTENT_CONTENT_PREVIEW = "
-				<table class='fborder' cellpadding='0' cellspacing='0' style='width:90%; text-align:left; margin-bottom:20px;' border='1'>
-					{CONTENT_CONTENT_PREVIEW_CATEGORY}
-					{CONTENT_CONTENT_PREVIEW_HEADING}
-					{CONTENT_CONTENT_PREVIEW_SUBHEADING}
-					{CONTENT_CONTENT_PREVIEW_SUMMARY}
-					{CONTENT_CONTENT_PREVIEW_TEXT}
-					{CONTENT_CONTENT_PREVIEW_AUTHORNAME}
-					{CONTENT_CONTENT_PREVIEW_AUTHOREMAIL}
-					{CONTENT_CONTENT_PREVIEW_STARTDATE}
-					{CONTENT_CONTENT_PREVIEW_ENDDATE}
-					{CONTENT_CONTENT_PREVIEW_COMMENT}
-					{CONTENT_CONTENT_PREVIEW_RATE}
-					{CONTENT_CONTENT_PREVIEW_PE}
-					{CONTENT_CONTENT_PREVIEW_CLASS}
-					{CONTENT_CONTENT_PREVIEW_SCORE}
-					{CONTENT_CONTENT_PREVIEW_META}
-					{CONTENT_CONTENT_PREVIEW_LAYOUT}
-					{CONTENT_CONTENT_PREVIEW_CUSTOM}
+			$TRPRE = "<tr>";
+			$TRPOST = "</tr>";
+			$TDPRE1 = "<td class='forumheader3' style='vertical-align:top;'>";
+			$TDPRE2 = "<td class='forumheader3' style='vertical-align:top;'>";
+			$TDPOST = "</td>";
+			$CONTENT_CONTENT_PREVIEW = "
+			<table class='fborder' cellpadding='0' cellspacing='0' style='width:90%; text-align:left; margin-bottom:20px;' border='1'>
+				{CONTENT_CONTENT_PREVIEW_CATEGORY}
+				{CONTENT_CONTENT_PREVIEW_HEADING}
+				{CONTENT_CONTENT_PREVIEW_SUBHEADING}
+				{CONTENT_CONTENT_PREVIEW_SUMMARY}
+				{CONTENT_CONTENT_PREVIEW_TEXT}
+				{CONTENT_CONTENT_PREVIEW_AUTHORNAME}
+				{CONTENT_CONTENT_PREVIEW_AUTHOREMAIL}
+				{CONTENT_CONTENT_PREVIEW_STARTDATE}
+				{CONTENT_CONTENT_PREVIEW_ENDDATE}
+				{CONTENT_CONTENT_PREVIEW_COMMENT}
+				{CONTENT_CONTENT_PREVIEW_RATE}
+				{CONTENT_CONTENT_PREVIEW_PE}
+				{CONTENT_CONTENT_PREVIEW_CLASS}
+				{CONTENT_CONTENT_PREVIEW_SCORE}
+				{CONTENT_CONTENT_PREVIEW_META}
+				{CONTENT_CONTENT_PREVIEW_LAYOUT}
+				{CONTENT_CONTENT_PREVIEW_CUSTOM}
 
-					{CONTENT_CONTENT_PREVIEW_PARENT}
-					{CONTENT_CONTENT_PREVIEW_ICON}
-					{CONTENT_CONTENT_PREVIEW_ATTACH}									
-					{CONTENT_CONTENT_PREVIEW_IMAGES}
-					{CONTENT_CONTENT_PREVIEW_PAGENAMES}
-				</table>\n";
+				{CONTENT_CONTENT_PREVIEW_PARENT}
+				{CONTENT_CONTENT_PREVIEW_ICON}
+				{CONTENT_CONTENT_PREVIEW_ATTACH}									
+				{CONTENT_CONTENT_PREVIEW_IMAGES}
+				{CONTENT_CONTENT_PREVIEW_PAGENAMES}
+			</table>\n";
 
-				$tmp = explode(".",$_POST['parent1']);
-				$_POST['parent1'] = $tmp[1];
-				$mainparent						= $aa -> getMainParent( $_POST['parent1'] );
-				$content_pref					= $aa -> getContentPref($mainparent);
-				$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-				$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-				$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-				$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-				$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
-				
-				$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
-				$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
-				$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
-						
-				$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
-				$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
-				$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
+			$tmp = explode(".",$_POST['parent1']);
+			$_POST['parent1'] = $tmp[1];
+			$mainparent						= $aa -> getMainParent( $_POST['parent1'] );
+			$content_pref					= $aa -> getContentPref($mainparent);
+			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
+			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
+			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
+			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
+			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
+			
+			$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
+			$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
+			$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
+					
+			$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
+			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
+			$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
 
-				if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent1']."' ")){
-					$row = $sql -> db_Fetch();
-					$PARENT = $row['content_heading'];
-				}
-				$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
-				$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
-				$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
-				$content_text		= $_POST['content_text'];
-				if(e_WYSIWYG){
-					$content_text = $tp->createConstants($content_text); // convert e107_images/ to {e_IMAGE} etc.
-				}
+			if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent1']."' ")){
+				$row = $sql -> db_Fetch();
+				$PARENT = $row['content_heading'];
+			}
+			$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
+			$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
+			$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
+			$content_text		= $_POST['content_text'];
+			if(e_WYSIWYG){
+				$content_text = $tp->createConstants($content_text); // convert e107_images/ to {e_IMAGE} etc.
+			}
 
-				//the problem with tiny_mce is it's storing e_HTTP with an image path, while it should only use the {e_xxx} variables
-				//this small check resolves this, and stores the paths correctly
-				if(strstr($content_text,e_HTTP."{e_")){
-					$content_text = str_replace(e_HTTP."{e_", "{e_", $content_text);
-				}
-				$content_text = $tp->post_toHTML($content_text,TRUE);
+			//the problem with tiny_mce is it's storing e_HTTP with an image path, while it should only use the {e_xxx} variables
+			//this small check resolves this, and stores the paths correctly
+			if(strstr($content_text,e_HTTP."{e_")){
+				$content_text = str_replace(e_HTTP."{e_", "{e_", $content_text);
+			}
+			$content_text = $tp->post_toHTML($content_text,TRUE);
 
-				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent1'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_HEADING = ($content_heading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$content_heading.$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($content_subheading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$content_subheading.$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_SUMMARY = ($content_summary ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$content_summary.$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_TEXT = ($content_text ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$content_text.$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_AUTHORNAME = ($_POST['content_author_name'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_14.$TDPOST.$TDPRE2.$_POST['content_author_name'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_AUTHOREMAIL = ($_POST['content_author_email'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_15.$TDPOST.$TDPRE2.$_POST['content_author_email'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_COMMENT = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_36.$TDPOST.$TDPRE2.($_POST['content_comment'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_RATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_37.$TDPOST.$TDPRE2.($_POST['content_rate'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_PE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_38.$TDPOST.$TDPRE2.($_POST['content_pe'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_CLASS = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_39.$TDPOST.$TDPRE2.r_userclass_name($_POST['content_class']).$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_SCORE = ($_POST['content_score'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_40.$TDPOST.$TDPRE2.($_POST['content_score']!="none" ? $_POST['content_score']."/100" : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_40." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_META = ($_POST['content_meta'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_53.$TDPOST.$TDPRE2.($_POST['content_meta']!="" ? $_POST['content_meta'] : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_53." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_LAYOUT = ($_POST['content_layout'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_92.$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? CONTENT_ADMIN_ITEM_LAN_120 : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent1'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_HEADING = ($content_heading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$content_heading.$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($content_subheading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$content_subheading.$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_SUMMARY = ($content_summary ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$content_summary.$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_TEXT = ($content_text ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$content_text.$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_AUTHORNAME = ($_POST['content_author_name'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_14.$TDPOST.$TDPRE2.$_POST['content_author_name'].$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_AUTHOREMAIL = ($_POST['content_author_email'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_15.$TDPOST.$TDPRE2.$_POST['content_author_email'].$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_COMMENT = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_36.$TDPOST.$TDPRE2.($_POST['content_comment'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
+			$CONTENT_CONTENT_PREVIEW_RATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_37.$TDPOST.$TDPRE2.($_POST['content_rate'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
+			$CONTENT_CONTENT_PREVIEW_PE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_38.$TDPOST.$TDPRE2.($_POST['content_pe'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
+			$CONTENT_CONTENT_PREVIEW_CLASS = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_39.$TDPOST.$TDPRE2.r_userclass_name($_POST['content_class']).$TDPOST.$TRPOST;
+			$CONTENT_CONTENT_PREVIEW_SCORE = ($_POST['content_score'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_40.$TDPOST.$TDPRE2.($_POST['content_score']!="none" ? $_POST['content_score']."/100" : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_40." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_META = ($_POST['content_meta'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_53.$TDPOST.$TDPRE2.($_POST['content_meta']!="" ? $_POST['content_meta'] : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_53." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
+			$CONTENT_CONTENT_PREVIEW_LAYOUT = ($_POST['content_layout'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_92.$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? CONTENT_ADMIN_ITEM_LAN_120 : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
 
-				//start date
-				if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-				$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
-				}else{
-				$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.strftime("%d %b %Y", time()).$TDPOST.$TRPOST;
-				}
-				//end date
-				if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
-				$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
-				}else{
-				$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_DATE_LAN_16." ".CONTENT_ADMIN_ITEM_LAN_119.$TDPOST.$TRPOST;
-				}
-				$CONTENT_CONTENT_PREVIEW_CUSTOM = "";
-				
-				//custom tags
-				for($i=0;$i<$content_pref["content_admin_custom_number"];$i++){
-				if($_POST["content_custom_key_{$i}"] != "" && $_POST["content_custom_value_{$i}"] != ""){
-				$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$_POST["content_custom_key_{$i}"].$TDPOST.$TDPRE2.$_POST["content_custom_value_{$i}"].$TDPOST.$TRPOST;
-				}
-				}
-				//custom preset tags
-				foreach($_POST['content_custom_preset_key'] as $k => $v){
-				if($k != "" && $v != ""){
-				$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$k.$TDPOST.$TDPRE2.$v.$TDPOST.$TRPOST;
-				}
-				}
-				
-				//icon
-				if($_POST['content_icon'] && file_exists($content_tmppath_icon.$_POST['content_icon'])){
-					$ICON = "<img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
-				}elseif($_POST['content_icon'] && file_exists($content_icon_path.$_POST['content_icon'])){
-					$ICON = "<img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
-				}else{
-					$ICON = CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_114." ".CONTENT_ADMIN_ITEM_LAN_119;
-				}
-				$CONTENT_CONTENT_PREVIEW_ICON = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_114.$TDPOST.$TDPRE2.$ICON.$TDPOST.$TRPOST;
+			//start date
+			if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
+			$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
+			}else{
+			$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.strftime("%d %b %Y", time()).$TDPOST.$TRPOST;
+			}
+			//end date
+			if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
+			$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
+			}else{
+			$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_DATE_LAN_16." ".CONTENT_ADMIN_ITEM_LAN_119.$TDPOST.$TRPOST;
+			}
+			$CONTENT_CONTENT_PREVIEW_CUSTOM = "";
+			
+			//custom tags
+			for($i=0;$i<$content_pref["content_admin_custom_number"];$i++){
+			if($_POST["content_custom_key_{$i}"] != "" && $_POST["content_custom_value_{$i}"] != ""){
+			$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$_POST["content_custom_key_{$i}"].$TDPOST.$TDPRE2.$_POST["content_custom_value_{$i}"].$TDPOST.$TRPOST;
+			}
+			}
+			//custom preset tags
+			foreach($_POST['content_custom_preset_key'] as $k => $v){
+			if($k != "" && $v != ""){
+			$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$k.$TDPOST.$TDPRE2.$v.$TDPOST.$TRPOST;
+			}
+			}
+			
+			//icon
+			if($_POST['content_icon'] && file_exists($content_tmppath_icon.$_POST['content_icon'])){
+				$ICON = "<img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
+			}elseif($_POST['content_icon'] && file_exists($content_icon_path.$_POST['content_icon'])){
+				$ICON = "<img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
+			}else{
+				$ICON = CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_114." ".CONTENT_ADMIN_ITEM_LAN_119;
+			}
+			$CONTENT_CONTENT_PREVIEW_ICON = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_114.$TDPOST.$TDPRE2.$ICON.$TDPOST.$TRPOST;
 
-				//images and attachments
-				$file	= FALSE;
-				$image	= FALSE;
-				$ATTACH = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_24.$TDPOST.$TDPRE2;
-				$IMAGES = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_31.$TDPOST.$TDPRE2;
-				foreach($_POST as $k => $v){
-					if(strpos($k, "content_files") === 0){
-						if($v && file_exists($content_tmppath_file.$v)){
-							$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
-							$file = TRUE;
-						}elseif($v && file_exists($content_file_path.$v)){
-							$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
-							$file = TRUE;
-						}
-					}
-					if(strpos($k, "content_images") === 0){
-						if($v && file_exists($content_tmppath_image.$v)){
-							$IMAGES .= "<img src='".$content_tmppath_image.$v."' alt='' style='width:100px; border:0;' /> ";
-							$image	= TRUE;
-						}elseif($v && file_exists($content_image_path.$v)){
-							$IMAGES .= "<img src='".$content_image_path.$v."' alt='' style='width:100px; border:0;' /> ";
-							$image	= TRUE;
-						}
+			//images and attachments
+			$file	= FALSE;
+			$image	= FALSE;
+			$ATTACH = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_24.$TDPOST.$TDPRE2;
+			$IMAGES = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_31.$TDPOST.$TDPRE2;
+			foreach($_POST as $k => $v){
+				if(strpos($k, "content_files") === 0){
+					if($v && file_exists($content_tmppath_file.$v)){
+						$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
+						$file = TRUE;
+					}elseif($v && file_exists($content_file_path.$v)){
+						$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
+						$file = TRUE;
 					}
 				}
-				if($file !== TRUE){
-					$ATTACH .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_24." ".CONTENT_ADMIN_ITEM_LAN_119;
+				if(strpos($k, "content_images") === 0){
+					if($v && file_exists($content_tmppath_image.$v)){
+						$IMAGES .= "<img src='".$content_tmppath_image.$v."' alt='' style='width:100px; border:0;' /> ";
+						$image	= TRUE;
+					}elseif($v && file_exists($content_image_path.$v)){
+						$IMAGES .= "<img src='".$content_image_path.$v."' alt='' style='width:100px; border:0;' /> ";
+						$image	= TRUE;
+					}
 				}
-				if($image !== TRUE){
-					$IMAGES .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_31." ".CONTENT_ADMIN_ITEM_LAN_119;
-				}
-				$CONTENT_CONTENT_PREVIEW_ATTACH = $ATTACH.$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_IMAGES = $IMAGES.$TDPOST.$TRPOST;
+			}
+			if($file !== TRUE){
+				$ATTACH .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_24." ".CONTENT_ADMIN_ITEM_LAN_119;
+			}
+			if($image !== TRUE){
+				$IMAGES .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_31." ".CONTENT_ADMIN_ITEM_LAN_119;
+			}
+			$CONTENT_CONTENT_PREVIEW_ATTACH = $ATTACH.$TDPOST.$TRPOST;
+			$CONTENT_CONTENT_PREVIEW_IMAGES = $IMAGES.$TDPOST.$TRPOST;
 
-				$caption = CONTENT_ADMIN_ITEM_LAN_46." ".$_POST['content_heading'];
-				$preview = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_PREVIEW);
-				$ns -> tablerender($caption, $preview);
+			$caption = CONTENT_ADMIN_ITEM_LAN_46." ".$_POST['content_heading'];
+			$preview = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_PREVIEW);
+			$ns -> tablerender($caption, $preview);
 		}
 
 		function show_create_content($mode, $userid="", $username=""){
@@ -224,57 +223,150 @@ class contentform{
 
 			$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
-			//if create, first show category select (as preferences need to be loaded from the selected category)
-			if( $qs[1] == "create" && !isset($qs[2]) ){
-				//category parent
-				global $CONTENT_ADMIN_CONTENT_CATSELECT, $CONTENTFORM_CATEGORYSELECT;
-				$CONTENTFORM_CATEGORYSELECT = $aa -> ShowOption('',"managecontent");
-				$text = $tp -> parseTemplate($CONTENT_ADMIN_CONTENT_CATSELECT, FALSE, $content_shortcodes);
-				$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_2, $text);
-				return;
-			}
+			//admin
+			if(e_PAGE=='admin_content_config.php'){
 
-			/*
-			if($mode == 'submit' || $mode=='contentmanager' || ($mode=='sa' && e_PAGE=='content_manager.php') ){
-				$border = "border:1px solid #5d6e75;";
-				$padding = "padding:6px;";
-				$tableprop = "border-collapse: collapse; border-spacing:0px;";
-				$TOPIC_ROW_NOEXPAND = "
-				<tr>
-					<td class='forumheader3' style='".$padding." ".$border." width:30%; vertical-align:top;'>{TOPIC_TOPIC}</td>
-					<td class='forumheader3' style='".$padding." ".$border."'>{TOPIC_FIELD}</td>
-				</tr>";
+				//first show the 'choose category' option selectbox (as preferences need to be loaded from the selected category)
+				if( $qs[1] == "create" && !isset($qs[2]) ){
+					global $CONTENT_ADMIN_CONTENT_CATSELECT, $CONTENTFORM_CATEGORYSELECT;
+					$CONTENTFORM_CATEGORYSELECT = $aa -> ShowOption('',"managecontent");
+					$text = $tp -> parseTemplate($CONTENT_ADMIN_CONTENT_CATSELECT, FALSE, $content_shortcodes);
+					$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_2, $text);
+					return;
+				}
 
-				$TOPIC_ROW = "
-				<tr>
-					<td class='forumheader3' style='".$padding." ".$border." width:30%; vertical-align:top;'>{TOPIC_TOPIC}</td>
-					<td class='forumheader3' style='".$padding." ".$border." vertical-align:top;'>
-						<a style='cursor: pointer;' onclick='expandit(this);'>{TOPIC_HEADING}</a>
-						<div style='display: none;'>
-							<div class='smalltext'>{TOPIC_HELP}</div><br />
-							{TOPIC_FIELD}
-						</div>
-					</td>
-				</tr>";
+				//we need to retrieve preferences from the top level category from this item/category as well
+				$mainparent = $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : intval($qs[2])) );
+				$content_pref = $aa -> getContentPref($mainparent);
+				
+				//top level category chosen, so continue to display create form
 
-				$TOPIC_TITLE_ROW = "<tr><td colspan='2' class='fcaption'>{TOPIC_CAPTION}</td></tr>";
-				$TOPIC_ROW_SPACER = "<tr><td style='height:20px;' colspan='2'></td></tr>";
 			}else{
-				$tableprop = "";
-				$TOPIC_ROW_SPACER = "";
+
+				if(e_PAGE=='content_manager.php'){
+
+					//##### submit (content.submit.X) (X = category id)
+					if(isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && $qs[1]=='submit' && isset($qs[2]) && is_numeric($qs[2])){
+
+						//we need to retrieve preferences from this category, and check if user is allowed here
+						$manager_pref = $aa -> getContentPref( intval($qs[2]) );
+
+						//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+						//and use those preferences in the permissions check.
+						if(isset($manager_pref['content_manager_inherit']) && $manager_pref['content_manager_inherit']){
+							$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+							$row = $sql -> db_Fetch();
+							$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
+						}
+
+						//user is allowed
+						if( isset($manager_pref["content_manager_submit"]) && check_class($manager_pref["content_manager_submit"]) ){
+						//user is not allowed
+						}else{
+							header("location: ".e_SELF); exit;
+						}
+					}
+
+					//##### manager create (content.create.X)
+					if(isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && $qs[1]=='create' && isset($qs[2]) && is_numeric($qs[2])){
+
+						//we need to retrieve preferences from this category, and check if user is allowed here
+						$manager_pref = $aa -> getContentPref( intval($qs[2]) );
+
+						//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+						//and use those preferences in the permissions check.
+						if(isset($manager_pref['content_manager_inherit']) && $manager_pref['content_manager_inherit']){
+							$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+							$row = $sql -> db_Fetch();
+							$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
+						}
+
+						//user is allowed
+						if( (isset($manager_pref["content_manager_personal"]) && check_class($manager_pref["content_manager_personal"])) || 
+							(isset($manager_pref["content_manager_category"]) && check_class($manager_pref["content_manager_category"])) ){
+						//user is not allowed
+						}else{
+							header("location: ".e_SELF); exit;
+						}
+					}
+
+					//##### manager edit (content.edit.X)
+					if(isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='edit' || $qs[1]=='sa') && isset($qs[2]) && is_numeric($qs[2])){
+
+						//we need to get the category (parent) of the content item first
+						if(!$sql -> db_Select($plugintable, "content_id, content_parent", "content_id='".intval($qs[2])."' ")){
+							//not a valid item, so redirect
+							//header("location: ".e_SELF); exit;
+						}else{
+							$row = $sql -> db_Fetch();
+							//parent can be '0' (top level) or '0.X (subcategory)
+							if(strpos($row['content_parent'], ".")){
+								$ipar = substr($row['content_parent'],2);
+							}else{
+								$ipar = $row['content_parent'];
+							}
+						}
+
+						//we need to retrieve preferences from the category this item belongs to, and check if user is allowed here
+						if(!isset($ipar) && !is_numeric($ipar)){
+							//not a valid category, so redirect
+							//header("location: ".e_SELF); exit;
+						}else{
+							$manager_pref = $aa -> getContentPref( intval($ipar) );
+
+							//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+							//and use those preferences in the permissions check.
+							if(isset($manager_pref['content_manager_inherit']) && $manager_pref['content_manager_inherit']){
+								$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+								$row = $sql -> db_Fetch();
+								$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
+							}
+
+						}
+
+						if($qs[1]=='edit'){
+							//user is allowed
+							if( (isset($manager_pref["content_manager_personal"]) && check_class($manager_pref["content_manager_personal"])) || 
+								(isset($manager_pref["content_manager_category"]) && check_class($manager_pref["content_manager_category"])) ){
+
+									//assign author query to make sure this item to edit is from this user
+									$userquery = '';
+									//if personal manager, we need to assign the author query
+									if( isset($manager_pref["content_manager_personal"]) && check_class($manager_pref["content_manager_personal"]) ){
+										if(isset($userid) && isset($username) ){
+											$userid = intval($userid);
+											$l = strlen($userid)+1;
+											$userquery = " AND (content_author = '".$userid."' || LEFT(content_author, ".$l.") = '".$userid."^' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' || content_author REGEXP '\\\^".$username."' ) ";
+										}
+									}
+									//if category manager, no author query is needed
+									if( isset($manager_pref["content_manager_category"]) && check_class($manager_pref["content_manager_category"]) ){
+										$userquery = "";
+									}
+
+							//user is not allowed
+							}else{
+								header("location: ".e_SELF); exit;
+							}
+						}elseif($qs[1]=='sa'){
+							//user is allowed
+							if( (isset($manager_pref["content_manager_approve"]) && check_class($manager_pref["content_manager_approve"])) ){
+
+							//user is not allowed
+							}else{
+								header("location: ".e_SELF); exit;
+							}
+						}
+					}
+
+					//we need to retrieve preferences from the top level category from this item/category as well
+					$mainparent = $aa -> getMainParent( intval($qs[2]) );
+					$content_pref = $aa -> getContentPref($mainparent);
+				}
+
 			}
-			*/
 
-			if($mode == "submit"){
-				$mainparent					= $aa -> getMainParent( intval($qs[2]) );
-				$array						= $aa -> getCategoryTree("", $mainparent, FALSE);
-			}else{
-				$array						= $aa -> getCategoryTree("", "", FALSE);
-				$mainparent					= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : intval($qs[2])) );
-			}
-
-			$content_pref					= $aa -> getContentPref($mainparent);
-
+			//general variables (from the top level category preferences)
 			$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
 			$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
 			$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
@@ -287,139 +379,95 @@ class contentform{
 			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
 			$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
 
-			if(!is_object($sql)){ $sql = new db; }
-			$sql2 = new db;
-			
-			//check submit permissions
-			if($mode == 'submit'){
-				//check if current item exists (item is a (sub)category)
-				if($sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_pref", " content_id='".intval($qs[2])."' ")){
-					//check submit perms from main parent
-					if($content_pref["content_submit"] && check_class($content_pref["content_submit_class"])){
-					}else{
-						header("location:".$plugindir."content_submit.php"); exit;
-					}
-				}else{
-					header("location:".$plugindir."content_submit.php"); exit;
-				}
-			}
-			
-			//check manager permissions
-			if($mode == "contentmanager"){
-				//get current item
-				if($sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_pref", " content_id='".intval($qs[2])."' ")){
-					$rowpcm = $sql -> db_Fetch();
-					
-					//if edit item (query holds item id)
-					if( isset($qs[1]) && $qs[1] == "edit" && is_numeric($qs[2]) ){
-						//get parent
-						$sql2 -> db_Select($plugintable, "content_id, content_heading, content_parent, content_pref", " content_id='".$rowpcm['content_parent']."' ");
-						$rowpcm2 = $sql2 -> db_Fetch();
-						$pcmcheckpref = $rowpcm2['content_pref'];
-						$p = $rowpcm['content_parent'];
-					//create item (query holds category id)
-					}else{
-						$pcmcheckpref = $rowpcm['content_pref'];
-						$p = $qs[2];
-					}
-
-					$pcm_pref = $eArrayStorage->ReadArray($pcmcheckpref);
-
-					//user is allowed to work here
-					if( (isset($pcm_pref["content_manager_personal"]) && check_class($pcm_pref["content_manager_personal"])) || (isset($pcm_pref["content_manager_category"]) && check_class($pcm_pref["content_manager_category"])) ){
-						if($qs[1] == "edit"){
-							//if personal manager, assign author query
-							if( isset($pcm_pref["content_manager_personal"]) && check_class($pcm_pref["content_manager_personal"]) ){
-								if(isset($userid) && isset($username) ){
-									$userid = intval($userid);
-									$l = strlen($userid)+1;
-									$userquery = " AND (content_author = '".$userid."' || LEFT(content_author, ".$l.") = '".$userid."^' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' || content_author REGEXP '\\\^".$username."' ) ";
-								}else{
-									$userquery = "";
-								}
-							}
-							//if category manager, no author query is needed
-							if( isset($pcm_pref["content_manager_category"]) && check_class($pcm_pref["content_manager_category"]) ){
-								$userquery = "";
-							}
-						}
-					//user is not allowed to work here
-					}else{
-						header("location:".$plugindir."content_manager.php"); exit;
-					}
-				}
-
-			}else{
-				$userquery = "";
-			}
-
 			//get preferences for submit page
 			if($mode == "submit"){
-				$checksubheading	= (isset($content_pref["content_submit_subheading"]) ? $content_pref["content_submit_subheading"] : "");
-				$checksummary		= (isset($content_pref["content_submit_summary"]) ? $content_pref["content_submit_summary"] : "");
-				$checkstartdate		= (isset($content_pref["content_submit_startdate"]) ? $content_pref["content_submit_startdate"] : "");
-				$checkenddate		= (isset($content_pref["content_submit_enddate"]) ? $content_pref["content_submit_enddate"] : "");
-				$checkicon			= (isset($content_pref["content_submit_icon"]) ? $content_pref["content_submit_icon"] : "");
-				$checkattach		= (isset($content_pref["content_submit_attach"]) ? $content_pref["content_submit_attach"] : "");
-				$checkattachnumber	= (isset($content_pref["content_submit_files_number"]) ? $content_pref["content_submit_files_number"] : "");
-				$checkimages		= (isset($content_pref["content_submit_images"]) ? $content_pref["content_submit_images"] : "");
-				$checkimagesnumber	= (isset($content_pref["content_submit_images_number"]) ? $content_pref["content_submit_images_number"] : "");
-				$checkcomment		= (isset($content_pref["content_submit_comment"]) ? $content_pref["content_submit_comment"] : "");
-				$checkrating		= (isset($content_pref["content_submit_rating"]) ? $content_pref["content_submit_rating"] : "");
-				$checkscore			= (isset($content_pref["content_submit_score"]) ? $content_pref["content_submit_score"] : "");
-				$checkpe			= (isset($content_pref["content_submit_pe"]) ? $content_pref["content_submit_pe"] : "");
-				$checkvisibility	= (isset($content_pref["content_submit_visibility"]) ? $content_pref["content_submit_visibility"] : "");
-				$checkmeta			= (isset($content_pref["content_submit_meta"]) ? $content_pref["content_submit_meta"] : "");
-				$checkcustom		= (isset($content_pref["content_submit_customtags"]) ? $content_pref["content_submit_customtags"] : "");
-				$checkcustomnumber	= (isset($content_pref["content_submit_custom_number"]) ? $content_pref["content_submit_custom_number"] : "");
-				$checklayout		= (isset($content_pref["content_submit_layout"]) ? $content_pref["content_submit_layout"] : "");
-				$checkpreset		= (isset($content_pref["content_submit_presettags"]) ? $content_pref["content_submit_presettags"] : "");
-			
-			//get preferences for admin area; posted submitted item.
+				$checksubheading	= (isset($manager_pref["content_manager_submit_subheading"]) ? $manager_pref["content_manager_submit_subheading"] : "");
+				$checksummary		= (isset($manager_pref["content_manager_submit_summary"]) ? $manager_pref["content_manager_submit_summary"] : "");
+				$checkstartdate		= (isset($manager_pref["content_manager_submit_startdate"]) ? $manager_pref["content_manager_submit_startdate"] : "");
+				$checkenddate		= (isset($manager_pref["content_manager_submit_enddate"]) ? $manager_pref["content_manager_submit_enddate"] : "");
+				$checkicon			= (isset($manager_pref["content_manager_submit_icon"]) ? $manager_pref["content_manager_submit_icon"] : "");
+				$checkattach		= (isset($manager_pref["content_manager_submit_attach"]) ? $manager_pref["content_manager_submit_attach"] : "");
+				$checkattachnumber	= (isset($manager_pref["content_manager_submit_files_number"]) ? $manager_pref["content_manager_submit_files_number"] : "");
+				$checkimages		= (isset($manager_pref["content_manager_submit_images"]) ? $manager_pref["content_manager_submit_images"] : "");
+				$checkimagesnumber	= (isset($manager_pref["content_manager_submit_images_number"]) ? $manager_pref["content_manager_submit_images_number"] : "");
+				$checkcomment		= (isset($manager_pref["content_manager_submit_comment"]) ? $manager_pref["content_manager_submit_comment"] : "");
+				$checkrating		= (isset($manager_pref["content_manager_submit_rating"]) ? $manager_pref["content_manager_submit_rating"] : "");
+				$checkscore			= (isset($manager_pref["content_manager_submit_score"]) ? $manager_pref["content_manager_submit_score"] : "");
+				$checkpe			= (isset($manager_pref["content_manager_submit_pe"]) ? $manager_pref["content_manager_submit_pe"] : "");
+				$checkvisibility	= (isset($manager_pref["content_manager_submit_visibility"]) ? $manager_pref["content_manager_submit_visibility"] : "");
+				$checkmeta			= (isset($manager_pref["content_manager_submit_meta"]) ? $manager_pref["content_manager_submit_meta"] : "");
+				$checkcustom		= (isset($manager_pref["content_manager_submit_customtags"]) ? $manager_pref["content_manager_submit_customtags"] : "");
+				$checkcustomnumber	= (isset($manager_pref["content_manager_submit_custom_number"]) ? $manager_pref["content_manager_submit_custom_number"] : "");
+				$checklayout		= (isset($manager_pref["content_manager_submit_layout"]) ? $manager_pref["content_manager_submit_layout"] : "");
+				$checkpreset		= (isset($manager_pref["content_manager_submit_presettags"]) ? $manager_pref["content_manager_submit_presettags"] : "");
+
+			//get preferences for managers page
+			}elseif($mode=='contentmanager'){
+				$checksubheading	= (isset($manager_pref["content_manager_manager_subheading"]) ? $manager_pref["content_manager_manager_subheading"] : "");
+				$checksummary		= (isset($manager_pref["content_manager_manager_summary"]) ? $manager_pref["content_manager_manager_summary"] : "");
+				$checkstartdate		= (isset($manager_pref["content_manager_manager_startdate"]) ? $manager_pref["content_manager_manager_startdate"] : "");
+				$checkenddate		= (isset($manager_pref["content_manager_manager_enddate"]) ? $manager_pref["content_manager_manager_enddate"] : "");
+				$checkicon			= (isset($manager_pref["content_manager_manager_icon"]) ? $manager_pref["content_manager_manager_icon"] : "");
+				$checkattach		= (isset($manager_pref["content_manager_manager_attach"]) ? $manager_pref["content_manager_manager_attach"] : "");
+				$checkattachnumber	= (isset($manager_pref["content_manager_manager_files_number"]) ? $manager_pref["content_manager_manager_files_number"] : "");
+				$checkimages		= (isset($manager_pref["content_manager_manager_images"]) ? $manager_pref["content_manager_manager_images"] : "");
+				$checkimagesnumber	= (isset($manager_pref["content_manager_manager_images_number"]) ? $manager_pref["content_manager_manager_images_number"] : "");
+				$checkcomment		= (isset($manager_pref["content_manager_manager_comment"]) ? $manager_pref["content_manager_manager_comment"] : "");
+				$checkrating		= (isset($manager_pref["content_manager_manager_rating"]) ? $manager_pref["content_manager_manager_rating"] : "");
+				$checkscore			= (isset($manager_pref["content_manager_manager_score"]) ? $manager_pref["content_manager_manager_score"] : "");
+				$checkpe			= (isset($manager_pref["content_manager_manager_pe"]) ? $manager_pref["content_manager_manager_pe"] : "");
+				$checkvisibility	= (isset($manager_pref["content_manager_manager_visibility"]) ? $manager_pref["content_manager_manager_visibility"] : "");
+				$checkmeta			= (isset($manager_pref["content_manager_manager_meta"]) ? $manager_pref["content_manager_manager_meta"] : "");
+				$checkcustom		= (isset($manager_pref["content_manager_manager_customtags"]) ? $manager_pref["content_manager_manager_customtags"] : "");
+				$checkcustomnumber	= (isset($manager_pref["content_manager_manager_custom_number"]) ? $manager_pref["content_manager_manager_custom_number"] : "");
+				$checklayout		= (isset($manager_pref["content_manager_manager_layout"]) ? $manager_pref["content_manager_manager_layout"] : "");
+				$checkpreset		= (isset($manager_pref["content_manager_manager_presettags"]) ? $manager_pref["content_manager_manager_presettags"] : "");
+
+			//get preferences for admin area; posted submitted item. (approve submitted)
 			}elseif($mode == "sa"){
 
-				//show all preferences from the submit options. if submit pref is not set, check if create prefs are set and use those
-				$checksubheading = (isset($content_pref["content_submit_subheading"]) ? $content_pref["content_submit_subheading"] : (isset($content_pref["content_admin_subheading"]) ? $content_pref["content_admin_subheading"] : ""));
+				//show all preferences from the manager-submit options.
+				//if manager-submit prefs are not set, check if admin create prefs are set and use those (from the top level category prefs)
+				$checksubheading = (isset($manager_pref["content_manager_submit_subheading"]) ? $manager_pref["content_manager_submit_subheading"] : (isset($content_pref["content_admin_subheading"]) ? $content_pref["content_admin_subheading"] : ""));
 
-				$checksummary	= (isset($content_pref["content_submit_summary"]) ? $content_pref["content_submit_summary"] : (isset($content_pref["content_admin_summary"]) ? $content_pref["content_admin_summary"] : ""));
+				$checksummary	= (isset($manager_pref["content_manager_submit_summary"]) ? $manager_pref["content_manager_submit_summary"] : (isset($content_pref["content_admin_summary"]) ? $content_pref["content_admin_summary"] : ""));
 
-				$checkstartdate = (isset($content_pref["content_submit_startdate"]) ? $content_pref["content_submit_startdate"] : (isset($content_pref["content_admin_startdate"]) ? $content_pref["content_admin_startdate"] : ""));
+				$checkstartdate = (isset($manager_pref["content_manager_submit_startdate"]) ? $manager_pref["content_manager_submit_startdate"] : (isset($content_pref["content_admin_startdate"]) ? $content_pref["content_admin_startdate"] : ""));
 				
-				$checkenddate = (isset($content_pref["content_submit_enddate"]) ? $content_pref["content_submit_enddate"] : (isset($content_pref["content_admin_enddate"]) ? $content_pref["content_admin_enddate"] : ""));
+				$checkenddate = (isset($manager_pref["content_manager_submit_enddate"]) ? $manager_pref["content_manager_submit_enddate"] : (isset($content_pref["content_admin_enddate"]) ? $content_pref["content_admin_enddate"] : ""));
 				
-				$checkicon = (isset($content_pref["content_submit_icon"]) ? $content_pref["content_submit_icon"] : (isset($content_pref["content_admin_icon"]) ? $content_pref["content_admin_icon"] : ""));
+				$checkicon = (isset($manager_pref["content_manager_submit_icon"]) ? $manager_pref["content_manager_submit_icon"] : (isset($content_pref["content_admin_icon"]) ? $content_pref["content_admin_icon"] : ""));
 				
-				$checkattach = (isset($content_pref["content_submit_attach"]) ? $content_pref["content_submit_attach"] : (isset($content_pref["content_admin_attach"]) ? $content_pref["content_admin_attach"] : ""));
+				$checkattach = (isset($manager_pref["content_manager_submit_attach"]) ? $manager_pref["content_manager_submit_attach"] : (isset($content_pref["content_admin_attach"]) ? $content_pref["content_admin_attach"] : ""));
 				
-				$checkattachnumber = (isset($content_pref["content_submit_files_number"]) ? $content_pref["content_submit_files_number"] : (isset($content_pref["content_admin_files_number"]) ? $content_pref["content_admin_files_number"] : ""));
+				$checkattachnumber = (isset($manager_pref["content_manager_submit_files_number"]) ? $manager_pref["content_manager_submit_files_number"] : (isset($content_pref["content_admin_files_number"]) ? $content_pref["content_admin_files_number"] : ""));
 				
-				$checkimages = (isset($content_pref["content_submit_images"]) ? $content_pref["content_submit_images"] : (isset($content_pref["content_admin_images"]) ? $content_pref["content_admin_images"] : ""));
+				$checkimages = (isset($manager_pref["content_manager_submit_images"]) ? $manager_pref["content_manager_submit_images"] : (isset($content_pref["content_admin_images"]) ? $content_pref["content_admin_images"] : ""));
 				
-				$checkimagesnumber = (isset($content_pref["content_submit_images_number"]) ? $content_pref["content_submit_images_number"] : (isset($content_pref["content_admin_images_number"]) ? $content_pref["content_admin_images_number"] : ""));
+				$checkimagesnumber = (isset($manager_pref["content_manager_submit_images_number"]) ? $manager_pref["content_manager_submit_images_number"] : (isset($content_pref["content_admin_images_number"]) ? $content_pref["content_admin_images_number"] : ""));
 				
-				$checkcomment = (isset($content_pref["content_submit_comment"]) ? $content_pref["content_submit_comment"] : (isset($content_pref["content_admin_comment"]) ? $content_pref["content_admin_comment"] : ""));
+				$checkcomment = (isset($manager_pref["content_manager_submit_comment"]) ? $manager_pref["content_manager_submit_comment"] : (isset($content_pref["content_admin_comment"]) ? $content_pref["content_admin_comment"] : ""));
 				
-				$checkrating = (isset($content_pref["content_submit_rating"]) ? $content_pref["content_submit_rating"] : (isset($content_pref["content_admin_rating"]) ? $content_pref["content_admin_rating"] : ""));
+				$checkrating = (isset($manager_pref["content_manager_submit_rating"]) ? $manager_pref["content_manager_submit_rating"] : (isset($content_pref["content_admin_rating"]) ? $content_pref["content_admin_rating"] : ""));
 				
-				$checkscore = (isset($content_pref["content_submit_score"]) ? $content_pref["content_submit_score"] : (isset($content_pref["content_admin_score"]) ? $content_pref["content_admin_score"] : ""));
+				$checkscore = (isset($manager_pref["content_manager_submit_score"]) ? $manager_pref["content_manager_submit_score"] : (isset($content_pref["content_admin_score"]) ? $content_pref["content_admin_score"] : ""));
 				
-				$checkpe = (isset($content_pref["content_submit_pe"]) ? $content_pref["content_submit_pe"] : (isset($content_pref["content_admin_pe"]) ? $content_pref["content_admin_pe"] : ""));
+				$checkpe = (isset($manager_pref["content_manager_submit_pe"]) ? $manager_pref["content_manager_submit_pe"] : (isset($content_pref["content_admin_pe"]) ? $content_pref["content_admin_pe"] : ""));
 				
-				$checkvisibility = (isset($content_pref["content_submit_visibility"]) ? $content_pref["content_submit_visibility"] : (isset($content_pref["content_admin_visibility"]) ? $content_pref["content_admin_visibility"] : ""));
+				$checkvisibility = (isset($manager_pref["content_manager_submit_visibility"]) ? $manager_pref["content_manager_submit_visibility"] : (isset($content_pref["content_admin_visibility"]) ? $content_pref["content_admin_visibility"] : ""));
 				
-				$checkmeta = (isset($content_pref["content_submit_meta"]) ? $content_pref["content_submit_meta"] : (isset($content_pref["content_admin_meta"]) ? $content_pref["content_admin_meta"] : ""));
+				$checkmeta = (isset($manager_pref["content_manager_submit_meta"]) ? $manager_pref["content_manager_submit_meta"] : (isset($content_pref["content_admin_meta"]) ? $content_pref["content_admin_meta"] : ""));
 				
-				$checkcustom = (isset($content_pref["content_submit_customtags"]) ? $content_pref["content_submit_customtags"] : (isset($content_pref["content_admin_customtags"]) ? $content_pref["content_admin_customtags"] : ""));
+				$checkcustom = (isset($manager_pref["content_manager_submit_customtags"]) ? $manager_pref["content_manager_submit_customtags"] : (isset($content_pref["content_admin_customtags"]) ? $content_pref["content_admin_customtags"] : ""));
 				
-				$checkcustomnumber = (isset($content_pref["content_submit_custom_number"]) && $content_pref["content_submit_custom_number"] != "0" ? $content_pref["content_submit_custom_number"] : (isset($content_pref["content_admin_custom_number"]) ? $content_pref["content_admin_custom_number"] : ""));
+				$checkcustomnumber = (isset($manager_pref["content_manager_submit_custom_number"]) && $manager_pref["content_manager_submit_custom_number"] != "0" ? $content_pref["content_manager_submit_custom_number"] : (isset($content_pref["content_admin_custom_number"]) ? $content_pref["content_admin_custom_number"] : ""));
 				
-				$checklayout = (isset($content_pref["content_submit_layout"]) ? $content_pref["content_submit_layout"] : (isset($content_pref["content_admin_layout"]) ? $content_pref["content_admin_layout"] : ""));
+				$checklayout = (isset($manager_pref["content_manager_submit_layout"]) ? $manager_pref["content_manager_submit_layout"] : (isset($content_pref["content_admin_layout"]) ? $content_pref["content_admin_layout"] : ""));
 
-				$checkpreset = (isset($content_pref["content_submit_presettags"]) ? $content_pref["content_submit_presettags"] : (isset($content_pref["content_admin_presettags"]) ? $content_pref["content_admin_presettags"] : ""));
+				$checkpreset = (isset($manager_pref["content_manager_submit_presettags"]) ? $manager_pref["content_manager_submit_presettags"] : (isset($content_pref["content_admin_presettags"]) ? $content_pref["content_admin_presettags"] : ""));
 
 			//normal admin content create preferences
 			}else{
-
 				$checksubheading	= (isset($content_pref["content_admin_subheading"]) ? $content_pref["content_admin_subheading"] : "");
 				$checksummary		= (isset($content_pref["content_admin_summary"]) ? $content_pref["content_admin_summary"] : "");
 				$checkstartdate		= (isset($content_pref["content_admin_startdate"]) ? $content_pref["content_admin_startdate"] : "");
@@ -440,13 +488,11 @@ class contentform{
 				$checklayout		= (isset($content_pref["content_admin_layout"]) ? $content_pref["content_admin_layout"] : "");
 				$checkpreset		= (isset($content_pref["content_admin_presettags"]) ? $content_pref["content_admin_presettags"] : "");
 			}
-			if($mode == "contentmanager"){ // used in contentmanager
-				$authordetails = $aa -> getAuthor(USERID);
-			}
-			if( !isset($authordetails) ){
-				$authordetails = $aa -> getAuthor(USERID);
-			}
 
+			//parse author info
+			$authordetails = $aa -> getAuthor(USERID);
+
+			//retrieve record if we are editing the item
 			if( ($qs[1] == "edit" || $qs[1] == "sa") && is_numeric($qs[2]) && !isset($_POST['preview_content']) && !isset($message)){
 				if(!$sql -> db_Select($plugintable, "*", "content_id='".intval($qs[2])."' ".$userquery." ")){
 					if($mode == "contentmanager"){
@@ -466,10 +512,10 @@ class contentform{
 				}
 			}
 
+			//show preview
 			if(isset($_POST['preview_content'])){
 				$this -> ContentItemPreview();
 			}
-
 			//re-prepare the posted fields for the form (after preview)
 			if( isset($_POST['preview_content']) || isset($message) ){
 
@@ -519,6 +565,7 @@ class contentform{
 				}
 			}
 
+			//prepare date variables
 			if(isset($row['content_datestamp']) && $row['content_datestamp'] != "0" && $row['content_datestamp'] != ""){
 				$startdate	= getdate($row['content_datestamp']);
 				$ne_day		= $startdate['mday'];
@@ -639,7 +686,7 @@ class contentform{
 				$hidden .= $rs -> form_hidden("content_layout", $row['content_layout']);
 			}
 
-			//category
+			//category field (we only need to show the 'category selector' dropdownbox on the admin create page)
 			$CONTENTFORM_CATEGORY = '';
 			if($mode == "contentmanager"){
 				if($qs[1] == "edit"){
@@ -649,11 +696,13 @@ class contentform{
 				}
 			}else{
 				if($mode == "submit"){
-					$parent = "submit";
+					$hidden .= $rs -> form_hidden("parent1", intval($qs[2]));
+				}elseif($mode=='sa' && e_PAGE=='content_manager.php'){
+					$hidden .= $rs -> form_hidden("parent1", $row['content_parent']);
 				}else{
 					$parent = (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : (isset($row['content_parent']) ? $row['content_parent'] : "") );
+					$CONTENTFORM_CATEGORY = $aa -> ShowOption($parent, "createcontent");
 				}
-				$CONTENTFORM_CATEGORY = $aa -> ShowOption($parent, "createcontent");
 			}
 
 			//author
@@ -666,11 +715,13 @@ class contentform{
 			$content_author_email_value	= ($content_author_email ? $content_author_email : CONTENT_ADMIN_ITEM_LAN_15);
 			$content_author_email_js	= ($content_author_email ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"");
 
+			//prepare file lists
 			$rejectlist	= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
 			$iconlist	= $fl->get_files($content_tmppath_icon,"",$rejectlist);
 			$filelist	= $fl->get_files($content_tmppath_file,"",$rejectlist);
 			$imagelist	= $fl->get_files($content_tmppath_image,"",$rejectlist);
 
+			//retrieve the custom/preset data tags
 			if(!(isset($_POST['preview_content']) || isset($message))){
 				if(isset($row['content_pref']) && $row['content_pref']){
 					$custom = $eArrayStorage->ReadArray($row['content_pref']);
@@ -686,9 +737,10 @@ class contentform{
 			if($checkcustom && $checkcustomnumber){
 				$ctext .= $tp -> parseTemplate($CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART, FALSE, $content_shortcodes);
 			}
+
 			if(!empty($custom)){
 				foreach($custom as $k => $v){
-					if(substr($k,0,22) != "content_custom_preset_" && $k != "content_custom_presettags"){
+					if(substr($k,0,15) == "content_custom_" && substr($k,0,22) != "content_custom_preset_" && $k != "content_custom_presettags"){
 						$key = substr($k,15);
 
 						$key	= $tp -> post_toForm($key);
@@ -745,9 +797,9 @@ class contentform{
 			}
 
 			$button = ($hidden ? $hidden : "");
-			if($qs[1] == "edit" || $qs[1] == "sa" || isset($_POST['editp']) ){
+			if($qs[1] == "edit" || $qs[1] == "sa" ){
 				if($qs[1] == "sa"){
-				$button = $rs -> form_hidden("content_refer", $row['content_refer']);
+				$button .= $rs -> form_hidden("content_refer", $row['content_refer']);
 				}
 				$button .= $rs -> form_hidden("content_datestamp", $row['content_datestamp']);
 				$button .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26));
@@ -830,7 +882,7 @@ class contentform{
 
 
 		function show_manage_content($mode, $userid="", $username=""){
-			global $qs, $sql, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $eArrayStorage;
+			global $qs, $sql, $sql2, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $eArrayStorage;
 
 			if($mode != "contentmanager"){
 				//category parent
@@ -857,6 +909,14 @@ class contentform{
 				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".intval($qs[1])."' ")){
 					$rowpcm = $sql -> db_Fetch();
 					$curpref = $eArrayStorage->ReadArray($rowpcm['content_pref']);
+
+					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+					//and use those preferences in the permissions check.
+					if(isset($curpref['content_manager_inherit']) && $curpref['content_manager_inherit']){
+						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$row2 = $sql2 -> db_Fetch();
+						$curpref = $eArrayStorage->ReadArray($row2['e107_value']);
+					}
 
 					//only show personal items
 					if( isset($curpref["content_manager_personal"]) && check_class($curpref["content_manager_personal"]) ){
@@ -965,15 +1025,44 @@ class contentform{
 
 
 
-		//show_submitted("contentmanager", USERID, USERNAME, $qs[2]);
 		function show_submitted($cat=''){
-			global $qs, $rs, $ns, $aa, $plugintable, $tp, $content_shortcodes, $row, $CONTENT_ADMIN_SUBMITTED_START, $CONTENT_ADMIN_SUBMITTED_TABLE, $CONTENT_ADMIN_SUBMITTED_END, $CONTENT_ICON, $CONTENT_ADMIN_OPTIONS, $CONTENT_ADMIN_CATEGORY;
+			global $qs, $rs, $ns, $aa, $plugintable, $tp, $content_shortcodes, $eArrayStorage, $row, $CONTENT_ADMIN_SUBMITTED_START, $CONTENT_ADMIN_SUBMITTED_TABLE, $CONTENT_ADMIN_SUBMITTED_END, $CONTENT_ICON, $CONTENT_ADMIN_OPTIONS, $CONTENT_ADMIN_CATEGORY;
+
+			if(!is_object($sql)){ $sql = new db; }
 
 			$catqry = '';
+			//if cat is not set, we are coming from admin, so continue
+			//if cat is set, cat holds the category id, and we need to do some validation
 			if($cat && is_numeric($cat)){
-				$catqry = " AND content_parent='".intval($cat)."' ";
+
+				//we need to check if the user is allowed to approve submitted content items within this category
+				//so first we need to get the preferences from the category
+				if(!$sql -> db_Select($plugintable, "content_pref", "content_id = '".intval($cat)."' ")){
+					//not a valid category, so redirect
+					header("location:".e_SELF); exit;
+				}else{
+					$row = $sql -> db_Fetch();
+					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
+
+					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+					//and use those preferences in the permissions check.
+					if(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']){
+						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$row = $sql -> db_Fetch();
+						$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
+					}
+
+					//check permission to approve submitted content items
+					if( isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"]) ){
+						//user is allowed, so assign cat query
+						$catqry = " AND content_parent='".intval($cat)."' ";
+					}else{
+						//user is not allowed, so redirect
+						header("location:".e_SELF); exit;
+					}
+				}
 			}
-			if(!is_object($sql)){ $sql = new db; }
+
 			if(!$content_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_author, content_icon, content_parent", "content_refer = 'sa' ".$catqry." ")){
 				$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_50."</div>";
 			}else{
@@ -992,7 +1081,7 @@ class contentform{
 						$icon				= $tp -> replaceConstants($iconpath).$row['content_icon'];
 						$CONTENT_ICON		= ($row['content_icon'] ? "<img src='".$icon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;");
 					}
-					$delete_heading			= str_replace("&#39;", "\'", $row['content_heading']);										
+					$delete_heading			= str_replace("&#39;", "\'", $row['content_heading']);
 					$delid					= $row['content_id'];
 
 					$CONTENT_ADMIN_OPTIONS = "
@@ -1054,11 +1143,9 @@ class contentform{
 
 				if(!is_object($sql)){ $sql = new db; }
 				foreach($array as $catid){
-					if(!$category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
-						$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
-					}else{
+					if($category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
 						$row = $sql -> db_Fetch();
-						$content_pref = $aa -> getContentPref($catarray[$catid][0]);
+						$content_pref = $aa -> getContentPref($catid);
 						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
 						$text .= $tp -> parseTemplate($CONTENT_ADMIN_MANAGER_TABLE, FALSE, $content_shortcodes);
 					}
@@ -1071,22 +1158,182 @@ class contentform{
 
 
 		function manager_category(){
-			global $plugintable, $qs, $sql, $ns, $rs, $aa, $eArrayStorage, $tp, $content_shortcodes, $CONTENT_ADMIN_MANAGER_CATEGORY, $CONTENT_ADMIN_BUTTON;
+			global $plugintable, $qs, $sql, $ns, $rs, $aa, $eArrayStorage, $tp, $content_shortcodes, $CONTENT_ADMIN_MANAGER_CATEGORY, $CONTENT_ADMIN_BUTTON, $CONTENT_ADMIN_MANAGER_OPTIONS, $content_pref;
 
-			if( !getperms("0") || !is_numeric($qs[1]) ){ js_location(e_SELF); }
+			if( !getperms("0") && ($qs[1]!='default' || !is_numeric($qs[1])) ){ js_location(e_SELF); }
 
-			if(!is_object($sql)){ $sql = new db; }
-			if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_pref", "content_id='".intval($qs[1])."' ")){
-				js_location(e_SELF."?manager");
+			if($qs[1] == "default"){
+				$caption = CONTENT_ADMIN_OPT_LAN_0." : ".CONTENT_ADMIN_OPT_LAN_1;
+				$content_pref = $aa -> getContentPref('0');
+			}elseif(is_numeric($qs[1])){
+				if(!is_object($sql)){ $sql = new db; }
+				if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_pref", "content_id='".intval($qs[1])."' ")){
+					header("location:".e_SELF."?manager"); exit;
+				}else{
+					$row = $sql -> db_Fetch();
+					$caption = CONTENT_ADMIN_CAT_LAN_30." : ".$row['content_heading'];
+					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
+				}
 			}else{
-				$row = $sql -> db_Fetch();
-				$caption = CONTENT_ADMIN_CAT_LAN_30." : ".$row['content_heading'];
+				header("location:".e_SELF."?option"); exit;
 			}
-			$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 			$CONTENT_ADMIN_BUTTON = $rs -> form_button("submit", "update_manager", LAN_SAVE)." ".$rs -> form_hidden("options_type", intval($qs[1]));
+			$CONTENT_ADMIN_MANAGER_OPTIONS = $this->manager_category_options($content_pref);
 			$text = $tp -> parseTemplate($CONTENT_ADMIN_MANAGER_CATEGORY, FALSE, $content_shortcodes);
 			$ns -> tablerender($caption, $text);
 		}
+
+		function manager_category_options($content_pref){
+			global $ns, $rs;
+
+			//define some variables
+			$CONTENT_ADMIN_MANAGER_ROW_TITLE	= "<tr><td colspan='2' class='fcaption'>{TOPIC_CAPTION}</td></tr>";
+			$CONTENT_ADMIN_MANAGER_ROW_NOEXPAND = "
+			<tr>
+				<td class='forumheader3' style='width:35%; vertical-align:top;'>{TOPIC_TOPIC}</td>
+				<td class='forumheader3'>{TOPIC_FIELD}</td>
+			</tr>";
+
+			$text = "
+			<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+			$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_MENU_4;
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_TITLE);
+
+			//content_manager_submit_directpost_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_11;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_manager_submit_directpost", "1", ($content_pref['content_manager_submit_directpost'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_manager_submit_directpost", "0", ($content_pref['content_manager_submit_directpost'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31;
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			//content_manager_submit_sections
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_SECTION_1;
+			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
+			".$rs -> form_checkbox("content_manager_submit_subheading", 1, (isset($content_pref['content_manager_submit_subheading']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_32."<br />
+			".$rs -> form_checkbox("content_manager_submit_summary", 1, (isset($content_pref['content_manager_submit_summary']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_38."<br />
+			".$rs -> form_checkbox("content_manager_submit_startdate", 1, (isset($content_pref['content_manager_submit_startdate']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_33."<br />
+			".$rs -> form_checkbox("content_manager_submit_enddate", 1, (isset($content_pref['content_manager_submit_enddate']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_34."<br />
+			".$rs -> form_checkbox("content_manager_submit_icon", 1, (isset($content_pref['content_manager_submit_icon']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_27."<br />
+			".$rs -> form_checkbox("content_manager_submit_attach", 1, (isset($content_pref['content_manager_submit_attach']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_2."<br />
+			".$rs -> form_checkbox("content_manager_submit_images", 1, (isset($content_pref['content_manager_submit_images']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_3."<br />
+			".$rs -> form_checkbox("content_manager_submit_comment", 1, (isset($content_pref['content_manager_submit_comment']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_4."<br />
+			</td><td style='white-space:nowrap; vertical-align:top;'>
+			".$rs -> form_checkbox("content_manager_submit_rating", 1, (isset($content_pref['content_manager_submit_rating']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_5."<br />
+			".$rs -> form_checkbox("content_manager_submit_score", 1, (isset($content_pref['content_manager_submit_score']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_6."<br />
+			".$rs -> form_checkbox("content_manager_submit_pe", 1, (isset($content_pref['content_manager_submit_pe']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_20."<br />
+			".$rs -> form_checkbox("content_manager_submit_visibility", 1, (isset($content_pref['content_manager_submit_visibility']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_7."<br />
+			".$rs -> form_checkbox("content_manager_submit_meta", 1, (isset($content_pref['content_manager_submit_meta']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_8."<br />
+			".$rs -> form_checkbox("content_manager_submit_layout", 1, (isset($content_pref['content_manager_submit_layout']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_9."<br />
+			".$rs -> form_checkbox("content_manager_submit_customtags", 1, (isset($content_pref['content_manager_submit_customtags']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_10."<br />
+			".$rs -> form_checkbox("content_manager_submit_presettags", 1, (isset($content_pref['content_manager_submit_presettags']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_11."<br />
+			</td></tr></table>";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			//content_manager_submit_custom_number_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_5;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_manager_submit_custom_number");
+			for($i=0;$i<11;$i++){
+				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_manager_submit_custom_number'] == $i ? "1" : "0"), $i);
+			}
+			$TOPIC_FIELD .= $rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			//content_manager_submit_images_number_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_3;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_manager_submit_images_number");
+			for($i=1;$i<16;$i++){
+				$k=$i*2;
+				$TOPIC_FIELD .= $rs -> form_option($k, ($content_pref['content_manager_submit_images_number'] == $k ? "1" : "0"), $k);
+			}
+			$TOPIC_FIELD .= $rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			//content_manager_submit_files_number_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_4;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_manager_submit_files_number");
+			for($i=1;$i<6;$i++){
+				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_manager_submit_files_number'] == $i ? "1" : "0"), $i);
+			}
+			$TOPIC_FIELD .= $rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			$text .= "
+			</table>";
+
+			$text .= "
+			<br /><br />
+			<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+			$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_MENU_23;
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_TITLE);
+
+			//content_manager_manager_sections
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_SECTION_1;
+			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
+			".$rs -> form_checkbox("content_manager_manager_subheading", 1, (isset($content_pref['content_manager_manager_subheading']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_32."<br />
+			".$rs -> form_checkbox("content_manager_manager_summary", 1, (isset($content_pref['content_manager_manager_summary']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_38."<br />
+			".$rs -> form_checkbox("content_manager_manager_startdate", 1, (isset($content_pref['content_manager_manager_startdate']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_33."<br />
+			".$rs -> form_checkbox("content_manager_manager_enddate", 1, (isset($content_pref['content_manager_manager_enddate']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_34."<br />
+			".$rs -> form_checkbox("content_manager_manager_icon", 1, (isset($content_pref['content_manager_manager_icon']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_27."<br />
+			".$rs -> form_checkbox("content_manager_manager_attach", 1, (isset($content_pref['content_manager_manager_attach']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_2."<br />
+			".$rs -> form_checkbox("content_manager_manager_images", 1, (isset($content_pref['content_manager_manager_images']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_3."<br />
+			".$rs -> form_checkbox("content_manager_manager_comment", 1, (isset($content_pref['content_manager_manager_comment']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_4."<br />
+			</td><td style='white-space:nowrap; vertical-align:top;'>
+			".$rs -> form_checkbox("content_manager_manager_rating", 1, (isset($content_pref['content_manager_manager_rating']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_5."<br />
+			".$rs -> form_checkbox("content_manager_manager_score", 1, (isset($content_pref['content_manager_manager_score']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_6."<br />
+			".$rs -> form_checkbox("content_manager_manager_pe", 1, (isset($content_pref['content_manager_manager_pe']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_20."<br />
+			".$rs -> form_checkbox("content_manager_manager_visibility", 1, (isset($content_pref['content_manager_manager_visibility']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_7."<br />
+			".$rs -> form_checkbox("content_manager_manager_meta", 1, (isset($content_pref['content_manager_manager_meta']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_8."<br />
+			".$rs -> form_checkbox("content_manager_manager_layout", 1, (isset($content_pref['content_manager_manager_layout']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_9."<br />
+			".$rs -> form_checkbox("content_manager_manager_customtags", 1, (isset($content_pref['content_manager_manager_customtags']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_10."<br />
+			".$rs -> form_checkbox("content_manager_manager_presettags", 1, (isset($content_pref['content_manager_manager_presettags']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_11."<br />
+			</td></tr></table>";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			//content_manager_manager_custom_number_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_5;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_manager_manager_custom_number");
+			for($i=0;$i<11;$i++){
+				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_manager_manager_custom_number'] == $i ? "1" : "0"), $i);
+			}
+			$TOPIC_FIELD .= $rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			//content_manager_manager_images_number_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_3;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_manager_manager_images_number");
+			for($i=1;$i<16;$i++){
+				$k=$i*2;
+				$TOPIC_FIELD .= $rs -> form_option($k, ($content_pref['content_manager_manager_images_number'] == $k ? "1" : "0"), $k);
+			}
+			$TOPIC_FIELD .= $rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			//content_manager_manager_files_number_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_4;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_manager_manager_files_number");
+			for($i=1;$i<6;$i++){
+				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_manager_manager_files_number'] == $i ? "1" : "0"), $i);
+			}
+			$TOPIC_FIELD .= $rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_MANAGER_ROW_NOEXPAND);
+
+			$text .= "
+			</table>";
+
+
+			return $text;
+		}
+
+
+
 
 		function show_create_category(){
 			global $qs, $plugintable, $plugindir, $sql, $ns, $rs, $aa, $fl, $pref, $tp, $content_shortcodes, $row, $message;
@@ -1293,8 +1540,9 @@ class contentform{
 
 
 		function show_contentmanager($mode, $userid="", $username=""){
-			global $content_shortcodes, $row, $tp, $sql, $ns, $rs, $plugintable, $plugindir, $aa, $eArrayStorage;
+			global $content_shortcodes, $row, $tp, $sql, $sql2, $ns, $rs, $plugintable, $plugindir, $aa, $eArrayStorage;
 			global $CONTENT_CONTENTMANAGER_CATEGORY, $CONTENT_CONTENTMANAGER_TABLE, $CONTENT_CONTENTMANAGER_TABLE_START, $CONTENT_CONTENTMANAGER_TABLE_END, $content_pref, $pref;
+
 			$personalmanagercheck = FALSE;
 
 			if(!isset($CONTENT_CONTENTMANAGER_TABLE)){
@@ -1308,10 +1556,26 @@ class contentform{
 			$catarray	= array_keys($array);
 			$content_contentmanager_table_string = "";
 			foreach($catarray as $catid){
-				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".intval($catid)."' ")){
+				if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_pref", " content_id='".intval($catid)."' ")){
 					$row = $sql -> db_Fetch();
+
+					//get preferences for this category
 					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
-					if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
+
+					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
+					//and use those preferences in the permissions check.
+					if(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']){
+						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$row2 = $sql2 -> db_Fetch();
+						$content_pref = $eArrayStorage->ReadArray($row2['e107_value']);
+					}
+
+					//now we can check the permissions for this user
+					if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || 
+						(isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || 
+						(isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) || 
+						(isset($content_pref["content_manager_submit"]) && check_class($content_pref["content_manager_submit"]))
+						){
 						$personalmanagercheck = TRUE;
 						$content_contentmanager_table_string .= $tp -> parseTemplate($CONTENT_CONTENTMANAGER_TABLE, FALSE, $content_shortcodes);
 					}
@@ -1329,8 +1593,6 @@ class contentform{
 
 		function show_order(){
 			global $qs, $sql, $sql2, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $content_pref, $CONTENT_ADMIN_ORDER_START, $CONTENT_ADMIN_ORDER_TABLE, $CONTENT_ADMIN_ORDER_END, $CONTENT_ADMIN_ORDER_UPDOWN, $CONTENT_ADMIN_ORDER_SELECT, $stylespacer, $catarray, $catid, $CONTENT_ADMIN_ORDER_AMOUNT, $CONTENT_ADMIN_ORDER_CAT, $CONTENT_ADMIN_ORDER_CATALL, $CONTENT_ADMIN_BUTTON, $row, $CONTENT_ADMIN_SPACER;
-
-			//if(!getperms("0")){ header("location:".e_SELF); exit; }
 
 			$catarray	= $aa -> getCategoryTree("", "", FALSE);
 			$array		= array_keys($catarray);
@@ -1514,8 +1776,7 @@ class contentform{
 			}else{
 				header("location:".e_SELF."?option"); exit;
 			}
-			//check prefs two times to insure they are shown, if none present, the first inserts them, the second retrieves them						
-			//$content_pref		= $aa -> getContentPref($id);
+
 			$content_pref		= $aa -> getContentPref($id);
 
 			//define some variables
@@ -1527,8 +1788,7 @@ class contentform{
 			<tr>
 				<td class='forumheader3' style='width:35%; vertical-align:top;'>{TOPIC_TOPIC}</td>
 				<td class='forumheader3'>{TOPIC_FIELD}</td>
-			</tr>
-			";
+			</tr>";
 
 			$TOPIC_ROW = "
 			<tr>
@@ -1694,88 +1954,6 @@ class contentform{
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_ROW_SPACER;
-
-			$text .= $TOPIC_TABLE_END;
-
-			$text .= "
-			<div id='submission' style='display:none; text-align:center'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>";
-
-			$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_MENU_4;
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
-
-			//content_submit_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_9;
-			$TOPIC_FIELD = "
-			".$rs -> form_radio("content_submit", "1", ($content_pref['content_submit'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
-			".$rs -> form_radio("content_submit", "0", ($content_pref['content_submit'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31;
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_submit_class_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_10;
-			$TOPIC_FIELD = r_userclass("content_submit_class", $content_pref['content_submit_class'], "CLASSES");
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_submit_directpost_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_11;
-			$TOPIC_FIELD = "
-			".$rs -> form_radio("content_submit_directpost", "1", ($content_pref['content_submit_directpost'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
-			".$rs -> form_radio("content_submit_directpost", "0", ($content_pref['content_submit_directpost'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31;
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_submit_sections
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_SECTION_1;
-			$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap;'>
-			".$rs -> form_checkbox("content_submit_subheading", 1, (isset($content_pref['content_submit_subheading']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_32."<br />
-			".$rs -> form_checkbox("content_submit_summary", 1, (isset($content_pref['content_submit_summary']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_38."<br />
-			".$rs -> form_checkbox("content_submit_startdate", 1, (isset($content_pref['content_submit_startdate']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_33."<br />
-			".$rs -> form_checkbox("content_submit_enddate", 1, (isset($content_pref['content_submit_enddate']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_34."<br />
-			".$rs -> form_checkbox("content_submit_icon", 1, (isset($content_pref['content_submit_icon']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_27."<br />
-			".$rs -> form_checkbox("content_submit_attach", 1, (isset($content_pref['content_submit_attach']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_2."<br />
-			".$rs -> form_checkbox("content_submit_images", 1, (isset($content_pref['content_submit_images']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_3."<br />
-			".$rs -> form_checkbox("content_submit_comment", 1, (isset($content_pref['content_submit_comment']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_4."<br />
-			</td><td style='white-space:nowrap; vertical-align:top;'>
-			".$rs -> form_checkbox("content_submit_rating", 1, (isset($content_pref['content_submit_rating']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_5."<br />
-			".$rs -> form_checkbox("content_submit_score", 1, (isset($content_pref['content_submit_score']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_6."<br />
-			".$rs -> form_checkbox("content_submit_pe", 1, (isset($content_pref['content_submit_pe']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_20."<br />
-			".$rs -> form_checkbox("content_submit_visibility", 1, (isset($content_pref['content_submit_visibility']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_7."<br />
-			".$rs -> form_checkbox("content_submit_meta", 1, (isset($content_pref['content_submit_meta']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_8."<br />
-			".$rs -> form_checkbox("content_submit_layout", 1, (isset($content_pref['content_submit_layout']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_9."<br />
-			".$rs -> form_checkbox("content_submit_customtags", 1, (isset($content_pref['content_submit_customtags']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_10."<br />
-			".$rs -> form_checkbox("content_submit_presettags", 1, (isset($content_pref['content_submit_presettags']) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_SECTION_11."<br />
-			</td></tr></table>";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_submit_custom_number_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_5;
-			$TOPIC_FIELD = "
-			".$rs -> form_select_open("content_submit_custom_number");
-			for($i=0;$i<11;$i++){
-				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_submit_custom_number'] == $i ? "1" : "0"), $i);
-			}
-			$TOPIC_FIELD .= $rs -> form_select_close();
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_submit_images_number_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_3;
-			$TOPIC_FIELD = "
-			".$rs -> form_select_open("content_submit_images_number");
-			for($i=1;$i<16;$i++){
-				$k=$i*2;
-				$TOPIC_FIELD .= $rs -> form_option($k, ($content_pref['content_submit_images_number'] == $k ? "1" : "0"), $k);
-			}
-			$TOPIC_FIELD .= $rs -> form_select_close();
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-
-			//content_submit_files_number_
-			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_4;
-			$TOPIC_FIELD = "
-			".$rs -> form_select_open("content_submit_files_number");
-			for($i=1;$i<6;$i++){
-				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_submit_files_number'] == $i ? "1" : "0"), $i);
-			}
-			$TOPIC_FIELD .= $rs -> form_select_close();
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
 
@@ -2934,7 +3112,6 @@ class contentform{
 			$text .= "
 			</form>
 			</div>";
-			//echo "<pre>"; print_r($content_pref); echo "</pre>";
 
 			$ns -> tablerender($caption, $text);
 		}

@@ -11,33 +11,37 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/content_manager_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-13 16:51:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 global $sc_style, $content_shortcodes;
 
+$sc_style['CONTENT_CONTENTMANAGER_ICONEDIT']['pre'] = " | ";
+$sc_style['CONTENT_CONTENTMANAGER_ICONEDIT']['post'] = "";
+
+$sc_style['CONTENT_CONTENTMANAGER_ICONSUBM']['pre'] = " | ";
+$sc_style['CONTENT_CONTENTMANAGER_ICONSUBM']['post'] = "";
+
+$sc_style['CONTENT_CONTENTMANAGER_CATEGORY_SUBHEADING']['pre'] = "<div class='forumheader3'>";
+$sc_style['CONTENT_CONTENTMANAGER_CATEGORY_SUBHEADING']['post'] = "</div>";
+
 // ##### CONTENT CONTENTMANAGER LIST --------------------------------------------------
 if(!isset($CONTENT_CONTENTMANAGER_TABLE_START)){
-	$CONTENT_CONTENTMANAGER_TABLE_START = "
-	<table class='fborder' style='width:98%; text-align:left;' cellpadding='0' cellspacing='0'>
-	<tr>
-		<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_57."</td>
-		<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
-	</tr>\n";
+	$CONTENT_CONTENTMANAGER_TABLE_START = "";
 }
 if(!isset($CONTENT_CONTENTMANAGER_TABLE)){
 	$CONTENT_CONTENTMANAGER_TABLE = "
-	<tr>
-		<td class='forumheader3'>{CONTENT_CONTENTMANAGER_CATEGORY}</td>
-		<td class='forumheader3' style='width:10%;white-space:nowrap;'>{CONTENT_CONTENTMANAGER_ICONEDIT} {CONTENT_CONTENTMANAGER_ICONNEW} {CONTENT_CONTENTMANAGER_ICONSUBM}</td>
-	</tr>";
+	<div class='fcaption'>{CONTENT_CONTENTMANAGER_CATEGORY}</div>
+	{CONTENT_CONTENTMANAGER_CATEGORY_SUBHEADING}
+	<div class='forumheader3' style='margin-bottom:20px;'>
+		{CONTENT_CONTENTMANAGER_ICONNEW} {CONTENT_CONTENTMANAGER_ICONEDIT} {CONTENT_CONTENTMANAGER_ICONSUBM}
+	</div>";
 }
 
 if(!isset($CONTENT_CONTENTMANAGER_TABLE_END)){
-	$CONTENT_CONTENTMANAGER_TABLE_END = "
-	</table>";
+	$CONTENT_CONTENTMANAGER_TABLE_END = "";
 }
 // ##### ----------------------------------------------------------------------
 

@@ -3,12 +3,7 @@ if (!defined('e107_INIT')) { exit; }
 
 global $plugindir;
 require_once($plugindir."handlers/content_defines.php");
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_help.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_help.php');
-
-
-//$arrhide = array("creation", "submission", "paththeme", "general", "contentmanager", "menu", "recentpages", "catpages", "contentpages", "authorpage", "archivepage", "toppage", "scorepage");
-
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_help.php");
 
 if(!e_QUERY){
 	$text = CONTENT_ADMIN_HELP_ITEM_1;
@@ -63,27 +58,9 @@ if(!e_QUERY){
 
 		//option: with main parent selected, show all options
 		}elseif($qs[0] == "option" && isset($qs[1]) && (is_numeric($qs[1]) || $qs[1] == "default") ){
-			//$text = CONTENT_ADMIN_HELP_OPTION_2;
-/*
+
 			$text .= "
 			<div id='creationhelp'>".CONTENT_ADMIN_HELP_OPTION_DIV_1."</div>
-			<div id='catcreationhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_14."</div>
-			<div id='submissionhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_2."</div>
-			<div id='paththemehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_3."</div>
-			<div id='generalhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_4."</div>
-			<div id='menuhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_6."</div>
-			<div id='recentpageshelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_7."</div>
-			<div id='catpageshelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_8."</div>
-			<div id='contentpageshelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_9."</div>
-			<div id='authorpagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_10."</div>
-			<div id='archivepagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_11."</div>
-			<div id='toppagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_12."</div>
-			<div id='scorepagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_13."</div>
-			";
-*/
-			$text .= "
-			<div id='creationhelp'>".CONTENT_ADMIN_HELP_OPTION_DIV_1."</div>
-			<div id='submissionhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_2."</div>
 			<div id='generalhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_3."</div>
 			<div id='menuhelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_6."</div>
 			<div id='recentpageshelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_7."</div>
@@ -92,19 +69,19 @@ if(!e_QUERY){
 			<div id='authorpagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_10."</div>
 			<div id='archivepagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_11."</div>
 			<div id='toppagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_12."</div>
-			<div id='scorepagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_13."</div>
-			";
+			<div id='scorepagehelp' style='display:none;'>".CONTENT_ADMIN_HELP_OPTION_DIV_13."</div>";
 
 
-	//##### CATEGORY --------------------------------------------------
-		//category content manager : choose category
+	//##### MANAGER --------------------------------------------------
+		//content manager : choose category
 		}elseif($qs[0] == "manager" && !isset($qs[1]) ){
 			$text = CONTENT_ADMIN_HELP_MANAGER_1;
 
-		//category content manager : view contentmanager
-		}elseif($qs[0] == "manager" && isset($qs[1]) && is_numeric($qs[1]) ){
+		//content manager : view contentmanager
+		}elseif($qs[0] == "manager" && isset($qs[1]) && (is_numeric($qs[1]) || $qs[1]=='default') ){
 			$text = CONTENT_ADMIN_HELP_MANAGER_2;
 
+	//##### CATEGORY --------------------------------------------------
 		//overview all categories
 		}elseif($qs[0] == "cat" && !isset($qs[1]) ){
 			$text = CONTENT_ADMIN_HELP_CAT_1;
@@ -116,7 +93,6 @@ if(!e_QUERY){
 		//edit category
 		}elseif($qs[0] == "cat" && $qs[1] == "edit" && is_numeric($qs[2]) ){
 			$text = CONTENT_ADMIN_HELP_CAT_3;
-
 		}
 }
 $ns -> tablerender(CONTENT_ADMIN_HELP_1, $text);

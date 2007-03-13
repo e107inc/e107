@@ -16,8 +16,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 global $PLUGINS_DIRECTORY;
-@include_once(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_admin.php');
-@include_once(e_PLUGIN.'content/languages/English/lan_content_admin.php');
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "CONTENT_PLUGIN_LAN_1";
@@ -106,5 +105,15 @@ $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';",
 );
 $eplug_upgrade_done = CONTENT_PLUGIN_LAN_6;
+
+//uninstall function: remove core prefs
+if(!function_exists(content_uninstall)){
+	function content_uninstall(){
+		global $sql;
+		if($sql->db_Select("core","*","e107_name='pcontent'")){
+			$sql -> db_Delete("core", "e107_name='pcontent' ");
+		}
+	}
+}
 
 ?>

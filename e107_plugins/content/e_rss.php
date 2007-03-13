@@ -2,8 +2,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
-
 require_once(e_PLUGIN."content/handlers/content_class.php");
 $aa = new content;
 
