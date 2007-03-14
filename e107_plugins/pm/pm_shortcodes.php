@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-02-10 10:19:23 $
+|     $Revision: 1.19 $
+|     $Date: 2007-03-14 20:06:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,9 @@ if($pm_prefs['allow_userclass'])
 		$args = "member, ".$args;
 	}
 	$ret .= r_userclass("pm_userclass", "", "off", $args);
+	if (strpos($ret,'option') === FALSE)  $ret = '';
 }
+
 return $ret;
 SC_END
 
