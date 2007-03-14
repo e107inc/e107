@@ -23,6 +23,6 @@ define("CM_L8", "Nieuwe reacties menu configuratie");
 define("CM_L9", "Bijwerken menu instellingen");
 define("CM_L10", "Reacties menu configuratie opgeslagen");
 define("CM_L11", "op");
-define("CM_L12", "Over:")
+define("CM_L12", "Over:");
 define("CM_L13", "Geplaatst door");
 ?>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*
 +---------------------------------------------------------------+
@@ -56,8 +56,8 @@ define("ADLAN_38", "Ledenklassen");
 define("ADLAN_39", "Maak/bewerk Ledenklasse");
 define("ADLAN_40", "Onderhoud");
 define("ADLAN_41", "Sluit tijdelijk de site voor onderhoud");
-define("ADLAN_42", "Menu's maken");
-define("ADLAN_43", "Maak je eigen menu's");
+define("ADLAN_42", "Maatwerk");
+define("ADLAN_43", "Maak uw eigen pagina's en menu's");
 define("ADLAN_44", "Database");
 define("ADLAN_45", "Database gereedschap");
 define("ADLAN_46", "Uitloggen");

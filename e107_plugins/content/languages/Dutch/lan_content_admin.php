@@ -4,11 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-10-30 22:19:43 $
+|     $Revision: 1.18 $
+|     $Date: 2007-03-14 20:31:07 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
+
+define("CONTENT_STATUS_LAN_1", "Aangemelde onderwerpen:");
 
 define("CONTENT_PLUGIN_LAN_1", "Contentbeheer");
 define("CONTENT_PLUGIN_LAN_2", "Een complete contentbeheer sectie.");
@@ -310,7 +312,7 @@ define("CONTENT_ADMIN_JS_LAN_8", "pictogram");
 define("CONTENT_ADMIN_JS_LAN_9", "WAARSCHUWING :\\ndoor deze categorie te verwijderen, worden alle eventuele aanwezige subcategorieën,\\nook verwijderd!");
 define("CONTENT_ADMIN_JS_LAN_10", "Weet u zeker dat u dit aangemelde onderwerp, dat nog niet werd geplaatst, wilt verwijderen?");
 
-define("CONTENT_ADMIN_SUBMIT_LAN_0", "geen van de inhoudscategorieën is beschikbaar voor aanmelding door gewone leden");
+define("CONTENT_ADMIN_SUBMIT_LAN_0", "je hebt onvoldoende autorisaties, of aanmelden door gebruikers is niet mogelijk");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "inhoud aanmeldingstype");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Bedankt, uw onderwerp is aangemeld.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Bedankt, uw onderwerp is aangemeld en wordt z.s.m. beoordeeld door een beheerder.");

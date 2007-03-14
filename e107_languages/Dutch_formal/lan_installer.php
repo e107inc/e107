@@ -130,4 +130,13 @@ define("LANINS_092", "Contact");
 define("LANINS_093", "Verleent toegang to persoonlijke menu's");
 define("LANINS_094", "Voorbeeld besloten forum klasse");
 define("LANINS_095", "Integriteitscontrole");
+define("LANINS_096", 'Laatste reacties');
+define("LANINS_097", '[verder ...]');
+define("LANINS_098", 'Artikelen');
+define("LANINS_099", 'Artikel voorpagina ...');
+define("LANINS_100", 'Laatste forumberichten');
+define("LANINS_101", 'Bijwerken menu instellingen');
+define("LANINS_102", 'Datum / tijd');
+define("LANINS_103", 'Reviews');
+define("LANINS_104", 'Review voorpagina ...');
 ?>

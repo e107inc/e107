@@ -78,6 +78,7 @@ define("FORLAN_62", "Forum opties");
 define("FORLAN_63", "Niveau's");
 define("FORLAN_64", "Geef het aantal niveau's op. Wanneer dit niet wordt opgegeven, worden asterisks gebruikt om het niveau aan te duiden. Niveau's scheiden door comma's. Maximaal 10 niveau's, laagste eerst.");
 define("FORLAN_65", "Forum Titel");
+define("FORLAN_66", "Peilingen plugin niet geïnstalleerd");
 define("FORLAN_68", "Toestaan HTML berichten");
 define("FORLAN_69", "sta gebruikers toe om html berichten te plaatsen, deze instelling geldt voor de hele site (reacties, chatbox etc)");
 define("FORLAN_70", "Tonen plaatjes, deze instelling geldt voor de hele site (reacties, chatbox etc)");

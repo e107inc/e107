@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Dutch.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-13 20:23:37 $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-14 20:31:22 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,9 @@ define("POLL_ADLAN01", "Peilingen");
 define("POLL_ADLAN02", "De peilingen plugin biedt de mogelijkheid peilingen in een menu of forumbericht te plaatsen.");
 define("POLL_ADLAN03", "Configureren peilingen");
 define("POLL_ADLAN04", "De peilingen plugin is succesvol geïnstalleerd. Klik op Peilingen in de pluginbeheer sectie van het beheerscherm om peilingen te maken en vergeet niet ze te activeren in het menubeheer scherm.");
+define("POLL_ADLAN05", "Hoofdpeiling: ");
+define("POLL_ADLAN06", "Forumdiscussie: ");
+define("POLL_ADLAN07", "Type");
 
 define("POLLAN_MENU_CAPTION", "Peilingen");
 
