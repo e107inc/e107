@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-14 21:17:03 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-15 15:55:08 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -76,7 +76,11 @@ if (isset($_POST['plugin_scan']) || e_QUERY == "plugin" || $_POST['delplug']) {
 	exit;
 }
 
-
+if (isset($_POST['verify_sql_record']) || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']) ) {
+	verify_sql_record();
+	require_once("footer.php");
+	exit;
+}
 
 
 
@@ -116,6 +120,12 @@ $text = "<div style='text-align:center'>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='backup_core' value='".DBLAN_9."' />
 	<input type='hidden' name='sqltext' value='$sqltext' />
 	</td></tr>
+
+	<tr>
+	<td style='width:70%' class='forumheader3'>".DBLAN_35."</td>
+	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='verify_sql_record' value='".DBLAN_36."' /></td>
+	</tr>
+
 	</table>
 	</form>
 	</div>";
@@ -297,6 +307,304 @@ function delete_plugin_entry()
 	$message = ($sql -> db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1")) ? LAN_DELETED : LAN_DELETED_FAILED;
     $caption = ($message == LAN_DELETED) ? LAN_DELETED : LAN_ERROR;
     $ns -> tablerender($caption,$message);
+}
+
+function verify_sql_record(){
+	global $ns, $sql, $sql2, $tp;
+
+	if(!is_object($sql)){ $sql = new db; }
+	if(!is_object($sql2)){ $sql2 = new db; }
+	if(!is_object($sql3)){ $sql3 = new db; }
+
+	$tables = array();
+	$tables[] = 'rate';
+	$tables[] = 'comments';
+
+	if(isset($_POST['delete_verify_sql_record'])){
+
+		$text = "<div style='font-weight:bold; text-align:center;'>";
+		$text .= "ok, so you want to delete some records? not a problem at all!<br />";
+		$text .= "but, since this is still an experimental procedure, i won't actually delete anything<br />";
+		$text .= "instead, i will show you the queries that would be performed<br />";
+		$text .= "<br />";
+
+		foreach($_POST['del_dbrec'] as $k=>$v){
+			
+			if($k=='rate'){
+
+				$keys = implode(", ", array_keys($v));
+				$qry .= "DELETE * FROM rate WHERE rate_id IN (".$keys.")<br />";
+
+			}elseif($k=='comments'){
+
+				$keys = implode(", ", array_keys($v));
+				$qry .= "DELETE * FROM comments WHERE comment_id IN (".$keys.")<br />";
+
+			}
+
+		}
+		$text .= $qry;
+
+		$text .= "<br />
+		<form method='post' action='".e_SELF."'>
+		<table border=0 align='center'>
+			<tr><td><input class='button' type='submit' name='back' value='".DBLAN_13."' /></td></tr>
+		</table>
+		</form>
+		</div>";
+
+		$ns->tablerender($caption, $text);
+
+		return;
+	}
+
+	if(!isset($_POST['check_verify_sql_record'])){
+		//select table to verify
+		$text = "
+		<form method='post' action='".e_SELF."'>
+		<table border=0 align='center'>
+		<tr><td>".DBLAN_37."<br /><br />";
+			foreach($tables as $t){
+				$text .= "<input type='checkbox' name='table_{$t}' />{$t}<br /";
+			}
+			$text .= "
+			<br />
+			<input class='button' name='check_verify_sql_record' type='submit' value='".DBLAN_38."' />
+			<input class='button' type='submit' name='back' value='".DBLAN_13."' />
+		</td></tr>
+		</table>
+		</form>";
+
+		$ns->tablerender(DBLAN_39, $text);
+	}else{
+
+
+		//function to sort the results
+		function verify_sql_record_cmp($a, $b) {
+			
+			$orderby=array('type'=>'asc', 'itemid'=>'asc');
+
+			$result= 0;
+			foreach( $orderby as $key => $value ) {
+				if( $a[$key] == $b[$key] ) continue;
+				$result = ($a[$key] < $b[$key])? -1 : 1;
+				if( $value=='desc' ) $result = -$result;
+				break;
+			}
+			return $result;
+		}
+
+		//function to display the results
+		//$err holds the error data
+		//$ctype holds the tablename
+		function verify_sql_record_displayresult($err, $ctype){
+
+			usort($err, 'verify_sql_record_cmp');
+
+			$text = '';
+			if(is_array($err) && !empty($err)){
+
+				$text .= "
+				<table class='fborder' style='".ADMIN_WIDTH."'>
+				<tr><td class='fcaption' colspan='4'>".DBLAN_40." ".$ctype."</td></tr>
+				<tr>
+					<td class='fcaption' style='width:20%;'>".DBLAN_41."</td>
+					<td class='fcaption' style='width:10%;'>".DBLAN_42."</td>
+					<td class='fcaption' style='width:50%;'>".DBLAN_43."</td>
+					<td class='fcaption' style='width:20%;'>".DBLAN_44."</td>
+				</tr>";
+
+				foreach($err as $k=>$v){
+					$delkey = $v['sqlid'];
+					$text .= "
+					<tr>
+						<td class='forumheader3'>".$v['type']."</td>
+						<td class='forumheader3'>".$v['itemid']."</td>
+						<td class='forumheader3'>".($v['table_exist'] ? DBLAN_45 : DBLAN_46)."</td>
+						<td class='forumheader3'><input type='checkbox' name=\"del_dbrec[$ctype][$delkey][]\" value='1' /> ".DBLAN_47."</td>
+					</tr>";
+				}
+				$text .= "
+				<tr>
+					<td class='fcaption' colspan='3'></td>
+					<td class='fcaption'>
+						<input class='button' name='delete_verify_sql_record' type='submit' value='".DBLAN_48."' />
+						<input class='button' type='submit' name='back' value='".DBLAN_13."' />
+					</td>
+				</tr>
+				</table><br />";
+			}
+
+			return $text;
+		}
+
+		function verify_sql_record_gettables(){
+			global $sql2;
+
+			//array which will hold all db tables
+			$dbtables = array();
+
+			//get all tables in the db
+			$sql2 -> db_Select_gen("SHOW TABLES");
+			while($row2=$sql2->db_Fetch()){
+				$dbtables[] = $row2[0];
+			}
+			return $dbtables;
+		}
+
+		$text = '';
+
+		//validate rate table records
+		if(isset($_POST['table_rate'])){
+
+			$query = "
+			SELECT r.*
+			FROM #rate AS r
+			WHERE r.rate_id!=''
+			ORDER BY r.rate_table, r.rate_itemid";
+			$data = array('type'=>'rate', 'table'=>'rate_table', 'itemid'=>'rate_itemid', 'id'=>'rate_id');
+
+			if(!$sql -> db_Select_gen($query)){
+				$text = DBLAN_49;
+			}else{
+
+				//the master error array
+				$err=array();
+
+				//array which will hold all db tables
+				$dbtables = verify_sql_record_gettables();
+
+				while($row=$sql->db_Fetch()){
+
+					$ctype		= $data['type'];
+					$cid		= $row[$data['id']];
+					$citemid	= $row[$data['itemid']];
+					$ctable		= $row[$data['table']];
+
+					//if the rate_table is an existing table, we need to do more validation
+					//else if the rate_table is not an existing table, this is an invalid reference
+					if(in_array($ctable, $dbtables)){
+
+						$sql3 -> db_Select_gen("SHOW COLUMNS FROM {$ctable}");
+						while($row3=$sql3->db_Fetch()){
+							//find the auto_increment field, since that's the most likely key used
+							if($row3['Extra']=='auto_increment'){
+								$aif = $row3['Field'];
+								break;
+							}
+						}
+
+						//we need to check if the itemid (still) exists in this table
+						//if the record is not found, this could well be an obsolete record
+						//if the record is found, we need to keep this record since it's a valid reference
+						if(!$sql2 -> db_Select("{$ctable}", "*", "{$aif}='{$citemid}' ORDER BY {$aif} ")){
+							$err[] = array('type'=>$ctable, 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>TRUE);
+						}
+
+					}else{
+						$err[] = array('type'=>$ctable, 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>FALSE);
+					}
+				}
+
+				$text .= verify_sql_record_displayresult($err, $ctype);
+			}
+		}
+
+		//validate comments table records
+		if(isset($_POST['table_comments'])){
+
+			$query = "
+			SELECT c.*
+			FROM #comments AS c
+			WHERE c.comment_id!=''
+			ORDER BY c.comment_type, c.comment_item_id";
+			$data = array('type'=>'comments', 'table'=>'comment_type', 'itemid'=>'comment_item_id', 'id'=>'comment_id');
+
+			if(!$sql -> db_Select_gen($query)){
+				$text = DBLAN_49;
+			}else{
+
+				//the master error array
+				$err=array();
+
+				//array which will hold all db tables
+				$dbtables = verify_sql_record_gettables();
+
+				//get all e_comment files and variables
+				require_once(e_HANDLER."comment_class.php");
+				$cobj = new comment;
+				$e_comment = $cobj->get_e_comment();
+
+				while($row=$sql->db_Fetch()){
+
+					$ctype		= $data['type'];
+					$cid		= $row[$data['id']];
+					$citemid	= $row[$data['itemid']];
+					$ctable		= $row[$data['table']];
+
+					//for each comment we need to validate the referencing record exists
+					//we need to check if the itemid (still) exists in this table
+					//if the record is not found, this could well be an obsolete record
+					//if the record is found, we need to keep this record since it's a valid reference
+
+					// news
+					if($ctable == "0"){
+						if(!$sql2 -> db_Select("news", "*", "news_id='{$citemid}' ")){
+							$err[] = array('type'=>'news', 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>TRUE);
+						}
+					//	article, review or content page
+					}elseif($ctable == "1"){
+
+					//	downloads
+					}elseif($ctable == "2"){
+						if(!$sql2 -> db_Select("download", "*", "download_id='{$citemid}' ")){
+							$err[] = array('type'=>'download', 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>TRUE);
+						}
+
+					//	poll
+					}elseif($ctable == "4"){
+						if(!$sql2 -> db_Select("polls", "*", "poll_id='{$citemid}' ")){
+							$err[] = array('type'=>'polls', 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>TRUE);
+						}
+
+					//	userprofile
+					}elseif($ctable == "profile"){
+						if(!$sql2 -> db_Select("user", "*", "user_id='{$citemid}' ")){
+							$err[] = array('type'=>'user', 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>TRUE);
+						}
+
+					//else if this is a plugin comment
+					}elseif(isset($e_comment[$ctable]) && is_array($e_comment[$ctable])){
+						$var = $e_comment[$ctable];
+						$qryp='';
+						//new method must use the 'qry' variable
+						if(isset($var) && $var['qry']!=''){
+							if($installed = $sql2 -> db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' ")){
+								$qryp = str_replace("{NID}", $citemid, $var['qry']);
+								if(!$sql2 -> db_Select_gen($qryp)){
+									$err[] = array('type'=>$ctable, 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>TRUE);
+								}
+							}
+						//old method
+						}else{
+							if(!$sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '{$citemid}' ")){
+								$err[] = array('type'=>$ctable, 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>TRUE);
+							}
+						}
+					//in all other cases
+					}else{
+						$err[] = array('type'=>$ctable, 'sqlid'=>$cid, 'table'=>$ctable, 'itemid'=>$citemid, 'table_exist'=>FALSE);
+					}
+
+				}
+
+				$text .= verify_sql_record_displayresult($err, $ctype);
+			}
+		}
+
+		$text = "<form method='post' name='deleteform' action='".e_SELF."?".e_QUERY."'>".$text."</form>";
+		$ns->tablerender(DBLAN_50,$text);
+	}
 }
 
 require_once("footer.php");
