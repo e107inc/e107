@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_db.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-14 21:17:15 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-15 15:55:08 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("DBLAN_1", "Core settings backed up in database.");
@@ -43,6 +43,23 @@ define("DBLAN_31", "Pass");
 define("DBLAN_32", "Error");
 define("DBLAN_33", "Inaccessible");
 define("DBLAN_34", "Not checked");
+
+define("DBLAN_35", "Click button to check validity of e107 database records");
+define("DBLAN_36", "Check database record validity");
+define("DBLAN_37", "Choose table(s) to validate");
+define("DBLAN_38", "Start Verify");
+define("DBLAN_39", "Database Record Validation");
+define("DBLAN_40", "Record Validation : ");
+define("DBLAN_41", "table");
+define("DBLAN_42", "id");
+define("DBLAN_43", "remark");
+define("DBLAN_44", "options");
+define("DBLAN_45", "Id Not Found!");
+define("DBLAN_46", "Table Not Found!");
+define("DBLAN_47", "delete");
+define("DBLAN_48", "Delete Checked");
+define("DBLAN_49", "no records present in the table, so nothing to validate");
+define("DBLAN_50", "Sql Record Validation");
 
 
 ?>
