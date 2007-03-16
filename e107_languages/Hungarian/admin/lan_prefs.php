@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-02-17 00:27:27 $
+|     $Revision: 1.7 $
+|     $Date: 2007-03-16 10:35:36 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ define("PRFLAN_132", "Az aktiválás engedélyezni fogja a jogosultak részére 
 define("PRFLAN_133", "A GD bővítmény szükséges, nem található");
 define("PRFLAN_134", "Összes kérés átirányítása az oldal URL-re");
 define("PRFLAN_135", "például, ha az oldalad címe http://foo.com , és valaki a http://www.foo.com címet írja be, akkor át lesz irányítva a http://foo.com -ra");
-define("PRFLAN_136", "Azonos IP címről történő bejelentkezések maximális megengedett száma.");
+define("PRFLAN_136", "Azonos IP címről történő regisztrációk maximális megengedett száma.");
 define("PRFLAN_137", "Memória használat megjelenítése");
 define("PRFLAN_138", "Igazolókód engedélyezése elfelejtett jelszó esetén.");
 define("PRFLAN_139", "Figyelmeztetés megjelenítése, ha a Fő Admin már több, mint 30 napja nem változtatta meg a jelszavát");
@@ -168,11 +168,11 @@ define("PRFLAN_163", "pl.: cég név, cím, telefon ...stb.");
 
 define("PRFLAN_164", "Kapcsolat Email másolat önmagának küldés engedélyezése");
 define("PRFLAN_165", "Engedélyezett spam megnyitás lehetősége, óvatosan használd");
-define("PRFLAN_166", "Megjelenítse az emotikonokat a hozzászólásoknál?");   
+define("PRFLAN_166", "Megjelenítse az emotikonokat a hozzászólásoknál?");
 
 define("PRFLAN_167", "Írj be egy email címet"); // subject to change.
 define("PRFLAN_168", "Oldal kapcsolattartó személyek");
-define("PRFLAN_169", "Ha a kiválasztott csoport egynél több személyt tartalmaz, a felhasználó kiválaszthatja a személyt a csoportból.");   
+define("PRFLAN_169", "Ha a kiválasztott csoport egynél több személyt tartalmaz, a felhasználó kiválaszthatja a személyt a csoportból.");
 
 define("PRFLAN_170", "Használd a DNS megváltoztatását a host kitiltáshoz");
 define("PRFLAN_171", "Ennek a beállításnak a bekapcsolásával engedélyezed a felhasználók kitiltását hostnév alapján, amely jobb, mint csak IP vagy email cím alapján történő kitiltás.  <br />Megjegyzés: Ez néhány kiszolgálónál befolyásolhatja az oldal betöltési idejét");
