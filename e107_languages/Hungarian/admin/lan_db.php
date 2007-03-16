@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_db.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-18 00:00:17 $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-16 14:42:34 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -43,4 +43,21 @@ define("DBLAN_31", "Rendben");
 define("DBLAN_32", "Hiba");
 define("DBLAN_33", "Hozzáférhetetlen");
 define("DBLAN_34", "Nincs bejelölve");
+
+define("DBLAN_35", "Kattins az e107 adatbázis rekordok érvényesítéséhez");
+define("DBLAN_36", "Adatbázis rekordok érvényességenek ellenőrzése");
+define("DBLAN_37", "Válaszd ki a táblakat az érvényesítéshez");
+define("DBLAN_38", "Ellenőrzés indítása");
+define("DBLAN_39", "Adatbázis rekordok érvényesítése");
+define("DBLAN_40", "Rekord érvényesítés : ");
+define("DBLAN_41", "tábla");
+define("DBLAN_42", "id");
+define("DBLAN_43", "megjegyzés");
+define("DBLAN_44", "opciók");
+define("DBLAN_45", "Id nem található!");
+define("DBLAN_46", "Tábla nem található!");
+define("DBLAN_47", "töröl");
+define("DBLAN_48", "Kijelöltek törlése");
+define("DBLAN_49", "jelenleg nincsenek rekordok.");
+define("DBLAN_50", "SQL rekord érvényesítés");
 ?>
