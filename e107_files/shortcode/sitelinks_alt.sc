@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-07 15:59:42 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-16 13:47:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -47,7 +47,7 @@
 		global $tp;
 
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
-        $cat_link = $tp->replaceConstants($cat_link,TRUE);
+        $cat_link = $tp->replaceConstants($cat_link, '', TRUE);
 
 		if ($cat_open == 4 || $cat_open == 5){
 			$dimen = ($cat_open == 4) ? "600,400" : "800,600";
@@ -104,7 +104,7 @@
 	// Loops thru parents.--------->
     global $tp;
     foreach ($linklist['head_menu'] as $lk) {
-        $lk['link_url'] = $tp -> replaceConstants($lk['link_url'],TRUE);
+        $lk['link_url'] = $tp -> replaceConstants($lk['link_url'], '', TRUE);
 		if ($params[0] == 'no_icons') {
 			$link_icon = 'no_icons';
 		} else {

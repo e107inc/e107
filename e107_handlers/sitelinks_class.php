@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-13 23:24:36 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-16 13:47:59 $
+|     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -183,7 +183,7 @@ class sitelinks
 			$indent = ($style['linkdisplay'] != 3) ? $style['subindent'] : "";
 		}
 
-		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'],TRUE); // replace {e_xxxx}
+		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], '', TRUE); // replace {e_xxxx}
 
 		if(strpos($linkInfo['link_url'],"{") !== FALSE){
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
@@ -263,7 +263,7 @@ function hilite($link,$enabled=''){
 	global $PLUGINS_DIRECTORY,$tp,$pref;
     if(!$enabled){ return FALSE; }
 
-    $link = $tp->replaceConstants($link,TRUE);
+    $link = $tp->replaceConstants($link, '', TRUE);
   	$tmp = explode("?",$link);
     $link_qry = (isset($tmp[1])) ? $tmp[1] : "";
     $link_slf = (isset($tmp[0])) ? $tmp[0] : "";
