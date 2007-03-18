@@ -251,5 +251,10 @@ global $pollstr;
 return $pollstr;
 SC_END
 
+SC_BEGIN NEWFLAG
+// Defined in case an indicator is required
+return '';
+SC_END
+
 */
 ?>
