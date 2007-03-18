@@ -75,7 +75,7 @@ $FOOTER = "
 </table>
 </div>
 
-<div class='smalltext' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</div>
+<div class='smalltext' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}</div>
 
 ";
 
