@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/modcomment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:49 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-18 15:00:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -142,7 +142,7 @@ if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type
 	<input type='hidden' name='current_lock' value='".$comment_lock."' />
 	</td>
 	</tr>
-	<tr><td colspan='5' class='fcaption'>comments (".$total_comments." ".($total_comments == "1" ? MDCLAN_11 : MDCLAN_12).", ".$total_blocked." ".MDCLAN_13.")</td></tr>
+	<tr><td colspan='5' class='fcaption'>".MDCLAN_12." (".$total_comments." ".($total_comments == "1" ? MDCLAN_11 : MDCLAN_12).", ".$total_blocked." ".MDCLAN_13.")</td></tr>
 	".$comments."
 	<tr><td colspan='5' class='forumheader' style='text-align:center'>".MDCLAN_9."</td></tr>
 	<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' /></td></tr>
