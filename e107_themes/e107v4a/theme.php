@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-07-04 19:09:52 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2007-03-18 11:20:29 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -85,7 +85,7 @@ $FOOTER =
 
 {SITEDISCLAIMER}
 <br />
-{THEMEDISCLAIMER}
+{THEME_DISCLAIMER}
 </td>
 </tr>
 </table>

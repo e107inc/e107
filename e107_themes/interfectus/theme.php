@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/interfectus/theme.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-30 02:18:44 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2007-03-18 11:20:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -118,7 +118,7 @@ $FOOTER = "
 </tr>
 </table>
 
-<div class='smalltext' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</div>
+<div class='smalltext' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}</div>
 
 ";
 

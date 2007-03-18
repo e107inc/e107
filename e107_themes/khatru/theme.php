@@ -119,7 +119,7 @@ $FOOTER = "
 		</div>
 	</div>
 	<div id='footer'>
-		{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
+		{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}
 		<br />
 		<a href='http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=86'><img alt='e107 recommends Firefox' title='e107 recommends Firefox' src=' http://sfx-images.mozilla.org/affiliates/Buttons/125x50/takebacktheweb_125x50.png' style='border: 0;' /></a>
 	</div>

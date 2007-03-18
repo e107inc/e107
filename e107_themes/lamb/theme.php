@@ -71,7 +71,7 @@ $FOOTER = "
 <div id='footer'>
 <div class='columnwrap'>
 <div style='text-align: center;' class='smalltext'>
-{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
+{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}
 <br />
 <img src='".e_IMAGE_ABS."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE_ABS."button.png' alt='' /> 
 <img src='".e_IMAGE_ABS."generic/poweredbymysql-88.png' alt=''  /> &nbsp;&nbsp;&nbsp;&nbsp;

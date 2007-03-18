@@ -76,7 +76,7 @@ $FOOTER = "
 </td>
 </tr>
 <tr>
-<td class='infobar' colspan='2' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</td>
+<td class='infobar' colspan='2' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}</td>
 </tr>
 </table>
 ";
@@ -104,7 +104,7 @@ $CUSTOMFOOTER = "
 </td>
 </tr>
 <tr>
-<td class='infobar' colspan='2' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</td>
+<td class='infobar' colspan='2' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}</td>
 </tr>
 </table>
 ";
