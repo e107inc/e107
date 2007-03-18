@@ -10,9 +10,9 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.1.1.1 $
-|   $Date: 2006-12-02 04:35:56 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.2 $
+|   $Date: 2007-03-18 11:20:39 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -64,7 +64,7 @@ $FOOTER = "
 <hr />
 <div id='footer'>
 <p>
-{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
+{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}
 </p>
 </div>
 </div>
@@ -84,7 +84,7 @@ $CUSTOMFOOTER = "
 <hr />
 <div id='footer'>
 <p>
-{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
+{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}
 </p>
 </div>
 </div>
