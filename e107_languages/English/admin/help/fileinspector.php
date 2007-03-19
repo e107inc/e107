@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-19 17:03:14 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-19 17:27:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,9 @@ $ns -> tablerender("File Key", $text);
 
 $text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters 
 an e107 core file, it checks it for file consistency to make sure it isn't corrupted.";
+
+$text .= "<br /><br />
+<a href='".e_SELF."?create'>Click here to create a snapshot of your own plugins files for use in file inspector.</a>";
 
 if ($pref['developer']) {
 $text .= "<br /><br />

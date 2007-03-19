@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-12-19 21:33:05 $
+|     $Revision: 1.8 $
+|     $Date: 2007-03-19 17:27:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -656,8 +656,8 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.7 $\n";
-			$data .= "|     \$Date: 2006-12-19 21:33:05 $\n";
+			$data .= "|     \$Revision: 1.8 $\n";
+			$data .= "|     \$Date: 2007-03-19 17:27:26 $\n";
 			$data .= "|     \$Author: sweetas $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
@@ -704,16 +704,16 @@ class file_inspector {
 			<form action='".e_SELF."' method='post' id='main_page'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td class='fcaption'>Snapshot Created</td>
+			<td class='fcaption'>".FS_LAN_10."</td>
 			</tr>";
 		
 			$text .= "<tr>
 			<td class='forumheader3' style='text-align:center'>
-			The snapshot was successfully created.
+			".FS_LAN_11."
 			</td>
 			</tr>
 			<tr>
-			<td style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'main_page', 'Return To Main Page')."</td>
+			<td style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'main_page', '".FS_LAN_12."')."</td>
 			</tr>
 			</table>
 			</form>
@@ -724,12 +724,12 @@ class file_inspector {
 		<form action='".e_SELF."?".e_QUERY."' method='post' id='snapshot'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
-		<td class='fcaption' colspan='2'>Create Snapshot</td>
+		<td class='fcaption' colspan='2'>".FS_LAN_1."</td>
 		</tr>";
 		
 		$text .= "<tr>
 		<td class='forumheader3' style='width:50%'>
-		Absolute path of root directory to create image from:
+		".FS_LAN_2.":
 		</td>
 		<td class='forumheader3' style='width:50%'>
 		<input class='tbox' type='text' name='snapshot_path' size='60' value='".(isset($_POST['snapshot_path']) ? $_POST['snapshot_path'] : $this -> root_dir)."' />
@@ -737,11 +737,11 @@ class file_inspector {
 
 		<tr>
 		<td class='forumheader3' style='width: 35%'>
-		Create snapshot for plugin:
+		".FS_LAN_3."
 		</td>
 		<td colspan='2' class='forumheader3' style='width: 65%'>
 		<select name='plugin' class='tbox'>
-		<option value='off' ".($_POST['plugin'] == 'off' ? "selected='selected'" : "").">Select...</option>";
+		<option value='off' ".($_POST['plugin'] == 'off' ? "selected='selected'" : "").">".FS_LAN_4."</option>";
 		
 		$handle = opendir(e_PLUGIN);
 		while (false !== ($readdir = readdir($handle))) {
@@ -762,23 +762,23 @@ class file_inspector {
 		
 		<tr>
 		<td class='forumheader3' style='width: 35%'>
-		Create snapshot of current or deprecated files:
+		".FS_LAN_5.":
 		</td>
 		<td colspan='2' class='forumheader3' style='width: 65%'>
-		<input type='radio' name='snaptype' value='current'".($_POST['snaptype'] == 'current' || !isset($_POST['snaptype']) ? " checked='checked'" : "")." /> Current&nbsp;&nbsp;
-		<input type='radio' name='snaptype' value='deprecated'".($_POST['snaptype'] == 'deprecated' ? " checked='checked'" : "")." /> Deprecated&nbsp;&nbsp;
+		<input type='radio' name='snaptype' value='current'".($_POST['snaptype'] == 'current' || !isset($_POST['snaptype']) ? " checked='checked'" : "")." /> ".FS_LAN_6."&nbsp;&nbsp;
+		<input type='radio' name='snaptype' value='deprecated'".($_POST['snaptype'] == 'deprecated' ? " checked='checked'" : "")." /> ".FS_LAN_7."&nbsp;&nbsp;
 		</td>
 		</tr>
 		
 		
 		<tr>
-		<td class='forumheader' style='text-align:center' colspan='2'>".$rs -> form_button('submit', 'create_snapshot', 'Create Snapshot')."</td>
+		<td class='forumheader' style='text-align:center' colspan='2'>".$rs -> form_button('submit', 'create_snapshot', FS_LAN_8)."</td>
 		</tr>
 		</table>
 		</form>
 		</div>";
 
-		$ns -> tablerender('Snapshot', $text);
+		$ns -> tablerender(FS_LAN_9, $text);
 
 	}
 	

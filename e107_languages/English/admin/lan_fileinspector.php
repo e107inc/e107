@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-19 01:55:23 $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-19 17:27:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -73,5 +73,19 @@ define("FR_LAN_28", "Known insecure files");
 
 define("FR_LAN_29", "Total files matched");
 define("FR_LAN_30", "Total lines matched");
+
+
+define("FS_LAN_1", "Create Snapshot");
+define("FS_LAN_2", "Absolute path of root directory to create image from");
+define("FS_LAN_3", "Create snapshot for plugin: (Your plugin will be listed when a writable e_inspect.php file exists in your plugins root directory.)");
+define("FS_LAN_4", "Select...");
+define("FS_LAN_5", "Create snapshot of current or deprecated files");
+define("FS_LAN_6", "Current");
+define("FS_LAN_7", "Deprecated");
+define("FS_LAN_8", "Create Snapshot");
+define("FS_LAN_9", "Snapshot");
+define("FS_LAN_10", "Snapshot Created");
+define("FS_LAN_11", "The snapshot was successfully created.");
+define("FS_LAN_12", "Return To Main Page");
 
 ?>
