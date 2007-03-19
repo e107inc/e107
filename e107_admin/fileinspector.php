@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-03-19 17:27:26 $
+|     $Revision: 1.9 $
+|     $Date: 2007-03-19 17:33:49 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -656,8 +656,8 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.8 $\n";
-			$data .= "|     \$Date: 2007-03-19 17:27:26 $\n";
+			$data .= "|     \$Revision: 1.9 $\n";
+			$data .= "|     \$Date: 2007-03-19 17:33:49 $\n";
 			$data .= "|     \$Author: sweetas $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
@@ -713,7 +713,7 @@ class file_inspector {
 			</td>
 			</tr>
 			<tr>
-			<td style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'main_page', '".FS_LAN_12."')."</td>
+			<td style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'main_page', FS_LAN_12)."</td>
 			</tr>
 			</table>
 			</form>
