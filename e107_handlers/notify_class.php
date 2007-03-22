@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-22 21:26:14 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -92,7 +92,7 @@ function notify_userveri($data) {
 	global $nt, $e107;
 	$msgtext = NT_LAN_UV_2.$data['user_id']."\n";
 	$msgtext .= NT_LAN_UV_3.$data['user_loginname']."\n";
-	$msgtext .= NT_LAN_UV_2.$e107->getip();
+	$msgtext .= NT_LAN_UV_4.$e107->getip();
 	$nt -> send('userveri', NT_LAN_UV_1, $msgtext);
 }
 
