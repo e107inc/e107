@@ -4,31 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Thai/lan_news.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:07 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-22 00:34:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
-แปลเป็นภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  
-อาจารย์ประจำโปรแกรมวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900
-Thai Translation : Assistant Professor Prachid Tinnabutr : 
-Date:18-March 2006 .
-Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 962 9505 prachid@tinnabutr.com,prachid@wittycomputer.com ,Mobile Phone : (66)0 9667 0091
-URL : http://www.tinnabutr.com, http://www.wittycomputer.com
 */
-define("PAGE_NAME", "ข่าวสาร");
-
-define("LAN_82", "ข่าวสาร - ประเภท");
-define("LAN_83", "ไม่มีรายการข่าวในขณะนี้ กรุณาเข้ามาใหม่.");
-define("LAN_84", "รายการข่าวสาร");
-define("LAN_99", "ความคิดเห็น");
-define("LAN_100", "ใน");
-define("LAN_307", "รายการในประเภทนี้ทั้งหมด ");
-
+define("PAGE_NAME", "ระบบบริหารจัดการเว็ปไซท์ e107 Thai Edition ");
 define("LAN_NEWS_1", "ข่าวสารเฉพาะสมาชิกที่ระบุเท่านั้น");
 define("LAN_NEWS_2", "คุณไม่ได้รับอนุญาตให้อ่านข่าวสารนี้");
-define("LAN_NEWS_3", "กรุณาลบไฟล์ install.php ที่อยู่ในเว็ปไซท์ของคุณออกไป");
-define("LAN_NEWS_4", "หากไม่ลบออกจะเป็นการเสี่ยงต่อความปลอดภัยของเว็ปไซท์คุณเอง");
-
 define("LAN_NEWS_5", "<b>ผิดพลาด!</b> ไม่สามารถปรับปรุงรายการข่าวสารเข้าในฐานข้อมูล!</b>");
 define("LAN_NEWS_6", "ได้เพิ่มรายการข่าวสารเข้าในฐานข้อมูลแล้ว.");
 define("LAN_NEWS_7", "<b>ผิดพลาด!!</b>  ไม่สามารถเพิ่มรายการข่าวสารเข้าในฐานข้อมูล!</b>");
@@ -46,8 +29,15 @@ define("LAN_NEWS_18", "ข้อมูล:");
 define("LAN_NEWS_19", "ขณะนี้");
 define("LAN_NEWS_20", "ปรับปรุงรายการข่าวในฐานข้อมูลเป็นภาษา: ");
 define("LAN_NEWS_21", "ปรับปรุงรายการข่าวในฐานข้อมูลแล้ว.");
-define("LAN_NEWS_22", "ไปที่หน้า: ");
-define("LAN_NEWS_23", "ประเภทรายการข่าวสารทั้งหมด");
+define("LAN_NEWS_23", "ประเภทรายการข่าว/เนื้อหาทั้งหมด");
 define("LAN_NEWS_24", "สร้างเอกสาร pdf รายการข่าวสารนี้");
-define("LAN_462", "ไม่มีรายการข่าวในประเภทที่ระบุนี้");
+define("LAN_NEWS_82", "ข่าว/เนื้อหา-ประเภท");
+define("LAN_NEWS_83", "ยังไม่มีรายการข่าว-เนื้อหาในขณะนี้ กรุณากลับเข้ามาดูใหม่อีกครั้ง");
+define("LAN_NEWS_84", "รายการข่าว:เนื้อหา");
+define("LAN_NEWS_99", "ความเห็น");
+define("LAN_NEWS_100", "เมื่อ");
+define("LAN_NEWS_307", "กระทู้ทั้งหมดในหมวดหมู่นี้");
+define("LAN_NEWS_462", "ยังไม่มีรายการข่าว/เนื้อหา ในเดือนที่ระบุนี้");
+
+
 ?>

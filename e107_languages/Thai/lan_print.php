@@ -4,27 +4,28 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Thai/lan_print.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:07 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-22 00:34:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
-แปลเป็นภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  
-อาจารย์ประจำโปรแกรมวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900
-Thai Translation : Assistant Professor Prachid Tinnabutr : 
-Date:18-March 2006 .
-Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 962 9505 prachid@tinnabutr.com,prachid@wittycomputer.com ,Mobile Phone : (66)0 9667 0091
-URL : http://www.tinnabutr.com, http://www.wittycomputer.com
+แปลและพัฒนาส่วนระบบภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  แก้ไขล่าสุด 28 พย.2549
+อาจารย์ประจำสาขาวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900.โทร.(66) 0 2942 6900  ต่อ 3011,3014
+Thai Developer & Translation : Assistant Professor Prachid Tinnabutr : Division of Art ,Chandrakasem Rajabhat University,Jatuchak,Bangkok ,Thailand.10900. Tel :(66) 02 9426900 ext:3011,3014
+Last update:28 nov 2006 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 2962 9505  prachid@prachid.com,prachid@wittycomputer.com ,Mobile Phone : (66) 08 9667 0091
+URL : http://www.prachid.com, http://www.wittycomputer.com, http://www.e107thailand.com
 */
-define("PAGE_NAME", "พิมพ์ง่าย");
+if (!defined("PAGE_NAME")) {define("PAGE_NAME", "พิมพ์");}
+define("LAN_PRINT_86", "หมวด");
+define("LAN_PRINT_87", "โดย");
+define("LAN_PRINT_94", "ส่งโดย");
+define("LAN_PRINT_135", "ข่าว:เนื้อหาใหม่");
+define("LAN_PRINT_303", "รายการข่าว:เนื้อหาใหม่นี้มาจาก");
+define("LAN_PRINT_304", "เรื่อง");
+define("LAN_PRINT_305", "หัวข้อย่อย");
+define("LAN_PRINT_306", "มาจาก");
+define("LAN_PRINT_307", "พิมพ์หน้านี้");
+define("LAN_PRINT_1", "พิมพ์");
 
-define("LAN_86", "ประเภท:");
-define("LAN_87", "โดย ");
-define("LAN_94", "ส่งโดย");
-define("LAN_135", "ข่าว: ");
-define("LAN_303", "ข่าวสารนี้มาจาก ");
-define("LAN_304", "ชื่อเรื่อง: ");
-define("LAN_305", "หัวเรื่องรอง: ");
-define("LAN_306", "มาจาก: ");
-define("LAN_307", "สั่งพิมพ์หน้านี้");
 
 ?>
