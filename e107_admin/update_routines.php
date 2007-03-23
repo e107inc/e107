@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-23 22:42:40 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-23 23:01:09 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -124,33 +124,33 @@ function update_706_to_800($type='') {
 	if ($type == "do")
 	{
 		//change menu_path for usertheme_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
 		{
-			$sql->db_Update("menus", "menu_path='user_menu' WHERE menu_path='usertheme_menu' ");
+			$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='usertheme_menu' || menu_path='usertheme_menu/' ");
 			catch_error();
 		}
 		//change menu_path for userlanguage_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))
 		{
-			$sql->db_Update("menus", "menu_path='user_menu' WHERE menu_path='userlanguage_menu' ");
+			$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='userlanguage_menu' || menu_path='userlanguage_menu/' ");
 			catch_error();
 		}
 		//change menu_path for compliance_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu' || menu_path='compliance_menu/'"))
 		{
-			$sql->db_Update("menus", "menu_path='siteinfo_menu' WHERE menu_path='compliance_menu' ");
+			$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='compliance_menu' || menu_path='compliance_menu/' ");
 			catch_error();
 		}
 		//change menu_path for powered_by_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu' || menu_path='powered_by_menu/'"))
 		{
-			$sql->db_Update("menus", "menu_path='siteinfo_menu' WHERE menu_path='powered_by_menu' ");
+			$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='powered_by_menu' || menu_path='powered_by_menu/' ");
 			catch_error();
 		}
 		//change menu_path for sitebutton_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu' || menu_path='sitebutton_menu/'"))
 		{
-			$sql->db_Update("menus", "menu_path='siteinfo_menu' WHERE menu_path='sitebutton_menu' ");
+			$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='sitebutton_menu' || menu_path='sitebutton_menu/' ");
 			catch_error();
 		}
 
@@ -161,27 +161,27 @@ function update_706_to_800($type='') {
 	{
 
 		//change menu_path for usertheme_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
 		{
 			return update_needed();
 		}
 		//change menu_path for userlanguage_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))
 		{
 			return update_needed();
 		}
 		//change menu_path for compliance_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu' || menu_path='compliance_menu/'"))
 		{
 			return update_needed();
 		}
 		//change menu_path for powered_by_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu' || menu_path='powered_by_menu/'"))
 		{
 			return update_needed();
 		}
 		//change menu_path for sitebutton_menu
-		if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu'"))
+		if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu' || menu_path='sitebutton_menu/'"))
 		{
 			return update_needed();
 		}
