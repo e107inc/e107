@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-23 21:46:41 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -77,14 +77,14 @@ $text = "<div style='text-align:center'>
 	<tr>
     <td style='width:25%' class='forumheader3'>".METLAN_9."</td>
     <td style='width:75%' class='forumheader3'>
-	<input class='tbox' style='width:90%' size='70' type='text' name='meta_description' value='".$meta_diz[$current_lang]."' />
+	<textarea class='tbox' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4' style='width:90%'>".$tp->toForm($meta_diz[$current_lang])."</textarea>
 	</td>
 	</tr>
 
 	<tr>
 	<td style='width:25%' class='forumheader3'>".METLAN_10."</td>
     <td style='width:75%' class='forumheader3'>
-	<input class='tbox' style='width:90%' size='70' type='text' name='meta_keywords' value='".$meta_keywords[$current_lang]."' />
+	<textarea class='tbox' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4' style='width:90%'>".$tp->toForm($meta_keywords[$current_lang])."</textarea>
 	</td>
 	</tr>
 
