@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/usertheme_menu/usertheme_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:44 $
-|     $Author: mcfly_e107 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/usertheme_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2007-03-23 22:42:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,14 +56,14 @@ if (USER == TRUE) {
 		if (($themelist[$counter] == USERTHEME) || (USERTHEME == FALSE && $themelist[$counter] == $defaulttheme)) {
 			$text .= "selected='selected'";
 		}
-		$text .= ">".($themelist[$counter] == $defaulttheme ? "[ ".$themelist[$counter]." ]" : $themelist[$counter])." (users: ".$themecount[$themelist[$counter]].")</option>\n";
+		$text .= ">".($themelist[$counter] == $defaulttheme ? "[ ".$themelist[$counter]." ]" : $themelist[$counter])." (".LAN_UMENU_THEME_3." ".$themecount[$themelist[$counter]].")</option>\n";
 		$counter++;
 	}
 	$text .= "</select>
 		<br /><br />
-		<input class='button' type='submit' name='settheme' value='".LAN_350."' />
+		<input class='button' type='submit' name='settheme' value='".LAN_UMENU_THEME_1."' />
 		</div></form>";
 	 
-	$ns->tablerender(LAN_351, $text, 'usertheme');
+	$ns->tablerender(LAN_UMENU_THEME_2, $text, 'usertheme');
 }
 ?>
