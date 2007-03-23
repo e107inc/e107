@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-05 09:27:15 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-23 22:42:40 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,6 +71,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_in
 }
 
 // $dbupdate["701_to_702"] = LAN_UPDATE_8." .7.1 ".LAN_UPDATE_9." .7.2";
+$dbupdate["706_to_800"] = LAN_UPDATE_8." .706 ".LAN_UPDATE_9." .8";
 $dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
 $dbupdate["617_to_700"] = LAN_UPDATE_8." .617 ".LAN_UPDATE_9." .7";
 $dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
@@ -116,6 +117,80 @@ function update_701_to_702($type='') {
 
 }
 */
+
+function update_706_to_800($type='') {
+	global $sql,$ns;
+
+	if ($type == "do")
+	{
+		//change menu_path for usertheme_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu'"))
+		{
+			$sql->db_Update("menus", "menu_path='user_menu' WHERE menu_path='usertheme_menu' ");
+			catch_error();
+		}
+		//change menu_path for userlanguage_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu'"))
+		{
+			$sql->db_Update("menus", "menu_path='user_menu' WHERE menu_path='userlanguage_menu' ");
+			catch_error();
+		}
+		//change menu_path for compliance_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu'"))
+		{
+			$sql->db_Update("menus", "menu_path='siteinfo_menu' WHERE menu_path='compliance_menu' ");
+			catch_error();
+		}
+		//change menu_path for powered_by_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu'"))
+		{
+			$sql->db_Update("menus", "menu_path='siteinfo_menu' WHERE menu_path='powered_by_menu' ");
+			catch_error();
+		}
+		//change menu_path for sitebutton_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu'"))
+		{
+			$sql->db_Update("menus", "menu_path='siteinfo_menu' WHERE menu_path='sitebutton_menu' ");
+			catch_error();
+		}
+
+		return '';
+
+	}
+	else
+	{
+
+		//change menu_path for usertheme_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu'"))
+		{
+			return update_needed();
+		}
+		//change menu_path for userlanguage_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu'"))
+		{
+			return update_needed();
+		}
+		//change menu_path for compliance_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu'"))
+		{
+			return update_needed();
+		}
+		//change menu_path for powered_by_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu'"))
+		{
+			return update_needed();
+		}
+		//change menu_path for sitebutton_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu'"))
+		{
+			return update_needed();
+		}
+
+		// No updates needed
+	 	return TRUE;
+	}
+}
+
 
 function update_70x_to_706($type='') {
 	global $sql,$ns;
