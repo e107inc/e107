@@ -1251,7 +1251,7 @@ if($show['selecticon']===true){
 	$iconlist = $fl->get_files($content_cat_icon_path_large,"",$rejectlist);
 	$text = $rs -> form_text("cat_icon", 60, $row['content_icon'], 100)."
 	".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick=\"expandit('divcaticon')\"")."
-	<div id='divcaticon' style='{head}; display:none'>";
+	<div id='divcaticon' style='display:none;'>";
 	foreach($iconlist as $icon){
 		$text .= "<a href=\"javascript:insertext('".$icon['fname']."','cat_icon','divcaticon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
 	}
@@ -1432,7 +1432,7 @@ global $row, $rs, $show, $iconlist;
 if($show['icon']===true){
 	$text = $rs -> form_text("content_icon", 60, $row['content_icon'], 100)."
 	".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divicon')\"")."
-	<div id='divicon' style='{head}; display:none'>";
+	<div id='divicon' style='display:none;'>";
 	if(empty($iconlist)){
 		$text .= CONTENT_ADMIN_ITEM_LAN_121;
 	}else{
@@ -1471,7 +1471,7 @@ if($show['attach']===true){
 		<div style='padding:2px;'>
 		".$num." ".$rs -> form_text("content_files".$i."", 60, $attachments[$i], 100)."
 		".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divfile".$i."')\"")."
-		<div id='divfile".$i."' style='{head}; display:none'>";
+		<div id='divfile".$i."' style='display:none;'>";
 		if(empty($filelist)){
 			$text .= CONTENT_ADMIN_ITEM_LAN_122;
 		}else{
@@ -1505,7 +1505,7 @@ if($show['images']===true){
 		<div style='padding:2px;'>
 		".$num." ".$rs -> form_text("content_images".$i."", 60, $imagesarray[$i], 100)."
 		".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divimage".$i."')\"")."
-		<div id='divimage".$i."' style='{head}; display:none'>";
+		<div id='divimage".$i."' style='display:none;'>";
 		if(empty($imagelist)){
 			$text .= CONTENT_ADMIN_ITEM_LAN_123;
 		}else{
