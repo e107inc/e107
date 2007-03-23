@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-09 20:28:44 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-23 20:39:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -312,6 +312,12 @@ class page
 			$update = $sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode'");
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
+
+			if($type)
+			{
+				$sql -> db_Update("menus", "menu_name='$page_title' WHERE menu_path='$mode' ");
+				$update++;
+			}
 
 			if ($_POST['page_link'])
 			{
