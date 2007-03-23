@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-23 21:46:57 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 	
@@ -30,7 +30,7 @@ class form {
 	 
 	function form_text($form_name, $form_size, $form_value, $form_maxlength, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
-		$value = ($form_value ? " value='".$form_value."'" : "");
+		$value = (isset($form_value) ? " value='".$form_value."'" : "");
 		$size = ($form_size ? " size='".$form_size."'" : "");
 		$maxlength = ($form_maxlength ? " maxlength='".$form_maxlength."'" : "");
 		$readonly = ($form_readonly ? " readonly='readonly'" : "");
@@ -40,7 +40,7 @@ class form {
 	 
 	function form_password($form_name, $form_size, $form_value, $form_maxlength, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
-		$value = ($form_value ? " value='".$form_value."'" : "");
+		$value = (isset($form_value) ? " value='".$form_value."'" : "");
 		$size = ($form_size ? " size='".$form_size."'" : "");
 		$maxlength = ($form_maxlength ? " maxlength='".$form_maxlength."'" : "");
 		$readonly = ($form_readonly ? " readonly='readonly'" : "");
