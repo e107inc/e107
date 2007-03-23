@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2006-10-28 09:02:43 $
+|		$Revision: 1.8 $
+|		$Date: 2007-03-23 20:26:12 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -381,7 +381,7 @@ function parse_page_options($type){
 	global $rc, $list_pref, $rs, $tp, $sections, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
 
 	if($type == "recent_page"){
-		$display = "display:;";
+		$display = "";
 	}else{
 		$display = "display:none;";
 	}
