@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-23 23:01:09 $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-24 11:54:46 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -153,6 +153,12 @@ function update_706_to_800($type='') {
 			$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='sitebutton_menu' || menu_path='sitebutton_menu/' ");
 			catch_error();
 		}
+		//change menu_path for counter_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='counter_menu' || menu_path='counter_menu/'"))
+		{
+			$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='counter_menu' || menu_path='counter_menu/' ");
+			catch_error();
+		}
 
 		return '';
 
@@ -182,6 +188,11 @@ function update_706_to_800($type='') {
 		}
 		//change menu_path for sitebutton_menu
 		if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu' || menu_path='sitebutton_menu/'"))
+		{
+			return update_needed();
+		}
+		//change menu_path for counter_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='counter_menu' || menu_path='counter_menu/'"))
 		{
 			return update_needed();
 		}
