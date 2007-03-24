@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-23 23:05:21 $
+|     $Revision: 1.4 $
+|     $Date: 2007-03-24 11:54:46 $
 |     $Author: lisa_ $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -175,12 +175,11 @@ if($f != ""){
 
 $core_plugins = array(
 	"alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
-	"clock_menu","comment_menu","content","counter_menu",
-	"featurebox","forum","gsitemap","integrity_check","lastseen","links_page",
-	"linkwords","list_new","log","login_menu","newforumposts_main","newsfeed",
-	"newsletter","online_extended_menu","online_menu","other_news_menu","pdf",
-	"pm","poll","rss_menu","search_menu","siteinfo_menu",
-	"trackback","tree_menu","user_menu"
+	"clock_menu","comment_menu","content","featurebox","forum","gsitemap",
+	"lastseen","links_page","linkwords","list_new","log","login_menu",
+	"newforumposts_main","newsfeed","newsletter","online_extended_menu",
+	"online_menu","other_news_menu","pdf","pm","poll","rss_menu",
+	"search_menu","siteinfo_menu","trackback","tree_menu","user_menu"
 	);
 
 $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
