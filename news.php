@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-07 01:20:47 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2007-03-24 18:47:43 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -43,14 +43,14 @@ if (e_QUERY) {
 	$id = $tmp[2];
 }
 
-$from = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
+$newsfrom = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
 if (isset($tmp[1]) && $tmp[1] == 'list') {
 	$action = 'list';
-	$from = intval($tmp[0]);
+	$newsfrom = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
 }
 if ($action == 'all' || $action == 'cat') {
-	$from = intval($tmp[2]);
+	$newsfrom = intval($tmp[2]);
 	$sub_action = intval($tmp[1]);
 }
 
@@ -82,7 +82,7 @@ if ($action == 'cat' || $action == 'all'){
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
-		AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_sticky DESC,n.news_datestamp DESC LIMIT ".intval($from).",".NEWSALL_LIMIT;
+		AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_sticky DESC,n.news_datestamp DESC LIMIT ".intval($newsfrom).",".NEWSALL_LIMIT;
 		$category_name = "All";
 	}
 	elseif ($action == 'cat'){
@@ -92,7 +92,7 @@ if ($action == 'cat' || $action == 'all'){
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category=".intval($sub_action)." ORDER BY n.news_datestamp DESC LIMIT ".intval($from).",".NEWSLIST_LIMIT;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category=".intval($sub_action)." ORDER BY n.news_datestamp DESC LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;
 	}
 
 	if($category_name){
@@ -136,7 +136,7 @@ if ($action == 'cat' || $action == 'all'){
 	$amount = ($action == "all") ? NEWSALL_LIMIT : NEWSLIST_LIMIT;
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
-	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
+	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
 	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
     if(!$NEWSLISTTITLE){
@@ -197,7 +197,7 @@ if ($action == "list"){
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
-		AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
+		AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 
 }
 elseif($action == "item")
@@ -220,7 +220,7 @@ elseif(strstr(e_QUERY, "month"))
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 }
 elseif(strstr(e_QUERY, "day"))
 {
@@ -235,7 +235,7 @@ elseif(strstr(e_QUERY, "day"))
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 }
 else
 {
@@ -259,7 +259,7 @@ else
 		AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2
 		GROUP by n.news_id
-		ORDER BY news_sticky DESC, ".$order." DESC LIMIT ".intval($from).",".$pref['newsposts'];
+		ORDER BY news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".$pref['newsposts'];
 	}
 	else
 	{
@@ -271,7 +271,7 @@ else
 		AND n.news_start < ".time()."
 		AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2
-		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($from).",".$pref['newsposts'];
+		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".$pref['newsposts'];
 	}
 	// #### END ---------------------------------------------------------------------------------------------------
 }
@@ -420,7 +420,7 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 		$ix->render_newsitem($news);
 		$i++;
 	}
-	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
+	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
 	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 
@@ -497,7 +497,7 @@ if ($action != "item") {
 	if (is_numeric($action)){
 		$action = "";
 	}
- //	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
+ //	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
  //	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
  //	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 }
