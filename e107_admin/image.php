@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:23 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-25 03:27:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -276,6 +276,33 @@ if (isset($_POST['check_avatar_sizes'])) {
 	$ns->tablerender(IMALAN_37, $text);
 }
 
+if(function_exists('gd_info'))
+{
+	$gd_info = gd_info();
+	$gd_version = $gd_info['GD Version'];
+}
+else
+{
+	$gd_version = "<span style='color:red'> Not Installed</span>";
+}
+
+$IM_NOTE = "";
+if($pref['im_path'] != "")
+{
+	if(!file_exists($pref['im_path']))
+	{
+		$IM_NOTE = "<br /><span style='color:red'>".IMALAN_52."</span>";
+	}
+	else
+	{
+		$cmd = "{$pref['im_path']} -version";
+		$tmp = `$cmd`;
+		if(strpos($tmp, "ImageMagick") === FALSE)
+		{
+			$IM_NOTE = "<br /><span style='color:red'>".IMALAN_53."</span>";
+		}
+	}
+}
 
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
@@ -328,7 +355,7 @@ $text .= "</select>
 	</tr>
 
 	<tr>
-	<td style='width:75%' class='forumheader3'>".IMALAN_3."<br /><span class='smalltext'>".IMALAN_4."</span></td>
+	<td style='width:75%' class='forumheader3'>".IMALAN_3."<br /><span class='smalltext'>".IMALAN_4."</span><br />".IMALAN_54." {$gd_version}</td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
 	<select name='resize_method' class='tbox'>". ($pref['resize_method'] == "gd1" ? "<option selected='selected'>gd1</option>" : "<option>gd1</option>"). ($pref['resize_method'] == "gd2" ? "<option selected='selected'>gd2</option>" : "<option>gd2</option>"). ($pref['resize_method'] == "ImageMagick" ? "<option selected='selected'>ImageMagick</option>" : "<option>ImageMagick</option>")."
 	</select>
@@ -339,6 +366,7 @@ $text .= "</select>
 	<td style='width:75%' class='forumheader3'>".IMALAN_5."<br /><span class='smalltext'>".IMALAN_6."</span></td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
 	<input class='tbox' type='text' name='im_path' size='40' value=\"".$pref['im_path']."\" maxlength='200' />
+	{$IM_NOTE}
 	</td></tr>
 
 	<tr>
