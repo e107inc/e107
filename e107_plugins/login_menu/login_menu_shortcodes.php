@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-25 09:22:42 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -68,22 +68,22 @@ SC_END
 
 SC_BEGIN LM_FPW_LINK
 global $pref;
-if ($pref['user_reg'])
+if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 {
-	if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
-	{
-		return "<a class='login_menu_link fpw' href='".e_BASE."fpw.php' title=\"".LOGIN_MENU_L4."\">".LOGIN_MENU_L4."</a>";
-	}
+	return "<a class='login_menu_link fpw' href='".e_BASE."fpw.php' title=\"".LOGIN_MENU_L4."\">".LOGIN_MENU_L4."</a>";
 }
 return "";
 SC_END
 
 SC_BEGIN LM_RESEND_LINK
 global $pref;
-if(isset($pref['user_reg_veri']) && $pref['user_reg_veri'] == 1){
-	if (!$pref['auth_method'] || $pref['auth_method'] == 'e107' )
-	{
-		return "<a class='login_menu_link resend' href='".e_SIGNUP."?resend' title=\"".LOGIN_MENU_L40."\">".LOGIN_MENU_L40."</a>";
+if ($pref['user_reg'])
+{
+	if(isset($pref['user_reg_veri']) && $pref['user_reg_veri'] == 1){
+		if (!$pref['auth_method'] || $pref['auth_method'] == 'e107' )
+		{
+			return "<a class='login_menu_link resend' href='".e_SIGNUP."?resend' title=\"".LOGIN_MENU_L40."\">".LOGIN_MENU_L40."</a>";
+		}
 	}
 }
 return "";
