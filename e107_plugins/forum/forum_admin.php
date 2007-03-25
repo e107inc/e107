@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2007-03-04 04:04:38 $
+|     $Revision: 1.46 $
+|     $Date: 2007-03-25 02:24:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1246,8 +1246,8 @@ class forum
 
 		<tr>
 		<td style='text-align:center' class='forumheader3'>".FORLAN_2."<br />
-		".FORLAN_89." <input type='radio' name='prune_type' value='".FORLAN_3."' />&nbsp;&nbsp;&nbsp;
-		".FORLAN_90." <input type='radio' name='prune_type' value='".FORLAN_111."' checked='checked' />
+		".FORLAN_89." <input type='radio' name='prune_type' value='delete' />&nbsp;&nbsp;&nbsp;
+		".FORLAN_90." <input type='radio' name='prune_type' value='make_inactive' checked='checked' />
 		</td>
 		</tr>
 

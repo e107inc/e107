@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2006-11-15 12:57:18 $
+|     $Revision: 1.66 $
+|     $Date: 2007-03-25 02:24:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -810,7 +810,7 @@ class e107forum
 				return FORLAN_9;
 			}
 		}
-		else
+		if($type == 'make_inactive')
 		{
 			$pruned = $sql->db_Update("forum_t", "thread_active=0 WHERE thread_lastpost < $prunedate AND thread_parent=0 AND thread_forum_id IN ({$forumList})");
 			return FORLAN_8." ".$pruned." ".FORLAN_91;
