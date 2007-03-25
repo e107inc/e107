@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.2 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2007-03-05 20:09:30 $
+|     $Revision: 1.3 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2007-03-25 21:17:26 $
 |     $Author: e107steved $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
@@ -79,7 +79,7 @@ $eplug_prefs = array(
 "eventpost_timecustom" => "%H%M",
 "eventpost_dateevent"  => 1,
 "eventpost_datenext"   => 1,
-"eventpost_eventdatecustom" => "&A %d %B %Y",
+"eventpost_eventdatecustom" => "%A %d %B %Y",
 "eventpost_nextdatecustom"   => "%d %b",
 "eventpost_mailsubject" => EC_ADLAN_A12,
 "eventpost_mailfrom" => EC_ADLAN_A151,
