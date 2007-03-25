@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:42 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-25 02:01:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -188,5 +188,8 @@ define("USRLAN_143", "Check For Bounces");
 define("USRLAN_144", "Resend Confirmation Email to All");
 define("USRLAN_145", "Bounced users");
 define("USRLAN_146", "Member information is available to");
+
+define("USRLAN_147", "Email address is already used by a banned user");
+define("USRLAN_148", "Email address is banned");
 
 ?>
