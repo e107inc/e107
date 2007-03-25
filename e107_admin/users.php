@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-24 16:39:14 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-25 02:01:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -163,7 +163,7 @@ if (isset($_POST['adduser'])) {
 		message_handler("P_ALERT", USRLAN_65);
 		$error = TRUE;
 	}
-	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' ")) {
+	if ($sql->db_Count("user", "(*)", "WHERE user_name='".$_POST['name']."' ")) {
 		message_handler("P_ALERT", USRLAN_66);
 		$error = TRUE;
 	}
@@ -180,21 +180,20 @@ if (isset($_POST['adduser'])) {
 		message_handler("P_ALERT", USRLAN_69);
 		$error = TRUE;
 	}
+	if ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' AND user_ban='1' ")) {
+		message_handler("P_ALERT", USRLAN_147);
+		$error = TRUE;
+	}
+	if ($sql->db_Count("banlist", "(*)", "WHERE banlist_ip='".$_POST['email']."'")) {
+		message_handler("P_ALERT", USRLAN_148);
+		$error = TRUE;
+	}
+
 	if (!$error) {
-		if ($sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1' ")) {
-			exit;
-		}
-		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'")) {
-			exit;
-		}
 
 		$username = strip_tags($_POST['name']);
 		$loginname = strip_tags($_POST['loginname']);
 
-//		extract($_POST);
-//		for($a = 0; $a <= (count($_POST['userclass'])-1); $a++) {
-//			$svar .= $userclass[$a].".";
-//		}
 		$svar = implode(",", $_POST['userclass']);
 		admin_update($sql -> db_Insert("user", "0, '$username', '$loginname',  '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '".time()."', '".time()."', '0', '0', '0', '0', '0', '0', '0', '', '', '0', '0', '".$_POST['realname']."', '".$svar."', '', '', '".time()."', ''"), 'insert', USRLAN_70);
 	}
@@ -206,7 +205,6 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
   //	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-//	 extract($row);
 	if ($row['user_perms'] == "0")
 	{
 		$user->show_message(USRLAN_7);
@@ -239,11 +237,10 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
 }
 // ------- Unban User --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == "unban") {
-	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
+	$sql->db_Select("user", "user_ip", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-	extract($row);
 	$sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ");
-	$sql -> db_Delete("banlist", " banlist_ip='$user_ip' ");
+	$sql -> db_Delete("banlist", " banlist_ip='{$row['user_ip']}' ");
 	$user->show_message(USRLAN_9);
 	$action = "main";
 	if(!$sub_action){$sub_action = "user_id"; }
@@ -318,11 +315,10 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 }
 // ------- Make Admin.. --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == "admin" && getperms('3')) {
-	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
+	$sql->db_Select("user", "user_id, user_name", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-	 extract($row);
 	$sql->db_Update("user", "user_admin='1' WHERE user_id='".$_POST['userid']."' ");
-	$user->show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$user_id'>".USRLAN_4."</a>");
+	$user->show_message($row['user_name']." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.{$row['user_id']}'>".USRLAN_4."</a>");
 	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
 	if(!$id){ $id = "DESC"; }
@@ -850,8 +846,8 @@ class users{
 	function show_prune() {
 		global $ns, $sql;
 
-		$unactive = $sql->db_Select("user", "*", "user_ban=2");
-		$bounced = $sql->db_Select("user", "*", "user_ban=3");
+		$unactive = $sql->db_Count("user", "(*)", "WHERE user_ban=2");
+		$bounced = $sql->db_Count("user", "(*)", "WHERE user_ban=3");
 		$text = "<div style='text-align:center'><br /><br />
 			<form method='post' action='".e_SELF."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
