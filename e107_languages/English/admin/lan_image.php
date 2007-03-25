@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-11 12:53:57 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2007-03-25 03:27:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("IMALAN_1", "Enable image posting");
@@ -61,5 +61,8 @@ define("IMALAN_49", "Users with avatars");
 define("IMALAN_50", "Total");
 define("IMALAN_51", "Avatar for ");
 
+define("IMALAN_52", "Path to ImageMagick appears to be incorrect");
+define("IMALAN_53", "Path to ImageMagick appears to be correct, but convert file may not be valid");
+define("IMALAN_54", "GD version installed:");
 
 ?>
