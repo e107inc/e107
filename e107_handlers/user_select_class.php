@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-10-24 13:35:06 $
-|     $Author: mrpete $
+|     $Revision: 1.11 $
+|     $Date: 2007-03-26 06:15:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,7 +28,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
 class user_select {
 
-	function user_list($class, $form_name) {
+	function user_list($class, $form_name='user', $display='user_name', $val = 'user_name') {
 		global $pref, $sql, $tp;
 		if($class === FALSE) { $class = e_UC_MEMBER;}
 		switch ($class)
@@ -40,26 +40,27 @@ class user_select {
 			case e_UC_MEMBER:
 				$where = "1";
 				break;
-				
+
 			case e_UC_NOBODY:
 				return "";
 				break;
-				
+
 			default:
 				$where = "user_class REGEXP '(^|,)(".$tp -> toDB($class, true).")(,|$)'";
 				break;
 		}
-				
-		$text = "<select class='tbox' id='user' name='user' onchange=\"uc_switch('class')\">";
+
+		$text = "<select class='tbox' id='{$form_name}' name='{$form_name}' onchange=\"uc_switch('class')\">";
 		$text .= "<option value=''>".US_LAN_1."</option>";
 		$sql -> db_Select("user", "user_name", $where." ORDER BY user_name");
-		while ($row = $sql -> db_Fetch()) {
-			$text .= "<option value='".$row['user_name']."'>".$row['user_name']."</option>";
+		while ($row = $sql -> db_Fetch())
+		{
+			$text .= "<option value='".$row[$val]."'>".$row[$display]."</option>";
 		}
 		$text .= "</select>";
 		return $text;
 	}
-	
+
 	function class_list($class, $form_name) {
 		global $pref, $sql;
 		$text = "<select class='tbox' id='class' name='class' onchange=\"uc_switch('user')\">";
@@ -82,7 +83,7 @@ class user_select {
 		}
 		return $text;
 	}
-	
+
 	function select_form($type, $user_form, $user_value = '', $class_form = false, $class_value = '', $class = false) {
 		global $tp;
 		$text .= "<script type='text/javascript'>
@@ -98,7 +99,7 @@ class user_select {
 
 		if ($type == 'list') {
 			$text .= $this -> user_list($class, 'user');
-		} 
+		}
 		else if ($type == 'popup')
 		{
 			if($form_type == 'textarea')
@@ -109,20 +110,20 @@ class user_select {
 			{
 				$text .= "<input class='tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$tp -> post_toForm($user_value)."'>&nbsp;";
 			}
-			$text .= "<img src='".e_IMAGE_ABS."generic/".IMODE."/user_select.png' 
-			style='width: 16px; height: 16px; vertical-align: top' alt='".US_LAN_4."...' 
+			$text .= "<img src='".e_IMAGE_ABS."generic/".IMODE."/user_select.png'
+			style='width: 16px; height: 16px; vertical-align: top' alt='".US_LAN_4."...'
 			title='".US_LAN_4."...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
 		}
-		
+
 		if ($class !== false) {
 			if (($class < e_UC_NOBODY && USERCLASS) || ADMINPERMS == '0') {
 				$text .= ' '.$this -> class_list($class, 'class');
 			}
 		}
-		
+
 		return $text;
 	}
-	
+
 	function real_name($_id) {
 		global $sql;
 		$sql -> db_Select("user", "user_name", "user_id='".intval($_id)."' ");
@@ -130,7 +131,7 @@ class user_select {
 			return $row['user_name'];
 		}
 	}
-	
+
 	function popup() {
 		global $ns, $tp;
 		list($elementType, $elementID) = explode(".", e_QUERY);
@@ -174,7 +175,7 @@ class user_select {
 			</table>
 			</form>
 			";
-	
+
 		if ($_POST['dosrch']) {
 			$userlist = $this -> findusers($_POST['srch']);
 			if($userlist == FALSE)
@@ -199,16 +200,16 @@ class user_select {
 			</select>
 			<input type='button' class='button' value='".US_LAN_1."' onClick='SelectUser()' />
 			</td>
-		 
+
 			</tr>
 			</table>
 			</form>
 			";
 		}
-	
+
 		$ns -> tablerender(US_LAN_4, $text);
 	}
-	
+
 	function findusers($s) {
 		global $sql, $tp;
 		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%' ")) {
