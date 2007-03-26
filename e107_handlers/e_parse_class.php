@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-03-11 20:52:47 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-03-26 06:34:56 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -761,14 +761,14 @@ class e_parse
 		return $text;
 	}
 
-    function toEmail($text,$posted="")
+    function toEmail($text,$posted="",$mods="parse_sc, no_make_clickable")
 	{
 		if ($posted === TRUE && MAGIC_QUOTES_GPC) {
 			$text = stripslashes($text);
 		}
 
-	  	$text = $this->replaceConstants($text,"full");
-    	$text = $this->toHTML($text,TRUE,"parse_sc, no_make_clickable");
+	  	$text = ($mods != "rawtext") ? $this->replaceConstants($text,"full") : $text;
+    	$text = $this->toHTML($text,TRUE,$mods);
         return $text;
 	}
 
