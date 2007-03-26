@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-03-26 01:29:07 $
+|     $Revision: 1.11 $
+|     $Date: 2007-03-26 06:29:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -37,9 +37,9 @@ if(isset($_POST['send-contactus'])){
 
 	$error = "";
 
-	$sender_name = $tp->toEmail($_POST['author_name'],TRUE,"title");
+	$sender_name = $tp->toEmail($_POST['author_name'],TRUE,"rawtext");
 	$sender = check_email($_POST['email_send']);
-	$subject = $tp->toEmail($_POST['subject'],TRUE,"title");
+	$subject = $tp->toEmail($_POST['subject'],TRUE,"rawtext");
 	$body = $tp->toEmail($_POST['body'],TRUE);
 
 // Check Image-Code
