@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-27 13:48:30 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -185,6 +185,7 @@ $USER_FULL_TEMPLATE = "
 	<td style='width:30%' class='forumheader3'>".LAN_146."</td>
 	<td style='width:70%' class='forumheader3'>{USER_VISITS}</td>
 </tr>
+{USER_EMBED_USERPROFILE}
 {USER_UPDATE_LINK}
 <tr>
 	<td colspan='2' class='forumheader3' style='text-align:center'>
@@ -200,4 +201,9 @@ $USER_FULL_TEMPLATE = "
 {PROFILE_COMMENTS}
 {PROFILE_COMMENT_FORM}
 ";
+
+$USER_EMBED_USERPROFILE_TEMPLATE = "
+<tr><td colspan='2' class='fcaption'>{USER_EMBED_USERPROFILE_CAPTION}</td></tr>
+<tr><td colspan='2' class='forumheader3'>{USER_EMBED_USERPROFILE_TEXT}</td></tr>";
+
 ?>
