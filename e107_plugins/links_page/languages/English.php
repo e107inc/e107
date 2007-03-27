@@ -4,15 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 12:58:37 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-27 13:48:30 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-// if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
-// Lisa, could you please move this out of the language file ?
 
-
+define("LCLAN_USERPROFILE_1", ">> view all links");
+define("LCLAN_USERPROFILE_2", "links: {total} links found");
 
 define("LCLAN_PLUGIN_LAN_1", "Links Page");
 define("LCLAN_PLUGIN_LAN_2", "Links Page For Displaying External Web Links");

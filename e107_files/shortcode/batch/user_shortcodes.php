@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-03-27 13:48:30 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -550,6 +550,83 @@ SC_BEGIN USER_FORM_SUBMIT
 return "<input class='button' type='submit' name='submit' value='".LAN_422."' />";
 SC_END
 
+SC_BEGIN USER_EMBED_USERPROFILE
+global $pref, $USER_EMBED_USERPROFILE_TEMPLATE, $embed_already_rendered;
+
+//if no parm, it means we render ALL embedded contents
+//so we're preloading all registerd e_userprofile files
+$key = varset($pref['e_userprofile_list']); 
+
+//if we don't have any embedded contents, return
+if(!is_array($key) || empty($key)){ return; }
+
+//array holding specific hooks to render
+$render=array();
+
+if($parm){
+	
+	//if the first char of parm is an ! mark, it means it should not render the following parms
+	if(strpos($parm,'!')===0){
+		$tmp = explode(",", substr($parm,1) );
+		foreach($tmp as $not){
+			$not=trim($not);
+			if(isset($key[$not])){
+				//so we're unsetting them from the $key array
+				unset($key[$not]);
+			}
+		}
+	
+	//else it means we render only the following parms
+	}else{
+		$tmp = explode(",", $parm );
+		foreach($tmp as $yes){
+			$yes=trim($yes);
+			if(isset($key[$yes])){
+				//so add the ones we need to render to the $render array
+				$render[$yes] = $key[$yes];
+			}
+		}
+		//finally assign the render array as the key array, overwriting it
+		$key = $render;
+	}
+}
+
+foreach($key as $hook){
+	//include the e_user file and initiate the class
+	if(is_readable(e_PLUGIN.$hook."/e_userprofile.php")){
+		//if the current hook is not yet rendered
+		if(!in_array($hook, $embed_already_rendered)){
+			require_once(e_PLUGIN.$hook."/e_userprofile.php");
+			$name = "e_userprofile_{$hook}";
+			if(function_exists($name)){
+				$arr[] = $name();
+				//we need to store which hooks are already rendered
+				$embed_already_rendered[] = $hook;
+			}
+		}
+	}
+}
+
+$ret = '';
+foreach($arr as $data){
+	if(is_array($data['caption'])){
+		foreach($data['caption'] as $k=>$v){
+			if(isset($data['caption'][$k]) && isset($data['text'][$k])){
+				$search = array('{USER_EMBED_USERPROFILE_CAPTION}', '{USER_EMBED_USERPROFILE_TEXT}');
+				$replace = array($data['caption'][$k], $data['text'][$k]);
+				$ret .= str_replace($search, $replace, $USER_EMBED_USERPROFILE_TEMPLATE);
+			}
+		}
+	}else{
+		if(isset($data['caption']) && isset($data['text'])){
+			$search = array('{USER_EMBED_USERPROFILE_CAPTION}', '{USER_EMBED_USERPROFILE_TEXT}');
+			$replace = array($data['caption'], $data['text']);
+			$ret .= str_replace($search, $replace, $USER_EMBED_USERPROFILE_TEMPLATE);
+		}
+	}
+}
+return $ret;
+SC_END
 
 */
 ?>
