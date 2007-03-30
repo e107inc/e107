@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.5 $
-| $Date: 2007-03-05 21:24:47 $
-| $Author: e107steved $
+| $Revision: 1.6 $
+| $Date: 2007-03-30 13:33:29 $
+| $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -84,7 +84,7 @@ class e_shortcode {
 		{
 			return $matches[0];
 		}
-		
+
 		if (strpos($matches[1], '='))
 		{
 			list($code, $parm) = explode("=", $matches[1], 2);
@@ -93,6 +93,14 @@ class e_shortcode {
 		{
 			$code = $matches[1];
 			$parm = '';
+		}
+		//look for the $sc_mode
+		if (strpos($code, '|')){
+			list($code, $sc_mode) = explode("|", $code, 2);
+			$code = trim($code);
+			$sc_mode = trim($sc_mode);
+		}else{
+			$sc_mode = '';
 		}
 		$parm = trim($parm);
 
@@ -152,6 +160,11 @@ class e_shortcode {
 
 		if($ret != '' || is_numeric($ret))
 		{
+
+			//if $sc_mode exists, we need it to parse $sc_style
+			if($sc_mode){
+				$code = $code."|".$sc_mode;
+			}
 			if(isset($sc_style) && is_array($sc_style) && array_key_exists($code,$sc_style))
 			{
 				if(isset($sc_style[$code]['pre']))
