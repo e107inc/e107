@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.334 $
-|     $Date: 2007-03-31 01:01:46 $
+|     $Revision: 1.335 $
+|     $Date: 2007-03-31 01:19:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -369,7 +369,7 @@ if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] &
           	$GLOBALS['elan'] = $eln;
 		}
 }
-unset($ltmp);
+
 
 // if a cookie name pref isn't set, make one :)
 if (!$pref['cookie_name']) {
