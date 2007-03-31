@@ -1,4 +1,4 @@
-﻿﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2007-03-04 21:47:15 $
-|     $Author: mrpete $
+|     $Revision: 1.17 $
+|     $Date: 2007-03-31 01:18:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -111,8 +111,23 @@ if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
 }
 
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
+
+// Define the domain name and subdomain name.
+if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST']))){
+	$srvtmp = "";  // Host is an IP address.
+}else{
 $srvtmp = explode(".",$_SERVER['HTTP_HOST']);
+}
+
 define("e_SUBDOMAIN", (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : FALSE)); // needs to be available to e107_config.
+$domrep = array("www.");
+if(e_SUBDOMAIN){
+	$domrep[] = e_SUBDOMAIN.".";
+}
+define("e_DOMAIN",($srvtmp != "" ? str_replace($domrep,"",$_SERVER['HTTP_HOST']) : FALSE)); // if it's an IP it must be set to FALSE. 
+
+unset($srvtmp,$domrep);
+
 
 //  Ensure thet '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
@@ -179,7 +194,7 @@ $tp = new e_parse;
 
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
-$e_QUERY = $tp->post_toForm($e_QUERY);
+$e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
 define("e_QUERY", $e_QUERY);
 //$e_QUERY = e_QUERY;
 
@@ -342,8 +357,9 @@ define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_S
 define("SITEURL", SITEURLBASE.e_HTTP);
 
 // let the subdomain determine the language (when enabled).
-if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session")){
-		e107_ini_set("session.cookie_domain",$pref['multilanguage_subdomain']);
+
+if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session") && e_DOMAIN){
+	 	e107_ini_set("session.cookie_domain",".".e_DOMAIN);
 		require_once(e_HANDLER."language_class.php");
 		$lng = new language;
         if(e_SUBDOMAIN == "www"){
