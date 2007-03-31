@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch_formal/lan_prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-03-02 18:43:29 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-31 21:05:40 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
