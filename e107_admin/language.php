@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-11-06 10:46:23 $
+|     $Revision: 1.38 $
+|     $Date: 2007-03-31 01:01:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -44,13 +44,8 @@ if (e_QUERY) {
 if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
 
 	$pref['multilanguage']	= $_POST['multilanguage'];
-	if($_POST['multilanguage_subdomain']){
-    	$pref['multilanguage_subdomain'] = ".".$_POST['multilanguage_subdomain'];
-	}else{
-    	$pref['multilanguage_subdomain'] = "";
-	}
-
-	$pref['sitelanguage'] = $_POST['mainsitelanguage'];
+    $pref['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
+    $pref['sitelanguage'] = $_POST['mainsitelanguage'];
 
 	save_prefs();
 	$ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
@@ -229,9 +224,10 @@ function multilang_prefs() {
 	$text .= "
 	<tr>
 	<td style='width:80%' class='forumheader3'>".LANG_LAN_18."<br />
-	<span class='smalltext'>".LANG_LAN_19."<br />".LANG_LAN_20."</span></td>
-	<td style='width:20%;text-align:center' class='forumheader3'>www.";
-	$text .= "<input class='tbox' type='text' name='multilanguage_subdomain'   value=\"".substr($pref['multilanguage_subdomain'],1)."\" />
+	<span class='smalltext'>".LANG_LAN_19."<br /></span></td>
+	<td style='width:20%;text-align:center' class='forumheader3'>";
+    $checked_m = ($pref['multilanguage_subdomain']) ? "checked='checked'" : "";
+	$text .= "<input type='checkbox' name='multilanguage_subdomain'   value='1' $checked_m />
 	</td>
 	</tr>
 	";
