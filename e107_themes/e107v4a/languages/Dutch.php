@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/e107v4a/languages/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-02 16:01:51 $
+|     $Revision: 1.2 $
+|     $Date: 2007-03-31 20:59:08 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */

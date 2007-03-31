@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_users_extended.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-02-18 21:42:59 $
+|     $Revision: 1.11 $
+|     $Date: 2007-03-31 20:50:36 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */

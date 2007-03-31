@@ -28,7 +28,7 @@ define("LWLAN_25", "Opties");
 define("LWLAN_26", "Zone waar linkwords kan worden geactiveerd");
 define("LWLAN_27", "Dit is de 'context' van de getoonde tekst");
 define("LWLAN_28", "Pagina's waar linkwords wordt gedeactiveerd");
-define("LWLAN_29", "Zelfde formaat als de menu zichtbaarheidscontrole. Eén overeeenkomst per regel. geef een hele of gedeeltelijke URL. Eindig met '!' voor een volledige overeenkomst of voor de eindtekst van de link");
+define("LWLAN_29", "Zelfde formaat als de menu zichtbaarheidscontrole. En overeeenkomst per regel. geef een hele of gedeeltelijke URL. Eindig met '!' voor een volledige overeenkomst of voor de eindtekst van de link");
 define("LWLAN_30", "Bewaar opties");
 define("LWLAN_31", "Toevoegen/bewerken linkword");
 define("LWLAN_32", "Linkword opties");
