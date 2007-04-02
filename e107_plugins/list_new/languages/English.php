@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-01-18 01:33:30 $
-|     $Author: mrpete $
+|     $Revision: 1.18 $
+|     $Date: 2007-04-02 20:31:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -148,7 +148,7 @@ define("LIST_MENU_2", "by");
 define("LIST_MENU_3", "on");
 define("LIST_MENU_4", "in");
 define("LIST_MENU_5", "days");
-define("LIST_MENU_6", "view content for how may days?");
+define("LIST_MENU_6", "view content for how many days?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
