@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-03 21:05:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -99,23 +99,30 @@ function read_tables($tab) {
 
 }
 
-function get_current($tab, $prefix = "") {
-	if (!$prefix) {
-		$prefix = MPREFIX;
-	}
-	$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
-	$qry = 'SHOW CREATE TABLE `'.$prefix.$tab."`";
-	$z = mysql_query($qry);
-	if ($z) {
-		$row = mysql_fetch_row($z);
-		return str_replace("`", "", stripslashes($row[1]));
-	} else {
 
-		return FALSE;
-	}
+// Get list of fields and keys for a table
+function get_current($tab, $prefix = "") 
+{  
+  if (!$prefix) 
+  {
+	$prefix = MPREFIX;
+  }
+  $result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+  $qry = 'SHOW CREATE TABLE `'.$prefix.$tab."`";
+  $z = mysql_query($qry);
+  if ($z) 
+  {
+	$row = mysql_fetch_row($z);
+	return str_replace("`", "", stripslashes($row[1]));
+  } 
+  else 
+  {
+	return FALSE;
+  }
 }
 
-function check_tables($what) {
+function check_tables($what) 
+{
 	global $tablines;
 	global $table_list;
 	global $ns;
@@ -123,6 +130,8 @@ function check_tables($what) {
 	$table_list = "";
 	read_tables($what);
 
+	$fix_active = FALSE;			// Flag set as soon as there's a fix - enables 'Fix it' button
+	
 	$text = "<form method='post' action='".e_SELF."' id='checktab'>
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -132,94 +141,148 @@ function check_tables($what) {
 		<td class='fcaption' style='text-align:center'>".DBLAN_6."</td>
 		<td class='fcaption' style='text-align:center'>".DBLAN_7."</td>
 		</tr>";
-	foreach(array_keys($table_list) as $k) {
+	foreach(array_keys($table_list) as $k) 
+	{	// $k is the DB table name (less prefix)
+	  $prefix = MPREFIX;
+	  $current_tab = get_current($k, $prefix);		// Get list of fields and keys from actual table
+	  unset($fields);
+	  unset($xfields);
+	  if ($current_tab) 
+	  {
+		$lines = split("\n", $current_tab);			// Create one element of $lines per field or other line of info
+		$fieldnum = 0;
+		foreach($tablines[$k] as $x) 
+		{	// $x is a line of the DB definition from the *_sql.php file
+		  $x = str_replace('  ',' ',$x);				// Remove double spaces
+		  $fieldnum++;
+		  $ffound = 0;
+		  list($fname, $fparams) = split(" ", $x, 2);
+		  if ($fname == "KEY") 
+		  {
+			list($key, $keyname, $keyparms) = split(" ", $x, 3);
+			$fname = $key." ".$keyname;
+			$fparams = $keyparms;
+		  }
+		  $fields[$fname] = 1;
+		  $fparams = ltrim(rtrim($fparams));
+		  $fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
 
-		$prefix = MPREFIX;
-		$current_tab = get_current($k, $prefix);
-		unset($fields);
-		unset($xfields);
-		if ($current_tab) {
-			$lines = split("\n", $current_tab);
-			$fieldnum = 0;
-			foreach($tablines[$k] as $x) {
-				$fieldnum++;
-				$ffound = 0;
-				list($fname, $fparams) = split(" ", $x, 2);
-				if ($fname == "KEY") {
-					list($key, $keyname, $keyparms) = split(" ", $x, 3);
-					$fname = $key." ".$keyname;
-					$fparams = $keyparms;
-				}
-				$fields[$fname] = 1;
-				$fparams = ltrim(rtrim($fparams));
-				$fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
-
-			if(stristr($k, "lan_") !== FALSE && $cur != 1){
-				$text .= "<tr><td colspan='6' class='fcaption'>".ADLAN_132."</td></tr>";
-				$cur = 1;
-			};
+		  if(stristr($k, "lan_") !== FALSE && $cur != 1)
+		  {
+			$text .= "<tr><td colspan='6' class='fcaption'>".ADLAN_132."</td></tr>";
+			$cur = 1;
+		  };
 
 
 
-				$text .= "<tr><td class='forumheader3'>$k</td><td class='forumheader3'>$fname";
-				if (strpos($fparams, "KEY") !== FALSE) {
-					$text .= " $fparams";
-				}
-				$text .= "</td>";
-				$s = 0;
-				$xfieldnum = -1;
-				foreach($lines as $l) {
-					$xfieldnum++;
-					list($xl, $tmp) = split("\n", $l, 2);
-					$xl = ltrim(rtrim(stripslashes($xl)));
-					$xl = preg_replace("/\r?\n$|\r[^\n]$/", "", $xl);
-					list($xfname, $xfparams) = split(" ", $xl, 2);
+		  $text .= "<tr><td class='forumheader3'>$k</td><td class='forumheader3'>$fname";
+		  if (strpos($fparams, "KEY") !== FALSE) 
+		  {
+			$text .= " $fparams";
+		  }
+		  $text .= "</td>";
+		  $s = 0;
+		  $xfieldnum = -1;
+		  foreach($lines as $l) 
+		  {
+			$xfieldnum++;
+			list($xl, $tmp) = split("\n", $l, 2);			// $tmp should be null
+			$xl = ltrim(rtrim(stripslashes($xl)));
+			$xl = preg_replace("/\r?\n$|\r[^\n]$/", "", $xl);
+			$xl = str_replace('  ',' ',$xl);				// Remove double spaces
+			list($xfname, $xfparams) = split(" ", $xl, 2);	// Field name and the rest
 
-					if ($xfname == "KEY") {
-						list($key, $keyname, $keyparms) = split(" ", $xl, 3);
-						$xfname = $key." ".$keyname;
-						$xfparams = $keyparms;
-					}
-
-					if ($xfname != "CREATE" && $xfname != ")") {
-						$xfields[$xfname] = 1;
-					}
-					$xfparams = preg_replace("/,$/", "", $xfparams);
-					$fparams = preg_replace("/,$/", "", $fparams);
-					if ($xfname == $fname) {
-						$ffound = 1;
-						if (strcasecmp($fparams, $xfparams) != 0) {
-							$text .= "<td class='forumheader' style='text-align:center'>".DBLAN_8."</td>";
-							$text .= "<td class='forumheader3' style='text-align:center'>".DBLAN_9."<div class='indent'>".$xfparams."</div><b>".DBLAN_10."</b><div class='indent'>".$fparams." <br />".fix_form($k,$fname,$fparams,"alter")."</div></td>";
-							$fix_active = TRUE;
-						} elseif($fieldnum != $xfieldnum) {
-							$text .= "<td class='fcaption' style='text-align:center'>".DBLAN_5." ".DBLAN_8."</td>
-								<td class='forumheader3' style='text-align:center'>".DBLAN_9." #{$xfieldnum}<br />".DBLAN_10." #{$fieldnum}</td>";
-						} else {
-							$text .= "<td class='forumheader3' style='text-align:center;'>OK</td>
-								<td class='forumheader3' style='text-align:center'>&nbsp;</td>";
-						}
-					}
-				}
-
-				if ($ffound == 0) {
-					$text .= "<td class='forumheader' style='text-align:center'><strong><em>".DBLAN_11."</em></strong></td>
-						<td class='forumheader3' style='text-align:center'><b>".DBLAN_10." [$fparams]</b><br />".fix_form($k,$fname,$fparams,"insert",$prev_fname)."<br /></td>";
-					$fix_active = TRUE;
-				}
-				$prev_fname = $fname;
-				$text .= "</tr>\n";
+			if ($xfname == "KEY") 
+			{
+			  list($key, $keyname, $keyparms) = split(" ", $xl, 3);
+			  $xfname = $key." ".$keyname;
+			  $xfparams = $keyparms;
 			}
-			foreach(array_keys($xfields) as $tf) {
-				if (!$fields[$tf] && $k != "user_extended") {
-					$fix_active = TRUE;
-					$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'><strong><em>".DBLAN_12."</em></strong></td><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$fparams,"drop")."</td></tr>";
-				}
+
+			if ($xfname != "CREATE" && $xfname != ")") 
+			{
+			  $xfields[$xfname] = 1;
 			}
-		} else {	// Table Missing.
-			$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>&nbsp;</td><td class='forumheader' style='text-align:center'>".DBLAN_13."<br /><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$tablines[$k],"create")."</td></tr>";
+			$xfparams = preg_replace("/,$/", "", $xfparams);
+			$fparams = preg_replace("/,$/", "", $fparams);
+			if ($xfname == $fname) 
+			{  // Field names match - or it could be the word 'KEY' and its name which matches
+			  $ffound = 1;
+//			  echo "Field: ".$xfname."   Actuals: ".$xfparams."   Expected: ".$fparams."<br />";
+			  $xfsplit = explode(' ',$xfparams);
+			  $fsplit  = explode(' ',$fparams);
+			  $skip = FALSE;
+			  $i = 0;
+			  $fld_err = FALSE;
+			  foreach ($xfsplit as $xf)
+			  {
+			    if ($skip)
+				{
+				  $skip = FALSE;
+//				  echo "  Unskip: ".$xf."<br />";
+				}
+				elseif (strcasecmp(trim($xf),'collate') == 0)
+				{	// Strip out the collation definition
+				  $skip = TRUE;
+//				  echo "Skip = ".$xf;
+				}
+				else
+				{
+//				  echo "Compare: ".$xf." - ".$fsplit[$i]."<br />";
+				  // Since VARCHAR and CHAR are interchangeable, convert to CHAR (strictly, VARCHAR(3) and smalller becomes CHAR() )
+				  if (stripos($xf,'VARCHAR') === 0) $xf = substr($xf,3);
+				  if (stripos($fsplit[$i],'VARCHAR') === 0) $fsplit[$i] = substr($fsplit[$i],3);
+				  if (strcasecmp(trim($xf),trim($fsplit[$i])) != 0) 
+				  {
+				    $fld_err = TRUE;
+					echo "Mismatch: ".$xf." - ".$fsplit[$i]."<br />";
+				  }
+				  $i++;
+				}
+			  }
+
+			  if ($fld_err)
+			  {
+				$text .= "<td class='forumheader' style='text-align:center'>".DBLAN_8."</td>";
+				$text .= "<td class='forumheader3' style='text-align:center'>".DBLAN_9."<div class='indent'>".$xfparams."</div><b>".DBLAN_10."</b><div class='indent'>".$fparams." <br />".fix_form($k,$fname,$fparams,"alter")."</div></td>";
+				$fix_active = TRUE;
+			  } 
+			  elseif ($fieldnum != $xfieldnum) 
+			  {  // Field numbers different - missing field?
+				$text .= "<td class='fcaption' style='text-align:center'>".DBLAN_5." ".DBLAN_8."</td>
+						<td class='forumheader3' style='text-align:center'>".DBLAN_9." #{$xfieldnum}<br />".DBLAN_10." #{$fieldnum}</td>";
+			  } 
+			  else 
+			  {
+				$text .= "<td class='forumheader3' style='text-align:center;'>OK</td>
+						<td class='forumheader3' style='text-align:center'>&nbsp;</td>";
+			  }
+			}
+		  }		// Finished checking one field
+
+		  if ($ffound == 0) 
+		  {
+			$text .= "<td class='forumheader' style='text-align:center'><strong><em>".DBLAN_11."</em></strong></td>
+					<td class='forumheader3' style='text-align:center'><b>".DBLAN_10." [$fparams]</b><br />".fix_form($k,$fname,$fparams,"insert",$prev_fname)."<br /></td>";
 			$fix_active = TRUE;
+		  }
+		  $prev_fname = $fname;
+		  $text .= "</tr>\n";
 		}
+		foreach(array_keys($xfields) as $tf) 
+		{
+		  if (!$fields[$tf] && $k != "user_extended") 
+		  {
+			$fix_active = TRUE;
+			$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'><strong><em>".DBLAN_12."</em></strong></td><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$fparams,"drop")."</td></tr>";
+		  }
+		}
+	  } 
+	  else 
+	  {	// Table Missing.
+		$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>&nbsp;</td><td class='forumheader' style='text-align:center'>".DBLAN_13."<br /><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$tablines[$k],"create")."</td></tr>";
+		$fix_active = TRUE;
+	  }
 	}
 	$text .= "</table></div>";
 
