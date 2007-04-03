@@ -54,3 +54,13 @@ if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND (menu_
 		$sql->db_Mark_Time("(After $name)");
 	}
 }
+else
+{
+	if(is_readable(e_PLUGIN.$path."/".$name.".php"))
+	{
+		$sql->db_Mark_Time($name);
+		include_lan(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php");
+		include_once(e_PLUGIN.$path."/".$name.".php");
+		$sql->db_Mark_Time("(After $name)");
+	}
+}
