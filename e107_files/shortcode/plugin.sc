@@ -59,7 +59,7 @@ else
 	if(is_readable(e_PLUGIN.$path."/".$name.".php"))
 	{
 		$sql->db_Mark_Time($name);
-		include_lan(e_PLUGIN.$path."/languages/English.php");
+		include_lan(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php");
 		include_once(e_PLUGIN.$path."/".$name.".php");
 		$sql->db_Mark_Time("(After $name)");
 	}
