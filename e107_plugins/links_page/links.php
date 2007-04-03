@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-31 14:46:30 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-03 10:31:32 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -335,11 +335,12 @@ function displayLinkComment(){
 		js_location(e_SELF);
 	}else{
 		$qry = "
-		SELECT l.*, lc.*
+		SELECT l.*, lc.*, COUNT(c.comment_id) AS link_comment
 		FROM #links_page AS l
 		LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category
+		LEFT JOIN #comments as c ON c.comment_item_id=l.link_id AND comment_type='links_page'
 		WHERE l.link_id = '".intval($qs[1])."' AND lc.link_category_class REGEXP '".e_CLASS_REGEXP."' AND l.link_class REGEXP '".e_CLASS_REGEXP."'
-		";
+		GROUP BY l.link_id";
 		$link_comment_table_string = "";
 		if(!$linkcomment = $sql -> db_Select_gen($qry)){
 			js_location(e_SELF);
