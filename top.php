@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/top.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-05 01:54:17 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -110,7 +110,7 @@ if ($action == "active") {
 		 
 		$ns->tablerender(LAN_7, $text, "nfp");
 		require_once(e_HANDLER."np_class.php");
-		$ftotal = $sql->db_Select("forum_t", "*", "thread_parent='0'");
+		$ftotal = $sql->db_Count("forum_t", "(*)", "WHERE thread_parent = 0");
 		$ix = new nextprev("top.php", $from, $view, $ftotal, "", "active.forum.".$view."");
 	}
 }
