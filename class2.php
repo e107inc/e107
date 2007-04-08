@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-03-31 01:18:33 $
+|     $Revision: 1.18 $
+|     $Date: 2007-04-08 23:45:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -358,7 +358,7 @@ define("SITEURL", SITEURLBASE.e_HTTP);
 
 // let the subdomain determine the language (when enabled).
 
-if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session") && e_DOMAIN){
+if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE){
 	 	e107_ini_set("session.cookie_domain",".".e_DOMAIN);
 		require_once(e_HANDLER."language_class.php");
 		$lng = new language;
