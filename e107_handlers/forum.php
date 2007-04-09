@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/forum.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-09 10:09:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -51,7 +51,7 @@ if (isset($_POST['prune'])) {
 			</td>
 			<td style='width:25%' class='forumheader2' style='text-align:right'>
 			<input type='radio' name='prune_type' value='delete' /> ".FORLAN_3."<br />
-			<input type='radio' name='prune_type' value='unactivatate' checked="checked" /> ".FORLAN_4."
+			<input type='radio' name='prune_type' value='unactivatate' checked='checked' /> ".FORLAN_4."
 			</td>
 			</tr>
 			<tr>
