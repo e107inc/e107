@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2007-03-02 21:12:45 $
+|     $Revision: 1.65 $
+|     $Date: 2007-04-09 10:18:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ if ($pages)
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== FALSE || strpos($FORUM_VIEW_END, 'THREADPAGES') !== FALSE)
 	{
 		$parms = "{$topics},{$view},{$thread_from},".e_SELF.'?'.$forum_id.'.[FROM],off';
-		$THREADPAGES = LAN_316." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
+		$THREADPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 	}
 }
 
