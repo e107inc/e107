@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/e_meta.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-10 14:34:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -47,6 +47,5 @@ if(isset($qs[0]) && $qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) )
 		define("META_KEYWORDS", " ".$add_meta_keywords);
 	}
 }
-
 
 ?>

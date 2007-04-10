@@ -11,31 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-10 14:34:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $content_shortcodes;
 
-$sc_style['CONTENT_CAT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='5' style='width:5%; white-space:nowrap; padding-right:5px;'>";
-$sc_style['CONTENT_CAT_TABLE_ICON']['post'] = "</td>";
+$sc_style['CM_ICON|cat']['pre'] = "<td class='forumheader3' rowspan='5' style='width:5%; white-space:nowrap; padding-right:5px;'>";
+$sc_style['CM_ICON|cat']['post'] = "</td>";
 
-$sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['pre'] = " ";
-$sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['post'] = " ";
+$sc_style['CM_AUTHOR|cat']['pre'] = " ";
+$sc_style['CM_AUTHOR|cat']['post'] = " ";
 
-$sc_style['CONTENT_CAT_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_CAT_TABLE_SUBHEADING']['post'] = "<br /></td></tr>";
+$sc_style['CM_SUBHEADING|cat']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_SUBHEADING|cat']['post'] = "<br /></td></tr>";
 
-$sc_style['CONTENT_CAT_TABLE_TEXT']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_CAT_TABLE_TEXT']['post'] = "<br /></td></tr>";
+$sc_style['CM_TEXT|cat']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_TEXT|cat']['post'] = "<br /></td></tr>";
 
-$sc_style['CONTENT_CAT_TABLE_RATING']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_CAT_TABLE_RATING']['post'] = "<br /></td></tr>";
+$sc_style['CM_RATING|cat']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_RATING|cat']['post'] = "<br /></td></tr>";
 
-$sc_style['CONTENT_CAT_TABLE_AMOUNT']['pre'] = "(";
-$sc_style['CONTENT_CAT_TABLE_AMOUNT']['post'] = ")";
+$sc_style['CM_AMOUNT|cat']['pre'] = "(";
+$sc_style['CM_AMOUNT|cat']['post'] = ")";
 
 $sc_style['CONTENT_CAT_TABLE_INFO_PRE']['pre'] = "<tr><td class='forumheader3'>";
 $sc_style['CONTENT_CAT_TABLE_INFO_PRE']['post'] = "";
@@ -51,44 +51,39 @@ if(!isset($CONTENT_CAT_TABLE)){
 	$CONTENT_CAT_TABLE = "
 	<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
 	<tr>
-		{CONTENT_CAT_TABLE_ICON}
-		<td class='fcaption' >{CONTENT_CAT_TABLE_HEADING} {CONTENT_CAT_TABLE_AMOUNT}</td>
+		{CM_ICON|cat}
+		<td class='fcaption' >{CM_HEADING|cat} {CM_AMOUNT|cat}</td>
 	</tr>
-
 	{CONTENT_CAT_TABLE_INFO_PRE}
-		{CONTENT_CAT_TABLE_DATE} {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS} {CONTENT_CAT_TABLE_COMMENT}
+		{CM_DATE|cat} {CM_AUTHOR|cat} {CM_EPICONS|cat} {CM_COMMENT|cat}
 	{CONTENT_CAT_TABLE_INFO_POST}
-
-	{CONTENT_CAT_TABLE_SUBHEADING}
-	{CONTENT_CAT_TABLE_TEXT}
-	{CONTENT_CAT_TABLE_RATING}
+	{CM_SUBHEADING|cat}
+	{CM_TEXT|cat}
+	{CM_RATING|cat}
 	</table>\n";
-
 }
 if(!isset($CONTENT_CAT_TABLE_END)){
 	$CONTENT_CAT_TABLE_END = "";
 }
 // ##### ----------------------------------------------------------------------
 
+$sc_style['CM_ICON|catlist']['pre'] = "<td class='forumheader3' style='width:5%; white-space:nowrap; padding-right:5px;' rowspan='5'>";
+$sc_style['CM_ICON|catlist']['post'] = "</td>";
 
+$sc_style['CM_SUBHEADING|catlist']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_SUBHEADING|catlist']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:5%; white-space:nowrap; padding-right:5px;' rowspan='5'>";
-$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['post'] = "</td>";
+$sc_style['CM_AUTHOR|catlist']['pre'] = " / ";
+$sc_style['CM_AUTHOR|catlist']['post'] = "";
 
-$sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['post'] = "</td></tr>";
+$sc_style['CM_RATING|catlist']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_RATING|catlist']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_CAT_LIST_TABLE_AUTHORDETAILS']['pre'] = " / ";
-$sc_style['CONTENT_CAT_LIST_TABLE_AUTHORDETAILS']['post'] = "";
+$sc_style['CM_TEXT|catlist']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_TEXT|catlist']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_CAT_LIST_TABLE_RATING']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_CAT_LIST_TABLE_RATING']['post'] = "</td></tr>";
-
-$sc_style['CONTENT_CAT_LIST_TABLE_TEXT']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_CAT_LIST_TABLE_TEXT']['post'] = "</td></tr>";
-
-$sc_style['CONTENT_CAT_LIST_TABLE_AMOUNT']['pre'] = "(";
-$sc_style['CONTENT_CAT_LIST_TABLE_AMOUNT']['post'] = ")";
+$sc_style['CM_AMOUNT|catlist']['pre'] = "(";
+$sc_style['CM_AMOUNT|catlist']['post'] = ")";
 
 $sc_style['CONTENT_CAT_LIST_TABLE_INFO_PRE']['pre'] = "<tr><td class='forumheader3'>";
 $sc_style['CONTENT_CAT_LIST_TABLE_INFO_PRE']['post'] = "";
@@ -101,31 +96,27 @@ if(!isset($CONTENT_CAT_LIST_TABLE)){
 	$CONTENT_CAT_LIST_TABLE = "
 	<table class='fborder' style='width:98%; text-align:left; margin-bottom:10px;'>
 	<tr>
-		{CONTENT_CAT_LIST_TABLE_ICON}
-		<td class='fcaption'>{CONTENT_CAT_LIST_TABLE_HEADING} {CONTENT_CAT_LIST_TABLE_AMOUNT}</td>
+		{CM_ICON|catlist}
+		<td class='fcaption'>{CM_HEADING|catlist} {CM_AMOUNT|catlist}</td>
 	</tr>
-	{CONTENT_CAT_LIST_TABLE_SUBHEADING}
-	
-	{CONTENT_CAT_LIST_TABLE_INFO_PRE}
-		{CONTENT_CAT_LIST_TABLE_DATE} {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS} {CONTENT_CAT_LIST_TABLE_EPICONS} {CONTENT_CAT_LIST_TABLE_COMMENT}
+	{CM_SUBHEADING|catlist}
+		{CONTENT_CAT_LIST_TABLE_INFO_PRE}
+		{CM_DATE|catlist} {CM_AUTHOR|catlist} {CM_EPICONS|catlist} {CM_COMMENT|catlist}
 	{CONTENT_CAT_LIST_TABLE_INFO_POST}
-
-	{CONTENT_CAT_LIST_TABLE_RATING}
-	{CONTENT_CAT_LIST_TABLE_TEXT}
+	{CM_RATING|catlist}
+	{CM_TEXT|catlist}
 	</table>\n";
 }
 // ##### ----------------------------------------------------------------------
 
+$sc_style['CM_ICON|catlistsub']['pre'] = "<td class='forumheader3' style='width:2%; white-space:nowrap; padding-right:5px; ' rowspan='2'>";
+$sc_style['CM_ICON|catlistsub']['post'] = "</td>";
 
+$sc_style['CM_SUBHEADING|catlistsub']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_SUBHEADING|catlistsub']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_CAT_LISTSUB_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:2%; white-space:nowrap; padding-right:5px; ' rowspan='2'>";
-$sc_style['CONTENT_CAT_LISTSUB_TABLE_ICON']['post'] = "</td>";
-
-$sc_style['CONTENT_CAT_LISTSUB_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_CAT_LISTSUB_TABLE_SUBHEADING']['post'] = "</td></tr>";
-
-$sc_style['CONTENT_CAT_LISTSUB_TABLE_AMOUNT']['pre'] = "(";
-$sc_style['CONTENT_CAT_LISTSUB_TABLE_AMOUNT']['post'] = ")";
+$sc_style['CM_AMOUNT|catlistsub']['pre'] = "(";
+$sc_style['CM_AMOUNT|catlistsub']['post'] = ")";
 
 // ##### CONTENT CAT_LIST SUB -------------------------------------------------
 if(!isset($CONTENT_CAT_LISTSUB_TABLE_START)){
@@ -135,10 +126,10 @@ if(!isset($CONTENT_CAT_LISTSUB_TABLE)){
 	$CONTENT_CAT_LISTSUB_TABLE = "
 	<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
 	<tr>
-		{CONTENT_CAT_LISTSUB_TABLE_ICON}
-		<td class='fcaption'>{CONTENT_CAT_LISTSUB_TABLE_HEADING} {CONTENT_CAT_LISTSUB_TABLE_AMOUNT}</td>
+		{CM_ICON|catlistsub}
+		<td class='fcaption'>{CM_HEADING|catlistsub} {CM_AMOUNT|catlistsub}</td>
 	</tr>
-	{CONTENT_CAT_LISTSUB_TABLE_SUBHEADING}
+	{CM_SUBHEADING|catlistsub}
 	</table>\n";
 }
 if(!isset($CONTENT_CAT_LISTSUB_TABLE_END)){

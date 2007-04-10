@@ -31,7 +31,7 @@ if (!defined('e107_INIT')) { exit; }
 			$CATEGORY = "";
 			$DATE = "";
 			$INFO = "";
-			$LIST_CAPTION	= $rowm['content_heading'];
+			$LIST_CAPTION = $rowm['content_heading'];
 
 			//global var for this main parent
 			$mainparent = $rowm['content_id'];
@@ -106,6 +106,5 @@ if (!defined('e107_INIT')) { exit; }
 			}
 		}
 	}
-
 
 ?>
