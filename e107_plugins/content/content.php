@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2007-03-13 16:51:05 $
+|		$Revision: 1.8 $
+|		$Date: 2007-04-10 14:34:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -155,9 +155,7 @@ if(!e_QUERY){
 
 // ##### CONTENT SEARCH MENU ----------------------------
 function show_content_search_menu($mode, $mainparent){
-		global $qs, $plugindir, $content_shortcodes, $tp, $ns, $rs, $aa;
-		global $plugintable, $gen, $content_pref;
-		global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
+		global $qs, $plugindir, $content_shortcodes, $tp, $ns, $rs, $aa, $plugintable, $gen, $content_pref, $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
 
 		if( (isset($content_pref["content_navigator_{$mode}"]) && $content_pref["content_navigator_{$mode}"]) || (isset($content_pref["content_search_{$mode}"]) && $content_pref["content_search_{$mode}"]) || (isset($content_pref["content_ordering_{$mode}"]) && $content_pref["content_ordering_{$mode}"]) ){
 
@@ -172,13 +170,13 @@ function show_content_search_menu($mode, $mainparent){
 					}
 				}
 			}
-			if(isset($content_pref["content_navigator_{$mode}"]) && $content_pref["content_navigator_{$mode}"]){
+			if( varsettrue($content_pref["content_navigator_{$mode}"]) ){
 				$CONTENT_SEARCH_TABLE_SELECT = $aa -> showOptionsSelect("page", $mainparent);
 			}
-			if(isset($content_pref["content_search_{$mode}"]) && $content_pref["content_search_{$mode}"]){
+			if( varsettrue($content_pref["content_search_{$mode}"]) ){
 				$CONTENT_SEARCH_TABLE_KEYWORD = $aa -> showOptionsSearch("page", $mainparent);
 			}
-			if(isset($content_pref["content_ordering_{$mode}"]) && $content_pref["content_ordering_{$mode}"]){
+			if( varsettrue($content_pref["content_ordering_{$mode}"]) ){
 				$CONTENT_SEARCH_TABLE_ORDER = $aa -> showOptionsOrder("page", $mainparent);
 			}
 
@@ -196,7 +194,7 @@ function show_content_search_menu($mode, $mainparent){
 }
 
 function show_content_search_result($searchkeyword){
-		global $row, $qs, $content_shortcodes, $ns, $rs, $tp, $plugindir, $plugintable, $gen, $aa, $content_pref, $datequery, $gen, $mainparent, $content_icon_path;
+		global $row, $qs, $content_shortcodes, $ns, $rs, $tp, $plugindir, $plugintable, $gen, $aa, $content_pref, $datequery, $mainparent, $content_icon_path;
 
 		$mainparent			= $aa -> getMainParent( (is_numeric($qs[1]) ? $qs[1] : intval($qs[2])) );
 		$content_pref		= $aa -> getContentPref($mainparent);
@@ -306,8 +304,8 @@ function show_content(){
 				if(!is_object($sql2)){ $sql2 = new db; }
 
 				$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
-				$content_pref["content_cat_icon_path_large"] = ($content_pref["content_cat_icon_path_large"] ? $content_pref["content_cat_icon_path_large"] : "{e_PLUGIN}content/images/cat/48/" );
-				$content_pref["content_cat_icon_path_small"] = ($content_pref["content_cat_icon_path_small"] ? $content_pref["content_cat_icon_path_small"] : "{e_PLUGIN}content/images/cat/16/" );
+				$content_pref["content_cat_icon_path_large"] = varset($content_pref["content_cat_icon_path_large"], "{e_PLUGIN}content/images/cat/48/");
+				$content_pref["content_cat_icon_path_small"] = varset($content_pref["content_cat_icon_path_small"], "{e_PLUGIN}content/images/cat/16/");
 				$content_cat_icon_path_large	= $tp->replaceConstants($content_pref["content_cat_icon_path_large"]);
 				$content_cat_icon_path_small	= $tp->replaceConstants($content_pref["content_cat_icon_path_small"]);
 				$content_icon_path				= $tp->replaceConstants($content_pref["content_icon_path"]);
@@ -360,10 +358,7 @@ function show_content(){
 }
 // ##### CONTENT ARCHIVE ------------------------------------------
 function show_content_archive(){
-		global $row, $ns, $plugindir, $plugintable, $sql, $aa, $rs, $e107cache, $tp, $pref, $content_pref, $cobj;
-		global $qs, $searchkeyword, $nextprevquery, $from, $number, $mainparent, $content_shortcodes;
-		global $CONTENT_ARCHIVE_TABLE, $CONTENT_ARCHIVE_TABLE_START, $datequery, $CONTENT_ARCHIVE_TABLE_LETTERS;
-		global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD, $CONTENT_ARCHIVE_TABLE_AUTHOR;
+		global $row, $ns, $plugindir, $plugintable, $sql, $aa, $rs, $e107cache, $tp, $pref, $content_pref, $cobj, $qs, $searchkeyword, $nextprevquery, $from, $number, $mainparent, $content_shortcodes, $datequery, $CONTENT_ARCHIVE_TABLE, $CONTENT_ARCHIVE_TABLE_START, $CONTENT_ARCHIVE_TABLE_LETTERS, $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -392,7 +387,7 @@ function show_content_archive(){
 		$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
 		$validparent	= implode(",", array_keys($array));
 		$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
-		$number			= (isset($content_pref["content_archive_nextprev_number"]) && $content_pref["content_archive_nextprev_number"] ? $content_pref["content_archive_nextprev_number"] : "30");
+		$number			= varsettrue($content_pref["content_archive_nextprev_number"], '30');
 		$order			= $aa -> getOrder();
 		$nextprevquery	= (isset($content_pref["content_archive_nextprev"]) && $content_pref["content_archive_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$sql1 = new db;
@@ -464,23 +459,21 @@ function show_content_archive(){
 		if($item = $sql1 -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 			$content_archive_table_string = "";
 			while($row = $sql1 -> db_Fetch()){
-				$CONTENT_ARCHIVE_TABLE_AUTHOR	= $aa -> prepareAuthor("archive", $row['content_author'], $row['content_id']);
 				$content_archive_table_string .= $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE, FALSE, $content_shortcodes);
 			}
 			$text .= $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
 		}
-		$text		= $aa -> getCrumbPage("archive", $array, $mainparent).$text;
-		$caption	= $content_pref['content_archive_caption'];
+		$text = $aa->getCrumbPage("archive", $array, $mainparent).$text;
+		$caption = $content_pref['content_archive_caption'];
 		$ns->tablerender($caption, $text);
-		$aa -> ShowNextPrev("archive", $from, $number, $contenttotal);
+		$aa->ShowNextPrev("archive", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);
 }
 
 //this function renders the preview of a content_item
 //used in recent list, view author list, category items list
 function displayPreview($qry){
-		global $qs, $array, $row, $gen, $rater, $aa, $sql2, $tp, $plugintable, $plugindir, $content_shortcodes, $content_pref, $mainparent, $CONTENT_RECENT_TABLE_AUTHORDETAILS;
-		global $CONTENT_RECENT_TABLE_START, $CONTENT_RECENT_TABLE_END, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_INFOPRE, $CONTENT_RECENT_TABLE_INFOPOST;
+		global $qs, $array, $row, $gen, $rater, $aa, $sql2, $tp, $plugintable, $plugindir, $content_shortcodes, $content_pref, $mainparent, $CM_AUTHOR, $CONTENT_RECENT_TABLE_START, $CONTENT_RECENT_TABLE_END, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_INFOPRE, $CONTENT_RECENT_TABLE_INFOPOST;
 
 		if(!isset($CONTENT_RECENT_TABLE)){
 			if(!$content_pref["content_theme"]){
@@ -496,12 +489,12 @@ function displayPreview($qry){
 		if($resultitem = $sql2 -> db_Select($plugintable, "*", $qry )){
 			$content_recent_table_string = "";
 			while($row = $sql2 -> db_Fetch()){
-				$CONTENT_RECENT_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("list", $row['content_author'], $row['content_id']);
-				$rdate	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_DATE}', FALSE, $content_shortcodes);
-				$rauth	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
-				$rep	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
-				$rpar	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_PARENT}', FALSE, $content_shortcodes);
-				$redi	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
+				$CM_AUTHOR = $aa -> prepareAuthor("list", $row['content_author'], $row['content_id']);
+				$rdate	= $tp -> parseTemplate('{CM_DATE|recent}', FALSE, $content_shortcodes);
+				$rauth	= $tp -> parseTemplate('{CM_AUTHOR|recent}', FALSE, $content_shortcodes);
+				$rep	= $tp -> parseTemplate('{CM_EPICONS|recent}', FALSE, $content_shortcodes);
+				$rpar	= $tp -> parseTemplate('{CM_PARENT|recent}', FALSE, $content_shortcodes);
+				$redi	= $tp -> parseTemplate('{CM_EDITICON|recent}', FALSE, $content_shortcodes);
 				$CONTENT_RECENT_TABLE_INFOPRE = FALSE;
 				$CONTENT_RECENT_TABLE_INFOPOST = FALSE;
 				if ($rdate!="" || $rauth!="" || $rep!="" || $rpar!="" || $redi!="" ) {
@@ -519,8 +512,7 @@ function displayPreview($qry){
 
 // ##### RECENT LIST ------------------------------------
 function show_content_recent(){
-		global $qs, $sql2, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-		global $nextprevquery, $from, $number, $mainparent, $datequery, $content_icon_path, $CONTENT_RECENT_TABLE;
+		global $qs, $sql2, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $nextprevquery, $from, $number, $mainparent, $datequery, $content_icon_path, $CONTENT_RECENT_TABLE;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -537,7 +529,7 @@ function show_content_recent(){
 		$array				= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 		$validparent		= implode(",", array_keys($array));
 		$order				= $aa -> getOrder();
-		$number				= ($content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
+		$number				= varsettrue($content_pref["content_nextprev_number"], '5');
 		$nextprevquery		= ($content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
@@ -547,22 +539,19 @@ function show_content_recent(){
 
 		$recentqry			= "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery;
 		$text				= displayPreview($recentqry);
-		$text				= $aa -> getCrumbPage("recent", $array, $mainparent).$text;
+		$text				= $aa->getCrumbPage("recent", $array, $mainparent).$text;
 		$caption			= $content_pref['content_list_caption'];
 		if(isset($content_pref['content_list_caption_append_name']) && $content_pref['content_list_caption_append_name']){
 			$caption .= " ".$array[intval($qs[1])][1];
 		}
 		$ns -> tablerender($caption, $text);
-		$aa -> ShowNextPrev("", $from, $number, $contenttotal);
+		$aa->ShowNextPrev("", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);
 }
 
 // ##### CATEGORY LIST ------------------------------------
 function show_content_cat_all(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems;
-		global $sql, $datequery, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $mainparent, $CONTENT_CAT_TABLE, $CONTENT_CAT_TABLE_AUTHORDETAILS;
-		global $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb;
-		global $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $sql, $datequery, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $mainparent, $CONTENT_CAT_TABLE, $CM_AUTHOR, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 
 		unset($text);
 
@@ -594,7 +583,7 @@ function show_content_cat_all(){
 		$array							= $aa -> getCategoryTree("", $mainparent, TRUE);
 		$validparent					= implode(",", array_keys($array));
 		$order							= $aa -> getOrder();
-		$number							= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
+		$number							= varsettrue($content_pref["content_nextprev_number"], '5');
 		$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry							= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
@@ -611,9 +600,9 @@ function show_content_cat_all(){
 			$sql -> db_Select($plugintable, "*", "content_id = '".$key."' ");
 			$row = $sql -> db_Fetch();
 
-			$date	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_DATE}', FALSE, $content_shortcodes);
-			$auth	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
-			$ep		= $tp -> parseTemplate('{CONTENT_CAT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+			$date	= $tp -> parseTemplate('{CM_DATE|cat}', FALSE, $content_shortcodes);
+			$auth	= $tp -> parseTemplate('{CM_AUTHOR|cat}', FALSE, $content_shortcodes);
+			$ep		= $tp -> parseTemplate('{CM_EPICONS|cat}', FALSE, $content_shortcodes);
 			$com	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_COMMENT}', FALSE, $content_shortcodes);
 			$CONTENT_CAT_TABLE_INFO_PRE = FALSE;
 			$CONTENT_CAT_TABLE_INFO_POST = FALSE;
@@ -621,22 +610,19 @@ function show_content_cat_all(){
 				$CONTENT_CAT_TABLE_INFO_PRE = TRUE;
 				$CONTENT_CAT_TABLE_INFO_POST = TRUE;
 			}
-			$CONTENT_CAT_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("catall", $row['content_author'], $row['content_id']);
+			$CM_AUTHOR = $aa -> prepareAuthor("catall", $row['content_author'], $row['content_id']);
 			$content_cat_table_string .= $tp -> parseTemplate($CONTENT_CAT_TABLE, FALSE, $content_shortcodes);
 
 		}
 		$text		= $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
-		$text		= $aa -> getCrumbPage("catall", $array, $mainparent).$text;
+		$text		= $aa->getCrumbPage("catall", $array, $mainparent).$text;
 		$caption	= $content_pref['content_catall_caption'];
 		$ns -> tablerender($caption, $text);
 		$cachecheck = CachePost($cachestr);
 }
 
 function show_content_cat($mode=""){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from;
-		global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
-		global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat;
-		global $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from, $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CM_AUTHOR, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST, $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -663,7 +649,7 @@ function show_content_cat($mode=""){
 		$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
 		$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
 		$order							= $aa -> getOrder();
-		$number							= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
+		$number							= varsettrue($content_pref["content_nextprev_number"], '5');
 		$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$capqs							= array_reverse($array[intval($qs[1])]);
 		$caption	= $content_pref['content_cat_caption'];
@@ -681,17 +667,17 @@ function show_content_cat($mode=""){
 					$content_pref['content_cat_text_char'] = 'all';
 				}
 				$row = $sql -> db_Fetch();
-				$date	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_DATE}', FALSE, $content_shortcodes);
-				$auth	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
-				$ep		= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_EPICONS}', FALSE, $content_shortcodes);
+				$date	= $tp -> parseTemplate('{CM_DATE|catlist}', FALSE, $content_shortcodes);
+				$auth	= $tp -> parseTemplate('{CM_AUTHOR|catlist}', FALSE, $content_shortcodes);
+				$ep		= $tp -> parseTemplate('{CM_EPICONS|catlist}', FALSE, $content_shortcodes);
 				$com	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_COMMENT}', FALSE, $content_shortcodes);
 				if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
 					$CONTENT_CAT_LIST_TABLE_INFO_PRE = TRUE;
 					$CONTENT_CAT_LIST_TABLE_INFO_POST = TRUE;
 				}
 				$totalparent = $aa -> countCatItems($row['content_id']);
-				$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("cat", $row['content_author'], $row['content_id']);
-				$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);
+				$CM_AUTHOR = $aa -> prepareAuthor("cat", $row['content_author'], $row['content_id']);
+				$textparent = $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);
 			}
 		}
 
@@ -760,7 +746,7 @@ function show_content_cat($mode=""){
 			$textchild			= displayPreview($childqry);
 			$captionchild		= $content_pref['content_cat_item_caption'];
 
-			$crumbpage = $aa -> getCrumbPage("cat", $array, $qs[1]);
+			$crumbpage = $aa->getCrumbPage("cat", $array, $qs[1]);
 			if(isset($textparent) && $textparent){ 
 				$textparent = $crumbpage.$textparent;
 			}else{
@@ -797,7 +783,7 @@ function show_content_cat($mode=""){
 		$cachecheck = CachePost($cachestr);
 
 		if($mode == "comment"){
-			$textparent = $aa -> getCrumbPage("cat", $array, $mainparent).$textparent;
+			$textparent = $aa->getCrumbPage("cat", $array, $mainparent).$textparent;
 			if(isset($textparent) && $textparent){ $ns -> tablerender($caption, $textparent); }
 
 			if($resultitem = $sql -> db_Select($plugintable, "*", $qry )){
@@ -823,7 +809,7 @@ function show_content_cat($mode=""){
 
 // ##### AUTHOR LIST --------------------------------------
 function show_content_author_all(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery, $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_AUTHOR_TABLE, $CONTENT_AUTHOR_TABLE_START, $CONTENT_AUTHOR_TABLE_END, $CONTENT_AUTHOR_TABLE_DATE, $CONTENT_AUTHOR_TABLE_HEADING;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery, $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_AUTHOR_TABLE, $CONTENT_AUTHOR_TABLE_START, $CONTENT_AUTHOR_TABLE_END;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[2]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -850,7 +836,7 @@ function show_content_author_all(){
 		}
 		$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
 		$validparent	= implode(",", array_keys($array));
-		$number			= (isset($content_pref["content_author_nextprev_number"]) && $content_pref["content_author_nextprev_number"] ? $content_pref["content_author_nextprev_number"] : "5");
+		$number			= varsettrue($content_pref["content_author_nextprev_number"],'5');
 		$nextprevquery	= (isset($content_pref["content_author_nextprev"]) && $content_pref["content_author_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry			= " p.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 		$dateqry		= "AND p.content_datestamp < ".time()." AND (p.content_enddate=0 || p.content_enddate>".time().")";
@@ -935,10 +921,17 @@ function show_content_author_all(){
 			//do an alpha ordering on the author (if 'firstname lastname', lastname is the comparison factor)
 			usort($arr3, "cmp");
 
+			//define amount of records to show
+			if(isset($content_pref["content_author_nextprev"]) && $content_pref["content_author_nextprev"]){
+				$a = $from;
+				$b = $from+$number;
+			}else{
+				$a = 0;
+				$b = count($arr3);
+			}
+
 			$string = "";
-			//only display number of records for nextprev
-			$max = $from+$number;
-			for($i=$from;$i<$max;$i++){
+			for($i=$a;$i<$b;$i++){
 				if(is_array($arr3[$i])){
 					$authordetails[$i][1] = $arr3[$i][0];
 					$row['content_id'] = $arr3[$i][1];
@@ -949,19 +942,17 @@ function show_content_author_all(){
 				}
 			}
 			$text = $CONTENT_AUTHOR_TABLE_START.$string.$CONTENT_AUTHOR_TABLE_END;
-			$text = $aa -> getCrumbPage("authorall", $array, $mainparent).$text;
+			$text = $aa->getCrumbPage("authorall", $array, $mainparent).$text;
 		}
 		$caption	= $content_pref['content_author_index_caption'];
 		$ns -> tablerender($caption, $text);
-		$aa -> ShowNextPrev("author", $from, $number, $contenttotal);
+		$aa->ShowNextPrev("author", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);
 }
 
 
 function show_content_author(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-		global $nextprevquery, $from, $number, $content_icon_path;
-		global $CONTENT_RECENT_TABLE, $datequery, $crumb, $mainparent;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $nextprevquery, $from, $number, $content_icon_path, $CONTENT_RECENT_TABLE, $datequery, $crumb, $mainparent;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -982,7 +973,7 @@ function show_content_author(){
 			$validparent	= implode(",", array_keys($array));
 		}
 		$order				= $aa -> getOrder();
-		$number				= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
+		$number				= varsettrue($content_pref["content_nextprev_number"],'10');
 		$nextprevquery		= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 		$sqla = "";
@@ -990,31 +981,29 @@ function show_content_author(){
 		if(!$author = $sqla -> db_Select($plugintable, "content_author", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_id = '".intval($qs[1])."' AND content_class REGEXP '".e_CLASS_REGEXP."' ")){
 			header("location:".e_SELF."?author.list.".$mainparent); exit;
 		}else{
-			list($content_author)	= $sqla -> db_Fetch();
+			list($content_author) = $sqla -> db_Fetch();
 			$sqlb = new db;
 			$authordetails	= $aa -> getAuthor($content_author);
-			$query			= " content_author = '".$authordetails[3]."' || content_author REGEXP '^".$authordetails[1]."^' ".(is_numeric($content_author) ? " || content_author = '".$authordetails[0]."' " : "")." ";
+			$query			= " content_author = '".$authordetails[3]."' || content_author REGEXP '\\\^".$authordetails[1]."' ".(is_numeric($content_author) && $authordetails[3]!=$authordetails[0] ? " || content_author = '".$authordetails[0]."' " : "")." ";
 			$validparent	= implode(",", array_keys($array));
 			$qry			= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND (".$query.") ";
 			$contenttotal	= $sqlb -> db_Count($plugintable, "(*)", "WHERE ".$qry." ");
 			$authorqry		= $qry." ".$order." ".$nextprevquery;
 			$text			= displayPreview($authorqry);
-			$text			= $aa -> getCrumbPage("author", $array, $mainparent).$text;
+			$text			= $aa->getCrumbPage("author", $array, $mainparent).$text;
 			$caption		= $content_pref['content_author_caption'];
 			if(isset($content_pref['content_author_caption_append_name']) && $content_pref['content_author_caption_append_name']){
 				$caption .= " ".$authordetails[1];
 			}
 			$ns -> tablerender($caption, $text);
-			$aa -> ShowNextPrev("", $from, $number, $contenttotal);
+			$aa->ShowNextPrev("", $from, $number, $contenttotal);
 		}
 		$cachecheck = CachePost($cachestr);
 }
 
 // ##### TOP RATED LIST -----------------------------------
 function show_content_top(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path;
-		global $from, $datequery, $content_pref, $mainparent;
-		global $CONTENT_TOP_TABLE_AUTHOR, $authordetails, $row;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path, $from, $datequery, $content_pref, $mainparent, $CM_AUTHOR, $authordetails, $row;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -1043,7 +1032,7 @@ function show_content_top(){
 		$validparent		= implode(",", array_keys($array));
 		$datequery1			= " AND p.content_datestamp < ".time()." AND (p.content_enddate=0 || p.content_enddate>".time().") ";
 		$qry				= " p.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
-		$number				= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "");
+		$number				= varsettrue($content_pref["content_nextprev_number"]);
 		$np					= ($number ? " LIMIT ".intval($from).", ".intval($number) : "");
 
 		$qry1 = "
@@ -1060,18 +1049,18 @@ function show_content_top(){
 			$text = CONTENT_LAN_37;
 		}else{
 			while($row = $sql -> db_Fetch()){
-				$CONTENT_TOP_TABLE_AUTHOR	= $aa -> prepareAuthor("top", $row['content_author'], $row['content_id']);
-				$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
+				$CM_AUTHOR = $aa -> prepareAuthor("top", $row['content_author'], $row['content_id']);
+				$content_top_table_string .= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
 			}
-			$content_top_table_string		= $aa -> getCrumbPage("top", $array, $mainparent).$content_top_table_string;
-			$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
+			$content_top_table_string = $aa->getCrumbPage("top", $array, $mainparent).$content_top_table_string;
+			$text = $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
 		}
-		$caption	= $content_pref['content_top_caption'];
+		$caption = $content_pref['content_top_caption'];
 		if(isset($content_pref['content_top_caption_append_name']) && $content_pref['content_top_caption_append_name']){
 			$caption .= " ".$array[intval($qs[1])][1];
 		}
 		$ns -> tablerender($caption, $text);
-		$aa -> ShowNextPrev("", $from, $number, $total);
+		$aa->ShowNextPrev("", $from, $number, $total);
 		$cachecheck = CachePost($cachestr);
 		unset($qry, $qry1, $qry2, $array, $validparent, $datequery);
 }
@@ -1079,8 +1068,7 @@ function show_content_top(){
 
 // ##### TOP SCORE LIST -----------------------------------
 function show_content_score(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path;
-		global $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CONTENT_SCORE_TABLE_SCORE, $CONTENT_SCORE_TABLE_AUTHOR, $authordetails, $row, $thisratearray;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path, $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CONTENT_SCORE_TABLE_SCORE, $CM_AUTHOR, $authordetails, $row, $thisratearray;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -1108,7 +1096,7 @@ function show_content_score(){
 		$array				= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 		$validparent		= implode(",", array_keys($array));
 		$qry				= " content_score != '0' AND content_score != '' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
-		$number				= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
+		$number				= varsettrue($content_pref["content_nextprev_number"],'5');
 
 		if(!is_object($sql)){ $sql = new db; }
 		$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE ".$qry." ");
@@ -1116,25 +1104,25 @@ function show_content_score(){
 			$content_score_table_string = CONTENT_LAN_88;
 		}else{
 			while($row = $sql -> db_Fetch()){
-				$CONTENT_SCORE_TABLE_AUTHOR	= $aa -> prepareAuthor("score", $row['content_author'], $row['content_id']);
+				$CM_AUTHOR	= $aa -> prepareAuthor("score", $row['content_author'], $row['content_id']);
 				$content_score_table_string	.= $tp -> parseTemplate($CONTENT_SCORE_TABLE, FALSE, $content_shortcodes);
 			}
 		}
-		$content_score_table_string = $aa -> getCrumbPage("score", $array, $mainparent).$content_score_table_string;
+		$content_score_table_string = $aa->getCrumbPage("score", $array, $mainparent).$content_score_table_string;
 		$text		= $CONTENT_SCORE_TABLE_START.$content_score_table_string.$CONTENT_SCORE_TABLE_END;
 		$caption	= $content_pref['content_score_caption'];
 		if(isset($content_pref['content_score_caption_append_name']) && $content_pref['content_score_caption_append_name']){
 			$caption .= " ".$array[intval($qs[1])][1];
 		}
 		$ns -> tablerender($caption, $text);
-		$aa -> ShowNextPrev("", $from, $number, $contenttotal);
+		$aa->ShowNextPrev("", $from, $number, $contenttotal);
 		$cachecheck = CachePost($cachestr);
 }
 
 // ##### CONTENT ITEM ------------------------------------------
 function show_content_item(){
 		global $pref, $content_pref, $content_icon_path, $content_image_path, $content_file_path, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent;
-		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA, $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
+		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CM_AUTHOR, $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA, $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
 		global $CONTENT_CONTENT_TABLE_PREV_PAGE, $CONTENT_CONTENT_TABLE_NEXT_PAGE;
 
 		$mainparent			= $aa -> getMainParent(intval($qs[1]));
@@ -1181,20 +1169,20 @@ function show_content_item(){
 				echo $cachecheck;
 				return;
 			}
-			$content_pref["content_cat_icon_path_large"] = ($content_pref["content_cat_icon_path_large"] ? $content_pref["content_cat_icon_path_large"] : "{e_PLUGIN}content/images/cat/48/" );
-			$content_pref["content_cat_icon_path_small"] = ($content_pref["content_cat_icon_path_small"] ? $content_pref["content_cat_icon_path_small"] : "{e_PLUGIN}content/images/cat/16/" );
-			$content_pref["content_icon_path"] = ($content_pref["content_icon_path"] ? $content_pref["content_icon_path"] : "{e_PLUGIN}content/images/icon/" );
-			$content_pref["content_image_path"] = ($content_pref["content_image_path"] ? $content_pref["content_image_path"] : "{e_PLUGIN}content/images/image/" );
-			$content_pref["content_file_path"] = ($content_pref["content_file_path"] ? $content_pref["content_file_path"] : "{e_PLUGIN}content/images/file/" );
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
-			$number							= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
-			$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+			$content_pref["content_cat_icon_path_large"] = varset($content_pref["content_cat_icon_path_large"], "{e_PLUGIN}content/images/cat/48/");
+			$content_pref["content_cat_icon_path_small"] = varset($content_pref["content_cat_icon_path_small"], "{e_PLUGIN}content/images/cat/16/");
+			$content_pref["content_icon_path"] = varset($content_pref["content_icon_path"], "{e_PLUGIN}content/images/icon/");
+			$content_pref["content_image_path"] = varset($content_pref["content_image_path"], "{e_PLUGIN}content/images/image/");
+			$content_pref["content_file_path"] = varset($content_pref["content_file_path"], "{e_PLUGIN}content/images/file/");
+			$content_cat_icon_path_large = $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
+			$content_cat_icon_path_small = $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
+			$content_icon_path = $tp -> replaceConstants($content_pref["content_icon_path"]);
+			$content_image_path = $tp -> replaceConstants($content_pref["content_image_path"]);
+			$content_file_path = $tp -> replaceConstants($content_pref["content_file_path"]);
+			$number = varsettrue($content_pref["content_nextprev_number"],'5');
+			$nextprevquery = (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 
-			$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("content", $row['content_author'], $row['content_id']);
+			$CM_AUTHOR = $aa -> prepareAuthor("content", $row['content_author'], $row['content_id']);
 			$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
 
 			$CONTENT_CONTENT_TABLE_PREV_PAGE = FALSE;
@@ -1284,7 +1272,7 @@ function show_content_item(){
 					}
 				}
 				if($content_pref["content_content_pagenames_rendertype"] == "1"){
-					$selectjs	= "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
+					$selectjs = "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
 					$CONTENT_CONTENT_TABLE_PAGENAMES = $rs -> form_select_open("pagenames", $selectjs).$rs -> form_option(CONTENT_LAN_89, "1", "none" , "").$options.$rs -> form_select_close();
 				}else{
 					$CONTENT_CONTENT_TABLE_PAGENAMES = $options;
@@ -1292,14 +1280,14 @@ function show_content_item(){
 
 			}else{
 				$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
-				$CONTENT_CONTENT_TABLE_SUMMARY	= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
+				$CONTENT_CONTENT_TABLE_SUMMARY = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 				$lastpage = TRUE;
 			}
 
-			$CONTENT_CONTENT_TABLE_TEXT		= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_TEXT);
-			$CONTENT_CONTENT_TABLE_TEXT		= $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "BODY");
+			$CONTENT_CONTENT_TABLE_TEXT = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_TEXT);
+			$CONTENT_CONTENT_TABLE_TEXT = $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "BODY");
 
-			$custom							= $eArrayStorage->ReadArray($row['content_pref']);
+			$custom = $eArrayStorage->ReadArray($row['content_pref']);
 
 			$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}', FALSE, $content_shortcodes);
 			$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
@@ -1414,7 +1402,7 @@ function show_content_item(){
 				}
 			}
 			$text		= $tp -> parseTemplate($CONTENT_CONTENT_TABLE, FALSE, $content_shortcodes);
-			$text		= $aa -> getCrumbPage("item", $array, $row['content_parent']).$text;
+			$text		= $aa->getCrumbPage("item", $array, $row['content_parent']).$text;
 			$caption	= $row['content_heading'];
 			$ns -> tablerender($caption, $text);
 			$cachecheck = CachePost($cachestr);
@@ -1430,12 +1418,14 @@ function show_content_item(){
 					$lastpage = TRUE;
 				}
 			}
+
 			if($lastpage && ($row['content_comment'] || (isset($content_pref["content_content_comment_all"]) && $content_pref["content_content_comment_all"]))){
 				$cachecheck = CachePre($cachestr);
 				if($cachecheck){
 					echo $cachecheck;
 					return;
 				}
+
 				if((isset($content_pref["content_content_rating"]) && $content_pref["content_content_rating"] && $row['content_rate']) || (isset($content_pref["content_content_rating_all"]) && $content_pref["content_content_rating_all"]) ){
 					$showrate = TRUE;
 				}else{

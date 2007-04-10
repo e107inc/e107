@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-03-25 08:38:20 $
+|     $Revision: 1.10 $
+|     $Date: 2007-04-10 14:34:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -105,6 +105,7 @@ define("CONTENT_ADMIN_MANAGER_LAN_5", "users with this class are able to create 
 define("CONTENT_ADMIN_MANAGER_LAN_6", "submit content");
 define("CONTENT_ADMIN_MANAGER_LAN_7", "users with this class are able to submit content items in this category");
 define("CONTENT_ADMIN_MANAGER_LAN_8", "manager inherit preferences updated");
+define("CONTENT_ADMIN_MANAGER_LAN_9", "manage permissions");
 
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "required field(s) left blank");

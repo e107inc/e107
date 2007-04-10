@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_archive_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-10 14:34:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $content_shortcodes;
 
-$sc_style['CONTENT_ARCHIVE_TABLE_AUTHOR']['pre'] = "<tr><td class='forumheader3' colspan='2' style='white-space:nowrap; text-align:left;'>".CONTENT_LAN_11." ";
-$sc_style['CONTENT_ARCHIVE_TABLE_AUTHOR']['post'] = "</td></tr>";
+$sc_style['CM_AUTHOR|archive']['pre'] = "<tr><td class='forumheader3' colspan='2' style='white-space:nowrap; text-align:left;'>".CONTENT_LAN_11." ";
+$sc_style['CM_AUTHOR|archive']['post'] = "</td></tr>";
 
 $sc_style['CONTENT_ARCHIVE_TABLE_LETTERS']['pre'] = "<div style='margin-bottom:20px;'>";
 $sc_style['CONTENT_ARCHIVE_TABLE_LETTERS']['post'] = "</div>";
@@ -29,16 +29,15 @@ $sc_style['CONTENT_ARCHIVE_TABLE_LETTERS']['post'] = "</div>";
 if(!isset($CONTENT_ARCHIVE_TABLE_START)){
 	$CONTENT_ARCHIVE_TABLE_START = "
 	{CONTENT_ARCHIVE_TABLE_LETTERS}
-	<table class='fborder'>
-	";
+	<table class='fborder'>";
 }
 if(!isset($CONTENT_ARCHIVE_TABLE)){
 	$CONTENT_ARCHIVE_TABLE = "				
 	<tr>
-		<td class='fcaption'>{CONTENT_ARCHIVE_TABLE_HEADING}</td>
-		<td class='fcaption' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_ARCHIVE_TABLE_DATE}</td>
+		<td class='fcaption'>{CM_HEADING|archive}</td>
+		<td class='fcaption' style='width:5%; white-space:nowrap; text-align:right;'>{CM_DATE|archive}</td>
 	</tr>
-	{CONTENT_ARCHIVE_TABLE_AUTHOR}
+	{CM_AUTHOR|archive}
 	\n";
 }
 if(!isset($CONTENT_ARCHIVE_TABLE_END)){

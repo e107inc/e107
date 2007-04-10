@@ -11,25 +11,25 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_score_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-10 14:34:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $content_shortcodes;
 
-$sc_style['CONTENT_SCORE_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='3' style='width:5%; white-space:nowrap;'>";
-$sc_style['CONTENT_SCORE_TABLE_ICON']['post'] = "</td>";
+$sc_style['CM_ICON|score']['pre'] = "<td class='forumheader3' rowspan='3' style='width:5%; white-space:nowrap;'>";
+$sc_style['CM_ICON|score']['post'] = "</td>";
 
-$sc_style['CONTENT_SCORE_TABLE_HEADING']['pre'] = "";
-$sc_style['CONTENT_SCORE_TABLE_HEADING']['post'] = "";
+$sc_style['CM_HEADING|score']['pre'] = "";
+$sc_style['CM_HEADING|score']['post'] = "";
 
-$sc_style['CONTENT_SCORE_TABLE_AUTHOR']['pre'] = "<tr><td class='forumheader3' colspan='2'>".CONTENT_LAN_11." ";
-$sc_style['CONTENT_SCORE_TABLE_AUTHOR']['post'] = "</td></tr>";
+$sc_style['CM_AUTHOR|score']['pre'] = "<tr><td class='forumheader3' colspan='2'>".CONTENT_LAN_11." ";
+$sc_style['CM_AUTHOR|score']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_SCORE_TABLE_SCORE']['pre'] = "<td class='fcaption' style='width:20%; white-space:nowrap; text-align:right;'>";
-$sc_style['CONTENT_SCORE_TABLE_SCORE']['post'] = "</td>";
+$sc_style['CM_SCORE|score']['pre'] = "<td class='fcaption' style='width:20%; white-space:nowrap; text-align:right;'>";
+$sc_style['CM_SCORE|score']['post'] = "</td>";
 
 // ##### CONTENT TOP --------------------------------------------------
 if(!isset($CONTENT_SCORE_TABLE_START)){
@@ -39,11 +39,11 @@ if(!isset($CONTENT_SCORE_TABLE)){
 	$CONTENT_SCORE_TABLE = "
 	<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
 	<tr>
-		{CONTENT_SCORE_TABLE_ICON}
-		<td class='fcaption'>{CONTENT_SCORE_TABLE_HEADING}</td>
-		{CONTENT_SCORE_TABLE_SCORE}
+		{CM_ICON|score}
+		<td class='fcaption'>{CM_HEADING|score}</td>
+		{CM_SCORE|score}
 	</tr>
-	{CONTENT_SCORE_TABLE_AUTHOR}
+	{CM_AUTHOR|score}
 	</table>\n";
 }
 if(!isset($CONTENT_SCORE_TABLE_END)){

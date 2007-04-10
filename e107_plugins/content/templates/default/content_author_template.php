@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_author_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-10 14:34:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 global $sc_style, $content_shortcodes;
@@ -21,8 +21,8 @@ global $sc_style, $content_shortcodes;
 $sc_style['CONTENT_AUTHOR_TABLE_LASTITEM']['pre'] = "<tr><td class='forumheader3'>".CONTENT_LAN_55." ";
 $sc_style['CONTENT_AUTHOR_TABLE_LASTITEM']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_AUTHOR_TABLE_TOTAL']['pre'] = "(";
-$sc_style['CONTENT_AUTHOR_TABLE_TOTAL']['post'] = ")";
+$sc_style['CM_AMOUNT|author']['pre'] = "(";
+$sc_style['CM_AMOUNT|author']['post'] = ")";
 
 // ##### CONTENT AUTHOR -------------------------------------------------------
 if(!isset($CONTENT_AUTHOR_TABLE_START)){
@@ -32,7 +32,7 @@ if(!isset($CONTENT_AUTHOR_TABLE_START)){
 if(!isset($CONTENT_AUTHOR_TABLE)){
 	$CONTENT_AUTHOR_TABLE = "
 	<tr>
-		<td class='fcaption'>{CONTENT_AUTHOR_TABLE_ICON} {CONTENT_AUTHOR_TABLE_NAME} {CONTENT_AUTHOR_TABLE_TOTAL}</td>
+		<td class='fcaption'>{CM_ICON|author} {CM_AUTHOR|author} {CM_AMOUNT|author}</td>
 	</tr>
 	{CONTENT_AUTHOR_TABLE_LASTITEM}
 	";

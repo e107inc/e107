@@ -11,22 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/content_type_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-13 16:51:05 $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-10 14:34:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $content_shortcodes;
 
-$sc_style['CONTENT_TYPE_TABLE_TOTAL']['pre'] = "";
-$sc_style['CONTENT_TYPE_TABLE_TOTAL']['post'] = " ";
+$sc_style['CM_AMOUNT|type']['pre'] = "";
+$sc_style['CM_AMOUNT|type']['post'] = " ";
 
-$sc_style['CONTENT_TYPE_TABLE_HEADING']['pre'] = "";
-$sc_style['CONTENT_TYPE_TABLE_HEADING']['post'] = "";
+$sc_style['CM_HEADING|type']['pre'] = "";
+$sc_style['CM_HEADING|type']['post'] = "";
 
-$sc_style['CONTENT_TYPE_TABLE_SUBHEADING']['pre'] = "";
-$sc_style['CONTENT_TYPE_TABLE_SUBHEADING']['post'] = "";
+$sc_style['CM_SUBHEADING|type']['pre'] = "";
+$sc_style['CM_SUBHEADING|type']['post'] = "";
 
 $sc_style['CONTENT_TYPE_TABLE_LINK']['pre'] = "<br /><span class='smalltext'>";
 $sc_style['CONTENT_TYPE_TABLE_LINK']['post'] = "</span>";
@@ -39,17 +39,17 @@ if(!isset($CONTENT_TYPE_TABLE_START)){
 if(!isset($CONTENT_TYPE_TABLE)){
 	$CONTENT_TYPE_TABLE = "
 	<tr>
-		<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_ICON}</td>
-		<td class='fcaption'>{CONTENT_TYPE_TABLE_HEADING}{CONTENT_TYPE_TABLE_LINK}</td>
-		<td class='forumheader' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_TYPE_TABLE_TOTAL} {CONTENT_TYPE_TABLE_TOTAL_LAN}</td>
+		<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CM_ICON|type}</td>
+		<td class='fcaption'>{CM_HEADING|type}{CONTENT_TYPE_TABLE_LINK}</td>
+		<td class='forumheader' style='width:5%; white-space:nowrap; text-align:right;'>{CM_AMOUNT|type}</td>
 	</tr>
-	<tr><td class='forumheader2' colspan='2'>{CONTENT_TYPE_TABLE_SUBHEADING}<br /></td></tr>\n";
+	<tr><td class='forumheader2' colspan='2'>{CM_SUBHEADING|type}<br /></td></tr>\n";
 }
 if(!isset($CONTENT_TYPE_TABLE_MANAGER)){
 	$CONTENT_TYPE_TABLE_MANAGER = "
 	<tr>
-		<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_MANAGER_ICON}</td>
-		<td class='fcaption' colspan='2'>{CONTENT_TYPE_TABLE_MANAGER_HEADING}</td>
+		<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CM_ICON|manager_link}</td>
+		<td class='fcaption' colspan='2'>{CM_HEADING|manager_link}</td>
 	</tr>
 	<tr><td class='forumheader2' colspan='2'>".CONTENT_LAN_68."</td></tr>\n";
 }

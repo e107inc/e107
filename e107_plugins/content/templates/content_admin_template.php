@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/content_admin_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-13 16:51:05 $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-10 14:34:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -189,9 +189,7 @@ if(!isset($CONTENT_ADMIN_MANAGER_CATEGORY)){
 	".$rs -> form_open("post", e_SELF."?".e_QUERY, "managerform", "", "enctype='multipart/form-data'")."
 	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
-		<td colspan='2' class='fcaption'>
-			manage permissions
-		</td>
+		<td colspan='2' class='fcaption'>".CONTENT_ADMIN_MANAGER_LAN_9."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='text-align:left'>

@@ -11,31 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_searchresult_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-10 14:34:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $content_shortcodes;
 
-$sc_style['CONTENT_SEARCHRESULT_TABLE_ICON']['pre'] = "<td class='forumheader3'>";
-$sc_style['CONTENT_SEARCHRESULT_TABLE_ICON']['post'] = "</td>";
+$sc_style['CM_ICON|searchresult']['pre'] = "<td class='forumheader3'>";
+$sc_style['CM_ICON|searchresult']['post'] = "</td>";
 
-$sc_style['CONTENT_SEARCHRESULT_TABLE_HEADING']['pre'] = "<tr><td class='fcaption'>";
-$sc_style['CONTENT_SEARCHRESULT_TABLE_HEADING']['post'] = "</td></tr>";
+$sc_style['CM_HEADING|searchresult']['pre'] = "<tr><td class='fcaption'>";
+$sc_style['CM_HEADING|searchresult']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_SEARCHRESULT_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_SEARCHRESULT_TABLE_SUBHEADING']['post'] = "</td></tr>";
+$sc_style['CM_SUBHEADING|searchresult']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_SUBHEADING|searchresult']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_SEARCHRESULT_TABLE_DATE']['pre'] = CONTENT_LAN_10." ";
-$sc_style['CONTENT_SEARCHRESULT_TABLE_DATE']['post'] = "";
+$sc_style['CM_DATE|searchresult']['pre'] = CONTENT_LAN_10." ";
+$sc_style['CM_DATE|searchresult']['post'] = "";
 
-$sc_style['CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS']['pre'] = CONTENT_LAN_11." ";
-$sc_style['CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS']['post'] = "";
+$sc_style['CM_AUTHOR|searchresult']['pre'] = CONTENT_LAN_11." ";
+$sc_style['CM_AUTHOR|searchresult']['post'] = "";
 
-$sc_style['CONTENT_SEARCHRESULT_TABLE_TEXT']['pre'] = "<tr><td class='forumheader3'>";
-$sc_style['CONTENT_SEARCHRESULT_TABLE_TEXT']['post'] = "</td></tr>";
+$sc_style['CM_TEXT|searchresult']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CM_TEXT|searchresult']['post'] = "</td></tr>";
 
 // ##### CONTENT SEARCHRESULT LIST --------------------------------------------------
 if(!isset($CONTENT_SEARCHRESULT_TABLE_START)){
@@ -45,13 +45,13 @@ if(!isset($CONTENT_SEARCHRESULT_TABLE)){
 	$CONTENT_SEARCHRESULT_TABLE .= "
 	<table class='fborder' style='width:98%; text-align:left;margin-bottom:5px;'>
 		<tr>
-			{CONTENT_SEARCHRESULT_TABLE_ICON}
+			{CM_ICON|searchresult}
 			<td>
 				<table style='width:100%;' cellpadding='0' cellspacing='0'>
-					{CONTENT_SEARCHRESULT_TABLE_HEADING}
-					{CONTENT_SEARCHRESULT_TABLE_SUBHEADING}
-					<tr><td class='forumheader3'>{CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS} {CONTENT_SEARCHRESULT_TABLE_DATE}</td></tr>
-					{CONTENT_SEARCHRESULT_TABLE_TEXT}
+					{CM_HEADING|searchresult}
+					{CM_SUBHEADING|searchresult}
+					<tr><td class='forumheader3'>{CM_AUTHOR|searchresult} {CM_DATE|searchresult}</td></tr>
+					{CM_TEXT|searchresult}
 				</table>
 			</td>
 		</tr>
