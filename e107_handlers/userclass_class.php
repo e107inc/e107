@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-05 09:24:46 $
-|     $Author: mrpete $
+|     $Revision: 1.5 $
+|     $Date: 2007-04-11 21:25:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -221,6 +221,7 @@ function r_userclass_name($id) {
 		$class_names[e_UC_MEMBER] = UC_LAN_3;
 		$class_names[e_UC_READONLY] = UC_LAN_4;
 		$class_names[e_UC_ADMIN] = UC_LAN_5;
+		$class_names[e_UC_MAINADMIN] = UC_LAN_6;
 		if ($sql->db_Select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere"))
 		{
 			while($row = $sql->db_Fetch())
