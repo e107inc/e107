@@ -4,357 +4,312 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Thai.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:08 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-11 05:41:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
+/*แปลและพัฒนาส่วนระบบภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  แก้ไขล่าสุด 28 มีนาคม.2550
+อาจารย์ประจำสาขาวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900.โทร.(66) 0 2942 6900  ต่อ 3011,3014
+Thai Developer & Translation : Assistant Professor Prachid Tinnabutr : Division of Art ,Chandrakasem Rajabhat University,Jatuchak,Bangkok ,Thailand.10900. Tel :(66) 02 9426900 ext:3011,3014
+Last update:28 March 2007 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 2962 9505  prachid@prachid.com,prachid@wittycomputer.com ,Mobile Phone : (66) 08 9667 0091
+URL : http://www.prachid.com, http://www.wittycomputer.com, http://www.e107thailand.com(Official International Sites)
 */
-// if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
-// Lisa, could you please move this out of the language file ?
-
-
-
-define("LCLAN_PLUGIN_LAN_1", "หน้าการเชื่อมโยงเว็ป");
-define("LCLAN_PLUGIN_LAN_2", "หน้าการเชื่อมโยงเว็ปภายนอกระบบ");
-define("LCLAN_PLUGIN_LAN_3", "ตั้งค่าหน้าการเชื่อมโยงเว็ป");
+define("LCLAN_PLUGIN_LAN_1", "หน้าเชื่อมโยงเว็ปไซท์");
+define("LCLAN_PLUGIN_LAN_2", "โปรแกรมเสริมระบบ เพื่อใช้ส่งแจ้ง แนะนำเว็ปไซท์ที่น่าสนใจ สร้างและเผยแพร่ เป็นหน้าเชื่อมโยงเว็ปไซท์จากภายนอกระบบ ไว้ในเว็ปไซท์ของเรา");
+define("LCLAN_PLUGIN_LAN_3", "ตั้งค่าหน้าเชื่อมโยงเว็ป");
 define("LCLAN_PLUGIN_LAN_4", "เชื่อมโยง");
-define("LCLAN_PLUGIN_LAN_5", "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
-define("LCLAN_PLUGIN_LAN_6", "Links_page successfully upgraded, now using version");
-
-define("LCLAN_OPT_MENU_1", "ตัวปรับแต่งทั่วไป");
-define("LCLAN_OPT_MENU_2", "การจัดการการเชื่อมโยงส่วนบุคคล");
-define("LCLAN_OPT_MENU_3", "ประเภท");
-define("LCLAN_OPT_MENU_4", "แสดงหน้าการเชื่อมโยงเว็ป");
-define("LCLAN_OPT_MENU_5", "refer page");
-define("LCLAN_OPT_MENU_6", "การจัดลำดับ");
-define("LCLAN_OPT_MENU_7", "รายการ");
-
+define("LCLAN_PLUGIN_LAN_5", "หน้าเชื่อมโยง ได้ติดตั้งเรียบร้อยแล้ว, การตั้งค่าให้เข้าไปที่หน้าศูนย์กลางการจัดการระบบ.");
+define("LCLAN_PLUGIN_LAN_6", "หน้าเชื่อมโยงได้รับการปรับปรุงรุ่นแล้ว รุ่นที่กำลังใช้คือ");
+define("LCLAN_OPT_MENU_1", "แสดงข้อมูลทั่วไปของรายการเชื่อมโยง");
+define("LCLAN_OPT_MENU_2", "การจัดการเชื่อมโยงส่วนตัว");
+define("LCLAN_OPT_MENU_3", "หน้าหมวดหมู่");
+define("LCLAN_OPT_MENU_4", "แสดงรายการในหน้าเชื่อมโยง");
+define("LCLAN_OPT_MENU_5", "หน้าอ้างอิง");
+define("LCLAN_OPT_MENU_6", "หน้าการให้คะแนน");
+define("LCLAN_OPT_MENU_7", "หน้าเมนูรายการเชื่อมโยง");
 define("LCLAN_PAGETITLE_1", "การเชื่อมโยง");
 define("LCLAN_PAGETITLE_2", "หมวดหมู่ทั้งหมด");
 define("LCLAN_PAGETITLE_3", "การเชื่อมโยงทั้งหมด");
-define("LCLAN_PAGETITLE_4", "ประเภท");
-define("LCLAN_PAGETITLE_5", "Top Rated");
-define("LCLAN_PAGETITLE_6", "Top Referrals");
-define("LCLAN_PAGETITLE_7", "Personal Link Manager");
-define("LCLAN_PAGETITLE_8", "Link Comments");
+define("LCLAN_PAGETITLE_4", "ชื่อหมวดหมู่");
+define("LCLAN_PAGETITLE_5", "ได้คะแนนสูงสุด");
+define("LCLAN_PAGETITLE_6", "อ้างถึงมากที่สุดจาก");
+define("LCLAN_PAGETITLE_7", "ตัวจัดการเชื่อมโยงส่วนตัว");
+define("LCLAN_PAGETITLE_8", "เชื่อมโยงความเห็น");
 define("LCLAN_PAGETITLE_9", "ยืนยันการเชื่อมโยงนี้");
 define("LCLAN_PAGETITLE_10", "");
-
-
-define("LCLAN_OPT_1", "ตัวปรับแต่งทั่วไป");
-define("LCLAN_OPT_2", "ตัวปรับแต่งหน้าการเชื่อมโยง");
-define("LCLAN_OPT_3", "enabled");
-define("LCLAN_OPT_4", "disabled");
-define("LCLAN_OPT_5", "px");
+define("LCLAN_OPT_1", "การตั้งค่าทั่วไป");
+define("LCLAN_OPT_2", "การตั้งค่าหน้าการเชื่อมโยง");
+define("LCLAN_OPT_3", "เปิดใช้งาน");
+define("LCLAN_OPT_4", "ไม่เปิด");
+define("LCLAN_OPT_5", "พิกเซลส์");
 define("LCLAN_OPT_6", "");
-define("LCLAN_OPT_7", "divide categories into individual pages");
-define("LCLAN_OPT_8", "allow links to be submitted");
-define("LCLAN_OPT_9", "ผู้ที่สามารถส่งเข้า การเชื่อมโยงเว็ป");
-define("LCLAN_OPT_10", "ใช้การเปิดหลายๆหน้าในการแสดงการเชื่อมโยง");
-define("LCLAN_OPT_11", "จำนวนการเชื่อมโยงต่อ 1 หน้า");
-define("LCLAN_OPT_12", "ประเภทหน้า");
-define("LCLAN_OPT_13", "display which sections");
+define("LCLAN_OPT_7", "แบ่งหมวดหมู่ออกเป็นแต่ละหน้า");
+define("LCLAN_OPT_8", "อนุญาตให้มีการแนะนำเว็ปไซท์");
+define("LCLAN_OPT_9", "ผู้ที่มีสิทธิ์แนะนำเว็ปไซท์");
+define("LCLAN_OPT_10", "แสดงหน้าเชื่อมโยงหลายหน้า");
+define("LCLAN_OPT_11", "แสดงรายชื่อเชื่อมโยงต่อหน้า");
+define("LCLAN_OPT_12", "หน้ารายการหมวดหมู่");
+define("LCLAN_OPT_13", "ให้แสดงรายการ");
 define("LCLAN_OPT_14", "สัญรูป");
-define("LCLAN_OPT_15", "ลักษณะ");
-define("LCLAN_OPT_16", "amount");
-define("LCLAN_OPT_17", "referal");
-define("LCLAN_OPT_18", "url");
-define("LCLAN_OPT_19", "total category info line");
-define("LCLAN_OPT_20", "link to top refer");
-define("LCLAN_OPT_21", "link to top rated");
-define("LCLAN_OPT_22", "show default icon if none is present");
-define("LCLAN_OPT_23", "default sort method");
-define("LCLAN_OPT_24", "default order method");
-define("LCLAN_OPT_25", "default resize value");
+define("LCLAN_OPT_15", "คำอธิบาย");
+define("LCLAN_OPT_16", "จำนวน");
+define("LCLAN_OPT_17", "ผู้คลิก");
+define("LCLAN_OPT_18", "ที่อยู่เว็ป");
+define("LCLAN_OPT_19", "ข้อมูลหมวดหมู่ทั้งหมด");
+define("LCLAN_OPT_20", "ผู้คลิกสูงสุด");
+define("LCLAN_OPT_21", "ได้คะแนนสูงสุด");
+define("LCLAN_OPT_22", "ให้แสดงสัญรูปที่เป็นค่าเริ่มต้น หากไม่มีสัญรูปอื่นแทน");
+define("LCLAN_OPT_23", "ให้เรียงลำดับตาม");
+define("LCLAN_OPT_24", "โดยเรียงจาก");
+define("LCLAN_OPT_25", "ค่าการปรับย่อขนาด");
 define("LCLAN_OPT_26", "หน้าการเชื่อมโยงเว็ป");
-define("LCLAN_OPT_27", "อนญาตให้ผู้ใช้กำหนดระดับของการเชื่อมโยง");
-define("LCLAN_OPT_28", "show default icon if none present");
+define("LCLAN_OPT_27", "การให้คะแนนเว็ปที่เชื่อมโยง");
+define("LCLAN_OPT_28", "ให้แสดงสัญรูปที่เป็นค่าเริ่มต้น หากไม่มีสัญรูปอื่นแทน");
 define("LCLAN_OPT_29", "แสดงการจัดเรียงของเมนู");
 define("LCLAN_OPT_30", "น้อยไปมาก");
 define("LCLAN_OPT_31", "มากไปน้อย");
-define("LCLAN_OPT_32", "use override of link open method");
-define("LCLAN_OPT_33", "default resize value");
+define("LCLAN_OPT_32", "วิธีการจัดแสดงหน้า ที่เชื่อมโยงถึง");
+define("LCLAN_OPT_33", "ค่าเริ่มต้นของการปรับย่อขนาด");
 define("LCLAN_OPT_34", "ชื่อ");
-define("LCLAN_OPT_35", "url");
+define("LCLAN_OPT_35", "ที่อยู่เว็ปไซท์");
 define("LCLAN_OPT_36", "เรียง");
 define("LCLAN_OPT_37", "อ้างจาก");
 define("LCLAN_OPT_38", "");
 define("LCLAN_OPT_39", "");
 define("LCLAN_OPT_40", "ชื่อ");
 define("LCLAN_OPT_41", "รหัส");
-define("LCLAN_OPT_42", "use individual link setting");
+define("LCLAN_OPT_42", "เปิดใช้การตั้งค่าการเชื่อมโยงส่วนตัว");
 define("LCLAN_OPT_43", "เปิดในหน้าเดียวกัน");
 define("LCLAN_OPT_44", "เปิดในหน้าใหม่");
-define("LCLAN_OPT_45", "เปิดในหน้าต่างขนาดเล็กขนาด600x400");
-define("LCLAN_OPT_46", "ผู้จัดการการเชื่อมโยง");
+define("LCLAN_OPT_45", "เปิดในหน้าต่างขนาดเล็กขนาด 600x400 พิกเซลส์");
+define("LCLAN_OPT_46", "ผู้ที่สามารถจัดการการเชื่อมโยงส่วนตัวได้");
 define("LCLAN_OPT_47", "ผู้ใช้เหล่านี้สามารถเพิ่ม/แก้ไขการเชื่อมโยงของพวกเขาได้");
-define("LCLAN_OPT_48", "อนุญาตให้มีการโพสโดยตรงได้");
-define("LCLAN_OPT_49", "if enabled links are submitted directly, else a site admin needs to approve them");
+define("LCLAN_OPT_48", "การอนุมัติและการตรวจสอบ");
+define("LCLAN_OPT_49", "หากเปิดใช้งาน ต้องมีการตรวจสอบจากผู้จัดการระบบก่อน");
 define("LCLAN_OPT_50", "อนุญาตให้มีการลบได้โดยตรง");
-define("LCLAN_OPT_51", "if enabled the link managers can delete their own links");
-define("LCLAN_OPT_52", "personal link managers");
+define("LCLAN_OPT_51", "หากเปิดให้ใช้ ผู้จัดการการเชื่อมโยงสามารถลบรายการได้เอง");
+define("LCLAN_OPT_52", "การจัดการเชื่อมโยงส่วนตัว");
 define("LCLAN_OPT_53", "วันที่");
-define("LCLAN_OPT_54", "allow personal management on links");
-define("LCLAN_OPT_55", "อนุญาตให้มีการติชมได้ทุกการเชื่อมโยง");
-define("LCLAN_OPT_56", "minimum refer value");
-define("LCLAN_OPT_57", "only links with a refer count larger then the given value are displayed (0 or empty = all)");
-define("LCLAN_OPT_58", "เชื่อมโยงไปยัง submit link");
-define("LCLAN_OPT_59", "เชื่อมโยงไปยัง personal manager (เฉพาะผู้ที่อนุญาตแล้ว)");
-define("LCLAN_OPT_60", "เชื่อมโยงไปยัง link frontpage");
-define("LCLAN_OPT_61", "เชื่อมโยงไปยัง all categories");
-define("LCLAN_OPT_62", "แสดงที่อยู่ของการเชื่อมโยง");
-define("LCLAN_OPT_63", "minimum rating value");
-define("LCLAN_OPT_64", "only links with a rating larger then the given value are displayed (0 or empty = all)");
+define("LCLAN_OPT_54", "อนุญาตให้จัดการการเชื่อมโยงได้เอง");
+define("LCLAN_OPT_55", "การแสดงความคิดเห็น");
+define("LCLAN_OPT_56", "ค่าการอ้างอิงน้อยที่สุด");
+define("LCLAN_OPT_57", "ใส่ตัวเลขจำนวนนับการอ้างมากกว่าเท่าใด จึงจะจัดระดับขึ้นแสดง(ค่าเป็น 0 หรือว่าง = ทั้งหมด)");
+define("LCLAN_OPT_58", "การส่งรายการเชื่อมโยง");
+define("LCLAN_OPT_59", "การเชื่อมโยงส่วนตัว(เฉพาะผู้ที่อนุญาตแล้ว)");
+define("LCLAN_OPT_60", "หน้าแรกการเชื่อมโยง");
+define("LCLAN_OPT_61", "การเชื่อมโยงทุกหมวดหมู่");
+define("LCLAN_OPT_62", "ให้แสดงรายการเชื่อมโยงของ");
+define("LCLAN_OPT_63", "ค่าการให้คะแนนน้อยสุด");
+define("LCLAN_OPT_64", "ใส่ตัวเลขจำนวนนับการให้คะแนนมากกว่าเท่าใด จึงจะจัดระดับขึ้นแสดง(ค่าเป็น 0 หรือว่าง = ทั้งหมด)");
 define("LCLAN_OPT_65", "แสดงหมวดหมู่ที่ว่าง");
-define("LCLAN_OPT_66", "link to each category");
-define("LCLAN_OPT_67", "link to all links");
+define("LCLAN_OPT_66", "แต่ละหมวดหมู่");
+define("LCLAN_OPT_67", "ทุกการเชื่อมโยง");
 define("LCLAN_OPT_68", "แสดงการเชื่อมโยงทุกรายการ");
-
-define("LCLAN_OPT_69", "rendertype navigator links");
-define("LCLAN_OPT_70", "show category links");
-define("LCLAN_OPT_71", "rendertype category links");
-define("LCLAN_OPT_72", "show recent links");
-define("LCLAN_OPT_73", "display which data");
-define("LCLAN_OPT_74", "จำนวนการเชื่อมโยงที่แสดงในตอนนี้");
-define("LCLAN_OPT_75", "hyperlinks");
-define("LCLAN_OPT_76", "selectbox");
-define("LCLAN_OPT_77", "ประเภท");
-define("LCLAN_OPT_78", "รายละเอียด");
-define("LCLAN_OPT_79", "caption navigator");
-define("LCLAN_OPT_80", "caption categories");
-define("LCLAN_OPT_81", "caption recent list");
-define("LCLAN_OPT_82", "เมนูสู่รายการเชื่อมโยง");
-define("LCLAN_OPT_83", "ประเภท");
+define("LCLAN_OPT_69", "ให้แสดงรูปแบบการเชื่อมโยงเป็น");
+define("LCLAN_OPT_70", "เปิดแสดงหมวดหมู่การเชื่อมโยง");
+define("LCLAN_OPT_71", "ให้แสดงรูปแบบหมวดหมู่การเชื่อมโยงเป็น");
+define("LCLAN_OPT_72", "แสดงการเชื่อมโยงปัจจุบัน");
+define("LCLAN_OPT_73", "ให้แสดงข้อมูลใด");
+define("LCLAN_OPT_74", "จำนวนการเชื่อมโยงที่จะแสดงต่อหน้า");
+define("LCLAN_OPT_75", "แบบแสดงที่อยู่ของเว็ป");
+define("LCLAN_OPT_76", "แบบกล่องเลือกรายการ");
+define("LCLAN_OPT_77", "หมวดหมู่");
+define("LCLAN_OPT_78", "คำอธิบาย");
+define("LCLAN_OPT_79", "ชื่อคำอธิบายรายการเชื่อมโยง");
+define("LCLAN_OPT_80", "ตั้งชื่อเมนูหมวดหมู่");
+define("LCLAN_OPT_81", "ชื่อคำอธิบายรายการที่มีอยู่ีปัจจุบัน");
+define("LCLAN_OPT_82", "รายการเชื่อมโยง");
+define("LCLAN_OPT_83", "หมวดหมู่");
 define("LCLAN_OPT_84", "รายการปัจจุบัน");
-define("LCLAN_OPT_85", "รายการหัวข้อ");
-define("LCLAN_OPT_86", "รายการเชื่อมโยง");
+define("LCLAN_OPT_85", "ตั้งชื่อหัวข้อการเชื่อมโยง");
+define("LCLAN_OPT_86", "เมนูเชื่อมโยงเว็ป");
 define("LCLAN_OPT_87", "จำนวนการเชื่อมโยง");
-
 define("LCLAN_ADMIN_1", "ปรับปรุง");
 define("LCLAN_ADMIN_2", "การเชื่อมโยงได้ถูกบันทึกลงในฐานข้อมูลแล้ว.");
 define("LCLAN_ADMIN_3", "การเชื่อมโยงได้ถูกบันปรับปรุงในฐานข้อมูลแล้ว.");
-define("LCLAN_ADMIN_4", "บันทึกประเภทการเชื่อมโยงแล้ว");
-define("LCLAN_ADMIN_5", "ปรับปรุงประเภทการเชื่อมโยงแล้ว");
-define("LCLAN_ADMIN_6", "ตัวปรับแต่งได้ถูกบันทึกแล้ว");
+define("LCLAN_ADMIN_4", "บันทึกหมวดหมู่การเชื่อมโยงแล้ว");
+define("LCLAN_ADMIN_5", "ปรับปรุงหมวดหมู่การเชื่อมโยงแล้ว");
+define("LCLAN_ADMIN_6", "ได้บันทึกการปรับปรุงให้แล้ว");
 define("LCLAN_ADMIN_7", "สัญรูปการเชื่อมโยงได้ส่งขึ้นเรียบร้อยแล้ว !");
-define("LCLAN_ADMIN_8", "link icon was not uploaded !");
+define("LCLAN_ADMIN_8", "ไม่สามารถส่งไฟล์ภาพสัญรูป เพื่อประกอบรายการเชื่อมโยงนี้ได้ !");
 define("LCLAN_ADMIN_9", "ปรับลำดับ");
 define("LCLAN_ADMIN_10", "เชื่อมโยง");
 define("LCLAN_ADMIN_11", "ลบ");
-define("LCLAN_ADMIN_12", "ประเภทการเชื่อมโยง");
+define("LCLAN_ADMIN_12", "หมวดหมู่การเชื่อมโยง");
 define("LCLAN_ADMIN_13", "ยืนยันการลบการเชื่อมโยง");
 define("LCLAN_ADMIN_14", "การเชื่อมโยงทั้งหมด");
-
-define("LCLAN_SL_1", "การเชื่อมโยงนี้ได้ถูกยืนยันแล้ว");
-define("LCLAN_SL_2", "ไม่มีการเชื่อมโยงที่ถูกยืนยัน");
+define("LCLAN_ADMIN_15", "ในหมวดหมู่ยังมีรายการเชื่อมโยงอยู่ ภายในหมวด กรุณาเข้าไปลบรายการออกก่อน");
+define("LCLAN_SL_1", "การเชื่อมโยงนี้ได้ผ่านการตรวจสอบแล้ว");
+define("LCLAN_SL_2", "ไม่มีการเชื่อมโยงที่ต้องตรวจสอบ");
 define("LCLAN_SL_3", "การเชื่อมโยง");
 define("LCLAN_SL_4", "ยืนยันโดย");
-define("LCLAN_SL_5", "ตั้งค่า");
-define("LCLAN_SL_6", "Post");
+define("LCLAN_SL_5", "การตั้งค่าการเชื่อมโยง");
+define("LCLAN_SL_6", "ส่ง");
 define("LCLAN_SL_7", "ลบ");
 define("LCLAN_SL_8", "คุณต้องการที่ลบการเชื่อมโยงที่ถูกยืนยันแล้วหรือไม่ ");
-define("LCLAN_SL_9", "หลังจากที่ยืนยันการเชื่อมโยงของคุณแล้ว จะถูกตรวจสอบโดยผู้ควบคุมระบบและถ้าเหมาะสมแล้วจะนำไปอยู่หน้าหลักของการเชื่อมโยง");
-define("LCLAN_SL_10", "ประเภท:");
-define("LCLAN_SL_11", "ชื่อ");
-define("LCLAN_SL_12", "url");
-define("LCLAN_SL_13", "รายละเอียด");
-define("LCLAN_SL_14", "URL to link button:");
-define("LCLAN_SL_15", "Underlined fields are required.");
-define("LCLAN_SL_16", "Submit Link");
+define("LCLAN_SL_9", "การส่งแจ้งหรือแนะนำเว็ปไซท์ใดๆ จะถูกตรวจสอบโดยผู้จัดการระบบ หากเหมาะสมแล้ว จะได้นำแสดงเป็นเมนูการเชื่อมโยงของเว็ปไซท์แห่งนี้");
+define("LCLAN_SL_10", "ชื่อหมวดหมู่:");
+define("LCLAN_SL_11", "ชื่อเว็ปไซท์");
+define("LCLAN_SL_12", "ที่อยู่ url เช่น http://www.prachid.com");
+define("LCLAN_SL_13", "คำอธิบาย");
+define("LCLAN_SL_14", "ที่อยู่ไฟล์ปุ่มภาพที่ต้องการเชื่อมโยงใช้(ความกว้างภาพไม่ควรเกิน150 พิกเซลส์)เช่น พิมพ์์ที่อยู่ของไฟล์ที่เก็บไว้ในเว็ปไซท์ของ ผศ.ประชิด ตามนี้ http://www.prachid.com/e107_images/button.png");
+define("LCLAN_SL_15", "หัวข้อที่ขีดเส้นใต้ไว้ คือส่วนที่จำเป็นต้องกรอกรายการในกรอบพิมพ์ข้อความ.");
+define("LCLAN_SL_16", "ส่งรายการเชื่อมโยง");
 define("LCLAN_SL_17", "");
 define("LCLAN_SL_18", "");
-
-define("LCLAN_CAT_1", "รูปภาพ");
-define("LCLAN_CAT_2", "ประเภท");
-define("LCLAN_CAT_3", "ตัวเลือก");
-define("LCLAN_CAT_4", "ย้าย");
-define("LCLAN_CAT_5", "ลำดับ");
+define("LCLAN_CAT_1", "สัญรูป");
+define("LCLAN_CAT_2", "ชื่อหมวดหมู่");
+define("LCLAN_CAT_3", "เลือก");
+define("LCLAN_CAT_4", "เลื่อน");
+define("LCLAN_CAT_5", "ลำดับที่");
 define("LCLAN_CAT_6", "แก้ไข");
 define("LCLAN_CAT_7", "มีอยู่");
 define("LCLAN_CAT_8", "คุณต้องการลบหมวดหมู่นี้หรือไม่");
 define("LCLAN_CAT_9", "ดูรายการเชื่อมโยง");
-define("LCLAN_CAT_10", "Reorder");
+define("LCLAN_CAT_10", "จัดใหม่");
 define("LCLAN_CAT_11", "ไม่มีการเชื่อมโยงในหมวดหมู่นี้");
-define("LCLAN_CAT_12", "พบการเชื่อมโยงที่อยู่ในหมวดหมู่นี้");
-define("LCLAN_CAT_13", "ชื่อ:");
-define("LCLAN_CAT_14", "รายละเอียด:");
-define("LCLAN_CAT_15", "Upload a new icon:");
-define("LCLAN_CAT_16", "ปรับรูปภาพขนาดเล็กอัตโนมัติ:");
-define("LCLAN_CAT_17", "This option is disabled as file uploading is not enabled on your server");
-define("LCLAN_CAT_18", "The");
-define("LCLAN_CAT_19", "folder is not writable, you need to CHMOD 777 the folder before uploading");
-define("LCLAN_CAT_20", "px");
-define("LCLAN_CAT_21", "upload");
-define("LCLAN_CAT_22", "Choose an icon:");
+define("LCLAN_CAT_12", "รายการเชื่อมโยงที่อยู่ในหมวดหมู่นี้");
+define("LCLAN_CAT_13", "ชื่อหมวด:");
+define("LCLAN_CAT_14", "คำอธิบาย:");
+define("LCLAN_CAT_15", "ส่งไฟล์สัญรูปใหม่ขึ้นระบบ:");
+define("LCLAN_CAT_16", "ปรับเป็นภาพเล็ก ขนาด:");
+define("LCLAN_CAT_17", "การเลือกใช้คำสั่งนี้ไม่ได้ อาจเป็นเพราะระบบแม่ข่ายบริการยังไม่อนุญาตให้ใช้งาน");
+define("LCLAN_CAT_18", "ใน");
+define("LCLAN_CAT_19", "ไม่สามารถบันทึกไฟล์ลงเข้าเก็บในแฟ้มได้ คุณต้องไปกำหนดสิทธิ์การอนุญาตบันทึกไฟล์ได้ก่อนการส่งไฟล์เข้าเก็บที่แฟ้ม");
+define("LCLAN_CAT_20", "พิกเซลส์");
+define("LCLAN_CAT_21", "ส่งไฟล์ขึ้น");
+define("LCLAN_CAT_22", "เลือกสัญรูปที่มีอยู่:");
 define("LCLAN_CAT_23", "ดูภาพ");
-define("LCLAN_CAT_24", "ให้เห็นเฉพาะกับ:");
-define("LCLAN_CAT_25", "tick to update timestamp to current time");
-define("LCLAN_CAT_26", "Update Link Category");
-define("LCLAN_CAT_27", "Clear Form");
-define("LCLAN_CAT_28", "Create Link Category");
-define("LCLAN_CAT_29", "Link Category");
-
-define("LCLAN_ITEM_1", "Submitted by");
-define("LCLAN_ITEM_2", "ประเภท:");
-define("LCLAN_ITEM_3", "no categories yet");
-define("LCLAN_ITEM_4", "ชื่อ:");
-define("LCLAN_ITEM_5", "Url:");
-define("LCLAN_ITEM_6", "Description:");
-define("LCLAN_ITEM_7", "Upload an icon:");
-define("LCLAN_ITEM_8", "Auto-Thumbnail size:");
-define("LCLAN_ITEM_9", "This option is disabled as file uploading is not enabled on your server");
+define("LCLAN_CAT_24", "เลือกผู้ที่ให้มองเห็น:");
+define("LCLAN_CAT_25", "การคลิกถูกในช่อง จะเป็นการปรับปรุงเวลาให้เป็นปัจจุบัน");
+define("LCLAN_CAT_26", "ปรับปรุงหมวดหมู่การเชื่อมโยง");
+define("LCLAN_CAT_27", "ล้างแบบฟอร์ม");
+define("LCLAN_CAT_28", "สร้างหมวดหมู่การเชื่อมโยง");
+define("LCLAN_CAT_29", "หมวดหมู่การเชื่อมโยง");
+define("LCLAN_ITEM_1", "ส่งโดย");
+define("LCLAN_ITEM_2", "ชื่อหมวดหมู่:");
+define("LCLAN_ITEM_3", "ยังไม่มีการจัดหมวดหมู่");
+define("LCLAN_ITEM_4", "ชื่อเว็ปไซท์:");
+define("LCLAN_ITEM_5", "ที่อยู่ Url เช่น http://www.prachid.com");
+define("LCLAN_ITEM_6", "คำอธิบาย:");
+define("LCLAN_ITEM_7", "ส่งไฟล์สัญรูปใหม่ขึ้นระบบ:");
+define("LCLAN_ITEM_8", "ปรับรูปภาพขนาดเล็กให้อัตโนมัติ:");
+define("LCLAN_ITEM_9", "การเลือกใช้คำสั่งนี้ไม่ได้ อาจเป็นเพราะระบบแม่ข่ายบริการยังไม่อนุญาตให้ใช้งาน");
 define("LCLAN_ITEM_10", "The");
-define("LCLAN_ITEM_11", "folder is not writable, you need to CHMOD 777 the folder before uploading");
+define("LCLAN_ITEM_11", "ไม่สามารถบันทึกไฟล์ลงเข้าเก็บในแฟ้มได้ คุณต้องไปกำหนดสิทธิ์การอนุญาตบันทึกไฟล์ได้ก่อนการส่งไฟล์เข้าเก็บที่แฟ้ม");
 define("LCLAN_ITEM_12", "px");
-define("LCLAN_ITEM_13", "upload");
-define("LCLAN_ITEM_14", "Choose an icon:");
-define("LCLAN_ITEM_15", "View Images");
-define("LCLAN_ITEM_16", "Open Type:");
-define("LCLAN_ITEM_17", "Opens in same window");
-define("LCLAN_ITEM_18", "Opens in new window");
-define("LCLAN_ITEM_19", "Opens in 600x400 miniwindow");
-define("LCLAN_ITEM_20", "ให้เห็นกับ:");
-define("LCLAN_ITEM_21", "tick to update timestamp to current time");
+define("LCLAN_ITEM_13", "ส่งไฟล์ขึ้น");
+define("LCLAN_ITEM_14", "เลือกสัญรูป:");
+define("LCLAN_ITEM_15", "ดูภาพ");
+define("LCLAN_ITEM_16", "เปิดแสดงหน้า:");
+define("LCLAN_ITEM_17", "ในกรอบวินโดวส์เดิม");
+define("LCLAN_ITEM_18", "เปิดเป็นกรอบวินโดวส์ใหม่");
+define("LCLAN_ITEM_19", "เปิดเป็นกรอบวินโดวส์ใหม่ขนาด 600x400 พิกเซลส์");
+define("LCLAN_ITEM_20", "สมาชิกที่ให้มองเห็น:");
+define("LCLAN_ITEM_21", "การคลิกถูกในช่อง จะเป็นการปรับปรุงเวลาให้เป็นปัจจุบัน");
 define("LCLAN_ITEM_22", "ปรับปรุงการเชื่อมโยง");
-define("LCLAN_ITEM_23", "สร้างการเชื่อมโยง");
-define("LCLAN_ITEM_24", "การเชื่อมโยง");
-define("LCLAN_ITEM_25", "ภาพ");
+define("LCLAN_ITEM_23", "สร้างรายการเชื่อมโยง");
+define("LCLAN_ITEM_24", "สร้างรายการเชื่อมโยง");
+define("LCLAN_ITEM_25", "ภาพประกอบ");
 define("LCLAN_ITEM_26", "ชื่อเชื่อมโยง");
-define("LCLAN_ITEM_27", "ตั้งค่า");
-define("LCLAN_ITEM_28", "ย้าย");
-define("LCLAN_ITEM_29", "เรียง");
+define("LCLAN_ITEM_27", "การตั้งค่าเชื่อมโยง");
+define("LCLAN_ITEM_28", "เลื่อน");
+define("LCLAN_ITEM_29", "จัดเรียงลำดับ");
 define("LCLAN_ITEM_30", "จัดลำดับใหม่");
 define("LCLAN_ITEM_31", "แก้ไข");
 define("LCLAN_ITEM_32", "ลบ");
-define("LCLAN_ITEM_33", "Are you sure you want to delete this link?");
+define("LCLAN_ITEM_33", "คุณแน่ใจว่าต้องการจะลบรายการเชื่อมโยงนี้หรือไม่?");
 define("LCLAN_ITEM_34", "ไม่มีสัญรูป");
-define("LCLAN_ITEM_35", "จัดการเชื่อมโยงส่วนบุคคล");
-define("LCLAN_ITEM_36", "go");
+define("LCLAN_ITEM_35", "จัดการเชื่อมโยงส่วนตัว");
+define("LCLAN_ITEM_36", "ไปต่อ");
 define("LCLAN_ITEM_37", "ดูการเชื่อมโยงทั้งหมด");
 define("LCLAN_ITEM_38", "การเชื่อมโยงทั้งหมด");
-define("LCLAN_ITEM_39", "");
-
+define("LCLAN_ITEM_39", "คะแนน");
 define("LCLAN_ADMINMENU_1", "ตั้งค่าการเชื่อมโยง");
-define("LCLAN_ADMINMENU_2", "Manage Link Categories");
-define("LCLAN_ADMINMENU_3", "Create Link Category");
-define("LCLAN_ADMINMENU_4", "Manage Links");
-define("LCLAN_ADMINMENU_5", "สร้างการเชื่อมโยง");
-define("LCLAN_ADMINMENU_6", "ตั้งค่า");
-define("LCLAN_ADMINMENU_7", "การเชื่อมโยงที่ยืนยันแล้ว");
-define("LCLAN_ADMINMENU_8", "Categories");
-
-define("NT_LAN_LP_1", "Links Page Events");
-define("NT_LAN_LP_2", "Link submitted by user");
-define("NT_LAN_LP_3", "Link Submitted");
-
+define("LCLAN_ADMINMENU_2", "หน้ารายการเชื่อมโยง");
+define("LCLAN_ADMINMENU_3", "1.สร้างหมวดหมู่การเชื่อมโยง");
+define("LCLAN_ADMINMENU_4", "การจัดการเมนูเชื่อมโยง");
+define("LCLAN_ADMINMENU_5", "2.สร้างรายการเชื่อมโยงในหมวดหมู่");
+define("LCLAN_ADMINMENU_6", "การตั้งค่าหน้าเชื่อมโยง");
+define("LCLAN_ADMINMENU_7", "การเชื่อมโยงที่ตรวจสอบแล้ว");
+define("LCLAN_ADMINMENU_8", "ชื่อหมวดหมู่ที่มีทั้งหมด");
+define("NT_LAN_LP_1", "หน้ากิจกรรมการเชื่อมโยง");
+define("NT_LAN_LP_2", "รายการเชื่อมโยงที่ส่งเข้าโดยสมาชิก");
+define("NT_LAN_LP_3", "การเชื่อมโยงที่ส่งเข้ามา");
 define("LNK_SCH_LAN_2", "การเชื่อมโยงที่อยู่ในหมวดหมู่นี้ทั้งหมด");
 define("LNK_SCH_LAN_3", "รายละเอียดการเชื่อมโยงทั้งหมด");
-
-define("LAN_LINKS_MANAGER_0", "icon");
-define("LAN_LINKS_MANAGER_1", "link");
-define("LAN_LINKS_MANAGER_2", "options");
-define("LAN_LINKS_MANAGER_3", "create new link");
-define("LAN_LINKS_MANAGER_4", "you don't have any links present");
-define("LAN_LINKS_MANAGER_5", "ประเภท");
+define("LAN_LINKS_MANAGER_0", "สัญรูป");
+define("LAN_LINKS_MANAGER_1", "เชื่อมโยง");
+define("LAN_LINKS_MANAGER_2", "เลือกค่า");
+define("LAN_LINKS_MANAGER_3", "สร้างการเชื่อมโยงใหม่");
+define("LAN_LINKS_MANAGER_4", "คุณไม่มีรายการเชื่อมโยงที่แสดงไว้");
+define("LAN_LINKS_MANAGER_5", "หมวดหมู่");
 define("LAN_LINKS_MANAGER_6", "");
 define("LAN_LINKS_MANAGER_7", "");
 define("LAN_LINKS_MANAGER_8", "");
 define("LAN_LINKS_MANAGER_9", "");
-
-define("LAN_LINKS_1", "Total links");
-define("LAN_LINKS_2", "Total links activated");
-define("LAN_LINKS_3", "Anonymous");
-define("LAN_LINKS_4", "heading");
+define("LAN_LINKS_1", "การเชื่อมโยงทั้งหมด");
+define("LAN_LINKS_2", "เปิดการเชื่อมโยงทั้งหมดแล้ว");
+define("LAN_LINKS_3", "บุคคลทั่วไป");
+define("LAN_LINKS_4", "พาดหัวเรื่อง");
 define("LAN_LINKS_5", "url");
-define("LAN_LINKS_6", "order");
-define("LAN_LINKS_7", "refer");
-define("LAN_LINKS_8", "ascending");
-define("LAN_LINKS_9", "descending");
-define("LAN_LINKS_10", "Top Links : Refer");
-define("LAN_LINKS_11", "Top Links : Rating");
-define("LAN_LINKS_12", "view links by refer");
-define("LAN_LINKS_13", "view links by rating");
-define("LAN_LINKS_14", "ดูหน้าแรกของการเชื่อมโยง");
-define("LAN_LINKS_15", "sort by");
-define("LAN_LINKS_16", "in this category");
-define("LAN_LINKS_17", "link");
-define("LAN_LINKS_18", "links");
-define("LAN_LINKS_19", "categories");
-define("LAN_LINKS_20", "category");
-define("LAN_LINKS_21", "There");
-define("LAN_LINKS_22", "is");
-define("LAN_LINKS_23", "are");
-define("LAN_LINKS_24", "total in");
-define("LAN_LINKS_25", "show all links");
-define("LAN_LINKS_26", "Referrals:");
-define("LAN_LINKS_27", "submit a link");
-define("LAN_LINKS_28", "Thankyou");
-define("LAN_LINKS_29", "Your link has been saved and will be reviewed by a site administrator.");
-define("LAN_LINKS_30", "ประเภทการเชื่อมโยง");
-define("LAN_LINKS_31", "ส่งแจ้งการเชื่อมโยง");
-define("LAN_LINKS_32", "ประเภท:");
-define("LAN_LINKS_33", "No Links are rated yet.");
+define("LAN_LINKS_6", "เรียง");
+define("LAN_LINKS_7", "ผู้อ้าง");
+define("LAN_LINKS_8", "น้อยไปมาก");
+define("LAN_LINKS_9", "มากไปน้อย");
+define("LAN_LINKS_10", "ที่นิยมสูงสุด : คลิกเข้า");
+define("LAN_LINKS_11", "ที่นิยมสูงสุด : คะแนน");
+define("LAN_LINKS_12", "ดูจำนวนคลิกเข้า");
+define("LAN_LINKS_13", "ดูคะแนน");
+define("LAN_LINKS_14", "ดูหน้าแรกการเชื่อมโยง");
+define("LAN_LINKS_15", "เรียงโดย");
+define("LAN_LINKS_16", "ในหมวดหมู่นี้");
+define("LAN_LINKS_17", "รายการเชื่อมโยง");
+define("LAN_LINKS_18", "รายการ");
+define("LAN_LINKS_19", "หมวดหมู่ทั้งหมด");
+define("LAN_LINKS_20", "หมวดหมู่");
+define("LAN_LINKS_21", "มี");
+define("LAN_LINKS_22", "อยู่");
+define("LAN_LINKS_23", "ทั้งหมด");
+define("LAN_LINKS_24", "ทั้งหมดรวม");
+define("LAN_LINKS_25", "แสดงการเชื่อมโยงทั้งหมด");
+define("LAN_LINKS_26", "จำนวนคลิก");
+define("LAN_LINKS_27", "แนะนำ้เชื่อมโยงเว็ปไซท์");
+define("LAN_LINKS_28", "ขอบคุณ");
+define("LAN_LINKS_29", "การแจ้งเชื่อมโยงเว็ปของคุณ ได้รับการบันทึกไว้แล้ว ผู้จัดการระบบจะเข้าตรวจสอบและดำเนินการในลำดับต่อไป.");
+define("LAN_LINKS_30", "หมวดหมู่การเชื่อมโยง");
+define("LAN_LINKS_31", "แนะนำเชื่อมโยงเว็ปไซท์");
+define("LAN_LINKS_32", "ชื่อหมวดหมู่:");
+define("LAN_LINKS_33", "ยังไม่มีการใหคะแนนรายการเชื่อมโยง");
 define("LAN_LINKS_34", "ยังไม่มีรายการเชื่อมโยง");
-define("LAN_LINKS_35", "personal links manager");
-define("LAN_LINKS_36", "link comments");
-define("LAN_LINKS_37", "comments:");
-define("LAN_LINKS_38", "date");
-define("LAN_LINKS_39", "Links");
-define("LAN_LINKS_40", "ประเภท");
-define("LAN_LINKS_41", "no categories yet");
-define("LAN_LINKS_42", "no links are referred yet");
-define("LAN_LINKS_43", "ดูประเภทรายการ");
+define("LAN_LINKS_35", "ตัวจัดการเชื่อมโยงส่วนบุคคล");
+define("LAN_LINKS_36", "แสดงความเห็นต่อเว็ปที่เชื่อมโยง");
+define("LAN_LINKS_37", "ความเห็น:");
+define("LAN_LINKS_38", "วันที่");
+define("LAN_LINKS_39", "การเชื่อมโยง");
+define("LAN_LINKS_40", "หมวดหมู่");
+define("LAN_LINKS_41", "ยังไม่จัดหมวดหมู่");
+define("LAN_LINKS_42", "ไม่มีรายการผู้อ้างอิง");
+define("LAN_LINKS_43", "ดูหมวดหมู่รายการ");
 define("LAN_LINKS_44", "id");
-define("LAN_LINKS_45", "ประเภทการเชื่อมโยง");
-define("LAN_LINKS_46", "Link Subcategories");
-define("LAN_LINKS_47", "");
-define("LAN_LINKS_48", "");
+define("LAN_LINKS_45", "หมวดหมู่การเชื่อมโยง");
+define("LAN_LINKS_46", "หมวดหมู่การเชื่อมโยงย่อย");
+define("LAN_LINKS_47", "เลือกรายการเชื่อมโยง");
+define("LAN_LINKS_48", "-- ดูหมวดหมู่การเชื่อมโยง--");
 define("LAN_LINKS_49", "");
-
-define("LAN_ADMIN_HELP_0", "linkspage help area");
-
-define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_LINK." : link to the category<br /><br />
-".LINK_ICON_EDIT." : edit the category<br /><br />
-".LINK_ICON_DELETE." : delete the category<br /><br />
-".LINK_ICON_ORDER_UP." : the up button allows you to move the category item one up in order.<br /><br />
-".LINK_ICON_ORDER_DOWN." : the down button allows you to move the category item one down in order.<br />
-<br />
-<b>order</b><br />here you can manually set the order of all the categories. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
-
+define("LAN_LINKS_50", "คุณไม่ได้รับอนุญาตให้ส่งรายการเชื่อมโยงเข้าในขณะเวลานี้");
+define("LAN_ADMIN_HELP_0", "คำแนะนำ หน้าการเชื่อมโยง");
+define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : edit the category<br /><br />".LINK_ICON_DELETE." : delete the category<br /><br />".LINK_ICON_ORDER_UP." : the up button allows you to move the category item one up in order.<br /><br />".LINK_ICON_ORDER_DOWN." : the down button allows you to move the category item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
 define("LAN_ADMIN_HELP_2", "<i>the create link category page allows you to add new categories</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.");
 define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.</i><br /><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : click the icon to view all links in this category<br />");
 define("LAN_ADMIN_HELP_4", "<i>the create link page allows you to add a new link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
-define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_EDIT." : post the submitted link to the link create form<br /><br />
-".LINK_ICON_DELETE." : delete the submitted link<br />
-");
-define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />
-general options<br />
-these options are generally used thoughout the link pages.<br /><br />
-personal link managers<br />
-the personal link managers are priviliged users who can manage their own personally added links.<br /><br />
-category page<br />
-here you can change options for the category page.<br /><br />
-links page<br />
-These options are used on the link pages.<br /><br />
-refer page<br />
-These options are used on the top refer links page.<br /><br />
-rating page<br />
-These options are used on the top rated links page.<br />
-");
-
+define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />".LINK_ICON_EDIT." : post the submitted link to the link create form<br /><br />".LINK_ICON_DELETE." : delete the submitted link<br />");
+define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />general options<br />these options are generally used thoughout the link pages.<br /><br />personal link managers<br />the personal link managers are priviliged users who can manage their own personally added links.<br /><br />category page<br />here you can change options for the category page.<br /><br />links page<br />These options are used on the link pages.<br /><br />refer page<br />These options are used on the top refer links page.<br /><br />rating page<br />These options are used on the top rated links page.<br />");
 define("LAN_ADMIN_HELP_7", "<i>the edit link category page allows you to edit an existing category</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.<br />You can update the timestamp of the link by checking the box.");
-
-define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_LINK." : link to the website<br /><br />
-".LINK_ICON_EDIT." : edit the link<br /><br />
-".LINK_ICON_DELETE." : delete the link<br /><br />
-".LINK_ICON_ORDER_UP." : the up button allows you to move the link one up in order.<br /><br />
-".LINK_ICON_ORDER_DOWN." : the down button allows you to move the link one down in order.<br />
-<br />
-<b>order</b><br />here you can manually set the order of all the links. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
-
+define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />".LINK_ICON_LINK." : link to the website<br /><br />".LINK_ICON_EDIT." : edit the link<br /><br />".LINK_ICON_DELETE." : delete the link<br /><br />".LINK_ICON_ORDER_UP." : the up button allows you to move the link one up in order.<br /><br />".LINK_ICON_ORDER_DOWN." : the down button allows you to move the link one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the links. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
 define("LAN_ADMIN_HELP_9", "<i>the edit link page allows you to edit an existing link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 define("LAN_ADMIN_HELP_10", "<i>the post submitted link page allows you to add a submitted link to the existing links</i><br /><br />A small submitted text is added into the description field.<br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
+
+
 ?>

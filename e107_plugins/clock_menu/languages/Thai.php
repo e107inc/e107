@@ -11,23 +11,28 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/Thai.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:07 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-11 05:41:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
+/*แปลและพัฒนาส่วนระบบภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  แก้ไขล่าสุด 28 มีนาคม.2550
+อาจารย์ประจำสาขาวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900.โทร.(66) 0 2942 6900  ต่อ 3011,3014
+Thai Developer & Translation : Assistant Professor Prachid Tinnabutr : Division of Art ,Chandrakasem Rajabhat University,Jatuchak,Bangkok ,Thailand.10900. Tel :(66) 02 9426900 ext:3011,3014
+Last update:28 March 2007 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 2962 9505  prachid@prachid.com,prachid@wittycomputer.com ,Mobile Phone : (66) 08 9667 0091
+URL : http://www.prachid.com, http://www.wittycomputer.com, http://www.e107thailand.com(Official International Sites)
 */
-	
-define('CLOCK_MENU_L1', 'บันทึกการตั้งค่าบล๊อคเมนูนาฬิกาแล้ว');
+define('CLOCK_MENU_L1', 'บันทึกการตั้งค่าบล๊อคเมนูนาฬิกาให้แล้ว');
 define('CLOCK_MENU_L2', 'คำอธิบาย');
-define('CLOCK_MENU_L3', 'ปรับปรุงการตั้งค่าบล๊อคเมนู');
-define('CLOCK_MENU_L4', 'ตั้งค่าบล๊อคเมนูนาฬิกา');
-define('CLOCK_MENU_L5', 'วันจันทร์ที่');
-define('CLOCK_MENU_L6', 'วันอังคารที่');
-define('CLOCK_MENU_L7', 'วันพุธที่');
-define('CLOCK_MENU_L8', 'วันพฤหัสบดีที่');
-define('CLOCK_MENU_L9', 'วันศุกร์ที่');
-define('CLOCK_MENU_L10', 'วันเสาร์ที่');
-define('CLOCK_MENU_L11', 'วันอาทิตยที่');
+define('CLOCK_MENU_L3', 'ปรับปรุงการตั้งค่าเมนู');
+define('CLOCK_MENU_L4', 'ตั้งค่าบล๊อกเมนูนาฬิกา');
+define('CLOCK_MENU_L5', 'วันจันทร์,');
+define('CLOCK_MENU_L6', 'วันอังคาร,');
+define('CLOCK_MENU_L7', 'วันพุธ,');
+define('CLOCK_MENU_L8', 'วันพฤหัสบดี,');
+define('CLOCK_MENU_L9', 'วันศุกร์,');
+define('CLOCK_MENU_L10', 'วันเสาร์,');
+define('CLOCK_MENU_L11', 'วันอาทิตย์,');
 define('CLOCK_MENU_L12', 'เดือนมกราคม');
 define('CLOCK_MENU_L13', 'เดือนกุมภาพันธ์');
 define('CLOCK_MENU_L14', 'เดือนมีนาคม');

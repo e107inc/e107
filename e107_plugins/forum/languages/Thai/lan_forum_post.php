@@ -4,112 +4,118 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Thai/lan_forum_post.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:07 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-11 05:41:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
+/*แปลและพัฒนาส่วนระบบภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  แก้ไขล่าสุด 28 มีนาคม.2550
+อาจารย์ประจำสาขาวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900.โทร.(66) 0 2942 6900  ต่อ 3011,3014
+Thai Developer & Translation : Assistant Professor Prachid Tinnabutr : Division of Art ,Chandrakasem Rajabhat University,Jatuchak,Bangkok ,Thailand.10900. Tel :(66) 02 9426900 ext:3011,3014
+Last update:28 March 2007 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 2962 9505  prachid@prachid.com,prachid@wittycomputer.com ,Mobile Phone : (66) 08 9667 0091
+URL : http://www.prachid.com, http://www.wittycomputer.com, http://www.e107thailand.com(Official International Sites)
 */
 define("PAGE_NAME", "อภิปราย");
 	
 define("LAN_01", "การอภิปราย");
 define("LAN_02", "ตอบกลับถึง: ");
-define("LAN_03", "New Thread");
-define("LAN_1", "ปกติ");
-define("LAN_2", "Sticky");
+define("LAN_03", "ตั้งกระทู้ใหม่");
+define("LAN_1", "ปกติเดิม");
+define("LAN_2", "เกาะติด");
 define("LAN_3", "ประกาศ");
-define("LAN_4", "อภิปรายความคิดเห็น");
-define("LAN_5", "คำถามสำรวจความคิดเห็น:");
-define("LAN_6", "เพิ่มการปรับแต่งแบบอื่น");
+define("LAN_4", "<b>แบบสอบถามความคิดเห็นร่วมกระทู้<b/>");
+define("LAN_5", "ตั้งคำถามแบบสอบถาม:");
+define("LAN_6", "คลิกเพื่อเพิ่มตัวเลือกตอบ");
 define("LAN_7", "ปรับแต่งการให้คะแนน:");
 define("LAN_8", "สามารถให้คะแนนได้จากทุกคน");
 define("LAN_9", "สามารถให้คะแนนได้เฉพาะสมาชิก");
 define("LAN_10", "เข้าสู่ระบบ");
 define("LAN_11", "จำฉันไว้");
-define("LAN_16", "ชื่อผู้ใช้: ");
+define("LAN_16", "ชื่อสมาชิก: ");
 define("LAN_17", "รหัสผ่าน: ");
 define("LAN_20", "ผิดพลาด");
 define("LAN_27", "คุณยังไม่ได้ใส่ข้อมูลลงในเขตข้อมูลที่ต้องการ");
 define("LAN_28", "คุณยังไม่ได้ทำการอภิปราย ..");
 define("LAN_29", "แก้ไข");
-define("LAN_45", "These forums can only be posted to by registered and logged in members, please click");
-define("LAN_60", "Start New Thread");
+define("LAN_45", "กระทู้เหล่านี้เป็นกระทู้เฉพาะสมาชิกที่ลงทะเบียนและทำการเข้าสู่ระบบก่อนจึงจะเข้าร่วมอภิปรายได้   กรุณาคลิกที่นี่");
+define("LAN_60", "เิริ่มสร้างกระทู้ใหม่");
 define("LAN_61", "ชื่อ: ");
-define("LAN_62", "หัวข้อ: ");
-define("LAN_63", "อภิปราย: ");
-define("LAN_64", "Submit new thread");
+define("LAN_62", "ตั้งหัวข้อกระทู้อภิปราย: ");
+define("LAN_63", "ข้อความกระทู้: ");
+define("LAN_64", "ส่งกระทู้ใหม่");
 define("LAN_73", "ตอบ: ");
-define("LAN_74", "Reply to  thread");
-define("LAN_77", "Update Thread");
-define("LAN_78", "Update Reply");
+define("LAN_74", "ตอบกระทู้");
+define("LAN_77", "ปรับปรุงกระทู้");
+define("LAN_78", "ปรับปรุงคำตอบ");
 define("LAN_94", "อภิปรายโดย");
-define("LAN_95", "Unauthorised");
-define("LAN_96", "You are not authorised to edit this forum post.");
-define("LAN_100", "Thread Topic");
+define("LAN_95", "ไม่ใช่ผู้เขียน");
+define("LAN_96", "คุณไม่มีสิทธิ์แก้ไขกระทู้นี้");
+define("LAN_100", "หัวข้อกระทู้อภิปราย");
 define("LAN_101", "ล่าสุด ");
 define("LAN_102", " ตอบกลับ");
-define("LAN_103", "Review complete thread. (Will open a new window.)");
+define("LAN_103", "อ่านกระทู้เต็ม. (จะเปิดเป็นหน้าต่างใหม่.)");
 define("LAN_133", "ขอบคุณ");
 define("LAN_174", "ลงทะเบียน");
 define("LAN_175", "เข้าสู่ระบบ");
 define("LAN_212", "ลืมรหัสผ่าน?");
-define("LAN_310", "Unable to accept post as that username is registered - if it is your username please login to post.");
+define("LAN_310", "ไม่สามารถยอมรับการตอบกระทู้ได้โดยใช้ชื่อที่ลงทะเบียนนี้ได้ หากเป็นชื่อของคุณเอง กรุณาเข้าระบบก่อน เพื่อตอบกระทู้ใหม่.");
 define("LAN_311", "ไม่ระบุชื่อ");
 define("LAN_322", "อภิปราย: ");
 define("LAN_323", "ลองดู");
-define("LAN_324", "ข้อความของคุณได้อภิปรายแล้ว.");
-define("LAN_325", "กดที่นี่เพื่อดูข้อความของคุณ");
-define("LAN_326", "กดที่นี่เพื่อกลับไปทการอภิปราย");
-define("LAN_327", "Review");
-define("LAN_380", "If you wish to be notified by email when a reply is posted to your thread please tick the box ");
+define("LAN_324", "ข้อความของคุณได้ส่งร่วมอภิปรายแล้ว.");
+define("LAN_325", "คลิกที่นี่เพื่อดูข้อความกระทู้ของคุณ");
+define("LAN_326", "คลิกที่นี่เพื่อกลับไปที่หน้าการอภิปราย");
+define("LAN_327", "อ่านใหม่");
+define("LAN_380", "หากคุณต้องการให้แจ้งเตือนทางอีเมลเมื่อมีผู้ตอบกระทู้ กรุณาคลิกถูกไว้ในช่อง");
 define("LAN_381", "ตอบอภิปรายจาก");
-define("LAN_382", "Post made: ");
-define("LAN_383", "Please click the following link to view the full thread ...");
+define("LAN_382", "สร้างกระทู้: ");
+define("LAN_383", "กรุณาคลิกที่นี่เพื่อดูรายละเอียด");
 define("LAN_384", "ตอบอภิปรายไปที่");
 define("LAN_385", "อภิปราย: ");
-define("LAN_386", "If you do not wish to add a poll to your thread leave the fields blank ");
+define("LAN_386", "ปล่อยว่างไว้ ถ้าหากคุณไม่ต้องการเพิ่มแบบสอบถามในกระทู้ของคุณ");
 define("LAN_387", "ไป");
 define("LAN_388", "กลับขึ้นสู่ด้านบน");
-define("LAN_389", "Duplicate post, redirecting ...");
+define("LAN_389", "สำเนากระทู้, ย้อนกลับไป ...");
 define("LAN_390", "แนบไฟล์ / รูปภาพ");
-define("LAN_391", "ปรับแต่ง");
-define("LAN_392", "ไฟล์ที่จะทำการแนบ");
-define("LAN_393", "<b>Please note</b><br />Allowed filetypes:");
-define("LAN_394", "Any other filetypes uploaded will be instantly deleted.");
+define("LAN_391", "ตัวเลือกตอบ");
+define("LAN_392", "ไฟล์ที่จะแนบขึ้น");
+define("LAN_393", "<b>หมายเหตุ</b><br />ชนิดไฟล์ที่อนุญาต:");
+define("LAN_394", "ถ้าส่งไฟล์ชนิดอื่นๆขึ้นจะถูกลบโดยอัตโนมัติ");
 define("LAN_395", "ขนาดของไฟล์สูงสุด");
 define("LAN_396", "bytes");
-define("LAN_397", "This thread is locked.");
+define("LAN_397", "กระทู้นี้ถูกล๊อคไว้");
 define("LAN_398", "อ่านอย่างเดียว");
-define("LAN_399", "You are not authorized to post to this forum.");
-define("LAN_400", "post thread as");
+define("LAN_399", "คุณไม่ได้รับอนุญาตให้ตอบกระทู้นี้.");
+define("LAN_400", "ส่งกระทู้โดยให้เป็น");
 define("LAN_401", "ไปที่");
 	
-define("LAN_402", "สำรวจความคิดเห็น");
+define("LAN_402", "แบบสอบถามความคิดเห็น");
 define("LAN_403", "ประกาศ");
-define("LAN_404", "sticky");
+define("LAN_404", "เกาะติด");
 define("LAN_405", "อภิปราย");
-define("LAN_406", "Re:");
+define("LAN_406", "ตอบ:");
 	
 //v.616
-define("LAN_407", "Redirect");
-define("LAN_408", "If your browser does not support meta redirection please click");
+define("LAN_407", "อ้างย้อนกลับ");
+define("LAN_408", "หากโปรแกรมดูอินเตอร์เน็ตของคุณไม่สนับสนุนการอ้างย้อนกลับ ให้คลิก");
 define("LAN_409", "ที่นี่");
-define("LAN_410", "to be redirected");
+define("LAN_410", "เพื่อรับค่าการอ้างย้อนกลับ");
 define("LAN_411", "ที่นี่");
 define("LAN_412", "ไปยังหน้าลงทะเบียน.");
 	
-define("LAN_413", "การสำรวจความคิดเห็นของคุณได้ทำการอภิปรายแล้ว.");
+define("LAN_413", "ได้ส่งแบบสอบถามความคิดเห็นของคุณเข้าไว้้ในกระทู้อภิปรายแล้ว.");
 define("LAN_414", "กดที่นี่เพื่อดูการอภิืปราย");
-define("LAN_415", "ข้อความตอบกลับของคุณได้ทำการอภิปรายแล้ว.");
+define("LAN_415", "ได้ส่งคำตอบกระทู้ของคุณ ไว้ในการอภิปรายนี้แล้ว.");
 
 define("LAN_416", "แนบไฟล์");
-define("LAN_417", "เพิ่มไฟล์แนบอื่นๆ");
+define("LAN_417", "คลิกเพิ่มไฟล์แนบขึ้นอีก");
 
-define("POLL_506", "อนุญาตให้เลือกหลายๆตัวเลือกAllow multiple choices?");
+define("POLL_506", "ให้เลือกตอบได้หลายข้อ?");
 define("POLL_507", "ใช่");
 define("POLL_508", "ไม่");
 
-define("LAN_FORUM_1", "Uploads disabled: ".e_FILE."public directory is not writable");
-define("LAN_FORUM_2", "Duplicate post");
+define("LAN_FORUM_1", "ส่งไฟล์ขึ้นไม่ได้: ".e_FILE."แฟ้ม public ไม่อนุญาตสิทธิ์การบันทึก");
+define("LAN_FORUM_2", "สำเนากระทู้");
 
 
 ?>

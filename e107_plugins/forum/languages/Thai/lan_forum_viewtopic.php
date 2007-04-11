@@ -4,86 +4,92 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Thai/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:08 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-11 05:41:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
+/*แปลและพัฒนาส่วนระบบภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  แก้ไขล่าสุด 28 มีนาคม.2550
+อาจารย์ประจำสาขาวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900.โทร.(66) 0 2942 6900  ต่อ 3011,3014
+Thai Developer & Translation : Assistant Professor Prachid Tinnabutr : Division of Art ,Chandrakasem Rajabhat University,Jatuchak,Bangkok ,Thailand.10900. Tel :(66) 02 9426900 ext:3011,3014
+Last update:28 March 2007 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 2962 9505  prachid@prachid.com,prachid@wittycomputer.com ,Mobile Phone : (66) 08 9667 0091
+URL : http://www.prachid.com, http://www.wittycomputer.com, http://www.e107thailand.com(Official International Sites)
 */
 define("PAGE_NAME", "การอภิปราย");
 	
 define("LAN_01", "การอภิปราย");
-define("LAN_02", "Go to page");
-define("LAN_03", "Go");
-define("LAN_04", "Previous");
-define("LAN_05", "Next");
-define("LAN_06", "Joined");
-define("LAN_07", "Location");
-define("LAN_08", "Website");
-define("LAN_09", "Visits to site since registration");
-define("LAN_10", "Back to top");
-define("LAN_65", "Jump");
-define("LAN_66", "This thread is now closed");
-define("LAN_67", "posts");
-define("LAN_194", "Guest");
-define("LAN_195", "Registered Member");
-define("LAN_321", "Moderators: ");
-define("LAN_389", "Previous thread");
-define("LAN_390", "Next thread");
-define("LAN_391", "Track Thread");
-define("LAN_392", "Cancel Thread Tracking");
-define("LAN_393", "Quick Reply");
-define("LAN_394", "Preview");
-define("LAN_395", "Reply To Thread");
-define("LAN_396", "Website");
-define("LAN_397", "Email");
-define("LAN_398", "Profile");
-define("LAN_399", "Private Message");
-define("LAN_400", "Edit");
-define("LAN_401", "Quote");
+define("LAN_02", "ไปที่หน้า");
+define("LAN_03", "ไป");
+define("LAN_04", "ย้อน");
+define("LAN_05", "ต่อไป");
+define("LAN_06", "เป็นสมาชิกเมื่อวัน");
+define("LAN_07", "ที่อยู่");
+define("LAN_08", "เว็ปไซท์");
+define("LAN_09", "เข้ามานับแต่ที่ลงทะเบียนไว้");
+define("LAN_10", "กลับด้านบน");
+define("LAN_65", "ไป");
+define("LAN_66", "ปิดกระทู้แล้ว");
+define("LAN_67", "รวมกระทู้");
+define("LAN_194", "บุคคลทั่วไป");
+define("LAN_195", "สมาชิกที่ลงทะเบียนแล้ว");
+define("LAN_321", "ผู้ดำเนินการอภิปราย: ");
+define("LAN_389", "กระทู้ก่อนนี้");
+define("LAN_390", "กระทู้ต่อไป");
+define("LAN_391", "ติดตามกระทู้");
+define("LAN_392", "ยกเลิกการติดตามกระทู้");
+define("LAN_393", "ตอบด่วน");
+define("LAN_394", "ทดลองดูก่อน");
+define("LAN_395", "ตอบกระทู้");
+define("LAN_396", "เว็ปไซท์");
+define("LAN_397", "อีเมล");
+define("LAN_398", "ประวัติ");
+define("LAN_399", "ข่าวสารส่วนตัว");
+define("LAN_400", "แก้ไข");
+define("LAN_401", "คำยกอ้างมา(Quote)");
 	
-define("LAN_402", "Author");
-define("LAN_403", "Post");
-define("LAN_404", "No previous thread");
-define("LAN_405", "No next thread");
+define("LAN_402", "ผู้เขียน");
+define("LAN_403", "ข้อความกระทู้");
+define("LAN_404", "ไม่มีกระทู้ก่อนนี้");
+define("LAN_405", "ไม่มีกระทู้ต่อไป");
 	
-define("LAN_406", "Moderator: Edit");
-define("LAN_435", "Moderator: Delete");
-define("LAN_408", "Moderator: Move");
-define("LAN_409", "Are you sure you want to delete this thread and any replies?");
-define("LAN_410", "Are you sure you want to delete this reply?");
-define("LAN_411", "posted by ");
+define("LAN_406", "ผู้ดำเนินการ:แก้ไขกระทู้ตอบ");
+define("LAN_435", "ผู้ดำเนินการ:ลบกระทู้ตอบ");
+define("LAN_408", "ผู้ดำเนินการ:ย้ายกระทู้ตอบ");
+define("LAN_409", "คุณแน่ใจที่จะลบกระทู้นี้หรือไม่?");
+define("LAN_410", "คุณแน่ใจที่จะลบกระทู้ตอบนี้หรือไม่?");
+define("LAN_411", "ส่งโดย");
 	
 //v.616
-define("LAN_412", "Title");
-define("LAN_413", "Report");
-define("LAN_414", "Report this thread to a moderator");
-define("LAN_415", "Thread title");
-define("LAN_416", "Enter your report");
-define("LAN_417", "The admin will be made aware of this thread. You may post a message explaining what you found to be objectionable.");
-define("LAN_418", "<b>Do not</b> use this form to contact the admin for any other reason.");
-define("LAN_419", "Send Report");
-define("LAN_420", "Click to view post");
-define("LAN_421", "Forum thread report from");
-define("LAN_422", "This post has been reported from site ");
-define("LAN_423", "Message could not be sent. ");
-define("LAN_424", "Post has been reported to moderator.<br />Thank You.");
-define("LAN_425", "Message from: ");
-define("LAN_426", "Reporting post in topic: ");
-define("LAN_427", "Error sending mail");
-define("LAN_428", "Post has been reported");
-define("LAN_429", "Click here to return to forum");
-define("LAN_430", "poll");
-define("FORLAN_26", "Reply deleted");
-define("FORLAN_10", "Begin New Thread");
-define("LAN_29", "Edited");
+define("LAN_412", "ชื่อเรื่อง");
+define("LAN_413", "รายงาน");
+define("LAN_414", "ส่งรายงานกระทู้ไปยังผู้ดำเนินการอภิปราย");
+define("LAN_415", "ชื่อกระทู้");
+define("LAN_416", "พิมพ์รายงาน");
+define("LAN_417", "ขอให้คุณพิมพ์รายงานและอธิบายในสิ่งที่คุณเห็นว่าไม่เหมาะสม ควรต้องแก้ไข หรือตัดทิ้งออกไป ไว้ในช่องด้านขวามือนี้ ผู้ดำเนินการอภิปราย จะเข้าพิจารณาตรวจสอบกระทู้ตามที่แจ้งนี้ในลำดับต่อไป");
+define("LAN_418", "<b>กรุณา</b>ใช้แบบฟอร์มนี้เพื่อแจ้งรายงานเฉพาะเรื่องมีกระทู้ที่ไม่เหมาะสมเท่านั้น");
+define("LAN_419", "ส่งรายงานกระทู้");
+define("LAN_420", "คลิกที่นี่เพื่ออ่านข้อความกระทูู้");
+define("LAN_421", "แบบส่งรายงานกระทู้จาก");
+define("LAN_422", "รายงานกระทู้ส่งมาจาก ");
+define("LAN_423", "ไม่สามารถส่งข้อความได้. ");
+define("LAN_424", "การแจ้งรายงานกระทู้ ได้ส่งไปให้ผู้ดำเนินการอภิปรายแล้ว.<br />ขอขอบคุณเป็นอย่างยิ่ง");
+define("LAN_425", "ข้อความจาก: ");
+define("LAN_426", "หัวข้อการรายงานกระทู้: ");
+define("LAN_427", "ไม่สามารถส่งเมล์ได้");
+define("LAN_428", "ส่งรายงานกระทู้แล้ว");
+define("LAN_429", "กดที่นี่เพื่อกลับไปที่กระทู้");
+define("LAN_430", "แบบสอบถาม");
+define("FORLAN_26", "ลบคำตอบแล้ว");
+define("FORLAN_10", "สร้างกระทู้ใหม่");
+define("LAN_29", "แก้ไข");
 
-define("LAN_431", "Syndicate this thread: rss 0.92");
-define("LAN_432", "Syndicate this thread: rss 2.0");
-define("LAN_433", "Syndicate this thread: RDF");
+define("LAN_431", "สร้างกระทู้นี้เป็นข่าวป้อน: rss 1.0");
+define("LAN_432", "สร้างกระทู้นี้เป็นข่าวป้อน : rss 2.0");
+define("LAN_433", "สร้างกระทู้นี้เป็นข่าวป้อน : RDF");
 	
-define("FORLAN_101", "Email Thread");
-define("FORLAN_102", "Print View");
-define('FORLAN_103', '[user deleted]');
-define('FORLAN_104', 'Thread not found');
-define("FORLAN_HIDDEN", "HIDDEN - LOGIN AND REPLY TO REVEAL");
+define("FORLAN_101", "ส่งอีเมล");
+define("FORLAN_102", "ดูก่อนพิมพ์");
+define('FORLAN_103', '[ลบสมาชิกแล้ว]');
+define('FORLAN_104', 'ไม่พบกระทู้');
+define("FORLAN_HIDDEN", "ซ่อน - ไม่้แสดงการเข้าระบบและการตอบ");
 ?>

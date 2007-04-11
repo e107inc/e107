@@ -4,45 +4,51 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Thai/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:07 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-11 05:41:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
+/*แปลและพัฒนาส่วนระบบภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  แก้ไขล่าสุด 28 มีนาคม.2550
+อาจารย์ประจำสาขาวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900.โทร.(66) 0 2942 6900  ต่อ 3011,3014
+Thai Developer & Translation : Assistant Professor Prachid Tinnabutr : Division of Art ,Chandrakasem Rajabhat University,Jatuchak,Bangkok ,Thailand.10900. Tel :(66) 02 9426900 ext:3011,3014
+Last update:28 March 2007 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 2962 9505  prachid@prachid.com,prachid@wittycomputer.com ,Mobile Phone : (66) 08 9667 0091
+URL : http://www.prachid.com, http://www.wittycomputer.com, http://www.e107thailand.com(Official International Sites)
 */
-define("FORLAN_1", "You must enter the number of days you wish to prune.");
-define("FORLAN_2", "Please select to either delete pruned posts completely, or make them inactive (not deleted but not visible in forums)");
+define("FORLAN_1", "คุณต้องกำหนดจำนวนวัน ที่กระทู้ค้างนานเกินเวลาและต้องการจะลบออกไป.");
+define("FORLAN_2", "กรุณาเลือกว่าต้องการที่จะลบกระทู้อย่างถาวร หรือจะปิดกระทู้เอาไว้ก่อน");
 define("FORLAN_3", "ลบ");
 define("FORLAN_4", "ไม่ให้ใช้");
-define("FORLAN_5", "Carry Out Prune");
+define("FORLAN_5", "ลบกระทู้ที่เลือกไว้");
 define("FORLAN_6", "ยกเลิก");
-define("FORLAN_7", "ตัวปรับแต่งกระทู้");
+define("FORLAN_7", "การตั้งค่าการอภิปราย");
 define("FORLAN_8", "กระทู้ที่ถูกตัดออก");
-define("FORLAN_9", "Prune not required.");
-define("FORLAN_10", "ตัวปรับแต่งได้ถูกบันทึกแล้ว");
-define("FORLAN_11", "กระทู้ได้ถูกสร้างแล้ว");
+define("FORLAN_9", "ไม่ต้องการลบกระทู้ค้าง.");
+define("FORLAN_10", "ได้บันทึกการปรับตั้งค่าให้แล้ว");
+define("FORLAN_11", "ได้สร้างกระทู้ใหม่ ให้มีการร่วมอภิปรายไว้แล้ว");
 define("FORLAN_12", "ปรับปรุงการอภิปรายแล้ว");
-define("FORLAN_13", "Parent created");
-define("FORLAN_14", "Forum parent updated");
-define("FORLAN_15", "Please tick the confirm box to delete the forum");
+define("FORLAN_13", "สร้างหมวดหมู่แล้ว");
+define("FORLAN_14", "ปรับปรุงหมวดหมู่แล้ว");
+define("FORLAN_15", "กรุณาคลิกในช่องเพื่อยืนยันการลบกระทู้การอภิปราย");
 define("FORLAN_16", "การอภิปราย");
 define("FORLAN_17", "ยังไม่มีหมวดหมู่");
 define("FORLAN_18", "หมวดหมู่ที่มี");
 define("FORLAN_19", "แก้ไข");
 define("FORLAN_20", "ลบ");
-define("FORLAN_21", "ทำเครื่องเพื่อยืนยัน");
+define("FORLAN_21", "คลิกถูกเพื่อยืนยัน");
 define("FORLAN_22", "หมวดหมู่");
 define("FORLAN_23", "ให้เห็นโดย");
-define("FORLAN_24", "แสดงผู้ที่สามารถดูกระทู้นี้");
+define("FORLAN_24", "เลือกผู้ที่สามารถอ่านกระทู้นี้ได้");
 define("FORLAN_25", "ปรับปรุงหมวดหมู่");
-define("FORLAN_26", "สร้างหมวดหมู่");
-define("FORLAN_27", "You need to define at least one forum parent before creating a forum.");
-define("FORLAN_28", "การอภิปราย");
-define("FORLAN_29", "ไม่มีกระทู้นี้");
-define("FORLAN_30", "กระทู้ที่มีอยู่");
-define("FORLAN_31", "ชื่อ");
+define("FORLAN_26", "สร้างหมวดหมู่การอภิปราย");
+define("FORLAN_27", "คุณต้องสร้างและนิยามอย่างน้อย 1 หมวดหมู่การอภิปราย ก่อนที่จะสร้างกระทู้ให้อภิปราย");
+define("FORLAN_28", "หมวดหมู่การอภิปราย");
+define("FORLAN_29", "ยังไม่มีกระทู้การอภิปราย");
+define("FORLAN_30", "กระทู้การเปิดอภิปรายที่มีอยู่");
+define("FORLAN_31", "ชื่อหมวด");
 define("FORLAN_32", "รายละเอียด");
-define("FORLAN_33", "ผู้ควบคุมระบบ");
-define("FORLAN_34", "เลือกระดับของผู้ควบคุมในอภิปรายนี้");
+define("FORLAN_33", "ผู้ดำเนินการอภิปราย");
+define("FORLAN_34", "เลือกระดับของผู้ดำเนินการในการอภิปรายนี้");
 define("FORLAN_35", "ปรับปรุงการอภิปราย");
 define("FORLAN_36", "สร้างกระทู้");
 define("FORLAN_37", "ลำดับ");
@@ -52,90 +58,79 @@ define("FORLAN_40", "ถูกจำกัด");
 define("FORLAN_41", "เลื่อนขึ้น");
 define("FORLAN_42", "เลื่อนลง");
 define("FORLAN_43", "ดู/ลำดับการอภิปราย");
-define("FORLAN_44", "Enclose tables");
-define("FORLAN_45", "Tick this to render the forum within theme table");
-define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
-define("FORLAN_47", "Enable email nofication");
-define("FORLAN_48", "Tick this to allow your users to have the option of receiving an email when somebody replies to their post");
-define("FORLAN_49", "ให้มีที่แสดงความคิดเห็น");
-define("FORLAN_50", "Tick this to allow your users to set polls in the forums - the Polls plugin must be installed to use this feature");
-define("FORLAN_51", "Enable tracking");
-define("FORLAN_52", "Tick this to allow your users to track threads and be emailed when the thread is replied to");
-define("FORLAN_53", "คำนำหน้าอีเมล");
-define("FORLAN_54", "The text you enter will prefix the subject on any emails sent through the forum");
-define("FORLAN_55", "Popular thread threshold");
-define("FORLAN_56", "Number of posts made to a thread before it is marked as popular");
-define("FORLAN_57", "อภิปรายต่อหน้า");
-define("FORLAN_58", "จำนวนการอภิปรายต่อหน้า");
-define("FORLAN_59", "Prune");
-define("FORLAN_60", "This will delete all threads that have not received a reply in the number of days you enter. <br /><b>Please be careful using this function!</b>");
-define("FORLAN_61", "Update Options");
-define("FORLAN_62", "ปรับแต่งการอภิปราย");
-define("FORLAN_63", "อันดับ");
-define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Seperate levels with comma. Maximum of 10 levels, lowest first.");
-define("FORLAN_65", "หัวข้อกระทู้");
-
-define("FORLAN_70", "สามารถแนบไฟล์ฝภาพประกอบ");
+define("FORLAN_44", "<b>การจัดแสดงกระทู้เป็นแถวตาราง</b>");
+define("FORLAN_45", "คลิกถูกเพื่อให้จัดเรียงกระทู้แสดงในรูปแบบของตาราง");
+define("FORLAN_46", "ตั้งชื่อที่จะแสดงเป็นหัวข้อการอภิปราย ในกรอบ");
+define("FORLAN_47", "<b>การเปิดใช้ระบบแจ้งเตือนทางอีเมล</b>");
+define("FORLAN_48", "คลิกถูกไว้ เพื่อเปิดระบบการแจ้งเตือนทางอีเมลแก่สมาชิก เมื่อมีผู้เข้าตอบกระทู้ของตน");
+define("FORLAN_49", "<b>การสร้างแบบสอบถามความคิดเห็น</b>");
+define("FORLAN_50", "คลิกเพื่อเป็นการอนุญาตให้สมาชิกสามารถสร้างแบบสอบถามร่วมกระทู้ได้ แต่ก่อนอื่นโปรแกรมเสริมการสร้างแบบสอบถามต้องติดตั้งแลัเปิดใช้ไว้ก่อนแล้ว");
+define("FORLAN_51", "<b>การเปิดระบบการติดตาม</b>");
+define("FORLAN_52", "คลิกในช่องไว้เพื่อเปิดใช้ระบบติดตามการส่งกระทู้ของสมาชิก เพื่อสามารถแจ้งกลับทางอีเมลเมื่อมีผู้เข้าตอบกระทู้ให้ทราบ");
+define("FORLAN_53", "<b>คำนำหน้าอีเมล</b>");
+define("FORLAN_54", "ข้อความที่จะพิมพ์ใส่นี้จะเป็นคำนำหน้าเรื่องแจ้งการส่งกระทู้ทางอีเมล");
+define("FORLAN_55", "<b>การกำหนดเกณฑ์กระทู้ที่จะจัดว่าได้รับความนิยม</b>");
+define("FORLAN_56", "เป็นการกำหนดจำนวนของกระทู้ที่ส่งเข้าร่วมอภิปราย หรือตั้งเกณฑ์ที่จัดว่าเป็นกระทู้ที่ได้รับความนิยมและสนใจอ่านหรือติดตาม");
+define("FORLAN_57", "<b>การกำหนดจำนวนกระทู้การอภิปราย แสดงต่อหน้า</b>");
+define("FORLAN_58", "กำหนดจำนวนรายการอภิปรายที่จะให้แสดงต่อเนื่องไว้ในหนึ่งหน้า");
+define("FORLAN_59", "ลบ/ปิดกระทู้");
+define("FORLAN_60", "ในที่นี้จะเป็นการลบรายการกระทู้ที่ส่งเข้ามาเป็นประเด็นให้เปิดอภิปราย แต่ไม่มีผู้สนใจตอบกระทู้ถามนานเกินเวลาที่คุณกำหนดไว้. <br /><b>โปรดระมัดระวังการใช้งานคำสั่งนี้!</b>");
+define("FORLAN_61", "ปรับปรุงการตั้งค่า");
+define("FORLAN_62", "ตั้งค่าหน้าการอภิปราย");
+define("FORLAN_63", "เกณฑ์ระดับคะแนน");
+define("FORLAN_64", "ใส่ระดับที่นี่ หากว่างไว้จะใส่รูปดาวระดับแสดงไว้แทน แยกระดับด้วยเครื่องหมายคอมม่า สูงสุด 10 ระดับ แสดงเลขดันดับน้อยขึ้นก่อน.");
+define("FORLAN_65", "<b>ชื่อหัวข้อกระทู้อภิปราย</b>");
+define("FORLAN_70", "<b>การแนบไฟล์ภาพประกอบกระทู้<b>");
 define("FORLAN_71", "อนุญาตให้สมาชิกสามารถส่งไฟล์หรือรูปภาพประกอบในกระทู้ได้");
 define("FORLAN_72", "ปรับเรียงอันดับ");
 define("FORLAN_73", "ปรับเรียงอันดับแล้ว");
-
 define("FORLAN_75", "ผู้จัดการ");
-define("FORLAN_76", "กระทู้หน้าแรก");
-define("FORLAN_77", "สร้างกระทู้");
-define("FORLAN_78", "ลำดับกระทู้");
-define("FORLAN_79", "สิทธิพิเศษ");
-define("FORLAN_80", "ตั้งค่า");
-define("FORLAN_81", "Are you sure you want to delete this parent? - forums of this parent will also be deleted");
+define("FORLAN_76", "หน้าแรกของการอภิปราย");
+define("FORLAN_77", "สร้างกระทู้อภิปราย");
+define("FORLAN_78", "จัดลำดับกระทู้");
+define("FORLAN_79", "ตั้งค่าหน้าการอภิปราย");
+define("FORLAN_80", "การตั้งค่า");
+define("FORLAN_81", "คุณแน่ใจว่าจะลบหมวดหมู่กระทู้นี้หรือไม่ ขอเตือนว่าหัวข้อและกระทู้ภายในหมวดก็จะถูกลบออกไปด้วยในคราวเดียวกันนี้");
 define("FORLAN_82", "คุณแน่ใจว่าจะลบกระทู้นี้หรือไม่");
-define("FORLAN_83", "สร้างผู้ดูแล");
+define("FORLAN_83", "สร้างหมวดหมู่การอภิปราย");
 define("FORLAN_84", "สมาชิกเท่านั้น");
 define("FORLAN_85", "อ่านอย่างเดียว");
 define("FORLAN_86", "ผู้ดูแลระบบเท่านั้น");
-define("FORLAN_87", "Prune topics with no replies in this many days:");
-
-define("FORLAN_88", "Prune topics with no replies in this many days:");
-
-define("FORLAN_89", "ลบการโพสโดยสมบูรณ์");
-define("FORLAN_90", "ทำให้การโพสไม่ทำงาน");
-
-define("FORLAN_91", "post(s) made inactive");
-define("FORLAN_92", "thread(s) deleted");
-define("FORLAN_93", "reply (replies) deleted");
-
+define("FORLAN_87", "ให้ลบหรือปิดหัวข้อ รายการกระทู้อภิปรายที่ไม่มีผู้ตอบนานเกินกี่วัน:");
+define("FORLAN_88", "ให้ลบ/ปิดหัวข้อกระทู้อภิปรายที่ไม่มีผู้ตอบนานเกินกี่วัน:");
+define("FORLAN_89", "ลบกระทู้อย่างถาวร");
+define("FORLAN_90", "ปิดไม่ให้แสดงกระทู้");
+define("FORLAN_91", "กระทู้ที่ถูกปิด");
+define("FORLAN_92", "กระทู้ที่ถูกลบไปแล้ว");
+define("FORLAN_93", "คำตอบกระทู้ที่ถูกลบไปแล้ว");
 define("FORLAN_94", "จัดอันดับ");
 define("FORLAN_95", "บันทึกการจัดอันดับแล้ว");
 define("FORLAN_96", "ลบการอภิปรายแล้ว");
 define("FORLAN_97", "ลบหมวดหมู่แล้ว");
-
-define("FORLAN_98", "ชื่ออันดับ");
-define("FORLAN_99", "number of points before level change");
-define("FORLAN_100", "อัพโหลดรูปภาพที่e107_themes/Your_Theme/forum/");
+define("FORLAN_98", "ชื่อสมาชิกผู้ถูกจัดอันดับ");
+define("FORLAN_99", "กำหนดคะแนนที่จะให้ผ่านเกณฑ์ระดับ");
+define("FORLAN_100", "ส่งไฟล์สัญรูปของอันดับขึ้นเก็บไปไว้ที่e107_themes/Your_Theme/forum/");
 define("FORLAN_101", "ผู้จัดการระบบหลัก");
-define("FORLAN_102", "Threshold");
+define("FORLAN_102", "เกณฑ์คะแนนการจัดระดับ");
 define("FORLAN_103", "ผู้จัดการส่วนพื้นที่");
-define("FORLAN_104", "ภาพอันดับ");
+define("FORLAN_104", "สัญรูปของอันดับ");
 define("FORLAN_105", "ผู้ดำเนินการอภิปราย");
-
-
-define("FORLAN_106", "Prune Type:");
+define("FORLAN_106", "รูปแบบการตกค้าง:");
 define("FORLAN_107", "อภิปราย");
-define("FORLAN_108", " ลบ");
+define("FORLAN_108", "ลบ");
 define("FORLAN_109", "วัน:");
-define("FORLAN_110", "Prune");
-define("FORLAN_111", "deactivate");
-
-define("FORLAN_112", "Enable Redirect");
-define("FORLAN_113", "Tick this to make browser redirect to forum page after replying");
-define("FORLAN_114", "ปรับแต่งหัวข้อโดยผู้ใช้");
-define("FORLAN_115", "กดที่นี่เพื่ออนุญาตให้ผู้ใช้ปรับแต่งชื่อหัวข้อได้");
-define("FORLAN_116", "รายงานการโพส");
-define("FORLAN_117", "This will delete the record of the reported post. Not the post itself.");
-define("FORLAN_118", "รายงานโพสที่ถูกลบ");
-// define("FORLAN_119", "กดที่การเชื่อมโยงเพื่อนเปิดการอภิปรายในหน้าต่างใหม่ .");
-define("FORLAN_120", "กดที่นี่เพื่ออนุญาตให้ผู้ใช้ปรับแต่งชื่อหัวข้อได้");
-define("FORLAN_121", "ไม่มีรายงานการโพส");
-define("FORLAN_122", "คลิกที่นี่เพื่ออีเมล์ไปยังผู้ดูแลระบบเมื่อมีการรายงานการโพสกระทู้");
+define("FORLAN_110", "ลบกระทู้ค้าง");
+define("FORLAN_111", "ปิดกระทู้");
+define("FORLAN_112", "<b>การเปิดใช้งานการย้อนกลับหน้าเดิม</b>");
+define("FORLAN_113", "คลิกถูกไว้เพื่อกำหนดให้โปรแกรมดูอินเตอร์เน็ต ย้อนกลับไปที่หน้าการอภิปรายเดิมอีกครั้ง หลังจากที่เข้าตอบกระทู้อภิปราย");
+define("FORLAN_114", "<b>การปรับแก้หัวข้อโดยสมาชิก</b>");
+define("FORLAN_115", "คลิกที่นี่เพื่ออนุญาตให้สมาชิกสามารถปรับแก้ชื่อหัวข้อได้");
+define("FORLAN_116", "<b>การรายงานการส่งกระทู้</b>");
+define("FORLAN_117", "คำสั่งในที่นี้จะเป็นการลบส่วนของการบันทึกรายงานการส่งกระทู้ ไม่ใช่ตัวกระทู้.");
+define("FORLAN_118", "รายงานกระทู้ที่ถูกลบ");
+define("FORLAN_120", "คลิกที่นี่เพื่ออนุญาตให้ผู้ใช้ปรับปรุงชื่อหัวข้อได้");
+define("FORLAN_121", "ไม่มีรายงานการส่งกระทู้");
+define("FORLAN_122", "คลิกที่นี่เพื่ออีเมล์ไปยังผู้ดูแลระบบเมื่อมีการรายงานการส่งกระทู้");
 define("FORLAN_123", "ระเบียบกระทู้");
 define("WMGLAN_1", "ระเบียบสำหรับผู้เยี่ยมชม");
 define("WMGLAN_2", "ระเบียบสำหรับสมาชิก");
@@ -143,62 +138,64 @@ define("WMGLAN_3", "ระเบียบสำหรับผู้ดูแล
 define("WMGLAN_4", "ยอมรับ");
 define("WMGLAN_5", "ตั้งค่าระบียบกระทู้");
 define("WMGLAN_6", "ยืนยัน?");
-define("FORLAN_126", "แสดงการแนะนำ");
-define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
-define("FORLAN_128", "Length of tooltip");
-define("FORLAN_129", "This will determine the number of characters to display in the tooltip. ");
+define("FORLAN_126", "<b>การให้แสดงแถบป้ายคำอธิบาย(Tooltip)</b>");
+define("FORLAN_127", "คลิกที่นี่เพื่อให้แสดงแถบป้ายคำอธิบาย ปุ่มคำสั่งของเครื่องมือหรือชื่อกระทู้ เมื่อนำเม้าส์ไปชี้วาง. ");
+define("FORLAN_128", "<b>การกำหนดความยาวของแถบป้ายคำอธิบาย</b>");
+define("FORLAN_129", "จะเป็นการกำหนดจำนวนตัวอักษรที่จะแสดงเป็นแถบป้ายคำอธิบายหรือคำแนะนำ(tooltip). ");
 define("FORLAN_130", "คลิกที่นี่");
-define("FORLAN_131", "to set max file size, allowed types etc");
-define("FORLAN_132", "Emphasize Sticky Threads");
-define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
-define("FORLAN_134", "Maximum width of uploaded image");
-define("FORLAN_135", "Leave blank to disable auto resizing of images");
-define("FORLAN_136", "สร้างลิงก์ไปยังรูปขนาดเต็ม");
-define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image.  If disabled, original image will be discarded");
-define("FORLAN_138", "Prune these forums");
-define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");
-define("FORLAN_140", "ดู");
-define("FORLAN_141", "Post");
-define("FORLAN_142", "การยินยอมให้อภิปราย");
-define("FORLAN_143", "Indicates who can can post to the forum");
-define("FORLAN_144", "Moderators set");
-define("FORLAN_145", "ผปรับแต่งกระทู้ย่อย");
+define("FORLAN_131", "เพื่อกำหนดขนาดไฟล์,การอนุญาตชนิดของไฟล์เป็นต้น");
+define("FORLAN_132", "<b>การเน้นการเกาะติดกระทู้</b>");
+define("FORLAN_133", "ทำให้การเกาะติดกระทู้เด่นเป็นพิเศษ(แยกจากรายการกระทู้และส่วนหัวรายการ)");
+define("FORLAN_134", "<b>กำหนดขนาดของภาพที่ส่งขึ้นแสดงไว้้กว้างสุด(หน่วยเป็นพิกเซลส์)</b>");
+define("FORLAN_135", "ปล่อยว่างไว้ หากไม่ต้องการใช้ระบบย่อ-ขยายสัดส่วนภาพให้อัตโนมัติ");
+define("FORLAN_136", "<b>สร้างการเชื่อมโยงไปที่ภาพขนาดจริง</b>");
+define("FORLAN_137", "การใช้งานคำสั่งนี้จะเป็นการเรียกเชื่อมโยงไปยังภาพขนาดจริงที่ส่งและเก็บไว้ในระบบมาแสดง  หากไม่เลือกจะใช้ตามขนาดที่เห็นภาพ");
+define("FORLAN_138", "เลือกลบรายการกระทู้อภิปรายที่ต้องการ หรือหัวข้อที่ไม่มีผู้ตอบ");
+define("FORLAN_139", "การที่จะใช้งานคำสั่งนี้ได้นั้น คุณต้องเปิดการอนุญาตให้ใช้งานส่วนของการส่งไฟล์ภาพได้ก่อนของคำสั่ง 'ส่งไฟล์ภาพได้' ในไฟล์ <a href='".e_ADMIN."image.php'>images</a>หน้า");
+define("FORLAN_140", "ผู้ที่อ่า่นกระทู้ได้คือ");
+define("FORLAN_141", "ผู้ร่วมอภิปรายคือ");
+define("FORLAN_142", "การอนุญาตให้ร่วมอภิปราย");
+define("FORLAN_143", "เลือกว่าใครจะสามารถร่วมอภิปรายได้");
+define("FORLAN_144", "ผู้ดำเนินการจัดอภิปราย");
+define("FORLAN_145", "ปรับปรุงกระทู้ย่อย");
 define("FORLAN_146", "ยังไม่มีการกระทู้ย่อย");
-define("FORLAN_147", "Update sub-forums");
+define("FORLAN_147", "ปรับปรุงกระทู้ย่อย");
 define("FORLAN_148", "สร้างกระทู้ย่อย");
 define("FORLAN_149", "กระทู้ย่อย");
 define("FORLAN_150", "กระทู้ย่อย");
 define("FORLAN_151", "ID");
-define("FORLAN_152", "posts");
-define("FORLAN_153", "เครื่องมือ");
-define("FORLAN_154", "Reply Deleted");
+define("FORLAN_152", "กระทู้");
+define("FORLAN_153", "เครื่องมือจัดการกระทู้");
+define("FORLAN_154", "ลบคำตอบแล้ว");
 define("FORLAN_155", "ประเภทกระทู้");
-
-define("FORLAN_156", "Select forum(s) to perform action on");
-define("FORLAN_157", "ทุกกระทู้");
-define("FORLAN_158", "Recalculate forum lastpost info");
-define("FORLAN_159", "Select to recalculate lastpost info");
-define("FORLAN_160", "Select to perform this on forums only, not threads");
-define("FORLAN_161", "Recalculate post / reply counts");
-define("FORLAN_162", "Select to recalculate forum thread/reply counts");
-define("FORLAN_163", "Recalculate user forum posts counts");
-define("FORLAN_164", "Select to recalculate user forum counts");
-define("FORLAN_165", "Execute functions");
-define("FORLAN_166", "เครื่องมือกระทู้");
-define("FORLAN_167", "Counts updated for forum");
-define("FORLAN_168", "Lastpost info updated for forum");
-define("FORLAN_169", "User forum counts updated");
+define("FORLAN_156", "เลือกหมวดหมู่รายการ หัวข้อกระทู้อภิปราย ไว้เพื่อใช้คำสั่งจัดการด้านล่าง");
+define("FORLAN_157", "ทุกกระทู้อภิปราย");
+define("FORLAN_158", "การเริ่มนับข้อมูลของกระทู้ใหม่");
+define("FORLAN_159", "คลิกเลือกเพื่อให้เริ่มนับจำนวนกระทู้ล่าสุดใหม่");
+define("FORLAN_160", "เลือกเพื่อให้ดำเนินการเฉพาะการอภิปรายนี้เท่านั้น ไม่ใช่ส่วนกระทู้เข้าอื่นๆ");
+define("FORLAN_161", "การเริ่มนับจำนวนกระทู้และคำตอบกระทู้ ใหม่");
+define("FORLAN_162", "คลิกเลือกเพื่อให้เริ่มนับจำนวนการส่งกระทู้เข้าเสริมและการตอบ ใหม่");
+define("FORLAN_163", "การเริ่มนับจำนวนสมาชิกที่ส่งกระทู้ ใหม่");
+define("FORLAN_164", "คลิกเลือกเพื่อให้เริ่มนับจำนวนสมาชิกการอภิปราย ใหม่");
+define("FORLAN_165", "ดำเนินการตามรายการที่เลือก");
+define("FORLAN_166", "เครื่องมือบริหารจัดการกับกระทู้อภิปราย");
+define("FORLAN_167", "ได้ปรับปรุงการนับจำนวนการอภิปรายแล้ว");
+define("FORLAN_168", "ได้ปรับปรุงข้อมูลของกระทู้อภิปรายล่าสุดแล้ว");
+define("FORLAN_169", "ได้ปรับปรุงจำนวนสมาชิกการอภิปรายแล้ว");
 define("FORLAN_170", "รายงาน");
-define("FORLAN_171", "Report on forum post");
+define("FORLAN_171", "รายงานการส่งกระทู้");
 define("FORLAN_172", "ลบรายงานนี้");
-define("FORLAN_173", "Thread title");
+define("FORLAN_173", "ชื่อกระทู้เข้า");
 define("FORLAN_174", "รายงานโดยผู้ใช้");
-define("FORLAN_175", "ยืนัยนรายงานนี้แล้ว");
+define("FORLAN_175", "ยืนยันรายงานนี้แล้ว");
 define("FORLAN_176", "รายงาน");
+define("FORLAN_177", "<b>การเปิดใช้ระบบแจ้งเตือนทางอีเมล<b/>");
+define("FORLAN_178", "คลิกถูก จะเป็นการเปิดใช้งานระบบแจ้งเตือนทางอีเมล");
+define("FORLAN_179", "(หากใส่เครื่องหมายดอกจัน *นำหน้าชื่อหัวข้อไว้ จะเป็นการกำหนดให้สร้างกระทู้ย่อยจัด เก็บไว้เฉพาะในหมวดการอภิปรายหลักที่เลือกเท่านั้น.จะยังสร้างหัวข้อกระทู้เสริมเข้าไม่ได้   หากไม่มีเครื่องหมายดอกจัน * ก็สร้างกระทู้ต่อไปได้ อย่างไรก็ตามการเลือกใช้รูปแบบกราฟิกเว็ป(Theme) ที่คุณเลือกใช้ก็ต้องมีคำสั่งรองรับกันด้วย.)");
+define("FORLAN_180", "ยืนยันปฏิบัติการลบ");
+define("FORLAN_181", "ยืนยันการลบ");
+define("FORLAN_182", "เช่นเดียวกับการคำนวณคำตอบใหม่สำหรับกระทู้ส่งอภิปรายที่เลือกไว้");
+define("FORLAN_183", "(ไม่อนุญาตให้ใช้คำสั่งนี้หากเลือก 'all forums' เนื่องจากเกี่ยวกับจำนวนคำสั่งเรียกใช้ queries ที่จะถูกสร้างขึ้น)");
 
-define("FORLAN_177", "email nofication ON by default");
-define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
-
-define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for subforums only.  The forum theme must support this option also.)");
 
 ?>

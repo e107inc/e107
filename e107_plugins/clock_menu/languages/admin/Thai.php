@@ -11,24 +11,29 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/admin/Thai.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-13 16:03:07 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-11 05:41:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
+/*แปลและพัฒนาส่วนระบบภาษาไทยโดย ผศ.ประชิด ทิณบุตร เมื่อวันที่ 18 มีนาคม 2549  แก้ไขล่าสุด 28 มีนาคม.2550
+อาจารย์ประจำสาขาวิชาศิลปกรรม มหาวิทยาลัยราชภัฏจันทรเกษม ถนนรัชดาภิเษก เขตจตุจักร กทม 10900.โทร.(66) 0 2942 6900  ต่อ 3011,3014
+Thai Developer & Translation : Assistant Professor Prachid Tinnabutr : Division of Art ,Chandrakasem Rajabhat University,Jatuchak,Bangkok ,Thailand.10900. Tel :(66) 02 9426900 ext:3011,3014
+Last update:28 March 2007 .
+Personal Address : 144/157 Moo 1 ,Changwatana Rd.Pakkret District ,Nonthaburi Province,Thailand,11120 Tel/Fax:(66)0 2962 9505  prachid@prachid.com,prachid@wittycomputer.com ,Mobile Phone : (66) 08 9667 0091
+URL : http://www.prachid.com, http://www.wittycomputer.com, http://www.e107thailand.com(Official International Sites)
 */
-	
-define("CLOCK_AD_L1", "บันทึกการตั้งค่าเมนูนาฬิกาแล้ว");
+define("CLOCK_AD_L1", "บันทึกการตั้งค่าบล๊อคเมนูนาฬิกาให้แล้ว");
 define("CLOCK_AD_L2", "คำอธิบาย");
 define("CLOCK_AD_L3", "ปรับปรุงการตั้งค่าเมนู");
-define("CLOCK_AD_L4", "การตั้งค่าเมนูนาฬิกา");
+define("CLOCK_AD_L4", "ตั้งค่าบล๊อกเมนูนาฬิกา");
 define("CLOCK_AD_L5", "AM/PM");
-define("CLOCK_AD_L6", "If checked, you will display time with US format (0-12 AM/PM format). Unchecked you will display a 'military' format 0-24 format");
+define("CLOCK_AD_L6", "หากเช็คไว้, จะแสดงเวลาแบบ US format (0-12 AM/PM ). หากไม่เช็คไว้จะแสดงเวลาแบบ 'military' คือเวลา  0-24 นาฬิกา");
 define("CLOCK_AD_L7", "คำนำหน้าวัน");
 define("CLOCK_AD_L8", "If your language requires a short word before the date (Example 'le' for french or 'den' for german...), use this field. If not required, let empty.");
-define("CLOCK_AD_L9", "คำตามหลัง 1");
-define("CLOCK_AD_L10", "คำตามหลัง 2");
-define("CLOCK_AD_L11", "คำตามหลัง 3");
-define("CLOCK_AD_L12", "คำตามหลัง 4 และมีอีก");
+define("CLOCK_AD_L9", "Suffix 1");
+define("CLOCK_AD_L10", "Suffix 2");
+define("CLOCK_AD_L11", "Suffix 3");
+define("CLOCK_AD_L12", "Suffix 4 and more");
 define("CLOCK_AD_L13", "If your language requires to display a suffix just after numbers for date, fill these fields with suffix only (Example: 'st' for 1, 'nd' for 2, 'rd' for 3 and 'th' for 4 and more for english users). If not required let empty.");
 define("CLOCK_AD_L14", "");
 define("CLOCK_AD_L15", "");
