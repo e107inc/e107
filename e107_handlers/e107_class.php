@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-04 14:59:28 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2007-04-11 22:23:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -112,13 +112,13 @@ class e107{
 			define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
 
-			if(isset($_SERVER['DOCUMENT_ROOT'])) 
-			{ 
-			  define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/"); 
-			} 
-			else 
-			{ 
-			  define("e_DOCROOT", false); 
+			if(isset($_SERVER['DOCUMENT_ROOT']))
+			{
+			  define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
+			}
+			else
+			{
+			  define("e_DOCROOT", false);
 			}
 			define("e_DOCS_ABS", e_HTTP.$HELP_DIRECTORY);
 
@@ -148,7 +148,7 @@ class e107{
 
 			if(!$UPLOADS_DIRECTORY)
 			{
-            	$UPLOADS_DIRECTORY = e_FILE."public/";
+            	$UPLOADS_DIRECTORY = $FILES_DIRECTORY."public/";
 			}
 
 			if ($UPLOADS_DIRECTORY{0} == "/") {
