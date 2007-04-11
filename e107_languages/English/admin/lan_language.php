@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-31 01:18:33 $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-11 22:29:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,12 @@ define("LANG_LAN_19", "e.g. fr.mydomain.com to set the language to French.");
 
 
 define("LANG_LAN_21", "Language Tools");
+define("LANG_LAN_22", "Language Pack created successfully.");
+define("LANG_LAN_23", "Create Language-Pack (zip)");
+define("LANG_LAN_24", "Generate");
+define("LANG_LAN_25", "Language-Pack Creation Status");
+
+
 
 
 
