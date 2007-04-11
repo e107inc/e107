@@ -2,15 +2,8 @@ if (ADMIN) {
 	global $ns, $sql, $pref, $imode;
 	if ($pref['multilanguage'])
 	{
-		$filepath = e_PLUGIN."userlanguage_menu/languages/".e_LANGUAGE.".php";
-		if(file_exists($filepath))
-		{
-			require_once($filepath);
-		}
-		else
-		{
-			require_once(e_PLUGIN."userlanguage_menu/languages/English.php");
-		}
+		include_lan(e_PLUGIN."user_menu/languages/English.php");
+
 		$lanlist = explode(",",e_LANLIST);
         sort($lanlist);
 		foreach($lanlist as $langval)
