@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-31 01:18:33 $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-11 22:29:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,10 @@ if (!getperms("ML"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+
+
+
 
 $e_sub_cat = 'language';
 
@@ -51,6 +55,7 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
 	$ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
 
 }
+
 
 
 // ----------------- delete tables ---------------------------------------------
@@ -112,6 +117,7 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 unset($text);
 
 
+
 if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existing']) {
 	multilang_prefs();
 }
@@ -120,10 +126,15 @@ if ($action == 'db') {
 	multilang_db();
 }
 
+if($_POST['ziplang'] && $_POST['language'])
+{
+ 	$text = zip_up_lang($_POST['language']);
+    $ns -> tablerender(LANG_LAN_25, $text);
+}
+
 if($action == "tools"){
 	show_tools();
 }
-
 
 
 
@@ -403,8 +414,8 @@ function show_tools()
 	<form name='lancheck' method='post' action='".e_ADMIN."lancheck.php'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
-	<td class='fcaption'>".LAN_CHECK_1."</td>
-	<td class='forumheader3' style='text-align:center'>
+	<td class='fcaption' style='width:70%'>".LAN_CHECK_1."</td>
+	<td class='forumheader3' style='text-align:left'>
 	<select name='language' class='tbox'>
 	<option value=''>".LAN_SELECT."</option>";
 
@@ -422,6 +433,32 @@ function show_tools()
 	$text .= "
 	</select>
 	<input type='submit' name='language_sel' value=\"".LAN_CHECK_2."\" class='button' />
+	</td></tr>
+	</table></form>";
+
+	$text .= "
+	<form name='ziplang' method='post' action='".e_SELF."?tools'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
+	<tr>
+	<td class='fcaption' style='width:70%'>".LANG_LAN_23."</td>
+	<td class='forumheader3' style='text-align:left'>
+	<select name='language' class='tbox'>
+	<option value=''>".LAN_SELECT."</option>";
+
+	$languages = explode(",",e_LANLIST);
+	sort($languages);
+
+	foreach($languages as $lang)
+	{
+		if($lang != "English")
+		{
+	   		$text .= "<option value='{$lang}' >{$lang}</option>\n";
+		}
+	}
+
+	$text .= "
+	</select>
+	<input type='submit' name='ziplang' value=\"".LANG_LAN_24."\" class='button' />
 	</td></tr>
 	</table></form>";
 
@@ -457,5 +494,84 @@ function language_adminmenu() {
 
 	show_admin_menu(ADLAN_132, $action, $var);
 }
+
+
+
+// Zip up the language pack.
+
+// ===================================================
+function zip_up_lang($language)
+{
+    if (is_readable(e_ADMIN."ver.php"))
+	{
+		include(e_ADMIN."ver.php");
+	}
+/*
+    $core_plugins = array(
+    "alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
+    "clock_menu","comment_menu","content","featurebox","forum","gsitemap",
+    "lastseen","links_page","linkwords","list_new","log","login_menu",
+    "newforumposts_main","newsfeed","newsletter","online_extended_menu",
+    "online_menu","other_news_menu","pdf","pm","poll","rss_menu",
+    "search_menu","siteinfo_menu","trackback","tree_menu","user_menu","userlanguage_menu",
+    "usertheme_menu"
+    );
+
+    $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
+    "khatru","kubrick","lamb","leaf","newsroom","reline","sebes","vekna_blue");
+*/
+
+	require_once(e_HANDLER.'pclzip.lib.php');
+
+	list($ver,$tmp) = explode(" ",$e107info['e107_version']);
+
+	$newfile = e_UPLOAD."e107_".$ver."_".$language."_utf8.zip";
+  	$archive = new PclZip($newfile);
+
+	$core = grab_lans(e_LANGUAGEDIR.$language."/",$language);
+    $plugs = grab_lans(e_PLUGIN,$language);
+    $theme = grab_lans(e_THEME,$language);
+
+	$file = array_merge($core,$plugs,$theme);
+	$data = implode(",",$file);
+
+  	if ($archive->create($data) == 0)
+	{
+    	return $archive->errorInfo(true);
+  	}
+	else
+	{
+    	return LANG_LAN_22." (".str_replace("../","",e_UPLOAD)."<a href='".$newfile."' >".basename($newfile)."</a>).";
+	}
+
+
+}
+
+function grab_lans($path,$language,$filter = "")
+{
+   	require_once(e_HANDLER."file_class.php");
+    $fl = new e_file;
+
+    if($lanlist = $fl->get_files($path,"", "standard",4)){
+    	sort($lanlist);
+    }else{
+    	return;
+	}
+
+    $pzip = array();
+ 	foreach($lanlist as $p)
+	{
+		$fullpath = $p['path'].$p['fname'];
+    	if(strpos($fullpath,$language)!== FALSE)
+	 	{
+			$pzip[] = $fullpath;
+		}
+	}
+    return $pzip;
+
+}
+
+
+
 
 ?>
