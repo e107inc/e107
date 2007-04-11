@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/search/search_download.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-11 21:22:00 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -43,7 +43,7 @@ if (isset($_GET['match']) && $_GET['match']) {
 $return_fields = 'd.download_id, d.download_category, download_category_id, d.download_name, d.download_description, d.download_author, d.download_author_website, d.download_datestamp, d.download_class, c.download_category_name, c.download_category_class';
 $weights = array('1.2', '0.9', '0.6', '0.6', '0.4');
 $no_results = LAN_198;
-$where = "download_active = '1' AND d.download_visible IN (".USERCLASS_LIST.") AND c.download_category_class IN (".USERCLASS_LIST.") AND".$advanced_where;
+$where = "download_active > '0' AND d.download_visible IN (".USERCLASS_LIST.") AND c.download_category_class IN (".USERCLASS_LIST.") AND".$advanced_where;
 $order = array('download_datestamp' => DESC);
 $table = "download AS d LEFT JOIN #download_category AS c ON d.download_category = c.download_category_id";
 
