@@ -48,7 +48,7 @@ $qry			= " content_refer !='sa' ".$datequery." AND content_class REGEXP '".e_CLA
 
 $rss = array();
 $sqlrss = new db;
-if($items = $sqlrss -> db_Select('pcontent', "*", $qry )){
+if($items = $sqlrss -> db_Select('pcontent', "content_id, content_heading, content_subheading, content_parent, content_author, content_datestamp", $qry )){
 	$i=0;
 	while($rowrss = $sqlrss -> db_Fetch()){
 		//$author = array($author_id, $author_name, $author_email, $content_author);

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2007-03-13 16:51:05 $
+|		$Revision: 1.5 $
+|		$Date: 2007-04-12 21:35:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -184,8 +184,8 @@ if(!e_QUERY){
 
 	//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 	//and use those preferences in the permissions check.
-	if(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']){
-		$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+	if( varsettrue($content_pref['content_manager_inherit']) ){
+		$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 		$row = $sql -> db_Fetch();
 		$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 	}

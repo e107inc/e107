@@ -15,7 +15,7 @@ if(!function_exists('e_userprofile_content')){
 
 		//get main parent types
 		$sqlm = new db;
-		if($sqlm -> db_Select("pcontent", "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
+		if($sqlm -> db_Select("pcontent", "content_id, content_heading", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
 			while($rowm = $sqlm -> db_Fetch()){
 				//global var for this main parent
 				$mainparent = $rowm['content_id'];

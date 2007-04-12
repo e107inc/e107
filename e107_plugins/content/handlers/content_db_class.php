@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2007-03-13 16:51:05 $
+|		$Revision: 1.7 $
+|		$Date: 2007-04-12 21:35:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ if(isset($_POST['uploadfile'])){
 		$new = "";
 		if($uploaded){
 			$uporg		= $uploaded[0]['name'];
-			$resize		= (isset($content_pref["content_upload_icon_size"]) && $content_pref["content_upload_icon_size"] ? $content_pref["content_upload_icon_size"] : "100");
+			$resize		= varsettrue($content_pref["content_upload_icon_size"],"100");
 			if($uporg){
 				$new = $newpid."_".$uporg;
 				rename($pathtmp.$uporg, $pathtmp.$new);
@@ -85,8 +85,8 @@ if(isset($_POST['uploadfile'])){
 		$new = "";
 		if($uploaded){
 			$uporg		= $uploaded[0]['name'];
-			$resize		= (isset($content_pref["content_upload_image_size"]) && $content_pref["content_upload_image_size"] ? $content_pref["content_upload_image_size"] : "500");
-			$resizethumb	= (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
+			$resize		= varsettrue($content_pref["content_upload_image_size"],"500");
+			$resizethumb	= varsettrue($content_pref["content_upload_image_size_thumb"],"100");
 			if($uporg){
 				$new = $newpid."_".$uporg;
 				rename($pathtmp.$uporg, $pathtmp.$new);
@@ -171,11 +171,9 @@ class contentdb{
 
 			$mainparent						= $aa -> getMainParent(intval($_POST['parent']));
 			$content_pref					= $aa -> getContentPref($mainparent);
-			
-			$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
-			$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
-			$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
-			
+			$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
+			$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
+			$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
 			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
 			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
 			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
@@ -188,7 +186,7 @@ class contentdb{
 			//move icon to correct folder
 			if($_POST['content_icon']){
 				$icon = $tp->toDB($_POST['content_icon']);	
-				if($icon && file_exists($content_tmppath_icon.$icon)){
+				if($icon && is_readable($content_tmppath_icon.$icon)){
 					rename($content_tmppath_icon.$icon, $content_icon_path.$icon);
 				}
 			}
@@ -207,10 +205,10 @@ class contentdb{
 			$totalattach = "";
 			for($i=0;$i<$sumf;$i++){
 				$attach{$i} = $tp->toDB($_POST["content_files{$i}"]);
-				if($attach{$i} && file_exists($content_tmppath_file.$attach{$i})){
+				if($attach{$i} && is_readable($content_tmppath_file.$attach{$i})){
 					rename($content_tmppath_file.$attach{$i}, $content_file_path.$attach{$i});
 				}
-				if($attach{$i} && file_exists($content_file_path.$attach{$i})){
+				if($attach{$i} && is_readable($content_file_path.$attach{$i})){
 					$totalattach .= "[file]".$attach{$i};
 				}
 			}
@@ -218,13 +216,13 @@ class contentdb{
 			$totalimages = "";
 			for($i=0;$i<$sumi;$i++){
 				$image{$i} = $tp->toDB($_POST["content_images{$i}"]);
-				if($image{$i} && file_exists($content_tmppath_image.$image{$i})){
+				if($image{$i} && is_readable($content_tmppath_image.$image{$i})){
 					rename($content_tmppath_image.$image{$i}, $content_image_path.$image{$i});
 				}
-				if($image{$i} && file_exists($content_tmppath_image."thumb_".$image{$i})){
+				if($image{$i} && is_readable($content_tmppath_image."thumb_".$image{$i})){
 					rename($content_tmppath_image."thumb_".$image{$i}, $content_image_path."thumb_".$image{$i});
 				}
-				if($image{$i} && file_exists($content_image_path.$image{$i})){
+				if($image{$i} && is_readable($content_image_path.$image{$i})){
 					$totalimages .= "[img]".$image{$i};
 				}
 			}
@@ -266,7 +264,7 @@ class contentdb{
 				}
 			}
 			//preset additional data tags
-			if(isset($_POST['content_custom_preset_key']) && $_POST['content_custom_preset_key']){
+			if( varsettrue(($_POST['content_custom_preset_key']) ){
 				$custom['content_custom_presettags'] = $tp->toDB($_POST['content_custom_preset_key']);
 			}
 			if($custom){

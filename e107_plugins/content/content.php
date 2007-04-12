@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2007-04-12 16:02:06 $
+|		$Revision: 1.11 $
+|		$Date: 2007-04-12 21:35:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -291,7 +291,7 @@ function show_content(){
 			return;
 		}
 		if(!is_object($sql)){ $sql = new db; }
-		if(!$sql -> db_Select($plugintable, "*", "content_parent = '0' AND content_class REGEXP '".e_CLASS_REGEXP."' ".$datequery." ORDER BY round(content_order)")){
+		if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_pref", "content_parent = '0' AND content_class REGEXP '".e_CLASS_REGEXP."' ".$datequery." ORDER BY round(content_order)")){
 			$text .= "<div style='text-align:center;'>".CONTENT_LAN_21."</div>";
 		}else{
 
@@ -334,7 +334,7 @@ function show_content(){
 					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 					//and use those preferences in the permissions check.
 					if( varsettrue($content_pref['content_manager_inherit'],'') ){
-						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$sql2 -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 						$row2 = $sql2 -> db_Fetch();
 						$content_pref = $eArrayStorage->ReadArray($row2['e107_value']);
 					}
@@ -386,22 +386,17 @@ function show_content_archive(){
 		$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 		$number			= varsettrue($content_pref["content_archive_nextprev_number"], '30');
 		$order			= $aa -> getOrder();
-		$nextprevquery	= (isset($content_pref["content_archive_nextprev"]) && $content_pref["content_archive_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+		$nextprevquery	= (varsettrue($content_pref["content_archive_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 		$sql1 = new db;
 
-		if(isset($content_pref["content_archive_letterindex"]) && $content_pref["content_archive_letterindex"]){
+		if( varsettrue($content_pref["content_archive_letterindex"]) ){
 			$distinctfirstletter = $sql -> db_Select($plugintable, " DISTINCT(content_heading) ", "content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_heading ASC ");
 			while($row = $sql -> db_Fetch()){
 				$head = $tp->toHTML($row['content_heading'], TRUE);
-				if(ord($head) < 128) {
-					$head_sub = strtoupper(substr($head,0,1));
-				}else{
-					$head_sub = substr($head,0,2);
-				}
+				$head_sub = ( ord($head) < 128 ? strtoupper(substr($head,0,1)) : substr($head,0,2) );
 				$arrletters[] = $head_sub;
 			}
-			$arrletters = array_unique($arrletters);
-			$arrletters = array_values($arrletters);
+			$arrletters = array_values( array_unique($arrletters) );
 			sort($arrletters);
 
 			if ($distinctfirstletter > 1){
@@ -410,41 +405,25 @@ function show_content_archive(){
 				for($i=0;$i<count($arrletters);$i++){
 					if(is_numeric($arrletters[$i])){
 						if($int===TRUE){
-							if(isset($qs[2]) && is_numeric($qs[2])){
-								$class = 'nextprev_current';
-							}else{
-								$class = 'nextprev_link';
-							}
+							$class = (isset($qs[2]) && is_numeric($qs[2]) ? 'nextprev_current' : 'nextprev_link');
 							$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent.".0'>0-9</a> ";
 						}
 						$int=FALSE;
 					}else{
-						if(isset($qs[2]) && strtoupper($qs[2]) == strtoupper($arrletters[$i])){
-							$class = 'nextprev_current';
-						}else{
-							$class = 'nextprev_link';
-						}
-						$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent.".".strtoupper($arrletters[$i])."'>".strtoupper($arrletters[$i])."</a> ";
+						$lu = strtoupper($arrletters[$i]);
+						$class = (isset($qs[2]) && strtoupper($qs[2]) == $lu ? 'nextprev_current' : 'nextprev_link');
+						$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent.".".$lu."'>".$lu."</a> ";
 					}
 				}
-				if(!isset($qs[2]) || (isset($qs[2]) && strtolower($qs[2])=='all') ){
-					$class = 'nextprev_current';
-				}else{
-					$class = 'nextprev_link';
-				}
-				$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent."'>ALL</a> ";
-				$CONTENT_ARCHIVE_TABLE_LETTERS .= "</form>";
+				$class = (!isset($qs[2]) || (isset($qs[2]) && strtolower($qs[2])=='all') ? 'nextprev_current' : 'nextprev_link');
+				$CONTENT_ARCHIVE_TABLE_LETTERS .= "<a class='".$class."' href='".e_SELF."?list.".$mainparent."'>ALL</a></form>";
 			}
 			//check letter
 			if(isset($qs[2])){
-				if($qs[2] == 'all'){
-					$qry .= '';
-				}elseif(strlen($qs[2]) == 1 && $qs[2] == '0'){
+				if(strlen($qs[2]) == 1 && $qs[2] == '0'){
 					$qry .= " AND content_heading NOT REGEXP '^[[:alpha:]]' ";
 				}elseif(strlen($qs[2]) == 1 && !is_numeric($qs[2]) ){
 					$qry .= " AND content_heading LIKE '".$tp->toDB($qs[2])."%' ";
-				}else{
-					$qry .= '';
 				}
 			}
 		}
@@ -452,8 +431,7 @@ function show_content_archive(){
 		$contenttotal = $sql1 -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 		if($from > $contenttotal-1){ header("location:".e_SELF); exit; }
 
-		if($item = $sql1 -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
-			
+		if($item = $sql1 -> db_Select($plugintable, "content_id, content_heading, content_author, content_datestamp", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 			$CONTENT_NEXTPREV = $aa->ShowNextPrev("archive", $from, $number, $contenttotal, true);
 			$text = $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE_START, FALSE, $content_shortcodes);
 			while($row = $sql1 -> db_Fetch()){
@@ -482,7 +460,7 @@ function displayPreview($qry, $np=false, $array=false){
 				}
 			}
 		}
-		if($resultitem = $sql2 -> db_Select($plugintable, "*", $qry )){
+		if($resultitem = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_icon, content_author, content_datestamp, content_parent, content_refer, content_rate", $qry )){
 			if($np){
 				$CONTENT_NEXTPREV = $np;
 			}
@@ -527,7 +505,7 @@ function show_content_recent(){
 		$validparent		= implode(",", array_keys($array));
 		$order				= $aa -> getOrder();
 		$number				= varsettrue($content_pref["content_nextprev_number"], '5');
-		$nextprevquery		= ($content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+		$nextprevquery		= (varsettrue($content_pref["content_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
 		$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " );
@@ -582,7 +560,7 @@ function show_content_cat_all(){
 		$validparent					= implode(",", array_keys($array));
 		$order							= $aa -> getOrder();
 		$number							= varsettrue($content_pref["content_nextprev_number"], '5');
-		$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+		$nextprevquery					= (varsettrue($content_pref["content_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry							= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
 		$newarray = array_merge_recursive($array);
@@ -595,7 +573,7 @@ function show_content_cat_all(){
 		$string = "";
 		foreach($newparent as $key => $value){
 			$totalitems = $aa -> countCatItems($key);
-			$sql -> db_Select($plugintable, "*", "content_id = '".$key."' ");
+			$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_icon, content_author, content_datestamp, content_parent, content_comment, content_rate", "content_id = '".$key."' ");
 			$row = $sql -> db_Fetch();
 
 			$date	= $tp -> parseTemplate('{CM_DATE|cat}', FALSE, $content_shortcodes);
@@ -650,7 +628,7 @@ function show_content_cat($mode=""){
 		$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
 		$order							= $aa -> getOrder();
 		$number							= varsettrue($content_pref["content_nextprev_number"], '5');
-		$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+		$nextprevquery					= (varsettrue($content_pref["content_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 		$capqs							= array_reverse($array[intval($qs[1])]);
 		$caption = $content_pref['content_cat_caption'];
 		if( varsettrue($content_pref['content_cat_caption_append_name'],'') ){
@@ -658,8 +636,8 @@ function show_content_cat($mode=""){
 		}
 
 		// parent article
-		if(isset($content_pref["content_cat_showparent"]) && $content_pref["content_cat_showparent"]){
-			if(!$resultparent = $sql -> db_Select($plugintable, "*", $qry )){
+		if( varsettrue($content_pref["content_cat_showparent"]) ){
+			if(!$resultparent = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_icon, content_author, content_datestamp, content_comment, content_rate", $qry )){
 				header("location:".e_SELF."?cat.list.".$mainparent); exit;
 			}else{
 				//if 'view' override the items pref to show only limited text adn show full catetgory text instead
@@ -710,12 +688,12 @@ function show_content_cat($mode=""){
 					$b++;
 				}
 			}
-			$subparent		= array_keys($subparent);
-			$validsub		= "0.".implode(",0.", $subparent);
-			$subqry			= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validsub)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
+			$subparent	= array_keys($subparent);
+			$validsub	= "0.".implode(",0.", $subparent);
+			$subqry		= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validsub)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
 
 			//list subcategories
-			if(isset($content_pref["content_cat_showparentsub"]) && $content_pref["content_cat_showparentsub"]){
+			if( varsettrue($content_pref["content_cat_showparentsub"]) ){
 
 				$content_cat_listsub_table_string = "";
 				for($i=0;$i<count($subparent);$i++){
@@ -734,7 +712,7 @@ function show_content_cat($mode=""){
 			unset($text);
 
 			//also show content items of subcategories of this category ?
-			if(isset($content_pref["content_cat_listtype"]) && $content_pref["content_cat_listtype"]){
+			if( varsettrue($content_pref["content_cat_listtype"]) ){
 				$validitem = implode(",", $subparent);
 				$qrycat = " content_parent REGEXP '".$aa -> CONTENTREGEXP($validitem)."' ";
 			}else{
@@ -744,33 +722,33 @@ function show_content_cat($mode=""){
 			$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE ".$qrycat);
 			$childqry = $qrycat." ".$order." ".$nextprevquery;
 			$np=false;
-			if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
+			if( varsettrue($content_pref["content_nextprev"]) ){
 				$np = $aa->ShowNextPrev(FALSE, $from, $number, $contenttotal, true);
 			}
 			$textchild = displayPreview($childqry, $np, $array);
 			$captionchild = $content_pref['content_cat_item_caption'];
 
 			$crumbpage = $aa->getCrumbPage("cat", $array, $qs[1]);
-			if(isset($textparent) && $textparent){ 
+			if( varsettrue($textparent) ){ 
 				$textparent = $crumbpage.$textparent;
 			}else{
 				$textchild = $crumbpage.$textchild;
 			}
 			if(isset($content_pref["content_cat_menuorder"]) && $content_pref["content_cat_menuorder"] == "1"){
 				if(isset($content_pref["content_cat_rendertype"]) && $content_pref["content_cat_rendertype"] == "1"){
-					if(isset($textparent) && $textparent){ $ns -> tablerender($caption, $textparent); }
-					if(isset($textsubparent) && $textsubparent){ $ns -> tablerender($captionsubparent, $textsubparent); }
-					if(isset($textchild) && $textchild){ $ns -> tablerender($captionchild, $textchild); }
+					if( varsettrue($textparent) ){ $ns -> tablerender($caption, $textparent); }
+					if( varsettrue($textsubparent) ){ $ns -> tablerender($captionsubparent, $textsubparent); }
+					if( varsettrue($textchild) ){ $ns -> tablerender($captionchild, $textchild); }
 				}else{
 					$ns -> tablerender($caption, varsettrue($textparent,'').varsettrue($textsubparent,'').$textchild);
 				}
 			}else{
 				if(isset($content_pref["content_cat_rendertype"]) && $content_pref["content_cat_rendertype"] == "1"){
-					if(isset($textchild) && $textchild){ $ns -> tablerender($captionchild, $textchild); }
-					if(isset($textparent) && $textparent){ $ns -> tablerender($caption, $textparent); }
-					if(isset($textsubparent) && $textsubparent){ $ns -> tablerender($captionsubparent, $textsubparent); }
+					if( varsettrue($textchild) ){ $ns -> tablerender($captionchild, $textchild); }
+					if( varsettrue($textparent) ){ $ns -> tablerender($caption, $textparent); }
+					if( varsettrue($textsubparent) ){ $ns -> tablerender($captionsubparent, $textsubparent); }
 				}else{
-					if(isset($textchild) && $textchild){ $ns -> tablerender($captionchild, $textchild); }
+					if( varsettrue($textchild) ){ $ns -> tablerender($captionchild, $textchild); }
 					$ns -> tablerender($caption, varsettrue($textparent,'').varsettrue($textsubparent,''));
 				}
 			}
@@ -779,7 +757,7 @@ function show_content_cat($mode=""){
 
 		if($mode == "comment"){
 			$textparent = $aa->getCrumbPage("cat", $array, $mainparent).$textparent;
-			if(isset($textparent) && $textparent){ $ns -> tablerender($caption, $textparent); }
+			if( varsettrue($textparent) ){ $ns -> tablerender($caption, $textparent); }
 
 			if($resultitem = $sql -> db_Select($plugintable, "*", $qry )){
 				$row = $sql -> db_Fetch();
@@ -790,7 +768,7 @@ function show_content_cat($mode=""){
 						echo $cachecheck;
 						return;
 					}
-					if( (isset($content_pref["content_cat_rating_all"]) && $content_pref["content_cat_rating_all"]) || (isset($content_pref["content_cat_rating"]) && $content_pref["content_cat_rating"] && $row['content_rate'])){
+					if( (varsettrue($content_pref["content_cat_rating_all"])) || (varsettrue($content_pref["content_cat_rating"]) && $row['content_rate'])){
 						$showrate = TRUE;
 					}else{
 						$showrate = FALSE;
@@ -832,7 +810,7 @@ function show_content_author_all(){
 		$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
 		$validparent	= implode(",", array_keys($array));
 		$number			= varsettrue($content_pref["content_author_nextprev_number"],'5');
-		$nextprevquery	= (isset($content_pref["content_author_nextprev"]) && $content_pref["content_author_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+		$nextprevquery	= (varsettrue($content_pref["content_author_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry			= " p.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 		$dateqry		= "AND p.content_datestamp < ".time()." AND (p.content_enddate=0 || p.content_enddate>".time().")";
 
@@ -970,7 +948,7 @@ function show_content_author(){
 		}
 		$order				= $aa -> getOrder();
 		$number				= varsettrue($content_pref["content_nextprev_number"],'10');
-		$nextprevquery		= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+		$nextprevquery		= (varsettrue($content_pref["content_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 		$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 		$sqla = "";
 		if(!is_object($sqla)){ $sqla = new db; }
@@ -1035,7 +1013,7 @@ function show_content_top(){
 		$np					= ($number ? " LIMIT ".intval($from).", ".intval($number) : "");
 
 		$qry1 = "
-		SELECT p.*, r.*, (r.rate_rating / r.rate_votes) as rate_avg
+		SELECT p.content_id, p.content_heading, p.content_icon, p.content_author, p.content_rate, (r.rate_rating / r.rate_votes) as rate_avg
 		FROM #rate AS r
 		LEFT JOIN #pcontent AS p ON p.content_id = r.rate_itemid
 		WHERE p.content_refer !='sa' AND ".$qry." ".$datequery1." AND p.content_class REGEXP '".e_CLASS_REGEXP."' AND r.rate_table='pcontent'
@@ -1140,7 +1118,7 @@ function show_content_item(){
 			$row = $sql -> db_Fetch();
 
 			//update refer count outside of cache (count visits ^ count unique ips)
-			if(isset($content_pref["content_log"]) && $content_pref["content_log"]){
+			if( varsettrue($content_pref["content_log"]) ){
 				$ip			= $e107->getip();
 				$self		= e_SELF;
 				$refertmp	= explode("^", $row['content_refer']);
@@ -1181,7 +1159,7 @@ function show_content_item(){
 			$content_image_path = $tp -> replaceConstants($content_pref["content_image_path"]);
 			$content_file_path = $tp -> replaceConstants($content_pref["content_file_path"]);
 			$number = varsettrue($content_pref["content_nextprev_number"],'5');
-			$nextprevquery = (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+			$nextprevquery = (varsettrue($content_pref["content_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 
 			$CM_AUTHOR = $aa -> prepareAuthor("content", $row['content_author'], $row['content_id']);
 			$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
@@ -1202,10 +1180,8 @@ function show_content_item(){
 				}
 				$pages = array_values($pages);
 
-				if(count($pages) == count($matches[0])){
-				}elseif(count($pages) > count($matches[0])){
+				if(count($pages) > count($matches[0])){
 					$matches[0] = array_pad($matches[0], -count($pages), "[newpage]");
-				}elseif(count($pages) < count($matches[0])){
 				}
 
 				$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$qs[2] ? 0 : $qs[2]-1)];
@@ -1219,9 +1195,9 @@ function show_content_item(){
 						$arrpagename = explode("[newpage=", $matches[0][$i]);
 						$pagename[$i] = substr($arrpagename[1],0,-1);
 					}
-					if(isset($content_pref["content_content_pagenames_nextprev"]) && $content_pref["content_content_pagenames_nextprev"]){
+					if( varsettrue($content_pref["content_content_pagenames_nextprev"]) ){
 						if($idp>1){
-							if(isset($content_pref["content_content_pagenames_nextprev_prevhead"]) && $content_pref["content_content_pagenames_nextprev_prevhead"]){
+							if( varsettrue($content_pref["content_content_pagenames_nextprev_prevhead"]) ){
 								$cap = $content_pref["content_content_pagenames_nextprev_prevhead"];
 								$cap = str_replace("{PAGETITLE}", $pagename[$idp-2], $cap);
 							}else{
@@ -1232,7 +1208,7 @@ function show_content_item(){
 							$CONTENT_CONTENT_TABLE_PREV_PAGE = ' ';
 						}
 						if($idp<count($pages)){
-							if(isset($content_pref["content_content_pagenames_nextprev_nexthead"]) && $content_pref["content_content_pagenames_nextprev_nexthead"]){
+							if( varsettrue($content_pref["content_content_pagenames_nextprev_nexthead"]) ){
 								$cap = $content_pref["content_content_pagenames_nextprev_nexthead"];
 								$cap = str_replace("{PAGETITLE}", $pagename[$idp], $cap);
 							}else{
@@ -1255,13 +1231,13 @@ function show_content_item(){
 					}
 
 					if($idp==1){
-						$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
+						$CONTENT_CONTENT_TABLE_SUMMARY = ( varsettrue($content_pref["content_content_summary"]) && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
 						$CONTENT_CONTENT_TABLE_SUMMARY = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 					}else{
 						$CONTENT_CONTENT_TABLE_SUMMARY = "";
 					}
 					//render custom/preset on first page
-					if(isset($content_pref['content_content_multipage_preset']) && $content_pref['content_content_multipage_preset']){
+					if( varsettrue($content_pref['content_content_multipage_preset']) ){
 						if($idp == '1'){
 							$lastpage = TRUE;
 						}
@@ -1280,7 +1256,7 @@ function show_content_item(){
 				}
 
 			}else{
-				$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
+				$CONTENT_CONTENT_TABLE_SUMMARY = ( varsettrue($content_pref["content_content_summary"]) && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
 				$CONTENT_CONTENT_TABLE_SUMMARY = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 				$lastpage = TRUE;
 			}
@@ -1369,7 +1345,7 @@ function show_content_item(){
 				//ksort($custom);
 				foreach($custom as $k => $v){
 					if($k == "content_custom_presettags"){
-						if(isset($content_pref["content_content_presettags"]) && $content_pref["content_content_presettags"]){
+						if( varsettrue($content_pref["content_content_presettags"]) ){
 							foreach($v as $ck => $cv){
 								if(is_array($cv)){	//date
 									if(!($cv['day']=="" && $cv['month']=="" && $cv['year']=="")){
@@ -1387,7 +1363,7 @@ function show_content_item(){
 							}
 						}
 					}else{
-						if(isset($content_pref["content_content_customtags"]) && $content_pref["content_content_customtags"]){
+						if( varsettrue($content_pref["content_content_customtags"]) ){
 							$key = substr($k,15);
 							if( isset($key) && $key != "" && isset($v) && $v!="" ){
 								$CUSTOM_TAGS = TRUE;
@@ -1419,14 +1395,14 @@ function show_content_item(){
 				}
 			}
 
-			if($lastpage && ($row['content_comment'] || (isset($content_pref["content_content_comment_all"]) && $content_pref["content_content_comment_all"]))){
+			if($lastpage && ($row['content_comment'] || (varsettrue($content_pref["content_content_comment_all"])) ) ){
 				$cachecheck = CachePre($cachestr);
 				if($cachecheck){
 					echo $cachecheck;
 					return;
 				}
 
-				if((isset($content_pref["content_content_rating"]) && $content_pref["content_content_rating"] && $row['content_rate']) || (isset($content_pref["content_content_rating_all"]) && $content_pref["content_content_rating_all"]) ){
+				if( (varsettrue($content_pref["content_content_rating"]) && $row['content_rate']) || varsettrue($content_pref["content_content_rating_all"]) ){
 					$showrate = TRUE;
 				}else{
 					$showrate = FALSE;
