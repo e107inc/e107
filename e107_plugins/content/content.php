@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2007-04-12 12:19:40 $
+|		$Revision: 1.10 $
+|		$Date: 2007-04-12 16:02:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -468,7 +468,7 @@ function show_content_archive(){
 
 //this function renders the preview of a content_item
 //used in recent list, view author list, category items list
-function displayPreview($qry, $np=false){
+function displayPreview($qry, $np=false, $array=false){
 		global $qs, $array, $row, $gen, $rater, $aa, $sql2, $tp, $plugintable, $plugindir, $content_shortcodes, $content_pref, $mainparent, $CM_AUTHOR, $CONTENT_RECENT_TABLE_START, $CONTENT_RECENT_TABLE_END, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_INFOPRE, $CONTENT_RECENT_TABLE_INFOPOST, $CONTENT_NEXTPREV;
 
 		if(!isset($CONTENT_RECENT_TABLE)){
@@ -509,7 +509,7 @@ function displayPreview($qry, $np=false){
 
 // ##### RECENT LIST ------------------------------------
 function show_content_recent(){
-		global $qs, $sql2, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $nextprevquery, $from, $number, $mainparent, $datequery, $content_icon_path, $CONTENT_RECENT_TABLE;
+		global $qs, $sql2, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $nextprevquery, $from, $number, $mainparent, $datequery, $content_icon_path, $CONTENT_RECENT_TABLE, $array;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -537,7 +537,7 @@ function show_content_recent(){
 		$recentqry = "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery;
 		$np = $aa->ShowNextPrev("", $from, $number, $contenttotal,true);
 		$text = $aa->getCrumbPage("recent", $array, $mainparent);
-		$text .= displayPreview($recentqry, $np);
+		$text .= displayPreview($recentqry, $np, $array);
 
 		$caption = $content_pref['content_list_caption'];
 		if( varsettrue($content_pref['content_list_caption_append_name'],'') ){
@@ -622,7 +622,7 @@ function show_content_cat_all(){
 }
 
 function show_content_cat($mode=""){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from, $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CM_AUTHOR, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST, $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from, $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CM_AUTHOR, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST, $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount, $array;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -747,7 +747,7 @@ function show_content_cat($mode=""){
 			if(isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"]){
 				$np = $aa->ShowNextPrev(FALSE, $from, $number, $contenttotal, true);
 			}
-			$textchild = displayPreview($childqry, $np);
+			$textchild = displayPreview($childqry, $np, $array);
 			$captionchild = $content_pref['content_cat_item_caption'];
 
 			$crumbpage = $aa->getCrumbPage("cat", $array, $qs[1]);
@@ -948,7 +948,7 @@ function show_content_author_all(){
 
 
 function show_content_author(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $nextprevquery, $from, $number, $content_icon_path, $CONTENT_RECENT_TABLE, $datequery, $crumb, $mainparent;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $nextprevquery, $from, $number, $content_icon_path, $CONTENT_RECENT_TABLE, $datequery, $crumb, $mainparent, $array;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -989,7 +989,7 @@ function show_content_author(){
 			$text = $aa->getCrumbPage("author", $array, $mainparent);
 
 			$np = $aa->ShowNextPrev("", $from, $number, $contenttotal, true);
-			$text .= displayPreview($authorqry, $np);
+			$text .= displayPreview($authorqry, $np, $array);
 			
 			$caption = $content_pref['content_author_caption'];
 			if( varsettrue($content_pref['content_author_caption_append_name'],'') ){
