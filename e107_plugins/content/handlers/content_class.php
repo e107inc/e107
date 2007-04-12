@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2007-04-10 14:34:39 $
+|		$Revision: 1.12 $
+|		$Date: 2007-04-12 12:19:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -625,7 +625,7 @@ class content{
 			return $crumb;
 		}
 
-		function ShowNextPrev($mode='', $from='0', $number, $total){
+		function ShowNextPrev($mode='', $from='0', $number, $total, $return=false){
 			global $content_pref, $qs, $tp, $plugindir, $content_shortcodes, $CONTENT_NEXTPREV;
 
 			if($total<=$number){
@@ -639,18 +639,22 @@ class content{
 				
 				$CONTENT_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
 
-				if(!isset($CONTENT_NP_TABLE)){
-					if(!$content_pref["content_theme"]){
-						require_once($plugindir."templates/default/content_np_template.php");
-					}else{
-						if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_np_template.php")){
-							require_once($tp->replaceConstants($content_pref["content_theme"])."content_np_template.php");
-						}else{
+				if($return){
+					return $CONTENT_NEXTPREV;
+				}else{
+					if(!isset($CONTENT_NP_TABLE)){
+						if(!$content_pref["content_theme"]){
 							require_once($plugindir."templates/default/content_np_template.php");
+						}else{
+							if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_np_template.php")){
+								require_once($tp->replaceConstants($content_pref["content_theme"])."content_np_template.php");
+							}else{
+								require_once($plugindir."templates/default/content_np_template.php");
+							}
 						}
 					}
+					echo $tp -> parseTemplate($CONTENT_NP_TABLE, FALSE, $content_shortcodes);
 				}
-				echo $tp -> parseTemplate($CONTENT_NP_TABLE, FALSE, $content_shortcodes);
 			}
 		}
 
@@ -698,8 +702,9 @@ class content{
 					global $row;
 					$crumb .= $row['content_heading'];
 				}
+
 				$crumb = trim($crumb);
-				if(substr($crumb,-strlen(trim($sep))) == trim($sep)){
+				if(substr($crumb,-strlen(trim($sep))) == trim($sep) && trim($sep)!='>'){
 					$crumb = substr($crumb,0,-strlen(trim($sep)));
 				}
 

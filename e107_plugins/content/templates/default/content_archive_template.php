@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_archive_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-10 14:34:39 $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-12 12:19:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,9 @@ $sc_style['CM_AUTHOR|archive']['post'] = "</td></tr>";
 
 $sc_style['CONTENT_ARCHIVE_TABLE_LETTERS']['pre'] = "<div style='margin-bottom:20px;'>";
 $sc_style['CONTENT_ARCHIVE_TABLE_LETTERS']['post'] = "</div>";
+
+$sc_style['CONTENT_NEXTPREV']['pre'] = "<div class='nextprev'>";
+$sc_style['CONTENT_NEXTPREV']['post'] = "</div>";
 
 // ##### CONTENT ARCHIVE --------------------------------------------------
 if(!isset($CONTENT_ARCHIVE_TABLE_START)){
@@ -42,7 +45,7 @@ if(!isset($CONTENT_ARCHIVE_TABLE)){
 }
 if(!isset($CONTENT_ARCHIVE_TABLE_END)){
 	$CONTENT_ARCHIVE_TABLE_END = "
-	</table>";
+	</table>{CONTENT_NEXTPREV}";
 }
 // ##### ----------------------------------------------------------------------
 
