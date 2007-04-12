@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-10-29 01:00:20 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2007-04-12 19:40:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -104,7 +104,7 @@ echo "<?xml version='1.0' encoding='".CHARSET."' ?><!DOCTYPE html PUBLIC \"-//W3
 <title>".PAGE_NAME."</title>
 <meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />
-<link rel='stylesheet' href='".e_THEME."lamb/style.css' type='text/css' />
+<link rel='stylesheet' href='".THEME."style.css' type='text/css' />
 </head>
 <body style='padding: 0; margin: 0; background-color: #e8e8e8; color: #8E8E8E'>
 
