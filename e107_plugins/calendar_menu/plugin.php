@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.3 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2007-03-25 21:17:26 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2007-04-12 08:46:08 $
+|     $Author: lisa_ $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added
@@ -56,7 +56,7 @@ $eplug_icon_small = $eplug_folder."/images/calendar_16.png";
 $eplug_caption = EC_LAN_81; // "Configure Event Calendar";
 
 $ecalSQL = new db;
-$ecalSQL->db_Select("plugin", "plugin_version", "plugin_name='Event Calendar' AND plugin_installflag > 0");
+$ecalSQL->db_Select("plugin", "plugin_version", "plugin_path='calendar_menu' AND plugin_installflag > 0");
 list($ecalVer) = $ecalSQL->db_Fetch();
 $ecalVer = preg_replace("/[a-zA-z\s]/", '', $ecalVer);
 
