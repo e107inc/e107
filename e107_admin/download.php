@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-03 15:12:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-12 23:32:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -78,7 +78,7 @@ $from = ($from ? $from : 0);
 $amount = 50;
 
 
-if($file_array = $fl->get_files(e_DOWNLOAD, "","standard",2)){
+if($file_array = $fl->get_files(e_DOWNLOAD, "","standard",5)){
 		sort($file_array);
 }
 
