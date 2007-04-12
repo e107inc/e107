@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.20 $
-|	$Date: 2007-01-19 20:46:53 $
-|	$Author: e107steved $
+|	$Revision: 1.21 $
+|	$Date: 2007-04-12 23:25:50 $
+|	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -224,15 +224,15 @@ function addtext(text, emote)
 			val = text.split('][');
 			if (val[0] == text) val[1] = '';
 		}
-		else 
-		{ 
-		val = text; 
+		else
+		{
+		val = text;
 		}
 
 		if ((clientVer >= 4) && is_ie && is_win)
 		{
 			theSelection = document.selection.createRange().text; /* wrap selected text */
-			if (theSelection) 
+			if (theSelection)
 			{
 				if (emote != true)
 				{
@@ -244,8 +244,8 @@ function addtext(text, emote)
 				  {  // bbcode
 					document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
 				  }
-				} 
-				else 
+				}
+				else
 				{
 					document.selection.createRange().text = val + theSelection;
 				}
@@ -255,7 +255,7 @@ function addtext(text, emote)
 			}
 
 		}
-		else 
+		else
 		  if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0))
 		  { // Selected text here
 			if (emote != true)
@@ -268,28 +268,28 @@ function addtext(text, emote)
 			  {  // Single piece of text to insert, and delete any selected text
 				mozSwap(ta, text); /* wrap selected text */
 			  }
-			} 
-			else 
+			}
+			else
 			{
 				mozWrap(ta, val, ''); /* wrap selected text */
 			}
 			return;
 		  }
 		text = ' ' + text + ' ';
-		if (ta.createTextRange && e107_selectedRange) 
+		if (ta.createTextRange && e107_selectedRange)
 		{
 			var caretPos = e107_selectedRange; /* IE */
 			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? caretPos.text + text + ' ' : caretPos.text + text;
-		} 
-		else 
-		  if (ta.selectionStart || ta.selectionStart == '0') 
+		}
+		else
+		  if (ta.selectionStart || ta.selectionStart == '0')
 		  { /* Moz */
 		   	var startPos = ta.selectionStart;
 			var endPos = ta.selectionEnd;
 			var charb4 = ta.value.charAt(endPos-1);
 			ta.value = ta.value.substring(0, endPos)+ text + ta.value.substring(endPos);
-		  } 
-		  else 
+		  }
+		  else
 		  {
 			ta.value  += text;
 		  }
@@ -362,7 +362,7 @@ function preview_image(src_val,img_path){
 	if(ta){
 		document.getElementById(desti).src = img_path + ta;
 	}else{
-		document.getElementById(desti).src = '".e_IMAGE."generic/blank.gif';
+		document.getElementById(desti).src = img_path + 'generic/blank.gif';
 	}
 	return;
 }
