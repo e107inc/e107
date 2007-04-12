@@ -1,22 +1,22 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-04 21:54:10 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2007-04-12 22:43:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
 define("LAN_7", "Display Name: ");
 define("LAN_8", "the name that will be displayed on site");
-define("LAN_9", "Login Name: ");
+define("LAN_9", "Username: ");
 define("LAN_10", "the name that you use to login");
 define("LAN_17", "Password: ");
 define("LAN_103", "That username cannot be accepted as valid, please choose a different user name");
-define("LAN_104", "That login name already exists in the database, please choose a different login name");
+define("LAN_104", "That username already exists in the database, please choose a different username");
 define("LAN_105", "The two passwords do not match");
 define("LAN_106", "That doesn't appear to be a valid email address");
 define("LAN_107", "Thank you! You are now a registered member of");
@@ -88,7 +88,7 @@ define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is 
 define("LAN_SIGNUP_35", "Click here to register using an XUP file");
 define("LAN_SIGNUP_36", "An error has occurred creating your user information, please contact the site admin");
 
-define("LAN_LOGINNAME", "Login Name");
+define("LAN_LOGINNAME", "Username");
 define("LAN_PASSWORD", "Password");
 define("LAN_USERNAME", "Display Name");
 define("LAN_EMAIL_01", "Dear");
