@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_email.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-12 22:52:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Email"); }
@@ -25,7 +25,7 @@ define("LAN_EMAIL_11", "Email sent");
 define("LAN_EMAIL_12", "Error");
 define("LAN_EMAIL_13", "Email article to a friend");
 define("LAN_EMAIL_14", "Email news_item to a friend");
-define("LAN_EMAIL_15", "Login Name: ");
+define("LAN_EMAIL_15", "Username: ");
 define("LAN_EMAIL_106", "That doesn't appear to be a valid email address");
 define("LAN_EMAIL_185", "Send Article");
 define("LAN_EMAIL_186", "Send News Item");
