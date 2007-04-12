@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2006-10-31 21:16:29 $
+|     $Revision: 1.28 $
+|     $Date: 2007-04-12 22:59:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ define("USRLAN_125", "From");
 define("USRLAN_126", "Allow users to rate users");
 define("USRLAN_127", "Allow comments in user profile");
 
-define("USRLAN_128", "Login name");
+define("USRLAN_128", "Username");
 
 define("USRLAN_130", "Enable online user tracking");
 define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
