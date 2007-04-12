@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2007-04-12 16:02:06 $
+|		$Revision: 1.14 $
+|		$Date: 2007-04-12 21:35:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -393,13 +393,13 @@ class content{
 				$row = $sql -> db_Fetch();
 				if (empty($row['content_pref'])) {
 					//if no prefs present yet, get them from core (default preferences)
-					$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+					$num_rows = $sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 					//if those are not present, insert the default ones given in this file
 					if ($num_rows == 0) {
 						$content_pref = $this -> ContentDefaultPrefs();
 						$tmp = $eArrayStorage->WriteArray($content_pref);
 						$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
-						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 					}
 					$row = $sql -> db_Fetch();
 					$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
@@ -428,7 +428,7 @@ class content{
 				}else{
 					//check inheritance, if set, get core prefs (default prefs)
 					if(isset($content_pref['content_inherit']) && $content_pref['content_inherit']!=''){
-						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 						$row = $sql -> db_Fetch();
 						$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 					}
@@ -436,12 +436,12 @@ class content{
 
 			//if not $id; use prefs from default core table
 			}else{
-				$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+				$num_rows = $sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 				if ($num_rows == 0) {
 					$content_pref = $this -> ContentDefaultPrefs();
 					$tmp = $eArrayStorage->WriteArray($content_pref);
 					$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
-					$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+					$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 				}
 				$row = $sql -> db_Fetch();
 				$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
@@ -457,12 +457,12 @@ class content{
 
 			//insert default preferences into core
 			if($id == "0"){
-				$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+				$num_rows = $sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 				if ($num_rows == 0) {
 					$content_pref = $this -> ContentDefaultPrefs();
 					$tmp = $eArrayStorage->WriteArray($content_pref);
 					$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
-					$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+					$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 				}
 				$row = $sql -> db_Fetch();
 				$current = $eArrayStorage->ReadArray($row['e107_value']);
@@ -580,7 +580,7 @@ class content{
 				$qrygc .= " AND content_class REGEXP '".e_CLASS_REGEXP."' ";
 			}
 
-			$datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
+			$datequery = " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
 			$sqlgetcat = new db;
 			if($sqlgetcat -> db_Select($plugintable, "content_id, content_heading, content_parent", " ".$qrygc." ".$datequery." " )){
@@ -633,7 +633,7 @@ class content{
 			}
 
 			$modepref = ($mode ? "content_{$mode}_nextprev" : "content_nextprev");
-			if(isset($content_pref[$modepref]) && $content_pref[$modepref]){
+			if( varsettrue($content_pref[$modepref]) ){
 				$np_querystring = e_SELF."?[FROM]".(isset($qs[0]) ? ".".$qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 				$parms = $total.",".$number.",".$from.",".$np_querystring."";
 				
@@ -661,14 +661,14 @@ class content{
 		function getCrumbPage($mode, $arr, $parent){
 			global $qs, $ns, $content_pref, $plugintable;
 
-			if(isset($content_pref["content_breadcrumb_{$mode}"]) && $content_pref["content_breadcrumb_{$mode}"]){
+			if( varsettrue($content_pref["content_breadcrumb_{$mode}"]) ){
 				$crumb = '';
 				if(array_key_exists($parent, $arr)){
-					$sep = (isset($content_pref["content_breadcrumb_seperator"]) ? $content_pref["content_breadcrumb_seperator"] : ">");
-					if($content_pref["content_breadcrumb_base"] && isset($content_pref["content_breadcrumb_base"])){
+					$sep = varsettrue($content_pref["content_breadcrumb_seperator"], ">");
+					if( varsettrue($content_pref["content_breadcrumb_base"]) ){
 						$crumb .= "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." ";
 					}
-					if($content_pref["content_breadcrumb_self"] && isset($content_pref["content_breadcrumb_self"])){
+					if( varsettrue($content_pref["content_breadcrumb_self"]) ){
 						$crumb .= "<a href='".e_SELF."'>".CONTENT_LAN_59."</a> ".$sep." ";
 					}
 					for($i=0;$i<count($arr[$parent]);$i++){
@@ -745,7 +745,7 @@ class content{
 		function getCategoryHeading($id){
 			global $plugintable, $sql;
 			$qry = "
-			SELECT c.*, p.*
+			SELECT p.content_heading
 			FROM #pcontent as c
 			LEFT JOIN #pcontent as p ON p.content_id = c.content_parent
 			WHERE c.content_id = '".intval($id)."' ";
@@ -1076,12 +1076,12 @@ class content{
 				$icon		= ($icon ? $path.$icon : ($blank ? $content_icon_path."blank.gif" : ""));
 			}
 
-			if($icon && file_exists($icon)){
+			if($icon && is_readable($icon)){
 				$iconstring	= $hrefpre."<img src='".$icon."' alt='' style='".$width." ".$border."' />".$hrefpost;
 			}else{
 				$iconstring = "";
 				if($blank){
-					if(file_exists($content_icon_path."blank.gif")){
+					if(is_readable($content_icon_path."blank.gif")){
 						if($mode == "catsmall"){
 							$width = ($width ? "width:".$width."px;" : "width:16px;");
 						}elseif($mode == "catlarge"){
@@ -1099,12 +1099,12 @@ class content{
 			if($mode == ''){return;}
 
 			$authorinfo = "";
-			if( (isset($content_pref["content_{$mode}_authorname"]) && $content_pref["content_{$mode}_authorname"]) || (isset($content_pref["content_{$mode}_authoremail"]) && $content_pref["content_{$mode}_authoremail"]) || (isset($content_pref["content_{$mode}_authoricon"]) && $content_pref["content_{$mode}_authoricon"]) || (isset($content_pref["content_{$mode}_authorprofile"]) && $content_pref["content_{$mode}_authorprofile"]) ){
+			if( varsettrue($content_pref["content_{$mode}_authorname"]) || varsettrue($content_pref["content_{$mode}_authoremail"]) || varsettrue($content_pref["content_{$mode}_authoricon"]) || varsettrue($content_pref["content_{$mode}_authorprofile"]) ){
 				$authordetails = $this -> getAuthor($author);
-				if(isset($content_pref["content_{$mode}_authorname"]) && $content_pref["content_{$mode}_authorname"]){
+				if( varsettrue($content_pref["content_{$mode}_authorname"]) ){
 					if(isset($content_pref["content_{$mode}_authoremail"]) && $authordetails[2]){
 						if($authordetails[0] == "0"){
-							if(isset($content_pref["content_{$mode}_authoremail_nonmember"]) && $content_pref["content_{$mode}_authoremail_nonmember"] && strpos($authordetails[2], "@") ){
+							if( varsettrue($content_pref["content_{$mode}_authoremail_nonmember"]) && strpos($authordetails[2], "@") ){
 								$authorinfo = preg_replace("#([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\1\"+\"@\"+\"\\2\"; return true;' onmouseout='window.status=\"\";return true;'>".$authordetails[1]."</a>", $authordetails[2]);
 							}else{
 								$authorinfo = $authordetails[1];
@@ -1115,11 +1115,11 @@ class content{
 					}else{
 						$authorinfo = $authordetails[1];
 					}
-					if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_{$mode}_authorprofile"]) && $content_pref["content_{$mode}_authorprofile"]){
+					if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && varsettrue($content_pref["content_{$mode}_authorprofile"]) ){
 						$authorinfo .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
 					}
 				}
-				if(isset($content_pref["content_{$mode}_authoricon"]) && $content_pref["content_{$mode}_authoricon"]){
+				if( varsettrue($content_pref["content_{$mode}_authoricon"]) ){
 					$authorinfo .= " <a href='".e_SELF."?author.".$id."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 				}
 			}
@@ -1195,7 +1195,6 @@ class content{
 				<div><select id='{$mode}value' name='{$mode}value' class='tbox' $style onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
 
 				if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_links"] && $content_pref["content_menu_links_dropdown"]) ){
-					//$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_56, 1, "none").$rs -> form_option("&nbsp;", "0", "none");
 					$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_56, 1, "none");
 
 					if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewallcat"])){
@@ -1287,7 +1286,7 @@ class content{
 			global $plugintable, $plugindir, $tp, $datequery;
 
 			if(!is_object($sqlcreatemenu)){ $sqlcreatemenu = new db; }
-			if(!$sqlcreatemenu -> db_Select($plugintable, "*", "content_id='".intval($parentid)."'  ")){
+			if(!$sqlcreatemenu -> db_Select($plugintable, "content_heading", "content_id='".intval($parentid)."'  ")){
 				return FALSE;
 			}else{
 				$row = $sqlcreatemenu -> db_Fetch();

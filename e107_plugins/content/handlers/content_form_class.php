@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2007-03-13 16:51:05 $
+|		$Revision: 1.10 $
+|		$Date: 2007-04-12 21:35:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -100,9 +100,9 @@ class contentform{
 			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
 			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
 			
-			$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
-			$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
-			$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
+			$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
+			$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
+			$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
 					
 			$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
 			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
@@ -170,9 +170,9 @@ class contentform{
 			}
 			
 			//icon
-			if($_POST['content_icon'] && file_exists($content_tmppath_icon.$_POST['content_icon'])){
+			if($_POST['content_icon'] && is_readable($content_tmppath_icon.$_POST['content_icon'])){
 				$ICON = "<img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
-			}elseif($_POST['content_icon'] && file_exists($content_icon_path.$_POST['content_icon'])){
+			}elseif($_POST['content_icon'] && is_readable($content_icon_path.$_POST['content_icon'])){
 				$ICON = "<img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
 			}else{
 				$ICON = CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_114." ".CONTENT_ADMIN_ITEM_LAN_119;
@@ -186,19 +186,19 @@ class contentform{
 			$IMAGES = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_31.$TDPOST.$TDPRE2;
 			foreach($_POST as $k => $v){
 				if(strpos($k, "content_files") === 0){
-					if($v && file_exists($content_tmppath_file.$v)){
+					if($v && is_readable($content_tmppath_file.$v)){
 						$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
 						$file = TRUE;
-					}elseif($v && file_exists($content_file_path.$v)){
+					}elseif($v && is_readable($content_file_path.$v)){
 						$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
 						$file = TRUE;
 					}
 				}
 				if(strpos($k, "content_images") === 0){
-					if($v && file_exists($content_tmppath_image.$v)){
+					if($v && is_readable($content_tmppath_image.$v)){
 						$IMAGES .= "<img src='".$content_tmppath_image.$v."' alt='' style='width:100px; border:0;' /> ";
 						$image	= TRUE;
-					}elseif($v && file_exists($content_image_path.$v)){
+					}elseif($v && is_readable($content_image_path.$v)){
 						$IMAGES .= "<img src='".$content_image_path.$v."' alt='' style='width:100px; border:0;' /> ";
 						$image	= TRUE;
 					}
@@ -253,7 +253,7 @@ class contentform{
 
 						//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 						//and use those preferences in the permissions check.
-						if(isset($manager_pref['content_manager_inherit']) && $manager_pref['content_manager_inherit']){
+						if( varsettrue($manager_pref['content_manager_inherit']) ){
 							$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 							$row = $sql -> db_Fetch();
 							$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
@@ -275,7 +275,7 @@ class contentform{
 
 						//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 						//and use those preferences in the permissions check.
-						if(isset($manager_pref['content_manager_inherit']) && $manager_pref['content_manager_inherit']){
+						if( varsettrue($manager_pref['content_manager_inherit']) ){
 							$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 							$row = $sql -> db_Fetch();
 							$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
@@ -316,8 +316,8 @@ class contentform{
 
 							//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 							//and use those preferences in the permissions check.
-							if(isset($manager_pref['content_manager_inherit']) && $manager_pref['content_manager_inherit']){
-								$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+							if( varsettrue($manager_pref['content_manager_inherit']) ){
+								$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 								$row = $sql -> db_Fetch();
 								$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
 							}
@@ -367,9 +367,9 @@ class contentform{
 			}
 
 			//general variables (from the top level category preferences)
-			$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
-			$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
-			$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
+			$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
+			$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
+			$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
 			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
 			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
 			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
@@ -381,47 +381,47 @@ class contentform{
 
 			//get preferences for submit page
 			if($mode == "submit"){
-				$checksubheading	= (isset($manager_pref["content_manager_submit_subheading"]) ? $manager_pref["content_manager_submit_subheading"] : "");
-				$checksummary		= (isset($manager_pref["content_manager_submit_summary"]) ? $manager_pref["content_manager_submit_summary"] : "");
-				$checkstartdate		= (isset($manager_pref["content_manager_submit_startdate"]) ? $manager_pref["content_manager_submit_startdate"] : "");
-				$checkenddate		= (isset($manager_pref["content_manager_submit_enddate"]) ? $manager_pref["content_manager_submit_enddate"] : "");
-				$checkicon			= (isset($manager_pref["content_manager_submit_icon"]) ? $manager_pref["content_manager_submit_icon"] : "");
-				$checkattach		= (isset($manager_pref["content_manager_submit_attach"]) ? $manager_pref["content_manager_submit_attach"] : "");
-				$checkattachnumber	= (isset($manager_pref["content_manager_submit_files_number"]) ? $manager_pref["content_manager_submit_files_number"] : "");
-				$checkimages		= (isset($manager_pref["content_manager_submit_images"]) ? $manager_pref["content_manager_submit_images"] : "");
-				$checkimagesnumber	= (isset($manager_pref["content_manager_submit_images_number"]) ? $manager_pref["content_manager_submit_images_number"] : "");
-				$checkcomment		= (isset($manager_pref["content_manager_submit_comment"]) ? $manager_pref["content_manager_submit_comment"] : "");
-				$checkrating		= (isset($manager_pref["content_manager_submit_rating"]) ? $manager_pref["content_manager_submit_rating"] : "");
-				$checkscore			= (isset($manager_pref["content_manager_submit_score"]) ? $manager_pref["content_manager_submit_score"] : "");
-				$checkpe			= (isset($manager_pref["content_manager_submit_pe"]) ? $manager_pref["content_manager_submit_pe"] : "");
-				$checkvisibility	= (isset($manager_pref["content_manager_submit_visibility"]) ? $manager_pref["content_manager_submit_visibility"] : "");
-				$checkmeta			= (isset($manager_pref["content_manager_submit_meta"]) ? $manager_pref["content_manager_submit_meta"] : "");
-				$checkcustom		= (isset($manager_pref["content_manager_submit_customtags"]) ? $manager_pref["content_manager_submit_customtags"] : "");
-				$checkcustomnumber	= (isset($manager_pref["content_manager_submit_custom_number"]) ? $manager_pref["content_manager_submit_custom_number"] : "");
-				$checklayout		= (isset($manager_pref["content_manager_submit_layout"]) ? $manager_pref["content_manager_submit_layout"] : "");
-				$checkpreset		= (isset($manager_pref["content_manager_submit_presettags"]) ? $manager_pref["content_manager_submit_presettags"] : "");
+				$checksubheading	= varsettrue($manager_pref["content_manager_submit_subheading"], "");
+				$checksummary		= varsettrue($manager_pref["content_manager_submit_summary"], "");
+				$checkstartdate		= varsettrue($manager_pref["content_manager_submit_startdate"], "");
+				$checkenddate		= varsettrue($manager_pref["content_manager_submit_enddate"], "");
+				$checkicon			= varsettrue($manager_pref["content_manager_submit_icon"], "");
+				$checkattach		= varsettrue($manager_pref["content_manager_submit_attach"], "");
+				$checkattachnumber	= varsettrue($manager_pref["content_manager_submit_files_number"], "");
+				$checkimages		= varsettrue($manager_pref["content_manager_submit_images"], "");
+				$checkimagesnumber	= varsettrue($manager_pref["content_manager_submit_images_number"], "");
+				$checkcomment		= varsettrue($manager_pref["content_manager_submit_comment"], "");
+				$checkrating		= varsettrue($manager_pref["content_manager_submit_rating"], "");
+				$checkscore			= varsettrue($manager_pref["content_manager_submit_score"], "");
+				$checkpe			= varsettrue($manager_pref["content_manager_submit_pe"], "");
+				$checkvisibility	= varsettrue($manager_pref["content_manager_submit_visibility"], "");
+				$checkmeta			= varsettrue($manager_pref["content_manager_submit_meta"], "");
+				$checkcustom		= varsettrue($manager_pref["content_manager_submit_customtags"], "");
+				$checkcustomnumber	= varsettrue($manager_pref["content_manager_submit_custom_number"], "");
+				$checklayout		= varsettrue($manager_pref["content_manager_submit_layout"], "");
+				$checkpreset		= varsettrue($manager_pref["content_manager_submit_presettags"], "");
 
 			//get preferences for managers page
 			}elseif($mode=='contentmanager'){
-				$checksubheading	= (isset($manager_pref["content_manager_manager_subheading"]) ? $manager_pref["content_manager_manager_subheading"] : "");
-				$checksummary		= (isset($manager_pref["content_manager_manager_summary"]) ? $manager_pref["content_manager_manager_summary"] : "");
-				$checkstartdate		= (isset($manager_pref["content_manager_manager_startdate"]) ? $manager_pref["content_manager_manager_startdate"] : "");
-				$checkenddate		= (isset($manager_pref["content_manager_manager_enddate"]) ? $manager_pref["content_manager_manager_enddate"] : "");
-				$checkicon			= (isset($manager_pref["content_manager_manager_icon"]) ? $manager_pref["content_manager_manager_icon"] : "");
-				$checkattach		= (isset($manager_pref["content_manager_manager_attach"]) ? $manager_pref["content_manager_manager_attach"] : "");
-				$checkattachnumber	= (isset($manager_pref["content_manager_manager_files_number"]) ? $manager_pref["content_manager_manager_files_number"] : "");
-				$checkimages		= (isset($manager_pref["content_manager_manager_images"]) ? $manager_pref["content_manager_manager_images"] : "");
-				$checkimagesnumber	= (isset($manager_pref["content_manager_manager_images_number"]) ? $manager_pref["content_manager_manager_images_number"] : "");
-				$checkcomment		= (isset($manager_pref["content_manager_manager_comment"]) ? $manager_pref["content_manager_manager_comment"] : "");
-				$checkrating		= (isset($manager_pref["content_manager_manager_rating"]) ? $manager_pref["content_manager_manager_rating"] : "");
-				$checkscore			= (isset($manager_pref["content_manager_manager_score"]) ? $manager_pref["content_manager_manager_score"] : "");
-				$checkpe			= (isset($manager_pref["content_manager_manager_pe"]) ? $manager_pref["content_manager_manager_pe"] : "");
-				$checkvisibility	= (isset($manager_pref["content_manager_manager_visibility"]) ? $manager_pref["content_manager_manager_visibility"] : "");
-				$checkmeta			= (isset($manager_pref["content_manager_manager_meta"]) ? $manager_pref["content_manager_manager_meta"] : "");
-				$checkcustom		= (isset($manager_pref["content_manager_manager_customtags"]) ? $manager_pref["content_manager_manager_customtags"] : "");
-				$checkcustomnumber	= (isset($manager_pref["content_manager_manager_custom_number"]) ? $manager_pref["content_manager_manager_custom_number"] : "");
-				$checklayout		= (isset($manager_pref["content_manager_manager_layout"]) ? $manager_pref["content_manager_manager_layout"] : "");
-				$checkpreset		= (isset($manager_pref["content_manager_manager_presettags"]) ? $manager_pref["content_manager_manager_presettags"] : "");
+				$checksubheading	= varsettrue($manager_pref["content_manager_manager_subheading"], "");
+				$checksummary		= varsettrue($manager_pref["content_manager_manager_summary"], "");
+				$checkstartdate		= varsettrue($manager_pref["content_manager_manager_startdate"], "");
+				$checkenddate		= varsettrue($manager_pref["content_manager_manager_enddate"], "");
+				$checkicon			= varsettrue($manager_pref["content_manager_manager_icon"], "");
+				$checkattach		= varsettrue($manager_pref["content_manager_manager_attach"], "");
+				$checkattachnumber	= varsettrue($manager_pref["content_manager_manager_files_number"], "");
+				$checkimages		= varsettrue($manager_pref["content_manager_manager_images"], "");
+				$checkimagesnumber	= varsettrue($manager_pref["content_manager_manager_images_number"], "");
+				$checkcomment		= varsettrue($manager_pref["content_manager_manager_comment"], "");
+				$checkrating		= varsettrue($manager_pref["content_manager_manager_rating"], "");
+				$checkscore			= varsettrue($manager_pref["content_manager_manager_score"], "");
+				$checkpe			= varsettrue($manager_pref["content_manager_manager_pe"], "");
+				$checkvisibility	= varsettrue($manager_pref["content_manager_manager_visibility"], "");
+				$checkmeta			= varsettrue($manager_pref["content_manager_manager_meta"], "");
+				$checkcustom		= varsettrue($manager_pref["content_manager_manager_customtags"], "");
+				$checkcustomnumber	= varsettrue($manager_pref["content_manager_manager_custom_number"], "");
+				$checklayout		= varsettrue($manager_pref["content_manager_manager_layout"], "");
+				$checkpreset		= varsettrue($manager_pref["content_manager_manager_presettags"], "");
 
 			//get preferences for admin area; posted submitted item. (approve submitted)
 			}elseif($mode == "sa"){
@@ -468,25 +468,25 @@ class contentform{
 
 			//normal admin content create preferences
 			}else{
-				$checksubheading	= (isset($content_pref["content_admin_subheading"]) ? $content_pref["content_admin_subheading"] : "");
-				$checksummary		= (isset($content_pref["content_admin_summary"]) ? $content_pref["content_admin_summary"] : "");
-				$checkstartdate		= (isset($content_pref["content_admin_startdate"]) ? $content_pref["content_admin_startdate"] : "");
-				$checkenddate		= (isset($content_pref["content_admin_enddate"]) ? $content_pref["content_admin_enddate"] : "");
-				$checkicon			= (isset($content_pref["content_admin_icon"]) ? $content_pref["content_admin_icon"] : "");
-				$checkattach		= (isset($content_pref["content_admin_attach"]) ? $content_pref["content_admin_attach"] : "");
-				$checkattachnumber	= (isset($content_pref["content_admin_files_number"]) ? $content_pref["content_admin_files_number"] : "");
-				$checkimages		= (isset($content_pref["content_admin_images"]) ? $content_pref["content_admin_images"] : "");
-				$checkimagesnumber	= (isset($content_pref["content_admin_images_number"]) ? $content_pref["content_admin_images_number"] : "");
-				$checkcomment		= (isset($content_pref["content_admin_comment"]) ? $content_pref["content_admin_comment"] : "");
-				$checkrating		= (isset($content_pref["content_admin_rating"]) ? $content_pref["content_admin_rating"] : "");
-				$checkscore			= (isset($content_pref["content_admin_score"]) ? $content_pref["content_admin_score"] : "");
-				$checkpe			= (isset($content_pref["content_admin_pe"]) ? $content_pref["content_admin_pe"] : "");
-				$checkvisibility	= (isset($content_pref["content_admin_visibility"]) ? $content_pref["content_admin_visibility"] : "");
-				$checkmeta			= (isset($content_pref["content_admin_meta"]) ? $content_pref["content_admin_meta"] : "");
-				$checkcustom		= (isset($content_pref["content_admin_customtags"]) ? $content_pref["content_admin_customtags"] : "");
-				$checkcustomnumber	= (isset($content_pref["content_admin_custom_number"]) ? $content_pref["content_admin_custom_number"] : "");
-				$checklayout		= (isset($content_pref["content_admin_layout"]) ? $content_pref["content_admin_layout"] : "");
-				$checkpreset		= (isset($content_pref["content_admin_presettags"]) ? $content_pref["content_admin_presettags"] : "");
+				$checksubheading	= varsettrue($content_pref["content_admin_subheading"], "");
+				$checksummary		= varsettrue($content_pref["content_admin_summary"], "");
+				$checkstartdate		= varsettrue($content_pref["content_admin_startdate"], "");
+				$checkenddate		= varsettrue($content_pref["content_admin_enddate"], "");
+				$checkicon			= varsettrue($content_pref["content_admin_icon"], "");
+				$checkattach		= varsettrue($content_pref["content_admin_attach"], "");
+				$checkattachnumber	= varsettrue($content_pref["content_admin_files_number"], "");
+				$checkimages		= varsettrue($content_pref["content_admin_images"], "");
+				$checkimagesnumber	= varsettrue($content_pref["content_admin_images_number"], "");
+				$checkcomment		= varsettrue($content_pref["content_admin_comment"], "");
+				$checkrating		= varsettrue($content_pref["content_admin_rating"], "");
+				$checkscore			= varsettrue($content_pref["content_admin_score"], "");
+				$checkpe			= varsettrue($content_pref["content_admin_pe"], "");
+				$checkvisibility	= varsettrue($content_pref["content_admin_visibility"], "");
+				$checkmeta			= varsettrue($content_pref["content_admin_meta"], "");
+				$checkcustom		= varsettrue($content_pref["content_admin_customtags"], "");
+				$checkcustomnumber	= varsettrue($content_pref["content_admin_custom_number"], "");
+				$checklayout		= varsettrue($content_pref["content_admin_layout"], "");
+				$checkpreset		= varsettrue($content_pref["content_admin_presettags"], "");
 			}
 
 			//parse author info
@@ -723,7 +723,7 @@ class contentform{
 
 			//retrieve the custom/preset data tags
 			if(!(isset($_POST['preview_content']) || isset($message))){
-				if(isset($row['content_pref']) && $row['content_pref']){
+				if( varsettrue($row['content_pref']) ){
 					$custom = $eArrayStorage->ReadArray($row['content_pref']);
 				}
 			}
@@ -912,7 +912,7 @@ class contentform{
 
 					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 					//and use those preferences in the permissions check.
-					if(isset($curpref['content_manager_inherit']) && $curpref['content_manager_inherit']){
+					if( varsettrue($curpref['content_manager_inherit']) ){
 						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
 						$row2 = $sql2 -> db_Fetch();
 						$curpref = $eArrayStorage->ReadArray($row2['e107_value']);
@@ -957,15 +957,10 @@ class contentform{
 			$distinctfirstletter = $sql -> db_Select($plugintable, " DISTINCT(content_heading) ", "content_refer != 'sa' AND ".$qryfirst." ".$qryuser." ORDER BY content_heading ASC ");
 			while($row = $sql -> db_Fetch()){
 				$head = $tp->toHTML($row['content_heading'], TRUE);
-				if(ord($head) < 128) {
-					$head_sub = strtoupper(substr($head,0,1));
-				}else{
-					$head_sub = substr($head,0,2);
-				}
+				$head_sub = ( ord($head) < 128 ? strtoupper(substr($head,0,1)) : substr($head,0,2) );
 				$arrletters[] = $head_sub;
 			}
-			$arrletters = array_unique($arrletters);
-			$arrletters = array_values($arrletters);
+			$arrletters = array_values(array_unique($arrletters));
 			sort($arrletters);
 
 			if ($distinctfirstletter == 0){
@@ -1046,7 +1041,7 @@ class contentform{
 
 					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 					//and use those preferences in the permissions check.
-					if(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']){
+					if( varsettrue($content_pref['content_manager_inherit']) ){
 						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 						$row = $sql -> db_Fetch();
 						$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
@@ -1114,8 +1109,8 @@ class contentform{
 					}else{
 						$row = $sql -> db_Fetch();
 
-						$content_pref					= $aa -> getContentPref($catarray[$catid][0]);
-						$delete_heading					= str_replace("&#39;", "\'", $row['content_heading']);
+						$content_pref = $aa -> getContentPref($catarray[$catid][0]);
+						$delete_heading = str_replace("&#39;", "\'", $row['content_heading']);
 
 						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
 						$CONTENT_ADMIN_OPTIONS = "<a href='".e_SELF."?cat.edit.".$catid."'>".CONTENT_ICON_EDIT."</a>
@@ -1450,13 +1445,13 @@ class contentform{
 			$current_year = $smarray['year'];
 
 			//check which areas should be visible (dependent on options in admin:create category)
-			if(isset($content_pref["content_admincat_subheading"]) && $content_pref["content_admincat_subheading"]){
+			if( varsettrue($content_pref["content_admincat_subheading"]) ){
 				$show['subheading'] = true;
 			}else{
 				$show['subheading'] = false;
 				$hidden .= $rs -> form_hidden("cat_subheading", $row['content_subheading']);
 			}
-			if(isset($content_pref["content_admincat_startdate"]) && $content_pref["content_admincat_startdate"]){
+			if( varsettrue($content_pref["content_admincat_startdate"]) ){
 				$show['startdate'] = true;
 			}else{
 				$show['startdate'] = false;
@@ -1464,7 +1459,7 @@ class contentform{
 				$hidden .= $rs -> form_hidden("ne_month", $ne_month);
 				$hidden .= $rs -> form_hidden("ne_year", $ne_year);
 			}
-			if(isset($content_pref["content_admincat_enddate"]) && $content_pref["content_admincat_enddate"]){
+			if( varsettrue($content_pref["content_admincat_enddate"]) ){
 				$show['enddate'] = true;
 			}else{
 				$show['enddate'] = false;
@@ -1472,36 +1467,36 @@ class contentform{
 				$hidden .= $rs -> form_hidden("end_month", $end_month);
 				$hidden .= $rs -> form_hidden("end_year", $end_year);
 			}
-			if(isset($content_pref["content_admincat_uploadicon"]) && $content_pref["content_admincat_uploadicon"]){
+			if( varsettrue($content_pref["content_admincat_uploadicon"]) ){
 				$show['uploadicon'] = true;
 			}else{
 				$show['uploadicon'] = false;
 			}
-			if(isset($content_pref["content_admincat_selecticon"]) && $content_pref["content_admincat_selecticon"]){
+			if( varsettrue($content_pref["content_admincat_selecticon"]) ){
 				$show['selecticon'] = true;
 			}else{
 				$show['selecticon'] = false;
 				$hidden .= $rs -> form_hidden("cat_icon", $row['content_icon']);
 			}
-			if(isset($content_pref["content_admincat_comment"]) && $content_pref["content_admincat_comment"]){
+			if( varsettrue($content_pref["content_admincat_comment"]) ){
 				$show['comment'] = true;
 			}else{
 				$show['comment'] = false;
 				$hidden .= $rs -> form_hidden("cat_comment", $row['content_comment']);
 			}
-			if(isset($content_pref["content_admincat_rating"]) && $content_pref["content_admincat_rating"]){
+			if( varsettrue($content_pref["content_admincat_rating"]) ){
 				$show['rating'] = true;
 			}else{
 				$show['rating'] = false;
 				$hidden .= $rs -> form_hidden("cat_rate", $row['content_rate']);
 			}
-			if(isset($content_pref["content_admincat_pe"]) && $content_pref["content_admincat_pe"]){
+			if( varsettrue($content_pref["content_admincat_pe"]) ){
 				$show['pe'] = true;
 			}else{
 				$show['pe'] = false;
 				$hidden .= $rs -> form_hidden("cat_pe", $row['content_pe']);
 			}
-			if(isset($content_pref["content_admincat_visibility"]) && $content_pref["content_admincat_visibility"]){
+			if( varsettrue($content_pref["content_admincat_visibility"]) ){
 				$show['visibility'] = true;
 			}else{
 				$show['visibility'] = false;
@@ -1564,7 +1559,7 @@ class contentform{
 
 					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 					//and use those preferences in the permissions check.
-					if(isset($content_pref['content_manager_inherit']) && $content_pref['content_manager_inherit']){
+					if( varsettrue($content_pref['content_manager_inherit']) ){
 						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
 						$row2 = $sql2 -> db_Fetch();
 						$content_pref = $eArrayStorage->ReadArray($row2['e107_value']);
@@ -1863,7 +1858,7 @@ class contentform{
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_3;
 			$TOPIC_FIELD = "
 			".$rs -> form_select_open("content_admin_images_number");
-			$content_pref['content_admin_images_number'] = ($content_pref['content_admin_images_number'] ? $content_pref['content_admin_images_number'] : "10");
+			$content_pref['content_admin_images_number'] = varset($content_pref['content_admin_images_number'],"10");
 			for($i=1;$i<16;$i++){
 				$k=$i*2;
 				$TOPIC_FIELD .= $rs -> form_option($k, ($content_pref['content_admin_images_number'] == $k ? "1" : "0"), $k);
@@ -1875,7 +1870,7 @@ class contentform{
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_4;
 			$TOPIC_FIELD = "
 			".$rs -> form_select_open("content_admin_files_number");
-			$content_pref['content_admin_files_number'] = ($content_pref['content_admin_files_number'] ? $content_pref['content_admin_files_number'] : "1");
+			$content_pref['content_admin_files_number'] = varset($content_pref['content_admin_files_number'],"1");
 			for($i=1;$i<6;$i++){
 				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_admin_files_number'] == $i ? "1" : "0"), $i);
 			}
