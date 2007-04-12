@@ -1,5 +1,5 @@
 <?php
-// $Id: contact_template.php,v 1.1.1.1 2006-12-02 04:36:12 mcfly_e107 Exp $
+// $Id: contact_template.php,v 1.2 2007-04-12 19:18:24 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
@@ -20,9 +20,6 @@ $sc_style['CONTACT_EMAIL_COPY']['post'] = LANCONTACT_07."</td></tr>";
 
 $sc_style['CONTACT_PERSON']['pre'] = "<tr><td>".LANCONTACT_14."<br />   ";
 $sc_style['CONTACT_PERSON']['post'] = "</td></tr>";
-
-$sc_style['CONTACT_IMAGECODE']['pre'] = "<tr><td>".LANCONTACT_14."</td><td>";
-$sc_style['CONTACT_IMAGECODE']['post'] = "</td>";
 
 $sc_style['CONTACT_IMAGECODE']['pre'] = "<tr><td>".LANCONTACT_16."<br />";
 $sc_style['CONTACT_IMAGECODE']['post'] = "";
