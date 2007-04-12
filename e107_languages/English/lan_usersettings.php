@@ -4,16 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-29 21:03:53 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-04-12 23:04:51 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
 
 define("LAN_7", "Display Name: ");
 define("LAN_8", "the name displayed on site");
-define("LAN_9", "Login Name: ");
+define("LAN_9", "Username: ");
 define("LAN_10", "the name you use to login to the site");
 define("LAN_11", "the name you use to login to the site - this cannot be changed, please contact an administrator if it needs to be changed for security purposes");
 
@@ -107,6 +107,6 @@ define("LAN_USET_9", "Some of the required fields (marked with a *) are missing 
 define("LAN_USET_10","Please update your settings now, in order to proceed.");
 define("LAN_USET_11", "That user name cannot be accepted as valid, please choose a different user name");
 define("LAN_USET_12", "That display name is too short. Please choose another");
-define("LAN_USET_13", "Invalid characters in login name. Please choose another");
+define("LAN_USET_13", "Invalid characters in Username. Please choose another");
 
 ?>
