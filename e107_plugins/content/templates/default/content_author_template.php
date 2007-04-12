@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_author_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-10 14:34:39 $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-12 12:19:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,9 @@ $sc_style['CONTENT_AUTHOR_TABLE_LASTITEM']['post'] = "</td></tr>";
 
 $sc_style['CM_AMOUNT|author']['pre'] = "(";
 $sc_style['CM_AMOUNT|author']['post'] = ")";
+
+$sc_style['CONTENT_NEXTPREV']['pre'] = "<div class='nextprev'>";
+$sc_style['CONTENT_NEXTPREV']['post'] = "</div>";
 
 // ##### CONTENT AUTHOR -------------------------------------------------------
 if(!isset($CONTENT_AUTHOR_TABLE_START)){
@@ -39,7 +42,7 @@ if(!isset($CONTENT_AUTHOR_TABLE)){
 }
 if(!isset($CONTENT_AUTHOR_TABLE_END)){
 	$CONTENT_AUTHOR_TABLE_END = "
-	</table>\n";
+	</table>{CONTENT_NEXTPREV}\n";
 }
 // ##### ----------------------------------------------------------------------
 

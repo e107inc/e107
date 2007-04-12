@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-04-10 14:34:39 $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-12 12:19:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,9 @@ $sc_style['CONTENT_RECENT_TABLE_INFOPRE']['post'] = "";
 $sc_style['CONTENT_RECENT_TABLE_INFOPOST']['pre'] = "";
 $sc_style['CONTENT_RECENT_TABLE_INFOPOST']['post'] = "</td></tr>";
 
+$sc_style['CONTENT_NEXTPREV']['pre'] = "<div class='nextprev'>";
+$sc_style['CONTENT_NEXTPREV']['post'] = "</div>";
+
 if(!isset($CONTENT_RECENT_TABLE_START)){
 	$CONTENT_RECENT_TABLE_START = "";
 }
@@ -75,7 +78,7 @@ if(!isset($CONTENT_RECENT_TABLE)){
 	</table>\n";
 }
 if(!isset($CONTENT_RECENT_TABLE_END)){
-	$CONTENT_RECENT_TABLE_END = "";
+	$CONTENT_RECENT_TABLE_END = "{CONTENT_NEXTPREV}";
 }
 // ##### ----------------------------------------------------------------------
 

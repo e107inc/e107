@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_top_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-10 14:34:39 $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-12 12:19:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,9 @@ $sc_style['CM_AUTHOR|top']['post'] = "</td></tr>";
 $sc_style['CM_RATING|top']['pre'] = "<td class='fcaption' style='width:20%; white-space:nowrap; text-align:right;'>";
 $sc_style['CM_RATING|top']['post'] = "</td>";
 
+$sc_style['CONTENT_NEXTPREV']['pre'] = "<div class='nextprev'>";
+$sc_style['CONTENT_NEXTPREV']['post'] = "</div>";
+
 // ##### CONTENT TOP --------------------------------------------------
 if(!isset($CONTENT_TOP_TABLE_START)){
 	$CONTENT_TOP_TABLE_START = "";
@@ -47,7 +50,7 @@ if(!isset($CONTENT_TOP_TABLE)){
 	</table>\n";
 }
 if(!isset($CONTENT_TOP_TABLE_END)){
-	$CONTENT_TOP_TABLE_END = "";
+	$CONTENT_TOP_TABLE_END = "{CONTENT_NEXTPREV}";
 }
 // ##### ----------------------------------------------------------------------
 
