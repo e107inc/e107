@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*
 +---------------------------------------------------------------+
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-03-04 15:00:19 $
-|     $Author: mrpete $
+|     $Revision: 1.9 $
+|     $Date: 2007-04-12 08:10:20 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.8 $
-* @author $Author: mrpete $
+* @version $Revision: 1.9 $
+* @author $Author: lisa_ $
 */
 class db {
 
