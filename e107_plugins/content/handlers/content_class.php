@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2007-04-12 21:35:00 $
+|		$Revision: 1.15 $
+|		$Date: 2007-04-12 23:11:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -375,11 +375,8 @@ class content{
 					$content_pref[$k] = $tp->toDB($v);
 				}
 			}
-
 			return $content_pref;
 		}
-
-
 
 		function getContentPref($id="") {
 			global $sql, $plugintable, $qs, $tp, $eArrayStorage;
@@ -557,7 +554,6 @@ class content{
 			return $content_pref;
 		}
 
-
 		function CONTENTREGEXP($var){
 			return "(^|,)(".str_replace(",", "|", $var).")(,|$)";
 		}
@@ -721,8 +717,6 @@ class content{
 			}
 		}
 
-
-
 		function countCatItems($id){
 			global $sqlcountitemsincat, $plugintable, $datequery;
 			//$id	:	category content_id
@@ -740,7 +734,6 @@ class content{
 
 			return $n;
 		}
-
 
 		function getCategoryHeading($id){
 			global $plugintable, $sql;
@@ -850,8 +843,6 @@ class content{
 			define("e_PAGETITLE", $page);
 		}
 
-
-
 		function getAuthor($content_author) {
 			global $sql, $plugintable, $datequery;
 
@@ -887,8 +878,6 @@ class content{
 			return $getauthor;
 		}
 
-
-
 		function getMainParent($id){
 			global $sql, $plugintable;
 
@@ -907,7 +896,6 @@ class content{
 			$val = ($mainparent ? $mainparent : "0");
 			return $val;
 		}
-
 
 		//$mode : managecontent, createcontent, category
 		function ShowOption($currentparent="", $mode=''){
@@ -998,7 +986,6 @@ class content{
 			return $text;
 		}
 
-
 		function getOrder(){
 			global $qs, $content_pref;
 
@@ -1043,8 +1030,6 @@ class content{
 			$order = " ORDER BY ".$orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2." ";
 			return $order;
 		}
-
-
 
 		function getIcon($mode, $icon, $path="", $linkid="", $width="", $blank=""){
 			global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $content_pref;
@@ -1137,7 +1122,6 @@ class content{
 			if(!isset($searchtypeid)){
 				$searchtypeid = (is_numeric($qs[1]) ? $qs[1] : $qs[2]);
 			}
-
 			if($mode == "menu"){
 				$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?recent.$searchtypeid", "contentsearchmenu_{$mode}", "", "enctype='multipart/form-data'")."<div><input class='tbox' size='20' type='text' id='searchfieldmenu_{$mode}' name='searchfieldmenu_{$mode}' value='".(isset($_POST['searchfieldmenu_{$mode}']) ? $_POST['searchfieldmenu_{$mode}'] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearchmenu_{$mode}'].searchfieldmenu_$mode.value='';\" /> <input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' /></div>".$rs -> form_close();
 			}else{

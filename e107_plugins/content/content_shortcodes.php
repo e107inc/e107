@@ -5,27 +5,27 @@ $content_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 
 SC_BEGIN CM_AMOUNT
-global $row, $tp;
+global $row, $tp, $content_pref;
 if($sc_mode){
 
 	if($sc_mode=='author'){
-			global $totalcontent, $content_pref;
-			if($content_pref["content_author_amount"]){
+			global $totalcontent;
+			if(varsettrue($content_pref["content_author_amount"])){
 				return $totalcontent." ".($totalcontent==1 ? CONTENT_LAN_53 : CONTENT_LAN_54);
 			}
 	}elseif($sc_mode=='cat'){
-			global $row, $totalitems, $content_pref;
-			if(isset($content_pref["content_catall_amount"]) && $content_pref["content_catall_amount"]){
+			global $totalitems;
+			if(varsettrue($content_pref["content_catall_amount"])){
 				return $totalitems." ".($totalitems == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 			}
 	}elseif($sc_mode=='catlist'){
-			global $row, $content_pref, $totalparent;
-			if(isset($content_pref["content_cat_amount"]) && $content_pref["content_cat_amount"]){
+			global $totalparent;
+			if(varsettrue($content_pref["content_cat_amount"])){
 				return $totalparent." ".($totalparent == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 			}
 	}elseif($sc_mode=='catlistsub'){
-			global $row, $content_pref, $totalsubcat;
-			if(isset($content_pref["content_catsub_amount"]) && $content_pref["content_catsub_amount"]){
+			global $totalsubcat;
+			if(varsettrue($content_pref["content_catsub_amount"])){
 				return $totalsubcat." ".($totalsubcat == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 			}
 	}elseif($sc_mode=='type'){
@@ -82,23 +82,23 @@ if($sc_mode){
 SC_END
 
 SC_BEGIN CM_COMMENT
-global $row, $tp;
+global $row, $tp, $content_pref;
 if($sc_mode){
 	if($sc_mode=='cat'){
-			global $row, $comment_total, $content_pref, $plugintable;
+			global $comment_total, $plugintable;
 			if($row['content_comment'] && isset($content_pref["content_catall_comment"]) && $content_pref["content_catall_comment"]){
 				$sqlc = new db;
 				$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 				return "<a href='".e_SELF."?cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 			}
 	}elseif($sc_mode=='catlist'){
-			global $qs, $row, $comment_total, $content_pref, $sql, $plugintable;
+			global $qs, $comment_total, $sql, $plugintable;
 			if($row['content_comment'] && isset($content_pref["content_cat_comment"]) && $content_pref["content_cat_comment"]){
 				$comment_total = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".intval($qs[1])."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 				return "<a href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 			}
 	}elseif($sc_mode=='content'){
-			global $cobj, $qs, $content_pref, $row, $plugintable;
+			global $cobj, $qs, $plugintable;
 			if((isset($content_pref["content_content_comment"]) && $content_pref["content_content_comment"] && $row['content_comment']) || $content_pref["content_content_comment_all"] ){
 				return $cobj -> count_comments($plugintable, $qs[1]);
 			}
@@ -110,30 +110,29 @@ SC_BEGIN CM_DATE
 global $row, $tp, $content_pref, $gen;
 if($sc_mode){
 	if($sc_mode=='archive'){
-			if(isset($content_pref["content_archive_date"]) && $content_pref["content_archive_date"]){
-				$datestyle = ($content_pref["content_archive_datestyle"] ? $content_pref["content_archive_datestyle"] : "%d %b %Y");
+			if(varsettrue($content_pref["content_archive_date"])){
+				$datestyle = varset($content_pref["content_archive_datestyle"],"%d %b %Y");
 				return strftime($datestyle, $row['content_datestamp']);
 			}
 	}elseif($sc_mode=='recent'){
-			if(isset($content_pref["content_list_date"]) && $content_pref["content_list_date"]){
-				$datestyle = ($content_pref["content_list_datestyle"] ? $content_pref["content_list_datestyle"] : "%d %b %Y");
+			if(varsettrue($content_pref["content_list_date"])){
+				$datestyle = varset($content_pref["content_list_datestyle"],"%d %b %Y");
 				return strftime($datestyle, $row['content_datestamp']);
 			}
 	}elseif($sc_mode=='content'){
-			global $gen, $row, $content_pref;
-			if(isset($content_pref["content_content_date"]) && $content_pref["content_content_date"]){
-				$gen = new convert;
+			if(varsettrue($content_pref["content_content_date"])){
+				if(!is_object($gen)){ $gen = new convert; }
 				$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 				return ($datestamp != "" ? $datestamp : "");
 			}
 	}elseif($sc_mode=='cat'){
-			if(isset($content_pref["content_catall_date"]) && $content_pref["content_catall_date"]){
+			if(varsettrue($content_pref["content_catall_date"])){
 				if(!is_object($gen)){ $gen = new convert; }
 				$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 				return ($datestamp != "" ? $datestamp : "");
 			}
 	}elseif($sc_mode=='catlist'){
-			if(isset($content_pref["content_cat_date"]) && $content_pref["content_cat_date"]){
+			if(varsettrue($content_pref["content_cat_date"])){
 				if(!is_object($gen)){ $gen = new convert; }
 				$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 				return ($datestamp != "" ? $datestamp : "");
@@ -149,11 +148,11 @@ SC_BEGIN CM_EDITICON
 global $content_pref, $row, $plugindir, $tp;
 if($sc_mode){
 	if($sc_mode=='content'){
-			if(ADMIN && getperms("P") && isset($content_pref["content_content_editicon"])){
+			if(ADMIN && getperms("P") && varsettrue($content_pref["content_content_editicon"])){
 				return "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 			}
 	}elseif($sc_mode=='recent'){
-			if(ADMIN && getperms("P") && isset($content_pref["content_list_editicon"]) && $content_pref["content_list_editicon"]){
+			if(ADMIN && getperms("P") && varsettrue($content_pref["content_list_editicon"])){
 				return $CONTENT_RECENT_TABLE_EDITICON = "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 			}
 	}
@@ -163,8 +162,8 @@ SC_END
 SC_BEGIN CM_EPICONS
 global $content_pref, $row, $tp;
 if($sc_mode){
+	$epicons = "";
 	if($sc_mode=='content'){
-			$epicons = "";
 			if(($content_pref["content_content_peicon"] && $row['content_pe']) || $content_pref["content_content_peicon_all"]){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
@@ -172,8 +171,7 @@ if($sc_mode){
 				return $epicons;
 			}
 	}elseif($sc_mode=='recent'){
-			$epicons = "";
-			if(isset($content_pref["content_list_peicon"]) && $content_pref["content_list_peicon"]){
+			if(varsettrue($content_pref["content_list_peicon"])){
 				if($row['content_pe'] || isset($content_pref["content_list_peicon_all"]) && $content_pref["content_list_peicon_all"]){
 					$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 					$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
@@ -182,22 +180,19 @@ if($sc_mode){
 				}
 			}
 	}elseif($sc_mode=='cat'){
-			$epicons = "";
-			if($row['content_pe'] && isset($content_pref["content_catall_peicon"]) && $content_pref["content_catall_peicon"]){
+			if($row['content_pe'] && varsettrue($content_pref["content_catall_peicon"])){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				return $epicons;
 			}
 	}elseif($sc_mode=='catlist'){
-			$epicons = "";
-			if( (isset($content_pref["content_cat_peicon"]) && $content_pref["content_cat_peicon"] && $row['content_pe']) || (isset($content_pref["content_cat_peicon_all"]) && $content_pref["content_cat_peicon_all"])){
+			if( (varsettrue($content_pref["content_cat_peicon"]) && $row['content_pe']) || varsettrue($content_pref["content_cat_peicon_all"]) ){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$qs[1]}");
 				return $epicons;
 			}
-
 	}
 }
 SC_END
@@ -249,33 +244,33 @@ if($sc_mode){
 				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 			}
 	}elseif($sc_mode=='score'){
-			if(isset($content_pref["content_score_icon"]) && $content_pref["content_score_icon"]){
+			if(varsettrue($content_pref["content_score_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
 				$width = varsettrue($content_pref["content_score_icon_width"], $width);
 				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 			}
 	}elseif($sc_mode=='cat'){
-			if(isset($content_pref["content_catall_icon"]) && $content_pref["content_catall_icon"]){
+			if(varsettrue($content_pref["content_catall_icon"])){
 				$qry = "cat.".$row['content_id'];
 				return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $qry, "", $content_pref["content_blank_caticon"]);
 			}
 	}elseif($sc_mode=='catlist'){
-			if(isset($content_pref["content_cat_icon"]) && $content_pref["content_cat_icon"]){
+			if(varsettrue($content_pref["content_cat_icon"])){
 				return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon"]);
 			}
 	}elseif($sc_mode=='catlistsub'){
-			if(isset($content_pref["content_catsub_icon"]) && $content_pref["content_catsub_icon"]){
+			if(varsettrue($content_pref["content_catsub_icon"])){
 				return $aa -> getIcon("catsmall", $row['content_icon'], $content_cat_icon_path_small, "cat.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
 			}
 	}elseif($sc_mode=='recent'){
-			if(isset($content_pref["content_list_icon"]) && $content_pref["content_list_icon"]){
+			if(varsettrue($content_pref["content_list_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
 				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 			}
 	}elseif($sc_mode=='author'){
 			return "<a href='".e_SELF."?author.".$row['content_id']."'>".CONTENT_ICON_AUTHORLIST."</a>";
 	}elseif($sc_mode=='content'){
-			if(isset($content_pref["content_content_icon"]) && $content_pref["content_content_icon"]){
+			if(varsettrue($content_pref["content_content_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
 				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", $width, $content_pref["content_blank_icon"]);
 			}
@@ -289,10 +284,6 @@ if($sc_mode){
 			return "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_ICON_CONTENTMANAGER."</a>";
 	}elseif($sc_mode=='manager_new'){
 			if( (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) || (isset($content_pref["content_manager_submit"]) && check_class($content_pref["content_manager_submit"])) ){
-
-				//if(getperms('0')){
-				//	return "<a href='".e_SELF."?content.create.".$row['content_id']."'>".CONTENT_MANAGER_LAN_1."</a> | <a href='".e_SELF."?content.submit.".$row['content_id']."'>".CONTENT_MANAGER_LAN_4."</a>";
-				//}
 
 				if( (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
 					return "<a href='".e_SELF."?content.create.".$row['content_id']."'>".CONTENT_MANAGER_LAN_1."</a>";
@@ -319,11 +310,11 @@ SC_BEGIN CM_PARENT
 global $aa, $array, $row, $content_pref, $tp;
 if($sc_mode){
 	if($sc_mode=='content'){
-			if(isset($content_pref["content_content_parent"]) && $content_pref["content_content_parent"]){
+			if(varsettrue($content_pref["content_content_parent"])){
 				return $aa -> getCrumbItem($row['content_parent'], $array);
 			}
 	}elseif($sc_mode=='recent'){
-			if(isset($content_pref["content_list_parent"]) && $content_pref["content_list_parent"]){
+			if(varsettrue($content_pref["content_list_parent"])){
 				return $aa -> getCrumbItem($row['content_parent'], $array);
 			}
 	}
@@ -361,15 +352,13 @@ if($sc_mode){
 			return $rating;
 
 	}elseif($sc_mode=='cat'){
-			if($row['content_rate'] && isset($content_pref["content_catall_rating"]) && $content_pref["content_catall_rating"]){
+			if($row['content_rate'] && varsettrue($content_pref["content_catall_rating"])){
 				return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 			}
 	}elseif($sc_mode=='catlist'){
-			if( (isset($content_pref["content_cat_rating_all"]) && $content_pref["content_cat_rating_all"]) || (isset($content_pref["content_cat_rating"]) && $content_pref["content_cat_rating"] && $row['content_rate'])){
+			if( varsettrue($content_pref["content_cat_rating_all"]) || (varsettrue($content_pref["content_cat_rating"]) && $row['content_rate'])){
 				return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 			}
-
-	
 	}
 }
 SC_END
@@ -378,7 +367,7 @@ SC_BEGIN CM_REFER
 global $sql, $row, $tp, $qs, $content_pref, $plugintable;
 if($sc_mode){
 	if($sc_mode=='content'){
-			if(isset($content_pref["content_content_refer"]) && $content_pref["content_content_refer"]){
+			if(varsettrue($content_pref["content_content_refer"])){
 				$sql -> db_Select($plugintable, "content_refer", "content_id='".intval($qs[1])."' ");
 				list($content_refer) = $sql -> db_Fetch();
 				$refercounttmp = explode("^", $content_refer);
@@ -437,7 +426,7 @@ if($sc_mode){
 	if($sc_mode=='content'){
 			return ($content_pref["content_content_subheading"] && $row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
 	}elseif($sc_mode=='recent'){
-			if (isset($content_pref["content_list_subheading"]) && $content_pref["content_list_subheading"] && $row['content_subheading'] && $content_pref["content_list_subheading_char"] && $content_pref["content_list_subheading_char"] != "" && $content_pref["content_list_subheading_char"] != "0"){
+			if (varsettrue($content_pref["content_list_subheading"]) && $row['content_subheading'] && $content_pref["content_list_subheading_char"] && $content_pref["content_list_subheading_char"] != "" && $content_pref["content_list_subheading_char"] != "0"){
 				if(strlen($row['content_subheading']) > $content_pref["content_list_subheading_char"]) {
 					$row['content_subheading'] = substr($row['content_subheading'], 0, $content_pref["content_list_subheading_char"]).$content_pref["content_list_subheading_post"];
 				}
@@ -449,16 +438,15 @@ if($sc_mode){
 	}elseif($sc_mode=='type'){
 			return $tp -> toHTML($row['content_subheading'], TRUE, "emotes_off, no_make_clickable");
 	}elseif($sc_mode=='cat'){
-			if(isset($content_pref["content_catall_subheading"]) && $content_pref["content_catall_subheading"]){
+			if(varsettrue($content_pref["content_catall_subheading"])){
 				return $tp -> toHTML($row['content_subheading'], TRUE, "");
 			}
 	}elseif($sc_mode=='catlist'){
-			if(isset($content_pref["content_cat_subheading"]) && $content_pref["content_cat_subheading"]){
+			if(varsettrue($content_pref["content_cat_subheading"])){
 				return $tp -> toHTML($row['content_subheading'], TRUE, "");
 			}
-
 	}elseif($sc_mode=='catlistsub'){
-			if(isset($content_pref["content_catsub_subheading"]) && $content_pref["content_catsub_subheading"]){
+			if(varsettrue($content_pref["content_catsub_subheading"])){
 				return $tp -> toHTML($row['content_subheading'], TRUE, "");
 			}
 	}elseif($sc_mode=='searchresult'){
@@ -475,7 +463,7 @@ if($sc_mode){
 	if($sc_mode=='content'){
 			return $CONTENT_CONTENT_TABLE_SUMMARY;
 	}elseif($sc_mode=='recent'){
-			if (isset($content_pref["content_list_summary"]) && $content_pref["content_list_summary"]){
+			if (varsettrue($content_pref["content_list_summary"])){
 				if($row['content_summary'] && $content_pref["content_list_summary_char"] && $content_pref["content_list_summary_char"] != "" && $content_pref["content_list_summary_char"] != "0"){
 					if(strlen($row['content_summary']) > $content_pref["content_list_summary_char"]) {
 						$row['content_summary'] = substr($row['content_summary'], 0, $content_pref["content_list_summary_char"]).$content_pref["content_list_summary_post"];
@@ -511,8 +499,8 @@ if($sc_mode){
 						$ret .= " ".$content_pref["content_list_text_post"];
 					}
 				}
+				return $ret;
 			}
-			return $ret;
 	}elseif($sc_mode=='cat'){
 			if($row['content_text'] && isset($content_pref["content_catall_text"]) && $content_pref["content_catall_text"] && ($content_pref["content_catall_text_char"] > 0 || $content_pref["content_catall_text_char"] == 'all')){
 				if($content_pref["content_catall_text_char"] == 'all'){
@@ -553,8 +541,6 @@ if($sc_mode){
 			return $tp -> toHTML($row['content_text'], TRUE, "");
 
 	}
-
-
 }
 SC_END
 
@@ -584,8 +570,6 @@ if($sc_mode){
 				}
 				return ($filesexisting == "0" ? "" : CONTENT_LAN_41." ".($filesexisting == 1 ? CONTENT_LAN_42 : CONTENT_LAN_43)." ".$file." ");
 			}
-
-	
 	}elseif($sc_mode=='print'){
 	}elseif($sc_mode=='pdf'){
 	}
@@ -700,28 +684,6 @@ if($sc_mode){
 }
 SC_END
 
-//SC_BEGIN CM_AUTHOR
-//global $row, $tp;
-//if($sc_mode){
-//	if($sc_mode=='archive'){
-//	}elseif($sc_mode=='author'){
-//	}elseif($sc_mode=='cat'){
-//	}elseif($sc_mode=='catlist'){
-//	}elseif($sc_mode=='content'){
-//	}elseif($sc_mode=='recent'){
-//	}elseif($sc_mode=='score'){
-//	}elseif($sc_mode=='top'){
-//	}elseif($sc_mode=='type'){
-//	}else{
-//	}
-//}else{
-//}
-//SC_END
-
-
-
-
-
 // ############################################################################
 // ##### SHORTCODES THAT STILL NEED TO BE CONVERTED TO THE NEW STANDARD! ------
 // ############################################################################
@@ -764,7 +726,6 @@ if($content_pref["content_archive_letterindex"]){
 	return $CONTENT_ARCHIVE_TABLE_LETTERS;
 }
 SC_END
-
 
 // CONTENT_RECENT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_RECENT_TABLE_INFOPRE
@@ -880,7 +841,6 @@ SC_BEGIN CONTENT_SEARCH_TABLE_KEYWORD
 global $CONTENT_SEARCH_TABLE_KEYWORD;
 return $CONTENT_SEARCH_TABLE_KEYWORD;
 SC_END
-
 
 // ############################################################################
 // ##### SHORTCODES USED IN THE MENU ------------------------------------------
@@ -1104,8 +1064,6 @@ SC_BEGIN CMT_RECENT
 global $CMT_RECENT;
 return $CMT_RECENT;
 SC_END
-
-
 
 // ############################################################################
 // ##### SHORTCODES USED IN THE ADMIN PAGES -----------------------------------
@@ -1779,8 +1737,6 @@ SC_BEGIN CONTENTFORM_PRESET_VALUE
 global $CONTENTFORM_PRESET_VALUE;
 return $CONTENTFORM_PRESET_VALUE;
 SC_END
-
-
 
 // ############################################################################
 // ##### DEPRECATED SHORTCODES ! WILL BE REMOVED AFTER THE NEXT RELEASE -------
