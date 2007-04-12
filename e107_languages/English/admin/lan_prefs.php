@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-02 21:53:51 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-12 23:04:51 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -165,7 +165,7 @@ define("PRFLAN_154", "New user verification method <br />If 'Admin Approval' is 
 
 define("PRFLAN_155", "Display Name available to");
 define("PRFLAN_156", "Reset ALL Display Names");
-define("PRFLAN_157", "All Display Names have been reset to the Login Name");
+define("PRFLAN_157", "All Display Names have been reset to the Username");
 define("PRFLAN_158", "Display Name maximum length");
 define("PRFLAN_159", "viewing this page with");
 
