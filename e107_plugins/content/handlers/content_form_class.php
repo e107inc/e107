@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2007-04-12 21:35:00 $
+|		$Revision: 1.11 $
+|		$Date: 2007-04-13 10:05:45 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -91,8 +91,9 @@ class contentform{
 			</table>\n";
 
 			$tmp = explode(".",$_POST['parent1']);
-			$_POST['parent1'] = $tmp[1];
+			$_POST['parent1'] = ($tmp[1] ? $tmp[1] : $tmp[0]);
 			$mainparent						= $aa -> getMainParent( $_POST['parent1'] );
+			
 			$content_pref					= $aa -> getContentPref($mainparent);
 			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
 			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
@@ -134,39 +135,43 @@ class contentform{
 			$CONTENT_CONTENT_PREVIEW_TEXT = ($content_text ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$content_text.$TDPOST.$TRPOST : "");
 			$CONTENT_CONTENT_PREVIEW_AUTHORNAME = ($_POST['content_author_name'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_14.$TDPOST.$TDPRE2.$_POST['content_author_name'].$TDPOST.$TRPOST : "");
 			$CONTENT_CONTENT_PREVIEW_AUTHOREMAIL = ($_POST['content_author_email'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_15.$TDPOST.$TDPRE2.$_POST['content_author_email'].$TDPOST.$TRPOST : "");
-			$CONTENT_CONTENT_PREVIEW_COMMENT = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_36.$TDPOST.$TDPRE2.($_POST['content_comment'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
-			$CONTENT_CONTENT_PREVIEW_RATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_37.$TDPOST.$TDPRE2.($_POST['content_rate'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
-			$CONTENT_CONTENT_PREVIEW_PE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_38.$TDPOST.$TDPRE2.($_POST['content_pe'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
-			$CONTENT_CONTENT_PREVIEW_CLASS = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_39.$TDPOST.$TDPRE2.r_userclass_name($_POST['content_class']).$TDPOST.$TRPOST;
+			$CONTENT_CONTENT_PREVIEW_COMMENT = ($_POST['content_comment'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_36.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_85.$TDPOST.$TRPOST : '');
+			$CONTENT_CONTENT_PREVIEW_RATE = ($_POST['content_rate'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_37.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_85.$TDPOST.$TRPOST : '');
+			$CONTENT_CONTENT_PREVIEW_PE = ($_POST['content_pe'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_38.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_85.$TDPOST.$TRPOST : '');
+			$CONTENT_CONTENT_PREVIEW_CLASS = ($_POST['content_class'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_39.$TDPOST.$TDPRE2.r_userclass_name($_POST['content_class']).$TDPOST.$TRPOST : '');
 			$CONTENT_CONTENT_PREVIEW_SCORE = ($_POST['content_score'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_40.$TDPOST.$TDPRE2.($_POST['content_score']!="none" ? $_POST['content_score']."/100" : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_40." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
 			$CONTENT_CONTENT_PREVIEW_META = ($_POST['content_meta'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_53.$TDPOST.$TDPRE2.($_POST['content_meta']!="" ? $_POST['content_meta'] : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_53." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
 			$CONTENT_CONTENT_PREVIEW_LAYOUT = ($_POST['content_layout'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_92.$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? CONTENT_ADMIN_ITEM_LAN_120 : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
 
 			//start date
-			if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-			$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
+			if( isset($_POST['ne_day']) && $_POST['ne_day']!='' && $_POST['ne_day']!='0' && $_POST['ne_day'] != "none" 
+			&& isset($_POST['ne_month']) && $_POST['ne_month']!='' && $_POST['ne_month']!='0' && $_POST['ne_month'] != "none" 
+			&& isset($_POST['ne_year']) && $_POST['ne_year']!='' && $_POST['ne_year']!='0' && $_POST['ne_year'] != "none" ){
+				$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
 			}else{
-			$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.strftime("%d %b %Y", time()).$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_STARTDATE='';
 			}
 			//end date
-			if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
-			$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
+			if( isset($_POST['end_day']) && $_POST['end_day']!='' && $_POST['end_day']!='0' && $_POST['end_day'] != "none" 
+			&& isset($_POST['end_month']) && $_POST['end_month']!='' && $_POST['end_month']!='0' && $_POST['end_month'] != "none" 
+			&& isset($_POST['end_year']) && $_POST['end_year']!='' && $_POST['end_year']!='0' && $_POST['end_year'] != "none" ){
+				$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
 			}else{
-			$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_DATE_LAN_16." ".CONTENT_ADMIN_ITEM_LAN_119.$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_ENDDATE='';
 			}
 			$CONTENT_CONTENT_PREVIEW_CUSTOM = "";
 			
 			//custom tags
 			for($i=0;$i<$content_pref["content_admin_custom_number"];$i++){
-			if($_POST["content_custom_key_{$i}"] != "" && $_POST["content_custom_value_{$i}"] != ""){
-			$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$_POST["content_custom_key_{$i}"].$TDPOST.$TDPRE2.$_POST["content_custom_value_{$i}"].$TDPOST.$TRPOST;
-			}
+				if($_POST["content_custom_key_{$i}"] != "" && $_POST["content_custom_value_{$i}"] != ""){
+					$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$_POST["content_custom_key_{$i}"].$TDPOST.$TDPRE2.$_POST["content_custom_value_{$i}"].$TDPOST.$TRPOST;
+				}
 			}
 			//custom preset tags
 			foreach($_POST['content_custom_preset_key'] as $k => $v){
-			if($k != "" && $v != ""){
-			$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$k.$TDPOST.$TDPRE2.$v.$TDPOST.$TRPOST;
-			}
+				if($k != "" && $v != ""){
+					$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$k.$TDPOST.$TDPRE2.$v.$TDPOST.$TRPOST;
+				}
 			}
 			
 			//icon
@@ -175,15 +180,15 @@ class contentform{
 			}elseif($_POST['content_icon'] && is_readable($content_icon_path.$_POST['content_icon'])){
 				$ICON = "<img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
 			}else{
-				$ICON = CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_114." ".CONTENT_ADMIN_ITEM_LAN_119;
+				$ICON='';
 			}
-			$CONTENT_CONTENT_PREVIEW_ICON = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_114.$TDPOST.$TDPRE2.$ICON.$TDPOST.$TRPOST;
+			$CONTENT_CONTENT_PREVIEW_ICON = ($ICON ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_114.$TDPOST.$TDPRE2.$ICON.$TDPOST.$TRPOST : '');
 
 			//images and attachments
 			$file	= FALSE;
 			$image	= FALSE;
-			$ATTACH = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_24.$TDPOST.$TDPRE2;
-			$IMAGES = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_31.$TDPOST.$TDPRE2;
+			$ATTACH = '';
+			$IMAGES = '';
 			foreach($_POST as $k => $v){
 				if(strpos($k, "content_files") === 0){
 					if($v && is_readable($content_tmppath_file.$v)){
@@ -205,13 +210,15 @@ class contentform{
 				}
 			}
 			if($file !== TRUE){
-				$ATTACH .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_24." ".CONTENT_ADMIN_ITEM_LAN_119;
+				$CONTENT_CONTENT_PREVIEW_ATTACH='';
+			}else{
+				$CONTENT_CONTENT_PREVIEW_ATTACH = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_24.$TDPOST.$TDPRE2.$ATTACH.$TDPOST.$TRPOST;
 			}
 			if($image !== TRUE){
-				$IMAGES .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_31." ".CONTENT_ADMIN_ITEM_LAN_119;
+				$CONTENT_CONTENT_PREVIEW_IMAGES='';
+			}else{
+				$CONTENT_CONTENT_PREVIEW_IMAGES = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_31.$TDPOST.$TDPRE2.$IMAGES.$TDPOST.$TRPOST;
 			}
-			$CONTENT_CONTENT_PREVIEW_ATTACH = $ATTACH.$TDPOST.$TRPOST;
-			$CONTENT_CONTENT_PREVIEW_IMAGES = $IMAGES.$TDPOST.$TRPOST;
 
 			$caption = CONTENT_ADMIN_ITEM_LAN_46." ".$_POST['content_heading'];
 			$preview = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_PREVIEW);
@@ -365,19 +372,6 @@ class contentform{
 				}
 
 			}
-
-			//general variables (from the top level category preferences)
-			$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
-			$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
-			$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
-			$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
-			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
-			$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
 
 			//get preferences for submit page
 			if($mode == "submit"){
@@ -621,23 +615,37 @@ class contentform{
 				$hidden .= $rs -> form_hidden("end_year", $end_year);
 			}
 			if( $checkicon || $checkattach || $checkimages ){
+				//prepare file lists
+				$rejectlist	= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
 				$show['upload'] = true;
 			}else{
 				$show['upload'] = false;
 			}
 			if($checkicon){
+				$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
+				$content_icon_path = $tp -> replaceConstants($content_pref["content_icon_path"]);
+				$content_tmppath_icon = $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
+				$iconlist	= $fl->get_files($content_tmppath_icon,"",$rejectlist);
 				$show['icon'] = true;
 			}else{
 				$show['icon'] = false;
 				$hidden .= $rs -> form_hidden("content_icon", $row['content_icon']);
 			}
 			if($checkattach){
+				$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
+				$content_file_path = $tp -> replaceConstants($content_pref["content_file_path"]);
+				$content_tmppath_file = $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
+				$filelist	= $fl->get_files($content_tmppath_file,"",$rejectlist);
 				$show['attach'] = true;
 			}else{
 				$show['attach'] = false;
 				$hidden .= $rs -> form_hidden("content_file", $row['content_file']);
 			}
 			if($checkimages){
+				$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
+				$content_image_path = $tp -> replaceConstants($content_pref["content_image_path"]);
+				$content_tmppath_image = $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
+				$imagelist	= $fl->get_files($content_tmppath_image,"",$rejectlist);
 				$show['images'] = true;
 			}else{
 				$show['images'] = false;
@@ -714,12 +722,6 @@ class contentform{
 			$content_author_name_js		= ($content_author_name ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"");
 			$content_author_email_value	= ($content_author_email ? $content_author_email : CONTENT_ADMIN_ITEM_LAN_15);
 			$content_author_email_js	= ($content_author_email ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"");
-
-			//prepare file lists
-			$rejectlist	= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
-			$iconlist	= $fl->get_files($content_tmppath_icon,"",$rejectlist);
-			$filelist	= $fl->get_files($content_tmppath_file,"",$rejectlist);
-			$imagelist	= $fl->get_files($content_tmppath_image,"",$rejectlist);
 
 			//retrieve the custom/preset data tags
 			if(!(isset($_POST['preview_content']) || isset($message))){

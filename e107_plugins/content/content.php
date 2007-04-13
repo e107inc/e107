@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2007-04-12 21:35:00 $
+|		$Revision: 1.12 $
+|		$Date: 2007-04-13 10:05:45 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -501,6 +501,7 @@ function show_content_recent(){
 			return;
 		}
 		$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path"]);
+		$crumbarray			= $aa -> getCategoryTree("", intval($mainparent), TRUE);
 		$array				= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 		$validparent		= implode(",", array_keys($array));
 		$order				= $aa -> getOrder();
@@ -514,7 +515,7 @@ function show_content_recent(){
 
 		$recentqry = "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery;
 		$np = $aa->ShowNextPrev("", $from, $number, $contenttotal,true);
-		$text = $aa->getCrumbPage("recent", $array, $mainparent);
+		$text = $aa->getCrumbPage("recent", $crumbarray, $mainparent);
 		$text .= displayPreview($recentqry, $np, $array);
 
 		$caption = $content_pref['content_list_caption'];
