@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-11-29 05:11:16 $
-|     $Author: e107coders $
+|     $Revision: 1.41 $
+|     $Date: 2007-04-14 16:50:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -113,6 +113,8 @@ class e107_user_extended
 		return $ret;
 	}
 
+
+	// Get the definition of all fields, or those in a specific category, grouped by category ID
 	function user_extended_get_fields($cat = "")
 	{
 		global $sql;
@@ -127,7 +129,8 @@ class e107_user_extended
 		return $ret;
 	}
 
-	function user_extended_get_fieldList()
+	// Get the definition of all fields, or those in a specific category, indexed by field ID
+	function user_extended_get_fieldList($cat = "")
 	{
 		global $sql;
 		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
