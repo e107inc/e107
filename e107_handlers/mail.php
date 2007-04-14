@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-04-14 10:39:55 $
+|     $Revision: 1.6 $
+|     $Date: 2007-04-14 19:38:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,17 @@ php 4.3.6 does NOT have this problem.
 
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") {
 	global $pref,$mailheader_e107id,$tp;
+
+    // ----- Mail pref. template override for parked domains, site mirrors or dynamic values
+    global $EMAIL_METHOD, $EMAIL_SMTP_SERVER, $EMAIL_SMTP_USER, $EMAIL_SMTP_PASS, $EMAIL_SENDMAIL_PATH, $EMAIL_FROM, $EMAIL_FROM_NAME;
+	if($EMAIL_METHOD){	$pref['mailer'] = $EMAIL_METHOD;	}
+	if($EMAIL_SMTP_SERVER){	$pref['smtp_server'] = $EMAIL_SMTP_SERVER;	}
+    if($EMAIL_SMTP_USER){	$pref['smtp_username'] = $EMAIL_SMTP_USER;	}
+	if($EMAIL_SMTP_PASS){	$pref['smtp_password'] = $EMAIL_SMTP_PASS;	}
+    if($EMAIL_SENDMAIL_PATH){	$pref['sendmail'] = $EMAIL_SENDMAIL_PATH; }
+    if($EMAIL_FROM){	$pref['siteadminemail'] = $EMAIL_FROM; }
+	if($EMAIL_FROM_NAME){	$pref['siteadmin'] = $EMAIL_FROM_NAME; }
+    // -------------------------------------------------------------------------
 
 	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
 
