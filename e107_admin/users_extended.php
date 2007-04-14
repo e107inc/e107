@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-02-24 14:45:24 $
+|     $Revision: 1.8 $
+|     $Date: 2007-04-14 17:24:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -156,10 +156,15 @@ if ($_POST['eu_action'] == "delext")
 	}
 }
 
+// Delete category
 if ($_POST['eu_action'] == "delcat")
 {
 	list($_id, $_name) = explode(",",$_POST['key']);
-	if($ue->user_extended_remove($_id, $_name))
+	if (count($ue->user_extended_get_fields($_id)) > 0)
+	{
+	  $message = EXTLAN_77;
+	}
+	elseif($ue->user_extended_remove($_id, $_name))
 	{
 		$message = EXTLAN_41;
 	}

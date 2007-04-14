@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-28 20:49:35 $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-14 17:24:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -89,6 +89,7 @@ define("EXTLAN_73", "was not deactivated!");
 define("EXTLAN_74", "is a reserved field name and can not be used.");
 define("EXTLAN_75", "Error adding field to database.");
 define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, '_' allowed.");
+define("EXTLAN_77", "Category not deleted - must delete fields in category first: ");
 
 
 //textbox
