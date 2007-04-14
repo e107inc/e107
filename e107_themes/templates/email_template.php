@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-14 19:38:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -27,6 +27,16 @@ $SIGNUPEMAIL_CC = "";  // comma separated email addresses to put in CC of the si
 $SIGNUPEMAIL_BCC = "";   // comma separated email addresses to put in BCC of the signup email.
 $SIGNUPEMAIL_ATTACHMENTS = ""; // files-path array of attachments. eg. array(e_FILE."myfile.zip",e_FILE."myotherfile.zip");
 $SIGNUPEMAIL_BACKGROUNDIMAGE = "";// relative path to a background image eg. e_IMAGE."mybackground.jpg";
+
+// Optional admin preferences Override.
+$EMAIL_METHOD = "";  // php, smtp or sendmail
+$EMAIL_SMTP_SERVER = ""; // smtp.myserver.com
+$EMAIL_SMTP_USER = "";
+$EMAIL_SMTP_PASS = "";
+$EMAIL_SENDMAIL_PATH = "";
+$EMAIL_FROM = "";  // admin@mysite.com
+$EMAIL_FROM_NAME = ""; // Admin
+
 
 
 $EMAIL_HEADER = "
@@ -76,4 +86,9 @@ LAN_403." {SITENAME}<br />
 </div>
 </div>
 ";
+
+
+
+
+
 ?>
