@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-30 18:55:42 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-04-14 10:39:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,7 +40,7 @@ php 4.3.6 does NOT have this problem.
 // e107_ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") {
-	global $pref,$mailheader_e107id;
+	global $pref,$mailheader_e107id,$tp;
 
 	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
 
@@ -79,8 +79,8 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	$to_name = ($to_name) ? $to_name: $send_to;
 
 	$mail->CharSet = CHARSET;
-	$mail->From = ($send_from)? $send_from: $pref['siteadminemail'];
-	$mail->FromName = ($from_name)? $from_name:	$pref['siteadmin'];
+	$mail->From = ($send_from)? $send_from: $tp->toEmail($pref['siteadminemail'],"","parse_sc, no_make_clickable, defs");
+	$mail->FromName = ($from_name)? $from_name:	$tp->toEmail($pref['siteadmin'],"","parse_sc, no_make_clickable, defs");
 	$mail->Subject = $subject;
 	$mail->SetLanguage("en",e_HANDLER."phpmailer/language/");
 
