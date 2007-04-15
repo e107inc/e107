@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-04-12 23:04:51 $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-15 22:50:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -70,8 +70,8 @@ define("USRLAN_61", "Display name");
 define("USRLAN_62", "Password");
 define("USRLAN_63", "Re-type Password");
 define("USRLAN_64", "Email Address");
-define("USRLAN_65", "That user name cannot be accepted as valid, please choose a different user name");
-define("USRLAN_66", "That user name already exists in the database, please choose a different user name");
+define("USRLAN_65", "That display name cannot be accepted as valid, please choose a different display name");
+define("USRLAN_66", "That display name already exists in the database, please choose a different display name");
 define("USRLAN_67", "The two passwords do not match");
 define("USRLAN_68", "You left required field(s) blank");
 define("USRLAN_69", "That doesn't appear to be a valid email address");
