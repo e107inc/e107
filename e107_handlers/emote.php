@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/emote.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-19 20:34:12 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-04-15 16:07:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -28,6 +28,7 @@ function r_emote()
 		$tp->e_emote = new e_emoteFilter;
 	}
 	
+	$str = '';
 	foreach($tp->e_emote->emotes as $key => $value)
 	{
 		$key = str_replace("!", "_", $key);

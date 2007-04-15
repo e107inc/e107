@@ -86,20 +86,20 @@ global $row, $tp, $content_pref;
 if($sc_mode){
 	if($sc_mode=='cat'){
 			global $comment_total, $plugintable;
-			if($row['content_comment'] && isset($content_pref["content_catall_comment"]) && $content_pref["content_catall_comment"]){
+			if(varsettrue($row['content_comment']) && varsettrue($content_pref["content_catall_comment"])){
 				$sqlc = new db;
 				$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 				return "<a href='".e_SELF."?cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 			}
 	}elseif($sc_mode=='catlist'){
 			global $qs, $comment_total, $sql, $plugintable;
-			if($row['content_comment'] && isset($content_pref["content_cat_comment"]) && $content_pref["content_cat_comment"]){
+			if(varsettrue($row['content_comment']) && varsettrue($content_pref["content_cat_comment"])){
 				$comment_total = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".intval($qs[1])."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 				return "<a href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 			}
 	}elseif($sc_mode=='content'){
 			global $cobj, $qs, $plugintable;
-			if((isset($content_pref["content_content_comment"]) && $content_pref["content_content_comment"] && $row['content_comment']) || $content_pref["content_content_comment_all"] ){
+			if((varsettrue($content_pref["content_content_comment"]) && varsettrue($row['content_comment'])) || varsettrue($content_pref["content_content_comment_all"]) ){
 				return $cobj -> count_comments($plugintable, $qs[1]);
 			}
 	}
@@ -164,7 +164,7 @@ global $content_pref, $row, $tp;
 if($sc_mode){
 	$epicons = "";
 	if($sc_mode=='content'){
-			if(($content_pref["content_content_peicon"] && $row['content_pe']) || $content_pref["content_content_peicon_all"]){
+			if((varsettrue($content_pref["content_list_peicon"]) && varsettrue($row['content_pe'])) || varsettrue($content_pref["content_list_peicon_all"]) ){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
@@ -172,7 +172,7 @@ if($sc_mode){
 			}
 	}elseif($sc_mode=='recent'){
 			if(varsettrue($content_pref["content_list_peicon"])){
-				if($row['content_pe'] || isset($content_pref["content_list_peicon_all"]) && $content_pref["content_list_peicon_all"]){
+				if( varsettrue($row['content_pe']) || varsettrue($content_pref["content_list_peicon_all"]) ){
 					$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 					$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 					$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
@@ -180,14 +180,14 @@ if($sc_mode){
 				}
 			}
 	}elseif($sc_mode=='cat'){
-			if($row['content_pe'] && varsettrue($content_pref["content_catall_peicon"])){
+			if( varsettrue($row['content_pe']) && varsettrue($content_pref["content_catall_peicon"])){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				return $epicons;
 			}
 	}elseif($sc_mode=='catlist'){
-			if( (varsettrue($content_pref["content_cat_peicon"]) && $row['content_pe']) || varsettrue($content_pref["content_cat_peicon_all"]) ){
+			if( (varsettrue($content_pref["content_cat_peicon"]) && varsettrue($row['content_pe'])) || varsettrue($content_pref["content_cat_peicon_all"]) ){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$qs[1]}");
@@ -238,7 +238,7 @@ SC_BEGIN CM_ICON
 global $aa, $row, $content_pref, $content_icon_path, $content_cat_icon_path_small, $content_cat_icon_path_large;
 if($sc_mode){
 	if($sc_mode=='top'){
-			if($content_pref["content_top_icon"]){
+			if(varsettrue($content_pref["content_top_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
 				$width = varsettrue($content_pref["content_top_icon_width"], $width);
 				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
@@ -486,7 +486,7 @@ if($sc_mode){
 	if($sc_mode=='content'){
 			return $CONTENT_CONTENT_TABLE_TEXT;
 	}elseif($sc_mode=='recent'){
-			if(isset($content_pref["content_list_text"]) && $content_pref["content_list_text"] && $content_pref["content_list_text_char"] > 0){
+			if(varsettrue($content_pref["content_list_text"]) && $content_pref["content_list_text_char"] > 0){
 				$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
 				$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
 				$rowtext = strip_tags($rowtext);
@@ -502,7 +502,7 @@ if($sc_mode){
 				return $ret;
 			}
 	}elseif($sc_mode=='cat'){
-			if($row['content_text'] && isset($content_pref["content_catall_text"]) && $content_pref["content_catall_text"] && ($content_pref["content_catall_text_char"] > 0 || $content_pref["content_catall_text_char"] == 'all')){
+			if($row['content_text'] && varsettrue($content_pref["content_catall_text"]) && ($content_pref["content_catall_text_char"] > 0 || $content_pref["content_catall_text_char"] == 'all')){
 				if($content_pref["content_catall_text_char"] == 'all'){
 					$ret = $row['content_text'];
 				}else{
@@ -520,7 +520,7 @@ if($sc_mode){
 				return $ret;
 			}
 	}elseif($sc_mode=='catlist'){
-			if($row['content_text'] && isset($content_pref["content_cat_text"]) && $content_pref["content_cat_text"] && ($content_pref["content_cat_text_char"] > 0 || $content_pref["content_cat_text_char"] == 'all')){
+			if($row['content_text'] && varsettrue($content_pref["content_cat_text"]) && ($content_pref["content_cat_text_char"] > 0 || $content_pref["content_cat_text_char"] == 'all')){
 				if($content_pref["content_cat_text_char"] == 'all'){
 					$CONTENT_CAT_LIST_TABLE_TEXT = $tp->toHTML($row['content_text'], TRUE, "constants");
 				}else{
@@ -599,11 +599,8 @@ if($sc_mode){
 				for($i=0;$i<count($images);$i++){		
 					$oSrc = $content_image_path.$images[$i];
 					$oSrcThumb = $content_image_path."thumb_".$images[$i];
-
-					$oIconWidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
-					
-					$oMaxWidth = (isset($content_pref["content_upload_image_size"]) && $content_pref["content_upload_image_size"] ? $content_pref["content_upload_image_size"] : "500");
-					
+					$oIconWidth = varsettrue($content_pref["content_upload_image_size_thumb"], '100');
+					$oMaxWidth = varsettrue($content_pref["content_upload_image_size"], '500');
 					$subheading	= $tp -> toHTML($row['content_subheading'], TRUE);
 					$popupname	= $tp -> toHTML($content_image_popup_name, TRUE);
 					$author		= $tp -> toHTML($authordetails[1], TRUE);
@@ -628,8 +625,7 @@ if($sc_mode){
 				for($i=0;$i<count($images);$i++){		
 					$oSrc = $content_image_path.$images[$i];
 					$oSrcThumb = $content_image_path."thumb_".$images[$i];
-
-					$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
+					$iconwidth = varsettrue($content_pref["content_upload_image_size_thumb"], '100');
 					if($iconwidth){
 						$style = "style='width:".$iconwidth."px;'";
 					}
@@ -661,8 +657,7 @@ if($sc_mode){
 				for($i=0;$i<count($images);$i++){		
 					$oSrc = $content_image_path.$images[$i];
 					$oSrcThumb = $content_image_path."thumb_".$images[$i];
-
-					$iconwidth = (isset($content_pref["content_upload_image_size_thumb"]) && $content_pref["content_upload_image_size_thumb"] ? $content_pref["content_upload_image_size_thumb"] : "100");
+					$iconwidth = varsettrue($content_pref["content_upload_image_size_thumb"], '100');
 					if($iconwidth){
 						$style = "style='width:".$iconwidth."px;'";
 					}

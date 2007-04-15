@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-03-03 19:40:53 $ 
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-04-15 16:07:39 $ 
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -101,8 +101,8 @@ class e_bbcode
       if ($cont[0] == '[')
 	  {  // We've got a bbcode - split it up and process it
 		$match_count = preg_match($pattern,$cont,$matches);
-	    $bbparam = $matches[5];
-        $bbword = $matches[2];
+	    $bbparam = (isset($matches[5])) ? $matches[5] : '';
+        $bbword = (isset($matches[2])) ? $matches[2] : '';
 		if ($force_lower) $bbword = strtolower($bbword);
 		if ($nopro && ($bbword == 'code') && ($matches[1] == '/')) $nopro = FALSE;		// End of code block
 	    if (($bbword) && ($bbword == trim($bbword)) && !$nopro)
