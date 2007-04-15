@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-04-14 19:38:10 $
+|     $Revision: 1.7 $
+|     $Date: 2007-04-15 22:12:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,11 +21,11 @@ if (!defined('e107_INIT')) { exit; }
 
 	if(is_readable(THEME."email_template.php"))
 	{
-    	require_once(THEME."email_template.php");
+    	require(THEME."email_template.php");
 	}
 	else
 	{
-    	require_once(e_THEME."templates/email_template.php");
+    	require(e_THEME."templates/email_template.php");
 	}
 
     if(isset($EMAIL_HEADER) && isset($EMAIL_FOOTER) && is_object($tp)){
@@ -42,8 +42,12 @@ php 4.3.6 does NOT have this problem.
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") {
 	global $pref,$mailheader_e107id,$tp;
 
+	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
+
+	$mail = new PHPMailer();
+
     // ----- Mail pref. template override for parked domains, site mirrors or dynamic values
-    global $EMAIL_METHOD, $EMAIL_SMTP_SERVER, $EMAIL_SMTP_USER, $EMAIL_SMTP_PASS, $EMAIL_SENDMAIL_PATH, $EMAIL_FROM, $EMAIL_FROM_NAME;
+    global $EMAIL_METHOD, $EMAIL_SMTP_SERVER, $EMAIL_SMTP_USER, $EMAIL_SMTP_PASS, $EMAIL_SENDMAIL_PATH, $EMAIL_FROM, $EMAIL_FROM_NAME, $EMAIL_POP3AUTH,$EMAIL_DEBUG,$EMAIL_RETURN;
 	if($EMAIL_METHOD){	$pref['mailer'] = $EMAIL_METHOD;	}
 	if($EMAIL_SMTP_SERVER){	$pref['smtp_server'] = $EMAIL_SMTP_SERVER;	}
     if($EMAIL_SMTP_USER){	$pref['smtp_username'] = $EMAIL_SMTP_USER;	}
@@ -51,11 +55,14 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
     if($EMAIL_SENDMAIL_PATH){	$pref['sendmail'] = $EMAIL_SENDMAIL_PATH; }
     if($EMAIL_FROM){	$pref['siteadminemail'] = $EMAIL_FROM; }
 	if($EMAIL_FROM_NAME){	$pref['siteadmin'] = $EMAIL_FROM_NAME; }
+	if($EMAIL_POP3AUTH){	$pref['smtp_pop3auth'] = TRUE; }
+	if($EMAIL_RETURN){ $returnpath = $EMAIL_RETURN; }
+	if($EMAIL_DEBUG){
+           $mail->SMTPDebug = TRUE;
+	}
     // -------------------------------------------------------------------------
 
-	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
 
-	$mail = new PHPMailer();
 
     if($mailheader_e107id){
 		$mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
