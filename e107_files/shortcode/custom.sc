@@ -1,25 +1,28 @@
-global $tp;
+global $tp,$pref;
 $ret = "";
 $custom_query = explode('+', $parm);
 switch($custom_query[0])
 {
 		case "login":
 		case "login noprofile":
-				@include_once(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
-				@include_once(e_PLUGIN."login_menu/languages/English.php");
+				include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+
+				$sep = (defined("LOGINC_SEP")) ? LOGINC_SEP : "<span class='loginc sep'>.:.</span>";
 
 				if (USER == TRUE){
-						$ret .= "<span class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;.:. ";
+						$ret .= "<span class='mediumtext'><span class='loginc welcome'>".LOGIN_MENU_L5." ".USERNAME."</span>&nbsp;&nbsp;&nbsp;".$sep." ";
 						if(ADMIN == TRUE){
-								$ret .= "<a href='".e_ADMIN."admin.php'>".LOGIN_MENU_L11."</a> .:. ";
+								$ret .= "<a class='loginc admin' href='".e_ADMIN."admin.php'>".LOGIN_MENU_L11."</a> ".$sep." ";
 						}
-						$ret .= ($custom_query[0] != "login noprofile") ? "<a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n.:. ":"";
-						$ret .= "<a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a> .:. <a href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a> .:.</span>";
+						$ret .= ($custom_query[0] != "login noprofile") ? "<a class='loginc profile' href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n".$sep." ":"";
+						$ret .= "<a class='loginc usersettings' href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a> ".$sep." <a class='loginc logout' href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a> ".$sep."</span>";
 				} else {
-						$ret .= "<form method='post' action='".e_SELF."'>\n<div class='loginc_div'>\n".LOGIN_MENU_L1."<input class='tbox loginc user' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button loginc' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />";
+						$ret .= "<form method='post' action='".e_SELF."'>\n<div class='loginc_div'>\n".LOGIN_MENU_L1."<input class='tbox loginc user' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n";
+						$ret .= ($pref['user_tracking'] == "cookie") ? "<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n" : "";
+						$ret .= "<input class='button loginc' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />";
 						if($pref['user_reg'])
 						{
-							$ret .= "&nbsp;&nbsp;<a href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";
+							$ret .= "&nbsp;&nbsp;<a class='loginc signup' href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";
 						}
 						$ret .= "</div>\n</form>";
 				}
