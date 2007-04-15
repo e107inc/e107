@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-29 22:10:53 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-15 16:07:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -487,6 +487,10 @@ class comment {
 		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp -> toDB($type, true)."' ORDER BY c.comment_datestamp";
 
 		$text = "";
+		$comment = '';
+		$modcomment = '';
+		$lock = '';
+		$ret['comment'] = '';
 
 		if ($comment_total = $sql->db_Select_gen($query))
 		{

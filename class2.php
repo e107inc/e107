@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-04-08 23:45:52 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2007-04-15 16:07:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1281,7 +1281,7 @@ function init_session() {
 
 			if ($result['user_ban'] == 1) { exit; }
 
-			$user_pref = unserialize($result['user_prefs']);
+			$user_pref = ($result['user_prefs']) ? unserialize($result['user_prefs']) : '';
 
 			if (isset($_POST['settheme'])) {
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);

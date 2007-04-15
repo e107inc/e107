@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-11 10:40:28 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-15 16:07:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -90,11 +90,11 @@ foreach($eplug_bb as $key=>$val)  // allow plugins to plug into it.
 }
 
 
-$_onclick_func = ($bbcode[$parm][0]) ? $bbcode[$parm][0] : $bbcode_func;
-$_onclick_var = $bbcode[$parm][1];
-$_helptxt = $bbcode[$parm][2];
-$_function = $bbcode[$parm][4];
-$_function_var = $bbcode[$parm][5];
+$_onclick_func = (isset($bbcode[$parm][0])) ? $bbcode[$parm][0] : $bbcode_func;
+$_onclick_var = (isset($bbcode[$parm][1])) ? $bbcode[$parm][1] : '';
+$_helptxt = (isset($bbcode[$parm][2])) ? $bbcode[$parm][2] : '';
+$_function = (isset($bbcode[$parm][4])) ? $bbcode[$parm][4] : '';
+$_function_var = (isset($bbcode[$parm][5])) ? $bbcode[$parm][5] : '';
 
 
 if($bbcode[$parm])  // default - insert text.
