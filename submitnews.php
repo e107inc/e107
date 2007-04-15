@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-13 23:50:45 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-15 20:56:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -127,15 +127,14 @@ if (!USER)
 {
     $text .= "<tr>\n<td style='width:20%' class='forumheader3'>" . LAN_7 . "</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>\n<tr>\n<td style='width:20%' class='forumheader3'>" . LAN_112 . "</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_email' size='60' value='$author_email' maxlength='100' />\n</td>\n</tr>";
 }
-$news_aj = new textparse();
-// Added by Barry
+
 if (!empty($pref['news_subheader']))
 {
     $text .= " <tr>
-	<td colspan='2' class='forumheader3'>" . $news_aj->tpa($pref['news_subheader']) . "</td>
+	<td colspan='2' class='forumheader3'>" . $tp->toHTML($pref['news_subheader'], TRUE,'TITLE') . "</td>
 	</tr>";
 }
-// end barry
+
 $text .= " <tr>
 	<td style='width:20%' class='forumheader3'>" . NWSLAN_6 . ": </td>
 	<td style='width:80%' class='forumheader3'>";
