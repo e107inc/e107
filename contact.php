@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-03-26 06:29:13 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2007-04-15 14:36:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -102,12 +102,12 @@ if(isset($_POST['send-contactus'])){
 			}
 			else
 			{
-        		$query = $pref['sitecontacts'] . " IN (user_class) ";
+				$query = "FIND_IN_SET(".$pref['sitecontacts'].",user_class) ";
 			}
 		}
 		else
 		{
-      		$query = "user_id = ".$_POST['contact_person'];
+      		$query = "user_id = ".intval($_POST['contact_person']);
 		}
 
     	if($sql -> db_Select("user", "user_name,user_email",$query." LIMIT 1"))
