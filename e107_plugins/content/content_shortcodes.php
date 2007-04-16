@@ -235,51 +235,51 @@ if($sc_mode){
 SC_END
 
 SC_BEGIN CM_ICON
-global $aa, $row, $content_pref, $content_icon_path, $content_cat_icon_path_small, $content_cat_icon_path_large;
+global $aa, $row, $content_pref;
 if($sc_mode){
 	if($sc_mode=='top'){
 			if(varsettrue($content_pref["content_top_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
 				$width = varsettrue($content_pref["content_top_icon_width"], $width);
-				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
+				return $aa -> getIcon("item", $row['content_icon'], $content_pref['content_icon_path'], "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 			}
 	}elseif($sc_mode=='score'){
 			if(varsettrue($content_pref["content_score_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
 				$width = varsettrue($content_pref["content_score_icon_width"], $width);
-				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
+				return $aa -> getIcon("item", $row['content_icon'], $content_pref['content_icon_path'], "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 			}
 	}elseif($sc_mode=='cat'){
 			if(varsettrue($content_pref["content_catall_icon"])){
 				$qry = "cat.".$row['content_id'];
-				return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $qry, "", $content_pref["content_blank_caticon"]);
+				return $aa -> getIcon("catlarge", $row['content_icon'], $content_pref['content_cat_icon_path_large'], $qry, "", $content_pref["content_blank_caticon"]);
 			}
 	}elseif($sc_mode=='catlist'){
 			if(varsettrue($content_pref["content_cat_icon"])){
-				return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon"]);
+				return $aa -> getIcon("catlarge", $row['content_icon'], $content_pref['content_cat_icon_path_large'], "", "", $content_pref["content_blank_caticon"]);
 			}
 	}elseif($sc_mode=='catlistsub'){
 			if(varsettrue($content_pref["content_catsub_icon"])){
-				return $aa -> getIcon("catsmall", $row['content_icon'], $content_cat_icon_path_small, "cat.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
+				return $aa -> getIcon("catsmall", $row['content_icon'], $content_pref['content_cat_icon_path_small'], "cat.".$row['content_id'], "", $content_pref["content_blank_caticon"]);
 			}
 	}elseif($sc_mode=='recent'){
 			if(varsettrue($content_pref["content_list_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
-				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
+				return $aa -> getIcon("item", $row['content_icon'], $content_pref['content_icon_path'], "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 			}
 	}elseif($sc_mode=='author'){
 			return "<a href='".e_SELF."?author.".$row['content_id']."'>".CONTENT_ICON_AUTHORLIST."</a>";
 	}elseif($sc_mode=='content'){
 			if(varsettrue($content_pref["content_content_icon"])){
 				$width = varsettrue($content_pref["content_upload_icon_size"], '100');
-				return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", $width, $content_pref["content_blank_icon"]);
+				return $aa -> getIcon("item", $row['content_icon'], $content_pref['content_icon_path'], "", $width, $content_pref["content_blank_icon"]);
 			}
 	}elseif($sc_mode=='type'){
 			$qry = "cat.".$row['content_id'];
-			return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $qry, "", $content_pref["content_blank_caticon"]);
+			return $aa -> getIcon("catlarge", $row['content_icon'], $content_pref['content_cat_icon_path_large'], $qry, "", $content_pref["content_blank_caticon"]);
 	}elseif($sc_mode=='searchresult'){
 			$width = varsettrue($content_pref["content_upload_icon_size"], '100');
-			return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
+			return $aa -> getIcon("item", $row['content_icon'], $content_pref['content_icon_path'], "content.".$row['content_id'], $width, $content_pref["content_blank_icon"]);
 	}elseif($sc_mode=='manager_link'){
 			return "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_ICON_CONTENTMANAGER."</a>";
 	}elseif($sc_mode=='manager_new'){
@@ -548,7 +548,7 @@ SC_BEGIN CM_FILE
 global $row, $tp;
 if($sc_mode){
 	if($sc_mode=='content'){
-			global $row, $content_file_path, $content_pref;
+			global $row, $content_pref;
 			if($content_pref["content_content_attach"]){
 				$filestmp = explode("[file]", $row['content_file']);
 				foreach($filestmp as $key => $value) { 
@@ -561,9 +561,9 @@ if($sc_mode){
 				$file = "";
 				$filesexisting = "0";
 				for($i=0;$i<count($files);$i++){
-					if(file_exists($content_file_path.$files[$i])){
+					if(file_exists($content_pref['content_file_path'].$files[$i])){
 						$filesexisting = $filesexisting+1;
-						$file .= "<a href='".$content_file_path.$files[$i]."' rel='external'>".CONTENT_ICON_FILE."</a> ";						
+						$file .= "<a href='".$content_pref['content_file_path'].$files[$i]."' rel='external'>".CONTENT_ICON_FILE."</a> ";						
 					}else{
 						$file .= "&nbsp;";
 					}
@@ -580,7 +580,7 @@ SC_BEGIN CM_IMAGES
 global $row, $tp;
 if($sc_mode){
 	if($sc_mode=='content'){
-			global $row, $content_image_path, $aa, $tp, $authordetails, $content_pref;
+			global $row, $aa, $tp, $authordetails, $content_pref;
 			if($content_pref["content_content_images"]){
 				$authordetails = $aa -> getAuthor($row['content_author']);
 				$imagestmp = explode("[img]", $row['content_image']);
@@ -597,8 +597,8 @@ if($sc_mode){
 				$gen = new convert;
 				$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 				for($i=0;$i<count($images);$i++){		
-					$oSrc = $content_image_path.$images[$i];
-					$oSrcThumb = $content_image_path."thumb_".$images[$i];
+					$oSrc = $content_pref['content_image_path'].$images[$i];
+					$oSrcThumb = $content_pref['content_image_path']."thumb_".$images[$i];
 					$oIconWidth = varsettrue($content_pref["content_upload_image_size_thumb"], '100');
 					$oMaxWidth = varsettrue($content_pref["content_upload_image_size"], '500');
 					$subheading	= $tp -> toHTML($row['content_subheading'], TRUE);
@@ -612,7 +612,7 @@ if($sc_mode){
 			}
 
 	}elseif($sc_mode=='print'){
-			global $row, $content_image_path, $tp, $content_pref;
+			global $row, $tp, $content_pref;
 			if($content_pref["content_content_images"]){
 				$imagestmp = explode("[img]", $row['content_image']);
 				foreach($imagestmp as $key => $value) { 
@@ -623,8 +623,8 @@ if($sc_mode){
 				$images = array_values($imagestmp);
 				$ret = "";
 				for($i=0;$i<count($images);$i++){		
-					$oSrc = $content_image_path.$images[$i];
-					$oSrcThumb = $content_image_path."thumb_".$images[$i];
+					$oSrc = $content_pref['content_image_path'].$images[$i];
+					$oSrcThumb = $content_pref['content_image_path']."thumb_".$images[$i];
 					$iconwidth = varsettrue($content_pref["content_upload_image_size_thumb"], '100');
 					if($iconwidth){
 						$style = "style='width:".$iconwidth."px;'";
@@ -644,7 +644,7 @@ if($sc_mode){
 			}
 
 	}elseif($sc_mode=='pdf'){
-			global $row, $content_image_path, $tp, $content_pref;
+			global $row, $tp, $content_pref;
 			if($content_pref["content_content_images"]){
 				$imagestmp = explode("[img]", $row['content_image']);
 				foreach($imagestmp as $key => $value) { 
@@ -655,8 +655,8 @@ if($sc_mode){
 				$images = array_values($imagestmp);
 				$ret = "";
 				for($i=0;$i<count($images);$i++){		
-					$oSrc = $content_image_path.$images[$i];
-					$oSrcThumb = $content_image_path."thumb_".$images[$i];
+					$oSrc = $content_pref['content_image_path'].$images[$i];
+					$oSrcThumb = $content_pref['content_image_path']."thumb_".$images[$i];
 					$iconwidth = varsettrue($content_pref["content_upload_image_size_thumb"], '100');
 					if($iconwidth){
 						$style = "style='width:".$iconwidth."px;'";
@@ -956,7 +956,7 @@ return ($content_pref["content_menu_cat_caption"] != "" ? $content_pref["content
 SC_END
 
 SC_BEGIN CM_MENU_CATEGORY_ICON
-global $content_pref, $row, $content_cat_icon_path_small, $bullet;
+global $content_pref, $row, $bullet;
 	$ret = "";
 	if($content_pref["content_menu_cat_icon"] == "0"){ $ret = "";
 	}elseif($content_pref["content_menu_cat_icon"] == "1"){ $ret = $bullet;
@@ -964,8 +964,8 @@ global $content_pref, $row, $content_cat_icon_path_small, $bullet;
 	}elseif($content_pref["content_menu_cat_icon"] == "3"){ $ret = "&ordm;";
 	}elseif($content_pref["content_menu_cat_icon"] == "4"){ $ret = "&raquo;";
 	}elseif($content_pref["content_menu_cat_icon"] == "5"){
-		if($row['content_icon'] != "" && is_readable($content_cat_icon_path_small.$row['content_icon']) ){
-			$ret = "<a href='".e_PLUGIN."content/content.php?cat.".$row['content_id']."'><img src='".$content_cat_icon_path_small.$row['content_icon']."' alt='' style='border:0;' /></a>";
+		if($row['content_icon'] != "" && is_readable($content_pref['content_cat_icon_path_small'].$row['content_icon']) ){
+			$ret = "<a href='".e_PLUGIN."content/content.php?cat.".$row['content_id']."'><img src='".$content_pref['content_cat_icon_path_small'].$row['content_icon']."' alt='' style='border:0;' /></a>";
 		}else{
 			//default category icon
 			if($content_pref["content_menu_cat_icon_default"] == "0"){ $ret = "";
@@ -997,7 +997,7 @@ return ($content_pref["content_menu_recent_caption"] != "" ? $content_pref["cont
 SC_END
 
 SC_BEGIN CM_MENU_RECENT_ICON
-global $content_pref, $row, $content_icon_path;
+global $content_pref, $row;
 	if($content_pref["content_menu_recent_icon"] == "0"){ $ret = "";
 	}elseif($content_pref["content_menu_recent_icon"] == "1"){ $ret = $bullet;
 	}elseif($content_pref["content_menu_recent_icon"] == "2"){ $ret = "&middot";
@@ -1010,8 +1010,8 @@ global $content_pref, $row, $content_icon_path;
 		}else{
 			$recenticonwidth = " width:50px; ";
 		}
-		if($row['content_icon'] != "" && is_readable($content_icon_path.$row['content_icon'])){
-			$ret = "<img src='".$content_icon_path.$row['content_icon']."' alt='' style='".$recenticonwidth." border:0;' />";
+		if($row['content_icon'] != "" && is_readable($content_pref['content_icon_path'].$row['content_icon'])){
+			$ret = "<img src='".$content_pref['content_icon_path'].$row['content_icon']."' alt='' style='".$recenticonwidth." border:0;' />";
 		}
 	}
 	return "<a href='".e_PLUGIN."content/content.php?content.".$row['content_id']."'>".$ret."</a>";
@@ -1071,9 +1071,7 @@ SC_END
 
 SC_BEGIN CONTENT_CAT_ICON
 global $row, $content_pref, $tp;
-$content_cat_icon_path_large = $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-$content_cat_icon_path_small = $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-$caticon = $content_cat_icon_path_small.$row['content_icon'];
+$caticon = $content_pref['content_cat_icon_path_small'].$row['content_icon'];
 return ($row['content_icon'] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;");
 SC_END
 
@@ -1317,19 +1315,19 @@ if($show['enddate']===true){
 SC_END
 
 SC_BEGIN CATFORM_UPLOAD
-global $row, $show, $content_cat_icon_path_large, $content_cat_icon_path_small;
+global $row, $show;
 if($show['uploadicon']===true){
 	$text='';
 	if(!FILE_UPLOADS){
 		$text = "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
 	}else{
-		if(!is_writable($content_cat_icon_path_large)){
-			$text = "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_cat_icon_path_large." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+		if(!is_writable($content_pref['content_cat_icon_path_large'])){
+			$text = "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_pref['content_cat_icon_path_large']." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
 		}
 		$text .= CONTENT_ADMIN_CAT_LAN_62."
 		<input class='tbox' type='file' name='file_userfile[]'  size='58' /> 
-		<input type='hidden' name='iconpathlarge' value='".$content_cat_icon_path_large."' />
-		<input type='hidden' name='iconpathsmall' value='".$content_cat_icon_path_small."' />
+		<input type='hidden' name='iconpathlarge' value='".$content_pref['content_cat_icon_path_large']."' />
+		<input type='hidden' name='iconpathsmall' value='".$content_pref['content_cat_icon_path_small']."' />
 		<input class='button' type='submit' name='uploadcaticon' value='".CONTENT_ADMIN_CAT_LAN_63."' />";
 	}
 	return $text;
@@ -1337,10 +1335,10 @@ if($show['uploadicon']===true){
 SC_END
 
 SC_BEGIN CATFORM_ICON
-global $row, $rs, $show, $fl, $content_cat_icon_path_large;
+global $row, $rs, $show, $fl;
 if($show['selecticon']===true){
 	$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
-	$iconlist = $fl->get_files($content_cat_icon_path_large,"",$rejectlist);
+	$iconlist = $fl->get_files($content_pref['content_cat_icon_path_large'],"",$rejectlist);
 	$text = $rs -> form_text("cat_icon", 60, $row['content_icon'], 100)."
 	".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick=\"expandit('divcaticon')\"")."
 	<div id='divcaticon' style='display:none;'>";

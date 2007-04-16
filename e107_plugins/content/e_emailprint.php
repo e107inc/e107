@@ -29,9 +29,7 @@ function print_item($id)
 		$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
 
 		$mainparent					= $aa -> getMainParent($id);
-		$content_pref				= $aa -> getContentPref($mainparent);
-		$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path"]);
-		$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path"]);
+		$content_pref				= $aa -> getContentPref($mainparent, true);
 		$img						= $tp -> parseTemplate('{CM_IMAGES|print}', FALSE, $content_shortcodes);
 
 		$text = "
@@ -96,9 +94,7 @@ function print_item_pdf($id){
 	$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
 
 	$mainparent					= $aa -> getMainParent(intval($id));
-	$content_pref				= $aa -> getContentPref($mainparent);
-	$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path"]);
-	$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path"]);
+	$content_pref				= $aa -> getContentPref($mainparent, true);
 	$img						= $tp -> parseTemplate('{CM_IMAGES|pdf}', FALSE, $content_shortcodes);
 
 	//add custom and preset tags if present

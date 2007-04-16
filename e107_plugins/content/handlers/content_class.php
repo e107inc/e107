@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2007-04-16 20:41:01 $
+|		$Revision: 1.18 $
+|		$Date: 2007-04-16 22:11:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -378,7 +378,7 @@ class content{
 		return $content_pref;
 	}
 
-	function getContentPref($id="") {
+	function getContentPref($id="", $parsepaths=false) {
 		global $sql, $plugintable, $qs, $tp, $eArrayStorage;
 
 		$plugintable = "pcontent";
@@ -443,7 +443,37 @@ class content{
 			$row = $sql -> db_Fetch();
 			$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 		}
+
+		if($parsepaths){
+			$content_pref = $this->parseConstants($content_pref);
+		}
+
 		return $content_pref;
+	}
+
+	function parseConstants($content_pref){
+			global $tp;
+
+			//sanitize the paths (first check if exists, else create default paths
+			$content_pref['content_cat_icon_path_large'] = varset($content_pref['content_cat_icon_path_large'], "{e_PLUGIN}content/images/cat/48/");
+			$content_pref['content_cat_icon_path_small'] = varset($content_pref['content_cat_icon_path_small'], "{e_PLUGIN}content/images/cat/16/");
+			$content_pref['content_icon_path'] = varset($content_pref['content_icon_path'], "{e_PLUGIN}content/images/icon/");
+			$content_pref['content_icon_path_tmp'] = varset($content_pref['content_icon_path_tmp'], $content_pref['content_icon_path']."tmp/");
+			$content_pref['content_image_path'] = varset($content_pref['content_image_path'], "{e_PLUGIN}content/images/image/");
+			$content_pref['content_image_path_tmp'] = varset($content_pref['content_image_path_tmp'], $content_pref['content_image_path']."tmp/");
+			$content_pref['content_file_path'] = varset($content_pref['content_file_path'], "{e_PLUGIN}content/images/file/");
+			$content_pref['content_file_path_tmp'] = varset($content_pref['content_file_path_tmp'], $content_pref['content_file_path']."tmp/");
+
+			//parse constants from the paths
+			$content_pref['content_cat_icon_path_large'] = $tp -> replaceConstants($content_pref['content_cat_icon_path_large']);
+			$content_pref['content_cat_icon_path_small'] = $tp -> replaceConstants($content_pref['content_cat_icon_path_small']);
+			$content_pref['content_icon_path'] = $tp -> replaceConstants($content_pref['content_icon_path']);
+			$content_pref['content_image_path'] = $tp -> replaceConstants($content_pref['content_image_path']);
+			$content_pref['content_file_path'] = $tp -> replaceConstants($content_pref['content_file_path']);
+			$content_pref['content_icon_path_tmp'] = $tp -> replaceConstants($content_pref['content_icon_path_tmp']);
+			$content_pref['content_file_path_tmp'] = $tp -> replaceConstants($content_pref['content_file_path_tmp']);
+			$content_pref['content_image_path_tmp'] = $tp -> replaceConstants($content_pref['content_image_path_tmp']);
+			return $content_pref;
 	}
 
 	//admin
@@ -1090,7 +1120,7 @@ class content{
 	}
 
 	function getIcon($mode, $icon, $path="", $linkid="", $width="", $blank=""){
-		global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $content_pref;
+		global $content_pref;
 
 		$blank			= (!$blank ? "0" : $blank);
 		$border			= "border:0;";
@@ -1098,25 +1128,25 @@ class content{
 		$hrefpost		= ($linkid ? "</a>" : "");
 
 		if($mode == "item"){
-			$path		= (!$path ? $content_icon_path : $path);
+			$path		= (!$path ? $content_pref['content_icon_path'] : $path);
 			$width		= ($width ? "width:".$width."px;" : "");
 			//$border		= "border:1px solid #000;";
 			$border		= '';
-			$icon		= ($icon ? $path.$icon : ($blank ? $content_icon_path."blank.gif" : ""));
+			$icon		= ($icon ? $path.$icon : ($blank ? $content_pref['content_icon_path']."blank.gif" : ""));
 
 		}elseif($mode == "catsmall"){
-			$path		= (!$path ? $content_cat_icon_path_small : $path);
+			$path		= (!$path ? $content_pref['content_cat_icon_path_small'] : $path);
 			$icon		= ($icon ? $path.$icon : "");
 
 		}elseif($mode == "catlarge"){
-			$path		= (!$path ? $content_cat_icon_path_large : $path);
+			$path		= (!$path ? $content_pref['content_cat_icon_path_large'] : $path);
 			$icon		= ($icon ? $path.$icon : "");
 		}else{
-			$path		= (!$path ? $content_icon_path : $path);
+			$path		= (!$path ? $content_pref['content_icon_path'] : $path);
 			$hrefpre	= "";
 			$hrefpost	= "";
 			$width		= "";
-			$icon		= ($icon ? $path.$icon : ($blank ? $content_icon_path."blank.gif" : ""));
+			$icon		= ($icon ? $path.$icon : ($blank ? $content_pref['content_icon_path']."blank.gif" : ""));
 		}
 
 		if($icon && is_readable($icon)){
@@ -1124,13 +1154,13 @@ class content{
 		}else{
 			$iconstring = "";
 			if($blank){
-				if(is_readable($content_icon_path."blank.gif")){
+				if(is_readable($content_pref['content_icon_path']."blank.gif")){
 					if($mode == "catsmall"){
 						$width = ($width ? "width:".$width."px;" : "width:16px;");
 					}elseif($mode == "catlarge"){
 						$width = ($width ? "width:".$width."px;" : "width:48px;");
 					}
-					$iconstring = $hrefpre."<img src='".$content_icon_path."blank.gif' alt='' style='".$width." ".$border."' />".$hrefpost;
+					$iconstring = $hrefpre."<img src='".$content_pref['content_icon_path']."blank.gif' alt='' style='".$width." ".$border."' />".$hrefpost;
 				}
 			}
 		}
@@ -1205,7 +1235,7 @@ class content{
 		}
 		$catarray		= "";
 		$mainparent		= $this -> getMainParent( $searchtypeid );
-		$content_pref	= $this -> getContentPref($mainparent);
+		$content_pref	= $this -> getContentPref($mainparent, true);
 		$parent			= $this -> getCategoryTree("", $mainparent, TRUE);
 		$parent			= array_merge_recursive($parent);
 		for($a=0;$a<count($parent);$a++){
@@ -1367,9 +1397,7 @@ class content{
 		$data .= "\n";
 		$data .= "\$bullet = (defined('BULLET') ? \"<img src='\".THEME_ABS.\"images/\".BULLET.\"' alt='' style='border:0;vertical-align: middle;' />\" : \"<img src='\".THEME_ABS.\"images/bullet2.gif' alt='bullet' style='border:0;vertical-align: middle;' />\");\n";
 		$data .= "\n";
-		$data .= "\$content_pref = \$aa -> getContentPref(\$menutypeid);\n";
-		$data .= "\$content_icon_path = \$tp -> replaceConstants(\$content_pref[\"content_icon_path\"]);\n";
-		$data .= "\$content_cat_icon_path_small = \$tp -> replaceConstants(\$content_pref[\"content_cat_icon_path_small\"]);\n";
+		$data .= "\$content_pref = \$aa -> getContentPref(\$menutypeid, true);\n";
 		$data .= "\n";
 		$data .= "// load the template --------------------------------------------------\n";
 		$data .= "if(!isset(\$CONTENT_MENU)){\n";

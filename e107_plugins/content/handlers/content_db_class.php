@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2007-04-13 10:05:45 $
+|		$Revision: 1.9 $
+|		$Date: 2007-04-16 22:11:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -165,25 +165,14 @@ class contentdb{
 			}
 		}
 
-		$mainparent						= $aa -> getMainParent(intval($_POST['parent']));
-		$content_pref					= $aa -> getContentPref($mainparent);
-		$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
-		$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
-		$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
-		$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-		$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-		$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-		$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-		$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
-		$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
-		$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
-		$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
+		$mainparent = $aa -> getMainParent(intval($_POST['parent']));
+		$content_pref = $aa -> getContentPref($mainparent, true);
 
 		//move icon to correct folder
 		if($_POST['content_icon']){
 			$icon = $tp->toDB($_POST['content_icon']);	
-			if($icon && is_readable($content_tmppath_icon.$icon)){
-				rename($content_tmppath_icon.$icon, $content_icon_path.$icon);
+			if($icon && is_readable($content_pref['content_icon_path_tmp'].$icon)){
+				rename($content_pref['content_icon_path_tmp'].$icon, $content_pref['content_icon_path'].$icon);
 			}
 		}
 
@@ -201,10 +190,10 @@ class contentdb{
 		$totalattach = "";
 		for($i=0;$i<$sumf;$i++){
 			$attach{$i} = $tp->toDB($_POST["content_files{$i}"]);
-			if($attach{$i} && is_readable($content_tmppath_file.$attach{$i})){
-				rename($content_tmppath_file.$attach{$i}, $content_file_path.$attach{$i});
+			if($attach{$i} && is_readable($content_pref['content_file_path_tmp'].$attach{$i})){
+				rename($content_pref['content_file_path_tmp'].$attach{$i}, $content_pref['content_file_path'].$attach{$i});
 			}
-			if($attach{$i} && is_readable($content_file_path.$attach{$i})){
+			if($attach{$i} && is_readable($content_pref['content_file_path'].$attach{$i})){
 				$totalattach .= "[file]".$attach{$i};
 			}
 		}
@@ -212,13 +201,13 @@ class contentdb{
 		$totalimages = "";
 		for($i=0;$i<$sumi;$i++){
 			$image{$i} = $tp->toDB($_POST["content_images{$i}"]);
-			if($image{$i} && is_readable($content_tmppath_image.$image{$i})){
-				rename($content_tmppath_image.$image{$i}, $content_image_path.$image{$i});
+			if($image{$i} && is_readable($content_pref['content_image_path_tmp'].$image{$i})){
+				rename($content_pref['content_image_path_tmp'].$image{$i}, $content_pref['content_image_path'].$image{$i});
 			}
-			if($image{$i} && is_readable($content_tmppath_image."thumb_".$image{$i})){
-				rename($content_tmppath_image."thumb_".$image{$i}, $content_image_path."thumb_".$image{$i});
+			if($image{$i} && is_readable($content_pref['content_image_path_tmp']."thumb_".$image{$i})){
+				rename($content_pref['content_image_path_tmp']."thumb_".$image{$i}, $content_pref['content_image_path']."thumb_".$image{$i});
 			}
-			if($image{$i} && is_readable($content_image_path.$image{$i})){
+			if($image{$i} && is_readable($content_pref['content_image_path'].$image{$i})){
 				$totalimages .= "[img]".$image{$i};
 			}
 		}
@@ -317,7 +306,7 @@ class contentdb{
 
 	//function dbCategoryUpdate($mode){
 	function dbCategory($mode){
-		global $pref, $sql, $ns, $rs, $qs, $aa, $tp, $plugintable, $e107cache, $content_cat_icon_path_large, $content_cat_icon_path_small;
+		global $pref, $sql, $ns, $rs, $qs, $aa, $tp, $plugintable, $e107cache;
 
 		$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
 		$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
