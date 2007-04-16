@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2007-04-13 10:05:45 $
+|		$Revision: 1.17 $
+|		$Date: 2007-04-16 20:41:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -556,6 +556,36 @@ class content{
 
 	function CONTENTREGEXP($var){
 		return "(^|,)(".str_replace(",", "|", $var).")(,|$)";
+	}
+
+	//function to check and require the template file
+	//$var: array of all variables that need to be global'ed
+	//$var[0]: holds the primary var to check isset on (if the template var exists ($MYTEMPLATE))
+	//$file: the actual filename (template.php)
+	function gettemplate($var, $file=''){
+		global $content_pref, $tp;
+
+		if(is_array($var)){
+			$check = $$var[0];
+			foreach($var as $t){
+				global $$t;
+			}
+		}else{
+			$check = $var;
+			global $var;
+		}
+
+		if(!isset($check)){
+			if(!$content_pref["content_theme"]){
+				require_once(e_PLUGIN."content/templates/default/".$file);
+			}else{
+				if( is_readable($tp->replaceConstants($content_pref["content_theme"]).$file) ){
+					require_once($tp->replaceConstants($content_pref["content_theme"]).$file);
+				}else{
+					require_once(e_PLUGIN."content/templates/default/".$file);
+				}
+			}
+		}
 	}
 
 	function getCategoryTree($id, $parent, $classcheck=TRUE, $cache=true){
