@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2007-04-12 21:35:00 $
+|		$Revision: 1.6 $
+|		$Date: 2007-04-16 22:11:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -189,6 +189,7 @@ if(!e_QUERY){
 		$row = $sql -> db_Fetch();
 		$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 	}
+	$content_pref = $aa->parseConstants($content_pref);
 
 	//now we can check the permissions for this user
 	$personalmanagercheck = FALSE;

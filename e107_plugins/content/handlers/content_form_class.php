@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2007-04-13 10:05:45 $
+|		$Revision: 1.12 $
+|		$Date: 2007-04-16 22:11:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -94,20 +94,7 @@ class contentform{
 			$_POST['parent1'] = ($tmp[1] ? $tmp[1] : $tmp[0]);
 			$mainparent						= $aa -> getMainParent( $_POST['parent1'] );
 			
-			$content_pref					= $aa -> getContentPref($mainparent);
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
-			
-			$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
-			$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
-			$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
-					
-			$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
-			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
-			$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
+			$content_pref					= $aa -> getContentPref($mainparent, true);
 
 			if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent1']."' ")){
 				$row = $sql -> db_Fetch();
@@ -175,10 +162,10 @@ class contentform{
 			}
 			
 			//icon
-			if($_POST['content_icon'] && is_readable($content_tmppath_icon.$_POST['content_icon'])){
-				$ICON = "<img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
-			}elseif($_POST['content_icon'] && is_readable($content_icon_path.$_POST['content_icon'])){
-				$ICON = "<img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
+			if($_POST['content_icon'] && is_readable($content_pref['content_icon_path_tmp'].$_POST['content_icon'])){
+				$ICON = "<img src='".$content_pref['content_icon_path_tmp'].$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
+			}elseif($_POST['content_icon'] && is_readable($content_pref['content_icon_path'].$_POST['content_icon'])){
+				$ICON = "<img src='".$content_pref['content_icon_path'].$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
 			}else{
 				$ICON='';
 			}
@@ -191,20 +178,20 @@ class contentform{
 			$IMAGES = '';
 			foreach($_POST as $k => $v){
 				if(strpos($k, "content_files") === 0){
-					if($v && is_readable($content_tmppath_file.$v)){
+					if($v && is_readable($content_pref['content_file_path_tmp'].$v)){
 						$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
 						$file = TRUE;
-					}elseif($v && is_readable($content_file_path.$v)){
+					}elseif($v && is_readable($content_pref['content_file_path'].$v)){
 						$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
 						$file = TRUE;
 					}
 				}
 				if(strpos($k, "content_images") === 0){
-					if($v && is_readable($content_tmppath_image.$v)){
-						$IMAGES .= "<img src='".$content_tmppath_image.$v."' alt='' style='width:100px; border:0;' /> ";
+					if($v && is_readable($content_pref['content_image_path_tmp'].$v)){
+						$IMAGES .= "<img src='".$content_pref['content_image_path_tmp'].$v."' alt='' style='width:100px; border:0;' /> ";
 						$image	= TRUE;
-					}elseif($v && is_readable($content_image_path.$v)){
-						$IMAGES .= "<img src='".$content_image_path.$v."' alt='' style='width:100px; border:0;' /> ";
+					}elseif($v && is_readable($content_pref['content_image_path'].$v)){
+						$IMAGES .= "<img src='".$content_pref['content_image_path'].$v."' alt='' style='width:100px; border:0;' /> ";
 						$image	= TRUE;
 					}
 				}
@@ -372,6 +359,7 @@ class contentform{
 				}
 
 			}
+			$content_pref = $aa -> parseConstants($content_pref);
 
 			//get preferences for submit page
 			if($mode == "submit"){
@@ -622,30 +610,21 @@ class contentform{
 				$show['upload'] = false;
 			}
 			if($checkicon){
-				$content_pref["content_icon_path_tmp"] = varset($content_pref["content_icon_path_tmp"], $content_pref["content_icon_path"]."tmp/");
-				$content_icon_path = $tp -> replaceConstants($content_pref["content_icon_path"]);
-				$content_tmppath_icon = $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
-				$iconlist	= $fl->get_files($content_tmppath_icon,"",$rejectlist);
+				$iconlist	= $fl->get_files($content_pref['content_icon_path_tmp'],"",$rejectlist);
 				$show['icon'] = true;
 			}else{
 				$show['icon'] = false;
 				$hidden .= $rs -> form_hidden("content_icon", $row['content_icon']);
 			}
 			if($checkattach){
-				$content_pref["content_file_path_tmp"] = varset($content_pref["content_file_path_tmp"], $content_pref["content_file_path"]."tmp/");
-				$content_file_path = $tp -> replaceConstants($content_pref["content_file_path"]);
-				$content_tmppath_file = $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
-				$filelist	= $fl->get_files($content_tmppath_file,"",$rejectlist);
+				$filelist	= $fl->get_files($content_pref['content_file_path_tmp'],"",$rejectlist);
 				$show['attach'] = true;
 			}else{
 				$show['attach'] = false;
 				$hidden .= $rs -> form_hidden("content_file", $row['content_file']);
 			}
 			if($checkimages){
-				$content_pref["content_image_path_tmp"] = varset($content_pref["content_image_path_tmp"], $content_pref["content_image_path"]."tmp/");
-				$content_image_path = $tp -> replaceConstants($content_pref["content_image_path"]);
-				$content_tmppath_image = $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
-				$imagelist	= $fl->get_files($content_tmppath_image,"",$rejectlist);
+				$imagelist	= $fl->get_files($content_pref['content_image_path_tmp'],"",$rejectlist);
 				$show['images'] = true;
 			}else{
 				$show['images'] = false;
@@ -898,13 +877,8 @@ class contentform{
 				return;
 			}
 
-			$mainparent						= $aa -> getMainParent($qs[1]);
-			$content_pref					= $aa -> getContentPref($mainparent);
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
+			$mainparent = $aa -> getMainParent($qs[1]);
+			$content_pref = $aa -> getContentPref($mainparent, true);
 
 			if($mode == "contentmanager"){
 				$personalmanagercheck = FALSE;
@@ -1005,7 +979,7 @@ class contentform{
 						$deleteicon		= CONTENT_ICON_DELETE;
 						$cid			= $row['content_id'];
 
-						$CONTENT_ICON = ($row['content_icon'] && is_readable($content_icon_path.$row['content_icon']) ? "<img src='".$content_icon_path.$row['content_icon']."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;");
+						$CONTENT_ICON = ($row['content_icon'] && is_readable($content_pref['content_icon_path'].$row['content_icon']) ? "<img src='".$content_pref['content_icon_path'].$row['content_icon']."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;");
 
 						$CONTENT_ADMIN_OPTIONS = "<a href='".e_SELF."?content.edit.".$cid."'>".CONTENT_ICON_EDIT."</a> 
 						<input type='image' title='".CONTENT_ICON_LAN_1."' name='delete[content_{$cid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>";
@@ -1073,10 +1047,8 @@ class contentform{
 					if(array_key_exists($row['content_parent'], $array)){
 						$mainparent			= $array[$row['content_parent']][0];
 						$CONTENT_ADMIN_CATEGORY	= $array[$row['content_parent']][1]." [".$array[$row['content_parent']][count($array[$row['content_parent']])-1]."]";
-						$content_pref		= $aa -> getContentPref($mainparent);
-						$iconpath			= ($content_pref["content_icon_path"] ? $content_pref["content_icon_path"] : "{e_PLUGIN}content/images/icon/" );
-						$icon				= $tp -> replaceConstants($iconpath).$row['content_icon'];
-						$CONTENT_ICON		= ($row['content_icon'] ? "<img src='".$icon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;");
+						$content_pref		= $aa -> getContentPref($mainparent, true);
+						$CONTENT_ICON		= ($row['content_icon'] ? "<img src='".$content_pref['content_icon_path'].$row['content_icon']."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;");
 					}
 					$delete_heading			= str_replace("&#39;", "\'", $row['content_heading']);
 					$delid					= $row['content_id'];
@@ -1111,7 +1083,7 @@ class contentform{
 					}else{
 						$row = $sql -> db_Fetch();
 
-						$content_pref = $aa -> getContentPref($catarray[$catid][0]);
+						$content_pref = $aa -> getContentPref($catarray[$catid][0], true);
 						$delete_heading = str_replace("&#39;", "\'", $row['content_heading']);
 
 						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
@@ -1142,7 +1114,7 @@ class contentform{
 				foreach($array as $catid){
 					if($category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
 						$row = $sql -> db_Fetch();
-						$content_pref = $aa -> getContentPref($catid);
+						$content_pref = $aa -> getContentPref($catid, true);
 						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
 						$text .= $tp -> parseTemplate($CONTENT_ADMIN_MANAGER_TABLE, FALSE, $content_shortcodes);
 					}
@@ -1174,6 +1146,7 @@ class contentform{
 			}else{
 				header("location:".e_SELF."?option"); exit;
 			}
+			$content_pref = $aa -> parseConstants($content_pref);
 			$CONTENT_ADMIN_BUTTON = $rs -> form_button("submit", "update_manager", LAN_SAVE)." ".$rs -> form_hidden("options_type", intval($qs[1]));
 			$CONTENT_ADMIN_MANAGER_OPTIONS = $this->manager_category_options($content_pref);
 			$text = $tp -> parseTemplate($CONTENT_ADMIN_MANAGER_CATEGORY, FALSE, $content_shortcodes);
@@ -1335,16 +1308,14 @@ class contentform{
 		function show_create_category(){
 			global $qs, $plugintable, $plugindir, $sql, $ns, $rs, $aa, $fl, $pref, $tp, $content_shortcodes, $row, $message;
 			global $show, $CONTENT_ADMIN_CAT_CREATE, $CONTENT_ADMIN_FORM_TARGET, $CONTENT_ADMIN_BUTTON, $CATFORM_CATEGORY;
-			global $content_cat_icon_path_large, $content_cat_icon_path_small, $months, $current_year, $ne_day, $ne_month, $ne_year, $end_day, $end_month, $end_year;
+			global $months, $current_year, $ne_day, $ne_month, $ne_year, $end_day, $end_month, $end_year;
 
 			$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 			if(!is_object($sql)){ $sql = new db; }
 			$array							= $aa -> getCategoryTree("", "", FALSE);
 			$mainparent						= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "0") ) );
-			$content_pref					= $aa -> getContentPref($mainparent);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
+			$content_pref					= $aa -> getContentPref($mainparent, true);
 
 			if( $qs[0] == "cat" && $qs[1] == "create" && isset($qs[2]) && is_numeric($qs[2]) ){
 				if(!$sql -> db_Select($plugintable, "*", "content_id='".intval($qs[2])."' ")){
@@ -1375,7 +1346,7 @@ class contentform{
 				<div style='text-align:center'>
 				<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
 				<tr>
-					<td class='forumheader3' rowspan='3' style='width:5%; vertical-align:top;'><img src='".$content_cat_icon_path_large.$_POST['cat_icon']."' style='border:0' alt='' /></td>
+					<td class='forumheader3' rowspan='3' style='width:5%; vertical-align:top;'><img src='".$content_pref['content_cat_icon_path_large'].$_POST['cat_icon']."' style='border:0' alt='' /></td>
 					<td class='fcaption'>".$cat_heading."</td>
 				</tr>
 				<tr><td class='forumheader3'>".$cat_subheading."</td></tr>
@@ -1610,7 +1581,7 @@ class contentform{
 					}else{
 						$row = $sql -> db_Fetch();
 
-						$content_pref = $aa -> getContentPref($catarray[$catid][0]);
+						$content_pref = $aa -> getContentPref($catarray[$catid][0], true);
 
 						//count subcategories for a main parent
 						if($row['content_parent'] == 0){
@@ -1684,7 +1655,7 @@ class contentform{
 				$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 				$order			= "SUBSTRING_INDEX(content_order, '.', -1)+0";
 			}
-			$content_pref		= $aa -> getContentPref(intval($qs[1]));
+			$content_pref		= $aa -> getContentPref(intval($qs[1]), true);
 
 			if(!$content_total = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_author, content_parent, content_order", "content_refer != 'sa' AND ".$qry." ORDER BY ".$order." ASC, content_heading DESC ")){
 				$text = "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
@@ -1733,17 +1704,17 @@ class contentform{
 		}
 
 		function show_options(){
-			global $sql2, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $stylespacer, $pref, $row, $content_pref, $content_cat_icon_path_large, $CONTENT_ADMIN_OPTIONS_START, $CONTENT_ADMIN_OPTIONS_TABLE, $CONTENT_ADMIN_OPTIONS_END;
+			global $sql2, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $stylespacer, $pref, $row, $content_pref, $CONTENT_ADMIN_OPTIONS_START, $CONTENT_ADMIN_OPTIONS_TABLE, $CONTENT_ADMIN_OPTIONS_END;
 
 			include_lan($plugindir."languages/".e_LANGUAGE."/lan_content_options.php");
 
 			$text = $tp -> parseTemplate($CONTENT_ADMIN_OPTIONS_START, FALSE, $content_shortcodes);
 
-			$content_pref = $aa -> getContentPref(0);
+			$content_pref = $aa -> getContentPref(0, true);
 
 			if($category_total = $sql2 -> db_Select($plugintable, "*", "content_parent='0' ")){
 				while($row = $sql2 -> db_Fetch()){
-					$content_pref = $aa -> getContentPref($row['content_id']);
+					$content_pref = $aa -> getContentPref($row['content_id'], true);
 					$text .= $tp -> parseTemplate($CONTENT_ADMIN_OPTIONS_TABLE, FALSE, $content_shortcodes);
 				}
 			}
@@ -1754,7 +1725,7 @@ class contentform{
 
 
 		function show_options_cat(){
-			global $qs, $id, $sql, $ns, $rs, $aa, $content_pref, $pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $plugintable, $plugindir;
+			global $qs, $id, $sql, $ns, $rs, $aa, $content_pref, $pref, $plugintable, $plugindir;
 			global $fl, $stylespacer, $tp;
 
 			if($qs[1] == "default"){
