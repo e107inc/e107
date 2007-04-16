@@ -153,7 +153,7 @@ if($sc_mode){
 			}
 	}elseif($sc_mode=='recent'){
 			if(ADMIN && getperms("P") && varsettrue($content_pref["content_list_editicon"])){
-				return $CONTENT_RECENT_TABLE_EDITICON = "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
+				return "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 			}
 	}
 }

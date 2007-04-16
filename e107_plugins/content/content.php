@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2007-04-13 10:05:45 $
+|		$Revision: 1.13 $
+|		$Date: 2007-04-16 20:41:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -159,17 +159,10 @@ function show_content_search_menu($mode, $mainparent){
 
 		if( varsettrue($content_pref["content_navigator_{$mode}"]) || varsettrue($content_pref["content_search_{$mode}"]) || varsettrue($content_pref["content_ordering_{$mode}"]) ){
 
-			if(!isset($CONTENT_SEARCH_TABLE)){
-				if(!$content_pref["content_theme"]){
-					require_once($plugindir."templates/default/content_search_template.php");
-				}else{
-					if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_search_template.php")){
-						require_once($tp->replaceConstants($content_pref["content_theme"])."content_search_template.php");
-					}else{
-						require_once($plugindir."templates/default/content_search_template.php");
-					}
-				}
-			}
+			$template_vars = array("CONTENT_SEARCH_TABLE");
+			foreach($template_vars as $t){ global $$t; }
+			$aa -> gettemplate($template_vars, 'content_search_template.php');
+
 			if( varsettrue($content_pref["content_navigator_{$mode}"]) ){
 				$CONTENT_SEARCH_TABLE_SELECT = $aa -> showOptionsSelect("page", $mainparent);
 			}
@@ -210,17 +203,11 @@ function show_content_search_result($searchkeyword){
 		if(!$sqlsr -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon, content_datestamp", " ".$qry." ".$datequery." ORDER BY content_heading")){
 			$textsr = "<div style='text-align:center;'>".CONTENT_SEARCH_LAN_0."</div>";
 		}else{
-			if(!isset($CONTENT_SEARCHRESULT_TABLE)){
-				if(!$content_pref["content_theme"]){
-					require_once($plugindir."templates/default/content_searchresult_template.php");
-				}else{
-					if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_searchresult_template.php")){
-						require_once($tp->replaceConstants($content_pref["content_theme"])."content_searchresult_template.php");
-					}else{
-						require_once($plugindir."templates/default/content_searchresult_template.php");
-					}
-				}
-			}
+
+			$template_vars = array("CONTENT_SEARCHRESULT_TABLE", "CONTENT_SEARCHRESULT_TABLE_START", "CONTENT_SEARCHRESULT_TABLE_END");
+			foreach($template_vars as $t){ global $$t; }
+			$aa -> gettemplate($template_vars, 'content_searchresult_template.php');
+
 			$string = "";
 			if(!is_object($gen)){ $gen = new convert; }
 			while($row = $sqlsr -> db_Fetch()){
@@ -353,26 +340,19 @@ function show_content(){
 		$ns -> tablerender(CONTENT_LAN_22, $text);
 		$cachecheck = CachePost($cachestr);
 }
+
 // ##### CONTENT ARCHIVE ------------------------------------------
 function show_content_archive(){
-		global $row, $ns, $plugindir, $plugintable, $sql, $aa, $rs, $e107cache, $tp, $pref, $content_pref, $cobj, $qs, $searchkeyword, $nextprevquery, $from, $number, $mainparent, $content_shortcodes, $datequery, $CONTENT_ARCHIVE_TABLE, $CONTENT_ARCHIVE_TABLE_START, $CONTENT_ARCHIVE_TABLE_LETTERS, $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD, $CONTENT_NEXTPREV;
+		global $row, $ns, $plugindir, $plugintable, $sql, $aa, $rs, $e107cache, $tp, $pref, $content_pref, $cobj, $qs, $searchkeyword, $nextprevquery, $from, $number, $mainparent, $content_shortcodes, $datequery, $CONTENT_ARCHIVE_TABLE_LETTERS, $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD, $CONTENT_NEXTPREV;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 
 		show_content_search_menu("archive", $mainparent);		//show navigator/search/order menu
 
-		if(!isset($CONTENT_ARCHIVE_TABLE)){
-			if(!$content_pref["content_theme"]){
-				require_once($plugindir."templates/default/content_archive_template.php");
-			}else{
-				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_archive_template.php")){
-					require_once($tp->replaceConstants($content_pref["content_theme"])."content_archive_template.php");
-				}else{
-					require_once($plugindir."templates/default/content_archive_template.php");
-				}
-			}
-		}
+		$template_vars = array("CONTENT_ARCHIVE_TABLE", "CONTENT_ARCHIVE_TABLE_START", "CONTENT_ARCHIVE_TABLE_END");
+		foreach($template_vars as $t){ global $$t; }
+		$aa -> gettemplate($template_vars, 'content_archive_template.php');
 
 		$cachestr = "$plugintable.archive.$qs[1]";
 		$cachecheck = CachePre($cachestr);
@@ -447,19 +427,12 @@ function show_content_archive(){
 //this function renders the preview of a content_item
 //used in recent list, view author list, category items list
 function displayPreview($qry, $np=false, $array=false){
-		global $qs, $array, $row, $gen, $rater, $aa, $sql2, $tp, $plugintable, $plugindir, $content_shortcodes, $content_pref, $mainparent, $CM_AUTHOR, $CONTENT_RECENT_TABLE_START, $CONTENT_RECENT_TABLE_END, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_INFOPRE, $CONTENT_RECENT_TABLE_INFOPOST, $CONTENT_NEXTPREV;
+		global $qs, $array, $row, $gen, $rater, $aa, $sql2, $tp, $plugintable, $plugindir, $content_shortcodes, $content_pref, $mainparent, $CM_AUTHOR, $CONTENT_RECENT_TABLE_INFOPRE, $CONTENT_RECENT_TABLE_INFOPOST, $CONTENT_NEXTPREV;
 
-		if(!isset($CONTENT_RECENT_TABLE)){
-			if(!$content_pref["content_theme"]){
-				require_once($plugindir."templates/default/content_recent_template.php");
-			}else{
-				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_recent_template.php")){
-					require_once($tp->replaceConstants($content_pref["content_theme"])."content_recent_template.php");
-				}else{
-					require_once($plugindir."templates/default/content_recent_template.php");
-				}
-			}
-		}
+		$template_vars = array("CONTENT_RECENT_TABLE", "CONTENT_RECENT_TABLE_START", "CONTENT_RECENT_TABLE_END");
+		foreach($template_vars as $t){ global $$t; }
+		$aa -> gettemplate($template_vars, 'content_recent_template.php');
+
 		if($resultitem = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_icon, content_author, content_datestamp, content_parent, content_refer, content_rate", $qry )){
 			if($np){
 				$CONTENT_NEXTPREV = $np;
@@ -528,7 +501,7 @@ function show_content_recent(){
 
 // ##### CATEGORY LIST ------------------------------------
 function show_content_cat_all(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $sql, $datequery, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $mainparent, $CONTENT_CAT_TABLE, $CM_AUTHOR, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $sql, $datequery, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $mainparent, $CM_AUTHOR, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 
 		unset($text);
 
@@ -537,17 +510,9 @@ function show_content_cat_all(){
 
 		show_content_search_menu("catall", $mainparent);		//show navigator/search/order menu
 
-		if(!isset($CONTENT_CAT_TABLE)){
-			if(!$content_pref["content_theme"]){
-				require_once($plugindir."templates/default/content_cat_template.php");
-			}else{
-				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php")){
-					require_once($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php");
-				}else{
-					require_once($plugindir."templates/default/content_cat_template.php");
-				}
-			}
-		}
+		$template_vars = array("CONTENT_CAT_TABLE", "CONTENT_CAT_TABLE_START", "CONTENT_CAT_TABLE_END");
+		foreach($template_vars as $t){ global $$t; }
+		$aa -> gettemplate($template_vars, 'content_cat_template.php');
 
 		$cachestr = "$plugintable.cat.list.$qs[2]";
 		$cachecheck = CachePre($cachestr);
@@ -601,7 +566,7 @@ function show_content_cat_all(){
 }
 
 function show_content_cat($mode=""){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from, $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CM_AUTHOR, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST, $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount, $array;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from, $CONTENT_RECENT_TABLE, $CM_AUTHOR, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST, $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount, $array;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -612,17 +577,9 @@ function show_content_cat($mode=""){
 
 		show_content_search_menu("cat", $mainparent);		//show navigator/search/order menu
 
-		if(!isset($CONTENT_CAT_LIST_TABLE)){
-			if(!$content_pref["content_theme"]){
-				require_once($plugindir."templates/default/content_cat_template.php");
-			}else{
-				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php")){
-					require_once($tp->replaceConstants($content_pref["content_theme"])."content_cat_template.php");
-				}else{
-					require_once($plugindir."templates/default/content_cat_template.php");
-				}
-			}
-		}
+		$template_vars = array("CONTENT_CAT_LIST_TABLE", "CONTENT_CAT_LISTSUB_TABLE", "CONTENT_CAT_LISTSUB_TABLE_START", "CONTENT_CAT_LISTSUB_TABLE_END");
+		foreach($template_vars as $t){ global $$t; }
+		$aa -> gettemplate($template_vars, 'content_cat_template.php');
 
 		$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
 		$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
@@ -783,24 +740,16 @@ function show_content_cat($mode=""){
 
 // ##### AUTHOR LIST --------------------------------------
 function show_content_author_all(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery, $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_AUTHOR_TABLE, $CONTENT_AUTHOR_TABLE_START, $CONTENT_AUTHOR_TABLE_END, $CONTENT_NEXTPREV;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery, $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_NEXTPREV;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[2]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 
 		show_content_search_menu("authorall", $mainparent);		//show navigator/search/order menu
 
-		if(!isset($CONTENT_AUTHOR_TABLE)){
-			if(!$content_pref["content_theme"]){
-				require_once($plugindir."templates/default/content_author_template.php");
-			}else{
-				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_author_template.php")){
-					require_once($tp->replaceConstants($content_pref["content_theme"])."content_author_template.php");
-				}else{
-					require_once($plugindir."templates/default/content_author_template.php");
-				}
-			}
-		}
+		$template_vars = array("CONTENT_AUTHOR_TABLE", "CONTENT_AUTHOR_TABLE_START", "CONTENT_AUTHOR_TABLE_END");
+		foreach($template_vars as $t){ global $$t; }
+		$aa -> gettemplate($template_vars, 'content_author_template.php');
 
 		$cachestr = "$plugintable.author.list.$qs[2]";
 		$cachecheck = CachePre($cachestr);
@@ -988,17 +937,10 @@ function show_content_top(){
 
 		show_content_search_menu("top", $mainparent);		//show navigator/search/order menu
 
-		if(!isset($CONTENT_TOP_TABLE)){
-			if(!$content_pref["content_theme"]){
-				require_once($plugindir."templates/default/content_top_template.php");
-			}else{
-				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_top_template.php")){
-					require_once($tp->replaceConstants($content_pref["content_theme"])."content_top_template.php");
-				}else{
-					require_once($plugindir."templates/default/content_top_template.php");
-				}
-			}
-		}
+		$template_vars = array("CONTENT_TOP_TABLE", "CONTENT_TOP_TABLE_START", "CONTENT_TOP_TABLE_END");
+		foreach($template_vars as $t){ global $$t; }
+		$aa -> gettemplate($template_vars, 'content_top_template.php');
+
 		$cachestr = "$plugintable.top.$qs[1]";
 		$cachecheck = CachePre($cachestr);
 		if($cachecheck){
@@ -1047,23 +989,15 @@ function show_content_top(){
 
 // ##### TOP SCORE LIST -----------------------------------
 function show_content_score(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path, $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CONTENT_SCORE_TABLE_SCORE, $CM_AUTHOR, $authordetails, $row, $thisratearray, $CONTENT_NEXTPREV;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path, $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CM_AUTHOR, $authordetails, $row, $thisratearray, $CONTENT_NEXTPREV;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("score", $mainparent);		//show navigator/search/order menu
 
-		if(!isset($CONTENT_SCORE_TABLE)){
-			if(!$content_pref["content_theme"]){
-				require_once($plugindir."templates/default/content_score_template.php");
-			}else{
-				if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_score_template.php")){
-					require_once($tp->replaceConstants($content_pref["content_theme"])."content_score_template.php");
-				}else{
-					require_once($plugindir."templates/default/content_score_template.php");
-				}
-			}
-		}
+		$template_vars = array("CONTENT_SCORE_TABLE", "CONTENT_SCORE_TABLE_START", "CONTENT_SCORE_TABLE_END");
+		foreach($template_vars as $t){ global $$t; }
+		$aa -> gettemplate($template_vars, 'content_score_template.php');
 
 		$cachestr = "$plugintable.score.$qs[1]";
 		$cachecheck = CachePre($cachestr);
