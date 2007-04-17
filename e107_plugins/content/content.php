@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2007-04-16 22:11:08 $
+|		$Revision: 1.15 $
+|		$Date: 2007-04-17 21:06:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -493,9 +493,19 @@ function show_content_recent(){
 		$cachecheck = CachePost($cachestr);
 }
 
+//function to (multi)sort by key
+function multi_sort($array, $key)
+{
+	$cmp_val="((\$a['$key']>\$b['$key'])?1:((\$a['$key']==\$b['$key'])?0:-1))";
+	$cmp=create_function('$a, $b', "return $cmp_val;");
+	uasort($array, $cmp);
+	return $array;
+}
+
+
 // ##### CATEGORY LIST ------------------------------------
 function show_content_cat_all(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $sql, $datequery, $amount, $from, $n, $mainparent, $CM_AUTHOR, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $sql, $sql2, $datequery, $amount, $from, $n, $mainparent, $CM_AUTHOR, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 
 		unset($text);
 
@@ -514,12 +524,7 @@ function show_content_cat_all(){
 			echo $cachecheck;
 			return;
 		}
-		$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
-		$validparent	= implode(",", array_keys($array));
-		$order			= $aa -> getOrder();
-		$number			= varsettrue($content_pref["content_nextprev_number"], '5');
-		$nextprevquery	= (varsettrue($content_pref["content_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
-		$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
+		$array = $aa -> getCategoryTree("", $mainparent, TRUE);
 
 		$newarray = array_merge_recursive($array);
 		for($a=0;$a<count($newarray);$a++){
@@ -528,12 +533,41 @@ function show_content_cat_all(){
 				$b++;
 			}
 		}
-		$string = "";
-		foreach($newparent as $key => $value){
-			$totalitems = $aa -> countCatItems($key);
-			$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_icon, content_author, content_datestamp, content_parent, content_comment, content_rate", "content_id = '".$key."' ");
-			$row = $sql -> db_Fetch();
+		$cids = implode(",", array_keys($newparent) );
 
+		//we need to get the order for the current mainparent
+		//the order value for all categories of this top level category will be increased with the top level categories order
+		//that way, the top level category will always be the first result,
+		//while all other categories are sorted correctly beneath it
+		$sql2 -> db_Select($plugintable, "content_id, content_order", " content_id = '".$mainparent."' ");
+		$row = $sql2 -> db_Fetch();
+		$mainparent_order = $row['content_order'];
+
+		//we parse the order string, dependent of the content_pref
+		$order = $aa -> getOrder('catall');
+
+		//get all records, and tmp store them in the $data array
+		$data=array();
+		$sql2 -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_icon, content_author, content_datestamp, content_parent, content_comment, content_rate, content_order", " content_id IN (".$cids.") ".$order." ");
+		while($row = $sql2 -> db_Fetch()){
+			if($row['content_id']!=$mainparent){
+				$row['content_order'] += $mainparent_order;
+			}
+			$data[] = $row;
+		}
+
+		//we need to reorder the records, but only if we need to sort by the content_order value
+		//in all other sort/order cases, the above query is already correct
+		$orderstring = ($content_pref['content_catall_defaultorder'] ? $content_pref['content_catall_defaultorder'] : "orderaheading" );
+		if(substr($orderstring,6) == "order"){
+			//sort the array on the order field
+			$data = multi_sort($data, "content_order");
+		}
+
+		//finally we can loop through all records
+		$string = "";
+		foreach($data as $row){
+			$totalitems = $aa -> countCatItems($row['content_id']);
 			$date	= $tp -> parseTemplate('{CM_DATE|cat}', FALSE, $content_shortcodes);
 			$auth	= $tp -> parseTemplate('{CM_AUTHOR|cat}', FALSE, $content_shortcodes);
 			$ep		= $tp -> parseTemplate('{CM_EPICONS|cat}', FALSE, $content_shortcodes);
@@ -546,8 +580,8 @@ function show_content_cat_all(){
 			}
 			$CM_AUTHOR = $aa -> prepareAuthor("catall", $row['content_author'], $row['content_id']);
 			$string .= $tp -> parseTemplate($CONTENT_CAT_TABLE, FALSE, $content_shortcodes);
-
 		}
+
 		$text = $aa->getCrumbPage("catall", $array, $mainparent);
 		$text .= $tp -> parseTemplate($CONTENT_CAT_TABLE_START, FALSE, $content_shortcodes);
 		$text .= $string;
@@ -558,7 +592,7 @@ function show_content_cat_all(){
 }
 
 function show_content_cat($mode=""){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from, $CONTENT_RECENT_TABLE, $CM_AUTHOR, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST, $mainparent, $totalparent, $totalsubcat, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount, $array;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $sql2, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from, $CONTENT_RECENT_TABLE, $CM_AUTHOR, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST, $mainparent, $totalparent, $totalsubcat, $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount, $array;
 
 		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent, true);
@@ -635,6 +669,7 @@ function show_content_cat($mode=""){
 					$b++;
 				}
 			}
+
 			$subparent	= array_keys($subparent);
 			$validsub	= "0.".implode(",0.", $subparent);
 			$subqry		= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validsub)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
@@ -642,16 +677,20 @@ function show_content_cat($mode=""){
 			//list subcategories
 			if( varsettrue($content_pref["content_cat_showparentsub"]) ){
 
+				$cids = implode(",", $subparent );
+
+				//we parse the order string, dependent of the content_pref
+				$order = $aa -> getOrder('cat');
+
+				//finally we can loop through all records
 				$content_cat_listsub_table_string = "";
-				for($i=0;$i<count($subparent);$i++){
-					if($resultsubparent = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent", " content_id = '".$subparent[$i]."' AND ".$subqry." " )){
-						while($row = $sql -> db_Fetch()){
-							$totalsubcat = $aa -> countCatItems($row['content_id']);
-							$content_cat_listsub_table_string .= $tp -> parseTemplate($CONTENT_CAT_LISTSUB_TABLE, FALSE, $content_shortcodes);
-						}
-						$textsubparent = $CONTENT_CAT_LISTSUB_TABLE_START.$content_cat_listsub_table_string.$CONTENT_CAT_LISTSUB_TABLE_END;
-						$captionsubparent = $content_pref['content_cat_sub_caption'];
+				if($sql2 -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent, content_order", " content_id IN (".$cids.") AND ".$subqry." ".$order." ")){
+					while($row = $sql2 -> db_Fetch()){
+						$totalsubcat = $aa -> countCatItems($row['content_id']);
+						$content_cat_listsub_table_string .= $tp -> parseTemplate($CONTENT_CAT_LISTSUB_TABLE, FALSE, $content_shortcodes);
 					}
+					$textsubparent = $CONTENT_CAT_LISTSUB_TABLE_START.$content_cat_listsub_table_string.$CONTENT_CAT_LISTSUB_TABLE_END;
+					$captionsubparent = $content_pref['content_cat_sub_caption'];
 				}
 			}
 

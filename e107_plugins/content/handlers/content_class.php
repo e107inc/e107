@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2007-04-16 22:11:09 $
+|		$Revision: 1.19 $
+|		$Date: 2007-04-17 21:06:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -176,6 +176,7 @@ class content{
 		$cp['content_catall_text_post'] = CONTENT_LAN_16;	//define postfix is text is too long
 		$cp['content_catall_text_link'] = '1';				//define if link to category should be added on postfix
 		$cp['content_catall_caption'] = CONTENT_LAN_25;		//caption for all categories page
+		$cp['content_catall_defaultorder'] = 'orderaheading';	//default order for categories on the all categories page
 		//sections of content category in 'view category' page
 		$cp['content_cat_icon'] = '1';						//show icon
 		$cp['content_cat_subheading'] = '1';				//show subheading
@@ -193,6 +194,7 @@ class content{
 		$cp['content_cat_caption_append_name'] = '1';		//append category heading to caption
 		$cp['content_cat_sub_caption'] = CONTENT_LAN_28;	//caption for subcategories
 		$cp['content_cat_item_caption'] = CONTENT_LAN_31;	//caption for items in category
+		$cp['content_cat_defaultorder'] = 'orderaheading';	//default order for the subcategories on the single category page
 
 		//sections of subcategories in 'view category page'
 		$cp['content_catsub_icon'] = '1';					//show icon
@@ -1074,7 +1076,7 @@ class content{
 		return $text;
 	}
 
-	function getOrder(){
+	function getOrder($mode=''){
 		global $qs, $content_pref;
 
 		if(isset($qs[0]) && substr($qs[0],0,5) == "order"){
@@ -1086,7 +1088,13 @@ class content{
 		}elseif(isset($qs[3]) && substr($qs[3],0,5) == "order"){
 			$orderstring	= $qs[3];
 		}else{
-			$orderstring	= ($content_pref["content_defaultorder"] ? $content_pref["content_defaultorder"] : "orderddate" );
+			if(isset($mode) && $mode=='catall'){
+				$orderstring = ($content_pref["content_catall_defaultorder"] ? $content_pref["content_catall_defaultorder"] : "orderaheading" );
+			}elseif(isset($mode) && $mode=='cat'){
+				$orderstring = ($content_pref['content_cat_defaultorder'] ? $content_pref['content_cat_defaultorder'] : "orderaheading" );
+			}else{
+				$orderstring = ($content_pref["content_defaultorder"] ? $content_pref["content_defaultorder"] : "orderddate" );
+			}
 		}
 
 		if(substr($orderstring,6) == "heading"){
@@ -1104,10 +1112,16 @@ class content{
 		}elseif(substr($orderstring,6) == "author"){
 
 		}elseif(substr($orderstring,6) == "order"){
-			if($qs[0] == "cat"){
-				$orderby	= "SUBSTRING_INDEX(content_order, '.', 1)+0";
-			}elseif($qs[0] != "cat"){
-				$orderby	= "SUBSTRING_INDEX(content_order, '.', -1)+0";
+			if(isset($mode) && $mode=='catall'){
+				$orderby	= "content_order+0";
+			}elseif(isset($mode) && $mode=='cat'){
+				$orderby	= "content_order+0";
+			}else{
+				if($qs[0] == "cat"){
+					$orderby	= "SUBSTRING_INDEX(content_order, '.', 1)+0";
+				}elseif($qs[0] != "cat"){
+					$orderby	= "SUBSTRING_INDEX(content_order, '.', -1)+0";
+				}
 			}
 			$orderby2		= ", content_heading ASC";
 		}else{
