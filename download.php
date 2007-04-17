@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.10 $ 
-|     $Date: 2007-04-01 20:46:01 $
+|     $Revision: 1.11 $ 
+|     $Date: 2007-04-17 21:39:25 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -731,7 +731,6 @@ class down_cat_handler
 		$temp2 = "AND d.download_visible IN ({$load_cat_class})";
 	  }
 	  
-	  if (count($temp3)) $temp1 = " WHERE ".implode(" AND ",$temp3);
 	  $qry = "
 	  SELECT dc.*, 
 	  dc1.download_category_parent AS d_parent1, dc1.download_category_order,
