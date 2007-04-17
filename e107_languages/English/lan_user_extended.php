@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_user_extended.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-04-29 06:45:38 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2007-04-17 19:29:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("UE_LAN_1", "Text Box");
@@ -42,5 +42,7 @@ define("UE_LAN_LANGUAGE", "Language");
 define("UE_LAN_LANGUAGE_DESC", "User Language");
 define("UE_LAN_COUNTRY", "Country");
 define("UE_LAN_COUNTRY_DESC", "User Country (includes db table)");
+
+define("LAN_UE_FAIL_HOMEPAGE", "Invalid entry for home page setting");
 
 ?>
