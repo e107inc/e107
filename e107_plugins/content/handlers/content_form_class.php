@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2007-04-16 22:11:09 $
+|		$Revision: 1.13 $
+|		$Date: 2007-04-17 21:06:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2378,6 +2378,20 @@ class contentform{
 			$TOPIC_FIELD = $rs -> form_text("content_catall_caption", 25, $tp->toHTML($content_pref['content_catall_caption'],"","defs"), 50);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
+			//content_catall_defaultorder
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_51;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_catall_defaultorder")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_1, ($content_pref['content_catall_defaultorder'] == "orderaheading" ? "1" : "0"), "orderaheading")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_2, ($content_pref['content_catall_defaultorder'] == "orderdheading" ? "1" : "0"), "orderdheading")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_3, ($content_pref['content_catall_defaultorder'] == "orderadate" ? "1" : "0"), "orderadate")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_4, ($content_pref['content_catall_defaultorder'] == "orderddate" ? "1" : "0"), "orderddate")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_9, ($content_pref['content_catall_defaultorder'] == "orderaorder" ? "1" : "0"), "orderaorder")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_10, ($content_pref['content_catall_defaultorder'] == "orderdorder" ? "1" : "0"), "orderdorder")."
+			".$rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+
 			$text .= $TOPIC_ROW_SPACER;
 
 			$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_MENU_17;
@@ -2512,6 +2526,19 @@ class contentform{
 			//content_subcat_levels_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_171;
 			$TOPIC_FIELD = CONTENT_ADMIN_OPT_LAN_172."<br />".$rs -> form_text("content_cat_levels", 10, $content_pref['content_cat_levels'], 3);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_cat_defaultorder
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_51;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_cat_defaultorder")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_1, ($content_pref['content_cat_defaultorder'] == "orderaheading" ? "1" : "0"), "orderaheading")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_2, ($content_pref['content_cat_defaultorder'] == "orderdheading" ? "1" : "0"), "orderdheading")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_3, ($content_pref['content_cat_defaultorder'] == "orderadate" ? "1" : "0"), "orderadate")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_4, ($content_pref['content_cat_defaultorder'] == "orderddate" ? "1" : "0"), "orderddate")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_9, ($content_pref['content_cat_defaultorder'] == "orderaorder" ? "1" : "0"), "orderaorder")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_10, ($content_pref['content_cat_defaultorder'] == "orderdorder" ? "1" : "0"), "orderdorder")."
+			".$rs -> form_select_close();
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
