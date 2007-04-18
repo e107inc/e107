@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-02-07 21:48:14 $
+|     $Revision: 1.14 $
+|     $Date: 2007-04-18 21:08:40 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -42,14 +42,17 @@ class e_linkwords
 	  $this->block_list = explode("|",substr($pref['lw_page_visibility'],2));    // Knock off the 'show/hide' flag
 	  foreach ($this->block_list as $p)
 	  {
-		if(substr($p, -1) == '!')
+		if ($p=trim($p))
 		{
-		  $p = substr($p, 0, -1);
-		  if(substr($check_url, strlen($p)*-1) == $p) return;
-		}
-		else 
-		{
-		  if(strpos($check_url, $p) !== FALSE) return;
+		  if(substr($p, -1) == '!')
+		  {
+			$p = substr($p, 0, -1);
+			if(substr($check_url, strlen($p)*-1) == $p) return;
+		  }
+		  else 
+		  {
+			if(strpos($check_url, $p) !== FALSE) return;
+		  }
 		}
 	  }
 
