@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-04-12 08:10:20 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2007-04-18 20:57:59 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.9 $
-* @author $Author: lisa_ $
+* @version $Revision: 1.10 $
+* @author $Author: e107steved $
 */
 class db {
 
@@ -517,18 +517,22 @@ class db {
 		changes by jalist 19/01/05:
 		added string replace on table prefix to tidy up long database queries
 		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM #table"
+		Returns result compatible with mysql_query - may be TRUE for some results, resource ID for others
 		*/
 
 		$this->tabset = FALSE;
 		if(strpos($query,'#') !== FALSE) {
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
-		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
+		switch ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) 
+		{
+		  case TRUE: return TRUE;
+		  case FALSE : 
+			$this->dbError('dbQuery ('.$query.')');
+		    return FALSE;
+		  default : 
 			$this->dbError('db_Select_gen');
 			return $this->db_Rows();
-		} else {
-			$this->dbError('dbQuery ('.$query.')');
-			return FALSE;
 		}
 	}
 
