@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.20 $
-|		$Date: 2007-04-18 20:31:17 $
+|		$Revision: 1.21 $
+|		$Date: 2007-04-18 20:46:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -261,6 +261,7 @@ class content{
 		$cp['content_archive_authoremail'] = '';					//archive : section: show author email
 		$cp['content_archive_authoremail_nonmember'] = '';			//archive : show link to email of non-member author
 		$cp['content_archive_caption'] = CONTENT_LAN_84;			//caption for archive page
+		$cp['content_archive_defaultorder'] = 'orderaheading';		//default order for content items on the archive page
 
 		//TOP RATED PAGE
 		$cp['content_top_icon'] = '';								//top : section: show icon
@@ -1092,6 +1093,8 @@ class content{
 				$orderstring = ($content_pref["content_catall_defaultorder"] ? $content_pref["content_catall_defaultorder"] : "orderaheading" );
 			}elseif(isset($mode) && $mode=='cat'){
 				$orderstring = ($content_pref['content_cat_defaultorder'] ? $content_pref['content_cat_defaultorder'] : "orderaheading" );
+			}elseif(isset($mode) && $mode=='archive'){
+				$orderstring = ($content_pref['content_archive_defaultorder'] ? $content_pref['content_archive_defaultorder'] : "orderaheading" );
 			}else{
 				$orderstring = ($content_pref["content_defaultorder"] ? $content_pref["content_defaultorder"] : "orderddate" );
 			}

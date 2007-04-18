@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2007-04-18 20:31:16 $
+|		$Revision: 1.17 $
+|		$Date: 2007-04-18 20:46:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -359,7 +359,7 @@ function show_content_archive(){
 		$validparent	= implode(",", array_keys($array));
 		$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 		$number			= varsettrue($content_pref["content_archive_nextprev_number"], '30');
-		$order			= $aa -> getOrder();
+		$order			= $aa -> getOrder('archive');
 		$nextprevquery	= (varsettrue($content_pref["content_archive_nextprev"]) ? "LIMIT ".intval($from).",".intval($number) : "");
 		$sql1 = new db;
 
