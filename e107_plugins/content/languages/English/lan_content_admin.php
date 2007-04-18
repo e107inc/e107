@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-04-10 14:34:39 $
+|     $Revision: 1.11 $
+|     $Date: 2007-04-18 21:41:58 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -691,4 +691,6 @@ define("CONTENT_ADMIN_OPT_LAN_172", "numeric value to show that amount of levels
 define("CONTENT_ADMIN_OPT_LAN_173", "include 'home' in the breadcrumb");
 define("CONTENT_ADMIN_OPT_LAN_174", "include the content start page in the breadcrumb");
 define("CONTENT_ADMIN_OPT_LAN_175", "show menu only on content pages of this top level category?");
+define("CONTENT_ADMIN_OPT_LAN_176", "when assigning an icons, load all icons ? (default is disabled = only load tmp icons) useful if you want to reuse the same icons");
+define("CONTENT_ADMIN_OPT_LAN_177", "when assigning an attachment, load all ? (default is disabled = only load tmp attachments) useful if you want to reuse the same attachments");
 ?>

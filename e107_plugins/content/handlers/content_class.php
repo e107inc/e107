@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2007-04-18 20:46:04 $
+|		$Revision: 1.22 $
+|		$Date: 2007-04-18 21:41:58 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -54,6 +54,8 @@ class content{
 		$cp['content_admin_layout'] = '';					//should the option for choosing a layout template be shown
 		$cp['content_admin_customtags'] = '';				//should options for adding additional data be shown
 		$cp['content_admin_presettags'] = '';				//should preset data tags be shown
+		$cp['content_admin_loadicons'] = 0;					//load all icons, or only the 'tmp' icons, when assigning an icon
+		$cp['content_admin_loadattach'] = 0;				//load all attachments, or only the 'tmp' attachments, when assigning an attachment
 
 		//ADMIN CREATE CATEGORY FORM
 		$cp['content_admincat_subheading'] = '1';			//should subheading be available
