@@ -1315,7 +1315,7 @@ if($show['enddate']===true){
 SC_END
 
 SC_BEGIN CATFORM_UPLOAD
-global $row, $show;
+global $row, $show, $content_pref;
 if($show['uploadicon']===true){
 	$text='';
 	if(!FILE_UPLOADS){
@@ -1335,7 +1335,7 @@ if($show['uploadicon']===true){
 SC_END
 
 SC_BEGIN CATFORM_ICON
-global $row, $rs, $show, $fl;
+global $row, $rs, $show, $fl, $content_pref;
 if($show['selecticon']===true){
 	$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
 	$iconlist = $fl->get_files($content_pref['content_cat_icon_path_large'],"",$rejectlist);

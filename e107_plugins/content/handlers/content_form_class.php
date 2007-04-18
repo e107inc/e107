@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.15 $
-|		$Date: 2007-04-18 20:46:04 $
+|		$Revision: 1.16 $
+|		$Date: 2007-04-18 21:13:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1308,14 +1308,14 @@ class contentform{
 		function show_create_category(){
 			global $qs, $plugintable, $plugindir, $sql, $ns, $rs, $aa, $fl, $pref, $tp, $content_shortcodes, $row, $message;
 			global $show, $CONTENT_ADMIN_CAT_CREATE, $CONTENT_ADMIN_FORM_TARGET, $CONTENT_ADMIN_BUTTON, $CATFORM_CATEGORY;
-			global $months, $current_year, $ne_day, $ne_month, $ne_year, $end_day, $end_month, $end_year;
+			global $months, $current_year, $ne_day, $ne_month, $ne_year, $end_day, $end_month, $end_year, $content_pref;
 
 			$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 			if(!is_object($sql)){ $sql = new db; }
-			$array							= $aa -> getCategoryTree("", "", FALSE);
-			$mainparent						= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "0") ) );
-			$content_pref					= $aa -> getContentPref($mainparent, true);
+			$array			= $aa -> getCategoryTree("", "", FALSE);
+			$mainparent		= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "0") ) );
+			$content_pref	= $aa -> getContentPref($mainparent, true);
 
 			if( $qs[0] == "cat" && $qs[1] == "create" && isset($qs[2]) && is_numeric($qs[2]) ){
 				if(!$sql -> db_Select($plugintable, "*", "content_id='".intval($qs[2])."' ")){
@@ -1335,8 +1335,8 @@ class contentform{
 			}
 
 			if(isset($_POST['preview_category'])){
-				$cat_heading		= $tp -> post_toHTML($_POST['cat_heading']);
-				$cat_subheading		= $tp -> post_toHTML($_POST['cat_subheading']);
+				$cat_heading	= $tp -> post_toHTML($_POST['cat_heading']);
+				$cat_subheading	= $tp -> post_toHTML($_POST['cat_subheading']);
 				if(e_WYSIWYG){
 					$_POST['cat_text'] = $tp->createConstants($_POST['cat_text']); // convert e107_images/ to {e_IMAGE} etc.
 				}
@@ -1372,24 +1372,24 @@ class contentform{
 				$row['content_heading']		= $tp -> post_toForm($_POST['cat_heading']);
 				$row['content_subheading']	= $tp -> post_toForm($_POST['cat_subheading']);
 				if(e_WYSIWYG){
-					$_POST['cat_text']		= $tp->toHTML($_POST['cat_text'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
-					$_POST['cat_text']		= $tp->replaceConstants($_POST['cat_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+					$_POST['cat_text'] = $tp->toHTML($_POST['cat_text'],$parseBB = TRUE); // parse the bbcodes to we can edit as html.
+					$_POST['cat_text'] = $tp->replaceConstants($_POST['cat_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
 				}
-				$row['content_text']		= $tp -> post_toForm($_POST['cat_text']);
-				$ne_day						= $_POST['ne_day'];
-				$ne_month					= $_POST['ne_month'];
-				$ne_year					= $_POST['ne_year'];
-				$end_day					= $_POST['end_day'];
-				$end_month					= $_POST['end_month'];
-				$end_year					= $_POST['end_year'];
-				$row['content_icon']		= $_POST['cat_icon'];
-				$row['content_comment']		= $_POST['cat_comment'];
-				$row['content_rate']		= $_POST['cat_rate'];
-				$row['content_pe']			= $_POST['cat_pe'];
-				$row['content_class']		= $_POST['cat_class'];
+				$row['content_text']	= $tp -> post_toForm($_POST['cat_text']);
+				$ne_day					= $_POST['ne_day'];
+				$ne_month				= $_POST['ne_month'];
+				$ne_year				= $_POST['ne_year'];
+				$end_day				= $_POST['end_day'];
+				$end_month				= $_POST['end_month'];
+				$end_year				= $_POST['end_year'];
+				$row['content_icon']	= $_POST['cat_icon'];
+				$row['content_comment']	= $_POST['cat_comment'];
+				$row['content_rate']	= $_POST['cat_rate'];
+				$row['content_pe']		= $_POST['cat_pe'];
+				$row['content_class']	= $_POST['cat_class'];
 			}else{
 				if(e_WYSIWYG){
-					$row['content_text']	= $tp->replaceConstants($row['content_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+					$row['content_text'] = $tp->replaceConstants($row['content_text'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
 				}
 			}
 
