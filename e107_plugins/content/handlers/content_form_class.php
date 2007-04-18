@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2007-04-17 21:06:06 $
+|		$Revision: 1.14 $
+|		$Date: 2007-04-18 20:31:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -248,7 +248,7 @@ class contentform{
 						//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 						//and use those preferences in the permissions check.
 						if( varsettrue($manager_pref['content_manager_inherit']) ){
-							$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+							$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 							$row = $sql -> db_Fetch();
 							$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
 						}
@@ -270,7 +270,7 @@ class contentform{
 						//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 						//and use those preferences in the permissions check.
 						if( varsettrue($manager_pref['content_manager_inherit']) ){
-							$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+							$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 							$row = $sql -> db_Fetch();
 							$manager_pref = $eArrayStorage->ReadArray($row['e107_value']);
 						}
@@ -889,7 +889,7 @@ class contentform{
 					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 					//and use those preferences in the permissions check.
 					if( varsettrue($curpref['content_manager_inherit']) ){
-						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$sql2 -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 						$row2 = $sql2 -> db_Fetch();
 						$curpref = $eArrayStorage->ReadArray($row2['e107_value']);
 					}
@@ -1018,7 +1018,7 @@ class contentform{
 					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 					//and use those preferences in the permissions check.
 					if( varsettrue($content_pref['content_manager_inherit']) ){
-						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$sql -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 						$row = $sql -> db_Fetch();
 						$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 					}
@@ -1078,7 +1078,7 @@ class contentform{
 
 				if(!is_object($sql)){ $sql = new db; }
 				foreach($array as $catid){
-					if(!$category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
+					if(!$category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_parent, content_icon, content_author", "content_id='".intval($catid)."' ")){
 						$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
 					}else{
 						$row = $sql -> db_Fetch();
@@ -1112,7 +1112,7 @@ class contentform{
 
 				if(!is_object($sql)){ $sql = new db; }
 				foreach($array as $catid){
-					if($category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
+					if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_parent, content_icon, content_author", "content_id='".intval($catid)."' ")){
 						$row = $sql -> db_Fetch();
 						$content_pref = $aa -> getContentPref($catid, true);
 						$CONTENT_ADMIN_SPACER = ($row['content_parent']==0 ? TRUE : FALSE);
@@ -1533,7 +1533,7 @@ class contentform{
 					//if inherit is used in the manager, we need to get the preferences from the core plugin table default preferences
 					//and use those preferences in the permissions check.
 					if( varsettrue($content_pref['content_manager_inherit']) ){
-						$sql2 -> db_Select("core", "*", "e107_name='$plugintable' ");
+						$sql2 -> db_Select("core", "e107_value", "e107_name='$plugintable' ");
 						$row2 = $sql2 -> db_Fetch();
 						$content_pref = $eArrayStorage->ReadArray($row2['e107_value']);
 					}
@@ -1576,7 +1576,7 @@ class contentform{
 
 				if(!is_object($sql)){ $sql = new db; }
 				foreach($array as $catid){
-					if(!$category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
+					if(!$category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_parent, content_icon, content_author, content_order", "content_id='".intval($catid)."' ")){
 						$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
 					}else{
 						$row = $sql -> db_Fetch();
@@ -1712,7 +1712,7 @@ class contentform{
 
 			$content_pref = $aa -> getContentPref(0, true);
 
-			if($category_total = $sql2 -> db_Select($plugintable, "*", "content_parent='0' ")){
+			if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_author", "content_parent='0' ")){
 				while($row = $sql2 -> db_Fetch()){
 					$content_pref = $aa -> getContentPref($row['content_id'], true);
 					$text .= $tp -> parseTemplate($CONTENT_ADMIN_OPTIONS_TABLE, FALSE, $content_shortcodes);

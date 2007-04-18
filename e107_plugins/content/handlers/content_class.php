@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2007-04-17 21:06:06 $
+|		$Revision: 1.20 $
+|		$Date: 2007-04-18 20:31:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1487,7 +1487,7 @@ class content{
 		$data .= "		}\n";
 		$data .= "		\$checkid = substr(\$checkid,0,-3);\n";
 		$data .= "		if(!is_object(\$sql)){ \$sql = new db; }\n";
-		$data .= "		if(\$sql -> db_Select(\$plugintable, \"*\", \" \".\$checkid.\" ORDER BY SUBSTRING_INDEX(content_order, '.', 1)+0 \")){\n";
+		$data .= "		if(\$sql -> db_Select(\$plugintable, \"content_id, content_heading, content_icon\", \" \".\$checkid.\" ORDER BY SUBSTRING_INDEX(content_order, '.', 1)+0 \")){\n";
 		$data .= "			\$CMT_CATEGORY .= \$tp->parseTemplate(\$CONTENT_MENU_CATEGORY_START,TRUE,\$content_shortcodes);\n";
 		$data .= "			while(\$row = \$sql -> db_Fetch()){\n";
 		$data .= "				\$CMT_CATEGORY .= \$tp->parseTemplate(\$CONTENT_MENU_CATEGORY_TABLE,TRUE,\$content_shortcodes);\n";
@@ -1504,7 +1504,7 @@ class content{
 		$data .= "	\$validparent = implode(\",\", array_keys(\$array));\n";
 		$data .= "	\$qry = \" content_parent REGEXP '\".\$aa -> CONTENTREGEXP(\$validparent).\"' \";\n";
 		$data .= "\n";
-		$data .= "	if(\$resultitem = \$sql -> db_Select(\$plugintable, \"*\", \"content_refer !='sa' AND \".\$qry.\" \".\$datequery.\" AND content_class REGEXP '\".e_CLASS_REGEXP.\"' ORDER BY content_datestamp DESC LIMIT 0,\".\$content_pref[\"content_menu_recent_number\"] )){\n";
+		$data .= "	if(\$resultitem = \$sql -> db_Select(\$plugintable, \"content_id, content_heading, content_subheading, content_author, content_icon, content_datestamp\", \"content_refer !='sa' AND \".\$qry.\" \".\$datequery.\" AND content_class REGEXP '\".e_CLASS_REGEXP.\"' ORDER BY content_datestamp DESC LIMIT 0,\".\$content_pref[\"content_menu_recent_number\"] )){\n";
 		$data .= "\n";
 		$data .= "		\$CMT_RECENT .= \$tp->parseTemplate(\$CONTENT_MENU_RECENT_START,TRUE,\$content_shortcodes);\n";
 		$data .= "		while(\$row = \$sql -> db_Fetch()){\n";

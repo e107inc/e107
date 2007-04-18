@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.15 $
-|		$Date: 2007-04-17 21:06:06 $
+|		$Revision: 1.16 $
+|		$Date: 2007-04-18 20:31:16 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -745,7 +745,7 @@ function show_content_cat($mode=""){
 			$textparent = $aa->getCrumbPage("cat", $array, $mainparent).$textparent;
 			if( varsettrue($textparent) ){ $ns -> tablerender($caption, $textparent); }
 
-			if($resultitem = $sql -> db_Select($plugintable, "*", $qry )){
+			if($resultitem = $sql -> db_Select($plugintable, "content_heading, content_rate, content_comment", $qry )){
 				$row = $sql -> db_Fetch();
 				if($row['content_comment']){
 					$cachestr = "comment.$plugintable.$qs[1]";

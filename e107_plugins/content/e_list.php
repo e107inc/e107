@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 	//get main parent types
 	$sqlm = new db;
-	if(!$mainparents = $sqlm -> db_Select("pcontent", "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
+	if(!$mainparents = $sqlm -> db_Select("pcontent", "content_id, content_heading", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
 		$LIST_DATA = "no valid content category";
 	}else{		
 		while($rowm = $sqlm -> db_Fetch()){
@@ -57,7 +57,7 @@ if (!defined('e107_INIT')) { exit; }
 
 				//get recent content for each main parent
 				$sqli = new db;
-				if(!$resultitem = $sqli -> db_Select("pcontent", "*", $qry)){
+				if(!$resultitem = $sqli -> db_Select("pcontent", "content_id, content_heading, content_parent, content_datestamp, content_icon, content_author", $qry)){
 					$LIST_DATA = "no items in ".$rowm['content_heading'];
 				}else{
 					$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
