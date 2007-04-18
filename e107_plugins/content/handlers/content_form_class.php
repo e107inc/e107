@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2007-04-18 20:31:17 $
+|		$Revision: 1.15 $
+|		$Date: 2007-04-18 20:46:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2742,6 +2742,19 @@ class contentform{
 			//content_archive_caption_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_155;
 			$TOPIC_FIELD = $rs -> form_text("content_archive_caption", 25, $tp->toHTML($content_pref['content_archive_caption'],"","defs"), 50);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_archive_defaultorder_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_51;
+			$TOPIC_FIELD = "
+			".$rs -> form_select_open("content_archive_defaultorder")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_1, ($content_pref['content_archive_defaultorder'] == "orderaheading" ? "1" : "0"), "orderaheading")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_2, ($content_pref['content_archive_defaultorder'] == "orderdheading" ? "1" : "0"), "orderdheading")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_3, ($content_pref['content_archive_defaultorder'] == "orderadate" ? "1" : "0"), "orderadate")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_4, ($content_pref['content_archive_defaultorder'] == "orderddate" ? "1" : "0"), "orderddate")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_9, ($content_pref['content_archive_defaultorder'] == "orderaorder" ? "1" : "0"), "orderaorder")."
+			".$rs -> form_option(CONTENT_ORDER_LAN_10, ($content_pref['content_archive_defaultorder'] == "orderdorder" ? "1" : "0"), "orderdorder")."
+			".$rs -> form_select_close();
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
