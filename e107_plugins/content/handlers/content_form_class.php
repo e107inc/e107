@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2007-04-18 21:13:23 $
+|		$Revision: 1.17 $
+|		$Date: 2007-04-18 21:41:58 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -213,7 +213,7 @@ class contentform{
 		}
 
 		function show_create_content($mode, $userid="", $username=""){
-			global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $content_shortcodes, $content_pref, $plugintable, $plugindir, $pref, $eArrayStorage, $message, $row, $show, $content_author_name_value, $content_author_name_js, $content_author_email_value, $content_author_email_js, $content_author_id, $months, $ne_day, $ne_month, $ne_year, $current_year, $end_day, $end_month, $end_year, $checkicon, $checkattach, $checkimages, $content_tmppath_icon, $content_tmppath_file, $content_tmppath_image, $iconlist, $checkattachnumber, $filelist, $checkimagesnumber, $imagelist, $CONTENTFORM_CATEGORY, $CONTENTFORM_CUSTOM, $CONTENTFORM_CUSTOM_KEY, $CONTENTFORM_CUSTOM_VALUE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMTABLE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMEND, $CONTENTFORM_PRESET, $CONTENT_ADMIN_CONTENT_CREATE, $CONTENT_ADMIN_BUTTON;
+			global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $content_shortcodes, $content_pref, $plugintable, $plugindir, $pref, $eArrayStorage, $message, $row, $show, $content_author_name_value, $content_author_name_js, $content_author_email_value, $content_author_email_js, $content_author_id, $months, $ne_day, $ne_month, $ne_year, $current_year, $end_day, $end_month, $end_year, $content_tmppath_icon, $content_tmppath_file, $content_tmppath_image, $iconlist, $checkattachnumber, $filelist, $checkimagesnumber, $imagelist, $CONTENTFORM_CATEGORY, $CONTENTFORM_CUSTOM, $CONTENTFORM_CUSTOM_KEY, $CONTENTFORM_CUSTOM_VALUE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMTABLE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMEND, $CONTENTFORM_PRESET, $CONTENT_ADMIN_CONTENT_CREATE, $CONTENT_ADMIN_BUTTON;
 
 			$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
@@ -610,14 +610,22 @@ class contentform{
 				$show['upload'] = false;
 			}
 			if($checkicon){
-				$iconlist	= $fl->get_files($content_pref['content_icon_path_tmp'],"",$rejectlist);
+				$list1 = $fl->get_files($content_pref['content_icon_path_tmp'],"",$rejectlist);
+				if(varsettrue($content_pref['content_admin_loadicons'])){
+					$list2 = $fl->get_files($content_pref['content_icon_path'],"",$rejectlist);
+				}
+				$iconlist = ($list2) ? array_merge($list1, $list2) : $list1;
 				$show['icon'] = true;
 			}else{
 				$show['icon'] = false;
 				$hidden .= $rs -> form_hidden("content_icon", $row['content_icon']);
 			}
 			if($checkattach){
-				$filelist	= $fl->get_files($content_pref['content_file_path_tmp'],"",$rejectlist);
+				$list1 = $fl->get_files($content_pref['content_file_path_tmp'],"",$rejectlist);
+				if(varsettrue($content_pref['content_admin_loadattach'])){
+					$list2 = $fl->get_files($content_pref['content_file_path'],"",$rejectlist);
+				}
+				$filelist = ($list2) ? array_merge($list1, $list2) : $list1;
 				$show['attach'] = true;
 			}else{
 				$show['attach'] = false;
@@ -1858,6 +1866,20 @@ class contentform{
 				$TOPIC_FIELD .= $rs -> form_option($i, ($content_pref['content_admin_custom_number'] == $i ? "1" : "0"), $i);
 			}
 			$TOPIC_FIELD .= $rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_admin_loadicons
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_176;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_admin_loadicons", "1", ($content_pref['content_admin_loadicons'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_admin_loadicons", "0", ($content_pref['content_admin_loadicons'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31;
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_admin_loadattach
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_177;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_admin_loadattach", "1", ($content_pref['content_admin_loadattach'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_admin_loadattach", "0", ($content_pref['content_admin_loadattach'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31;
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_admin_custom_preset_

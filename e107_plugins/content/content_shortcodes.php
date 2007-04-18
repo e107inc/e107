@@ -1485,31 +1485,37 @@ if($show['enddate']===true){
 SC_END
 
 SC_BEGIN CONTENTFORM_UPLOAD
-global $row, $rs, $show, $checkicon, $checkattach, $checkimages, $content_tmppath_icon, $content_tmppath_file, $content_tmppath_image;
+global $row, $rs, $show, $content_pref;
 if($show['upload']===true){
 	$text = "";
 	if(!FILE_UPLOADS){
 		$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
 	}else{
-		if(!is_writable($content_tmppath_icon)){
-			$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_icon." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+		if($show['icon']===true){
+			if(!is_writable($content_pref['content_icon_path_tmp'])){
+				$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_pref['content_icon_path_tmp']." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+			}
 		}
-		if(!is_writable($content_tmppath_file)){
-			$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_file." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+		if($show['attach']===true){
+			if(!is_writable($content_pref['content_file_path_tmp'])){
+				$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_pref['content_file_path_tmp']." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+			}
 		}
-		if(!is_writable($content_tmppath_image)){
-			$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_image." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+		if($show['images']===true){
+			if(!is_writable($content_pref['content_image_path_tmp'])){
+				$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_pref['content_image_path_tmp']." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+			}
 		}
 		$text .= "<br />
 		<input class='tbox' type='file' name='file_userfile[]'  size='36' /> 
 			".$rs -> form_select_open("uploadtype")."
-			".($checkicon ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_114, "0", "1") : '')."
-			".($checkattach ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_115, "0", "2") : '')."
-			".($checkimages ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_116, "0", "3") : '')."
+			".($show['icon'] ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_114, "0", "1") : '')."
+			".($show['attach'] ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_115, "0", "2") : '')."
+			".($show['images'] ? $rs -> form_option(CONTENT_ADMIN_ITEM_LAN_116, "0", "3") : '')."
 			".$rs -> form_select_close()."
-		<input type='hidden' name='tmppathicon' value='".$content_tmppath_icon."' />
-		<input type='hidden' name='tmppathfile' value='".$content_tmppath_file."' />
-		<input type='hidden' name='tmppathimage' value='".$content_tmppath_image."' />
+		".($show['icon'] ? "<input type='hidden' name='tmppathicon' value='".$content_pref['content_icon_path_tmp']."' />" : '')."
+		".($show['attach'] ? "<input type='hidden' name='tmppathfile' value='".$content_pref['content_file_path_tmp']."' />" : '')."
+		".($show['images'] ? "<input type='hidden' name='tmppathimage' value='".$content_pref['content_image_path_tmp']."' />" : '')."
 		<input class='button' type='submit' name='uploadfile' value='".CONTENT_ADMIN_ITEM_LAN_104."' />";
 	}
 	$text .= "<br />";
@@ -1528,9 +1534,9 @@ if($show['icon']===true){
 	}else{
 		foreach($iconlist as $icon){
 			if(file_exists($icon['path']."thumb_".$icon['fname'])){
-				$img = "<img src='".$icon['path']."thumb_".$icon['fname']."' style='width:100px; border:0' alt='' />";
+				$img = "<img src='".$icon['path']."thumb_".$icon['fname']."' style='width:50px; border:0' alt='' />";
 			}else{
-				$img = "<img src='".$icon['path'].$icon['fname']."' style='width:100px; border:0' alt='' />";
+				$img = "<img src='".$icon['path'].$icon['fname']."' style='width:50px; border:0' alt='' />";
 			}
 			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','content_icon','divicon')\">".$img."</a> ";
 		}
