@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_email.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-10-29 12:57:42 $
+|     $Revision: 1.17 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("LAN_EMAIL_11", "Correo enviado");
 define("LAN_EMAIL_12", "Error"); 
 define("LAN_EMAIL_13", "Enviar artículo por correo a un amigo"); 
 define("LAN_EMAIL_14", "Enviar noticia por correo a un amigo"); 
-define("LAN_EMAIL_15", "Nombre conexión: "); 
+define("LAN_EMAIL_15", "Nombre de usuario: "); 
 
 define("LAN_EMAIL_106", "Esta no parece una dirección de email válida");
 

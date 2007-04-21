@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_submitnews.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.11 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Enviar Noticia");
 
-define("LAN_7", "Usuario: ");
+define("LAN_7", "Nombre de usuario: ");
 
 define("LAN_62", "Asunto: ");
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user_extended.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-05-13 16:12:00 $
+|     $Revision: 1.15 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -41,5 +41,5 @@ define("UE_LAN_LANGUAGE", "Idioma");
 define("UE_LAN_LANGUAGE_DESC", "Idioma del usuario"); 
 define("UE_LAN_COUNTRY", "Pais"); 
 define("UE_LAN_COUNTRY_DESC", "Pais del usuario (incluye tabla db)"); 
-
+define("LAN_UE_FAIL_HOMEPAGE", "Entrada inválida para fijar en la página principal");
 ?>

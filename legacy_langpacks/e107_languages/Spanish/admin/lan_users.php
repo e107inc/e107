@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-08-12 17:23:21 $
+|     $Revision: 1.9 $
+|     $Date: 2007-04-21 09:35:39 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -70,8 +70,8 @@ define("USRLAN_61", "Usuario");
 define("USRLAN_62", "Contraseña");
 define("USRLAN_63", "Reescriba Contraseña");
 define("USRLAN_64", "Dirección Email");
-define("USRLAN_65", "Este usuario no puede ser aceptado, por favor elija un usuario diferente");
-define("USRLAN_66", "Este usuario existe en la base de datos, por favor elija un usuario diferente");
+define("USRLAN_65", "Este nombre a mostrar no puede ser aceptado, por favor elija un nombre a mostrar diferente");
+define("USRLAN_66", "Este nombre a mostrar existe en la base de datos, por favor elija un nombre a mostrar diferente");
 define("USRLAN_67", "Las dos contraseñas no coinciden");
 define("USRLAN_68", "Ha dejado en blanco campos obligatorios");
 define("USRLAN_69", "Ésta no parece una dirección de email válida");
@@ -119,7 +119,7 @@ define("USRLAN_124", "Su cuenta está actualmente marcada como inactiva, para act
 define("USRLAN_125", "Desde");
 define("USRLAN_126", "Permitir a usuarios valorar usuarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
-define("USRLAN_128", "Nombre de conexión");
+define("USRLAN_128", "Nombre de usuario");
 
 define("USRLAN_130", "Activar tracking de usuario online");
 define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracking de usuario online, como online.php, foro online info y menús online");

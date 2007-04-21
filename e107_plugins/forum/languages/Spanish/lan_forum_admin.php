@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-11-18 21:03:01 $
+|     $Revision: 1.15 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -75,7 +75,8 @@ define("FORLAN_62", "Opciones del foro");
 define("FORLAN_63", "Rangos");
 define("FORLAN_64", "Introduzca sus niveles aquí, si deja en blanco se usarán estrellas genéricas para asignar el nivel. Separe los niveles con comas. Máximo de 10 niveles, primero el más bajo.");
 define("FORLAN_65", "Título del foro");
-
+define("FORLAN_66", "Plugin de encuestas no instalado");
+ 
 define("FORLAN_70", "Activar adjuntar ficheros/imágenes");
 define("FORLAN_71", "Permite a los usuarios adjuntar ficheros o imágenes con su mensaje, <a href='upload.php'>pulse aquí</a> para configurar el tamaño máximo de los ficheros, tipos permitidos, etc");
 define("FORLAN_72", "Actualizar orden");

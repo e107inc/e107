@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-01-10 18:26:28 $
+|     $Revision: 1.13 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -114,7 +114,7 @@ define("LANINS_071", "Finalizando la instalación");
 define("LANINS_072", "Nombre Admin");
 define("LANINS_073", "Este es el nombre que usará al conectarse. Si lo desea, utilícelo como nombre a mostrar");
 define("LANINS_074", "Nombre Admin a mostrar");
-define("LANINS_075", "Este es el nombre que se mostrará en su perfil y en todo el sitio. Si desea mostrar el mismo nombre que el nombre de conexión, déjelo en blanco.");
+define("LANINS_075", "Este es el nombre que se mostrará en su perfil y en todo el sitio. Si desea mostrar el mismo nombre que el nombre de usuario, déjelo en blanco.");
 define("LANINS_076", "Contraseña Admin");
 define("LANINS_077", "Por favor, indique la contraseña que asignará al administrador");
 define("LANINS_078", "Admin Password Confirmation");
@@ -136,9 +136,15 @@ define("LANINS_092", "Contactar");
 define("LANINS_093", "Dar permisos a menus privados");
 define("LANINS_094", "Ejemplo de clase de foro privada");
 define("LANINS_095", "Comprobación integridad");
-define("LANINS_096", "");
-define("LANINS_097", "");
-define("LANINS_098", "");
-define("LANINS_099", "");
-define("LANINS_100", "");
+define("LANINS_096", 'Últimos comentarios'); 
+define("LANINS_097", '[más ...]'); 
+define("LANINS_098", 'Artículos'); 
+define("LANINS_099", 'Artículos página inicial ...'); 
+define("LANINS_100", 'Últimos envíos del foro'); 
+define("LANINS_101", 'Actualizar ajustes de menú'); 
+define("LANINS_102", 'Fecha / Hora'); 
+define("LANINS_103", 'Revisiones'); 
+define("LANINS_104", 'Revisar página inicial ...'); 
+define("LANINS_105", ''); 
+define("LANINS_106", ''); 
 ?>

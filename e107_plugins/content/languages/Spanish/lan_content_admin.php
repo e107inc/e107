@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-12-02 10:35:56 $
+|     $Revision: 1.23 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -17,6 +17,7 @@ define("CONTENT_PLUGIN_LAN_5", "Contenido");
 define("CONTENT_PLUGIN_LAN_6", "Actualizada la estructura de la tabla del CMS");
 
 define("CONTENT_LATEST_LAN_1", "Contenidos enviados:");
+define("CONTENT_STATUS_LAN_1", "Contenidos:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "Crear categoría de contenido");
 define("CONTENT_ADMIN_CAT_LAN_1", "Editar categoría de contenido");
@@ -308,7 +309,7 @@ define("CONTENT_ADMIN_JS_LAN_8", "Icono");
 define("CONTENT_ADMIN_JS_LAN_9", "ATENCIÓN :\\nsolo las categorías vacías se podrán eliminar.\\n La categoría esta vacía cuando no contiene subcategorías y\\n no contiene contenidos en éstas!");
 define("CONTENT_ADMIN_JS_LAN_10", "¿Está seguro de eliminar el contenido enviado antes de enviarlo?");
 	 
-define("CONTENT_ADMIN_SUBMIT_LAN_0", "En este punto no se permiten sumisiones de categorías de contenido");
+define("CONTENT_ADMIN_SUBMIT_LAN_0", "No se ha activado la autorización de envíos o no tiene permisos para enviar");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "Tipos de contenidos enviados");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Gracias, su contenido ha sido enviado.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Gracias, su contenido ha sido enviado y será revisado por un administrador para ser aceptado.");

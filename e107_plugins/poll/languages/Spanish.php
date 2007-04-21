@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Spanish.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-11-11 11:02:27 $
+|     $Revision: 1.11 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,6 +13,9 @@ define("POLL_ADLAN01", "Encuesta");
 define("POLL_ADLAN02", "El plugin encuesta permite definir encuestas en forma de menú o en envíos de foro.");
 define("POLL_ADLAN03", "Configure las encuestas");
 define("POLL_ADLAN04", "El plugin encuestas se instaló correctamente. Para añadir encuestas, click en el icono de encuestas en el menu del Administrador->sección plugins, y recuerde de activar el bloque menú en la sección menús.");
+define("POLL_ADLAN05", "Encuesta principal: "); 
+define("POLL_ADLAN06", "Tema del foro: "); 
+define("POLL_ADLAN07", "Tipo"); 
 
 define("POLLAN_MENU_CAPTION", "Encuesta");
 

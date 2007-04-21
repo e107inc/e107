@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-11-22 18:09:39 $
+|     $Revision: 1.31 $
+|     $Date: 2007-04-21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -150,7 +150,7 @@ define("PRFLAN_153", "Aprobación Admin");
 define("PRFLAN_154", "Nuevo método de verificación de usuario <br />Si selecciona 'Aprobación Admin', se recomienda que active la verificación por email en el registro <a href='".e_ADMIN."notify.php'>aquí</a>.");
 define("PRFLAN_155", "Mostrar Nombre disponible a");
 define("PRFLAN_156", "Resetear TODOS los nombres mostrables");
-define("PRFLAN_157", "Todoso los nombres mostrables se han reseteado a nombres de conexión");
+define("PRFLAN_157", "Todoso los nombres mostrables se han reseteado a nombres de usuario");
 define("PRFLAN_158", "Longitud máxima del nombre mostrable");
 define("PRFLAN_159", "Viendo esta página con");
 define("PRFLAN_160", "Comprueba servidores remotos al validar direcciones email.");
