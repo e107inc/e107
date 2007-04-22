@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-04-18 20:57:59 $
+|     $Revision: 1.11 $
+|     $Date: 2007-04-22 09:07:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.10 $
+* @version $Revision: 1.11 $
 * @author $Author: e107steved $
 */
 class db {
@@ -524,15 +524,20 @@ class db {
 		if(strpos($query,'#') !== FALSE) {
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
-		switch ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) 
-		{
-		  case TRUE: return TRUE;
-		  case FALSE : 
-			$this->dbError('dbQuery ('.$query.')');
-		    return FALSE;
-		  default : 
-			$this->dbError('db_Select_gen');
-			return $this->db_Rows();
+		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE) 
+		{	// Successful query which doesn't return a row count
+		  $this->dbError('db_Select_gen');
+		  return TRUE;
+		}
+		elseif (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === FALSE) 
+		{	// Failed query
+		  $this->dbError('dbQuery ('.$query.')');
+		  return FALSE;
+		}
+		else
+		{	// Successful query which does return a row count - get the count and return it
+		  $this->dbError('db_Select_gen');
+		  return $this->db_Rows();
 		}
 	}
 
