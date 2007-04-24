@@ -4,16 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-24 20:20:17 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "Search");
 
-define("LAN_98", "News");
-define("LAN_99", "Comments");
 define("LAN_140", "Members");
 define("LAN_180", "Search");
 define("LAN_192", "All categories");
@@ -25,9 +23,7 @@ define("LAN_196", "matches");
 define("LAN_197", "Downloads");
 define("LAN_198", "No matches found");
 define("LAN_199", "Search For:");
-define("LAN_200", "Categories:");
 
-define("LAN_201", "Please redefine your search query");
 define("LAN_416", "You must be logged in to access this page");
 define("LAN_417", "Search terms must be at least 3 characters.");
 
@@ -115,5 +111,11 @@ define("LAN_SEARCH_74", "Joined on");
 define("LAN_SEARCH_75", "Search type");
 define("LAN_SEARCH_76", "Posted on page");
 define("LAN_SEARCH_77", "Posted on profile page of");
+
+// Following formerly LAN_nnn - renamed to avoid clashes
+define("LAN_SEARCH_98", "News");
+define("LAN_SEARCH_99", "Comments");
+//define("LAN_SEARCH_200", "Categories:");						// Redundant LAN?
+define("LAN_SEARCH_201", "Please redefine your search query");
 
 ?>
