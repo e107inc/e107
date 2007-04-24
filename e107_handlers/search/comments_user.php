@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/comments_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-28 14:47:20 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-24 20:19:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$comments_title = LAN_98;
+$comments_title = LAN_SEARCH_98;
 $comments_type_id = 'profile';
 $comments_return['user'] = "u.user_name";
 $comments_table['user'] = "LEFT JOIN #user AS u ON c.comment_type='profile' AND u.user_id = c.comment_item_id";
