@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-04-22 09:07:27 $
+|     $Revision: 1.12 $
+|     $Date: 2007-04-24 19:40:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.11 $
+* @version $Revision: 1.12 $
 * @author $Author: e107steved $
 */
 class db {
@@ -529,7 +529,7 @@ class db {
 		  $this->dbError('db_Select_gen');
 		  return TRUE;
 		}
-		elseif (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === FALSE) 
+		elseif ($this->mySQLresult === FALSE) 
 		{	// Failed query
 		  $this->dbError('dbQuery ('.$query.')');
 		  return FALSE;
