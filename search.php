@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-11 17:43:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2007-04-24 20:20:10 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -60,13 +60,13 @@ function search_info($id, $type, $plug_require, $info='') {
 
 //core search routines
 
-if ($search_info['news'] = search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php', 'id' => 'news'))) {
+if ($search_info['news'] = search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_SEARCH_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php', 'id' => 'news'))) {
    //	$search_id++;
 } else {
 	unset($search_info['news']);
 }
 
-if ($search_info['comments'] = search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
+if ($search_info['comments'] = search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_SEARCH_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
    //	$search_id++;
 } else {
 	unset($search_info['comments']);
@@ -166,11 +166,11 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 
 	if (isset($_GET['r']) && !is_numeric($_GET['r'])) {
 		$perform_search = false;
-		$SEARCH_MESSAGE = LAN_201;
+		$SEARCH_MESSAGE = LAN_SEARCH_201;
 		$result_flag = 0;
 	} else if (strlen($full_query) == 0) {
 		$perform_search = false;
-		$SEARCH_MESSAGE = LAN_201;
+		$SEARCH_MESSAGE = LAN_SEARCH_201;
 	} else if (strlen($full_query) < 3) {
 		$perform_search = false;
 		$SEARCH_MESSAGE = LAN_417;

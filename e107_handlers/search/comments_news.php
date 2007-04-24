@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/search/comments_news.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-04-24 20:20:10 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$comments_title = LAN_98;
+$comments_title = LAN_SEARCH_98;
 $comments_type_id = 0;
 $comments_return['news'] = "n.news_title";
 $comments_table['news'] = "LEFT JOIN #news AS n ON c.comment_type=0 AND n.news_id = c.comment_item_id";
