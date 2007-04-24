@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-17 18:18:50 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-04-24 20:29:11 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -116,8 +116,8 @@ if($_POST['cancel_emails']){
 
 	$attach = chop($_POST['email_attachment']);
 	if (($temp = strrchr($attach,'/')) !== FALSE)
-	{
-		$attach = substr($attach,$temp + 1);
+	{	// Just specify filename as attachment - no path
+		$attach = substr($attach,1);
 	}
 
 	if(is_readable(e_DOWNLOAD.$attach))
