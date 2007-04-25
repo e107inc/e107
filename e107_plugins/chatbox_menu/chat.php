@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2007-01-28 13:51:57 $
+|     $Revision: 1.25 $
+|     $Date: 2007-04-25 19:35:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -111,7 +111,7 @@ foreach ($chatList as $row)
 {
 	$CHAT_TABLE_DATESTAMP = $obj2->convert_date($row['cb_datestamp'], "long");
 	$CHAT_TABLE_NICK = preg_replace("/[0-9]+\./", "", $row['cb_nick']);
-	$cb_message = $tp->toHTML($row['cb_message'], TRUE,'BODY');
+	$cb_message = $tp->toHTML($row['cb_message'], TRUE,'USER_BODY');
 	if($row['cb_blocked'])
 	{
 		$cb_message .= "<br />".CHATBOX_L25;
