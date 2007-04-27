@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-02-04 09:30:56 $
+|     $Revision: 1.8 $
+|     $Date: 2007-04-27 19:30:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -325,15 +325,16 @@ if (e_QUERY)
 
 if (isset($_POST['register']))
 {
+  $_POST['xupexist'] = trim(varset($_POST['xupexist'],''));
 	$e107cache->clear("online_menu_totals");
 	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
-	if ($signup_imagecode && !isset($_POST['xupexist']))
+	if ($signup_imagecode && !$_POST['xupexist'] )
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
-			$error_message .= LAN_SIGNUP_3."\\n";
-			$error = TRUE;
+		  $error_message .= LAN_SIGNUP_3."\\n";
+		  $error = TRUE;
 		}
 	}
 
