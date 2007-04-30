@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-03-26 06:34:56 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2007-04-30 20:16:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -63,32 +63,42 @@ class e_parse
 		// Second line changes default-OFF options
 	var	$e_SuperMods = array(
 				'title' =>				//text is part of a title (e.g. news title)
-					array( 
-						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
+					array(
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,
 						'defs'=>TRUE,'parse_sc'=>TRUE),
 
+				'user_title' =>				//text is user-entered (i.e. untrusted) and part of a title (e.g. forum title)
+					array(
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE
+						),
+
 				'summary' =>			// text is part of the summary of a longer item (e.g. content summary)
-					array( 
+					array(
 						// no changes to default-on items
 						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
 
 				'description' =>	// text is the description of an item (e.g. download, link)
-					array( 
+					array(
 						// no changes to default-on items
 						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
 
 				'body' =>					// text is 'body' or 'bulk' text (e.g. custom page body, content body)
-					array( 
+					array(
 						// no changes to default-on items
 						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
 
+				'user_body' =>					// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
+					array(
+						// no changes to default-on items
+						),
+
 				'linktext' =>			// text is the 'content' of a link (A tag, etc)
-					array( 
+					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
 						'defs'=>TRUE,'parse_sc'=>TRUE),
 
 				'rawtext' =>			// text is used (for admin edit) without fancy conversions
-					array( 
+					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
 						// leave opt-in options off
 						)

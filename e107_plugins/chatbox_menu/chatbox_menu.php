@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-28 14:08:25 $
+|     $Revision: 1.7 $
+|     $Date: 2007-04-30 20:17:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -190,13 +190,13 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 			}
 			else
 			{
-				$cb_nick = $tp -> toHTML($cb_nick,FALSE,'emotes_off, no_make_clickable');
+				$cb_nick = $tp -> toHTML($cb_nick,FALSE,'USER_TITLE, emotes_off, no_make_clickable');
 				$cb_nick = str_replace("Anonymous", LAN_ANONYMOUS, $cb_nick);
 			}
 
 			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
-			$emotes_active = $pref['cb_emote'] ? 'BODY, emotes_on' : 'BODY, emotes_off';
+			$emotes_active = $pref['cb_emote'] ? 'USER_BODY, emotes_on' : 'USER_BODY, emotes_off';
 
 			$cb_message = $tp -> toHTML($cb['cb_message'], FALSE, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
 
