@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-04-15 16:07:39 $ 
-|     $Author: lisa_ $
+|     $Revision: 1.9 $
+|     $Date: 2007-05-01 19:48:22 $ 
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -175,7 +175,10 @@ class e_bbcode
 		     // If its a single code, we can process it now. Otherwise just stack the value
 		    if (array_key_exists('_'.$bbword,$this->bbLocation))
 		    {  // Single code to process
-	          $stacktext .= $this->proc_bbcode('_'.$bbword);
+			  if (count($code_stack) == 0)
+	            $result .= $this->proc_bbcode('_'.$bbword,$bbparam);
+			  else
+	            $stacktext .= $this->proc_bbcode('_'.$bbword,$bbparam);
 			  $is_proc = TRUE;
 		    }
 		    elseif (array_key_exists($bbword,$this->bbLocation))
