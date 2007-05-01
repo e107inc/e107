@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-04-11 22:29:34 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-05-01 19:50:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -510,9 +510,9 @@ function zip_up_lang($language)
     $core_plugins = array(
     "alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
     "clock_menu","comment_menu","content","featurebox","forum","gsitemap",
-    "lastseen","links_page","linkwords","list_new","log","login_menu",
-    "newforumposts_main","newsfeed","newsletter","online_extended_menu",
-    "online_menu","other_news_menu","pdf","pm","poll","rss_menu",
+    "links_page","linkwords","list_new","log","login_menu",
+    "newforumposts_main","newsfeed","newsletter","online",
+    "other_news_menu","pdf","pm","poll","rss_menu",
     "search_menu","siteinfo_menu","trackback","tree_menu","user_menu","userlanguage_menu",
     "usertheme_menu"
     );

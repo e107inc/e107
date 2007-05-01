@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-25 02:01:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2007-05-01 19:50:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -130,7 +130,8 @@ if (isset($_POST['update_options'])) {
 }
 // ------- Prune Users. --------------
 if (isset($_POST['prune'])) {
-	$e107cache->clear("online_menu_totals");
+	$e107cache->clear("online_menu_member_total");
+	$e107cache->clear("online_menu_member_newest");
 	$text = USRLAN_56." ";
 	$bantype = $_POST['prune_type'];
 	if ($sql->db_Select("user", "user_id, user_name", "user_ban= {$bantype}"))
@@ -148,7 +149,8 @@ if (isset($_POST['prune'])) {
 }
 // ------- Quick Add User --------------
 if (isset($_POST['adduser'])) {
-	$e107cache->clear("online_menu_totals");
+	$e107cache->clear("online_menu_member_total");
+	$e107cache->clear("online_menu_member_newest");
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
 	}
