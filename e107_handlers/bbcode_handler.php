@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2007-04-30 08:29:16 $ 
-|     $Author: asperon $
+|     $Revision: 1.56 $
+|     $Date: 2007-05-01 19:48:12 $ 
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -101,8 +101,8 @@ class e_bbcode
       if ($cont[0] == '[')
 	  {  // We've got a bbcode - split it up and process it
 		$match_count = preg_match($pattern,$cont,$matches);
-	    $bbparam = $matches[5];
-        $bbword = $matches[2];
+	    $bbparam = (isset($matches[5])) ? $matches[5] : '';
+        $bbword = (isset($matches[2])) ? $matches[2] : '';
 		if ($force_lower) $bbword = strtolower($bbword);
 		if ($nopro && ($bbword == 'code') && ($matches[1] == '/')) $nopro = FALSE;		// End of code block
 	    if (($bbword) && ($bbword == trim($bbword)) && !$nopro)
@@ -175,7 +175,10 @@ class e_bbcode
 		     // If its a single code, we can process it now. Otherwise just stack the value
 		    if (array_key_exists('_'.$bbword,$this->bbLocation))
 		    {  // Single code to process
-	          $stacktext .= $this->proc_bbcode('_'.$bbword,$bbparam);
+			  if (count($code_stack) == 0)
+	            $result .= $this->proc_bbcode('_'.$bbword,$bbparam);
+			  else
+	            $stacktext .= $this->proc_bbcode('_'.$bbword,$bbparam);
 			  $is_proc = TRUE;
 		    }
 		    elseif (array_key_exists($bbword,$this->bbLocation))
