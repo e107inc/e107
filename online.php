@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/online.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-01 19:50:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -225,7 +225,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 		$online_location_page = ADMINAREA;
 	}
 	$pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
-	$ONLINE_TABLE_ICON = ($pm_installed && $oid != USERID ? $tp->parseTemplate("{pm_menu.sendpm={$oid}}") : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
+	$ONLINE_TABLE_ICON = ($pm_installed && $oid != USERID ? $tp->parseTemplate("{pm_menu.sendpm={$oid}}") : "<img src='".e_PLUGIN."online/images/user.png' alt='' style='vertical-align:middle' />");
 	 
 	$ONLINE_TABLE_USERNAME = "<a href='".e_BASE."user.php?id.$oid'>$oname</a>";
 	$ONLINE_TABLE_LOCATION = ($class_check ? "<a href='$online_location'>$online_location_page</a>" : $online_location_page);

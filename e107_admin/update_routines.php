@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-24 11:54:46 $
+|     $Revision: 1.6 $
+|     $Date: 2007-05-01 19:50:55 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -160,6 +160,36 @@ function update_706_to_800($type='') {
 			catch_error();
 		}
 
+		//change menu_path for lastseen_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='lastseen_menu' || menu_path='lastseen_menu/'"))
+		{
+			$sql->db_Update("menus", "menu_path='online/' WHERE menu_path='lastseen_menu' || menu_path='lastseen_menu/' ");
+			catch_error();
+		}
+
+		//delete record for online_extended_menu (now only using one online menu)
+		if($sql->db_Select("menus", "*", "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
+		{
+			$row=$sql->db_Fetch();
+			
+			//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
+			if($row['menu_location']!=0){
+				$sql->db_Update("menus", "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
+			
+			//else if the menu is not active
+			}else{
+				//we need to delete the online_extended menu row, and change the online_menu to online
+				$sql->db_Delete("menus", " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
+			}
+			catch_error();
+		}
+		//change menu_path for online_menu (if it still exists)
+		if($sql->db_Select("menus", "menu_path", "menu_path='online_menu' || menu_path='online_menu/'"))
+		{
+			$sql->db_Update("menus", "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ");
+			catch_error();
+		}
+		
 		return '';
 
 	}
@@ -193,6 +223,22 @@ function update_706_to_800($type='') {
 		}
 		//change menu_path for counter_menu
 		if($sql->db_Select("menus", "menu_path", "menu_path='counter_menu' || menu_path='counter_menu/'"))
+		{
+			return update_needed();
+		}
+
+		//change menu_path for lastseen_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='lastseen_menu' || menu_path='lastseen_menu/'"))
+		{
+			return update_needed();
+		}
+		//change menu_path for online_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='online_menu' || menu_path='online_menu/'"))
+		{
+			return update_needed();
+		}
+		//change menu_path for online_extended_menu
+		if($sql->db_Select("menus", "menu_path", "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
 		{
 			return update_needed();
 		}
