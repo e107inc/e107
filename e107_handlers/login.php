@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-12 02:49:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2007-05-02 19:47:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,6 +33,7 @@ class userlogin {
 		# - scope                                        public
 		*/
 		global $pref, $e_event, $sql, $e107, $tp;
+		global $admin_log;
 
 		$username = trim($username);
 		$userpass = trim($userpass);
@@ -43,7 +44,7 @@ class userlogin {
 		}
 
 	 	if(!is_object($sql)){
-   		  	$sql = new db;
+		$sql = new db;
 		}
 
 		$fip = $e107->getip();
@@ -80,35 +81,45 @@ class userlogin {
 			$userpass = md5(utf8_decode($ouserpass));
 		}
 
-		if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) {
+		if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) 
+		{	// Invalid user
 			define("LOGINMESSAGE", LAN_300."<br /><br />");
 			$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 			$this -> checkibr($fip);
 			return FALSE;
 		}
-		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}'")) {
+		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}'")) 
+		{	// Invalid user/password combination
 			define("LOGINMESSAGE", LAN_300."<br /><br />");
 			return FALSE;
 		}
-		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
+		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) 
+		{	// Banned user
 			define("LOGINMESSAGE", LAN_302."<br /><br />");
                	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 				$this -> checkibr($fip);
 			return FALSE;
-		} else {
+		} 
+		else 
+		{	// User is OK as far as core is concerned
 			$ret = $e_event->trigger("preuserlogin", $username);
-			if ($ret!='') {
+			if ($ret!='') 
+			{
 				define("LOGINMESSAGE", $ret."<br /><br />");
 				return FALSE;
-			} else {
-				$lode = $sql -> db_Fetch();
+			} 
+			else 
+			{	// Trigger events happy as well
+				$lode = $sql -> db_Fetch();		// Get user info
 				$user_id = $lode['user_id'];
 				$user_name = $lode['user_name'];
 				$user_xup = $lode['user_xup'];
 
 				/* restrict more than one person logging in using same us/pw */
-				if($pref['disallowMultiLogin']) {
-					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
+				if($pref['disallowMultiLogin']) 
+				{
+					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) 
+					{
 						define("LOGINMESSAGE", LAN_304."<br /><br />");
 						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 						$this -> checkibr($fip);
@@ -133,6 +144,42 @@ class userlogin {
 				$edata_li = array("user_id" => $user_id, "user_name" => $username);
 				$e_event->trigger("login", $edata_li);
 				$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
+
+
+				if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force'])) 
+				{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
+					// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
+				  $lode['user_perms'] = trim($lode['user_perms']);
+//				  $log_info = "New user: ".$lode['user_name']."  Class: ".$lode['user_class']."  Admin: ".$lode['user_admin']."  Perms: ".$lode['user_perms'];
+//				  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
+				  $class_list = explode(',',$lode['user_class']);
+				  if ($lode['user_admin'] && strlen($lode['user_perms']))
+				  {
+				    $class_list[] = e_UC_ADMIN;
+					if (('0'==$lode['user_perms']) || ('0.' == $lode['user_perms'])) 
+					{
+					  $class_list[] = e_UC_MAINADMIN;
+					}
+				  }
+				  $class_list[] = e_UC_MEMBER;
+				  $class_list[] = e_UC_PUBLIC;
+//				  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","New User class",implode(',',$class_list),FALSE,FALSE);
+				  foreach ($pref['frontpage_force'] as $fk=>$fp)
+				  {
+					if (in_array($fk,$class_list))
+					{  // We've found the entry of interest
+					  if (strlen($fp))
+					  {
+						$redir = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$fp;
+						if (e_QUERY) $redir .= "?".e_QUERY;
+//						$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
+					  }
+					  break;
+					}
+				  }
+				}
+
+
 				if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
 					header("Location: ".$redir);
 					exit;

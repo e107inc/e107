@@ -11,16 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-02 19:47:47 $
+|     $Author: e107steved $
+|
 +----------------------------------------------------------------------------+
 */
 
 require_once('../class2.php');
-if (!getperms('G')) {
-	header('location:'.e_BASE.'index.php');
-	exit;
+if (!getperms('G')) 
+{
+  header('location:'.e_BASE.'index.php');
+  exit;
 }
 $e_sub_cat = 'frontpage';
 require_once('auth.php');
@@ -28,236 +30,463 @@ require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 require_once(e_HANDLER.'userclass_class.php');
 
+
+// New language defs to be moved out (probably get rid of nearly all the existing ones)
+define('FRTLAN_35', 'Post-login page');
+//define('FRTLAN_36', 'Yes');
+//define('FRTLAN_37', 'No');
+define('FRTLAN_38', 'The rules are searched in order, to find the first where the current user belongs to the class specified in the rule. That rule then determines the front (home) page and any specific post-login page.');
+define('FRTLAN_39', 'If no rule matches, news.php is set as the home page');
+define('FRTLAN_40', 'Order');
+define('FRTLAN_41', "The user is sent to the specified 'Post-login page' (if specified) immediately following a login");
+define('FRTLAN_42', 'Add new rule');
+define('FRTLAN_43', 'Class: ');
+define('FRTLAN_44', 'Go to this page after login');
+define('FRTLAN_45', 'Values not changed');
+define('FRTLAN_46', 'Edit existing rule');
+define('FRTLAN_47', 'Move up');
+define('FRTLAN_48', 'Move down');
+define('FRTLAN_49', 'Home Page');
+define('FRTLAN_50', "(To disable, select 'Other' with a blank page)");
+define('FRTLAN_51', "Other");
+define('FRTLAN_52', "None");
+define('FRTLAN_53', 'User Class');
+
+
+// Get list of possible options for front page
 $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
 $front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);
 $front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
-if ($sql -> db_Select("page", "*", "page_theme=''")) {
-	$front_page['custom']['title'] = 'Custom Page';
-	while ($row = $sql -> db_Fetch()) {
-		$front_page['custom']['page'][] = array('page' => 'page.php?'.$row['page_id'], 'title' => $row['page_title']);
-	}
+
+if ($sql -> db_Select("page", "*", "page_theme=''")) 
+{
+  $front_page['custom']['title'] = 'Custom Page';
+  while ($row = $sql -> db_Fetch()) 
+  {
+	$front_page['custom']['page'][] = array('page' => 'page.php?'.$row['page_id'], 'title' => $row['page_title']);
+  }
 }
 
-
+// Now let any plugins add to the options - must append to the $front_page array as above
 foreach($pref['e_frontpage_list'] as $val)
 {
-	if (is_readable(e_PLUGIN.$val."/e_frontpage.php"))
-	{
-		require_once(e_PLUGIN.$val."/e_frontpage.php");
-	}
+  if (is_readable(e_PLUGIN.$val."/e_frontpage.php"))
+  {
+	require_once(e_PLUGIN.$val."/e_frontpage.php");
+  }
 }
 
 
+// Now sort out list of rules for display (based on $pref data to start with)
+$gotpub = FALSE;
+if (is_array($pref['frontpage']))
+{
+  $i = 1;
+  foreach ($pref['frontpage'] as $class => $val)
+  {
+	if ($class == 'all')
+	{
+	  $class = e_UC_PUBLIC;
+	  $gotpub = TRUE;
+	}
+	if ($val)
+	{	// Only add non-null pages
+      $fp_settings[$i] = array('order' => $i, 'class' => $class, 'page' => $val,'force' => varset($pref['frontpage_force'][$class],''));
+	  $i++;
+	}
+  }
+}
+else
+{  // Legacy stuff to convert
+  $fp_settings = array();
+  $fp_settings[] = array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => varset($pref['frontpage'],'news.php'),'force' => '');
+}
 
-if (isset($_POST['edit'])) {
+if (!$gotpub)
+{	// Need a 'default' setting - usually 'all'
+  $fp_settings[] = array('order' => $i, 'class' => e_UC_PUBLIC, 'page' => varset($pref['frontpage']['all'],'news.php'),'force' => '');
+}
+
+$fp_update_prefs = FALSE;
+
+
+if (isset($_POST['fp_inc']))
+{
+  $mv = intval($_POST['fp_inc']);
+  if (($mv > 1) && ($mv <= count($fp_settings)))
+  {
+    $temp = $fp_settings[$mv-1];
+	$fp_settings[$mv-1] = $fp_settings[$mv];
+	$fp_settings[$mv] = $temp;
+	$fp_update_prefs = TRUE;
+  }
+}
+elseif (isset($_POST['fp_dec']))
+{
+  $mv = intval($_POST['fp_dec']);
+  if (($mv > 0) && ($mv < count($fp_settings)))
+  {
+    $temp = $fp_settings[$mv+1];
+	$fp_settings[$mv+1] = $fp_settings[$mv];
+	$fp_settings[$mv] = $temp;
+	$fp_update_prefs = TRUE;
+  }
+}
+
+
+// Edit an existing rule
+if (isset($_POST['fp_edit_rule'])) 
+{
 	$_POST['type'] = (isset($_POST['edit']['all'])) ? 'all_users' : 'user_class';
 	$_POST['class'] = key($_POST['edit']);
 }
 
-if (isset($_POST['updatesettings'])) {
-	if ($_POST['frontpage'] == 'other') {
-		$_POST['other_page'] = $tp -> toForm($_POST['other_page']);
-		$frontpage_value = $_POST['other_page'] ? $_POST['other_page'] : 'news.php';
-	} else {
-		if (is_array($front_page[$_POST['frontpage']]['page'])) {
-			$frontpage_value = $front_page[$_POST['frontpage']]['page'][$_POST['multipage'][$_POST['frontpage']]]['page'];
-		} else {
-			$frontpage_value = $front_page[$_POST['frontpage']]['page'];
-		}
+
+// Cancel Edit
+
+
+
+
+if (isset($_POST['fp_save_new']))
+{  // Add or edit an existing rule here.
+	// fp_order - zero for a new rule, non-zero if editing an existing rule
+	// class - user class for rule
+	// frontpage - radio button option indicating type of page (for home page)
+	// frontpage_multipage[] - the other information for custom pages and similar - array index matches value of 'frontpage' when selected
+	// frontpage_other - URL for 'other' home page
+	// fp_force_page - radio button option indicating type of page (for post-login page)
+	// fp_force_page_multipage[] - the other information for custom pages and similar - array index matches value of 'frontpage' when selected
+	// fp_force_page_other - URL for forced post-login 'other' page
+	
+	
+	if ($_POST['frontpage'] == 'other') 
+	{
+	  $_POST['frontpage_other'] = trim($tp -> toForm($_POST['frontpage_other']));
+	  $frontpage_value = $_POST['frontpage_other'] ? $_POST['frontpage_other'] : 'news.php';
+	} 
+	else 
+	{
+	  if (is_array($front_page[$_POST['frontpage']]['page'])) 
+	  {
+		$frontpage_value = $front_page[$_POST['frontpage']]['page'][$_POST['frontpage_multipage'][$_POST['frontpage']]]['page'];
+	  } 
+	  else 
+	  {
+		$frontpage_value = $front_page[$_POST['frontpage']]['page'];
+	  }
 	}
 
-	if ($_POST['type'] == 'all_users') {
-		unset($pref['frontpage']);
-		$pref['frontpage']['all'] = $frontpage_value;
-	} else {
-		if (isset($pref['frontpage']['all'])) {
-			$pref['frontpage']['252'] = ($_POST['class'] == '252') ? $frontpage_value : $pref['frontpage']['all'];
-			$pref['frontpage']['253'] = ($_POST['class'] == '253') ? $frontpage_value : $pref['frontpage']['all'];
-			$pref['frontpage']['254'] = ($_POST['class'] == '254') ? $frontpage_value : $pref['frontpage']['all'];
-			$class_list = get_userclass_list();
-			foreach ($class_list as $fp_class) {
-				$pref['frontpage'][$fp_class['userclass_id']] = ($_POST['class'] == $fp_class['userclass_id']) ? $frontpage_value : $pref['frontpage']['all'];
-			}
-			unset($pref['frontpage']['all']);
-		}
-		$pref['frontpage'][$_POST['class']] = $frontpage_value;
+	if ($_POST['fp_force_page'] == 'other') 
+	{
+	  $_POST['fp_force_page_other'] = trim($tp -> toForm($_POST['fp_force_page_other']));
+	  $forcepage_value = $_POST['fp_force_page_other'];		// A null value is allowable here
+	} 
+	else 
+	{
+	  if (is_array($front_page[$_POST['fp_force_page']]['page'])) 
+	  {
+		$forcepage_value = $front_page[$_POST['fp_force_page']]['page'][$_POST['fp_force_page_multipage'][$_POST['fp_force_page']]]['page'];
+	  } 
+	  else 
+	  {
+		$forcepage_value = $front_page[$_POST['fp_force_page']]['page'];
+	  }
 	}
 
-	save_prefs();
-	$ns -> tablerender(LAN_UPDATED, "<div style='text-align:center'><b>".FRTLAN_1."</b></div>");
+	$temp = array('order' => intval($_POST['fp_order']), 'class' => $_POST['class'], 'page' => $frontpage_value,'force' => trim($forcepage_value));
+	if ($temp['order'] == 0)
+	{	// New index to add
+	  $ind = 0;
+	  for ($i = 1; $i <= count($fp_settings); $i++)
+	  {
+	    if ($fp_settings[$i]['class'] == $temp['class']) $ind = $i;
+	  }
+	  if ($ind)
+	  {
+	    unset($fp_settings[$ind]);		// Knock out duplicate definition for class
+		echo "duplicate definition for class: ".$ind."<br />";
+	  }
+	  array_unshift($fp_settings,$temp);		// Deliberately add twice
+	  array_unshift($fp_settings,$temp);		// ....because re-indexed from zero
+	  unset($fp_settings[0]);					// Then knock out index zero
+	  $fp_update_prefs = TRUE;
+	}
+	elseif (array_key_exists($temp['order'],$fp_settings))
+	{
+	  $fp_settings[$temp['order']] = $temp;
+	  $fp_update_prefs = TRUE;
+	}
+	else
+	{  // Someone playing games
+      $ns -> tablerender(LAN_UPDATED, "<div style='text-align:center'><b>"."Software error"."</b></div>");
+	}
 }
+
+if (isset($_POST['fp_delete_rule']))
+{
+  if (isset($fp_settings[key($_POST['fp_delete_rule'])])) 
+  {
+    unset($fp_settings[key($_POST['fp_delete_rule'])]);
+	$fp_update_prefs = TRUE;
+  }
+}
+
+
+if ($fp_update_prefs)
+{  // Save the two arrays
+  $fp_list = array();
+  $fp_force = array();
+  for ($i = 1; $i <= count($fp_settings); $i++)
+  {
+    $fp_list[$fp_settings[$i]['class']] = $fp_settings[$i]['page'];
+//	$fp_force[$fp_settings[$i]['class']] = intval($fp_settings[$i]['force']);
+	$fp_force[$fp_settings[$i]['class']] = $fp_settings[$i]['force'];
+  }
+//  if (($fp_list != $pref['frontpage']) || ($fp_force != $pref['frontpage_force']))
+//  {
+    $pref['frontpage'] = $fp_list;
+	$pref['frontpage_force'] = $fp_force;
+    save_prefs();
+    $ns -> tablerender(LAN_UPDATED, "<div style='text-align:center'><b>".FRTLAN_1."</b></div>");
+//  }
+//  else
+//  {
+//    $ns -> tablerender(LAN_UPDATED, "<div style='text-align:center'><b>".FRTLAN_45."</b></div>");
+//  }
+}
+
+
+/* For reference:
+define("e_UC_PUBLIC", 0);
+define("e_UC_MAINADMIN", 250);
+define("e_UC_READONLY", 251);
+define("e_UC_GUEST", 252);
+define("e_UC_MEMBER", 253);
+define("e_UC_ADMIN", 254);
+define("e_UC_NOBODY", 255);
+*/
 
 $fp = new frontpage;
 
-if (isset($_POST['select']) || isset($_POST['edit'])) {
-	$fp -> select_page();
-} else {
-	$fp -> select_class();
+if (isset($_POST['fp_add_new']))
+{
+  $fp->edit_rule(array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => 'news.php','force' => FALSE));	// Display edit form as well
+  $fp -> select_class(FALSE);
+}
+elseif (isset($_POST['fp_edit_rule']))
+{
+  $fp->edit_rule($fp_settings[key($_POST['fp_edit_rule'])]);	// Display edit form as well
+  $fp -> select_class(FALSE);
+}
+else
+{	// Just show existing rules
+  $fp -> select_class(TRUE);
 }
 
-class frontpage {
-	function select_class() {
-		global $rs, $pref, $ns, $front_page;
-		$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>";
 
-		$text .= "<tr>
-		<td style='width: 50%' class='forumheader3'>".FRTLAN_2.":</td>
-		<td style='width: 50%' class='forumheader3'>
-		".$rs -> form_radio('type', 'all_users', (isset($pref['frontpage']['all']) ? TRUE : FALSE))." ".FRTLAN_31."&nbsp;
-		".$rs -> form_radio('type', 'user_class', (isset($pref['frontpage']['all']) ? FALSE : TRUE))." ".FRTLAN_32.":
-		".r_userclass('class', '', 'off', 'guest,member,admin,classes')."</td>
-		</tr>";
 
-		$text .= "<tr style='vertical-align:top'>
-		<td colspan='2' style='text-align: center' class='forumheader'>
-		".$rs -> form_button('submit', 'select', LAN_SELECT)."
-		</td>
-		</tr>
-		</table>
-		</form>
-		</div>";
+class frontpage 
+{
+	function select_class($show_button = TRUE) 
+	{	// Display existing data
+	  global $fp_settings, $rs, $ns, $front_page;
+		
 
-		$ns -> tablerender(FRTLAN_13, $text);
-
-		$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'><tr>
-		<td style='width: 25%' class='fcaption'>".FRTLAN_32."</td>
-		<td style='width: 65%' class='fcaption'>".FRTLAN_34."</td>
-		<td style='width: 10%' class='fcaption'>".LAN_EDIT."</td>
-		</tr>";
-
-		if (isset($pref['frontpage']['all'])) {
-			$text .= "<tr>
-			<td class='forumheader3'>All Users</td>
-			<td class='forumheader3'>".$pref['frontpage']['all']."</td>
-			<td class='forumheader3' style='text-align:center'>
-			<input type='image' title='".LAN_EDIT."' name='edit[all]' src='".ADMIN_EDIT_ICON_PATH."' />
-			</td>
-			</tr>";
-		} else {
-			foreach ($pref['frontpage'] as $current_key => $current_value) {
-				if ($current_key == 252) {
-					$title = FRTLAN_27;
-				} else if ($current_key == 253) {
-					$title = FRTLAN_28;
-				} else if ($current_key == 254) {
-					$title = FRTLAN_29;
-				} else {
-					$class_list = get_userclass_list();
-					foreach ($class_list as $fp_class) {
-						if ($current_key == $fp_class['userclass_id']) {
-							$title = $fp_class['userclass_name'];
-						}
-					}
-				}
-				$text .= "<tr>
-				<td class='forumheader3'>".$title."</td>
-				<td class='forumheader3'>".$current_value."</td>
-				<td class='forumheader3' style='text-align:center'>
-				<input type='image' title='".LAN_EDIT."' name='edit[".$current_key."]' src='".ADMIN_EDIT_ICON_PATH."' />
-				</td>
-				</tr>";
-			}
-		}
-		$text .= "</table>
-		</form>
-		</div>";
-
-		$ns -> tablerender(FRTLAN_33, $text);
-
-	}
-
-	function select_page() {
-		global $rs, $pref, $ns, $front_page;
-
-		if ($_POST['type'] == 'all_users') {
-			$title = FRTLAN_26;
-		} else {
-			if ($_POST['class'] == 252) {
-				$title = FRTLAN_27;
-			} else if ($_POST['class'] == 253) {
-				$title = FRTLAN_28;
-			} else if ($_POST['class'] == 254) {
-				$title = FRTLAN_29;
-			} else {
-				$class_list = get_userclass_list();
-				foreach ($class_list as $fp_class) {
-					if ($_POST['class'] == $fp_class['userclass_id']) {
-						$title = $fp_class['userclass_name'];
-					}
-				}
-			}
-		}
-
+// List of current settings
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<colgroup>
+		<col style='width:  5%' />
+		<col style='width: 25%' />
+		<col style='width: 30%' />
+		<col style='width: 30%' />
+		<col style='width: 10%' />
+		</colgroup>
+		<tr><td class='forumheader3' colspan='5' style='text-align:center'>".FRTLAN_38."<br />".FRTLAN_39."<br />".FRTLAN_41."</td></tr>
 		<tr>
-		<td colspan='3' class='fcaption'>".FRTLAN_2." ".$title.": </td>
+		<td class='fcaption'>".FRTLAN_40."</td>
+		<td class='fcaption'>".FRTLAN_53."</td>
+		<td class='fcaption'>".FRTLAN_49."</td>
+		<td class='fcaption'>".FRTLAN_35."</td>
+		<td class='fcaption' style='text-align:center'>".LAN_EDIT."</td>
 		</tr>";
 
-		foreach ($front_page as $front_key => $front_value) {
-			$type_selected = FALSE;
-			$current_setting = (isset($pref['frontpage']['all'])) ? $pref['frontpage']['all'] : $pref['frontpage'][$_POST['class']];
-			if (is_array($front_value['page'])) {
-				foreach ($front_value['page'] as $multipage) {
-					if ($current_setting == $multipage['page']) {
-						$type_selected = TRUE;
-						$not_other = TRUE;
-					}
-				}
-			} else {
-				if ($current_setting == $front_value['page']) {
-					$type_selected = TRUE;
-					$not_other = TRUE;
-				}
-			}
+	  foreach ($fp_settings as $order => $current_value) 
+	  {
+		$title = r_userclass_name($current_value['class']);
+		$text .= "<tr><td class='forumheader3'>".$order."</td>
+				<td class='forumheader3'>".$title."</td>
+				<td class='forumheader3'>".$this->lookup_path($current_value['page'])."</td>
+				<td class='forumheader3'>".$this->lookup_path($current_value['force'])."</td>
+				<td class='forumheader3' style='text-align:center'>
+				<input type='image' src='".e_IMAGE."admin_images/up.png' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
+				<input type='image' src='".e_IMAGE."admin_images/down.png' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
+				<input type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
+				<input type='image' title='".LAN_DELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
+				</td>
+				</tr>";
+	  }
+	  if ($show_button)
+	  {
+	    $text .= "<tr><td colspan='5' style='text-align: center' class='forumheader'>
+		".$rs -> form_button('submit', 'fp_add_new', FRTLAN_42)."</td></tr>";
+	  }
+	  $text .= "</table></form></div>";
 
-			$text .= "<tr><td class='forumheader3'>";
-			$text .= $rs -> form_radio('frontpage', $front_key, $type_selected);
-			$text .= "</td>";
+	  $ns -> tablerender(FRTLAN_33, $text);
+	}
+ 
+ 
 
-			if (is_array($front_value['page'])) {
-				$text .= "<td style='width: 50%' class='forumheader3'>".$front_value['title']."</td>";
-				$text .= "<td style='width: 50%' class='forumheader3'>";
-				$text .= $rs -> form_select_open('multipage['.$front_key.']');
-				$type = isset($pref['frontpage']['all']) ? 'all' : $_POST['class'];
-				foreach ($front_value['page'] as $multipage_key => $multipage_value) {
-					$sub_selected = ($pref['frontpage'][$type] == $multipage_value['page']) ? TRUE : FALSE;
-					$text .= $rs -> form_option($multipage_value['title'], $sub_selected, $multipage_key);
-				}
-				$text .= $rs -> form_select_close();
-				$text .= "</td>";
-			} else {
-				$text .= "<td style='width: 100%' colspan='2' class='forumheader3'>".$front_value['title']."</td>";
-			}
-			$text .= "</tr>";
+
+	function edit_rule($rule_info)
+	{	// Display form to add/edit rules
+	  global $front_page, $rs, $ns;
+	  // $rule_info contains existing data as an array, or a set of defaults otherwise ('order', 'class', 'page', 'force')
+	  
+	  $is_other_home = TRUE;
+	  $is_other_force = TRUE;
+	  $force_checked = $rule_info['force'] ? " checked='checked'" : '';
+	  $text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<colgroup>
+		<col style='width: 4%' />
+		<col style='width: 24%' />
+		<col style='width: 24%' />
+		<col style='width: 4%' />
+		<col style='width: 4%' />
+		<col style='width: 24%' />
+		<col style='width: 24%' />
+		</colgroup>
+
+		<tr><td colspan='7' class='fcaption' style='text-align:center;'>".($rule_info['order'] ? FRTLAN_46 : FRTLAN_42)."</td></tr>
+		<tr>
+		<td class='forumheader3' style='text-align:center' colspan='7'>
+		".FRTLAN_43.r_userclass('class', $rule_info['class'], 'off', 'guest,member,admin,main,classes')."</td>
+		</tr><tr><td  colspan='3' class='fcaption' style='text-align:center;'>".FRTLAN_49."</td><td>&nbsp;</td>
+		<td  colspan='3' class='fcaption' style='text-align:center;'>".FRTLAN_35."<br />".FRTLAN_50."</td></tr>";
+
+		foreach ($front_page as $front_key => $front_value) 
+		{
+		  $type_selected = FALSE;
+		  $text .= "<tr>".$this->show_front_val('frontpage',$front_key,$front_value,$is_other_home,$rule_info['page']);
+  		  $text .= "<td>&nbsp;</td>";		// Spacer
+		  $text .= $this->show_front_val('fp_force_page',$front_key,$front_value,$is_other_force,$rule_info['force'])."</tr>";
 		}
+		// Now add in the 'other' URL box
+		$text .= "<tr>".$this->add_other('frontpage', $is_other_home, $rule_info['page'])."<td>&nbsp;</td>".
+					$this->add_other('fp_force_page', $is_other_force, $rule_info['force'])."</tr>";
 
-		$text .= "<tr>
-		<td class='forumheader3'>".$rs -> form_radio('frontpage', 'other', (!$not_other ? TRUE : FALSE))."</td>
-		<td style='width: 50%' class='forumheader3'>".FRTLAN_15."</td>
-		<td style='width: 50%' class='forumheader3'>
-		".$rs -> form_text('other_page', 50, (!$not_other ? $current_setting : ''))."
-		</td>
-		</tr>";
-
+		// 'Save' and 'Cancel' buttons
 		$text .= "<tr style='vertical-align:top'>
-		<td colspan='3' style='text-align: center' class='forumheader'>";
-		$text .= $rs -> form_hidden('type', $_POST['type']);
-		$text .= $rs -> form_hidden('class', $_POST['class']);
-		$text .= $rs -> form_button('submit', 'updatesettings', FRTLAN_12);
+		<td colspan='7' style='text-align: center' class='forumheader'>";
+		$text .= $rs -> form_hidden('fp_order', $rule_info['order']);
+		$text .= $rs -> form_button('submit', 'fp_save_new', FRTLAN_12)."&nbsp;&nbsp;&nbsp;&nbsp;".$rs -> form_button('submit', 'fp_cancel', LAN_CANCEL);
 		$text .= "</td>
 		</tr>
+
 		</table>
 		</form>
-		</div>";
+		</div><br /><br />";
 
 		$ns -> tablerender(FRTLAN_13, $text);
+	}
+
+
+	// Given a path string, returns the 'type' (title) for it
+	function lookup_path($path)
+	{
+	  global $front_page;
+	  foreach ($front_page as $front_key => $front_value) 
+	  {
+	    if (is_array($front_value['page'])) 
+	    {  // Its a URL with multiple options
+		  foreach ($front_value['page'] as $multipage) 
+		  {
+		    if ($path == $multipage['page']) 
+		    {
+//			  return $front_value['title'].":".$path;
+			  return $front_value['title'].":".$multipage['title'];
+		    }
+		  }
+	    } 
+	    else 
+	    {
+		  if ($path == $front_value['page']) 
+		  {
+			return $front_value['title'];
+		  }
+	    }
+	  }
+	  if (strlen($path)) return FRTLAN_51.":".$path;		// 'Other'
+	  else return FRTLAN_52;			// 'None'
+	}
+	
+	
+	
+	function show_front_val($ob_name, $front_key, $front_value, &$is_other, $current_setting)
+	{
+	  global $rs;
+
+	  $type_selected = FALSE;
+	  $text = '';
+
+	  if (is_array($front_value['page'])) 
+	  {  // Its a URL with multiple options
+		foreach ($front_value['page'] as $multipage) 
+		{
+		  if ($current_setting == $multipage['page']) 
+		  {
+			$type_selected = TRUE;
+			$is_other = FALSE;
+		  }
+		}
+	  } 
+	  else 
+	  {
+		if ($current_setting == $front_value['page']) 
+		{
+		  $type_selected = TRUE;
+		  $is_other = FALSE;
+		}
+	  }
+
+	  $text .= "<td class='forumheader3'>";
+	  $text .= $rs -> form_radio($ob_name, $front_key, $type_selected);
+	  $text .= "</td>";
+
+		  if (is_array($front_value['page'])) 
+		  {  // Multiple options for same page name
+			$text .= "<td class='forumheader3'>".$front_value['title']."</td>";
+			$text .= "<td class='forumheader3'>";
+			$text .= $rs -> form_select_open($ob_name.'_multipage['.$front_key.']');
+			foreach ($front_value['page'] as $multipage_key => $multipage_value) 
+			{
+			  $sub_selected = ($current_setting == $multipage_value['page']) ? TRUE : FALSE;
+			  $text .= $rs -> form_option($multipage_value['title'], $sub_selected, $multipage_key);
+			}
+			$text .= $rs -> form_select_close();
+			$text .= "</td>";
+		  } 
+		  else 
+		  {  // Single option for URL
+			$text .= "<td colspan='2' class='forumheader3'>".$front_value['title']."</td>";
+		  }
+	  return $text;
+	}
+
+
+	function add_other($ob_name, $cur_val, $cur_page)
+	{
+	  global $rs;
+	  return  "<td class='forumheader3'>".$rs -> form_radio($ob_name, 'other', $cur_val)."</td>
+		<td class='forumheader3'>".FRTLAN_15."</td>
+		<td class='forumheader3'>
+		".$rs -> form_text($ob_name.'_other', 50, ($cur_val ? $cur_page : ''),100)."
+		</td>";
 	}
 }
 
