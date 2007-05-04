@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-04 21:42:48 $
+|     $Revision: 1.6 $
+|     $Date: 2007-05-04 20:51:02 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -184,7 +184,6 @@ class themeHandler{
 				if($fileType == "zip") {
 					require_once(e_HANDLER."pclzip.lib.php");
 					$archive = new PclZip(e_THEME.$archiveName);
-					$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_THEME));
 					$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_THEME, PCLZIP_OPT_SET_CHMOD, 0666));
 				} else {
 					require_once(e_HANDLER."pcltar.lib.php");
