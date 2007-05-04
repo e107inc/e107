@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2007-01-29 22:11:09 $
+|     $Revision: 1.69 $
+|     $Date: 2007-05-04 19:32:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -739,8 +739,8 @@ class comment {
 
 				//	downloads
 				}elseif($row['comment_type'] == "2"){
-					$mp = MPREFIX;
-					$qryd = "SELECT download_name, {$mp}download_category.download_category_class, {$mp}download_category.download_category_id, {$mp}download_category.download_category_name FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_id={$row['comment_item_id']} AND {$mp}download_category.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
+//					$mp = MPREFIX;
+					$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id WHERE d.download_id={$row['comment_item_id']} AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
 					if($sql2->db_Select_gen($qryd)){
 						$row2 = $sql2->db_Fetch();
 
