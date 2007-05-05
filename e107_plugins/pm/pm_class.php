@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-26 20:29:19 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-05 20:06:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -226,9 +226,14 @@ class private_message
 	function block_add($from, $to = USERID)
 	{
 		global $sql, $tp;
-		if($sql->db_Select("user", "user_name", "user_id = '".intval($from)."'"))
+		if($sql->db_Select("user", "user_name, user_perms", "user_id = '".intval($from)."'"))
 		{
-			$uinfo = $sql->db_Fetch();
+		  $uinfo = $sql->db_Fetch();
+		  if (($uinfo['user_perms'] == '0') || ($uinfo['user_perms'] == '0.'))
+		  {  // Don't allow block of main admin
+		    return LAN_PM_64;
+		  }
+		  
 			if(!$sql->db_Count("private_msg_block", "(*)", "WHERE pm_block_from = '".intval($from)."' AND pm_block_to = '".$tp -> toDB($to)."'"))
 			{
 				if($sql->db_Insert("private_msg_block", "0, '".intval($from)."', '".$tp -> toDB($to)."', '".time()."', '0'"))
