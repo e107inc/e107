@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2006-11-12 02:24:21 $
-|     $Author: e107coders $
+|     $Revision: 1.67 $
+|     $Date: 2007-05-06 21:13:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -663,7 +663,7 @@ function show_sublink_generator() {
 	</table>
 	</form>
 	</div>";
-	$ns->tablerender("Sublinks Generator", $text);
+	$ns->tablerender(LINKLAN_4, $text);
 }
 
 
