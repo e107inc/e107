@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-25 03:27:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-06 20:52:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -283,7 +283,7 @@ if(function_exists('gd_info'))
 }
 else
 {
-	$gd_version = "<span style='color:red'> Not Installed</span>";
+	$gd_version = "<span style='color:red'> ".IMALAN_55."</span>";
 }
 
 $IM_NOTE = "";
