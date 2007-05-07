@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-04 21:42:48 $
+|     $Revision: 1.6 $
+|     $Date: 2007-05-07 13:38:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -124,7 +124,8 @@ if ($action == 'uninstall')
 	$id = intval($id);
 	$plug = $plugin->getinfo($id);
 	//Uninstall Plugin
-	if ($plug['plugin_installflag'] == TRUE ) {
+	if ($plug['plugin_installflag'] == TRUE ) 
+	{
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 		$func = $eplug_folder.'_uninstall';
@@ -149,7 +150,7 @@ if ($action == 'uninstall')
 		}
 		else
 		{
-			$text .= "Tables not deleted during uninstall process by request<br />";
+			$text .= EPL_ADLAN_49."<br />";
 		}
 
 		if (is_array($eplug_prefs)) {
@@ -229,6 +230,12 @@ if ($action == 'uninstall')
 		$plugin -> manage_notify('remove', $eplug_folder);
 
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
+		if (isset($pref['plug_installed'][$plug['plugin_path']]))
+		{
+		  unset($pref['plug_installed'][$plug['plugin_path']]);
+		  save_prefs();
+		}
+
 
 		if($_POST['delete_files'])
 		{
@@ -371,6 +378,8 @@ if ($action == 'upgrade') {
 
 	$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
 	$sql->db_Update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$id' ");
+	$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
+	save_prefs();			
 	$ns->tablerender(EPL_ADLAN_34, $text);
 
 	$plugin -> save_addon_prefs();
