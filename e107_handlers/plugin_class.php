@@ -11,9 +11,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2007-02-14 21:17:34 $
+|     $Revision: 1.59 $
+|     $Date: 2007-05-07 13:37:55 $
 |     $Author: e107steved $
+|
 +----------------------------------------------------------------------------+
 */
 
@@ -53,16 +54,18 @@ class e107plugin
 		'upgrade_remove_prefs',
 		'upgrade_add_user_prefs',
 		'upgrade_remove_user_prefs',
-		'upgrade_add_array_pref',		// missing
-		'upgrade_remove_array_pref'		// missing
+		'upgrade_add_array_pref',
+		'upgrade_remove_array_pref'
 	);
 	
 	/**
-	 * Returns an array containing details of all plugins in the plugin table - should noramlly use e107plugin::update_plugins_table() first to make sure the table is up to date.
+	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to 
+	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
 	 * @return array plugin details
 	 */
 	function getall($flag)
 	{
+	  
 		global $sql;
 		if ($sql->db_Select("plugin","*","plugin_installflag = '".intval($flag)."' ORDER BY plugin_path ASC"))
 		{
@@ -77,12 +80,13 @@ class e107plugin
 	 */
 	function update_plugins_table() 
 	{
-		global $sql, $sql2, $mySQLprefix, $menu_pref, $tp;
+		global $sql, $sql2, $mySQLprefix, $menu_pref, $tp, $pref;
 
 		require_once(e_HANDLER.'file_class.php');
 
 		$fl = new e_file;
 		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.php$", "standard", 1);
+		$sp = FALSE;
 
 		// Get rid of any variables previously defined which may occur in plugin.php
 		foreach($pluginList as $p)
@@ -98,6 +102,7 @@ class e107plugin
 
 		  // We have to include here to set the variables, otherwise we only get uninstalled plugins
 		  // Would be nice to eval() the file contents to pick up errors better, but too many path issues
+		  $plug['plug_action'] = 'scan';			// Make sure plugin.php knows what we're up to
 		  include("{$p['path']}{$p['fname']}");
 		  $plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 
@@ -121,6 +126,19 @@ class e107plugin
 			  // If plugin not installed, and version number of files changed, update version as well
 			  if (($ep_row['plugin_installflag'] == 0) && ($ep_row['plugin_version'] != $eplug_version)) $ep_update = ", plugin_version = '{$eplug_version}' ";
 			  $sql->db_Update("plugin", "plugin_addons = '{$eplug_addons}'{$ep_update} WHERE plugin_path = '$plugin_path'");
+			  
+			  if (($ep_row['plugin_installflag'] != 0) && (!isset($pref['plug_installed'][$plugin_path]) || ($pref['plug_installed'][$plugin_path] != $ep_row['plugin_version'])))
+			  {
+			    $pref['plug_installed'][$plugin_path] = $ep_row['plugin_version'];
+//				echo "Add: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
+				$sp = TRUE;
+			  }
+			  elseif (($ep_row['plugin_installflag'] == 0) && isset($pref['plug_installed'][$plugin_path]))
+			  {
+			    unset($pref['plug_installed'][$plugin_path]);
+//				echo "Remove: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
+				$sp = TRUE;
+			  }
 			  unset($ep_row, $ep_update);
 			}
 
@@ -144,7 +162,10 @@ class e107plugin
 			$sql2->db_Delete('plugin', "plugin_path = '{$row['plugin_path']}'");
 		  }
 		}
+	  if ($sp)  save_prefs();
 	}
+
+
 
 	/**
 	 * Returns deatils of a plugin from the plugin table from it's ID
@@ -409,11 +430,13 @@ class e107plugin
 	 *
 	 * @param int $id
 	 */
-	function install_plugin($id) {
+	function install_plugin($id) 
+	{
 		global $sql, $ns, $sysprefs,$mySQLprefix, $tp;
 
 		// install plugin ...
 		$plug = $this->getinfo($id);
+		$plug['plug_action'] = 'install';
 
 		if ($plug['plugin_installflag'] == FALSE) {
 			include_once(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
@@ -479,6 +502,7 @@ class e107plugin
                 $plug_perm['everyone'] = e_UC_PUBLIC;
 				$plug_perm['guest'] = e_UC_GUEST;
 				$plug_perm['member'] = e_UC_MEMBER;
+				$plug_perm['mainadmin'] = e_UC_MAINADMIN;
 				$plug_perm['admin'] = e_UC_ADMIN;
 				$plug_perm['nobody'] = e_UC_NOBODY;
 				$eplug_link_perms = strtolower($eplug_link_perms);
@@ -497,7 +521,10 @@ class e107plugin
 			$eplug_addons = $this->getAddons($eplug_folder);
 
 			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = '".intval($id)."'");
-            if($rssmess){ $text .= $rssmess; }
+			$pref['plug_installed'][$plugin_path] = $plug['plugin_version'];
+			save_prefs();
+			
+            if($rssmess) { $text .= $rssmess; }
 			$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 		} else {
 			$text = EPL_ADLAN_21;
@@ -567,17 +594,18 @@ class e107plugin
 				}
 				else
 				{
-                    unset($pref['bbcode_list'][$path]);
+                  if (isset($pref['bbcode_list'][$path])) unset($pref['bbcode_list'][$path]);
 				}
 
                 // Build shortcode list
-				if(count($sc_array) > 0){
-					ksort($sc_array);
-					$pref['shortcode_list'][$path] = $sc_array;
+				if(count($sc_array) > 0)
+				{
+				  ksort($sc_array);
+				  $pref['shortcode_list'][$path] = $sc_array;
                 }
 				else
 				{
-                    unset($pref['shortcode_list'][$path]);
+                  if(isset($pref['shortcode_list'][$path])) unset($pref['shortcode_list'][$path]);
 				}
 
 			}
