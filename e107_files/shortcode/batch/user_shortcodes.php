@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-12-31 15:01:21 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2007-05-11 19:57:39 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -278,8 +278,11 @@ return $user['user_forums'] ? "<a href='".e_HTTP."userposts.php?0.forums.".$user
 SC_END
 
 SC_BEGIN USER_SENDPM
-global $tp, $user;
-return $tp->parseTemplate("{SENDPM={$user['user_id']}}");
+global $pref, $tp, $user;
+if(isset($pref['plug_installed']['pm']) && ($user['user_id'] > 0))
+{
+  return $tp->parseTemplate("{SENDPM={$user['user_id']}}");
+}
 SC_END
 
 SC_BEGIN USER_RATING
