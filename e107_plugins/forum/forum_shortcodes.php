@@ -30,8 +30,9 @@ return $ret;
 SC_END
 	
 SC_BEGIN PRIVMESSAGE
-global $post_info, $tp;
-if($post_info['user_id'] > 0){
+global $pref, $post_info, $tp;
+if(isset($pref['plug_installed']['pm']) && ($post_info['user_id'] > 0))
+{
 	return $tp->parseTemplate("{SENDPM={$post_info['user_id']}}");
 }
 SC_END
