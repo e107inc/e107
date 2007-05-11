@@ -1,4 +1,4 @@
-/* $Id: menu.sc,v 1.27 2006-10-14 13:13:45 lisa_ Exp $ */
+/* $Id: menu.sc,v 1.28 2007-05-11 19:58:08 e107steved Exp $ */
 global $sql;
 global $ns;
 global $eMenuList;
@@ -103,7 +103,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 		}
 		$sql->db_Mark_Time("(After ".$mname.")");
 		if ($error_handler->debug == true) {
-			echo "\n<!-- Menu Start: ".$mname." -->\n";			
+			echo "\n<!-- Menu End: ".$mname." -->\n";			
 		}
 	}
 }
