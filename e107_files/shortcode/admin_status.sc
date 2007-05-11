@@ -1,4 +1,5 @@
-if (ADMIN) {
+if (getperms('0') || getperms('4')) 
+{
 	if (!function_exists('admin_status')) {
 		function admin_status() {
 			global $sql, $ns, $pref;
