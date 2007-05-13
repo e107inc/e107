@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/archive.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-06-12 09:07:10 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2007-05-13 13:58:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -61,7 +61,7 @@ if (strstr(e_QUERY, "year")) {
 // --------------------------------
 // look for the first and last year
 // --------------------------------
-$sql->db_Select_gen("SELECT news_id, news_datestamp from ".MPREFIX."news ORDER BY news_datestamp LIMIT 0,1");
+$sql->db_Select_gen("SELECT news_id, news_datestamp from #news ORDER BY news_datestamp LIMIT 0,1");
 $first_post = $sql->db_Fetch();
 $start_year = date("Y", $first_post['news_datestamp']);
 $end_year = $cur_year;
