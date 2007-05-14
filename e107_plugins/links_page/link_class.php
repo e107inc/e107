@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.2 $
-|    $Date: 2007-01-15 10:42:14 $
-|    $Author: lisa_ $
+|    $Revision: 1.3 $
+|    $Date: 2007-05-14 10:26:40 $
+|    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -286,7 +286,7 @@ class linkclass {
             ".$rs -> form_option(LAN_LINKS_8, ($checko == "a" ? "1" : "0"), $baseurl."?".($qry ? $qry."." : "")."ordera", "")."
             ".$rs -> form_option(LAN_LINKS_9, ($checko == "d" ? "1" : "0"), $baseurl."?".($qry ? $qry."." : "")."orderd", "")."
             ".$rs -> form_select_close()."
-            ".$rs -> form_button("button", "submit", LCLAN_ITEM_36, "style='width:25px;' onclick=\"document.location=link_order.options[link_order.selectedIndex].value+link_sort.options[link_sort.selectedIndex].value;\"", "", "")."
+            ".$rs -> form_button("button", "submit", LCLAN_ITEM_36, " onclick=\"document.location=link_order.options[link_order.selectedIndex].value+link_sort.options[link_sort.selectedIndex].value;\"", "", "")."
         ".$rs -> form_close();
 
         return $sotext;
