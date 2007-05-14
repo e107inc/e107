@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.41 $
-|    $Date: 2007-05-14 10:25:17 $
+|    $Revision: 1.42 $
+|    $Date: 2007-05-14 10:26:22 $
 |    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
