@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-03-16 13:47:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2007-05-16 20:24:30 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -183,7 +183,8 @@ class sitelinks
 			$indent = ($style['linkdisplay'] != 3) ? $style['subindent'] : "";
 		}
 
-		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], '', TRUE); // replace {e_xxxx}
+		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
+		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], TRUE, TRUE); // replace {e_xxxx}
 
 		if(strpos($linkInfo['link_url'],"{") !== FALSE){
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
@@ -290,9 +291,13 @@ function hilite($link,$enabled=''){
 
 // --------------- highlighting for 'HOME'. ----------------
 	global $pref;
- 	list($fp,$fp_q) = explode("?",$pref['frontpage']['all']."?");
-	if(strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $tmp[1] && $link == e_HTTP."index.php"){
+	if (isset($pref['frontpage']['all']))
+	{
+ 	  list($fp,$fp_q) = explode("?",$pref['frontpage']['all']."?");
+	  if (strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $tmp[1] && $link == e_HTTP."index.php")
+	  {
 	  	return TRUE;
+	  }
 	}
 
 // --------------- highlighting for plugins. ----------------

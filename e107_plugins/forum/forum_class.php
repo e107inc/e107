@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-16 20:24:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -230,6 +230,7 @@ class e107forum
 
 	function forum_newflag_list()
 	{
+	  if (!USER) return FALSE;		// Can't determine new threads for non-logged in users
 		global $sql;
 		$viewed = "";
 		if(USERVIEWED)
@@ -810,7 +811,7 @@ class e107forum
 				return FORLAN_9;
 			}
 		}
-		else
+		if($type == 'make_inactive')
 		{
 			$pruned = $sql->db_Update("forum_t", "thread_active=0 WHERE thread_lastpost < $prunedate AND thread_parent=0 AND thread_forum_id IN ({$forumList})");
 			return FORLAN_8." ".$pruned." ".FORLAN_91;
