@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-04-30 20:16:55 $
+|     $Revision: 1.10 $
+|     $Date: 2007-05-16 20:24:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -276,6 +276,7 @@ class e_parse
 		$pos = 0;
 		$curlen = 0;
 		$tmp_pos = 0;
+		$intag = FALSE;
 		while($curlen < $len && $curlen < strlen($text))
 		{
 			switch($text{$pos})
@@ -699,9 +700,17 @@ class e_parse
 				$search[] = "{e_ADMIN}";
 			}
 			if ($all) {
+			  if (USER)
+			  {  // Can only replace with valid number for logged in users
 				$replace_relative[] = USERID;
 				$replace_absolute[] = USERID;
-				$search[] = "{USERID}";
+			  }
+			  else
+			  {
+				$replace_relative[] = '';
+				$replace_absolute[] = '';
+			  }
+			  $search[] = "{USERID}";
 			}
 			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
