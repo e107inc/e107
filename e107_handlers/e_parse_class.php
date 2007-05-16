@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.188 $
-|     $Date: 2007-04-25 19:35:01 $
+|     $Revision: 1.189 $
+|     $Date: 2007-05-16 20:24:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -192,6 +192,7 @@ class e_parse
 		*/
 		global $pref;
 
+		$no_encode = FALSE;
 		if(isset($pref['post_html']) && check_class($pref['post_html'])) {
 			$no_encode = true;
 		}
@@ -311,6 +312,7 @@ class e_parse
 		$pos = 0;
 		$curlen = 0;
 		$tmp_pos = 0;
+		$intag = FALSE;
 		while($curlen < $len && $curlen < strlen($text))
 		{
 			switch($text{$pos})
@@ -324,6 +326,7 @@ class e_parse
 				$tmp_pos = $pos-1;
 				$pos++;
 				break;
+				
 				case ">" :
 				if($text{$pos-1} == "/")
 				{
@@ -337,6 +340,7 @@ class e_parse
 				$intag = FALSE;
 				$pos++;
 				break;
+				
 				case "&" :
 				if($text{$pos+1} == "#")
 				{
@@ -737,9 +741,17 @@ class e_parse
 				$search[] = "{e_ADMIN}";
 			}
 			if ($all) {
+			  if (USER)
+			  {  // Can only replace with valid number for logged in users
 				$replace_relative[] = USERID;
 				$replace_absolute[] = USERID;
-				$search[] = "{USERID}";
+			  }
+			  else
+			  {
+				$replace_relative[] = '';
+				$replace_absolute[] = '';
+			  }
+			  $search[] = "{USERID}";
 			}
 			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);

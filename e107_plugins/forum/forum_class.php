@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2007-03-25 02:24:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.67 $
+|     $Date: 2007-05-16 20:24:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -230,6 +230,7 @@ class e107forum
 
 	function forum_newflag_list()
 	{
+	  if (!USER) return FALSE;		// Can't determine new threads for non-logged in users
 		global $sql;
 		$viewed = "";
 		if(USERVIEWED)
