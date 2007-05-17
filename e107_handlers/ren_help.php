@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-17 20:14:57 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -163,7 +163,7 @@ function Color_Select($formid='col_selector') {
 			}
 		}
 	}
-	document.write('<table cellspacing=\'1\' cellpadding=\'0\' style=\'cursor: hand; cursor: pointer; background-color: #000; width: 100%; border: 0px\'><tr>');
+	document.write('<table cellspacing=\'1\' cellpadding=\'0\' style=\'cursor: pointer; background-color: #000; width: 100%; border: 0px\'><tr>');
 	document.write(td_render(coloursgrey[0]) + tdblk + rows1 + rows2);
 	document.write('<\/tr><\/table>');
 	//]]>
@@ -282,25 +282,25 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
 				<option value=''>".LANHELP_43."</option>";
 		foreach($filelist as $file)
 		{
-					if(isset($file['class']))
-					{
-						$ucinfo = "^".$file['class'];
-						$ucname = r_userclass_name($file['class']);
-					}
-					else
-					{
-						$ucinfo = "";
-						$ucname = r_userclass_name(0);
-					}
+			if(isset($file['class']))
+			{
+				$ucinfo = "^".$file['class'];
+				$ucname = r_userclass_name($file['class']);
+			}
+			else
+			{
+				$ucinfo = "";
+				$ucname = r_userclass_name(0);
+			}
 
-					if($file['id'])
-					{
-						$text .= "<option value=\"[file={e_BASE}request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
-											}
-					else
-					{
-						$text .= "<option value=\"[file={e_BASE}request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
-					}
+			if($file['id'])
+			{
+				$text .= "<option value=\"[file={e_BASE}request.php?".$file['id']."{$ucinfo}]".$file['name']."[/file]\">".$file['name']." - {$ucname}</option>\n";
+			}
+			else
+			{
+				$text .= "<option value=\"[file={e_BASE}request.php?".$file['url']."{$ucinfo}]".$file['name']."[/file]\">".$file['name']." - {$ucname}</option>\n";
+			}
 
 		}
 		$text .="</select>";

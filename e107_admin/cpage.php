@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-23 20:39:52 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2007-05-17 20:14:57 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,7 +36,7 @@ if (e_QUERY)
 	$action     = $tmp[0];
 	$sub_action = $tmp[1];
 	$id         = $tmp[2];
-	$from       = ($tmp[3] ? $tmp[3] : 0);
+	$from       = varset($tmp[3],0);
 }
 
 if(isset($_POST['submitPage']))
@@ -127,12 +127,12 @@ class page
 			{
 				$text .= "
 				<tr>
-				<td style='width:5%; text-align: center;' class='forumheader3'>$pge[page_id]</td>
-				<td style='width:60%' class='forumheader3'><a href='".($pge[page_theme] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge[page_id]}" )."'>$pge[page_title]</a></td>
-				<td style='width:15%; text-align: center;' class='forumheader3'>".($pge[page_theme] ? "menu" : "page")."</td>
+				<td style='width:5%; text-align: center;' class='forumheader3'>{$pge['page_id']}</td>
+				<td style='width:60%' class='forumheader3'><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$pge['page_title']}</a></td>
+				<td style='width:15%; text-align: center;' class='forumheader3'>".($pge['page_theme'] ? "menu" : "page")."</td>
 				<td style='width:20%; text-align: center;' class='forumheader3'>
-				<a href='".e_SELF."?".($pge[page_theme] ? "createm": "create").".edit.{$pge[page_id]}'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete[{$pge[page_id]}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $pge[page_id] ]')\"/>
+				<a href='".e_SELF."?".($pge['page_theme'] ? "createm": "create").".edit.{$pge['page_id']}'>".ADMIN_EDIT_ICON."</a>
+				<input type='image' title='".LAN_DELETE."' name='delete[{$pge['page_id']}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $pge[page_id] ]')\"/>
 				</td>
 				</tr>";
 			}
@@ -167,7 +167,7 @@ class page
 
 		global $sql, $tp, $ns, $pref, $sub_action, $id;
 
-		if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit'])
+		if ($sub_action == "edit" && !isset($_POST['preview']) && !isset($_POST['submit']))
 		{
 			if ($sql->db_Select("page", "*", "page_id='$id' "))
 			{
@@ -186,6 +186,10 @@ class page
 			{
 				$row = $sql -> db_Fetch();
 				$page_link = $row['link_name'];
+			}
+			else
+			{
+			  $page_link = '';
 			}
 		}
 
@@ -308,8 +312,8 @@ class page
 		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
 
 		if($mode)
-		{
-			$update = $sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode'");
+		{	// Don't think $_POST['page_ip_restrict'] is ever set
+			$update = $sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='$mode'");
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
 
