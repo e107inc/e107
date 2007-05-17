@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.60 $
-|   $Date: 2007-02-07 21:21:20 $
+|   $Revision: 1.61 $
+|   $Date: 2007-05-17 20:14:45 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -360,7 +360,7 @@ if (!function_exists('show_admin_menu')) {
 				}
 				$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 				$replace[1] = $e107_vars[$act]['link'];
-				if ($e107_vars[$act]['include']!='') {
+				if (!empty($e107_vars[$act]['include'])) {
 					$replace[2] = $e107_vars[$act]['include'];
 				} else {
 					$replace[2] = $js ? "onclick=\"showhideit('".$act."');\"" : "onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";

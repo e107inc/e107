@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-12-24 13:35:32 $
-|     $Author: mrpete $
+|     $Revision: 1.62 $
+|     $Date: 2007-05-17 20:14:45 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -282,25 +282,25 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
 				<option value=''>".LANHELP_43."</option>";
 		foreach($filelist as $file)
 		{
-					if(isset($file['class']))
-					{
-						$ucinfo = "^".$file['class'];
-						$ucname = r_userclass_name($file['class']);
-					}
-					else
-					{
-						$ucinfo = "";
-						$ucname = r_userclass_name(0);
-					}
+			if(isset($file['class']))
+			{
+				$ucinfo = "^".$file['class'];
+				$ucname = r_userclass_name($file['class']);
+			}
+			else
+			{
+				$ucinfo = "";
+				$ucname = r_userclass_name(0);
+			}
 
-					if($file['id'])
-					{
-						$text .= "<option value=\"[file={e_BASE}request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
-											}
-					else
-					{
-						$text .= "<option value=\"[file={e_BASE}request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]\">".$file['name']." - $ucname</option>\n";
-					}
+			if($file['id'])
+			{
+				$text .= "<option value=\"[file={e_BASE}request.php?".$file['id']."{$ucinfo}]".$file['name']."[/file]\">".$file['name']." - {$ucname}</option>\n";
+			}
+			else
+			{
+				$text .= "<option value=\"[file={e_BASE}request.php?".$file['url']."{$ucinfo}]".$file['name']."[/file]\">".$file['name']." - {$ucname}</option>\n";
+			}
 
 		}
 		$text .="</select>";
