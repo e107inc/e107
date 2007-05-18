@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-04-24 20:20:10 $
+|     $Revision: 1.6 $
+|     $Date: 2007-05-18 21:14:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -171,10 +171,13 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 	} else if (strlen($full_query) == 0) {
 		$perform_search = false;
 		$SEARCH_MESSAGE = LAN_SEARCH_201;
-	} else if (strlen($full_query) < 3) {
+	} 
+	elseif (strlen($full_query) < ($char_count = ($search_prefs['mysql_sort'] ? 4 : 3))) 
+	{
 		$perform_search = false;
-		$SEARCH_MESSAGE = LAN_417;
-	} else if ($search_prefs['time_restrict']) {
+		$SEARCH_MESSAGE = str_replace('--CHARS--', $char_count, LAN_417);
+	} 
+	elseif ($search_prefs['time_restrict']) {
 		$time = time() - $search_prefs['time_secs'];
 		$query_check = $tp -> toDB($full_query);
 		$ip = getip();

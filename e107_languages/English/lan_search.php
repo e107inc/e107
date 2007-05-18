@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-24 20:20:17 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-18 21:14:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("LAN_198", "No matches found");
 define("LAN_199", "Search For:");
 
 define("LAN_416", "You must be logged in to access this page");
-define("LAN_417", "Search terms must be at least 3 characters.");
+define("LAN_417", "Search terms must be at least --CHARS-- characters.");
 
 define("LAN_418", "Other Pages");
 
