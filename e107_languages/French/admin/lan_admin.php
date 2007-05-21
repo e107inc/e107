@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-02-27 01:57:03 $
+|     $Revision: 1.18 $
+|     $Date: 2007-05-21 10:09:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -152,8 +152,8 @@ define("ADLAN_149", "Alertes Courriel");
 define("ADLAN_150", "Recevoir des alertes par courriel");
 define("ADLAN_151", "Page principale");
 define("ADLAN_152", "Entrer le Code");
-define("ADLAN_153", "Zone d&#39;administration");
-
+define("ADLAN_153", "Zone d'administration");
+define("ADLAN_154", "Erreur lors de la tentative de contact de Sourceforge pour vérifier les nouvelles versions");
 define("ADLAN_CL_1", "Paramètres");
 define("ADLAN_CL_2", "Utilisateurs");
 define("ADLAN_CL_3", "Contenus");
@@ -175,7 +175,7 @@ define("ADLAN_ERR_2", "Il y a des fichiers présents sur votre serveur qui sont 
 define("ADLAN_ERR_3", "Il y a un ou plusieurs fichiers dans vos dossiers d'upload qui ne sont pas d'un type que vous avez permis dans la liste filetypes. Ils peuvent avoir été mis là par un esprit malveillant et devraient en ce cas être enlevés <strong>immédiatement</strong>. Vous ne devriez <strong>pas</strong> ouvrir ces fichiers car ils pourraient exécuter du code dangereux s'ils en contiennent. Ne les ouvrez pas avec votre navigateur (IE, firefox, etc.).<br /><br />Si vous reconnaissez la légitimité de ces fichiers, il est probable que dû à de récents changements apportés à la liste des types de fichiers permis, le type de fichier que vous aviez permis ne soit désormais plus dans cette liste. Vous devez alors le rajouter (voir admin => uploads).<br /><br /> Vous ne devriez pas permettre l'upload de .html, .txt, etc..., car un intrus malveillant pourrait uploader un fichier de ce type contenant du javascript dangereux.  Évidemment, vous ne devriez pas permettre l'upload de fichier .php ou tout autre type de script exécutable.<br /><br />Voici une liste des types de fichiers potentiellement dangereux pour votre site:");
 define("ADLAN_ERR_4", "Des fichiers obsolètes d'extensions ont été trouvés");
 define("ADLAN_ERR_5", "Les fichiers suivants doivent être renommés en");
-define("ADLAN_ERR_6", "Cliquez ensuite ici pour scanner à nouveau vos répertoires d&#039;extensions.");
+define("ADLAN_ERR_6", "Cliquez ensuite ici pour scanner à nouveau vos répertoires d'extensions.");
 define("LAN_EDIT", "Éditer");
 define("LAN_DELETE", "Supprimer");
 define("LAN_CREATE", "Créer");
@@ -233,7 +233,7 @@ define("LAN_PRESET_CONFIRMSAVE", "Sauvegarder par défaut les valeurs courantes 
 define("LAN_CONFIGURE", "Configurer");
 define("LAN_BACK", "Retour");
 define("LAN_CREDITS", "Crédits");
-define("LAN_NEWVERSION","Nouvelle version disponible");
+define("LAN_NEWVERSION", "Nouvelle version disponible");
 
 
 ?>

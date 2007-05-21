@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:35:16 $
+|     $Revision: 1.11 $
+|     $Date: 2007-05-21 10:10:32 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -74,6 +74,7 @@ define("FORLAN_62", "Options du Forum");
 define("FORLAN_63", "Rangs");
 define("FORLAN_64", "Entrer vos rangs ici, si laissé vide des étoiles génériques seront utilisées pour dénoter le rang. Séparer les rangs par des virgules. 10 rangs maximum, le plus petit en premier.");
 define("FORLAN_65", "Titre du Forum");
+define("FORLAN_66", "L'extension Sondage n'est pas installée");
 define("FORLAN_70", "Activer l'upload de fichiers / images");
 define("FORLAN_71", "Autoriser les utilisateurs à uploader un fichier ou une image afin de l'insérer dans leur message sur le forum, <a href='".e_ADMIN."image.php'>cliquer ici</a> pour configurer la taille max des fichiers, types autorisés etc");
 define("FORLAN_72", "Mettre à jour l'ordre");

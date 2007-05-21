@@ -1,11 +1,11 @@
-<?php 
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user_extended.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-12-04 21:32:30 $
+|     $Revision: 1.9 $
+|     $Date: 2007-05-21 10:09:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -39,4 +39,7 @@ define("UE_LAN_LANGUAGE", "Langage");
 define("UE_LAN_LANGUAGE_DESC", "Langage de l'utilisateur");
 define("UE_LAN_COUNTRY", "Pays");
 define("UE_LAN_COUNTRY_DESC", "Pays de l'utilisateur (inclus la table de BdD)");
+define("LAN_UE_FAIL_HOMEPAGE", "Entrée invalide pour les réglages de la page web personnelle");
+
+
 ?>

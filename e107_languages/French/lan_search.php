@@ -4,16 +4,14 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-12-10 08:43:18 $
+|     $Revision: 1.15 $
+|     $Date: 2007-05-21 10:09:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
 define("PAGE_NAME", "Recherche");
   
 define("LAN_20", "Erreur");
-define("LAN_98", "".GLOBAL_LAN_NEWS_4."");
-define("LAN_99", "Commentaires");
 define("LAN_140", "Utilisateurs");
 define("LAN_180", "Chercher");
 define("LAN_192", "Toutes les catégories");
@@ -27,7 +25,7 @@ define("LAN_199", "Rechercher:");
 define("LAN_200", "Catégories:");
 define("LAN_201", "Veuillez redéfinir votre recherche");
 define("LAN_416", "Vous devez être identifier pour accéder à cette page");
-define("LAN_417", "Les mots clés de recherche doivent être d'au moins 3 caractères.");
+define("LAN_417", "Les mots clés de recherche doivent être d'au moins --CHARS-- caractères.");
 define("LAN_418", "Autres Pages");
   
 define("LAN_SEARCH_1", "TOUT Sélectionner");
@@ -107,4 +105,9 @@ define("LAN_SEARCH_74", "Inscrit(e) le");
 define("LAN_SEARCH_75","Type de Recherche ");
 define("LAN_SEARCH_76","Posté sur la page ");
 define("LAN_SEARCH_77","Posté sur la page des profils de ");
+// Following formerly LAN_nnn - renamed to avoid clashes
+define("LAN_SEARCH_98", "".GLOBAL_LAN_NEWS_4."");
+define("LAN_SEARCH_99", "Commentaires");
+//define("LAN_SEARCH_200", "Categories:");						// Redundant LAN?
+define("LAN_SEARCH_201", "Veuillez redéfinir votre requête de recherche");
 ?>

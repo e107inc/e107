@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-27 01:57:03 $
+|     $Revision: 1.6 $
+|     $Date: 2007-05-21 10:09:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -29,7 +29,6 @@ define("EPL_ADLAN_16", "Informations");
 define("EPL_ADLAN_17", "Plus d'infos ...");
 define("EPL_ADLAN_18", "Impossible de créer les tables dans la base de données pour cette extension.");
 define("EPL_ADLAN_19", "Les tables ont été créées avec succès dans la base de données.");
-//define("EPL_ADLAN_20", "Les paramètres ont été créés avec succès."); //réplique de EPL_ADLAN_8
 define("EPL_ADLAN_21", "Cette extension est déjà installé.");
 define("EPL_ADLAN_22", "Installé");
 define("EPL_ADLAN_23", "Non installé");
@@ -45,9 +44,9 @@ define("EPL_ADLAN_32", "et tous les fichiers à l'intérieur pour compléter la 
 define("EPL_ADLAN_33", "L'extension a été installée avec succès.");
 define("EPL_ADLAN_34", "L'extension a été mise à jour avec succès.");
 define("EPL_ADLAN_35", "Les paramètres d'analyse syntaxique ont été correctement ajoutés.");
-define("EPL_ADLAN_36", "L'insertion du code de l'interpréteur à échoué."); //???
+define("EPL_ADLAN_36", "L'insertion du code de l'interpréteur à échoué.");
 define("EPL_ADLAN_37", "Télécharger une extension sur le serveur (le fichier doit être au format.zip ou .tar.gz)");
-define("EPL_ADLAN_38", "Télécharger l&#39;extension sur le serveur");
+define("EPL_ADLAN_38", "Télécharger l'extension sur le serveur");
 define("EPL_ADLAN_39", "Ce fichier ne peut pas être uploadé tant que le dossier ".e_PLUGIN." n'a pas les permissions correctes - Veuillez CHMODER à 777 et réuploadez le fichier.");
 define("EPL_ADLAN_40", "Message Admin");
 define("EPL_ADLAN_41", "Ce fichier ne semble pas être une compression .zip ou .tar valide.");
@@ -58,14 +57,12 @@ define("EPL_ADLAN_45", "Votre menu à bien été téléchargé et dézipé sur l
 define("EPL_ADLAN_46", "PCLZIP erreur d'extraction:");
 define("EPL_ADLAN_47", "PCLTAR erreur d'extraction: ");
 define("EPL_ADLAN_48", "code:");
-define("EPL_WEBSITE",   "Site Web");
+define("EPL_ADLAN_49", "Sur demande, les tables de données n'ont pas été effacées lors du processus de désinstallation ");
+define("EPL_WEBSITE", "Site Web");
 define("EPL_NOINSTALL", "Aucune installation n'est requise, il vous suffit d'activer cette extension depuis la gestion des menus. Pour désinstaller, supprimer le ");
 define("EPL_DIRECTORY", "répertoire.");
 define("EPL_NOINSTALL_1", "Aucune installation n'est requise. Pour le désinstaller, supprimer le ");
-define("EPL_UPGRADE",   "Mettre à jour");
-define("EPL_CANCEL",   "Annuler");
-define("EPL_EMAIL",   "Courriel");
-define("EPL_OPTIONS",   "Mettre à jour");
+define("EPL_UPGRADE", "Mettre à jour");
 define("EPL_ADLAN_50", "Commentaires supprimés avec succès");
 define("EPL_ADLAN_53", "Le répertoire est protégé en écriture");
 define("EPL_ADLAN_54", "Veuillez choisir l'option de désinstallation de l'extension:");
@@ -74,9 +71,10 @@ define("EPL_ADLAN_57", "Effacer les tables de l'extension");
 define("EPL_ADLAN_58", "Si les tables ne sont pas enlevées, il sera possible de réinstaller l'extension en retrouvant les données actuelles. La création de tables lors de la réinstallation échouera, ce qui sera normal. Si plus tard, vous voulez supprimer définitivement les tables vous devrez le faire manuellement.");
 define("EPL_ADLAN_59", "Effacer les fichiers de l'extension");
 define("EPL_ADLAN_60", "e107 va tenter d'effacer tous les fichiers reliés à l'extension.");
-//define("EPL_ADLAN_61", "Confirmer la désinstallation");  //duplication
 define("EPL_ADLAN_62", "Annuler la désinstallation");
 define("EPL_ADLAN_63", "Désinstaller:");
 define("LAN_UPGRADE_SUCCESSFUL", "Mise à jour réussie");
 define("LAN_INSTALL_SUCCESSFUL", "Installation réussie");
+
+
 ?>

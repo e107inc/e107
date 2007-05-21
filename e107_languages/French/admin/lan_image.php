@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_image.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-02-27 01:57:03 $
+|     $Revision: 1.10 $
+|     $Date: 2007-05-21 10:09:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("IMALAN_24", "Photographie");
 define("IMALAN_25", "Cliquer ici pour supprimer toutes les images non utilisées");
 define("IMALAN_26", "image(s) supprimée(s)");
 define("IMALAN_28", "supprimée");
-define("IMALAN_29", "pas d&#39;images");
+define("IMALAN_29", "pas d'images");
 define("IMALAN_30", "Tous (public)");
 define("IMALAN_31", "Visiteurs uniquement");
 define("IMALAN_32", "Utilisateur uniquement");
@@ -48,7 +48,7 @@ define("IMALAN_39", "Hauteur maximale autorisée");
 define("IMALAN_40", "Trop large");
 define("IMALAN_41", "Trop haut");
 define("IMALAN_42", "Non trouvé");
-define("IMALAN_43", "Supprimer l&#39;avatar uploadé");
+define("IMALAN_43", "Supprimer l'avatar uploadé");
 define("IMALAN_44", "Supprimer les références aux images externes");
 define("IMALAN_45", "Non trouvé");
 define("IMALAN_46", "Trop grand");
@@ -57,6 +57,10 @@ define("IMALAN_48", "Nombre d'avatars avec référence externe");
 define("IMALAN_49", "Utilisateurs possédant un avatar");
 define("IMALAN_50", "Total");
 define("IMALAN_51", "Avatar pour ");
+define("IMALAN_52", "Chemin pour ImageMagick semble être incorrect");
+define("IMALAN_53", "Chemin pour ImageMagick semble être correct, mais la conversion de fichiers pourrait être invalide");
+define("IMALAN_54", "Version GD installée :");
+define("IMALAN_55", "Non installé");
 
 
 ?>

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/French.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-12-04 21:38:14 $
+|     $Revision: 1.7 $
+|     $Date: 2007-05-21 10:10:48 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -13,6 +13,9 @@ define("POLL_ADLAN01", "Sondages");
 define("POLL_ADLAN02", "L'extension Sondages vous permet de définir des sondages aussi bien dans un menu que dans un message forum.");
 define("POLL_ADLAN03", "Configurer les Sondages");
 define("POLL_ADLAN04", "L'extension sondage a été installée avec succès. Pour ajouter des sondages, cliquez sur l'icône Sondages dans la section extensions de votre panneau d'administration, et n'oubliez pas de l'activer dans la section Menus de l'administration.");
+define("POLL_ADLAN05", "Sondage principal :");
+define("POLL_ADLAN06", "Sujet du forum :");
+define("POLL_ADLAN07", "Type");
 define("POLLAN_MENU_CAPTION", "Sondage");
 define("POLLAN_1", "Sondages existants");
 define("POLLAN_2", "Créer / éditer les sondages");

@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_installer.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-02-27 01:57:03 $
+|     $Revision: 1.11 $
+|     $Date: 2007-05-21 10:09:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -133,11 +133,19 @@ define("LANINS_092", "Nous contacter");
 define("LANINS_093", "Donne accès aux menus privés");
 define("LANINS_094", "Exemple de Groupe de Forum Privé");
 define("LANINS_095", "Vérification de l&#39;Intégrité");
-define("LANINS_096", "");
-define("LANINS_097", "");
-define("LANINS_098", "");
-define("LANINS_099", "");
-define("LANINS_100", "");
+
+define("LANINS_096", 'Derniers commentaires');
+define("LANINS_097", '[plus ...]');
+define("LANINS_098", 'Articles');
+define("LANINS_099", 'Page principale des Articles ...');
+define("LANINS_100", 'Derniers messages du Forum');
+define("LANINS_101", 'Mettre à jour les réglages du menu');
+define("LANINS_102", 'Date / Heure');
+define("LANINS_103", 'Révisions');
+define("LANINS_104", 'Page principale des révisions ...');
+
+define("LANINS_105", '');
+define("LANINS_106", '');
 /* old definitions... seems to have been removed..
 define("LANINS_087", "Forums: http://e107.org/forum.php");
 define("LANINS_088", "Téléchargements");

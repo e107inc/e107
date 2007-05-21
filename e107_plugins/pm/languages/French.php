@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/French.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-12-04 21:38:02 $
+|     $Revision: 1.11 $
+|     $Date: 2007-05-21 10:10:41 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -72,6 +72,7 @@ define("LAN_PM_60", "Vous n'avez pas la permission de voir ce message");
 define("LAN_PM_61", "Pas de sujet");
 define("LAN_PM_62", "Fichier: [{FILENAME}] excède la limite de taille définie sur ce site. Fichier non attaché");
 define("LAN_PM_63", "groupe:");
+define("LAN_PM_64", "ERREUR : Vous n'avez pas la permission de bloquer les messages des administrateurs du site");
 define("LAN_PM_100", "Nouveau MP de ");
 define("LAN_PM_101", "Vous avez reçu un nouveau message privé de ");
 define("LAN_PM_102", "Message envoyé de: ");

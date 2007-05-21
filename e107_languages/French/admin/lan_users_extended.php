@@ -1,11 +1,11 @@
-<?php 
+<?php
 /*
 +---------------------------------------------------------------+
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_users_extended.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-02-27 01:57:03 $
+|     $Revision: 1.8 $
+|     $Date: 2007-05-21 10:09:56 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -39,8 +39,6 @@ define("EXTLAN_27", "Confirmer la suppression");
 define("EXTLAN_28", "Aucun champ étendu de profil défini");
 define("EXTLAN_29", "Champ étendu de profil sauvegardé.");
 define("EXTLAN_30", "Champ étendu de profil supprimé");
-//define("EXTLAN_31", "Menu Champ étendu de profil");
-//define("EXTLAN_32", "Page d'accueil Champs étendus de profil");
 define("EXTLAN_33", "Annuler Édition");
 define("EXTLAN_34", "Champs étendus de profil");
 define("EXTLAN_35", "Catégories");
@@ -85,26 +83,15 @@ define("EXTLAN_73", "n'a pas été désactivé!");
 define("EXTLAN_74", "est un nom de champ réservé et ne peut être utilisé.");
 define("EXTLAN_75", "Une erreur s'est produite en ajoutant un champ à la base de données.");
 define("EXTLAN_76", "Caractères invalides dans le nom du champ - seuls A-Z, a-z, 0-9, '_' sont permis.");
-//textbox
+define("EXTLAN_77", "Catégorie non supprimée - vous devez d'abord effacer les champs dans la catégorie :");
 define("EXTLAN_HELP_1", "<strong><i>Paramètres:</i></strong><br />size: taille du champ<br />maxlength: longueur max du champ<br /><br />class: classe CSS du champ<br />style: style CSS de la chaîne<br /><br />regex: code REGEX de validation<br />regexfail - texte d'erreur de la validation");
-//radio buttons
 define("EXTLAN_HELP_2", "Entrez le nom des options dans le champ 'Valeur' - un champ par option. Ajouter de nouveaux champs selon vos besoins.");
-//dropdown
 define("EXTLAN_HELP_3", "Entrez le nom des options dans le champ 'Valeur' - un champ par option. Ajouter de nouveaux champs selon vos besoins.");
-//db field
 define("EXTLAN_HELP_4", "<strong><i>Valeurs:</i></strong><br />Il doit TOUJOURS y avoir trois valeurs:<br /><ol><li>une table BdD</li><li>un champ ID (identifiant)</li><li>une valeur d'affichage</li></ol><br />");
-//textarea
 define("EXTLAN_HELP_5", "Défini une zone de texte libre. (Gérez la taille dans le champ '".EXTLAN_15."' selon vos besoins.");
-//integer
 define("EXTLAN_HELP_6", "Permettre aux utilisateurs d'entrer une valeur numérique");
-//date
 define("EXTLAN_HELP_7", "Requiert des utilisateurs d'entrer une date");
-// Language
 define("EXTLAN_HELP_8", "Permet aux utilisateurs de sélectionner un des langages installés");
 
-define("EXTLAN_PRE1", "Résidence");
-define("EXTLAN_PRE2", "AIM");
-define("EXTLAN_PRE3", "ICQ");
-define("EXTLAN_PRE4", "Yahoo!");
-define("EXTLAN_PRE5", "Page d'accueil");
+
 ?>

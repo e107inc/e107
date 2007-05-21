@@ -4,8 +4,8 @@
 | Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
 | Traducteurs: communauté francophone e107
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/French/lan_content_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-12-04 21:34:35 $
+|     $Revision: 1.13 $
+|     $Date: 2007-05-21 10:10:18 $
 |     $Author: daddycool78 $
 +---------------------------------------------------------------+
 */
@@ -16,6 +16,7 @@ define("CONTENT_PLUGIN_LAN_4", "Cette extension est maintenant prête à être u
 define("CONTENT_PLUGIN_LAN_5", "Contenu");
 define("CONTENT_PLUGIN_LAN_6", "La structure des tables de l'extension Gestion de contenus a été mise à jour");
 define("CONTENT_LATEST_LAN_1", "Contenu proposé:");
+define("CONTENT_STATUS_LAN_1", "Items de contenu:");
 define("CONTENT_ADMIN_CAT_LAN_0", "Créer une catégorie de contenu");
 define("CONTENT_ADMIN_CAT_LAN_1", "Éditer une catégorie de contenu");
 define("CONTENT_ADMIN_CAT_LAN_2", "Titre");
@@ -279,7 +280,8 @@ define("CONTENT_ADMIN_JS_LAN_7", "Êtes vous sûr de vouloir supprimer l'icône 
 define("CONTENT_ADMIN_JS_LAN_8", "Icône");
 define("CONTENT_ADMIN_JS_LAN_9", "NOTE : Seules les catégories vides peuvent être effacées. La catégorie est vide si elle ne contient pas de sous-catégories et ne contient pas de contenu!");
 define("CONTENT_ADMIN_JS_LAN_10", "Êtes vous sûr de vouloir supprimer ce contenu proposé avant de l'avoir envoyé?");
-define("CONTENT_ADMIN_SUBMIT_LAN_0", "Aucune catégorie ne permet la proposition de contenu aux usagers");
+define("CONTENT_ADMIN_SUBMIT_LAN_0", "you do not have enough permission or user submission is not enabled");
+define("CONTENT_ADMIN_SUBMIT_LAN_0", "Vous ne disposez pas des permissions requises ou la proposition de contenu n&#39;est pas activé");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "Choisir un type de contenu à proposer");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Merci, votre article contenu a été proposé.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Merci, votre article contenu a été proposé et sera passé en revue par un administrateur du site en temps utile.");
