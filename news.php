@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-24 18:47:43 $
-|     $Author: lisa_ $
+|     $Revision: 1.6 $
+|     $Date: 2007-05-21 19:18:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -189,7 +189,7 @@ if (empty($order)){
 }
 $order = $tp -> toDB($order, true);
 
-$interval = 10;
+$interval = $pref['newsposts'];
 if ($action == "list"){
 	$sub_action = intval($sub_action);
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
