@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2007-05-25 21:47:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,17 +36,20 @@ class e_emotefilter {
 
 		foreach($this->emotes as $key => $value)
 		{
+		  $value = trim($value);
+
+		  if ($value)
+		  {	// Only 'activate' emote if there's a substitution string set
 			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
+			// Next two probably to sort out legacy issues - may not be required any more
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 			$key = str_replace("!", "_", $key);
 
-			$value = trim($value);
+			  $filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
+			  $fileloc = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
 
-			$filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
-			$fileloc = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
-
-			if(file_exists($filename))
-			{
+			  if(file_exists($filename))
+			  {
 				if(strstr($value, " "))
 				{
 					$tmp = explode(" ", $value);
@@ -69,7 +72,12 @@ class e_emotefilter {
 						$this->replace[] = "\n <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
 				}
-			}
+			  }
+		  }
+		  else
+		  {
+			unset($this->emotes[$key]);
+		  }
 		}
 	}
 	 
