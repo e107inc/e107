@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-08-27 02:24:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.18 $
+|     $Date: 2007-05-27 19:25:00 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -30,15 +30,19 @@ else
 	include_once(e_PLUGIN."forum/languages/English/lan_newforumposts_menu.php");
 }
 
+$max_age = varset($menu_pref['newforumposts_maxage'],0);
+$max_age = $max_age == 0 ? '' : "(t.thread_datestamp > '".intval(time()-$max_age*86400)."') AND ";
 $query2 = "
-SELECT tp.thread_name AS parent_name, t.thread_datestamp , t.thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t
+SELECT tp.thread_name AS parent_name, 
+t.thread_datestamp , t.thread_thread, t.thread_name, t.thread_id, t.thread_user, 
+f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
 LEFT JOIN #user AS u ON t.thread_user = u.user_id
 LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
-LEFT JOIN #forum AS f ON (f.forum_id = t.thread_forum_id
-AND f.forum_class IN (".USERCLASS_LIST."))
+LEFT JOIN #forum AS f ON (f.forum_id = t.thread_forum_id AND f.forum_class IN (".USERCLASS_LIST."))
 LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-WHERE fp.forum_class IN (".USERCLASS_LIST.")
+WHERE {$max_age} fp.forum_class IN (".USERCLASS_LIST.")
 ORDER BY t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
+
 
 $results = $sql->db_Select_gen($query2);
 
