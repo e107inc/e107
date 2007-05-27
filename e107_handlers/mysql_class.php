@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2007-04-24 19:40:12 $
+|     $Revision: 1.70 $
+|     $Date: 2007-05-27 12:18:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.69 $
+* @version $Revision: 1.70 $
 * @author $Author: e107steved $
 */
 class db {
@@ -476,6 +476,7 @@ class db {
 	* @param unknown $arg
 	* @desc Enter description here...
 	* @access private
+	* Deprecated - replaced by db_gen_query
 	*/
 	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '') 
 	{
@@ -515,6 +516,60 @@ class db {
 		}
 		return " ".MPREFIX.$table.substr($matches[0],-1);
 	}
+
+
+
+
+	/**
+	* @return unknown
+	* @param unknown $arg
+	* @desc Used to make 'general' queries.
+	* @access public
+	*/
+	function db_gen_query($query, $debug = FALSE, $log_type = '', $log_remark = '') 
+	{
+		/*
+		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM `#table`" (note backticks round table name and '#')
+		The '#' will be replaced with the database prefix, including the appropriate language prefix on a multi-language site
+		This supercedes db_Select_gen(), which had problems whereby '#' in data sometimes got replaced by a table prefix.
+		Returns result compatible with mysql_query - may be TRUE for some results, resource ID for others
+		*/
+
+	  $this->tabset = FALSE;
+	  if (strpos($query,'#') !== FALSE) 
+	  {
+		$query = preg_replace_callback("/\s`#([\w]*?)`/", array($this, 'mlq_check'), $query);
+	  }
+	  if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_gen_query', $debug, $log_type, $log_remark)) === TRUE) 
+	  {	// Successful query which doesn't return a row count
+		$this->dbError('db_gen_query');
+		return TRUE;
+	  }
+	  elseif ($this->mySQLresult === FALSE) 
+	  {	// Failed query
+		$this->dbError('dbQuery ('.$query.')');
+		return FALSE;
+	  }
+	  else
+	  {	// Successful query which does return a row count - get the count and return it
+		$this->dbError('db_gen_query');
+		return $this->db_Rows();
+	  }
+	}
+
+	function mlq_check($matches) 
+	{
+	  $table = $this->db_IsLang($matches[1]);	// Add any language prefix to table name
+	  if($this->tabset == false) 
+	  {
+		$this->mySQLcurTable = $table;
+		$this->tabset = true;
+	  }
+//		return " ".MPREFIX.$table.substr($matches[0],-1);
+	  return " `".MPREFIX.$table."`";
+	}
+
+
 
 	/**
 	* @return unknown
