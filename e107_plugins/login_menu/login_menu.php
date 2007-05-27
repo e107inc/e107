@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2006-12-26 14:49:20 $
-|     $Author: mrpete $
+|     $Revision: 1.53 $
+|     $Date: 2007-05-27 18:57:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,8 +72,8 @@ if (USER == TRUE || ADMIN == TRUE)
 
     $text = $tp->parseTemplate($LOGIN_MENU_LOGGED, true, $login_menu_shortcodes);
 
-	if (!$sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
-	{
+	if ($sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
+	{	// User now logged in - delete 'guest' record (tough if several users on same IP)
 		$sql->db_Delete('online', "`online_ip` = '{$ip}' AND `online_user_id` = '0' ");
 	}
 
