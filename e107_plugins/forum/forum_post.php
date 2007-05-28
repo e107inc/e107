@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-18 20:44:32 $
+|     $Revision: 1.5 $
+|     $Date: 2007-05-28 15:17:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -630,7 +630,7 @@ function process_upload()
 				{
 					//upload was not an image, link to file
 					//echo "<pre>"; print_r($upload); echo "</pre>";
-					$_POST['post'] .= "[br][file=".e_FILE."public/".$upload['name']."]".$upload['name']."[/file]";
+					$_POST['post'] .= "[br][file=".e_FILE."public/".$upload['name']."]".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."[/file]";
 				}
 
 			}
