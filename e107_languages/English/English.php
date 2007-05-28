@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-28 18:02:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 setlocale(LC_ALL, 'en');
@@ -35,5 +35,6 @@ define("CORE_LAN10", "Corrupted cookie detected - logged out.");
 define("LAN_WARNING", "Warning!");
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anonymous");
+define("LAN_EMAIL_SUBS", "-email-");
 
 ?>
