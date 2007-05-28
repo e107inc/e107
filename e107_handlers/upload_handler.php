@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.1.1.1 $
-|   $Date: 2006-12-02 04:33:58 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.2 $
+|   $Date: 2007-05-28 15:17:07 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -94,6 +94,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 		{
 			$filesize[] = $files['size'][$key];
 			$name = preg_replace("/[^a-z0-9._-]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
+			$raw_name = $name;			// Save 'proper' file name - useful for display
 			if ($avatar == "attachment") {
 				$name = time()."_".USERID."_".$fileinfo.$name;
 			}
@@ -130,6 +131,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 				}
 
 				$uploaded[$c]['name'] = $name;
+				$uploaded[$c]['rawname'] = $raw_name;
 				$uploaded[$c]['type'] = $files['type'][$key];
 				$uploaded[$c]['size'] = 0;
 
