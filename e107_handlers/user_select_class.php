@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-03-26 06:15:52 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2007-05-28 11:13:08 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -84,9 +84,10 @@ class user_select {
 		return $text;
 	}
 
-	function select_form($type, $user_form, $user_value = '', $class_form = false, $class_value = '', $class = false) {
+	function select_form($type, $user_form, $user_value = '', $class_form = false, $class_value = '', $class = false) 
+	{
 		global $tp;
-		$text .= "<script type='text/javascript'>
+		$text = "<script type='text/javascript'>
 		<!--
 		function uc_switch(uctype) {
 			document.getElementById(uctype).value = '';
@@ -154,6 +155,15 @@ class user_select {
 			}
 			$job = "parent.opener.document.getElementById('{$elementID}').value = d;";
 		}
+		
+		// send the charset to the browser - overrides spurious server settings with the lan pack settings.
+		header("Content-type: text/html; charset=".CHARSET, true);
+		echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+		echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
+		<head>
+		<title>".SITENAME."</title>\n";
+
+		
 		echo "<link rel=stylesheet href='".THEME_ABS."style.css'>
 		<script language='JavaScript' type='text/javascript'>
 		<!--
@@ -164,6 +174,8 @@ class user_select {
 		}
 		//-->
 		</script>
+		</head>
+		<body>
 		";
 
 		$text = "<form action='".e_SELF."?".e_QUERY."' method='POST'>
@@ -206,8 +218,8 @@ class user_select {
 			</form>
 			";
 		}
-
 		$ns -> tablerender(US_LAN_4, $text);
+		echo "\n</body>\n</html>";
 	}
 
 	function findusers($s) {
