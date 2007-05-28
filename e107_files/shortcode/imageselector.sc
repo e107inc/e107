@@ -1,4 +1,4 @@
-// $Id: imageselector.sc,v 1.4 2006-05-31 06:33:28 e107coders Exp $
+// $Id: imageselector.sc,v 1.5 2007-05-28 18:48:59 e107steved Exp $
 
 global $sql,$parm;
 
@@ -24,7 +24,7 @@ global $sql,$parm;
     $height = ($height) ? $height : "*";
     $label = ($label) ? $label : " -- -- ";
 
-	$text .= "<select {$multi} class='tbox' name='$name' id='$name' onchange=\"preview_image('$name','$path');\">
+	$text .= "<select {$multi} class='tbox' name='$name' id='$name' onchange=\"preview_image('$name','$path','".e_IMAGE_ABS."generic/blank.gif');\">
 	<option value=''>".$label."</option>\n";
 	foreach($imagelist as $icon)
 	{
@@ -34,7 +34,7 @@ global $sql,$parm;
 	}
 	$text .= "</select>";
 
-	$pvw_default = ($default) ? $path.$default : e_IMAGE."generic/blank.gif";
+	$pvw_default = ($default) ? $path.$default : e_IMAGE_ABS."generic/blank.gif";
   	$text .= "&nbsp;<img id='{$name}_prev' src='{$pvw_default}' alt='' style='width:{$width};height:{$height}' />\n";
 
 
