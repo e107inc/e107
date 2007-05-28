@@ -11,7 +11,7 @@ global $tp;
 $lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
 
-$bullet = "<img src='".THEME."images/bullet2.gif' alt='' style='border:0;' />";
+$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' style='border:0;' />";
 global $linkspage_pref;
 $linkspage_pref = $lc -> getLinksPagePref();
 
