@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_func.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-28 11:18:18 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -45,6 +45,10 @@ function pm_getInfo($which = "inbox")
 			{
 				$pm_info['inbox']['new'] = $new;
 			}
+			else
+			{
+				$pm_info['inbox']['new'] = 0;
+			}
 		}
 	}
 	if(!isset($pm_info[$which]['limit']))
@@ -65,7 +69,7 @@ function pm_getInfo($which = "inbox")
 				$pm_info['inbox']['limit'] =  $row['inbox_limit'];
 				$pm_info['outbox']['limit'] =  $row['outbox_limit'];
 			}
-			$pm_info['inbox']['limit_val'] = ($pref['pm_limits'] == 1 ? $pm_info['inbox']['total'] : $pm_info['inbox']['size']);
+			$pm_info['inbox']['limit_val'] = ($pref['pm_limits'] == 1 ? varset($pm_info['inbox']['total'],'') : varset($pm_info['inbox']['size'],''));
 			if(!$pm_info['inbox']['limit'] || !$pm_info['inbox']['limit_val'])
 			{
 				$pm_info['inbox']['filled'] = 0;
@@ -74,7 +78,7 @@ function pm_getInfo($which = "inbox")
 			{
 				$pm_info['inbox']['filled'] = number_format($pm_info['inbox']['limit_val']/$pm_info['inbox']['limit'] * 100, 2);
 			}
-			$pm_info['outbox']['limit_val'] = ($pref['pm_limits'] == 1 ? $pm_info['outbox']['total'] : $pm_info['outbox']['size']);
+			$pm_info['outbox']['limit_val'] = ($pref['pm_limits'] == 1 ? varset($pm_info['outbox']['total'],'') : varset($pm_info['outbox']['size'],''));
 			if(!$pm_info['outbox']['limit'] || !$pm_info['outbox']['limit_val'])
 			{
 				$pm_info['outbox']['filled'] = 0;
