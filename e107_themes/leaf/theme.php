@@ -11,8 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-03 19:59:43 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-28 16:52:39 $
 |     $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -61,16 +61,16 @@ $colorstyle ="E2EDF0";
 // [header function]
 function theme_head() {
 	global $logo, $colorstyle;
-	return "<link rel='alternate stylesheet' type='text/css' href='".THEME."style.css' title='Small' />
-	<link rel='alternate stylesheet' type='text/css' href='".THEME."fontstyles/medium.css' title='Medium' />
-	<link rel='alternate stylesheet' type='text/css' href='".THEME."fontstyles/large.css' title='Large' />
+	return "<link rel='alternate stylesheet' type='text/css' href='".THEME_ABS."style.css' title='Small' />
+	<link rel='alternate stylesheet' type='text/css' href='".THEME_ABS."fontstyles/medium.css' title='Medium' />
+	<link rel='alternate stylesheet' type='text/css' href='".THEME_ABS."fontstyles/large.css' title='Large' />
 	<style type='text/css'>
 	#header{
 		position: relative;
 		width: 700px;
 		height: 151px;
 		margin: auto;
-		background: url(".THEME."images/01_header0".$logo.".jpg) no-repeat;
+		background: url(".THEME_ABS."images/01_header0".$logo.".jpg) no-repeat;
 	}
 	/* Sidbar menu content styles */
 	.loginform, .searchform, .chatboxform, .onlineform{

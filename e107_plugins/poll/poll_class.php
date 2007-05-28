@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-07 15:59:42 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-28 16:52:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -240,9 +240,9 @@ class poll
 			$POLLMODE = $this->pollmode;
 		}
 
-		$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
-		$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
-		$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_PLUGIN."poll/images/bar.png");
+		$barl = (file_exists(THEME."images/barl.png") ? THEME_ABS."images/barl.png" : e_PLUGIN."poll/images/barl.png");
+		$barr = (file_exists(THEME."images/barr.png") ? THEME_ABS."images/barr.png" : e_PLUGIN."poll/images/barr.png");
+		$bar = (file_exists(THEME."images/bar.png") ? THEME_ABS."images/bar.png" : e_PLUGIN."poll/images/bar.png");
 
 		if($type == "preview")
 		{
@@ -399,7 +399,7 @@ class poll
 		}
 
 		if(!defined("POLLRENDERED")) define("POLLRENDERED", TRUE);
-		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".POLLAN_MENU_CAPTION : POLLAN_MENU_CAPTION);
+		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME_ABS."images/poll_menu.png' alt='' /> ".POLLAN_MENU_CAPTION : POLLAN_MENU_CAPTION);
 		if($type == "preview")
 		{
 			$caption = POLLAN_23;

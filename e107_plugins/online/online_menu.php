@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/online/online_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-01 19:50:56 $
-|     $Author: lisa_ $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-28 16:52:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -88,7 +88,7 @@ if(!defined("e_TRACKING_DISABLED") && varsettrue($pref['track_online'])){
 	}
 }
 
-$img = (is_readable(THEME."images/online_menu.png") ? "<img src='".THEME."images/online_menu.png' alt='' />" : "");
+$img = (is_readable(THEME."images/online_menu.png") ? "<img src='".THEME_ABS."images/online_menu.png' alt='' />" : "");
 $caption = $img." ".varsettrue($menu_pref['online_caption'],LAN_ONLINE_10);
 $ns->tablerender($caption, $text, 'online');
 
