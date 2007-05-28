@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-28 11:24:12 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("SEALAN_1", "Search Configuration");
@@ -42,7 +42,7 @@ define("SEALAN_37", "Checkbox");
 define("SEALAN_38", "Radio");
 define("SEALAN_39", "Custom Pages");
 
-define("LAN_98", "News");
+define("LAN_SEARCH_98", "News");		// Renamed to avoid clashes
 define("LAN_197", "Downloads");
 define("LAN_418", "Custom Pages");
 
