@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-12-09 06:43:48 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2007-05-28 16:52:42 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$caption = (file_exists(THEME."images/online_menu.png") ? "<img src='".THEME."images/online_menu.png' alt='' /> ".ONLINE_L4 : ONLINE_L4);
+$caption = (file_exists(THEME."images/online_menu.png") ? "<img src='".THEME_ABS."images/online_menu.png' alt='' /> ".ONLINE_L4 : ONLINE_L4);
 
 if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['track_online'])) {
 	$text = ONLINE_L1.GUESTS_ONLINE."<br />";

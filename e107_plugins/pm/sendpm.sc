@@ -6,7 +6,7 @@ if(check_class($pm_prefs['pm_class']))
 {
 	if(file_exists(THEME."forum/pm.png"))
 	{
-		$img = "<img src='".THEME."forum/pm.png' alt='".LAN_PM."' title='".LAN_PM."' style='border:0' />";
+		$img = "<img src='".THEME_ABS."forum/pm.png' alt='".LAN_PM."' title='".LAN_PM."' style='border:0' />";
 	}
 	else
 	{

@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/forum_viewforum_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-24 13:51:15 $
-|     $Author: mrpete $
+|     $Revision: 1.5 $
+|     $Date: 2007-05-28 16:52:49 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$icon = (file_exists(THEME."forum/e.png") ? THEME."forum/e.png" : e_PLUGIN."forum/images/lite/e.png");
+$icon = (file_exists(THEME."forum/e.png") ? THEME_ABS."forum/e.png" : e_PLUGIN."forum/images/lite/e.png");
 
 
 
