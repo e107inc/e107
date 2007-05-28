@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-28 11:13:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -153,6 +153,15 @@ class user_select {
 			}
 			$job = "parent.opener.document.getElementById('{$elementID}').value = d;";
 		}
+		
+		// send the charset to the browser - overrides spurious server settings with the lan pack settings.
+		header("Content-type: text/html; charset=".CHARSET, true);
+		echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+		echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
+		<head>
+		<title>".SITENAME."</title>\n";
+
+		
 		echo "<link rel=stylesheet href='".THEME_ABS."style.css'>
 		<script language='JavaScript' type='text/javascript'>
 		<!--
@@ -163,6 +172,8 @@ class user_select {
 		}
 		//-->
 		</script>
+		</head>
+		<body>
 		";
 
 		$text = "<form action='".e_SELF."?".e_QUERY."' method='POST'>
@@ -174,7 +185,7 @@ class user_select {
 			</table>
 			</form>
 			";
-	
+
 		if ($_POST['dosrch']) {
 			$userlist = $this -> findusers($_POST['srch']);
 			if($userlist == FALSE)
@@ -199,16 +210,16 @@ class user_select {
 			</select>
 			<input type='button' class='button' value='".US_LAN_1."' onClick='SelectUser()' />
 			</td>
-		 
+
 			</tr>
 			</table>
 			</form>
 			";
 		}
-	
 		$ns -> tablerender(US_LAN_4, $text);
+		echo "\n</body>\n</html>";
 	}
-	
+
 	function findusers($s) {
 		global $sql, $tp;
 		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%' ")) {
