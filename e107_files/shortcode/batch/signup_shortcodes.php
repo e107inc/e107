@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-07 15:59:42 $
+|     $Revision: 1.5 $
+|     $Date: 2007-05-28 09:37:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -81,14 +81,16 @@ SC_BEGIN SIGNUP_DISPLAYNAME
 global $pref, $rs;
 if (check_class($pref['displayname_class']))
 {
-	return $rs->form_text("name", 30, ($_POST['name'] ? $_POST['name'] : $name), 30);
+  $dis_name_len = varset($pref['displayname_maxlength'],15);
+  return $rs->form_text("name", $dis_name_len+5, ($_POST['name'] ? $_POST['name'] : $name), $dis_name_len);
 }
 SC_END
 
 
 SC_BEGIN SIGNUP_LOGINNAME
 global $rs;
-return $rs->form_text("loginname", 30,  ($_POST['loginname'] ? $_POST['loginname'] : $loginname), 30);
+$log_name_length = varset($pref['loginname_maxlength'],30);
+return $rs->form_text("loginname", $log_name_length+5,  ($_POST['loginname'] ? $_POST['loginname'] : $loginname), $log_name_length);
 SC_END
 
 SC_BEGIN SIGNUP_REALNAME

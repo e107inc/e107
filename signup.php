@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-04-27 19:30:23 $
+|     $Revision: 1.9 $
+|     $Date: 2007-05-28 09:37:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -421,15 +421,22 @@ global $db_debug;
 	}
 
 	// Check if form maxlength has been bypassed
-	if ( strlen($_POST['name']) > 30 || strlen($_POST['loginname']) > 30)
+	if ( strlen($_POST['name']) > 30 || strlen($_POST['loginname']) > 100)
 	{
-		exit;
+	  exit;
 	}
 
 	// Check if display name exceeds maximum allowed length
-	if (isset($pref['displayname_maxlength']) && (strlen($_POST['name']) > $pref['displayname_maxlength']))
+	if (strlen($_POST['name']) > varset($pref['displayname_maxlength'],15))
 	{
 	  $error_message .= LAN_SIGNUP_55."\\n";
+	  $error = TRUE;
+	}
+	
+	// Check if login name exceeds maximum allowed length
+	if (strlen($_POST['loginname']) > varset($pref['loginname_maxlength'],30))
+	{
+	  $error_message .= LAN_SIGNUP_57."\\n";
 	  $error = TRUE;
 	}
 	

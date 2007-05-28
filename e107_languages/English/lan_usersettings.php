@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-04-12 23:04:51 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2007-05-28 09:37:35 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
@@ -108,5 +108,7 @@ define("LAN_USET_10","Please update your settings now, in order to proceed.");
 define("LAN_USET_11", "That user name cannot be accepted as valid, please choose a different user name");
 define("LAN_USET_12", "That display name is too short. Please choose another");
 define("LAN_USET_13", "Invalid characters in Username. Please choose another");
+define("LAN_USET_14", "Login name too long. Please choose another");
+define("LAN_USET_15", "Display name too long. Please choose another");
 
 ?>

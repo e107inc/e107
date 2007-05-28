@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-02-16 20:36:05 $
+|     $Revision: 1.8 $
+|     $Date: 2007-05-28 09:37:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -137,6 +137,8 @@ if (isset($_POST['updatesettings']))
 		}
     }
 
+
+// Login Name checks
 	if (isset($_POST['loginname']))
 	{  // Only check if its been edited
 	  $temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
@@ -144,11 +146,16 @@ if (isset($_POST['updatesettings']))
 	  {
 		$error .= LAN_USET_13."\\n";
 	  }
+	  // Check if login name exceeds maximum allowed length
+	  if (strlen($temp_name) > varset($pref['loginname_maxlength'],30))
+	  {
+	    $error .= LAN_USET_14."\\n";
+	}
 	  $_POST['loginname'] = $temp_name;
 	}
 	
-	// ====================================================================
 
+// Password checks
 	$pwreset = "";
 	if ($_POST['password1'] != $_POST['password2']) {
 		$error .= LAN_105."\\n";
@@ -192,12 +199,22 @@ if (isset($_POST['updatesettings']))
 	  	$error .= LAN_408."\\n";
 	}
 
-	// Impose a minimum length on display name
-	$username = trim(strip_tags($_POST['username']));
-	if (isset($_POST['username']) && strlen($username) < 2)
+
+// Display name checks
+	if (isset($_POST['username']))
 	{
-	  $error .= LAN_USET_12."\\n";
+	  // Impose a minimum length on display name
+	  $username = trim(strip_tags($_POST['username']));
+	  if (strlen($username) < 2)
+	  {
+		$error .= LAN_USET_12."\\n";
+	  }
+	  if (strlen($username) > varset($pref['displayname_maxlength'],15))
+	  {
+		$error .= LAN_USET_15."\\n";
+	  }
 	}
+
 
 	$user_sess = "";
 	if ($file_userfile['error'] != 4)
