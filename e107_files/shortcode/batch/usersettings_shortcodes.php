@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-16 13:55:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2007-05-28 09:37:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -22,9 +22,11 @@ $usersettings_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN USERNAME
 global $rs, $curVal, $pref;
+// This is the 'display name'
 if (check_class($pref['displayname_class']))
 {
-	return $rs->form_text("username", 20, $curVal['user_name'], $pref['displayname_maxlength'], "tbox");
+  $dis_name_len = varset($pref['displayname_maxlength'],15);
+  return $rs->form_text("username", $dis_name_len, $curVal['user_name'], $dis_name_len, "tbox");
 }
 else
 {
@@ -36,7 +38,8 @@ SC_BEGIN LOGINNAME
 global $rs, $curVal;
 if (ADMIN && getperms("4"))
 {
-	return $rs->form_text("loginname", 20, $curVal['user_loginname'], 100, "tbox");
+  $log_name_length = varset($pref['loginname_maxlength'],30);
+  return $rs->form_text("loginname", $log_name_length, $curVal['user_loginname'], $log_name_length, "tbox");
 }
 else
 {
@@ -180,7 +183,7 @@ SC_END
 
 SC_BEGIN AVATAR_CHOOSE
 $ret = "
-<input class='button' type ='button' style=' cursor:hand' size='30' value='".LAN_403."' onclick='expandit(this)' />
+<input class='button' type ='button' style=' cursor:pointer' size='30' value='".LAN_403."' onclick='expandit(this)' />
 <div style='display:none' >";
 $avatarlist[0] = "";
 $handle = opendir(e_IMAGE."avatars/");

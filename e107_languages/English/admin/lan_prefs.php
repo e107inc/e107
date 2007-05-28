@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-04-12 23:04:51 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-05-28 09:37:35 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -166,7 +166,7 @@ define("PRFLAN_154", "New user verification method <br />If 'Admin Approval' is 
 define("PRFLAN_155", "Display Name available to");
 define("PRFLAN_156", "Reset ALL Display Names");
 define("PRFLAN_157", "All Display Names have been reset to the Username");
-define("PRFLAN_158", "Display Name maximum length");
+define("PRFLAN_158", "Display Name maximum length (5..30)");
 define("PRFLAN_159", "viewing this page with");
 
 define("PRFLAN_160", "Check remote servers when validating email addresses.");
@@ -185,6 +185,6 @@ define("PRFLAN_169", "If the chosen group contains more than one person, the use
 
 define("PRFLAN_170", "Use reverse DNS to allow host banning");
 define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
-
+define("PRFLAN_172", "Login Name maximum length (10..100)");
 
 ?>

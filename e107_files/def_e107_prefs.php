@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-05-28 09:37:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -48,6 +48,14 @@ City, State, Country
   'anon_post' => '0',
   'user_reg' => '1',
   'use_coppa' => '1',
+  'membersonly_enabled' => '0',
+  'signup_pass_len' => '',
+  'signup_maxip' => '3',
+  'signup_disallow_text' => '',
+  'displayname_class' => 255,
+  'displayname_maxlength' => 15,
+  'loginname_maxlength' => 30,
+  
   'profanity_filter' => '0',
   'profanity_replace' => '[censored]',
   'smiley_activate' => '',
@@ -117,7 +125,6 @@ City, State, Country
   'wysiwyg' => '0',
   'old_np' => '0',
   'make_clickable' => '0',
-  'signup_maxip' => '3',
   'track_online' => '1',
   'emotepack' => 'default',
   'xup_enabled' => '1',
@@ -132,9 +139,6 @@ City, State, Country
   'post_html' => '254',
   'redirectsiteurl' => '0',
   'admin_alerts_uniquemenu' => '0',
-  'membersonly_enabled' => '0',
-  'signup_pass_len' => '',
-  'signup_disallow_text' => '',
   'signup_text_after' => '',
   'null' => '',
   'links_new_window' => '1',
