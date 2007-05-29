@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2007-04-18 21:41:58 $
+|		$Revision: 1.18 $
+|		$Date: 2007-05-29 20:14:51 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ $TOPIC_ROW_SPACER = "";
 class contentform{
 
 		function ContentItemPreview(){
-			global $ns, $sql, $aa, $qs, $tp, $mainparent;
+			global $ns, $sql, $aa, $qs, $tp, $mainparent, $months;
 
 			$TRPRE = "<tr>";
 			$TRPOST = "</tr>";
