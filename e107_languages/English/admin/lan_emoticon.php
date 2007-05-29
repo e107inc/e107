@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_emoticon.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-24 21:06:57 $
+|     $Revision: 1.4 $
+|     $Date: 2007-05-29 19:45:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -43,4 +43,5 @@ define("EMOLAN_26", "Re-scan pack");
 define("EMOLAN_27", "Error occurred processing pack: ");
 define("EMOLAN_28", "Generate XML");
 define("EMOLAN_29", "XML file generated: ");
+define("EMOLAN_30", "Error writing XML file: ");
 ?>
