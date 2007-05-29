@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-03 21:05:44 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-29 18:53:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ if (!getperms("0")) {
 			$id = str_replace("_sql","",$file);
         	$tables[$id] = $sql_data;
 		}else{
-        	echo $filename." is not readable<br />";
+        	echo $filename.DBLAN_22."<br />";
 		}
     }
 
