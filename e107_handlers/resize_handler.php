@@ -11,9 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-13 21:45:38 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-29 18:56:53 $
 |     $Author: e107steved $
+|
+| Mod to support GIF (for gd at least)
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -104,10 +106,21 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"".$destination_file."\"");
 		}
 	  case "gd1" :
-		if ($image_stats[2] == 2)
-		  $src_img = imagecreatefromjpeg($source_file);
-		else
+		switch ($image_stats[2])
+		{
+		  case IMAGETYPE_PNG : // 3 - PNG
 			$src_img = imagecreatefrompng($source_file);
+			break;
+		  case IMAGETYPE_GIF : // 1 - GIF
+		    if (!function_exists('imagecreatefromgif')) return FALSE;		// Some versions of GD library don't support GIF
+			$src_img = imagecreatefromgif($source_file);
+			break;
+		  case IMAGETYPE_JPEG :	// 2 - Jpeg
+		    $src_img = imagecreatefromjpeg($source_file);
+			break;
+		  default :
+			return FALSE; // Unsupported image type
+		}
 		if (!$src_img) 
 		{
 		  return FALSE;
@@ -134,10 +147,21 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		  imagedestroy($dst_img);
 		}
 	  case "gd2" :
-		if ($image_stats[2] == 2)
-			$src_img = imagecreatefromjpeg($source_file);
-		else
+		switch ($image_stats[2])
+		{
+		  case IMAGETYPE_PNG : // 3 - PNG
 			$src_img = imagecreatefrompng($source_file);
+			break;
+		  case IMAGETYPE_GIF : // 1 - GIF
+		    if (!function_exists('imagecreatefromgif')) return FALSE;		// Some versions of GD library don't support GIF
+			$src_img = imagecreatefromgif($source_file);
+			break;
+		  case IMAGETYPE_JPEG :	// 2 - Jpeg
+		    $src_img = imagecreatefromjpeg($source_file);
+			break;
+		  default :
+			return FALSE; // Unsupported image type
+		}
 		if (!$src_img) 
 		{
 		  return FALSE;
