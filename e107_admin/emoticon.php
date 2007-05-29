@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-05-24 21:06:50 $
+|     $Revision: 1.5 $
+|     $Date: 2007-05-29 19:45:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -259,7 +259,7 @@ class emotec
 
 
 	// Generate an XML file - packname.xml in root emoticon directory
-	function emoteXML($packID)
+	function emoteXML($packID, $strip_xtn = TRUE)
 	{
 		global $fl, $pref, $sysprefs, $tp;
 		
@@ -289,9 +289,9 @@ class emotec
 
 		foreach($eArray as $emote)
 		{
-			// Strip file extension
+			// Optionally strip file extension
 		  $evalue = str_replace(".", "!", $emote);
-		  $ename = substr($emote,0,strrpos($emote,'.'));
+		  if ($strip_xtn) $ename = substr($emote,0,strrpos($emote,'.'));
 		  $f_string .= "<emoticon file=\"{$ename}\">\n";
 		  foreach (explode(' ',$tp -> toForm($emotecode[$evalue])) as $v)
 		  {
@@ -305,8 +305,14 @@ class emotec
 		if (is_file($backname)) unlink($backname);		// Delete any old backup
 		
 		if (is_file($fname)) rename($fname,$backname);
-		file_put_contents($fname,$f_string);
-		echo "<br /><div style='text-align: center;'>".EMOLAN_29."<b>".$fname."</b></div><br />";
+		if (file_put_contents($fname,$f_string) === FALSE)
+		{
+		  echo "<br /><div style='text-align: center;'>".EMOLAN_30."<b>".$fname."</b></div><br />";
+		}
+		else
+		{
+		  echo "<br /><div style='text-align: center;'>".EMOLAN_29."<b>".$fname."</b></div><br />";
+		}
 	}
 
 
@@ -345,6 +351,17 @@ class emotec
 	function installCheck($do_one = FALSE)
 	{
 		global $sql, $fl;
+
+		// Pick up a list of emote packs from the database
+		$pack_local = array();
+		if ($sql->db_Select("core","*","`e107_name` LIKE 'emote_%'",TRUE))
+		{
+		  while ($row = $sql->db_Fetch())
+		  {
+		    $pack_local[substr($row['e107_name'],6)] = TRUE;
+		  }
+		}
+		
 		foreach($this -> packArray as $value)
 		{
 			if(strpos($value,' ')!==FALSE)
@@ -366,6 +383,11 @@ class emotec
 				$ns->tablerender(EMOLAN_21, $msg);
 				return FALSE;
 			}
+
+		  if (array_key_exists($value,$pack_local))
+		  {
+		    unset($pack_local[$value]);
+		  }
 			
 			if (($do_one == $value) || !$do_one &&  (!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' ")))
 			{  // Pack info not in DB, or to be re-scanned
@@ -373,7 +395,8 @@ class emotec
 			  $File_type = 'Unknown';
 				// Array of all files in the directory of the selected emote pack
 				$fileArray = $fl -> get_files(e_IMAGE."emotes/".$value);
-				foreach($fileArray as $file)
+				$confFile = '';
+				foreach($fileArray as $k => $file)
 				{
 					if(strstr($file['fname'], ".xml"))
 					{
@@ -386,6 +409,11 @@ class emotec
 					else if(strstr($file['fname'], ".php"))
 					{
 						$confFile = array('file' => $file['fname'], 'type' => "php");
+					}
+					if ($confFile)
+					{
+					  unset($fileArray[$k]);
+					  break;
 					}
 				}
 
@@ -416,40 +444,102 @@ class emotec
 				{
 					$filename = e_IMAGE."emotes/".$value."/".$confFile['file'];
 
-					$handle = fopen ($filename, "r");
-					$contents = fread ($handle, filesize ($filename));	// Get the XML file for the emote pack
-					fclose ($handle);
-
-					preg_match_all("#\<emoticon file=\"(.*?)\"\>(.*?)\<\/emoticon\>#si", $contents, $match);
+//					$handle = fopen ($filename, "r");
+//					$contents = fread ($handle, filesize ($filename));	// Get the XML file for the emote pack
+//					fclose ($handle);
+					$contents = file_get_contents($filename);
 					$confArray = array();
+					$xml_type = 0;
+
+					if ((strpos($contents, "<icon>") !== FALSE) && (strpos($contents, "<icondef>") !== FALSE))
+					{ 	// xep-0038 format
+					/* Example:
+					  <icon>
+						<text>:-)</text>
+						<text>:)</text>
+						<object mime="image/png">happy.png</object>
+						<object mime="audio/x-wav">choir.wav</object>
+					  </icon>*/
+					  preg_match_all("#\<icon>(.*?)\<\/icon\>#si", $contents, $match);
 					
-					// $match[0] - complete emoticon entry
-					// $match[1] - filename (no file extension/suffix)
-					// $match[2] - match string(s) representing emote
-
-					// Now pull out all the 'match' strings
-					for($a=0; $a < count($match[2]); $a++)
+					  $xml_type = 1;
+						// $match[0] - complete emoticon entry
+						// $match[1] - match string and object specification 
+					  $item_index = 1;
+					}
+					elseif (strpos($contents, "<emoticon") !== FALSE)
+					{	//  "Original" E107 format (as used on KDE, although they may be changing to XEP-0038)
+					  preg_match_all("#\<emoticon file=\"(.*?)\"\>(.*?)\<\/emoticon\>#si", $contents, $match);
+					
+					  $xml_type = 2;
+						// $match[0] - complete emoticon entry
+						// $match[1] - filename (may or may not not have file extension/suffix)
+						// $match[2] - match string(s) representing emote
+					  $item_index = 2;
+					}
+					
+					if ($xml_type)
 					{
-					  preg_match_all("#\<string\>(.*?)\<\/string\>#si", $match[2][$a], $match2);
-
-					  $codet = "";
-					  foreach($match2[1] as $code)
+					  for($a=0; $a < count($match[0]); $a++)
 					  {
-						$codet .= $code." ";
-					  }
-
-					  $file = '';
-					  foreach($fileArray as $emote)
-					  { // Check that the file exists
-						if(strpos($emote['fname'], $match[1][$a].".") === 0)
+					    $e_file = '';
+					    switch ($xml_type)
 						{
-						  $file = str_replace(".", "!", $emote['fname']);
-						  break;
+						  case 1 :		// xep-0038
+							// Pull out a file name (only support first image type) - its in $fmatch[1]
+							if (preg_match("#\<object\s*?mime\=[\"\']image\/.*?\>(.*?)\<\/object\>#si",$match[1][$a],$fmatch))
+							{
+							  $e_file = $fmatch[1];
+//							  echo "xep-0038 file: ".$e_file."<br />";
+							  // Pull out all match strings - need to pick out any language definitions for posterity
+							  // but currently accept all language strings
+							  preg_match_all("#\<text(?:\s*?\>|\s*?xml\:lang\=\"(.*?)\"\>)(.*?)\<\/text\>#si", $match[1][$a], $match2);
+							  // $match2[1] is the languages
+							  // $match2[2] is the match strings
+							  $codet = implode(" ",$match2[2]);
+							}
+							break;
+						  case 2 :
+						    $e_file = $match[1][$a];
+							// Now pull out all the 'match' strings
+							preg_match_all("#\<string\>(.*?)\<\/string\>#si", $match[2][$a], $match2);
+							$codet = implode(" ",$match2[1]);
+							break;
 						}
-					  }
+						// $e_file has the emote file name
+						// $match2 has an array of substitution strings
+
+
+						$file = '';
+						foreach($fileArray as $emote)
+						{ // Check that the file exists
+					      if (strpos($e_file,".") === FALSE)
+						  {  // File extension not specified - accept any file extension for match
+							if(strpos($emote['fname'], $e_file.".") === 0)
+							{
+						      $file = str_replace(".", "!", $emote['fname']);
+							  break;
+							}
+						  }
+						  else
+						  {    // File extension specified - do simple match
+							if($emote['fname'] == $e_file)
+							{
+						      $file = str_replace(".", "!", $emote['fname']);
+							  break;
+						    }
+						  }
+					    }
 					  // Only add if the file exists. OK if no definition - might want to be added
 					  if ($file) $confArray[$file] = $codet;
+					  }
 					}
+					else
+					{
+					  echo "Unsupported XML File Format<br /><br />";
+					  $no_error = FALSE;
+					}
+
 
 					// Save pack info in the database
 					$tmp = addslashes(serialize($confArray));
@@ -482,6 +572,14 @@ class emotec
 				}
 			}
 		}
+	  if (count($pack_local))
+	  {
+	    foreach ($pack_local as $p => $d)
+		{
+	      echo "Missing files for pack: ".$p." - deleted in database<br />";
+		  $sql->db_Delete("core","`e107_name` = 'emote_{$p}'");
+		}
+	  }
 	  return TRUE;
 	}
   
