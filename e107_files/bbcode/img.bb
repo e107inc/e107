@@ -25,7 +25,7 @@ foreach($imgParms as $k => $v) {
 }
 
 
-if(file_exists(e_IMAGE."newspost_images/".$code_text))
+if((strpos($code_text,'../') === FALSE) && file_exists(e_IMAGE."newspost_images/".$code_text))
 {
 	$code_text = e_IMAGE."newspost_images/".$code_text;
 }
