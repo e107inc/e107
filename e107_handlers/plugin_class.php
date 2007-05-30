@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-05-07 13:38:28 $
+|     $Revision: 1.8 $
+|     $Date: 2007-05-30 20:35:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -53,8 +53,8 @@ class e107plugin
 		'upgrade_remove_prefs',
 		'upgrade_add_user_prefs',
 		'upgrade_remove_user_prefs',
-		'upgrade_add_array_pref',		// missing
-		'upgrade_remove_array_pref'		// missing
+		'upgrade_add_array_pref',
+		'upgrade_remove_array_pref'
 	);
 	
 	/**
@@ -64,6 +64,7 @@ class e107plugin
 	 */
 	function getall($flag)
 	{
+	  
 		global $sql;
 		if ($sql->db_Select("plugin","*","plugin_installflag = '".intval($flag)."' ORDER BY plugin_path ASC"))
 		{
@@ -222,8 +223,9 @@ class e107plugin
 		global $sql, $tp;
 		$link_url = $tp -> toDB($link_url, true);
 		$link_name = $tp -> toDB($link_name, true);
-		if ($action == 'add') {
-			$path = str_replace("../", "", $link_url);
+		$path = str_replace("../", "", $link_url);
+		if ($action == 'add') 
+		{
 			$link_t = $sql->db_Count('links');
 			if (!$sql->db_Count('links', '(*)', "link_name = '{$link_name}'")) {
 				return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '{$link_class}' ");
@@ -231,12 +233,15 @@ class e107plugin
 				return FALSE;
 			}
 		}
-		if ($action == 'remove') {
-			if ($sql->db_Select('links', 'link_order', "link_name = '{$link_name}'")) {
-				$row = $sql->db_Fetch();
-				$sql->db_Update('links', "link_order = link_order - 1 WHERE link_order > {$row['link_order']}");
-				return $sql->db_Delete('links', "link_name = '{$link_name}'");
-			}
+		if ($action == 'remove') 
+		{	// Look up by URL if we can - should be more reliable. Otherwise try looking up by name (as previously)
+		  if (($path && $sql->db_Select('links', 'link_id,link_order', "link_url = '{$path}'")) ||
+					$sql->db_Select('links', 'link_id,link_order', "link_name = '{$link_name}'")) 
+		  {
+			$row = $sql->db_Fetch();
+			$sql->db_Update('links', "link_order = link_order - 1 WHERE link_order > {$row['link_order']}");
+			return $sql->db_Delete('links', "link_id = '{$row['link_id']}'");
+		  }
 		}
 	}
 
@@ -428,7 +433,8 @@ class e107plugin
 	 *
 	 * @param int $id
 	 */
-	function install_plugin($id) {
+	function install_plugin($id) 
+	{
 		global $sql, $ns, $sysprefs,$mySQLprefix, $tp;
 
 		// install plugin ...
@@ -521,7 +527,7 @@ class e107plugin
 			$pref['plug_installed'][$plugin_path] = $plug['plugin_version'];
 			save_prefs();
 			
-            if($rssmess){ $text .= $rssmess; }
+            if($rssmess) { $text .= $rssmess; }
 			$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 		} else {
 			$text = EPL_ADLAN_21;
