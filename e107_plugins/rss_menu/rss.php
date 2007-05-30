@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-07 22:45:10 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-30 19:25:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -434,7 +434,10 @@ class rssCreate {
 				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
-				<ttl>60</ttl>
+				<ttl>60</ttl>";
+				if (trim(SITEBUTTON))
+				{
+				echo "
 				<image>
 				<title>".$tp->toRss($rss_title)."</title>
 				<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
@@ -442,7 +445,9 @@ class rssCreate {
 				<width>88</width>
 				<height>31</height>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
-				</image>
+				</image>";
+				}
+				echo "
 				<textInput>
 				<title>Search</title>
 				<description>Search ".$tp->toRss($pref['sitename'])."</description>
