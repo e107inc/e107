@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2007-05-07 13:37:55 $
+|     $Revision: 1.73 $
+|     $Date: 2007-05-30 20:35:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -218,7 +218,7 @@ if ($action == 'uninstall')
 		}
 
 		if ($eplug_link) {
-			$plugin->manage_link('remove', '', $eplug_link_name);
+			$plugin->manage_link('remove', $eplug_link_url, $eplug_link_name);
 		}
 
 		if ($eplug_userclass) {
