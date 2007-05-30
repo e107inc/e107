@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-10 15:54:47 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-30 20:49:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -78,7 +78,7 @@ $eplug_tables = array(
 	
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = "Site Stats";
+$eplug_link_name = ADSTAT_L34;
 $eplug_link_url = e_PLUGIN."log/stats.php?1";
 	
 	
