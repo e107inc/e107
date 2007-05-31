@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-12-23 18:37:46 $
+|     $Revision: 1.19 $
+|     $Date: 2007-05-31 21:17:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['tr
 				$pinfo = "comment.php";
 				$online_location_page = "comment.php";
 			}
-			$text .= "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7;
+			$text .= "<img src='".e_IMAGE_ABS."admin_images/users_16.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7;
 			(!strstr($pinfo, $ADMIN_DIRECTORY) ? $text .= " <a href='{$pinfo}'>$online_location_page</a><br />" : $text .= " $online_location_page<br />");
 		}
 	}
