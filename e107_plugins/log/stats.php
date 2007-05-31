@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-10 15:54:47 $
+|     $Revision: 1.3 $
+|     $Date: 2007-05-31 19:38:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1110,7 +1110,7 @@ class siteStats {
 		global $sql;
 
 		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) {
-			return "No monthly stats yet.";
+			return ADSTAT_L42;
 		}
 
 		$array = $sql -> db_getList();
