@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2006-12-31 14:46:30 $
-|		$Author: e107coders $
+|		$Revision: 1.3 $
+|		$Date: 2007-05-31 21:02:53 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -475,7 +475,7 @@ class listclass {
 		{
 			if(file_exists(THEME."images/bullet2.gif"))
 			{
-				$default_bullet = "<img src='".THEME."images/bullet2.gif' alt='' />";
+				$default_bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' />";
 			}
 		}
 
