@@ -3,29 +3,15 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:00 $
-|     $Author: whoisbig $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = "Notify sends email notifications when e107 events occur.<br /><br />
-For example, set 'IP banned for flooding site' to user class 'Admin' and all admins will be sent an email when your 
-site is being flooded.<br /><br />
-You can also, as another example, set 'News item posted by admin' to user class 'Members' and all your users will be 
-sent news items you post to the site in an email.<br /><br />
-If you would like the email notifications to be sent to an alternative email address - select the 'Email' option and 
-enter in the email address in the field provided.";
+$text = "Notify/hatýrlatýcý 107 de girilmiþ olan olaylarý hatýrlatmak için size email yollar.<br /><br />
+Örnek olarak:, þayet  'IP adresi flood yaptýðý için banlandý. ' SEL/ FLOOD Güvelik ayarý açýkken, sitenize Flood / çoðul  saldýrý olursa,'Admin' ve tüm  Yönetici sýnýfýndaki üyelere email gönderilecektir.<br /><br />
+Baþka bir örnek olarak  'News item posted by admin= admin tarafýndan haber yollandý' ayarýný 'üyelerinize' ve kullanýcýlarýnýza açarsanýz, o zaman haber yolladýðýnýz taktirde, onlara otomatik olarak email yollanacaktýr.<br /><br />
+Þayet email Notifcation/Hatýrlatmayý  alternatif olarak baþka bir email adresine yollamak istiyorsanýz – o zaman 'Email' opsiyonunu seçip yollamak istediðiniz email adresini giriniz.";
 
-$ns -> tablerender("Notify Help", $text);
+$ns -> tablerender("Notify/Hatýrlatýcý Yardým", $text);
 ?>

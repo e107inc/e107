@@ -1,26 +1,7 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:00 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$text = "Enter all your site links here. Links added here will be shown in your main navigation menu, for other links please use the Links Page plugin.
+$text = "Sayfa Linklerinizi(baðlantý) buraya giriniz.Buraya kayýt edilen Linkler, Ana Navigasyon/Gezinti Menüsünde gösterilecektir. Baþka Linkler için Lütfen Baðlantýlar Eklentisini (plug-in) kullanýnýz.
 <br />
-";
-$ns -> tablerender("Links Help", $text);
+<br />
+Alt Menü oluþturucusu sadece e107 DHTML-Menüleri için Mantýklýdýr. (TreeMenu, UltraTreeMenu, eDynamicMenu, ypSlideMenu...)";
+$ns -> tablerender("Baðlantý Yardým", $text);
 ?>

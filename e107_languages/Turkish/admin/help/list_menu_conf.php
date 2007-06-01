@@ -1,30 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/list_menu_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:00 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$text = "In this section you can configure 3 menus<br>
-<b> New Articles Menu</b> <br>
-Enter a number for example '5' in the first field to show the first 5 articles, leave empty to see all, You configure what the title of the link should be to the rest of the articles in the second field, when you leave this last option empty it won't create a link, for example: 'All articles'<br>
-<b> Comments/Forum Menu</b> <br>
-The number of comments default to 5, the number of characters default to 10000. The postfix is for if a line is too long it will cut it off and append this postfix to the end, a good choice for this is '...', check original topics if you want to see those in the overview.<br>
-
-";
-$ns -> tablerender("Menu Configuration Help", $text);
+$text = "Bu Bölümde 3 Menüyü ayarlayabilirsiniz.<br />
+<b>Menü Yeni Makale </b> <br>
+Lütfen bir rakam giriniz, mesela '5' rakamýný  birinci alana giriniz. Bunun neticesi olarak sadece ilk '5' Makalenin gösterilmesi olacaktýr. Alaný boþ býraktýðýnýz taktirde, tümü gözükecektir. Ýsterseniz baðlantýyý girip, Makalenin devamýna gidebilirsiniz. Ýkinci Alana, örnek olarak 'Tüm makaleler'. Alaný boþ býraktýðýnýz takdirde Baðlantý oluþturulmayacaktýr.<br />
+<b>Forum Menüsünde Yorumlar</b><br />
+standart ayar  #5 olarak yapýlmýþtýr. Gösterilecek harf adeti standart olarak  10.000 dir! uzun satýrlarý önlemek için  yapýlan bir  ayardýr. satýrýn kesiminin iyi gözükmesi için  '...' olarak bitirin. Nasýl gözüktüðünü görmek için orijinal metne bakýn.<br />";
+$ns -> tablerender("Menü Ayar Yardým", $text);
 ?>

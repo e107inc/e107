@@ -1,25 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/userclass2.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:01 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$caption = "Use Class Help";
-$text = "You can create or edit/delete existing classes from this page.<br />This is useful for restricting users to certain parts of your site. For example, you could create a class called TEST, then create a forum which only allowed users in the TEST class to access it.";
+$caption = "Kullanýcý sýnýfý Yardým";
+$text = "Kullanýcý sýnýflarýný deðiþtirebilirsiniz, oluþturabilirsiniz ve silebilirsiniz. <br /> Bu bölüm bazý site Kullanýcýlarýnýzýn yetkilerini kýsýtlamaya yardýmcý olur. Bir tane ADMIN sýnýfý yapmanýz, size daima kolaylýk saðlar. Bu sýnýfý sadece kendiniz için etkinleþtirebilirsiniz. Bunun iyi tarafýný þayet siz bildiri, haber, makale yada içerik hazýrlýyorsanýz  mizampajý sayfada orijinal halinde görmek istiyorsanýz, yada bir haberi uzun bir zaman zarfý içinde hazýrlamanýz gerekiyorsa göreceksiniz.<br /><br />
+Aynýsýný belli bölümlere izin vermek gereken üyelere de uygulayabilirsiniz.  Dikkat edeceðiniz diðer bir hususta, verdiðiniz sýnýflandýrmaya da hangi üyelerin girebilme yetkisidir. <br /><br />
+TÝP:<br />
+Mümkün olduðunca HÝÇBÝR ZAMAN, emin deðilseniz bir sýnýfý silmeyiniz! Bir daha silinmiþ bir sýnýfý geri getirme imkanýnýz yoktur!";
 $ns -> tablerender($caption, $text);
 ?>

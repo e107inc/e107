@@ -2,23 +2,11 @@
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:01 $
-|     $Author: whoisbig $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = "The theme manager allows you to set your site's public theme and your admin areas theme.";
-$ns -> tablerender("Theme Manager Help", $text);
+$text = "Tema yöneticisi size Ana sayfa ve Admin bölümünde kullanacaðýnýz temalarýn seçme ve ayar yapma imkanýný saðlar.";
+$ns -> tablerender("Tema Yöneticisi Yardým", $text);
 ?>

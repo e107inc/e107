@@ -1,43 +1,23 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:59 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$caption = "Forum Help";
-$text = "<b>General</b><br />
-Use this screen to create or edit your forums<br />
+$caption = "Forum yardým";
+$text = "<b>Genel açýklama</b><br />
+Bu Menüyü Forumlarýnýzý deðiþtirmek ve yenisini oluþturmak için kullanýnýz.<br />
 <br />
-<b>Parents/Forums</b><br />
-A parent is a heading that other forums are displayed under, this makes layout simpler and makes navigating around your forums much simpler for visitors.
+<b>Ana  - Kök kategori/Forumlar</b><br />
+Kök Kategori diðer Alt kategorilerin bu isim altýnda toplandýðý bir Mekan/Baþlýktýr. Bunun sayesinde kullanýcýlar için gezinmek daha da kolaylaþmaktadýr.
 <br /><br />
-<b>Accessibility</b>
-<br />
-You can set your forums to only be accessible to certain visitors. Once you have set the 'class' of the visitors you can tick the 
-class to only allow those visitors access to the forum. You can set parents or individual forums up in this way.
+<b>Sýnýrlama</b>
+<br /> 
+Sadece belli sýnýf üyelerin eriþebileceði Forumlar oluþturabilirsiniz. Bunun için Sýnflandýrma yapmanýz gerekmektedir. Sýnýflandýrma yaptýðýnýz takdirde,  buralar sadece izin verdiginiz üyeler görebilecektir. Bu Ana ve diðer kategoriler içinde geçerlidir.
 <br /><br />
-<b>Moderators</b>
+<b>Moderatörler</b>
 <br />
-Tick the names of the listed administrators to give them moderator status on the forum. The administrator must have forum moderation permissions to be listed here.
+Forum Moderatörü statüsü vermek istediðiniz Yöneticilerin isimlerini seçin. Burada listede görünmeleri için Moderatörler ilk önce 'Forum Moderator' statüsünü almalýlar ! Bunu Yöneticiler Menüsü üzerinden gerçekleþtirmelisiniz.
 <br /><br />
-<b>Ranks</b>
+<b>Kullanýcý Ranking/kademe</b>
 <br />
-Set your user ranks from here. If the image fields are filled in, images will be used, to use rank names enter the names and make sure the corresponding rank image field is blank.<br />The threshold is the number of points the user needs to gain before his level changes.";
+Bu Menü üzerinden ayrýca Kullanýcý kademelerini de yönetebilirsiniz. Resim alanlarý seçildiði takdirde, resimlerde kullanýlabilir. Kademe isimlerini kullanabilmek için, Kademe  Resim alanýný boþ býrakýn.<br /> Kademe eþik/en alt deðeri üyenin diðer dereceye çýkmasý için gereken Puandýr.";
 $ns -> tablerender($caption, $text);
 unset($text);
 ?>
+

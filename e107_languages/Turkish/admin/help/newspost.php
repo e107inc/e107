@@ -1,36 +1,15 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:00 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$caption = "Newspost Help";
-$text = "<b>General</b><br />
-Body will be displayed on the main page; extended will be readable by clicking a 'Read More' link.
+$caption = "Haber yayýnlama (posten) Yardým";
+$text = "<b>Genel açýklama</b><br />
+Haberin açýklamasý Ana sayfada göster,  haberin detaylý görüntüsü,  kullanýcýlarýn 'devamýný oku' yazýsýnda týkladýklarýna gözükecektir. 
 <br />
 <br />
-<b>Show title only</b>
+<b>sadece baþlýðý göster</b>
 <br />
-Enable this to show the news title only on front page, with clickable link to full story.
+Sadece baþlýðýn haber sayfasýnda gözükmesi için, bu ayarý etkinleþtirin. Üzerine týklandýðý taktirde tüm haber okunabilir þekilde gözükecektir.
 <br /><br />
-<b>Activation</b>
+<b>etkinleþtirme </b>
 <br />
-If you set a start and/or end date your news item will only be displayed between these dates.
-";
+Baþlangýc ve bitiþ tarihi seçerseniz, haberleriniz sadece bu zaman zarfýnda gösterilecektir.";
 $ns -> tablerender($caption, $text);
 ?>
