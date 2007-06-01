@@ -1,27 +1,13 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/article.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:59 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$text = "From this page you can add single or multi-page articles.<br />
- For a multi-page article separate each page with the text [newpage], i.e. <br /><code>Test1 [newpage] Test2</code><br /> would create a two page article with 'Test1' on page 1 and 'Test2' on page 2.
+$text = "Bu sayfa üzerinden Tekil yada çoðul Makale oluþturabilirsiniz.<br />
+ Çok sayfalý makale kullanmak için her sayfayý bir BBCode ile ayýrmalýsýnýz. <br />
+ Bunun için lütfen SADECE ! bu TAG kullanýn: [newpage], Örnek olarak: <br />
+ <code>Test Sayfa 1 [newpage] Test sayfa 2</code><br /> Böyle bir yazý metni olan Ýki sayfalýk bir Makale yazmak  için 1. sayfaya:<br />
+ 'Test sayfa 1' ve devam eden 2. sayfa içeriði: <br />
+ 'Test sayfa 2'.
 <br /><br />
-If your article contains HTML tags that you wish to preserve, enclose the code with [html] [/html]. For example, if you entered the text '&lt;table>&lt;tr>&lt;td>Hello &lt;/td>&lt;/tr>&lt;/table>' in your article, a table would be shown containing the word hello. If you entered '[html]&lt;table>&lt;tr>&lt;td>Hello &lt;/td>&lt;/tr>&lt;/table>[/html]' the code as you entered it would be shown and not the table that the code generates.";
-$ns -> tablerender("Article Help", $text);
+Þayet HTML Taglar içeren  bir makaleyi kullanmak istiyorsanýz, o zaman bu Taglarý  bu Kodlarla çevrelemelisiniz: [html] [/html].<br />
+Örnek olarak bu yazýyý verdik: '&lt;table>&lt;tr>&lt;td>Merhaba &lt;/td>&lt;/tr>&lt;/table>' Þimdi sizin makalenizde içinde Merhaba diye bir Tablo oluþur.<br />
+Ama siz þimdi þöyle yazarsanýz '[html]&lt;table>&lt;tr>&lt;td>Merhaba  &lt;/td>&lt;/tr>&lt;/table>[/html]' , o zaman Kodlarla (code)üretilen tablo olarak deðilde, sizin yazdýðýnýz Kod (code)  gibi gözükür.";
+$ns -> tablerender("Makale  Yardým", $text);
 ?>

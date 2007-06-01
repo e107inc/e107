@@ -1,34 +1,12 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/banlist.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:59 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$caption = "Banning users from your site";
-$text = "You can ban users from your site at this screen.<br />
-Either enter their full IP address or use a wildcard to ban a range of IP addresses. You can also enter an email address to stop a user registering as a member on your site.<br /><br />
-<b>Banning by IP address:</b><br />
-Entering the IP address 123.123.123.123 will stop the user with that address visiting your site.<br />
-Entering the IP address 123.123.123.* will stop anyone in that IP range from visiting your site.<br /><br />
-<b>Banning by email address</b><br />
-Entering the email address foo@bar.com will stop anyone using that email address from registering as a member on your site.<br />
-Entering the email address *@bar.com will stop anyone using that email domain from registering as a member on your site.<br /><br />
-<b>Banning by user name</b><br />
-This is done from the user administration page.";
+$caption = "Kullanýcýyý Sitenizden uzaklaþtýrma (BANlama)";
+$text = "Bu Menü üzerinden kullanýcýlarý sitenizden uzaklaþtýrabilirsiniz (BAN).<br />
+Ya bir kiþi için IP adresiniz girerek , yada birçok kiþiyi (wildcard) rastgele BANlayabilirsiniz. Yada belli E.Mail adreslerini girerek istemediðiniz kiþilerin sitenize kayýt  olmasýný engelleyebilirsiniz.<br /><br />
+<b> IP-Adresi Üzeri BANlama:</b><br />
+Örnek olarak mesela 123.123.123.123 IP-Adresini verirseniz , bu IP kullanan kiþiler yasaklanýr (BANlanýr).<br />
+Ama siz þimdi  123.123.123.* IP-Adresini  verirseniz, o zaman sonu 000 - 999 ile biten tüm  IP adresi kullanýcýlarý BANlanýr. Yaný bir kaç deðiþik kullanýcý yasaklanmýþ olacak.<br /><br />
+<b>E-Mail Adresi  üzeri BANlama:</b><br />
+Mesela  isim@email.com adresini verirseniz, ozaman bu E-Mail adresini kullanan kiþi sitenize kayýt olmasý engellenmiþ olur. Bu genellikle bir kiþi yada bir gruba ait kayýt yapmaya çalýþan ekip olabilir.<br />
+Þayet þimdi  *@email.com adresini girerseniz, o zaman bu domaine ait emaili olan KÝMSE kayýt olamaz! O yüzden yasaklama iþleminde dikkatli olunuz!.";
 $ns -> tablerender($caption, $text);
 ?>

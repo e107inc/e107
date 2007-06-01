@@ -1,26 +1,6 @@
+
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:59 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$caption = "Site Admin Help";
-$text = "Use this page to edit the preferences for, or delete site administrators. The administrator will only have permission to access the features that are ticked.<br /><br />
-To create a new admin go to the user config page and update an existing user to admin status.";
+$caption = " Yönetici ana sayfa - yardým";
+$text = "Bu sayfayý yeni  Yönetici eklemek, deðiþtirmek, silmek için kullanýnýz. Yeni Yönetici, sadece sizin verdiðiniz yetkilere ve Menülere eriþebilir. Sadece yetki vermek istediðiz yerlere(checkbox) iþaret koyunuz.";
 $ns -> tablerender($caption, $text);
 ?>

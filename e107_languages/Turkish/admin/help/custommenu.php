@@ -1,26 +1,13 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/custommenu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:59 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$text = "From this screen you can create custom menus or custom pages with your own content in them.<br /><br />
-Please see <a href='http://docs.e107.org?Custom Pages'>http://docs.e107.org?Custom Pages</a>";
-
+$text = "Bu Menü üzerinden,  Kendinize özel sayfalar ve Menüler  yapabilirsiniz.<br /><br />
+<b>Önemli Bilgi!</b><br />
+- Bu Ekstralarý kullanabilmek için  /e107_plugins/custom/ ve /e107_plugins/custompages/ dosyasý yetkisini  CHMOD  777 yapmalýsýnýz.
+<br />
+- Bunun için HTML Kodlamalarýnýda kullanabilirsiniz. Dikkat edeceðiniz önemli konu, ( " )  yerine ( ' ) kullanmanýzdýr !! . "/  kullandýðýnýz taktirde mizampajda hata oluþacaktýr!
+<br /><br />
+<i>Menü/Sayfa-Dosya ismi</i>: Yaptýðýnýz Menü ve sayfalar ".e_PLUGIN."custom/ Klasöründe  'Siteninismi.php' olarak kayýt olacaktýr.<br />
+Sayfa kendisi ".e_PLUGIN."custompages/ Klasöründeki Siteninismi.php dosyasýna kayýt olacaktýr<br /><br />
+<i>Menü/Sayfa Baþlýðý<i/>: Yazý Metni, Baþlýk olarak Menüler ve Sayfa baþlýðýnda gösterilecektir.<br /><br />
+<i>Menü/Sayfa yazýsý(içeriði)</I>: Sizin girmiþ olduðunuz bilgiler, ya 'BODY' bölgesine yada normal yazý olarak verilecektir. çaðýrmak için her seferinde, class2.php,   HEADER ve FOOTERE, satýrlarý eklemenize gerek yoktur.Bu satýrlar otomatik olarak eklenecektir.<br /> Yinede sayfanýzda deðiþiklikler yapmak isterseniz, bunu CSS biçem dosyasý üzerinden sýnýflandýrarak sayfanýzýn deðiþik görünmesini saðlayabilirsiniz.";
 $ns -> tablerender(CUSLAN_18, $text);
 ?>

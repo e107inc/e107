@@ -1,25 +1,6 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/help/chatbox.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:59 $
-|     $Author: whoisbig $
-+----------------------------------------------------------------------------+
-*/
-
-if (!defined('e107_INIT')) { exit; }
-
-$text = "Set your chatbox preferences from here.";
-
-$ns -> tablerender("Chatbox", $text);
+$caption = "Chatbox Menüsü";
+$text = "Chat Kutusu Ayarlarýný buradan yapabilirsiniz.<br />
+Þayet  'Link deðiþtir' Checkbox kutusunu aktifleþtirirseniz, oz aman tüm linkler text kutusuna girilen kelime ile deðiþtirilecektir. Satýr bölme, bir satýra Maksimum kaç harf girileceðini belirler (mesela 20).Bu verilen rakamdan sonra satýr bölünür ve yeni satýrbaþý yapýlýr.";
+$ns -> tablerender($caption, $text);
 ?>
