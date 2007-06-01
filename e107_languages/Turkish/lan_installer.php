@@ -6,8 +6,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_installer.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2007-06-01 08:50:43 $
+|        $Revision: 1.3 $
+|        $Date: 2007-06-01 13:47:45 $
 |			
 +---------------------------------------------------------------+
 */
