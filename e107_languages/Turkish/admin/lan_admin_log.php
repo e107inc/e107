@@ -6,8 +6,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_admin_log.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2007-06-01 11:23:12 $
+|        $Revision: 1.3 $
+|        $Date: 2007-06-01 13:52:22 $
 |      
 +---------------------------------------------------------------+
 */
