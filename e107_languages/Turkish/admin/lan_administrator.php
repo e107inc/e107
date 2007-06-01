@@ -4,80 +4,71 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:01 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("ADMSLAN_0", "New user/admin entry created for");
-define("ADMSLAN_1", "now has admin status.");
-define("ADMSLAN_2", "updated in database.");
-define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
-define("ADMSLAN_4", "Continue");
-define("ADMSLAN_5", "Error!");
-define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
+define("ADMSLAN_0", "Yeni kullanýcý/yönetici girdisi oluþturulan:");
+define("ADMSLAN_1", "artýk yönetici durumuna sahip.");
+define("ADMSLAN_2", "veritabanýnda güncellendi.");
+define("ADMSLAN_3", "ana site yöneticiniz ve düzenlenemez.");
+define("ADMSLAN_4", "Devam Et");
+define("ADMSLAN_5", "Hata!");
+define("ADMSLAN_6", "ana site yöneticiniz ve silinemez.");
+define("ADMSLAN_13", "Varolan yöneticiler");
+define("ADMSLAN_16", "Yönetici Adý");
+define("ADMSLAN_17", "Yönetici Parolasý");
+define("ADMSLAN_18", "Ýzinler");
+define("ADMSLAN_19", "Site Terchilerini Deðiþtir");
+define("ADMSLAN_20", "Menüleri Deðiþtir");
+define("ADMSLAN_21", "site Yöneticileri Ekle");
+define("ADMSLAN_22", "Kullanýcýlarý/Reklamlarý Yönet");
+define("ADMSLAN_23", "Özel Sayfa veya Menüler oluþtur/düzenle");
+define("ADMSLAN_24", "Dosya Kategorilerini Yönet");
+define("ADMSLAN_25", "Dosyalarý Yükle/Yönet");
+define("ADMSLAN_26", "Haber Kategorilerini Gözetle");
+define("ADMSLAN_27", "Baðlantý Kategorilerini Gözetle");
+define("ADMSLAN_28", "Siteyi Bakým için Kapat");
+define("ADMSLAN_29", "Bannerlarý Yönet");
+define("ADMSLAN_30", "Haber Kaynak Baþlýklarýný Ayarla");
+define("ADMSLAN_31", "Yüz Ýfadelerini Ayarla");
+define("ADMSLAN_32", "Ön Sayfa içeriðini Ayarla");
+define("ADMSLAN_33", "Kayýt / Durum Ayarla");
+define("ADMSLAN_34", "Meta Etiketleri Ayarla");
+define("ADMSLAN_35", "Genel Dosya Ýndirimlerini Ayarla");
+define("ADMSLAN_36", "Resim Ayarlarý Kuruldu");
+define("ADMSLAN_37", "Yorumlarý Yönet");
+define("ADMSLAN_39", "Haber Gönder");
+define("ADMSLAN_40", "Link Gönder");
+define("ADMSLAN_41", "Makale Gönder");
+define("ADMSLAN_42", "Ýnceleme Gönder");
+define("ADMSLAN_43", "Ýçerik Sayfasý Gönder");
+define("ADMSLAN_44", "Dosya Gönder");
+define("ADMSLAN_45", "Oylama Gönder");
+define("ADMSLAN_46", "Karþýlama Mesajý");
+define("ADMSLAN_47", "Gönderilen Haberleri Yönet");
+define("ADMSLAN_49", "Tümünü Seç");
+define("ADMSLAN_51", "Tümünü Kaldýr");
+define("ADMSLAN_52", "Yönetici Güncelle");
+define("ADMSLAN_53", "Yönetici Ekle");
+define("ADMSLAN_54", "Site Yöneticileri");
+define("ADMSLAN_55", "Alan(lar) boþ býrakýldý");
+define("ADMSLAN_56", "Site Yöneticisi");
+define("ADMSLAN_58", "Ana Site Yöneticisi");
+define("ADMSLAN_59", "Yönetici Durumunu Kaldýr");
+define("ADMSLAN_60", "Þuradan yönetici durumunu kaldýrmak istediðinizden emin misiniz");
+define("ADMSLAN_61", "Yönetici Silindi");
+define("ADMSLAN_62", "Eklenti Yönetimi");
+define("ADMSLAN_64", "Sistem Ön Belleðini Temizle");
+define("ADMSLAN_65", "Posta ayarlarýný ve çýkýþýný ayarla");
+define("ADMSLAN_66", "Aramayý Ayarla");
+define("ADMSLAN_67", "Dosya Dedektifi ile ara");
+define("ADMSLAN_68", "Eposta bildirimini aç");
+define("ADMSLAN_69", "zaten bir yönetici ve düzenlenmesi gerekmektedir.");
+define("ADMSLAN_70", "Yönetici Listelemesine Geri Dön");
+define("ADMSLAN_71", "Ayrýcalýklarý görmek için buraya týklayýn");
 
-define("ADMSLAN_13", "Existing Administrators");
-
-
-define("ADMSLAN_16", "Admin Name");
-define("ADMSLAN_17", "Admin Password");
-define("ADMSLAN_18", "Permissions");
-define("ADMSLAN_19", "Alter site preferences");
-define("ADMSLAN_20", "Alter Menus");
-define("ADMSLAN_21", "Modify administrator permissions");
-define("ADMSLAN_22", "Moderate users/bans etc");
-define("ADMSLAN_23", "Create/edit custom pages/menus");
-define("ADMSLAN_24", "Manage download categories");
-define("ADMSLAN_25", "Upload /manage files");
-define("ADMSLAN_26", "Oversee news categories");
-define("ADMSLAN_27", "Oversee link categories");
-define("ADMSLAN_28", "Take site down for maintenance");
-define("ADMSLAN_29", "Manage banners");
-define("ADMSLAN_30", "Configure news feed headlines");
-define("ADMSLAN_31", "Configure emoticons");
-define("ADMSLAN_32", "Configure front page content");
-define("ADMSLAN_33", "Configure log/stats");
-define("ADMSLAN_34", "Configure meta tags");
-define("ADMSLAN_35", "Configure public file uploads");
-define("ADMSLAN_36", "Configure Image Settings");
-define("ADMSLAN_37", "Moderate comments");
-// define("ADMSLAN_38", "Moderate/configure chatbox");
-define("ADMSLAN_39", "Post news");
-define("ADMSLAN_40", "Post links");
-define("ADMSLAN_41", "Post articles");
-define("ADMSLAN_42", "Post reviews");
-define("ADMSLAN_43", "Post content pages");
-define("ADMSLAN_44", "Post downloads");
-define("ADMSLAN_45", "Post polls");
-define("ADMSLAN_46", "Welcome message");
-define("ADMSLAN_47", "Moderate submitted news");
-
-define("ADMSLAN_49", "Check All");
-define("ADMSLAN_51", "Uncheck All");
-define("ADMSLAN_52", "Update administrator");
-define("ADMSLAN_53", "Add administrator");
-define("ADMSLAN_54", "Site Administrators");
-
-define("ADMSLAN_55", "Field(s) left blank");
-
-define("ADMSLAN_56", "Site Administrator");
-
-define("ADMSLAN_58", "Main Site Administrator");
-define("ADMSLAN_59", "Remove Admin Status");
-define("ADMSLAN_60", "Are you sure you want to remove admin status from");
-define("ADMSLAN_61", "Administrator deleted");
-
-define("ADMSLAN_62", "Plugin Manager");
-
-define("ADMSLAN_64", "Clear the system cache");
-define("ADMSLAN_65", "Configure mail settings and mailout");
-define("ADMSLAN_66", "Configure Search");
-define("ADMSLAN_67", "Scan with file inspector");
-define("ADMSLAN_68", "Configure email notification");
-define("ADMSLAN_69", "is already an administrator and must be edited.");
-
-define("ADMSLAN_70", "Return to Administrator Listing");
-define("ADMSLAN_71", "Click here to display privileges");  
 
 ?>

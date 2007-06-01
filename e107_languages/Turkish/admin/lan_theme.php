@@ -4,64 +4,58 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
-define("TPVLAN_2", "Theme Preview");
-define("TPVLAN_3", "Main site theme set to");
-define("TPVLAN_4", "Author");
-define("TPVLAN_5", "Website");
-define("TPVLAN_6", "Release date");
-define("TPVLAN_7", "Information");
-define("TPVLAN_8", "Options");
-define("TPVLAN_9", "Preview Theme");
-define("TPVLAN_10", "Set As Site Theme");
-define("TPVLAN_11", "Version");
-define("TPVLAN_12", "No preview available");
+define("TPVLAN_1", "Þu an <b>'".PREVIEWTHEMENAME."'</b> temasýnýn ön izlemesini inceliyorsunuz. Siteniz için henüz ana tema olarak ayarlanmýþ deðil, sadece temanýn nasýl görünebileceði hakkýnda bir izlenim verme amacýný taþýmaktadýr.<br />Ana site temanýz olarak kullanmak için, <a href='".e_ADMIN."theme.php'>Tema Yöneticisine</a> geri dönün ve Site Temasý Olarak Seç i seçin.<br />Daha fazla temayý ön izlemek için <a href='".e_ADMIN."theme.php'>buraya týklayýn</a>");
+define("TPVLAN_2", "Tema Önizlemesi");
+define("TPVLAN_3", "Ana site temasý þuna ayarlandý:");
+define("TPVLAN_4", "Yazar");
+define("TPVLAN_5", "Web site");
+define("TPVLAN_6", "Çýkýþ Tarifi");
+define("TPVLAN_7", "Bilgi");
+define("TPVLAN_8", "Seçenekler");
+define("TPVLAN_9", "Temayý Ön izle");
+define("TPVLAN_10", "Site Temasý Olarak Ayarla");
+define("TPVLAN_11", "Sürüm");
+define("TPVLAN_12", "Ön izleme mevcut deðil");
+define("TPVLAN_13", "Tema Yükle (.zip yada .tar.gz biçiminde)");
+define("TPVLAN_14", "Temayý Yükle");
+define("TPVLAN_15", " ".e_THEME." klasörü doðru izinlere sahip olmadýðýndan belirtilen  dosya yüklenemedi- Lütfen klasöre CHMOD777 yapýn ve dosyayý yeniden yükleyin.");
+define("TPVLAN_16", "Yönetici Mesajý");
+define("TPVLAN_17", "Bu dosya doðru bir zip ya da tar dosyasýna benzemiyor.");
+define("TPVLAN_18", "Bir hata oluþtu - Dosya açýlamýyor");
+define("TPVLAN_19", "Temanýz yüklendi ve açýldý, lütfen aþaðýya kaydýrarak temanýzý listeden görün.");
+define("TPVLAN_20", "Oto tema yüklemesi ve açýlýmý tema klasörünüz doðru izinlere sahip olmadýðý için kapalý - lütfen e107_themes klasörünüze CHMOD 777 yapýn.");
+define("TPVLAN_21", "Bu þu an sitede kullanýlan temadýr");
+define("TPVLAN_22", "bu tema çoklu biçim sayfalarýna sahiptir");
+define("TPVLAN_23", "varsayýlan biçim sayfasý");
+define("TPVLAN_24", "bilgi yok");
+define("TPVLAN_25", "Hangi biçim sayfasýnýn kullanýlacaðýný seçmek için, lütfen <a href='".e_ADMIN."prefs.php'>Tercihler</a> bölümüne gidin ve 'Tema' ya týklayýn.");
+define("TPVLAN_26", "Tema Yöneticisi");
+define("TPVLAN_27", "Lütfen kullanýlacak Biçim sayfasýný seçin");
+define("TPVLAN_28", "açýk");
+define("TPVLAN_29", "kapalý");
+define("TPVLAN_30", "Tema Resimlerini Önceden Yükle:");
+define("TPVLAN_31", "Bu þu an seçilmiþ olan yönetici temasý");
+define("TPVLAN_32", "Yönetici Temasý olarak ayarla");
+define("TPVLAN_33", "Þu anki Site Temasý");
+define("TPVLAN_34", "Þu anki Yönetici Temasý");
+define("TPVLAN_35", "Seçenekleri Kaydet");
+define("TPVLAN_36", "Yönetici Mesajý");
+define("TPVLAN_37", "Tema Seçenekleri Kaydedildi");
+define("TPVLAN_38", "Tema Yükle");
+define("TPVLAN_39", "Kullanýlabilen Temalar");
+define("TPVLAN_40", "Yönetici Temasý þuna ayarlandý:");
+define("TPVLAN_41", "Lütfen Kullanýlacak Yönetim Görünüm Biçimini Seçin");
+define("TPVLAN_42", "Yönetici Seçeneklerini Kaydet");
+define("TPVLAN_43", "Yönetici Seçenekleri Kaydedildi");
+define("TPVLAN_46", "PCLZIP açma hatasý:");
+define("TPVLAN_47", "PCLTAR açma hatasý:");
+define("TPVLAN_48", "kod:");
 
-define("TPVLAN_13", "Upload theme (.zip or .tar.gz format)");
-define("TPVLAN_14", "Upload Theme");
-define("TPVLAN_15", "The file could not be uploaded as the ".e_THEME." folder does not have the correct permissions - please CHMOD to 777 and re-upload the file.");
-define("TPVLAN_16", "Admin Message");
-define("TPVLAN_17", "That file does not appear to be a valid .zip or .tar archive.");
-define("TPVLAN_18", "An error has occurred, unable to un-archive the file");
-define("TPVLAN_19", "Your theme has been uploaded and unzipped, please scroll down to see your theme in the list.");
-define("TPVLAN_20", "Auto theme upload and extraction is disabled as your themes folder does not have the correct permissions - please CHMOD your e107_themes folder to 777.");
-
-define("TPVLAN_21", "This is the currently selected site theme");
-
-define("TPVLAN_22", "This theme has multiple stylesheets");
-define("TPVLAN_23", "default stylesheet");
-define("TPVLAN_24", "no information");
-define("TPVLAN_25", "To choose which stylesheet to use, please go to <a href='".e_ADMIN."prefs.php'>preferences</a> and click on 'Theme'.");
-
-define("TPVLAN_26", "Theme Manager");
-define("TPVLAN_27", "Please select stylesheet to use");
-define("TPVLAN_28", "on");
-define("TPVLAN_29", "off");
-define("TPVLAN_30", "Preload Theme Images:");
-
-define("TPVLAN_31", "This is the currently selected admin theme");
-define("TPVLAN_32", "Set As Admin Theme");
-
-define("TPVLAN_33", "Current Site Theme");
-define("TPVLAN_34", "Current Admin Theme");
-define("TPVLAN_35", "Save options");
-define("TPVLAN_36", "Admin Message");
-define("TPVLAN_37", "Theme options saved");
-define("TPVLAN_38", "Upload Theme");
-define("TPVLAN_39", "Available Themes");
-define("TPVLAN_40", "Admin theme set to");
-
-define("TPVLAN_41", "Please select admin layout style to use");
-define("TPVLAN_42", "Save admin options");
-define("TPVLAN_43", "Admin options saved");
-
-define("TPVLAN_46", "PCLZIP extract error:");
-define("TPVLAN_47", "PCLTAR extract error: ");
-define("TPVLAN_48", "code:");
 
 ?>

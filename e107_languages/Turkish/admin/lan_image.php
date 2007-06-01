@@ -4,62 +4,60 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_image.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("IMALAN_1", "Enable image posting");
-define("IMALAN_2", "Display images, this will apply sitewide (comments, chatbox etc)");
-define("IMALAN_3", "Resize method");
-define("IMALAN_4", "Method used to resize images, either GD1/2 library, or ImageMagick");
-define("IMALAN_5", "Path to ImageMagick (if selected)");
-define("IMALAN_6", "Full path to ImageMagick Convert utility");
-define("IMALAN_7", "Image Settings");
-define("IMALAN_8", "Update Image Settings");
-define("IMALAN_9", "Image settings updated");
-define("IMALAN_10", "Image posting class");
-define("IMALAN_11", "Restrict users who can post images (if enabled above)");
-define("IMALAN_12", "Disabled image method");
-define("IMALAN_13", "What to do with posted images if image posting is disabled");
-define("IMALAN_14", "Show image URL");
-define("IMALAN_15", "Show nothing");
-define("IMALAN_16", "Show uploaded avatars");
-define("IMALAN_17", "Click here");
-define("IMALAN_18", "Uploaded images");
-
-define("IMALAN_21", "Used by");
-define("IMALAN_22", "Image not in use");
+define("IMALAN_1", "Resim Göndermeyi Aç");
+define("IMALAN_2", "Resim göster, site genelinde etkin olur (yorumlar, chat kutusu vb.)");
+define("IMALAN_3", "Yeniden Boyutlandýrma Metodu");
+define("IMALAN_4", "Resmi yeniden boyutlandýrmada kullanýlacak olan metot, ya GD1/2 kitaplýðý, yada ImageMagick");
+define("IMALAN_5", "ImageMagick için yol (seçiliyse)");
+define("IMALAN_6", "ImageMagick Dönüþüm izlencesi için tam yol");
+define("IMALAN_7", "Resim Ayarlarý");
+define("IMALAN_8", "Resim Ayarlarýný Güncelle");
+define("IMALAN_9", "Resim ayarlarý güncellendi");
+define("IMALAN_10", "Resim gönderme sýnýfý");
+define("IMALAN_11", "Resim gönderemeyecek kullanýcýlarý sýnýrla (yukarýda açýksa)");
+define("IMALAN_12", "Kullanýlmayan Resim Metodu");
+define("IMALAN_13", "Resim göndermenin kapalý olmasý durumunda yapýlmasý gerekenler");
+define("IMALAN_14", "Resim URL sini gönder");
+define("IMALAN_15", "hiçbir þey gösterme");
+define("IMALAN_16", "Yüklü avatarlarý göster");
+define("IMALAN_17", "Buraya Týkla");
+define("IMALAN_18", "Yüklü Resimler");
+define("IMALAN_21", "Kullanan");
+define("IMALAN_22", "Resim Kullanýmda deðil");
 define("IMALAN_23", "Avatar");
-define("IMALAN_24", "Photograph");
-define("IMALAN_25", "Click here to delete all unused images");
-define("IMALAN_26", "image(s) deleted");
-
-define("IMALAN_28", "deleted");
-define("IMALAN_29", "No images");
-define("IMALAN_30", "Everyone (public)");
-define("IMALAN_31", "Guests only");
-define("IMALAN_32", "Members only");
-define("IMALAN_33", "Admin only");
-define("IMALAN_34", "Enable Sleight");
-define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
-
-define("IMALAN_36", "Validate avatar size and access");
-define("IMALAN_37", "Avatar Validation");
-define("IMALAN_38", "Maximum allowable width");
-define("IMALAN_39", "Maximum allowable height");
-define("IMALAN_40", "Too wide");
-define("IMALAN_41", "Too high");
-define("IMALAN_42", "Not found");
-define("IMALAN_43", "Delete uploaded avatar");
-define("IMALAN_44", "Delete external reference");
-define("IMALAN_45", "Not found");
-define("IMALAN_46", "Too large");
-define("IMALAN_47", "Total uploaded avatars");
-define("IMALAN_48", "Total external avatars");
-define("IMALAN_49", "Users with avatars");
-define("IMALAN_50", "Total");
-define("IMALAN_51", "Avatar for ");
+define("IMALAN_24", "Fotoðraf");
+define("IMALAN_25", "Tüm kullanýlmayan resimleri silmek için týklayýn");
+define("IMALAN_26", "Resim(ler) silindi");
+define("IMALAN_28", "silindi");
+define("IMALAN_29", "resim yok");
+define("IMALAN_30", "Herkes (umumi)");
+define("IMALAN_31", "Sadece Misafirlere");
+define("IMALAN_32", "Sadece Üyelere");
+define("IMALAN_33", "Sadece Yöneticilere");
+define("IMALAN_34", "Hile yapmaya izin ver");
+define("IMALAN_35", "IE 5/6 daki Alfa saydamlýðý olan PNG-24 leri onar (site Geneli)");
+define("IMALAN_36", "Geçerli avatar boyut ve eriþimi");
+define("IMALAN_37", "Avatar Doðrulamasý");
+define("IMALAN_38", "Ýzin verilen maksimum geniþlik");
+define("IMALAN_39", "Ýzin verilen maksimum yükseklik");
+define("IMALAN_40", "Çok geniþ");
+define("IMALAN_41", "Çok yüksek");
+define("IMALAN_42", "Bulunamadý");
+define("IMALAN_43", "Yüklü avatarý sil");
+define("IMALAN_44", "Harici avatarý sil");
+define("IMALAN_45", "Bulunamadý");
+define("IMALAN_46", "Çok büyük");
+define("IMALAN_47", "Toplam yüklü avatar");
+define("IMALAN_48", "Toplam harici avatar");
+define("IMALAN_49", "Avatarlarýyla kullanýcýlar");
+define("IMALAN_50", "Toplam");
+define("IMALAN_51", "için Avatar");
 
 
 ?>

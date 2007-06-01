@@ -4,37 +4,38 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_frontpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
 
-define("FRTLAN_1", "Front Page settings updated.");
-define("FRTLAN_2", "Set front page for");
-define("FRTLAN_6", "Links");
-// define("FRTLAN_7", "Content Page");
-define("FRTLAN_12", "Update Front Page Settings");
-define("FRTLAN_13", "Front Page Settings");
-define("FRTLAN_15", "Other (enter url):");
-define("FRTLAN_16", "error: no content main parent selected");
-define("FRTLAN_17", "error: no content sub category selected");
-define("FRTLAN_18", "error: no content item selected");
-define("FRTLAN_19", "content main parent");
-define("FRTLAN_20", "content category");
-define("FRTLAN_21", "content item");
+define("FRTLAN_1", "Ön Sayfa Ayarlarý Güncellendi.");
+define("FRTLAN_2", "Þunun için ön sayfa ayarla");
+define("FRTLAN_6", "Baðlantýlar");
+// define("FRTLAN_7", "Ýçerik Sayfasý");
+define("FRTLAN_12", "Ön Sayfa Ayarlarýný Güncelle");
+define("FRTLAN_13", "Ön Sayfa Ayarlarý");
+define("FRTLAN_15", "Diðer (url gir):");
+define("FRTLAN_16", "hata: içerik ana bölümü seçilmedi");
+define("FRTLAN_17", "hata: içerik alt kategorisi seçilmedi");
+define("FRTLAN_18", "hata: içerik nesnesi seçilmedi");
+define("FRTLAN_19", "içerik ana bölümü");
+define("FRTLAN_20", "içerik kategorisi");
+define("FRTLAN_21", "içerik nesnesi");
 // define("FRTLAN_22", "");
 // define("FRTLAN_23", "");
 // define("FRTLAN_24", "");
 // define("FRTLAN_25", "");
 
-define("FRTLAN_26", "all users");
-define("FRTLAN_27", "Guests");
-define("FRTLAN_28", "Members");
-define("FRTLAN_29", "Administrators");
-define("FRTLAN_31", "All Users");
-define("FRTLAN_32", "User Class");
-define("FRTLAN_33", "Current Settings");
-define("FRTLAN_34", "Page");
+define("FRTLAN_26", "tüm üyeler");
+define("FRTLAN_27", "Misafirler");
+define("FRTLAN_28", "Üyeler");
+define("FRTLAN_29", "Yöneticiler");
+define("FRTLAN_31", "Tüm Kullanýcýlar");
+define("FRTLAN_32", "Kullanýcý Sýnýflar");
+define("FRTLAN_33", "Geçerli Ayarlar");
+define("FRTLAN_34", "Sayfa");
 
 ?>

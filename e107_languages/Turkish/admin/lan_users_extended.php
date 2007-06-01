@@ -4,108 +4,94 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|			
 +----------------------------------------------------------------------------+
 */
-define("EXTLAN_1", "Name");
-define("EXTLAN_2", "Preview");
-define("EXTLAN_3", "Values");
-define("EXTLAN_4", "Req'd");
-define("EXTLAN_5", "Applicable");
-define("EXTLAN_6", "Read access");
-define("EXTLAN_7", "Write access");
-define("EXTLAN_8", "Action");
-define("EXTLAN_9", "Extended User Fields");
+define("EXTLAN_1", "Ad");
+define("EXTLAN_2", "Ön izleme");
+define("EXTLAN_3", "Deðerler");
+define("EXTLAN_4", "Gerekli");
+define("EXTLAN_5", "Uygulanabilir");
+define("EXTLAN_6", "Okuma Eriþimi");
+define("EXTLAN_7", "Yazma Eriþimi");
+define("EXTLAN_8", "Eylem");
+define("EXTLAN_9", "Geniþletilmiþ Kullanýcý Alanlarý");
+define("EXTLAN_10", "Alan Adý");
+define("EXTLAN_11", "Alanýn adý tabloda kayýtlý olacaðýndan tek bir isim sahibi olmasý gerekmekte");
+define("EXTLAN_12", "Alan Metni");
+define("EXTLAN_13", "Sunulan sayfalarda gösterilecek alan adý");
+define("EXTLAN_14", "Alan Tipi");
+define("EXTLAN_15", "Alan Ýçerik Metni");
+define("EXTLAN_16", "Varsayýlan Deðer");
+define("EXTLAN_17", "Her satýrda mümkün deðeri girin <br /> VT tablosu için yardým a bakýn.");
+define("EXTLAN_18", "Gerekli");
+define("EXTLAN_19", "Kullanýcýlar kendi ayarlarýný güncellerken buraya bir deðer girmeleri gerekebilir.");
+define("EXTLAN_20", "Hangi kullanýcýlara görünür olacaðýný belirler.");
+define("EXTLAN_21", "Kullanýcý ayarlarýnda kimin bu özelliði göreceðini belirler.");
+define("EXTLAN_22", "Deðeri kullanýcý sayfasýnda kimin göreceðini belirler <br />NOT: Bunu Salt Okunur yapmanýz sadece üyelere ve yöneticiye gösterir.");
+define("EXTLAN_23", "Geniþletilmiþ Alan Ekle");
+define("EXTLAN_24", "Geniþletilmiþ Alan Güncelle");
+define("EXTLAN_25", "Yukarý taþý");
+define("EXTLAN_26", "Aþaðý taþý");
+define("EXTLAN_27", "Silmeyi Onayla");
+define("EXTLAN_28", "Tanýmlanan Geniþletilmiþ Alan yok");
+define("EXTLAN_29", "Geniþletilmiþ Kullanýcý Alanlarý Kaydedildi.");
+define("EXTLAN_30", "Geniþletilmiþ Alan Silindi");
+define("EXTLAN_33", "Düzenleme Ýptal");
+define("EXTLAN_34", "Geniþletilmiþ Alanlar");
+define("EXTLAN_35", "Kategoriler");
+define("EXTLAN_36", "Atanmýþ Kategori Yok");
+define("EXTLAN_37", "hiçbir kategori tanýmlanmamýþ");
+define("EXTLAN_38", "Kategori Adý");
+define("EXTLAN_39", "Kategori Ekle");
+define("EXTLAN_40", "Kategori Oluþturuldu");
+define("EXTLAN_41", "Kategori Silindi");
+define("EXTLAN_42", "Kategori Güncelle");
+define("EXTLAN_43", "Kategori Güncellendi");
+define("EXTLAN_44", "Kategori");
+define("EXTLAN_45", "Yeni Alan Ekle");
+define("EXTLAN_46", "Yardým");
+define("EXTLAN_47", "Yeni Parametre Ekle");
+define("EXTLAN_48", "Yeni Deðer Ekle");
+define("EXTLAN_49", "Kullanýcý Gizleyebilme özelliði ver");
+define("EXTLAN_50", "Bunu evet olarak belirlemeniz kullanýcýya bu deðeri yönetici olmayanlardan gizleme yeteneðini kazandýracaktýr");
+define("EXTLAN_51", "Herhangi geçerli bir w3c parametresi buraya girilebilir<br />örn <i><b>class='tbox' size='40' maxlength='80'</i></b>");
+define("EXTLAN_52", "regex doðrulama kodu");
+define("EXTLAN_53", "Geçerli girdi olduðunu eþleþtirmek için regex kodunu girin <br />**regex sýnýrlayýcýlarý gereklidir**");
+define("EXTLAN_54", "regex baþarýsýzlýk metni");
+define("EXTLAN_55", "Regex doðrulanamadýðýnda gösterilecek hata mesajýný girin.");
+define("EXTLAN_56", "Önceden tanýmlý alanlar");
+define("EXTLAN_57", "Etkinleþtirildi");
+define("EXTLAN_58", "Etkinleþtirilmedi");
+define("EXTLAN_59", "Etkinleþtir");
+define("EXTLAN_60", "Etkinleþtirme");
+define("EXTLAN_61", "Hiçbiri");
+define("EXTLAN_62", "Tablo");
+define("EXTLAN_63", "Alan Id");
+define("EXTLAN_64", "Gösterim Deðeri");
+define("EXTLAN_65", "Hayýr - kayýt sayfasýnda gösterilmeyecek");
+define("EXTLAN_66", "Evet - Kayýt sayfasýnda gösterilecek");
+define("EXTLAN_67", "Hayýr - Kayýt Sayfasýnda gösterilecek");
+define("EXTLAN_68", "Alan:");
+define("EXTLAN_69", "aktifleþtirildi");
+define("EXTLAN_70", "HATA!! Alan:");
+define("EXTLAN_71", "aktifleþtirilemedi!");
+define("EXTLAN_72", "pasifleþtirildi");
+define("EXTLAN_73", "pasifleþtirilemedi!");
+define("EXTLAN_74", "ayrýlmýþ alan adý ve kullanýlamaz.");
+define("EXTLAN_75", "Alan ekleme hatasý");
+define("EXTLAN_76", "Alan adýnda geçersiz karakterler - sadece A-Z, a-z, 0-9, '_' kullanýlabilir.");
+define("EXTLAN_HELP_1", "<b><i>Parametreler:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex valiation code<br />regexfail - validation fail text");
+define("EXTLAN_HELP_2", "Radyo buton yardým metni");
+define("EXTLAN_HELP_3", "Menü yardým metni");
+define("EXTLAN_HELP_4", "<b><i>Deðerler:</i></b><br />HERZAMAN 3 deðer verilmeli:<br /><ol><li>dbtable</li><li> ID içeren alan</li><li>deðer içeren alan</li></ol><br />");
+define("EXTLAN_HELP_5", "Yazý alaný yardým metni");
+define("EXTLAN_HELP_6", "Tamsayý yardým metni");
+define("EXTLAN_HELP_7", "Tarih yardým metni");
+define("EXTLAN_HELP_8", "Kullanýcýlarýn kurulu dilleri seçebilmelerine izin ver");
 
-define("EXTLAN_10", "Field name");
-define("EXTLAN_11", "This is the name of the field as stored in the table, it must be unique from any other, and must not be used in the main user table");
-define("EXTLAN_12", "Field text");
-define("EXTLAN_13", "This is the displayed name of the field in rendered pages");
-define("EXTLAN_14", "Field Type");
-define("EXTLAN_15", "Field include text");
-define("EXTLAN_16", "Default Value");
-define("EXTLAN_17", "Enter each possible value on each line <br /> For DB table see help.");
-define("EXTLAN_18", "Required");
-define("EXTLAN_19", "Users will be required to enter a value in this field when updating their settings.");
-define("EXTLAN_20", "Determines which users this field will apply to.");
-define("EXTLAN_21", "This will determine who will see this field in their usersettings.");
-define("EXTLAN_22", "This will determine who can see the value in the user page <br />NOTE: Setting this to 'Read Only' will make it visible to Admin and the member only.");
-define("EXTLAN_23", "Add Extended Field");
-define("EXTLAN_24", "Update Extended Field");
-define("EXTLAN_25", "move down");
-define("EXTLAN_26", "move up");
-define("EXTLAN_27", "Confirm Delete");
-define("EXTLAN_28", "No extended fields defined");
-define("EXTLAN_29", "Extended user fields saved.");
-define("EXTLAN_30", "Extended field deleted");
-// define("EXTLAN_31", "Extended Field Menu");
-// define("EXTLAN_32", "Extended front page");
-define("EXTLAN_33", "Cancel Edit");
-define("EXTLAN_34", "Extended Fields");
-define("EXTLAN_35", "Categories");
-define("EXTLAN_36", "No assigned Category");
-define("EXTLAN_37", "No categories defined");
-define("EXTLAN_38", "Category name");
-define("EXTLAN_39", "Add category");
-define("EXTLAN_40", "Category created");
-define("EXTLAN_41", "Category deleted");
-define("EXTLAN_42", "Update Category");
-define("EXTLAN_43", "Category Updated");
-define("EXTLAN_44", "Category");
-define("EXTLAN_45", "Add New Field");
-define("EXTLAN_46", "Help");
-define("EXTLAN_47", "Add new parameter");
-define("EXTLAN_48", "Add new value");
-define("EXTLAN_49", "Allow user to hide");
-define("EXTLAN_50", "Setting this to yes will allow the user to hide this value from non-admins");
-define("EXTLAN_51", "Any valid w3c parameter may be entered here<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>");
-define("EXTLAN_52", "regex validation code");
-define("EXTLAN_53", "Enter the regex code that will need to be matched to make it a valid entry <br />**regex delimiters are required**");
-define("EXTLAN_54", "regex failure text");
-define("EXTLAN_55", "Enter the error message that will be shown if the regex validation fails.");
-define("EXTLAN_56", "Predefined Fields");
-define("EXTLAN_57", "Activated");
-define("EXTLAN_58", "Not Activated");
-define("EXTLAN_59", "Activate");
-define("EXTLAN_60", "Deactivate");
-define("EXTLAN_61", "None");
-
-define("EXTLAN_62", "Table");
-define("EXTLAN_63", "Field Id");
-define("EXTLAN_64", "Display Value");
-
-define("EXTLAN_65", "No - Will not show on signup page");
-define("EXTLAN_66", "Yes - Will show on signup page");
-define("EXTLAN_67", "No - Show on signup page");
-
-define("EXTLAN_68", "Field:");
-define("EXTLAN_69", "has been activated");
-define("EXTLAN_70", "ERROR!! Field:");
-define("EXTLAN_71", "was not activated!");
-define("EXTLAN_72", "has been deactivated");
-define("EXTLAN_73", "was not deactivated!");
-define("EXTLAN_74", "is a reserved field name and can not be used.");
-define("EXTLAN_75", "Error adding field to database.");
-define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, '_' allowed.");
-
-
-//textbox
-define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
-//radio buttons
-define("EXTLAN_HELP_2", "Enter text for options in 'Values' box - one box per option. Add new boxes as needed");
-//dropdown
-define("EXTLAN_HELP_3", "Enter text for options in 'Values' box - one box per option. Add new boxes as needed");
-//db field
-define("EXTLAN_HELP_4", "<b><i>Values:</i></b><br />There should be three values given ALWAYS:<br /><ol><li>dbtable</li><li>field containing id</li><li>field containing value</li></ol><br />");
-//textarea
-define("EXTLAN_HELP_5", "Define an area for free-format text. (Set the size in the 'Field include text' box as required)");
-//integer
-define("EXTLAN_HELP_6", "Allow user to enter a numeric value");
-//date
-define("EXTLAN_HELP_7", "Require user to enter a date");
-// Language
-define("EXTLAN_HELP_8", "Allow user to select from installed languages");
 
 ?>

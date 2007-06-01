@@ -4,20 +4,21 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_cache.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:01 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  
 +----------------------------------------------------------------------------+
 */
-define("CACLAN_1", "Cache System Status");
-define("CACLAN_2", "Set cache status");
-define("CACLAN_3", "Cache System");
-define("CACLAN_4", "Cache status set");
-define("CACLAN_5", "Empty Cache");
-define("CACLAN_6", "Cache Emptied");
+define("CACLAN_1", "Önbellek Sistem Durumu");
+define("CACLAN_2", "Önbellek Durumunu Ayarla");
+define("CACLAN_3", "Önbellek Sistemi");
+define("CACLAN_4", "Önbellek durumu ayarlandý");
+define("CACLAN_5", "Önbelleði Boþalt");
+define("CACLAN_6", "Önbellek Boþaltýldý");
+define("CACLAN_7", "Önbellek Kapalý");
+define("CACLAN_9", "Önbellek verisi disk dosyasýna yazýldý");
+define("CACLAN_10", "Önbellek dizini yazýlabilir deðil. lütfen bu dizine CHMOD 0777 izini verin");
 
-define("CACLAN_7", "Cache Disabled");
-// define("CACLAN_8", "Cache data saved to MySQL");
-define("CACLAN_9", "Cache data saved to disk file");
-define("CACLAN_10", "The cache directory is not writable. Please ensure this directory is set CHMOD 0777");
+
 ?>

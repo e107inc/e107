@@ -3,39 +3,39 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_userclass2.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("UCSLAN_1", "Cleared all users from class.");
-define("UCSLAN_2", "Class users updated.");
-define("UCSLAN_3", "Class deleted.");
-define("UCSLAN_4", "Please tick the confirm box to delete this user class");
-define("UCSLAN_5", "Class updated.");
-define("UCSLAN_6", "Class saved to database.");
-define("UCSLAN_7", "No user classes yet.");
-define("UCSLAN_8", "Existing Classes");
+define("UCSLAN_1", "Sýnýftan tüm kullanýcýlar temizlendi.");
+define("UCSLAN_2", "Sýnýf Kullanýcýlarý Güncellendi.");
+define("UCSLAN_3", "Sýnýf Silindi.");
+define("UCSLAN_4", "Lütfen bu sýnýftaki kullanýcýlarý silmek için týklayýn");
+define("UCSLAN_5", "Sýnýf Güncellendi.");
+define("UCSLAN_6", "Sýnýf Veritabanýna Kaydedildi.");
+define("UCSLAN_7", "Henüz kullanýcý sýnýfý yok.");
+define("UCSLAN_8", "Varolan Sýnýflar");
 
-// define("UCSLAN_9", "Edit");
-// define("UCSLAN_10", "Delete");
-define("UCSLAN_11", "tick to confirm");
-define("UCSLAN_12", "Class Name");
-define("UCSLAN_13", "Class Description");
-define("UCSLAN_14", "Update User Class");
-define("UCSLAN_15", "Create New Class");
-define("UCSLAN_16", "Assign users to class");
-define("UCSLAN_17", "Remove");
-define("UCSLAN_18", "Clear Class");
-define("UCSLAN_19", "Assign users to");
-define("UCSLAN_20", "class");
-define("UCSLAN_21", "User Class Settings");
+// define("UCSLAN_9", "Düzenle");
+// define("UCSLAN_10", "Sil");
+define("UCSLAN_11", "doðrulamak için týkla");
+define("UCSLAN_12", "Sýnýf Adý");
+define("UCSLAN_13", "Sýnýf Tanýmý");
+define("UCSLAN_14", "Kullanýcý sýnýfýný Güncelle");
+define("UCSLAN_15", "Yeni Sýnýf Oluþtur");
+define("UCSLAN_16", "Kullanýcýlarý Sýnýfa Ata");
+define("UCSLAN_17", "Kaldýr");
+define("UCSLAN_18", "Sýnýfý Temizle");
+define("UCSLAN_19", "Kullanýcýlarý");
+define("UCSLAN_20", "sýnýfýna ata");
+define("UCSLAN_21", "Kullanýcý Sýnýf Ayarlarý");
 
-define("UCSLAN_22", "Users - click to move ...");
-define("UCSLAN_23", "Users in this class ...");
+define("UCSLAN_22", "Kullanýcýlar - taþýmak için týkla ...");
+define("UCSLAN_23", "Bu sýnýftaki kullanýcýlar ...");
 
-define("UCSLAN_24", "Who can manage class");
+define("UCSLAN_24", "Bu sýnýfý kim yönetecek?");
 
 
 ?>

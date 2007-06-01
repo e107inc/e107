@@ -4,69 +4,58 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	 		
 +----------------------------------------------------------------------------+
 */
-define("UPLLAN_1", "Upload removed from list.");
-define("UPLLAN_2", "Settings saved in database");
-define("UPLLAN_3", "Upload ID");
-
-define("UPLLAN_5", "Poster");
+define("UPLLAN_1", "Yükleme listeden kaldýrýldý.");
+define("UPLLAN_2", "Ayarlar veritabanýna kaydedildi");
+define("UPLLAN_3", "Yükleme ID");
+define("UPLLAN_5", "Gönderen");
 define("UPLLAN_6", "Email");
-define("UPLLAN_7", "Website");
-define("UPLLAN_8", "File Name");
-
-define("UPLLAN_9", "Version");
-define("UPLLAN_10", "File");
-define("UPLLAN_11", "File Size");
-define("UPLLAN_12", "Screenshot");
-define("UPLLAN_13", "Description");
+define("UPLLAN_7", "Web sitesi");
+define("UPLLAN_8", "Dosya Adý");
+define("UPLLAN_9", "Sürüm");
+define("UPLLAN_10", "Dosya");
+define("UPLLAN_11", "Dosya Boyutu");
+define("UPLLAN_12", "Ekran Görüntüsü");
+define("UPLLAN_13", "Taným");
 define("UPLLAN_14", "Demo");
-
-define("UPLLAN_16", "copy to newspost");
-define("UPLLAN_17", "remove upload from list");
-define("UPLLAN_18", "View details");
-define("UPLLAN_19", "There are no unmoderated public uploads");
-define("UPLLAN_20", "There");
-define("UPLLAN_21", "unmoderated public upload");
+define("UPLLAN_16", "haber gönderisine kopyala");
+define("UPLLAN_17", "listeden yüklemeyi kaldýr");
+define("UPLLAN_18", "detaylarý gör");
+define("UPLLAN_19", "Yönetilmemiþ umumi yükleme yok");
+define("UPLLAN_20", "Mevcut");
+define("UPLLAN_21", "yönetilmemiþ umumi yükleme");
 define("UPLLAN_22", "ID");
-define("UPLLAN_23", "Name");
-define("UPLLAN_24", "Filetype");
-define("UPLLAN_25", "Uploads Enabled?");
-define("UPLLAN_26", "No public uploads will be permitted if disabled");
-define("UPLLAN_27", "unmoderated public uploads");
-
-define("UPLLAN_29", "Storage type");
-define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> binary is only suitable for smaller files under approximately 500kb");
-define("UPLLAN_31", "Flatfile");
+define("UPLLAN_23", "Ad");
+define("UPLLAN_24", "Dosya Tipi");
+define("UPLLAN_25", "Yüklemelere Ýzin Verilsin mi?");
+define("UPLLAN_26", "Kapalý olmasý durumunda hiçbir umumi yükleme iþlemi yapýlmaz");
+define("UPLLAN_27", "yönetilmemiþ genel yüklemeler");
+define("UPLLAN_29", "Saklama Tipi");
+define("UPLLAN_30", "Yüklenmiþ dosyalarý nasýl saklayacaðýnýzý seçin, ya sunucunuzda normal dosyalar ya da veritabanýnda çiftli olarak<br /><b>Not</b> Binary olarak bilinen çiftli sistem sadece ortalama 500 KB dan küçük olan dosyalar için uygundur");
+define("UPLLAN_31", "Düz Dosya");
 define("UPLLAN_32", "Binary");
-define("UPLLAN_33", "Maximum file size");
-define("UPLLAN_34", "Maximum upload size in bytes - leave blank to conform to php.ini setting ( php.ini setting is");
-define("UPLLAN_35", "Allowed file types");
-define("UPLLAN_36", "Please enter one type per line");
-define("UPLLAN_37", "Permission");
-define("UPLLAN_38", "Select to allow only certain users to upload");
-define("UPLLAN_39", "Submit");
-
-define("UPLLAN_41", "Please note - file uploads are disabled from your php.ini, it will not be possible to upload files until you set it to On.");
-
-define("UPLLAN_42", "Actions");
-define("UPLLAN_43", "Uploads");
-define("UPLLAN_44", "Upload");
-
-define("UPLLAN_45", "Are you sure you want to delete the following file...");
-
-define("UPLAN_COPYTODLM", "copy to download manager");
-define("UPLAN_IS", "is ");
-define("UPLAN_ARE", "are ");
-define("UPLAN_COPYTODLS", "Copy to Downloads");
-
-define("UPLLAN_48", "For security reasons allowed file types has been moved out of the database into a 
-flatfile located in your admin directory. To use, rename the file e107_admin/filetypes_.php to e107_admin/filetypes.php 
-and add a comma delimited list of file type extensions to it. You should not allow the upload of .html, .txt, etc., as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow 
-the upload of .php files or any other type of executable script.");
+define("UPLLAN_33", "Maks. Dosya Boyutu");
+define("UPLLAN_34", "Byte cinsinden maks. yükleme boyutu - php.ini ayarlarýný geçerli kýlmak için boþ býrakýn ( php.ini ayarlarý þöyle:");
+define("UPLLAN_35", "Ýzin verilen dosya tipleri");
+define("UPLLAN_36", "Lütfen her satýr baþýna bir tip girin");
+define("UPLLAN_37", "Ýzin");
+define("UPLLAN_38", "Sadece belli kullanýcýlarýn yükleme yapabilmesini saðlamak için seçin");
+define("UPLLAN_39", "Gönder");
+define("UPLLAN_41", "Lütfen Dikkat - dosya yüklemeleri php.ini dosyanýzda kapalý, siz bu ayarý açana kadar yüklemeler yapýlamayacaktýr.");
+define("UPLLAN_42", "Eylemler");
+define("UPLLAN_43", "Yüklemeler");
+define("UPLLAN_44", "Yükle");
+define("UPLLAN_45", "Þu dosyayý silmek istediðinizden emin misiniz...");
+define("UPLAN_COPYTODLM", "Dosya Yöneticisine Kopyala");
+define("UPLAN_IS", " ");
+define("UPLAN_ARE", " ");
+define("UPLAN_COPYTODLS", "Dosyalara Kopyala");
+define("UPLLAN_48", "Güvenlik gerekçesiyle izin verilen dosya tipleri yönetici dizininizde bulunan düz bir dosya içine yerleþtirilmiþtir. Kullanmak için, e107_admin/filetypes_.php dosyasýnýn adýný e107_admin/filetypes.php a çevirin ve virgülle ayýrarak listenizi uzatýn. .html, .txt, vb dosyalarýn yüklenmesine izin vermeyin çünkü istenmeyen betikler çalýþtýrarak sitenize saldýrýda bulunabilir. Buna benzer olan .php dosyalarýnýn da yüklenmesine izin vermeyin.");
 
 
 ?>

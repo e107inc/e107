@@ -4,64 +4,47 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_filemanager.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("FMLAN_1", "Uploaded");
-define("FMLAN_2", "to");
-define("FMLAN_3", "directory");
-define("FMLAN_4", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
-// define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
-// define("FMLAN_6", "The uploaded file was only partially uploaded.");
-// define("FMLAN_7", "No file was uploaded.");
-// define("FMLAN_8", "Uploaded file size 0 bytes");
-// define("FMLAN_9", "The file did not upload. Filename");
-// define("FMLAN_10", "Error");
-// define("FMLAN_11", "Probably incorrect permissions on upload directory.");
-define("FMLAN_12", "file");
-define("FMLAN_13", "files");
-define("FMLAN_14", "directory");
-define("FMLAN_15", "directories");
-define("FMLAN_16", "Root directory");
-define("FMLAN_17", "Name");
-define("FMLAN_18", "Size");
-define("FMLAN_19", "Last Modified");
-
-define("FMLAN_21", "Upload file to this dir");
-define("FMLAN_22", "Upload");
-
-define("FMLAN_26", "Deleted");
-define("FMLAN_27", "successfully");
-define("FMLAN_28", "Unable to delete");
-define("FMLAN_29", "Path");
-define("FMLAN_30", "Up level");
-define("FMLAN_31", "folder");
-
-define("FMLAN_32", "Select Directory");
-define("FMLAN_33", "Select");
-define("FMLAN_34", "Directory Choice");
-define("FMLAN_35", "Files Directory");
-
-define("FMLAN_36", "Custom Menus Directory");
-define("FMLAN_37", "Custom Pages Directory");
-
-define("FMLAN_38", "Successfully moved file to");
-define("FMLAN_39", "Unable to move file to");
-define("FMLAN_40", "Newspost-Images Directory");
-
-
-define("FMLAN_43", "Delete selected files");
-
-
-define("FMLAN_46", "Please confirm that you wish to DELETE the selected files.");
-define("FMLAN_47", "User Uploads");
-
-define("FMLAN_48", "Move selected to");
-define("FMLAN_49", "Please confirm you wish to move the selected files.");
-define("FMLAN_50", "Move");
-
+define("FMLAN_1", "Yüklendi");
+define("FMLAN_2", ",");
+define("FMLAN_3", "dizinine yüklendi");
+define("FMLAN_4", "Sunucuya yüklenen dosya php.ini içindeki the upload_max_filesize sýnýrýný aþtý.");
+define("FMLAN_12", "dosya");
+define("FMLAN_13", "dosya");
+define("FMLAN_14", "dizin");
+define("FMLAN_15", "dizin");
+define("FMLAN_16", "Kök Dizin");
+define("FMLAN_17", "Ad");
+define("FMLAN_18", "Boyut");
+define("FMLAN_19", "Son Deðiþtirilme");
+define("FMLAN_21", "Dosyayý bu dizine kopyala");
+define("FMLAN_22", "Yükle");
+define("FMLAN_26", "Silindi");
+define("FMLAN_27", "baþarýyla");
+define("FMLAN_28", "Silinemedi");
+define("FMLAN_29", "Yol");
+define("FMLAN_30", "Üst Seviyeye");
+define("FMLAN_31", "Klasör");
+define("FMLAN_32", "Dizin Seç");
+define("FMLAN_33", "Seç");
+define("FMLAN_34", "Dizin Seçimi");
+define("FMLAN_35", "Dosya Dizini");
+define("FMLAN_36", "Özel Menü Dizini");
+define("FMLAN_37", "Özel Sayfa Dizini");
+define("FMLAN_38", "Dosya baþarýyla þu dizine taþýndý");
+define("FMLAN_39", "Dosya þu dizine taþýnamadý:");
+define("FMLAN_40", "Newspost-Images Dizini");
+define("FMLAN_43", "Seçili Dosyalarý Sil");
+define("FMLAN_46", "Lütfen seçili dosyalarý silmek istediðinizi onaylayýn.");
+define("FMLAN_47", "Kullanýcý Yüklemeleri");
+define("FMLAN_48", "Seçiliyi Þuraya Taþý");
+define("FMLAN_49", "Seçili dosyalarýn taþýnmasýný onaylayýn.");
+define("FMLAN_50", "Taþý");
 
 
 ?>

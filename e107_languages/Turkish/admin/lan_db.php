@@ -4,45 +4,46 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_db.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("DBLAN_1", "Core settings backed up in database.");
-define("DBLAN_2", "Click button to save a backup of your e107 database");
-define("DBLAN_3", "Backup SQL database");
-define("DBLAN_4", "Click button to check validity of e107 database");
-define("DBLAN_5", "Check database validity");
-define("DBLAN_6", "Click button to optimize your e107 database");
-define("DBLAN_7", "Optimize SQL database");
-define("DBLAN_8", "Click button to backup your core settings");
-define("DBLAN_9", "Backup core");
-define("DBLAN_10", "Database Utilities");
-define("DBLAN_11", "MySQL database");
-define("DBLAN_12", "optimized");
-define("DBLAN_13", "Back");
-define("DBLAN_14", "Done");
-define("DBLAN_15", "Click button to check for any available db updates");
-define("DBLAN_16", "Check for Updates");
-define("DBLAN_17", "Pref. Name");
-define("DBLAN_18", "Pref. Value");
-define("DBLAN_19", "Click button to open the preferences editor (for advanced users only)");
-define("DBLAN_20", "Preferences Editor");
-define("DBLAN_21", "Delete Checked");
-define("DBLAN_22", "Plugin: View and Scan");
-define("DBLAN_23", "Scan Completed");
-define("DBLAN_24", "Name");
-define("DBLAN_25", "Directory");
-define("DBLAN_26", "Included add-ons");
-define("DBLAN_27", "Installed");
-define("DBLAN_28", "Click button to scan plugin directories for changes");
-define("DBLAN_29", "Scan plugin directories");
-define("DBLAN_30", " (If an addon shows an error, check for characters outside the PHP opening/closing tags)");
-define("DBLAN_31", "Pass");
-define("DBLAN_32", "Error");
-define("DBLAN_33", "Inaccessible");
-define("DBLAN_34", "Not checked");
+define("DBLAN_1", "Çekirdek ayarlarý veritabanýnda yedeklendi.");
+define("DBLAN_2", "e107 veritabanýnýzýn bir yedeðini almak için buraya týklayýn");
+define("DBLAN_3", "SQL veritabanýný yedekle");
+define("DBLAN_4", "e107 veirtabanýnýzýn geçerliliðini kontrol etmek için buraya týklayýn");
+define("DBLAN_5", "Veritabaný geçerliliðini kontrol et");
+define("DBLAN_6", "e107 veirtabanýnýzý optimize etmek için buraya týklayýn");
+define("DBLAN_7", "SQL veirtabanýný optimize et");
+define("DBLAN_8", "Çekirdek ayarlarýnýzý yedeklemek için buraya týklayýn");
+define("DBLAN_9", "Çekirdeði Yedekle");
+define("DBLAN_10", "Veritabaný izlenceleri");
+define("DBLAN_11", "MySQL veritabaný");
+define("DBLAN_12", "optimize edildi");
+define("DBLAN_13", "Geri");
+define("DBLAN_14", "Tamam");
+define("DBLAN_15", "Herhangi bir veritabaný güncellemesini kontrol etmek için buraya týklayýn");
+define("DBLAN_16", "Güncellemeleri Kontrol Et");
+define("DBLAN_17", "Tercih Adý");
+define("DBLAN_18", "Tercih Deðeri");
+define("DBLAN_19", "Tercih düzenleyicisini açmak için butona týklayýn (sadece ayrýcalýklý üyeler için)");
+define("DBLAN_20", "Tercih Düzenleyicisi");
+define("DBLAN_21", "Seçilileri Sil");
+define("DBLAN_22", "Eklendi: Göster ve Tara");
+define("DBLAN_23", "Tarama Tamamlandý");
+define("DBLAN_24", "Ad");
+define("DBLAN_25", "Dizin");
+define("DBLAN_26", "Ýçerdiði eklentiler");
+define("DBLAN_27", "Kurulu");
+define("DBLAN_28", "Eklenti dizinindeki deðiþiklikleri taramak için butona týklayýn");
+define("DBLAN_29", "Eklenti dizinlerini tara");
+define("DBLAN_30", "(Eðer ek hatalar gözüküyorsa, PHP açýlýþ/kapanýþ taglarýnýn dýþýndaki karakterleri kontrol edin.)");
+define("DBLAN_31", "Tamam");
+define("DBLAN_32", "Hata");
+define("DBLAN_33", "Eriþilemez");
+define("DBLAN_34", "Kontrol edilmedi");
 
 
 ?>

@@ -4,88 +4,77 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("EPL_ADLAN_0", "Install");
-define("EPL_ADLAN_1", "Uninstall");
-define("EPL_ADLAN_2", "Are you certain you want to uninstall this plugin?");
-define("EPL_ADLAN_3", "Confirm uninstall");
-define("EPL_ADLAN_4", "Uninstall cancelled.");
-define("EPL_ADLAN_5", "The install procedure will create new preference entries.");
-define("EPL_ADLAN_6", "... then click here to begin install procedure");
-define("EPL_ADLAN_7", "Database tables successfully upgraded.");
-define("EPL_ADLAN_8", "Preference settings successfully created.");
-define("EPL_ADLAN_9", "SQL commands failed. Check to be sure all upgrade changes are ok.");
-define("EPL_ADLAN_10", "Name");
-define("EPL_ADLAN_11", "Version");
-define("EPL_ADLAN_12", "Author");
-define("EPL_ADLAN_13", "Compatible");
-define("EPL_ADLAN_14", "Description");
-define("EPL_ADLAN_15", "Read the README file for more information");
-define("EPL_ADLAN_16", "Plugin Information");
-define("EPL_ADLAN_17", "More info...");
-define("EPL_ADLAN_18", "Unable to successfully create table(s) for this plugin.");
-define("EPL_ADLAN_19", "Database tables successfully created.");
-// define("EPL_ADLAN_20", "Preference settings successfully created."); // duplicate of EPL_ADLAN_8;
-
-define("EPL_ADLAN_21", "Plugin is already installed.");
-define("EPL_ADLAN_22", "Installed");
-define("EPL_ADLAN_23", "Not installed");
-define("EPL_ADLAN_24", "Upgrade available");
-define("EPL_ADLAN_25", "No install required");
-define("EPL_ADLAN_26", "... then click here to begin uninstall procedure");
-define("EPL_ADLAN_27", "Unable to successfully delete ");
-define("EPL_ADLAN_28", "Database tables successfully deleted.");
-define("EPL_ADLAN_29", "Preference settings successfully deleted.");
-define("EPL_ADLAN_30", "please delete it manually.");
-define("EPL_ADLAN_31", "Please now delete the folder ");
-define("EPL_ADLAN_32", "and all files inside it to complete the uninstall process.");
-define("EPL_ADLAN_33", "Plugin successfully installed.");
-define("EPL_ADLAN_34", "Plugin successfully updated.");
-define("EPL_ADLAN_35", "Parser settings successfully added.");
-define("EPL_ADLAN_36", "Parser code insert failed, incorrectly formatted.");
-
-define("EPL_ADLAN_37", "Upload plugin (.zip or .tar.gz format)");
-define("EPL_ADLAN_38", "Upload Plugin");
-define("EPL_ADLAN_39", "The file could not be uploaded as the ".e_PLUGIN." folder does not have the correct permissions - please CHMOD to 777 and re-upload the file.");
-define("EPL_ADLAN_40", "Admin Message");
-define("EPL_ADLAN_41", "That file does not appear to be a valid .zip or .tar archive.");
-define("EPL_ADLAN_42", "An error has occurred, unable to un-archive the file");
-define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped, please scroll down to see your plugin in the list.");
-define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as your plugins folder does not have the correct permissions - please CHMOD your e107_plugins folder to 777.");
-define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menus.php'>your menus page</a>.");
-define("EPL_ADLAN_46", "PCLZIP extract error:");
-define("EPL_ADLAN_47", "PCLTAR extract error: ");
-define("EPL_ADLAN_48", "code:");
-
-// define("EPL_CANCEL", "Cancel"); use LAN_CANCEL instead !!
-// define("EPL_EMAIL", "email");
-define("EPL_WEBSITE", "Website");
-// define("EPL_OPTIONS", "Options"); use LAN_OPTIONS instead!
-define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
-define("EPL_DIRECTORY", "directory.");
-define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
-define("EPL_UPGRADE", "Upgrade");
-
-define("EPL_ADLAN_50", "Comments successfully deleted");
-
-define("EPL_ADLAN_53", "Directory not writable");
-define("EPL_ADLAN_54", "Please select the option for uninstalling the plugin:");
-define("EPL_ADLAN_55", "Uninstall plugin");
-
-define("EPL_ADLAN_57", "Delete plugin tables");
-define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail. Tables will have to be manually deleted to remove.");
-define("EPL_ADLAN_59", "Delete plugin files");
-define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
-// define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
-define("EPL_ADLAN_62", "Cancel uninstall");
-define("EPL_ADLAN_63", "Uninstall:");
-
-define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
-define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
+define("EPL_ADLAN_0", "Yükle");
+define("EPL_ADLAN_1", "Kaldýr");
+define("EPL_ADLAN_2", "Bu eklentiyi kaldýrmak istediðinizden emin misiniz?");
+define("EPL_ADLAN_3", "Özel silme");
+define("EPL_ADLAN_4", "Kaldýrma Ýptal Edildi.");
+define("EPL_ADLAN_5", "Yükleme prosedürü yeni tercih girdileri oluþturacaktýr.");
+define("EPL_ADLAN_6", "... yükleme prosedürünü baþlatmak için buraya týklayýn");
+define("EPL_ADLAN_7", "Veritabaný tablolarý baþarýyla oluþturuldu.");
+define("EPL_ADLAN_8", "Tercih ayarlarý baþarýyla oluþturuldu.");
+define("EPL_ADLAN_9", "SQL komutlarý baþarýsýz oldu. Tüm güncellemelerin doðru olduðundan emin olun.");
+define("EPL_ADLAN_10", "Ad");
+define("EPL_ADLAN_11", "Sürüm");
+define("EPL_ADLAN_12", "Yazar");
+define("EPL_ADLAN_13", "Uyumluluk");
+define("EPL_ADLAN_14", "Taným");
+define("EPL_ADLAN_15", "Daha fazla bilgi için BENÝ OKU dosyasýný oku");
+define("EPL_ADLAN_16", "Eklenti Bilgisi");
+define("EPL_ADLAN_17", "Daha Fazla...");
+define("EPL_ADLAN_18", "Bu eklenti için tablo(lar) baþarýyla oluþturulamadý.");
+define("EPL_ADLAN_19", "Veritabaný tablolarý baþarýyla oluþturuldu.");
+define("EPL_ADLAN_21", "Eklenti zaten yüklü.");
+define("EPL_ADLAN_22", "Yüklü");
+define("EPL_ADLAN_23", "Yüklü Deðil");
+define("EPL_ADLAN_24", "Güncelleme Mevcut");
+define("EPL_ADLAN_25", "Yükleme Gerekmez");
+define("EPL_ADLAN_26", "... kaldýrma prosedürüne baþlamak için buraya týklayýn");
+define("EPL_ADLAN_27", "Baþarýyla silinemedi ");
+define("EPL_ADLAN_28", "Veritabaný tablolarý baþarýyla silindi.");
+define("EPL_ADLAN_29", "Tercih ayarlarý baþarýyla silindi.");
+define("EPL_ADLAN_30", "lütfen elle silin.");
+define("EPL_ADLAN_31", "lütfen kaldýrma iþlemini tamamlamak için þimdi ");
+define("EPL_ADLAN_32", "klasörünü ve içindekileri silin.");
+define("EPL_ADLAN_33", "Eklenti Baþarýyla yüklendi.");
+define("EPL_ADLAN_34", "Eklenti baþarýyla güncellendi.");
+define("EPL_ADLAN_35", "Ayrýþtýrýcý ayarlarý baþarýyla eklendi.");
+define("EPL_ADLAN_36", "Ayrýþtýrýcý kod giriþi baþarýsýz, yanlýþ biçimlendirilmiþ.");
+define("EPL_ADLAN_37", "Eklenti Yükle (.zip yada .tar.gz biçiminde)");
+define("EPL_ADLAN_38", "Eklenti Yükle");
+define("EPL_ADLAN_39", " ".e_PLUGIN." klasörü doðru izinlere sahip olmadýðý için dosya yüklenemiyor - lütfen dosyayý yeniden yüklemek için CHMOD  777yapýn.");
+define("EPL_ADLAN_40", "Yönetici Mesajý");
+define("EPL_ADLAN_41", "Bu dosya geçerli bir .zip yada .tar dosyasýna benzemiyor.");
+define("EPL_ADLAN_42", "Bir hata oluþtu, sýkýþtýrýlmýþ dosya açýlamýyor");
+define("EPL_ADLAN_43", "Eklentiniz yüklendi ve açýldý, lütfen listede eklentinizi görmek için aþaðýya kaydýrýn.");
+define("EPL_ADLAN_44", "Eklenti dizininiz doðru izinlere sahip olmadýðý için OTO EKLENTÝ YÜKLEME ve AÇMA kapatýldý - lütfen e107_plugins klasörünüze CHMOD 777 uygulayýn.");
+define("EPL_ADLAN_45", "Menü nesneniz yüklendi ve açýldý, etkinleþtirmek için <a href='".e_ADMIN."menus.php'>Menüleriniz sayfasýna gidin</a>.");
+define("EPL_ADLAN_46", "PCLZIP açma hatasý:");
+define("EPL_ADLAN_47", "PCLTAR açma hatasý:");
+define("EPL_ADLAN_48", "kod:");
+define("EPL_WEBSITE", "Web Site");
+define("EPL_NOINSTALL", "Hiçbir yükleme gerekmez, sadece menü ekranýndan etkinleþtirin. Kaldýrmak için, ");
+define("EPL_DIRECTORY", "dizinini silin.");
+define("EPL_NOINSTALL_1", "Hiçbir yükleme gerekmez, kaldýrmak için þunu silin: ");
+define("EPL_UPGRADE", "Güncelle");
+define("EPL_ADLAN_50", "Yorumlar Baþarýyla silindi");
+define("EPL_ADLAN_53", "Dizin yazýlabilir deðil");
+define("EPL_ADLAN_54", "Kaldýrýlacak eklenti için seçeneði seçin:");
+define("EPL_ADLAN_55", "Eklentiyi Kaldý");
+define("EPL_ADLAN_57", "Eklenti tablolarýný sil");
+define("EPL_ADLAN_58", "Eðer tablolar silinmezse, eklenti yeniden yüklendiðinde veri kaybý olmaz. Yeniden kurulum aþamasýnda hatalar oluþacaktýr. Tablolarý elle de kaldýrabilirsiniz.");
+define("EPL_ADLAN_59", "Eklenti dosyalarýný sil");
+define("EPL_ADLAN_60", "e107 eklentiyle ilgili bütün dosyalarý silecek.");
+define("EPL_ADLAN_62", "Kaldýrmaktan Vazgeç");
+define("EPL_ADLAN_63", "Kaldýr:");
+define("LAN_UPGRADE_SUCCESSFUL", "Güncelleme Baþarýlý");
+define("LAN_INSTALL_SUCCESSFUL", "Kurulum Baþarýlý");
 
 
 ?>

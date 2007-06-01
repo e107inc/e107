@@ -2,102 +2,93 @@
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_mailout.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("PRFLAN_52", "Save Changes");
-define("PRFLAN_63", "Send test email");
-define("PRFLAN_64", "Clicking button will send test email to main admin email address");
-define("PRFLAN_65", "Click to send email to");
-define("PRFLAN_66", "Test email from");
-define("PRFLAN_67", "This is a test email, it appears that your email settings are working ok!\n\nRegards\nfrom the e107 website system.");
-define("PRFLAN_68", "The email could not be sent. It appears that your server is not correctly configured to send emails, please try again using SMTP, or contact your hosts and ask them to check their sendmail / email server settings.");
-define("PRFLAN_69", "The email has been successfully sent, please check your inbox.");
-define("PRFLAN_70", "Emailing method");
-define("PRFLAN_71", "If unsure, leave as php");
-define("PRFLAN_72", "SMTP Server");
-define("PRFLAN_73", "SMTP Username");
-define("PRFLAN_74", "SMTP Password");
-define("PRFLAN_75", "The email could not be sent. Please review your SMTP settings, or disable SMTP and try again.");
-
-define("MAILAN_01","From Name");
-define("MAILAN_02","From Email");
-define("MAILAN_03","To");
-define("MAILAN_04","Cc");
-define("MAILAN_05","Bcc");
-define("MAILAN_06","Subject");
-define("MAILAN_07","Attachment");
-define("MAILAN_08","Send Email");
-define("MAILAN_09","Use Theme Style");
-define("MAILAN_10","User Subscribed");
-define("MAILAN_11","Insert Variables");
-define("MAILAN_12","All Members");
-define("MAILAN_13","All Unverified Members ");
-define("MAILAN_14","It is recommended that you enable SMTP for sending large numbers of emails - set in preferences below.");
-define("MAILAN_15","Mail-Out");
-
-define("MAILAN_16","username");
-define("MAILAN_17","signup link");
-define("MAILAN_18","user id");
-define("MAILAN_19","There is no email address for site-admin. Please check your preferences and try again.");
-define("MAILAN_20","Sendmail-path");
-define("MAILAN_21","Mass-Mail Entries");
-define("MAILAN_22","There are currently no saved entries");
-define("MAILAN_23","userclass: ");
-define("MAILAN_24", "email(s) are ready to be sent");
-
-define("MAILAN_25", "Pause");
-define("MAILAN_26", "Pause mass-mailing every");
-define("MAILAN_27", "emails");
-define("MAILAN_28", "Pause Length");
-define("MAILAN_29", "seconds");
-define("MAILAN_30", "More than 30 seconds may cause the browser to time-out");
-define("MAILAN_31", "Bounced Email Processing");
-define("MAILAN_32", "Email address");
-define("MAILAN_33", "Incoming Mail");
-define("MAILAN_34", "Account Name");
-define("MAILAN_35", "Password");
-define("MAILAN_36", "Delete Bounced Mails after checking");
-
-define("MAILAN_37", "Proceed");
-define("MAILAN_38", "Cancel");
-define("MAILAN_39", "Emailing");
-define("MAILAN_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
-define("MAILAN_41", "before sending mail from this page.");
-define("MAILAN_42", "Warning");
-define("MAILAN_43", "Username");
-define("MAILAN_44", "User Login");
-define("MAILAN_45", "User Email");
-define("MAILAN_46", "User-Match");
-define("MAILAN_47", "contains");
-define("MAILAN_48", "equals");
+define("PRFLAN_52", "Deðiþiklikleri Kaydet");
+define("PRFLAN_63", "Deneme Maili Gönder");
+define("PRFLAN_64", "Bu butona týklayarak yönetici mailinden bir deneme testi yaparsýnýz");
+define("PRFLAN_65", "Þu kiþiye email göndermek için týkla");
+define("PRFLAN_66", "Test emaili göndereni");
+define("PRFLAN_67", "Bu bir deneme iletisidir, email ayarlarýnýzýn doðru çalýþtýðýný gösterir!\n\nSaygýlarýmýzla,\ne107 web sistemi.");
+define("PRFLAN_68", "Email gönderilemedi. sunucunuzun email göndermek için doðru ayarlanmadýðýný gösterir, lütfen SMTP kullanarak tekrar deneyin, yada sunucu þirketinize baþvurarak email gönderme ayarlarýnýzý sizin için kontrol etmelerini isteyin.");
+define("PRFLAN_69", "Email baþarýyla gönderildi, lütfen gelen kutunuzu kontrol edin.");
+define("PRFLAN_70", "Email gönderme metodu");
+define("PRFLAN_71", "Emin deðilseniz, php olarak býrakýn");
+define("PRFLAN_72", "SMTP Sunucusu");
+define("PRFLAN_73", "SMTP Kullanýcý Adý");
+define("PRFLAN_74", "SMTP Parolasý");
+define("PRFLAN_75", "Email gönderilemedi. SMTP ayarlarýnýzý gözden geçirin, ve yeniden deneyin.");
+define("MAILAN_01", "Gönderen Adý");
+define("MAILAN_02", "Gönderen Maili");
+define("MAILAN_03", "Kime");
+define("MAILAN_04", "Karbon Kopya");
+define("MAILAN_05", "Kör Karbon Kopya");
+define("MAILAN_06", "Konu");
+define("MAILAN_07", "Ek");
+define("MAILAN_08", "Email Gönder");
+define("MAILAN_09", "Tema Stili Kullan");
+define("MAILAN_10", "Kullanýcý Giriþli");
+define("MAILAN_11", "Deðiþken gir");
+define("MAILAN_12", "Tüm Üyeler");
+define("MAILAN_13", "Tüm Doðrulanmamýþ Üyeler ");
+define("MAILAN_14", "Fazla sayýda mail göndermek için SMTP kullanmanýz önerilir - aþaðýdaki tercihlerden ayarlayýn.");
+define("MAILAN_15", "Mail-Gidiþi");
+define("MAILAN_16", "kullanýcý adý");
+define("MAILAN_17", "kayýt linki");
+define("MAILAN_18", "kullanýcý id");
+define("MAILAN_19", "Site yöneticisi için mail adresi yok. Lütfen tercihlerinizi kontrol edip yeniden deneyin.");
+define("MAILAN_20", "Mail Gönderim Yolu");
+define("MAILAN_21", "Toplu Mail Girdileri");
+define("MAILAN_22", "Þu an kayýtlý girdi yok");
+define("MAILAN_23", "kullanýcý sýnýfý: ");
+define("MAILAN_24", "email(ler) þu an beklemede");
+define("MAILAN_25", "Duraklat");
+define("MAILAN_26", "Her toptan-postalamayý duraklat");
+define("MAILAN_27", "epostalar");
+define("MAILAN_28", "Duraklatma Uzunluðu");
+define("MAILAN_29", "saniye");
+define("MAILAN_30", "30 saniyeden fazla olursa tarayýcýnýn zaman aþýmýna uðramasýna sebep olabilir");
+define("MAILAN_31", "Karþýlýksýz Eposta Ýþlemleri");
+define("MAILAN_32", "Eposta Adresi");
+define("MAILAN_33", "Gelen Posta");
+define("MAILAN_34", "Hesap Adý");
+define("MAILAN_35", "Parola");
+define("MAILAN_36", "Kontrolden sonra karþýlýksýz postalarý sil");
+define("MAILAN_37", "Devam ediyor");
+define("MAILAN_38", "Vazgeç");
+define("MAILAN_39", "Epostalama");
+define("MAILAN_40", "<b>.htaccess</b> dosyasýný <b>e107.htaccess</b> olarak yeniden adlandýrmalýsýnýz");
+define("MAILAN_41", "bu sayfadan eposta yollamadan önce");
+define("MAILAN_42", "Uyarý");
+define("MAILAN_43", "Kullanýcý Adý");
+define("MAILAN_44", "Kullanýcý Giriþ Adý");
+define("MAILAN_45", "Kullanýcý Eposta");
+define("MAILAN_46", "Kullanýcý-Eþleþtir");
+define("MAILAN_47", "kapsayanlar");
+define("MAILAN_48", "eþit olanlar");
 define("MAILAN_49", "Id");
-define("MAILAN_50", "Author");
-define("MAILAN_51", "Subject");
-define("MAILAN_52", "Lastmod");
-define("MAILAN_53", "Admins");
-define("MAILAN_54", "Self");
-define("MAILAN_55", "Userclass");
-define("MAILAN_56", "Send Mail");
-define("MAILAN_57", "Keep SMTP session alive");
-define("MAILAN_58", "There is a problem with the attachment:");
-define("MAILAN_59", "Mailing Progress");
-define("MAILAN_60", "Sending...");
-define("MAILAN_61", "There are no remaining emails to be sent.");
-define("MAILAN_62", "Emails sent:");
-define("MAILAN_63", "Emails failed:");
-define("MAILAN_64", "Total time elapsed:");
-define("MAILAN_65", "seconds");
-define("MAILAN_66", "Cancelled Successfully");
-define("MAILAN_67", "Use 'POP before SMTP' authentication"); 
-
-
-
-
+define("MAILAN_50", "Yazar");
+define("MAILAN_51", "Konu");
+define("MAILAN_52", "Son Düzenleme");
+define("MAILAN_53", "Yöneticilere");
+define("MAILAN_54", "Kiþiye");
+define("MAILAN_55", "Kullanýcý Sýnýfýna");
+define("MAILAN_56", "Postayý Gönder");
+define("MAILAN_57", "SMTP oturumunu canlý tut");
+define("MAILAN_58", "Bu eklentide sorun var:");
+define("MAILAN_59", "Postalama sürüyor");
+define("MAILAN_60", "Gönderiliyor...");
+define("MAILAN_61", "Gönderilecek eposta kalmadý.");
+define("MAILAN_62", "Gönderilen Epostalar:");
+define("MAILAN_63", "Gönderilemeyen Epostalar:");
+define("MAILAN_64", "Geçen toplam zaman:");
+define("MAILAN_65", "saniye");
+define("MAILAN_66", "Baþarýyla Vazgeçildi");
+define("MAILAN_67", "'SMTP öncesi POP' doðrulamasý kullan");
 
 
 ?>

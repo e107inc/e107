@@ -4,24 +4,25 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_meta.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("METLAN_1", "Meta tags updated in database");
-define("METLAN_2", "Enter additional meta-tags");
-define("METLAN_3", "Enter new meta tag settings");
-define("METLAN_4", "Updated");
-define("METLAN_5", "type your description here");
-define("METLAN_6", "type, a, list, of, your, keywords, here");
-define("METLAN_7", "type your copyright info here");
-define("METLAN_8", "Meta Tags");
+define("METLAN_1", "Meta etiketler veritabanýnda güncellendi");
+define("METLAN_2", "Ýlave meta-tag ekle");
+define("METLAN_3", "Yeni meta tag ayarlarýný gir");
+define("METLAN_4", "Güncellendi");
+define("METLAN_5", "tanýmýnýzý buraya girin");
+define("METLAN_6", "buraya ANAHTAR KELÝME, LÝSTENÝZÝ, GÝRÝN...");
+define("METLAN_7", "telif hakký bilginizi buraya girin");
+define("METLAN_8", "Meta Taglar");
+define("METLAN_9", "Taným");
+define("METLAN_10", "Anahtar Kelimeler");
+define("METLAN_11", "Telif Hakký");
+define("METLAN_12", "Haber baþlýðý ve özetlerini haber sayfasý için meta-açýklamasý olarak kullan.");
+define("METLAN_13", "Yazar");
 
-define("METLAN_9", "Description");
-define("METLAN_10", "Keywords");
-define("METLAN_11", "Copyright");
-define("METLAN_12", "Use News title and summary as the meta-description on news pages.");
-define("METLAN_13", "Author");
 
 ?>

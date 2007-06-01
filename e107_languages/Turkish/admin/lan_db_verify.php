@@ -4,30 +4,31 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_db_verify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("DBLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/admin/sql</b> directory.");
-define("DBLAN_2", "Verifying all");
+define("DBLAN_1", "Sql veri dosyasý okunamýyor<br /><br />Lütfen <b>core_sql.php</b> dosyasýnýn <b>/admin/sql</b> dizininde olduðundan emin olun.");
+define("DBLAN_2", "Tümü Doðrulanýyor");
 
-define("DBLAN_4", "Table");
-define("DBLAN_5", "Field");
-define("DBLAN_6", "Status");
-define("DBLAN_7", "Notes");
-define("DBLAN_8", "Mismatch");
-define("DBLAN_9", "Currently");
-define("DBLAN_10", "should be");
-define("DBLAN_11", "Field missing");
-define("DBLAN_12", "Extra Field!");
-define("DBLAN_13", "Table missing!");
-define("DBLAN_14", "Choose table(s) to validate");
-define("DBLAN_15", "Start Verify");
-define("DBLAN_16", "SQL Verification");
-define("DBLAN_17", "Back");
-define("DBLAN_18", "tables");
-define("DBLAN_19", "Attempt to Fix");
-define("DBLAN_20", "Attempting to fix tables");
-define("DBLAN_21", "Fix Selected Items");
+define("DBLAN_4", "Tablo");
+define("DBLAN_5", "Alan");
+define("DBLAN_6", "Durum");
+define("DBLAN_7", "Notlar");
+define("DBLAN_8", "Uyumsuzluklar");
+define("DBLAN_9", "Þu an");
+define("DBLAN_10", "olmalý");
+define("DBLAN_11", "Alan Eksik");
+define("DBLAN_12", "Fazladan alan!");
+define("DBLAN_13", "Tablo eksik!");
+define("DBLAN_14", "Doðrulamak için tablo(larý) seç");
+define("DBLAN_15", "Doðrulamaya Baþla");
+define("DBLAN_16", "SQL Doðrulama");
+define("DBLAN_17", "Geri");
+define("DBLAN_18", "tablolar");
+define("DBLAN_19", "Düzeltmeyi Dene");
+define("DBLAN_20", "Tablolarý Düzeltmeyi dene");
+define("DBLAN_21", "Seçili Nesneleri Düzelt");
 ?>

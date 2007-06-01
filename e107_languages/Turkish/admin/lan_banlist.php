@@ -4,22 +4,24 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_banlist.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:01 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("BANLAN_1", "Ban removed.");
-define("BANLAN_2", "No bans.");
-define("BANLAN_3", "Existing Bans");
-define("BANLAN_4", "Remove ban");
-define("BANLAN_5", "Enter IP, email address, or host");
-define("BANLAN_7", "Reason");
-define("BANLAN_8", "Ban Address");
-define("BANLAN_9", "Ban users from site by email, IP or host address");
-define("BANLAN_10", "IP / Email / Reason");
-define("BANLAN_11", "Auto-ban: More than 10 failed login attempts");
-define("BANLAN_12", "Note: Reverse DNS is currently disabled, it must be enabled to allow banning by host.  Banning by IP and email will still function normally.");
-define("BANLAN_13", "Note: To ban a user by user name, go to the users admin page: ");
+define("BANLAN_1", "Yasak Kaldýrýldý.");
+define("BANLAN_2", "Yasaklanan yok");
+define("BANLAN_3", "Var olan yasaklar");
+define("BANLAN_4", "Yasak Kaldýr");
+define("BANLAN_5", "IP, email adresi, yada host girin");
+define("BANLAN_7", "Neden");
+define("BANLAN_8", "Kullanýcý Yasakla");
+define("BANLAN_9", "Þu siteden gelen kullanýcýlarý yasakla");
+define("BANLAN_10", "IP / Email / Neden");
+define("BANLAN_11", "Otomatik yasak: 10 dan fazla baþarýsýz giriþ denemesi");
+define("BANLAN_12", "Not: Zýt DNS þu an devre dýþý, sunucu tarafýndan yasaklamaya izin vermek için aktifleþtirmelisiniz. Yasaklananýn IP ve eposta hala normal fonksiyonlanacak");
+define("BANLAN_13", "Not: Kullanýcý yasaklanmýþtýr, kullanýcýlar yönetici sayfasýna gidin:");
+
 
 ?>

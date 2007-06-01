@@ -4,18 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_updateadmin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("UDALAN_1", "Error - please re-submit");
-define("UDALAN_2", "Settings updated");
-define("UDALAN_3", "Settings updated for");
-define("UDALAN_4", "Name");
-define("UDALAN_5", "Password");
-define("UDALAN_6", "Re-type password");
-define("UDALAN_7", "Change password");
-define("UDALAN_8", "Password updated for");
+define("UDALAN_1", "Hata - lütfen yeniden gönderin");
+define("UDALAN_2", "Ayarlar Güncellendi");
+define("UDALAN_3", "Ayarlar þunun için güncellendi:");
+define("UDALAN_4", "Ad");
+define("UDALAN_5", "Parola");
+define("UDALAN_6", "Tekrar Parola");
+define("UDALAN_7", "Parolayý Deðiþtir");
+define("UDALAN_8", "Parola bu kullanýcý için güncellendi");
+
 
 ?>

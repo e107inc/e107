@@ -4,32 +4,30 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_lancheck.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  
 +----------------------------------------------------------------------------+
 */
-define("LAN_CHECK_1", "Verify/Edit Language Files"); // modified in 0.7.6
-define("LAN_CHECK_2", "Begin Verify");
-define("LAN_CHECK_3", "Verification of");
-define("LAN_CHECK_4", "File missing!");
-define("LAN_CHECK_5", "Phrase missing!");
-
-define("LAN_CHECK_7", "phrase");
-
-define("LAN_CHECK_8", "A file is missing...");
-define("LAN_CHECK_9", " files are missing...");
-define("LAN_CHECK_10", "Critical error: ");
-define("LAN_CHECK_11", "No files missing !");
-define("LAN_CHECK_12", "A file is wrong...");
-define("LAN_CHECK_13", " files are wrong...");
-define("LAN_CHECK_14", "All existing files are valid !");
-
-define("LAN_CHECK_15", "Illegal characters found before '&lt;?php'");
-define("LAN_CHECK_16", "Original File");
-define("LAN_CHECK_17", "A write problem occured while trying to save the file.");
-define("LAN_CHECK_18", "Language files in the standard format are NOT available for this plugin/theme.");
-define("LAN_CHECK_19", "Non-UTF-8 characters found!");
+define("LAN_CHECK_1", "Doðrulamak için dil seçin");
+define("LAN_CHECK_2", "Doðrulamaya Baþla");
+define("LAN_CHECK_3", "Þunu doðrulamasý:");
+define("LAN_CHECK_4", "Dosya Eksik!");
+define("LAN_CHECK_5", "Cümle eksik!");
+define("LAN_CHECK_7", "cümle");
+define("LAN_CHECK_8", "Bir dosya eksik...");
+define("LAN_CHECK_9", " dosyalar eksik...");
+define("LAN_CHECK_10", "Önemli hata: ");
+define("LAN_CHECK_11", "Hiçbir dosya eksik deðil !");
+define("LAN_CHECK_12", "Bir dosya yanlýþ...");
+define("LAN_CHECK_13", " dosyalar yanlýþ...");
+define("LAN_CHECK_14", "Tüm dosyalar geçerli !");
+define("LAN_CHECK_15", "Geçersiz karakterler bulundu");
+define("LAN_CHECK_16", "Orijinal Dosya");
+define("LAN_CHECK_17", "Dosya kaydedilirken yazma hatsý oldu.");
+define("LAN_CHECK_18", "Bu eklenti/tema için standart biçimde dil dosyalarý bulunamadý.");
+define("LAN_CHECK_19", "UTF-8'e uygun olmayan karakter bulundu!");
 
 
 ?>

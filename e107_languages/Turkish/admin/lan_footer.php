@@ -4,28 +4,30 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_footer.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:12 $
 |     $Author: whoisbig $
+|	  
 +----------------------------------------------------------------------------+
 */
 define("FOOTLAN_1", "Site");
-define("FOOTLAN_2", "Head Admin");
-define("FOOTLAN_3", "Version");
-define("FOOTLAN_4", "build");
-define("FOOTLAN_5", "Admin Theme");
-define("FOOTLAN_6", "by");
-define("FOOTLAN_7", "Info");
-define("FOOTLAN_8", "Install date");
-define("FOOTLAN_9", "Server");
+define("FOOTLAN_2", "Ana Yönetici");
+define("FOOTLAN_3", "Sürüm");
+define("FOOTLAN_4", "mimari");
+define("FOOTLAN_5", "Tema");
+define("FOOTLAN_6", "tarafýndan");
+define("FOOTLAN_7", "Bilgi");
+define("FOOTLAN_8", "Tarih Kur");
+define("FOOTLAN_9", "Sunucu");
 define("FOOTLAN_10", "host");
-define("FOOTLAN_11", "PHP Version");
+define("FOOTLAN_11", "PHP sürümü");
 define("FOOTLAN_12", "MySQL");
-define("FOOTLAN_13", "Site Info");
-define("FOOTLAN_14", "Show Docs");
-define("FOOTLAN_15", "Documentation");
-define("FOOTLAN_16", "Database");
-define("FOOTLAN_17", "Charset");
-define("FOOTLAN_18", "Site Theme");
+define("FOOTLAN_13", "Site Bilgisi");
+define("FOOTLAN_14", "Belgeleri Göster");
+define("FOOTLAN_15", "Belgelemeler");
+define("FOOTLAN_16", "Veritabaný");
+define("FOOTLAN_17", "Karakter Kodu");
+define("FOOTLAN_18", "Site Temasý");
+
 
 ?>

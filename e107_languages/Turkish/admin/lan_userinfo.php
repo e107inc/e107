@@ -4,17 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_userinfo.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	 		
 +----------------------------------------------------------------------------+
 */
-define("USFLAN_1", "Unable to find poster's IP address - no information is available.");
-// define("USFLAN_2", "Error");
-define("USFLAN_3", "Messages posted from IP address");
-define("USFLAN_4", "Host");
-define("USFLAN_5", "Click here to transfer IP address to admin ban page");
-define("USFLAN_6", "User ID");
-define("USFLAN_7", "User Information");
+define("USFLAN_1", "Gönderenin IP adresi bulunamýyor - mümkün bilgi yok.");
+define("USFLAN_3", "Mesajlar þu IP adresinden gönderildi");
+define("USFLAN_4", "Sunucu");
+define("USFLAN_5", "Ip adreslerini Yönetici Yasak listesine taþýmak için týkla");
+define("USFLAN_6", "Kullanýcý ID");
+define("USFLAN_7", "Kullanýcý Bilgisi");
+
 
 ?>

@@ -4,31 +4,22 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_wmessage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	 		
 +----------------------------------------------------------------------------+
 */
-// define("WMGLAN_1", "Message for Guests");
-// define("WMGLAN_2", "Message for Members");
-// define("WMGLAN_3", "Message for Administrators");
-// define("WMGLAN_4", "Submit");
-// define("WMGLAN_5", "Set Welcome Message");
-// define("WMGLAN_6", "Activate?");
-// define("WMGLAN_7", "Welcome message settings updated.");
+define("WMLAN_00", "Karþýlama Mesajlarý");
+define("WMLAN_01", "Yeni Mesaj Oluþtur");
+define("WMLAN_02", "Mesaj");
+define("WMLAN_03", "Görünürlük");
+define("WMLAN_04", "Mesaj Metni");
+define("WMLAN_05", "Ekle");
+define("WMLAN_06", "Seçiliyse, mesaj kutu içinde gösterilir");
+define("WMLAN_07", "{WMESSAGE} kýsa kodunu kullanmak için standart sistemin üstüne yaz:");
+define("WMLAN_09", "Henüz karýþýlama mesajý girilmemiþ");
+define("WMLAN_10", "Mesaj Baþlýðý");
 
-define("WMLAN_00","Welcome Messages");
-define("WMLAN_01","Create New Message");
-define("WMLAN_02","Message");
-define("WMLAN_03","Visibility");
-define("WMLAN_04","Message Text");
-
-define("WMLAN_05","Enclose");
-define("WMLAN_06","If ticked, the message will be rendered inside box");
-define("WMLAN_07","Override standard system to use {WMESSAGE} shortcode:");
-// define("WMLAN_08","Preferences");
-
-define("WMLAN_09","No welcome messages set yet");
-define("WMLAN_10","Message Caption");    
 
 ?>

@@ -4,17 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_ugflag.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:03 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("UGFLAN_1", "maintenance setting updated");
-define("UGFLAN_2", "Activate maintenance flag");
-define("UGFLAN_3", "Update Maintenance Setting");
-define("UGFLAN_4", "Maintenance Setting");
+define("UGFLAN_1", "bakým ayarý güncellendi");
+define("UGFLAN_2", "Bakým bayraðýný etkinleþtir");
+define("UGFLAN_3", "Bakým ayarlarýný güncelle");
+define("UGFLAN_4", "Bakým Ayarlarý");
 
-define("UGFLAN_5", "Text to display when site down");
-define("UGFLAN_6", "Leave blank to display default message");
+define("UGFLAN_5", "Site kapalý olduðunda gösterilecek metin");
+define("UGFLAN_6", "Varsayýlan iletinin gösterilmesi için boþ býrakýn");
 
 ?>

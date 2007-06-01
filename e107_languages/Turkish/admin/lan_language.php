@@ -4,35 +4,32 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_language.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	 
 +----------------------------------------------------------------------------+
 */
-
-define("LANG_LAN_00","could not be created.(already exists)");
-define("LANG_LAN_01","was deleted(if existing) and created.");
-define("LANG_LAN_02","couldn't be deleted");
-define("LANG_LAN_03","Tables");
-
-define("LANG_LAN_05","Not Installed");
-define("LANG_LAN_06", "Create tables");
-define("LANG_LAN_07", "Drop existing tables?");
-define("LANG_LAN_08", "Replace existing tables (data will be lost).");
-define("LANG_LAN_10", "Confirm delete");
-define("LANG_LAN_11", "Delete unchecked tables above (if they exist).");
-define("LANG_LAN_12", "Enable Multi-Language Tables");
-define("LANG_LAN_13", "Language Preferences");
-define("LANG_LAN_14", "Default Site Language");
-define("LANG_LAN_15", "Tick to copy data from the default language. (Useful for links, news-categories, etc.)");
-define("LANG_LAN_16", "Multi-language Database Usage");
-define("LANG_LAN_17", "Default Language - No additional tables required.");
-define("LANG_LAN_18", "Use Parked Subdomains to set Language:");
-define("LANG_LAN_19", "e.g. fr.mydomain.com to set the language to French.");
-define("LANG_LAN_20", "Enter the main domain name to enable. e.g. mydomain.com");
-
-define("LANG_LAN_21", "Language Tools");
-
+define("LANG_LAN_00", "oluþturulamadý.(zaten mevcut)");
+define("LANG_LAN_01", "silindi(varsa) ve oluþturuldu.");
+define("LANG_LAN_02", "silinemedi");
+define("LANG_LAN_03", "tablolar");
+define("LANG_LAN_05", "Yüklü Deðil");
+define("LANG_LAN_06", "Tablolar Oluþturuluyor");
+define("LANG_LAN_07", "Varolan tablolar býrakýlsýn mý?");
+define("LANG_LAN_08", "Varolan tablolarýn yerini deðiþtir (veriler kaybolabilir).");
+define("LANG_LAN_10", "Silmeyi Onayla");
+define("LANG_LAN_11", "Yukarýda seçilmemiþ tablolarý sil (varsa).");
+define("LANG_LAN_12", "Çoklu Dil Tablolarýna izin ver");
+define("LANG_LAN_13", "Dil Tercihleri");
+define("LANG_LAN_14", "Varsayýlan Site Dili");
+define("LANG_LAN_15", "Varsayýlan dilden veri kopyalamak için týkla.(linkler, haber kategorileri için uygundur) ");
+define("LANG_LAN_16", "Çoklu-Dil Veritabaný Kullanýmý");
+define("LANG_LAN_17", "Varsayýlan Dil - Ek tablolara gerek yok.");
+define("LANG_LAN_18", "Park edilmiþ alt alan adý dilini ayarla:");
+define("LANG_LAN_19", "örn. fr.mydomain.com için Fransýzca ayarlayýn.");
+define("LANG_LAN_20", "Genel alan adýný girerek etkinleþtirin. örn. mydomain.com");
+define("LANG_LAN_21", "Dil Araçlarý");
 
 
 ?>

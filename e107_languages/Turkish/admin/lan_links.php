@@ -4,64 +4,65 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 11:23:13 $
 |     $Author: whoisbig $
+|	  	
 +----------------------------------------------------------------------------+
 */
-define("LCLAN_1", "Options Saved");
-define("LCLAN_2", "Link saved to database.");
-define("LCLAN_3", "Link updated in database.");
-// define("LCLAN_4", "Link deleted.");
-define("LCLAN_6", "Order updated.");
-define("LCLAN_8", "Existing Links");
-define("LCLAN_12", "Link Rendertype");
-define("LCLAN_15", "Link Name");
+define("LCLAN_1", "Seçenekler Kaydedildi");
+define("LCLAN_2", "Link veritabanýna kaydedildi.");
+define("LCLAN_3", "Link veritabanýnda güncellendi.");
+// define("LCLAN_4", "Link silindi.");
+define("LCLAN_6", "Sýra Güncellendi.");
+define("LCLAN_8", "Varolan Linkler");
+define("LCLAN_12", "Link Gösterim tipi");
+define("LCLAN_15", "Link Adý");
 define("LCLAN_16", "Link URL");
-define("LCLAN_17", "Link Description");
-define("LCLAN_18", "Link Button / Icon");
-define("LCLAN_19", "Link Open Type");
-define("LCLAN_20", "Opens in same window");
-define("LCLAN_23", "Opens in new window");
-define("LCLAN_24", "Opens in 600x400 mini-window");
-define("LCLAN_25", "Link Class");
-define("LCLAN_26", "Ticking will make the link visible to only users in that class");
-define("LCLAN_27", "Update Link");
-define("LCLAN_28", "Create link");
-define("LCLAN_29", "Links");
-define("LCLAN_30", "move up");
-define("LCLAN_31", "move down");
-define("LCLAN_39", "View Images");
+define("LCLAN_17", "Link Tanýmý");
+define("LCLAN_18", "Link Butonu / Simgesi");
+define("LCLAN_19", "Link Açýlýþý");
+define("LCLAN_20", "Ayný Sayfa Ýçinde");
+define("LCLAN_23", "Yeni Pencerede");
+define("LCLAN_24", "600x400 mini pencerede");
+define("LCLAN_25", "Link Sýnýfý");
+define("LCLAN_26", "Buraya týklayarak sadece belirtilen sýnýfa bu hakký verirsiniz");
+define("LCLAN_27", "Link Güncelle");
+define("LCLAN_28", "Link Oluþtur");
+define("LCLAN_29", "Linkler");
+define("LCLAN_30", "yukarý taþý");
+define("LCLAN_31", "aþaðý taþý");
+define("LCLAN_39", "Resimleri Gör");
 define("LCLAN_53", "Link");
-define("LCLAN_54", "deleted");
-define("LCLAN_58", "Are you sure you want to delete this link?");
-define("LCLAN_61", "No links");
-define("LCLAN_62", "Links Front Page");
-define("LCLAN_63", "Create New Link");
-define("LCLAN_68", "Links Options");
-define("LCLAN_78", "Show Description as Screen-Tip");
-define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
-define("LCLAN_80", "Activate expanding sub-menus");
-define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Link parent is disabled)");
-define("LCLAN_83", "Submenus Generator");
-define("LCLAN_88", "Site Links Options");
-define("LCLAN_89", "Image");
+define("LCLAN_54", "silindi");
+define("LCLAN_58", "Bu linki silmek istediðinizden emin misiniz?");
+define("LCLAN_61", "Link yok");
+define("LCLAN_62", "Linkler Ön sayfasý");
+define("LCLAN_63", "Yeni Link Oluþtur");
+define("LCLAN_68", "Link Seçenekleri");
+define("LCLAN_78", "Tanýmý ekran yardýmcýsý olarak göster");
+define("LCLAN_79", "Taným, fare link üstüne gittiðinde açýklama olarak gösterilecektir");
+define("LCLAN_80", "Açýlan Alt Menüleri Aktif et");
+define("LCLAN_81", "Alt menüler sadece ana linke týklandýðýnda gösterilir. (ana link kapalý)");
+define("LCLAN_83", "Alt Menü Oluþturucu");
+define("LCLAN_88", "Site Linklerinin Seçenekleri");
+define("LCLAN_89", "Resim");
+define("LCLAN_90", "Link Adý");
+define("LCLAN_91", "Taþý");
+define("LCLAN_95", "Sýnýf");
 
-define("LCLAN_91", "Move");
-define("LCLAN_95", "Class");
-
-define("LCLAN_96", "Shown in your theme as");
+define("LCLAN_96", "Temanýzda gösterimi");
 
 
-define("LINKLAN_1", "Opens in 800x600 window");
-define("LINKLAN_2", "Parent");
-define("LINKLAN_3", "No Parent (Normal Link)");
-define("LINKLAN_4", "Sublink Generator");
-define("LINKLAN_5", "Generate Sublinks");
-define("LINKLAN_6", "Create sublinks from:");
-define("LINKLAN_7", "Create sublinks under which link?");
-define("LINKLAN_8", "News Categories");
-define("LINKLAN_9", "Download Categories");
-define("LINKLAN_10", "Create Sublink");
+define("LINKLAN_1", "800x600 pencerede aç");
+define("LINKLAN_2", "Ana");
+define("LINKLAN_3", "Ana yok (Normal Link)");
+define("LINKLAN_4", "Alt link oluþturucu");
+define("LINKLAN_5", "Alt linkler oluþtur");
+define("LINKLAN_6", "Þuradan alt linkler oluþtur:");
+define("LINKLAN_7", "alt linkler hangi linkler altýnda görünsün?");
+define("LINKLAN_8", "Haber Kategorileri");
+define("LINKLAN_9", "Dosya Kategorileri");
+define("LINKLAN_10", "Alt Link Oluþtur");
 
 ?>
