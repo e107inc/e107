@@ -4,64 +4,64 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:58 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|		
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Members");
-
-define("LAN_20", "Error");
-define("LAN_112", "Email Address");
-define("LAN_115", "ICQ Number");
-define("LAN_116", "AIM Address");
+define("PAGE_NAME", "Üyeler");
+define("LAN_20", "Hata");
+define("LAN_112", "Email Adresi");
+define("LAN_115", "ICQ Numarasý");
+define("LAN_116", "AIM Ekran Adý");
 define("LAN_117", "MSN Messenger");
-define("LAN_118", "Birthday");
-define("LAN_119", "Location");
-define("LAN_120", "Signature");
-define("LAN_137", "There is no information for that user as they are not registered at");
-define("LAN_138", "Registered members: ");
-define("LAN_139", "Order: ");
-define("LAN_140", "Registered members");
-define("LAN_141", "No registered members yet.");
-define("LAN_142", "Member");
-define("LAN_143", "[hidden by request]");
+define("LAN_118", "Doðum tarihi");
+define("LAN_119", "Yer");
+define("LAN_120", "Ýmza");
+define("LAN_137", "Bu kullanýcý için bilgi yok, kayýt olmamýþ");
+define("LAN_138", "Kayýtlý Kullanýcýlar: ");
+define("LAN_139", "Sýra: ");
+define("LAN_140", "Kayýtlý Kullanýcýlar");
+define("LAN_141", "Kayýtlý kullanýcý yok.");
+define("LAN_142", "Üye");
+define("LAN_143", "[gizli]");
 define("LAN_144", "Website URL");
-define("LAN_145", "Joined");
-define("LAN_146", "Visits to site since registration");
-define("LAN_147", "Chatbox posts");
-define("LAN_148", "Comments posted");
-define("LAN_149", "Forum posts");
-define("LAN_308", "Real Name");
-define("LAN_400", "That is not a valid user.");
-define("LAN_401", "no information");
-define("LAN_402", "Member Profile");
-define("LAN_403", "Site Stats");
-define("LAN_404", "Last visit");
-define("LAN_405", "days ago");
-define("LAN_406", "Rating");
-define("LAN_407", "none");
-define("LAN_408", "no photo");
-define("LAN_409", "points");
-define("LAN_410", "Miscellaneous");
-define("LAN_411", "Click here to update your information");
-define("LAN_412", "Click here to edit this user's information");
-define("LAN_413", "delete photo");
-define("LAN_414", "previous member");
-define("LAN_415", "next member");
-define("LAN_416", "You must be logged in to access this page");
-define("LAN_417", "Main site administrator");
-define("LAN_418", "Site administrator");
-define("LAN_419", "Show");
-define("LAN_420", "DESC");
-define("LAN_421", "ASC");
-define("LAN_422", "Go");
-define("LAN_423", "Click here to View User Comments");
-define("LAN_424", "Click here to View Forum Posts");
-define("LAN_425", "Send Private Message");
-define("LAN_426", "ago");
+define("LAN_145", "Giriþ");
+define("LAN_146", "Kayýttan beri siteyi ziyaret");
+define("LAN_147", "Chatbox mesajlarý");
+define("LAN_148", "Yorumlarý");
+define("LAN_149", "Forum mesajlarý");
+define("LAN_308", "Gerçek Adý");
+define("LAN_400", "Geçersiz kullanýcý ");
+define("LAN_401", "bilgi yok");
+define("LAN_402", "Üye Profili");
+define("LAN_403", "Site Ýstatistikleri");
+define("LAN_404", "Son ziyaret");
+define("LAN_405", "gün önce");
+define("LAN_406", "Derecelendirme");
+define("LAN_407", "yok");
+define("LAN_408", "Resim yok");
+define("LAN_409", "puan");
+define("LAN_410", "Diðer");
+define("LAN_411", "Bilgilerinizi güncellemek için týklayýn");
+define("LAN_412", "Bilgilerini düzenlemek için týkla");
+define("LAN_413", "resmi sil");
+define("LAN_414", "önceki üye");
+define("LAN_415", "sonraki üye");
+define("LAN_416", "Bu sayfaya eriþmek için giriþ yapmanýz gerekiyor...");
+define("LAN_417", "Site Yöneticisi");
+define("LAN_418", "Yönetici");
+define("LAN_419", "Göster");
+define("LAN_420", "AZALAN");
+define("LAN_421", "ARTAN");
+define("LAN_422", "Git");
+define("LAN_423", "Yorumlarý görmek için týklayýn");
+define("LAN_424", "Forum mesajlarýný görmek için týklayýn");
+define("LAN_425", "Özel mesaj yolla");
+define("LAN_426", "önce");
+define("USERLAN_1", "Eþ Deðerli");
+define("USERLAN_2", "Bu sayfaya eriþiminiz engellendi.");
 
-define("USERLAN_1", "Peer Rating");
-define("USERLAN_2", "You do not have access to view this page.");
 
 ?>

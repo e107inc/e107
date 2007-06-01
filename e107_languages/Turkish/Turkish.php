@@ -4,36 +4,29 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/Turkish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:56 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|			
 +----------------------------------------------------------------------------+
 */
 setlocale(LC_ALL, 'tr');
-define("CORE_LC", 'tr');
-define("CORE_LC2", 'tr');
-// define("TEXTDIRECTION","rtl");
-define("CHARSET", "utf-8");  // for a true multi-language site. :)
-define("CORE_LAN1","Error : theme is missing.\\n\\nChange the used themes in your preferences (admin area) or upload files of the current theme on the server.");
+define("CORE_LC", "tr");
+define("CORE_LC2", "tr");
+define("CHARSET", "ISO-8859-9");
+define("CORE_LAN1", "Tema bulunamadý.\\n\\nLütfen temayý deðiþtirin veya gerekli dosyalarý sunucuya yükleyin.");
+define("CORE_LAN2", " \\1yaz:");// "\\1");
+define("CORE_LAN3", "dosya eki devre dýþý");
+define("CORE_LAN4", "Lütfen install.php dosyasýný sunucudan siliniz.");
+define("CORE_LAN5", "aksi halde bu siteniz için potansiyel bir güvenlik açýðý oluþturur.");
+define("CORE_LAN6", "Flood korumasý aktif ve uyarýlýyorsunuz. Devam ederseniz siteye eriþiminiz engellenebilir.");
+define("CORE_LAN7", "Çekirdek ayarlar yüklenmeye çalýþýlýyor.");
+define("CORE_LAN8", "Çekirdek hatasý");
+define("CORE_LAN9", "Çekirdek ayarlar yüklenemedi. Ýþlem durduruldu.");
+define("CORE_LAN10", "Hatalý çerez tespit edildi - oturum kapatýldý.");
+define("LAN_WARNING", "Uyarý!");
+define("LAN_ERROR", "Hata");
+define("LAN_ANONYMOUS", "Anonim");
 
-//v.616
-define("CORE_LAN2"," \\1 wrote:");// "\\1" represents the username.
-define("CORE_LAN3","file attachment disabled");
-
-//v0.7+
-define("CORE_LAN4", "Please delete install.php from your server");
-define("CORE_LAN5", "if you do not there is a potential security risk to your website");
-
-// v0.7.6
-define("CORE_LAN6", "The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.");
-define("CORE_LAN7", "Core is attempting to restore prefs from automatic backup.");
-define("CORE_LAN8", "Core Prefs Error");
-define("CORE_LAN9", "Core could not restore from automatic backup. Execution halted.");
-define("CORE_LAN10", "Corrupted cookie detected - logged out.");
-
-
-define("LAN_WARNING", "Warning!");
-define("LAN_ERROR", "Error");
-define("LAN_ANONYMOUS", "Anonymous");
 
 ?>

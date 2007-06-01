@@ -4,35 +4,36 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:56 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Banner");
+define("PAGE_NAME", "Reklam");
+define("BANNERLAN_16", "Kullanýcý Adý:");
+define("BANNERLAN_17", "Parola :");
+define("BANNERLAN_18", "Devam");
+define("BANNERLAN_19", "Lütfen müþteri adýnýzý ve parolanýzý girerek devam ediniz");
+define("BANNERLAN_20", "Üzgünüm, bu bilgiler veritabanýnda yok. Lütfen ayrýntýlý bilgi için site yöneticisiyle irtibat geçin.");
+define("BANNERLAN_21", "Reklam Ýstatistikleri");
+define("BANNERLAN_22", "Müþteri");
+define("BANNERLAN_23", "Reklam ID");
+define("BANNERLAN_24", "Týklanma");
+define("BANNERLAN_25", "Týklanma Yüzdesi");
+define("BANNERLAN_26", "Etkiler");
+define("BANNERLAN_27", "Alýnan Etki");
+define("BANNERLAN_28", "Kalan Etki");
+define("BANNERLAN_29", "Reklam yok");
+define("BANNERLAN_30", "Sýnýrsýz");
+define("BANNERLAN_31", "Uygun deðil");
+define("BANNERLAN_32", "Evet");
+define("BANNERLAN_33", "Hayýr");
+define("BANNERLAN_34", "Bitiþ:");
+define("BANNERLAN_35", "Týklayan IP Adresleri");
+define("BANNERLAN_36", "Aktif:");
+define("BANNERLAN_37", "Baþlangýç:");
+define("BANNERLAN_38", "Hata");
 
-define("BANNERLAN_16", "Username: ");
-define("BANNERLAN_17", "Password: ");
-define("BANNERLAN_18", "Continue");
-define("BANNERLAN_19", "Please enter your client login and password to continue");
-define("BANNERLAN_20", "Sorry, unable to find those details in the database. Please contact the site administrator for details.");
-define("BANNERLAN_21", "Banners Statistics");
-define("BANNERLAN_22", "Client");
-define("BANNERLAN_23", "Banner ID");
-define("BANNERLAN_24", "Clickthroughs");
-define("BANNERLAN_25", "Click %");
-define("BANNERLAN_26", "Impressions");
-define("BANNERLAN_27", "Impressions Purchased");
-define("BANNERLAN_28", "Impressions Left");
-define("BANNERLAN_29", "No banners");
-define("BANNERLAN_30", "Unlimited");
-define("BANNERLAN_31", "Not applicable");
-define("BANNERLAN_32", "Yes");
-define("BANNERLAN_33", "No");
-define("BANNERLAN_34", "Ends:");
-define("BANNERLAN_35", "Clickthrough IP addresses");
-define("BANNERLAN_36", "Active:");
-define("BANNERLAN_37", "Starts:");
-define("BANNERLAN_38", "Error");
 
 ?>

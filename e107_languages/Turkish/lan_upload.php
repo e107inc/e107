@@ -4,37 +4,38 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:58 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Upload");
+define("PAGE_NAME", "Yükleme");
 
-define("LAN_20", "Error");
-define("LAN_61", "Your Name: ");
-define("LAN_112", "Email Address: ");
+define("LAN_20", "Hata");
+define("LAN_61", "Adýnýz: ");
+define("LAN_112", "Email Adresiniz: ");
 define("LAN_144", "Website URL: ");
-define("LAN_402", "You must be a registered member to upload files to this server.");
-define("LAN_403", "You do not have the correct permissions to upload files to this server.");
-define("LAN_404", "Thank you. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
-define("LAN_405", "File exceeds specified maximum size limit - deleted.");
-define("LAN_406", "Please note");
-define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
-define("LAN_408", "Underlined");
-define("LAN_409", "Name of file");
-define("LAN_410", "Version");
-define("LAN_411", "File");
-define("LAN_412", "Screenshot");
-define("LAN_413", "Description");
-define("LAN_414", "Working demo");
-define("LAN_415", "enter URL to site where demo can be viewed");
-define("LAN_416", "Submit and Upload");
-define("LAN_417", "Upload File");
-define("LAN_418", "Maximum file size: ");
-define("DOWLAN_11", "Category");
-define("LAN_419", "Allowed filetypes");
-define("LAN_420", "fields are required");
+define("LAN_402", "Sadece kayýtlý üyeler yükleme yapabilir.");
+define("LAN_403", "Yükleme kabul edilmedi.");
+define("LAN_404", "Teþekkürler. Yükleme yöneticiler tarafýndan incelenmek üzere yollandý.");
+define("LAN_405", "Dosya boyutu belirlenen limitin üzerinde - silindi"); //File exceeds specified maximum size limit - deleted.
+define("LAN_406", "Not");
+define("LAN_407", "Diðer dosya tipleri silinecek.");
+define("LAN_408", "Altý çizgili");
+define("LAN_409", "Dosyanýn Adý");
+define("LAN_410", "Versiyon");
+define("LAN_411", "Dosya");
+define("LAN_412", "Ekran Görüntüsü");
+define("LAN_413", "Açýklama");
+define("LAN_414", "Çalýþan demo");
+define("LAN_415", "demonun görüleceði sitenin adresini girin");
+define("LAN_416", "Gönder ve Yükle");
+define("LAN_417", "Dosya Yükle");
+define("LAN_418", "Maksimum dosya boyutu: ");
+define("DOWLAN_11", "Kategori");
+define("LAN_419", "Ýzin verilmeyen dosya tipi");
+define("LAN_420", "alanlar gereklidir");
 
 
 

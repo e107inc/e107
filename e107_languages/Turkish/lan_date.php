@@ -4,9 +4,10 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_date.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:56 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|			
 +----------------------------------------------------------------------------+
 */
 
@@ -25,10 +26,10 @@ define("LANDT_05s", "saat");
 define("LANDT_06s", "dakika");
 define("LANDT_07s", "saniye");
 
-define("LANDT_08", "dk");
-define("LANDT_08s", "dk");
-define("LANDT_09", "sn");
-define("LANDT_09s", "sn");
+define("LANDT_08", "dk.");
+define("LANDT_08s", "dk.");
+define("LANDT_09", "sn.");
+define("LANDT_09s", "sn.");
 define("LANDT_AGO", "önce");
 
 

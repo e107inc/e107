@@ -4,74 +4,63 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_comment.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:56 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|			
 +----------------------------------------------------------------------------+
 */
+define("COMLAN_0", "[yönetici tarafýndan engellendi]");
+define("COMLAN_1", "buraya");
+define("COMLAN_2", "kayýt için");
+define("COMLAN_3", "Hata!");
+define("COMLAN_4", "Konu");
+define("COMLAN_5", "Cevap:");
+define("COMLAN_6", "Cevapla");
+define("COMLAN_7", "Deðer");
+define("COMLAN_8", "Yorumlar kapalý");
+define("COMLAN_9", "Yorum Yaz");
+define("COMLAN_10", "Yönetici");
+define("COMLAN_11", "Yorumunuz veritabanýna kaydedilemedi - lütfen standart olmayan karakterleri kullanmadan tekrar giriniz.");
+define("COMLAN_16", "Kullanýcý Adý :");
+define("COMLAN_99", "Yorumlar");
+define("COMLAN_100", "Haber");
+define("COMLAN_101", "Anket");
+define("COMLAN_102", "Cevaplayan :");
+define("COMLAN_103", "Makale");
+define("COMLAN_104", "Araþtýrma");
+define("COMLAN_105", "Ýçerik");
+define("COMLAN_145", "Kayýt :");
+define("COMLAN_194", "Misafir");
+define("COMLAN_195", "Kayýtlý kullanýcý");
+define("COMLAN_310", "Bu kullanýcý adý sitemizde kayýtlý - eðer sizseniz lüütfen giriþ yapýnýz.");
+define("COMLAN_312", "Mükerrer mesaj - kabul edilmedi.");
+define("COMLAN_313", "Konum");
+define("COMLAN_314", "yorumlarý yönet");
+define("COMLAN_315", "Trackbackler");
+define("COMLAN_316", "Bu haber mesajý için tracback yok");
+define("COMLAN_317", "Trackbackleri yönet");
+define("COMLAN_318", "Yorumu düzenle");
+define("COMLAN_319", "düzenlendi");
+define("COMLAN_320", "Yorumu güncelle");
+define("COMLAN_321", "buraya");
+define("COMLAN_322", "kayýt için");
+define("COMLAN_323", "Hata");
+define("COMLAN_324", "Konu");
+define("COMLAN_325", "Cevap :");
+define("COMLAN_326", "Cevapla");
+define("COMLAN_327", "Deðer");
+define("COMLAN_328", "Yorumlarý kilitle");
+define("COMLAN_329", "Doðrulanmamýþ");
+define("COMLAN_330", "IP :");
+define("COMLAN_TYPE_1", "haber");
+define("COMLAN_TYPE_2", "dosya");
+define("COMLAN_TYPE_3", "sss");
+define("COMLAN_TYPE_4", "anket");
+define("COMLAN_TYPE_5", "döküman");
+define("COMLAN_TYPE_6", "hata izi");
+define("COMLAN_TYPE_7", "fikirler");
+define("COMLAN_TYPE_8", "kullanýcý profili");
 
-define("COMLAN_0", "[blocked by admin]");
-define("COMLAN_1", "Unblock");
-define("COMLAN_2", "Block");
-define("COMLAN_3", "Delete");
-define("COMLAN_4", "Info");
-define("COMLAN_5", "Comments ...");
-define("COMLAN_6", "You must be logged in to post comments on this site - please either log in or if you are not registered click");
-define("COMLAN_7", "Main site administrator");
-define("COMLAN_8", "Comment");
-define("COMLAN_9", "Submit comment");
-define("COMLAN_10", "Administrator");
-define("COMLAN_11", "Was unable to enter your comment into the database - please retype leaving out any non-standard characters.");
-define("COMLAN_16", "Username: ");
-define("COMLAN_99", "Comments");
-define("COMLAN_100", "News");
-define("COMLAN_101", "Poll");
-define("COMLAN_102", "Replying to: ");
-define("COMLAN_103", "Article");
-define("COMLAN_104", "Review");
-define("COMLAN_105", "Content");
-define("COMLAN_145", "Registered: ");
-define("COMLAN_194", "Guest");
-define("COMLAN_195", "Registered member");
-define("COMLAN_310", "Unable to accept post as that username is registered - if it is your username please login to post.");
-define("COMLAN_312", "Duplicate post - unable to accept.");
-define("COMLAN_313", "Location");
-define("COMLAN_314", "moderate comments");
-define("COMLAN_315", "Trackbacks");
-define("COMLAN_316", "No trackbacks for this newspost.");
-define("COMLAN_317", "Moderate trackbacks");
-define("COMLAN_318", "Edit comment");
-define("COMLAN_319", "edited");
-define("COMLAN_320", "Update comment");
-/*
-define("COMLAN_1", "here");
-define("COMLAN_2", "to signup");
-define("COMLAN_3", "Error!");
-define("COMLAN_4", 'Subject');
-define("COMLAN_5", 'Re:');
-define("COMLAN_6", 'Reply to this');
-define("COMLAN_7", 'Rating');
-define("COMLAN_8", 'Comments are locked');
-define("COMLAN_9", 'Unauthorized');
-*/
-define("COMLAN_321", "here");
-define("COMLAN_322", "to signup");
-define("COMLAN_323", "Error!");
-define("COMLAN_324", 'Subject');
-define("COMLAN_325", 'Re:');
-define("COMLAN_326", 'Reply to this');
-define("COMLAN_327", 'Rating');
-define("COMLAN_328", 'Comments are locked');
-define("COMLAN_329", 'Unauthorized');
-define("COMLAN_330", 'IP:');
-
-define("COMLAN_TYPE_1", "news");
-define("COMLAN_TYPE_2", "download");
-define("COMLAN_TYPE_3", "faq");
-define("COMLAN_TYPE_4", "poll");
-define("COMLAN_TYPE_5", "docs");
-define("COMLAN_TYPE_6", "bugtrack");
-define("COMLAN_TYPE_7", "ideas");
-define("COMLAN_TYPE_8", "userprofile");
 
 ?>

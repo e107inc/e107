@@ -4,18 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_mail_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:57 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|		
 +----------------------------------------------------------------------------+
 */
-define("LANMAILH_1", "Produced by e107 website system");
-define("LANMAILH_2", "This is a multi-part message in MIME format.");
-define("LANMAILH_3", " is not properly formatted");
-define("LANMAILH_4", "Server rejected address");
-define("LANMAILH_5", "No response from server");
-define("LANMAILH_6", "Cannot find E-Mail server.");
-define("LANMAILH_7", " appears to be valid.");
+define("LANMAILH_1", "e107 website sistemi tarafýndan üretilmiþtir");
+define("LANMAILH_2", "Bu çok parçalý mesaj MIME biçiminde.");
+define("LANMAILH_3", " geçerli bir biçimde deðil");
+define("LANMAILH_4", "Sunucu adresi geri çevirdi");
+define("LANMAILH_5", "Sunucudan yanýt yok");
+define("LANMAILH_6", "E-posta sunucusu bulunamadý.");
+define("LANMAILH_7", " geçerli gözüküyor.");
 
 
 ?>

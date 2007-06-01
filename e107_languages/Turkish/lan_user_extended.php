@@ -4,43 +4,44 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:47:58 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 08:50:43 $
 |     $Author: whoisbig $
+|			
 +----------------------------------------------------------------------------+
 */
-define("UE_LAN_1", "Text Box");
-define("UE_LAN_2", "Radio Buttons");
-define("UE_LAN_3", "Drop-Down Menu");
-define("UE_LAN_4", "DB Table Field");
-define("UE_LAN_5", "Textarea");
-define("UE_LAN_6", "Integer");
-define("UE_LAN_7", "Date");
-define("UE_LAN_8", "Language");
+define("UE_LAN_1", "Metin Kutusu");
+define("UE_LAN_2", "Radyo Buton");
+define("UE_LAN_3", "Açýlýr-Kapanýr Menü");
+define("UE_LAN_4", "DB Tablo Alaný");
+define("UE_LAN_5", "Metin Alaný");
+define("UE_LAN_6", "Tamsayý");
+define("UE_LAN_7", "Tarih");
+define("UE_LAN_8", "Dil");
 
-define("UE_LAN_9", "Name");
-define("UE_LAN_10", "Type");
-define("UE_LAN_11", "Use");
+define("UE_LAN_9", "Ad");
+define("UE_LAN_10", "Tip");
+define("UE_LAN_11", "Kullan");
 
-define("UE_LAN_HIDE", "Hide from users");
+define("UE_LAN_HIDE", "Kullanýcýlardan sakla");
 
-define("UE_LAN_LOCATION", "Location");
-define("UE_LAN_LOCATION_DESC", "User location");
-define("UE_LAN_AIM", "AIM Address");
-define("UE_LAN_AIM_DESC", "AIM Address");
-define("UE_LAN_ICQ", "ICQ Number");
-define("UE_LAN_ICQ_DESC", "ICQ Number");
-define("UE_LAN_YAHOO", "Yahoo! Address");
+define("UE_LAN_LOCATION", "Konum");
+define("UE_LAN_LOCATION_DESC", "Kullanýcý Konumu");
+define("UE_LAN_AIM", "AIM Adresi");
+define("UE_LAN_AIM_DESC", "AIM Adresi");
+define("UE_LAN_ICQ", "ICQ Numarasý");
+define("UE_LAN_ICQ_DESC", "ICQ Numarasý");
+define("UE_LAN_YAHOO", "Yahoo! Adresi");
 define("UE_LAN_YAHOO_DESC", "Yahoo! Address");
 define("UE_LAN_MSN", "MSN");
-define("UE_LAN_MSN_DESC", "MSN Address");
-define("UE_LAN_HOMEPAGE", "Homepage");
-define("UE_LAN_HOMEPAGE_DESC", "User homepage (url)");
-define("UE_LAN_BIRTHDAY", "Birthday");
-define("UE_LAN_BIRTHDAY_DESC", "Birthday");
-define("UE_LAN_LANGUAGE", "Language");
-define("UE_LAN_LANGUAGE_DESC", "User Language");
-define("UE_LAN_COUNTRY", "Country");
-define("UE_LAN_COUNTRY_DESC", "User Country (includes db table)");
+define("UE_LAN_MSN_DESC", "MSN Adresi");
+define("UE_LAN_HOMEPAGE", "Anasayfa");
+define("UE_LAN_HOMEPAGE_DESC", "Kullanýcý anasayfasý (url)");
+define("UE_LAN_BIRTHDAY", "Doðum Tarihi");
+define("UE_LAN_BIRTHDAY_DESC", "Doðum Tarihi");
+define("UE_LAN_LANGUAGE", "Dil");
+define("UE_LAN_LANGUAGE_DESC", "Kullanýcý Dili");
+define("UE_LAN_COUNTRY", "Ülke");
+define("UE_LAN_COUNTRY_DESC", "Kullanýcýnýn Ülkesi (veritabaný tablolarýnda)");
 
 ?>
