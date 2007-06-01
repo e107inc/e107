@@ -4,273 +4,235 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-31 13:48:01 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-01 10:32:27 $
 |     $Author: whoisbig $
 +----------------------------------------------------------------------------+
 */
-define("ADLAN_0", "News");
-define("ADLAN_1", "Add/edit/delete news items");
-define("ADLAN_2", "News Categories");
-define("ADLAN_3", "Add/edit/delete news categories");
-define("ADLAN_4", "Preferences");
-define("ADLAN_5", "Edit Site Preferences");
-define("ADLAN_6", "Menus");
-define("ADLAN_7", "Alter the order of your menus");
-define("ADLAN_8", "Administrators");
-define("ADLAN_9", "Add/delete site administrators");
-define("ADLAN_10", "Admin password");
-define("ADLAN_11", "Change your password");
-define("ADLAN_12", "Forums");
-define("ADLAN_13", "Add/Edit Forums");
-define("ADLAN_14", "Articles");
-define("ADLAN_15", "Add new/edit/delete articles");
-define("ADLAN_16", "Content");
-define("ADLAN_17", "Add new/edit/delete content pages");
-define("ADLAN_18", "Reviews");
-define("ADLAN_19", "Add new/edit/delete reviews");
-define("ADLAN_22", "Link Categories");
-define("ADLAN_23", "Add new/edit/delete link categories");
-define("ADLAN_24", "Downloads");
-define("ADLAN_25", "Manage Downloads");
-define("ADLAN_26", "Download Categories");
-define("ADLAN_27", "Add new/edit/delete download categories");
-define("ADLAN_28", "Welcome Message");
-define("ADLAN_29", "Set static welcome message");
-define("ADLAN_30", "File Manager");
-define("ADLAN_31", "Manage/upload files");
-define("ADLAN_32", "Submitted News");
-define("ADLAN_33", "Review user submitted news items");
-define("ADLAN_34", "Banlist");
-define("ADLAN_35", "Ban visitors");
-define("ADLAN_36", "Users");
-define("ADLAN_37", "Moderate site members");
-define("ADLAN_38", "User Classes");
-define("ADLAN_39", "Create/edit user classes");
-define("ADLAN_40", "Maintenance");
-define("ADLAN_41", "Take site down for maintenance");
-define("ADLAN_42", "Custom Menus/Pages");
-define("ADLAN_43", "Create custom menu items");
-define("ADLAN_44", "Database");
-define("ADLAN_45", "Database utilities");
-define("ADLAN_46", "Logout");
-define("ADLAN_47", "Welcome");
-define("ADLAN_48", "Logged in");
-define("ADLAN_49", "main site administrator");
-define("ADLAN_50", "permissions");
-define("ADLAN_51", "Please log in to gain access to administration area");
-define("ADLAN_52", "Admin Front Page");
-define("ADLAN_53", "Leave Admin");
-define("ADLAN_54", "Banners");
-define("ADLAN_55", "Configure banners");
+define("ADLAN_0", "Haberler");
+define("ADLAN_1", "Haber nesnesi ekle/düzenle/sil");
+define("ADLAN_2", "Haber Kategorileri");
+define("ADLAN_3", "Haber Kategrileri Ekle/Düzenle/Sil");
+define("ADLAN_4", "Tercihler");
+define("ADLAN_5", "site Tercihlerini Düzenle");
+define("ADLAN_6", "Menüler");
+define("ADLAN_7", "Menü Sýranýzý Deðiþtirin");
+define("ADLAN_8", "Yöneticiler");
+define("ADLAN_9", "Site Yöneticisi Ekle/Sil");
+define("ADLAN_10", "Yönetici Parolasý");
+define("ADLAN_11", "Parolanýzý Deðiþtirin");
+define("ADLAN_12", "Forumlar");
+define("ADLAN_13", "Forum Ekle/Düzenle");
+define("ADLAN_14", "Makaleler");
+define("ADLAN_15", "Makale Ekle/Düzenle/Sil");
+define("ADLAN_16", "Ýçerik");
+define("ADLAN_17", "Ýçerik Sayfalarý Ekle/Düzenle/Sil");
+define("ADLAN_18", "Ýnceleme");
+define("ADLAN_19", "Görüþ Ekle/Düzenle/Sil");
+define("ADLAN_22", "Baðlantý Kategorileri");
+define("ADLAN_23", "Baðlantý Kategorileri Ekleme/Düzenleme/silme");
+define("ADLAN_24", "Dosyalar");
+define("ADLAN_25", "Dosyalarý Yönet");
+define("ADLAN_26", "Dosya Kategorileri");
+define("ADLAN_27", "Dosya Kategorisi Ekle/Deðiþtir/Sil");
+define("ADLAN_28", "Karþýlama Mesajý");
+define("ADLAN_29", "Sabit Karþýlama Mesajý Ayarla");
+define("ADLAN_30", "Dosya Yöneticisi");
+define("ADLAN_31", "Dosyalarý Yönet/Yükle");
+define("ADLAN_32", "Gönderilen Haberler");
+define("ADLAN_33", "Ýncelemede Bulunan Kullanýcý Haber Nesnesi Gönderdi");
+define("ADLAN_34", "Yasak Listesi");
+define("ADLAN_35", "Yasaklý Ziyaretçiler");
+define("ADLAN_36", "Kullanýcýlar");
+define("ADLAN_37", "Site Üyelerini Yönet");
+define("ADLAN_38", "Kullanýcý Sýnýflarý");
+define("ADLAN_39", "Kullanýcý Sýnýflarý Oluþtur/Düzenle");
+define("ADLAN_40", "Bakým");
+define("ADLAN_41", "Bakým için siteyi kapat");
+define("ADLAN_42", "Özel Menüler/Sayfalar");
+define("ADLAN_43", "Özel Menü Nesnesi Oluþtur");
+define("ADLAN_44", "Veritabaný");
+define("ADLAN_45", "Veritabaný Araçlarý");
+define("ADLAN_46", "Çýkýþ");
+define("ADLAN_47", "Merhaba");
+define("ADLAN_48", "Giriþ yapýldý");
+define("ADLAN_49", "ana site yöneticisi");
+define("ADLAN_50", "izinler");
+define("ADLAN_51", "Lütfen, yönetim alanýna ulaþmak için giriþ yapýn");
+define("ADLAN_52", "Yönetici Ön Sayfasý");
+define("ADLAN_53", "Yöneticiyi Býrak");
+define("ADLAN_54", "Reklamlar");
+define("ADLAN_55", "Reklamlarý Yönet");
 define("ADLAN_56", "Chatbox");
-define("ADLAN_57", "Configure chatbox");
-define("ADLAN_58", "Emoticons");
-define("ADLAN_59", "Configure emoticons");
-define("ADLAN_60", "Front Page");
-define("ADLAN_61", "Configure front page content");
-define("ADLAN_62", "News Feeds");
-define("ADLAN_63", "Configure news feeds");
-define("ADLAN_64", "Log Stats");
-define("ADLAN_65", "Log stats/counter etc");
-define("ADLAN_66", "Meta Tags");
-define("ADLAN_67", "Add/Edit site meta tags");
-define("ADLAN_68", "PHP Info");
-define("ADLAN_69", "PHP Info page");
-define("ADLAN_70", "Polls");
-define("ADLAN_71", "Add/Edit Polls");
-define("ADLAN_72", "Public Uploads");
-define("ADLAN_73", "Configure public file uploads");
-define("ADLAN_74", "Cache");
-define("ADLAN_75", "Set cache status");
-define("ADLAN_77", "You have had a news item submitted - please click here to check.");
-define("ADLAN_78", "Extended User Fields");
-define("ADLAN_79", "Edit extended user fields");
-
-
-define("ADLAN_86", "Incorrect password ");
-define("ADLAN_87", "Administrator name not found in database ");
-define("ADLAN_88", "Unable to login ");
-define("ADLAN_89", "Admin Name ");
-define("ADLAN_90", "Admin Password ");
-define("ADLAN_91", "Log In");
-define("ADLAN_92", "Please log in to proceed to administration area ...");
-define("ADLAN_93", "Show Admin Functions");
-define("ADLAN_94", "Show Installed Plugins");
-define("ADLAN_95", "Plugin Management");
-define("ADLAN_96", "None");
-define("ADLAN_97", "Click here for FAQ");
-define("ADLAN_98", "Plugin Manager");
-define("ADLAN_99", "Install/upgrade etc. plugins");
-define("ADLAN_100", "Theme Layout");
-define("ADLAN_101", "Template Creator");
-define("ADLAN_102", "It has been more than 30 days since you changed the main administrator password - ");
-define("ADLAN_103", "Click here to change it now");
-define("ADLAN_104", "Security");
-
-define("ADLAN_105", "Images");
-define("ADLAN_106", "Image Settings");
-
-define("ADLAN_107", "Unchecked submitted news items");
-define("ADLAN_108", "Unchecked file uploads");
-define("ADLAN_109", "Information");
-define("ADLAN_110", "Registered members");
-define("ADLAN_111", "Unverified members");
-define("ADLAN_112", "Banned users");
-define("ADLAN_113", "Forum posts");
-define("ADLAN_114", "Comments");
-define("ADLAN_115", "Chatbox posts");
-define("ADLAN_116", "Admin log ...");
-define("ADLAN_117", "Show all entries");
-define("ADLAN_118", "Clear log");
-
-define("ADLAN_119", "Unchecked submitted links");
-
-define("ADLAN_120", "There is a database update available, please click button to install ...");
-define("ADLAN_121", "Install");
-
-
-define("ADLAN_123", "Unchecked submitted articles");
-define("ADLAN_124", "Unchecked submitted reviews");
-
-define("ADLAN_125", "Unchecked reported forum posts");
-
-define("ADLAN_126", "Main Options");
-define("ADLAN_127", "Users");
-define("ADLAN_128", "Content");
-define("ADLAN_129", "Communication");
-define("ADLAN_130", "Files Management");
-define("ADLAN_131", "Other tools");
-
-define("ADLAN_132", "Language");
-define("ADLAN_133", "default");
-
-define("ADLAN_134", "Status");
-define("ADLAN_135", "Admin Log");
-
-define("ADLAN_136", "Mail");
-define("ADLAN_137", "Email Settings And Mailout");
-
-define("ADLAN_138", "Site Links");
-define("ADLAN_139", "Add/edit/delete links");
-
-define("ADLAN_140", "Theme Manager");
-define("ADLAN_141", "Install / set themes etc");
-
-define("ADLAN_142", "Search");
-define("ADLAN_143", "Search Configuration");
-define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
-define("ADLAN_145", "click here");
-
-define("ADLAN_146", "Failed login attempts");
-define("ADLAN_147", "File Inspector");
-define("ADLAN_148", "Scan site files");
-
-define("ADLAN_149", "Notify");
-define("ADLAN_150", "Admin Email Notifications");
-
-define("ADLAN_151", "Main");
-define("ADLAN_152", "Enter Code");
-
-define("ADLAN_153", "Administration Area");
-
-define('ADLAN_CL_1', 'Settings');
-define('ADLAN_CL_2', 'Users');
-define('ADLAN_CL_3', 'Content');
-define('ADLAN_CL_4', 'Coms');
-define('ADLAN_CL_5', 'Files');
-define('ADLAN_CL_6', 'Tools');
-define('ADLAN_CL_7', 'Plugins');
-define('ADLAN_CL_8', 'Docs');
-
-define("ADLAN_LAT_1", "Latest");
-
-define("ADLAN_LAT_2", "Submitted news items");
-define("ADLAN_LAT_3", "Submitted articles");
-define("ADLAN_LAT_4", "Submitted reviews");
-define("ADLAN_LAT_5", "Submitted links");
-define("ADLAN_LAT_6", "Reported forum posts");
-define("ADLAN_LAT_7", "File uploads");
-define("ADLAN_LAT_8", "There are unmoderated administrator messages");
-
-define("ADLAN_ERR_1", "Warning!");
-define("ADLAN_ERR_2", "There are files on your server that are known to be exploitable. These must be removed <b>immediately</b>. The files are related to the older 0.6xx branch of e107. Please delete the following directories and all their contents:");
-define("ADLAN_ERR_3", "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed <b>immediately</b>. You should <b>not</b> open these files as this may execute any malicious code the file might contain; i.e. do not open them with your browser.<br /><br />If you recognise these files as being legitimate, it is likely that due to the recent allowed filetypes changes, the filetype you allowed is no longer in the allowed filetypes list and you will need to re-add it (see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or any other type of executable script.<br /><br />Below is the list of files that could potentially be malicious:");
-define("ADLAN_ERR_4", "Deprecated plugin file(s) found");
-define("ADLAN_ERR_5", "The following files need to be renamed to");
-define("ADLAN_ERR_6", "Then, click here to re-scan your plugin folders.");
-
-
-// Common Terms
-define("LAN_EDIT","Edit");
-define("LAN_DELETE","Delete");
-define("LAN_CREATE","Create");
-define("LAN_UPDATE","Update");
-define("LAN_SAVE","Save");
-define("LAN_SAVED","Saved");
-define("LAN_SETSAVED","Your settings have been saved");
-define("LAN_CONFIRMDEL","Please confirm you wish to delete");
-define("LAN_OPTIONS","Options");
-define("LAN_PREFS","Preferences");
-define("LAN_DELETED","Successfully deleted");
-define("LAN_UPDATED","Successfully updated");
-define("LAN_CREATED","Successfully created");
-define("LAN_CREATED_FAILED","Creation Unsuccessful");
-define("LAN_DELETED_FAILED","Deletion Unsuccessful");
-define("LAN_UPDATED_FAILED","Update Unsuccessful");
-define("LAN_NO_CHANGE","Update unsuccessful as no changes were made.");
-define("LAN_TRY_AGAIN","Please try again.");
-
-define("LAN_RESET","Reset");
-define("LAN_CLEAR","Clear");
-define("LAN_OK","OK");
-
-define("LAN_PRESET","Preset");
-define("LAN_PRESET_SAVED","Preset saved successfully");
-
-define("LAN_PRESET_DELETED","Preset successfully deleted");
-define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
-define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or folder first.");
-define("LAN_DATE","Date");
-define("LAN_TIME","Time");
-define("LAN_YES","Yes");
-define("LAN_NO","No");
-define("LAN_EMPTY","There are no entries in the database yet");
-define("LAN_EXISTING","Existing Entries");
-
-define("LAN_CANCEL","Cancel");
-define("LAN_CONFDELETE","Confirm Delete");
-define("LAN_PLUGIN","Plugin");
-define("LAN_ORDER","Order");
-
-define("LAN_SELECT","Select ...");
-define("LAN_ADMIN","Admin");
-define("LAN_DISPLAYOPT", "Edit Display Options");
-define("LAN_GOPAGE", "Go to page:");
-define("LAN_DATESTAMP","Date stamp");
-define("LAN_OPTIONAL", "optional");
-define("LAN_INACTIVE","Inactive");
-
-define("LAN_BAN","Ban");
-define("LAN_RATING", "Rating");
-
-define("LAN_UPLOAD_IMAGES","Upload Images");
-define("LAN_UPLOAD_FILES","Upload Files");
-define("LAN_UPLOAD_ADDFILE","Add Another File");
-define("LAN_UPLOAD_CONFIRM","Any unsaved changes to this page will be lost. Continue?");
-define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:");
-define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not enabled on your server");
-
-define("LAN_DISABLED","Disabled");
-define("LAN_ENABLED", "Enabled");
-
-define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
-define("LAN_CONFIGURE", "Configure");
-
-define("LAN_BACK","Back");
-
-define("LAN_CREDITS","Credits");
-define("LAN_NEWVERSION","New Version Available");
+define("ADLAN_57", "Chatbox ý ayarla");
+define("ADLAN_58", "Yüz Ýfadeleri");
+define("ADLAN_59", "Yüz Ýfadelerini Ayarla");
+define("ADLAN_60", "Ön Sayfa");
+define("ADLAN_61", "Ön sayfa içeriðini ayarla");
+define("ADLAN_62", "Haber Kaynaklarý");
+define("ADLAN_63", "Haber Kaynaklarýný Ayarla");
+define("ADLAN_64", "Kayýt Ýstatistiði");
+define("ADLAN_65", "Kayýt istatistiði/sayacý vs.");
+define("ADLAN_66", "Meta Taglar");
+define("ADLAN_67", "Site için Meta Tag Ekle/Düzenle");
+define("ADLAN_68", "PHP Bilgisi");
+define("ADLAN_69", "PHP Bilgi sayfasý");
+define("ADLAN_70", "Anketler");
+define("ADLAN_71", "Anket Ekle / Düzenle");
+define("ADLAN_72", "Dosya Yükleme");
+define("ADLAN_73", "Dosya Yüklemeyi Düzenle");
+define("ADLAN_74", "Önbellek");
+define("ADLAN_75", "Önbellek Durumunu Ayarla");
+define("ADLAN_77", "Gönderilmiþ haber nesneniz mevcut - kontrol etmek için lütfen týklayýn.");
+define("ADLAN_78", "Geniþletilmiþ Kullanýcý Alanlarý");
+define("ADLAN_79", "Geniþletilmiþ Kullanýcý Alanlarýný Düzenle");
+define("ADLAN_86", "Yanlýþ parola");
+define("ADLAN_87", "Yönetici adý veritabanýnda bulunamadý ");
+define("ADLAN_88", "Giriþ yapýlamadý ");
+define("ADLAN_89", "Yönetici Adý ");
+define("ADLAN_90", "Yönetici Parolasý ");
+define("ADLAN_91", "Giriþ");
+define("ADLAN_92", "Yönetici Bölümüne girmek için lütfen devam edin ...");
+define("ADLAN_93", "Yönetici Fonksiyonlarýný Göster");
+define("ADLAN_94", "Yüklenmiþ Eklentileri Göster");
+define("ADLAN_95", "Eklenti Yönetimi");
+define("ADLAN_96", "Hiçbiri");
+define("ADLAN_97", "SSS için buraya týklayýn");
+define("ADLAN_98", "Eklenti Yöneticisi");
+define("ADLAN_99", "Eklenti Yükle/Güncelle");
+define("ADLAN_100", "Tema Görünümü");
+define("ADLAN_101", "Kalýp Oluþturucusu");
+define("ADLAN_102", "Yönetici parolanýzý deðiþtireli 30 günden fazla oldu - ");
+define("ADLAN_103", "Deðiþtirmek için buraya týklayýn");
+define("ADLAN_104", "Güvenlik");
+define("ADLAN_105", "Resimler");
+define("ADLAN_106", "Resim Ayarlarý");
+define("ADLAN_107", "Gönderilmiþ Haber Nesnelerini Ýþaretleme");
+define("ADLAN_108", "Dosya Yükelemelerini Ýþaretleme");
+define("ADLAN_109", "Bilgi");
+define("ADLAN_110", "Kayýtlý Üyeler");
+define("ADLAN_111", "Doðrulanmamýþ Üyeler");
+define("ADLAN_112", "Yasaklý Üyeler");
+define("ADLAN_113", "Forum mesajlarý");
+define("ADLAN_114", "Yorumlar");
+define("ADLAN_115", "Chatbox mesajlarý");
+define("ADLAN_116", "Yönetici kaydý ...");
+define("ADLAN_117", "Tüm girdileri göster");
+define("ADLAN_118", "Kaydý Temizle");
+define("ADLAN_119", "Gönderilen Baðlantýlarý Ýþaretleme");
+define("ADLAN_120", "Veritabaný güncellemesi mevcut, lütfen kurmak için týklayýn ...");
+define("ADLAN_121", "Kur");
+define("ADLAN_123", "Gönderilen makaleleri iþaretleme");
+define("ADLAN_124", "Gönderilen yorumlarý iþaretleme");
+define("ADLAN_125", "Ýþaretlenmemiþ Rapor Forum Gönderileri");
+define("ADLAN_126", "Ana Seçenekler");
+define("ADLAN_127", "Kullanýcýlar");
+define("ADLAN_128", "Ýçerik");
+define("ADLAN_129", "Haberleþme");
+define("ADLAN_130", "Dosya Yönetimi");
+define("ADLAN_131", "Diðer Araçlar");
+define("ADLAN_132", "Dil");
+define("ADLAN_133", "varsayýlan");
+define("ADLAN_134", "Durum");
+define("ADLAN_135", "yönetici Kaydý");
+define("ADLAN_136", "Posta");
+define("ADLAN_137", "Eposta ayarlarý ve posta gönderimi");
+define("ADLAN_138", "Site Baðlantýlarý");
+define("ADLAN_139", "Baðlantý Ekle/Düzenle/Sil");
+define("ADLAN_140", "Tema Yöneticisi");
+define("ADLAN_141", "Tema Kur / Ayarla vs");
+define("ADLAN_142", "Arama");
+define("ADLAN_143", "Arama Ayarlarý");
+define("ADLAN_144", "Basit Görünüm modundasýnýz, geliþmiþ görünüme geçmek için");
+define("ADLAN_145", "buraya týklayýn");
+define("ADLAN_146", "Baþarýsýz Giriþ Denemeleri");
+define("ADLAN_147", "Dosya Dedektifi");
+define("ADLAN_148", "Site Dosyalarýný Tara");
+define("ADLAN_149", "Bildirim");
+define("ADLAN_150", "Yönetici Eposta Bildirimleri");
+define("ADLAN_151", "Ana");
+define("ADLAN_152", "Kod Gir");
+define("ADLAN_153", "Yönetici Alaný");
+define("ADLAN_CL_1", "Ayarlar");
+define("ADLAN_CL_2", "Kullanýcýlar");
+define("ADLAN_CL_3", "Ýçerik");
+define("ADLAN_CL_4", "Haberleþme");
+define("ADLAN_CL_5", "Dosyalar");
+define("ADLAN_CL_6", "Araçlar");
+define("ADLAN_CL_7", "Eklentiler");
+define("ADLAN_CL_8", "Belgeler");
+define("ADLAN_LAT_1", "En son");
+define("ADLAN_LAT_2", "Gönderilen Haber Nesneleri");
+define("ADLAN_LAT_3", "Gönderilen Makaleler");
+define("ADLAN_LAT_4", "Gönderilen Görüþler");
+define("ADLAN_LAT_5", "Gönderilen Baðlantýlar");
+define("ADLAN_LAT_6", "Rapor Edilen Forum Gönderileri");
+define("ADLAN_LAT_7", "Dosya Yüklemeleri");
+define("ADLAN_LAT_8", "Yetkilendirilmemiþ Yönetici Mesajlarý mevcut");
+define("ADLAN_ERR_1", "Uyarý");
+define("ADLAN_ERR_2", "Sunucunuzda iþletilebilir dosyalar var. Bunlarýn <b>derhal</b> silinmesi gerekiyor. Bu dosyalar e107 nin eski 0.6xx sürümünün dosyalarý. Lütfen izlenen dizini ve diðer tüm içeriðini siliniz :");
+define("ADLAN_ERR_3", "Yüklenmesine izin vermediðiniz tipte bir ya da daha fazla dosya genel yükleme dizininde mevcut. Bu dosyalarý <b>derhal</b> silin. Bu dosyalar çalýþtýrýlabilir dosyalar olabilir, kesinlikle <b>açmayýn</b>.<br/><br/> Eðer bu dosyalarýn meþru olduðunu düþünüyorsanýz, bu dosyanýn uzantýsýný izin verilen dosya tipleri listesine ekleyin. Ancak bilmelisiniz ki .html, .txt, gibi hackerlarýn kullanabileceði javascript içerebilecek dosya tiplerine izin vermemelisiniz. Ayrýca kesinlikle .php gibi çalýþtýrýlabilir script dosyalarýna da izin vermemelisiniz.<br/><br/>Aþaðýda potansiyel kötü niyetli olabilecek dosya tiplerinin listesi var :");
+define("ADLAN_ERR_4", "Uygun olmayan eklenti dosyalarý var");
+define("ADLAN_ERR_5", "Dosyanýn yeniden adlandýrýlmasý gerekli");
+define("ADLAN_ERR_6", "Ardýndan, eklenti klasörünü yeniden taramak için buraya týklayýn");
+define("LAN_EDIT", "Düzenle");
+define("LAN_DELETE", "Sil");
+define("LAN_CREATE", "Oluþtur");
+define("LAN_UPDATE", "Güncelle");
+define("LAN_SAVE", "Kaydet");
+define("LAN_SAVED", "Kaydedildi");
+define("LAN_SETSAVED", "Ayarlarýnýz kaydedildi");
+define("LAN_CONFIRMDEL", "Lütfen silme isteðinizi onaylayýn");
+define("LAN_OPTIONS", "Seçenekler");
+define("LAN_PREFS", "Tercihler");
+define("LAN_DELETED", "Baþarýyla Silindi");
+define("LAN_UPDATED", "Baþarýyla Güncellendi");
+define("LAN_CREATED", "Baþarýyla Oluþturuldu");
+define("LAN_CREATED_FAILED", "Oluþturma Baþarýsýz");
+define("LAN_DELETED_FAILED", "Silme Baþarýsýz");
+define("LAN_UPDATED_FAILED", "Güncelleme Baþarýsýz");
+define("LAN_NO_CHANGE", "Deðiþiklik olmadýðý için güncelleme baþarýsýz oldu.");
+define("LAN_TRY_AGAIN", "Lütfen tekrar deneyin.");
+define("LAN_RESET", "Sýfýrla");
+define("LAN_CLEAR", "Sil");
+define("LAN_OK", "TAMAM");
+define("LAN_PRESET", "Önceden Belirtilmiþ Ayarlar");
+define("LAN_PRESET_SAVED", "Önceden belirtilmiþ ayarlar baþarýyla kaydedildi");
+define("LAN_PRESET_DELETED", "Önceden belirtilmiþ ayarlar baþarýyla silindi");
+define("LAN_PRESET_CONFIRMDEL", "Bu önceden belirtilmiþ ayarý silmek istediðinizden emin misiniz?");
+define("LAN_NOTWRITABLE", " yazýlabilir deðil, kalsöre CHMOD 777 komutunu uygulamalýsýnýz.");
+define("LAN_DATE", "Tarih");
+define("LAN_TIME", "Zaman");
+define("LAN_YES", "Evet");
+define("LAN_NO", "Hayýr");
+define("LAN_EMPTY", "Veritabanýnda henüz girdi yok");
+define("LAN_EXISTING", "Varolan girdiler");
+define("LAN_CANCEL", "Ýptal");
+define("LAN_CONFDELETE", "Silmeyi Onayla");
+define("LAN_PLUGIN", "Eklenti");
+define("LAN_ORDER", "Sýra");
+define("LAN_SELECT", "Seç ...");
+define("LAN_ADMIN", "Yönetici");
+define("LAN_DISPLAYOPT", "Görünüm Ayarlarýný Düzenle");
+define("LAN_GOPAGE", "Sayfaya Git:");
+define("LAN_DATESTAMP", "Tarih damgasý");
+define("LAN_OPTIONAL", "opsiyonel");
+define("LAN_INACTIVE", "Etkin Deðil");
+define("LAN_BAN", "Yasak");
+define("LAN_RATING", "Deðer");
+define("LAN_UPLOAD_IMAGES", "Resim Yükle");
+define("LAN_UPLOAD_FILES", "Dosya Yükle");
+define("LAN_UPLOAD_ADDFILE", "Farklý Dosya Ekle");
+define("LAN_UPLOAD_CONFIRM", "Kaydedilmemiþ deðiþiklikler kaybedilecek, devam etmek istiyormusunuz ?");
+define("LAN_UPLOAD_777", "Klasör yazýlabilir deðil, yükleme yapmadan önce CHMOD ayarýný 777 yapmalýsýnýz :");
+define("LAN_UPLOAD_SERVEROFF", "Bu seçenek devre dýþý, sunucuya dosya yükleyemezsiniz");
+define("LAN_DISABLED", "Devre Dýþý");
+define("LAN_ENABLED", "Aktif");
+define("LAN_PRESET_CONFIRMSAVE", "Bu sayfa için varsayýlan deðerleri kaydetmek istiyormusunuz ?");
+define("LAN_CONFIGURE", "Ayarla");
+define("LAN_BACK", "Geri");
+define("LAN_CREDITS", "Hazýrlayanlar");
+define("LAN_NEWVERSION", "Yeni Sürüm Kullanýlabilir");
 
 
 ?>
