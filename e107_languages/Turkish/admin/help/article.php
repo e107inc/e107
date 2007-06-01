@@ -1,4 +1,16 @@
 <?php
+
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: 
+|     $Revision: 
+|     $Date: 
+|     $Author: 
+|			
++----------------------------------------------------------------------------+
+*/
 $text = "Bu sayfa üzerinden Tekil yada çoðul Makale oluþturabilirsiniz.<br />
  Çok sayfalý makale kullanmak için her sayfayý bir BBCode ile ayýrmalýsýnýz. <br />
  Bunun için lütfen SADECE ! bu TAG kullanýn: [newpage], Örnek olarak: <br />

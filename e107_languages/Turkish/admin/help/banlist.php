@@ -1,4 +1,16 @@
 <?php
+
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: 
+|     $Revision: 
+|     $Date: 
+|     $Author: 
+|			
++----------------------------------------------------------------------------+
+*/
 $caption = "Kullanýcýyý Sitenizden uzaklaþtýrma (BANlama)";
 $text = "Bu Menü üzerinden kullanýcýlarý sitenizden uzaklaþtýrabilirsiniz (BAN).<br />
 Ya bir kiþi için IP adresiniz girerek , yada birçok kiþiyi (wildcard) rastgele BANlayabilirsiniz. Yada belli E.Mail adreslerini girerek istemediðiniz kiþilerin sitenize kayýt  olmasýný engelleyebilirsiniz.<br /><br />
