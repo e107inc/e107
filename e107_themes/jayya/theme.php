@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-12-24 13:46:54 $
-|     $Author: mrpete $
+|     $Revision: 1.57 $
+|     $Date: 2007-06-04 19:42:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -213,7 +213,7 @@ function tablestyle($caption, $text, $mode){
 
 // chatbox post style
 $CHATBOXSTYLE = "
-<img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
+<img src='".e_IMAGE_ABS."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
 <b>{USERNAME}</b><br />{TIMEDATE}<br />{MESSAGE}<br /><br />";
 
 

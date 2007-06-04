@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|	$Revision: 1.18 $
-|	$Date: 2006-11-21 19:30:27 $
-|	$Author: lisa_ $
+|	$Revision: 1.19 $
+|	$Date: 2007-06-04 19:42:37 $
+|	$Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 |	Photo Credits
@@ -120,7 +120,7 @@ $no_core_css = TRUE;
 $HEADER = "<table class='container'>
 <tr>
 <td>
-<img class='advanced_image' src='".e_IMAGE."advanced.png' alt='' />
+<img class='advanced_image' src='".e_IMAGE_ABS."advanced.png' alt='' />
 </td>
 
 <td class='top_section'>
@@ -357,7 +357,7 @@ $SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' v
 
 
 // Chatbox post style
-$CHATBOXSTYLE = "<br /><img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
+$CHATBOXSTYLE = "<br /><img src='".e_IMAGE_ABS."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
 <b>{USERNAME}</b><br />{TIMEDATE}<br />{MESSAGE}<br />";
 
 
