@@ -37,7 +37,7 @@ define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 $layout = "_default";
 
 $HEADER = "<div id='header'>
-<img src='".THEME."images/logo.png' style='width: 168px; height: 80px; display: block' alt='' />
+<img src='".THEME_ABS."images/logo.png' style='width: 168px; height: 80px; display: block' alt='' />
 </div>
 <div id='banner'>
 {BANNER}
@@ -99,7 +99,7 @@ $NEWSSTYLE = "
 on
 {NEWSDATE}
 <br />
-<img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='vertical-align: middle;' />
+<img src='".e_IMAGE_ABS."admin_images/userclass_16.png' alt='' style='vertical-align: middle;' />
 {NEWSCOMMENTS}{TRACKBACK}
 </div>
 <br />";
