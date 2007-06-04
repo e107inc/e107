@@ -193,7 +193,7 @@ define("TRACKBACKBEFORESTRING", ", ");
 
 $CHATBOXSTYLE = "
 <br />
-<img src='".THEME."images/bullet.png' alt=''  />
+<img src='".THEME_ABS."images/bullet.png' alt=''  />
 <span class='chatb'>{USERNAME}</span>
 <div class='smalltext'>
 {TIMEDATE}<br />

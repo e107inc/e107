@@ -10,8 +10,8 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.2 $
-|   $Date: 2007-03-18 11:20:39 $
+|   $Revision: 1.3 $
+|   $Date: 2007-06-04 19:42:45 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -140,7 +140,7 @@ $COMMENTSTYLE = "
 
 
 $CHATBOXSTYLE = "
-<img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
+<img src='".e_IMAGE_ABS."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
 <b>{USERNAME}</b>
 <div class='smalltext'>
 {MESSAGE}
