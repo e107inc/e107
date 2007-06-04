@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-01-23 22:44:47 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2007-06-04 19:20:38 $
+|     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -361,9 +361,10 @@ if ($e107_popup != 1) {
 	if (e_PAGE == 'news.php' && isset($NEWSHEADER)) {
 		parseheader($NEWSHEADER);
 	} else {
+		$full_query = e_SELF."?".e_QUERY."!";
 		foreach ($custompage as $key_extract => $cust_extract) {
 			foreach ($cust_extract as $key => $kpage) {
-				if ($kpage && strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)) {
+				if ($kpage && (strstr(e_SELF, $kpage) || strstr($full_query,$kpage))) {
 					$ph = TRUE;
 					if ($key_extract=='no_array') {
 						$cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
