@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-04-12 23:32:30 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-06-04 19:26:54 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -298,7 +298,7 @@ if ($action == "opt") {
 
 		<tr>
 		<td style='width:70%' class='forumheader3'>".DOWLAN_151."</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>". r_userclass("download_reportbroken", $_POST['download_reportbroken'])."</td>
+		<td class='forumheader3' style='width:30%;text-align:left'>". r_userclass("download_reportbroken", $pref['download_reportbroken'])."</td>
 		</tr>
 
 		<tr>
