@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-05-29 19:45:38 $
+|     $Revision: 1.6 $
+|     $Date: 2007-06-04 19:17:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -154,6 +154,7 @@ class emotec
 		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '\.bak$');
 		foreach($this -> packArray as $pack)
 		{
+		  $can_scan = FALSE;
 			$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$pack, "", $reject);
 
 			$text .= "
@@ -164,14 +165,23 @@ class emotec
 
 			foreach($emoteArray as $emote)
 			{
+			  if (strstr($emote['fname'], ".pak") 
+			  || strstr($emote['fname'], ".xml") 
+			  || strstr($emote['fname'], "phpBB"))
+			  {
+				$can_scan = TRUE;		// Allow re-scan of config files
+			  }
+			  elseif  (!strstr($emote['fname'], ".txt") && !strstr($emote['fname'], ".bak") && !strstr($emote['fname'], ".html") && !strstr($emote['fname'], ".php") )
+			  {  // Emote file found
 				$text .= "<img src='".$emote['path'].$emote['fname']."' alt='' /> ";
+			  }
 			}
 
 			$text .= "</td>
 			<td class='forumheader3' style='width: 10%; text-align: center;'>".($pref['emotepack'] == $pack ? EMOLAN_10 : "<input class='button' type='submit' name='defPack_".$pack."' value=\"".EMOLAN_11."\" />")."</td>
 			<td class='forumheader3' style='width: 20%; text-align: center;'>
 				<input class='button' type='submit' name='subPack_".$pack."' value=\"".EMOLAN_12."\" />";
-			if ($pack != 'default')
+			if ($can_scan && ($pack != 'default'))
 			{
 			  $text .= "<br /><br /><input class='button' type='submit' name='scanPack_".$pack."' value=\"".EMOLAN_26."\" />";
 			}
