@@ -11,9 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-06 21:13:11 $
+|     $Revision: 1.4 $
+|     $Date: 2007-06-05 20:07:35 $
 |     $Author: e107steved $
+|
+| links.php?debug shows stored data for each link after name (before constant conversion)
 +----------------------------------------------------------------------------+
 */
 
@@ -161,6 +163,11 @@ if (!e_QUERY || $action == 'main') {
 	$linkpost->show_existing_items();
 }
 
+if ($action == 'debug') 
+{
+  $linkpost->show_existing_items(TRUE);
+}
+
 if ($action == 'opt') {
 	$linkpost->show_pref_options();
 }
@@ -178,6 +185,7 @@ class links
 {
 	var $link_total;
 	var $aIdOptPrep, $aIdOptData, $aIdOptTest;
+	var $debug_dis = FALSE;
 
 	function getLinks()
 	{
@@ -267,9 +275,11 @@ class links
 		return $ret;
 	}
 
-	function show_existing_items()
+	function show_existing_items($dbg_display=FALSE)
 	{
 		global $sql, $rs, $ns, $tp, $linkArray;
+		$this->debug_dis = $dbg_display;
+		
 		if (count($linkArray))
 		{
 
@@ -337,6 +347,11 @@ class links
 		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0) // 'submenu' for upgrade compatibility only.
 		{
 			$link_name = $this->linkName( $link_name );
+		}
+		
+		if ($this->debug_dis)
+		{
+		  $link_name.= ' ['.$link_url.']';
 		}
 
 		if ($indent) {
@@ -783,6 +798,9 @@ function links_adminmenu() {
 
 	$var['sub']['text'] = LINKLAN_4;
 	$var['sub']['link'] = e_SELF."?sublinks";
+
+//	$var['debug']['text'] = "List DB";
+//	$var['debug']['link'] = e_SELF."?debug";
 
 	show_admin_menu(LCLAN_68, $action, $var);
 }
