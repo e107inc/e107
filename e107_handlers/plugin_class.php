@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-05-30 20:35:44 $
+|     $Revision: 1.9 $
+|     $Date: 2007-06-05 19:51:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -57,6 +57,15 @@ class e107plugin
 		'upgrade_remove_array_pref'
 	);
 	
+	// List of all 'editable' DB fields ('plugin_id' is an arbitrary reference which is never edited)
+	var $all_editable_db_fields = array (
+		'plugin_name',				// Name of the plugin - language dependent
+		'plugin_version',			// Version - arbitrary text field
+		'plugin_path',				// Name of the directory off e_PLUGIN - unique
+		'plugin_installflag',		// '0' = not installed, '1' = installed
+		'plugin_addons'				// List of any extras associated with plugin - bbcodes, e_XXX files...
+	);
+	
 	/**
 	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to 
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
@@ -87,6 +96,18 @@ class e107plugin
 		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.php$", "standard", 1);
 		$sp = FALSE;
 
+// Read all the plugin DB info into an array to save lots of accesses
+		$pluginDBList = array();
+		if ($sql->db_Select('plugin',"*"))
+		{
+		  while ($row = $sql->db_Fetch())
+		  {
+		    $pluginDBList[$row['plugin_path']] = $row;
+		    $pluginDBList[$row['plugin_path']]['status'] = 'read';
+//			echo "Found plugin: ".$row['plugin_path']." in DB<br />";
+		  }
+		}
+
 		// Get rid of any variables previously defined which may occur in plugin.php
 		foreach($pluginList as $p)
 		{
@@ -106,7 +127,7 @@ class e107plugin
 		  $plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 
 		  // scan for addons.
-		  $eplug_addons = $this->getAddons($plugin_path);
+		  $eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
 //		  $eplug_addons = $this->getAddons($plugin_path,'check');		// Checks opening/closing tags on addon files
 
 		  // See whether the plugin needs installation - it does if one or more variables defined
@@ -115,35 +136,51 @@ class e107plugin
 		  {
 		    if (isset($$check_var) && ($$check_var)) { $no_install_needed = 0; }
 		  }
-				  
+
 		  if ($plugin_path == $eplug_folder)
 		  {
-			if($sql->db_Select("plugin", "plugin_id, plugin_version, plugin_installflag", "plugin_path = '$plugin_path'"))
+			if(array_key_exists($plugin_path,$pluginDBList))
 			{  // Update the addons needed by the plugin
-			  $ep_row = $sql->db_Fetch();
-			  $ep_update = '';
+		      $pluginDBList[$plugin_path]['status'] = 'exists';
 			  // If plugin not installed, and version number of files changed, update version as well
-			  if (($ep_row['plugin_installflag'] == 0) && ($ep_row['plugin_version'] != $eplug_version)) $ep_update = ", plugin_version = '{$eplug_version}' ";
-			  $sql->db_Update("plugin", "plugin_addons = '{$eplug_addons}'{$ep_update} WHERE plugin_path = '$plugin_path'");
+			  if (($pluginDBList[$plugin_path]['plugin_installflag'] == 0) && ($pluginDBList[$plugin_path]['plugin_version'] != $eplug_version))
+			  {  // Update stored version
+				$pluginDBList[$plugin_path]['plugin_version'] = $eplug_version;
+				$pluginDBList[$plugin_path]['status'] = 'update';
+			  }
+			  if ($pluginDBList[$plugin_path]['plugin_addons'] != $eplug_addons)
+			  {  // Update stored addons list
+				$pluginDBList[$plugin_path]['plugin_addons'] = $eplug_addons;
+				$pluginDBList[$plugin_path]['status'] = 'update';
+			  }
 			  
-			  if (($ep_row['plugin_installflag'] != 0) && (!isset($pref['plug_installed'][$plugin_path]) || ($pref['plug_installed'][$plugin_path] != $ep_row['plugin_version'])))
-			  {
-			    $pref['plug_installed'][$plugin_path] = $ep_row['plugin_version'];
-//				echo "Add: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
-				$sp = TRUE;
+			  if ($pluginDBList[$plugin_path]['plugin_installflag'] == 0)
+			  {  // Plugin not installed - make sure $pref not set
+			    if (isset($pref['plug_installed'][$plugin_path]))
+				{
+			      unset($pref['plug_installed'][$plugin_path]);
+//				  echo "Remove: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
+				  $sp = TRUE;
+				}
 			  }
-			  elseif (($ep_row['plugin_installflag'] == 0) && isset($pref['plug_installed'][$plugin_path]))
-			  {
-			    unset($pref['plug_installed'][$plugin_path]);
-//				echo "Remove: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
-				$sp = TRUE;
+			  else
+			  {	// Plugin installed - make sure $pref is set
+				if (!isset($pref['plug_installed'][$plugin_path]) || ($pref['plug_installed'][$plugin_path] != $pluginDBList[$plugin_path]['plugin_version']))
+				{	// Update prefs array of installed plugins
+			      $pref['plug_installed'][$plugin_path] = $pluginDBList[$plugin_path]['plugin_version'];
+//				  echo "Add: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
+				  $sp = TRUE;
+				}
 			  }
-			  unset($ep_row, $ep_update);
 			}
-
-			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($eplug_folder, true)."'")) && $eplug_name)
+			else
 			{  // New plugin - not in table yet, so add it. If no install needed, mark it as 'installed'
-			  $sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', {$no_install_needed}, '{$eplug_addons}' ");
+			  if ($eplug_name)
+			  {
+				// Can just add to DB - shouldn''t matter that its not in our current table
+//				echo "Trying to insert: ".$eplug_folder."<br />";
+				$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', {$no_install_needed}, '{$eplug_addons}' ");
+			  }
 			}
 		  }
 		  else
@@ -152,13 +189,23 @@ class e107plugin
 		  }
 		}
 
-		$sql->db_Select("plugin");
-		while ($row = $sql->db_fetch()) 
-		{	// Check for the actual plugin.php file - that's really the criterion for a 'proper' plugin
-		  if (!file_exists(e_PLUGIN.$row['plugin_path'].'/plugin.php')) 
+		// Now scan the table, updating the DB where needed
+		foreach ($pluginDBList as $plug_path => $plug_info)
+		{
+		  if ($plug_info['status'] == 'read')
+		  {	// In table, not on server - delete it
+			$sql->db_Delete('plugin', "`plugin_id`='{$plug_info['plugin_id']}'");
+//			echo "Deleted: ".$plug_path."<br />";
+		  }
+		  if ($plug_info['status'] == 'update')
 		  {
-//			  echo "Deleting: ".e_PLUGIN.$row['plugin_path'].'/plugin.php'."<br />";
-			$sql2->db_Delete('plugin', "plugin_path = '{$row['plugin_path']}'");
+		    $temp = array();
+			foreach ($this->all_editable_db_fields as $p_f)
+			{
+			  $temp[] ="`{$p_f}` = '{$plug_info[$p_f]}'";
+			}
+		    $sql->db_Update('plugin', implode(", ",$temp)."  WHERE `plugin_id`='{$plug_info['plugin_id']}'");
+//			echo "Updated: ".$plug_path."<br />";
 		  }
 		}
 	  if ($sp)  save_prefs();
@@ -223,7 +270,8 @@ class e107plugin
 		global $sql, $tp;
 		$link_url = $tp -> toDB($link_url, true);
 		$link_name = $tp -> toDB($link_name, true);
-		$path = str_replace("../", "", $link_url);
+		$path = $tp->createConstants($link_url);		// Add in standard {e_XXXX} directory constants if we can
+		$path = str_replace("../", "", $path);			// This should clean up 'non-standard' links
 		if ($action == 'add') 
 		{
 			$link_t = $sql->db_Count('links');
@@ -248,17 +296,30 @@ class e107plugin
 	function manage_prefs($action, $var) {
 		global $pref;
 		if (is_array($var)) {
-			if ($action == 'add') {
-				foreach($var as $k => $v) {
-					$pref[$k] = $v;
-				}
-			}
-			if ($action == 'remove') {
-				foreach($var as $k => $v) {
-					unset($pref[$k]);
-				}
-			}
-			save_prefs();
+		  switch ($action)
+		  {
+			case 'add' :
+			  foreach($var as $k => $v) 
+			  {
+				$pref[$k] = $v;
+			  }
+			  break;
+			  
+			case 'update' :
+			  foreach($var as $k => $v) 
+			  {	// Only update if $pref doesn't exist
+				if (!isset($pref[$k])) $pref[$k] = $v;
+			  }
+			  break;
+			  
+			case 'remove' :
+			  foreach($var as $k => $v) 
+			  {
+				unset($pref[$k]);
+			  }
+			  break;
+		  }
+		  save_prefs();
 		}
 	}
 
@@ -314,9 +375,10 @@ class e107plugin
 	}
 
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '') 
-	{  // 
+	{  // These prefs are 'cumulative' - several plugins may contribute an array element
 		global $pref;
-		if ($prefname == 'plug_sc' || $prefname == 'plug_bb') {
+		if ($prefname == 'plug_sc' || $prefname == 'plug_bb') 
+		{  // Special cases - shortcodes and bbcodes - each plugin may contribute several elements
 			foreach($varArray as $code) {
 				$prefvals[] = "$code:$plugin_folder";
 			}
