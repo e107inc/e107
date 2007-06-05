@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2007-05-04 19:32:11 $
+|     $Revision: 1.70 $
+|     $Date: 2007-06-05 18:54:51 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 @include_once(e_LANGUAGEDIR."English/lan_comment.php");
+global $comment_shortcodes;
 require_once(e_FILE."shortcode/batch/comment_shortcodes.php");
 
 /**
