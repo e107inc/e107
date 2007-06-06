@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-06-05 19:51:36 $
+|     $Revision: 1.10 $
+|     $Date: 2007-06-06 19:25:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -270,8 +270,8 @@ class e107plugin
 		global $sql, $tp;
 		$link_url = $tp -> toDB($link_url, true);
 		$link_name = $tp -> toDB($link_name, true);
-		$path = $tp->createConstants($link_url);		// Add in standard {e_XXXX} directory constants if we can
-		$path = str_replace("../", "", $path);			// This should clean up 'non-standard' links
+		$path = str_replace("../", "", $link_url);			// This should clean up 'non-standard' links
+		$path = $tp->createConstants($path);				// Add in standard {e_XXXX} directory constants if we can
 		if ($action == 'add') 
 		{
 			$link_t = $sql->db_Count('links');
