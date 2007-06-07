@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-06-06 19:28:25 $
+|     $Revision: 1.13 $
+|     $Date: 2007-06-07 19:19:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -345,11 +345,11 @@ class e_parse
 	  if (CHARSET !== 'utf-8') return substr($text,0,$len).$more;	// Non-utf-8 - one byte per character - simple
   
 	  // Its a utf-8 string here - don't know whether its longer than allowed length yet
-	  $ret = preg_replace('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,0}'.
-					'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'}).*#s',
-					'$1',$text);
-	  // Now check the final length - need to count characters rather than bytes
-	  if (preg_match_all('/[\x00-\x7F\xC0-\xFD]/', $ret, $dummy) > $len) $ret .= $more;
+	  preg_match('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,0}'.
+				'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'})(.{0,1}).*#s',$text,$matches);
+
+	  $ret = $matches[1];
+	  if (!empty($matches[2])) $ret .= $more;
 	  return $ret;
 	}
 
