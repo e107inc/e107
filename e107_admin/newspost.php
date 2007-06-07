@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.6 $
-|   $Date: 2007-02-07 21:22:09 $
+|   $Revision: 1.7 $
+|   $Date: 2007-06-07 20:43:25 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 
@@ -150,6 +150,7 @@ if (isset($_POST['preview'])) {
 if (isset($_POST['submit_news'])) {
 
 	$newspost->submit_item($sub_action, $id);
+	$e107cache->clear("news.php");
 	$e107cache->clear("othernews");
 	$e107cache->clear("othernews2");
 	$action = "main";
