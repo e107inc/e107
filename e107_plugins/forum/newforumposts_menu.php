@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-28 16:52:31 $
+|     $Revision: 1.3 $
+|     $Date: 2007-06-08 19:15:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -78,10 +78,7 @@ else
 
 		$fi['thread_thread'] = strip_tags($tp->toHTML($fi['thread_thread'], TRUE, "emotes_off, no_make_clickable", "", $pref['menu_wordwrap']));
 
-		if (strlen($fi['thread_thread']) > $menu_pref['newforumposts_characters'])
-		{
-			$fi['thread_thread'] = substr($fi['thread_thread'], 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];
-		}
+		$fi['thread_thread'] = $tp->text_truncate($fi['thread_thread'], $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
 		if ($menu_pref['newforumposts_title'])
 		{
