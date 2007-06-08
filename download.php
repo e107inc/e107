@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.11 $ 
-|     $Date: 2007-04-17 21:39:25 $
+|     $Revision: 1.12 $ 
+|     $Date: 2007-06-08 20:52:47 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -37,7 +37,7 @@ define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."imag
 define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/".IMODE."/new.png"));
 
 $template_load_core = '
-  $template_name .= $load_template.".php";
+  $template_name = $load_template.".php";
   if (is_readable(THEME."templates/".$template_name))
   {
 	require_once(THEME."templates/".$template_name);
@@ -81,9 +81,6 @@ else
     case 'list' :	// Category-based listing
 	  if (isset($_POST['view'])) extract($_POST);
 	  if (!isset($dl_from)) $dl_from = 0;
-	  if (!isset($order))	$order = ($pref['download_order'] ? $pref['download_order'] : "download_datestamp");
-	  if (!isset($sort))	$sort = ($pref['download_sort'] ? $pref['download_sort'] : "DESC");
-	  if (!isset($view))	$view = ($pref['download_view'] ? $pref['download_view'] : "10");
 
 	  // Get category type, page title
 	  if ($sql->db_Select("download_category", "download_category_name,download_category_description,download_category_parent", "(download_category_id='{$id}') AND (download_category_class IN (".USERCLASS_LIST."))") )
@@ -117,6 +114,10 @@ else
   }
 }
 
+if (!isset($order))	$order = varset($pref['download_order'],"download_datestamp");
+if (!isset($sort))	$sort =  varset($pref['download_sort'], "DESC");
+if (!isset($view))	$view =  varset($pref['download_view'], "10");
+
 
 //--------------------------------------------------
 //			GENERATE DISPLAY TEXT
@@ -139,7 +140,7 @@ switch ($action)
     if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
 
 	// Read in tree of categories which this user is allowed to see
-    $dl = new down_cat_handler($pref['download_subsub'],'',$maincatval);
+    $dl = new down_cat_handler($pref['download_subsub'],USERCLASS_LIST,$maincatval);
 	
 	if ($dl->down_count == 0)
 	{
@@ -607,6 +608,9 @@ function parse_download_cat_parent_table($row)
 
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_PARENT_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_PARENT_TABLE);
 
+	$DOWNLOAD_CAT_MAIN_ICON = '';
+	$DOWNLOAD_CAT_MAIN_NAME = '';
+	
 	if (check_class($download_category_class)) 
 	{
 		if(strstr($download_category_icon, chr(1)))
@@ -728,7 +732,7 @@ class down_cat_handler
 	  if ($load_cat_class != "")
 	  {
 		$temp1 = " WHERE dc.download_category_class IN ({$load_cat_class}) ";
-		$temp2 = "AND d.download_visible IN ({$load_cat_class})";
+		$temp2 = "AND d.download_visible IN ({$load_cat_class}) ";
 	  }
 	  
 	  $qry = "
