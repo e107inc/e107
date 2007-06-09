@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_installer.php,v $
+|     $Revision: 1.10 $
+|     $Date: 2007-06-09 10:52:35 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("LANINS_001", "e107 Telepítés");
 
 

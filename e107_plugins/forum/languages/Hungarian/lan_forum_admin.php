@@ -1,8 +1,14 @@
 <?php
-# ---------------------------------------------------------------------------
-# e107 hungarian language file - rev: 1.17 - author: e107hungary.org team - 2006
-# ---------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Hungarian/lan_forum_admin.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2007-06-09 10:52:35 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("FORLAN_1", "Meg kell adnod a karbantartások közti napok számát.");
 define("FORLAN_2", "Válaszd ki, hogy a karbantartás során a kiszűrt hozzászólások törlődjenek, vagy csak inaktiválja őket a rendszer (nem lesznek törölve, de nem lesznek elérhetőek a fórumokban)");
 define("FORLAN_3", "Törlés");
@@ -68,7 +74,7 @@ define("FORLAN_62", "Fórum beállítások");
 define("FORLAN_63", "Rangok");
 define("FORLAN_64", "Add meg a használandó rangokat. Ha nem adsz meg semmit, akkor egyszerű csillagokkal dolgozik majd a rendszer. Max. 10 szint, vesszővel elválasztva, alacsonyabb rang előre.");
 define("FORLAN_65", "Fórum cím");
-define("FORLAN_66", "A szavazás plugin nincs még telepítve");
+define("FORLAN_66", "Szavazás plugin nincs telepítve");
 
 define("FORLAN_70", "Fájl / kép csatolások engedélyezése");
 define("FORLAN_71", "A felhasználók feltölthetnek fájlt vagy képet a fórumüzenetekhez,");

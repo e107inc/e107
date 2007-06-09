@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_error.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-10 20:56:32 $
+|     $Revision: 1.5 $
+|     $Date: 2007-06-09 10:52:35 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -44,6 +44,5 @@ define("LAN_ERROR_29", "[5]: Mező(k) maradtak üresen. Lépj vissza és töltsd
 define("LAN_ERROR_30", "[6]: Nincs megfelelő kapcsolat a mySQL-hoz. Ellenőrizd az e107_config.php file-t, hogy megfelelő információkat tartalmaz-e.");
 define("LAN_ERROR_31", "[7]: mySQL fut, de az adatbázis ({$mySQLdefaultdb}) nem tud kapcsolódni hozzá.<br />Ellenőrizd az adatbázis létezését és az e107_config.php file tartalmát, hogy megfelelő információkat tartalmaz-e.");
 define("LAN_ERROR_32", "A frissítés befejezéséhez másold a következő szöveget az e107_config.php file-be:");
-define("LAN_ERROR_33", "Feldolgozási hiba! Átírányítás a kezdőoldalra.");
-define("LAN_ERROR_34", "Ismeretlen hiba! Kérlek tájékoztasd az oldal adminisztrátorát erről:");
+
 ?>

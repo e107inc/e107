@@ -4,12 +4,11 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_signup.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-03-10 20:56:32 $
+|     $Revision: 1.8 $
+|     $Date: 2007-06-09 10:52:35 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Regisztráció");
 define("LAN_7", "Megjelenő név:");
 define("LAN_8", "ez a név jelenik meg az oldalakon");
@@ -32,7 +31,7 @@ define("LAN_123", "Regisztráció");
 define("LAN_185", "Kötelező mező(ke)t hagytál üresen");
 define("LAN_201", "Igen");
 define("LAN_200", "Nem");
-define("LAN_202", "Túllépted a felhasználói regisztrációs limitet. Kérlek csak az egyik felhasználónevedet használd belépéskor.");
+define("LAN_202", "Sikertelen regisztráció");
 define("LAN_309", "Add meg az adataidat lentebb.");
 define("LAN_399", "Tovább");
 define("LAN_400", "Felhasználónév, jelszó: <b>case-sensitive</b>");
@@ -114,10 +113,10 @@ define("LAN_SIGNUP_50", "Új Email");
 define("LAN_SIGNUP_51", "Régi jelszó");
 define("LAN_SIGNUP_52", "Érvénytelen jelszó");
 define("LAN_SIGNUP_53", "mező hibás érvényességi teszt");
-define("LAN_SIGNUP_54", "Kattints ide a regisztráláshoz szükséges adatok kitöltéséhez");
-define("LAN_SIGNUP_55", "Túl hosszú a megjelenő név. Válassz egy másikat");
-define("LAN_SIGNUP_56", "Túl rövid a megjelenő név. Válassz egy másikat");
-
+define("LAN_SIGNUP_54", "Katt ide a regisztráláshoz szükséges adatok kitöltéséhez");
+define("LAN_SIGNUP_55", "Túl hosszú a megjelenő név. Válassz másikat");
+define("LAN_SIGNUP_56", "Túl rövid a megjelenő név. Válassz másikat");
+define("LAN_SIGNUP_57", "Túl hosszú a bejelentkező név. Válassz másikat");
 
 
 

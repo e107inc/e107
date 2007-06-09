@@ -1,14 +1,21 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.8 - author: e107hungary.org team - 2006
-# --------------------------------------------------------------------------
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Hungarian Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Hungarian.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2007-06-09 10:52:35 $
+|     $Author: e107hun-lac $
++----------------------------------------------------------------------------+
+*/
 define("POLL_ADLAN01", "Szavazás");
 define("POLL_ADLAN02", "Szavazást hozhatsz létre önállóan, vagy a fórumban.");
 define("POLL_ADLAN03", "Szavazások beállítása");
 define("POLL_ADLAN04", "A szavazás plugin telepítve. Szavazás létrehozásához kattints a Szavazás ikonra az admin területen, és aktiváld a menüt a Menük részben.");
-define("POLL_ADLAN05", "Szavazás: ");
-define("POLL_ADLAN06", "Fórum téma: ");
+
+define("POLL_ADLAN05", "Fő szavazás: ");
+define("POLL_ADLAN06", "Fórum Téma: ");
 define("POLL_ADLAN07", "Típus");
 
 define("POLLAN_MENU_CAPTION", "Szavazás");
