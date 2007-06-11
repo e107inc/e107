@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-05-16 20:24:30 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-06-11 09:26:06 $
+|     $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -92,6 +92,9 @@ class sitelinks
 			$style['linkdisplay'] = defined('LINKDISPLAY') ? LINKDISPLAY : '';
 			$style['linkend'] = defined('LINKEND') ? LINKEND : '';
 			$style['linkseparator'] = defined('LINKSEPARATOR') ? LINKSEPARATOR : '';
+			$style['sublinkstart'] = defined('SUBLINKSTART') ? SUBLINKSTART : '';
+			$style['sublinkend'] = defined('SUBLINKEND') ? SUBLINKEND : '';
+			$style['sublinkclass'] = defined('SUBLINKCLASS') ? SUBLINKCLASS : '';
 		}
 
     // Sublink styles.- replacing the tree-menu.
