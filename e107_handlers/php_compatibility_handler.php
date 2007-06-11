@@ -12,17 +12,25 @@ if (!function_exists('file_put_contents')) {
 	* @param mixed $data
 	* @desc Write a string to a file
 	*/
-	function file_put_contents($filename, $data) {
-		if (($h = @fopen($filename, 'w+')) === false) {
-			return false;
-		}
-		if (($bytes = @fwrite($h, $data)) === false) {
-			return false;
-		}
-		fclose($h);
-		return $bytes;
+	define('FILE_APPEND', 1);
+	function file_put_contents($filename, $data, $flag = false) 
+	{
+      $mode = ($flag == FILE_APPEND || strtoupper($flag) == 'FILE_APPEND') ? 'a' : 'w';
+	  if (($h = @fopen($filename, $mode)) === false) 
+	  {
+		return false;
+	  }
+      if (is_array($data)) $data = implode($data);
+	  if (($bytes = @fwrite($h, $data)) === false) 
+	  {
+		return false;
+	  }
+	  fclose($h);
+	  return $bytes;
 	}
 }
+
+
 
 if (!function_exists('stripos')) {
 	function stripos($haystack, $needle) {
