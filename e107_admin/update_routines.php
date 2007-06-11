@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.193 $
-|     $Date: 2006-12-05 10:50:24 $
-|     $Author: mrpete $
+|     $Revision: 1.194 $
+|     $Date: 2007-06-11 19:27:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,6 +40,36 @@ if (!$pref['displayname_maxlength'])
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
 if (!defined("LAN_UPDATE_9")) { define("LAN_UPDATE_9", ""); }
 
+
+
+$dbupdate = array();
+
+global $e107cache;
+	if (is_readable(e_ADMIN."ver.php"))
+	{
+		include(e_ADMIN."ver.php");
+	}
+
+
+// If $dont_check_update is both defined and TRUE on entry, a check for update is done only once per 24 hours.
+$dont_check_update = varset($dont_check_update, FALSE);
+
+
+if ($dont_check_update === TRUE)
+{
+  $dont_check_update = FALSE;
+  if ($tempData = $e107cache->retrieve("nq_admin_updatecheck",3600, TRUE))
+  {	// See when we last checked for an admin update
+    list($last_time, $dont_check_update,$last_ver) = explode(',',$tempData);
+	if ($last_ver != $e107info['e107_version']) 
+	{
+	  $dont_check_update = FALSE;	// Do proper check on version change
+	}
+  }
+}
+
+if (!$dont_check_update)
+{ 
 if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
 	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 	{
@@ -79,8 +109,17 @@ $dbupdate["614_to_615"] = LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615";
 $dbupdate["611_to_612"] = LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612";
 $dbupdate["603_to_604"] = LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604";
 
-function update_check() {
-	global $ns, $dbupdate, $dbupdatep;
+}
+
+function update_check() 
+{
+  global $ns, $dont_check_update, $e107info;
+  
+  $update_needed = FALSE;
+  
+  if ($dont_check_update === FALSE)
+  {
+	global $dbupdate, $dbupdatep, $e107cache;
 	foreach($dbupdate as $func => $rmks) {
 		if (function_exists("update_".$func)) {
 			if (!call_user_func("update_".$func, FALSE)) {
@@ -98,6 +137,13 @@ function update_check() {
 			}
 		}
 	}
+  	$e107cache->set("nq_admin_updatecheck", time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
+  }
+  else  
+  {
+    $update_needed = ($dont_check_update == '2');
+  }
+
 
 	if ($update_needed === TRUE) {
 		$txt = "<div style='text-align:center;'>".ADLAN_120;
@@ -106,7 +152,11 @@ function update_check() {
 		</form></div>";
 		$ns->tablerender(LAN_UPDATE, $txt);
 	}
-}
+}		// Function update_check
+
+
+
+
 /*
 // ------------------------------- .7.1 to .7.2 etc ----------------------------------
 function update_701_to_702($type='') {

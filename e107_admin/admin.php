@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2007-01-06 23:09:56 $
+|     $Revision: 1.40 $
+|     $Date: 2007-06-11 19:27:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -145,9 +145,11 @@ if ($update_prefs == true) {
 }
 
 // auto db update
-if ('0' == ADMINPERMS) {
-	require_once(e_ADMIN.'update_routines.php');
-	update_check();
+if ('0' == ADMINPERMS) 
+{
+  $dont_check_update = TRUE;		// This reduces frequency of checks
+  require_once(e_ADMIN.'update_routines.php');
+  update_check();
 }
 // end auto db update
 
