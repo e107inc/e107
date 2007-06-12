@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_type_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-08-08 07:09:35 $
+|     $Revision: 1.11 $
+|     $Date: 2007-06-12 22:47:50 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ if(!isset($CONTENT_TYPE_TABLE)){
 	<tr>
 		<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_ICON}</td>
 		<td class='fcaption'>{CONTENT_TYPE_TABLE_HEADING}{CONTENT_TYPE_TABLE_LINK}</td>
-		<td class='forumheader' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_TYPE_TABLE_TOTAL} {CONTENT_TYPE_TABLE_TOTAL_LAN}</td>
+		<td class='forumheader' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_TYPE_TABLE_TOTAL}</td>
 	</tr>
 	<tr><td class='forumheader2' colspan='2'>{CONTENT_TYPE_TABLE_SUBHEADING}<br /></td></tr>\n";
 }
