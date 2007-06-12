@@ -115,6 +115,7 @@ $text .= "
 <html>\n
 <head>\n
 <title>".CONTENT_PRESET_LAN_7."</title>\n
+<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />\n
 <script type='text/javascript' src='../../../e107_files/e107.js'></script>
 ".$js."
 <style type='text/css'>\n
