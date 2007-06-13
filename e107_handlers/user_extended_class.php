@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2007-04-14 16:50:37 $
-|     $Author: e107steved $
+|     $Revision: 1.42 $
+|     $Date: 2007-06-13 22:00:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -289,7 +289,7 @@ class e107_user_extended
 			$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
 		}
 		$parms = explode("^,^",$struct['user_extended_struct_parms']);
-		$include = preg_replace("/\n/", " ", $tp->toText($parms[0]));
+		$include = preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
 		$fname = "ue[user_".$struct['user_extended_struct_name']."]";
