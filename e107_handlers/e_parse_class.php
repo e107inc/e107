@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-06-07 19:19:37 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2007-06-13 02:53:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -117,6 +117,11 @@ class e_parse
 			$this->e_modSet[$key] = TRUE;
 		}
 
+		if (!is_object($this->e_sc))
+		{
+			require_once(e_HANDLER."shortcode_handler.php");
+			$this->e_sc = new e_shortcode;
+		}
 	}
 	
 	function toDB($data, $nostrip = false, $no_encode = false, $original_author = false, $mod = false)
@@ -195,11 +200,6 @@ class e_parse
 
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
-		if (!is_object($this->e_sc))
-		{
-			require_once(e_HANDLER."shortcode_handler.php");
-			$this->e_sc = new e_shortcode;
-		}
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
 	}
 
