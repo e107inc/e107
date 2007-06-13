@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2007-05-28 09:37:12 $
-|     $Author: e107steved $
+|     $Revision: 1.88 $
+|     $Date: 2007-06-13 22:07:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -130,7 +130,7 @@ if (isset($_POST['updatesettings']))
 	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
 
 	foreach($signup_option_names as $key => $value)
-	{  // Check required signup fields 
+	{  // Check required signup fields
 		if ($pref['signup_option_'.$value] == 2 && !$_POST[$value] && !$_uid)
 		{
 			$error .= LAN_SIGNUP_6.$signup_option_title[$key].LAN_SIGNUP_7."\\n";
@@ -153,7 +153,7 @@ if (isset($_POST['updatesettings']))
 	}
 	  $_POST['loginname'] = $temp_name;
 	}
-	
+
 
 // Password checks
 	$pwreset = "";
@@ -194,7 +194,7 @@ if (isset($_POST['updatesettings']))
 	}
 
 	// Check for duplicate of email address
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".$inp."' ")) 
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".$inp."' "))
 	{
 	  	$error .= LAN_408."\\n";
 	}
@@ -482,7 +482,7 @@ if(e_QUERY == "update")
 	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*","<span style='color:red'>*</span>",LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 }
 
-$text .= $tp->parseTemplate($USERSETTINGS_EDIT, FALSE, $usersettings_shortcodes);
+$text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 $text .= "<div>";
 
 $text .= "
