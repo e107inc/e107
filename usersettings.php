@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2007-06-13 22:07:12 $
+|     $Revision: 1.89 $
+|     $Date: 2007-06-13 22:53:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -295,7 +295,7 @@ if (isset($_POST['updatesettings']))
 	{
 		unset($_POST['password1']);
 		unset($_POST['password2']);
-
+        $_POST['user_id'] = intval($inp);
 		$ret = $e_event->trigger("preuserset", $_POST);
 		if(trim($_POST['user_xup']) != "")
 		{
@@ -486,7 +486,7 @@ $text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 $text .= "<div>";
 
 $text .= "
-	<input type='hidden' name='_uid' value='$_uid' />
+	<input type='hidden' name='_uid' value='$uuid' />
 	</div>
 	</form>
 	";
