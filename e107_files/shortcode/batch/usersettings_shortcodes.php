@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-05-28 09:37:27 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-06-13 22:13:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -243,7 +243,7 @@ $catList[] = array("user_extended_struct_id" => 0, "user_extended_struct_name" =
 foreach($catList as $cat)
 {
 	cachevars("extendedcat_{$cat['user_extended_struct_id']}", $cat);
-	$ret .= $tp->parseTemplate("{USEREXTENDED_CAT={$cat['user_extended_struct_id']}}", FALSE, $usersettings_shortcodes);
+  	$ret .= $tp->parseTemplate("{USEREXTENDED_CAT={$cat['user_extended_struct_id']}}", TRUE, $usersettings_shortcodes);
 }
 return $ret;
 SC_END
@@ -286,7 +286,7 @@ if($catInfo)
 		foreach($fieldList as $field)
 		{
 			cachevars("extendedfield_{$cat['user_extended_struct_name']}", $field);
-			$ret .= $tp->parseTemplate("{USEREXTENDED_FIELD={$field['user_extended_struct_name']}}", FALSE, $usersettings_shortcodes);
+			$ret .= $tp->parseTemplate("{USEREXTENDED_FIELD={$field['user_extended_struct_name']}}", TRUE, $usersettings_shortcodes);
 		}
 	}
 }
