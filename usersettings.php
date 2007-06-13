@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-05-28 09:37:27 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2007-06-13 22:13:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -482,7 +482,7 @@ if(e_QUERY == "update")
 	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*","<span style='color:red'>*</span>",LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 }
 
-$text .= $tp->parseTemplate($USERSETTINGS_EDIT, FALSE, $usersettings_shortcodes);
+$text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 $text .= "<div>";
 
 $text .= "
