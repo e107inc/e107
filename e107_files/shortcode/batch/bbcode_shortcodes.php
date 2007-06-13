@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-04-15 16:07:39 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2007-06-13 19:36:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -37,9 +37,16 @@ $bbcode_tag  = ($bbcode_helptag != 'helpb') ? ",'$bbcode_helptag'" : "";
 $rand = rand(1000,9999);
 $imagedir_display = str_replace("../","",$bbcode_imagedir);
 
-if($parm == "emotes" && $pref['comments_emoticons'] && $pref['smiley_activate'] && !e_WYSIWYG)
+if($parm == "emotes")
 {
+  if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !e_WYSIWYG)
+  {
 	$bbcode['emotes'] = array("expandit","emoticon_selector_".$rand, LANHELP_44, "emotes.png", "Emoticon_Select", "emoticon_selector_".$rand);
+  }
+  else
+  {	// If emotes disabled, don't return anything (without this we return an empty image reference)
+    return '';
+  }
 }
 
 // Format: $bbcode['UNIQUE_NAME'] = array(ONCLICK_FUNC, ONCLICK_VAR, HELPTEXT, ICON, INCLUDE_FUNC, INCLUDE_FUNCTION_VAR);
