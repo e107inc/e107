@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-15 03:04:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2007-06-14 19:22:06 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -149,7 +149,7 @@ $text = "<div style='text-align:center'>
 <tr>
 <td style='width:50%' class='forumheader3'>".FBLAN_09."</td>
 <td style='width:50%; text-align: left;' class='forumheader3'>
-".r_userclass("fb_class", $fb_class, "public, guests, nobody, member, admin, classes")."
+".r_userclass("fb_class", $fb_class,'off', "public, guests, nobody, member, admin, classes")."
 </td>
 </tr>
 
