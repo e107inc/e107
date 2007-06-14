@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2007-06-08 20:56:45 $
-|     $Author: e107steved $
+|     $Revision: 1.72 $
+|     $Date: 2007-06-14 06:53:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.71 $
-* @author $Author: e107steved $
+* @version $Revision: 1.72 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -478,7 +478,7 @@ class db {
 	* @access private
 	* Deprecated - replaced by db_gen_query
 	*/
-	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '') 
+	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		/*
 		changes by jalist 19/01/05:
@@ -491,12 +491,12 @@ class db {
 		if(strpos($query,'#') !== FALSE) {
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
-		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE) 
+		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE)
 		{	// Successful query which doesn't return a row count
 		  $this->dbError('db_Select_gen');
 		  return TRUE;
 		}
-		elseif ($this->mySQLresult === FALSE) 
+		elseif ($this->mySQLresult === FALSE)
 		{	// Failed query
 		  $this->dbError('dbQuery ('.$query.')');
 		  return FALSE;
@@ -526,7 +526,7 @@ class db {
 	* @desc Used to make 'general' queries.
 	* @access public
 	*/
-	function db_gen_query($query, $debug = FALSE, $log_type = '', $log_remark = '') 
+	function db_Generic($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		/*
 		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM `#table`" (note backticks round table name and '#')
@@ -536,31 +536,31 @@ class db {
 		*/
 
 	  $this->tabset = FALSE;
-	  if (strpos($query,'#') !== FALSE) 
+	  if (strpos($query,'#') !== FALSE)
 	  {
 		$query = preg_replace_callback("/\s`#([\w]*?)`/", array($this, 'mlq_check'), $query);
 	  }
-	  if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_gen_query', $debug, $log_type, $log_remark)) === TRUE) 
+	  if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Generic', $debug, $log_type, $log_remark)) === TRUE)
 	  {	// Successful query which doesn't return a row count
-		$this->dbError('db_gen_query');
+		$this->dbError('db_Generic');
 		return TRUE;
 	  }
-	  elseif ($this->mySQLresult === FALSE) 
+	  elseif ($this->mySQLresult === FALSE)
 	  {	// Failed query
 		$this->dbError('dbQuery ('.$query.')');
 		return FALSE;
 	  }
 	  else
 	  {	// Successful query which does return a row count - get the count and return it
-		$this->dbError('db_gen_query');
+		$this->dbError('db_Generic');
 		return $this->db_Rows();
 	  }
 	}
 
-	function mlq_check($matches) 
+	function mlq_check($matches)
 	{
 	  $table = $this->db_IsLang($matches[1]);	// Add any language prefix to table name
-	  if($this->tabset == false) 
+	  if($this->tabset == false)
 	  {
 		$this->mySQLcurTable = $table;
 		$this->tabset = true;
