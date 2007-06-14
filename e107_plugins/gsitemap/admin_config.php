@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-06-14 19:23:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -254,7 +254,7 @@ class gsitemap
 		<tr>
 		<td class='forumheader3'>".GSLAN_31."</td>
 		<td class='forumheader3'>";
-		$text .= r_userclass("gsitemap_active", $editArray['gsitemap_active'], "nobody,public,guest,member,admin,classes,language");
+		$text .= r_userclass("gsitemap_active", $editArray['gsitemap_active'], 'off', "nobody,public,guest,member,admin,classes,language");
 		$text .="
 		</td>
 		</tr>
