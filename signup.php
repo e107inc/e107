@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.110 $
-|     $Date: 2007-05-28 09:37:12 $
-|     $Author: e107steved $
+|     $Revision: 1.111 $
+|     $Date: 2007-06-14 07:53:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -329,7 +329,7 @@ if (isset($_POST['register']))
 	$e107cache->clear("online_menu_totals");
 	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
-	if ($signup_imagecode && !$_POST['xupexist'] )
+	if (isset($_POST['rand_num']) && $signup_imagecode && !$_POST['xupexist'] )
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
@@ -404,7 +404,7 @@ if (isset($_POST['register']))
 	  $error_message .= LAN_SIGNUP_56."\\n";
 	  $error = TRUE;
 	}
-	
+
 global $db_debug;
 	// Check for disallowed names.
 	if(varsettrue($pref['signup_disallow_text']))
@@ -432,14 +432,14 @@ global $db_debug;
 	  $error_message .= LAN_SIGNUP_55."\\n";
 	  $error = TRUE;
 	}
-	
+
 	// Check if login name exceeds maximum allowed length
 	if (strlen($_POST['loginname']) > varset($pref['loginname_maxlength'],30))
 	{
 	  $error_message .= LAN_SIGNUP_57."\\n";
 	  $error = TRUE;
 	}
-	
+
 	// Display Name exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
@@ -653,6 +653,7 @@ global $db_debug;
 			require_once(FOOTERF);
 		}
 
+
 		if ($pref['user_reg_veri'])
 		{
 			// ==== Update Userclass =======>
@@ -689,6 +690,7 @@ global $db_debug;
 			}
 
             $_POST['ip'] = $ip;
+			$_POST['user_id'] = $nid;
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			require_once(HEADERF);
@@ -745,6 +747,7 @@ global $db_debug;
 
 			// ==========================================================
             $_POST['ip'] = $ip;
+			$_POST['user_id'] = $nid;
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			if($pref['signup_text_after'])
