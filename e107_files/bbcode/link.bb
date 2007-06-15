@@ -17,10 +17,11 @@ if(substr($parm,0,6) == "mailto")
 if ($parm && $parm != 'external' && strpos($parm, ' ') === FALSE)
 {
 	$parm = preg_replace('#^external.#is', '', $parm);
+	if (strtolower(substr($parm,0,11)) == 'javascript:') return '';
 	return "<a class='bbcode' href='".$tp -> toAttribute($parm)."'".$external.">".$code_text."</a>";
 }
-
 else
 {
+  if (strtolower(substr($parm,0,11)) == 'javascript:') return '';
 	return "<a class='bbcode' href='".$tp -> toAttribute($code_text)."'".$external.">".$code_text."</a>";
 }
