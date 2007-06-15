@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2007-06-15 07:56:04 $
-|     $Author: e107coders $
+|     $Revision: 1.75 $
+|     $Date: 2007-06-15 11:55:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.74 $
-* @author $Author: e107coders $
+* @version $Revision: 1.75 $
+* @author $Author: mcfly_e107 $
 */
 class db {
 
@@ -557,8 +557,7 @@ class db {
 		}
 		$ret = str_replace("#", MPREFIX, $matches[0]);
 		$ret = str_replace($matches[0], $table, $ret);
-	//	return $ret; // this one fails. 
-		return " ".MPREFIX.$table.substr($matches[0],-1);
+		return $ret;
 	}
 
 
@@ -799,7 +798,7 @@ class db {
 			global $sql;
         	$this->mySQLaccess = $sql->mySQLaccess;
 		}
-		
+
 		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
 }
