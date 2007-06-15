@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-06-08 20:56:53 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2007-06-15 08:04:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.13 $
-* @author $Author: e107steved $
+* @version $Revision: 1.14 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -511,8 +511,8 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '') {
-
+	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
 		/*
 		changes by jalist 19/01/05:
 		added string replace on table prefix to tidy up long database queries
@@ -521,9 +521,15 @@ class db {
 		*/
 
 		$this->tabset = FALSE;
-		if(strpos($query,'#') !== FALSE) {
+		if(strpos($query,'`#') !== FALSE)
+		{
+			$query = preg_replace_callback("/\s`#([\w]*?)`/", array($this, 'ml_check'), $query);
+		}
+		elseif(strpos($query,'#') !== FALSE)
+	  {
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
+
 		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE) 
 		{	// Successful query which doesn't return a row count
 		  $this->dbError('db_Select_gen');
@@ -541,14 +547,20 @@ class db {
 		}
 	}
 
-	function ml_check($matches) {
+	function ml_check($matches)
+	{
 		$table = $this->db_IsLang($matches[1]);
-		if($this->tabset == false) {
+		if($this->tabset == false)
+		{
 			$this->mySQLcurTable = $table;
 			$this->tabset = true;
 		}
+		$ret = str_replace("#", MPREFIX, $matches[0]);
+		$ret = str_replace($matches[0], $table, $ret);
+	//	return $ret; // this one fails. 
 		return " ".MPREFIX.$table.substr($matches[0],-1);
 	}
+
 
 	/**
 	* @return unknown
