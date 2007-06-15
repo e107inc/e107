@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.339 $
-|     $Date: 2007-06-14 06:53:36 $
+|     $Revision: 1.340 $
+|     $Date: 2007-06-15 07:32:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1079,13 +1079,13 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
   {
 	if ($row_val == '')
 	{		// Save old version as a backup first
-	  $sql->db_Generic("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
+	  $sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
 
 	  // Now save the updated values
 	  // traverse the pref array, with toDB on everything
 	  $_pref = $tp -> toDB($pref, true, true);
 	  // Create the data to be stored
-	  $sql->db_Generic("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
+	  $sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
 	  ecache::clear('SitePrefs');
 	}
   }
