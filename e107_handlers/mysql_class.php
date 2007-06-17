@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2007-06-15 11:55:45 $
+|     $Revision: 1.76 $
+|     $Date: 2007-06-17 21:00:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.75 $
+* @version $Revision: 1.76 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -523,7 +523,7 @@ class db {
 		$this->tabset = FALSE;
 		if(strpos($query,'`#') !== FALSE)
 		{
-			$query = preg_replace_callback("/\s`#([\w]*?)`/", array($this, 'ml_check'), $query);
+			$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
 		}
 		elseif(strpos($query,'#') !== FALSE)
 	  {
@@ -555,9 +555,7 @@ class db {
 			$this->mySQLcurTable = $table;
 			$this->tabset = true;
 		}
-		$ret = str_replace("#", MPREFIX, $matches[0]);
-		$ret = str_replace($matches[0], $table, $ret);
-		return $ret;
+		return ' `'.MPREFIX.$table.'` ';
 	}
 
 
