@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2007-06-17 21:00:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.77 $
+|     $Date: 2007-06-19 21:01:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.76 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.77 $
+* @author $Author: e107steved $
 */
 class db {
 
@@ -555,7 +555,7 @@ class db {
 			$this->mySQLcurTable = $table;
 			$this->tabset = true;
 		}
-		return ' `'.MPREFIX.$table.'` ';
+		return ' `'.MPREFIX.$table.'`'.substr($matches[0],-1);
 	}
 
 
