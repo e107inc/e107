@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.340 $
-|     $Date: 2007-06-15 07:32:14 $
-|     $Author: e107coders $
+|     $Revision: 1.341 $
+|     $Date: 2007-06-19 20:55:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -886,7 +886,7 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 
 	if (!$var || $var == "")
 	{
-		return TRUE;
+		return FALSE;
 	}
 
 	if(strpos($var, ",") !== FALSE)
