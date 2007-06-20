@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2007-06-19 21:01:52 $
-|     $Author: e107steved $
+|     $Revision: 1.78 $
+|     $Date: 2007-06-20 20:48:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.77 $
-* @author $Author: e107steved $
+* @version $Revision: 1.78 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -353,10 +353,10 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Fetch() {
+	function db_Fetch($type = MYSQL_BOTH) {
 		global $eTraffic;
 		$b = microtime();
-		$row = @mysql_fetch_array($this->mySQLresult);
+		$row = @mysql_fetch_array($this->mySQLresult,$type);
 		$eTraffic->Bump('db_Fetch', $b);
 		if ($row) {
 			$this->dbError('db_Fetch');
