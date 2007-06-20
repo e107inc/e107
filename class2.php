@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.341 $
-|     $Date: 2007-06-19 20:55:52 $
+|     $Revision: 1.342 $
+|     $Date: 2007-06-20 19:28:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -884,8 +884,10 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 		return TRUE;
 	}
 
+	if (is_numeric($var) && !$var) return TRUE;		// Accept numeric class zero - 'PUBLIC'
+
 	if (!$var || $var == "")
-	{
+	{	// ....but an empty string or NULL variable is not valid
 		return FALSE;
 	}
 
