@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.12 $ 
-|     $Date: 2007-06-08 20:52:47 $
+|     $Revision: 1.13 $ 
+|     $Date: 2007-06-20 19:29:14 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -83,7 +83,7 @@ else
 	  if (!isset($dl_from)) $dl_from = 0;
 
 	  // Get category type, page title
-	  if ($sql->db_Select("download_category", "download_category_name,download_category_description,download_category_parent", "(download_category_id='{$id}') AND (download_category_class IN (".USERCLASS_LIST."))") )
+	  if ($sql->db_Select("download_category", "download_category_name,download_category_description,download_category_parent,download_category_class", "(download_category_id='{$id}') AND (download_category_class IN (".USERCLASS_LIST."))") )
 	  {
 		$row = $sql->db_Fetch();
 		extract($row);
