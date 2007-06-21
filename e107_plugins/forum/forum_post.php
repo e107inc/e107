@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-05-28 20:36:15 $
+|     $Revision: 1.7 $
+|     $Date: 2007-06-21 19:37:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -439,7 +439,7 @@ if (!$FORUMPOST)
 {
   if (is_readable(THEME."forum_post_template.php"))
   {
-  include_once(THEME."forum_post_template.php");
+    include_once(THEME."forum_post_template.php");
   }
   else
   {
@@ -462,6 +462,9 @@ else if($action == "nt" && !$sact && !$sql -> db_Select("forum", "*", "forum_id=
 }
 else
 {
+	// DB access should pass - after all, the thread should exist
+	$sql->db_Select_gen("SELECT t.*, p.forum_postclass FROM #forum_t AS t 
+	LEFT JOIN #forum AS p ON t.thread_forum_id=p.forum_id WHERE thread_id='{$id}'");
 	$fpr = $sql -> db_Fetch();
 	if(!check_class($fpr['forum_postclass']))
 	{
