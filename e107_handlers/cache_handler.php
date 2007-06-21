@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*
 + ----------------------------------------------------------------------------+
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-04 15:01:28 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2007-06-21 16:55:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.3 $
-* @author      $Author: mrpete $
+* @version     $Revision: 1.4 $
+* @author      $Author: sweetas $
 */
 class ecache {
 
