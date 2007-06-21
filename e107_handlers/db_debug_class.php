@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-04 13:42:01 $
-|     $Author: mrpete $
+|     $Revision: 1.5 $
+|     $Date: 2007-06-21 16:55:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
