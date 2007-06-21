@@ -1,4 +1,4 @@
- <?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/fileinspector.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-09-20 14:04:31 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2007-06-21 19:38:45 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
