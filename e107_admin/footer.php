@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-03-04 21:50:28 $
-|     $Author: mrpete $
+|     $Revision: 1.7 $
+|     $Date: 2007-06-21 19:40:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

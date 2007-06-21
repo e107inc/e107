@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-04-18 21:08:27 $
+|     $Revision: 1.9 $
+|     $Date: 2007-06-21 19:40:38 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
