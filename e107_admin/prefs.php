@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-16 01:13:19 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2007-06-23 21:10:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -59,6 +59,12 @@ if (isset($_POST['updateprefs']))
 	{
 		$pref[$key] = $tp->toDB($value);
 	}
+
+	// Range check these - can cause big problems if admin enters stupid values!
+	if ($pref['loginname_maxlength'] < 10) $pref['loginname_maxlength'] = 10;
+	if ($pref['loginname_maxlength'] > 100) $pref['loginname_maxlength'] = 100;
+	if ($pref['displayname_maxlength'] < 5) $pref['displayname_maxlength'] = 5;
+	if ($pref['displayname_maxlength'] > 30) $pref['displayname_maxlength'] = 30;
 
 	$e107cache->clear();
 	save_prefs();
@@ -493,7 +499,14 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_158.":</td>
 	<td class='forumheader3' style='width:50%;text-align:right' >
-	<input type='text' class='tbox' size='3' name='displayname_maxlength' value='".$pref['displayname_maxlength']."' />
+	<input type='text' class='tbox' size='3' name='displayname_maxlength' value='".varset($pref['displayname_maxlength'],15)."' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_172.":</td>
+	<td class='forumheader3' style='width:50%;text-align:right' >
+	<input type='text' class='tbox' size='3' name='loginname_maxlength' value='".varset($pref['loginname_maxlength'],30)."' />
 	</td>
 	</tr>
 
