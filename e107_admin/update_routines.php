@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-05-21 21:42:48 $
+|     $Revision: 1.8 $
+|     $Date: 2007-06-24 16:18:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,33 +28,57 @@ require_once("../class2.php");
 // To do - how do we handle multi-language tables?
 
 
-// This is really a 0.7.0..0.7.6 or so update
-if (!$pref['displayname_maxlength'])
-{
-  $pref['displayname_maxlength'] = 15;
-  save_prefs();
-}
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
 if (!defined("LAN_UPDATE_9")) { define("LAN_UPDATE_9", ""); }
 
 
 // Determine which installed plugins have an update file - save the path and the installed version in an array
-$dbupdatep = array();		// Array of paths to installed plugins which have a checking routine
+$dbupdateplugs = array();		// Array of paths to installed plugins which have a checking routine
+$dbupdatep = array();		// Array of plugin upgrade actions (similar to $dbupdate)
+$dbupdate = array();
+
+global $e107cache;
+
+if (is_readable(e_ADMIN."ver.php"))
+{
+  include(e_ADMIN."ver.php");
+}
+
+
+// If $dont_check_update is both defined and TRUE on entry, a check for update is done only once per 24 hours.
+$dont_check_update = varset($dont_check_update, FALSE);
+
+
+if ($dont_check_update === TRUE)
+{
+  $dont_check_update = FALSE;
+  if ($tempData = $e107cache->retrieve_sys("nq_admin_updatecheck",3600, TRUE))
+  {	// See when we last checked for an admin update
+    list($last_time, $dont_check_update,$last_ver) = explode(',',$tempData);
+	if ($last_ver != $e107info['e107_version']) 
+	{
+	  $dont_check_update = FALSE;	// Do proper check on version change
+	}
+  }
+}
+
+if (!$dont_check_update)
+{ 
 if ($sql->db_Select("plugin", "plugin_version, plugin_path", "plugin_installflag='1' ")) 
 {
   while ($row = $sql->db_Fetch())
   {  // Mark plugins for update which have a specific update file, or a plugin.php file to check
 	if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php')) 
 	{
-	  $dbupdatep[$row['plugin_path']] = $row['plugin_version'];
+	  $dbupdateplugs[$row['plugin_path']] = $row['plugin_version'];
 	}
   }
 }
 
 
-// Read in each update file
-foreach ($dbupdatep as $path => $ver)
+// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
+foreach ($dbupdateplugs as $path => $ver)
 {
   $fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';
   if (is_readable($fname)) include_once($fname);
@@ -94,40 +118,57 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_in
 
 */
 
-
+// List of potential updates
+$dbupdate["core_prefs"] = LAN_UPDATE_13;						// Prefs check
 $dbupdate["706_to_800"] = LAN_UPDATE_8." .706 ".LAN_UPDATE_9." .8";
 $dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
-
+}		// End if (!$dont_check_update)
 
 
 function update_check() 
 {
-  global $ns, $dbupdate, $dbupdatep;
+  global $ns, $dont_check_update, $e107info;
   
   $update_needed = FALSE;
-  foreach($dbupdate as $func => $rmks) 
+  
+  if ($dont_check_update === FALSE)
   {
-	if (function_exists("update_".$func)) 
+	global $dbupdate, $dbupdatep, $e107cache;
+
+	// See which core functions need update
+	foreach($dbupdate as $func => $rmks) 
 	{
-	  if (!call_user_func("update_".$func, FALSE)) 
+//	  echo "Core Check {$func}=>{$rmks}<br />";
+	  if (function_exists("update_".$func)) 
 	  {
-		$update_needed = TRUE;
-		continue;
+		if (!call_user_func("update_".$func, FALSE)) 
+		{
+		  $update_needed = TRUE;
+		  continue;
+		}
 	  }
 	}
+
+	// Now check plugins
+	foreach($dbupdatep as $func => $rmks) 
+	{
+//	  echo "Plugin Check {$func}=>{$rmks}<br />";
+	  if (function_exists("update_".$func)) 
+	  {
+		if (!call_user_func("update_".$func, FALSE)) 
+		{
+		  $update_needed = TRUE;
+		  continue;
+		}
+	  }
+	}
+  	$e107cache->set_sys("nq_admin_updatecheck", time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
+  }
+  else  
+  {
+    $update_needed = ($dont_check_update == '2');
   }
 
-  foreach($dbupdatep as $func => $rmks) 
-  {
-	if (function_exists("update_".$func)) 
-	{
-	  if (!call_user_func("update_".$func, FALSE)) 
-	  {
-		$update_needed = TRUE;
-		continue;
-	  }
-	}
-  }
 
   if ($update_needed === TRUE) 
   {
@@ -143,24 +184,24 @@ function update_check()
 //--------------------------------------------
 //	Check current prefs against latest list
 //--------------------------------------------
-function check_core_prefs($type='')
+function update_core_prefs($type='')
 {
   global $pref;
   $do_save = FALSE;
   $should = get_default_prefs();
 
   $just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
-  
   foreach ($should as $k => $v)
   {
-    if (!array_key_exists($k,$pref))
+    if ($k && !array_key_exists($k,$pref))
 	{
 	  if ($just_check) return update_needed();
 	  $pref[$k] = $v;
 	  $do_save = TRUE;
 	}
   }
-  if ($do_save) save_prefs();
+  if ($do_save) { save_prefs();  }
+  return $just_check;
 }
 
 
@@ -172,7 +213,7 @@ function update_706_to_800($type='')
 	global $sql,$ns, $pref;
 	
 	// List of unwanted $pref values which can go
-	$obs_prefs = array();
+	$obs_prefs = array('frontpage_type');
 	$do_save = FALSE;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
@@ -262,6 +303,16 @@ function update_706_to_800($type='')
 	}
 
 
+	// Front page prefs (logic has changed)
+	if (!isset($pref['frontpage_force']))
+	{	// Just set basic options; no real method of converting the existing
+	  if ($just_check) return update_needed();
+	  $pref['frontpage_force'] = array(e_UC_PUBLIC => '');
+	  $pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
+	  $do_save = TRUE;
+	}
+
+
 	// Obsolete prefs (list at top)
 	foreach ($obs_prefs as $p)
 	{
@@ -298,7 +349,7 @@ function update_706_to_800($type='')
 
 function update_70x_to_706($type='') 
 {
-	global $sql,$ns;
+	global $sql,$ns, $pref;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;
 	if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
@@ -408,7 +459,7 @@ function catch_error(){
 
 function get_default_prefs()
 {
-  require_once(e_FILES."def_e107_prefs.php");
+  require(e_FILE."def_e107_prefs.php");
   return $pref;
 }
 

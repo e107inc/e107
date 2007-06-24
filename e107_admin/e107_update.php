@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/e107_update.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-06-24 16:18:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -21,7 +21,10 @@ $e_sub_cat = 'database';
 require_once("auth.php");
 require_once("update_routines.php");
 
-function run_updates($dbupdate) {
+
+// Carry out core updates
+function run_updates($dbupdate) 
+{
 	global $ns;
 	foreach($dbupdate as $func => $rmks) {
 		$installed = call_user_func("update_".$func);
@@ -40,7 +43,9 @@ function run_updates($dbupdate) {
 	}
 }
 
-function show_updates($dbupdate, $additional = false) {
+
+function show_updates($dbupdate) 
+{
 	global $ns;
 	$text = "<form method='POST' action='".e_SELF."'>
 	<div style='width:100%'>
@@ -56,6 +61,7 @@ function show_updates($dbupdate, $additional = false) {
 	foreach($dbupdate as $func => $rmks) {
 		if (function_exists("update_".$func)) {
 			$text .= "<tr><td class='forumheader3' style='width: 60%'>{$rmks}</td>";
+//	  echo "Core2 Check {$func}=>{$rmks}<br />";
 			if (call_user_func("update_".$func)) {
 				$text .= "<td class='forumheader3' style='text-align:center; width: 40%'>".LAN_UPDATE_3."</td>";
 			} else {
@@ -67,13 +73,18 @@ function show_updates($dbupdate, $additional = false) {
 	}
 
 	$text .= "</table></div></form>";
-	$ns->tablerender(($additional ? (defined("LAN_UPDATE_11") ? LAN_UPDATE_11 : '.617 to .7 Update Continued') : LAN_UPDATE_10), $text);
+		$ns->tablerender(LAN_UPDATE, $text);
 }
 
-if ($_POST) {
-	$message = run_updates($dbupdate);
+
+if ($_POST) 
+{
+  $message = run_updates($dbupdate);
 }
 
+
+/*
+These things already done within update_routines.php
 if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
 	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 	{
@@ -103,13 +114,18 @@ if ($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_i
 	}
 }
 
-if ($_POST) {
-	$message = run_updates($dbupdatep);
+*/
+
+if ($_POST) 
+{	// Do plugin updates
+  $message = run_updates($dbupdatep);
 }
 
-if (isset($dbupdatep)) {
-	show_updates($dbupdatep, true);
+if (isset($dbupdatep)) 
+{	// Show plugin updates done
+	show_updates($dbupdatep);
 }
+// Show core updates done
 show_updates($dbupdate);
 
 require_once("footer.php");
