@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-02 19:47:47 $
+|     $Revision: 1.3 $
+|     $Date: 2007-06-24 16:30:42 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -30,27 +30,6 @@ require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 require_once(e_HANDLER.'userclass_class.php');
 
-
-// New language defs to be moved out (probably get rid of nearly all the existing ones)
-define('FRTLAN_35', 'Post-login page');
-//define('FRTLAN_36', 'Yes');
-//define('FRTLAN_37', 'No');
-define('FRTLAN_38', 'The rules are searched in order, to find the first where the current user belongs to the class specified in the rule. That rule then determines the front (home) page and any specific post-login page.');
-define('FRTLAN_39', 'If no rule matches, news.php is set as the home page');
-define('FRTLAN_40', 'Order');
-define('FRTLAN_41', "The user is sent to the specified 'Post-login page' (if specified) immediately following a login");
-define('FRTLAN_42', 'Add new rule');
-define('FRTLAN_43', 'Class: ');
-define('FRTLAN_44', 'Go to this page after login');
-define('FRTLAN_45', 'Values not changed');
-define('FRTLAN_46', 'Edit existing rule');
-define('FRTLAN_47', 'Move up');
-define('FRTLAN_48', 'Move down');
-define('FRTLAN_49', 'Home Page');
-define('FRTLAN_50', "(To disable, select 'Other' with a blank page)");
-define('FRTLAN_51', "Other");
-define('FRTLAN_52', "None");
-define('FRTLAN_53', 'User Class');
 
 
 // Get list of possible options for front page
@@ -290,7 +269,7 @@ class frontpage
 {
 	function select_class($show_button = TRUE) 
 	{	// Display existing data
-	  global $fp_settings, $rs, $ns, $front_page;
+	  global $fp_settings, $rs, $ns, $front_page, $imode;
 		
 
 // List of current settings
@@ -321,8 +300,8 @@ class frontpage
 				<td class='forumheader3'>".$this->lookup_path($current_value['page'])."</td>
 				<td class='forumheader3'>".$this->lookup_path($current_value['force'])."</td>
 				<td class='forumheader3' style='text-align:center'>
-				<input type='image' src='".e_IMAGE."admin_images/up.png' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
-				<input type='image' src='".e_IMAGE."admin_images/down.png' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
+				<input type='image' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
+				<input type='image' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
 				<input type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
 				<input type='image' title='".LAN_DELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
 				</td>
