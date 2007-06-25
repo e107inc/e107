@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2007-06-13 22:53:35 $
-|     $Author: e107coders $
+|     $Revision: 1.90 $
+|     $Date: 2007-06-25 20:09:17 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -239,7 +239,12 @@ if (isset($_POST['updatesettings']))
 			{
 				// photograph uploaded
 				$user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
-				resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180);
+				if (!resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180))
+				{
+					unset($message);
+					$error .= RESIZE_NOT_SUPPORTED."\\n";
+					@unlink(e_FILE."public/avatars/".$user_sess);
+				}
 			}
 		}
 	}
