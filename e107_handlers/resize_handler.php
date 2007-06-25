@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-29 18:56:53 $
+|     $Revision: 1.4 $
+|     $Date: 2007-06-25 20:09:29 $
 |     $Author: e107steved $
 |
 | Mod to support GIF (for gd at least)
@@ -56,7 +56,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 */ 
 	if ($image_stats == null) 
 	{
-	  echo "<b>DEBUG</b> image_stats are null<br />";
+//	  echo "<b>DEBUG</b> image_stats are null<br />";
 	  return false;
 	}
 	 
