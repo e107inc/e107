@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-05-28 09:37:27 $
+|     $Revision: 1.6 $
+|     $Date: 2007-06-25 21:36:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -225,17 +225,18 @@ if($pref['signup_option_image'])
 	$text .= "<br />
 	</div><br />";
 
-	if ($pref['avatar_upload'] && FILE_UPLOADS)
+    // Intentionally disable uploadable avatar and photos at this stage
+	if (false && $pref['avatar_upload'] && FILE_UPLOADS)
 	{
 		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
 		<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
 	}
 
-	if ($pref['photo_upload'] && FILE_UPLOADS)
+	if (false && $pref['photo_upload'] && FILE_UPLOADS)
 	{
 		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
 		<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
-	}
+	}  
 	return $text;
 }
 SC_END
