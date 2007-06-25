@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-05 20:07:35 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-06-25 15:39:34 $
+|     $Author: sweetas $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
 +----------------------------------------------------------------------------+
@@ -40,6 +40,7 @@ $pst->save_preset();
 
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
+require_once(e_HANDLER."ren_help.php");
 
 $rs = new form;
 $linkpost = new links;
@@ -464,8 +465,12 @@ class links
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_17.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<textarea class='tbox' name='link_description' cols='59' rows='3'>$link_description</textarea>
-			</td>
+			<textarea class='tbox' id='link_description' name='link_description' cols='70' rows='5' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($link_description)."</textarea>
+			<br />";
+
+			$text .= display_help("helpb", "admin");
+			
+			$text .= "</td>
 			</tr>
 
 			<tr>
