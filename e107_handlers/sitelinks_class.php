@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-06-25 15:00:58 $
+|     $Revision: 1.10 $
+|     $Date: 2007-06-25 15:06:38 $
 |     $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -267,7 +267,7 @@ class sitelinks
 		$search[0] = "/\{LINK\}(.*?)/si";
 		$replace[0] = $_link.$style['linkend']."\n";
 		$search[1] = "/\{LINK_DESCRIPTION\}(.*?)/si";
-		$replace[1] = $tp -> toHTML($linkInfo['link_description'],"","value, emotes_off, defs, no_hook");
+		$replace[1] = $tp -> toHTML($linkInfo['link_description'], true);
 
 		$text = preg_replace($search, $replace, $SITELINKSTYLE);
 
