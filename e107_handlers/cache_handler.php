@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-21 16:55:10 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2007-06-25 21:13:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.4 $
-* @author      $Author: sweetas $
+* @version     $Revision: 1.5 $
+* @author      $Author: e107steved $
 */
 class ecache {
 
@@ -84,7 +84,7 @@ class ecache {
 	*/
 	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false) {
 		global $pref, $FILES_DIRECTORY, $tp;
-		if(($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
+		if(($ForcedCheck != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
 		{
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			if (file_exists($cache_file)) {
@@ -134,7 +134,7 @@ class ecache {
 	*/
 	function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) {
 		global $pref, $FILES_DIRECTORY, $tp;
-		if(($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
+		if(($ForceCache != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
 		{
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			file_put_contents($cache_file, ($bRaw? $Data : '<?php'.$Data) );
