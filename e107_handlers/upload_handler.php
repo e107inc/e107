@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.2 $
-|   $Date: 2007-05-28 15:17:07 $
+|   $Revision: 1.3 $
+|   $Date: 2007-06-26 20:27:02 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -30,13 +30,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 	if (!$uploaddir) {$uploaddir = e_FILE."public/";}
 	if($uploaddir == e_THEME) {$pref['upload_storagetype'] = 1;}
 
-	if (is_readable(e_ADMIN.'filetypes.php')) {
-		$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
-		$a_filetypes = explode(',', $a_filetypes);
-		foreach ($a_filetypes as $ftype) {
-			$allowed_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
-		}
-	}
+	$allowed_filetypes = get_allowed_filetypes();
 
 	if ($pref['upload_storagetype'] == "2" && $avatar == FALSE)
 	{
@@ -45,19 +39,14 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 		{
 			if ($file_userfile['tmp_name'][$c])
 			{
-				$fileext1 = substr(strrchr($file_userfile['name'][$c], "."), 1);
-				$fileext2 = substr(strrchr($file_userfile['name'][$c], "."), 0); // in case user has left off the . in allowed_filetypes
-				if (!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes))
-				{
-					if (!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes))
-					{
-						require_once(e_HANDLER."message_handler.php");
-						message_handler("MESSAGE", "".LANUPLOAD_1." '".$file_userfile['type'][$c]."' ".LANUPLOAD_2."");
-						return FALSE;
-						require_once(FOOTERF);
-						exit;
-					}
-				}
+			  if (($file_status = vet_file($file_userfile['tmp_name'][$c], $file_userfile['name'][$c], $allowed_filetypes)) !== TRUE)
+			  {
+				require_once(e_HANDLER."message_handler.php");
+				message_handler("MESSAGE", "".LANUPLOAD_1." '".$file_userfile['type'][$c]."' ".LANUPLOAD_2." ({$file_status})");
+				return FALSE;
+				require_once(FOOTERF);
+				exit;
+			  }
 				set_magic_quotes_runtime(0);
 				$data = mysql_escape_string(fread(fopen($file_userfile['tmp_name'][$c], "rb"), filesize($file_userfile['tmp_name'][$c])));
 				set_magic_quotes_runtime(get_magic_quotes_gpc());
@@ -114,21 +103,16 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 			}
 			else
 			{
-				$uploadfile = $files['tmp_name'][$key];
-				$fileext1 = substr(strrchr($files['name'][$key], "."), 1);
-				$fileext2 = substr(strrchr($files['name'][$key], "."), 0);
-				if (!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes))
-				{
-					if (!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes))
-					{
-						require_once(e_HANDLER."message_handler.php");
-						message_handler("MESSAGE", LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2.".", __LINE__, __FILE__);
-						$f_message .= LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2."." . __LINE__ .  __FILE__;
-						return FALSE;
-						require_once(FOOTERF);
-						exit;
-					}
-				}
+			  $uploadfile = $files['tmp_name'][$key];
+			  if (($file_status = vet_file($uploadfile, $name, $allowed_filetypes)) !== TRUE)
+			  {
+				require_once(e_HANDLER."message_handler.php");
+				message_handler("MESSAGE", LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2.". ({$file_status})", __LINE__, __FILE__);
+				$f_message .= LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2."." . __LINE__ .  __FILE__;
+				return FALSE;
+				require_once(FOOTERF);
+				exit;
+			  }
 
 				$uploaded[$c]['name'] = $name;
 				$uploaded[$c]['rawname'] = $raw_name;
@@ -201,4 +185,87 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 
 	return $uploaded;
 }
+
+
+// Check uploaded file to try and identify dodgy content.
+// Return TRUE if appears OK.
+// Return a numeric reason code 1..9 if unacceptable
+
+// $filename is the full path+name to the uploaded file on the server
+// $target_name is the intended name of the file once transferred
+// $allowed_filetypes is an array of permitted file extensions, in lower case, no leading '.'
+//		(usually generated from filetypes.php)
+// if $unknown is FALSE, rejects totally unknown file extensions (even if in $allowed_filetypes).
+// if $unknown is TRUE, accepts totally unknown file extensions.
+// otherwise $unknown is a comma-separated list of additional permitted file extensions
+function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = FALSE)
+{
+// 1. Start by checking against filetypes - that's the easy one!
+  $file_ext = strtolower(substr(strrchr($target_name, "."), 1));
+  if (!in_array($file_ext, $allowed_filetypes)) return 1;
+
+
+// 2. For all files, read the first little bit to check for any flags etc
+  $res = fopen($filename, 'rb');
+  $tstr = fread($res,100);
+  fclose($res);
+  if ($tstr === FALSE) return 2;			// If can't read file, not much use carrying on!
+  if (stristr($tstr,'<?php') !== FALSE) return 3;		// Pretty certain exploit
+  if (stristr($tstr,'<?') !== FALSE) return 7;			// Possible exploit - maybe allowable?
+  
+  
+// 3. Now do what we can based on file extension
+  switch ($file_ext)
+  {
+    case 'jpg' :
+	case 'gif' :
+	case 'png' :
+	case 'jpeg' :
+	case 'pjpeg' :
+	case 'bmp' :
+	  $ret = getimagesize($filename);
+	  if (!is_array($ret)) return 4;		// getimagesize didn't like something
+	  if (($ret[0] == 0) || ($ret[1] == 0)) return 5;		// Zero size picture or bad file format
+	  break;
+	  
+	case 'zip' :
+	case 'gzip' :
+	case 'gz' :
+	case 'tar' :
+	case 'bzip' :
+	case 'pdf' :
+	  break;			// Just accept these
+
+	case 'php' :
+	case 'htm' :
+	case 'html' :
+	  return 9;			// Never accept these! Whatever the user thinks!
+	  
+	default :
+	  if (is_boolean($unknown)) return ($unknown ? TRUE : 8);
+	  $tmp = explode(',', $unknown);
+	  for ($i = 0; $i < count($tmp); $i++) { $tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));  }
+	  if (!in_array($file_ext, $tmp)) return 6;
+  }
+  return TRUE;			// Accepted here
+}
+
+
+
+function get_allowed_filetypes($def_file = 'filetypes.php')
+{
+  $ret = array();
+  
+  if (is_readable(e_ADMIN.$def_file)) 
+  {
+	$a_filetypes = trim(file_get_contents(e_ADMIN.$def_file));
+	$a_filetypes = explode(',', $a_filetypes);
+	foreach ($a_filetypes as $ftype) 
+	{
+	  $ret[] = strtolower(trim(str_replace('.', '', $ftype)));
+	}
+  }
+  return $ret;
+}
+
 ?>
