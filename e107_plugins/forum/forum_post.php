@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-06-21 19:37:13 $
+|     $Revision: 1.8 $
+|     $Date: 2007-06-26 21:34:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -448,21 +448,24 @@ if (!$FORUMPOST)
 }
 /* check post access (bugtracker #1424) */
 
-if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='$id'"))
+if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='{$id}'"))
 {
 	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 	 require_once(FOOTERF);
 	exit;
 }
-else if($action == "nt" && !$sact && !$sql -> db_Select("forum", "*", "forum_id='$id'"))
+elseif($action == "nt")
 {
-	 $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-	 require_once(FOOTERF);
+  if (!$sact && !$sql -> db_Select("forum", "*", "forum_id='{$id}'"))
+  {
+	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+	require_once(FOOTERF);
 	exit;
+  }
 }
 else
 {
-	// DB access should pass - after all, the thread should exist
+  // DB access should pass - after all, the thread should exist
 	$sql->db_Select_gen("SELECT t.*, p.forum_postclass FROM #forum_t AS t 
 	LEFT JOIN #forum AS p ON t.thread_forum_id=p.forum_id WHERE thread_id='{$id}'");
 	$fpr = $sql -> db_Fetch();

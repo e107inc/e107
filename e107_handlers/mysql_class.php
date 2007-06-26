@@ -4,7 +4,7 @@
 +---------------------------------------------------------------+
 |     e107 website system
 |
-|     Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-06-15 08:04:07 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2007-06-26 21:34:24 $
+|     $Author: e107steved $
+|
 +----------------------------------------------------------------------------+
 */
 
@@ -23,12 +24,14 @@ if (!defined('e107_INIT')) { exit; }
 $db_time = 0.0;				// Global total time spent in all db object queries
 $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 
+$db_ConnectionID = NULL;
+
 /**
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.14 $
-* @author $Author: e107coders $
+* @version $Revision: 1.15 $
+* @author $Author: e107steved $
 */
 class db {
 
@@ -81,8 +84,9 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
-		global $eTraffic;
+	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) 
+	{
+		global $eTraffic, $db_ConnectionID;
 		$eTraffic->BumpWho('db Connect', 1);
 
 		$this->mySQLserver = $mySQLserver;
@@ -113,6 +117,7 @@ class db {
 				}
 			}
 		}
+	  $db_ConnectionID = $this->mySQLaccess;		// Save the connection resource
 	}
 
 
@@ -158,6 +163,7 @@ class db {
 	* @param unknown $rli
 	* @desc Enter description here...
 	* @access private
+	* This is the 'core' routine which handles much of the interface between other functions and the DB
 	*/
 	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		global $db_time,$db_mySQLQueryCount,$queryinfo, $eTraffic;
@@ -176,8 +182,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		$b = microtime();
@@ -289,8 +295,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 
@@ -327,8 +333,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
@@ -353,10 +359,10 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Fetch() {
+	function db_Fetch($type = MYSQL_BOTH) {
 		global $eTraffic;
 		$b = microtime();
-		$row = @mysql_fetch_array($this->mySQLresult);
+		$row = @mysql_fetch_array($this->mySQLresult,$type);
 		$eTraffic->Bump('db_Fetch', $b);
 		if ($row) {
 			$this->dbError('db_Fetch');
@@ -420,8 +426,8 @@ class db {
 		global $eTraffic;
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 		$eTraffic->BumpWho('db Close', 1);
 		mysql_close($this->mySQLaccess);
@@ -445,8 +451,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 
@@ -523,19 +529,19 @@ class db {
 		$this->tabset = FALSE;
 		if(strpos($query,'`#') !== FALSE)
 		{
-			$query = preg_replace_callback("/\s`#([\w]*?)`/", array($this, 'ml_check'), $query);
+			$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
 		}
 		elseif(strpos($query,'#') !== FALSE)
 	  {
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
-		}
+	  }
 
-		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE) 
+		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE)
 		{	// Successful query which doesn't return a row count
 		  $this->dbError('db_Select_gen');
 		  return TRUE;
 		}
-		elseif ($this->mySQLresult === FALSE) 
+		elseif ($this->mySQLresult === FALSE)
 		{	// Failed query
 		  $this->dbError('dbQuery ('.$query.')');
 		  return FALSE;
@@ -555,10 +561,7 @@ class db {
 			$this->mySQLcurTable = $table;
 			$this->tabset = true;
 		}
-		$ret = str_replace("#", MPREFIX, $matches[0]);
-		$ret = str_replace($matches[0], $table, $ret);
-	//	return $ret; // this one fails. 
-		return " ".MPREFIX.$table.substr($matches[0],-1);
+		return ' `'.MPREFIX.$table.'`'.substr($matches[0],-1);
 	}
 
 
@@ -607,8 +610,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		if (!$mySQLtablelist) {
@@ -746,8 +749,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
         $result = mysql_query("SHOW COLUMNS FROM ".MPREFIX.$table,$this->mySQLaccess);
@@ -787,15 +790,17 @@ class db {
 	 * @param string $data
 	 * @return string
 	 */
-	function escape($data, $strip = true) {
-		if ($strip) {
+	function escape($data, $strip = true)
+	{
+		if ($strip)
+		{
 			$data = strip_if_magic($data);
 		}
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		return mysql_real_escape_string($data,$this->mySQLaccess);
