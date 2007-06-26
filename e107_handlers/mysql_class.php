@@ -12,9 +12,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2007-06-20 20:48:35 $
-|     $Author: e107coders $
+|     $Revision: 1.79 $
+|     $Date: 2007-06-26 21:33:59 $
+|     $Author: e107steved $
+|
 +----------------------------------------------------------------------------+
 */
 
@@ -23,12 +24,14 @@ if (!defined('e107_INIT')) { exit; }
 $db_time = 0.0;				// Global total time spent in all db object queries
 $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 
+$db_ConnectionID = NULL;
+
 /**
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.78 $
-* @author $Author: e107coders $
+* @version $Revision: 1.79 $
+* @author $Author: e107steved $
 */
 class db {
 
@@ -81,8 +84,9 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
-		global $eTraffic;
+	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) 
+	{
+		global $eTraffic, $db_ConnectionID;
 		$eTraffic->BumpWho('db Connect', 1);
 
 		$this->mySQLserver = $mySQLserver;
@@ -113,6 +117,7 @@ class db {
 				}
 			}
 		}
+	  $db_ConnectionID = $this->mySQLaccess;		// Save the connection resource
 	}
 
 
@@ -158,6 +163,7 @@ class db {
 	* @param unknown $rli
 	* @desc Enter description here...
 	* @access private
+	* This is the 'core' routine which handles much of the interface between other functions and the DB
 	*/
 	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		global $db_time,$db_mySQLQueryCount,$queryinfo, $eTraffic;
@@ -176,8 +182,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		$b = microtime();
@@ -289,8 +295,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 
@@ -327,8 +333,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
@@ -420,8 +426,8 @@ class db {
 		global $eTraffic;
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 		$eTraffic->BumpWho('db Close', 1);
 		mysql_close($this->mySQLaccess);
@@ -445,8 +451,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 
@@ -604,8 +610,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		if (!$mySQLtablelist) {
@@ -743,8 +749,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
         $result = mysql_query("SHOW COLUMNS FROM ".MPREFIX.$table,$this->mySQLaccess);
@@ -793,8 +799,8 @@ class db {
 
 		if(!$this->mySQLaccess)
 		{
-			global $sql;
-        	$this->mySQLaccess = $sql->mySQLaccess;
+			global $db_ConnectionID;
+        	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		return mysql_real_escape_string($data,$this->mySQLaccess);
