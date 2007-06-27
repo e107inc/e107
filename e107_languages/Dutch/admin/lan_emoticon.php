@@ -14,19 +14,19 @@
 +---------------------------------------------------------------+
 */
 
-define("EMOLAN_1", "Smiley instellingen bijgewerkt.");
-define("EMOLAN_2", "Smiley toegevoegd.");
-define("EMOLAN_3", "Smiley verwijderd.");
-define("EMOLAN_4", "Activeren Smileys?");
+define("EMOLAN_1", "Emoticon  Activatie.");
+define("EMOLAN_2", "Naam");
+define("EMOLAN_3", "Emoticons");
+define("EMOLAN_4", "Emoticons Activeren?");
 define("EMOLAN_5", "Afbeelding");
 define("EMOLAN_6", "Smiley Code");
 define("EMOLAN_7", "meerdere mogelijkheden scheiden met spaties");
-define("EMOLAN_8", "Smiley code");
-define("EMOLAN_9", "Smiley afbeelding");
-define("EMOLAN_10", "Toevoegen nieuwe smiley");
-define("EMOLAN_11", "Smiley instellingen");
-define("EMOLAN_12", "Bekijken");
-define("EMOLAN_13", "Verwijderen");
+define("EMOLAN_8", "Status");
+define("EMOLAN_9", "Opties");
+define("EMOLAN_10", "Actief pakket");
+define("EMOLAN_11", "Pakket activeren");
+define("EMOLAN_12", "Bewerk/configureer dit pakket");
+define("EMOLAN_13", "Genstalleerde pakketten");
 define("EMOLAN_14", "Bewaren configuratie");
 define("EMOLAN_15", "Bewerken/configureren smileys");
 define("EMOLAN_16", "Smiley configuratie opgeslagen");
@@ -38,4 +38,10 @@ define("EMOLAN_21", "Fout");
 define("EMOLAN_22", "Nieuw emote pak gevonden:");
 define("EMOLAN_23", "Nieuw emote xml pak gevonden:");
 define("EMOLAN_24", "Nieuw emote php gevonden:");
+define("EMOLAN_25", "Installeren nieuwe PHP emotes: ");
+define("EMOLAN_26", "Opnieuw scannen pakket");
+define("EMOLAN_27", "Fout bij verwerken pakket: ");
+define("EMOLAN_28", "Genereren XML");
+define("EMOLAN_29", "XML bestand gegenereerd: ");
+define("EMOLAN_30", "Fout bij wegschrijven XML bestand: ");
 ?>

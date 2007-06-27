@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_search.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-16 18:57:42 $
+|     $Revision: 1.9 $
+|     $Date: 2007-06-27 19:43:10 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,8 @@ define("SEALAN_47", "Uitsluitend hele woorden:");
 define("SEALAN_48", "Deze instelling geldt alleen bij de PHP zoek sorteermethode van PHP. Als je site karaktergeoriënteerde talen als Chinees en Japans gebruikt, moet je deze functie uit zetten.");
 define("SEALAN_49", "Als je site karaktergeoriënteerde talen als Chinees en Japans gebruikt, moet je de PHP sorteermethode gebruiken.");
 
+define("LAN_SEARCH_98", "Nieuws");		// Renamed to avoid clashes
 define("LAN_98", "Nieuws");
 define("LAN_197", "Downloads");
-define("LAN_418", "Maatwerk pagina &rsquo; s");
+define("LAN_418", "Maatwerk pagina's");
 ?>

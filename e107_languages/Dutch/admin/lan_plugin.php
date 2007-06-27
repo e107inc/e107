@@ -63,6 +63,7 @@ define("EPL_ADLAN_45", "Het menuscript is geupload en uitgepakt. Ga naar <a href
 define("EPL_ADLAN_46", "PCLZIP extract fout:");
 define("EPL_ADLAN_47", "PCLTAR extract fout: ");
 define("EPL_ADLAN_48", "code:");
+define('EPL_ADLAN_49', "Tabellen op verzoek niet verwijderd bij de-installatie");
 define("EPL_ADLAN_50", "Reacties succesvol verwijderd");
 define("EPL_ADLAN_53", "Directorie niet beschrijfbaar");
 define("EPL_ADLAN_54", "Select de optie voor de-installeren van de plugin:");

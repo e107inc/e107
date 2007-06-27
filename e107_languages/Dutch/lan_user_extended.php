@@ -30,4 +30,5 @@ define("UE_LAN_LANGUAGE", "Taal");
 define("UE_LAN_LANGUAGE_DESC", "Ledentaal");
 define("UE_LAN_COUNTRY", "Land");
 define("UE_LAN_COUNTRY_DESC", "Land lid (inclusief db tabel)");
+define("LAN_UE_FAIL_HOMEPAGE", "Ongeldige invoer voor startpagina instellingen");
 ?>

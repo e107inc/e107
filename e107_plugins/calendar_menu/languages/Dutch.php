@@ -326,14 +326,14 @@ define('EC_ADLAN_A161', "Leegmaken kalender cache");
 define('EC_ADLAN_A162', "Bevestig leegmaken cache");
 define('EC_ADLAN_A163', "Cache leeggemaakt");
 define('EC_ADLAN_A164', "Bijwerken gereed");
-define('EC_ADLAN_A165', "Kalender menu tiel linkt naar:");
-define('EC_ADLAN_A166', "Vertonen datumDate in gebeurtenissenoverzicht:");
+define('EC_ADLAN_A165', "Kalender menu titel linkt naar:");
+define('EC_ADLAN_A166', "Vertonen datum in gebeurtenissenoverzicht:");
 define('EC_ADLAN_A167', "Vertonen datum in toekomstige gebeurtenissen:");
 define('EC_ADLAN_A168', "Maatwerk datum gebruikt het formaat in het veld rechts");
 define('EC_ADLAN_A169', "Bepaalt het datumweergave formaat voor het gebeurtenissenoverzicht");
 define('EC_ADLAN_A170', "Bepaalt het datumweergave formaat voor het toekomstige gebeurtenissenmenu");
-define('EC_ADLAN_A171', "Markeren recent toegevogede/gewijzigde gebeurtenissen");
-define('EC_ADLAN_A172', "Waard is de tijd in uren sinds bijwerken, nul om te deactiveren");
+define('EC_ADLAN_A171', "Markeren recent toegevoegde/gewijzigde gebeurtenissen");
+define('EC_ADLAN_A172', "Waarde is de tijd in uren sinds bijwerken, nul om te deactiveren");
 
 define("NT_LAN_EC_1", "Gebeurtenissenkalender events");
 define("NT_LAN_EC_2", "Gebeurtenis bijgewerkt");

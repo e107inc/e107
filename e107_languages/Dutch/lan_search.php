@@ -17,8 +17,6 @@
 
 define("PAGE_NAME", "Zoeken");
 
-define("LAN_98", "Nieuwsberichten");
-define("LAN_99", "Reacties");
 define("LAN_140", "Geregistreerde deelnemers");
 define("LAN_180", "Zoeken");
 define("LAN_192", "Alle categorieën");
@@ -29,8 +27,6 @@ define("LAN_196", "Treffers");
 define("LAN_197", "Downloads");
 define("LAN_198", "Trefwoord niet gevonden");
 define("LAN_199", "Zoek naar");
-define("LAN_200", "Categorieën:");
-define("LAN_201", "Definieer zoekopdracht anders");
 define("LAN_416", "Je moet zijn ingelogd om deze pagina te kunnen benaderen");
 define("LAN_417", "De zoekterm moet minimaal drie tekens bevatten.");
 define("LAN_418", "Overige pagina's");
@@ -111,4 +107,8 @@ define("LAN_SEARCH_74", "Aangesloten op");
 define("LAN_SEARCH_75", "Zoek type");
 define("LAN_SEARCH_76", "Geplaatst op pagina");
 define("LAN_SEARCH_77", "Geplaatst op profielpagina van");
+
+define("LAN_SEARCH_98", "Nieuws");
+define("LAN_SEARCH_99", "Reacties");
+define("LAN_SEARCH_201", "Stel je vraag opnieuw");
 ?>

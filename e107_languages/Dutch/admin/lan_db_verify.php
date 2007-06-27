@@ -34,5 +34,5 @@ define("DBLAN_18", "tabellen");
 define("DBLAN_19", "Herstelpoging");
 define("DBLAN_20", "Poging tot herstellen van tabellen");
 define("DBLAN_21", "Herstellen geselecteerde onderdelen");
-
+define("DBLAN_22", " is niet leesbaar");
 ?>

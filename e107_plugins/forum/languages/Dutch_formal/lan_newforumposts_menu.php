@@ -24,5 +24,6 @@ define("NFP_8", "Originele discussies tonen in menu?");
 define("NFP_9", "Bijwerken menuconfiguratie");
 define("NFP_10", "New Forum Posts menuconfiguratie");
 define("NFP_11", "Geplaatst door");
-
+define("NFP_12", "Maximum ouderdom van de te tonen berichten");
+define("NFP_13", "Instellen op 0 (nul) op een rustige site; het instellen van een waarde in dagen verminderd de databasebelasting op een drukke site");
 ?>

@@ -65,5 +65,8 @@ define("IMALAN_48", "Totaal externe avatars");
 define("IMALAN_49", "Gebruikers met avatar");
 define("IMALAN_50", "Totaal");
 define("IMALAN_51", "Avatar voor ");
-
+define("IMALAN_52", "Pad naar ImageMagick lijkt onjuist");
+define("IMALAN_53", "Pad naar ImageMagick lijkt juist, maar het geconverteerde bestand kan ongeldig zijn");
+define("IMALAN_54", "Geïnstalleerde GD versie:");
+define('IMALAN_55', 'Niet geïnstalleerd');
 ?>
