@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-01-20 14:52:41 $
-|     $Author: mrpete $
+|     $Revision: 1.10 $
+|     $Date: 2007-06-27 13:27:19 $
+|     $Author: sweetas $
 |
 +----------------------------------------------------------------------------+
 */
@@ -299,7 +299,8 @@ class pageClass
 
 	function pageRating($page_rating_flag)
 	{
-	  $rate_text = '';      // Notice removal
+		global $imode;
+		$rate_text = '';      // Notice removal
 		if($page_rating_flag)
 		{
 			require_once(e_HANDLER."rate_class.php");
@@ -312,7 +313,7 @@ class pageClass
 				{
 					$ratearray[2] = 0;
 				}
-				$rate_text .= "<img src='".e_IMAGE."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
+				$rate_text .= "<img src='".e_IMAGE."packs/".$imode."/rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
 				$rate_text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
 				$rate_text .= ($ratearray[0] == 1 ? "vote" : "votes");
 			}
