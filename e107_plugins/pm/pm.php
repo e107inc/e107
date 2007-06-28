@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2007-05-28 11:18:11 $
+|     $Revision: 1.24 $
+|     $Date: 2007-06-28 19:28:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -184,7 +184,7 @@ exit;
 
 function show_send($to_uid)
 {
-	global $tp, $pm_info;
+	global $tp, $pm_info, $pm_prefs;
 	$pm_outbox = pm_getInfo('outbox');
 	if($to_uid)
 	{
