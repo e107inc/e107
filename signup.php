@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-05-28 09:37:27 $
+|     $Revision: 1.10 $
+|     $Date: 2007-06-28 19:38:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -922,7 +922,7 @@ function render_email($preview = FALSE)
 	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
 	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 	$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
-    $HEAD .= ($preview) ? "<title>Signup Preview</title>\n" : "";
+    $HEAD .= ($preview) ? "<title>".LAN_SIGNUP_58."</title>\n" : "";
 	if($SIGNUPEMAIL_USETHEME == 2)
 	{
 		$CSS = file_get_contents(THEME."style.css");
