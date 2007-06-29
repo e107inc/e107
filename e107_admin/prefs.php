@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-23 21:10:55 $
+|     $Revision: 1.4 $
+|     $Date: 2007-06-29 20:13:57 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -212,7 +212,7 @@ $text = "<script type=\"text/javascript\">
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_168."<br /><span class='smalltext'>".PRFLAN_169."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>".r_userclass("sitecontacts",$pref['sitecontacts'],"off","nobody main admin userclasses")."
+	<td style='width:50%; text-align:right' class='forumheader3'>".r_userclass("sitecontacts",$pref['sitecontacts'],"off","nobody,main,admin,userclasses")."
 	</td>
 	</tr>
 
@@ -491,7 +491,7 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_155.":</td>
 	<td class='forumheader3' style='width:50%;text-align:right' >
-	".r_userclass('displayname_class',$pref['displayname_class'],'off','nobody, public, admin, classes')."
+	".r_userclass('displayname_class',$pref['displayname_class'],'off','nobody,public,admin,classes')."
 	<input class='button' type='submit' name='submit_resetdisplaynames' value='".PRFLAN_156."' />
 	</td>
 	</tr>
@@ -631,7 +631,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_116.":  <div class='smalltext'>".PRFLAN_117."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('post_html',$pref['post_html'],'off','nobody, public, member, admin, main, classes')."
+	".r_userclass('post_html',$pref['post_html'],'off','nobody,public,member,admin,main,classes')."
 	</td>
 	</tr>\n
 
@@ -654,7 +654,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_131.":  <div class='smalltext'>".PRFLAN_132."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('php_bbcode',$pref['php_bbcode'],'off','nobody, admin, classes')."
+	".r_userclass('php_bbcode',$pref['php_bbcode'],'off','nobody,admin,classes')."
 	</td>
 	</tr>\n
 
