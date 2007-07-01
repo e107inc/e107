@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.3 $
-|   $Date: 2007-06-26 20:27:02 $
+|   $Revision: 1.4 $
+|   $Date: 2007-07-01 21:12:22 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -242,7 +242,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	  return 9;			// Never accept these! Whatever the user thinks!
 	  
 	default :
-	  if (is_boolean($unknown)) return ($unknown ? TRUE : 8);
+	  if (is_bool($unknown)) return ($unknown ? TRUE : 8);
 	  $tmp = explode(',', $unknown);
 	  for ($i = 0; $i < count($tmp); $i++) { $tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));  }
 	  if (!in_array($file_ext, $tmp)) return 6;
