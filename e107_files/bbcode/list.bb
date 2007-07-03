@@ -1,5 +1,7 @@
-/* Tag: unordered list [list]*line 1*line2*line 3*line 4*line5 etc[/list] */
-/* Tag: ordered list [list=<list type>]*line 1*line2*line 3*line 4*line5 etc[/list] */
+/* Tag: unordered list [list][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - preferred */
+/* Tag: ordered list [list=<list type>][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - preferred */
+/* Tag: unordered list [list]*line 1*line2*line 3*line 4*line5 etc[/list]  - legacy*/
+/* Tag: ordered list [list=<list type>]*line 1*line2*line 3*line 4*line5 etc[/list] - legacy */
 /* valid list types: 
 				disc
 				circle
@@ -11,8 +13,14 @@
 				upper-alpha	A, B, C
 */
 
-
-$listitems = explode("*", $code_text);
+if (strpos($code_text,"[*]") !== FALSE)
+{
+  $listitems = explode("[*]", $code_text);
+}
+else
+{
+  $listitems = explode("*", $code_text);
+}
 
 if ($parm == '')
 {	/* unordered list */
