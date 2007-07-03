@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-06-04 19:20:38 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-07-03 03:24:35 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -106,7 +106,18 @@ if (isset($theme_js_php) && $theme_js_php) {
 
 if (isset($eplug_js) && $eplug_js) {
 	echo "\n<!-- eplug_js -->\n";
-	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+	if(is_array($eplug_js))
+	{
+    	foreach($eplug_js as $kjs)
+		{
+        	echo "<script type='text/javascript' src='{$kjs}'></script>\n";
+		}
+	}
+	else
+	{
+    	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+	}
+
 }
 
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
@@ -122,7 +133,18 @@ echo "<!-- *CSS* -->\n";
 
 if (isset($eplug_css) && $eplug_css) {
 	echo "\n<!-- eplug_css -->\n";
-	echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
+    if(is_array($eplug_css))
+	{
+    	foreach($eplug_css as $kcss)
+		{
+        	echo "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
+		}
+	}
+	else
+	{
+    	echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
+	}
+
 }
 
 echo "<!-- Theme css -->\n";
