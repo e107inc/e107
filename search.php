@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-05-18 21:14:52 $
+|     $Revision: 1.7 $
+|     $Date: 2007-07-03 19:25:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -345,7 +345,7 @@ $SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".($_GET['adv'] ? "
 
 foreach ($search_info as $key => $value) {
 	if (!isset($search_info[$key]['advanced'])) {
-		$js_adv .= " && abid != ".$key;
+		$js_adv .= " && abid != '".$key."'";
 	}
 }
 
@@ -356,7 +356,7 @@ if (isset($search_info[$_GET['t']]['advanced'])) {
 }
 
 if (check_class($search_prefs['google'])) {
-	$js_adv .= " && abid != ".$google_id;
+	$js_adv .= " && abid != '".$google_id."'";
 }
 
 if ($perform_search) {
