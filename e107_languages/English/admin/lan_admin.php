@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-04-05 19:53:06 $
+|     $Revision: 1.5 $
+|     $Date: 2007-07-03 19:22:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -255,6 +255,7 @@ define("LAN_INACTIVE","Inactive");
 define("LAN_BAN","Ban");
 define("LAN_RATING", "Rating");
 
+define("LAN_UPLOAD", "Upload");
 define("LAN_UPLOAD_IMAGES","Upload Images");
 define("LAN_UPLOAD_FILES","Upload Files");
 define("LAN_UPLOAD_ADDFILE","Add Another File");
