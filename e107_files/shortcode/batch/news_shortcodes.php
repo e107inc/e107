@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2007-01-20 05:12:04 $
-|     $Author: mrpete $
+|     $Revision: 1.28 $
+|     $Date: 2007-07-03 00:21:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -62,7 +62,7 @@ SC_BEGIN NEWSCATEGORY
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$category_name = $tp -> toHTML($news_item['category_name']);
+$category_name = $tp -> toHTML($news_item['category_name'],FALSE,"defs");
 return "<a style='".(isset($param['catlink']) ? $param['catlink'] : "#")."' href='".e_BASE."news.php?cat.".$news_item['news_category']."'>".$category_name."</a>";
 SC_END
 
