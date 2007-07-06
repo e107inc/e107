@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-25 15:06:38 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2007-07-06 22:02:29 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -176,7 +176,8 @@ class sitelinks
 
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
-
+		$highlighted = FALSE;
+		
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == TRUE) {
 			if(substr($linkInfo['link_name'],0,8) == "submenu."){
