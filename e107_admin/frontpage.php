@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-07-08 03:57:35 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2007-07-08 21:08:18 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -132,7 +132,7 @@ class frontpage {
 
 		if (isset($pref['frontpage']['all'])) {
 			$text .= "<tr>
-			<td class='forumheader3'>All Users</td>
+			<td class='forumheader3'>".FRTLAN_31."</td>
 			<td class='forumheader3'>".$pref['frontpage']['all']."</td>
 			<td class='forumheader3' style='text-align:center'>
 			<input type='image' title='".LAN_EDIT."' name='edit[all]' src='".ADMIN_EDIT_ICON_PATH."' />
