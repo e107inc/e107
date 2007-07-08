@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-25 20:09:29 $
+|     $Revision: 1.5 $
+|     $Date: 2007-07-08 21:01:00 $
 |     $Author: e107steved $
 |
-| Mod to support GIF (for gd at least)
+| Mod to give correct return code if source image already smaller than max size
+|
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -23,17 +24,27 @@ if (!defined('e107_INIT')) { exit; }
 function resize_image($source_file, $destination_file, $type = "upload", $model = "") 
 {
 // $destination_file - 'stdout' sends direct to browser. Otherwise treated as file name	
+//						- if its a file, given '644' permissions
 // $type - "upload"
 //		 - numeric - sets new width of image
 //		 - anything else - default preference for image width used, or failing that, 120 pixels
-// $model - if "copy", creates a new file with the prefix 'thumb_'. Otherwise overwrites
+//			'avatar' is used
+// $model - if "copy", creates a new file from $destination_file with the prefix 'thumb_'. 
+//					Otherwise overwrites any existing $destination_file
+
+// Returns:  TRUE - essentially, if $destination_file (or a file with a modified name) is valid:
+//						- if resizing done
+//						- source and (ultimate) destination files are the same, and the image was smaller than the limits
+//						- destination was 'stdout', and file output successfully
+//			 FALSE - essentially, if there is not a valid output file available - usually, that resizing failed, or some other error.
+
 	global $pref;
 	 
 	$new_height = 0;
 	$mode = ($pref['resize_method'] ? $pref['resize_method'] : "gd2");
 	if ($type == "upload") 
 	{
-	  $new_size = ($pref['im_width'] ? $pref['im_width'] : 400);
+	  $new_size = varset($pref['im_width'],400);
 	}
 	elseif(is_numeric($type)) 
 	{
@@ -41,36 +52,37 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	} 
 	else 
 	{	// Use preferences or failing that hard-coded defaults for new size
-	  $new_size = ($pref['im_width'] ? $pref['im_width'] : 120);
-	  $new_height = ($pref['im_height'] ? $pref['im_height'] : 100);
+	  $new_size = varset($pref['im_width'], 120);
+	  $new_height = varset($pref['im_height'], 100);
 	}
 	 
-	$im_quality = ($pref['im_quality'] ? $pref['im_quality'] : 99);
+	$im_quality = varset($pref['im_quality'], 99);
 	 
 	$image_stats = getimagesize($source_file);
-/*
-	if ($image_stats[0] <= $type && is_numeric($type)) 
-	{
-	  return false;
-	}
-*/ 
 	if ($image_stats == null) 
 	{
 //	  echo "<b>DEBUG</b> image_stats are null<br />";
 	  return false;
 	}
+	if (($image_stats[0] == 0) || ($image_stats[1] == 0))
+	{
+	  return FALSE;				// Zero sized image - shouldn't happen
+	}
 	 
-	// Check the image type. '2'=jpeg
+	// Check the image type. '1'=GIF, '2'=jpeg, '3' = PNG
 	if ($image_stats[2] != 1 && $image_stats[2] != 2 && $image_stats[2] != 3 && ($mode == 'gd1' || $mode == 'gd2')) 
 	{
 	  echo "<b>DEBUG</b> Wrong image type<br />";
 	  return FALSE;
 	}
+	
 	$imagewidth = $image_stats[0];		// Width of existing image
 	$imageheight = $image_stats[1];		// Height of existing image
 	if ($imagewidth <= $new_size && ($imageheight <= $new_height || $new_height == 0)) 
 	{  // Nothing to do if image width already smaller than the maximum
-	  return TRUE;
+	  // If we were basically ensuring an existing file was within limits, return TRUE
+	  // If we had to create a new file, return FALSE since it wasn't done.
+	  return (($source_file == $destination_file) && ($model != 'copy'));
 	}
 	
 	$ratio = ($imagewidth / $new_size);
