@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.13 $ 
-|     $Date: 2007-06-20 19:29:14 $
+|     $Revision: 1.14 $ 
+|     $Date: 2007-07-09 19:49:59 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -610,6 +610,7 @@ function parse_download_cat_parent_table($row)
 
 	$DOWNLOAD_CAT_MAIN_ICON = '';
 	$DOWNLOAD_CAT_MAIN_NAME = '';
+	$DOWNLOAD_CAT_MAIN_DESCRIPTION = '';
 	
 	if (check_class($download_category_class)) 
 	{
@@ -619,6 +620,7 @@ function parse_download_cat_parent_table($row)
 		}
 		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($download_category_name,FALSE,"emotes_off, no_make_clickable");
+		$DOWNLOAD_CAT_MAIN_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
 	}
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
 }
