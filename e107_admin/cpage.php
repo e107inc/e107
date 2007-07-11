@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-05-17 20:14:57 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-07-11 12:00:29 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -274,7 +274,7 @@ class page
 
 			<tr>
 			<td style='width:25%' class='forumheader3'>".CUSLAN_16."<br /><span class='smalltext'>".CUSLAN_17."</span></td>
-			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='50' /></td>
+			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='100' /></td>
 			</tr>
 
 			<tr>
