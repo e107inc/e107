@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-06-25 15:39:34 $
+|     $Revision: 1.6 $
+|     $Date: 2007-07-11 12:03:01 $
 |     $Author: sweetas $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -513,7 +513,7 @@ class links
 			<td style='width:30%' class='forumheader3'>".LCLAN_12.": </td>
 			<td style='width:70%' class='forumheader3'>
 			<select name='linkrender' class='tbox'>";
-			$rentype = array("","Main","Alt","Alt", "Alt");
+			$rentype = array("","Main","Alt","Alt", "Alt","Alt", "Alt","Alt", "Alt","Alt", "Alt");
 			for ($i=1; $i<count($rentype); $i++) {
 				$sel = ($link_category == $i) ? "selected='selected'" : "";
 				$text .="<option value='$i' $sel>$i - ".$rentype[$i]."</option>";
