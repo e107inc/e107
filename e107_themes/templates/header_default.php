@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-07-03 03:24:35 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2007-07-11 13:50:49 $
+|     $Author: sweetas $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -82,12 +82,11 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 
 echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
-<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
+<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n\n";
 
 //
 // D: Send JS
 //
-echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
 if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
@@ -99,13 +98,14 @@ if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset(
 if (isset($theme_js_php) && $theme_js_php) {
 	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
 } else {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
+	if (!isset($no_core_js) || !$no_core_js) {
+		echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
+	}
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
 
 if (isset($eplug_js) && $eplug_js) {
-	echo "\n<!-- eplug_js -->\n";
 	if(is_array($eplug_js))
 	{
     	foreach($eplug_js as $kjs)
@@ -121,7 +121,7 @@ if (isset($eplug_js) && $eplug_js) {
 }
 
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
+	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
 }
 
 if (function_exists('headerjs')){echo headerjs();  }
@@ -129,10 +129,8 @@ if (function_exists('headerjs')){echo headerjs();  }
 //
 // E: Send CSS
 //
-echo "<!-- *CSS* -->\n";
 
 if (isset($eplug_css) && $eplug_css) {
-	echo "\n<!-- eplug_css -->\n";
     if(is_array($eplug_css))
 	{
     	foreach($eplug_css as $kcss)
@@ -147,7 +145,6 @@ if (isset($eplug_css) && $eplug_css) {
 
 }
 
-echo "<!-- Theme css -->\n";
 if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
@@ -198,14 +195,13 @@ if(function_exists('core_head')){ echo core_head(); }
 //
 // F: Send Meta Tags and Icon links
 //
-echo "<!-- *META* -->\n";
 
 // Multi-Language meta-tags with merge and override option.
 
-echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+echo "\n<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 
-echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n\n" : "";
 
 // --- Load plugin Meta files and eplug_ before others --------
 if (is_array($pref['e_meta_list']))
@@ -214,7 +210,6 @@ foreach($pref['e_meta_list'] as $val)
 {
 	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
 	{
-		echo "<!-- $val meta -->\n";
 		require_once(e_PLUGIN.$val."/e_meta.php");
 	}
 }
@@ -240,9 +235,8 @@ function render_meta($type)
 	}
 }
 
-echo "\n<!-- Core Meta Tags -->\n";
-echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
-echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
+echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
+echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
 echo render_meta('copyright');
 echo render_meta('author');
 echo render_meta('tag');
@@ -262,7 +256,6 @@ if (file_exists(THEME."favicon.ico")) {
 
 
 if(function_exists('theme_head')){
-	echo "\n<!-- *THEME HEAD* -->\n";
 	echo theme_head();
 }
 
@@ -270,7 +263,7 @@ if(function_exists('theme_head')){
 //
 // H: Generate JS for image preloads
 //
-echo "\n<!-- *PRELOAD* -->\n";
+
 if ($pref['image_preload']) {
 	$ejs_listpics = '';
 	$handle=opendir(THEME.'images');
