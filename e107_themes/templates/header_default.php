@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-07-11 13:50:49 $
+|     $Revision: 1.10 $
+|     $Date: 2007-07-11 14:07:26 $
 |     $Author: sweetas $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -103,6 +103,8 @@ if (isset($theme_js_php) && $theme_js_php) {
 	}
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+	if (file_exists(THEME.'theme.vbs')) { echo "<script type='text/vbscript' src='".THEME_ABS."theme.vbs'></script>\n"; }
+	if (filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
 }
 
 if (isset($eplug_js) && $eplug_js) {
