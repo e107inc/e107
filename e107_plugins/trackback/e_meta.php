@@ -6,15 +6,15 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/e_meta.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-11 20:09:19 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-07-12 12:59:05 $
+|     $Author: sweetas $
 +-----------------------------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 if(isset($pref['trackbackEnabled'])){
-	echo "<link rel='pingback' href='".SITEURLBASE.e_PLUGIN_ABS."trackback/xmlrpc.php' />";
+	echo "<link rel='pingback' href='".SITEURLBASE.e_PLUGIN_ABS."trackback/trackback.php' />";
 }
 
 ?>
