@@ -4,7 +4,7 @@ if ((e_PAGE == 'page.php') || (array_key_exists('forum_attach', $pref) && $pref[
 {
 	$image = (file_exists(THEME."images/file.png") ? THEME."images/file.png" : e_IMAGE."generic/".IMODE."/file.png");
 	list($fname, $uc) = explode("^", $parm."^");
-	if(isset($uc))
+	if($uc)
 	{
 		if(!check_class($uc))
 		{
