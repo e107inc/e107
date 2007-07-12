@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-04-12 08:10:20 $
-|     $Author: lisa_ $
+|     $Revision: 1.8 $
+|     $Date: 2007-07-12 21:34:39 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -240,30 +240,45 @@ class e107{
 		return $this->_host_name_cache[$ip_address];
 	}
 
+	// Return a memory value formatted helpfully
+	function ret_memory_text($memusage)
+	{
+	  $memunit = 'b';
+	  if ($memusage > 65536)
+	  {
+		$memusage = $memusage / 1024; // more than 64k, show in k
+		$memunit = 'kb';
+	  }
+	  if ($memusage > 1024)
+	  { /* 1.002 mb, etc */
+		$memusage = $memusage / 1024;
+		$memunit = 'Mb';
+	  }
+	  if ($memusage > 1024)
+	  { /* show in GB if >1GB */
+		$memusage = $memusage / 1024;
+		$memunit = 'Gb';
+	  }
+	  return (number_format($memusage, ($memunit=='b'? 0 : 3)).$memunit);
+	}
+	
+	
 	/**
 	 * Get the current memory usage of the code
 	 *
 	 * @return string memory usage
 	 */
 	function get_memory_usage(){
-		if(function_exists("memory_get_usage")){
-			$memusage = memory_get_usage();
-			$memunit = 'b';
-			if ($memusage > 65536){
-				$memusage = $memusage / 1024; // more than 64k, show in k
-				$memunit = 'kb';
-			}
-			if ($memusage > 1024){ /* 1.002 mb, etc */
-				$memusage = $memusage / 1024;
-				$memunit = 'mb';
-			}
-			if ($memusage > 1024){ /* show in GB if >1GB */
-				$memusage = $memusage / 1024;
-				$memunit = 'gb';
-			}
-			return (number_format($memusage, ($memunit=='b'? 0 : 3)).$memunit);
-		} else {
-			return ('Unknown');
+		if(function_exists("memory_get_usage"))
+		{
+	      $ret = $this->ret_memory_text(memory_get_usage());
+		  // With PHP>=5.2.0, can show peak usage as well
+	      if (function_exists("memory_get_peak_usage")) $ret .= '/'.$this->ret_memory_text(memory_get_peak_usage(TRUE));
+		  return $ret;
+		} 
+		else 
+		{
+		  return ('Unknown');
 		}
 	}
 
