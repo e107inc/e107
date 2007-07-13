@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/search/search_parser.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-07-13 19:37:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 

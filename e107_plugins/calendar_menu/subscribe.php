@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subscribe.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-28 11:40:20 $
+|     $Revision: 1.3 $
+|     $Date: 2007-07-13 19:37:52 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
+if (!isset($pref['plug_installed']['calendar_menu'])) header("Location: ".e_BASE."index.php");
 include_lan(e_PLUGIN . "calendar_menu/languages/".e_LANGUAGE.".php");
 
 define("PAGE_NAME", EC_LAN_80);
