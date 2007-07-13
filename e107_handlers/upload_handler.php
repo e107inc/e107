@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2007-07-08 20:58:24 $
+|   $Revision: 1.6 $
+|   $Date: 2007-07-13 21:21:58 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -241,6 +241,8 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	case 'php' :
 	case 'htm' :
 	case 'html' :
+	case 'cgi' :
+	case 'pl' :
 	  return 9;			// Never accept these! Whatever the user thinks!
 	  
 	default :
