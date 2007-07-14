@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-02-01 06:59:15 $
+|     $Revision: 1.20 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -119,4 +119,6 @@ define("LAN_SIGNUP_53", "falló la prueba de validación");
 define("LAN_SIGNUP_54", "Haga click aquí para rellenar los detalles de su registro");
 define("LAN_SIGNUP_55", "El nombre a mostrar es demasiado largo. Por favor, escoja otro");
 define("LAN_SIGNUP_56", "El nombre a mostrar es demasiado corto. Por favor, escoja otro");
+define("LAN_SIGNUP_57", "Ese nombre de conexión es demasiado largo. Por favor, escoja otro");
+define("LAN_SIGNUP_58", "Previsualizar registro");
 ?>

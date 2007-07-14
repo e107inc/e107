@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/Spanish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-10 19:17:11 $
+|     $Revision: 1.7 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'SP');
+setlocale(LC_ALL, 'es_ES');
 define("CORE_LC", 'es');
 define("CORE_LC2", 'es');
-define("CHARSET", "iso-8859-1");
+define("CHARSET", "utf-8");
 define("CORE_LAN1","Error : tema no encontrado.\\n\\nCambie el tema usado en preferencias (administración) o copie los archivos del tema seleccionado al servidor.");
 define("CORE_LAN2"," \\1 escribió:");// "\\1" representa el nombre de usuario.
 define("CORE_LAN3","archivo adjunto desactivado");
@@ -28,7 +28,7 @@ define("CORE_LAN9", "El núcleo no puede recuperar del backup automático. Ejecuci
 define("CORE_LAN10", "Detectada cookie corrupta - desconectando."); 
 
 define("LAN_WARNING", "¡Atención!"); 
-
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anónimo");
+define("LAN_EMAIL_SUBS", "-email-");
 ?>

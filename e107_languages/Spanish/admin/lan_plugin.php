@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-08-12 17:23:20 $
+|     $Revision: 1.14 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -55,6 +55,9 @@ define("EPL_ADLAN_42", "Ocurrió un error, no se pudo descomprimir el archivo");
 define("EPL_ADLAN_43", "Su plugin ha sido transferido y descomprimido, compruebe su plugin en la lista.");
 define("EPL_ADLAN_44", "La transferencia y extracción automática ha sido desactivada por falta de permisos en la carpeta - CHMOD la carpeta e107_plugins a 777.");
 define("EPL_ADLAN_45", "Su menú ha sido transferido y descomprimido, para activar ir a <a href='".e_ADMIN."menus.php'>su página de menús</a>.");
+define("EPL_ADLAN_47", "PCLTAR extracción error: "); 
+define("EPL_ADLAN_48", "código:"); 
+define('EPL_ADLAN_49', "Las tablas no se eliminaron en la desinstalación por petición");
 
 define("EPL_ADLAN_50", "Comentarios eliminados con éxito");
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/Spanish.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-11-10 19:17:11 $
+|     $Revision: 1.11 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("CORE_LAN9", "El núcleo no puede recuperar del backup automático. Ejecu
 define("CORE_LAN10", "Detectada cookie corrupta - desconectando."); 
 
 define("LAN_WARNING", "¡Atención!"); 
-
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anónimo");
+define("LAN_EMAIL_SUBS", "-email-");
 ?>

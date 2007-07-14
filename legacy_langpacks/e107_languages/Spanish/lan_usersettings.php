@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_usersettings.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-04-21 09:35:39 $
+|     $Revision: 1.8 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -112,4 +112,6 @@ define("LAN_USET_10","Por favor, actualice sus ajustes ahora para poder proceder
 define("LAN_USET_11", "No se puede aceptar este usuario como válido, por favor escoja otro usuario");
 define("LAN_USET_12", "El nombre a mostrar es demasiado corto. Por favor, escoja otro");
 define("LAN_USET_13", "Carácteres inválidos en el nombre de usuario. Por favor, escoja otro");
+define("LAN_USET_14", "Nombre de conexion demasiado largo. Por favor, escoja otro"); 
+define("LAN_USET_15", "Nombre a mostrar demasiado largo. Por favor, escoja otro"); 
 ?>

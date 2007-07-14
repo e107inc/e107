@@ -4,15 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_search.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.12 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Buscador");
-
-define("LAN_98", "Noticias");
-define("LAN_99", "Comentarios");
 
 define("LAN_140", "Miembros");
 
@@ -25,12 +22,10 @@ define("LAN_195", "Buscando");
 define("LAN_196", "Resultados");
 define("LAN_197", "Descargas");
 define("LAN_198", "Sin resultados");
-define("LAN_199", "Buscar");
-define("LAN_200", "en");
-define("LAN_201", "Por favor redefina su consulta");
+define("LAN_199", "Buscar por");
 
 define("LAN_416", "Debe iniciar sesión para acceder a esta página");
-define("LAN_417", "(+ de 3 caracteres.)");
+define("LAN_417", "Para la búsqueda es necesario un mínimo de --CHARS-- carácteres.");
 define("LAN_418", "Otras páginas");
 
 define("LAN_SEARCH_1", "Marcar Todo");
@@ -110,5 +105,9 @@ define("LAN_SEARCH_74", "Registrado desde");
 define("LAN_SEARCH_75", "Tipo de búsqueda");
 define("LAN_SEARCH_76", "Enviado en la página"); 
 define("LAN_SEARCH_77", "Enviado en el perfil de página de"); 
-
+// Following formerly LAN_nnn - renamed to avoid clashes 
+define("LAN_SEARCH_98", "Noticias"); 
+define("LAN_SEARCH_99", "omentarios"); 
+//define("LAN_SEARCH_200", "Categories:");                                              // Redundant LAN? 
+define("LAN_SEARCH_201", "Por favor, redefina la cadena de búsqueda"); 
 ?>

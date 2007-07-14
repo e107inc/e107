@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-04-21 09:35:39 $
+|     $Revision: 1.20 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -151,7 +151,7 @@ define("PRFLAN_154", "Nuevo método de verificación de usuario <br />Si seleccion
 define("PRFLAN_155", "Mostrar Nombre disponible a");
 define("PRFLAN_156", "Resetear TODOS los nombres mostrables");
 define("PRFLAN_157", "Todoso los nombres mostrables se han reseteado a nombres de usuario");
-define("PRFLAN_158", "Longitud máxima del nombre mostrable");
+define("PRFLAN_158", "Longitud máxima del nombre a mostrar (5..30)");
 define("PRFLAN_159", "Viendo esta página con");
 define("PRFLAN_160", "Comprueba servidores remotos al validar direcciones email.");
 define("PRFLAN_161", "Desactivar todos los comentarios del sitio");
@@ -165,6 +165,7 @@ define("PRFLAN_168", "Persona(s) de Contacto de la web");
 define("PRFLAN_169", "Si el grupo escogido contiene mas de una persona, el usuario será preguntado para seleccionar una persona del grupo."); 
 define("PRFLAN_170", "Use DNS reversa para expulsar un dominio"); 
 define("PRFLAN_171", "Activar esta opción le permitirá expulsar usuarios por un dominio, en vez de por su IP o correo. <br />NOTA: Esto podría afectar a la carga de la página en algunos dominios");
+define("PRFLAN_172", "Longitud máxima del nombre de conexión (10..100)");
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");

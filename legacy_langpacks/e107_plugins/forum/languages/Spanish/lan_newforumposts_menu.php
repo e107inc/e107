@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Spanish/lan_newforumposts_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-14 22:25:10 $
+|     $Revision: 1.4 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -20,4 +20,6 @@ define("NFP_8", "¿Mostrar temas originales en el menú?");
 define("NFP_9", "Actualizar parámetros del menú");
 define("NFP_10", "Configuración del menú de nuevos envíos del foro");
 define("NFP_11", "Enviado por");
+define("NFP_12", "Antiguedad de los envíos mostrados"); 
+define("NFP_13", "Use cero para un sitio tranquilo; fijando un valor en días reducirá el tiempo de la dase de datos en un sitio ocupado"); 
 ?>

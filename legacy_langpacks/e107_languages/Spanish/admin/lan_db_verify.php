@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_db_verify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-01 21:16:20 $
+|     $Revision: 1.4 $
+|     $Date: 2007-07-14 06:02:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -30,4 +30,5 @@ define("DBLAN_18", "Tablas");
 define("DBLAN_19", "Intento de reparación");
 define("DBLAN_20", "Intentando reparar tablas");
 define("DBLAN_21", "Reparar elementos seleccionados");
+define("DBLAN_22", " no es leíble");
 ?>
