@@ -3,7 +3,7 @@ if (getperms('0'))
 	if (!function_exists('admin_log')) {
 		function admin_log() {
 			global $sql, $ns;
-			$text = E_16_ADMINLOG." <a style='cursor: pointer; cursor: hand' onclick=\"expandit('adminlog')\">".ADLAN_116."</a>\n";
+			$text = E_16_ADMINLOG." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a>\n";
 			if (e_QUERY == "logall") {
 				$text .= "<div id='adminlog'>";
 				$cnt = $sql -> db_Select("dblog", "*", "ORDER BY `dblog_datestamp` DESC", "no_where");
