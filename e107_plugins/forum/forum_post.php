@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2007-06-26 21:34:06 $
+|     $Revision: 1.80 $
+|     $Date: 2007-07-17 19:53:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -595,13 +595,15 @@ function process_upload()
 		$tid = 0;
 	}
 
-	if (isset($_FILES['file_userfile']['error']) && $_FILES['file_userfile']['error'] != 4)
+	if (isset($_FILES['file_userfile']['error']))
 	{
 		require_once(e_HANDLER."upload_handler.php");
 		if ($uploaded = file_upload('/'.e_FILE."public/", "attachment", "FT{$tid}_"))
 		{
 			foreach($uploaded as $upload)
 			{
+			  if ($upload['error'] == 0)
+			  {
 				if(strstr($upload['type'], "image"))
 				{
 					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
@@ -647,8 +649,17 @@ function process_upload()
 					//echo "<pre>"; print_r($upload); echo "</pre>";
 					$_POST['post'] .= "[br][file=".e_FILE."public/".$upload['name']."]".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."[/file]";
 				}
-
+			  }
+			  else
+			  {  // Error in uploaded file
+			    echo "Error in uploaded file: ".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."<br />";
+			  }
 			}
+		}
+		else
+		{
+		  // Error in uploaded files
+		  echo "Problem with uploading files<br />";
 		}
 	}
 }
