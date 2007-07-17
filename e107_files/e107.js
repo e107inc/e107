@@ -5,8 +5,8 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.22 $
-|	$Date: 2007-05-28 18:48:59 $
+|	$Revision: 1.23 $
+|	$Date: 2007-07-17 20:27:58 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,24 +34,23 @@ var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded 
  */
 function SyncWithServerTime(serverTime)
 {
-	if (serverTime) {
+	if (serverTime) 
+	{
 	  	/* update time difference cookie */
-		tdCookie='e107_tdOffset=';
-		tdSetTimeCookie='e107_tdSetTime=';
-		serverDelta=Math.floor(localTime-serverTime);
-	  	document.cookie = tdCookie+serverDelta;
-	  	document.cookie = tdSetTimeCookie+(localTime-serverDelta); /* server time when set */
+		var serverDelta=Math.floor(localTime-serverTime);
+	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path=/';
+	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path=/'; /* server time when set */
 	}
 
-	tzCookie = 'e107_tzOffset=';
-	if (document.cookie.indexOf(tzCookie) < 0) {
+	var tzCookie = 'e107_tzOffset=';
+//	if (document.cookie.indexOf(tzCookie) < 0) {
 		/* set if not already set */
-		timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset;
-	}
+		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
+		document.cookie = tzCookie + timezoneOffset+'; path=/';
+//	}
 }
-
-if(document.getElementById&&!document.all){ns6=1;}else{ns6=0;}
+var ns6=0;
+if(document.getElementById&&!document.all){ns6=1;}
 var agtbrw=navigator.userAgent.toLowerCase();
 var operaaa=(agtbrw.indexOf('opera')!=-1);
 var head="display:''";

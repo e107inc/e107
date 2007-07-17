@@ -3,7 +3,8 @@
 function tick(e107_datepref,e107_dateformat,e107_datesuff1,e107_datesuff2,e107_datesuff3,e107_datesuff4) {
   if(e107_datepref=='undefined'){e107_datepref = '';}
   var hours, minutes, seconds, ap;
-  var intHours, intMinutes, intSeconds;  var today;
+  var intHours, intMinutes, intSeconds, today;
+  var intDay, intDate, intMonth, intYear, timeString;
   today = new Date();
   intDay = today.getDay();
   intDate = today.getDate();
