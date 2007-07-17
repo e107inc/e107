@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/credits.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-12 19:40:59 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-07-17 16:20:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -94,7 +94,7 @@ $contentA = array(
 	"<h1>Thom Michelbrink<\/h1>[ McFly ]<br /><br /><br />".CRELAN_24,
 	"<h1>William Moffett<\/h1>[ que ]<br /><br /><br />".CRELAN_25,
 	"<h1>Martin Nicholls<\/h1>[ streaky ]<br /><br /><br />".CRELAN_26,
-	"<h1>James Currie<\/h1>[ SweetAs ]<br /><br /><br />".CRELAN_27,
+	"<h1>Jim Currie<\/h1>[ SweetAs ]<br /><br /><br />".CRELAN_27,
 	"<h1>Pete Holzmann<\/h1>[ MrPete ]<br /><br /><br />".CRELAN_28
 );
 
