@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-06 19:25:26 $
+|     $Revision: 1.11 $
+|     $Date: 2007-07-18 20:46:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -602,7 +602,8 @@ class e107plugin
 
 	function save_addon_prefs(){  // scan the plugin table and create path-array-prefs for each addon.
 		global $sql,$pref;
-        $query = "SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_addons !='' ORDER BY plugin_path ASC";
+//        $query = "SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_addons !='' ORDER BY plugin_path ASC";
+        $query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
 
 		// clear all addon prefs before re-creation. 
 		unset($pref['shortcode_list'],$pref['bbcode_list'],$pref['e_sql_list']);
@@ -615,9 +616,12 @@ class e107plugin
 		{
 			while($row = $sql-> db_Fetch())
 			{
+			  $is_installed = ($row['plugin_installflag'] == 1 );
                 $tmp = explode(",",$row['plugin_addons']);
 				$path = $row['plugin_path'];
 
+			  if ($is_installed)
+			  {
         		foreach($this->plugin_addons as $val)
 				{
                 	if(in_array($val,$tmp))
@@ -625,6 +629,7 @@ class e107plugin
  						$pref[$val."_list"][$path] = $path;
 					}
 				}
+			  }
                 // search for .bb and .sc files.
 				$sc_array = array();
 				$bb_array = array();
@@ -635,22 +640,29 @@ class e107plugin
                 	if(substr($adds,-3) == ".sc")
 					{
 						$sc_name = substr($adds, 0,-3);  // remove the .sc
-                    	$sc_array[$sc_name] = "0"; // default userclass.
+						if ($is_installed)
+						{
+                    	  $sc_array[$sc_name] = "0"; // default userclass = e_UC_PUBLIC
+						}
+						else
+						{
+                    	  $sc_array[$sc_name] = e_UC_NOBODY; // register shortcode, but disable it
+						}
 					}
 
-					if(substr($adds,-3) == ".bb")
+					if($is_installed && (substr($adds,-3) == ".bb"))
 					{
 						$bb_name = substr($adds, 0,-3); // remove the .bb
                     	$bb_array[$bb_name] = "0"; // default userclass.
 					}
 
-					if(substr($adds,-4) == "_sql")
+					if($is_installed && (substr($adds,-4) == "_sql"))
 					{
 						$pref['e_sql_list'][$path] = $adds;
 					}
 				}
 
-                // Build Bbcode list
+                // Build Bbcode list (will be empty if plugin not installed)
                 if(count($bb_array) > 0)
 				{
 					ksort($bb_array);
@@ -662,7 +674,7 @@ class e107plugin
                   if (isset($pref['bbcode_list'][$path])) unset($pref['bbcode_list'][$path]);
 				}
 
-                // Build shortcode list
+                // Build shortcode list - do if uninstalled as well
 				if(count($sc_array) > 0)
 				{
 				  ksort($sc_array);
