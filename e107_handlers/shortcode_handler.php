@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.43 $
-| $Date: 2007-05-07 01:05:30 $
-| $Author: e107coders $
+| $Revision: 1.44 $
+| $Date: 2007-07-18 20:46:42 $
+| $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,10 +25,10 @@ if (!isset($tp) || !is_object($tp -> e_sc)) {
 }
 
 class e_shortcode {
-	var $scList;
-	var $parseSCFiles;
-	var $addedCodes;
-	var $registered_codes;
+	var $scList;					// The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
+	var $parseSCFiles;				// True if shortcode file has been parsed
+	var $addedCodes;				// Apparently not used
+	var $registered_codes;			// Shortcodes added by plugins
 
 	function e_shortcode()
 	{
@@ -43,7 +43,7 @@ class e_shortcode {
 					$code = strtoupper($code);
 					$this->registered_codes[$code]['type'] = 'plugin';
                 	$this->registered_codes[$code]['path'] = $path;
-                  //  $this->registered_codes[$code]['perms'] = $uclass;
+                    $this->registered_codes[$code]['perms'] = $uclass;			// Add this in
 				}
 			}
 		}
@@ -109,13 +109,15 @@ class e_shortcode {
 		}
 		else
 		{
+			$sc_perms = e_UC_PUBLIC;			// Default permissions are 'everybody'
 			if ($this->parseSCFiles == TRUE)
 			{
 				if (is_array($this -> registered_codes) && array_key_exists($code, $this->registered_codes))
 				{
 					if($this->registered_codes[$code]['type'] == 'plugin')
 					{
-						$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
+					  if (isset($this->registered_codes[$code]['perms'])) $sc_perms = $this->registered_codes[$code]['perms'];
+					  $scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
 					}
 					else
 					{
@@ -126,7 +128,13 @@ class e_shortcode {
 				{
 						$scFile = e_FILE."shortcode/".strtolower($code).".sc";
 				}
-				if (file_exists($scFile)) {
+				if (!check_class($sc_perms))
+				{	// Mainly to pick up e_UC_NOBODY
+				  $shortcode = 'return;';
+				  $this->scList[$code] = 'return;';
+				}
+				elseif (file_exists($scFile)) 
+				{
 					$shortcode = file_get_contents($scFile);
 					$this->scList[$code] = $shortcode;
 				}
