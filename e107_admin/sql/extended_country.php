@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/extended_country.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-07-18 20:08:21 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -179,7 +179,7 @@ INSERT INTO user_extended_country VALUES('NGA', 'Nigeria', 'Africa', 'Western Af
 INSERT INTO user_extended_country VALUES('NIU', 'Niue', 'Oceania', 'Polynesia', 'NU');
 INSERT INTO user_extended_country VALUES('NFK', 'Norfolk Island', 'Oceania', 'Australia and New Zealand', 'NF');
 INSERT INTO user_extended_country VALUES('NOR', 'Norway', 'Europe', 'Nordic Countries', 'NO');
-INSERT INTO user_extended_country VALUES('CIV', 'CÃ´te dâ€™Ivoire', 'Africa', 'Western Africa', 'CI');
+INSERT INTO user_extended_country VALUES('CIV', 'Côte d\'Ivoire', 'Africa', 'Western Africa', 'CI');
 INSERT INTO user_extended_country VALUES('OMN', 'Oman', 'Asia', 'Middle East', 'OM');
 INSERT INTO user_extended_country VALUES('PAK', 'Pakistan', 'Asia', 'Southern and Central Asia', 'PK');
 INSERT INTO user_extended_country VALUES('PLW', 'Palau', 'Oceania', 'Micronesia', 'PW');
@@ -197,7 +197,7 @@ INSERT INTO user_extended_country VALUES('QAT', 'Qatar', 'Asia', 'Middle East', 
 INSERT INTO user_extended_country VALUES('FRA', 'France', 'Europe', 'Western Europe', 'FR');
 INSERT INTO user_extended_country VALUES('GUF', 'French Guiana', 'South America', 'South America', 'GF');
 INSERT INTO user_extended_country VALUES('PYF', 'French Polynesia', 'Oceania', 'Polynesia', 'PF');
-INSERT INTO user_extended_country VALUES('REU', 'RÃ©union', 'Africa', 'Eastern Africa', 'RE');
+INSERT INTO user_extended_country VALUES('REU', 'Réunion', 'Africa', 'Eastern Africa', 'RE');
 INSERT INTO user_extended_country VALUES('ROM', 'Romania', 'Europe', 'Eastern Europe', 'RO');
 INSERT INTO user_extended_country VALUES('RWA', 'Rwanda', 'Africa', 'Eastern Africa', 'RW');
 INSERT INTO user_extended_country VALUES('SWE', 'Sweden', 'Europe', 'Nordic Countries', 'SE');
