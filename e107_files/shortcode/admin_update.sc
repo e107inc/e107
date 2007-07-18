@@ -1,6 +1,10 @@
-// $Id: admin_update.sc,v 1.5 2007-04-05 19:53:00 e107steved Exp $
+// $Id: admin_update.sc,v 1.6 2007-07-18 19:53:50 e107steved Exp $
 
-	global $e107cache,$ns;
+	if (!ADMIN) return "";
+
+	global $e107cache,$ns, $pref;
+	if (!varset($pref['check_updates'], FALSE)) return "";
+	
 	if (is_readable(e_ADMIN."ver.php"))
 	{
 		include(e_ADMIN."ver.php");
