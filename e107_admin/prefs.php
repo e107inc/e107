@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-29 20:13:57 $
+|     $Revision: 1.5 $
+|     $Date: 2007-07-18 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -938,6 +938,14 @@ $text .= "<div id='advanced' style='display:none; text-align:center'>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_150."<br /><span class='smalltext'>&nbsp;</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_173."<br /><span class='smalltext'>&nbsp;</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='check_updates' value='1'".($pref['check_updates'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='check_updates' value='0'".(!$pref['check_updates'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
 	</tr>
 
 	";
