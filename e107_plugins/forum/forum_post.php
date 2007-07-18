@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-07-17 19:53:33 $
+|     $Revision: 1.10 $
+|     $Date: 2007-07-18 19:50:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -653,11 +653,6 @@ function process_upload()
 			    echo "Error in uploaded file: ".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."<br />";
 			  }
 			}
-		}
-		else
-		{
-		  // Error in uploaded files
-		  echo "Problem with uploading files<br />";
 		}
 	}
 }
