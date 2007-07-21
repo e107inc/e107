@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-27 13:48:30 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2007-07-21 09:57:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-global $user_shortcodes, $pref;
+global $user_shortcodes, $pref, $user;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
 define("HIDE_EMPTY_FIELDS", FALSE);
 
@@ -105,16 +105,11 @@ else
 $sc_style['USER_SENDPM']['pre'] = "<tr><td colspan='2' style='width:100%' class='forumheader3'><span style='float:left'>";
 $sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425."</span></td></tr>";
 
-if($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes))
-{
-	$sendpm = "{USER_SENDPM}";
-}
-else
-{
-	$sendpm = "";
-}
+// Determine which other bits are installed; let photo span those rows (can't do signature - will vary with user)
+$span = 4;
+if ($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
+$span = " rowspan='".$span."' ";
 
-$span = " rowspan='".($sendpm ? "5" : "4")."' ";
 $sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
 $sc_style['USER_PICTURE']['post']="</td>";
 
@@ -125,7 +120,7 @@ $USER_FULL_TEMPLATE = "
 	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
 </tr>
 <tr>
-	$user_picture
+	{$user_picture}
 	<td {$main_colspan} class='forumheader3' style='width:100%'>
 		<span style='float:left'>{USER_REALNAME_ICON} ".LAN_308."</span>
 		<span style='float:right; text-align:right'>{USER_REALNAME}</span>
@@ -152,7 +147,7 @@ $USER_FULL_TEMPLATE = "
 		<span style='float:right; text-align:right'>{USER_LASTVISIT}<br />{USER_LASTVISIT_LAPSE}</span>
 	</td>
 </tr>
-{$sendpm}
+{USER_SENDPM}
 {USER_RATING}
 {USER_SIGNATURE}
 {USER_EXTENDED_ALL}

@@ -11,12 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-04-29 19:59:43 $
+|     $Revision: 1.3 $
+|     $Date: 2007-07-21 09:57:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+
+// Next bit is to fool PM plugin into doing things
+global $user;
+$user['user_id'] = USERID;
+
 require_once(e_FILE."shortcode/batch/user_shortcodes.php");
 require_once(e_HANDLER."form_handler.php");
 
