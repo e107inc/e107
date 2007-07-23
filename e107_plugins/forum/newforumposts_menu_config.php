@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/newforumposts_menu_config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-07-23 21:13:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
@@ -40,44 +40,58 @@ if (isset($_POST['update_menu'])) {
 	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".NFP_3."</b></div>");
 }
-	
+
+$menu_pref['newforumposts_maxage'] = varset($menu_pref['newforumposts_maxage'],0);
+
 $text = "<div style='text-align:center'>
 	<form method=\"post\" action=\"".e_SELF."?".e_QUERY."\" name=\"menu_conf_form\">
-	<table style=\"width:85%\" class=\"fborder\">
-	 
+	<table style='width:85%' class=\"fborder\">
+	<colgroup>
+	  <col style='width:40%;' />
+	  <col style='width:60%;' />
+	</colgroup>
 	<tr>
-	<td style=\"width:40%\" class='forumheader3'>".NFP_4.": </td>
-	<td style=\"width:60%\" class='forumheader3'>
+	<td class='forumheader3'>".NFP_4.": </td>
+	<td class='forumheader3'>
 	<input class=\"tbox\" type=\"text\" name=\"newforumposts_caption\" size=\"20\" value=\"".$menu_pref['newforumposts_caption']."\" maxlength=\"100\" />
 	</td>
 	</tr>
 	 
 	<tr>
-	<td style=\"width:40%\" class='forumheader3'>".NFP_5.":
+	<td class='forumheader3'>".NFP_5.":
 	</td>
-	<td style=\"width:60%\" class='forumheader3'>
+	<td class='forumheader3'>
 	<input class=\"tbox\" type=\"text\" name=\"newforumposts_display\" size=\"20\" value=\"".$menu_pref['newforumposts_display']."\" maxlength=\"2\" />
 	</td>
 	</tr>
 	 
 	<tr>
-	<td style=\"width:40%\" class='forumheader3'>".NFP_6.": </td>
-	<td style=\"width:60%\" class='forumheader3'>
+	<td class='forumheader3'>".NFP_12.":
+	</td>
+	<td class='forumheader3'>
+	<input class=\"tbox\" type=\"text\" name='newforumposts_maxage' size='20' value='".$menu_pref['newforumposts_maxage']."' maxlength='3' /><br />
+	<span class='smalltext'><em>".NFP_13."</em></span>
+	</td>
+	</tr>
+	 
+	<tr>
+	<td class='forumheader3'>".NFP_6.": </td>
+	<td class='forumheader3'>
 	<input class=\"tbox\" type=\"text\" name=\"newforumposts_characters\" size=\"20\" value=\"".$menu_pref['newforumposts_characters']."\" maxlength=\"4\" />
 	</td>
 	</tr>
 	 
 	<tr>
-	<td style=\"width:40%\" class='forumheader3'>".NFP_7.":
+	<td class='forumheader3'>".NFP_7.":
 	</td>
-	<td style=\"width:60%\" class='forumheader3'>
+	<td class='forumheader3'>
 	<input class=\"tbox\" type=\"text\" name=\"newforumposts_postfix\" size=\"30\" value=\"".$menu_pref['newforumposts_postfix']."\" maxlength=\"200\" />
 	</td>
 	</tr>
 	 
 	<tr>
-	<td style=\"width:40%\" class='forumheader3'>".NFP_8.":</td>
-	<td style=\"width:60%\" class='forumheader3'>
+	<td class='forumheader3'>".NFP_8.":</td>
+	<td class='forumheader3'>
 	<input type=\"checkbox\" name=\"newforumposts_title\" value=\"1\" ";
 if ($menu_pref['newforumposts_title']) {
 	$text .= " checked ";
