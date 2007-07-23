@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-06 20:17:10 $
+|     $Revision: 1.5 $
+|     $Date: 2007-07-23 21:02:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,9 @@ $lw_context_areas = array(
 			'title' => LWLAN_33,
 			'summary' => LWLAN_34,
 			'body' => LWLAN_35,
-			'description' => LWLAN_36
+			'description' => LWLAN_36,
+			'user_title' => LWLAN_40,
+			'user_body'  => LWLAN_41
 			// Don't do the next three - linkwords are meaningless on them
 //			'olddefault' => LWLAN_37,
 //			'linktext' => LWLAN_38,
