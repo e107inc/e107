@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-06-13 22:07:12 $
-|     $Author: e107coders $
+|     $Revision: 1.27 $
+|     $Date: 2007-07-23 20:05:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -172,7 +172,7 @@ SC_BEGIN AVATAR_UPLOAD
 global $pref;
 if ($pref['avatar_upload'] && FILE_UPLOADS)
 {
-		return "<input class='tbox' name='file_userfile[]' type='file' size='47' />";
+		return "<input class='tbox' name='file_userfile[avatar]' type='file' size='47' />";
 }
 SC_END
 
@@ -212,7 +212,8 @@ SC_BEGIN PHOTO_UPLOAD
 global $pref;
 if ($pref['photo_upload'] && FILE_UPLOADS)
 {
-		return "<input class='tbox' name='file_userfile[]' type='file' size='47' />";
+	return "<input type='checkbox' name='user_delete_photo' value='1' />".LAN_USET_16."<br />\n
+	        <input class='tbox' name='file_userfile[photo]' type='file' size='47' />";
 }
 SC_END
 

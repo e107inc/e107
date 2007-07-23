@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-05-28 09:37:27 $
+|     $Revision: 1.14 $
+|     $Date: 2007-07-23 20:05:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -110,5 +110,6 @@ define("LAN_USET_12", "That display name is too short. Please choose another");
 define("LAN_USET_13", "Invalid characters in Username. Please choose another");
 define("LAN_USET_14", "Login name too long. Please choose another");
 define("LAN_USET_15", "Display name too long. Please choose another");
+define("LAN_USET_16", "Tick box to delete existing photo without uploading another");
 
 ?>

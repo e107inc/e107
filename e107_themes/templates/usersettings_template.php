@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-18 16:34:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2007-07-23 20:05:38 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,9 +71,9 @@ $sc_style['PHOTO_UPLOAD']['pre'] = "
 
 <tr>
 <td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_426."</span></td>
-<td style='width:60%' class='forumheader2'>
+<td style='width:60%' class='forumheader2'><span class='smalltext'>
 ";
-$sc_style['PHOTO_UPLOAD']['post'] = "</td></tr>";
+$sc_style['PHOTO_UPLOAD']['post'] = "</span></td></tr>";
 
 
 $sc_style['XUP']['pre'] = "

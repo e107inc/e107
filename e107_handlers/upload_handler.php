@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.27 $
-|   $Date: 2007-07-13 21:22:07 $
+|   $Revision: 1.28 $
+|   $Date: 2007-07-23 20:05:25 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -55,6 +55,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 				$uploaded[$c]['name'] = "Binary ".mysql_insert_id()."/".$file_name;
 				$uploaded[$c]['type'] = $file_userfile['type'][$c];
 				$uploaded[$c]['size'] = $file_userfile['size'][$c];
+				$uploaded[$c]['index'] = $key;			// Store the actual index from the file_userfile array
 			}
 		}
 		return $uploaded;
@@ -118,6 +119,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 				$uploaded[$c]['rawname'] = $raw_name;
 				$uploaded[$c]['type'] = $files['type'][$key];
 				$uploaded[$c]['size'] = 0;
+				$uploaded[$c]['index'] = $key;			// Store the actual index from the file_userfile array
 
 				$method = (OPEN_BASEDIR == FALSE ? "copy" : "move_uploaded_file");
 
