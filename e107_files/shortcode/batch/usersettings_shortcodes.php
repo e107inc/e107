@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-06-13 22:13:58 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2007-07-23 20:05:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -172,7 +172,7 @@ SC_BEGIN AVATAR_UPLOAD
 global $pref;
 if ($pref['avatar_upload'] && FILE_UPLOADS)
 {
-		return "<input class='tbox' name='file_userfile[]' type='file' size='47' />";
+		return "<input class='tbox' name='file_userfile[avatar]' type='file' size='47' />";
 }
 SC_END
 
@@ -212,7 +212,8 @@ SC_BEGIN PHOTO_UPLOAD
 global $pref;
 if ($pref['photo_upload'] && FILE_UPLOADS)
 {
-		return "<input class='tbox' name='file_userfile[]' type='file' size='47' />";
+	return "<input type='checkbox' name='user_delete_photo' value='1' />".LAN_USET_16."<br />\n
+	        <input class='tbox' name='file_userfile[photo]' type='file' size='47' />";
 }
 SC_END
 
@@ -245,7 +246,7 @@ foreach($catList as $cat)
 	cachevars("extendedcat_{$cat['user_extended_struct_id']}", $cat);
   	$ret .= $tp->parseTemplate("{USEREXTENDED_CAT={$cat['user_extended_struct_id']}}", TRUE, $usersettings_shortcodes);
 }
-return $ret;
+ return $ret;
 SC_END
 
 SC_BEGIN USEREXTENDED_CAT
