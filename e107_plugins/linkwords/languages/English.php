@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/languages/English.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2007-07-23 21:02:35 $
+|     $Author: e107steved $
++----------------------------------------------------------------------------+
+*/
 	
 define("LWLAN_1", "Field(s) left blank.");
 define("LWLAN_2", "Link word saved.");
@@ -39,6 +56,8 @@ define("LWLAN_36", 'Descriptions (links etc)');
 define("LWLAN_37", 'Legacy areas');
 define("LWLAN_38", 'Clickable links');
 define("LWLAN_39", 'Unprocessed text');
+define("LWLAN_40", 'User-entered titles (e.g. forum)');
+define("LWLAN_41", 'User-entered body text (e.g. forum)');
 
 
 define("LWLANINS_1", "Linkwords");
