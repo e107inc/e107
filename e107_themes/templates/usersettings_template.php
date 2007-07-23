@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-17 13:48:50 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2007-07-23 20:06:05 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,9 +71,9 @@ $sc_style['PHOTO_UPLOAD']['pre'] = "
 
 <tr>
 <td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_426."</span></td>
-<td style='width:60%' class='forumheader2'>
+<td style='width:60%' class='forumheader2'><span class='smalltext'>
 ";
-$sc_style['PHOTO_UPLOAD']['post'] = "</td></tr>";
+$sc_style['PHOTO_UPLOAD']['post'] = "</span></td></tr>";
 
 
 $sc_style['XUP']['pre'] = "
@@ -122,7 +122,7 @@ $USERSETTINGS_EDIT = "
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_308.req($pref['signup_option_realname'])."<br /><span class='smalltext'>".LAN_310."</span>"."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_308.req($pref['signup_option_realname'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{REALNAME}
 	</td>

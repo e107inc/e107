@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-25 20:09:30 $
+|     $Revision: 1.11 $
+|     $Date: 2007-07-23 20:05:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -73,6 +73,9 @@ include_once(e_FILE."shortcode/batch/usersettings_shortcodes.php");
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 $_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
+$sesschange = '';						// Notice removal
+$photo_to_delete = '';
+$avatar_to_delete = '';
 
 require_once(HEADERF);
 
@@ -102,10 +105,10 @@ if (isset($_POST['updatesettings']))
 	{	// Current user logged in - use their ID
 		$inp = USERID;
 	}
+
+
+	// Check external avatar
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyway, so why allow them? (XSS Fix)
-
-	// check prefs for required fields =================================.
-
 	if ($_POST['image'] && $size = getimagesize($_POST['image'])) {
 		$avwidth = $size[0];
 		$avheight = $size[1];
@@ -184,6 +187,7 @@ if (isset($_POST['updatesettings']))
 		$password2 = "";
 	}
 
+
 	if (isset($pref['disable_emailcheck']) && $pref['disable_emailcheck']==1)
 	{
 	} else {
@@ -216,6 +220,7 @@ if (isset($_POST['updatesettings']))
 	}
 
 
+// Uploaded avatar and/or photo
 	$user_sess = "";
 	if ($file_userfile['error'] != 4)
 	{
@@ -224,21 +229,29 @@ if (isset($_POST['updatesettings']))
 
 		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
 		{
-			if ($uploaded[0]['name'] && $pref['avatar_upload'])
+		  foreach ($uploaded as $upload)
+		  {	// Needs the latest upload handler (with legacy and 'future' interfaces) to work
+			if ($upload['name'] && ($upload['index'] == 'avatar') && $pref['avatar_upload'])
 			{
-				// avatar uploaded
-				$_POST['image'] = "-upload-".$uploaded[0]['name'];
-				if (!resize_image(e_FILE."public/avatars/".$uploaded[0]['name'], e_FILE."public/avatars/".$uploaded[0]['name'], "avatar"))
+				// avatar uploaded - give it a reference which identifies it as server-stored
+				$_POST['image'] = "-upload-".$upload['name'];
+				if ($_POST['image'] != $currentUser['user_image'])
+				{
+				  $avatar_to_delete = str_replace("-upload-", "", $currentUser['user_image']);
+//				  echo "Avatar change; deleting {$avatar_to_delete}<br />";
+				}
+				if (!resize_image(e_FILE."public/avatars/".$upload['name'], e_FILE."public/avatars/".$upload['name'], "avatar"))
 				{
 					unset($message);
 					$error .= RESIZE_NOT_SUPPORTED."\\n";
-					@unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
+					@unlink(e_FILE."public/avatars/".$upload['name']);
 				}
 			}
-			if ($uploaded[1]['name'] || (!$pref['avatar_upload'] && $uploaded[0]['name']))
+
+			if ($upload['name'] && ($upload['index'] == 'photo') && $pref['photo_upload'] )
 			{
 				// photograph uploaded
-				$user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
+				$user_sess = $upload['name'];
 				if (!resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180))
 				{
 					unset($message);
@@ -246,13 +259,32 @@ if (isset($_POST['updatesettings']))
 					@unlink(e_FILE."public/avatars/".$user_sess);
 				}
 			}
+		  }
 		}
 	}
 
-	if ($user_sess != "")
+// See if user just wants to delete existing photo
+	if (isset($_POST['user_delete_photo']))
 	{
-		$sesschange = "user_sess = '".$tp->toDB($user_sess)."', ";
+	  $photo_to_delete = $currentUser['user_sess'];
+	  $sesschange = "user_sess = '', ";
+//	  echo "Just delete old photo: {$photo_to_delete}<br />";
 	}
+	elseif ($user_sess != "")
+	{	// Update DB with photo
+	  $sesschange = "user_sess = '".$tp->toDB($user_sess)."', ";
+	  if ($currentUser['user_sess'] == $sesschange)
+	  {
+		$sesschange = '';			// Same photo - do nothing
+//		echo "Photo not changed<br />";
+	  }
+	  else
+	  {
+		$photo_to_delete = $currentUser['user_sess'];
+//		echo "Delete old photo: {$photo_to_delete}<br />";
+	  }
+	}
+
 
     // Validate Extended User Fields.
 	if($_POST['ue'])
@@ -300,7 +332,7 @@ if (isset($_POST['updatesettings']))
 	{
 		unset($_POST['password1']);
 		unset($_POST['password2']);
-
+        $_POST['user_id'] = intval($inp);
 		$ret = $e_event->trigger("preuserset", $_POST);
 		if(trim($_POST['user_xup']) != "")
 		{
@@ -362,6 +394,15 @@ if (isset($_POST['updatesettings']))
 			}
 
 			$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
+			if ($photo_to_delete)
+			{	// Photo may be a flat file, or in the database
+			  delete_file($photo_to_delete);
+			}
+			if ($avatar_to_delete)
+			{	// Avatar may be a flat file, or in the database
+			  delete_file($avatar_to_delete);
+			}
+
 			// If user has changed display name, update the record in the online table
 			if(isset($username) && ($username != USERNAME) && !$_uid)
 			{
@@ -491,7 +532,7 @@ $text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 $text .= "<div>";
 
 $text .= "
-	<input type='hidden' name='_uid' value='$_uid' />
+	<input type='hidden' name='_uid' value='$uuid' />
 	</div>
 	</form>
 	";
@@ -513,7 +554,27 @@ function req($field) {
 	}
 	return $ret;
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------
+
+// Delete a file from the public directories. Return TRUE on success, FALSE on failure.
+// Also deletes from database if appropriate.
+function delete_file($fname, $dir = 'avatars/')
+{
+  global $sql;
+  if (!$fname) return FALSE;
+  
+  if (preg_match("#Binary (.*?)/#", $fname, $match)) 
+  {
+	return $sql -> db_Delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
+  }
+  elseif (file_exists(e_FILE."public/".$dir.$fname)) 
+  {
+	unlink(e_FILE."public/".$dir.$fname);
+	return TRUE;
+  }
+  return FALSE;
+}
+
 
 function headerjs() {
 	global $cal;
