@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2007-06-26 21:33:59 $
+|     $Revision: 1.80 $
+|     $Date: 2007-07-24 21:29:36 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.79 $
+* @version $Revision: 1.80 $
 * @author $Author: e107steved $
 */
 class db {
@@ -766,7 +766,7 @@ class db {
 				}
                 else
 				{
-					if(($key == "") && ($fieldid == $row['Field']))
+					if(($key == "OFF") && ($fieldid == $row['Field']))
 					{
                     	return TRUE;  // key not in use, but field matches.
 					}
