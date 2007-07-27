@@ -11,13 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-12-24 13:45:37 $
-|     $Author: mrpete $
+|     $Revision: 1.18 $
+|     $Date: 2007-07-27 19:08:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+$sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29." ";
+$sc_style['LASTEDIT']['post'] = " ]</span>";
 
 $sc_style['ANON_IP']['pre'] = "<br /><span class='smalltext'>";
 $sc_style['ANON_IP']['post'] = "</span>";
@@ -73,7 +76,7 @@ $FORUMTHREADSTYLE = "
 </tr>
 <tr>
 <td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<div class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{USER_EXTENDED=location.text_value}\n{POSTS}\n</div>\n</td>
-<td class='nforumthread' style='vertical-align:top'>{POLL}\n{POST}\n{SIGNATURE}\n</td>
+<td class='nforumthread' style='vertical-align:top'>{POLL}\n{POST}\n{LASTEDIT}\n{SIGNATURE}\n</td>
 </tr>
 <tr>
 <td class='nforumthread2'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>
@@ -105,7 +108,7 @@ $FORUMREPLYSTYLE = "
 </tr>
 <tr>
 <td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{USER_EXTENDED=location.text_value}\n{POSTS}\n</span>\n</td>
-<td class='nforumthread' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>
+<td class='nforumthread' style='vertical-align:top'>\n{POST}\n{LASTEDIT}\n{SIGNATURE}\n</td>
 </tr>
 <tr>
 <td class='nforumthread2'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>
