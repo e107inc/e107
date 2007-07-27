@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/khatru/forum_viewtopic_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-07-27 19:08:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,6 +21,9 @@ if (!defined('e107_INIT')) { exit; }
 
 $icon = (file_exists(THEME."forum/e.png") ? THEME."forum/e.png" : e_PLUGIN."forum/images/lite/e.png");
 
+
+$sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29." ";
+$sc_style['LASTEDIT']['post'] = " ]</span>";
 
 $FORUMSTART =
 BOXOPEN."{BACKLINK}".BOXMAIN."
@@ -99,7 +102,7 @@ $FORUMTHREADSTYLE = "
 </tr>	
 <tr>
 <td class='nforumreply2' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
-<td class='nforumreply2' style='vertical-align:top'>{POLL}\n{POST}\n{SIGNATURE}\n</td>
+<td class='nforumreply2' style='vertical-align:top'>{POLL}\n{POST}\n{LASTEDIT}\n{SIGNATURE}\n</td>
 </tr>		
 <tr>
 <td class='nforumreplycaption'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>
@@ -132,7 +135,7 @@ $FORUMREPLYSTYLE = "
 </tr>	
 <tr>
 <td class='nforumreply2' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
-<td class='nforumreply2' style='vertical-align:top'>{POST}\n{SIGNATURE}</td>
+<td class='nforumreply2' style='vertical-align:top'>{POST}\n{LASTEDIT}\n{SIGNATURE}</td>
 </tr>		
 <tr>
 <td class='nforumreplycaption'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>
