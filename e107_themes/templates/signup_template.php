@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-17 13:43:40 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2007-07-30 20:25:36 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -315,6 +315,19 @@ $SIGNUP_BODY = "
 {SIGNUP_FORM_CLOSE}
 ";
 }
+
+
+if(!defined($SIGNUP_EXTENDED_CAT))
+{
+	$SIGNUP_EXTENDED_CAT	= "
+<tr>
+	<td colspan='2' class='forumheader'>
+		{EXTENDED_CAT_TEXT}
+	</td>	
+</tr>
+";
+}
+
 
 if(!defined($SIGNUP_END))
 {
