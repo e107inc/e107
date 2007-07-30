@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2007-06-13 22:00:18 $
-|     $Author: e107coders $
+|     $Revision: 1.43 $
+|     $Date: 2007-07-30 20:25:16 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,11 +30,7 @@ to store its data and structural information.
 
 */
 
-if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php")) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
-} else {
-	@include_once(e_LANGUAGEDIR."English/lan_user_extended.php");
-}
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 
 class e107_user_extended
 {
@@ -133,7 +129,7 @@ class e107_user_extended
 	function user_extended_get_fieldList($cat = "")
 	{
 		global $sql;
-		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
+		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 {$more} ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->db_Fetch())
