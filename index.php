@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/index.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-02 19:47:47 $
+|     $Revision: 1.3 $
+|     $Date: 2007-07-31 19:25:26 $
 |     $Author: e107steved $
 
 Mods for prioritised system
@@ -68,13 +68,12 @@ if (isset($pref['frontpage']['all']) && $pref['frontpage']['all'])
 } 
 else
 {	// This is the 'new' method - assumes $pref['frontpage'] is an ordered list of rules
-  echo "Using new method: ".USERCLASS_LIST."<br />";
   foreach ($pref['frontpage'] as $fk=>$fp)
   {
 	if (in_array($fk,$class_list))
 	{
+		// Debateable whether we should append $query - we may be redirecting to a custom page, for example
 	  $location = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$fp.$query;
-	  echo "Redirecting to: ".$location."<br />";
 	  break;
 	}
   }
@@ -83,7 +82,6 @@ else
 
 if (!$location)
 {  // Try and use the 'old' method (this bit can go later)
-  echo "Using OLD METHOD<br />";
   if (ADMIN) 
   {
     $location =  ((strpos($pref['frontpage'][e_UC_ADMIN], 'http') === FALSE) ? e_BASE : '').$pref['frontpage'][e_UC_ADMIN].$query;

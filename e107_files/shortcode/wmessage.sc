@@ -1,44 +1,32 @@
-// $Id: wmessage.sc,v 1.4 2007-01-20 16:10:32 mrpete Exp $
-$prefwmsc = isset($pref['wmessage_sc']) && $pref['wmessage_sc'];
-if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
+// $Id: wmessage.sc,v 1.5 2007-07-31 19:25:26 e107steved Exp $
+
+$prefwmsc = varset($pref['wmessage_sc'], FALSE);
+if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) )
+{	// Two places it might be invoked - allow one or the other
 	return;
 }
 
-	global $e107,$e107cache;
+  global $e107,$e107cache;
 
-
-	if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
-		$full_url = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['all'];
-	} else if (ADMIN) {
-		$full_url = ((strpos($pref['frontpage']['254'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['254'];
-	} else if (USER) {
-		require_once(e_HANDLER.'userclass_class.php');
-		$class_list = get_userclass_list();
-		foreach ($class_list as $fp_class) {
-			if (check_class($fp_class['userclass_id'])) {
-				$full_url = ((strpos($pref['frontpage'][$fp_class['userclass_id']], 'http') === FALSE) ? SITEURL : '').$pref['frontpage'][$fp_class['userclass_id']];
-        $class_match = true;
-				break;
-			}
-		}
-		if (!$class_match) {
-			$full_url = ((strpos($pref['frontpage']['253'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['253'];
-		}
-	} else {
-		$full_url = ((strpos($pref['frontpage']['252'], 'http') === FALSE) ? SITEURL : '').$pref['frontpage']['252'];
+  if ($parm != "force")
+  {
+    $full_url = 'news.php';					// Set a default in case
+	$uc_array = explode(',', USERCLASS_LIST);
+	foreach ($pref['frontpage'] as $fk=>$fp)
+	{
+	  if (in_array($fk,$uc_array))
+	  {
+	    $full_url = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$fp;
+	    break;
+	  }
 	}
 	list($front_url,$front_qry) = explode("?",$full_url."?"); // extra '?' ensure the array is filled
+  }
 
-	if($parm == "ignore_query"){
-    	$front_qry = e_QUERY;
-	}
 
-	if($parm == "force"){
-    	$front_url = e_SELF;
-		$front_qry = e_QUERY;
-	}
-
-	if (e_SELF == $front_url && e_QUERY == $front_qry) {
+	if (($parm == "force") || ((e_SELF == $front_url) && (($parm == "ignore_query") || (e_QUERY == $front_qry)))) 
+	{
+		// Actually want to display a welcome message here
 		global $sql, $pref, $tp, $ns;
 
 
@@ -49,7 +37,8 @@ if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 		}
 
 
-		if (!defined("WMFLAG")) {
+		if (!defined("WMFLAG")) 
+		{
 			$qry = "
 			SELECT * FROM #generic
 			WHERE gen_type ='wmessage' AND gen_intdata IN (".USERCLASS_LIST.")";
@@ -85,3 +74,5 @@ if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) ){
 			}
 		}
 	}
+
+
