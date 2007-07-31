@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-05-01 19:48:22 $ 
+|     $Revision: 1.10 $
+|     $Date: 2007-07-31 20:10:44 $ 
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,7 @@ class e_bbcode
   {
     $strip_array = explode(',',$bb_strip);
   }
-  $pattern = '#^\[(/?)([A-Za-z]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
+  $pattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
 		// $matches[0] - same as the input text
 		// $matches[1] - '/' for a closing tag. Otherwise empty string
 		// $matches[2] - the bbcode word
