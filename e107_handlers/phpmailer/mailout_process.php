@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-04-24 20:29:11 $
+|     $Revision: 1.5 $
+|     $Date: 2007-08-02 20:37:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -114,11 +114,7 @@ if($_POST['cancel_emails']){
 		$mail->Sender = $pref['mail_bounce_email'];
 	}
 
-	$attach = chop($_POST['email_attachment']);
-	if (($temp = strrchr($attach,'/')) !== FALSE)
-	{	// Just specify filename as attachment - no path
-		$attach = substr($attach,1);
-	}
+	$attach = trim($_POST['email_attachment']);
 
 	if(is_readable(e_DOWNLOAD.$attach))
 	{
@@ -129,11 +125,16 @@ if($_POST['cancel_emails']){
 		$attach_link = e_FILE.'public/'.$attach;
 	}
 
+	if (($temp = strrchr($attach,'/')) !== FALSE)
+	{	// Just specify filename as attachment - no path
+		$attach = substr($temp,1);
+	}
+
 	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach))
 	{
 		$mss = MAILAN_58."<br />$attach_link";  // problem with attachment.
 		$ns->tablerender("Error", $mss);
-		require_once(e_ADMIN."footer.php");
+//		require_once(e_ADMIN."footer.php");
 		exit;
 	}
 
