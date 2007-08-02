@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-05 20:06:47 $
+|     $Revision: 1.4 $
+|     $Date: 2007-08-02 20:41:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,6 +56,8 @@ class private_message
 		return FALSE;
 	}
 
+
+	// Send a PM
 	function add($vars)
 	{
 		global $pm_prefs, $tp, $sql;
@@ -68,7 +70,7 @@ class private_message
 		{
 			foreach($vars['uploaded'] as $u)
 			{
-				if(!isset($u['error']))
+				if (!isset($u['error']) || !$u['error'])
 				{
 					$pmsize += $u['size'];
 					$a_list[] = $u['name'];
@@ -78,8 +80,14 @@ class private_message
 		}
 		$pmsize += strlen($vars['pm_message']);
 
-		$pm_subject = $tp->toDB($vars['pm_subject']);
-		$pm_message = $tp->toDB($vars['pm_message']);
+		$pm_subject = trim($tp->toDB($vars['pm_subject']));
+		$pm_message = trim($tp->toDB($vars['pm_message']));
+		
+		if (!$pm_subject && !$pm_message && !$attachlist)
+		{  // Error - no subject, no message body and no uploaded files
+		  return LAN_PM_65;
+		}
+		
 		$sendtime = time();
 		if(isset($vars['to_userclass']) || isset($vars['to_array']))
 		{
