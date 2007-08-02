@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-07-11 13:49:27 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2007-08-02 20:42:16 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -204,27 +204,33 @@ class sitelinks
 		}
 
 		// Check if its expandable first. It should override its URL.
-		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand']){
+		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand'])
+		{
 			$href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
-		} elseif ($linkInfo['link_url']){
-
+		} 
+		elseif ($linkInfo['link_url'])
+		{
 			// Only add the e_BASE if it actually has an URL.
 			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? e_HTTP.$linkInfo['link_url'] : $linkInfo['link_url']);
 
 			// Only check if its highlighted if it has an URL
-			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
-				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
-				$highlighted = TRUE;
+			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) 
+			{
+			  if (isset($style['linkstart_hilite']))
+			  {
+				$linkstart = $style['linkstart_hilite'];
+				$linkadd = " class='".$style['linkclass_hilite']."'";
 			}
-			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) {
-				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
 			}
 
-			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
+			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5)
+			{
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
 				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."',{$dimen})\"";
-			} else {
+			} 
+			else 
+			{
 				$href = " href='".$linkInfo['link_url']."'";
 			}
 
@@ -233,7 +239,8 @@ class sitelinks
 		}
 
 		// Remove default images if its a button and add new image at the start.
-		if ($linkInfo['link_button']){
+		if ($linkInfo['link_button'])
+		{
 			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
 			$linkstart .= "<img src='".e_IMAGE_ABS."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
 		}
@@ -279,62 +286,80 @@ class sitelinks
 
 
 
-function hilite($link,$enabled=''){
+function hilite($link,$enabled='')
+{
 	global $PLUGINS_DIRECTORY,$tp,$pref;
     if(!$enabled){ return FALSE; }
 
-    $link = $tp->replaceConstants($link, '', TRUE);
+    $link = $tp->replaceConstants($link, '', TRUE);			// The link saved in the DB
   	$tmp = explode("?",$link);
     $link_qry = (isset($tmp[1])) ? $tmp[1] : "";
     $link_slf = (isset($tmp[0])) ? $tmp[0] : "";
 	$link_pge = basename($link_slf);
-	$link_match = strpos(e_SELF,$tmp[0]);
+	$link_match = strpos(e_SELF,$tmp[0]);					// e_SELF is the actual displayed page
 
     if(e_MENU == "debug" && getperms('0'))
 	{
 		echo "<br />link= ".$link;
 		echo "<br />link_q= ".$link_qry;
 		echo "<br />url= ".e_PAGE;
+		echo "<br />self= ".e_SELF;
 		echo "<br />url_query= ".e_QUERY."<br />";
-
 	}
 
-// ----------- highlight overriding - set the link matching in the page itself.
 
-	if(defined("HILITE")){
-		if(strpos($link,HILITE)){
+// ----------- highlight overriding - set the link matching in the page itself.
+	if(defined("HILITE"))
+	{
+		if(strpos($link,HILITE))
+		{
         	return TRUE;
 		}
 	}
 
 
 // --------------- highlighting for 'HOME'. ----------------
+	// See if we're on whatever is set as 'home' page for this user
+
+	// Although should be just 'index.php', allow for the possibility that there might be a query part
 	global $pref;
-	if (isset($pref['frontpage']['all']))
+	if (($link_slf == e_HTTP."index.php") && count($pref['frontpage']))
+	{	// Only interested if the displayed page is index.php - see whether its the user's home (front) page
+      $full_url = 'news.php';					// Set a default in case
+	  $uc_array = explode(',', USERCLASS_LIST);
+		foreach ($pref['frontpage'] as $fk=>$fp)
+		{
+	      if (in_array($fk,$uc_array))
+	      {
+	        $full_url = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$fp;
+			break;
+	      }
+	    }
+	    list($fp,$fp_q) = explode("?",$full_url."?"); // extra '?' ensure the array is filled
+		if (e_MENU == "debug" && getperms('0'))
 	{
- 	  list($fp,$fp_q) = explode("?",$pref['frontpage']['all']."?");
-	  if (strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $tmp[1] && $link == e_HTTP."index.php")
+		  echo "\$fp = ".$fp."<br />";
+		  echo "\$fp_q = ".$fp_q."<br />";
+		}
+		$tmp = str_replace("../", "", e_SELF);
+	    if ((strpos($fp, $tmp) !== FALSE) && ($fp_q == $link_qry))
 	  {
 	  	return TRUE;
 	  }
 	}
 
 // --------------- highlighting for plugins. ----------------
-		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE){
-
+		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE)
+		{
 			if($link_qry)
 			{  // plugin links with queries
-                $subq = explode("?",$link);
-				if(strpos(e_SELF,$subq[0]) && e_QUERY == $subq[1]){
-			   		return TRUE;
-				}else{
-				  	return FALSE;
-				}
+				return (strpos(e_SELF,$link_slf) && e_QUERY == $link_qry) ? TRUE : FALSE;
 			}
 			else
 			{  // plugin links without queries
 				$link = str_replace("../", "", $link);
-		   		if(stristr(dirname(e_SELF), dirname($link)) !== FALSE){
+		   		if(stristr(dirname(e_SELF), dirname($link)) !== FALSE)
+				{
  			 		return TRUE;
 				}
 			}
