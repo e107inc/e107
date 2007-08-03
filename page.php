@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-27 13:27:19 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2007-08-03 18:40:49 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -362,7 +362,7 @@ class pageClass
 
 	function pageCheckPerms($page_class, $page_password, $page_title="&nbsp;")
 	{
-		global $ns, $tp, $HEADER, $FOOTER, $sql;     // $tp added
+		global $ns, $tp, $pref, $HEADER, $FOOTER, $sql;     // $tp added - also $pref - used by footer
 
 
 		if (!check_class($page_class))
