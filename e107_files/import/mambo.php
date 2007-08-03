@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/import/mambo.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-08-03 21:10:50 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -132,8 +132,9 @@ $text .= "</tr>";
 
 $block = ($mos['block']) ? 2 : 0;
 $admin = ($mos['usertype'] == "superadministrator") ? 1 : 0;
+$class = '';			// Potential class allocation - can edit to list class numbers here
 $query = "INSERT INTO ".$mySQLprefix."user VALUES (";
-$query .= "0, \"".$mos['name']."\", \"".$mos['username']."\", '', \"".$mos['password']."\", '', \"".$mos['email']."\", '', '', '', '', '', '', '', '', '', \"1\", \"".$mos['regDate']."\", \"".$mos['lvDate']."\", \"\", \"\", \"\", \"\", \"\", \"\", \"$block\", '', '', '', '', \"$admin\", \"".$mos['name']."\", \"$class\", 0, 0, 0 ";
+$query .= "0, '".$mos['name']."', '".$mos['username']."', '', '".$mos['password']."', '', '".$mos['email']."', '', '', '', '1', '".$mos['regDate']."', '".$mos['lvDate']."', 0, 0, 0, 0, 0, '', '{$block}', '', '', '', 0, '{$admin}', '".$mos['name']."', '{$class}', '', '', 0, '' ";
 $query .= ")";
 $message = mysql_query($query, $e107Connection) ? LAN_CREATED: LAN_CREATED_FAILED;
 
