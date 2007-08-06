@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-04-21 09:34:59 $
+|     $Revision: 1.21 $
+|     $Date: 2007-08-06 21:48:50 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -130,20 +130,27 @@ define("USRLAN_135", "No se encontró la IP en la info de usuario, IP no expulsa
 define("USRLAN_136", "Varios usuarios tienen la ip {IP}, IP no expulsada."); 
 define("USRLAN_137", "Usuarios con la IP {IP} expulsados."); 
 define("USRLAN_138", "Usuarios sin verificar"); 
-define("USRLAN_139", "Su cuenta ha sido activada.\n\nAhora puede visitar {SITEURL} y conectarse usando la información que escribió en su registro.");
-define("USRLAN_140", "Reenviar email a"); 
-define("USRLAN_141", "Fallo al reenviar email a"); 
-define("USRLAN_142", "con el siguiente enlace de activación"); 
+define("USRLAN_139", "Su cuanta ha sido activada.\n\nPuede visitar {SITEURL} y conectarse en el sitio usando la información de conexión que dispone."); 
+define("USRLAN_140", "Correo reenviado a"); 
+define("USRLAN_141", "Falló al reenviar el correo a"); 
+define("USRLAN_142", "con el siguiente enlace de activación");  
 define("USRLAN_143", "Comprobar saltos"); 
-define("USRLAN_144", "Reenviar confirmación de mail a todos");
-define("USRLAN_145", "Usuarios rechazados");
-define("USRLAN_146", "La información del miembro está disponible a");
+define("USRLAN_144", "Reenciar confirmación de correo a todos"); 
+define("USRLAN_145", "Usuarios saltados"); 
+define("USRLAN_146", "La información del miembro esta disponible a");   
+define("USRLAN_147", "La dirección de correo la utiliza un usuario expusado"); 
+define("USRLAN_148", "La dirección de correo está expulsada"); 
+define("USRLAN_149", "Eliminar correos marcados"); 
+define("USRLAN_150", "Eliminar todos los correos"); 
+define("USRLAN_151", "Limpiar saltos requieren activación"); 
+define("USRLAN_152", "Limpiar saltos y activar"); 
+define("USRLAN_153", "Eliminar correos sin saltos"); 
 
 define("LAN_BOUNCED","Saltado");
 define("LAN_MAINADMIN","Admin principal"); 
 define("LAN_ADMIN","Admin"); 
 define("LAN_NOTVERIFIED","Sin verificar"); 
-define("LAN_BANNED","Expuldado"); 
+define("LAN_BANNED","Expuldado");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Nombre a mostrar");

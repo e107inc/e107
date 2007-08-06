@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/Spanish.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-07-14 06:02:13 $
+|     $Revision: 1.13 $
+|     $Date: 2007-08-06 21:48:50 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -73,6 +73,7 @@ define('LAN_PM_61', "Sin asunto");
 define('LAN_PM_62', "Archivo: [{FILENAME}] excede el límite de tamaño - No se ha adjuntado");
 define('LAN_PM_63', "Clase:");
 define('LAN_PM_64', 'ERROR: No tiene permitido bloquear mensajes de los Administradores del sitio');
+define('LAN_PM_65', 'ERROR: Nada que enviar');
 
 define("LAN_PM_100", "Nuevo MP de "); 
 define("LAN_PM_101", "Ha recibido un nuevo Mensaje Privado de "); 

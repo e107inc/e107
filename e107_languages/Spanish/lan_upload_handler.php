@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_upload_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2007-08-06 21:48:50 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -21,5 +21,11 @@ define("LANUPLOAD_9", "El tamaño de la transferencia es de 0 bytes");
 define("LANUPLOAD_10", "Falló la transferencia [Archivo duplicado] - existe un archivo con el mismo nombre.");
 define("LANUPLOAD_11", "El archivo no pudo ser transferido. Archivo: ");
 define("LANUPLOAD_12", "Error");
-
+define("LANUPLOAD_13", "Falta la carpeta temporal"); 
+define("LANUPLOAD_14", "Fallo en la escritura de archivo"); 
+define("LANUPLOAD_15", "Transferencia no permitida"); 
+define("LANUPLOAD_16", "Error desconocido"); 
+define("LANUPLOAD_17", "Nombre inválido para el archivo transferido"); 
+define("LANUPLOAD_18", "El archivo trasnferido excede los límites permitidos."); 
+define("LANUPLOAD_19", "Demasiados archivos trasnferidos - eliminados los excesos."); 
 ?>

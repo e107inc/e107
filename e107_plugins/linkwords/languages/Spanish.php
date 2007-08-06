@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/linkwords/languages/Spanish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-11 11:02:27 $
+|     $Revision: 1.7 $
+|     $Date: 2007-08-06 21:48:50 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,24 @@ define("LWLAN_19", "Palabra enlazada eliminada.");
 define("LWLAN_20", "No encuentro la entrada de la palabra enlazada.");
 define("LWLAN_21", "Palabra a autoenlace.");
 define("LWLAN_22", "¿Activar?.");
+define("LWLAN_23", "Administración de palabras enlazadas");
+define("LWLAN_24", "Gestionar palabras");
+define("LWLAN_25", "Opciones");
+define("LWLAN_26", "Áreas donde activar palabras enlazadas");
+define("LWLAN_27", "Este es el 'contexto' del texto mostrado");
+define("LWLAN_28", "Páginas donde desactivar palabras enlazadas");
+define("LWLAN_29", "El mismo formato que en el control de visibilidad. Una coincidencia por línea. Especificar una URL completa o parcial. Finalizar con '!' paGuardar opciones");
+define("LWLAN_31", "Añadir/Editar palabra enlazada");
+define("LWLAN_32", "Opciones Palabra enlazada");
+define("LWLAN_33", 'Título de áreas');
+define("LWLAN_34", 'Sumarios');
+define("LWLAN_35", 'Texto del cuerpo');
+define("LWLAN_36", 'Descripciones (enlaces etc)');
+define("LWLAN_37", 'Áreas originales');
+define("LWLAN_38", 'Enlazes hábiles');
+define("LWLAN_39", 'Texto sin procesar');
+define("LWLAN_40", 'Títulos entrados por el usuario (e.j. forum)');
+define("LWLAN_41", 'Texto de cuerpo entrado por el usuario (e.j. forum)');
 
 define("LWLANINS_1", "Palabras enlazadas");
 define("LWLANINS_2", "Este plugin enlaza palabras a un enlace determinado");
