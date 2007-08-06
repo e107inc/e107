@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.7 $
-|   $Date: 2007-06-07 20:43:25 $
+|   $Revision: 1.8 $
+|   $Date: 2007-08-06 21:33:53 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 
@@ -469,7 +469,7 @@ class newspost {
 		<tr>
 		<td style='width:20%' class='forumheader3'>".NWSLAN_14.":</td>
 		<td style='width:80%' class='forumheader3'>
-		<a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);$ff_expand\">".NWSLAN_83."</a>
+		<a style='cursor: pointer' onclick=\"expandit(this);$ff_expand\">".NWSLAN_83."</a>
 		<div style='display:none'>
 		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."</textarea>
 		". display_help("helpc", 'extended')."
@@ -480,7 +480,7 @@ class newspost {
 		<tr>
 		<td style='width:20%' class='forumheader3'>".NWSLAN_66.":</td>
 		<td style='width:80%' class='forumheader3'>
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_69."</a>
+		<a style='cursor: pointer' onclick='expandit(this);'>".NWSLAN_69."</a>
 		<div style='display: none;'>";
 
 		if (!FILE_UPLOADS)
@@ -549,7 +549,7 @@ class newspost {
 		$text .= "<tr>
 		<td style='width:20%' class='forumheader3'>".NWSLAN_15.":</td>
 		<td style='width:80%' class='forumheader3'>
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_18."</a>
+		<a style='cursor: pointer' onclick='expandit(this);'>".NWSLAN_18."</a>
 		<div style='display: none;'>
 
 		". ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0' />".LAN_ENABLED."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked='checked' />".LAN_DISABLED : "<input name='news_allow_comments' type='radio' value='0' checked='checked' />".LAN_ENABLED."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' />".LAN_DISABLED)."
@@ -560,7 +560,7 @@ class newspost {
 		<tr>
 		<td style='width:20%' class='forumheader3'>".NWSLAN_73.":</td>
 		<td style='width:80%' class='forumheader3'>
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_74."</a>
+		<a style='cursor: pointer' onclick='expandit(this);'>".NWSLAN_74."</a>
 		<div style='display: none;'>";
 		$ren_type = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
 		foreach($ren_type as $key=>$value) {
@@ -577,7 +577,7 @@ class newspost {
 		<td style='width:20%' class='forumheader3'>".NWSLAN_19.":</td>
 		<td style='width:80%' class='forumheader3'>
 
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_72."</a>
+		<a style='cursor: pointer' onclick='expandit(this);'>".NWSLAN_72."</a>
 		<div style='display: none;'>
 
 		<br />
@@ -622,7 +622,7 @@ class newspost {
 		".LAN_NEWS_32.":
 		</td>
 		<td class='forumheader3'>
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_33."</a>
+		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_33."</a>
 		<div style='display: none;'>";
 		$update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
 
@@ -653,7 +653,7 @@ class newspost {
 		</td>
 		<td class='forumheader3'>
 
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_84."</a>
+		<a style='cursor: pointer' onclick='expandit(this);'>".NWSLAN_84."</a>
 		<div style='display: none;'>
 		".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."
 		</div>
@@ -666,7 +666,7 @@ class newspost {
 		</td>
 		<td class='forumheader3'>
 
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_29."</a>
+		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_29."</a>
 		<div style='display: none;'>
 		";
 		if($_POST['news_sticky'])
@@ -682,7 +682,7 @@ class newspost {
 		if($pref['trackbackEnabled']){
 			$text .= "<tr>
 			<td class='forumheader3'>".LAN_NEWS_34.":</td>
-			<td class='forumheader3'><a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_35."</a>
+			<td class='forumheader3'><a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_35."</a>
 			<div style='display: none;'>
 			<span class='smalltext'>";
 			/* pingback */
@@ -863,7 +863,7 @@ class newspost {
 		<td class='forumheader3' style='width:70%'>
 		".$rs->form_text("category_button", 60, $category_icon, 100)."
 		<br />
-		<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_54."' onclick='expandit(this)' />
+		<input class='button' type ='button' style='cursor: pointer' size='30' value='".NWSLAN_54."' onclick='expandit(this)' />
 		<div id='caticn' style='display:none'>";
 		while (list($key, $icon) = each($iconlist)) {
 			$text .= "<a href=\"javascript:insertext('$icon','category_button','caticn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a>\n ";
