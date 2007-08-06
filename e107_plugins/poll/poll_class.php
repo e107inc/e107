@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-28 16:52:31 $
+|     $Revision: 1.4 $
+|     $Date: 2007-08-06 19:16:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -533,7 +533,7 @@ class poll
 
 		<tr>
 		<td style='width:30%' class='forumheader3'>".POLLAN_15."</td>
-		<td class='forumheader3'>".r_userclass("pollUserclass", $_POST['pollUserclass'], "admin")."</td>
+		<td class='forumheader3'>".r_userclass("pollUserclass", $_POST['pollUserclass'], 'off', "admin,classes,matchclass")."</td>
 		</tr>
 
 		<tr>
