@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-07-23 20:05:46 $
+|     $Revision: 1.12 $
+|     $Date: 2007-08-07 19:27:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -198,7 +198,7 @@ if (isset($_POST['updatesettings']))
 	}
 
 	// Check for duplicate of email address
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".$inp."' "))
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".intval($inp)."' "))
 	{
 	  	$error .= LAN_408."\\n";
 	}
@@ -216,6 +216,12 @@ if (isset($_POST['updatesettings']))
 	  if (strlen($username) > varset($pref['displayname_maxlength'],15))
 	  {
 		$error .= LAN_USET_15."\\n";
+	  }
+
+	// Display Name exists.
+	  if ($sql->db_Count("user", "(*)", "WHERE user_name='".$username."'"))
+	  {
+		$error .= LAN_USET_17;
 	  }
 	}
 
@@ -393,7 +399,7 @@ if (isset($_POST['updatesettings']))
 				$ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
 			}
 
-			$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
+			$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".intval($tp -> toDB($_POST['hideemail']))."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
 			if ($photo_to_delete)
 			{	// Photo may be a flat file, or in the database
 			  delete_file($photo_to_delete);
