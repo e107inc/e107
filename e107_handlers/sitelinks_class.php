@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-08-02 20:42:16 $
+|     $Revision: 1.14 $
+|     $Date: 2007-08-07 19:31:44 $
 |     $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -214,13 +214,12 @@ class sitelinks
 			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? e_HTTP.$linkInfo['link_url'] : $linkInfo['link_url']);
 
 			// Only check if its highlighted if it has an URL
-			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) 
-			{
-			  if (isset($style['linkstart_hilite']))
-			  {
-				$linkstart = $style['linkstart_hilite'];
-				$linkadd = " class='".$style['linkclass_hilite']."'";
+			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
+				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
+				$highlighted = TRUE;
 			}
+			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) {
+				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
 			}
 
