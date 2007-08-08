@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2007-07-24 21:29:36 $
+|     $Revision: 1.81 $
+|     $Date: 2007-08-08 21:01:38 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.80 $
+* @version $Revision: 1.81 $
 * @author $Author: e107steved $
 */
 class db {
@@ -117,7 +117,7 @@ class db {
 				}
 			}
 		}
-	  $db_ConnectionID = $this->mySQLaccess;		// Save the connection resource
+	  if ($db_ConnectionID == NULL) $db_ConnectionID = $this->mySQLaccess;		// Save the connection resource
 	}
 
 
