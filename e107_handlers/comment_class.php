@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-06-05 18:54:56 $
+|     $Revision: 1.7 $
+|     $Date: 2007-08-08 19:28:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -266,8 +266,8 @@ class comment {
 
 		$text = $tp -> parseTemplate($renderstyle, TRUE, $comment_shortcodes);
 
-		if ($action == "comment" && $pref['nested_comments']) {
-
+		if ($action == "comment" && $pref['nested_comments']) 
+		{
 			$type = $this -> getCommentType($thistable);
 			$sub_query = "
 			SELECT c.*, u.*, ue.*
@@ -278,20 +278,20 @@ class comment {
 			ORDER BY comment_datestamp
 			";
 
-			$sql2 = new db;	/* a new db must be created here, for nested comment  */
-			if ($sub_total = $sql2->db_Select_gen($sub_query)) {
-				while ($row1 = $sql2->db_Fetch()) {
-					if ($pref['nested_comments']) {
-						$width = $width + 3;
-						if ($width > 80) {
-							$width = 80;
-						}
-					}
-					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
-					unset($width);
+			$sql_nc = new db;	/* a new db must be created here, for nested comment  */
+			if ($sub_total = $sql_nc->db_Select_gen($sub_query)) 
+			{
+			  while ($row1 = $sql_nc->db_Fetch()) 
+			  {
+				if ($pref['nested_comments']) 
+				{
+				  $width = min($width + 3, 80);
 				}
+				$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
+				unset($width);
+			  }
 			}
-		}
+		}		// End (nested comment handling)
 		//echo $text;
 		return stripslashes($text);
 	}
@@ -707,8 +707,8 @@ class comment {
 		if ($comment_total = $sql->db_Select_gen($query))
 		{
 			$width = 0;
-			while ($row = $sql->db_Fetch()){
-
+			while ($row = $sql->db_Fetch())
+			{
 				$ret = array();
 
 				//date
@@ -728,9 +728,11 @@ class comment {
 				//subject
 				$ret['comment_subject'] = $tp->toHTML($row['comment_subject'], TRUE);
 
-				// news
-				if($row['comment_type'] == "0"){
-					if($sql2 -> db_Select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' ")){
+				switch ($row['comment_type'])
+				{
+				  case '0' :	// news
+					if($sql2 -> db_Select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' "))
+					{
 						$row2 = $sql2 -> db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_1;
@@ -739,14 +741,15 @@ class comment {
 						$ret['comment_category_heading']	= COMLAN_TYPE_1;
 						$ret['comment_category_url']		= e_BASE."news.php";
 					}
-				//	article, review or content page
-				}elseif($row['comment_type'] == "1"){
-
-				//	downloads
-				}elseif($row['comment_type'] == "2"){
-//					$mp = MPREFIX;
+					break;
+					
+				  case '1' :	//	article, review or content page - defunct category, but filter them out
+					break;
+					
+				  case '2' :	//	downloads
 					$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id WHERE d.download_id={$row['comment_item_id']} AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
-					if($sql2->db_Select_gen($qryd)){
+					if($sql2->db_Select_gen($qryd))
+					{
 						$row2 = $sql2->db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_2;
@@ -755,67 +758,52 @@ class comment {
 						$ret['comment_category_heading']	= $row2['download_category_name'];
 						$ret['comment_category_url']		= e_BASE."download.php?list.".$row2['download_category_id'];
 					}
-				/*
-				//	faq (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "3"){
-					if($sql2 -> db_Select("faq", "faq_question", "faq_id='".$row['comment_item_id']."' ")){
-						$row2 = $sql2 -> db_Fetch();
-
-						$ret['comment_type']				= COMLAN_TYPE_3;
-						$ret['comment_title']				= $tp -> toHTML($row2['faq_question'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_PLUGIN."faq/faq.php?view.".$row2['comment_item_id'];
-					}
-				*/
-				//	poll
-				}elseif($row['comment_type'] == "4"){
-					if($sql2 -> db_Select("polls", "*", "poll_id='".$row['comment_item_id']."' ")){
+					break;
+						// '3' was FAQ
+				  case '4' :	//	poll
+					if($sql2 -> db_Select("polls", "*", "poll_id='".$row['comment_item_id']."' "))
+					{
 						$row2 = $sql2 -> db_Fetch();
 
 						$ret['comment_type']				= COMLAN_TYPE_4;
 						$ret['comment_title']				= $tp -> toHTML($row2['poll_title'], TRUE,'emotes_off, no_make_clickable');
 						$ret['comment_url']					= e_BASE."comment.php?comment.poll.".$row['comment_item_id'];
 					}
-				/*
-				//	docs (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "5"){
-					//$str .= $bullet." <b><a href='http://e107.org/docs/main.php?$comment_item_id'>Doc $comment_item_id</a></b><br />";
-					//$str .= ($recent_pref['comments_cat'] ? $style_pre."".LIST_31."<br />" : "").($recent_pref['comments_author'] ? $style_pre."".($comment_author_id == 0 ? $comment_author_name : "<a href='".e_BASE."user.php?id.".$comment_author_name."'>".$comment_author_name."</a>" )."<br />" : "").($recent_pref['comments_date'] ? $style_pre."".$datestamp."<br />" : "");
-
-				//	bugtracker (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "6"){
-					if($sql2 -> db_Select("bugtrack2_bugs", "bugtrack2_bugs_summary", "bugtrack2_bugs_id='".$row['comment_item_id']."' ")){
-						$row2 = $sql2 -> db_Fetch();
-
-						$ret['comment_type']				= COMLAN_TYPE_6;
-						$ret['comment_title']				= $tp -> toHTML($row2['bugtrack2_bugs_summary'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_PLUGIN."bugtracker2/bugtracker2.php?0.bug.".$row['comment_item_id'];
-					}
-				//	ideas (should use an e_comment.php file)
-				}elseif($row['comment_type'] == "ideas"){
-					if($sql2 -> db_Select("ideas", "ideas_summary", "ideas_id='".$row['comment_item_id']."' ")){
-						$row2 = $sql2 -> db_Fetch();
-
-						$ret['comment_type']				= COMLAN_TYPE_7;
-						$ret['comment_title']				= $tp -> toHTML($row2['ideas_summary'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_PLUGIN."ideas/ideas.php?show.".$row['comment_item_id'];
-					}
-				*/
-				//	userprofile
-				}elseif($row['comment_type'] == "profile"){
+					break;
+					
+					// '5' was docs
+					// '6' was bugtracker
+					// 'ideas' was implemented
+			
+				  case 'profile' :		//	userprofile
 					if(USER)
 					{
 						$ret['comment_type']				= COMLAN_TYPE_8;
 						$ret['comment_title']				= $comment_author_name;
 						$ret['comment_url']					= e_BASE."user.php?id.".$row['comment_item_id'];
 					}
-				}elseif(isset($e_comment[$row['comment_type']]) && is_array($e_comment[$row['comment_type']])){
-					$var = $e_comment[$row['comment_type']];
-					$qryp='';
-					//new method must use the 'qry' variable
-					if(isset($var) && $var['qry']!=''){
-						if($installed = $sql2 -> db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' ")){
+					break;
+
+				  case 'page' :		//	Custom Page
+					$ret['comment_type']				= COMLAN_TYPE_PAGE;
+					$ret['comment_title']				= $ret['comment_subject'] ? $ret['comment_subject'] : $ret['comment_comment'];
+					$ret['comment_url']					= e_BASE."page.php?".$row['comment_item_id'];
+					break;
+
+				  default :
+					if(isset($e_comment[$row['comment_type']]) && is_array($e_comment[$row['comment_type']]))
+					{
+					  $var = $e_comment[$row['comment_type']];
+					  $qryp='';
+						//new method must use the 'qry' variable
+					  if(isset($var) && $var['qry']!='')
+					  {
+//						if ($installed = $sql2 -> db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' "))
+						if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
+						{
 							$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
-							if($sql2 -> db_Select_gen($qryp)){
+							if($sql2 -> db_Select_gen($qryp))
+							{
 								$row2 = $sql2 -> db_Fetch();
 								$ret['comment_type']				= $var['plugin_name'];
 								$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
@@ -825,7 +813,9 @@ class comment {
 							}
 						}
 					//old method
-					}else{
+					  }
+					  else
+					  {
 						if($sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' ")){
 							$row2 = $sql2 -> db_Fetch();
 							$ret['comment_type']				= $var['plugin_name'];
@@ -834,20 +824,24 @@ class comment {
 							$ret['comment_category_heading']	= $var['plugin_name'];
 							$ret['comment_category_url']		= $var['plugin_name'];
 						}
+					  }
 					}
-				}
-				if($ret['comment_title']){
+				  }		// End Switch
+				  if($ret['comment_title'])
+				  {
 					$reta[] = $ret;
 					$valid++;
-				}
-				if($amount && $valid>=$amount){
+				  }
+				  if($amount && $valid>=$amount)
+				  {
 					return $reta;
+				  }
 				}
-			}
-			//loop if less records found than given $amount
-			if($amount && $valid<$amount){
-				$reta = $this->getCommentData($amount, $from+$amount, $qry, $valid, $reta);
-			}
+			//loop if less records found than given $amount - probably because we discarded some
+				if($amount && ($valid<$amount))
+				{
+				  $reta = $this->getCommentData($amount, $from+$amount, $qry, $valid, $reta);
+				}
 		}
 		return $reta;
 	}
