@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2007-05-31 21:02:53 $
+|		$Revision: 1.4 $
+|		$Date: 2007-08-08 19:34:34 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -120,8 +120,10 @@ class listclass {
 	{
 		global $sql, $sections, $titles, $content_types, $content_name;
 
-		if(!$content_install = $sql -> db_Select("plugin", "plugin_id", "plugin_path = 'content' AND plugin_installflag = '1' ")){
-			return;
+//		if(!$content_install = $sql -> db_Select("plugin", "plugin_id", "plugin_path = 'content' AND plugin_installflag = '1' "))
+		if (!$content_install = isset($pref['plug_installed']['content']))		
+		{
+		  return;
 		}
 		$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
@@ -160,7 +162,8 @@ class listclass {
 			$tmp = array_reverse($tmp);
 			$icon['fname'] = $tmp[1];
 
-			if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$icon['fname']."' AND plugin_installflag = '1' "))
+//			if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$icon['fname']."' AND plugin_installflag = '1' "))
+			if ($plugin_installed = isset($pref['plug_installed'][$icon['fname']]))
 			{
 				if($icon['fname'] == "content")
 				{
@@ -187,7 +190,8 @@ class listclass {
 			{
 				if(!in_array($sections[$i], $content_types))
 				{
-					if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($sections[$i], true)."' AND plugin_installflag = '1' "))
+//					if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($sections[$i], true)."' AND plugin_installflag = '1' "))
+					if ($plugin_installed = isset($pref['plug_installed'][$tp -> toDB($sections[$i], true)]))
 					{
 						$list_pref["$sections[$i]_recent_menu_caption"]	= $sections[$i];
 						$list_pref["$sections[$i]_recent_page_caption"]	= $sections[$i];

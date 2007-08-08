@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-08-03 18:40:49 $
+|     $Revision: 1.12 $
+|     $Date: 2007-08-08 19:34:34 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -288,6 +288,7 @@ class pageClass
 	function pageIndex()
 	{
 		$count = 0;
+		$itext = '';
 		foreach($this -> pageTitles as $title)
 		{
 			if (!$count) { $itext = "<br /><br />"; }
