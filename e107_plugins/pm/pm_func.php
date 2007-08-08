@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_func.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-28 11:18:18 $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-08 19:34:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,7 @@ function pm_getInfo($which = "inbox")
 	}
 	if(!isset($pm_info[$which]['limit']))
 	{
-		if($pref['pm_limits'] > 0)
+		if(varset($pref['pm_limits'],0) > 0)
 		{
 			if($pref['pm_limits'] == 1)
 			{

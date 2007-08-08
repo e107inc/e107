@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-08-06 19:16:28 $
+|     $Revision: 1.5 $
+|     $Date: 2007-08-08 19:34:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -286,9 +286,17 @@ class poll
 
 		if(count($voteArray))
 		{
-			foreach($voteArray as $votes){
-				$percentage[] = round(($votes/$voteTotal) * 100, 2);
+		  foreach($voteArray as $votes)
+		  {
+		    if ($voteTotal > 0)
+			{
+			  $percentage[] = round(($votes/$voteTotal) * 100, 2);
 			}
+			else
+			{
+			  $percentage[] = 0;
+			}
+		  }
 		}
 		/* get template */
 		if (file_exists(THEME."poll_template.php"))

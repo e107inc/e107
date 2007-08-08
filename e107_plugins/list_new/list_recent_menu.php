@@ -11,17 +11,17 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:35:26 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2007-08-08 19:34:34 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
-	return;
-}
+if (!isset($pref['plug_installed']['list_new'])) return;
+
+
 
 global $sysprefs, $tp, $eArrayStorage;
 $listplugindir = e_PLUGIN."list_new/";
@@ -42,10 +42,13 @@ $arr		= $rc -> prepareSectionArray($mode, $sections);
 
 //display the sections
 $text = "";
-for($i=0;$i<count($arr);$i++){
-	if($arr[$i][1] == "1"){
+for($i=0;$i<count($arr);$i++)
+{
+	if($arr[$i][1] == "1")
+	{
 		$sectiontext = $rc -> show_section_list($arr[$i], $mode);
-		if($sectiontext != ""){
+		if($sectiontext != "")
+		{
 			$text .= $sectiontext;
 		}
 	}
