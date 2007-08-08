@@ -22,6 +22,6 @@ if ($parm && $parm != 'external' && strpos($parm, ' ') === FALSE)
 }
 else
 {
-  if (strtolower(substr($parm,0,11)) == 'javascript:') return '';
+  if (strtolower(substr($code_text,0,11)) == 'javascript:') return '';
 	return "<a class='bbcode' href='".$tp -> toAttribute($code_text)."'".$external.">".$code_text."</a>";
 }
