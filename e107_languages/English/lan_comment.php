@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-18 20:57:22 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2007-08-08 19:27:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -73,5 +73,6 @@ define("COMLAN_TYPE_5", "docs");
 define("COMLAN_TYPE_6", "bugtrack");
 define("COMLAN_TYPE_7", "ideas");
 define("COMLAN_TYPE_8", "userprofile");
+define("COMLAN_TYPE_PAGE", "Content");		// Reall custom page, but use a 'non-technical' description
 
 ?>
