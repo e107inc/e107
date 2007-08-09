@@ -9,13 +9,13 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.1 $Date: 2004/10/04
+// $Revision: 1.2 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.1 $
-// $Date: 2006-12-22 18:45:26 $
-// $Author: e107coders $
+// $Revision: 1.2 $
+// $Date: 2007-08-09 19:09:56 $
+// $Author: e107steved $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
 
@@ -320,7 +320,7 @@ $errors = array();
 	  sort($arr_tinyMCE_image_files);
 	  for($k=0; $k<count($arr_tinyMCE_image_files); $k++){
       $entry = $arr_tinyMCE_image_files[$k][file_name];
-	  $size = getimagesize($tinyMCE_base_url.$imglib.$entry);
+	  $size = getimagesize($_root.$imglib.$entry);
 	  $fsize = filesize($_root.$imglib.$entry);
    ?>
             <option  value="<?php echo $size[0]; ?>|<?php echo $size[1]; ?>|<?php echo filesize_h($fsize,2); ?>|<?php echo $entry?>" <?php echo ($entry == $img)?'selected':''?>><?php echo $entry?></option>
