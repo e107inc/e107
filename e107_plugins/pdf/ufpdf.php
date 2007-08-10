@@ -257,10 +257,10 @@ function _dounderline($x,$y,$width,$txt)
   return sprintf('%.2f %.2f %.2f %.2f re f',$x*$this->k,($this->h-($y-$up/1000*$this->FontSize))*$this->k,$w*$this->k,-$ut/1000*$this->FontSizePt);
 }
 
-function _textstring($s)
+function _textstring($s, $bom = true)
 {
   //Convert to UTF-16BE
-  $s = $this->utf8_to_utf16be($s);
+  $s = $this->utf8_to_utf16be($s, $bom);
   //Escape necessary characters
   $trans = array(')' => '\\)', '(' => '\\(', '\\' => '\\\\');
   return '('.strtr($s, $trans).')';
@@ -276,20 +276,21 @@ function _escapetext($s)
 	//return strtr($s, $trans);
 }
 
+
 function _putinfo()
-{
-	$this->_out('/Producer '.$this->_textstring('UFPDF '. UFPDF_VERSION));
+{  // If present, all these fields need to be saved without BOM
+	$this->_out('/Producer '.$this->_textstring('UFPDF '. UFPDF_VERSION, FALSE));
 	if(!empty($this->title))
-		$this->_out('/Title '.$this->_textstring($this->title));
+		$this->_out('/Title '.$this->_textstring($this->title, FALSE));
 	if(!empty($this->subject))
-		$this->_out('/Subject '.$this->_textstring($this->subject));
+		$this->_out('/Subject '.$this->_textstring($this->subject, FALSE));
 	if(!empty($this->author))
-		$this->_out('/Author '.$this->_textstring($this->author));
+		$this->_out('/Author '.$this->_textstring($this->author, FALSE));
 	if(!empty($this->keywords))
-		$this->_out('/Keywords '.$this->_textstring($this->keywords));
+		$this->_out('/Keywords '.$this->_textstring($this->keywords, FALSE));
 	if(!empty($this->creator))
-		$this->_out('/Creator '.$this->_textstring($this->creator));
-	$this->_out('/CreationDate '.$this->_textstring('D:'.date('YmdHis')));
+		$this->_out('/Creator '.$this->_textstring($this->creator, FALSE));
+	$this->_out('/CreationDate '.$this->_textstring('D:'.date('YmdHis'), FALSE));
 }
 
 // UTF-8 to UTF-16BE conversion.
