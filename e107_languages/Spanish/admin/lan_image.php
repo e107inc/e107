@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_image.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-07-14 06:02:13 $
+|     $Revision: 1.11 $
+|     $Date: 2007-08-10 19:04:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -61,5 +61,6 @@ define("IMALAN_50", "Total");
 define("IMALAN_51", "Avatar para ");
 define("IMALAN_52", "La ruta de ImageMagick parece incorrecta"); 
 define("IMALAN_53", "La ruta de ImageMagick parece correcta, pero el archivo convertido parece no ser válido"); 
-define("IMALAN_54", "No instalado");
+define("IMALAN_54","Versión GD instalada:");
+define("IMALAN_55","No instalado");
 ?>

@@ -4,45 +4,45 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Spanish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-07-14 06:02:13 $
+|     $Revision: 1.7 $
+|     $Date: 2007-08-10 19:04:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("ADSTAT_ON", "On");
 define("ADSTAT_OFF", "Off");
-define("ADSTAT_L1", "Este plugin registrará todas las visitas de su página, y creará varias pantallas con la información recibida.");
-define("ADSTAT_L2", "El registro de estadísticas se ha instalado con éxito. Para activar, vaya a la pantalla de configuración de estadístics y pulse 'Activar'.<br /><b>Debe fijar los permisos a la carpeta e107_plugins/log/logs a 777 (chmod 777)</b>");
-define("ADSTAT_L3", "Log de estadísticas");
-define("ADSTAT_L4", "Activar monitor de estadísticas");
-define("ADSTAT_L5", "Tipos de estadísticas");
+define("ADSTAT_L1", "Este plugin registrarÃ¡ todas las visitas de su pÃ¡gina, y crearÃ¡ varias pantallas con la informaciÃ³n recibida.");
+define("ADSTAT_L2", "El registro de estadÃ­sticas se ha instalado con Ã©xito. Para activar, vaya a la pantalla de configuraciÃ³n de estadÃ­stics y pulse 'Activar'.<br /><b>Debe fijar los permisos a la carpeta e107_plugins/log/logs a 777 (chmod 777)</b>");
+define("ADSTAT_L3", "Log de estadÃ­sticas");
+define("ADSTAT_L4", "Activar monitor de estadÃ­sticas");
+define("ADSTAT_L5", "Tipos de estadÃ­sticas");
 define("ADSTAT_L6", "Navegadores");
 define("ADSTAT_L7", "Sistemas operativos");
-define("ADSTAT_L8", "Resolución y colores de pantalla");
-define("ADSTAT_L9", "Paises de orígen");
+define("ADSTAT_L8", "ResoluciÃ³n y colores de pantalla");
+define("ADSTAT_L9", "Paises de orÃ­gen");
 define("ADSTAT_L10", "Referidos");
 define("ADSTAT_L11", "Buscar consultas");
-define("ADSTAT_L12", "Resetear estadísticas");
-define("ADSTAT_L13", "Esto borrará las estadisticas - ¡Cuidado!");
-define("ADSTAT_L14", "Cantidad de páginas");
-define("ADSTAT_L15", "Actualizar ajustes de estadísticas");
-define("ADSTAT_L16", "Ajustes de estadísticas del sitio");
-define("ADSTAT_L17", "Ajustes de estadísticas actualizado");
-define("ADSTAT_L18", "Permitir acceder a la página de estadísticas principales ...");
+define("ADSTAT_L12", "Resetear estadÃ­sticas");
+define("ADSTAT_L13", "Esto borrarÃ¡ las estadisticas - Â¡Cuidado!");
+define("ADSTAT_L14", "Cantidad de pÃ¡ginas");
+define("ADSTAT_L15", "Actualizar ajustes de estadÃ­sticas");
+define("ADSTAT_L16", "Ajustes de estadÃ­sticas del sitio");
+define("ADSTAT_L17", "Ajustes de estadÃ­sticas actualizado");
+define("ADSTAT_L18", "Permitir acceder a la pÃ¡gina de estadÃ­sticas principales ...");
 define("ADSTAT_L19", "Visitantes recientes");
 define("ADSTAT_L20", "Cantidad de visitas del Admin");
-define("ADSTAT_L21", "Máx registros a mostrar en la página de estadísticas");
-define("ADSTAT_L22", "Ejecutar rutina de actualización");
-define("ADSTAT_L23", "Se han detectado registros de versiones previas a e107, actualicelas aquí");
-define("ADSTAT_L24", "Ir al script de actualización");
-define("ADSTAT_L25", "Estadísticas seleccionadas Reseteadas");
-define("ADSTAT_L26", "Eliminar entradas de páginas");
-define("ADSTAT_L27", "Si sus estadísticas tiene páginas incorrectas, puede eliminarlas desde aquí");
-define("ADSTAT_L28", "Abrir página");
-define("ADSTAT_L29", "Nombre de página");
+define("ADSTAT_L21", "MÃ¡x registros a mostrar en la pÃ¡gina de estadÃ­sticas");
+define("ADSTAT_L22", "Ejecutar rutina de actualizaciÃ³n");
+define("ADSTAT_L23", "Se han detectado registros de versiones previas a e107, actualicelas aquÃ­");
+define("ADSTAT_L24", "Ir al script de actualizaciÃ³n");
+define("ADSTAT_L25", "EstadÃ­sticas seleccionadas Reseteadas");
+define("ADSTAT_L26", "Eliminar entradas de pÃ¡ginas");
+define("ADSTAT_L27", "Si sus estadÃ­sticas tiene pÃ¡ginas incorrectas, puede eliminarlas desde aquÃ­");
+define("ADSTAT_L28", "Abrir pÃ¡gina");
+define("ADSTAT_L29", "Nombre de pÃ¡gina");
 define("ADSTAT_L30", "Activa para eliminar");
-define("ADSTAT_L31", "Eliminar las páginas seleccionadas");
-define("ADSTAT_L32", "Página ordenada");
-define("ADSTAT_L33", "Configure el registro de estadísticas");
-define("ADSTAT_L34", "Estadísticas del sitio");
+define("ADSTAT_L31", "Eliminar las pÃ¡ginas seleccionadas");
+define("ADSTAT_L32", "PÃ¡gina ordenada");
+define("ADSTAT_L33","Configure el registro de estadÃ­sticas");
+define("ADSTAT_L34","EstadÃ­sticas del sitio");
 ?>

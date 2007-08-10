@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-16 23:45:35 $
+|     $Revision: 1.4 $
+|     $Date: 2007-08-10 19:04:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -55,10 +55,8 @@ define("SEALAN_47", "Solo coincidencias de todas las palabras:");
 define("SEALAN_48", "Este ajuste solo se aplica cuando se busca utilizando PHP. Si su sitio incluye idiomas ideográficos como el Chino o Japonés, debe desactivar esta opción."); 
 define("SEALAN_49", "Si su sitio incluye idiomas ideográficos como el Chino o Japones, debe usar el método corto de PHP."); 
 
-
-
+define("LAN_SEARCH_98","Noticias");
 define("LAN_98", "Noticias");
 define("LAN_197", "Descargas");
 define("LAN_418", "Páginas personalizadas");
-
 ?>

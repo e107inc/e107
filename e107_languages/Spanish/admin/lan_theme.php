@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_theme.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2007-08-10 19:04:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -52,4 +52,7 @@ define("TPVLAN_40", "Tema del Admin fijado");
 define("TPVLAN_41", "Seleccione la plantilla del Admin");
 define("TPVLAN_42", "Guardar opciones del Admin");
 define("TPVLAN_43", "Opciones del Admin guardadas");
+define("TPVLAN_46","PCLZIP extracción error:");
+define("TPVLAN_47","PCLTAR extracción error:");
+define("TPVLAN_48","Código:");
 ?>

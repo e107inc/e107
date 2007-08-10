@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_db.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-09-10 22:17:50 $
+|     $Revision: 1.5 $
+|     $Date: 2007-08-10 19:04:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -38,4 +38,9 @@ define("DBLAN_26", "Complementos incluídos");
 define("DBLAN_27", "Instalado"); 
 define("DBLAN_28", "Click en el botón para escanear cambios en los directorios"); 
 define("DBLAN_29", "Escanear directorios de los plugins");
+define("DBLAN_30","(Si un plugin muestra un error, compruebe los carácteres fuera de los tags de apertura y cierre de PHP)");
+define("DBLAN_31","Acceso");
+define("DBLAN_32","Error");
+define("DBLAN_33","Inaccesible");
+define("DBLAN_34","Sin comprobar");
 ?>

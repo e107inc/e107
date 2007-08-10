@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/log/languages/admin/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:58 $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-10 19:04:03 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -43,5 +43,6 @@ define("ADSTAT_L29", "Nombre de página");
 define("ADSTAT_L30", "Activa para eliminar");
 define("ADSTAT_L31", "Eliminar las páginas seleccionadas");
 define("ADSTAT_L32", "Página ordenada");
-define("ADSTAT_L10", "Referentes");
+define("ADSTAT_L33","Configure el registro de estadísticas");
+define("ADSTAT_L34","Estadísticas del sitio");
 ?>

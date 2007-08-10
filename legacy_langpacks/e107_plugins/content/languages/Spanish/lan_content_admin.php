@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-04-21 09:35:39 $
+|     $Revision: 1.14 $
+|     $Date: 2007-08-10 19:04:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -61,7 +61,6 @@ define("CONTENT_ADMIN_CAT_LAN_38", "Comprobación contenidos: no hay contenidos")
 define("CONTENT_ADMIN_CAT_LAN_39", "Comprobación categoría: no hay categorías");
 define("CONTENT_ADMIN_CAT_LAN_40", "Debajo verá una lista de las categorías principales y sus subcategorías, si esxisten.<br />");
 define("CONTENT_ADMIN_CAT_LAN_41","El gestor personal de las categorías de contenidos le permite asignar otros administradores a una categoría. Con este privilegio, esos administardores pueden gestionar sus propios contenidos y solo sus elementos de esa categoría, sin necesidad de tener el control de todo el gestor de contenidos. Desde la página general de contenidos, verán sus iconos que le llevarán a su página de gestión de contenidos ");
-define("CONTENT_ADMIN_CAT_LAN_41", "");
 define("CONTENT_ADMIN_CAT_LAN_42", "Para re-editar la misma categoría");
 define("CONTENT_ADMIN_CAT_LAN_43", "pulsar aquí");
 define("CONTENT_ADMIN_CAT_LAN_44", "Para añadir otra categoría en la última categoría principal seleccionada");

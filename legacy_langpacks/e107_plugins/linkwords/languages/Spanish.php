@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/linkwords/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-08-06 21:48:50 $
+|     $Revision: 1.5 $
+|     $Date: 2007-08-10 19:04:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,8 @@ define("LWLAN_25", "Opciones");
 define("LWLAN_26", "Áreas donde activar palabras enlazadas");
 define("LWLAN_27", "Este es el 'contexto' del texto mostrado");
 define("LWLAN_28", "Páginas donde desactivar palabras enlazadas");
-define("LWLAN_29", "El mismo formato que en el control de visibilidad. Una coincidencia por línea. Especificar una URL completa o parcial. Finalizar con '!' paGuardar opciones");
+define("LWLAN_29", "El mismo formato que en el control de visibilidad. Una coincidencia por línea. Especificar una URL completa o parcial. Finalizar con '!' para guardar opciones");
+define("LWLAN_30","Guardar Opciones");
 define("LWLAN_31", "Añadir/Editar palabra enlazada");
 define("LWLAN_32", "Opciones Palabra enlazada");
 define("LWLAN_33", 'Título de áreas');
