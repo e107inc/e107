@@ -1,8 +1,13 @@
 <?php
 
+//define ('PDF_DEBUG', TRUE);
+define ('PDF_DEBUG', FALSE);
+
 //extend fpdf class from package with custom functions
 class e107PDF extends UFPDF{
 
+	var $temp_counter = 2;			// Used for debug
+	
 	//variables of html parser
 	var $B;
 	var $I;
@@ -224,6 +229,8 @@ class e107PDF extends UFPDF{
 	}
 
 	function WriteHTML($html,$scale){
+	  global $tp;
+	  global $admin_log;
 
 		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;', '&amp;#091;', '&nbsp;', 'â€˜', 'â€™', ' />', '&#40;', '&#41;', '&#123;', '&#125;', '&#91;', '&#93;');
 		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '', '[', '[', ' ', "'", "'", '>', '(', ')', '{', '}', '[',']' );
@@ -231,24 +238,40 @@ class e107PDF extends UFPDF{
 		$html=str_replace($search, $replace, $html);
 		$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string
 
+	if (PDF_DEBUG) 
+	{
+	  $admin_log->e_log_event(10,'split_vars',"DEBUG","PDF Trace","Write text: : ".$tp->toHTML('[code]'.$html.'[/code]',TRUE),FALSE,LOG_TO_ROLLING);
+	  $acc = array();
+	  foreach ($a as $ef) { $acc[] = strlen($ef); }
+	  $admin_log->e_log_event(10,'no_vars',"DEBUG","PDF Trace","Lengths:: ".implode(',',$acc),FALSE,LOG_TO_ROLLING);
+	}
 		foreach($a as $i=>$e)
 		{
+		  if ($this->temp_counter == 0)
+		  {
+//	if (PDF_DEBUG) $admin_log->e_log_event(10,'no_vars',"DEBUG","PDF Trace","Process chunk {$i}: ".$e,FALSE,LOG_TO_ROLLING);
+		  }
 			if($i%2==0)
 			{
-				//Text
+				//Text between tags
 				if($this->HREF){
 					$this->PutLink($this->HREF,$e);
 					$this->HREF='';
-				}elseif($this->IMG){
+				}elseif(0 && $this->IMG){		// This bit shouldn't happen now
 					//correct url
 					if(is_readable($this->SRC)){
-						$file = $this->SRC;
+						$file = trim($this->SRC);
 						$pos=strrpos($file,'.');
 						$type=substr($file,$pos+1);
 						$type=strtolower($type);
 						//for now only jpg, jpeg and png are supported
-						if($type=='jpg' || $type=='jpeg' || $type=='png'){
-
+						if($type=='jpg' || $type=='jpeg' || $type=='png')
+						{
+						  if ((strpos($file,'http') !== 0) && (strpos($file,'www.') !== 0))
+						  {  // Its a local file - possibly don't need to do anything at all!
+						    $url = $tp->replaceConstants($file);
+						  }
+/*							Old path-related stuff confused things
 							$url = str_replace("../", "", $this->SRC);
 							$imgsearch = array(e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER);
 							//e_BASE and e_ADMIN are not taken into account !
@@ -258,8 +281,8 @@ class e107PDF extends UFPDF{
 								if ($l !== false) {
 									$url = SITEURL.$url;
 								}
-							}
-							$this->Ln(2);
+							}  */
+							$this->Ln();		// Newline with 'default' height to avoid overlaying text
 							$this->PutImage($url,$scale);
 							$this->Ln(2);
 							$this->SetX($this->lMargin);
@@ -278,19 +301,25 @@ class e107PDF extends UFPDF{
 					$this->Cell(0,5,$e,0,1,'R');
 				}elseif($this->ALIGN == 'left'){
 					$this->Cell(0,5,$e,0,1,'L');
-				}elseif($this->BLOCKQUOTE == 'BLOCKQUOTE'){
+				}
+				elseif($this->BLOCKQUOTE == 'BLOCKQUOTE')
+				{
 					$this->SetFont('Courier','',11);
 					$this->SetStyle('B',true);
 					$this->SetStyle('I',true);
 					$this->Cell(0,5,$e,1,1,'L');
 					$this->SetStyle('B',false);
 					$this->SetStyle('I',false);
-					if ($this->issetcolor==true) {
+					if ($this->issetcolor==true) 
+					{
 						$this->SetTextColor(0);
 						$this->issetcolor=false;
 					}
 					$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
-				}else{
+				}
+				else
+				{
+				  //	if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Write block {$i}: ".$e,FALSE,LOG_TO_ROLLING);
 					$this->Write(5,stripslashes($this->txtentities($e)));
 				}
 			}
@@ -315,11 +344,16 @@ class e107PDF extends UFPDF{
 		}
 	}
 
-	function OpenTag($tag,$attr,$scale){
+	function OpenTag($tag,$attr,$scale)
+	{
+	  global $tp;
+	  global $admin_log;
+	  
 		$tag = strtoupper($tag);
 		//Opening tag
 
-		switch($tag){
+		switch($tag)
+		{
 			case 'STRONG':
 				$this->SetStyle('B',true);
 				break;
@@ -370,10 +404,36 @@ class e107PDF extends UFPDF{
 				}
 				break;
 			case 'IMG':
+				if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Image tag found: ".$attr['SRC'],FALSE,LOG_TO_ROLLING);
 				$this->IMG=true;
 				$this->SRC=$attr['SRC'];
 				$this->WIDTH=$attr['WIDTH'];
 				$this->HEIGHT=$attr['HEIGHT'];
+				// Its a 'closed' tag - so need to process it immediately
+				
+				if(is_readable($this->SRC))
+				{
+				  $file = trim($this->SRC);
+				  $pos=strrpos($file,'.');
+				  $type=substr($file,$pos+1);
+				  $type=strtolower($type);
+					//for now only jpg, jpeg and png are supported
+				  if($type=='jpg' || $type=='jpeg' || $type=='png')
+				  {
+					if ((strpos($file,'http') !== 0) && (strpos($file,'www.') !== 0))
+					{  // Its a local file - possibly don't need to do anything at all!
+					  $url = $tp->replaceConstants($file);
+					}
+					$this->Ln();		// Newline with 'default' height to avoid overlaying text
+					$this->PutImage($url,$scale);
+					$this->Ln(2);
+					$this->SetX($this->lMargin);
+				  }
+				}
+				$this->IMG='';		// Clear the parameters - stops further image-related processing
+				$this->SRC='';
+				$this->WIDTH='';
+				$this->HEIGHT='';
 				break;
 			case 'TR':
 				break;
@@ -571,9 +631,13 @@ class e107PDF extends UFPDF{
 	//(c)2004/03/12 by St@neCold
 	function PutImage($url,$scale)
 	{
+	  global $admin_log;
+	if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Process image {$url}, scale ".$scale,FALSE,LOG_TO_ROLLING);
+	
 		if($scale<0) $scale=0;
 		//$scale<=0: put NO image inside the pdf!
-		if($scale>0){
+		if($scale>0)
+		{
 			$xsflag=0;
 			$ysflag=0;
 			$yhflag=0;
@@ -582,17 +646,25 @@ class e107PDF extends UFPDF{
 			//get image info
 			$oposy=$this->GetY();
 			$iminfo=@getimagesize($url);
-			if($iminfo){
+			if($iminfo)
+			{
+				// Width and height of current drawing page
+				$pw = $this->w - $this->lMargin - $this->rMargin;
+				$ph = $this->h - $this->tMargin - $this->bMargin;
+				
 				$iw=$scale * $this->px2mm($iminfo[0]);
 				$ih=$scale * $this->px2mm($iminfo[1]);
-				$iw = ($iw)?$iw:1;
-				$ih = ($ih)?$ih:1;
-				$nw=$iw;
-				$nh=$ih;
+				$iw = ($iw)?$iw:1;		// Initial width
+				$ih = ($ih)?$ih:1;		// Initial height
+				$nw=$iw;				// New width
+				$nh=$ih;				// New height
 				//resizing in x-direction
 				$xsflag=0;
-				if($iw>150)	{
-					$xscale=150 / $iw;
+//				if($iw>150)			// Dimensions in mm - so width of portrait A4
+				if($iw>$pw)			// Dimensions in mm - so width of portrait A4
+				{
+//					$xscale=150 / $iw;
+					$xscale=$pw / $iw;
 					$yscale=$xscale;
 					$nw=$xscale * $iw;
 					$nh=$xscale * $ih;
@@ -600,8 +672,11 @@ class e107PDF extends UFPDF{
 				}
 				//now eventually resizing in y-direction
 				$ysflag=0;
-				if(($oposy+$nh)>250){
-					$yscale=(250-$oposy)/$ih;
+//				if(($oposy+$nh)>250)	// See if will fit vertically on current page
+				if(($oposy+$nh)>$ph)	// See if will fit vertically on current page
+				{
+//					$yscale=(250-$oposy)/$ih;
+					$yscale=($ph-$oposy)/$ih;
 					$nw=$yscale * $iw;
 					$nh=$yscale * $ih;
 					$ysflag=1;
@@ -610,7 +685,8 @@ class e107PDF extends UFPDF{
 				//remark: without(!) the global factor $scale!
 				//that's hard -> on the next page please...
 				$yhflag=0;
-				if($yscale<0.33 and ($xsflag==1 or $ysflag==1))	{
+				if($yscale<0.33 and ($xsflag==1 or $ysflag==1))	
+				{
 					$nw=$xscale * $iw;
 					$nh=$xscale * $ih;
 					$ysflag==0;
@@ -621,7 +697,12 @@ class e107PDF extends UFPDF{
 				$oposy=$this->GetY();
 				$this->Image($url, $this->GetX(), $this->GetY(), $nw, $nh);
 				$this->SetY($oposy+$nh);
+//	if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Original Y={$oposy}, Initial height={$ih}, new height={$nh}. Set Y = ".($oposy+$nh)." after image output",FALSE,LOG_TO_ROLLING);
+	if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Page width: {$pw}, Height: {$ph}, Image new width={$nw}, new height={$nh}. Set Y = ".($oposy+$nh)." after image output",FALSE,LOG_TO_ROLLING);
+/*
+Original Y=76.166666666667, Initial height=119.23888888889, new height=101.4. Set Y = 177.56666666667 after image output */
 				//if($yhflag==0 and $ysflag==1) $this->AddPage();
+				if ($this->temp_counter > 0) $this->temp_counter--;
 			}
 		}
 	}
