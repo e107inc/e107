@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-08-27 02:24:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2007-08-11 15:10:57 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -76,7 +76,7 @@ define("LAN_392", "File to attach");
 define("LAN_393", "<b>Please note</b><br />Allowed file types:");
 define("LAN_394", "Any other file types uploaded will be instantly deleted.");
 define("LAN_395", "Maximum file size");
-define("LAN_396", "bytes");
+define("LAN_396", " bytes");
 define("LAN_397", "This thread is locked.");
 define("LAN_398", "This forum is read only");
 define("LAN_399", "You are not authorized to post to this forum.");
