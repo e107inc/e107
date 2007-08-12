@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-04-30 21:00:10 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2007-08-12 21:40:49 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1485,8 +1485,11 @@ if(!function_exists("print_a")) {
 	}
 }
 
-function force_userupdate() {
 
+// Check that all required user fields (including extended fields) are valid.
+// Return TRUE if update required
+function force_userupdate() 
+{
 	global $sql,$pref,$currentUser;
 
 	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE)
@@ -1503,6 +1506,8 @@ function force_userupdate() {
 			return TRUE;
 		}
     }
+
+	if (!varset($pref['disable_emailcheck'],TRUE) && !trim($currentUser['user_email'])) return TRUE;
 
 	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", "user_extended_struct_required = '1'"))
 	{
