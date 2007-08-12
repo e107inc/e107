@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-07-23 20:06:05 $
+|     $Revision: 1.4 $
+|     $Date: 2007-08-12 21:40:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -135,7 +135,7 @@ $USERSETTINGS_EDIT = "
 	{PASSWORD2}
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_112."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_112.req(!$pref['disable_emailcheck'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{EMAIL}
 	</td>
