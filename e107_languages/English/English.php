@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-28 18:02:47 $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-13 19:56:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,20 @@ define("CORE_LAN7", "Core is attempting to restore prefs from automatic backup."
 define("CORE_LAN8", "Core Prefs Error");
 define("CORE_LAN9", "Core could not restore from automatic backup. Execution halted.");
 define("CORE_LAN10", "Corrupted cookie detected - logged out.");
+
+// Footer
+define("CORE_LAN11", "Render time: ");
+define("CORE_LAN12", " sec (");
+define("CORE_LAN13", " % of that for queries)");
+define("CORE_LAN14", "%2.3f cpu sec (%2.2f%% load, %2.3f startup). Clock: ");
+define("CORE_LAN15", "DB queries: ");
+define("CORE_LAN16", "Memory: ");
+
+define("CORE_LAN_B", "b");
+define("CORE_LAN_KB", "kb");
+define("CORE_LAN_MB", "Mb");
+define("CORE_LAN_GB", "Gb");
+define("CORE_LAN_TB", "Tb");
 
 
 define("LAN_WARNING", "Warning!");

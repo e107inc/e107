@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-06-21 19:40:43 $
+|     $Revision: 1.10 $
+|     $Date: 2007-08-13 19:56:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,8 @@ if(varset($e107_popup)!=1){
 	$memuse     = $e107->get_memory_usage();		// Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
 
-	if ( function_exists( 'getrusage' ) ) {
+	if ( function_exists( 'getrusage' ) ) 
+	{
 		$ru = getrusage();
 		$cpuUTime = $ru['ru_utime.tv_sec'] + ($ru['ru_utime.tv_usec'] * 1e-6);
 		$cpuSTime = $ru['ru_stime.tv_sec'] + ($ru['ru_stime.tv_usec'] * 1e-6);
@@ -102,15 +103,18 @@ if(varset($e107_popup)!=1){
 	//	$logname = "/home/mysite/public_html/queryspeed.log";
 	//	$logfp = fopen($logname, 'a+'); fwrite($logfp, "$cpuTot,$cpuPct,$cpuStart,$rendertime,$db_time\n"); fclose($logfp);
 
-	if($pref['displayrendertime']){ 
-		$rinfo .= "Render time: ";
-		if (isset($cpuTime)) {
-			$rinfo .= "{$cpuTime} cpu sec ({$cpuPct}% load, {$cpuStart} startup). Clock: ";
+	if($pref['displayrendertime'])
+	{ 
+		$rinfo .= CORE_LAN11;
+		if (isset($cpuTime)) 
+		{
+//			$rinfo .= "{$cpuTime} cpu sec ({$cpuPct}% load, {$cpuStart} startup). Clock: ";
+			$rinfo .= sprintf(CORE_LAN14,$cpuTime,$cpuPct,$cpuStart);
 		}
-		$rinfo .= "{$rendertime} sec ({$dbPercent}% for queries). "; 
+		$rinfo .= $rendertime.CORE_LAN_12.$dbPercent.CORE_LAN13; 
 	}
-	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
-	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory: ".$memuse; }
+	if($pref['displaysql']){ $rinfo .= CORE_LAN15.$sql -> db_QueryCount().". "; }
+	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= CORE_LAN16.$memuse; }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 
 	if (function_exists('theme_renderinfo'))

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-07-12 21:34:39 $
+|     $Revision: 1.9 $
+|     $Date: 2007-08-13 19:56:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -243,21 +243,21 @@ class e107{
 	// Return a memory value formatted helpfully
 	function ret_memory_text($memusage)
 	{
-	  $memunit = 'b';
+	  $memunit = CORE_LAN_B;
 	  if ($memusage > 65536)
 	  {
 		$memusage = $memusage / 1024; // more than 64k, show in k
-		$memunit = 'kb';
+		$memunit = CORE_LAN_KB;
 	  }
 	  if ($memusage > 1024)
 	  { /* 1.002 mb, etc */
 		$memusage = $memusage / 1024;
-		$memunit = 'Mb';
+		$memunit = CORE_LAN_MB;
 	  }
 	  if ($memusage > 1024)
 	  { /* show in GB if >1GB */
 		$memusage = $memusage / 1024;
-		$memunit = 'Gb';
+		$memunit = CORE_LAN_GB;
 	  }
 	  return (number_format($memusage, ($memunit=='b'? 0 : 3)).$memunit);
 	}
