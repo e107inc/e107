@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-06-13 19:42:50 $
+|     $Revision: 1.14 $
+|     $Date: 2007-08-14 19:26:55 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
+define("ERR_PAGE_ACTIVE",'error');
+
 require_once("class2.php");
 
 if(!e_QUERY || (e_QUERY != 401 && e_QUERY != 403 && e_QUERY != 404 && e_QUERY != 500))
@@ -42,8 +45,6 @@ switch(e_QUERY) {
 	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_4."</div><br /><div class='installh'>".LAN_ERROR_5."</div><br /><div class='smalltext'>".LAN_ERROR_6."</div>
 		<br /><div class='installh'>".LAN_ERROR_2."<a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
 	break;
-	default:
-
 
 	case 404:
 	header("HTTP/1.1 404 Not Found");
@@ -54,7 +55,6 @@ switch(e_QUERY) {
 
 	$text .= "<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a><br />";
 	$text .= "<a href='{$base_path}search.php'>".LAN_ERROR_22."</a></p>";
-
 	break;
 
 
@@ -65,6 +65,10 @@ switch(e_QUERY) {
 	break;
 	$text = "<div class='installe'>".LAN_ERROR_13." (".$_SERVER['QUERY_STRING'].")</div><br /><div class='installh'>".LAN_ERROR_14."</div><br /><div class='smalltext'>".LAN_ERROR_15."</div>
 		<br /><div class='installh'>".LAN_ERROR_2."<a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
+
+	default:
+	$text = LAN_ERROR_34." e_QUERY = '".e_QUERY."'<br/><a href='{$base_path}index.php'>".LAN_ERROR_20."</a>";
+	break;
 }
 
 $ns->tablerender(PAGE_NAME, $text);

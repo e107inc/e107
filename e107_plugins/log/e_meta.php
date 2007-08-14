@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/e_meta.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-07-09 19:40:43 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2007-08-14 19:26:55 $
+|     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -22,11 +22,18 @@ if (isset($pref['statActivate']) && $pref['statActivate'])
 	else
 	{
 		require_once(e_PLUGIN."log/consolidate.php");
+		$err_flag = '';
+		if (defined("ERR_PAGE_ACTIVE"))
+		{	// We've got an error - set a flag to log it
+		  $err_flag = "&err_direct=".ERR_PAGE_ACTIVE;
+		  if (is_numeric(e_QUERY)) $err_flag .= '/'.substr(e_QUERY,0,10);		// This should pick up the error code - and limit numeric length to upset the malicious
+		  $err_flag .= "&err_referer=".$_SERVER['HTTP_REFERER'];
+		}
 		echo "<script type='text/javascript'>\n";
 		echo "<!--\n";
-		echo "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN_ABS."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
+		echo "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN_ABS."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '{$err_flag}\">' );\n";
 		echo "// -->\n";
-		echo "</script>";
+		echo "</script>\n\n";
 	}
 }
 
