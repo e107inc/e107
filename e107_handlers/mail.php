@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-04-15 22:12:44 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2007-08-14 19:37:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,10 +36,10 @@ if (!defined('e107_INIT')) { exit; }
 Please note that mailed attachments have been found to be corrupted using php 4.3.3
 php 4.3.6 does NOT have this problem.
 */
-// Comment out the line below if you have trouble with some people not receiving emails.
-// e107_ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
-function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") {
+// If $send_from is blank, uses the 'replyto' name and email if set, otherwise site admins details
+function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_name='', $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") 
+{
 	global $pref,$mailheader_e107id,$tp;
 
 	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
@@ -96,9 +96,14 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 	$to_name = ($to_name) ? $to_name: $send_to;
 
+	if (!trim($send_from))
+	{
+	  $from_name = $tp->toEmail(varset($pref['replyto_name'],$pref['siteadmin']),"","parse_sc, no_make_clickable, defs");
+	  $send_from = $tp->toEmail(varset($pref['replyto_email'],$pref['siteadminemail']),"","parse_sc, no_make_clickable, defs");
+	}
 	$mail->CharSet = CHARSET;
-	$mail->From = ($send_from)? $send_from: $tp->toEmail($pref['siteadminemail'],"","parse_sc, no_make_clickable, defs");
-	$mail->FromName = ($from_name)? $from_name:	$tp->toEmail($pref['siteadmin'],"","parse_sc, no_make_clickable, defs");
+	$mail->From = $send_from;
+	$mail->FromName = $from_name;
 	$mail->Subject = $subject;
 	$mail->SetLanguage("en",e_HANDLER."phpmailer/language/");
 

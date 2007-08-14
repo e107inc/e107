@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-07-18 20:20:27 $
+|     $Revision: 1.6 $
+|     $Date: 2007-08-14 19:37:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -187,5 +187,11 @@ define("PRFLAN_170", "Use reverse DNS to allow host banning");
 define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
 define("PRFLAN_172", "Login Name maximum length (10..100)");
 define("PRFLAN_173", "Check at SourceForge for E107 updates once/day");
+
+define("PRFLAN_174", "Name for responses to emails from site");
+define("PRFLAN_175", "This will appear in the 'From' field of registration and other emails from this site");
+define("PRFLAN_176", "Email address for emails from site");
+define("PRFLAN_177", "Address specified for replies to emails from this site.");
+
 
 ?>
