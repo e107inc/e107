@@ -13,8 +13,8 @@
 | File locking, modified getip() 18.01.07
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/log.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-10 15:54:47 $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-14 19:27:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,12 +25,27 @@
 // color= colord
 // eself= eself 
 // res= res
+// err_direct - optional error flag
+// err_referer - referrer if came via error page
 define("log_INIT", TRUE);
+
+
 $colour = strip_tags((isset($_REQUEST['color']) ? $_REQUEST['color'] : ''));
 $res = strip_tags((isset($_REQUEST['res']) ? $_REQUEST['res'] : ''));
 $self = strip_tags((isset($_REQUEST['eself']) ? $_REQUEST['eself'] : ''));
 $ref = addslashes(strip_tags((isset($_REQUEST['referer']) ? $_REQUEST['referer'] : '')));
 $date = date("z.Y", time());
+$logPfile = "logs/logp_".$date.".php";
+
+if ($err_code = strip_tags((isset($_REQUEST['err_direct']) ? $_REQUEST['err_direct'] : '')))
+{
+  $ref = addslashes(strip_tags(isset($_REQUEST['err_referer']) ? $_REQUEST['err_referer'] : ''));
+  $log_string = $err_code.",".$self.",".$ref;
+// Uncomment the next two lines to create a separate CSV format log of invalid accesses - error code, entered URL, referrer
+//  $logname = "logs/errpages.csv";
+//  $logfp = fopen($logname, 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
+  $err_code .= ':';
+}
 
 if(strstr($ref, "admin")) 
 {
@@ -60,10 +75,11 @@ $pageName = substr($match[1], (strrpos($match[1], "/")+1));
 $PN = $pageName;
 $pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
 if($pageName == "") $pageName = "index";
+
+$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+
 if(preg_match("/".$pageDisallow."/i", $pageName)) return;
 
-
-$logPfile = "logs/logp_".$date.".php";
 
 $p_handle = fopen($logPfile, 'r+');
 if($p_handle && flock( $p_handle, LOCK_EX ) ) 

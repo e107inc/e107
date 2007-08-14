@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-31 19:38:10 $
+|     $Revision: 1.4 $
+|     $Date: 2007-08-14 19:27:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -48,18 +48,17 @@ if (!$pref['statActivate']) {
 	exit;
 }
 
-if(strstr(e_QUERY, ".")) {
-	list($action, $order) = explode(".", e_QUERY);
-} else {
-	$action = e_QUERY;
-	$order = FALSE;
-}
 
-$action = intval($action);
+$qs = explode('.', e_QUERY, 3);
+$action = varset($qs[0],1);
+$sec_action = varset($qs[1],FALSE);
+$order = varset($qs[2],0);
+
 $toremove = $order;
 $order = intval($order);
 
-if($stat -> error) {
+if($stat -> error) 
+{
 	$ns->tablerender(ADSTAT_L6, $stat -> error);
 	require_once(FOOTERF);
 	exit;
@@ -381,6 +380,7 @@ $country["zm"] = "Zambia";
 $country["zr"] = "Zaire";
 $country["zw"] = "Zimbabwe";
 
+
 /* stats displayed will depend on the query string. For example, ?1.2.4 will render today's stats, all time stats and browser stats */
 /*
 1: today's stats
@@ -393,90 +393,134 @@ $country["zw"] = "Zimbabwe";
 8: search engine strings
 */
 
-switch($action) {
+$text = '';
+if ((ADMIN == TRUE) && ($sec_action == "rem"))
+{
+  $toremove = rawurldecode($toremove);
+  if ($stat -> remove_entry($toremove))
+  {
+    $text .= "<div style='text-align: center; font-weight: bold'>".ADSTAT_L45.$toremove."<br />".ADSTAT_L46."</div>";
+  }
+  else
+  {
+    $text .= "<div style='text-align: center; font-weight: bold'>".ADSTAT_L47.$toremove."</div>";
+  }
+}
+
+$action = intval($action);
+
+switch($action) 
+{
 	case 1:
-	$text = $stat -> renderTodaysVisits();
+	$text .= $stat -> renderTodaysVisits(FALSE);
 	break;
 	case 2:
-	$text = $stat -> renderAlltimeVisits();
+	$text .= $stat -> renderAlltimeVisits(FALSE);
+	break;
+	case 12:
+	  if (ADMIN == TRUE)
+		$text .= $stat -> renderTodaysVisits(TRUE);
+	break;
+	case 13:
+	  if (ADMIN == TRUE)
+		$text .= $stat -> renderAlltimeVisits(TRUE);
 	break;
 	case 3:
 	if($pref['statBrowser']) {
-		$text = $stat -> renderBrowsers();
+		$text .= $stat -> renderBrowsers();
 	} else {
-		$text = ADSTAT_L7;
+		$text .= ADSTAT_L7;
 	}
 	break;
 	case 4:
 	if($pref['statOs']) {
-		$text = $stat -> renderOses();
+		$text .= $stat -> renderOses();
 	} else {
-		$text = ADSTAT_L7;
+		$text .= ADSTAT_L7;
 	}
 	break;
 	case 5:
 	if($pref['statDomain']) {
-		$text = $stat -> renderDomains();
+		$text .= $stat -> renderDomains();
 	} else {
-		$text = ADSTAT_L7;
+		$text .= ADSTAT_L7;
 	}
 	break;
 	case 6:
 	if($pref['statScreen']) {
-		$text = $stat -> renderScreens();
+		$text .= $stat -> renderScreens();
 	} else {
-		$text = ADSTAT_L7;
+		$text .= ADSTAT_L7;
 	}
 	break;
 	case 7:
 	if($pref['statRefer']) {
-		$text = $stat -> renderRefers();
+		$text .= $stat -> renderRefers();
 	} else {
-		$text = ADSTAT_L7;
+		$text .= ADSTAT_L7;
 	}
 	break;
 	case 8:
 	if($pref['statQuery']) {
-		$text = $stat -> renderQueries();
+		$text .= $stat -> renderQueries();
 	} else {
-		$text = ADSTAT_L7;
+		$text .= ADSTAT_L7;
 	}
 	break;
 	case 9:
 	if($pref['statRecent']) {
-		$text = $stat -> recentVisitors();
+		$text .= $stat -> recentVisitors();
 	} else {
-		$text = ADSTAT_L7;
+		$text .= ADSTAT_L7;
 	}
 	break;
 	case 10:
-	$text = $stat -> renderDaily();
+	$text .= $stat -> renderDaily();
 	break;
 	case 11:
-	$text = $stat -> renderMonthly();
+	$text .= $stat -> renderMonthly();
 	break;
-	case "rem":
-	$stat -> remove_entry($toremove);
-	break;
+	default :
+	  $text .= $stat -> renderTodaysVisits(FALSE);
 }
 
 
-/* render links */
+
+/* render links 
+ 1 - Todays visits
+ 2 - All-time
+ 3 - Browser stats
+ 4 - OS Stats
+ 5 - Domain Stats
+ 6 - Screen resolution
+ 7 - Referral stats
+ 8 - Search strings
+ 9 - Recent visitors
+10 - Daily Stats
+11 - Monthly stats
+12 - Today's error page visits
+13 - All-time error page visits
+*/
+
 $path = e_PLUGIN."log/stats.php";
 $links = "
 <div style='text-align: center;'>".
-(e_QUERY != 1 ? "<a href='$path?1'>".ADSTAT_L8."</a>" : "<b>".ADSTAT_L8."</b>")." | ".
-(e_QUERY != 2 ? "<a href='$path?2'>".ADSTAT_L9."</a>" : "<b>".ADSTAT_L9."</b>")." | ".
-(e_QUERY != 10 ? "<a href='$path?10'>".ADSTAT_L10."</a>" : "<b>".ADSTAT_L10."</b>")." | ".
-(e_QUERY != 11 ? "<a href='$path?11'>".ADSTAT_L11."</a>" : "<b>".ADSTAT_L11."</b>")." | ".
-(e_QUERY != 3 && $pref['statBrowser'] ? "<a href='$path?3'>".ADSTAT_L12."</a> | " : ($pref['statBrowser'] ? "<b>".ADSTAT_L12."</b> | " : "")).
-(e_QUERY != 4 && $pref['statOs'] ? "<a href='$path?4'>".ADSTAT_L13."</a> | " : ($pref['statOs'] ? "<b>".ADSTAT_L13."</b> | " : "")).
-(e_QUERY != 5 && $pref['statDomain'] ? "<a href='$path?5'>".ADSTAT_L14."</a> | " : ($pref['statDomain'] ? "<b>".ADSTAT_L14."</b> | " : "")).
-(e_QUERY != 6 && $pref['statScreen'] ? "<a href='$path?6'>".ADSTAT_L15."</a> | " : ($pref['statScreen'] ? "<b>".ADSTAT_L15."</b> | " : "")).
-(e_QUERY != 7 && $pref['statRefer'] ? "<a href='$path?7'>".ADSTAT_L16."</a> | " : ($pref['statRefer'] ? "<b>".ADSTAT_L16."</b> | " : "")).
-(e_QUERY != 8 && $pref['statQuery'] ? "<a href='$path?8'>".ADSTAT_L17."</a> | " : ($pref['statQuery'] ? "<b>".ADSTAT_L17."</b> | " : "")).
-(e_QUERY != 9 && $pref['statRecent'] ? "<a href='$path?9'>".ADSTAT_L18."</a>" : ($pref['statRecent'] ? "<b>".ADSTAT_L18."</b>" : "")).
-"</div><br /><br />";
+($action != 1 ? "<a href='{$path}?1'>".ADSTAT_L8."</a>" : "<b>".ADSTAT_L8."</b>")." | ".
+($action != 2 ? "<a href='{$path}?2'>".ADSTAT_L9."</a>" : "<b>".ADSTAT_L9."</b>")." | ".
+($action != 10 ? "<a href='{$path}?10'>".ADSTAT_L10."</a>" : "<b>".ADSTAT_L10."</b>")." | ".
+($action != 11 ? "<a href='{$path}?11'>".ADSTAT_L11."</a>" : "<b>".ADSTAT_L11."</b>")." | ".
+($action != 3 && $pref['statBrowser'] ? "<a href='{$path}?3'>".ADSTAT_L12."</a> | " : ($pref['statBrowser'] ? "<b>".ADSTAT_L12."</b> | " : "")).
+($action != 4 && $pref['statOs'] ? "<a href='{$path}?4'>".ADSTAT_L13."</a> | " : ($pref['statOs'] ? "<b>".ADSTAT_L13."</b> | " : "")).
+($action != 5 && $pref['statDomain'] ? "<a href='{$path}?5'>".ADSTAT_L14."</a> | " : ($pref['statDomain'] ? "<b>".ADSTAT_L14."</b> | " : "")).
+($action != 6 && $pref['statScreen'] ? "<a href='{$path}?6'>".ADSTAT_L15."</a> | " : ($pref['statScreen'] ? "<b>".ADSTAT_L15."</b> | " : "")).
+($action != 7 && $pref['statRefer'] ? "<a href='{$path}?7'>".ADSTAT_L16."</a> | " : ($pref['statRefer'] ? "<b>".ADSTAT_L16."</b> | " : "")).
+($action != 8 && $pref['statQuery'] ? "<a href='{$path}?8'>".ADSTAT_L17."</a> | " : ($pref['statQuery'] ? "<b>".ADSTAT_L17."</b> | " : "")).
+($action != 9 && $pref['statRecent'] ? "<a href='{$path}?9'>".ADSTAT_L18."</a> | " : ($pref['statRecent'] ? "<b>".ADSTAT_L18."</b> | " : ""));
+if (ADMIN == TRUE)
+$links .= 
+($action != 12 ? "<a href='{$path}?12'>".ADSTAT_L43."</a>" : "<b>".ADSTAT_L43."</b>")." | ".
+($action != 13 ? "<a href='{$path}?13'>".ADSTAT_L44."</a>" : "<b>".ADSTAT_L44."</b>");
+$links .= "</div><br /><br />";
 
 
 
@@ -501,7 +545,8 @@ class siteStats {
 	var $filesiteTotal;
 	var $filesiteUnique;
 
-	function siteStats() {
+	function siteStats() 
+	{
 		/* constructor */
 		global $sql;
 
@@ -560,7 +605,8 @@ class siteStats {
 		/* end constructor */
 	}
 
-	function arraySort($array, $column, $order = SORT_DESC){
+	function arraySort($array, $column, $order = SORT_DESC)
+	{
 		/* sorts multi-dimentional array based on which field is passed */
 		$i=0;
 		foreach($array as $info) {
@@ -574,74 +620,131 @@ class siteStats {
 	
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function renderTodaysVisits() {
+	function renderTodaysVisits($do_errors = FALSE) 
+	{
 		/* renders information for today only */
-		$totalArray = $this -> arraySort($this -> fileInfo, "ttl");
 
-		foreach($totalArray as $key => $info) {
+		$do_errors = $do_errors && ADMIN && getperms("P");
+
+		// Now run through and keep either the non-error pages, or the error pages, according to $do_errors
+		$totalArray = array();
+		$totalv = 0;
+		$totalu = 0;
+		foreach ($this -> fileInfo as $k => $v)
+		{
+		  $found = (strpos($k,'error/') === 0);
+		  if ($do_errors XOR !$found) 
+		  {
+		    $totalArray[$k] = $v;
+			$total += $v['ttlv'];
+		  }
+		}
+		$totalArray = $this -> arraySort($totalArray, "ttl");
+
+		foreach($totalArray as $key => $info) 
+		{
 			$totalv += $info['ttl'];
 			$totalu += $info['unq'];
 		}
 
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-		foreach($totalArray as $key => $info) {
-			if($info['ttl']){
+		foreach($totalArray as $key => $info) 
+		{
+			if($info['ttl'])
+			{
 				$percentage = round(($info['ttl']/$totalv) * 100, 2);
 				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
 				</td>\n<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['ttl']." [".$info['unq']."]")."</td>\n<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21." [".ADSTAT_L22."]</td><td class='forumheader' style='text-align: center;'>$totalv [$totalu]</td><td class='forumheader'></td></tr></table>";
+		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21." [".ADSTAT_L22."]</td><td class='forumheader' style='text-align: center;'>{$totalv} [{$totalu}]</td><td class='forumheader'></td></tr></table>";
 		return $text;
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function renderAlltimeVisits() {
+	function renderAlltimeVisits($do_errors = FALSE) 
+	{
 		/* renders information for alltime, total and unique */
 
-		global $sql;
+		global $sql, $action;
 
 		$sql -> db_Select("logstats", "*", "log_id='pageTotal' ");
 		$row = $sql -> db_Fetch();
 		$pageTotal = unserialize($row['log_data']);
+		$total = 0;
 
-		foreach($this -> fileInfo as $url => $tmpcon) {
+		$can_delete = ADMIN && getperms("P");
+		$do_errors = $do_errors && $can_delete;
+		
+		foreach($this -> fileInfo as $url => $tmpcon) 
+		{
 			$pageTotal[$url]['url'] = $tmpcon['url'];
 			$pageTotal[$url]['ttlv'] += $tmpcon['ttl'];
 			$pageTotal[$url]['unqv'] += $tmpcon['unq'];
 		}
 
-		$totalArray = $this -> arraySort($pageTotal, "ttlv");
-
-		foreach($totalArray as $key => $info) {
-			$total += $info['ttlv'];
+		// Now run through and keep either the non-error pages, or the error pages, according to $do_errors
+		$totalArray = array();
+		foreach ($pageTotal as $k => $v)
+		{
+		  $found = (strpos($k,'error/') === 0);
+		  if ($do_errors XOR !$found) 
+		  {
+		    $totalArray[$k] = $v;
+			$total += $v['ttlv'];
+		  }
 		}
-		$text .= "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L23."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-		foreach($totalArray as $key => $info) {
-			if($info['ttlv']){
+
+		$totalArray = $this -> arraySort($totalArray, "ttlv");
+
+		$text .= "<table class='fborder' style='width: 100%;'>\n
+			<colgroup>
+			  <col style='width: 20%;' />
+			  <col style='width: 60%;' />
+			  <col style='width: 10%;' />
+			  <col style='width: 10%;' />
+			</colgroup>
+			<tr>\n<td class='fcaption' >".ADSTAT_L19."</td>\n
+			<td class='fcaption' colspan='2'>".ADSTAT_L23."</td>\n<td class='fcaption' text-align: center;'>%</td>\n</tr>\n";
+		foreach($totalArray as $key => $info) 
+		{
+			if($info['ttlv'])
+			{
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'>
-				".(ADMIN && getperms("P") ? "<a href='".e_SELF."?rem.".$key."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle; border: 0;' /></a> " : "")."
+				<td class='forumheader3' >
+				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle; border: 0;' /></a> " : "")."
 				<img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
 				";
 				$text .= "</td>
-				<td class='forumheader3' style='width: 70%;'>".$this->bar($percentage, $info['ttlv'])."</td>
-				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
+				<td class='forumheader3' >".$this->bar($percentage, $info['ttlv'])."</td>
+				<td class='forumheader3' style='text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
 		}
 		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>$total</td><td class='forumheader'></td></tr>\n</table>";
 
-		$uniqueArray = $this -> arraySort($this -> dbPageInfo, "unqv");
-		foreach($uniqueArray as $key => $info) {
-			$totalv += $info['unqv'];
+
+		$uniqueArray = array();
+		$totalv = 0;
+		foreach ($this -> dbPageInfo as $k => $v)
+		{
+		  $found = (strpos($k,'error/') === 0);
+		  if ($do_errors XOR !$found) 
+		  {
+		    $uniqueArray[$k] = $v;
+			$totalv += $v['unqv'];
+		  }
 		}
+		$uniqueArray = $this -> arraySort($uniqueArray, "unqv");
+
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-		foreach($uniqueArray as $key => $info) {
-			if($info['ttlv']){
-				$percentage = round(($info['unqv']/$total) * 100, 2);
+		foreach($uniqueArray as $key => $info) 
+		{
+			if($info['ttlv'])
+			{
+				$percentage = round(($info['unqv']/$totalv) * 100, 2);
 				$text .= "<tr>
 				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
 				<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['unqv'])."</td>
@@ -1195,15 +1298,20 @@ class siteStats {
 		<td style='width:10%; text-align:center' class='forumheader3'>".$val;
 	}
 
-	function remove_entry($toremove) {
-		global $sql;
-		$sql -> db_Select("logstats", "*", "log_id='pageTotal'");
+	function remove_entry($toremove) 
+	{	// Note - only removes info from the database - not from the current page file
+	  global $sql;
+	  if ($sql -> db_Select("logstats", "*", "log_id='pageTotal'"))
+	  {
 		$row = $sql -> db_Fetch();
 		$dbPageInfo = unserialize($row[2]);
 		unset($dbPageInfo[$toremove]);
 		$dbPageDone = serialize($dbPageInfo);
-		$sql -> db_Update("logstats", "log_data='$dbPageDone' WHERE log_id='pageTotal' ");
-		$this -> renderAlltimeVisits();
+		$sql -> db_Update("logstats", "log_data='{$dbPageDone}' WHERE log_id='pageTotal' ");
+//		$this -> renderAlltimeVisits();
+		return TRUE;
+	  }
+	  return FALSE;
 	}
 }
 
