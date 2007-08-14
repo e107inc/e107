@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2007-04-14 10:38:26 $
-|     $Author: e107coders $
+|     $Revision: 1.41 $
+|     $Date: 2007-08-14 19:37:38 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,11 +21,11 @@ if (!defined('e107_INIT')) { exit; }
 
 	if(is_readable(THEME."email_template.php"))
 	{
-    	require_once(THEME."email_template.php");
+    	require(THEME."email_template.php");
 	}
 	else
 	{
-    	require_once(e_THEME."templates/email_template.php");
+    	require(e_THEME."templates/email_template.php");
 	}
 
     if(isset($EMAIL_HEADER) && isset($EMAIL_FOOTER) && is_object($tp)){
@@ -36,23 +36,25 @@ if (!defined('e107_INIT')) { exit; }
 Please note that mailed attachments have been found to be corrupted using php 4.3.3
 php 4.3.6 does NOT have this problem.
 */
-// Comment out the line below if you have trouble with some people not receiving emails.
-// e107_ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
-function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") {
+// If $send_from is blank, uses the 'replyto' name and email if set, otherwise site admins details
+function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_name='', $attachments='', $Cc='', $Bcc='', $returnpath='', $returnreceipt='',$inline ="") 
+{
 	global $pref,$mailheader_e107id,$tp;
 
 	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
 
 	$mail = new PHPMailer();
 
-    if($mailheader_e107id){
+    if($mailheader_e107id)
+	{
 		$mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
     }
 
-	if ($pref['mailer']== 'smtp') {
-
-		if(isset($pref['smtp_pop3auth']) && $pref['smtp_pop3auth']){
+	if ($pref['mailer']== 'smtp') 
+	{
+		if(isset($pref['smtp_pop3auth']) && $pref['smtp_pop3auth'])
+		{
 			// http://www.corephp.co.uk/archives/18-POP-before-SMTP-Authentication-for-PHPMailer.html
 			require_once(e_HANDLER."phpmailer/class.pop3.php");
 			$pop = new POP3();
@@ -68,19 +70,27 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 			$mail->Password = $pref['smtp_password'];
 			$mail->PluginDir = e_HANDLER."phpmailer/";
 		}
-
-	} elseif ($pref['mailer']== 'sendmail'){
+	} 
+	elseif ($pref['mailer']== 'sendmail')
+	{
 		$mail->Mailer = "sendmail";
 		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'];
-	} else {
+	} 
+	else 
+	{
         $mail->Mailer = "mail";
 	}
 
 	$to_name = ($to_name) ? $to_name: $send_to;
 
+	if (!trim($send_from))
+	{
+	  $from_name = $tp->toEmail(varset($pref['replyto_name'],$pref['siteadmin']),"","parse_sc, no_make_clickable, defs");
+	  $send_from = $tp->toEmail(varset($pref['replyto_email'],$pref['siteadminemail']),"","parse_sc, no_make_clickable, defs");
+	}
 	$mail->CharSet = CHARSET;
-	$mail->From = ($send_from)? $send_from: $tp->toEmail($pref['siteadminemail'],"","parse_sc, no_make_clickable, defs");
-	$mail->FromName = ($from_name)? $from_name:	$tp->toEmail($pref['siteadmin'],"","parse_sc, no_make_clickable, defs");
+	$mail->From = $send_from;
+	$mail->FromName = $from_name;
 	$mail->Subject = $subject;
 	$mail->SetLanguage("en",e_HANDLER."phpmailer/language/");
 
