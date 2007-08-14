@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/error.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-13 19:43:01 $
+|     $Revision: 1.5 $
+|     $Date: 2007-08-14 19:27:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
+define("ERR_PAGE_ACTIVE",'error');
+
 require_once("class2.php");
+
 if(!e_QUERY || (e_QUERY != 401 && e_QUERY != 403 && e_QUERY != 404 && e_QUERY != 500))
 {
 	if (E107_DEBUG_LEVEL)
@@ -61,6 +65,7 @@ switch(e_QUERY) {
 	$text .= "<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a><br />";
 	$text .= "<a href='{$base_path}search.php'>".LAN_ERROR_22."</a></p>";
 	break;
+
 
 	case 500:
 	header("HTTP/1.1 500 Internal Server Error");
