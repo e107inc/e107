@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-16 20:24:37 $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-15 21:11:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -712,26 +712,29 @@ class e107forum
 			{
 				$pref['forum_eprefix'] = "[forum]";
 			}
-			//   Send email to orinator of flagged
-			if ($parent_thread[0]['thread_active'] == 99 && $parent_thread[0]['user_id'] != USERID)
+			//   Send email to originator if 'notify' set
+			$email_addy = '';
+			if ($pref['email_notify'] && $parent_thread[0]['thread_active'] == 99 && $parent_thread[0]['user_id'] != USERID)
 			{
 				$gen = new convert;
 				$email_name = $parent_thread[0]['user_name'];
+				$email_addy = $parent_thread[0]['user_email'];
 				$message = LAN_384.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$email_post."<br /><br />". LAN_383."<br /><br />".$mail_link;
 				include_once(e_HANDLER."mail.php");
-				sendemail($parent_thread[0]['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
+				sendemail($email_addy, $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message, $email_name);
 			}
 
-			//   Send email to all users tracking thread
-			if ($sql->db_Select("user", "*", "user_realm REGEXP('-".intval($thread_parent)."-') "))
+
+			//   Send email to all users tracking thread - except the one that's just posted
+			if ($pref['forum_track'] && $sql->db_Select("user", "user_id, user_email, user_name", "user_realm REGEXP('-".intval($thread_parent)."-') "))
 			{
 				include_once(e_HANDLER.'mail.php');
 				$message = LAN_385.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$email_post."<br /><br />". LAN_383."<br /><br />".$mail_link;
 				while ($row = $sql->db_Fetch())
-				{
-					if ($row['user_email'])
+				{	// Don't sent to self, nor to originator of thread if they've got 'notify' set
+					if ($row['user_email'] && ($row['user_email'] != $email_addy) && ($row['user_id'] != USERID))	// (May be wrong, but this could be faster than filtering current user in the query)
 					{
-						sendemail($row['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
+						sendemail($row['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message, $row['user_name']);
 					}
 				}
 			}
