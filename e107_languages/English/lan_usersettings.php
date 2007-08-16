@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-08-07 19:27:18 $
+|     $Revision: 1.9 $
+|     $Date: 2007-08-16 19:19:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -93,8 +93,8 @@ define("LAN_CUSTOMTITLE", "Custom Title");
 
 //v.617
 define("LAN_408", "A user with that email address already exists. ");
-//define("MAX_AVWIDTH", "Maximum avatar size (wxh) is ");
-//define("MAX_AVHEIGHT", " x ");
+define("MAX_AVWIDTH", "Maximum avatar size (wxh) is ");
+define("MAX_AVHEIGHT", " x ");
 // define("GIF_RESIZE", "Please resize gif image or convert to different format");
 define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Please resize image or choose another. File has been deleted.");
 
