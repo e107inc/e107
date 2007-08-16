@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-17 20:14:57 $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-16 19:30:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -130,6 +130,7 @@ function Color_Select($formid='col_selector') {
 	var tdblk = '<td style=\'background-color: #000000; cursor: default; height: 10px; width: 10px;\'><\/td>';
 	var g = 1;
 	var s = 0;
+	var i, j, k;
 
 	function td_render(color) {
 		return '<td style=\'background-color: #' + color + '; height: 10px; width: 10px;\' onmousedown=\"addtext(\'[color=#' + color + '][/color]\')\"><\/td>';
