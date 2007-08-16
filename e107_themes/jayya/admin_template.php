@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-12-19 14:20:09 $
+|     $Revision: 1.21 $
+|     $Date: 2007-08-16 00:00:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -61,51 +61,61 @@ $ADMIN_HEADER = "<table class='page_container'>
 </table>";
 
 if (ADMIN) {
-	$ADMIN_HEADER .= "{ADMIN_ALT_NAV}";
+    $ADMIN_HEADER .= "{ADMIN_ALT_NAV}";
 } else {
-	if (file_exists(THEME.'admin_nav.js')) {
-		$ADMIN_HEADER .= "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
-	} else {
-		$ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
-	}
+    if (file_exists(THEME.'admin_nav.js')) {
+        $ADMIN_HEADER .= "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
+    } else {
+        $ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
+    }
 
-	$ADMIN_HEADER .= "<div style='width: 100%'><table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
-	<tr><td>
-	<div class='menuBar' style='width:100%;'>
-	&nbsp;
-	</div>
-	</td>
-	</tr>
-	</table></div>";
+    $ADMIN_HEADER .= "<div style='width: 100%'><table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+    <tr><td>
+    <div class='menuBar' style='width:100%;'>
+    &nbsp;
+    </div>
+    </td>
+    </tr>
+    </table></div>";
 }
 
 $ADMIN_HEADER .= "<table class='main_section'>
-<tr>
-<td class='left_menu'>
-<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
-<tr>
-<td>
-{SETSTYLE=leftmenu}
-{ADMIN_LANG}
-{ADMIN_PWORD}
-{ADMIN_MSG}
-{ADMIN_PLUGINS}";
+<tr>";
+if(ADMIN)
+{
+    $ADMIN_HEADER .= "
+    <td class='left_menu'>
+    <table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+    <tr>
+    <td>
+    {SETSTYLE=leftmenu}
+    {ADMIN_LANG}
+    {ADMIN_PWORD}
+    {ADMIN_MSG}
+    {ADMIN_PLUGINS}";
 
-if (!ADMIN) {
-	$style='leftmenu';
-	$ADMIN_HEADER .= $ns -> tablerender('Welcome', '', '', TRUE);
-	$style='default';
+ /* if (!ADMIN)
+    {
+        $style='leftmenu';
+        $ADMIN_HEADER .= $ns -> tablerender('Welcome', '', '', TRUE);
+        $style='default';
+    }*/
+
+    if ($prehelp!='')
+    {
+        $ADMIN_HEADER .= $prehelp;
+    }
+    else
+    {
+        $ADMIN_HEADER .= "{ADMIN_UPDATE} {ADMIN_SITEINFO}";
+    }
+
+
+    $ADMIN_HEADER .= "<br />
+    </td></tr></table>
+    </td>";
 }
-
-if ($prehelp!='') {
-	$ADMIN_HEADER .= $prehelp;
-} else {
-	$ADMIN_HEADER .= "{ADMIN_UPDATE} {ADMIN_SITEINFO}";
-}
-
-$ADMIN_HEADER .= "<br />
-</td></tr></table>
-</td>
+$ADMIN_HEADER .= "
 <td class='default_menu'>
 {SETSTYLE=default}
 ";
@@ -114,16 +124,16 @@ $ADMIN_FOOTER = "<br />
 </td>";
 
 if ($pre_admin_menu || $preright) {
-	$ADMIN_FOOTER .= "<td class='right_menu'>
-	<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
-	<tr>
-	<td>
-	{SETSTYLE=rightmenu}
-	{ADMIN_MENU}
-	".$preright."
-	<br />
-	</td></tr></table>
-	</td>";
+    $ADMIN_FOOTER .= "<td class='right_menu'>
+    <table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+    <tr>
+    <td>
+    {SETSTYLE=rightmenu}
+    {ADMIN_MENU}
+    ".$preright."
+    <br />
+    </td></tr></table>
+    </td>";
 }
 
 $ADMIN_FOOTER .= "</tr>
