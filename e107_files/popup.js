@@ -20,11 +20,11 @@ function getRefToDivMod( divID, oDoc ) {
 //resize method for popup window (resize to fit contents)
 function resizeWinTo() {
 	if( !document.images.length ) { document.images[0] = document.layers[0].images[0]; }
-	if( !document.images[0].height || window.doneAlready ) { return; } //in case images are disabled
+	if( !document.images[0].height || window.doneAlready ) { return false; } //in case images are disabled
 	var oH = getRefToDivMod( 'myID' ); if( !oH ) { return false; }
 	var oW = oH.clip ? oH.clip.width : oH.offsetWidth;
 	var oH = oH.clip ? oH.clip.height : oH.offsetHeight; if( !oH ) { return false; }
-	if( !oH || window.doneAlready ) { return; } //in case images are disabled
+	if( !oH || window.doneAlready ) { return false; } //in case images are disabled
 	window.doneAlready = true; //for Safari and Opera
 	/*//no idea why this is in here
 	if(document.getElementsByTagName) {
@@ -45,6 +45,7 @@ function resizeWinTo() {
 	//'var scW = screen.availWidth ? screen.availWidth : screen.width;
 	//'var scH = screen.availHeight ? screen.availHeight : screen.height;
 	//'if( !window.opera ) { x.moveTo(Math.round((scW-oW)/2),Math.round((scH-oH)/2)); }
+	return false;
 }
 
 
@@ -154,4 +155,5 @@ function openPerfectPopup(oSrc, oWidth, oTitle, oText){
 
 	imgWin.document.close();
 	if( imgWin.focus ) { imgWin.focus(); }
+	return false;
 }
