@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-05 09:00:52 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-17 19:23:26 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -29,62 +29,80 @@ if (!e_QUERY) {
 $cobj =& new comment;
 
 $temp_query = explode(".", e_QUERY);
-$action = $temp_query[0];
-$table = $temp_query[1];
-$id = (isset($temp_query[2]) ? intval($temp_query[2]) : "");
-$nid = (isset($temp_query[3]) ? intval($temp_query[3]) : "");
-$xid = (isset($temp_query[4]) ? intval($temp_query[4]) : "");
+$action = $temp_query[0];			// Usually says 'comment' - may say 'reply'
+$table = $temp_query[1];			// Table containing item associated with comment(s)
+$id  = intval(varset($temp_query[2], ""));	// ID of item associated with comments (e.g. news ID)
+											// For reply with nested comments, its the ID of the comment
+$nid = intval(varset($temp_query[3], ""));	// Action - e.g. 'edit'. Or news ID for reply with nested comments
+$xid = intval(varset($temp_query[4], ""));	// ID of target comment
+global $comment_edit_query;
+//$comment_edit_query = '';
+//if ($temp_query[3] == 'edit') $comment_edit_query = $temp_query[0].".".$temp_query[1].".".$temp_query[2];
+$comment_edit_query = $temp_query[0].".".$temp_query[1].".".$temp_query[2];
 unset($temp_query);
 
-if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
+if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) 
+{
 	if(!ANON && !USER)
 	{
 		header("location: ".e_BASE."index.php");
 		exit;
 	}
 
-	if($table == "poll") {
-		if (!$sql->db_Select("polls", "poll_title", "`poll_id` = {$id} AND `poll_comment` = 1")) {
+	if($table == "poll") 
+	{
+		if (!$sql->db_Select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
+		{
 			header("location: ".e_BASE."index.php");
 			exit;
 		}
-	} else if($table == "news") {
-		if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = {$id} AND `news_allow_comments` = 0")) {
+	} else if($table == "news") 
+	{
+		if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
+		{
 			header("location: ".e_BASE."index.php");
 			exit;
 		}
 	}
 
-	$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
-	$pid = intval($pid);
+//	$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
+//	$pid = intval($pid);
+	$pid = intval(varset($_POST['pid'], 0));
 
-	$editpid = intval((isset($_POST['editpid']) ? $_POST['editpid'] : false));
+	$editpid = intval(varset($_POST['editpid'], 0));		// ID of the specific comment being edited
 
 	$clean_authorname = $_POST['author_name'];
 	$clean_comment = $_POST['comment'];
 	$clean_subject = $_POST['subject'];
 
 	$cobj->enter_comment($clean_authorname, $clean_comment, $table, $id, $pid, $clean_subject);
-	if ($table == "news") {
+	if ($table == "news") 
+	{
 		$e107cache->clear("news");
-	} else {
+	} 
+	else 
+	{
 		$e107cache->clear("comment.php?{$table}.{$id}");
 	}
 
-	if($editpid) {
+	if($editpid) 
+	{
 		$redir = preg_replace("#\.edit.*#si", "", e_QUERY);
 		header("Location: ".e_SELF."?{$redir}");
 		exit;
 	}
 }
 
+
 if (isset($_POST['replysubmit']))
 {
-
-	if ($table == "news" && !$sql->db_Select("news", "news_allow_comments", "news_id='{$nid}' ")) {
+	if ($table == "news" && !$sql->db_Select("news", "news_allow_comments", "news_id='{$nid}' ")) 
+	{
 		header("location:".e_BASE."index.php");
 		exit;
-	} else {
+	} 
+	else 
+	{
 		$row = $sql->db_Fetch();
 		if (!$row['news_id']) {
 			$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
@@ -137,28 +155,41 @@ if (isset($_POST['replysubmit']))
 	}
 }
 
-if ($action == "reply") {
-	if (!$pref['nested_comments']) {
+$comment_ob_start = FALSE;
+if ($action == "reply") 
+{
+	if (!$pref['nested_comments']) 
+	{
 		header("Location: ".e_BASE."comment.php?comment.{$table}.{$nid}");
 		exit;
 	}
+	
 	$query = "`comment_id` = '{$id}' LIMIT 0,1";
-	if ($sql->db_Select("comments", "comment_subject", "`comment_id` = '{$id}'")) {
+	if ($sql->db_Select("comments", "comment_subject", "`comment_id` = '{$id}'")) 
+	{
 		list($comments['comment_subject']) = $sql->db_Fetch();
 		$subject = $comments['comment_subject'];
 		$subject_header = $tp->toHTML($comments['comment_subject']);
 	}
-	if ($subject == "") {
-		if ($table == "news") {
-			if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' ")) {
-				header("location: ".e_BASE."index.php");
-				exit;
-			} else {
-				list($news['news_title']) = $sql->db_Fetch();
-				$subject = $news['news_title'];
-				$title = COMLAN_100;
-			}
-		} elseif ($table == "poll") {
+	
+	if ($subject == "") 
+	{
+	  if ($table == "news") 
+	  {
+		if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' ")) 
+		{
+		  header("location: ".e_BASE."index.php");
+		  exit;
+		} 
+		else 
+		{
+		  list($news['news_title']) = $sql->db_Fetch();
+		  $subject = $news['news_title'];
+		  $title = COMLAN_100;
+		}
+	  } 
+	  elseif ($table == "poll") 
+	  {
 			if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' ")) {
 				header("location:".e_BASE."index.php");
 				exit;
@@ -167,15 +198,21 @@ if ($action == "reply") {
 				$subject = $poll['poll_title'];
 				$title = COMLAN_101;
 			}
-		} elseif ($table == "content") {
+	  } 
+	  elseif ($table == "content") 
+	  {
 			$sql->db_Select("content", "content_heading", "content_id='{$nid}'");
 			$subject = $content['content_heading'];
-		} elseif ($table == "bugtracker") {
+	  } 
+	  elseif ($table == "bugtracker") 
+	  {
 			$sql->db_Select("bugtrack", "bugtrack_summary", "bugtrack_id='{$nid}'");
 			$subject = $content['content_heading'];
-		}
+	  }
 	}
-	if ($table == "content") {
+
+	if ($table == "content") 
+	{
 		$sql->db_Select("content", "content_type", "content_id='{$nid}'");
 		list($content['content_type']) = $sql->db_Fetch();
 		if ($content['content_type'] == "0") {
@@ -192,22 +229,27 @@ if ($action == "reply") {
 
 	define('e_PAGETITLE', $title." / ".COMLAN_99." / ".COMLAN_102.$subject."");
 	require_once(HEADERF);
-} else {
-
-
-	if ($cache = $e107cache->retrieve("comment.php?{$table}.{$id}")) {
+} 
+else 
+{
+	if ($cache = $e107cache->retrieve("comment.php?{$table}.{$id}")) 
+	{
 		require_once(HEADERF);
 		echo $cache;
 		require_once(FOOTERF);
 		exit;
-	} else {
-		if ($table == "news") {
+	} 
+	else 
+	{
+		if ($table == "news") 
+		{
 			/*
 			changes by jalist 19/01/05:
 			updated db query removed one call
 			*/
 
-			if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
+			if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) 
+			{
 				$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -216,7 +258,9 @@ if ($action == "reply") {
 				AND n.news_id={$id}
 				AND n.news_allow_comments=0
 				GROUP by n.news_id";
-			} else {
+			} 
+			else 
+			{
 				$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -225,26 +269,34 @@ if ($action == "reply") {
 				AND n.news_allow_comments=0";
 			}
 
-			if (!$sql->db_Select_gen($query)) {
+			if (!$sql->db_Select_gen($query)) 
+			{
 				header("location:".e_BASE."index.php");
 				exit;
-			} else {
+			} 
+			else 
+			{
 				$news = $sql->db_Fetch();
 				$subject = $tp->toForm($news['news_title']);
 				define("e_PAGETITLE", COMLAN_100." / ".COMLAN_99." / {$subject}");
 				require_once(HEADERF);
 				ob_start();
+				$comment_ob_start = TRUE;
 				$ix = new news;
 				$ix->render_newsitem($news, "extend"); // extend so that news-title-only news text is displayed in full when viewing comments.
 				$field = $news['news_id'];
 				$comtype = 0;
 			}
 		}
-		else if($table == "poll") {
-			if (!$sql->db_Select("polls", "*", "poll_id='{$id}'")) {
+		else if($table == "poll") 
+		{
+			if (!$sql->db_Select("polls", "*", "poll_id='{$id}'")) 
+			{
 				header("location:".e_BASE."index.php");
 				exit;
-			} else {
+			} 
+			else 
+			{
 				$row = $sql->db_Fetch();
 				$comments_poll = $row['poll_comment'];
 				$subject = $row['poll_title'];
@@ -265,7 +317,8 @@ if ($action == "reply") {
 	}
 }
 
-if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news"){
+if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news")
+{
 	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid={$id}</span>";
 }
 $field = ($field ? $field : ($id ? $id : ""));
@@ -276,7 +329,7 @@ if (!strstr(e_QUERY, "poll")) {
 	$cache = ob_get_contents();
 	$e107cache->set("comment.php?{$table}.{$field}", $cache);
 }
-ob_end_flush(); // dump the buffer we started
+if ($comment_ob_start) ob_end_flush(); // dump the buffer we started
 
 
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news"){
