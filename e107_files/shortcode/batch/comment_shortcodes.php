@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 16:20:46 $
+|     $Revision: 1.4 $
+|     $Date: 2007-08-17 19:23:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -97,7 +97,7 @@ return (isset($comrow['comment_blocked']) && $comrow['comment_blocked'] ? COMLAN
 SC_END
 
 SC_BEGIN COMMENTEDIT
-global $COMMENTEDIT, $pref, $comrow, $imode;
+global $COMMENTEDIT, $pref, $comrow, $comment_edit_query, $imode;
 if ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow['comment_lock'] != "1")
 {
 	if (!strstr(e_QUERY, "."))
@@ -106,7 +106,7 @@ if ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow
 	}
 	else
 	{
-		return "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
 	}
 }
 else
@@ -123,7 +123,7 @@ SC_END
 SC_BEGIN IPADDRESS
 global $IPADDRESS, $comrow;
 require_once(e_HANDLER."encrypt_handler.php");
-return (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.".$comrow['user_ip']."'>".COMLAN_330." ".decode_ip($comrow['comment_ip'])."</a>" : "");
+return (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".decode_ip($comrow['comment_ip'])."</a>" : "");
 SC_END
 
 SC_BEGIN LEVEL
