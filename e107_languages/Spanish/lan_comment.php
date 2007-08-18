@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-08-12 17:23:20 $
+|     $Revision: 1.14 $
+|     $Date: 2007-08-18 05:30:09 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -67,4 +67,5 @@ define("COMLAN_TYPE_5", "docs");
 define("COMLAN_TYPE_6", "errores"); 
 define("COMLAN_TYPE_7", "ideas"); 
 define("COMLAN_TYPE_8", "perfiles de usuario"); 
+define("COMLAN_TYPE_PAGE", "Contenido"); 
 ?>

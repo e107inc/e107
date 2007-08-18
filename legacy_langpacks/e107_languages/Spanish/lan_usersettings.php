@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_usersettings.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-08-06 21:48:50 $
+|     $Revision: 1.10 $
+|     $Date: 2007-08-18 05:30:10 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -93,13 +93,13 @@ define("LAN_USET_4", "El alto máximo permitido es");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Título");
-define("LAN_ICQNUMBER", "La cuenta ICQ debe contener solo números");
+//define("LAN_ICQNUMBER", "La cuenta ICQ debe contener solo números");
 
 //v.617
 define("LAN_408", "Existe un usuario con esta dirección email. ");
-define("MAX_AVWIDTH", "El ancho máximo del avatar es ");
-define("MAX_AVHEIGHT", "El alto máximo del avatar es ");
-define("GIF_RESIZE", "Por favor recorte su imagen gif ó conviértala a un formato diferente");
+//define("MAX_AVWIDTH", "El ancho máximo del avatar es ");
+//define("MAX_AVHEIGHT", "El alto máximo del avatar es ");
+//define("GIF_RESIZE", "Por favor recorte su imagen gif ó conviértala a un formato diferente");
 define("RESIZE_NOT_SUPPORTED", "Este servidor no soporta el cambio de tamaño automático de imágenes. Fichero borrado.");
 
 // v0.7
@@ -115,4 +115,5 @@ define("LAN_USET_13", "Carácteres inválidos en el nombre de usuario. Por favor, 
 define("LAN_USET_14", "Nombre de conexion demasiado largo. Por favor, escoja otro"); 
 define("LAN_USET_15", "Nombre a mostrar demasiado largo. Por favor, escoja otro");
 define("LAN_USET_16", "Marcar para borrar la foto existente sin transferir ninguna otra");
+define("LAN_USET_17", "El nombre a mostrar ya se está utilizando. Por favor, escoja otro");
 ?>
