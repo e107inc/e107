@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_usersettings.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-08-18 05:30:10 $
+|     $Revision: 1.11 $
+|     $Date: 2007-08-18 05:56:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -97,8 +97,8 @@ define("LAN_CUSTOMTITLE", "Título");
 
 //v.617
 define("LAN_408", "Existe un usuario con esta dirección email. ");
-//define("MAX_AVWIDTH", "El ancho máximo del avatar es ");
-//define("MAX_AVHEIGHT", "El alto máximo del avatar es ");
+define("MAX_AVWIDTH", "El ancho máximo del avatar es ");
+define("MAX_AVHEIGHT", "El alto máximo del avatar es ");
 //define("GIF_RESIZE", "Por favor recorte su imagen gif ó conviértala a un formato diferente");
 define("RESIZE_NOT_SUPPORTED", "Este servidor no soporta el cambio de tamaño automático de imágenes. Fichero borrado.");
 

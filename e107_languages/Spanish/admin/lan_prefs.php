@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2007-08-06 21:48:50 $
+|     $Revision: 1.34 $
+|     $Date: 2007-08-18 05:56:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -167,6 +167,10 @@ define("PRFLAN_170", "Use DNS reversa para expulsar un dominio");
 define("PRFLAN_171", "Activar esta opción le permitirá expulsar usuarios por un dominio, en vez de por su IP o correo. <br />NOTA: Esto podría afectar a la carga de la página en algunos dominios");
 define("PRFLAN_172", "Longitud máxima del nombre de conexión (10..100)");
 define("PRFLAN_173", "Comprobar en SourceForge actualizaciones E107 una vez por día");
+define("PRFLAN_174", "Nombre para las respuestas de correo desde este sitio"); 
+define("PRFLAN_175", "Esto aparecerá en el campo 'De' del registro y otros correos desde aquí");
+define("PRFLAN_176", "Dirección de correo para correos del sitio"); 
+define("PRFLAN_177", "Dirección de correo para respuestas desde este sitio."); 
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");

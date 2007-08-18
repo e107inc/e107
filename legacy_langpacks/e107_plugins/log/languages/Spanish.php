@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/log/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-07-14 06:02:13 $
+|     $Revision: 1.5 $
+|     $Date: 2007-08-18 05:56:27 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -53,4 +53,12 @@ define("ADSTAT_L39", "Eliminar esta entrada");
 define("ADSTAT_L40", "Días");
 define("ADSTAT_L41", "Error");
 define("ADSTAT_L42", "No hay estadísticas mensuales todavía.");
+define("ADSTAT_L43", "Errores de la página hoy"); 
+define("ADSTAT_L44", "Errores de la página de todo el tiempo"); 
+define("ADSTAT_L45", "Estadísticas borradas por: "); 
+define("ADSTAT_L46", "Nota: cualquier estadística de hot no será borrada"); 
+define("ADSTAT_L47", "No se encontraron estadísticas por: "); 
+define("ADSTAT_L48", ""); 
+define("ADSTAT_L49", ""); 
+define("ADSTAT_L50", ""); 
 ?>
