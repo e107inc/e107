@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-06-21 19:40:32 $
+|     $Revision: 1.8 $
+|     $Date: 2007-08-18 13:47:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
+
 global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $ADMIN_FOOTER, $e107;
 
 //
@@ -94,7 +95,8 @@ if (ADMIN == TRUE) {
 	$memuse     = $e107->get_memory_usage();		// Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
 
-	if ( function_exists( 'getrusage' ) ) {
+	if ( function_exists( 'getrusage' ) ) 
+	{
 		$ru = getrusage();
 		$cpuUTime = $ru['ru_utime.tv_sec'] + ($ru['ru_utime.tv_usec'] * 1e-6);
 		$cpuSTime = $ru['ru_stime.tv_sec'] + ($ru['ru_stime.tv_usec'] * 1e-6);
@@ -119,15 +121,18 @@ if (ADMIN == TRUE) {
 	//	$logname = "/home/mysite/public_html/queryspeed.log";
 	//	$logfp = fopen($logname, 'a+'); fwrite($logfp, "$cpuTot,$cpuPct,$cpuStart,$rendertime,$db_time\n"); fclose($logfp);
 
-	if($pref['displayrendertime']){ 
-		$rinfo .= "Render time: ";
-		if (isset($cpuTime)) {
-			$rinfo .= "{$cpuTime} cpu sec ({$cpuPct}% load, {$cpuStart} startup). Clock: ";
+	if($pref['displayrendertime'])
+	{ 
+		$rinfo .= CORE_LAN11;
+		if (isset($cpuTime)) 
+		{
+//			$rinfo .= "{$cpuTime} cpu sec ({$cpuPct}% load, {$cpuStart} startup). Clock: ";
+			$rinfo .= sprintf(CORE_LAN14,$cpuTime,$cpuPct,$cpuStart);
 		}
-		$rinfo .= "{$rendertime} sec ({$dbPercent}% for queries). "; 
+		$rinfo .= $rendertime.CORE_LAN_12.$dbPercent.CORE_LAN13; 
 	}
-	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
-	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory: ".$memuse; }
+	if($pref['displaysql']){ $rinfo .= CORE_LAN15.$sql -> db_QueryCount().". "; }
+	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= CORE_LAN16.$memuse; }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 
 	if (function_exists('theme_renderinfo'))
@@ -138,6 +143,7 @@ if (ADMIN == TRUE) {
 	}
 
 } // End of regular-page footer (the above NOT done for popups)
+
 
 //
 // C Dump all debug and traffic information
@@ -291,5 +297,4 @@ if(varset($pref['compress_output'],false) && $server_support == true && $browser
 
 unset($In_e107_Footer);
 $e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
-
 ?>
