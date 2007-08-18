@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2007-08-18 03:41:23 $
+|     $Revision: 1.42 $
+|     $Date: 2007-08-18 04:29:37 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -58,7 +58,7 @@ else
         require_once(HEADERF);
         if ($tmp['err'])        // Need to display error block after header defined
         {
-            $ns -> tablerender($tmp['title'], $tmp['text']);
+            $ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
             require_once(FOOTERF);
             exit;
         }
@@ -73,7 +73,7 @@ else
         }
         else
         {
-          $ns -> tablerender($tmp['title'], $tmp['text']);
+          $ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
           $comment_flag = $tmp['comment_flag'];
         }
     }
@@ -439,7 +439,7 @@ class pageClass
         ";
         // Mustn't return to higher level code here
 
-        $ns->tablerender($page_title, $pw_entry_text);      // HEADERF also clears $text - hence different variable
+        $ns->tablerender($page_title, $pw_entry_text,"cpage_pw");       // HEADERF also clears $text - hence different variable
         require_once(FOOTERF);
         exit;
     }
