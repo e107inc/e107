@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-12-09 06:46:33 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2007-08-18 13:47:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
+
 global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $ADMIN_FOOTER, $e107;
 
 //
@@ -85,18 +86,18 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 }
 
 
-//
-// C Dump all debug and traffic information
-//
-$eTimingStop = microtime();
-global $eTimingStart;
-$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
-$db_time    = number_format($db_time,4);
-$rinfo = '';
+	//
+	// C Dump all debug and traffic information
+	//
+	$eTimingStop = microtime();
+	global $eTimingStart;
+	$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
+	$db_time    = number_format($db_time,4);
+	$rinfo = '';
 
-	if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
-	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
-	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory Usage: ".$e107->get_memory_usage(); }
+	if($pref['displayrendertime']){ $rinfo .= CORE_LAN11.$rendertime.CORE_LAN12.$db_time.CORE_LAN13; }
+	if($pref['displaysql']){ $rinfo .= CORE_LAN15.$sql -> db_QueryCount().". "; }
+	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= CORE_LAN16.$e107->get_memory_usage(); }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
 
@@ -231,13 +232,13 @@ header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
 $pref['compression_level'] = 6;
-if(isset($_SERVER["HTTP_ACCEPT_ENCODING"]) && strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")) {
+if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip")) {
 	$browser_support = true;
 }
 if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {
 	$server_support = true;
 }
-if($pref['compress_output'] == true && $server_support == true && $browser_support == true) {
+if(varset($pref['compress_output'],false) && $server_support == true && $browser_support == true) {
 	$level = intval($pref['compression_level']);
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
@@ -250,5 +251,4 @@ if($pref['compress_output'] == true && $server_support == true && $browser_suppo
 
 unset($In_e107_Footer);
 $e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
-
 ?>
