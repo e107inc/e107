@@ -186,7 +186,7 @@ if($total_pages > 1)
         $newstart = ($i-1)*$perpage;
         $link = str_replace("[FROM]", $newstart, $url);
         $c = $i-1;
-        $title = ($pagetitle[$c]) ? $i.". ".$pagetitle[$c] : $i;
+        $title = ($pagetitle[$c]) ? $pagetitle[$c] : $i;
         $dropdown .= "<option value='{$link}' {$sel}>{$title}</option>\n";
     }
     $dropdown .= "</select>";
