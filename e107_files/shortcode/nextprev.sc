@@ -6,19 +6,20 @@ global $pref;
 
 $parm_count = substr_count($parm, ",");
 
-while($parm_count < 4)
+while($parm_count < 5)
 {
 	$parm .= ",";
 	$parm_count++;
 }
 
-$p = explode(",", $parm, 5);
+$p = explode(",", $parm, 6);
 
 $total_items = intval($p[0]);
 $perpage = intval($p[1]);
 $current_start = intval($p[2]);
 $url = trim($p[3]);
 $caption = trim($p[4]);
+$pagetitle = explode("|",trim($p[5]));
 
 if($total_items < $perpage) {	return ""; }
 
@@ -184,7 +185,9 @@ if($total_pages > 1)
 		}
 		$newstart = ($i-1)*$perpage;
 		$link = str_replace("[FROM]", $newstart, $url);
-		$dropdown .= "<option value='{$link}' {$sel}>{$i}</option>\n";
+        $c = $i-1;
+        $title = ($pagetitle[$c]) ? $pagetitle[$c] : $i;
+        $dropdown .= "<option value='{$link}' {$sel}>{$title}</option>\n";
 	}
 	$dropdown .= "</select>";
 	$ret = $np_parm['template'];

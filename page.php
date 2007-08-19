@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-08-08 19:34:34 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2007-08-19 21:46:20 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ else
 		require_once(HEADERF);
 		if ($tmp['err'])		// Need to display error block after header defined
 		{
-			$ns -> tablerender($tmp['title'], $tmp['text']);
+            $ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
 			require_once(FOOTERF);
 			exit;
 		}
@@ -73,7 +73,7 @@ else
 		}
 		else
 		{
-		  $ns -> tablerender($tmp['title'], $tmp['text']);
+          $ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
 		  $comment_flag = $tmp['comment_flag'];
 		}
 	}
@@ -196,12 +196,12 @@ class pageClass
 		
 		if($page_author)
 		{
-			$text .= "<div class='smalltext' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
+            $text .= "<div class='smalltext cpage_author' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
 		}
 
 		if($this -> title)
 		{
-			$text .= "<b>".$this -> title."</b><br /><br />";
+            $text .= "<div class='cpage_title'>".$this -> title."</div>";
 		}
 
 		$text .= $this -> pageToRender;
@@ -287,14 +287,25 @@ class pageClass
 
 	function pageIndex()
 	{
+        global $tp,$pref;
+        $itext = '';
+        if(isset($pref['old_np']) && $pref['old_np'])
+        {
 		$count = 0;
-		$itext = '';
 		foreach($this -> pageTitles as $title)
 		{
 			if (!$count) { $itext = "<br /><br />"; }
 			$itext .= $this -> bullet." ".($count == $this -> pageSelected ? $title : "<a href='".e_SELF."?".$this -> pageID.".".$count."'>".$title."</a>")."<br />\n";
 			$count++;
 		}
+        }
+        else
+        {
+            $titles = implode("|",$this -> pageTitles);
+            $total_items = count($this -> pageTitles);
+            $parms = $total_items.",1,".$this -> pageSelected.",".e_SELF."?".$this -> pageID.".[FROM],,$titles";
+            $itext = ($total_items) ? "<div class='nextprev nextprev_custom'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>" : "";
+        }
 		return $itext;
 	}
 
@@ -429,7 +440,7 @@ class pageClass
 		";
 		// Mustn't return to higher level code here
 
-		$ns->tablerender($page_title, $pw_entry_text);		// HEADERF also clears $text - hence different variable
+        $ns->tablerender($page_title, $pw_entry_text,"cpage_pw");       // HEADERF also clears $text - hence different variable
 		require_once(FOOTERF);
 		exit;
 	}
