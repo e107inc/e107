@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-08-07 19:31:44 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2007-08-19 21:49:32 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -122,8 +122,19 @@ class sitelinks
 
 					// if there's a submenu. :
 					if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
-						$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "" : " style='display:none'";   // expanding sub-menus.
-						$render_link[$key] .= "\n\n<div id='{$main_linkid}'".$substyle." class='d_sublink'>\n";
+                        foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
+                        {
+                            if($this->hilite($val['link_url'],TRUE)== TRUE || $link['link_expand'] == FALSE)
+                            {
+                                $substyle = "compact";
+                                break;
+                            }
+                            else
+                            {
+                                $substyle = "none";
+                            }
+                        }
+                        $render_link[$key] .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
 						foreach ($this->eLinkList[$main_linkid] as $sub){
 							$render_link[$key] .= $this->makeLink($sub, TRUE, $aSubStyle, $css_class);
 						}
