@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2007-08-18 04:29:37 $
+|     $Revision: 1.43 $
+|     $Date: 2007-08-19 21:39:13 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -196,12 +196,12 @@ class pageClass
         
         if($page_author)
         {
-            $text .= "<div class='smalltext' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
+            $text .= "<div class='smalltext cpage_author' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
         }
 
         if($this -> title)
         {
-            $text .= "<b>".$this -> title."</b><br /><br />";
+            $text .= "<div class='cpage_title'>".$this -> title."</div>";
         }
 
         $text .= $this -> pageToRender;
