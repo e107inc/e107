@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-04-14 14:09:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2007-08-22 22:50:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -22,6 +22,6 @@ include_once(e_PLUGIN."newsfeed/newsfeed_functions.php");
 $info = newsfeed_info('all', 'menu');
 if($info['text'])
 {
-	$ns->tablerender($info['title'], $info['text']);
+    $ns->tablerender($info['title'], $info['text'],'newsfeed_menu');
 }
 ?>
