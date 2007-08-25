@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.343 $
-|     $Date: 2007-08-12 21:40:31 $
-|     $Author: e107steved $
+|     $Revision: 1.344 $
+|     $Date: 2007-08-25 05:27:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -423,7 +423,7 @@ define("e_PAGE", $page);
 if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan'])) {
 	if($_GET['elan'])  // query support, for language selection splash pages. etc
 	{
-		$_POST['sitelanguage'] = $_GET['elan'];
+		$_POST['sitelanguage'] = str_replace(array(".","/","%"),"",$_GET['elan']);
 	}
 	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
 	{
@@ -440,7 +440,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (strpos(e_SELF, ADMINDIR) === FALSE) {
 			$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
-		  		header("Location:".$locat);
+		  	 	header("Location:".$locat);
 		}
 	}
 }
