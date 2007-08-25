@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-08 08:36:47 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2007-08-25 05:48:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -82,7 +82,10 @@ if (ADMIN) {
 }
 
 $ADMIN_HEADER .= "<table class='main_section'>
-<tr>
+<tr>";
+if(ADMIN)
+{
+    $ADMIN_HEADER .= "
 <td class='left_menu'>
 <table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 <tr>
@@ -93,21 +96,28 @@ $ADMIN_HEADER .= "<table class='main_section'>
 {ADMIN_MSG}
 {ADMIN_PLUGINS}";
 
-if (!ADMIN) {
+ /* if (!ADMIN)
+    {
 	$style='leftmenu';
 	$ADMIN_HEADER .= $ns -> tablerender('Welcome', '', '', TRUE);
 	$style='default';
-}
+    }*/
 
-if ($prehelp!='') {
+    if ($prehelp!='')
+    {
 	$ADMIN_HEADER .= $prehelp;
-} else {
+    }
+    else
+    {
 	$ADMIN_HEADER .= "{ADMIN_UPDATE} {ADMIN_SITEINFO}";
 }
 
+
 $ADMIN_HEADER .= "<br />
 </td></tr></table>
-</td>
+    </td>";
+}
+$ADMIN_HEADER .= "
 <td class='default_menu'>
 {SETSTYLE=default}
 ";

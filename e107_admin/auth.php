@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-08-25 05:48:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -95,14 +95,16 @@ class auth
 		# - scope		public
 		*/
 
-		global $use_imagecode, $sec_img;
+		global $use_imagecode, $sec_img,$imode;
 
-		$text = "<div style='text-align:center'>
+        $text = "<div style='padding:20px;text-align:center'>
 			<form method='post' action='".e_SELF."'>\n
 			<table style='width:50%' class='fborder'>
 			<tr>
+            <td rowspan='4' style='vertical-align:middle;width:65px'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."packs/".$imode."/generic/password.png' alt='' />\n" )."</td>
 			<td style='width:35%' class='forumheader3'>".ADLAN_89."</td>
 			<td class='forumheader3' style='text-align:center'><input class='tbox' type='text' name='authname' size='30' value='$authname' maxlength='20' />\n</td>
+
 			</tr>
 			<tr>
 			<td style='width:35%' class='forumheader3'>".ADLAN_90."</td>
