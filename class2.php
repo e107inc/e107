@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2007-08-12 21:40:49 $
-|     $Author: e107steved $
+|     $Revision: 1.22 $
+|     $Date: 2007-08-25 05:51:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -424,7 +424,7 @@ define("e_PAGE", $page);
 if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan'])) {
 	if($_GET['elan'])  // query support, for language selection splash pages. etc
 	{
-		$_POST['sitelanguage'] = $_GET['elan'];
+		$_POST['sitelanguage'] = str_replace(array(".","/","%"),"",$_GET['elan']);
 	}
 	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
 	{
