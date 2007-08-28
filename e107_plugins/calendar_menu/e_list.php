@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_list.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-08-28 19:05:02 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -20,7 +20,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if (isset($pref['plug_installed']) 
+if (isset($pref['plug_installed'])) 
 {
   if (!isset($pref['plug_installed']['calendar_menu'])) return;
 }
