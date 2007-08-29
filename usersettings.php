@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2007-08-07 19:27:04 $
+|     $Revision: 1.93 $
+|     $Date: 2007-08-29 19:44:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -219,7 +219,7 @@ if (isset($_POST['updatesettings']))
 	  }
 
 	// Display Name exists.
-	  if ($sql->db_Count("user", "(*)", "WHERE user_name='".$username."'"))
+	  if ($sql->db_Count("user", "(*)", "WHERE `user_name`='".$username."' AND `user_id` != '".USERID."' "))
 	  {
 		$error .= LAN_USET_17;
 	  }
