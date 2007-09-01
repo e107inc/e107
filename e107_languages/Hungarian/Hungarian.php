@@ -1,13 +1,13 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.6 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# e107 Hungarian language file - $Revision: 1.7 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:30:18 $
 # --------------------------------------------------------------------------
 
-setlocale(LC_ALL, 'hu_HU.ISO8859-2', 'hu_HU@euro', 'hu_HU', 'hu', 'Hungarian');
+setlocale(LC_ALL, 'hu_HU.UTF-8', 'hu_HU@euro', 'hu_HU', 'hu', 'Hungarian');
 define("CORE_LC", 'hu');
-define("CORE_LC2", 'HU.iso-8859-2');
+define("CORE_LC2", 'HU.utf-8');
 // define("TEXTDIRECTION","rtl");
-define("CHARSET", "iso-8859-2");  // for a true multi-language site. :)
+define("CHARSET", "utf-8");  // for a true multi-language site. :)
 define("CORE_LAN1","Hiba : A téma hiányzik.\\n\\nCseréld le a beállításoknál a használt témát (admin terület) vagy tölts fel az aktuális téma file-it a szerverre.");
 
 //v.616
