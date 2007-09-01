@@ -11,19 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/userlanguage_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-03-23 22:42:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-01 02:29:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+require_once(e_HANDLER."language_class.php");
+$slng = new language;
 require_once(e_HANDLER."file_class.php");
 	$fl = new e_file;
 	$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 	sort($lanlist);
 
+	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
+	{
+        	$text = "<div style='text-align:center'><select class='tbox' name='lang_select' style='width:95%' onchange=\"location.href=this.options[selectedIndex].value\">";
+			foreach($lanlist as $lng)
+			{
+				$selected = ($lng  == USERLAN || ($lng == $pref['sitelanguage'] && USERLAN == "")) ? "selected='selected'" : "";
+                $urlval = $slng->subdomainUrl($lng);
+				$text .= "<option value='".$urlval."' $selected>$lng</option>\n";
+			}
+			$text .= "</select></div>";
+	}
+	else
+	{
 	$action = (e_QUERY && !$_GET['elan']) ? e_SELF."?".e_QUERY : e_SELF;
 	$text = "<form method='post' action='".$action."'>
 		<div style='text-align:center'>
@@ -41,6 +56,7 @@ require_once(e_HANDLER."file_class.php");
 	$text .= "</select>";
 	$text .= "<br /><br /><input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />";
 	$text .= "</div></form>	";
+	}
 
 $ns->tablerender(UTHEME_MENU_L2, $text, 'user_lan');
 
