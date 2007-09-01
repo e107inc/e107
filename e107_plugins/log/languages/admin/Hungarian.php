@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Hungarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-18 00:00:18 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.10 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("ADSTAT_ON", "Be");
 define("ADSTAT_OFF", "Ki");
 define("ADSTAT_L1", "A plugin minden látogatást naplózni fog, és részletes statisztikákat ad az összegyűjtött információk alapján.");
@@ -39,12 +33,11 @@ define("ADSTAT_L25", "Kiválasztott statisztika nullázása");
 define("ADSTAT_L26", "Meglévő oldal törlése");
 define("ADSTAT_L27", "Ha a statisztika téves oldalt tartalmaz, itt törölheted azt.");
 define("ADSTAT_L28", "Oldal megnyitása");
-
-
 define("ADSTAT_L29", "Oldal neve");
 define("ADSTAT_L30", "Jelöld be a törléshez");
 define("ADSTAT_L31", "Kiválasztott oldal törlése");
 define("ADSTAT_L32", "Oldal rendezése");
-define("ADSTAT_L10", "Hivatkozások");
-define("ADSTAT_L10", "Hivatkozások");
+define("ADSTAT_L33", "Statisztika Loggolása - Beállítás");
+define("ADSTAT_L34", "Oldal statisztika");
+
 ?>

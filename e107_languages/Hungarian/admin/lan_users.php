@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_users.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:00 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# ---------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# ---------------------------------------------------------------------------
+
 define("USRLAN_1", "Beállítások elmentve");
 define("USRLAN_3", "adminisztrátor - a jogosultságok beállításához menj az");
 define("USRLAN_4", "adminisztrátorok oldalra");

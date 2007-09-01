@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_signup.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-06-09 10:52:35 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.9 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:19 $
+# --------------------------------------------------------------------------
+
 define("PAGE_NAME", "Regisztráció");
 define("LAN_7", "Megjelenő név:");
 define("LAN_8", "ez a név jelenik meg az oldalakon");
@@ -117,7 +111,7 @@ define("LAN_SIGNUP_54", "Katt ide a regisztráláshoz szükséges adatok kitölt
 define("LAN_SIGNUP_55", "Túl hosszú a megjelenő név. Válassz másikat");
 define("LAN_SIGNUP_56", "Túl rövid a megjelenő név. Válassz másikat");
 define("LAN_SIGNUP_57", "Túl hosszú a bejelentkező név. Válassz másikat");
-
+define("LAN_SIGNUP_58", "Regisztráció előnézet");
 
 
 

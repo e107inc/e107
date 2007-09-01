@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_mailout.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:00 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("PRFLAN_52", "Módosítások mentése");
 define("PRFLAN_63", "Teszt e-mail küldése");
 define("PRFLAN_64", "A gombra kattintva egy teszt e-mail lesz elküldve a fő admin e-mail címére");
@@ -93,7 +87,7 @@ define("MAILAN_63", "Hibás Email-ek:");
 define("MAILAN_64", "Összes eltelt idő:");
 define("MAILAN_65", "másodperc");
 define("MAILAN_66", "Kilépés sikeres");
-define("MAILAN_67", "Használd a 'POP before SMTP' lehetőséget a hitelesítéshez");
+define("MAILAN_67", "Használd a 'POP before SMTP' lehetőséget a hitelesítéshez"); 
 
 
 ?>

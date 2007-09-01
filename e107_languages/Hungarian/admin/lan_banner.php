@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_banner.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:00 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("BNRLAN_1", "Reklámcsík törölve");
 define("BNRLAN_2", "Biztos, hogy törölni akarod ezt a Reklámcsíkot? Nem lehet majd visszaállítani!");
 define("BNRLAN_5", "Reklámcsík törlésének megerősítése");
@@ -68,6 +62,6 @@ define("BANNER_MENU_L10", "Megjelenítés típusa");
 define("BANNER_MENU_L12", "egyszerű");
 define("BANNER_MENU_L13", "box-ban címsorral");
 define("BANNER_MENU_L18", "Menü beállítás frissítése");
-define("BANNER_MENU_L19", "megjelenített bannerek száma:<br />ez csak akkor használható, ha több reklámkampány van kiválasztva");
+define("BANNER_MENU_L19", "megjelenített bannerek száma:<br />ez csak akkor használható, ha több reklámkampány van kiválasztva"); 
 
 ?>

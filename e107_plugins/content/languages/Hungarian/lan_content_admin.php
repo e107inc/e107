@@ -4,8 +4,8 @@
 |     e107 website system - Hungarian Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Hungarian/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-09 10:52:35 $
+|     $Revision: 1.5 $
+|     $Date: 2007-09-01 11:13:19 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */

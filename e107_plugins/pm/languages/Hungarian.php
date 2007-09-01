@@ -67,6 +67,7 @@ define('LAN_PM_60', "Nincs jogosultságod az üzenet megtekintésére");
 define('LAN_PM_61', "Nincs az üzenetnek tárgya");
 define('LAN_PM_62', "File: [{FILENAME}] túllépte a megadott méretet - nem lehet csatolni");
 define('LAN_PM_63', "csoport:");
+define('LAN_PM_64', 'HIBA: Nem tudod blokkolni az oldal adminisztrátorától származó üzenetet');
 
 define("LAN_PM_100", "Új Privát Üzenet a következőtől ");
 define("LAN_PM_101", "Új Privát Üzenetet kaptál a következőtől ");

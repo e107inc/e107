@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_emoticon.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:00 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - ver: 1.7 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("EMOLAN_1", "Emotikonok bekapcsolása");
 define("EMOLAN_2", "Név");
 define("EMOLAN_3", "Emotikon");
@@ -21,7 +15,7 @@ define("EMOLAN_7", "összetett beíráshoz használj szóközt");
 define("EMOLAN_8", "Állapot");
 define("EMOLAN_9", "Beállítások");
 define("EMOLAN_10", "Aktív");
-define("EMOLAN_11", "Aktiválás'");
+define("EMOLAN_11", "Aktiválás");
 
 define("EMOLAN_12", "Módosít / beállít");
 define("EMOLAN_13", "Telepített csomagok");
@@ -38,7 +32,12 @@ define("EMOLAN_21", "Hiba");
 define("EMOLAN_22", "Új emotikon csoport:");
 define("EMOLAN_23", "Új emotikon xml csoport:");
 define("EMOLAN_24", "Új emotikon php:");
-
+define("EMOLAN_25", "Új emotikon php telepítése: ");
+define("EMOLAN_26", "Csomag újra-ellenőrzése");
+define("EMOLAN_27", "Hiba történt a csomag feldolgozásában: ");
+define("EMOLAN_28", "XML létrehozása");
+define("EMOLAN_29", "XML file létrehozva: ");
+define("EMOLAN_30", "Hiba az XML file írásakor: ");
 
 
 ?>

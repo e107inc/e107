@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_user_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# --------------------------------------------------------------------------
+
 define("UE_LAN_1", "Szövegmező");
 define("UE_LAN_2", "Rádiógombok");
 define("UE_LAN_3", "Lenyíló menü");
@@ -42,4 +36,6 @@ define("UE_LAN_LANGUAGE", "Nyelv");
 define("UE_LAN_LANGUAGE_DESC", "Felhasználó Nyelv");
 define("UE_LAN_COUNTRY", "Ország");
 define("UE_LAN_COUNTRY_DESC", "Felhasználó Ország (includes db table)");
+
+define("LAN_UE_FAIL_HOMEPAGE", "Érvénytelen bejegyzés a weboldal beállításokhoz");
 ?>

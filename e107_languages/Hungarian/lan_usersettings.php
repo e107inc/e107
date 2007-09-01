@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_usersettings.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-17 00:27:27 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.6 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# --------------------------------------------------------------------------
+
 define("PAGE_NAME", "Felhasználói beállítások");
 
 define("LAN_7", "Megjelenő név: ");
@@ -106,5 +100,11 @@ define("LAN_USET_8", "Aláírás / Időzóna");
 define("LAN_USET_9", "Valamelyik kötelező mező (*-al jelölve) hiányzik a beállításaidnál.");
 define("LAN_USET_10","Frissítsd a beállításaidat most, az eljárásnak megfelelően.");
 define("LAN_USET_11", "Ennek a felhasználónévnek a hozzáadása nem lehetséges, válassz másik felhasználónevet");   
-define("LAN_USET_12", "Túl rövid a megjelenő név. Válassz másikat");          
+define("LAN_USET_12", "Túl rövid a megjelenő név. Válassz másikat");
+define("LAN_USET_13", "Érvénytelen karakter a bejelentkező névben. Válassz másikat");
+define("LAN_USET_14", "A bejelentkező név túl hosszú. Válassz másikat");
+define("LAN_USET_15", "Megjelenő név túl hosszú. Válassz másikat");
+
+
+          
 ?>

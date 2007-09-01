@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_fla.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 22:34:00 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.3 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("FLALAN_1", "Sikertelen belépési kísérletek");
 define("FLALAN_2", "Nincs sikertelen belépési kísérlet rögzítve");
 define("FLALAN_3", "Kísérlet törölve");

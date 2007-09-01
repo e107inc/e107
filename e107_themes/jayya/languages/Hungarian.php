@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ŠSteve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/jayya/languages/Hungarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-10 20:56:32 $
+|     $Revision: 1.4 $
+|     $Date: 2007-09-01 11:13:21 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -23,4 +23,6 @@ define("LAN_THEME_3", "Tovább...");
 define("LAN_THEME_4", "Trackback: ");
 define("LAN_THEME_5", "Írta");
 define("LAN_THEME_6", "-");
+
+
 ?>

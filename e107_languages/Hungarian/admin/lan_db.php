@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_db.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-06-09 10:52:35 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.8 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("DBLAN_1", "Alapbeállítások elmentve az adatbázisban");
 define("DBLAN_2", "Adatbázis lementése");
 define("DBLAN_3", "Adatbázis lementése");
@@ -42,7 +36,7 @@ define("DBLAN_30", " (Ha egy bővítmény egy hibát mutat, ellenőrizd a PHP ke
 define("DBLAN_31", "Megvizsgálva");
 define("DBLAN_32", "Hiba");
 define("DBLAN_33", "Elérhetetlen");
-define("DBLAN_34", "Nem ellenőrzött");
+define("DBLAN_34", "Nem ellenörzött");
 
 
 

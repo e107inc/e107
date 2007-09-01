@@ -1,14 +1,7 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Hungarian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-17 00:27:27 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.23 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
 
 //if(!defined("PAGE_NAME")){define("PAGE_NAME", "Linkek");} <--
 // Lisa, could you please move this out of the language file ?

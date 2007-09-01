@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_rate.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.3 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# --------------------------------------------------------------------------
+
 define("RATELAN_0", "szavazat");
 define("RATELAN_1", "szavazat");
 define("RATELAN_2", "Hogyan értékeled?");

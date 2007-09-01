@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# --------------------------------------------------------------------------
+
 define("NT_LAN_US_1", "Felhasználói regisztráció");
 
 define("NT_LAN_UV_1", "Felhasználói regisztráció ellenörzése");

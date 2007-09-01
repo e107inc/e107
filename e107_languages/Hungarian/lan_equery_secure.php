@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_equery_secure.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:19 $
+# --------------------------------------------------------------------------
+
 define("EQSEC_LAN1", "Egy admin funkcióhoz leszel átirányítva, módosulhat az adatbázis");
 define("EQSEC_LAN2", "Erősítsd meg a műveletet:");
 define("EQSEC_LAN3", "Nincs utaló");

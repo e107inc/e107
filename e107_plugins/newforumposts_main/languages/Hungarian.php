@@ -9,7 +9,7 @@ define("NFPM_LAN_3", "Megtekintések");
 define("NFPM_LAN_4", "Válaszok");
 define("NFPM_LAN_5", "Utolsó üzenet");
 define("NFPM_LAN_6", "Témák");
-define("NFPM_LAN_7", " - ");
+define("NFPM_LAN_7", "Írta: ");
 
 define("NFPM_L1", "Ez a plugin megjeleníti az új fórumüzenetek listáját a főoldalon");
 define("NFPM_L2", "Legutóbbi fórumüzenetek");

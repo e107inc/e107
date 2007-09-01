@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-17 00:27:27 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - ver: 1.4 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("ADLAN_0", "Hírek");
 define("ADLAN_1", "Hozzáadás/módosítás/törlés");
 define("ADLAN_2", "Hírkategóriák");
@@ -145,7 +139,7 @@ define("ADLAN_131", "Egyéb eszközök");
 define("ADLAN_132", "Nyelv");
 define("ADLAN_133", "Alapértelmezett");
 
-define("ADLAN_134", "Státusz");
+define("ADLAN_134", "Állapot");
 define("ADLAN_135", "Admin Bejegyzések (Log)");
 
 define("ADLAN_136", "Mail");
@@ -171,6 +165,9 @@ define("ADLAN_150", "Admin Email Értesítések");
 
 define("ADLAN_151", "Fő");
 define("ADLAN_152", "Írd be a kódot");
+
+define("ADLAN_153", "Adminisztrációs terület");
+define('ADLAN_154', "Sourceforge kapcsolat hiba az új verzió ellenőrzése során");
 
 define('ADLAN_CL_1', 'Beállítások');
 define('ADLAN_CL_2', 'Felhasználók');
@@ -252,6 +249,7 @@ define("LAN_INACTIVE","Inaktív");
 define("LAN_BAN","Kitiltás");
 define("LAN_RATING", "Értékelés");
 
+define("LAN_UPLOAD", "Feltöltés");
 define("LAN_UPLOAD_IMAGES","Képek feltöltése");
 define("LAN_UPLOAD_FILES","File-k feltöltése");
 define("LAN_UPLOAD_ADDFILE","További file-k hozzáadása");
@@ -268,5 +266,5 @@ define("LAN_CONFIGURE", "Beállítás");
 define("LAN_BACK","Vissza");
 
 define("LAN_CREDITS","Credits");  
-define("LAN_NEWVERSION","Új verzió");
+define("LAN_NEWVERSION","Érvényes Új verzió");
 ?>

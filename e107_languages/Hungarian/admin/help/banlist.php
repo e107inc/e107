@@ -1,14 +1,24 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
+|     e107 website system
+|
+|     ŠSteve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/banlist.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-18 00:00:18 $
+|     $Revision: 1.4 $
+|     $Date: 2007-09-01 11:13:16 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 $caption = "Kitiltások súgó";
 $text = "Kitilthatsz felhasználókat az oldalról itt.<br />
 Add meg a teljes IP címet, vagy használj *-ot egy IP cím tartomány kitiltásához.<br /><br />
@@ -18,7 +28,7 @@ Az 123.123.123.* IP cím megadásával letiltod az erről az IP cím tartományr
 <b>Kitiltás email címmel</b><br />
 A foo@bar.com email cím megadása letiltja ennek az email címnek a használatát, így e címmel senki nem fog tudni regisztrálni.<br />
 Az *@bar.com cím megadása a bar.com domain-t tiltja le, így e domainről semmilyen email címmel senki nem fog tudni regisztrálni.<br /><br />
-<b>Kitiltás felhasználónév megadásával</b><br />
-A felhasználók kezelése alatt tudod megtenni.";
+<b>Kitiltás felhasználónévvel</b><br />
+Ezt végrehajthatod a felhasználók adminisztrációs oldalról.";
 $ns -> tablerender($caption, $text);
 ?>

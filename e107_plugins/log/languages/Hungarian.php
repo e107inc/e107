@@ -45,4 +45,5 @@ define("ADSTAT_L38", "Havi egyedi látogatások");
 define("ADSTAT_L39", "Bejegyzés törlése");
 define("ADSTAT_L40", "napban");
 define("ADSTAT_L41", "Hiba");
+define("ADSTAT_L42", "Még nincs havi statisztika.");
 ?>

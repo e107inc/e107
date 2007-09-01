@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_filemanager.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("FMLAN_1", "Feltöltve");
 define("FMLAN_2", "a");
 define("FMLAN_3", "könyvtárba");
@@ -58,7 +52,7 @@ define("FMLAN_43", "Kijelölt file-ok törlése");
 define("FMLAN_46", "Erősítsd meg a kiválasztott fájlok törlését.");
 define("FMLAN_47", "Felhasználók feltöltései");
 
-define("FMLAN_48", "Kiválasztott fiel áthelyezése");
+define("FMLAN_48", "Kiválasztott file áthelyezése");
 define("FMLAN_49", "Kiválasztott file áthelyezésének megerősítése.");
 define("FMLAN_50", "Áthelyezés");
 

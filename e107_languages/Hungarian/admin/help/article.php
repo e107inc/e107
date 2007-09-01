@@ -1,12 +1,19 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
+|     e107 website system
+|
+|     ŠSteve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/article.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-18 01:59:50 $
-|     $Author: lisa_
+|     $Revision: 1.6 $
+|     $Date: 2007-09-01 11:13:16 $
+|     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
 

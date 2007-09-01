@@ -1,15 +1,9 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_email.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
-if (!defined("PAGE_NAME")) {define("PAGE_NAME", "E-mail"); }
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.6 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:19 $
+# --------------------------------------------------------------------------
+
+if (!defined("PAGE_NAME")) {define("PAGE_NAME", "Email"); }
 
 define("LAN_EMAIL_1", "Feladó:");
 define("LAN_EMAIL_2", "Küldő IP címe:");
@@ -21,7 +15,7 @@ define("LAN_EMAIL_7", "email valakinek");
 define("LAN_EMAIL_8", "Üzenet");
 define("LAN_EMAIL_9", "Hiba: e-mail küldése sikertelen");
 define("LAN_EMAIL_10", "Levél címzettje");
-define("LAN_EMAIL_11", "E-mail elküldve");
+define("LAN_EMAIL_11", "Email elküldve");
 define("LAN_EMAIL_12", "Hiba");
 define("LAN_EMAIL_13", "Cikk küldése");
 define("LAN_EMAIL_14", "Hír küldése");

@@ -11,14 +11,14 @@
 
 // full day names
 Calendar._DN = new Array
-("Vas·rnap",
- "HÈtfı",
+("Vas√°rnap",
+ "H√©tf≈ë",
  "Kedd",
  "Szerda",
- "Cs¸tˆrtˆk",
- "PÈntek",
+ "Cs√ºt√∂rt√∂k",
+ "P√©ntek",
  "Szombat",
- "Vas·rnap");
+ "Vas√°rnap");
 
 // Please note that the following array of short day names (and the same goes
 // for short month names, _SMN) isn't absolutely necessary.  We give it here
@@ -49,16 +49,16 @@ Calendar._FD = 0;
 
 // full month names
 Calendar._MN = new Array
-("Janu·r",
- "Febru·r",
- "M·rcius",
- "¡prilis",
- "M·jus",
- "J˙nius",
- "J˙lius",
+("Janu√°r",
+ "Febru√°r",
+ "M√°rcius",
+ "√Åprilis",
+ "M√°jus",
+ "J√∫nius",
+ "J√∫lius",
  "Augusztus",
  "Szeptember",
- "OktÛber",
+ "Okt√≥ber",
  "November",
  "December");
 
@@ -66,11 +66,11 @@ Calendar._MN = new Array
 Calendar._SMN = new Array
 ("Jan",
  "Febr",
- "M·rc",
- "¡pr",
- "M·j",
- "J˙n",
- "J˙l",
+ "M√°rc",
+ "√Åpr",
+ "M√°j",
+ "J√∫n",
+ "J√∫l",
  "Aug",
  "Szept",
  "Okt",
@@ -79,49 +79,49 @@ Calendar._SMN = new Array
 
 // tooltips
 Calendar._TT = {};
-Calendar._TT["INFO"] = "A napt·rrÛl";
+Calendar._TT["INFO"] = "A napt√°rr√≥l";
 
 Calendar._TT["ABOUT"] =
 "DHTML Date/Time Selector\n" +
 "(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
-"A legfrissebb verziÛ megtekintÈsÈhez l·togass ide: http://www.dynarch.com/projects/calendar/\n" +
-"Kiadva a GNU LGPL alatt.  A rÈszletek megtekintÈse itt http://gnu.org/licenses/lgpl.html ." +
+"A legfrissebb verzi√≥ megtekint√©s√©hez l√°togass ide: http://www.dynarch.com/projects/calendar/\n" +
+"Kiadva a GNU LGPL alatt.  A r√©szletek megtekint√©se itt http://gnu.org/licenses/lgpl.html ." +
 "\n\n" +
-"D·tum kiv·laszt·s:\n" +
-"- Haszn·ld a \xab, \xbb gombokat az Èv kiv·laszt·s·hoz\n" +
-"- Haszn·ld a " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " gombot a hÛnap kiv·laszt·s·hoz\n" +
-"- Tartsd az egÈr gombot b·rmelyik gomb felett a gyorsabb kiv·laszt·shoz.";
+"D√°tum kiv√°laszt√°s:\n" +
+"- Haszn√°ld a \xab, \xbb gombokat az √©v kiv√°laszt√°s√°hoz\n" +
+"- Haszn√°ld a " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " gombot a h√≥nap kiv√°laszt√°s√°hoz\n" +
+"- Tartsd az eg√©r gombot b√°rmelyik gomb felett a gyorsabb kiv√°laszt√°shoz.";
 Calendar._TT["ABOUT_TIME"] = "\n\n" +
-"Idı kiv·laszt·sa:\n" +
-"- Katt az idı b·rmely rÈszÈre a nˆvelÈsÈhez\n" +
-"- vagy Shift-katt a csˆkkentÈshez\n" +
-"- vagy katt Ès fogd a gyorsabb kiv·laszt·shoz.";
+"Id≈ë kiv√°laszt√°sa:\n" +
+"- Katt az id≈ë b√°rmely r√©sz√©re a n√∂vel√©s√©hez\n" +
+"- vagy Shift-katt a cs√∂kkent√©shez\n" +
+"- vagy katt √©s fogd a gyorsabb kiv√°laszt√°shoz.";
 
-Calendar._TT["PREV_YEAR"] = "Elızı Èv (tartsd a men¸hˆz)";
-Calendar._TT["PREV_MONTH"] = "Elızı hÛnap (tartsd a men¸hˆz)";
-Calendar._TT["GO_TODAY"] = "Ugr·s mai napra";
-Calendar._TT["NEXT_MONTH"] = "Kˆvetkezı hÛnap (tartsd a men¸hˆz)";
-Calendar._TT["NEXT_YEAR"] = "Kˆvetkezı Èv (tartsd a men¸hˆz)";
-Calendar._TT["SEL_DATE"] = "D·tum kiv·laszt·sa";
-Calendar._TT["DRAG_TO_MOVE"] = "Fogd a mozgat·shoz";
+Calendar._TT["PREV_YEAR"] = "El≈ëz≈ë √©v (tartsd a men√ºh√∂z)";
+Calendar._TT["PREV_MONTH"] = "El≈ëz≈ë h√≥nap (tartsd a men√ºh√∂z)";
+Calendar._TT["GO_TODAY"] = "Ugr√°s mai napra";
+Calendar._TT["NEXT_MONTH"] = "K√∂vetkez≈ë h√≥nap (tartsd a men√ºh√∂z)";
+Calendar._TT["NEXT_YEAR"] = "K√∂vetkez≈ë √©v (tartsd a men√ºh√∂z)";
+Calendar._TT["SEL_DATE"] = "D√°tum kiv√°laszt√°sa";
+Calendar._TT["DRAG_TO_MOVE"] = "Fogd a mozgat√°shoz";
 Calendar._TT["PART_TODAY"] = " (ma)";
 
 // the following is to inform that "%s" is to be the first day of week
 // %s will be replaced with the day name.
-Calendar._TT["DAY_FIRST"] = "%s elsıkÈnt megjelenÌt";
+Calendar._TT["DAY_FIRST"] = "%s els≈ëk√©nt megjelen√≠t";
 
 // This may be locale-dependent.  It specifies the week-end days, as an array
 // of comma-separated numbers.  The numbers are from 0 to 6: 0 means Sunday, 1
 // means Monday, etc.
 Calendar._TT["WEEKEND"] = "0,6";
 
-Calendar._TT["CLOSE"] = "Bez·r";
+Calendar._TT["CLOSE"] = "Bez√°r";
 Calendar._TT["TODAY"] = "Ma";
-Calendar._TT["TIME_PART"] = "(Shift-)Katt vagy fogd az ÈrtÈk megv·ltoztat·s·hoz";
+Calendar._TT["TIME_PART"] = "(Shift-)Katt vagy fogd az √©rt√©k megv√°ltoztat√°s√°hoz";
 
 // date formats
 Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
 Calendar._TT["TT_DATE_FORMAT"] = "%a, %b %e";
 
 Calendar._TT["WK"] = "wk";
-Calendar._TT["TIME"] = "Idı:";
+Calendar._TT["TIME"] = "Id≈ë:";

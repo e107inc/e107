@@ -1,18 +1,12 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_submitnews.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.3 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# --------------------------------------------------------------------------
+
 define("PAGE_NAME", "Hír beküldése");
 define("LAN_7", "Felhasználónév: ");
 define("LAN_62", "Cím: ");
-define("LAN_112", "E-mail cím: ");
+define("LAN_112", "Email cím: ");
 define("LAN_133", "Köszönjük!");
 define("LAN_134", "A beküldött hírt rögzítettük. Amint tudjuk ellenőrizzük.");
 define("LAN_135", "Hír: ");

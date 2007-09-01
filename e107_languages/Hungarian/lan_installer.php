@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_installer.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-09 10:52:35 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.11 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# --------------------------------------------------------------------------
+
 define("LANINS_001", "e107 Telepítés");
 
 
@@ -143,15 +137,18 @@ define("LANINS_092", "Kapcsolat");
 define("LANINS_093", "Hozzáférés a Privát Üzenetküldés menühöz");
 define("LANINS_094", "Privát fórumcsoport példa");
 define("LANINS_095", "Integritás ellenörzés");
-define("LANINS_096", "Legújabb hozzászólások");
-define("LANINS_097", "[több...]");
-define("LANINS_098", "Cikkek");
-define("LANINS_099", "Cikkek főoldal ...");
-define("LANINS_100", "Legújabb fórumüzenetek");
-define("LANINS_101", 'Menü beállítások frissitése');
+
+define("LANINS_096", 'Legújabb hozzászólások');
+define("LANINS_097", '[tovább ...]');
+define("LANINS_098", 'Cikkek');
+define("LANINS_099", 'Cikkek főoldal ...');
+define("LANINS_100", 'Legújabb fórumüzenetek');
+define("LANINS_101", 'Menü beállítások frissítése');
 define("LANINS_102", 'Dátum / Idő');
 define("LANINS_103", 'Leírások');
 define("LANINS_104", 'Leírások főoldal ...');
+
 define("LANINS_105", '');
 define("LANINS_106", '');
+
 ?>

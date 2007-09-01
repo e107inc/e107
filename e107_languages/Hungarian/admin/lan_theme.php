@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-18 00:00:17 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("TPVLAN_1", "Ez a(z) <b>'".PREVIEWTHEMENAME."'</b> theme előnézete. Ez nem az oldalad theme-je, csak azt mutatja meg, hogy néz ki az oldalad e theme-vel.<br />A theme használatához lépj <a href='".e_ADMIN."theme.php'>a theme kezelőbe</a> és válaszd a 'Beállítás az oldal témájaként' opciót.<br /><a href='".e_ADMIN."theme.php'>További témák előnézete</a>");
 define("TPVLAN_2", "Theme előnézet");
 define("TPVLAN_3", "Az oldal témája:");
@@ -29,7 +23,7 @@ define("TPVLAN_16", "Admin üzenet");
 define("TPVLAN_17", "A file nem tűnik ténylegesen .zip vagy .tar archívnak.");
 define("TPVLAN_18", "Hiba: a file kicsomagolása nem sikerült");
 define("TPVLAN_19", "A theme feltöltve és kicsomagolva, görgesd lefelé az oldalt, ha látni akarod a theme-t a  listában.");
-define("TPVLAN_20", "Az automatikus feltöltés és kicsomagolás nem lehetséges, mert a(z) ".e_THEME." könyvtár nem írható - adj rá írási jogot (CHMOD 777).");
+define("TPVLAN_20", "Az automatikus feltöltés és kicsomagolás nem lehetséges, mert a themes könyvtár nem írható - adj rá írási jogot (CHMOD 777).");
 
 define("TPVLAN_21", "Jelenleg ez a beállított theme");
 
@@ -60,7 +54,9 @@ define("TPVLAN_41", "Válaszd ki a használandó admin elrendezési stílust");
 define("TPVLAN_42", "Admin beállítások mentése");
 define("TPVLAN_43", "Admin beállítások elmentve");
 
-define("TPVLAN_46", "PCLZIP tömörítési hiba:");
-define("TPVLAN_47", "PCLTAR tömörítési hiba: ");
+
+define("TPVLAN_46", "PCLZIP kicsomagolási hiba:");
+define("TPVLAN_47", "PCLTAR kicsomagolási hiba: ");
 define("TPVLAN_48", "kód:");
+
 ?>

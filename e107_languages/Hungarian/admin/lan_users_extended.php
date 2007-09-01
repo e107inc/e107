@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-17 00:27:27 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - ver: 1.14 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("EXTLAN_1", "Név");
 define("EXTLAN_2", "Előnézet");
 define("EXTLAN_3", "Értékek");
@@ -88,6 +82,8 @@ define("EXTLAN_72", "Kikapcsolható");
 define("EXTLAN_73", "Nem lehet kikapcsolni!");
 define("EXTLAN_74", "ez egy védett mező és nem lehet használni.");
 define("EXTLAN_75", "Hiba, a mezőt nem sikerült hozzáadni az adatbázishoz.");
+define("EXTLAN_76", "Érvénytelen karakter a mező nevében - csak A-Z, a-z, 0-9, '_' engedélyezett.");
+define("EXTLAN_77", "Kategória nincs törölve - először töröld a benne lévő mezőket: ");
 
 
  //textbox

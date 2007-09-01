@@ -1,18 +1,10 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/lan_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# --------------------------------------------------------------------------
+
 define("PAGE_NAME", "Keresés");
 
-define("LAN_98", "Hírek");
-define("LAN_99", "Hozzászólások");
 define("LAN_140", "Regisztrált tagok");
 define("LAN_180", "Keresés");
 define("LAN_192", "Összes kategória");
@@ -24,9 +16,7 @@ define("LAN_196", "találat");
 define("LAN_197", "Letöltések");
 define("LAN_198", "Nincs találat");
 define("LAN_199", "Keresendő:");
-define("LAN_200", "Keresés helye:");
 
-define("LAN_201", "Módosítsd a keresési feltételt");
 define("LAN_416", "Be kell jelentkezned az oldal eléréséhez.");
 define("LAN_417", "A keresett kifejezésnek legalább 3 karakter hosszúnak kell lennie");
 
@@ -114,5 +104,11 @@ define("LAN_SEARCH_74", "Regisztrált");
 define("LAN_SEARCH_75", "Keresés típusa");
 define("LAN_SEARCH_76", "Üzenet az oldalon");
 define("LAN_SEARCH_77", "Üzenet a profil oldalon");
+
+// Following formerly LAN_nnn - renamed to avoid clashes
+define("LAN_SEARCH_98", "Hírek");
+define("LAN_SEARCH_99", "Hozzászólások");
+//define("LAN_SEARCH_200", "Kategóriák:");						// Redundant LAN?
+define("LAN_SEARCH_201", "Határozd meg újra a keresés feltételét");
 
 ?>

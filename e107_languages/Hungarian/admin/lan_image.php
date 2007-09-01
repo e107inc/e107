@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_image.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 22:34:00 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("IMALAN_1", "Képek engedélyezése");
 define("IMALAN_2", "Képek megjelenítése, a teljes oldalra érvényes lesz (hozzászólások, chatbox stb)");
 define("IMALAN_3", "Átméretezési eljárás");
@@ -60,4 +54,10 @@ define("IMALAN_48", "Összes külső avatar");
 define("IMALAN_49", "Avatar-val rendelkező felhasználók");
 define("IMALAN_50", "Összes");
 define("IMALAN_51", "Avatar, kinek ");
+
+define("IMALAN_52", "Az ImageMagick útvonala nem megfelelő");
+define("IMALAN_53", "Az ImageMagick útvonala megfelelő, de a file konvertálása talán nem érvényes");
+define("IMALAN_54", "GD verzió telepítve:");
+define('IMALAN_55', 'Nincs telepítve');
+
 ?>

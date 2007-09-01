@@ -90,4 +90,6 @@ define("LAN_dl_74", "Összes letöltés a tükörszerverről: ");
 
 define("LAN_dl_75", "nincs kép ");
 define("LAN_dl_76", "Ugrás"); 
+define("LAN_dl_77", "Letöltések");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
+
 ?>

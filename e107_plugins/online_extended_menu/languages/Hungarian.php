@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Hungarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-17 00:27:27 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.3 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("ONLINE_EL1", "vendég: ");
 define("ONLINE_EL2", "tag: ");
 define("ONLINE_EL3", "Ezen az oldalon: ");

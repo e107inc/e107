@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_language.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("LANG_LAN_00","nem lett létrehozva. (már létezik)");
 define("LANG_LAN_01","törölve (ha volt) és létrehozva.");
 define("LANG_LAN_02","nem lett törölve");
@@ -24,11 +18,10 @@ define("LANG_LAN_12", "Többnyelvű táblák engedélyezése");
 define("LANG_LAN_13", "Többnyelvűség beállításai");
 define("LANG_LAN_14", "Az oldal alapértelmezett nyelve");
 define("LANG_LAN_15", "Jelöld be az adatok másolásához az alapértelmezett nyelvből. (hasznos a linkeknél, hírkategóriáknál stb.) ");
-define("LANG_LAN_16", "Több-nyelvű Adatbázis Használat");
+define("LANG_LAN_16", "Több-nyelvű Adatbázis Használat"); 
 define("LANG_LAN_17", "Alapértelmezett nyelv - További táblák nem szükségesek.");
 define("LANG_LAN_18", "Használd az elhelyezett Subdomain-t a nyelv kiválasztásához:");
 define("LANG_LAN_19", "Pl.: fr.mydomain.com a francia nyelv kiválasztásához.");
-define("LANG_LAN_20", "Írd be a fő domain nevet az engedélyezéshez. Pl.: mydomain.com");
 
 define("LANG_LAN_21", "Nyelvi eszközök");
 ?>

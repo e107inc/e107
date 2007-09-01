@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Hungarian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-17 00:27:27 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.13 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Újdonság lista"); }
 
 define("LIST_PLUGIN_1", "Újdonság lista");

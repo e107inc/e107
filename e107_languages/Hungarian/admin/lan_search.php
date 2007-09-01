@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 22:34:01 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - ver: 1.23 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("SEALAN_1", "Keresés beállítása");
 define("SEALAN_2", "A keresés eredményében megjelenítendő karakterek száma:");
 define("SEALAN_3", "Keresés rendezési módja:");
@@ -42,7 +36,7 @@ define("SEALAN_37", "Bejelölő doboz");
 define("SEALAN_38", "Rádió gomb");
 define("SEALAN_39", "Egyéni oldalak");
 
-define("LAN_98", "Hírek");
+define("LAN_SEARCH_98", "Hírek");
 define("LAN_197", "Letöltések");
 define("LAN_418", "Egyéni oldalak");
 

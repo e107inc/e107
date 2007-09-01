@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-02-18 00:00:17 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 Hungarian language file - $Revision: 1.6 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# --------------------------------------------------------------------------
+
 define("EPL_ADLAN_0", "Telepítés");
 define("EPL_ADLAN_1", "Eltávolítás");
 define("EPL_ADLAN_2", "Biztosan törölni akarod ezt a plugint?");
@@ -57,9 +51,10 @@ define("EPL_ADLAN_42", "Hiba: a file kicsomagolása nem sikerült");
 define("EPL_ADLAN_43", "A plugin feltöltve és kicsomagolva, görgesd lefelé az oldalt, ha látni akarod a plugint az elérhető plugin-ek listájában.");
 define("EPL_ADLAN_44", "Az automatikus modul feltöltés és kicsomagolás nem lehetséges, mert a(z) ".e_PLUGIN." könyvtár nem írható - adj rá írási jogot (CHMOD 777).");
 define("EPL_ADLAN_45", "A menü feltöltve és kicsomagolva, az aktiváláshoz lépj a <a href='".e_ADMIN."menu.php'>Menük oldalra</a>.");
-define("EPL_ADLAN_46", "PCLZIP tömörítési hiba: ");
-define("EPL_ADLAN_47", "PCLZIP tömörítési hiba: ");
-define("EPL_ADLAN_48", "code: ");
+define("EPL_ADLAN_46", "PCLZIP kicsomagolási hiba:");
+define("EPL_ADLAN_47", "PCLTAR kicsomagolási hiba: ");
+define("EPL_ADLAN_48", "kód:");
+define('EPL_ADLAN_49', "Táblák nem lettek törölve");
 
 //define("EPL_CANCEL", "Mégsem"); use LAN_CANCEL instead !!
 //define("EPL_EMAIL", "E-mail");
