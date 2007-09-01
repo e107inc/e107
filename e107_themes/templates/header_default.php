@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-07-11 14:07:26 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2007-09-01 09:05:13 $
+|     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -71,7 +71,11 @@ if (!function_exists("parseheader")) {
 //
 
 // send the charset to the browser - overrides spurious server settings with the lan pack settings.
-header("Content-type: text/html; charset=".CHARSET, true);
+// And set the MIME type appropriately
+if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) 
+  header("Content-type: application/xhtml+xml; charset=".CHARSET, true);
+else
+  header("Content-type: text/html; charset=".CHARSET, true);
 
 
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
