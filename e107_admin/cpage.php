@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-07-11 12:00:29 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2007-09-02 11:44:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -169,7 +169,11 @@ class page
 
 		if ($sub_action == "edit" && !isset($_POST['preview']) && !isset($_POST['submit']))
 		{
-			if ($sql->db_Select("page", "*", "page_id='$id' "))
+        	$query = "SELECT p.*,l.link_name,m.menu_name FROM #page AS p
+			LEFT JOIN #links AS l ON l.link_url='page.php?".$id."'
+			LEFT JOIN #menus AS m ON m.menu_path='$id' WHERE p.page_id ='$id' LIMIT 1";
+
+            if ($sql->db_Select_gen($query))
 			{
 				$row                          = $sql->db_Fetch();
 				$page_class                   = $row['page_class'];
@@ -180,39 +184,21 @@ class page
 				$page_display_authordate_flag = $row['page_author'];
 				$data                         = $tp -> toFORM($row['page_text']);
 				$edit                         = TRUE;
+				$menu_name					  = $tp -> toFORM($row['menu_name']);
 			}
-
-			if ($sql -> db_Select("links", "*", "link_url='page.php?".$id."'"))
-			{
-				$row = $sql -> db_Fetch();
-				$page_link = $row['link_name'];
 			}
-			else
-			{
-			  $page_link = '';
-			}
-		}
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='dataform' enctype='multipart/form-data'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>";
 
-		if($mode)
+		if($mode)  // menu mode.
 		{
 			$text .= "<tr>
 			<td style='width:25%' class='forumheader3'>".CUSLAN_7."</td>
-			<td style='width:75%' class='forumheader3'>";
-
-			if($edit)
-			{
-				$text .= $page_theme;
-			}
-			else
-			{
-				$text .= "<input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' />";
-			}
-
-			$text .= "</td>
+			<td style='width:75%' class='forumheader3'>
+           <input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' />
+		   	</td>
 			</tr>";
 		}
 
@@ -274,7 +260,7 @@ class page
 
 			<tr>
 			<td style='width:25%' class='forumheader3'>".CUSLAN_16."<br /><span class='smalltext'>".CUSLAN_17."</span></td>
-			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='100' /></td>
+			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='50' /></td>
 			</tr>
 
 			<tr>
@@ -311,15 +297,18 @@ class page
 		$page_text = $tp -> toDB($_POST['data']);
 		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
 
+
 		if($mode)
-		{	// Don't think $_POST['page_ip_restrict'] is ever set
+		{	// Don't think $_POST['page_ip_restrict'] is ever set.
+
 			$update = $sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='$mode'");
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
 
 			if($type)
 			{
-				$sql -> db_Update("menus", "menu_name='$page_title' WHERE menu_path='$mode' ");
+				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
+				$sql -> db_Update("menus", "menu_name='$menu_name' WHERE menu_path='$mode' ");
 				$update++;
 			}
 
@@ -345,7 +334,7 @@ class page
 					$e107cache->clear("sitelinks");
 				}
 			}
-			admin_update($update, 'update', "Page updated in database.");
+			admin_update($update, 'update', LAN_UPDATED);
 		}
 		else
 		{
