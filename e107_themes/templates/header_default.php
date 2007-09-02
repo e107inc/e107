@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-09-01 09:05:13 $
+|     $Revision: 1.12 $
+|     $Date: 2007-09-02 08:42:11 $
 |     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -71,10 +71,10 @@ if (!function_exists("parseheader")) {
 //
 
 // send the charset to the browser - overrides spurious server settings with the lan pack settings.
-// And set the MIME type appropriately
-if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) 
-  header("Content-type: application/xhtml+xml; charset=".CHARSET, true);
-else
+// Would like to set the MIME type appropriately - but it broke other things
+//if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) 
+//  header("Content-type: application/xhtml+xml; charset=".CHARSET, true);
+//else
   header("Content-type: text/html; charset=".CHARSET, true);
 
 
