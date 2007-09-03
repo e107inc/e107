@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2007-09-02 08:41:55 $
-|     $Author: e107steved $
+|     $Revision: 1.107 $
+|     $Date: 2007-09-03 10:46:56 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -107,12 +107,23 @@ if (isset($theme_js_php) && $theme_js_php) {
 } else {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
-	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
 
 if (isset($eplug_js) && $eplug_js) {
 	echo "\n<!-- eplug_js -->\n";
-	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+	if(is_array($eplug_js))
+	{
+    	foreach($eplug_js as $kjs)
+		{
+        	echo "<script type='text/javascript' src='{$kjs}'></script>\n";
+		}
+	}
+	else
+	{
+		echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+	}
+
 }
 
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
@@ -128,7 +139,18 @@ echo "<!-- *CSS* -->\n";
 
 if (isset($eplug_css) && $eplug_css) {
 	echo "\n<!-- eplug_css -->\n";
-	echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
+    if(is_array($eplug_css))
+	{
+    	foreach($eplug_css as $kcss)
+		{
+        	echo "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
+		}
+	}
+	else
+	{
+		echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
+	}
+
 }
 
 echo "<!-- Theme css -->\n";
