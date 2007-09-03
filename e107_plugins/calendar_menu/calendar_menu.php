@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2006-11-24 22:27:18 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2007-09-03 21:06:02 $
+|     $Author: e107steved $
 |
 | 22.10.06 steved - Various tidying up, additional options supported
 | 24.10.06 steved - templated, various cleaning up
@@ -158,7 +158,7 @@ $cal_text .= $CALENDAR_MENU_HEADER_START;
 foreach($cal_week as $cal_day)
 {
     $cal_text .= $CALENDAR_MENU_HEADER_FRONT;
-	$cal_text .= substr($cal_day, 0, $pref['eventpost_lenday']);
+	$cal_text .= $tp->text_truncate($cal_day, $pref['eventpost_lenday'], '');
     $cal_text .= $CALENDAR_MENU_HEADER_BACK;
 }
 $cal_text .= $CALENDAR_MENU_HEADER_END;  // Close off header row, open first date row

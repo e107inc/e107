@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-11-16 10:24:14 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2007-09-03 21:06:02 $
+|     $Author: e107steved $
 |
 | 10.11.06 - mods for next CVS release
 +----------------------------------------------------------------------------+
@@ -147,7 +147,7 @@ SC_BEGIN SHOWEVENT_INDICAT
 SC_END
 
 SC_BEGIN SHOWEVENT_HEADING
-	global $SHOWEVENT_HEADING, $ev, $datearray, $c;
+	global $SHOWEVENT_HEADING, $ev, $datearray, $c, $tp;
 	$linkut = mktime(0 , 0 , 0 , $datearray['mon'], $c, $datearray['year']);
 	if(isset($ev['fulltopic']) && $ev['fulltopic'])
 	{  // Used on first day
@@ -155,14 +155,7 @@ SC_BEGIN SHOWEVENT_HEADING
 	}
 	else
 	{
-		if (strlen($ev['event_title']) > 10)
-		{
-		  $show_title = substr($ev['event_title'], 0, 10) . "...";
-		}
-		else
-		{
-		  $show_title = $ev['event_title'];
-		}
+	  $show_title = $tp->text_truncate($ev['event_title'], 10, "...");
 	}
 	if($ev['startofevent'])
 	{
@@ -197,10 +190,10 @@ SC_END
 
 // CALENDAR CALENDAR ------------------------------------------------------------
 SC_BEGIN CALENDAR_CALENDAR_HEADER_DAY
-	global $CALENDAR_CALENDAR_HEADER_DAY, $day, $pref, $week;
+	global $CALENDAR_CALENDAR_HEADER_DAY, $day, $pref, $week, $tp;
 	if(isset($pref['eventpost_lenday']) && $pref['eventpost_lenday'])
 	{
-	  return "<strong>".substr($day,0,$pref['eventpost_lenday'])."</strong>";
+	  return "<strong>".$tp->text_truncate($day,$pref['eventpost_lenday'],'')."</strong>";
 	}
 	else
 	{
