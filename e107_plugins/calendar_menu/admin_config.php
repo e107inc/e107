@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-04 21:09:46 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -61,6 +61,7 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_mailaddress'] = $_POST['eventpost_mailaddress'];
 	$pref['eventpost_asubs'] = $_POST['eventpost_asubs'];
 	$pref['eventpost_emaillog'] = $_POST['eventpost_emaillog'];
+	$pref['eventpost_editmode'] = $_POST['eventpost_editmode'];
 	save_prefs();
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
 	$message = EC_LAN_75; // "Calendar settings updated.";
@@ -908,6 +909,18 @@ $text .= "
 		<td class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fivemins' value='1' ".($pref['eventpost_fivemins']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='smalltext'><em>".EC_ADLAN_A139."</em></span>
 		</td>
 	</tr>
+
+	<tr>
+		<td class='forumheader3'>".EC_ADLAN_A200."<br /></td>
+		<td class='forumheader3'>
+			<select name='eventpost_editmode' class='tbox'>
+			<option value='0' ".($pref['eventpost_editmode']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A201."</option>
+			<option value='1' ".($pref['eventpost_editmode']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A202."</option>
+			<option value='2' ".($pref['eventpost_editmode']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A203."</option>
+			</select>
+		</td>
+	</tr>
+
 	
 	<tr>
 		<td class='forumheader3'>".EC_ADLAN_A122."<br />

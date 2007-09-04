@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-04 21:09:47 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -44,9 +44,9 @@ $cal_datearray		= $ecal_class->cal_date;
 $cal_current_month	= $cal_datearray['mon'];
 $cal_current_year	= $cal_datearray['year'];
 $numberdays	= date("t", $ecal_class->cal_timedate); // number of days in this month
-$cal_monthstart		= mktime(0, 0, 0, $cal_current_month, 1, $cal_current_year);			// Time stamp for first day of month
+$cal_monthstart		= gmmktime(0, 0, 0, $cal_current_month, 1, $cal_current_year);			// Time stamp for first day of month
 $cal_firstdayarray	= getdate($cal_monthstart);												
-$cal_monthend		= mktime(0, 0, 0, $cal_current_month + 1, 1, $cal_current_year) -1;		// Time stamp for last day of month
+$cal_monthend		= gmmktime(0, 0, 0, $cal_current_month + 1, 1, $cal_current_year) -1;		// Time stamp for last day of month
 //$cal_thismonth	= $cal_datearray['mon'];
 $cal_thisday	= $cal_datearray['mday'];	// Today
 $cal_events = array();
@@ -110,7 +110,7 @@ for ($i = 0; $i < 7; $i++)
   $cal_day = $ecal_class->day_offset_string($i);
   $cal_text .= $CALENDAR_MENU_HEADER_FRONT;
 //  $cal_text .= substr($cal_day, 0, $pref['eventpost_lenday']);
-  $cal_text .= substr($cal_day, 0, 1);		// Unlikely to have room for more than 1 letter
+  $cal_text .= $tp->text_truncate($cal_day, 1, '');		// Unlikely to have room for more than 1 letter
   $cal_text .= $CALENDAR_MENU_HEADER_BACK;
 }
 $cal_text .= $CALENDAR_MENU_HEADER_END;  // Close off header row, open first date row
@@ -137,7 +137,7 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
     $cal_event_count = 0;
     $title = "";
     if ($cal_thisday == $cal_c) $cal_css = 1;
-    $cal_linkut = mktime(0 , 0 , 0 , $cal_current_month, $cal_c, $cal_current_year).".one";  // Always need "one"
+    $cal_linkut = gmmktime(0 , 0 , 0 , $cal_current_month, $cal_c, $cal_current_year).".one";  // Always need "one"
     if (array_key_exists($cal_c, $cal_events))
     {	// There are events today
       $cal_event_icon = "calendar_menu/images/" . $cal_events[$cal_c]['0'];		// Icon file could be NULL

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-04 21:09:47 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -410,6 +410,12 @@ define('EC_ADLAN_A196', "Display/Print/PDF");
 define('EC_ADLAN_A197', "No class membership");
 define('EC_ADLAN_A198', "Invalid User");
 define('EC_ADLAN_A199', "Show 'recent' icon");
+define('EC_ADLAN_A200', "Editor for events");
+define('EC_ADLAN_A201', "BBCode (Standard)");
+define('EC_ADLAN_A202', "BBCode with help");
+define('EC_ADLAN_A203', "WYSIWYG");
+define('EC_ADLAN_A204', "");
+define('EC_ADLAN_A205', "");
 
 // Notify
 define("NT_LAN_EC_1", "Event Calendar Events");
