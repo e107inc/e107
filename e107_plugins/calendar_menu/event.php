@@ -11,12 +11,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-04 21:09:47 $
 |     $Author: e107steved $
 |
-To do:
-	1. Clear array variables after use - ev_list, tim_arr
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -57,6 +55,10 @@ $cal = new DHTML_Calendar(true);
 
 $cat_filter = intval(varset($_POST['event_cat_ids'],0));
 $mult_count = 0;
+
+
+$e_wysiwyg = $pref['eventpost_editmode'] == 2 ? 'ne_event' : '';
+
 
 // Array links db field names to internal variables
 $ev_fields = array(
@@ -600,15 +602,29 @@ if ($action == "ne" || $action == "ed")
         $text .= "</select>
 		</td></tr>";
 
+		switch ($pref['eventpost_editmode'])
+		{
+		  case 1  : $insertjs = "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
+		  case 2  : $insertjs = "rows='25' ";
+		  default : $insertjs = "rows='15' ";
+		}
+
         $text .= "
 		<tr><td class='forumheader3'>".EC_LAN_32." </td><td class='forumheader3'>
 		<input class='tbox' type='text' name='ne_location' size='60' value='".(isset($ne_location) ? $ne_location : "")."' maxlength='200' style='width:95%' />
 		</td></tr>
 
 		<tr><td class='forumheader3'>".EC_LAN_57." *</td><td class='forumheader3'>
-		<textarea class='tbox' name='ne_event' cols='59' rows='8' style='width:95%'>".(isset($ne_event) ? $ne_event : "")."</textarea>
-		</td></tr>";
+		<textarea class='tbox' id='ne_event' name='ne_event' cols='59' style='width:95%' {$insertjs}>".(isset($ne_event) ? $ne_event : "")."</textarea>";
+		if ($pref['eventpost_editmode'] == 1)
+		{
+		  // Show help
+		  require_once(e_HANDLER."ren_help.php");
+		  $text .= "<br />".display_help("helpb", 'cpage');
+		}
 		
+		$text .= "</td></tr>";
+
         // Only display for forum thread/link if required.  No point if not wanted
         if (isset($pref['eventpost_forum']) && $pref['eventpost_forum'] == 1)
         {
@@ -657,7 +673,7 @@ if ($action == "ne" || $action == "ed")
         header("location:".e_PLUGIN."calendar_menu/event.php");
         exit;
     }
-}   // End of "Enter New Event
+}   // End of "Enter New Event"
 
 
 //-----------------------------------------------
@@ -851,6 +867,7 @@ $ns->tablerender($caption.(isset($cap_title) ? $cap_title : ""), $text2);
 // Claim back memory no longer required
 unset($ev_list);
 unset($text2);
+unset($tim_arr);
 
 require_once(FOOTERF);
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.4 $
+|     $Date: 2007-09-04 21:09:47 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -161,9 +161,9 @@ SC_BEGIN EC_SHOWEVENT_HEADING
 	global $ev, $datearray, $c, $tp;
 	$linkut = mktime(0 , 0 , 0 , $datearray['mon'], $c, $datearray['year']);
 	$show_title = $tp->toHTML($ev['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
-	if(isset($ev['fulltopic']) && !$ev['fulltopic'] && (strlen($show_title) > 10))
+	if(isset($ev['fulltopic']) && !$ev['fulltopic'])
 	{
-	  $show_title = substr($show_title, 0, 10) . "...";
+	  $show_title = $tp->text_truncate($show_title, 10, "...");
 	}
 	if($ev['startofevent'])
 	{
@@ -181,10 +181,10 @@ SC_END
 // CALENDAR CALENDAR - 'Big' calendar
 //------------------------------------------
 SC_BEGIN EC_CALENDAR_CALENDAR_HEADER_DAY
-	global $day, $pref;
+	global $day, $pref, $tp;
 	if(isset($pref['eventpost_lenday']) && $pref['eventpost_lenday'])
 	{
-	  return "<strong>".substr($day,0,$pref['eventpost_lenday'])."</strong>";
+	  return "<strong>".$tp->text_truncate($day,$pref['eventpost_lenday'],'')."</strong>";
 	}
 	else
 	{
