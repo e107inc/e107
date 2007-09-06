@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/e_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-06-07 13:37:21 $
-|     $Author: lisa_ $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-06 07:23:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }   
 
 $lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
