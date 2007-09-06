@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.192 $
-|     $Date: 2007-06-07 19:19:28 $
-|     $Author: e107steved $
+|     $Revision: 1.193 $
+|     $Date: 2007-09-06 07:25:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -55,7 +55,8 @@ class e_parse
 		// Disabled by Default
 		'defs' => FALSE,					// Convert defines(constants) within text.
 		'constants' => FALSE,				// replace all {e_XXX} constants with their e107 value
-		'parse_sc' => FALSE					// Parse shortcodes - TRUE enables parsing
+		'parse_sc' => FALSE,			   	// Parse shortcodes - TRUE enables parsing
+		'no_tags' => FALSE                  // remove HTML tags.
 		);
 
 		// Super modifiers adjust default option values
@@ -97,9 +98,9 @@ class e_parse
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
 						'defs'=>TRUE,'parse_sc'=>TRUE),
 
-				'rawtext' =>			// text is used (for admin edit) without fancy conversions
+				'rawtext' =>			// text is used (for admin edit) without fancy conversions or html.
 					array(
-						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,'no_tags'=>TRUE
 						// leave opt-in options off
 						)
 		);
@@ -468,22 +469,23 @@ class e_parse
 											// work with all lower case
 											strtolower($modifiers)
 										)
-		);
+				);
 
 				foreach ($aMods as $mod)
-		{
-				  if (isset($this->e_SuperMods[$mod]))
-				  {
-				  	$opts = $this->e_SuperMods[$mod];
-				  }
-		}
+				{
+					if (isset($this->e_SuperMods[$mod]))
+					{
+						  	$opts = $this->e_SuperMods[$mod];
+					}
+				}
 
 				// Find any regular mods
 				foreach ($aMods as $mod)
 				{
-			  	$opts[$mod] = TRUE;  // Change mods as spec'd
+					$opts[$mod] = TRUE;  // Change mods as spec'd
 				}
 			}
+
 			if (0) // php 5 code - not tested, and may not be faster anyway
 			{
 				$aMods = array_flip(
@@ -515,8 +517,13 @@ class e_parse
 			$text = $this->replaceConstants($text);
 		}
 
+		if ($opts['no_tags'])
+		{
+			$text = strip_tags($text);
+		}
 
-       if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
+
+		if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
         $text = " ".$text;
 
 
@@ -829,9 +836,11 @@ class e_parse
 		return $text;
 	}
 
+
     function toEmail($text,$posted="",$mods="parse_sc, no_make_clickable")
 	{
-		if ($posted === TRUE && MAGIC_QUOTES_GPC) {
+		if ($posted === TRUE && MAGIC_QUOTES_GPC)
+		{
 			$text = stripslashes($text);
 		}
 
