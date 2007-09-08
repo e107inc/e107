@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-09-02 08:42:11 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2007-09-08 01:35:42 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -106,12 +106,14 @@ if (isset($theme_js_php) && $theme_js_php) {
 		echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
 	}
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
-	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 	if (file_exists(THEME.'theme.vbs')) { echo "<script type='text/vbscript' src='".THEME_ABS."theme.vbs'></script>\n"; }
 	if (filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
+	
 }
 
 if (isset($eplug_js) && $eplug_js) {
+	echo "\n<!-- eplug_js -->\n";
 	if(is_array($eplug_js))
 	{
     	foreach($eplug_js as $kjs)
