@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2007-08-19 21:39:13 $
+|     $Revision: 1.44 $
+|     $Date: 2007-09-09 06:47:40 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -193,7 +193,8 @@ class pageClass
         $gen = new convert;
 
         $text = '';    // Notice removal
-        
+        $ptitle = "";
+
         if($page_author)
         {
             $text .= "<div class='smalltext cpage_author' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
@@ -201,7 +202,7 @@ class pageClass
 
         if($this -> title)
         {
-            $text .= "<div class='cpage_title'>".$this -> title."</div>";
+            $ptitle = "<div class='cpage_title'>".$this -> title."</div>";
         }
 
         $text .= $this -> pageToRender;
@@ -209,7 +210,7 @@ class pageClass
         $text .= $this -> pageRating($page_rating_flag);
 
         $ret['title'] = $page_title;
-        $ret['text'] = $text;
+        $ret['text'] = $ptitle."<div class='cpage_body'>".$text."</div>";
         $ret['comment_flag'] = $page_comment_flag;
         $ret['err'] = FALSE;
         $ret['cachecontrol'] = (isset($page_password) && !$page_password);      // Don't cache password protected pages
