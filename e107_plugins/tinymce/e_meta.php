@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/e_meta.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-22 18:45:26 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 06:58:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
