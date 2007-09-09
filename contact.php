@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/contact.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-04-15 14:37:17 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-09-09 07:05:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -40,7 +40,8 @@ if(isset($_POST['send-contactus'])){
 	$sender_name = $tp->toEmail($_POST['author_name'],TRUE,"rawtext");
 	$sender = check_email($_POST['email_send']);
 	$subject = $tp->toEmail($_POST['subject'],TRUE,"rawtext");
-	$body = $tp->toEmail($_POST['body'],TRUE);
+	$body = $tp->toEmail($_POST['body'],TRUE,"rawtext");
+
 
 // Check Image-Code
     if (isset($_POST['rand_num']) && !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
@@ -66,6 +67,7 @@ if(isset($_POST['send-contactus'])){
     }
 
 
+
 // Check email address on remote server (if enabled).
 	if ($pref['signup_remote_emailcheck'] && $error == "")
 	{
@@ -88,7 +90,10 @@ if(isset($_POST['send-contactus'])){
     if(!$error)
 	{
 		$body .= "\n\nIP:\t".USERIP."\n";
+		if(USERID !== FALSE)
+		{
 		$body .= "User:\t#".USERID." ".USERNAME."\n";
+		}
 
 		if(!$_POST['contact_person'] && isset($pref['sitecontacts'])) // only 1 person, so contact_person not posted.
 		{

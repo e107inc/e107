@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-06-13 02:53:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2007-09-09 07:05:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -55,7 +55,8 @@ class e_parse
 			// Disabled by Default
 			'defs' => FALSE,							// Convert defines(constants) within text.
 			'constants' => FALSE,					// replace all {e_XXX} constants with their e107 value
-			'parse_sc' => FALSE						// Parse shortcodes - TRUE enables parsing
+		'parse_sc' => FALSE,			   	// Parse shortcodes - TRUE enables parsing
+		'no_tags' => FALSE                  // remove HTML tags.
 		);
 		
 		// Super modifiers adjust default option values
@@ -97,9 +98,9 @@ class e_parse
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
 						'defs'=>TRUE,'parse_sc'=>TRUE),
 
-				'rawtext' =>			// text is used (for admin edit) without fancy conversions
+				'rawtext' =>			// text is used (for admin edit) without fancy conversions or html.
 					array(
-						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,'no_tags'=>TRUE
 						// leave opt-in options off
 						)
 		);
@@ -448,6 +449,7 @@ class e_parse
 			  	$opts[$mod] = TRUE;  // Change mods as spec'd
 				}
 			}
+
 			if (0) // php 5 code - not tested, and may not be faster anyway
 			{
 				$aMods = array_flip(
@@ -479,6 +481,11 @@ class e_parse
 			$text = $this->replaceConstants($text);
 		}
 
+		if ($opts['no_tags'])
+		{
+			$text = strip_tags($text);
+		}
+
 
        if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
         $text = " ".$text;
@@ -502,11 +509,14 @@ class e_parse
                 $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
 //                $text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
 			  $text = preg_replace("#(^|[\n ])((www|ftp)\.[\w+-]+?\.[\w+\-.]*(?(?=/)(/.+?(?=\s|,\s))|(?=\W)))#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
-                if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
+              if(CHARSET != "utf-8" && CHARSET != "UTF-8")
+			  {
                     $email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2&copy;\\3";
-                }else{
+              }
+			  else
+			  {
                     $email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2©\\3";
-                }
+              }
                 $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
             }
 			else 
@@ -790,9 +800,11 @@ class e_parse
 		return $text;
 	}
 
+
     function toEmail($text,$posted="",$mods="parse_sc, no_make_clickable")
 	{
-		if ($posted === TRUE && MAGIC_QUOTES_GPC) {
+		if ($posted === TRUE && MAGIC_QUOTES_GPC)
+		{
 			$text = stripslashes($text);
 		}
 
