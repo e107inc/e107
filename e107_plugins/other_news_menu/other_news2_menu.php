@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news2_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-11-23 14:53:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2007-09-09 06:45:04 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -89,6 +89,7 @@ $param['caticon'] = OTHERNEWS2_CATICON;
 
 $style = OTHERNEWS2_CELL;
 $nbr_cols = OTHERNEWS2_COLS;
+$GLOBALS['NEWS_CSSMODE'] = "othernews2";  
 
 $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 LEFT JOIN #user AS u ON n.news_author = u.user_id

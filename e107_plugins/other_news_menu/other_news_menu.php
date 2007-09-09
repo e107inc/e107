@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-11-23 14:53:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2007-09-09 06:45:04 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -30,7 +30,7 @@ if($cacheData = $e107cache->retrieve("nq_othernews"))
 
 require_once(e_HANDLER."news_class.php");
 unset($text);
-global $OTHERNEWS_STYLE;
+global $OTHERNEWS_STYLE,$news_cssmode;
 $ix = new news;
 
 if(!$OTHERNEWS_STYLE)
@@ -85,20 +85,23 @@ $param['caticon'] = OTHERNEWS_CATICON;
 
 $style = OTHERNEWS_CELL;
 $nbr_cols = OTHERNEWS_COLS;
-
+$GLOBALS['NEWS_CSSMODE'] = "othernews";
 
 $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 LEFT JOIN #user AS u ON n.news_author = u.user_id
 LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type=2  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
 
-if ($sql->db_Select_gen($query)){
+if ($sql->db_Select_gen($query))
+{
 	$text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS_SPACING."'>";
 	$t = 0;
 	$wid = floor(100/$nbr_cols);
-	while ($row = $sql->db_Fetch()) {
+
+	while ($row = $sql->db_Fetch())
+	{
 		$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
-		$text .= "\n<td style='$style ; width:$wid%;'>\n";
+		$text .= "\n<td class='othernews_cell' style='$style ; width:$wid%;'>\n";
 		$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
 
 		$text .= "\n</td>\n";
@@ -112,11 +115,11 @@ if ($sql->db_Select_gen($query)){
 	}
 
 
-	while ($t % $nbr_cols != 0){
+	while ($t % $nbr_cols != 0)
+	{
 		$text .= "<td style='width:$wid'>&nbsp;</td>\n";
 		$text .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
 		$t++;
-
 	}
 	$text .= "</table>";
 
