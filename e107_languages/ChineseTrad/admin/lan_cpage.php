@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_cpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("CUSLAN_14", "密碼保護頁面");
 define("CUSLAN_15", "輸入密碼保護該頁面");
 define("CUSLAN_16", "點選連結於主要的選單");
 define("CUSLAN_17", "輸入連結名稱以便於新增");
-define("CUSLAN_18", "頁面 / 連結可見權限");
+define("CUSLAN_18", "頁面/連結可見權限");
 define("CUSLAN_19", "更新頁面");
 define("CUSLAN_20", "新增頁面");
 define("CUSLAN_21", "更新選單");

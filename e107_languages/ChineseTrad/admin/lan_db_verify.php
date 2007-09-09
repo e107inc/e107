@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_db_verify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("DBLAN_12", "多餘的欄位!");
 define("DBLAN_13", "資料表遺失!");
 define("DBLAN_14", "選擇資料表驗證檢查");
 define("DBLAN_15", "開始檢查");
-define("DBLAN_16", "SQL 檢查");
+define("DBLAN_16", "SQL檢查");
 define("DBLAN_17", "返回");
 define("DBLAN_18", "資料表");
 define("DBLAN_19", "試圖修正");

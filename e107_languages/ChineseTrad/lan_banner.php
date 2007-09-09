@@ -1,38 +1,38 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 web網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:47 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "廣告欄位");
+define("PAGE_NAME", "播放廣告設定");
 
-define("LAN_16", "會員名稱: ");
-define("LAN_17", "密碼: ");
-define("LAN_18", "繼續");
-define("LAN_19", "請輸入您的客戶帳號與密碼");
-define("LAN_20", "抱歉, 沒有發現對應的資料. 請聯絡管理員.");
-define("LAN_21", "廣告欄位統計");
-define("LAN_22", "客戶");
-define("LAN_23", "廣告 ID");
-define("LAN_24", "點選經過");
-define("LAN_25", "點選 %");
-define("LAN_26", "效果");
-define("LAN_27", "已購買的效果");
-define("LAN_28", "殘留效果");
-define("LAN_29", "沒有廣告欄位");
-define("LAN_30", "沒有限制");
-define("LAN_31", "沒有適合的");
-define("LAN_32", "是");
-define("LAN_33", "否");
-define("LAN_34", "結束於:");
-define("LAN_35", "點選經過 IP 位址");
-define("LAN_36", "啟動:");
-define("LAN_37", "開始於:");
-define("LAN_38", "錯誤");
+define("BANNERLAN_16", "會員名稱: ");
+define("BANNERLAN_17", "密碼: ");
+define("BANNERLAN_18", "繼續");
+define("BANNERLAN_19", "請輸入您的客戶帳號與密碼");
+define("BANNERLAN_20", "抱歉, 沒有發現相對應的資料. 請聯絡管理員.");
+define("BANNERLAN_21", "廣告欄位統計");
+define("BANNERLAN_22", "客戶");
+define("BANNERLAN_23", "廣告 ID");
+define("BANNERLAN_24", "點選經過");
+define("BANNERLAN_25", "點選 %");
+define("BANNERLAN_26", "次數");
+define("BANNERLAN_27", "購買的次數");
+define("BANNERLAN_28", "剩餘次數");
+define("BANNERLAN_29", "沒有廣告欄位");
+define("BANNERLAN_30", "沒有限制");
+define("BANNERLAN_31", "沒有適合的");
+define("BANNERLAN_32", "是");
+define("BANNERLAN_33", "否");
+define("BANNERLAN_34", "結束於:");
+define("BANNERLAN_35", "點選經過 IP 位址");
+define("BANNERLAN_36", "啟動:");
+define("BANNERLAN_37", "開始於:");
+define("BANNERLAN_38", "錯誤");
 
 ?>

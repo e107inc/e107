@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_online.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,39 +26,39 @@ define("ONLINE_EL12", "回覆於");
 define("ONLINE_EL13", "版面");
 define("ONLINE_EL14", "主題");
 define("ONLINE_EL15", "頁面");
-define("CLASSRESTRICTED", "Class Restricted Page");
+define("CLASSRESTRICTED", "私人保護頁面");
 define("ARTICLEPAGE", "文章/回顧");
-define("CHAT", "Chat");
+define("CHAT", "聊天");
 define("COMMENT", "評論");
 define("DOWNLOAD", "下載");
 define("EMAIL", "email.php");
 define("FORUM", "討論區首頁");
 define("LINKS", "連結");
 define("NEWS", "新聞");
-define("OLDPOLLS", "Old Polls");
-define("POLLCOMMENT", "Poll");
+define("OLDPOLLS", "舊的投票");
+define("POLLCOMMENT", "投票");
 define("PRINTPAGE", "列印");
 define("LOGIN", "登入");
 define("SEARCH", "搜尋中");
 define("STATS", "網站統計");
 define("SUBMITNEWS", "提供新聞");
-define("UPLOAD", "上船");
+define("UPLOAD", "上傳");
 define("USERPAGE", "個人資訊");
 define("USERSETTINGS", "個人設定");
 define("ONLINE", "觀看線上會員");
-define("LISTNEW", "List New Items");
+define("LISTNEW", "列出新聞清單");
 define("USERPOSTS", "會員發表");
-define("SUBCONTENT", "Submit Article/Review");
-define("TOP", "Top Posters/Most Active Threads");
+define("SUBCONTENT", "送出 文章回顧");
+define("TOP", "最多發表和最多人回覆主題");
 define("ADMINAREA", "管理控制台");
 define("BUGTRACKER", "錯誤追蹤");
 define("EVENT", "事件清單");
 define("CALENDAR", "事件行事曆");
-define("FAQ", "Faq");
+define("FAQ", "常見問題");
 define("PM", "私人訊息");
-define("SURVEY", "Survey");
-define("ARTICLE", "Article");
-define("CONTENT", "Content Page");
-define("REVIEW", "Review");
+define("SURVEY", "投票");
+define("ARTICLE", "文章");
+define("CONTENT", "內容頁面");
+define("REVIEW", "回顧");
 
 ?>

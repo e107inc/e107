@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ define("LAN_432", "回顧");
 
 define("LAN_433", "您的 XUP 檔案連結");
 define("LAN_434", "這是什麼?");
-define("LAN_435", "XUP=XML User Protocol file");
+define("LAN_435", "XUP=XML 使用通訊檔案");
 
 define("LAN_SIGNUP_1", "最小的.");
 define("LAN_SIGNUP_2", "字元.");
@@ -106,5 +106,7 @@ define("LAN_USET_8", "簽名檔 / 時區");
 define("LAN_USET_9", "部份必填項目 ( *星號標記) 已經遺失於您的設定中.");
 define("LAN_USET_10","請更新您的設定.");
 define("LAN_USET_11", "此帳號不被接受, 請選擇其他帳號");
+define("LAN_USET_12", "顯示名稱太短，請選擇另外的名稱");
+define("LAN_USET_13", "無效的字元於登入名稱中，請選擇另外的名稱");
 
 ?>

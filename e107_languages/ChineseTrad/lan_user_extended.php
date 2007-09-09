@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,5 +38,9 @@ define("UE_LAN_HOMEPAGE", "網站首頁");
 define("UE_LAN_HOMEPAGE_DESC", "會員首頁（網址）");
 define("UE_LAN_BIRTHDAY", "生日");
 define("UE_LAN_BIRTHDAY_DESC", "生日");
+define("UE_LAN_LANGUAGE", "語言");
+define("UE_LAN_LANGUAGE_DESC", "會員語言");
+define("UE_LAN_COUNTRY", "國家");
+define("UE_LAN_COUNTRY_DESC", "會員國家 (包含在 db table)");
 
 ?>

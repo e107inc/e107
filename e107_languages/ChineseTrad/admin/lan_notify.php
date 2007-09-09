@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,4 +32,6 @@ define("NN_LAN_3", "管理員已送出的新聞項目");
 define("NN_LAN_4", "管理員已編輯的新聞項目編輯");
 define("NN_LAN_5", "管理員已刪除的新聞項目刪除");
 
+define("NF_LAN_1", "檔案事件");
+define("NF_LAN_2", "依會員上傳的檔案");
 ?>

@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站系統 - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
-|     $Author: e107coders $ Chinese Auther:Hank
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "新聞");
@@ -34,7 +34,7 @@ define("ADLAN_23", "新增/編輯/刪除連結分區");
 define("ADLAN_24", "下載");
 define("ADLAN_25", "管理下載");
 define("ADLAN_26", "下載分區");
-define("ADLAN_27", "新增 新的/編輯/刪除下載分區");
+define("ADLAN_27", "新增新的/編輯/刪除下載分區");
 define("ADLAN_28", "歡迎訊息");
 define("ADLAN_29", "設定基本的歡迎訊息");
 define("ADLAN_30", "檔案管理");
@@ -56,7 +56,7 @@ define("ADLAN_45", "資料庫工具");
 define("ADLAN_46", "登出");
 define("ADLAN_47", "歡迎");
 define("ADLAN_48", "已登入");
-define("ADLAN_49", "主要的網站管理員");
+define("ADLAN_49", "超級網站管理員");
 define("ADLAN_50", "權限");
 define("ADLAN_51", "請登入管理台");
 define("ADLAN_52", "管理台首頁");
@@ -73,8 +73,8 @@ define("ADLAN_62", "提供新聞");
 define("ADLAN_63", "設定提供新聞");
 define("ADLAN_64", "登入統計");
 define("ADLAN_65", "登入統計/計數器等");
-define("ADLAN_66", "關鍵字（Meta）標籤");
-define("ADLAN_67", "新增/編輯關鍵字（Meta）標籤");
+define("ADLAN_66", "關鍵字（Meta）");
+define("ADLAN_67", "新增/編輯關鍵字（Meta）");
 define("ADLAN_68", "PHP 資訊");
 define("ADLAN_69", "PHP資訊頁面");
 define("ADLAN_70", "問卷");
@@ -84,7 +84,7 @@ define("ADLAN_73", "設定公開上傳");
 define("ADLAN_74", "快取");
 define("ADLAN_75", "設定快取狀態");
 define("ADLAN_77", "您的新聞項目已經送出- 請點選這裡確認.");
-define("ADLAN_78", "另設會員欄位");
+define("ADLAN_78", "延伸會員欄位");
 define("ADLAN_79", "編輯延伸會員欄位");
 
 
@@ -99,12 +99,12 @@ define("ADLAN_93", "顯示管理選項");
 define("ADLAN_94", "顯示已安裝外掛");
 define("ADLAN_95", "外掛管理");
 define("ADLAN_96", "沒有");
-define("ADLAN_97", "瀏覽常見問題 FAQ");
+define("ADLAN_97", "瀏覽常見問題");
 define("ADLAN_98", "外掛管理");
 define("ADLAN_99", "安裝/更新外掛");
 define("ADLAN_100", "風格外觀");
 define("ADLAN_101", "模板製作");
-define("ADLAN_102", "你超過三十天未更新主要的管理員密碼");
+define("ADLAN_102", "你超過三十天未更新超級管理員密碼");
 define("ADLAN_103", "點選這裡變更密碼");
 define("ADLAN_104", "安全設定");
 
@@ -126,7 +126,7 @@ define("ADLAN_118", "清除紀錄");
 
 define("ADLAN_119", "未確認已送出的連結");
 
-define("ADLAN_120", "資料庫更新成功, 請點選安裝 ...");
+define("ADLAN_120", "資料庫更新成功,請點選安裝 ...");
 define("ADLAN_121", "安裝");
 
 
@@ -135,7 +135,7 @@ define("ADLAN_124", "尚未確認的已送出的回顧");
 
 define("ADLAN_125", "尚未確認問題文章");
 
-define("ADLAN_126", "主要的選項");
+define("ADLAN_126", "重要選項");
 define("ADLAN_127", "會員");
 define("ADLAN_128", "內容");
 define("ADLAN_129", "通訊");
@@ -148,8 +148,8 @@ define("ADLAN_133", "預設的");
 define("ADLAN_134", "統計資訊");
 define("ADLAN_135", "管理員登入紀錄");
 
-define("ADLAN_136", "Mail");
-define("ADLAN_137", "Email 設定和外部信箱設定");
+define("ADLAN_136", "電子信件");
+define("ADLAN_137", "電子信件設定和外部信箱設定");
 
 define("ADLAN_138", "網站連結");
 define("ADLAN_139", "新增/編輯/刪除連結");
@@ -169,9 +169,10 @@ define("ADLAN_148", "瀏覽網站檔案");
 define("ADLAN_149", "提醒信件");
 define("ADLAN_150", "寄信給管理員提醒網站狀態");
 
-define("ADLAN_151", "主要的");
+define("ADLAN_151", "首頁");
 define("ADLAN_152", "輸入編碼");
 
+define("ADLAN_153", "管理控制台");
 define('ADLAN_CL_1', '設定');
 define('ADLAN_CL_2', '會員');
 define('ADLAN_CL_3', '內容');
@@ -185,11 +186,18 @@ define("ADLAN_LAT_1", "最新的");
 
 define("ADLAN_LAT_2", "已送出的新聞項目");
 define("ADLAN_LAT_3", "已送出的文章");
-define("ADLAN_LAT_4", "已送出的reviews");
+define("ADLAN_LAT_4", "已送出的回顧");
 define("ADLAN_LAT_5", "已送出的連結");
 define("ADLAN_LAT_6", "已回報的討論區文章");
 define("ADLAN_LAT_7", "檔案上傳");
 define("ADLAN_LAT_8", "目前有未處理的通知訊息");
+
+define("ADLAN_ERR_1", "警告!");
+define("ADLAN_ERR_2", "你伺服器上的檔案室很容易被其他人入侵寫入.  <b>請趕快移除</b>. 這些檔案室關於舊的0.6xx版本. 請刪除下列目錄和所有內容:");
+define("ADLAN_ERR_3", "目前有一個或是多個檔案在您的公開上傳目錄，這不是e107預先設定需要的. 這些將會造成駭客攻擊請儘速 <b>移除</b>. 請<b>不要開啟</b> 這些檔案可能會內藏惡意的程式碼. 請不要用您的瀏覽器開啟.<br /><br />如果您知道這些檔案為合法的, 並且很像最近允許變更的檔案類型, 該檔案您該允許存在不久所以建議您重新新增他(請到管理台 =>上傳). 建議不要允許上傳 .html, .txt, 等等，很容易造成駭客利用此檔案置入惡意的javascript. 當然也不要允許php檔案.<br /><br />下列檔案可能容易植入惡意程式碼的危險:");
+define("ADLAN_ERR_4", "Deprecated plugin file(s) found");
+define("ADLAN_ERR_5", "下列檔案必須重新命名");
+define("ADLAN_ERR_6", "然後, 點選這裡重新掃描您的外掛資料夾.");
 
 // Common Terms
 define("LAN_EDIT","編輯");
@@ -199,7 +207,6 @@ define("LAN_UPDATE","更新");
 define("LAN_SAVE","儲存");
 define("LAN_SAVED","已儲存的");
 define("LAN_SETSAVED","您的設定已被儲存的");
-define("LAN_ERROR","錯誤");
 define("LAN_CONFIRMDEL","請確認後刪除");
 define("LAN_OPTIONS","選項");
 define("LAN_PREFS","基本設定");
@@ -216,10 +223,11 @@ define("LAN_RESET","清除重設");
 define("LAN_CLEAR","清除");
 define("LAN_OK","可以");
 
-define("LAN_PRESET","Preset");
-define("LAN_PRESET_SAVED","Preset 已成功儲存");
-define("LAN_PRESET_DELETED","Preset 已刪除成功");
-define("LAN_PRESET_CONFIRMDEL","您確定要刪除該 preset?");
+define("LAN_PRESET","預調");
+define("LAN_PRESET_SAVED","預調已成功儲存");
+
+define("LAN_PRESET_DELETED","預調已刪除成功");
+define("LAN_PRESET_CONFIRMDEL","您確定要刪除該預調?");
 define("LAN_NOTWRITABLE"," 為不可寫入, 您必須 CHMOD 777 該資料夾權限.");
 define("LAN_DATE","日期");
 define("LAN_TIME","時間");
@@ -237,9 +245,28 @@ define("LAN_SELECT","選擇 ...");
 define("LAN_ADMIN","管理控制台");
 define("LAN_DISPLAYOPT", "編輯顯示選項");
 define("LAN_GOPAGE", "前往頁面:");
-define("LAN_DATESTAMP","Datestamp");
+define("LAN_DATESTAMP","日期格式");
 define("LAN_OPTIONAL", "選項");
 define("LAN_INACTIVE","尚未啟動");
 
+define("LAN_BAN","封鎖");
+define("LAN_RATING", "評比中");
 
+define("LAN_UPLOAD_IMAGES","上傳圖片");
+define("LAN_UPLOAD_FILES","上傳檔案");
+define("LAN_UPLOAD_ADDFILE","另外新增檔案");
+define("LAN_UPLOAD_CONFIRM","任何未儲存的變更將會遺失.確定繼續嗎?");
+define("LAN_UPLOAD_777","資料夾遺失或是不可以寫入, 您必須 CHMOD 777 下列資料夾:");
+define("LAN_UPLOAD_SERVEROFF", "您的伺服器不支援檔案上傳");
+
+define("LAN_DISABLED","已關閉");
+define("LAN_ENABLED", "已開啟");
+
+define("LAN_PRESET_CONFIRMSAVE","儲存目前表格上的值給此頁面?");
+define("LAN_CONFIGURE", "基本設定");
+
+define("LAN_BACK","返回");
+
+define("LAN_CREDITS","贊助");
+define("LAN_NEWVERSION","有新的版本");
 ?>

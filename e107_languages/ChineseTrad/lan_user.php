@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("LAN_139", "排列: ");
 define("LAN_140", "已註冊會員");
 define("LAN_141", "目前沒有註冊會員.");
 define("LAN_142", "會員");
-define("LAN_143", "[hidden by request]");
+define("LAN_143", "[要求隱藏]");
 define("LAN_144", "個人網站");
 define("LAN_145", "加入於");
 define("LAN_146", "自從註冊後瀏覽網站次數");
@@ -61,6 +61,7 @@ define("LAN_424", "點選這裡瀏覽會員發表");
 define("LAN_425", "發送私人訊息");
 define("LAN_426", "之前");
 
-define("USERLAN_1", "會員評等");
+define("USERLAN_1", "Peer 評比中");
+define("USERLAN_2", "您沒有權限瀏覽此頁面.");
 
 ?>

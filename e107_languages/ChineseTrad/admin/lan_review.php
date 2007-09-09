@@ -1,92 +1,92 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_review.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("REVLAN_1", "回顧新增到資料庫.");
-define("REVLAN_2", "Fields left blank.");
-define("REVLAN_3", "Review updated in 資料庫.");
-define("REVLAN_4", "Review 刪除d.");
-define("REVLAN_5", "請 tick the confirm box to 刪除 this review");
-define("REVLAN_6", "No reviews yet.");
-define("REVLAN_7", "Existing Reviews");
+define("REVLAN_1", "評論新增到資料庫.");
+define("REVLAN_2", "欄位保留空白.");
+define("REVLAN_3", "評論更新於資料庫.");
+define("REVLAN_4", "評論完成刪除d.");
+define("REVLAN_5", "請勾選確認欄位刪除該評論");
+define("REVLAN_6", "目前沒有評論.");
+define("REVLAN_7", "現有的評論");
 define("REVLAN_8", "編輯");
 define("REVLAN_9", "刪除");
-define("REVLAN_10", "tick to confirm");
-define("REVLAN_11", "Open HTML 編輯or");
-define("REVLAN_12", "Heading");
-define("REVLAN_13", "Sub-Heading");
-define("REVLAN_14", "Summary");
-define("REVLAN_15", "Review");
-define("REVLAN_16", "Rating");
-define("REVLAN_17", "請 select rating");
+define("REVLAN_10", "勾選確認");
+define("REVLAN_11", "開啟 HTML 編輯或");
+define("REVLAN_12", "標題");
+define("REVLAN_13", "子標題");
+define("REVLAN_14", "概述");
+define("REVLAN_15", "評論");
+define("REVLAN_16", "評比");
+define("REVLAN_17", "請選擇評論");
 define("REVLAN_18", "允許評論?");
-define("REVLAN_19", "On");
-define("REVLAN_20", "Off");
-define("REVLAN_21", "Visible to");
-define("REVLAN_22", "Update Review");
-define("REVLAN_23", "Submit Review");
-define("REVLAN_24", "Reviews");
+define("REVLAN_19", "開啟");
+define("REVLAN_20", "關閉");
+define("REVLAN_21", "瀏覽於");
+define("REVLAN_22", "更新評論");
+define("REVLAN_23", "送出評論");
+define("REVLAN_24", "評論");
 
 
 
 
-define("REVLAN_25", "Review 分區 已儲存的");
-define("REVLAN_26", "Review 分區 Updated");
-define("REVLAN_27", "分區 刪除d");
+define("REVLAN_25", "評論分區完成儲存");
+define("REVLAN_26", "評論分區完成更新");
+define("REVLAN_27", "分區完成刪除");
 define("REVLAN_28", "分區");
-define("REVLAN_29", "Options");
+define("REVLAN_29", "選項");
 define("REVLAN_30", "編輯");
 define("REVLAN_31", "刪除");
-define("REVLAN_32", "No review 分區");
-define("REVLAN_33", "Existing Review 分區");
-define("REVLAN_34", "分區 Name");
-define("REVLAN_35", "分區 Icon");
-define("REVLAN_36", "View Images");
-define("REVLAN_37", "分區 Summary");
-define("REVLAN_38", "Update Review 分區");
-define("REVLAN_39", "Create Review 分區");
-define("REVLAN_40", "No reviews");
-define("REVLAN_41", "Existing Reviews");
-define("REVLAN_42", "Open HTML 編輯or");
+define("REVLAN_32", "沒有評論分區");
+define("REVLAN_33", "現有的評論分區");
+define("REVLAN_34", "分區名稱");
+define("REVLAN_35", "分區圖標");
+define("REVLAN_36", "瀏覽圖片");
+define("REVLAN_37", "分區概述");
+define("REVLAN_38", "更新評論分區");
+define("REVLAN_39", "新增評論分區");
+define("REVLAN_40", "沒有評論");
+define("REVLAN_41", "現有評論");
+define("REVLAN_42", "開啟 HTML 編輯或");
 define("REVLAN_43", "分區");
-define("REVLAN_44", "None");
-define("REVLAN_45", "Review Front Page");
-define("REVLAN_46", "Create new Review");
+define("REVLAN_44", "目前沒有");
+define("REVLAN_45", "評論首頁");
+define("REVLAN_46", "新增評論");
 define("REVLAN_47", "分區");
-define("REVLAN_48", "Review Options");
-define("REVLAN_49", "Are you sure you want to 刪除 this 分區?");
-define("REVLAN_50", "Are you sure you want to 刪除 this review?");
-define("REVLAN_51", "Author Details");
-define("REVLAN_52", "leave if review written by you");
-define("REVLAN_53", "author name");
-define("REVLAN_54", "author email address");
+define("REVLAN_48", "評論選項");
+define("REVLAN_49", "您確定要刪除該分區?");
+define("REVLAN_50", "您確定要刪除該評論?");
+define("REVLAN_51", "作者細節");
+define("REVLAN_52", "假如作者是您請保留空白");
+define("REVLAN_53", "作者名稱");
+define("REVLAN_54", "作者電子信箱");
 
-define("REVLAN_55", "Allow reviews to be submitted");
-define("REVLAN_56", "Allow 訪客 to submit reviews to your site");
-define("REVLAN_57", "Submit review class");
-define("REVLAN_58", "Select which 會員s can submit reviews");
-define("REVLAN_59", "Update Options");
-define("REVLAN_60", "Review Options");
-define("REVLAN_61", "Review options updated");
+define("REVLAN_55", "允許提供評論");
+define("REVLAN_56", "允許訪客提供評論給您的網站");
+define("REVLAN_57", "提供評論等級");
+define("REVLAN_58", "選擇會員等級提供評論");
+define("REVLAN_59", "更新選項");
+define("REVLAN_60", "評論選項");
+define("REVLAN_61", "評論選項完成更新");
 
-define("REVLAN_62", "已送出的Reviews");
-define("REVLAN_63", "No 已送出的reviews");
-define("REVLAN_64", "No email address supplied");
-define("REVLAN_65", "Review Heading");
-define("REVLAN_66", "Post");
-define("REVLAN_67", "Post 會員 已送出的Article");
-define("REVLAN_68", "會員 已送出的review 已儲存的 in 資料庫");
+define("REVLAN_62", "已送出的評論");
+define("REVLAN_63", "沒有已送出的評論");
+define("REVLAN_64", "沒有提供電子信箱");
+define("REVLAN_65", "評論標題");
+define("REVLAN_66", "發表");
+define("REVLAN_67", "發表會員提供的文章");
+define("REVLAN_68", "會員已送出的評論儲存於資料庫");
 
-define("REVLAN_69", "Clear Form");
-define("REVLAN_70", "Click here to fill author fields");
-define("REVLAN_71", "Add email/print icons?");
-define("REVLAN_72", "Yes");
-define("REVLAN_73", "No");
+define("REVLAN_69", "清除來自於");
+define("REVLAN_70", "點選這裡填滿作者欄位");
+define("REVLAN_71", "新增電子信箱/列印圖標?");
+define("REVLAN_72", "是");
+define("REVLAN_73", "否");
 ?>

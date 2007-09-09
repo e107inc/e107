@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_cache.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("CACLAN_5", "清空快取");
 define("CACLAN_6", "快取已清空");
 
 define("CACLAN_7", "取消快取");
-// define("CACLAN_8", "Cache data 已儲存的 to MySQL");
+// define("CACLAN_8", "Cache data 已存入 MySQL");
 define("CACLAN_9", "快取資料已儲存於磁碟檔案");
-define("CACLAN_10", "該cache 目錄無法寫入. 請確認該目錄設定為 CHMOD 0777");
+define("CACLAN_10", "該 cache目錄無法寫入. 請確認該目錄設定為 CHMOD 0777");
 ?>

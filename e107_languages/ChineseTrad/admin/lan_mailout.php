@@ -1,52 +1,97 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_mailout.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("PRFLAN_52", "Save Changes");
-define("PRFLAN_63", "Send test email");
-define("PRFLAN_64", "Clicking button will send test email to 主要的 admin email address");
-define("PRFLAN_65", "Click to send email to");
-define("PRFLAN_66", "Test email from");
-define("PRFLAN_67", "This is a test email, it appears that your email 設定 are working ok!\n\nRegards\nfrom the e107 網站 system.");
-define("PRFLAN_68", "The email could not be sent. It appears that your server is not correctly configured to send emails, 請 try again using SMTP, or contact your hosts and ask them to check their sendmail / email server 設定.");
-define("PRFLAN_69", "The email has been successfully sent, 請 check your inbox.");
-define("PRFLAN_70", "Emailing method");
-define("PRFLAN_71", "If unsure, leave as php");
-define("PRFLAN_72", "SMTP Server");
+define("PRFLAN_52", "儲存變更");
+define("PRFLAN_63", "送出測試信件");
+define("PRFLAN_64", "點選按鈕送出測試給主要的管理員電子信箱");
+define("PRFLAN_65", "點選送出信件給");
+define("PRFLAN_66", "測試信件來自於");
+define("PRFLAN_67", "這是一封測試信, 代表您的發信系統設定已經完成!\n\n一切順利\n此信來自於 e107 網站系統.");
+define("PRFLAN_68", "該信件無法寄出. 可能是您的伺服器設定不正確, 請再次嘗試 SMTP, 或是聯絡您的主機商詢問 sendmail / email 伺服器設定.");
+define("PRFLAN_69", "該信件已成功送出, 請檢查您的收件箱.");
+define("PRFLAN_70", "寄信模式");
+define("PRFLAN_71", "假如不確定, 使用 php");
+define("PRFLAN_72", "SMTP 伺服器");
 define("PRFLAN_73", "SMTP 會員名稱");
 define("PRFLAN_74", "SMTP 密碼");
-define("PRFLAN_75", "The email could not be sent. 請 review your SMTP 設定, or disable SMTP and try again.");
+define("PRFLAN_75", "該信件無法寄出. 請檢查您的 SMTP 設定, 或是關閉 SMTP 後再次嘗試.");
 
-define("MAILAN_01","From Name");
-define("MAILAN_02","From Email");
-define("MAILAN_03","To");
+define("MAILAN_01","寄件人");
+define("MAILAN_02","寄見者信箱");
+define("MAILAN_03","收件人");
 define("MAILAN_04","Cc");
 define("MAILAN_05","Bcc");
-define("MAILAN_06","Subject");
-define("MAILAN_07","Attachment");
-define("MAILAN_08","Send Email");
-define("MAILAN_09","Use Theme Style");
-define("MAILAN_10","會員 Subscribed");
-define("MAILAN_11","Insert Variables");
-define("MAILAN_12","All 會員");
-define("MAILAN_13","All Unverified 會員 ");
-define("MAILAN_14","It is recommended that you 開啟 SMTP for sending large numbers of emails - set in preferences below.");
+define("MAILAN_06","主題");
+define("MAILAN_07","附件");
+define("MAILAN_08","送出信件");
+define("MAILAN_09","使用風格");
+define("MAILAN_10","已訂閱會員");
+define("MAILAN_11","插入變數");
+define("MAILAN_12","全部會員");
+define("MAILAN_13","全部未啟動會員 ");
+define("MAILAN_14","通常建議您開啟 SMTP 來發送大量會員信件 - 請設定下列的基本設定.");
 define("MAILAN_15","Mail-Out");
 
 define("MAILAN_16","會員名稱");
-define("MAILAN_17","signup link");
-define("MAILAN_18","會員 id");
-define("MAILAN_19","There is no email address for site-admin. 請 check your preferences and try again.");
-define("MAILAN_20","Sendmail-path");
-define("MAILAN_21","Mass-Mail Entries");
-define("MAILAN_22","There are currently no 已儲存的 entries");
-define("MAILAN_23","會員class: ");
-define("MAILAN_24", "email(s) are ready to be sent");
+define("MAILAN_17","註冊連結");
+define("MAILAN_18","會員id");
+define("MAILAN_19","目前沒有網站管理員的電子信箱. 請檢查您的基本設定並稍後嘗試.");
+define("MAILAN_20","寄信路徑");
+define("MAILAN_21","大量寄信入口");
+define("MAILAN_22","目前沒有已儲存的目錄");
+define("MAILAN_23","會員等級 ");
+define("MAILAN_24", "信件已經寄出");
+
+define("MAILAN_25", "暫停");
+define("MAILAN_26", "暫停大量寄信每一個");
+define("MAILAN_27", "電子信件");
+define("MAILAN_28", "暫停長度");
+define("MAILAN_29", "秒");
+define("MAILAN_30", "超過30 秒將會造成瀏覽器時間到");
+define("MAILAN_31", "退信郵件處理中");
+define("MAILAN_32", "電子信箱");
+define("MAILAN_33", "進來的信件");
+define("MAILAN_34", "帳號");
+define("MAILAN_35", "密碼");
+define("MAILAN_36", "確認後刪除退件信件");  
+
+define("MAILAN_37", "已處理");
+define("MAILAN_38", "取消");
+define("MAILAN_39", "寄信中");
+define("MAILAN_40", "您必須重新命名 <b>e107.htaccess</b> 到 <b>.htaccess</b>");
+define("MAILAN_41", "從此頁面寄出信件之前.");
+define("MAILAN_42", "警告");
+define("MAILAN_43", "帳號");
+define("MAILAN_44", "會員登入");
+define("MAILAN_45", "會員 Email");
+define("MAILAN_46", "吻合會員");
+define("MAILAN_47", "包含");
+define("MAILAN_48", "等於");
+define("MAILAN_49", "Id");
+define("MAILAN_50", "作者");
+define("MAILAN_51", "主題");
+define("MAILAN_52", "最新修改");
+define("MAILAN_53", "管理員");
+define("MAILAN_54", "自己");
+define("MAILAN_55", "會員等級");
+define("MAILAN_56", "寄出信件");
+define("MAILAN_57", "保持 SMTP session 存活");
+define("MAILAN_58", "此附件有問題:");
+define("MAILAN_59", "寄信程序");
+define("MAILAN_60", "寄件中...");
+define("MAILAN_61", "目前沒有重新命名的信件要寄出.");
+define("MAILAN_62", "Emails 寄給:");
+define("MAILAN_63", "Emails 寄出失敗:");
+define("MAILAN_64", "總共使用時間:");
+define("MAILAN_65", "秒");
+define("MAILAN_66", "完成取消");
+define("MAILAN_67", "使用 'POP 在 SMTP' 認證前"); 
 ?>

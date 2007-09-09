@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_filemanager.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -13,13 +13,13 @@ define("FMLAN_1", "已上傳");
 define("FMLAN_2", "到");
 define("FMLAN_3", "目錄");
 define("FMLAN_4", "以上傳的檔案超過php.ini裡面的 upload_max_filesize 設定 .");
-// define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
-// define("FMLAN_6", "The uploaded file was only partially uploaded.");
-// define("FMLAN_7", "No file was uploaded.");
-// define("FMLAN_8", "Uploaded file size 0 bytes");
-// define("FMLAN_9", "The file did not upload. Filename");
+// define("FMLAN_5", "上傳檔案超過 MAX_FILE_SIZE 指令他會指定於html.");
+// define("FMLAN_6", "剛上傳檔案曾有部份檔案已上傳.");
+// define("FMLAN_7", "目前沒有檔案.");
+// define("FMLAN_8", "上傳檔案大小為 0 bytes");
+// define("FMLAN_9", "該檔案沒有上傳. 檔案名稱");
 // define("FMLAN_10", "錯誤");
-// define("FMLAN_11", "Probably 錯誤的 權限 on upload directory.");
+// define("FMLAN_11", "上傳的目錄有錯誤的權限.");
 define("FMLAN_12", "檔案");
 define("FMLAN_13", "檔案");
 define("FMLAN_14", "目錄");

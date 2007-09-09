@@ -1,19 +1,18 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 web網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-
-define("LAN_PREF_1", "e107 網站製作");
-define("LAN_PREF_2", "e107 網站系統");
-define("LAN_PREF_3", "所有的商標 c 為原擁有者所有, 所有網站元件內容由 c e107 網站製作.<br />e107 是 c e107.org 2002-2005 版權為 <a href=\"http://www.gnu.org/\" rel=\"external\">GNU GPL 條款</a>.");
-define("LAN_PREF_4", "censored");
+define("LAN_PREF_1", "e107 Powered Website");
+define("LAN_PREF_2", "e107 Website System");
+define("LAN_PREF_3", "This site is powered by <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a>, 版權為<a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> GPL 條款.");
+define("LAN_PREF_4", "已審查");
 define("LAN_PREF_5", "討論區");
 
 ?>

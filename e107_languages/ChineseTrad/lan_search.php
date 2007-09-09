@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -41,79 +41,79 @@ define("LAN_SEARCH_5", "找到的新聞內容");
 define("LAN_SEARCH_6", "找到的延伸的新聞內容");
 define("LAN_SEARCH_7", "發表於");
 define("LAN_SEARCH_8", " on ");
-define("LAN_SEARCH_9", "Untitled");
-define("LAN_SEARCH_10", "Go to page:");
-define("LAN_SEARCH_11", "Results");
+define("LAN_SEARCH_9", "無標題的");
+define("LAN_SEARCH_10", "前往頁面:");
+define("LAN_SEARCH_11", "結果");
 define("LAN_SEARCH_12", " of ");
 define("LAN_SEARCH_13", " in ");
-define("LAN_SEARCH_14", "Category:");
-define("LAN_SEARCH_15", "Author:");
-define("LAN_SEARCH_17", "Sorry, search is restricted to one search every ");
-define("LAN_SEARCH_18", " seconds.");
-define("LAN_SEARCH_19", "Search In:");
-define("LAN_SEARCH_20", "Authorisation Required");
-define("LAN_SEARCH_21", "You are not authorised to view this page.");
+define("LAN_SEARCH_14", "分區:");
+define("LAN_SEARCH_15", "作者:");
+define("LAN_SEARCH_17", "抱歉, 每次搜尋至少間隔 ");
+define("LAN_SEARCH_18", " 秒.");
+define("LAN_SEARCH_19", "搜尋於:");
+define("LAN_SEARCH_20", "需要的權限");
+define("LAN_SEARCH_21", "您沒有權限瀏覽該頁面.");
 
 
 
-define("LAN_SEARCH_22", "All Areas");
-define("LAN_SEARCH_23", "Enhanced Query Form");
-define("LAN_SEARCH_24", "Must contain word(s)");
-define("LAN_SEARCH_25", "Must not contain word(s)");
-define("LAN_SEARCH_26", "Exact Phrase");
-define("LAN_SEARCH_27", "Word(s) beginning with");
-define("LAN_SEARCH_28", "All Has No Advanced Search");
-define("LAN_SEARCH_29", "Basic");
-define("LAN_SEARCH_30", "Advanced");
-define("LAN_SEARCH_31", "Has No Advanced Search");
-define("LAN_SEARCH_32", "The following words were excluded from the search");
-define("LAN_SEARCH_33", "The following word was excluded from the search");
-define("LAN_SEARCH_34", "Newer than");
-define("LAN_SEARCH_35", "Older than");
-define("LAN_SEARCH_36", "Any time");
-define("LAN_SEARCH_37", "One day");
-define("LAN_SEARCH_38", "Two days");
-define("LAN_SEARCH_39", "Three days");
-define("LAN_SEARCH_40", "One week");
-define("LAN_SEARCH_41", "Two weeks");
-define("LAN_SEARCH_42", "Three weeks");
-define("LAN_SEARCH_43", "One month");
-define("LAN_SEARCH_44", "Two months");
-define("LAN_SEARCH_45", "Three months");
-define("LAN_SEARCH_46", "Half a year");
-define("LAN_SEARCH_47", "One year");
-define("LAN_SEARCH_48", "Two years");
-define("LAN_SEARCH_49", "Three Years");
+define("LAN_SEARCH_22", "所有區域");
+define("LAN_SEARCH_23", "加強查詢於");
+define("LAN_SEARCH_24", "必須包含字");
+define("LAN_SEARCH_25", "必須不包含字");
+define("LAN_SEARCH_26", "精確用語");
+define("LAN_SEARCH_27", "搜尋字開始於");
+define("LAN_SEARCH_28", "全部沒有進階搜尋");
+define("LAN_SEARCH_29", "基本");
+define("LAN_SEARCH_30", "進階");
+define("LAN_SEARCH_31", "沒有進階搜尋");
+define("LAN_SEARCH_32", "下列字元將會包含於搜尋中");
+define("LAN_SEARCH_33", "下列字元將會包含於搜尋中");
+define("LAN_SEARCH_34", "較新於");
+define("LAN_SEARCH_35", "較舊於");
+define("LAN_SEARCH_36", "任何時間");
+define("LAN_SEARCH_37", "一天");
+define("LAN_SEARCH_38", "兩天");
+define("LAN_SEARCH_39", "三天");
+define("LAN_SEARCH_40", "一週");
+define("LAN_SEARCH_41", "兩週");
+define("LAN_SEARCH_42", "三週");
+define("LAN_SEARCH_43", "一個月");
+define("LAN_SEARCH_44", "兩個月");
+define("LAN_SEARCH_45", "三個月");
+define("LAN_SEARCH_46", "半年");
+define("LAN_SEARCH_47", "一年");
+define("LAN_SEARCH_48", "兩年");
+define("LAN_SEARCH_49", "三年");
 
-define("LAN_SEARCH_50", "Date posted");
-define("LAN_SEARCH_51", "All categories");
-define("LAN_SEARCH_52", "Match in");
-define("LAN_SEARCH_53", "Whole item");
-define("LAN_SEARCH_54", "Title only");
-define("LAN_SEARCH_55", "Search in news category");
-define("LAN_SEARCH_56", "All News Categories");
-define("LAN_SEARCH_57", "Comments posted to");
-define("LAN_SEARCH_58", "All Areas");
-define("LAN_SEARCH_59", "All Comments");
-define("LAN_SEARCH_60", "Comments posted to");
-define("LAN_SEARCH_61", "By author");
-define("LAN_SEARCH_62", "Date joined");
-define("LAN_SEARCH_63", "Search in category");
-define("LAN_SEARCH_64", "All Download Categories");
-define("LAN_SEARCH_65", "Downloads");
-define("LAN_SEARCH_66", "Date added");
-define("LAN_SEARCH_67", "All downloads details");
-define("LAN_SEARCH_68", "Date");
-define("LAN_SEARCH_69", "Relevance");
+define("LAN_SEARCH_50", "發表日期");
+define("LAN_SEARCH_51", "所有分區");
+define("LAN_SEARCH_52", "吻合於");
+define("LAN_SEARCH_53", "內容全部");
+define("LAN_SEARCH_54", "僅限標題");
+define("LAN_SEARCH_55", "搜尋於新聞分區");
+define("LAN_SEARCH_56", "所有新聞分區");
+define("LAN_SEARCH_57", "評論發表於");
+define("LAN_SEARCH_58", "所有區域");
+define("LAN_SEARCH_59", "所有評論");
+define("LAN_SEARCH_60", "評論發表於");
+define("LAN_SEARCH_61", "依作者");
+define("LAN_SEARCH_62", "加入日期");
+define("LAN_SEARCH_63", "搜尋於分區");
+define("LAN_SEARCH_64", "所有下載分區");
+define("LAN_SEARCH_65", "下載");
+define("LAN_SEARCH_66", "新增日期");
+define("LAN_SEARCH_67", "所有下載細節");
+define("LAN_SEARCH_68", "日期");
+define("LAN_SEARCH_69", "關聯");
 
-define("LAN_SEARCH_70", "Posted to download item");
-define("LAN_SEARCH_71", "Posted in reply to news item");
-define("LAN_SEARCH_72", "Signature");
-define("LAN_SEARCH_73", "No Signature.");
-define("LAN_SEARCH_74", "Joined on");
+define("LAN_SEARCH_70", "已發表的下載");
+define("LAN_SEARCH_71", "已發表回覆的新聞");
+define("LAN_SEARCH_72", "簽名檔");
+define("LAN_SEARCH_73", "沒有簽名檔.");
+define("LAN_SEARCH_74", "加入於");
 
-define("LAN_SEARCH_75", "Search type");
-define("LAN_SEARCH_76", "Posted on page");
-define("LAN_SEARCH_77", "Posted on profile page of");
+define("LAN_SEARCH_75", "搜尋類型");
+define("LAN_SEARCH_76", "已發表於頁面");
+define("LAN_SEARCH_77", "發表個人資訊頁面於");
 
 ?>

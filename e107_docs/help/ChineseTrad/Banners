@@ -1,0 +1,18 @@
+
+Q>	我在管理區新增一個廣告欄位為甚麼沒有顯示 ?
+A>	您使用的風格必須支援顯示廣告欄位. 開啟 theme.php 並確定您有將 {BANNER} 或 {BANNER=yourcampaignname} 放進您的 $HEADER 區域中.
+
+Q>	我要設定一組廣告欄位於同一區塊並設定另一組於另一區塊 - 要如何設定?
+A>	您可以將您的廣告欄位群組化於 'campaigns', 並設定您的風格顯示廣告欄位於特定活動. 例如： 如果您有兩個活動, 取名為 cam_1 和 cam_2, 放置 {BANNER=cam1} 於一個於您的 $HEADER 區域在theme.php 裡面，這將會僅顯示cam_1 banners,放置 {BANNER=cam_2} 於另外區域僅顯示 cam_2 banners. 放置 {BANNER} (非 campaign 名稱) 於您的 theme.php 將會隨機顯示廣告欄位於全部campaigns.
+
+Q>	什麼事客戶端登入和客戶端密碼?
+A>	您可以定義一個登入帳號和密碼給您的廣告客戶, 他們可以登入進入瞭解他們的廣告效益，請到 http://yoursite.com/banner.php 並輸入帳號密碼.
+
+Q>	我如何擁有一個 'tower' 類型廣告欄位於選單項目中?
+A>	首先您必須定義一個活動給升起類型欄位 (這將會保持欄位分開) ...
+	1. 前往管理台點選廣告欄位.
+	2. 輸入您的 tower-type banner(s), 並確認使用一個新的活動名稱, 例如：'towers'.
+	3. 然後前往選單區域, 並啟動 Banner_menu 到您的選單區域.
+	4. 於選單項目中點選 '設定' 連結.
+	5. 輸入該 caption 標題 (通常預設為'Advertisment'), 並輸入您之前定義的該活動名稱.
+	6. 離開管理台您將會看到您的 tower-type 於您設定的廣告欄位.

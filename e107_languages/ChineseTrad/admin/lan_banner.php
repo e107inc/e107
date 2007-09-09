@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -70,5 +70,6 @@ define("BANNER_MENU_L10", "表達類型");
 define("BANNER_MENU_L12", "平滑");
 define("BANNER_MENU_L13", "在標題盒中");
 define("BANNER_MENU_L18", "更新選單設定");
+define("BANNER_MENU_L19", "顯示廣告數:<br />此像功能僅適用於多樣化的活動");
 
 ?>

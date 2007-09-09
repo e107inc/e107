@@ -1,59 +1,62 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("SEALAN_1", "搜尋 Configuration");
-define("SEALAN_2", "Number of characters displayed in 搜尋 result summary:");
-define("SEALAN_3", "搜尋 sort method:");
+define("SEALAN_1", "搜尋設定");
+define("SEALAN_2", "搜尋結果概述顯示字數:");
+define("SEALAN_3", "搜尋排列模式:");
 define("SEALAN_6", "評論");
-define("SEALAN_7", "註冊ed 會員");
-define("SEALAN_10", "Display relevance value:");
-define("SEALAN_11", "Allow 會員 to select 搜尋able areas:");
-define("SEALAN_12", "Restrict time allowed between 搜尋es (max 5 mins):");
-define("SEALAN_13", "Restrict to one 搜尋 every");
-define("SEALAN_14", "seconds");
-define("SEALAN_15", "搜尋 page accessible to 會員 class");
-define("SEALAN_16", "On");
-define("SEALAN_17", "Off");
-define("SEALAN_18", "搜尋able 評論 Areas (when 評論 搜尋 is activated)");
-define("SEALAN_19", "Allow 會員s to 搜尋 more than one area at a time:");
-define("SEALAN_20", "General 設定");
-define("SEALAN_21", "搜尋able Areas");
-define("SEALAN_22", "Default");
-define("SEALAN_23", "Alternative:");
-define("SEALAN_24", "Type");
-define("SEALAN_25", "會員 Class");
-define("SEALAN_26", "Pre-Title Text");
-define("SEALAN_30", "Highlight keywords on referred too page:");
-define("SEALAN_31", "PHP limited to");
-define("SEALAN_32", "results (leave blank for no limit)");
-define("SEALAN_33", "Could not switch to MySql sort method as this requires at least version 4.0.1 of MySql.");
-define("SEALAN_34", "Your version is currently");
-define("SEALAN_35", "搜尋able areas selection method:");
+define("SEALAN_7", "註冊會員");
+define("SEALAN_10", "顯示關聯值:");
+define("SEALAN_11", "允許會員選擇可搜尋區域:");
+define("SEALAN_12", "每次間隔搜尋介於 (最大五分鐘):");
+define("SEALAN_13", "保護每次搜尋間隔");
+define("SEALAN_14", "秒");
+define("SEALAN_15", "搜尋頁面接收的會員等級");
+define("SEALAN_16", "開啟");
+define("SEALAN_17", "關閉");
+define("SEALAN_18", "可搜尋評論區域 (當評論搜尋機制開啟)");
+define("SEALAN_19", "允許會員搜尋更多於同一個時間:");
+define("SEALAN_20", "一般設定");
+define("SEALAN_21", "可搜尋區域");
+define("SEALAN_22", "預設");
+define("SEALAN_23", "選擇方式:");
+define("SEALAN_24", "類型");
+define("SEALAN_25", "會員等級");
+define("SEALAN_26", "抬頭前面文字");
+define("SEALAN_30", "強調關鍵字參考頁面:");
+define("SEALAN_31", "PHP 限至於");
+define("SEALAN_32", "結果(保留空白則是沒有限制)");
+define("SEALAN_33", "無法切換到 MySql 排列模式他至少需要MySql 4.0.1以後版本.");
+define("SEALAN_34", "您的版本為正確的");
+define("SEALAN_35", "搜尋區域選擇模式:");
 define("SEALAN_36", "Dropdown");
 define("SEALAN_37", "Checkbox");
 define("SEALAN_38", "Radio");
-define("SEALAN_39", "Custom Pages");
+define("SEALAN_39", "自訂頁面");
 
-define("LAN_98", "News");
+define("LAN_98", "新聞");
 define("LAN_197", "下載");
-define("LAN_418", "Custom Pages");
+define("LAN_418", "自訂頁面");
 
-define("SEALAN_40", "搜尋 Options");
-define("SEALAN_41", "主要的 Page");
-define("SEALAN_42", "Preferences");
+define("SEALAN_40", "搜尋選項");
+define("SEALAN_41", "搜尋首頁");
+define("SEALAN_42", "偏好設定");
 
-define("SEALAN_43", "編輯 搜尋 設定 for");
-define("SEALAN_44", "會員 class allowed to 搜尋 this area");
-define("SEALAN_45", "Number of results displayed per page");
-define("SEALAN_46", "Number of characters in 搜尋 result summary");
+define("SEALAN_43", "編輯搜尋設定於");
+define("SEALAN_44", "接受的會員等級搜尋該區域");
+define("SEALAN_45", "每一頁面顯示結果數目");
+define("SEALAN_46", "搜尋結果概述顯示字數");
 
+define("SEALAN_47", "僅吻合部份文字:");
+define("SEALAN_48", "該設定僅採用當搜尋排列模式是 PHP類型. 如果您的網站包含象形語言類似中文和日文您必須關閉此功能.");
+define("SEALAN_49", "如果您的網站包含象形語言類似中文和日文您必須使用 PHP 排列模式.");
 
 ?>

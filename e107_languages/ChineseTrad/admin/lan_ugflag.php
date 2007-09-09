@@ -1,20 +1,20 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_ugflag.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("UGFLAN_1", "主要的tenance setting updated");
-define("UGFLAN_2", "Activate 主要的tenance flag");
-define("UGFLAN_3", "Update 主要的tenance Setting");
-define("UGFLAN_4", "主要的tenance Setting");
+define("UGFLAN_1", "維修設定完成更新");
+define("UGFLAN_2", "啟動維修暫停公告");
+define("UGFLAN_3", "更新維修設定");
+define("UGFLAN_4", "維修設定");
 
-define("UGFLAN_5", "Text to display when site down");
-define("UGFLAN_6", "Leave blank to display default message");
+define("UGFLAN_5", "顯示網站維修原因");
+define("UGFLAN_6", "保留空白則顯示預設的訊息");
 
 ?>

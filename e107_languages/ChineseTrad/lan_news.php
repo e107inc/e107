@@ -4,24 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_news.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "新聞");
 
-define("LAN_82", "新聞 - 分區");
-define("LAN_83", "目前沒有新聞項目 - 請稍後確認.");
-define("LAN_84", "新聞項目");
-define("LAN_99", "評論");
-define("LAN_100", "開啟");
-define("LAN_307", "總共發表於該分區: ");
 
 define("LAN_NEWS_1", "僅限特定會員");
 define("LAN_NEWS_2", "您不被允許瀏覽該新聞");
-define("LAN_NEWS_3", "請刪除伺服器中的 install.php ");
-define("LAN_NEWS_4", "您如果沒有刪除將容易造成網站被駭客入侵的機會");
+//define("LAN_NEWS_3", "請刪除伺服器中的 install.php ");
+//define("LAN_NEWS_4", "您如果沒有刪除將容易造成網站被駭客入侵的機會");
 
 define("LAN_NEWS_5", "<b>錯誤!</b> 無法更新資料庫中的新聞!</b>");
 define("LAN_NEWS_6", "新聞輸入於資料庫.");
@@ -40,8 +34,16 @@ define("LAN_NEWS_18", "資訊:");
 define("LAN_NEWS_19", "現在");
 define("LAN_NEWS_20", "新聞更新於資料庫於下列的語言: ");
 define("LAN_NEWS_21", "新聞更新於資料庫.");
-define("LAN_NEWS_22", "前往頁面: ");
+//define("LAN_NEWS_22", "前往頁面: ");
 define("LAN_NEWS_23", "新聞分區");
 define("LAN_NEWS_24", "新增 pdf 於該新聞項目");
-define("LAN_462", "該月沒有新聞項目");
+
+define("LAN_NEWS_82", "新聞 - 分區");
+define("LAN_NEWS_83", "目前沒有新聞項目 - 請稍後確認.");
+define("LAN_NEWS_84", "新聞項目");
+define("LAN_NEWS_99", "評論");
+define("LAN_NEWS_100", "開啟");
+define("LAN_NEWS_307", "總共發表於該分區: ");
+define("LAN_NEWS_462", "指定的月份沒有新聞項目");
+
 ?>

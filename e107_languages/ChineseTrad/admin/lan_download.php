@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,13 +34,13 @@ define("DOWLAN_25", "提供下載");
 
 define("DOWLAN_27", "下載項目");
 
+define("DOWLAN_28", "沒有");
 define("DOWLAN_29", "下載首頁");
 define("DOWLAN_30", "新增下載");
 define("DOWLAN_31", "分區");
 define("DOWLAN_32", "下載選項");
 define("DOWLAN_33", "您確定要刪除該下載檔案?");
 define("DOWLAN_34", "您確定要刪除該下載分區?");
-define("DOWLAN_35", "下載");
 define("DOWLAN_36", "已刪除");
 define("DOWLAN_37", "上一層");
 define("DOWLAN_38", "沒有存在分區");
@@ -65,7 +65,6 @@ define("DOWLAN_56", "排列於");
 
 
 define("DOWLAN_59", "檔案名稱");
-define("DOWLAN_60", "作者");
 
 define("DOWLAN_62", "向上排序");
 define("DOWLAN_63", "向下排序");
@@ -128,7 +127,16 @@ define("DOWLAN_146", "自訂下載訊息或連結");
 
 
 define("DOWLAN_147", "空的分區圖標");
-define("DOWLAN_148", "點選更新 datestamp 到目前時間");
+define("DOWLAN_148", "點選更新發表日期到目前時間");
 define("DOWLAN_149", "或選擇使用外部連結檔案");
 
+define("DOWLAN_150", "當下載連結損毀時寄信通知管理員");
+define("DOWLAN_151", "連結損毀回報給");
+
+define("DOWLAN_152", "無法移動檔案");
+define("DOWLAN_153", "移動檔案到download資料夾");   
+define("DOWLAN_154", "假如使用鏡像, 請選擇選擇方式");
+define("DOWLAN_155", "鏡像顯示類型:");
+define("DOWLAN_156", "選擇鏡像名單, 允許會員選擇");
+define("DOWLAN_157", "使用隨機鏡像 - 非使用者選擇");
 ?>

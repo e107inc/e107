@@ -1,0 +1,15 @@
+
+Q>	如何變更風格?
+A>	這裡使偏好設定面允許您變更網站風格.請先預覽風格，部份舊的風格不會正確的顯示.
+
+Q>	什麼是 COPPA?
+A>	是 Children's Online Privacy Protection Act of 1998. 這是保護小於13歲的小孩條款. 這是確認沒有任何不良的資訊傳達給 '使用者' (例如, 您). 更多資訊請到 http://www.cdt.org/legislation/105th/privacy/coppa.html.
+
+Q>	什麼是浮動攻擊保護?
+A>	這將會防止您受到太多的 HTTP 連線, 避免您的網站因此不穩定.
+
+Q>	我該使用 Cookies 或是 Sessions 跟我的會員使用?
+A>	看您的選擇, 如果您的網站可以使用 cookies (預設設定) . 如果您比較喜歡使用  PHP sessions, 請使用(一個自訂的 session 處理來給 e107 系統儲存處理 sessions).
+
+Q>	為甚麼我的網站是基本模式?
+A>	如果您開發的風格有問題（ Firefox/Mozilla 和 IE瀏覽器不同）, 嘗試勾選此欄位. IE是基本模式和使用正確欄位模式.

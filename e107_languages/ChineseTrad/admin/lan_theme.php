@@ -1,15 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("TPVLAN_1", "您目前所看到的預覽風格 <b>'".PREVIEWTHEMENAME."'</b> .他尚未設定為主要的風格, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes 請 <a href='".e_ADMIN."theme.php'>click here</a>");
+define("TPVLAN_1", "您目前所看到的預覽風格 <b>'".PREVIEWTHEMENAME."'</b> .尚未設定為主要的風格,此為提供預覽風格.<br />如果想要設定此風格為網站風格,請到 <a href='".e_ADMIN."theme.php'>返回到風格管理員</a> 並選擇 '設定網站風格'.<br />如果要預覽風格請 <a href='".e_ADMIN."theme.php'>點選這裡</a>");
 define("TPVLAN_2", "風格預覽");
 define("TPVLAN_3", "主要的網站風格設定");
 define("TPVLAN_4", "作者");
@@ -24,12 +24,12 @@ define("TPVLAN_12", "目前無法預覽");
 
 define("TPVLAN_13", "上傳風格 (.zip or .tar.gz 格式)");
 define("TPVLAN_14", "上傳風格");
-define("TPVLAN_15", "The file could not be uploaded as the ".e_THEME." folder does not have the correct 權限 - 請 CHMOD to 777 and reupload the file.");
+define("TPVLAN_15", "該檔案沒有上傳到 ".e_THEME." 資料夾且沒有正確的權限 - 請 CHMOD  777 並重新上傳檔案.");
 define("TPVLAN_16", "管理訊息");
-define("TPVLAN_17", "That file does not appear to be a valid .zip or .tar archive.");
+define("TPVLAN_17", "該檔案不是 .zip 或 .tar 資料的有效檔案.");
 define("TPVLAN_18", "發生錯誤產生執行中斷, 無法解壓縮該檔案");
 define("TPVLAN_19", "您的風格已經被上傳且解壓縮了, 請下拉選單.");
-define("TPVLAN_20", "Auto theme upload and extraction is disabled as your themes folder does not have the correct 權限 - 請 CHMOD your e107_themes folder to 777.");
+define("TPVLAN_20", "自動上傳且解壓縮功能已關閉室因為您風格資料夾沒有足夠的權限權限 - 請 CHMOD 您的 e107_themes 資料夾到 777.");
 
 define("TPVLAN_21", "這是目前所選擇的網站風格");
 
@@ -59,4 +59,9 @@ define("TPVLAN_40", "控制台風格設定於");
 define("TPVLAN_41", "請選擇控制台外觀");
 define("TPVLAN_42", "儲存管理選項");
 define("TPVLAN_43", "管理選項已儲存");
+
+define("TPVLAN_46", "PCLZIP extract error:");
+define("TPVLAN_47", "PCLTAR extract error: ");
+define("TPVLAN_48", "code:");
+
 ?>

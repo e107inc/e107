@@ -1,11 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_wmessage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,5 +29,7 @@ define("WMLAN_07","撤除基本系統設定使用 {WMESSAGE} 簡短編碼:");
 // define("WMLAN_08","基本設定");
 
 define("WMLAN_09","目前沒有歡迎訊息");
+define("WMLAN_10","訊息說明");    
+
 
 ?>

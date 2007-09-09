@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站系統 - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:48 $
-|     $Author: e107coders $ Chinese Auther:Hank
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "新增會員/管理員登入並新增於");
@@ -14,6 +14,7 @@ define("ADMSLAN_1", "目前於管理模式.");
 define("ADMSLAN_2", "已更新於資料庫.");
 define("ADMSLAN_3", "一定要主要的網站管理員否則不能編輯.");
 define("ADMSLAN_4", "繼續");
+define("ADMSLAN_5", "發生錯誤!");
 define("ADMSLAN_6", "一定要主要的網站管理員否則不能編輯.");
 
 define("ADMSLAN_13", "現存管理員");
@@ -39,7 +40,7 @@ define("ADMSLAN_32", "設定首頁內容");
 define("ADMSLAN_33", "設定登入統計狀態");
 define("ADMSLAN_34", "設定 meta 標前");
 define("ADMSLAN_35", "設定公開檔案上傳");
-// define("ADMSLAN_36", "Moderate forums");
+define("ADMSLAN_36", "設定圖片");
 define("ADMSLAN_37", "管理修改評論");
 // define("ADMSLAN_38", "Moderate/configure chatbox");
 define("ADMSLAN_39", "發表新聞");
@@ -77,6 +78,6 @@ define("ADMSLAN_68", "信件通知設定");
 define("ADMSLAN_69", "已經是管理員而且已經被編輯.");
 
 define("ADMSLAN_70", "回到管理選單");
-define("ADMSLAN_71", "點選這裡顯示privelages ");  
+define("ADMSLAN_71", "點選這裡顯示權限 ");  
 
 ?>

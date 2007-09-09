@@ -1,66 +1,66 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 網站 system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/admin/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-12-20 23:04:49 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 07:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("LCLAN_1", "Options 已儲存的");
-define("LCLAN_2", "Link 已儲存的 to 資料庫.");
-define("LCLAN_3", "Link updated in 資料庫.");
-// define("LCLAN_4", "Link 刪除d.");
-define("LCLAN_6", "Order updated.");
-define("LCLAN_8", "Existing Links");
-define("LCLAN_12", "Link Rendertype");
-define("LCLAN_15", "Link Name");
-define("LCLAN_16", "Link URL");
-define("LCLAN_17", "Link Description");
-define("LCLAN_18", "Link Button / Icon");
-define("LCLAN_19", "Link Open Type");
-define("LCLAN_20", "Opens in same window");
-define("LCLAN_23", "Opens in new window");
-define("LCLAN_24", "Opens in 600x400 miniwindow");
-define("LCLAN_25", "Link Class");
-define("LCLAN_26", "Ticking will make the link visible to only 會員s in that class");
-define("LCLAN_27", "Update Link");
-define("LCLAN_28", "Create link");
-define("LCLAN_29", "Links");
-define("LCLAN_30", "move up");
-define("LCLAN_31", "move down");
-define("LCLAN_39", "View Images");
-define("LCLAN_53", "Link");
-define("LCLAN_54", "刪除d");
-define("LCLAN_58", "Are you sure you want to 刪除 this link?");
-define("LCLAN_61", "No links");
-define("LCLAN_62", "Links Front Page");
-define("LCLAN_63", "Create New Link");
-define("LCLAN_68", "Links Options");
-define("LCLAN_78", "Show Description as Screen-Tip");
-define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
-define("LCLAN_80", "Activate expanding sub-menus");
-define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Link parent is disabled)");
-define("LCLAN_83", "Submenus Generator");
-define("LCLAN_88", "Site Links Options");
-define("LCLAN_89", "Image");
-define("LCLAN_90", "Link Name");
-define("LCLAN_91", "Move");
-define("LCLAN_95", "Class");
+define("LCLAN_1", "選項已儲存的");
+define("LCLAN_2", "連結已儲存到資料庫.");
+define("LCLAN_3", "連結已更新於資料庫.");
+// define("LCLAN_4", "連結已刪除.");
+define("LCLAN_6", "順序已更新.");
+define("LCLAN_8", "已存在的連結");
+define("LCLAN_12", "連結顯示類型");
+define("LCLAN_15", "連結名稱");
+define("LCLAN_16", "連結網址");
+define("LCLAN_17", "連結描述");
+define("LCLAN_18", "連結按鈕 / 圖標");
+define("LCLAN_19", "連結開啟類型");
+define("LCLAN_20", "開啟於同樣視窗");
+define("LCLAN_23", "開啟於新視窗");
+define("LCLAN_24", "開啟於 600x400 小視窗");
+define("LCLAN_25", "連結瀏覽權限");
+define("LCLAN_26", "勾選您可瀏覽的會員權限");
+define("LCLAN_27", "更新連結");
+define("LCLAN_28", "新增連結");
+define("LCLAN_29", "連結");
+define("LCLAN_30", "向上移動");
+define("LCLAN_31", "向下移動");
+define("LCLAN_39", "瀏覽圖片");
+define("LCLAN_53", "連結");
+define("LCLAN_54", "已刪除");
+define("LCLAN_58", "您確定要刪除該連結?");
+define("LCLAN_61", "沒有連結");
+define("LCLAN_62", "連結管理首頁");
+define("LCLAN_63", "新增連結");
+define("LCLAN_68", "連結選項");
+define("LCLAN_78", "顯示描述於提示工具");
+define("LCLAN_79", "描述將會顯示當滑鼠移動到該連結時");
+define("LCLAN_80", "啟動延伸的子選單");
+define("LCLAN_81", "子選單將會顯示於您點選他上一層的選單時. (上一層選單將關閉)");
+define("LCLAN_83", "子選單產生器");
+define("LCLAN_88", "網站連結選項");
+define("LCLAN_89", "圖片");
+define("LCLAN_91", "移動");
+define("LCLAN_95", "等級");
 
-define("LCLAN_96", "Shown in your theme as");
+define("LCLAN_96", "顯示於您的風格於");
 
 
-define("LINKLAN_1", "Opens in 800x600 window");
-define("LINKLAN_2", "Parent");
-define("LINKLAN_3", "No Parent (Normal Link)");
-define("LINKLAN_4", "Sublink Generator");
-define("LINKLAN_5", "Generate Sublinks");
-define("LINKLAN_6", "Create sublinks from:");
-define("LINKLAN_7", "Create sublinks under which link?");
-define("LINKLAN_8", "News 分區");
-define("LINKLAN_9", "Download 分區");
+define("LINKLAN_1", "開啟於 800x600 視窗");
+define("LINKLAN_2", "上一層");
+define("LINKLAN_3", "沒有上一層 (一般連結)");
+define("LINKLAN_4", "子連結產生器");
+define("LINKLAN_5", "產生子連結");
+define("LINKLAN_6", "新增子連結於:");
+define("LINKLAN_7", "新增子連結於哪個連結下方?");
+define("LINKLAN_8", "新聞分區");
+define("LINKLAN_9", "下載分區");
+define("LINKLAN_10", "新增子連結");
 
 ?>
