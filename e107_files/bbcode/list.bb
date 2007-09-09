@@ -24,20 +24,20 @@ else
 
 if ($parm == '')
 {	/* unordered list */
-  $listtext = "<ul>";
+  $listtext = "<ul class='bbcode'>";
   $trailer = "</ul>";
 }
 else
 {
   $type = $tp -> toAttribute($parm);
-  $listtext = "\n<ol style='list-style-type: $type'>";
+  $listtext = "\n<ol class='bbcode' style='list-style-type: $type'>";
   $trailer = "</ol>";
 }
 foreach($listitems as $item)
 {
   if($item && $item != E_NL)
   {
-	$listtext .= "<li>$item</li>";
+	$listtext .= "<li class='bbcode'>$item</li>";
   }
 }
 return $listtext.$trailer;
