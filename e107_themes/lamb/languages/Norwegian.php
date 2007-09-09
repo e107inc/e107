@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/lamb/languages/Norwegian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-10-25 02:44:19 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 08:08:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */

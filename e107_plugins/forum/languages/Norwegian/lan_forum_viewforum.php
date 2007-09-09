@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Norwegian/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-09-09 07:47:11 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-09 08:08:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -13,82 +13,82 @@ define("PAGE_NAME", "Forum");
 	
 define("LAN_01", "Forumer");
 define("LAN_02", "Tilbake til toppen");
-define("LAN_03", "Gå");
-define("LAN_53", "Tråd");
+define("LAN_03", "GÃ¥");
+define("LAN_53", "TrÃ¥d");
 define("LAN_54", "Starter");
 define("LAN_55", "Svar");
 define("LAN_56", "Sett");
 define("LAN_57", "Siste post");
-define("LAN_58", "Det er ingen tråder i dette forumet enda.");
-define("LAN_59", "Du må være ett registrert medlem og logget inn for å poste i dette forumet. Trykk på registrer eller logg inn fra logg inn menyen.");
+define("LAN_58", "Det er ingen trÃ¥der i dette forumet enda.");
+define("LAN_59", "Du mÃ¥ vÃ¦re ett registrert medlem og logget inn for Ã¥ poste i dette forumet. Trykk pÃ¥ registrer eller logg inn fra logg inn menyen.");
 define("LAN_79", "Nye poster");
 define("LAN_80", " Ingen nye poster");
-define("LAN_81", "Lukket tråd");
-define("LAN_180", "Søk");
+define("LAN_81", "Lukket trÃ¥d");
+define("LAN_180", "SÃ¸k");
 define("LAN_199", "Uleste poster eksisterer");
 define("LAN_202", "Viktig");
 define("LAN_203", "Viktig/stengt");
-define("LAN_204", "Du <b>kan</b> starte en ny tråd");
-define("LAN_205", "Du <b>kan ikke</b> starte nye tråder");
+define("LAN_204", "Du <b>kan</b> starte en ny trÃ¥d");
+define("LAN_205", "Du <b>kan ikke</b> starte nye trÃ¥der");
 define("LAN_206", "Du <b>kan</b> poste svar");
 define("LAN_207", "Du <b>kan ikke</b> poste svar");
 define("LAN_208", "Du <b>kan</b> endre postene dine");
 define("LAN_209", "DU <b>kan ikke</b> endre postene dine");
-define("LAN_316", "Gå til side: ");
+define("LAN_316", "GÃ¥ til side: ");
 define("LAN_317", "Ingen");
 define("LAN_321", "Moderatorer: ");
-define("LAN_395", "[populær]");
-define("LAN_396", "Kunngjøring");
+define("LAN_395", "[populÃ¦r]");
+define("LAN_396", "KunngjÃ¸ring");
 	
 define("LAN_397", "Dette forumet er bare lesing");
 	
-define("LAN_398", "Ta vekk 'viktig' merke på tråd");
-define("LAN_399", "Lås tråd");
-define("LAN_400", "Lås opp tråd");
-define("LAN_401", "Sett 'viktig' på tråen");
-define("LAN_402", "Flytt tråd");
+define("LAN_398", "Ta vekk 'viktig' merke pÃ¥ trÃ¥d");
+define("LAN_399", "LÃ¥s trÃ¥d");
+define("LAN_400", "LÃ¥s opp trÃ¥d");
+define("LAN_401", "Sett 'viktig' pÃ¥ trÃ¥en");
+define("LAN_402", "Flytt trÃ¥d");
 define("LAN_403", "Hopp til forum");
 define("LAN_404", "Dette forumet er moderert av");
 	
-define("LAN_405", "brukere ser på dette forumet akkurat nå");
-define("LAN_406", "brukere surfer i dette forumet akkurat nå");
+define("LAN_405", "brukere ser pÃ¥ dette forumet akkurat nÃ¥");
+define("LAN_406", "brukere surfer i dette forumet akkurat nÃ¥");
 define("LAN_407", "medlem");
 define("LAN_408", "gjest");
 define("LAN_409", "medlemmer");
 define("LAN_410", "gjester");
 	
 //v.616
-define("LAN_411", "Viktige tråder");
-define("LAN_412", "Forum tråder");
-define("LAN_431", "Følg med på denne tråden: rss 0.92");
-define("LAN_432", "Følg med på denne tråden: rss 2.0");
-define("LAN_433", "Følg med på denne tråden: RDF");
+define("LAN_411", "Viktige trÃ¥der");
+define("LAN_412", "Forum trÃ¥der");
+define("LAN_431", "FÃ¸lg med pÃ¥ denne trÃ¥den: rss 0.92");
+define("LAN_432", "FÃ¸lg med pÃ¥ denne trÃ¥den: rss 2.0");
+define("LAN_433", "FÃ¸lg med pÃ¥ denne trÃ¥den: RDF");
 
-define("LAN_434", "Er du sikker på at du vil slette hele tråden og alle svarene?");
-define("LAN_435", "Slett tråd");
+define("LAN_434", "Er du sikker pÃ¥ at du vil slette hele trÃ¥den og alle svarene?");
+define("LAN_435", "Slett trÃ¥d");
 	
 //v.617
-define("FORLAN_CLOSE", "Tråd stengt.");
-define("FORLAN_OPEN", "Tråd åpnet på nytt.");
-define("FORLAN_STICK", "Tråd lagd viktig.");
-define("FORLAN_UNSTICK", "Tråd 'ikke sammenlimt'.");
-define("FORLAN_6", "Tråd slettet");
+define("FORLAN_CLOSE", "TrÃ¥d stengt.");
+define("FORLAN_OPEN", "TrÃ¥d Ã¥pnet pÃ¥ nytt.");
+define("FORLAN_STICK", "TrÃ¥d lagd viktig.");
+define("FORLAN_UNSTICK", "TrÃ¥d 'ikke sammenlimt'.");
+define("FORLAN_6", "TrÃ¥d slettet");
 define("FORLAN_7", "svar slettet");
 define("FORLAN_8", "her");
-define("FORLAN_9", "for å registrere deg eller logg inn fra logg inn menyen.");
+define("FORLAN_9", "for Ã¥ registrere deg eller logg inn fra logg inn menyen.");
 	
-define("FORLAN_10", "Start ny tråd");
+define("FORLAN_10", "Start ny trÃ¥d");
 define("FORLAN_11", "Nye poster");
 define("FORLAN_12", "Ingen nye poster");
-define("FORLAN_13", "Nye poster i populær tråd");
-define("FORLAN_14", "Ingen nye poster i populær tråd");
-define("FORLAN_15", "Viktig tråd");
-define("FORLAN_16", "Stengt viktig tråd");
-define("FORLAN_17", "Kunngjøringstråd");
-define("FORLAN_18", "Tråd stengt");
+define("FORLAN_13", "Nye poster i populÃ¦r trÃ¥d");
+define("FORLAN_14", "Ingen nye poster i populÃ¦r trÃ¥d");
+define("FORLAN_15", "Viktig trÃ¥d");
+define("FORLAN_16", "Stengt viktig trÃ¥d");
+define("FORLAN_17", "KunngjÃ¸ringstrÃ¥d");
+define("FORLAN_18", "TrÃ¥d stengt");
 define('FORLAN_19', '[bruker slettet]');
 define('FORLAN_20', 'Under-forum');
-define('FORLAN_21', 'Tråder');
+define('FORLAN_21', 'TrÃ¥der');
 define('FORLAN_22', 'Siste poster');
 	
 ?>

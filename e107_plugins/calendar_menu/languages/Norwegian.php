@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: Norwegian.php,v 1.1 2006-10-19 17:08:20 e107coders Exp $
+// $Id: Norwegian.php,v 1.2 2007-09-09 08:08:46 e107coders Exp $
 	
 	
 define('EC_ADLAN_1', "Hendelses Kalender");
