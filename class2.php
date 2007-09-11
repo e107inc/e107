@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2007-08-25 05:51:48 $
+|     $Revision: 1.23 $
+|     $Date: 2007-09-11 05:15:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1059,7 +1059,8 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 class e_online {
 	function online($online_tracking = false, $flood_control = false) {
-		if($online_tracking == true || $flood_control == true) {
+		if($online_tracking == true || $flood_control == true)
+		{
 			global $online_timeout, $online_warncount, $online_bancount;
 			if(!isset($online_timeout)) {
 				$online_timeout = 300;
@@ -1079,7 +1080,8 @@ class e_online {
 			$ip = $e107->getip();
 			$udata = (USER === true ? USERID.".".USERNAME : "0");
 
-			if (USER) {
+			if (USER)
+			{
 				// Find record that matches IP or visitor, or matches user info
 				if ($sql->db_Select("online", "*", "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'")) {
 					$row = $sql->db_Fetch();
@@ -1115,7 +1117,9 @@ class e_online {
 				} else {
 					$sql->db_Insert("online", " '".time()."', '0', '{$udata}', '{$ip}', '{$page}', 1, 0");
 				}
-			} else {
+				}
+			else
+			{
 				//Current page request is from a visitor
 				if ($sql->db_Select("online", "*", "`online_ip` = '{$ip}' AND `online_user_id` = '0'")) {
 					$row = $sql->db_Fetch();
@@ -1136,10 +1140,12 @@ class e_online {
 				}
 			}
 
-			if (ADMIN || $pref['autoban'] != 1) {
+			if (ADMIN || ($pref['autoban'] != 1 && $pref['autoban'] != 2)) // Auto-Ban is switched off. (0 or 3)
+			{
 				$row['online_pagecount'] = 1;
 			}
-			if ($row['online_pagecount'] > $online_bancount && $row['online_ip'] != "127.0.0.1") {
+
+			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) {
 				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
 				$e_event->trigger("flood", $ip);
 				exit;
@@ -1167,7 +1173,9 @@ class e_online {
 			define("GUESTS_ONLINE", $total_online - $members_online);
 			define("ON_PAGE", $sql->db_Count("online", "(*)", "WHERE `online_location` = '{$page}' "));
 			define("MEMBER_LIST", $member_list);
-		} else {
+		}
+		else
+		{
 			define("e_TRACKING_DISABLED", true);
 			define("TOTAL_ONLINE", "");
 			define("MEMBERS_ONLINE", "");
