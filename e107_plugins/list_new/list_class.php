@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2007-08-08 19:34:34 $
+|		$Revision: 1.5 $
+|		$Date: 2007-09-16 17:27:11 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -118,7 +118,7 @@ class listclass {
 	//content needs this to split each main parent into separate sections
 	function getContentSections($mode)
 	{
-		global $sql, $sections, $titles, $content_types, $content_name;
+		global $sql, $sections, $titles, $content_types, $content_name, $pref;
 
 //		if(!$content_install = $sql -> db_Select("plugin", "plugin_id", "plugin_path = 'content' AND plugin_installflag = '1' "))
 		if (!$content_install = isset($pref['plug_installed']['content']))		
@@ -148,7 +148,7 @@ class listclass {
 
 	function getSections()
 	{
-		global $sql, $sections, $titles;
+		global $sql, $sections, $titles, $pref;
 
 		$this -> getDefaultSections();
 
@@ -181,7 +181,7 @@ class listclass {
 
 	function getDefaultPrefs()
 	{
-		global $sql, $sections, $titles, $defaultarray, $content_types, $tp;
+		global $sql, $sections, $titles, $defaultarray, $content_types, $tp, $pref;
 
 		//section preferences
 		for($i=0;$i<count($sections);$i++)
