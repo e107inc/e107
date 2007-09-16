@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-07-18 20:46:32 $
+|     $Revision: 1.12 $
+|     $Date: 2007-09-16 17:13:51 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -315,7 +315,14 @@ class e107plugin
 			case 'remove' :
 			  foreach($var as $k => $v) 
 			  {
-				unset($pref[$k]);
+				if (is_numeric($k))
+				{	// Sometimes arrays specified with value being the name of the key to delete
+				  unset($pref[$var[$k]]);
+				}
+				else
+				{	// This is how the array should be specified - key is the name of the pref
+				  unset($pref[$k]);
+				} 
 			  }
 			  break;
 		  }
