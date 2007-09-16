@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/search/search_parser.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-16 17:16:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }    
 
 $return_fields = 'event_id, event_start, event_title, event_location, event_details';
 $search_fields = array('event_title', 'event_location', 'event_details');
