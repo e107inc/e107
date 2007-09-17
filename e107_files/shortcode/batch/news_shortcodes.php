@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2007-09-17 09:27:51 $
+|     $Revision: 1.32 $
+|     $Date: 2007-09-17 10:28:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,7 @@ global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
-if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
+if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != "noextend") {
     $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
 }
@@ -187,7 +187,7 @@ SC_END
 SC_BEGIN EXTENDED
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-if ($news_item['news_extended'] && strpos(e_QUERY, 'extend') === FALSE) {
+if ($news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == "force")) {
 	if (defined("PRE_EXTENDEDSTRING")) {
 		$es1 = PRE_EXTENDEDSTRING;
 	}
