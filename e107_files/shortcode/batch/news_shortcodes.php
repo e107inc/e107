@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2007-09-17 09:22:28 $
+|     $Revision: 1.31 $
+|     $Date: 2007-09-17 09:27:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -255,7 +255,8 @@ SC_END
 SC_BEGIN NEWSTITLELINK
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return "<a class='".$GLOBALS['NEWS_CSSMODE']."_titlelink' style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."' href='".e_BASE."news.php?item.".$news_item['news_id'].".".$news_item['news_category']."' title=\"".$news_item['news_title']."\" >".$news_item['news_title']."</a>";
+$mode = ($parm == "extend") ? "extend" : "item";
+return "<a class='".$GLOBALS['NEWS_CSSMODE']."_titlelink' style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."' href='".e_BASE."news.php?".$mode.".".$news_item['news_id'].".".$news_item['news_category']."' title=\"".$news_item['news_title']."\" >".$news_item['news_title']."</a>";
 SC_END
 
 SC_BEGIN NEWSCATICON

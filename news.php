@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.120 $
-|     $Date: 2007-09-17 09:21:18 $
+|     $Revision: 1.121 $
+|     $Date: 2007-09-17 09:27:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -146,7 +146,7 @@ if ($action == 'cat' || $action == 'all')
 		<td style='vertical-align:top;padding:3px;width:20px'>
 		{NEWSCATICON}
 		</td><td style='text-align:left;padding:3px'>
-		{NEWSTITLELINK}
+		{NEWSTITLELINK=extend}
 		<br />
 		{NEWSSUMMARY}
 		<span class='smalltext'>
