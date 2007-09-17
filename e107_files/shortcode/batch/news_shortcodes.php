@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2007-09-09 06:45:04 $
+|     $Revision: 1.30 $
+|     $Date: 2007-09-17 09:22:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -111,6 +111,10 @@ SC_END
 
 SC_BEGIN NEWSCOMMENTS
 global $pref, $sql;
+if($pref['comments_disabled'] == 1)
+{
+	return;
+}
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $news_item['news_comment_total'] = $sql->db_Select("comments", "*", "comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
