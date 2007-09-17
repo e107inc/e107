@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.119 $
-|     $Date: 2007-06-07 20:33:50 $
-|     $Author: e107steved $
+|     $Revision: 1.120 $
+|     $Date: 2007-09-17 09:21:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -178,8 +178,11 @@ if ($action == 'cat' || $action == 'all')
 
     if(!$NEWSLISTTITLE)
 	{
-//	  $NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"defs")."'";
-	  $NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"TITLE")."'";
+		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"TITLE")."'";
+	}
+	else
+	{
+    	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,"TITLE"),$NEWSLISTTITLE);
 	}
 
 	ob_start();
