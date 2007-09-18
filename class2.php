@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2007-09-11 05:15:24 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2007-09-18 21:15:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -828,11 +828,14 @@ if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 
-if ($pref['antiflood1'] == 1) {
-	define('FLOODPROTECT', TRUE);
-	define('FLOODTIMEOUT', $pref['antiflood_timeout']);
-}else{
-	define('FLOODPROTECT', FALSE);
+if ($pref['antiflood1'] == 1) 
+{
+  define('FLOODPROTECT', TRUE);
+  define('FLOODTIMEOUT', max(varset($pref['antiflood_timeout'],10),3));
+}
+else
+{
+  define('FLOODPROTECT', FALSE);
 }
 
 $layout = isset($layout) ? $layout : '_default';
