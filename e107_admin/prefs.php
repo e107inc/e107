@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-08-14 19:37:30 $
+|     $Revision: 1.7 $
+|     $Date: 2007-09-18 21:10:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -55,16 +55,34 @@ if (isset($_POST['updateprefs']))
 	$_POST['siteurl']     = substr($_POST['siteurl'], -1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
 
 
+// Table of range checking values - min and max for numerics. Only do the important ones
+	$pref_limits = array(
+	  'loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30),
+	  'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15),
+	  'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10)
+	);
+
 	foreach($_POST as $key => $value)
 	{
-		$pref[$key] = $tp->toDB($value);
+	  if (isset($pref_limits[$key]))
+	  {	// Its a numeric value to check
+	    if (is_numeric($value))
+		{
+		  if ($value < $pref_limits[$key]['min']) $value = $pref_limits[$key]['min'];
+		  if ($value > $pref_limits[$key]['max']) $value = $pref_limits[$key]['max'];
+		}
+		else
+		{
+		  $value = $pref_limits[$key]['default'];
+		} 
+	    $pref[$key] = $value;
+	  }
+	  else
+	  {
+	    $pref[$key] = $tp->toDB($value);
+	  }
 	}
 
-	// Range check these - can cause big problems if admin enters stupid values!
-	if ($pref['loginname_maxlength'] < 10) $pref['loginname_maxlength'] = 10;
-	if ($pref['loginname_maxlength'] > 100) $pref['loginname_maxlength'] = 100;
-	if ($pref['displayname_maxlength'] < 5) $pref['displayname_maxlength'] = 5;
-	if ($pref['displayname_maxlength'] > 30) $pref['displayname_maxlength'] = 30;
 
 	$e107cache->clear();
 	save_prefs();
