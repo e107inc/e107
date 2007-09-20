@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2007-02-04 15:27:28 $
-|     $Author: e107steved $
+|     $Revision: 1.26 $
+|     $Date: 2007-09-20 11:08:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -123,6 +123,10 @@ $agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"));
 	}
 SC_END
 
+SC_BEGIN DOWNLOAD_LIST_NEXTPREV
+	global $nextprev_parms,$tp;
+ 	return $tp->parseTemplate("{NEXTPREV={$nextprev_parms}}");
+SC_END
 
 
 // ---------------------- Download View ----------------------------------------
@@ -414,8 +418,12 @@ SC_END
 
 
 SC_BEGIN DOWNLOAD_BACK_TO_LIST
-global $dl;
-return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
+	global $dl;
+	return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
+SC_END
+
+SC_BEGIN DOWNLOAD_BACK_TO_CATEGORY_LIST
+	return "<a href='".e_SELF."'>".LAN_dl_9."</a>";
 SC_END
 
 

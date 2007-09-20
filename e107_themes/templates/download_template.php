@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-02-03 14:21:25 $
-|     $Author: e107steved $
+|     $Revision: 1.18 $
+|     $Date: 2007-09-20 11:08:14 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -216,6 +216,8 @@ if(!isset($DOWNLOAD_LIST_TABLE_END))
 $DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 $DL_VIEW_CAPTION = "{DOWNLOAD_VIEW_CAPTION}";
 
+if(!isset($DL_VIEW_NEXTPREV))
+{
 		$DL_VIEW_NEXTPREV = "
 		<div style='text-align:center'>
 			<table style='".USER_WIDTH."'>
@@ -226,6 +228,7 @@ $DL_VIEW_CAPTION = "{DOWNLOAD_VIEW_CAPTION}";
 			</tr>
 			</table>
 		</div>\n";
+}
 
 // Only renders the following rows when data is present.
 $sc_style['DOWNLOAD_VIEW_AUTHOR_LAN']['pre'] = "<tr><td style='width:20%' class='forumheader3'>";

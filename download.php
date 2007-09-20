@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.89 $ 
-|     $Date: 2007-07-09 19:49:46 $
-|     $Author: e107steved $
+|     $Revision: 1.90 $ 
+|     $Date: 2007-09-20 11:08:12 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -324,11 +324,19 @@ if ($action == "list")
 		$ns->tablerender($type, $text);
 	}
 
+	if(!isset($DOWNLOAD_LIST_NEXTPREV))
+	{
+        $sc_style['DOWNLOAD_LIST_NEXTPREV']['pre'] = "<div class='nextprev'>";
+		$sc_style['DOWNLOAD_LIST_NEXTPREV']['post'] = "</div>";
 
-	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><a href='".e_SELF."'>".LAN_dl_9."</a><br /><br />";
-	$parms = $total_downloads.",".$view.",".$dl_from.",".e_SELF."?[FROM].list.{$id}.{$view}.{$order}.{$sort}.";
-	echo ($total_downloads > $view) ? "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>" : "";
-    echo "</div>";
+    	$DOWNLOAD_LIST_NEXTPREV = "
+			<div style='text-align:center;margin-left:auto;margin-right:auto'>{DOWNLOAD_BACK_TO_CATEGORY_LIST}<br /><br />
+            {DOWNLOAD_LIST_NEXTPREV}
+			</div>";
+    }
+
+	$nextprev_parms = $total_downloads.",".$view.",".$dl_from.",".e_SELF."?[FROM].list.{$id}.{$view}.{$order}.{$sort}.";
+    echo $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $download_shortcodes);
 
 	require_once(FOOTERF);
 	exit;
