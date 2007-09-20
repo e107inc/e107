@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-05-01 19:50:55 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2007-09-20 21:45:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -235,10 +235,9 @@ function multilang_prefs() {
 	$text .= "
 	<tr>
 	<td style='width:80%' class='forumheader3'>".LANG_LAN_18."<br />
-	<span class='smalltext'>".LANG_LAN_19."<br /></span></td>
+    <span class='smalltext'>".LANG_LAN_19."<br />".LANG_LAN_20."</span></td>
 	<td style='width:20%;text-align:center' class='forumheader3'>";
-    $checked_m = ($pref['multilanguage_subdomain']) ? "checked='checked'" : "";
-	$text .= "<input type='checkbox' name='multilanguage_subdomain'   value='1' $checked_m />
+    $text .= "<textarea name='multilanguage_subdomain' rows='5' cols='15' style='width:80%'>".$pref['multilanguage_subdomain']."</textarea>
 	</td>
 	</tr>
 	";
