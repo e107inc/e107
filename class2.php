@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2007-09-18 21:15:41 $
-|     $Author: e107steved $
+|     $Revision: 1.25 $
+|     $Date: 2007-09-20 21:45:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -359,15 +359,22 @@ define("SITEURL", SITEURLBASE.e_HTTP);
 // let the subdomain determine the language (when enabled).
 
 if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE){
-	 	e107_ini_set("session.cookie_domain",".".e_DOMAIN);
-		require_once(e_HANDLER."language_class.php");
-		$lng = new language;
-        if(e_SUBDOMAIN == "www"){
-        	$GLOBALS['elan'] = $pref['sitelanguage'];
-		}
-		elseif($eln = $lng->convert(e_SUBDOMAIN))
+
+		$mtmp = explode("\n",$pref['multilanguage_subdomain']);
+
+		if(in_array(e_DOMAIN,$mtmp) || ($pref['multilanguage_subdomain'] ==1))
 		{
-          	$GLOBALS['elan'] = $eln;
+	 		e107_ini_set("session.cookie_domain",".".e_DOMAIN);
+			require_once(e_HANDLER."language_class.php");
+			$lng = new language;
+	    	if(e_SUBDOMAIN == "www")
+			{
+        		$GLOBALS['elan'] = $pref['sitelanguage'];
+			}
+			elseif($eln = $lng->convert(e_SUBDOMAIN))
+			{
+          		$GLOBALS['elan'] = $eln;
+			}
 		}
 }
 
