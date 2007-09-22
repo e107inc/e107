@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-14 20:08:04 $
+|     $Revision: 1.5 $
+|     $Date: 2007-09-22 17:41:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -296,7 +296,14 @@ SC_END
 
 SC_BEGIN PM_DELETE
 global $pm_info;
-$extra = $parm != "" ? ".{$parm}" : "";
+if($parm != "")
+{ 
+  $extra = '.'.$parm;
+}
+else
+{
+  $extra = '.'.($pm_info['pm_from'] == USERID ? 'outbox' : 'inbox');
+}
 return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' style='width: 16px; height: 16px; border: 0px' /></a>";
 SC_END
 
