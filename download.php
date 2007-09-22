@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.90 $ 
-|     $Date: 2007-09-20 11:08:12 $
-|     $Author: e107coders $
+|     $Revision: 1.91 $ 
+|     $Date: 2007-09-22 09:43:03 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -318,10 +318,16 @@ if ($action == "list")
 	$text .= $download_list_table_start.$download_list_table_string.$download_list_table_end;
 
 
-	if($DOWNLOAD_LIST_TABLE_RENDERPLAIN) {
+	if ($filetotal)
+	{  // Only show list if some files in it
+	  if($DOWNLOAD_LIST_TABLE_RENDERPLAIN) 
+	  {
 		echo $text;
-	} else {
+	  } 
+	  else 
+ 	  {
 		$ns->tablerender($type, $text);
+	  }
 	}
 
 	if(!isset($DOWNLOAD_LIST_NEXTPREV))
