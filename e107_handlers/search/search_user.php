@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_user.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2007-09-22 19:48:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,7 +27,7 @@ if (isset($_GET['time']) && is_numeric($_GET['time'])) {
 
 // basic
 $return_fields = 'user_id, user_name, user_email, user_signature, user_join';
-$search_fields = array('user_name', 'user_email', 'user_signature');
+$search_fields = array('user_name', 'user_signature');
 $weights = array('1.2', '0.6', '0.6', '0.6', '0.6');
 $no_results = LAN_198;
 $where = $advanced_where;
