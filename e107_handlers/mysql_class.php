@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-08-08 21:01:46 $
+|     $Revision: 1.18 $
+|     $Date: 2007-09-22 21:46:16 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.17 $
+* @version $Revision: 1.18 $
 * @author $Author: e107steved $
 */
 class db {
@@ -739,49 +739,49 @@ class db {
 	}
 
 	// Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
-    function db_Field($table,$fieldid="",$key=""){
-		if(!$this->mySQLdefaultdb){
-			global $mySQLdefaultdb;
-			$this->mySQLdefaultdb = $mySQLdefaultdb;
-		}
-        $convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
-        $key = ($convert[$key]) ? $convert[$key] : "OFF";
+	// If $retinfo is true, returns complete array of field data; FALSE if not found
+    function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
+	{
+	  if(!$this->mySQLdefaultdb)
+	  {
+		global $mySQLdefaultdb;
+		$this->mySQLdefaultdb = $mySQLdefaultdb;
+	  }
+      $convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
+      $key = ($convert[$key]) ? $convert[$key] : "OFF";
 
-		if(!$this->mySQLaccess)
-		{
-			global $db_ConnectionID;
-        	$this->mySQLaccess = $db_ConnectionID;
-		}
+	  if(!$this->mySQLaccess)
+	  {
+		global $db_ConnectionID;
+        $this->mySQLaccess = $db_ConnectionID;
+	  }
 
         $result = mysql_query("SHOW COLUMNS FROM ".MPREFIX.$table,$this->mySQLaccess);
-        if (mysql_num_rows($result) > 0) {
-            $c=0;
-   			while ($row = mysql_fetch_assoc($result)) {
-				if(is_numeric($fieldid))
-				{
-                	if($c == $fieldid)
-					{
-                       return $row['Field']; // field number matches.
-					}
-				}
-                else
-				{
-					if(($key == "OFF") && ($fieldid == $row['Field']))
-					{
-                    	return TRUE;  // key not in use, but field matches.
-					}
-					elseif(($fieldid == $row['Field']) && $key == $row['Key'])
-					{
-                    	return TRUE;
-					}
-
- 			    }
-				$c++;
-        	}
+        if (mysql_num_rows($result) > 0) 
+		{
+          $c=0;
+   		  while ($row = mysql_fetch_assoc($result)) 
+		  {
+			if(is_numeric($fieldid))
+			{
+              if($c == $fieldid)
+			  {
+			    if ($retinfo) return $row;
+                return $row['Field']; // field number matches.
+			  }
+			}
+            else
+			{	// Check for match of key name - and allow that key might not be used
+			  if(($fieldid == $row['Field']) && (($key == "OFF") || ($key == $row['Key'])))
+			  {
+			    if ($retinfo) return $row;
+                return TRUE;
+			  }
+ 			}
+			$c++;
+          }
 		}
-
 		return FALSE;
-
 	}
 
 	/**

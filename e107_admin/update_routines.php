@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-09-22 20:32:31 $
+|     $Revision: 1.10 $
+|     $Date: 2007-09-22 21:46:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,7 @@ require_once("../class2.php");
 
 // To do - how do we handle multi-language tables?
 
+$update_debug = FALSE;			// TRUE gives extra messages in places
 
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
@@ -84,39 +85,6 @@ foreach ($dbupdateplugs as $path => $ver)
   if (is_readable($fname)) include_once($fname);
 }
 
-
-/*
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
-	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
-	{
-		include_once(e_PLUGIN.'forum/forum_update_check.php');
-	}
-}
-if (mysql_table_exists("stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
-	if(file_exists(e_PLUGIN.'log/log_update_check.php'))
-	{
-		include_once(e_PLUGIN.'log/log_update_check.php');
-	}
-}
-
-//content
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
-{
-	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
-	{
-		include_once(e_PLUGIN.'content/content_update_check.php');
-	}
-}
-
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_installflag='1' "))
-{
-	if(file_exists(e_PLUGIN.'pm/pm_update_check.php'))
-	{
-		include_once(e_PLUGIN.'pm/pm_update_check.php');
-	}
-}
-
-*/
 
 // List of potential updates
 $dbupdate["core_prefs"] = LAN_UPDATE_13;						// Prefs check
@@ -217,6 +185,16 @@ function update_706_to_800($type='')
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
+	
+	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
+	$ip_upgrade = array('comments' => 'comment_ip', 
+						'download_requests' => 'download_request_ip',
+						'online' => 'online_ip',
+						'submitnews' => 'submitnews_ip',
+						'tmp' => 'tmp_ip',
+						'user' => 'user_ip',
+						'chatbox' => 'cb_ip'
+						);
 	
 	$do_save = FALSE;
 
@@ -334,8 +312,31 @@ function update_706_to_800($type='')
 	{
 	  if (mysql_table_exists($ot)) 
 	  {
-	    if ($just_check) return update_needed();
+	    if ($just_check) return update_needed("Delete table: ".$ot);
 		mysql_query('DROP TABLE `'.MPREFIX.$ot.'`');
+	  }
+	}
+	
+	
+	// Tables where IP address field needs updating to accommodate IPV6
+	// Set to varchar(45) - just in case something uses the IPV4 subnet (see http://en.wikipedia.org/wiki/IPV6#Notation)
+	foreach ($ip_upgrade as $t => $f)
+	{
+	  if (mysql_table_exists($t)) 
+	  {		// Check for table - might add some core plugin tables in here
+	    if ($field_info = ($sql->db_Field($t, $f, '', TRUE)))
+	    {
+		  if (strtolower($field_info['Type']) != 'varchar(45)')
+		  {
+            if ($just_check) return update_needed('Update field '.$f.' in table '.$t);
+			mysql_query("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR( 45 ) NOT NULL DEFAULT '';");
+			catch_error();
+		  }
+	    }
+	    else
+		{
+			// Got a strange error here
+		}
 	  }
 	}
 
@@ -429,9 +430,10 @@ function update_70x_to_706($type='')
 }
 
 
-function update_needed()
+function update_needed($message='')
 {
-	global $ns;
+	global $ns, $update_debug;
+	if ($update_debug) echo "Update: ".$message."<br />";
 	if(E107_DEBUG_LEVEL)
 	{
 		$tmp = debug_backtrace();
@@ -439,6 +441,7 @@ function update_needed()
 	}
 	return FALSE;
 }
+
 
 function mysql_table_exists($table)
 {

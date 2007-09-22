@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-22 20:32:31 $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-22 21:46:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,7 @@ CREATE TABLE comments (
   comment_datestamp int(10) unsigned NOT NULL default '0',
   comment_comment text NOT NULL,
   comment_blocked tinyint(3) unsigned NOT NULL default '0',
-  comment_ip varchar(20) NOT NULL default '',
+  comment_ip varchar(45) NOT NULL default '',
   comment_type varchar(10) NOT NULL default '0',
   comment_lock tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id)
@@ -183,7 +183,7 @@ CREATE TABLE download_mirror (
 CREATE TABLE download_requests (
   download_request_id int(10) unsigned NOT NULL auto_increment,
   download_request_userid int(10) unsigned NOT NULL default '0',
-  download_request_ip varchar(30) NOT NULL default '',
+  download_request_ip varchar(45) NOT NULL default '',
   download_request_download_id int(10) unsigned NOT NULL default '0',
   download_request_datestamp int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (download_request_id),
@@ -278,7 +278,7 @@ CREATE TABLE online (
   online_timestamp int(10) unsigned NOT NULL default '0',
   online_flag tinyint(3) unsigned NOT NULL default '0',
   online_user_id varchar(100) NOT NULL default '',
-  online_ip varchar(15) NOT NULL default '',
+  online_ip varchar(45) NOT NULL default '',
   online_location varchar(100) NOT NULL default '',
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0'
@@ -390,7 +390,7 @@ CREATE TABLE submitnews (
   submitnews_category tinyint(3) unsigned NOT NULL default '0',
   submitnews_item text NOT NULL,
   submitnews_datestamp int(10) unsigned NOT NULL default '0',
-  submitnews_ip varchar(15) NOT NULL default '',
+  submitnews_ip varchar(45) NOT NULL default '',
   submitnews_auth tinyint(3) unsigned NOT NULL default '0',
   submitnews_file varchar(100) NOT NULL default '',
   PRIMARY KEY  (submitnews_id)
@@ -402,7 +402,7 @@ CREATE TABLE submitnews (
 #
 
 CREATE TABLE tmp (
-  tmp_ip varchar(20) NOT NULL default '',
+  tmp_ip varchar(45) NOT NULL default '',
   tmp_time int(10) unsigned NOT NULL default '0',
   tmp_info text NOT NULL,
   KEY tmp_ip (tmp_ip)
@@ -457,7 +457,7 @@ CREATE TABLE user (
   user_chats int(10) unsigned NOT NULL default '0',
   user_comments int(10) unsigned NOT NULL default '0',
   user_forums int(10) unsigned NOT NULL default '0',
-  user_ip varchar(20) NOT NULL default '',
+  user_ip varchar(45) NOT NULL default '',
   user_ban tinyint(3) unsigned NOT NULL default '0',
   user_prefs text NOT NULL,
   user_new text NOT NULL,
