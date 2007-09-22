@@ -232,8 +232,8 @@ class e107PDF extends UFPDF{
 	  global $tp;
 	  global $admin_log;
 
-		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;', '&amp;#091;', '&nbsp;', 'â€˜', 'â€™', ' />', '&#40;', '&#41;', '&#123;', '&#125;', '&#91;', '&#93;');
-		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '', '[', '[', ' ', "'", "'", '>', '(', ')', '{', '}', '[',']' );
+		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;', '&amp;#091;', '&nbsp;', 'â€˜', 'â€™', ' />', '&#40;', '&#41;', '&#123;', '&#125;', '&#91;', '&#93;', '&#092;', '&#92;');
+		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '', '[', '[', ' ', "'", "'", '>', '(', ')', '{', '}', '[',']', '\\\\', '\\\\' );
 		//replace carriage returns by spaces, and some html variants
 		$html=str_replace($search, $replace, $html);
 		$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string
