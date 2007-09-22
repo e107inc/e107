@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-06-24 16:18:48 $
+|     $Revision: 1.9 $
+|     $Date: 2007-09-22 20:32:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -214,6 +214,10 @@ function update_706_to_800($type='')
 	
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type');
+
+	// List of DB tables not required (includes a few from 0.6xx)
+	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
+	
 	$do_save = FALSE;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
@@ -325,19 +329,15 @@ function update_706_to_800($type='')
 	}
 
 
-	// Obsolete tables
-	if (mysql_table_exists("headlines")) 
+	// Obsolete tables (list at top)
+	foreach ($obs_tables as $ot)
 	{
+	  if (mysql_table_exists($ot)) 
+	  {
 	    if ($just_check) return update_needed();
-		mysql_query('DROP TABLE `'.MPREFIX.'headlines`');
+		mysql_query('DROP TABLE `'.MPREFIX.$ot.'`');
+	  }
 	}
-
-	if (mysql_table_exists("flood")) 
-	{
-	    if ($just_check) return update_needed();
-		mysql_query('DROP TABLE `'.MPREFIX.'flood`');
-	}
-
 
 
 	if ($do_save) save_prefs();
@@ -440,20 +440,23 @@ function update_needed()
 	return FALSE;
 }
 
-function mysql_table_exists($table){
-     $exists = mysql_query("SELECT 1 FROM ".MPREFIX."$table LIMIT 0");
-     if ($exists) return TRUE;
-     return FALSE;
+function mysql_table_exists($table)
+{
+  $exists = mysql_query("SELECT 1 FROM ".MPREFIX."$table LIMIT 0");
+  if ($exists) return TRUE;
+  return FALSE;
 }
 
 
-function catch_error(){
-	if (mysql_error()!='' && E107_DEBUG_LEVEL != 0) {
-		$tmp2 = debug_backtrace();
-		$tmp = mysql_error();
-		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
-	}
-	return;
+function catch_error()
+{
+  if (mysql_error()!='' && E107_DEBUG_LEVEL != 0) 
+  {
+	$tmp2 = debug_backtrace();
+	$tmp = mysql_error();
+	echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
+  }
+  return;
 }
 
 
