@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2007-06-28 19:38:15 $
-|     $Author: e107steved $
+|     $Revision: 1.113 $
+|     $Date: 2007-09-22 22:28:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -781,17 +781,22 @@ if (!$website)
 	$website = "http://";
 }
 
-if (strpos(LAN_109, "stage") === FALSE)
+if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 {
-	if (isset($_POST['newver']))
+	if(isset($_POST['newver']))
 	{
-		if (!$_POST['coppa'])
+		if(!varsettrue($_POST['coppa']))
 		{
 			$text = $tp->parseTemplate($COPPA_FAIL);
 			$ns->tablerender(LAN_110, $text);
 			require_once(FOOTERF);
 			exit;
 		}
+	}
+	else
+	{
+  		header('Location: '.e_BASE.'signup.php');
+		exit;
 	}
 }
 
@@ -951,4 +956,3 @@ function render_email($preview = FALSE)
 
 	return $ret;
 }
-?>
