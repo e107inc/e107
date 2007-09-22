@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-04 19:26:54 $
+|     $Revision: 1.5 $
+|     $Date: 2007-09-22 09:43:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -455,7 +455,8 @@ class download {
             $search_display = explode("|",$pref['admin_download_disp']);
 		}
 
-         $query = "SELECT d.*, dc.* FROM #download AS d	LEFT JOIN #download_category AS dc ON dc. download_category_id  = d.download_category";
+//         $query = "SELECT d.*, dc.* FROM #download AS d	LEFT JOIN #download_category AS dc ON dc. download_category_id  = d.download_category";
+         $query = "SELECT d.*, dc.* FROM `#download` AS d	LEFT JOIN `#download_category` AS dc ON dc. download_category_id  = d.download_category";
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
 			$query .= " WHERE  download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ";
@@ -467,92 +468,115 @@ class download {
 			$query .= " ORDER BY ".($sub_action ? $sub_action : $sortorder)." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
 
-      	if ($sql->db_Select_gen($query)) {
-			$text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
+      	if ($dl_count = $sql->db_Select_gen($query)) 
+		{
+		  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
 				<table class='fborder' style='width:99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'>ID</td>
 				";
 
 // Search Display Column header.----------
-			foreach($search_display as $disp){
-				if($disp == "download_name"){
-					$text .= "<td class='fcaption'><a href='".e_SELF."?main.download_name.".($id == "desc" ? "asc" : "desc").".$from'>".DOWLAN_27."</a></td>";
-				}else{
-					$repl = array("download_","_");
-					$text .= "<td class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace($repl," ",$disp))."</a></td>";
-				}
+		  foreach($search_display as $disp)
+		  {
+			if($disp == "download_name")
+			{
+			  $text .= "<td class='fcaption'><a href='".e_SELF."?main.download_name.".($id == "desc" ? "asc" : "desc").".$from'>".DOWLAN_27."</a></td>";
+			}
+			else
+			{
+			  $repl = array("download_","_");
+			  $text .= "<td class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace($repl," ",$disp))."</a></td>";
+			}
+		  }
+
+
+		  $text .="<td style='width:10%' class='fcaption'>".LAN_OPTIONS."</td></tr>";
+
+		  while ($row = $sql->db_Fetch()) 
+		  {
+			$text .= "<tr><td style='width:5%;vertical-align:top' class='forumheader3'>".$row['download_id']."</td>";
+
+			// Display Chosen options 
+			foreach($search_display as $disp)
+			{
+			  $text .= "<td class='forumheader3' style='vertical-align:top'>";
+			  switch ($disp)
+			  {
+			    case "download_name" :
+        		  $text .= "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$row['download_name']."</a>";
+				  break;
+				case "download_category" :
+				  $text .= $row['download_category_name']."&nbsp;";
+				  break;
+				case "download_datestamp" :
+				  $text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp])."&nbsp;" : "&nbsp";
+				  break;
+				case "download_class" :
+				case "download_visible" :
+				  $text .= r_userclass_name($row[$disp])."&nbsp;";
+				  break;
+				case "download_filesize" :
+				  $text .= ($row[$disp]) ? round(($row[$disp] / 1000))." Kb&nbsp;" : "&nbsp";
+				  break;
+				case "download_thumb" :
+				  $text .= ($row[$disp]) ? "<img src='".e_FILE."downloadthumbs/".$row[$disp]."' alt='' />" : "";
+				  break;
+				case "download_image" :
+				  $text .= "<a rel='external' href='".e_FILE."downloadimages/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
+				  break;
+				case "download_description" :
+				  $text .= $tp->toHTML($row[$disp],TRUE)."&nbsp;";
+				  break;
+				case "download_active" :
+				  if($row[$disp]== 1)
+				  { 
+				    $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_123."' alt='' style='cursor:help' />\n"; 	
+				  }
+				  elseif($row[$disp]== 2)
+				  { 
+				    $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help' /><img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help' />\n"; 	
+				  }
+				  else
+				  { 
+				    $text .= "<img src='".ADMIN_FALSE_ICON_PATH."' title='".DOWLAN_122."' alt='' style='cursor:help' />\n";  
+				  }
+				  break;
+				case "download_comment" :
+                  $text .= ($row[$disp]) ? ADMIN_TRUE_ICON : "&nbsp;";
+				  break;
+				default :
+				  $text .= $row[$disp]."&nbsp;";
+			  }
+			  $text .= "</td>";
 			}
 
-// ------------------------------
-			$text .="
-				<td style='width:10%' class='fcaption'>".LAN_OPTIONS."</td>
-				</tr>";
-			while ($row = $sql->db_Fetch()) {
-				extract($row);
-				$text .= "<tr>
-					<td style='width:5%;vertical-align:top' class='forumheader3'>$download_id</td>";
-
-// Display Chosen options -------------------------------------
-        $bolean_list = array("download_active","download_comment");
-
-		foreach($search_display as $disp){
-			$text .= "<td class='forumheader3' style='vertical-align:top'>";
-
-        	if($disp == "download_name"){
-        		$text .= "<a href='".e_BASE."download.php?view.$download_id'>$download_name</a>";
-			}elseif($disp == "download_category"){
-				$text .= $row['download_category_name']."&nbsp;";
-        	}elseif($disp == "download_datestamp"){
-				$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp])."&nbsp;" : "&nbsp";
-			}elseif($disp == "download_class" || $disp == "download_visible"){
-				$text .= r_userclass_name($row[$disp])."&nbsp;";
-        	}elseif($disp == "download_filesize"){
-				$text .= ($row[$disp]) ? round(($row[$disp] / 1000))." Kb&nbsp;" : "&nbsp";
-			}elseif($disp == "download_thumb"){
-				$text .= ($row[$disp]) ? "<img src='".e_FILE."downloadthumbs/".$row[$disp]."' alt='' />" : "";
-        	}elseif($disp == "download_image"){
-				$text .= "<a rel='external' href='".e_FILE."downloadimages/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
-			}elseif($disp == "download_description"){
-				$text .= $tp->toHTML($row[$disp],TRUE)."&nbsp;";
-            }elseif($disp == "download_active"){
-				if($row[$disp]== 1){ $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_123."' alt='' style='cursor:help' />\n"; 	}
-				elseif($row[$disp]== 2){ $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help' /><img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help' />\n"; 	}
-				else{ $text .= "<img src='".ADMIN_FALSE_ICON_PATH."' title='".DOWLAN_122."' alt='' style='cursor:help' />\n";  }
-			}elseif($disp == "download_comment"){
-                $text .= ($row[$disp]) ? ADMIN_TRUE_ICON : "&nbsp;";
-			}else{
-				$text .= $row[$disp]."&nbsp;";
-        	}
-
-			$text .= "</td>";
-		}
-// -------------------------------------------------------------
 
 			$text .= "
 					<td style='width:20%;vertical-align:top; text-align:center' class='forumheader3'>
-					<a href='".e_SELF."?create.edit.{$download_id}'>".ADMIN_EDIT_ICON."</a>
-					<input type='image' title='".LAN_DELETE."' name='delete[main_{$download_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: $download_id ]")."') \" />
+					<a href='".e_SELF."?create.edit.".$row['download_id']."'>".ADMIN_EDIT_ICON."</a>
+					<input type='image' title='".LAN_DELETE."' name='delete[main_".$row['download_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: ".$row['download_id']." ]")."') \" />
 					</td>
 					</tr>";
-			}
-			$text .= "</table></form>";
-		} else {
-			$text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
+		  }
+		  $text .= "</table></form>";
+		} 
+		else 
+		{	// 'No downloads yet'
+		  $text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
 		}
 		$text .= "</div>";
 
-// Next-Previous. ==========================
-
+		// Next-Previous.
 		$downloads = $sql->db_Count("download");
-		if ($downloads > $amount && !$_POST['searchquery']) {
+		if ($downloads > $amount && !$_POST['searchquery']) 
+		{
 			$parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.download_id.desc.")."[FROM]";
 			$text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 
 
-// Search  & display options etc. =========================.
-
+		// Search  & display options etc.
 		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
 
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
