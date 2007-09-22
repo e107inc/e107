@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-22 20:32:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -190,34 +190,6 @@ CREATE TABLE download_requests (
   KEY download_request_userid (download_request_userid),
   KEY download_request_download_id (download_request_download_id)
 ) TYPE=MyISAM;
-# --------------------------------------------------------
-
-
-#
-# Table structure for table `flood`
-#
-
-CREATE TABLE flood (
-  flood_url text NOT NULL,
-  flood_time int(10) unsigned NOT NULL default '0'
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `headlines`
-#
-
-CREATE TABLE headlines (
-  headline_id int(10) unsigned NOT NULL auto_increment,
-  headline_url varchar(150) NOT NULL default '',
-  headline_data text NOT NULL,
-  headline_timestamp int(10) unsigned NOT NULL default '0',
-  headline_description text NOT NULL,
-  headline_image varchar(100) NOT NULL default '',
-  headline_active tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY  (headline_id)
-) TYPE=MyISAM;
-
 # --------------------------------------------------------
 
 #
