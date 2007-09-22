@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-22 12:40:03 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -276,7 +276,7 @@ $text = "<div style='text-align:center'>
 
 	<tr>
 	<td style='width:70%' class='forumheader3'>".UPLLAN_33."<br />
-	<span class='smalltext'>".UPLLAN_34." ".ini_get('upload_max_filesize')." )</span></td>
+	<span class='smalltext'>".UPLLAN_34." (upload_max_filesize = ".ini_get('upload_max_filesize').", post_max_size = ".ini_get('post_max_size')." )</span></td>
 	<td style='width:30%' class='forumheader3'>". $rs->form_text("upload_maxfilesize", 10, $pref['upload_maxfilesize'], 10)."
 	</td>
 	</tr>
