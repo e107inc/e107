@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-07-14 20:38:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2007-09-22 17:41:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -283,18 +283,19 @@ function show_pm($pmid)
 		exit;
 	}
 	if($pm_info['pm_read'] == 0 && $pm_info['pm_to'] == USERID)
-	{
+	{	// Inbox
 		$now = time();
 		$pm_info['pm_read'] = $now;
 		$pm->pm_mark_read($pmid, $pm_info);
 	}
 	$txt .= $tp->parseTemplate($PM_SHOW, true, $pm_shortcodes);
 	$ns -> tablerender(LAN_PM, $txt);
-	if($pm_info['pm_from'] == USERID) {
+	if($pm_info['pm_from'] == USERID) 
+	{	// Show Outbox
 		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), "PM");
 	} 
 	else
-	{
+	{	// Show Inbox
 		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), "PM");
 	}
 }
