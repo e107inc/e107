@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-08-14 19:37:37 $
+|     $Revision: 1.7 $
+|     $Date: 2007-09-22 09:48:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -100,7 +100,7 @@ define("CUSTSIG_17", "Subscribe to content/mailouts");
 define("CUSTSIG_18", "Disallow usernames");
 define("CUSTSIG_19", "usernames containing the following text will be rejected, separate entries by commas");
 
-define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Don't replace a correct server config !!!");
+define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Best done with server config if possible!!!");
 define("PRFLAN_92", "Secure signup verification -- hide password in email?");
 define("PRFLAN_93", "strftime function page at php.net");
 define("PRFLAN_94", "here");
