@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-30 16:07:08 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2007-09-22 12:40:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("UPLLAN_1", "Upload removed from list.");
@@ -43,7 +43,7 @@ define("UPLLAN_30", "Choose how to store uploaded files, either as normal files 
 define("UPLLAN_31", "Flatfile");
 define("UPLLAN_32", "Binary");
 define("UPLLAN_33", "Maximum file size");
-define("UPLLAN_34", "Maximum upload size in bytes - leave blank to conform to php.ini setting ( php.ini setting is");
+define("UPLLAN_34", "Maximum upload size in bytes - leave blank to use settings from php.ini");
 define("UPLLAN_35", "Allowed file types");
 define("UPLLAN_36", "Please enter one type per line");
 define("UPLLAN_37", "Permission");
