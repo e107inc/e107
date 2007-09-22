@@ -122,7 +122,7 @@ SC_END
 
 SC_BEGIN EMAILNOTIFY
 global $pref, $thread_info, $action;
-if ($pref['email_notify'] && $action == "nt")
+if ($pref['email_notify'] && $action == "nt" && USER)
 {
 	if(isset($_POST['fpreview']))
 	{
