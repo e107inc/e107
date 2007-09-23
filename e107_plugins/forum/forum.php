@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-09-23 10:18:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e107_INIT")) {
@@ -140,7 +140,7 @@ if (USER == TRUE)
 	$total_new_threads = $sql->db_Count('forum_t', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
 	if (USERVIEWED != "")
 	{
-		$tmp = explode("..", USERVIEWED);
+		$tmp = explode(".", USERVIEWED);		// List of numbers, separated by single period
 		$total_read_threads = count($tmp);
 	}
 	else
