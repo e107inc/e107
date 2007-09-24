@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2007-07-21 09:57:22 $
-|     $Author: e107steved $
+|     $Revision: 1.44 $
+|     $Date: 2007-09-24 14:51:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -162,6 +162,7 @@ else
 	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
 	foreach ($userList as $row)
 	{
+		$loop_uid = $row['user_id'];
 		$text .= renderuser($row, "short");
 	}
 	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
