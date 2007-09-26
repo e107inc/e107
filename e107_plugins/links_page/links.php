@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-04-03 10:31:32 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2007-09-26 20:06:04 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -267,31 +267,38 @@ function displayTopRefer(){
 	}
 }
 
-function displayPersonalManager(){
+function displayPersonalManager()
+{
 	global $qs, $sql, $sql2, $lc, $link_shortcodes, $cobj, $row, $from, $tp, $ns, $linkspage_pref;
 	global $LINK_TABLE_MANAGE_START, $LINK_TABLE_MANAGE, $LINK_TABLE_MANAGE_END;
 
-	if(!(isset($linkspage_pref['link_manager']) && $linkspage_pref['link_manager'])){
-		js_location(e_SELF);
+	if(!(isset($linkspage_pref['link_manager']) && $linkspage_pref['link_manager']))
+	{
+	  js_location(e_SELF);
 	}
 	//delete link
-	if(isset($linkspage_pref['link_directdelete']) && $linkspage_pref['link_directdelete']){
-		if(isset($_POST['delete'])){
-			$tmp = array_pop(array_flip($_POST['delete']));
-			list($delete, $del_id) = explode("_", $tmp);
+	if(isset($linkspage_pref['link_directdelete']) && $linkspage_pref['link_directdelete'])
+	{
+	  if(isset($_POST['delete']))
+	  {
+		$tmp = array_pop(array_flip($_POST['delete']));
+		list($delete, $del_id) = explode("_", $tmp);
+	  }
+	  if (isset($delete) && $delete == 'main') 
+	  {
+		$sql->db_Select("links_page", "link_category, link_order", "link_id='".intval($del_id)."'");		// Get the position of target in the order
+		$row = $sql->db_Fetch();
+		if (!is_object($sql2)){ $sql2 = new db; }
+		$sql->db_Select("links_page", "link_id", "link_order>'".$row['link_order']."' && link_category='".intval($row['link_category'])."'");
+		while ($row = $sql->db_Fetch()) 
+		{
+		  $sql2->db_Update("links_page", "link_order=link_order-1 WHERE link_id='".$row['link_id']."'");
 		}
-		if (isset($delete) && $delete == 'main') {
-			$sql->db_Select("links_page", "link_order", "link_id='".intval($del_id)."'");
-			$row = $sql->db_Fetch();
-			if (!is_object($sql2)){ $sql2 = new db; }
-			$sql->db_Select("links_page", "link_id", "link_order>'".$row['link_order']."' && link_category='".intval($id)."'");
-			while ($row = $sql->db_Fetch()) {
-				$sql2->db_Update("links_page", "link_order=link_order-1 WHERE link_id='".$row['link_id']."'");
-			}
-			if ($sql->db_Delete("links_page", "link_id='".intval($del_id)."'")) {
-				$lc->show_message(LCLAN_ADMIN_10." #".$del_id." ".LCLAN_ADMIN_11);
-			}
+		if ($sql->db_Delete("links_page", "link_id='".intval($del_id)."'")) 
+		{
+		  $lc->show_message(LCLAN_ADMIN_10." #".$del_id." ".LCLAN_ADMIN_11);
 		}
+	  }
 	}
 	//upload link icon
 	if(isset($_POST['uploadlinkicon'])){
