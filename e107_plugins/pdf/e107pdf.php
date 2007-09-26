@@ -228,8 +228,9 @@ class e107PDF extends UFPDF{
 		return $tbl_couleur;
 	}
 
-	function WriteHTML($html,$scale){
-	  global $tp;
+	function WriteHTML($html,$scale)
+	{
+	  global $tp, $pdfpref;
 	  global $admin_log;
 
 		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;', '&amp;#091;', '&nbsp;', 'â€˜', 'â€™', ' />', '&#40;', '&#41;', '&#123;', '&#125;', '&#91;', '&#93;', '&#092;', '&#92;');
