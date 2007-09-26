@@ -478,7 +478,7 @@ function AddFont($family,$style='',$file='')
 		$this->Error('Could not include font definition file');
 	$i=count($this->fonts)+1;
 	$this->fonts[$fontkey]=array('i'=>$i,'type'=>$type,'name'=>$name,'desc'=>$desc,'up'=>$up,'ut'=>$ut,'cw'=>$cw,'enc'=>$enc,'file'=>$file);
-	if($diff)
+	if(isset($diff) && $diff)
 	{
 		//Search existing encodings
 		$d=0;
