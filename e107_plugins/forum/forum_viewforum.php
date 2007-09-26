@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-04-09 10:17:48 $
+|     $Revision: 1.6 $
+|     $Date: 2007-09-26 19:36:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -299,7 +299,7 @@ require_once(FOOTERF);
 
 function parse_thread($thread_info)
 {
-	global $forum, $tp, $FORUM_VIEW_FORUM, $gen, $pref, $forum_id, $menu_pref;
+	global $forum, $tp, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $forum_id, $menu_pref;
 	$text = "";
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
