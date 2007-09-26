@@ -11,9 +11,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.2 $
-| $Date: 2007-01-20 16:18:12 $
-| $Author: mrpete $
+| $Revision: 1.3 $
+| $Date: 2007-09-26 19:28:47 $
+| $Author: e107steved $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -123,7 +123,7 @@ if ($action == "delete_poll")
 		</form>
 		</div>";
 	$ns->tablerender(FORLAN_16, $text);
-	require_once("footer.php");
+	require_once(FOOTERF);
 	exit;
 }
 	
