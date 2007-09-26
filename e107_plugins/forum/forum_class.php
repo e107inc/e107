@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-08-15 21:11:12 $
+|     $Revision: 1.4 $
+|     $Date: 2007-09-26 19:39:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,7 @@ class e107forum
 			list($uid, $uname) = explode(".", $thread_info['thread_user'], 2);
 			if ($thread_info)
 			{
-				if($thread_user['user_name'] != "")
+				if($thread_info['user_name'] != "")
 				{
 					$thread_lastuser = $uid.".".$thread_info['user_name'];
 				}
