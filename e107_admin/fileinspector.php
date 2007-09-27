@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-03-19 17:33:49 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2007-09-27 20:11:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -248,112 +248,195 @@ class file_inspector {
 		return $list;
 	}
 	
-	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand) {
-		global $coredir, $imode;
-		unset ($childOut);
-		$parent_expand = false;
-		if (substr($dir, -1) == '/') {
-			$dir = substr($dir, 0, -1);
-		}
-		$dir_id = dechex(crc32($dir));
-		$this -> files[$dir_id]['.']['level'] = $level;
-		$this -> files[$dir_id]['.']['parent'] = $this -> parent;
-		$this -> files[$dir_id]['.']['file'] = $dir;
-		$directory = $level ? basename($dir) : SITENAME;
-		$level++;
+
+	// Given a full path and filename, looks it up in the list to determine valid actions; returns:
+	//	  'check' - file is expected to be present, and validity is to be checked
+	//	  'ignore' - file may or may not be present - check its validity if found, but not an error if missing
+	//	  'uncalc' - file must be present, but its integrity cannot be checked.
+	//	  'nocalc' - file may be present, but its integrity cannot be checked. Not an error if missing
+	function check_action($dir, $name)
+	{
+	  global $coredir;
+	  
+	  if ($name == 'e_inspect.php') return 'nocalc';		// Special case for plugin integrity checking
+	  
+	  $filename = $dir.'/'.$name;
+	  $admin_dir = $this -> root_dir.'/'.$coredir['admin'].'/';
+	  $image_dir  = $this -> root_dir.'/'.$coredir['images'].'/';
+	  $test_list = array(
+			$admin_dir.'core_image.php' => 'uncalc',
+			$admin_dir.'filetypes.php' => 'uncalc',
+			$admin_dir.'filetypes_.php' => 'ignore',
+			$admin_dir.'admin_filetypes.php' => 'nocalc',
+			$this -> root_dir.'/e107_config.php' => 'uncalc',
+			$this -> root_dir.'/e107.htaccess' => 'ignore',
+			$this -> root_dir.'/install.php' => 'ignore',
+			$image_dir.'adminlogo.png' => 'uncalc',				// Users often change logo
+			$image_dir.'logo.png' => 'uncalc'
+		);
+	  if (isset($test_list[$filename])) return $test_list[$filename];
+	  return 'check';
+	}
+
+	
+	// This function does the real work
+	//  $list -
+	//	$deprecated
+	// 	$level
+	//	$dir
+	//	&$tree_end
+	//	&$parent_expand
+	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand) 
+	{
+	  global $coredir, $imode;
+
+	  unset ($childOut);
+	  $parent_expand = false;
+	  if (substr($dir, -1) == '/') 
+	  {
+		$dir = substr($dir, 0, -1);
+	  }
+	  $dir_id = dechex(crc32($dir));
+	  $this -> files[$dir_id]['.']['level'] = $level;
+	  $this -> files[$dir_id]['.']['parent'] = $this -> parent;
+	  $this -> files[$dir_id]['.']['file'] = $dir;
+	  $directory = $level ? basename($dir) : SITENAME;
+	  $level++;
 		
-		foreach ($list as $key => $value) {
-			$this -> parent = $dir_id;
-			if (is_array($value)) {
-				$path = $dir.'/'.$key;
-				$child_open = false;
-				$child_end = true;
-				$sub_text .= $this -> inspect($value, $deprecated[$key], $level, $path, $child_end, $child_expand);
-				$tree_end = false;
-				if ($child_expand) {
-					$parent_expand = true;
-					$last_expand = true;
-				}
-			} else {
-					$path = $dir.'/'.$key;
-					$fid = strtolower($key);
+	  foreach ($list as $key => $value) 
+	  {
+		$this -> parent = $dir_id;
+		if (is_array($value)) 
+		{ // Entry is a subdirectory - recurse another level
+		  $path = $dir.'/'.$key;
+		  $child_open = false;
+		  $child_end = true;
+		  $sub_text .= $this -> inspect($value, $deprecated[$key], $level, $path, $child_end, $child_expand);
+		  $tree_end = false;
+		  if ($child_expand) 
+		  {
+			$parent_expand = true;
+			$last_expand = true;
+		  }
+		} 
+		else 
+		{
+		  $path = $dir.'/'.$key;
+		  $fid = strtolower($key);
+		  $this -> files[$dir_id][$fid]['file'] = ($_POST['type'] == 'tree') ? $key : $path;
+		  if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) 
+		  {	// We're checking a file here
+			if ($_POST['core'] != 'none') 
+			{		// Look at core files
+			  $this -> count['core']['num']++;
+			  $this -> count['core']['size'] += $this -> files[$dir_id][$fid]['size'];
+			  if ($_POST['regex']) 
+			  {	// Developer prefs activated - search file contents according to regex
+				$file_content = file($path);		// Get contents of file
+				if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) 
+				{
+				  if ($this -> files[$dir_id][$fid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content))
+				  {	// Search string found - add file to list
 					$this -> files[$dir_id][$fid]['file'] = ($_POST['type'] == 'tree') ? $key : $path;
-					if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) {
-						if ($_POST['core'] != 'none') {
-							$this -> count['core']['num']++;
-							$this -> count['core']['size'] += $this -> files[$dir_id][$fid]['size'];
-							if ($_POST['regex']) {
-								$file_content = file($path);
-								if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) {
-									if ($this -> files[$dir_id][$fid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content)){
-										$this -> files[$dir_id][$fid]['file'] = ($_POST['type'] == 'tree') ? $key : $path;
-										$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
-										$dir_icon = 'fileinspector.png';
-										$parent_expand = TRUE;
-										$this -> results++;
-										$this -> line_results += count($this -> files[$dir_id][$fid]['lines']);
-									} else {
-										unset($this -> files[$dir_id][$fid]);
-										$known[$dir_id][$fid] = true;
-										$dir_icon = ($dir_icon == 'fileinspector.png') ? $dir_icon : 'folder.png';
-									}
-								}
-							} else {
-								//if (strpos($dir.'/'.$key, 'htmlarea') === false) {
-									if ($_POST['integrity']) {
-										if ($dir.'/'.$key != $this -> root_dir.'/'.$coredir['admin'].'/core_image.php' && $key != 'e_inspect.php' && $dir.'/'.$key != $this -> root_dir.'/e107_config.php') {
-											if ($this -> checksum($path) != $value) {
-												$this -> count['fail']['num']++;
-												$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
-												$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
-												$dir_icon = 'folder_fail.png';
-												$parent_expand = TRUE;
-											} else {
-												$this -> count['pass']['num']++;
-												$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
-												if ($_POST['core'] != 'fail') {
-													$this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
-													$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
-												} else {
-													unset($this -> files[$dir_id][$fid]);
-													$known[$dir_id][$fid] = true;
-												}
-											}
-										} else {
-											$this -> count['uncalculable']['num']++;
-											$this -> count['uncalculable']['size'] += $this -> files[$dir_id][$fid]['size'];
-											if ($_POST['core'] != 'fail') {
-												$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc.png';
-											} else {
-												unset($this -> files[$dir_id][$fid]);
-												$known[$dir_id][$fid] = true;
-											}
-										}
-									} else {
-										$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
-									}
-								//} else {
-								//	$this -> count['warning']['num']++;
-								//	$this -> count['warning']['size'] += $this -> files[$dir_id][$fid]['size'];
-								//	$this -> files[$dir_id][$fid]['icon'] = 'file_warning.png';
-								//	$dir_icon = 'folder_warning.png';
-								//	$parent_expand = TRUE;
-								//}
-							}
-						} else {
-							unset ($this -> files[$dir_id][$fid]);
-							$known[$dir_id][$fid] = true;
-						}
-					} else if ($_POST['missing']) {
-						$this -> count['missing']['num']++;
-						$this -> files[$dir_id][$fid]['icon'] = 'file_missing.png';
-						$dir_icon = ($dir_icon == 'folder_fail.png') ? $dir_icon : 'folder_missing.png';
+					$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
+					$dir_icon = 'fileinspector.png';
+					$parent_expand = TRUE;
+					$this -> results++;
+					$this -> line_results += count($this -> files[$dir_id][$fid]['lines']);
+				  } 
+				  else 
+				  {	// Search string not found - discard from list
+					unset($this -> files[$dir_id][$fid]);
+					$known[$dir_id][$fid] = true;
+					$dir_icon = ($dir_icon == 'fileinspector.png') ? $dir_icon : 'folder.png';
+				  }
+				}
+			  } 
+			  else 
+			  {	
+				if ($_POST['integrity']) 
+				{	// Actually check file integrity
+				  switch ($this_action = $this->check_action($dir,$key))
+				  {
+					case 'ignore' :
+				    case 'check' :
+					  if ($this -> checksum($path) != $value) 
+					  {
+						$this -> count['fail']['num']++;
+						$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
+						$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
+						$dir_icon = 'folder_fail.png';
 						$parent_expand = TRUE;
-					} else {
-						unset ($this -> files[$dir_id][$fid]);
-					}
+					  } 
+					  else 
+					  {
+						$this -> count['pass']['num']++;
+						$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
+						if ($_POST['core'] != 'fail') 
+						{
+						  $this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
+						  $dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
+						} 
+						else 
+						{
+						  unset($this -> files[$dir_id][$fid]);
+						  $known[$dir_id][$fid] = true;
+						}
+					  }
+					  break;
+					case 'uncalc' :
+					case 'nocalc' :
+					  $this -> count['uncalculable']['num']++;
+					  $this -> count['uncalculable']['size'] += $this -> files[$dir_id][$fid]['size'];
+					  if ($_POST['core'] != 'fail')
+					  {
+						$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc.png';
+					  } 
+					  else 
+					  {
+						unset($this -> files[$dir_id][$fid]);
+						$known[$dir_id][$fid] = true;
+					  }
+					  break;
+				  }
+				} 
+				else 
+				{	// Just identify as core file
+				  $this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
+				}
+			  }
+			} 
+			else 
+			{
+			  unset ($this -> files[$dir_id][$fid]);
+			  $known[$dir_id][$fid] = true;
 			}
+		  } 
+		  else if ($_POST['missing']) 
+		  {
+			switch ($this_action = $this->check_action($dir,$key))
+			{
+			  case 'check' :
+			  case 'uncalc' :
+				$this -> count['missing']['num']++;
+				$this -> files[$dir_id][$fid]['icon'] = 'file_missing.png';
+				$dir_icon = ($dir_icon == 'folder_fail.png') ? $dir_icon : 'folder_missing.png';
+				$parent_expand = TRUE;
+				break;
+			  case 'ignore' :
+			  case 'nocalc' :
+			    // These files can be missing without error - delete from the list
+				unset ($this -> files[$dir_id][$fid]);
+				$known[$dir_id][$fid] = true;
+			    break;
+			}
+		  } 
+		  else 
+		  {
+			unset ($this -> files[$dir_id][$fid]);
+		  }
 		}
+	  }
 		
 		if ($_POST['noncore'] || $_POST['oldcore']) {
 			$handle = opendir($dir.'/');
@@ -656,9 +739,9 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.9 $\n";
-			$data .= "|     \$Date: 2007-03-19 17:33:49 $\n";
-			$data .= "|     \$Author: sweetas $\n";
+			$data .= "|     \$Revision: 1.10 $\n";
+			$data .= "|     \$Date: 2007-09-27 20:11:40 $\n";
+			$data .= "|     \$Author: e107steved $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
 		}
