@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-09-08 01:35:42 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2007-09-27 20:58:11 $
+|     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -300,16 +300,16 @@ if (isset($script_text) && $script_text) {
 //
 // I: Calculate JS onload() functions for the BODY tag
 //
+// Fader menu
 global $eMenuActive;
-$fader_onload='';
-if(in_array('fader_menu', $eMenuActive))
-{
-	$fader_onload = 'changecontent(); ';
-}
+if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
 
-$links_onload = 'externalLinks();';
-$theme_onload = (defined('THEME_ONLOAD') ? THEME_ONLOAD : '');
-$body_onload = ($fader_onload != '' || $links_onload != '' || $theme_onload != '' ? " onload='".$fader_onload.$links_onload.$theme_onload."'" : "");
+// External links handling
+$js_body_onload[] = 'externalLinks();';
+
+// Theme JS
+if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
+if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
 
 //
 // J: Send end of <head> and start of <body>
