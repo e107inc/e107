@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2007-09-20 21:45:33 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2007-09-27 20:58:11 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -554,6 +554,10 @@ if (isset($pref['modules']) && $pref['modules']) {
 		}
 	}
 }
+
+
+$js_body_onload = array();			// Initialise this array in case a module wants to add to it
+
 
 // Load e_modules after all the constants, but before the themes, so they can be put to use.
 if(isset($pref['e_module_list']) && $pref['e_module_list']){
