@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-08-06 19:35:11 $
+|     $Revision: 1.6 $
+|     $Date: 2007-09-28 20:50:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -72,6 +72,7 @@ $amount = 30;
 $bounce_act = '';
 if (isset($_POST['check_bounces'])) $bounce_act = 'first_check';
 if (isset($_POST['delnonbouncesubmit'])) $bounce_act = 'delnonbounce';
+if (isset($_POST['clearemailbouncesubmit'])) $bounce_act = 'clearemailbounce';
 if (isset($_POST['delcheckedsubmit'])) $bounce_act = 'delchecked';
 if (isset($_POST['delallsubmit'])) $bounce_act = 'delall';
 if ($bounce_act)
@@ -791,11 +792,12 @@ class users{
 	function show_options($action) {
 
 		global $unverified;
-		// ##### Display options ---------------------------------------------------------------------------------------------------------
-		if ($action == "") {
+		// ##### Display options 
+		if ($action == "") 
+		{
 			$action = "main";
 		}
-		// ##### Display options ---------------------------------------------------------------------------------------------------------
+		// ##### Display options 
 		$var['main']['text'] = USRLAN_71;
 		$var['main']['link'] = e_SELF;
 
@@ -1080,32 +1082,51 @@ class users{
 // $bounce_act has the task to perform:
 //	'first_check' - initial read of list of bounces
 //	'delnonbounce' - delete any emails that aren't bounces
+//  'clearemailbounce' - delete email address for any user whose emails bounced
 //	'delchecked' - delete the emails whose comma-separated IDs are in $bounce_arr
 //	'delall' - delete all bounced emails
 
     function check_bounces($bounce_act='first_check', $bounce_arr = '')
 	{
-		global $sql,$pref;
-        include(e_HANDLER."pop3_class.php");
+	  global $sql,$pref;
+      include(e_HANDLER."pop3_class.php");
 
-	  if (!$bounce_act) $bounce_act='first_check';
+	  if (!trim($bounce_act)) $bounce_act='first_check';
 
 //	  echo "Check bounces. Action: {$bounce_act}; Entries: {$bounce_arr}<br />";
 
-		$obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],'pop3','110');
-		if ($bounce_act !='first_check')
-		{ // Must do some deleting
-		  $obj->connect();
-		  $tot=$obj->getTotalMails();
-		  $del_array = explode(',',$bounce_arr);
-		  for($i=1;$i<=$tot;$i++)	
-		  {
+	  $obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],'pop3','110');
+	  $del_count = 0;
+	  if ($bounce_act !='first_check')
+	  { // Must do some deleting
+		$obj->connect();
+		$tot=$obj->getTotalMails();
+		$del_array = explode(',',$bounce_arr);
+		for($i=1;$i<=$tot;$i++)	
+		{	// Scan all emails; delete current one if meets the criteria
 		    $dodel = FALSE;
 		    switch ($bounce_act)
 			{
 			  case 'delnonbounce' :
 				$head=$obj->getHeaders($i);
 				$dodel = (!$head['bounce']);
+			    break;
+			  case 'clearemailbounce' :
+				if (!in_array($i, $del_array)) break;
+				$head=$obj->getHeaders($i);
+				if($head['bounce'])
+				{
+				  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result)) $usr_email = trim($result[0]);
+				  if ($sql->db_Select('user','user_id, user_name, user_email',"user_email='".$usr_email."' "))
+				  {
+				    $row = $sql->db_Fetch();
+				    if ($sql->db_Update('user',"`user_email`='' WHERE `user_id` = '".$row['user_id']."' ") !== FALSE)
+					{
+//					  echo "Deleting user email {$row['user_email']} for user {$row['user_name']}, id={$row['user_id']}<br />";
+					  $dodel = TRUE;
+					}
+				  }
+				}
 			    break;
 			  case 'delall' :
 			    $dodel = TRUE;
@@ -1118,73 +1139,87 @@ class users{
 			{
 //			  echo "Delete email ID {$i}<br />";
 			  $obj->deleteMails($i);
+			  $del_count++;			// Keep track of number of emails deleted
 			}
-		  }
-		  $obj->close_mailbox();	// This actually deletes the emails
-		}
+		}	// End - Delete one email
+		$obj->close_mailbox();	// This actually deletes the emails
+	  }		// End of email deletion
 
-		$obj->connect();
-		$tot=$obj->getTotalMails();
-        $found = FALSE;
-		$DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
-        $text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table class='fborder' style='".ADMIN_WIDTH."'>
+
+	// Now list the emails that are left
+	  $obj->connect();
+	  $tot=$obj->getTotalMails();
+      $found = FALSE;
+	  $DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
+	  
+      $text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr><td class='fcaption' style='width:5%'>#</td><td class='fcaption'>e107-id</td><td class='fcaption'>email</td><td class='fcaption'>Subject</td><td class='fcaption'>Bounce</td></tr>\n";
-		for($i=1;$i<=$tot;$i++)	
-		{
-			$head=$obj->getHeaders($i);
-            if($head['bounce'])
-			{
-		   		if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result))
-				{
-					if($result[1])
-					{
-						$id[$i] = intval($result[1]);
-//						Try and pull out an email address from body - should be the one that failed
-						if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
-						{
-						  $emails[$i] = "'".$result[0]."'";						
-						}
-						$found = TRUE;
-					}
 
-        		}
-				elseif (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
-				{
-                	if($result[0] && $result[0] != $pref['mail_bounce_email'])
-					{
-						$emails[$i] = "'".$result[0]."'";
-						$found = TRUE;
-					}
-					elseif($result[1] && $result[1] != $pref['mail_bounce_email'])
-					{
-                    	$emails[$i] = "'".$result[1]."'";
-						$found = TRUE;
-					}
-				}
-				 	if($DEL && $found){ $obj->deleteMails($i); }
-			}
-			else
-			{  // Its a warning message or similar
-//			  $id[$i] = '';			// Don't worry about an ID for now
-//				Try and pull out an email address from body - should be the one that failed
+
+		
+	  for($i=1;$i<=$tot;$i++)	
+	  {
+		$head=$obj->getHeaders($i);
+        if($head['bounce'])
+		{	// Its a 'bounce' email
+		  if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result))
+		  {
+			if($result[1])
+			{
+			  $id[$i] = intval($result[1]);		// This should be a user ID - but not on special mailers!
+			  //	Try and pull out an email address from body - should be the one that failed
 			  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
 			  {
-				 $wmails[$i] = "'".$result[0]."'";						
+				$emails[$i] = "'".$result[0]."'";						
 			  }
+			  $found = TRUE;
 			}
-			$text .= "<tr><td class='forumheader3'>".$i."</td><td class='forumheader3'>".$id[$i]."</td><td class='forumheader3'>".(isset($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td class='forumheader3'>".$head['subject']."</td><td class='forumheader3'>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
-			$text .= "<input type='checkbox' name='delete_email[]' value='{$i}' /></td></tr>\n";
+		  }
+		  elseif (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
+		  {
+            if($result[0] && $result[0] != $pref['mail_bounce_email'])
+			{
+			  $emails[$i] = "'".$result[0]."'";
+			  $found = TRUE;
+			}
+			elseif($result[1] && $result[1] != $pref['mail_bounce_email'])
+			{
+              $emails[$i] = "'".$result[1]."'";
+			  $found = TRUE;
+			}
+		  }
+		  if ($DEL && $found)
+		  { 	// Auto-delete bounced emails once noticed (if option set)
+		    $obj->deleteMails($i); 
+			$del_count++;
+		  }
 		}
+		else
+		{  // Its a warning message or similar
+//			  $id[$i] = '';			// Don't worry about an ID for now
+//				Try and pull out an email address from body - should be the one that failed
+		  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
+		  {
+			$wmails[$i] = "'".$result[0]."'";						
+		  }
+		}
+		
+		$text .= "<tr><td class='forumheader3'>".$i."</td><td class='forumheader3'>".$id[$i]."</td><td class='forumheader3'>".(isset($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td class='forumheader3'>".$head['subject']."</td><td class='forumheader3'>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
+		$text .= "<input type='checkbox' name='delete_email[]' value='{$i}' /></td></tr>\n";
+	  }
 
-		if ($tot)
-		{ // Option to delete emails
+
+
+	  if ($tot)
+	  { // Option to delete emails - only if there are some in the list
 		  $text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td class='forumheader3'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_153."' /></td>\n
-			<td class='forumheader3'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_149."' /></td>\n
-			<td class='forumheader3'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_150."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_153."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_154."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_149."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_150."' /></td>\n
 			</td></tr>";
-		}
-		$text .= "</table></form></div>";
+	  }
+	  $text .= "</table></form></div>";
 
 		array_unique($id);
 		array_unique($emails);
@@ -1192,18 +1227,18 @@ class users{
         $all_ids = implode(",",$id);
 		$all_emails = implode(",",$emails);
 
-		$obj->close_mailbox();
-//        $found = count($id) + count($emails);
-        $found = count($emails);				// Number of bounce emails found
+		$obj->close_mailbox();					// This will actually delete emails
+
+												// $tot has total number of emails in the mailbox
+        $found = count($emails);				// $found - Number of bounce emails found
+												// $del_count has number of emails deleted
+
+
 		// Update bounce status for users
-	  	if($ed = $sql -> db_Update("user", "user_ban=3 WHERE (`user_id` IN (".$all_ids.") OR `user_email` IN (".$all_emails.")) AND user_sess !='' "))
-		{
-        	$this->show_message(LAN_UPDATED."<br >Found {$tot}, updated {$ed} / {$found}".$text);
-	  	}
-		else
-		{
-       		$this->show_message(LAN_UPDATED_FAILED."<br >Found {$tot}, not updated {$ed} / {$found}".$text);
-   	  	}
+	  	$ed = $sql -> db_Update("user", "user_ban=3 WHERE (`user_id` IN (".$all_ids.") OR `user_email` IN (".$all_emails.")) AND user_sess !='' ");
+		if (!$ed) $ed = '0';
+		$this->show_message(str_replace(array('{TOTAL}','{DELCOUNT}','{DELUSER}','{FOUND}'),
+										array($tot,$del_count,$ed,$found),USRLAN_155).$text);
 
 	}
 

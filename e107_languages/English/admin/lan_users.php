@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-08-06 19:35:17 $
+|     $Revision: 1.6 $
+|     $Date: 2007-09-28 20:50:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -154,7 +154,8 @@ define("USRLAN_150", "Delete all emails");
 define("USRLAN_151", "Clear bounce, require Activation");
 define("USRLAN_152", "Clear bounce and Activate");
 define("USRLAN_153", "Delete non-bounce emails");
-
+define("USRLAN_154", "Clear email for checked");
+define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
 
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");
