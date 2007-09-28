@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.3 $
-|    $Date: 2007-05-14 10:26:40 $
-|    $Author: e107coders $
+|    $Revision: 1.4 $
+|    $Date: 2007-09-28 21:21:05 $
+|    $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -700,15 +700,21 @@ class linkclass {
         $ns->tablerender(LCLAN_ITEM_24, $text);
     }
 
-    function show_links() {
+    function show_links() 
+	{
         global $sql, $qs, $rs, $ns, $tp, $from;
         $number = "20";
+		$LINK_CAT_NAME = '';			// May be appropriate to add a shortcode later
 
-        if($qs[2] == "all"){
+        if($qs[2] == "all")
+		{	// Show all categories
             $caption = LCLAN_ITEM_38;
             $qry = " link_id != '' ORDER BY link_category ASC, link_order ASC";
-        }else{
-            if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".intval($qs[2])."' " )) {
+        }
+		else
+		{	// Show single category
+            if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".intval($qs[2])."' " )) 
+			{
                 $row = $sql->db_Fetch();
                 $caption = LCLAN_ITEM_2." ".$row['link_category_name'];
             }
@@ -716,9 +722,12 @@ class linkclass {
         }
 
         $link_total = $sql->db_Select("links_page", "*", " ".$qry." ");
-        if (!$sql->db_Select("links_page", "*", " ".$qry." LIMIT ".intval($from).",".intval($number)." ")) {
-            js_location(e_SELF."?link");
-        }else{
+        if (!$sql->db_Select("links_page", "*", " ".$qry." LIMIT ".intval($from).",".intval($number)." ")) 
+		{
+          js_location(e_SELF."?link");
+        }
+		else
+		{	// Display the individual links
             $text = $rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "myform_{$row['link_id']}", "", "");
             $text .= "<div style='text-align:center'>
             <table class='fborder' style='".ADMIN_WIDTH."'>
@@ -729,16 +738,24 @@ class linkclass {
             <td class='fcaption' style='width:10%'>".LCLAN_ITEM_28."</td>
             <td class='fcaption' style='width:10%'>".LCLAN_ITEM_29."</td>
             </tr>";
-            while ($row = $sql->db_Fetch()) {
+            while ($row = $sql->db_Fetch()) 
+			{
                 $linkid = $row['link_id'];
                 $img = "";
-                if ($row['link_button']) {
-                    if (strpos($row['link_button'], "http://") !== FALSE) {
+                if ($row['link_button']) 
+				{
+                    if (strpos($row['link_button'], "http://") !== FALSE) 
+					{
                         $img = "<img style='border:0;' src='".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
-                    } else {
-                        if(strstr($row['link_button'], "/")){
+                    } 
+					else 
+					{
+                        if(strstr($row['link_button'], "/"))
+						{
                             $img = "<img style='border:0;' src='".e_BASE.$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
-                        }else{
+                        }
+						else
+						{
                             $img = "<img style='border:0' src='".e_PLUGIN."links_page/link_images/".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
                         }
                     }
