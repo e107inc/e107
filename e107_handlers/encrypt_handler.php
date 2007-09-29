@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/encrypt_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-09-29 17:48:21 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,12 +21,14 @@ if (!defined('e107_INIT')) { exit; }
 
 function encode_ip($ip)
 {
+  if (strpos($ip,':') !== FALSE) return $ip;			// IPV6 addresses - return unaltered
 	$ipa = explode('.', $ip);
 	return sprintf('%02x%02x%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
 }
 
 function decode_ip($encodedIP)
 {
+  if (strpos($encodedIP,':') !== FALSE) return $encodedIP;			// IPV6 addresses - return unaltered
 	$hexip = explode('.', chunk_split($encodedIP, 2, '.'));
 	return hexdec($hexip[0]). '.' . hexdec($hexip[1]) . '.' . hexdec($hexip[2]) . '.' . hexdec($hexip[3]);
 }
