@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2007-06-05 20:07:24 $
+|     $Revision: 1.69 $
+|     $Date: 2007-09-29 20:20:29 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -97,30 +97,34 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 	}
 }
 
-if (isset($_POST['inc'])) {
+if (isset($_POST['inc'])) 
+{
 	$qs = explode(".", $_POST['inc']);
 	$linkid = $qs[0];
 	$link_order = $qs[1];
-	$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."'");
-	$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".$linkid."'");
+	$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order-1)."'");
+	$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($linkid)."'");
 }
 
-if (isset($_POST['dec'])) {
+if (isset($_POST['dec'])) 
+{
 	$qs = explode(".", $_POST['dec']);
 	$linkid = $qs[0];
 	$link_order = $qs[1];
-	$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."'");
-	$sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".$linkid."'");
+	$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order+1)."'");
+	$sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($linkid)."'");
 }
 
-if (isset($_POST['update'])) {
-
-	foreach ($_POST['link_order'] as $loid) {
-		$tmp = explode(".", $loid);
-		$sql->db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
+if (isset($_POST['update'])) 
+{
+	foreach ($_POST['link_order'] as $loid) 
+	{
+	  $tmp = explode(".", $loid);
+	  $sql->db_Update("links", "link_order=".intval($tmp[1])." WHERE link_id=".intval($tmp[0]));
 	}
-	foreach ($_POST['link_class'] as $lckey => $lcid) {
-	 	$sql->db_Update("links", "link_class='".$lcid."' WHERE link_id=".$lckey);
+	foreach ($_POST['link_class'] as $lckey => $lcid) 
+	{
+	 	$sql->db_Update("links", "link_class='".$lcid."' WHERE link_id=".intval($lckey));
 	}
 	$e107cache->clear("sitelinks");
 	$linkpost->show_message(LAN_UPDATED);
