@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-09-26 19:39:06 $
+|     $Revision: 1.5 $
+|     $Date: 2007-09-29 20:52:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -110,29 +110,35 @@ class e107forum
 		}
 	}
 
-	function forum_markasread($forum_id) {
-		global $sql;
-		if ($forum_id != 'all') {
-			$forum_id = intval($forum_id);
-			$extra = " AND thread_forum_id='$forum_id' ";
+	function forum_markasread($forum_id) 
+	{
+	  global $sql;
+	  if ($forum_id != 'all') 
+	  {
+		$forum_id = intval($forum_id);
+		$extra = " AND thread_forum_id='{$forum_id}' ";
+	  }
+	  $qry = "thread_lastpost > ".USERLV." AND thread_parent = 0 {$extra} ";
+	  if ($sql->db_Select('forum_t', 'thread_id', $qry)) 
+	  {
+		while ($row = $sql->db_Fetch()) 
+		{
+		  $u_new .= $row['thread_id'].".";
 		}
-		$qry = "thread_lastpost > ".USERLV." AND thread_parent = 0 {$extra} ";
-		if ($sql->db_Select('forum_t', 'thread_id', $qry)) {
-			while ($row = $sql->db_Fetch()) {
-				$u_new .= ".".$row['thread_id'].".";
-			}
-			$u_new .= USERVIEWED;
-			$sql->db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");
-			header("location:".e_SELF);
-			exit;
-		}
+		$u_new .= USERVIEWED;
+		$t = array_unique(explode('.',$u_new));		// Filter duplicates
+		$u_new = implode('.',$t);
+		$sql->db_Update("user", "user_viewed='{$u_new}' WHERE user_id='".USERID."' ");
+		header("location:".e_SELF);
+		exit;
+	  }
 	}
 
 	function thread_markasread($thread_id)
 	{
 		global $sql;
 		$thread_id = intval($thread_id);
-		$u_new = USERVIEWED.".$thread_id";
+		$u_new = USERVIEWED.".".$thread_id;
 		return $sql->db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");
 	}
 
