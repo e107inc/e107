@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-04-14 09:30:39 $
+|     $Revision: 1.5 $
+|     $Date: 2007-09-29 17:24:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -122,18 +122,13 @@ if (isset($_POST['submit'])) {
 	$_POST['mail_id']  = time();
 
 	$sql->db_Select_gen($qry);
-	if (ob_get_level() == 0) {
-		ob_start();
-	}
+
 	while ($row = $sql->db_Fetch()) {
 		$qry = "0,'sendmail', '".$_POST['mail_id']."', '".$row['user_id']."', '', '0', \"".$tp->toDB($_POST['email_subject'])."\" ";
 		if($sql2 -> db_Insert("generic", $qry)){
 			$c++;
 		}
-		ob_flush();
-		flush();
 	}
-	ob_end_flush();
 
 	$debug = (e_MENU == "debug") ? "?[debug]" : "";
 
