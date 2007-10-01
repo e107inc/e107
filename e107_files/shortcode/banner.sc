@@ -1,4 +1,4 @@
-// $Id: banner.sc,v 1.2 2007-09-30 10:58:49 e107steved Exp $
+// $Id: banner.sc,v 1.3 2007-10-01 18:47:32 e107steved Exp $
 global $sql, $tp, $ns, $menu_pref;
 $ret = "";
 
@@ -34,16 +34,9 @@ if($sql -> db_Select("banner", "*", $query))
 		";
 	  case 'html' :
 	  case 'js' :
-		$file_data = file_get_contents(e_IMAGE."banners/".$row['banner_image']);
-		return $file_data;
 	  case 'php' :			// Code - may 'echo' text, or may return it as a value
 		$file_data = file_get_contents(e_IMAGE."banners/".$row['banner_image']);
-		ob_start();
-		if (strpos($file_data,'<?php') !== FALSE) $file_data = str_replace(array('<?php', '?>'),'',$file_data);
-		$shortcode_return = eval($file_data);
-		$shortcode_output = ob_get_contents();
-		ob_end_clean();
-		return $shortcode_output.$shortcode_return;
+		return $file_data;
 	  default :
 		return "<a href='".e_HTTP."banner.php?".$row['banner_id']."' rel='external'><img src='".e_IMAGE_ABS."banners/".$row['banner_image']."' alt='".$row['banner_clickurl']."' style='border:0' /></a>";
 	}
