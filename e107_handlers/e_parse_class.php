@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-09-09 07:05:06 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2007-10-04 19:08:38 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -469,7 +469,8 @@ class e_parse
 		$fromadmin = $opts['fromadmin'];
 
 		// Convert defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
-		if ($opts['defs'] && (strlen($text) < 25) && defined(trim($text)))
+		// The check for '::' is a workaround for a bug in the Zend Optimiser 3.3.0 and PHP 5.2.4 combination - causes crashes if '::' in site name
+		if ($opts['defs'] && (strlen($text) < 25) && ((strpos($text,'::') === FALSE) && defined(trim($text))))
 		{
 			return constant(trim($text));
 		}
