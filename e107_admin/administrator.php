@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-11-10 15:59:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.34 $
+|     $Date: 2007-10-05 05:31:14 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -191,7 +191,7 @@ function edit_administrator($row){
 	$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />";			// file inspector
 	$text .= checkb("O", $a_perms).ADMSLAN_68."<br />";			// notify
 	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";			// Oversee news categories
-	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";			// Oversee link categories
+  //	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";		// Oversee link categories - NOWPLUGIN
 	$text .= checkb("C", $a_perms).ADMSLAN_64."<br />";			// Clear Cache - Previously moderate chatbox
 	$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";			// Take site down for maintenance
 	$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";	// Configure mail settings and mailout
@@ -212,7 +212,7 @@ function edit_administrator($row){
 //	$text .= checkb("K", $a_perms).ADMSLAN_42."<br />";					// Post reviews    - NOW PLUGIN
 //	$text .= checkb("L", $a_perms).ADMSLAN_43."<br />";					// Post content pages - NOW PLUGIN
 	$text .= checkb("R", $a_perms).ADMSLAN_44."<br />";			// Post downloads
-	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";			// Post polls
+//	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";			// Post polls  - NOW PLUGIN.
 	$text .= checkb("M", $a_perms).ADMSLAN_46."<br />";			// Welcome message
 	$text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";	// Moderate submitted news
 
