@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-08-14 19:26:55 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2007-10-05 05:46:44 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,12 +38,12 @@ switch(e_QUERY) {
 	case 401:
 	header("HTTP/1.1 401 Unauthorized");
 	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_1."</div><br /><div class='installh'>".LAN_ERROR_2."</div><br /><div class='smalltext'>".LAN_ERROR_3."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
+		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
 	break;
 	case 403:
 	header("HTTP/1.1 403 Forbidden");
 	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_4."</div><br /><div class='installh'>".LAN_ERROR_5."</div><br /><div class='smalltext'>".LAN_ERROR_6."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
+		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
 	break;
 
 	case 404:
@@ -61,13 +61,13 @@ switch(e_QUERY) {
 	case 500:
 	header("HTTP/1.1 500 Internal Server Error");
 	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_ERROR_10."</div><br /><div class='installh'>".LAN_ERROR_11."</div><br /><div class='smalltext'>".LAN_ERROR_12."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
+		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
 	break;
 	$text = "<div class='installe'>".LAN_ERROR_13." (".$_SERVER['QUERY_STRING'].")</div><br /><div class='installh'>".LAN_ERROR_14."</div><br /><div class='smalltext'>".LAN_ERROR_15."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
+		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
 
 	default:
-	$text = LAN_ERROR_34." e_QUERY = '".e_QUERY."'<br/><a href='{$base_path}index.php'>".LAN_ERROR_20."</a>";
+	$text = LAN_ERROR_34." e_QUERY = '".e_QUERY."'<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a>";
 	break;
 }
 
