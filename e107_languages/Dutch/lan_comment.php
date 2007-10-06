@@ -67,5 +67,5 @@ define("COMLAN_TYPE_5", "docs");
 define("COMLAN_TYPE_6", "bugtrack");
 define("COMLAN_TYPE_7", "ideeën");
 define("COMLAN_TYPE_8", "gebruikersprofiel");
-
+define("COMLAN_TYPE_PAGE", "Inhoud");		// Reall custom page, but use a 'non-technical' description
 ?>

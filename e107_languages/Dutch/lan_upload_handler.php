@@ -28,6 +28,13 @@ define("LANUPLOAD_9", "Geupoade bestandsgrootte 0 bytes");
 define("LANUPLOAD_10", "Upload mislukt [Duplicate filename] - er bestaat al een bestand met deze naam.");
 define("LANUPLOAD_11", "Het bestand werd niet geupload. Bestandsnaam:");
 define("LANUPLOAD_12", "Fout");
+define("LANUPLOAD_13", "Ontbrekende map voor tijdelijke bestanden");
+define("LANUPLOAD_14", "Wegschrijven bestand mislukt");
+define("LANUPLOAD_15", "Upload niet toegestaan");
+define("LANUPLOAD_16", "Onbekende fout");
+define("LANUPLOAD_17", "Ongeldige naam voor ge-upload bestand");
+define("LANUPLOAD_18", "Ge-upload bestand overschrijdt limieten.");
+define("LANUPLOAD_19", "Te veel bestanden ge-upload - het teveel verwijderd.");
 
 
 ?>

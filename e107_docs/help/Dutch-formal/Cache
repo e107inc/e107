@@ -1,9 +1,0 @@
-
-Q>	Waar dient dit voor?
-A>	Het instellen van de Cache Status op 'aan' slaat enkele delen van uw website op in uw database. Dit vermindert het aantal queries op de mySQL database en versnelt dus uw site.
-
-Q>	Ik heb wat aanpassingen gedaan aan het theme dat ik gebruik, maar de wijzigingen worden niet getoond - komt dat door de cache?
-A>	Waarschijnlijk. Als u van theme wijzigt, wordt de cache geleegd, maar het wijzigen van alleen enige code in theme.php schoont de cache niet. Stel de Cache Status op 'uit' tot u klaar bent met het aanpassen van uw theme.
-
-Q>	Kan ik de cache in bestandsvorm opslaan op de harde schijf?
-A>	Ja. Zorg er alleen voor dat de e107_files/cache map schrijfbaar is (chmod 777). Selecteer daarna die optie op de cache beheerpagina.

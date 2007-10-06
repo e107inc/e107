@@ -1,9 +1,0 @@
-
-Q>	Waar dient de instelling Vervang links voor?
-A>	U kunt alle in de chatbox ingevoerde links veranderen in andere tekst of een afbeelding. Hiermee kunt u voorkomen dat de chatbox wordt overspoeld met lange website adressen. Om een plaatje te gebruiken, kruist u Vervang links aan en in het tekstvakje daaronder voert u in &lt;img src='pad_naar_je_plaatje' alt='' />. Nu wordt elke ingevoerde link weergegeven door het plaatje.
-
-Q>	Waar is woordomslag voor?
-A>	Als iemand een heel lang woord in de chatbox invoert, wordt de layout van je site verminkt. Als u de waarde 40 invoert bij Woordomslag, wordt elk woord langer dan 40 tekens afgebroken en op een nieuwe regel voortgezet. De kolom wordt nu niet verbreed. U kunt de waarde afstemmen op uw theme layout.
-
-Q>	Ik heb een site die voor alle leeftijden toegankelijk is en er wordt stevig in gevloekt en gescholden - is dit te stoppen?
-A>	Ga naar Voorkeuren in het beheerscherm. In de sectie Bescherming van minderjarigen kunt u een serie van verboden woorden opgeven. Deze woorden worden vervangen door een ander woord van uw eigen voorkeur, bij voorbeeld GECENSUREERD! Elke keer dat zo'n woord op de site staat, wordt het vervangen met de opgegeven tekst.

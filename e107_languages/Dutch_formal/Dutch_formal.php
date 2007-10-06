@@ -17,8 +17,8 @@
 +---------------------------------------------------------------+
 */
 
-setlocale(LC_TIME, 'nl_NL'); 
-//setlocale(LC_ALL, 'nl_NL'); 
+//setlocale(LC_TIME, 'nl_NL'); 
+setlocale(LC_ALL, 'nl_NL.utf8', 'nld_nld.utf8', 'nld.utf8', 'nl.utf8', 'nl');
 
 //define("CHARSET", "iso-8859-1");
 define("CHARSET", "utf-8");
@@ -30,8 +30,18 @@ define("CORE_LAN5", "Als u dat niet doet, bestaat er mogelijk een beveiligingsri
 define("CORE_LAN6", "De 'flood'-bescherming op deze site is geactiveerd en u wordt gewaarschuwd dat u kunt worden geblokkeerd als je doorgaat pagina's op te vragen.");
 define("CORE_LAN7", "Core probeert de voorkeuren vanuit de automatische backup te herstellen.");
 define("CORE_LAN8", "Core voorkeuren FOUT");
-define("CORE_LAN9", "Core kon niet herstellen vanaf de automatische backup. Uitvoering gestopt.");
+define("CORE_LAN9", "Core kon niet worden hersteld vanaf de automatische backup. Uitvoering gestopt.");
 define("CORE_LAN10", "Corrupt cookie gedetecteerd - uitgelogd.");
+define("CORE_LAN11", "Opbouwtijd: ");
+define("CORE_LAN12", " sec, ");
+define("CORE_LAN13", " daarvan voor queries. ");
+define("CORE_LAN15", "DB queries: ");
+define("CORE_LAN16", "Geheugengebruik: ");
+define("CORE_LAN_B", "b");
+define("CORE_LAN_KB", "kb");
+define("CORE_LAN_MB", "Mb");
+define("CORE_LAN_GB", "Gb");
+define("CORE_LAN_TB", "Tb");
 define("LAN_WARNING", "Waarschuwing!");
 define("LAN_ERROR", "Fout");
 define("LAN_ANONYMOUS", "Anoniem");

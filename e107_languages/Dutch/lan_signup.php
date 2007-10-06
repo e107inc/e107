@@ -110,6 +110,7 @@ define("LAN_SIGNUP_54", "Klik hier om je gegevens te registreren");
 define("LAN_SIGNUP_55", "De weergavenaam is te lang. Kies een andere.");
 define("LAN_SIGNUP_56", "De weergavenaam is te kort. Kies een andere.");
 define("LAN_SIGNUP_57", "Deze inlognaam is te lang. Kies een andere");
+define("LAN_SIGNUP_58", "Bekijk aanmelding");
 
 define("LAN_LOGINNAME", "Inlognaam");
 define("LAN_PASSWORD", "Wachtwoord");

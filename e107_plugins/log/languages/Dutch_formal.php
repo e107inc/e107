@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Dutch_formal.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-27 19:43:33 $
+|     $Revision: 1.3 $
+|     $Date: 2007-10-06 21:53:47 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -62,4 +62,9 @@ define("ADSTAT_L39", "verwijder deze regel");
 define("ADSTAT_L40", "dagen");
 define("ADSTAT_L41", "Fout");
 define("ADSTAT_L42", "Nog geen maandelijkse statistieken.");
+define("ADSTAT_L43", "Paginafouten vandaag");
+define("ADSTAT_L44", "Paginafouten totaal");
+define("ADSTAT_L45", "Stats verwijderd voor: ");
+define("ADSTAT_L46", "Let op: de statistieken van vandaag worden niet verwijderd");
+define("ADSTAT_L47", "Geen gegevens gevonden voor: ");
 ?>

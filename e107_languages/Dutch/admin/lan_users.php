@@ -112,6 +112,15 @@ define("USRLAN_143", "Controle op bouncen");
 define("USRLAN_144", "Verstuur iedereen een bevestigingse-mailbericht");
 define("USRLAN_145", "Gebouncete leden");
 define("USRLAN_146", "Ledeninformatie is beschikbaar voor");
+define("USRLAN_147", "E-mailadres is al in gebruik bij een geblokkeerde gebruiker");
+define("USRLAN_148", "E-mailadres is geblokkeerd");
+define("USRLAN_149", "Verwijder aangekruiste e-mails");
+define("USRLAN_150", "Verwijder alle e-mails");
+define("USRLAN_151", "Schoonmaken bounce, vereist activatie");
+define("USRLAN_152", "Schoonmaken bounce en activeren");
+define("USRLAN_153", "Verwijder niet-gebouncete e-mails");
+define("USRLAN_154", "Schoonmaken e-mail voor aangekruiste");
+define("USRLAN_155", "Totaal {TOTAL} e-mails gevonden. {DELCOUNT} verwijder conform opties.<br />{DELUSER} als gebouncet aangemerkte gebruikers (van {FOUND} e-mails)");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Weergavenaam");

@@ -157,6 +157,11 @@ define("PRFLAN_169", "Als de gekozen groep meer dan één persoon bevat, wordt g
 define("PRFLAN_170", "Gebruik van reverse DNS voor blokkade van hosts");
 define("PRFLAN_171", "Het inschakelen van deze optie maakt het mogelijk om gebruikers op hostnaam te blokkeren in plaats van alleen maar IP-adres of e-mailadres.  <br />LET OP: dit kan resulteren in verminderde prestaties voor sommige hosts");
 define("PRFLAN_172", "Maximale lengte inlognaam (10..100)");
+define("PRFLAN_173", "Controleer dagelijks SourceForge voor E107 updates");
+define("PRFLAN_174", "Naam voor antwoord op e-mails vanaf de site");
+define("PRFLAN_175", "Dit verschijnt in het 'Van' veld van registratie- en andere e-mails verstuurd door deze site");
+define("PRFLAN_176", "E-mailadres voor e-mails van deze site");
+define("PRFLAN_177", "Opgegeven adres voor reacties op e-mails vanaf deze site.");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");
