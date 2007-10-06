@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-11 15:33:21 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-10-06 21:01:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -52,7 +52,7 @@ if ($action == "comments")
 	{
 		$sql->db_Select("user", "user_name", "user_id=".$id);
 		$row = $sql->db_Fetch();
-		extract($row);
+		$user_name = $row['user_name'];
 		$user_id = $id.".".$user_name."";
 	}
 	else
@@ -77,7 +77,7 @@ if ($action == "comments")
 	if(is_numeric($id))
 	{
 		$ccaption = UP_LAN_1.$user_name;
-		$sql->db_Select("user", "user_comments", "user_id=".$id."");
+		$sql->db_Select("user", "user_comments", "user_id=".$id);
 		list($user_comments) = $sql->db_Fetch();
 		$ctotal = $user_comments;
 		$data = $cobj->getCommentData($amount='10', $from, "comment_author = '".$user_id."'");
@@ -119,7 +119,7 @@ if ($action == "forums" || isset($_POST['fsearch']))
 	if(is_numeric($id))
 	{
 		$user_id = intval($id);
-		$sql->db_Select("user", "user_name", "user_id=".$id."");
+		$sql->db_Select("user", "user_name", "user_id=".$id);
 		$row = $sql->db_Fetch();
 		$fcaption = UP_LAN_0." ".$row['user_name'];
 	}
@@ -148,10 +148,10 @@ if ($action == "forums" || isset($_POST['fsearch']))
 		$fcaption = UP_LAN_12." ".$row['user_name'];
 	}
 	$qry = "
-	SELECT f.*, ft.* FROM #forum_t AS ft
+	SELECT ft.*, f.* FROM #forum_t AS ft
 	LEFT JOIN #forum AS f ON ft.thread_forum_id = f.forum_id
 	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-	WHERE ft.thread_user LIKE '{$user_id}.%'
+	WHERE SUBSTRING_INDEX(ft.thread_user,'.',1) = {$user_id}
 	AND f.forum_class IN (".USERCLASS_LIST.")
 	AND fp.forum_class IN (".USERCLASS_LIST.")
 	{$s_info}
@@ -162,7 +162,7 @@ if ($action == "forums" || isset($_POST['fsearch']))
 	SELECT COUNT(*) AS count FROM #forum_t AS ft
 	LEFT JOIN #forum AS f ON ft.thread_forum_id = f.forum_id
 	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-	WHERE ft.thread_user LIKE '{$user_id}.%'
+	WHERE SUBSTRING_INDEX(ft.thread_user,'.',1) = {$user_id}
 	AND f.forum_class IN (".USERCLASS_LIST.")
 	AND fp.forum_class IN (".USERCLASS_LIST.")
 	{$s_info}
@@ -244,8 +244,7 @@ function parse_userposts_forum_table($row)
 		}
 		else
 		{
-			$tmp = $thread_parent;
-			$sql2->db_Select("forum_t", "thread_name", "thread_id = '".intval($thread_parent)."' ");
+			$sql2->db_Select("forum_t", "thread_name", "thread_id = ".intval($thread_parent));
 			list($thread_name) = $sql2->db_Fetch();
 			$cachevar[$thread_parent] = $thread_name;
 		}
@@ -257,10 +256,11 @@ function parse_userposts_forum_table($row)
 		$USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_2.": ";
 	}
 
+	$tmp = $thread_id;
 	$thread_thread = $tp->toHTML($thread_thread, TRUE, "", $id);
 
 	$USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
-	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp."'>";
+	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp.".post'>";
 	$USERPOSTS_FORUM_TOPIC = $thread_name;
 	$USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>";
 	$USERPOSTS_FORUM_NAME = $forum_name;
@@ -269,5 +269,3 @@ function parse_userposts_forum_table($row)
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE));
 }
-
-?>
