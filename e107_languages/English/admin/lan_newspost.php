@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-11-10 06:54:18 $
-|     $Author: lisa_ $
+|     $Revision: 1.32 $
+|     $Date: 2007-10-06 00:17:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -81,8 +81,8 @@ define("NWSLAN_69", "Upload an image or file for use in the news item");
 define("NWSLAN_72", "Only show news item between certain dates");
 define("NWSLAN_73", "Render type");
 define("NWSLAN_74", "Select how and where news item is posted");
-define("NWSLAN_75", "Default - post to front page");
-define("NWSLAN_76", "Title only - post to front page");
+define("NWSLAN_75", "Default - post to news page");
+define("NWSLAN_76", "Title only - post to news page");
 define("NWSLAN_77", "Post to other news menu");
 
 // define("NWSLAN_78", "This option is disabled as file uploading is not enabled on your server");  // deprecated see lan_admin.php
