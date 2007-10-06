@@ -23,8 +23,7 @@ define("UCSLAN_5", "U hebt nu toegang tot de volgende functie(s)");
 define("UCSLAN_6", "Instellen klasse voor lid");
 define("UCSLAN_7", "Instellen klassen");
 define("UCSLAN_8", "Melden aan lid");
-define("UCSLAN_8", "Klassen bijgewerkt");
-define("UCSLAN_9", "Groeten");
+define("UCSLAN_9", "Klassen bijgewerkt");
 define("UCSLAN_10", "Groeten,");
 
 ?>

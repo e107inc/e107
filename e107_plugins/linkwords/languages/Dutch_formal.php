@@ -39,6 +39,8 @@ define("LWLAN_36", 'beschrijvingen (links enz.)');
 define("LWLAN_37", 'Legacy zones');
 define("LWLAN_38", 'Klikbare links');
 define("LWLAN_39", 'Niet verwerkte tekst');
+define("LWLAN_40", 'Door gebruiker opgevoerde titels (bv. forum)');
+define("LWLAN_41", 'Door gebruiker opgevoerde tekst (bv. forum)');
 
 define("LWLANINS_1", "Linkwoorden");
 define("LWLANINS_2", "Deze plugin maakt hyperlinks van aangegeven woorden");
