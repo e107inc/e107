@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/online.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-01 19:50:55 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2007-10-06 17:36:10 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,7 +25,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 	$class_check = TRUE;
 	list($oid, $oname) = explode(".", $uinfo, 2);
 	$sql2 = new db;
-	$sql2->db_Select("user", "user_id", "user_admin > '0' ");
+	$sql2->db_Select("user", "user_id", "user_admin > 0 ");
 	$row_2 = $sql2->db_Fetch();
 	$online_location = $pinfo;
 	$online_location_page = substr(strrchr($online_location, "/"), 1);
@@ -161,7 +161,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 		$tmp = explode(".", $tmp[1]);
 		if ($tmp[1] == "news") {
 			$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
-			$sql->db_Select("news", "news_title, news_class", "news_id='".intval($id)."'");
+			$sql->db_Select("news", "news_title, news_class", "news_id=".intval($id));
 			list($news['news_title'], $news['news_class']) = $sql->db_Fetch();
 			$online_location_page = ($tmp[0] == "reply" ? COMMENT.": ".ONLINE_EL12." > ".$news['news_title'] : COMMENT.": ".$news['news_title']);
 			$online_location = "comment.php?comment.news.$id";
@@ -171,7 +171,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 			}
 		} elseif($tmp[1] == "poll") {
 			$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
-			$sql->db_Select("poll", "poll_title", "poll_id='".intval($id)."'");
+			$sql->db_Select("poll", "poll_title", "poll_id=".intval($id));
 			list($poll['poll_title']) = $sql->db_Fetch();
 			$online_location_page = POLLCOMMENT.": ".$poll['poll_title'];
 			$online_location = "comment.php?comment.poll.$id";
@@ -192,8 +192,8 @@ foreach($listuserson as $uinfo => $pinfo) {
 			$qry = "
 			SELECT t.thread_name, f.forum_name, f.forum_class from #forum_t AS t
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-			WHERE t.thread_id = '".intval($tmp[0])."'
-			";
+			WHERE t.thread_id = ".intval($tmp[0])
+			;
 			$sql->db_Select_gen($qry);
 			$forum = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum['thread_name']."->".ONLINE_EL15.": ".$t_page;
@@ -203,7 +203,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 				$online_location_page = ONLINE_EL13.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif(strstr($online_location, "_viewforum")) {
-			$sql->db_Select("forum", "forum_name, forum_class", "forum_id='".intval($tmp[0])."' ");
+			$sql->db_Select("forum", "forum_name, forum_class", "forum_id=".intval($tmp[0]));
 			list($forum['forum_name'], $forum['forum_class']) = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL13." .:. ".$forum['forum_name'];
 			$online_location = str_replace("php.", "php?", $online_location);
@@ -212,9 +212,9 @@ foreach($listuserson as $uinfo => $pinfo) {
 				$online_location_page = ONLINE_EL13.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif(strstr($online_location, "_post")) {
-			$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_forum_id='".intval($tmp[0])."' AND thread_parent='0'");
+			$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_forum_id=".intval($tmp[0])." AND thread_parent=0");
 			list($forum_t['thread_name'], $forum_t['thread_forum_id']) = $sql->db_Fetch();
-			$sql->db_Select("forum", "forum_name", "forum_id='".$forum_t['thread_forum_id']."'");
+			$sql->db_Select("forum", "forum_name", "forum_id=".$forum_t['thread_forum_id']);
 			list($forum['forum_name']) = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL12.": ".ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum_t['thread_name'];
 			$online_location = e_PLUGIN."forum/forum_viewtopic.php?$tmp[0].$tmp[1]";
@@ -224,8 +224,8 @@ foreach($listuserson as $uinfo => $pinfo) {
 		$class_check = FALSE;
 		$online_location_page = ADMINAREA;
 	}
-	$pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
-	$ONLINE_TABLE_ICON = ($pm_installed && $oid != USERID ? $tp->parseTemplate("{pm_menu.sendpm={$oid}}") : "<img src='".e_PLUGIN."online/images/user.png' alt='' style='vertical-align:middle' />");
+	
+	$ONLINE_TABLE_ICON = (varsettrue($pref['plug_installed']['pm']) && $oid != USERID ? $tp->parseTemplate("{SENDPM={$oid}}", 'sendpm.sc') : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
 	 
 	$ONLINE_TABLE_USERNAME = "<a href='".e_BASE."user.php?id.$oid'>$oname</a>";
 	$ONLINE_TABLE_LOCATION = ($class_check ? "<a href='$online_location'>$online_location_page</a>" : $online_location_page);
@@ -263,13 +263,13 @@ $ONLINE_TABLE_DATESTAMP = $datestamp;
 	
 $total_members = $sql->db_Count("user");
 	
-if ($total_members > 1) {
-	$newest_member = $sql->db_Select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
+if ($total_members > 1)
+{
+	$newest_member = $sql->db_Select("user", "user_id, user_name", "user_ban=0 ORDER BY user_join DESC LIMIT 0,1");
 	$row = $sql->db_Fetch();
-	 extract($row);
 	 
 	$ONLINE_TABLE_MEMBERS_TOTAL = "<br />".ONLINE_EL5.": ".$total_members;
-	$ONLINE_TABLE_MEMBERS_NEWEST = "<br />".ONLINE_EL6.": ".(USER ? "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>" : $user_name);
+	$ONLINE_TABLE_MEMBERS_NEWEST = "<br />".ONLINE_EL6.": ".(USER ? "<a href='".e_BASE."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>" : $row['user_name']);
 }
 	
 $textstart = preg_replace("/\{(.*?)\}/e", '$\1', $ONLINE_TABLE_START);
@@ -279,4 +279,3 @@ $text = $textstart.$textstring.$textend;
 $ns->tablerender(ONLINE_EL4, $text);
 	
 require_once(FOOTERF);
-?>
