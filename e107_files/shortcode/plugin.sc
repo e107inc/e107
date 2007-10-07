@@ -3,6 +3,7 @@ $menu = $parm;
 
 $path = $tp -> toDB(dirname($menu));
 $name = $tp -> toDB(basename($menu));
+$plugin_file = "";
 if($path == '.')
 {
 	$path = $menu;
@@ -50,8 +51,7 @@ if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND (menu_
 				include_once(e_PLUGIN.$path."/languages/English.php");
 			}
 		}
-		include_once(e_PLUGIN.$path."/".$name.".php");
-		$sql->db_Mark_Time("(After $name)");
+		$plugin_file = e_PLUGIN.$path."/".$name.".php";
 	}
 }
 else
@@ -60,7 +60,16 @@ else
 	{
 		$sql->db_Mark_Time($name);
 		include_lan(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php");
-		include_once(e_PLUGIN.$path."/".$name.".php");
-		$sql->db_Mark_Time("(After $name)");
+		$plugin_file = e_PLUGIN.$path."/".$name.".php";
 	}
+}
+
+if($plugin_file != "")
+{
+	ob_start();
+	include(e_PLUGIN.$path."/".$name.".php");
+	$buff = ob_get_contents();
+	ob_end_clean();
+	$sql->db_Mark_Time("(After $name)");
+	return $buff;
 }
