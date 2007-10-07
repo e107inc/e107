@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2006-11-16 10:24:14 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2007-10-07 20:24:14 $
+|     $Author: mcfly_e107 $
 |
 | 09.11.06 - Started next batch of mods
 +----------------------------------------------------------------------------+
@@ -228,7 +228,6 @@ function make_calendar($boxname, $boxvalue)
 	
         unset($cal_options);
         unset($cal_attrib);
-        $cal_options['firstDay'] = 0;
         $cal_options['showsTime'] = false;
         $cal_options['showOthers'] = true;
         $cal_options['weekNumbers'] = false;
