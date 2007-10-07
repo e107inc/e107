@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-09-22 09:43:30 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2007-10-07 20:30:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -898,7 +898,6 @@ class download {
         if(!$download_datestamp){
         	$download_datestamp = time();
 	   	}
-		$cal_options['firstDay'] = 0;
 		$cal_options['showsTime'] = false;
 		$cal_options['showOthers'] = false;
 		$cal_options['weekNumbers'] = false;

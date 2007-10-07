@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.8 $
-|   $Date: 2007-08-06 21:33:53 $
-|   $Author: e107steved $
+|   $Revision: 1.9 $
+|   $Date: 2007-10-07 20:30:54 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -585,7 +585,6 @@ class newspost {
 
 		$_startdate = ($_POST['news_start'] > 0) ? date("d/m/Y", $_POST['news_start']) : "";
 
-		$cal_options['firstDay'] = 0;
 		$cal_options['showsTime'] = false;
 		$cal_options['showOthers'] = false;
 		$cal_options['weekNumbers'] = false;
@@ -602,7 +601,6 @@ class newspost {
 
 		unset($cal_options);
 		unset($cal_attrib);
-		$cal_options['firstDay'] = 0;
 		$cal_options['showsTime'] = false;
 		$cal_options['showOthers'] = false;
 		$cal_options['weekNumbers'] = false;
@@ -629,7 +627,6 @@ class newspost {
 		$_update_datestamp = ($_POST['news_datestamp'] > 0 && !strpos($_POST['news_datestamp'],"/")) ? date("d/m/Y H:i:s", $_POST['news_datestamp']) : trim($_POST['news_datestamp']);
 		unset($cal_options);
 		unset($cal_attrib);
-		$cal_options['firstDay'] = 0;
 		$cal_options['showsTime'] = true;
 		$cal_options['showOthers'] = true;
 		$cal_options['weekNumbers'] = false;
