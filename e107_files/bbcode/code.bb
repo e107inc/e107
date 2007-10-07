@@ -10,11 +10,11 @@ if($pref['smiley_activate'])
 	$code_text = $tp->e_emote->filterEmotesRev($code_text);
 }
 
-$search = array(E_NL,'&#092;','&#036;', '&lt');
+$search = array(E_NL,'&#092;','&#036;', '&lt;');
 $replace = array("\r\n","\\",'$', '<');
 $code_text = str_replace($search, $replace, $code_text);
 
-if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
+if(varset($pref['useGeshi']) && file_exists(e_PLUGIN."geshi/geshi.php")) {
 
 	$code_md5 = md5($code_text);
 	if(!$CodeCache = $e107cache->retrieve('GeshiParsed_'.$code_md5)) {
