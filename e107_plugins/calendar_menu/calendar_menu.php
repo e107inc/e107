@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-09-03 21:06:02 $
+|     $Revision: 1.27 $
+|     $Date: 2007-10-07 14:06:42 $
 |     $Author: e107steved $
 |
 | 22.10.06 steved - Various tidying up, additional options supported
@@ -56,7 +56,7 @@ else
 $cal_datearray		= $ecal_class->cal_date;
 $cal_current_month	= $cal_datearray['mon'];
 $cal_current_year	= $cal_datearray['year'];
-$numberdays	= date("t", $ecal_class->cal_date); // number of days in this month
+$numberdays	= date("t", $ecal_class->cal_timedate); // number of days in this month
 
 
 $cal_monthstart		= mktime(0, 0, 0, $cal_current_month, 1, $cal_current_year);			// Time stamp for first day of month
