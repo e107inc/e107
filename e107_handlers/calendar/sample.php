@@ -16,8 +16,7 @@ echo "
 ";
 echo $cal->make_input_field(
            // calendar options go here; see the documentation and/or calendar-setup.js
-           array('firstDay'       => 1, // show Monday first
-                 'showsTime'      => true,
+           array('showsTime'      => true,
                  'showOthers'     => true,
                  'ifFormat'       => '%Y/%m/%d %I:%M %P',
                  'weekNumbers'    => false,
@@ -31,7 +30,6 @@ echo $cal->make_input_field(
 echo "</td></tr><tr><td>";
 unset($cal_options);
 unset($cal_attrib);
-$cal_options['firstDay'] = 0;
 $cal_options['showsTime'] = false;
 $cal_options['showOthers'] = false;
 $cal_options['weekNumbers'] = true;
