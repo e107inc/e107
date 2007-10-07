@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-10-06 21:01:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.27 $
+|     $Date: 2007-10-07 14:11:21 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -268,3 +268,5 @@ function parse_userposts_forum_table($row)
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE));
 }
+
+?>
