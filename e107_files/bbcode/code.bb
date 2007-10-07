@@ -10,7 +10,7 @@ if($pref['smiley_activate'])
 	$code_text = $tp->e_emote->filterEmotesRev($code_text);
 }
 
-$search = array(E_NL,'&#092;','&#036;', '&lt');
+$search = array(E_NL,'&#092;','&#036;', '&lt;');
 $replace = array("\r\n","\\",'$', '<');
 $code_text = str_replace($search, $replace, $code_text);
 
