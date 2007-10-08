@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-06-08 19:15:03 $
+|     $Revision: 1.21 $
+|     $Date: 2007-10-08 21:02:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ else
 }
 
 $max_age = varset($menu_pref['newforumposts_maxage'],0);
-$max_age = $max_age == 0 ? '' : "(t.thread_datestamp > '".intval(time()-$max_age*86400)."') AND ";
+$max_age = $max_age == 0 ? '' : "(t.thread_datestamp > ".intval(time()-$max_age*86400).") AND ";
 $query2 = "
 SELECT tp.thread_name AS parent_name, 
 t.thread_datestamp , t.thread_thread, t.thread_name, t.thread_id, t.thread_user, 
