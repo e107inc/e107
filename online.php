@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-10-06 17:35:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2007-10-08 20:15:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -203,7 +203,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 				$online_location_page = ONLINE_EL13.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif(strstr($online_location, "_viewforum")) {
-			$sql->db_Select("forum", "forum_name, forum_class", "forum_id='".intval($tmp[0]));
+			$sql->db_Select("forum", "forum_name, forum_class", "forum_id=".intval($tmp[0]));
 			list($forum['forum_name'], $forum['forum_class']) = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL13." .:. ".$forum['forum_name'];
 			$online_location = str_replace("php.", "php?", $online_location);
