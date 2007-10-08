@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2007-03-25 02:24:05 $
+|     $Revision: 1.47 $
+|     $Date: 2007-10-08 15:20:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1001,7 +1001,7 @@ class forum
 				save_prefs();
 			}
 		}
-		
+
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -1318,9 +1318,12 @@ class forum
 
 		for($a = 0; $a <= 9; $a++)
 		{
+			$low_val = ($a == 0 ? '0' : (int)$rank_thresholds[$a-1]+1);
+			$high_val = ($a == 9 ? '&#8734' : "<input class='tbox' type='text' name='rank_thresholds[]' size='10' value='".$rank_thresholds[$a]."' maxlength='5' />");
+
 			$text .= "<tr>
 			<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_names[]' size='30' value='".($rank_names[$a] ? $rank_names[$a] : "")."' maxlength='30' /></td>
-			<td class='forumheader3' style='width:20%; text-align:center'><input class='tbox' type='text' name='rank_thresholds[]' size='10' value='".$rank_thresholds[$a]."' maxlength='5' /></td>
+			<td class='forumheader3' style='width:20%; text-align:center'>{$low_val} - {$high_val}</td>
 			<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_images[]' size='30' value='".($rank_images[$a] ? $rank_images[$a] : "")."' maxlength='30' /></td>
 			</tr>";
 		}
