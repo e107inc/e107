@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-09-02 11:44:00 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2007-10-08 20:18:11 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -182,6 +182,7 @@ class page
 				$page_rating_flag             = $row['page_rating_flag'];
 				$page_comment_flag            = $row['page_comment_flag'];
 				$page_display_authordate_flag = $row['page_author'];
+				$page_link 					  = varset($row['link_name'],'');
 				$data                         = $tp -> toFORM($row['page_text']);
 				$edit                         = TRUE;
 				$menu_name					  = $tp -> toFORM($row['menu_name']);
