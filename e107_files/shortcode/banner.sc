@@ -1,4 +1,4 @@
-// $Id: banner.sc,v 1.4 2007-10-04 20:32:17 e107steved Exp $
+// $Id: banner.sc,v 1.5 2007-10-08 20:10:40 e107steved Exp $
 global $sql, $tp, $ns, $menu_pref;
 $ret = "";
 
@@ -24,7 +24,7 @@ if($sql -> db_Select("banner", "*", $query))
 	switch ($fileext1)
 	{
 	  case 'swf' :
-		$ban_ret =  "
+		return  "
 		<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0\" width=\"468\" height=\"60\">\n
 			<param name=\"movie\" value=\"".e_IMAGE_ABS."banners/".$row['banner_image']."\">\n
 			<param name=\"quality\" value=\"high\">\n
