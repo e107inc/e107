@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-09-18 19:12:27 $
+|     $Revision: 1.15 $
+|     $Date: 2007-10-09 21:30:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,10 @@ require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
+
+//define("US_DEBUG",TRUE);
+define("US_DEBUG",FALSE);
+
 
 if (isset($_POST['sub_news']))
 {
@@ -79,8 +83,9 @@ $avatar_to_delete = '';
 
 require_once(HEADERF);
 
-// Save Form Data  --------------------------------------->
 
+// Save user settings (whether or not changed)
+//---------------------------------------------
 $error = "";
 
 if (isset($_POST['updatesettings']))
@@ -98,12 +103,12 @@ if (isset($_POST['updatesettings']))
 
 	if ($_uid && ADMIN)
 	{	// Admin logged in and editing another user's settings - so editing a different ID
-		$inp = $_uid;
-		$remflag = TRUE;
+	  $inp = $_uid;
+	  $remflag = TRUE;
 	}
 	else
 	{	// Current user logged in - use their ID
-		$inp = USERID;
+	  $inp = USERID;
 	}
 
 
@@ -333,146 +338,176 @@ if (isset($_POST['updatesettings']))
     }
 
 
+// All validated here
+// ------------------
 
+// $inp - UID of user whose data is being changed (may not be the currently logged in user)
 	if (!$error)
 	{
-		unset($_POST['password1']);
-		unset($_POST['password2']);
-        $_POST['user_id'] = intval($inp);
-		$ret = $e_event->trigger("preuserset", $_POST);
-		if(trim($_POST['user_xup']) != "")
+	  unset($_POST['password1']);
+	  unset($_POST['password2']);
+	  
+	  
+      $_POST['user_id'] = intval($inp);
+
+
+	  $ret = $e_event->trigger("preuserset", $_POST);
+
+	  if(trim($_POST['user_xup']) != "")
+	  {
+		if($sql->db_Select('user', 'user_xup', "user_id = '".intval($inp)."'"))
 		{
-			if($sql->db_Select('user', 'user_xup', "user_id = '".intval($inp)."'"))
-			{
-				$row = $sql->db_Fetch();
-				$update_xup = ($row['user_xup'] != $_POST['user_xup']) ? TRUE : FALSE;
-			}
+		  $row = $sql->db_Fetch();
+		  $update_xup = ($row['user_xup'] != $_POST['user_xup']) ? TRUE : FALSE;
+		}
+	  }
+
+	  if ($ret == '')
+	  {
+		$udata = get_user_data($inp);				// Get all the user data, including any extended fields
+		$peer = ($inp == USERID ? false : true);
+
+		$loginname = strip_tags($_POST['loginname']);
+		if (!$loginname)
+		{
+//		  $sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
+//		  $row = $sql -> db_Fetch();
+		  $loginname = $udata['user_loginname'];
+		}
+		else
+		{
+		  if(!check_class($pref['displayname_class'], $udata['user_class'], $peer))
+		  {
+			$new_username = "user_name = '{$loginname}', ";
+			$username = $loginname;
+		  }
 		}
 
-		if ($ret == '')
-		{
-			$udata = get_user_data($inp);
-			$peer = ($inp == USERID ? false : true);
-			$loginname = strip_tags($_POST['loginname']);
-
-			if (!$loginname)
-			{
-				$sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
-				$row = $sql -> db_Fetch();
-				$loginname = $row['user_loginname'];
-			}
-			else
-			{
-				if(!check_class($pref['displayname_class'], $udata['user_class'], $peer))
-				{
-					$new_username = "user_name = '{$loginname}', ";
-					$username = $loginname;
-				}
-			}
-
-			if (isset($_POST['username']) && check_class($pref['displayname_class']))
-			{
-				$username = strip_tags($_POST['username']);
-				$username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
-				$new_username = "user_name = '{$username}', ";
-			}
-
-
-			$_POST['signature'] = $tp->toDB($_POST['signature']);
-			$_POST['realname'] = $tp->toDB($_POST['realname']);
-
-			$new_customtitle = "";
-
-			if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
-			{
-				$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
-			}
-
-
-			if($ue_fields)
-			{
-				$hidden_fields = implode("^", array_keys($_POST['hide']));
-				if($hidden_fields != "")
-				{
-					$hidden_fields = "^".$hidden_fields."^";
-				}
-				$ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
-			}
-
-			$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".intval($tp -> toDB($_POST['hideemail']))."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
-			if ($photo_to_delete)
-			{	// Photo may be a flat file, or in the database
-			  delete_file($photo_to_delete);
-			}
-			if ($avatar_to_delete)
-			{	// Avatar may be a flat file, or in the database
-			  delete_file($avatar_to_delete);
-			}
-
-			// If user has changed display name, update the record in the online table
-			if(isset($username) && ($username != USERNAME) && !$_uid)
-			{
-				$sql->db_Update("online", "online_user_id = '".USERID.".".$username."' WHERE online_user_id = '".USERID.".".USERNAME."'");
-			}
-
-			if(ADMIN && getperms("4"))
-			{
-				$sql -> db_Update("user", "user_loginname='".$tp -> toDB($loginname)."' WHERE user_id='".intval($inp)."' ");
-			}
-
-			if($ue_fields)
-			{
-				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
-				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".intval($inp)."'");
-			}
-
-			// Update Userclass =======
-			if (!$_uid && $sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
-			{
-				$ucList = $sql->db_getList();
-				if ($sql->db_Select("user", "user_class", "user_id = '".intval($inp)."'"))
-				{
-					$row = $sql->db_Fetch();
-					$cur_classes = explode(",", $row['user_class']);
-					$newclist = array_flip($cur_classes);
-					foreach($ucList as $c)
-					{
-						$cid = $c['userclass_id'];
-						if(!in_array($cid, $_POST['class']))
-						{
-							unset($newclist[$cid]);
-						}
-						else
-						{
-							$newclist[$cid] = 1;
-						}
-					}
-					$newclist = array_keys($newclist);
-					$nid = implode(',', array_diff($newclist, array('')));
-					$sql->db_Update("user", "user_class='".$nid."' WHERE user_id='".intval($inp)."'");
-				}
-			}
-
-			if($update_xup == TRUE)
-			{
-				require_once(e_HANDLER."login.php");
-				userlogin::update_xup($inp, $_POST['user_xup']);
-			}
-
-			$e_event->trigger("postuserset", $_POST);
-
-			// =======================
-
-			if(e_QUERY == "update") {
-            	header("Location: index.php");
-			}
-			$message = "<div style='text-align:center'>".LAN_150."</div>";
-			$caption = LAN_151;
-		} else {
-			$message = "<div style='text-align:center'>".$ret."</div>";
-			$caption = LAN_151;
+//			if (isset($_POST['username']) && check_class($pref['displayname_class']))
+		if (isset($_POST['username']) && check_class($pref['displayname_class'], $udata['user_class'], $peer))
+		{	// Allow change of display name if in right class
+		  $username = strip_tags($_POST['username']);
+		  $username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
+		  $new_username = "user_name = '{$username}', ";
 		}
-		unset($_POST);
+
+
+		$_POST['signature'] = $tp->toDB($_POST['signature']);
+		$_POST['realname'] = $tp->toDB($_POST['realname']);
+
+		$new_customtitle = "";
+		if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
+		{
+		  $new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
+		}
+
+
+		// Extended fields - handle any hidden fields
+		if($ue_fields)
+		{
+		  $hidden_fields = implode("^", array_keys($_POST['hide']));
+		  if($hidden_fields != "")
+		  {
+			$hidden_fields = "^".$hidden_fields."^";
+		  }
+		  $ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
+		}
+
+
+		// We can update the basic user record now
+		$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".intval($tp -> toDB($_POST['hideemail']))."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
+		if ($photo_to_delete)
+		{	// Photo may be a flat file, or in the database
+		  delete_file($photo_to_delete);
+		}
+		if ($avatar_to_delete)
+		{	// Avatar may be a flat file, or in the database
+		  delete_file($avatar_to_delete);
+		}
+
+
+		// If user has changed display name, update the record in the online table
+		if(isset($username) && ($username != USERNAME) && !$_uid)
+		{
+		  $sql->db_Update("online", "online_user_id = '".USERID.".".$username."' WHERE online_user_id = '".USERID.".".USERNAME."'");
+		}
+
+
+		// Only admins can update login name
+		if(ADMIN && getperms("4"))
+		{
+		  $sql -> db_Update("user", "user_loginname='".$tp -> toDB($loginname)."' WHERE user_id='".intval($inp)."' ");
+		}
+
+
+		// Save extended field values
+		if($ue_fields)
+		{
+// ***** Next line creates a record which presumably should be there anyway, so could generate an error
+		  $sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
+		  $sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".intval($inp)."'");
+		}
+
+
+		// Update Userclass - only if its the user changing their own data (admins can do it another way)
+//		if (!$_uid && $sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
+		if (!$_uid && $sql->db_Select("userclass_classes", "userclass_id", "userclass_editclass IN (".USERCLASS_LIST.")"))
+		{
+		  $ucList = $sql->db_getList();			// List of classes which this user can edit
+		  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Read editable list. Current user classes: ".$udata['user_class'],FALSE,LOG_TO_ROLLING);
+//		  if ($sql->db_Select("user", "user_class", "user_id = '".intval($inp)."'"))
+//		  {
+//			$row = $sql->db_Fetch();
+//			$cur_classes = explode(",", $row['user_class']);
+			$cur_classes = explode(",", $udata['user_class']);			// Current class membership
+			$newclist = array_flip($cur_classes);						// Array keys are now the class IDs
+
+			// Update class list - we must take care to only change those classes a user can edit themselves 
+			foreach ($ucList as $c)
+			{
+			  $cid = $c['userclass_id'];
+			  if(!in_array($cid, $_POST['class']))
+			  {
+				unset($newclist[$cid]);
+			  }
+			  else
+			  {
+				$newclist[$cid] = 1;
+			  }
+			}
+			$newclist = array_keys($newclist);
+			$nid = implode(',', array_diff($newclist, array('')));
+			if ($nid != $udata['user_class'])
+			{
+			  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Write back classes; new list: ".$nid,FALSE,LOG_TO_ROLLING);
+			  $sql->db_Update("user", "user_class='".$nid."' WHERE user_id=".intval($inp));
+			}
+//		  }
+		}
+
+
+		if($update_xup == TRUE)
+		{
+		  require_once(e_HANDLER."login.php");
+		  userlogin::update_xup($inp, $_POST['user_xup']);
+		}
+
+		$e_event->trigger("postuserset", $_POST);
+
+
+		if(e_QUERY == "update") 
+		{
+          header("Location: index.php");
+		}
+		$message = "<div style='text-align:center'>".LAN_150."</div>";
+		$caption = LAN_151;
+	  } 
+	  else 
+	  {	// Invalid data
+		$message = "<div style='text-align:center'>".$ret."</div>";
+		$caption = LAN_151;
+	  }
+	  unset($_POST);
 	}
 }
 
@@ -482,7 +517,8 @@ if ($error)
 	message_handler("P_ALERT", $error);
 	$adref = $_POST['adminreturn'];
 }
-// -------------------
+
+// --- User data has been update here if appropriate ---
 
 if(isset($message))
 {
@@ -538,7 +574,7 @@ $text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 $text .= "<div>";
 
 $text .= "
-	<input type='hidden' name='_uid' value='$uuid' />
+	<input type='hidden' name='_uid' value='{$uuid}' />
 	</div>
 	</form>
 	";
