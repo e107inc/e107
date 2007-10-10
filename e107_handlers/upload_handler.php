@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.8 $
-|   $Date: 2007-09-20 21:04:23 $
+|   $Revision: 1.9 $
+|   $Date: 2007-10-10 21:28:43 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -629,7 +629,7 @@ function file_size_decode($source, $compare = 0, $action = '')
 	}
   }
   if ($val == 0) return $compare;
-  switch (action)
+  switch ($action)
   {
     case 'lt' : return min($val, $compare);
 	case 'gt' : return max($val, $compare);
