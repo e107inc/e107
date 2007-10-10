@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-07-08 21:01:00 $
+|     $Revision: 1.6 $
+|     $Date: 2007-10-10 21:34:44 $
 |     $Author: e107steved $
 |
 | Mod to give correct return code if source image already smaller than max size
@@ -117,6 +117,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 //		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." '".$destination_file."'");
 		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"".$destination_file."\"");
 		}
+		break:
 	  case "gd1" :
 		switch ($image_stats[2])
 		{
@@ -158,6 +159,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		  imagedestroy($src_img);
 		  imagedestroy($dst_img);
 		}
+		break;
 	  case "gd2" :
 		switch ($image_stats[2])
 		{
@@ -200,6 +202,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		  imagedestroy($src_img);
 		  imagedestroy($dst_img);
 		}
+		break;
 	}   // End switch($mode)
 
 	if ($destination_file == "stdout") return TRUE;		// Can't do anything more if file sent to stdout - assume success
