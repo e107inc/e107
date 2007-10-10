@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2007-09-09 06:47:40 $
+|     $Revision: 1.45 $
+|     $Date: 2007-10-10 22:35:26 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -64,20 +64,21 @@ else
         }
         if ($tmp['cachecontrol'] == TRUE)
         {
-        ob_start();
-        $ns -> tablerender($tmp['title'], $tmp['text']);
-        $cache_data = ob_get_flush();
-        $e107cache->set($cacheString, $cache_data);
-        $e107cache->set($cachePageTitle, $tmp['title']."^".$tmp['comment_flag']);
-        $comment_flag = $tmp['comment_flag'];
+	        ob_start();
+	        $ns -> tablerender($tmp['title'], $tmp['text']);
+	        $cache_data = ob_get_flush();
+	        $e107cache->set($cacheString, $cache_data);
+	        $e107cache->set($cachePageTitle, $tmp['title']."^".$tmp['comment_flag']);
+	        $comment_flag = $tmp['comment_flag'];
         }
         else
         {
-          $ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
-          $comment_flag = $tmp['comment_flag'];
+	    	$ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
+	        $comment_flag = $tmp['comment_flag'];
         }
     }
-
+	
+    $page -> title = $tmp['title'];
     if($com = $page -> pageComment($comment_flag))
     {
         echo $com['comment'].$com['comment_form'];
@@ -367,7 +368,7 @@ class pageClass
                 $e107cache->clear("comment.page.".$this -> pageID);
                 $e107cache->clear($cacheString);
             }
-
+            return $cobj->compose_comment("page", "comment", $this -> pageID, $width="", $this -> title, $showrate=FALSE, $return=TRUE);
             return $cobj->compose_comment("page", "comment", $this -> pageID, $width="", $subject="", $showrate=FALSE, $return=TRUE);
         }
     }
