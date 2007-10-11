@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-07-30 20:25:36 $
+|     $Revision: 1.5 $
+|     $Date: 2007-10-11 19:46:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,9 @@ $sc_style['SIGNUP_REALNAME']['post'] = "
 </td>
 </tr>
 ";
+
+$sc_style['SIGNUP_IS_MANDATORY']['pre'] = "<span style='font-size:15px; color:red'>";
+$sc_style['SIGNUP_IS_MANDATORY']['post'] = "</span>";
 
 
 if(!defined($USERCLASS_SUBSCRIBE_START))
@@ -279,14 +282,14 @@ $SIGNUP_BODY = "
 </tr>
 
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."{SIGNUP_IS_MANDATORY=email}</td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_EMAIL}
 </td>
 </tr>
 
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_39."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_39."{SIGNUP_IS_MANDATORY=email}</td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_EMAIL_CONFIRM}
 </td>

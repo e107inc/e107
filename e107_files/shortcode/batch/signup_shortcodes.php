@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-07-30 20:25:24 $
+|     $Revision: 1.8 $
+|     $Date: 2007-10-11 19:46:29 $
 |     $Author: e107steved $
 |
 | Mods to show extended field categories
@@ -319,6 +319,18 @@ SC_END
 SC_BEGIN SIGNUP_XUP_PASSWORD2
 global $rs, $password1;
 return $rs->form_password("password2xup", 30, $password2, 20);
+SC_END
+
+SC_BEGIN SIGNUP_IS_MANDATORY
+global $pref;
+if (isset($parm))
+{
+  switch ($parm)
+  {
+    case 'email' : if (varset($pref['disable_emailcheck'],FALSE)) return '';
+  }
+}
+return " *";
 SC_END
 
 */
