@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2007-08-08 21:01:38 $
-|     $Author: e107steved $
+|     $Revision: 1.82 $
+|     $Date: 2007-10-11 07:55:05 $
+|     $Author: asperon $
 |
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.81 $
-* @author $Author: e107steved $
+* @version $Revision: 1.82 $
+* @author $Author: asperon $
 */
 class db {
 
@@ -361,6 +361,9 @@ class db {
 	*/
 	function db_Fetch($type = MYSQL_BOTH) {
 		global $eTraffic;
+		if (!(is_int($type))) {
+			$type=MYSQL_BOTH;
+		}
 		$b = microtime();
 		$row = @mysql_fetch_array($this->mySQLresult,$type);
 		$eTraffic->Bump('db_Fetch', $b);
