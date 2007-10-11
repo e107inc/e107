@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-28 19:38:03 $
+|     $Revision: 1.11 $
+|     $Date: 2007-10-11 19:46:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -177,7 +177,7 @@ if(!$_POST)   // Notice Removal.
 	$text = " ";
 	$password1 = "";
 	$password2 = "";
-	$email = "";
+	$email = "";				// Used in shortcodes
 	$loginname = "";
 	$realname = "";
 	$user_timezone = "";
@@ -329,7 +329,7 @@ if (isset($_POST['register']))
 	$e107cache->clear("online_menu_totals");
 	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
-	if ($signup_imagecode && !$_POST['xupexist'] )
+	if (isset($_POST['rand_num']) && $signup_imagecode && !$_POST['xupexist'] )
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
@@ -385,17 +385,19 @@ if (isset($_POST['register']))
 	}
 	$_POST['loginname'] = $temp_name;
 
-	if ($_POST['loginname'] == "Anonymous")
+	if (strcasecmp($_POST['loginname'],"Anonymous") == 0)
 	{
 		$error_message .= LAN_103."\\n";
 		$error = TRUE;
 	}
+
 
 	// Use LoginName for DisplayName if restricted   **** MOVED FORWARD ****
 	if (!check_class($pref['displayname_class']))
 	{
 		$_POST['name'] = $_POST['loginname'];
 	}
+
 
 	// Impose a minimum length on display name
 	$_POST['name'] = trim($_POST['name']);
@@ -404,7 +406,7 @@ if (isset($_POST['register']))
 	  $error_message .= LAN_SIGNUP_56."\\n";
 	  $error = TRUE;
 	}
-	
+
 global $db_debug;
 	// Check for disallowed names.
 	if(varsettrue($pref['signup_disallow_text']))
@@ -432,14 +434,14 @@ global $db_debug;
 	  $error_message .= LAN_SIGNUP_55."\\n";
 	  $error = TRUE;
 	}
-	
+
 	// Check if login name exceeds maximum allowed length
 	if (strlen($_POST['loginname']) > varset($pref['loginname_maxlength'],30))
 	{
 	  $error_message .= LAN_SIGNUP_57."\\n";
 	  $error = TRUE;
 	}
-	
+
 	// Display Name exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
@@ -472,14 +474,22 @@ global $db_debug;
 		$password2 = "";
 	}
 
+
 	// Email address confirmation.
+	$email_address_OK = TRUE;
 	if ($_POST['email'] != $_POST['email_confirm'])
 	{
 		$error_message .= LAN_SIGNUP_38."\\n";
 		$error = TRUE;
 		$email = "";
 		$email_confirm = "";
+	  $email_address_OK = FALSE;
 	}
+	
+	// Always validate an email address if entered. If its blank, that's OK if checking disabled
+	$_POST['email'] = $tp->toDB(trim(varset($_POST['email'],'')));
+	$do_email_validate = !varset($pref['disable_emailcheck'],FALSE) || ($_POST['email'] !='');
+
 
 	// Password length check.
 	if (trim(strlen($_POST['password1'])) < $pref['signup_pass_len'])
@@ -497,8 +507,8 @@ global $db_debug;
 		$error = TRUE;
 	}
 
-	// ========== Verify Custom Signup options if selected ========================
 
+	// ========== Verify Custom Signup options if selected ========================
 	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_SIGNUP_28);
 	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
 
@@ -511,19 +521,74 @@ global $db_debug;
 		}
 	}
 
-	// Check for Duplicate Email address.
-	if ($sql->db_Select("user", "user_email, user_ban, user_sess", "user_email='".$tp -> toDB($_POST['email'])."' "))
+
+	//--------------------------------------
+	// Email address checks
+	//--------------------------------------
+	// Email syntax validation.
+	if ($do_email_validate && (!$_POST['email'] || !check_email($_POST['email'])))
 	{
-        $chk = $sql -> db_Fetch();
-		if($chk['user_ban']== 2 && $chk['user_sess']){
-		// duplicate because unactivated
-			$error = TRUE;
-        	header("Location: ".e_BASE."signup.php?resend");
-			exit;
-		}else{
-			$error_message .= LAN_408."\\n";
-			$error = TRUE;
-		}
+	  $error_message .= LAN_106."\\n";
+	  $error = TRUE;
+	  $email_address_OK = FALSE;
+	}
+
+	// Check Email against banlist.
+	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
+	if ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'"))
+	{
+	  $email_address_OK = FALSE;
+	  $brow = $sql -> db_Fetch();
+	  $error = TRUE;
+	  if($brow['banlist_reason'])
+	  {
+		$repl = array("\n","\r","<br />");
+		$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak, defs"))."\\n";
+		$email = "";
+	  }
+	  else
+	  {
+		exit;
+	  }
+	}
+
+	// Check email address on remote server (if enabled) - but only if previous checks passed.
+	if ($do_email_validate && $email_address_OK && varsettrue($pref['signup_remote_emailcheck']) && $error != TRUE)
+	{
+	  require_once(e_HANDLER."mail_validation_class.php");
+	  list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
+	  $validator = new email_validation_class;
+	  $validator->localuser= $adminuser;
+	  $validator->localhost= $adminhost;
+	  $validator->timeout=3;
+		//	$validator->debug=1;
+		//	$validator->html_debug=1;
+	  if($validator->ValidateEmailBox(trim($_POST['email'])) != 1)
+	  {
+		$email_address_OK = FALSE;
+		$error_message .= LAN_106."\\n";
+		$error = TRUE;
+		$email = "";
+		$email_confirm = "";
+	  }
+	}
+
+	// Check for Duplicate Email address - but only if previous checks passed.
+	if ($do_email_validate && $email_address_OK && $sql->db_Select("user", "user_email, user_ban, user_sess", "user_email='".$_POST['email']."' "))
+	{
+      $chk = $sql -> db_Fetch();
+	  if($chk['user_ban']== 2 && $chk['user_sess'])
+	  {  // duplicate because unactivated
+		$error = TRUE;
+        header("Location: ".e_BASE."signup.php?resend");
+		exit;
+	  }
+	  else
+	  {
+	  $email_address_OK = FALSE;
+		$error_message .= LAN_408."\\n";
+		$error = TRUE;
+	  }
 	}
 
 	// Extended Field validation
@@ -533,7 +598,6 @@ global $db_debug;
 	{
 		if(isset($_POST['ue']['user_'.$ext['user_extended_struct_name']]))
 		{
-
 			$newval = trim($_POST['ue']['user_'.$ext['user_extended_struct_name']]);
 			if($ext['user_extended_struct_required'] == 1 && $newval == "" )
 			{
@@ -563,56 +627,10 @@ global $db_debug;
 		}
 	}
 
-	// Email syntax validation.
-	if (!check_email($_POST['email']))
-	{
-		message_handler("P_ALERT", LAN_106);
-		$error_message .= LAN_106."\\n";
-		$error = TRUE;
-	}
-
-	// Check Email against banlist.
-	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
-	if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_POST['email'])."' OR banlist_ip='{$wc}'"))
-	{
-		$brow = $sql -> db_Fetch();
-		$error = TRUE;
-		if($brow['banlist_reason'])
-		{
-			$repl = array("\n","\r","<br />");
-			$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak, defs"))."\\n";
-			$email = "";
-		}
-		else
-		{
-			exit;
-		}
-	}
-
-	// Check email address on remote server (if enabled).
-	if (varsettrue($pref['signup_remote_emailcheck']) && $error != TRUE)
-	{
-		require_once(e_HANDLER."mail_validation_class.php");
-		list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
-		$validator = new email_validation_class;
-		$validator->localuser= $adminuser;
-		$validator->localhost= $adminhost;
-		$validator->timeout=3;
-		//	$validator->debug=1;
-		//	$validator->html_debug=1;
-		if($validator->ValidateEmailBox(trim($_POST['email'])) != 1)
-		{
-			$error_message .= LAN_106."\\n";
-			$error = TRUE;
-			$email = "";
-			$email_confirm = "";
-		}
-
-	}
 
 	if($error_message)
 	{
-		message_handler("P_ALERT", $error_message);
+	  message_handler("P_ALERT", $error_message);
 	}
 
 	// ========== End of verification.. ====================================================
@@ -626,8 +644,9 @@ global $db_debug;
 			exit;
 		}
 
-		if ($sql->db_Select("user", "*", "user_email='".$tp -> toDB($_POST['email'])."' AND user_ban='1'")) {
-			exit;
+		if ($_POST['email'] && $sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1'")) 
+		{
+		  exit;
 		}
 
 		$username = $tp -> toDB(strip_tags($_POST['name']));
@@ -645,13 +664,14 @@ global $db_debug;
 		}
 
 		$u_key = md5(uniqid(rand(), 1));
-		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['timezone'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
+		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$_POST['email']."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['timezone'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
 		if(!$nid)
 		{
 			require_once(HEADERF);
 			$ns->tablerender("", LAN_SIGNUP_36);
 			require_once(FOOTERF);
 		}
+
 
 		if ($pref['user_reg_veri'])
 		{
@@ -675,7 +695,7 @@ global $db_debug;
 
 			// ========== Send Email =========>
 
-			if ($pref['user_reg_veri'] != 2)
+			if (($pref['user_reg_veri'] != 2) && $_POST['email'])		// Don't send if email address blank - means that its not compulsory
 			{
                 $eml = render_email();
 				$mailheader_e107id = $eml['userid'];
@@ -689,6 +709,7 @@ global $db_debug;
 			}
 
             $_POST['ip'] = $ip;
+			$_POST['user_id'] = $nid;
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			require_once(HEADERF);
@@ -745,6 +766,7 @@ global $db_debug;
 
 			// ==========================================================
             $_POST['ip'] = $ip;
+			$_POST['user_id'] = $nid;
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			if($pref['signup_text_after'])
@@ -778,17 +800,22 @@ if (!$website)
 	$website = "http://";
 }
 
-if (strpos(LAN_109, "stage") === FALSE)
+if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 {
-	if (isset($_POST['newver']))
+	if(isset($_POST['newver']))
 	{
-		if (!$_POST['coppa'])
+		if(!varsettrue($_POST['coppa']))
 		{
 			$text = $tp->parseTemplate($COPPA_FAIL);
 			$ns->tablerender(LAN_110, $text);
 			require_once(FOOTERF);
 			exit;
 		}
+	}
+	else
+	{
+  		header('Location: '.e_BASE.'signup.php');
+		exit;
 	}
 }
 
