@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-09-20 11:08:13 $
-|     $Author: e107coders $
+|     $Revision: 1.27 $
+|     $Date: 2007-10-12 19:54:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -181,7 +181,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_NAME_LINKED
 global $pref,$dl,$tp;
 if ($pref['agree_flag'] == 1) {
-	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"))."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
 } else {
 	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
 }
@@ -418,8 +418,8 @@ SC_END
 
 
 SC_BEGIN DOWNLOAD_BACK_TO_LIST
-	global $dl;
-	return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
+global $dl;
+return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
 SC_END
 
 SC_BEGIN DOWNLOAD_BACK_TO_CATEGORY_LIST
