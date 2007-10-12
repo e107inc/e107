@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-05-11 19:57:07 $
+|     $Revision: 1.5 $
+|     $Date: 2007-10-12 20:40:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,8 +25,12 @@ SC_BEGIN TOTAL_CHATPOSTS
 global $sql;
 if(!$chatposts = getcachedvars('total_chatposts'))
 {
+  $chatposts = 0;				// In case plugin not installed
+  if (isset($pref['plug_installed']['chatbox_menu']))
+  {
 	$chatposts = $sql->db_Count("chatbox");
-	cachevars('total_chatposts', $chatposts);
+  }
+  cachevars('total_chatposts', $chatposts);
 }
 return $chatposts;
 SC_END
@@ -76,8 +80,12 @@ SC_BEGIN USER_CHATPER
 global $sql, $user;
 if(!$chatposts = getcachedvars('total_chatposts'))
 {
+  $chatposts = 0;			// In case plugin not installed
+  if (isset($pref['plug_installed']['chatbox_menu']))
+  {
 	$chatposts = $sql->db_Count("chatbox");
-	cachevars('total_chatposts', $chatposts);
+  }
+  cachevars('total_chatposts', $chatposts);
 }
 return round(($user['user_chats']/$chatposts) * 100, 2);
 SC_END
@@ -418,7 +426,7 @@ $ue = new e107_user_extended;
 $ueCatList = $ue->user_extended_get_categories();
 $ueFieldList = $ue->user_extended_get_fields();
 $ueCatList[0][0] = array('user_extended_struct_name' => LAN_410);
-
+$ret = "";
 foreach($ueCatList as $catnum => $cat)
 {
 	$key = $cat[0]['user_extended_struct_name'];
