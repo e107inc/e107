@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-27 13:27:19 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2007-10-12 19:54:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -123,6 +123,10 @@ $agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"));
 	}
 SC_END
 
+SC_BEGIN DOWNLOAD_LIST_NEXTPREV
+	global $nextprev_parms,$tp;
+ 	return $tp->parseTemplate("{NEXTPREV={$nextprev_parms}}");
+SC_END
 
 
 // ---------------------- Download View ----------------------------------------
@@ -177,7 +181,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_NAME_LINKED
 global $pref,$dl,$tp;
 if ($pref['agree_flag'] == 1) {
-	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"))."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
 } else {
 	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
 }
@@ -416,6 +420,10 @@ SC_END
 SC_BEGIN DOWNLOAD_BACK_TO_LIST
 global $dl;
 return "<a href='".e_BASE."download.php?list.".$dl['download_category']."'>".LAN_dl_35."</a>";
+SC_END
+
+SC_BEGIN DOWNLOAD_BACK_TO_CATEGORY_LIST
+	return "<a href='".e_SELF."'>".LAN_dl_9."</a>";
 SC_END
 
 
