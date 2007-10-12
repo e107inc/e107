@@ -164,5 +164,5 @@ define("LAN_MAINADMIN","Hoofdbeheerder");
 define("LAN_ADMIN","Beheerder");
 define("LAN_NOTVERIFIED","Niet geverifieerd");
 define("LAN_BANNED","Geblokkeerd"); 
-define("LAN_BOUNCED","Gebouncet");
+define("LAN_BOUNCED","Gebounced");
 ?>

@@ -16,9 +16,9 @@
 +---------------------------------------------------------------+
 */
 
-define("METLAN_1", "Meta tags bijgewerkt in database");
-define("METLAN_2", "Opvoeren meta tags");
-define("METLAN_3", "Invoeren nieuwe meta tag instellingen");
+define("METLAN_1", "Metatags bijgewerkt in database");
+define("METLAN_2", "Opvoeren metatags");
+define("METLAN_3", "Invoeren nieuwe metatag instellingen");
 define("METLAN_4", "Bijgewerkt");
 define("METLAN_5", "voer hier de beschrijving in");
 define("METLAN_6", "geef, hier, een, serie, sleutelwoorden, op");

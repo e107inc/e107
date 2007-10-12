@@ -24,7 +24,7 @@ define("LAN_PRINT_135", "Nieuwsbericht: ");
 define("LAN_PRINT_303", "Dit nieuwsbericht is van ");
 define("LAN_PRINT_304", "Titel van het artikel: ");
 define("LAN_PRINT_305", "Onderkop: ");
-define("LAN_PRINT_306", "Dit artikel is van ");
+define("LAN_PRINT_306", "Dit artikel is van: ");
 define("LAN_PRINT_307", "Druk deze pagina af");
 
 ?>

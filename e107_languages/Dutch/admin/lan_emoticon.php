@@ -14,10 +14,10 @@
 +---------------------------------------------------------------+
 */
 
-define("EMOLAN_1", "Emoticon  Activatie.");
+define("EMOLAN_1", "Emoticon activering.");
 define("EMOLAN_2", "Naam");
 define("EMOLAN_3", "Emoticons");
-define("EMOLAN_4", "Emoticons Activeren?");
+define("EMOLAN_4", "Emoticons activeren?");
 define("EMOLAN_5", "Afbeelding");
 define("EMOLAN_6", "Smiley Code");
 define("EMOLAN_7", "meerdere mogelijkheden scheiden met spaties");

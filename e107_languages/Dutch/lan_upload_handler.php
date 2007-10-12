@@ -18,13 +18,13 @@
 
 define("LANUPLOAD_1", "Het bestandsformaat");
 define("LANUPLOAD_2", "is niet toegestaan en het bestand wordt verwijderd.");
-define("LANUPLOAD_3", "Succesvol geupload");
+define("LANUPLOAD_3", "Succesvol ge-upload");
 define("LANUPLOAD_4", "Of de bestemmingsmap bestaat niet, of deze map is schrijfbeveiligd.");
-define("LANUPLOAD_5", "Het geuploade bestand is groter dan de upload_max_filesize parameter in php.ini.");
-define("LANUPLOAD_6", "Het geuploade bestand is groter dan de MAX_FILE_SIZE in het html formulier.");
-define("LANUPLOAD_7", "Het bestand is slechts gedeeltelijk geupload.");
-define("LANUPLOAD_8", "Er werd geen bestand geupload.");
-define("LANUPLOAD_9", "Geupoade bestandsgrootte 0 bytes");
+define("LANUPLOAD_5", "Het ge-uploade bestand is groter dan de upload_max_filesize parameter in php.ini.");
+define("LANUPLOAD_6", "Het ge-uploade bestand is groter dan de MAX_FILE_SIZE in het html formulier.");
+define("LANUPLOAD_7", "Het bestand is slechts gedeeltelijk ge-upload.");
+define("LANUPLOAD_8", "Er werd geen bestand ge-upload.");
+define("LANUPLOAD_9", "Ge-uploade bestandsgrootte 0 bytes");
 define("LANUPLOAD_10", "Upload mislukt [Duplicate filename] - er bestaat al een bestand met deze naam.");
 define("LANUPLOAD_11", "Het bestand werd niet geupload. Bestandsnaam:");
 define("LANUPLOAD_12", "Fout");

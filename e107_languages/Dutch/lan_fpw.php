@@ -17,7 +17,7 @@
 
 define("PAGE_NAME", "Wachtwoord vernieuwen");
 define("LAN_02", "Sorry, kon geen mailtje versturen - neem contact op met de beheerder.");
-define("LAN_03", "Wachtwoord vernieuwen");
+define("LAN_03", "Wachtwoord herstellen");
 define("LAN_05", "Om je wachtwoord te vernieuwen moet je de volgende informatie verschaffen");
 define("LAN_06", "Wachtwoord wijzigingspoging");
 define("LAN_07", "Iemand met ip-adres ");
@@ -26,7 +26,7 @@ define("LAN_09", "Wachtwoordwijziging van ");
 define("LAN_112", "E-mailadres bij aanmelding");
 define("LAN_156", "Verstuur");
 define("LAN_213", "Deze gebruikersnaam/e-mailadres is niet aanwezig in de database.");
-define("LAN_214", "Om het wachtwoord te activeren surf je naar het volgende internetadres ...");
+define("LAN_214", "Wachtwoord kon niet worden hersteld.");
 define("LAN_216", "Om je nieuwe wachtwoord te valideren, ga je naar de volgende pagina...");
 define("LAN_217", "Je nieuwe wachtwoord is nu geldig, je kunt met het nieuwe wachtwoord inloggen.");
 define("LAN_218", "Je gebruikersnaam is:");

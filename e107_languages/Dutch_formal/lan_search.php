@@ -28,7 +28,7 @@ define("LAN_197", "Downloads");
 define("LAN_198", "Trefwoord niet gevonden");
 define("LAN_199", "Zoek naar");
 define("LAN_416", "U moet zijn ingelogd om deze pagina te kunnen benaderen");
-define("LAN_417", "De zoekterm moet minimaal drie tekens bevatten.");
+define("LAN_417", "De zoekterm moet minimaal --CHARS-- tekens bevatten.");
 define("LAN_418", "Overige pagina's");
 
 define("LAN_SEARCH_1", "Alles selecteren");

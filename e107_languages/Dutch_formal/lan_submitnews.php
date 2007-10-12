@@ -24,7 +24,7 @@ define("LAN_134", "Uw nieuwsbericht is aangemeld en wordt zo spoedig mogelijk do
 define("LAN_135", "Nieuwsbericht: ");
 define("LAN_136", "Meld nieuwsbericht");
 define("NWSLAN_6", "Categorie");
-define("NWSLAN_10", "Geen niewscategorieën");
+define("NWSLAN_10", "Geen nieuwscategorieën");
 define("NWSLAN_11", "U mag dit onderdeel niet benaderen.");
 define("NWSLAN_12", "Verboden toegang.");
 define("SUBNEWSLAN_1", "U moet een onderwerp opgeven.");

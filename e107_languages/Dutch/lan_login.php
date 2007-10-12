@@ -16,7 +16,7 @@
 */
 
 define("LAN_27", "Je hebt een verplicht veld niet ingevuld");
-define("LAN_300", "Deze gebruikersnaam is niet aanwezig in de database.");
+define("LAN_300", "De ingevoerde gegevens komen niet overeen met een geregistreerd lid. Controleer of de CAPS-LOCK niet aan staat.");
 define("LAN_302", "Je hebt je lidmaatschap niet geactiveerd. Je moet een mailtje met instructies hebben ontvangen om je lidmaatschap te activeren. Als dat niet zo is, meld het aan de beheerder van de website.");
 define("LAN_303", "Onjuiste code ingevoerd.");
 define("LAN_304", "Deze gebruikersnaam/wachtwoord combinatie is al in gebruik.");

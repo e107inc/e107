@@ -19,7 +19,7 @@ define("LAN_CHECK_1", "Kies de te verifiëren taal");
 define("LAN_CHECK_2", "Begin verificatie");
 define("LAN_CHECK_3", "Verificatie van");
 define("LAN_CHECK_4", "Bestand ontbreekt!");
-define("LAN_CHECK_5", "Regel ontbreekt!");
+define("LAN_CHECK_5", "Regel ontbreekt (wellicht blanco tekst)");
 define("LAN_CHECK_7", "regel");
 define("LAN_CHECK_8", "Er ontbreekt een bestand...");
 define("LAN_CHECK_9", " bestanden ontbreken...");
@@ -31,6 +31,6 @@ define("LAN_CHECK_14", "Alle aanwezige bestanden zijn geldig !");
 define("LAN_CHECK_15", "Onjuiste tekens gevonden voor '&lt;?php'");
 define("LAN_CHECK_16", "Originele bestand");
 define("LAN_CHECK_17", "Er bestaat een schrijfprobleem bij het opslaan van het bestand.");
-define("LAN_CHECK_18", "Taalbestanden in het standaardformaat zijn voor deze plugin/dit theme niet beschikbaar.");
+define("LAN_CHECK_18", "Taalbestanden in het standaardformaat zijn voor deze plugin/dit thema niet beschikbaar.");
 define("LAN_CHECK_19", "Non-UTF-8 tekens aangetroffen!");
 ?>

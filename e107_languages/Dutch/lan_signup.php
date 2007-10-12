@@ -66,7 +66,7 @@ define("LAN_SIGNUP_9", "Kan niet verder gaan.");
 define("LAN_SIGNUP_10", "Ja");
 define("LAN_SIGNUP_11", ".");
 define("LAN_SIGNUP_12", "bewaar je gebruikersnaam en wachtwoord op een veilige plek. Verloren gegevens kunnen namelijk niet worden teruggehaald.");
-define("LAN_SIGNUP_13", "Je kunt nu inloggen in het Inlogmenu.");
+define("LAN_SIGNUP_13", "U kunt nu inloggen in het Inlogmenu of <a href='".e_BASE."login.php'>hier</a>...");
 define("LAN_SIGNUP_14", "hier");
 define("LAN_SIGNUP_15", "Neem contact op met de beheerder");
 define("LAN_SIGNUP_16", "als je hulp nodig hebt.");

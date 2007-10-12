@@ -78,7 +78,6 @@ define("NWSLAN_76", "Alleen titel - plaatsen op de hoofdpagina");
 define("NWSLAN_77", "Plaats in ander nieuwsmenu");
 define("NWSLAN_79", "Schonen formulier");
 define("NWSLAN_83", "Uitgebreid nieuwsbericht");
-define("NWSLAN_83", "en");
 define("NWSLAN_84", "Geef op welke bezoekers het nieuwsbericht mogen zien");
 define("NWSLAN_86", "Toon nieuwscategorie voettekst menu");
 define("NWSLAN_87", "Nieuwscategorie kolommen?");

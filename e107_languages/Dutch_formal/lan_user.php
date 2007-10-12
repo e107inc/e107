@@ -42,7 +42,7 @@ define("LAN_308", "Echte naam: ");
 define("LAN_400", "Dat is geen geldig lidnummer.");
 define("LAN_401", "geen informatie");
 define("LAN_402", "Lidmaatschapsprofiel");
-define("LAN_403", "Deelname op de site");
+define("LAN_403", "Statistieken");
 define("LAN_404", "Laatste bezoek");
 define("LAN_405", "dagen geleden");
 define("LAN_406", "Waardering");

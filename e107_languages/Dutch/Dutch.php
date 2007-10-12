@@ -19,6 +19,9 @@
 
 //setlocale(LC_TIME, 'nl_NL'); 
 setlocale(LC_ALL, 'nl_NL.utf8', 'nld_nld.utf8', 'nld.utf8', 'nl.utf8', 'nl');
+define("CORE_LC", 'nl');
+define("CORE_LC2", 'nl');
+
 
 //define("CHARSET", "iso-8859-1");
 define("CHARSET", "utf-8");

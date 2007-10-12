@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch_formal/admin/lan_cpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-03-02 18:43:45 $
+|     $Revision: 1.2 $
+|     $Date: 2007-10-12 20:49:05 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ define("CUSLAN_31", "Aanmaken menu");
 define("CUSLAN_32", "Converteren oude pagina's/menu's");
 define("CUSLAN_33", "Pagina opties");
 define("CUSLAN_34", "Start conversie");
-define("CUSLAN_35", "Gereed bijwerken maatwerkpagina - bijgewerkt");
+define("CUSLAN_35", "Maatwerkpagina - bijgewerkt");
 define("CUSLAN_36", "Om uw voorkeuren voor elke pagina in te stellen, kunt u op de voorpagina de afzonderlijke pagina's bewerken .");
 define("CUSLAN_37", "Maatwerkpagina bijwerken");
 define("CUSLAN_38", "aan");
