@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-09-29 20:20:36 $
+|     $Revision: 1.8 $
+|     $Date: 2007-10-13 19:08:37 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -45,29 +45,41 @@ require_once(e_HANDLER."ren_help.php");
 $rs = new form;
 $linkpost = new links;
 
-if (e_QUERY) {
-	$tmp = explode('.', e_QUERY);
-	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
-	unset($tmp);
+$action = '';
+if (e_QUERY) 
+{
+  $tmp = explode('.', e_QUERY);
+  $action = $tmp[0];
+  $sub_action = $tmp[1];
+  $id = $tmp[2];
+  unset($tmp);
 }
 
+define("URL_SEPARATOR",'X');		// Used in names of 'inc' and 'dec' fields
+
+$incdec_action = '';
 foreach(array_keys($_POST) as $k)
 {
-	if (preg_match("#(.*?)_delete_(\d+)(.*)#", $k, $matches))
-	{
-		$delete = $matches[1];
-		$del_id = $matches[2];
-	}
+  if (preg_match("#(.*?)_delete_(\d+)(.*)#", $k, $matches))
+  {
+	$delete = $matches[1];
+	$del_id = $matches[2];
+  }
+  elseif (!$incdec_action && (preg_match("#^(inc|dec)".URL_SEPARATOR."(\d+)".URL_SEPARATOR."(\d+)_[x|y]#", $k, $matches)))
+  {
+    $incdec_action = $matches[1];
+	$linkid = intval($matches[2]);
+	$link_order = intval($matches[3]);
+  }
 }
 
-if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] !="" ){
-
+if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] !="" )
+{
 	$subtype = $_POST['sublink_type'];
 	$sublink = $linkpost->sublink_list($subtype);
-    if(!is_object($sql2)){
-    	$sql2 = new db;
+    if(!is_object($sql2))
+	{
+      $sql2 = new db;
 	}
 
 	$sql -> db_Select("links", "*", "link_id = '".$_POST['sublink_parent']."'");
@@ -98,22 +110,15 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 	}
 }
 
-if (isset($_POST['inc'])) 
+if ($incdec_action == 'inc') 
 {
-	$qs = explode(".", $_POST['inc']);
-	$linkid = $qs[0];
-	$link_order = $qs[1];
-	$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order-1)."'");
-	$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($linkid)."'");
+  $sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order-1)."'");
+  $sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($linkid)."'");
 }
-
-if (isset($_POST['dec'])) 
+elseif ($incdec_action =='dec') 
 {
-	$qs = explode(".", $_POST['dec']);
-	$linkid = $qs[0];
-	$link_order = $qs[1];
-	$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order+1)."'");
-	$sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($linkid)."'");
+  $sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order+1)."'");
+  $sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($linkid)."'");
 }
 
 if (isset($_POST['update'])) 
@@ -330,11 +335,11 @@ class links
 		$this->aIdOptPrep = $this->prepOpts($this->aIdOptData);
 	}
 
-	function display_row($row2, $indent = FALSE) {
+	function display_row($row2, $indent = FALSE) 
+	{
 		global $sql, $rs, $ns, $tp, $linkArray, $previous_cat, $imode;
 		extract($row2);
 
-		//
 		if($link_category > 1 && $link_category != $previous_cat)
 		{
         	$text .= "
@@ -359,42 +364,43 @@ class links
 		  $link_name.= ' ['.$link_url.']';
 		}
 
-		if ($indent) {
-			$subimage = "<img src='".e_IMAGE."packs/".$imode."/admin_images/sublink.png' alt='' />";
-			$subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
-			$subindent = "<td".$subspacer.">".$subimage."</td>";
+		if ($indent) 
+		{
+		  $subimage = "<img src='".e_IMAGE."packs/".$imode."/admin_images/sublink.png' alt='' />";
+		  $subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
+		  $subindent = "<td".$subspacer.">".$subimage."</td>";
 		}
 
-				$text .= "<tr><td class='forumheader3' style='text-align: center; vertical-align: middle' title='".$link_description."'>";
-				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
-				"";
-				$text .= "</td><td class='forumheader3' title='".$link_description."'>
+		$text .= "<tr><td class='forumheader3' style='text-align: center; vertical-align: middle' title='".$link_description."'>";
+		$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
+		"";
+		$text .= "</td><td class='forumheader3' title='".$link_description."'>
 				<table cellspacing='0' cellpadding='0' border='0' style='width: 100%'>
 				<tr>
-				".$subindent."
+			".$subindent."
 				<td style='".($indent ? "" : "font-weight:bold;")."width: 100%'>".$link_name."</td>
 				</tr>
 				</table>
 				</td>";
-				$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= "<a href='".e_SELF."?create.sub.{$link_id}'><img src='".e_IMAGE."packs/".$imode."/admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;";
-				$text .= "<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;";
-				$text .= "<input type='image' title='".LAN_DELETE."' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."') \" />";
-				$text .= "</td>";
-				$text .= "<td style='text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
-				$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= "<input type='image' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' title='".LCLAN_30."' value='".$link_id.".".$link_order."' name='inc' />";
-				$text .= "<input type='image' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' title='".LCLAN_31."' value='".$link_id.".".$link_order."' name='dec' />";
-				$text .= "</td>";
-				$text .= "<td style='text-align:center' class='forumheader3'>";
-				$text .= "<select name='link_order[]' class='tbox'>\n";
-				$text .= $this->genOpts( $this->aIdOptPrep, $this->aIdOptTest, $link_order, $link_id );
-				$text .= "</select>";
-				$text .= "</td>";
-				$text .= "</tr>";
+		$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
+		$text .= "<a href='".e_SELF."?create.sub.{$link_id}'><img src='".e_IMAGE."packs/".$imode."/admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;";
+		$text .= "<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;";
+		$text .= "<input type='image' title='".LAN_DELETE."' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."') \" />";
+		$text .= "</td>";
+		$text .= "<td style='text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
+		$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
+		$name_suffix = URL_SEPARATOR.$link_id.URL_SEPARATOR.$link_order;
+		$text .= "<input name='inc".$name_suffix."' type='image' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' title='".LCLAN_30."' />";
+		$text .= "<input name='dec".$name_suffix."' type='image' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' title='".LCLAN_31."' />";
+		$text .= "</td>";
+		$text .= "<td style='text-align:center' class='forumheader3'>";
+		$text .= "<select name='link_order[]' class='tbox'>\n";
+		$text .= $this->genOpts( $this->aIdOptPrep, $this->aIdOptTest, $link_order, $link_id );
+		$text .= "</select>";
+		$text .= "</td>";
+		$text .= "</tr>";
 
-	return $text;
-
+	  return $text;
 	}
 
 
