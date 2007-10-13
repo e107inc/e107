@@ -29,18 +29,23 @@ $udata['user_class'] .= ($udata['user_class'] == "" ? "" : ",");
 $udata['user_class'] .= e_UC_PUBLIC.",".e_UC_MEMBER;
 if($udata['user_admin'] == 1)
 {
-	$udata['user_class'].= ",".e_UC_ADMIN;
+  $udata['user_class'].= ",".e_UC_ADMIN;
 }
 
-if (
-!check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
-|| !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])
-|| ($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (!ADMIN && $udata['user_id'] != USERID))
-|| (!ADMIN && substr($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], -1) == 1 
-&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $uid != USERID)
-)
+
+// Need to pick up the 'miscellaneous' category - anything which isn't in a named category. Have to control visibility on a field by field basis
+if ($parms[0] != LAN_410)
 {
+  $ret_cause = 0;
+  if (!check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])) $ret_cause = 1;
+  if (!check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])) $ret_cause = 2;
+  if (($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (!ADMIN && $udata['user_id'] != USERID))) $ret_cause = 3;
+  if ((!ADMIN && substr($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], -1) == 1 
+	&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $uid != USERID)) $ret_cause = 4;
+  if ($ret_cause != 0)
+  {
 	return FALSE;
+  }
 }
 
 if($parms[1] == 'text_value')
@@ -59,15 +64,15 @@ if($parms[1] == 'text_value')
 
 if ($parms[1] == 'text')
 {
-	$text_val = $ueStruct["user_".$parms[0]]['user_extended_struct_text'];
-	if($text_val)
-	{
-		return (defined($text_val) ? constant($text_val) : $text_val);
-	}
-	else
-	{
-		return TRUE;
-	}
+  $text_val = $ueStruct["user_".$parms[0]]['user_extended_struct_text'];
+  if($text_val)
+  {
+	return (defined($text_val) ? constant($text_val) : $text_val);
+  }
+  else
+  {
+	return TRUE;
+  }
 }
 
 if ($parms[1] == 'icon')
