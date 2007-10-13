@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch_formal/lan_content_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-03-02 18:44:44 $
+|     $Revision: 1.2 $
+|     $Date: 2007-10-13 06:44:23 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -31,9 +31,7 @@ define("CONTENT_ADMIN_HELP_CAT_1", "<i>deze pagina toont alle aanwezige categori
 define("CONTENT_ADMIN_HELP_CAT_2", "".CONTENT_ICON_CONTENTMANAGER_SMALL." : (alleen hoofdbeheerder) voor elke subcategorie kunt u via de knop het Persoonlijke Beheer voor andere beheerders regelen.<br />
 <br /><b>persoonlijke beheerder</b><br />u kunt beheerders toewijzen aan bepaalde categorieën. Hierdoor kunnen deze beheerders hun persoonlijke content voor deze categorieën beheren zonder het beheerscherm te moeten gebruiken (content_manager.php).");
 
-define("CONTENT_ADMIN_HELP_CAT_3", "<i>op deze pagina kunt u een nieuwe categorie maken</i><br /><br />
-KIES ALTIJD EERST DE HOOFDONDERWERPCATEGORIE VOORDAT U DE ANDERE VELDEN INVULT !<br /><br />
-Dit moet u doen omdat sommige unieke categorieinformatie eerst in het formulier moet worden geladen.");
+define("CONTENT_ADMIN_HELP_CAT_3", "<i>deze pagina toont het categorieën bewerkformulier.</i><br /><br /><b>categorieën bewerkingenformulier</b><br />U kunt hier alle informatie voor deze (sub)categorie bewerken en uw wijzigingen laten verwerken.<br /><br />Als u de hoofdcategorie voor deze categorie wilt wijzigen, doet u dat dan eerst. Na het opgeven van de juiste categorie kunt u de overige gegevens wijzigen.");
 define("CONTENT_ADMIN_HELP_CAT_4", "<i>deze pagina toont het formulier om categorieën te bewerken.</i><br /><br />
 <b>bewerk categorie formulier</b><br />u kunt nu alle gegevens voor deze (sub)categorie bewerken en de wijzigingen aanmelden.");
 
@@ -43,14 +41,10 @@ define("CONTENT_ADMIN_HELP_ORDER_2", "<i>deze pagina toont u alle content onderw
 
 define("CONTENT_ADMIN_HELP_ORDER_3", "<i>deze pagina toont u alle content onderwerpen in de geselecteerde hoofdonderwerpcategorie.</i><br /><br /><b>detail overzicht</b><br />u ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br /><br /><b>Legenda</b><br />".CONTENT_ICON_USER." : link naar auteursprofiel<br />".CONTENT_ICON_LINK." : link to the content item<br />".CONTENT_ICON_ORDER_UP." : de omhoogknop verplaatst een onderwerp omhoog.<br />".CONTENT_ICON_ORDER_DOWN." : de omlaagknop verplaatst een onderwerp omlaag.<br /><br /><b>volgorde</b><br />hier kunt u handmatig de volgorde van alle categorieën in elk hoofdonderwerp bepalen. U moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna drukt u op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_1", "Op deze pagina kunt u de opties voor hoofdonderwerpcategorie instellen, of je kunt de standaardvoorkeuren wijzigen.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_OPTIONS." : bewerk de opties<br />");
-
-//define("CONTENT_ADMIN_HELP_OPTION_2", "<i>deze pagina toont de opties die u voor het hoofdonderwerp kunt instellen. Elk hoofdonderwerp heeft een eigen set opties, let u er dus op de juiste gegevens goed in te vullen.</i><br /><br />");
-//<b>standaardwaarden</b><br />Standaard zijn alle waarden al aanwezig en bijgewerkt in de voorkeuren als u deze pagina bekijkt, u kunt alles naar willekeur aanpassen.<br /><br />
-
+define("CONTENT_ADMIN_HELP_OPTION_1", "Op deze pagina kunt u de opties voor hoofdonderwerpcategorie instellen, of je kunt de standaardvoorkeuren wijzigen.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_OPTIONS." : bewerk de opties<br /><br /><br />De standaard voorkeuren worden alleen gebruikt bij het opvoeren van een nieuwe hoofdcategorie. Dus bij een nieuwe hoofcategorie worden deze voorkeuren opgeslagen. U kunt ze wijzigen om er zeker van te zijn dat de nieuw aangemaakte hoofdonderwerpen zijn voorzien van de juiste functies.<br /><br />Elk hoofdonderwerp heeft zijn eigen set opties, uniek voor die hoofdonderwerpcategorie<br /><br /><b>overerving</b><br />De overervingkeuze maakt het mogelijk voorbij te gaan aan de hoofdonderwerp keuzes en de standaard voorkeuren voor het aangekruiste hoofdonderwerp te gebruiken.");
 define("CONTENT_ADMIN_HELP_MANAGER_1", "Op deze pagina ziet u het overzicht van alle categorieën. U kunt de 'persoonlijke content beheerder' voor elke categorie beheren door op het pictogram te kliken.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : bewerk de persoonlijke content beheerders<br />");
 
-define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>op deze pagina kunt u gebruikers toewijzen aan de geselecteerde categorie</i><br /><br /><b>persoonlijke beheerder</b><br />u kunt gebruikers aan bepaalde categorieën toewijzen. Hierdoor kunnen die gebruikers hun persoonlijke contentonderwerpen binnen deze categorie beheren buiten het beheerscherm om (content_manager.php).<br /><br />Selecteert u de gebruikers uit de linkerkolom. Door op een naam te klikken wordt de gebruiker verplaatst naar de rechterkolom. Nadat u op Toewijzen hebt gedrukt, worden de gebruikers in de rechterkolom toegewezen aan deze categorie.");
+define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>op deze pagina kunt u gebruikersklassen toewijzen aan de geselecteerde categorie</i><br /><br /><b>persoonlijke beheerder</b><br />U kunt klassen definiëren voor verschillende soorten persoonlijke beheerders. Op dit moment zijn er drie soorten beheerders:<br /><br />goedkeuren: gebruikers met deze klassen kunnen aangemelde onderwerpen goedkeuren<br /><br />persoonlijke beheerder: gebruikers met deze klasse kunnen alleen hun eigen contentonderwerpen beheren<br /><br />categoriebeheerder: gebruikers met deze klasse kunnen alle contentonderwerpen binnen deze categorie beheren<br />");
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>Op deze pagina ziet u een overzicht van alle door gebruikers aangemelde contentonderwerpen.</i><br /><br />
 <b>detail overzicht</b><br />U ziet hier een overzicht van deze content onderwerpen met hun id, pictogram, hoofdonderwerp, kop [onderkop], auteur en opties.<br /><br /><b>opties</b><br />u kunt een content onderwerp met behulp van de knoppen plaatsen of verwijderen.");
@@ -83,7 +77,7 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "In de Pad en thema Opties kunt u opge
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "Algemene opties zijn opties die op alle contentpagina's in de content manager plugin worden toegepast.");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "Deze opties werken binnen de Persoonlijke Content Manager in de content management beheerpagina.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "'Deze opties gelden in het menu voor dit hoofdonderwerp als u het menu hebt geactiveerd.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
 

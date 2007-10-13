@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-03-14 20:31:07 $
+|     $Revision: 1.19 $
+|     $Date: 2007-10-13 06:42:48 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -229,26 +229,8 @@ define("CONTENT_ADMIN_MAIN_LAN_7", "Welkom bij het Content Management System !")
 define("CONTENT_ADMIN_MAIN_LAN_8", "Leest u eerst nauwkeurig de onderstaande informatie en maak een keuze.");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Deze informatie wordt getoond, omdat de tabel van de Content Management Plugin geen records bevat.");
 define("CONTENT_ADMIN_MAIN_LAN_10", "U kunt de content beheren op deze pagina. Bepaalt u eerst in welke categorie u content wilt beheren. Klik op de knop van de hoofdonderwerpen die hieronder staan om de content voor die categorie te beheren.");
-define("CONTENT_ADMIN_MAIN_LAN_11", "
-<b>De oude content tabel bevat records</b><br />
-Omdat de oude tabel al records bevat, kunt u nu kiezen uit twee mogelijkheden:<br />
-<br />
-<b>a) converteren oude records</b><br />
-Het eerste dat u moet doen is het maken van een backup van uw huidige content tabel alsmede van uw reacties en waarderingstabellen.<br />
-Gebruik een apart programma voor het maken van de backup, bijvoorbeeld phpmyadmin.<br />
-Nadat u de backup van uw oude content tabel hebt gemaakt, kunt u de content converteren naar de nieuwe Content Management Plugin.<br />
-Na de conversie zult u deze informatie niet meer terugzien en kunt u met het beheer beginnen.<br />
-Ga naar de <a href='".e_PLUGIN."content/admin_content_convert.php'>Content conversie script</a> pagina.<br />
-<br />
-<b>b) niet converteren en alleen de nieuwe content beheren</b><br />
-Als u de bestaande content niet meer nodig hebt,<br />
-en een nieuwe Content Management Plugin tabel wilt aanmaken,<br />
-dan kunt u gewoon beginnen door het creëren van een nieuwe categorie.<br />
-Ga naar de <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> pagina.<br />");
-define("CONTENT_ADMIN_MAIN_LAN_12", "<b>Dit is een nieuwe installatie / De oude content tabel bevat geen records</b><br />
-Omdat de oude tabel geen records bevat, kunt u nu meteen beginnen met het beheer van uw nieuwe content.<br />
-Het eerste wat u moet doen is het creëren van een nieuwe categorie.<br />
-Ga naar de <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> pagina.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_11", "Omdat de oude content tabel nog records bevat, moet je een van de volgende drie conversiemogelijkheden kiezen:"
+define("CONTENT_ADMIN_MAIN_LAN_12", "");
 define("CONTENT_ADMIN_MAIN_LAN_13", "U kunt nieuwe content beheren op deze pagina. Bepaal eerst de categorie waarvoor u content wilt beheren. Klik op de knop van de hoofdonderwerpen die hieronder staan om de content voor die categorie te beheren.");
 define("CONTENT_ADMIN_MAIN_LAN_14", "U kunt op deze pagina de volgorde van de content vaststellen. Klik op de knop van de hoofdonderwerpen die hieronder staan om de volgorde van content of categorieën binnen de geselecteerde hoofdcategorie te wijzigen.");
 define("CONTENT_ADMIN_MAIN_LAN_15", "Op deze pagina kunt u de categorieën beheren. Kies de hoofdcategorie hieronder om het overzicht van alle categorieën en subcategorieën binnen deze hoofdcategorie te zien.");
@@ -314,8 +296,8 @@ define("CONTENT_ADMIN_JS_LAN_10", "Weet u zeker dat u dit aangemelde onderwerp, 
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "je hebt onvoldoende autorisaties, of aanmelden door gebruikers is niet mogelijk");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "inhoud aanmeldingstype");
-define("CONTENT_ADMIN_SUBMIT_LAN_2", "Bedankt, uw onderwerp is aangemeld.");
-define("CONTENT_ADMIN_SUBMIT_LAN_3", "Bedankt, uw onderwerp is aangemeld en wordt z.s.m. beoordeeld door een beheerder.");
+define("CONTENT_ADMIN_SUBMIT_LAN_2", "Bedankt, je onderwerp is aangemeld.");
+define("CONTENT_ADMIN_SUBMIT_LAN_3", "Bedankt, je onderwerp is aangemeld en wordt z.s.m. beoordeeld door een beheerder.");
 define("CONTENT_ADMIN_SUBMIT_LAN_4", "verplicht(e) veld(en) niet ingevuld");
 define("CONTENT_ADMIN_SUBMIT_LAN_5", "Ga terug naar de <a href='".e_SELF."'>hoofd aanmeldingspagina</a> om meer inhoud aan te melden<br />or<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>inhoud hoofdpagina</a> om de inhoud te zien.");
 define("CONTENT_ADMIN_SUBMIT_LAN_6", "");
@@ -333,21 +315,21 @@ define("CONTENT_ADMIN_CONVERSION_LAN_7", "hoofdpagina ingevoegd");
 define("CONTENT_ADMIN_CONVERSION_LAN_8", "voorkeuren hoofdpagina ingevoegd");
 define("CONTENT_ADMIN_CONVERSION_LAN_9", "geen");
 define("CONTENT_ADMIN_CONVERSION_LAN_10", "hoofdpagina nodig");
-define("CONTENT_ADMIN_CONVERSION_LAN_11", "CONVERSIE ANALYSE");
+define("CONTENT_ADMIN_CONVERSION_LAN_11", "conversie analyse");
 define("CONTENT_ADMIN_CONVERSION_LAN_12", "aantal te converteren regels");
 define("CONTENT_ADMIN_CONVERSION_LAN_13", "aantal geconverteerde regels");
 define("CONTENT_ADMIN_CONVERSION_LAN_14", "aantal waarschuwingen");
 define("CONTENT_ADMIN_CONVERSION_LAN_15", "aantal fouten");
-define("CONTENT_ADMIN_CONVERSION_LAN_16", "OUDE INHOUD TABEL : ANALYSE");
+define("CONTENT_ADMIN_CONVERSION_LAN_16", "analyse oude contenttabel");
 define("CONTENT_ADMIN_CONVERSION_LAN_17", "aantal regels");
 define("CONTENT_ADMIN_CONVERSION_LAN_18", "onbekende regels");
 define("CONTENT_ADMIN_CONVERSION_LAN_19", "alle regels zijn bekend");
-define("CONTENT_ADMIN_CONVERSION_LAN_20", "INHOUD HOOFDPAGINA");
-define("CONTENT_ADMIN_CONVERSION_LAN_21", "REVIEW HOOFDPAGINA");
-define("CONTENT_ADMIN_CONVERSION_LAN_22", "ARTIKEL HOOFDPAGINA");
+define("CONTENT_ADMIN_CONVERSION_LAN_20", "Content hoofdpagona");
+define("CONTENT_ADMIN_CONVERSION_LAN_21", "Review hoofdpagina");
+define("CONTENT_ADMIN_CONVERSION_LAN_22", "Artikel hoofdpagina");
 define("CONTENT_ADMIN_CONVERSION_LAN_23", "invoegen mislukt");
-define("CONTENT_ADMIN_CONVERSION_LAN_24", "GEEN INHOUDPAGINA'S AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_25", "INHOUDPAGINA'S AANWEZIG");
+define("CONTENT_ADMIN_CONVERSION_LAN_24", "Geen contentpagina's aanwezig");
+define("CONTENT_ADMIN_CONVERSION_LAN_25", "Contentpagina's aanwezig");
 define("CONTENT_ADMIN_CONVERSION_LAN_26", "ingevoegd");
 define("CONTENT_ADMIN_CONVERSION_LAN_27", "conversie analyse");
 define("CONTENT_ADMIN_CONVERSION_LAN_28", "aantal oude regels");
@@ -356,14 +338,14 @@ define("CONTENT_ADMIN_CONVERSION_LAN_30", "mislukt");
 define("CONTENT_ADMIN_CONVERSION_LAN_31", "waarschuwing");
 define("CONTENT_ADMIN_CONVERSION_LAN_32", "oude categorie bestaat niet: onderwerpen toegevoegd aan hogere categorie");
 define("CONTENT_ADMIN_CONVERSION_LAN_33", "nieuwe categorie bestaat niet: onderwerpen toegevoegd aan hogere categorie");
-define("CONTENT_ADMIN_CONVERSION_LAN_34", "GEEN REVIEW CATEGORIE PAGINA'S AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_35", "REVIEW CATEGORIE PAGINA'S AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_36", "GEEN REVIEW PAGINA'S EN/OF AANGEMELDE REVIEW PAGINA'S AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_37", "REVIEW PAGINA'S EN/OF AANGEMELDE REVIEW PAGINA'S AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_38", "GEEN ARTIKELCATEGORIE PAGINA AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_39", "ARTIKELCATEGORIE PAGINA AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_40", "GEEN ARTIKELPAGINA'S EN/OF AANGEMELDE ARTIKELPAGINA'S AANWEZIG");
-define("CONTENT_ADMIN_CONVERSION_LAN_41", "ARTIKELPAGINA'S EN/OF AANGEMELDE ARTIKELPAGINA'S AANWEZIG");
+define("CONTENT_ADMIN_CONVERSION_LAN_34", "nee");
+define("CONTENT_ADMIN_CONVERSION_LAN_35", "categoriepagina's aanwezig");
+define("CONTENT_ADMIN_CONVERSION_LAN_36", "pagina's en aangemelde pagina's aanwezig");
+define("CONTENT_ADMIN_CONVERSION_LAN_37", "conversie van categorieën");
+define("CONTENT_ADMIN_CONVERSION_LAN_38", "geldige invoegingen");
+define("CONTENT_ADMIN_CONVERSION_LAN_39", "mislukte invoegingen");
+define("CONTENT_ADMIN_CONVERSION_LAN_40", "waarschuwing");
+define("CONTENT_ADMIN_CONVERSION_LAN_41", "waarschuwing");
 define("CONTENT_ADMIN_CONVERSION_LAN_42", "conversie resultaten van de oude inhoudtabel naar de nieuwe inhoud plugin tabel");
 define("CONTENT_ADMIN_CONVERSION_LAN_43", "druk op de knop om de oude inhoud tabel te converteren");
 define("CONTENT_ADMIN_CONVERSION_LAN_44", "de nieuwe inhoud tabel bevat al gegevens !<br />weet u zeker dat u de oude inhoudtabel naar de nieuwe inhoudtabel wilt converteren ?<br /><br />als u inderdaad wilt, zal de oude inhoud aan de al aanwezige nieuwe inhoudtabel worden toegevoegd, maar er wordt niet gegarandeerd dat alle onderwerpen goed aan de nieuwe categorieën kunnen worden gekoppeld !");
@@ -527,7 +509,7 @@ define("CONTENT_ADMIN_OPT_LAN_34", "archief");
 define("CONTENT_ADMIN_OPT_LAN_35", "score");
 define("CONTENT_ADMIN_OPT_LAN_36", "kruimelpad scheidingsteken");
 define("CONTENT_ADMIN_OPT_LAN_37", "bepaal hoe de kruimelpadinformatie wordt weergegeven");
-define("CONTENT_ADMIN_OPT_LAN_38", "");
+define("CONTENT_ADMIN_OPT_LAN_38", "tmp");
 define("CONTENT_ADMIN_OPT_LAN_39", "echo");
 define("CONTENT_ADMIN_OPT_LAN_40", "gebruik een apart menu");
 define("CONTENT_ADMIN_OPT_LAN_41", "combineer in één menu");
@@ -633,16 +615,16 @@ define("CONTENT_ADMIN_OPT_LAN_140", "Beheren categorie");
 define("CONTENT_ADMIN_OPT_LAN_141", "Aanmaken categorie");
 define("CONTENT_ADMIN_OPT_LAN_142", "Volgorde");
 define("CONTENT_ADMIN_OPT_LAN_143", "Opties");
-define("CONTENT_ADMIN_OPT_LAN_144", "Personlijk contentbeheer");
+define("CONTENT_ADMIN_OPT_LAN_144", "Persoonlijk contentbeheer");
 define("CONTENT_ADMIN_OPT_LAN_145", "Recent");
-define("CONTENT_ADMIN_OPT_LAN_146", "Alle Categorieën");
+define("CONTENT_ADMIN_OPT_LAN_146", "Alle categorieën");
 define("CONTENT_ADMIN_OPT_LAN_147", "Eén categorie");
 define("CONTENT_ADMIN_OPT_LAN_148", "Contentonderwerp");
 define("CONTENT_ADMIN_OPT_LAN_149", "Auteurspagina");
 define("CONTENT_ADMIN_OPT_LAN_150", "Archiefpagina");
 define("CONTENT_ADMIN_OPT_LAN_151", "Hoogstgewaardeerd pagina");
 define("CONTENT_ADMIN_OPT_LAN_152", "Topscore pagina");
-define("CONTENT_ADMIN_OPT_LAN_153", "Aanmeld pagina");
+define("CONTENT_ADMIN_OPT_LAN_153", "Aanmeldpagina");
 define("CONTENT_ADMIN_OPT_LAN_154", "Beheerpagina");
 define("CONTENT_ADMIN_OPT_LAN_155", "titel");
 define("CONTENT_ADMIN_OPT_LAN_156", "titel index pagina");
