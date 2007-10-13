@@ -8,6 +8,8 @@ global $pref;
 	[link=external]http://mysite.com[/link]
 	[link]http://mysite.com[/link]
 	[link=mailto:myemail@email.com]My name[/link]
+	Historic usage:
+	[link=external=http://mysite.com]My text[/link]
 */
 
 	$parm = trim($parm);
@@ -27,6 +29,8 @@ global $pref;
 	}
 
 	list($link,$extras) = explode(" ",$parm);
+
+	if(!$parm) $link = $code_text;
 
 	if($link == "external" && $extras == "")
 	{
