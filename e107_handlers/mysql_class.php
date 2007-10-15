@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-09-22 21:46:16 $
-|     $Author: e107steved $
+|     $Revision: 1.19 $
+|     $Date: 2007-10-15 11:03:29 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.18 $
-* @author $Author: e107steved $
+* @version $Revision: 1.19 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -107,6 +107,7 @@ class db {
 				}
 			}
 		} else {
+			
 			if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
 				return 'e1';
 			} else {
@@ -204,7 +205,8 @@ class db {
 				$this->mySQLcurTable = ''; // clear before next query
 			}
 			if(is_object($db_debug)) {
-				$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes, $aTrace, $mytime, $pTable);
+				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
+			   	$nFields = $db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			} else {
 				echo "what happened to db_debug??!!<br />";
 			}
@@ -361,6 +363,9 @@ class db {
 	*/
 	function db_Fetch($type = MYSQL_BOTH) {
 		global $eTraffic;
+		if (!(is_int($type))) {
+			$type=MYSQL_BOTH;
+		}
 		$b = microtime();
 		$row = @mysql_fetch_array($this->mySQLresult,$type);
 		$eTraffic->Bump('db_Fetch', $b);
@@ -430,7 +435,7 @@ class db {
         	$this->mySQLaccess = $db_ConnectionID;
 		}
 		$eTraffic->BumpWho('db Close', 1);
-		mysql_close($this->mySQLaccess);
+		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
 	}
 
