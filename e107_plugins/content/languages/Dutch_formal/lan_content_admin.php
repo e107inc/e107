@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch_formal/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-10-13 06:43:47 $
+|     $Revision: 1.4 $
+|     $Date: 2007-10-15 22:15:24 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -229,7 +229,7 @@ define("CONTENT_ADMIN_MAIN_LAN_7", "Welkom bij het Content Management System !")
 define("CONTENT_ADMIN_MAIN_LAN_8", "Lees eerst nauwkeurig de onderstaande informatie en maak een keuze.");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Deze informatie wordt getoond, omdat de tabel van de Content Management Plugin geen records bevat.");
 define("CONTENT_ADMIN_MAIN_LAN_10", "Je kunt de content beheren op deze pagina. Bepaal eerst in welke categorie je content wilt beheren. Klik op de knop van de hoofdonderwerpen die hieronder staan om de content voor die categorie te beheren.");
-define("CONTENT_ADMIN_MAIN_LAN_11", "Omdat de oude content tabel nog records bevat, moet je een van de volgende drie conversiemogelijkheden kiezen:"
+define("CONTENT_ADMIN_MAIN_LAN_11", "Omdat de oude content tabel nog records bevat, moet je een van de volgende drie conversiemogelijkheden kiezen:");
 define("CONTENT_ADMIN_MAIN_LAN_12", "");
 define("CONTENT_ADMIN_MAIN_LAN_13", "Je kunt nieuwe content beheren op deze pagina. Bepaal eerst de categorie waarvoor je content wilt beheren. Klik op de knop van de hoofdonderwerp die hieronder staan om de content voor die categorie te beheren.");
 define("CONTENT_ADMIN_MAIN_LAN_14", "Je kunt op deze pagina de volgorde van de content vaststellen. Klik op de knop van de hoofdonderwerpen die hieronder staan om de volgorde van content of categorieën binnen de geselecteerde hoofdcategorie te wijzigen.");
