@@ -63,6 +63,8 @@ define('LAN_PM_60', "U hebt niet de permissies om dit bericht te bekijken");
 define('LAN_PM_61', "Geen onderwerp");
 define('LAN_PM_62', "Bestand: [{FILENAME}] overschrijdt bestandslimiet - niet toegevoegd");
 define('LAN_PM_63', "klasse:");
+define('LAN_PM_64', "Fout: U mag berichten van de webmaster niet blokkeren");
+define('LAN_PM_65', "Fout: Niets te versturen");
 
 define("LAN_PM_100", "Nieuwe PM van ");
 define("LAN_PM_101", "U hebt een nieuwe PM ontvangen van ");

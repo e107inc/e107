@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Dutch.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-10-06 21:53:47 $
+|     $Revision: 1.6 $
+|     $Date: 2007-10-15 21:20:16 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 	
 	
 define("ADSTAT_L1", "Deze plugin logt alle bezoeken aan je site en creëert statistiekoverzichten gebaseerd op de verzamelde gegevens.");
-define("ADSTAT_L2", "De statistiek logger is succesvol geïnstalleerd.");
+define("ADSTAT_L2", "De statistiek logger is succesvol geïnstalleerd. Om de huidige statistieken te converteren naar het nieuwe systeem, <a href='".e_PLUGIN."log/update_routine.php'>klik hier voor de updateroutine</a>.");
 define("ADSTAT_L3", "Statistiek log");
 
 define("PAGE_NAME", "Statistieken");

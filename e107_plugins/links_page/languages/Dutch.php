@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-01-16 18:44:22 $
+|     $Revision: 1.19 $
+|     $Date: 2007-10-15 21:20:01 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -76,8 +76,8 @@ define("LCLAN_OPT_36", "link_volgorde");
 define("LCLAN_OPT_37", "link_verwijzer");
 define("LCLAN_OPT_38", "");
 define("LCLAN_OPT_39", "");
-define("LCLAN_OPT_40", "link categorienaam");
-define("LCLAN_OPT_41", "link categorie id");
+define("LCLAN_OPT_40", "naam");
+define("LCLAN_OPT_41", "id");
 define("LCLAN_OPT_42", "gebruiken individuele link instelling");
 define("LCLAN_OPT_43", "Openen in hetzelfde venster");
 define("LCLAN_OPT_44", "Openen in nieuw venster");
@@ -305,7 +305,7 @@ define("LAN_LINKS_50", "Je hebt nu niet de autorisatie om links aan te melden");
 
 define("LAN_ADMIN_HELP_0", "linkspage helpfunctie");
 
-define("LAN_ADMIN_HELP_1", "<i>De pagina Beheren linkcategorieën toont alle aanwezige categorieën.</i><br /><br /><b>detailoverzicht</b><br />Je ziet een overzicht van alle categorieën met hun pictogram, naam, bescrhijving, opties en sorteerinstelling.<br /><br /><b>uitleg van de pictogrammen</b><br />");
+define("LAN_ADMIN_HELP_1", "<i>De pagina Beheren linkcategorieën toont alle aanwezige categorieën.</i><br /><br /><b>detailoverzicht</b><br />Je ziet een overzicht van alle categorieën met hun pictogram, naam, bescrhijving, opties en sorteerinstelling.<br /><br /><b>uitleg van de pictogrammen</b><br />".LINK_ICON_LINK." : link naar de categorie<br /><br />".LINK_ICON_EDIT." : bewerk de categorie<br /><br />".LINK_ICON_DELETE." : verwijder de categorie<br /><br />".LINK_ICON_ORDER_UP." : de omhoog pijl verplaatst de categorie omhoog in de volgorde.<br /><br />".LINK_ICON_ORDER_DOWN." : de omlaag knop verplaatst de categorie naar beneden.<br /><br /><b>volgorde</b><br />hier kunt je de categorievolgorde handmatig instellen. Wijzig de waarden in de selectieveldjes naar wens en druk op de sorteerknop.<br />");
 
 define("LAN_ADMIN_HELP_2", "<i>de maak link categorie pagina laat je nieuwe categorieën aanmaken</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de categorie.");
 
@@ -313,13 +313,13 @@ define("LAN_ADMIN_HELP_3", "<i>de pagina Beheren links toont eerst alle categori
 
 define("LAN_ADMIN_HELP_4", "<i>de creëer link pagina staat je toe een nieuwe link op te voeren</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de link.<br /><br />Open Type laat je instellen hoe de link wordt geopend als iemand erop klikt.");
 
-define("LAN_ADMIN_HELP_5", "<i>de pagina met aangemelde links toont alle links die door gebruikers zijn aangemeld</i><br /><br /><b>detailoverzicht</b><br />Je ziet de link url, de naam van de gebruiker die de link heeft aangemeld en opties.<br /><br /><b>uitleg van de pictogrammen</b><br />");
+define("LAN_ADMIN_HELP_5", "<i>de pagina met aangemelde links toont alle links die door gebruikers zijn aangemeld</i><br /><br /><b>detailoverzicht</b><br />Je ziet de link url, de naam van de gebruiker die de link heeft aangemeld en opties.<br /><br /><b>uitleg van de pictogrammen</b><br />".LINK_ICON_EDIT." : verplaats de aangemelde link naar het Creëer link formulier<br /><br />".LINK_ICON_DELETE." : verwijder de aangemelde link<br />");
 
-define("LAN_ADMIN_HELP_6", "<i>via de Opties pagina kun je het gedrag van de links_page plugin wijzigen</i><br /><br />");
+define("LAN_ADMIN_HELP_6", "<i>via de Opties pagina kun je het gedrag van de links_page plugin wijzigen</i><br /><br />algemene opties<br />deze instellingen worden op alle linkpagina's gebruikt.<br /><br />persoonlijke linkbeheerders<br />De persoonlijke linkbeheerders zijn geprivilegeerde leden die hun eigen toegevoegde links kunnen beheren.<br /><br />categorie pagina<br />Hier kun je de opties voor de categoriepagina wijzigen.<br /><br />links pagina<br />Deze instellingen worden gebruikt op de link pagina's.<br /><br />verwijzingenpagina<br />Deze instellingen gelden voor de top verwijzingen linkspagina.<br /><br />beoordelingen pagina<br />Deze instellingen worden gebruikt op de hoogst gewaardeerde links pagina.<br />");
 
 define("LAN_ADMIN_HELP_7", "<i>op de Bewerken link categorie pagina kun je een bestaande categorie wijzigen</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de categorie.<br />Je kunt datum/tijd van de link aanpassen door het vakje aan te kruisen.");
 
-define("LAN_ADMIN_HELP_8", "<i>deze pagina toont alle aanwezige links in de geselecteerde categorie.</i><br /><br /><b>detailoverzicht</b><br />Je ziet een lijst met links met hun afbeelding, naam, opties en sorteeropties.<br /><br /><b>uitleg van de pictogrammen</b><br />");
+define("LAN_ADMIN_HELP_8", "<i>deze pagina toont alle aanwezige links in de geselecteerde categorie.</i><br /><br /><b>detailoverzicht</b><br />Je ziet een lijst met links met hun afbeelding, naam, opties en sorteeropties.<br /><br /><b>uitleg van de pictogrammen</b><br />".LINK_ICON_LINK." : link naar de website<br /><br />".LINK_ICON_EDIT." : bewerk de link<br /><br />".LINK_ICON_DELETE." : verwijder de link<br /><br />".LINK_ICON_ORDER_UP." : de omhoog knop verplaatst de link één regel omhoog.<br /><br />".LINK_ICON_ORDER_DOWN." : de omlaag knop verplaatst de link één regel omlaag.<br /><br /><b>volgorde</b><br />hier kan de volgorde van alle links handmatig worden ingesteld. Wijzig de waarde in de selectieveldjes naar wens om de volgorde in te stellen en druk op de Sorteer knop.<br />");
 
 define("LAN_ADMIN_HELP_9", "<i>je kunt een link wijzigen op de Bewerk link pagina</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de link.<br /><br />Open Type laat je instellen hoe de link wordt geopend als iemand erop klikt.");
 

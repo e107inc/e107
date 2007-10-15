@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/human_condition/languages/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-02 16:01:51 $
+|     $Revision: 1.2 $
+|     $Date: 2007-10-15 21:20:36 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 
 define("LAN_THEME_1", "'Human Condition' door <a href='http://e107.org' rel='external'>jalist</a>, gebaseerd op het Wordpress thema, <a href='http://wordpress.org'>http://wordpress.org</a>.");
-define("LAN_THEME_2", "Reacties bij dit onderwepr niet mogelijk");
+define("LAN_THEME_2", "Reacties bij dit onderwerp niet mogelijk");
 define("LAN_THEME_3", "reactie(s): ");
 define("LAN_THEME_4", "Lees verder ...");
 define("LAN_THEME_5", "Trackbacks: ");

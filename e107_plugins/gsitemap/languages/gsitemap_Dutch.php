@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/gsitemap/languages/gsitemap_Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-08-21 21:41:02 $
+|     $Revision: 1.2 $
+|     $Date: 2007-10-15 21:19:56 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -50,10 +50,10 @@ define("GSLAN_30", "Weergave volgorde");
 define("GSLAN_31", "Zichtbaar voor");
 define("GSLAN_32", "Hoe gebruik je Google Sitemaps");
 define("GSLAN_33", "GSiteMap instructies");
-define("GSLAN_34", "Creèer eerst de links die je in je sitemap wilt opnemen. Je kunt de meeste links importeren door op de 'Importeren' knop rechts te klikken");
+define("GSLAN_34", "Creëer eerst de links die je in je sitemap wilt opnemen. Je kunt de meeste links importeren door op de 'Importeren' knop rechts te klikken");
 define("GSLAN_35", "Als je wilt importeren, klik dan op 'Importeren' en selecteer de links die je wilt importeren");
 define("GSLAN_36", "Je kunt ook handmatig individuele links toevoegen door te klikken op 'Aanmaken nieuwe link'");
-define("GSLAN_37", "Als je een paar links hebt, dan dan naar <a href='https://www.google.com/webmasters/sitemaps/stats'>https://www.google.com/webmasters/sitemaps/stats</a> en volg de volgende  URL -> <b>".SITEURL."gsitemap.php</b> - als deze URL er niet goed uitziet, controleer dan of je site url in Beheerscherm - Voorkeuren goed staat ingesteld");
+define("GSLAN_37", "Als je een paar links hebt, ga dan naar <a href='https://www.google.com/webmasters/sitemaps/stats'>https://www.google.com/webmasters/sitemaps/stats</a> en volg de volgende  URL -> <b>".SITEURL."gsitemap.php</b> - als deze URL er niet goed uitziet, controleer dan of je site url in Beheerscherm - Voorkeuren goed staat ingesteld");
 define("GSLAN_38", "Voor meer informatie over het Google Sitemap protocol, ga naar <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>.");
 define("GSLAN_39", "Geen links in sitemap - importeren sitelinks?");
 define("GSLAN_40", "Google Sitemap links");

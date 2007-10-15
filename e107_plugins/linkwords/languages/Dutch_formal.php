@@ -20,7 +20,7 @@ define("LWLAN_17", "Verwijderen");
 define("LWLAN_18", "Weet u zeker dat je dit linkwoord wilt verwijderen?");
 define("LWLAN_19", "Linkwoord verwijderd.");
 define("LWLAN_20", "Kan linkwoord niet vinden.");
-define("LWLAN_21","Woord om te autolinken");
+define("LWLAN_21","Woord om te autolinken (of door comma's gescheiden woorden)");
 define("LWLAN_22","Activeren?");
 define("LWLAN_23", "Linkwords beheer");
 define("LWLAN_24", "Beheren Woorden");

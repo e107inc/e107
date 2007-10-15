@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Dutch.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-08 16:54:36 $
+|     $Revision: 1.7 $
+|     $Date: 2007-10-15 21:20:32 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ define("RSS_LAN_ADMINMENU_1", "RSS Opties");
 define("RSS_LAN_ADMINMENU_2", "Overzicht");
 define("RSS_LAN_ADMINMENU_4", "Import");
 define("RSS_LAN_ERROR_1", "Dit is geen geldige rss feed<br /><br /><a href='".e_SELF."'><< terug naar het rss feed overzicht</a>");
-define("RSS_LAN_ERROR_2", "Je e107_config.php bestand bevat een spatie voor de &lt;? tekens. Je moet deze spatie verwijderen als je een geldige RSS feed wenst.");
+define("RSS_LAN_ERROR_2", "Je e107_config.php bestand bevat een spatie of Ã¯Â»Â¿ï»¿ tekens voor de &lt;? tekens. Je moet deze spatie verwijderen als je een geldige RSS feed wenst.");
 define("RSS_LAN_ERROR_3", "Er zijn nog geen rss feeds beschikbaar<br />gebruik de import functie om beschikbare rss feeds te importen of creëer handmatig een rss feed.");
 define("RSS_LAN_ERROR_4", "Nog geen rss feeds beschikbaar");
 define("RSS_LAN_ERROR_5", "Deze rss feed bestaat niet");
