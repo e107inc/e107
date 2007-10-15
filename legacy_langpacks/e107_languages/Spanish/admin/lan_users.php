@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-08-06 21:48:50 $
+|     $Revision: 1.11 $
+|     $Date: 2007-10-15 21:01:14 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -144,7 +144,10 @@ define("USRLAN_149", "Eliminar correos marcados");
 define("USRLAN_150", "Eliminar todos los correos"); 
 define("USRLAN_151", "Limpiar saltos requieren activación"); 
 define("USRLAN_152", "Limpiar saltos y activar"); 
-define("USRLAN_153", "Eliminar correos sin saltos"); 
+define("USRLAN_153", "Eliminar correos sin saltos");
+define("USRLAN_154", "Limiar marca de correo"); 
+define("USRLAN_155", "Total: {TOTAL} Correos encontrados. {DELCOUNT} eliminados a través de opciones.<br />{DELUSER} usuarios marcados como 'saltados' (fuera de {FOUND} correos)"); 
+ 
 
 define("LAN_BOUNCED","Saltado");
 define("LAN_MAINADMIN","Admin principal"); 

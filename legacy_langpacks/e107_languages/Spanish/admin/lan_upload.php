@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_upload.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-02 10:35:56 $
+|     $Revision: 1.6 $
+|     $Date: 2007-10-15 21:01:14 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ define("UPLLAN_30", "Elige cómo almacenar ficheros transferidos, tanto como fich
 define("UPLLAN_31", "Fichero plano<br>");
 define("UPLLAN_32", "Binario");
 define("UPLLAN_33", "Tamaño máximo de archivo");
-define("UPLLAN_34", "Tamaño máximo de archivo en bytes - deja en blanco para ajustarse a la configuración de php.ini<br>( en php.ini está configurado a");
+define("UPLLAN_34", "Tamaño máximo de archivo en bytes - deja en blanco para ajustarse a la configuración de php.ini");
 define("UPLLAN_35", "Tipos de ficheros permitidos");
 define("UPLLAN_36", "Por favor introduce un tipo por línea");
 define("UPLLAN_37", "Permisos");

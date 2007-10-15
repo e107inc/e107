@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-10 19:17:12 $
+|     $Revision: 1.7 $
+|     $Date: 2007-10-15 21:01:14 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -81,8 +81,8 @@ define("NWSLAN_69", "Transferir una imagen o archivo para usar en la noticia");
 define("NWSLAN_72", "Solo muestra la noticia entre ciertas fechas");
 define("NWSLAN_73", "Tipo de muestreo");
 define("NWSLAN_74", "Seleccione como y donde se mostrará la noticia");
-define("NWSLAN_75", "Por defecto - enviar a la página principal");
-define("NWSLAN_76", "Solo título - enviar a la página principal");
+define("NWSLAN_75", "Por defecto - envío a la página de noticias"); 
+define("NWSLAN_76", "Solo título - envío a la página de noticias");
 define("NWSLAN_77", "Enviar a menú - otras noticias");
 //define("NWSLAN_78", "Esta opción está desactivada porque su servidor no admite transferencia de archivos");
 define("NWSLAN_79","Limpiar");
