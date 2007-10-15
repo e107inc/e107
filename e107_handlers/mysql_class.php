@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2007-10-11 07:55:05 $
-|     $Author: asperon $
+|     $Revision: 1.83 $
+|     $Date: 2007-10-15 10:29:13 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.82 $
-* @author $Author: asperon $
+* @version $Revision: 1.83 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -107,6 +107,7 @@ class db {
 				}
 			}
 		} else {
+			
 			if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
 				return 'e1';
 			} else {
@@ -180,14 +181,14 @@ class db {
 			$this->db_Write_log($log_type, $log_remark, $query);
 		}
 
-		if(!$this->mySQLaccess)
+    	if(!$this->mySQLaccess)
 		{
 			global $db_ConnectionID;
         	$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		$b = microtime();
-		$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);
+	 	$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);
 		$e = microtime();
 
 		$eTraffic->Bump('db_Query', $b, $e);
@@ -204,7 +205,8 @@ class db {
 				$this->mySQLcurTable = ''; // clear before next query
 			}
 			if(is_object($db_debug)) {
-				$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes, $aTrace, $mytime, $pTable);
+				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
+			   	$nFields = $db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			} else {
 				echo "what happened to db_debug??!!<br />";
 			}
@@ -245,7 +247,7 @@ class db {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
-				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."{$table} WHERE {$arg})");
+			 	$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."{$table} WHERE {$arg})");
 				return FALSE;
 			}
 		} elseif ($arg != '' && $mode != 'default') {
@@ -253,15 +255,15 @@ class db {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
-				$this->dbError("db_Select (SELECT {$fields} FROM ".MPREFIX."{$table} {$arg})");
+			  	$this->dbError("db_Select (SELECT {$fields} FROM ".MPREFIX."{$table} {$arg})");
 				return FALSE;
 			}
 		} else {
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
-				$this->dbError('dbQuery');
+			 	$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
-				$this->dbError("db_Select (SELECT {$fields} FROM ".MPREFIX."{$table})");
+			 	$this->dbError("db_Select (SELECT {$fields} FROM ".MPREFIX."{$table})");
 				return FALSE;
 			}
 		}
@@ -433,7 +435,7 @@ class db {
         	$this->mySQLaccess = $db_ConnectionID;
 		}
 		$eTraffic->BumpWho('db Close', 1);
-		mysql_close($this->mySQLaccess);
+		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
 	}
 
