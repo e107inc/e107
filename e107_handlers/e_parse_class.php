@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.194 $
-|     $Date: 2007-10-04 19:08:26 $
+|     $Revision: 1.195 $
+|     $Date: 2007-10-16 19:05:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -679,10 +679,11 @@ class e_parse
 
 	function toAttribute($text) {
 		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
-		$text = htmlspecialchars($text); // Xhtml compliance.
-		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) {
-			$text = $this->replaceConstants($text);
-			return $text;
+		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET); // Xhtml compliance.
+		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) 
+		{
+		  $text = $this->replaceConstants($text);
+		  return $text;
 		} else {
 			return '';
 		}
