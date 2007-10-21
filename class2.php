@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.348 $
-|     $Date: 2007-09-27 20:57:50 $
-|     $Author: e107steved $
+|     $Revision: 1.349 $
+|     $Date: 2007-10-21 22:02:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -366,7 +366,7 @@ if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] &
 			e107_ini_set("session.cookie_domain",".".e_DOMAIN);
 			require_once(e_HANDLER."language_class.php");
 			$lng = new language;
-	        if(e_SUBDOMAIN == "www")
+	        if(e_SUBDOMAIN == "www" || e_SUBDOMAIN === FALSE)
 			{
 	        	$GLOBALS['elan'] = $pref['sitelanguage'];
 			}
