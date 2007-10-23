@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.3 $
-|     $Date: 2007-02-19 20:42:10 $
+|     $Revision: 1.4 $
+|     $Date: 2007-10-23 17:06:29 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/linkwords/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/linkwords/languages/English.php rev. 1.4
+|     Zgodne z: /e107_plugins/linkwords/languages/English.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -54,6 +54,9 @@ define("LWLAN_36", 'Opis (linki etc)');
 define("LWLAN_37", 'Dopuszczone obszary'); //Legacy areas
 define("LWLAN_38", 'Klikalne linki');
 define("LWLAN_39", 'Nieprzetworzony tekst'); //Unprocessed text
+define("LWLAN_40", 'Tytuły użytkowników (np. na forum)');
+define("LWLAN_41", 'Treść użytkowników (np. na forum)');
+
 
 define("LWLANINS_1", "Linki wyrazowe");
 define("LWLANINS_2", "Plugin Linki wyrazowe łączy ściśle wyszczególnione wyrazy ze zdefiniowanymi wcześniej dla nich linkami.");

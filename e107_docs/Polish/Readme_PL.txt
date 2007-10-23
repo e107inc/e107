@@ -1,9 +1,9 @@
-Polskie tłumaczenie systemu CMS e107 Website System v0.7.8
+Polskie tłumaczenie systemu CMS e107 Website System v0.7.9
 
-Wersja tłumaczenia: v0.7.8
+Wersja tłumaczenia: v0.7.9
 Wersja kodowa: UTF-8
 
-Data: 19.02.2007
+Data: 22.10.2007
 
 Tłumaczenie wykonał zespół - e107pl Dev Team - http://e107.org.pl
 
@@ -22,7 +22,7 @@ Spis treści:
 
 1. Wprowadzenie
 
-	Wszystkie pliki zawarte w archiwum stanowią zestaw polskich plików językowych przeznaczonych dla systemu CMS e107 v0.7.8. W archiwum zawarte są jedynie pliki językowe i nie ingerują on w strukturę systemu e107 w sposób bezpośredni.
+	Wszystkie pliki zawarte w archiwum stanowią zestaw polskich plików językowych przeznaczonych dla systemu CMS e107 v0.7.9. W archiwum zawarte są jedynie pliki językowe i nie ingerują on w strukturę systemu e107 w sposób bezpośredni.
 
 2. Instalacja
 
@@ -30,11 +30,11 @@ Spis treści:
 
 3. Aktualizacja
 
-- Z e107 v0.7.4 do e107 v0.7.8+
+- Z e107 v0.7.4 do e107 v0.7.9+
 
   Należy postępować identycznie jak przy instalacji, czyli najpierw rozpakować archiwum, a następnie wysłać na serwer i zatwierdzić wszystkie zmiany.
 
-- Dla wszystkich wersji systemu e107 od e107 v0.7.0 do e107 v0.7.3 włącznie (dotyczy również wersji wcześniejszych systemu e107, które są aktualizowane do wersji v.7)
+- Dla wszystkich wersji systemu e107 od e107 v0.7.0 do e107 v0.7.3 włącznie (dotyczy również wersji wcześniejszych systemu e107, które są aktualizowane do wersji v0.7)
   
 	W związku z tym, że poprzednia wersja tłumaczenia systemu e107 zawierała po części odmienne nazewnictwo plików, przed przeprowadzeniem aktualizacji MUSISZ usunąć ze swojego serwera katalog o ścieżce dostępu:
  
@@ -60,6 +60,4 @@ http://wiki.e107.org - e107Wiki - czyli wikipedia dla e107 :) [EN,GR,FR]
 http://e107coders.org - pluginy, wtyczki, dodatki... [EN]
 http://e107themes.com - tematy do e107 [EN]
 http://e107faq.org - wsparcie ogólne [EN]
-http://e107tutorials.com - tutoriale [EN]
 http://e107hacks.org - strona obecnie offline ze względu na problemy z hostingiem - wszelkiego rodzaju hack’i, nieoficjalne patche itp [EN]
-http://www.e107themes.de - tematy i pomoc ogólna {EN,GR]

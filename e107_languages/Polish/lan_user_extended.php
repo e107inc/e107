@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.11 $
+|     $Date: 2007-10-23 17:03:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_user_extended.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_user_extended.php rev. 1.10
+|     Zgodne z: /e107_languages/English/lan_user_extended.php rev. 1.11
 +-----------------------------------------------------------------------------+
 */
  
@@ -48,5 +48,7 @@ define("UE_LAN_LANGUAGE", "Język");
 define("UE_LAN_LANGUAGE_DESC", "Język użytkownika");
 define("UE_LAN_COUNTRY", "Kraj");
 define("UE_LAN_COUNTRY_DESC", "Kraj użytkownika (zawiera tabele DB)");
+
+define("LAN_UE_FAIL_HOMEPAGE", "Nieprawidłowy wpis w ustawieniu strony głównej");
 
 ?>

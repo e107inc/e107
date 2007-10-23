@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.3 $
-|     $Date: 2007-02-19 20:40:40 $
+|     $Revision: 1.4 $
+|     $Date: 2007-10-23 17:05:17 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Polish/lan_content_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/content/languages/English/lan_content_admin.php rev. 1.19
+|     Zgodne z: /e107_plugins/content/languages/English/lan_content_admin.php rev. 1.22
 +-----------------------------------------------------------------------------+
 */
  
@@ -23,6 +23,7 @@ define("CONTENT_PLUGIN_LAN_5", "Publikacje");
 define("CONTENT_PLUGIN_LAN_6", "Struktura tabel plugina do zarządzania publikacjami została zaktualizowana.");
 
 define("CONTENT_LATEST_LAN_1", "Nadesłane publikacje:");
+define("CONTENT_STATUS_LAN_1", "Pozycje Publikacji:");
 
 define("CONTENT_ADMIN_CAT_LAN_0", "Tworzenie kategorii publikacji");
 define("CONTENT_ADMIN_CAT_LAN_1", "Edycja kategorii publikacji");
@@ -337,7 +338,7 @@ define("CONTENT_ADMIN_JS_LAN_10", "Czy na pewno chcesz usunąć nadesłaną publ
 
 
 
-define("CONTENT_ADMIN_SUBMIT_LAN_0", "W tym momencie nie ma żadnych udostępnionych kategorii publikacji dla użytkowników.");
+define("CONTENT_ADMIN_SUBMIT_LAN_0", "Nie masz odpowiednich uprawnień lub nadsyłanie publikacji nie jest aktywne.");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "Rodzaj publikacji");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Dziękuję, Twoja publikacja została wysłana.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Dziękuję, Twoja publikacja została wysłana i w najbliższym czasie zostanie zweryfikowana przez administratora w celu dalszej publikacji.");
@@ -710,4 +711,5 @@ define("CONTENT_ADMIN_OPT_LAN_171", "Ilość poziomów");
 define("CONTENT_ADMIN_OPT_LAN_172", "Liczbowa wartość do wyświetlenia ilości podkategorii drzewa kategorii. Pozostaw puste, aby pokazać wszystkie poziomy.");
 define("CONTENT_ADMIN_OPT_LAN_173", "Uwzględniaj 'Stronę domową' w ścieżkach dla 'Aktualnie jesteś w dziale'");
 define("CONTENT_ADMIN_OPT_LAN_174", "Uwzględniaj 'Stronę publikacji' w ścieżkach dla 'Aktualnie jesteś w dziale'");
+
 ?>

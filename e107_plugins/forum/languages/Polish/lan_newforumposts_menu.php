@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:41:26 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:05:46 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_newforumposts_menu.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_newforumposts_menu.php rev. 1.2
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_newforumposts_menu.php rev. 1.3
 +-----------------------------------------------------------------------------+
 */
  
@@ -26,5 +26,7 @@ define("NFP_8", "Pokazywać oryginalne tematy w menu?");
 define("NFP_9", "Aktualizuj ustawienia menu");
 define("NFP_10", "Konfiguracja menu Nowych Postów na Forum");
 define("NFP_11", "Autor");
-
+define("NFP_12", "Maksymalny wiek wyświetlanych postów");
+define("NFP_13", "Użyj 0 dla mało aktywnej strony; Ustawiając wartości w dniach, zredukujesz bazę danych na obciążonych stronach");
+	
 ?>

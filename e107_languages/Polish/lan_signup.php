@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.7 $
+|     $Date: 2007-10-23 17:03:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_signup.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.25
+|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.28
 +-----------------------------------------------------------------------------+
 */
  
@@ -19,11 +19,11 @@ define("PAGE_NAME", "Rejestracja");
 
 define("LAN_7", "Wyświetlana nazwa: ");
 define("LAN_8", "ta nazwa będzie wyświetlana na stronie");
-define("LAN_9", "Login: ");
+define("LAN_9", "Użytkownik: ");
 define("LAN_10", "ta nazwa będzie używana do logowania");
 define("LAN_17", "Hasło: ");
 define("LAN_103", "Podana wyświetlana nazwa lub login nie może być zaakceptowana, proszę zmienić te dane na jakieś inne.");
-define("LAN_104", "Podany login już istnieje w bazie danych. Proszę zmienić go na jakiś inny.");
+define("LAN_104", "Podana nazwa użytkownika już istnieje w bazie danych. Proszę zmienić ją na inną.");
 define("LAN_105", "Podane hasła różnią się. Proszę wprowadzić je ponownie.");
 define("LAN_106", "Podany adres email jest błędny. Wprowadź go ponownie.");
 define("LAN_107", "Dziękujemy! Jesteś teraz zarejestrowanym użytkownikiem ");
@@ -93,7 +93,7 @@ define("LAN_SIGNUP_34", "Zapamiętaj: Każdy obraz nadesłany do serwisu, który
 define("LAN_SIGNUP_35", "Kliknij tutaj, aby się zarejestrować używając pliku XUP");
 define("LAN_SIGNUP_36", "Napotkano na niepokojący błąd w Twoich danych użytkownika, proszę skontaktować się z administratorem strony");
 
-define("LAN_LOGINNAME", "Login");
+define("LAN_LOGINNAME", "Użytkownik");
 define("LAN_PASSWORD", "Hasło");
 define("LAN_USERNAME", "Wyświetlana nazwa");
 define("LAN_EMAIL_01", "Drogi(a)");
@@ -121,6 +121,8 @@ define("LAN_SIGNUP_53", "pole nie przeszło testu walidacji");
 define("LAN_SIGNUP_54", "Kliknij tutaj, aby wypełnić formularz rejestracyjny."); // Click here to fill in your details to register
 define("LAN_SIGNUP_55", "Wyświetlana nazwa jest za długa. Proszę wybrać inną.");
 define("LAN_SIGNUP_56", "Wyświetlana nazwa jest za krótka. Proszę wybrać inną.");
+define("LAN_SIGNUP_57", "Login ten jest zbyt długi. Proszę wybrać inny.");
+define("LAN_SIGNUP_58", "Podgląd rejestracji");
 
 
 ?>

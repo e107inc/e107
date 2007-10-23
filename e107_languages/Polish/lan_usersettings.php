@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_usersettings.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_usersettings.php rev. 1.11
+|     Zgodne z: /e107_languages/English/lan_usersettings.php rev. 1.16
 +-----------------------------------------------------------------------------+
 */
  
@@ -19,7 +19,7 @@ define("PAGE_NAME", "Ustawienia użytkownika");
 
 define("LAN_7", "Wyświetlana nazwa: ");
 define("LAN_8", "ta nazwa będzie wyświetlana na stronie");
-define("LAN_9", "Login: ");
+define("LAN_9", "Użytkownik: ");
 define("LAN_10", "ta nazwa będzie używana do logowania w serwisie");
 define("LAN_11", "ta nazwa będzie używana do logowania w serwisie - nie będziesz mógł jej zmienić. Jeśli potrzebujesz zmiany tej nazwy w związku z bezpieczeństwem swojego konta, proszę skontaktować się z administratorem strony.");
 
@@ -95,13 +95,13 @@ define("LAN_USET_4", "Maksymalną dopuszczoną wysokością jest");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Dodatkowy opis");
-define("LAN_ICQNUMBER", "Numer ICQ musi składać się tylko cyfry");
+//define("LAN_ICQNUMBER", "Numer ICQ musi składać się tylko cyfry");
 
 //v.617
 define("LAN_408", "Użytkownik o podanym adresie email już istnieje. ");
 define("MAX_AVWIDTH", "Maksymalnym rozmiarem awatara (sxw) jest ");
 define("MAX_AVHEIGHT", " x ");
-define("GIF_RESIZE", "Proszę zmienić rozmiar obrazka gif lub przekonwertować go do innego formatu");
+// define("GIF_RESIZE", "Proszę zmienić rozmiar obrazka gif lub przekonwertować go do innego formatu");
 define("RESIZE_NOT_SUPPORTED", "Zmiana rozmiarów na tym serwerze nie jest wspomagana. Proszę zmienić rozmiar obrazka inną metodą. Plik został usunięty.");
 
 // v0.7
@@ -113,6 +113,10 @@ define("LAN_USET_9", "Pewne wymagane pola (oznaczone znakiem *) zostały utracon
 define("LAN_USET_10","Aby przejść dalej, proszę uaktualnić swoje ustawienia.");
 define("LAN_USET_11", "Podany login nie może zostać zaakceptowany, proszę wybrać inną nazwę użytkownika");
 define("LAN_USET_12", "Wyświetlana nazwa jest za krótka. Proszę wybrać inną.");
-define("LAN_USET_13", "Wykryto niedozwolone znaki w loginie. Proszę wybrać inny.");
+define("LAN_USET_13", "Niedozwolone znaki w nazwie użytkownika. Proszę wybrać inną nazwę");
+define("LAN_USET_14", "Zbyt długi login. Proszę wybrać inny.");
+define("LAN_USET_15", "Nazwa wyświetlana jest zbyt długa. Proszę wybrać inną.");
+define("LAN_USET_16", "Odznacz w celu usunięcia obecnej fotografii bez ładowania nowej");
+define("LAN_USET_17", "Nazwa wyświetlana jest już w użyciu. Proszę wybrać inną.");
 
 ?>

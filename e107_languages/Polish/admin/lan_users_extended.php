@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:51 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users_extended.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.19
+|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.20
 +-----------------------------------------------------------------------------+
 */
  
@@ -95,6 +95,7 @@ define("EXTLAN_73", "nie zostało deaktywowane!");
 define("EXTLAN_74", "jest zarezerwowaną nazwą pola i nie może być urzyta.");
 define("EXTLAN_75", "Błąd dodawania pola do bazy danych.");
 define("EXTLAN_76", "Niedozwolone znaki w nazwie pola - tylko znaki A-Z, a-z, 0-9, '_' są dozwolone.");
+define("EXTLAN_77", "Kategoria nie została usunięta - najpierw musisz usunąć elementy kategorii: ");
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parametry:</i></b><br />size - rozmiar pola<br />maxlength - maksymalna długość pola<br /><br />class - klasa stylu css<br />style - string stylu css<br /><br />regex - walidacja kodu wyrażeń regularnych<br />regexfail - komunikat nieudanej walidacji"); // style - css style string

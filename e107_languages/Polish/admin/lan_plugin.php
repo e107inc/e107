@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:51 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_plugin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_plugin.php rev. 1.22
+|     Zgodne z: /e107_languages/English/admin/lan_plugin.php rev. 1.23
 +-----------------------------------------------------------------------------+
 */
  
@@ -66,6 +66,7 @@ define("EPL_ADLAN_45", "Twoje menu zostało pomyślnie załadowane oraz rozpakow
 define("EPL_ADLAN_46", "PCLZIP - Błąd wypakowywania:");
 define("EPL_ADLAN_47", "PCLTAR - Bład wypakowywania: ");
 define("EPL_ADLAN_48", "kod:");
+define('EPL_ADLAN_49', "Podczas deinstalacji tabele nie zostały usunięte");
 
 // define("EPL_CANCEL", "Anuluj"); use LAN_CANCEL instead !!
 // define("EPL_EMAIL", "email");

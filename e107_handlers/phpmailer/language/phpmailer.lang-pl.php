@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.5 $
-|     $Date: 2007-02-19 20:37:38 $
+|     $Revision: 1.6 $
+|     $Date: 2007-10-23 17:02:10 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/phpmailer/language/phpmailer.lang-pl.php,v $
 +-----------------------------------------------------------------------------+

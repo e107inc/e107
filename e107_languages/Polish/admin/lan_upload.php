@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:51 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_upload.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_upload.php rev. 1.6
+|     Zgodne z: /e107_languages/English/admin/lan_upload.php rev. 1.7
 +-----------------------------------------------------------------------------+
 */
  
@@ -49,7 +49,7 @@ define("UPLLAN_30", "Wybierz jak przechowywać nadesłane pliki, czy jako normal
 define("UPLLAN_31", "Zwykły plik");
 define("UPLLAN_32", "Binarny");
 define("UPLLAN_33", "Maksymalny rozmiar pliku");
-define("UPLLAN_34", "Maksymalny rozmiar pliku w bajtach - pozostaw puste, aby zastosować ustawienia z pliku php.ini (wartość ustawiona w php.ini wynosi");
+define("UPLLAN_34", "Maksymalny rozmiar pliku w bajtach - pozostaw puste, aby zastosować ustawienia z pliku php.ini");
 define("UPLLAN_35", "Zezwalaj na następujące typy plików");
 define("UPLLAN_36", "Proszę wpisać po jednym typie w linii");
 define("UPLLAN_37", "Uprawnienia");

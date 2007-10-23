@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:49 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_db_verify.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_db_verify.php rev. 1.3
+|     Zgodne z: /e107_languages/English/admin/lan_db_verify.php rev. 1.4
 +-----------------------------------------------------------------------------+
 */
  
@@ -36,5 +36,6 @@ define("DBLAN_18", "Tabele");
 define("DBLAN_19", "Spróbuj naprawić");
 define("DBLAN_20", "Proces naprawy tabel");
 define("DBLAN_21", "Napraw zaznaczone");
+define("DBLAN_22", " jest nie do odczytu");
 
 ?>

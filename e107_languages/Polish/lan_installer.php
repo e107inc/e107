@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.4 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.5 $
+|     $Date: 2007-10-23 17:03:44 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_installer.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.17
+|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.19
 +-----------------------------------------------------------------------------+
 */
  
@@ -149,10 +149,18 @@ define("LANINS_092", "Kontakt");
 define("LANINS_093", "Nadaje dostęp do prywatnych menu");
 define("LANINS_094", "Przykładowa grupa użytkowników forum prywatnego");
 define("LANINS_095", "Sprawdzanie integralności");
-define("LANINS_096", "");
-define("LANINS_097", "");
-define("LANINS_098", "");
-define("LANINS_099", "");
-define("LANINS_100", "");
 
+define("LANINS_096", 'Ostatnie komentarze');
+define("LANINS_097", '[więcej ...]');
+define("LANINS_098", 'Artykuły');
+define("LANINS_099", 'Strona startowa artykułów ...');
+define("LANINS_100", 'Ostatnie posty na forum');
+define("LANINS_101", 'Zapisz ustawienia menu');
+define("LANINS_102", 'Data / Czas');
+define("LANINS_103", 'Odwiedzin');
+define("LANINS_104", 'Odwiedź stronę startową ...');
+
+define("LANINS_105", '');
+define("LANINS_106", '');
 ?>
+

@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.7 $
+|     $Date: 2007-10-23 17:03:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_search.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_search.php rev. 1.12
+|     Zgodne z: /e107_languages/English/lan_search.php rev. 1.14
 +-----------------------------------------------------------------------------+
 */
  
@@ -30,11 +30,9 @@ define("LAN_196", "trafień");
 define("LAN_197", "Download");
 define("LAN_198", "Szukana fraza nie została odnaleziona");
 define("LAN_199", "Szukaj:");
-define("LAN_200", "Kategorię:");
 
-define("LAN_201", "Proszę zmienić treść zapytania");
 define("LAN_416", "Musisz się zalogować, aby uzyskać dostęp do tej strony");
-define("LAN_417", "Wyszukiwana fraza musi zawierać przynajmniej 3 znaki.");
+define("LAN_417", "Wyszukiwana fraza musi zawierać przynajmniej --CHARS-- znaki/znaków.");
 
 define("LAN_418", "Inne strony");
 
@@ -120,5 +118,11 @@ define("LAN_SEARCH_74", "Dołączył(a) dnia");
 define("LAN_SEARCH_75", "Sposób wyszukiwania");
 define("LAN_SEARCH_76", "Wyszukuj na stronie");
 define("LAN_SEARCH_77", "Wyszukuj w opisie strony");
+
+// Following formerly LAN_nnn - renamed to avoid clashes
+define("LAN_SEARCH_98", "Newości");
+define("LAN_SEARCH_99", "Komentarze");
+//define("LAN_SEARCH_200", "Kategorie:");						// Redundant LAN?
+define("LAN_SEARCH_201", "Proszę zmienić zapytanie wyszukiwarki");
 
 ?>

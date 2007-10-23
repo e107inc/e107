@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:51 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_prefs.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_prefs.php rev. 1.60
+|     Zgodne z: /e107_languages/English/admin/lan_prefs.php rev. 1.65
 +-----------------------------------------------------------------------------+
 */
  
@@ -97,7 +97,7 @@ define("CUSTSIG_17", "Zapisz się na listę mailingową"); // Subscribe to conte
 define("CUSTSIG_18", "Odrzucaj nazwy użytkowników");
 define("CUSTSIG_19", "nazwy użytkowników zawierające następujące wyrażenia będą odrzucane, poszczególne słowa oddzielaj przecinkami");
 
-define("PRFLAN_91", "Jeśli ktoś będzie atakował Twoją stronę poprzez wielokrotne zapytania/odwołania do twojego serwera, jego IP zostanie automatycznie zablokowane! Nie zmieniaj prawidłowej konfiguracji serwera!!!");
+define("PRFLAN_91", "Jeśli ktoś będzie atakował Twoją stronę poprzez wielokrotne zapytania/odwołania do twojego serwera, jego IP zostanie automatycznie zablokowane! Najlepiej jeśli jest to możliwe poprzez konfigurację serwera!!!");
 define("PRFLAN_92", "Zabezpieczenie procesu weryfikacji rejestracji -- ukryć hasło w mailu?");
 define("PRFLAN_93", "funkcję <i>strftime</i> na stronie php.net</a> - <a href='http://pl.php.net/manual/pl/function.strftime.php'>pl.php.net");
 define("PRFLAN_94", "tutaj");
@@ -161,9 +161,9 @@ define("PRFLAN_153", "Zatwierdzenie przez admina");
 define("PRFLAN_154", "Metoda weryfikacji nowego użytkownika <br />Jeśli jest wybrana metoda 'Zatwierdzenie przez admina', zalecane jest aktywowanie powiadamiania email o rejestracji nowych użytkowników <a href='".e_ADMIN."notify.php'>(kliknij tutaj)</a>.");
 
 define("PRFLAN_155", "Wyświetlana nazwa użytkownika widoczna dla");
-define("PRFLAN_156", "Resetuj WSZYSTKIE wyświetlana nazwy");
-define("PRFLAN_157", "Wszystkie wyświetlane nazwy zostały zresetowane i zastąpione loginem");
-define("PRFLAN_158", "Maksymalna długość wyświetlanej nazwy");
+define("PRFLAN_156", "Resetuj WSZYSTKIE wyświetlane nazwy");
+define("PRFLAN_157", "Wszystkie wyświetlane nazwy zostały zresetowane i zastąpione nazwami użytkowników");
+define("PRFLAN_158", "Maksymalna długość wyświetlanej nazwy to (5..30)");
 define("PRFLAN_159", "wyświetlaj tą stroną jako");
 define("PRFLAN_160", "Sprawdzaj serwery zdalne, kiedy walidujesz adresy email.");
 define("PRFLAN_161", "Wyłącz wszystkie komentarze na tej stronie");
@@ -180,5 +180,14 @@ define("PRFLAN_168", "Strona kontaktowa"); //Site Contact Person(s)
 define("PRFLAN_169", "Jeśli wybrana grupa zawiera więcej niż jedną osobę, użytkownik zostanie poproszony o wybranie odpowiedniej osoby z grupy.");
 define("PRFLAN_170", "Używaj rDNS, aby umożliwić blokowanie hostów");
 define("PRFLAN_171", "Zmiana tej opcji umożliwi Ci blokowanie użytkowników ze względu na nazwę hosta, prędzej niż tylko adres IP lub adres email. <br />UWAGA: Może wpłynąć na czas ładowania strony na niektórych hostach.");
+
+define("PRFLAN_172", "Maksymalna długość loginu to (10..100)");
+define("PRFLAN_173", "Codziennie sprawdzaj uaktualnienia e107 na stronie SourceForge");
+
+define("PRFLAN_174", "Nazwa dla odpowiedzi na e-mail ze strony");
+define("PRFLAN_175", "Nazwa ta pojawiać się będzie w polu 'Od' potwierdzeń rejestracji oraz innych wiadmości e-mail wysyłanych z tej strony");
+define("PRFLAN_176", "Adres e-mail dla wiadmości wysyłanych ze strony");
+define("PRFLAN_177", "Adres dla odpowiedzi na e-mail ze strony.");
+
 
 ?>

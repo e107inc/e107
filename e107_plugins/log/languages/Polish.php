@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2007-02-19 20:42:25 $
+|     $Revision: 1.11 $
+|     $Date: 2007-10-23 17:06:47 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/log/languages/English.php rev. 1.7
+|     Zgodne z: /e107_plugins/log/languages/English.php rev. 1.9
 +-----------------------------------------------------------------------------+
 */
  
@@ -58,5 +58,15 @@ define("ADSTAT_L38", "Unikalnych odzwiedzin w miesiącu");
 define("ADSTAT_L39", "Usuń wskazane wpisy");
 define("ADSTAT_L40", "dni");
 define("ADSTAT_L41", "Błąd");
+define("ADSTAT_L42", "Brak miesięcznych statystyk.");
+
+define("ADSTAT_L43", "Dzisiejsze błędy strony");
+define("ADSTAT_L44", "Wszystkie błędy strony");
+define("ADSTAT_L45", "Statystyki usunięte dla: ");
+define("ADSTAT_L46", "Uwaga: dzisiejsze statystyki nie zostaną usunięte");
+define("ADSTAT_L47", "Nie znaleziono statystyk dla: ");
+define("ADSTAT_L48", "");
+define("ADSTAT_L49", "");
+define("ADSTAT_L50", "");
 
 ?>

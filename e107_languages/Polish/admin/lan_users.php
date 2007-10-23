@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.13 $
+|     $Date: 2007-10-23 17:03:51 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_users.php rev. 1.27
+|     Zgodne z: /e107_languages/English/admin/lan_users.php rev. 1.32
 +-----------------------------------------------------------------------------+
 */
  
@@ -76,8 +76,8 @@ define("USRLAN_61", "Wyświetlana nazwa");
 define("USRLAN_62", "Hasło");
 define("USRLAN_63", "Powtórz hasło");
 define("USRLAN_64", "Adres email");
-define("USRLAN_65", "Podana wyświetlana nazwa lub login nie może być zaakceptowana, proszę zmienić te dane na jakieś inne.");
-define("USRLAN_66", "Podany login już istnieje w bazie danych, proszę zmienić go na jakiś inny.");
+define("USRLAN_65", "Podana nazwa wyświetlana  nie może być zaakceptowana, proszę zmienić ją na inną.");
+define("USRLAN_66", "Podana nazwa wyświetlana już istnieje w bazie danych, proszę zmienić ją na inną.");
 define("USRLAN_67", "Podane hasła różnią się. Proszę wprowadzić je ponownie.");
 define("USRLAN_68", "Pozostały niewypełnione pola");
 define("USRLAN_69", "Podany adres email jest błędny. Wprowadź go ponownie.");
@@ -126,7 +126,7 @@ define("USRLAN_125", "Od");
 define("USRLAN_126", "Pozwól użytkownikom na ocenę użytkowników");
 define("USRLAN_127", "Pozwól na komentarze w profilu użytkownika");
 
-define("USRLAN_128", "Login");
+define("USRLAN_128", "Użytkownik");
 
 define("USRLAN_130", "Włącz śledzenie użytkowników online");
 define("USRLAN_131", "Musisz włączyć tą opcje, aby używać opcji śledzenia użytkowników online. Wymagane przez online.php, informacje online na forum oraz menu online");
@@ -139,10 +139,35 @@ define("USRLAN_135", "Nie znalazłem adresu IP w informacjach o użytkownikach, 
 define("USRLAN_136", "Znalazłem wielu użytkowników, którzy używają adresu IP {IP}, IP nie jest zablokowany.");
 define("USRLAN_137", "Użytkownicy o adresie IP {IP} są zablokowani.");
 
+
+define("USRLAN_138", "Konta bez weryfikacji");
+define("USRLAN_139", "Twoje konto zostało aktywowane.\n\nOd tej chwili możesz się zalogować na stronie {SITEURL} używając hasła i loginu podanego podczas procesu rejestracji.");
+
+define("USRLAN_140", "Ponownie wysłano emaila do");
+define("USRLAN_141", "Nieudana próba wysłania ponownego emaila aktywacyjnego do");
+define("USRLAN_142", "z następującym linkiem aktywacyjnym");
+
+define("USRLAN_143", "Sprawdź odpowiedź do nadawców");
+define("USRLAN_144", "Ponownie wyślij emaile weryfikacyjne do wszystkich");
+define("USRLAN_145", "Odrzuceni użytkownicy");
+define("USRLAN_146", "Informacje o zarejestrowanych użytkownikach jest dostępna dla");
+
+define("USRLAN_147", "Adres email jest używany przez zbanowanego użytkownika");
+define("USRLAN_148", "Adres email jest zbanowany");
+
+define("USRLAN_149", "Usuń wybrane wiadomości");
+define("USRLAN_150", "Usuń wszystkie wiadomości");
+define("USRLAN_151", "Wyczyść odbicie, zażądaj Aktywacji");
+define("USRLAN_152", "Wyczyść odbicie i Aktywuj");
+define("USRLAN_153", "Usuń nieodbite wiadomości");
+define("USRLAN_154", "Wyczyść wiadomość dla wybranych");
+define("USRLAN_155", "Znaleziono {TOTAL} wszystkich wiadomości. Usunięto {DELCOUNT}.<br />{DELUSER} użytkowników oznaczono jako 'odbitych' (z {FOUND} wiadomości)");
+
 define("LAN_MAINADMIN","Główny administrator");
 define("LAN_ADMIN","Administrator");
 define("LAN_NOTVERIFIED","Niezweryfikowany");
 define("LAN_BANNED","Zablokowany");
+define("LAN_BOUNCED", "Odbite");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Wyświetlana nazwa");
@@ -181,18 +206,5 @@ define("DUSRLAN_34", "Uprawnienia");
 define("DUSRLAN_35", "Obraz");
 define("DUSRLAN_36", "Zmień hasło");
 define("DUSRLAN_37", "XUP");
-
-define("USRLAN_138", "Konta bez weryfikacji");
-define("USRLAN_139", "Twoje konto zostało aktywowane.\n\nOd tej chwili możesz się zalogować na stronie {SITEURL} używając hasła i loginu podanego podczas procesu rejestracji.");
-
-define("USRLAN_140", "Ponownie wysłano emaila do");
-define("USRLAN_141", "Nieudana próba wysłania ponownego emaila aktywacyjnego do");
-define("USRLAN_142", "z następującym linkiem aktywacyjnym");
-
-define("LAN_BOUNCED", "Odpowiedź zwrotna");
-define("USRLAN_143", "Sprawdź odpowiedź do nadawców");
-define("USRLAN_144", "Ponownie wyślij emaile weryfikacyjne do wszystkich");
-define("USRLAN_145", "Odrzuceni użytkownicy");
-define("USRLAN_146", "Informacje o zarejestrowanych użytkownikach jest dostępna dla");
 
 ?>

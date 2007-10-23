@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:43 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_comment.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_comment.php rev. 1.10
+|     Zgodne z: /e107_languages/English/lan_comment.php rev. 1.12
 +-----------------------------------------------------------------------------+
 */
 
@@ -48,16 +48,7 @@ define("COMLAN_317", "Moderuj powiązania");
 define("COMLAN_318", "Edycja komentarza");
 define("COMLAN_319", "edytowany");
 define("COMLAN_320", "Zaktualizuj");
-/*
-define("COMLAN_1", "tutaj");
-define("COMLAN_2", ", aby się zarejestrować.");
-define("COMLAN_3", "Błąd!");
-define("COMLAN_4", 'Temat');
-define("COMLAN_5", 'Odp:');
-define("COMLAN_6", 'Odpowiedz');
-define("COMLAN_7", 'Ocena');
-define("COMLAN_8", 'Komentarze zostały wyłączone');
-*/
+
 define("COMLAN_321", "tutaj");
 define("COMLAN_322", ", aby się zarejestrować.");
 define("COMLAN_323", "Błąd!");
@@ -77,5 +68,6 @@ define("COMLAN_TYPE_5", "Dokumentacja");
 define("COMLAN_TYPE_6", "Bugtracker");
 define("COMLAN_TYPE_7", "Pomysły");
 define("COMLAN_TYPE_8", "Profil użytkownika");
+define("COMLAN_TYPE_PAGE", "Zawartość");		// Reall custom page, but use a 'non-technical' description
 
 ?>

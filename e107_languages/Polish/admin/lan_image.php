@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:50 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_image.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_image.php rev. 1.5
+|     Zgodne z: /e107_languages/English/admin/lan_image.php rev. 1.7
 +-----------------------------------------------------------------------------+
 */
  
@@ -66,5 +66,10 @@ define("IMALAN_48", "Wszystkie zewnętrzne awatary");
 define("IMALAN_49", "Użytkowników z awatarami");
 define("IMALAN_50", "Wszystkich");
 define("IMALAN_51", "Awatar dla ");
+
+define("IMALAN_52", "Ścieżka do ImageMagick wygląda na nieprawidłową");
+define("IMALAN_53", "Ścieżka do ImageMagick wygląda na prawidłową, ale konwersja pliku może być niepoprawna");
+define("IMALAN_54", "Zainstalowano GD w wersji:");
+define('IMALAN_55', 'Nie zainstalowano');
 
 ?>

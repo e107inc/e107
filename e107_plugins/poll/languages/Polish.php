@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2007-02-19 20:43:52 $
+|     $Revision: 1.11 $
+|     $Date: 2007-10-23 17:08:04 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/poll/languages/English.php rev. 1.12
+|     Zgodne z: /e107_plugins/poll/languages/English.php rev. 1.13
 +-----------------------------------------------------------------------------+
 */
  
@@ -19,6 +19,10 @@ define("POLL_ADLAN01", "Ankieta");
 define("POLL_ADLAN02", "Plugin ankiet, pozwoli Ci na definiowanie ankiet w menu lub na forum.");
 define("POLL_ADLAN03", "Konfiguracja ankiet");
 define("POLL_ADLAN04", "Plugin ankiet został pomyślnie zainstalowany. Aby dodać ankietę kliknij na ikonę Ankiety w sekcji pluginów na stronie głównej administratora oraz pamiętaj aby po jej dodaniu aktyować menu pool na stronie konfiguracji menu.");
+
+define("POLL_ADLAN05", "Ankieta główna: ");
+define("POLL_ADLAN06", "Temat forum: ");
+define("POLL_ADLAN07", "Rodzaj");
 
 define("POLLAN_MENU_CAPTION", "Ankieta");
 
@@ -71,4 +75,5 @@ define("POLLAN_44", "Czy usunąć tą ankietę?");
 
 define("POLLAN_45", "Ankieta została zaktualizowana");
 define("POLLAN_46", "Pola pozostały puste");
+
 ?>

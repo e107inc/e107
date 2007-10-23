@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_ren_help.php,v $
 +-----------------------------------------------------------------------------+
@@ -42,7 +42,7 @@ define("LANHELP_22", "Kliknij, aby wybrać rozmiar...");
 
 define("LANHELP_23", "Wstawia link: [link]http://e107.org.pl[/link] lub  [link=http://e107.org.pl]Odwiedź tą stronę[/link]");
 define("LANHELP_24", "Pogrubiony tekst: [b]Ten tekst będzie pogrubiony[/b]", "font-weight:bold; width: 20px");
-define("LANHELP_25", "Pochylony tekst: [i]Ten tekst będzie podkreślony[/i]", "font-style:italic; width: 20px");
+define("LANHELP_25", "Pochylony tekst: [i]Ten tekst będzie pochylony[/i]", "font-style:italic; width: 20px");
 define("LANHELP_26", "Podkreślony tekst: [u]Ten tekst będzie podkreślony[/u]", "text-decoration: underline; width: 20px");
 define("LANHELP_27", "Wstawia obraz: [img]mojobraz.jpg[/img]");
 define("LANHELP_28", "Wyśrodkowanie: [center]Ten tekst będzie wyśrodkowany[/center]");

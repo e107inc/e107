@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:41:26 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:05:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_admin.php rev rev. 1.22
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_admin.php rev rev. 1.23
 +-----------------------------------------------------------------------------+
 */
  
@@ -80,6 +80,7 @@ define("FORLAN_62", "Opcje forum");
 define("FORLAN_63", "Rangi");
 define("FORLAN_64", "Z poziomu tej strony możesz zarządzać rangami i ustalić dla nich poziom, jeśli pozostawisz puste pola, zostaną użyte ogólne oznaczenia poziomów. Poziomy oddziel przecinkami. Maksymalni jest 10 poziomów, najniższy jest pierwszy.");
 define("FORLAN_65", "Nagłówek forum");
+define("FORLAN_66", "Wtyczka Ankieta nie zainstalowana");
 
 define("FORLAN_70", "Włącz załączanie obrazków oraz plików");
 define("FORLAN_71", "Umożliwi użytkownikom ładowanie obrazków oraz plików i załączanie ich do wypowiedzi na forum,");

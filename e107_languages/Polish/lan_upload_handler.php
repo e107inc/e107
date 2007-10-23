@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.4 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.5 $
+|     $Date: 2007-10-23 17:03:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_upload_handler.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_upload_handler.php rev. 1.2
+|     Zgodne z: /e107_languages/English/lan_upload_handler.php rev. 1.3
 +-----------------------------------------------------------------------------+
 */
  
@@ -27,5 +27,13 @@ define("LANUPLOAD_9", "Wysyłany plik posiada rozmiar 0 bajtów");
 define("LANUPLOAD_10", "Błąd wysyłania [napotkano duplikat nazwy] - Plik z taką sama nazwą już istnieje.");
 define("LANUPLOAD_11", "Plik nie został wysłany. Nazwa pliku: ");
 define("LANUPLOAD_12", "Błąd");
+define("LANUPLOAD_13", "Brakujący folder tymczasowy");
+define("LANUPLOAD_14", "Błąd zapisu pliku");
+define("LANUPLOAD_15", "Upload zabroniony");
+define("LANUPLOAD_16", "Nieznany błąd");
+define("LANUPLOAD_17", "Niepoprawna nazwa wysyłanego pliku");
+define("LANUPLOAD_18", "Wysyłany plik przekracza dozwoloną wielkość.");
+define("LANUPLOAD_19", "Wysłano zbyt wiele plików - usunięto nadmiar.");
+
 
 ?>

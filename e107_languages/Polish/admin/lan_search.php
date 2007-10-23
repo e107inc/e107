@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:03:51 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_search.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_search.php rev. 1.25
+|     Zgodne z: /e107_languages/English/admin/lan_search.php rev. 1.26
 +-----------------------------------------------------------------------------+
 */
  
@@ -48,7 +48,7 @@ define("SEALAN_37", "Zaznaczenie");
 define("SEALAN_38", "Przyciski");
 define("SEALAN_39", "Inne strony");
 
-define("LAN_98", "Aktualności");
+define("LAN_SEARCH_98", "Aktualności");		// Renamed to avoid clashes
 define("LAN_197", "Pliki do pobrania");
 define("LAN_418", "Inne strony");
 

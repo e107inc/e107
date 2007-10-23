@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.5 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.6 $
+|     $Date: 2007-10-23 17:03:43 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/English.php rev. 1.9
+|     Zgodne z: /e107_languages/English/English.php rev. 1.11
 +-----------------------------------------------------------------------------+
 */
  
@@ -37,9 +37,24 @@ define("CORE_LAN8", "Błąd preferencji jądra");
 define("CORE_LAN9", "Jądro nie może zostać przywrócone z automatycznej kopii bezpieczeństwa. Zatrzymano wykonywanie.");
 define("CORE_LAN10", "Wykryto uszkodzony plik cookie - wyloguj się.");
 
+// Footer
+define("CORE_LAN11", "Czas generowania: ");
+define("CORE_LAN12", " sek., ");
+define("CORE_LAN13", " z tego dla zapytań. ");
+define("CORE_LAN14", "");			// Used in 0.8
+define("CORE_LAN15", "Zapytań BD: ");
+define("CORE_LAN16", "Użycie pamięci: ");
+
+
+define("CORE_LAN_B", "b");
+define("CORE_LAN_KB", "kB");
+define("CORE_LAN_MB", "MB");
+define("CORE_LAN_GB", "GB");
+define("CORE_LAN_TB", "TB");
 
 define("LAN_WARNING", "Ostrzeżenie!");
 define("LAN_ERROR", "Błąd");
 define("LAN_ANONYMOUS", "Anonim");
+define("LAN_EMAIL_SUBS", "-e-mail-");
 
 ?>

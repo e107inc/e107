@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.13 $
-|     $Date: 2007-02-19 20:38:59 $
+|     $Revision: 1.14 $
+|     $Date: 2007-10-23 17:03:48 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.56
+|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.58
 +-----------------------------------------------------------------------------+
 */
 
@@ -178,6 +178,7 @@ define("ADLAN_150", "System powiadomień email o wydarzeniach w serwisie");
 define("ADLAN_151", "Panel");
 define("ADLAN_152", "Wpisz kod");
 define("ADLAN_153", "Panel administratora");
+define('ADLAN_154', "Błąd w połączeniu z Sourceforge. Nie można sprawdzić dostępności aktualizacji.");
 
 define('ADLAN_CL_1', 'Ustawienia');
 define('ADLAN_CL_2', 'Użytkownicy');
@@ -259,6 +260,7 @@ define("LAN_INACTIVE", "Nieaktywny");
 define("LAN_BAN", "Zablokuj");
 define("LAN_RATING", "Ocena");
 
+define("LAN_UPLOAD", "Upload");
 define("LAN_UPLOAD_IMAGES", "Załaduj obrazek");
 define("LAN_UPLOAD_FILES", "Załaduj plik");
 define("LAN_UPLOAD_ADDFILE", "Dodaj kolejny plik");

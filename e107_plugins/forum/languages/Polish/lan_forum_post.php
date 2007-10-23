@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.11 $
-|     $Date: 2007-02-19 20:41:26 $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-23 17:05:45 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_post.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_post.php rev rev. 1.11
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum_post.php rev rev. 1.12
 +-----------------------------------------------------------------------------+
 */
  
@@ -82,7 +82,7 @@ define("LAN_392", "Załącznik");
 define("LAN_393", "<b>UWAGA!</b><br />Dozwolone typy plików:");
 define("LAN_394", "Jakiekolwiek inne załadowane pliki zostaną natychmiast usunięte.");
 define("LAN_395", "Maksymalny rozmiar pliku");
-define("LAN_396", "bajtów");
+define("LAN_396", " bajtów");
 define("LAN_397", "Ten temat jest zamknięty.");
 define("LAN_398", "Forum tylko do odczytu");
 define("LAN_399", "Nie posiadasz uprawnień do zamieszczania postów na tym forum.");

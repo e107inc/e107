@@ -1,13 +1,13 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.4 $
-|     $Date: 2007-02-19 20:38:58 $
+|     $Revision: 1.5 $
+|     $Date: 2007-10-23 17:03:44 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_fpw.php,v $
 +-----------------------------------------------------------------------------+
@@ -46,8 +46,8 @@ define("LAN_FPW11","się zalogować");
 define("LAN_FPW12","i niezwłocznie zmienić hasło w celach bezpieczeństwa.");
 
 define("LAN_FPW13", "proszę postępować zgodnie z instrukcją w emailu w celu potwierdzenia hasła.");
-define("LAN_FPW14", "zostało wysłane przez kogoś o adresie IP");
-define("LAN_FPW15", "Nie znaczy to jednak, że twoje hasło zostało już zresetowane. Aby tego dokonać, musisz przejść pod link wskazany poniżej i uzupełnić proces resetowania hasła.");
+define("LAN_FPW14", "została wysłana przez kogoś o adresie IP");
+define("LAN_FPW15", "Nie znaczy to jednak, że twoje hasło zostało już zresetowane. Aby tego dokonać, musisz przejść pod link wskazany poniżej i dokończyć proces resetowania hasła.");
 define("LAN_FPW16", "Jeśli to nie Ty poprosiłeś o zresetowanie hasła i NIE chcesz go zresetować, możesz po prostu zignorować tego emaila");
 define("LAN_FPW17", "Poniższy link będzie ważny przez 48 godzin.");
 
