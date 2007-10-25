@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-11-20 11:48:44 $
-|     $Author: mrpete $
+|     $Revision: 1.17 $
+|     $Date: 2007-10-25 07:11:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -94,7 +94,7 @@ if(is_readable($path."secure_image_custom.php")) {
 	$secureimg['x']		= "6";
 	$secureimg['y']		= "22";
 	$secureimg['font'] 	= "imagecode.ttf";
-	$secureimg['color'] = array(90,90,90); // red,green,blue
+	$secureimg['color'] = "90,90,90"; // red,green,blue
 
 	*/
 	$bg_file = $secureimg['image'];
@@ -114,10 +114,13 @@ switch($type) {
 		break;
 }
 
-if(isset($secureimg['color'])) {
+if(isset($secureimg['color']))
+{
 	$tmp = explode(",",$secureimg['color']);
 	$text_color = ImageColorAllocate($image,$tmp[0],$tmp[1],$tmp[2]);
-} else {
+}
+else
+{
 	$text_color = ImageColorAllocate($image, 90, 90, 90);
 }
 
