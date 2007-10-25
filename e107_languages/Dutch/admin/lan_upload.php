@@ -50,7 +50,7 @@ define("UPLLAN_35", "Toegestane bestandstypen");
 define("UPLLAN_36", "voer één type per regel in");
 define("UPLLAN_37", "Rechten");
 define("UPLLAN_38", "selecteer welke gebruikers mogen uploaden");
-define("UPLLAN_39", "Plaats");
+define("UPLLAN_39", "Verwerk");
 define("UPLLAN_41", "Let op - upload van bestanden is niet geactiveerd in je php.ini bestand. Upload is niet mogelijk totdat deze functie wordt ingeschakeld.");
 define("UPLLAN_42", "Acties");
 define("UPLLAN_43", "Uploads");

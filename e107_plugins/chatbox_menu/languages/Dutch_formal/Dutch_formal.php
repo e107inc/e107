@@ -15,7 +15,7 @@
 define("PAGE_NAME", "Chatbox");
 define("CHATBOX_L1", "Kan dit bericht niet plaatsen omdat de gebruikersnaam is gereserveerd voor een lid - als dit uw gebruikersnaam is, logt u dan eerst in.");
 define("CHATBOX_L2", "Chatbox");
-define("CHATBOX_L3", "U moet zijn ingelogd om commentaar te kunnen plaatsen - logt u in of, als u nog geen lid bent, meld u dan <a href="signup.php">hier</a> aan");
+define("CHATBOX_L3", "U moet zijn ingelogd om commentaar te kunnen plaatsen - logt u in of, als u nog geen lid bent, meld u dan <a href=\"signup.php\">hier</a> aan");
 define("CHATBOX_L4", "Plaats");
 define("CHATBOX_L5", "Herstel");
 define("CHATBOX_L6", "[geblokkeerd door beheerder]");
