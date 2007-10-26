@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.9 $
-|   $Date: 2007-10-07 20:30:54 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.10 $
+|   $Date: 2007-10-26 21:51:05 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 
 */
@@ -57,11 +57,15 @@ $rs = new form;
 $ix = new news;
 
 
-if (e_QUERY) {
-	list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
-	$id = intval($id);
-	$from = intval($from);
-	unset($tmp);
+if (e_QUERY) 
+{
+  $tmp = explode(".", e_QUERY);
+  $action = $tmp[0];
+  $sub_action = varset($tmp[1],'');
+  $id = intval(varset($tmp[2],0));
+  $sort_order = varset($tmp[2],'desc');
+  $from = intval(varset($tmp[3],0));
+  unset($tmp);
 }
 
 $from = ($from ? $from : 0);
@@ -217,8 +221,9 @@ if (isset($_POST['save_prefs'])) {
 	$newspost->show_message(NWSLAN_119);
 }
 
-if (!e_QUERY || $action == "main") {
-	$newspost->show_existing_items($action, $sub_action, $id, $from, $amount);
+if (!e_QUERY || $action == "main") 
+{
+  $newspost->show_existing_items($action, $sub_action, $sort_order, $from, $amount);
 }
 
 if ($action == "create") {
@@ -272,52 +277,58 @@ function fclear() {
 require_once("footer.php");
 exit;
 
-class newspost {
+class newspost 
+{
 
+	function show_existing_items($action, $sub_action, $sort_order, $from, $amount) 
+	{
+	  // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
+	  global $sql, $ns, $tp, $imode;
+	  $text = "<div style='text-align:center'>";
 
-	function show_existing_items($action, $sub_action, $id, $from, $amount) {
-		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
-		global $sql, $rs, $ns, $tp, $imode;
-		$text = "<div style='text-align:center'>";
+	  if (!$sort_order) $sort_order = 'desc';
+	  if ($sort_order != 'asc') $sort_order = 'desc';
+	  $sort_link = $sort_order == 'asc' ? 'desc' : 'asc';		// Effectively toggle setting for headings
+	  
+	  if (isset($_POST['searchquery'])) 
+	  {
+		$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
+	  } 
+	  else 
+	  {
+		$query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".strtoupper($sort_order)."  LIMIT {$from}, {$amount}";
+	  }
 
-		if (isset($_POST['searchquery'])) {
-			$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
-			} else {
-			$query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
-		}
-
-		if ($sql->db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere")))
-		{
-
-			$newsarray = $sql -> db_getList();
-			$text .= "
+	  if ($sql->db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere")))
+	  {
+		$newsarray = $sql -> db_getList();
+		$text .= "
 			<form action='".e_SELF."' id='newsform' method='post'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
-			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>".LAN_NEWS_45."</a></td>
-			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
+			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.{$sort_link}.{$from}'>".LAN_NEWS_45."</a></td>
+			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.{$sort_link}.{$from}'>".NWSLAN_40."</a></td>
 			<td style='width:15%' class='fcaption'>".LAN_NEWS_49."</td>
 			<td style='width:15%' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>";
-			$ren_type = array("default","title","other-news","other-news 2");
-			foreach($newsarray as $row)
-			{
-				extract($row);
+		$ren_type = array("default","title","other-news","other-news 2");
+		foreach($newsarray as $row)
+		{
+		  extract($row);
 
 				// Note: To fix the alignment bug. Put both buttons inside the Form.
 				// But make EDIT a 'button' and DELETE 'submit'
-
-				$text .= "<tr>
-				<td style='width:5%' class='forumheader3'>$news_id</td>
-				<td style='width:55%' class='forumheader3'><a href='".e_BASE."news.php?item.$news_id.$news_category'>".($news_title ? $tp->toHTML($news_title,"","no_hook,emotes_off,no_make_clickable") : "[".NWSLAN_42."]")."</a></td>
+		  $text .= "<tr>
+				<td style='width:5%' class='forumheader3'>{$news_id}</td>
+				<td style='width:55%' class='forumheader3'><a href='".e_BASE."news.php?item.{$news_id}.{$news_category}'>".($news_title ? $tp->toHTML($news_title,"","no_hook,emotes_off,no_make_clickable") : "[".NWSLAN_42."]")."</a></td>
 				<td style='20%' class='forumheader3'>";
-				$text .= $ren_type[$news_render_type];
-				if($news_sticky)
-				{
-					$sicon = (file_exists(THEME."images/sticky.png") ? THEME."images/sticky.png" : e_IMAGE."packs/".$imode."/generic/sticky.png");
-					$text .= " <img src='".$sicon."' alt='' />";
-				}
-				$text .= "
+		  $text .= $ren_type[$news_render_type];
+		  if($news_sticky)
+		  {
+			$sicon = (file_exists(THEME."images/sticky.png") ? THEME."images/sticky.png" : e_IMAGE."packs/".$imode."/generic/sticky.png");
+			$text .= " <img src='".$sicon."' alt='' />";
+		  }
+		  $text .= "
 				</td>
 
 				<td style='width:15%; text-align:center' class='forumheader3'>
@@ -325,26 +336,30 @@ class newspost {
 				<input type='image' title='".LAN_DELETE."' name='delete[main_{$news_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".NWSLAN_39." [ID: $news_id ]')\"/>
 				</td>
 				</tr>";
-			}
-			$text .= "</table></form>";
-			} else {
-			$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
 		}
+		$text .= "</table></form>";
+	  } 
+	  else 
+	  {
+		$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
+	  }
 
-		$newsposts = $sql->db_Count("news");
+	  $newsposts = $sql->db_Count("news");
 
-		if (!$_POST['searchquery']) {
-            $parms = $newsposts.",".$amount.",".$from.",".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.news_datestamp.desc.")."[FROM]";
-            $text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
+	  if (!$_POST['searchquery']) 
+	  {
+        $parms = $newsposts.",".$amount.",".$from.",".e_SELF."?".(e_QUERY ? "$action.$sub_action.$sort_order." : "main.news_datestamp.desc.")."[FROM]";
+        $text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
 
-		}
+	  }
 
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
+	  $text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
 
 
 
-		$ns->tablerender(NWSLAN_4, $text);
+	  $ns->tablerender(NWSLAN_4, $text);
 	}
+
 
 	function show_options($action) {
 		global $sql;
