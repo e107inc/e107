@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-04-15 20:56:18 $
-|     $Author: e107steved $
+|     $Revision: 1.20 $
+|     $Date: 2007-10-26 11:43:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -167,19 +167,20 @@ if ($pref['subnews_htmlarea'])
 }
 else
 {
-require_once(e_HANDLER."ren_help.php");
+	require_once(e_HANDLER."ren_help.php");
 }
 
-$insertjs = (!$pref['subnews_htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'" : "rows='25' ";
+$insertjs = (!$pref['subnews_htmlarea']) ? "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'" : "rows='25' ";
 $text .= "
 
 	<tr>
 	<td style='width:20%' class='forumheader3'>" . LAN_135 . "</td>
 	<td style='width:80%' class='forumheader3'>
-	<textarea class='tbox' id='item' name='item'  cols='80'  style='max-width:95%' $insertjs></textarea>";
+	<textarea class='tbox' id='item' name='item'  cols='80'  style='max-width:95%' $insertjs></textarea><br />";
+
 if (!$pref['subnews_htmlarea'])
 {
-  $text .= display_help("helpb", 'news');
+  $text .= display_help("helpb","submitnews");
 }
 $text .= "	</td>
 	</tr>\n";
