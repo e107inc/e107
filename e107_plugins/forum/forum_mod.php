@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-08-14 21:11:36 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2007-10-26 02:10:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -33,22 +33,22 @@ function forum_thread_moderate($p)
 			switch($act)
 			{
 				case 'lock' :
-				$sql->db_Update("forum_t", "thread_active='0' WHERE thread_id='$id' ");
+				$sql->db_Update("forum_t", "thread_active=0 WHERE thread_id={$id}");
 				return FORLAN_CLOSE;
 				break;
 				 
 				case 'unlock' :
-				$sql->db_Update("forum_t", "thread_active='1' WHERE thread_id='$id' ");
+				$sql->db_Update("forum_t", "thread_active=1 WHERE thread_id={$id}");
 				return FORLAN_OPEN;
 				break;
 				 
 				case 'stick' :
-				$sql->db_Update("forum_t", "thread_s='1' WHERE thread_id='$id' ");
+				$sql->db_Update("forum_t", "thread_s=1 WHERE thread_id={$id}");
 				return FORLAN_STICK;
 				break;
 				 
 				case 'unstick' :
-				$sql->db_Update("forum_t", "thread_s='0' WHERE thread_id='$id' ");
+				$sql->db_Update("forum_t", "thread_s=0 WHERE thread_id={$id}");
 				return FORLAN_UNSTICK;
 				break;
 				 
@@ -66,17 +66,17 @@ function forum_delete_thread($thread_id)
 	global $sql;
 	@require_once(e_PLUGIN.'forum/forum_class.php');
 	$f =& new e107forum;
-	$sql->db_Select("forum_t", "*", "thread_id='".intval($thread_id)."' ");
+	$sql->db_Select("forum_t", "*", "thread_id=".(int)$thread_id);
 	$row = $sql->db_Fetch();
 	 
 	if ($row['thread_parent'])
 	{
 		// post is a reply?
-		$sql->db_Delete("forum_t", "thread_id='".intval($thread_id)."' ");
+		$sql->db_Delete("forum_t", "thread_id=".(int)$thread_id);
 		// dec forum reply count by 1
-		$sql->db_Update("forum", "forum_replies=forum_replies-1 WHERE forum_id='".$row['thread_forum_id']."' AND forum_replies>0");
+		$sql->db_Update("forum", "forum_replies=forum_replies-1 WHERE forum_id={$row['thread_forum_id']} AND forum_replies>0");
 		// dec thread reply count by 1
-		$sql->db_Update("forum_t", "thread_total_replies=thread_total_replies-1 WHERE thread_id='".$row['thread_parent']."' AND thread_total_replies>0");
+		$sql->db_Update("forum_t", "thread_total_replies=thread_total_replies-1 WHERE thread_id={$row['thread_parent']} AND thread_total_replies>0");
 		// dec user forum post count by 1
 		$tmp = explode(".", $row['thread_user']);
 		$uid = intval($tmp[0]);
@@ -93,15 +93,16 @@ function forum_delete_thread($thread_id)
 	{
 		// post is thread
 		// delete poll if there is one
-		$sql->db_Delete("poll", "poll_datestamp='".intval($thread_id)."'");
+		$sql->db_Delete("poll", "poll_datestamp=".(int)$thread_id);
 		//decrement user post counts
-		forum_userpost_count("WHERE thread_id = '".intval($thread_id)."' OR thread_parent = '".intval($thread_id)."'", "dec");
+		forum_userpost_count("WHERE thread_id = ".(int)$thread_id." OR thread_parent = ".(int)$thread_id, "dec");
 		// delete replies and grab how many there were
-		$count = $sql->db_Delete("forum_t", "thread_parent='".intval($thread_id)."'");
+		$count = $sql->db_Delete("forum_t", "thread_parent=".(int)$thread_id);
 		// delete the post itself
-		$sql->db_Delete("forum_t", "thread_id='".intval($thread_id)."'");
+		$sql->db_Delete("forum_t", "thread_id=".(int)$thread_id);
 		// update thread/reply counts
-		$sql->db_Update("forum", "forum_threads=LEAST(forum_threads-1,0), forum_replies=LEAST(forum_replies-{$count},0) WHERE forum_id='".$row['thread_forum_id']."'");
+      $sql->db_Update("forum", "forum_threads = CAST(GREATEST(CAST(forum_threads AS SIGNED) - 1, 0) AS UNSIGNED), forum_threads = CAST(GREATEST(CAST(forum_replies AS SIGNED) - {$count}, 0) AS UNSIGNED) WHERE forum_id=".$row['thread_forum_id']);
+
 		// update lastpost info
 		$f->update_lastpost('forum', $row['thread_forum_id']);
 		return FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
@@ -129,14 +130,13 @@ function forum_userpost_count($where = "", $type = "dec")
 			{
 				if("set" == $type)
 				{
-					$sql->db_Update("user", "user_forums={$u['cnt']} WHERE user_id='".$uid."'");
+					$sql->db_Update("user", "user_forums={$u['cnt']} WHERE user_id=".$uid);
 				}
 				else
 				{	// user_forums is unsigned, so underflow will give a very big number
-					$sql->db_Update("user", "user_forums=LEAST(user_forums-{$u['cnt']},0) WHERE user_id='".$uid."'");
+			      $sql->db_Update("user", "user_forums = CAST(GREATEST(CAST(user_forums AS SIGNED) - {$u['cnt']}, 0) AS UNSIGNED) WHERE user_id=".$uid);
 				}
 			}
 		}
 	}
 }
-?>
