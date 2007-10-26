@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2007-02-14 21:17:33 $
-|     $Author: e107steved $
+|     $Revision: 1.23 $
+|     $Date: 2007-10-26 09:43:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -156,7 +156,9 @@ function optimizesql($mySQLdefaultdb) {
 
 function plugin_viewscan()
 {
-  $error_messages = array(0 => DBLAN_31, 1 =>"<b>".DBLAN_32."</b>", 2 =>"<strong>".DBLAN_33."</strong>", 3 => DBLAN_34);
+  $error_messages = array(0 => DBLAN_31, 1 =>DBLAN_32, 2 =>DBLAN_33, 3 => DBLAN_34);
+  $error_image = array("integrity_pass.png","integrity_fail.png","warning.png","blank.png");
+
 
 		global $sql, $pref, $ns, $tp;
 		require_once(e_HANDLER."plugin_class.php");
@@ -177,7 +179,7 @@ function plugin_viewscan()
 		while($row = $sql-> db_Fetch())
 		{
 			$text .= "<tr>
-				<td class='forumheader3'>".$tp->toHtml($row['plugin_name'],FALSE,"defs")."</td>
+				<td class='forumheader3'>".$tp->toHtml($row['plugin_name'],FALSE,"defs,emotes_off")."</td>
                 <td class='forumheader3'>".$row['plugin_path']."</td>
 				<td class='forumheader3'>";
 				
@@ -192,8 +194,10 @@ function plugin_viewscan()
 //			      echo "Checking: ".$row['plugin_path'].":".$this_addon."<br />";
 			      $ret_code = $ep->checkAddon($row['plugin_path'],$this_addon);		// See whether spaces before opening tag or after closing tag
 			    }
-			    $text .= $nl_code.$this_addon." - ".$error_messages[$ret_code];	// $ret_code - 0=OK, 1=content error, 2=access error
-			    $nl_code = "<br />";
+				$text .= "<div style='border-bottom:1px dotted #cccccc'>";
+				$text .= "<img src='".e_IMAGE."fileinspector/".$error_image[$ret_code]."' alt=\"".$error_messages[$ret_code]."\" title=\"".$error_messages[$ret_code]."\" style='vertical-align:middle;height:16px;width:16px' />\n";
+			    $text .= trim($this_addon);	// $ret_code - 0=OK, 1=content error, 2=access error
+			    $text .= "</div>";
 			  }
 			}
 			
