@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-11-15 15:55:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.22 $
+|     $Date: 2007-10-26 01:09:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -24,9 +24,7 @@ if (!getperms("6")) {
 $e_sub_cat = 'filemanage';
 require_once("auth.php");
 
-
 $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")) ? TRUE : FALSE;
-
 
 $imagedir = e_IMAGE."filemanager/";
 
@@ -45,7 +43,8 @@ if (!$path) {
 	$path = str_replace("../", "", $adchoice[0]);
 }
 
-if($path == "/")
+$ok = (e_QUERY == '' || '../'.substr(e_QUERY, 0, strlen(e_FILE)-3) == e_FILE || '../'.substr(e_QUERY, 0, strlen(e_IMAGE)-3) == e_IMAGE);
+if($path == "/" || !$ok)
 {
 	$path = $adchoice[0];
 	echo "<b>Debug</b> ".$path." <br />";
