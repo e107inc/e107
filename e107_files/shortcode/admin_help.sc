@@ -1,4 +1,4 @@
-if (ADMIN) 
+if (ADMIN)
 {
   global $ns, $pref;
   ob_start();
@@ -28,10 +28,15 @@ if (ADMIN)
 	}
     closedir($handle);
   }
-  $plugpath = getcwd()."/help.php";
+  $plugpath = getcwd()."/help.php"; // deprecated file. For backwards compat. only. 
+  $eplugpath = getcwd()."/e_help.php";
   if(file_exists($plugpath))
   {
 	@require_once($plugpath);
+  }
+  elseif(is_readable($eplugpath))
+  {
+  	@require_once($eplugpath);
   }
   $help_text = ob_get_contents();
   ob_end_clean();
