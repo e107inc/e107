@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.195 $
-|     $Date: 2007-10-16 19:05:32 $
-|     $Author: e107steved $
+|     $Revision: 1.196 $
+|     $Date: 2007-10-26 00:36:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -149,7 +149,7 @@ class e_parse
 			//If user is not allowed to use [php] change to entities
 			if(!check_class($pref['php_bbcode']))
 			{
-				$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
+				$ret = str_replace(array("[php", "[/php"), array("&#91;php", "&#91;/php"), $ret);
 			}
 
 		}
@@ -161,13 +161,12 @@ class e_parse
 	{
 		if($text == "") { return ""; }
 		$mode = ($single_quotes ? ENT_QUOTES : ENT_COMPAT);
-		$search = array('&#036;', '&quot;');
-		$replace = array('$', '"');
+		$search = array('&#036;');
+		$replace = array('$');
 		$text = str_replace($search, $replace, $text);
 		if(e_WYSIWYG !== TRUE){
 	   	  	$text = str_replace("&nbsp;"," ",$text); // fix for utf-8 issue with html_entity_decode();
 		}
-	  	$text = html_entity_decode($text, $mode, CHARSET);
 		if($convert_lt_gt)
 		{
 			//need to convert < > to entities if this text will be in a textarea, to prevent injection
