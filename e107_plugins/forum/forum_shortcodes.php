@@ -83,12 +83,12 @@ else
 SC_END
 	
 SC_BEGIN EMAILIMG
-global $post_info, $tp;
-if($post_info['user_id'])
+global $post_info;
+if(USER && $post_info['user_id'] && !$post_info['user_hideemail'])
 {
-	return (!$post_info['user_hideemail'] ? $tp->parseTemplate("{EMAILTO={$post_info['user_email']}}") : "");
+	return "<a href='mailto:{$post_info['user_email']}'>".IMAGE_email."</a>";
 }
-return "";
+return '';
 SC_END
 	
 SC_BEGIN EMAILITEM
