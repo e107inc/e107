@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.196 $
-|     $Date: 2007-10-26 00:36:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.197 $
+|     $Date: 2007-10-28 21:04:25 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -126,7 +126,7 @@ class e_parse
 		if (is_array($data)) {
 			// recursively run toDB (for arrays)
 			foreach ($data as $key => $var) {
-				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode);
+				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $mod);
 			}
 		} else {
 			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false) {
