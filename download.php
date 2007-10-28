@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.15 $ 
-|     $Date: 2007-09-22 09:43:30 $
+|     $Revision: 1.16 $ 
+|     $Date: 2007-10-28 20:03:10 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -75,6 +75,7 @@ else
   {
 	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[0]));
 	$id = intval($tmp[1]);
+	$errnum = intval(varset($tmp[2],0));
   }
   switch ($action)
   {
@@ -111,6 +112,23 @@ else
 	  break;
 	case 'mirror' :
 	  break;
+	case 'error' :		// Errors passed from request.php
+	  define("e_PAGETITLE", PAGE_NAME);
+	  require_once(HEADERF);
+	  switch ($errnum)
+	  {
+	    case 1 : 
+		  $errmsg = LAN_dl_63;			// No permissions
+		  break;
+		case 2 : 
+		  $errmsg = LAN_dl_62;			// Quota exceeded
+		  break;
+		default:
+		  $errmsg = LAN_dl_61." ".$errnum;		// Generic error - shouldn't happen
+	  }
+	  $ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".$errmsg."</div>");
+	  require_once(FOOTERF);
+	  exit;
   }
 }
 

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/request.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-10-28 20:03:10 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -49,7 +49,8 @@ if(strstr(e_QUERY, "mirror")) {
 	if ($sql->db_Select_gen($qry)) {
 		$row = $sql->db_Fetch();
 		extract($row);
-		if (check_class($download_category_class) && check_class($download_class)) {
+		if (check_class($download_category_class) && check_class($download_class)) 
+		{
 			if($pref['download_limits'] && $download_active == 1) {
 				check_download_limits();
 			}
@@ -73,6 +74,8 @@ if(strstr(e_QUERY, "mirror")) {
 			header("Location: {$gaddress}");
 			exit();
 		}
+		header("Location: ".e_BASE."download.php?error.{$download_id}.1");
+		exit;
 	}
 }
 
@@ -180,22 +183,29 @@ if ($type == "file")
 					exit();
 				}
 			}
-		} else {
-			// Download Access Denied.
-			if((!strpos($pref['download_denied'],".php") &&
+		} 
+		else 
+		{	// Download Access Denied.
+		  if((!strpos($pref['download_denied'],".php") &&
 			!strpos($pref['download_denied'],".htm") &&
 			!strpos($pref['download_denied'],".html") &&
 			!strpos($pref['download_denied'],".shtml") ||
 			(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
-			)){
-				require_once(HEADERF);
+			))
+		  {
+			header("Location: ".e_BASE."download.php?error.{$id}.1");
+			exit;
+/*				require_once(HEADERF);
 				$denied_message = ($pref['download_denied'] && !strpos($pref['download_denied'],"signup.php")) ? $tp->toHTML($pref['download_denied'],"","defs") : LAN_dl_63;
 				$ns -> tablerender(LAN_dl_61, $denied_message);
-				require_once(FOOTERF);
-				exit();
-			}else{
-				header("Location: ".trim($pref['download_denied']));
-			}
+				require_once(FOOTERF);  
+				exit();  */
+		  }
+		  else
+		  {
+			header("Location: ".trim($pref['download_denied']));
+			exit;
+		  }
 		}
 	}
 	else if(strstr(e_QUERY, "pub_"))
@@ -292,7 +302,7 @@ function send_file($file) {
 	if(!strstr($path, $path_downloads) && !strstr($path,$path_public)) {
         if(E107_DEBUG_LEVEL > 0 && ADMIN){
 			echo "Failed to Download <b>".$file."</b><br />";
-			echo "The file-path <b>".$path."<b> didn't match with either <b>$path_downloads</b> or <b>$path_public</b><br />";
+			echo "The file-path <b>".$path."<b> didn't match with either <b>{$path_downloads}</b> or <b>{$path_public}</b><br />";
 			exit();
         }else{
 			header("location: {$e107->base_path}");
@@ -351,28 +361,33 @@ function send_file($file) {
 		}
 	}
 }
-function check_download_limits() {
+function check_download_limits() 
+{
 	global $pref, $sql, $ns, $HEADER, $e107, $tp;
 	// Check download count limits
 	$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata >= 0 AND gen_intdata >= 0) ORDER BY count_perday DESC";
-	if($sql->db_Select_gen($qry)) {
+	if($sql->db_Select_gen($qry)) 
+	{
 		$limits = $sql->db_Fetch();
 		$cutoff = time() - (86400 * $limits['gen_chardata']);
-		if(USER) {
+		if(USER) 
+		{
 			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_userid = ".USERID;
 		} else {
 			$ip = $e107->getip();
 			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
 		}
 		$qry = "SELECT COUNT(d.download_id) as count FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
-		if($sql->db_Select_gen($qry)) {
+		if($sql->db_Select_gen($qry)) 
+		{
 			$row=$sql->db_Fetch();
-			if($row['count'] >= $limits['gen_intdata']) {
+			if($row['count'] >= $limits['gen_intdata']) 
+			{
 				// Exceeded download count limit
-
-				require_once(HEADERF);
+			  header("Location: ".e_BASE."download.php?error.{$cutoff}.2");
+/*				require_once(HEADERF);
 				$ns->tablerender(LAN_dl_61, LAN_dl_62);
-				require(FOOTERF);
+				require(FOOTERF);  */
 				exit();
 			}
 		}
@@ -391,11 +406,12 @@ function check_download_limits() {
 		$qry = "SELECT SUM(d.download_filesize) as total_bw FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
 		if($sql->db_Select_gen($qry)) {
 			$row=$sql->db_Fetch();
-			if($row['total_bw'] / 1024 > $limit['gen_user_id']) {
-				//Exceed bandwith limit
-				require(HEADERF);
+			if($row['total_bw'] / 1024 > $limit['gen_user_id']) 
+			{	//Exceed bandwith limit
+			  header("Location: ".e_BASE."download.php?error.{$cutoff}.2");
+/*				require(HEADERF);
 				$ns->tablerender(LAN_dl_61, LAN_dl_62);
-				require(FOOTERF);
+				require(FOOTERF); */
 				exit();
 			}
 		}
