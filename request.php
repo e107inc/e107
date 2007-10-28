@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/request.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-10-28 21:33:58 $
+|     $Revision: 1.4 $
+|     $Date: 2007-10-28 22:19:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -63,7 +63,7 @@ if(strstr(e_QUERY, "mirror")) {
 					$address = $tmp[1];
 					$requests = $tmp[2];
 					if($tmp[0] == $mirror_id) {
-						$gaddress = $address;
+						$gaddress = trim($address);
 						$requests ++;
 					}
 					$mstr .= $mid.",".$address.",".$requests.chr(1);
@@ -137,11 +137,12 @@ if ($type == "file")
 						$mid = $tmp[0];
 						$address = $tmp[1];
 						$requests = $tmp[2];
-						if($tmp[0] == $mirror_id) {
-							$gaddress = $address;
-							$requests ++;
+						if($tmp[0] == $mirror_id) 
+						{
+						  $gaddress = trim($address);
+						  $requests ++;
 						}
-						$mstr .= "{$mid}, {$address}, {$requests}".chr(1);
+					  $mstr .= $mid.",".$address.",".$requests.chr(1);
 					}
 				}
 				$sql -> db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '".intval($download_id)."'");
