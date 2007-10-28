@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/request.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-10-28 20:03:10 $
+|     $Revision: 1.3 $
+|     $Date: 2007-10-28 21:33:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ if(strstr(e_QUERY, "mirror")) {
 	list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
 	$download_id = intval($download_id);
 	$mirror_id = intval($mirror_id);
-	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id WHERE d.download_id = {$download_id}";
+	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category WHERE d.download_id = {$download_id}";
 	if ($sql->db_Select_gen($qry)) {
 		$row = $sql->db_Fetch();
 		extract($row);
