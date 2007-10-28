@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-10-07 14:11:47 $
+|     $Revision: 1.5 $
+|     $Date: 2007-10-28 15:01:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,21 +21,24 @@ require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
 require_once(HEADERF);
 
-if (!check_class(varset($pref['memberlist_access'], 253)))
-{
-	header("location:".e_BASE."index.php");
-	exit;
-}
 
 $_POST['f_query'] = trim($_POST['f_query']);
 
+$action = 'exit';
 if (e_QUERY)
 {
-	list($from, $action, $id) = explode(".", e_QUERY);
-	$id = intval($id);
-	$from = intval($from);
+  $tmp = explode(".", e_QUERY);
+  $from = intval($tmp[0]);			// Always defined
+  $action = varset($tmp[1],'exit');
+  if (!isset($tmp[2])) $action = 'exit';
+  $id = intval(varset($tmp[2],0));
+  if ($id <= 0) $action = 'exit';
+  if (($id != USERID) && !check_class(varset($pref['memberlist_access'], 253))) $action = 'exit';
+  unset($tmp);
 }
-else
+
+
+if ($action == 'exit')
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -252,7 +255,6 @@ function parse_userposts_forum_table($row)
 	}
 	else
 	{
-		$tmp = $thread_id;
 		$USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_2.": ";
 	}
 
