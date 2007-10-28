@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2007-10-26 00:31:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.59 $
+|     $Date: 2007-10-28 20:45:14 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -182,8 +182,8 @@ class e_bbcode
 									else
 									{
 										$stacktext .= $this->proc_bbcode('_'.$bbword,$bbparam);
-										$is_proc = TRUE;
 									}
+									$is_proc = TRUE;
 								}
 								elseif (array_key_exists($bbword,$this->bbLocation))
 								{
