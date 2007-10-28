@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-09-29 17:24:43 $
+|     $Revision: 1.6 $
+|     $Date: 2007-10-28 13:03:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -773,7 +773,7 @@ function sc_Select($container='sc_selector') {
 	<div style='position:absolute; bottom:30px; right:125px'>
 	<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>
-	<select class='tbox' name='sc_sel' onchange=\"addtext(this.value); expandit('{$container}')\">
+	<select class='tbox' name='sc_sel' onchange=\"addtext(this.value); this.selectedIndex= 0; expandit('{$container}')\">
 	<option value=''> -- </option>\n";
 
 	$sc = array(
