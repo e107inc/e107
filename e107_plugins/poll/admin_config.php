@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2007-03-04 04:00:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2007-10-28 21:10:00 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
-if (!getperms("U")) {
+if (!getperms("P")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
