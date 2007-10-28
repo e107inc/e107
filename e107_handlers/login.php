@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-10-28 19:04:14 $
+|     $Revision: 1.7 $
+|     $Date: 2007-10-28 19:20:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -171,7 +171,6 @@ class userlogin {
 					  if (strlen($fp))
 					  {
 						$redir = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$tp -> replaceConstants($fp, TRUE, FALSE);
-						if (e_QUERY) $redir .= "?".e_QUERY;
 //						$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					  }
 					  break;
