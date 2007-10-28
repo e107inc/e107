@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-24 16:30:42 $
+|     $Revision: 1.4 $
+|     $Date: 2007-10-28 19:04:13 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -206,7 +206,15 @@ if (isset($_POST['fp_delete_rule']))
 {
   if (isset($fp_settings[key($_POST['fp_delete_rule'])])) 
   {
-    unset($fp_settings[key($_POST['fp_delete_rule'])]);
+    $rule_no = key($_POST['fp_delete_rule']);
+	$array_size = count($fp_settings);
+    unset($fp_settings[$rule_no]);
+	while ($rule_no < $array_size)
+	{  // Move up and renumber any entries after the deleted rule
+	  $fp_settings[$rule_no] = $fp_settings[$rule_no + 1];
+	  $rule_no++;
+      unset($fp_settings[$rule_no]);
+	}
 	$fp_update_prefs = TRUE;
   }
 }
@@ -344,7 +352,7 @@ class frontpage
 		<tr><td colspan='7' class='fcaption' style='text-align:center;'>".($rule_info['order'] ? FRTLAN_46 : FRTLAN_42)."</td></tr>
 		<tr>
 		<td class='forumheader3' style='text-align:center' colspan='7'>
-		".FRTLAN_43.r_userclass('class', $rule_info['class'], 'off', 'guest,member,admin,main,classes')."</td>
+		".FRTLAN_43.r_userclass('class', $rule_info['class'], 'off', 'public,guest,member,admin,main,classes')."</td>
 		</tr><tr><td  colspan='3' class='fcaption' style='text-align:center;'>".FRTLAN_49."</td><td>&nbsp;</td>
 		<td  colspan='3' class='fcaption' style='text-align:center;'>".FRTLAN_35."<br />".FRTLAN_50."</td></tr>";
 
