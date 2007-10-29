@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2007-10-07 20:24:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.32 $
+|     $Date: 2007-10-29 20:49:54 $
+|     $Author: e107steved $
 |
 | 09.11.06 - Started next batch of mods
 +----------------------------------------------------------------------------+
@@ -146,6 +146,7 @@ else
     else
     {
         $smarray	= getdate($action);
+		$day 		= $smarray['mday'];
         $month		= $smarray['mon'];
         $year		= $smarray['year'];
     }
@@ -563,7 +564,7 @@ if ($nextmonth == 13)
     $nextyear	= ($year + 1);
 }
 
-$prop		= mktime(0, 0, 0, $month, 1, $year);		// Sets start date for new event entry
+$prop		= mktime(0, 0, 0, $month, $day, $year);		// Sets start date for new event entry
 $next		= mktime(0, 0, 0, $nextmonth, 1, $nextyear);	// Used by nav buttons
 $nowmonth	= $ecal_class->cal_date['mon'];
 $nowyear	= $ecal_class->cal_date['year'];
