@@ -1,9 +1,9 @@
-Polskie tłumaczenie systemu CMS e107 Website System v0.7.9
+Polskie tłumaczenie systemu CMS e107 Website System v0.7.10
 
-Wersja tłumaczenia: v0.7.9
+Wersja tłumaczenia: v0.7.10
 Wersja kodowa: UTF-8
 
-Data: 22.10.2007
+Data: 29.10.2007
 
 Tłumaczenie wykonał zespół - e107pl Dev Team - http://e107.org.pl
 
@@ -22,7 +22,7 @@ Spis treści:
 
 1. Wprowadzenie
 
-	Wszystkie pliki zawarte w archiwum stanowią zestaw polskich plików językowych przeznaczonych dla systemu CMS e107 v0.7.9. W archiwum zawarte są jedynie pliki językowe i nie ingerują on w strukturę systemu e107 w sposób bezpośredni.
+	Wszystkie pliki zawarte w archiwum stanowią zestaw polskich plików językowych przeznaczonych dla systemu CMS e107 v0.7.10. W archiwum zawarte są jedynie pliki językowe i nie ingerują on w strukturę systemu e107 w sposób bezpośredni.
 
 2. Instalacja
 
@@ -30,7 +30,7 @@ Spis treści:
 
 3. Aktualizacja
 
-- Z e107 v0.7.4 do e107 v0.7.9+
+- Z e107 v0.7.4 do e107 v0.7.10+
 
   Należy postępować identycznie jak przy instalacji, czyli najpierw rozpakować archiwum, a następnie wysłać na serwer i zatwierdzić wszystkie zmiany.
 
