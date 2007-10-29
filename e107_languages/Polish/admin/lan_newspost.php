@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2007-10-23 17:03:50 $
+|     $Revision: 1.13 $
+|     $Date: 2007-10-29 10:27:05 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_newspost.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_newspost.php rev. 1.31
+|     Zgodne z: /e107_languages/English/admin/lan_newspost.php rev. 1.32
 +-----------------------------------------------------------------------------+
 */
  
@@ -87,8 +87,8 @@ define("NWSLAN_69", "Załaduj obraz albo plik, aby go użyć w redagowanej wiado
 define("NWSLAN_72", "Wyświetlaj wiadomość tylko pomiędzy wskazanymi datami");
 define("NWSLAN_73", "Metoda prezentacji");
 define("NWSLAN_74", "Wybierz jak i gdzie ma być wyświetlana wiadomość");
-define("NWSLAN_75", "Domyślnie - publikacja na pierwszej stronie");
-define("NWSLAN_76", "Tylko tytuł - publikacja na pierwszej stronie");
+define("NWSLAN_75", "Domyślnie - publikacja na pierwszej stronie newsów");
+define("NWSLAN_76", "Tylko tytuł - publikacja na pierwszej stronie newsów");
 define("NWSLAN_77", "Publikacja w menu aktualności");
 
 // define("NWSLAN_78", "Ta opcja jest nieaktywna, ponieważ zapisywanie plików na Twoim serwerze jest wyłączone"); // deprecated see lan_admin.php
