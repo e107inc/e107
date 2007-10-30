@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.349 $
-|     $Date: 2007-10-21 22:02:36 $
+|     $Revision: 1.350 $
+|     $Date: 2007-10-30 00:38:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -119,13 +119,15 @@ if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST']))){
 }
 
 define("e_SUBDOMAIN", (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : FALSE)); // needs to be available to e107_config.
-$domrep = array("www.");
-if(e_SUBDOMAIN){
-	$domrep[] = e_SUBDOMAIN.".";
-}
-define("e_DOMAIN",($srvtmp != "" ? str_replace($domrep,"",$_SERVER['HTTP_HOST']) : FALSE)); // if it's an IP it must be set to FALSE.
 
-unset($srvtmp,$domrep);
+if(e_SUBDOMAIN)
+{
+   	unset($srvtmp[0]);
+}
+
+define("e_DOMAIN",(count($srvtmp) > 1 ? (implode(".",$srvtmp)) : FALSE)); // if it's an IP it must be set to FALSE.
+
+unset($srvtmp);
 
 
 //  Ensure thet '.' is the first part of the include path
@@ -360,8 +362,15 @@ define("SITEURL", SITEURLBASE.e_HTTP);
 if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE){
 
 		$mtmp = explode("\n",$pref['multilanguage_subdomain']);
+        foreach($mtmp as $val)
+		{
+        	if(e_DOMAIN == trim($val))
+			{
+            	$domain_active = TRUE;
+			}
+		}
 
-		if(in_array(e_DOMAIN,$mtmp) || ($pref['multilanguage_subdomain'] ==1))
+		if($domain_active || ($pref['multilanguage_subdomain'] == "1"))
 		{
 			e107_ini_set("session.cookie_domain",".".e_DOMAIN);
 			require_once(e_HANDLER."language_class.php");
