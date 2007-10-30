@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-09-22 09:48:45 $
+|     $Revision: 1.8 $
+|     $Date: 2007-10-30 22:30:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -163,7 +163,7 @@ define("PRFLAN_152", "No Verification");
 define("PRFLAN_153", "Admin Approval");
 define("PRFLAN_154", "New user verification method <br />If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
 
-define("PRFLAN_155", "Display Name available to");
+define("PRFLAN_155", "Display name and login name may be different for:");
 define("PRFLAN_156", "Reset ALL Display Names");
 define("PRFLAN_157", "All Display Names have been reset to the Username");
 define("PRFLAN_158", "Display Name maximum length (5..30)");
