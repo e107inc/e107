@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.9 $
-|   $Date: 2007-10-10 21:28:43 $
+|   $Revision: 1.10 $
+|   $Date: 2007-10-30 22:34:32 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -36,10 +36,10 @@ Parameters:
 			"attachment+extra_text" - indicates an attachment (related to forum post or PM), and specifies some optional text which is 
 											incorporated into the final file name (the original $fileinfo parameter).
 											$file_name = time()."_".USERID."_".'extra_text'.$name;
-			"prefix+extra_text" - indicates an attachment, and specifies some optional text which is prefixed to the file name
+			"prefix+extra_text" - indicates an attachment or file, and specifies some optional text which is prefixed to the file name
 			"unique"		- if the proposed destination file doesn't exist, saved under given name
 							- if the proposed destination file does exist, prepends time() to the file name to make it unique
-			'avatar'		- indicates an avatar is being uploaded (not used here)
+			'avatar'		- indicates an avatar is being uploaded (not used - options must be set elsewhere)
 	$options - an array of supplementary options, all of which will be given appropriate defaults if not defined:
 		'filetypes' - name of file containing list of valid file types 
 			   - Always looks in the admin directory
@@ -59,7 +59,8 @@ Parameters:
 					(Note: other parts of E107 don't understand strings with a multiplier letter yet)
 		'file_array_name' - the name of the 'input' array - defaults to file_userfile[] - otherwise as set.
 		'max_file_count' - maximum number of files which can be uploaded - default is 'unlimited' if this is zero of not set.
-		'save_to_db' - storage type - if set and TRUE, uploaded files are saved in the database (rhater than as flat files)
+		'overwrite' - if TRUE, existing file of the same name is overwritten; otherwise returns 'duplicate file' error (default FALSE)
+		'save_to_db' - storage type - if set and TRUE, uploaded files are saved in the database (rhater than as flat files) (default FALSE)
 
 
 Returns FALSE if the upload directory doesn't exist, or various other errors occurred which restrict the amount of meaningful information.
@@ -69,7 +70,7 @@ Returns an array, with one set of entries per uploaded file, regardless of wheth
 				$uploaded[$c]['type'] - mime type (if set - as returned by browser)
 				$uploaded[$c]['size'] - size in bytes (should be zero if error)
 				$uploaded[$c]['error'] - numeric error code (zero = OK)
-				$uploaded[$c]['index'] - if upload successful, the index position from the file_userfile[] array - usually numeric, but may be alphanumerif if coded
+				$uploaded[$c]['index'] - if upload successful, the index position from the file_userfile[] array - usually numeric, but may be alphanumeric if coded
 				$uploaded[$c]['message'] - text of displayed message relating to file
 				$uploaded[$c]['line'] - only if an error occurred, has line number (from __LINE__)
 				$uploaded[$c]['file'] - only if an error occurred, has file name (from __FILE__)
@@ -97,8 +98,8 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	if (UH_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Upload Handler test","Process uploads to {$uploaddir}, fileinfo  ".$fileinfo,FALSE,LOG_TO_ROLLING);
 	
 
-	$overwrite = varset($options['overwrite'],FALSE);				// Hopefully not needed
-	$save_to_db = varset($options['save_to_db'],FALSE);				// Hopefully not needed
+	$overwrite = varset($options['overwrite'],FALSE);
+	$save_to_db = varset($options['save_to_db'],FALSE);
 
 
 	$uploaddir = realpath($uploaddir);				// Mostly to get rid of the grot that might be passed in from legacy code. Also strips any trailing '/'
@@ -226,7 +227,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 		  $name = time()."_".USERID."_".trim($addbit[1]).$name;
 		}
 		elseif (strpos($fileinfo,"prefix") === 0) 
-		{	// For attachments, alternatively just add a prefix we've been passed
+		{	// For attachments, avatars, photos etc alternatively just add a prefix we've been passed
 		  $addbit = explode('+',$fileinfo,2);
 		  $name = trim($addbit[1]).$name;
 		}
@@ -234,14 +235,14 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 		$destination_file = $uploaddir."/".$name;
 
 		if ($fileinfo == "unique" && file_exists($destination_file))
-		{	// Modify destination name to make it unique - but only if target file name existis
+		{	// Modify destination name to make it unique - but only if target file name exists
 		  $name = time()."_".$name;
 		  $destination_file = $uploaddir."/".$name;
 		}
 
 		if (file_exists($destination_file) && !$overwrite)  $first_error = 250;			// Invent our own error number - duplicate file
 	  }
-	  
+ 
 	  if (!$first_error)
 	  {
 		$tpos = strrchr($files['name'][$key], ".");		// Require uploaded files to have an extension
@@ -293,18 +294,6 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 			@chmod($destination_file, $final_chmod);
 			if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Final chmod() file {$destination_file} to {$final_chmod} ",FALSE,FALSE);
 			
-			if (FALSE)
-			{	// Need to rename file under some circumstances - looks as if it needs a test round it! Or, more likely, just deleting.
-			  $_tmp = explode('.', $name);
-			  $fext = array_pop($_tmp);
-			  $fname = basename($name, '.'.$fext);
-			  $tmp = pathinfo($name);
-			  $rename = substr($fname, 0, 15).".".time().".".$fext;
-			  if (@rename(e_FILE."public/avatars/".$name, e_FILE."public/avatars/".$rename))
-			  {
-			    $uploaded[$c]['name'] = $rename;
-			  }
-			}
 			$uploaded[$c]['size'] = $files['size'][$key];
 			if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Saved file {$c} OK: ".$uploaded[$c]['name'],FALSE,FALSE);
 		  }
@@ -317,7 +306,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 	  if(!$first_error)
 	  {   // This file succeeded
-		$uploaded[$c]['message'] = LANUPLOAD_3." '".$name."'";
+		$uploaded[$c]['message'] = LANUPLOAD_3." '".$raw_name."'";
 		$uploaded[$c]['error'] = 0;
 	  }
 	  else
@@ -452,20 +441,31 @@ For backward compatibility, returns FALSE if only one file uploaded and an error
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "")
 {
 	global $admin_log;
+	$options = array('extra_file_types' => TRUE);		// As default, allow any filetype enabled in filetypes.php
+
 
 	if (!$uploaddir) {$uploaddir = e_FILE."public/";}
 
 // Compute storage type - 1 is file, 2 is DB
 	$upload_storagetype = varset($pref['upload_storagetype'],1);
 	if($uploaddir == e_THEME) {$upload_storagetype = 1;}
-	$save_to_db = ($upload_storagetype == "2" && $avatar == FALSE);
+	$options['save_to_db'] = ($upload_storagetype == "2" && $avatar == FALSE);
+
+	switch ($avatar)
+	{
+	  case 'attachment' :
+	    $avatar = "attachment+".$fileinfo;
+		break;
+	  case 'avatar' :
+	    $avatar = 'prefix+ap_'.USERID.'_';				// Prefix unique to user
+		$options['overwrite'] = TRUE;			// Allow update of avatar with same file name
+		break;
+	}
 
 	if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Legacy call, directory ".$uploaddir,FALSE,FALSE);
 	
 	$ret = process_uploaded_files(getcwd()."/".$uploaddir, 					// Well, that's the way it was done before
-			($avatar == "attachment" ? "attachment+".$fileinfo : $avatar),
-			array('extra_file_types' => TRUE,		// As default, allow any filetype enabled in filetypes.php
-				  'save_to_db' => $save_to_db));
+			$avatar,$options);
 	if ($ret === FALSE) 
 	{
 	  if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Legacy return FALSE",FALSE,FALSE);

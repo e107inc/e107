@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-10-09 21:30:16 $
+|     $Revision: 1.16 $
+|     $Date: 2007-10-30 22:34:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -256,6 +256,7 @@ if (isset($_POST['updatesettings']))
 					unset($message);
 					$error .= RESIZE_NOT_SUPPORTED."\\n";
 					@unlink(e_FILE."public/avatars/".$upload['name']);
+					$_POST['image'] = '';
 				}
 			}
 
@@ -268,6 +269,7 @@ if (isset($_POST['updatesettings']))
 					unset($message);
 					$error .= RESIZE_NOT_SUPPORTED."\\n";
 					@unlink(e_FILE."public/avatars/".$user_sess);
+					$user_sess = '';
 				}
 			}
 		  }
@@ -284,7 +286,7 @@ if (isset($_POST['updatesettings']))
 	elseif ($user_sess != "")
 	{	// Update DB with photo
 	  $sesschange = "user_sess = '".$tp->toDB($user_sess)."', ";
-	  if ($currentUser['user_sess'] == $sesschange)
+	  if ($currentUser['user_sess'] == $tp->toDB($user_sess))
 	  {
 		$sesschange = '';			// Same photo - do nothing
 //		echo "Photo not changed<br />";
@@ -292,7 +294,7 @@ if (isset($_POST['updatesettings']))
 	  else
 	  {
 		$photo_to_delete = $currentUser['user_sess'];
-//		echo "Delete old photo: {$photo_to_delete}<br />";
+//		echo "New photo: {$user_sess} Delete old photo: {$photo_to_delete}<br />";
 	  }
 	}
 
