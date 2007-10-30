@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-04 17:53:51 $
+|     $Revision: 1.3 $
+|     $Date: 2007-10-30 22:47:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -202,7 +202,7 @@ if (!$action) {
 				<tr><td colspan='8'>&nbsp;</td></tr>";
 		}
 	}
-	$text .= "</table></div>";
+	$text .= "</table>";
 
 	$ns->tablerender(BNRLAN_42, $text);
 }
@@ -438,10 +438,10 @@ if ($action == "create") {
 
 
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
-	$text .= ($sub_action == "edit" && $id ? "<input class='button' type='submit' name='updatebanner' value='".BNRLAN_40."' /><input type='hidden' name='eid' value='".$id."'" : "<input class='button' type='submit' name='createbanner' value='".BNRLAN_41."' />");
+	$text .= ($sub_action == "edit" && $id ? "<input class='button' type='submit' name='updatebanner' value='".BNRLAN_40."' /><input type='hidden' name='eid' value='".$id."' />" : "<input class='button' type='submit' name='createbanner' value='".BNRLAN_41."' />");
 
 	$text .= "</td></tr></table>
-		</form>";
+		</form></div>";
 
 	$ns->tablerender(BNRLAN_42, $text);
 
