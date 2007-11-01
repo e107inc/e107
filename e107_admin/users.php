@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-09-28 20:50:11 $
+|     $Revision: 1.7 $
+|     $Date: 2007-11-01 22:01:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1027,19 +1027,22 @@ class users{
 		}
 
 
-		define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
+		$return_address = (substr(SITEURL, -1) == "/") ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key;
 
 		$message = LAN_EMAIL_01." ".$name."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."...\n\n";
-		$message .= RETURNADDRESS . "\n\n".SITENAME."\n".SITEURL;
+		$message .= $return_address . "\n\n".SITENAME."\n".SITEURL;
 
         $mailheader_e107id = $id;
 
 		require_once(e_HANDLER."mail.php");
-	  	if(sendemail($email, LAN_404." ".SITENAME, $message)){
+	  	if(sendemail($email, LAN_404." ".SITENAME, $message))
+		{
 	   //		echo str_replace("\n","<br>",$message);
-			$this->show_message(USRLAN_140.": <a href='mailto:".$email."?body=".RETURNADDRESS."' title=\"".DUSRLAN_7."\" >".$name."</a> (".$row['user_language'].") ");
-	  	}else{
-    		$this->show_message(USRLAN_141.": ".$name);
+		  $this->show_message(USRLAN_140.": <a href='mailto:".$email."?body=".$return_address."' title=\"".DUSRLAN_7."\" >".$name."</a> (".$row['user_language'].") ");
+	  	}
+		else
+		{
+    	  $this->show_message(USRLAN_141.": ".$name);
 	  	}
 
 	}
