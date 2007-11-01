@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-10-28 21:10:00 $
+|     $Revision: 1.18 $
+|     $Date: 2007-11-01 22:46:14 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -107,13 +107,16 @@ if (POLLACTION == "edit" && !$_POST['preview'] && !$_POST['submit'])
 
 		$_POST['multipleChoice'] = $poll_allow_multiple;
 		$_POST['showResults'] = $poll_result_type;
-		$_POST['pollUserclass'] = $poll_vote_userclass;
+		// Can't have everyone voting if tracking method is user ID
+		$_POST['pollUserclass'] = (($poll_vote_userclass == e_UC_PUBLIC) && $poll_storage_method == 2) ? e_UC_MEMBER : $poll_vote_userclass;
 		$_POST['storageMethod'] = $poll_storage_method;
 	}
 }
 
 if (isset($_POST['preview']))
 {
+	// Can't have everyone voting if tracking method is user ID
+	if (($_POST['pollUserclass'] == e_UC_PUBLIC) && ($_POST['storageMethod'] == 2)) $_POST['pollUserclass'] = e_UC_MEMBER;
 	$poll->render_poll($_POST, "preview");
 }
 
@@ -125,7 +128,8 @@ if (isset($message))
 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 	<form action='".e_SELF."' method='post' id='del_poll'>";
 
-if ($poll_total = $sql->db_Select("polls", "*", "1 ORDER BY poll_type")) {
+if ($poll_total = $sql->db_Select("polls", "*", "1 ORDER BY poll_type")) 
+{  // Display existing polls
 	$text .= "<table class='fborder' style='width:99%'>
 		<tr>
 		<td style='width:5%' class='fcaption' style='white-space:nowrap'>".POLL_ADLAN07."
@@ -152,8 +156,10 @@ if ($poll_total = $sql->db_Select("polls", "*", "1 ORDER BY poll_type")) {
 			</tr>";
 	}
 	$text .= "</table>";
-} else {
-	$text .= "<div style='text-align:center'>".POLLAN_7."</div>";
+} 
+else 
+{  // No polls to display
+  $text .= "<div style='text-align:center'>".POLLAN_7."</div>";
 }
 $text .= "</form></div></div>";
 $ns->tablerender(POLLAN_1, $text);
@@ -164,17 +170,22 @@ $text = $poll -> renderPollForm();
 
 $ns->tablerender(POLLAN_2, $text);
 require_once(e_ADMIN."footer.php");
-function headerjs() {
+
+
+function headerjs() 
+{
 	global $tp;
 	$headerjs = "<script type=\"text/javascript\">
-		function confirm_(poll_id){
-		var x=confirm(\"Delete this poll? [ID: \" + poll_id + \"]\");
-		if (x){
-		document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
-		document.getElementById('del_poll').submit();
-		}
-		}
-		</script>";
+function confirm_(poll_id)
+{
+  var x=confirm(\"Delete this poll? [ID: \" + poll_id + \"]\");
+  if (x)
+  {
+	document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
+	document.getElementById('del_poll').submit();
+  }
+}
+</script>";
 	return $headerjs;
 }
 ?>
