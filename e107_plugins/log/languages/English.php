@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-08-14 19:27:22 $
+|     $Revision: 1.4 $
+|     $Date: 2007-11-01 20:28:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ define("ADSTAT_L21", "Total");
 define("ADSTAT_L22", "Unique");
 define("ADSTAT_L23", "Total Visits");
 define("ADSTAT_L24", "Total Unique Visits");
-define("ADSTAT_L25", "No statistics yet.");
+define("ADSTAT_L25", "No statistics available.");
 define("ADSTAT_L26", "Browser");
 define("ADSTAT_L27", "Operating System");
 define("ADSTAT_L28", "Countries / Domains");
@@ -67,8 +67,18 @@ define("ADSTAT_L44", "All-time page errors");
 define("ADSTAT_L45", "Stats deleted for: ");
 define("ADSTAT_L46", "Note: any stats for today will not be deleted");
 define("ADSTAT_L47", "No stats found for: ");
-define("ADSTAT_L48", "");
-define("ADSTAT_L49", "");
-define("ADSTAT_L50", "");
+define("ADSTAT_L48", "sort by total");
+define("ADSTAT_L49", "sort alphabetically");
+define("ADSTAT_L50", "All-time stats");
+define("ADSTAT_L51", "Current month stats");
+define("ADSTAT_L52", "Previous month stats");
+define("ADSTAT_L53", "");
+define("ADSTAT_L54", "");
+define("ADSTAT_L55", "");
+define("ADSTAT_L56", "");
+define("ADSTAT_L57", "");
+define("ADSTAT_L58", "");
+define("ADSTAT_L59", "");
+define("ADSTAT_L60", "");
 
 ?>
