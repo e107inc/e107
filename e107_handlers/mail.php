@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-08-14 19:37:30 $
+|     $Revision: 1.9 $
+|     $Date: 2007-11-01 20:10:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -68,9 +68,10 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 		$mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
     }
 
-	if ($pref['mailer']== 'smtp') {
-
-		if(isset($pref['smtp_pop3auth']) && $pref['smtp_pop3auth']){
+	if ($pref['mailer']== 'smtp') 
+	{
+		if(isset($pref['smtp_pop3auth']) && $pref['smtp_pop3auth'])
+		{
 			// http://www.corephp.co.uk/archives/18-POP-before-SMTP-Authentication-for-PHPMailer.html
 			require_once(e_HANDLER."phpmailer/class.pop3.php");
 			$pop = new POP3();
@@ -86,11 +87,14 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 			$mail->Password = $pref['smtp_password'];
 			$mail->PluginDir = e_HANDLER."phpmailer/";
 		}
-
-	} elseif ($pref['mailer']== 'sendmail'){
+	} 
+	elseif ($pref['mailer']== 'sendmail')
+	{
 		$mail->Mailer = "sendmail";
 		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'];
-	} else {
+	} 
+	else 
+	{
         $mail->Mailer = "mail";
 	}
 
@@ -98,8 +102,8 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 
 	if (!trim($send_from))
 	{
-	  $from_name = $tp->toEmail(varset($pref['replyto_name'],$pref['siteadmin']),"","parse_sc, no_make_clickable, defs");
-	  $send_from = $tp->toEmail(varset($pref['replyto_email'],$pref['siteadminemail']),"","parse_sc, no_make_clickable, defs");
+	  $from_name = $tp->toEmail(varsettrue($pref['replyto_name'],$pref['siteadmin']),"","parse_sc, no_make_clickable, defs");
+	  $send_from = $tp->toEmail(varsettrue($pref['replyto_email'],$pref['siteadminemail']),"","parse_sc, no_make_clickable, defs");
 	}
 	$mail->CharSet = CHARSET;
 	$mail->From = $send_from;
