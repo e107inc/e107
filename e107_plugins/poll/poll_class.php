@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-08-12 19:52:55 $
+|     $Revision: 1.7 $
+|     $Date: 2007-11-01 22:47:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -541,14 +541,14 @@ class poll
 
 		<tr>
 		<td style='width:30%' class='forumheader3'>".POLLAN_15."</td>
-		<td class='forumheader3'>".r_userclass("pollUserclass", $_POST['pollUserclass'], 'off', "member,admin,classes,matchclass")."</td>
+		<td class='forumheader3'>".r_userclass("pollUserclass", $_POST['pollUserclass'], 'off', "public,member,admin,classes,matchclass")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:30%' class='forumheader3'>".POLLAN_16."</td>
 		<td class='forumheader3'>
 		<input type='radio' name='storageMethod' value='0'".(!$_POST['storageMethod'] ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
-		<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
+		<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] ==1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
 		<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
 		</tr>
 
