@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-30 20:49:13 $
+|     $Revision: 1.4 $
+|     $Date: 2007-11-01 20:28:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = ADSTAT_L3;
-$eplug_version = "2.0";
+$eplug_version = "2.1";
 $eplug_author = "jalist";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
@@ -52,14 +52,14 @@ $eplug_prefTable = "menu_pref";
 $eplug_prefs = array(
 		"statActivate" => 0, 
 		"statUserclass" => "", 
-		"statClass" => 0, 
 		"statBrowser" => 1, 
 		"statOs" => 1, 
 		"statScreen" => 1, 
 		"statDomain" => 1, 
 		"statRefer" => 1, 
 		"statQuery" => 1, 
-		"statRecent" => 1
+		"statRecent" => 1,
+		"statPrevMonth" => 0
 		);
 	
 // List of table names -----------------------------------------------------------------------------------------------
@@ -84,6 +84,9 @@ $eplug_link_url = e_PLUGIN."log/stats.php?1";
 	
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = ADSTAT_L2;
-	
+
+$upgrade_add_prefs = array("statPrevMonth" => 0);
+$upgrade_remove_prefs = array("statClass");
+
 	
 ?>

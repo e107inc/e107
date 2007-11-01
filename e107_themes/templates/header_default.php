@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-09-27 20:58:11 $
+|     $Revision: 1.15 $
+|     $Date: 2007-11-01 20:28:29 $
 |     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -141,14 +141,14 @@ if (function_exists('headerjs')){echo headerjs();  }
 if (isset($eplug_css) && $eplug_css) {
     if(is_array($eplug_css))
 	{
-    	foreach($eplug_css as $kcss)
-		{
-        	echo "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
-		}
+      foreach($eplug_css as $kcss)
+	  {	// Allow inline style definition - but only if $eplug_css is an array (maybe require an array later)
+        if ('<style' == substr($kcss,0,6)) echo $kcss; else echo "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
+	  }
 	}
 	else
 	{
-    	echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
+		echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 	}
 
 }
@@ -194,11 +194,9 @@ if(defined("PREVIEWTHEME")) {
 	}
 }
 
-//
-// DEPRECATED!!! This is used in log/stats.php to generate some css. We'll clean this up in a future release.
-//
+// Deprecated function finally removed
+//if(function_exists('core_head')){ echo core_head(); }
 
-if(function_exists('core_head')){ echo core_head(); }
 
 //
 // F: Send Meta Tags and Icon links
