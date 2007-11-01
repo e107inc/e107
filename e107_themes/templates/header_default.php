@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2007-09-27 20:57:51 $
+|     $Revision: 1.109 $
+|     $Date: 2007-11-01 20:27:45 $
 |     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -141,10 +141,10 @@ if (isset($eplug_css) && $eplug_css) {
 	echo "\n<!-- eplug_css -->\n";
     if(is_array($eplug_css))
 	{
-    	foreach($eplug_css as $kcss)
-		{
-        	echo "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
-		}
+      foreach($eplug_css as $kcss)
+	  {	// Allow inline style definition - but only if $eplug_css is an array (maybe require an array later)
+        if ('<style' == substr($kcss,0,6)) echo $kcss; else echo "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
+	  }
 	}
 	else
 	{
@@ -196,10 +196,10 @@ if(defined("PREVIEWTHEME")) {
 }
 
 //
-// DEPRECATED!!! This is used in log/stats.php to generate some css. We'll clean this up in a future release.
+// DEPRECATED!!! This is used in log/stats.php to generate some css. Its gone in 0.8 - requirement removed
 //
-
 if(function_exists('core_head')){ echo core_head(); }
+
 
 //
 // F: Send Meta Tags and Icon links
