@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     �Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-10-07 22:01:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.27 $
+|     $Date: 2007-11-02 22:01:44 $
+|     $Author: e107steved $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
 */
