@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.197 $
-|     $Date: 2007-10-28 21:04:25 $
+|     $Revision: 1.198 $
+|     $Date: 2007-11-04 20:24:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -845,7 +845,7 @@ class e_parse
 			$text = stripslashes($text);
 		}
 
-	  	$text = ($mods != "rawtext") ? $this->replaceConstants($text,"full") : $text;
+	  	$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text,"full") : $text;
     	$text = $this->toHTML($text,TRUE,$mods);
         return $text;
 	}

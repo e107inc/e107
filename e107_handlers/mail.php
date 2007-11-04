@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2007-11-01 20:10:04 $
+|     $Revision: 1.43 $
+|     $Date: 2007-11-04 20:24:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -85,8 +85,8 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 
 	if (!trim($send_from))
 	{
-	  $from_name = $tp->toEmail(varsettrue($pref['replyto_name'],$pref['siteadmin']),"","parse_sc, no_make_clickable, defs");
-	  $send_from = $tp->toEmail(varsettrue($pref['replyto_email'],$pref['siteadminemail']),"","parse_sc, no_make_clickable, defs");
+	  $from_name = $tp->toEmail(varsettrue($pref['replyto_name'],$pref['siteadmin']),"","RAWTEXT");
+	  $send_from = $tp->toEmail(varsettrue($pref['replyto_email'],$pref['siteadminemail']),"","RAWTEXT");
 	}
 	$mail->CharSet = CHARSET;
 	$mail->From = $send_from;
