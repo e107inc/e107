@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-11-01 20:28:21 $
+|     $Revision: 1.6 $
+|     $Date: 2007-11-04 09:24:59 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,14 @@ require_once("../../class2.php");
 @include_once(e_PLUGIN."log/languages/English.php");
 
 
+$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
+$eplug_css[] = "<style type='text/css'>
+<!--
+.b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font: 0px }
+-->
+</style>";
+
+/*
 function core_head() {
 	$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 	return "<style type='text/css'>
@@ -30,6 +38,7 @@ function core_head() {
 -->
 </style>";
 }
+*/
 
 require_once(HEADERF);
 
@@ -64,6 +73,20 @@ if($stat -> error)
 	require_once(FOOTERF);
 	exit;
 }
+
+
+$oses_map = array (
+"Windows" => "windows",
+"Mac" => "mac",
+"Linux" => "linux",
+"BeOS" => "beos",
+"FreeBSD" => "freebsd",
+"NetBSD" => "netbsd",
+"Unspecified"=> "unspecified",
+"OpenBSD" => "openbsd",
+"Unix" => "unix",
+"Spiders" => "spiders",
+);
 
 $browser_map = array (
 'Netcaptor'         => "netcaptor",
@@ -439,8 +462,8 @@ switch($action)
 	  if (ADMIN == TRUE)
 		$text .= $stat -> renderAlltimeVisits(TRUE);
 	break;
-	case 3 :
-	case 14 :
+	case 3 :		// 'Normal' render
+	case 14 :		// 'Consolidated' render
 	  if($pref['statBrowser']) 
 	  {
 		$text .= $stat -> renderBrowsers(display_pars($pref['statBrowser']), $action==3);
@@ -450,10 +473,11 @@ switch($action)
 		$text .= ADSTAT_L7;
 	  }
 	  break;
-	case 4:
+	case 4:			// 'Normal' render
+	case 15 :		// 'Consolidated' render
 	  if($pref['statOs']) 
 	  {
-		$text .= $stat -> renderOses(display_pars($pref['statOs']));
+		$text .= $stat -> renderOses(display_pars($pref['statOs']), $action==4);
 	  } 
 	  else 
 	  {
@@ -537,6 +561,7 @@ switch($action)
 12 - Today's error page visits
 13 - All-time error page visits
 14 - Consolidated browser view (not listed as a menu option)
+15 - Consolidated OS view (not listed as a menu option)
 */
 
 $path = e_PLUGIN."log/stats.php";
@@ -831,7 +856,7 @@ class siteStats
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	// List browsers. $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
-	// If $show_version is FALSE, browsers are consolidated across versions - e.g. 1 line for Firefox
+	// If $show_version is FALSE, browsers are consolidated across versions - e.g. 1 line for Firefox using info from $browser_map
 	function renderBrowsers($selection, $show_version=TRUE) 
 	{
 	  global $sql, $browser_map;
@@ -839,7 +864,7 @@ class siteStats
 	  if (!is_array($selection)) $selection = array(1);
 	  $text = '';
 
-	  echo "Show browsers; expanded = ".($show_version ? 'TRUE' : 'FALSE')."<br />";
+//	  echo "Show browsers; expanded = ".($show_version ? 'TRUE' : 'FALSE')."<br />";
 	  foreach ($selection as $act)
 	  {
 	    unset($statBrowser);
@@ -871,7 +896,7 @@ class siteStats
 		    $b_type = '';
 			foreach ($browser_map as $name => $file) 
 			{
-			  if(stristr($b_full, $name) === 0)
+			  if(stripos($b_full, $name) === 0)
 			  {  // Match here
 			    $b_type = $name;
 			    break;
@@ -879,7 +904,7 @@ class siteStats
 			}
 			if (!$b_type) $b_type = $b_full;		// Default is an unsupported browser - use the whole name
 
-			if (array_key_exists($temp_array,$b_type))
+			if (array_key_exists($b_type,$temp_array))
 			{
 			  $temp_array[$b_type] += $v;
 			}
@@ -949,14 +974,18 @@ class siteStats
 	  return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-	function renderOses($selection) 
+	/* -------------------------------------------------------
+	Show operating systems. Only show different versions of the operating system if $show_version == TRUE
+	Uses $oses_map
+	-----------------------------------------------------------*/
+	function renderOses($selection, $show_version=TRUE) 
 	{
-	  global $sql;
+	  global $sql, $oses_map;
 	  if (!$selection) $selection = array(1);
 	  if (!is_array($selection)) $selection = array(1);
 	  $text = '';
+
+//	  echo "Show OSes; expanded = ".($show_version ? 'TRUE' : 'FALSE')."<br />";
 
 	  $statOs = array();
 	  foreach ($selection as $act)
@@ -978,6 +1007,38 @@ class siteStats
 			$statOs[$name] += $count;
 		  }
 		}
+
+
+		if ($show_version == FALSE)
+		{
+		  $temp_array = array();
+		  foreach ($statOs as $b_full=>$v)
+		  {
+		    $b_type = '';
+			foreach ($oses_map as $name => $file) 
+			{
+			  if(stripos($b_full, $name) === 0)
+			  {  // Match here
+			    $b_type = $name;
+			    break;
+			  }
+			}
+			if (!$b_type) $b_type = $b_full;		// Default is an unsupported browser - use the whole name
+
+			if (array_key_exists($b_type,$temp_array))
+			{
+			  $temp_array[$b_type] += $v;
+			}
+			else
+			{
+			  $temp_array[$b_type] = $v;		// New browser found
+			}
+		  }
+		  $statOs = $temp_array;
+		  unset($temp_array);
+		}
+
+
 
 		if($this -> order) 
 		{
