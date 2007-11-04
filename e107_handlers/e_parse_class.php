@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-10-16 19:05:24 $
+|     $Revision: 1.18 $
+|     $Date: 2007-11-04 09:05:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -125,20 +125,19 @@ class e_parse
 		}
 	}
 	
-	function toDB($data, $nostrip = false, $no_encode = false, $original_author = false, $mod = false)
+	function toDB($data, $nostrip = false, $no_encode = false, $mod = false, $original_author = false)
 	{
 		/**
 		* $nostrip: toDB() assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless you indicate otherwise by setting this var to true.
 		* If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
 		* $no_encode: This var should nearly always be false. It is used by the save_prefs() function to preserve html content within prefs even when 
 		* the save_prefs() function has been called by a non admin user / user without html posting permissions.
-		* $mod: although not used in core, the 'no_html' and 'no_php' modifiers are available for plugins to blanket prevent html and php posting regardless 
-		* of posting permissions.
+		* $mod: the 'no_html' and 'no_php' modifiers blanket prevent html and php posting regardless of posting permissions. (used in logging)
 		*/
 		global $pref;
 		if (is_array($data)) {
 			foreach ($data as $key => $var) {
-				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $original_author, $mod);
+				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $mod, $original_author);
 			}
 		} else {
 			if (MAGIC_QUOTES_GPC == true && $nostrip == false) {
@@ -195,7 +194,7 @@ class e_parse
 
 
 	function post_toHTML($text, $original_author = false, $extra = '', $mod = false) {
-		$text = $this -> toDB($text, false, false, $original_author, $mod);
+		$text = $this -> toDB($text, false, false, $mod, $original_author);
 		return $this -> toHTML($text, true, $extra);
 	}
 
