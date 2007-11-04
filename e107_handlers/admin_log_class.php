@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ?Steve Dunstan 2001-2002
+|     �Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-21 16:55:10 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-11-04 09:10:54 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -89,9 +89,9 @@ class e_admin_log {
 	function log_event ($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE) {
 		global $e107, $sql, $tp;
 		if($event_type >= $this->_options['log_level']) {
-			$event_title = $tp -> toDB($event_title, true);
-			$event_detail = $tp -> toDB($event_detail, true);
-			$event_type = $tp -> toDB($event_type, true);
+			$event_title = $tp -> toDB($event_title, true,false,'no_html');
+			$event_detail = $tp -> toDB($event_detail, true,false,'no_html');
+			$event_type = $tp -> toDB($event_type, true,false,'no_html');
 			$time_stamp = time();
 			$uid = (USERID !== FALSE) ? USERID : '0';
 			$ip = $e107->getip();
