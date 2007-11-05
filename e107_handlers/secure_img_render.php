@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-10-25 07:11:35 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2007-11-05 20:12:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,15 +52,18 @@ if($recnum == false){
 
 $mySQLserver = "";
 
-@include_once(dirname(__FILE__)."e107_config.php");
-
 $a = 0;
 $p = "";
 
-while(!$mySQLserver && $a < 5){
-	$a ++;
-	$p .= "../";
-	@include_once($p."e107_config.php");
+$ifile = dirname(__FILE__);
+if (substr($ifile,-1,1) != '/') $ifile .= '/';
+@include_once($ifile."e107_config.php");
+
+while(!$mySQLserver && $a < 5)
+{
+  $a ++;
+  $p .= "../";
+  @include_once($ifile.$p.'e107_config.php');		// *** Revised
 }
 
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
