@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-11-05 20:12:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,15 +52,18 @@ if($recnum == false){
 
 $mySQLserver = "";
 
-@include_once(dirname(__FILE__)."e107_config.php");
-
 $a = 0;
 $p = "";
 
-while(!$mySQLserver && $a < 5){
-	$a ++;
-	$p .= "../";
-	@include_once($p."e107_config.php");
+$ifile = dirname(__FILE__);
+if (substr($ifile,-1,1) != '/') $ifile .= '/';
+@include_once($ifile."e107_config.php");
+
+while(!$mySQLserver && $a < 5)
+{
+  $a ++;
+  $p .= "../";
+  @include_once($ifile.$p.'e107_config.php');		// *** Revised
 }
 
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
@@ -94,7 +97,7 @@ if(is_readable($path."secure_image_custom.php")) {
 	$secureimg['x']		= "6";
 	$secureimg['y']		= "22";
 	$secureimg['font'] 	= "imagecode.ttf";
-	$secureimg['color'] = array(90,90,90); // red,green,blue
+	$secureimg['color'] = "90,90,90"; // red,green,blue
 
 	*/
 	$bg_file = $secureimg['image'];
@@ -114,10 +117,13 @@ switch($type) {
 		break;
 }
 
-if(isset($secureimg['color'])) {
+if(isset($secureimg['color']))
+{
 	$tmp = explode(",",$secureimg['color']);
 	$text_color = ImageColorAllocate($image,$tmp[0],$tmp[1],$tmp[2]);
-} else {
+}
+else
+{
 	$text_color = ImageColorAllocate($image, 90, 90, 90);
 }
 
