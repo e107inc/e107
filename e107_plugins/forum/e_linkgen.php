@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/e_linkgen.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-15 21:15:38 $
+|     $Revision: 1.4 $
+|     $Date: 2007-11-05 20:52:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ include_lan(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_forum_admin.php");
 	$sublink_type['forum']['title'] = FORLAN_155; // "News Categories";
 	$sublink_type['forum']['table'] = "forum";
 	$sublink_type['forum']['query'] = "forum_parent !='0' ORDER BY forum_order ASC";
-    $sublink_type['forum']['url'] = $PLUGINS_DIRECTORY."forum/forum_viewforum.php?#";
+    $sublink_type['forum']['url'] = "{e_PLUGIN}forum/forum_viewforum.php?#";
 	$sublink_type['forum']['fieldid'] = "forum_id";
 	$sublink_type['forum']['fieldname'] = "forum_name";
 	$sublink_type['forum']['fielddiz'] = "forum_description";
