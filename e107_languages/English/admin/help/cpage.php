@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/cpage.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-11-06 20:08:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,5 +22,5 @@ if (!defined('e107_INIT')) { exit; }
 $text = "From this screen you can create custom menus or custom pages with your own content in them.<br /><br />";
 // $text .= "Please see <a href='http://docs.e107.org/Using Custom Pages and Custom Menus'>http://docs.e107.org/Using Custom Pages and Custom Menus</a> for an explanation of all the features.";
 
-$ns -> tablerender(CUSLAN_18, $text);
+$ns -> tablerender('Custom Menus/Pages Help', $text);
 ?>
