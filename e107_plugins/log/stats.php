@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-11-04 09:24:59 $
+|     $Revision: 1.7 $
+|     $Date: 2007-11-07 22:20:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -934,7 +934,7 @@ class siteStats
 			$text .= "<table class='fborder' style='width: 100%;'>\n
 					 <tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 					 <tr><td class='fcaption' style='width: 20%;'>
-					 <a title='".($this -> order ? ADSTAT_L48 : ADSTAT_L49)."' href='".e_SELF."?3".($this -> order ? "" : ".1" )."'>".ADSTAT_L26."</a>
+					 <a title='".($this -> order ? ADSTAT_L48 : ADSTAT_L49)."' href='".e_SELF."?".($show_version ? "3" : "14").($this -> order ? "" : ".1" )."'>".ADSTAT_L26."</a>
 					 </td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n
 					 <td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 
@@ -1055,7 +1055,7 @@ class siteStats
 		$text .= "<table class='fborder' style='width: 100%;'>\n
 			<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 		  <tr>\n<td class='fcaption' style='width: 20%;'>
-		  <a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?4".($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></td>\n
+		  <a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></td>\n
 		  <td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		  
 		if (count($osArray))
