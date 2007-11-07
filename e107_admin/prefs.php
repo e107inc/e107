@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-09-18 21:10:12 $
+|     $Revision: 1.8 $
+|     $Date: 2007-11-07 22:34:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -54,6 +54,8 @@ if (isset($_POST['updateprefs']))
 	$_POST['siteurl']     = trim($_POST['siteurl']) ? trim($_POST['siteurl']) : SITEURL;
 	$_POST['siteurl']     = substr($_POST['siteurl'], -1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
 
+	// If email verification, email address is required!
+	if ($_POST['user_reg_veri'] == 1) $_POST['disable_emailcheck'] = 0;
 
 // Table of range checking values - min and max for numerics. Only do the important ones
 	$pref_limits = array(
