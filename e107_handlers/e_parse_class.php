@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.198 $
-|     $Date: 2007-11-04 20:24:53 $
-|     $Author: e107steved $
+|     $Revision: 1.199 $
+|     $Date: 2007-11-07 22:41:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -511,11 +511,7 @@ class e_parse
 		}
 
 
-		// replace all {e_XXX} constants with their e107 value
-		if ($opts['constants'])
-		{
-			$text = $this->replaceConstants($text);
-		}
+
 
 		if ($opts['no_tags'])
 		{
@@ -600,6 +596,8 @@ class e_parse
 		}
 
 
+
+
         // Start parse [bb][/bb] codes
         if ($parseBB === TRUE)
 		{
@@ -611,6 +609,12 @@ class e_parse
         }
         // End parse [bb][/bb] codes
 
+
+		// replace all {e_XXX} constants with their e107 value AFTER the bbcodes have been parsed.
+		if ($opts['constants'])
+		{
+		   	$text = $this->replaceConstants($text);
+		}
 
 		// profanity filter
         if ($pref['profanity_filter']) {

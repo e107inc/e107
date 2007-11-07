@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2007-10-28 20:45:14 $
-|     $Author: e107steved $
+|     $Revision: 1.60 $
+|     $Date: 2007-11-07 22:41:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -65,6 +65,7 @@ class e_bbcode
 	{
 		global $postID;
 		$postID = $p_ID;
+
 
 		if (strlen($value) <= 6) return $value;     // Don't waste time on trivia!
 		if ($force_lower == 'default') $force_lower = TRUE;	// Set the default behaviour if not overridden
@@ -254,7 +255,8 @@ class e_bbcode
 	{
 		global $tp, $postID, $code_text, $parm;
 		$parm = $param1;
-		$code_text = $tp->replaceConstants($code_text_par);
+
+		$code_text = $code_text_par;
 
 		if (E107_DEBUG_LEVEL)
 		{

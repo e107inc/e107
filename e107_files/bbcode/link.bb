@@ -12,6 +12,7 @@ global $pref;
 	[link=external=http://mysite.com]My text[/link]
 */
 
+
 	$parm = trim($parm);
 
 	/* Fix for people using link=external= */
@@ -38,8 +39,14 @@ global $pref;
     	$extras = "rel=external";
 	}
 
-    $insert = (($pref['links_new_window'] || $extras == "external" || strpos($extras,"rel=external")!==FALSE) && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#") ? "rel='external' " : "";
-
+	if($extras == "external" || strpos($extras,"rel=external")!==FALSE)
+	{
+    	$insert = "rel='external' ";
+	}
+	else
+	{
+    	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
+    }
 	if (strtolower(substr($link,0,11)) == 'javascript:') return '';
 	return "<a class='bbcode' href='".$tp -> toAttribute($link)."' ".$insert.">".$code_text."</a>";
 
