@@ -1,4 +1,4 @@
-global $sql, $page, $link_class;
+global $sql, $page, $link_class, $tp;
 $sql -> db_Select('links', '*', "link_category = 1 and link_name NOT REGEXP('submenu') and link_name NOT REGEXP('child') and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC");
 $ulmenu = "<ul id='navigation'>";
 $r="1";
@@ -8,7 +8,8 @@ while($row = $sql -> db_Fetch()){
 			extract($row);
 			$ltest = (e_QUERY ? e_PAGE."?".e_QUERY : e_PAGE);
 			$rtest=substr(strrchr($link_url, "/"), 1);
-			if(!preg_match("#(http:|mailto:|ftp:)#",$link_url)){ $link_url = e_BASE.$link_url; }
+			$link_url = $tp->replaceConstants($link_url,TRUE);
+			if (strpos($link_url, '://') === FALSE) { $link_url = e_BASE.$link_url; }
 			if($ltest == $link_url || $rtest == e_PAGE){ $ulclass = '_onpage'; } else { $ulclass = ''; }
 			switch ($link_open) { 
 				case 1:
