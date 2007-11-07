@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/khatru/forum_viewforum_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-28 16:52:39 $
+|     $Revision: 1.4 $
+|     $Date: 2007-11-07 23:01:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,6 +28,7 @@ $icon = (file_exists(THEME."forum/e.png") ? THEME_ABS."forum/e.png" : e_PLUGIN."
 BOXOPEN."{BREADCRUMB}".BOXMAIN."
 
 <table style='width:100%'>
+{SUBFORUMS}
 <tr>
 <td style='width:80%'><div class='newheadline'><img src='".$icon."' style='vertical-align:middle' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
 <td style='width:20%; text-align:right; vertical-align:bottom;'>
