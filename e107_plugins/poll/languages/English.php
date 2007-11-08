@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-11-08 20:40:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,6 +21,10 @@ define("POLL_ADLAN01", "Poll");
 define("POLL_ADLAN02", "The poll plugin allows you to define polls in either a menu or forum post.");
 define("POLL_ADLAN03", "Configure polls");
 define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remember to activate the menu item from your menus page.");
+
+define("POLL_ADLAN05", "Main Poll: ");
+define("POLL_ADLAN06", "Forum Thread: ");
+define("POLL_ADLAN07", "Type");
 
 define("POLLAN_MENU_CAPTION", "Poll");
 
@@ -66,7 +70,7 @@ define("POLLAN_39", "Thank you for voting!");
 define("POLLAN_40", "Click here to see results");
 define("POLLAN_41", "This poll is restricted to members only");
 define("POLLAN_42", "This poll is restricted to administrators only");
-define("POLLAN_43", "You do not have the permission to vote in this poll");
+define("POLLAN_43", "You do not have the required permissions to vote in this poll");
 define("POLLAN_44", "Delete this poll?");
 define("POLLAN_45", "Poll successfully updated");
 define("POLLAN_46", "Field(s) left blank");
