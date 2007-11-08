@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-11-08 20:48:48 $
+|     $Revision: 1.6 $
+|     $Date: 2007-11-08 21:06:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -269,7 +269,7 @@ SC_END
 
 SC_BEGIN TRACKBACK
 global $pref;
-if(varsettrue($pref['trackbackEnabled'])) return '';
+if(!varsettrue($pref['trackbackEnabled'])) return '';
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 return ($param['trackbackbeforestring'] ? $param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."#track'>".$param['trackbackstring'].$news_item['tb_count']."</a>".($param['trackbackafterstring'] ? $param['trackbackafterstring'] : "");

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-10-15 19:16:04 $
+|     $Revision: 1.9 $
+|     $Date: 2007-11-08 21:06:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -145,7 +145,7 @@ if ($action == 'cat' || $action == 'all')
 		<td style='vertical-align:top;padding:3px;width:20px'>
 		{NEWSCATICON}
 		</td><td style='text-align:left;padding:3px'>
-		{NEWSTITLELINK}
+		{NEWSTITLELINK=extend}
 		<br />
 		{NEWSSUMMARY}
 		<span class='smalltext'>
@@ -177,7 +177,11 @@ if ($action == 'cat' || $action == 'all')
 
     if(!$NEWSLISTTITLE)
 	{
-	  $NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"TITLE")."'";
+		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"TITLE")."'";
+	}
+	else
+	{
+    	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,"TITLE"),$NEWSLISTTITLE);
 	}
 
 	ob_start();
@@ -195,9 +199,10 @@ if ($action == 'cat' || $action == 'all')
 //------------------------------------------------------
 if ($action == "extend") 
 {	// --> Cache
-	if($tmp = checkCache($cacheString)){
-		require_once(HEADERF);
-		renderCache($tmp, TRUE);
+	if($tmp = checkCache($cacheString))
+	{
+	  require_once(HEADERF);
+	  renderCache($tmp, TRUE);
 	}
 	// <-- Cache
 
@@ -209,7 +214,8 @@ if ($action == "extend")
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
 		WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."' 
 		AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") ";
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
+		GROUP by n.news_id";
 	}
 	else
 	{
@@ -225,7 +231,7 @@ if ($action == "extend")
 	{
 	  if($pref['meta_news_summary'] && $news['news_title'])
 	  {
-		define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
+       	define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
 	  }
 	  define("e_PAGETITLE",$news['news_title']);
 	}
