@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-20 16:09:53 $
-|     $Author: mrpete $
+|     $Revision: 1.5 $
+|     $Date: 2007-11-08 20:48:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -32,7 +32,7 @@ global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
-if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
+if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != "noextend") {
     $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
 }
@@ -62,8 +62,8 @@ SC_BEGIN NEWSCATEGORY
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$category_name = $tp -> toHTML($news_item['category_name']);
-return "<a style='".(isset($param['catlink']) ? $param['catlink'] : "#")."' href='".e_BASE."news.php?cat.".$news_item['news_category']."'>".$category_name."</a>";
+$category_name = $tp -> toHTML($news_item['category_name'],FALSE,"defs");
+return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($param['catlink']) ? $param['catlink'] : "#")."' href='".e_BASE."news.php?cat.".$news_item['news_category']."'>".$category_name."</a>";
 SC_END
 
 SC_BEGIN NEWSAUTHOR
@@ -110,6 +110,10 @@ SC_END
 
 SC_BEGIN NEWSCOMMENTS
 global $pref, $sql;
+if($pref['comments_disabled'] == 1)
+{
+	return;
+}
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $news_item['news_comment_total'] = $sql->db_Select("comments", "*", "comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
@@ -183,7 +187,7 @@ SC_END
 SC_BEGIN EXTENDED
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-if ($news_item['news_extended'] && strpos(e_QUERY, 'extend') === FALSE) {
+if ($news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == "force")) {
 	if (defined("PRE_EXTENDEDSTRING")) {
 		$es1 = PRE_EXTENDEDSTRING;
 	}
@@ -265,13 +269,10 @@ SC_END
 
 SC_BEGIN TRACKBACK
 global $pref;
+if(varsettrue($pref['trackbackEnabled'])) return '';
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-if(isset($pref['trackbackEnabled'])) {
-	return ($param['trackbackbeforestring'] ? $param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."#track'>".$param['trackbackstring'].$news_item['tb_count']."</a>".($param['trackbackafterstring'] ? $param['trackbackafterstring'] : "");
-} else {
-	return "";
-}
+return ($param['trackbackbeforestring'] ? $param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."#track'>".$param['trackbackstring'].$news_item['tb_count']."</a>".($param['trackbackafterstring'] ? $param['trackbackafterstring'] : "");
 SC_END
 
 SC_BEGIN NEWSINFO
