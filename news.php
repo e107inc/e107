@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.123 $
-|     $Date: 2007-10-15 19:15:35 $
+|     $Revision: 1.124 $
+|     $Date: 2007-11-08 21:05:51 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -131,7 +131,6 @@ if ($action == 'cat' || $action == 'all')
 
 	if($category_name)
 	{
-//		define("e_PAGETITLE", $tp->toHTML($category_name,FALSE,"defs"));
 		define("e_PAGETITLE", $tp->toHTML($category_name,FALSE,"TITLE"));
 	}
 
@@ -215,7 +214,8 @@ if ($action == "extend")
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
 		WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."' 
 		AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") ";
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
+		GROUP by n.news_id";
 	}
 	else
 	{
