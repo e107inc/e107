@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2007-09-17 10:28:11 $
-|     $Author: e107coders $
+|     $Revision: 1.33 $
+|     $Date: 2007-11-08 20:48:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -261,7 +261,6 @@ SC_END
 
 SC_BEGIN NEWSCATICON
 global $tp, $news_shortcodes;
-;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $category_icon = $tp -> parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
@@ -271,13 +270,10 @@ SC_END
 
 SC_BEGIN TRACKBACK
 global $pref;
+if(varsettrue($pref['trackbackEnabled'])) return '';
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-if(isset($pref['trackbackEnabled'])) {
-	return ($param['trackbackbeforestring'] ? $param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."#track'>".$param['trackbackstring'].$news_item['tb_count']."</a>".($param['trackbackafterstring'] ? $param['trackbackafterstring'] : "");
-} else {
-	return "";
-}
+return ($param['trackbackbeforestring'] ? $param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."#track'>".$param['trackbackstring'].$news_item['tb_count']."</a>".($param['trackbackafterstring'] ? $param['trackbackafterstring'] : "");
 SC_END
 
 SC_BEGIN NEWSINFO
