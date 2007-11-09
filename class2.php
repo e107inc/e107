@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.352 $
-|     $Date: 2007-11-09 05:50:27 $
+|     $Revision: 1.353 $
+|     $Date: 2007-11-09 05:55:15 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1048,11 +1048,11 @@ function get_user_data($uid, $extra = "")
 	$qry = "
 	SELECT u.*, ue.* FROM #user AS u
 	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
-	WHERE u.user_id='{$uid}' {$extra}
+	WHERE u.user_id = {$uid} {$extra}
 	";
 	if (!$sql->db_Select_gen($qry))
 	{
-		$qry = "SELECT * FROM #user AS u WHERE u.user_id='{$uid}' {$extra}";
+		$qry = "SELECT * FROM #user AS u WHERE u.user_id = {$uid} {$extra}";
 		if(!$sql->db_Select_gen($qry))
 		{
 			return FALSE;
