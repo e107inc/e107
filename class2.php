@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.351 $
-|     $Date: 2007-11-09 05:41:21 $
+|     $Revision: 1.352 $
+|     $Date: 2007-11-09 05:50:27 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -689,7 +689,7 @@ if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SEL
 	exit;
 }
 
-$sql->db_Delete("tmp", "tmp_time < '".(time() - 300)."' AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
+$sql->db_Delete("tmp", "tmp_time < ".(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
 
 
 
