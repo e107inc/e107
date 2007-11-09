@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.350 $
-|     $Date: 2007-10-30 00:38:17 $
-|     $Author: e107coders $
+|     $Revision: 1.351 $
+|     $Date: 2007-11-09 05:41:21 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1521,12 +1521,16 @@ function include_lan($path, $force = false) {
 }
 
 if(!function_exists("print_a")) {
+	$charset = "utf-8";
+	if(defined("CHARSET")) {
+		$charset = CHARSET;
+	}
 	function print_a($var, $return = false) {
 		if(!$return){
-			echo '<pre>'.print_r($var, true).'</pre>';
+			echo '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
 			return true;
 		} else {
-			return '<pre>'.print_r($var, true).'</pre>';
+			return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
 		}
 	}
 }
