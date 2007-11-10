@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2007-10-10 22:35:26 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2007-11-10 15:31:51 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -368,8 +368,7 @@ class pageClass
                 $e107cache->clear("comment.page.".$this -> pageID);
                 $e107cache->clear($cacheString);
             }
-            return $cobj->compose_comment("page", "comment", $this -> pageID, $width="", $this -> title, $showrate=FALSE, $return=TRUE);
-            return $cobj->compose_comment("page", "comment", $this -> pageID, $width="", $subject="", $showrate=FALSE, $return=TRUE);
+            return $cobj->compose_comment("page", "comment", $this -> pageID, 0, $this -> title);
         }
     }
 
