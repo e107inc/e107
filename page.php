@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-08-19 21:46:20 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2007-11-10 15:31:58 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -78,6 +78,7 @@ else
 		}
 	}
 
+    $page -> title = $tmp['title'];
 	if($com = $page -> pageComment($comment_flag))
 	{
 		echo $com['comment'].$com['comment_form'];
@@ -193,6 +194,7 @@ class pageClass
 		$gen = new convert;
 
 		$text = '';    // Notice removal
+        $ptitle = "";
 		
 		if($page_author)
 		{
@@ -201,7 +203,7 @@ class pageClass
 
 		if($this -> title)
 		{
-            $text .= "<div class='cpage_title'>".$this -> title."</div>";
+            $ptitle = "<div class='cpage_title'>".$this -> title."</div>";
 		}
 
 		$text .= $this -> pageToRender;
@@ -209,7 +211,7 @@ class pageClass
 		$text .= $this -> pageRating($page_rating_flag);
 
 		$ret['title'] = $page_title;
-		$ret['text'] = $text;
+        $ret['text'] = $ptitle."<div class='cpage_body'>".$text."</div>";
 		$ret['comment_flag'] = $page_comment_flag;
 		$ret['err'] = FALSE;
 		$ret['cachecontrol'] = (isset($page_password) && !$page_password);		// Don't cache password protected pages
@@ -367,8 +369,7 @@ class pageClass
 				$e107cache->clear("comment.page.".$this -> pageID);
 				$e107cache->clear($cacheString);
 			}
-
-			return $cobj->compose_comment("page", "comment", $this -> pageID, $width="", $subject="", $showrate=FALSE, $return=TRUE);
+            return $cobj->compose_comment("page", "comment", $this -> pageID, 0, $this -> title);
 		}
 	}
 
