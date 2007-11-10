@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.200 $
-|     $Date: 2007-11-08 22:46:44 $
-|     $Author: e107steved $
+|     $Revision: 1.201 $
+|     $Date: 2007-11-10 19:24:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -149,7 +149,7 @@ class e_parse
 			//If user is not allowed to use [php] change to entities
 			if(!check_class($pref['php_bbcode']))
 			{
-				$ret = str_replace(array("[php", "[/php"), array("&#91;php", "&#91;/php"), $ret);
+				$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
 			}
 
 		}
@@ -223,7 +223,7 @@ class e_parse
 		//If user is not allowed to use [php] change to entities
 		if(!check_class($pref['php_bbcode']))
 		{
-			$text = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $text);
+			$text = preg_replace("#\[(php)#i", "&#91;\\1", $text);
 		}
 
 		return ($modifier ? $this->toHTML($text, true, $extra) : $text);
