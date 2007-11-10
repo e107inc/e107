@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-11-08 22:46:49 $
-|     $Author: e107steved $
+|     $Revision: 1.21 $
+|     $Date: 2007-11-10 19:24:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -161,7 +161,7 @@ class e_parse
 				$data = str_replace('\\', '&#092;', $data);
 				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 			}
-			if (!check_class($pref['php_bbcode']) || (is_numeric($original_author) && !check_class($pref['php_bbcode'], '', $original_author)) || strpos($mod, 'no_php') !== false)
+			if (strpos($mod, 'no_php') !== false)
 			{
 				$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
 			}
