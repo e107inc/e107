@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2007-10-08 15:20:13 $
+|     $Revision: 1.48 $
+|     $Date: 2007-11-11 23:45:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -93,6 +93,8 @@ if(isset($_POST['tools']))
 			$msg .= FORLAN_168.": $fid <br />";
 		}
 	}
+	$for->update_subparent_lp('all');
+
 	if(isset($_POST['userpostcounts']))
 	{
 		$list = $for->get_user_counts();
