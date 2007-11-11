@@ -13,8 +13,8 @@
 | File locking, modified getip() 18.01.07
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-08-14 19:26:55 $
+|     $Revision: 1.27 $
+|     $Date: 2007-11-11 12:11:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -36,6 +36,27 @@ $self = strip_tags((isset($_REQUEST['eself']) ? $_REQUEST['eself'] : ''));
 $ref = addslashes(strip_tags((isset($_REQUEST['referer']) ? $_REQUEST['referer'] : '')));
 $date = date("z.Y", time());
 $logPfile = "logs/logp_".$date.".php";
+
+
+// vet resolution and colour depth some more - avoid dud values
+if ($res && preg_match("#.*?((\d+)\w+?(\d+))#", $res, $match))
+{
+  $res = $match[2].'x'.$match[3];
+}
+else
+{
+  $res = '??';			// Can't decode resolution
+}
+
+if ($colour && preg_match("#.*?(\d+)#",$colour,$match))
+{
+  $colour = intval($match[1]);
+}
+else
+{
+  $colour='??';
+}
+
 
 if ($err_code = strip_tags((isset($_REQUEST['err_direct']) ? $_REQUEST['err_direct'] : '')))
 {
