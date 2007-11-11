@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.16 $ 
-|     $Date: 2007-10-28 20:03:10 $
+|     $Revision: 1.17 $ 
+|     $Date: 2007-11-11 22:30:27 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -29,8 +29,8 @@ $dl_text = '';			// Output variable
 
 if(!defined("USER_WIDTH")) { define("USER_WIDTH","width:100%"); }
 
-// To prevent display of sub-categories on the main display, un-comment the following line
-//$pref['download_subsub'] = '0';
+// To prevent display of sub-categories on the main display, change the value in the following line from '1' to '0'
+$pref['download_subsub'] = '1';
 
 /* define images */
 define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
