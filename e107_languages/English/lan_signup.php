@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-06-28 19:38:03 $
+|     $Revision: 1.9 $
+|     $Date: 2007-11-11 21:52:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -119,6 +119,7 @@ define("LAN_SIGNUP_55", "That display name is too long. Please choose another");
 define("LAN_SIGNUP_56", "That display name is too short. Please choose another");
 define("LAN_SIGNUP_57", "That login name is too long. Please choose another");
 define("LAN_SIGNUP_58", "Signup Preview");
+define("LAN_SIGNUP_59","**** If the link doesn't work, please check that part of it has not overflowed onto the next line. ****");
 
 
 ?>
