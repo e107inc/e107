@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Hungarian/lan_content.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-09-01 11:13:19 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.66 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("CONTENT_EMAILPRINT_LAN_1", "ez a tartalom innen van");
 
 define("POPUP_LAN_1", "Katt ide a nagyobb képhez");
@@ -104,13 +98,13 @@ define("CONTENT_LAN_6", "Összes kategória");
 define("CONTENT_LAN_7", "Összes szerző");
 define("CONTENT_LAN_8", "Legjobb értékelés");
 define("CONTENT_LAN_9", "kategória:");
-define("CONTENT_LAN_10", "");
+define("CONTENT_LAN_10", "-");
 define("CONTENT_LAN_11", "szerző:");
-define("CONTENT_LAN_12", "Legtöbb pont tartalom");
-define("CONTENT_LAN_13", "");
-define("CONTENT_LAN_14", "");
-define("CONTENT_LAN_15", "");
-define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_12", "Legtöbb pont");
+define("CONTENT_LAN_13", "Lista");
+define("CONTENT_LAN_14", "-- Kategóriák --");
+define("CONTENT_LAN_15", "még nincs szerző");
+define("CONTENT_LAN_16", "[tovább]");
 define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "kulcsszó alapján");
 define("CONTENT_LAN_19", "Keresés");
@@ -211,6 +205,7 @@ define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
 
 ?>
+
 
 
 

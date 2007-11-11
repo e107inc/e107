@@ -46,4 +46,13 @@ define("ADSTAT_L39", "Bejegyzés törlése");
 define("ADSTAT_L40", "napban");
 define("ADSTAT_L41", "Hiba");
 define("ADSTAT_L42", "Még nincs havi statisztika.");
+
+define("ADSTAT_L43", "Mai látogatások oldal hibák");
+define("ADSTAT_L44", "Összes látogatás oldal hibák");
+define("ADSTAT_L45", "Ennek a statisztikája törölve: ");
+define("ADSTAT_L46", "Megjegyzés: valamelyik mai napi statisztika nem lett törölve");
+define("ADSTAT_L47", "Ennek a statisztikája nem található: ");
+define("ADSTAT_L48", "");
+define("ADSTAT_L49", "");
+define("ADSTAT_L50", "");
 ?>

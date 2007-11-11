@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# e107 Hungarian language file - $Version: 1.16 $ - $Author: e107hun-lac $ - $Date: 2007-11-11 08:59:40 $
 # --------------------------------------------------------------------------
 
 define("LANG_LAN_00","nem lett létrehozva. (már létezik)");
@@ -22,6 +22,7 @@ define("LANG_LAN_16", "Több-nyelvű Adatbázis Használat");
 define("LANG_LAN_17", "Alapértelmezett nyelv - További táblák nem szükségesek.");
 define("LANG_LAN_18", "Használd az elhelyezett Subdomain-t a nyelv kiválasztásához:");
 define("LANG_LAN_19", "Pl.: fr.mydomain.com a francia nyelv kiválasztásához.");
+define("LANG_LAN_20", "Egy domain beírás / sor. Pl.: mydomain.com stb. vagy hagyd üresen a tiltáshoz.");
 
 define("LANG_LAN_21", "Nyelvi eszközök");
 ?>

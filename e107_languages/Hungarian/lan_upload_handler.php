@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:19 $
+# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
 define("LANUPLOAD_1", "A fájltípus");
@@ -15,5 +15,11 @@ define("LANUPLOAD_9", "Feltöltött fileméret: 0 byte");
 define("LANUPLOAD_10", "A feltöltés nem sikerült [Duplikált fájlnév] - Már van ilyen nevű fájl.");
 define("LANUPLOAD_11", "A fájl nem lett feltöltve. Fájlnév: ");
 define("LANUPLOAD_12", "Hiba");
-
+define("LANUPLOAD_13", "Hiányzik az ideiglenes mappa");
+define("LANUPLOAD_14", "File írás hibás");
+define("LANUPLOAD_15", "Feltöltés nem engedélyezett");
+define("LANUPLOAD_16", "Ismeretlen hiba");
+define("LANUPLOAD_17", "Feltöltött file érvénytelen file név");
+define("LANUPLOAD_18", "A feltöltött file túllépte a megengedett határértéket.");
+define("LANUPLOAD_19", "Túl sok a feltöltött file - többlet törölve.");
 ?>

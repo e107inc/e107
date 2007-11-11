@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Hungarian/lan_forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-09-01 11:13:16 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# ---------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.17 - author: e107hungary.org team - 2006
+# ---------------------------------------------------------------------------
+
 define("FORLAN_1", "Meg kell adnod a karbantartások közti napok számát.");
 define("FORLAN_2", "Válaszd ki, hogy a karbantartás során a kiszűrt hozzászólások törlődjenek, vagy csak inaktiválja őket a rendszer (nem lesznek törölve, de nem lesznek elérhetőek a fórumokban)");
 define("FORLAN_3", "Törlés");

@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
 define("TPVLAN_1", "Ez a(z) <b>'".PREVIEWTHEMENAME."'</b> theme előnézete. Ez nem az oldalad theme-je, csak azt mutatja meg, hogy néz ki az oldalad e theme-vel.<br />A theme használatához lépj <a href='".e_ADMIN."theme.php'>a theme kezelőbe</a> és válaszd a 'Beállítás az oldal témájaként' opciót.<br /><a href='".e_ADMIN."theme.php'>További témák előnézete</a>");

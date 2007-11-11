@@ -70,7 +70,7 @@ define("LAN_392", "Csatolandó fájl");
 define("LAN_393", "<b>Figyelem</b><br />Megengedett fájltípusok:");
 define("LAN_394", "Minden más típusú feltöltött fájl azonnal törölve lesz.");
 define("LAN_395", "Maximális fájlméret");
-define("LAN_396", "byte");
+define("LAN_396", "bájt");
 define("LAN_397", "Lezárt téma");
 define("LAN_398", "Ez a fórum csak olvasható");
 define("LAN_399", "Nincs jogosultságod írni ebbe a fórumba.");

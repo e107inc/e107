@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.6 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
 define("PAGE_NAME", "Felhasználói beállítások");
@@ -83,13 +83,13 @@ define("LAN_USET_4", "Maximális megengedett magasság");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Egyéni cím");
-define("LAN_ICQNUMBER", "Az ICQ szám csak számokat tartalmazhat");
+// define("LAN_ICQNUMBER", "Az ICQ szám csak számokat tartalmazhat");
 
 //v.617
 define("LAN_408", "Ezzel az e-mail címmel már van felhasználó. ");
 define("MAX_AVWIDTH", "Maximális avatar méret (sz x m) ");
 define("MAX_AVHEIGHT", " x ");
-define("GIF_RESIZE", "Méretezd át a gif képet, vagy alakítsd át más formátumba");
+// define("GIF_RESIZE", "Méretezd át a gif képet, vagy alakítsd át más formátumba");
 define("RESIZE_NOT_SUPPORTED", "A szerver nem támogatja az átméretezési eljárást. Méretezd át a képet, vagy válassz másikat. A képfájl törölve.");
 
 // v0.7
@@ -104,7 +104,7 @@ define("LAN_USET_12", "Túl rövid a megjelenő név. Válassz másikat");
 define("LAN_USET_13", "Érvénytelen karakter a bejelentkező névben. Válassz másikat");
 define("LAN_USET_14", "A bejelentkező név túl hosszú. Válassz másikat");
 define("LAN_USET_15", "Megjelenő név túl hosszú. Válassz másikat");
-
-
+define("LAN_USET_16", "Jelöld be a dobozt a meglévő fotó törléséhez, másik kép feltöltése nélkül");
+define("LAN_USET_17", "Megjelenő név már használatban. Válassz másikat");
           
 ?>

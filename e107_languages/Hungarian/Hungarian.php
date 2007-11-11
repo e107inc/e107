@@ -1,7 +1,7 @@
 <?php
-# --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.7 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:30:18 $
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------
+# e107 hungarian language file - $Revision: 1.8 $ - $author: e107hungary.org team $ - $Date: 2007-11-11 08:59:48 $
+# ------------------------------------------------------------------------------------------------------------------
 
 setlocale(LC_ALL, 'hu_HU.UTF-8', 'hu_HU@euro', 'hu_HU', 'hu', 'Hungarian');
 define("CORE_LC", 'hu');
@@ -23,12 +23,26 @@ define("CORE_LAN6", "A flood védelem ezen az oldalon aktiválva van és figyelm
 define("CORE_LAN7", "A mag (Core) megkisérli a helyreállítást az autómatikus biztonsági mentésből.");
 define("CORE_LAN8", "Mag (Core) beállítások Hiba");
 define("CORE_LAN9", "A mag (Core) nem tudja a visszaállítást végrehajtani az autómatikus mentésből. Végrehajtás megszakítva.");
-define("CORE_LAN10", "Korrupt cookie észlelése - Kijelentkezett.");
+define("CORE_LAN10", "Hibás cookie észlelése - Kijelentkezett.");
+
+// Footer
+define("CORE_LAN11", "Oldal létrehozási idő: ");
+define("CORE_LAN12", " másodperc, ");
+define("CORE_LAN13", " lekérdezési idő. ");
+define("CORE_LAN14", "");			// Used in 0.8
+define("CORE_LAN15", "Adatbázis lekérdezés: ");
+define("CORE_LAN16", "Memória használat: ");
+
+define("CORE_LAN_B", "b");
+define("CORE_LAN_KB", "kb");
+define("CORE_LAN_MB", "Mb");
+define("CORE_LAN_GB", "Gb");
+define("CORE_LAN_TB", "Tb");
 
 
 define("LAN_WARNING", "Figyelmeztetés!");
 define("LAN_ERROR", "Hiba");
 define("LAN_ANONYMOUS", "Anonymous");
-define("LAN_EMAIL_SUBS", "-email-");
+define("LAN_EMAIL_SUBS", "-Email-");
 
 ?>

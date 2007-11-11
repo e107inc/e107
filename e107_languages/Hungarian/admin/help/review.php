@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/review.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-09-01 11:13:16 $
+|     $Revision: 1.7 $
+|     $Date: 2007-11-11 08:59:44 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */

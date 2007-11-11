@@ -1,6 +1,6 @@
 <?php
 # ---------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# e107 Hungarian language file - $Version: 1.32 $ - $Author: e107hun-lac $ - $Date: 2007-11-11 08:59:44 $
 # ---------------------------------------------------------------------------
 
 define("USRLAN_1", "Beállítások elmentve");
@@ -127,10 +127,35 @@ define("USRLAN_135", "No IP address found in user's info, IP not banned");
 define("USRLAN_136", "Multiple users found with IP address of {IP}, IP not banned.");
 define("USRLAN_137", "Users IP address of {IP} banned.");
 
+
+define("USRLAN_138", "Nem ellenőrzött felhasználók");
+define("USRLAN_139", "Hozzáférésed aktiválva.\n\nLátogass el a(z) {SITEURL} oldalra és lépj be az általad megadott felhasználói adatokkal.");
+
+define("USRLAN_140", "Email Újraküldve a következőnek");
+define("USRLAN_141", "E-mail újraküldése sikertelen a következőnek");
+define("USRLAN_142", "a következő aktiváló linkkel");
+
+define("USRLAN_143", "Visszadobott mail ellenőrzése");
+define("USRLAN_144", "Megerősítő Email újraküldése mindenkinek");
+define("USRLAN_145", "Visszautasított felhasználók");
+define("USRLAN_146", "Tag információk engedélyezése");
+
+define("USRLAN_147", "Az Email címet egy kitiltott felhasználó használja");
+define("USRLAN_148", "Email cím kitiltva");
+
+define("USRLAN_149", "Bejelölt email törlése");
+define("USRLAN_150", "Összes email törlése");
+define("USRLAN_151", "Visszadobás, aktiválás kérés törlése");
+define("USRLAN_152", "Visszadobás, aktiválás törlés");
+define("USRLAN_153", "Nem visszadobott email törlése");
+define("USRLAN_154", "Megjelölt email törlése");
+define("USRLAN_155", "Összes {TOTAL} emails találat. {DELCOUNT} törlési folyamat beállítása.<br />{DELUSER} felhasználók, akik 'visszautasítottnak' jelölve (out of {FOUND} emails)");
+
 define("LAN_MAINADMIN","Fő Admin");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Nincs Ellenőrizve");
 define("LAN_BANNED","Kitiltva");
+define("LAN_BOUNCED","Visszautasított");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Megjelenő név");
@@ -170,16 +195,5 @@ define("DUSRLAN_35", "Kép");
 define("DUSRLAN_36", "Jelszó megváltoztatása");
 define("DUSRLAN_37", "XUP");
 
-define("USRLAN_138", "Nem ellenőrzött felhasználók");
-define("USRLAN_139", "Hozzáférésed aktiválva.\n\nLátogass el a(z) {SITEURL} oldalra és lépj be az általad megadott felhasználói adatokkal.");
 
-define("USRLAN_140", "Email Újraküldve a következőnek");
-define("USRLAN_141", "E-mail újraküldése sikertelen a következőnek");
-define("USRLAN_142", "a következő aktiváló linkkel");
-
-define("LAN_BOUNCED","Visszadobott");
-define("USRLAN_143", "Visszadobott mail ellenőrzése");
-define("USRLAN_144", "Megerősítő Email újraküldése mindenkinek");
-define("USRLAN_145", "Visszautasított felhasználók");
-define("USRLAN_146", "Tag információk engedélyezése");
 ?>

@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
 define("NT_LAN_US_1", "Felhasználói regisztráció");

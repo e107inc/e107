@@ -32,7 +32,7 @@ define("LAN_180", "Keresés");
 define("LAN_191", "Információ");
 define("LAN_192", "Tagjaink által elküldött hozzászólások száma: ");
 define("LAN_196", "Ezekből elolvastál: ");
-define("LAN_197", "");
+define("LAN_197", " ezen üzenetekből.");
 define("LAN_198", " Összes új hozzászólás elolvasva.");
 define("LAN_199", "Összes hozzászólás megjelölése olvasottként");
 define("LAN_204", "<b>Nyithatsz</b> új témákat");

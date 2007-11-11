@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
 define("NWSLAN_1", "Hír törölve");
@@ -17,8 +17,8 @@ define("NWSLAN_12", "Cím");
 define("NWSLAN_13", "Törzs");
 define("NWSLAN_14", "Bővített hír");
 define("NWSLAN_15", "Hozzászólások");
-// define("NWSLAN_16", "Engedélyezve");
-// define("NWSLAN_17", "Letiltva");
+// define("NWSLAN_16", "Engedélyezve"); // deprecated see lan_admin.php
+// define("NWSLAN_17", "Letiltva"); // deprecated see lan_admin.php
 define("NWSLAN_18", "Hozzászólások engedélyezése ehhez a hírhez");
 define("NWSLAN_19", "Aktiváció");
 
@@ -61,7 +61,7 @@ define("NWSLAN_56", "Hírkategória létrehozása");
 define("NWSLAN_57", "Hír");
 define("NWSLAN_58", "Beküld");
 define("NWSLAN_59", "Nincs beküldött hír");
-// define("NWSLAN_60", "Beküldött hírek");
+// define("NWSLAN_60", "Beküldött hírek"); //already defined above.
 
 define("NWSLAN_62", "További oldalak: ");
 define("NWSLAN_63", "Hír keresése");
@@ -153,13 +153,13 @@ define("LAN_NEWS_39", "a beszúráshoz kattints a fájlra a kurzor helyén");
 define("LAN_NEWS_40", "Letöltés linkek beszúrása");
 
 define("LAN_NEWS_42", "Fájlok");
-// define("LAN_NEWS_43", "(nincsenek képek a(z) /e107_images/newspost_images könyvtárban)");
+// define("LAN_NEWS_43", "(nincsenek képek a(z) /e107_images/newspost_images könyvtárban)"); // deprecated see lan_admin.php
 define("LAN_NEWS_44", "Trackback nem engedélyezett.");
 
 define("LAN_NEWS_45", "ID");
 
 define("LAN_NEWS_46", "Hír frissítése sikertelen.");
-// define("LAN_NEWS_47", "Kép");
+// define("LAN_NEWS_47", "Kép");  // already defined above.
 define("LAN_NEWS_48", "Nincs kép");
 
 define("LAN_NEWS_49", "Rendezés");

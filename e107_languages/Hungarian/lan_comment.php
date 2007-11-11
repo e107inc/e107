@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.4 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:18 $
+# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
 # --------------------------------------------------------------------------
 
 
@@ -37,17 +37,6 @@ define("COMLAN_317", "Trackback moderálása");
 define("COMLAN_318", "Hozzászólás módosítása");
 define("COMLAN_319", "módosítva");
 define("COMLAN_320", "Hozzászólás frissítése");
-/*
-define("COMLAN_1", "ide");
-define("COMLAN_2", "a regisztrációhoz");
-define("COMLAN_3", "Hiba!");
-define("COMLAN_4", 'Tárgy');
-define("COMLAN_5", 'Válasz:');
-define("COMLAN_6", 'Válasz erre');
-define("COMLAN_7", 'Értékelés');
-define("COMLAN_8", 'Hozzászólás kikapcsolva');
-define("COMLAN_9", 'Unauthorized');
-*/
 define("COMLAN_321", "ide");
 define("COMLAN_322", "a regisztrációhoz");
 define("COMLAN_323", "Hiba!");
@@ -67,5 +56,6 @@ define("COMLAN_TYPE_5", "Dokumentáció");
 define("COMLAN_TYPE_6", "Hibajelenzés");
 define("COMLAN_TYPE_7", "Ötletek");
 define("COMLAN_TYPE_8", "Felhasználó Profil");
+define("COMLAN_TYPE_PAGE", "Tartalom");		// Reall custom page, but use a 'non-technical' description
 
 ?>

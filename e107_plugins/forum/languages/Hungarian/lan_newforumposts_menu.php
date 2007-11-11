@@ -14,4 +14,7 @@ define("NFP_8", "Eredeti témák mutatása a menüben?");
 define("NFP_9", "Menü beállítások frissítése");
 define("NFP_10", "Új fórumüzenetek menü beállítása");
 define("NFP_11", "Írta:");
+define("NFP_12", "Megjelenő üzenetek maximális elavulása");
+define("NFP_13", "Egy ritkán látogatott oldalon használj nullát; egy sűrűn látogatott oldalon a napokban beállított érték lecsökkenti az adatbázis időt");
+
 ?>

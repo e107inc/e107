@@ -42,6 +42,8 @@ define("LWLAN_36", 'Leírások (linkek ...stb.)');
 define("LWLAN_37", 'Záradék területek');
 define("LWLAN_38", 'Kattintható linkek');
 define("LWLAN_39", 'Folyamat nélküli szövegek');
+define("LWLAN_40", 'Felhasználó által-megadott címek, fejlécek (Pl.: fórum)');
+define("LWLAN_41", 'Felhasználó által-megadott törzs szöveg (Pl.: fórum)');
 
 
 define("LWLANINS_1", "Link szavak");

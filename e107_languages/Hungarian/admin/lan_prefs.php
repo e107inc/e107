@@ -1,6 +1,6 @@
 <?php
 # ---------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.46 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.65 $ - $Author: e107hun-lac $ - $Date: 2007-11-11 08:59:44 $
 # ---------------------------------------------------------------------------
 
 define("PRFLAN_1", "Oldal információk");
@@ -117,7 +117,7 @@ define("PRFLAN_123", "Egy WYSIWYG (azt-kapod-amit-látsz) szerkesztőt fog megje
 define("PRFLAN_124", "A 'klasszikus' lapozás használata");
 define("PRFLAN_125", "Ennek bekapcsolása az oldalakat '1 2 3 ... 21 22 23' formában jelzi, az új lenyíló lista helyett.");
 define("PRFLAN_126", "Megjelenítendő szöveg a regisztrációs oldalon");
-define("PRFLAN_127", "Kattintható linkek");
+define("PRFLAN_127", "Kattintható linkek létrehozása");
 define("PRFLAN_128", "Ennek bekapcsolásával a linkek kattintható hyperlink-ek lesznek");
 define("PRFLAN_129", "Többszörös bejelentkezés tiltása");
 define("PRFLAN_130", "Ennek aktiválása megakadályozza, hogy többen is belépjenek ugyanazzal a felhaználónévvel és jelszóval (bejelentkezési datok megosztása)");
@@ -151,7 +151,7 @@ define("PRFLAN_154", "Új felhasználó megerősítési módszer <br />Ha az 'Ad
 define("PRFLAN_155", "A weboldalon megjelenő név engedélyezése");
 define("PRFLAN_156", "Összes megjelenő név törlése");
 define("PRFLAN_157", "Az összes megjelenő név a bejelentkező névre változik");
-define("PRFLAN_158", "Megjelenő név max. hossza");
+define("PRFLAN_158", "Megjelenő név max. hossza (5..30)");
 define("PRFLAN_159", "oldal megtekintése ezzel");
 
 define("PRFLAN_160", "Szerver ellenörzése az E-mail cím érvényességének ellenőrzésekor.");
@@ -171,4 +171,11 @@ define("PRFLAN_169", "Ha a kiválasztott csoport egynél több személyt tartalm
 define("PRFLAN_170", "Használd a DNS megváltoztatását a host kitiltáshoz");
 define("PRFLAN_171", "Ennek a beállításnak a bekapcsolásával engedélyezed a felhasználók kitiltását hostnév alapján, amely jobb, mint csak IP vagy email cím alapján történő kitiltás.  <br />Megjegyzés: Ez néhány kiszolgálónál befolyásolhatja az oldal betöltési idejét");
 define("PRFLAN_172", "Bejelentkező Név maximális hossza (10..100)");
+define("PRFLAN_173", "e107 frissítések ellenőrzése a SourceForge-on egyszer/nap");
+
+define("PRFLAN_174", "Név az oldalról történő email válaszokhoz");
+define("PRFLAN_175", "Ez meg fog jelenni a regisztráció 'Kitől' mezőjében és egyéb email-ban erről az oldalról");
+define("PRFLAN_176", "Email cím az oldalról történő levelezéshez");
+define("PRFLAN_177", "A válaszokhoz hozzáadott cím az oldalról történő levelezéshez.");
+
 ?>

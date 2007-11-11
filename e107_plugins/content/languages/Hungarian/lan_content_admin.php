@@ -1,14 +1,8 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Hungarian Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Hungarian/lan_content_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-09-01 11:13:19 $
-|     $Author: e107hun-lac $
-+----------------------------------------------------------------------------+
-*/
+# --------------------------------------------------------------------------
+# e107 hungarian language file - rev: 1.6 - author: e107hungary.org team - 2006
+# --------------------------------------------------------------------------
+
 define("CONTENT_PLUGIN_LAN_1", "Tartalomkezelő");
 define("CONTENT_PLUGIN_LAN_2", "Egy komplett Tartalomkezelő rendszer.");
 define("CONTENT_PLUGIN_LAN_3", "Tartalomkezelő beállítása");

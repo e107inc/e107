@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Revision: 1.5 $ - $Author: e107hun-lac $ - $Date: 2007-09-01 11:13:16 $
+# e107 Hungarian language file - $Version: 1.7 $ - $Author: e107hun-lac $ - $Date: 2007-11-11 08:59:40 $
 # --------------------------------------------------------------------------
 
 define("UPLLAN_1", "Feltöltés törölve a listából");
@@ -52,7 +52,7 @@ define("UPLLAN_44", "Feltöltés");
 
 define("UPLLAN_45", "Biztosan törölni akarod ezt a fájlt? ");
 
-define("UPLAN_COPYTODLM", "Másolás a letöltés kezelőbe");
+define("UPLAN_COPYTODLM", "Másolás a letöltéskezelőbe");
 define("UPLAN_IS", "van ");
 define("UPLAN_ARE", "van ");
 define("UPLAN_COPYTODLS", "Másolás a letöltésekhez");
