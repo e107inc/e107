@@ -10,9 +10,11 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
+| File locking, modified getip() 18.01.07
+|
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/log.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-11-01 20:28:21 $
+|     $Revision: 1.5 $
+|     $Date: 2007-11-11 12:10:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -23,12 +25,48 @@
 // color= colord
 // eself= eself 
 // res= res
+// err_direct - optional error flag
+// err_referer - referrer if came via error page
 define("log_INIT", TRUE);
+
+
 $colour = strip_tags((isset($_REQUEST['color']) ? $_REQUEST['color'] : ''));
 $res = strip_tags((isset($_REQUEST['res']) ? $_REQUEST['res'] : ''));
 $self = strip_tags((isset($_REQUEST['eself']) ? $_REQUEST['eself'] : ''));
 $ref = addslashes(strip_tags((isset($_REQUEST['referer']) ? $_REQUEST['referer'] : '')));
 $date = date("z.Y", time());
+$logPfile = "logs/logp_".$date.".php";
+
+
+// vet resolution and colour depth some more - avoid dud values
+if ($res && preg_match("#.*?((\d+)\w+?(\d+))#", $res, $match))
+{
+  $res = $match[2].'x'.$match[3];
+}
+else
+{
+  $res = '??';			// Can't decode resolution
+}
+
+if ($colour && preg_match("#.*?(\d+)#",$colour,$match))
+{
+  $colour = intval($match[1]);
+}
+else
+{
+  $colour='??';
+}
+
+
+if ($err_code = strip_tags((isset($_REQUEST['err_direct']) ? $_REQUEST['err_direct'] : '')))
+{
+  $ref = addslashes(strip_tags(isset($_REQUEST['err_referer']) ? $_REQUEST['err_referer'] : ''));
+  $log_string = $err_code.",".$self.",".$ref;
+// Uncomment the next two lines to create a separate CSV format log of invalid accesses - error code, entered URL, referrer
+//  $logname = "logs/errpages.csv";
+//  $logfp = fopen($logname, 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
+  $err_code .= ':';
+}
 
 if(strstr($ref, "admin")) 
 {
@@ -58,24 +96,29 @@ $pageName = substr($match[1], (strrpos($match[1], "/")+1));
 $PN = $pageName;
 $pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
 if($pageName == "") $pageName = "index";
+
+$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+
 if(preg_match("/".$pageDisallow."/i", $pageName)) return;
 
 
-$logPfile = "logs/logp_".$date.".php";
-$handle = fopen($logPfile, 'r+');
-if($handle && flock( $handle, LOCK_EX ) ) 
+$p_handle = fopen($logPfile, 'r+');
+if($p_handle && flock( $p_handle, LOCK_EX ) ) 
 {
-  $log_file_contents = get_file_contents($handle);
-  $log_file_contents = str_replace(array('<'.'?php','?>'),'',$log_file_contents);
-  if (eval($log_file_contents) === FALSE) echo "error in log file contents<br />";
+  $log_file_contents = '';
+  while (!feof($p_handle))
+  {  // Assemble a string of data
+    $log_file_contents.= fgets($p_handle,1000);
+  }
+  $log_file_contents = str_replace(array('<'.'?php','?'.'>'),'',$log_file_contents);
+  if (eval($log_file_contents) === FALSE) echo "error in log file contents<br /><br /><br /><br />";
 }
 else
 {
-  echo "Couldn't log data<br />";
+  echo "Couldn't log data<br /><br /><br /><br />";
   exit;
 }
 
-//require_once($logPfile);
 
 $flag = FALSE;
 if(array_key_exists($pageName, $pageInfo)) 
@@ -117,13 +160,12 @@ $data = "<?php
 
 ?>";
 
-if ($handle)
+if ($p_handle)
 {
-  ftruncate( $handle, 0 );
-//  fwrite( $handle, $part_one );
-//  sleep( 10 ); // for test purpose, assume the whole writing process takes 10 seconds
-  fwrite($handle, $data);
-  fclose($handle);
+  ftruncate( $p_handle, 0 );
+  fseek( $p_handle, 0 );
+  fwrite($p_handle, $data);
+  fclose($p_handle);
 }
 
 
@@ -133,16 +175,15 @@ function getip($mode=TRUE)
   if (getenv('HTTP_X_FORWARDED_FOR')) 
   {
 	$ip = $_SERVER['REMOTE_ADDR'];
-	// Shouldn't this be: "#((?:\d{1,3}\.){3}\d{1,3})#" or "#(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#"
-	if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+	if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
 	{  
-	  $ip2 = array('#^0\..*#', 
+      $ip2 = array('#^0\..*#', 
 			   '#^127\..*#', 							// Local loopbacks
-			   '#^192\.168\..*#', 						// Private Network
-			   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// Private network
-			   '#^10\..*#', 							// Private Network
+			   '#^192\.168\..*#', 						// RFC1918 - Private Network
+			   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+			   '#^10\..*#', 							// RFC1918 - Private Network
 			   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
-			   '#^2[45][0-9]\..*#'						// Single check for Class D and Class E
+			   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
 			   );
 	  $ip = preg_replace($ip2, $ip, $ip3[1]);
 	}
