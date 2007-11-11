@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-07-12 08:15:58 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2007-11-11 21:52:49 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -58,6 +58,8 @@ LAN_403." {SITENAME}<br />
 ".LAN_SIGNUP_21." ...<br />
 <br />
 {ACTIVATION_LINK}<br />
+<br />
+".LAN_SIGNUP_59."<br />
 <br />
 ".LAN_SIGNUP_18."...<br />
 <br />
