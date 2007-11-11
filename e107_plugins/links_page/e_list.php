@@ -33,7 +33,7 @@ if (!defined('e107_INIT')) { exit; }
 
 			$rowheading	= $this -> parse_heading($row['link_name'], $mode);
 			$ICON		= $bullet;
-			$HEADING	= "<a href='".$row['link_url']."' target='_blank' title='".$row['link_name']."'>".$rowheading."</a>";
+			$HEADING	= "<a href='".$row['link_url']."' rel='external' title='".$row['link_name']."'>".$rowheading."</a>";
 			$AUTHOR		= "";
 			$CATEGORY	= ($arr[4] ? "<a href='".e_PLUGIN."links_page/links.php?cat.".$row['link_category_id']."'>".$row['link_category_name']."</a>" : "");
 			$DATE		= ($arr[5] ? ($row['link_datestamp'] > 0 ? $this -> getListDate($row['link_datestamp'], $mode) : "") : "");
