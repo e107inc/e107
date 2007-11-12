@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-09-04 21:09:47 $
+|     $Revision: 1.7 $
+|     $Date: 2007-11-12 19:56:13 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -127,6 +127,7 @@ $eplug_prefs = array(
 "eventpost_fe_showrecent" => 0,
 "eventpost_showcaticon" => 0,
 "eventpost_printlists" => 1,
+'eventpost_editmode' => 1,
 "eventpost_namelink" => 1 );
 
 
@@ -327,6 +328,7 @@ if ($ecal_ver_num < 370)
     "eventpost_showmouseover" => 0,
 	"eventpost_fe_hideifnone" => '0',
 	"eventpost_fe_showrecent" => 0,
+	'eventpost_editmode' => 1,
 	"eventpost_printlists" => 1
 	);
 	$upgrade_add_prefs = array_merge($upgrade_add_prefs,$verprefs);

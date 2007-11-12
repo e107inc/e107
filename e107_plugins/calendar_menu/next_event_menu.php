@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/next_event_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-11-12 19:56:13 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -68,7 +68,7 @@ global $cal_row, $cal_totev;
 
 
 $ev_list = $ecal_class->get_n_events($show_count, $start_time, $end_time, varset($pref['eventpost_fe_set'],0), $show_recurring, 
-						'event_id,event_start, event_thread, event_title, event_recurring, event_allday', 'event_cat_icon');
+						'event_id,event_start, event_thread, event_title, event_recurring, event_allday, event_category', 'event_cat_icon');
 
 $cal_totev = count($ev_list);
 if ($cal_totev > 0)
