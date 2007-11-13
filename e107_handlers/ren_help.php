@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-08-16 19:30:49 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-11-13 07:54:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -65,6 +65,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	}
 
     $temp['news'] 		= $BBCODE_TEMPLATE_NEWSPOST;
+	$temp['submitnews']	= $BBCODE_TEMPLATE_SUBMITNEWS; 
 	$temp['extended']	= $BBCODE_TEMPLATE_NEWSPOST;
 	$temp['admin']		= $BBCODE_TEMPLATE_ADMIN;
 	$temp['mailout']	= $BBCODE_TEMPLATE_ADMIN."{BB=shortcode}";
