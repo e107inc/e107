@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-10-28 20:45:22 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2007-11-13 07:34:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -307,3 +307,5 @@ class e_bbcode
 		return $bbcode_output.$bbcode_return;
 	}
 }
+
+?>
