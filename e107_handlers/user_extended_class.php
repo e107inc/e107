@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-07-30 20:25:30 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2007-11-13 07:45:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -90,6 +90,7 @@ class e107_user_extended
 
 	function user_extended_get_categories($byID = TRUE)
 	{
+	   	$ret = array();
 		global $sql;
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
 		{
