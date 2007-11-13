@@ -11,16 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-11-05 20:12:28 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2007-11-13 13:50:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 while (@ob_end_clean());
-
-function e107_ini_set($var, $value){
-	if (function_exists('ini_set')){
+ob_start();
+function e107_ini_set($var, $value)
+{
+	if (function_exists('ini_set'))
+	{
 		ini_set($var, $value);
 	}
 }
@@ -32,8 +34,10 @@ e107_ini_set('arg_separator.output',     '&amp;');
 e107_ini_set('session.use_only_cookies', 1);
 e107_ini_set('session.use_trans_sid',    0);
 
-while (list($global) = each($GLOBALS)) {
-	if (!preg_match('/^(_SERVER|GLOBALS)$/', $global)) {
+while (list($global) = each($GLOBALS))
+{
+	if (!preg_match('/^(_SERVER|GLOBALS)$/', $global))
+	{
 		unset($$global);
 	}
 }
@@ -46,9 +50,7 @@ define("e_QUERY", preg_replace("#&|/?PHPSESSID.*#i", "", $_SERVER['QUERY_STRING'
 
 $recnum = preg_replace("#\D#","",e_QUERY);
 
-if($recnum == false){
-	exit;
-}
+if($recnum == false){ exit; }
 
 $mySQLserver = "";
 
@@ -70,7 +72,8 @@ mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
 
 $result = mysql_query("SELECT tmp_info FROM {$mySQLprefix}tmp WHERE tmp_ip = '{$recnum}'");
-if(!$row = mysql_fetch_array($result)) {
+if(!$row = mysql_fetch_array($result))
+{
 	exit;
 }
 
@@ -78,8 +81,10 @@ list($code, $url) = explode(",",$row['tmp_info']);
 
 $type = "none";
 
-foreach($imgtypes as $t) {
-	if(function_exists("imagecreatefrom".$t)) {
+foreach($imgtypes as $t)
+{
+	if(function_exists("imagecreatefrom".$t))
+	{
 		$type = $t;
 		break;
 	}
@@ -87,7 +92,8 @@ foreach($imgtypes as $t) {
 
 $path = realpath(dirname(__FILE__)."/../")."/".$IMAGES_DIRECTORY;
 
-if(is_readable($path."secure_image_custom.php")) {
+if(is_readable($path."secure_image_custom.php"))
+{
 	require_once($path."secure_image_custom.php");
 	/*   Example secure_image_custom.php file:
 
@@ -101,11 +107,14 @@ if(is_readable($path."secure_image_custom.php")) {
 
 	*/
 	$bg_file = $secureimg['image'];
-} else {
+}
+else
+{
 	$bg_file = "generic/code_bg";
 }
 
-switch($type) {
+switch($type)
+{
 	case "jpeg":
 		$image = ImageCreateFromJPEG($path.$bg_file.".jpg");
 		break;
@@ -129,13 +138,18 @@ else
 
 header("Content-type: image/{$type}");
 
-if(isset($secureimg['font']) && is_readable($path.$secureimg['font'])){
+if(isset($secureimg['font']) && is_readable($path.$secureimg['font']))
+{
 	imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color,$path.$secureimg['font'], $code);
-} else {
+}
+else
+{
 	imagestring ($image, 5, 12, 2, $code, $text_color);
 }
 
-switch($type) {
+ob_end_clean();
+switch($type)
+{
 	case "jpeg":
 		imagejpeg($image);
 		break;
@@ -148,4 +162,3 @@ switch($type) {
 }
 
 imagedestroy($image);
-?>
