@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.353 $
-|     $Date: 2007-11-09 05:55:15 $
-|     $Author: streaky $
+|     $Revision: 1.354 $
+|     $Date: 2007-11-13 07:13:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1538,11 +1538,11 @@ if(!function_exists("print_a")) {
 
 // Check that all required user fields (including extended fields) are valid.
 // Return TRUE if update required
-function force_userupdate() 
+function force_userupdate()
 {
 	global $sql,$pref,$currentUser;
 
-	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE)
+	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE || (defined("FORCE_USERUPDATE") && (FORCE_USERUPDATE == FALSE)))
 	{
 		return FALSE;
 	}
