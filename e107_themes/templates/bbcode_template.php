@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-05 23:02:25 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2007-11-13 07:54:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // How to register your own BBcode button.
@@ -32,6 +32,11 @@ $BBCODE_TEMPLATE = "
 // $sc_style['BB_HELP']['pre'] = "<div style='text-align:center'>";
 // $sc_style['BB_HELP']['post'] = "</div>";
 
+$BBCODE_TEMPLATE_SUBMITNEWS = "
+	{BB_HELP}<br />
+    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
+";
 
 
 // --------   Admin Templates ----------------------
