@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2007-11-09 05:55:45 $
-|     $Author: streaky $
+|     $Revision: 1.31 $
+|     $Date: 2007-11-13 07:25:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1527,7 +1527,7 @@ function force_userupdate()
 {
 	global $sql,$pref,$currentUser;
 
-	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE)
+	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE || (defined("FORCE_USERUPDATE") && (FORCE_USERUPDATE == FALSE)))
 	{
 		return FALSE;
 	}
