@@ -33,12 +33,9 @@ if (!function_exists('file_put_contents')) {
 
 
 if (!function_exists('stripos')) {
-	function stripos($haystack, $needle) {
-		$parts = explode(strtolower($needle), strtolower($haystack), 2);
-		if (count($parts) == 1) {
-			return false;
-		}
-		return strlen($parts[0]);
+ 	function stripos($str,$needle,$offset=0)
+	{
+		return strpos(strtolower($str), strtolower($needle), $offset);
 	}
 }
 
