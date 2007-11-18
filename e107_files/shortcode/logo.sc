@@ -14,7 +14,7 @@ else if (is_readable(THEME."images/e_logo.png"))
 else
 {
 	$logo = e_IMAGE_ABS."logo.png";				// HTML path
-	$path = e_IMAGE.$logo;						// PHP path
+	$path = e_IMAGE."logo.png";					// PHP path
 }
 
 $dimensions = getimagesize($path);
