@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-06 19:59:27 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2007-11-18 02:20:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -27,7 +27,10 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."file_class.php");
 $frm = new form;
 
-if($_POST) {
+if($_POST)
+{
+	print_a($_POST);
+//	exit;
 	$e107cache->clear("menus_");
 }
 
@@ -118,12 +121,26 @@ if($_POST['menuActivate'])
 		}
 	}
 
-	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$location' ");
+	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$location);
 
 	foreach($_POST['menuselect'] as $sel_mens)
 	{
-		$sql->db_Update("menus", "menu_location='$location', menu_order='".($menu_count+1)."' WHERE menu_id='$sel_mens' ");
-		$menu_count++;
+		//Get info from menu being activated
+		if($sql->db_Select("menus", 'menu_name, menu_path' , 'menu_id = '.$sel_mens))
+		{
+			$row=$sql->db_Fetch();
+			//If menu is not already activated in that area, add the record.
+			if(!$sql->db_Select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = $location"))
+			{
+				$qry = "
+				INSERT into #menus
+				(`menu_name`, `menu_location`, `menu_order`, `menu_path`)
+				VALUES ('{$row['menu_name']}', {$location}, {$menu_count}, '{$row['menu_path']}')
+				";
+				$sql->db_Select_gen($qry);
+				$menu_count++;
+			}
+		}
 	}
 }
 // =============
@@ -207,14 +224,39 @@ if ($menu_act == "sv") {
 }
 
 if ($menu_act == "move") {
-	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$newloc' ");
-	$sql->db_Update("menus", "menu_location='$newloc', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
+	// Get current menu name
+	if($sql->db_Select('menus', 'menu_name', 'menu_id='.$id, 'default'))
+	{
+		$row = $sql->db_Fetch();
+		//Check to see if menu is already active in the new area, if not then move it
+		if(!$sql->db_Select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$newloc))
+		{
+			$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$newloc);
+			$sql->db_Update("menus", "menu_location='$newloc', menu_order=".($menu_count+1)." WHERE menu_id=".$id);
+			$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
+		}
+	}
 }
 
 if ($menu_act == "deac") {
-	$sql->db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_id='$id' ");
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
+	// Get current menu name
+	if($sql->db_Select('menus', 'menu_name', 'menu_id='.$id, 'default'))
+	{
+		$row = $sql->db_Fetch();
+		//Check to see if there is already a menu with location = 0 (to maintain BC)
+		if($sql->db_Select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = 0"))
+		{
+			//menu_location=0 already exists, we can just delete this record
+			$sql->db_Delete('menus', 'menu_id='.$id);
+		}
+		else
+		{
+			//menu_location=0 does NOT exist, let's just convert this to it
+			$sql->db_Update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$id);
+		}
+		//Move all other menus up
+		$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location={$location} AND menu_order > $position");
+	}
 }
 
 if ($menu_act == "bot") {
@@ -376,29 +418,29 @@ else
 	echo $frm->form_open("post", e_SELF."?configure.".$menus_equery[1], "menuActivation");
 	$text = "<table style='margin-left:auto;margin-right:auto'>";
 
-	$sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
+	$sql->db_Select("menus", "menu_name, menu_id, menu_pages", "1 GROUP BY menu_name ORDER BY menu_name ASC");
 	$text .= "<tr><td style='width:50%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
 	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
 
 	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>";
 	while ($row = $sql->db_Fetch())
 	{
-		extract($row);
-		if($menu_pages == "dbcustom")
+		if($row['menu_pages'] == "dbcustom")
 		{
-			$menu_name .= " [custom]";
+			$row['menu_name'] .= " [custom]";
 		}
 		else
 		{
-			$menu_name = preg_replace("#_menu#i", "", $menu_name);
+			$row['menu_name'] = preg_replace("#_menu$#i", "", $row['menu_name']);
 		}
-		$text .= "<option value='$menu_id'>$menu_name</option>\n";
+		$text .= "<option value='{$row['menu_id']}'>".$row['menu_name']."</option>\n";
 
 	}
 	$text .= "</select>";
 	$text .= "<br /><br /><span class='smalltext'>".MENLAN_38."</span>";
 	$text .= "</td><td style='width:50%;vertical-align:top;text-align:center'><br />";
-	foreach ($menu_areas as $menu_act) {
+	foreach ($menu_areas as $menu_act)
+	{
 		$text .= "<input type='submit' class='button' id='menuAct_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
 	}
 	$text .= "</td>";
