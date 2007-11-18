@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-11-18 02:20:59 $
+|     $Revision: 1.6 $
+|     $Date: 2007-11-18 03:05:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -170,28 +170,25 @@ if ($menu_act == 'config') {
 
 if ($menu_act == "adv") {
 	require_once(e_HANDLER."userclass_class.php");
-	$sql->db_Select("menus", "*", "menu_id='$id' ");
+	$sql->db_Select("menus", "*", "menu_id=".$id);
 	$row = $sql->db_Fetch();
-	extract($row);
-	$listtype = substr($menu_pages, 0, 1);
-	$menu_pages = substr($menu_pages, 2);
+	$listtype = substr($row['menu_pages'], 0, 1);
+	$menu_pages = substr($row['menu_pages'], 2);
 	$menu_pages = str_replace("|", "\n", $menu_pages);
 	$text = "<div style='text-align:center;'>
-	<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'>\n
+	<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'>
 	<table style='width:40%'>
 	<tr>
 	<td>
-	<input type='hidden' name='menuAct[$menu_id]' value='sv.$menu_id' />
+	<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
 	".MENLAN_4." ".
-	r_userclass('menu_class', $menu_class, "off", "public,member,guest,admin,main,classes,nobody")."
+	r_userclass('menu_class', $row['menu_class'], "off", "public,member,guest,admin,main,classes,nobody")."
 	</td>
 	</tr>
 	<tr><td><br />";
-	$checked = ($listtype == 1) ? " checked='checked' " :
-	"";
+	$checked = ($listtype == 1) ? " checked='checked' " : "";
 	$text .= "<input type='radio' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
-	$checked = ($listtype == 2) ? " checked='checked' " :
-	"";
+	$checked = ($listtype == 2) ? " checked='checked' " : "";
 	$text .= "<input type='radio' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br /><br />".MENLAN_28."<br />";
 	$text .= "<textarea name='pagelist' cols='60' rows='10' class='tbox'>$menu_pages</textarea>";
 	$text .= "
@@ -203,7 +200,7 @@ if ($menu_act == "adv") {
 	</table>
 	</form>
 	</div>";
-	$caption = MENLAN_7." ".$menu_name;
+	$caption = MENLAN_7." ".$row['menu_name'];
 	$ns->tablerender($caption, $text);
 }
 
@@ -314,31 +311,27 @@ if (strpos(e_QUERY, 'configure') === FALSE)
 	  }
 	}
 
-if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
-foreach ($menu_areas as $menu_act) {
-	if ($sql->db_Select("menus", "*", "menu_location='$menu_act' ORDER BY menu_order ASC")) {
-		$c = 1;
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			$sql2->db_Update("menus", "menu_order='$c' WHERE menu_id='$menu_id' ");
-			$c++;
+	//Reorder all menus into 1...x order
+	if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
+	foreach ($menu_areas as $menu_act) {
+		if ($sql->db_Select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC")) {
+			$c = 1;
+			while ($row = $sql->db_Fetch()) {
+				$sql2->db_Update("menus", "menu_order={$c} WHERE menu_id=".$row['menu_id']);
+				$c++;
+			}
 		}
 	}
-}
-
-$sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
-while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch())
-{
-	if (stristr($menustr, $menu_name) === FALSE)
+	
+	$sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
+	while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch())
 	{
-		$sql2->db_Delete("menus", "menu_name='$menu_name'");
-		$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
+		if (stristr($menustr, $menu_name) === FALSE)
+		{
+			$sql2->db_Delete("menus", "menu_name='$menu_name'");
+			$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
+		}
 	}
-}
-}
-
-foreach ($menu_areas as $menu_act) {
-	$menus_sql[] = "menu_location!='".$menu_act."'";
 }
 
 if ($message != "")
@@ -353,9 +346,6 @@ if (strpos(e_QUERY, 'configure') === FALSE)
 }
 else
 {
-
-	$menus_query = implode(' && ', $menus_sql);
-	$sql->db_Update("menus", "menu_location='0', menu_order='0' WHERE ".$menus_query);
 
 	if ($CUSTOMPAGES) {
 		if ($menu_act != 'adv') {
