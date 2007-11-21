@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.17 $ 
-|     $Date: 2007-11-11 22:30:27 $
+|     $Revision: 1.18 $ 
+|     $Date: 2007-11-21 22:52:45 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -29,8 +29,11 @@ $dl_text = '';			// Output variable
 
 if(!defined("USER_WIDTH")) { define("USER_WIDTH","width:100%"); }
 
+// Following two now set in prefs
 // To prevent display of sub-categories on the main display, change the value in the following line from '1' to '0'
-$pref['download_subsub'] = '1';
+//$pref['download_subsub'] = '1';
+// To include file counts and sizes from subcategories and subsubcategories in superior categories, change the following to '1'
+//$pref['download_incinfo'] = '1';
 
 /* define images */
 define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
@@ -158,7 +161,7 @@ switch ($action)
     if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
 
 	// Read in tree of categories which this user is allowed to see
-    $dl = new down_cat_handler($pref['download_subsub'],USERCLASS_LIST,$maincatval);
+    $dl = new down_cat_handler(varset($pref['download_subsub'],1),USERCLASS_LIST,$maincatval,varset($pref['download_incinfo'],FALSE));
 	
 	if ($dl->down_count == 0)
 	{
@@ -738,13 +741,14 @@ class down_cat_handler
   var $cat_count;			// Count visible subcats and subsubcats
   var $down_count;			// Counts total downloads
   
-  function down_cat_handler($nest_level = 1, $load_class = USERCLASS_LIST, $main_cat_load = '')
+  function down_cat_handler($nest_level = 1, $load_class = USERCLASS_LIST, $main_cat_load = '', $accum = FALSE)
   {  // Constructor - make a copy of the tree for re-use
      // $nest_level = 0 merges subsubcats with subcats. >0 creates full tree.
 	 // If load-class non-null, assumed to be a 'class set' such as USERCLASS_LIST
+	 // If $accum is TRUE, include file counts and sizes in superior categories
 	define("SUB_PREFIX","-->");				// Added in front of sub categories
 	define("SUBSUB_PREFIX","---->");		// Added in front of sub-sub categories
-    $this->cat_tree = $this->down_cat_tree($nest_level,$load_class, $main_cat_load);
+    $this->cat_tree = $this->down_cat_tree($nest_level,$load_class, $main_cat_load, $accum);
   }
   
   
@@ -754,7 +758,7 @@ class down_cat_handler
 // Within the 'sub-category' level of the nesting, array 'subsubcats' has the next level's info
 // If $main_cat_load is numeric, and the value of a 'main' category, only that main category is displayed.
 //		(Unpredictable if $main_cat_load is some other category)
-	function down_cat_tree($nest_level = 1, $load_cat_class = USERCLASS_LIST, $main_cat_load = '')
+	function down_cat_tree($nest_level = 1, $load_cat_class = USERCLASS_LIST, $main_cat_load = '', $accum = FALSE)
 	{
 	  global $sql2;
 
@@ -814,11 +818,14 @@ class down_cat_handler
 			{
 		      $this->cat_count++;
 			  $this->down_count += $row['d_count'];
-		      if ($nest_level == 0)
+			  if ($accum || ($nest_level == 0))
 			  {  // Add the counts into the subcategory values
 				$catlist[$row['d_parent1']]['subcats'][$tmp]['d_size'] += $row['d_size'];
 				$catlist[$row['d_parent1']]['subcats'][$tmp]['d_count'] += $row['d_count'];
 				$catlist[$row['d_parent1']]['subcats'][$tmp]['d_requests'] += $row['d_requests'];
+			  }
+		      if ($nest_level == 0)
+			  {  // Reflect subcat dates in category
 				if ($catlist[$row['d_parent1']]['subcats'][$tmp]['d_last'] < $row['d_last'])
 				    $catlist[$row['d_parent1']]['subcats'][$tmp]['d_last'] = $row['d_last'];
 			  }
@@ -835,6 +842,7 @@ class down_cat_handler
 	  }
 	  return $catlist;
 	}
+
 	
 // Rest of the class isn't actually used normally, but print_tree() might help with debug	
 
