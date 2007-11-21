@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-10-07 20:30:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2007-11-21 22:52:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -142,6 +142,8 @@ if (isset($_POST['updateoptions']))
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
 	$pref['download_denied'] = $tp->toDB($_POST['download_denied']);
 	$pref['download_reportbroken'] = $_POST['download_reportbroken'];
+	if ($_POST['download_subsub']) $pref['download_subsub'] = '1'; else $pref['download_subsub'] = '0';
+	if ($_POST['download_incinfo']) $pref['download_incinfo'] = '1'; else $pref['download_incinfo'] = '0';
 	save_prefs();
 	$message = DOWLAN_65;
 }
@@ -256,26 +258,45 @@ if ($action == "opt") {
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<colgroup>
+		<col style='width:70%' />
+		<col style='width:30%' />
+		</colgroup>
 		<tr>
-		<td style='width:70%' class='forumheader3'>".DOWLAN_69."</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>";
+		<td class='forumheader3'>".DOWLAN_69."</td>
+		<td class='forumheader3' style='text-align:left'>";
 	$c = $pref['download_php'] ? " checked = 'checked' " : "";
+	$ssc = ((!isset($pref['download_subsub'])) || ($pref['download_subsub'] == '1')) ? " checked = 'checked' " : "";
+	$sacc = (varset($pref['download_incinfo'],0) == '1') ? " checked = 'checked' " : "";
 	$text .= "<input type='checkbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
 		</tr>
+
 		<tr>
-		<td style='width:70%' class='forumheader3'>
+		<td class='forumheader3'>".DOWLAN_158."</td>
+		<td class='forumheader3' style='text-align:left'>
+		<input type='checkbox' name='download_subsub' value='1' {$ssc} /> </td>
+		</tr>
+
+		<tr>
+		<td class='forumheader3'>".DOWLAN_159."</td>
+		<td class='forumheader3' style='text-align:left'>
+		<input type='checkbox' name='download_incinfo' value='1' {$sacc} /> </td>
+		</tr>
+
+		<tr>
+		<td class='forumheader3'>
 		".DOWLAN_55."
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>
+		<td class='forumheader3' style='text-align:left'>
 		<select name='download_view' class='tbox'>". ($pref['download_view'] == 5 ? "<option selected='selected'>5</option>" : "<option>5</option>"). ($pref['download_view'] == 10 ? "<option selected='selected'>10</option>" : "<option>10</option>"). ($pref['download_view'] == 15 ? "<option selected='selected'>15</option>" : "<option>15</option>"). ($pref['download_view'] == 20 ? "<option selected='selected'>20</option>" : "<option>20</option>"). ($pref['download_view'] == 50 ? "<option selected='selected'>50</option>" : "<option>50</option>")."
 		</select>
 		</td>
 		</tr>
 
-		<tr><td style='width:70%' class='forumheader3'>
+		<tr><td class='forumheader3'>
 		".DOWLAN_56."
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>
+		<td class='forumheader3' style='text-align:left'>
 
 		<select name='download_order' class='tbox'>";
 		$order_options = array("download_id"=>"Id No.","download_datestamp"=>LAN_DATE,"download_requested"=>ADLAN_24,"download_name"=>DOWLAN_59,"download_author"=>DOWLAN_15);
@@ -287,44 +308,44 @@ if ($action == "opt") {
 		$text .= "</select>
 		</td>
 		</tr>
-		<tr><td style='width:70%' class='forumheader3'>
+		<tr><td class='forumheader3'>
 		".LAN_ORDER."
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>
+		<td class='forumheader3' text-align:left'>
 		<select name='download_sort' class='tbox'>". ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected='selected'>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>"). ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected='selected'>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
 		</select>
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:70%' class='forumheader3'>".DOWLAN_151."</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>". r_userclass("download_reportbroken", $pref['download_reportbroken'])."</td>
+		<td class='forumheader3'>".DOWLAN_151."</td>
+		<td class='forumheader3' style='text-align:left'>". r_userclass("download_reportbroken", $pref['download_reportbroken'])."</td>
 		</tr>
 
 		<tr>
-		<td style='width:70%' class='forumheader3'>".DOWLAN_150."</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>". ($pref['download_email'] ? "<input type='checkbox' name='download_email' value='1' checked='checked' />" : "<input type='checkbox' name='download_email' value='1' />")."</td>
+		<td class='forumheader3'>".DOWLAN_150."</td>
+		<td class='forumheader3' style='text-align:left'>". ($pref['download_email'] ? "<input type='checkbox' name='download_email' value='1' checked='checked' />" : "<input type='checkbox' name='download_email' value='1' />")."</td>
 		</tr>
 
 		<tr>
-		<td style='width:70%' class='forumheader3'>".DOWLAN_100."</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>". ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1' />")."</td>
+		<td class='forumheader3'>".DOWLAN_100."</td>
+		<td class='forumheader3' style='text-align:left'>". ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1' />")."</td>
 		</tr>
 
 
 
-		<tr><td style='width:70%' class='forumheader3'>
+		<tr><td class='forumheader3'>
 		".DOWLAN_101."
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>
-		<textarea class='tbox' name='agree_text' cols='59' rows='3'>$agree_text</textarea>
+		<td class='forumheader3' style='text-align:left'>
+		<textarea class='tbox' name='agree_text' cols='59' rows='3'>{$agree_text}</textarea>
 		</td>
 		</tr>
 
-		<tr><td style='width:70%' class='forumheader3'>
+		<tr><td class='forumheader3'>
 		".DOWLAN_146."
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>
+		<td class='forumheader3' style='text-align:left'>
 		<textarea class='tbox' name='download_denied' cols='59' rows='3'>".$pref['download_denied']."</textarea>
 		</td>
 		</tr>

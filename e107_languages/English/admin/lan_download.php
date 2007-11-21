@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-03 15:12:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2007-11-21 22:52:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -140,4 +140,8 @@ define("DOWLAN_154", "if using mirrors, select how they will be displayed");
 define("DOWLAN_155", "Mirror display type:");
 define("DOWLAN_156", "show mirror list, allow user to choose mirror");
 define("DOWLAN_157", "use random mirror - no user choice");
+
+define("DOWLAN_158", "Show sub-sub-categories on main download page");
+define("DOWLAN_159", "Include sub-sub-category counts in subcategory counts");
+
 ?>
