@@ -4,21 +4,25 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_upload.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-11-23 21:52:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Upload");
 
-define("LAN_20", "Error");
+define('LAN_UL_001','Invalid email address');
+define('LAN_UL_002', 'You do not have the correct permissions to upload files to this server.');	// LAN_403
+
+define('LAN_UL_020', 'Error');
+define('LAN_UL_021', 'Upload Failure');
+
 define("LAN_61", "Your Name: ");
 define("LAN_112", "Email Address: ");
 define("LAN_144", "Website URL: ");
 define("LAN_402", "You must be a registered member to upload files to this server.");
-define("LAN_403", "You do not have the correct permissions to upload files to this server.");
 define("LAN_404", "Thank you. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
-define("LAN_405", "File exceeds specified maximum size limit - deleted.");
+//define("LAN_405", "File exceeds specified maximum size limit - deleted.");
 define("LAN_406", "Please note");
 define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
 define("LAN_408", "Underlined");
