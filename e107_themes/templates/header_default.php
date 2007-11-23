@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-11-01 20:28:29 $
+|     $Revision: 1.16 $
+|     $Date: 2007-11-23 20:48:14 $
 |     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -100,7 +100,7 @@ if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset(
 }
 
 if (isset($theme_js_php) && $theme_js_php) {
-	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
+	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css' />";
 } else {
 	if (!isset($no_core_js) || !$no_core_js) {
 		echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
