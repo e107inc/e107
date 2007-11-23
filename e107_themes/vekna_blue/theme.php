@@ -33,8 +33,9 @@ $csscompliant = TRUE;
 
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
-function theme_head() {
-	return "<link rel='stylesheet' href='".THEME_ABS."nav_menu.css' />\n";
+function theme_head() 
+{
+  return "<link rel='stylesheet' href='".THEME_ABS."nav_menu.css' type='text/css' />\n";
 }
 
 // [layout]
