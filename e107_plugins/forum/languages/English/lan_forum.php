@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-11-24 15:10:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Forum");
@@ -60,7 +60,7 @@ define("LAN_402", "This forum is read only");
 	
 define("LAN_403", "No posts yet");
 define("LAN_404", "posts");
-define("LAN_405", "Read Only");
+define("LAN_405", "Restricted Access");
 	
 define("LAN_406", "This forum is restricted to administrators only");
 define("LAN_407", "This forum is restricted to members only");
