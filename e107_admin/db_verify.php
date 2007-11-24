@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-29 18:53:01 $
+|     $Revision: 1.4 $
+|     $Date: 2007-11-24 15:42:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -235,7 +235,7 @@ function check_tables($what)
 				  if (strcasecmp(trim($xf),trim($fsplit[$i])) != 0) 
 				  {
 				    $fld_err = TRUE;
-					echo "Mismatch: ".$xf." - ".$fsplit[$i]."<br />";
+//					echo "Mismatch: ".$xf." - ".$fsplit[$i]."<br />";
 				  }
 				  $i++;
 				}
