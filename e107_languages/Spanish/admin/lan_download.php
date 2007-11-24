@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-12-05 06:49:32 $
+|     $Revision: 1.18 $
+|     $Date: 2007-11-24 16:41:36 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -132,5 +132,7 @@ define("DOWLAN_153", "Mover el archivo a la carpeta de descargas");
 define("DOWLAN_154", "Si usa zonas, seleccione cuales se mostraran"); 
 define("DOWLAN_155", "Tipo de presentar la zona:"); 
 define("DOWLAN_156", "Mostrar lista de zonas, permite al usuario escojer la zona");
-define("DOWLAN_157", "Usar zona aleatoria - no permite eleccion de usuario");  
+define("DOWLAN_157", "Usar zona aleatoria - no permite eleccion de usuario");
+define("DOWLAN_158", "Mostrar sub-categorías en la página principal de descargas"); 
+define("DOWLAN_159", "Incluir las cuentas de sub-sub-categororías en las cuentas de subcategorías");
 ?>

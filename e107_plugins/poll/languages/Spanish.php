@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Spanish.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-04-21 09:34:59 $
+|     $Revision: 1.12 $
+|     $Date: 2007-11-24 16:41:36 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@ define("POLLAN_39", "¡Gracias por su voto!");
 define("POLLAN_40", "Click aquí para ver los resultados");
 define("POLLAN_41", "Esta encuesta está restringida solo a los miembros");
 define("POLLAN_42", "Esta encuesta está restringida solo a los Admins");
-define("POLLAN_43", "No tiene permisos para votar en esta encuenta");
+define("POLLAN_43", "No tiene permisos necesarios para votar en esta encuenta");
 define("POLLAN_44", "¿Eliminar esta encuesta?");
 define("POLLAN_45", "Encuesta actualizada con éxito");
 define("POLLAN_46", "Campo(s) en blanco");

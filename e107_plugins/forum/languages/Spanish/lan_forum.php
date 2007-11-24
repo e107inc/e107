@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-11 11:02:27 $
+|     $Revision: 1.7 $
+|     $Date: 2007-11-24 16:41:36 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ define("LAN_401", "Solo Miembros");
 define("LAN_402", "Este foro es solo de lectura");
 define("LAN_403", "No hay mensajes");
 define("LAN_404", "mensajes");
-define("LAN_405", "Solo lectura");
+define("LAN_405", "Acceso restringido");
 define("LAN_406", "Este foro está restringido solo para administradores");
 define("LAN_407", "Este foro está restringido solo para miembros");
 define("LAN_408", "Este foro es de solo lectura");
