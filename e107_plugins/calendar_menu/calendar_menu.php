@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2007-10-07 14:06:42 $
+|     $Revision: 1.28 $
+|     $Date: 2007-11-27 21:41:56 $
 |     $Author: e107steved $
 |
 | 22.10.06 steved - Various tidying up, additional options supported
@@ -185,7 +185,7 @@ for ($cal_c = 0; $cal_c < $firstdayoffset; $cal_c++)
 $cal_loop = $firstdayoffset;
 
 // Now do the days of the month
-for($cal_c = 1; $cal_c <= 31; $cal_c++)
+for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 {   // Four cases to decode:
 	//     	1 - Today, no events
 	//		2 - Some other day, no events (or no icon defined)
