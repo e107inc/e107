@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.8 $
-| $Date: 2007-07-18 20:46:32 $
+| $Revision: 1.9 $
+| $Date: 2007-11-30 22:23:10 $
 | $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -129,7 +129,7 @@ class e_shortcode {
 		}
 
 		/* Check for shortcode registered with $e_shortcodes */
-		if(array_key_exists($code, $e_shortcodes))
+		if (is_array($e_shortcodes) && (array_key_exists($code, $e_shortcodes)))
 		{
 			include_once($e_shortcodes[$code]['file']);
 			if(function_exists($e_shortcodes[$code]['function']))
