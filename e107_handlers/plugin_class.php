@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-09-28 20:00:31 $
+|     $Revision: 1.14 $
+|     $Date: 2007-12-03 20:43:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -275,7 +275,7 @@ class e107plugin
 		if ($action == 'add') 
 		{
 			$link_t = $sql->db_Count('links');
-			if (!$sql->db_Count('links', '(*)', "link_url = '{$path}' OR link_name = '{$link_name}'")) 
+			if (!$sql->db_Count('links', '(*)', "WHERE link_url = '{$path}' OR link_name = '{$link_name}'")) 
 			{
 			  return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '{$link_class}' ");
 			} 
