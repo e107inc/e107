@@ -5,8 +5,8 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e107.js,v $
-|	$Revision: 1.7 $
-|	$Date: 2007-11-24 04:53:32 $
+|	$Revision: 1.8 $
+|	$Date: 2007-12-03 21:58:46 $
 |	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -165,7 +165,14 @@ function setCheckboxes(the_form, do_check, the_cb){
 	var elts = (typeof(document.forms[the_form].elements[the_cb]) != 'undefined') ? document.forms[the_form].elements[the_cb] : document.forms[the_form].elements[the_cb];
 	if(document.getElementById(the_form))
 	{
-		var elts = document.getElementById(the_form);
+		if(the_cb)
+		{
+			var elts =(typeof(document.getElementById(the_form).elements[the_cb]) != 'undefined') ? document.getElementById(the_form).elements[the_cb] : document.getElementById(the_form).elements[the_cb];
+		}
+		else
+		{
+			var elts = document.getElementById(the_form);
+		}
 	}
 	
 	var elts_cnt  = (typeof(elts.length) != 'undefined') ? elts.length : 0;
