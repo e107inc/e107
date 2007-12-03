@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-03 20:38:01 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -38,8 +38,8 @@ list($cur_year, $cur_month, $cur_day) = explode(" ", date("Y n j"));
 if (strstr(e_QUERY, "day")) {
 	$tmp = explode(".", e_QUERY);
 	$item = $tmp[1];
-	$req_year = substr($item, 0, 4);
-	$req_month = substr($item, 4, 2);
+	$req_year = intval(substr($item, 0, 4));
+	$req_month = intval(substr($item, 4, 2));
 	// decide on the behaviour here, do we highlight
 	// the day being viewed? or only 'today'?
 	//$req_day = substr($item, 6, 2);
@@ -54,8 +54,8 @@ if (strstr(e_QUERY, "day")) {
 else if(strstr(e_QUERY, "month")) {
 	$tmp = explode(".", e_QUERY);
 	$item = $tmp[1];
-	$req_year = substr($item, 0, 4);
-	$req_month = substr($item, 4, 2);
+	$req_year = intval(substr($item, 0, 4));
+	$req_month = intval(substr($item, 4, 2));
 	// if the requested year and month are the current, then add
 	// the current day to the mix so the calendar highlights it
 	if (($req_year == $cur_year) && ($req_month == $cur_month)) {

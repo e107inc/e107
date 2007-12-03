@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/blogcalendar_menu/archive.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-13 13:59:25 $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-03 20:38:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
@@ -50,12 +50,17 @@ $pref['blogcal_ws'] = "monday";
 $cur_year = date("Y");
 $cur_month = date("n");
 $cur_day = date("j");
-if (strstr(e_QUERY, "year")) {
-	$tmp = explode(".", e_QUERY);
-	$req_year = $tmp[1];
-} else {
-	$req_year = $cur_year;
+if (strstr(e_QUERY, "year")) 
+{
+  $tmp = explode(".", e_QUERY);
+  if (is_numeric($tmp[1]))
+  {
+	$req_year = intval($tmp[1]);
+  }
 }
+
+if (!isset($req_year)) $req_year = $cur_year;
+
 	
 	
 // --------------------------------
