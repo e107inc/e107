@@ -1,9 +1,11 @@
 <?php
+// $Id: login_template.php,v 1.4 2007-12-06 21:35:55 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 
 // ##### LOGIN HEADER TABLE -----------------------------------------------------------------------
-if(!$LOGIN_TABLE_HEADER){
+if(!isset($LOGIN_TABLE_HEADER))
+{
 	$LOGIN_TABLE_HEADER .= "
 	<div style='width:100%;text-align:center; margin-left: auto;margin-right: auto'><br />
 		<div style='text-align:center;width:70%;margin-left: auto;margin-right: auto'>
@@ -11,7 +13,8 @@ if(!$LOGIN_TABLE_HEADER){
 }
 
 // ##### LOGIN TABLE -----------------------------------------------------------------------------
-if(!$LOGIN_TABLE){
+if(!isset($LOGIN_TABLE))
+{
 		$LOGIN_TABLE = "";
 		if($LOGIN_TABLE_LOGINMESSAGE != ""){
 				$LOGIN_TABLE .= "<div style='text-align:center'>{LOGIN_TABLE_LOGINMESSAGE}</div>";
@@ -29,7 +32,8 @@ if(!$LOGIN_TABLE){
 // ##### ------------------------------------------------------------------------------------------
 
 // ##### LOGIN TABLE FOOTER -----------------------------------------------------------------------
-if(!$LOGIN_TABLE_FOOTER){
+if(!isset($LOGIN_TABLE_FOOTER))
+{
 			$LOGIN_TABLE_FOOTER = "
 			<div style='width:70%;margin-right:auto;margin-left:auto'>
 				<div style='text-align:center'><br />
