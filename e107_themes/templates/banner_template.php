@@ -1,10 +1,12 @@
 <?php
+// $Id: banner_template.php,v 1.2 2007-12-06 21:35:55 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:98%"); }
 
 // ##### LOGIN TABLE -------------------------------------------------------------------------------
-if(!$BANNER_LOGIN_TABLE){
+if(!isset($BANNER_LOGIN_TABLE))
+{
 		$BANNER_LOGIN_TABLE = "
 		<div style='align:center'>\n
 		<form method='post' action='".e_SELF."'>\n
@@ -29,7 +31,8 @@ if(!$BANNER_LOGIN_TABLE){
 // ##### ------------------------------------------------------------------------------------------
 
 // ##### BANNER TABLE -----------------------------------------------------------------------------
-if(!$BANNER_TABLE_START){
+if(!isset($BANNER_TABLE_START))
+{
 		$BANNER_TABLE_START = "
 		<table class='fborder' style='".USER_WIDTH."; border:1px solid #000' border='1'>
 		<tr><td colspan='7' style='text-align:center' class='fcaption'>".BANNERLAN_21."</td></tr>
@@ -43,7 +46,8 @@ if(!$BANNER_TABLE_START){
 			<td class='forumheader' style='text-align:center'>".BANNERLAN_28."</td>
 		</tr>";
 }
-if(!$BANNER_TABLE){
+if(!isset($BANNER_TABLE))
+{
 		$BANNER_TABLE = "
 		<tr>
 			<td class='forumheader3' style='text-align:center'>{BANNER_TABLE_CLIENTNAME}</td>
@@ -71,20 +75,24 @@ if(!$BANNER_TABLE){
 		</tr>
 		<tr><td colspan='7'>&nbsp;</td></tr>";
 }
-if(!$BANNER_TABLE_END){
+if(!isset($BANNER_TABLE_END))
+{
 		$BANNER_TABLE_END = "
 		</table>";
 }
 // ##### ------------------------------------------------------------------------------------------
 
 // ##### BANNER MENU -----------------------------------------------------------------------------
-if(!isset($BANNER_MENU_START)){
+if(!isset($BANNER_MENU_START))
+{
 	$BANNER_MENU_START = "<div style='text-align:center;'>";
 }
-if(!isset($BANNER_MENU)){
+if(!isset($BANNER_MENU))
+{
 	$BANNER_MENU = "{BANNER}<br /><br />";
 }
-if(!isset($BANNER_MENU_END)){
+if(!isset($BANNER_MENU_END))
+{
 	$BANNER_MENU_END = "</div>";
 }
 // ##### ------------------------------------------------------------------------------------------

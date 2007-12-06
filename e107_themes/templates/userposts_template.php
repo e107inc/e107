@@ -11,25 +11,28 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/userposts_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-06 21:35:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-if(!isset($USERPOSTS_NP_TABLE)){
+if(!isset($USERPOSTS_NP_TABLE))
+{
 	$USERPOSTS_NP_TABLE = "<div class='nextprev'>{USERPOSTS_NEXTPREV}</div>";
 }
 
 // ##### USERPOSTS_COMMENTS TABLE -----------------------------------------------------------------
-if(!$USERPOSTS_COMMENTS_TABLE_START){
+if(!isset($USERPOSTS_COMMENTS_TABLE_START))
+{
 	$USERPOSTS_COMMENTS_TABLE_START = "
 	<div style='text-align:center'>
 	<table class='fborder' style='".USER_WIDTH."'>\n";
 }
-if(!$USERPOSTS_COMMENTS_TABLE){
+if(!isset($USERPOSTS_COMMENTS_TABLE))
+{
 	$USERPOSTS_COMMENTS_TABLE = "
 	<tr>
 	<td class='fcaption'>
@@ -44,7 +47,8 @@ if(!$USERPOSTS_COMMENTS_TABLE){
 	</tr>
 	";
 }
-if(!$USERPOSTS_COMMENTS_TABLE_END){
+if(!isset($USERPOSTS_COMMENTS_TABLE_END))
+{
 	 $USERPOSTS_COMMENTS_TABLE_END = "
 	</table>
 	</div>";
@@ -52,13 +56,15 @@ if(!$USERPOSTS_COMMENTS_TABLE_END){
 // ##### ------------------------------------------------------------------------------------------
 
 // ##### USERPOSTS FORUM TABLE --------------------------------------------------------------------
-if(!$USERPOSTS_FORUM_TABLE_START){
+if(!isset($USERPOSTS_FORUM_TABLE_START))
+{
 	$USERPOSTS_FORUM_TABLE_START = "
 	<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
 	<table class='fborder' style='".USER_WIDTH."'>";
 }
-if(!$USERPOSTS_FORUM_TABLE){
+if(!isset($USERPOSTS_FORUM_TABLE))
+{
 	$USERPOSTS_FORUM_TABLE .= "
 	<tr>
 	<td class='fcaption'>
@@ -74,7 +80,8 @@ if(!$USERPOSTS_FORUM_TABLE){
 	</tr>
 	";
 }
-if(!$USERPOSTS_FORUM_TABLE_END){
+if(!isset($USERPOSTS_FORUM_TABLE_END))
+{
 	$USERPOSTS_FORUM_TABLE_END = "
 	<tr>
 	<td class='forumheader' style='text-align:right'>

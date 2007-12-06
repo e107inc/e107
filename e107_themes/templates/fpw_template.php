@@ -1,11 +1,13 @@
 <?php
+// $Id: fpw_template.php,v 1.2 2007-12-06 21:35:55 e107steved Exp $
 
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:70%"); }
 
 // ##### FPW TABLE -----------------------------------------------------------------------------
-if(!$FPW_TABLE){
+if(!isset($FPW_TABLE))
+{
 		$FPW_TABLE = "
 		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
@@ -52,7 +54,8 @@ if(!$FPW_TABLE){
 // ##### ------------------------------------------------------------------------------------------
 
 // ##### FPW HEADER TABLE -------------------------------------------------------------------------
-if(!$FPW_TABLE_HEADER){
+if(!isset($FPW_TABLE_HEADER))
+{
 		$FPW_TABLE_HEADER = "
 		<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
 			<div style='width:70%;margin-left:auto;margin-right:auto;text-align:center;'><br />
@@ -62,7 +65,8 @@ if(!$FPW_TABLE_HEADER){
 // ##### ------------------------------------------------------------------------------------------
 
 // ##### FPW FOOTER TABLE -------------------------------------------------------------------------
-if(!$FPW_TABLE_FOOTER){
+if(!isset($FPW_TABLE_FOOTER))
+{
 		$FPW_TABLE_FOOTER = "</div></div>";
 }
 // ##### ------------------------------------------------------------------------------------------

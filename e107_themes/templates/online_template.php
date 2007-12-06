@@ -1,10 +1,12 @@
 <?php
+// $Id: online_template.php,v 1.2 2007-12-06 21:35:55 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:96%"); }
 
 // ##### ONLINE TABLE -----------------------------------------------------------------------------
-if(!$ONLINE_TABLE_START){
+if(!isset($ONLINE_TABLE_START))
+{
 		$ONLINE_TABLE_START = "
 		<div style='text-align:center'>
 		<table class='fborder' style='".USER_WIDTH."'>
@@ -14,7 +16,8 @@ if(!$ONLINE_TABLE_START){
 			<td class='forumheader' style='width:50%'>".ONLINE_EL11."</td>
 		</tr>";
 }
-if(!$ONLINE_TABLE){
+if(!isset($ONLINE_TABLE))
+{
 		$ONLINE_TABLE = "
 		<tr>
 			<td class='forumheader3' style='width:3%;text-align:center'>{ONLINE_TABLE_ICON}</td>
@@ -22,7 +25,8 @@ if(!$ONLINE_TABLE){
 			<td class='forumheader3' style='width:50%'>{ONLINE_TABLE_LOCATION}<br /></td>
 		</tr>";
 }
-if(!$ONLINE_TABLE_END){
+if(!isset($ONLINE_TABLE_END))
+{
 		$ONLINE_TABLE_END = "
 		</table>
 		</div>

@@ -1,10 +1,11 @@
 <?php
-// $Id: contact_template.php,v 1.2 2007-04-12 19:18:24 e107steved Exp $
+// $Id: contact_template.php,v 1.3 2007-12-06 21:35:55 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
 
-if(!$CONTACT_INFO){
+if(!isset($CONTACT_INFO))
+{
   $CONTACT_INFO = "
 	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	<tr>
@@ -28,7 +29,8 @@ $sc_style['CONTACT_IMAGECODE_INPUT']['pre'] = "";
 $sc_style['CONTACT_IMAGECODE_INPUT']['post'] = "</td></tr>";
 
 
-if(!$CONTACT_FORM){
+if(!isset($CONTACT_FORM))
+{
   $CONTACT_FORM = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
 	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
