@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/e_meta.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-02-11 20:09:19 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-06 20:23:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,9 +20,8 @@ if (!defined('e107_INIT')) { exit; }
 
 global $tp,$PLUGINS_DIRECTORY;
 
-if(isset($pref['rss_feeds']) && $pref['rss_feeds'])
-{
-	if($sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name")){
+	if($sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name"))
+	{
    		while($row=$sql->db_Fetch()){
 	  		//wildcard topic_id's should not be listed
 	   		if(strpos($row['rss_url'], "*")===FALSE){
@@ -33,5 +32,5 @@ if(isset($pref['rss_feeds']) && $pref['rss_feeds'])
 			}
 		}
 	}
-}
+
 ?>
