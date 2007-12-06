@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/e107_update.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-24 16:18:48 $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-06 21:38:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,8 @@ function show_updates($dbupdate)
 	}
 
 	$text .= "</table></div></form>";
-		$ns->tablerender(LAN_UPDATE, $text);
+	$ns->tablerender(LAN_UPDATE, $text);
+	return $updates;				// Number of updates to do
 }
 
 
@@ -83,50 +84,24 @@ if ($_POST)
 }
 
 
-/*
-These things already done within update_routines.php
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
-	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
-	{
-		include_once(e_PLUGIN.'forum/forum_update_check.php');
-	}
-}
-if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
-	if(file_exists(e_PLUGIN.'log/log_update_check.php'))
-	{
-		include_once(e_PLUGIN.'log/log_update_check.php');
-	}
-}
-
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
-{
-	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
-	{
-		include_once(e_PLUGIN.'content/content_update_check.php');
-	}
-}
-
-if ($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_installflag='1' "))
-{
-	if(file_exists(e_PLUGIN.'pm/pm_update_check.php'))
-	{
-		include_once(e_PLUGIN.'pm/pm_update_check.php');
-	}
-}
-
-*/
-
 if ($_POST) 
 {	// Do plugin updates
   $message = run_updates($dbupdatep);
 }
 
+$total_updates = 0;
 if (isset($dbupdatep)) 
 {	// Show plugin updates done
-	show_updates($dbupdatep);
+  $total_updates += show_updates($dbupdatep);
 }
 // Show core updates done
-show_updates($dbupdate);
+$total_updates += show_updates($dbupdate);
+
+if ($total_updates == 0)
+{  // No updates needed - clear the cache to be sure
+  $e107cache->set_sys("nq_admin_updatecheck", time().', 1, '.$e107info['e107_version'], TRUE);
+}
+
 
 require_once("footer.php");
 
