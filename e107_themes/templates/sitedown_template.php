@@ -11,16 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/sitedown_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-11 07:45:18 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-06 21:36:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // ##### SITEDOWN TABLE -----------------------------------------------------------------
-if(!$SITEDOWN_TABLE){
+if(!isset($SITEDOWN_TABLE))
+{
 	$SITEDOWN_TABLE = (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 	";
 	$SITEDOWN_TABLE .= "
