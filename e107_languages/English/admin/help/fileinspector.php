@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/fileinspector.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-06-21 19:38:45 $
+|     $Revision: 1.11 $
+|     $Date: 2007-12-07 20:54:59 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Non Core File</div>";
 $ns -> tablerender("File Key", $text);
 
-$text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters
+$text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters 
 an e107 core file, it checks it for file consistency to make sure it isn't corrupted.";
 
 if ($pref['developer']) {
