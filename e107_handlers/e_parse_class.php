@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2007-11-13 07:38:55 $
-|     $Author: e107coders $
+|     $Revision: 1.23 $
+|     $Date: 2007-12-07 21:24:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -714,9 +714,23 @@ class e_parse
 		if($nonrelative != "")
 		{
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
-			$replace_relative = array("",$IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY);
-			$replace_absolute = array(SITEURL,SITEURL.$IMAGES_DIRECTORY,SITEURL.$PLUGINS_DIRECTORY,SITEURL.$FILES_DIRECTORY,SITEURL.$THEMES_DIRECTORY,SITEURL.$DOWNLOADS_DIRECTORY);
-			$search = array("{e_BASE}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}");
+			$replace_relative = array("",
+									SITEURL.$IMAGES_DIRECTORY,
+									SITEURL.$THEMES_DIRECTORY,
+									$IMAGES_DIRECTORY,
+									$PLUGINS_DIRECTORY,
+									$FILES_DIRECTORY,
+									$THEMES_DIRECTORY,
+									$DOWNLOADS_DIRECTORY);
+			$replace_absolute = array(SITEURL,
+									SITEURL.$IMAGES_DIRECTORY,
+									SITEURL.$THEMES_DIRECTORY,
+									SITEURL.$IMAGES_DIRECTORY,
+									SITEURL.$PLUGINS_DIRECTORY,
+									SITEURL.$FILES_DIRECTORY,
+									SITEURL.$THEMES_DIRECTORY,
+									SITEURL.$DOWNLOADS_DIRECTORY);
+			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}");
 			if (ADMIN) {
 				$replace_relative[] = $ADMIN_DIRECTORY;
 				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
@@ -738,7 +752,8 @@ class e_parse
 			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
 		}
-		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
+//		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
+		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*(?:_ABS){0,1})\}#s");
 	 	$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
 		$theme_path = (defined("THEME")) ? constant("THEME") : "";
 		$text = str_replace("{THEME}",$theme_path,$text);
