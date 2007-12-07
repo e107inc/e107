@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-05-06 20:52:26 $
+|     $Revision: 1.19 $
+|     $Date: 2007-12-07 19:52:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -289,13 +289,14 @@ else
 $IM_NOTE = "";
 if($pref['im_path'] != "")
 {
-	if(!file_exists($pref['im_path']))
+  $im_file = $pref['im_path'].'convert';
+	if(!file_exists($im_file))
 	{
 		$IM_NOTE = "<br /><span style='color:red'>".IMALAN_52."</span>";
 	}
 	else
 	{
-		$cmd = "{$pref['im_path']} -version";
+		$cmd = "{$im_file} -version";
 		$tmp = `$cmd`;
 		if(strpos($tmp, "ImageMagick") === FALSE)
 		{
