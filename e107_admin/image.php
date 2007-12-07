@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-06 20:52:40 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-07 19:53:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -76,7 +76,7 @@ if (isset($_POST['avdelete'])) {
 if (isset($_POST['update_options'])) {
 	$pref['image_post'] = $_POST['image_post'];
 	$pref['resize_method'] = $_POST['resize_method'];
-	$pref['im_path'] = $tp->toDB($_POST['im_path']);
+	$pref['im_path'] = trim($tp->toDB($_POST['im_path']));
 	$pref['image_post_class'] = $_POST['image_post_class'];
 	$pref['image_post_disabled_method'] = $_POST['image_post_disabled_method'];
 	$pref['enable_png_image_fix'] = $_POST['enable_png_image_fix'];
@@ -289,13 +289,14 @@ else
 $IM_NOTE = "";
 if($pref['im_path'] != "")
 {
-	if(!file_exists($pref['im_path']))
+  $im_file = $pref['im_path'].'convert';
+	if(!file_exists($im_file))
 	{
 		$IM_NOTE = "<br /><span style='color:red'>".IMALAN_52."</span>";
 	}
 	else
 	{
-		$cmd = "{$pref['im_path']} -version";
+		$cmd = "{$im_file} -version";
 		$tmp = `$cmd`;
 		if(strpos($tmp, "ImageMagick") === FALSE)
 		{
