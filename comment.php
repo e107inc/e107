@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-08-17 19:23:26 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-08 14:49:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -325,11 +325,6 @@ $field = ($field ? $field : ($id ? $id : ""));
 $width = (isset($width) && $width ? $width : "");
 $cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE);
 
-if (!strstr(e_QUERY, "poll")) {
-	$cache = ob_get_contents();
-	$e107cache->set("comment.php?{$table}.{$field}", $cache);
-}
-if ($comment_ob_start) ob_end_flush(); // dump the buffer we started
 
 
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news"){
@@ -371,6 +366,13 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "n
 		echo "<div style='text-align:right'><a href='".e_PLUGIN."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
 	}
 }
+
+if (!strstr(e_QUERY, "poll")) 
+{
+  $cache = ob_get_contents();
+  $e107cache->set("comment.php?{$table}.{$field}", $cache);
+}
+if ($comment_ob_start) ob_end_flush(); // dump the buffer we started
 
 
 require_once(FOOTERF);
