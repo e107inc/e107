@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-09-04 21:09:47 $
+|     $Revision: 1.5 $
+|     $Date: 2007-12-08 12:22:36 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -422,7 +422,12 @@ SC_BEGIN EC_EVENT_CONTACT
 	}
 	else
 	{
-	  $EC_EVENT_CONTACT = $tp->toHTML($thisevent['event_contact'],TRUE,'LINKTEXT');
+	  $tm = $thisevent['event_contact'];
+	  if (strpos($tm,'[') === FALSE)
+	  {
+	    $tm = '[link=mailto:'.trim($tm).']'.substr($tm,0,strpos($tm,'@')).'[/link]';
+	  }
+	  $EC_EVENT_CONTACT = $tp->toHTML($tm,TRUE,'LINKTEXT');
 	}
 	return $EC_EVENT_CONTACT;
 SC_END
