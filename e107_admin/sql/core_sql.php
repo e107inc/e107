@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-09-22 21:46:09 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-08 15:11:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -35,14 +35,39 @@ exit;
 # --------------------------------------------------------
 
 #
+# Table structure for table `audit_log` - user audit trail
+#
+CREATE TABLE audit_log (
+  dblog_id int(10) unsigned NOT NULL auto_increment,
+  dblog_datestamp int(10) unsigned NOT NULL default '0',
+  dblog_microtime int(10) unsigned NOT NULL default '0',
+  dblog_eventcode varchar(10) NOT NULL default '',
+  dblog_user_id int(10) unsigned NOT NULL default '0',
+  dblog_user_name varchar(100) NOT NULL default '',
+  dblog_ip varchar(45) NOT NULL default '',
+  dblog_title varchar(255) NOT NULL default '',
+  dblog_remarks text NOT NULL,
+  PRIMARY KEY  (dblog_id),
+  KEY dblog_datestamp (dblog_datestamp)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+# --------------------------------------------------------
+
+
+#
 # Table structure for table `banlist`
 #
 
 CREATE TABLE banlist (
   banlist_ip varchar(100) NOT NULL default '',
+  banlist_bantype tinyint(3) unsigned NOT NULL default '0',
+  banlist_datestamp int(10) unsigned NOT NULL default '0',
+  banlist_banexpires int(10) unsigned NOT NULL default '0',
   banlist_admin smallint(5) unsigned NOT NULL default '0',
   banlist_reason tinytext NOT NULL,
-  PRIMARY KEY  (banlist_ip)
+  banlist_notes tinytext NOT NULL,
+  PRIMARY KEY  (banlist_ip),
+  KEY banlist_datestamp (banlist_datestamp),
+  KEY banlist_banexpires (banlist_banexpires)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -105,13 +130,16 @@ CREATE TABLE core (
 #
 CREATE TABLE dblog (
   dblog_id int(10) unsigned NOT NULL auto_increment,
-  dblog_type varchar(60) NOT NULL default '',
   dblog_datestamp int(10) unsigned NOT NULL default '0',
+  dblog_microtime int(10) unsigned NOT NULL default '0',
+  dblog_type tinyint(3) NOT NULL default '0',
+  dblog_eventcode varchar(10) NOT NULL default '',
   dblog_user_id int(10) unsigned NOT NULL default '0',
-  dblog_ip varchar(80) NOT NULL default '',
+  dblog_ip varchar(45) NOT NULL default '',
   dblog_title varchar(255) NOT NULL default '',
   dblog_remarks text NOT NULL,
-  PRIMARY KEY  (dblog_id)
+  PRIMARY KEY  (dblog_id),
+  KEY dblog_datestamp (dblog_datestamp)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -365,6 +393,28 @@ CREATE TABLE rbinary (
 # --------------------------------------------------------
 
 #
+# Table structure for table `rl_history` - rolling log
+#
+
+CREATE TABLE rl_history (
+  dblog_id int(10) unsigned NOT NULL auto_increment,
+  dblog_datestamp int(10) unsigned NOT NULL default '0',
+  dblog_microtime int(10) unsigned NOT NULL default '0',
+  dblog_type tinyint(3) NOT NULL default '0',
+  dblog_eventcode varchar(10) NOT NULL default '',
+  dblog_user_id int(10) unsigned NOT NULL default '0',
+  dblog_user_name varchar(100) NOT NULL default '',
+  dblog_ip varchar(45) NOT NULL default '',
+  dblog_caller varchar(255) NOT NULL default '',
+  dblog_title varchar(255) NOT NULL default '',
+  dblog_remarks text NOT NULL,
+  PRIMARY KEY  (dblog_id),
+  KEY dblog_datestamp (dblog_datestamp)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
+# --------------------------------------------------------
+
+#
 # Table structure for table `session`
 #
 
@@ -484,6 +534,10 @@ CREATE TABLE userclass_classes (
   userclass_name varchar(100) NOT NULL default '',
   userclass_description varchar(250) NOT NULL default '',
   userclass_editclass tinyint(3) unsigned NOT NULL default '0',
+  userclass_parent tinyint(3) unsigned NOT NULL default '0',
+  userclass_accum varchar(250) NOT NULL default '', 
+  userclass_visibility tinyint(3) unsigned NOT NULL default '0',
+  userclass_icon varchar(250) NOT NULL default '',
   PRIMARY KEY  (userclass_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

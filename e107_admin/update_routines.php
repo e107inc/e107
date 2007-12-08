@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-09-22 21:46:09 $
+|     $Revision: 1.11 $
+|     $Date: 2007-12-08 15:11:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
+require_once(e_HANDLER.'db_table_admin_class.php');
 
 
 // Modified update routine - combines checking and update code into one block per function
@@ -163,7 +164,7 @@ function update_core_prefs($type='')
   {
     if ($k && !array_key_exists($k,$pref))
 	{
-	  if ($just_check) return update_needed();
+	  if ($just_check) return update_needed('Missing pref: '.$k);
 	  $pref[$k] = $v;
 	  $do_save = TRUE;
 	}
@@ -181,10 +182,20 @@ function update_706_to_800($type='')
 	global $sql,$ns, $pref;
 	
 	// List of unwanted $pref values which can go
-	$obs_prefs = array('frontpage_type');
+	$obs_prefs = array('frontpage_type','rss_feeds');
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
+	
+	
+	// List of DB tables newly required  (defined in core_sql.php)
+	$new_tables = array('audit_log', 'rl_history');
+
+
+	// List of changed DB tables (defined in core_sql.php) 
+	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
+	$changed_tables = array('dblog','rl_history', 'userclass_classes', 'banlist');
+
 	
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
 	$ip_upgrade = array('comments' => 'comment_ip', 
@@ -195,7 +206,8 @@ function update_706_to_800($type='')
 						'user' => 'user_ip',
 						'chatbox' => 'cb_ip'
 						);
-	
+
+	$db_parser = new db_table_admin;								// Class to read table defs and process them
 	$do_save = FALSE;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
@@ -303,6 +315,61 @@ function update_706_to_800($type='')
 	    if ($just_check) return update_needed();
 		unset($pref[$p]);
 		$do_save = TRUE;
+	  }
+	}
+
+
+	// Tables defined in core_sql.php
+	//---------------------------------
+
+	// New tables required (list at top. Definitions in core_sql.php)
+	foreach ($new_tables as $nt)
+	{
+	  if (!mysql_table_exists($nt))
+	  {
+	    if ($just_check) return update_needed("Add table: ".$nt);
+		// Get the definition
+		$defs = $db_parser->get_table_def($nt,e_ADMIN."sql/core_sql.php");
+		if (count($defs))
+		{	// **** Add in table here
+		  $sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]);
+		  catch_error();
+		}
+		else
+		{  // error parsing defs file
+		}
+		unset($defs);
+	  }
+	}
+
+
+	// Tables whose definition needs changing significantly
+	foreach ($changed_tables as $ct)
+	{
+	  $req_defs = $db_parser->get_table_def($ct,e_ADMIN."sql/core_sql.php");
+	  $req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
+//	  echo $db_parser->make_field_list($req_fields);
+
+	  if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
+	  {
+	    echo "Couldn't get table structure: {$ct}<br />";
+	  }
+	  else
+	  {
+//		echo $db_parser->make_table_list($actual_defs);
+		$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
+//		echo $db_parser->make_field_list($actual_fields);
+  
+		$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
+		if (count($diffs[0]))
+		{  // Changes needed
+		  if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
+		// Do the changes here 
+		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
+//		  echo "Query: ".$qry."<br />";
+		  mysql_query($qry);
+		  catch_error();
+		}
 	  }
 	}
 
