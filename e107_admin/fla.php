@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-09 16:42:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -44,14 +44,15 @@ if(isset($_POST['delbanSubmit']))
 	$bancount = 0;
 	foreach($_POST['flaban'] as $ban)
 	{
-		if($sql -> db_Select("generic", "*", "gen_id=$ban"))
-		{
-			$at = $sql -> db_Fetch();
-			$banlist_ip = $at['gen_ip'];
-			$sql->db_Insert("banlist", "'$banlist_ip', '".ADMINID."', '".FLALAN_4."' ");
-			$sql -> db_Delete("generic", "gen_id='$ban' ");
-			$bancount ++;
-		}
+	  if($sql -> db_Select("generic", "*", "gen_id={$ban}"))
+	  {
+		$at = $sql -> db_Fetch();
+		$e107->add_ban(4,FLALAN_4,$at['gen_ip'],ADMINID);
+//		$banlist_ip = $at['gen_ip'];
+//			$sql->db_Insert("banlist", "'$banlist_ip', '".ADMINID."', '".FLALAN_4."' ");
+		$sql -> db_Delete("generic", "gen_id='$ban' ");
+		$bancount ++;
+	  }
 	}
 	$message .= ", ".FLALAN_5.": ".$bancount;
 }
@@ -83,7 +84,7 @@ if (isset($message)) {
 
 $gen = new convert;
 $fla_total = $sql->db_Count("generic", "(*)", "WHERE gen_type='failed_login'");
-if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT $from,$amount"))
+if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
 {
 	$text = "<div style='text-align: center;'>".FLALAN_2."</div>";
 }
@@ -113,8 +114,8 @@ else
 		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", htmlentities($gen_chardata, ENT_QUOTES, CHARSET))."</td>
 		<td style='width: 20%;' class='forumheader'>".$fa['gen_ip']."<br />{$host}</td>
 		<td style='width: 10%; text-align: left;' class='forumheader3'>
-		<input type='checkbox' name='fladelete[]' value='$gen_id' /> ".LAN_DELETE."<br />
-		<input type='checkbox' name='flaban[]' value='$gen_id' /> ".LAN_BAN."
+		<input type='checkbox' name='fladelete[]' value='{$gen_id}' /> ".LAN_DELETE."<br />
+		<input type='checkbox' name='flaban[]' value='{$gen_id}' /> ".LAN_BAN."
 		</td>
 		</tr>
 		";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userinfo.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-09 16:42:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -40,7 +40,7 @@ if (isset($ipd)) {
 	$sql->db_Select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
 	$host = $e107->get_host_name($ipd);
 	$text = USFLAN_3." <b>".$ipd."</b> [ ".USFLAN_4.": $host ]<br />
-		<i><a href=\"banlist.php?".$ipd."\">".USFLAN_5."</a></i>
+		<i><a href=\"banlist.php?add-".$ipd."\">".USFLAN_5."</a></i>
 
 		<br /><br />";
 	while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->db_Fetch()) {

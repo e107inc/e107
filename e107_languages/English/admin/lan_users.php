@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-09-28 20:50:21 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-09 16:42:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -133,35 +133,10 @@ define("USRLAN_135", "No IP address found in user's info; IP not banned");
 define("USRLAN_136", "Multiple users found with IP address of {IP}; IP not banned.");
 define("USRLAN_137", "Users IP address of {IP} banned.");
 
-
-define("USRLAN_138", "Unverified users");
-define("USRLAN_139", "Your account has been activated.\n\nYou can visit {SITEURL} and log into the site using the login information you provided.");
-
-define("USRLAN_140", "Email Re-sent to");
-define("USRLAN_141", "Failed to Re-send email to");
-define("USRLAN_142", "with the following activation link");
-
-define("USRLAN_143", "Check For Bounces");
-define("USRLAN_144", "Resend Confirmation Email to All");
-define("USRLAN_145", "Bounced users");
-define("USRLAN_146", "Member information is available to");
-
-define("USRLAN_147", "Email address is already used by a banned user");
-define("USRLAN_148", "Email address is banned");
-
-define("USRLAN_149", "Delete checked emails");
-define("USRLAN_150", "Delete all emails");
-define("USRLAN_151", "Clear bounce, require Activation");
-define("USRLAN_152", "Clear bounce and Activate");
-define("USRLAN_153", "Delete non-bounce emails");
-define("USRLAN_154", "Clear email for checked");
-define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
-
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Not Verified");
 define("LAN_BANNED","Banned");
-define("LAN_BOUNCED","Bounced");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Display Name");
@@ -200,5 +175,22 @@ define("DUSRLAN_34", "Perms");
 define("DUSRLAN_35", "Picture");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
+
+define("USRLAN_138", "Unverified users");
+define("USRLAN_139", "Your account has been activated.\n\nYou can visit {SITEURL} and log into the site using the login information you provided.");
+
+define("USRLAN_140", "Email Re-sent to");
+define("USRLAN_141", "Failed to Re-send email to");
+define("USRLAN_142", "with the following activation link");
+
+define("LAN_BOUNCED","Bounced");
+define("USRLAN_143", "Check For Bounces");
+define("USRLAN_144", "Resend Confirmation Email to All");
+define("USRLAN_145", "Bounced users");
+define("USRLAN_146", "Member information is available to");
+
+define("USRLAN_147", "Email address is already used by a banned user");
+define("USRLAN_148", "Email address is banned");
+define('USRLAN_149', "User banned: ");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-11-01 22:01:38 $
+|     $Revision: 1.8 $
+|     $Date: 2007-12-09 16:42:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -153,7 +153,8 @@ if (isset($_POST['update_options']))
 
 
 // ------- Prune Users. --------------
-if (isset($_POST['prune'])) {
+if (isset($_POST['prune'])) 
+{
 	$e107cache->clear("online_menu_member_total");
 	$e107cache->clear("online_menu_member_newest");
 	$text = USRLAN_56." ";
@@ -211,11 +212,11 @@ if (isset($_POST['adduser'])) {
 	if ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' AND user_ban='1' ")) {
 		message_handler("P_ALERT", USRLAN_147);
 		$error = TRUE;
-	}
+		}
 	if ($sql->db_Count("banlist", "(*)", "WHERE banlist_ip='".$_POST['email']."'")) {
 		message_handler("P_ALERT", USRLAN_148);
 		$error = TRUE;
-	}
+		}
 
 	if (!$error) {
 
@@ -270,8 +271,9 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
 			}
 			else
 			{
-				$sql -> db_Insert("banlist", "'".$row['user_ip']."', '".USERID."', '".$row['user_name']."' ");
-				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_137));
+			  $e107->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID);
+//				$sql -> db_Insert("banlist", "'".$row['user_ip']."', '".USERID."', '".$row['user_name']."' ");
+			  $user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_137));
 			}
 		}
 	}
@@ -389,8 +391,25 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms
 if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 {
 	$uid = intval($_POST['userid']);
-	if ($sql->db_Update("user", "user_ban='0' WHERE user_id='{$uid}' "))
+	
+	if ($sql->db_Select("user", "*", "user_id='".$uid."' "))
 	{
+	  if ($row = $sql->db_Fetch())
+	  {
+		// Add in the initial classes, if this is the time
+		$init_classes = '';
+		if ($pref['init_class_stage'] == '2')
+		{
+		  $init_classes = explode(',',varset($pref['initial_user_classes'],''));
+		  if ($init_classes)
+		  {	// Update the user classes
+		    $row['user_class'] = $tp->toDB(implode(',',array_unique(array_merge($init_classes, explode(',',$row['user_class'])))));
+			$init_classes = ", user_class='".$row['user_class']."' ";
+		  }
+		}
+		$sql->db_Update("user", "user_ban='0'{$init_classes} WHERE user_id='".$uid."' ");
+//		$e_event->trigger("userveri", $row);		// We do this from signup.php - should we do it here?
+
 		$user->show_message(USRLAN_86);
 		if(!$action){ $action = "main"; }
 		if(!$sub_action){ $sub_action = "user_id"; }
@@ -416,6 +435,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 		    }
 			}
 		}
+	  }
 	}
 }
 
@@ -463,21 +483,29 @@ if (isset($action) && $action == "create") {
 
 require_once("footer.php");
 
-class users{
 
-	function show_existing_users($action, $sub_action, $id, $from, $amount) {
-		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 
+
+
+class users
+{
+
+	function show_existing_users($action, $sub_action, $id, $from, $amount) 
+	{
 		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified;
 		// save the display choices.
-		if(isset($_POST['searchdisp'])){
+		if(isset($_POST['searchdisp']))
+		{
 			$pref['admin_user_disp'] = implode("|",$_POST['searchdisp']);
 			save_prefs();
 		}
 
-		if(!$pref['admin_user_disp']){
+		if(!$pref['admin_user_disp'])
+		{
 			$search_display = array("user_name","user_class");
-		}else{
+		}
+		else
+		{
 			$search_display = explode("|",$pref['admin_user_disp']);
 		}
 
@@ -969,7 +997,7 @@ class users{
 			<td style='width:70%' class='forumheader3'>
 			".$rs->form_text("email", 60, "", 100)."
 			</td>
-			</tr>";
+			</tr>\n";
 
 
 		if (!is_object($sql)) $sql = new db;
@@ -978,7 +1006,7 @@ class users{
 				<td colspan='2' style='text-align:center' class='forumheader'>
 				".USRLAN_120."
 				</td>
-				</tr>";
+				</tr>\n";
 			$c = 0;
 			while ($row = $sql->db_Fetch()) {
 				$class[$c][0] = $row['userclass_id'];
@@ -986,10 +1014,13 @@ class users{
 				$class[$c][2] = $row['userclass_description'];
 				$c++;
 			}
-			for($a = 0; $a <= (count($class)-1); $a++) {
+			$init_classes = explode(',',varset($pref['initial_user_classes'],''));
+			for($a = 0; $a <= (count($class)-1); $a++) 
+			{
+			  $selected = in_array($class[$a][0],$init_classes) ? " checked='checked'" : "";
 				$text .= "<tr><td style='width:30%' class='forumheader'>
-					<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' />".$class[$a][1]."
-					</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
+					<input type='checkbox' name='userclass[]' value='".$class[$a][0]."'{$selected} />".$class[$a][1]."
+					</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>\n";
 			}
 		}
 		$text .= "
@@ -1042,7 +1073,7 @@ class users{
 	  	}
 		else
 		{
-    	  $this->show_message(USRLAN_141.": ".$name);
+    		$this->show_message(USRLAN_141.": ".$name);
 	  	}
 
 	}
@@ -1091,21 +1122,21 @@ class users{
 
     function check_bounces($bounce_act='first_check', $bounce_arr = '')
 	{
-	  global $sql,$pref;
-      include(e_HANDLER."pop3_class.php");
+		global $sql,$pref;
+        include(e_HANDLER."pop3_class.php");
 
 	  if (!trim($bounce_act)) $bounce_act='first_check';
 
 //	  echo "Check bounces. Action: {$bounce_act}; Entries: {$bounce_arr}<br />";
 
-	  $obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],'pop3','110');
+		$obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],'pop3','110');
 	  $del_count = 0;
-	  if ($bounce_act !='first_check')
-	  { // Must do some deleting
-		$obj->connect();
-		$tot=$obj->getTotalMails();
-		$del_array = explode(',',$bounce_arr);
-		for($i=1;$i<=$tot;$i++)	
+		if ($bounce_act !='first_check')
+		{ // Must do some deleting
+		  $obj->connect();
+		  $tot=$obj->getTotalMails();
+		  $del_array = explode(',',$bounce_arr);
+		  for($i=1;$i<=$tot;$i++)	
 		{	// Scan all emails; delete current one if meets the criteria
 		    $dodel = FALSE;
 		    switch ($bounce_act)
@@ -1145,75 +1176,75 @@ class users{
 			  $del_count++;			// Keep track of number of emails deleted
 			}
 		}	// End - Delete one email
-		$obj->close_mailbox();	// This actually deletes the emails
+		  $obj->close_mailbox();	// This actually deletes the emails
 	  }		// End of email deletion
 
 
 	// Now list the emails that are left
-	  $obj->connect();
-	  $tot=$obj->getTotalMails();
-      $found = FALSE;
-	  $DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
+		$obj->connect();
+		$tot=$obj->getTotalMails();
+        $found = FALSE;
+		$DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
 	  
-      $text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table class='fborder' style='".ADMIN_WIDTH."'>
+        $text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr><td class='fcaption' style='width:5%'>#</td><td class='fcaption'>e107-id</td><td class='fcaption'>email</td><td class='fcaption'>Subject</td><td class='fcaption'>Bounce</td></tr>\n";
 
 
 		
-	  for($i=1;$i<=$tot;$i++)	
-	  {
-		$head=$obj->getHeaders($i);
-        if($head['bounce'])
+		for($i=1;$i<=$tot;$i++)	
+		{
+			$head=$obj->getHeaders($i);
+            if($head['bounce'])
 		{	// Its a 'bounce' email
-		  if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result))
-		  {
-			if($result[1])
-			{
+		   		if (ereg('.*X-e107-id:(.*)MIME', $obj->getBody($i), $result))
+				{
+					if($result[1])
+					{
 			  $id[$i] = intval($result[1]);		// This should be a user ID - but not on special mailers!
 			  //	Try and pull out an email address from body - should be the one that failed
-			  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
-			  {
-				$emails[$i] = "'".$result[0]."'";						
-			  }
-			  $found = TRUE;
-			}
-		  }
-		  elseif (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
-		  {
-            if($result[0] && $result[0] != $pref['mail_bounce_email'])
-			{
-			  $emails[$i] = "'".$result[0]."'";
-			  $found = TRUE;
-			}
-			elseif($result[1] && $result[1] != $pref['mail_bounce_email'])
-			{
-              $emails[$i] = "'".$result[1]."'";
-			  $found = TRUE;
-			}
-		  }
+						if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
+						{
+						  $emails[$i] = "'".$result[0]."'";						
+						}
+						$found = TRUE;
+					}
+        		}
+				elseif (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
+				{
+                	if($result[0] && $result[0] != $pref['mail_bounce_email'])
+					{
+						$emails[$i] = "'".$result[0]."'";
+						$found = TRUE;
+					}
+					elseif($result[1] && $result[1] != $pref['mail_bounce_email'])
+					{
+                    	$emails[$i] = "'".$result[1]."'";
+						$found = TRUE;
+					}
+				}
 		  if ($DEL && $found)
 		  { 	// Auto-delete bounced emails once noticed (if option set)
 		    $obj->deleteMails($i); 
 			$del_count++;
 		  }
-		}
-		else
-		{  // Its a warning message or similar
+			}
+			else
+			{  // Its a warning message or similar
 //			  $id[$i] = '';			// Don't worry about an ID for now
 //				Try and pull out an email address from body - should be the one that failed
-		  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
-		  {
-			$wmails[$i] = "'".$result[0]."'";						
-		  }
-		}
+			  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
+			  {
+				 $wmails[$i] = "'".$result[0]."'";						
+			  }
+			}
 		
-		$text .= "<tr><td class='forumheader3'>".$i."</td><td class='forumheader3'>".$id[$i]."</td><td class='forumheader3'>".(isset($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td class='forumheader3'>".$head['subject']."</td><td class='forumheader3'>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
-		$text .= "<input type='checkbox' name='delete_email[]' value='{$i}' /></td></tr>\n";
-	  }
+			$text .= "<tr><td class='forumheader3'>".$i."</td><td class='forumheader3'>".$id[$i]."</td><td class='forumheader3'>".(isset($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td class='forumheader3'>".$head['subject']."</td><td class='forumheader3'>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
+			$text .= "<input type='checkbox' name='delete_email[]' value='{$i}' /></td></tr>\n";
+		}
 
 
 
-	  if ($tot)
+		if ($tot)
 	  { // Option to delete emails - only if there are some in the list
 		  $text .= "</table><table style='".ADMIN_WIDTH."'><tr>
 			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_153."' /></td>\n
@@ -1221,8 +1252,8 @@ class users{
 			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_149."' /></td>\n
 			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_150."' /></td>\n
 			</td></tr>";
-	  }
-	  $text .= "</table></form></div>";
+		}
+		$text .= "</table></form></div>";
 
 		array_unique($id);
 		array_unique($emails);
