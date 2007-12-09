@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-08-13 19:56:35 $
+|     $Revision: 1.10 $
+|     $Date: 2007-12-09 16:42:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -192,15 +192,57 @@ class e107{
 
 			if ($ip != '127.0.0.1')
 			{
-				if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}"))
-				{
-				  header("HTTP/1.1 403 Forbidden", true);
-					// enter a message here if you want some text displayed to banned users ...
-					exit();
-				}
+			  check_ban("banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}");
 			}
 		}
 	}
+
+
+	// Check the banlist table. $query is used to determine the match.
+	// If $show_error, displays "HTTP/1.1 403 Forbidden"
+	// If $do_return, will always return with ban status - TRUE for OK, FALSE for banned.
+	// If return permitted, will never display a message for a banned user; otherwise will display any message then exit
+	function check_ban($query,$show_error=TRUE, $do_return = FALSE)
+	{
+	  global $sql, $tp, $pref, $admin_log;
+//	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
+	  if ($sql->db_Select('banlist','*',$query))
+	  {
+//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
+		if ($show_error) header("HTTP/1.1 403 Forbidden", true);
+		if (isset($pref['ban_messages']))
+		{  // May want to display a message
+		  $row = $sql->db_Fetch();				// Get the type of the ban
+		  if (($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
+		  {	// Ban has expired - delete from DB
+			$sql->db_Delete('banlist', $query);
+			return TRUE;
+		  }
+		  // Ban still current here
+		  if ($do_return) return FALSE;
+		  echo $tp->toHTML(varsettrue($pref['ban_messages'][$row['banlist_bantype']]));		// Show message if one set
+		}
+		exit();
+	  }  
+//	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
+	  return TRUE;			// Email address OK
+	}
+	
+
+	// Add an entry to the banlist. $bantype = 1 for manual, 2 for flooding, 4 for multiple logins
+	function add_ban($bantype,$ban_message='',$ban_ip='',$ban_user = 0,$ban_notes='')
+	{
+	  global $sql, $pref;
+	  if (!$ban_message) $ban_message = 'No explanation given';
+	  if (!$ban_ip) $ban_ip = $this->getip();
+	  $ban_ip = preg_replace("/[^\w@\.]*/",'',urldecode($ban_ip));		// Make sure no special characters
+	  if (!$ban_ip) return;
+	  // Add using an array - handles DB changes better
+	  $sql->db_Insert('banlist',array('banlist_ip' => $ban_ip, 'banlist_bantype' => $bantype, 'banlist_datestamp' => time(),
+		'banlist_banexpires' => (varsettrue($pref['ban_durations'][$bantype]) ? time() + ($pref['ban_durations'][$bantype]*60*60) : 0),
+		'banlist_admin' => $ban_user, 'banlist_reason' => $ban_message, 'banlist_notes' => $ban_notes));
+	}
+
 
 	/**
 	 * Get the current user's IP address

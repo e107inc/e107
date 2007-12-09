@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-10-11 19:46:29 $
+|     $Revision: 1.12 $
+|     $Date: 2007-12-09 16:42:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,9 @@ include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
-// Resend Activation Email ------------------------------------------->
+//-------------------------------
+// Resend Activation Email 
+//-------------------------------
 if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
@@ -273,7 +275,9 @@ if(USER)
 	exit;
 }
 
-// After clicking the activation link -------------------------
+//----------------------------------------
+// After clicking the activation link 
+//----------------------------------------
 if (e_QUERY)
 {
 	$qs = explode(".", e_QUERY);
@@ -303,19 +307,30 @@ if (e_QUERY)
 		$e107cache->clear("online_menu_totals");
 		if ($sql->db_Select("user", "*", "user_sess='".$tp -> toDB($qs[2], true)."' "))
 		{
-			if ($row = $sql->db_Fetch())
+		  if ($row = $sql->db_Fetch())
+		  {
+			// Set initial classes, and any which the user can opt to join
+			$init_classes = '';
+			if ($pref['init_class_stage'] == '2')
 			{
-				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$tp -> toDB($qs[2], true)."' ");
-				$e_event->trigger("userveri", $row);
-				require_once(HEADERF);
-				$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
-				$ns->tablerender(LAN_402, $text);
-				require_once(FOOTERF);
-				exit;
+			  $init_classes = explode(',',varset($pref['initial_user_classes'],''));
+			  if ($init_classes)
+			  {	// Update the user classes
+			    $row['user_class'] = $tp->toDB(implode(',',array_unique(array_merge($init_classes, explode(',',$row['user_class'])))));
+				$init_classes = ", user_class='".$row['user_class']."' ";
+			  }
 			}
+			$sql->db_Update("user", "user_ban='0', user_sess=''{$init_classes} WHERE user_sess='".$tp -> toDB($qs[2], true)."' ");
+			$e_event->trigger("userveri", $row);
+			require_once(HEADERF);
+			$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
+			$ns->tablerender(LAN_402, $text);
+			require_once(FOOTERF);
+			exit;
+		  }
 		}
 		else
-		{
+		{	// Invalid activation code
 			header("location: ".e_BASE."index.php");
 			exit;
 		}
@@ -323,6 +338,9 @@ if (e_QUERY)
 }
 
 
+//----------------------------------------
+// 		Initial signup (registration)
+//----------------------------------------
 if (isset($_POST['register']))
 {
   $_POST['xupexist'] = trim(varset($_POST['xupexist'],''));
@@ -485,7 +503,7 @@ global $db_debug;
 		$email_confirm = "";
 	  $email_address_OK = FALSE;
 	}
-	
+
 	// Always validate an email address if entered. If its blank, that's OK if checking disabled
 	$_POST['email'] = $tp->toDB(trim(varset($_POST['email'],'')));
 	$do_email_validate = !varset($pref['disable_emailcheck'],FALSE) || ($_POST['email'] !='');
@@ -535,12 +553,15 @@ global $db_debug;
 
 	// Check Email against banlist.
 	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
-	if ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'"))
+//	if ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'"))
+	if ($do_email_validate && !$e107->check_ban("banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'",FALSE,TRUE))
 	{
 	  $email_address_OK = FALSE;
 	  $brow = $sql -> db_Fetch();
 	  $error = TRUE;
-	  if($brow['banlist_reason'])
+	  $error_message = varsettrue($pref['ban_messages'][$row['banlist_bantype']]);
+	  if (!$error_message) exit;
+/*	  if($brow['banlist_reason'])
 	  {
 		$repl = array("\n","\r","<br />");
 		$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak, defs"))."\\n";
@@ -550,7 +571,7 @@ global $db_debug;
 	  {
 		exit;
 	  }
-	}
+*/	}
 
 	// Check email address on remote server (if enabled) - but only if previous checks passed.
 	if ($do_email_validate && $email_address_OK && varsettrue($pref['signup_remote_emailcheck']) && $error != TRUE)
@@ -576,19 +597,19 @@ global $db_debug;
 	// Check for Duplicate Email address - but only if previous checks passed.
 	if ($do_email_validate && $email_address_OK && $sql->db_Select("user", "user_email, user_ban, user_sess", "user_email='".$_POST['email']."' "))
 	{
-      $chk = $sql -> db_Fetch();
+        $chk = $sql -> db_Fetch();
 	  if($chk['user_ban']== 2 && $chk['user_sess'])
 	  {  // duplicate because unactivated
-		$error = TRUE;
-        header("Location: ".e_BASE."signup.php?resend");
-		exit;
+			$error = TRUE;
+        	header("Location: ".e_BASE."signup.php?resend");
+			exit;
 	  }
 	  else
 	  {
 	  $email_address_OK = FALSE;
-		$error_message .= LAN_408."\\n";
-		$error = TRUE;
-	  }
+			$error_message .= LAN_408."\\n";
+			$error = TRUE;
+		}
 	}
 
 	// Extended Field validation
@@ -630,10 +651,11 @@ global $db_debug;
 
 	if($error_message)
 	{
-	  message_handler("P_ALERT", $error_message);
+		message_handler("P_ALERT", $error_message);
 	}
 
-	// ========== End of verification.. ====================================================
+	// ========== End of verification.. ==============
+	// If no errors, we can enter the new member in the DB
 
 	if (!$error)
 	{
@@ -646,7 +668,7 @@ global $db_debug;
 
 		if ($_POST['email'] && $sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1'")) 
 		{
-		  exit;
+			exit;
 		}
 
 		$username = $tp -> toDB(strip_tags($_POST['name']));
@@ -664,7 +686,8 @@ global $db_debug;
 		}
 
 		$u_key = md5(uniqid(rand(), 1));
-		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$_POST['email']."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['timezone'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
+		// ************* Possible class insert
+		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['timezone'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
 		if(!$nid)
 		{
 			require_once(HEADERF);
@@ -674,16 +697,16 @@ global $db_debug;
 
 
 		if ($pref['user_reg_veri'])
-		{
-			// ==== Update Userclass =======>
+		{	// Verification required (may be by email or by admin)
 
-			if ($_POST['class'])
-			{
-				unset($insert_class);
-				sort($_POST['class']);
-				$insert_class = implode(",",$_POST['class']);
-				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
-			}
+		  // Set initial classes, and any which the user can opt to join
+		  $init_classes = array();
+		  if ($pref['init_class_stage'] == '1') $init_classes = explode(',',varset($pref['initial_user_classes'],''));
+		  if (isset($_POST['class'])) $init_classes = array_unique(array_merge($init_classes, $_POST['class']));
+		  if (count($init_classes))
+		  {
+			$sql->db_Update("user", "user_class='".$tp -> toDB(implode(',',$init_classes))."' WHERE user_id='".$nid."' ");
+		  }
 
 			// ========= save extended fields into db table. =====
 
@@ -737,7 +760,7 @@ global $db_debug;
 			exit;
 		}
 		else
-		{
+		{	// User can be signed up immediately
 			require_once(HEADERF);
 
 			if(!$sql -> db_Select("user", "user_id", "user_name='{$username}' AND user_password='".md5($_POST['password1'])."'"))
@@ -746,18 +769,17 @@ global $db_debug;
 				require_once(FOOTERF);
 				exit;
 			}
-			$sql->db_Update("user", "user_ban = '0' WHERE user_id = '{$nid}'");
 
-			// ==== Update Userclass =======
-			if ($_POST['class'])
-			{
-				unset($insert_class);
-				sort($_POST['class']);
-				$insert_class = implode(",",$_POST['class']);
-				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
-			}
+
+		  // Set initial classes, and any which the user can opt to join
+		  $init_classes = explode(',',varset($pref['initial_user_classes'],''));
+		  if (isset($_POST['class'])) $init_classes = array_unique(array_merge($init_classes, $_POST['class']));
+
+		  // Set member as registered, update classes
+		  $sql->db_Update("user", "user_ban = '0', user_class='".$tp -> toDB(implode(',',$init_classes))."' WHERE user_id = '{$nid}'");
+
+
 			// ======== save extended fields to DB table.
-
 			if($ue_fields)
 			{
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$nid}')");

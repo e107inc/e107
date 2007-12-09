@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2007-11-13 07:25:54 $
-|     $Author: e107coders $
+|     $Revision: 1.32 $
+|     $Date: 2007-12-09 16:42:21 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1059,13 +1059,13 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
   {
 		if ($row_val == '') 
 		{		// Save old version as a backup first
-		  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
+	  $sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
 
 		  // Now save the updated values
 		  // traverse the pref array, with toDB on everything
 		  $_pref = $tp -> toDB($pref, true, true);
 		  // Create the data to be stored
-		  $sql->db_Select_gen("REPLACE INTO #core (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
+	  $sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
 		  ecache::clear('SitePrefs');
 		}
   }
@@ -1168,12 +1168,15 @@ class e_online {
 				$row['online_pagecount'] = 1;
 			}
 
-			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) {
-				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
+			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) 
+			{
+//				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
+			  $e107->add_ban(2,"Hit count exceeded ({$row['online_pagecount']} requests within allotted time)",$ip,0);
 				$e_event->trigger("flood", $ip);
 				exit;
 			}
-			if ($row['online_pagecount'] >= $online_warncount && $row['online_ip'] != "127.0.0.1") {
+			if ($row['online_pagecount'] >= $online_warncount && $row['online_ip'] != "127.0.0.1") 
+			{
 				echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>".LAN_WARNING."</b><br /><br />".CORE_LAN6."<br /></div>";
 				exit;
 			}
@@ -1310,7 +1313,14 @@ function init_session() {
 			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
 			define("USERLV", $result['user_lastvisit']);
 
-			if ($result['user_ban'] == 1) { exit; }
+			if ($result['user_ban'] == 1) 
+			{ 
+			  if (isset($pref['ban_messages']))
+			  {
+				echo $tp->toHTML(varsettrue($pref['ban_messages'][6]));		// Show message if one set
+			  }
+			  exit; 
+			}
 
 			$user_pref = ($result['user_prefs']) ? unserialize($result['user_prefs']) : '';
 

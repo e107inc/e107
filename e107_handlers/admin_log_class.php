@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-11-04 09:10:54 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-09 16:42:23 $
 |     $Author: e107steved $
+
+To do:
+1. Do we need to check for presence of elements of debug_backtrace() to avoid notices?
+2. Reflect possible DB structure changes once finalised
+3. Ad user audit trail
+
 +----------------------------------------------------------------------------+
 */
 
@@ -35,6 +41,7 @@ class e_admin_log {
 		'log_level' => 2,
 		'backtrace' => false,
 	);
+	var $rldb = NULL;				// Database used by logging routine
 
 	/**
 	 * Constructor. Sets up constants and overwrites default options where set.
@@ -42,41 +49,23 @@ class e_admin_log {
 	 * @param array $options
 	 * @return e_admin_log
 	 */
-	function e_admin_log ($options = array()){
-		foreach ($options as $key => $val) {
-			$this->_options[$key] = $val;
-		}
+	function e_admin_log ($options = array())
+	{
+	  foreach ($options as $key => $val) 
+	  {
+		$this->_options[$key] = $val;
+	  }
 
-		/**
-		 * Minmal Log Level, including really minor stuff
-		 *
-		 */
-
-		define("E_LOG_INFORMATIVE", 0);
-
-		/**
-		 * More important than informative, but less important than notice
-		 *
-		 */
-		define("E_LOG_NOTICE", 1);
-
-		/**
-		 * Not anything serious, but important information
-		 *
-		 */
-		define("E_LOG_WARNING", 2);
-
-		/**
-		 * An event so bad your site ceased execution.
-		 *
-		 */
-		define("E_LOG_FATAL", 3);
-
-		/*
-		 * 	Plugin Information.
-		 */
-
-		define("E_LOG_PLUGIN", 4);
+	  define("E_LOG_INFORMATIVE", 0);				// Minimal Log Level, including really minor stuff
+	  define("E_LOG_NOTICE", 1);					// More important than informative, but less important than notice
+	  define("E_LOG_WARNING", 2);					// Not anything serious, but important information
+	  define("E_LOG_FATAL", 3);					//  An event so bad your site ceased execution.
+	  define("E_LOG_PLUGIN", 4);					// Plugin information
+		
+	  // Logging actions
+	  define("LOG_TO_ADMIN", 1);
+	  define("LOG_TO_AUDIT", 2);
+	  define("LOG_TO_ROLLING", 4);
 	}
 
 	/**
@@ -86,43 +75,170 @@ class e_admin_log {
 	 * @param string $event_detail
 	 * @param int $event_type Log level
 	 */
-	function log_event ($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE) {
-		global $e107, $sql, $tp;
-		if($event_type >= $this->_options['log_level']) {
-			$event_title = $tp -> toDB($event_title, true,false,'no_html');
-			$event_detail = $tp -> toDB($event_detail, true,false,'no_html');
-			$event_type = $tp -> toDB($event_type, true,false,'no_html');
-			$time_stamp = time();
-			$uid = (USERID !== FALSE) ? USERID : '0';
-			$ip = $e107->getip();
-			if($this->_options['backtrace'] == true) {
-				$event_detail .= "\n\n".debug_backtrace();
-			}
-			$sql->db_Insert('dblog', "'', '{$event_type}', {$time_stamp}, {$uid}, '{$ip}', '{$event_title}', '{$event_detail}' ");
+	// Legacy entry point (not used by much) - retained for completeness.
+	// (Should really only be used for admin events anyway - not debugging)
+	function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE) 
+	{
+	  global $e107, $tp;
+	  if($event_type >= $this->_options['log_level']) 
+	  {
+		if($this->_options['backtrace'] == true) 
+		{
+		  $event_detail .= "\n\n".debug_backtrace();
 		}
+		$this->e_log_event($event_type,-1,"ADMIN",$event_title,$event_detail,FALSE,LOG_TO_ADMIN);
+	  }
 	}
 
-	function get_log_events($count = 15, $offset) {
-		global $sql;
-		$count = intval($count);
+//  ***************************** START OF ADDITIONS **************************
+/*
+	Example call: (Deliberately pick separators that shouldn't be in file names)
+		e_log_event(E_LOG_NOTICE,__FILE__."|".__FUNCTION__."@".__LINE__,"ECODE","Event Title","explanatory message",FALSE,LOG_TO_ADMIN);
+	or:
+		e_log_event(E_LOG_NOTICE,debug_backtrace(),"ECODE","Event Title","explanatory message",TRUE,LOG_TO_ROLLING);
+		
+	Parameters:
+		$importance - importance of event - 0..4 or so
+		$source_call - either:	string identifying calling file/routine
+						or:		a number 0..9 identifying info to log from debug_backtrace()
+						or:		empty string, in which case first entry from debug_backtrace() logged
+						or:		an array, assumed to be from passing debug_backtrace() as a parameter, in which case relevant
+									information is extracted and the argument list from the first entry logged
+						or:		-1, in which case no information logged
+		$eventcode - abbreviation listing event type
+		$event_title - title of event - pass standard 'LAN_ERROR_nn' defines to allow language translation
+		$explain - detail of event
+		$finished - if TRUE, aborts execution
+		$target_logs - flags indicating which logs to update - if entry to be posted in several logs, add (or 'OR') their defines:
+			LOG_TO_ADMIN		- admin log
+			LOG_TO_AUDIT		- audit log
+			LOG_TO_ROLLING		- rolling log
+*/
+  function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title="Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT)
+  {
+    global $pref, $e107, $tp;
+	
+	list($time_usec, $time_sec) = explode(" ", microtime());		// Log event time immediately to minimise uncertainty
+	
+	if ($this->rldb == NULL) $this->rldb = new db;		// Better use our own db - don't know what else is going on
+
+	if (is_bool($target_logs))
+	{	// Handle the legacy stuff for now - some old code used a boolean to select admin or rolling logs
+	  $target_logs = $target_logs ? LOG_TO_ADMIN : LOG_TO_ROLLING;
 	}
+
+//---------------------------------------
+// Calculations common to all logs
+//---------------------------------------
+	$userid = (USER === TRUE) ? USERID : 0;
+	$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS"); 
+	$userIP = $e107->getip();
+
+	$importance = $tp->toDB($importance,true,false,'no_html');
+	$eventcode = $tp->toDB($eventcode,true,false,'no_html');
+	$explain = $tp->toDB($explain,true,false,'no_html');
+	$event_title = $tp->toDB($event_title,true,false,'no_html');
+	$source_call = $tp->toDB($source_call,true,false,'no_html');
+
+
+//---------------------------------------
+// 			Admin Log
+//---------------------------------------
+	if ($target_logs & LOG_TO_ADMIN)
+	{  // Admin log - assume all fields valid
+	  $this->rldb->db_Insert("dblog", " 0, ".intval($time_usec).','.intval($time_sec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ");
+	}
+
+
+//---------------------------------------
+// 			Audit Log
+//---------------------------------------
+	// Add in audit log here
+
+
+//---------------------------------------
+// 			Rolling Log
+//---------------------------------------
+	if (($target_logs & LOG_TO_ROLLING) && varsettrue($pref['roll_log_active']))
+	{  //	Rolling log
+
+		// 	Process source_call info
+		//---------------------------------------
+	  if (is_numeric($source_call) && ($source_call >= 0))
+	  {
+		$back_count = 1;
+		$i = 0;			
+		if (is_numeric($source_call) || ($source_call == ''))
+		{
+		  $back_count = $source_call + 1;
+		  $source_call = debug_backtrace();
+		  $i = 1;			// Don't want to print the entry parameters to this function - we know all that!
+		}
+	  }
+
+
+		if (is_array($source_call))
+		{ // Print the debug_backtrace() array
+		  while ($i < $back_count)
+		  {
+			$source_call[$i]['file'] = $e107->fix_windows_paths($source_call[$i]['file']);		// Needed for Windoze hosts.
+			$source_call[$i]['file'] = str_replace($e107->file_path,"",$source_call[$i]['file']);	// We really just want a e107 root-relative path. Strip out the root bit
+			$tmp = $source_call[$i]['file']."|".$source_call[$i]['class'].$source_call[$i]['type'].$source_call[$i]['function']."@".$source_call[$i]['line'];
+			foreach ($source_call[$i]['args'] as $k => $v)
+			{  // Add in the arguments
+			  $explain .= "<br />".$k."=".$v;
+			}
+			$i++;
+			if ($i < $back_count) $explain .= "<br />-------------------";
+			if (!isset($tmp1)) $tmp1 = $tmp;		// Pick off the immediate caller as the source
+		  }
+		  if (isset($tmp1)) $source_call = $tmp1; else $source_call = 'Root level';
+		}
+		else
+		{
+		  $source_call = $e107->fix_windows_paths($source_call);		// Needed for Windoze hosts.
+		  $source_call = str_replace($e107->file_path,"",$source_call);	// We really just want a e107 root-relative path. Strip out the root bit
+		}
+	// else $source_call is a string
+
+	  // Save new rolling log record
+	  $this->rldb->db_Insert("rl_history","0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
+
+	  // Now delete any old stuff
+	  $this->rldb->db_Delete("rl_history", "dblog_datestamp < '".intval(time() - (varset($pref['roll_log_days'],7)*86400))."' ");
+	}
+
+	if ($finished) exit;		// Optional abort for all logs
+  }
+
+
+
+  function get_log_events($count = 15, $offset) 
+  {
+	global $sql;
+	$count = intval($count);
+	return "Not implemented yet";
+  }
+
 
 	/**
 	 * Removes all events older than $days, or truncates the table if $days == false
 	 *
 	 * @param int $days
 	 */
-	function purge_log_events($days) {
+	function purge_log_events($days) 
+	{
 		global $sql;
-		if($days == false) {
-			// $days is false, so truncate the log table
-			$sql->db_Select_gen("TRUNCATE TABLE #dblog ");
-		} else {
-			// $days is set, so remove all entries older than that.
-			$days = intval($days);
-			$mintime = $days * 24 * 60 * 60;
-			$time = time() - $mintime;
-			$sql->db_Delete("dblog", "WHERE `dblog_datestamp` < {$time}", true);
+		if($days == false) 
+		{	// $days is false, so truncate the log table
+		  $sql->db_Select_gen("TRUNCATE TABLE #dblog ");
+		} 
+		else 
+		{	// $days is set, so remove all entries older than that.
+		  $days = intval($days);
+		  $mintime = $days * 24 * 60 * 60;
+		  $time = time() - $mintime;
+		  $sql->db_Delete("dblog", "WHERE `dblog_datestamp` < {$time}", true);
 		}
 	}
 }

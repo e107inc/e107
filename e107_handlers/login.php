@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-10-28 19:20:48 $
+|     $Revision: 1.8 $
+|     $Date: 2007-12-09 16:42:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -48,9 +48,9 @@ class userlogin {
 		}
 
 		$fip = $e107->getip();
-		if($sql -> db_Select("banlist", "*", "banlist_ip='{$fip}' ")) {
-			exit;
-		}
+//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
+		$e107->check_ban("banlist_ip='{$fip}' ",FALSE);
+//		if($sql -> db_Select("banlist", "*", "banlist_ip='{$fip}' ")) {	exit;}
 
 		$autologin = intval($autologin);
 
@@ -81,6 +81,7 @@ class userlogin {
 			$userpass = md5(utf8_decode($ouserpass));
 		}
 
+//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'Doing final checks',FALSE,LOG_TO_ROLLING);
 		if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) 
 		{	// Invalid user
 			define("LOGINMESSAGE", LAN_300."<br /><br />");
@@ -95,13 +96,15 @@ class userlogin {
 		}
 		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) 
 		{	// Banned user
-			define("LOGINMESSAGE", LAN_302."<br /><br />");
-               	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
-				$this -> checkibr($fip);
-			return FALSE;
+		  define("LOGINMESSAGE", LAN_302."<br /><br />");
+//		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User is banned: '.$tp -> toDB($username),FALSE,LOG_TO_ROLLING);
+		  $sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
+		  $this -> checkibr($fip);
+		  return FALSE;
 		} 
 		else 
 		{	// User is OK as far as core is concerned
+//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User passed basics',FALSE,LOG_TO_ROLLING);
 			$ret = $e_event->trigger("preuserlogin", $username);
 			if ($ret!='') 
 			{
@@ -189,15 +192,19 @@ class userlogin {
 		}
 	}
 
-	function checkibr($fip) {
-		global $sql, $pref, $tp;
-		if($pref['autoban'] == 1 || $pref['autoban'] == 3){ // Flood + Login or Login Only.
-	   		$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='$fip' AND gen_type='failed_login' ");
-			if($fails > 10) {
-				$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
-		   		$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
-			}
+	function checkibr($fip) 
+	{
+	  global $sql, $pref, $tp, $e107;
+	  if($pref['autoban'] == 1 || $pref['autoban'] == 3)
+	  { // Flood + Login or Login Only.
+		$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='{$fip}' AND gen_type='failed_login' ");
+		if($fails > 10) 
+		{
+		  $e107->add_ban(4,LAN_LOGIN_18,$fip,1);
+//				$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
+		  $sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 		}
+	  }
 	}
 
 	function update_xup($user_id, $user_xup = "") {
