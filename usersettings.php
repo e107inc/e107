@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2007-10-30 22:34:32 $
+|     $Revision: 1.17 $
+|     $Date: 2007-12-09 22:38:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -547,6 +547,10 @@ $tmp[] = e_UC_PUBLIC;
 if($curVal['user_admin'] == 1)
 {
 	$tmp[] = e_UC_ADMIN;
+}
+if (strpos($curVal['user_perms'],'0') === 0)
+{
+	$tmp[] = e_UC_MAINADMIN;
 }
 $curVal['userclass_list'] = implode(",", $tmp);
 
