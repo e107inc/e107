@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-12-10 20:22:10 $
+|     $Revision: 1.13 $
+|     $Date: 2007-12-10 22:39:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,7 @@ class trackbackClass
 
 	function respondTrackback ()
 	{
-		global $sql, $pref, $tp;
+		global $sql, $pref, $tp, $e107cache;
 		$errorMessage = "";
 		if(!$pref['trackbackEnabled'])
 		{
