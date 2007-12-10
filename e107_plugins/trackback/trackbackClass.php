@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-08 14:49:44 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-10 20:22:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -158,7 +158,7 @@ class trackbackClass
 		  }
 		  else
 		  {
-			e107cache->clear("comment.php?news.{$pid}");
+			$e107cache->clear("comment.php?news.{$pid}");
 		  }
 		}
 
