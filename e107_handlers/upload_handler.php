@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.10 $
-|   $Date: 2007-10-30 22:34:32 $
+|   $Revision: 1.11 $
+|   $Date: 2007-12-11 21:17:59 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -548,6 +548,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	case 'pdf' :
 	case 'rar' :
 	case '7z' :
+	case 'csv' :
 	  break;			// Just accept these
 
 	case 'php' :
@@ -585,12 +586,17 @@ function get_allowed_filetypes($def_file = FALSE, $file_mask = '')
   {
 	$a_filetypes = trim(file_get_contents(e_ADMIN.$def_file));
 	$a_filetypes = explode(',', $a_filetypes);
-	foreach ($a_filetypes as $ftype) 
+  }
+  else
+  { // Its an 'override' array
+	$a_filetypes = explode(',', $def_file);
+  }
+  foreach ($a_filetypes as $ftype) 
+  {
+	$ftype = strtolower(trim(str_replace('.', '', $ftype)));
+	if (!$file_mask || in_array($ftype, $file_array))
 	{
-	  if (!$file_mask || in_array($ftype, $file_array))
-	  {
-	    $ret[] = strtolower(trim(str_replace('.', '', $ftype)));
-	  }
+	  $ret[] = $ftype;
 	}
   }
   return $ret;
