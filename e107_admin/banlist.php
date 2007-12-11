@@ -11,14 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-09 16:42:22 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-11 22:48:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 define('BAN_TIME_FORMAT',"%d-%m-%Y %H:%M");
 define('BAN_REASON_COUNT',7);				// Update as more ban reasons added (max 10 supported)
+
+define('BAN_TYPE_IMPORTED',5);				// Imported bans
+define('BAN_TYPE_TEMPORARY',9);				// Used during CSV import
 
 require_once("../class2.php");
 if (!getperms("4")) 
@@ -173,6 +176,24 @@ function ban_time_dropdown($click_js = '', $zero_text=BANLAN_21, $curval=-1,$dro
 }
 
 
+// Character options for import & export
+$separator_char = array(1 => ',', 2 => '|');
+$quote_char = array(1 => '', 2 => "'", 3 => '"');
+
+
+function select_box($name, $data, $curval = FALSE)
+{
+  $ret = "<select class='tbox' name='{$name}'>\n";
+  foreach ($data as $k => $v)
+  {
+    $selected = '';
+    if (($curval !== FALSE) && ($curval == $k)) $selected = " selected='selected'";
+	$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+  }
+  $ret .= "</select>\n";
+  return $ret;
+}
+
 $text = "";
 
 
@@ -298,6 +319,74 @@ switch ($action)
 	$ns->tablerender(BANLAN_9, $text);
     break;			// End of 'Add' and 'Edit'
 
+
+  case 'transfer' :
+    $message = '';
+    if (isset($_POST['ban_import']))
+	{  // Got a file to import
+	  require_once(e_HANDLER.'upload_handler.php');
+	  if (($files = process_uploaded_files(e_FILE."public/",FALSE,array('overwrite'=>TRUE, 'max_file_count' => 1, 'file_mask'=> 'csv'))) === FALSE)
+	  {  // Invalid file
+	    $message = BANLAN_47;
+	  }
+	  if (!$message && $files[0]['error']) $message = $files[0]['message'];
+	  if (!$message)
+	  {  // Got a file of some sort
+		$message = process_csv(e_FILE."public/".$files[0]['name'],
+								intval(varset($_POST['ban_over_import'],0)),
+								intval(varset($_POST['ban_over_expiry'],0)),
+								$separator_char[intval(varset($_POST['ban_separator'],1))],
+								$quote_char[intval(varset($_POST['ban_quote'],3))]);
+	  }
+	  
+	}
+	if ($message) $ns->tablerender(BANLAN_48, "<div style='text-align:center; font-weight:bold'>{$message}</div>");
+
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_ADMIN."banlist_export.php' name='ban_export_form' >
+		<div><table>
+		<colgroup>
+		<col style='width:70%' />
+		<col style='width:30%' />
+		</colgroup>
+		<tr><td class='fcaption'>".BANLAN_36."</td><td class='fcaption'>".BANLAN_15."</td></tr>";
+	$text .= "<tr><td class='forumheader3' rowspan='3'>\n";
+	$spacer = '';
+	for ($i = 0;  $i < BAN_REASON_COUNT; $i++)
+	{
+	  $text .= $spacer."<input type='checkbox' name='ban_types[{$i}]' value='".($i)."'>&nbsp;".constant('BANLAN_10'.$i)." - ".constant('BANLAN_11'.$i);
+	  $spacer = "<br />\n";
+	}
+	$text .= "</td><td class='forumheader3'>".select_box('ban_separator',$separator_char).' '.BANLAN_37;
+	$text .= "</td></tr><tr><td class='forumheader3'>".select_box('ban_quote',$quote_char).' '.BANLAN_38."</td></tr><tr><td class='forumheader3' style='text-align:right'>";
+	$text .= "<input class='button' type='submit' name='ban_export' value='".BANLAN_39."' />
+	</td></tr>";
+	$text .= "</table></form><br /><br /></div>";
+	$ns->tablerender(BANLAN_40, $text);
+	
+	// Now do the import options
+	$text = "<div style='text-align:center'>
+		<form enctype=\"multipart/form-data\" method='post' action='".e_SELF."?transfer' name='ban_import_form' >
+		<div><table>
+		<colgroup>
+		<col style='width:70%' />
+		<col style='width:30%' />
+		</colgroup>
+		<tr><td class='fcaption'>".BANLAN_42."</td><td class='fcaption'>".BANLAN_15."</td></tr>";
+	$text .= "<tr><td class='forumheader3' rowspan='2'>\n";
+	$text .= "<input type='checkbox' name='ban_over_import' value='1'>&nbsp;".BANLAN_43.'<br />';
+	$text .= "<input type='checkbox' name='ban_over_expiry' value='1'>&nbsp;".BANLAN_44;
+
+	$text .= "</td><td class='forumheader3'>".select_box('ban_separator',$separator_char).' '.BANLAN_37;
+	$text .= "</td></tr><tr><td class='forumheader3'>".select_box('ban_quote',$quote_char).' '.BANLAN_38."</td></tr>
+		<tr><td class='forumheader3'><input class='tbox' type='file' name='file_userfile[]' style='width:90%' size='50' /></td>
+		<td class='forumheader3' style='text-align:right'>";
+	$text .= "<input class='button' type='submit' name='ban_import' value='".BANLAN_45."' />
+	</td></tr>";
+	$text .= "</table></form><br /><br /></div>";
+	$ns->tablerender(BANLAN_41, $text);
+    break;
+
   case 'list' :
   default :
 	  $text = $rs->form_open("post", e_SELF, "ban_form")."<div style='text-align:center'>".$rs->form_hidden("ban_secure", "1");
@@ -361,11 +450,15 @@ function banlist_adminmenu()
 
     $var['list']['text'] = BANLAN_14;			// List existing bans
 	$var['list']['link'] = e_SELF."?list";
-	$var['list']['perm'] = "W";
+	$var['list']['perm'] = "4";
 
     $var['add']['text'] = BANLAN_25;			// Add a new ban
 	$var['add']['link'] = e_SELF."?add";
-	$var['add']['perm'] = "W";
+	$var['add']['perm'] = "4";
+
+	$var['transfer']['text'] = BANLAN_35;
+	$var['transfer']['link'] = e_SELF."?transfer";
+   	$var['transfer']['perm'] = "4";
 
 	if(getperms("0"))
 	{
@@ -376,5 +469,92 @@ function banlist_adminmenu()
 	show_admin_menu(BANLAN_16, $action, $var);
 }
 
+
+
+// Parse the date string used by the import/export - YYYYMMDD_HHMMSS
+function parse_date($instr)
+{
+  if (strlen($instr) != 15) return 0;
+  return mktime(substr($instr,9,2),substr($instr,11,2),substr($instr,13,2),substr($instr,4,2),substr($instr,6,2),substr($instr,0,4));
+}
+
+
+// Process the imported CSV file, update the database, delete the file.
+// Return a message
+function process_csv($filename, $override_imports, $override_expiry, $separator = ',', $quote = '"')
+{
+  global $sql, $pref;
+//  echo "Read CSV: {$filename} separator: {$separator}, quote: {$quote}  override imports: {$override_imports}  override expiry: {$override_expiry}<br />";
+  // Renumber imported bans
+  if ($override_imports) $sql->db_Update('banlist', "`banlist_bantype`=".BAN_TYPE_TEMPORARY." WHERE `banlist_bantype` = ".BAN_TYPE_IMPORTED);
+  $temp = file($filename);
+  $line_num = 0;
+  foreach ($temp as $line)
+  {  // Process one entry
+    $line = trim($line);
+	$line_num++;
+	if ($line)
+	{
+	  $fields = explode($separator,$line);
+	  $field_num = 0;
+	  $field_list = array('banlist_bantype' => BAN_TYPE_IMPORTED);
+	  foreach ($fields as $f)
+	  {
+	    $f = trim($f);
+	    if (substr($f,0,1) == $quote)
+		{
+		  if (substr($f,-1,1) == $quote)
+		  {  // Strip quotes
+		    $f = substr($f,1,-1);		// Strip off the quotes
+		  }
+		  else
+		  {
+		    return BANLAN_49.$line_num;
+		  }
+		}
+		// Now handle the field
+		$field_num++;
+		switch ($field_num)
+		{
+		  case 1 :		// IP address
+			$field_list['banlist_ip'] = $f;
+		    break;
+		  case 2 :		// Original date of ban
+			$field_list['banlist_datestamp'] = parse_date($f);
+			break;
+		  case 3 :		// Expiry of ban - depends on $override_expiry
+		    if ($override_expiry)
+			{
+			$field_list['banlist_banexpires'] = parse_date($f);
+			}
+			else
+			{	// Use default ban time from now
+			  $field_list['banlist_banexpires'] = $pref['ban_durations'][BAN_TYPE_IMPORTED] ? time() + (60*60*$pref['ban_durations'][BAN_TYPE_IMPORTED]) : 0;
+			}
+			break;
+		  case 4 :		// Original ban type - we always ignore this and force to 'imported'
+			break;
+		  case 5 :		// Ban reason originally generated by E107
+			$field_list['banlist_reason'] = $f;
+			break;
+		  case 6 :		// Any user notes added
+			$field_list['banlist_notes'] = $f;
+			break;
+		  default :		// Just ignore any others
+		}
+	  }
+	  $qry = "REPLACE INTO `#banlist` (".implode(',',array_keys($field_list)).") values ('".implode("', '",$field_list)."')";
+//	  echo count($field_list)." elements, query: ".$qry."<br />";
+	  if (!$sql->db_Select_gen($qry))
+	  {
+	    return BANLAN_50.$line_num;
+	  }
+	}
+  }
+  // Success here - may need to delete old imported bans
+  if ($override_imports) $sql->db_Delete('banlist', "`banlist_bantype` = ".BAN_TYPE_TEMPORARY);
+  @unlink($filename);			// Delete file once done
+  return str_replace('--NUM--',$line_num, BANLAN_51).$filename;
+}
 
 ?>

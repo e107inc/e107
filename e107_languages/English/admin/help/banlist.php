@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-09 16:42:23 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-11 22:48:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,19 @@ if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'list';
 
 switch ($action)
 {
+case 'transfer' :
+  $text = "This page allows you to transfer banlist data to and from this site as CSV (Comma Separated Variable) files.<br /><br />";
+  $text .= "<b>Data Export</b><br />
+  Select the types of ban to export. The fields will be delimited by the chosen separator, and optionally included within the selected quotation marks.<br /><br />";
+  $text .= "<b>Data Import</b><br />
+  You can choose whether the imported bans replace existing imported bans, or whether they add to the list. If the imported data includes an expiry date/time, you
+  can select whether this is used, or whether the value for this site is used.<br /><br />";
+  $text .= "<b>CSV Format</b><br />
+  The format of each line in the file is: IP/email, date, expiry, type, reason, notes.<br />
+  Date and expiry are in the format YYYYMMDD_HHMMDD, except that a zero value indicates 'unknown' or 'indefinite'<br />
+  Only the IP or email address is essential; the other fields are imported if present.<br /><br />
+  <b>Note:</b> You will need to add the 'CSV' file type to admin_filetypes.php";
+  break;
 case 'options' :
   $text = "This page sets the default behaviour for various types of ban.<br />
   If a message is specified, this will be shown to the user (where appropriate); otherwise they will most likely get a blank screen<br />
