@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.124 $
-|     $Date: 2007-11-08 21:05:51 $
+|     $Revision: 1.125 $
+|     $Date: 2007-12-11 20:37:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -280,7 +280,7 @@ switch ($action)
   case "item" :
 	$sub_action = intval($sub_action);
 	$news_total = 1;
-/*	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) 
+	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) 
 	{
 	  $query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -291,13 +291,13 @@ switch ($action)
 		GROUP by n.news_id";
 	}
 	else
-	{  */
+	{ 
 	  $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
-//	}
+	}
 	break;
 
   case "month" :
