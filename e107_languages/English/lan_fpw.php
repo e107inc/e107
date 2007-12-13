@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_fpw.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-13 01:01:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Password Reset");
@@ -33,8 +33,8 @@ define("LAN_FPW4","A request has already been sent to reset this password, if yo
 define("LAN_FPW5","A request to reset your password for");
 define("LAN_FPW6","An email has been sent to you with a link that will allow you to reset your password.");
 define("LAN_FPW7","This is not a valid link to reset your password.<br />Please contact the site administrator for more details.");
-define("LAN_FPW8","The password for username");
-define("LAN_FPW9","has been successfully changed.<br /><br />The new password is:");
+define("LAN_FPW8","Your password has been changed successfully.");
+define("LAN_FPW9","The new password is:");
 define("LAN_FPW10","Please");
 define("LAN_FPW11","log in now");
 define("LAN_FPW12","and immediately change your password, for security purposes.");
