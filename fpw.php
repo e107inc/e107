@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2007-01-18 00:49:58 $
-|     $Author: mrpete $
+|     $Revision: 1.23 $
+|     $Date: 2007-12-13 00:44:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -81,7 +81,12 @@ if (e_QUERY) {
 		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
 
-		$txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10." <a href='".e_BASE."login.php'>".LAN_FPW11."</a> ".LAN_FPW12;
+		$txt = "<div>".LAN_FPW8."<br /><br />
+		<table style='width:70%'>
+		<tr><td>".LAN_218."</td><td style='font-weight:bold'>{$username}</td></tr>
+		<tr><td>".LAN_FPW9."</td><td style='font-weight:bold'>{$newpw}</td></tr>
+		</table>
+		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_FPW11."</a> ".LAN_FPW12."</div>";
 		fpw_error($txt);
 
 	} else {
@@ -101,7 +106,7 @@ if (isset($_POST['pwsubmit'])) {
 
 	$clean_email = check_email($tp -> toDB($_POST['email']));
 	$clean_username = $tp -> toDB($_POST['username']);
-	$query = "user_email='{$clean_email}' ";
+ 	$query = "user_email='{$clean_email}' ";
 	// Allow admins to remove 'username' from fpw_template.php if they wish.
 	$query .= (isset($_POST['username'])) ? " AND user_loginname='{$clean_username}'" : "";
 
@@ -133,6 +138,7 @@ if (isset($_POST['pwsubmit'])) {
 		$deltime = time()+86400 * 2;
 		//Set timestamp two days ahead so it doesn't get auto-deleted
 		$sql->db_Insert("tmp", "'pwreset',{$deltime},'{$user_name}{$fpw_sep}{$rcode}'");
+
 
 		if (sendemail($_POST['email'], "".LAN_09."".SITENAME, $message)) {
 			$text = "<div style='text-align:center'>".LAN_FPW6."</div>";
