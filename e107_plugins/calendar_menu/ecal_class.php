@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ecal_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-15 14:19:19 $
 |     $Author: e107steved $
 |
 | Event calendar class:
@@ -304,11 +304,11 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 		case 2 : break;   // Continue
 		default : return;   // Invalid or undefined option
 	  }
-	  $log_titles = array(	'1' => 'Event Calendar - add event'.strftime("%d-%B-%Y",$event_start),
-							'2' => 'Event Calendar - edit event'.strftime("%d-%B-%Y",$event_start),
-							'3' => 'Event Calendar - delete event'.strftime("%d-%B-%Y",$event_start),
+	  $log_titles = array(	'1' => 'Event Calendar - add event '.strftime("%d-%B-%Y",$event_start),
+							'2' => 'Event Calendar - edit event '.strftime("%d-%B-%Y",$event_start),
+							'3' => 'Event Calendar - delete event '.strftime("%d-%B-%Y",$event_start),
 							'4' => 'Event Calendar - Bulk Delete',
-							'5' => 'Event Calendar - multiple add'.strftime("%d-%B-%Y",$event_start)
+							'5' => 'Event Calendar - multiple add '.strftime("%d-%B-%Y",$event_start)
 							);
 	  $admin_log->log_event($log_titles[$event_type],$event_title."&nbsp;\n".$event_string,4);
 	}
