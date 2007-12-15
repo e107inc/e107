@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-15 16:31:32 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -20,8 +20,19 @@
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:auto"); }
 
+global $imode;
+if (varsettrue($imode))
+{  // Its 0.8
+  $ec_images_path = e_IMAGE.'packs/'.$imode.'/';
+  if (!defined('EC_RECENT_ICON')) {define('EC_RECENT_ICON',$ec_images_path.'generic/new.png'); }		// Filename of icon used to flag recent events
+}
+else
+{
+  $ec_images_path = e_IMAGE;
+  if (!defined('EC_RECENT_ICON')) {define('EC_RECENT_ICON',e_IMAGE.'generic/'.IMODE.'/new.png'); }		// Filename of icon used to flag recent events
+}
 
-if (!defined('EC_RECENT_ICON')) {define('EC_RECENT_ICON',e_IMAGE.'generic/'.IMODE.'/new.png'); }		// Filename of icon used to flag recent events
+
 
 // TIME SWITCH BUTTONS ------------------------------------------------------------
 $sc_style['EC_PREV_MONTH']['pre'] = "<span class='defaulttext'>";

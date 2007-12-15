@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-08 12:22:36 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-15 16:31:32 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -212,7 +212,7 @@ SC_BEGIN EC_CALENDAR_CALENDAR_RECENT_ICON
   if (!isset($ev['is_recent'])) return "";
   if (!$ev['startofevent']) return "";		// Only display on first day of multi-day events
 //  $recent_icon = e_PLUGIN."calendar_menu/images/recent_icon.png";
-  $recent_icon = e_IMAGE."generic/".IMODE."/new.png";
+  $recent_icon = EC_RECENT_ICON;
   if (file_exists($recent_icon))
 	{
 	  return "<img style='border:0' src='".$recent_icon."' alt='' /> ";
@@ -438,10 +438,10 @@ SC_BEGIN EC_EVENT_THREAD
 SC_END
 
 SC_BEGIN EC_EVENT_OPTIONS
-	global $EC_EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super;
+	global $EC_EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super,$ec_images_path;
 	if (USERNAME == $event_author_name || $cal_super)
 	{
-	  $EC_EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+	  $EC_EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".$ec_images_path."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".$ec_images_path."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 	}
 	return $EC_EVENT_OPTIONS;
 SC_END
@@ -502,13 +502,13 @@ SC_BEGIN EC_IF_SAMEDAY
 SC_END
 
 
-//   FORTHCOMINT EVENTS MENU
+//   FORTHCOMING EVENTS MENU
 //--------------------------------------------
 
 SC_BEGIN EC_NEXT_EVENT_RECENT_ICON
-  global $thisevent;
+  global $cal_row;
   if (!$pref['eventpost_fe_showrecent']) return;
-  if (!isset($thisevent['is_recent'])) return;
+  if (!isset($cal_row['is_recent'])) return;
   $recent_icon = EC_RECENT_ICON;
   if (file_exists($recent_icon))
 	{
