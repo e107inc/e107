@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-15 16:31:32 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-15 21:46:20 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -433,8 +433,8 @@ SC_BEGIN EC_EVENT_CONTACT
 SC_END
 
 SC_BEGIN EC_EVENT_THREAD
-  global  $thisevent;
-  return (isset($thisevent['event_thread']) && ($thisevent['event_thread'] != "")) ? "<a href='{$thisevent['event_thread']}'><img src='".e_PLUGIN."forum/images/".IMODE."/e.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$thisevent['event_thread']}'>".EC_LAN_39."</a>" : "";
+  global  $thisevent, $ec_images_path;
+  return (isset($thisevent['event_thread']) && ($thisevent['event_thread'] != "")) ? "<a href='{$thisevent['event_thread']}'><img src='".$ec_images_path."admin_images/forums_32.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$thisevent['event_thread']}'>".EC_LAN_39."</a>" : "";
 SC_END
 
 SC_BEGIN EC_EVENT_OPTIONS
