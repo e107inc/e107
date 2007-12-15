@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-09-04 21:09:46 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-15 21:46:20 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -852,7 +852,10 @@ $text .= "
 
 	<tr>
 		<td class='forumheader3'>".EC_LAN_102."</td>
-		<td class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($pref['eventpost_forum']==1?" checked='checked' ":"")." /></td>
+		<td class='forumheader3'>
+		  <input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($pref['eventpost_forum']==1?" checked='checked' ":"")." />
+		  		<span class='smalltext'><em>".EC_ADLAN_A22."</em></span>
+		  </td>
 	</tr>
 
 	<tr>

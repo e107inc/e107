@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-09-04 21:09:47 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-15 21:46:20 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -192,7 +192,7 @@ define('EC_LAN_118', "Date format in calendar header:");
 define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");
 define('EC_LAN_121', "Show Calendar");	
-//define('EC_LAN_122', "Css element to show events on this day (menu)");	
+
 define('EC_LAN_123', "Subscriptions");
 define('EC_LAN_124', "Calendar Subscriptions");
 define('EC_LAN_125', "Categories available for subscription");
@@ -268,7 +268,7 @@ define('EC_ADLAN_A18', "Action");
 define('EC_ADLAN_A19', "Administer Categories");
 define('EC_ADLAN_A20', "Calendar Categories");
 define('EC_ADLAN_A21', "Category name");
-
+define('EC_ADLAN_A22', "Adds a field to be used as a link to a forum thread or external site");	
 define('EC_ADLAN_A23', "Create category");
 define('EC_ADLAN_A24', "Edit category");
 define('EC_ADLAN_A25', "Save");

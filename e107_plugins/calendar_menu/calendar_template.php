@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-15 16:31:32 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-15 21:46:20 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -124,8 +124,8 @@ $sc_style['EC_EVENT_HEADING_DATE']['post'] = "";
 $sc_style['EC_EVENT_DETAILS']['pre'] = "<tr><td colspan='2' class='forumheader3'>";
 $sc_style['EC_EVENT_DETAILS']['post'] = "</td></tr>\n";
 
-$sc_style['EC_EVENT_LOCATION']['pre'] = "<b>".EC_LAN_32."</b> ";
-$sc_style['EC_EVENT_LOCATION']['post'] = "";
+$sc_style['EC_EVENT_LOCATION']['pre'] = "<tr><td colspan='2' class='forumheader3'><b>".EC_LAN_32."</b> ";
+$sc_style['EC_EVENT_LOCATION']['post'] = "</td></tr>";
 
 $sc_style['EC_EVENT_AUTHOR']['pre'] = "<b>".EC_LAN_31."</b> ";
 $sc_style['EC_EVENT_AUTHOR']['post'] = "&nbsp;";
@@ -175,7 +175,7 @@ $EVENT_EVENT_TABLE = "
 	  <table style='width:100%;'  cellspacing='0' cellpadding='0'>
 		<tr><td colspan='2' class='forumheader3'>{EC_EVENT_AUTHOR} {EC_EVENT_CAT_ICON} {EC_EVENT_CATEGORY} {EC_EVENT_CONTACT} {EC_EVENT_OPTIONS}</td></tr>
 		<tr><td colspan='2' class='forumheader3'>{EC_EVENT_EVENT_DATE_TIME}</td></tr>\n
-		<tr><td colspan='2' class='forumheader3'>{EC_EVENT_LOCATION}</td></tr>
+		{EC_EVENT_LOCATION}
 		{EC_EVENT_DETAILS}
 		{EC_EVENT_THREAD}
 	  </table>
