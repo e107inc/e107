@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-09-04 21:09:47 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-15 22:15:30 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -53,7 +53,8 @@ require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
-$cat_filter = intval(varset($_POST['event_cat_ids'],0));
+$cat_filter = intval(varset($_POST['event_cat_ids'],-1));
+if ($cat_filter == -1) $cat_filter = '*';
 $mult_count = 0;
 
 
