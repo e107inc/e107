@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-11-11 21:52:37 $
+|     $Revision: 1.10 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -44,6 +44,18 @@ define("LAN_405", "This stage of registration is complete. You will receive a co
 define("LAN_406", "Thank you!");
 define("LAN_407", "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
 define("LAN_408", "A user with that email address already exists. Please use the 'forgot password' screen to retrieve your password.");
+
+define("LAN_409", "Invalid characters in username");
+define("LAN_410", "Enter code visible in the image");
+define("LAN_411", "That display name already exists in the database, please choose a different display name");
+
+
+define("LAN_EMAIL_01", "Dear");
+define("LAN_EMAIL_04", "Please keep this email for your own information.");
+define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.");
+define("LAN_EMAIL_06", "Thanks for your registration.");
+
+
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "chars.");
 define("LAN_SIGNUP_3", "Code verification failed.");
@@ -55,12 +67,6 @@ define("LAN_SIGNUP_8", "Thank you!");
 define("LAN_SIGNUP_9", "Unable to proceed.");
 define("LAN_SIGNUP_10", "Yes");
 define("LAN_SIGNUP_11", ".");
-
-define("LAN_409", "Invalid characters in username");
-define("LAN_410", "Enter code visible in the image");
-define("LAN_411", "That display name already exists in the database, please choose a different display name");
-
-
 define("LAN_SIGNUP_12", "please keep your username and password written down in a safe place as if lost they cannot be retrieved.");
 define("LAN_SIGNUP_13", "You can now log in from the Login box, or from <a href='".e_BASE."login.php'>here</a>.");
 define("LAN_SIGNUP_14", "here");
@@ -80,27 +86,15 @@ define("LAN_SIGNUP_27", "Show");
 define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
 define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
-
 define("LAN_SIGNUP_31", "URL to your XUP file");
 define("LAN_SIGNUP_32", "What's an XUP file?");
 define("LAN_SIGNUP_33", "Type path or choose avatar");
 define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 define("LAN_SIGNUP_35", "Click here to register using an XUP file");
 define("LAN_SIGNUP_36", "An error has occurred creating your user information, please contact the site admin");
-
-define("LAN_LOGINNAME", "Username");
-define("LAN_PASSWORD", "Password");
-define("LAN_USERNAME", "Display Name");
-define("LAN_EMAIL_01", "Dear");
-define("LAN_EMAIL_04", "Please keep this email for your own information.");
-define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.");
-define("LAN_EMAIL_06", "Thanks for your registration.");
-
 define("LAN_SIGNUP_37", "This stage of registration is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
 define("LAN_SIGNUP_38", "You entered two different email addresses. Please enter a valid email address in the two fields provided");
 define("LAN_SIGNUP_39", "Re-type Email Address:");
-
-// 0.7.6
 define("LAN_SIGNUP_40", "Activation not necessary");
 define("LAN_SIGNUP_41", "Your account is already activated.");
 define("LAN_SIGNUP_42", "There was a problem, the registration mail was not sent, please contact the website administrator.");
@@ -120,6 +114,21 @@ define("LAN_SIGNUP_56", "That display name is too short. Please choose another")
 define("LAN_SIGNUP_57", "That login name is too long. Please choose another");
 define("LAN_SIGNUP_58", "Signup Preview");
 define("LAN_SIGNUP_59","**** If the link doesn't work, please check that part of it has not overflowed onto the next line. ****");
+define('LAN_SIGNUP_60','Signup email resend requested');
+define('LAN_SIGNUP_61','Send succeeded');
+define('LAN_SIGNUP_62','Send failed');
+define('LAN_SIGNUP_63','Password reset email resent requested');
+define('LAN_SIGNUP_64','');
+define('LAN_SIGNUP_65','');
+define('LAN_SIGNUP_66','');
+define('LAN_SIGNUP_67','');
+define('LAN_SIGNUP_68','');
+define('LAN_SIGNUP_69','');
+define('LAN_SIGNUP_70','');
+
+define("LAN_LOGINNAME", "Username");
+define("LAN_PASSWORD", "Password");
+define("LAN_USERNAME", "Display Name");
 
 
 ?>

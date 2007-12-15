@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2007-12-15 09:55:37 $
+|     $Revision: 1.34 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -706,7 +706,16 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x'])) {
 	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
 
-if (e_QUERY == 'logout') {
+if (e_QUERY == 'logout') 
+{
+  if (USER)
+  {
+	if (check_class(varset($pref['user_audit_class'],'')))
+	{  // Need to note in user audit trail
+	  $admin_log->user_audit(USER_AUDIT_LOGOUT,'');
+	}
+  }
+
 	$ip = $e107->getip();
 	$udata=(USER === TRUE) ? USERID.".".USERNAME : "0";
 	$sql->db_Update("online", "online_user_id = '0', online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");

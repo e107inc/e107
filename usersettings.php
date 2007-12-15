@@ -11,11 +11,38 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-12-09 22:38:27 $
+|     $Revision: 1.18 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
+
+Mods to give a uniform interface.
+
+
+To do:
+1. Check that photo can be updated/deleted OK
+3. Make sure all $_POST values go through $tp->toDB - currently display name, login name don't - that's the way it was
+4. Make sure displayname and loginname kept in sync where not permitted to be different
+5. Check whether customtitle needs a special look to obey an option - currently updated in two places; check which is required
+6. XUP update - there's a bit of code which calls userlogin::update_xup() which looks relevant - BUT:
+	a) It allows update of user_login field
+	b) Possible error on {EMAILHIDE} - should it be {$EMAILHIDE} ?
+	c) That code will update the user record regardless of whether there are values in the XUP file - so could become null
+7. When restoring $_POST values after an error (just before display) they should all have been vetted - should be done, but double check
+8. Check the use of 'class' around line 190 - if left, the message doesn't make total sense. Not sure the feature makes sense anyway.
+9. No means of retaining name of photo file through an error?
+10. Can get editable classes from the userclass object in 0.8
+11. Check its acceptable to, on the whole, not update a field which is empty but for which $_POST[] value exists
+12. Run through list of fields in DB; make sure all can be updated where needed
+14. Add admin log entry for when admin changing data
+15. Check class memberships - possible that main admin made a member of all (may be an inherited userclass issue)
+
+Notes:
+$pref['forum_user_customtitle'] - used and saved in central record; set in forum interface
+Uses $udata initially, later curVal to hold current user data
 +----------------------------------------------------------------------------+
 */
+
+//echo "Starting usersettings<br />";
 
 require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
@@ -24,8 +51,11 @@ $ue = new e107_user_extended;
 
 //define("US_DEBUG",TRUE);
 define("US_DEBUG",FALSE);
+//echo "Loaded includes<br />";
 
 
+/*
+These links look redundant
 if (isset($_POST['sub_news']))
 {
     header("location:".e_BASE."submitnews.php");
@@ -51,26 +81,30 @@ if (isset($_POST['sub_review'])) {
     header("location:".e_BASE."subcontent.php?review");
     exit;
 }
+*/
 
-if (!USER) {
-    header("location:".e_BASE."index.php");
-    exit;
+
+if (!USER) 
+{	// Must be logged in to change settings
+  header("location:".e_BASE."index.php");
+  exit;
 }
 
-if (!ADMIN && e_QUERY && e_QUERY != "update") {
-    header("location:".e_BASE."usersettings.php");
-    exit;
+if (!ADMIN && e_QUERY && e_QUERY != "update") 
+{
+  header("location:".e_BASE."usersettings.php");
+  exit;
 }
 
 require_once(e_HANDLER."ren_help.php");
 
 if(is_readable(THEME."usersettings_template.php"))
 {
-	include_once(THEME."usersettings_template.php");
+  include_once(THEME."usersettings_template.php");
 }
 else
 {
-	include_once(e_THEME."templates/usersettings_template.php");
+  include_once(e_THEME."templates/usersettings_template.php");
 }
 include_once(e_FILE."shortcode/batch/usersettings_shortcodes.php");
 
@@ -80,26 +114,28 @@ $_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
 $sesschange = '';						// Notice removal
 $photo_to_delete = '';
 $avatar_to_delete = '';
+$changed_user_data = array();
 
 require_once(HEADERF);
 
 
-// Save user settings (whether or not changed)
-//---------------------------------------------
+// Save user settings (changes only)
+//-----------------------------------
 $error = "";
 
 if (isset($_POST['updatesettings']))
 {
 	if(!varsettrue($pref['auth_method']) || $pref['auth_method'] == '>e107')
 	{
-		$pref['auth_method'] = 'e107';
+	  $pref['auth_method'] = 'e107';
 	}
 
 	if($pref['auth_method'] != 'e107')
 	{
-		$_POST['password1'] = '';
-		$_POST['password2'] = '';
+	  $_POST['password1'] = '';
+	  $_POST['password2'] = '';
 	}
+
 
 	if ($_uid && ADMIN)
 	{	// Admin logged in and editing another user's settings - so editing a different ID
@@ -112,31 +148,59 @@ if (isset($_POST['updatesettings']))
 	}
 
 
+	$udata = get_user_data($inp);				// Get all the existing user data, including any extended fields
+	$peer = ($inp == USERID ? false : true);
+
+
+
+
 	// Check external avatar
-	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyway, so why allow them? (XSS Fix)
-	if ($_POST['image'] && $size = getimagesize($_POST['image'])) {
+	if ($_POST['image'])
+	{
+	  $_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyway, so why allow them? (XSS Fix)
+	  if ($size = getimagesize($_POST['image']))
+	  {
 		$avwidth = $size[0];
 		$avheight = $size[1];
 		$avmsg = "";
 
-		$pref['im_width'] = ($pref['im_width']) ? $pref['im_width'] : 120;
-		$pref['im_height'] = ($pref['im_height']) ? $pref['im_height'] : 100;
-		if ($avwidth > $pref['im_width']) {
-			$avmsg .= LAN_USET_1." ($avwidth)<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
+		$pref['im_width'] = varsettrue($pref['im_width'], 120);
+		$pref['im_height'] = varsettrue($pref['im_height'], 100);
+		if ($avwidth > $pref['im_width']) 
+		{
+		  $avmsg .= LAN_USET_1." ({$avwidth})<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
 		}
-		if ($avheight > $pref['im_height']) {
-			$avmsg .= LAN_USET_3." ($avheight)<br />".LAN_USET_4.": {$pref['im_height']}";
+		if ($avheight > $pref['im_height']) 
+		{
+		  $avmsg .= LAN_USET_3." ({$avheight})<br />".LAN_USET_4.": {$pref['im_height']}";
 		}
-		if ($avmsg) {
-			$_POST['image'] = "";
-			$error = $avmsg;
+		if ($avmsg) 
+		{
+		  $_POST['image'] = "";
+		  $error = $avmsg;
 		}
-
+		else
+		{
+		  if ($_POST['image'] != $udata['user_image'])
+		  {
+			$changed_user_data['user_image'] = $_POST['image'];
+		  }
+		}
+	  }
+	  else
+	  {  // Invalid image file - we could just put up a message
+	  }
 	}
+
+
+
+
+	// The 'class' option doesn't really make sense to me, but left it for now
+//	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122);
+//	$signup_option_names = array("realname", "signature", "image", "timezone");
 
 	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_USET_6);
 	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
-
 	foreach($signup_option_names as $key => $value)
 	{  // Check required signup fields
 		if ($pref['signup_option_'.$value] == 2 && !$_POST[$value] && !$_uid)
@@ -146,74 +210,56 @@ if (isset($_POST['updatesettings']))
     }
 
 
-// Login Name checks
-	if (isset($_POST['loginname']))
+
+// Login Name checks - only admin can change login name
+	if (isset($_POST['loginname']) && ADMIN && getperms("4"))
 	{  // Only check if its been edited
-	  $temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
-	  if ($temp_name != $_POST['loginname'])
+	  $loginname = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
+	  if ($loginname != $_POST['loginname'])
 	  {
 		$error .= LAN_USET_13."\\n";
 	  }
 	  // Check if login name exceeds maximum allowed length
-	  if (strlen($temp_name) > varset($pref['loginname_maxlength'],30))
+	  if (strlen($loginname) > varset($pref['loginname_maxlength'],30))
 	  {
 	    $error .= LAN_USET_14."\\n";
+	  }
+	  if ($udata['user_loginname']  != $loginname) 
+	  {
+	    $changed_user_data['user_loginname']  = $loginname; 
+	  }
+	  else 
+	  {
+		unset($loginname);
+	  }
 	}
-	  $_POST['loginname'] = $temp_name;
-	}
+	if (isset($loginname)) $_POST['loginname'] = $loginname; else unset($_POST['loginname']);			// Make sure no change of the $_POST value staying set inappropriately
 
 
-// Password checks
-	$pwreset = "";
-	if ($_POST['password1'] != $_POST['password2']) {
-		$error .= LAN_105."\\n";
+
+	// Display name checks 
+	// If display name == login name, it has to meet the criteria for both login name and display name
+	echo "Check_class: {$pref['displayname_class']}; {$udata['user_class']}; {$peer}<br />";
+	if (check_class($pref['displayname_class'], $udata['user_class'], $peer))
+	{	// Display name can be different to login name - check display name if its been entered
+	  if (isset($_POST['username']))
+	  {
+	    $username = trim(strip_tags($_POST['username']));
+		$_POST['username'] = $username;
+		echo "Found new display name: {$username}<br />";
+	  }
 	}
 	else
-	{
-		if(trim($_POST['password1']) != "")
-		{
-			$pwreset = "user_password = '".md5(trim($_POST['password1']))."', ";
-		}
-	}
-
-	if(isset($pref['signup_disallow_text']))
-	{
-		$tmp = explode(",", $pref['signup_disallow_text']);
-		foreach($tmp as $disallow){
-			if(strstr($_POST['username'], $disallow)){
-				$error .= LAN_USET_11."\\n";
-			}
-		}
-	}
-
-	if (strlen(trim($_POST['password1'])) < $pref['signup_pass_len'] && trim($_POST['password1']) != "") {
-		$error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
-		$password1 = "";
-		$password2 = "";
+	{  // Display name and login name must be the same - check only if the login name has been changed
+	  if (varsettrue($loginname)) $username = $loginname;
 	}
 
 
-	if (isset($pref['disable_emailcheck']) && $pref['disable_emailcheck']==1)
-	{
-	} else {
-		if (!check_email($_POST['email']))
-		{
-	  		$error .= LAN_106."\\n";
-		}
-	}
 
-	// Check for duplicate of email address
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".intval($inp)."' "))
+	if (varsettrue($username))
 	{
-	  	$error .= LAN_408."\\n";
-	}
-
-
-// Display name checks
-	if (isset($_POST['username']))
-	{
+	  echo "Checking user name<br />";
 	  // Impose a minimum length on display name
-	  $username = trim(strip_tags($_POST['username']));
 	  if (strlen($username) < 2)
 	  {
 		$error .= LAN_USET_12."\\n";
@@ -223,95 +269,141 @@ if (isset($_POST['updatesettings']))
 		$error .= LAN_USET_15."\\n";
 	  }
 
+	  if(isset($pref['signup_disallow_text']))
+	  {
+		$tmp = explode(",", $pref['signup_disallow_text']);
+		foreach($tmp as $disallow)
+		{
+		  if(stristr($username, trim($disallow)))
+		  {
+			$error .= LAN_USET_11."\\n";
+		  }
+	    }
+	  }
+
 	// Display Name exists.
 	  if ($sql->db_Count("user", "(*)", "WHERE `user_name`='".$username."' AND `user_id` != '".intval($inp)."' "))
 	  {
 		$error .= LAN_USET_17;
 	  }
+	  if ($username != $udata['user_name']) $changed_user_data['user_name'] = $username;
+	  unset($username);
 	}
 
 
+
+// Password checks
+	if ($_POST['password1'] != $_POST['password2']) 
+	{
+	  $error .= LAN_105."\\n";
+	}
+	else
+	{
+	  if(trim($_POST['password1']) != "")
+	  {
+		if (strlen(trim($_POST['password1'])) < $pref['signup_pass_len']) 
+		{
+		  $error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
+		}
+	    $changed_user_data['user_password'] = md5(trim($_POST['password1']));
+	  }
+	}
+
+
+// Email address checks
+	if (!varsettrue($pref['disable_emailcheck']))
+	{
+	  if (!check_email($_POST['email']))
+	  {
+		$error .= LAN_106."\\n";
+	  }
+	}
+
+	// Check for duplicate of email address
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".intval($inp)."' "))
+	{
+	  $error .= LAN_408."\\n";
+	}
+
+		
+		
 // Uploaded avatar and/or photo
-	$user_sess = "";
 	if ($file_userfile['error'] != 4)
 	{
-		require_once(e_HANDLER."upload_handler.php");
-		require_once(e_HANDLER."resize_handler.php");
+	  require_once(e_HANDLER."upload_handler.php");
+	  require_once(e_HANDLER."resize_handler.php");
 
-		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
-		{
-		  foreach ($uploaded as $upload)
-		  {	// Needs the latest upload handler (with legacy and 'future' interfaces) to work
-			if ($upload['name'] && ($upload['index'] == 'avatar') && $pref['avatar_upload'])
+	  if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
+	  {
+		foreach ($uploaded as $upload)
+		{	// Needs the latest upload handler (with legacy and 'future' interfaces) to work
+		  if ($upload['name'] && ($upload['index'] == 'avatar') && $pref['avatar_upload'])
+		  {
+			// avatar uploaded - give it a reference which identifies it as server-stored
+			$_POST['image'] = "-upload-".$upload['name'];
+			if ($_POST['image'] != $udata['user_image'])
 			{
-				// avatar uploaded - give it a reference which identifies it as server-stored
-				$_POST['image'] = "-upload-".$upload['name'];
-				if ($_POST['image'] != $currentUser['user_image'])
-				{
-				  $avatar_to_delete = str_replace("-upload-", "", $currentUser['user_image']);
-//				  echo "Avatar change; deleting {$avatar_to_delete}<br />";
-				}
-				if (!resize_image(e_FILE."public/avatars/".$upload['name'], e_FILE."public/avatars/".$upload['name'], "avatar"))
-				{
-					unset($message);
-					$error .= RESIZE_NOT_SUPPORTED."\\n";
-					@unlink(e_FILE."public/avatars/".$upload['name']);
-					$_POST['image'] = '';
-				}
+			  $avatar_to_delete = str_replace("-upload-", "", $udata['user_image']);
+//			  echo "Avatar change; deleting {$avatar_to_delete}<br />";
+			  $changed_user_data['user_image'] = $_POST['image'];
 			}
 
-			if ($upload['name'] && ($upload['index'] == 'photo') && $pref['photo_upload'] )
+			if (!resize_image(e_FILE."public/avatars/".$upload['name'], e_FILE."public/avatars/".$upload['name'], "avatar"))
 			{
-				// photograph uploaded
-				$user_sess = $upload['name'];
-				if (!resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180))
-				{
-					unset($message);
-					$error .= RESIZE_NOT_SUPPORTED."\\n";
-					@unlink(e_FILE."public/avatars/".$user_sess);
-					$user_sess = '';
-				}
+			  unset($message);
+			  $error .= RESIZE_NOT_SUPPORTED."\\n";
+			  @unlink(e_FILE."public/avatars/".$upload['name']);
+			  $_POST['image'] = '';
+			  unset($changed_user_data['user_image']);
+			}
+		  }
+
+		  if ($upload['name'] && ($upload['index'] == 'photo') && $pref['photo_upload'] )
+		  {
+			// photograph uploaded
+			if ($udata['user_sess'] != $upload['name'])
+			{
+			  $photo_to_delete = $udata['user_sess'];
+			  $changed_user_data['user_sess'] = $upload['name'];
+			}
+
+			if (!resize_image(e_FILE."public/avatars/".$upload['name'], e_FILE."public/avatars/".$upload['name'], 180))
+			{
+			  unset($message);
+			  $error .= RESIZE_NOT_SUPPORTED."\\n";
+			  @unlink(e_FILE."public/avatars/".$upload['name']);
+			  unset($changed_user_data['user_sess']);
 			}
 		  }
 		}
+	  }
 	}
 
 // See if user just wants to delete existing photo
 	if (isset($_POST['user_delete_photo']))
 	{
-	  $photo_to_delete = $currentUser['user_sess'];
-	  $sesschange = "user_sess = '', ";
+	  $photo_to_delete = $udata['user_sess'];
+	  $changed_user_data['user_sess'] = '';
 //	  echo "Just delete old photo: {$photo_to_delete}<br />";
 	}
-	elseif ($user_sess != "")
-	{	// Update DB with photo
-	  $sesschange = "user_sess = '".$tp->toDB($user_sess)."', ";
-	  if ($currentUser['user_sess'] == $tp->toDB($user_sess))
-	  {
-		$sesschange = '';			// Same photo - do nothing
-//		echo "Photo not changed<br />";
-	  }
-	  else
-	  {
-		$photo_to_delete = $currentUser['user_sess'];
-//		echo "New photo: {$user_sess} Delete old photo: {$photo_to_delete}<br />";
-	  }
-	}
+
+
 
 
     // Validate Extended User Fields.
 	if($_POST['ue'])
 	{
-		if($sql->db_Select('user_extended_struct'))	{
-			while($row = $sql->db_Fetch())
-			{
-				$extList["user_".$row['user_extended_struct_name']] = $row;
-			}
-		}
-
-		$ue_fields = "";
-		foreach($_POST['ue'] as $key => $val)
+	  if($sql->db_Select('user_extended_struct'))	
+	  {
+		while($row = $sql->db_Fetch())
 		{
+		  $extList["user_".$row['user_extended_struct_name']] = $row;
+		}
+	  }
+
+	  $ue_fields = "";
+	  foreach($_POST['ue'] as $key => $val)
+	  {
 			$err = false;
 			$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
 			$regex = $tp->toText($parms[1]);
@@ -336,12 +428,13 @@ if (isset($_POST['updatesettings']))
 				$ue_fields .= ($ue_fields) ? ", " : "";
 				$ue_fields .= $key."='".$val."'";
 				}
-		}
+	  }
     }
 
 
-// All validated here
-// ------------------
+
+// All key fields validated here
+// -----------------------------
 
 // $inp - UID of user whose data is being changed (may not be the currently logged in user)
 	if (!$error)
@@ -355,52 +448,14 @@ if (isset($_POST['updatesettings']))
 
 	  $ret = $e_event->trigger("preuserset", $_POST);
 
-	  if(trim($_POST['user_xup']) != "")
-	  {
-		if($sql->db_Select('user', 'user_xup', "user_id = '".intval($inp)."'"))
-		{
-		  $row = $sql->db_Fetch();
-		  $update_xup = ($row['user_xup'] != $_POST['user_xup']) ? TRUE : FALSE;
-		}
-	  }
-
 	  if ($ret == '')
 	  {
-		$udata = get_user_data($inp);				// Get all the user data, including any extended fields
-		$peer = ($inp == USERID ? false : true);
-
-		$loginname = strip_tags($_POST['loginname']);
-		if (!$loginname)
-		{
-//		  $sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
-//		  $row = $sql -> db_Fetch();
-		  $loginname = $udata['user_loginname'];
-		}
-		else
-		{
-		  if(!check_class($pref['displayname_class'], $udata['user_class'], $peer))
-		  {
-			$new_username = "user_name = '{$loginname}', ";
-			$username = $loginname;
-		  }
-		}
-
-//			if (isset($_POST['username']) && check_class($pref['displayname_class']))
-		if (isset($_POST['username']) && check_class($pref['displayname_class'], $udata['user_class'], $peer))
-		{	// Allow change of display name if in right class
-		  $username = strip_tags($_POST['username']);
-		  $username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
-		  $new_username = "user_name = '{$username}', ";
-		}
-
-
-		$_POST['signature'] = $tp->toDB($_POST['signature']);
-		$_POST['realname'] = $tp->toDB($_POST['realname']);
-
+		// Either delete this block, or delete user_customtitle from the later loop for non-vetted fields
 		$new_customtitle = "";
 		if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
 		{
-		  $new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
+		  $new_customtitle = $tp->toDB($_POST['customtitle']);
+		  if ($new_customtitle != $udata['user_customtitle']) $changed_user_data['user_customtitle'] = $new_customtitle;
 		}
 
 
@@ -416,51 +471,39 @@ if (isset($_POST['updatesettings']))
 		}
 
 
-		// We can update the basic user record now
-		$sql->db_Update("user", "{$new_username} {$pwreset} {$sesschange} user_email='".$tp -> toDB($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['timezone'])."', user_hideemail='".intval($tp -> toDB($_POST['hideemail']))."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
-		if ($photo_to_delete)
-		{	// Photo may be a flat file, or in the database
-		  delete_file($photo_to_delete);
-		}
-		if ($avatar_to_delete)
-		{	// Avatar may be a flat file, or in the database
-		  delete_file($avatar_to_delete);
-		}
-
-
-		// If user has changed display name, update the record in the online table
-		if(isset($username) && ($username != USERNAME) && !$_uid)
+		// Handle fields which are just transferred without vetting (but are subject to toDB() for exploit restriction)
+		$copy_list = array('user_signature' => 'signature', 
+							'user_login' => 'realname', 
+							'user_email' => 'email',
+							'user_timezone' => 'timezone',
+							'user_customtitle' => 'customtitle', 
+							'user_hideemail' =>'hideemail',
+							'user_xup' => 'user_xup');
+		
+		// Next list identifies numerics which might take a value of 0
+		$non_text_list = array(
+							'user_hideemail' =>'hideemail'
+							);
+		foreach ($copy_list as $k => $v)
 		{
-		  $sql->db_Update("online", "online_user_id = '".USERID.".".$username."' WHERE online_user_id = '".USERID.".".USERNAME."'");
-		}
-
-
-		// Only admins can update login name
-		if(ADMIN && getperms("4"))
-		{
-		  $sql -> db_Update("user", "user_loginname='".$tp -> toDB($loginname)."' WHERE user_id='".intval($inp)."' ");
-		}
-
-
-		// Save extended field values
-		if($ue_fields)
-		{
-// ***** Next line creates a record which presumably should be there anyway, so could generate an error
-		  $sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
-		  $sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".intval($inp)."'");
+		  if (isset($_POST[$v]) && (trim($_POST[$v]) || isset($non_text_list[$k])))
+		  {
+		    $_POST[$v] = $tp->toDB(trim($_POST[$v]));
+			if ($_POST[$v] != $udata[$k]) 
+			{
+			  $changed_user_data[$k] = $_POST[$v];
+//			  echo "Changed {$k}, {$v} from {$udata[$k]} to {$_POST[$v]}<br />";
+			}
+		  }
 		}
 
 
 		// Update Userclass - only if its the user changing their own data (admins can do it another way)
-//		if (!$_uid && $sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
 		if (!$_uid && $sql->db_Select("userclass_classes", "userclass_id", "userclass_editclass IN (".USERCLASS_LIST.")"))
 		{
 		  $ucList = $sql->db_getList();			// List of classes which this user can edit
 		  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Read editable list. Current user classes: ".$udata['user_class'],FALSE,LOG_TO_ROLLING);
-//		  if ($sql->db_Select("user", "user_class", "user_id = '".intval($inp)."'"))
-//		  {
-//			$row = $sql->db_Fetch();
-//			$cur_classes = explode(",", $row['user_class']);
+
 			$cur_classes = explode(",", $udata['user_class']);			// Current class membership
 			$newclist = array_flip($cur_classes);						// Array keys are now the class IDs
 
@@ -479,20 +522,143 @@ if (isset($_POST['updatesettings']))
 			}
 			$newclist = array_keys($newclist);
 			$nid = implode(',', array_diff($newclist, array('')));
+//			echo "Userclass data - new: {$nid}, old: {$udata['user_class']}<br />";
 			if ($nid != $udata['user_class'])
 			{
-			  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Write back classes; new list: ".$nid,FALSE,LOG_TO_ROLLING);
-			  $sql->db_Update("user", "user_class='".$nid."' WHERE user_id=".intval($inp));
+			  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Write back classes; old list: {$udata['user_class']}; new list: ".$nid,FALSE,LOG_TO_ROLLING);
+			  $changed_user_data['user_class'] = $nid;
 			}
-//		  }
 		}
 
 
-		if($update_xup == TRUE)
+
+		// Only admins can update login name - do this just in case one of the event triggers has mucked it about
+		if (!(ADMIN && getperms("4")))
+		{
+		  unset($changed_user_data['user_loginname']);
+		}
+
+
+		// We can update the basic user record now - can just update fields from $changed_user_data
+		$new_data = array();
+		foreach ($changed_user_data as $fn => $fv)
+		{
+		  $new_data[] = "`{$fn}`='{$fv}'";
+		}
+		if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Changed data:<br> ".var_export($changed_user_data,TRUE),FALSE,LOG_TO_ROLLING);
+		$sql->db_Update("user",implode(', ',$new_data)." WHERE user_id='".intval($inp)."' ");
+
+
+		// Now see if we need to log anything. First check the options and class membership
+		// (Normally we would leave logging decision to the log class. But this one's a bit more complicated)
+		$user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
+		$do_log = array();
+		$log_action = '';
+		if ($_uid)
+		{		// Its an admin changing someone elses data - add an admin log entry here
+		  echo "Admin changing user data<br />";
+		  // Check against the class of the target user, not the admin!
+		  if (!check_class(varset($pref['user_audit_class'],''),$udata['user_class'])) $user_logging_opts = array();
+		}
+		else
+		{
+		  if (!check_class(varset($pref['user_audit_class'],''))) $user_logging_opts = array();
+		}
+		
+		// Now log changes if required
+		if (count($user_logging_opts))
+		{
+			// Start with any specific fields we're changing
+
+			if (isset($changed_user_data['user_name']))
+			{
+			  if (isset($user_logging_opts[USER_AUDIT_NEW_DN]))
+			  {
+				$do_log['user_name'] = $changed_user_data['user_name'];
+				$log_action = USER_AUDIT_NEW_DN;
+			  }
+			  unset($changed_user_data['user_name']);
+			}
+
+			if (isset($changed_user_data['user_password']))
+			{
+			  if (isset($user_logging_opts[USER_AUDIT_NEW_PW]))
+			  {	// Password has already been changed to an md5(), so OK to leave the data
+				$do_log['user_password'] = $changed_user_data['user_password'];
+				$log_action = USER_AUDIT_NEW_PW;
+			  }
+			  unset($changed_user_data['user_password']);
+			}
+
+			if (isset($changed_user_data['user_email']))
+			{
+			  if (isset($user_logging_opts[USER_AUDIT_NEW_EML]))
+			  {
+				$do_log['user_email'] = $changed_user_data['user_email'];
+				$log_action = USER_AUDIT_NEW_EML;
+			  }
+			  unset($changed_user_data['user_email']);
+			}
+
+			if (count($changed_user_data) && isset($user_logging_opts[USER_AUDIT_NEW_SET]))
+			{
+			  $do_log = array_merge($do_log,$changed_user_data);
+			  $log_action = USER_AUDIT_NEW_SET;
+			}
+			if (count($do_log))
+			{  // Got some changes to audit
+//			echo "Adding to audit log<br />";
+			  if ($_uid)
+			  {
+				$log_action = USER_AUDIT_ADMIN;						// If an admin did the mod, different heading
+				// Embed a message saying who changed the data
+				$changed_user_data['message'] = str_replace(array('--ID--','--LOGNAME--'),array(USERID,USERNAME),LAN_USET_18);
+				$admin_log->user_audit($log_action,$do_log, $udata['user_id'],$udata['user_loginname']);
+			  }
+			  else
+			  {
+				if (count($do_log) > 1)  $log_action = USER_AUDIT_NEW_SET;		// Log multiple entries to one record
+				$admin_log->user_audit($log_action,$do_log);
+			  }
+			}
+		}	// End of audit logging
+
+		
+		// Now tidy up
+		if ($photo_to_delete)
+		{	// Photo may be a flat file, or in the database
+		  delete_file($photo_to_delete);
+		}
+		if ($avatar_to_delete)
+		{	// Avatar may be a flat file, or in the database
+		  delete_file($avatar_to_delete);
+		}
+
+
+		// If user has changed display name, update the record in the online table
+		if(isset($changed_user_data['user_name']) && !$_uid)
+		{
+		  $sql->db_Update("online", "online_user_id = '".USERID.".".$changed_user_data['user_name']."' WHERE online_user_id = '".USERID.".".USERNAME."'");
+		}
+
+
+		// Save extended field values
+		if($ue_fields)
+		{
+// ***** Next line creates a record which presumably should be there anyway, so could generate an error
+		  $sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
+		  $sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".intval($inp)."'");
+		}
+
+
+/*
+Needed - but check bits of the file first
+		if(isset($changed_user_data['user_xup']))
 		{
 		  require_once(e_HANDLER."login.php");
-		  userlogin::update_xup($inp, $_POST['user_xup']);
+		  userlogin::update_xup($inp, $changed_user_data['user_xup']);
 		}
+*/
 
 		$e_event->trigger("postuserset", $_POST);
 
@@ -520,17 +686,19 @@ if ($error)
 	$adref = $_POST['adminreturn'];
 }
 
-// --- User data has been update here if appropriate ---
+// --- User data has been updated here if appropriate ---
 
 if(isset($message))
 {
 	$ns->tablerender($caption, $message);
 }
 
-// ---------------------
 
+//-----------------------------------------------------
+// Re-read the user data into curVal (ready for display)
+//-----------------------------------------------------
 
-$uuid = ($_uid) ? $_uid : USERID;
+$uuid = ($_uid) ? $_uid : USERID;			// If $_uid is set, its an admin changing another user's data
 
 $qry = "
 SELECT u.*, ue.* FROM #user AS u
@@ -555,15 +723,16 @@ if (strpos($curVal['user_perms'],'0') === 0)
 $curVal['userclass_list'] = implode(",", $tmp);
 
 if($_POST)
-{     // Fix for all the values being lost when an error occurred.
-	foreach($_POST as $key => $val)
-	{
-		$curVal["user_".$key] = $val;
-	}
-	foreach($_POST['ue'] as $key => $val)
-	{
-		$curVal[$key] = $val;
-	}
+{     // Fix for all the values being lost when there was an error in a field - restore from the latest $_POST values
+	  // (Password fields have intentionally been cleared). If no error, there's an unset($_POST) to disable this block
+  foreach($_POST as $key => $val)
+  {
+	$curVal["user_".$key] = $val;
+  }
+  foreach($_POST['ue'] as $key => $val)
+  {
+	$curVal[$key] = $val;
+  }
 }
 
 require_once(e_HANDLER."form_handler.php");
@@ -588,9 +757,10 @@ $text .= "
 $ns->tablerender(LAN_155, $text);
 require_once(FOOTERF);
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function req($field) {
+// If a field is required, returns a red asterisk
+function req($field) 
+{
 	global $pref;
 	if ($field == 2)
 	{
@@ -602,7 +772,8 @@ function req($field) {
 	}
 	return $ret;
 }
-//---------------------------------------------------------------------------------
+
+
 
 // Delete a file from the public directories. Return TRUE on success, FALSE on failure.
 // Also deletes from database if appropriate.
@@ -624,7 +795,8 @@ function delete_file($fname, $dir = 'avatars/')
 }
 
 
-function headerjs() {
+function headerjs() 
+{
 	global $cal;
 	$script = "<script type=\"text/javascript\">
 		function addtext_us(sc){

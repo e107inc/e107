@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/fpw.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-13 01:01:35 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-15 15:06:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -58,14 +58,18 @@ function fpw_error($txt) {
 	exit;
 }
 
-//the seperator character used
+//the separator character used
 $fpw_sep = "#";
 
-if (e_QUERY) {
+
+
+if (e_QUERY) 
+{	// User has clicked on link to reset password
 	define("FPW_ACTIVE","TRUE");
 	$tmp = explode($fpw_sep, e_QUERY);
 	$tmpinfo = preg_replace("#[\W_]#", "", $tp -> toDB($tmp[0], true));
-	if ($sql->db_Select("tmp", "*", "tmp_info LIKE '%{$fpw_sep}{$tmpinfo}' ")) {
+	if ($sql->db_Select("tmp", "*", "tmp_info LIKE '%{$fpw_sep}{$tmpinfo}' ")) 
+	{
 		$row = $sql->db_Fetch();
 		extract($row);
 		$sql->db_Delete("tmp", "tmp_info LIKE '%{$fpw_sep}{$tmpinfo}' ");
@@ -76,8 +80,15 @@ if (e_QUERY) {
 		}
 		$mdnewpw = md5($newpw);
 
+		// Details for admin log
+		$do_log['password_action'] = LAN_FPW21;
+		$do_log['user_name'] = $tp -> toDB($username, true);
+		$do_log['activation_code'] = $tmpinfo;
+		$do_log['user_password'] = $mdnewpw;
+		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
+
 		list($username, $md5) = explode($fpw_sep, $tmp_info);
-		$sql->db_Update("user", "user_password='$mdnewpw', user_viewed='' WHERE user_name='".$tp -> toDB($username, true)."' ");
+		$sql->db_Update("user", "user_password='{$mdnewpw}', user_viewed='' WHERE user_name='".$tp -> toDB($username, true)."' ");
 		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
 
@@ -94,11 +105,16 @@ if (e_QUERY) {
 	}
 }
 
-if (isset($_POST['pwsubmit'])) {
+
+// Request to reset password
+//--------------------------
+if (isset($_POST['pwsubmit'])) 
+{
 	require_once(e_HANDLER."mail.php");
 	$email = $_POST['email'];
 
-	if ($pref['fpwcode'] && extension_loaded("gd")) {
+	if ($pref['fpwcode'] && extension_loaded("gd")) 
+	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) {
 			fpw_error(LAN_FPW3);
 		}
@@ -110,19 +126,22 @@ if (isset($_POST['pwsubmit'])) {
 	// Allow admins to remove 'username' from fpw_template.php if they wish.
 	$query .= (isset($_POST['username'])) ? " AND user_loginname='{$clean_username}'" : "";
 
-	if ($sql->db_Select("user", "*", $query)) {
+	if ($sql->db_Select("user", "*", $query)) 
+	{
 		$row = $sql->db_Fetch();
-		 extract($row);
+		extract($row);
 
-		if ($user_admin == 1 && $user_perms == "0") {
+		if ($user_admin == 1 && $user_perms == "0") 
+		{	// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
 			sendemail($pref['siteadminemail'], LAN_06, LAN_07."".$e107->getip()." ".LAN_08);
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 			die();
 		}
 
-		if ($sql->db_Select("tmp", "*", "tmp_ip = 'pwreset' AND tmp_info LIKE '{$user_name}{$fpw_sep}%'")) {
-			fpw_error(LAN_FPW4);
-			exit;
+		if ($sql->db_Select("tmp", "*", "tmp_ip = 'pwreset' AND tmp_info LIKE '{$user_name}{$fpw_sep}%'")) 
+		{
+		  fpw_error(LAN_FPW4);
+		  exit;
 		}
 
 		mt_srand ((double)microtime() * 1000000);
@@ -139,17 +158,30 @@ if (isset($_POST['pwsubmit'])) {
 		//Set timestamp two days ahead so it doesn't get auto-deleted
 		$sql->db_Insert("tmp", "'pwreset',{$deltime},'{$user_name}{$fpw_sep}{$rcode}'");
 
+		$do_log['password_action'] = LAN_FPW18;
+		$do_log['user_id'] = $row['user_id'];
+		$do_log['user_name'] = $row['user_name'];
+		$do_log['user_loginname'] = $row['user_loginname'];
+		$do_log['activation_code'] = $rcode;
 
-		if (sendemail($_POST['email'], "".LAN_09."".SITENAME, $message)) {
-			$text = "<div style='text-align:center'>".LAN_FPW6."</div>";
-		} else {
-			$text = "<div style='text-align:center'>".LAN_02."</div>";
+		if (sendemail($_POST['email'], "".LAN_09."".SITENAME, $message)) 
+		{
+		  $text = "<div style='text-align:center'>".LAN_FPW6."</div>";
+		  $do_log['password_result'] = LAN_FPW20;
+		} 
+		else 
+		{
+		  $text = "<div style='text-align:center'>".LAN_02."</div>";
+		  $do_log['password_result'] = LAN_FPW19;
 		}
+		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,$row['user_id'],$row['user_name']);
 
 		$ns->tablerender(LAN_03, $text);
 		require_once(FOOTERF);
 		exit;
-	} else {
+	} 
+	else 
+	{
 		$text = LAN_213;
 		$ns->tablerender(LAN_214, "<div style='text-align:center'>".$text."</div>");
 	}

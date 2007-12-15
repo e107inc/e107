@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:49 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-15 15:06:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -200,7 +200,7 @@ function edit_administrator($row){
 	$text .= checkb("E", $a_perms).ADMSLAN_30."<br />";			// Configure news feed headlines
 	$text .= checkb("F", $a_perms).ADMSLAN_31."<br />";			// Configure emoticons
 	$text .= checkb("G", $a_perms).ADMSLAN_32."<br />";			// Configure front page content
-	$text .= checkb("S", $a_perms).ADMSLAN_33."<br />";			// Configure log/stats
+	$text .= checkb("S", $a_perms).ADMSLAN_33."<br />";			// Configure system logs  (previously log/stats - now plugin)
 	$text .= checkb("T", $a_perms).ADMSLAN_34."<br />";			// Configure meta tags
 	$text .= checkb("V", $a_perms).ADMSLAN_35."<br />";			// Configure public file uploads
 	$text .= checkb("X", $a_perms).ADMSLAN_66."<br />";			// Configure Search

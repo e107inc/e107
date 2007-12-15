@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-09 16:42:23 $
+|     $Revision: 1.5 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
 
 To do:
@@ -59,13 +59,25 @@ class e_admin_log {
 	  define("E_LOG_INFORMATIVE", 0);				// Minimal Log Level, including really minor stuff
 	  define("E_LOG_NOTICE", 1);					// More important than informative, but less important than notice
 	  define("E_LOG_WARNING", 2);					// Not anything serious, but important information
-	  define("E_LOG_FATAL", 3);					//  An event so bad your site ceased execution.
+	  define("E_LOG_FATAL", 3);						//  An event so bad your site ceased execution.
 	  define("E_LOG_PLUGIN", 4);					// Plugin information
 		
 	  // Logging actions
 	  define("LOG_TO_ADMIN", 1);
 	  define("LOG_TO_AUDIT", 2);
 	  define("LOG_TO_ROLLING", 4);
+	  
+	  // User audit logging (intentionally start at 10 - stick to 2 digits)
+	  define('USER_AUDIT_ADMIN',10);				// User data changed by admin
+	  define('USER_AUDIT_SIGNUP',11);				// User signed up
+	  define('USER_AUDIT_EMAILACK',12);				// User responded to registration email
+	  define('USER_AUDIT_LOGIN',13);				// User logged in
+	  define('USER_AUDIT_LOGOUT',14);				// User logged out
+	  define('USER_AUDIT_NEW_DN',15);				// User changed display name
+	  define('USER_AUDIT_NEW_PW',16);				// User changed password
+	  define('USER_AUDIT_NEW_EML',17);				// User changed email
+	  define('USER_AUDIT_PW_RES',18);				// Password reset
+	  define('USER_AUDIT_NEW_SET',19);				// User changed other settings (intentional gap in numbering)
 	}
 
 	/**
@@ -136,9 +148,8 @@ class e_admin_log {
 
 	$importance = $tp->toDB($importance,true,false,'no_html');
 	$eventcode = $tp->toDB($eventcode,true,false,'no_html');
-	$explain = $tp->toDB($explain,true,false,'no_html');
+	$explain = mysql_real_escape_string($tp->toDB($explain,true,false,'no_html'));
 	$event_title = $tp->toDB($event_title,true,false,'no_html');
-	$source_call = $tp->toDB($source_call,true,false,'no_html');
 
 
 //---------------------------------------
@@ -146,7 +157,8 @@ class e_admin_log {
 //---------------------------------------
 	if ($target_logs & LOG_TO_ADMIN)
 	{  // Admin log - assume all fields valid
-	  $this->rldb->db_Insert("dblog", " 0, ".intval($time_usec).','.intval($time_sec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ");
+	  $qry =  " 0, ".intval($time_sec).','.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ";
+	  $this->rldb->db_Insert("dblog",$qry);
 	}
 
 
@@ -177,10 +189,10 @@ class e_admin_log {
 	  }
 
 
-		if (is_array($source_call))
-		{ // Print the debug_backtrace() array
-		  while ($i < $back_count)
-		  {
+	  if (is_array($source_call))
+	  { // Print the debug_backtrace() array
+		while ($i < $back_count)
+		{
 			$source_call[$i]['file'] = $e107->fix_windows_paths($source_call[$i]['file']);		// Needed for Windoze hosts.
 			$source_call[$i]['file'] = str_replace($e107->file_path,"",$source_call[$i]['file']);	// We really just want a e107 root-relative path. Strip out the root bit
 			$tmp = $source_call[$i]['file']."|".$source_call[$i]['class'].$source_call[$i]['type'].$source_call[$i]['function']."@".$source_call[$i]['line'];
@@ -191,14 +203,15 @@ class e_admin_log {
 			$i++;
 			if ($i < $back_count) $explain .= "<br />-------------------";
 			if (!isset($tmp1)) $tmp1 = $tmp;		// Pick off the immediate caller as the source
-		  }
-		  if (isset($tmp1)) $source_call = $tmp1; else $source_call = 'Root level';
 		}
-		else
-		{
-		  $source_call = $e107->fix_windows_paths($source_call);		// Needed for Windoze hosts.
-		  $source_call = str_replace($e107->file_path,"",$source_call);	// We really just want a e107 root-relative path. Strip out the root bit
-		}
+		if (isset($tmp1)) $source_call = $tmp1; else $source_call = 'Root level';
+	  }
+	  else
+	  {
+		$source_call = $e107->fix_windows_paths($source_call);		// Needed for Windoze hosts.
+		$source_call = str_replace($e107->file_path,"",$source_call);	// We really just want a e107 root-relative path. Strip out the root bit
+		$source_call = $tp->toDB($source_call,true,false,'no_html');
+	  }
 	// else $source_call is a string
 
 	  // Save new rolling log record
@@ -211,6 +224,40 @@ class e_admin_log {
 	if ($finished) exit;		// Optional abort for all logs
   }
 
+
+//--------------------------------------
+//		USER AUDIT ENTRY
+//--------------------------------------
+// $event_code is a defined constant (see above) which specifies the event
+// $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
+// $id and $u_name are left blank except for admin edits and user login, where they specify the id and login name of the 'target' user
+  function user_audit($event_type, $event_data, $id = '', $u_name = '')
+  {
+    global $e107, $tp;
+	list($time_usec, $time_sec) = explode(" ", microtime());		// Log event time immediately to minimise uncertainty
+
+	// See whether we should log this
+	$user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
+	if (!isset($user_logging_opts[$event_type])) return;			// Finished if not set to log this event type
+
+
+	if ($this->rldb == NULL) $this->rldb = new db;					// Better use our own db - don't know what else is going on
+
+	if ($id) $userid = $id; else $userid = (USER === TRUE) ? USERID : 0;
+	if ($u_name) $userstring = $u_name; else $userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS"); 
+	$userIP = $e107->getip();
+	$eventcode = 'USER_'.$event_type;
+
+    $title = 'LAN_AUDIT_LOG_0'.$event_type;			// This creates a string which will be displayed as a constant
+	$spacer = '';
+	$detail = '';
+	foreach ($event_data as $k => $v)
+	{
+	  $detail .= $spacer.$k.'=>'.$v;
+	  $spacer = '<br />';
+	}
+	$this->rldb->db_Insert("audit_log","0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
+  }
 
 
   function get_log_events($count = 15, $offset) 

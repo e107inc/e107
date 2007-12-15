@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-12-09 16:42:23 $
+|     $Revision: 1.9 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -105,48 +105,79 @@ class userlogin {
 		else 
 		{	// User is OK as far as core is concerned
 //	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User passed basics',FALSE,LOG_TO_ROLLING);
-			$ret = $e_event->trigger("preuserlogin", $username);
-			if ($ret!='') 
+		  $ret = $e_event->trigger("preuserlogin", $username);
+		  if ($ret!='') 
+		  {
+			define("LOGINMESSAGE", $ret."<br /><br />");
+			return FALSE;
+		  } 
+		  else 
+		  {	// Trigger events happy as well
+			$lode = $sql -> db_Fetch();		// Get user info
+			$user_id = $lode['user_id'];
+			$user_name = $lode['user_name'];
+			$user_xup = $lode['user_xup'];
+
+			/* restrict more than one person logging in using same us/pw */
+			if($pref['disallowMultiLogin']) 
 			{
-				define("LOGINMESSAGE", $ret."<br /><br />");
+			  if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) 
+			  {
+				define("LOGINMESSAGE", LAN_304."<br /><br />");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+				$this -> checkibr($fip);
 				return FALSE;
-			} 
-			else 
-			{	// Trigger events happy as well
-				$lode = $sql -> db_Fetch();		// Get user info
-				$user_id = $lode['user_id'];
-				$user_name = $lode['user_name'];
-				$user_xup = $lode['user_xup'];
+				}
+			  }
 
-				/* restrict more than one person logging in using same us/pw */
-				if($pref['disallowMultiLogin']) 
+			  $cookieval = $user_id.".".md5($userpass);
+			  if($user_xup) 
+			  {
+				$this->update_xup($user_id, $user_xup);
+			  }
+
+			  if ($pref['user_tracking'] == "session") 
+			  {
+				$_SESSION[$pref['cookie_name']] = $cookieval;
+			  } 
+			  else 
+			  {
+				if ($autologin == 1) 
 				{
-					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) 
-					{
-						define("LOGINMESSAGE", LAN_304."<br /><br />");
-						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
-						$this -> checkibr($fip);
-						return FALSE;
-					}
+				  cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
+				} 
+				else 
+				{
+				  cookie($pref['cookie_name'], $cookieval);
 				}
+			  }
+			  
+			  // User login definitely accepted here
 
-				$cookieval = $user_id.".".md5($userpass);
-				if($user_xup) {
-					$this->update_xup($user_id, $user_xup);
-				}
 
-				if ($pref['user_tracking'] == "session") {
-					$_SESSION[$pref['cookie_name']] = $cookieval;
-				} else {
-					if ($autologin == 1) {
-						cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
-					} else {
-						cookie($pref['cookie_name'], $cookieval);
-					}
+			  // Calculate class membership - needed for a couple of things
+			  $class_list = explode(',',$lode['user_class']);
+			  if ($lode['user_admin'] && strlen($lode['user_perms']))
+			  {
+			    $class_list[] = e_UC_ADMIN;
+				if (strpos($lode['user_perms'],'0') === 0)
+				{
+				  $class_list[] = e_UC_MAINADMIN;
 				}
-				$edata_li = array("user_id" => $user_id, "user_name" => $username);
-				$e_event->trigger("login", $edata_li);
-				$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
+			  }
+			  $class_list[] = e_UC_MEMBER;
+			  $class_list[] = e_UC_PUBLIC;
+
+			  $user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
+			  if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'],''),$class_list))
+			  {  // Need to note in user audit trail
+			    $admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
+			  }
+
+			  $edata_li = array("user_id" => $user_id, "user_name" => $username);
+			  $e_event->trigger("login", $edata_li);
+			  $redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
+
 
 
 				if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force'])) 
@@ -155,17 +186,6 @@ class userlogin {
 				  $lode['user_perms'] = trim($lode['user_perms']);
 //				  $log_info = "New user: ".$lode['user_name']."  Class: ".$lode['user_class']."  Admin: ".$lode['user_admin']."  Perms: ".$lode['user_perms'];
 //				  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
-				  $class_list = explode(',',$lode['user_class']);
-				  if ($lode['user_admin'] && strlen($lode['user_perms']))
-				  {
-				    $class_list[] = e_UC_ADMIN;
-					if (('0'==$lode['user_perms']) || ('0.' == $lode['user_perms'])) 
-					{
-					  $class_list[] = e_UC_MAINADMIN;
-					}
-				  }
-				  $class_list[] = e_UC_MEMBER;
-				  $class_list[] = e_UC_PUBLIC;
 //				  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","New User class",implode(',',$class_list),FALSE,FALSE);
 				  foreach ($pref['frontpage_force'] as $fk=>$fp)
 				  {
