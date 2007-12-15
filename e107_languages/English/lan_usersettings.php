@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-08-16 19:19:43 $
+|     $Revision: 1.10 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -82,10 +82,6 @@ define("LAN_SIGNUP_5", " characters long.");
 define("LAN_SIGNUP_6", "Your ");
 define("LAN_SIGNUP_7", " is required");
 
-define("LAN_USET_1", "Your avatar is too wide");
-define("LAN_USET_2", "Maximum allowable width is");
-define("LAN_USET_3", "Your avatar is too high");
-define("LAN_USET_4", "Maximum allowable height is");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Custom Title");
@@ -99,6 +95,10 @@ define("MAX_AVHEIGHT", " x ");
 define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Please resize image or choose another. File has been deleted.");
 
 // v0.7
+define("LAN_USET_1", "Your avatar is too wide");
+define("LAN_USET_2", "Maximum allowable width is");
+define("LAN_USET_3", "Your avatar is too high");
+define("LAN_USET_4", "Maximum allowable height is");
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
 define("LAN_USET_7", "Miscellaneous");
@@ -112,5 +112,8 @@ define("LAN_USET_14", "Login name too long. Please choose another");
 define("LAN_USET_15", "Display name too long. Please choose another");
 define("LAN_USET_16", "Tick box to delete existing photo without uploading another");
 define("LAN_USET_17", "Display name already used. Please choose another");
+define('LAN_USET_18', 'User data changed by admin: --ID--, login name: --LOGNAME--');
+define('LAN_USET_19', '');
+define('LAN_USET_20', '');
 
 ?>

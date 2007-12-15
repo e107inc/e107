@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-12-09 16:42:22 $
+|     $Revision: 1.13 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,7 @@ if (is_readable(THEME."signup_template.php")) {
 include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
+
 
 //-------------------------------
 // Resend Activation Email 
@@ -100,24 +101,22 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
         	$mailheader_e107id = $nid;
 			require_once(e_HANDLER."mail.php");
 
-/*
-            echo "Sending to: ".$row['user_email'];
-            require_once(FOOTERF);
-            exit;
-*/
+			$do_log['signup_action'] = LAN_SIGNUP_63;
 
             if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
             {
-                $ns -> tablerender(LAN_ERROR,LAN_SIGNUP_42);
-                require_once(FOOTERF);
-                exit;
+              $ns -> tablerender(LAN_ERROR,LAN_SIGNUP_42);
+			  $do_log['signup_result'] = LAN_SIGNUP_62;
             }
             else
             {
                 $ns -> tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
-                require_once(FOOTERF);
-                exit;
+			  $do_log['signup_result'] = LAN_SIGNUP_61;
             }
+			// Now log this (log will ignore if its disabled)
+			$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,$row['user_id'],$row['user_name']);
+            require_once(FOOTERF);
+            exit;
          }
 
 		require_once(e_HANDLER."message_handler.php");
@@ -284,7 +283,7 @@ if (e_QUERY)
 	if ($qs[0] == "activate" && (count($qs) == 3 || count($qs) == 4) && $qs[2])
 	{
         // return the message in the correct language.
-		if($qs[3] && strlen($qs[3]) == 2 )
+		if(isset($qs[3]) && strlen($qs[3]) == 2 )
 		{
 			require_once(e_HANDLER."language_class.php");
 			$lng = new language;
@@ -321,6 +320,10 @@ if (e_QUERY)
 			  }
 			}
 			$sql->db_Update("user", "user_ban='0', user_sess=''{$init_classes} WHERE user_sess='".$tp -> toDB($qs[2], true)."' ");
+
+			// Log to user audit log if enabled
+			$admin_log->user_audit(USER_AUDIT_EMAILACK,$row);
+			
 			$e_event->trigger("userveri", $row);
 			require_once(HEADERF);
 			$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
@@ -688,6 +691,17 @@ global $db_debug;
 		$u_key = md5(uniqid(rand(), 1));
 		// ************* Possible class insert
 		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['timezone'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
+
+		// Log to user audit log if enabled
+		$admin_log->user_audit(USER_AUDIT_SIGNUP,array(
+		  'user_id' => $nid,
+		  'user_name' => $username,
+		  'user_loginname' => $loginname,
+		  'user_email' => $tp -> toDB($_POST['email']),
+		  'user_realname' => $tp -> toDB($_POST['realname']),
+		  'signup_key' => $u_key
+		));
+
 		if(!$nid)
 		{
 			require_once(HEADERF);

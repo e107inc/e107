@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-07-03 19:22:08 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-15 15:06:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -175,6 +175,9 @@ define("ADLAN_152", "Enter Code");
 define("ADLAN_153", "Administration Area");
 define('ADLAN_154', "Error contacting Sourceforge to check for new version");
 
+define('ADLAN_155', 'System Logs');
+define('ADLAN_156', 'Admin log, user audit, rolling log');
+
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
 define('ADLAN_CL_3', 'Content');
@@ -255,7 +258,6 @@ define("LAN_INACTIVE","Inactive");
 define("LAN_BAN","Ban");
 define("LAN_RATING", "Rating");
 
-define("LAN_UPLOAD", "Upload");
 define("LAN_UPLOAD_IMAGES","Upload Images");
 define("LAN_UPLOAD_FILES","Upload Files");
 define("LAN_UPLOAD_ADDFILE","Add Another File");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:49 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-15 15:06:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -386,6 +386,7 @@ $e_icon_array = array(
 	'poll' => E_32_POLLS,
 	'prefs' => E_32_PREFS,
 	'search' => E_32_SEARCH,
+	'syslogs' => E_32_ADMINLOG,
 	'theme_manage' => E_32_THEMEMANAGER,
 	'maintain' => E_32_MAINTAIN,
 	'upload' => E_32_UPLOADS,
@@ -426,6 +427,11 @@ attribute 2 = title
 attribute 3 = description
 attribute 4 = perms
 attribute 5 = category
+	1 - settings
+	2 - users
+	3 - content
+	4 - tools
+	5 - plugins
 attribute 6 = 16 x 16 image
 attribute 7 = 32 x 32 image
 */
@@ -452,14 +458,15 @@ $array_functions = array(
 	18 => array(e_ADMIN."phpinfo.php", ADLAN_68, ADLAN_69, "0", 4, E_16_PHP, E_32_PHP),
 	19 => array(e_ADMIN."prefs.php", ADLAN_4, ADLAN_5, "1", 1, E_16_PREFS, E_32_PREFS),
 	20 => array(e_ADMIN."search.php", ADLAN_142, ADLAN_143, "X", 1, E_16_SEARCH, E_32_SEARCH),
-	21 => array(e_ADMIN."theme.php", ADLAN_140, ADLAN_141, "1", 4, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
-	22 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V", 3, E_16_UPLOADS, E_32_UPLOADS),
-	23 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
-	24 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
-	25 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
-	26 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
-	27 => array(e_ADMIN."users_extended.php", ADLAN_78, ADLAN_79, "4", 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
-	28 => array(e_ADMIN."fileinspector.php", ADLAN_147, ADLAN_148, "Y", 4, E_16_INSPECT, E_32_INSPECT),
-	29 => array(e_ADMIN."notify.php", ADLAN_149, ADLAN_150, "O", 4, E_16_NOTIFY, E_32_NOTIFY)
+	21 => array(e_ADMIN."admin_log.php", ADLAN_155, ADLAN_156, "S", 4, E_16_ADMINLOG, E_32_ADMINLOG),
+	22 => array(e_ADMIN."theme.php", ADLAN_140, ADLAN_141, "1", 4, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
+	23 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V", 3, E_16_UPLOADS, E_32_UPLOADS),
+	24 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
+	25 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
+	26 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
+	27 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
+	28 => array(e_ADMIN."users_extended.php", ADLAN_78, ADLAN_79, "4", 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
+	29 => array(e_ADMIN."fileinspector.php", ADLAN_147, ADLAN_148, "Y", 4, E_16_INSPECT, E_32_INSPECT),
+	30 => array(e_ADMIN."notify.php", ADLAN_149, ADLAN_150, "O", 4, E_16_NOTIFY, E_32_NOTIFY)
 	);
 ?>
