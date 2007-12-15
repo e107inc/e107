@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2007-12-09 16:42:21 $
+|     $Revision: 1.33 $
+|     $Date: 2007-12-15 09:55:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -916,6 +916,8 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 	{
 		return TRUE;
 	}
+
+	if (is_numeric($var) && ($var == e_UC_PUBLIC)) return TRUE;		// Accept numeric class zero - 'PUBLIC'
 
 	// userid has been supplied, go build that user's class list
 	if(is_numeric($uid) && $uid > 0)
