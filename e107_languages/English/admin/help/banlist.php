@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-11 22:48:42 $
+|     $Revision: 1.5 $
+|     $Date: 2007-12-16 11:14:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -54,6 +54,17 @@ Entering the email address foo@bar.com will stop anyone using that email address
 Entering the email address *@bar.com will stop anyone using that email domain from registering as a member on your site.<br /><br />
 <b>Banning by user name</b><br />
 This is done from the user administration page.<br /><br />";
+  break;
+case 'whadd' :
+case 'whedit' :
+  $text = "You can specify IP addresses which you know to be 'friendly' here - generally those for the main site admins, to guarantee that they can
+  always gain access to the site.<br />
+  You are advised to keep the number of addresses in this list to an absolute minimum; both for security, and to minimise the impact on site performance.";
+  break;
+case 'white' :
+  $text = "This page shows a list of all IP addresses and email addresses which are explicitly permitted.<br />
+    This list takes priority over the ban list - it should not be possible for an address from this list to be banned.<br />
+	All addresses must be manually entered.";
   break;
 case 'list' :
 default :
