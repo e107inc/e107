@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-12-09 16:42:23 $
+|     $Revision: 1.11 $
+|     $Date: 2007-12-16 11:14:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -206,8 +206,16 @@ class e107{
 	{
 	  global $sql, $tp, $pref, $admin_log;
 //	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
-	  if ($sql->db_Select('banlist','*',$query))
+	  if ($sql->db_Select('banlist','*',$query.' ORDER BY `banlist_bantype` DESC'))
 	  {
+		// Any whitelist entries will be first - so we can answer based on the first DB record read
+		define('BAN_TYPE_WHITELIST',100);			// Entry for whitelist
+		$row = $sql->db_Fetch();
+		if ($row['banlist_bantype'] >= BAN_TYPE_WHITELIST)
+		{
+//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
+		  return TRUE;
+		}
 //	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
 		if ($show_error) header("HTTP/1.1 403 Forbidden", true);
 		if (isset($pref['ban_messages']))
