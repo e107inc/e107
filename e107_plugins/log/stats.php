@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-11-07 22:20:27 $
+|     $Revision: 1.8 $
+|     $Date: 2007-12-18 20:25:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -878,6 +878,10 @@ class siteStats
 			$row = $sql -> db_Fetch();
 			$statBrowser = unserialize($row['log_data']);
 		}
+		else
+		{
+		  continue;		// No data - terminate this loop
+		}
 
 		/* temp consolidate today's data ... */
 		if (($act == 1) || ($act == 2))
@@ -998,6 +1002,10 @@ class siteStats
 			$row = $sql -> db_Fetch();
 			$statOs = unserialize($row['log_data']);
 		}
+		else
+		{
+		  continue;		// No data - terminate this loop
+		}
 
 		/* temp consolidate today's data ... */
 		if (($act == 1) || ($act == 2))
@@ -1113,6 +1121,10 @@ class siteStats
 			$row = $sql -> db_Fetch();
 			$statDom = unserialize($row['log_data']);
 		}
+		else
+		{
+		  continue;		// No data - terminate this loop
+		}
 
 		/* temp consolidate today's data ... */
 		if (($act == 1) || ($act == 2))
@@ -1186,6 +1198,10 @@ class siteStats
 		{
 			$row = $sql -> db_Fetch();
 			$statScreen = unserialize($row['log_data']);
+		}
+		else
+		{
+		  continue;		// No data - terminate this loop
 		}
 
 		/* temp consolidate today's data ... */
@@ -1270,6 +1286,10 @@ class siteStats
 			$row = $sql -> db_Fetch();
 			$statRefer = unserialize($row['log_data']);
 		}
+		else
+		{
+		  continue;		// No data - terminate this loop
+		}
 
 		/* temp consolidate today's data ... */
 		if (($act == 1) || ($act == 2))
@@ -1343,6 +1363,10 @@ class siteStats
 		{
 			$row = $sql -> db_Fetch();
 			$statQuery = unserialize($row['log_data']);
+		}
+		else
+		{
+		  continue;		// No data - terminate this loop
 		}
 
 		/* temp consolidate today's data ... */
