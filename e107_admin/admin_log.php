@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-15 15:06:40 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-18 20:57:37 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -99,7 +99,7 @@ if (isset($_POST['confirmdeleteold']))
 	$old_string = strftime("%d %B %Y",$old_date);
 	$qry = "dblog_datestamp < ".$old_date;
 //	$message = "Back delete, oldest date = {$old_string}  Query = {$qry}";
-	if ($del_count = $sql -> db_Delete("dblog",$qry))
+	if ($del_count = $sql -> db_Delete("admin_log",$qry))
 	{
   // Add in a log event
 	  $admin_log->log_event ("db_Delete - earlier than {$old_string} (past {$qs[2]} days)", $qry, 4);
@@ -158,7 +158,7 @@ if($action == "confdel")
 }
 
 // Arrays of options for the various logs
-$log_db_table = array('adminlog' => 'dblog', 'auditlog' => 'audit_log', 'rolllog' => 'rl_history');
+$log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog');
 $back_day_count = array('adminlog' => 30, 'auditlog' => 30, 'rolllog' => max(intval($pref['roll_log_days']),1));
 $page_title = array('adminlog' => RL_LAN_030, 'auditlog' => RL_LAN_062, 'rolllog' => RL_LAN_002);
 $col_count = array('adminlog' => 8, 'auditlog' => 8, 'rolllog' => 9);

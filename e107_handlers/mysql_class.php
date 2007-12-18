@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-10-15 11:03:29 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2007-12-18 20:57:37 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.19 $
-* @author $Author: e107coders $
+* @version $Revision: 1.20 $
+* @author $Author: e107steved $
 */
 class db {
 
@@ -151,11 +151,12 @@ class db {
 	*/
 	function db_Write_log($log_type = '', $log_remark = '', $log_query = '') {
 		global $tp, $e107;
-		$d = time();
+		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
+		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS"); 
 		$ip = $e107->getip();
 		$qry = $tp->toDB($log_query);
-		$this->db_Insert('dblog', "0, '{$log_type}', {$d}, {$uid}, '{$ip}', '{$qry}', '{$log_remark}'");
+		$this->db_Insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
 	}
 
 	/**
