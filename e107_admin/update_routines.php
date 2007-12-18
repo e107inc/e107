@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-12-08 15:11:43 $
+|     $Revision: 1.12 $
+|     $Date: 2007-12-18 20:57:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,8 @@ require_once(e_HANDLER.'db_table_admin_class.php');
 
 // To do - how do we handle multi-language tables?
 
-$update_debug = FALSE;			// TRUE gives extra messages in places
+//$update_debug = FALSE;			// TRUE gives extra messages in places
+$update_debug = TRUE;			// TRUE gives extra messages in places
 
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
@@ -189,12 +190,12 @@ function update_706_to_800($type='')
 	
 	
 	// List of DB tables newly required  (defined in core_sql.php)
-	$new_tables = array('audit_log', 'rl_history');
+	$new_tables = array('admin_log','audit_log');
 
 
 	// List of changed DB tables (defined in core_sql.php) 
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$changed_tables = array('dblog','rl_history', 'userclass_classes', 'banlist');
+	$changed_tables = array('dblog','admin_log', 'userclass_classes', 'banlist');
 
 	
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
@@ -321,6 +322,22 @@ function update_706_to_800($type='')
 
 	// Tables defined in core_sql.php
 	//---------------------------------
+
+	if (mysql_table_exists('dblog') && !mysql_table_exists('admin_log'))
+	{
+	  if ($just_check) return update_needed('Rename dblog to admin_log');
+	  $sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
+	  catch_error();
+	}
+
+	// Next bit will be needed only by the brave souls who used an early CVS - probably delete before release
+	if (mysql_table_exists('rl_history') && !mysql_table_exists('dblog'))
+	{
+	  if ($just_check) return update_needed('Rename rl_history to dblog');
+	  $sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
+	  catch_error();
+	}
+
 
 	// New tables required (list at top. Definitions in core_sql.php)
 	foreach ($new_tables as $nt)

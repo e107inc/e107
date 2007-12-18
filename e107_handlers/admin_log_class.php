@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-15 15:06:40 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-18 20:57:37 $
 |     $Author: e107steved $
 
 To do:
@@ -158,7 +158,7 @@ class e_admin_log {
 	if ($target_logs & LOG_TO_ADMIN)
 	{  // Admin log - assume all fields valid
 	  $qry =  " 0, ".intval($time_sec).','.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ";
-	  $this->rldb->db_Insert("dblog",$qry);
+	  $this->rldb->db_Insert("admin_log",$qry);
 	}
 
 
@@ -215,10 +215,10 @@ class e_admin_log {
 	// else $source_call is a string
 
 	  // Save new rolling log record
-	  $this->rldb->db_Insert("rl_history","0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
+	  $this->rldb->db_Insert("dblog","0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
 
 	  // Now delete any old stuff
-	  $this->rldb->db_Delete("rl_history", "dblog_datestamp < '".intval(time() - (varset($pref['roll_log_days'],7)*86400))."' ");
+	  $this->rldb->db_Delete("dblog", "dblog_datestamp < '".intval(time() - (varset($pref['roll_log_days'],7)*86400))."' ");
 	}
 
 	if ($finished) exit;		// Optional abort for all logs
