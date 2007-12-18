@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2007-11-06 20:12:22 $
+|     $Revision: 1.85 $
+|     $Date: 2007-12-18 21:55:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -407,12 +407,10 @@ if ($action == 'edit' || $action == 'quote')
 	if (!isset($_POST['fpreview']))
 	{
 		$subject = $thread_info['0']['thread_name'];
-
-		$post = $tp->toForm($thread_info[0]['thread_thread'], false, true);
-		//Remove old 'edited by' message
-		$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
+		$post = $tp->toForm($thread_info[0]['thread_thread']);
 	}
-	
+	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
+
 	if ($action == 'quote') {
 		$post = preg_replace("#\[hide].*?\[/hide]#s", "", $post);
 		$tmp = explode(chr(1), $thread_info[0]['user_name']);
@@ -581,7 +579,7 @@ function redirect($url)
 
 function process_upload()
 {
-	global $pref, $forum_info, $thread_info;
+	global $pref, $forum_info, $thread_info, $admin_log;
 
 	if(isset($thread_info['head']['thread_id']))
 	{
@@ -610,12 +608,11 @@ function process_upload()
 						$orig_file = $upload['name'];
 						$p = strrpos($orig_file,'.');
 						$new_file = substr($orig_file, 0 , $p)."_".substr($orig_file, $p);
-//						$fpath = e_FILE."public/";
-						if(resize_image($fpath.$orig_file, $fpath.$new_file, $pref['forum_maxwidth']))
+						if(resize_image(e_FILE.'public/'.$orig_file, e_FILE.'public/'.$new_file, $pref['forum_maxwidth']))
 						{
 							if($pref['forum_linkimg'])
 							{
-								$parms = image_getsize($fpath.$new_file);
+								$parms = image_getsize(e_FILE.'public/'.$new_file);
 								$_POST['post'] .= "[br][link=".$fpath.$orig_file."][img{$parms}]".$fpath.$new_file."[/img][/link][br]";
 								//show resized, link to fullsize
 							}
@@ -623,25 +620,19 @@ function process_upload()
 							{
 								@unlink($fpath.$orig_file);
 								//show resized
-								$parms = image_getsize($fpath.$new_file);
+								$parms = image_getsize(e_FILE.'public/'.$new_file);
 								$_POST['post'] .= "[br][img{$parms}]".$fpath.$new_file."[/img][br]";
 							}
 						}
 						else
-						{
-							//resize failed, show original
-//							$parms = image_getsize(e_FILE."public/".$upload['name']);
-//							$_POST['post'] .= "[br][img{$parms}]".e_FILE."public/".$upload['name']."[/img]";
-							$parms = image_getsize($fpath.$upload['name']);
+						{	//resize failed, show original
+							$parms = image_getsize(e_FILE.'public/'.$upload['name']);
 							$_POST['post'] .= "[br][img{$parms}]".$fpath.$upload['name']."[/img]";
 						}
 					}
 					else
-					{
-//						$parms = image_getsize(e_FILE."public/".$upload['name']);
-//						//resizing disabled, show original
-//						$_POST['post'] .= "[br]<div class='spacer'>[img{$parms}]".e_FILE."public/".$upload['name']."[/img]</div>\n";
-						$parms = image_getsize($fpath.$upload['name']);
+					{	//resizing disabled, show original
+						$parms = image_getsize(e_FILE.'public/'.$upload['name']);
 						//resizing disabled, show original
 						$_POST['post'] .= "[br]<div class='spacer'>[img{$parms}]".$fpath.$upload['name']."[/img]</div>\n";
 					}
@@ -649,8 +640,6 @@ function process_upload()
 				else
 				{
 					//upload was not an image, link to file
-					//echo "<pre>"; print_r($upload); echo "</pre>";
-//					$_POST['post'] .= "[br][file=".e_FILE."public/".$upload['name']."]".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."[/file]";
 					$_POST['post'] .= "[br][file=".$fpath.$upload['name']."]".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."[/file]";
 				}
 			  }
