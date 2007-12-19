@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.25 $
-|	$Date: 2007-12-03 21:55:05 $
-|	$Author: e107coders $
+|	$Revision: 1.26 $
+|	$Date: 2007-12-19 20:21:57 $
+|	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -227,6 +227,7 @@ function storeCaret (textAr){
 
 function addtext(text, emote)
 {
+  var val = new Array(2);
 	if (window.e107_selectedInputArea)
 	{
 		var ta = e107_selectedInputArea;
