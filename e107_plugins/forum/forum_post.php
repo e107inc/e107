@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2007-12-18 21:55:25 $
+|     $Revision: 1.86 $
+|     $Date: 2007-12-19 20:12:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -599,9 +599,9 @@ function process_upload()
 			{
 			  if ($upload['error'] == 0)
 			  {
+				$fpath = "{e_FILE}public/";
 				if(strstr($upload['type'], "image"))
 				{
-					$fpath = "{e_FILE}public/";
 					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
 					{
 						require_once(e_HANDLER."resize_handler.php");
