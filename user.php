@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-07-21 09:57:33 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-19 20:34:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -57,7 +57,8 @@ $user_frm = new form;
 require_once(HEADERF);
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-if (!getperms("0") && !check_class(varset($pref['memberlist_access'], 253)) && !$self_page)
+$full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
+if (!$full_perms && !$self_page)
 {
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".USERLAN_2."</div>");
 	require_once(FOOTERF);
@@ -162,6 +163,7 @@ else
 	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
 	foreach ($userList as $row)
 	{
+		$loop_uid = $row['user_id'];
 		$text .= renderuser($row, "short");
 	}
 	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-10-12 20:40:18 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-19 20:34:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -333,7 +333,8 @@ else if(ADMIN && getperms("4") && !$user['user_admin']) {
 SC_END
 
 SC_BEGIN USER_JUMP_LINK
-global $sql, $user;
+global $sql, $user, $full_perms;
+if (!$full_perms) return;
 if(!$userjump = getcachedvars('userjump'))
 {
 	$sql->db_Select("user", "user_id, user_name", "ORDER BY user_id ASC", "no-where");
