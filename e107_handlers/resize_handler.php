@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-10-10 21:34:44 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-20 20:51:17 $
 |     $Author: e107steved $
 |
 | Mod to give correct return code if source image already smaller than max size
@@ -117,19 +117,19 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 //		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." '".$destination_file."'");
 		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"".$destination_file."\"");
 		}
-		break:
+		break;
 	  case "gd1" :
 		switch ($image_stats[2])
 		{
 		  case IMAGETYPE_PNG : // 3 - PNG
-			$src_img = imagecreatefrompng($source_file);
+			$src_img = @imagecreatefrompng($source_file);
 			break;
 		  case IMAGETYPE_GIF : // 1 - GIF
 		    if (!function_exists('imagecreatefromgif')) return FALSE;		// Some versions of GD library don't support GIF
-			$src_img = imagecreatefromgif($source_file);
+			$src_img = @imagecreatefromgif($source_file);
 			break;
 		  case IMAGETYPE_JPEG :	// 2 - Jpeg
-		    $src_img = imagecreatefromjpeg($source_file);
+		    $src_img = @imagecreatefromjpeg($source_file);
 			break;
 		  default :
 			return FALSE; // Unsupported image type
@@ -164,14 +164,14 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		switch ($image_stats[2])
 		{
 		  case IMAGETYPE_PNG : // 3 - PNG
-			$src_img = imagecreatefrompng($source_file);
+			$src_img = @imagecreatefrompng($source_file);
 			break;
 		  case IMAGETYPE_GIF : // 1 - GIF
 		    if (!function_exists('imagecreatefromgif')) return FALSE;		// Some versions of GD library don't support GIF
-			$src_img = imagecreatefromgif($source_file);
+			$src_img = @imagecreatefromgif($source_file);
 			break;
 		  case IMAGETYPE_JPEG :	// 2 - Jpeg
-		    $src_img = imagecreatefromjpeg($source_file);
+		    $src_img = @imagecreatefromjpeg($source_file);
 			break;
 		  default :
 			return FALSE; // Unsupported image type
