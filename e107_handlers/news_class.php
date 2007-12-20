@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
-| $Revision: 1.3 $
-| $Date: 2007-09-09 06:56:32 $
-| $Author: e107coders $
+| $Revision: 1.4 $
+| $Date: 2007-12-20 20:47:49 $
+| $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -129,20 +129,8 @@ class news {
 			$news['comment_total'] = 0;
 		}
 
-		if (!$param) {
-			if (!defined("IMAGE_nonew_small")){
-				define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/nonew_comments.png' alt=''  />"));
-			}
-			if (!defined("IMAGE_new_small"))	{
-				define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/new_comments.png' alt=''  /> "));
-			}
-			if (!defined("IMAGE_sticky")){
-				define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
-			}
-
-			$param['image_nonew_small'] = IMAGE_nonew_small;
-			$param['image_new_small'] = IMAGE_new_small;
-			$param['image_sticky'] = IMAGE_sticky;
+		if (!$param) 
+		{
 			$param['caticon'] = ICONSTYLE;
 			$param['commentoffstring'] = COMMENTOFFSTRING;
 			$param['commentlink'] = COMMENTLINK;
@@ -153,6 +141,34 @@ class news {
 			$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
 			$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 			$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
+		}
+
+// Next three images aren't always defined by the caller, even if most of $param is.
+		if (!isset($param['image_nonew_small']))
+		{
+		  if (!defined("IMAGE_nonew_small"))
+		  {
+			define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/nonew_comments.png' alt=''  />"));
+		  }
+		  $param['image_nonew_small'] = IMAGE_nonew_small;
+		}
+		
+		if (!isset($param['image_new_small']))
+		{
+		  if (!defined("IMAGE_new_small"))	
+		  {
+			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/new_comments.png' alt=''  /> "));
+		  }
+		  $param['image_new_small'] = IMAGE_new_small;
+		}
+
+		if (!isset($param['image_sticky']))
+		{
+		  if (!defined("IMAGE_sticky"))
+		  {
+			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
+		  }
+		  $param['image_sticky'] = IMAGE_sticky;
 		}
 
 		cachevars('current_news_item', $news);
