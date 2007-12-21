@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2007-12-09 22:38:41 $
+|     $Revision: 1.98 $
+|     $Date: 2007-12-21 20:43:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -82,6 +82,26 @@ $photo_to_delete = '';
 $avatar_to_delete = '';
 
 require_once(HEADERF);
+
+
+// Given an array of user data, return a comma separated string which includes public, admin, member classes etc as appropriate.
+function addCommonClasses($udata)
+{
+  $tmp = array();
+  if ($udata['user_class'] != "") $tmp = explode(",", $udata['user_class']);
+  $tmp[] = e_UC_MEMBER;
+  $tmp[] = e_UC_READONLY;
+  $tmp[] = e_UC_PUBLIC;
+  if($udata['user_admin'] == 1)
+  {
+	$tmp[] = e_UC_ADMIN;
+  }
+  if (strpos($udata['user_perms'],'0') === 0)
+  {
+	$tmp[] = e_UC_MAINADMIN;
+  }
+  return implode(",", $tmp);
+}
 
 
 // Save user settings (whether or not changed)
@@ -368,6 +388,7 @@ if (isset($_POST['updatesettings']))
 	  {
 		$udata = get_user_data($inp);				// Get all the user data, including any extended fields
 		$peer = ($inp == USERID ? false : true);
+		$udata['user_classlist'] = addCommonClasses($udata);
 
 		$loginname = strip_tags($_POST['loginname']);
 		if (!$loginname)
@@ -378,7 +399,7 @@ if (isset($_POST['updatesettings']))
 		}
 		else
 		{
-		  if(!check_class($pref['displayname_class'], $udata['user_class'], $peer))
+		  if(!check_class($pref['displayname_class'], $udata['user_classlist'], $peer))
 		  {
 			$new_username = "user_name = '{$loginname}', ";
 			$username = $loginname;
@@ -386,7 +407,7 @@ if (isset($_POST['updatesettings']))
 		}
 
 //			if (isset($_POST['username']) && check_class($pref['displayname_class']))
-		if (isset($_POST['username']) && check_class($pref['displayname_class'], $udata['user_class'], $peer))
+		if (isset($_POST['username']) && check_class($pref['displayname_class'], $udata['user_classlist'], $peer))
 		{	// Allow change of display name if in right class
 		  $username = strip_tags($_POST['username']);
 		  $username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
@@ -540,19 +561,7 @@ WHERE u.user_id='".intval($uuid)."'
 
 $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
-$tmp = ($curVal['user_class'] != "" ? explode(",", $curVal['user_class']) : "");
-$tmp[] = e_UC_MEMBER;
-$tmp[] = e_UC_READONLY;
-$tmp[] = e_UC_PUBLIC;
-if($curVal['user_admin'] == 1)
-{
-	$tmp[] = e_UC_ADMIN;
-}
-if (strpos($curVal['user_perms'],'0') === 0)
-{
-	$tmp[] = e_UC_MAINADMIN;
-}
-$curVal['userclass_list'] = implode(",", $tmp);
+$curVal['userclass_list'] = addCommonClasses($curVal);
 
 if($_POST)
 {     // Fix for all the values being lost when an error occurred.
