@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-11-21 22:52:46 $
+|     $Revision: 1.8 $
+|     $Date: 2007-12-22 14:03:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -122,14 +122,18 @@ if (isset($_POST['submit_download'])) {
 }
 
 
-if(isset($_POST['update_catorder'])){
- 	foreach($_POST['catorder'] as $key=>$order){
-		if($_POST['catorder'][$key]){
-			$sql -> db_Update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
-	  	}
+if(isset($_POST['update_catorder']))
+{
+  foreach($_POST['catorder'] as $key=>$order)
+  {
+	if (is_numeric($_POST['catorder'][$key]))
+	{
+	  $sql -> db_Update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
 	}
-   	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
+  }
+  $ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
 }
+
 
 if (isset($_POST['updateoptions']))
 {
