@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-22 18:59:34 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-22 23:03:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ CREATE TABLE audit_log (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) TYPE=MyISAM;
 # --------------------------------------------------------
 
 
@@ -161,7 +161,7 @@ CREATE TABLE dblog (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
