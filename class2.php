@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2007-12-15 15:06:40 $
+|     $Revision: 1.35 $
+|     $Date: 2007-12-22 12:39:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -926,7 +926,7 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 		return TRUE;
 	}
 
-	if (is_numeric($var) && ($var == e_UC_PUBLIC)) return TRUE;		// Accept numeric class zero - 'PUBLIC'
+//	if (is_numeric($var) && ($var == e_UC_PUBLIC)) return TRUE;		// Accept numeric class zero - 'PUBLIC'
 
 	// userid has been supplied, go build that user's class list
 	if(is_numeric($uid) && $uid > 0)
@@ -1057,6 +1057,18 @@ function get_user_data($uid, $extra = "")
 			}
 		}
 	}
+	
+	//===========================================================
+	// Now look up the 'inherited' user classes
+	if (!isset($e_userclass) && !is_object($e_userclass)) 
+	{
+	  require_once(e_HANDLER."userclass_class.php");
+	  $e_userclass = new user_class;
+	}
+	$var['user_class'] = $e_userclass->get_all_user_classes($var['user_class']);
+	
+	//===========================================================
+	
 	cachevars("userdata_{$uid}", $var);
 	return $var;
 }

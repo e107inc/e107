@@ -11,222 +11,358 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-20 15:59:42 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-22 12:39:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
 require_once("../class2.php");
-if (!getperms("4")) {
-	header("location:".e_BASE."index.php");
-	 exit;
+if (!getperms("4")) 
+{
+  header("location:".e_BASE."index.php");
+  exit;
 }
 $e_sub_cat = 'userclass';
+define('UC_DEBUG_OPTS',FALSE);
 require_once("auth.php");
-require_once(e_HANDLER."userclass_class.php");
-$uclass = new e_userclass;
+require_once(e_HANDLER."userclass_class.php");		// Modified class handler
+$uclass = new e_userclass;						// Class management functions - legacy stuff from 0.7
+$e_userclass = new user_class_admin;			// Admin functions - should just obliterate any previous object created in class2.php
+
+
+$message = '';
+
+
 
 function check_allowed($class_id)
 {
-	global $sql;
-	if (!$sql->db_Select('userclass_classes', '*', "userclass_id = {$class_id}"))
-	{
-		header("location:".SITEURL);
-		exit;
-	}
-	$row = $sql->db_Fetch();
-	if (!getperms('0') && !check_class($row['userclass_editclass']))
-	{
-		header("location:".SITEURL);
-		exit;
-	}
+  global $sql;
+  if (!$sql->db_Select('userclass_classes', '*', "userclass_id = {$class_id}"))
+  {
+	header("location:".SITEURL);
+	exit;
+  }
+  $row = $sql->db_Fetch();
+  if (!getperms('0') && !check_class($row['userclass_editclass']))
+  {
+	header("location:".SITEURL);
+	exit;
+  }
 }
 
-if (strstr(e_QUERY, 'clear'))
+
+
+if (e_QUERY) 
 {
-	$tmp = explode('.', e_QUERY);
-	$class_id = $tmp[1];
-	check_allowed($class_id);
-	if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
-	{
-		while ($row = $sql->db_Fetch())
-		{
-			$uidList[$row['user_id']] = $row['user_class'];
-		}
-		$uclass->class_remove($class_id, $uidList);
-		$message = UCSLAN_1;
-	}
+  $uc_qs = explode(".", e_QUERY);
 }
-elseif(e_QUERY)
+$action = varset($uc_qs[0],'config');
+$params = varset($uc_qs[1],'');
+
+
+
+
+//---------------------------------------------------
+//		Set Initial Classes
+//---------------------------------------------------
+if (isset($_POST['set_initial_classes']))
 {
-	$tmp2 = explode('-', e_QUERY);
-	$class_id = $tmp2[0];
-	check_allowed($class_id);
-	$message = UCSLAN_2;
-
-	if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
-	{
-		while ($row = $sql->db_Fetch())
-		{
-			$uidList[$row['user_id']] = $row['user_class'];
-		}
-		$uclass->class_remove($class_id, $uidList);
-	}
-	unset($uidList);
-	if ($sql->db_Select('user', 'user_id, user_class', "user_id IN({$tmp2[1]})"))
-	{
-		while ($row = $sql->db_Fetch())
-		{
-			$uidList[$row['user_id']] = $row['user_class'];
-		}
-		$uclass->class_add($class_id, $uidList);
-	}
+  $changed = $pref['init_class_stage'] != intval($_POST['init_class_stage']);
+  $pref['init_class_stage'] = intval($_POST['init_class_stage']);
+  $temp = varset($pref['initial_user_classes'],'');
+  $newval = implode(',',$_POST['init_classes']);
+  if ($temp != $newval) $changed = TRUE;
+  if ($changed)
+  {
+    $pref['initial_user_classes'] = $newval;
+    save_prefs();
+    userclass2_adminlog("AL_UC_LAN_05","New: {$newval}, Old: {$temp}, Stage: ".$pref['init_class_stage'],5);
+    $message = UCSLAN_41;
+  }
+  else
+  {
+    $message = UCSLAN_42;
+  }
 }
 
+
+//---------------------------------------------------
+//		Delete existing class
+//---------------------------------------------------
 if (isset($_POST['delete']))
 {
-	$class_id = $_POST['existing'];
+	$class_id = intval($_POST['existing']);
 	check_allowed($class_id);
-	if ($_POST['confirm']) {
-		$sql->db_Delete('userclass_classes', "userclass_id='".$_POST['existing']."' ");
+	if ($class_id > 247)		// Crude check, but good enough for now
+	{
+	  $message = UCSLAN_29;
+	}
+	elseif ($_POST['confirm']) 
+	{
+	  if ($e_userclass->delete_class($class_id))
+	  {
+//		$sql->db_Delete('userclass_classes', "userclass_id='".$class_id."' ");
+		userclass2_adminlog("AL_UC_LAN_02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")",2);
 		if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
-		{
+		{	// Delete existing users from class
 			while ($row = $sql->db_Fetch())
 			{
-				$uidList[$row['user_id']] = $row['user_class'];
+			  $uidList[$row['user_id']] = $row['user_class'];
 			}
 			$uclass->class_remove($class_id, $uidList);
 		}
 		if (isset($pref['frontpage'][$class_id]))
 		{
-			unset($pref['frontpage'][$class_id]);
-			save_prefs();
+		  unset($pref['frontpage'][$class_id]);		// (Should work with both 0.7 and 0.8 front page methods)
+		  save_prefs();
 		}
 		$message = UCSLAN_3;
+	  }
+	  else
+	  {
+		$message = UCSLAN_4;
+	  }
 	}
 	else
 	{
-		$message = UCSLAN_4;
+	  $message = UCSLAN_4;
 	}
 }
 
-if(isset($_POST['edit']))
-{
-	check_allowed($_POST['existing']);
-	$sql->db_Select('userclass_classes', '*', "userclass_id='".$_POST['existing']."' ");
-	$row = $sql->db_Fetch();
-	extract($row);
-}
 
-if (isset($_POST['updateclass']))
-{
+
+//---------------------------------------------------
+//		Add/Edit class information
+//---------------------------------------------------
+if (isset($_POST['updateclass']) || isset($_POST['createclass']))
+{ 
+  $class_record = array(
+	'userclass_name' 		=> varset($tp->toDB($_POST['userclass_name']),''),
+	'userclass_description' => varset($tp->toDB($_POST['userclass_description']),''),
+	'userclass_editclass' 	=> intval(varset($_POST['userclass_editclass'],0)),
+	'userclass_parent'		=> intval(varset($_POST['userclass_parent'],0)),
+	'userclass_visibility'	=> intval(varset($_POST['userclass_visibility'],0)),
+	'userclass_icon' 		=> varset($tp->toDB($_POST['userclass_icon']),'')
+	);
+
+  $do_tree = FALSE;
+
+  if (isset($_POST['updateclass']))
+  {
 	check_allowed($_POST['userclass_id']);
-	$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
-	$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
-	$sql->db_Update('userclass_classes', "userclass_editclass={$_POST['userclass_editclass']}, userclass_name='".$_POST['userclass_name']."', userclass_description='".$_POST['userclass_description']."' WHERE userclass_id='".$_POST['userclass_id']."' ");
+	$class_record['userclass_id'] = intval($_POST['userclass_id']);
+	$e_userclass->save_edited_class($class_record);
+	userclass2_adminlog("AL_UC_LAN_03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")",3);
+	$do_tree = TRUE;
 	$message = UCSLAN_5;
-}
-
-if (isset($_POST['createclass']))
-{
-	if($_POST['userclass_name'])
+  } 
+  elseif (isset($_POST['createclass']))
+  {
+	if($class_record['userclass_name'])
 	{
-		$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
-		$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
-
-		if (getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']) {
-			$editclass = $_POST['userclass_editclass'];
-			$i = 1;
-			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
-			{
-				$i++;
-			}
-			if ($i < 255)
-			{
-				$sql->db_Insert("userclass_classes", $i.", '".strip_tags($_POST['userclass_name'])."', '".$_POST['userclass_description']."',{$editclass} ");
-			}
-			if (!isset($pref['frontpage'][$i]))
-			{
-				$pref['frontpage'][$i] = $pref['frontpage'][e_UC_GUEST];
-				save_prefs();
-			}
-			$message = UCSLAN_6;
-		}
-		else
+	  if (getperms("0") || ($class_record['userclass_editclass'] && check_class($class_record['userclass_editclass']))) 
+	  {
+		$i = 1;
+		while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
 		{
-			header("location:".SITEURL);
-			exit;
+		  $i++;
 		}
+		if ($i < 245)
+		{
+		  $class_record['userclass_id'] = $i;
+		  $e_userclass->add_new_class($class_record);
+		  userclass2_adminlog("AL_UC_LAN_01","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")",1);
+		  $do_tree = TRUE;
+		}
+		$message = UCSLAN_6;
+	  }
+	  else
+	  {
+		header("location:".SITEURL);
+		exit;
+	  }
 	}
-}
-
-if (isset($message))
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-
-$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
-
-$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."' id='classForm'>
-	<table class='fborder' style='".ADMIN_WIDTH."'>
-	<tr>
-	<td class='fcaption' style='text-align:center' colspan='2'>";
-
-if ($class_total == "0")
-{
-	$text .= UCSLAN_7;
-}
-else
-{
-	$text .= "<span class='defaulttext'>".UCSLAN_8.":</span>
-		<select name='existing' class='tbox'>";
-	while ($row = $sql->db_Fetch())
+	else
 	{
-		if (check_class($row['userclass_editclass']) || getperms("0"))
-		{
-			$text .= "<option value='{$row['userclass_id']}'>{$row['userclass_name']}</option>";
-		}
+	  $message = UCSLAN_37;
 	}
-	$text .= "</select>
+  }
+
+  if ($do_tree)
+  {
+	$e_userclass->calc_tree();
+	$e_userclass->save_tree();
+  }
+}
+
+
+
+if ($message)
+{
+  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+}
+
+
+switch ($action)
+{
+//-----------------------------------	
+//		Class management
+//-----------------------------------	
+  case 'config' :
+	if(isset($_POST['edit']))
+	{
+	  $params = 'edit';
+	  $class_num = varset($_POST['existing'],0);
+	}
+	else
+	{
+	  $class_num = varset($uc_qs[2],0);
+	}
+	if ($params == 'edit')
+	{
+	  check_allowed($class_num);
+	  $sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
+	  $row = $sql->db_Fetch();
+	  extract($row);
+	}
+
+	// Get the userclass icons
+	require_once(e_HANDLER."file_class.php");
+	$fl = new e_file;
+    $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'blank*');
+    $iconpath = e_IMAGE.UC_CLASS_ICON_DIR;
+    $iconlist = $fl->get_files($iconpath,"",$rejectlist);
+
+
+	$userclass_id = varset($userclass_id,0);
+	$userclass_editclass = varset($userclass_editclass,e_UC_ADMIN);
+	$userclass_visibility = varset($userclass_visibility,e_UC_ADMIN);
+	$userclass_parent = varset($userclass_parent,e_UC_PUBLIC);
+	$userclass_icon = varset($userclass_icon,'');
+
+	$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
+
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."' id='classForm'>
+		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<colgroup>
+		<col style='width:30%' />
+		<col style='width:40%' />
+		<col style='width:30%' />
+		</colgroup>
+		<tr>
+		<td class='fcaption' style='text-align:center' colspan='3'>";
+
+	if ($class_total == "0")
+	{
+	  $text .= UCSLAN_7;
+	}
+	else
+	{
+	  $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>";
+	  $text .= "<select name='existing' class='tbox'>".$e_userclass->vetted_tree('existing',array($e_userclass,'select'), $userclass_id,"main,admin,classes,matchclass").'</select>';
+	  $text .= "
 		<input class='button' type='submit' name='edit' value='".LAN_EDIT."' />
 		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
 		<input type='checkbox' name='confirm' value='1' /><span class='smalltext'> ".UCSLAN_11."</span>
 		</td>
 		</tr>";
-}
-
-$text .= "
-	<tr>
-	<td class='forumheader3' style='width:30%'>".UCSLAN_12."</td>
-	<td class='forumheader3' style='width:70%'>
-	<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='$userclass_name' /></td>
-	</tr>
-	<tr>
-	<td class='forumheader3'>".UCSLAN_13."</td>
-	<td class='forumheader3' style='width:70%'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='$userclass_description' /></td>
-	</tr>
-	";
-
-	if(!isset($userclass_editclass))
-	{
-		$userclass_editclass = e_UC_ADMIN;
 	}
 
-$text .= "
-	<tr>
-	<td class='forumheader3'>".UCSLAN_24."</td>
-	<td class='forumheader3'>".r_userclass("userclass_editclass", $userclass_editclass, "off", "main,admin,classes,matchclass,public,nobody")."</td>
-	</tr>
-	";
+	$text .= "
+		<tr>
+		<td class='forumheader3'>".UCSLAN_12."</td>
+		<td class='forumheader3'>
+		<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='{$userclass_name}' /></td>
+		<td class='forumheader3'>".UCSLAN_30."</td>
+		</tr>
+		<tr>
+		<td class='forumheader3'>".UCSLAN_13."</td>
+		<td class='forumheader3'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='{$userclass_description}' /></td>
+		<td class='forumheader3'>".UCSLAN_31."</td>
+		</tr>";
 
-$text .= "
-	<tr><td colspan='2' style='text-align:center' class='forumheader'>";
+// Userclass icon
+		$text .= "
+		<tr>
+		<td class='forumheader3'>".UCSLAN_68."</td>
+		<td class='forumheader3'>
+		  <input class='tbox' type='text' size='60' maxlength='85' name='userclass_icon' id='userclass_icon' value='{$userclass_icon}' /><br />
+          <div id='linkbut' style='display:block; vertical-align:top;'>
+		  <table style='text-align:left; width:100%;'>
+		  <tr><td style='width:20%; padding-right:10px;'>";
+        $selectjs = " onchange=\"document.getElementById('userclass_icon').value=this.options[this.selectedIndex].value;
+					if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value; 
+					document.getElementById('iconview').style.display='block';}else{document.getElementById('iconview').src='';
+					document.getElementById('iconview').style.display='none';}\"";
+        $text  .= "<Select name='uc_icon_select' class='tbox' {$selectjs}>\n";
+        $text  .= "<option value=''".($userclass_icon ? '' : " selected='selected'").">".UCSLAN_9."</option>\n";
+        foreach($iconlist as $icon)
+		{
+          $text   .= "<option value='{$icon['fname']}'".($icon['fname'] == $userclass_icon ? " selected='selected'" : "").">{$icon['fname']}</option>\n";
+        }
+		$text .= "</select>\n";
+        if($userclass_icon)
+		{
+          $img = $iconpath.$userclass_icon;
+        }
+		else
+		{
+          $blank_display = 'display: none';
+          $img = e_IMAGE_ABS."generic/blank.gif";
+        }
+        $text .= "</td><td><img id='iconview' src='".$img."' style='border:0; ".$blank_display."' />
+		</td></tr></table>
+        </div>
+		</td>
+		<td class='forumheader3'>".UCSLAN_69.$IMAGES_DIRECTORY.UC_CLASS_ICON_DIR."</td>
+		</tr>
+		";
 
-if(isset($_POST['edit']))
+
+
+	$text .= "
+		<tr>
+		<td class='forumheader3'>".UCSLAN_24."</td>
+		<td class='forumheader3'>";
+	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,"main,admin,classes,matchclass,member").'</select>';
+//		.r_userclass("userclass_editclass", $userclass_editclass, "off", "main,admin,classes,matchclass,public,nobody").
+	$text .= "</td>
+		<td class='forumheader3'>".UCSLAN_32."</td>
+		</tr>
+		";
+
+	$text .= "
+		<tr>
+		<td class='forumheader3'>".UCSLAN_34."</td>
+		<td class='forumheader3'>";
+	  $text .= "<select name='userclass_visibility' class='tbox'>".$e_userclass->vetted_tree('userclass_visibility',array($e_userclass,'select'), $userclass_visibility,"main,admin,classes,matchclass,public,member,nobody").'</select>';
+//		.r_userclass("userclass_visibility", $userclass_visibility, "off", "main,admin,classes,matchclass,public,nobody,member").
+	$text .= "</td>
+		<td class='forumheader3'>".UCSLAN_33."</td>
+		</tr>
+		";
+
+	$text .= "
+		<tr>
+		<td class='forumheader3'>".UCSLAN_35."</td>
+		<td class='forumheader3'>";
+	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,"main,admin,classes,matchclass,public,member").'</select>';
+//		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
+	$text .= "</td>
+		<td class='forumheader3'>".UCSLAN_36."</td>
+		</tr>
+		";
+
+
+	$text .= "
+		<tr><td colspan='3' style='text-align:center' class='forumheader'>";
+
+if($params == 'edit')
 {
-	$text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />
-		<input type='hidden' name='userclass_id' value='$userclass_id' />";
+	$text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />&nbsp;&nbsp;<input class='button' type='submit' name='updatecancel' value='".LAN_CANCEL."' />
+		<input type='hidden' name='userclass_id' value='{$userclass_id}' />";
 }
 else
 {
@@ -234,8 +370,357 @@ else
 }
 
 $text .= "</td></tr></table>";
+$text .= "</form></div><br /><br />";
+	$text .= $e_userclass->show_graphical_tree();
 
-if(isset($_POST['edit']))
+
+$ns->tablerender(UCSLAN_21, $text);
+
+    break;				// End of 'config' option
+
+
+
+
+//-----------------------------------	
+//		Initial User class(es)
+//-----------------------------------
+  case 'initial' :
+    $initial_classes = varset($pref['initial_user_classes'],'');
+	$irc = explode(',',$initial_classes);
+	$icn = array();
+	foreach ($irc as $i)
+	{
+	  if (trim($i)) $icn[] = $e_userclass->uc_get_classname($i);
+	}
+	
+//	$class_text = $e_userclass->uc_checkboxes('init_classes', $initial_classes, 'classes, force', TRUE);
+	$class_text = $e_userclass->vetted_tree('init_classes',array($e_userclass,'checkbox_desc'), $initial_classes, 'classes, force');
+
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?initial' id='initialForm'>
+		<table class='fborder' style='".ADMIN_WIDTH."'><tr><td class='forumheader3'>";
+	$text .= UCSLAN_43;
+	if (count($icn) > 0)
+	{
+	  $text .= implode(', ',$icn);
+	}
+	else
+	{
+	  $text .= UCSLAN_44;
+	}
+	$text .= "</td></tr><tr><td class='forumheader3'>".UCSLAN_49."</td></tr><tr><td class='forumheader3'>";
+
+	if ($class_text)
+	{
+	  $text .= $class_text."</td></tr><tr><td class='forumheader3'>";
+	  $sel_stage = varset($pref['init_class_stage'],2);
+	  $text .= "<table><tr><td>".UCSLAN_45."<br /><span class='smalltext'>".UCSLAN_46."</span></td><td>
+	  <select class='tbox' name='init_class_stage'>\n
+	  <option value='1'".($sel_stage==1 ? " selected='selected'" : "").">".UCSLAN_47."</selected>
+	  <option value='2'".($sel_stage==2 ? " selected='selected'" : "").">".UCSLAN_48."</selected>
+	  </select>\n";
+	  $text .= "</td></tr></table><tr><td class='forumheader3' style='text-align:center'><input class='button' type='submit' name='set_initial_classes' value='".UCSLAN_UPDATE."' />";
+	}
+	else
+	{
+	  $text .= UCSLAN_39;
+	}
+	$text .= "</td></tr></table></form></div>";
+	$ns->tablerender(UCSLAN_40, $text);
+	
+    break;				// End of 'initial'
+
+
+//-----------------------------------	
+//		Debug aids
+//-----------------------------------	
+  case 'debug' :
+//    if (!check_class(e_UC_MAINADMIN)) break;				// Let ordinary admins see this if they know enough to specify the URL
+	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
+	$ns->tablerender(UCSLAN_21, $text);
+	
+	$text = "<table cellpadding='3'><tr><td colspan='4'>Class rights for first 20 users in database</td></tr><tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td></tr>";
+	$sql->db_Select('user','user_id,user_name,user_class',"ORDER BY user_id LIMIT 0,20",'no_where');
+	while ($row = $sql->db_Fetch())
+	{
+	  $text .= "<tr><td>".$row['user_id']."</td><td>".$row['user_name']."</td><td>".$row['user_class']."</td><td>".$e_userclass->get_all_user_classes($row['user_class'])."</td></tr>";
+	}
+	$text .= "</table>";
+	$ns->tablerender(UCSLAN_21, $text);
+    break;				// End of 'debug'
+
+
+//-----------------------------------	
+//		Configuration options
+//-----------------------------------	
+  case 'options' :
+    if (!check_class(e_UC_MAINADMIN)) break;
+
+	// Set general options
+	if (isset($_POST['set_admin_options']))
+	{
+	  $pref['admin_log_log']['admin_userclass'] = intval($_POST['admin_log_userclass']);
+	  save_prefs();
+	}
+
+	if (isset($_POST['add_class_tree']))
+	{	// Create a default tree
+	  $message = UCSLAN_62;
+	  if (!$e_userclass->update_db(TRUE))
+	  {
+	    $message .= UCSLAN_63;
+	  }
+	  else
+	  {
+	    $e_userclass->set_default_structure();
+		$e_userclass->calc_tree();
+		$e_userclass->save_tree();
+		$e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
+		$message .= UCSLAN_64;
+	  }
+	}
+	
+	if (isset($_POST['flatten_class_tree']))
+	{	// Remove the default tree
+	  $message = UCSLAN_65;
+	  $sql->db_Update("userclass_classes", "userclass_parent='0'");
+	  $e_userclass->calc_tree();
+	  $e_userclass->save_tree();
+	  $e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
+	  $message .= UCSLAN_64;
+	}
+
+	if (isset($_POST['rebuild_tree']))
+	{
+	  $message = UCSLAN_70;
+	  $e_userclass->calc_tree();
+	  $e_userclass->save_tree();
+	  $message .= UCSLAN_64;
+	}
+
+	if ($message)
+	{
+	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	}
+
+	$text = "<form method='post' action='".e_SELF."?options' id='optionsForm'>
+		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<tr><td class='forumheader3'>".UCSLAN_59."</td><td class='forumheader3'>
+		<input type='checkbox' name='admin_log_userclass' value='1'".(varset($pref['admin_log_log']['admin_userclass'],0) ? " checked='checked'" : '')."/></td></tr>
+		<tr><td class='forumheader3' style='text-align:center' colspan='2'>
+		<input class='button' type='submit' name='set_admin_options' value='".UCSLAN_UPDATE."' />
+		</td>
+		</tr></table></form>";
+	$ns->tablerender(UCSLAN_60, $text);
+
+
+	$text = "<form method='post' action='".e_SELF."?options' id='treesetForm'>
+		<table class='fborder' style='text-align:center; ".ADMIN_WIDTH."'>
+		<colgroup>
+		<col style='width:50%' />
+		<col style='width:50%' />
+		</colgroup>
+		<tr><td class='forumheader3' style='text-align:center' colspan='2'>".UCSLAN_52."<br />".UCSLAN_53."</td></tr>
+		<tr><td class='forumheader3' style='text-align:center'>".UCSLAN_54."<br /><span class='smalltext'>".UCSLAN_57."</span><br />
+		<input class='button' type='submit' name='add_class_tree' value='".UCSLAN_58."' onclick=\"return jsconfirm('".UCSLAN_67."')\" />
+		</td><td class='forumheader3' style='text-align:center'>".UCSLAN_55."<br /><span class='smalltext'>".UCSLAN_56."</span><br />
+		<input class='button' type='submit' name='flatten_class_tree' value='".UCSLAN_58."' onclick=\"return jsconfirm('".UCSLAN_66."')\" />
+		</td>
+		</tr></table></form>";
+	$ns->tablerender(UCSLAN_61, $text);
+	
+
+	$text = "<form method='post' action='".e_SELF."?options' id='maintainForm'>
+		<table class='fborder' style='text-align:center; ".ADMIN_WIDTH."'>
+		<colgroup>
+		<col style='width:50%' />
+		<col style='width:50%' />
+		</colgroup>
+		<tr><td class='forumheader3' style='text-align:center'>".UCSLAN_72."<br /><span class='smalltext'>".UCSLAN_73."</span></td>
+		<td class='forumheader3' style='text-align:center'>
+		<input class='button' type='submit' name='rebuild_tree' value='".UCSLAN_58."' />
+		</td>
+		</tr></table></form>";
+	$ns->tablerender(UCSLAN_71, $text);
+	
+    break;				// End of 'options'
+
+
+//-----------------------------------	
+//		Test options
+//-----------------------------------	
+  case 'test' :
+    if (!check_class(e_UC_MAINADMIN)) break;
+	if (isset($_POST['add_db_fields']))
+	{	// Add the extra DB fields
+	  $message = "Add DB fields: ";
+	  $e_userclass->update_db(FALSE);
+	  $message .= "Completed";
+	}
+	
+	if (isset($_POST['remove_db_fields']))
+	{	// Remove the DB fields
+	  $message = "Remove DB fields: ";
+	  $sql->db_Select_gen("ALTER TABLE #userclass_classes DROP `userclass_parent`, DROP `userclass_accum`, DROP `userclass_visibility`");
+	  $message .= "Completed";
+	}
+	
+	if (isset($_POST['add_class_tree']))
+	{	// Create a default tree
+	  $message = "Create default class tree: ";
+	  if (!$e_userclass->update_db(TRUE))
+	  {
+	    $message .= "Must add new DB fields first";
+	  }
+	  else
+	  {
+	    $e_userclass->set_default_structure();
+		$e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
+		$message .= "Completed";
+	  }
+	}
+	
+	if (isset($_POST['remove_class_tree']))
+	{	// Remove the default tree
+	  $message = "Remove default class tree: ";
+	  $sql->db_Delete("userclass_classes","`userclass_id` IN (".implode(',',array(e_UC_MAINADMIN,e_UC_MEMBER, e_UC_ADMIN, e_UC_ADMINMOD, e_UC_MODS, e_UC_USERS, e_UC_READONLY)).") ");
+	  $e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
+	  $message .= "completed";
+	}
+	
+	if (isset($_POST['rebuild_tree']))
+	{
+	  $message = 'Rebuilding tree: ';
+	  $e_userclass->calc_tree();
+	  $e_userclass->save_tree();
+	  $message .= " completed";
+	}
+	
+	if ($message)
+	{
+	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	}
+
+	$db_status = "Unknown";
+	$db_status = $e_userclass->update_db(TRUE) ? "Updated" : "Original";
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?test' id='testForm'>
+		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<tr><td class='fcaption' style='text-align:center' colspan='2'>Test Functions and Information</td></tr>";
+	$text .= "<tr><td class='forumheader3' style='text-align:center' colspan='2'>DB Status: ".$db_status."</td></tr>";
+	$text .= "<tr><td class='forumheader3'><input class='button' type='submit' name='add_db_fields' value='Add new DB fields' />First required step</td>";
+	$text .= "<td class='forumheader3'><input class='button' type='submit' name='remove_db_fields' value='Remove new DB fields' />Reverse the process</td></tr>";
+	$text .= "<tr><td class='forumheader3'><input class='button' type='submit' name='add_class_tree' value='Add class tree' />Optional default tree</td>";
+	$text .= "<td class='forumheader3'><input class='button' type='submit' name='remove_class_tree' value='Remove class tree' />Deletes the 'core' class entries</td></tr>";
+	$text .= "<tr><td class='forumheader3'><input class='button' type='submit' name='rebuild_tree' value='Rebuild class tree' />Sets up all the structures</td>";
+	$text .= "<td class='forumheader3'><input class='button' type='submit' name='' value='Spare' />Spare</td></tr>";
+	$text .= "<tr><td class='forumheader3' colspan='2'>&nbsp;</td></tr>";
+	$text .= "<tr><td class='forumheader3' colspan='2'>".$e_userclass->show_tree(TRUE)."</td></tr>";
+
+	$text .= "</table>";
+
+	$text .= "</form>
+			</div>";
+	$ns->tablerender('User classes - test features', $text);
+	break;				// End of temporary test options
+
+//-----------------------------------	
+//		Edit class membership
+//-----------------------------------	
+  case 'membs' :
+	if ($params == 'clear')
+	{
+	  $class_id = intval(varset($uc_qs[2]));
+	  check_allowed($class_id);
+	  if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
+	  {
+		while ($row = $sql->db_Fetch())
+		{
+		  $uidList[$row['user_id']] = $row['user_class'];
+		}
+		$uclass->class_remove($class_id, $uidList);
+		$message = UCSLAN_1;
+		userclass2_adminlog("AL_UC_LAN_06","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")",6);
+	  }
+	}
+	elseif($params)
+	{	// Process the updated membership list
+	  $tmp2 = explode('-', $params,2);
+	  $class_id = intval($tmp2[0]);
+	  check_allowed($class_id);
+	  $message = UCSLAN_2;
+
+	  if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
+	  {
+		while ($row = $sql->db_Fetch())
+		{
+			$uidList[$row['user_id']] = $row['user_class'];
+		}
+		$uclass->class_remove($class_id, $uidList);
+	  }
+	  unset($uidList);
+	  if ($sql->db_Select('user', 'user_id, user_class', "user_id IN({$tmp2[1]})"))
+	  {
+		while ($row = $sql->db_Fetch())
+		{
+			$uidList[$row['user_id']] = $row['user_class'];
+		}
+		$uclass->class_add($class_id, $uidList);
+	  }
+	  userclass2_adminlog("AL_UC_LAN_04","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")",4);
+	}
+
+
+	if ($message)
+	{
+	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	}
+
+
+	// If we're editing a class, get the info on the class
+	if(isset($_POST['class_members_edit']))
+	{
+	  $uc_edit_class = varset($_POST['class_to_edit'],0);
+	  check_allowed($uc_edit_class);
+	  $sql->db_Select('userclass_classes', '*', "userclass_id='".$_POST['class_to_edit']."' ");
+	  $row = $sql->db_Fetch();
+	  extract($row);
+	}
+	
+	$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
+
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?membs' id='classForm'>
+		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<tr>
+		<td class='fcaption' style='text-align:center' colspan='2'>";
+
+	if ($class_total == "0")
+	{
+	  $text .= UCSLAN_7;
+	}
+	else
+	{
+	  $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>
+			<select name='class_to_edit' class='tbox'>";
+	  while ($row = $sql->db_Fetch())
+	  {
+		if (check_class($row['userclass_editclass']) || getperms("0"))
+		{
+		  $s =  $uc_edit_class == $row['userclass_id'] ? " selected='selected'" : '';
+		  $text .= "<option value='{$row['userclass_id']}'{$s}>{$row['userclass_name']}</option>";
+		}
+	  }
+	  $text .= "</select>
+			<input class='button' type='submit' name='class_members_edit' value='".LAN_EDIT."' />
+			</td>
+			</tr>";
+	}
+
+$text .= "</table>";
+
+
+if(isset($_POST['class_members_edit']))
 {
 	$sql->db_Select("user", "user_id, user_name, user_class, user_login", "ORDER BY user_name", "no-where");
 	$c = 0;
@@ -261,7 +746,7 @@ if(isset($_POST['edit']))
 
 	$text .= "<br /><table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr>
-		<td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16."</td></tr>
+		<td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16." ".$userclass_name."</td></tr>
 		<tr>
 		<td class='forumheader3' style='width:70%; text-align:center'>
 
@@ -269,171 +754,304 @@ if(isset($_POST['edit']))
 		<tr>
 		<td style='width:45%; vertical-align:top'>
 		".UCSLAN_22."<br />
-		<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' multiple='multiple' onchange='moveOver();'>";
+		<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' onchange='addIt()'>";
+//		<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' multiple='multiple'>";
 
 	for ($a = 0; $a <= ($d-1); $a++)
 	{
-		$text .= "<option value=".$out_userid[$a].">".$out_username[$a]." ".$out_userlogin[$a]."</option>";
+		$text .= "<option value=".$out_userid[$a].">".$out_username[$a]." ".$out_userlogin[$a]."</option>\n";
 	}
 
 	$text .= "</select>
-		</td>
+		</td>\n
 		<td style='width:45%; vertical-align:top'>
 		".UCSLAN_23."<br />
-		<select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' multiple='multiple'>";
+		<select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' onchange='delIt()'>";
+//		<select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' multiple='multiple'>";
 	for($a = 0; $a <= ($c-1); $a++)
 	{
-		$text .= "<option value=".$in_userid[$a].">".$in_username[$a]." ".$in_userlogin[$a]."</option>";
+		$text .= "<option value=".$in_userid[$a].">".$in_username[$a]." ".$in_userlogin[$a]."</option>\n";
 	}
-	$text .= "</select><br /><br />
-		<input class='button' type='button' value='".UCSLAN_17."' onclick='removeMe();' />
-		<input class='button' type='button' value='".UCSLAN_18."' onclick='clearMe($userclass_id);' />
-		<input type='hidden' name='class_id' value='$userclass_id' />
+	$text .= "</select><br />\n<br />";
+	if (count($in_userid))
+	{	// No option to clear class if it starts empty
+	  $text .= "<input class='button' type='button' value='".UCSLAN_18."' onclick='clearMe({$userclass_id});' />";
+	}
+
+	$text .= "<input type='hidden' name='class_id' value='{$userclass_id}' />
 
 		</td></tr></table>
 		</td></tr>
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>
-		<input class='button' type='button' value='".UCSLAN_19." ".$userclass_name." ".UCSLAN_20."' onclick='saveMe($userclass_id);' />
+		<input class='button' type='button' value='".UCSLAN_19." ".$userclass_name." ".UCSLAN_20."' onclick='saveMe({$userclass_id});' />
 		</td>
 		</tr>
 		</table>";
 
 }
 
-$text .= "</form>
-	</div>";
+	$text .= "</form>
+			</div>";
+	$ns->tablerender(UCSLAN_28, $text);
 
-//
-// Show a table of all userclasses and who can manage them
-//
-// lazy get list again
-$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
+    break;				// End of 'membs' (class membership) option
 
-$text .= "<br /><div style='text-align:center'>
-	<table class='fborder' style='".ADMIN_WIDTH."'>
-	<tr>
-	<td class='fcaption'>".UCSLAN_12."</td>
-	<td class='fcaption'>".UCSLAN_24."</td>
-	<td class='fcaption'>".UCSLAN_13."</td>
-	</tr>\n";
-	
-if ($class_total == "0")
+
+//-----------------------------------	
+//		Special fooling around
+//-----------------------------------	
+  case 'special' :
+    if (!check_class(e_UC_MAINADMIN)) break;				// Let ordinary admins see this if they know enough to specify the URL
+
+  $text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?special' id='specialclassForm'>";
+
+
+  $text .= "<select name='class_select'>\n";
+  $text .= $e_userclass->vetted_tree('class_select',array($e_userclass,'select'), $_POST['class_select']);
+  $text .= "</select>\n";
+  $ns->tablerender('Select box with nested items', $text);
+
+  $text = "<select multiple size='10' name='multi_class_select[]'>\n";
+  $text .= $e_userclass->vetted_tree('multi_class_select[]',array($e_userclass,'select'), implode(',',$_POST['multi_class_select']));
+  $text .= "</select>\n";
+  $ns->tablerender('Multiple Select box with nested items', $text);
+
+  $checked_class_list = implode(',',$_POST['classes_select']);
+  $text = "<table width='95%'><tr><td style='text-align:left'>";
+  $text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), $checked_class_list);
+  $text .= "Classes: ".$checked_class_list;
+  $text .= "</td><td style='text-align:left'>";
+  $text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), $e_userclass->normalise_classes($checked_class_list));
+  $text .= "Normalised Classes: ".$e_userclass->normalise_classes($checked_class_list);
+  $text .= "</td></tr></table>";
+  $ns->tablerender('Nested checkboxes, showing the effect of the normalise() routine', $text);
+
+  $text = "Single class: ".$_POST['class_select']."<br />
+       Multi-select: ".implode(',',$_POST['multi_class_select'])."<br />
+       Check boxes: ".implode(',',$_POST['classes_select'])."<br />";
+  $text .= "<input class='button' type='submit' value='Click to save' />
+	</form>	</div>";
+  $ns->tablerender('Click on the button - the settings above should be remembered, and the $_POST values displayed', $text);
+    break;				// End of 'debug'
+
+
+
+}	// End - switch ($action)
+
+
+// Log event to admin log
+function userclass2_adminlog($title, $woffle,$msg_num='00')
 {
-	$text .= "<tr><td colspan='3'>".UCSLAN_7."</td></tr>";
+  global $pref, $admin_log;
+  if (!varset($pref['admin_log_log']['admin_userclass'],0)) return;
+  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'UCLASS_'.$msg_num);
 }
-else
+
+
+function userclass2_adminmenu()
 {
-	while ($row = $sql->db_Fetch())
+  if (e_QUERY) 
+  {
+	$tmp = explode(".", e_QUERY);
+//	$action = $tmp[0];
+  }
+  $action = varsettrue($tmp[0],'config');
+
+  $var['config']['text'] = UCSLAN_25;
+  $var['config']['link'] = 'userclass2.php';
+
+  $var['membs']['text'] = UCSLAN_26;
+  $var['membs']['link'] ='userclass2.php?membs';
+
+  $var['initial']['text'] = UCSLAN_38;
+  $var['initial']['link'] ='userclass2.php?initial';
+
+  if (check_class(e_UC_MAINADMIN))
+  {
+	$var['options']['text'] = UCSLAN_50;
+	$var['options']['link'] ='userclass2.php?options';
+
+	if (defined('UC_DEBUG_OPTS'))
 	{
-		$rEditClass = $row['userclass_editclass'];
-		if (check_class($rEditClass) || getperms("0"))
-		{
-			if(!isset($rEditClass))
-			{
-				$rEditClass = e_UC_ADMIN;
-			}
+		$var['debug']['text'] = UCSLAN_27;
+		$var['debug']['link'] ='userclass2.php?debug';
 
-			$text .= "<tr>
-			<td class='forumheader3'>{$row['userclass_name']}</td>
-			<td class='forumheader3'>".r_userclass_name($rEditClass)."</td>
-			<td class='forumheader3'>{$row['userclass_description']}</td>\n";
-		}
+		$var['test']['text'] = 'Test functions';
+		$var['test']['link'] ="userclass2.php?test";
+
+		$var['specials']['text'] = 'Special tests';
+		$var['specials']['link'] ="userclass2.php?special";
 	}
+  }	
+  show_admin_menu(UCSLAN_51, $action, $var);
 }
-$text .="</table>";
 
-$ns->tablerender(UCSLAN_21, $text);
 
 require_once("footer.php");
+
+
 function headerjs()
 {
+  if (!e_QUERY) return '';
+  $qs = explode('.',e_QUERY);
+  if ($qs[0] != 'membs') return '';
+ 
+// We only want this JS on the class membership selection page
 
 	$script_js = "<script type=\"text/javascript\">
 		//<![CDATA[
-		// Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com)
-		function moveOver() {
-		var boxLength = document.getElementById('assignclass2').length;
-		var selectedItem = document.getElementById('assignclass1').selectedIndex;
-		var selectedText = document.getElementById('assignclass1').options[selectedItem].text;
-		var selectedValue = document.getElementById('assignclass1').options[selectedItem].value;
-		var i;
-		var isNew = true;
-		if (boxLength != 0) {
-		for (i = 0; i < boxLength; i++) {
-		thisitem = document.getElementById('assignclass2').options[i].text;
-		if (thisitem == selectedText) {
-		isNew = false;
-		break;
-		}
-		}
-		}
-		if (isNew) {
-		newoption = new Option(selectedText, selectedValue, false, false);
-		document.getElementById('assignclass2').options[boxLength] = newoption;
-		document.getElementById('assignclass1').options[selectedItem].text = '';
-		}
-		document.getElementById('assignclass1').selectedIndex=-1;
-		}
+// Inspiration (and some of the code) from a script by Sean Geraty -  Web Site:  http://www.freewebs.com/sean_geraty/ 
+// Script from: The JavaScript Source!! http://javascript.internet.com
+
+// Control flags for list selection and sort sequence
+// Sequence is on option value (first 2 chars - can be stripped off in form processing)
+// It is assumed that the select list is in sort sequence initially
+
+var singleSelect = true;  // Allows an item to be selected once only (i.e. in only one list at a time)
+var sortSelect = true;  // Only effective if above flag set to true
+var sortPick = true;  // Will order the picklist in sort sequence
 
 
-		function removeMe() {
-		var boxLength = document.getElementById('assignclass2').length;
-		var boxLength2 = document.getElementById('assignclass1').length;
-		arrSelected = new Array();
-		var count = 0;
-		for (i = 0; i < boxLength; i++) {
-		if (document.getElementById('assignclass2').options[i].selected) {
-		arrSelected[count] = document.getElementById('assignclass2').options[i].value;
-		var valname = document.getElementById('assignclass2').options[i].text;
-		for (j = 0; j < boxLength2; j++) {
-		if (document.getElementById('assignclass1').options[j].value == arrSelected[count]){
-		document.getElementById('assignclass1').options[j].text = valname;
-		}
-		}
+// Initialise - invoked on load
+function initIt() 
+{
+  var selectList = document.getElementById(\"assignclass1\");
+  var pickList   = document.getElementById(\"assignclass2\");
+  var pickOptions = pickList.options;
+  pickOptions[0] = null;  // Remove initial entry from picklist (was only used to set default width)
+  selectList.focus();  // Set focus on the selectlist
+}
 
-		// document.getElementById('assignclass1').options[i].text = valname;
-		}
-		count++;
-		}
-		var x;
-		for (i = 0; i < boxLength; i++) {
-		for (x = 0; x < arrSelected.length; x++) {
-		if (document.getElementById('assignclass2').options[i].value == arrSelected[x]) {
-		document.getElementById('assignclass2').options[i] = null;
-		}
-		}
-		boxLength = document.getElementById('assignclass2').length;
-		}
-		}
 
-		function clearMe(clid) {
-		location.href = document.location + \"?clear.\" + clid;
-		}
 
-		function saveMe(clid) {
-		var strValues = \"\";
-		var boxLength = document.getElementById('assignclass2').length;
-		var count = 0;
-		if (boxLength != 0) {
-		for (i = 0; i < boxLength; i++) {
-		if (count == 0) {
+// Adds a selected item into the picklist
+
+function addIt() 
+{
+  var selectList = document.getElementById(\"assignclass1\");
+  var selectIndex = selectList.selectedIndex;
+  var selectOptions = selectList.options;
+
+  var pickList   = document.getElementById(\"assignclass2\");
+  var pickOptions = pickList.options;
+  var pickOLength = pickOptions.length;
+
+  // An item must be selected
+  if (selectIndex > -1) 
+  {
+    pickOptions[pickOLength] = new Option(selectList[selectIndex].text);
+    pickOptions[pickOLength].value = selectList[selectIndex].value;
+    // If single selection, remove the item from the select list
+    if (singleSelect) 
+	{
+      selectOptions[selectIndex] = null;
+    }
+
+    if (sortPick) 
+	{
+      var tempText;
+      var tempValue;
+      // Sort the pick list
+//      while (pickOLength > 0 && pickOptions[pickOLength].text < pickOptions[pickOLength-1].text) 
+      while (pickOLength > 0 && pickOptions[pickOLength].text.toLowerCase() < pickOptions[pickOLength-1].text.toLowerCase()) 
+	  {
+        tempText = pickOptions[pickOLength-1].text;
+        tempValue = pickOptions[pickOLength-1].value;
+        pickOptions[pickOLength-1].text = pickOptions[pickOLength].text;
+        pickOptions[pickOLength-1].value = pickOptions[pickOLength].value;
+        pickOptions[pickOLength].text = tempText;
+        pickOptions[pickOLength].value = tempValue;
+        pickOLength = pickOLength - 1;
+      }
+    }
+  }
+}
+
+
+
+// Deletes an item from the picklist
+
+function delIt() 
+{
+  var selectList = document.getElementById(\"assignclass1\");
+  var selectOptions = selectList.options;
+  var selectOLength = selectOptions.length;
+
+  var pickList   = document.getElementById(\"assignclass2\");
+  var pickIndex = pickList.selectedIndex;
+  var pickOptions = pickList.options;
+
+  if (pickIndex > -1) 
+  {
+    // If single selection, replace the item in the select list
+    if (singleSelect) 
+	{
+      selectOptions[selectOLength] = new Option(pickList[pickIndex].text);
+      selectOptions[selectOLength].value = pickList[pickIndex].value;
+    }
+    pickOptions[pickIndex] = null;
+    if (singleSelect && sortSelect) 
+	{
+      var tempText;
+      var tempValue;
+      // Re-sort the select list - start from the bottom, swapping pairs, until the moved element is in the right place
+// Commented out line sorts upper case first, then lower case. 'Active' line does case-insensitive sort
+//      while (selectOLength > 0 && selectOptions[selectOLength].text < selectOptions[selectOLength-1].text) 
+      while (selectOLength > 0 && selectOptions[selectOLength].text.toLowerCase() < selectOptions[selectOLength-1].text.toLowerCase()) 
+	  {
+        tempText = selectOptions[selectOLength-1].text;
+        tempValue = selectOptions[selectOLength-1].value;
+        selectOptions[selectOLength-1].text = selectOptions[selectOLength].text;
+        selectOptions[selectOLength-1].value = selectOptions[selectOLength].value;
+        selectOptions[selectOLength].text = tempText;
+        selectOptions[selectOLength].value = tempValue;
+        selectOLength = selectOLength - 1;
+      }
+    }
+  }
+}
+
+function clearMe(clid) 
+{
+  location.href = document.location + \".clear.\" + clid;
+}
+
+
+function saveMe(clid) 
+{
+  var strValues = \"\";
+  var boxLength = document.getElementById('assignclass2').length;
+  var count = 0;
+  if (boxLength != 0) 
+  {
+	for (i = 0; i < boxLength; i++) 
+	{
+	  if (count == 0) 
+	  {
 		strValues = document.getElementById('assignclass2').options[i].value;
-		} else {
+	  } 
+	  else 
+	  {
 		strValues = strValues + \",\" + document.getElementById('assignclass2').options[i].value;
-		}
-		count++;
-		}
-		}
-		if (strValues.length == 0) {
-		//alert(\"You have not made any selections\");
-		}
-		else {
-		location.href = document.location + \"?\" + clid + \"-\" + strValues;
-		}
-		}
-		//]]>
-		</script>\n";
+	  }
+	  count++;
+	}
+  }
+  if (strValues.length == 0) 
+  {
+	//alert(\"You have not made any selections\");
+  }
+  else 
+  {
+	location.href = document.location + \".\" + clid + \"-\" + strValues;
+  }
+}
+
+	//]]>
+	</script>\n";
 	return $script_js;
 }
+
 
 ?>
