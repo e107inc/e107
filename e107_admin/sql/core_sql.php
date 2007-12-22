@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-08 15:11:43 $
+|     $Revision: 1.5 $
+|     $Date: 2007-12-22 18:59:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,24 @@ exit;
 # |        GNU General Public License (http://gnu.org).
 # +---------------------------------------------------------------+
 # Database : <variable>
+# --------------------------------------------------------
+
+#
+# Table structure for table `admin_log` - admin/moderator actions
+#
+CREATE TABLE admin_log (
+  dblog_id int(10) unsigned NOT NULL auto_increment,
+  dblog_datestamp int(10) unsigned NOT NULL default '0',
+  dblog_microtime int(10) unsigned NOT NULL default '0',
+  dblog_type tinyint(3) NOT NULL default '0',
+  dblog_eventcode varchar(10) NOT NULL default '',
+  dblog_user_id int(10) unsigned NOT NULL default '0',
+  dblog_ip varchar(45) NOT NULL default '',
+  dblog_title varchar(255) NOT NULL default '',
+  dblog_remarks text NOT NULL,
+  PRIMARY KEY  (dblog_id),
+  KEY dblog_datestamp (dblog_datestamp)
+) TYPE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -126,8 +144,9 @@ CREATE TABLE core (
 # --------------------------------------------------------
 
 #
-# Table structure for table `dblog`
+# Table structure for table `dblog` - db/debug/rolling
 #
+
 CREATE TABLE dblog (
   dblog_id int(10) unsigned NOT NULL auto_increment,
   dblog_datestamp int(10) unsigned NOT NULL default '0',
@@ -135,12 +154,15 @@ CREATE TABLE dblog (
   dblog_type tinyint(3) NOT NULL default '0',
   dblog_eventcode varchar(10) NOT NULL default '',
   dblog_user_id int(10) unsigned NOT NULL default '0',
+  dblog_user_name varchar(100) NOT NULL default '',
   dblog_ip varchar(45) NOT NULL default '',
+  dblog_caller varchar(255) NOT NULL default '',
   dblog_title varchar(255) NOT NULL default '',
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM;
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
 # --------------------------------------------------------
 
 #
@@ -390,28 +412,6 @@ CREATE TABLE rbinary (
   binary_data longblob NOT NULL,
   PRIMARY KEY  (binary_id)
 ) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `rl_history` - rolling log
-#
-
-CREATE TABLE rl_history (
-  dblog_id int(10) unsigned NOT NULL auto_increment,
-  dblog_datestamp int(10) unsigned NOT NULL default '0',
-  dblog_microtime int(10) unsigned NOT NULL default '0',
-  dblog_type tinyint(3) NOT NULL default '0',
-  dblog_eventcode varchar(10) NOT NULL default '',
-  dblog_user_id int(10) unsigned NOT NULL default '0',
-  dblog_user_name varchar(100) NOT NULL default '',
-  dblog_ip varchar(45) NOT NULL default '',
-  dblog_caller varchar(255) NOT NULL default '',
-  dblog_title varchar(255) NOT NULL default '',
-  dblog_remarks text NOT NULL,
-  PRIMARY KEY  (dblog_id),
-  KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM AUTO_INCREMENT=1;
-
 # --------------------------------------------------------
 
 #
