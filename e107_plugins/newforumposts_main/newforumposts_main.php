@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-22 19:18:39 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -75,7 +75,14 @@ if (!isset($gen) || !is_object($gen)) {
 	$gen = new convert;
 }
 
-$ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
+if (file_exists(THEME."forum/new_small.png")) 
+{
+  $ICON = "<img src='".THEME."forum/new_small.png' alt='' />";
+}
+else
+{
+  $ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
+}
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $sql->db_Select_gen("SELECT sum(thread_views) FROM ".MPREFIX."forum_t");
