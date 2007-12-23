@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.1 2007-12-15 22:15:50 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.2 2007-12-23 21:15:54 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -36,7 +36,7 @@ define('LAN_AUDIT_LOG_020', "");
 
 // Admin log events
 //-----------------
-define('LAN_ADMIN_LOG_001', '');
+define('LAN_ADMIN_LOG_001', 'Admin edited user data');
 define('LAN_ADMIN_LOG_002', '');
 define('LAN_ADMIN_LOG_003', '');
 define('LAN_ADMIN_LOG_004', '');
@@ -48,12 +48,25 @@ define('LAN_ADMIN_LOG_009', '');
 define('LAN_ADMIN_LOG_010', '');
 define('LAN_ADMIN_LOG_011', '');
 
-define("AL_UC_LAN_01","Userclass created");
-define("AL_UC_LAN_02","Userclass deleted");
-define("AL_UC_LAN_03","Userclass edited");
-define("AL_UC_LAN_04","Class membership updated");
-define("AL_UC_LAN_05","Initial userclass settings edited");
-define("AL_UC_LAN_06","Class membership emptied");
+define('AL_UC_LAN_00',"Unknown userclass-related event");
+define('AL_UC_LAN_01',"Userclass created");
+define('AL_UC_LAN_02',"Userclass deleted");
+define('AL_UC_LAN_03',"Userclass edited");
+define('AL_UC_LAN_04',"Class membership updated");
+define('AL_UC_LAN_05',"Initial userclass settings edited");
+define('AL_UC_LAN_06',"Class membership emptied");
+
+define('AL_BAN_LAN_00','Unknown ban-related event');
+define('AL_BAN_LAN_01','Manual ban added');
+define('AL_BAN_LAN_02','Ban deleted');
+define('AL_BAN_LAN_03','Ban time changed');
+define('AL_BAN_LAN_04','Whitelist entry added');
+define('AL_BAN_LAN_05','Whitelist entry deleted');
+define('AL_BAN_LAN_06','Banlist exported');
+define('AL_BAN_LAN_07','Banlist imported');
+define('AL_BAN_LAN_08','Banlist options updated');
+define('AL_BAN_LAN_09','Banlist entry edited');
+define('AL_BAN_LAN_10','Whitelist entry edited');
 
 
 // Rolling log events
