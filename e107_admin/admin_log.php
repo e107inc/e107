@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-18 20:57:37 $
+|     $Revision: 1.5 $
+|     $Date: 2007-12-23 15:30:15 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -428,7 +428,7 @@ $col_widths = array('adminlog' => array(18,4,14,7,15,8,14,20),		 // Date - Pri -
 $col_titles = array('adminlog' => array(RL_LAN_019,RL_LAN_032,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_023,RL_LAN_025,RL_LAN_033),
 					'auditlog' => array(RL_LAN_019,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_023,RL_LAN_025,RL_LAN_033),
 					'rolllog'  => array(RL_LAN_019,RL_LAN_032,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_023,RL_LAN_024,RL_LAN_025,RL_LAN_033));
-$col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_title','dblog_remarks'),
+$col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','user_name','dblog_eventcode','dblog_title','dblog_remarks'),
 					'auditlog' => array('cf_datestring','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_title','dblog_remarks'),
 					'rolllog'  => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_caller','dblog_title','dblog_remarks'));
 
