@@ -1,44 +1,36 @@
-if (ADMIN)
-{
-  global $ns, $pref;
-  ob_start();
-  $help_text = "";
+if (!ADMIN) return '';
+
+  $helpfile = '';
+  global $ns, $pref;			// Used by the help renderer
+
   if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
   {
-	if (!($handle=opendir(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/"))) 
+	if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".e_PAGE)) 
 	{
-      $handle=opendir(e_LANGUAGEDIR."English/admin/help/");
-    }
-    while(false !== ($file = readdir($handle))) 
+	  $helpfile = e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".e_PAGE;
+	} 
+	elseif (is_readable(e_LANGUAGEDIR."English/admin/help/".e_PAGE)) 
 	{
-	  if ($file != "." && $file != ".." && $file != "CVS") 
-	  {
-		if (strpos(e_SELF, $file) !== FALSE) 
-		{
-		  if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)) 
-		  {
-			include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);
-		  } 
-		  elseif (is_readable(e_LANGUAGEDIR."English/admin/help/".$file)) 
-		  {
-			include_once(e_LANGUAGEDIR."English/admin/help/".$file);
-		  }
-		}
-	  }
+	  $helpfile = e_LANGUAGEDIR."English/admin/help/".e_PAGE;
 	}
-    closedir($handle);
   }
-  $plugpath = getcwd()."/help.php"; // deprecated file. For backwards compat. only. 
-  $eplugpath = getcwd()."/e_help.php";
-  if(file_exists($plugpath))
+  else
   {
-	@require_once($plugpath);
+	$plugpath = getcwd()."/help.php"; // deprecated file. For backwards compat. only. 
+	$eplugpath = getcwd()."/e_help.php";
+	if(is_readable($eplugpath))
+	{
+	  $helpfile = $eplugpath;
+	}
+	elseif(is_readable($plugpath))
+	{
+	  $helpfile = $plugpath;
+	}
   }
-  elseif(is_readable($eplugpath))
-  {
-  	@require_once($eplugpath);
-  }
+  if (!$helpfile) return '';
+
+  ob_start();
+  include_once($helpfile);
   $help_text = ob_get_contents();
   ob_end_clean();
   return $help_text;
-}
