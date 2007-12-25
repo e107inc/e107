@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-10-07 22:03:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-25 12:43:05 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -16,7 +16,7 @@ define("COMLAN_2", "Block");
 define("COMLAN_3", "Delete");
 define("COMLAN_4", "Info");
 define("COMLAN_5", "Comments ...");
-define("COMLAN_6", "You must be logged in to post comments on this site - please either log in or if you are not registered click");
+define("COMLAN_6", "You must be logged in to make comments on this site - please log in, or if you are not registered click");
 define("COMLAN_7", "Main site administrator");
 define("COMLAN_8", "Comment");
 define("COMLAN_9", "Submit comment");
