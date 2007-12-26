@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_fla.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-26 13:21:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("FLALAN_1", "Failed login attempts");
@@ -26,5 +26,6 @@ define("FLALAN_14", "uncheck all ban checkboxes");
 define("FLALAN_15", "The following IP address(es) have been auto-banned - user attempted more than ten failed logins");
 define("FLALAN_16", "delete this auto ban list");
 define("FLALAN_17", "Auto-ban list deleted");
+define('FLALAN_18', "Could not ban IP address --IP-- - on whitelist");
 
 ?>

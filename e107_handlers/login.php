@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-12-15 15:06:40 $
+|     $Revision: 1.10 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -227,20 +227,45 @@ class userlogin {
 	  }
 	}
 
-	function update_xup($user_id, $user_xup = "") {
+	// This is called to update user settings from a XUP file - usually because the file name has changed.
+	// $user_xup has the new file name
+	function update_xup($user_id, $user_xup = "") 
+	{
 		global $sql, $tp;
-		if($user_xup) {
+		if($user_xup) 
+		{
 			require_once(e_HANDLER."xml_class.php");
 			$xml = new parseXml;
-			if($rawData = $xml -> getRemoteXmlFile($user_xup)) {
+			if($rawData = $xml -> getRemoteXmlFile($user_xup)) 
+			{
 				preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
 				$count = 0;
-				foreach($match[1] as $value) {
+				foreach($match[1] as $value) 
+				{
 					$$value = $tp -> toDB($match[2][$count]);
 					$count++;
 				}
 
-				$sql -> db_Update("user", "user_login='{$FN}', user_hideemail='{EMAILHIDE}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
+				// List of fields in main user record, and their corresponding XUP fields
+				$main_fields = array('user_realname' => 'FN',
+							'user_hideemail'=>'EMAILHIDE', 
+							'user_signature'=>'SIG', 
+							'user_sess'=>'PHOTO', 
+							'user_image'=>'AV', 
+							'user_timezone'=>'TZ');
+				
+				$new_values = array();
+				foreach ($main_fields as $f => $v)
+				{
+				  if (isset($$v) && $$v)
+				  {
+				    $new_values[$f] = $$v;
+				  }
+				}
+
+				// Use of db_updateArray() ensures only non-empty fields are changed
+				$sql -> db_UpdateArray("user", $new_values, "WHERE user_id='".intval($user_id)."'");
+//				$sql -> db_Update("user", "user_realname='{$FN}', user_hideemail='{$EMAILHIDE}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
 
 				$ue_fields = "";
 				$fields = array("URL" => "homepage",

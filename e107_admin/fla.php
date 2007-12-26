@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-09 16:42:22 $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("4")) {
+if (!getperms("4")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -26,20 +27,25 @@ $e_sub_cat = 'failed_login';
 require_once("auth.php");
 
 $tmp = (e_QUERY) ? explode(".", e_QUERY) : "";
-$from = (!$tmp[0]) ? 0 : intval($tmp[0]);
-$amount = (!$tmp[1]) ? 50 : intval($tmp[1]);
+$from = intval(varset($tmp[0], 0));
+$amount = intval(varset($tmp[1], 50));
 
 
 if(isset($_POST['delbanSubmit']))
 {
-
+	$message = '';
 	$delcount = 0;
+	$spacer = '';
 	foreach($_POST['fladelete'] as $delete)
 	{
-		$delcount ++;
-		$sql -> db_Delete("generic", "gen_id='$delete' ");
+	  $delcount ++;
+	  $sql -> db_Delete("generic", "gen_id='{$delete}' ");
 	}
-	$message = FLALAN_3.": ".$delcount;
+	if ($delcount)
+	{
+	  $message .= FLALAN_3.": ".$delcount;
+	  $spacer = '<br />';
+	}
 
 	$bancount = 0;
 	foreach($_POST['flaban'] as $ban)
@@ -47,14 +53,18 @@ if(isset($_POST['delbanSubmit']))
 	  if($sql -> db_Select("generic", "*", "gen_id={$ban}"))
 	  {
 		$at = $sql -> db_Fetch();
-		$e107->add_ban(4,FLALAN_4,$at['gen_ip'],ADMINID);
+		if (!$e107->add_ban(4,FLALAN_4,$at['gen_ip'],ADMINID))
+		{  // IP on whitelist (although possibly we shouldn't get to this stage, but check anyway
+		  $message .= $spacer.str_replace(FLALAN_18,'--IP--',$at['gen_ip']);
+		  $spacer = '<br />';
+		}
 //		$banlist_ip = $at['gen_ip'];
 //			$sql->db_Insert("banlist", "'$banlist_ip', '".ADMINID."', '".FLALAN_4."' ");
-		$sql -> db_Delete("generic", "gen_id='$ban' ");
+		$sql -> db_Delete("generic", "gen_id='{$ban}' ");
 		$bancount ++;
 	  }
 	}
-	$message .= ", ".FLALAN_5.": ".$bancount;
+	$message .= $spacer.FLALAN_5.": ".$bancount;
 }
 
 

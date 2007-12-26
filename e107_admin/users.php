@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-12-09 16:42:22 $
+|     $Revision: 1.9 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -249,7 +249,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
   //	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-	if ($row['user_perms'] == "0")
+	if (($row['user_perms'] == "0") || ($row['user_perms'] == "0."))
 	{
 		$user->show_message(USRLAN_7);
 	}
@@ -257,24 +257,29 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
 	{
 		if($sql->db_Update("user", "user_ban='1' WHERE user_id='".$_POST['userid']."' "))
 		{
-			$user->show_message(USRLAN_8);
+		  $user->show_message(USRLAN_8);
 		}
 		if(trim($row['user_ip']) == "")
 		{
-			$user->show_message(USRLAN_135);
+		  $user->show_message(USRLAN_135);
 		}
 		else
 		{
-			if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}'") > 1)
-			{
-				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_136));
-			}
-			else
-			{
-			  $e107->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID);
-//				$sql -> db_Insert("banlist", "'".$row['user_ip']."', '".USERID."', '".$row['user_name']."' ");
+		  if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}'") > 1)
+		  {	// Multiple users have same IP address
+			$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_136));
+		  }
+		  else
+		  {
+			if ($e107->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID))
+			{	// Successful IP ban
 			  $user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_137));
 			}
+			else
+			{	// IP address on whitelist
+			  $user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_150));
+			}
+		  }
 		}
 	}
 	$action = "main";
@@ -780,7 +785,7 @@ class users
 
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div  id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
-		<table class='forumheader3' style='width:95%'><tr>";
+		<table class='forumheader3' style='width:95%'>";
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -789,19 +794,26 @@ class users
 
 		// include extended fields in the list.
         $sql -> db_Select("user_extended_struct");
-            while($row = $sql-> db_Fetch()){
-            $fname[] = "user_".$row['user_extended_struct_name'];
+        while($row = $sql-> db_Fetch())
+		{
+          $fname[] = "user_".$row['user_extended_struct_name'];
 		}
         $m = 0;
-		foreach($fname as $fcol){
-        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
-			$text .= "<td style='text-align:left; padding:0px'>";
-			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace("user_","",$fcol) . "</td>\n";
-			$m++;
-			if($m == 5){
-				$text .= "</tr><tr>";
-				$m = 0;
-			 }
+		foreach($fname as $fcol)
+		{
+		  if($m == 0)
+		  {
+			$text .= "<tr>";
+		  }
+          $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
+		  $text .= "<td style='text-align:left; padding:0px'>";
+		  $text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace("user_","",$fcol) . "</td>\n";
+		  $m++;
+		  if($m == 5)
+		  {
+			$text .= "</tr>";
+			$m = 0;
+		  }
         }
 
 		$text .= "</table></div>

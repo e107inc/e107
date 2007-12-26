@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-23 21:15:48 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -217,7 +217,7 @@ function ban_time_dropdown($click_js = '', $zero_text=BANLAN_21, $curval=-1,$dro
 
 // Character options for import & export
 $separator_char = array(1 => ',', 2 => '|');
-$quote_char = array(1 => '', 2 => "'", 3 => '"');
+$quote_char = array(1 => '(none)', 2 => "'", 3 => '"');
 
 
 function select_box($name, $data, $curval = FALSE)
@@ -274,7 +274,7 @@ switch ($action)
 			<textarea class='tbox' name='ban_text[]' cols='50' rows='4'>{$pref['ban_messages'][$i]}</textarea>
 			</td>
 		    <td class='forumheader3'>".ban_time_dropdown('',BANLAN_32,$pref['ban_durations'][$i],'ban_time[]')."</td>
-			";
+			</tr>";
 		}
 		$text .= "<tr><td class='forumheader3' colspan='3' style='text-align:center'><input class='button' type='submit' name='update_ban_prefs' value='".LAN_UPDATE."' /></td></tr>
 			</table>\n";
@@ -293,10 +293,9 @@ switch ($action)
 	// Edit/add form first
 	$text .= "<div style='text-align:center'>
 		<form method='post' action='".e_SELF.$next."'>
-		<input type='hidden' name='entry_intent' value='{$action}' />
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
-		  <td style='width:30%' class='forumheader3'>".BANLAN_5.": </td>
+		  <td style='width:30%' class='forumheader3'><input type='hidden' name='entry_intent' value='{$action}' />".BANLAN_5.": </td>
 		  <td style='width:70%' class='forumheader3'>
 		  <input class='tbox' type='text' name='ban_ip' size='40' value='".$banlist_ip."' maxlength='200' />{$rdns_warn}
 		  </td>
@@ -398,8 +397,8 @@ switch ($action)
 	if ($message) $ns->tablerender(BANLAN_48, "<div style='text-align:center; font-weight:bold'>{$message}</div>");
 
 	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_ADMIN."banlist_export.php' name='ban_export_form' >
-		<div><table>
+		<form method='post' action='".e_ADMIN."banlist_export.php' id='ban_export_form' >
+		<table>
 		<colgroup>
 		<col style='width:70%' />
 		<col style='width:30%' />
@@ -409,7 +408,7 @@ switch ($action)
 	$spacer = '';
 	for ($i = 0;  $i < BAN_REASON_COUNT; $i++)
 	{
-	  $text .= $spacer."<input type='checkbox' name='ban_types[{$i}]' value='".($i)."'>&nbsp;".constant('BANLAN_10'.$i)." - ".constant('BANLAN_11'.$i);
+	  $text .= $spacer."<input type='checkbox' name='ban_types[{$i}]' value='".($i)."' />&nbsp;".constant('BANLAN_10'.$i)." - ".constant('BANLAN_11'.$i);
 	  $spacer = "<br />\n";
 	}
 	$text .= "</td><td class='forumheader3'>".select_box('ban_separator',$separator_char).' '.BANLAN_37;
@@ -421,16 +420,16 @@ switch ($action)
 	
 	// Now do the import options
 	$text = "<div style='text-align:center'>
-		<form enctype=\"multipart/form-data\" method='post' action='".e_SELF."?transfer' name='ban_import_form' >
-		<div><table>
+		<form enctype=\"multipart/form-data\" method='post' action='".e_SELF."?transfer' id='ban_import_form' >
+		<table>
 		<colgroup>
 		<col style='width:70%' />
 		<col style='width:30%' />
 		</colgroup>
 		<tr><td class='fcaption'>".BANLAN_42."</td><td class='fcaption'>".BANLAN_15."</td></tr>";
 	$text .= "<tr><td class='forumheader3' rowspan='2'>\n";
-	$text .= "<input type='checkbox' name='ban_over_import' value='1'>&nbsp;".BANLAN_43.'<br />';
-	$text .= "<input type='checkbox' name='ban_over_expiry' value='1'>&nbsp;".BANLAN_44;
+	$text .= "<input type='checkbox' name='ban_over_import' value='1' />&nbsp;".BANLAN_43.'<br />';
+	$text .= "<input type='checkbox' name='ban_over_expiry' value='1' />&nbsp;".BANLAN_44;
 
 	$text .= "</td><td class='forumheader3'>".select_box('ban_separator',$separator_char).' '.BANLAN_37;
 	$text .= "</td></tr><tr><td class='forumheader3'>".select_box('ban_quote',$quote_char).' '.BANLAN_38."</td></tr>
@@ -503,6 +502,7 @@ switch ($action)
 			}
 			$text .= "<td class='forumheader3'>{$val}</td>";
 		  }
+		  $text .= '</tr>';
 		}
 		$text .= "</table>\n";
 	  }

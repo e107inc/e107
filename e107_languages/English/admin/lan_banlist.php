@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_banlist.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-16 11:14:53 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("BANLAN_11", "Auto-ban: More than 10 failed login attempts");
 define("BANLAN_12", "Note: Reverse DNS is currently disabled; it must be enabled to allow banning by host.  Banning by IP and email address will still function normally.");
 define("BANLAN_13", "Note: To ban a user by user name, go to the users admin page: ");
 define('BANLAN_14','Ban List');
-define('BANLAN_15','Options');
+define('BANLAN_15','Messages/Ban Periods');
 define('BANLAN_16','Banning');
 define('BANLAN_17','Ban Date');
 define('BANLAN_18','Ban expires');
