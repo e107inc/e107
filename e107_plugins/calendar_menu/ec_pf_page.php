@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.2 $
+|     $Date: 2007-12-26 18:30:13 $
 |     $Author: e107steved $
 |
 | Generate a printer-friendly page of calendar events
@@ -99,8 +99,8 @@ if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 	<form method='post' action='".e_SELF."'>
 	<table style='".USER_WIDTH."' class='fborder'>
 	<colgroup>
-	<col width = '60%';vertical-align:top; />
-	<col width = '40%';vertical-align:top; />
+	<col style='width:60%;vertical-align:top;' />
+	<col style='width:40%;vertical-align:top;' />
 	</colgroup>";
 	$cal_text .= 	"<tr>
 	<td class='forumheader3'>".EC_LAN_153."</td>
