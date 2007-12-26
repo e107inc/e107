@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-12-16 11:14:47 $
+|     $Revision: 1.12 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -220,7 +220,6 @@ class e107{
 		if ($show_error) header("HTTP/1.1 403 Forbidden", true);
 		if (isset($pref['ban_messages']))
 		{  // May want to display a message
-		  $row = $sql->db_Fetch();				// Get the type of the ban
 		  if (($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
 		  {	// Ban has expired - delete from DB
 			$sql->db_Delete('banlist', $query);
@@ -230,6 +229,7 @@ class e107{
 		  if ($do_return) return FALSE;
 		  echo $tp->toHTML(varsettrue($pref['ban_messages'][$row['banlist_bantype']]));		// Show message if one set
 		}
+		$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,'BAN_03','LAN_AUDIT_LOG_003',$query,FALSE,LOG_TO_ROLLING);
 		exit();
 	  }  
 //	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
@@ -238,17 +238,26 @@ class e107{
 	
 
 	// Add an entry to the banlist. $bantype = 1 for manual, 2 for flooding, 4 for multiple logins
+	// Returns TRUE if ban accepted.
+	// Returns FALSE if ban not accepted (i.e. because on whitelist, or invalid IP specified)
 	function add_ban($bantype,$ban_message='',$ban_ip='',$ban_user = 0,$ban_notes='')
 	{
 	  global $sql, $pref;
 	  if (!$ban_message) $ban_message = 'No explanation given';
 	  if (!$ban_ip) $ban_ip = $this->getip();
 	  $ban_ip = preg_replace("/[^\w@\.]*/",'',urldecode($ban_ip));		// Make sure no special characters
-	  if (!$ban_ip) return;
+	  if (!$ban_ip) return FALSE;
+	  // See if the address is in the whitelist
+	  if ($sql->db_Select('banlist','*','`banlist_bantype` >= '.BAN_TYPE_WHITELIST))
+	  { // Got a whitelist entry for this 
+	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"BANLIST_11",'AL_BAN_LAN_11',$ban_ip,FALSE,LOG_TO_ROLLING);
+		return FALSE;
+	  }
 	  // Add using an array - handles DB changes better
 	  $sql->db_Insert('banlist',array('banlist_ip' => $ban_ip, 'banlist_bantype' => $bantype, 'banlist_datestamp' => time(),
 		'banlist_banexpires' => (varsettrue($pref['ban_durations'][$bantype]) ? time() + ($pref['ban_durations'][$bantype]*60*60) : 0),
 		'banlist_admin' => $ban_user, 'banlist_reason' => $ban_message, 'banlist_notes' => $ban_notes));
+	  return TRUE;
 	}
 
 

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-12-18 20:57:37 $
+|     $Revision: 1.21 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.20 $
+* @version $Revision: 1.21 $
 * @author $Author: e107steved $
 */
 class db {
@@ -348,6 +348,45 @@ class db {
 			$this->dbError("db_Update ($query)");
 			return FALSE;
 		}
+	}
+
+	/* Similar to db_Update(), but splits the variables and the 'WHERE' clause.
+		$vars may be an array (fieldname=>newvalue) of fields to be updated, or a simple list.
+		$arg is usually a 'WHERE' clause
+	*/
+	function db_UpdateArray($table, $vars, $arg, $debug = FALSE, $log_type = '', $log_remark = '') 
+	{
+	  $table = $this->db_IsLang($table);
+	  $this->mySQLcurTable = $table;
+
+	  if(!$this->mySQLaccess)
+	  {
+		global $db_ConnectionID;
+        $this->mySQLaccess = $db_ConnectionID;
+	  }
+
+	  $new_data = '';
+	  if (is_array($vars))
+	  {
+		$spacer = '';
+		foreach ($vars as $fn => $fv)
+		{
+		  $new_data .= $spacer."`{$fn}`='{$fv}'";
+		  $spacer = ', ';
+		}
+		$vars = '';
+	  }
+	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark)) 
+	  {
+		$result = mysql_affected_rows($this->mySQLaccess);
+		if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
+		return $result;
+	  } 
+	  else 
+	  {
+		$this->dbError("db_Update ($query)");
+		return FALSE;
+	  }
 	}
 
 	/**

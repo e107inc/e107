@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.2 2007-12-23 21:15:54 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.3 2007-12-26 13:21:34 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -14,7 +14,7 @@ into any of the system logs. They are in three groups with different prefixes:
 // User audit trail events. For messages 11-30, the last 2 digits must match the define for the event type in the admin log
 define('LAN_AUDIT_LOG_001', "Access by banned user");
 define('LAN_AUDIT_LOG_002', "Flood protection activated");
-define('LAN_AUDIT_LOG_003', "");
+define('LAN_AUDIT_LOG_003', 'Access from banned IP Address');
 define('LAN_AUDIT_LOG_004', "");
 define('LAN_AUDIT_LOG_005', "");
 define('LAN_AUDIT_LOG_006', "User changed password");
@@ -67,7 +67,7 @@ define('AL_BAN_LAN_07','Banlist imported');
 define('AL_BAN_LAN_08','Banlist options updated');
 define('AL_BAN_LAN_09','Banlist entry edited');
 define('AL_BAN_LAN_10','Whitelist entry edited');
-
+define('AL_BAN_LAN_11','Whitelist hit for ban entry');
 
 // Rolling log events
 //-------------------

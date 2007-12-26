@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2007-12-22 12:39:23 $
+|     $Revision: 1.36 $
+|     $Date: 2007-12-26 13:21:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -910,7 +910,7 @@ function js_location($qry){
 		exit;
 	} else {
 	echo "<script type='text/javascript'>document.location.href='{$qry}'</script>\n"; exit;
-}
+	}
 }
 
 function check_email($email) {
@@ -1103,8 +1103,10 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-class e_online {
-	function online($online_tracking = false, $flood_control = false) {
+class e_online 
+{
+	function online($online_tracking = false, $flood_control = false) 
+	{
 		if($online_tracking == true || $flood_control == true)
 		{
 			global $online_timeout, $online_warncount, $online_bancount;
@@ -1129,7 +1131,8 @@ class e_online {
 			if (USER)
 			{
 				// Find record that matches IP or visitor, or matches user info
-				if ($sql->db_Select("online", "*", "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'")) {
+				if ($sql->db_Select("online", "*", "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'")) 
+				{
 					$row = $sql->db_Fetch();
 
 					if ($row['online_user_id'] == $udata) {
@@ -1160,7 +1163,9 @@ class e_online {
 						}
 					}
 					$sql->db_Update("online", $query);
-				} else {
+				} 
+				else 
+				{
 					$sql->db_Insert("online", " '".time()."', '0', '{$udata}', '{$ip}', '{$page}', 1, 0");
 				}
 				}
@@ -1194,9 +1199,11 @@ class e_online {
 			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) 
 			{
 //				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
-			  $e107->add_ban(2,"Hit count exceeded ({$row['online_pagecount']} requests within allotted time)",$ip,0);
+			  if ($e107->add_ban(2,"Hit count exceeded ({$row['online_pagecount']} requests within allotted time)",$ip,0))
+			  {
 				$e_event->trigger("flood", $ip);
 				exit;
+			}
 			}
 			if ($row['online_pagecount'] >= $online_warncount && $row['online_ip'] != "127.0.0.1") 
 			{
