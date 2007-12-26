@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-22 12:39:24 $
+|     $Revision: 1.4 $
+|     $Date: 2007-12-26 16:32:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!getperms("4"))
   exit;
 }
 $e_sub_cat = 'userclass';
-define('UC_DEBUG_OPTS',FALSE);
+//define('UC_DEBUG_OPTS',FALSE);
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");		// Modified class handler
 $uclass = new e_userclass;						// Class management functions - legacy stuff from 0.7
@@ -296,7 +296,7 @@ switch ($action)
 					if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value; 
 					document.getElementById('iconview').style.display='block';}else{document.getElementById('iconview').src='';
 					document.getElementById('iconview').style.display='none';}\"";
-        $text  .= "<Select name='uc_icon_select' class='tbox' {$selectjs}>\n";
+        $text  .= "<select name='uc_icon_select' class='tbox' {$selectjs}>\n";
         $text  .= "<option value=''".($userclass_icon ? '' : " selected='selected'").">".UCSLAN_9."</option>\n";
         foreach($iconlist as $icon)
 		{
@@ -312,7 +312,7 @@ switch ($action)
           $blank_display = 'display: none';
           $img = e_IMAGE_ABS."generic/blank.gif";
         }
-        $text .= "</td><td><img id='iconview' src='".$img."' style='border:0; ".$blank_display."' />
+        $text .= "</td><td><img id='iconview' src='".$img."' style='border:0; ".$blank_display."' alt='' />
 		</td></tr></table>
         </div>
 		</td>
@@ -408,7 +408,8 @@ $ns->tablerender(UCSLAN_21, $text);
 	{
 	  $text .= UCSLAN_44;
 	}
-	$text .= "</td></tr><tr><td class='forumheader3'>".UCSLAN_49."</td></tr><tr><td class='forumheader3'>";
+	$text .= "</td></tr>
+	<tr><td class='forumheader3'>".UCSLAN_49."</td></tr><tr><td class='forumheader3'>";
 
 	if ($class_text)
 	{
@@ -416,10 +417,11 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $sel_stage = varset($pref['init_class_stage'],2);
 	  $text .= "<table><tr><td>".UCSLAN_45."<br /><span class='smalltext'>".UCSLAN_46."</span></td><td>
 	  <select class='tbox' name='init_class_stage'>\n
-	  <option value='1'".($sel_stage==1 ? " selected='selected'" : "").">".UCSLAN_47."</selected>
-	  <option value='2'".($sel_stage==2 ? " selected='selected'" : "").">".UCSLAN_48."</selected>
+	  <option value='1'".($sel_stage==1 ? " selected='selected'" : "").">".UCSLAN_47."</option>
+	  <option value='2'".($sel_stage==2 ? " selected='selected'" : "").">".UCSLAN_48."</option>
 	  </select>\n";
-	  $text .= "</td></tr></table><tr><td class='forumheader3' style='text-align:center'><input class='button' type='submit' name='set_initial_classes' value='".UCSLAN_UPDATE."' />";
+	  $text .= "</td></tr></table></td></tr>
+	  <tr><td class='forumheader3' style='text-align:center'><input class='button' type='submit' name='set_initial_classes' value='".UCSLAN_UPDATE."' />";
 	}
 	else
 	{
@@ -712,12 +714,10 @@ $ns->tablerender(UCSLAN_21, $text);
 		}
 	  }
 	  $text .= "</select>
-			<input class='button' type='submit' name='class_members_edit' value='".LAN_EDIT."' />
-			</td>
-			</tr>";
+			<input class='button' type='submit' name='class_members_edit' value='".LAN_EDIT."' />";
 	}
 
-$text .= "</table>";
+$text .= "</td></tr><tr><td>&nbsp;</td></tr></table>";
 
 
 if(isset($_POST['class_members_edit']))
@@ -744,7 +744,7 @@ if(isset($_POST['class_members_edit']))
 		}
 	}
 
-	$text .= "<br /><table class='fborder' style='".ADMIN_WIDTH."'>
+	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr>
 		<td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16." ".$userclass_name."</td></tr>
 		<tr>
@@ -759,7 +759,7 @@ if(isset($_POST['class_members_edit']))
 
 	for ($a = 0; $a <= ($d-1); $a++)
 	{
-		$text .= "<option value=".$out_userid[$a].">".$out_username[$a]." ".$out_userlogin[$a]."</option>\n";
+	  $text .= "<option value='".$out_userid[$a]."'>".htmlentities($out_username[$a])." ".htmlentities($out_userlogin[$a])."</option>\n";
 	}
 
 	$text .= "</select>
@@ -770,7 +770,7 @@ if(isset($_POST['class_members_edit']))
 //		<select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' multiple='multiple'>";
 	for($a = 0; $a <= ($c-1); $a++)
 	{
-		$text .= "<option value=".$in_userid[$a].">".$in_username[$a]." ".$in_userlogin[$a]."</option>\n";
+	  $text .= "<option value='".$in_userid[$a]."'>".htmlentities($in_username[$a])." ".htmlentities($in_userlogin[$a])."</option>\n";
 	}
 	$text .= "</select><br />\n<br />";
 	if (count($in_userid))
