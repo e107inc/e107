@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-11-01 20:28:20 $
+|     $Revision: 1.3 $
+|     $Date: 2007-12-26 18:50:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -132,6 +132,26 @@ if (isset($_POST['create_export']) && (($action == 'export') || ($action == 'dat
 }
 
 
+// Needed on Windoze platforms - not an ideal solution!
+if (!function_exists('nl_langinfo'))
+{
+  define('MON_1',86400);
+  define('MON_2',2764800);
+  define('MON_3',5443200);
+  define('MON_4',8035200);
+  define('MON_5',10800000);
+  define('MON_6',13392000);
+  define('MON_7',15811200);
+  define('MON_8',19008000);
+  define('MON_9',21168000);
+  define('MON_10',23760000);
+  define('MON_11',26352000);
+  define('MON_12',28944000);
+  function nl_langinfo($mon)
+  {
+    return date('F',$mon);
+  }
+}
 
 //---------------------------------------------
 //		Remove page entries
@@ -373,7 +393,7 @@ switch ($action)
 	}
 
 	// Type of output data - page data, browser stats....
-	$text .= "<tr><td class='forumheader3'>".ADSTAT_L51."</td><td class='forumheader3'>\n".data_type_select('export_type',$export_type);
+	$text .= "<tr><td class='forumheader3'>".ADSTAT_L51."</td><td class='forumheader3'>\n".data_type_select('export_type',$export_type).'</td></tr>';
 
 	// Period selection type for page data
 	$text .= "<tr><td class='forumheader3'>".ADSTAT_L41."</td><td class='forumheader3'>\n
@@ -545,6 +565,7 @@ switch ($action)
 	<td colspan='2'  style='text-align:center' class='forumheader'>
 	<input class='button' type='submit' name='delete_history' value='".ADSTAT_L71."' />
 	</td></tr>
+	<tr>
 	<td colspan='2'  style='text-align:center' class='forumheader3'><em>".ADSTAT_L76."</em>
 	</td></tr>";
 	}
