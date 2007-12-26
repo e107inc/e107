@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-06-04 19:17:54 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-26 15:55:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -149,7 +149,7 @@ class emotec
 		<td class='forumheader' style='width: 50%;'>".EMOLAN_3."</td>
 		<td class='forumheader' style='width: 10%; text-align: center;'>".EMOLAN_8."</td>
 		<td class='forumheader' style='width: 20%;'>".EMOLAN_9."</td>
-		";
+		</tr>";
 
 		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '\.bak$');
 		foreach($this -> packArray as $pack)
