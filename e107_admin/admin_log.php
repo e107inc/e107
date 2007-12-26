@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-23 15:30:15 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-26 15:12:59 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -277,7 +277,7 @@ if($action == "config")
 	</tr>
 
 	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='setcommonoptions' value='".RL_LAN_010."' /></td></tr>
-	</table></form></div>";
+	</table></form></div><br />";
 	$ns->tablerender("<div style='text-align:center'>".RL_LAN_064."</div>", $text);
 
 
@@ -308,9 +308,11 @@ if($action == "config")
 			</select>
 			".RL_LAN_046."
 		</td>
-	</tr>
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='deleteoldadmin' value='".RL_LAN_049."' /></td></tr>
-	</table></form></div><br />";
+	</tr>\n
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'>
+		<input class='button' type='submit' name='deleteoldadmin' value='".RL_LAN_049."' />
+		</td></tr>\n
+	</table></form>\n<br />";
 
 	$ns->tablerender("<div style='text-align:center'>".RL_LAN_048."</div>", $text);
 
@@ -388,18 +390,21 @@ $audit_checkboxes = array(
 	<table style='".USERWIDTH."' class='fborder'>
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_008."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='roll_log_active' value='1' ".($pref['roll_log_active']==1?" checked='checked' ":"")." /></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+		<input class='tbox' type='checkbox' name='roll_log_active' value='1' ".($pref['roll_log_active']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_009."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='roll_log_days' size='10' value='".$pref['roll_log_days']."' maxlength='5' />
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+		   <input class='tbox' type='text' name='roll_log_days' size='10' value='".$pref['roll_log_days']."' maxlength='5' />
 		</td>
-	</tr>
+	</tr>\n
 	
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='setoptions' value='".RL_LAN_010."' /></td></tr>
-	</table></form></div>";
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'>
+	<input class='button' type='submit' name='setoptions' value='".RL_LAN_010."' /></td></tr>\n
+	</table></form>\n</div>";
 	$ns->tablerender("<div style='text-align:center'>".RL_LAN_011."</div>", $text);
 	
 }
@@ -532,10 +537,10 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
 	<table style='".USERWIDTH."' class='fborder'>
 	<colgroup>
-	<col width = '20%';vertical-align:top; />
-	<col width = '30%';vertical-align:top; />
-	<col width = '20%';vertical-align:top; />
-	<col width = '30%';vertical-align:top; />
+	<col style = 'width:20%;vertical-align:top;' />
+	<col style = 'width:30%;vertical-align:top;' />
+	<col style = 'width:20%;vertical-align:top;' />
+	<col style = 'width:30%;vertical-align:top;' />
 	</colgroup>
 	<tr><td colspan='4' class='fcaption'>".RL_LAN_012." </td></tr>";
 	$filter_cols = 0;
@@ -610,7 +615,7 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 	<colgroup>";
 	foreach($col_widths[$action] as $i)
 	{
-	  $text .= "<col width = '{$i}%';vertical-align:top; />\n";
+	  $text .= "<col style='width:{$i}%;vertical-align:top;' />\n";
 	}
 	$text .= "</colgroup>\n";
 
