@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/subcontent.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-21 21:55:20 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-28 01:16:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -21,8 +21,9 @@ require_once("class2.php");
 //redirection to new content management plugin if it is installed
 if ($sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){ 
 	header("location:".e_PLUGIN."content/content_submit.php");
+	exit;
 } else {
 	header("location:".e_BASE."index.php");
+	exit;
 }
-	
 ?>
