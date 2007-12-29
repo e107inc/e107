@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-22 14:49:28 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-29 20:34:17 $
 |     $Author: e107steved $
 |
 | Modifications in hand to work with most recent mailout.php
@@ -29,7 +29,7 @@ To do:
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if(!getperms("W")){ header("location:".e_BASE."index.php"); }
+if(!getperms("W")){ header("location:".e_BASE."index.php"); exit; }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_mailout.php");
 
 

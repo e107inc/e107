@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-15 21:46:20 $
+|     $Revision: 1.5 $
+|     $Date: 2007-12-29 20:34:24 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -24,6 +24,7 @@ require_once(e_HANDLER."userclass_class.php");
 if (!getperms("P")) 
 {
   header("location:".e_BASE."index.php");
+  exit;
 }
 	
 	
