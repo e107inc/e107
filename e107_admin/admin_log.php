@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-26 15:12:59 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-29 22:07:42 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -32,7 +32,8 @@ Todo:
 require_once("../class2.php");
 if (!getperms("S")) 
 {
-	header("location:".e_BASE."index.php");
+  header("location:".e_BASE."index.php");
+  exit;
 }
 
 // Main language file should automatically be loaded
@@ -69,17 +70,30 @@ $action = varset($qs[0],'adminlog');
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php');
 
+
+
 // ****************** MAINTENANCE ******************
+unset($back_count);
 if (isset($_POST['deleteoldadmin']) && isset($_POST['rolllog_clearadmin']))
 {
   $back_count = $_POST['rolllog_clearadmin'];
+  $next_action = 'confdel';
+}
+elseif (isset($_POST['deleteoldaudit']) && isset($_POST['rolllog_clearaudit']))
+{
+  $back_count = $_POST['rolllog_clearaudit'];
+  $next_action = 'auditdel';
+}
+
+if (isset($back_count) && isset($next_action))
+{
   if (($back_count >= 1) && ($back_count <= 90))
   {
     $temp_date = getdate();
     $old_date = intval(mktime(0,0,0,$temp_date['mon'],$temp_date['mday']-$back_count,$temp_date['year']));
 	$old_string = strftime("%d %B %Y",$old_date);
 //	$message = "Back delete ".$back_count." days. Oldest date = ".$old_string;
-	$action = "confdel";
+	$action = $next_action;
 	$qs[1] = $old_date;
 	$qs[2] = $back_count;
   }
@@ -87,23 +101,40 @@ if (isset($_POST['deleteoldadmin']) && isset($_POST['rolllog_clearadmin']))
     $message = RL_LAN_050;
 }
 
+
+
 if (!isset($admin_log)) $message .= "  Admin Log not valid";
 
 
-// Actually delete back events
-if ($action == "backdel")
+// Actually delete back events - admin or user audit log
+if (($action == "backdel") && isset($_POST['backdeltype']))
 {
-if (isset($_POST['confirmdeleteold']))
+  if (isset($_POST['confirmdeleteold']))
   {
 	$old_date = intval($qs[1]);
 	$old_string = strftime("%d %B %Y",$old_date);
-	$qry = "dblog_datestamp < ".$old_date;
+	$qry = "dblog_datestamp < ".$old_date;			// Same field for both logs
+	switch ($_POST['backdeltype'])
+	{
+	  case 'confdel' :
+	    $db_table = 'admin_log';
+		$db_name = RL_LAN_052;
+		$db_msg = 'LAN_ADMIN_LOG_002';
+	    break;
+	  case 'auditdel' :
+	    $db_table = 'audit_log';
+		$db_name = RL_LAN_053;
+		$db_msg = 'LAN_ADMIN_LOG_003';
+	    break;
+	  default :
+	    exit;				// Someone fooling around!
+	}
 //	$message = "Back delete, oldest date = {$old_string}  Query = {$qry}";
-	if ($del_count = $sql -> db_Delete("admin_log",$qry))
+	if ($del_count = $sql -> db_Delete($db_table,$qry))
 	{
   // Add in a log event
-	  $admin_log->log_event ("db_Delete - earlier than {$old_string} (past {$qs[2]} days)", $qry, 4);
-      $message = RL_LAN_052.$old_string.RL_LAN_057.$del_count.RL_LAN_053;
+	  $message = $db_name.str_replace(array('--OLD--','--NUM--'),array($old_string,$del_count),RL_LAN_057);
+	  $admin_log->log_event($db_msg,"db_Delete - earlier than {$old_string} (past {$qs[2]} days)<br />".$message.'<br />'.$db_table.' '.$qry, 4,'LOG_01');
 	}
 	else
 	{
@@ -140,15 +171,19 @@ if (varsettrue($message))
   $ns->tablerender("", "<div style='text-align:center'><b>$message</b></div>");
 }
 
+
+
 // Prompt to delete back events
-if($action == "confdel")
+if (($action == "confdel") || ($action == "auditdel"))
 {
 	$old_string = strftime("%d %B %Y",$qs[1]);
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?backdel.{$qs[1]}.{$qs[2]}'>
+	<input type='hidden' name='backdeltype' value='{$action}' />
 	<table style='width:97%' class='fborder'>
 	<tr>
-		<td class='forumheader3' colspan='2' style='width:100%;vertical-align:top;rext-align:center;'><br /><strong>".RL_LAN_047.$old_string." </strong><br /><br /></td>
+		<td class='forumheader3' colspan='2' style='width:100%;vertical-align:top;rext-align:center;'><br /><strong>";
+	$text .= (($action == "confdel") ? RL_LAN_047 : RL_LAN_065).$old_string." </strong><br /><br /></td>
 	</tr>
 	<tr><td style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdeleteold' value='".RL_LAN_049."' /></td>
 	<td style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmcancelold' value='".RL_LAN_055."' /></td></tr>
@@ -156,6 +191,8 @@ if($action == "confdel")
 	
 	$ns->tablerender("<div style='text-align:center'>".RL_LAN_051."</div>", $text);
 }
+
+
 
 // Arrays of options for the various logs
 $log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog');
@@ -281,6 +318,20 @@ if($action == "config")
 	$ns->tablerender("<div style='text-align:center'>".RL_LAN_064."</div>", $text);
 
 
+function gen_log_delete($selectname)
+{
+  $values = array(90,60,30,21,20,14,10,7,6,5,4,3,2,1);
+  $ret = "<select name='{$selectname}' class='tbox'>\n";
+  $selected = " selected='selected'";		// Always select the first (highest) value
+  foreach ($values as $v)
+  {
+    $ret .= "<option value='{$v}'{$selected}>{$v}</option>\n";
+	$selected = '';
+  }
+  $ret .= "</select>\n";
+  return $ret;
+}
+
 
 // Admin log options
 //==================
@@ -289,24 +340,7 @@ if($action == "config")
 	<table style='width:97%' class='fborder'>
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_045." </td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'>
-			<select name='rolllog_clearadmin' class='tbox'>
-			<option value='90' selected='selected'>90</option>
-			<option value='60'>60</option>
-			<option value='30'>30</option>
-			<option value='21'>21</option>
-			<option value='20'>20</option>
-			<option value='14'>14</option>
-			<option value='10'>10</option>
-			<option value='7'>7</option>
-			<option value='6'>6</option>
-			<option value='5'>5</option>
-			<option value='4'>4</option>
-			<option value='3'>3</option>
-			<option value='2'>2</option>
-			<option value='1'>1</option>
-			</select>
-			".RL_LAN_046."
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>".gen_log_delete('rolllog_clearadmin').RL_LAN_046."
 		</td>
 	</tr>\n
 	<tr><td colspan='2'  style='text-align:center' class='fcaption'>
@@ -381,6 +415,23 @@ $audit_checkboxes = array(
 	</table></form></div>
 	<br />";
 	$ns->tablerender("<div style='text-align:center'>".RL_LAN_007."</div>", $text);
+
+
+// Audit Trail maintenance
+	$text = "
+	<form method='post' action='".e_SELF."?config'>
+	<table style='width:97%' class='fborder'>
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_066." </td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>".gen_log_delete('rolllog_clearaudit').RL_LAN_046."
+		</td>
+	</tr>\n
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'>
+		<input class='button' type='submit' name='deleteoldaudit' value='".RL_LAN_049."' />
+		</td></tr>\n
+	</table></form>\n<br />";
+
+	$ns->tablerender("<div style='text-align:center'>".RL_LAN_003."</div>", $text);
 
 
 // Rolling log options

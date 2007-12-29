@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-18 20:57:37 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-29 22:07:42 $
 |     $Author: e107steved $
 
 To do:
@@ -77,7 +77,7 @@ class e_admin_log {
 	  define('USER_AUDIT_NEW_PW',16);				// User changed password
 	  define('USER_AUDIT_NEW_EML',17);				// User changed email
 	  define('USER_AUDIT_PW_RES',18);				// Password reset
-	  define('USER_AUDIT_NEW_SET',19);				// User changed other settings (intentional gap in numbering)
+	  define('USER_AUDIT_NEW_SET',19);				// User changed other settings
 	}
 
 	/**
@@ -87,23 +87,22 @@ class e_admin_log {
 	 * @param string $event_detail
 	 * @param int $event_type Log level
 	 */
-	// Legacy entry point (not used by much) - retained for completeness.
-	// (Should really only be used for admin events anyway - not debugging)
-	function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE) 
+	// Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
+	// ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
+	// We also log everything (unlike 0.7, where admin log and debug stuff were all mixed up together)
+	function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE, $eventcode='ADMIN') 
 	{
 	  global $e107, $tp;
-	  if($event_type >= $this->_options['log_level']) 
-	  {
 		if($this->_options['backtrace'] == true) 
 		{
 		  $event_detail .= "\n\n".debug_backtrace();
 		}
-		$this->e_log_event($event_type,-1,"ADMIN",$event_title,$event_detail,FALSE,LOG_TO_ADMIN);
-	  }
+		$this->e_log_event($event_type,-1,$eventcode,$event_title,$event_detail,FALSE,LOG_TO_ADMIN);
 	}
 
-//  ***************************** START OF ADDITIONS **************************
 /*
+Generic log entry point
+-----------------------
 	Example call: (Deliberately pick separators that shouldn't be in file names)
 		e_log_event(E_LOG_NOTICE,__FILE__."|".__FUNCTION__."@".__LINE__,"ECODE","Event Title","explanatory message",FALSE,LOG_TO_ADMIN);
 	or:
