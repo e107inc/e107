@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-11-16 10:24:14 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2007-12-29 20:34:37 $
+|     $Author: e107steved $
 |
 | 02.11.06 - Cache clear option added
 | 10.11.06 - Support for updated templates etc
@@ -23,8 +23,10 @@
 $eplug_admin = true;		// Make sure we show admin theme
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
-if (!getperms("P")) {
-	header("location:".e_BASE."index.php");
+if (!getperms("P")) 
+{
+  header("location:".e_BASE."index.php");
+  exit;
 }
 	
 	

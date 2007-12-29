@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2007-08-02 20:37:11 $
+|     $Revision: 1.17 $
+|     $Date: 2007-12-29 20:34:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if(!getperms("W")){ header("location:".e_BASE."index.php"); }
+if(!getperms("W")){ header("location:".e_BASE."index.php"); exit; }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_mailout.php");
 
 $HEADER = "";
