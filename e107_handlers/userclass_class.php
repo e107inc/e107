@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-22 12:39:24 $
+|     $Revision: 1.7 $
+|     $Date: 2007-12-29 22:32:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -254,14 +254,14 @@ class user_class
 	  // Do the 'fixed' classes next
 	  foreach ($this->text_class_link as $k => $v)
 	  {
-		if (isset($opt_arr[$k]))
+		if (isset($opt_arr[$k]) || isset($opt_arr['force']))
 		{
 		  $ret[$v] = $just_ids ? '1' : $this->fixed_classes[$v];
 	    }
 	  }
 
 	  // Now do the user-defined classes
-	  if (isset($opt_arr['classes']))
+	  if (isset($opt_arr['classes']) || isset($opt_arr['force']))
 	  {	// Display those classes the user is allowed to:
 		//	Main admin always sees the lot
 		//	a) Mask the 'fixed' user classes which have already been processed

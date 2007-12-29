@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-29 22:07:42 $
+|     $Revision: 1.8 $
+|     $Date: 2007-12-29 22:32:58 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -375,11 +375,11 @@ $audit_checkboxes = array(
 );
 
 //Uncomment once inherited user classes
-//	if (!isset($e_userclass) && !is_object($e_userclass)) 
-//	{
+	if (!isset($e_userclass) && !is_object($e_userclass)) 
+	{
 	  require_once(e_HANDLER."userclass_class.php");
-//	  $e_userclass = new user_class;
-//	}
+	  $e_userclass = new user_class;
+	}
 
 	$user_signup_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
 	$text = "<div style='text-align:center'>
@@ -390,10 +390,10 @@ $audit_checkboxes = array(
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>";
 
 // Uncomment once inherited userclasses		
-//	$text .= "<select name='class_select'>\n";
-//	$text .= $e_userclass->vetted_tree('user_audit_class',array($e_userclass,'select'), varset($pref['user_audit_class'],''),'force');
-//	$text .= "</select>\n";
-	$text .= r_userclass('user_audit_class', varset($pref['user_audit_class'],''),'off','nobody,admin,user,classes');
+	$text .= "<select class='tbox' name='class_select'>\n";
+	$text .= $e_userclass->vetted_tree('user_audit_class',array($e_userclass,'select'), varset($pref['user_audit_class'],''),'force');
+	$text .= "</select>\n";
+//	$text .= r_userclass('user_audit_class', varset($pref['user_audit_class'],''),'off','nobody,admin,user,classes');
 	$text .= "</td>
 	</tr>
 
