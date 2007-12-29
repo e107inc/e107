@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2007-12-26 13:21:34 $
+|     $Revision: 1.37 $
+|     $Date: 2007-12-29 19:01:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1191,7 +1191,7 @@ class e_online
 				}
 			}
 
-			if (ADMIN || ($pref['autoban'] != 1 && $pref['autoban'] != 2)) // Auto-Ban is switched off. (0 or 3)
+		if (ADMIN || ($pref['autoban'] != 1 && $pref['autoban'] != 2) || (!isset($row['online_pagecount']))) // Auto-Ban is switched off. (0 or 3)
 			{
 				$row['online_pagecount'] = 1;
 			}
