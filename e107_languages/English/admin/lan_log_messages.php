@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.3 2007-12-26 13:21:34 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.4 2007-12-29 22:07:49 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -37,8 +37,8 @@ define('LAN_AUDIT_LOG_020', "");
 // Admin log events
 //-----------------
 define('LAN_ADMIN_LOG_001', 'Admin edited user data');
-define('LAN_ADMIN_LOG_002', '');
-define('LAN_ADMIN_LOG_003', '');
+define('LAN_ADMIN_LOG_002', 'Admin log - delete old data');
+define('LAN_ADMIN_LOG_003', 'User Audit log - delete old data');
 define('LAN_ADMIN_LOG_004', '');
 define('LAN_ADMIN_LOG_005', '');
 define('LAN_ADMIN_LOG_006', '');
@@ -48,6 +48,8 @@ define('LAN_ADMIN_LOG_009', '');
 define('LAN_ADMIN_LOG_010', '');
 define('LAN_ADMIN_LOG_011', '');
 
+// Userclass events
+//------------------
 define('AL_UC_LAN_00',"Unknown userclass-related event");
 define('AL_UC_LAN_01',"Userclass created");
 define('AL_UC_LAN_02',"Userclass deleted");
@@ -56,6 +58,8 @@ define('AL_UC_LAN_04',"Class membership updated");
 define('AL_UC_LAN_05',"Initial userclass settings edited");
 define('AL_UC_LAN_06',"Class membership emptied");
 
+// Banlist events
+//----------------
 define('AL_BAN_LAN_00','Unknown ban-related event');
 define('AL_BAN_LAN_01','Manual ban added');
 define('AL_BAN_LAN_02','Ban deleted');
@@ -69,20 +73,5 @@ define('AL_BAN_LAN_09','Banlist entry edited');
 define('AL_BAN_LAN_10','Whitelist entry edited');
 define('AL_BAN_LAN_11','Whitelist hit for ban entry');
 
-// Rolling log events
-//-------------------
-define('LAN_ROLL_LOG_001', "Access by banned user");
-define('LAN_ROLL_LOG_002', "Flood protection activated");
-define('LAN_ROLL_LOG_003', "Invalid page access");
-define('LAN_ROLL_LOG_004', "");
-define('LAN_ROLL_LOG_005', "");
-define('LAN_ROLL_LOG_006', "");
-define('LAN_ROLL_LOG_007', "");
-define('LAN_ROLL_LOG_008', "");
-define('LAN_ROLL_LOG_009', "");
-define('LAN_ROLL_LOG_010', "");
-define('LAN_ROLL_LOG_011', "");
-define('LAN_ROLL_LOG_012', "");
-define('LAN_ROLL_LOG_013', "");
 
 ?>
