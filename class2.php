@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2007-12-29 19:01:21 $
+|     $Revision: 1.38 $
+|     $Date: 2007-12-30 16:54:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -386,6 +386,16 @@ if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] &
 			}
 		}
 }
+
+
+
+//----------------------------
+//	Load shortcode handler
+//----------------------------
+// ********* This is probably a bodge! Work out what to do properly. Has to be done when $pref valid
+$tp->sch_load();
+
+
 
 
 // if a cookie name pref isn't set, make one :)
