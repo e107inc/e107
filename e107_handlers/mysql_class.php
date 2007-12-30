@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2007-12-26 13:21:34 $
+|     $Revision: 1.22 $
+|     $Date: 2007-12-30 11:03:57 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.21 $
+* @version $Revision: 1.22 $
 * @author $Author: e107steved $
 */
 class db {
@@ -353,8 +353,10 @@ class db {
 	/* Similar to db_Update(), but splits the variables and the 'WHERE' clause.
 		$vars may be an array (fieldname=>newvalue) of fields to be updated, or a simple list.
 		$arg is usually a 'WHERE' clause
+		The way the code is written at the moment, a call to db_Update() with just the first two parameters specified can be 
+			converted simply by changing the function name - it will still work.
 	*/
-	function db_UpdateArray($table, $vars, $arg, $debug = FALSE, $log_type = '', $log_remark = '') 
+	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '') 
 	{
 	  $table = $this->db_IsLang($table);
 	  $this->mySQLcurTable = $table;
