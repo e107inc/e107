@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2007-12-07 21:24:55 $
+|     $Revision: 1.24 $
+|     $Date: 2007-12-30 09:49:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -204,72 +204,124 @@ class e_parse
 	}
 
 
+
+
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
 	{
 		/*
-		* htmlwrap() function - v1.1
+		* Parts of code from  htmlwrap() function - v1.6
 		* Copyright (c) 2004 Brian Huisman AKA GreyWyvern
 		* http://www.greywyvern.com/code/php/htmlwrap_1.1.php.txt
 		*
 		* This program may be distributed under the terms of the GPL
 		*   - http://www.gnu.org/licenses/gpl.txt
+		*
+		* Other mods by steved
 		*/
 
-		$content = preg_split("/([<>])/", $str, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-		$nobreak = explode(" ", $nobreak);
-		$nobr = explode(" ", $nobr);
-		$intag = false;
-		$innbk = array();
-		$innbr = array();
-		$drain = "";
-		$utf = ($utf || CHARSET == 'utf-8') ? "u" : "";
-		$lbrks = "/?!%)-}]\\\"':;";
-		if ($break == "\r")
+  // Transform protected element lists into arrays
+  $nobreak = explode(" ", strtolower($nobreak));
+
+  // Variable setup
+  $intag = false;
+  $innbk = array();
+  $drain = "";
+
+  // List of characters it is "safe" to insert line-breaks at
+  // It is not necessary to add < and > as they are automatically implied
+  $lbrks = "/?!%)-}]\\\"':;&";
+
+  // Is $str a UTF8 string?
+	$utf8 = ($utf || CHARSET == 'utf-8') ? "u" : "";
+
+
+// Start of the serious stuff - split into HTML tags and text between
+	  $content = preg_split('#(<.*?>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+	  foreach($content as $value)
+	  {
+		if ($value[0] == "<")
+		{  // We are within an HTML tag
+          // Create a lowercase copy of this tag's contents
+          $lvalue = strtolower(substr($value,1,-1));
+		  if ($lvalue)
+		  {	// Tag of non-zero length
+			// If the first character is not a / then this is an opening tag
+            if ($lvalue[0] != "/") 
+			{            // Collect the tag name   
+              preg_match("/^(\w*?)(\s|$)/", $lvalue, $t);
+
+              // If this is a protected element, activate the associated protection flag
+              if (in_array($t[1], $nobreak)) array_unshift($innbk, $t[1]);
+            }
+		    else 
+		    {  // Otherwise this is a closing tag
+              // If this is a closing tag for a protected element, unset the flag
+              if (in_array(substr($lvalue, 1), $nobreak)) 
+			  {
+                reset($innbk);
+                while (list($key, $tag) = each($innbk)) 
+				{
+                  if (substr($lvalue, 1) == $tag) 
+				  {
+                    unset($innbk[$key]);
+                    break;
+                  }
+                }
+                $innbk = array_values($innbk);
+              }
+            }
+		  }
+		  else
+		  {
+		    $value = '';		// Eliminate any empty tags altogether
+		  }
+        // Else if we're outside any tags, and with non-zero length string...
+        } 
+		elseif ($value) 
 		{
-			$break = "\n";
-		}
-		while (list(, $value) = each($content))
-		{
-			switch ($value)
+          // If unprotected...
+          if (!count($innbk)) 
+		  {
+            // Use the ACK (006) ASCII symbol to replace all HTML entities temporarily
+            $value = str_replace("\x06", "", $value);
+            preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
+            $value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
+
+            // Enter the line-break loop
+            do 
 			{
-				case "<": $intag = true; break;
-				case ">": $intag = false; break;
-				default:
-				if ($intag)
+              $store = $value;
+
+              // Find the first stretch of characters over the $width limit
+              if (preg_match("/^(.*?\s)?(\S{".$width."})(?!(".preg_quote($break, "/")."|\s))(.*)$/s".(($utf8) ? "u" : ""), $value, $match)) 
+			  {
+                if (strlen($match[2])) 
 				{
-					if ($value{0} != "/")
-					{
-						preg_match('/^(.*?)(\s|$)/'.$utf, $value, $t);
-						if ((!count($innbk) && in_array($t[1], $nobreak)) || in_array($t[1], $innbk)) $innbk[] = $t[1];
-						if ((!count($innbr) && in_array($t[1], $nobr)) || in_array($t[1], $innbr)) $innbr[] = $t[1];
-					} else {
-						if (in_array(substr($value, 1), $innbk)) unset($innbk[count($innbk)]);
-						if (in_array(substr($value, 1), $innbr)) unset($innbr[count($innbr)]);
-					}
-				} else if ($value)
-				{
-					if (!count($innbr)) $value = str_replace("\n", "\r", str_replace("\r", "", $value));
-					if (!count($innbk))
-					{
-						do
-						{
-							$store = $value;
-							if (preg_match("/^(.*?\s|^)(([^\s&]|&(\w{2,5}|#\d{2,4});){".$width."})(?!(".preg_quote($break, "/").'|\s))(.*)$/s'.$utf, $value, $match))
-							{
-								for ($x = 0, $ledge = 0; $x < strlen($lbrks); $x++) $ledge = max($ledge, strrpos($match[2], $lbrks{$x}));
-								if (!$ledge) $ledge = strlen($match[2]) - 1;
-								$value = $match[1].substr($match[2], 0, $ledge + 1).$break.substr($match[2], $ledge + 1).$match[6];
-							}
-						}
-						while ($store != $value);
-					}
-					if (!count($innbr)) $value = str_replace("\r", E_NL, $value);
-				}
-			}
-			$drain .= $value;
-		}
-		return $drain;
+                  // Determine the last "safe line-break" character within this match
+                  for ($x = 0, $ledge = 0; $x < strlen($lbrks); $x++) $ledge = max($ledge, strrpos($match[2], $lbrks{$x}));
+                  if (!$ledge) $ledge = strlen($match[2]) - 1;
+
+                  // Insert the modified string
+                  $value = $match[1].substr($match[2], 0, $ledge + 1).$break.substr($match[2], $ledge + 1).$match[4];
+                }
+              }
+            // Loop while overlimit strings are still being found
+            } while ($store != $value);
+
+            // Put captured HTML entities back into the string
+            foreach ($ents[0] as $ent) $value = preg_replace("/\x06/", $ent, $value, 1);
+          }
+        }
+
+        // Send the modified segment down the drain
+        $drain .= $value;
+	  }
+
+	  // Return contents of the drain
+	  return $drain;
 	}
+
+
 
 	function html_truncate ($text, $len = 200, $more = "[more]")
 	{
