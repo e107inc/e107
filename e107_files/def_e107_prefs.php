@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-07 19:53:27 $
+|     $Revision: 1.6 $
+|     $Date: 2007-12-30 18:19:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -66,7 +66,6 @@ City, State, Country
   'sitelanguage' => $pref_language,
   'maintainance_flag' => '0',
   'time_offset' => '0',
-  'log_lvcount' => '10',
   'meta_tag' => '',
   'user_reg_veri' => '1',
   'email_notify' => '0',
