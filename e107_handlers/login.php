@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-12-31 14:45:50 $
+|     $Revision: 1.12 $
+|     $Date: 2007-12-31 17:20:55 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -174,7 +174,7 @@ class userlogin {
 			    $admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
 			  }
 
-			  $edata_li = array("user_id" => $user_id, "user_name" => $username, 'class_list' = implode(',',$class_list));
+			  $edata_li = array("user_id" => $user_id, "user_name" => $username, 'class_list' => implode(',',$class_list));
 			  $e_event->trigger("login", $edata_li);
 			  $redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
 
