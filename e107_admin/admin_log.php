@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-12-29 22:32:58 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-01 21:26:16 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -371,7 +371,8 @@ $audit_checkboxes = array(
 	USER_AUDIT_NEW_PW 	=> RL_LAN_076,
 	USER_AUDIT_PW_RES 	=> RL_LAN_078,
 	USER_AUDIT_NEW_EML 	=> RL_LAN_077,
-	USER_AUDIT_NEW_SET 	=> RL_LAN_079
+	USER_AUDIT_NEW_SET 	=> RL_LAN_079,
+	USER_AUDIT_ADD_ADMIN => RL_LAN_080
 );
 
 //Uncomment once inherited user classes
@@ -391,7 +392,7 @@ $audit_checkboxes = array(
 
 // Uncomment once inherited userclasses		
 	$text .= "<select class='tbox' name='class_select'>\n";
-	$text .= $e_userclass->vetted_tree('user_audit_class',array($e_userclass,'select'), varset($pref['user_audit_class'],''),'force');
+	$text .= $e_userclass->vetted_tree('user_audit_class',array($e_userclass,'select'), varset($pref['user_audit_class'],''),'nobody,admin,member,classes');
 	$text .= "</select>\n";
 //	$text .= r_userclass('user_audit_class', varset($pref['user_audit_class'],''),'off','nobody,admin,user,classes');
 	$text .= "</td>
@@ -703,8 +704,8 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 //		    $val = $tp->toHTML($row['dblog_title'],FALSE,'RAWTEXT,defs');
 			if (defined($val)) $val = constant($val);
 		    break;
-		  case 'dblog_username' :
-		    $val = $row['dblog_userid'] ? $row['dblog_username'] : 'Anonymous';
+		  case 'dblog_user_name' :
+		    $val = $row['dblog_user_id'] ? $row['dblog_user_name'] : LAN_ANONYMOUS;
 			break;
 		  case 'dblog_caller' :
 		    $val = $row['dblog_caller'];

@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.6 2008-01-01 18:18:12 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.7 2008-01-01 21:26:23 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -91,7 +91,7 @@ define('LAN_ROLL_LOG_04','Invalid username entered');
 define('LAN_ROLL_LOG_05','Login attempt by user not fully signed up');
 define('LAN_ROLL_LOG_06','Login blocked by event trigger handler');
 define('LAN_ROLL_LOG_07','Multiple logins from same address');
-define('LAN_ROLL_LOG_08','');
+define('LAN_ROLL_LOG_08','Excessive username length');
 define('LAN_ROLL_LOG_09','');
 define('LAN_ROLL_LOG_10','');
 
