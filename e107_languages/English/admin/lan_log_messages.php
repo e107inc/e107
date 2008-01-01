@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.5 2008-01-01 12:38:05 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.6 2008-01-01 18:18:12 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -51,7 +51,7 @@ define('LAN_ADMIN_LOG_012', 'User approved');
 define('LAN_ADMIN_LOG_013', 'Resend validation email');
 define('LAN_ADMIN_LOG_014', 'Resend all validation emails');
 define('LAN_ADMIN_LOG_015', 'Bounced emails deleted');
-define('LAN_ADMIN_LOG_016', '');
+define('LAN_ADMIN_LOG_016', 'Class membership updated');
 define('LAN_ADMIN_LOG_017', '');
 define('LAN_ADMIN_LOG_018', '');
 define('LAN_ADMIN_LOG_019', '');
