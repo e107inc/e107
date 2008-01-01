@@ -4,16 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-01 21:26:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-define("LAN_27", "You left required field(s) blank");
-define("LAN_300", "Incorrect login. The entered data doesn't match to a registered user. Check if you have the CAPS-LOCK key activated as logins on this site are case sensitive");
-define("LAN_302", "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please click <a href='".e_BASE."signup.php?resend'>here</a>.");
-define("LAN_303", "Incorrect code entered.");
-define("LAN_304", "That username/password combination is already in use.");
 define("LAN_LOGIN_1", "User name");
 define("LAN_LOGIN_2", "User password");
 define("LAN_LOGIN_3", "Protected server");
@@ -27,12 +22,16 @@ define("LAN_LOGIN_10", "Click to login");
 define("LAN_LOGIN_11", "Register as a New User");
 define("LAN_LOGIN_12", "Forgot Password");
 define("LAN_LOGIN_13", "Please enter text in image");
-
 define("LAN_LOGIN_14", "User attempted to login with unrecognised user name");
 define("LAN_LOGIN_15", "User attempted to login with incorrect password");
 define("LAN_LOGIN_16", "User attempted to login with username/password combination that was already in use");
 define("LAN_LOGIN_17", "User password (hashed)");
 define("LAN_LOGIN_18", "Auto-ban: More than 10 failed login attempts");
 define("LAN_LOGIN_19", "> 10 failed login attempts");
+define("LAN_LOGIN_20", "You left required field(s) blank");
+define("LAN_LOGIN_21", "Incorrect login. The entered data doesn't match to a registered user. Check if you have the CAPS-LOCK key activated as logins on this site are case sensitive");
+define("LAN_LOGIN_22", "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please click <a href='".e_BASE."signup.php?resend'>here</a>.");
+define("LAN_LOGIN_23", "Incorrect code entered.");
+define("LAN_LOGIN_24", "That username/password combination is already in use.");
 
 ?>

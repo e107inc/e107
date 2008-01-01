@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-12-31 17:20:55 $
+|     $Revision: 1.13 $
+|     $Date: 2008-01-01 21:26:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,8 +22,10 @@ if (!defined('e107_INIT')) { exit; }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
 
-class userlogin {
-	function userlogin($username, $userpass, $autologin) {
+class userlogin 
+{
+	function userlogin($username, $userpass, $autologin) 
+	{
 		/* Constructor
 		# Class called when user attempts to log in
 		#
@@ -38,40 +40,49 @@ class userlogin {
 		$username = trim($username);
 		$userpass = trim($userpass);
 		if($username == "" || $userpass == "")
-		{
-			define("LOGINMESSAGE", LAN_27."<br /><br />");
-			return FALSE;
+		{	// Required fields blank
+		  define("LOGINMESSAGE", LAN_LOGIN_20."<br /><br />");
+		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_01',$username,FALSE,LOG_TO_ROLLING);
+		  return FALSE;
 		}
 
-	 	if(!is_object($sql)){
-		$sql = new db;
-		}
+	 	if(!is_object($sql)) { $sql = new db; }
 
 		$fip = $e107->getip();
 //	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
-		$e107->check_ban("banlist_ip='{$fip}' ",FALSE);
+		$e107->check_ban("banlist_ip='{$fip}' ",FALSE);			// This will exit if a ban is in force
 //		if($sql -> db_Select("banlist", "*", "banlist_ip='{$fip}' ")) {	exit;}
 
 		$autologin = intval($autologin);
 
-		if ($pref['auth_method'] && $pref['auth_method'] != "e107") {
-			$auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
-			if (file_exists($auth_file)) {
-				require_once(e_PLUGIN."alt_auth/alt_auth_login_class.php");
-				$result = new alt_login($pref['auth_method'], $username, $userpass);
-			}
+		if ($pref['auth_method'] && $pref['auth_method'] != "e107") 
+		{
+		  $auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
+		  if (file_exists($auth_file)) 
+		  {
+			require_once(e_PLUGIN."alt_auth/alt_auth_login_class.php");
+			$result = new alt_login($pref['auth_method'], $username, $userpass);
+		  }
 		}
 
-		if ($pref['logcode'] && extension_loaded("gd")) {
-			require_once(e_HANDLER."secure_img_handler.php");
-			$sec_img = new secure_image;
-			if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) {
-				define("LOGINMESSAGE", LAN_303."<br /><br />");
-				return FALSE;
-			}
+		if ($pref['logcode'] && extension_loaded("gd")) 
+		{
+		  require_once(e_HANDLER."secure_img_handler.php");
+		  $sec_img = new secure_image;
+		  if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) 
+		  {	// Invalid code
+			define("LOGINMESSAGE", LAN_LOGIN_23."<br /><br />");
+			$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_02','',FALSE,LOG_TO_ROLLING);
+			return FALSE;
+		  }
 		}
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
-		$username = substr($username, 0, 30);
+		if (strlen($username) > varset($pref['loginname_maxlength'],30))
+		{  // Error - invalid username
+		  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
+		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_08',$username,FALSE,LOG_TO_ROLLING);
+		  return FALSE;
+		}
 		$ouserpass = $userpass;
 		$userpass = md5($ouserpass);
 
@@ -81,23 +92,24 @@ class userlogin {
 			$userpass = md5(utf8_decode($ouserpass));
 		}
 
-//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'Doing final checks',FALSE,LOG_TO_ROLLING);
 		if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) 
 		{	// Invalid user
-			define("LOGINMESSAGE", LAN_300."<br /><br />");
+			define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
 			$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
+			$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_04',$username,FALSE,LOG_TO_ROLLING);
 			$this -> checkibr($fip);
 			return FALSE;
 		}
 		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}'")) 
 		{	// Invalid user/password combination
-			define("LOGINMESSAGE", LAN_300."<br /><br />");
+			define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
+			$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_03',$username,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) 
-		{	// Banned user
-		  define("LOGINMESSAGE", LAN_302."<br /><br />");
-//		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User is banned: '.$tp -> toDB($username),FALSE,LOG_TO_ROLLING);
+		{	// User not fully signed up - hasn't activated account
+		  define("LOGINMESSAGE", LAN_LOGIN_22."<br /><br />");
+		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_05',$username,FALSE,LOG_TO_ROLLING);
 		  $sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 		  $this -> checkibr($fip);
 		  return FALSE;
@@ -109,11 +121,13 @@ class userlogin {
 		  if ($ret!='') 
 		  {
 			define("LOGINMESSAGE", $ret."<br /><br />");
+			$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_06',$username,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		  } 
 		  else 
 		  {	// Trigger events happy as well
 			$lode = $sql -> db_Fetch();		// Get user info
+			$lode['user_perms'] = trim($lode['user_perms']);
 			$user_id = $lode['user_id'];
 			$user_name = $lode['user_name'];
 			$user_xup = $lode['user_xup'];
@@ -123,12 +137,13 @@ class userlogin {
 			{
 			  if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) 
 			  {
-				define("LOGINMESSAGE", LAN_304."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+				define("LOGINMESSAGE", LAN_LOGIN_24."<br /><br />");
+				$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",'LAN_ROLL_LOG_07',"U: {$username} IP: {$fip}",FALSE,LOG_TO_ROLLING);
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', '{$user_id}', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 				$this -> checkibr($fip);
 				return FALSE;
-				}
 			  }
+			}
 
 			  $cookieval = $user_id.".".md5($userpass);
 			  if($user_xup) 
@@ -143,7 +158,7 @@ class userlogin {
 			  else 
 			  {
 				if ($autologin == 1) 
-				{
+				{	// Cookie valid for up to 30 days
 				  cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
 				} 
 				else 
@@ -156,6 +171,7 @@ class userlogin {
 
 
 			  // Calculate class membership - needed for a couple of things
+			  // Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
 			  $class_list = explode(',',$lode['user_class']);
 			  if ($lode['user_admin'] && strlen($lode['user_perms']))
 			  {
@@ -174,7 +190,7 @@ class userlogin {
 			    $admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
 			  }
 
-			  $edata_li = array("user_id" => $user_id, "user_name" => $username, 'class_list' => implode(',',$class_list));
+			  $edata_li = array("user_id" => $user_id, "user_name" => $username, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin);
 			  $e_event->trigger("login", $edata_li);
 			  $redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
 
@@ -182,8 +198,6 @@ class userlogin {
 
 				if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force'])) 
 				{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
-					// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
-				  $lode['user_perms'] = trim($lode['user_perms']);
 //				  $log_info = "New user: ".$lode['user_name']."  Class: ".$lode['user_class']."  Admin: ".$lode['user_admin']."  Perms: ".$lode['user_perms'];
 //				  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
 //				  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","New User class",implode(',',$class_list),FALSE,FALSE);
@@ -222,7 +236,7 @@ class userlogin {
 		{
 		  $e107->add_ban(4,LAN_LOGIN_18,$fip,1);
 //				$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
-		  $sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+		  $sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '{$fip}', '{$user_id}', '".LAN_LOGIN_20.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 		}
 	  }
 	}
