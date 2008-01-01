@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-12-26 13:21:34 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-01 12:38:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -120,8 +120,8 @@ define("USRLAN_125", "From");
 define("USRLAN_126", "Allow users to rate users");
 define("USRLAN_127", "Allow comments in user profile");
 
-define("USRLAN_128", "Username");
-
+define("USRLAN_128", "Username (login name)");
+define("USRLAN_129", "Real Name");
 define("USRLAN_130", "Enable online user tracking");
 define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
 define("USRLAN_132", "Enable");
@@ -149,6 +149,26 @@ define("USRLAN_147", "Email address is already used by a banned user");
 define("USRLAN_148", "Email address is banned");
 define('USRLAN_149', "User banned: ");
 define('USRLAN_150', "IP address of {IP} appears on whitelist; IP not banned.");
+define('USRLAN_151', "Send confirmation email with password to new user");
+define('USRLAN_152', 'Invalid characters in login name');
+define('USRLAN_153', 'That login name already in use');
+define('USRLAN_154', 'Length of login name outside limits');
+define('USRLAN_155', 'A user account has been created for you at --SITE-- with the following login:<br />Login Name: --LOGIN--<br />Password: --PASSWORD--<br/><br />');
+define('USRLAN_156', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
+						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.');
+define('USRLAN_157', 'Access to website: ');
+define('USRLAN_158', 'Email sent successfully');
+define('USRLAN_159', 'Error sending email');
+define('USRLAN_160', 'Total --COUNT-- users of type --TYPE-- pruned');
+define('USRLAN_161', 'User ID --UID-- name --NAME-- banned');
+define('USRLAN_162', 'User ID --UID-- name --NAME-- unbanned');
+define('USRLAN_163', 'User ID --UID-- deleted');
+define('USRLAN_164', 'User ID --UID-- name --NAME-- made admin');
+define('USRLAN_165', 'User ID --UID-- name --NAME-- admin status revoked');
+define('USRLAN_166', 'User ID --UID-- name --NAME-- approved');
+define('USRLAN_167', 'Validation email ID --ID-- resent to --NAME-- at --EMAIL--');
+define('USRLAN_168', 'Re-send --COUNT-- validation emails');
+define('USRLAN_169', 'Total --COUNT-- bounced emails deleted');
 
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");

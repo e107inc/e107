@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.4 2007-12-29 22:07:49 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.5 2008-01-01 12:38:05 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -29,9 +29,9 @@ define('LAN_AUDIT_LOG_014', 'User logged out');
 define('LAN_AUDIT_LOG_015', 'User changed display name');
 define('LAN_AUDIT_LOG_016', 'User changed password');
 define('LAN_AUDIT_LOG_017', 'User changed email address');
-define('LAN_AUDIT_LOG_018', '');
+define('LAN_AUDIT_LOG_018', 'User password reset');
 define('LAN_AUDIT_LOG_019', 'User changed settings');
-define('LAN_AUDIT_LOG_020', "");
+define('LAN_AUDIT_LOG_020', 'User added by admin');
 
 
 // Admin log events
@@ -39,14 +39,22 @@ define('LAN_AUDIT_LOG_020', "");
 define('LAN_ADMIN_LOG_001', 'Admin edited user data');
 define('LAN_ADMIN_LOG_002', 'Admin log - delete old data');
 define('LAN_ADMIN_LOG_003', 'User Audit log - delete old data');
-define('LAN_ADMIN_LOG_004', '');
-define('LAN_ADMIN_LOG_005', '');
-define('LAN_ADMIN_LOG_006', '');
-define('LAN_ADMIN_LOG_007', '');
-define('LAN_ADMIN_LOG_008', '');
-define('LAN_ADMIN_LOG_009', '');
-define('LAN_ADMIN_LOG_010', '');
-define('LAN_ADMIN_LOG_011', '');
+define('LAN_ADMIN_LOG_004', 'User added by Admin');
+define('LAN_ADMIN_LOG_005', 'User options updated');
+define('LAN_ADMIN_LOG_006', 'Users pruned');
+define('LAN_ADMIN_LOG_007', 'User banned');
+define('LAN_ADMIN_LOG_008', 'User unbanned');
+define('LAN_ADMIN_LOG_009', 'User deleted');
+define('LAN_ADMIN_LOG_010', 'User made admin');
+define('LAN_ADMIN_LOG_011', 'User admin status revoked');
+define('LAN_ADMIN_LOG_012', 'User approved');
+define('LAN_ADMIN_LOG_013', 'Resend validation email');
+define('LAN_ADMIN_LOG_014', 'Resend all validation emails');
+define('LAN_ADMIN_LOG_015', 'Bounced emails deleted');
+define('LAN_ADMIN_LOG_016', '');
+define('LAN_ADMIN_LOG_017', '');
+define('LAN_ADMIN_LOG_018', '');
+define('LAN_ADMIN_LOG_019', '');
 
 // Userclass events
 //------------------
@@ -72,6 +80,20 @@ define('AL_BAN_LAN_08','Banlist options updated');
 define('AL_BAN_LAN_09','Banlist entry edited');
 define('AL_BAN_LAN_10','Whitelist entry edited');
 define('AL_BAN_LAN_11','Whitelist hit for ban entry');
+
+
+// Rolling log events
+//-------------------
+define('LAN_ROLL_LOG_01','Empty username and/or password');
+define('LAN_ROLL_LOG_02','Incorrect image code entered');
+define('LAN_ROLL_LOG_03','Invalid username/password combination');
+define('LAN_ROLL_LOG_04','Invalid username entered');
+define('LAN_ROLL_LOG_05','Login attempt by user not fully signed up');
+define('LAN_ROLL_LOG_06','Login blocked by event trigger handler');
+define('LAN_ROLL_LOG_07','Multiple logins from same address');
+define('LAN_ROLL_LOG_08','');
+define('LAN_ROLL_LOG_09','');
+define('LAN_ROLL_LOG_10','');
 
 
 ?>
