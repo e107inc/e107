@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-01 18:18:05 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,56 +22,62 @@ if (!getperms("4")) {
 	 exit;
 }
 
-if (!e_QUERY) {
-  	header("location:".e_ADMIN."admin.php");
-	exit;
-} else {
-    $qs = explode(".", e_QUERY);
-	$id = $qs[0];
+if (!e_QUERY) 
+{
+  header("location:".e_ADMIN."admin.php");
+  exit;
+} 
+else 
+{
+  $qs = explode(".", e_QUERY);
+  $id = intval($qs[0]);
 }
 
-$sql->db_Select("userclass_classes");
-$c = 0;
-while ($row = $sql->db_Fetch()) {
-	if (getperms("0") || check_class($row['userclass_editclass'])) {
-		$class[$c][0] = $row['userclass_id'];
-		$class[$c][1] = $row['userclass_name'];
-		$class[$c][2] = $row['userclass_description'];
-		$c++;
-	}
-}
+require_once(e_HANDLER."userclass_class.php");		// Modified class handler
+$e_userclass = new user_class;
 
-if (isset($_POST['updateclass'])) {
-	$remuser = TRUE;
-	$classcount = count($_POST['userclass'])-1;
-	for($a = 0; $a <= $classcount; $a++) {
-		check_allowed($_POST['userclass'][$a]);
-		$svar .= $_POST['userclass'][$a];
-		$svar .= ($a < $classcount ) ? "," : "";
-	}
-	$sql->db_Update("user", "user_class='$svar' WHERE user_id='$id' ");
-        $message = UCSLAN_9;
-	$sql->db_Select("user", "*", "user_id='$id' ");
+
+if (isset($_POST['updateclass'])) 
+{
+  $remuser = TRUE;
+  $classcount = count($_POST['userclass']);
+  $spacer = '';
+  foreach ($_POST['userclass'] as $a) 
+  {
+	$a = intval($a);
+	check_allowed($a);
+	$svar .= $spacer.$a;
+	$spacer = ',';
+  }
+  $sql->db_Update("user", "user_class='{$svar}' WHERE user_id={$id} ");
+  $message = UCSLAN_9;
+
+  if ($_POST['notifyuser']) 
+  {
+	$sql->db_Select("user", "*", "user_id={$id} ");
 	$row = $sql->db_Fetch();
-	if ($_POST['notifyuser']) {
-		$message .= "<br />".UCSLAN_1.":</b> ".$row['user_name']."<br />";
-		require_once(e_HANDLER."mail.php");
-   		unset($messaccess);
-		for($a = 0; $a <= (count($class)-1); $a++) {
-			if (check_class($class[$a][0], $row['user_class'])) {
-				$messaccess .= $class[$a][1]." - " . $class[$a][2]. "\n";
-			}
-		}
-		$send_to = $row['user_email'];
-		$subject = UCSLAN_2;
-        $message = UCSLAN_3." " . $row['user_name']. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
-		sendemail($send_to, $subject, $message);
+	$message .= "<br />".UCSLAN_1.":</b> ".$row['user_name']."<br />";
+	require_once(e_HANDLER."mail.php");
+	$messaccess = '';
+	foreach (explode(',',$row['user_class']) as $a)
+	{
+	  if (!isset($e_userclass->fixed_classes[$a]))
+	  {
+		$messaccess .= $e_userclass->class_tree[$a]['userclass_name']." - " . $e_userclass->class_tree[$a]['userclass_description']. "\n";
+	  }
 	}
+	$send_to = $row['user_email'];
+	$subject = UCSLAN_2;
+    $message = UCSLAN_3." " . $row['user_name']. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
+//    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
+	sendemail($send_to, $subject, $message);
+  }
+  $admin_log->log_event('LAN_ADMIN_LOG_016',str_replace(array('--UID--','--CLASSES--'),array($id,$svar),UCSLAN_11),E_LOG_INFORMATIVE,'USET_14');
 
 
-	 header("location: ".$_POST['adminreturn']);
-	 echo "location redirect failed.";
-     exit;
+  header("location: ".$_POST['adminreturn']);
+  echo "location redirect failed.";
+  exit;
 }
 
 
@@ -80,29 +86,23 @@ require_once("auth.php");
 
 
 
-$sql->db_Select("user", "*", "user_id='$id' ");
+$sql->db_Select("user", "*", "user_id={$id} ");
 $row = $sql->db_Fetch();
 
 $caption = UCSLAN_6." <b>".$row['user_name']."</b> (".$row['user_class'].")";
 
 $text = "	<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>";
+			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<tr><td class='forumheader3'>";
 
-for($a = 0; $a <= (count($class)-1); $a++) {
-	$text .= "<tr><td style='width:30%' class='forumheader3'>";
-	if (check_class($class[$a][0], $row['user_class'])) {
-		$text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' checked='checked' />".$class[$a][1]." ";
-	} else {
-		$text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' />".$class[$a][1]." ";
-	}
-	$text .= "</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
-}
+$text .= $e_userclass->vetted_tree('userclass',array($e_userclass,'checkbox_desc'), $row['user_class'], 'classes');
+$text .= '</td></tr>';
  
 $adminreturn = e_ADMIN."users.php?cu".($qs[2] ? ".{$qs[2]}.{$qs[3]}.{$qs[4]}" : "");
 
-$text .= "	<tr><td class='forumheader' colspan='2' style='text-align:center'>
-			<input type='hidden' name='adminreturn' value='$adminreturn' />
+$text .= "	<tr><td class='forumheader' style='text-align:center'>
+			<input type='hidden' name='adminreturn' value='{$adminreturn}' />
 			<input type='checkbox' name='notifyuser' value='1' /> ".UCSLAN_8."&nbsp;&nbsp;
 			<input class='button' type='submit' name='updateclass' value='".UCSLAN_7."' />
 			</td>
@@ -119,17 +119,19 @@ require_once("footer.php");
 
 // ----------------------------------------------------------
 
-function check_allowed($class_id) {
-	global $sql;
-	if (!$sql->db_Select("userclass_classes", "*", "userclass_id = {$class_id}")) {
-		header("location:".SITEURL);
-		exit;
-	}
-	$row = $sql->db_Fetch();
-	extract($row);
-	if (!getperms("0") && !check_class($userclass_editclass)) {
-		header("location:".SITEURL);
-		exit;
-	}
+function check_allowed($class_id) 
+{
+  global $e_userclass;
+  if (!isset($e_userclass->class_tree[$class_id]))
+  {
+	header("location:".SITEURL);
+	exit;
+  }
+  if (!getperms("0") && !check_class($e_userclass->class_tree[$class_id]['userclass_editclass'])) 
+  {
+	header("location:".SITEURL);
+	exit;
+  }
+  return TRUE;
 }
 ?>

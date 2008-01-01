@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-01-01 12:37:58 $
+|     $Revision: 1.11 $
+|     $Date: 2008-01-01 18:18:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -149,7 +149,8 @@ if (isset($_POST['update_options']))
 	$pref['force_userupdate'] = $_POST['force_userupdate'];
 	$pref['memberlist_access'] = $_POST['memberlist_access'];
 	save_prefs();
-	$admin_log->log_event('LAN_ADMIN_LOG_005',implode('; ',$_POST),E_LOG_INFORMATIVE,'USET_03');
+	unset($_POST['update_options']);		// So we don't log it
+	$admin_log->log_event('LAN_ADMIN_LOG_005',$tp->toDB(implode('; ',$_POST)),E_LOG_INFORMATIVE,'USET_03');
 	$user->show_message(USRLAN_1);
 }
 
@@ -981,7 +982,8 @@ class users
 
 	function show_prefs() 
 	{
-		global $ns, $pref;
+		global $ns, $pref, $e_userclass;
+		if (!is_object($e_userclass)) $e_userclass = new user_class;
 		$pref['memberlist_access'] = varset($pref['memberlist_access'], e_UC_MEMBER);
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
@@ -1046,7 +1048,9 @@ class users
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_146.":</td>
-			<td style='width:50%' class='forumheader3'>".r_userclass("memberlist_access",$pref['memberlist_access'], "off", "public,member,guest,admin,main,classes,nobody")."
+			<td style='width:50%' class='forumheader3'><select name='memberlist_access' class='tbox'>\n";
+		$text .= $e_userclass->vetted_tree('memberlist_access',array($e_userclass,'select'), $pref['memberlist_access'], "public,member,guest,admin,main,classes,nobody");
+		$text .= "</select>
 			</td>
 			</tr>
 
