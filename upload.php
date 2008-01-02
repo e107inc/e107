@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-11-23 21:52:44 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-02 19:43:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ if (isset($_POST['upload']))
   {
 	require_once(e_HANDLER."upload_handler.php");
 //	$uploaded = file_upload(e_FILE."public/", "unique");
-	$uploaded = process_uploaded_files(e_FILE."public/", "unique", array('max_file_count' => 2));
+	$uploaded = process_uploaded_files(e_FILE."public/", "unique", array('max_file_count' => 2, 'extra_file_types' => TRUE));
 
 // First, see what errors the upload handler picked up
 	if ($uploaded === FALSE)
