@@ -129,4 +129,6 @@ define("DOWLAN_154", "als u mirrors gebruikt, kies dan hoe ze worden getoond");
 define("DOWLAN_155", "Mirror weergave type:");
 define("DOWLAN_156", "toon mirror lijst, sta gebruiker toe zelf een mirror te kiezen");
 define("DOWLAN_157", "gebruik een willekeurige mirror - gebruiker kan niet kiezen");
+define("DOWLAN_158", "Toon sub-sub-categorieën op de hoofd downloadpagina");
+define("DOWLAN_159", "Sub-sub-categorie tellingen meenemen in subcategorie tellingen");
 ?>

@@ -42,5 +42,9 @@ define("DOWLAN_11", "Categorie");
 define("LAN_419", "Toegestane bestandsformaten");
 define("LAN_420", "velden zijn verplicht");
 
+define('LAN_UL_001','Ongeldig e-mailadres');
+define('LAN_UL_002', 'Je hebt niet de juiste rechten om bestanden naar deze server te uploaden.');	// LAN_403
+define('LAN_UL_020', 'Fout');
+define('LAN_UL_021', 'Upload fout');
 
 ?>

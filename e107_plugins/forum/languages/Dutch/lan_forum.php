@@ -63,7 +63,7 @@ define("LAN_401", "Alleen voor leden");
 define("LAN_402", "In dit forum kan alleen worden gelezen");
 define("LAN_403", "Nog geen berichten");
 define("LAN_404", "berichten");
-define("LAN_405", "Alleen Lezen");
+define("LAN_405", "Beperkte toegang");
 define("LAN_406", "Dit forum is alleen toegankelijk voor beheerders");
 define("LAN_407", "Dit forum is alleen toegankelijk voor leden");
 define("LAN_408", "Dit is een Alleen Lezen forum");

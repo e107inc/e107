@@ -38,8 +38,8 @@ define("LAN_FPW4", "Er is al een wijzigingsverzoek voor dit wachtwoord verstuurd
 define("LAN_FPW5", "Het verzoek om je wachtwoord te vervangen voor");
 define("LAN_FPW6", "Er is je een e-mail gestuurd met een linkje waarmee je de wachtwoordwijziging kunt accepteren.");
 define("LAN_FPW7", "Dit is geen geldige link om je wachtwoord te wijzigen.<br />Neem contact op met de beheerder voor meer informatie.");
-define("LAN_FPW8", "Het wachtwoord voor gebruiker");
-define("LAN_FPW9", "is succesvol gewijzigd.<br /><br />Het nieuwe wachtwoord is:");
+define("LAN_FPW8", "Je wachtwoord is succesvol gewijzigd.");
+define("LAN_FPW9", "Het nieuwe wachtwoord is:");
 define("LAN_FPW10", "Alstublief,");
 define("LAN_FPW11", "log nu in");
 define("LAN_FPW12", "en je wordt geadviseerd om in verband met beveiligingsaspecten je wachtwoord meteen weer te wijzigen.");

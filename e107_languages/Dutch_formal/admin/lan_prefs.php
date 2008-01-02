@@ -139,7 +139,7 @@ define("PRFLAN_151", "e107 - er wordt geen alternatieve authenticatiemethode geb
 define("PRFLAN_152", "Geen goedkeuring");
 define("PRFLAN_153", "Beheerdersgoedkeuring");
 define("PRFLAN_154", "Nieuwe gebruiker goedkeuringsmethode<br />Als 'Beheerdersgoedkeuring' is geselecteerd, wordt geadviseerd om de e-mailmelding bij de aanmelding van leden <a href='".e_ADMIN."notify.php'>hier</a> te activeren.");
-define("PRFLAN_155", "Weergavenaam beschikbaar voor");
+define("PRFLAN_155", "Weergavenaam en inlognaam kunnen verschillen voor");
 define("PRFLAN_156", "Reset ALLE weergavenamen");
 define("PRFLAN_157", "Alle weergavenamen zijn teruggezet naar de inlognaam");
 define("PRFLAN_158", "Maximum lengte weergavenaam");
