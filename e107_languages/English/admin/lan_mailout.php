@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-22 14:49:34 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-02 20:14:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -128,10 +128,11 @@ define('LAN_MAILOUT_116','If unsure, leave as php');
 define('LAN_MAILOUT_117','complete');
 define('LAN_MAILOUT_118','Click on \'proceed\' to start sending emails. Click on \'cancel\' to stop the run. Once complete, select another page. Unsent emails cal be viewed through the \'Mailshot status\' screen');
 define('LAN_MAILOUT_119','Logging only, with errors');
-define('LAN_MAILOUT_120','');
-
-
-
+define('LAN_MAILOUT_120','Account type');
+define('LAN_MAILOUT_121','Standard POP3');
+define('LAN_MAILOUT_122','POP3, TLS disabled');
+define('LAN_MAILOUT_123','POP3 with TLS');
+define('LAN_MAILOUT_124','IMAP');
 
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-22 14:49:34 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-02 20:14:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -44,12 +44,19 @@ if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'makemai
 	  $text .= 'Any attachment is selected from the list of valid downloads.';
 	  break;
 	case 'prefs' :
-	  $text = 'Configure mailshot options.<br />';
-	  $text .= 'A test email is sent using the current method and settings.<br />';
-	  $text .= 'Use SMTP to send mail if possible. The settings will depend on your host\'s mail server.<br />';
-	  $text .= 'You can specifiy a POP3 account to receive the return response when an email is undeliverable.<br />';
-	  $text .= 'If you have additional mail-related plugins, you can select which of them may contribute email addresses to the list.<br />';
-	  $text .= 'The logging option creates a text file in the stats plugin\'s log directory. This must be deleted periodically.';
+	  $text = '<b>Configure mailshot options.</b><br />
+	  A test email is sent using the current method and settings.<br /><br />';
+	  $text .= '<b>Emailing Method</b><br />
+	  Use SMTP to send mail if possible. The settings will depend on your host\'s mail server.<br /><br />';
+	  $text .= '<b>Bounced Emails</b><br />
+	  You can specify a POP3 account to receive the return response when an email is undeliverable. Normally this will be a standard
+	  POP3 account; use the TLS-related options only if specifically required by your host<br /><br />';
+	  $text .= '<b>Email Address Sources</b><br />
+	  If you have additional mail-related plugins, you can select which of them may contribute email addresses to the list.<br /><br />';
+	  $text .= '<b>Logging</b><br />
+	  The logging option creates a text file in the stats plugin\'s log directory. This must be deleted periodically. The \'logging
+	  only\' options allow you to see exactly who would receive emails if actually sent. The \'with errors\' option fails every
+	  7th email, primarily for testing';
 	  break;
 	default :
 	  $text = 'Undocumented option';

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-22 14:49:21 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-02 20:14:05 $
 |     $Author: e107steved $
 |
 | Work in progress - supplementary mailer plugin
@@ -505,6 +505,7 @@ if (isset($_POST['updateprefs']) && getperms("0"))
 	$pref['mail_bounce_pop3'] = $_POST['mail_bounce_pop3'];
 	$pref['mail_bounce_user'] =	$_POST['mail_bounce_user'];
 	$pref['mail_bounce_pass'] = $_POST['mail_bounce_pass'];
+	$pref['mail_bounce_type'] = $_POST['mail_bounce_type'];
 	$pref['mail_bounce_delete'] = $_POST['mail_bounce_delete'];
 
 	$pref['mailout_enabled'] = implode(',',$_POST['mail_mailer_enabled']);
@@ -1133,9 +1134,17 @@ $text = "
 	<td style='vertical-align:top' class='forumheader3'>".LAN_MAILOUT_31."</td>
 	<td style=' text-align:right' class='forumheader3'>
 		".LAN_MAILOUT_32.": <input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /><br />
-		".LAN_MAILOUT_33." (POP3):  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /><br />
+		".LAN_MAILOUT_33.":  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /><br />
 		".LAN_MAILOUT_34.":  <input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /><br />
-		".LAN_MAILOUT_35.":  <input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /><br />";
+		".LAN_MAILOUT_35.":  <input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /><br />
+		".LAN_MAILOUT_120.": <select class='tbox' name='mail_bounce_type'>\n
+		<option value=''>&nbsp;</option>\n
+		<option value='pop3'".(($pref['mail_bounce_type']=='pop3') ? " selected='selected'" : "").">".LAN_MAILOUT_121."</option>\n
+		<option value='pop3/notls'".(($pref['mail_bounce_type']=='pop3/notls') ? " selected='selected'" : "").">".LAN_MAILOUT_122."</option>\n
+		<option value='pop3/tls'".(($pref['mail_bounce_type']=='pop3/tls') ? " selected='selected'" : "").">".LAN_MAILOUT_123."</option>\n
+		<option value='imap'".(($pref['mail_bounce_type']=='imap') ? " selected='selected'" : "").">".LAN_MAILOUT_124."</option>\n
+		</select><br />\n
+		";
 
 	$check = ($pref['mail_bounce_delete']==1) ? " checked='checked'" : "";
 	$text .= LAN_MAILOUT_36.":  <input type='checkbox' name='mail_bounce_delete' value='1' {$check} />

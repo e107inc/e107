@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-01 18:18:05 $
+|     $Revision: 1.12 $
+|     $Date: 2008-01-02 20:14:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1293,7 +1293,7 @@ class users
 
 //	  echo "Check bounces. Action: {$bounce_act}; Entries: {$bounce_arr}<br />";
 
-	  $obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],'pop3','110');
+	  $obj= new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],varset($pref['mail_bounce_type'],'pop3'));
 	  $del_count = 0;
 	  if ($bounce_act !='first_check')
 	  { // Must do some deleting

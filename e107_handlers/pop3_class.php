@@ -1,17 +1,17 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
-// $Id: pop3_class.php,v 1.1.1.1 2006-12-02 04:33:56 mcfly_e107 Exp $
+// $Id: pop3_class.php,v 1.2 2008-01-02 20:14:05 e107steved Exp $
 // Main ReciveMail Class File - Version 1.0 (01-03-2006)
 /*
  * File: recivemail.class.php
- * Description: Reciving mail With Attechment
+ * Description: Receiving mail With Attachment
  * Version: 1.0
  * Created: 01-03-2006
  * Author: Mitul Koradia
  * Email: mitulkoradia@gmail.com
  * Cell : +91 9879697592
 
-Modified by CaMer0n (www.e107coders.org)
+Modified by CaMer0n (www.e107coders.org) and steved
 
  */
 class receiveMail
@@ -24,7 +24,7 @@ class receiveMail
 
 	var $email='';
 
-	function receiveMail($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop',$port='110') //Constructure
+	function receiveMail($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop3',$port='110') //Constructor
 	{
 		if($servertype=='imap')
 		{
@@ -33,7 +33,9 @@ class receiveMail
 		}
 		else
 		{
-			$strConnect='{'.$mailserver.':'.$port. '/pop3}INBOX';
+		  if($port=='') $port='110';
+		  if ($servertype == '') $servertype = 'pop3';
+		  $strConnect='{'.$mailserver.':'.$port. '/'.$servertype.'}INBOX';
 		}
 		$this->server			=	$strConnect;
 		$this->username			=	$username;
