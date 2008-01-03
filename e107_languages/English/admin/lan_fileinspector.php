@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-19 17:27:38 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2008-01-03 22:29:08 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -73,6 +73,7 @@ define("FR_LAN_28", "Known insecure files");
 
 define("FR_LAN_29", "Total files matched");
 define("FR_LAN_30", "Total lines matched");
+define('FR_LAN_31', 'Missing complete plugin folder');
 
 
 define("FS_LAN_1", "Create Snapshot");
