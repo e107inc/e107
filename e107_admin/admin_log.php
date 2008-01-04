@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-01 21:26:16 $
+|     $Revision: 1.10 $
+|     $Date: 2008-01-04 21:32:21 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -25,8 +25,6 @@
 |	'roll_log_active' - set to '1' to enable
 |
 |
-Todo:
-1. Change userclass dropdown once inherited userclasses in place
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -375,7 +373,7 @@ $audit_checkboxes = array(
 	USER_AUDIT_ADD_ADMIN => RL_LAN_080
 );
 
-//Uncomment once inherited user classes
+
 	if (!isset($e_userclass) && !is_object($e_userclass)) 
 	{
 	  require_once(e_HANDLER."userclass_class.php");
@@ -390,11 +388,10 @@ $audit_checkboxes = array(
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_026."</td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>";
 
-// Uncomment once inherited userclasses		
+
 	$text .= "<select class='tbox' name='class_select'>\n";
 	$text .= $e_userclass->vetted_tree('user_audit_class',array($e_userclass,'select'), varset($pref['user_audit_class'],''),'nobody,admin,member,classes');
 	$text .= "</select>\n";
-//	$text .= r_userclass('user_audit_class', varset($pref['user_audit_class'],''),'off','nobody,admin,user,classes');
 	$text .= "</td>
 	</tr>
 
@@ -581,7 +578,6 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 	if ($from > $num_entry) $from = 0;		// We may be on a later page
 	
 	$qry = "SELECT dbl.*,u.user_name FROM #".$log_db_table[$action]." AS dbl LEFT JOIN #user AS u ON dbl.dblog_user_id=u.user_id".$qry." ORDER BY {$sort_field} ".$sort_order." LIMIT {$from}, {$amount} ";
-//	echo $qry.'<br />';
 
 
 // Start by putting up the filter boxes
@@ -659,7 +655,6 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 
 
 // Next bit is the actual log display - the arrays define column widths, titles, fields etc for each log
-					
 	$column_count = count($col_widths[$action]);
 	$text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
@@ -685,6 +680,23 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 	  }
 	  $text .= "</tr>\n";
 	
+
+// Routine to handle the simple bbcode-like codes for log body text
+function log_process($matches)
+{
+  switch ($matches[1])
+  {
+    case 'br' :
+	  return '<br />';
+	case 'link' :
+	  $temp = substr($matches[2],1);
+	  return "<a href='{$temp}'>{$temp}</a>";
+	case 'test' :
+	  return '----TEST----';
+	default :
+	  return $matches[0];			// No change
+  }
+}
 // Now put up the events
 	  while ($row = $sql->db_Fetch())
 	  {
@@ -701,7 +713,6 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 		    break;
 		  case 'dblog_title' :		// Look up constants to give multi-language viewing
 		    $val = trim($row['dblog_title']);
-//		    $val = $tp->toHTML($row['dblog_title'],FALSE,'RAWTEXT,defs');
 			if (defined($val)) $val = constant($val);
 		    break;
 		  case 'dblog_user_name' :
@@ -713,8 +724,12 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 			{
 			  list($file,$rest) = explode('|',$val);
 			  list($routine,$rest) = explode('@',$rest);
-			  $val = $file.'<br />Routine: '.$routine.'<br />Line: '.$rest;
+			  $val = $file.'<br />Function: '.$routine.'<br />Line: '.$rest;
 			}
+		    break;
+		  case 'dblog_remarks' :
+		    // Look for pseudo-code for newlines, link insertion
+		    $val = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#",'log_process',$row['dblog_remarks']);
 		    break;
 		  default :
 		    $val = $row[$cf];
@@ -729,6 +744,7 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 	</table>
 	</form>
 	</div>";
+
 	
 // Next-Previous. ==========================
 
