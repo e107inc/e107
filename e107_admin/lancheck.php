@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-11-02 22:01:47 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-04 19:57:19 $
 |     $Author: e107steved $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -604,7 +604,7 @@ function fill_phrases_array($data,$type) {
 				$rep = array(");","\n",'""');
 				$val = str_replace($rep,"",$pos);
 				$retloc[$type]['LC_ALL']= $val;
-				$retloc['orig']['LC_ALL']= "'en'";
+//				$retloc['orig']['LC_ALL']= "'en'";
 			}
 			else
 			{
