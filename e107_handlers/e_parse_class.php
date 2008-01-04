@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-12-30 23:31:18 $
+|     $Revision: 1.27 $
+|     $Date: 2008-01-04 19:54:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -90,7 +90,7 @@ class e_parse
 
 				'user_body' =>					// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
 					array(
-						// no changes to default-on items
+						'constants'=>TRUE
 						),
 
 				'linktext' =>			// text is the 'content' of a link (A tag, etc)
