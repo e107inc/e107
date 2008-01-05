@@ -38,18 +38,19 @@ if (!$postID || $postID == 'admin')
 }
 else
 {
-  if(strstr($postID,'class:'))
-  {
-	$uc = substr($postID,6);
-  }
-  else
-  {
-	$uc = $postID;
-  }
-
   if ($pref['image_post'])
   {
-    if (check_class($pref['image_post_class'],'',$uc))
+	if(strstr($postID,'class:'))
+	{
+	  $uc = substr($postID,6).','.e_UC_PUBLIC;				// Not ideal, but 'Everyone' class not necessarily present
+	  $can_show = check_class($pref['image_post_class'],$uc);
+	}
+	else
+	{
+	  $uc = $postID;
+	  $can_show = check_class($pref['image_post_class'],'',$uc);
+	}
+    if ($can_show)
 	{
 	  return "<img src='".$code_text."' {$parmStr} />";
 	}
