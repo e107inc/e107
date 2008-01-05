@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-08-13 19:56:46 $
+|     $Revision: 1.11 $
+|     $Date: 2008-01-05 20:49:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -111,7 +111,7 @@ if(varset($e107_popup)!=1){
 //			$rinfo .= "{$cpuTime} cpu sec ({$cpuPct}% load, {$cpuStart} startup). Clock: ";
 			$rinfo .= sprintf(CORE_LAN14,$cpuTime,$cpuPct,$cpuStart);
 		}
-		$rinfo .= $rendertime.CORE_LAN_12.$dbPercent.CORE_LAN13; 
+		$rinfo .= $rendertime.CORE_LAN12.$dbPercent.CORE_LAN13.'&nbsp;'; 
 	}
 	if($pref['displaysql']){ $rinfo .= CORE_LAN15.$sql -> db_QueryCount().". "; }
 	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= CORE_LAN16.$memuse; }
