@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2007-12-30 16:54:31 $
+|     $Revision: 1.39 $
+|     $Date: 2008-01-05 22:02:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1070,6 +1070,7 @@ function get_user_data($uid, $extra = "")
 	
 	//===========================================================
 	// Now look up the 'inherited' user classes
+	global $e_userclass;
 	if (!isset($e_userclass) && !is_object($e_userclass)) 
 	{
 	  require_once(e_HANDLER."userclass_class.php");
