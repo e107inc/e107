@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-03 22:29:01 $
+|     $Revision: 1.12 $
+|     $Date: 2008-01-05 21:09:54 $
 |     $Author: e107steved $
 
 Includes standalone function - needs finishing
@@ -176,12 +176,13 @@ class file_inspector {
 	var $results = 0;
 	var $line_results = 0;
 	var $BASE_PLUGIN_DIR;
+	var $BASE_THEMES_DIR;
 	var $alone = FALSE;
 	var $dotree = FALSE;
 	
 	function file_inspector($standalone = FALSE) 
 	{
-	  global $PLUGINS_DIRECTORY;
+	  global $PLUGINS_DIRECTORY, $THEMES_DIRECTORY;
 	  $this->dotree = ($_POST['type'] == 'tree');
 	  set_time_limit(240);
 
@@ -203,6 +204,8 @@ class file_inspector {
 		$this->dotree = FALSE;
 		$this->BASE_PLUGIN_DIR = $this -> root_dir.'/'.$PLUGINS_DIRECTORY;
 		if (substr($this->BASE_PLUGIN_DIR,-1) == '/') $this->BASE_PLUGIN_DIR = substr($this->BASE_PLUGIN_DIR,0,-1);
+		$this->BASE_THEMES_DIR = $this -> root_dir.'/'.$THEMES_DIRECTORY;
+		if (substr($this->BASE_THEMES_DIR,-1) == '/') $this->BASE_THEMES_DIR = substr($this->BASE_THEMES_DIR,0,-1);
 	    return;
 	  }
 
@@ -231,6 +234,8 @@ class file_inspector {
 		}
 		$this->BASE_PLUGIN_DIR = $this -> root_dir.'/'.$PLUGINS_DIRECTORY;
 		if (substr($this->BASE_PLUGIN_DIR,-1) == '/') $this->BASE_PLUGIN_DIR = substr($this->BASE_PLUGIN_DIR,0,-1);
+		$this->BASE_THEMES_DIR = $this -> root_dir.'/'.$THEMES_DIRECTORY;
+		if (substr($this->BASE_THEMES_DIR,-1) == '/') $this->BASE_THEMES_DIR = substr($this->BASE_THEMES_DIR,0,-1);
 	}
 	
 	function scan_config() 
@@ -452,9 +457,9 @@ class file_inspector {
 		  $path = $dir.'/'.$key;
 		  $child_open = false;
 		  $child_end = true;
-		  if (($dir == $this->BASE_PLUGIN_DIR) && !is_readable($path))
-		  {  // Its one of the plugin directories which doesn't exist - that could be OK
-//		    echo "Plugin folder missing: {$path}<br />";
+		  if ((($dir == $this->BASE_PLUGIN_DIR) || ($dir == $this->BASE_THEMES_DIR)) && !is_readable($path))
+		  {  // Its one of the plugin or theme directories which doesn't exist - that could be OK
+//		    echo "Plugin or theme folder missing: {$path}<br />";
 			$icon = "<img src='".e_IMAGE."packs/".$imode."/fileinspector/folder_missing.png' class='i' alt='' />";
 			$text = "<div class='d' style='margin-left: ".(($level+1) * 8)."px'>";
 			$text .= "<img src='".e_IMAGE."packs/".$imode."/fileinspector/contract.png' class='e' alt='' />&nbsp;".$icon."&nbsp;".$key."&nbsp;-&nbsp;".FR_LAN_31;
@@ -944,8 +949,8 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.11 $\n";
-			$data .= "|     \$Date: 2008-01-03 22:29:01 $\n";
+			$data .= "|     \$Revision: 1.12 $\n";
+			$data .= "|     \$Date: 2008-01-05 21:09:54 $\n";
 			$data .= "|     \$Author: e107steved $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
