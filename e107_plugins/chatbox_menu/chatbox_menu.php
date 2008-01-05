@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-04-30 20:17:05 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-05 11:42:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -195,7 +195,6 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 			}
 
 			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");
-			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
 			$emotes_active = $pref['cb_emote'] ? 'USER_BODY, emotes_on' : 'USER_BODY, emotes_off';
 
 			$cb_message = $tp -> toHTML($cb['cb_message'], FALSE, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
@@ -212,16 +211,9 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 				$CHATBOXSTYLE = "<!-- chatbox -->\n<div class='spacer'>
 				$bullet <b>{USERNAME}</b><br /><span class='smalltext'>{TIMEDATE}</span><br /><div class='smallblacktext'>{MESSAGE}</div></div><br />\n";
 			}
-
-			$search[0] = "/\{USERNAME\}(.*?)/si";
-			$replace[0] = $cb_nick;
-			$search[1] = "/\{TIMEDATE\}(.*?)/si";
-			$replace[1] = $datestamp;
-			$search[2] = "/\{MESSAGE\}(.*?)/si";
-			$replace[2] = ($cb['cb_blocked'] ? CHATBOX_L6 : $cb_message);
-
-			$text .= preg_replace($search, $replace, $CHATBOXSTYLE);
-
+			$search = array('{USERNAME}', '{TIMEDATE}', '{MESSAGE}');
+			$replace = array($cb_nick,$datestamp,($cb['cb_blocked'] ? CHATBOX_L6 : $cb_message));
+			$text .= str_replace($search,$replace,$CHATBOXSTYLE);
 		}
 	}
 	else
