@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.10 $
-|   $Date: 2007-05-17 20:14:57 $
-|   $Author: e107steved $
+|   $Revision: 1.11 $
+|   $Date: 2008-01-06 22:16:37 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -58,6 +58,12 @@ $sql->db_Mark_Time('(Header Top)');
 // A: Admin Defines and Links
 //
 require_once(e_ADMIN.'ad_links.php');
+if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
+{
+	$threshold=(time() - ($pref['del_unv'] * 60));
+	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
+}
+
 //
 // B: Send HTTP headers (these come before ANY html)
 //

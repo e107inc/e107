@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2008-01-06 18:40:29 $
+|     $Revision: 1.42 $
+|     $Date: 2008-01-06 22:16:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -64,13 +64,30 @@ if(function_exists('ini_get')) {
 
 // Destroy! (if we need to)
 if($register_globals == true){
+	if(isset($_REQUEST['_E107'])) { unset($_E107); }
 	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|_SESSION|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs|eplug_admin|eTimingStart.*|oblev_.*)$/', $global)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|_SESSION|GLOBALS|HTTP.*|_REQUEST|_E107|retrieve_prefs|eplug_admin|eTimingStart.*|oblev_.*)$/', $global)) {
 			unset($$global);
 		}
 	}
 	unset($global);
 }
+
+if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
+if(isset($_E107['minimal']))
+{
+	$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
+	foreach($_e107vars as $v)
+	{
+		$noname = 'no_'.$v;
+		if(!isset($_E107[$v]))
+		{
+			$_E107[$noname] = 1;
+		}
+		unset($_E107[$v]);
+	}
+}
+
 
 // e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
 if(($pos = strpos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URLs to the correct one.
@@ -268,7 +285,8 @@ else if ($merror == "e2") {
 //
 // K: Load compatability mode.
 //
-PHP Compatabilty should *always* be on. */
+
+/* PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER."php_compatibility_handler.php");
 
 //
@@ -357,33 +375,33 @@ define("SITEURL", SITEURLBASE.e_HTTP);
 
 // let the subdomain determine the language (when enabled).
 
-if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE){
+if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE)
+{
 
-		$mtmp = explode("\n",$pref['multilanguage_subdomain']);
-        foreach($mtmp as $val)
+	$mtmp = explode("\n",$pref['multilanguage_subdomain']);
+	foreach($mtmp as $val)
+	{
+		if(e_DOMAIN == trim($val))
 		{
-        	if(e_DOMAIN == trim($val))
-			{
-            	$domain_active = TRUE;
-			}
+			$domain_active = TRUE;
 		}
+	}
 
-		if($domain_active || ($pref['multilanguage_subdomain'] == "1"))
+	if($domain_active || ($pref['multilanguage_subdomain'] == "1"))
+	{
+		e107_ini_set("session.cookie_domain",".".e_DOMAIN);
+		require_once(e_HANDLER."language_class.php");
+		$lng = new language;
+		if(e_SUBDOMAIN == "www" || e_SUBDOMAIN === FALSE)
 		{
-	 		e107_ini_set("session.cookie_domain",".".e_DOMAIN);
-			require_once(e_HANDLER."language_class.php");
-			$lng = new language;
-	        if(e_SUBDOMAIN == "www" || e_SUBDOMAIN === FALSE)
-			{
-        		$GLOBALS['elan'] = $pref['sitelanguage'];
-			}
-			elseif($eln = $lng->convert(e_SUBDOMAIN))
-			{
-          		$GLOBALS['elan'] = $eln;
-			}
+			$GLOBALS['elan'] = $pref['sitelanguage'];
 		}
+		elseif($eln = $lng->convert(e_SUBDOMAIN))
+		{
+			$GLOBALS['elan'] = $eln;
+		}
+	}
 }
-
 
 
 //----------------------------
@@ -391,7 +409,6 @@ if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] &
 //----------------------------
 // ********* This is probably a bodge! Work out what to do properly. Has to be done when $pref valid
 $tp->sch_load();
-
 
 
 
@@ -524,16 +541,9 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 // N: misc setups: online user tracking, cache
 //
 $sql -> db_Mark_Time('Start: Misc resources. Online user tracking, cache');
-$e_online = new e_online();
 
 // cache class
 $e107cache = new ecache;
-
-
-if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2) {
-	$threshold=(time() - ($pref['del_unv'] * 60));
-	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
-}
 
 e107_require_once(e_HANDLER."override_class.php");
 $override=new override;
@@ -681,7 +691,8 @@ $ns=new e107table;
 
 $e107->ban();
 
-if(varset($pref['force_userupdate']) && USER) {
+if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']))
+{
 	if(force_userupdate()) {
 		header("Location: ".e_BASE."usersettings.php?update");
 	}
@@ -692,13 +703,19 @@ $sql->db_Mark_Time('Start: Signup/splash/admin');
 define("e_SIGNUP", e_BASE.(file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
 define("e_LOGIN", e_BASE.(file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
 
-if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SELF != SITEURL."index.php" && e_SELF != SITEURL."fpw.php" && e_SELF != SITEURL.e_LOGIN && strpos(e_PAGE, "admin") === FALSE && e_SELF != SITEURL.'membersonly.php' && e_SELF != SITEURL.'sitedown.php') {
-	header("Location: ".e_HTTP."membersonly.php");
-	exit;
+if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SELF != SITEURL."index.php" && e_SELF != SITEURL."fpw.php" && e_SELF != SITEURL.e_LOGIN && strpos(e_PAGE, "admin") === FALSE && e_SELF != SITEURL.'membersonly.php' && e_SELF != SITEURL.'sitedown.php')
+{
+	if(!isset($_E107['allow_guest']))
+	{
+		header("Location: ".e_HTTP."membersonly.php");
+		exit;
+	}
 }
 
-$sql->db_Delete("tmp", "tmp_time < ".(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
-
+if(!isset($_E107['no_prunetmp']))
+{
+	$sql->db_Delete("tmp", "tmp_time < ".(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
+}
 
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
@@ -767,32 +784,39 @@ if (isset($_COOKIE['e107_tzOffset'])) {
 define("TIMEOFFSET", $e_deltaTime);
 
 $sql->db_Mark_Time('Start: Get menus');
-
-$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
-$menu_data = $eArrayStorage->ReadArray($menu_data);
-$eMenuList=array();
-$eMenuActive=array();
-if(!is_array($menu_data)) {
-	if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCLASS_LIST.") ORDER BY menu_order")) {
-		while ($row = $sql->db_Fetch()) {
-			$eMenuList[$row['menu_location']][]=$row;
-			$eMenuActive[]=$row['menu_name'];
+if(!isset($_E107['no_menus']))
+{
+	$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
+	$menu_data = $eArrayStorage->ReadArray($menu_data);
+	$eMenuList=array();
+	$eMenuActive=array();
+	if(!is_array($menu_data))
+	{
+		if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCLASS_LIST.") ORDER BY menu_order"))
+		{
+			while ($row = $sql->db_Fetch())
+			{
+				$eMenuList[$row['menu_location']][]=$row;
+				$eMenuActive[]=$row['menu_name'];
+			}
 		}
+		$menu_data['menu_list'] = $eMenuList;
+		$menu_data['menu_active'] = $eMenuActive;
+		$menu_data = $eArrayStorage->WriteArray($menu_data, false);
+		$e107cache->set_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE), $menu_data);
+		unset($menu_data);
 	}
-	$menu_data['menu_list'] = $eMenuList;
-	$menu_data['menu_active'] = $eMenuActive;
-	$menu_data = $eArrayStorage->WriteArray($menu_data, false);
-	$e107cache->set_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE), $menu_data);
-	unset($menu_data);
-} else {
-	$eMenuList = $menu_data['menu_list'];
-	$eMenuActive = $menu_data['menu_active'];
-	unset($menu_data);
+	else
+	{
+		$eMenuList = $menu_data['menu_list'];
+		$eMenuActive = $menu_data['menu_active'];
+		unset($menu_data);
+	}
 }
-
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if(!defined("THEME")){
+if(!defined("THEME") && !isset($_E107['no_theme']))
+{
 	// any plugin file starting with 'admin_' is assumed to use admin theme
 	// any plugin file in a folder called admin/ is assumed to use admin theme.
 	// any file that specifies $eplug_admin = TRUE;
@@ -827,17 +851,25 @@ if(!defined("THEME")){
 
 // --------------------------------------------------------------
 
-	// here we USE the theme
-	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0) || (isset($eplug_admin) && $eplug_admin == TRUE))) {
-	if (file_exists(THEME.'admin_theme.php')) {
-		require_once(THEME.'admin_theme.php');
-	} else {
+// here we USE the theme
+if(!isset($_E107['no_theme']))
+{
+	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0) || (isset($eplug_admin) && $eplug_admin == TRUE)))
+	{
+		if (file_exists(THEME.'admin_theme.php'))
+		{
+			require_once(THEME.'admin_theme.php');
+		}
+		else
+		{
+			require_once(THEME."theme.php");
+		}
+	}
+	else
+	{
 		require_once(THEME."theme.php");
 	}
-} else {
-	require_once(THEME."theme.php");
 }
-
 $exclude_lan = array("lan_signup.php");  // required for multi-language.
 
 if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !== FALSE) {
@@ -847,8 +879,6 @@ if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !=
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
-
-
 
 if(!defined("IMODE")) define("IMODE", "lite");
 
@@ -1109,146 +1139,6 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
   }
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-class e_online 
-{
-	function online($online_tracking = false, $flood_control = false) 
-	{
-		if($online_tracking == true || $flood_control == true)
-		{
-			global $online_timeout, $online_warncount, $online_bancount;
-			if(!isset($online_timeout)) {
-				$online_timeout = 300;
-			}
-			if(!isset($online_warncount)) {
-				$online_warncount = 90;
-			}
-			if(!isset($online_bancount)) {
-				$online_bancount = 100;
-			}
-			global $sql, $pref, $e107, $listuserson, $e_event, $tp;
-			$page = (strpos(e_SELF, "forum_") !== FALSE) ? e_SELF.".".e_QUERY : e_SELF;
-			$page = (strpos(e_SELF, "comment") !== FALSE) ? e_SELF.".".e_QUERY : $page;
-			$page = (strpos(e_SELF, "content") !== FALSE) ? e_SELF.".".e_QUERY : $page;
-			$page = $tp -> toDB($page, true);
-
-			$ip = $e107->getip();
-			$udata = (USER === true ? USERID.".".USERNAME : "0");
-
-			if (USER)
-			{
-				// Find record that matches IP or visitor, or matches user info
-				if ($sql->db_Select("online", "*", "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'")) 
-				{
-					$row = $sql->db_Fetch();
-
-					if ($row['online_user_id'] == $udata) {
-						//Matching user record
-						if ($row['online_timestamp'] < (time() - $online_timeout)) {
-							//It has been at least 'timeout' seconds since this user has connected
-							//Update user record with timestamp, current IP, current page and set pagecount to 1
-							$query = "online_timestamp='".time()."', online_ip='{$ip}', online_location='{$page}', online_pagecount=1 WHERE online_user_id='{$row['online_user_id']}' LIMIT 1";
-						} else {
-							if (!ADMIN) {
-								$row['online_pagecount'] ++;
-							}
-							// Update user record with current IP, current page and increment pagecount
-							$query = "online_ip='{$ip}', `online_location` = '{$page}', `online_pagecount` = '".intval($row['online_pagecount'])."' WHERE `online_user_id` = '{$row['online_user_id']}' LIMIT 1";
-						}
-					} else {
-						//Found matching visitor record (ip only) for this user
-						if ($row['online_timestamp'] < (time() - $online_timeout)) {
-							// It has been at least 'timeout' seconds since this user has connected
-							// Update record with timestamp, current IP, current page and set pagecount to 1
-							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}', `online_location` = '{$page}', `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
-						} else {
-							if (!ADMIN) {
-								$row['online_pagecount'] ++;
-							}
-							//Update record with current IP, current page and increment pagecount
-							$query = "`online_user_id` = '{$udata}', `online_location` = '{$page}', `online_pagecount` = ".intval($row['online_pagecount'])." WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
-						}
-					}
-					$sql->db_Update("online", $query);
-				} 
-				else 
-				{
-					$sql->db_Insert("online", " '".time()."', '0', '{$udata}', '{$ip}', '{$page}', 1, 0");
-				}
-				}
-			else
-			{
-				//Current page request is from a visitor
-				if ($sql->db_Select("online", "*", "`online_ip` = '{$ip}' AND `online_user_id` = '0'")) {
-					$row = $sql->db_Fetch();
-
-					if ($row['online_timestamp'] < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
-					{
-						//Update record with timestamp, current page, and set pagecount to 1
-						$query = "`online_timestamp` = '".time()."', `online_location` = '{$page}', `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
-					} else {
-						//Update record with current page and increment pagecount
-						$row['online_pagecount'] ++;
-						//   echo "here {$online_pagecount}";
-						$query="`online_location` = '{$page}', `online_pagecount` = {$row['online_pagecount']} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
-					}
-					$sql->db_Update("online", $query);
-				} else {
-					$sql->db_Insert("online", " '".time()."', '0', '0', '{$ip}', '{$page}', 1, 0");
-				}
-			}
-
-		if (ADMIN || ($pref['autoban'] != 1 && $pref['autoban'] != 2) || (!isset($row['online_pagecount']))) // Auto-Ban is switched off. (0 or 3)
-			{
-				$row['online_pagecount'] = 1;
-			}
-
-			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) 
-			{
-//				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
-			  if ($e107->add_ban(2,"Hit count exceeded ({$row['online_pagecount']} requests within allotted time)",$ip,0))
-			  {
-				$e_event->trigger("flood", $ip);
-				exit;
-			}
-			}
-			if ($row['online_pagecount'] >= $online_warncount && $row['online_ip'] != "127.0.0.1") 
-			{
-				echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>".LAN_WARNING."</b><br /><br />".CORE_LAN6."<br /></div>";
-				exit;
-			}
-
-			$sql->db_Delete("online", "`online_timestamp` < ".(time() - $online_timeout));
-
-			global $members_online, $total_online, $member_list, $listuserson;
-			$total_online = $sql->db_Count("online");
-			if ($members_online = $sql->db_Select("online", "*", "online_user_id != '0' ")) {
-				$member_list = '';
-				$listuserson = array();
-				while ($row = $sql->db_Fetch()) {
-					$vals = explode(".", $row['online_user_id'], 2);
-					$member_list .= "<a href='".e_BASE."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
-					$listuserson[$row['online_user_id']] = $row['online_location'];
-				}
-			}
-			define("TOTAL_ONLINE", $total_online);
-			define("MEMBERS_ONLINE", $members_online);
-			define("GUESTS_ONLINE", $total_online - $members_online);
-			define("ON_PAGE", $sql->db_Count("online", "(*)", "WHERE `online_location` = '{$page}' "));
-			define("MEMBER_LIST", $member_list);
-		}
-		else
-		{
-			define("e_TRACKING_DISABLED", true);
-			define("TOTAL_ONLINE", "");
-			define("MEMBERS_ONLINE", "");
-			define("GUESTS_ONLINE", "");
-			define("ON_PAGE", "");
-			define("MEMBER_LIST", ""); //
-		}
-	}
-}
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function cachevars($id, $var) {
@@ -1394,7 +1284,10 @@ function init_session() {
 }
 
 $sql->db_Mark_Time('Start: Go online');
-if(isset($pref['track_online']) && $pref['track_online']) {
+if(!isset($_E107['no_online']) && varset($pref['track_online']))
+{
+	e107_require_once(e_HANDLER."online_class.php");
+	$e_online = new e_online();
 	$e_online->online($pref['track_online'], $pref['flood_protect']);
 }
 

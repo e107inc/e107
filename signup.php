@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-12-15 15:06:40 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2008-01-06 22:16:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,6 +23,12 @@ if($qs[0] != "activate"){   // multi-language fix.
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
 	e107_include_once(e_LANGUAGEDIR."English/lan_signup.php");
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
+}
+
+if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
+{
+	$threshold=(time() - ($pref['del_unv'] * 60));
+	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
 }
 
 include_once(e_HANDLER."user_extended_class.php");
