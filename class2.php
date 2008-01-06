@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2008-01-05 22:02:31 $
+|     $Revision: 1.40 $
+|     $Date: 2008-01-06 17:57:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -973,7 +973,7 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 					$v = $row['userclass_id'];
 				}
 			}
-			if(in_array($v, $class_array))
+			if (in_array($v, $class_array) || (ctype_digit($v) && ($v == 0)))
 			{
 				return TRUE;
 			}

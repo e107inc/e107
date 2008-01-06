@@ -42,7 +42,7 @@ else
   {
 	if(strstr($postID,'class:'))
 	{
-	  $uc = substr($postID,6).','.e_UC_PUBLIC;				// Not ideal, but 'Everyone' class not necessarily present
+	  $uc = substr($postID,6);
 	  $can_show = check_class($pref['image_post_class'],$uc);
 	}
 	else
