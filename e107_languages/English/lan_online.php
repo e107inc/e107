@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_online.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-06 09:38:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,8 +26,10 @@ define("ONLINE_EL12", "Replying to");
 define("ONLINE_EL13", "Forum");
 define("ONLINE_EL14", "Thread");
 define("ONLINE_EL15", "Page");
+define("ONLINE_EL16", "Information not available");
+
 define("CLASSRESTRICTED", "Class Restricted Page");
-define("ARTICLEPAGE", "Article/Review");
+//define("ARTICLEPAGE", "Article/Review");
 define("CHAT", "Chat");
 define("COMMENT", "Comments");
 define("DOWNLOAD", "Downloads");
@@ -48,7 +50,7 @@ define("USERSETTINGS", "User Settings");
 define("ONLINE", "Online Users");
 define("LISTNEW", "List New Items");
 define("USERPOSTS", "User Posts");
-define("SUBCONTENT", "Submit Article/Review");
+define("SUBCONTENT", "Submit Content");
 define("TOP", "Top Posters/Most Active Threads");
 define("ADMINAREA", "Admin Area");
 define("BUGTRACKER", "Bugtracker");
@@ -60,5 +62,6 @@ define("SURVEY", "Survey");
 define("ARTICLE", "Article");
 define("CONTENT", "Content Page");
 define("REVIEW", "Review");
+define('OTHER', 'Other page: ');
 
 ?>
