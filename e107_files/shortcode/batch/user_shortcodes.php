@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-19 20:34:47 $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-06 21:26:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -550,7 +550,7 @@ SC_BEGIN USER_FORM_START
 global $from;
 return "
 <form method='post' action='".e_SELF."'>
-<input type='hidden' name='from' value='$from' />
+<p><input type='hidden' name='from' value='$from' /></p>
 ";
 SC_END
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-09-20 21:35:38 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-06 21:26:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -46,8 +46,8 @@ $USER_SHORT_TEMPLATE_START = "
 	{USER_FORM_START}
 	<p>".LAN_419.": {USER_FORM_RECORDS} ".LAN_139." {USER_FORM_ORDER}
 	{USER_FORM_SUBMIT}
-	{USER_FORM_END}
 	</p>
+	{USER_FORM_END}
 	</div>
 	<br />
 	<br />
