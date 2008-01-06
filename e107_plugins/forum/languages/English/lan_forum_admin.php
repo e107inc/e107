@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-06 21:16:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -127,8 +127,8 @@ define("FORLAN_111", "deactivate");
 
 define("FORLAN_112", "Enable Redirect");
 define("FORLAN_113", "Tick this to make browser redirect to forum page after replying");
-define("FORLAN_114", "User Custom Title");
-define("FORLAN_115", "Tick this to allow users to change their Custom Title");
+//define("FORLAN_114", "User Custom Title");
+//define("FORLAN_115", "Tick this to allow users to change their Custom Title");
 define("FORLAN_116", "Reported Posts");
 define("FORLAN_117", "This will delete the record of the reported post. Not the post itself.");
 define("FORLAN_118", "Reported post deleted");

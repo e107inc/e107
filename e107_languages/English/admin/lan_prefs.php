@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-12-29 19:05:59 $
+|     $Revision: 1.10 $
+|     $Date: 2008-01-06 21:16:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -99,6 +99,7 @@ define("CUSTSIG_16", "Minimum Length for Passwords");
 define("CUSTSIG_17", "Subscribe to content/mailouts");
 define("CUSTSIG_18", "Disallow usernames");
 define("CUSTSIG_19", "usernames containing the following text will be rejected, separate entries by commas");
+define('CUSTSIG_20', 'User Custom Title');
 
 define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Best done with server config if possible!!!");
 define("PRFLAN_92", "Secure signup verification -- hide password in email?");
