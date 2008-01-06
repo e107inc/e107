@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-01-06 21:16:16 $
+|     $Revision: 1.16 $
+|     $Date: 2008-01-06 22:31:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -189,8 +189,8 @@ function update_706_to_800($type='')
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
 	
 	
-	// List of DB tables newly required  (defined in core_sql.php)
-	$new_tables = array('admin_log','audit_log');
+	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
+	$new_tables = array('admin_log','audit_log', 'dblog');
 
 
 	// List of changed DB tables (defined in core_sql.php) 
