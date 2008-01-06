@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/online.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-01-06 09:38:33 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-06 09:48:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -111,6 +111,9 @@ foreach($listuserson as $uinfo => $pinfo)
 	  break;
 	case 'top' :
 	  $online_location_page = TOP;
+	  break;
+	case 'oldpolls' :
+	  $online_location_page = OLDPOLLS;
 	  break;
 	//commonly used plugin pages
 	case 'bugtracker' :
