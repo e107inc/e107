@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-07-23 20:05:46 $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-06 21:16:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ SC_END
 
 SC_BEGIN CUSTOMTITLE
 global $rs, $curVal, $pref;
-if ($pref['forum_user_customtitle'] || ADMIN)
+if ($pref['signup_option_customtitle'] || ADMIN)
 {
 	return $rs->form_text("customtitle", 40, $curVal['user_customtitle'], 100, "tbox");
 }

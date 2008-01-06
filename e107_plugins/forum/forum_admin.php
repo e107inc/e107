@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-23 21:13:34 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-06 21:16:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -218,7 +218,6 @@ if (isset($_POST['updateoptions']))
 	$pref['html_post'] = $_POST['html_post'];
 	$pref['forum_attach'] = $_POST['forum_attach'];
 	$pref['forum_redirect'] = $_POST['forum_redirect'];
-	$pref['forum_user_customtitle'] = $_POST['forum_user_customtitle'];
 	$pref['reported_post_email'] = $_POST['reported_post_email'];
 	$pref['forum_tooltip'] = $_POST['forum_tooltip'];
 	$pref['forum_tiplength'] = $_POST['forum_tiplength'];
@@ -1069,11 +1068,6 @@ class forum
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_112."<br /><span class='smalltext'>".FORLAN_113."</span></td>
 		<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_redirect'] ? "<input type='checkbox' name='forum_redirect' value='1' checked='checked' />" : "<input type='checkbox' name='forum_redirect' value='1' />")."</td>
-		</tr>
-
-		<tr>
-		<td style='width:75%' class='forumheader3'>".FORLAN_114."<br /><span class='smalltext'>".FORLAN_115."</span></td>
-		<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_user_customtitle'] ? "<input type='checkbox' name='forum_user_customtitle' value='1' checked='checked' />" : "<input type='checkbox' name='forum_user_customtitle' value='1' />")."</td>
 		</tr>
 
 		<tr>

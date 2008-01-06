@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-12-30 18:20:54 $
+|     $Revision: 1.15 $
+|     $Date: 2008-01-06 21:16:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -183,7 +183,7 @@ function update_706_to_800($type='')
 	global $sql,$ns, $pref;
 	
 	// List of unwanted $pref values which can go
-	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real');
+	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle');
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
@@ -208,11 +208,20 @@ function update_706_to_800($type='')
 						'chatbox' => 'cb_ip'
 						);
 
-	$db_parser = new db_table_admin;								// Class to read table defs and process them
-	$do_save = FALSE;
+	$db_parser = new db_table_admin;				// Class to read table defs and process them
+	$do_save = FALSE;								// Set TRUE to update prefs when update complete
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
-	
+
+
+	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
+	{
+	  if ($just_check) return update_needed();
+	  $pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
+	  unset($pref['forum_user_customtitle']);
+	  $do_save = TRUE;
+	}
+
 	//change menu_path for usertheme_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
 	{

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-11-07 22:34:47 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-06 21:16:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -580,8 +580,8 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 	<td class='forumheader'>".CUSTSIG_14."</td>
 	</tr>";
 
-    $signup_option_title = array(CUSTSIG_2, CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17);
-    $signup_option_names = array("signup_option_realname", "signup_option_signature", "signup_option_image", "signup_option_timezone", "signup_option_class");
+    $signup_option_title = array(CUSTSIG_2, CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17, CUSTSIG_20);
+    $signup_option_names = array("signup_option_realname", "signup_option_signature", "signup_option_image", "signup_option_timezone", "signup_option_class", 'signup_option_customtitle');
 
 	foreach($signup_option_names as $key => $value)
 	{

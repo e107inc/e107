@@ -11,35 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-12-15 15:06:40 $
+|     $Revision: 1.19 $
+|     $Date: 2008-01-06 21:16:16 $
 |     $Author: e107steved $
-
-Mods to give a uniform interface.
-
-
-To do:
-1. Check that photo can be updated/deleted OK
-3. Make sure all $_POST values go through $tp->toDB - currently display name, login name don't - that's the way it was
-4. Make sure displayname and loginname kept in sync where not permitted to be different
-5. Check whether customtitle needs a special look to obey an option - currently updated in two places; check which is required
-6. XUP update - there's a bit of code which calls userlogin::update_xup() which looks relevant - BUT:
-	a) It allows update of user_login field
-	b) Possible error on {EMAILHIDE} - should it be {$EMAILHIDE} ?
-	c) That code will update the user record regardless of whether there are values in the XUP file - so could become null
-7. When restoring $_POST values after an error (just before display) they should all have been vetted - should be done, but double check
-8. Check the use of 'class' around line 190 - if left, the message doesn't make total sense. Not sure the feature makes sense anyway.
-9. No means of retaining name of photo file through an error?
-10. Can get editable classes from the userclass object in 0.8
-11. Check its acceptable to, on the whole, not update a field which is empty but for which $_POST[] value exists
-12. Run through list of fields in DB; make sure all can be updated where needed
-14. Add admin log entry for when admin changing data
-15. Check class memberships - possible that main admin made a member of all (may be an inherited userclass issue)
++----------------------------------------------------------------------------+
 
 Notes:
-$pref['forum_user_customtitle'] - used and saved in central record; set in forum interface
 Uses $udata initially, later curVal to hold current user data
-+----------------------------------------------------------------------------+
+Admin log events:
+	USET_01 - admin changed user data
+
 */
 
 //echo "Starting usersettings<br />";
@@ -51,8 +32,6 @@ $ue = new e107_user_extended;
 
 //define("US_DEBUG",TRUE);
 define("US_DEBUG",FALSE);
-//echo "Loaded includes<br />";
-
 
 /*
 These links look redundant
@@ -119,6 +98,26 @@ $changed_user_data = array();
 require_once(HEADERF);
 
 
+// Given an array of user data, return a comma separated string which includes public, admin, member classes etc as appropriate.
+function addCommonClasses($udata)
+{
+  $tmp = array();
+  if ($udata['user_class'] != "") $tmp = explode(",", $udata['user_class']);
+  $tmp[] = e_UC_MEMBER;
+  $tmp[] = e_UC_READONLY;
+  $tmp[] = e_UC_PUBLIC;
+  if($udata['user_admin'] == 1)
+  {
+	$tmp[] = e_UC_ADMIN;
+  }
+  if (strpos($udata['user_perms'],'0') === 0)
+  {
+	$tmp[] = e_UC_MAINADMIN;
+  }
+  return implode(",", $tmp);
+}
+
+
 // Save user settings (changes only)
 //-----------------------------------
 $error = "";
@@ -149,9 +148,14 @@ if (isset($_POST['updatesettings']))
 
 
 	$udata = get_user_data($inp);				// Get all the existing user data, including any extended fields
+	$udata['user_classlist'] = addCommonClasses($udata);
+
 	$peer = ($inp == USERID ? false : true);
-
-
+/*
+	echo "<pre>";
+	var_dump($udata);
+	echo "</pre>";
+*/
 
 
 	// Check external avatar
@@ -199,8 +203,8 @@ if (isset($_POST['updatesettings']))
 //	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122);
 //	$signup_option_names = array("realname", "signature", "image", "timezone");
 
-	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_USET_6);
-	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
+	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_USET_6, LAN_USET_19);
+	$signup_option_names = array("realname", "signature", "image", "timezone", "class", 'signup_option_customtitle');
 	foreach($signup_option_names as $key => $value)
 	{  // Check required signup fields
 		if ($pref['signup_option_'.$value] == 2 && !$_POST[$value] && !$_uid)
@@ -233,20 +237,20 @@ if (isset($_POST['updatesettings']))
 		unset($loginname);
 	  }
 	}
-	if (isset($loginname)) $_POST['loginname'] = $loginname; else unset($_POST['loginname']);			// Make sure no change of the $_POST value staying set inappropriately
+	if (isset($loginname)) $_POST['loginname'] = $loginname; else unset($_POST['loginname']);			// Make sure no chance of the $_POST value staying set inappropriately
 
 
 
 	// Display name checks 
 	// If display name == login name, it has to meet the criteria for both login name and display name
-	echo "Check_class: {$pref['displayname_class']}; {$udata['user_class']}; {$peer}<br />";
-	if (check_class($pref['displayname_class'], $udata['user_class'], $peer))
+//	echo "Check_class: {$pref['displayname_class']}; {$udata['user_classlist']}; {$peer}<br />";
+	if (check_class($pref['displayname_class'], $udata['user_classlist'], $peer))
 	{	// Display name can be different to login name - check display name if its been entered
 	  if (isset($_POST['username']))
 	  {
 	    $username = trim(strip_tags($_POST['username']));
 		$_POST['username'] = $username;
-		echo "Found new display name: {$username}<br />";
+//		echo "Found new display name: {$username}<br />";
 	  }
 	}
 	else
@@ -258,7 +262,6 @@ if (isset($_POST['updatesettings']))
 
 	if (varsettrue($username))
 	{
-	  echo "Checking user name<br />";
 	  // Impose a minimum length on display name
 	  if (strlen($username) < 2)
 	  {
@@ -452,7 +455,7 @@ if (isset($_POST['updatesettings']))
 	  {
 		// Either delete this block, or delete user_customtitle from the later loop for non-vetted fields
 		$new_customtitle = "";
-		if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
+		if(isset($_POST['customtitle']) && ($pref['signup_option_customtitle'] || ADMIN))
 		{
 		  $new_customtitle = $tp->toDB($_POST['customtitle']);
 		  if ($new_customtitle != $udata['user_customtitle']) $changed_user_data['user_customtitle'] = $new_customtitle;
@@ -476,7 +479,6 @@ if (isset($_POST['updatesettings']))
 							'user_login' => 'realname', 
 							'user_email' => 'email',
 							'user_timezone' => 'timezone',
-							'user_customtitle' => 'customtitle', 
 							'user_hideemail' =>'hideemail',
 							'user_xup' => 'user_xup');
 		
@@ -540,14 +542,8 @@ if (isset($_POST['updatesettings']))
 
 
 		// We can update the basic user record now - can just update fields from $changed_user_data
-		$new_data = array();
-		foreach ($changed_user_data as $fn => $fv)
-		{
-		  $new_data[] = "`{$fn}`='{$fv}'";
-		}
 		if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Changed data:<br> ".var_export($changed_user_data,TRUE),FALSE,LOG_TO_ROLLING);
-		$sql->db_Update("user",implode(', ',$new_data)." WHERE user_id='".intval($inp)."' ");
-
+		$sql->db_UpdateArray("user",$changed_user_data," WHERE user_id='".intval($inp)."' ");
 
 		// Now see if we need to log anything. First check the options and class membership
 		// (Normally we would leave logging decision to the log class. But this one's a bit more complicated)
@@ -555,8 +551,8 @@ if (isset($_POST['updatesettings']))
 		$do_log = array();
 		$log_action = '';
 		if ($_uid)
-		{		// Its an admin changing someone elses data - add an admin log entry here
-		  echo "Admin changing user data<br />";
+		{		// Its an admin changing someone elses data - make an admin log entry here
+		  $admin_log->log_event('LAN_ADMIN_LOG_001',"UID: {$udata['user_id']}. UName: {$udata['user_name']}",E_LOG_INFORMATIVE,'USET_01');
 		  // Check against the class of the target user, not the admin!
 		  if (!check_class(varset($pref['user_audit_class'],''),$udata['user_class'])) $user_logging_opts = array();
 		}
@@ -651,14 +647,13 @@ if (isset($_POST['updatesettings']))
 		}
 
 
-/*
-Needed - but check bits of the file first
+		// Update XUP data if file name changed.
 		if(isset($changed_user_data['user_xup']))
 		{
 		  require_once(e_HANDLER."login.php");
 		  userlogin::update_xup($inp, $changed_user_data['user_xup']);
 		}
-*/
+
 
 		$e_event->trigger("postuserset", $_POST);
 
@@ -708,19 +703,8 @@ WHERE u.user_id='".intval($uuid)."'
 
 $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
-$tmp = ($curVal['user_class'] != "" ? explode(",", $curVal['user_class']) : "");
-$tmp[] = e_UC_MEMBER;
-$tmp[] = e_UC_READONLY;
-$tmp[] = e_UC_PUBLIC;
-if($curVal['user_admin'] == 1)
-{
-	$tmp[] = e_UC_ADMIN;
-}
-if (strpos($curVal['user_perms'],'0') === 0)
-{
-	$tmp[] = e_UC_MAINADMIN;
-}
-$curVal['userclass_list'] = implode(",", $tmp);
+$curVal['userclass_list'] = addCommonClasses($curVal);
+
 
 if($_POST)
 {     // Fix for all the values being lost when there was an error in a field - restore from the latest $_POST values
