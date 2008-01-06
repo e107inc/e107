@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2008-01-06 17:57:06 $
-|     $Author: e107steved $
+|     $Revision: 1.41 $
+|     $Date: 2008-01-06 18:40:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -268,11 +268,8 @@ else if ($merror == "e2") {
 //
 // K: Load compatability mode.
 //
-/* At a later date add a check to load e107 compat mode by $pref
 PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER."php_compatibility_handler.php");
-e107_require_once(e_HANDLER."e107_Compat_handler.php");
-$aj = new textparse; // required for backwards compatibility with 0.6 plugins.
 
 //
 // L: Extract core prefs from the database
