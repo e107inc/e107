@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-26 16:32:05 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-07 22:30:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -326,7 +326,7 @@ switch ($action)
 		<tr>
 		<td class='forumheader3'>".UCSLAN_24."</td>
 		<td class='forumheader3'>";
-	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,"main,admin,classes,matchclass,member").'</select>';
+	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,"nobody,main,admin,classes,matchclass,member").'</select>';
 //		.r_userclass("userclass_editclass", $userclass_editclass, "off", "main,admin,classes,matchclass,public,nobody").
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_32."</td>
@@ -441,11 +441,17 @@ $ns->tablerender(UCSLAN_21, $text);
 	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
 	$ns->tablerender(UCSLAN_21, $text);
 	
-	$text = "<table cellpadding='3'><tr><td colspan='4'>Class rights for first 20 users in database</td></tr><tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td></tr>";
+	$text = "<table cellpadding='3'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
+	<tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td><td>Editable classes</td></tr>";
 	$sql->db_Select('user','user_id,user_name,user_class',"ORDER BY user_id LIMIT 0,20",'no_where');
 	while ($row = $sql->db_Fetch())
 	{
-	  $text .= "<tr><td>".$row['user_id']."</td><td>".$row['user_name']."</td><td>".$row['user_class']."</td><td>".$e_userclass->get_all_user_classes($row['user_class'])."</td></tr>";
+	  $inherit = $e_userclass->get_all_user_classes($row['user_class']);
+	  $text .= "<tr><td>".$row['user_id']."</td>
+	  <td>".$row['user_name']."</td><td>".$row['user_class']."</td>
+	  <td>".$inherit."</td>
+	  <td>".$e_userclass->get_editable_classes($inherit)."</td>
+	  </tr>";
 	}
 	$text .= "</table>";
 	$ns->tablerender(UCSLAN_21, $text);

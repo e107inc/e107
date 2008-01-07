@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-29 22:32:58 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-07 22:30:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -153,6 +153,27 @@ class user_class
 	return implode(',',array_unique($is));
   }
 
+
+  // Returns a list of user classes which can be edited by the specified classlist (defaults to current user's classes)
+  function get_editable_classes($class_list = USERCLASS_LIST)
+  {
+    $ret = array();
+	$possibles = array_flip(explode(',',$class_list));
+	foreach ($possibles as $uc => $uv)
+	{
+	  $ec = $this->class_tree[$uc]['userclass_editclass'];
+	  $vis = $this->class_tree[$uc]['userclass_visibility'];
+	  if (
+	  (($ec == e_UC_PUBLIC) || isset($possibles[$ec]))
+	  && 
+	  (($vis == e_UC_PUBLIC) || isset($possibles[$vis]))
+	  )
+	  {
+	    $ret[] = $uc;
+	  }
+	}
+	return implode(',',$ret);
+  }
 
 
   // Given a comma separated list, returns the minimum number of class memberships required to achieve this (i.e. strips classes 'above' another in the tree)
@@ -801,7 +822,7 @@ class user_class_admin extends user_class
 	$name_line = '';
 	if ($this->graph_debug) $name_line = $this->class_tree[$listnum]['userclass_id'].":";
 	$name_line .= $this->class_tree[$listnum]['userclass_name'];
-	if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility']."] = ".$this->class_tree[$listnum]['userclass_accum'];
+	if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum'];
 	// Next (commented out) line gives a 'conventional' link
 //	$ret .= "<img src='images/topicon.png' alt='class icon' /><a href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a></div>";
 	$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
