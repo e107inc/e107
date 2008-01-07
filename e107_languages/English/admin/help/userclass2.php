@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/userclass2.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-22 12:39:24 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-07 22:30:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -44,11 +44,12 @@ switch (varsettrue($qs[0],'config'))
   case 'debug' :
 	$text = "For advanced users only - shows the hierarchy of the classes, plus the assigned classes and the classes to which the first 20 site members have access.<br />
 	The number in front of the class name is its unique ID (reference number). The 'Everyone' class has an ID of 0 (zero). E107 uses these IDs throughout to refer to classes.<br />
-	After the class name is the class visibility - [vis:253] for example. This means that the class will be visible in most selectors only if the current user is a member of class 253.<br />
+	After the class name is the class visibility and editability - [vis:253, edit: 27] for example. This means that the class will be visible in most selectors only if the current user is a member of class 253, 
+	and the user may edit their class membership only if they are a member of class 27.<br />
 	Finally, after the '=', is a list of all classes above each class in the tree, plus the ID of that class. Thus a user who is a member of a particular class will
 	 be a member of all the classes in this list.<br /><br />
 	To help with understanding, the class membership of the first 20 members is shown. The first entry on each line shows the classes of which the user is a member. The 
-	 second entry lists all the classes where the user is a member once inheritance takes effect.";
+	 second entry lists all the classes where the user is a member once inheritance takes effect. The third entry shows which class memberships they can edit";
 	break;
   case 'test' :
   case 'special' :
@@ -61,7 +62,8 @@ switch (varsettrue($qs[0],'config'))
 		 then create a forum which only allowed users in the TEST class to access it.<br /><br />
 		 The class name is displayed in drop-down lists and the like; in some places the more detailed description is also displayed.<br /><br />
 		 The class icon may be displayed in various places on the site, if one is set.<br /><br />
-		 To allow users to determine whether they can be a member of a class, allow them to manage it.<br /><br />
+		 To allow users to determine whether they can be a member of a class, allow them to manage it. If you set 'no-one' here, only the admins
+		 can manage membership of the class<br /><br />
 		 The 'visibility' field allows you to hide the class from most members - applies in some of the drop-down lists and checkboxes.<br /><br />
 		 The 'class parent' allows you to set a hierarchy of classes, where the classes lower down the hierarchy also have the rights of their parent class, 
 		 and that classes' parent, and so on. The resulting tree is shown in the lower part of the page; you can expand and contract branches by clicking on the '+' and '-' boxes.";
