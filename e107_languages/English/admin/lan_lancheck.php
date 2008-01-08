@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_lancheck.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-08 20:23:00 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("LAN_CHECK_1", "Verify/Edit Language Files"); // modified in 0.7.6
@@ -30,6 +30,9 @@ define("LAN_CHECK_16", "Original File");
 define("LAN_CHECK_17", "A write problem occured while trying to save the file.");
 define("LAN_CHECK_18", "Language files in the standard format are NOT available for this plugin/theme.");
 define("LAN_CHECK_19", "Non-UTF-8 characters found!");
+define('LAN_CHECK_20', 'File');
+define('LAN_CHECK_21', 'Theme');
+define('LAN_CHECK_22', 'Themes');
 
 
 ?>
