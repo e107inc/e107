@@ -6,25 +6,29 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.5 $
-|     $Date: 2007-10-23 17:03:45 $
+|     $Revision: 1.6 $
+|     $Date: 2008-01-08 19:25:32 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_upload.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_upload.php rev. 1.1
+|     Zgodne z: /e107_languages/English/lan_upload.php rev. 1.2
 +-----------------------------------------------------------------------------+
 */
  
 define("PAGE_NAME", "Wysyłanie pliku");
 
-define("LAN_20", "Błąd");
+define('LAN_UL_001','Nieprawidłowy adres e-amil');
+define('LAN_UL_002', 'Nie masz odpowiednich uprawnień do przesyłania plików na ten serwer.');	// LAN_403
+
+define('LAN_UL_020', 'Błąd');
+define('LAN_UL_021', 'Przesyłanie niemożliwe');
+
 define("LAN_61", "Imię: ");
-define("LAN_112", "Adres email: ");
+define("LAN_112", "Adres e-mail: ");
 define("LAN_144", "Strona domowa: ");
 define("LAN_402", "Musisz być zarejestrowanym użytkownikiem, aby wysłać pliki na ten serwer.");
-define("LAN_403", "Nie masz odpowiednich uprawnień, aby wysyłać pliki na ten serwer.");
 define("LAN_404", "Dziękujemy, wysłany plik będzie sprawdzony przez administratora i po uzyskaniu pozytywnej oceny zostanie umieszczony w odpowiednim dziale.");
-define("LAN_405", "Plik przekracza zdefiniowany limit wielkości - plik został usunięty.");
+//define("LAN_405", "Plik przekracza zdefiniowany limit wielkości - plik został usunięty.");
 define("LAN_406", "Uwaga");
 define("LAN_407", "Wszystkie inne typy wysyłanych plików zostaną natychmiast skasowane.");
 define("LAN_408", "Podkreślone");

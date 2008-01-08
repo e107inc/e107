@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2007-10-23 17:03:43 $
+|     $Revision: 1.13 $
+|     $Date: 2008-01-08 19:25:30 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_comment.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_comment.php rev. 1.12
+|     Zgodne z: /e107_languages/English/lan_comment.php rev. 1.13
 +-----------------------------------------------------------------------------+
 */
 

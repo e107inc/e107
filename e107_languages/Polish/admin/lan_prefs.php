@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2007-10-23 17:03:51 $
+|     $Revision: 1.13 $
+|     $Date: 2008-01-08 19:25:41 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_prefs.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_prefs.php rev. 1.65
+|     Zgodne z: /e107_languages/English/admin/lan_prefs.php rev. 1.67
 +-----------------------------------------------------------------------------+
 */
  
@@ -160,7 +160,7 @@ define("PRFLAN_152", "Brak weryfikacji");
 define("PRFLAN_153", "Zatwierdzenie przez admina");
 define("PRFLAN_154", "Metoda weryfikacji nowego użytkownika <br />Jeśli jest wybrana metoda 'Zatwierdzenie przez admina', zalecane jest aktywowanie powiadamiania email o rejestracji nowych użytkowników <a href='".e_ADMIN."notify.php'>(kliknij tutaj)</a>.");
 
-define("PRFLAN_155", "Wyświetlana nazwa użytkownika widoczna dla");
+define("PRFLAN_155", "Wyświetlana nazwa oraz login mogą być widoczne dla");
 define("PRFLAN_156", "Resetuj WSZYSTKIE wyświetlane nazwy");
 define("PRFLAN_157", "Wszystkie wyświetlane nazwy zostały zresetowane i zastąpione nazwami użytkowników");
 define("PRFLAN_158", "Maksymalna długość wyświetlanej nazwy to (5..30)");

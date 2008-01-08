@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.5 $
-|     $Date: 2007-10-23 17:03:44 $
+|     $Revision: 1.6 $
+|     $Date: 2008-01-08 19:25:30 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_fpw.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_fpw.php rev. 1.5
+|     Zgodne z: /e107_languages/English/lan_fpw.php rev. 1.6
 +-----------------------------------------------------------------------------+
 */
  
@@ -39,8 +39,8 @@ define("LAN_FPW4","Prośba w celu zresetowania hasła została już wysłana. Je
 define("LAN_FPW5","Prośba o zresetowanie hasła dla");
 define("LAN_FPW6","Email został wysłany wraz z linkiem, który pozwoli Ci zresetować twoje hasło.");
 define("LAN_FPW7","Link do zresetowania hasła jest nieaktualny.<br />Proszę skontaktować się z administratorem strony w celu uzyskania dokładniejszych informacji.");
-define("LAN_FPW8","Hasło dla użytkownika");
-define("LAN_FPW9","zostało pomyślnie zmienione.<br /><br />Nowe hasło to:");
+define("LAN_FPW8","Hasło zostało zmienione pomyślnie.");
+define("LAN_FPW9","Nowe hasło to:");
 define("LAN_FPW10","Proszę");
 define("LAN_FPW11","się zalogować");
 define("LAN_FPW12","i niezwłocznie zmienić hasło w celach bezpieczeństwa.");

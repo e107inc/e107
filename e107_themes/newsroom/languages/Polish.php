@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.2 $
-|     $Date: 2007-10-23 17:10:17 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-08 19:41:43 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/newsroom/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+

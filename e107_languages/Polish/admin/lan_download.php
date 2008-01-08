@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2007-10-23 17:03:49 $
+|     $Revision: 1.13 $
+|     $Date: 2008-01-08 19:25:38 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_download.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_download.php rev. 1.19
+|     Zgodne z: /e107_languages/English/admin/lan_download.php rev. 1.20
 +-----------------------------------------------------------------------------+
 */
  
@@ -145,5 +145,8 @@ define("DOWLAN_154", "Jeśli używasz mirrorów, wybierz sposób w jaki mają by
 define("DOWLAN_155", "Metoda wyświetlania mirrorów:");
 define("DOWLAN_156", "Pokaż listę mirrorów, umożliwia użytkownikowi wybór mirrora");
 define("DOWLAN_157", "Używaj losowego mirrora - brak możliwości wyboru przez użytkownika");
+
+define("DOWLAN_158", "Pokaż podkategorie danej podkategorii na stronie głównej działu download");
+define("DOWLAN_159", "W ilości podkategorii sumuj ilość podrzędnych im kategorii"); //Include sub-sub-category counts in subcategory counts
 
 ?>

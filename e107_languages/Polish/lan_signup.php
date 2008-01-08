@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.7 $
-|     $Date: 2007-10-23 17:03:45 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-08 19:25:32 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_signup.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.28
+|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.29
 +-----------------------------------------------------------------------------+
 */
  
@@ -123,6 +123,6 @@ define("LAN_SIGNUP_55", "Wyświetlana nazwa jest za długa. Proszę wybrać inn�
 define("LAN_SIGNUP_56", "Wyświetlana nazwa jest za krótka. Proszę wybrać inną.");
 define("LAN_SIGNUP_57", "Login ten jest zbyt długi. Proszę wybrać inny.");
 define("LAN_SIGNUP_58", "Podgląd rejestracji");
-
+define("LAN_SIGNUP_59","**** Jeśli odsyłacz nie działa, sprawdź czy jego część nie została przeniesiona do następnej linii. ****");
 
 ?>

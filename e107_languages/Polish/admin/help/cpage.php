@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.5 $
-|     $Date: 2007-10-23 17:03:46 $
+|     $Revision: 1.6 $
+|     $Date: 2008-01-08 19:25:34 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/cpage.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/help/cpage.php rev. 1.4
+|     Zgodne z: /e107_languages/English/admin/help/cpage.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -20,6 +20,6 @@ if (!defined('e107_INIT')) { exit; }
 $text = "Na tej stronie możesz tworzyć własne menu oraz własne strony wraz z ich zawartością.<br /><br />";
 // $text .= "Proszę zobaczyć <a href='http://e107.org/e107_plugins/docs/docs.php?133'>Używanie narzędzia Własne menu oraz własne strony (po angielsku)</a> dla wyjaśnienia wszystkich funkcji.";
 
-$ns -> tablerender("Własne menu oraz strony", $text);
+$ns -> tablerender('Własne menu oraz strony', $text);
 
 ?>

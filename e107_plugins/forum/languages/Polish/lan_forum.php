@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2007-10-23 17:05:45 $
+|     $Revision: 1.13 $
+|     $Date: 2008-01-08 19:29:57 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum.php rev. 1.7
+|     Zgodne z: /e107_plugins/forum/languages/English/lan_forum.php rev. 1.8
 +-----------------------------------------------------------------------------+
 */
  
@@ -66,7 +66,7 @@ define("LAN_402", "Obecnie to forum jest przeznaczone tylko do odczytu");
 	
 define("LAN_403", "Nie ma jeszcze postów");
 define("LAN_404", "wypowiedzi");
-define("LAN_405", "Tylko do odczytu");
+define("LAN_405", "Dostęp ograniczony");
 	
 define("LAN_406", "Forum tylko dla administratorów");
 define("LAN_407", "Forum tylko dla zarejestrowanych użytkowników");
