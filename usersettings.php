@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-01-06 21:16:16 $
+|     $Revision: 1.20 $
+|     $Date: 2008-01-08 22:24:14 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -23,7 +23,6 @@ Admin log events:
 
 */
 
-//echo "Starting usersettings<br />";
 
 require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
@@ -32,35 +31,6 @@ $ue = new e107_user_extended;
 
 //define("US_DEBUG",TRUE);
 define("US_DEBUG",FALSE);
-
-/*
-These links look redundant
-if (isset($_POST['sub_news']))
-{
-    header("location:".e_BASE."submitnews.php");
-    exit;
-}
-
-if (isset($_POST['sub_link'])) {
-    header("location:".e_PLUGIN."links_page/links.php?submit");
-    exit;
-}
-
-if (isset($_POST['sub_download'])) {
-    header("location:".e_BASE."upload.php");
-    exit;
-}
-
-if (isset($_POST['sub_article'])) {
-    header("location:".e_BASE."subcontent.php?article");
-    exit;
-}
-
-if (isset($_POST['sub_review'])) {
-    header("location:".e_BASE."subcontent.php?review");
-    exit;
-}
-*/
 
 
 if (!USER) 
@@ -501,18 +471,20 @@ if (isset($_POST['updatesettings']))
 
 
 		// Update Userclass - only if its the user changing their own data (admins can do it another way)
-		if (!$_uid && $sql->db_Select("userclass_classes", "userclass_id", "userclass_editclass IN (".USERCLASS_LIST.")"))
+		if (!$_uid)
 		{
-		  $ucList = $sql->db_getList();			// List of classes which this user can edit
-		  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Read editable list. Current user classes: ".$udata['user_class'],FALSE,LOG_TO_ROLLING);
+		  if (!is_object($e_userclass)) $e_userclass = new user_class;
+		  $ucList = explode(',',$e_userclass->get_editable_classes());			// List of classes which this user can edit
+		  if (count($ucList))
+		  {
+			if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Read editable list. Current user classes: ".$udata['user_class'],FALSE,LOG_TO_ROLLING);
 
 			$cur_classes = explode(",", $udata['user_class']);			// Current class membership
 			$newclist = array_flip($cur_classes);						// Array keys are now the class IDs
 
 			// Update class list - we must take care to only change those classes a user can edit themselves 
-			foreach ($ucList as $c)
+			foreach ($ucList as $cid)
 			{
-			  $cid = $c['userclass_id'];
 			  if(!in_array($cid, $_POST['class']))
 			  {
 				unset($newclist[$cid]);
@@ -530,6 +502,7 @@ if (isset($_POST['updatesettings']))
 			  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Write back classes; old list: {$udata['user_class']}; new list: ".$nid,FALSE,LOG_TO_ROLLING);
 			  $changed_user_data['user_class'] = $nid;
 			}
+		  }
 		}
 
 
