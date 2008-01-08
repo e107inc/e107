@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-01-06 21:16:23 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-08 22:24:14 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -103,32 +103,32 @@ if($parm == 'radio')
 SC_END
 
 SC_BEGIN USERCLASSES
-global $sql, $pref, $tp, $curVal;
+global $e_userclass, $pref, $tp, $curVal;
 $ret = "";
 if(ADMIN && $curVal['user_id'] != USERID)
 {
 	return "";
 }
-if($sql->db_Select("userclass_classes", "*", "userclass_editclass IN(".$tp -> toDB($curVal['userclass_list'], true).") ORDER BY userclass_name"))
-{
-	$ucList = $sql->db_getList();
-	$ret = "<table style='width:95%'>";
-	foreach($ucList as $row)
+if (!is_object($e_userclass)) $e_userclass = new user_class;
+$ucList = explode(',',$e_userclass->get_editable_classes());			// List of classes which this user can edit
+$ret = '';
+if(!count($ucList)) return;
+
+  $is_checked = array();
+  foreach ($ucList as $cid)
+  {
+    if (check_class($cid, $curVal['user_class'])) $is_checked[$cid] = $cid;
+	if(isset($_POST['class']))
 	{
-		$inclass = check_class($row['userclass_id'], $curVal['user_class']) ? TRUE : FALSE;
-		if(isset($_POST['class']))
-		{
-			$inclass = in_array($row['userclass_id'], $_POST['class']);
-		}
-		$frm_checked = $inclass ? "checked='checked'" : "";
-		$ret .= "<tr><td class='defaulttext'>";
-		$ret .= "<input type='checkbox' name='class[]' value='{$row['userclass_id']}' $frm_checked />\n";
-		$ret .= $tp->toHTML($row['userclass_name'], "", "defs")."</td>";
-		$ret .= "<td class='smalltext'>".$tp->toHTML($row['userclass_description'], "", "defs")."</td>";
-		$ret .= "</tr>\n";
+	  $is_checked[$cid] = in_array($cid, $_POST['class']);
 	}
-	$ret .= "</table>\n";
-}
+  }
+  $inclass = implode(',',$is_checked);
+
+  $ret = "<table style='width:95%'><tr><td class='defaulttext'>";
+  $ret .= $e_userclass->vetted_tree('class',array($e_userclass,checkbox_desc),$inclass,'editable');
+  $ret .= "</td></tr></table>\n";
+
 return $ret;
 SC_END
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-07 22:30:19 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-08 22:24:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -158,18 +158,20 @@ class user_class
   function get_editable_classes($class_list = USERCLASS_LIST)
   {
     $ret = array();
+	$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1);
 	$possibles = array_flip(explode(',',$class_list));
-	foreach ($possibles as $uc => $uv)
+	unset($possibles[e_UC_PUBLIC]);
+	unset($possibles[e_UC_READONLY]);
+	foreach ($this->class_tree as $uc => $uv)
 	{
-	  $ec = $this->class_tree[$uc]['userclass_editclass'];
-	  $vis = $this->class_tree[$uc]['userclass_visibility'];
-	  if (
-	  (($ec == e_UC_PUBLIC) || isset($possibles[$ec]))
-	  && 
-	  (($vis == e_UC_PUBLIC) || isset($possibles[$vis]))
-	  )
+	  if (!isset($blockers[$uc]))
 	  {
-	    $ret[] = $uc;
+		$ec = $this->class_tree[$uc]['userclass_editclass'];
+//	  echo "Check class: {$uc} editclass {$ec}  in array: ".(isset($possibles[$ec]) ? 'yes' : 'no').'<br />';
+		if (isset($possibles[$ec]))
+		{
+	      $ret[] = $uc;
+		}
 	  }
 	}
 	return implode(',',$ret);
@@ -261,6 +263,17 @@ class user_class
 	{
 	  $ret = array();
 	  if (!$optlist) $optlist = 'public,guest,nobody,member,classes';		// Set defaults to simplify ongoing processing
+	  
+	  if ($optlist == 'editable')
+	  {
+		$temp = array_flip(explode(',',$this->get_editable_classes()));
+		if ($just_ids) return $temp;
+		foreach ($temp as $c => $t)
+		{
+		  $temp[$c] = $this->class_tree[$c]['userclass_name'];
+		}
+		return $temp;
+	  }
 
 	  $opt_arr = explode(',',$optlist);
 	  foreach ($opt_arr as $k => $v) 
@@ -299,7 +312,7 @@ class user_class
 				)
 				)
 			{
-			  $ret[$uc_id] = $this->class_tree[$uc_id]['userclass_name'];
+			  $ret[$uc_id] = $just_ids ? '1' : $this->class_tree[$uc_id]['userclass_name'];
 			}
 		}
 	  }
@@ -391,7 +404,6 @@ class user_class
 	$current_value = str_replace(' ','',$current_value);				// Simplifies parameter passing for the tidy-minded
 
 	$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
-	
 /*	// Start with the fixed classes
 	foreach ($this->fixed_classes as $c => $j)
 	{
