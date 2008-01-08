@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-04 19:57:19 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-08 20:22:54 $
 |     $Author: e107steved $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -209,7 +209,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 
 	$theme_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
-	<td class='fcaption'>Theme</td>
+	<td class='fcaption'>".LAN_CHECK_21."</td>
 	<td class='fcaption'>".LAN_CHECK_16."</td>
 	<td class='fcaption'>".$_POST['language']."</td>
 	<td class='fcaption'>".LAN_OPTIONS."</tr>";
@@ -222,7 +222,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 	}
 	$theme_text .= "</table>";
 
-	$ns -> tablerender("Themes",$theme_text);
+	$ns -> tablerender(LAN_CHECK_22,$theme_text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
@@ -237,7 +237,7 @@ function check_core_lanfiles($checklan,$subdir=''){
 	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='fcaption'>".LAN_CHECK_16."</td>
-	<td class='fcaption'>".$_POST['language']." File</td>
+	<td class='fcaption'>".$_POST['language'].' '.LAN_CHECK_20."</td>
 	<td class='fcaption'>".LAN_OPTIONS."</tr>";
 
 	$keys = array_keys($English);
