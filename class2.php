@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2008-01-06 22:16:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.43 $
+|     $Date: 2008-01-09 22:00:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1221,7 +1221,7 @@ function init_session() {
 			define("USERREALM", $result['user_realm']);
 			define("USERVIEWED", $result['user_viewed']);
 			define("USERIMAGE", $result['user_image']);
-			define("USERSESS", $result['user_sess']);
+			define("USERPHOTO", $result['user_sess']);
 
 			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
 

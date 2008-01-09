@@ -7,7 +7,7 @@ if(is_numeric($parm))
 {
 	if(intval($parm) == USERID)
 	{
-		$image = USERSESS;
+		$image = USERPHOTO;
 	}
 	else
 	{
@@ -21,7 +21,7 @@ elseif($parm)
 }
 else
 {
-	$image = USERSESS;
+	$image = USERPHOTO;
 }
 if($image && file_exists(e_FILE."public/avatars/".$image))
 {
