@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-01-07 22:30:19 $
+|     $Revision: 1.6 $
+|     $Date: 2008-01-09 22:44:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!getperms("4"))
   exit;
 }
 $e_sub_cat = 'userclass';
-//define('UC_DEBUG_OPTS',FALSE);
+define('UC_DEBUG_OPTS',FALSE);
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");		// Modified class handler
 $uclass = new e_userclass;						// Class management functions - legacy stuff from 0.7
@@ -326,7 +326,7 @@ switch ($action)
 		<tr>
 		<td class='forumheader3'>".UCSLAN_24."</td>
 		<td class='forumheader3'>";
-	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,"nobody,main,admin,classes,matchclass,member").'</select>';
+	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,"nobody,public,main,admin,classes,matchclass,member").'</select>';
 //		.r_userclass("userclass_editclass", $userclass_editclass, "off", "main,admin,classes,matchclass,public,nobody").
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_32."</td>

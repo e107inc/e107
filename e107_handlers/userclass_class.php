@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-08 22:24:22 $
+|     $Revision: 1.10 $
+|     $Date: 2008-01-09 22:44:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -158,9 +158,9 @@ class user_class
   function get_editable_classes($class_list = USERCLASS_LIST)
   {
     $ret = array();
-	$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1);
+	$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1);
 	$possibles = array_flip(explode(',',$class_list));
-	unset($possibles[e_UC_PUBLIC]);
+//	unset($possibles[e_UC_PUBLIC]);
 	unset($possibles[e_UC_READONLY]);
 	foreach ($this->class_tree as $uc => $uv)
 	{

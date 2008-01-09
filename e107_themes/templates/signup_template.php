@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-03 21:03:25 $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-09 22:44:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ $sc_style['SIGNUP_IS_MANDATORY']['pre'] = "<span style='font-size:15px; color:re
 $sc_style['SIGNUP_IS_MANDATORY']['post'] = "</span>";
 
 
-if(!isset($USERCLASS_SUBSCRIBE_START))
+if(!defined($USERCLASS_SUBSCRIBE_START))
 {
 $USERCLASS_SUBSCRIBE_START = "
 <tr>
@@ -58,21 +58,23 @@ $USERCLASS_SUBSCRIBE_START = "
 ";
 }
 
-if(!isset($USERCLASS_SUBSCRIBE_ROW))
+if(!defined($USERCLASS_SUBSCRIBE_ROW))
 {
 $USERCLASS_SUBSCRIBE_ROW = "
 <tr>
 	<td class='defaulttext' style='width:10%;vertical-align:top'>
+		<div {USERCLASS_INDENT}>
 		<input type='checkbox' name='class[]' value='{USERCLASS_ID}'  />
+		</div>
 	</td>
-	<td class='defaulttext' style='text-align:left;margin-left:0px;width:90%padding-top:3px;vertical-align:top'>{USERCLASS_NAME}<br />
+	<td class='defaulttext' style='text-align:left;margin-left:0px;width:90%;padding-top:3px;vertical-align:top'>{USERCLASS_NAME}<br />
 		<span class='smalltext'>{USERCLASS_DESCRIPTION}</span>
 	</td>
 </tr>
 ";
 }
 
-if(!isset($USERCLASS_SUBSCRIBE_END))
+if(!defined($USERCLASS_SUBSCRIBE_END))
 {
 $USERCLASS_SUBSCRIBE_END = "
 </table>
@@ -83,13 +85,13 @@ $USERCLASS_SUBSCRIBE_END = "
 
 
 
-if(!isset($SIGNUP_PASSWORD_LEN))
+if(!defined($SIGNUP_PASSWORD_LEN))
 {
 $SIGNUP_PASSWORD_LEN = "<span class='smalltext'> (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
 }
 
 
-if(!isset($SIGNUP_EXTENDED_USER_FIELDS))
+if(!defined($SIGNUP_EXTENDED_USER_FIELDS))
 {
 	$SIGNUP_EXTENDED_USER_FIELDS	= "
 <tr>
@@ -104,7 +106,7 @@ if(!isset($SIGNUP_EXTENDED_USER_FIELDS))
 ";
 }
 
-if(!isset($EXTENDED_USER_FIELD_REQUIRED))
+if(!defined($EXTENDED_USER_FIELD_REQUIRED))
 {
 	$EXTENDED_USER_FIELD_REQUIRED	= "<span style='text-align:right;font-size:15px; color:red'> *</span>";
 }
@@ -154,7 +156,7 @@ $sc_style['SIGNUP_IMAGECODE']['post'] = "
 ";
 
 
-if(!isset($COPPA_TEMPLATE))
+if(!defined($COPPA_TEMPLATE))
 {
 $COPPA_TEMPLATE = LAN_109." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href='mailto:".SITEADMINEMAIL."'>".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."
 <br />
@@ -165,19 +167,19 @@ $COPPA_TEMPLATE = LAN_109." <a href='http://www.cdt.org/legislation/105th/privac
 ";
 }
 
-if(!isset($COPPA_FAIL))
+if(!defined($COPPA_FAIL))
 {
 $COPPA_FAIL = "<div style='text-align:center'>".LAN_SIGNUP_9."</div>";
 }
 
-if(!isset($SIGNUP_TEXT))
+if(!defined($SIGNUP_TEXT))
 {
 $SIGNUP_TEXT =
 LAN_309." <b>".LAN_SIGNUP_29."</b><br /><br />".LAN_SIGNUP_30."<br />
 ";
 }
 
-if(!isset($SIGNUP_XUP_FORM))
+if(!defined($SIGNUP_XUP_FORM))
 {
 $SIGNUP_XUP_FORM = "
 	<div id='xup' style='display:none' >
@@ -233,7 +235,7 @@ $SIGNUP_XUP_FORM = "
 ";
 }
 
-if (!isset($SIGNUP_XUP_BUTTON))
+if (!defined($SIGNUP_XUP_BUTTON))
 {
 $SIGNUP_XUP_BUTTON = "	<div style='padding:10px;text-align:center'>
 	<input class='button' type ='button' style='cursor:pointer' size='30' value=\"".LAN_SIGNUP_35."\" onclick=\"expandit('default');expandit('xup')\" />
@@ -242,7 +244,7 @@ $SIGNUP_XUP_BUTTON = "	<div style='padding:10px;text-align:center'>
 }
 
 
-if(!isset($SIGNUP_BEGIN))
+if(!defined($SIGNUP_BEGIN))
 {
 $SIGNUP_BEGIN = "
 {SIGNUP_FORM_OPEN}
@@ -252,7 +254,7 @@ $SIGNUP_BEGIN = "
 ".LAN_400."<br /><br /></div>";
 }
 
-if(!isset($SIGNUP_BODY))
+if(!defined($SIGNUP_BODY))
 {
 $SIGNUP_BODY = "
 {SIGNUP_XUP}
@@ -320,7 +322,7 @@ $SIGNUP_BODY = "
 }
 
 
-if(!isset($SIGNUP_EXTENDED_CAT))
+if(!defined($SIGNUP_EXTENDED_CAT))
 {
 	$SIGNUP_EXTENDED_CAT	= "
 <tr>
@@ -332,7 +334,7 @@ if(!isset($SIGNUP_EXTENDED_CAT))
 }
 
 
-if(!isset($SIGNUP_END))
+if(!defined($SIGNUP_END))
 {
 $SIGNUP_END = "
 ";
