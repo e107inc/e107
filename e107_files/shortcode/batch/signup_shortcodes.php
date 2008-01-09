@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-10-11 19:46:29 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-09 22:44:13 $
 |     $Author: e107steved $
 |
 | Mods to show extended field categories
@@ -140,19 +140,29 @@ SC_END
 
 
 SC_BEGIN SIGNUP_USERCLASS_SUBSCRIBE
-global $tp, $pref, $sql, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_ROW, $USERCLASS_SUBSCRIBE_END;
+global $pref, $e_userclass, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_END;
 $ret = "";
-$search = array('{USERCLASS_ID}', '{USERCLASS_NAME}', '{USERCLASS_DESCRIPTION}');
-if($pref['signup_option_class'] && ($sql->db_Select("userclass_classes", "*", "userclass_editclass = 0 order by userclass_name")))
+if($pref['signup_option_class'])
 {
-	$ret = $USERCLASS_SUBSCRIBE_START;
-	while($row = $sql->db_Fetch())
-	{
-		$row['userclass_description'] = $tp->toHTML($row['userclass_description'], "", "defs");
-		$row['userclass_name'] = $tp->toHTML($row['userclass_name'], "", "defs");
-		$replace = array($row['userclass_id'], $row['userclass_name'], $row['userclass_description']);
-		$ret .= str_replace($search, $replace, $USERCLASS_SUBSCRIBE_ROW);
-	}
+  if (!is_object($e_userclass))
+  {
+	require_once(e_HANDLER.'userclass_class.php');
+	$e_userclass = new user_class;
+  }
+  $ucList = $e_userclass->get_editable_classes();			// List of classes which this user can edit
+  $ret = '';
+  if(!$ucList) return;
+
+  function show_signup_class($treename, $classnum, $current_value, $nest_level)
+  {
+	global $USERCLASS_SUBSCRIBE_ROW, $e_userclass, $tp;
+	$search = array('{USERCLASS_ID}', '{USERCLASS_NAME}', '{USERCLASS_DESCRIPTION}', '{USERCLASS_INDENT}');
+	$replace = array($classnum, $tp->toHTML($e_userclass->uc_get_classname($classnum), "", "defs"), 
+					$tp->toHTML($e_userclass->uc_get_classdescription($classnum), "", "defs"), " style='text-indent:".(1.2*$nest_level)."em'");
+	return str_replace($search, $replace, $USERCLASS_SUBSCRIBE_ROW);
+  }
+  $ret = $USERCLASS_SUBSCRIBE_START;
+  $ret .= $e_userclass->vetted_tree('class',show_signup_class,'','editable');
 	$ret .= $USERCLASS_SUBSCRIBE_END;
 	return $ret;
 }
