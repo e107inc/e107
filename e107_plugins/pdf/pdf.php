@@ -11,19 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-09 22:06:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-$qs = explode(".", e_QUERY);
+$qs = explode(".", e_QUERY,2);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
 $source = $qs[0];
-$parms = $qs[1];
+$parms = varset($qs[1],'');
 
 $lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");

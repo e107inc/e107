@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-02-13 22:27:33 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-09 22:06:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -23,13 +23,13 @@ $CUSTOMHEADER = "";
 $CUSTOMFOOTER = "";
 
 
-$qs = explode(".", e_QUERY);
+$qs = explode(".", e_QUERY,2);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
 $source = $qs[0];
-$parms = intval($qs[1]);
+$parms = varset($qs[1],'');
 unset($qs);
 
 
@@ -55,8 +55,8 @@ else
 	$row = $sql->db_Fetch(); 
 	extract($row);
 	define("e_PAGETITLE", $news_title);
-	$news_body = $tp->toHTML($news_body, TRUE);
-	$news_extended = $tp->toHTML($news_extended, TRUE);
+	$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
+	$news_extended = $tp->toHTML($news_extended, TRUE, 'BODY');
 	if ($news_author == 0)
 	{
 		$a_name = "e107";
