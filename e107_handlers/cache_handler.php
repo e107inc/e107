@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-09 00:12:08 $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-10 03:14:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.6 $
+* @version     $Revision: 1.7 $
 * @author      $Author: e107coders $
 */
 class ecache {
@@ -71,7 +71,7 @@ class ecache {
 			$CheckTag = '';
 		}
 		$q = ($syscache ? "S_" : "C_").preg_replace("#\W#", "_", $CacheTag);
-		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.$CheckTag.'.cache.php';
+		$fname = e_CACHE.$q.$CheckTag.'.cache.php';
 		//echo "cache f_name = $fname <br />";
 		return $fname;
 	}
@@ -84,7 +84,7 @@ class ecache {
 	* @scope public
 	*/
 	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false) {
-		global $pref, $FILES_DIRECTORY, $tp;
+		global $pref, $tp;
 		if(($ForcedCheck != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
 		{
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
@@ -171,11 +171,11 @@ class ecache {
 	* @param string $CacheTag
 	* @desc Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
 	*/
-	function clear($CacheTag = '', $syscache = false) {
+	function clear($CacheTag = '', $syscache = false)
+	{
 		global $pref, $FILES_DIRECTORY;
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
-		$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
-		$ret = ecache::delete($dir, $file, $syscache);
+		$ret = ecache::delete(e_CACHE, $file, $syscache);
 		return $ret;
 	}
 
