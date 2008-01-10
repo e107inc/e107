@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-01-04 21:32:21 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2008-01-10 02:55:03 $
+|     $Author: e107coders $
 |
 | Preferences:
 |	'sys_log_perpage' - number of events per page
@@ -178,7 +178,7 @@ if (($action == "confdel") || ($action == "auditdel"))
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?backdel.{$qs[1]}.{$qs[2]}'>
 	<input type='hidden' name='backdeltype' value='{$action}' />
-	<table style='width:97%' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 		<td class='forumheader3' colspan='2' style='width:100%;vertical-align:top;rext-align:center;'><br /><strong>";
 	$text .= (($action == "confdel") ? RL_LAN_047 : RL_LAN_065).$old_string." </strong><br /><br /></td>
@@ -296,7 +296,7 @@ if($action == "config")
 // Common to all logs
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?config'>
-	<table style='".USERWIDTH."' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_044."<br /></td>
@@ -335,7 +335,7 @@ function gen_log_delete($selectname)
 //==================
 	$text = "
 	<form method='post' action='".e_SELF."?config'>
-	<table style='width:97%' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_045." </td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>".gen_log_delete('rolllog_clearadmin').RL_LAN_046."
@@ -383,7 +383,7 @@ $audit_checkboxes = array(
 	$user_signup_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?config'>
-	<table style='".USERWIDTH."' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_026."</td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>";
@@ -418,7 +418,7 @@ $audit_checkboxes = array(
 // Audit Trail maintenance
 	$text = "
 	<form method='post' action='".e_SELF."?config'>
-	<table style='width:97%' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_066." </td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>".gen_log_delete('rolllog_clearaudit').RL_LAN_046."
@@ -436,7 +436,7 @@ $audit_checkboxes = array(
 //====================
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?config'>
-	<table style='".USERWIDTH."' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".RL_LAN_008."</td>
 		<td style='width:60%;vertical-align:top;' class='forumheader3'>
@@ -583,7 +583,7 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 // Start by putting up the filter boxes
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
-	<table style='".USERWIDTH."' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<colgroup>
 	<col style = 'width:20%;vertical-align:top;' />
 	<col style = 'width:30%;vertical-align:top;' />
@@ -658,7 +658,7 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 	$column_count = count($col_widths[$action]);
 	$text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
-	<table style='".USERWIDTH."' class='fborder'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<colgroup>";
 	foreach($col_widths[$action] as $i)
 	{
