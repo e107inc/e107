@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-04 17:36:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-10 03:25:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -30,9 +30,9 @@ if ($pref['cachestatus'] == '2') {
 	save_prefs();
 }
 
-if(!is_writable(e_BASE.$FILES_DIRECTORY.'cache/'))
+if(!is_writable(e_CACHE))
 {
-	$ns->tablerender(CACLAN_3, CACLAN_10);
+	$ns->tablerender(CACLAN_3, CACLAN_10."<br />(".$CACHE_DIRECTORY.")");
 	require_once("footer.php");
 	exit;
 }
@@ -74,34 +74,34 @@ $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td colspan='2' class='fcaption'>".CACLAN_1."</td>
+	<td colspan='3' class='fcaption'>".CACLAN_1."</td>
 	</tr>
-	<tr>
 
 	<tr>
-	<td class='forumheader3' style='width:50%;'>".CACLAN_11.":  <div class='smalltext'>".CACLAN_13."</div><br />{$nonsys_count}</td>
-	<td class='forumheader3' style='width:50%'>
+	<td class='forumheader3' style='width:60%;'>".CACLAN_11.":  <div class='smalltext'>".CACLAN_13."</div><br />{$nonsys_count}</td>
+	<td class='forumheader3' style='width:20%'>
 	<input type='radio' name='cachestatus' value='1'".($pref['cachestatus'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
 	<input type='radio' name='cachestatus' value='0'".(!$pref['cachestatus'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."&nbsp;&nbsp;
-	<input class='button' type='submit' name='empty_cache' value='".CACLAN_5."' />	
+    </td>
+	<td class='forumheader3' style='width:20%'> <input class='button' type='submit' name='empty_cache' value=\"".CACLAN_5."\" />
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3' style='width:50%;'>".CACLAN_12.":  <div class='smalltext'>".CACLAN_14."</div><br />{$sys_count}</td>
-	<td class='forumheader3' style='width:50%'>
+	<td class='forumheader3' style='width:60%;'>".CACLAN_12.":  <div class='smalltext'>".CACLAN_14."</div><br />{$sys_count}</td>
+	<td class='forumheader3' style='width:20%'>
 	<input type='radio' name='syscachestatus' value='1'".($pref['syscachestatus'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
 	<input type='radio' name='syscachestatus' value='0'".(!$pref['syscachestatus'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."&nbsp;&nbsp;
-	<input class='button' type='submit' name='empty_syscache' value='".CACLAN_16."' />	
+	</td>
+	<td class='forumheader3' style='width:20%'>
+	<input class='button' type='submit' name='empty_syscache' value=\"".CACLAN_16."\" />
 	</td>
 	</tr>
 
  
 	<tr style='vertical-align:top'>
-	<td colspan='2' style='text-align:center' class='forumheader'>
-	<br />
-	<input class='button' type='submit' name='submit_cache' value='".CACLAN_2."' />
- 
+	<td colspan='3' style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='submit_cache' value=\"".CACLAN_2."\" />
 	</td>
 	</tr>
 	</table>
