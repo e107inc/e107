@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/admin_log.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-12-15 17:59:49 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-11 21:53:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -55,6 +55,10 @@ case 'config' :
   break;
 case 'rolllog' :
   $text = "The rolling log displays various abnormal events which are not otherwise logged. It may also be used for code debugging and monitoring.<br /><br />";
+  $text .= common_filters();
+  break;
+case 'downlog' :
+  $text = "This page displays user downloads.<br /><br />";
   $text .= common_filters();
   break;
 case 'adminlog' :

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-10 02:55:03 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2008-01-11 21:53:33 $
+|     $Author: e107steved $
 |
 | Preferences:
 |	'sys_log_perpage' - number of events per page
@@ -35,6 +35,7 @@ if (!getperms("S"))
 }
 
 // Main language file should automatically be loaded
+
 
 unset($qs);
 
@@ -193,9 +194,9 @@ if (($action == "confdel") || ($action == "auditdel"))
 
 
 // Arrays of options for the various logs
-$log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog');
-$back_day_count = array('adminlog' => 30, 'auditlog' => 30, 'rolllog' => max(intval($pref['roll_log_days']),1));
-$page_title = array('adminlog' => RL_LAN_030, 'auditlog' => RL_LAN_062, 'rolllog' => RL_LAN_002);
+$log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog', 'downlog' => 'download_requests');
+$back_day_count = array('adminlog' => 30, 'auditlog' => 30, 'rolllog' => max(intval($pref['roll_log_days']),1), 'downlog' => 60);
+$page_title = array('adminlog' => RL_LAN_030, 'auditlog' => RL_LAN_062, 'rolllog' => RL_LAN_002, 'downlog' => RL_LAN_067);
 $col_count = array('adminlog' => 8, 'auditlog' => 8, 'rolllog' => 9);
 
 
@@ -211,6 +212,7 @@ $pri_filter_cond = "xx";
 $pri_filter_val  = "";
 $sort_field  = "dblog_id";
 $sort_order  = "DESC";
+$downloadid_filter = '';
 
 
 // Maintain the log view filter across pages
@@ -227,7 +229,8 @@ if (isset($_POST['updatefilters']))
   $pri_filter_val  = $_POST['roll_pri_val'];
   $caller_filter   = $_POST['roll_caller_filter'];
   $ipaddress_filter = $_POST['roll_ipaddress_filter'];
-  $cookie_string = implode("|",array($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val,$caller_filter,$ipaddress_filter));
+  $downloadid_filter = $_POST['roll_downloadid_filter'];
+  $cookie_string = implode("|",array($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val,$caller_filter,$ipaddress_filter,$downloadid_filter));
 //  echo $cookie_string."<br />";
 // Create session cookie to store values
   cookie($rl_cookiename,$cookie_string,0);    // Use session cookie
@@ -236,7 +239,7 @@ else
 {
 // Now try and get the filters from the cookie
   if (isset($_COOKIE[$rl_cookiename]))
-    list($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val, $caller_filter,$ipaddress_filter) = explode("|",$_COOKIE[$rl_cookiename]);
+    list($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val, $caller_filter,$ipaddress_filter,$downloadid_filter) = explode("|",$_COOKIE[$rl_cookiename]);
 }
 
 
@@ -465,7 +468,7 @@ $audit_checkboxes = array(
 //					LOG VIEW MENU
 //====================================================================
 
-if (($action == "rolllog") || ($action == "adminlog") || ($action == "auditlog"))
+if (($action == "rolllog") || ($action == "adminlog") || ($action == "auditlog") || ($action == "downlog"))
 {
 $from = intval(varset($qs[1], 0));				// First entry to display
 $amount = max(varset($pref['sys_log_perpage'], 20),5);	// Number of entries per page
@@ -473,20 +476,42 @@ $amount = max(varset($pref['sys_log_perpage'], 20),5);	// Number of entries per 
 // Array decides which filters are active for each log. There are 4 columns total. All but 'datetimes' occupy 2. Must specify multiple of 4 columns - add 'blank' if necessary
 $active_filters = array('adminlog' => array('datetimes'=>0,'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'priority'=>0),
 						'auditlog' => array('datetimes'=>0,'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'blank'=>2),
-						'rolllog'  => array('datetimes'=>0,'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'priority'=>0,'callerfilter'=>0,'blank'=>2));
+						'rolllog'  => array('datetimes'=>0,'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'priority'=>0,'callerfilter'=>0,'blank'=>2),
+						'downlog' => array('datetimes'=>0,'ipfilter'=>0,'userfilter'=>0,'downloadidfilter'=>0,'blank'=>2)
+						);
 
 // Arrays determine column widths, headings, displayed fields for each log
 $col_widths = array('adminlog' => array(18,4,14,7,15,8,14,20),		 // Date - Pri - IP - UID - User - Code - Event - Info
 					'auditlog' => array(18,14,7,15,8,14,24),
-					'rolllog'  => array(15,4,12,6,12,7,13,13,18));	 // Date - Pri - IP - UID - User - Code - Caller - Event - Info
+					'rolllog'  => array(15,4,12,6,12,7,13,13,18),	 // Date - Pri - IP - UID - User - Code - Caller - Event - Info
+					'downlog' => array(18,14,7,15,8,38)
+					);
 $col_titles = array('adminlog' => array(RL_LAN_019,RL_LAN_032,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_023,RL_LAN_025,RL_LAN_033),
 					'auditlog' => array(RL_LAN_019,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_023,RL_LAN_025,RL_LAN_033),
-					'rolllog'  => array(RL_LAN_019,RL_LAN_032,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_023,RL_LAN_024,RL_LAN_025,RL_LAN_033));
+					'rolllog'  => array(RL_LAN_019,RL_LAN_032,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_023,RL_LAN_024,RL_LAN_025,RL_LAN_033),
+					'downlog' => array(RL_LAN_019,RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_068,RL_LAN_069)
+					);
 $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','user_name','dblog_eventcode','dblog_title','dblog_remarks'),
 					'auditlog' => array('cf_datestring','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_title','dblog_remarks'),
-					'rolllog'  => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_caller','dblog_title','dblog_remarks'));
+					'rolllog'  => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_caller','dblog_title','dblog_remarks'),
+					'downlog' => array('cf_datestring','dblog_ip','dblog_user_id','user_name','download_request_download_id','download_name')
+					);
 
 
+// Only need to define entries in this array if the base DB query is non-standard (i.e. different field names and/or joins)
+$base_query = array('downlog' => "SELECT 
+									dbl.download_request_id as dblog_id,
+									dbl.download_request_userid as dblog_user_id,
+									dbl.download_request_ip as dblog_ip,
+									dbl.download_request_download_id,
+									dbl.download_request_datestamp as dblog_datestamp,
+									d.download_name,
+									u.user_name 
+						FROM #download_requests AS dbl 
+						LEFT JOIN #user AS u ON dbl.download_request_userid=u.user_id 
+						LEFT JOIN #download AS d ON dbl.download_request_download_id=d.download_id
+						"
+					);
 
 // Check things
   if ($start_time >= $end_time)
@@ -497,33 +522,39 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
   }
 
 
+// The filters have to use the 'actual' db field names. So the following table sets the defaults and the exceptions which vary across the range of tables supported
+$map_filters = array(
+			'default' => array('datetimes' => 'dblog_datestamp', 'ipfilter' => 'dblog_ip', 'userfilter' => 'dblog_user_id'),
+			'downlog' => array('datetimes' => 'download_request_datestamp', 'ipfilter' => 'download_request_ip', 'userfilter' => 'download_request_userid')
+								);
 
 // Now work out the query - only use those filters which are displayed
 	$qry = '';
 	$and_array = array();
 	foreach ($active_filters[$action] as $fname=>$fpars)
 	{
+	  $filter_field = varset($map_filters[$action][$fname],$map_filters[$default][$fname]);
 	  switch ($fname)
 	  {
 	    case 'datetimes' :
-		  if ($start_enabled && ($start_time > 0)) $and_array[] = "`dblog_datestamp` >= ".intval($start_time);
-		  if ($end_enabled && ($end_time > 0)) $and_array[] = "`dblog_datestamp` <= ".intval($end_time);
+		  if ($start_enabled && ($start_time > 0)) $and_array[] = "`{$filter_field}` >= ".intval($start_time);
+		  if ($end_enabled && ($end_time > 0)) $and_array[] = "`{$filter_field}` <= ".intval($end_time);
 		  break;
 		case 'ipfilter' :
 		  if ($ipaddress_filter != "") 
 		  {
 			if (substr($ipaddress_filter,-1) == '*')
 			{  // Wildcard to handle - mySQL uses %
-			  $and_array[] = "`dblog_ip` LIKE '".substr($ipaddress_filter,0,-1)."%' ";
+			  $and_array[] = "`{$filter_field}` LIKE '".substr($ipaddress_filter,0,-1)."%' ";
 			}
 			else
 			{
-			  $and_array[] = "`dblog_ip`= '".$ipaddress_filter."' ";
+			  $and_array[] = "`{$filter_field}`= '".$ipaddress_filter."' ";
 			}
 		  }
 		  break;
 		case 'userfilter' :
-		  if ($user_filter != '') $and_array[] = "`dblog_user_id` = ".intval($user_filter);
+		  if ($user_filter != '') $and_array[] = "`{$filter_field}` = ".intval($user_filter);
 		  break;
 		case 'eventfilter' :
 		  if ($event_filter != '')
@@ -568,6 +599,9 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 			}
 		  }
 		  break;
+		case 'downloadidfilter' :
+		  if ($downloadid_filter != '') $and_array[] = "`download_request_download_id` = ".intval($downloadid_filter);
+		  break;
 	  }
 	}
 
@@ -576,8 +610,15 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 	$num_entry = $sql->db_Count($log_db_table[$action], "(*)", $qry);
 
 	if ($from > $num_entry) $from = 0;		// We may be on a later page
-	
-	$qry = "SELECT dbl.*,u.user_name FROM #".$log_db_table[$action]." AS dbl LEFT JOIN #user AS u ON dbl.dblog_user_id=u.user_id".$qry." ORDER BY {$sort_field} ".$sort_order." LIMIT {$from}, {$amount} ";
+
+	if (isset($base_query[$action]))
+	{
+	  $qry = $base_query[$action].$qry." ORDER BY {$sort_field} ".$sort_order." LIMIT {$from}, {$amount} ";
+	}
+	else
+	{
+	  $qry = "SELECT dbl.*,u.user_name FROM #".$log_db_table[$action]." AS dbl LEFT JOIN #user AS u ON dbl.dblog_user_id=u.user_id".$qry." ORDER BY {$sort_field} ".$sort_order." LIMIT {$from}, {$amount} ";
+	}
 
 
 // Start by putting up the filter boxes
@@ -636,6 +677,11 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 		case 'callerfilter' :
 		  $text .= "<td class='forumheader3'>".RL_LAN_059."<br /><span class='smalltext'><em>".RL_LAN_061."</em></span></td>
 			<td class='forumheader3'><input class='tbox' type='text' name='roll_caller_filter' size='40' value='".$caller_filter."' maxlength='40' /></td>";
+		  $filter_cols += 2;
+		  break;
+		case 'downloadidfilter' :
+		  $text .= "<td class='forumheader3'>".RL_LAN_090."</td>
+			<td class='forumheader3'><input class='tbox' type='text' name='roll_downloadid_filter' size='20' value='".$downloadid_filter."' maxlength='10' /></td>";
 		  $filter_cols += 2;
 		  break;
 		case 'blank' :	// Any number of blank cells
@@ -718,6 +764,9 @@ function log_process($matches)
 		  case 'dblog_user_name' :
 		    $val = $row['dblog_user_id'] ? $row['dblog_user_name'] : LAN_ANONYMOUS;
 			break;
+		  case 'user_name' :
+		    $val = $row['dblog_user_id'] ? $row['user_name'] : LAN_ANONYMOUS;
+			break;
 		  case 'dblog_caller' :
 		    $val = $row['dblog_caller'];
 		    if ((strpos($val,'|') !== FALSE) && (strpos($val,'@') !== FALSE))
@@ -776,6 +825,9 @@ function admin_log_adminmenu()
 			
 		$var['rolllog']['text'] = RL_LAN_002;
 		$var['rolllog']['link'] = "admin_log.php?rolllog";
+			
+		$var['downlog']['text'] = RL_LAN_067;
+		$var['downlog']['link'] = "admin_log.php?downlog";
 			
 		$var['config']['text'] = RL_LAN_027;
 		$var['config']['link'] ="admin_log.php?config";

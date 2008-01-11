@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_admin_log.php,v 1.3 2007-12-29 22:07:49 e107steved Exp $
+// $Id: lan_admin_log.php,v 1.4 2008-01-11 21:53:39 e107steved Exp $
 	
 define('RL_LAN_001', 'System Logs');
 define('RL_LAN_002', "Rolling Log");
@@ -58,6 +58,9 @@ define('RL_LAN_063', 'User audit settings updated');
 define('RL_LAN_064', 'Applicable to all logs');
 define('RL_LAN_065', "Confirm delete user audit log events older than ");
 define('RL_LAN_066', "Delete user audit trail log events older than ");
+define('RL_LAN_067', 'Download History');
+define('RL_LAN_068', 'D/L ID');
+define('RL_LAN_069', 'Download Name');
 
 
 // Messages for checkbox options in audit log - correspond to audit log event codes (20 consecutive values reserved)
@@ -69,5 +72,9 @@ define('RL_LAN_076', 'Change password');
 define('RL_LAN_077', 'Change email address');
 define('RL_LAN_078', 'Password Reset');
 define('RL_LAN_079', 'Change other user settings');
+define('RL_LAN_080', 'Admin quick add user');
+// Intentional gap
+define('RL_LAN_090', 'Download ID');
+
 
 ?>
