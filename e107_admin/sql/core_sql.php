@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-22 23:03:52 $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-11 22:13:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -238,7 +238,8 @@ CREATE TABLE download_requests (
   download_request_datestamp int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (download_request_id),
   KEY download_request_userid (download_request_userid),
-  KEY download_request_download_id (download_request_download_id)
+  KEY download_request_download_id (download_request_download_id),
+  KEY download_request_datestamp (download_request_datestamp)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
