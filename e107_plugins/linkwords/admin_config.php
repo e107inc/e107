@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-07-23 21:02:35 $
+|     $Revision: 1.6 $
+|     $Date: 2008-01-11 22:13:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -165,7 +165,7 @@ $text = "
 <tr>
 <td style='width:50%' class='forumheader3'>".LWLAN_6."</td>
 <td style='width:50%' class='forumheader3'>
-<input class='tbox' type='text' name='linkword_link' size='60' value='".$linkword_link."' maxlength='150' />
+<input class='tbox' type='text' name='linkword_link' size='60' value='".$linkword_link."' maxlength='200' />
 </td>
 </tr>
 

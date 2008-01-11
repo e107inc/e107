@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-01-06 22:31:33 $
+|     $Revision: 1.17 $
+|     $Date: 2008-01-11 22:13:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -254,7 +254,7 @@ function update_706_to_800($type='')
 		catch_error();
 	}
 
-		//change menu_path for sitebutton_menu
+	//change menu_path for sitebutton_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu' || menu_path='sitebutton_menu/'"))
 	{
 	  if ($just_check) return update_needed();
@@ -307,10 +307,29 @@ function update_706_to_800($type='')
 	}
 
 
+	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."download_requests")) 
+	{
+	  $found = FALSE;
+	  while ($row = $sql -> db_Fetch())
+	  {		// One index per field
+	    if (in_array('download_request_datestamp', $row)) 
+		{
+		  $found = TRUE;
+		  break;
+		}
+	  }
+	  if (!$found)
+	  {
+		if ($just_check) return update_needed();
+		mysql_query("ALTER TABLE `".MPREFIX."download_requests` ADD INDEX `download_request_datestamp` (`download_request_datestamp`);");
+	  }
+	}
+
+
 	// Front page prefs (logic has changed)
 	if (!isset($pref['frontpage_force']))
 	{	// Just set basic options; no real method of converting the existing
-	  if ($just_check) return update_needed();
+	  if ($just_check) return update_needed('Change front page prefs');
 	  $pref['frontpage_force'] = array(e_UC_PUBLIC => '');
 	  $pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
 	  $do_save = TRUE;
@@ -322,9 +341,24 @@ function update_706_to_800($type='')
 	{
 	  if (isset($pref[$p]))
 	  {
-	    if ($just_check) return update_needed();
+	    if ($just_check) return update_needed('Remove obsolete prefs');
 		unset($pref[$p]);
 		$do_save = TRUE;
+	  }
+	}
+
+
+	if (mysql_table_exists('linkwords'))
+	{	// Need to extend field linkword_link varchar(200) NOT NULL default ''
+	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."linkwords LIKE 'linkword_link'")) 
+	  {
+		$row = $sql -> db_Fetch();
+		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(200)')
+		{
+		  if ($just_check) return update_needed('Update linkwords field definition');
+		  mysql_query("ALTER TABLE `".MPREFIX."linkwords` MODIFY `linkword_link` VARCHAR(200) NOT NULL DEFAULT '' ");
+		  catch_error();
+		}
 	  }
 	}
 
