@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-15 22:15:30 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-12 16:09:33 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -605,8 +605,12 @@ if ($action == "ne" || $action == "ed")
 
 		switch ($pref['eventpost_editmode'])
 		{
-		  case 1  : $insertjs = "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
-		  case 2  : $insertjs = "rows='25' ";
+		  case 1  : 
+			$insertjs = "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
+			break;
+		  case 2  : 
+			$insertjs = "rows='25' ";
+			break;
 		  default : $insertjs = "rows='15' ";
 		}
 
@@ -621,7 +625,7 @@ if ($action == "ne" || $action == "ed")
 		{
 		  // Show help
 		  require_once(e_HANDLER."ren_help.php");
-		  $text .= "<br />".display_help("helpb", 'cpage');
+		  $text .= "<br />".display_help("helpb", 'event');
 		}
 		
 		$text .= "</td></tr>";
