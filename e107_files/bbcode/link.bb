@@ -18,7 +18,7 @@ global $pref;
 	/* Fix for people using link=external= */
 	if(strpos($parm,"external=") !== FALSE)
 	{
-		list($extras,$parm) = explode("=",$parm);
+		list($extras,$parm) = explode("=",$parm,2);
 		$parm = $parm." ".$extras;
 	}
 
