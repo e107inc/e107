@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_bb.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-09-04 21:09:47 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-12 16:09:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
 BBCode template for calendar menu (pretend we're custom page)
 */
-$BBCODE_TEMPLATE_CPAGE = "
+$temp['event'] = "
 	{BB_HELP=ec_event}<br />
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
 	{BB=bq}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
