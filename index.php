@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/index.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-07-31 19:25:26 $
+|     $Revision: 1.4 $
+|     $Date: 2008-01-12 16:51:43 $
 |     $Author: e107steved $
 
 Mods for prioritised system
@@ -29,26 +29,6 @@ if (file_exists('index_include.php'))
 }
 
 
-// Legacy bit to handle 0.6xx values of prefs - simplify to a sensible option later
-if (!is_array($pref['frontpage']) && $pref['frontpage'] != 'Array') {
-	if (!$pref['frontpage'] || $pref['frontpage'] == 'Array.php') {
-		$up_pref = 'news.php';
-	} else if ($pref['frontpage'] == 'links') {
-		$up_pref = $PLUGINS_DIRECTORY.'links_page/links.php';
-	} else if ($pref['frontpage'] == 'forum') {
-		$up_pref = $PLUGINS_DIRECTORY.'forum/forum.php';
-	} else if (is_numeric($pref['frontpage'])) {
-		$up_pref = $PLUGINS_DIRECTORY.'content/content.php?content.'.$pref['frontpage'];
-	} else if (substr($pref['frontpage'], -1) != '/' && strpos($pref['frontpage'], '.') === FALSE) {
-		$up_pref = $pref['frontpage'].'.php';
-	} else {
-		$up_pref = $pref['frontpage'];
-	}
-	unset($pref['frontpage']);
-	$pref['frontpage']['all'] = $up_pref;
-	save_prefs();
-}
-
 $query = (e_QUERY && e_QUERY != '' && !$_GET['elan']) ? '?'.e_QUERY : '';
 $location = '';
 
@@ -63,7 +43,7 @@ $class_list = explode(',',USERCLASS_LIST);
 
 
 if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) 
-{
+{	// 0.7 method
   $location = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['all'].$query;
 } 
 else
@@ -109,30 +89,6 @@ if (!$location)
 if (!trim($location)) $location = 'news.php';
 
 
-// handle redirect and include front page methods ($pref['frontpage_method'] looks as if not used)
-if(isset($pref['frontpage_method']) && $pref['frontpage_method'] == "include") 
-{
-  if($location == "news.php") 
-  {
-	require_once("news.php");
-  } 
-  elseif ($location == PLUGINS_DIRECTORY."forum/forum.php") 
-  {
-	require_once($PLUGINS_DIRECTORY."forum/forum.php");
-  } 
-  elseif (preg_match('/^page\.php\?([0-9]*)$/', $location)) 
-  {
-	$e_QUERY = preg_match('/^page\.php\?([0-9]*)$/', $location);
-	require_once("page.php");
-  } 
-  else 
-  {
-  	header("Location: {$location}");
-	exit();
-  }
-} 
-else 
-{
   list($page,$str) = explode("?",$location."?"); // required to prevent infinite looping when queries are used on index.php.
   if($page == "index.php") // Welcome Message is the front-page.
   {
@@ -145,6 +101,6 @@ else
 	header("Location: {$location}");
   }
   exit();
-}
+
 
 ?>

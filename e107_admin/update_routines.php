@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-01-11 22:13:43 $
+|     $Revision: 1.18 $
+|     $Date: 2008-01-12 16:51:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,8 +28,8 @@ require_once(e_HANDLER.'db_table_admin_class.php');
 
 // To do - how do we handle multi-language tables?
 
-//$update_debug = FALSE;			// TRUE gives extra messages in places
-$update_debug = TRUE;			// TRUE gives extra messages in places
+$update_debug = FALSE;			// TRUE gives extra messages in places
+//$update_debug = TRUE;			// TRUE gives extra messages in places
 
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
@@ -183,7 +183,8 @@ function update_706_to_800($type='')
 	global $sql,$ns, $pref;
 	
 	// List of unwanted $pref values which can go
-	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle');
+	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
+						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality');
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');

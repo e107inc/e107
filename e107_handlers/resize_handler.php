@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-20 20:51:17 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-12 16:51:43 $
 |     $Author: e107steved $
 |
 | Mod to give correct return code if source image already smaller than max size
@@ -56,7 +56,8 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	  $new_height = varset($pref['im_height'], 100);
 	}
 	 
-	$im_quality = varset($pref['im_quality'], 99);
+//	$im_quality = varset($pref['im_quality'], 99);
+	$im_quality = 99;
 	 
 	$image_stats = getimagesize($source_file);
 	if ($image_stats == null) 
@@ -208,10 +209,6 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	if ($destination_file == "stdout") return TRUE;		// Can't do anything more if file sent to stdout - assume success
 	 
 	@chmod($destination_file, 0644);
-	if ($pref['image_owner']) 
-	{
-	  @chown($destination_file, $pref['image_owner']);
-	}
 	 
 	$image_stats = getimagesize($destination_file);
 	if ($image_stats == null) 

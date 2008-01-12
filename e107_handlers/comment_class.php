@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-08-08 19:28:04 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-12 16:51:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -221,8 +221,9 @@ class comment {
 		}
 		if ($pref['nested_comments']) {
 			$width2 = 100 - $width;
-			$total_width = (isset($pref['standards_mode']) && $pref['standards_mode'] ? "98%" : "95%");
-			if($width){
+			$total_width = "95%";
+			if($width)
+			{
 				$renderstyle = "
 				<table style='width:".$total_width."' border='0'>
 				<tr>
@@ -361,9 +362,7 @@ class comment {
 
 				if (!defined("emessage"))
 				{
-					$ip = $e107->getip();
-					require_once(e_HANDLER."encrypt_handler.php");
-					$ip = encode_ip($ip);
+					$ip = $e107->getip();		// Store IP 'in the raw' - could be IPv4 or IPv6
 					$_t = time();
 
 					if($editpid)

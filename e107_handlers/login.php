@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-01-01 21:26:16 $
+|     $Revision: 1.14 $
+|     $Date: 2008-01-12 16:51:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -85,12 +85,6 @@ class userlogin
 		}
 		$ouserpass = $userpass;
 		$userpass = md5($ouserpass);
-
-		// This is only required for upgrades and only for those not using utf-8 to begin with..
-		if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
-			$username = utf8_decode($username);
-			$userpass = md5(utf8_decode($ouserpass));
-		}
 
 		if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) 
 		{	// Invalid user
