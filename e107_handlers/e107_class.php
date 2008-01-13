@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-12-26 13:21:34 $
+|     $Revision: 1.13 $
+|     $Date: 2008-01-13 10:51:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -169,32 +169,30 @@ class e107{
 	 * Check if current user is banned
 	 *
 	 */
-	function ban() {
-		global $sql, $e107, $tp, $pref;
-		$ban_count = $sql->db_Count("banlist");
-		if($ban_count)
+	function ban() 
+	{
+	  global $sql, $e107, $tp, $pref;
+	  $ban_count = $sql->db_Count("banlist");
+	  if($ban_count)
+	  {
+		$ip = $this->getip();
+		$tmp = explode(".",$ip);
+		$wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
+		$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
+
+		$bhost = "";
+		if(varsettrue($pref['enable_rdns']))
 		{
-			$ip = $this->getip();
-			$tmp = explode(".",$ip);
-			$wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
-			$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
-
-			if(varsettrue($pref['enable_rdns']))
-			{
-				$tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
-				preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-				$bhost = (isset($match[0]) ? " OR banlist_ip='".$tp -> toDB($match[0], true)."'" : "");
-			}
-			else
-			{
-				$bhost = "";
-			}
-
-			if ($ip != '127.0.0.1')
-			{
-			  check_ban("banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}");
-			}
+		  $tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
+		  preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
+		  $bhost = (isset($match[0]) ? " OR banlist_ip='".$tp -> toDB($match[0], true)."'" : "");
 		}
+
+		if ($ip != '127.0.0.1')
+		{
+		  check_ban("banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}");
+		}
+	  }
 	}
 
 
@@ -216,15 +214,25 @@ class e107{
 //	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
 		  return TRUE;
 		}
+		
+		// Found banlist entry in table here
+		if (($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
+		{	// Ban has expired - delete from DB
+		  $sql->db_Delete('banlist', $query);
+		  return TRUE;
+		}
+
+		if (varsettrue($pref['ban_retrigger']) && varsettrue($pref['ban_durations'][$row['banlist_bantype']]))
+		{	// May need to retrigger ban period
+		  $sql->db_UpdateArray('banlist',
+			"`banlist_banexpires`=".intval(time() + ($pref['ban_durations'][$row['banlist_bantype']]*60*60)),
+			"WHERE `banlist_ip`='{$row['banlist_ip']}'");
+//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
+		}
 //	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
 		if ($show_error) header("HTTP/1.1 403 Forbidden", true);
 		if (isset($pref['ban_messages']))
 		{  // May want to display a message
-		  if (($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
-		  {	// Ban has expired - delete from DB
-			$sql->db_Delete('banlist', $query);
-			return TRUE;
-		  }
 		  // Ban still current here
 		  if ($do_return) return FALSE;
 		  echo $tp->toHTML(varsettrue($pref['ban_messages'][$row['banlist_bantype']]));		// Show message if one set
@@ -252,6 +260,10 @@ class e107{
 	  { // Got a whitelist entry for this 
 	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"BANLIST_11",'AL_BAN_LAN_11',$ban_ip,FALSE,LOG_TO_ROLLING);
 		return FALSE;
+	  }
+	  if (varsettrue($pref['enable_rdns_on_ban']))
+	  {
+		$ban_message .= 'Host: '.$e107->get_host_name(getenv('REMOTE_ADDR'));
 	  }
 	  // Add using an array - handles DB changes better
 	  $sql->db_Insert('banlist',array('banlist_ip' => $ban_ip, 'banlist_bantype' => $bantype, 'banlist_datestamp' => time(),

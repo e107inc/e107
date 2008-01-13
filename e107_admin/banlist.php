@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-26 13:21:34 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-13 10:51:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -235,11 +235,114 @@ function select_box($name, $data, $curval = FALSE)
 
 $text = "";
 
+// Drop-down box for access counts
+function drop_box($box_name,$curval)
+{
+  $opts = array(50,100,150,200,250,300,400,500);
+  $ret = "<select class='tbox' name={$box_name}>\n";
+  foreach ($opts as $o)
+  {
+    $sel = ($curval == $o) ? " selected='selected'" : '';
+	$ret .= "<option value='{$o}'{$sel}>{$o}</option>\n";
+  }
+  $ret .= "</select>\n";
+  return $ret;
+}
+
 
 switch ($action)
 {
-
   case 'options' :
+	if(!getperms("0")) exit;
+	if (isset($_POST['update_ban_options']))
+	{
+	  $pref['enable_rdns'] = intval($_POST['ban_rdns_on_access']);
+	  $pref['enable_rdns_on_ban'] = intval($_POST['ban_rdns_on_ban']);
+	  $pref['ban_max_online_access'] = intval($_POST['ban_access_guest']).','.intval($_POST['ban_access_member']);
+	  $pref['ban_retrigger'] = intval($_POST['ban_retrigger']);
+	  save_prefs();
+	}
+
+	if (isset($_POST['remove_expired_bans']))
+	{
+	  $sql->db_Delete('banlist',"`banlist_bantype` < ".BAN_TYPE_WHITELIST." AND `banlist_banexpires` > 0 AND `banlist_banexpires` < ".time());
+	}
+
+	list($ban_access_guest,$ban_access_member) = explode(',',varset($pref['ban_max_online_access'],'100,200'));
+	$ban_access_member = max($ban_access_guest,$ban_access_member);
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?options'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<colgroup>
+		<col style='width:40%' />
+		<col style='width:20%' />
+		<col style='width:40%' />
+		</colgroup>
+
+		<tr>
+		  <td class='forumheader3'>".BANLAN_63."</td>
+		  <td class='forumheader3'>
+		  <input type='checkbox' name='ban_rdns_on_access' value='1'".($pref['enable_rdns'] == 1 ? " checked='checked'" : '')." />
+		  </td>
+		  <td class='forumheader3'><span style='smalltext'>".BANLAN_65."</span></td>
+		</tr>
+
+		<tr>
+		  <td class='forumheader3'>".BANLAN_64."</td>
+		  <td class='forumheader3'>
+		  <input type='checkbox' name='ban_rdns_on_ban' value='1'".($pref['enable_rdns_on_ban'] == 1 ? " checked='checked'" : '')." />
+		  </td>
+		  <td class='forumheader3'><span style='smalltext'>".BANLAN_66."</span></td>
+		</tr>
+
+		<tr>
+		  <td class='forumheader3'>".BANLAN_67."</td>
+		  <td class='forumheader3'>".drop_box('ban_access_guest',$ban_access_guest).BANLAN_70.'<br />'.
+		  drop_box('ban_access_member',$ban_access_member).BANLAN_69."
+		  </td>
+		  <td class='forumheader3'>".BANLAN_68."</td>
+		</tr>
+
+		<tr>
+		  <td class='forumheader3'>".BANLAN_71."</td>
+		  <td class='forumheader3'>
+		  <input type='checkbox' name='ban_retrigger' value='1'".($pref['ban_retrigger'] == 1 ? " checked='checked'" : '')." />
+		  </td>
+		  <td class='forumheader3'><span style='smalltext'>".BANLAN_73."</span></td>
+		</tr>
+
+		";
+
+	$text .= "<tr><td class='forumheader3' colspan='3' style='text-align:center'>
+				<input class='button' type='submit' name='update_ban_options' value='".LAN_UPDATE."' /></td>
+			  </tr>
+			</table>\n
+	</form>
+	</div><br />";
+	$ns->tablerender(BANLAN_72, $text);
+
+
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?options'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<colgroup>
+		<col style='width:75%' />
+		<col style='width:25%' />
+		</colgroup>
+
+		<tr>
+		  <td class='forumheader3'>".BANLAN_75."</td>
+		  <td class='forumheader3'>
+			<input class='button' type='submit' name='remove_expired_bans' value='".BANLAN_76."' /></td>
+		</tr>
+	</table>\n
+	</form>
+	</div><br />";
+	$ns->tablerender(BANLAN_74, $text);
+	break;
+
+  case 'times' :
+	if(!getperms("0")) exit;
 	  if ((!isset($pref['ban_messages'])) || !is_array($pref['ban_messages']))
 	  {
 	    $pref['ban_messages'] = array_fill(0,BAN_REASON_COUNT-1,'');
@@ -541,7 +644,11 @@ function banlist_adminmenu()
 
 	if(getperms("0"))
 	{
-	  $var['options']['text'] = BANLAN_15;
+	  $var['times']['text'] = BANLAN_15;
+	  $var['times']['link'] = e_SELF."?times";
+   	  $var['times']['perm'] = "0";
+
+	  $var['options']['text'] = BANLAN_62;
 	  $var['options']['link'] = e_SELF."?options";
    	  $var['options']['perm'] = "0";
     }

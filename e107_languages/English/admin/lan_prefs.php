@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-01-06 21:16:30 $
+|     $Revision: 1.11 $
+|     $Date: 2008-01-13 10:51:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -184,8 +184,8 @@ define("PRFLAN_167", "Make entering an email address optional"); // subject to c
 define("PRFLAN_168", "Site Contact Person(s)");
 define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
 
-define("PRFLAN_170", "Use reverse DNS to allow host banning");
-define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
+//define("PRFLAN_170", "Use reverse DNS to allow host banning");
+//define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
 define("PRFLAN_172", "Login Name maximum length (10..100)");
 define("PRFLAN_173", "Check at SourceForge for E107 updates once/day");
 
