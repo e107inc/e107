@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-10-28 15:01:49 $
+|     $Revision: 1.6 $
+|     $Date: 2008-01-13 17:04:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -87,8 +87,13 @@ if ($action == "comments")
 	}
 	else
 	{
-		require_once(e_HANDLER."encrypt_handler.php");
-		$dip = decode_ip($id);
+		$dip = $id;
+		if (strlen($dip) == 8)
+		{  // Legacy decode (IPV4 address as it used to be stored - hex string)
+		  $hexip = explode('.', chunk_split($dip, 2, '.'));
+		  $dip = hexdec($hexip[0]). '.' . hexdec($hexip[1]) . '.' . hexdec($hexip[2]) . '.' . hexdec($hexip[3]);
+		  
+		}
 		$ccaption = UP_LAN_1.$dip;
 		$data = $cobj->getCommentData($amount='10', $from, "comment_ip = '".$id."'");
 	}
