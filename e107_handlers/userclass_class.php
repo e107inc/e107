@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-01-09 22:44:05 $
+|     $Revision: 1.11 $
+|     $Date: 2008-01-13 17:47:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -932,8 +932,16 @@ class user_class_admin extends user_class
   function delete_class($class_id)
   {
     if (in_array($class_id, $this->fixed_list)) return FALSE;			// Some classes can't be deleted
-	if (isset($this->class_list[$class_id]) && count($this->class_list[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
-    return $this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$class_id}'");
+	if (!isset($this->class_tree[$class_id])) return FALSE;
+	if (count($this->class_tree[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
+	foreach ($this->class_tree as $c)
+	{
+	  if ($c['userclass_editclass'] == $class_id) return FALSE;
+	  if ($c['userclass_visibility'] == $class_id) return FALSE;
+	}
+    if (!$this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$class_id}'")) return FALSE;
+	$this->read_tree(TRUE);			// Re-read the class tree
+	return TRUE;
   }
 
 
