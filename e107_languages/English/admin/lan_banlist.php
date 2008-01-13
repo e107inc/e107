@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_banlist.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-26 13:21:34 $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-13 10:51:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -69,7 +69,25 @@ define('BANLAN_58','Add users to the whitelist');
 define('BANLAN_59','Edit existing whitelist entry');
 define('BANLAN_60','Edit existing banlist entry');
 define('BANLAN_61','Existing Whitelist entries');
-define('BANLAN_62','');
+define('BANLAN_62','Options');
+define('BANLAN_63','Use reverse DNS to allow host banning');
+define('BANLAN_64','Reverse DNS accesses when adding ban');
+define('BANLAN_65','Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts, or if a server isn\'t responding');
+define('BANLAN_66','When a ban occurs, this option adds the domain of the banned address to the reason');
+define('BANLAN_67','Set maximum access rate');
+define('BANLAN_68','This determines the maximum number of site accesses in a 5-minute period');
+define('BANLAN_69','for members');
+define('BANLAN_70','for guests');
+define('BANLAN_71','Retrigger ban period');
+define('BANLAN_72','Ban Options');
+define('BANLAN_73','This will restart the ban period if a banned user accesses the site');
+define('BANLAN_74','Banlist Maintenance');
+define('BANLAN_75','Remove expired bans from list');
+define('BANLAN_76','Execute');
+define('BANLAN_77','');
+define('BANLAN_78','');
+define('BANLAN_79','');
+define('BANLAN_80','');
 
 // Ban types - block reserved 100-109 
 define('BANLAN_100', 'Unknown');

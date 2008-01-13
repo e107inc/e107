@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/online_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-01-06 22:16:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-13 10:51:34 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,30 +21,30 @@ class e_online
 {
 	function online($online_tracking = false, $flood_control = false) 
 	{
-		global $sql, $pref, $e107, $e_event, $tp, $online_timeout, $online_warncount, $online_bancount;
-		global $members_online, $total_online, $member_list, $listuserson;
+	  global $sql, $pref, $e107, $e_event, $tp, $online_timeout, $online_warncount, $online_bancount;
+	  global $members_online, $total_online, $member_list, $listuserson;
 
-		if($online_tracking == true || $flood_control == true)
+	  if($online_tracking == true || $flood_control == true)
+	  {
+		if(!isset($online_timeout)) $online_timeout = 300;
+		if(!isset($online_bancount)) 
 		{
-			if(!isset($online_timeout)) {
-				$online_timeout = 300;
-			}
-			if(!isset($online_warncount)) {
-				$online_warncount = 90;
-			}
-			if(!isset($online_bancount)) {
-				$online_bancount = 100;
-			}
-			$page = (strpos(e_SELF, "forum_") !== FALSE) ? e_SELF.".".e_QUERY : e_SELF;
-			$page = (strpos(e_SELF, "comment") !== FALSE) ? e_SELF.".".e_QUERY : $page;
-			$page = (strpos(e_SELF, "content") !== FALSE) ? e_SELF.".".e_QUERY : $page;
-			$page = $tp -> toDB($page, true);
-
-			$ip = $e107->getip();
-			$udata = (USER === true ? USERID.".".USERNAME : "0");
-
-			if (USER)
-			{
+		  list($ban_access_guest,$ban_access_member) = explode(',',varset($pref['ban_max_online_access'],'100,200'));
+		  $online_bancount = max($ban_access_guest,50);					// Safety net for incorrect values
+		  if (USER)
+		  {
+			$online_bancount = max($online_bancount,$ban_access_member);
+		  }
+		}
+		$online_warncount = $online_bancount * 0.9;		// Set warning threshold at 90% of ban threshold
+		$page = (strpos(e_SELF, "forum_") !== FALSE) ? e_SELF.".".e_QUERY : e_SELF;
+		$page = (strpos(e_SELF, "comment") !== FALSE) ? e_SELF.".".e_QUERY : $page;
+		$page = (strpos(e_SELF, "content") !== FALSE) ? e_SELF.".".e_QUERY : $page;
+		$page = $tp -> toDB($page, true);
+		$ip = $e107->getip();
+		$udata = (USER === true ? USERID.".".USERNAME : "0");
+		if (USER)
+		{
 				// Find record that matches IP or visitor, or matches user info
 				if ($sql->db_Select("online", "*", "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'")) 
 				{
@@ -83,9 +83,9 @@ class e_online
 				{
 					$sql->db_Insert("online", " '".time()."', '0', '{$udata}', '{$ip}', '{$page}', 1, 0");
 				}
-				}
-			else
-			{
+		}
+		else
+		{
 				//Current page request is from a visitor
 				if ($sql->db_Select("online", "*", "`online_ip` = '{$ip}' AND `online_user_id` = '0'")) {
 					$row = $sql->db_Fetch();
@@ -104,12 +104,12 @@ class e_online
 				} else {
 					$sql->db_Insert("online", " '".time()."', '0', '0', '{$ip}', '{$page}', 1, 0");
 				}
-			}
+		}
 
 		if (ADMIN || ($pref['autoban'] != 1 && $pref['autoban'] != 2) || (!isset($row['online_pagecount']))) // Auto-Ban is switched off. (0 or 3)
-			{
-				$row['online_pagecount'] = 1;
-			}
+		{
+		  $row['online_pagecount'] = 1;
+		}
 
 			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) 
 			{
