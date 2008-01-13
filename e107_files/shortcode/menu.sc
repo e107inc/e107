@@ -1,4 +1,4 @@
-/* $Id: menu.sc,v 1.2 2007-05-11 19:57:55 e107steved Exp $ */
+/* $Id: menu.sc,v 1.3 2008-01-13 12:34:40 e107steved Exp $ */
 global $sql;
 global $ns;
 global $eMenuList;
@@ -82,17 +82,20 @@ foreach($eMenuList[$tmp[0]] as $row)
 		}
 		else
 		{
-			if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php")) {
-				include_once(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php");
-			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php")) {
+			if (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php")) 
+			{
 				include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");	
-			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
+			} 
+			elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) 
+			{
 				include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");	
-			} elseif (is_readable(e_LANGUAGEDIR."english/plugins/lan_{$row['menu_path']}.php")) {
-				include_once(e_LANGUAGEDIR."English/plugins/lan_{$row['menu_path']}.php");
-			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English.php")) {
+			} 
+			elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English.php")) 
+			{
 				include_once(e_PLUGIN.$row['menu_path']."/languages/English.php");
-			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English/English.php")) {
+			} 
+			elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English/English.php")) 
+			{
 				include_once(e_PLUGIN.$row['menu_path']."/languages/English/English.php");
 			}
 			
