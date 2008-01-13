@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/siteinfo_menu/counter_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-03-24 11:54:46 $
-|     $Author: lisa_ $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-13 09:44:45 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 $text = "";
-if (isset($pref['statActivate']) && $pref['statActivate'] == true) {
+if (isset($pref['statActivate']) && $pref['statActivate'] == true) 
+{
 	$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));
 	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
 	if(!is_readable($logfile))
@@ -34,7 +35,9 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true) {
 		$siteUnique = 1;
 		$totalever = 1;
 		$uniqueever = 1;
-	} else {
+	} 
+	else 
+	{
 		$text = "";
 		require($logfile);
 		if($sql -> db_Select("logstats", "*", "log_id='statTotal' OR log_id='statUnique' OR log_id='pageTotal'"))
@@ -57,7 +60,6 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true) {
 				}
 			}
 		}
-		$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));
 		$total = ($pageInfo[$pageName]['ttl'] ? $pageInfo[$pageName]['ttl'] : 0);
 		$unique = ($pageInfo[$pageName]['unq'] ? $pageInfo[$pageName]['unq'] : 0);
 		$totalever = ($pageInfo[$pageName]['ttlv'] ? $pageInfo[$pageName]['ttlv'] : 0) + $totalPageEver + $total;
