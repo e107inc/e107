@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-01-09 22:44:05 $
+|     $Revision: 1.7 $
+|     $Date: 2008-01-13 17:47:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -100,7 +100,7 @@ if (isset($_POST['delete']))
 	}
 	elseif ($_POST['confirm']) 
 	{
-	  if ($e_userclass->delete_class($class_id))
+	  if ($e_userclass->delete_class($class_id) !== FALSE)
 	  {
 //		$sql->db_Delete('userclass_classes', "userclass_id='".$class_id."' ");
 		userclass2_adminlog("AL_UC_LAN_02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")",2);
@@ -121,7 +121,7 @@ if (isset($_POST['delete']))
 	  }
 	  else
 	  {
-		$message = UCSLAN_4;
+		$message = UCSLAN_10;
 	  }
 	}
 	else
