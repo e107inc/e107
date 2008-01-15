@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/user.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-19 20:34:47 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-15 22:16:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,7 @@ if (isset($_POST['delp']))
 	if (USERID == $tmp[1] || (ADMIN && getperms("4")))
 	{
 		$sql->db_Select("user", "user_sess", "user_id='". USERID."'");
+		$row = $sql->db_Fetch();
 		@unlink(e_FILE."public/avatars/".$row['user_sess']);
 		$sql->db_Update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
 		header("location:".e_SELF."?id.".$tmp[1]);
