@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-13 10:52:20 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-15 21:57:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -105,7 +105,6 @@ City, State, Country
   'signup_option_realname' => '1',
   'signup_option_signature' => '1',
   'signup_option_image' => '1',
-  'signup_option_timezone' => '1',
   'signup_option_class' => '1',
   'newsposts_archive' => '0',
   'newsposts_archive_title' => '',

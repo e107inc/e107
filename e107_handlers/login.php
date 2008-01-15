@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-01-12 16:51:43 $
+|     $Revision: 1.15 $
+|     $Date: 2008-01-15 21:57:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -259,8 +259,7 @@ class userlogin
 							'user_hideemail'=>'EMAILHIDE', 
 							'user_signature'=>'SIG', 
 							'user_sess'=>'PHOTO', 
-							'user_image'=>'AV', 
-							'user_timezone'=>'TZ');
+							'user_image'=>'AV');
 				
 				$new_values = array();
 				foreach ($main_fields as $f => $v)
@@ -282,6 +281,7 @@ class userlogin
 					"MSN" => "msn",
 					"YAHOO" => "yahoo",
 					"GEO" => "location",
+					"TZ" => 'timezone',
 					"BDAY" => "birthday");
 					include_once(e_HANDLER."user_extended_class.php");
 					$usere = new e107_user_extended;

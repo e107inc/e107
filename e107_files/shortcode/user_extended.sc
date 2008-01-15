@@ -91,28 +91,28 @@ if ($parms[1] == 'icon')
 if ($parms[1] == 'value')
 {
 	$uVal = str_replace(chr(1), "", $udata['user_'.$parms[0]]);
-	// check for db_lookup type
-	if($ueStruct["user_".$parms[0]]['user_extended_struct_type'] == '4')
+	switch ($ueStruct["user_".$parms[0]]['user_extended_struct_type'])
 	{
+	// check for db_lookup type
+	  case EUF_DB_FIELD :
 		$tmp = explode(",",$ueStruct["user_".$parms[0]]['user_extended_struct_values']);
 		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
 		{
-			$row = $sql->db_Fetch();
-			$ret_data = $row[$tmp[2]];
+		  $row = $sql->db_Fetch();
+		  $ret_data = $row[$tmp[2]];
 		}
 		else
 		{
-			$ret_data = FALSE;
+		  $ret_data = FALSE;
 		}
-	}
-	else
-	{
-		//check for 0000-00-00 in date field
-		if($ueStruct["user_".$parms[0]]['user_extended_struct_type'] == '7')
-		{
-			if($uVal == "0000-00-00") { $uVal = ""; }
-		}
+		break;
+	  case EUF_DATE ;		//check for 0000-00-00 in date field
+		if($uVal == "0000-00-00") { $uVal = ""; }
 		$ret_data = $uVal;
+		break;
+	  case EUF_PREDEFINED :	// Predefined field - have to look up display string in relevant file
+	    $ret_data = e107_user_extended::user_extended_display_text($ueStruct["user_".$parms[0]]['user_extended_struct_values'],$uVal);
+		break;
 	}
 	if($ret_data != "")
 	{

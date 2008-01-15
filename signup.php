@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-01-06 22:16:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2008-01-15 21:57:16 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -187,7 +187,6 @@ if(!$_POST)   // Notice Removal.
 	$email = "";				// Used in shortcodes
 	$loginname = "";
 	$realname = "";
-	$user_timezone = "";
 	$image = "";
 	$avatar_upload = "";
 	$photo_upload = "";
@@ -385,10 +384,10 @@ if (isset($_POST['register']))
 		$_POST['email'] = $xup['EMAIL'];
 		$_POST['signature'] = $xup['SIG'];
 		$_POST['hideemail'] = $xup['EMAILHIDE'];
-		$_POST['timezone'] = $xup['TZ'];
 		$_POST['realname'] = $xup['FN'];
 		$_POST['image'] = $xup['AV'];
 
+		$_POST['ue']['user_timezone'] = $xup['TZ'];
 		$_POST['ue']['user_homepage'] = $xup['URL'];
 		$_POST['ue']['user_icq'] = $xup['ICQ'];
 		$_POST['ue']['user_aim'] = $xup['AIM'];
@@ -536,8 +535,8 @@ global $db_debug;
 
 
 	// ========== Verify Custom Signup options if selected ========================
-	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_SIGNUP_28);
-	$signup_option_names = array("realname", "signature", "image", "timezone", "class");
+	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_SIGNUP_28);
+	$signup_option_names = array("realname", "signature", "image", "class");
 
 	foreach($signup_option_names as $key => $value)
 	{
@@ -696,17 +695,37 @@ global $db_debug;
 
 		$u_key = md5(uniqid(rand(), 1));
 		// ************* Possible class insert
-		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['timezone'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
-
-		// Log to user audit log if enabled
-		$admin_log->user_audit(USER_AUDIT_SIGNUP,array(
+		
+		// Following array will be logged to both admin log and user's entry
+		$signup_data = array(
 		  'user_id' => $nid,
 		  'user_name' => $username,
 		  'user_loginname' => $loginname,
 		  'user_email' => $tp -> toDB($_POST['email']),
-		  'user_realname' => $tp -> toDB($_POST['realname']),
-		  'signup_key' => $u_key
-		));
+		  'user_ip' => $ip);
+
+		// Following array is logged to user's entry only
+		$new_data = array(
+			'user_password' 	=> md5($_POST['password1']),
+			'user_sess'			=> $u_key,
+			'user_signature'	=> $tp -> toDB($_POST['signature']),
+			'user_image'		=> $tp -> toDB($_POST['image']),
+			'user_hideemail'	=> $tp -> toDB($_POST['hideemail']),
+			'user_join'			=> time(),
+			'user_currentvisit'	=> time(),
+			'user_ban'			=> 2,
+			'user_login'		=> $tp -> toDB($_POST['realname']),
+			'user_xup'			=> $tp -> toDB($_POST['xupexist'])
+			);
+
+		$nid = $sql->db_Insert("user", array_merge($signup_data,$new_data));
+//		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
+
+		// Log to user audit log if enabled
+		$signup_data['signup_key'] = $u_key;
+		$signup_data['user_realname'] = $tp -> toDB($_POST['realname']));
+
+		$admin_log->user_audit(USER_AUDIT_SIGNUP,$signup_data);
 
 		if(!$nid)
 		{

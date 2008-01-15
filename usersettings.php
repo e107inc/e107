@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-01-08 22:24:14 $
+|     $Revision: 1.21 $
+|     $Date: 2008-01-15 21:57:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -170,11 +170,11 @@ if (isset($_POST['updatesettings']))
 
 
 	// The 'class' option doesn't really make sense to me, but left it for now
-//	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122);
+//	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_USET_19);
 //	$signup_option_names = array("realname", "signature", "image", "timezone");
 
-	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_122, LAN_USET_6, LAN_USET_19);
-	$signup_option_names = array("realname", "signature", "image", "timezone", "class", 'signup_option_customtitle');
+	$signup_option_title = array(LAN_308, LAN_120, LAN_121, LAN_USET_6, LAN_USET_19);
+	$signup_option_names = array("realname", "signature", "image", "class", 'signup_option_customtitle');
 	foreach($signup_option_names as $key => $value)
 	{  // Check required signup fields
 		if ($pref['signup_option_'.$value] == 2 && !$_POST[$value] && !$_uid)
@@ -448,7 +448,6 @@ if (isset($_POST['updatesettings']))
 		$copy_list = array('user_signature' => 'signature', 
 							'user_login' => 'realname', 
 							'user_email' => 'email',
-							'user_timezone' => 'timezone',
 							'user_hideemail' =>'hideemail',
 							'user_xup' => 'user_xup');
 		
