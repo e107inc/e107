@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-06 21:16:30 $
+|     $Revision: 1.12 $
+|     $Date: 2008-01-15 21:57:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -23,14 +23,14 @@ define("LAN_106", "That doesn't appear to be a valid email address");
 define("LAN_112", "Email Address: ");
 define("LAN_113", "Hide email address?: ");
 define("LAN_114", "This will prevent your email address from being displayed on site");
-define("LAN_115", "ICQ Number: ");
-define("LAN_116", "AIM Address: ");
-define("LAN_117", "MSN Messenger: ");
-define("LAN_118", "Birthday: ");
+//define("LAN_115", "ICQ Number: ");
+//define("LAN_116", "AIM Address: ");
+//define("LAN_117", "MSN Messenger: ");
+//define("LAN_118", "Birthday: ");
 define("LAN_119", "Location: ");
 define("LAN_120", "Signature: ");
 define("LAN_121", "Avatar: ");
-define("LAN_122", "Timezone:");
+//define("LAN_122", "Timezone:");
 define("LAN_144", "Website URL: ");
 define("LAN_150", "Settings updated and saved into database.");
 define("LAN_151", "OK");
@@ -102,7 +102,7 @@ define("LAN_USET_4", "Maximum allowable height is");
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
 define("LAN_USET_7", "Miscellaneous");
-define("LAN_USET_8", "Signature / Timezone");
+define("LAN_USET_8", "User Signature");
 define("LAN_USET_9", "Some of the required fields (marked with a *) are missing from your settings.");
 define("LAN_USET_10","Please update your settings now, in order to proceed.");
 define("LAN_USET_11", "That user name cannot be accepted as valid, please choose a different user name");

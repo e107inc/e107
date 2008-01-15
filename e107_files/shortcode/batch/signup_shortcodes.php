@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-09 22:44:13 $
+|     $Revision: 1.10 $
+|     $Date: 2008-01-15 21:57:31 $
 |     $Author: e107steved $
 |
 | Mods to show extended field categories
@@ -273,34 +273,6 @@ if($pref['signup_option_image'])
 	}  
 	return $text;
 }
-SC_END
-
-SC_BEGIN SIGNUP_TIMEZONE
-global $pref;
-if ($pref['signup_option_timezone'])
-{
-	$timezone = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "GMT", "+1", "+2", "+3", "+4", "+5", "+5.30", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
-	$timearea = array("International DateLine West", "Samoa", "Hawaii", "Alaska", "Pacific Time (US and Canada)", "Mountain Time (US and Canada)", "Central Time (US and Canada), Central America", "Eastern Time (US and Canada)", "Atlantic Time (Canada)", "Greenland, Brasilia, Buenos Aires, Georgetown", "Mid-Atlantic", "Azores", "GMT - UK, Ireland, Lisbon", "West Central Africa, Western Europe", "Greece, Egypt, parts of Africa", "Russia, Baghdad, Kuwait, Nairobi", "Abu Dhabi, Kabul", "Islamabad, Karachi", "Mumbai, Delhi, Calcutta", "Astana, Dhaka", "Bangkok, Rangoon", "Hong Kong, Singapore, Perth, Beijing", "Tokyo, Seoul", "Brisbane, Canberra, Sydney, Melbourne", "Soloman Islands", "New Zealand", "Nuku'alofa");
-	$text .= "
-	<select style='width:99%' name='timezone' class='tbox'>\n";
-
-	$count = 0;
-	while ($timezone[$count])
-	{
-		if ($timezone[$count] == $user_timezone)
-		{
-			$text .= "<option value='".$timezone[$count]."' selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-		}
-		else
-		{
-			$text .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-		}
-		$count++;
-	}
-	$text .= "</select>";
-	return $text;
-}
-return "";
 SC_END
 
 

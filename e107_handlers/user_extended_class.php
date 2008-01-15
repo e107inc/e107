@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-11-13 07:45:12 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-15 21:57:38 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,16 +41,17 @@ class e107_user_extended
 
 	function e107_user_extended()
 	{
-		//		1 = text
-		//		2 = radio
-		//		3 = dropdown
-		//		4 = db field
-		//		5 = textarea
-		//		6 = integer
-		//		7 = date
-		//		8 = language
+	  define('EUF_TEXT',1);
+	  define('EUF_RADIO',2);
+	  define('EUF_DROPDOWN',3);
+	  define('EUF_DB_FIELD',4);
+	  define('EUF_TEXTAREA',5);
+	  define('EUF_INTEGER',6);
+	  define('EUF_DATE',7);
+	  define('EUF_LANGUAGE',8);
+	  define('EUF_PREDEFINED',9);
 
-		$this->typeArray = array(
+	  $this->typeArray = array(
 			'text' => 1,
 			'radio' => 2,
 			'dropdown' => 3,
@@ -58,9 +59,11 @@ class e107_user_extended
 			'textarea' => 5,
 			'integer' => 6,
 			'date' => 7,
-			'language' => 8
-		);
-		$this->user_extended_types = array(
+			'language' => 8,
+			'list' => 9
+	  );
+
+	  $this->user_extended_types = array(
 		1 => UE_LAN_1,
 		2 => UE_LAN_2,
 		3 => UE_LAN_3,
@@ -68,15 +71,17 @@ class e107_user_extended
 		5 => UE_LAN_5,
 		6 => UE_LAN_6,
 		7 => UE_LAN_7,
-		8 => UE_LAN_8
-		);
+		8 => UE_LAN_8,
+		9 => UE_LAN_9
+	  );
 
 		//load array with field names from main user table, so we can disallow these
+		// user_new, user_timezone deleted for 0.8
 		$this->reserved_names = array (
 		'id', 'name', 'loginname', 'customtitle', 'password',
-		'sess', 'email', 'signature', 'image', 'timezone', 'hideemail',
+		'sess', 'email', 'signature', 'image', 'hideemail',
 		'join', 'lastvisit', 'currentvisit', 'lastpost', 'chats',
-		'comments', 'forums', 'ip', 'ban', 'prefs', 'new', 'viewed',
+		'comments', 'forums', 'ip', 'ban', 'prefs', 'viewed',
 		'visits', 'admin', 'login', 'class', 'perms', 'realm', 'pwchange',
 		'xup'
 		);
@@ -85,8 +90,9 @@ class e107_user_extended
 
 	function user_extended_reserved($name)
 	{
-		return (in_array($name, $this->reserved_names));
+	  return (in_array($name, $this->reserved_names));
 	}
+
 
 	function user_extended_get_categories($byID = TRUE)
 	{
@@ -94,7 +100,6 @@ class e107_user_extended
 		global $sql;
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
 		{
-
 			if($byID == TRUE)
 			{
 				while($row = $sql->db_Fetch())
@@ -141,94 +146,97 @@ class e107_user_extended
 		return $ret;
 	}
 
+
 	function user_extended_type_text($type, $default)
 	{
-		global $tp;
-		switch ($type)
-		{
+	  global $tp;
+	  switch ($type)
+	  {
+		case EUF_INTEGER :
+		  $db_type = 'INT(11)';
+		  break;
 
-			case 6:
-				// integer,
-				$db_type = 'INT(11)';
-				break;
+		case EUF_DATE :
+		  $db_type = 'DATE NOT NULL';
+		  break;
 
-			case 7:
-				// date,
-				$db_type = 'DATE NOT NULL';
-				break;
+		case EUF_TEXTAREA:
+		  $db_type = 'TEXT';
+		  break;
 
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 8:
-				//text, dropdown, radio, db_field, language
-				$db_type = 'VARCHAR(255)';
-				break;
+		case EUF_TEXT :
+		case EUF_RADIO :
+		case EUF_DROPDOWN :
+		case EUF_DB_FIELD :
+		case EUF_LANGUAGE :
+		case EUF_PREDEFINED :
+		  $db_type = 'VARCHAR(255)';
+		  break;
 
-			case 5:
-				//textarea
-				$db_type = 'TEXT';
-				break;
-		}
-		if($type != 4 && $default != '')
-		{
-			$default_text = " DEFAULT '".$tp -> toDB($default, true)."'";
-		}
-		else
-		{
-			$default_text = '';
-		}
-		return $db_type.$default_text;
+	  }
+	  if($type != EUF_DB_FIELD && $default != '')
+	  {
+		$default_text = " DEFAULT '".$tp -> toDB($default, true)."'";
+	  }
+	  else
+	  {
+		$default_text = '';
+	  }
+	  return $db_type.$default_text;
 	}
+
 
 	function user_extended_field_exist($name)
 	{
-		global $sql, $tp;
-		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
+	  global $sql, $tp;
+	  return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
 	}
+
 
 	// For use by plugins to add extended user fields and won't be visible anywhere else
 	function user_extended_add_system($name, $type, $default = '')
 	{
-		return $this->user_extended_add($name, '_system_', $type, '', '', $default, 0, 255, 255, 255, 0, 0);
+	  return $this->user_extended_add($name, '_system_', $type, '', '', $default, 0, 255, 255, 255, 0, 0);
 	}
+
 
 	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent)
 	{
-		global $sql, $tp;
-		if(is_array($name))
-		{
-			extract($name);
-		}
-		if(!is_numeric($type))
-		{
-			$type = $this->typeArray[$type];
-		}
+	  global $sql, $tp;
+	  if(is_array($name))
+	  {
+		extract($name);
+	  }
+	  if(!is_numeric($type))
+	  {
+		$type = $this->typeArray[$type];
+	  }
 
-		if (!$this->user_extended_field_exist($name) && !$this->user_extended_reserved($name))
+	  if (!$this->user_extended_field_exist($name) && !$this->user_extended_reserved($name))
+	  {
+		$field_info = $this->user_extended_type_text($type, $default);
+		if($order === '')
 		{
-			$field_info = $this->user_extended_type_text($type, $default);
-			if($order === '')
+		  if($sql->db_Select("user_extended_struct","MAX(user_extended_struct_order) as maxorder","1"))
+		  {
+			$row = $sql->db_Fetch();
+			if(is_numeric($row['maxorder']))
 			{
-				if($sql->db_Select("user_extended_struct","MAX(user_extended_struct_order) as maxorder","1"))
-				{
-					$row = $sql->db_Fetch();
-					if(is_numeric($row['maxorder']))
-					{
-						$order = $row['maxorder']+1;
-					}
-				}
+			  $order = $row['maxorder']+1;
 			}
-			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$tp -> toDB($name, true)." ".$field_info);
-			$sql->db_Insert("user_extended_struct","0,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
-			if ($this->user_extended_field_exist($name))
-			{
-				return TRUE;
-			}
+		  }
 		}
-		return FALSE;
+		$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$tp -> toDB($name, true)." ".$field_info);
+		$sql->db_Insert("user_extended_struct","0,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+		if ($this->user_extended_field_exist($name))
+		{
+		  return TRUE;
+		}
+	  }
+	  return FALSE;
 	}
+
+
 
 	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $parent)
 	{
@@ -279,59 +287,96 @@ class e107_user_extended
 		return "<input type='checkbox' {$chk} value='1' name='{$name}' />&nbsp;".UE_LAN_HIDE;
 	}
 
+
+
 	function user_extended_edit($struct, $curval)
 	{
-		global $cal, $tp;
-		$choices = explode(",",$struct['user_extended_struct_values']);
-		if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
-		{
-			$curval = $struct['user_extended_struct_default'];
-		}
-		foreach($choices as $k => $v)
-		{
-			$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
-		}
-		$parms = explode("^,^",$struct['user_extended_struct_parms']);
-		$include = preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
-		$regex = $tp->toText($parms[1]);
-		$regexfail = $tp->toText($parms[2]);
-		$fname = "ue[user_".$struct['user_extended_struct_name']."]";
-		if(strpos($include, 'class') === FALSE)	{
-			$include .= " class='tbox' ";
-		}
+	  global $cal, $tp;
+	  if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
+	  {
+		$curval = $struct['user_extended_struct_default'];
+	  }
+	  $choices = explode(",",$struct['user_extended_struct_values']);
+	  foreach($choices as $k => $v)
+	  {
+		$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
+	  }
+	  $parms = explode("^,^",$struct['user_extended_struct_parms']);
+	  $include = preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
+	  $regex = $tp->toText($parms[1]);
+	  $regexfail = $tp->toText($parms[2]);
+	  $fname = "ue[user_".$struct['user_extended_struct_name']."]";
+	  if(strpos($include, 'class') === FALSE)	
+	  {
+		$include .= " class='tbox' ";
+	  }
 
-		switch($struct['user_extended_struct_type'])
-		{
-			case 1:  //textbox
-			case 6:  //integer
-				$ret = "<input name='{$fname}' value='{$curval}' {$include} />";
-				return $ret;
-				break;
 
-			case 2: //radio
-				foreach($choices as $choice)
-				{
-					$choice = trim($choice);
-					$chk = ($curval == $choice)? " checked='checked' " : "";
-					$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
-				}
-				return $ret;
-				break;
+/*
+	  define('EUF_TEXT',1);
+	  define('EUF_RADIO',2);
+	  define('EUF_DROPDOWN',3);
+	  define('EUF_DB_FIELD',4);
+	  define('EUF_TEXTAREA',5);
+	  define('EUF_INTEGER',6);
+	  define('EUF_DATE',7);
+	  define('EUF_LANGUAGE',8);
+	  define('EUF_PREDEFINED',9);
+*/
+	  switch($struct['user_extended_struct_type'])
+	  {
+		case EUF_TEXT :  //textbox
+		case EUF_INTEGER :  //integer
+		  $ret = "<input name='{$fname}' value='{$curval}' {$include} />";
+		  return $ret;
+		  break;
 
-			case 3: //dropdown
-				$ret = "<select {$include} name='{$fname}'>\n";
-				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
-				foreach($choices as $choice)
-				{
-					$choice = trim($choice);
-					$sel = ($curval == $choice) ? " selected='selected' " : "";
-					$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
-				}
-				$ret .= "</select>\n";
-				return $ret;
-				break;
+		case EUF_RADIO : //radio
+		  foreach($choices as $choice)
+		  {
+			$choice = trim($choice);
+			$chk = ($curval == $choice)? " checked='checked' " : "";
+			$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
+		  }
+		  return $ret;
+		  break;
 
-			case 4: //db_field
+		case EUF_DROPDOWN : //dropdown
+		  $ret = "<select {$include} name='{$fname}'>\n";
+		  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
+		  foreach($choices as $choice)
+		  {
+			$choice = trim($choice);
+			$sel = ($curval == $choice) ? " selected='selected' " : "";
+			$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+		  }
+		  $ret .= "</select>\n";
+		  return $ret;
+		  break;
+
+		case EUF_PREDEFINED : // predefined list, shown in dropdown
+		  $filename = e_ADMIN.'sql/extended_'.trim($struct['user_extended_struct_values']).'.php';
+		  if (!is_readable($filename)) return 'No file: '.$filename;
+		  require($filename);
+		  $list_name = $struct['user_extended_struct_values'].'_list';
+		  $display_func = $struct['user_extended_struct_values'].'_value';
+		  if (!function_exists($display_func)) $display_func = '';
+		  $source_data = $$list_name;
+		  $ret = "<select {$include} name='{$fname}'>\n";
+		  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
+		  foreach($source_data as $v)
+		  {
+			$val = $v[0];
+			$choice = trim($v[1]);
+			if ($display_func) $choice = $display_func($val,$choice);
+			$sel = ($curval == $val) ? " selected='selected' " : "";
+			$ret .= "<option value='{$val}' {$sel}>{$choice}</option>\n";
+		  }
+		  $ret .= "</select>\n";
+		  return $ret;
+		  break;
+
+		case EUF_DB_FIELD : //db_field
 				global $sql;
 				$order = ($choices[3]) ? "ORDER BY ".$tp -> toDB($choices[3], true) : "";
 
@@ -353,11 +398,11 @@ class e107_user_extended
 				}
 				break;
 
-			case 5: //textarea
+			case EUF_TEXTAREA : //textarea
 				return "<textarea {$include} name='{$fname}' >{$curval}</textarea>";
 				break;
 
-			case 7: //date
+			case EUF_DATE : //date
 				return $cal->make_input_field(
 				array(
                'ifFormat' => '%Y-%m-%d'
@@ -370,7 +415,7 @@ class e107_user_extended
 				);
 				break;
 
-			case 8: // language
+			case EUF_LANGUAGE : // language
 				require_once(e_HANDLER."file_class.php");
 				$fl = new e_file;
 				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
@@ -415,6 +460,7 @@ class e107_user_extended
 		return $ret;
 	}
 
+
 	function parse_extended_xml($contents, $no_cache = FALSE)
 	{
 		if($no_cache == FALSE && $this->extended_xml)
@@ -442,11 +488,11 @@ class e107_user_extended
 								"default" 		=> $item->default[0],
 								"required" 		=> $item->required[0],
 								"read" 			=> $item->read[0],
-								"write" 			=> $item->write[0],
+								"write" 		=> $item->write[0],
 								"applicable" 	=> $item->applicable[0],
 								"include_text"	=> $item->include_text[0],
 								"parms"			=> $item->include_text[0],
-								"regex" 			=> $item->regex[0]
+								"regex" 		=> $item->regex[0]
 							 );
 			if(is_array($item->default) && $item->default[0] == '')
 			{
@@ -529,7 +575,30 @@ class e107_user_extended
 			$field_name = 'user_'.$field_name;
 		}
 		$uinfo = get_user_data($uid);
-		return (isset($uinfo[$field_name]) ? $uinfo[$field_name] : $ifnotset);
+		if (!isset($uinfo[$field_name])) return $ifnotset;
+		return $uinfo[$field_name];
 	}
+
+	// Given a predefined list field, returns the display text corresponding to the passed value
+	function user_extended_display_text($table,$value)
+	{
+	  $filename = e_ADMIN.'sql/extended_'.$table.'.php';
+	  if (!is_readable($filename)) return 'No file: '.$filename;
+	  require_once($filename);
+	  $list_name = $table.'_list';
+	  $display_func = $table.'_value';
+	  if (!function_exists($display_func)) $display_func = '';
+	  $source_data = $$list_name;
+	  foreach($source_data as $v)
+	  {
+		if ($value == $v[0])
+		{
+		  if ($display_func) return $display_func($v[0],$v[1]);
+		  return $v[1];
+		}
+	  }
+	  return '????';
+	}
+
 }
 ?>

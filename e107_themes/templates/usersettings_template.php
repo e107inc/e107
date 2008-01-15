@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-08-12 21:40:49 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-15 21:57:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -159,13 +159,6 @@ $USERSETTINGS_EDIT = "
 	{SIGNATURE=cols=58&rows=4}
 	<br />
 	{SIGNATURE_HELP}
-	</td>
-	</tr>
-
-	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_122.req($pref['signup_option_timezone'])."</td>
-	<td style='width:60%' class='forumheader2'>
-	{TIMEZONE}
 	</td>
 	</tr>
 

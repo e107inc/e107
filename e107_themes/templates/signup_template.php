@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-01-09 22:44:19 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-15 21:57:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -130,16 +130,6 @@ $sc_style['SIGNUP_IMAGES']['pre'] = "
 <td class='forumheader3' style='width:70%;vertical-align:top' >
 ";
 $sc_style['SIGNUP_IMAGES']['post'] = "
-</td>
-</tr>
-";
-
-$sc_style['SIGNUP_TIMEZONE']['pre'] = "
-<tr>
-<td class='forumheader3' style='width:30%' >".LAN_122.req($pref['signup_option_timezone'])."</td>
-<td class='forumheader3' style='width:70%;white-space:nowrap'>
-";
-$sc_style['SIGNUP_TIMEZONE']['post'] = "
 </td>
 </tr>
 ";
@@ -307,7 +297,6 @@ $SIGNUP_BODY = "
 {SIGNUP_EXTENDED_USER_FIELDS}
 {SIGNUP_SIGNATURE}
 {SIGNUP_IMAGES}
-{SIGNUP_TIMEZONE}
 {SIGNUP_IMAGECODE}
 <tr style='vertical-align:top'>
 <td class='forumheader' colspan='2'  style='text-align:center'>

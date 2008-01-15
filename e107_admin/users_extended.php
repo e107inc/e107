@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-04-14 17:24:22 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-15 21:57:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -65,6 +65,7 @@ if (isset($_POST['up_x']))
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 }
 
+
 if (isset($_POST['down_x']))
 {
 	$qs = explode(".", $_POST['id']);
@@ -85,6 +86,7 @@ if (isset($_POST['catup_x']))
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 }
 
+
 if (isset($_POST['catdown_x']))
 {
 	$qs = explode(".", $_POST['id']);
@@ -93,6 +95,7 @@ if (isset($_POST['catdown_x']))
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 }
+
 
 if (isset($_POST['add_field']))
 {
@@ -126,7 +129,9 @@ if (isset($_POST['add_field']))
   }
 }
 
-if (isset($_POST['update_field'])) {
+
+if (isset($_POST['update_field'])) 
+{
 	if($_POST['user_type']==4){
     	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 	}
@@ -135,17 +140,20 @@ if (isset($_POST['update_field'])) {
 	admin_update($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']), 'update', EXTLAN_29);
 }
 
+
 if (isset($_POST['update_category']))
 {
 	$name = trim($tp->toHTML($_POST['user_field']));
 	admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
 }
 
+
 if (isset($_POST['add_category']))
 {
 	$name = $tp->toHTML($_POST['user_field']);
 	admin_update($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
 }
+
 
 if ($_POST['eu_action'] == "delext")
 {
@@ -627,6 +635,7 @@ class users_ext
 		$ns->tablerender(EXTLAN_9, $text);
 	}
 
+
 	function show_categories($current)
 	{
 		global $sql, $ns, $ue;
@@ -764,12 +773,13 @@ class users_ext
 		$ns->tablerender(EXTLAN_9, $text);
 	}
 
-	function show_options($action) {
-		// ##### Display options ---------------------------------------------------------------------------------------------------------
-		if ($action == "") {
+
+	function show_options($action) 
+	{
+		if ($action == "") 
+		{
 			$action = "main";
 		}
-		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		$var['main']['text'] = EXTLAN_34;
 		$var['main']['link'] = e_SELF;
 
@@ -785,6 +795,7 @@ class users_ext
 		show_admin_menu(EXTLAN_9, $action, $var);
 	}
 }
+
 
 function users_extended_adminmenu() {
 	global $user, $action, $ns, $curtype, $action;
@@ -812,6 +823,7 @@ function make_delimited($var)
 	$ret = implode(",", $var);
 	return $ret;
 }
+
 
 function show_predefined()
 {
@@ -876,6 +888,7 @@ function show_predefined()
 	exit;
 }
 
+
 function show_field($var, $type='activate')
 {
 	global $tp;
@@ -884,12 +897,11 @@ function show_field($var, $type='activate')
 //	$showlist = array('type','text', 'values', 'include_text', 'regex');
 	if($head_shown != 1)
 	{
-
 		$txt .= "
 		<tr>
-		<td class='forumheader'>".UE_LAN_9."</td>
-		<td class='forumheader'>".UE_LAN_10."</td>
-		<td class='forumheader'>".UE_LAN_11."</td>
+		<td class='forumheader'>".UE_LAN_21."</td>
+		<td class='forumheader'>".UE_LAN_22."</td>
+		<td class='forumheader'>".UE_LAN_23."</td>
 		<td class='forumheader' style='width: 5%'>&nbsp;</td>
 		</tr>
 		";
@@ -915,6 +927,7 @@ function show_field($var, $type='activate')
 	</tr>";
 	return $txt;
 }
+
 
 function field_activate()
 {
@@ -943,6 +956,7 @@ function field_activate()
 	return $ret;
 }
 
+
 function field_deactivate()
 {
 	global $ue, $ns, $tp,$sql;
@@ -965,7 +979,8 @@ function field_deactivate()
 }
 
 
-function process_sql($f){
+function process_sql($f)
+{
     global $sql;
 	$filename = e_ADMIN."sql/extended_".$f.".php";
 	$fd = fopen ($filename, "r");
@@ -1007,7 +1022,7 @@ function headerjs()
 		var ftype;
 		var helptext;
 		";
-		for($i=1; $i<=8; $i++)
+		for($i=1; $i<=9; $i++)
 		{
 			$type_const = "UE_LAN_{$i}";
 			$help_const = "EXTLAN_HELP_{$i}";

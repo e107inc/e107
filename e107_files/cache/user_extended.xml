@@ -64,4 +64,12 @@
 		<read>253</read>
 		<write>253</write>
 	</item>
+	<item name="timezone">
+		<type>list</type>
+		<values>timezones</values>
+		<default>+0</default>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
 </e107_extended_user_fields>

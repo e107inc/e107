@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-01-12 16:51:43 $
+|     $Revision: 1.19 $
+|     $Date: 2008-01-15 21:57:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -184,7 +184,7 @@ function update_706_to_800($type='')
 	
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
-						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality');
+						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone');
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
@@ -196,7 +196,7 @@ function update_706_to_800($type='')
 
 	// List of changed DB tables (defined in core_sql.php) 
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$changed_tables = array('dblog','admin_log', 'userclass_classes', 'banlist');
+	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist');
 
 	
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
@@ -205,7 +205,6 @@ function update_706_to_800($type='')
 						'online' => 'online_ip',
 						'submitnews' => 'submitnews_ip',
 						'tmp' => 'tmp_ip',
-						'user' => 'user_ip',
 						'chatbox' => 'cb_ip'
 						);
 
@@ -337,18 +336,6 @@ function update_706_to_800($type='')
 	}
 
 
-	// Obsolete prefs (list at top)
-	foreach ($obs_prefs as $p)
-	{
-	  if (isset($pref[$p]))
-	  {
-	    if ($just_check) return update_needed('Remove obsolete prefs');
-		unset($pref[$p]);
-		$do_save = TRUE;
-	  }
-	}
-
-
 	if (mysql_table_exists('linkwords'))
 	{	// Need to extend field linkword_link varchar(200) NOT NULL default ''
 	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."linkwords LIKE 'linkword_link'")) 
@@ -363,6 +350,20 @@ function update_706_to_800($type='')
 	  }
 	}
 
+
+	// Check need for user timezone before we delete the field
+	if (varsettrue($pref['signup_option_timezone']))
+	{
+	  if ($sql->db_Field('user', 'user_timezone', '', TRUE) && !$sql->db_Field('user_extended','user_timezone','',TRUE))
+	  {
+		if ($just_check) return update_needed('Move user timezone info');
+		if (!copy_user_timezone())
+		{  // Error doing the transfer
+		  echo "Error transferring user timezone data - aborted<br />";
+		  return FALSE;
+		}
+	  }
+	}
 
 	// Tables defined in core_sql.php
 	//---------------------------------
@@ -468,6 +469,18 @@ function update_706_to_800($type='')
 	  }
 	}
 
+	// Obsolete prefs (list at top)
+	// Intentionally do this last - we may check some of them during the update
+	foreach ($obs_prefs as $p)
+	{
+	  if (isset($pref[$p]))
+	  {
+	    if ($just_check) return update_needed('Remove obsolete prefs');
+		unset($pref[$p]);
+		$do_save = TRUE;
+	  }
+	}
+
 
 	if ($do_save) save_prefs();
 	
@@ -555,6 +568,33 @@ function update_70x_to_706($type='')
 	// If we get to here, in checking mode no updates are required. In update mode, all done.
 	return $just_check;		// TRUE if no updates needed, FALSE if updates needed and completed
 
+}
+
+
+
+// Carries out the copy of timezone data from the user record to an extended user field
+// Return TRUE on success, FALSE on failure
+function copy_user_timezone()
+{
+  global $sql, $sql2, $tp;
+  require_once(e_HANDLER.'user_extended_class.php');
+  $ue = new e107_user_extended;
+  $tmp = $ue->parse_extended_xml('getfile');
+  $tmp['timezone']['parms'] = $tp->toDB($tmp['timezone']['parms']);
+  if(!$ue->user_extended_add($tmp['timezone']))
+  {
+	return FALSE;
+  }
+
+// Created the field - now copy existing data
+  if ($sql->db_Select('user','user_id, user_timezone'))
+  {
+	while ($row = $sql->db_Fetch())
+	{
+	  $sql2->db_Update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
+	}
+  }
+  return TRUE;		// All done!
 }
 
 

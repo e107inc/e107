@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-01-11 22:13:43 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-15 21:57:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ CREATE TABLE audit_log (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM;
+) TYPE=MyISAM AUTO_INCREMENT=1;
 # --------------------------------------------------------
 
 
@@ -161,7 +161,7 @@ CREATE TABLE dblog (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM;
+) TYPE=MyISAM AUTO_INCREMENT=1;
 
 # --------------------------------------------------------
 
@@ -499,7 +499,6 @@ CREATE TABLE user (
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,
   user_image varchar(100) NOT NULL default '',
-  user_timezone varchar(3) NOT NULL default '',
   user_hideemail tinyint(3) unsigned NOT NULL default '0',
   user_join int(10) unsigned NOT NULL default '0',
   user_lastvisit int(10) unsigned NOT NULL default '0',
@@ -511,7 +510,6 @@ CREATE TABLE user (
   user_ip varchar(45) NOT NULL default '',
   user_ban tinyint(3) unsigned NOT NULL default '0',
   user_prefs text NOT NULL,
-  user_new text NOT NULL,
   user_viewed text NOT NULL,
   user_visits int(10) unsigned NOT NULL default '0',
   user_admin tinyint(3) unsigned NOT NULL default '0',

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-04-14 17:24:29 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-15 21:57:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -108,5 +108,7 @@ define("EXTLAN_HELP_6", "Allow user to enter a numeric value");
 define("EXTLAN_HELP_7", "Require user to enter a date");
 // Language
 define("EXTLAN_HELP_8", "Allow user to select from installed languages");
+// Predefined list
+define('EXTLAN_HELP_9', 'Specify a predefined list. The value field selects the type of list - at present only \'timezones\' is a valid entry');
 
 ?>

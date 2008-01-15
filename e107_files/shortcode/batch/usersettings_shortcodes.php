@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-08 22:24:14 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-15 21:57:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -145,28 +145,6 @@ return display_help("", 2);
 SC_END
 
 
-SC_BEGIN TIMEZONE
-global $curVal;
-$ret = "<select name='timezone' class='tbox'>\n";
-$timezone = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "GMT", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
-$timearea = array("International DateLine West", "Samoa", "Hawaii", "Alaska", "Pacific Time (US and Canada)", "Mountain Time (US and Canada)", "Central Time (US and Canada), Central America", "Eastern Time (US and Canada)", "Atlantic Time (Canada)", "Greenland, Brasilia, Buenos Aires, Georgetown", "Mid-Atlantic", "Azores", "GMT - UK, Ireland, Lisbon", "West Central Africa, Western Europe", "Greece, Egypt, parts of Africa", "Russia, Baghdad, Kuwait, Nairobi", "Abu Dhabi, Kabul", "Islamabad, Karachi", "Astana, Dhaka", "Bangkok, Rangoon", "Hong Kong, Singapore, Perth, Beijing", "Tokyo, Seoul", "Brisbane, Canberra, Sydney, Melbourne", "Soloman Islands", "New Zealand", "Nuku'alofa");
-$count = 0;
-while ($timezone[$count])
-{
-	if ($timezone[$count] == $curVal['user_timezone'])
-	{
-		$ret .= "<option value='".$timezone[$count]."' selected='selected'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-	}
-	else
-	{
-		$ret .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-	}
-	$count++;
-}
-
-$ret .= "</select>";
-return $ret;
-SC_END
 
 SC_BEGIN AVATAR_UPLOAD
 global $pref;
