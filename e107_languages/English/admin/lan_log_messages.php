@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.7 2008-01-01 21:26:23 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.8 2008-01-16 22:18:27 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -36,50 +36,50 @@ define('LAN_AUDIT_LOG_020', 'User added by admin');
 
 // Admin log events
 //-----------------
-define('LAN_ADMIN_LOG_001', 'Admin edited user data');
 define('LAN_ADMIN_LOG_002', 'Admin log - delete old data');
 define('LAN_ADMIN_LOG_003', 'User Audit log - delete old data');
-define('LAN_ADMIN_LOG_004', 'User added by Admin');
-define('LAN_ADMIN_LOG_005', 'User options updated');
-define('LAN_ADMIN_LOG_006', 'Users pruned');
-define('LAN_ADMIN_LOG_007', 'User banned');
-define('LAN_ADMIN_LOG_008', 'User unbanned');
-define('LAN_ADMIN_LOG_009', 'User deleted');
-define('LAN_ADMIN_LOG_010', 'User made admin');
-define('LAN_ADMIN_LOG_011', 'User admin status revoked');
-define('LAN_ADMIN_LOG_012', 'User approved');
-define('LAN_ADMIN_LOG_013', 'Resend validation email');
-define('LAN_ADMIN_LOG_014', 'Resend all validation emails');
-define('LAN_ADMIN_LOG_015', 'Bounced emails deleted');
-define('LAN_ADMIN_LOG_016', 'Class membership updated');
-define('LAN_ADMIN_LOG_017', '');
-define('LAN_ADMIN_LOG_018', '');
-define('LAN_ADMIN_LOG_019', '');
+
+// User edits
+//-----------
+define('LAN_AL_USET_01', 'Admin edited user data');
+define('LAN_AL_USET_02', 'User added by Admin');
+define('LAN_AL_USET_03', 'User options updated');
+define('LAN_AL_USET_04', 'Users pruned');
+define('LAN_AL_USET_05', 'User banned');
+define('LAN_AL_USET_06', 'User unbanned');
+define('LAN_AL_USET_07', 'User deleted');
+define('LAN_AL_USET_08', 'User made admin');
+define('LAN_AL_USET_09', 'User admin status revoked');
+define('LAN_AL_USET_10', 'User approved');
+define('LAN_AL_USET_11', 'Resend validation email');
+define('LAN_AL_USET_12', 'Resend all validation emails');
+define('LAN_AL_USET_13', 'Bounced emails deleted');
+define('LAN_AL_USET_14', 'Class membership updated');
 
 // Userclass events
 //------------------
-define('AL_UC_LAN_00',"Unknown userclass-related event");
-define('AL_UC_LAN_01',"Userclass created");
-define('AL_UC_LAN_02',"Userclass deleted");
-define('AL_UC_LAN_03',"Userclass edited");
-define('AL_UC_LAN_04',"Class membership updated");
-define('AL_UC_LAN_05',"Initial userclass settings edited");
-define('AL_UC_LAN_06',"Class membership emptied");
+define('LAN_AL_UCLASS_00',"Unknown userclass-related event");
+define('LAN_AL_UCLASS_01',"Userclass created");
+define('LAN_AL_UCLASS_02',"Userclass deleted");
+define('LAN_AL_UCLASS_03',"Userclass edited");
+define('LAN_AL_UCLASS_04',"Class membership updated");
+define('LAN_AL_UCLASS_05',"Initial userclass settings edited");
+define('LAN_AL_UCLASS_06',"Class membership emptied");
 
 // Banlist events
 //----------------
-define('AL_BAN_LAN_00','Unknown ban-related event');
-define('AL_BAN_LAN_01','Manual ban added');
-define('AL_BAN_LAN_02','Ban deleted');
-define('AL_BAN_LAN_03','Ban time changed');
-define('AL_BAN_LAN_04','Whitelist entry added');
-define('AL_BAN_LAN_05','Whitelist entry deleted');
-define('AL_BAN_LAN_06','Banlist exported');
-define('AL_BAN_LAN_07','Banlist imported');
-define('AL_BAN_LAN_08','Banlist options updated');
-define('AL_BAN_LAN_09','Banlist entry edited');
-define('AL_BAN_LAN_10','Whitelist entry edited');
-define('AL_BAN_LAN_11','Whitelist hit for ban entry');
+define('LAN_AL_BANLIST_00','Unknown ban-related event');
+define('LAN_AL_BANLIST_01','Manual ban added');
+define('LAN_AL_BANLIST_02','Ban deleted');
+define('LAN_AL_BANLIST_03','Ban time changed');
+define('LAN_AL_BANLIST_04','Whitelist entry added');
+define('LAN_AL_BANLIST_05','Whitelist entry deleted');
+define('LAN_AL_BANLIST_06','Banlist exported');
+define('LAN_AL_BANLIST_07','Banlist imported');
+define('LAN_AL_BANLIST_08','Banlist options updated');
+define('LAN_AL_BANLIST_09','Banlist entry edited');
+define('LAN_AL_BANLIST_10','Whitelist entry edited');
+define('LAN_AL_BANLIST_11','Whitelist hit for ban entry');
 
 
 // Rolling log events

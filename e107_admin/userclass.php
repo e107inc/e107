@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-01 18:18:05 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-16 22:18:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -72,7 +72,7 @@ if (isset($_POST['updateclass']))
 //    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
 	sendemail($send_to, $subject, $message);
   }
-  $admin_log->log_event('LAN_ADMIN_LOG_016',str_replace(array('--UID--','--CLASSES--'),array($id,$svar),UCSLAN_11),E_LOG_INFORMATIVE,'USET_14');
+  $admin_log->log_event('USET_14',str_replace(array('--UID--','--CLASSES--'),array($id,$svar),UCSLAN_11),E_LOG_INFORMATIVE);
 
 
   header("location: ".$_POST['adminreturn']);

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-01-02 20:14:05 $
+|     $Revision: 1.13 $
+|     $Date: 2008-01-16 22:18:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -150,7 +150,7 @@ if (isset($_POST['update_options']))
 	$pref['memberlist_access'] = $_POST['memberlist_access'];
 	save_prefs();
 	unset($_POST['update_options']);		// So we don't log it
-	$admin_log->log_event('LAN_ADMIN_LOG_005',$tp->toDB(implode('; ',$_POST)),E_LOG_INFORMATIVE,'USET_03');
+	$admin_log->log_event('USET_03',$tp->toDB(implode('; ',$_POST)),E_LOG_INFORMATIVE);
 	$user->show_message(USRLAN_1);
 }
 
@@ -171,7 +171,7 @@ if (isset($_POST['prune']))
 	  $sql->db_Delete("user", "user_id='{$u['user_id']}' ");
 	  $sql->db_Delete("user_extended", "user_extended_id='{$u['user_id']}' ");
 	}
-	$admin_log->log_event('LAN_ADMIN_LOG_006',str_replace(array('--COUNT--','--TYPE--'),array(count($uList),$bantype),USRLAN_160),E_LOG_INFORMATIVE,'USET_04');
+	$admin_log->log_event('USET_04',str_replace(array('--COUNT--','--TYPE--'),array(count($uList),$bantype),USRLAN_160),E_LOG_INFORMATIVE);
   }
   $ns->tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
   unset($text);
@@ -277,7 +277,7 @@ if (isset($_POST['adduser']))
 	  if (admin_update($sql -> db_Insert("user", $user_data), 'insert', USRLAN_70))
 	  {
 		// Add to admin log
-		$admin_log->log_event('LAN_ADMIN_LOG_004',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}",E_LOG_INFORMATIVE,'USET_02');
+		$admin_log->log_event('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}",E_LOG_INFORMATIVE);
 		// Add to user audit trail
 		$admin_log->user_audit(USER_AUDIT_ADD_ADMIN,$user_data, 0,$user_data['user_loginname']);
 		if (isset($_POST['sendconfemail']))
@@ -329,7 +329,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
 	{
 	  if($sql->db_Update("user", "user_ban='1' WHERE user_id='".$_POST['userid']."' "))
 	  {
-		$admin_log->log_event('LAN_ADMIN_LOG_007',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_161),E_LOG_INFORMATIVE,'USET_05');
+		$admin_log->log_event('USET_05',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_161),E_LOG_INFORMATIVE);
 		$user->show_message(USRLAN_8);
 	  }
 		if(trim($row['user_ip']) == "")
@@ -367,7 +367,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unban")
 	$row = $sql->db_Fetch();
 	$sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ");
 	$sql -> db_Delete("banlist", " banlist_ip='{$row['user_ip']}' ");
-	$admin_log->log_event('LAN_ADMIN_LOG_008',str_replace(array('--UID--','--NAME--'),array($_POST['userid'],$row['user_name']),USRLAN_162),E_LOG_INFORMATIVE,'USET_06');
+	$admin_log->log_event('USET_06',str_replace(array('--UID--','--NAME--'),array($_POST['userid'],$row['user_name']),USRLAN_162),E_LOG_INFORMATIVE);
 	$user->show_message(USRLAN_9);
 	$action = "main";
 	if(!$sub_action){$sub_action = "user_id"; }
@@ -426,7 +426,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 	if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'")) 
 	{
 	  $sql->db_Delete("user_extended", "user_extended_id='".$_POST['userid']."' ");
-	  $admin_log->log_event('LAN_ADMIN_LOG_009',str_replace('--UID--',$_POST['userid'],USRLAN_163),E_LOG_INFORMATIVE,'USET_07');
+	  $admin_log->log_event('USET_07',str_replace('--UID--',$_POST['userid'],USRLAN_163),E_LOG_INFORMATIVE);
 	  $user->show_message(USRLAN_10);
 	}
 	if(!$sub_action){ $sub_action = "user_id"; }
@@ -464,7 +464,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "admin" && getperms('
 	$sql->db_Select("user", "user_id, user_name", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	$sql->db_Update("user", "user_admin='1' WHERE user_id='".$_POST['userid']."' ");
-	$admin_log->log_event('LAN_ADMIN_LOG_010',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_164),E_LOG_INFORMATIVE,'USET_08');
+	$admin_log->log_event('USET_08',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_164),E_LOG_INFORMATIVE);
 	$user->show_message($row['user_name']." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.{$row['user_id']}'>".USRLAN_4."</a>");
 	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
@@ -488,7 +488,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms
   else 
   {
 	$sql->db_Update("user", "user_admin='0', user_perms='' WHERE user_id='".$_POST['userid']."'");
-	$admin_log->log_event('LAN_ADMIN_LOG_011',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_165),E_LOG_INFORMATIVE,'USET_09');
+	$admin_log->log_event('USET_09',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_165),E_LOG_INFORMATIVE);
 	$user->show_message($user_name." ".USRLAN_6);
 	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
@@ -520,7 +520,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 		  }
 		}
 		$sql->db_Update("user", "user_ban='0'{$init_classes} WHERE user_id='".$uid."' ");
-		$admin_log->log_event('LAN_ADMIN_LOG_012',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_166),E_LOG_INFORMATIVE,'USET_10');
+		$admin_log->log_event('USET_10',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_166),E_LOG_INFORMATIVE);
 //		$e_event->trigger("userveri", $row);		// We do this from signup.php - should we do it here?
 
 		$user->show_message(USRLAN_86);
@@ -1220,7 +1220,7 @@ class users
 	  if(sendemail($email, LAN_404." ".SITENAME, $message))
 	  {
 	   //		echo str_replace("\n","<br>",$message);
-		$admin_log->log_event('LAN_ADMIN_LOG_013',str_replace(array('--ID--','--NAME--','--EMAIL--'),array($id,$name,$email),USRLAN_167),E_LOG_INFORMATIVE,'USET_11');
+		$admin_log->log_event('USET_11',str_replace(array('--ID--','--NAME--','--EMAIL--'),array($id,$name,$email),USRLAN_167),E_LOG_INFORMATIVE);
 		$this->show_message(USRLAN_140.": <a href='mailto:".$email."?body=".$return_address."' title=\"".DUSRLAN_7."\" >".$name."</a> (".$row['user_language'].") ");
 	  }
 	  else
@@ -1268,7 +1268,7 @@ class users
 	  }
 	  if ($count) 
 	  {
-  		$admin_log->log_event('LAN_ADMIN_LOG_014',str_replace('--COUNT--',$count,USRLAN_168),E_LOG_INFORMATIVE,'USET_12');
+  		$admin_log->log_event('USET_12',str_replace('--COUNT--',$count,USRLAN_168),E_LOG_INFORMATIVE);
 	  }
 	}
 
@@ -1409,7 +1409,7 @@ class users
 
 	  if ($del_count)
 	  {
-		$admin_log->log_event('LAN_ADMIN_LOG_015',str_replace('--COUNT--',$del_count,USRLAN_169),E_LOG_INFORMATIVE,'USET_13');
+		$admin_log->log_event('USET_13',str_replace('--COUNT--',$del_count,USRLAN_169),E_LOG_INFORMATIVE);
 	  }
 
 

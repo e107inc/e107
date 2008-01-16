@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banlist_export.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-23 21:15:48 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-16 22:18:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ if ($error_string = do_export($filename, $type_list, $format_array, $use_separat
 // Need to report an error here
   echo "Error report: {$error_string}<br />";
 }
-banlist_adminlog("AL_BAN_LAN_06","File: ".$filename.'<br />'.$error_string,6);
+banlist_adminlog('06',"File: ".$filename.'<br />'.$error_string);
 
 
 function do_export($filename, $type_list='',$format_array, $sep = ',', $quot = '"')
@@ -136,11 +136,12 @@ function do_export($filename, $type_list='',$format_array, $sep = ',', $quot = '
 }
 
 // Log event to admin log
-function banlist_adminlog($title, $woffle,$msg_num='00')
+function banlist_adminlog($msg_num='00', $woffle='')
 {
   global $pref, $admin_log;
 //  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
-  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'BANLIST_'.$msg_num);
+//  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'BANLIST_'.$msg_num);
+  $admin_log->log_event('BANLIST_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
 
 

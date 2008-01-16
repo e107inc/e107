@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-01-16 10:55:42 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2008-01-16 22:18:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -203,7 +203,7 @@ class e107{
 	// If return permitted, will never display a message for a banned user; otherwise will display any message then exit
 	function check_ban($query,$show_error=TRUE, $do_return = FALSE)
 	{
-	  global $sql, $tp, $pref, $admin_log;
+	  global $sql, $tp, $pref, $admin_log, $e107;
 //	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
 	  if ($sql->db_Select('banlist','*',$query.' ORDER BY `banlist_bantype` DESC'))
 	  {
@@ -251,7 +251,7 @@ class e107{
 	// Returns FALSE if ban not accepted (i.e. because on whitelist, or invalid IP specified)
 	function add_ban($bantype,$ban_message='',$ban_ip='',$ban_user = 0,$ban_notes='')
 	{
-	  global $sql, $pref;
+	  global $sql, $pref, $e107;
 	  if (!$ban_message) $ban_message = 'No explanation given';
 	  if (!$ban_ip) $ban_ip = $this->getip();
 	  $ban_ip = preg_replace("/[^\w@\.]*/",'',urldecode($ban_ip));		// Make sure no special characters
@@ -259,12 +259,12 @@ class e107{
 	  // See if the address is in the whitelist
 	  if ($sql->db_Select('banlist','*','`banlist_bantype` >= '.BAN_TYPE_WHITELIST))
 	  { // Got a whitelist entry for this 
-	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"BANLIST_11",'AL_BAN_LAN_11',$ban_ip,FALSE,LOG_TO_ROLLING);
+	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"BANLIST_11",'LAN_AL_BANLIST_11',$ban_ip,FALSE,LOG_TO_ROLLING);
 		return FALSE;
 	  }
 	  if (varsettrue($pref['enable_rdns_on_ban']))
 	  {
-		$ban_message .= 'Host: '.$e107->get_host_name(getenv('REMOTE_ADDR'));
+		$ban_message .= 'Host: '.$e107->get_host_name($ban_ip);
 	  }
 	  // Add using an array - handles DB changes better
 	  $sql->db_Insert('banlist',array('banlist_ip' => $ban_ip, 'banlist_bantype' => $bantype, 'banlist_datestamp' => time(),
