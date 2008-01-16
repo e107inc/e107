@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-09 23:46:22 $
+|     $Revision: 1.10 $
+|     $Date: 2008-01-16 11:00:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 		@include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 		@include_lan(e_PLUGIN."chatbox_menu/languages/English/English.php");
 	}
- 	$footer_js[] = e_FILE_ABS.'e_ajax.js';
+ 	$footer_js[] = e_FILE_ABS.'e_ajax.php';
 
 
 }
