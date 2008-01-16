@@ -4,8 +4,8 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e_js.php,v $
-|	$Revision: 1.1 $
-|	$Date: 2008-01-16 10:13:45 $
+|	$Revision: 1.2 $
+|	$Date: 2008-01-16 10:46:59 $
 |	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -389,15 +389,6 @@ function preview_image(src_val,img_path, not_found)
 	}
 	return;
 }
-
-function replace_sc(sc,obj,id,scfile)
-{
-	if(!id){ var id = sc; }
-	var handler = '".SITEURL.$FILES_DIRECTORY."/sc_replace.php';
-	var parm = ($(obj).serialize() +  '&ajax_sc=' + sc + '&ajax_scfile=' + scfile + '&ajax_used=1');
-    new Ajax.Updater(id, handler, { parameters: parm }	);
-}
-
 
 
 
