@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/e_ajax.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-01-16 10:46:59 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-16 22:45:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-$E107['minimal'] = TRUE;
+$_E107['minimal'] = TRUE;
 require_once("../class2.php");
 
 // -----------------------------------------------------------------------------
