@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-01-13 10:51:34 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2008-01-16 10:55:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -90,6 +90,7 @@ class e107{
 			define("e_HTTP", $this->server_path);
 			define("e_BASE", $this->relative_base_path);
 
+			define("e_ROOT",$_SERVER['DOCUMENT_ROOT'].$this->server_path);
 //
 // HTTP relative paths
 //
