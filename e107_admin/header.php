@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.12 $
-|   $Date: 2008-01-16 10:13:45 $
+|   $Revision: 1.13 $
+|   $Date: 2008-01-16 10:46:59 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -142,7 +142,7 @@ if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset(
 
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.js'></script>\n"; 
+	echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.php'></script>\n";
 }
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
