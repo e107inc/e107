@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-01 21:26:16 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-16 22:18:19 $
 |     $Author: e107steved $
 
 To do:
@@ -91,14 +91,26 @@ class e_admin_log {
 	// Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	// ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
 	// We also log everything (unlike 0.7, where admin log and debug stuff were all mixed up together)
-	function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE, $eventcode='ADMIN') 
+	function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE, $event_code='') 
 	{
 	  global $e107, $tp;
+	  if ($event_code == '')
+	  {
+		if (strlen($event_title) <= 10)
+		{	// Assume the title is actually a reference to the event
+		  $event_code = $event_title;
+		  $event_title = 'LAN_AL_'.$event_title;
+		}
+		else
+		{
+		  $event_code = 'ADMIN';
+		}
+	  }
 		if($this->_options['backtrace'] == true) 
 		{
 		  $event_detail .= "\n\n".debug_backtrace();
 		}
-		$this->e_log_event($event_type,-1,$eventcode,$event_title,$event_detail,FALSE,LOG_TO_ADMIN);
+		$this->e_log_event($event_type,-1,$event_code,$event_title,$event_detail,FALSE,LOG_TO_ADMIN);
 	}
 
 /*

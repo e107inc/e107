@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-01-13 17:47:27 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-16 22:18:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ if (isset($_POST['set_initial_classes']))
   {
     $pref['initial_user_classes'] = $newval;
     save_prefs();
-    userclass2_adminlog("AL_UC_LAN_05","New: {$newval}, Old: {$temp}, Stage: ".$pref['init_class_stage'],5);
+    userclass2_adminlog("05","New: {$newval}, Old: {$temp}, Stage: ".$pref['init_class_stage']);
     $message = UCSLAN_41;
   }
   else
@@ -103,7 +103,7 @@ if (isset($_POST['delete']))
 	  if ($e_userclass->delete_class($class_id) !== FALSE)
 	  {
 //		$sql->db_Delete('userclass_classes', "userclass_id='".$class_id."' ");
-		userclass2_adminlog("AL_UC_LAN_02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")",2);
+		userclass2_adminlog("02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
 		if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
 		{	// Delete existing users from class
 			while ($row = $sql->db_Fetch())
@@ -153,7 +153,7 @@ if (isset($_POST['updateclass']) || isset($_POST['createclass']))
 	check_allowed($_POST['userclass_id']);
 	$class_record['userclass_id'] = intval($_POST['userclass_id']);
 	$e_userclass->save_edited_class($class_record);
-	userclass2_adminlog("AL_UC_LAN_03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")",3);
+	userclass2_adminlog("03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 	$do_tree = TRUE;
 	$message = UCSLAN_5;
   } 
@@ -172,7 +172,7 @@ if (isset($_POST['updateclass']) || isset($_POST['createclass']))
 		{
 		  $class_record['userclass_id'] = $i;
 		  $e_userclass->add_new_class($class_record);
-		  userclass2_adminlog("AL_UC_LAN_01","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")",1);
+		  userclass2_adminlog("01","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 		  $do_tree = TRUE;
 		}
 		$message = UCSLAN_6;
@@ -648,7 +648,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		}
 		$uclass->class_remove($class_id, $uidList);
 		$message = UCSLAN_1;
-		userclass2_adminlog("AL_UC_LAN_06","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")",6);
+		userclass2_adminlog("06","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
 	  }
 	}
 	elseif($params)
@@ -675,7 +675,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		}
 		$uclass->class_add($class_id, $uidList);
 	  }
-	  userclass2_adminlog("AL_UC_LAN_04","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")",4);
+	  userclass2_adminlog("04","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
 	}
 
 
@@ -847,11 +847,12 @@ if(isset($_POST['class_members_edit']))
 
 
 // Log event to admin log
-function userclass2_adminlog($title, $woffle,$msg_num='00')
+function userclass2_adminlog($msg_num='00', $woffle='')
 {
   global $pref, $admin_log;
   if (!varset($pref['admin_log_log']['admin_userclass'],0)) return;
-  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'UCLASS_'.$msg_num);
+//  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'UCLASS_'.$msg_num);
+  $admin_log->log_event('UCLASS_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
 
 

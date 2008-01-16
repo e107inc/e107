@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-01-15 21:57:17 $
+|     $Revision: 1.22 $
+|     $Date: 2008-01-16 22:18:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -524,7 +524,7 @@ if (isset($_POST['updatesettings']))
 		$log_action = '';
 		if ($_uid)
 		{		// Its an admin changing someone elses data - make an admin log entry here
-		  $admin_log->log_event('LAN_ADMIN_LOG_001',"UID: {$udata['user_id']}. UName: {$udata['user_name']}",E_LOG_INFORMATIVE,'USET_01');
+		  $admin_log->log_event('USET_01',"UID: {$udata['user_id']}. UName: {$udata['user_name']}",E_LOG_INFORMATIVE);
 		  // Check against the class of the target user, not the admin!
 		  if (!check_class(varset($pref['user_audit_class'],''),$udata['user_class'])) $user_logging_opts = array();
 		}

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-13 10:51:34 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-16 22:18:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ if (isset($_POST['update_ban_prefs']))
     $pref['ban_durations'][$i] = intval(varset($_POST['ban_time'][$i],0));
   }
   save_prefs();
-  banlist_adminlog("AL_BAN_LAN_08","",8);
+  banlist_adminlog('08',"");
   $ns->tablerender(BANLAN_9, "<div style='text-align:center'>".BANLAN_33.'</div>');
 }
 
@@ -112,11 +112,11 @@ if (isset($_POST['ban_ip']))
 	  admin_update($sql -> db_Insert("banlist",$new_vals), 'insert');
 	  if ($_POST['entry_intent'] == 'add')
 	  {
-	    banlist_adminlog("AL_BAN_LAN_01",$new_vals['banlist_ip'],1);
+	    banlist_adminlog('01',$new_vals['banlist_ip']);
 	  }
 	  else
 	  {
-	    banlist_adminlog("AL_BAN_LAN_04",$new_vals['banlist_ip'],4);
+	    banlist_adminlog('04',$new_vals['banlist_ip']);
 	  }
 	}
 	else
@@ -131,11 +131,11 @@ if (isset($_POST['ban_ip']))
 	  admin_update($sql -> db_Update("banlist", $qry." WHERE banlist_ip='".$_POST['old_ip']."'"));
 	  if ($_POST['entry_intent'] == 'edit')
 	  {
-	    banlist_adminlog("AL_BAN_LAN_09",$new_vals['banlist_ip'],9);
+	    banlist_adminlog("09",$new_vals['banlist_ip']);
 	  }
 	  else
 	  {
-	    banlist_adminlog("AL_BAN_LAN_10",$new_vals['banlist_ip'],10);
+	    banlist_adminlog("10",$new_vals['banlist_ip']);
 	  }
 	}
   unset($ban_ip);
@@ -151,12 +151,12 @@ if (($action == "remove" || $action == "whremove") && isset($_POST['ban_secure']
   if ($action == "remove") 
   {
     $action = 'list'; 
-    banlist_adminlog("AL_BAN_LAN_02",$sub_action,2);
+    banlist_adminlog("02",$sub_action);
   }
   else 
   {
 	$action = 'white';
-    banlist_adminlog("AL_BAN_LAN_05",$sub_action,5);
+    banlist_adminlog("05",$sub_action);
   }
 }
 
@@ -166,7 +166,7 @@ if ($action == 'newtime')
 {
   $end_time = $id ? time() + ($id*60*60) : 0;
   admin_update($sql -> db_Update("banlist", "banlist_banexpires='".intval($end_time)."' WHERE banlist_ip='".$sub_action."'"));
-  banlist_adminlog("AL_BAN_LAN_03",$sub_action,3);
+  banlist_adminlog("03",$sub_action);
   $action = 'list';
 }
 
@@ -493,7 +493,7 @@ switch ($action)
 								intval(varset($_POST['ban_over_expiry'],0)),
 								$separator_char[intval(varset($_POST['ban_separator'],1))],
 								$quote_char[intval(varset($_POST['ban_quote'],3))]);
-	    banlist_adminlog("AL_BAN_LAN_07",'File: '.e_FILE."public/".$files[0]['name'].'<br />'.$message,7);
+	    banlist_adminlog("07",'File: '.e_FILE."public/".$files[0]['name'].'<br />'.$message);
 	  }
 	  
 	}
@@ -745,11 +745,12 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 
 
 // Log event to admin log
-function banlist_adminlog($title, $woffle,$msg_num='00')
+function banlist_adminlog($msg_num='00', $woffle='')
 {
   global $pref, $admin_log;
 //  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
-  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'BANLIST_'.$msg_num);
+//  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'BANLIST_'.$msg_num);
+  $admin_log->log_event('BANLIST_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
 
 ?>
