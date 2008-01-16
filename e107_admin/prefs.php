@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-01-13 10:51:34 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2008-01-16 10:52:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -85,12 +85,14 @@ if (isset($_POST['updateprefs']))
 	  }
 	}
 
-
-	$e107cache->clear();
-	save_prefs();
+	$e107cache->clear('',TRUE);
+	$saved = save_prefs();
 	$sql -> db_Select_gen("TRUNCATE ".MPREFIX."online");
-	header("location:".e_ADMIN."prefs.php?u");
-	exit;
+	if($saved)
+	{
+	  	header("location:".e_ADMIN."prefs.php?u");
+	  	exit;
+	}
 }
 
 if($sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' AND plugin_path = 'alt_auth'"))
@@ -192,8 +194,18 @@ $text = "<script type=\"text/javascript\">
 	<td class='forumheader3'>".PRFLAN_4."</td>
 	<td style='text-align:right' class='forumheader3'>";
 
-    $param = "sitebutton,".e_IMAGE.",".SITEBUTTON.",81px,30px,";
-    $text .= $tp->parseTemplate("{IMAGESELECTOR={$param}}");
+	$parms = "name=sitebutton";
+	$parms .= "&path=".e_THEME.$pref['sitetheme']."/images/|".e_IMAGE;
+	$parms .= "&filter=0";
+	$parms .= "&fullpath=1";
+	$parms .= "&default=".urlencode($pref['sitebutton']);
+	$parms .= "&width=81px";
+	$parms .= "&height=30px";
+	$parms .= "&multiple=FALSE";
+	$parms .= "&label=-- No Image --";
+	$parms .= "&subdirs=1";
+
+    $text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}}");
 
 	$text .= "
 		</td>
