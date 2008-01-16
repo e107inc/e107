@@ -4,8 +4,8 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e_js.php,v $
-|	$Revision: 1.2 $
-|	$Date: 2008-01-16 10:46:59 $
+|	$Revision: 1.3 $
+|	$Date: 2008-01-16 22:45:56 $
 |	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
  * Final product: tdOffset cookie contains server-browser time difference in seconds,
  * independent of time zone. tzOffset contains browser time zone in minutes.
  */
-$E107['minimal'] = TRUE;
+$_E107['minimal'] = TRUE;
 require_once("../class2.php");
 header('Content-type: text/javascript', TRUE);
 
