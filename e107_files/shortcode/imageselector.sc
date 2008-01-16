@@ -1,4 +1,4 @@
-// $Id: imageselector.sc,v 1.2 2007-05-28 18:49:08 e107steved Exp $
+// $Id: imageselector.sc,v 1.3 2008-01-16 00:39:03 e107coders Exp $
 
 global $sql,$parm;
 
@@ -6,19 +6,25 @@ global $sql,$parm;
     	 parse_str($parm, $tmp);
 		 extract($tmp);
 	}else{        // comma separated parms.
-    	list($name,$path,$default,$width,$height,$multiple,$label,$subdirs) = explode(",",$parm);
+    	list($name,$path,$default,$width,$height,$multiple,$label,$subdirs,$filter) = explode(",",$parm);
     }
 
 
 	require_once(e_HANDLER."file_class.php");
 	$fl = new e_file;
-
-  //	$paths = explode("|",$path);
+  	$paths = explode("|",$path);
     $recurse = ($subdirs) ? $subdirs : 0;
-	if($imagelist = $fl->get_files($path,".jpg|.gif|.png|.JPG|.GIF|.PNG", 'standard', $recurse)){
+	$imagelist = array();
+
+	foreach($paths as $path)
+	{
+		$imagelist += $fl->get_files($path,".jpg|.gif|.png|.JPG|.GIF|.PNG", 'standard', $recurse);
+    }
+
+    if($imagelist)
+	{
 		sort($imagelist);
 	}
-
     $multi = ($multiple == "TRUE" || $multiple == "1") ? "multiple='multiple' style='height:{$height}'" : "style='float:left'";
     $width = ($width) ? $width : "*";
     $height = ($height) ? $height : "*";
@@ -28,9 +34,12 @@ global $sql,$parm;
 	<option value=''>".$label."</option>\n";
 	foreach($imagelist as $icon)
 	{
-		$dir = str_replace($path,"",$icon['path']);
+		$dir = str_replace($paths,"",$icon['path']);
 		$selected = ($default == $dir.$icon['fname']) ? " selected='selected'" : "";
+		if(!$filter || ($filter && ereg($filter,$dir.$icon['fname'])))
+		{
 		$text .= "<option value='".$dir.$icon['fname']."'".$selected.">".$dir.$icon['fname']."</option>\n";
+        }
 	}
 	$text .= "</select>";
 
