@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2008-01-09 22:00:22 $
-|     $Author: e107steved $
+|     $Revision: 1.44 $
+|     $Date: 2008-01-16 10:53:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -563,7 +563,7 @@ init_session();
 
 // for multi-language these definitions needs to come after the language loaded.
 define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off, defs, no_make_clickable")));
-define("SITEBUTTON", $pref['sitebutton']);
+define("SITEBUTTON", $tp->replaceConstants($pref['sitebutton']));
 define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off, defs"));
 define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off, defs"));
 define("SITEADMIN", $pref['siteadmin']);
@@ -1113,21 +1113,28 @@ function get_user_data($uid, $extra = "")
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function save_prefs($table = 'core', $uid = USERID, $row_val = '') 
+function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
   global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
   if ($table == 'core') 
   {
 		if ($row_val == '') 
-		{		// Save old version as a backup first
-	  $sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
+		{ 	// Save old version as a backup first
+	  		$sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
 
-		  // Now save the updated values
-		  // traverse the pref array, with toDB on everything
-		  $_pref = $tp -> toDB($pref, true, true);
-		  // Create the data to be stored
-	  $sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
-		  ecache::clear('SitePrefs');
+		  	// Now save the updated values
+		  	// traverse the pref array, with toDB on everything
+		  	$_pref = $tp -> toDB($pref, true, true);
+		  	// Create the data to be stored
+	  		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') "))
+			{
+		  		ecache::clear('SitePrefs');
+				return TRUE;
+			}
+			else
+			{
+            	return FALSE;
+			}
 		}
   }
   else 
