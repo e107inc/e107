@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-01-10 03:14:09 $
+|     $Revision: 1.8 $
+|     $Date: 2008-01-16 10:54:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.7 $
+* @version     $Revision: 1.8 $
 * @author      $Author: e107coders $
 */
 class ecache {
@@ -173,7 +173,7 @@ class ecache {
 	*/
 	function clear($CacheTag = '', $syscache = false)
 	{
-		global $pref, $FILES_DIRECTORY;
+		global $pref;
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		$ret = ecache::delete(e_CACHE, $file, $syscache);
 		return $ret;
@@ -210,8 +210,9 @@ class ecache {
 		if (substr($dir, -1) != "/") {
 			$dir .= "/";
 		}
-		if (is_dir($dir)) {
-			$d = opendir($dir);
+		if (is_dir($dir))
+		{
+ 			$d = opendir($dir);
 			while ($file = readdir($d)) {
 				if (is_file($dir.$file) && preg_match("/^{$pattern}$/", $file)) {
 					if (unlink($dir.$file)) {
