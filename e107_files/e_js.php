@@ -1,22 +1,16 @@
-<!--
-
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |	e107 website system - Javascript File.
 |
-|	$Source: /cvs_backup/e107_0.8/e107_files/e107.js,v $
-|	$Revision: 1.10 $
+|	$Source: /cvs_backup/e107_0.8/e107_files/e_js.php,v $
+|	$Revision: 1.1 $
 |	$Date: 2008-01-16 10:13:45 $
 |	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-
 /*
  * NOTE: KEEP THIS AT THE TOP OF E107.JS!
-
-  THIS FILE IS DEPRECATED - Please use e_js.php instead. 
-
-
  * localTime is recorded ASAP after page load; SyncWithServerTime is called at the END
  * of page processing. We want localTime and serverTime set in close chronological order.
  * Page Processing order is as follows:
@@ -28,6 +22,11 @@
  * Final product: tdOffset cookie contains server-browser time difference in seconds,
  * independent of time zone. tzOffset contains browser time zone in minutes.
  */
+$E107['minimal'] = TRUE;
+require_once("../class2.php");
+header('Content-type: text/javascript', TRUE);
+
+echo "<!--
 
 var nowLocal = new Date();		/* time at very beginning of js execution */
 var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
@@ -38,7 +37,7 @@ var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded 
  */
 function SyncWithServerTime(serverTime)
 {
-	if (serverTime) 
+	if (serverTime)
 	{
 	  	/* update time difference cookie */
 		var serverDelta=Math.floor(localTime-serverTime);
@@ -57,7 +56,7 @@ var ns6=0;
 if(document.getElementById&&!document.all){ns6=1;}
 var agtbrw=navigator.userAgent.toLowerCase();
 var operaaa=(agtbrw.indexOf('opera')!=-1);
-var head="display:''";
+var head=\"display:''\";
 var folder='';
 
 function expandit(curobj, hide) {
@@ -70,21 +69,21 @@ function expandit(curobj, hide) {
 			folder=document.all[curobj.sourceIndex+1].style;
 		}
    }
-	if(folder.display=="none")
+	if(folder.display==\"none\")
 	{
-		folder.display="";
+		folder.display=\"\";
 	} else {
-		folder.display="none";
+		folder.display=\"none\";
 	}
 	if(hide) {
-		var hide_objects = hide.split(",");
+		var hide_objects = hide.split(\",\");
 		for(i=0; i<hide_objects.length; i++) {
-			hide_objects[i]=hide_objects[i].replace(/^\s*(.*)/, "$1");
-			hide_objects[i]=hide_objects[i].replace(/(.*?)\s*$/, "$1");
+			hide_objects[i]=hide_objects[i].replace(/^\\s*(.*)/, \"\$1\");
+			hide_objects[i]=hide_objects[i].replace(/(.*?)\\s*\$/, \"\$1\");
 			if(document.getElementById(hide_objects[i])) {
 				hidden=document.getElementById(hide_objects[i]).style;
-				if(hidden.display=="") {
-					hidden.display="none";
+				if(hidden.display==\"\") {
+					hidden.display=\"none\";
 				}
 			}
 		}
@@ -152,7 +151,7 @@ function textCounter(field,cntfield) {
 }
 
 function openwindow() {
-	opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");
+	opener = window.open(\"htmlarea/index.php\", \"popup\",\"top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no\");
 	opener.focus();
 }
 
@@ -162,7 +161,7 @@ function closeWindow(form){
 	}
 	if(window.opener!=null) {
 		window.close();
-	}else{setWinType(form);form.whatAction.value="Close";form.submit();}
+	}else{setWinType(form);form.whatAction.value=\"Close\";form.submit();}
 }
 
 function setCheckboxes(the_form, do_check, the_cb){
@@ -178,7 +177,7 @@ function setCheckboxes(the_form, do_check, the_cb){
 			var elts = document.getElementById(the_form);
 		}
 	}
-	
+
 	var elts_cnt  = (typeof(elts.length) != 'undefined') ? elts.length : 0;
 	if(elts_cnt){
 		for(var i = 0; i < elts_cnt; i++){
@@ -190,19 +189,19 @@ function setCheckboxes(the_form, do_check, the_cb){
 	return true;
 }
 
-var ref=""+escape(top.document.referrer);
+var ref=\"\"+escape(top.document.referrer);
 var colord = window.screen.colorDepth;
-var res = window.screen.width + "x" + window.screen.height;
+var res = window.screen.width + \"x\" + window.screen.height;
 var eself = document.location;
 
 // From http://phpbb.com
 var clientPC = navigator.userAgent.toLowerCase();
 var clientVer = parseInt(navigator.appVersion);
-var is_ie = ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1));
+var is_ie = ((clientPC.indexOf(\"msie\") != -1) && (clientPC.indexOf(\"opera\") == -1));
 var is_nav = ((clientPC.indexOf('mozilla')!=-1) && (clientPC.indexOf('spoofer')==-1) && (clientPC.indexOf('compatible') == -1) && (clientPC.indexOf('opera')==-1) && (clientPC.indexOf('webtv')==-1) && (clientPC.indexOf('hotjava')==-1));
 var is_moz = 0;
-var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1));
-var is_mac = (clientPC.indexOf("mac")!=-1);
+var is_win = ((clientPC.indexOf(\"win\")!=-1) || (clientPC.indexOf(\"16bit\") != -1));
+var is_mac = (clientPC.indexOf(\"mac\")!=-1);
 var e107_selectedInputArea;
 var e107_selectedRange;
 var e107_dupCounter = 1;
@@ -249,15 +248,15 @@ function addtext(text, emote)
 			val = text.split('][');
 			if (val[0] == text) val[1] = '';
 		}
-		else 
-		{ 
-		val = text; 
+		else
+		{
+		val = text;
 		}
 
 		if ((clientVer >= 4) && is_ie && is_win)
 		{
 			theSelection = document.selection.createRange().text; /* wrap selected text */
-			if (theSelection) 
+			if (theSelection)
 			{
 				if (emote != true)
 				{
@@ -269,8 +268,8 @@ function addtext(text, emote)
 				  {  // bbcode
 					document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
 				  }
-				} 
-				else 
+				}
+				else
 				{
 					document.selection.createRange().text = val + theSelection;
 				}
@@ -280,7 +279,7 @@ function addtext(text, emote)
 			}
 
 		}
-		else 
+		else
 		  if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0))
 		  { // Selected text here
 			if (emote != true)
@@ -293,28 +292,28 @@ function addtext(text, emote)
 			  {  // Single piece of text to insert, and delete any selected text
 				mozSwap(ta, text); /* wrap selected text */
 			  }
-			} 
-			else 
+			}
+			else
 			{
 				mozWrap(ta, val, ''); /* wrap selected text */
 			}
 			return;
 		  }
 		text = ' ' + text + ' ';
-		if (ta.createTextRange && e107_selectedRange) 
+		if (ta.createTextRange && e107_selectedRange)
 		{
 			var caretPos = e107_selectedRange; /* IE */
 			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? caretPos.text + text + ' ' : caretPos.text + text;
-		} 
-		else 
-		  if (ta.selectionStart || ta.selectionStart == '0') 
+		}
+		else
+		  if (ta.selectionStart || ta.selectionStart == '0')
 		  { /* Moz */
 		   	var startPos = ta.selectionStart;
 			var endPos = ta.selectionEnd;
 			var charb4 = ta.value.charAt(endPos-1);
 			ta.value = ta.value.substring(0, endPos)+ text + ta.value.substring(endPos);
-		  } 
-		  else 
+		  }
+		  else
 		  {
 			ta.value  += text;
 		  }
@@ -331,12 +330,12 @@ function help(help,tagid){
 }
 function externalLinks() {
 	if (!document.getElementsByTagName) return;
-	var anchors = document.getElementsByTagName("a");
+	var anchors = document.getElementsByTagName(\"a\");
 	for (var i=0; i<anchors.length; i++) {
 	var anchor = anchors[i];
-	if (anchor.getAttribute("href") &&
-		anchor.getAttribute("rel") == "external")
-		anchor.target = "_blank";
+	if (anchor.getAttribute(\"href\") &&
+		anchor.getAttribute(\"rel\") == \"external\")
+		anchor.target = \"_blank\";
 	}
 }
 
@@ -382,7 +381,6 @@ function preview_image(src_val,img_path, not_found)
 {
 	var ta;
 	var desti = src_val + '_prev';
-
 	ta = document.getElementById(src_val).value;
 	if(ta){
 		document.getElementById(desti).src = img_path + ta;
@@ -392,5 +390,17 @@ function preview_image(src_val,img_path, not_found)
 	return;
 }
 
+function replace_sc(sc,obj,id,scfile)
+{
+	if(!id){ var id = sc; }
+	var handler = '".SITEURL.$FILES_DIRECTORY."/sc_replace.php';
+	var parm = ($(obj).serialize() +  '&ajax_sc=' + sc + '&ajax_scfile=' + scfile + '&ajax_used=1');
+    new Ajax.Updater(id, handler, { parameters: parm }	);
+}
 
-//-->
+
+
+
+//-->";
+
+?>

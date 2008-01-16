@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2007-11-23 20:48:14 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2008-01-16 10:13:49 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -103,7 +103,7 @@ if (isset($theme_js_php) && $theme_js_php) {
 	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css' />";
 } else {
 	if (!isset($no_core_js) || !$no_core_js) {
-		echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
+		echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
 	}
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
