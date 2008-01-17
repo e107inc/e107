@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-01-16 22:18:20 $
+|     $Revision: 1.23 $
+|     $Date: 2008-01-17 22:17:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -301,7 +301,7 @@ if (isset($_POST['updatesettings']))
 		
 		
 // Uploaded avatar and/or photo
-	if ($file_userfile['error'] != 4)
+	if (isset($_FILES['file_userfile']['error']))
 	{
 	  require_once(e_HANDLER."upload_handler.php");
 	  require_once(e_HANDLER."resize_handler.php");
