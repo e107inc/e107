@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-12-19 20:12:46 $
+|     $Revision: 1.16 $
+|     $Date: 2008-01-18 21:07:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -618,7 +618,7 @@ function process_upload()
 							}
 							else
 							{
-								@unlink($fpath.$orig_file);
+								@unlink(e_FILE.'public/'.$orig_file);
 								//show resized
 								$parms = image_getsize(e_FILE.'public/'.$new_file);
 								$_POST['post'] .= "[br][img{$parms}]".$fpath.$new_file."[/img][br]";
