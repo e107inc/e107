@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-16 22:18:19 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-19 21:01:59 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!getperms("4"))
   exit;
 }
 $e_sub_cat = 'userclass';
-define('UC_DEBUG_OPTS',FALSE);
+//define('UC_DEBUG_OPTS',FALSE);
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");		// Modified class handler
 $uclass = new e_userclass;						// Class management functions - legacy stuff from 0.7
