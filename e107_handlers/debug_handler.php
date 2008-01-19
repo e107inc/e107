@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-21 16:55:10 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-19 13:17:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -112,44 +112,54 @@ class e107_debug {
 														// removed: inline debug breaks pages!
 	);
 
-	function e107_debug() {
-		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) {
-			$dVals=0;
-			if (isset($_COOKIE['e107_debug_level'])) {
-				$dVals = substr($_COOKIE['e107_debug_level'],6);
-			}
-			if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU)) {
-				$dVals = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
-			}
-			
-			$aDVal = explode('.',$dVals); // support multiple values, OR'd together
-			$dVal = 0;
-			foreach ($aDVal as $curDVal)
-			{
-				if (isset($this->aDebugShortcuts[$curDVal])) {
-					$dVal |= $this->aDebugShortcuts[$curDVal];
-				} else {
-					$dVal |= $curDVal;
-				}
-			}
-				
-			if (isset($debug_param[3]))
-			{
-				if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
-				{
-					cookie('e107_debug_level', 'level='.$dVal, time() + 86400);
-				}
-				if ($debug_param[3] == '-' || $debug_param[3] == 'unstick')
-				{
-					cookie('e107_debug_level', '', time() - 3600);
-				}
-			}
-
-			$this->debug_level = $dVal;
+	function e107_debug() 
+	{
+	  if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) 
+	  {
+		$dVals='';
+		if (!isset($debug_param[1]) || ($debug_param[1]=='')) $debug_param[1] = '=';
+		if (isset($_COOKIE['e107_debug_level'])) 
+		{
+		  $dVals = substr($_COOKIE['e107_debug_level'],6);
 		}
+		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU)) 
+		{
+		  $dVals = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
+		}
+			
+		$aDVal = explode('.',$dVals); // support multiple values, OR'd together
+		$dVal = 0;
+		foreach ($aDVal as $curDVal)
+		{
+		  if (isset($this->aDebugShortcuts[$curDVal])) 
+		  {
+			$dVal |= $this->aDebugShortcuts[$curDVal];
+		  } 
+		  else 
+		  {
+				$dVal |= $curDVal;
+		  }
+		}
+				
+		if (isset($debug_param[3]))
+		{
+		  if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
+		  {
+			cookie('e107_debug_level', 'level='.$dVal, time() + 86400);
+		  }
+		  if ($debug_param[3] == '-' || $debug_param[3] == 'unstick')
+		  {
+			cookie('e107_debug_level', '', time() - 3600);
+		  }
+		}
+
+		$this->debug_level = $dVal;
+	  }
 	}
 
-	function set_error_reporting() {
+
+	function set_error_reporting() 
+	{
 	}
 }
 
