@@ -1,4 +1,4 @@
-<?php
+<?
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,43 +11,41 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-24 21:21:11 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-20 04:46:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-if (!defined('e107_INIT')) { exit; }
-
-class parseXml {
-
-	var $parser;
-	var $error;
-	var $current_tag;
-	var $start_tag;
-	var $xmlData = array();
-	var $counterArray = array();
-	var $data;
+class xmlClass
+{
 	var $xmlFileContents;
 
-
-	function getRemoteXmlFile($address)
+	function getRemoteFile($address)
 	{
+		if(function_exists('file_get_contents'))
+		{
+			if($data = file_get_contents($address))
+			{
+				return $data;
+			}
+		}
+
 		if(function_exists("curl_init"))
 		{
-			$cu = curl_init (); 
+			$cu = curl_init ();
 			curl_setopt($cu, CURLOPT_URL, $address);
 			curl_setopt($cu, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt ($cu, CURLOPT_HEADER, 0);
 			curl_setopt ($cu, CURLOPT_TIMEOUT, 10);
-			$this -> xmlFileContents = curl_exec($cu);
+			$this->xmlFileContents = curl_exec($cu);
 			if (curl_error($cu))
 			{
 				$this -> error =  "Error: ".curl_errno($cu).", ".curl_error($cu);
 				return FALSE;
 			}
 			curl_close ($cu);
-			return $this -> xmlFileContents;
+			return $this->xmlFileContents;
 		}
 
 		if(ini_get("allow_url_fopen"))
@@ -76,163 +74,85 @@ class parseXml {
 		$this -> xmlFileContents = "";
 		while (!feof($remote))
 		{
-			$this -> xmlFileContents .= fgets ($remote, 4096);
+			$this->xmlFileContents .= fgets ($remote, 4096);
 		}
 		fclose ($remote);
-		return $this -> xmlFileContents;
+		return $this->xmlFileContents;
 	}
 
-
-	function parseXmlContents ()
+	function parseXml($xml='')
 	{
-		foreach($this -> xmlData as $key => $value)
+		if($xml == '' && $this->xmlFileContents)
 		{
-			unset($this -> xmlData[$key]);
+			$xml = $this->xmlFileContents;
 		}
-		foreach($this -> counterArray as $key => $value)
+		if(!$xml)
 		{
-			unset($this -> counterArray[$key]);
-		}
-
-		if(!function_exists('xml_parser_create'))
-		{
-			$this->error = "XML library not available.";
-			return FALSE;
+			return false;
 		}
 
-		if(!$this -> xmlFileContents)
-        {
-            $this->error = "No XML source specified";
-            return FALSE;
-        }
-
-		$this->parser = xml_parser_create('');
-		xml_set_object($this->parser, $this);
-		xml_set_element_handler($this->parser, 'startElement', 'endElement');
-		xml_set_character_data_handler( $this->parser, 'characterData' );
-
-		$array = explode("\n", $this -> xmlFileContents);
-
-		foreach($array as $data)
+		$xml = simplexml_load_string($xml);
+		if(is_object($xml))
 		{
+			$xml = (array)$xml;
+		}
+		$xml = $this->xml_convert_to_array($xml);
+		return $xml;
+	}
 
-			if(strlen($data == 4096))
+	function xml_convert_to_array($xml)
+	{
+		if(is_array($xml))
+		{
+			foreach($xml as $k => $v)
 			{
-				$this -> error = "The XML cannot be parsed as it is badly formed.";
-				return FALSE;
+				if(is_object($v))
+				{
+					$v = (array)$v;
+				}
+				$xml[$k] = $this->xml_convert_to_array($v);
 			}
-
-            if (!xml_parse($this->parser, $data))
-            {
-				$this->error = sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->parser)), xml_get_current_line_number($this->parser),xml_get_current_column_number($this->parser));
-				return FALSE;
-            }
-        }
-		xml_parser_free( $this->parser );
-		return $this -> xmlData;
+			if(count($xml) == 1 && isset($xml[0]))
+			{
+				$xml = $xml[0];
+			}
+		}
+		return $xml;
 	}
 
-	function startElement ($p, $element, &$attrs)
+	function loadXMLfile($fname='', $parse = false)
 	{
-		$this -> start_tag = $element;
-		$this -> current_tag = strtolower($element);
-		if(!array_key_exists($this -> current_tag, $this -> counterArray))
-		{
-			$this -> counterArray[$this -> current_tag] = 0;
-			$this -> xmlData[$this -> current_tag][$this -> counterArray[$this -> current_tag]] = "";
-		}
-	}
 
-	function endElement ($p, $element)
-	{
-		if($this -> start_tag == $element)
+		if($fname == '')
 		{
-			$this -> counterArray[$this -> current_tag] ++;
+			return false;
 		}
-	}
+		$xml = false;
 
-	function characterData ($p, $data)
-	{
-		$data = trim ( chop ( $data ));
-		$data = preg_replace('/&(?!amp;)/', '&amp;', $data);
-		if(!array_key_exists($this -> current_tag, $this -> xmlData))
+		if(strpos($filename, '://') !== false)
 		{
-			$this -> xmlData [$this -> current_tag] = array();
-		}
-		if(array_key_exists($this -> counterArray[$this -> current_tag], $this -> xmlData [$this -> current_tag]))
-		{
-			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] .= $data;
+			$this->getRemoteFile($fname);
 		}
 		else
 		{
-			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] = $data;
+			if($xml = file_get_contents($fname))
+			{
+				$this->xmlFileContents = $xml;
+			}
 		}
+		if($this->xmlFileContents)
+		{
+			if($parse == true)
+			{
+				return $this->parseXML();
+			}
+			else
+			{
+				return $this->xmlFileContents;
+			}
+		}
+		return false;
 	}
+
+
 }
-
-//CXml class code found on php.net
-class CXml
-{
-   var $xml_data;
-   var $obj_data;
-   var $pointer;
-
-   function CXml() { }
-  
-   function Set_xml_data( &$xml_data )
-   {
-       $this->index = 0;
-       $this->pointer[] = &$this->obj_data;
-  
-       //strip white space between tags
-       $this->xml_data = preg_replace("/>[[:space:]]+</i", "><", $xml_data);
-       $this->xml_parser = xml_parser_create( "UTF-8" );
-  
-       xml_parser_set_option( $this->xml_parser, XML_OPTION_CASE_FOLDING, false );
-       xml_set_object( $this->xml_parser, $this );
-       xml_set_element_handler( $this->xml_parser, "_startElement", "_endElement");
-       xml_set_character_data_handler( $this->xml_parser, "_cData" );
-      
-       xml_parse( $this->xml_parser, $this->xml_data, true );
-       xml_parser_free( $this->xml_parser );
-   }
-  
-   function _startElement( $parser, $tag, $attributeList )
-   {
-       foreach( $attributeList as $name => $value )
-       {
-           $value = $this->_cleanString( $value );
-           $object->$name = $value;
-       }
-       //replaces the special characters with the underscore (_) in tag name
-       $tag = preg_replace("/[:\-\. ]/", "_", $tag);
-       eval( "\$this->pointer[\$this->index]->" . $tag . "[] = \$object;" );
-       eval( "\$size = sizeof( \$this->pointer[\$this->index]->" . $tag . " );" );
-       eval( "\$this->pointer[] = &\$this->pointer[\$this->index]->" . $tag . "[\$size-1];" );
-          
-       $this->index++;
-   }
-
-   function _endElement( $parser, $tag )
-   {
-       array_pop( $this->pointer );
-       $this->index--;
-   }
-  
-   function _cData( $parser, $data )
-   {
-       if (empty($this->pointer[$this->index])) {
-           if (rtrim($data, "\n"))
-               $this->pointer[$this->index] = $data;
-       } else {
-           $this->pointer[$this->index] .= $data;
-       }
-   }
-
-   function _cleanString( $string )
-   {
-       return utf8_decode( trim( $string ) );
-   }
-}
-
-?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-07 23:28:17 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-20 04:46:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,7 +25,7 @@ if(!function_exists("checkUpdate"))
 	{
 		global $sql, $tp;
 		require_once(e_HANDLER."xml_class.php");
-		$xml = new parseXml;
+		$xml = new xmlClass;
 		require_once(e_HANDLER."magpie_rss.php");
 
 		if ($sql -> db_Select("newsfeed", "*", $tp -> toDB($query, true)))
@@ -36,7 +36,7 @@ if(!function_exists("checkUpdate"))
 				extract ($feed);
 				if($newsfeed_timestamp + $newsfeed_updateint < time())
 				{
-					if($rawData = $xml -> getRemoteXmlFile($newsfeed_url))
+					if($rawData = $xml->getRemoteFile($newsfeed_url))
 					{
 						$rss = new MagpieRSS( $rawData );
 						$serializedArray = addslashes(serialize($rss));
