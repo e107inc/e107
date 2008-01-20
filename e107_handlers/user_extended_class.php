@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-15 21:57:38 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2008-01-20 04:46:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -469,40 +469,39 @@ class e107_user_extended
 		}
 
 		require_once(e_HANDLER."xml_class.php");
-		$xml = new CXml;
-		if("getfile" == $contents)
-		{
-			$contents = file_get_contents(e_FILE."cache/user_extended.xml");
-		}
-		$xml->Set_XML_data($contents);
-		$data = $xml->obj_data->e107_extended_user_fields[0];
-		$ret['version'] = $data->version;
+		$xml = new xmlClass;
+		$data = $xml->loadXMLfile(e_FILE."cache/user_extended.xml", true);
+		$ret['version'] = $data['@attributes']['version'];
 		unset($info);
-		foreach($data->item as $item)
+		foreach($data['item'] as $item)
 		{
+			if(is_array($item['include_text']) && !count($item['include_text']))
+			{
+				$item['include_text'] = '';
+			}
 			$info = array(
-								"name" 			=> $item->name,
-								"text" 			=> "UE_LAN_".strtoupper($item->name),
-								"type" 			=> $item->type[0],
-								"values" 		=> $item->values[0],
-								"default" 		=> $item->default[0],
-								"required" 		=> $item->required[0],
-								"read" 			=> $item->read[0],
-								"write" 		=> $item->write[0],
-								"applicable" 	=> $item->applicable[0],
-								"include_text"	=> $item->include_text[0],
-								"parms"			=> $item->include_text[0],
-								"regex" 		=> $item->regex[0]
+								"name" 			=> $item['@attributes']['name'],
+								"text" 			=> "UE_LAN_".strtoupper($item['@attributes']['name']),
+								"type" 			=> $item['type'],
+								"values" 		=> $item['values'],
+								"default" 		=> $item['default'],
+								"required" 		=> $item['required'],
+								"read" 			=> $item['read'],
+								"write" 			=> $item['write'],
+								"applicable" 	=> $item['applicable'],
+								"include_text"	=> $item['include_text'],
+								"parms"			=> $item['include_text'],
+								"regex" 			=> $item['regex']
 							 );
-			if(is_array($item->default) && $item->default[0] == '')
+			if(is_array($item['default']) && $item['default'] == '')
 			{
 				$info['default'] = 0;
 			}
-			if($item->regex[0])
+			if($item['regex'])
 			{
-				$info['parms'] .= $item->include_text[0]."^,^".$item->regex[0]."^,^LAN_UE_FAIL_".strtoupper($item->name);
+				$info['parms'] .= $item['include_text']."^,^".$item['regex']."^,^LAN_UE_FAIL_".strtoupper($item['@attributes']['name']);
 			}
-			$ret[$item->name] = $info;
+			$ret[$item['@attributes']['name']] = $info;
 		}
 		$this->extended_xml = $ret;
 		return $this->extended_xml;

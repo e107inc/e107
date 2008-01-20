@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-01-15 21:57:16 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2008-01-20 04:46:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -367,8 +367,8 @@ if (isset($_POST['register']))
 	if($_POST['xupexist'])
 	{
 		require_once(e_HANDLER."xml_class.php");
-		$xml = new parseXml;
-		if(!$rawData = $xml -> getRemoteXmlFile($_POST['xupexist']))
+		$xml = new xmlClass;
+		if(!$rawData = $xml->getRemoteFile($_POST['xupexist']))
 		{
 			echo "Error: Unable to open remote XUP file";
 		}
