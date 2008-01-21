@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-01-16 22:18:20 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2008-01-21 03:54:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,12 +56,17 @@ class e107{
 	function set_paths(){
 		global $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY,
 		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $CACHE_DIRECTORY,
-		$NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY, $UPLOADS_DIRECTORY;
+		$NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY, $UPLOADS_DIRECTORY,$_E107;
 
 		$path = ""; $i = 0;
-		while (!file_exists("{$path}class2.php")) {
-			$path .= "../";
-			$i++;
+
+		if(!$_E107['cli'])
+		{
+			while (!file_exists("{$path}class2.php"))
+			{
+				$path .= "../";
+				$i++;
+			}
 		}
 		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
 
@@ -69,7 +74,8 @@ class e107{
 		$http_path = explode("/", $http_path);
 		$http_path = array_reverse($http_path);
 		$j = 0;
-		while ($j < $i) {
+		while ($j < $i)
+		{
 			unset($http_path[$j]);
 			$j++;
 		}
@@ -77,10 +83,15 @@ class e107{
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
 
-		if ($this->server_path == "//") {
+		if ($this->server_path == "//")
+		{
 			$this->server_path = "/";
 		}
-		$this->relative_base_path = $path;
+
+		// Absolute file-path of directory containing class2.php
+		define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
+
+		$this->relative_base_path = (!$_E107['cli']) ? $path : e_ROOT;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $path;
@@ -88,9 +99,8 @@ class e107{
 		if(!defined("e_HTTP") || !defined("e_ADMIN") )
 		{
 			define("e_HTTP", $this->server_path);
-			define("e_BASE", $this->relative_base_path);
+		  	define("e_BASE", $this->relative_base_path);
 
-			define("e_ROOT",$_SERVER['DOCUMENT_ROOT'].$this->server_path);
 //
 // HTTP relative paths
 //
@@ -115,35 +125,48 @@ class e107{
 
 			if(isset($_SERVER['DOCUMENT_ROOT']))
 			{
-			  define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
+			  	define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
 			}
 			else
 			{
-			  define("e_DOCROOT", false);
+			  	define("e_DOCROOT", false);
 			}
+
 			define("e_DOCS_ABS", e_HTTP.$HELP_DIRECTORY);
 
-			if($CACHE_DIRECTORY) {
+			if($CACHE_DIRECTORY)
+			{
             	define("e_CACHE", e_BASE.$CACHE_DIRECTORY);
-			} else {
+			}
+			else
+			{
             	define("e_CACHE", e_BASE.$FILES_DIRECTORY."cache/");
 			}
 
-			if($NEWSIMAGES_DIRECTORY) {
+			if($NEWSIMAGES_DIRECTORY)
+			{
             	define("e_NEWSIMAGE", e_BASE.$NEWSIMAGES_DIRECTORY);
-			} else {
+			}
+			else
+			{
             	define("e_NEWSIMAGE", e_IMAGE."newspost_images/");
 			}
 
-			if($CUSTIMAGES_DIRECTORY) {
+			if($CUSTIMAGES_DIRECTORY)
+			{
             	define("e_CUSTIMAGE", e_BASE.$CUSTIMAGES_DIRECTORY);
-			} else {
+			}
+			else
+			{
             	define("e_CUSTIMAGE", e_IMAGE."custom/");
 			}
 
-			if ($DOWNLOADS_DIRECTORY{0} == "/") {
+			if ($DOWNLOADS_DIRECTORY{0} == "/")
+			{
 				define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
-			} else {
+			}
+			else
+			{
 				define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
 			}
 
@@ -152,15 +175,19 @@ class e107{
             	$UPLOADS_DIRECTORY = $FILES_DIRECTORY."public/";
 			}
 
-			if ($UPLOADS_DIRECTORY{0} == "/") {
+			if ($UPLOADS_DIRECTORY{0} == "/")
+			{
 				define("e_UPLOAD", $UPLOADS_DIRECTORY);
-			} else {
+			}
+			else
+			{
 				define("e_UPLOAD", e_BASE.$UPLOADS_DIRECTORY);
 			}
 		}
 	}
 
-	function fix_windows_paths($path) {
+	function fix_windows_paths($path)
+	{
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
 		$fixed_path = (substr($fixed_path, 1, 2) == ":/" ? substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;

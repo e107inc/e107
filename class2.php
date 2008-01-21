@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2008-01-16 10:53:57 $
+|     $Revision: 1.45 $
+|     $Date: 2008-01-21 03:54:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -49,10 +49,12 @@ $oblev_before_start = ob_get_level();
 //
 // B: Remove all output buffering
 //
-while (@ob_end_clean());  // destroy all ouput buffering
-ob_start();             // start our own.
-$oblev_at_start = ob_get_level(); 	// preserve when destroying globals in step C
-
+if(!$_E107['cli'])
+{
+	while (@ob_end_clean());  // destroy all ouput buffering
+	ob_start();             // start our own.
+	$oblev_at_start = ob_get_level(); 	// preserve when destroying globals in step C
+}
 //
 // C: Find out if register globals is enabled and destroy them if so
 // (DO NOT use the value of any variables before this point! They could have been set by the user)
@@ -130,7 +132,7 @@ if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
 // Define the domain name and subdomain name.
-if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST']))){
+if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST']))){
 	$srvtmp = "";  // Host is an IP address.
 }else{
 $srvtmp = explode(".",$_SERVER['HTTP_HOST']);
@@ -1517,6 +1519,20 @@ class error_handler {
 		//
 		// This is initialized before the current debug level is known
 		//
+        global $_E107;
+        if($_E107['debug'])
+		{
+			$this->debug = true;
+			error_reporting(E_ALL);
+			return;
+        }
+
+        if($_E107['cli'])
+		{
+         	error_reporting(E_ALL ^ E_NOTICE);
+			return;
+		}
+
 		if ((isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'debug=') !== FALSE) || isset($_COOKIE['e107_debug_level'])) {
 			$this->debug = true;
 			error_reporting(E_ALL);
