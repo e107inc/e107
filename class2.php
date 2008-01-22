@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2008-01-21 03:54:10 $
+|     $Revision: 1.46 $
+|     $Date: 2008-01-22 00:39:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -49,6 +49,11 @@ $oblev_before_start = ob_get_level();
 //
 // B: Remove all output buffering
 //
+if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
+if($_E107['cli'] && !$_E107['debug'] && isset($_SERVER["HTTP_USER_AGENT"]))
+{
+	exit;
+}
 if(!$_E107['cli'])
 {
 	while (@ob_end_clean());  // destroy all ouput buffering
@@ -75,7 +80,7 @@ if($register_globals == true){
 	unset($global);
 }
 
-if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
+
 if(isset($_E107['minimal']))
 {
 	$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
@@ -1193,18 +1198,42 @@ function init_session() {
 	# - return boolean
 	# - scope public
 	*/
-	global $sql, $pref, $user_pref, $tp, $currentUser, $e107;
+	global $sql, $pref, $user_pref, $tp, $currentUser, $e107, $_E107;
 
 	define('USERIP', $e107->getip());
-	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']])) {
+
+    if($_E107['cli'] && $_SERVER['argv'][1])
+	{
+		require_once(e_HANDLER."cli_class.php");
+		$cli = new eCLI;
+		$arg = $cli->parse_args();
+		if($arg['u'] && $arg['p'])
+		{
+	        e107_require_once(e_HANDLER."login.php");
+			$usr = new userlogin;
+			$cli_log = $usr->userlogin(trim($arg['u']), trim($arg['p']), 0);
+		}
+	}
+
+	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']]) && !$_E107['cli'])
+	{
 		define("USER", FALSE);
 		define("USERTHEME", FALSE);
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
-	} else {
-		list($uid, $upw)=(isset($_COOKIE[$pref['cookie_name']]) && $_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
+	}
+	else
+	{
+		if(!$_E107['cli'])
+		{
+			list($uid, $upw)=(isset($_COOKIE[$pref['cookie_name']]) && $_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
+        }
+		else
+		{
+        	list($uid, $upw)= explode(".", $cli_log);
+		}
 
 		if (empty($uid) || empty($upw)) {
 			cookie($pref['cookie_name'], "", (time() - 2592000));
