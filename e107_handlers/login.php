@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-01-15 21:57:38 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2008-01-22 00:39:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -35,7 +35,7 @@ class userlogin
 		# - scope                                        public
 		*/
 		global $pref, $e_event, $sql, $e107, $tp;
-		global $admin_log;
+		global $admin_log,$_E107;
 
 		$username = trim($username);
 		$userpass = trim($userpass);
@@ -145,7 +145,7 @@ class userlogin
 				$this->update_xup($user_id, $user_xup);
 			  }
 
-			  if ($pref['user_tracking'] == "session") 
+			  if ($pref['user_tracking'] == "session")
 			  {
 				$_SESSION[$pref['cookie_name']] = $cookieval;
 			  } 
@@ -209,12 +209,16 @@ class userlogin
 				  }
 				}
 
+				if($_E107['cli'])
+				{
+                	return $cookieval;
+				}
 
 				if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
-					header("Location: ".$redir);
-					exit;
+				  	header("Location: ".$redir);
+				  	exit;
 				} else {
-					echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
+				  	echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
 				}
 			}
 		}
