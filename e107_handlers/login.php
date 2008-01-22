@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-01-22 00:39:08 $
+|     $Revision: 1.17 $
+|     $Date: 2008-01-22 01:41:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,12 @@ class userlogin
 
 		$username = trim($username);
 		$userpass = trim($userpass);
+
+		if($_E107['cli'] && ($username == ""))
+		{
+        	return;
+		}
+
 		if($username == "" || $userpass == "")
 		{	// Required fields blank
 		  define("LOGINMESSAGE", LAN_LOGIN_20."<br /><br />");
@@ -188,7 +194,10 @@ class userlogin
 			  $e_event->trigger("login", $edata_li);
 			  $redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
 
-
+				if($_E107['cli'])
+				{
+                	return $cookieval;
+				}
 
 				if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force'])) 
 				{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
@@ -209,10 +218,7 @@ class userlogin
 				  }
 				}
 
-				if($_E107['cli'])
-				{
-                	return $cookieval;
-				}
+
 
 				if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
 				  	header("Location: ".$redir);
