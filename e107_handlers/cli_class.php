@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cli_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-01-21 13:25:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-22 02:06:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,7 +23,7 @@ class eCLI
 	*  Provided a list of command line arguments, parse them in a unix manner.
 	*  If no args are provided, will default to $_SERVER['argv']
 	*
-	*	 @return array arg values 
+	*	 @return array arg values
 	*/
 
 	function parse_args($argv='')
@@ -89,3 +89,4 @@ class eCLI
 	}
 
 }
+?>
