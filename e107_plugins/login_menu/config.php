@@ -1,5 +1,4 @@
 <?php
-
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -12,32 +11,66 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-23 01:12:15 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
 $eplug_admin = TRUE;
+
 require_once("../../class2.php");
 if (!getperms("4")) { header("location:".e_BASE."index.php"); exit ;}
 
 include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 require_once(e_ADMIN."auth.php");
 
+require_once(e_PLUGIN."login_menu/login_menu_class.php");
+
 if ($_POST['update_menu']) {
+	
+    //sort/show/hide - Start
+	if(varset($_POST['external_links'])) {
+	    
+	    $_POST['pref']['external_links'] = array();
+        asort($_POST['external_links_order']);
+        
+        foreach ($_POST['external_links_order'] as $key => $value) {
+        	if(array_key_exists($key, $_POST['external_links']))
+                $_POST['pref']['external_links'][] = $key;
+        }
+
+        $_POST['pref']['external_links'] = $_POST['pref']['external_links'] ? implode(',', $_POST['pref']['external_links']) : '';
+
+        unset($_POST['external_links']);
+        
+	} else {
+        $_POST['pref']['external_links'] = '';
+    }
+    
+    unset($_POST['external_links_order']);
+    //sort/show/hide - End
+    
+	//print_a($_POST);
 	unset($menu_pref['login_menu']);
 	$menu_pref['login_menu'] = $_POST['pref'];
 	$tmp = addslashes(serialize($menu_pref));
 	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
 	$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
+
 }
 
 $text = '
 	<div style="text-align:center">
-	<form action="'.e_SELF.'?'.e_QUERY.'" method="post">
-	<table style="width:85%" class="fborder" >
-
+	<form action="'.e_SELF.'" method="post">
+	<table style="width:85%;" class="fborder" >
+	
+    '.login_menu_class::render_config_links().'
+    
+    <tr>
+    <td colspan="2" class="fcaption">'.LOGIN_MENU_L42.'</td>
+    </tr>
+    
 	<tr>
 	<td style="width:30%" class="forumheader3">'.LOGIN_MENU_L31.'</td>
 	<td style="width:70%" class="forumheader3">

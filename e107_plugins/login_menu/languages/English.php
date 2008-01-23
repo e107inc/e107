@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-01-23 01:12:15 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,7 +23,7 @@ define("LOGIN_MENU_L3", "Signup");
 define("LOGIN_MENU_L4", "Forgot password?");
 define("LOGIN_MENU_L5", "Welcome");
 define("LOGIN_MENU_L6", "Remember me");
-define("LOGIN_MENU_L7", "Unique user ID not recognised (possible corrupted cookie).<br />Please <a href=\"".e_BASE."index.php?logout\">click here</a> to destroy cookie.");
+define("LOGIN_MENU_L7", "Unique user ID not recognised (possible corrupted cookie). Please click the logout link below to destroy cookie.");
 define("LOGIN_MENU_L8", "Logout");
 define("LOGIN_MENU_L9", "Login Error");
 define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.");
@@ -61,5 +61,13 @@ define('LOGIN_MENU_L36', 'Show New Members');
 define('LOGIN_MENU_L39', 'Leave Admin');
 define("LOGIN_MENU_L40", "Resend Activation Email");
 define("LOGIN_MENU_L41", "Login Menu Settings");
+
+//new v0.8
+define('LOGIN_MENU_L37', 'Show');
+define('LOGIN_MENU_L38', 'Login menu - Additional Links');
+
+define('LOGIN_MENU_L42', 'Login menu - Recent additions');
+define('LOGIN_MENU_L43', 'Position');
+define('LOGIN_MENU_L44', 'missing link title');
 
 ?>
