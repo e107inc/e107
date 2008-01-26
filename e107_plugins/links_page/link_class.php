@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.4 $
-|    $Date: 2007-09-28 21:21:05 $
+|    $Revision: 1.5 $
+|    $Date: 2008-01-26 17:35:21 $
 |    $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -207,16 +207,21 @@ class linkclass {
 
 
 
-    function parse_link_append($rowl){
-
+    function parse_link_append($rowl)
+	{
         global $tp, $linkspage_pref;
-        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
-            $link_open_type = $rowl['link_open'];
-        }else{
-            $link_open_type = $linkspage_pref['link_open_all'];
+        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5")
+		{
+          $link_open_type = $rowl['link_open'];
+        }
+		else
+		{
+          $link_open_type = $linkspage_pref['link_open_all'];
         }
 
-        switch ($link_open_type) {
+		$rowl['link_url'] = htmlentities($rowl['link_url'],ENT_QUOTES,CHARSET);
+        switch ($link_open_type) 
+		{
             case 1:
             $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."','full');return false;\" >"; // Googlebot won't see it any other way.
             break;
