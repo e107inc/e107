@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-08-10 19:04:02 $
+|     $Revision: 1.15 $
+|     $Date: 2008-01-26 21:32:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -394,8 +394,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_60", "Crear por defectos");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "Crear nueva categoría");
 define("CONTENT_ADMIN_CONVERSION_LAN_62", "Plugin de gestor de contenidos actualizado a la versión:");
 define("CONTENT_ADMIN_CONVERSION_LAN_63", "Actualice");
-define("CONTENT_ADMIN_CONVERSION_LAN_64", "Estructura de la tabla del plugin de contenidos actualizada"); 
-define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "Estructura de la tabla del plugin de contenidos actualizada");
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "Plugin gestor de contenidos : autor de contenido actualizado"); 
 define("CONTENT_ADMIN_CONVERSION_LAN_66", "Plugin gestor de contenidos : preferencias de contenido y menus actualizado"); 
 define("CONTENT_ADMIN_CONVERSION_LAN_67", "Plugin gestor de contenidos : preferencias de contenido actualizado"); 
