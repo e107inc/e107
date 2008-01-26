@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<e107Plugin>
+	<name>Forum</name>
+	<version>1.2</version>
+	<author>e107dev</author>
+	<authorUrl>http://e107.org</authorUrl>
+	<description>This plugin is a fully featured Forum system</description>
+	<compatibility>0.8</compatibility>
+	<installRequired>true</installRequired>
+	<folder>forum</folder>
+	<administration>
+		<configFile>forum_admin.php</configFile>
+		<icon>forum/images/forums_32.png</icon>
+		<iconSmall>forum/images/images/forums_16.png</iconSmall>
+		<caption>Configure Forum</caption>
+		<latest>true</latest>
+		<status>true</status>
+	</administration>
+	<menuLink name="Forum" value="forum/forum.php" perm='everyone'/>
+	<mainPrefs>
+		<pref name="forum_show_topics" value="1" />
+		<pref name="forum_postfix" value="[more...]" />
+		<pref name="forum_poll" value="0" />
+		<pref name="forum_popular" value="10" />
+		<pref name="forum_track" value="0" />
+		<pref name="forum_eprefix" value="[forum]" />
+		<pref name="forum_enclose" value="1" />
+		<pref name="forum_title" value="Forums" />
+		<pref name="forum_postspage" value="10" />
+		<pref name="forum_hilightsticky" value="1" />
+		<pref name="forum_obsolete_pref" value="1" active="false"/>
+	</mainPrefs>
+	<userclasses>
+		<userclass name="forum_moderator" description="Moderator of all forums" />
+	</userclasses>
+	<sqlFile>forum_sql.php</sqlFile>
+	<management>
+		<install type="classFunction" file="forum_management.php" class="forum_management" function="forum_install" />
+		<uninstall type="classFunction" file="forum_management.php" class="forum_management" function="forum_uninstall" />
+		<upgrade type="classFunction" file="forum_management.php" class="forum_management" function="forum_upgrade"  />
+	</management>
+</e107Plugin>	

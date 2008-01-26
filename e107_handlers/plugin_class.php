@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-01-20 15:01:19 $
+|     $Revision: 1.16 $
+|     $Date: 2008-01-26 04:47:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -875,6 +875,63 @@ class e107plugin
 		}
 		return 2;
 	}
+	
+
+	function parse_plugin($path)
+	{
+		if(file_exists($_path.'plugin.xml'))
+		{
+			return $this->parse_plugin_xml($path);
+		}
+		elseif(file_exists($_path.'plugin.php'))
+		{
+			return $this->parse_plugin_php($path);
+		}
+		return false;
+	}
+
+	function parse_plugin_php($path)
+	{
+		include($path.'plugin.php');
+		$ret = array();
+
+ 		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+
+		$ret['version'] = varset($eplug_version);
+		$ret['name'] = varset($eplug_name);
+		$ret['folder'] = varset($eplug_folder);
+		$ret['description'] = varset($eplug_description);
+		$ret['author'] = varset($eplug_author);
+		$ret['authorUrl'] = varset($eplug_url);
+		$ret['authorEmail'] = varset($eplug_email);
+		$ret['compatibility'] = varset($eplug_compatible);
+		$ret['readme'] = varset($eplug_readme);
+		$ret['compliant'] = varset($eplug_compliant);
+		$ret['menuName'] = varset($eplug_menu_name);
+
+		$ret['administration']['icon'] = varset($eplug_icon);
+		$ret['administration']['caption'] = varset($eplug_caption);
+		$ret['administration']['iconSmall'] = varset($eplug_icon_small);
+		$ret['administration']['configFile'] = varset($eplug_conffile);
+		
+		// Set this key so we know the vars came from a plugin.php file
+		$ret['plugin_php'] = true;
+		return $ret;
+	}
+
+
+	function parse_plugin_xml($path)
+	{
+		global $tp;
+		include_lan($path.'languages/'.e_LANGUAGE.'/lan_config.php');
+		include_lan($path.'languages/admin/'.e_LANGUAGE.'.php');
+		require_once(e_HANDLER.'xml_class.php');
+		$xml = new xmlClass;
+		$xml->loadXMLfile($path.'plugin.xml', true, true);
+		$xml->xmlFileContents = $tp->replaceConstants($xml->xmlFileContents, '', true);
+		return $xml->parseXml();
+	}
+
 }
 
 ?>
