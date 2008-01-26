@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ecal_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-15 22:15:30 $
+|     $Revision: 1.5 $
+|     $Date: 2008-01-26 16:16:59 $
 |     $Author: e107steved $
 |
 | Event calendar class:
@@ -304,11 +304,11 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 		case 2 : break;   // Continue
 		default : return;   // Invalid or undefined option
 	  }
-	  $log_titles = array(	'1' => 'Event Calendar - add event '.strftime("%d-%B-%Y",$event_start),
-							'2' => 'Event Calendar - edit event '.strftime("%d-%B-%Y",$event_start),
-							'3' => 'Event Calendar - delete event '.strftime("%d-%B-%Y",$event_start),
+	  $log_titles = array(	'1' => 'Event Calendar - add event'.strftime("%d-%B-%Y",$event_start),
+							'2' => 'Event Calendar - edit event'.strftime("%d-%B-%Y",$event_start),
+							'3' => 'Event Calendar - delete event'.strftime("%d-%B-%Y",$event_start),
 							'4' => 'Event Calendar - Bulk Delete',
-							'5' => 'Event Calendar - multiple add '.strftime("%d-%B-%Y",$event_start)
+							'5' => 'Event Calendar - multiple add'.strftime("%d-%B-%Y",$event_start)
 							);
 	  $admin_log->log_event($log_titles[$event_type],$event_title."&nbsp;\n".$event_string,4);
 	}
@@ -495,12 +495,11 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 // Read a list of events between start and end dates
 // If $start_only is TRUE, only searches based on the start date/time
 // Potential option to hook in other routines later
-	function get_events($start_time, $end_time, $start_only=FALSE, $cat_filter='*', $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
+	function get_events($start_time, $end_time, $start_only=FALSE, $cat_filter=0, $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
 	{
 	  global $sql;
 	  
 	  $ret = array();
-	  if ($cat_filter === FALSE) return $ret;
 	  $cat_lj = '';
 	  $category_filter = '';
 	  $extra = '';
@@ -516,19 +515,6 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	  if ($cat_filter && ($cat_filter != '*')) $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
 	  if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start <= ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
 	  
-/*
-	  if (!$start_only) $so = "OR (e.event_end >= ".intval($start_time)." AND e.event_end <= ".intval($end_time).")
-		OR (e.event_start <= ".intval($start_time)." AND e.event_end >= ".intval($end_time).") ";
-	
-	  $qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
-		WHERE (
-		(e.event_recurring = '0' AND ((e.event_start >= ".intval($start_time)." AND e.event_start <= ".intval($end_time).") {$so}))
-		{$extra})
-		{$category_filter} 
-		{$this->extra_query} 
-		ORDER BY e.event_start ASC
-	  ";
-*/
 	  $so = $start_only ? 'start' : 'end';
 	  $qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
 		WHERE (
@@ -568,16 +554,11 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	// It always uses the event start date only
 	// It tries to keep the actual number of events in memory to a minimum by discarding when it can.
 	// Once there are $num_events read, it pulls in the $end_time to speed up checks
-	// $cat_filter = FALSE is 'no categories' - returns an empty array.
-	// $cat_filter = '*' means 'all categories'
-	// otherwise $cat_filter mst be a comma-separated list of category IDs.
-	function get_n_events($num_event, $start_time, $end_time, $cat_filter='*', $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
+	function get_n_events($num_event, $start_time, $end_time, $cat_filter=0, $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
 	{
 	  global $sql;
 
 	  $ret = array();
-	  if ($cat_filter === FALSE) return $ret;			// Empty category
-
 	  $cat_lj = '';
 	  $category_filter = '';
 	  $extra = '';
@@ -589,7 +570,7 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 		$cat_lj = ' LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id ';
 	  }
 	  
-	  if ($cat_filter != '*') $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
+	  if ($cat_filter && ($cat_filter != '*')) $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
 	  if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start <= ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
 	
 	  $qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
