@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-08-18 05:30:09 $
+|     $Revision: 1.15 $
+|     $Date: 2008-01-26 20:34:03 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("COMLAN_2", "Bloquear");
 define("COMLAN_3", "Borrar");
 define("COMLAN_4", "Información");
 define("COMLAN_5", "Comentarios ...");
-define("COMLAN_6", "Debe iniciar la sesión en este sitio como usuario registrado para poder dejar sus comentarios - Si no es un usuario registrado pulse  <a href='".e_BASE."signup.php'>aquí</a> para realizar el registro");
+define("COMLAN_6", "Debe iniciar la sesión en este sitio como usuario registrado para poder dejar sus comentarios - Conéctese o si no está registrado hágalo");
 define("COMLAN_7", "Administrador del sitio");
 define("COMLAN_8", "Comentario");
 define("COMLAN_9", "Enviar comentario");
