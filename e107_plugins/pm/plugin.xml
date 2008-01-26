@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<e107Plugin>
+	<name>{ADLAN_PM}</name>
+	<version>3.0</version>
+	<author>McFly</author>
+	<authorEmail>mcfly@e107.org</authorEmail>
+	<description>{ADLAN_PM_57}</description>
+	<compatibility>0.8</compatibility>
+	<installRequired>true</installRequired>
+	<folder>pm</folder>
+	<administration>
+		<configFile>pm_conf.php</configFile>
+		<icon>pm/images/pvt_message_32.png</icon>
+		<iconSmall>pm/images/pvt_message_16.png</iconSmall>
+		<caption>{ADLAN_PM_2}</caption>
+	</administration>
+	<sqlFile>pm_sql.php</sqlFile>
+	<management>
+		<install type="fileFunction" file="pm_install.php" function="forum_install" />
+		<uninstall type="fileFunction" file="pm_uninstall.php" function="forum_uninstall" />
+		<upgrade type="fileFunction" file="pm_uninstall" function="forum_upgrade" />
+	</management>
+</e107Plugin>
