@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-01-26 04:47:27 $
+|     $Revision: 1.17 $
+|     $Date: 2008-01-26 05:19:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -559,9 +559,132 @@ class e107plugin
 			}
 		}
 		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		$s_prefs = $eArrayStorage->WriteArray($s_prefs);
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
+
+	function install_plugin_xml($path)
+	{
+		$plug_vars = $this->parse_plugin_xml($path);
+		
+		//Still working on this, let's install via plugin.php still
+		return $this->install_plugin_php($path);
+	}
+
+
+	function install_plugin_php($path)
+	{
+		$plug = array();
+		$plug['plug_action'] = 'install';
+
+//		$plug_vars = $this->parse_plugin_php($path);
+		include_once($path.'plugin.php');
+
+		$func = $eplug_folder.'_install';
+		if (function_exists($func))
+		{
+			$text .= call_user_func($func);
+		}
+
+		if (is_array($eplug_tables))
+		{
+			$result = $this->manage_tables('add', $eplug_tables);
+			if ($result === TRUE)
+			{
+				$text .= EPL_ADLAN_19.'<br />';
+				//success
+			}
+			else
+			{
+				$text .= EPL_ADLAN_18.'<br />';
+				//fail
+			}
+		}
+
+		if (is_array($eplug_prefs))
+		{
+			$this->manage_prefs('add', $eplug_prefs);
+			$text .= EPL_ADLAN_8.'<br />';
+		}
+
+		if (is_array($eplug_array_pref))
+		{
+			foreach($eplug_array_pref as $key => $val)
+			{
+				$this->manage_plugin_prefs('add', $key, $eplug_folder, $val);
+			}
+		}
+
+		if (is_array($eplug_sc))
+		{
+			$this->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
+		}
+
+		if (is_array($eplug_bb))
+		{
+			$this->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
+		}
+
+		if (is_array($eplug_user_prefs))
+		{
+			$sql->db_Select("core", " e107_value", " e107_name = 'user_entended'");
+			$row = $sql->db_Fetch();
+			$user_entended = unserialize($row[0]);
+			while (list($e_user_pref, $default_value) = each($eplug_user_prefs))
+			{
+				$user_entended[] = $e_user_pref;
+				$user_pref['$e_user_pref'] = $default_value;
+			}
+			save_prefs("user");
+			$tmp = addslashes(serialize($user_entended));
+			if ($sql->db_Select("core", "e107_value", " e107_name = 'user_entended'"))
+			{
+				$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'user_entended' ");
+			}
+			else
+			{
+				$sql->db_Insert("core", "'user_entended', '{$tmp}' ");
+			}
+			$text .= EPL_ADLAN_8."<br />";
+		}
+
+		if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '')
+		{
+			$plug_perm['everyone'] = e_UC_PUBLIC;
+			$plug_perm['guest'] = e_UC_GUEST;
+			$plug_perm['member'] = e_UC_MEMBER;
+			$plug_perm['mainadmin'] = e_UC_MAINADMIN;
+			$plug_perm['admin'] = e_UC_ADMIN;
+			$plug_perm['nobody'] = e_UC_NOBODY;
+			$eplug_link_perms = strtolower($eplug_link_perms);
+			$linkperm = ($plug_perm[$eplug_link_perms]) ? $plug_perm[$eplug_link_perms] : e_UC_PUBLIC;
+			$this->manage_link('add', $eplug_link_url, $eplug_link_name,$linkperm);
+		}
+
+		if ($eplug_userclass)
+		{
+			$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
+		}
+
+		$this -> manage_search('add', $eplug_folder);
+
+		$this -> manage_notify('add', $eplug_folder);
+
+		$eplug_addons = $this->getAddons($eplug_folder);
+
+		$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = ".(int)$id);
+		$pref['plug_installed'][$plugin_path] = $plug['plugin_version'];
+		save_prefs();
+
+		if($rssmess)
+		{
+			$text .= $rssmess;
+		}
+		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
+
+		return $text;
+	}
+
 
 	/**
 	* Installs a plugin by ID
@@ -570,7 +693,7 @@ class e107plugin
 	*/
 	function install_plugin($id)
 	{
-		global $sql, $ns, $sysprefs,$mySQLprefix, $tp;
+		global $sql, $ns, $sysprefs, $mySQLprefix, $tp;
 
 		// install plugin ...
 		$plug = $this->getinfo($id);
@@ -578,112 +701,15 @@ class e107plugin
 
 		if ($plug['plugin_installflag'] == FALSE)
 		{
-			include_once(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-
-			$func = $eplug_folder.'_install';
-			if (function_exists($func))
+			$_path = e_PLUGIN.$plug['plugin_path'].'/';
+			if(file_exists($path.'plugin.php'))
 			{
-				$text .= call_user_func($func);
+				$text = $this->install_plugin_php($_path);
 			}
-
-			if (is_array($eplug_tables))
+			elseif(file_exists($path.'plugin.xml'))
 			{
-				$result = $this->manage_tables('add', $eplug_tables);
-				if ($result === TRUE)
-				{
-					$text .= EPL_ADLAN_19.'<br />';
-					//success
-				}
-				else
-				{
-					$text .= EPL_ADLAN_18.'<br />';
-					//fail
-				}
+				$text = $this->install_plugin_xml($_path);
 			}
-
-
-
-			if (is_array($eplug_prefs))
-			{
-				$this->manage_prefs('add', $eplug_prefs);
-				$text .= EPL_ADLAN_8.'<br />';
-			}
-
-
-
-			if (is_array($eplug_array_pref))
-			{
-				foreach($eplug_array_pref as $key => $val)
-				{
-					$this->manage_plugin_prefs('add', $key, $eplug_folder, $val);
-				}
-			}
-
-			if (is_array($eplug_sc))
-			{
-				$this->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
-			}
-
-			if (is_array($eplug_bb))
-			{
-				$this->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
-			}
-
-			if (is_array($eplug_user_prefs))
-			{
-				$sql->db_Select("core", " e107_value", " e107_name = 'user_entended'");
-				$row = $sql->db_Fetch();
-				$user_entended = unserialize($row[0]);
-				while (list($e_user_pref, $default_value) = each($eplug_user_prefs))
-				{
-					$user_entended[] = $e_user_pref;
-					$user_pref['$e_user_pref'] = $default_value;
-				}
-				save_prefs("user");
-				$tmp = addslashes(serialize($user_entended));
-				if ($sql->db_Select("core", "e107_value", " e107_name = 'user_entended'"))
-				{
-					$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'user_entended' ");
-				}
-				else
-				{
-					$sql->db_Insert("core", "'user_entended', '{$tmp}' ");
-				}
-				$text .= EPL_ADLAN_8."<br />";
-			}
-
-			if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '')
-			{
-				$plug_perm['everyone'] = e_UC_PUBLIC;
-				$plug_perm['guest'] = e_UC_GUEST;
-				$plug_perm['member'] = e_UC_MEMBER;
-				$plug_perm['mainadmin'] = e_UC_MAINADMIN;
-				$plug_perm['admin'] = e_UC_ADMIN;
-				$plug_perm['nobody'] = e_UC_NOBODY;
-				$eplug_link_perms = strtolower($eplug_link_perms);
-				$linkperm = ($plug_perm[$eplug_link_perms]) ? $plug_perm[$eplug_link_perms] : e_UC_PUBLIC;
-				$this->manage_link('add', $eplug_link_url, $eplug_link_name,$linkperm);
-			}
-
-			if ($eplug_userclass)
-			{
-				$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
-			}
-
-			$this -> manage_search('add', $eplug_folder);
-
-			$this -> manage_notify('add', $eplug_folder);
-
-			$eplug_addons = $this->getAddons($eplug_folder);
-
-			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = ".(int)$id);
-			$pref['plug_installed'][$plugin_path] = $plug['plugin_version'];
-			save_prefs();
-
-			if($rssmess)
-			{ $text .= $rssmess;
-			}
-			$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 		}
 		else
 		{
@@ -875,7 +901,7 @@ class e107plugin
 		}
 		return 2;
 	}
-	
+
 
 	function parse_plugin($path)
 	{
@@ -895,7 +921,7 @@ class e107plugin
 		include($path.'plugin.php');
 		$ret = array();
 
- 		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
 
 		$ret['version'] = varset($eplug_version);
 		$ret['name'] = varset($eplug_name);
@@ -913,7 +939,7 @@ class e107plugin
 		$ret['administration']['caption'] = varset($eplug_caption);
 		$ret['administration']['iconSmall'] = varset($eplug_icon_small);
 		$ret['administration']['configFile'] = varset($eplug_conffile);
-		
+
 		// Set this key so we know the vars came from a plugin.php file
 		$ret['plugin_php'] = true;
 		return $ret;

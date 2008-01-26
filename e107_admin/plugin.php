@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-26 04:47:27 $
+|     $Revision: 1.9 $
+|     $Date: 2008-01-26 05:19:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -522,10 +522,10 @@ function render_plugs($pluginList)
 
 			$plugin_icon = $plug_vars['administration']['icon'] ? "<img src='".e_PLUGIN.$plug_vars['administration']['icon']."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
 
-			if ($plug_vars['configFile'] && $plug['plugin_installflag'] == true)
+			if ($plug_vars['administration']['configFile'] && $plug['plugin_installflag'] == true)
 			{
 				$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['name'], "", "defs,emotes_off, no_make_clickable");
-				$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$plug_vars['folder'].'/'.$plug_vars['configFile']."' >".$plugin_icon.'</a>';
+				$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$plug_vars['folder'].'/'.$plug_vars['administration']['configFile']."' >".$plugin_icon.'</a>';
 			}
 
 			$text .= "
