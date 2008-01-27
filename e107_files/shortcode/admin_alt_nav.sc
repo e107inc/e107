@@ -58,18 +58,25 @@ if (ADMIN) {
 	}
 
 	$render_plugins = FALSE;
+	include_once(e_HANDLER.'plugin_class.php');
+	$plug = new e107plugin;
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1 ORDER BY plugin_path")){
 		while($row = $sql -> db_Fetch()){
 			if(getperms('P'.$row['plugin_id'])){
-				include_once(e_PLUGIN.$row['plugin_path']."/plugin.php");
-				if($eplug_conffile){
-					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs");
-					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN_ABS.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
-					$plugin_array[ucfirst($eplug_name)] = adnav_main($eplug_name, e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, $plugin_icon);
+				if($plug->parse_plugin(e_PLUGIN.$row['plugin_path'].'/'))
+				{
+					$plug_vars = $plug->plug_vars;
+//					print_a($plug_vars);
+//					exit;
+//					include_once(e_PLUGIN.$row['plugin_path']."/plugin.php");
+					if($plug_vars['administration']['configFile']){
+						$plug_vars['name'] = $tp->toHTML($plug_vars['name'], FALSE, "defs");
+						$plugin_icon = $plug_vars['administration']['iconSmall'] ? "<img src='".e_PLUGIN_ABS.$plug_vars['administration']['iconSmall']."' alt='".$plug_vars['administration']['caption']."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
+						$plugin_array[ucfirst($plug_vars['name'])] = adnav_main($plug_vars['name'], e_PLUGIN.$row['plugin_path']."/".$plug_vars['administration']['configFile'], $plugin_icon);
+					}
+					$render_plugins = TRUE;
+					$active_plugs = TRUE;
 				}
-				unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
-				$render_plugins = TRUE;
-				$active_plugs = TRUE;
 			}
 		}
 		ksort($plugin_array, SORT_STRING);
