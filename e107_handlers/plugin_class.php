@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-01-27 01:34:59 $
+|     $Revision: 1.19 $
+|     $Date: 2008-01-27 05:16:03 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -696,7 +696,7 @@ class e107plugin
 				{
 					case 'install':
 					case 'upgrade':
-						if(!isset($attrib['active']) || $attrib['active'] == true)
+						if(!isset($attrib['active']) || $attrib['active'] == 'true')
 						{
 							echo "Adding prefs ".print_a($list['active'], true)."<br />";
 //							manage_prefs('add', $list['active']);
@@ -718,6 +718,56 @@ class e107plugin
 				}
 			}
 		}
+		
+		//Userclasses
+		//$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
+		if(isset($plug_vars['userclasses']))
+		{
+
+			if(isset($plug_vars['userclasses']['userclass']))
+			{
+				if(!is_array($plug_vars['userclasses']['userclass']))
+				{
+					$uclass_list = array($plug_vars['mainPrefs']['pref']);
+				}
+				else
+				{
+					$uclass_list = $plug_vars['mainPrefs']['pref'];
+				}
+				foreach($uclass_list as $uclass)
+				{
+					$attrib = $uclass['@attributes'];
+					switch($function)
+					{
+						case 'install':
+						case 'upgrade':
+							if(!isset($attrib['active']) || $attrib['active'] == 'true')
+							{
+								echo "Adding userclass ".$attrib['name']."<br />";
+//								manage_userclass('add', $attrib['name'], $attrib['description']);
+							}
+							
+							//If upgrading, removing any inactive pref
+							if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
+							{
+								echo "Removing userclass ".$attrib['name']."<br />";
+//								manage_userclass('remove', $attrib['name'], $attrib['description']);
+							}
+							break;
+					
+						//If uninstalling, remove all userclasses (active or inactive)
+						case 'uninstall':
+							echo "Removing prefs ".$attrib['name']."<br />";
+//							manage_userclass('remove', $attrib['name'], $attrib['description']);
+							break;
+					}
+				}
+			}
+		}
+		
+		$this -> manage_search($function, $plug_vars['folder']);
+		$this -> manage_notify($function, $plug_vars['folder']);
+		
 	}
 
 
