@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-01-27 05:16:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2008-01-27 11:02:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class e107plugin
 {
-	var	$plugin_addons = array("e_rss", "e_notify", "e_linkgen", "e_list", "e_bb", "e_meta", "e_emailprint", "e_frontpage", "e_latest", "e_status", "e_search", "e_sc", "e_module", "e_comment", "e_sql", "e_userprofile");
+	var	$plugin_addons = array("e_rss", "e_notify", "e_linkgen", "e_list", "e_bb", "e_meta", "e_emailprint", "e_frontpage", "e_latest", "e_status", "e_search", "e_sc", "e_module", "e_comment", "e_sql", "e_userprofile","e_header");
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
 	var $all_eplug_install_variables = array(

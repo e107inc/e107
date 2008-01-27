@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/e_ajax.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-16 22:45:55 $
+|     $Revision: 1.3 $
+|     $Date: 2008-01-27 11:02:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $_E107['minimal'] = TRUE;
 require_once("../class2.php");
+ob_start();
+ob_implicit_flush(0);
 
 // -----------------------------------------------------------------------------
 	// Ajax Short-code-Replacer Routine.
@@ -38,14 +40,15 @@ require_once("../class2.php");
 	}
 // -----------------------------------------------------------------------------
 
+header("last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
 header('Content-type: text/javascript', TRUE);
 
-echo "
+$text = "
 
     function replaceSC(sc,obj,id,scfile)
 	{
 		if(!id){ var id = sc; }
-		var handler = '".SITEURL.$FILES_DIRECTORY."/e_ajax.php';
+		var handler = '".e_FILE_ABS."e_ajax.php';
 		var parm = ($(obj).serialize() +  '&ajax_sc=' + sc + '&ajax_scfile=' + scfile + '&ajax_used=1');
 	    new Ajax.Updater(id, handler, { parameters: parm }	);
 	}
@@ -57,6 +60,9 @@ echo "
 	}
 
 ";
+header ('ETag: "' . md5($text).'"' );
+echo $text;
+
 ?>
 
 /*  Prototype JavaScript framework, version 1.6.0
@@ -4245,3 +4251,6 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
 
 Element.addMethods();
 
+<?php
+	echo_gzipped_page();
+?>
