@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-26 05:19:58 $
+|     $Revision: 1.10 $
+|     $Date: 2008-01-27 01:34:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -501,8 +501,11 @@ function render_plugs($pluginList)
 	foreach($pluginList as $plug)
 	{
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
-		$plug_vars = $plugin->parse_plugin($_path);
-
+		$plug_vars = false;
+		if($plugin->parse_plugin($_path))
+		{
+			$plug_vars = $plugin->plug_vars;
+		}
 		if($plug_vars)
 		{
 
@@ -616,10 +619,14 @@ function show_uninstall_confirm()
 	global $plugin, $tp, $id, $ns;
 	$id = intval($id);
 	$plug = $plugin->getinfo($id);
+	$_path = e_PLUGIN.$plug['plugin_path'];
 
 	if ($plug['plugin_installflag'] == true )
 	{
-		$plug_vars = $plugin->parse_plugin($_path);
+		if($plugin->parse_plugin($_path))
+		{
+			$plug_vars = $plugin->plug_vars;
+		}
 	}
 
 	if(is_writable(e_PLUGIN.$plug['plugin_path']))
