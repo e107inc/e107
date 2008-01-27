@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-01-26 05:19:59 $
+|     $Revision: 1.18 $
+|     $Date: 2008-01-27 01:34:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -65,6 +65,8 @@ class e107plugin
 	'plugin_installflag',		// '0' = not installed, '1' = installed
 	'plugin_addons'				// List of any extras associated with plugin - bbcodes, e_XXX files...
 	);
+
+	var $plug_vars;
 
 	/**
 	* Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
@@ -280,9 +282,22 @@ class e107plugin
 		}
 	}
 
-	function manage_link($action, $link_url, $link_name,$link_class=0)
+	function manage_link($action, $link_url, $link_name, $link_class=0)
 	{
 		global $sql, $tp;
+
+		if(!ctype_digit($link_class))
+		{
+			$link_class = strtolower($link_class);
+			$plug_perm['everyone'] = e_UC_PUBLIC;
+			$plug_perm['guest'] = e_UC_GUEST;
+			$plug_perm['member'] = e_UC_MEMBER;
+			$plug_perm['mainadmin'] = e_UC_MAINADMIN;
+			$plug_perm['admin'] = e_UC_ADMIN;
+			$plug_perm['nobody'] = e_UC_NOBODY;
+			$link_class = ($plug_perm[$link_class]) ? $plug_perm[$link_class] : e_UC_PUBLIC;
+		}
+
 		$link_url = $tp -> toDB($link_url, true);
 		$link_name = $tp -> toDB($link_name, true);
 		$path = str_replace("../", "", $link_url);			// This should clean up 'non-standard' links
@@ -563,21 +578,156 @@ class e107plugin
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
 
-	function install_plugin_xml($path)
+	function manage_plugin_xml($path, $function='')
 	{
-		$plug_vars = $this->parse_plugin_xml($path);
-		
-		//Still working on this, let's install via plugin.php still
+		//Will just install using plugin.php file for now.
 		return $this->install_plugin_php($path);
+
+		//New code to install using plugin.xml below.
+		if(!file_exists($path.'plugin.xml') || $function == '')
+		{
+			return false;
+		}
+
+		$error = array();
+
+		if($this->parse_plugin_xml($path))
+		{
+			$plug_vars = $this->plug_vars;
+		}
+		else
+		{
+			return false;
+		}
+		
+		//tables
+		if(($function == 'install' || $function == 'uninstall') || isset($plug_vars['sqlFile']))
+		{
+			if($sql_data = file_get_contents($path.$plug_vars['sqlFile']))
+			{
+				preg_match_all("/create(.*?)myisam.*?;/si", $sql_data, $result );
+				foreach ($result[0] as $sql_table)
+				{
+					if($function == 'uninstall')
+					{
+						preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
+						$tablename = trim($match[1]);
+						echo "Removing table $tablename <br />";
+//						$this->manage_tables('remove', array($tablename));
+					}
+					if($function == 'install')
+					{
+						$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE #", $sql_table);
+						echo "Adding table: <pre>{$sql_table}</pre><br />";
+//						$this->manage_tables('add', array($sql_table));
+					}
+				}
+			}
+		}
+		
+		//main menu items
+		if(isset($plug_vars['menuLink']))
+		{
+			//Ensure it is an array for use with foreach()
+			if(!is_array($plug_vars['menuLink']))
+			{
+				$plug_vars['menuLink'] = array($plug_vars['menuLink']);
+			}
+			foreach($plug_vars['menuLink'] as $link)
+			{
+				$attrib = $link['@attributes'];
+				switch($function)
+				{
+					case 'upgrade':
+					case 'install':
+						// Add any active link
+						if(!isset($attrib['active']) || $attrib['active'] == 'true')
+						{
+							$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
+							echo "Adding link {$attrib['name']} with url [{$attrib['url']}] and perm {$perm} <br />";
+//							manage_link('add', $attrib['url'], $attrib['name'], $perm);
+						}
+						//remove inactive links on upgrade
+						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
+						{
+							echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
+//							manage_link('remove', $attrib['url'], $attrib['name']);
+						}
+						break;
+
+					case 'uninstall':
+						//remove all links
+						echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
+//						manage_link('remove', $attrib['url'], $attrib['name']);
+						break;
+				}
+			}
+		}
+		
+		//main pref items
+		if(isset($plug_vars['mainPrefs']))
+		{
+			if(isset($plug_vars['mainPrefs']['pref']))
+			{
+				if(!is_array($plug_vars['mainPrefs']['pref']))
+				{
+					$pref_list = array($plug_vars['mainPrefs']['pref']);
+				}
+				else
+				{
+					$pref_list = $plug_vars['mainPrefs']['pref'];
+				}
+				
+				$list = array();
+				foreach($pref_list as $pref)
+				{
+					$attrib = $pref['@attributes'];
+					$list['all'][$attrib['name']] = $attrib['value'];
+					if(!isset($attrib['active']) || $attrib['active'] == 'true')
+					{
+						$list['active'][$attrib['name']] = $attrib['value'];
+					}
+					if(isset($attrib['active']) && $attrib['active'] == 'false')
+					{
+						$list['inactive'][$attrib['name']] = $attrib['value'];
+					}
+				}
+				switch($function)
+				{
+					case 'install':
+					case 'upgrade':
+						if(!isset($attrib['active']) || $attrib['active'] == true)
+						{
+							echo "Adding prefs ".print_a($list['active'], true)."<br />";
+//							manage_prefs('add', $list['active']);
+						}
+						
+						//If upgrading, removing any inactive pref
+						if($function == 'upgrade')
+						{
+							echo "Removing prefs ".print_a($list['inactive'], true)."<br />";
+//							manage_prefs('remove', $list['inactive']);
+						}
+						break;
+					
+					//If uninstalling, remove all prefs (active or inactive)
+					case 'uninstall':
+						echo "Removing prefs ".print_a($list['all'], true)."<br />";
+//						manage_prefs('remove', $list['all']);
+						break;
+				}
+			}
+		}
 	}
 
 
 	function install_plugin_php($path)
 	{
+		global $sql;
 		$plug = array();
 		$plug['plug_action'] = 'install';
 
-//		$plug_vars = $this->parse_plugin_php($path);
+		//		$plug_vars = $this->parse_plugin_php($path);
 		include_once($path.'plugin.php');
 
 		$func = $eplug_folder.'_install';
@@ -650,15 +800,8 @@ class e107plugin
 
 		if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '')
 		{
-			$plug_perm['everyone'] = e_UC_PUBLIC;
-			$plug_perm['guest'] = e_UC_GUEST;
-			$plug_perm['member'] = e_UC_MEMBER;
-			$plug_perm['mainadmin'] = e_UC_MAINADMIN;
-			$plug_perm['admin'] = e_UC_ADMIN;
-			$plug_perm['nobody'] = e_UC_NOBODY;
-			$eplug_link_perms = strtolower($eplug_link_perms);
-			$linkperm = ($plug_perm[$eplug_link_perms]) ? $plug_perm[$eplug_link_perms] : e_UC_PUBLIC;
-			$this->manage_link('add', $eplug_link_url, $eplug_link_name,$linkperm);
+			$linkperm = (isset($eplug_link_perms) ? $eplug_link_perms : e_UC_PUBLIC);
+			$this->manage_link('add', $eplug_link_url, $eplug_link_name, $linkperm);
 		}
 
 		if ($eplug_userclass)
@@ -702,13 +845,13 @@ class e107plugin
 		if ($plug['plugin_installflag'] == FALSE)
 		{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
-			if(file_exists($path.'plugin.php'))
+			if(file_exists($_path.'plugin.xml'))
+			{
+				$text = $this->manage_plugin_xml($_path, 'install');
+			}
+			elseif(file_exists($_path.'plugin.php'))
 			{
 				$text = $this->install_plugin_php($_path);
-			}
-			elseif(file_exists($path.'plugin.xml'))
-			{
-				$text = $this->install_plugin_xml($_path);
 			}
 		}
 		else
@@ -905,11 +1048,11 @@ class e107plugin
 
 	function parse_plugin($path)
 	{
-		if(file_exists($_path.'plugin.xml'))
+		if(file_exists($path.'plugin.xml'))
 		{
 			return $this->parse_plugin_xml($path);
 		}
-		elseif(file_exists($_path.'plugin.php'))
+		elseif(file_exists($path.'plugin.php'))
 		{
 			return $this->parse_plugin_php($path);
 		}
@@ -942,9 +1085,9 @@ class e107plugin
 
 		// Set this key so we know the vars came from a plugin.php file
 		$ret['plugin_php'] = true;
-		return $ret;
+		$this->plug_vars = $ret;
+		return true;
 	}
-
 
 	function parse_plugin_xml($path)
 	{
@@ -955,7 +1098,8 @@ class e107plugin
 		$xml = new xmlClass;
 		$xml->loadXMLfile($path.'plugin.xml', true, true);
 		$xml->xmlFileContents = $tp->replaceConstants($xml->xmlFileContents, '', true);
-		return $xml->parseXml();
+		$this->plug_vars = $xml->parseXml();
+		return true;
 	}
 
 }

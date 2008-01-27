@@ -16,7 +16,8 @@
 		<latest>true</latest>
 		<status>true</status>
 	</administration>
-	<menuLink name="Forum" value="forum/forum.php" perm='everyone'/>
+	<menuLink name="Forum" url="forum/forum.php" perm='everyone'/>
+	<menuLink name="Forum1" url="forum/forum1.php" perm='everyone' active='false'/>
 	<mainPrefs>
 		<pref name="forum_show_topics" value="1" />
 		<pref name="forum_postfix" value="[more...]" />
