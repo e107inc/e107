@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-16 11:14:53 $
+|     $Revision: 1.6 $
+|     $Date: 2008-01-27 18:52:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -37,10 +37,23 @@ case 'transfer' :
   Only the IP or email address is essential; the other fields are imported if present.<br /><br />
   <b>Note:</b> You will need to add the 'CSV' file type to admin_filetypes.php";
   break;
-case 'options' :
+case 'times' :
   $text = "This page sets the default behaviour for various types of ban.<br />
-  If a message is specified, this will be shown to the user (where appropriate); otherwise they will most likely get a blank screen<br />
-  The ban will persist for the time specified; after which it will be cleared next time they access the site.";
+  If a message is specified, this will be shown to the user (where appropriate); otherwise they will most likely get a blank screen.<br />
+  The ban will be in force for the time specified; after which it will be cleared next time they access the site.";
+  break;
+case 'options' :
+  $text = '<b>Reverse DNS</b><br />
+    If enabled, the user\'s IP address is looked up to obtain the associated domain name. This accesses an external server, so there may
+	be a delay before the information is available - and if the server is off-line, there may be a very long delay.<br /><br />
+	<b>Maximum Access Rate</b><br />
+	This sets the maximum number of site accesses permitted from a single user or IP address in any five-minute period, and is intended
+	to detect denial of service attacks. At 90% of the selected limit, the user receives a warning; on reaching the limit they are banned.
+	Different thresholds may be set for guests and logged-in users.<br /><br />
+	<b>Retrigger Ban Period</b><br />
+	This option is only relevant if the option to ban users for a specified time, rather than indefinitely, has been used. If enabled, and
+	the user attempts to access the site, the ban period is extended (as if the ban had just started).
+	';
   break;
 case 'edit' :
 case 'add' :
