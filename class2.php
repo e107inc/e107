@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2008-01-22 00:39:08 $
+|     $Revision: 1.47 $
+|     $Date: 2008-01-27 01:57:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -793,10 +793,11 @@ define("TIMEOFFSET", $e_deltaTime);
 $sql->db_Mark_Time('Start: Get menus');
 if(!isset($_E107['no_menus']))
 {
-	$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
-	$menu_data = $eArrayStorage->ReadArray($menu_data);
-	$eMenuList=array();
-	$eMenuActive=array();
+  	$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
+ 	$menu_data = $eArrayStorage->ReadArray($menu_data);
+	$eMenuList		= array();
+	$eMenuActive	= array();
+	$eMenuArea		= array();
 	if(!is_array($menu_data))
 	{
 		if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCLASS_LIST.") ORDER BY menu_order"))
@@ -804,9 +805,11 @@ if(!isset($_E107['no_menus']))
 			while ($row = $sql->db_Fetch())
 			{
 				$eMenuList[$row['menu_location']][]=$row;
+                $eMenuArea[$row['menu_location']][$row['menu_name']] =1;
 				$eMenuActive[]=$row['menu_name'];
 			}
 		}
+		$menu_data['menu_area'] = $eMenuArea;
 		$menu_data['menu_list'] = $eMenuList;
 		$menu_data['menu_active'] = $eMenuActive;
 		$menu_data = $eArrayStorage->WriteArray($menu_data, false);
@@ -815,6 +818,7 @@ if(!isset($_E107['no_menus']))
 	}
 	else
 	{
+		$eMenuArea = $menu_data['menu_area'];
 		$eMenuList = $menu_data['menu_list'];
 		$eMenuActive = $menu_data['menu_active'];
 		unset($menu_data);
