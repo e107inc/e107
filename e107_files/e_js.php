@@ -4,8 +4,8 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e_js.php,v $
-|	$Revision: 1.3 $
-|	$Date: 2008-01-16 22:45:56 $
+|	$Revision: 1.4 $
+|	$Date: 2008-01-27 11:02:34 $
 |	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,9 +24,14 @@
  */
 $_E107['minimal'] = TRUE;
 require_once("../class2.php");
+ob_start();
+ob_implicit_flush(0);
+header("last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
 header('Content-type: text/javascript', TRUE);
+//header("Expires: 0");
+//header("Cache-Control: max-age=30" );
 
-echo "<!--
+$js = "<!--
 
 var nowLocal = new Date();		/* time at very beginning of js execution */
 var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
@@ -393,5 +398,7 @@ function preview_image(src_val,img_path, not_found)
 
 
 //-->";
-
+header ('ETag: "' . md5($text).'"' );
+echo $js;
+echo_gzipped_page(); 
 ?>

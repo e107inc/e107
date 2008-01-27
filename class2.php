@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2008-01-27 01:57:23 $
+|     $Revision: 1.48 $
+|     $Date: 2008-01-27 11:02:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -591,7 +591,6 @@ if (isset($pref['modules']) && $pref['modules']) {
 
 $js_body_onload = array();			// Initialise this array in case a module wants to add to it
 
-
 // Load e_modules after all the constants, but before the themes, so they can be put to use.
 if(isset($pref['e_module_list']) && $pref['e_module_list']){
 	foreach ($pref['e_module_list'] as $mod){
@@ -804,9 +803,9 @@ if(!isset($_E107['no_menus']))
 		{
 			while ($row = $sql->db_Fetch())
 			{
-				$eMenuList[$row['menu_location']][]=$row;
+				$eMenuList[$row['menu_location']][] =$row;
                 $eMenuArea[$row['menu_location']][$row['menu_name']] =1;
-				$eMenuActive[]=$row['menu_name'];
+				$eMenuActive[$row['menu_name']]	= $row['menu_name'];
 			}
 		}
 		$menu_data['menu_area'] = $eMenuArea;
@@ -818,8 +817,8 @@ if(!isset($_E107['no_menus']))
 	}
 	else
 	{
-		$eMenuArea = $menu_data['menu_area'];
-		$eMenuList = $menu_data['menu_list'];
+		$eMenuArea 	= $menu_data['menu_area'];
+		$eMenuList 	= $menu_data['menu_list'];
 		$eMenuActive = $menu_data['menu_active'];
 		unset($menu_data);
 	}
@@ -1668,6 +1667,34 @@ function e107_ini_set($var, $value){
 	if (function_exists('ini_set')){
 		ini_set($var, $value);
 	}
+}
+
+function echo_gzipped_page() {
+
+    if( headers_sent() ){
+        $encoding = false;
+    }elseif( strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false ){
+        $encoding = 'x-gzip';
+    }elseif( strpos($_SERVER["HTTP_ACCEPT_ENCODING"],'gzip') !== false ){
+        $encoding = 'gzip';
+    }else{
+        $encoding = false;
+    }
+
+    if( $encoding ){
+        $contents = ob_get_contents();
+        ob_end_clean();
+        header('Content-Encoding: '.$encoding);
+        print("\x1f\x8b\x08\x00\x00\x00\x00\x00");
+        $size = strlen($contents);
+        $contents = gzcompress($contents, 9);
+        $contents = substr($contents, 0, $size);
+        print($contents);
+        exit();
+    }else{
+        ob_end_flush();
+        exit();
+    }
 }
 
 ?>

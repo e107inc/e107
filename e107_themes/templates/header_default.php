@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-01-16 10:47:06 $
+|     $Revision: 1.19 $
+|     $Date: 2008-01-27 11:02:34 $
 |     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -98,13 +98,24 @@ if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset(
 }else{
 	define("e_WYSIWYG",FALSE);
 }
+// Load Plugin Header Files
+if (is_array($pref['e_header_list']))
+{
+	foreach($pref['e_header_list'] as $val)
+	{
+		if(is_readable(e_PLUGIN.$val."/e_header.php"))
+		{
+			require_once(e_PLUGIN.$val."/e_header.php");
+		}
+	}
+}
 
 if (isset($theme_js_php) && $theme_js_php) {
 	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css' />";
 } else {
-	if (!isset($no_core_js) || !$no_core_js) {
+	if (!isset($no_core_js) || !$no_core_js)
+	{
 		echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
-		echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.php'></script>\n";
 	}
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
@@ -117,9 +128,10 @@ if (isset($eplug_js) && $eplug_js) {
 	echo "\n<!-- eplug_js -->\n";
 	if(is_array($eplug_js))
 	{
-    	foreach($eplug_js as $kjs)
+	   	$eplug_js_unique = array_unique($eplug_js);
+    	foreach($eplug_js_unique as $kjs)
 		{
-        	echo "<script type='text/javascript' src='{$kjs}'></script>\n";
+        	echo ($kjs[0] == "<") ? $kjs : "<script type='text/javascript' src='{$kjs}'></script>\n";
 		}
 	}
 	else
@@ -139,13 +151,15 @@ if (function_exists('headerjs')){echo headerjs();  }
 // E: Send CSS
 //
 
-if (isset($eplug_css) && $eplug_css) {
+if (isset($eplug_css) && $eplug_css)
+{
     if(is_array($eplug_css))
 	{
-      foreach($eplug_css as $kcss)
-	  {	// Allow inline style definition - but only if $eplug_css is an array (maybe require an array later)
-        if ('<style' == substr($kcss,0,6)) echo $kcss; else echo "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
-	  }
+		$eplug_css_unique = array_unique($eplug_css);
+		foreach($eplug_css_unique as $kcss)
+		{
+			echo ($kcss[0] == "<") ? $kcss : "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
+		}
 	}
 	else
 	{
@@ -300,7 +314,7 @@ if (isset($script_text) && $script_text) {
 // I: Calculate JS onload() functions for the BODY tag
 //
 // Fader menu
-global $eMenuActive;
+global $eMenuActive, $eMenuArea;
 if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
 
 // External links handling
