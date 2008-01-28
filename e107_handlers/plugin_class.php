@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-01-27 11:02:34 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2008-01-28 02:49:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -67,7 +67,13 @@ class e107plugin
 	);
 
 	var $plug_vars;
+	var $parsed_plugin;
 
+	function e107plugin()
+	{
+		$parsed_plugin = array();	
+	}
+	
 	/**
 	* Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
 	* make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
@@ -222,12 +228,24 @@ class e107plugin
 	* @param int $id
 	* @return array plugin info
 	*/
-	function getinfo($id) {
-		global $sql;
-		$id = intval($id);
-		if ($sql->db_Select('plugin', '*', "plugin_id = {$id}")) {
-			return $sql->db_Fetch();
+	function getinfo($id, $force=false)
+	{
+		global $sql, $getinfo_results;
+		if(!is_array($getinfo_results)) { $getinfo_results = array(); }
+		
+		$id = (int)$id;
+		if(!isset($getinfo_results[$id] || $force == true))
+		{
+			if ($sql->db_Select('plugin', '*', "plugin_id = ".$id))
+			{
+				$getinfo_results[$id]; $sql->db_Fetch();
+			}
+			else
+			{
+				return false;
+			}
 		}
+		return $getinfo_results[$id];
 	}
 
 	function manage_userclass($action, $class_name, $class_description)
@@ -578,8 +596,12 @@ class e107plugin
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
 
-	function manage_plugin_xml($path, $function='')
+	function manage_plugin_xml($id, $function='')
 	{
+		$id = (int)$id;
+		$plug = $this->getinfo($id);
+		$path = e_PLUGIN.$plug['plugin_path'].'/';		
+
 		//Will just install using plugin.php file for now.
 		return $this->install_plugin_php($path);
 
@@ -767,14 +789,35 @@ class e107plugin
 		
 		$this -> manage_search($function, $plug_vars['folder']);
 		$this -> manage_notify($function, $plug_vars['folder']);
+
+		if($function == 'install' || $functon = 'upgrade')
+		{
+			$eplug_addons = $this->getAddons($plug_vars['folder']);
+
+			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['version']}' WHERE plugin_id = ".$id);
+			$pref['plug_installed'][$plug['plugin_path']] = $plug_vars['version'];
+			save_prefs();
+		}
+
+		if($function == 'install')
+		{
+			$text .= LAN_INSTALL_SUCCESSFUL."<br />";
+			if(isset($plug_vars['installDone']))
+			{
+				$text .= $plug_vars['installDone'];
+			}
+		}
 		
 	}
 
 
-	function install_plugin_php($path)
+	function install_plugin_php($id)
 	{
 		global $sql;
-		$plug = array();
+		
+		$plug = $this->getinfo($id);
+		$_path = e_PLUGIN.$plug['plugin_path'].'/';		
+
 		$plug['plug_action'] = 'install';
 
 		//		$plug_vars = $this->parse_plugin_php($path);
@@ -889,6 +932,7 @@ class e107plugin
 		global $sql, $ns, $sysprefs, $mySQLprefix, $tp;
 
 		// install plugin ...
+		$id = (int)$id;
 		$plug = $this->getinfo($id);
 		$plug['plug_action'] = 'install';
 
@@ -901,7 +945,7 @@ class e107plugin
 			}
 			elseif(file_exists($_path.'plugin.php'))
 			{
-				$text = $this->install_plugin_php($_path);
+				$text = $this->install_plugin_php($id);
 			}
 		}
 		else
@@ -1096,17 +1140,26 @@ class e107plugin
 	}
 
 
-	function parse_plugin($path)
+	function parse_plugin($path, $force=false)
 	{
+		if(isset($this->parsed_plugin[$path]) && $force != true)
+		{
+			$this->plug_vars = $this->parsed_plugin[$path];
+			return true;
+		}
 		if(file_exists($path.'plugin.xml'))
 		{
-			return $this->parse_plugin_xml($path);
+			$ret = $this->parse_plugin_xml($path);
 		}
 		elseif(file_exists($path.'plugin.php'))
 		{
-			return $this->parse_plugin_php($path);
+			$ret = $this->parse_plugin_php($path);
 		}
-		return false;
+		if($ret == true)
+		{
+			$this->parsed_plugin[$path] = $this->plug_vars;
+		}
+		return $ret;
 	}
 
 	function parse_plugin_php($path)

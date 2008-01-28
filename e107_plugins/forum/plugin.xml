@@ -15,6 +15,7 @@
 		<caption>Configure Forum</caption>
 		<latest>true</latest>
 		<status>true</status>
+		<installDone>Your forum is now installed</installDone>
 	</administration>
 	<menuLink name="Forum" url="forum/forum.php" perm='everyone'/>
 	<menuLink name="Forum1" url="forum/forum1.php" perm='everyone' active='false'/>
