@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-20 04:46:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2008-01-30 20:33:16 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -156,3 +156,4 @@ class xmlClass
 
 
 }
+?>
