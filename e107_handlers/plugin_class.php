@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-02-01 11:52:27 $
+|     $Revision: 1.23 $
+|     $Date: 2008-02-01 14:11:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -71,9 +71,9 @@ class e107plugin
 
 	function e107plugin()
 	{
-		$parsed_plugin = array();	
+		$parsed_plugin = array();
 	}
-	
+
 	/**
 	* Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
 	* make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
@@ -230,15 +230,16 @@ class e107plugin
 	*/
 	function getinfo($id, $force=false)
 	{
-		global $sql, $getinfo_results;
+		global $sql;
+		static $getinfo_results;
 		if(!is_array($getinfo_results)) { $getinfo_results = array(); }
-		
+
 		$id = (int)$id;
 		if(!isset($getinfo_results[$id]) || $force == true)
 		{
 			if ($sql->db_Select('plugin', '*', "plugin_id = ".$id))
 			{
-				$getinfo_results[$id]; $sql->db_Fetch();
+				$getinfo_results[$id] = $sql->db_Fetch();
 			}
 			else
 			{
@@ -598,12 +599,22 @@ class e107plugin
 
 	function manage_plugin_xml($id, $function='')
 	{
+		global $sql;
 		$id = (int)$id;
 		$plug = $this->getinfo($id);
-		$path = e_PLUGIN.$plug['plugin_path'].'/';		
+		$path = e_PLUGIN.$plug['plugin_path'].'/';
+		$addons = explode(',', $plug['plugin_addons']);
+		$sql_list = array();
+		foreach($addons as $addon)
+		{
+			if(substr($addon, -4) == '_sql')
+			{
+				$sql_list[] = $addon.'.php';
+			}
+		}
 
 		//Will just install using plugin.php file for now.
-		return $this->install_plugin_php($path);
+		//return $this->install_plugin_php($path);
 
 		//New code to install using plugin.xml below.
 		if(!file_exists($path.'plugin.xml') || $function == '')
@@ -621,32 +632,36 @@ class e107plugin
 		{
 			return false;
 		}
-		
-		//tables
-		if(($function == 'install' || $function == 'uninstall') || isset($plug_vars['sqlFile']))
+
+		// tables
+		// This will load each _sql.php file found in the plugin directory and parse it.
+		if(($function == 'install' || $function == 'uninstall') && count($sql_list))
 		{
-			if($sql_data = file_get_contents($path.$plug_vars['sqlFile']))
+			foreach($sql_list as $sql_file)
 			{
-				preg_match_all("/create(.*?)myisam.*?;/si", $sql_data, $result );
-				foreach ($result[0] as $sql_table)
+				if($sql_data = file_get_contents($path.$sql_file))
 				{
-					if($function == 'uninstall')
+					preg_match_all("/create(.*?)myisam.*?;/si", $sql_data, $result );
+					foreach ($result[0] as $sql_table)
 					{
-						preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
-						$tablename = trim($match[1]);
-						echo "Removing table $tablename <br />";
-//						$this->manage_tables('remove', array($tablename));
-					}
-					if($function == 'install')
-					{
-						$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE #", $sql_table);
-						echo "Adding table: <pre>{$sql_table}</pre><br />";
-//						$this->manage_tables('add', array($sql_table));
+						if($function == 'uninstall')
+						{
+							preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
+							$tablename = trim($match[1]);
+							echo "Removing table $tablename <br />";
+							//	$this->manage_tables('remove', array($tablename));
+						}
+						if($function == 'install')
+						{
+							$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE #", $sql_table);
+							echo "Adding table: <pre>{$sql_table}</pre><br />";
+							//	$this->manage_tables('add', array($sql_table));
+						}
 					}
 				}
 			}
 		}
-		
+
 		//main menu items
 		if(isset($plug_vars['menuLink']))
 		{
@@ -662,30 +677,30 @@ class e107plugin
 				{
 					case 'upgrade':
 					case 'install':
-						// Add any active link
-						if(!isset($attrib['active']) || $attrib['active'] == 'true')
-						{
-							$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
-							echo "Adding link {$attrib['name']} with url [{$attrib['url']}] and perm {$perm} <br />";
-//							manage_link('add', $attrib['url'], $attrib['name'], $perm);
-						}
-						//remove inactive links on upgrade
-						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
-						{
-							echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
-//							manage_link('remove', $attrib['url'], $attrib['name']);
-						}
-						break;
+					// Add any active link
+					if(!isset($attrib['active']) || $attrib['active'] == 'true')
+					{
+						$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
+						echo "Adding link {$attrib['name']} with url [{$attrib['url']}] and perm {$perm} <br />";
+						//	manage_link('add', $attrib['url'], $attrib['name'], $perm);
+					}
+					//remove inactive links on upgrade
+					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
+					{
+						echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
+						//	manage_link('remove', $attrib['url'], $attrib['name']);
+					}
+					break;
 
 					case 'uninstall':
-						//remove all links
-						echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
-//						manage_link('remove', $attrib['url'], $attrib['name']);
-						break;
+					//remove all links
+					echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
+					//	manage_link('remove', $attrib['url'], $attrib['name']);
+					break;
 				}
 			}
 		}
-		
+
 		//main pref items
 		if(isset($plug_vars['mainPrefs']))
 		{
@@ -699,11 +714,10 @@ class e107plugin
 				{
 					$pref_list = $plug_vars['mainPrefs']['pref'];
 				}
-				
 				$list = array();
-				foreach($pref_list as $pref)
+				foreach($pref_list as $_pref)
 				{
-					$attrib = $pref['@attributes'];
+					$attrib = $_pref['@attributes'];
 					$list['all'][$attrib['name']] = $attrib['value'];
 					if(!isset($attrib['active']) || $attrib['active'] == 'true')
 					{
@@ -718,75 +732,81 @@ class e107plugin
 				{
 					case 'install':
 					case 'upgrade':
-						if(!isset($attrib['active']) || $attrib['active'] == 'true')
-						{
-							echo "Adding prefs ".print_a($list['active'], true)."<br />";
-//							manage_prefs('add', $list['active']);
-						}
-						
-						//If upgrading, removing any inactive pref
-						if($function == 'upgrade')
-						{
-							echo "Removing prefs ".print_a($list['inactive'], true)."<br />";
-//							manage_prefs('remove', $list['inactive']);
-						}
-						break;
-					
+					if(is_array($list['active']))
+					{
+						echo "Adding prefs ".print_a($list['active'], true)."<br />";
+						//	manage_prefs('add', $list['active']);
+					}
+
+					//If upgrading, removing any inactive pref
+					if($function == 'upgrade' && is_array($list['inactive']))
+					{
+						echo "Removing prefs ".print_a($list['inactive'], true)."<br />";
+						//	manage_prefs('remove', $list['inactive']);
+					}
+					break;
+
 					//If uninstalling, remove all prefs (active or inactive)
 					case 'uninstall':
+					if(is_array($list['all']))
+					{
 						echo "Removing prefs ".print_a($list['all'], true)."<br />";
-//						manage_prefs('remove', $list['all']);
-						break;
+						//	manage_prefs('remove', $list['all']);
+					}
+					break;
 				}
 			}
 		}
-		
+
 		//Userclasses
 		//$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
 		if(isset($plug_vars['userclasses']))
 		{
-
 			if(isset($plug_vars['userclasses']['userclass']))
 			{
 				if(!is_array($plug_vars['userclasses']['userclass']))
 				{
-					$uclass_list = array($plug_vars['mainPrefs']['pref']);
+					$uclass_list = array($plug_vars['userclasses']['userclass']);
 				}
 				else
 				{
-					$uclass_list = $plug_vars['mainPrefs']['pref'];
+					$uclass_list = $plug_vars['userclasses']['userclass'];
 				}
+				print_a($uclass_list);
+				
 				foreach($uclass_list as $uclass)
 				{
+					print_a($uclass);
 					$attrib = $uclass['@attributes'];
 					switch($function)
 					{
 						case 'install':
 						case 'upgrade':
-							if(!isset($attrib['active']) || $attrib['active'] == 'true')
-							{
-								echo "Adding userclass ".$attrib['name']."<br />";
-//								manage_userclass('add', $attrib['name'], $attrib['description']);
-							}
-							
-							//If upgrading, removing any inactive pref
-							if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
-							{
-								echo "Removing userclass ".$attrib['name']."<br />";
-//								manage_userclass('remove', $attrib['name'], $attrib['description']);
-							}
-							break;
-					
+						// Add all active userclasses						
+						if(!isset($attrib['active']) || $attrib['active'] == 'true')
+						{
+							echo "Adding userclass ".$attrib['name']."<br />";
+							//	manage_userclass('add', $attrib['name'], $attrib['description']);
+						}
+
+						//If upgrading, removing any inactive userclass
+						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
+						{
+							echo "Removing userclass ".$attrib['name']."<br />";
+							//	manage_userclass('remove', $attrib['name'], $attrib['description']);
+						}
+						break;
+
 						//If uninstalling, remove all userclasses (active or inactive)
 						case 'uninstall':
-							echo "Removing prefs ".$attrib['name']."<br />";
-//							manage_userclass('remove', $attrib['name'], $attrib['description']);
-							break;
+						echo "Removing prefs ".$attrib['name']."<br />";
+						// manage_userclass('remove', $attrib['name'], $attrib['description']);
+						break;
 					}
 				}
 			}
 		}
-		
+
 		$this -> manage_search($function, $plug_vars['folder']);
 		$this -> manage_notify($function, $plug_vars['folder']);
 
@@ -807,20 +827,19 @@ class e107plugin
 				$text .= $plug_vars['installDone'];
 			}
 		}
-		
-	}
 
+	}
 
 	function install_plugin_php($id)
 	{
 		global $sql;
-		
+
 		$plug = $this->getinfo($id);
-		$_path = e_PLUGIN.$plug['plugin_path'].'/';		
+		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 
 		$plug['plug_action'] = 'install';
 
-		//		$plug_vars = $this->parse_plugin_php($path);
+		//	$plug_vars = $this->parse_plugin_php($path);
 		include_once($path.'plugin.php');
 
 		$func = $eplug_folder.'_install';
@@ -935,13 +954,13 @@ class e107plugin
 		$id = (int)$id;
 		$plug = $this->getinfo($id);
 		$plug['plug_action'] = 'install';
-
+	
 		if ($plug['plugin_installflag'] == FALSE)
 		{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
 			if(file_exists($_path.'plugin.xml'))
 			{
-				$text = $this->manage_plugin_xml($_path, 'install');
+				$text = $this->manage_plugin_xml($id, 'install');
 			}
 			elseif(file_exists($_path.'plugin.php'))
 			{
@@ -1199,9 +1218,10 @@ class e107plugin
 		include_lan($path.'languages/admin/'.e_LANGUAGE.'.php');
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
-		$xml->loadXMLfile($path.'plugin.xml', true, true);
-		$xml->xmlFileContents = $tp->replaceConstants($xml->xmlFileContents, '', true);
-		$this->plug_vars = $xml->parseXml();
+		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
+//		$xml->loadXMLfile($path.'plugin.xml', true, true);
+//		$xml->xmlFileContents = $tp->replaceConstants($xml->xmlFileContents, '', true);
+//		$this->plug_vars = $xml->parseXml();
 		return true;
 	}
 

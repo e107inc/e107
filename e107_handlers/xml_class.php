@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-01-30 20:33:16 $
-|     $Author: secretr $
+|     $Revision: 1.5 $
+|     $Date: 2008-02-01 14:11:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -120,7 +120,7 @@ class xmlClass
 		return $xml;
 	}
 
-	function loadXMLfile($fname='', $parse = false)
+	function loadXMLfile($fname='', $parse = false, $replace_constants = false)
 	{
 
 		if($fname == '')
@@ -142,6 +142,16 @@ class xmlClass
 		}
 		if($this->xmlFileContents)
 		{
+			if($replace_constants == true)
+			{
+				global $tp;
+				if(!is_object($tp))
+				{
+					require_once('e_parse_class.php');
+					$tp = new e_parse;
+				}
+				$this->xmlFileContents = $tp->replaceConstants($this->xmlFileContents, '', true);
+			}
 			if($parse == true)
 			{
 				return $this->parseXML();
