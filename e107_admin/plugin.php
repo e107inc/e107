@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-01-27 01:34:59 $
+|     $Revision: 1.11 $
+|     $Date: 2008-02-01 14:11:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -523,7 +523,8 @@ function render_plugs($pluginList)
 				$img = "<img src='".e_IMAGE."packs/".$imode."/admin_images/upgrade.png' alt='' />";
 			}
 
-			$plugin_icon = $plug_vars['administration']['icon'] ? "<img src='".e_PLUGIN.$plug_vars['administration']['icon']."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
+			$icon_src = (isset($plug_vars['plugin_php']) ? e_PLUGIN : $_path).$plug_vars['administration']['icon'];
+			$plugin_icon = $plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
 
 			if ($plug_vars['administration']['configFile'] && $plug['plugin_installflag'] == true)
 			{

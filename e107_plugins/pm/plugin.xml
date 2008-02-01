@@ -10,11 +10,10 @@
 	<folder>pm</folder>
 	<administration>
 		<configFile>pm_conf.php</configFile>
-		<icon>pm/images/pvt_message_32.png</icon>
-		<iconSmall>pm/images/pvt_message_16.png</iconSmall>
+		<icon>images/pvt_message_32.png</icon>
+		<iconSmall>images/pvt_message_16.png</iconSmall>
 		<caption>{ADLAN_PM_2}</caption>
 	</administration>
-	<sqlFile>pm_sql.php</sqlFile>
 	<management>
 		<install type="fileFunction" file="pm_install.php" function="forum_install" />
 		<uninstall type="fileFunction" file="pm_uninstall.php" function="forum_uninstall" />

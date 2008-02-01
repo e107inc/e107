@@ -10,11 +10,9 @@
 	<folder>forum</folder>
 	<administration>
 		<configFile>forum_admin.php</configFile>
-		<icon>forum/images/forums_32.png</icon>
-		<iconSmall>forum/images/images/forums_16.png</iconSmall>
+		<icon>images/forums_32.png</icon>
+		<iconSmall>images/images/forums_16.png</iconSmall>
 		<caption>Configure Forum</caption>
-		<latest>true</latest>
-		<status>true</status>
 		<installDone>Your forum is now installed</installDone>
 	</administration>
 	<menuLink name="Forum" url="forum/forum.php" perm='everyone'/>
@@ -35,7 +33,6 @@
 	<userclasses>
 		<userclass name="forum_moderator" description="Moderator of all forums" />
 	</userclasses>
-	<sqlFile>forum_sql.php</sqlFile>
 	<management>
 		<install type="classFunction" file="forum_management.php" class="forum_management" function="forum_install" />
 		<uninstall type="classFunction" file="forum_management.php" class="forum_management" function="forum_uninstall" />
