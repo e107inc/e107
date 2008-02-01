@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-23 01:12:15 $
+|     $Revision: 1.3 $
+|     $Date: 2008-02-01 00:37:10 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -46,15 +46,15 @@ define("LOGIN_MENU_L26", "no");
 define("LOGIN_MENU_L27", "and");
 define("LOGIN_MENU_L28", "Login");
 
-define("LOGIN_MENU_L29", "new article");
-define("LOGIN_MENU_L30", "new articles");
+//define("LOGIN_MENU_L29", "new article");
+//define("LOGIN_MENU_L30", "new articles");
 
 // New config options
 define('LOGIN_MENU_L31', 'Show New News Posts');
-define('LOGIN_MENU_L32', 'Show New Article Posts');
-define('LOGIN_MENU_L33', 'Show New Chatbox Posts');
+//define('LOGIN_MENU_L32', 'Show New Article Posts');
+//define('LOGIN_MENU_L33', 'Show New Chatbox Posts');
 define('LOGIN_MENU_L34', 'Show New Comment Posts');
-define('LOGIN_MENU_L35', 'Show New Forum Posts');
+//define('LOGIN_MENU_L35', 'Show New Forum Posts');
 define('LOGIN_MENU_L36', 'Show New Members');
 
 
@@ -66,8 +66,13 @@ define("LOGIN_MENU_L41", "Login Menu Settings");
 define('LOGIN_MENU_L37', 'Show');
 define('LOGIN_MENU_L38', 'Login menu - Additional Links');
 
-define('LOGIN_MENU_L42', 'Login menu - Recent additions');
+define('LOGIN_MENU_L42', 'Login menu - Recent core additions');
 define('LOGIN_MENU_L43', 'Position');
 define('LOGIN_MENU_L44', 'missing link title');
+define('LOGIN_MENU_L45', 'link(s) -');
+define('LOGIN_MENU_L45a', ''); //pre
+define('LOGIN_MENU_L45b', 'plugin'); //post
+define('LOGIN_MENU_L46', 'recent items -');
+define('LOGIN_MENU_L47', 'Login menu - Recent plugin additions');
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-01-23 01:12:15 $
+|     $Revision: 1.2 $
+|     $Date: 2008-02-01 00:37:10 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,10 @@ $lbox_stats[] = $LBOX_STAT;
 
 class login_menu_class
 {
+    function get_coreplugs() {
+        return array('forum', 'chatbox_menu');
+    }
+    
     function get_external_list($sort = true) {
         global $sql, $pref, $menu_pref;
         
@@ -76,26 +80,48 @@ class login_menu_class
 		return $list;
     }
     
-    function parse_external_list($list) {
-        
+    function parse_external_list($active=false, $order=true) {
+        global $menu_pref;
         //prevent more than 1 call
         if(($tmp = getcachedvars('loginbox_elist')) !== FALSE) return $tmp;
-
+        
         $ret = array();
+        $lbox_admin = varsettrue($eplug_admin, false);
+        $coreplugs = login_menu_class::get_coreplugs();
+        
+        $lprefs = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
+        $sprefs = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
+        
+        if($active) {
+            $tmp =  array_flip($lprefs);
+            $tmp1 = array_flip($sprefs);
+            $list = array_keys(array_merge($tmp, $tmp1));
+        } else {
+            $list = array_merge($coreplugs, login_menu_class::get_external_list($order));
+        } 
+        
         foreach ($list as $item) { 
-        	if(file_exists(e_PLUGIN.$item."/e_loginbox.php")) { 
+        
+            //core
+            if(in_array($item, $coreplugs)) {           
+                if($tmp = call_user_func(array('login_menu_class', "get_{$item}_stats"), $get_stats))
+                    $ret['stats'][$item] = $tmp;  
+                       
+                continue;
+            }
         	    
-                $lbox_links = array();
-                $lbox_stats = array();
-                require(e_PLUGIN.$item."/e_loginbox.php");
+            $lbox_links = array();
+            $lbox_stats = array();
+            $lbox_links_active = (!$active || in_array($item, $lprefs));
+            $lbox_stats_active = (!$active || in_array($item, $sprefs));
+
+        	if(file_exists(e_PLUGIN.$item."/e_loginbox.php")) { 
+
                 
-                /* Front-end only!
-                if($check) {
-                    $lbox_links = login_menu_class::clean_links($lbox_links);
-                }*/
+                include(e_PLUGIN.$item."/e_loginbox.php");
                 
-                if(!empty($lbox_links)) $ret['links'][$item] = $lbox_links;
-                if(!empty($lbox_stats)) $ret['stats'][$item] = $lbox_stats;
+                if(!empty($lbox_links) && $lbox_links_active) $ret['links'][$item] = $lbox_links;
+                if(!empty($lbox_stats) && $lbox_stats_active) $ret['stats'][$item] = $lbox_stats;
                 
             }
         }
@@ -103,15 +129,78 @@ class login_menu_class
         
         return $ret;
     }
+    /*
+    function parse_coreplug_stats($get_stats=true) {
+        global $pref;
+        $lbox_stats = array();
+        
+        $coreplugs = login_menu_class::get_coreplugs();
+        foreach($coreplugs as $plug_id) {
+            if(array_key_exists($plug_id, $pref['plug_installed'])) {
+                if($tmp = call_user_func(array('login_menu_class', "get_{$plug_id}_stats"), $get_stats))
+                    $lbox_stats[$plug_id] = $tmp;
+            }
+        }
+        
+        return $lbox_stats;
+    }
+    */
+    
+    function get_forum_stats($get_stats=true) {
+        global $sql, $pref;
+        
+        if(!array_key_exists('forum', $pref['plug_installed']))
+            return array();
+        
+        $lbox_stats = array();
+        $lbox_stats[0]['stat_item']    = LOGIN_MENU_L20;
+        $lbox_stats[0]['stat_items']   = LOGIN_MENU_L21;
+        $lbox_stats[0]['stat_new']     = 0;
+        $lbox_stats[0]['stat_nonew']   = LOGIN_MENU_L26.' '.LOGIN_MENU_L21;
+        if($get_stats) {
+
+            $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+        	$qry = "
+        	SELECT  count(*) as count FROM #forum_t  as t
+        	LEFT JOIN #forum as f
+        	ON t.thread_forum_id = f.forum_id
+        	WHERE t.thread_datestamp > ".USERLV." and f.forum_class IN (".USERCLASS_LIST.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
+        	";
+        	
+        	if($sql->db_Select_gen($qry)) {
+        		$row = $sql->db_Fetch();
+        		$lbox_stats['forum'][0]['stat_new'] = $row['count'];
+        	}
+        }
+    	
+    	return $lbox_stats;
+    }
+    
+    function get_chatbox_menu_stats() {
+        global $sql, $pref;
+        
+        if(!array_key_exists('chatbox_menu', $pref['plug_installed']))
+            return array();
+        
+        $lbox_stats[0]['stat_item']     = LOGIN_MENU_L16;
+        $lbox_stats[0]['stat_items']    = LOGIN_MENU_L17;
+        $lbox_stats[0]['stat_new']      = 0;
+        $lbox_stats[0]['stat_nonew']    = LOGIN_MENU_L26.' '.LOGIN_MENU_L17;
+        if($get_stats) {
+            $lbox_stats['chatbox_menu'][0]['stat_new']  = $sql->db_Count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.USERLV);
+        }
+        
+        return $lbox_stats;
+    }
     
     function render_config_links() {
         global $menu_pref;
         
         $ret = '';
-        $list = login_menu_class::get_external_list(true);
-        $lbox_infos = login_menu_class::parse_external_list($list);
+        
+        $lbox_infos = login_menu_class::parse_external_list(false);
         if(!varsettrue($lbox_infos['links'])) return '';
-
+        
         $enabled = varsettrue($menu_pref['login_menu']['external_links']) ? explode(',', $menu_pref['login_menu']['external_links']) : array();
         
         $num = 1;
@@ -121,12 +210,14 @@ class login_menu_class
             	$links[] = '<a href="'.$value['link_url'].'">'.varsettrue($value['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
             }
             
+            $plug_data = login_menu_class::get_plugin_data($id);
+            
             $links = implode(', ', $links);
             
         	$ret .= '
             	<tr>
-            	<td style="width:30%" class="forumheader3">'.LOGIN_MENU_L37.' '.$links.'</td>
-            	<td style="width:70%; text-align: left;" class="forumheader3">
+            	<td class="forumheader3">'.LOGIN_MENU_L37.' '.(varset($plug_data['eplug_name']) ? LOGIN_MENU_L45.LOGIN_MENU_L45a." {$plug_data['eplug_name']} ".LOGIN_MENU_L45b."<br />" : '').$links.'</td>
+            	<td style="text-align: left;" class="forumheader3">
 
                    <table style="margin-left: 0px">
             	   <tr>
@@ -147,6 +238,57 @@ class login_menu_class
         
         if($ret) {
             $ret = '<tr><td colspan="2" class="fcaption">'.LOGIN_MENU_L38.'</td></tr>'.$ret;
+        }
+        
+        return $ret;
+    }
+    
+    function render_config_stats() {
+        global $menu_pref;
+        
+        $ret = '';
+        $lbox_infos = login_menu_class::parse_external_list(false);
+        $lbox_infos = varsettrue($lbox_infos['stats'], array());
+        //$lbox_infos = array_merge(login_menu_class::parse_coreplug_list(false), $lbox_infos);
+        //print_a($lbox_infos);
+        if(!$lbox_infos) return '';
+
+        $enabled = varsettrue($menu_pref['login_menu']['external_stats']) ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
+        
+        $num = 1;
+        foreach ($lbox_infos as $id => $stack) {
+
+            $plug_data = login_menu_class::get_plugin_data($id);
+
+        	$ret .= '
+            	<tr>
+            	<td class="forumheader3">'.LOGIN_MENU_L37.' '.LOGIN_MENU_L46.LOGIN_MENU_L45a." {$plug_data['eplug_name']} ".LOGIN_MENU_L45b.'<br /></td>
+            	<td class="forumheader3">
+                   <input type="checkbox" name="external_stats['.$id.']" value="1"'.(in_array($id, $enabled) ? ' checked="checked"' : '').' />
+                </td>
+            	</tr>
+            ';
+            $num++;
+        }
+        
+        if($ret) {
+            $ret = '<tr><td colspan="2" class="fcaption">'.LOGIN_MENU_L47.'</td></tr>'.$ret;
+        }
+        
+        return $ret;
+    }
+    
+    function get_plugin_data($plugid) {
+        
+        if(($tmp = getcachedvars('loginbox_eplug_data_'.$plugid)) !== FALSE) return $tmp;
+
+        $ret = array();
+        if(is_readable(e_PLUGIN.$plugid.'/plugin.php')) {
+            
+            include(e_PLUGIN.$plugid.'/plugin.php');
+            $ret['eplug_name'] = defined($eplug_name) ? constant($eplug_name) : $eplug_name;
+            $ret['eplug_version'] = $eplug_version;
+            cachevars('loginbox_eplug_data_'.$plugid, $ret);
         }
         
         return $ret;
