@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-01-28 02:49:50 $
+|     $Revision: 1.22 $
+|     $Date: 2008-02-01 11:52:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -234,7 +234,7 @@ class e107plugin
 		if(!is_array($getinfo_results)) { $getinfo_results = array(); }
 		
 		$id = (int)$id;
-		if(!isset($getinfo_results[$id] || $force == true))
+		if(!isset($getinfo_results[$id]) || $force == true)
 		{
 			if ($sql->db_Select('plugin', '*', "plugin_id = ".$id))
 			{
