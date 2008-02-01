@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2008-01-04 19:54:16 $
-|     $Author: e107steved $
+|     $Revision: 1.28 $
+|     $Date: 2008-02-01 18:09:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -657,6 +657,7 @@ class e_parse
         //Run any hooked in parsers
 		if (!$opts['no_hook'] && varset($pref['tohtml_hook']))
         {
+          //Process the older tohtml_hook pref (depricated)
           foreach(explode(",",$pref['tohtml_hook']) as $hook)
           {
             if (!is_object($this->e_hook[$hook]))
@@ -665,8 +666,24 @@ class e_parse
               $hook_class = "e_".$hook;
               $this->e_hook[$hook] = new $hook_class;
             }
-          $text = $this->e_hook[$hook]->$hook($text,$opts['context']);
+          	$text = $this->e_hook[$hook]->$hook($text,$opts['context']);
           }
+          
+          if(isset($pref['e_tohtml_list']) && is_array($pref['e_tohtml_list']))
+          {
+          	foreach($pref['e_tohtml_list'] as $hook)
+          	{
+            	if (!is_object($this->e_hook[$hook]))
+            	{
+	              require_once(e_PLUGIN.$hook."/e_tohtml.php");
+              	$hook_class = "e_tohtml_".$hook;
+              	$this->e_hook[$hook] = new $hook_class;
+            	}
+          		$text = $this->e_hook[$hook]->to_html($text, $opts['context']);
+          	}
+          }
+
+          
         }
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-02-01 14:11:27 $
+|     $Revision: 1.24 $
+|     $Date: 2008-02-01 18:09:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -706,28 +706,7 @@ class e107plugin
 		{
 			if(isset($plug_vars['mainPrefs']['pref']))
 			{
-				if(!is_array($plug_vars['mainPrefs']['pref']))
-				{
-					$pref_list = array($plug_vars['mainPrefs']['pref']);
-				}
-				else
-				{
-					$pref_list = $plug_vars['mainPrefs']['pref'];
-				}
-				$list = array();
-				foreach($pref_list as $_pref)
-				{
-					$attrib = $_pref['@attributes'];
-					$list['all'][$attrib['name']] = $attrib['value'];
-					if(!isset($attrib['active']) || $attrib['active'] == 'true')
-					{
-						$list['active'][$attrib['name']] = $attrib['value'];
-					}
-					if(isset($attrib['active']) && $attrib['active'] == 'false')
-					{
-						$list['inactive'][$attrib['name']] = $attrib['value'];
-					}
-				}
+				$list = $this->parse_prefs($plug_vars['mainPrefs']['pref']);
 				switch($function)
 				{
 					case 'install':
@@ -764,7 +743,7 @@ class e107plugin
 		{
 			if(isset($plug_vars['userclasses']['userclass']))
 			{
-				if(!is_array($plug_vars['userclasses']['userclass']))
+				if(!isset($plug_vars['userclasses']['userclass'][0]))
 				{
 					$uclass_list = array($plug_vars['userclasses']['userclass']);
 				}
@@ -772,11 +751,8 @@ class e107plugin
 				{
 					$uclass_list = $plug_vars['userclasses']['userclass'];
 				}
-				print_a($uclass_list);
-				
 				foreach($uclass_list as $uclass)
 				{
-					print_a($uclass);
 					$attrib = $uclass['@attributes'];
 					switch($function)
 					{
@@ -809,6 +785,25 @@ class e107plugin
 
 		$this -> manage_search($function, $plug_vars['folder']);
 		$this -> manage_notify($function, $plug_vars['folder']);
+		
+		// Let's call any custom functions defined in <management> section
+		if(isset($plug_vars['management'][$function]))
+		{
+			$manage = $plug_vars['management'][$function]['@attributes'];
+			if(is_readable($path.$manage['file']))
+			{
+				include($path.$manage['file']);
+				if($manage['type'] == 'fileFunction')
+				{
+					$result = call_user_func($manage['function'], $plug_vars);
+				}
+				elseif($manage['type'] == 'classFunction')
+				{
+					$_tmp = new $manage['class'];
+					$result = call_user_func(array($_tmp, $manage['function']), $plug_vars);
+				}
+			}
+		}
 
 		if($function == 'install' || $functon = 'upgrade')
 		{
@@ -830,6 +825,40 @@ class e107plugin
 
 	}
 
+	function parse_prefs($pref_array)
+	{
+		$ret = array();
+		if(!isset($pref_array[0]))
+		{
+			$pref_array = array($pref_array);
+		}
+		foreach($pref_array as $k => $p)
+		{
+			$attrib = $p['@attributes'];
+			if(isset($attrib['type']) && $attrib['type'] == 'array')
+			{
+				$name = $attrib['name'];
+				$tmp = $this->parse_prefs($pref_array[$k]['key']);
+				$ret['all'][$name] = $tmp['all'];
+				$ret['active'][$name] = $tmp['active'];
+				$ret['inactive'][$name] = $tmp['inactive'];
+			}
+			else
+			{
+				$ret['all'][$attrib['name']] = $attrib['value'];
+				if(!isset($attrib['active']) || $attrib['active'] == 'true')
+				{
+					$ret['active'][$attrib['name']] = $attrib['value'];
+				}
+				else
+				{
+					$ret['inactive'][$attrib['name']] = $attrib['value'];
+				}
+			}
+		}
+		return $ret;
+	}
+	
 	function install_plugin_php($id)
 	{
 		global $sql;
@@ -998,9 +1027,9 @@ class e107plugin
 
 				if ($is_installed)
 				{
-					foreach($this->plugin_addons as $val)
+					foreach($tmp as $val)
 					{
-						if(in_array($val,$tmp))
+						if(strpos($val, 'e_') === 0)
 						{
 							$pref[$val."_list"][$path] = $path;
 						}
@@ -1219,6 +1248,7 @@ class e107plugin
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
+//		print_a($this->plug_vars);
 //		$xml->loadXMLfile($path.'plugin.xml', true, true);
 //		$xml->xmlFileContents = $tp->replaceConstants($xml->xmlFileContents, '', true);
 //		$this->plug_vars = $xml->parseXml();
