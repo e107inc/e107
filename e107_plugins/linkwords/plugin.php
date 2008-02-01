@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-07-28 16:47:55 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-01 18:09:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "LWLANINS_1";
-$eplug_version = "1.1";
+$eplug_version = "1.2";
 $eplug_author = "jalist";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
@@ -115,9 +115,5 @@ $upgrade_remove_prefs = "";
 $upgrade_alter_tables = "";
 
 $eplug_upgrade_done = "";
-
-
-
-
 
 ?>

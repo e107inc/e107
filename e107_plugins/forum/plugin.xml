@@ -29,6 +29,11 @@
 		<pref name="forum_postspage" value="10" />
 		<pref name="forum_hilightsticky" value="1" />
 		<pref name="forum_obsolete_pref" value="1" active="false"/>
+		<pref name="forum_tmp" type="array">
+			<key name="pref1" value="val1" active="false" />
+			<key name="pref2" value="val2" />
+			<key name="pref3" value="val3" />
+		</pref>
 	</mainPrefs>
 	<userclasses>
 		<userclass name="forum_moderator" description="Moderator of all forums" />
