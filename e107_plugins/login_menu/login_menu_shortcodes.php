@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-23 01:12:15 $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-01 00:37:10 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -144,10 +144,8 @@ SC_END
 
 SC_BEGIN LM_EXTERNAL_LINKS
 global $tp, $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
-require_once(e_PLUGIN."login_menu/login_menu_class.php");
 if(!varsettrue($menu_pref['login_menu']['external_links'])) return '';
-$tmp = explode(',', $menu_pref['login_menu']['external_links']);
-$lbox_infos = login_menu_class::parse_external_list($tmp);
+$lbox_infos = login_menu_class::parse_external_list(true, false); 
 if(!varsettrue($lbox_infos['links'])) return '';
 $ret = '';
 foreach ($lbox_infos['links'] as $id => $items) {
@@ -216,6 +214,33 @@ if(!isset($data['new_users'])) return '';
 if(!$data['new_users'])
     return LOGIN_MENU_L26.' '.LOGIN_MENU_L23;
 return $data['new_users'].' '.($data['new_users'] == 1 ? LOGIN_MENU_L22 : LOGIN_MENU_L23);
+SC_END
+
+SC_BEGIN LM_PLUGIN_STATS
+global $tp, $menu_pref, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR;
+if(!varsettrue($menu_pref['login_menu']['external_stats'])) return ''; 
+$lbox_infos = login_menu_class::parse_external_list(true, false);
+if(!varsettrue($lbox_infos['stats'])) return '';
+$ret = array(); 
+$sep = varset($LM_STATITEM_SEPARATOR, '<br />');
+foreach ($lbox_infos['stats'] as $id => $items) { 
+    foreach ($items as $lbox_item) {
+    	$tmp = array();
+    	if($lbox_item["stat_new"]){ 
+        	$tmp['LM_STAT_NEW'] = "return '{$lbox_item['stat_new']}';";
+        	$tmp['LM_STAT_LABEL'] = $lbox_item["stat_new"] == 1 ? "return '{$lbox_item['stat_item']}';" : "return '{$lbox_item['stat_items']}';";
+        	$tmp['LM_STAT_EMPTY'] = '';
+    	} else {
+    	    //if(empty($lbox_item['stat_nonew'])) continue;
+        	$tmp['LM_STAT_NEW'] = '';
+        	$tmp['LM_STAT_LABEL'] = '';
+        	$tmp['LM_STAT_EMPTY'] = "return '{$lbox_item['stat_nonew']}';";
+        }
+        //print_a($lbox_infos['stats']);
+    	$ret[] = $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
+    }
+}
+return $ret ? implode($sep, $ret) : '';
 SC_END
 
 SC_BEGIN LM_LISTNEW_LINK

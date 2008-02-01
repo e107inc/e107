@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-23 01:12:15 $
+|     $Revision: 1.3 $
+|     $Date: 2008-02-01 00:37:10 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -100,6 +100,15 @@ if (!isset($LOGIN_MENU_STATS)){
         {LM_NEW_CHAT}
         {LM_NEW_FORUM}
         {LM_NEW_USERS}
+        {LM_PLUGIN_STATS}
+    ';
+}
+
+$LM_STATITEM_SEPARATOR = '<br />';
+if (!isset($LOGIN_MENU_STATITEM)){
+    
+	$LOGIN_MENU_STATITEM = '
+        {LM_STAT_NEW} {LM_STAT_LABEL}{LM_STAT_EMPTY}
     ';
 }
 

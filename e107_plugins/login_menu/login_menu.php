@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-01-23 01:12:15 $
+|     $Revision: 1.7 $
+|     $Date: 2008-02-01 00:37:10 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if(defined("FPW_ACTIVE"))
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
 
-global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, 
+global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM,
        $login_menu_shortcodes, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK;
 $ip = $e107->getip();
 
@@ -68,8 +68,9 @@ $ip = $e107->getip();
 // START LOGGED CODE
 if (USER == TRUE || ADMIN == TRUE)
 {
+    require_once(e_PLUGIN."login_menu/login_menu_class.php");
 
-    //login class ???
+    //login class ??? - REMOVE IT
 	if ($sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
 	{	// User now logged in - delete 'guest' record (tough if several users on same IP)
 		$sql->db_Delete('online', "`online_ip` = '{$ip}' AND `online_user_id` = '0' ");
@@ -108,7 +109,8 @@ if (USER == TRUE || ADMIN == TRUE)
 			$menu_data['new_comments'] = $sql->db_Count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
 			$new_total += $menu_data['new_comments'];
 		}
-
+		
+/*
 		// ------------ Chatbox Stats -----------
 
 		if (varsettrue($menu_pref['login_menu']['new_chatbox']) && in_array('chatbox_menu',$eMenuActive)) 
@@ -119,7 +121,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Forum Stats -----------
 
-		if (varsettrue($menu_pref['login_menu']['new_forum'])) 
+		if (varsettrue($menu_pref['login_menu']['new_forum']) && array_key_exists('forum', $pref['plug_installed'])) 
         {
 			$qry = "
 			SELECT  count(*) as count FROM #forum_t  as t
@@ -135,6 +137,7 @@ if (USER == TRUE || ADMIN == TRUE)
 				$new_total += $menu_data['new_forum'];
 			}
 		}
+*/
 
 		// ------------ Member Stats -----------
 
