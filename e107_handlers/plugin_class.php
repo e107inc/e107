@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-02-01 18:09:01 $
+|     $Revision: 1.25 $
+|     $Date: 2008-02-02 00:48:57 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -633,6 +633,9 @@ class e107plugin
 			return false;
 		}
 
+		// Let's call any custom pre functions defined in <management> section
+		$this->execute_function($path, $function, 'pre');
+
 		// tables
 		// This will load each _sql.php file found in the plugin directory and parse it.
 		if(($function == 'install' || $function == 'uninstall') && count($sql_list))
@@ -786,24 +789,8 @@ class e107plugin
 		$this -> manage_search($function, $plug_vars['folder']);
 		$this -> manage_notify($function, $plug_vars['folder']);
 		
-		// Let's call any custom functions defined in <management> section
-		if(isset($plug_vars['management'][$function]))
-		{
-			$manage = $plug_vars['management'][$function]['@attributes'];
-			if(is_readable($path.$manage['file']))
-			{
-				include($path.$manage['file']);
-				if($manage['type'] == 'fileFunction')
-				{
-					$result = call_user_func($manage['function'], $plug_vars);
-				}
-				elseif($manage['type'] == 'classFunction')
-				{
-					$_tmp = new $manage['class'];
-					$result = call_user_func(array($_tmp, $manage['function']), $plug_vars);
-				}
-			}
-		}
+		// Let's call any custom post functions defined in <management> section
+		$this->execute_function($path, $function, 'post');
 
 		if($function == 'install' || $functon = 'upgrade')
 		{
@@ -822,7 +809,36 @@ class e107plugin
 				$text .= $plug_vars['installDone'];
 			}
 		}
+	}
 
+	function execute_function($path = '', $what='', $when='')
+	{
+		if($what == '' || $when == '') { return true; }
+		if(!isset($this->plug_vars['management'][$what])) { return true; }
+		$vars = $this->plug_vars['management'][$what];
+		if(!is_array($vars)) { $vars = array($vars); }
+		foreach($vars as $var)
+		{
+			$attrib = $var['@attributes'];
+			if(isset($attrib['when']) && $attrib['when'] == $when)
+			{
+				if(is_readable($path.$attrib['file']))
+				{
+					include_once($path.$attrib['file']);
+					if($attrib['type'] == 'fileFunction')
+					{
+						$result = call_user_func($attrib['function'], $plug_vars);
+						return $result;
+					}	
+					elseif($attrib['type'] == 'classFunction')
+					{
+						$_tmp = new $attrib['class'];
+						$result = call_user_func(array($_tmp, $attrib['function']), $plug_vars);
+						return $result;
+					}
+				}
+			}
+		}
 	}
 
 	function parse_prefs($pref_array)
