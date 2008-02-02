@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-02-02 03:23:47 $
+|     $Revision: 1.27 $
+|     $Date: 2008-02-02 22:04:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,16 +30,15 @@ class e107plugin
 	'eplug_prefs',
 	'eplug_array_pref',		// missing previously
 	'eplug_table_names',
-	'eplug_user_prefs',
 	'eplug_sc',
 	'eplug_userclass',
 	'eplug_module',
 	'eplug_bb',
 	'eplug_latest',
-	'eplug_status'		//,
-	//		'eplug_comment_ids',	// Not sure about this one
-	//		'eplug_menu_name',		// ...or this one
-	//		'eplug_conffile'		// ...or this one
+	'eplug_status',
+	'eplug_comment_ids',
+	'eplug_conffile',
+	'eplug_menu_name'
 	);
 
 	// List of all plugin variables involved in an update (not used ATM, but worth 'documenting')
@@ -51,8 +50,6 @@ class e107plugin
 	'upgrade_remove_eplug_bb',
 	'upgrade_add_prefs',
 	'upgrade_remove_prefs',
-	'upgrade_add_user_prefs',
-	'upgrade_remove_user_prefs',
 	'upgrade_add_array_pref',
 	'upgrade_remove_array_pref'
 	);
@@ -69,7 +66,7 @@ class e107plugin
 	var $plug_vars;
 	var $current_plug;
 	var $parsed_plugin;
-	
+
 	function e107plugin()
 	{
 		$parsed_plugin = array();
@@ -385,10 +382,10 @@ class e107plugin
 		}
 	}
 
-
-	function manage_comments($action,$comment_id)
+	function manage_comments($action, $comment_id)
 	{
 		global $sql, $tp;
+		$tmp = array();
 		if($action == 'remove')
 		{
 			foreach($comment_id as $com)
@@ -396,10 +393,10 @@ class e107plugin
 				$tmp[] = "comment_type='".$tp -> toDB($com, true)."'";
 			}
 			$qry = implode(" OR ",$tmp);
-			return $sql->db_Delete('comments',$qry);
+			echo $qry."<br />";
+			return $sql->db_Delete('comments', $qry);
 		}
 	}
-
 
 	function manage_tables($action, $var)
 	{
@@ -604,10 +601,11 @@ class e107plugin
 		$id = (int)$id;
 		$plug = $this->getinfo($id);
 		$this->current_plug = $plug;
+		$txt = '';
 		$path = e_PLUGIN.$plug['plugin_path'].'/';
 
 		//We'll just install using plugin.php file for now.
-		return $this->install_plugin_php($path);
+		//return $this->install_plugin_php($path);
 
 		//New code to install using plugin.xml below.
 		$addons = explode(',', $plug['plugin_addons']);
@@ -637,7 +635,7 @@ class e107plugin
 		}
 
 		// Let's call any custom pre functions defined in <management> section
-		$this->execute_function($path, $function, 'pre');
+		$txt .= $this->execute_function($path, $function, 'pre');
 
 		// tables
 		// This will load each _sql.php file found in the plugin directory and parse it.
@@ -650,18 +648,20 @@ class e107plugin
 					preg_match_all("/create(.*?)myisam.*?;/si", $sql_data, $result );
 					foreach ($result[0] as $sql_table)
 					{
-						if($function == 'uninstall')
+						preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
+						$tablename = trim($match[1]);
+
+						if($function == 'uninstall' && isset($_POST['delete_tables']) && $_POST['delete_tables'])
 						{
-							preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
-							$tablename = trim($match[1]);
-							echo "Removing table $tablename <br />";
+							$txt .= "Removing table $tablename <br />";
 							$this->manage_tables('remove', array($tablename));
 						}
 						if($function == 'install')
 						{
-							$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE #", $sql_table);
-							echo "Adding table: <pre>{$sql_table}</pre><br />";
-							$this->manage_tables('add', array($sql_table));
+							$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $sql_table);
+							$txt .= "Adding table: {$tablename} ... ";
+							$result = $this->manage_tables('add', array($sql_table));
+							$txt .= ($result ? "Success" : "Failed!")."<br />";
 						}
 					}
 				}
@@ -687,20 +687,20 @@ class e107plugin
 					if(!isset($attrib['active']) || $attrib['active'] == 'true')
 					{
 						$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
-						echo "Adding link {$attrib['name']} with url [{$attrib['url']}] and perm {$perm} <br />";
+						$txt .= "Adding link {$attrib['name']} with url [{$attrib['url']}] and perm {$perm} <br />";
 						$this->manage_link('add', $attrib['url'], $attrib['name'], $perm);
 					}
 					//remove inactive links on upgrade
 					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
 					{
-						echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
+						$txt .= "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
 						$this->manage_link('remove', $attrib['url'], $attrib['name']);
 					}
 					break;
 
 					case 'uninstall':
 					//remove all links
-					echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
+					$txt .= "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
 					$this->manage_link('remove', $attrib['url'], $attrib['name']);
 					break;
 				}
@@ -719,14 +719,14 @@ class e107plugin
 					case 'upgrade':
 					if(is_array($list['active']))
 					{
-						echo "Adding prefs ".print_a($list['active'], true)."<br />";
+						$txt .= "Adding prefs ".print_a($list['active'], true)."<br />";
 						$this->manage_prefs('add', $list['active']);
 					}
 
 					//If upgrading, removing any inactive pref
 					if($function == 'upgrade' && is_array($list['inactive']))
 					{
-						echo "Removing prefs ".print_a($list['inactive'], true)."<br />";
+						$txt .= "Removing prefs ".print_a($list['inactive'], true)."<br />";
 						$this->manage_prefs('remove', $list['inactive']);
 					}
 					break;
@@ -735,7 +735,7 @@ class e107plugin
 					case 'uninstall':
 					if(is_array($list['all']))
 					{
-						echo "Removing prefs ".print_a($list['all'], true)."<br />";
+						$txt .= "Removing prefs ".print_a($list['all'], true)."<br />";
 						$this->manage_prefs('remove', $list['all']);
 					}
 					break;
@@ -745,55 +745,53 @@ class e107plugin
 
 		//Userclasses
 		//$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
-		if(isset($plug_vars['userclasses']))
+		if(isset($plug_vars['userclass']))
 		{
-			if(isset($plug_vars['userclasses']['userclass']))
+			$uclass_list = (isset($plug_vars['userclass'][0]) ? $plug_vars['userclass'] : array($plug_vars['userclass']));
+			foreach($uclass_list as $uclass)
 			{
-				if(!isset($plug_vars['userclasses']['userclass'][0]))
+				$attrib = $uclass['@attributes'];
+				switch($function)
 				{
-					$uclass_list = array($plug_vars['userclasses']['userclass']);
-				}
-				else
-				{
-					$uclass_list = $plug_vars['userclasses']['userclass'];
-				}
-				foreach($uclass_list as $uclass)
-				{
-					$attrib = $uclass['@attributes'];
-					switch($function)
+					case 'install':
+					case 'upgrade':
+					// Add all active userclasses						
+					if(!isset($attrib['active']) || $attrib['active'] == 'true')
 					{
-						case 'install':
-						case 'upgrade':
-						// Add all active userclasses						
-						if(!isset($attrib['active']) || $attrib['active'] == 'true')
-						{
-							echo "Adding userclass ".$attrib['name']."<br />";
-							$this->manage_userclass('add', $attrib['name'], $attrib['description']);
-						}
-
-						//If upgrading, removing any inactive userclass
-						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
-						{
-							echo "Removing userclass ".$attrib['name']."<br />";
-							$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
-						}
-						break;
-
-						//If uninstalling, remove all userclasses (active or inactive)
-						case 'uninstall':
-						echo "Removing prefs ".$attrib['name']."<br />";
-						$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
-						break;
+						$txt .= "Adding userclass ".$attrib['name']."<br />";
+						$this->manage_userclass('add', $attrib['name'], $attrib['description']);
 					}
+
+					//If upgrading, removing any inactive userclass
+					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
+					{
+						$txt .= "Removing userclass ".$attrib['name']."<br />";
+						$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
+					}
+					break;
+
+					//If uninstalling, remove all userclasses (active or inactive)
+					case 'uninstall':
+					$txt .= "Removing userclass ".$attrib['name']."<br />";
+					$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
+					break;
 				}
 			}
 		}
+		
+		//If and commentIDs are configured, we need to remove all comments on uninstall
+		if($function == 'uninstall' && isset($plug_vars['commentID']))
+		{
+			$commentArray = (is_array($plug_vars['commentID']) ? $plug_vars['commentID'] : array($plug_vars['commentID']));
+			$txt .= "Removing all plugin comments: (".implode(', ', $commentArray).")<br />";
+			$this->manage_comments('remove', $commentArray);
+		}
 
-		$this -> manage_search($function, $plug_vars['folder']);
-		$this -> manage_notify($function, $plug_vars['folder']);
+		$this->manage_search($function, $plug_vars['folder']);
+		$this->manage_notify($function, $plug_vars['folder']);
 		
 		// Let's call any custom post functions defined in <management> section
-		$this->execute_function($path, $function, 'post');
+		$txt .= $this->execute_function($path, $function, 'post');
 
 
 		if($function == 'install' || $functon = 'upgrade')
@@ -806,12 +804,13 @@ class e107plugin
 
 		if($function == 'install')
 		{
-			$text .= LAN_INSTALL_SUCCESSFUL."<br />";
+			$txt .= LAN_INSTALL_SUCCESSFUL."<br />";
 			if(isset($plug_vars['installDone']))
 			{
-				$text .= $plug_vars['installDone'];
+				$txt .= $plug_vars['installDone'];
 			}
 		}
+		return $txt;
 	}
 
 	function execute_function($path = '', $what='', $when='')
@@ -935,29 +934,6 @@ class e107plugin
 			$this->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
 		}
 
-		if (is_array($eplug_user_prefs))
-		{
-			$sql->db_Select("core", " e107_value", " e107_name = 'user_entended'");
-			$row = $sql->db_Fetch();
-			$user_entended = unserialize($row[0]);
-			while (list($e_user_pref, $default_value) = each($eplug_user_prefs))
-			{
-				$user_entended[] = $e_user_pref;
-				$user_pref['$e_user_pref'] = $default_value;
-			}
-			save_prefs("user");
-			$tmp = addslashes(serialize($user_entended));
-			if ($sql->db_Select("core", "e107_value", " e107_name = 'user_entended'"))
-			{
-				$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'user_entended' ");
-			}
-			else
-			{
-				$sql->db_Insert("core", "'user_entended', '{$tmp}' ");
-			}
-			$text .= EPL_ADLAN_8."<br />";
-		}
-
 		if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '')
 		{
 			$linkperm = (isset($eplug_link_perms) ? $eplug_link_perms : e_UC_PUBLIC);
@@ -1019,8 +995,7 @@ class e107plugin
 		{
 			$text = EPL_ADLAN_21;
 		}
-		if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".LAN_CONFIGURE."]</a>"; }
-		$ns->tablerender(EPL_ADLAN_33, $text);
+		return $text;
 	}
 
 	function save_addon_prefs()
@@ -1234,7 +1209,7 @@ class e107plugin
 		include($path.'plugin.php');
 		$ret = array();
 
-		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
 
 		$ret['version'] = varset($eplug_version);
 		$ret['name'] = varset($eplug_name);
