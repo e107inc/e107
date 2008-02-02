@@ -8,6 +8,8 @@
 	<compatibility>0.8</compatibility>
 	<installRequired>true</installRequired>
 	<folder>forum</folder>
+	<commentID>forum1</commentID>
+	<commentID>forum2</commentID>
 	<administration>
 		<configFile>forum_admin.php</configFile>
 		<icon>images/forums_32.png</icon>
@@ -35,9 +37,8 @@
 			<key name="pref3" value="val3" />
 		</pref>
 	</mainPrefs>
-	<userclasses>
-		<userclass name="forum_moderator" description="Moderator of all forums" />
-	</userclasses>
+	<userclass name="forum_moderator" description="Moderator of all forums" />
+	<userclass name="forum_moderator2" description="Moderator of all forums" />
 	<management>
 		<install when="post" type="classFunction" file="forum_management.php" class="forum_management" function="forum_install_post" />
 		<uninstall type="classFunction" file="forum_management.php" class="forum_management" function="forum_uninstall" />
