@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-02-02 00:48:57 $
+|     $Revision: 1.26 $
+|     $Date: 2008-02-02 03:23:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -67,8 +67,9 @@ class e107plugin
 	);
 
 	var $plug_vars;
+	var $current_plug;
 	var $parsed_plugin;
-
+	
 	function e107plugin()
 	{
 		$parsed_plugin = array();
@@ -602,7 +603,13 @@ class e107plugin
 		global $sql;
 		$id = (int)$id;
 		$plug = $this->getinfo($id);
+		$this->current_plug = $plug;
 		$path = e_PLUGIN.$plug['plugin_path'].'/';
+
+		//We'll just install using plugin.php file for now.
+		return $this->install_plugin_php($path);
+
+		//New code to install using plugin.xml below.
 		$addons = explode(',', $plug['plugin_addons']);
 		$sql_list = array();
 		foreach($addons as $addon)
@@ -613,10 +620,6 @@ class e107plugin
 			}
 		}
 
-		//Will just install using plugin.php file for now.
-		//return $this->install_plugin_php($path);
-
-		//New code to install using plugin.xml below.
 		if(!file_exists($path.'plugin.xml') || $function == '')
 		{
 			return false;
@@ -652,13 +655,13 @@ class e107plugin
 							preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
 							$tablename = trim($match[1]);
 							echo "Removing table $tablename <br />";
-							//	$this->manage_tables('remove', array($tablename));
+							$this->manage_tables('remove', array($tablename));
 						}
 						if($function == 'install')
 						{
 							$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE #", $sql_table);
 							echo "Adding table: <pre>{$sql_table}</pre><br />";
-							//	$this->manage_tables('add', array($sql_table));
+							$this->manage_tables('add', array($sql_table));
 						}
 					}
 				}
@@ -685,20 +688,20 @@ class e107plugin
 					{
 						$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
 						echo "Adding link {$attrib['name']} with url [{$attrib['url']}] and perm {$perm} <br />";
-						//	manage_link('add', $attrib['url'], $attrib['name'], $perm);
+						$this->manage_link('add', $attrib['url'], $attrib['name'], $perm);
 					}
 					//remove inactive links on upgrade
 					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
 					{
 						echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
-						//	manage_link('remove', $attrib['url'], $attrib['name']);
+						$this->manage_link('remove', $attrib['url'], $attrib['name']);
 					}
 					break;
 
 					case 'uninstall':
 					//remove all links
 					echo "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
-					//	manage_link('remove', $attrib['url'], $attrib['name']);
+					$this->manage_link('remove', $attrib['url'], $attrib['name']);
 					break;
 				}
 			}
@@ -717,14 +720,14 @@ class e107plugin
 					if(is_array($list['active']))
 					{
 						echo "Adding prefs ".print_a($list['active'], true)."<br />";
-						//	manage_prefs('add', $list['active']);
+						$this->manage_prefs('add', $list['active']);
 					}
 
 					//If upgrading, removing any inactive pref
 					if($function == 'upgrade' && is_array($list['inactive']))
 					{
 						echo "Removing prefs ".print_a($list['inactive'], true)."<br />";
-						//	manage_prefs('remove', $list['inactive']);
+						$this->manage_prefs('remove', $list['inactive']);
 					}
 					break;
 
@@ -733,7 +736,7 @@ class e107plugin
 					if(is_array($list['all']))
 					{
 						echo "Removing prefs ".print_a($list['all'], true)."<br />";
-						//	manage_prefs('remove', $list['all']);
+						$this->manage_prefs('remove', $list['all']);
 					}
 					break;
 				}
@@ -765,21 +768,21 @@ class e107plugin
 						if(!isset($attrib['active']) || $attrib['active'] == 'true')
 						{
 							echo "Adding userclass ".$attrib['name']."<br />";
-							//	manage_userclass('add', $attrib['name'], $attrib['description']);
+							$this->manage_userclass('add', $attrib['name'], $attrib['description']);
 						}
 
 						//If upgrading, removing any inactive userclass
 						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
 						{
 							echo "Removing userclass ".$attrib['name']."<br />";
-							//	manage_userclass('remove', $attrib['name'], $attrib['description']);
+							$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
 						}
 						break;
 
 						//If uninstalling, remove all userclasses (active or inactive)
 						case 'uninstall':
 						echo "Removing prefs ".$attrib['name']."<br />";
-						// manage_userclass('remove', $attrib['name'], $attrib['description']);
+						$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
 						break;
 					}
 				}
@@ -792,10 +795,10 @@ class e107plugin
 		// Let's call any custom post functions defined in <management> section
 		$this->execute_function($path, $function, 'post');
 
+
 		if($function == 'install' || $functon = 'upgrade')
 		{
 			$eplug_addons = $this->getAddons($plug_vars['folder']);
-
 			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['version']}' WHERE plugin_id = ".$id);
 			$pref['plug_installed'][$plug['plugin_path']] = $plug_vars['version'];
 			save_prefs();
@@ -827,13 +830,13 @@ class e107plugin
 					include_once($path.$attrib['file']);
 					if($attrib['type'] == 'fileFunction')
 					{
-						$result = call_user_func($attrib['function'], $plug_vars);
+						$result = call_user_func($attrib['function'], $this);
 						return $result;
 					}	
 					elseif($attrib['type'] == 'classFunction')
 					{
 						$_tmp = new $attrib['class'];
-						$result = call_user_func(array($_tmp, $attrib['function']), $plug_vars);
+						$result = call_user_func(array($_tmp, $attrib['function']), $this);
 						return $result;
 					}
 				}

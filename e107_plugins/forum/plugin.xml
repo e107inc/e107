@@ -39,7 +39,6 @@
 		<userclass name="forum_moderator" description="Moderator of all forums" />
 	</userclasses>
 	<management>
-		<install when="pre" type="classFunction" file="forum_management.php" class="forum_management" function="forum_install_pre" />
 		<install when="post" type="classFunction" file="forum_management.php" class="forum_management" function="forum_install_post" />
 		<uninstall type="classFunction" file="forum_management.php" class="forum_management" function="forum_uninstall" />
 		<upgrade type="classFunction" file="forum_management.php" class="forum_management" function="forum_upgrade"  />
