@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-09-22 17:41:20 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-02-02 22:41:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -55,12 +55,12 @@ $read_timeout = intval($pm_prefs['read_timeout']);
 $unread_timeout = intval($pm_prefs['unread_timeout']);
 if($read_timeout > 0)
 {
-	$timeout = time()-($read_timeout * 60);
+	$timeout = time()-($read_timeout * 86400);
 	$del_qry[] = "(pm_sent < {$timeout} AND pm_read > 0)";
 }
 if($unread_timeout > 0)
 {
-	$timeout = time()-($unread_timeout * 60);
+	$timeout = time()-($unread_timeout * 86400);
 	$del_qry[] = "(pm_sent < {$timeout} AND pm_read = 0)";
 }
 if(count($del_qry) > 0)
