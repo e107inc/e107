@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-08-02 20:41:30 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2008-02-03 15:22:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -148,10 +148,11 @@ class private_message
 	function del($pmid)
 	{
 		global $sql;
+		$pmid = (int)$pmid;
 		$ret = "";
 		$del_pm = FALSE;
 		$newvals = "";
-		if($sql->db_Select("private_msg", "*", "pm_id = ".intval($pmid)." AND (pm_from = ".USERID." OR pm_to = ".USERID.")"))
+		if($sql->db_Select("private_msg", "*", "pm_id = ".$pmid." AND (pm_from = ".USERID." OR pm_to = ".USERID.")"))
 		{
 			$row = $sql->db_Fetch();
 			if($row['pm_to'] == USERID)
@@ -168,7 +169,7 @@ class private_message
 				if($row['pm_read_del'] == 1) { $del_pm = TRUE; }
 			}
 
-			if(count($newvals) == 2 || $del_pm == TRUE)
+			if($del_pm == TRUE)
 			{
 				// Delete any attachments and remove PM from db
 				$attachments = explode(chr(0), $row['pm_attachments']);
@@ -177,11 +178,11 @@ class private_message
 					$filename = getcwd()."/attachments/{$a}";
 					unlink($filename);
 				}
-				$sql->db_Delete("private_msg", "pm_id = ".intval($pmid));
+				$sql->db_Delete("private_msg", "pm_id = ".$pmid);
 			}
 			else
 			{
-				$sql->db_Update("private_msg", $newvals." WHERE pm_id = ".intval($pmid));
+				$sql->db_Update("private_msg", $newvals." WHERE pm_id = ".$pmid);
 			}
 			return $ret;
 		}
