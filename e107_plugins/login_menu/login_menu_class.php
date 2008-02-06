@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-02-01 00:37:10 $
+|     $Revision: 1.3 $
+|     $Date: 2008-02-06 00:23:28 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -26,23 +26,31 @@ e_loginbox.php example:
 $LBOX_LINK = array();
 $LBOX_LINK['link_label']  = 'My link 1';
 $LBOX_LINK['link_url']    = e_PLUGIN_ABS.'myplug/me.php?1';
-//Additional information?
 $lbox_links[] = $LBOX_LINK;
 
-//Not implemented yet
+//Example stats
 $LBOX_STAT = array();
 $LBOX_STAT['stat_item']  = 'my item';
 $LBOX_STAT['stat_items']  = 'my items';
 $LBOX_STAT['stat_new']    = '1';
 $LBOX_STAT['stat_nonew']    = 'no my items';//or empty to omit
-//Additional information?
 $lbox_stats[] = $LBOX_STAT;
 */
 
 class login_menu_class
 {
-    function get_coreplugs() {
-        return array('forum', 'chatbox_menu');
+    function get_coreplugs($active=true) {
+        global $pref;
+        
+        $list = array('forum', 'chatbox_menu');
+        $ret = array();
+        
+        foreach ($list as $value) {
+            if(!$active || array_key_exists($value, $pref['plug_installed']))
+                $ret[] = $value;
+        }
+
+        return $ret;
     }
     
     function get_external_list($sort = true) {
@@ -87,7 +95,7 @@ class login_menu_class
         
         $ret = array();
         $lbox_admin = varsettrue($eplug_admin, false);
-        $coreplugs = login_menu_class::get_coreplugs();
+        $coreplugs = login_menu_class::get_coreplugs(); 
         
         $lprefs = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
         $sprefs = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
@@ -129,22 +137,6 @@ class login_menu_class
         
         return $ret;
     }
-    /*
-    function parse_coreplug_stats($get_stats=true) {
-        global $pref;
-        $lbox_stats = array();
-        
-        $coreplugs = login_menu_class::get_coreplugs();
-        foreach($coreplugs as $plug_id) {
-            if(array_key_exists($plug_id, $pref['plug_installed'])) {
-                if($tmp = call_user_func(array('login_menu_class', "get_{$plug_id}_stats"), $get_stats))
-                    $lbox_stats[$plug_id] = $tmp;
-            }
-        }
-        
-        return $lbox_stats;
-    }
-    */
     
     function get_forum_stats($get_stats=true) {
         global $sql, $pref;
@@ -249,8 +241,7 @@ class login_menu_class
         $ret = '';
         $lbox_infos = login_menu_class::parse_external_list(false);
         $lbox_infos = varsettrue($lbox_infos['stats'], array());
-        //$lbox_infos = array_merge(login_menu_class::parse_coreplug_list(false), $lbox_infos);
-        //print_a($lbox_infos);
+
         if(!$lbox_infos) return '';
 
         $enabled = varsettrue($menu_pref['login_menu']['external_stats']) ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
@@ -273,6 +264,28 @@ class login_menu_class
         
         if($ret) {
             $ret = '<tr><td colspan="2" class="fcaption">'.LOGIN_MENU_L47.'</td></tr>'.$ret;
+        }
+        
+        return $ret;
+    }
+    
+    function get_stats_total() {
+        global $menu_pref;
+        
+        $lbox_infos = login_menu_class::parse_external_list(true, false);
+        if(!varsettrue($lbox_infos['stats'])) 
+            return 0;
+            
+        $ret = 0;
+        $lbox_active_sorted = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
+        
+        foreach ($lbox_active_sorted as $stackid) { 
+            if(!varset($lbox_infos['stats'][$stackid])) 
+                continue;
+            foreach ($lbox_infos['stats'][$stackid] as $lbox_item) {
+                if($lbox_item['stat_new'])
+                    $ret += $lbox_item['stat_new'];
+            }
         }
         
         return $ret;
