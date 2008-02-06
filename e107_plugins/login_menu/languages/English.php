@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-02-01 00:37:10 $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-06 00:23:28 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -74,5 +74,6 @@ define('LOGIN_MENU_L45a', ''); //pre
 define('LOGIN_MENU_L45b', 'plugin'); //post
 define('LOGIN_MENU_L46', 'recent items -');
 define('LOGIN_MENU_L47', 'Login menu - Recent plugin additions');
+define('LOGIN_MENU_L48', 'Menu Config');
 
 ?>

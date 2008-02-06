@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-02-01 00:37:10 $
+|     $Revision: 1.8 $
+|     $Date: 2008-02-06 00:23:28 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -24,8 +24,8 @@ if(defined("FPW_ACTIVE"))
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
 
-global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM,
-       $login_menu_shortcodes, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK;
+global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR,
+       $login_menu_shortcodes, $LOGIN_MENU_FORM, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK;
 $ip = $e107->getip();
 
 //shortcodes
@@ -35,17 +35,20 @@ $ip = $e107->getip();
 	if(defined("BULLET"))
 	{
    		$bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />";
+   		$bullet_src = THEME_ABS."images/".BULLET;
 	}
 	elseif(file_exists(THEME."images/bullet2.gif"))
 	{
 		$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />";
+		$bullet_src = THEME_ABS."images/bullet2.gif";
 	}
 	else
 	{
 		$bullet = "";
+		$bullet_src = "";
 	}
 
-//Corrup cookie
+//Corrup cookie - template? - TODO
     if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
     {
     	$text = "<div class='core-sysmsg loginbox'>".LOGIN_MENU_L7."<br /><br />
@@ -70,7 +73,7 @@ if (USER == TRUE || ADMIN == TRUE)
 {
     require_once(e_PLUGIN."login_menu/login_menu_class.php");
 
-    //login class ??? - REMOVE IT
+    //login class ??? - TODO
 	if ($sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
 	{	// User now logged in - delete 'guest' record (tough if several users on same IP)
 		$sql->db_Delete('online', "`online_ip` = '{$ip}' AND `online_user_id` = '0' ");
@@ -109,35 +112,6 @@ if (USER == TRUE || ADMIN == TRUE)
 			$menu_data['new_comments'] = $sql->db_Count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
 			$new_total += $menu_data['new_comments'];
 		}
-		
-/*
-		// ------------ Chatbox Stats -----------
-
-		if (varsettrue($menu_pref['login_menu']['new_chatbox']) && in_array('chatbox_menu',$eMenuActive)) 
-        {
-            $menu_data['new_chat'] = $sql->db_Count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.$time);
-			$new_total += $menu_data['new_chat'];
-		}
-
-		// ------------ Forum Stats -----------
-
-		if (varsettrue($menu_pref['login_menu']['new_forum']) && array_key_exists('forum', $pref['plug_installed'])) 
-        {
-			$qry = "
-			SELECT  count(*) as count FROM #forum_t  as t
-			LEFT JOIN #forum as f
-			ON t.thread_forum_id = f.forum_id
-			WHERE t.thread_datestamp > {$time} and f.forum_class IN (".USERCLASS_LIST.")
-			";
-			
-			if($sql->db_Select_gen($qry))
-			{
-				$row = $sql->db_Fetch();
-				$menu_data['new_forum'] = $row['count'];
-				$new_total += $menu_data['new_forum'];
-			}
-		}
-*/
 
 		// ------------ Member Stats -----------
 
@@ -149,14 +123,15 @@ if (USER == TRUE || ADMIN == TRUE)
 		
 		// ------------ Enable stats / other ---------------
 		
-		$menu_data['enable_stats'] = $menu_data ? true : false;
-		$menu_data['new_total'] = $new_total;
+		$menu_data['enable_stats'] = $menu_data || $menu_pref['login_menu']['external_stats'] ? true : false;
+		$menu_data['new_total'] = $new_total + login_menu_class::get_stats_total();
 		$menu_data['link_bullet'] = $bullet;
+		$menu_data['link_bullet_src'] = $bullet_src;
 		
 		// ------------ List New Link ---------------
 		
 		$menu_data['listnew_link'] = '';
-		if ($new_total && array_key_exists('list_new', $pref['plug_installed'])) 
+		if ($menu_data['new_total'] && array_key_exists('list_new', $pref['plug_installed'])) 
         {
             $menu_data['listnew_link'] = e_PLUGIN.'list_new/list.php?new';
 		}
@@ -173,7 +148,7 @@ if (USER == TRUE || ADMIN == TRUE)
 	}
 	
 	//render
-	$ns->tablerender($caption, $text, 'login');
+	$ns->tablerender($caption, $text, 'loginbox');
 
 // END LOGGED CODE	
 } 
@@ -191,22 +166,10 @@ else
 	if(!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE){
     	require(e_PLUGIN."login_menu/login_menu_template.php");
 	}
-    
-    
-	//if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE)
-	//{
-        /*
-		if (LOGINMESSAGE != '') {
-			$text = $tp->parseTemplate($LOGIN_MENU_MESSAGE, true, $login_menu_shortcodes);
-		}*/
 
-		$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
-		$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
-		$text .= '</form>';
-	//} else {
-	//	$text = $tp->parseTemplate("<div style='padding-top: 150px'>{LM_FPW_LINK}</div>", true, $login_menu_shortcodes);
-	//}
-
+	$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
+	$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
+	$text .= '</form>';
 
 	if (file_exists(THEME.'images/login_menu.png')) {
 		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;

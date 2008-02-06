@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-02-01 00:37:10 $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-06 00:23:28 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -61,8 +61,7 @@ if ($_POST['update_menu']) {
         $_POST['pref']['external_stats'] = '';
     }
     //show/hide stats - End
-    
-	print_a($_POST);
+
 	unset($menu_pref['login_menu']);
 	$menu_pref['login_menu'] = $_POST['pref'];
 	$tmp = addslashes(serialize($menu_pref));

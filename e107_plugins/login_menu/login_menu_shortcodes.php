@@ -11,47 +11,65 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-02-01 00:37:10 $
+|     $Revision: 1.5 $
+|     $Date: 2008-02-06 00:23:28 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 global $tp;
 $login_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-
 /*
 SC_BEGIN LM_USERNAME_INPUT
-return "<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n";
+return "<input class='tbox login user' type='text' name='username' id='username' size='15' value='' maxlength='30' />\n";
 SC_END
 
 SC_BEGIN LM_PASSWORD_INPUT
-return "<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n";
+return "<input class='tbox login pass' type='password' name='userpass' id='userpass' size='15' value='' maxlength='20' />\n\n";
 SC_END
 
 SC_BEGIN LM_IMAGECODE
 global $use_imagecode, $sec_img;
-if($use_imagecode)
-{
-	return '<input type="hidden" name="rand_num" value="'.$sec_img->random_number.'" />
-		'.$sec_img->r_image().'
-		<br /><input class="tbox login verify" type="text" name="code_verify" size="15" maxlength="20" /><br />';
+//DEPRECATED - use LM_IMAGECODE_NUMBER, LM_IMAGECODE_BOX instead
+if($use_imagecode) {
+    return '<input type="hidden" name="rand_num" id="rand_num" value="'.$sec_img->random_number.'" />
+    		'.$sec_img->r_image().'
+    		<br /><input class="tbox login verify" type="text" name="code_verify" id="code_verify" size="15" maxlength="20" /><br />'; 
 }
+return '';
+SC_END
+
+SC_BEGIN LM_IMAGECODE_NUMBER
+global $use_imagecode, $sec_img;
+if($use_imagecode) {
+    return '<input type="hidden" name="rand_num" id="rand_num" value="'.$sec_img->random_number.'" />
+        '.$sec_img->r_image(); 
+}
+return '';
+SC_END
+
+SC_BEGIN LM_IMAGECODE_BOX
+global $use_imagecode, $sec_img;
+if($use_imagecode) {
+    return '<input class="tbox login verify" type="text" name="code_verify" id="code_verify" size="15" maxlength="20" />'; 
+}
+return '';
 SC_END
 
 SC_BEGIN LM_LOGINBUTTON
-return "<input class='button' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />";
+return "<input class='button login' type='submit' name='userlogin' id='userlogin' value='".LOGIN_MENU_L28."' />";
 SC_END
 
 SC_BEGIN LM_REMEMBERME
 global $pref;
 if($parm == "hidden"){
-	return "<input type='hidden' name='autologin' value='1' />";
+	return "<input type='hidden' name='autologin' id='autologin' value='1' />";
 }
 if($pref['user_tracking'] != "session")
 {
-	return "<input type='checkbox' name='autologin' value='1' checked='checked' />".LOGIN_MENU_L6;
+	return "<input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "<label for='autologin'>".LOGIN_MENU_L6."</label>");
 }
+return '';
 SC_END
 
 SC_BEGIN LM_SIGNUP_LINK
@@ -60,19 +78,19 @@ if ($pref['user_reg'])
 {
 	if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 	{
-		return "<a class='login_menu_link signup' href='".e_SIGNUP."' title=\"".LOGIN_MENU_L3."\">".LOGIN_MENU_L3."</a>";
+		return $parm == 'href' ? e_SIGNUP : "<a class='login_menu_link signup' id='login_menu_link_signup' href='".e_SIGNUP."' title=\"".LOGIN_MENU_L3."\">".LOGIN_MENU_L3."</a>";
 	}
 }
-return "";
+return '';
 SC_END
 
 SC_BEGIN LM_FPW_LINK
 global $pref;
 if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 {
-	return "<a class='login_menu_link fpw' href='".e_BASE."fpw.php' title=\"".LOGIN_MENU_L4."\">".LOGIN_MENU_L4."</a>";
+	return $parm == 'href' ? SITEURL.'fpw.php' : "<a class='login_menu_link fpw' id='login_menu_link_fpw' href='".SITEURL."fpw.php' title=\"".LOGIN_MENU_L4."\">".LOGIN_MENU_L4."</a>";
 }
-return "";
+return '';
 SC_END
 
 SC_BEGIN LM_RESEND_LINK
@@ -82,76 +100,87 @@ if ($pref['user_reg'])
 	if(isset($pref['user_reg_veri']) && $pref['user_reg_veri'] == 1){
 		if (!$pref['auth_method'] || $pref['auth_method'] == 'e107' )
 		{
-			return "<a class='login_menu_link resend' href='".e_SIGNUP."?resend' title=\"".LOGIN_MENU_L40."\">".LOGIN_MENU_L40."</a>";
+			return $parm == 'href' ? e_SIGNUP.'?resend' : "<a class='login_menu_link resend' id=login_menu_link_resend' href='".e_SIGNUP."?resend' title=\"".LOGIN_MENU_L40."\">".LOGIN_MENU_L40."</a>";
 		}
 	}
 }
-return "";
+return '';
 SC_END
 
 SC_BEGIN LM_MAINTENANCE
 global $pref;
 if(ADMIN == TRUE){
-	return ($pref['maintainance_flag'] == 1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
+	return ($pref['maintainance_flag'] == 1 ? LOGIN_MENU_L10 : '' );
 }
+return '';
 SC_END
 
 SC_BEGIN LM_ADMINLINK_BULLET
 $data = getcachedvars('login_menu_data'); 
-if(ADMIN==TRUE && $data['link_bullet'] != 'bullet'){
-	return $data['link_bullet'];
+if(ADMIN==TRUE){
+	return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
 }
+return '';
 SC_END
 
 SC_BEGIN LM_ADMINLINK
-global $ADMIN_DIRECTORY, $eplug_admin;
-
-//die(e_PAGE);
-
 if(ADMIN == TRUE) {
-		if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || $eplug_admin == true || substr(e_PAGE, 0, 6) == 'admin_')
-		{
-			return '<a class="login_menu_link" href="'.e_BASE.'index.php">'.LOGIN_MENU_L39.'</a>';
-		}
-		else
-		{
-			return '<a class="login_menu_link" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a>';
-		}
+	return $parm == 'href' ? e_ADMIN_ABS.'admin.php' : '<a class="login_menu_link admin" id="login_menu_link_admin" href="'.e_ADMIN_ABS.'admin.php">'.LOGIN_MENU_L11.'</a>';
 }
+return '';
 SC_END
 
-
+SC_BEGIN LM_ADMIN_CONFIGURE
+if(ADMIN == TRUE) {
+	return $parm == 'href' ? e_PLUGIN.'login_menu/config.php' : '<a class="login_menu_link config" id="login_menu_link_config" href="'.e_PLUGIN.'login_menu/config.php">'.LOGIN_MENU_L48.'</a>';
+}
+return '';
+SC_END
 
 SC_BEGIN LM_BULLET
 $data = getcachedvars('login_menu_data'); 
-return $data['link_bullet'];
+return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
 SC_END
 
 SC_BEGIN LM_USERSETTINGS
 $text = ($parm) ? $parm : LOGIN_MENU_L12;
-return '<a class="login_menu_link" href="'.e_HTTP.'usersettings.php">'.$text.'</a>';
+return '<a class="login_menu_link usersettings" id="login_menu_link_usersettings" href="'.e_HTTP.'usersettings.php">'.$text.'</a>';
+SC_END
+
+SC_BEGIN LM_USERSETTINGS_HREF
+return e_HTTP.'usersettings.php';
 SC_END
 
 SC_BEGIN LM_PROFILE
 $text = ($parm) ? $parm : LOGIN_MENU_L13;
-return '<a class="login_menu_link" href="'.e_HTTP.'user.php?id.'.USERID.'">'.$text.'</a>';
+return '<a class="login_menu_link profile" id="login_menu_link_profile" href="'.e_HTTP.'user.php?id.'.USERID.'">'.$text.'</a>';
+SC_END
+
+SC_BEGIN LM_PROFILE_HREF
+return e_HTTP.'user.php?id.'.USERID;
 SC_END
 
 SC_BEGIN LM_LOGOUT
 $text = ($parm) ? $parm : LOGIN_MENU_L8;
-return '<a class="login_menu_link" href="'.e_HTTP.'index.php?logout">'.$text.'</a>';
+return '<a class="login_menu_link logout" id="login_menu_link_logout" href="'.e_HTTP.'index.php?logout">'.$text.'</a>';
+SC_END
+
+SC_BEGIN LM_LOGOUT_HREF
+return e_HTTP.'index.php?logout';
 SC_END
 
 SC_BEGIN LM_EXTERNAL_LINKS
 global $tp, $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
 if(!varsettrue($menu_pref['login_menu']['external_links'])) return '';
 $lbox_infos = login_menu_class::parse_external_list(true, false); 
+$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
 if(!varsettrue($lbox_infos['links'])) return '';
 $ret = '';
-foreach ($lbox_infos['links'] as $id => $items) {
-$lbox_items = login_menu_class::clean_links($items);
-if(!$lbox_items) continue;
-    foreach ($lbox_items as $lbox_item) {
+foreach ($lbox_active as $stackid) {
+    $lbox_items = login_menu_class::clean_links(varset($lbox_infos['links'][$stackid]));
+    if(!$lbox_items) continue;
+    foreach ($lbox_items as $num=>$lbox_item) {
+        $lbox_item['link_id'] = $stackid.'_'.$num;
     	cachevars('login_menu_linkdata', $lbox_item);
     	$ret .= $tp -> parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $login_menu_shortcodes);
     }
@@ -161,7 +190,7 @@ SC_END
 
 SC_BEGIN LM_EXTERNAL_LINK
 $lbox_item = getcachedvars('login_menu_linkdata');
-return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'">'.varsettrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
+return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'" class="login_menu_link external" id="login_menu_link_external_'.$lbox_item['link_id'].'">'.varsettrue($lbox_item['link_label'], '['.LOGIN_MENU_L44.']').'</a>';
 SC_END
 
 SC_BEGIN LM_EXTERNAL_LINK_LABEL
@@ -177,66 +206,79 @@ return $tp -> parseTemplate($LOGIN_MENU_STATS, true, $login_menu_shortcodes);
 SC_END
 
 SC_BEGIN LM_NEW_NEWS
+global $LOGIN_MENU_STATITEM, $tp;
 $data = getcachedvars('login_menu_data'); 
 if(!isset($data['new_news'])) return ''; 
-if(!$data['new_news'])
-    return LOGIN_MENU_L26.' '.LOGIN_MENU_L15;
-return $data['new_news'].' '.($data['new_news'] == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15);
+$tmp = array();
+if($data['new_news']){
+	$tmp['LM_STAT_NEW'] = "return '".$data['new_news']."';";
+	$tmp['LM_STAT_LABEL'] = $data['new_news'] == 1 ? "return '".LOGIN_MENU_L14."';" : "return '".LOGIN_MENU_L15."';";
+	$tmp['LM_STAT_EMPTY'] = '';
+} else {
+	$tmp['LM_STAT_NEW'] = '';
+	$tmp['LM_STAT_LABEL'] = '';
+	$tmp['LM_STAT_EMPTY'] = "return '".LOGIN_MENU_L26." ".LOGIN_MENU_L15."';";
+}
+return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 SC_END
 
 SC_BEGIN LM_NEW_COMMENTS
+global $LOGIN_MENU_STATITEM, $tp;
 $data = getcachedvars('login_menu_data');
 if(!isset($data['new_comments'])) return '';
-if(!$data['new_comments'])
-    return LOGIN_MENU_L26.' '.LOGIN_MENU_L19;
-return $data['new_comments'].' '.($data['new_comments'] == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19);
-SC_END
-
-SC_BEGIN LM_NEW_CHAT
-$data = getcachedvars('login_menu_data');
-if(!isset($data['new_chat'])) return '';
-if(!$data['new_chat'])
-    return LOGIN_MENU_L26.' '.LOGIN_MENU_L17;
-return $data['new_chat'].' '.($data['new_chat'] == 1 ? LOGIN_MENU_L16 : LOGIN_MENU_L17);
-SC_END
-
-SC_BEGIN LM_NEW_FORUM
-$data = getcachedvars('login_menu_data');
-if(!isset($data['new_forum'])) return '';
-if(!$data['new_forum'])
-    return LOGIN_MENU_L26.' '.LOGIN_MENU_L21;
-return $data['new_forum'].' '.($data['new_forum'] == 1 ? LOGIN_MENU_L20 : LOGIN_MENU_L17);
+$tmp = array();
+if($data['new_comments']){
+	$tmp['LM_STAT_NEW'] = "return '".$data['new_comments']."';";
+	$tmp['LM_STAT_LABEL'] = $data['new_comments'] == 1 ? "return '".LOGIN_MENU_L18."';" : "return '".LOGIN_MENU_L19."';";
+	$tmp['LM_STAT_EMPTY'] = '';
+} else {
+	$tmp['LM_STAT_NEW'] = '';
+	$tmp['LM_STAT_LABEL'] = '';
+	$tmp['LM_STAT_EMPTY'] = "return '".LOGIN_MENU_L26." ".LOGIN_MENU_L19."';";
+}
+return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 SC_END
 
 SC_BEGIN LM_NEW_USERS
+global $LOGIN_MENU_STATITEM, $tp;
 $data = getcachedvars('login_menu_data');
 if(!isset($data['new_users'])) return '';
-if(!$data['new_users'])
-    return LOGIN_MENU_L26.' '.LOGIN_MENU_L23;
-return $data['new_users'].' '.($data['new_users'] == 1 ? LOGIN_MENU_L22 : LOGIN_MENU_L23);
+$tmp = array();
+if($data['new_users']){
+	$tmp['LM_STAT_NEW'] = "return '".$data['new_users']."';";
+	$tmp['LM_STAT_LABEL'] = $data['new_users'] == 1 ? "return '".LOGIN_MENU_L22."';" : "return '".LOGIN_MENU_L23."';";
+	$tmp['LM_STAT_EMPTY'] = '';
+} else {
+	$tmp['LM_STAT_NEW'] = '';
+	$tmp['LM_STAT_LABEL'] = '';
+	$tmp['LM_STAT_EMPTY'] = "return '".LOGIN_MENU_L26." ".LOGIN_MENU_L23."';";
+}
+return $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 SC_END
 
 SC_BEGIN LM_PLUGIN_STATS
-global $tp, $menu_pref, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR;
+global $tp, $menu_pref, $new_total, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR;
 if(!varsettrue($menu_pref['login_menu']['external_stats'])) return ''; 
 $lbox_infos = login_menu_class::parse_external_list(true, false);
 if(!varsettrue($lbox_infos['stats'])) return '';
+$lbox_active_sorted = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
 $ret = array(); 
 $sep = varset($LM_STATITEM_SEPARATOR, '<br />');
-foreach ($lbox_infos['stats'] as $id => $items) { 
-    foreach ($items as $lbox_item) {
+foreach ($lbox_active_sorted as $stackid) { 
+    if(!varset($lbox_infos['stats'][$stackid])) continue;
+    foreach ($lbox_infos['stats'][$stackid] as $lbox_item) {
     	$tmp = array();
-    	if($lbox_item["stat_new"]){ 
+    	if($lbox_item['stat_new']){ 
         	$tmp['LM_STAT_NEW'] = "return '{$lbox_item['stat_new']}';";
         	$tmp['LM_STAT_LABEL'] = $lbox_item["stat_new"] == 1 ? "return '{$lbox_item['stat_item']}';" : "return '{$lbox_item['stat_items']}';";
         	$tmp['LM_STAT_EMPTY'] = '';
+        	$new_total += $lbox_item['stat_new'];
     	} else {
     	    //if(empty($lbox_item['stat_nonew'])) continue;
         	$tmp['LM_STAT_NEW'] = '';
         	$tmp['LM_STAT_LABEL'] = '';
         	$tmp['LM_STAT_EMPTY'] = "return '{$lbox_item['stat_nonew']}';";
         }
-        //print_a($lbox_infos['stats']);
     	$ret[] = $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
     }
 }
@@ -246,7 +288,7 @@ SC_END
 SC_BEGIN LM_LISTNEW_LINK
 $data = getcachedvars('login_menu_data');
 if($parm == 'href') return $data['listnew_link'];
-return $data['listnew_link'] ? '<a href="'.$data['listnew_link'].'">'.LOGIN_MENU_L24.'</a>' : '';
+return $data['listnew_link'] ? '<a href="'.$data['listnew_link'].'" class="login_menu_link listnew" id="login_menu_link_listnew">'.LOGIN_MENU_L24.'</a>' : '';
 SC_END
 
 SC_BEGIN LM_MESSAGE
