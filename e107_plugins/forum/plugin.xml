@@ -13,7 +13,7 @@
 	<administration>
 		<configFile>forum_admin.php</configFile>
 		<icon>images/forums_32.png</icon>
-		<iconSmall>images/images/forums_16.png</iconSmall>
+		<iconSmall>images/forums_16.png</iconSmall>
 		<caption>Configure Forum</caption>
 		<installDone>Your forum is now installed</installDone>
 	</administration>
