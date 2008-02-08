@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-02-01 18:09:53 $
+|     $Revision: 1.2 $
+|     $Date: 2008-02-08 20:09:43 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ class e_tohtml_linkwords
 	var $area_opts = array();		// Process flags for the various contexts
 	var $block_list = array();		// Array of 'blocked' pages
 	
-	function tohtml()
+	function to_html()
 	{
 	  global $pref;
 		/* constructor */
