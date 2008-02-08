@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2008-02-07 22:20:02 $
-|     $Author: e107steved $
+|     $Revision: 1.29 $
+|     $Date: 2008-02-08 20:05:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -794,7 +794,7 @@ class e107plugin
 		$txt .= $this->execute_function($path, $function, 'post');
 
 
-		if($function == 'install' || $function = 'upgrade')
+		if($function == 'install' || $function == 'upgrade')
 		{
 			$eplug_addons = $this->getAddons($plug_vars['folder']);
 			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['version']}' WHERE plugin_id = ".$id);
