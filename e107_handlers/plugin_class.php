@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2008-02-13 00:56:00 $
+|     $Revision: 1.33 $
+|     $Date: 2008-02-13 02:58:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -592,7 +592,9 @@ class e107plugin
 		$this->current_plug = $plug;
 		$txt = '';
 		$path = e_PLUGIN.$plug['plugin_path'].'/';
-
+		
+		$_folder = strtolower(preg_replace("#![a-zA-Z0-9]#", '', $plug['plugin_path']));
+		
 		//We'll just install using plugin.php file for now.
 		//return $this->install_plugin_php($path);
 
@@ -639,6 +641,7 @@ class e107plugin
 					{
 						preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
 						$tablename = trim($match[1]);
+						$tablename = str_replace("[folder]", $_folder, $tablename);
 
 						if($function == 'uninstall' && isset($_POST['delete_tables']) && $_POST['delete_tables'])
 						{
@@ -648,6 +651,7 @@ class e107plugin
 						if($function == 'install')
 						{
 							$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $sql_table);
+							$sql_table = str_replace("[folder]", $_folder, $sql_table);
 							$txt .= "Adding table: {$tablename} ... ";
 							$result = $this->manage_tables('add', array($sql_table));
 							$txt .= ($result ? "Success" : "Failed!")."<br />";

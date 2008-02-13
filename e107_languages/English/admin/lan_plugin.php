@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-07 13:38:34 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-13 02:58:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -84,6 +84,7 @@ define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
 // define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
 define("EPL_ADLAN_62", "Cancel uninstall");
 define("EPL_ADLAN_63", "Uninstall:");
+define("EPL_ADLAN_64", "Folder:");
 
 define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
 define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
