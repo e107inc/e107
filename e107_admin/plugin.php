@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-02-02 22:04:18 $
+|     $Revision: 1.13 $
+|     $Date: 2008-02-13 02:58:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -483,7 +483,7 @@ function render_plugs($pluginList)
 			if ($plug_vars['administration']['configFile'] && $plug['plugin_installflag'] == true)
 			{
 				$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['name'], "", "defs,emotes_off, no_make_clickable");
-				$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$plug_vars['folder'].'/'.$plug_vars['administration']['configFile']."' >".$plugin_icon.'</a>';
+				$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile']."' >".$plugin_icon.'</a>';
 			}
 
 			$text .= "
@@ -492,10 +492,11 @@ function render_plugs($pluginList)
 			<table style='width:100%'><tr><td style='text-align:left;width:40px;vertical-align:top'>
 			".$plugin_icon."
 			</td><td>
-			$img <b>".$tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable")."</b><br />".EPL_ADLAN_11." {$plug['plugin_version']}
-			<br />";
-
-			$text .="</td>
+			$img <b>".$tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable")."</b><br /><b>".EPL_ADLAN_11."</b>&nbsp;{$plug['plugin_version']}
+			<br /><br />
+			<b>".EPL_ADLAN_64."</b>&nbsp;".$plug['plugin_path']."
+			<br />
+			</td>
 			</tr></table>
 			</td>
 			<td class='forumheader3' style='vertical-align:top'>
@@ -509,7 +510,7 @@ function render_plugs($pluginList)
 			<tr><td style='vertical-align:top'><b>".EPL_ADLAN_14."</b>:</td><td style='vertical-align:top'> {$plug_vars['description']}&nbsp;";
 			if ($plug_vars['readme'])
 			{
-				$text .= "[ <a href='".e_PLUGIN.$plug_vars['folder']."/".$plug_vars['readme']."'>".$plug_vars['readme']."</a> ]";
+				$text .= "[ <a href='".e_PLUGIN.$plug['plugin_path']."/".$plug_vars['readme']."'>".$plug_vars['readme']."</a> ]";
 			}
 
 			$text .="</td></tr>
