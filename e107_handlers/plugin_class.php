@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2008-02-08 20:05:43 $
+|     $Revision: 1.30 $
+|     $Date: 2008-02-13 00:46:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -100,14 +100,17 @@ class e107plugin
 		require_once(e_HANDLER.'file_class.php');
 
 		$fl = new e_file;
-		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.php$", "standard", 1);
+		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
 		$sp = FALSE;
+
+		print_a($pluginList);
+//		exit;
 
 		// Read all the plugin DB info into an array to save lots of accesses
 		$pluginDBList = array();
 		if ($sql->db_Select('plugin',"*"))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$pluginDBList[$row['plugin_path']] = $row;
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
@@ -115,44 +118,32 @@ class e107plugin
 			}
 		}
 
-		// Get rid of any variables previously defined which may occur in plugin.php
 		foreach($pluginList as $p)
 		{
-			$defined_vars = array_keys(get_defined_vars());
-			foreach($defined_vars as $varname)
-			{
-				if ((substr($varname, 0, 6) == 'eplug_') || (substr($varname, 0, 8) == 'upgrade_'))
-				{
-					unset($$varname);
-				}
-			}
-
-			// We have to include here to set the variables, otherwise we only get uninstalled plugins
-			// Would be nice to eval() the file contents to pick up errors better, but too many path issues
 			$plug['plug_action'] = 'scan';			// Make sure plugin.php knows what we're up to
-			include("{$p['path']}{$p['fname']}");
+			if(!$this->parse_plugin($p['path']))
+			{
+				//parsing of plugin.php/plugin.xml failed.
+				break;
+			}
+			$plug_info = $this->plug_vars;
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 
 			// scan for addons.
 			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
 			//		  $eplug_addons = $this->getAddons($plugin_path,'check');		// Checks opening/closing tags on addon files
 
-			// See whether the plugin needs installation - it does if one or more variables defined
-			$no_install_needed = 1;
-			foreach ($this->all_eplug_install_variables as $check_var)
+			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml, unless
+			//anyDir is set to true.
+			if ($plugin_path == $plug_info['folder'] || (isset($plug_info['anyDir']) && $plug_info['anyDir'] == 'true'))
 			{
-				if (isset($$check_var) && ($$check_var)) { $no_install_needed = 0; }
-			}
-
-			if ($plugin_path == $eplug_folder)
-			{
-				if(array_key_exists($plugin_path,$pluginDBList))
+				if(array_key_exists($plugin_path, $pluginDBList))
 				{  // Update the addons needed by the plugin
 					$pluginDBList[$plugin_path]['status'] = 'exists';
 					// If plugin not installed, and version number of files changed, update version as well
-					if (($pluginDBList[$plugin_path]['plugin_installflag'] == 0) && ($pluginDBList[$plugin_path]['plugin_version'] != $eplug_version))
+					if (($pluginDBList[$plugin_path]['plugin_installflag'] == 0) && ($pluginDBList[$plugin_path]['plugin_version'] != $plug_info['version']))
 					{  // Update stored version
-						$pluginDBList[$plugin_path]['plugin_version'] = $eplug_version;
+						$pluginDBList[$plugin_path]['plugin_version'] = $plug_info['version'];
 						$pluginDBList[$plugin_path]['status'] = 'update';
 					}
 					if ($pluginDBList[$plugin_path]['plugin_addons'] != $eplug_addons)
@@ -182,11 +173,12 @@ class e107plugin
 				}
 				else
 				{  // New plugin - not in table yet, so add it. If no install needed, mark it as 'installed'
-					if ($eplug_name)
+					if ($plug_info['name'])
 					{
-						// Can just add to DB - shouldn''t matter that its not in our current table
+						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
-						$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', {$no_install_needed}, '{$eplug_addons}' ");
+						$_installed = ($plug_info['installRequired'] == 'true' || $plug_info['installRequired'] == 1 ? 0 : 1 );
+						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['name'], true)."', '".$tp -> toDB($plug_info['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}' ");
 					}
 				}
 			}
@@ -199,6 +191,7 @@ class e107plugin
 		// Now scan the table, updating the DB where needed
 		foreach ($pluginDBList as $plug_path => $plug_info)
 		{
+			print_a($plug_info);
 			if ($plug_info['status'] == 'read')
 			{	// In table, not on server - delete it
 				$sql->db_Delete('plugin', "`plugin_id`={$plug_info['plugin_id']}");
@@ -215,7 +208,7 @@ class e107plugin
 				//			echo "Updated: ".$plug_path."<br />";
 			}
 		}
-		if ($sp)  save_prefs();
+		if ($sp) { save_prefs(); }
 	}
 
 
