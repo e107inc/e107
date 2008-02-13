@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2008-02-13 00:47:36 $
+|     $Revision: 1.32 $
+|     $Date: 2008-02-13 00:56:00 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ class e107plugin
 
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml, unless
 			//anyDir is set to true.
-			if ($plugin_path == $plug_info['folder'] || (isset($plug_info['anyDir']) && $plug_info['anyDir'] == 'true'))
+			if ($plugin_path == $plug_info['folder'] || $plug_info['folder'] == '*anyDir*')
 			{
 				if(array_key_exists($plugin_path, $pluginDBList))
 				{  // Update the addons needed by the plugin
