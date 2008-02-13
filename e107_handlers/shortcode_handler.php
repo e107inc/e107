@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.9 $
-| $Date: 2007-11-30 22:23:10 $
-| $Author: e107steved $
+| $Revision: 1.10 $
+| $Date: 2008-02-13 02:57:17 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,11 +29,12 @@ function register_shortcode($code, $filename, $function, $force=false)
 	}
 }
 
-class e_shortcode {
+class e_shortcode
+{
 	var $scList;					// The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
-	var $parseSCFiles;				// True if shortcode file has been parsed
+	var $parseSCFiles;			// True if shortcode file has been parsed
 	var $addedCodes;				// Apparently not used
-	var $registered_codes;			// Shortcodes added by plugins
+	var $registered_codes;		// Shortcodes added by plugins
 
 	function e_shortcode()
 	{
@@ -42,7 +43,7 @@ class e_shortcode {
 		$this->shortcode_functions = array();
 		if(varset($pref['shortcode_list'],'') != '')
 		{
-        	foreach($pref['shortcode_list'] as $path=>$namearray)
+			foreach($pref['shortcode_list'] as $path=>$namearray)
 			{
 				foreach($namearray as $code=>$uclass)
 				{
@@ -54,8 +55,8 @@ class e_shortcode {
 					{
 						$code = strtoupper($code);
 						$this->registered_codes[$code]['type'] = 'plugin';
-                	$this->registered_codes[$code]['path'] = $path;
-                    $this->registered_codes[$code]['perms'] = $uclass;			// Add this in
+						$this->registered_codes[$code]['path'] = $path;
+						$this->registered_codes[$code]['perms'] = $uclass;			// Add this in
 					}
 				}
 			}
@@ -71,22 +72,17 @@ class e_shortcode {
 	}
 
 
-	function parseCodes($text, $useSCFiles = TRUE, $extraCodes = '') {
+	function parseCodes($text, $useSCFiles = true, $extraCodes = '')
+	{
 		$this->parseSCFiles = $useSCFiles;
-		$ret = '';
-		if (is_array($extraCodes)) {
-			foreach($extraCodes as $sc => $code) {
+		if(is_array($extraCodes))
+		{
+			foreach($extraCodes as $sc => $code)
+			{
 				$this->scList[$sc] = $code;
 			}
 		}
-		$tmp = explode("\n", $text);
-		foreach($tmp as $line) {
-			if (preg_match("/{.+?}/", $line, $match)) {
-				$ret .= preg_replace_callback("#\{(\S[^\x02]*?\S)\}#", array($this, 'doCode'), $line);
-			} else {
-				$ret .= $line;
-			}
-		}
+		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		return $ret;
 	}
 
@@ -139,7 +135,6 @@ class e_shortcode {
 		}
 		else
 		{
-
 			if (is_array($this->scList) && array_key_exists($code, $this->scList))
 			{
 				$shortcode = $this->scList[$code];
@@ -153,7 +148,7 @@ class e_shortcode {
 					{
 						if($this->registered_codes[$code]['type'] == 'plugin')
 						{
-						    if (isset($this->registered_codes[$code]['perms'])) $sc_perms = $this->registered_codes[$code]['perms'];
+							if (isset($this->registered_codes[$code]['perms'])) $sc_perms = $this->registered_codes[$code]['perms'];
 							$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
 						}
 						else
@@ -163,45 +158,45 @@ class e_shortcode {
 					}
 					else
 					{
-							$scFile = e_FILE."shortcode/".strtolower($code).".sc";
+						$scFile = e_FILE."shortcode/".strtolower($code).".sc";
 					}
 					if (!check_class($sc_perms))
 					{	// Mainly to pick up e_UC_NOBODY
-					  $shortcode = 'return;';
-					  $this->scList[$code] = 'return;';
+						$shortcode = 'return;';
+						$this->scList[$code] = 'return;';
 					}
-					elseif (file_exists($scFile)) 
+					elseif (file_exists($scFile))
 					{
 						$shortcode = file_get_contents($scFile);
 						$this->scList[$code] = $shortcode;
 					}
 				}
 			}
-	
+
 			if (!isset($shortcode))
 			{
-			  	if(E107_DBG_BBSC) trigger_error("shortcode not found:{".$code."}", E_USER_ERROR);
-			  	return $matches[0];
+				if(E107_DBG_BBSC) trigger_error("shortcode not found:{".$code."}", E_USER_ERROR);
+				return $matches[0];
 			}
 
-      	if(E107_DBG_SC)
+			if(E107_DBG_SC)
 			{
-		  	echo ($scFile) ? "<br />sc_file= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />" : "";
-			echo "<br />sc= <b>$code</b>";
-		}
+				echo ($scFile) ? "<br />sc_file= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />" : "";
+				echo "<br />sc= <b>$code</b>";
+			}
 
 			if(E107_DBG_BBSC)
 			{
-		  	trigger_error("starting shortcode {".$code."}", E_USER_ERROR);
+				trigger_error("starting shortcode {".$code."}", E_USER_ERROR);
 			}
 			$ret = eval($shortcode);
 		}
 
 		if($ret != '' || is_numeric($ret))
 		{
-
 			//if $sc_mode exists, we need it to parse $sc_style
-			if($sc_mode){
+			if($sc_mode)
+			{
 				$code = $code."|".$sc_mode;
 			}
 			if(isset($sc_style) && is_array($sc_style) && array_key_exists($code,$sc_style))
@@ -216,7 +211,8 @@ class e_shortcode {
 				}
 			}
 		}
-		if (E107_DBG_SC) {
+		if (E107_DBG_SC)
+		{
 			$sql->db_Mark_Time("(SC $code Done)");
 		}
 		return $ret;
@@ -229,7 +225,7 @@ class e_shortcode {
 		if($type == 'file')
 		{
 			$batch_cachefile = "nomd5_scbatch_".md5($fname);
-//			$cache_filename = $e107cache->cache_fname("nomd5_{$batchfile_md5}");
+			//			$cache_filename = $e107cache->cache_fname("nomd5_{$batchfile_md5}");
 			$sc_cache = $e107cache->retrieve_sys($batch_cachefile);
 			if(!$sc_cache)
 			{
@@ -274,13 +270,18 @@ class e_shortcode {
 
 		foreach(array_keys($cur_shortcodes) as $cur_sc)
 		{
-			if (is_array($this -> registered_codes) && array_key_exists($cur_sc, $this -> registered_codes)) {
-				if ($this -> registered_codes[$cur_sc]['type'] == 'plugin') {
+			if (is_array($this -> registered_codes) && array_key_exists($cur_sc, $this -> registered_codes))
+			{
+				if ($this -> registered_codes[$cur_sc]['type'] == 'plugin')
+				{
 					$scFile = e_PLUGIN.strtolower($this -> registered_codes[$cur_sc]['path']).'/'.strtolower($cur_sc).'.sc';
-				} else {
+				}
+				else
+				{
 					$scFile = THEME.strtolower($cur_sc).'.sc';
 				}
-				if (is_readable($scFile)) {
+				if (is_readable($scFile))
+				{
 					$cur_shortcodes[$cur_sc] = file_get_contents($scFile);
 				}
 			}
