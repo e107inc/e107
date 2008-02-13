@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2008-02-13 00:46:05 $
+|     $Revision: 1.31 $
+|     $Date: 2008-02-13 00:47:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -103,9 +103,6 @@ class e107plugin
 		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
 		$sp = FALSE;
 
-		print_a($pluginList);
-//		exit;
-
 		// Read all the plugin DB info into an array to save lots of accesses
 		$pluginDBList = array();
 		if ($sql->db_Select('plugin',"*"))
@@ -191,7 +188,6 @@ class e107plugin
 		// Now scan the table, updating the DB where needed
 		foreach ($pluginDBList as $plug_path => $plug_info)
 		{
-			print_a($plug_info);
 			if ($plug_info['status'] == 'read')
 			{	// In table, not on server - delete it
 				$sql->db_Delete('plugin', "`plugin_id`={$plug_info['plugin_id']}");
