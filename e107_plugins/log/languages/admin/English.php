@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-11-01 20:28:22 $
+|     $Revision: 1.5 $
+|     $Date: 2008-02-16 14:57:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("ADSTAT_L9", "Countries/domains visited from");
 define("ADSTAT_L10", "Referrers");
 define("ADSTAT_L11", "Search queries");
 define("ADSTAT_L12", "Reset stats");
-define("ADSTAT_L13", "this will erase the all-time stats - careful!<br />There is a separate menu option to delete selected historical data");
+define("ADSTAT_L13", "this will erase the all-time stats - careful!<br />Deletes stats to the end of yesterday.<br />There is a separate menu option to delete selected historical data");
 define("ADSTAT_L14", "Page counts");
 define("ADSTAT_L15", "Update Statistic Settings");
 define("ADSTAT_L16", "Site Statistic Settings");

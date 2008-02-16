@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/admin/English_log_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-01-06 10:18:34 $
+|     $Revision: 1.2 $
+|     $Date: 2008-02-16 14:57:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ Sets the number of \'recent visitors\' retained<br /><br />
 Determines which information is logged. Recording monthly data will take up more database space, and gives better visibility.
 If monthly statistics are being collected, you can set whether just the current month, or current month and previous month, are displayed<br /><br />
 <b>Reset Stats</b><br />
-Clears the selected all-time data to zero<br /><br />
+Clears the selected all-time data (up to the end of yesterday) to zero. To delete today\'s data as well, delete the log*.php files in the log/logs plugin directory<br /><br />
 ');
 define('LAN_STAT_HELP_06','');
 
