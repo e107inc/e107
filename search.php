@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-07-03 19:25:49 $
+|     $Revision: 1.8 $
+|     $Date: 2008-02-16 21:24:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,8 @@ $search_prefs = $sysprefs -> getArray('search_prefs');
 // load search routines
 $search_info = array();
 $auto_order = 1000;
-function search_info($id, $type, $plug_require, $info='') {
+function search_info($id, $type, $plug_require, $info='') 
+{
 	global $tp, $search_prefs, $auto_order;
 	if (check_class($search_prefs[$type.'_handlers'][$id]['class'])) {
 		if ($plug_require) {
@@ -180,7 +181,7 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 	elseif ($search_prefs['time_restrict']) {
 		$time = time() - $search_prefs['time_secs'];
 		$query_check = $tp -> toDB($full_query);
-		$ip = getip();
+		$ip = $e107->getip();
 		if ($sql -> db_Select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) {
 			$row = $sql -> db_Fetch();
 			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {
