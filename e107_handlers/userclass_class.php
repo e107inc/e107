@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-13 17:47:27 $
+|     $Revision: 1.12 $
+|     $Date: 2008-02-16 12:03:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -48,12 +48,11 @@ define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in th
 
 class user_class
 {
-	var $class_tree;				// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
-	var $class_parents;				// Array of class IDs of 'parent' (i.e. top level) classes
+	var $class_tree;					// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
+	var $class_parents;					// Array of class IDs of 'parent' (i.e. top level) classes
   
-	var  $fixed_classes = array();	// The 'predefined' classes of 0.7
-	// List of 'core' user classes and the related constants
-	var  $text_class_link = array();
+	var  $fixed_classes = array();		// The 'predefined' classes of 0.7
+	var  $text_class_link = array();	// List of 'core' user classes and the related constants
 	
 	var $sql_r;						// We'll use our own DB to avoid interactions
 	
@@ -73,11 +72,10 @@ class user_class
 							e_UC_READONLY => UC_LAN_4
 							);
 							
-	 $this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER, 
+	  $this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER, 
 									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'readonly' => e_UC_READONLY);
 
       $this->read_tree(TRUE);			// Initialise the classes on entry
-
 	}
 
 
@@ -122,9 +120,9 @@ class user_class
 	// Finally, add in any fixed classes that aren't already defined
 	foreach ($this->fixed_classes as $c => $d)
 	{
-	  if (!isset($this->class_tree[$c]))
+	  if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
 	  {
-		$this->class_tree[$c]['userclass_parent'] = 0;
+		$this->class_tree[$c]['userclass_parent'] = ($c == e_UC_MEMBER) ? e_UC_PUBLIC :  e_UC_MEMBER;
 		$this->class_tree[$c]['userclass_id'] = $c;
 		$this->class_tree[$c]['userclass_name'] = $d;
 		$this->class_tree[$c]['userclass_description'] = 'Fixed class';
@@ -288,7 +286,8 @@ class user_class
 	  // Do the 'fixed' classes next
 	  foreach ($this->text_class_link as $k => $v)
 	  {
-		if (isset($opt_arr[$k]) || isset($opt_arr['force']))
+//		if (isset($opt_arr[$k]) || isset($opt_arr['force']))
+		if (isset($opt_arr[$k]))
 		{
 		  $ret[$v] = $just_ids ? '1' : $this->fixed_classes[$v];
 	    }
@@ -442,7 +441,7 @@ class user_class
 	}
 	else
 	{
-	  $prefix = '&nbsp;&nbsp;'.str_repeat('--',$nest_level).'>';
+	  $prefix = '&nbsp;&nbsp;'.str_repeat('--',$nest_level-1).'>';
 	  $style = '';
 	}
     return "<option value='{$classnum}'{$sel}{$style}>".$prefix.$this->class_tree[$classnum]['userclass_name']."</option>\n";
@@ -672,8 +671,7 @@ class user_class_admin extends user_class
 						'userclass_icon' => "varchar(250) NOT NULL default ''"
 						);		// Note - 'userclass_id' intentionally not in this list
 
-  var $fixed_list = array(e_UC_MAINADMIN, e_UC_MEMBER, e_UC_ADMIN, e_UC_ADMINMOD, e_UC_MODS, e_UC_READONLY);	// Classes which can't be deleted
-//  var $fixed_list = array(e_UC_MAINADMIN, e_UC_MEMBER, e_UC_ADMIN, e_UC_ADMINMOD, e_UC_MODS, e_UC_USERS, e_UC_READONLY);	// Classes which can't be deleted
+//  var $fixed_list = array(e_UC_MAINADMIN, e_UC_MEMBER, e_UC_ADMIN, e_UC_ADMINMOD, e_UC_MODS, e_UC_READONLY);	// Classes which can't be deleted
 
   // Icons to use for graphical tree display
   // First index - no children, children
@@ -931,7 +929,8 @@ class user_class_admin extends user_class
  
   function delete_class($class_id)
   {
-    if (in_array($class_id, $this->fixed_list)) return FALSE;			// Some classes can't be deleted
+//    if (in_array($class_id, $this->fixed_list)) return FALSE;			// Some classes can't be deleted
+    if (isset($this->fixed_classes[$class_id])) return FALSE;			// Some classes can't be deleted
 	if (!isset($this->class_tree[$class_id])) return FALSE;
 	if (count($this->class_tree[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
 	foreach ($this->class_tree as $c)

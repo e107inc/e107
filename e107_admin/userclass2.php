@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-19 21:01:59 $
+|     $Revision: 1.10 $
+|     $Date: 2008-02-16 12:03:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,8 +27,8 @@ $e_sub_cat = 'userclass';
 //define('UC_DEBUG_OPTS',FALSE);
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");		// Modified class handler
-$uclass = new e_userclass;						// Class management functions - legacy stuff from 0.7
-$e_userclass = new user_class_admin;			// Admin functions - should just obliterate any previous object created in class2.php
+$uclass = new e_userclass;							// Class management functions - legacy stuff from 0.7
+$e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
 
 
 $message = '';
@@ -348,7 +348,7 @@ switch ($action)
 		<tr>
 		<td class='forumheader3'>".UCSLAN_35."</td>
 		<td class='forumheader3'>";
-	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,"main,admin,classes,matchclass,public,member").'</select>';
+	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,"main,admin,classes,matchclass,member").'</select>';
 //		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_36."</td>
@@ -824,11 +824,11 @@ if(isset($_POST['class_members_edit']))
   $ns->tablerender('Multiple Select box with nested items', $text);
 
   $checked_class_list = implode(',',$_POST['classes_select']);
-  $text = "<table width='95%'><tr><td style='text-align:left'>";
+  $text = "<table style='".ADMIN_WIDTH."'><tr><td style='text-align:left'>";
   $text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), $checked_class_list);
   $text .= "Classes: ".$checked_class_list;
   $text .= "</td><td style='text-align:left'>";
-  $text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), $e_userclass->normalise_classes($checked_class_list));
+  $text .= $e_userclass->vetted_tree('normalised_classes_select',array($e_userclass,'checkbox'), $e_userclass->normalise_classes($checked_class_list));
   $text .= "Normalised Classes: ".$e_userclass->normalise_classes($checked_class_list);
   $text .= "</td></tr></table>";
   $ns->tablerender('Nested checkboxes, showing the effect of the normalise() routine', $text);
@@ -841,9 +841,8 @@ if(isset($_POST['class_members_edit']))
   $ns->tablerender('Click on the button - the settings above should be remembered, and the $_POST values displayed', $text);
     break;				// End of 'debug'
 
-
-
 }	// End - switch ($action)
+
 
 
 // Log event to admin log
