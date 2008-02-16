@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:15 $
+|     $Revision: 1.2 $
+|     $Date: 2008-02-16 16:56:12 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 @include_once(e_PLUGIN.'forum/languages/English/lan_forum_conf.php');
+//test
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = 'Forum';
