@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/search/search_pages.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-26 17:55:52 $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-16 21:24:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ $search_fields = array('page_title', 'page_text');
 $weights = array('1.2', '0.6');
 $no_results = LAN_198;
 
-$where = "page_class IN (".USERCLASS_LIST.") AND".$advanced_where;
+$where = "page_class IN (".USERCLASS_LIST.") AND `page_theme` = '' AND".$advanced_where;
 $order = array('page_datestamp' => DESC);
 $table = "page";
 
