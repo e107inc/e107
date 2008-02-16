@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-02-16 20:51:01 $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-16 21:46:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e107_INIT")) {
 	require_once("../../class2.php");
 }
-//test
+
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 
 require_once(e_PLUGIN.'forum/forum_class.php');

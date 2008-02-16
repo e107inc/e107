@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-02-16 20:51:01 $
+|     $Revision: 1.3 $
+|     $Date: 2008-02-16 21:46:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,6 @@
 if (!defined('e107_INIT')) { exit; }
 
 include_lan(e_PLUGIN."pm/languages/admin/".e_LANGUAGE.".php");
-//test
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "ADLAN_PM";
