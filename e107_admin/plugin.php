@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-02-13 02:58:58 $
+|     $Revision: 1.14 $
+|     $Date: 2008-02-17 03:42:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -241,13 +241,14 @@ if ($action == 'uninstall')
 			{
 				$plugin->manage_userclass('remove', $eplug_userclass);
 			}
+
+			$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
+			$plugin->manage_search('remove', $eplug_folder);
+	
+			$plugin->manage_notify('remove', $eplug_folder);
 		}
 
-		$plugin->manage_search('remove', $eplug_folder);
 
-		$plugin->manage_notify('remove', $eplug_folder);
-
-		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
 		if (isset($pref['plug_installed'][$plug['plugin_path']]))
 		{
 			unset($pref['plug_installed'][$plug['plugin_path']]);
