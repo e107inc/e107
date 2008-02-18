@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-11-01 20:28:22 $
+|     $Revision: 1.5 $
+|     $Date: 2008-02-18 20:52:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("ADSTAT_L3", "Statistic Logging");
 define("ADSTAT_L4", "You do not have permission to view this page.");
 define("ADSTAT_L5", "The features on this page have been disabled.");
 define("ADSTAT_L6", "Site Statistics");
-define("ADSTAT_L7", "Statistics for this type is not being gathered.");
+define("ADSTAT_L7", "Statistics for this type are not being gathered.");
 define("ADSTAT_L8", "Today's Stats");
 define("ADSTAT_L9", "All-time Stats");
 define("ADSTAT_L10", "Daily Stats");
