@@ -4,18 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_contact.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-02-18 20:52:29 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 define("LANCONTACT_01", "Contact Details");
 define("LANCONTACT_02", "Contact Form");
 define("LANCONTACT_03", "Enter your name:");
-define("LANCONTACT_04", "E-mail address:");
+define("LANCONTACT_04", "Enter your e-mail address:");
 define("LANCONTACT_05", "Message subject:");
-define("LANCONTACT_06", "Enter your message:");
+define("LANCONTACT_06", "Message:");
 define("LANCONTACT_07", "Email a copy of this message to your own address ");
 define("LANCONTACT_08", "Send");
 define("LANCONTACT_09", "Your message was sent.");
