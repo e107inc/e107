@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/fpw.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-15 15:06:40 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2008-02-18 02:12:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -35,8 +35,6 @@ if (USE_IMAGECODE) {
 	$sec_img = new secure_image;
 }
 
-
-
 if ($pref['membersonly_enabled']) {
 	if (!$FPW_TABLE_HEADER) {
 		if (file_exists(THEME."fpw_template.php")) {
@@ -51,7 +49,8 @@ if ($pref['membersonly_enabled']) {
 
 require_once(HEADERF);
 
-function fpw_error($txt) {
+function fpw_error($txt)
+{
 	global $ns;
 	$ns->tablerender(LAN_03, "<div style='text-align:center'>".$txt."</div>");
 	require_once(FOOTERF);
