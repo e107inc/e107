@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.10 $
-|   $Date: 2007-10-26 21:51:05 $
-|   $Author: e107steved $
+|   $Revision: 1.11 $
+|   $Date: 2008-02-19 19:33:45 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -546,15 +546,18 @@ class newspost
 		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
 		<div style='display: none'><br />";
 
-        $parms = "name=news_thumbnail";
+		$parms = "name=news_thumbnail";
 		$parms .= "&path=".e_IMAGE."newspost_images/";
 		$parms .= "&default=".$_POST['news_thumbnail'];
 		$parms .= "&width=100px";
 		$parms .= "&height=100px";
 		$parms .= "&multiple=TRUE";
 		$parms .= "&label=-- ".LAN_NEWS_48." --";
+		$parms .= "&click_target=data";
+		$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
+		$parms .= "&click_postfix=[/img]";
 
-        $text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}}");
+		$text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}}");
 
 		$text .= "</div>
 		</td>
