@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.10 $
-| $Date: 2008-02-13 02:57:17 $
+| $Revision: 1.11 $
+| $Date: 2008-02-19 19:33:45 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -116,6 +116,7 @@ class e_shortcode
 			$sc_mode = '';
 		}
 		$parm = trim($parm);
+		$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
 
 		if (E107_DBG_BBSC)
 		{
