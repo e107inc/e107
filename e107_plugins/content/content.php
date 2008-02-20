@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2007-04-18 20:46:04 $
+|		$Revision: 1.18 $
+|		$Date: 2008-02-20 21:42:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -734,8 +734,7 @@ function show_content_cat($mode=""){
 					if( varsettrue($textparent) ){ $ns -> tablerender($caption, $textparent); }
 					if( varsettrue($textsubparent) ){ $ns -> tablerender($captionsubparent, $textsubparent); }
 				}else{
-					if( varsettrue($textchild) ){ $ns -> tablerender($captionchild, $textchild); }
-					$ns -> tablerender($caption, varsettrue($textparent,'').varsettrue($textsubparent,''));
+					$ns -> tablerender($caption, varsettrue($textchild).varsettrue($textparent,'').varsettrue($textsubparent,''));
 				}
 			}
 		}
