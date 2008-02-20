@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-09-26 20:06:04 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2008-02-20 20:28:23 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -517,8 +517,8 @@ function displayCategoryLinks($mode=''){
 				$text .= $link_table_start.$link_table_string.$link_table_end;
 
 			}
-
-				$ns->tablerender($link_table_caption, $text);
+			$nav = $tp->parseTemplate("{NAVIGATOR}", FALSE, $link_shortcodes);
+			$ns->tablerender($link_table_caption, $nav.$text);
 		}
 	}
 	return;
