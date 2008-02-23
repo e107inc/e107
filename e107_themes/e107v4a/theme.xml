@@ -3,7 +3,7 @@
 <e107Theme>
 	<name>e107.v4</name>
 	<version>3.0</version>
-	<date>11/06/2003</date>
+	<date>2003-06-11</date>
 	<author>Steve Dunstan [jalist]</author>
 	<authorEmail>jalist@e107.org</authorEmail>
 	<authorUrl>http://e107.org</authorUrl>
@@ -11,5 +11,7 @@
 	<compatibility>0.8</compatibility>
 	<xhtmlCompliant>true</xhtmlCompliant>
 	<cssCompliant>true</cssCompliant>
-	<layout name="3 Column" default='true' />
+	<layouts>
+		<layout name='3_column' title='3 Columns' preview='preview.png' previewFull='preview_full.png' />
+	</layouts>
 </e107Theme>
