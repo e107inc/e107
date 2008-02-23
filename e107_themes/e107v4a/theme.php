@@ -11,29 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-18 11:20:39 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-02-23 23:51:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-include_lan(e_THEME."e107v4a/languages/".e_LANGUAGE.".php");
+include_lan(e_THEME."e107v4a/languages/e107v4a_".e_LANGUAGE.".php");
 
 
 // [theme]
 
-$themename = "e107.v4";
-$themeversion = "2.01";
-$themeauthor = "Steve Dunstan [jalist]";
-$themeemail = "jalist@e107.org";
-$themewebsite = "http://e107.org";
-$themedate = "11/06/2003";
-$themeinfo = "";
-$xhtmlcompliant = TRUE;
-$csscompliant = TRUE;
 define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_6."</i>");
 
@@ -42,7 +33,7 @@ define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_6."</i>");
 $layout = "_default";
 $logo = THEME_ABS."images/bullet3.gif";
 
-$HEADER .=
+$HEADER['3_column'] =
 "
 <table style='width:100%; background-color:#E4E0E0' cellspacing='3' class='topborder'>
 <tr>
@@ -76,7 +67,7 @@ $HEADER .=
 {MENU=1}
 </td><td style='width:60%; vertical-align: top;'>";
 
-$FOOTER =
+$FOOTER['3_column'] =
 "</td><td style='width:20%; vertical-align:top'>
 {MENU=2}
 </td></tr>
