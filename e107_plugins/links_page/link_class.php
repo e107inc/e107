@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.5 $
-|    $Date: 2008-01-26 17:35:21 $
-|    $Author: e107steved $
+|    $Revision: 1.6 $
+|    $Date: 2008-02-24 00:04:19 $
+|    $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -480,6 +480,17 @@ class linkclass {
             $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id='$linkid' ");
         }
     }
+    
+    function verify_link_manage($id) {
+    	global $sql;
+    	
+		if ($sql->db_Select("links_page", "link_author", "link_id='".intval($id)."' ")) {
+			$row = $sql->db_Fetch();
+		}
+		
+		if(varset($row['link_author']) != USERID)
+			js_location(SITEURL);
+    }
 
     function dbLinkCreate($mode='') {
         global $ns, $tp, $qs, $sql, $e107cache, $e_event, $linkspage_pref;
@@ -553,6 +564,11 @@ class linkclass {
         if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) {
             if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) {
                 $row = $sql->db_Fetch();
+                
+            	if($row['link_author'] != USERID) {
+					header('Location: '.SITEURL);
+					exit;
+            	}
             }
         }
 
