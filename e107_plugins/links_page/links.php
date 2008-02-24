@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-02-20 20:28:23 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2008-02-24 00:04:19 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -106,6 +106,9 @@ if (isset($_POST['add_link'])) {
 	}
 	if($qs[0] == "manage"){
 		if(check_class($linkspage_pref['link_manager_class'])){
+			
+			$lc->verify_link_manage($qs[2]);
+			
 			if(isset($linkspage_pref['link_directpost']) && $linkspage_pref['link_directpost']){
 				$lc -> dbLinkCreate();
 			}else{
@@ -286,8 +289,14 @@ function displayPersonalManager()
 	  }
 	  if (isset($delete) && $delete == 'main') 
 	  {
-		$sql->db_Select("links_page", "link_category, link_order", "link_id='".intval($del_id)."'");		// Get the position of target in the order
+		$sql->db_Select("links_page", "link_category, link_order, link_author", "link_id='".intval($del_id)."'");		// Get the position of target in the order
+		
 		$row = $sql->db_Fetch();
+	    if($row['link_author'] != USERID) {
+			header('Location: '.SITEURL);
+			exit;
+	    }
+			
 		if (!is_object($sql2)){ $sql2 = new db; }
 		$sql->db_Select("links_page", "link_id", "link_order>'".$row['link_order']."' && link_category='".intval($row['link_category'])."'");
 		while ($row = $sql->db_Fetch()) 
