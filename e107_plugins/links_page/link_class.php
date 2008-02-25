@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.43 $
-|    $Date: 2007-09-28 21:20:58 $
+|    $Revision: 1.44 $
+|    $Date: 2008-02-25 20:11:10 $
 |    $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -207,16 +207,21 @@ class linkclass {
 
 
 
-    function parse_link_append($rowl){
-
+    function parse_link_append($rowl)
+	{
         global $tp, $linkspage_pref;
-        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
-            $link_open_type = $rowl['link_open'];
-        }else{
-            $link_open_type = $linkspage_pref['link_open_all'];
+        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5")
+		{
+          $link_open_type = $rowl['link_open'];
+        }
+		else
+		{
+          $link_open_type = $linkspage_pref['link_open_all'];
         }
 
-        switch ($link_open_type) {
+		$rowl['link_url'] = htmlentities($rowl['link_url'],ENT_QUOTES,CHARSET);
+        switch ($link_open_type) 
+		{
             case 1:
             $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."','full');return false;\" >"; // Googlebot won't see it any other way.
             break;
@@ -475,6 +480,17 @@ class linkclass {
             $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id='$linkid' ");
         }
     }
+    
+    function verify_link_manage($id) {
+    	global $sql;
+    	
+		if ($sql->db_Select("links_page", "link_author", "link_id='".intval($id)."' ")) {
+			$row = $sql->db_Fetch();
+		}
+		
+		if(varset($row['link_author']) != USERID)
+			js_location(SITEURL);
+    }
 
     function dbLinkCreate($mode='') {
         global $ns, $tp, $qs, $sql, $e107cache, $e_event, $linkspage_pref;
@@ -548,6 +564,11 @@ class linkclass {
         if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) {
             if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) {
                 $row = $sql->db_Fetch();
+                
+            	if($row['link_author'] != USERID) {
+					header('Location: '.SITEURL);
+					exit;
+            	}
             }
         }
 
