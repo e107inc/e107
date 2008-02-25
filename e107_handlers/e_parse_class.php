@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2008-02-01 18:09:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.29 $
+|     $Date: 2008-02-25 22:15:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -216,14 +216,9 @@ class e_parse
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
 	{
 		/*
-		* Parts of code from  htmlwrap() function - v1.6
-		* Copyright (c) 2004 Brian Huisman AKA GreyWyvern
-		* http://www.greywyvern.com/code/php/htmlwrap_1.1.php.txt
-		*
-		* This program may be distributed under the terms of the GPL
-		*   - http://www.gnu.org/licenses/gpl.txt
-		*
-		* Other mods by steved
+		Pretty well complete rewrite to try and handle utf-8 properly.
+		Breaks a utf-8 string every $width characters max. If possible, breaks after 'safe' characters.
+		$break is the character inserted to flag the break.
 		*/
 
   // Transform protected element lists into arrays
@@ -240,7 +235,7 @@ class e_parse
 
   // Is $str a UTF8 string?
 	$utf8 = ($utf || CHARSET == 'utf-8') ? "u" : "";
-
+	
 
 // Start of the serious stuff - split into HTML tags and text between
 	  $content = preg_split('#(<.*?>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
@@ -285,48 +280,80 @@ class e_parse
         // Else if we're outside any tags, and with non-zero length string...
         } 
 		elseif ($value) 
-		{
-          // If unprotected...
+		{    // If unprotected...
           if (!count($innbk)) 
 		  {
             // Use the ACK (006) ASCII symbol to replace all HTML entities temporarily
             $value = str_replace("\x06", "", $value);
             preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
             $value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
-
-            // Enter the line-break loop
-            do 
+			$split = preg_split('#(\s)#', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+			$value = '';
+			foreach ($split as $sp)
 			{
-              $store = $value;
-
-              // Find the first stretch of characters over the $width limit
-              if (preg_match("/^(.*?\s)?(\S{".$width."})(?!(".preg_quote($break, "/")."|\s))(.*)$/s".(($utf8) ? "u" : ""), $value, $match)) 
-			  {
-                if (strlen($match[2])) 
+			  while (strlen($sp) > $width)
+			  {	// Enough characters that we may need to do something.
+				$pulled = '';
+				if ($utf8)
 				{
-                  // Determine the last "safe line-break" character within this match
-                  for ($x = 0, $ledge = 0; $x < strlen($lbrks); $x++) $ledge = max($ledge, strrpos($match[2], $lbrks{$x}));
-                  if (!$ledge) $ledge = strlen($match[2]) - 1;
+				  // Pull out a piece of the maximum permissible length
+				  preg_match('#^((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$width.'})(.{0,1}).*#s',$sp,$matches);
 
-                  // Insert the modified string
-                  $value = $match[1].substr($match[2], 0, $ledge + 1).$break.substr($match[2], $ledge + 1).$match[4];
-                }
-              }
-            // Loop while overlimit strings are still being found
-            } while ($store != $value);
-
+				  if (empty($matches[2]))
+				  {  // utf-8 length is less than specified - treat as a special case
+				    $value .= $sp;
+					$sp = '';
+				  }
+				  else
+				  {		// Need to find somewhere to break the string
+					for ($i = strlen($matches[1])-1; $i >= 0; $i--)
+					{
+					  if (strpos($lbrks,$matches[1][$i]) !== FALSE) break;
+					}
+					if ($i < 0)
+					{	// No 'special' break character found - break at the word boundary
+					  $pulled = $matches[1];
+					}
+					else
+					{
+					  $pulled = substr($sp,0,$i+1);
+					}
+				  }
+				}
+				else
+				{
+					for ($i = strlen($matches[1]); $i > 0; $i--)
+					{
+					  if (strpos($lbrks,$matches[1][$i-1]) !== FALSE) break;		// No speed advantage to defining match character
+					}
+					if ($i == 0)
+					{	// No 'special' break character found - break at the word boundary
+					  $pulled = $matches[1];
+					}
+					else
+					{
+					  $pulled = substr($sp,0,$i);
+					}
+				}
+				if ($pulled)
+				{
+				  $value .= $pulled.$break;
+				  $sp = substr($sp,strlen($pulled));			// Shorten $sp by whatever we've processed (will work even for utf-8)
+				}
+			  }
+			  $value .= $sp;		// Add in any residue
+			}
             // Put captured HTML entities back into the string
             foreach ($ents[0] as $ent) $value = preg_replace("/\x06/", $ent, $value, 1);
-          }
+          } 
         }
-
         // Send the modified segment down the drain
         $drain .= $value;
 	  }
-
 	  // Return contents of the drain
 	  return $drain;
 	}
+
 
 
 
