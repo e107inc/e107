@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-08-13 19:56:41 $
+|     $Revision: 1.4 $
+|     $Date: 2008-02-29 21:57:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("CORE_LAN10", "Corrupted cookie detected - logged out.");
 // Footer
 define("CORE_LAN11", "Render time: ");
 define("CORE_LAN12", " sec (");
-define("CORE_LAN13", " % of that for queries)");
+define("CORE_LAN13", "% of that for queries) ");
 define("CORE_LAN14", "%2.3f cpu sec (%2.2f%% load, %2.3f startup). Clock: ");
 define("CORE_LAN15", "DB queries: ");
 define("CORE_LAN16", "Memory: ");
