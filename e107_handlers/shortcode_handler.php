@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.11 $
-| $Date: 2008-02-19 19:33:45 $
-| $Author: mcfly_e107 $
+| $Revision: 1.12 $
+| $Date: 2008-03-02 21:08:31 $
+| $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -142,17 +142,22 @@ class e_shortcode
 			}
 			else
 			{
-				$sc_perms = e_UC_PUBLIC;			// Default permissions are 'everybody'
 				if ($this->parseSCFiles == TRUE)
 				{
 					if (is_array($this -> registered_codes) && array_key_exists($code, $this->registered_codes))
 					{
 						if($this->registered_codes[$code]['type'] == 'plugin')
 						{
-							if (isset($this->registered_codes[$code]['perms'])) $sc_perms = $this->registered_codes[$code]['perms'];
+				if (check_class($this->registered_codes[$code]['perms']))
+				{	// Use the plugin 'override' shortcode
 							$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
 						}
 						else
+				{	// Look for a core shortcode
+				  $scFile = e_FILE."shortcode/".strtolower($code).".sc";
+				}
+			  }
+			  else
 						{
 							$scFile = THEME.strtolower($code).'.sc';
 						}
@@ -161,12 +166,7 @@ class e_shortcode
 					{
 						$scFile = e_FILE."shortcode/".strtolower($code).".sc";
 					}
-					if (!check_class($sc_perms))
-					{	// Mainly to pick up e_UC_NOBODY
-						$shortcode = 'return;';
-						$this->scList[$code] = 'return;';
-					}
-					elseif (file_exists($scFile))
+			if (file_exists($scFile)) 
 					{
 						$shortcode = file_get_contents($scFile);
 						$this->scList[$code] = $shortcode;
