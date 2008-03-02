@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.44 $
-| $Date: 2007-07-18 20:46:42 $
+| $Revision: 1.45 $
+| $Date: 2008-03-02 21:08:20 $
 | $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -109,36 +109,36 @@ class e_shortcode {
 		}
 		else
 		{
-			$sc_perms = e_UC_PUBLIC;			// Default permissions are 'everybody'
-			if ($this->parseSCFiles == TRUE)
+		  if ($this->parseSCFiles == TRUE)
+		  {
+			if (is_array($this -> registered_codes) && array_key_exists($code, $this->registered_codes))
 			{
-				if (is_array($this -> registered_codes) && array_key_exists($code, $this->registered_codes))
-				{
-					if($this->registered_codes[$code]['type'] == 'plugin')
-					{
-					  if (isset($this->registered_codes[$code]['perms'])) $sc_perms = $this->registered_codes[$code]['perms'];
-					  $scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
-					}
-					else
-					{
-						$scFile = THEME.strtolower($code).'.sc';
-					}
+			  if($this->registered_codes[$code]['type'] == 'plugin')
+			  {
+				if (check_class($this->registered_codes[$code]['perms']))
+				{	// Use the plugin 'override' shortcode
+				  $scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
 				}
 				else
-				{
-						$scFile = e_FILE."shortcode/".strtolower($code).".sc";
+				{	// Look for a core shortcode
+				  $scFile = e_FILE."shortcode/".strtolower($code).".sc";
 				}
-				if (!check_class($sc_perms))
-				{	// Mainly to pick up e_UC_NOBODY
-				  $shortcode = 'return;';
-				  $this->scList[$code] = 'return;';
-				}
-				elseif (file_exists($scFile)) 
-				{
-					$shortcode = file_get_contents($scFile);
-					$this->scList[$code] = $shortcode;
-				}
+			  }
+			  else
+			  {
+				$scFile = THEME.strtolower($code).'.sc';
+			  }
 			}
+			else
+			{
+			  $scFile = e_FILE."shortcode/".strtolower($code).".sc";
+			}
+			if (file_exists($scFile)) 
+			{
+			  $shortcode = file_get_contents($scFile);
+			  $this->scList[$code] = $shortcode;
+			}
+		  }
 		}
 
 		if (!isset($shortcode))
