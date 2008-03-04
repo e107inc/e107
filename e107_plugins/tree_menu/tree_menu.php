@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-31 21:17:17 $
+|     $Revision: 1.4 $
+|     $Date: 2008-03-04 22:14:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -74,7 +74,7 @@ foreach($linkArray as $links) {
 
 			$mainLinkArray[$link_parent]['sublink'][$link_id]['parent_name'] = $link_parent;
 			$mainLinkArray[$link_parent]['sublink'][$link_id]['id'] = $link_id;
-			$mainLinkArray[$link_parent]['sublink'][$link_id]['name'] = $tp->toHtml(strip_tags($submenu_name));
+			$mainLinkArray[$link_parent]['sublink'][$link_id]['name'] = $tp->toHtml(strip_tags($submenu_name),"","defs");
 			$mainLinkArray[$link_parent]['sublink'][$link_id]['url'] = $link_url;
 			$mainLinkArray[$link_parent]['sublink'][$link_id]['description'] = $links['link_description'];
 			$mainLinkArray[$link_parent]['sublink'][$link_id]['image'] = $link_button;
