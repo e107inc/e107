@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-12-29 20:34:24 $
+|     $Revision: 1.6 $
+|     $Date: 2008-03-09 20:33:17 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -438,7 +438,7 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 			<tr>
 				<td class='forumheader3' style='width:20%'>".EC_LAN_55."</td><td class='forumheader3' >
 					<input class='tbox' style='width:150px' id='caticon' type='text' name='ne_new_category_icon' value='".$event_cat_icon."' />
-					<input class='button' type='button' style='width: 45px; cursor:hand;' value='".EC_LAN_90."' onclick='expandit(\"cat_icons\")' />
+					<input class='button' type='button' style='width: 45px; cursor:pointer;' value='".EC_LAN_90."' onclick='expandit(\"cat_icons\")' />
 					<div style='display:none' id='cat_icons'>";
 					$fi = new e_file;
 					$imagelist = $fi->get_files(e_PLUGIN."calendar_menu/images", "\.\w{3}$");
