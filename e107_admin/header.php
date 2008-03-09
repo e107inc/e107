@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.13 $
-|   $Date: 2008-01-16 10:46:59 $
-|   $Author: e107coders $
+|   $Revision: 1.14 $
+|   $Date: 2008-03-09 20:33:03 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -297,10 +297,10 @@ if (!function_exists('show_admin_menu')) {
 			$BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>\n";
 		}
 		if (!isset($BUTTON)) {
-			$BUTTON = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' {ONCLICK} >{LINK_TEXT}</a></div></td></tr>\n";
+			$BUTTON = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:pointer; text-decoration:none;' {ONCLICK} >{LINK_TEXT}</a></div></td></tr>\n";
 		}
 		if (!isset($BUTTON_OVER)) {
-			$BUTTON_OVER = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' {ONCLICK} ><b>&laquo;&nbsp;{LINK_TEXT}&nbsp;&raquo;</b></a></div></td></tr>\n";
+			$BUTTON_OVER = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:pointer; text-decoration:none;' {ONCLICK} ><b>&laquo;&nbsp;{LINK_TEXT}&nbsp;&raquo;</b></a></div></td></tr>\n";
 		}
 		if (!isset($BUTTONS_END)) {
 			$BUTTONS_END = "</table></div>\n";
@@ -313,7 +313,7 @@ if (!function_exists('show_admin_menu')) {
 		}
 		if (!isset($SUB_BUTTONS_START)) {
 			$SUB_BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>
-			<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;'
+			<tr><td class='button'><a style='text-align:center; cursor:pointer; text-decoration:none;'
 			onclick=\"expandit('{SUB_HEAD_ID}');\" >{SUB_HEAD}</a></td></tr>
 			<tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
 		}

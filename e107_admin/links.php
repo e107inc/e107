@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-10-13 19:08:37 $
+|     $Revision: 1.9 $
+|     $Date: 2008-03-09 20:33:04 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -488,7 +488,7 @@ class links
 			<td style='width:70%' class='forumheader3'>
 			<input class='tbox' type='text' id='link_button' name='link_button' size='42' value='$link_button' maxlength='100' />
 
-					<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
+					<input class='button' type ='button' style='cursor:pointer' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
 			<div id='linkicn' style='display:none;{head}'>";
 
 		foreach($iconlist as $icon)

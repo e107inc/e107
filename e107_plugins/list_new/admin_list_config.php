@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2007-03-23 20:26:36 $
-|		$Author: lisa_ $
+|		$Revision: 1.3 $
+|		$Date: 2008-03-09 20:33:18 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -198,7 +198,7 @@ function parse_global_options($type){
 		<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$titles[$i]."</td>
 		<td class='forumheader3'>
 			".$rs -> form_text($sections[$i]."_".$type."_icon", 15, $list_pref[$sections[$i]."_".$type."_icon"], 100)."
-			<input class='button' type='button' style='cursor:hand' size='30' value='".LIST_ADMIN_12."' onClick=\"expandit('div_".$sections[$i]."_".$type."_icon')\" />
+			<input class='button' type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onClick=\"expandit('div_".$sections[$i]."_".$type."_icon')\" />
 			<div id='div_".$sections[$i]."_".$type."_icon' style='display:none;'>";
 			foreach($iconlist as $icon){
 				$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$icon['fname']."','".$sections[$i]."_".$type."_icon','div_".$sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";

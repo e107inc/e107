@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-12-22 14:03:23 $
+|     $Revision: 1.9 $
+|     $Date: 2008-03-09 20:33:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1405,7 +1405,7 @@ class download {
 			<input class='tbox' type='text' id='download_category_icon' name='download_category_icon' size='60' value='$download_category_icon' maxlength='100' />
 
 			<br />
-			<input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+			<input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
 			<div id='cat_icn' style='display:none;{head}' >";
 
 		while (list($key, $icon) = each($iconlist)) {
@@ -1424,7 +1424,7 @@ class download {
 			<input class='tbox' type='text' id='download_category_icon_empty' name='download_category_icon_empty' size='60' value='$download_category_icon_empty' maxlength='100' />
 
 			<br />
-			<input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+			<input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
 			<div id='cat_icn_empty' style='display:none;{head}' >";
 
 		while (list($key, $icon) = each($iconlist)) {
@@ -1577,7 +1577,7 @@ class download {
 		<input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='$mirror_image' maxlength='200' />
 
 
-		<br /><input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+		<br /><input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
 		<div id='imagefile' style='display:none;{head}'>";
 
 		$text .= DOWLAN_140."<br /><br />";
