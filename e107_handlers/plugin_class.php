@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2008-02-17 03:42:33 $
+|     $Revision: 1.35 $
+|     $Date: 2008-03-11 01:47:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -130,9 +130,8 @@ class e107plugin
 			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
 			//		  $eplug_addons = $this->getAddons($plugin_path,'check');		// Checks opening/closing tags on addon files
 
-			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml, unless
-			//anyDir is set to true.
-			if ($plugin_path == $plug_info['folder'] || $plug_info['folder'] == '*anyDir*')
+			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml
+			if ($plugin_path == $plug_info['folder'])
 			{
 				if(array_key_exists($plugin_path, $pluginDBList))
 				{  // Update the addons needed by the plugin
@@ -641,7 +640,6 @@ class e107plugin
 					{
 						preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
 						$tablename = trim($match[1]);
-						$tablename = str_replace("[folder]", $_folder, $tablename);
 
 						if($function == 'uninstall' && isset($_POST['delete_tables']) && $_POST['delete_tables'])
 						{
@@ -651,7 +649,6 @@ class e107plugin
 						if($function == 'install')
 						{
 							$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $sql_table);
-							$sql_table = str_replace("[folder]", $_folder, $sql_table);
 							$txt .= "Adding table: {$tablename} ... ";
 							$result = $this->manage_tables('add', array($sql_table));
 							$txt .= ($result ? "Success" : "Failed!")."<br />";
