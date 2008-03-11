@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2008-02-17 05:01:28 $
+|     $Revision: 1.50 $
+|     $Date: 2008-03-11 01:47:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -430,8 +430,6 @@ if ($pref['user_tracking'] == "session") {
 }
 
 define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
-$parts = pathinfo(e_SELF);
-define('e_CURDIR', substr($parts['dirname'], strrpos($parts['dirname'], '/')+1));
 
 // if the option to force users to use a particular url for the site is enabled, redirect users there as needed
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
