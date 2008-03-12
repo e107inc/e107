@@ -26,8 +26,8 @@ foreach($imgParms as $k => $v)
     $parmStr .= $tp -> toAttribute($k)."='".$tp -> toAttribute($v)."' ";
 }
 
-
-if((strpos($code_text,'../') === FALSE) && file_exists(e_IMAGE."newspost_images/".$code_text))
+// Only look for file if not a url - suspected bug in PHP 5.2.5 on XP
+if((strpos($code_text,'../') === FALSE) && (strpos($code_text,'://') === FALSE) && file_exists(e_IMAGE."newspost_images/".$code_text))
 {
     $code_text = e_IMAGE."newspost_images/".$code_text;
 }
