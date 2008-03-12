@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-01-21 03:54:10 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2008-03-12 01:03:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -60,7 +60,7 @@ class e107{
 
 		$path = ""; $i = 0;
 
-		if(!$_E107['cli'])
+		if(!isset($_E107['cli']))
 		{
 			while (!file_exists("{$path}class2.php"))
 			{
@@ -91,7 +91,7 @@ class e107{
 		// Absolute file-path of directory containing class2.php
 		define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
 
-		$this->relative_base_path = (!$_E107['cli']) ? $path : e_ROOT;
+		$this->relative_base_path = (!isset($_E107['cli'])) ? $path : e_ROOT;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $path;
