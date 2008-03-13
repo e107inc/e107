@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2008-03-11 01:47:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.51 $
+|     $Date: 2008-03-13 19:15:56 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1205,7 +1205,7 @@ function init_session() {
 
 	define('USERIP', $e107->getip());
 
-    if($_E107['cli'] && $_SERVER['argv'][1])
+    if(isset($_E107['cli']) && $_SERVER['argv'][1])
 	{
 		require_once(e_HANDLER."cli_class.php");
 		$cli = new eCLI;
@@ -1218,7 +1218,7 @@ function init_session() {
 		}
 	}
 
-	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']]) && !$_E107['cli'])
+	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']]) && !isset($_E107['cli']))
 	{
 		define("USER", FALSE);
 		define("USERTHEME", FALSE);
@@ -1229,7 +1229,7 @@ function init_session() {
 	}
 	else
 	{
-		if(!$_E107['cli'])
+		if(!isset($_E107['cli']))
 		{
 			list($uid, $upw)=(isset($_COOKIE[$pref['cookie_name']]) && $_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
         }
@@ -1552,14 +1552,14 @@ class error_handler {
 		// This is initialized before the current debug level is known
 		//
         global $_E107;
-        if($_E107['debug'])
+        if(isset($_E107['debug']))
 		{
 			$this->debug = true;
 			error_reporting(E_ALL);
 			return;
         }
 
-        if($_E107['cli'])
+        if(isset($_E107['cli']))
 		{
          	error_reporting(E_ALL ^ E_NOTICE);
 			return;

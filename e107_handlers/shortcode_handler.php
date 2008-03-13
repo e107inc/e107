@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.12 $
-| $Date: 2008-03-02 21:08:31 $
-| $Author: e107steved $
+| $Revision: 1.13 $
+| $Date: 2008-03-13 19:15:56 $
+| $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -182,7 +182,7 @@ class e_shortcode
 
 			if(E107_DBG_SC)
 			{
-				echo ($scFile) ? "<br />sc_file= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />" : "";
+				echo (isset($scFile)) ? "<br />sc_file= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />" : "";
 				echo "<br />sc= <b>$code</b>";
 			}
 

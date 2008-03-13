@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-01-27 11:02:34 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2008-03-13 19:15:56 $
+|     $Author: lisa_ $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -99,7 +99,7 @@ if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset(
 	define("e_WYSIWYG",FALSE);
 }
 // Load Plugin Header Files
-if (is_array($pref['e_header_list']))
+if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
 {
 	foreach($pref['e_header_list'] as $val)
 	{
