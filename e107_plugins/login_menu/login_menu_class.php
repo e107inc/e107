@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-02-06 00:23:28 $
-|     $Author: secretr $
+|     $Revision: 1.4 $
+|     $Date: 2008-03-13 19:15:56 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -97,8 +97,8 @@ class login_menu_class
         $lbox_admin = varsettrue($eplug_admin, false);
         $coreplugs = login_menu_class::get_coreplugs(); 
         
-        $lprefs = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
-        $sprefs = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
+        $lprefs = varsettrue($menu_pref['login_menu']['external_links']) ? explode(',', $menu_pref['login_menu']['external_links']) : array();
+        $sprefs = varsettrue($menu_pref['login_menu']['external_stats']) ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
         
         if($active) {
             $tmp =  array_flip($lprefs);

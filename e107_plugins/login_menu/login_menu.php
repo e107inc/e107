@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-02-06 00:23:28 $
-|     $Author: secretr $
+|     $Revision: 1.9 $
+|     $Date: 2008-03-13 19:15:56 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -123,7 +123,7 @@ if (USER == TRUE || ADMIN == TRUE)
 		
 		// ------------ Enable stats / other ---------------
 		
-		$menu_data['enable_stats'] = $menu_data || $menu_pref['login_menu']['external_stats'] ? true : false;
+		$menu_data['enable_stats'] = $menu_data || varsettrue($menu_pref['login_menu']['external_stats']) ? true : false;
 		$menu_data['new_total'] = $new_total + login_menu_class::get_stats_total();
 		$menu_data['link_bullet'] = $bullet;
 		$menu_data['link_bullet_src'] = $bullet_src;
