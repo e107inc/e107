@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |	e107 website system
 |
-|	�Steve Dunstan 2001-2005
+|	?Steve Dunstan 2001-2005
 |	http://e107.org
 |	jalist@e107.org
 |
@@ -121,7 +121,7 @@ $FOOTER = "
 	<div id='footer'>
 		{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}
 		<br />
-		<a href='http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=86'><img alt='e107 recommends Firefox' title='e107 recommends Firefox' src=' http://sfx-images.mozilla.org/affiliates/Buttons/125x50/takebacktheweb_125x50.png' style='border: 0;' /></a>
+		<a href='http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=86'><img alt='e107 recommends Firefox' title='e107 recommends Firefox' src='http://sfx-images.mozilla.org/affiliates/Buttons/125x50/takebacktheweb_125x50.png' style='border: 0;' /></a>
 	</div>
 </div>
 ";
