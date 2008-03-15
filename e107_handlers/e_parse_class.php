@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2008-02-25 22:15:24 $
+|     $Revision: 1.30 $
+|     $Date: 2008-03-15 12:33:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -287,7 +287,7 @@ class e_parse
             $value = str_replace("\x06", "", $value);
             preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
             $value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
-			$split = preg_split('#(\s)#', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+			$split = preg_split('#(\s)#'.$utf8, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 			$value = '';
 			foreach ($split as $sp)
 			{
