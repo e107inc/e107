@@ -275,14 +275,14 @@ h2 {
 .nforumcaption3 {
 	border: 1px solid #fff;
 	padding: 4px;
-	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	background-repeat: repeat; background-image: url(images/menubg.png);
 	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
 }
 
 .nforumthread {
 	border: 1px solid #fff;
 	padding: 4px;
-	background-repeat: repeat-x repeat-y; background-image: url(images/menubg2.png);
+	background-repeat: repeat; background-image: url(images/menubg2.png);
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 }
 
@@ -296,21 +296,21 @@ h2 {
 .nforumreplycaption {
 	border: 1px solid #fff;
 	padding: 4px;
-	background-repeat: repeat-x repeat-y; background-image: url(images/menubg2.png);
+	background-repeat: repeat; background-image: url(images/menubg2.png);
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 }
 
 .nforumreply {
 	border: 1px solid #fff;
 	padding: 4px;
-	background-repeat: repeat-x repeat-y; background-image: url(images/menubg2.png);
+	background-repeat: repeat; background-image: url(images/menubg2.png);
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 }
 
 .nforumreply2 {
 	border: 1px solid #fff;
 	padding: 4px;
-	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	background-repeat: repeat; background-image: url(images/menubg.png);
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 }
 .nforumdisclaimer {
@@ -321,14 +321,14 @@ h2 {
 .nforumview1 {
 	border: 1px solid #fff;
 	padding: 4px;
-	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	background-repeat: repeat; background-image: url(images/menubg.png);
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 }
 
 .nforumview2 {
 	border: 1px solid #fff;
 	padding: 4px;
-	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	background-repeat: repeat; background-image: url(images/menubg.png);
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 }
 
