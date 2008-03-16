@@ -1,4 +1,4 @@
-// $Id: admin_update.sc,v 1.6 2007-07-18 19:53:50 e107steved Exp $
+// $Id: admin_update.sc,v 1.7 2008-03-16 16:09:07 asperon Exp $
 
 	if (!ADMIN) return "";
 
@@ -23,11 +23,11 @@
 	if ((strpos(e_SELF,'localhost') !== FALSE) || (strpos(e_SELF,'127.0.0.1') !== FALSE)) return '';
 
 	require_once(e_HANDLER."xml_class.php");
-	$xml = new parseXml;
+	$xml = new xmlClass;
 	require_once(e_HANDLER."magpie_rss.php");
 
     $ftext = "";
-	if($rawData = $xml -> getRemoteXmlFile($feed))
+	if($rawData = $xml -> getRemoteFile($feed))
 	{
 	  $rss = new MagpieRSS( $rawData );
       list($cur_version,$tag) = explode(" ",$e107info['e107_version']);
