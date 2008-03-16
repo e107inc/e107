@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-01-06 21:26:25 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2008-03-16 16:38:06 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -638,6 +638,11 @@ foreach($arr as $data){
 	}
 }
 return $ret;
+SC_END
+
+SC_BEGIN USER_CUSTOMTITLE
+global $user;
+return $user['user_customtitle'];
 SC_END
 
 */
