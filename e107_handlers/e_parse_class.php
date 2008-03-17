@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2008-03-15 12:33:21 $
+|     $Revision: 1.31 $
+|     $Date: 2008-03-17 21:01:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -588,7 +588,7 @@ class e_parse
             if ($pref['link_replace'] && !$opts['no_replace']) 
 			{
               $_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
-              $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
+              $text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
 			  $text = preg_replace("#(^|[\n \]])((www|ftp)\.[\w+-]+?\.[\w+\-.]*(?(?=/)(/.+?(?=\s|,\s))|(?=\W)))#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
               if(CHARSET != "utf-8" && CHARSET != "UTF-8")
 			  {
