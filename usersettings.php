@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-01-17 22:17:41 $
+|     $Revision: 1.24 $
+|     $Date: 2008-03-17 20:45:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -306,7 +306,7 @@ if (isset($_POST['updatesettings']))
 	  require_once(e_HANDLER."upload_handler.php");
 	  require_once(e_HANDLER."resize_handler.php");
 
-	  if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
+		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar=".$udata['user_id']))
 	  {
 		foreach ($uploaded as $upload)
 		{	// Needs the latest upload handler (with legacy and 'future' interfaces) to work
