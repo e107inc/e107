@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.11 $
-|   $Date: 2007-12-11 21:17:59 $
+|   $Revision: 1.12 $
+|   $Date: 2008-03-17 20:45:29 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -451,13 +451,21 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 	if($uploaddir == e_THEME) {$upload_storagetype = 1;}
 	$options['save_to_db'] = ($upload_storagetype == "2" && $avatar == FALSE);
 
+	if (strpos($avatar,'=') !== FALSE)
+	{
+	  list($avatar,$param) = explode('=',$avatar,2);
+	}
+	else
+	{
+	  $param = USERID;
+	}
 	switch ($avatar)
 	{
 	  case 'attachment' :
 	    $avatar = "attachment+".$fileinfo;
 		break;
 	  case 'avatar' :
-	    $avatar = 'prefix+ap_'.USERID.'_';				// Prefix unique to user
+	    $avatar = 'prefix+ap_'.$param.'_';				// Prefix unique to user
 		$options['overwrite'] = TRUE;			// Allow update of avatar with same file name
 		break;
 	}
