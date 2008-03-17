@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2007-12-21 20:43:39 $
+|     $Revision: 1.99 $
+|     $Date: 2008-03-17 20:42:50 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -130,6 +130,9 @@ if (isset($_POST['updatesettings']))
 	{	// Current user logged in - use their ID
 	  $inp = USERID;
 	}
+	$udata = get_user_data($inp);				// Get all the user data, including any extended fields
+	$peer = ($inp == USERID ? false : true);
+	$udata['user_classlist'] = addCommonClasses($udata);
 
 
 	// Check external avatar
@@ -258,7 +261,7 @@ if (isset($_POST['updatesettings']))
 		require_once(e_HANDLER."upload_handler.php");
 		require_once(e_HANDLER."resize_handler.php");
 
-		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
+		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar=".$udata['user_id']))
 		{
 		  foreach ($uploaded as $upload)
 		  {	// Needs the latest upload handler (with legacy and 'future' interfaces) to work
@@ -266,9 +269,9 @@ if (isset($_POST['updatesettings']))
 			{
 				// avatar uploaded - give it a reference which identifies it as server-stored
 				$_POST['image'] = "-upload-".$upload['name'];
-				if ($_POST['image'] != $currentUser['user_image'])
+				if ($_POST['image'] != $udata['user_image'])
 				{
-				  $avatar_to_delete = str_replace("-upload-", "", $currentUser['user_image']);
+				  $avatar_to_delete = str_replace("-upload-", "", $udata['user_image']);
 //				  echo "Avatar change; deleting {$avatar_to_delete}<br />";
 				}
 				if (!resize_image(e_FILE."public/avatars/".$upload['name'], e_FILE."public/avatars/".$upload['name'], "avatar"))
@@ -299,21 +302,21 @@ if (isset($_POST['updatesettings']))
 // See if user just wants to delete existing photo
 	if (isset($_POST['user_delete_photo']))
 	{
-	  $photo_to_delete = $currentUser['user_sess'];
+	  $photo_to_delete = $udata['user_sess'];
 	  $sesschange = "user_sess = '', ";
 //	  echo "Just delete old photo: {$photo_to_delete}<br />";
 	}
 	elseif ($user_sess != "")
 	{	// Update DB with photo
 	  $sesschange = "user_sess = '".$tp->toDB($user_sess)."', ";
-	  if ($currentUser['user_sess'] == $tp->toDB($user_sess))
+	  if ($udata['user_sess'] == $tp->toDB($user_sess))
 	  {
 		$sesschange = '';			// Same photo - do nothing
 //		echo "Photo not changed<br />";
 	  }
 	  else
 	  {
-		$photo_to_delete = $currentUser['user_sess'];
+		$photo_to_delete = $udata['user_sess'];
 //		echo "New photo: {$user_sess} Delete old photo: {$photo_to_delete}<br />";
 	  }
 	}
@@ -386,10 +389,6 @@ if (isset($_POST['updatesettings']))
 
 	  if ($ret == '')
 	  {
-		$udata = get_user_data($inp);				// Get all the user data, including any extended fields
-		$peer = ($inp == USERID ? false : true);
-		$udata['user_classlist'] = addCommonClasses($udata);
-
 		$loginname = strip_tags($_POST['loginname']);
 		if (!$loginname)
 		{
