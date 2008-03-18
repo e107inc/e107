@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-16 10:52:30 $
+|     $Revision: 1.12 $
+|     $Date: 2008-03-18 00:38:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -204,6 +204,7 @@ $text = "<script type=\"text/javascript\">
 	$parms .= "&multiple=FALSE";
 	$parms .= "&label=-- No Image --";
 	$parms .= "&subdirs=1";
+
 
     $text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}}");
 
