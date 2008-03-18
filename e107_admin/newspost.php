@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.11 $
-|   $Date: 2008-02-19 19:33:45 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.12 $
+|   $Date: 2008-03-18 00:38:53 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -556,6 +556,7 @@ class newspost
 		$parms .= "&click_target=data";
 		$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		$parms .= "&click_postfix=[/img]";
+
 
 		$text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}}");
 
