@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-01-12 16:09:33 $
+|     $Revision: 1.6 $
+|     $Date: 2008-03-20 20:49:02 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -28,6 +28,7 @@ if (isset($_POST['viewallevents']))
 if (isset($_POST['doit']))
 {  // Triggered from NAV_BUT_ENTEREVENT
     Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
+	exit;
 }
 
 if (isset($_POST['subs']))
@@ -45,7 +46,6 @@ define("PAGE_NAME", EC_LAN_80);
 
 require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 global $ecal_class;
-//$ecal_class = new ecal_class;
 if (!is_object($ecal_class)) $ecal_class = new ecal_class;
 $cal_super = $ecal_class->cal_super;
 
@@ -80,7 +80,7 @@ $ev_fields = array(
 //--------------------------------------
 // Event to add or update
 //--------------------------------------
-if ($cal_super && (isset($_POST['ne_insert']) || isset($_POST['ne_update'])))
+if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  || check_class($pref['eventpost_admin'])))
 {  
   $ev_start		= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
   if (($_POST['ne_event'] == "") || !isset($_POST['qs']))
@@ -211,7 +211,7 @@ if (isset($_POST['jump']))
 }
 else
 {
-    if(e_QUERY)
+  if (e_QUERY)
 	{
 		$qs			= explode(".", e_QUERY);
 		$action		= $qs[0];			// Often a date if just viewing
@@ -233,7 +233,7 @@ else
 }
 
 
-if ($cal_super)
+if ($cal_super || check_class($pref['eventpost_admin']))
 {  // Bits relating to 'delete event', and generation of multiple events
   if ($action == 'mc')
   {

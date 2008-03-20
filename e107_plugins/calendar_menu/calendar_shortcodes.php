@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-15 21:46:20 $
+|     $Revision: 1.8 $
+|     $Date: 2008-03-20 20:49:02 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -98,10 +98,10 @@ SC_BEGIN EC_NAV_BUT_PRINTLISTS
 SC_END
 
 SC_BEGIN EC_NAV_BUT_ENTEREVENT
-		global $EC_NAV_BUT_ENTEREVENT, $pref, $prop;
+	global $EC_NAV_BUT_ENTEREVENT, $pref, $prop, $cal_super;
 	$EC_NAV_BUT_ENTEREVENT = "<input type='hidden' name='enter_new_val' value='".$prop."' />";
-	if (check_class($pref['eventpost_admin']) || getperms('0')){
-    	// start no admin preference
+	if ($cal_super || check_class($pref['eventpost_admin']))
+	{
     	$EC_NAV_BUT_ENTEREVENT .= "<input class='button' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
 	}
 	return $EC_NAV_BUT_ENTEREVENT;
@@ -117,7 +117,7 @@ SC_BEGIN EC_NAV_LINKCURRENTMONTH
 SC_END
 
 SC_BEGIN EC_NAV_CATEGORIES
-	global $EC_NAV_CATEGORIES, $sql, $pref, $_POST, $cal_super;
+	global $EC_NAV_CATEGORIES, $sql, $pref, $_POST, $cal_super, $cat_filter;
 	(isset($parm) && ($parm == 'nosubmit')) ? $insert = '' : $insert = "onchange='this.form.submit()'";
 	$EC_NAV_CATEGORIES = "<select name='event_cat_ids' class='tbox' style='width:140px;' {$insert} >\n<option value='all'>".EC_LAN_97."</option>\n";
 	$event_cat_id = ( isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] ? $_POST['event_cat_ids'] : null);
@@ -126,7 +126,7 @@ SC_BEGIN EC_NAV_CATEGORIES
 	$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
 	$sql->db_Select("event_cat", "*", $cal_arg);
 	while ($row = $sql->db_Fetch()){
- 	   if ($row['event_cat_id'] == $event_cat_id){
+ 	   if ($row['event_cat_id'] == $cat_filter){
  	       $EC_NAV_CATEGORIES .= "<option class='tbox' value='".$row['event_cat_id']."' selected='selected'>".$row['event_cat_name']."</option>\n";
   	  }else{
     	    $EC_NAV_CATEGORIES .= "<option value='".$row['event_cat_id']."'>".$row['event_cat_name']."</option>\n";
@@ -438,10 +438,10 @@ SC_BEGIN EC_EVENT_THREAD
 SC_END
 
 SC_BEGIN EC_EVENT_OPTIONS
-	global $EC_EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super,$ec_images_path;
-	if (USERNAME == $event_author_name || $cal_super)
+	global $EC_EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super, $pref, $ec_images_path;
+	if (USERNAME == $event_author_name || $cal_super || check_class($pref['eventpost_admin']))
 	{
-	  $EC_EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".$ec_images_path."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".$ec_images_path."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+	  $EC_EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 	}
 	return $EC_EVENT_OPTIONS;
 SC_END
