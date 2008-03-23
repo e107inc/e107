@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-12-19 20:34:28 $
+|     $Revision: 1.27 $
+|     $Date: 2008-03-23 21:22:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -333,24 +333,19 @@ global $sql, $user, $full_perms;
 if (!$full_perms) return;
 if(!$userjump = getcachedvars('userjump'))
 {
-	$sql->db_Select("user", "user_id, user_name", "ORDER BY user_id ASC", "no-where");
-	$c = 0;
-	while ($row = $sql->db_Fetch())
-	{
-		$array[$c]['id'] = $row['user_id'];
-		$array[$c]['name'] = $row['user_name'];
-		if ($row['user_id'] == $user['user_id'])
-		{
-			$userjump['prev']['id'] = $array[$c-1]['id'];
-			$userjump['prev']['name'] = $array[$c-1]['name'];
-			$row = $sql->db_Fetch();
-			$userjump['next']['id'] = $row['user_id'];
-			$userjump['next']['name'] = $row['user_name'];
-			break;
-		}
-		$c++;
-	}
-	cachevars('userjump', $userjump);
+  $sql->db_Select("user", "user_id, user_name", "`user_id` > ".intval($user['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
+  if ($row = $sql->db_Fetch())
+  {
+	$userjump['next']['id'] = $row['user_id'];
+	$userjump['next']['name'] = $row['user_name'];
+  }
+  $sql->db_Select("user", "user_id, user_name", "`user_id` < ".intval($user['user_id'])." AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1 ");
+  if ($row = $sql->db_Fetch())
+  {
+	$userjump['prev']['id'] = $row['user_id'];
+	$userjump['prev']['name'] = $row['user_name'];
+  }
+  cachevars('userjump', $userjump);
 }
 if($parm == 'prev')
 {
