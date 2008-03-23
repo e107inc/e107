@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-13 17:47:35 $
+|     $Revision: 1.4 $
+|     $Date: 2008-03-23 10:11:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -82,6 +82,12 @@ define("UCSLAN_70", 'Rebuilding class hierarchy: ');
 define("UCSLAN_71", 'User Class Maintenance');
 define("UCSLAN_72", 'Rebuild class hierarchy ');
 define('UCSLAN_73', '(This may be required if database corruption occurs)');
+define('UCSLAN_74', 'Administrators and Moderators');
+define('UCSLAN_75', 'Registered and logged in members');
+define('UCSLAN_76', 'Site Administrators');
+define('UCSLAN_77', 'Main site Administrators');
+define('UCSLAN_78', 'Moderators for Forums and other areas');
+
 
 define("UCSLAN_UPDATE", 'Update');
 

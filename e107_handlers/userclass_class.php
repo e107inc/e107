@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-02-16 12:03:27 $
+|     $Revision: 1.13 $
+|     $Date: 2008-03-23 10:11:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -85,7 +85,7 @@ class user_class
 	*/
   function read_tree($force = FALSE)
   {
-    if ($this->class_tree && !$force) return $this->class_tree;
+    if (isset($this->class_tree) && !$force) return $this->class_tree;
 	$this->class_tree = array();
 	$this->class_parents = array();
 
@@ -97,10 +97,29 @@ class user_class
 	  $this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
 	}
 
+	// Add in any fixed classes that aren't already defined
+	foreach ($this->fixed_classes as $c => $d)
+	{
+	  if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
+	  {
+//		$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_MEMBER) || ($c == e_UC_NOBODY)) ? e_UC_PUBLIC :  e_UC_MEMBER;
+		$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_ADMIN) || ($c == e_UC_MAINADMIN)) ? e_UC_MEMBER : e_UC_PUBLIC ;
+		$this->class_tree[$c]['userclass_id'] = $c;
+		$this->class_tree[$c]['userclass_name'] = $d;
+		$this->class_tree[$c]['userclass_description'] = 'Fixed class';
+		$this->class_tree[$c]['userclass_visibility'] = 0;
+		$this->class_tree[$c]['userclass_editclass'] = 0;
+		$this->class_tree[$c]['userclass_accum'] = $c;
+//		$this->class_parents[] = $c;
+	  }
+	}
+
+
 	// Now build the tree
 	foreach ($this->class_tree as $uc)
 	{
-	  if ($uc['userclass_parent'] == 0)
+	  if ($uc['userclass_parent'] == e_UC_PUBLIC)
+//	  if (($uc['userclass_parent'] == e_UC_PUBLIC) || ($uc['userclass_parent'] == e_UC_NOBODY) || ($uc['userclass_parent'] == e_UC_MEMBER))
 	  {	// Note parent (top level) classes
 	    $this->class_parents[$uc['userclass_id']] = $uc['userclass_id'];
 	  }
@@ -117,21 +136,6 @@ class user_class
 	  }
 	} 
 	
-	// Finally, add in any fixed classes that aren't already defined
-	foreach ($this->fixed_classes as $c => $d)
-	{
-	  if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
-	  {
-		$this->class_tree[$c]['userclass_parent'] = ($c == e_UC_MEMBER) ? e_UC_PUBLIC :  e_UC_MEMBER;
-		$this->class_tree[$c]['userclass_id'] = $c;
-		$this->class_tree[$c]['userclass_name'] = $d;
-		$this->class_tree[$c]['userclass_description'] = 'Fixed class';
-		$this->class_tree[$c]['userclass_visibility'] = 0;
-		$this->class_tree[$c]['userclass_editclass'] = 0;
-		$this->class_tree[$c]['userclass_accum'] = $c;
-		$this->class_parents[] = $c;
-	  }
-	}
   }
 
 
@@ -403,18 +407,8 @@ class user_class
 	$current_value = str_replace(' ','',$current_value);				// Simplifies parameter passing for the tidy-minded
 
 	$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
-/*	// Start with the fixed classes
-	foreach ($this->fixed_classes as $c => $j)
-	{
-	  if (isset($perms[$c]))
-	  {
-		$ret .= call_user_func($callback,$treename, $c,$current_value,0);
-	  }
-	}
-*/
     foreach ($this->class_parents as $p)
 	{
-	// Looks like we don't need to differentiate between function and class calls
 	  if (isset($perms[$p]))
 	  {
 		$ret .= call_user_func($callback,$treename, $p,$current_value,0);
@@ -425,6 +419,7 @@ class user_class
   }
 
 
+  // Callback for vetted_tree - Creates the option list for a selection box
   function select($treename, $classnum, $current_value, $nest_level)
   {
 	$tmp = explode(',',$current_value);
@@ -671,7 +666,6 @@ class user_class_admin extends user_class
 						'userclass_icon' => "varchar(250) NOT NULL default ''"
 						);		// Note - 'userclass_id' intentionally not in this list
 
-//  var $fixed_list = array(e_UC_MAINADMIN, e_UC_MEMBER, e_UC_ADMIN, e_UC_ADMINMOD, e_UC_MODS, e_UC_READONLY);	// Classes which can't be deleted
 
   // Icons to use for graphical tree display
   // First index - no children, children
@@ -723,14 +717,21 @@ class user_class_admin extends user_class
 	foreach ($this->class_parents as $cp)
 	{
 	  $rights = array();
-	  $this->rebuild_tree($cp,$rights);
+	  $this->rebuild_tree($cp,$rights);		// increasing rights going down the tree
 	}
   }
   
 
-	// Internal function, called recursively to rebuild the permissions tree
+	// Internal function, called recursively to rebuild the permissions tree where rights increase going down the tree
+	// $parent is the class number being processed.
+	// $rights is the array of rights accumulated so far in the walk down the tree
   function rebuild_tree($parent, $rights) 
   {
+	if ($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
+	{
+	  $this->topdown_tree($parent);
+	  return;
+	}
     $rights[]  = $parent;
 	$imp_rights = implode(',',$rights);
 	if ($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
@@ -742,6 +743,26 @@ class user_class_admin extends user_class
 	{
 	  $this->rebuild_tree($cc,$rights);		// Recursive call
     }
+  } 
+
+
+	// Internal function, called recursively to rebuild the permissions tree where rights increase going up the tree
+	// Returns an array
+  function topdown_tree($our_class) 
+  {
+    $rights  = array($our_class);				// Accumulator always has rights to its own class
+    foreach ($this->class_tree[$our_class]['class_children'] as $cc)
+	{
+	  $rights = array_merge($rights,$this->topdown_tree($cc));				// Recursive call
+    }
+	$rights = array_unique($rights);
+	$imp_rights = implode(',',$rights);
+	if ($this->class_tree[$our_class]['userclass_accum'] != $imp_rights)
+	{
+	  $this->class_tree[$our_class]['userclass_accum'] = $imp_rights;
+	  $this->class_tree[$our_class]['change_flag'] = 'UPDATE';
+	}
+	return $rights;
   } 
 
 
@@ -869,6 +890,7 @@ class user_class_admin extends user_class
   }
   
 
+
   function show_graphical_tree($show_debug=FALSE)
   {
     $this->graph_debug = $show_debug;
@@ -929,7 +951,6 @@ class user_class_admin extends user_class
  
   function delete_class($class_id)
   {
-//    if (in_array($class_id, $this->fixed_list)) return FALSE;			// Some classes can't be deleted
     if (isset($this->fixed_classes[$class_id])) return FALSE;			// Some classes can't be deleted
 	if (!isset($this->class_tree[$class_id])) return FALSE;
 	if (count($this->class_tree[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
@@ -975,42 +996,36 @@ class user_class_admin extends user_class
   {
     // If they don't exist, we need to create class records for the 'standard' user classes
     $init_list = array(
-					array('userclass_id' => e_UC_MEMBER, 'userclass_name' => "Member", 
-						'userclass_description' => "Registered and logged in users", 
+					array('userclass_id' => e_UC_MEMBER, 'userclass_name' => UC_LAN_3, 
+						'userclass_description' => UCSLAN_75,
 						'userclass_editclass' => e_UC_MAINADMIN,
 						'userclass_parent' => e_UC_PUBLIC,
 						'userclass_visibility' => e_UC_MEMBER
 						),
-					array('userclass_id' => e_UC_ADMINMOD, 'userclass_name' => "Admins and Mods", 
-						'userclass_description' => "Administrators and Moderators", 
+					array('userclass_id' => e_UC_ADMINMOD, 'userclass_name' => UC_LAN_8, 
+						'userclass_description' => UCSLAN_74, 
 						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_MEMBER,
+						'userclass_parent' => e_UC_MAINADMIN,
 						'userclass_visibility' => e_UC_MEMBER
 						),
-					array('userclass_id' => e_UC_ADMIN, 'userclass_name' => "Admin", 
-						'userclass_description' => "Administrators", 
+					array('userclass_id' => e_UC_ADMIN, 'userclass_name' => UC_LAN_5, 
+						'userclass_description' => UCSLAN_76, 
 						'userclass_editclass' => e_UC_MAINADMIN,
 						'userclass_parent' => e_UC_ADMINMOD,
 						'userclass_visibility' => e_UC_MEMBER
 						),
-					array('userclass_id' => e_UC_MAINADMIN, 'userclass_name' => "Main Admins", 
-						'userclass_description' => "Main Administrators", 
+					array('userclass_id' => e_UC_MAINADMIN, 'userclass_name' => UC_LAN_6, 
+						'userclass_description' => UCSLAN_77, 
 						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_ADMIN,
+						'userclass_parent' => e_UC_NOBODY,
 						'userclass_visibility' => e_UC_MEMBER
 						),
-					array('userclass_id' => e_UC_MODS, 'userclass_name' => "Moderators", 
-						'userclass_description' => "Forum Moderators", 
+					array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7, 
+						'userclass_description' => UCSLAN_78, 
 						'userclass_editclass' => e_UC_MAINADMIN,
 						'userclass_parent' => e_UC_ADMINMOD,
 						'userclass_visibility' => e_UC_MEMBER
-						)  /*,
-					array('userclass_id' => e_UC_USERS, 'userclass_name' => "Users", 
-						'userclass_description' => "Non-admin users", 
-						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_MEMBER,
-						'userclass_visibility' => e_UC_MEMBER  
-						)  */
+						)
 					);
 
 	foreach ($init_list as $entry)

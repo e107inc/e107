@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-02-16 12:03:26 $
+|     $Revision: 1.11 $
+|     $Date: 2008-03-23 10:11:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -348,7 +348,7 @@ switch ($action)
 		<tr>
 		<td class='forumheader3'>".UCSLAN_35."</td>
 		<td class='forumheader3'>";
-	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,"main,admin,classes,matchclass,member").'</select>';
+	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,"main,admin,nobody,classes,matchclass,member").'</select>';
 //		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_36."</td>
