@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/userclass2.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-07 22:30:29 $
+|     $Revision: 1.4 $
+|     $Date: 2008-03-23 10:11:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@ switch (varsettrue($qs[0],'config'))
 	The number in front of the class name is its unique ID (reference number). The 'Everyone' class has an ID of 0 (zero). E107 uses these IDs throughout to refer to classes.<br />
 	After the class name is the class visibility and editability - [vis:253, edit: 27] for example. This means that the class will be visible in most selectors only if the current user is a member of class 253, 
 	and the user may edit their class membership only if they are a member of class 27.<br />
-	Finally, after the '=', is a list of all classes above each class in the tree, plus the ID of that class. Thus a user who is a member of a particular class will
+	Finally, after the '=', is a list of all classes either above or below each class in the tree, plus the ID of that class. Thus a user who is a member of a particular class will
 	 be a member of all the classes in this list.<br /><br />
 	To help with understanding, the class membership of the first 20 members is shown. The first entry on each line shows the classes of which the user is a member. The 
 	 second entry lists all the classes where the user is a member once inheritance takes effect. The third entry shows which class memberships they can edit";
@@ -65,8 +65,10 @@ switch (varsettrue($qs[0],'config'))
 		 To allow users to determine whether they can be a member of a class, allow them to manage it. If you set 'no-one' here, only the admins
 		 can manage membership of the class<br /><br />
 		 The 'visibility' field allows you to hide the class from most members - applies in some of the drop-down lists and checkboxes.<br /><br />
-		 The 'class parent' allows you to set a hierarchy of classes, where the classes lower down the hierarchy also have the rights of their parent class, 
-		 and that classes' parent, and so on. The resulting tree is shown in the lower part of the page; you can expand and contract branches by clicking on the '+' and '-' boxes.";
+		 The 'class parent' allows you to set a hierarchy of classes. If the 'top' of the hierarchy is the 'Everybody/Public' or 'Member' classes, the 
+		 classes lower down the hierarchy also have the rights of their parent class, and that classes' parent, and so on. If the 'top' of the hierarchy is
+		 the 'No One/Nobody' class, then rights are accumulated in the opposite direction - a class accumlates all the rights of a class <b>below</b> them in the 
+		 tree. The resulting tree is shown in the lower part of the page; you can expand and contract branches by clicking on the '+' and '-' boxes.";
 }
 $ns -> tablerender($caption, $text);
 ?>
