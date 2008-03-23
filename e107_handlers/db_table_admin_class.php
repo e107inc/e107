@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-12-08 15:11:50 $
+|     $Revision: 1.2 $
+|     $Date: 2008-03-23 11:17:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -94,11 +94,13 @@ class db_table_admin
   function parse_field_defs($text)
   {
     $ans = array();
-    $field_lines = explode(',',$text);
+	$text = str_replace("\r","\n",$text);
+    $field_lines = explode("\n",$text);
 	foreach ($field_lines as $fv)
 	{
 	  unset($defs);
 	  $fv = trim(str_replace('  ',' ',$fv));
+	  if (substr($fv,-1) == ',') $fv = trim(substr($fv,0,-1));
 //	  echo "Line: ".$fv."<br />";
 	  if ($fv)
 	  {
@@ -178,8 +180,8 @@ class db_table_admin
 			  $i++;
 			}
 		}
+		if (count($defs) > 1) $ans[] = $defs; else echo "Partial definition<br />";
 	  }
-	  if (count($defs) > 1) $ans[] = $defs; else echo "Partial definition<br />";
 	}
 	if (!count($ans)) return FALSE;
 	return $ans;
