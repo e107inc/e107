@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-01-20 04:46:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2008-03-23 21:43:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -367,8 +367,8 @@ if (isset($_POST['register']))
 	if($_POST['xupexist'])
 	{
 		require_once(e_HANDLER."xml_class.php");
-		$xml = new xmlClass;
-		if(!$rawData = $xml->getRemoteFile($_POST['xupexist']))
+		$xml = new parseXml;
+		if(!$rawData = $xml -> getRemoteXmlFile($_POST['xupexist']))
 		{
 			echo "Error: Unable to open remote XUP file";
 		}
@@ -696,9 +696,11 @@ global $db_debug;
 		$u_key = md5(uniqid(rand(), 1));
 		// ************* Possible class insert
 		
+		require_once(e_HANDLER.'password_handler.php');
+		$passhandler = new PasswordHandler();
+
 		// Following array will be logged to both admin log and user's entry
 		$signup_data = array(
-		  'user_id' => $nid,
 		  'user_name' => $username,
 		  'user_loginname' => $loginname,
 		  'user_email' => $tp -> toDB($_POST['email']),
@@ -706,7 +708,7 @@ global $db_debug;
 
 		// Following array is logged to user's entry only
 		$new_data = array(
-			'user_password' 	=> md5($_POST['password1']),
+			'user_password' 	=> $sql->escape($passhandler->HashPassword($_POST['password1']), FALSE),
 			'user_sess'			=> $u_key,
 			'user_signature'	=> $tp -> toDB($_POST['signature']),
 			'user_image'		=> $tp -> toDB($_POST['image']),
@@ -722,8 +724,9 @@ global $db_debug;
 //		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
 
 		// Log to user audit log if enabled
+		$signup_data['user_id'] = $nid;
 		$signup_data['signup_key'] = $u_key;
-		$signup_data['user_realname'] = $tp -> toDB($_POST['realname']));
+		$signup_data['user_realname'] = $tp -> toDB($_POST['realname']);
 
 		$admin_log->user_audit(USER_AUDIT_SIGNUP,$signup_data);
 
@@ -802,7 +805,7 @@ global $db_debug;
 		{	// User can be signed up immediately
 			require_once(HEADERF);
 
-			if(!$sql -> db_Select("user", "user_id", "user_name='{$username}' AND user_password='".md5($_POST['password1'])."'"))
+			if(!$sql -> db_Select("user", "user_id", "user_name='{$username}' AND user_password='".$new_data['user_password']."'"))
 			{
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
