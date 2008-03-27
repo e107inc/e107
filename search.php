@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-02-16 21:24:49 $
+|     $Revision: 1.9 $
+|     $Date: 2008-03-27 21:14:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -26,11 +26,27 @@ if (!check_class($pref['search_restrict'])) {
 	exit;
 }
 
-if($_GET['t'] == '0'){$_GET['t'] = 'news';}
-if($_GET['t'] == 1){$_GET['t'] = 'comments';}
-if($_GET['t'] == 2){$_GET['t'] = 'users';}
-if($_GET['t'] == 3){$_GET['t'] = 'downloads';}
-if($_GET['t'] == 4){$_GET['t'] = 'pages';}
+if (isset($_GET['t']))
+{
+  switch ($_GET['t'])
+  {
+	case '0' : 
+	  $_GET['t'] = 'news';
+	  break;
+	case 1 :
+	  $_GET['t'] = 'comments';
+	  break;
+	case  2 :
+	  $_GET['t'] = 'users';
+	  break;
+	case 3 :
+	  $_GET['t'] = 'downloads';
+	  break;
+	case 4 :
+	  $_GET['t'] = 'pages';
+	  break;
+  }
+}
 
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
@@ -273,51 +289,12 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 	}
 }
 
-// standard search config
-if ($search_prefs['selector'] == 2) {
-	$SEARCH_DROPDOWN = "<select name='t' id='t' class='tbox' onchange=\"ab()\">";
-	if ($search_prefs['multisearch']) {
-		$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_22."</option>";
-	}
-} else {
-	$SEARCH_MAIN_CHECKBOXES = '';
-}
-
-foreach($search_info as $key => $value) {
-	if ($search_prefs['selector'] == 2) {
-		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " selected='selected'" : "";
-	} else {
-		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " checked='checked'" : "";
-	}
-	$google_js = check_class($search_prefs['google']) ? "onclick=\"uncheckG();\" " : "";
-	if ($search_prefs['selector'] == 2) {
-		$SEARCH_DROPDOWN .= "<option value='".$key."' ".$sel.">".$value['qtype']."</option>";
-	} else if ($search_prefs['selector'] == 1) {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
-	} else {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
-	}
-}
-
-if (check_class($search_prefs['google'])) {
-	if ($search_prefs['selector'] == 2) {
-		$SEARCH_DROPDOWN .= "<option value='".$google_id."'>Google</option>";
-	} else if ($search_prefs['selector'] == 1) {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
-	} else {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='radio' name='t' value='".$google_id."' />Google".$POST_CHECKBOXES;
-	}
-}
-
-if ($search_prefs['selector'] == 2) {
-	$SEARCH_DROPDOWN .= "</select>";
-}
-
 $value = isset($_GET['q']) ? $tp -> post_toForm($_GET['q']) : "";
 $SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
-if ($search_prefs['selector'] == 1) {
-	$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
-	$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
+if ($search_prefs['selector'] == 1) 
+{
+  $SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
+  $SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
 
 $SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
@@ -333,55 +310,72 @@ $enhanced_types['be'] = LAN_SEARCH_27.':';
 $ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
 
 // advanced search config
-if (!$_GET['adv'] || $_GET['t'] == 'all') {
-	foreach ($_GET as $gk => $gv) {
-		if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') {
-			unset($_GET[$gk]);
-		}
+if (!varsettrue($_GET['adv']) || $_GET['t'] == 'all') 
+{
+  foreach ($_GET as $gk => $gv) 
+  {
+	if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') 
+	{
+	  unset($_GET[$gk]);
 	}
+  }
 }
 
-$SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".($_GET['adv'] ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-<input type='radio' name='adv' value='1' ".($_GET['adv'] ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
+$SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
+<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 
-foreach ($search_info as $key => $value) {
-	if (!isset($search_info[$key]['advanced'])) {
-		$js_adv .= " && abid != '".$key."'";
-	}
+$js_adv = '';
+foreach ($search_info as $key => $value) 
+{
+  if (!isset($search_info[$key]['advanced'])) 
+  {
+	$js_adv .= " && abid != '".$key."'";
+  }
 }
 
-if (isset($search_info[$_GET['t']]['advanced'])) {
-	$SEARCH_TYPE_DISPLAY = "";
-} else {
-	$SEARCH_TYPE_DISPLAY = "style='display: none'";
+if (isset($_GET['t']) && isset($search_info[$_GET['t']]['advanced'])) 
+{
+  $SEARCH_TYPE_DISPLAY = "";
+} 
+else 
+{
+  $SEARCH_TYPE_DISPLAY = "style='display: none'";
 }
 
 if (check_class($search_prefs['google'])) {
 	$js_adv .= " && abid != '".$google_id."'";
 }
 
-if ($perform_search) {
-	$con = new convert;
-	e107_require(e_HANDLER.'search_class.php');
-	$sch = new e_search;
 
-	// omitted words message
-	$stop_count = count($sch -> stop_keys);
-	if ($stop_count) {
-		if ($stop_count > 1) {
-			$SEARCH_MESSAGE = LAN_SEARCH_32.": ";
-		} else {
-			$SEARCH_MESSAGE = LAN_SEARCH_33.": ";
-		}
-		$i = 1;
-		foreach ($sch -> stop_keys as $stop_key) {
-			$SEARCH_MESSAGE .= $stop_key;
-			if ($i != $stop_count) {
-				$SEARCH_MESSAGE .= ', ';
-			}
-			$i++;
-		}
+if ($perform_search) 
+{
+  $con = new convert;
+  e107_require(e_HANDLER.'search_class.php');
+  $sch = new e_search;
+
+  // omitted words message
+  $stop_count = count($sch -> stop_keys);
+  if ($stop_count) 
+  {
+	if ($stop_count > 1) 
+	{
+	  $SEARCH_MESSAGE = LAN_SEARCH_32.": ";
+	} 
+	else 
+	{
+	  $SEARCH_MESSAGE = LAN_SEARCH_33.": ";
 	}
+	$i = 1;
+	foreach ($sch -> stop_keys as $stop_key) 
+	{
+	  $SEARCH_MESSAGE .= $stop_key;
+	  if ($i != $stop_count) 
+	  {
+		$SEARCH_MESSAGE .= ', ';
+	  }
+	  $i++;
+	}
+  }
 }
 
 require_once(HEADERF);
@@ -395,6 +389,56 @@ if (!isset($SEARCH_TOP_TABLE)) {
 		require(e_BASE.$THEMES_DIRECTORY."templates/search_template.php");
 	}
 }
+
+
+
+// standard search config
+if ($search_prefs['selector'] == 2) 
+{
+	$SEARCH_DROPDOWN = "<select name='t' id='t' class='tbox' onchange=\"ab()\">";
+	if ($search_prefs['multisearch']) {
+		$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_22."</option>";
+	}
+} 
+else 
+{
+  $SEARCH_MAIN_CHECKBOXES = '';
+}
+
+foreach($search_info as $key => $value) 
+{
+	if ($search_prefs['selector'] == 2) {
+		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " selected='selected'" : "";
+	} else {
+		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " checked='checked'" : "";
+	}
+	$google_js = check_class($search_prefs['google']) ? "onclick=\"uncheckG();\" " : "";
+	if ($search_prefs['selector'] == 2) {
+		$SEARCH_DROPDOWN .= "<option value='".$key."' ".$sel.">".$value['qtype']."</option>";
+	} else if ($search_prefs['selector'] == 1) {
+		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
+	} else {
+		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
+	}
+}
+
+if (check_class($search_prefs['google'])) 
+{
+	if ($search_prefs['selector'] == 2) {
+		$SEARCH_DROPDOWN .= "<option value='".$google_id."'>Google</option>";
+	} else if ($search_prefs['selector'] == 1) {
+		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
+	} else {
+		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='radio' name='t' value='".$google_id."' />Google".$POST_CHECKBOXES;
+	}
+}
+
+if ($search_prefs['selector'] == 2) 
+{
+	$SEARCH_DROPDOWN .= "</select>";
+}
+// end of standard search config
+
 
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
 foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) {
