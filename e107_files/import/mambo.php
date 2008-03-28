@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/mambo.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-08-03 21:10:43 $
+|     $Revision: 1.3 $
+|     $Date: 2008-03-28 22:10:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -115,7 +115,7 @@ $text .= "<td class='fcaption'>regDate</td>";
 $text .= "<td class='fcaption'>lvDate</td>";
 $text .= "</tr>";
 
-$result = mysql_query("SELECT name,username,email,block,sendEmail,gid,password,usertype,UNIX_TIMESTAMP(registerDate) AS regDate,UNIX_TIMESTAMP(lastvisitDate) AS lvDate FROM mos_users", $phpbbConnection);
+$result = mysql_query("SELECT name,username,email,block,sendEmail,gid,password,usertype,UNIX_TIMESTAMP(registerDate) AS regDate,UNIX_TIMESTAMP(lastvisitDate) AS lvDate FROM {$mamboPrefix}users", $phpbbConnection);
 while ($mos = mysql_fetch_array($result, MYSQL_ASSOC)) {
 $text .= "<tr>";
 $text .= "<td class='forumheader3'>".$mos['name']."</td>";
