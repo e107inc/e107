@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/credits.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-07-17 16:20:16 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2008-04-01 20:08:38 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -109,7 +109,7 @@ echo "<?xml version='1.0' encoding='".CHARSET."' ?><!DOCTYPE html PUBLIC \"-//W3
 <body style='padding: 0; margin: 0; background-color: #e8e8e8; color: #8E8E8E'>
 
 <div><img src='".e_IMAGE."generic/cred.png' alt='' />
-<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>".CRELAN_7." ".$e107info['e107_version'].", build ".($e107info['e107_build'] ? $e107info['e107_build'] : "zero")."</b><br />&copy; 2002-2006, ".CRELAN_3."</div>
+<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>".CRELAN_7." ".$e107info['e107_version'].", build ".($e107info['e107_build'] ? $e107info['e107_build'] : "zero")."</b><br />&copy; 2002-2008, ".CRELAN_3."</div>
 
 ";
 
