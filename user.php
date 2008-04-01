@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/user.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-01-15 22:16:07 $
+|     $Revision: 1.6 $
+|     $Date: 2008-04-01 19:58:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -161,7 +161,7 @@ else
 {
 	$userList = $sql->db_getList();
 
-	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
+	$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
 	foreach ($userList as $row)
 	{
 		$loop_uid = $row['user_id'];
