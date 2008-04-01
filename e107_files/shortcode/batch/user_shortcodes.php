@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-03-27 20:42:20 $
+|     $Revision: 1.12 $
+|     $Date: 2008-04-01 19:58:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ if(!$chatposts = getcachedvars('total_chatposts'))
   }
   cachevars('total_chatposts', $chatposts);
 }
-return round(($user['user_chats']/$chatposts) * 100, 2);
+return ($chatposts!=0) ? round(($user['user_chats']/$chatposts) * 100, 2): 0;
 SC_END
 
 SC_BEGIN USER_COMMENTPER
@@ -97,17 +97,17 @@ if(!$commentposts = getcachedvars('total_commentposts'))
 	$commentposts = $sql->db_Count("comments");
 	cachevars('total_commentposts', $commentposts);
 }
-return round(($user['user_comments']/$commentposts) * 100, 2);
+return ($commentposts!=0) ? round(($user['user_comments']/$commentposts) * 100, 2): 0;
 SC_END
 
 SC_BEGIN USER_FORUMPER
 global $sql, $user;
 if(!$forumposts = getcachedvars('total_forumposts'))
 {
-	$forumposts = $sql->db_Count("forum_t");
-	cachevars('total_forumposts', $forumposts);
+  $forumposts = (isset($pref['plug_installed']['forum'])) ? $sql->db_Count("forum_t"): 0;
+  cachevars('total_forumposts', $forumposts);
 }
-return round(($user['user_forums']/$forumposts) * 100, 2);
+return ($forumposts!==0) ? round(($user['user_forums']/$forumposts) * 100, 2): 0;
 SC_END
 
 SC_BEGIN USER_LEVEL
