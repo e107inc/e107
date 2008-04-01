@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 16:18:51 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2008-04-01 20:06:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -55,7 +55,10 @@ if($path == "/")
 // ===============================================
 
 
-foreach($_POST['deleteconfirm'] as $key=>$delfile){
+if (isset($_POST['deleteconfirm'])) 
+{
+  foreach($_POST['deleteconfirm'] as $key=>$delfile)
+  {
 	// check for delete.
 	if (isset($_POST['selectedfile'][$key]) && isset($_POST['deletefiles'])) {
 		if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
@@ -86,6 +89,7 @@ foreach($_POST['deleteconfirm'] as $key=>$delfile){
 			}
 		}
 	}
+  }
 }
 
 
