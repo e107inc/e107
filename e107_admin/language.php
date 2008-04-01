@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-09-20 21:45:33 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2008-04-01 20:03:05 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -331,7 +331,7 @@ function table_list() {
 
 	while (list($temp) = mysql_fetch_array($tables))
 	{
-		if(strpos($temp, MPREFIX) === 0)
+        if ((MPREFIX=='') ||(strpos($temp, MPREFIX) === 0))
 		{
 			$e107tab = str_replace(MPREFIX, "", $temp);
 			if (!in_array($e107tab, $exclude) && stristr($e107tab, "lan_") === FALSE)
