@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2008-03-17 20:42:50 $
+|     $Revision: 1.100 $
+|     $Date: 2008-04-01 19:41:56 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -201,12 +201,14 @@ if (isset($_POST['updatesettings']))
 
 	if(isset($pref['signup_disallow_text']))
 	{
-		$tmp = explode(",", $pref['signup_disallow_text']);
-		foreach($tmp as $disallow){
-			if(strstr($_POST['username'], $disallow)){
-				$error .= LAN_USET_11."\\n";
-			}
+	  $tmp = explode(",", $pref['signup_disallow_text']);
+	  foreach($tmp as $disallow)
+	  {
+		if (($disallow != '') && strstr($_POST['username'], $disallow))
+		{
+		  $error .= LAN_USET_11."\\n";
 		}
+	  }
 	}
 
 	if (strlen(trim($_POST['password1'])) < $pref['signup_pass_len'] && trim($_POST['password1']) != "") {
