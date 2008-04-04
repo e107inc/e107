@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-02-16 14:25:46 $
-|     $Author: whoisrich $
+|     $Revision: 1.13 $
+|     $Date: 2008-04-04 21:03:51 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -41,7 +41,8 @@ while ($row = $sql->db_Fetch()) {
 	}
 }
 
-if (isset($_POST['updateclass'])) {
+if (isset($_POST['updateclass'])) 
+{
 	$remuser = TRUE;
 	$classcount = count($_POST['userclass'])-1;
 	for($a = 0; $a <= $classcount; $a++) {
@@ -53,15 +54,19 @@ if (isset($_POST['updateclass'])) {
         $message = UCSLAN_9;
 	$sql->db_Select("user", "*", "user_id='$id' ");
 	$row = $sql->db_Fetch();
-	if ($_POST['notifyuser']) {
+	if ($_POST['notifyuser']) 
+	{
 		$message .= "<br />".UCSLAN_1.":</b> ".$row['user_name']."<br />";
 		require_once(e_HANDLER."mail.php");
-   		unset($messaccess);
-		for($a = 0; $a <= (count($class)-1); $a++) {
-			if (check_class($class[$a][0], $row['user_class'])) {
-				$messaccess .= $class[$a][1]." - " . $class[$a][2]. "\n";
-			}
+		$messaccess = '';
+		for($a = 0; $a <= (count($class)-1); $a++) 
+		{
+		  if (check_class($class[$a][0], $row['user_class'])) 
+		  {
+			$messaccess .= $class[$a][1]." - " . $class[$a][2]. "\n";
+		  }
 		}
+		if ($messaccess == '') $messaccess = UCSLAN_12."\n";
 		$send_to = $row['user_email'];
 		$subject = UCSLAN_2;
         $message = UCSLAN_3." " . $row['user_name']. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";

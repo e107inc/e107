@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_userclass.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-03 15:57:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2008-04-04 21:03:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -20,5 +20,6 @@ define("UCSLAN_7", "Set Classes");
 define("UCSLAN_8", "Notify User");
 define("UCSLAN_9", "Classes Updated.");
 define("UCSLAN_10", "Regards,");
+define('UCSLAN_12', 'Member privileges only');
 
 ?>
