@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-10-28 19:04:13 $
+|     $Revision: 1.5 $
+|     $Date: 2008-04-04 21:40:37 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -472,7 +472,7 @@ class frontpage
 	  return  "<td class='forumheader3'>".$rs -> form_radio($ob_name, 'other', $cur_val)."</td>
 		<td class='forumheader3'>".FRTLAN_15."</td>
 		<td class='forumheader3'>
-		".$rs -> form_text($ob_name.'_other', 50, ($cur_val ? $cur_page : ''),100)."
+		".$rs -> form_text($ob_name.'_other', 50, ($cur_val ? $cur_page : ''),150)."
 		</td>";
 	}
 }
