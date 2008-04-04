@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2007-07-08 21:08:18 $
+|     $Revision: 1.25 $
+|     $Date: 2008-04-04 21:40:50 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -242,7 +242,7 @@ class frontpage {
 		<td class='forumheader3'>".$rs -> form_radio('frontpage', 'other', (!$not_other ? TRUE : FALSE))."</td>
 		<td style='width: 50%' class='forumheader3'>".FRTLAN_15."</td>
 		<td style='width: 50%' class='forumheader3'>
-		".$rs -> form_text('other_page', 50, (!$not_other ? $current_setting : ''))."
+		".$rs -> form_text('other_page', 50, (!$not_other ? $current_setting : ''), 150)."
 		</td>
 		</tr>";
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-09-16 18:18:04 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2008-04-04 21:40:50 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -145,7 +145,7 @@ class notify_config {
 		<input type='radio' name='event[".$id."][type]' value='class' ".($this -> notify_prefs['event'][$id]['type'] == 'class' ? " checked='checked'" : "")." /> ".NT_LAN_5.":
 		".r_userclass('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'], 'off', 'member,admin,classes')."
 		<input type='radio' name='event[".$id."][type]' value='email' ".($this -> notify_prefs['event'][$id]['type'] == 'email' ? " checked='checked'" : "")." /> ".NT_LAN_6.":
-		".$rs -> form_text('event['.$id.'][email]', 17, $tp -> toForm($this -> notify_prefs['event'][$id]['email']))."
+		".$rs -> form_text('event['.$id.'][email]', 40, $tp -> toForm($this -> notify_prefs['event'][$id]['email']), 150)."
 		</td>
 		</tr>";
 		return $text;
