@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-16 22:18:19 $
+|     $Revision: 1.4 $
+|     $Date: 2008-04-04 21:03:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -66,6 +66,7 @@ if (isset($_POST['updateclass']))
 		$messaccess .= $e_userclass->class_tree[$a]['userclass_name']." - " . $e_userclass->class_tree[$a]['userclass_description']. "\n";
 	  }
 	}
+	if ($messaccess == '') $messaccess = UCSLAN_12."\n";
 	$send_to = $row['user_email'];
 	$subject = UCSLAN_2;
     $message = UCSLAN_3." " . $row['user_name']. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
