@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2007-08-08 19:27:50 $
+|     $Revision: 1.72 $
+|     $Date: 2008-04-04 20:47:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -685,24 +685,18 @@ class comment {
 		$qry1 = ($qry ? " AND ".$qry : "");
 
 		//get 'amount' of records from comment db
-		/*
-		$query = $pref['nested_comments'] ?
-		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author = u.user_id
-		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-		WHERE c.comment_pid='0' ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." "
-		:
-		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author = u.user_id
-		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-		WHERE c.comment_id!='' ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
-		*/
 
+/*
 		$query = "
 		SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author = u.user_id
-		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-		WHERE c.comment_id!='' ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.comment_author,'.',1) = u.user_id
+		LEFT JOIN #user_extended AS ue ON SUBSTRING_INDEX(c.comment_author,'.',1) = ue.user_extended_id
+		WHERE c.comment_id!='' AND c.comment_blocked = 0 ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
+//		WHERE c.comment_id!='' ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
+*/
+		$query = "
+		SELECT c.*  FROM #comments AS c
+		WHERE c.comment_id!='' AND c.comment_blocked = 0 ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
 
 		if ($comment_total = $sql->db_Select_gen($query))
 		{

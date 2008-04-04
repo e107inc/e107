@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2007-10-28 15:01:35 $
+|     $Revision: 1.29 $
+|     $Date: 2008-04-04 20:47:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,8 @@ if ($action == "comments")
 		$sql->db_Select("user", "user_comments", "user_id=".$id);
 		list($user_comments) = $sql->db_Fetch();
 		$ctotal = $user_comments;
-		$data = $cobj->getCommentData($amount='10', $from, "comment_author = '".$user_id."'");
+//		$data = $cobj->getCommentData($amount='10', $from, "comment_author = '".$user_id."'");
+		$data = $cobj->getCommentData($amount='10', $from, "SUBSTRING_INDEX(comment_author,'.',1) = '".$id."'");
 	}
 	else
 	{
