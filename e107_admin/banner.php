@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-10-30 22:47:10 $
+|     $Revision: 1.4 $
+|     $Date: 2008-04-05 15:18:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -451,6 +451,8 @@ if ($action == "create") {
 
 if ($action == "menu")
 {
+  $in_catname = array();		// Notice removal
+  $out_catname = array();
 
 	$array_cat_in = explode("|", $menu_pref['banner_campaign']);
 	if (!$menu_pref['banner_caption'])
@@ -493,7 +495,7 @@ if ($action == "menu")
 
 	foreach($out_catname as $name)
 	{
-		$text .= "<option value='$name'>$name</option>\n";
+		$text .= "<option value='{$name}'>{$name}</option>\n";
 	}
 
 	$text .= "</select>
@@ -504,7 +506,7 @@ if ($action == "menu")
 	$catidvalues = "";
 	foreach($in_catname as $name)
 	{
-		$text .= "<option value='$name'>$name</option>\n";
+		$text .= "<option value='{$name}'>{$name}</option>\n";
 		$catidvalues .= $name."-";
 	}
 
