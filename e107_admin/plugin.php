@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2007-05-30 20:35:41 $
+|     $Revision: 1.74 $
+|     $Date: 2008-04-05 07:58:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -429,8 +429,11 @@ $text .= "<tr><td class='fcaption' colspan='3'>".EPL_ADLAN_23."</td></tr>";
 $text .= render_plugs($uninstalled);
 
 
-function render_plugs($pluginList){
+function render_plugs($pluginList)
+{
 	global $tp;
+
+	if (empty($pluginList)) return '';
 
 	foreach($pluginList as $plug) {
 	//Unset any possible eplug_ variables set by last plugin.php
