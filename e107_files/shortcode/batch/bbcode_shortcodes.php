@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-06-13 19:36:31 $
+|     $Revision: 1.6 $
+|     $Date: 2008-04-05 08:39:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -77,23 +77,30 @@ if(!isset($iconpath[$parm]))
 }
 
 
-foreach($register_bb as $key=>$val) // allow themes to plug in to it.
+
+if (!empty($register_bb))
 {
+  foreach($register_bb as $key=>$val) // allow themes to plug in to it.
+  {
 	if($val[0]=="")
 	{
     	$val[0] = $bbcode_func;
 	}
 	$bbcode[$key] = $val;
 	$iconpath[$key] = $val[3];
+  }
 }
 
 
-foreach($eplug_bb as $key=>$val)  // allow plugins to plug into it.
+if (!empty($eplug_bb))
 {
+  foreach($eplug_bb as $key=>$val)  // allow plugins to plug into it.
+  {
 	extract($val);
    //	echo "$onclick $onclick_var $helptext $icon <br />";
     $bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
 	$iconpath[$name] = $icon;
+  }
 }
 
 
