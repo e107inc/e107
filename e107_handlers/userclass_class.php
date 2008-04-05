@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-03-23 10:11:09 $
+|     $Revision: 1.14 $
+|     $Date: 2008-04-05 16:30:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,7 @@ define("e_UC_MODS",248);
 define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons
 define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in the admin tree displays
 
+define('e_UC_BLANK','-1');
 
 class user_class
 {
@@ -217,6 +218,7 @@ class user_class
 			classes - shows all classes
 			matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
 			language - list of languages.
+			blank - puts an empty option at the top of select dropdowns
 
 			filter - only show those classes where member is in a class permitted to view them - i.e. as the new 'visible to' field - added for 0.8
 			force  - show all classes (subject to the other options, including matchclass) - added for 0.8
@@ -234,8 +236,15 @@ class user_class
 	  $text = '';
 	  foreach ($show_classes as $k => $v)
 	  {
-		$s = ($curval == $k) ?  "selected='selected'" : "";
-	    $text .= "<option  value='".$k."' ".$s.">".$v."</option>\n";
+		if ($k == e_UC_BLANK)
+		{
+		  $text .= "<option value=''>&nbsp;</option>\n";
+		}
+		else
+		{
+		  $s = ($curval == $k) ?  "selected='selected'" : "";
+		  $text .= "<option  value='".$k."' ".$s.">".$v."</option>\n";
+		}
 	  }
 
 	  if (isset($opt_arr['language']) && $pref['multilanguage']) 
@@ -286,6 +295,11 @@ class user_class
 	  $opt_arr = array_flip($opt_arr);		// This also eliminates duplicates which could arise from applying the other options, although shouldn't matter
 
 	  if (isset($opt_arr['force'])) unset($opt_arr['filter']);
+
+	  if (isset($opt_arr['blank'])) 
+	  {
+		$ret[e_UC_BLANK] = 1;
+	  }
 
 	  // Do the 'fixed' classes next
 	  foreach ($this->text_class_link as $k => $v)
@@ -349,9 +363,12 @@ class user_class
 
 	  foreach ($show_classes as $k => $v)
 	  {
+		if ($k != e_UC_BLANK)
+		{
 		  $c = (in_array($k,$curArray)) ?  " checked='checked'" : "";
 		  if ($showdescription) $v .= " (".$this->uc_get_classdescription($k).")";
 		  $ret .= "<label><input type='checkbox' name='{$fieldname}[{$k}]' value='{$k}' {$c} /> ".$v."</label><br />\n";
+		}
 	  }
 
 	  if (strpos($optlist, "language") !== FALSE && $pref['multilanguage']) 
@@ -407,6 +424,10 @@ class user_class
 	$current_value = str_replace(' ','',$current_value);				// Simplifies parameter passing for the tidy-minded
 
 	$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
+	if (isset($perms[e_UC_BLANK]))
+	{
+	  $ret .= call_user_func($callback,$treename, e_UC_BLANK, $current_value,0);
+	}
     foreach ($this->class_parents as $p)
 	{
 	  if (isset($perms[$p]))
@@ -422,6 +443,7 @@ class user_class
   // Callback for vetted_tree - Creates the option list for a selection box
   function select($treename, $classnum, $current_value, $nest_level)
   {
+	if ($classnum == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
 	$tmp = explode(',',$current_value);
     $sel = in_array($classnum,$tmp) ? " selected='selected'" : '';
     if ($nest_level == 0)
@@ -446,6 +468,7 @@ class user_class
 	// Callback for vetted_tree - displays indented checkboxes with class name only
   function checkbox($treename, $classnum, $current_value, $nest_level)
   {
+	if ($classnum == e_UC_BLANK)  return '';
 	$tmp = explode(',',$current_value);
 	$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
     if ($nest_level == 0)
@@ -464,6 +487,7 @@ class user_class
 	// Callback for vetted_tree - displays indented checkboxes with class name, and description in brackets
   function checkbox_desc($treename, $classnum, $current_value, $nest_level)
   {
+	if ($classnum == e_UC_BLANK)  return '';
 	$tmp = explode(',',$current_value);
 	$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
     if ($nest_level == 0)
