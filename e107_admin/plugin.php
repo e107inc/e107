@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-02-17 03:42:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2008-04-05 07:58:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -452,6 +452,8 @@ $text .= render_plugs($uninstalled);
 function render_plugs($pluginList)
 {
 	global $tp, $imode, $plugin;
+
+	if (empty($pluginList)) return '';
 
 	foreach($pluginList as $plug)
 	{
