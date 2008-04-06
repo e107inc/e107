@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2007-08-18 13:47:47 $
+|     $Revision: 1.27 $
+|     $Date: 2008-04-06 21:37:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
-global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $ADMIN_FOOTER, $e107;
+global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $ADMIN_FOOTER, $e107, $pref;
 
 //
 // SHUTDOWN SEQUENCE

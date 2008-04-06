@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2007-10-30 08:11:42 $
-|     $Author: e107coders $
+|     $Revision: 1.45 $
+|     $Date: 2008-04-06 21:37:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -88,13 +88,13 @@ class e107_user_extended
 		return (in_array($name, $this->reserved_names));
 	}
 
+
 	function user_extended_get_categories($byID = TRUE)
 	{
 	   	$ret = array();
 		global $sql;
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
 		{
-
 			if($byID == TRUE)
 			{
 				while($row = $sql->db_Fetch())
@@ -115,6 +115,7 @@ class e107_user_extended
 	function user_extended_get_fields($cat = "")
 	{
 		global $sql;
+		$ret = array();
 		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 {$more} ORDER BY user_extended_struct_order ASC"))
 		{
@@ -140,6 +141,7 @@ class e107_user_extended
 		}
 		return $ret;
 	}
+
 
 	function user_extended_type_text($type, $default)
 	{
@@ -182,13 +184,14 @@ class e107_user_extended
 		return $db_type.$default_text;
 	}
 
+
 	function user_extended_field_exist($name)
 	{
 		global $sql, $tp;
 		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
 	}
 
-	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent)
+	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent=0)
 	{
 		global $sql, $tp;
 		if(is_array($name))
@@ -223,6 +226,8 @@ class e107_user_extended
 		}
 		return FALSE;
 	}
+
+
 
 	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $parent)
 	{
@@ -273,14 +278,16 @@ class e107_user_extended
 		return "<input type='checkbox' {$chk} value='1' name='{$name}' />&nbsp;".UE_LAN_HIDE;
 	}
 
+
+
 	function user_extended_edit($struct, $curval)
 	{
 		global $cal, $tp;
-		$choices = explode(",",$struct['user_extended_struct_values']);
 		if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
 		{
 			$curval = $struct['user_extended_struct_default'];
 		}
+	  $choices = explode(",",$struct['user_extended_struct_values']);
 		foreach($choices as $k => $v)
 		{
 			$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
@@ -290,7 +297,8 @@ class e107_user_extended
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
 		$fname = "ue[user_".$struct['user_extended_struct_name']."]";
-		if(strpos($include, 'class') === FALSE)	{
+	  if(strpos($include, 'class') === FALSE)	
+	  {
 			$include .= " class='tbox' ";
 		}
 
@@ -408,6 +416,7 @@ class e107_user_extended
 		cachevars('ue_struct',$ret);
 		return $ret;
 	}
+
 
 	function parse_extended_xml($contents, $no_cache = FALSE)
 	{
