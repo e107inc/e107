@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-15 21:57:16 $
+|     $Revision: 1.10 $
+|     $Date: 2008-04-06 21:38:02 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -43,13 +43,14 @@ require_once(e_HANDLER."userclass_class.php");
 
 
 $ue = new e107_user_extended;
+$message = '';
 
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
+	$sub_action = varset($tmp[1],'');
+	$id = varset($tmp[2],0);
 	unset($tmp);
 }
 
@@ -155,7 +156,7 @@ if (isset($_POST['add_category']))
 }
 
 
-if ($_POST['eu_action'] == "delext")
+if (varset($_POST['eu_action'],'') == "delext")
 {
 	list($_id, $_name) = explode(",",$_POST['key']);
 	if($ue->user_extended_remove($_id, $_name))
@@ -165,7 +166,7 @@ if ($_POST['eu_action'] == "delext")
 }
 
 // Delete category
-if ($_POST['eu_action'] == "delcat")
+if (varset($_POST['eu_action'],'') == "delcat")
 {
 	list($_id, $_name) = explode(",",$_POST['key']);
 	if (count($ue->user_extended_get_fields($_id)) > 0)
@@ -260,7 +261,7 @@ require_once("footer.php");
 class users_ext
 {
 
-	function show_extended($current)
+	function show_extended($current = '')
 	{
 		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action;
 
@@ -268,14 +269,15 @@ class users_ext
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
 		$catNums = array_keys($catList);
 		$extendedList = $ue->user_extended_get_fields();
+	  $text = '';
 
-		if(!$current){
+		if(!$current)
+		{	// Show existing fields
 			$text = "<div style='text-align:center'>";
 			$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td class='fcaption'>".EXTLAN_1."</td>
 			<td class='fcaption'>".EXTLAN_2."</td>";
-		//	$text .="<td class='fcaption'>".EXTLAN_3."</td>";
 			$text .="<td class='fcaption'>".EXTLAN_4."</td>
 			<td class='fcaption'>".EXTLAN_5."</td>
 			<td class='fcaption'>".EXTLAN_6."</td>
@@ -295,11 +297,11 @@ class users_ext
 
 				$i=0;
 				if(count($extendedList))
-				{
-					//	Show current extended fields
-					foreach($extendedList[$cn] as $ext)	{
+				{  //	Show current extended fields
+			foreach($extendedList[$cn] as $ext)	
+			{
 					$fname = "user_".$ext['user_extended_struct_name'];
-					$uVal = str_replace(chr(1), "", $curVal[$fname]);
+			  $uVal = str_replace(chr(1), "", $ext['user_extended_struct_default']);		// Is this right?
 						$text .= "
 						<tr>
 						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."]</td>
@@ -312,7 +314,8 @@ class users_ext
 						<form method='post' action='".e_SELF."'>
 						<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 						";
-						if($i > 0){
+			  if($i > 0)
+			  {
 							$text .= "
 							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 							";
@@ -354,15 +357,21 @@ class users_ext
 		{
 			if($current == 'new')
 			{
-				$current = '';
+		  $current = array();
+		  $current_include = '';
+		  $current_regex = '';
+		  $current_regexfail = '';
+		  $current_hide = '';
 			}
+		else
+		{	// Editing existing definition
 			list($current_include, $current_regex, $current_regexfail, $current_hide) = explode("^,^",$current['user_extended_struct_parms']);
+		}
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			";
 			$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>  ";
 			$text .= "
-
 			<tr>
 			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_10.":</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>user_";
@@ -446,10 +455,14 @@ class users_ext
             $text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox' name='table_db' onchange=\"this.form.submit()\" >
             <option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$result = mysql_list_tables($mySQLdefaultdb);
-			while ($row2 = mysql_fetch_row($result)){
-				$fld = str_replace(MPREFIX,"",$row2[0]);
-				$selected =  ($_POST['table_db'] == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
-         		$text .= (strpos($row2[0], MPREFIX) !== FALSE) ? "<option value=\"".$fld."\" $selected>".$fld."</option>\n" : "";
+			while ($row2 = mysql_fetch_row($result))
+			{
+			  $fld = str_replace(MPREFIX,"",$row2[0]);
+			  $selected =  (varset($_POST['table_db'],'') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
+			  if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
+			  {
+				$text .= "<option value=\"".$fld."\" $selected>".$fld."</option>\n";
+			  }
 			}
 			$text .= " </select></td></tr>";
      	if($_POST['table_db'] || $curVals[0]){
@@ -839,6 +852,7 @@ function show_predefined()
 	//Get list of predefined fields, determine which are already activated.
 	$preList = $ue->parse_extended_xml('getfile');
 	ksort($preList);
+	$active = array();
 	foreach($preList as $k => $v)
 	{
 		if($k != 'version')
