@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-16 22:18:19 $
+|     $Revision: 1.10 $
+|     $Date: 2008-04-07 21:35:38 $
 |     $Author: e107steved $
 
 To do:
@@ -143,6 +143,7 @@ Generic log entry point
     global $pref, $e107, $tp;
 	
 	list($time_usec, $time_sec) = explode(" ", microtime());		// Log event time immediately to minimise uncertainty
+	$time_usec = $time_usec * 1000000;
 	
 	if ($this->rldb == NULL) $this->rldb = new db;		// Better use our own db - don't know what else is going on
 
@@ -247,6 +248,7 @@ Generic log entry point
   {
     global $e107, $tp, $pref;
 	list($time_usec, $time_sec) = explode(" ", microtime());		// Log event time immediately to minimise uncertainty
+	$time_usec = $time_usec * 1000000;
 
 	// See whether we should log this
 	$user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
