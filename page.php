@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-04-07 15:51:55 $
+|     $Revision: 1.16 $
+|     $Date: 2008-04-07 20:29:24 $
 |     $Author: secretr $
 |
 +----------------------------------------------------------------------------+
@@ -62,7 +62,7 @@ else
 			require_once(FOOTERF);
 			exit;
 		}
-		if ($tmp['cachecontrol'] == TRUE)
+		if ($e107_core_custom_pages['cachecontrol'] == TRUE)
 		{
 		ob_start();
 		$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text']);
