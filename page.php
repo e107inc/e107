@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-11-10 15:31:58 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2008-04-07 15:51:55 $
+|     $Author: secretr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -53,32 +53,32 @@ else
 	}
 	else
 	{
-		$tmp = $page -> showPage();
-		define("e_PAGETITLE", $tmp['title']);
+		$e107_core_custom_pages = $page -> showPage();
+		define("e_PAGETITLE", $e107_core_custom_pages['title']);
 		require_once(HEADERF);
-		if ($tmp['err'])		// Need to display error block after header defined
+		if ($e107_core_custom_pages['err'])		// Need to display error block after header defined
 		{
-            $ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
+            $ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
 			require_once(FOOTERF);
 			exit;
 		}
 		if ($tmp['cachecontrol'] == TRUE)
 		{
 		ob_start();
-		$ns -> tablerender($tmp['title'], $tmp['text']);
+		$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text']);
 		$cache_data = ob_get_flush();
 		$e107cache->set($cacheString, $cache_data);
-		$e107cache->set($cachePageTitle, $tmp['title']."^".$tmp['comment_flag']);
-		$comment_flag = $tmp['comment_flag'];
+		$e107cache->set($cachePageTitle, $e107_core_custom_pages['title']."^".$e107_core_custom_pages['comment_flag']);
+		$comment_flag = $e107_core_custom_pages['comment_flag'];
 		}
 		else
 		{
-          $ns -> tablerender($tmp['title'], $tmp['text'],"cpage");
-		  $comment_flag = $tmp['comment_flag'];
+          $ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
+		  $comment_flag = $e107_core_custom_pages['comment_flag'];
 		}
 	}
 
-    $page -> title = $tmp['title'];
+    $page -> title = $e107_core_custom_pages['title'];
 	if($com = $page -> pageComment($comment_flag))
 	{
 		echo $com['comment'].$com['comment_form'];
