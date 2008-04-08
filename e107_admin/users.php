@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2007-11-01 22:01:29 $
+|     $Revision: 1.93 $
+|     $Date: 2008-04-08 21:29:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -537,7 +537,7 @@ class users
 
 
 // Search Display Column header.
-	$display_lan = array('user_id' => DUSRLAN_1,
+	$display_lan = array(
 	'user_id' => DUSRLAN_1,
 	'user_name' => DUSRLAN_2,
 	'user_loginname' => DUSRLAN_3,
