@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-05-04 20:51:02 $
+|     $Revision: 1.7 $
+|     $Date: 2008-04-08 21:24:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -72,47 +72,59 @@ class themeHandler{
 		$themeArray = array();
 		$tloop = 1;
 		$handle = opendir(e_THEME);
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && file_exists(e_THEME.$file."/theme.php")) {
-				if($mode == "id") {
-					$themeArray[$tloop] = $file;
-				} else {
-					$themeArray[$file]['id'] = $tloop;
+		while (false !== ($file = readdir($handle))) 
+		{
+		  if ($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && file_exists(e_THEME.$file."/theme.php")) 
+		  {
+			if($mode == "id") 
+			{
+			  $themeArray[$tloop] = $file;
+			} 
+			else 
+			{
+			  $themeArray[$file]['id'] = $tloop;
+			}
+			$tloop++;
+			$STYLESHEET = FALSE;
+			if(!$mode) 
+			{
+			  $handle2 = opendir(e_THEME.$file."/");
+			  while (false !== ($file2 = readdir($handle2))) 
+			  { // Read files in theme directory
+				if ($file2 != "." && $file2 != ".." && $file != "CVS" && !is_dir(e_THEME.$file."/".$file2)) 
+				{
+				  $themeArray[$file]['files'][] = $file2;
+				  if(strstr($file2, "preview.")) 
+				  {
+					$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
+				  }
+				  if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0 && strpos($file2, "admin_") !== 0)
+				  {
+					/* get information string for css file */
+					$fp=fopen(e_THEME.$file."/".$file2, "r");
+					$cssContents = fread ($fp, filesize(e_THEME.$file."/".$file2));
+					fclose($fp);
+					$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
+					preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
+					$match[1]=varset($match[1],'');
+					$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1], "nonadmin" => $nonadmin);
+					if($STYLESHEET)
+					{
+					  $themeArray[$file]['multipleStylesheets'] = TRUE;
+					}
+					else
+					{
+					  $STYLESHEET = TRUE;
+					}
+				  }
 				}
-				$tloop++;
-				$STYLESHEET = FALSE;
-				if(!$mode) {
-					$handle2 = opendir(e_THEME.$file."/");
-					while (false !== ($file2 = readdir($handle2))) {
-						if ($file2 != "." && $file2 != ".." && $file != "CVS" && !is_dir(e_THEME.$file."/".$file2)) {
-							$themeArray[$file]['files'][] = $file2;
-							if(strstr($file2, "preview.")) {
-								$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
-							}
-							if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0 && strpos($file2, "admin_") !== 0)
-							{
-								/* get information string */
-								$fp=fopen(e_THEME.$file."/".$file2, "r");
-								$cssContents = fread ($fp, filesize(e_THEME.$file."/".$file2));
-								fclose($fp);
-								$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
-								preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
-								$match[1]=varset($match[1],'');
-								$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1], "nonadmin" => $nonadmin);
-								if($STYLESHEET)
-								{
-									$themeArray[$file]['multipleStylesheets'] = TRUE;
-								}
-								else
-								{
-									$STYLESHEET = TRUE;
-								}
 
-							}
-						}
-						$fp=fopen(e_THEME.$file."/theme.php", "r");
-						$themeContents = fread ($fp, filesize(e_THEME.$file."/theme.php"));
-						fclose($fp);
+
+				if($file2=='theme.php')
+				{
+				  $fp=fopen(e_THEME.$file."/theme.php", "r");
+				  $themeContents = fread ($fp, filesize(e_THEME.$file."/theme.php"));
+				  fclose($fp);
 						preg_match('/themename(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
 						$themeArray[$file]['name'] = varset($match[3],'');
 						preg_match('/themeversion(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
@@ -136,14 +148,15 @@ class themeHandler{
 						$css = strtolower($match[2]);
 						$themeArray[$file]['csscompliant'] = ($css == "true" ? true : false);
 
-						if (!$themeArray[$file]['name'])
-						{
-							unset($themeArray[$file]);
-						}
-					}
-					closedir($handle2);
+				  if (!$themeArray[$file]['name'])
+				  {
+					unset($themeArray[$file]);
+				  }
 				}
+			  }
+			  closedir($handle2);
 			}
+		  }
 		}
 		closedir($handle);
 		return $themeArray;
