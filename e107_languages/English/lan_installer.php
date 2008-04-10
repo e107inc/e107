@@ -84,8 +84,8 @@ e107 Homepage: [link=http://e107.org]http://e107.org[/link], you will find the F
 Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
 
 [b]Downloads[/b]
-Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
-Themes: [link=http://e107themes.org]http://e107themes.org[/link]
+Plugins: [link=http://plugins.e107.org]http://plugins.e107.org[/link]
+Themes: [link=http://themes.e107.org]http://themes.e107.org[/link]
 
 Thank you for trying e107, we hope it fulfils your website needs.
 (You can delete this message from your admin section.)");
