@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-04-08 21:24:23 $
+|     $Revision: 1.8 $
+|     $Date: 2008-04-10 19:23:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -429,8 +429,7 @@ class themeHandler{
 
 	function showPreview()
 	{
-		@include_once(e_LANGUAGE."admin/lan_theme.php");
-		@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
+		include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
 		$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
 		global $ns;
 		$ns->tablerender(TPVLAN_2, $text);
