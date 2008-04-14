@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-12 16:51:43 $
+|     $Revision: 1.9 $
+|     $Date: 2008-04-14 19:07:02 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -552,25 +552,26 @@ class comment {
 
 	function recalc_user_comments($id)
 	{
-		global $sql;
+	  global $sql;
 	
-		if(is_array($id))
+	  if(is_array($id))
+	  {
+		foreach($id as $_id)
 		{
-			foreach($id as $_id)
-			{
-				$this->recalc_user_comments($_id);
-			}
+		  $this->recalc_user_comments($_id);
 		}
-		$qry = "
+		return;
+	  }
+	  $qry = "
 		SELECT COUNT(*) AS count
 		FROM #comments
 		WHERE SUBSTRING_INDEX(comment_author,'.',1) = '{$id}'
 		";
-		if($sql->db_Select_gen($qry))
-		{
-			$row = $sql->db_Fetch();
-			$sql->db_Update("user","user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
-		}
+	  if($sql->db_Select_gen($qry))
+	  {
+		$row = $sql->db_Fetch();
+		$sql->db_Update("user","user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
+	  }
 	}
 	
 	function get_author_list($id, $comment_type)
