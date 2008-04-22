@@ -12,9 +12,20 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.12 $
-|   $Date: 2008-03-17 20:45:29 $
+|   $Revision: 1.13 $
+|   $Date: 2008-04-22 20:32:40 $
 |   $Author: e107steved $
+
+
+********** TEST VERSION DOES INTERMEDIATE COPY ***************
+Unaltered code to:
+	V0.7.x File V1.33
+	V0.8.x File V1.12
+
+To do:
+	1. Criteria for intermediate copy
+	2. Make get_file_types compatible with XML counterpart - array of filetype/max size
+	3. Check sizes - may be different for various file types for non-admin user, for example
 +---------------------------------------------------------------+
 */
 
@@ -24,6 +35,14 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 
 //define("UH_DEBUG",TRUE);
 define("UH_DEBUG",FALSE);
+
+
+define('e_UPLOAD_TEMP_DIR', e_FILE.'temp/');			// Temporary directory
+define('e_READ_FILETYPES','filetypes.xml');				// Upload permissions
+define('e_SAVE_FILETYPES','filetypes_.xml');
+
+
+
 /*
 File upload handler - this is the preferred interface for new code
 -------------------
@@ -43,7 +62,7 @@ Parameters:
 	$options - an array of supplementary options, all of which will be given appropriate defaults if not defined:
 		'filetypes' - name of file containing list of valid file types 
 			   - Always looks in the admin directory
-			   - defaults to e_ADMIN.admin_filetypes.php for admins (if file exists), otherwise e_ADMIN.filetypes.php for users.
+			   - defaults to e_ADMIN.filetypes.xml, else e_ADMIN.admin_filetypes.php for admins (if file exists), otherwise e_ADMIN.filetypes.php for users.
 			   - FALSE disables this option (which implies that 'extra_file_types' is used)
 		'file_mask' - comma-separated list of file types which if defined limits the allowed file types to those which are in both this list and the
 						file specified by the 'filetypes' option. Enables restriction to, for example, image files.
@@ -95,7 +114,17 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	
 	global $admin_log;
 
+	if (ini_get('open_basedir') != '')
+	{ // Need to move file to intermediate directory before we can read its contents to check it.
+	  $ul_temp_dir = e_UPLOAD_TEMP_DIR;
+	}
+	else
+	{
+	  $ul_temp_dir = '';
+	}
+
 	if (UH_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Upload Handler test","Process uploads to {$uploaddir}, fileinfo  ".$fileinfo,FALSE,LOG_TO_ROLLING);
+//	$admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Intermediate directory: {$ul_temp_dir} ",FALSE,LOG_TO_ROLLING);
 	
 
 	$overwrite = varset($options['overwrite'],FALSE);
@@ -112,23 +141,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 
 
-	$file_mask = varset($options['file_mask'],'');
-	if (isset($options['filetypes']))
-	{
-	  $allowed_filetypes = get_allowed_filetypes($options['filetypes'], $file_mask);
-	}
-	elseif (ADMIN && is_readable(e_ADMIN.'admin_filetypes.php'))
-	{
-	  $allowed_filetypes = get_allowed_filetypes('admin_filetypes.php', $file_mask);
-	}
-	else
-	{
-	  $allowed_filetypes = get_allowed_filetypes('filetypes.php', $file_mask);
-	}
-
-	
 	$final_chmod = varset($options['final_chmod'],0644);
-
 
 
 	if (isset($options['file_array_name']))
@@ -154,24 +167,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	$uploaded = array();
 	
 
-	// Work out maximum allowable file size
-	if (UH_DEBUG)
-	{ $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test",
-	  "File size limits - user set: ".$pref['upload_maxfilesize']." Post_max_size: ".ini_get('post_max_size')." upload_max_size: ".ini_get('upload_max_size'),FALSE,FALSE);
-	}
-	$max_upload_size = file_size_decode(ini_get('post_max_size'));
-	$max_upload_size = file_size_decode(ini_get('upload_max_filesize'), $max_upload_size, 'lt');
-	if (isset($options['max_upload_size']))
-	{
-	  $max_upload_size = file_size_decode($options['max_upload_size'], $max_upload_size, 'lt');
-	}
-	else
-	{
-	  if (varset($pref['upload_maxfilesize'],0) > 0) $max_upload_size = file_size_decode($pref['upload_maxfilesize'], $max_upload_size, 'lt');
-	}
-	if ($save_to_db) $max_upload_size = min($max_upload_size, 512000);		// Approx 500k limit for database saves
-	if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Final max upload size: {$max_upload_size}",FALSE,FALSE);
-
+	$max_upload_size = calc_max_upload_size(varset($options['max_upload_size'],-1));		// Find overriding maximum upload size
+	$allowed_filetypes = get_filetypes(varset($options['file_mask'],''), varset($options['filetypes'],''));
+	$max_upload_size = set_max_size($allowed_filetypes, $max_upload_size);
 
 
 // That's the basics set up - we can start processing files now
@@ -182,81 +180,93 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	$c = 0;
 	foreach ($files['name'] as $key => $name)
 	{
-	if (($name != '') || $files['size'][$key])		// Need this check for things like file manager which allow multiple possible uploads
-	{
-	  $name = preg_replace("/[^a-z0-9._-]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
-	  $raw_name = $name;			// Save 'proper' file name - useful for display
+	  $first_error = FALSE;								// Clear error flag
+	  if (($name != '') || $files['size'][$key])		// Need this check for things like file manager which allow multiple possible uploads
+	  {
+		$name = preg_replace("/[^a-z0-9._-]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
+		$raw_name = $name;			// Save 'proper' file name - useful for display
+		$file_ext = trim(strtolower(substr(strrchr($name, "."), 1)));			// File extension
 
-	  if (!trim($files['type'][$key])) $files['type'][$key] = 'Unknowm mime-type';
+		if (!trim($files['type'][$key])) $files['type'][$key] = 'Unknowm mime-type';
 	  
-	  if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Process file {$name}, size ".$files['size'][$key],FALSE,FALSE);
+		if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Process file {$name}, size ".$files['size'][$key],FALSE,FALSE);
 
-	  if ($max_file_count && ($c > $max_file_count))
-	  {
-	    $first_error = 249;		// 'Too many files uploaded' error
-	  }
-	  else
-	  {
-	    $first_error = $files['error'][$key];				// Start with whatever error PHP gives us for the file
-	  }
+		if ($max_file_count && ($c > $max_file_count))
+		{
+		  $first_error = 249;		// 'Too many files uploaded' error
+		}
+		else
+		{
+		  $first_error = $files['error'][$key];				// Start with whatever error PHP gives us for the file
+		}
 	  
-	  if (!$first_error)
-	  {  // Check file size early on
-	    if ($files['size'][$key] == 0) 
-		{
-		  $first_error = 4;			// Standard error code for zero size file
+		if (!$first_error)
+		{  // Check file size early on
+		  if ($files['size'][$key] == 0) 
+		  {
+			$first_error = 4;			// Standard error code for zero size file
+		  }
+		  elseif ($files['size'][$key] > $max_upload_size) 
+		  {
+			$first_error = 254;
+		  }
+		  elseif (isset($allowed_filetypes[$file_ext]) && ($allowed_filetypes[$file_ext] > 0) && ($files['size'][$key] > $allowed_filetypes[$file_ext]))
+		  {	// XML file set limits per extension
+			$first_error = 254;
+		  }
 		}
-		elseif ($files['size'][$key] > $max_upload_size) 
-		{
-		  $first_error = 254;
-		}
-	  }
 
-	  if (!$first_error)
-	  {
-	    $uploadfile = $files['tmp_name'][$key];		// Name in temporary directory
-	    if (!$uploadfile) $first_error = 253;
-	  }
+		if (!$first_error)
+		{
+		  $uploadfile = $files['tmp_name'][$key];		// Name in temporary directory
+		  if (!$uploadfile) $first_error = 253;
+		}
 
-	  if (!$first_error)
-	  {
-		// Need to support multiple files with the same 'real' name in some cases
-		if (strpos($fileinfo,"attachment") === 0) 
-		{	// For attachments, add in a prefix plus time and date to give a unique file name
-		  $addbit = explode('+',$fileinfo,2);
-		  $name = time()."_".USERID."_".trim($addbit[1]).$name;
-		}
-		elseif (strpos($fileinfo,"prefix") === 0) 
-		{	// For attachments, avatars, photos etc alternatively just add a prefix we've been passed
-		  $addbit = explode('+',$fileinfo,2);
-		  $name = trim($addbit[1]).$name;
-		}
+		if (!$first_error)
+		{
+		  // Need to support multiple files with the same 'real' name in some cases
+		  if (strpos($fileinfo,"attachment") === 0) 
+		  {	// For attachments, add in a prefix plus time and date to give a unique file name
+			$addbit = explode('+',$fileinfo,2);
+			$name = time()."_".USERID."_".trim($addbit[1]).$name;
+		  }
+		  elseif (strpos($fileinfo,"prefix") === 0) 
+		  {	// For attachments, avatars, photos etc alternatively just add a prefix we've been passed
+			$addbit = explode('+',$fileinfo,2);
+			$name = trim($addbit[1]).$name;
+		  }
 		
-		$destination_file = $uploaddir."/".$name;
-
-		if ($fileinfo == "unique" && file_exists($destination_file))
-		{	// Modify destination name to make it unique - but only if target file name exists
-		  $name = time()."_".$name;
 		  $destination_file = $uploaddir."/".$name;
-		}
 
-		if (file_exists($destination_file) && !$overwrite)  $first_error = 250;			// Invent our own error number - duplicate file
-	  }
+		  if ($fileinfo == "unique" && file_exists($destination_file))
+		  {	// Modify destination name to make it unique - but only if target file name exists
+			$name = time()."_".$name;
+			$destination_file = $uploaddir."/".$name;
+		  }
+
+		  if (file_exists($destination_file) && !$overwrite)  $first_error = 250;			// Invent our own error number - duplicate file
+		}
  
-	  if (!$first_error)
-	  {
-		$tpos = strrchr($files['name'][$key], ".");		// Require uploaded files to have an extension
-		if ($tpos !== FALSE) 
+		if (!$first_error)
 		{
-		  $fileext = strtolower($tpos);
-		  $tpos = (($file_status = vet_file($uploadfile, $name, $allowed_filetypes, varset($options['extra_file_types'],FALSE))) === TRUE);
-		}
-		if ($tpos === FALSE)
-		{
+		  $tpos = FALSE;
+		  if ($file_ext != '')			// Require any uploaded file to have an extension
+		  {
+			if ($ul_temp_dir)
+			{  // Need to move file to our own temporary directory
+			  $tempfilename = $uploadfile;
+			  $uploadfile = $ul_temp_dir.basename($uploadfile);
+			  if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Move {$tempfilename} to {$uploadfile} ",FALSE,LOG_TO_ROLLING);
+			  @move_uploaded_file($tempfilename,$uploadfile);		// This should work on all hosts
+			}
+			$tpos = (($file_status = vet_file($uploadfile, $name, $allowed_filetypes, varset($options['extra_file_types'],FALSE))) === TRUE);
+		  }
+		  if ($tpos === FALSE)
+		  {
 			// File type upload not permitted - error message and abort
-		  $first_error = 251;			// Invent our own error number - file type not permitted
+			$first_error = 251;			// Invent our own error number - file type not permitted
+		  }
 		}
-	  }
 
 	  
 	  if (!$first_error)
@@ -271,7 +281,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 		if ($save_to_db)
 		{	// Store binary files in the database if selected. Maximum two files this way
 			// This is really legacy stuff - not seriously changed from the original apart from using the newer file vetting routines
-			if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Save to DB {$c}: ".$uploaded[$c]['name'],FALSE,FALSE);
+			if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Save to DB {$c}: ".$uploaded[$c]['name'],FALSE,LOG_TO_ROLLING);
 			set_magic_quotes_runtime(0);
 			$data = mysql_real_escape_string(fread(fopen($files['tmp_name'][$c], "rb"), filesize($uploadfile)));
 			set_magic_quotes_runtime(get_magic_quotes_gpc());
@@ -289,7 +299,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 		{  // Store as flat file
 //		  $method = (OPEN_BASEDIR == FALSE ? "copy" : "move_uploaded_file");
 //		  if (@$method($uploadfile, $destination_file))
-		  if (@move_uploaded_file($uploadfile, $destination_file))		// This should work on all hosts
+		  if ((!$ul_temp_dir && @move_uploaded_file($uploadfile, $destination_file)) || ($ul_temp_dir && @rename($uploadfile, $destination_file)))		// This should work on all hosts
 		  {
 			@chmod($destination_file, $final_chmod);
 			if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Final chmod() file {$destination_file} to {$final_chmod} ",FALSE,FALSE);
@@ -494,6 +504,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 
 
 
+
 /*
 ====================================================================
 				VETTING AND UTILITY ROUTINES
@@ -515,7 +526,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 {
 // 1. Start by checking against filetypes - that's the easy one!
   $file_ext = strtolower(substr(strrchr($target_name, "."), 1));
-  if (!in_array($file_ext, $allowed_filetypes))
+  if (!isset($allowed_filetypes[$file_ext]))
   {
     if (is_bool($unknown)) return 1;	  // Reject out of hand if no possible alternative extensions
 	// Otherwise, it could be in the supplementary list
@@ -575,6 +586,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 
 
 // Get array of file types (file extensions) which are permitted - reads a definition file.
+// Key is the file type.
 // If $file_mask is a comma-separated list of file types, only those types which are in both the definition file and in $file_mask are added
 function get_allowed_filetypes($def_file = FALSE, $file_mask = '')
 {
@@ -604,11 +616,12 @@ function get_allowed_filetypes($def_file = FALSE, $file_mask = '')
 	$ftype = strtolower(trim(str_replace('.', '', $ftype)));
 	if (!$file_mask || in_array($ftype, $file_array))
 	{
-	  $ret[] = $ftype;
+	  $ret[$ftype] = -1;
 	}
-  }
+  }  
   return $ret;
 }
+
 
 
 // Parse a file size string (e.g. 16M) and compute the simple numeric value.
@@ -619,6 +632,7 @@ function get_allowed_filetypes($def_file = FALSE, $file_mask = '')
 function file_size_decode($source, $compare = 0, $action = '')
 {
   $source = trim($source);
+  if (strtolower(substr($source,-1,1)) == 'b') $source = substr($source,0,-1);		// Trim a trailing byte indicator
   $mult = 1;
   $nostrip = FALSE;
   if (!$source || is_numeric($source))
@@ -651,5 +665,160 @@ function file_size_decode($source, $compare = 0, $action = '')
   }
   return 0;
 }
+
+
+
+function parsesize($size) 
+{
+	$kb = 1024;
+	$mb = 1024 * $kb;
+	$gb = 1024 * $mb;
+	$tb = 1024 * $gb;
+	if ($size < $kb) {
+		return $size." b";
+	}
+	else if($size < $mb) {
+		return round($size/$kb, 2)." kb";
+	}
+	else if($size < $gb) {
+		return round($size/$mb, 2)." Mb";
+	}
+	else if($size < $tb) {
+		return round($size/$gb, 2)." Gb";
+	} else {
+		return round($size/$tb, 2)." Tb";
+	}
+}
+
+
+// Similar to get_allowed_filetypes(), but expects an XML file
+// Returns an array where key is the file extension; value is max upload size
+function get_XML_filetypes($def_file = FALSE, $file_mask = '')
+{
+  $ret = array();
+  if ($def_file === FALSE) return $ret;
+  
+  if ($file_mask)
+  {
+    $file_array = explode(',', $file_mask);
+	foreach ($file_array as $k => $f)
+	{
+	  $file_array[$k] = trim($f);
+	}
+  }
+
+  if ($def_file && is_readable(e_ADMIN.$def_file)) 
+  {
+	require_once(e_HANDLER.'xml_class.php');
+	$xml = new xmlClass;
+	$temp_vars = $xml->loadXMLfile(e_ADMIN.$def_file, true, false);
+	if ($temp_vars === FALSE) return $ret;
+	foreach ($temp_vars['class'] as $v1)
+	{
+	  $v = $v1['@attributes'];
+	  if (check_class($v['name']))
+	  {
+	  $current_perms[$v['name']] = array('type' => $v['type'],'maxupload' => $v['maxupload']);
+		$a_filetypes = explode(',', $v['type']);
+		foreach ($a_filetypes as $ftype) 
+		{
+		  $ftype = strtolower(trim(str_replace('.', '', $ftype)));		// File extension
+		  if (!$file_mask || in_array($ftype, $file_array))
+		  {  // We can load this extension
+			if (isset($ret[$ftype]))
+			{
+			  $ret[$ftype] = file_size_decode($v['maxupload'],$ret[$ftype], 'gt');	// Use largest value
+			}
+			else
+			{
+			  $ret[$ftype] = file_size_decode($v['maxupload']);
+			}
+		  }
+		}
+	  }
+	}
+  }
+//  echo '<pre>';
+//  var_dump($ret);
+//  echo '</pre>';
+  return $ret;
+}
+
+
+// Calculate 'global' maximum upload size - the maximum before extension-specific restrictions taken into account
+function calc_max_upload_size($max_up = -1)
+{
+  global $pref, $admin_log;
+  // Work out maximum allowable file size
+  if (UH_DEBUG)
+  { 
+	$admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test",
+	  "File size limits - user set: ".$pref['upload_maxfilesize']." Post_max_size: ".ini_get('post_max_size')." upload_max_size: ".ini_get('upload_max_size'),FALSE,FALSE);
+  }
+  $max_upload_size = file_size_decode(ini_get('post_max_size'));
+  $max_upload_size = file_size_decode(ini_get('upload_max_filesize'), $max_upload_size, 'lt');
+  if ($max_up > 0)
+  {
+	$max_upload_size = file_size_decode($max_up, $max_upload_size, 'lt');
+  }
+  else
+  {
+	if (varset($pref['upload_maxfilesize'],0) > 0) $max_upload_size = file_size_decode($pref['upload_maxfilesize'], $max_upload_size, 'lt');
+  }
+  if ($save_to_db) $max_upload_size = min($max_upload_size, 512000);		// Approx 500k limit for database saves
+  if (UH_DEBUG) $admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Final max upload size: {$max_upload_size}",FALSE,FALSE);
+  return $max_upload_size;
+}
+
+
+
+
+// Get an array of permitted filetypes according to a set hierarchy.
+function get_filetypes($file_mask = FALSE, $filename = '')
+{
+  if ($filename != '')
+  {
+	if (strtolower(substr($filename) == '.xml'))
+	{
+	  return get_allowed_filetypes($filename, $file_mask);
+	}
+	return get_allowed_filetypes($filename, $file_mask);
+  }
+
+  if (is_readable(e_ADMIN.e_READ_FILETYPES))
+  {
+	return get_XML_filetypes(e_READ_FILETYPES, $file_mask);
+  }
+
+  if (ADMIN && is_readable(e_ADMIN.'admin_filetypes.php'))
+  {
+	return get_allowed_filetypes('admin_filetypes.php', $file_mask);
+  }
+
+  if (is_readable(e_ADMIN.'filetypes.php'))
+  {
+	return get_allowed_filetypes('filetypes.php', $file_mask);
+  }
+  return array();			// Just an empty array
+}
+
+
+// Scans the array of allowed file types, updates allowed max size as appropriate.
+// Returns largest allowed file size
+function set_max_size(&$allowed_filetypes, $max_upload_size)
+{
+  $new_max = 0;
+  foreach ($allowed_filetypes as $t => $s)
+  {
+    if ($s < 0)
+	{  // Unspecified max - use the global value
+	  $allowed_filetypes[$t] = $max_upload_size;
+	}
+	elseif ($allowed_filetypes[$t] > $max_upload_size) $allowed_filetypes[$t] = $max_upload_size;
+	if ($allowed_filetypes[$t] > $new_max) $new_max = $allowed_filetypes[$t];
+  }
+  return $new_max;
+}
+
 
 ?>

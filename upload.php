@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/upload.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-01-10 03:14:09 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2008-04-22 20:32:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -148,10 +148,10 @@ if ($message)
 $text = "<div style='text-align:center'>
 	<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
 	<table style='".USER_WIDTH."' class='fborder'>
-	<colspan>
+	<colgroup>
 	<col style='width:30%' />
 	<col style='width:70%' />
-	</colspan>
+	</colgroup>
 	<tr>
 	<td class='forumheader3'>".DOWLAN_11.":</td>
 	<td class='forumheader3'>";
@@ -170,19 +170,39 @@ $text .= "
 
 $text .= "<b>".LAN_406."</b><br />".LAN_419.":";
 
-if (is_readable(e_ADMIN.'filetypes.php')) 
+require_once(e_HANDLER.'upload_handler.php');
+
+$a_filetypes = get_filetypes();
+if (count($a_filetypes) == 0)
 {
-  $a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
-  $a_filetypes = explode(',', $a_filetypes);
-  foreach ($a_filetypes as $ftype) 
+  $text .= LAN_UL_025."</td></tr></table>
+	</form>
+	</div>";
+  $ns->tablerender(LAN_417, $text);
+  require_once(FOOTERF);
+}
+$max_upload_size = calc_max_upload_size(-1);		// Find overriding maximum upload size
+$max_upload_size = set_max_size($a_filetypes, $max_upload_size);
+
+
+if (ADMIN)
+{
+  $upper_limit = calc_max_upload_size();
+  $allowed_filetypes = "<table><tr><td>".LAN_UL_023."&nbsp;&nbsp;</td><td style='text-align:right'>".LAN_UL_024."</td></tr>";
+  foreach ($a_filetypes as $type => $size)
   {
-	$sa_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
+    $allowed_filetypes .= "<tr><td>{$type}</td><td style='text-align:right'>".parsesize($size)."</td></tr>";
   }
-  $allowed_filetypes = implode(' | ', $sa_filetypes);
+  $allowed_filetypes .= "</table>";
+}
+else
+{
+  $a_filetypes = array_keys($a_filetypes);
+  $allowed_filetypes = implode(' | ', $a_filetypes);
 }
 
 $text .= " ".$allowed_filetypes."<br />".LAN_407."<br />
-	".LAN_418.($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'] : ini_get('upload_max_filesize'))."<br />";
+	".LAN_418.parsesize($max_upload_size)." (".LAN_UL_022.")<br />";
 
 $text .= "<span style='text-decoration:underline'>".LAN_408."</span> ".LAN_420."</td>
 	</tr>";
