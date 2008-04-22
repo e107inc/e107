@@ -1,1 +1,0 @@
-zip, gz, jpg, png, gif
