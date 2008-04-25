@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2007-08-14 19:26:55 $
+|     $Revision: 1.41 $
+|     $Date: 2008-04-25 19:24:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,8 +20,6 @@ require_once("../../class2.php");
 
 @include_once(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."log/languages/English.php");
-
-$stat = new siteStats();
 
 function core_head() {
 	$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
@@ -52,10 +50,12 @@ if (!$pref['statActivate']) {
 $qs = explode('.', e_QUERY, 3);
 $action = varset($qs[0],1);
 $sec_action = varset($qs[1],FALSE);
-$order = varset($qs[2],0);
+$order = varset($qs[1],0);
 
-$toremove = $order;
+$toremove = varset($qs[2],'');
 $order = intval($order);
+
+$stat = new siteStats();
 
 if($stat -> error) 
 {
