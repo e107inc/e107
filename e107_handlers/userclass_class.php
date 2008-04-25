@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2007-04-11 21:25:01 $
+|     $Revision: 1.22 $
+|     $Date: 2008-04-25 19:39:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -259,14 +259,7 @@ class e_userclass {
 		foreach($uinfoArray as $uid => $curclass)
 		{
 			$newarray = array_diff(explode(',', $curclass), array('', $cid));
-			if (count($newarray) > 1)
-			{
-				$new_userclass = implode(',', $newarray);
-			}
-			else
-			{
-				$new_userclass = $newarray[0];
-			}
+			$new_userclass = implode(',', $newarray);
 			$sql2->db_Update('user', "user_class='".$tp -> toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
 		}
 	}
