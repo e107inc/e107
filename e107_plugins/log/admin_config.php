@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-10-30 13:46:31 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2008-04-25 19:17:04 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 if (!getperms("P")) {
-	header("location:../index.php");
+	header("location:../../index.php");
 	 exit;
 }
 
