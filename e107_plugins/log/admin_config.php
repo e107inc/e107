@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-26 18:50:21 $
+|     $Revision: 1.4 $
+|     $Date: 2008-04-25 19:17:59 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -24,7 +24,7 @@ To do:
 require_once("../../class2.php");
 if (!getperms("P")) 
 {
-	header("location:../index.php");
+	header("location:../../index.php");
 	 exit;
 }
 
