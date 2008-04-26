@@ -82,6 +82,7 @@ e107 has installed successfully and is now ready to accept content.<br />Your ad
 [b]Support[/b]
 e107 Homepage: [link=http://e107.org]http://e107.org[/link], you will find the FAQ and documentation here.
 Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
+Plugin Developer Community: [link=http://www.e107coders.org]http://e107coders.org[/link]
 
 [b]Downloads[/b]
 Plugins: [link=http://plugins.e107.org]http://plugins.e107.org[/link]
