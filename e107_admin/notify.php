@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-04-04 21:40:37 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-04-26 14:34:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -25,12 +25,20 @@ if (!getperms('O')) {
 $e_sub_cat = 'notify';
 
 require_once('auth.php');
+
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 $nc = new notify_config;
-if (isset($_POST['update'])) {
-	$nc -> update();
+$uc = new user_class;
+
+$uc->fixed_classes['email'] = 'Email Address =>';
+$uc->text_class_link['email'] = 'email';
+
+if (isset($_POST['update']))
+{
+	$message = ($nc -> update()) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+	$ns -> tablerender($message,"<div style='text-align:center'>".$message."</div>");
 }
 $nc -> config();
 
@@ -54,7 +62,7 @@ class notify_config {
 						require_once(e_PLUGIN.$val.'/e_notify.php');
 						foreach ($config_events as $event_id => $event_text)
 				   		{
-							$this -> notify_prefs['event'][$event_id] = array('type' => 'off', 'class' => '254', 'email' => '');
+							$this -> notify_prefs['event'][$event_id] = array('class' => '255', 'email' => '');
 						}
 						$recalibrate = true;
 					}
@@ -110,14 +118,16 @@ class notify_config {
 
 		$text .= $this -> render_event('fileupload', NF_LAN_2);
 
-		foreach ($this -> notify_prefs['plugins'] as $plugin_id => $plugin_settings) {
+		foreach ($this -> notify_prefs['plugins'] as $plugin_id => $plugin_settings)
+		{
             if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
 			{
 				require(e_PLUGIN.$plugin_id.'/e_notify.php');
 				$text .= "<tr>
 				<td colspan='2' class='forumheader'>".$config_category."</td>
 				</tr>";
-				foreach ($config_events as $event_id => $event_text) {
+				foreach ($config_events as $event_id => $event_text)
+				{
 					$text .= $this -> render_event($event_id, $event_text);
 				}
 			}
@@ -134,47 +144,67 @@ class notify_config {
 	}
 
 	function render_event($id, $description) {
-		global $rs, $tp;
-		$text .= "<tr>
-		<td class='forumheader3' style='width: 30%'>
-		".$description.":
-		</td>
-		<td class='forumheader3' style='width: 70%; white-space: nowrap'>
-		<input type='radio' name='event[".$id."][type]' value='off' ".(($this -> notify_prefs['event'][$id]['type'] == 'off' || !$this -> notify_prefs['event'][$id]['type']) ? " checked='checked'" : "")." /> ".NT_LAN_3."
-		<input type='radio' name='event[".$id."][type]' value='main' ".($this -> notify_prefs['event'][$id]['type'] == 'main' ? " checked='checked'" : "")." /> ".NT_LAN_4."
-		<input type='radio' name='event[".$id."][type]' value='class' ".($this -> notify_prefs['event'][$id]['type'] == 'class' ? " checked='checked'" : "")." /> ".NT_LAN_5.":
-		".r_userclass('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'], 'off', 'member,admin,classes')."
-		<input type='radio' name='event[".$id."][type]' value='email' ".($this -> notify_prefs['event'][$id]['type'] == 'email' ? " checked='checked'" : "")." /> ".NT_LAN_6.":
-		".$rs -> form_text('event['.$id.'][email]', 40, $tp -> toForm($this -> notify_prefs['event'][$id]['email']), 150)."
-		</td>
+		global $rs, $tp, $uc;
+		$text .= "
+			<tr>
+				<td class='forumheader3' style='width: 40%'>".$description.":	</td>
+				<td class='forumheader3' style='width: 60%; white-space: nowrap'>
+				".$uc->uc_dropdown('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'],"nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
+
+			if($this -> notify_prefs['event'][$id]['class'] == 'email')
+			{
+            	$disp='display:visible';
+				$value = $tp -> toForm($this -> notify_prefs['event'][$id]['email']);
+			}
+			else
+			{
+            	$disp = "display:none'";
+				$value= "";
+			}
+
+			$text .= "<input type='text' style='width:180px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
+
+		$text .= "</td>
 		</tr>";
 		return $text;
 	}
 
 	function update() {
 		global $sql, $pref, $tp, $eArrayStorage;
-		foreach ($_POST['event'] as $key => $value) {
-			if ($this -> update_event($key)) {
+		foreach ($_POST['event'] as $key => $value)
+		{
+			if ($this -> update_event($key))
+			{
 				$active = TRUE;
 			}
 		}
-
+        if ($active)
+		{
+		   	$pref['notify'] = TRUE;
+		}
+		else
+		{
+		 	$pref['notify'] = FALSE;
+		}
+	  	save_prefs();
 		$s_prefs = $tp -> toDB($this -> notify_prefs);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
-		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
-		if ($active) {
-			$pref['notify'] = TRUE;
-		} else {
-			$pref['notify'] = FALSE;
+		if($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'")!==FALSE)
+		{
+            return TRUE;
 		}
-		save_prefs();
+		else
+		{
+        	return FALSE;
+		}
+
 	}
 
 	function update_event($id) {
-		$this -> notify_prefs['event'][$id]['type'] = $_POST['event'][$id]['type'];
-		$this -> notify_prefs['event'][$id]['class'] = $_POST['event'][$id]['class'];
+
+  		$this -> notify_prefs['event'][$id]['class'] = $_POST['event'][$id]['class'];
 		$this -> notify_prefs['event'][$id]['email'] = $_POST['event'][$id]['email'];
-		if ($this -> notify_prefs['event'][$id]['type'] != 'off') {
+		if ($this -> notify_prefs['event'][$id]['class'] != 255) {
 			return TRUE;
 		} else {
 			return FALSE;
@@ -183,5 +213,26 @@ class notify_config {
 }
 
 require_once('footer.php');
+function headerjs()
+{
 
+	$js = "
+	<script type='text/javascript'>
+
+    function mail_field(val,id)
+	{
+    	if(val == 'email')
+		{
+        	document.getElementById(id).style.display ='';
+		}
+        else
+		{
+        	document.getElementById(id).style.display ='none';
+		}
+	}
+
+	</script>";
+
+	return $js;
+}
 ?>
