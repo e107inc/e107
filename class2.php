@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2008-03-13 19:15:56 $
-|     $Author: lisa_ $
+|     $Revision: 1.52 $
+|     $Date: 2008-04-26 02:12:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -140,7 +140,7 @@ define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST']))){
 	$srvtmp = "";  // Host is an IP address.
 }else{
-$srvtmp = explode(".",$_SERVER['HTTP_HOST']);
+	$srvtmp = explode(".",str_replace("www.","",$_SERVER['HTTP_HOST']));
 }
 
 define("e_SUBDOMAIN", (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : FALSE)); // needs to be available to e107_config.
@@ -399,7 +399,7 @@ if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "sessi
 		e107_ini_set("session.cookie_domain",".".e_DOMAIN);
 		require_once(e_HANDLER."language_class.php");
 		$lng = new language;
-		if(e_SUBDOMAIN == "www" || e_SUBDOMAIN === FALSE)
+	        if(!e_SUBDOMAIN)
 		{
 			$GLOBALS['elan'] = $pref['sitelanguage'];
 		}
@@ -435,33 +435,46 @@ define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST']
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
 // And, this is robust against hack attacks. Malignant users can put **anything** in HTTP_HOST!
 if($pref['redirectsiteurl'] && $pref['siteurl']) {
-	// Find domain and port from user and from pref
-	list($urlbase,$urlport) = explode(':',$_SERVER['HTTP_HOST'].':');
-	if (!$urlport) { $urlport = $_SERVER['SERVER_PORT']; }
-	if (!$urlport) { $urlport = 80; }
-	$aPrefURL = explode('/',$pref['siteurl'],4);
-	if (count($aPrefURL) > 2) { // we can do this -- there's at least http[s]://dom.ain/whatever
-		$PrefRoot = $aPrefURL[2];
-		list($PrefSiteBase,$PrefSitePort) = explode(':',$PrefRoot.':');
-		if (!$PrefSitePort) {
-			$PrefSitePort = ( $aPrefURL[0] == "https:" ) ? 443 : 80;	// no port so set port based on 'scheme'
+
+	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
+	{
+   		if(substr(e_SELF,7,4)=="www." || substr(e_SELF,8,4)=="www.")
+		{
+			$location = str_replace("://www.","://",e_SELF);
+			header("Location: {$location}", true, 301); // send 301 header, not 302
+			exit();
 		}
-
-		// Redirect only if
-		// -- ports do not match (http <==> https)
-		// -- base domain does not match (case-insensitive)
-		// -- NOT admin area
-		if (($urlport != $PrefSitePort || stripos($PrefSiteBase, $urlbase) === FALSE) && strpos(e_SELF, ADMINDIR) === FALSE) 		{
-			$aeSELF = explode('/',e_SELF,4);
-			$aeSELF[0] = $aPrefURL[0];	// Swap in correct type of query (http, https)
-			$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
-			$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
-			$location = implode('/',$aeSELF).(e_QUERY ? "?".e_QUERY : "");
-
-		header("Location: {$location}", true, 301); // send 301 header, not 302
-		exit();
 	}
-}
+    else
+	{
+		// Find domain and port from user and from pref
+		list($urlbase,$urlport) = explode(':',$_SERVER['HTTP_HOST'].':');
+		if (!$urlport) { $urlport = $_SERVER['SERVER_PORT']; }
+		if (!$urlport) { $urlport = 80; }
+		$aPrefURL = explode('/',$pref['siteurl'],4);
+		if (count($aPrefURL) > 2) { // we can do this -- there's at least http[s]://dom.ain/whatever
+			$PrefRoot = $aPrefURL[2];
+			list($PrefSiteBase,$PrefSitePort) = explode(':',$PrefRoot.':');
+			if (!$PrefSitePort) {
+				$PrefSitePort = ( $aPrefURL[0] == "https:" ) ? 443 : 80;	// no port so set port based on 'scheme'
+			}
+
+			// Redirect only if
+			// -- ports do not match (http <==> https)
+			// -- base domain does not match (case-insensitive)
+			// -- NOT admin area
+			if (($urlport != $PrefSitePort || stripos($PrefSiteBase, $urlbase) === FALSE) && strpos(e_SELF, ADMINDIR) === FALSE) 		{
+				$aeSELF = explode('/',e_SELF,4);
+				$aeSELF[0] = $aPrefURL[0];	// Swap in correct type of query (http, https)
+				$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
+				$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
+				$location = implode('/',$aeSELF).(e_QUERY ? "?".e_QUERY : "");
+
+			header("Location: {$location}", true, 301); // send 301 header, not 302
+			exit();
+			}
+		}
+	}
 }
 
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
