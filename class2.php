@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2008-04-26 02:12:13 $
+|     $Revision: 1.53 $
+|     $Date: 2008-04-28 13:42:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -440,7 +440,9 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	{
    		if(substr(e_SELF,7,4)=="www." || substr(e_SELF,8,4)=="www.")
 		{
-			$location = str_replace("://www.","://",e_SELF);
+			$self = e_SELF;
+			if(e_QUERY){ $self .= "?".e_QUERY; }
+			$location = str_replace("://www.","://",$self);
 			header("Location: {$location}", true, 301); // send 301 header, not 302
 			exit();
 		}
