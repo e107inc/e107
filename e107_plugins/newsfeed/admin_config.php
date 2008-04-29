@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-04-29 19:44:25 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -131,7 +131,7 @@ $text = "<div style='text-align:center'>
 <tr>
 <td style='width:50%' class='forumheader3'>".NFLAN_10."</td>
 <td style='width:50%; text-align: left;' class='forumheader3'>
-<input class='tbox' type='text' name='newsfeed_url' size='80' value='$newsfeed_url' maxlength='200' />
+<input class='tbox' type='text' name='newsfeed_url' size='80' value='$newsfeed_url' maxlength='250' />
 </td>
 </tr>
 

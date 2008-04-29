@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-04-29 19:44:25 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,7 +57,7 @@ $eplug_tables = array(
 "CREATE TABLE ".MPREFIX."newsfeed (
   newsfeed_id int(10) unsigned NOT NULL auto_increment,
   newsfeed_name varchar(150) NOT NULL default '',
-  newsfeed_url varchar(150) NOT NULL default '',
+  newsfeed_url varchar(250) NOT NULL default '',
   newsfeed_data longtext NOT NULL,
   newsfeed_timestamp int(10) unsigned NOT NULL default '0',
   newsfeed_description text NOT NULL,
