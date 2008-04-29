@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/banner.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-04-29 19:48:45 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -70,7 +70,7 @@ if (isset($_POST['clientsubmit'])) {
 			
 			if ($row['banner_ip']) {
 				$tmp = explode("^", $row['banner_ip']);
-				$BANNER_TABLE_IP_LAN = BANNERLAN_35.": ".(count($tmp)-1);
+				$BANNER_TABLE_IP_LAN = (count($tmp)-1);
 				for($a = 0; $a <= (count($tmp)-2); $a++) {
 					$BANNER_TABLE_IP .= $tmp[$a]."<br />";
 				}
