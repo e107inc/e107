@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpbb2.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-09-29 00:48:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2008-04-29 19:54:16 $
+|     $Author: e107steved $
 |
 |     31/1/2006  Changes by Albert Drent
 |                Aducom Software
@@ -272,7 +272,9 @@ while($topic = mysql_fetch_array($phpbb_res))
 
 		//echo "PARENT: $parent_id, TOPIC: $topic_id<br />"; 
 
-		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='{$topic_id}' AND post_subject = '' ORDER BY post_time DESC";
+// Amending next line to not require blank post_subject might work better
+//		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='{$topic_id}' AND post_subject = '' ORDER BY post_time DESC";
+		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='{$topic_id}' ORDER BY post_time DESC";
 		$phpbb_res2 = mysql_query($query, $phpbbConnection);
 		if(!$phpbb_res2)
 		{
