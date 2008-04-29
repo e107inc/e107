@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-01-15 21:57:15 $
+|     $Revision: 1.20 $
+|     $Date: 2008-04-29 19:44:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -345,6 +345,21 @@ function update_706_to_800($type='')
 		{
 		  if ($just_check) return update_needed('Update linkwords field definition');
 		  mysql_query("ALTER TABLE `".MPREFIX."linkwords` MODIFY `linkword_link` VARCHAR(200) NOT NULL DEFAULT '' ");
+		  catch_error();
+		}
+	  }
+	}
+
+
+	if (mysql_table_exists('newsfeed'))
+	{	// Need to extend field newsfeed_url varchar(250) NOT NULL default ''
+	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'")) 
+	  {
+		$row = $sql -> db_Fetch();
+		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
+		{
+		  if ($just_check) return update_needed('Update newsfeed field definition');
+		  mysql_query("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ");
 		  catch_error();
 		}
 	  }
