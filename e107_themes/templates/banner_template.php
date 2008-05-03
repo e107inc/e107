@@ -1,10 +1,11 @@
 <?php
-// $Id: banner_template.php,v 1.6 2007-12-06 21:36:02 e107steved Exp $
+// $Id: banner_template.php,v 1.7 2008-05-03 19:40:15 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:98%"); }
 
 // ##### LOGIN TABLE -------------------------------------------------------------------------------
+global $BANNER_LOGIN_TABLE;
 if(!isset($BANNER_LOGIN_TABLE))
 {
 		$BANNER_LOGIN_TABLE = "
