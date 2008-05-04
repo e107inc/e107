@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.357 $
-|     $Date: 2008-04-28 13:37:11 $
-|     $Author: e107coders $
+|     $Revision: 1.358 $
+|     $Date: 2008-05-04 21:09:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1317,22 +1317,28 @@ function init_session() {
 	global $sql, $pref, $user_pref, $tp, $currentUser, $e107;
 
 	define('USERIP', $e107->getip());
-	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']])) {
+	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']])) 
+	{
 		define("USER", FALSE);
+		define('USERID', 0);
 		define("USERTHEME", FALSE);
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
-	} else {
+	} 
+	else 
+	{
 		list($uid, $upw)=(isset($_COOKIE[$pref['cookie_name']]) && $_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
 
-		if (empty($uid) || empty($upw)) {
+		if (empty($uid) || empty($upw)) 
+		{
 			cookie($pref['cookie_name'], "", (time() - 2592000));
 			$_SESSION[$pref['cookie_name']] = "";
 			session_destroy();
 			define("ADMIN", FALSE);
 			define("USER", FALSE);
+			define('USERID', 0);
 			define("USERCLASS", "");
 			define("LOGINMESSAGE",CORE_LAN10."<br /><br />");
 			return (FALSE);
@@ -1392,8 +1398,11 @@ function init_session() {
 			} else {
 				define("ADMIN", FALSE);
 			}
-		} else {
+		} 
+		else 
+		{
 			define("USER", FALSE);
+			define('USERID', 0);
 			define("USERTHEME", FALSE);
 			define("ADMIN", FALSE);
 			define("CORRUPT_COOKIE", TRUE);
