@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.114 $
-|     $Date: 2007-10-11 19:46:05 $
+|     $Revision: 1.115 $
+|     $Date: 2008-05-13 19:10:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -522,6 +522,25 @@ global $db_debug;
 	}
 
 
+// Split up an email address to check for banned domains.
+// Return false if invalid address
+function make_email_query($email, $fieldname = 'banlist_ip')
+{
+  global $tp;
+  $tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));
+  if ($tmp == '') return FALSE;
+  if (strpos($tmp,'.') === FALSE) return FALSE;
+  $em = array_reverse(explode('.',$tmp));
+  $line = '';
+  $out = array();
+  foreach ($em as $e)
+  {
+    $line = '.'.$e.$line;
+	$out[] = $fieldname."='*{$line}'";
+  }
+  return implode(' OR ',$out);
+}
+
 	//--------------------------------------
 	// Email address checks
 	//--------------------------------------
@@ -534,8 +553,10 @@ global $db_debug;
 	}
 
 	// Check Email against banlist.
-	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
-	if ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'"))
+	$wc = make_email_query($_POST['email']);
+	if ($wc) $wc = ' OR '.$wc;
+	
+	if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
 	{
 	  $email_address_OK = FALSE;
 	  $brow = $sql -> db_Fetch();

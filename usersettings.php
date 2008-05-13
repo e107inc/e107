@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2008-04-01 19:41:56 $
+|     $Revision: 1.101 $
+|     $Date: 2008-05-13 19:10:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -218,20 +218,55 @@ if (isset($_POST['updatesettings']))
 	}
 
 
-	if (isset($pref['disable_emailcheck']) && $pref['disable_emailcheck']==1)
+
+//--------------------------------------------
+//		Email address checks
+//--------------------------------------------
+// Split up an email address to check for banned domains.
+// Return false if invalid address
+function make_email_query($email, $fieldname = 'banlist_ip')
+{
+  global $tp;
+  $tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));
+  if ($tmp == '') return FALSE;
+  if (strpos($tmp,'.') === FALSE) return FALSE;
+  $em = array_reverse(explode('.',$tmp));
+  $line = '';
+  $out = array();
+  foreach ($em as $e)
+  {
+    $line = '.'.$e.$line;
+	$out[] = $fieldname."='*{$line}'";
+  }
+  return implode(' OR ',$out);
+}
+
+
+	// Always validate an email address if entered. If its blank, that's OK if checking disabled
+	$_POST['email'] = $tp->toDB(trim(varset($_POST['email'],'')));
+	$do_email_validate = !varset($pref['disable_emailcheck'],FALSE) || ($_POST['email'] !='');
+	if ($do_email_validate && !check_email($_POST['email']))
 	{
-	} else {
-		if (!check_email($_POST['email']))
-		{
-	  		$error .= LAN_106."\\n";
-		}
+	  $error .= LAN_106."\\n";
 	}
 
-	// Check for duplicate of email address
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$tp -> toDB($_POST['email'])."' AND user_id !='".intval($inp)."' "))
+	// Check Email address against banlist.
+	$wc = make_email_query($_POST['email']);
+	if ($wc) $wc = ' OR '.$wc;
+	
+	if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
 	{
-	  	$error .= LAN_408."\\n";
+	  $error .= LAN_106."\\n";
 	}
+
+
+	// Check for duplicate of email address (always)
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$_POST['email']."' AND user_id !='".intval($inp)."' "))
+	{
+	  $error .= LAN_408."\\n";
+	}
+
+
 
 
 // Display name checks
