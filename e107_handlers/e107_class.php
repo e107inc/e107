@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2007-08-13 19:56:24 $
+|     $Revision: 1.62 $
+|     $Date: 2008-05-16 19:40:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -133,37 +133,50 @@ class e107{
 	 * Check if current user is banned
 	 *
 	 */
-	function ban() {
-		global $sql, $e107, $tp, $pref;
-		$ban_count = $sql->db_Count("banlist");
-		if($ban_count)
+	function ban() 
+	{
+	  global $sql, $e107, $tp, $pref;
+	  $ban_count = $sql->db_Count("banlist");
+	  if($ban_count)
+	  {
+	    $vals = array();
+		$ip = $this->getip();
+		if ($ip != 'x.x.x.x')
 		{
-			$ip = $this->getip();
-			$tmp = explode(".",$ip);
-			$wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
-			$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
-
-			if(varsettrue($pref['enable_rdns']))
-			{
-				$tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
-				preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-				$bhost = (isset($match[0]) ? " OR banlist_ip='".$tp -> toDB($match[0], true)."'" : "");
-			}
-			else
-			{
-				$bhost = "";
-			}
-
-			if ($ip != '127.0.0.1')
-			{
-				if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}"))
-				{
-				  header("HTTP/1.1 403 Forbidden", true);
-					// enter a message here if you want some text displayed to banned users ...
-					exit();
-				}
-			}
+		  $tmp = explode(".",$ip);
+		  $vals[] = $tp -> toDB($_SERVER['REMOTE_ADDR'], true);
+		  $vals[] = $tmp[0].".".$tmp[1].".".$tmp[2].".*";
+		  $vals[] = $tmp[0].".".$tmp[1].".*.*";
 		}
+
+		if(varsettrue($pref['enable_rdns']))
+		{
+		  $tmp = array_reverse(explode('.',$addr = $e107->get_host_name(getenv('REMOTE_ADDR'))));
+		  $line = '';
+		  $vals[] = $addr;
+		  foreach ($tmp as $e)
+		  {
+			$line = '.'.$e.$line;
+			$vals[] = '*'.$line;
+		  }
+		}
+
+		if ((defined('USEREMAIL') && USEREMAIL))
+		{
+		  $vals[] = USEREMAIL;
+		}
+
+		if (($ip != '127.0.0.1') && count($vals))
+		{
+		  $match = "`banlist_ip`='".implode("' OR `banlist_ip`='",$vals)."'";
+		  if ($sql->db_Select("banlist", "*",$match))
+		  {
+			header("HTTP/1.1 403 Forbidden", true);
+				// enter a message here if you want some text displayed to banned users ...
+			exit();
+		  }
+		}
+	  }
 	}
 
 	/**
@@ -171,12 +184,16 @@ class e107{
 	 *
 	 * @return string
 	 */
-	function getip() {
-		if(!$this->_ip_cache){
-			if (getenv('HTTP_X_FORWARDED_FOR')) {
-				$ip=$_SERVER['REMOTE_ADDR'];
-				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) {
-				$ip2 = array('#^0\..*#', 
+	function getip() 
+	{
+	  if(!$this->_ip_cache)
+	  {
+		if (getenv('HTTP_X_FORWARDED_FOR')) 
+		{
+		  $ip=$_SERVER['REMOTE_ADDR'];
+		  if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+		  {
+			$ip2 = array('#^0\..*#', 
 					'#^127\..*#', 							// Local loopbacks
 					'#^192\.168\..*#', 						// RFC1918 - Private Network
 					'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
@@ -184,24 +201,29 @@ class e107{
 					'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
 					'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
 					);
-					$ip = preg_replace($ip2, $ip, $ip3[1]);
-				}
-			} else {
-				$ip = $_SERVER['REMOTE_ADDR'];
-			}
-			if ($ip == "") {
-				$ip = "x.x.x.x";
-			}
-			$this->_ip_cache = $ip;
+			$ip = preg_replace($ip2, $ip, $ip3[1]);
+		  }
+		} 
+		else 
+		{
+		  $ip = $_SERVER['REMOTE_ADDR'];
 		}
-		return $this->_ip_cache;
+		if ($ip == "") 
+		{
+		  $ip = "x.x.x.x";
+		}
+		$this->_ip_cache = $ip;
+	  }
+	  return $this->_ip_cache;
 	}
 
-	function get_host_name($ip_address) {
-		if(!$this->_host_name_cache[$ip_address]) {
-			$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);
-		}
-		return $this->_host_name_cache[$ip_address];
+	function get_host_name($ip_address) 
+	{
+	  if (!varsettrue($this->_host_name_cache[$ip_address]))
+	  {
+		$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);
+	  }
+	  return $this->_host_name_cache[$ip_address];
 	}
 
 	/**
