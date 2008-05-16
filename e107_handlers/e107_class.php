@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-03-12 01:03:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.18 $
+|     $Date: 2008-05-16 19:40:39 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,8 +23,8 @@ if (!defined('e107_INIT')) { exit; }
  * Core e107 class
  *
  */
-class e107{
-
+class e107
+{
 	var $server_path;
 	var $e107_dirs;
 	var $http_path;
@@ -41,11 +41,13 @@ class e107{
 	 * @param string $e107_root_path
 	 * @return e107
 	 */
-	function e107($e107_paths, $e107_root_path){
+	function e107($e107_paths, $e107_root_path)
+	{
 		$this->e107_dirs = $e107_paths;
 		$this->set_paths();
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 	}
+
 
 	function set_base_path()
 	{
@@ -53,7 +55,9 @@ class e107{
 		$this->base_path = ($pref['ssl_enabled']==1 ?  $this->https_path : $this->http_path);
 	}
 
-	function set_paths(){
+
+	function set_paths()
+	{
 		global $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY,
 		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $CACHE_DIRECTORY,
 		$NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY, $UPLOADS_DIRECTORY,$_E107;
@@ -203,22 +207,37 @@ class e107{
 	  $ban_count = $sql->db_Count("banlist");
 	  if($ban_count)
 	  {
+	    $vals = array();
 		$ip = $this->getip();
-		$tmp = explode(".",$ip);
-		$wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
-		$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
-
-		$bhost = "";
-		if(varsettrue($pref['enable_rdns']))
+		if ($ip != 'x.x.x.x')
 		{
-		  $tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
-		  preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-		  $bhost = (isset($match[0]) ? " OR banlist_ip='".$tp -> toDB($match[0], true)."'" : "");
+		  $tmp = explode(".",$ip);
+		  $vals[] = $tp -> toDB($_SERVER['REMOTE_ADDR'], true);
+		  $vals[] = $tmp[0].".".$tmp[1].".".$tmp[2].".*";
+		  $vals[] = $tmp[0].".".$tmp[1].".*.*";
 		}
 
-		if ($ip != '127.0.0.1')
+		if(varsettrue($pref['enable_rdns']))
 		{
-		  check_ban("banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}");
+		  $tmp = array_reverse(explode('.',$addr = $e107->get_host_name(getenv('REMOTE_ADDR'))));
+		  $line = '';
+//		  $vals[] = $addr;
+		  foreach ($tmp as $e)
+		  {
+			$line = '.'.$e.$line;
+			$vals[] = '*'.$line;
+		  }
+		}
+
+		if ((defined('USEREMAIL') && USEREMAIL))
+		{
+		  $vals[] = USEREMAIL;
+		}
+
+		if (($ip != '127.0.0.1') && count($vals))
+		{
+		  $match = "`banlist_ip`='".implode("' OR `banlist_ip`='",$vals)."'";
+		  $this->check_ban($match);
 		}
 	  }
 	}
