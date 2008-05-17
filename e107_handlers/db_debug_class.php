@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-06-21 16:55:10 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2008-05-17 14:41:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -112,61 +112,82 @@ class e107_db_debug {
 		//$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart."<br/>";
 	}
 
-	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable) {
-		global $sql;
 
-		// Explain the query, if possible...
-		list($qtype,$args) = explode(" ", ltrim($query), 2);
+	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable) 
+	{
+	  global $sql;
 
-		$nFields=0;
-		$bExplained = FALSE;
-		if (!strcasecmp($qtype,'SELECT') || !strcasecmp($qtype,'(SELECT')) {
-			$sQryRes=is_null($rli) ? mysql_query("EXPLAIN $query") : mysql_query("EXPLAIN $query", $rli);
+	  // Explain the query, if possible...
+	  list($qtype,$args) = explode(" ", ltrim($query), 2);
 
-			if ($sQryRes) { // There's something to explain
+	  $nFields=0;
+	  $bExplained = FALSE;
+	  $ExplainText = '';
+	  // Note the subtle bracket in the second comparison! Also, strcasecmp() returns zero on match
+	  if (!strcasecmp($qtype,'SELECT') || !strcasecmp($qtype,'(SELECT'))
+	  {	// It's a SELECT statement - explain it (usually)
+		if (strpos($args,'SQL_CALC_FOUND_ROWS') === FALSE)
+		{
+		  // $rli should always be set by caller
+		  $sQryRes = (is_null($rli) ? mysql_query("EXPLAIN {$query}") :  mysql_query("EXPLAIN {$query}", $rli));
+		  if ($sQryRes) 
+		  { // There's something to explain
 			$nFields = mysql_num_fields($sQryRes);
 			$bExplained = TRUE;
-			}
-		} else {
-			$sQryRes = $origQryRes;
-			$bExplained = FALSE;
-			$nFields=0;
+		  }
 		}
+		else
+		{  // Blocked queries containing 'SQL_CALC_FOUND_ROWS' ATM - they get broken by the 'explain'
+		  $ExplainText = "<tr><td class='forumheader3'>Cannot EXPLAIN queries containing SQL_CALC_FOUND_ROWS</td></tr>";
+		  $sQryRes = $origQryRes;			// Return from original query could be TRUE or a link resource if success
+		}
+	  } 
+	  else 
+	  {	// Don't run 'EXPLAIN' on other queries
+		$sQryRes = $origQryRes;			// Return from original query could be TRUE or a link resource if success
+	  }
 
 		// Record Basic query info
-		$sCallingFile=$aTrace[1]['file'];
-		$sCallingLine=$aTrace[1]['line'];
+		$sCallingFile	= $aTrace[1]['file'];
+		$sCallingLine	= $aTrace[1]['line'];
 
-		$t = &$this->aSQLdetails[$sql->db_QueryCount()];
-		$t['marker']=$this->curTimeMark;
-		$t['caller']="$sCallingFile($sCallingLine)";
-		$t['query']=$query;
-		$t['ok']=$sQryRes ? TRUE : FALSE;
-		$t['error']=$sQryRes ? '' : mysql_error();
-		$t['nFields']=$nFields;
-		$t['time']=$mytime;
+		$t 				= &$this->aSQLdetails[$sql->db_QueryCount()];
+		$t['marker']	= $this->curTimeMark;
+		$t['caller']	= "$sCallingFile($sCallingLine)";
+		$t['query']		= $query;
+		$t['ok']		= $sQryRes ? TRUE : FALSE;
+		$t['error']		= $sQryRes ? '' : mysql_error();
+		$t['nFields']	= $nFields;
+		$t['time']		= $mytime;
 
-		if ($bExplained) {
-			$bRowHeaders=FALSE;
-			while ($row = @mysql_fetch_assoc($sQryRes)) {
-				if (!$bRowHeaders) {
-					$bRowHeaders=TRUE;
-					$t['explain']="<tr><td class='forumheader3'><b>".implode("</b></td><td class='forumheader3'><b>", array_keys($row))."</b></td></tr>\n";
-				}
-
-				$t['explain'] .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($row))."&nbsp;</td></tr>\n";
+		if ($bExplained) 
+		{
+		  $bRowHeaders=FALSE;
+		  while ($row = @mysql_fetch_assoc($sQryRes)) 
+		  {
+			if (!$bRowHeaders) 
+			{
+			  $bRowHeaders=TRUE;
+			  $t['explain']="<tr><td class='forumheader3'><b>".implode("</b></td><td class='forumheader3'><b>", array_keys($row))."</b></td></tr>\n";
 			}
-		} else {
-			$t['explain'] = '';
+			$t['explain'] .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($row))."&nbsp;</td></tr>\n";
+		  }
+		} 
+		else 
+		{
+		  $t['explain'] = $ExplainText;
 		}
 
 		$this->aTimeMarks[$this->nTimeMarks]['DB Time'] += $mytime;
 		$this->aTimeMarks[$this->nTimeMarks]['DB Count']++;
 
-		if (array_key_exists($curtable, $this->aDBbyTable)) {
+		if (array_key_exists($curtable, $this->aDBbyTable)) 
+		{
 			$this->aDBbyTable[$curtable]['DB Time'] += $mytime;
 			$this->aDBbyTable[$curtable]['DB Count']++;
-		} else {
+		} 
+		else 
+		{
 			$this->aDBbyTable[$curtable]['Table']=$curtable;
 			$this->aDBbyTable[$curtable]['%DB Time']=0;  // placeholder
 			$this->aDBbyTable[$curtable]['%DB Count']=0; // placeholder
