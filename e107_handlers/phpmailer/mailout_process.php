@@ -11,20 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-29 20:34:17 $
+|     $Revision: 1.8 $
+|     $Date: 2008-05-17 19:05:08 $
 |     $Author: e107steved $
 |
 | Modifications in hand to work with most recent mailout.php
 
 To do:
-	1. Decide final resting place for log - possibly accumulate, and write to an admin log entry?
-	2. Admin log entries?
-	3. Better vetting on 'cancel' button?
-	4. Option to add user name in subject line - support |...| and {...} - done; test
-	5. Strip bbcode from plain text emails (ideally needs updated parser).
-	6. Support phpmailer 2.0 options
-	7. Log cancellation of email run
+	1. Admin log entries?
+	2. Option to add user name in subject line - support |...| and {...} - done; test
+	3. Strip bbcode from plain text emails (ideally needs updated parser).
+	4. Support phpmailer 2.0 options
+	5. Log cancellation of email run
 |
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +32,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_mailout.php");
 
 
 // Directory for log (if enabled)
-define('MAIL_LOG_PATH',e_PLUGIN."log/logs/");
+define('MAIL_LOG_PATH',e_FILE."logs/");
 
 $HEADER = "";
 $FOOTER = "";
