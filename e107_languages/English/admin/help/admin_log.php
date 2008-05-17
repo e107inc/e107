@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/admin_log.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-11 21:53:39 $
+|     $Revision: 1.3 $
+|     $Date: 2008-05-17 15:00:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -60,6 +60,14 @@ case 'rolllog' :
 case 'downlog' :
   $text = "This page displays user downloads.<br /><br />";
   $text .= common_filters();
+  break;
+case 'comments' :
+  $text = "This page displays user comments, with options to select by user ID, type and date. Unwanted comments can be deleted.";
+  break;
+case 'detailed' :
+  $text = "The main system logs record time to a high degree of precision (if the underlying server supports it), and this page allows you to inspect entries
+	occuring within a relatively small time window. Entries from the admin log, audit log and rolling log are merged, so that you can see the precise 
+	relationships between events.";
   break;
 case 'adminlog' :
 default :

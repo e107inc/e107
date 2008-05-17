@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_admin_log.php,v 1.4 2008-01-11 21:53:39 e107steved Exp $
+// $Id: lan_admin_log.php,v 1.5 2008-05-17 15:00:41 e107steved Exp $
 	
 define('RL_LAN_001', 'System Logs');
 define('RL_LAN_002', "Rolling Log");
@@ -75,6 +75,36 @@ define('RL_LAN_079', 'Change other user settings');
 define('RL_LAN_080', 'Admin quick add user');
 // Intentional gap
 define('RL_LAN_090', 'Download ID');
+define('RL_LAN_091', 'Detailed timings');
+define('RL_LAN_092', 'Time period');
+define('RL_LAN_093', '(mins)');
+define('RL_LAN_094', 'Detailed timing analysis');
+define('RL_LAN_095', 'Logs to include');
+define('RL_LAN_096', 'Diff (s)');
+define('RL_LAN_097', 'Time');
+define('RL_LAN_098', 'Source');
+define('RL_LAN_099', 'Comments');
+define('RL_LAN_100', 'CID');			// Comment ID field
+define('RL_LAN_101', 'PID');
+define('RL_LAN_102', 'ID');
+define('RL_LAN_103', 'Subject');
+define('RL_LAN_104', 'UID');
+define('RL_LAN_105', 'Author');
+define('RL_LAN_106', 'Type');
+define('RL_LAN_107', 'Comment');
+define('RL_LAN_108', 'BK');				// Comment blocked
+define('RL_LAN_109', 'LK');				// Comment locked
+define('RL_LAN_110', 'Del');			// Delete column
+define('RL_LAN_111', 'Delete checked items');
+define('RL_LAN_112', 'Deleted --NUMBER-- comments');
+define('RL_LAN_113', 'Error deleting comments!');
+define('RL_LAN_114', 'Clear Filters');
+define('RL_LAN_115', 'Users Admin');
+define('RL_LAN_116', '');
+define('RL_LAN_117', '');
+define('RL_LAN_118', '');
+define('RL_LAN_119', '');
+define('RL_LAN_120', '');
 
 
 ?>

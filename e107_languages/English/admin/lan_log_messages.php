@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.8 2008-01-16 22:18:27 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.9 2008-05-17 15:00:41 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -82,6 +82,10 @@ define('LAN_AL_BANLIST_10','Whitelist entry edited');
 define('LAN_AL_BANLIST_11','Whitelist hit for ban entry');
 
 
+// Comment-related events
+//-----------------------
+define('LAN_AL_COMMENT_01', 'Comment(s) deleted');
+
 // Rolling log events
 //-------------------
 define('LAN_ROLL_LOG_01','Empty username and/or password');
@@ -92,8 +96,9 @@ define('LAN_ROLL_LOG_05','Login attempt by user not fully signed up');
 define('LAN_ROLL_LOG_06','Login blocked by event trigger handler');
 define('LAN_ROLL_LOG_07','Multiple logins from same address');
 define('LAN_ROLL_LOG_08','Excessive username length');
-define('LAN_ROLL_LOG_09','');
-define('LAN_ROLL_LOG_10','');
+define('LAN_ROLL_LOG_09','Banned user attempted login');
+define('LAN_ROLL_LOG_10','Login fail - reason unknown');
+define('LAN_ROLL_LOG_11','Admin login fail');
 
 
 ?>
