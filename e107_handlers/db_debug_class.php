@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-05-17 14:41:43 $
+|     $Revision: 1.7 $
+|     $Date: 2008-05-17 17:18:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -125,21 +125,13 @@ class e107_db_debug {
 	  $ExplainText = '';
 	  // Note the subtle bracket in the second comparison! Also, strcasecmp() returns zero on match
 	  if (!strcasecmp($qtype,'SELECT') || !strcasecmp($qtype,'(SELECT'))
-	  {	// It's a SELECT statement - explain it (usually)
-		if (strpos($args,'SQL_CALC_FOUND_ROWS') === FALSE)
-		{
-		  // $rli should always be set by caller
-		  $sQryRes = (is_null($rli) ? mysql_query("EXPLAIN {$query}") :  mysql_query("EXPLAIN {$query}", $rli));
-		  if ($sQryRes) 
-		  { // There's something to explain
-			$nFields = mysql_num_fields($sQryRes);
-			$bExplained = TRUE;
-		  }
-		}
-		else
-		{  // Blocked queries containing 'SQL_CALC_FOUND_ROWS' ATM - they get broken by the 'explain'
-		  $ExplainText = "<tr><td class='forumheader3'>Cannot EXPLAIN queries containing SQL_CALC_FOUND_ROWS</td></tr>";
-		  $sQryRes = $origQryRes;			// Return from original query could be TRUE or a link resource if success
+	  {	// It's a SELECT statement - explain it
+		// $rli should always be set by caller
+		$sQryRes = (is_null($rli) ? mysql_query("EXPLAIN {$query}") :  mysql_query("EXPLAIN {$query}", $rli));
+		if ($sQryRes) 
+		{ // There's something to explain
+		  $nFields = mysql_num_fields($sQryRes);
+		  $bExplained = TRUE;
 		}
 	  } 
 	  else 
