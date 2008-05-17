@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-05-14 20:20:32 $
+|     $Revision: 1.24 $
+|     $Date: 2008-05-17 17:18:36 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.23 $
+* @version $Revision: 1.24 $
 * @author $Author: e107steved $
 */
 class db {
@@ -208,6 +208,15 @@ class db {
 		$mytime = $eTraffic->TimeDelta($b,$e);
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
+
+		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== FALSE) && (strpos($query,'SELECT') !== FALSE))
+		{	// Need to get the total record count as well. Return code is a resource identifier
+		  // Have to do this before any debug action, otherwise this bit gets messed up
+		  $fr = mysql_query("SELECT FOUND_ROWS()", $this->mySQLaccess);
+		  $rc = mysql_fetch_array($fr);
+		  $this->total_results = $rc['FOUND_ROWS()']; 		  
+		}
+
 		if (E107_DEBUG_LEVEL) {
 			global $db_debug;
 			$aTrace = debug_backtrace();
@@ -610,12 +619,6 @@ class db {
 		else
 		{	// Successful query which does return a row count - get the count and return it
 		  $this->dbError('db_Select_gen');
-		  if (strpos($query,'SQL_CALC_FOUND_ROWS') !== FALSE)
-		  {	// Need to get the total record count as well. Return code is a resource identifier
-			$fr = mysql_query("SELECT FOUND_ROWS()", $this->mySQLaccess);
-			$rc = mysql_fetch_array($fr);
-			$this->total_results = $rc['FOUND_ROWS()']; 		  
-		  }
 		  return $this->db_Rows();
 		}
 	}
