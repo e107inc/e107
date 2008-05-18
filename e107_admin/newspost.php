@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.12 $
-|   $Date: 2008-03-18 00:38:53 $
+|   $Revision: 1.13 $
+|   $Date: 2008-05-18 16:34:16 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -194,25 +194,19 @@ if (isset($_POST['update_category'])) {
 if (isset($_POST['save_prefs'])) {
 	$pref['newsposts'] = $_POST['newsposts'];
 
-	// ##### ADDED FOR NEWS ARCHIVE --------------------------------------------------------------------
-	$pref['newsposts_archive'] = $_POST['newsposts_archive'];
+   	$pref['newsposts_archive'] 		= $_POST['newsposts_archive'];
 	$pref['newsposts_archive_title'] = $tp->toDB($_POST['newsposts_archive_title']);
-	// ##### END --------------------------------------------------------------------------------------
-
-	$pref['news_cats'] = $_POST['news_cats'];
-	$pref['nbr_cols'] = $_POST['nbr_cols'];
-	$pref['subnews_attach'] = $_POST['subnews_attach'];
-	$pref['subnews_resize'] = $_POST['subnews_resize'];
-	$pref['subnews_class'] = $_POST['subnews_class'];
-	$pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
-	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
-	$pref['news_subheader'] = $tp->toDB($_POST['news_subheader']);
-	/*
-	changes by jalist 22/01/2005:
-	added pref to render new date header
-	*/
-	$pref['news_newdateheader'] = $_POST['news_newdateheader'];
-	$pref['news_unstemplate'] = $_POST['news_unstemplate'];
+	$pref['news_cats'] 				= $_POST['news_cats'];
+	$pref['nbr_cols'] 				= $_POST['nbr_cols'];
+	$pref['subnews_attach'] 		= $_POST['subnews_attach'];
+	$pref['subnews_resize'] 		= $_POST['subnews_resize'];
+	$pref['subnews_class'] 			= $_POST['subnews_class'];
+	$pref['subnews_htmlarea'] 		= $_POST['subnews_htmlarea'];
+	$pref['subnews_hide_news'] 		= $_POST['subnews_hide_news'];
+	$pref['news_subheader'] 		= $tp->toDB($_POST['news_subheader']);
+	$pref['news_newdateheader'] 	= $_POST['news_newdateheader'];
+	$pref['news_unstemplate'] 		= $_POST['news_unstemplate'];
+	$pref['news_editauthor']		= $_POST['news_editauthor'];
 
 	save_prefs();
 	$e107cache->clear("news.php");
@@ -230,11 +224,13 @@ if ($action == "create") {
 	$preset = $pst->read_preset("admin_newspost");  //only works here because $_POST is used.
 
 	if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit_news']) {
-		if ($sql->db_Select("news", "*", "news_id='$id' ")) {
+		if ($sql->db_Select("news", "*", "news_id='$id' "))
+		{
 			$row = $sql->db_Fetch();
 			extract($row);
 			$_POST['news_title'] = $news_title;
 			$_POST['data'] = $news_body;
+			$_POST['news_author'] = $row['news_author'];
 			$_POST['news_extended'] = $news_extended;
 			$_POST['news_allow_comments'] = $news_allow_comments;
 			$_POST['news_class'] = $news_class;
@@ -280,7 +276,7 @@ exit;
 class newspost 
 {
 
-	function show_existing_items($action, $sub_action, $sort_order, $from, $amount) 
+	function show_existing_items($action, $sub_action, $sort_order, $from, $amount)
 	{
 	  // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 	  global $sql, $ns, $tp, $imode;
@@ -290,11 +286,11 @@ class newspost
 	  if ($sort_order != 'asc') $sort_order = 'desc';
 	  $sort_link = $sort_order == 'asc' ? 'desc' : 'asc';		// Effectively toggle setting for headings
 	  
-	  if (isset($_POST['searchquery'])) 
+	  if (isset($_POST['searchquery']))
 	  {
 		$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
-	  } 
-	  else 
+	  }
+	  else
 	  {
 		$query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".strtoupper($sort_order)."  LIMIT {$from}, {$amount}";
 	  }
@@ -338,15 +334,15 @@ class newspost
 				</tr>";
 		}
 		$text .= "</table></form>";
-	  } 
-	  else 
+	  }
+	  else
 	  {
 		$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
 	  }
 
 	  $newsposts = $sql->db_Count("news");
 
-	  if (!$_POST['searchquery']) 
+	  if (!$_POST['searchquery'])
 	  {
         $parms = $newsposts.",".$amount.",".$from.",".e_SELF."?".(e_QUERY ? "$action.$sub_action.$sort_order." : "main.news_datestamp.desc.")."[FROM]";
         $text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
@@ -463,6 +459,66 @@ class newspost
 		<td style='width:20%' class='forumheader3'>".LAN_NEWS_27.":</td>
 		<td style='width:80%' class='forumheader3'>
 		<input class='tbox' type='text' name='news_summary' size='80' value='".$tp->toForm($_POST['news_summary'])."' maxlength='250' style='width:95%'/>
+		</td>
+		</tr>";
+
+		// -------- News Author ---------------------
+
+
+        $text .="<tr>
+		<td class='forumheader3'>
+		".LAN_NEWS_50.":
+		</td>
+		<td class='forumheader3'>";
+
+		if(!getperms('0') && !check_class($pref['news_editauthor']))
+		{
+			$auth = ($_POST['news_author']) ? $_POST['news_author'] : USERID;
+			$sql -> db_Select("user", "user_name", "user_id = '".$auth."' LIMIT 1");
+           	$row = $sql -> db_Fetch(MYSQL_ASSOC);
+			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(1).$row['user_name']."' />";
+			$text .= "<a href='".e_BASE."user.php?id.".$_POST['news_author']."'>".$row['user_name']."</a>";
+		}
+        else // allow master admin to
+		{
+			$text .= "
+			<select class='tbox' name='news_author'>";
+			$qry = "SELECT user_id,user_name FROM #user WHERE user_perms = '0' OR FIND_IN_SET('H',user_perms) ";
+			if($pref['subnews_class'] && $pref['subnews_class']!= e_UC_GUEST && $pref['subnews_class']!= e_UC_NOBODY)
+			{
+				if($pref['subnews_class']== e_UC_MEMBER)
+				{
+					$qry .= " OR user_ban != 1";
+				}
+				elseif($pref['subnews_class']== e_UC_ADMIN)
+				{
+	            	$qry .= " OR user_admin = 1";
+				}
+				else
+				{
+	            	$qry .= " OR FIND_IN_SET(".intval($pref['subnews_class']).",user_class) ";
+				}
+			}
+
+	        $sql -> db_Select_gen($qry);
+	        while($row = $sql-> db_Fetch())
+	        {
+	        	if($_POST['news_author'])
+				{
+		        	$sel = ($_POST['news_author'] == $row['user_id']) ? "selected='selected'" : "";
+		        }
+				else
+				{
+		        	$sel = (USERID == $row['user_id']) ? "selected='selected'" : "";
+				}
+
+	            $text .= "<option value=\"".$row['user_id'].chr(1).$row['user_name']."\" {$sel}>".$row['user_name']."</option>\n";;
+			}
+
+			$text .= "</select>
+			";
+		}
+		$text .= "
 		</td>
 		</tr>
 
@@ -661,7 +717,10 @@ class newspost
 		</div>
 		</td></tr>";
 
-		// -------- end of datestamp ---------------------
+
+
+
+        // --------------------- News Userclass ---------------------------
 
 		$text .="	<tr>
 		<td class='forumheader3'>
@@ -770,11 +829,12 @@ class newspost
 
 		$sql->db_Select("news_category", "*", "category_id='".$_POST['cat_id']."' ");
 		list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $sql->db_Fetch();
-		$_POST['user_id'] = USERID;
-		$_POST['user_name'] = USERNAME;
+	  //	$_POST['user_id'] = USERID;
+	   //	$_POST['user_name'] = USERNAME."blabla";
+	   	list($_POST['user_id'],$_POST['user_name']) = explode(chr(1),$_POST['news_author']);
+		$_POST['news_author'] = $_POST['user_id'];
 		$_POST['comment_total'] = $comment_total;
 		$_PR = $_POST;
-
 
 		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
@@ -824,11 +884,6 @@ class newspost
 			$_POST['news_datestamp'] = time();
 		}
 
-		if($sub_action == 'edit')
-		{
-			$_POST['news_author'] = -1;
-		}
-
 		if ($id && $sub_action != "sn" && $sub_action != "upload")
 		{
 			$_POST['news_id'] = $id;
@@ -840,6 +895,9 @@ class newspost
 		if (!$_POST['cat_id']) {
 			$_POST['cat_id'] = 1;
 		}
+
+        list($_POST['news_author'],$empty) = explode(chr(1),$_POST['news_author']);
+
 		$this->show_message($ix->submit_item($_POST));
 		unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
 	}
@@ -981,9 +1039,6 @@ class newspost
 		//			</tr>";
 
 
-
-
-
 		// ##### ADDED FOR NEWS ARCHIVE --------------------------------------------------------------------
 		// the possible archive values are from "0" to "< $pref['newsposts']"
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
@@ -1011,7 +1066,14 @@ class newspost
 
 
 		require_once(e_HANDLER."userclass_class.php");
-		$text .= " <tr>
+
+		$text .= "
+		<tr>
+		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".LAN_NEWS_51."</span></td>
+		<td class='forumheader3' style='width:40%'>
+		".r_userclass("news_editauthor", $pref['news_editauthor'],"off","nobody,mainadmin,admin,classes"). "</td></tr>
+
+		 <tr>
 		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_106."</span></td>
 		<td class='forumheader3' style='width:40%'>
 		".r_userclass("subnews_class", $pref['subnews_class'],"off","nobody,public,guest,member,admin,classes"). "</td></tr>";
