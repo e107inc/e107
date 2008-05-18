@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
-| $Revision: 1.4 $
-| $Date: 2007-12-20 20:47:49 $
-| $Author: e107steved $
+| $Revision: 1.5 $
+| $Date: 2008-05-18 16:34:16 $
+| $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -33,7 +33,7 @@ class news {
 		$news['news_summary'] = $tp->toDB($news['news_summary']);
 		$news['news_userid'] = ($news['news_userid']) ? $news['news_userid'] : USERID;
 		if(!isset($news['news_sticky'])) {$news['news_sticky'] = 0;}
-		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "";
+		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "news_author = '".intval($news['news_author'])."', ";
         $news['news_author'] = ($news['news_author']) ? $news['news_author'] : USERID;
 
 		if ($news['news_id']) {

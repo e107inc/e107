@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-05-18 16:34:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -169,5 +169,7 @@ define("LAN_NEWS_46", "News item not updated as no changes were made.");
 define("LAN_NEWS_48", "No Image");
 
 define("LAN_NEWS_49", "Render-type");
+define("LAN_NEWS_50", "Author");
+define("LAN_NEWS_51", "Modification of the news-item author can be done by:");
 
 ?>
