@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2008-04-28 13:42:23 $
-|     $Author: e107coders $
+|     $Revision: 1.54 $
+|     $Date: 2008-05-18 16:35:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -280,11 +280,11 @@ $sql->db_Mark_Time('Start: Prefs, misc tables');
 require_once(e_HANDLER.'admin_log_class.php');
 $admin_log = new e_admin_log();
 
-if ($merror == "e1") {
+if ($merror === "e1") {
 	message_handler("CRITICAL_ERROR", 6, ": generic, ", "class2.php");
 	exit;
 }
-else if ($merror == "e2") {
+else if ($merror === "e2") {
 	message_handler("CRITICAL_ERROR", 7, ": generic, ", "class2.php");
 	exit;
 }
