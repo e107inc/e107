@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2008-05-19 09:42:28 $
+|     $Revision: 1.57 $
+|     $Date: 2008-05-19 10:09:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -745,7 +745,7 @@ if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SEL
 // -----   Redirect to previously logged-in page ---------------------------.
 if(USER && $pref['membersonly_enabled'] && ($_SESSION[e_COOKIE.'_afterlogin'] || $_COOKIE[e_COOKIE.'_afterlogin']))
 {
-	$url = ($_SESSION[e_COOKIE.'_afterlogin']) ? $_SESSION[e_COOKIE.'_afterlogin'] : $_COOKIE[e_COOKIE3.'_afterlogin'];
+	$url = ($_SESSION[e_COOKIE.'_afterlogin']) ? $_SESSION[e_COOKIE.'_afterlogin'] : $_COOKIE[e_COOKIE.'_afterlogin'];
 	session_set(e_COOKIE.'_afterlogin',FALSE,-1000);
 	header("Location: ".$url);
 	exit;
