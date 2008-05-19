@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2008-05-18 16:35:47 $
-|     $Author: e107steved $
+|     $Revision: 1.55 $
+|     $Date: 2008-05-19 08:54:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -728,10 +728,48 @@ if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SEL
 {
 	if(!isset($_E107['allow_guest']))
 	{
-		header("Location: ".e_HTTP."membersonly.php");
+		if($_POST['ajax_used'] || $_GET['ajax_used'] || e_PAGE == "e_ajax.php" || e_PAGE == "e_js.php")
+		{
+        	exit;
+		}
+		// remember the url for after-login.
+        $afterlogin = $pref['cookie_name'].'_afterlogin';
+		$url = (e_QUERY) ? e_SELF."?".e_QUERY :  e_SELF;
+		if ($pref['user_tracking'] == "session")
+		{
+			$_SESSION[$afterlogin] = $url;
+		}
+		else
+		{
+			setcookie($afterlogin, $url, time() + 60, "/");
+			$_COOKIE[$afterlogin] = $url;
+		}
+
+	  	header("Location: ".e_HTTP."membersonly.php");
 		exit;
 	}
 }
+
+// -----   Redirect to previously logged-in page ---------------------------.
+if(USER && $pref['membersonly_enabled'])
+{
+	if($_SESSION[$pref['cookie_name'].'_afterlogin'])
+	{
+		$url = $_SESSION[$pref['cookie_name'].'_afterlogin'];
+		$_SESSION[$pref['cookie_name'].'_afterlogin']=FALSE;
+   		header("Location: ".$url);
+	}
+
+	if($_COOKIE[$pref['cookie_name'].'_afterlogin'])
+	{
+    	$url = $_COOKIE[$pref['cookie_name'].'_afterlogin'];
+		setcookie($pref['cookie_name'].'_afterlogin', FALSE,-1000, "/");
+		$_COOKIE[$pref['cookie_name'].'_afterlogin']=FALSE;
+   		header("Location: ".$url);
+	}
+}
+// ------------------------------------------------------------------------
+
 
 if(!isset($_E107['no_prunetmp']))
 {
