@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2008-05-19 08:54:38 $
+|     $Revision: 1.56 $
+|     $Date: 2008-05-19 09:42:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -377,20 +377,28 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 //
 // M: Subdomain and Language Selection
 //
+
+if (!$pref['cookie_name']) // if a cookie name pref isn't set, make one :)
+{
+	$pref['cookie_name'] = "e107cookie";
+}
+
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
+define("e_COOKIE", $pref['cookie_name']);
+
 
 // let the subdomain determine the language (when enabled).
 
 if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE)
 {
-
 	$mtmp = explode("\n",$pref['multilanguage_subdomain']);
 	foreach($mtmp as $val)
 	{
 		if(e_DOMAIN == trim($val))
 		{
 			$domain_active = TRUE;
+			break;
 		}
 	}
 
@@ -399,7 +407,7 @@ if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "sessi
 		e107_ini_set("session.cookie_domain",".".e_DOMAIN);
 		require_once(e_HANDLER."language_class.php");
 		$lng = new language;
-	        if(!e_SUBDOMAIN)
+	    if(!e_SUBDOMAIN)
 		{
 			$GLOBALS['elan'] = $pref['sitelanguage'];
 		}
@@ -417,15 +425,9 @@ if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "sessi
 // ********* This is probably a bodge! Work out what to do properly. Has to be done when $pref valid
 $tp->sch_load();
 
-
-
-// if a cookie name pref isn't set, make one :)
-if (!$pref['cookie_name']) {
-	$pref['cookie_name'] = "e107cookie";
-}
-
 // start a session if session based login is enabled
-if ($pref['user_tracking'] == "session") {
+if ($pref['user_tracking'] == "session")
+{
 	session_start();
 }
 
@@ -483,7 +485,8 @@ $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
 // sort out the users language selection
-if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan'])) {
+if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan']))
+{
 	if($_GET['elan'])  // query support, for language selection splash pages. etc
 	{
 		$_POST['sitelanguage'] = str_replace(array(".","/","%"),"",$_GET['elan']);
@@ -495,34 +498,31 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
     $sql2->mySQLlanguage = $_POST['sitelanguage'];
-
-	if ($pref['user_tracking'] == "session") {
-		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
-	} else {
-		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
-		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
-		if (strpos(e_SELF, ADMINDIR) === FALSE) {
-			$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
-		  		header("Location:".$locat);
-		}
+    session_set('e107language_'.e_COOKIE, $_POST['sitelanguage'], time() + 86400);
+	if ($pref['user_tracking'] != "session" && (strpos(e_SELF, ADMINDIR) === FALSE))
+	{
+		$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
+		header("Location:".$locat);
 	}
+
 }
 
 $user_language='';
 // Multi-language options.
-if (isset($pref['multilanguage']) && $pref['multilanguage']) {
-
-	if ($pref['user_tracking'] == "session") {
-		$user_language=(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : "");
-		$sql->mySQLlanguage=($user_language) ? $user_language : "";
-		$sql2->mySQLlanguage = $sql->mySQLlanguage;
-	} else {
-		$user_language= (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : "";
+if (isset($pref['multilanguage']) && $pref['multilanguage'])
+{
+	if ($pref['user_tracking'] == "session")
+	{
+		$user_language=(array_key_exists('e107language_'.e_COOKIE, $_SESSION) ? $_SESSION['e107language_'.e_COOKIE] : "");
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
 		$sql2->mySQLlanguage = $sql->mySQLlanguage;
 	}
-
-
+	else
+	{
+		$user_language= (isset($_COOKIE['e107language_'.e_COOKIE])) ? $_COOKIE['e107language_'.e_COOKIE] : "";
+		$sql->mySQLlanguage=($user_language) ? $user_language : "";
+		$sql2->mySQLlanguage = $sql->mySQLlanguage;
+	}
 }
 
 // Get Language List for rights checking.
@@ -540,7 +540,7 @@ if(!$tmplan = getcachedvars("language-list")){
 
 define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
 
-$language=(isset($_COOKIE['e107language_'.$pref['cookie_name']]) ? $_COOKIE['e107language_'.$pref['cookie_name']] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
+$language=(isset($_COOKIE['e107language_'.e_COOKIE]) ? $_COOKIE['e107language_'.e_COOKIE] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
 $language = preg_replace("#\W#", "", $language);
 define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
@@ -724,6 +724,7 @@ $sql->db_Mark_Time('Start: Signup/splash/admin');
 define("e_SIGNUP", e_BASE.(file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
 define("e_LOGIN", e_BASE.(file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
 
+// --------- Send user to Membersonly-page when not logged in ---------------.
 if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SELF != SITEURL."index.php" && e_SELF != SITEURL."fpw.php" && e_SELF != SITEURL.e_LOGIN && strpos(e_PAGE, "admin") === FALSE && e_SELF != SITEURL.'membersonly.php' && e_SELF != SITEURL.'sitedown.php')
 {
 	if(!isset($_E107['allow_guest']))
@@ -733,43 +734,23 @@ if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SEL
         	exit;
 		}
 		// remember the url for after-login.
-        $afterlogin = $pref['cookie_name'].'_afterlogin';
+        $afterlogin = e_COOKIE.'_afterlogin';
 		$url = (e_QUERY) ? e_SELF."?".e_QUERY :  e_SELF;
-		if ($pref['user_tracking'] == "session")
-		{
-			$_SESSION[$afterlogin] = $url;
-		}
-		else
-		{
-			setcookie($afterlogin, $url, time() + 60, "/");
-			$_COOKIE[$afterlogin] = $url;
-		}
-
+		session_set($afterlogin,$url,time()+300);
 	  	header("Location: ".e_HTTP."membersonly.php");
 		exit;
 	}
 }
 
 // -----   Redirect to previously logged-in page ---------------------------.
-if(USER && $pref['membersonly_enabled'])
+if(USER && $pref['membersonly_enabled'] && ($_SESSION[e_COOKIE.'_afterlogin'] || $_COOKIE[e_COOKIE.'_afterlogin']))
 {
-	if($_SESSION[$pref['cookie_name'].'_afterlogin'])
-	{
-		$url = $_SESSION[$pref['cookie_name'].'_afterlogin'];
-		$_SESSION[$pref['cookie_name'].'_afterlogin']=FALSE;
-   		header("Location: ".$url);
-	}
-
-	if($_COOKIE[$pref['cookie_name'].'_afterlogin'])
-	{
-    	$url = $_COOKIE[$pref['cookie_name'].'_afterlogin'];
-		setcookie($pref['cookie_name'].'_afterlogin', FALSE,-1000, "/");
-		$_COOKIE[$pref['cookie_name'].'_afterlogin']=FALSE;
-   		header("Location: ".$url);
-	}
+	$url = ($_SESSION[e_COOKIE.'_afterlogin']) ? $_SESSION[e_COOKIE.'_afterlogin'] : $_COOKIE[e_COOKIE3.'_afterlogin'];
+	session_set(e_COOKIE.'_afterlogin',FALSE,-1000);
+	header("Location: ".$url);
+	exit;
 }
 // ------------------------------------------------------------------------
-
 
 if(!isset($_E107['no_prunetmp']))
 {
@@ -805,10 +786,10 @@ if (e_QUERY == 'logout')
 
 	if ($pref['user_tracking'] == "session") {
 		session_destroy();
-		$_SESSION[$pref['cookie_name']]="";
+		$_SESSION[e_COOKIE]="";
 	}
 
-	cookie($pref['cookie_name'], "", (time() - 2592000));
+	cookie(e_COOKIE, "", (time() - 2592000));
 	$e_event->trigger("logout");
 	echo "<script type='text/javascript'>document.location.href = '".SITEURL."index.php'</script>\n";
 	exit;
@@ -1271,7 +1252,7 @@ function init_session() {
 		}
 	}
 
-	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']]) && !isset($_E107['cli']))
+	if (!isset($_COOKIE[e_COOKIE]) && !isset($_SESSION[e_COOKIE]) && !isset($_E107['cli']))
 	{
 		define("USER", FALSE);
 		define("USERTHEME", FALSE);
@@ -1284,7 +1265,7 @@ function init_session() {
 	{
 		if(!isset($_E107['cli']))
 		{
-			list($uid, $upw)=(isset($_COOKIE[$pref['cookie_name']]) && $_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
+			list($uid, $upw)=(isset($_COOKIE[e_COOKIE]) && $_COOKIE[e_COOKIE] ? explode(".", $_COOKIE[e_COOKIE]) : explode(".", $_SESSION[e_COOKIE]));
         }
 		else
 		{
@@ -1292,8 +1273,8 @@ function init_session() {
 		}
 
 		if (empty($uid) || empty($upw)) {
-			cookie($pref['cookie_name'], "", (time() - 2592000));
-			$_SESSION[$pref['cookie_name']] = "";
+			cookie(e_COOKIE, "", (time() - 2592000));
+			$_SESSION[e_COOKIE] = "";
 			session_destroy();
 			define("ADMIN", FALSE);
 			define("USER", FALSE);
@@ -1387,6 +1368,21 @@ if(!isset($_E107['no_online']) && varset($pref['track_online']))
 
 function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
 	setcookie($name, $value, $expire, $path, $domain, $secure);
+}
+
+// generic function for retaining values across pages. ie. cookies or sessions.
+function session_set($name, $value, $expire="", $path = "/", $domain = "", $secure = 0)
+{
+	global $pref;
+	if ($pref['user_tracking'] == "session")
+	{
+		$_SESSION[$name] = $value;
+	}
+	else
+	{
+		setcookie($name, $value, $expire, $path, $domain, $secure);
+		$_COOKIE[$name] = $value;
+	}
 }
 
 //
