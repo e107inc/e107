@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2008-03-17 21:01:44 $
+|     $Revision: 1.32 $
+|     $Date: 2008-05-23 20:29:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -322,13 +322,13 @@ class e_parse
 				}
 				else
 				{
-					for ($i = strlen($matches[1]); $i > 0; $i--)
+					for ($i = min($width,strlen($sp)); $i > 0; $i--)
 					{
-					  if (strpos($lbrks,$matches[1][$i-1]) !== FALSE) break;		// No speed advantage to defining match character
+					  if (strpos($lbrks,$sp[$i-1]) !== FALSE) break;		// No speed advantage to defining match character
 					}
 					if ($i == 0)
-					{	// No 'special' break character found - break at the word boundary
-					  $pulled = $matches[1];
+					{	// No 'special' break boundary character found - break at the word boundary
+					  $pulled = substr($sp,0,$width);
 					}
 					else
 					{
