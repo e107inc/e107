@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.6 $
-|    $Date: 2008-02-24 00:04:19 $
-|    $Author: secretr $
+|    $Revision: 1.7 $
+|    $Date: 2008-05-23 21:03:49 $
+|    $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -207,21 +207,16 @@ class linkclass {
 
 
 
-    function parse_link_append($rowl)
-	{
+    function parse_link_append($rowl){
+
         global $tp, $linkspage_pref;
-        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5")
-		{
-          $link_open_type = $rowl['link_open'];
-        }
-		else
-		{
-          $link_open_type = $linkspage_pref['link_open_all'];
+        if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
+            $link_open_type = $rowl['link_open'];
+        }else{
+            $link_open_type = $linkspage_pref['link_open_all'];
         }
 
-		$rowl['link_url'] = htmlentities($rowl['link_url'],ENT_QUOTES,CHARSET);
-        switch ($link_open_type) 
-		{
+        switch ($link_open_type) {
             case 1:
             $lappend = "<a class='linkspage_url' href='".$rowl['link_url']."' onclick=\"open_window('".e_PLUGIN."links_page/links.php?view.".$rowl['link_id']."','full');return false;\" >"; // Googlebot won't see it any other way.
             break;
@@ -480,19 +475,10 @@ class linkclass {
             $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id='$linkid' ");
         }
     }
-    
-    function verify_link_manage($id) {
-    	global $sql;
-    	
-		if ($sql->db_Select("links_page", "link_author", "link_id='".intval($id)."' ")) {
-			$row = $sql->db_Fetch();
-		}
-		
-		if(varset($row['link_author']) != USERID)
-			js_location(SITEURL);
-    }
 
-    function dbLinkCreate($mode='') {
+	// Create a new link. If $mode == 'submit', link has to go through the approval process; else its admin entry
+    function dbLinkCreate($mode='') 
+	{
         global $ns, $tp, $qs, $sql, $e107cache, $e_event, $linkspage_pref;
 
         $link_name          = $tp->toDB($_POST['link_name']);
@@ -500,26 +486,32 @@ class linkclass {
         $link_description   = $tp->toDB($_POST['link_description']);
         $link_button        = $tp->toDB($_POST['link_but']);
 
-        if (!strstr($link_url, "http")) {
-            $link_url = "http://".$link_url;
+		if (!$link_name || !$link_url || !$link_description) 
+		{
+		  message_handler("ALERT", 5);
+		  return;
+		} 
+
+        if ($link_url && !strstr($link_url, "http")) 
+		{
+          $link_url = "http://".$link_url;
         }
 
         //create link, submit area, tmp table
-		if(isset($mode) && $mode == "submit"){
-			if (!$_POST['link_name'] || !$_POST['link_url'] || !$_POST['link_description']) {
-				 message_handler("ALERT", 5);
-			} else {
-                $username           = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
+		if(isset($mode) && $mode == "submit")
+		{
+		  $username           = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 
-                $submitted_link     = intval($_POST['cat_id'])."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
-                $sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
+		  $submitted_link     = intval($_POST['cat_id'])."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
+		  $sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
 
-                $edata_ls = array("link_category" => $_POST['cat_id'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
-                $e_event->trigger("linksub", $edata_ls);
-                //header("location:".e_SELF."?s");
-                js_location(e_SELF."?s");
-            }
-        }else{
+		  $edata_ls = array("link_category" => $_POST['cat_id'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
+		  $e_event->trigger("linksub", $edata_ls);
+		  //header("location:".e_SELF."?s");
+		  js_location(e_SELF."?s");
+        }
+		else
+		{
             $link_t = $sql->db_Count("links_page", "(*)", "WHERE link_category='".intval($_POST['cat_id'])."'");
             $time   = ($_POST['update_datestamp'] ? time() : ($_POST['link_datestamp'] != "0" ? $_POST['link_datestamp'] : time()) );
 
@@ -564,11 +556,6 @@ class linkclass {
         if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) {
             if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) {
                 $row = $sql->db_Fetch();
-                
-            	if($row['link_author'] != USERID) {
-					header('Location: '.SITEURL);
-					exit;
-            	}
             }
         }
 
