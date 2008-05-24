@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-05-24 12:45:27 $
+|     $Revision: 1.11 $
+|     $Date: 2008-05-24 15:14:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -627,7 +627,7 @@ class comment {
 		global $sql;
 		$authors = array();
 		$qry = "
-		SELECT DISTINCT(comment_author_id,) AS author 
+		SELECT DISTINCT(comment_author_id) AS author 
 		FROM #comments
 		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}' 
 		GROUP BY author
