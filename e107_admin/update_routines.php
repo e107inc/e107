@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-04-29 19:44:17 $
+|     $Revision: 1.21 $
+|     $Date: 2008-05-24 12:45:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
 
 require_once("../class2.php");
 require_once(e_HANDLER.'db_table_admin_class.php');
@@ -28,6 +29,8 @@ require_once(e_HANDLER.'db_table_admin_class.php');
 
 // To do - how do we handle multi-language tables?
 
+// If following line uncommented, enables a test routine
+//define('TEST_UPDATE',TRUE);
 $update_debug = FALSE;			// TRUE gives extra messages in places
 //$update_debug = TRUE;			// TRUE gives extra messages in places
 
@@ -89,6 +92,10 @@ foreach ($dbupdateplugs as $path => $ver)
 
 
 // List of potential updates
+if (defined('TEST_UPDATE'))
+{
+  $dbupdate["test_code"] = "Test update routine";
+}
 $dbupdate["core_prefs"] = LAN_UPDATE_13;						// Prefs check
 $dbupdate["706_to_800"] = LAN_UPDATE_8." .706 ".LAN_UPDATE_9." .8";
 $dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
@@ -175,6 +182,24 @@ function update_core_prefs($type='')
 }
 
 
+if (defined('TEST_UPDATE'))
+{
+//--------------------------------------------
+//	Test routine - to activate, define TEST_UPDATE
+//--------------------------------------------
+  function update_test_code($type='') 
+  {
+	global $sql,$ns, $pref;
+	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
+	//--------------**************---------------
+	// Add your test code in here
+	//--------------**************---------------
+
+
+	return $just_check;
+  }
+}  // End of test routine
+
 //--------------------------------------------
 //	Upgrade later versions of 0.7.x to 0.8
 //--------------------------------------------
@@ -211,7 +236,7 @@ function update_706_to_800($type='')
 	$db_parser = new db_table_admin;				// Class to read table defs and process them
 	$do_save = FALSE;								// Set TRUE to update prefs when update complete
 
-	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
+	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
 
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
@@ -307,6 +332,42 @@ function update_706_to_800($type='')
 	}
 
 
+//---------------------------------------------------------
+//			Comments - split user field
+//---------------------------------------------------------
+	if($sql->db_Field("comments","comment_author"))
+	{
+      if ($just_check) return update_needed('Comment table author field update');
+	  if ((!$sql->db_Field("comments","comment_author_id"))		// Check to see whether new fields already added - maybe data copy failed part way through
+		&& (!$sql->db_Select_gen("ALTER TABLE `#comments` 
+			ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
+			ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
+	  {
+		// Flag error
+		echo "Error<br />";
+	  }
+	  else
+	  {
+		if (!$sql->db_Update("comments","comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+		{
+			// Flag error
+		  echo "Error<br />";
+		}
+		else
+		{	// Delete superceded field - comment_author
+		  if (!$sql->db_Select_gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
+		  {
+			// Flag error
+			echo "Error<br />";
+		  }
+		}
+	  }
+	}
+
+
+//---------------------------------------------------------
+//			Add index to download history
+//---------------------------------------------------------
 	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."download_requests")) 
 	{
 	  $found = FALSE;
@@ -380,9 +441,9 @@ function update_706_to_800($type='')
 	  }
 	}
 
+
 	// Tables defined in core_sql.php
 	//---------------------------------
-
 	if (mysql_table_exists('dblog') && !mysql_table_exists('admin_log'))
 	{
 	  if ($just_check) return update_needed('Rename dblog to admin_log');
@@ -472,8 +533,8 @@ function update_706_to_800($type='')
 	    {
 		  if (strtolower($field_info['Type']) != 'varchar(45)')
 		  {
-            if ($just_check) return update_needed('Update field '.$f.' in table '.$t);
-			mysql_query("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR( 45 ) NOT NULL DEFAULT '';");
+            if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
+			mysql_query("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';");
 			catch_error();
 		  }
 	    }
