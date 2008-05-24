@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-08-17 19:23:26 $
+|     $Revision: 1.5 $
+|     $Date: 2008-05-24 12:45:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -33,15 +33,19 @@ SC_END
 
 SC_BEGIN USERNAME
 global $USERNAME, $comrow;
-if (isset($comrow['user_id']) && $comrow['user_id']) {
-	$USERNAME = "<a href='".e_BASE."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
-}else{
-	$comrow['user_id'] = 0;
-	$USERNAME = preg_replace("/[0-9]+\./", '', $comrow['comment_author']);
-	$USERNAME = str_replace("Anonymous", LAN_ANONYMOUS, $USERNAME);
+if (isset($comrow['user_id']) && $comrow['user_id']) 
+{
+  $USERNAME = "<a href='".e_BASE."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
+}
+else
+{
+  $comrow['user_id'] = 0;
+  $USERNAME = preg_replace("/[0-9]+\./", '', $comrow['comment_author_name']);
+  $USERNAME = str_replace("Anonymous", LAN_ANONYMOUS, $USERNAME);
 }
 return $USERNAME;
 SC_END
+
 
 SC_BEGIN TIMEDATE
 global $TIMEDATE, $comrow, $datestamp, $gen;
@@ -122,8 +126,8 @@ SC_END
 
 SC_BEGIN IPADDRESS
 global $IPADDRESS, $comrow;
-require_once(e_HANDLER."encrypt_handler.php");
-return (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".decode_ip($comrow['comment_ip'])."</a>" : "");
+//require_once(e_HANDLER."encrypt_handler.php");
+return (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".$comrow['comment_ip']."</a>" : "");
 SC_END
 
 SC_BEGIN LEVEL

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-20 22:21:14 $
-|     $Author: secretr $
+|     $Revision: 1.10 $
+|     $Date: 2008-05-24 12:45:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -121,7 +121,8 @@ CREATE TABLE comments (
   comment_pid int(10) unsigned NOT NULL default '0',
   comment_item_id int(10) unsigned NOT NULL default '0',
   comment_subject varchar(100) NOT NULL default '',
-  comment_author varchar(100) NOT NULL default '',
+  comment_author_id int(10) unsigned NOT NULL default '0',
+  comment_author_name varchar(100) NOT NULL default '',
   comment_author_email varchar(200) NOT NULL default '',
   comment_datestamp int(10) unsigned NOT NULL default '0',
   comment_comment text NOT NULL,

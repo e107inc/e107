@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-05-17 15:00:32 $
+|     $Revision: 1.14 $
+|     $Date: 2008-05-24 12:45:26 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -527,7 +527,7 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 					'rolllog'  => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_caller','dblog_title','dblog_remarks'),
 					'downlog'  => array('cf_datestring','dblog_ip','dblog_user_id','user_name','download_request_download_id','download_name'),
 					'detailed' => array('cf_microtime','cf_microtimediff','source','dblog_type','dblog_ip','dblog_user_id','user_name','dblog_eventcode','dblog_title','dblog_remarks'),
-					'comments' => array('cf_datestring', 'comment_id', 'comment_pid', 'comment_item_id', 'comment_subject', 'author_id', 'comment_author', 'comment_ip', 'comment_type', 'comment_comment', 'comment_blocked', 'comment_lock', 'del_check')
+					'comments' => array('cf_datestring', 'comment_id', 'comment_pid', 'comment_item_id', 'comment_subject', 'comment_author_id', 'comment_author_name', 'comment_ip', 'comment_type', 'comment_comment', 'comment_blocked', 'comment_lock', 'del_check')
 					);
 $col_widths = array('adminlog' => array(18,4,14,7,15,8,14,20),		 // Date - Pri - IP - UID - User - Code - Event - Info
 					'auditlog' => array(18,14,7,15,8,14,24),
@@ -570,9 +570,7 @@ $base_query = array(
 			UNION
 			SELECT dblog_datestamp + (dblog_microtime/1000000) AS dblog_time, dblog_user_id, dblog_eventcode, dblog_title, dblog_remarks, dblog_type, dblog_ip, 'admin' AS source FROM `#admin_log`) AS cl
 			LEFT JOIN `#user` AS u ON cl.dblog_user_id=u.user_id ",
-		'comments' => "SELECT SQL_CALC_FOUND_ROWS *, comment_datestamp AS dblog_datestamp, SUBSTRING_INDEX(c.comment_author,'.',1) as author_id
-			FROM `#comments` AS c"
-//			LEFT JOIN `#user` AS u ON SUBSTRING_INDEX(c.comment_author,'.',1) = u.user_id"
+		'comments' => "SELECT SQL_CALC_FOUND_ROWS *, comment_datestamp AS dblog_datestamp FROM `#comments` AS c"
 					);
 
 // The filters have to use the 'actual' db field names. So the following table sets the defaults and the exceptions which vary across the range of tables supported
@@ -580,7 +578,7 @@ $map_filters = array(
 			'default' => array('datetimes' => '`dblog_datestamp`', 'ipfilter' => '`dblog_ip`', 'userfilter' => '`dblog_user_id`', 'eventfilter' => '`dblog_eventcode`'),
 			'downlog' => array('datetimes' => '`download_request_datestamp`', 'ipfilter' => '`download_request_ip`', 'userfilter' => '`download_request_userid`'),
 			'detailed' => array('datestart' => '`dblog_time`'),
-			'comments'  => array('datetimes' => '`comment_datestamp`', 'ipfilter' => '`comment_ip`', 'eventfilter' => 'comment_type', 'userfilter' => "SUBSTRING_INDEX(c.`comment_author`,'.',1)")
+			'comments'  => array('datetimes' => '`comment_datestamp`', 'ipfilter' => '`comment_ip`', 'eventfilter' => 'comment_type', 'userfilter' => '`comment_author_id`')
 			);
 
 
@@ -905,9 +903,6 @@ function log_process($matches)
 		    // Look for pseudo-code for newlines, link insertion
 		    $val = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#",'log_process',$row['dblog_remarks']);
 		    break;
-		  case 'comment_author' :
-		    list(,$val) = explode('.',$row['comment_author'],2);
-			break;
 		  case 'comment_ip' :
 		    $val = $row['comment_ip'];
 		    if (strlen($val) == 8)
