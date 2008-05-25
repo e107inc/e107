@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-05-25 14:51:07 $
+|     $Revision: 1.11 $
+|     $Date: 2008-05-25 16:10:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -707,9 +707,8 @@ class download
 // ---------------------------------------------------------------------------
 
 
-	function create_download($sub_action, $id) {
-
-
+	function create_download($sub_action, $id) 
+	{
 		global $cal,$tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
 		require_once(e_FILE."shortcode/batch/download_shortcodes.php");
 
@@ -797,21 +796,26 @@ class download
 			";
 
 		$counter = 0;
-		while (isset($file_array[$counter])) {
-			$fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
-			if (stristr($fpath, $download_url) !== FALSE) {
-				$selected = " selected='selected'";
-				$found = 1;
-			} else {
-				$selected = "";
-			}
+		while (isset($file_array[$counter])) 
+		{
+		  $fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
+		  $selected = '';
+		  if (stristr($fpath, $download_url) !== FALSE) 
+		  {
+			$selected = " selected='selected'";
+			$found = 1;
+		  }
 
-			$text .= "<option value='".$fpath."' $selected>".$fpath."</option>\n";
-			$counter++;
+		  $text .= "<option value='".$fpath."' $selected>".$fpath."</option>\n";
+		  $counter++;
 		}
 
-		if (preg_match("/http:|ftp:/", $download_url)) {
-			$download_url_external = $download_url;
+		$dt = 'display:none';
+		if (preg_match("/http:|ftp:/", $download_url)) 
+		{
+		  $download_url_external = $download_url;
+		  $download_url = '';
+		  $dt = '';
 		}
 
 		$etext = " - (".DOWLAN_68.")";
@@ -819,18 +823,19 @@ class download
 			$etext = "";
 		}
 
-		if (!$found && $download_url) {
-			$text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
+		if (!$found && $download_url) 
+		{
+		  $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
 		}
 
 		$text .= "</select></div>
             <span style='padding-top:6px;cursor:pointer;text-decoration:underline' onclick='expandit(this)' title='".DOWLAN_14."'>".DOWLAN_149."</span>
-			<div id='use_ext' style='padding-top:6px;display:none'>
+			<div id='use_ext' style='padding-top:6px;{$dt}'>
            URL:&nbsp;
 
-			<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='150' />
+			<input class='tbox' type='text' name='download_url_external' size='70' value='{$download_url_external}' maxlength='150' />
 			&nbsp;&nbsp;&nbsp;".DOWLAN_66."
-			<input class='tbox' type='text' name='download_filesize_external' size='8' value='$download_filesize' maxlength='10' />
+			<input class='tbox' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10' />
            </div>
 
 			</td>
