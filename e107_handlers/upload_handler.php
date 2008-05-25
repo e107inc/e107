@@ -12,20 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.13 $
-|   $Date: 2008-04-22 20:32:40 $
+|   $Revision: 1.14 $
+|   $Date: 2008-05-25 09:04:16 $
 |   $Author: e107steved $
-
-
-********** TEST VERSION DOES INTERMEDIATE COPY ***************
-Unaltered code to:
-	V0.7.x File V1.33
-	V0.8.x File V1.12
-
-To do:
-	1. Criteria for intermediate copy
-	2. Make get_file_types compatible with XML counterpart - array of filetype/max size
-	3. Check sizes - may be different for various file types for non-admin user, for example
 +---------------------------------------------------------------+
 */
 
@@ -820,5 +809,16 @@ function set_max_size(&$allowed_filetypes, $max_upload_size)
   return $new_max;
 }
 
+
+
+// Quick routine if all we want is the size of the largest file the current user can upload
+function get_user_max_upload()
+{
+  $a_filetypes = get_filetypes();
+  if (count($a_filetypes) == 0) return 0;			// Return if no upload allowed
+  $max_upload_size = calc_max_upload_size(-1);		// Find overriding maximum upload size
+  $max_upload_size = set_max_size($a_filetypes, $max_upload_size);
+  return $max_upload_size;
+}
 
 ?>

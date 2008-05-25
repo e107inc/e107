@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-04-01 20:06:24 $
+|     $Revision: 1.4 $
+|     $Date: 2008-05-25 09:04:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,7 @@ if (!getperms("6")) {
 }
 $e_sub_cat = 'filemanage';
 require_once("auth.php");
+require_once(e_HANDLER.'upload_handler.php');
 
 
 $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")) ? TRUE : FALSE;
@@ -204,9 +205,13 @@ $text .= "</select>\n
 $ns->tablerender(FMLAN_34, $text);
 
 
+// Get largest allowable file upload
+$max_file_size = get_user_max_upload();
+
+
 $text = "<form enctype=\"multipart/form-data\" action=\"".e_SELF.(e_QUERY ? "?".e_QUERY : "")."\" method=\"post\">
 	<div style=\"text-align:center\">
-	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000000\" />
+	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"{$max_file_size}\" />
 	<table class='fborder' style=\"".ADMIN_WIDTH."\">";
 
 $text .= "<tr>
@@ -356,26 +361,6 @@ function dirsize($dir) {
 	return parsesize($size);
 }
 
-function parsesize($size) {
-	$kb = 1024;
-	$mb = 1024 * $kb;
-	$gb = 1024 * $mb;
-	$tb = 1024 * $gb;
-	if ($size < $kb) {
-		return $size." b";
-	}
-	else if($size < $mb) {
-		return round($size/$kb, 2)." kb";
-	}
-	else if($size < $gb) {
-		return round($size/$mb, 2)." mb";
-	}
-	else if($size < $tb) {
-		return round($size/$gb, 2)." gb";
-	} else {
-		return round($size/$tb, 2)." tb";
-	}
-}
 
 require_once("footer.php");
 ?>
