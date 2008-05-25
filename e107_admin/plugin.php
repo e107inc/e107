@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-04-05 07:58:30 $
+|     $Revision: 1.16 $
+|     $Date: 2008-05-25 09:04:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -418,13 +418,17 @@ if(!is_writable(e_PLUGIN))
 }
 else
 {
-	$text = "<div style='text-align:center'>
+  // Get largest allowable file upload
+  require_once(e_HANDLER.'upload_handler.php');
+  $max_file_size = get_user_max_upload();
+
+  $text = "<div style='text-align:center'>
 	<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
 	<td class='forumheader3' style='width: 50%;'>".EPL_ADLAN_37."</td>
 	<td class='forumheader3' style='width: 50%;'>
-	<input type='hidden' name='MAX_FILE_SIZE' value='1000000' />
+	<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
 	<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 	<input class='tbox' type='file' name='file_userfile[]' size='50' />
 	</td>
