@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-05-24 12:45:34 $
+|     $Revision: 1.6 $
+|     $Date: 2008-05-25 08:26:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -110,7 +110,8 @@ if ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow
 	}
 	else
 	{
-		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+//		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+		return "<a href='".e_BASE."comment.php?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
 	}
 }
 else
