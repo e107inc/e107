@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-12-25 12:42:57 $
+|     $Revision: 1.14 $
+|     $Date: 2008-05-25 08:25:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,7 @@ define("COMLAN_102", "Replying to: ");
 define("COMLAN_103", "Article");
 define("COMLAN_104", "Review");
 define("COMLAN_105", "Content");
+define("COMLAN_106", "Download");
 define("COMLAN_145", "Registered: ");
 define("COMLAN_194", "Guest");
 define("COMLAN_195", "Registered member");

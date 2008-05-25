@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.94 $ 
-|     $Date: 2007-11-21 22:52:26 $
+|     $Revision: 1.95 $ 
+|     $Date: 2008-05-25 08:25:33 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -398,6 +398,8 @@ if ($action == "view")
 	}
 
 	$dl = $sql -> db_Fetch();
+
+$comment_edit_query = 'comment.download.'.$id;
 
 	$load_template = 'download_template';
 	if (!isset($DOWNLOAD_VIEW_TABLE)) eval($template_load_core);

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2008-04-14 19:07:11 $
+|     $Revision: 1.74 $
+|     $Date: 2008-05-25 08:25:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -628,7 +628,8 @@ class comment {
 		$fl = new e_file;
 
 		$omit = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','.bak$');
-		$files = $fl->get_files(e_PLUGIN, $fmask = 'e_comment.php', $omit, $recurse_level = 1, $current_level = 0);
+//		$files = $fl->get_files(e_PLUGIN, $fmask = 'e_comment.php', $omit, $recurse_level = 1, $current_level = 0);
+		$files = $fl->get_files(e_PLUGIN, 'e_comment.php', $omit, 1, 0);
 
 		foreach($files as $file){
 			unset($e_comment, $key);

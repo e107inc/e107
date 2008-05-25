@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2007-08-17 19:23:02 $
+|     $Revision: 1.22 $
+|     $Date: 2008-05-25 08:25:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -33,15 +33,19 @@ SC_END
 
 SC_BEGIN USERNAME
 global $USERNAME, $comrow;
-if (isset($comrow['user_id']) && $comrow['user_id']) {
+if (isset($comrow['user_id']) && $comrow['user_id']) 
+{
 	$USERNAME = "<a href='".e_BASE."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
-}else{
+}
+else
+{
 	$comrow['user_id'] = 0;
 	$USERNAME = preg_replace("/[0-9]+\./", '', $comrow['comment_author']);
 	$USERNAME = str_replace("Anonymous", LAN_ANONYMOUS, $USERNAME);
 }
 return $USERNAME;
 SC_END
+
 
 SC_BEGIN TIMEDATE
 global $TIMEDATE, $comrow, $datestamp, $gen;
@@ -106,7 +110,8 @@ if ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow
 	}
 	else
 	{
-		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+//		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+		return "<a href='".e_BASE."comment.php?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
 	}
 }
 else
