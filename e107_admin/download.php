@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-03-09 20:33:03 $
+|     $Revision: 1.10 $
+|     $Date: 2008-05-25 14:51:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -58,13 +58,15 @@ $pst->save_preset("admin_downloads");  // unique name for the preset
 */
 
 $rs = new form;
-if (e_QUERY) {
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
-	$from = ($tmp[3] ? $tmp[3] : 0);
-	unset($tmp);
+$sub_action = '';
+if (e_QUERY) 
+{
+  $tmp = explode(".", e_QUERY);
+  $action = $tmp[0];
+  $sub_action = varset($tmp[1],'');
+  $id = varset($tmp[2],'');
+  $from = varset($tmp[3], 0);
+  unset($tmp);
 }
 
 if(isset($_POST['delete']))
@@ -78,23 +80,29 @@ $from = ($from ? $from : 0);
 $amount = 50;
 
 
-if($file_array = $fl->get_files(e_DOWNLOAD, "","standard",5)){
-		sort($file_array);
-}
-
-if($public_array = $fl->get_files(e_FILE."public/")){
-	foreach($public_array as $key=>$val){
-    	$file_array[] = str_replace(e_FILE."public/","",$val);
-	}
+if($file_array = $fl->get_files(e_DOWNLOAD, "","standard",5))
+{
+  sort($file_array);
 }
 
 
+if($public_array = $fl->get_files(e_FILE."public/"))
+{
+  foreach($public_array as $key=>$val)
+  {
+	$file_array[] = str_replace(e_FILE."public/","",$val);
+  }
+}
 
-if ($sql->db_Select("rbinary")){
-	while ($row = $sql->db_Fetch())	{
-		extract($row);
-		$file_array[] = "Binary ".$binary_id."/".$binary_name;
-	}
+
+
+if ($sql->db_Select("rbinary"))
+{
+  while ($row = $sql->db_Fetch())	
+  {
+	extract($row);
+	$file_array[] = "Binary ".$binary_id."/".$binary_name;
+  }
 }
 
 
@@ -107,18 +115,23 @@ if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", ".gif|.jpg|.png|.GIF|
 	sort($thumb_array);
 }
 
-if(isset($_POST)){
-	$e107cache->clear("download_cat");
+
+
+if(isset($_POST))
+{
+  $e107cache->clear("download_cat");
 }
 
-if (isset($_POST['add_category'])) {
-	$download->create_category($sub_action, $id);
+if (isset($_POST['add_category'])) 
+{
+  $download->create_category($sub_action, $id);
 }
 
-if (isset($_POST['submit_download'])) {
-	$download->submit_download($sub_action, $id);
-	$action = "main";
-	unset($sub_action, $id);
+if (isset($_POST['submit_download'])) 
+{
+  $download->submit_download($sub_action, $id);
+  $action = "main";
+  unset($sub_action, $id);
 }
 
 
@@ -152,6 +165,7 @@ if (isset($_POST['updateoptions']))
 	$message = DOWLAN_65;
 }
 
+
 if(isset($_POST['addlimit']))
 {
 	if($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = {$_POST['newlimit_class']}"))
@@ -170,6 +184,7 @@ if(isset($_POST['addlimit']))
 		}
 	}
 }
+
 
 if(isset($_POST['updatelimits']))
 {
@@ -202,10 +217,12 @@ if(isset($_POST['updatelimits']))
 	}
 }
 
+
 if(isset($_POST['submit_mirror']))
 {
 	$download->submit_mirror($sub_action, $id);
 }
+
 
 if($action == "mirror")
 {
@@ -220,38 +237,50 @@ if ($action == "dlm")
 	$sub_action = "dlm";
 }
 
-if ($action == "create") {
-	$download->create_download($sub_action, $id);
-}
 
-if ($delete == 'category') {
-	if (admin_update($sql->db_Delete("download_category", "download_category_id='$del_id' "), 'delete', DOWLAN_49." #".$del_id." ".DOWLAN_36)) {
-		$sql->db_Delete("download_category", "download_category_parent='{$del_id}' ");
-	}
-}
-
-if ($action == "cat") {
-	$download->show_categories($sub_action, $id);
-}
-
-if ($delete == 'main') {
-
-	$result = admin_update($sql->db_Delete("download", "download_id='$del_id' "), 'delete', DOWLAN_27." #".$del_id." ".DOWLAN_36);
-	if($result)
-	{
-		admin_purge_related("download", $del_id);
-		$e_event->trigger("dldelete", $del_id);
-	}
-	unset($sub_action, $id);
+if ($action == "create") 
+{
+  $download->create_download($sub_action, $id);
 }
 
 
-if (isset($message)) {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+if ($delete == 'category') 
+{
+  if (admin_update($sql->db_Delete("download_category", "download_category_id='$del_id' "), 'delete', DOWLAN_49." #".$del_id." ".DOWLAN_36)) 
+  {
+	$sql->db_Delete("download_category", "download_category_parent='{$del_id}' ");
+  }
 }
 
-if (!e_QUERY || $action == "main") {
-	$download->show_existing_items($action, $sub_action, $id, $from, $amount);
+
+if ($action == "cat") 
+{
+  $download->show_categories($sub_action, $id);
+}
+
+
+if ($delete == 'main') 
+{
+  $result = admin_update($sql->db_Delete("download", "download_id='$del_id' "), 'delete', DOWLAN_27." #".$del_id." ".DOWLAN_36);
+  if($result)
+  {
+	admin_purge_related("download", $del_id);
+	$e_event->trigger("dldelete", $del_id);
+  }
+  unset($sub_action, $id);
+}
+
+
+if (isset($message)) 
+{
+  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+}
+
+
+
+if (!e_QUERY || $action == "main") 
+{
+  $download->show_existing_items($action, $sub_action, $id, $from, $amount);
 }
 
 
@@ -458,39 +487,50 @@ if($action == 'limits')
 	exit;
 }
 
-//$download->show_options($action);
-
 require_once("footer.php");
 exit;
 
-class download {
 
-	function show_existing_items($action, $sub_action, $id, $from, $amount) {
-		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
-		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
-        $sortorder = ($pref['download_order']) ? $pref['download_order'] : "download_datestamp";
-		if(isset($_POST['searchdisp'])){
-			$pref['admin_download_disp'] = implode("|",$_POST['searchdisp']);
-			save_prefs();
-		}
 
-		if(!$pref['admin_download_disp']){
-			$search_display = array("download_name","download_class");
-		}else{
-            $search_display = explode("|",$pref['admin_download_disp']);
-		}
 
-//         $query = "SELECT d.*, dc.* FROM #download AS d	LEFT JOIN #download_category AS dc ON dc. download_category_id  = d.download_category";
-         $query = "SELECT d.*, dc.* FROM `#download` AS d	LEFT JOIN `#download_category` AS dc ON dc. download_category_id  = d.download_category";
+class download 
+{
+  function show_existing_items($action, $sub_action, $id, $from, $amount) 
+  {
+	global $sql, $rs, $ns, $tp, $mySQLdefaultdb, $pref;
+	$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
+    $sortorder = ($pref['download_order']) ? $pref['download_order'] : "download_datestamp";
+    $sortdirection = ($pref['download_sort']) ? strtolower($pref['download_sort']) : "desc";
+	if ($sortdirection != 'desc') $sortdirection = 'asc';
+	if(isset($_POST['searchdisp']))
+	{
+	  $pref['admin_download_disp'] = implode("|",$_POST['searchdisp']);
+	  save_prefs();
+	}
 
-		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
-			$query .= " WHERE  download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ";
-            foreach($search_display as $disp){
-		  		$query .= " OR $disp REGEXP('".$_POST['searchquery']."') ";
-			}
-            $query .= " ORDER BY ".$sortorder." DESC";
-		} else {
-			$query .= " ORDER BY ".($sub_action ? $sub_action : $sortorder)." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
+	if(!$pref['admin_download_disp'])
+	{
+	  $search_display = array("download_name","download_class");
+	}
+	else
+	{
+      $search_display = explode("|",$pref['admin_download_disp']);
+	}
+
+	$query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc. download_category_id  = d.download_category";
+
+		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") 
+		{
+		  $query .= " WHERE  download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ";
+          foreach($search_display as $disp)
+		  {
+			$query .= " OR $disp REGEXP('".$_POST['searchquery']."') ";
+		  }
+          $query .= " ORDER BY {$sortorder} {$sortdirection}";
+		} 
+		else 
+		{
+		  $query .= " ORDER BY ".($sub_action ? $sub_action : $sortorder)." ".($id ? $id : $sortdirection)."  LIMIT $from, $amount";
 		}
 
       	if ($dl_count = $sql->db_Select_gen($query)) 
@@ -505,13 +545,13 @@ class download {
 		  foreach($search_display as $disp)
 		  {
 			if($disp == "download_name")
-			{
+			{  // Toggle direction
 			  $text .= "<td class='fcaption'><a href='".e_SELF."?main.download_name.".($id == "desc" ? "asc" : "desc").".$from'>".DOWLAN_27."</a></td>";
 			}
 			else
 			{
 			  $repl = array("download_","_");
-			  $text .= "<td class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace($repl," ",$disp))."</a></td>";
+			  $text .= "<td class='fcaption'><a href='".e_SELF."?main.{$disp}.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace($repl," ",$disp))."</a></td>";
 			}
 		  }
 
@@ -596,8 +636,8 @@ class download {
 		$downloads = $sql->db_Count("download");
 		if ($downloads > $amount && !$_POST['searchquery']) 
 		{
-			$parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.download_id.desc.")."[FROM]";
-			$text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
+		  $parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.{$sortorder}.{$sortdirection}.")."[FROM]";
+		  $text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 
 
@@ -612,26 +652,28 @@ class download {
 		for ($i = 0; $i < $columns; $i++) {
 			$fname[] = mysql_field_name($fields, $i);
 		}
-        $m = 0;
-		$replacechar = array("download_","_");
-		foreach($fname as $fcol){
-        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
-			$text .= "<td style='text-align:left; padding:0px'>";
-			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace($replacechar," ",$fcol) . "</td>\n";
-			$m++;
-			if($m == 5){
-				$text .= "</tr><tr>";
-				$m = 0;
-			 }
-        }
+    $m = 0;
+	$replacechar = array("download_","_");
+	foreach($fname as $fcol)
+	{
+      $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
+	  $text .= "<td style='text-align:left; padding:0px'>";
+	  $text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace($replacechar," ",$fcol) . "</td>\n";
+	  $m++;
+	  if($m == 5)
+	  {
+		$text .= "</tr><tr>";
+		$m = 0;
+	  }
+    }
 
-		$text .= "</table></div>
+	$text .= "</table></div>
 		</form>\n
 		</div>";
-// ======================
 
-		$ns->tablerender(DOWLAN_7, $text);
-	}
+
+	$ns->tablerender(DOWLAN_7, $text);
+  }
 
 	function show_options($action) {
 
