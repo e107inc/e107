@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.19 $ 
-|     $Date: 2008-05-25 08:26:11 $
+|     $Revision: 1.20 $ 
+|     $Date: 2008-05-25 13:50:46 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -36,8 +36,8 @@ if(!defined("USER_WIDTH")) { define("USER_WIDTH","width:100%"); }
 //$pref['download_incinfo'] = '1';
 
 /* define images */
-define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
-define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/".IMODE."/new.png"));
+define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE.'packs/'.$imode."/generic/download.png"));
+define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE.'packs/'.$imode."/generic/new.png"));
 
 $template_load_core = '
   $template_name = $load_template.".php";
@@ -549,21 +549,23 @@ if($action == "mirror")
 		extract($row);
 		$array = explode(chr(1), $download_mirror);
 
-		$c = (count($array)-1);
-		for ($i=1; $i<$c; $i++) {
-			$d = mt_rand(0, $i);
-			$tmp = $array[$i];
-			$array[$i] = $array[$d];
-			$array[$d] = $tmp;
+		// Shuffle the mirror list into a random order
+		$c = count($array) -1;		// Will always be an empty entry at the end
+		for ($i=1; $i<$c; $i++) 
+		{
+		  $d = mt_rand(0, $i);
+		  $tmp = $array[$i];
+		  $array[$i] = $array[$d];
+		  $array[$d] = $tmp;
 		}
 
 		$download_mirror = "";
 		foreach($array as $mirrorstring)
 		{
-			if($mirrorstring)
-			{
-				$download_mirror .= parse_download_mirror_table($row, $mirrorstring, $mirrorList);
-			}
+		  if($mirrorstring)
+		  {
+			$download_mirror .= parse_download_mirror_table($row, $mirrorstring, $mirrorList);
+		  }
 		}
 
 		$DOWNLOAD_MIRROR_HOST_LAN = LAN_dl_68;
