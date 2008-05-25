@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-04-06 21:38:02 $
+|     $Revision: 1.12 $
+|     $Date: 2008-05-25 15:31:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -443,16 +443,17 @@ class e107_user_extended
 		{
 			return $ueStruct;
 		}
-		global $sql, $tp;
+		global $tp;
 		$ret = array();
 		$parms = "";
 		if($orderby != "")
 		{
 			$parms = "1 ORDER BY ".$tp -> toDB($orderby, true);
 		}
-		if($sql->db_Select('user_extended_struct','*',$parms))
+		$sql_ue = new db;		// Use our own db to avoid interference with other objects
+		if($sql_ue->db_Select('user_extended_struct','*',$parms))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql_ue->db_Fetch())
 			{
 				$ret['user_'.$row['user_extended_struct_name']] = $row;
 			}

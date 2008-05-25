@@ -2,7 +2,7 @@
 //EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
 include(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
-global $currentUser, $sql, $tp, $loop_uid, $e107, $imode, $sc_style;
+global $currentUser, $tp, $loop_uid, $e107, $imode, $sc_style;
 if(isset($loop_uid) && intval($loop_uid) == 0) { return ""; }
 $key = $parms[0].".".$parms[1];
 $sc_style['USER_EXTENDED']['pre'] = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : "");
@@ -96,9 +96,10 @@ if ($parms[1] == 'value')
 	// check for db_lookup type
 	  case EUF_DB_FIELD :
 		$tmp = explode(",",$ueStruct["user_".$parms[0]]['user_extended_struct_values']);
-		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
+		$sql_ue = new db;			// Use our own DB object to avoid conflicts
+		if($sql_ue->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
 		{
-		  $row = $sql->db_Fetch();
+		  $row = $sql_ue->db_Fetch();
 		  $ret_data = $row[$tmp[2]];
 		}
 		else
@@ -106,7 +107,7 @@ if ($parms[1] == 'value')
 		  $ret_data = FALSE;
 		}
 		break;
-	  case EUF_DATE ;		//check for 0000-00-00 in date field
+	  case EUF_DATE :		//check for 0000-00-00 in date field
 		if($uVal == "0000-00-00") { $uVal = ""; }
 		$ret_data = $uVal;
 		break;
