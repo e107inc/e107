@@ -144,6 +144,6 @@ define("LANINS_102", 'Date / Time');
 define("LANINS_103", 'Reviews');
 define("LANINS_104", 'Review Front Page ...');
 
-define("LANINS_105", '');
+define("LANINS_105", 'A database name or prefix beginning with some digits followed by \'e\' or \'E\' is not acceptable');
 define("LANINS_106", '');
 ?>
