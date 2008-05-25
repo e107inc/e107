@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2008-02-20 21:42:25 $
-|		$Author: lisa_ $
+|		$Revision: 1.19 $
+|		$Date: 2008-05-25 08:26:11 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -1062,9 +1062,11 @@ function show_content_item(){
 		global $pref, $content_pref, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent;
 		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CM_AUTHOR, $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA, $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
 		global $CONTENT_CONTENT_TABLE_PREV_PAGE, $CONTENT_CONTENT_TABLE_NEXT_PAGE;
+		global $comment_edit_query;
 
 		$mainparent			= $aa -> getMainParent(intval($qs[1]));
 		$content_pref		= $aa -> getContentPref($mainparent, true);
+		$comment_edit_query = 'comment.pcontent.'.$qs[1];
 
 		show_content_search_menu("item", $mainparent);		//show navigator/search/order menu
 		$array				= $aa -> getCategoryTree("", $mainparent, TRUE);
