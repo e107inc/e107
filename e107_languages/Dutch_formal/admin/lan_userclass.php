@@ -25,5 +25,5 @@ define("UCSLAN_7", "Instellen klassen");
 define("UCSLAN_8", "Melden aan lid");
 define("UCSLAN_9", "Klassen bijgewerkt");
 define("UCSLAN_10", "Groeten,");
-
+define('UCSLAN_12', 'Recht voorbehouden aan leden');
 ?>

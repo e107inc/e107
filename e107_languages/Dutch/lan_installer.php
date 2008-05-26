@@ -139,4 +139,5 @@ define("LANINS_101", 'Bijwerken menu instellingen');
 define("LANINS_102", 'Datum / tijd');
 define("LANINS_103", 'Reviews');
 define("LANINS_104", 'Review voorpagina ...');
+define("LANINS_105", 'Een database naam of voorloopcode die begine met cijfers gevolgd door \'e\' of \'E\' is niet toegestaan');
 ?>

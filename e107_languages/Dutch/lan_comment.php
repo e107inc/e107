@@ -35,6 +35,7 @@ define("COMLAN_102", "Reactie op: ");
 define("COMLAN_103", "Artikel");
 define("COMLAN_104", "Review");
 define("COMLAN_105", "Inhoud");
+define("COMLAN_106", "Download");
 define("COMLAN_145", "Geregistreerd: ");
 define("COMLAN_194", "Gast");
 define("COMLAN_195", "Geregistreerd lid");
