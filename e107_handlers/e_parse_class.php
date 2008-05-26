@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2008-05-23 20:29:04 $
+|     $Revision: 1.33 $
+|     $Date: 2008-05-26 17:58:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -220,6 +220,9 @@ class e_parse
 		Breaks a utf-8 string every $width characters max. If possible, breaks after 'safe' characters.
 		$break is the character inserted to flag the break.
 		*/
+
+  if (!ctype_digit($width)) return $str;		// Don't wrap if non-numeric width
+  if ($width < 6) return $str;					// Trap stupid wrap counts, as well
 
   // Transform protected element lists into arrays
   $nobreak = explode(" ", strtolower($nobreak));
