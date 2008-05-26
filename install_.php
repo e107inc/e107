@@ -11,11 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/install_.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-05-25 10:23:12 $
+|     $Revision: 1.9 $
+|     $Date: 2008-05-26 13:19:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
+define('MIN_PHP_VERSION','4.4');
+define('MIN_MYSQL_VERSION','4.1');
+
 
 /* Default Options and Paths for Installer */
 $MySQLPrefix	     = 'e107_';
@@ -34,9 +38,10 @@ $UPLOADS_DIRECTORY   = "e107_files/public/";
 
 /* End configurable variables */
 
-if(isset($_GET['object'])) {
-	get_object($_GET['object']);
-	die();
+if(isset($_GET['object'])) 
+{
+  get_object($_GET['object']);
+  die();
 }
 
 define("e107_INIT", TRUE);
@@ -44,10 +49,12 @@ define("e_UC_ADMIN", 254);
 
 error_reporting(E_ALL);
 
-function e107_ini_set($var, $value){
-	if (function_exists('ini_set')){
-		ini_set($var, $value);
-	}
+function e107_ini_set($var, $value)
+{
+  if (function_exists('ini_set'))
+  {
+	ini_set($var, $value);
+  }
 }
 
 // setup some php options
@@ -58,21 +65,26 @@ e107_ini_set('session.use_only_cookies', 1);
 e107_ini_set('session.use_trans_sid',    0);
 
 
-if(!function_exists("file_get_contents")) {
-	die("e107 requires PHP 4.3 or greater to work correctly.");
+$php_version = phpversion();
+if(version_compare($php_version, MIN_PHP_VERSION, "<")) 
+{
+  die('A newer version of PHP is required');
 }
+
 
 //  Ensure that '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
-if($inc_path[0] != ".") {
-	array_unshift($inc_path, ".");
-	$inc_path = implode(PATH_SEPARATOR, $inc_path);
-	e107_ini_set("include_path", $inc_path);
+if($inc_path[0] != ".") 
+{
+  array_unshift($inc_path, ".");
+  $inc_path = implode(PATH_SEPARATOR, $inc_path);
+  e107_ini_set("include_path", $inc_path);
 }
 unset($inc_path);
 
-if(!function_exists("mysql_connect")) {
-	die("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
+if(!function_exists("mysql_connect")) 
+{
+  die("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
 }
 
 # Check for the realpath(). Some hosts (I'm looking at you, Awardspace) are totally dumb and
@@ -81,25 +93,32 @@ if(!function_exists("mysql_connect")) {
 # checks. So, we refuse to work with these people.
 $functions_ok = true;
 $disabled_functions = ini_get('disable_functions');
-if (trim($disabled_functions) != '') {
-	$disabled_functions = explode( ',', $disabled_functions );
-	foreach ($disabled_functions as $function) {
-		if(trim($function) == "realpath") {
-			$functions_ok = false;
-		}
+if (trim($disabled_functions) != '') 
+{
+  $disabled_functions = explode( ',', $disabled_functions );
+  foreach ($disabled_functions as $function) 
+  {
+	if(trim($function) == "realpath") 
+	{
+	  $functions_ok = false;
 	}
+  }
 }
-if($functions_ok == true && function_exists("realpath") == false) {
-	$functions_ok = false;
+if($functions_ok == true && function_exists("realpath") == false) 
+{
+  $functions_ok = false;
 }
-if($functions_ok == false) {
-	die("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and <b>There is NO workaround</b>. Please contact your host for more information.");
+if($functions_ok == false) 
+{
+  die("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and <b>There is NO workaround</b>. Please contact your host for more information.");
 }
 
-if(!function_exists("print_a")) {
-	function print_a($var) {
-		return '<pre>'.htmlentities(print_r($var, true), null, "UTF-8").'</pre>';
-	}
+if(!function_exists("print_a")) 
+{
+  function print_a($var) 
+  {
+	return '<pre>'.htmlentities(print_r($var, true), null, "UTF-8").'</pre>';
+  }
 }
 
 header("Content-type: text/html; charset=utf-8");
@@ -121,12 +140,14 @@ $e_install->template->SetTag("installer_css_http", $_SERVER['PHP_SELF']."?object
 $e_install->template->SetTag("installer_folder_http", e_HTTP.$installer_folder_name."/");
 $e_install->template->SetTag("files_dir_http", e_FILE_ABS);
 
-if(!isset($_POST['stage'])) {
-	$_POST['stage'] = 1;
+if(!isset($_POST['stage'])) 
+{
+  $_POST['stage'] = 1;
 }
 $_POST['stage'] = intval($_POST['stage']);
 
-switch ($_POST['stage']) {
+switch ($_POST['stage']) 
+{
 	case 1:
 		$e_install->stage_1();
 		break;
@@ -152,20 +173,21 @@ switch ($_POST['stage']) {
 		$e_install->raise_error("Install stage information from client makes no sense to me.");
 }
 
-if($_SERVER['QUERY_STRING'] == "debug"){
-	$e_install->template->SetTag("debug_info", print_a($e_install));
-} else {
-	$e_install->template->SetTag("debug_info", (count($e_install->debug_info) ? print_a($e_install->debug_info)."Backtrace:<br />".print_a($e_install) : ""));
+if($_SERVER['QUERY_STRING'] == "debug")
+{
+  $e_install->template->SetTag("debug_info", print_a($e_install));
+} 
+else 
+{
+  $e_install->template->SetTag("debug_info", (count($e_install->debug_info) ? print_a($e_install->debug_info)."Backtrace:<br />".print_a($e_install) : ""));
 }
 
 echo $e_install->template->ParseTemplate(template_data(), TEMPLATE_TYPE_DATA);
 
 
 
-class e_install {
-
-	var $required_php = "4.3";
-
+class e_install 
+{
 	var $paths;
 	var $template;
 	var $debug_info;
@@ -174,21 +196,26 @@ class e_install {
 	var $stage;
 	var $post_data;
 
-	function e_install() {
-		$this->template = new SimpleTemplate();
-		while (@ob_end_clean());
-		global $e107;
-		$this->e107 = $e107;
-		if(isset($_POST['previous_steps'])) {
-			$this->previous_steps = unserialize(base64_decode($_POST['previous_steps']));
-			unset($_POST['previous_steps']);
-		} else {
-			$this->previous_steps = array();
-		}
-		$this->post_data = $_POST;
+	function e_install() 
+	{
+	  $this->template = new SimpleTemplate();
+	  while (@ob_end_clean());
+	  global $e107;
+	  $this->e107 = $e107;
+	  if(isset($_POST['previous_steps'])) 
+	  {
+		$this->previous_steps = unserialize(base64_decode($_POST['previous_steps']));
+		unset($_POST['previous_steps']);
+	  } 
+	  else 
+	  {
+		$this->previous_steps = array();
+	  }
+	  $this->post_data = $_POST;
 	}
 
-	function raise_error($details){
+	function raise_error($details)
+	{
 		$this->debug_info[] = array (
 		'info' => array (
 		'details' => $details,
@@ -363,7 +390,8 @@ class e_install {
 		$this->template->SetTag("stage_content", $head.$e_forms->return_form());
 	}
 
-	function stage_4(){
+	function stage_4()
+	{
 		global $e_forms;
 		$this->stage = 4;
 		$this->get_lan_file();
@@ -374,46 +402,72 @@ class e_install {
 		$not_writable = $this->check_writable_perms();
 		$version_fail = false;
 		$perms_errors = "";
-		if(count($not_writable)) {
-			$perms_pass = false;
-			foreach ($not_writable as $file) {
-				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."...<br /><b>{$file}</b><br />\n";
-			}
-			$perms_notes = LANINS_018;
-		} else {
-			$perms_pass = true;
-			$perms_errors = "&nbsp;";
-			$perms_notes = LANINS_017;
+		if(count($not_writable)) 
+		{
+		  $perms_pass = false;
+		  foreach ($not_writable as $file) 
+		  {
+			$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."...<br /><b>{$file}</b><br />\n";
+		  }
+		  $perms_notes = LANINS_018;
+		} 
+		else 
+		{
+		  $perms_pass = true;
+		  $perms_errors = "&nbsp;";
+		  $perms_notes = LANINS_017;
 		}
-		if(!function_exists("mysql_connect")) {
-			$version_fail = true;
-			$mysql_note = LANINS_011;
-			$mysql_help = LANINS_012;
-		} elseif (!@mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password'])) {
-			$mysql_note = LANINS_011;
-			$mysql_help = LANINS_013;
-		} else {
-			$mysql_note = mysql_get_server_info();
+
+		if(!function_exists("mysql_connect")) 
+		{
+		  $version_fail = true;
+		  $mysql_note = LANINS_011;
+		  $mysql_help = LANINS_012;
+		} 
+		elseif (!@mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password'])) 
+		{
+		  $mysql_note = LANINS_011;
+		  $mysql_help = LANINS_013;
+		} 
+		else 
+		{
+		  $mysql_note = mysql_get_server_info();
+		  if (version_compare($mysql_note,MIN_MYSQL_VERSION, '>='))
+		  {
 			$mysql_help = LANINS_017;
+		  }
+		  else
+		  {
+			$mysql_help = LANINS_105;
+		  }
 		}
-		if(!function_exists("utf8_encode")) {
-			$xml_installed = false;
-		} else {
-			$xml_installed = true;
+		if(!function_exists("utf8_encode")) 
+		{
+		  $xml_installed = false;
+		} 
+		else 
+		{
+		  $xml_installed = true;
 		}
 
 		$php_version = phpversion();
-		if(version_compare($php_version, $this->required_php, ">=")) {
-			$php_help = LANINS_017;
-		} else {
-			$php_help = LANINS_019;
+		if(version_compare($php_version, MIN_PHP_VERSION, ">=")) 
+		{
+		  $php_help = LANINS_017;
+		} 
+		else 
+		{
+		  $php_help = LANINS_019;
 		}
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-		if(!$perms_pass) {
-			$e_forms->add_button("retest_perms", LANINS_009);
-			$this->stage = 3; // make the installer jump back a step
-		} elseif ($perms_pass && !$version_fail && $xml_installed) {
-			$e_forms->add_button("continue_install", LANINS_020);
+		if(!$perms_pass) 
+		{
+		  $e_forms->add_button("retest_perms", LANINS_009);
+		  $this->stage = 3; // make the installer jump back a step
+		} 
+		elseif ($perms_pass && !$version_fail && $xml_installed) 
+		{
+		  $e_forms->add_button("continue_install", LANINS_020);
 		}
 		$output = "
 			<table style='width: 100%; margin-left: auto; margin-right: auto;'>
