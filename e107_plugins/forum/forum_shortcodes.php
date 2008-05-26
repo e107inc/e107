@@ -16,7 +16,7 @@ SC_END
 	
 SC_BEGIN THREADDATESTAMP
 global $post_info, $gen, $thread_id;
-return "<a id='post_{$post_info['thread_id']}'>".IMAGE_post."</a> ".$gen->convert_date($post_info['thread_datestamp'], "forum");
+return "<a id='post_{$post_info['thread_id']}' href='".e_SELF."?{$post_info['thread_id']}.post'>".IMAGE_post."</a> ".$gen->convert_date($post_info['thread_datestamp'], "forum");
 SC_END
 	
 SC_BEGIN POST
