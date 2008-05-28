@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2008-05-19 10:09:05 $
-|     $Author: e107coders $
+|     $Revision: 1.58 $
+|     $Date: 2008-05-28 21:22:57 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1575,19 +1575,17 @@ function force_userupdate()
 
 	if (!varset($pref['disable_emailcheck'],TRUE) && !trim($currentUser['user_email'])) return TRUE;
 
-	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", "user_extended_struct_required = '1'"))
+	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name, user_extended_struct_type", "user_extended_struct_required = '1'"))
 	{
-		while($row = $sql -> db_Fetch())
+	  while($row = $sql -> db_Fetch())
+	  {
+		$user_extended_struct_name = "user_{$row['user_extended_struct_name']}";
+		if ((!$currentUser[$user_extended_struct_name]) || (($row['user_extended_struct_type'] == 7) && ($currentUser[$user_extended_struct_name] == '0000-00-00')))
 		{
-			$user_extended_struct_name = "user_{$row['user_extended_struct_name']}";
-
-			if(!$currentUser[$user_extended_struct_name])
-			{
-				return TRUE;
-			}
+		  return TRUE;
 		}
+	  }
 	}
-
 	return FALSE;
 }
 
