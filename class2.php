@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2008-05-28 21:22:57 $
+|     $Revision: 1.59 $
+|     $Date: 2008-05-29 21:12:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -859,70 +859,87 @@ if(!isset($_E107['no_menus']))
 }
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if(!defined("THEME") && !isset($_E107['no_theme']))
+
+// Work out which theme to use
+//----------------------------
+// The following files are assumed to use admin theme:
+//	  1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
+// 	  2. any plugin file starting with 'admin_' 
+// 	  3. any plugin file in a folder called admin/ 
+// 	  4. any file that specifies $eplug_admin = TRUE;
+//
+// e_SELF has the full HTML path
+$inAdminDir = FALSE;
+$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
+$e107Path = str_replace($e107->base_path, "", e_SELF);				// Knock off the initial bits
+if	( 
+		 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 								// Core admin directory
+	  || ($isPluginDir && (strpos(e_PAGE,"admin_") === 0 || strpos($e107Path, "admin/") !== FALSE)) // Plugin admin file or directory
+	  || (varsettrue($eplug_admin))																	// Admin forced
+	)
 {
-	// any plugin file starting with 'admin_' is assumed to use admin theme
-	// any plugin file in a folder called admin/ is assumed to use admin theme.
-	// any file that specifies $eplug_admin = TRUE;
-	// this test: (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0)
-	// alternate test: match ANY file starting with 'admin_'...
-	//   strpos(e_PAGE, "admin_") === 0
-	//
-	// here we TEST the theme (see below for deciding what theme to USE)
-	//
-
-	if((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && (strpos(e_PAGE,"admin_") === 0 || strpos(str_replace($e107->base_path, "", e_SELF), "admin/") !== FALSE)) || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
-
-		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
-			checkvalidtheme($pref['sitetheme']);
-		} else if (strpos(e_SELF, "newspost.php") !== FALSE) {
-			define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
-			checkvalidtheme($pref['admintheme']);
-		}
-		else {
-			checkvalidtheme($pref['admintheme']);
-		}
-	} else {
-		if (USERTHEME !== FALSE && USERTHEME != "USERTHEME") {
-			checkvalidtheme(USERTHEME);
-		} else {
-			checkvalidtheme($pref['sitetheme']);
-		}
-	}
+  $inAdminDir = TRUE;
 }
 
+
+if(!defined("THEME"))
+{
+	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE))
+	{
+/*	  if (strpos(e_SELF, "newspost.php") !== FALSE) 
+	  {
+		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
+	  }  */
+	  checkvalidtheme($pref['admintheme']);
+	} 
+	elseif (USERTHEME !== FALSE && USERTHEME != "USERTHEME") 
+	{
+	  checkvalidtheme(USERTHEME);
+	} 
+	else 
+	{
+	  checkvalidtheme($pref['sitetheme']);
+	}
+}
 
 
 // --------------------------------------------------------------
 
+
 // here we USE the theme
-if(!isset($_E107['no_theme']))
+if ($inAdminDir)
 {
-	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || (strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE && strpos(e_PAGE,"admin_") === 0) || (isset($eplug_admin) && $eplug_admin == TRUE)))
-	{
-		if (file_exists(THEME.'admin_theme.php'))
-		{
-			require_once(THEME.'admin_theme.php');
-		}
-		else
-		{
-			require_once(THEME."theme.php");
-		}
-	}
-	else
-	{
-		require_once(THEME."theme.php");
-	}
+  if (file_exists(THEME.'admin_theme.php')) 
+  {
+	require_once(THEME.'admin_theme.php');
+  } 
+  else 
+  {
+	require_once(THEME."theme.php");
+  }
+} 
+else 
+{
+  require_once(THEME."theme.php");
 }
+
+
+
+
 $exclude_lan = array("lan_signup.php");  // required for multi-language.
 
-if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !== FALSE) {
-	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
-	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
-} else if (!in_array("lan_".e_PAGE,$exclude_lan) && strpos(e_SELF, $PLUGINS_DIRECTORY) === FALSE) {
-	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
-	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
+if ($inAdminDir)
+{
+  e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
+  e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
+} 
+elseif (!in_array("lan_".e_PAGE,$exclude_lan) && !$isPluginDir) 
+{
+  e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+  e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
+
+
 
 if(!defined("IMODE")) define("IMODE", "lite");
 
