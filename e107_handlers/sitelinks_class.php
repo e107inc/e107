@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-08-19 21:49:32 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2008-05-30 20:57:13 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -58,8 +58,9 @@ class sitelinks
 		global $pref, $ns, $e107cache, $linkstyle;
 		$usecache = ((trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != "") ? false : true);
 
-		if ($usecache && !strpos(e_SELF, e_ADMIN) & ($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY)))) {
-			return $data;
+		if ($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY)))) 
+		{
+		  return $data;
 		}
 
 		if (LINKDISPLAY == 4) {
@@ -306,8 +307,8 @@ function hilite($link,$enabled='')
     $link_qry = (isset($tmp[1])) ? $tmp[1] : "";
     $link_slf = (isset($tmp[0])) ? $tmp[0] : "";
 	$link_pge = basename($link_slf);
-	$link_match = strpos(e_SELF,$tmp[0]);					// e_SELF is the actual displayed page
-
+	$link_match = (empty($tmp[0])) ? "": strpos(e_SELF,$tmp[0]);	// e_SELF is the actual displayed page
+	
     if(e_MENU == "debug" && getperms('0'))
 	{
 		echo "<br />link= ".$link;
@@ -432,7 +433,7 @@ function hilite($link,$enabled='')
 		if(strpos($link, "?") !== FALSE){
 
 			$thelink = str_replace("../", "", $link);
-			if((strpos(e_SELF,$thelink) !== false) && (strpos(e_QUERY,$link_qry) !== false)){
+			if(!preg_match("/all|item|cat|list/", e_QUERY) && (empty($link) == false) && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
 		   		return true;
 			}
 		}
@@ -440,11 +441,11 @@ function hilite($link,$enabled='')
 		  	return true;
 		}
 
-   		if((!$link_qry && !e_QUERY) && (strpos(e_SELF,$link) !== FALSE)){
+		if((!$link_qry && !e_QUERY) && (empty($link) == FALSE) && (strpos(e_SELF,$link) !== FALSE)){
 			return TRUE;
 		}
 
-		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) ){
+		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && empty($link) == FALSE && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) ){
           	return TRUE;
 		}
 
