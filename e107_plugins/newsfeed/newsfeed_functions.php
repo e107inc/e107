@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-02-07 23:27:32 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2008-05-30 20:36:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -169,6 +169,7 @@ if(!function_exists("newsfeed_info"))
 				{
 					$item = $item_total[$i];
 					$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>\n";
+					$FEEDITEMLINK = str_replace('&', '&amp;', $FEEDITEMLINK);
 					$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", strip_tags($item['description']));
 					$FEEDITEMTEXT = $tp->text_truncate($feeditemtext, $truncate, $truncate_string);
 

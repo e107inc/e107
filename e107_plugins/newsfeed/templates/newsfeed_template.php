@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-11-13 12:25:00 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2008-05-30 20:36:47 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,11 +52,11 @@ $NEWSFEED_MAIN_END = "
 </tr>
 
 <tr>
-<td class='forumheader3' style='text-align: right;'><span class='smalltext'>{FEEDCOPYRIGHT} | {FEEDLASTBUILDDATE}</td>
+<td class='forumheader3' style='text-align: right;'><span class='smalltext'>{FEEDCOPYRIGHT} | {FEEDLASTBUILDDATE}</span></td>
 </tr>
 
 <tr>
-<td class='forumheader3' style='text-align: center;'><span class='smalltext'>{BACKLINK}</td>
+<td class='forumheader3' style='text-align: center;'><span class='smalltext'>{BACKLINK}</span></td>
 </tr>
 </table>\n";
 
