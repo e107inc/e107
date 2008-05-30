@@ -1,16 +1,21 @@
-/* $Id: menu.sc,v 1.3 2008-01-13 12:34:40 e107steved Exp $ */
+/* $Id: menu.sc,v 1.4 2008-05-30 20:45:53 e107steved Exp $ */
 global $sql;
 global $ns;
 global $eMenuList;
 global $error_handler;
 $tmp = explode(":",$parm);
 
+$buffer_output = TRUE;				// Default - return all output.
+if (isset($tmp[1]) && $tmp[1] == 'echo') $buffer_output = FALSE;
+if (isset($tmp[1]) && $tmp[1] == 'ret') $buffer_output = TRUE;			// 0.7 compatible parameter
+
 if (!array_key_exists($tmp[0],$eMenuList)) {
 	return;
 }
 
-if (isset($tmp[1]) && $tmp[1] == 'ret') {
-	ob_start();
+if ($buffer_output) 
+{
+  ob_start();
 }
 
 foreach($eMenuList[$tmp[0]] as $row)
@@ -65,9 +70,12 @@ foreach($eMenuList[$tmp[0]] as $row)
 			}
 		}
 	}
-	if($show_menu) {
+
+	if($show_menu) 
+	{
 		$mname = $row['menu_name'];
-		if($error_handler->debug == true) {
+		if($error_handler->debug == true) 
+		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
 		$sql->db_Mark_Time($row['menu_name']);
@@ -105,14 +113,16 @@ foreach($eMenuList[$tmp[0]] as $row)
 			}
 		}
 		$sql->db_Mark_Time("(After ".$mname.")");
-		if ($error_handler->debug == true) {
-			echo "\n<!-- Menu End: ".$mname." -->\n";			
+		if ($error_handler->debug == true) 
+		{
+		  echo "\n<!-- Menu End: ".$mname." -->\n";			
 		}
 	}
 }
 
-if (isset($tmp[1]) && $tmp[1] == 'ret') {
-	$ret = ob_get_contents();
-	ob_end_clean();
-	return $ret;
+if ($buffer_output) 
+{
+  $ret = ob_get_contents();
+  ob_end_clean();
+  return $ret;
 }
