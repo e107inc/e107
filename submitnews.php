@@ -11,12 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-11-13 07:54:30 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2008-05-31 17:55:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+
+$e_wysiwyg = varsettrue($pref['subnews_htmlarea']) ? 'e107_submitnews_item' : '';
+
 require_once(HEADERF);
 
 if (!isset($pref['subnews_class']))
@@ -48,7 +51,7 @@ if (isset($_POST['submit']))
             exit;
         }
         $itemtitle = $tp->toDB($_POST['itemtitle']);
-        $item = $tp->toDB($_POST['item']);
+        $item = $tp->toDB($_POST['e107_submitnews_item']);
         $item = str_replace("src=&quot;e107_images", "src=&quot;" . SITEURL . "e107_images", $item);
         // Process File Upload    =================================================
         if ($_FILES['file_userfile'] && $pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS)
@@ -145,11 +148,11 @@ if (!$sql->db_Select("news_category"))
 else
 {
     $text .= "
-		<select name='cat_id' class='tbox'>";
+	<select name='cat_id' class='tbox'>";
     while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch())
     {
 		$sel = ($_POST['cat_id'] == $cat_id) ? "selected='selected'" : "";
-        $text .= "<option value='$cat_id' $sel>" . $tp->toHTML($cat_name,FALSE,"defs") . "</option>";
+        $text .= "<option value='{$cat_id}' {$sel}>" . $tp->toHTML($cat_name,FALSE,"defs") . "</option>";
     }
     $text .= "</select>";
 }
@@ -157,28 +160,28 @@ $text .= "</td>
 	</tr><tr>
 	<td style='width:20%' class='forumheader3'>" . LAN_62 . "</td>
 	<td style='width:80%' class='forumheader3'>
-	<input class='tbox' type='text' id='itemtitle' name='itemtitle' size='60' value='$itemtitle' maxlength='200' style='width:90%' />
+	<input class='tbox' type='text' id='itemtitle' name='itemtitle' size='60' value='{$itemtitle}' maxlength='200' style='width:90%' />
 	</td>
 	</tr>";
-if ($pref['subnews_htmlarea'])
+
+
+if (e_WYSIWYG)
 {
-    require_once(e_HANDLER . "tiny_mce/wysiwyg.php");
-    echo wysiwyg("item");
+  $insertjs = "rows='25' ";
 }
 else
 {
-require_once(e_HANDLER."ren_help.php");
+  require_once(e_HANDLER."ren_help.php");
+  $insertjs = "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
 }
 
-$insertjs = (!$pref['subnews_htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'" : "rows='25' ";
 $text .= "
-
 	<tr>
 	<td style='width:20%' class='forumheader3'>" . LAN_135 . "</td>
 	<td style='width:80%' class='forumheader3'>
-	<textarea class='tbox' id='item' name='item'  cols='80'  style='max-width:95%' $insertjs></textarea><br />";
+	<textarea class='tbox' id='e107_submitnews_item' name='e107_submitnews_item'  cols='80'  style='max-width:95%' {$insertjs}></textarea><br />";
 
-if (!$pref['subnews_htmlarea'])
+if (!e_WYSIWYG)
 {
   $text .= display_help("helpb","submitnews");
 }
@@ -206,21 +209,23 @@ $text .= "
 	</div>";
 $ns->tablerender(LAN_136, $text);
 require_once(FOOTERF);
+
 function headerjs()
 {
-    $script = "<script type=\"text/javascript\">
+  $script = "<script type=\"text/javascript\">
 		function frmVerify()
 		{
-			if(document.getElementById('itemtitle').value == \"\")
-			{
-				alert('" . SUBNEWSLAN_1 . "');
-				return false;
-			}
-			if(document.getElementById('item').value == \"\")
-			{
-				alert('" . SUBNEWSLAN_2 . "');
-				return false;
-			}
+		  if(document.getElementById('itemtitle').value == \"\")
+		  {
+			alert('" . SUBNEWSLAN_1 . "');
+			return false;
+		  }
+
+		  if(document.getElementById('e107_submitnews_item').value == \"\")
+		  {
+			alert('" . SUBNEWSLAN_2 . "');
+			return false;
+		  }
 		}
 		</script>";
     return $script;
