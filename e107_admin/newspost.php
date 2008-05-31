@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.13 $
-|   $Date: 2008-05-18 16:34:16 $
-|   $Author: e107coders $
+|   $Revision: 1.14 $
+|   $Date: 2008-05-31 17:55:22 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 
 */
@@ -399,6 +399,8 @@ class newspost
 
 				if (e_WYSIWYG)
 				{
+				  if (substr($_POST['data'],-7,7) == '[/html]') $_POST['data'] = substr($_POST['data'],0,-7);
+				  if (substr($_POST['data'],0,6) == '[html]') $_POST['data'] = substr($_POST['data'],6);
 					$_POST['data'] .= "<br /><b>".NWSLAN_49." ".$submitnews_name."</b>";
 					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='{e_IMAGE}newspost_images/".$submitnews_file."' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":	"";
 				}
@@ -1039,6 +1041,9 @@ class newspost
 		//			</tr>";
 
 
+
+
+
 		// ##### ADDED FOR NEWS ARCHIVE --------------------------------------------------------------------
 		// the possible archive values are from "0" to "< $pref['newsposts']"
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
@@ -1139,19 +1144,24 @@ class newspost
 
 
 
-	function submitted_news($sub_action, $id) {
+	function submitted_news($sub_action, $id) 
+	{
 		global $rs, $ns, $tp;
 		$sql2 = new db;
 		$text = "<div style='text-align: center'>";
-		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC")) {
+		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC")) 
+		{
 			$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 			<td style='width:5%' class='fcaption'>ID</td>
 			<td style='width:70%' class='fcaption'>".NWSLAN_57."</td>
 			<td style='width:25%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>";
-			while ($row = $sql2->db_Fetch()) {
+		  while ($row = $sql2->db_Fetch()) 
+		  {
 				extract($row);
+			if (substr($submitnews_item,-7,7) == '[/html]') $submitnews_item = substr($submitnews_item,0,-7);
+			if (substr($submitnews_item,0,6) == '[html]') $submitnews_item = substr($submitnews_item,6);
 				$text .= "<tr>
 				<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
 				<td style='width:70%' class='forumheader3'>";
@@ -1167,12 +1177,13 @@ class newspost
 				</tr>\n";
 			}
 			$text .= "</table>";
-			} else {
+		}
+		else 
+		{
 			$text .= "<div style='text-align:center'>".NWSLAN_59."</div>";
 		}
 		$text .= "</div>";
 		$ns->tablerender(NWSLAN_47, $text);
-
 	}
 
 }
