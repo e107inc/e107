@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-05-31 17:55:22 $
+|     $Revision: 1.7 $
+|     $Date: 2008-06-02 18:28:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -212,20 +212,22 @@ require_once(FOOTERF);
 
 function headerjs()
 {
+  $adder = '';
+  if (e_WYSIWYG) $adder = 'triggerSave();';
   $script = "<script type=\"text/javascript\">
 		function frmVerify()
 		{
-		  if(document.getElementById('itemtitle').value == \"\")
-		  {
-			alert('" . SUBNEWSLAN_1 . "');
-			return false;
-		  }
-
-		  if(document.getElementById('e107_submitnews_item').value == \"\")
-		  {
-			alert('" . SUBNEWSLAN_2 . "');
-			return false;
-		  }
+		  {$adder}
+			if(document.getElementById('itemtitle').value == \"\")
+			{
+				alert('" . SUBNEWSLAN_1 . "');
+				return false;
+			}
+			if(document.getElementById('e107_submitnews_item').value == \"\")
+			{
+				alert('" . SUBNEWSLAN_2 . "');
+				return false;
+			}
 		}
 		</script>";
     return $script;
