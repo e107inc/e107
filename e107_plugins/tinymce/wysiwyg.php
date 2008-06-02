@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-05-31 17:55:31 $
+|     $Revision: 1.7 $
+|     $Date: 2008-06-02 18:28:57 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -102,7 +102,7 @@ function tinymce_html_bbcode_control(type, source) {
             source = source.replace(/^\s*|\s*$/g,'');
             if(source != '')
             {
-                source = '[html]\\n' + source + '\\n[/html]';";
+                source = '[html]\\n' + source + '\\n[/html]';
 /*
 				source = source.replace(/<\/strong>/gi,'[/b]');
                 source = source.replace(/<strong>/gi,'[b]');
@@ -115,7 +115,7 @@ function tinymce_html_bbcode_control(type, source) {
                 source = source.replace(/<\/strong>/gi,'[/b]');
 				source = source.replace(/<a href=\"(.*?)\"(.*?)>(.*?)<\/a>/gi,'[link=$1 $2]$3[/link]');
 */
-$text .= "
+
             }
 
 		// Convert e107 paths.
@@ -140,12 +140,11 @@ $text .= "
 
             if (html_bbcode_check == '[/html]') {
                 source = source.slice(0, -7);
-            }";
+            }
 /*
 			source = source.replace(/\[b\]/gi,'<strong>');
 			source = source.replace(/\[\/b\]/gi,'<\/strong>');
 */
-$text .= "
 			source = source.replace(/\{e_IMAGE\}/gi,'".$IMAGES_DIRECTORY."');
 			source = source.replace(/\{e_PLUGIN\}/gi,'".$PLUGINS_DIRECTORY."');
 
@@ -155,6 +154,11 @@ $text .= "
     return source;
 }
 
+
+function triggerSave()
+{
+  tinyMCE.triggerSave();
+}
 
 </script>\n
 ";
