@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-06-03 21:31:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,12 +41,25 @@ if(!defined("POLL_1"))
 	@include_once(e_PLUGIN."poll/languages/English.php");
 }
 
+if (empty($poll_to_show))
+{
+  $poll_to_show = ' AND p.`poll_vote_userclass`!=255';
+  $pollType = 'menu';
+  $pollMode = 'query';
+}
+else
+{
+  $poll_to_show = ' AND p.`poll_id`='.$poll_to_show;
+  $pollType = 'menu';
+  $pollMode = 'results';
+}
+
 $query = "SELECT p.*, u.user_name FROM #polls AS p 
 LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
-WHERE p.poll_vote_userclass!=255 AND p.poll_type=1
+WHERE  p.poll_type=1{$poll_to_show}
 ORDER BY p.poll_datestamp DESC LIMIT 0,1
 ";
 
-$poll->render_poll($query, "menu", "query");
+$poll->render_poll($query, $pollType, $pollMode);
 
 ?>

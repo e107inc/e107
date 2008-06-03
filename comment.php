@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-05-25 08:26:11 $
+|     $Revision: 1.6 $
+|     $Date: 2008-06-03 21:31:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -288,6 +288,7 @@ else
 			$comments_poll = $row['poll_comment'];
 			$subject = $row['poll_title'];
 			define("e_PAGETITLE", COMLAN_101." / ".COMLAN_99." / ".$subject."");
+			$poll_to_show = $id;				// Need to pass poll number through to display routine
 			require_once(HEADERF);
 			require(e_PLUGIN."poll/poll_menu.php");
 			$field = $row['poll_id'];
@@ -296,7 +297,6 @@ else
 			  require_once(FOOTERF);
 			  exit;
 			}
-			require_once(HEADERF);
 		  }
 		  break;
 		case 'download' :
