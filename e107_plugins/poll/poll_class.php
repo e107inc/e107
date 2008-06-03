@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2007-11-01 22:47:27 $
+|     $Revision: 1.56 $
+|     $Date: 2008-06-03 21:31:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -233,11 +233,19 @@ class poll
 	function render_poll($pollArray = "", $type = "menu", $POLLMODE = "", $returnMethod=FALSE)
 	{
 		global $POLLSTYLE, $sql, $tp, $ns;
-		if($POLLMODE == "query")
+		switch ($POLLMODE)
 		{
+		  case "query" :	// Show poll, register any vote
 			$this->get_poll($pollArray);
 			$pollArray = $this->pollRow;
 			$POLLMODE = $this->pollmode;
+			break;
+		  case 'results' :
+			if ($sql->db_Select_gen($pollArray))
+			{
+			  $pollArray = $sql -> db_Fetch();
+			}
+			break;
 		}
 
 		$barl = (file_exists(THEME."images/barl.png") ? THEME_ABS."images/barl.png" : e_PLUGIN."poll/images/barl.png");
@@ -272,10 +280,10 @@ class poll
 //			$voteArray = array_slice($voteArray, 0, -1);
 		}
 		else
-		{
-			$optionArray = explode(chr(1), $pollArray['poll_options']);
-			$optionArray = array_slice($optionArray, 0, -1);
-			$voteArray = explode(chr(1), $pollArray['poll_votes']);
+		{  // Get existing results
+		  $optionArray = explode(chr(1), $pollArray['poll_options']);
+		  $optionArray = array_slice($optionArray, 0, -1);
+		  $voteArray = explode(chr(1), $pollArray['poll_votes']);
 //			$voteArray = array_slice($voteArray, 0, -1);
 		}
 
@@ -311,10 +319,11 @@ class poll
 		$preview = FALSE;
 		if ($type == "preview")
 		{
-			$POLLMODE = "notvoted";
+		  $POLLMODE = "notvoted";
 		}
-		else if($type == "forum") {
-			$preview = TRUE;
+		elseif($type == "forum") 
+		{
+		  $preview = TRUE;
 		}
 
 		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".intval($pollArray['poll_id'])."' AND comment_type=4");
@@ -327,82 +336,80 @@ class poll
 
 		switch ($POLLMODE)
 		{
-			case "notvoted":
-				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
-				$count = 1;
-				$alt = 0; // alternate style.
-				foreach($optionArray as $option) {
+		  case "notvoted":
+			$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
+			$count = 1;
+			$alt = 0; // alternate style.
+			foreach($optionArray as $option) 
+			{
 				//	$MODE = ($mode) ? $mode : "";		/* debug */
-					$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
-					$OPTION = $tp->toHTML($option, TRUE);
-					if(isset($POLL_NOTVOTED_LOOP_ALT) && $POLL_NOTVOTED_LOOP_ALT && $type != "forum"){ // alternating style
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
-						$alt = ($alt ==0) ? 1 : 0;
-					}else{
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP));
-					}
-					$count ++;
-				}
-				$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' />";
-				if(('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
-				{
-					$SUBMITBUTTON = "[".POLLAN_30."]";
-				}
+			  $OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
+			  $OPTION = $tp->toHTML($option, TRUE);
+			  if(isset($POLL_NOTVOTED_LOOP_ALT) && $POLL_NOTVOTED_LOOP_ALT && $type != "forum")
+			  { // alternating style
+				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
+				$alt = ($alt ==0) ? 1 : 0;
+			  }
+			  else
+			  {
+				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP));
+			  }
+			  $count ++;
+			}
+			$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' />";
+			if(('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
+			{
+			  $SUBMITBUTTON = "[".POLLAN_30."]";
+			}
 
-				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
+			$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
 			break;
 
-			case "voted":
-
-				if($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
-				{
-					$text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
-
-				}
-				else
-				{
-
-
-					$text = preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_START : $POLL_VOTED_START));
-					$count = 0;
-					foreach($optionArray as $option)
-					{
-						$OPTION = $tp->toHTML($option, TRUE);
-
-						$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
-
-						$PERCENTAGE = $percentage[$count]."%";
-						$VOTES = POLLAN_31.": ".$voteArray[$count];
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
-						$count ++;
-					}
-				}
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
-
+		  case "voted":
+		  case 'results' :
+			if($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
+			{
+			  $text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
+			}
+			else
+			{
+			  $text = preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_START : $POLL_VOTED_START));
+			  $count = 0;
+			  foreach($optionArray as $option)
+			  {
+				$OPTION = $tp->toHTML($option, TRUE);
+				$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
+				$PERCENTAGE = $percentage[$count]."%";
+				$VOTES = POLLAN_31.": ".$voteArray[$count];
+				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
+				$count ++;
+			  }
+			}
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
 			break;
 
-			case "disallowed":
-				$text = preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_START);
-				foreach($optionArray as $option)
-				{
-					$MODE = $mode;		/* debug */
-					$OPTION = $tp->toHTML($option, TRUE);
-					$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_LOOP);
-					$count ++;
-				}
-				if($pollArray['poll_vote_userclass'] == 253)
-				{
-					$DISALLOWMESSAGE = POLLAN_41;
-				}
-				else if($pollArray['poll_vote_userclass'] == 254)
-				{
-					$DISALLOWMESSAGE = POLLAN_42;
-				}
-				else
-				{
-					$DISALLOWMESSAGE = POLLAN_43;
-				}
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_END);
+		  case "disallowed":
+			$text = preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_START);
+			foreach($optionArray as $option)
+			{
+			  $MODE = $mode;		/* debug */
+			  $OPTION = $tp->toHTML($option, TRUE);
+			  $text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_LOOP);
+			  $count ++;
+			}
+			if($pollArray['poll_vote_userclass'] == 253)
+			{
+			  $DISALLOWMESSAGE = POLLAN_41;
+			}
+			elseif($pollArray['poll_vote_userclass'] == 254)
+			{
+			  $DISALLOWMESSAGE = POLLAN_42;
+			}
+			else
+			{
+			  $DISALLOWMESSAGE = POLLAN_43;
+			}
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_END);
 			break;
 		}
 
