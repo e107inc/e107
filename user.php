@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/user.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-04-01 19:58:41 $
+|     $Revision: 1.7 $
+|     $Date: 2008-06-05 19:57:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -88,7 +88,7 @@ else
 	{
 		if ($qs[0] == "id")
 		{
-			$id = $qs[1];
+			$id = intval($qs[1]);
 		}
 		else
 		{
