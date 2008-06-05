@@ -391,7 +391,7 @@ class MagpieRSS {
                 
                 $atom_date = (isset($item['issued']) ) ? $item['issued'] : $item['modified'];
                 if ( $atom_date ) {
-                    $epoch = @parse_w3cdtf($item['modified']);
+                    $epoch = @parse_w3cdtf($atom_date);
                     if ($epoch and $epoch > 0) {
                         $item['date_timestamp'] = $epoch;
                     }
