@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2008-04-08 21:29:25 $
+|     $Revision: 1.94 $
+|     $Date: 2008-06-06 19:14:14 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -55,16 +55,17 @@ require_once(e_HANDLER."userclass_class.php");
 
 $rs = new form;
 
-if (e_QUERY) {
+if (e_QUERY) 
+{
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
-	$from = ($tmp[3] ? $tmp[3] : 0);
+  $sub_action = varset($tmp[1],'');
+  $id = varset($tmp[2],0);
+  $from = varset($tmp[3],0);
 	unset($tmp);
 }
 
-$from = (isset($from)) ? $from : 0;
+$from = varset($from, 0);
 $amount = 30;
 
 
@@ -248,7 +249,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
   //	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-	if ($row['user_perms'] == "0")
+	if (($row['user_perms'] == "0") || ($row['user_perms'] == "0."))
 	{
 		$user->show_message(USRLAN_7);
 	}
@@ -265,7 +266,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
 		else
 		{
 			if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}'") > 1)
-			{
+		  {	// Multiple users have same IP address
 				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_136));
 			}
 			else
@@ -293,7 +294,8 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unban") {
 }
 
 // ------- Resend Email Confirmation. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') 
+{
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$resend = $sql->db_Fetch();
@@ -311,8 +313,13 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') {
 		exit;
 	}
 }
+
+
+
+
 // ------- TEst Email confirmation. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') 
+{
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$test = $sql->db_Fetch();
@@ -327,6 +334,10 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
 		exit;
 	}
 }
+
+
+
+
 // ------- Delete User --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
@@ -336,8 +347,9 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 		}
 		if(!$sub_action){ $sub_action = "user_id"; }
 		if(!$id){ $id = "DESC"; }
-
-	} else {
+  } 
+  else 
+  {	// Put up confirmation
 		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 			$row = $sql->db_Fetch();
 			$qry = (e_QUERY) ? "?".e_QUERY : "";
@@ -372,13 +384,17 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "admin" && getperms('
 }
 
 // ------- Remove Admin --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms('3')) {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms('3')) 
+{
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
-	if ($user_perms == "0") {
+  if ($user_perms == "0") 
+  {
 		$user->show_message(USRLAN_5);
-	} else {
+  } 
+  else 
+  {
 		$sql->db_Update("user", "user_admin='0', user_perms='' WHERE user_id='".$_POST['userid']."'");
 		$user->show_message($user_name." ".USRLAN_6);
 	$action = "main";
@@ -386,6 +402,9 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms
 	if(!$id){ $id = "DESC"; }
 	}
 }
+
+
+
 
 // ------- Approve User. --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
@@ -421,12 +440,14 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 	}
 }
 
-if (isset($action) && $action == "uset") {
+if (isset($action) && $action == "uset") 
+{
 	$user->show_message(USRLAN_87);
 	$action = "main";
 }
 
-if (isset($action) && $action == "cu") {
+if (isset($action) && $action == "cu") 
+{
 	$user->show_message(USRLAN_88);
 	$action = "main";
   //	$sub_action = "user_id";
@@ -502,7 +523,7 @@ class users
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "")
 		{
-			$_POST['searchquery'] = trim($_POST['searchquery']);
+			$_POST['searchquery'] = $tp->toDB(trim($_POST['searchquery']));
       $query = "WHERE ".
 			$query .= (strpos($_POST['searchquery'], "@") !== FALSE) ? "user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (strpos($_POST['searchquery'], ".") !== FALSE) ? "user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
@@ -799,8 +820,10 @@ class users
 
 	}
 
-	function show_options($action) {
 
+
+	function show_options($action) 
+	{
 		global $unverified;
 		// ##### Display options 
 		if ($action == "") 

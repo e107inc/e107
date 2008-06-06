@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2007-10-13 19:08:21 $
+|     $Revision: 1.71 $
+|     $Date: 2008-06-06 19:14:14 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -549,12 +549,15 @@ class links
 	}
 
 
-	function submit_link($sub_action, $id) {
+	function submit_link($sub_action, $id) 
+	{
 		global $sql, $e107cache, $tp;
-		if(!is_object($tp)) {
-			$tp=new e_parse;
+		if(!is_object($tp)) 
+		{
+		  $tp=new e_parse;
 		}
 
+		$id = intval($id);
 		$parent_id = ($_POST['link_parent']) ? intval($_POST['link_parent']) : 0;
 
 		$link_name = $tp->toDB($_POST['link_name']);
@@ -563,19 +566,24 @@ class links
 
 		$link_description = $tp->toDB($_POST['link_description']);
 		$link_button = $tp->toDB($_POST['link_button']);
+		$link_render = intval($_POST['linkrender']);
+		$link_open = intval($_POST['linkopentype']);
+		$link_class = $tp->toDB($_POST['link_class']);
 
 		$link_t = $sql->db_Count("links", "(*)");
-		if ($id) {
-			$sql->db_Update("links", "link_parent='$parent_id', link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['linkrender']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
+		if ($id) 
+		{
+		  $sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
 			//rename all sublinks to eliminate old embedded 'submenu' etc hierarchy.
 		    // this is for upgrade compatibility only. Current hierarchy uses link_parent.
-
-			$e107cache->clear("sitelinks");
-			$this->show_message(LCLAN_3);
-		} else {
-			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$_POST['linkrender'].", ".($link_t+1).", ".$parent_id.", ".$_POST['linkopentype'].", ".$_POST['link_class']);
-			$e107cache->clear("sitelinks");
-			$this->show_message(LCLAN_2);
+		  $e107cache->clear("sitelinks");
+		  $this->show_message(LCLAN_3);
+		} 
+		else 
+		{
+		  $sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t+1).", ".$parent_id.", ".$link_open.", ".$link_class);
+		  $e107cache->clear("sitelinks");
+		  $this->show_message(LCLAN_2);
 		}
 	}
 
