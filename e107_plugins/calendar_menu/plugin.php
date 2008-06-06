@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-11-12 19:56:13 $
+|     $Revision: 1.8 $
+|     $Date: 2008-06-06 21:57:59 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -155,7 +155,8 @@ $eplug_tables = array(
 	event_thread varchar(100) NOT NULL default '',
 	event_rec_m tinyint(2) unsigned NOT NULL default '0',
 	event_rec_y tinyint(2) unsigned NOT NULL default '0',
-	PRIMARY KEY  (event_id)
+	PRIMARY KEY  (event_id),
+	KEY event_start (event_start)
 	) TYPE=MyISAM;",
 	"CREATE TABLE ".MPREFIX."event_cat (
 	event_cat_id smallint(5) unsigned NOT NULL auto_increment,
