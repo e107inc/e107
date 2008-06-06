@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-04-08 21:29:34 $
+|     $Revision: 1.15 $
+|     $Date: 2008-06-06 19:14:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -639,7 +639,7 @@ class users
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "")
 		{
-			$_POST['searchquery'] = trim($_POST['searchquery']);
+			$_POST['searchquery'] = $tp->toDB(trim($_POST['searchquery']));
       $query = "WHERE ".
 			$query .= (strpos($_POST['searchquery'], "@") !== FALSE) ? "user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (strpos($_POST['searchquery'], ".") !== FALSE) ? "user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
