@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-05-25 16:10:46 $
+|     $Revision: 1.12 $
+|     $Date: 2008-06-06 19:14:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1512,15 +1512,21 @@ class download
 		$download_category_name = $tp->toDB($_POST['download_category_name']);
 		$download_category_description = $tp->toDB($_POST['download_category_description']);
 	  	$download_category_icon = $tp->toDB($_POST['download_category_icon']);
+		$download_category_class = $tp->toDB($_POST['download_category_class']);
+		$download_categoory_parent = intval($_POST['download_category_parent']);
 
-		if(isset($_POST['download_category_icon_empty']) && $_POST['download_category_icon_empty'] != ""){
+		if(isset($_POST['download_category_icon_empty']) && $_POST['download_category_icon_empty'] != "")
+		{
 			$download_category_icon .= trim(chr(1).$tp->toDB($_POST['download_category_icon_empty']));
 		}
 
-		if ($id) {
-			admin_update($sql->db_Update("download_category", "download_category_name='$download_category_name', download_category_description='$download_category_description', download_category_icon ='$download_category_icon', download_category_parent= '".intval($_POST['download_category_parent'])."', download_category_class='".$_POST['download_category_class']."' WHERE download_category_id='$id'"), 'update', DOWLAN_48);
-		} else {
-			admin_update($sql->db_Insert("download_category", "0, '$download_category_name', '$download_category_description', '$download_category_icon', '".intval($_POST['download_category_parent'])."', '".$_POST['download_category_class']."', 0 "), 'insert', DOWLAN_47);
+		if ($id) 
+		{
+		  admin_update($sql->db_Update("download_category", "download_category_name='{$download_category_name}', download_category_description='{$download_category_description}', download_category_icon ='{$download_category_icon}', download_category_parent= '{$download_categoory_parent}', download_category_class='{$download_category_class}' WHERE download_category_id='{$id}'"), 'update', DOWLAN_48);
+		} 
+		else 
+		{
+		  admin_update($sql->db_Insert("download_category", "0, '{$download_category_name}', '{$download_category_description}', '{$download_category_icon}', '{$download_categoory_parent}', '{$download_category_class}', 0 "), 'insert', DOWLAN_47);
 		}
 		if ($sub_action == "sn") {
 			$sql->db_Delete("tmp", "tmp_time='$id' ");
