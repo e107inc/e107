@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.115 $
-|     $Date: 2008-05-13 19:10:52 $
+|     $Revision: 1.116 $
+|     $Date: 2008-06-10 19:30:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -620,7 +620,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		if(isset($_POST['ue']['user_'.$ext['user_extended_struct_name']]))
 		{
 			$newval = trim($_POST['ue']['user_'.$ext['user_extended_struct_name']]);
-			if($ext['user_extended_struct_required'] == 1 && $newval == "" )
+			if($ext['user_extended_struct_required'] == 1 && (($newval == "") || (($ext['user_extended_struct_type'] == 7) && ($newval == '0000-00-00')) ))
 			{
 				$_ftext = (defined($ext['user_extended_struct_text']) ? constant($ext['user_extended_struct_text']) : $ext['user_extended_struct_text']);
 				$error_message .= LAN_SIGNUP_6.$_ftext.LAN_SIGNUP_7."\\n";

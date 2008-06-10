@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2008-05-13 19:10:52 $
+|     $Revision: 1.102 $
+|     $Date: 2008-06-10 19:30:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -362,40 +362,33 @@ function make_email_query($email, $fieldname = 'banlist_ip')
     // Validate Extended User Fields.
 	if($_POST['ue'])
 	{
-		if($sql->db_Select('user_extended_struct'))	{
-			while($row = $sql->db_Fetch())
-			{
-				$extList["user_".$row['user_extended_struct_name']] = $row;
-			}
+	  if($sql->db_Select('user_extended_struct'))	
+	  {
+		while($row = $sql->db_Fetch())
+		{
+		  $extList["user_".$row['user_extended_struct_name']] = $row;
 		}
+	  }
 
 		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val)
 		{
-			$err = false;
-			$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
-			$regex = $tp->toText($parms[1]);
-			$regexfail = $tp->toText($parms[2]);
-    		if(defined($regexfail)) {$regexfail = constant($regexfail);}
-	  		if($val == '' && $extList[$key]['user_extended_struct_required'] == 1 && !$_uid)
-			{
-         		$error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
-	    		$err = TRUE;
+			$err = $ue->user_extended_validate_entry($val,$extList[$key]);
+	  		if($err === TRUE && !$_uid)
+			{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+         	  $error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
 			}
-			if($regex != "" && $val != "")
-			{
-				if(!preg_match($regex, $val))
-				{
-               		$error .= $regexfail."\\n";
-         			$err = TRUE;
-	         	}
+			elseif ($err)
+			{	// Specific error message returned - usually regex fail
+			  $error .= $err."\\n";
+			  $err = TRUE;
 			}
 			if(!$err)
 			{
-				$val = $tp->toDB($val);
-				$ue_fields .= ($ue_fields) ? ", " : "";
-				$ue_fields .= $key."='".$val."'";
-				}
+			  $val = $tp->toDB($val);
+			  $ue_fields .= ($ue_fields) ? ", " : "";
+			  $ue_fields .= $key."='".$val."'";
+			}
 		}
     }
 
@@ -429,8 +422,6 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		$loginname = strip_tags($_POST['loginname']);
 		if (!$loginname)
 		{
-//		  $sql->db_Select("user", "user_loginname", "user_id='".intval($inp)."'");
-//		  $row = $sql -> db_Fetch();
 		  $loginname = $udata['user_loginname'];
 		}
 		else
@@ -509,15 +500,10 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 
 		// Update Userclass - only if its the user changing their own data (admins can do it another way)
-//		if (!$_uid && $sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
 		if (!$_uid && $sql->db_Select("userclass_classes", "userclass_id", "userclass_editclass IN (".USERCLASS_LIST.")"))
 		{
 		  $ucList = $sql->db_getList();			// List of classes which this user can edit
 		  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Read editable list. Current user classes: ".$udata['user_class'],FALSE,LOG_TO_ROLLING);
-//		  if ($sql->db_Select("user", "user_class", "user_id = '".intval($inp)."'"))
-//		  {
-//			$row = $sql->db_Fetch();
-//			$cur_classes = explode(",", $row['user_class']);
 			$cur_classes = explode(",", $udata['user_class']);			// Current class membership
 			$newclist = array_flip($cur_classes);						// Array keys are now the class IDs
 
@@ -541,7 +527,6 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			  if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Write back classes; new list: ".$nid,FALSE,LOG_TO_ROLLING);
 			  $sql->db_Update("user", "user_class='".$nid."' WHERE user_id=".intval($inp));
 			}
-//		  }
 		}
 
 
