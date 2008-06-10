@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_admin_log.php,v 1.5 2008-05-17 15:00:41 e107steved Exp $
+// $Id: lan_admin_log.php,v 1.6 2008-06-10 21:43:57 e107steved Exp $
 	
 define('RL_LAN_001', 'System Logs');
 define('RL_LAN_002', "Rolling Log");
@@ -100,11 +100,11 @@ define('RL_LAN_112', 'Deleted --NUMBER-- comments');
 define('RL_LAN_113', 'Error deleting comments!');
 define('RL_LAN_114', 'Clear Filters');
 define('RL_LAN_115', 'Users Admin');
-define('RL_LAN_116', '');
-define('RL_LAN_117', '');
-define('RL_LAN_118', '');
-define('RL_LAN_119', '');
-define('RL_LAN_120', '');
+define('RL_LAN_116', 'Location');
+define('RL_LAN_117', 'PgCnt');
+define('RL_LAN_118', 'Flag');
+define('RL_LAN_119', 'Active');
+define('RL_LAN_120', 'Users on-line');
 
 
 ?>

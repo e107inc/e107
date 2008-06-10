@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-05-24 12:45:26 $
+|     $Revision: 1.15 $
+|     $Date: 2008-06-10 21:43:48 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -217,9 +217,9 @@ if (($action == "confdel") || ($action == "auditdel"))
 
 
 // Arrays of options for the various logs - the $page_title array is used to determine the allowable values for $action ('options' is a special case)
-$log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog', 'downlog' => 'download_requests', 'comments' => 'comments');
-$back_day_count = array('adminlog' => 30, 'auditlog' => 30, 'rolllog' => max(intval($pref['roll_log_days']),1), 'downlog' => 60, 'detailed' => 20, 'comments' => 30);
-$page_title = array('adminlog' => RL_LAN_030, 'auditlog' => RL_LAN_062, 'rolllog' => RL_LAN_002, 'downlog' => RL_LAN_067, 'detailed' => RL_LAN_094, 'comments' => RL_LAN_099);
+$log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog', 'downlog' => 'download_requests', 'comments' => 'comments', 'online'=>'online');
+$back_day_count = array('adminlog' => 30, 'auditlog' => 30, 'rolllog' => max(intval($pref['roll_log_days']),1), 'downlog' => 60, 'detailed' => 20, 'comments' => 30, 'online' => 30);
+$page_title = array('adminlog' => RL_LAN_030, 'auditlog' => RL_LAN_062, 'rolllog' => RL_LAN_002, 'downlog' => RL_LAN_067, 'detailed' => RL_LAN_094, 'comments' => RL_LAN_099, 'online' => RL_LAN_120);
 
 
 
@@ -232,7 +232,6 @@ $user_filter = '';
 $event_filter = '';
 $pri_filter_cond = "xx";
 $pri_filter_val  = "";
-$sort_field  = "dblog_id";
 $sort_order  = "DESC";
 $downloadid_filter = '';
 
@@ -518,7 +517,8 @@ $active_filters = array('adminlog' => array('datetimes'=>0,'ipfilter'=>0,'userfi
 						'rolllog'  => array('datetimes'=>0,'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'priority'=>0,'callerfilter'=>0,'blank'=>2),
 						'downlog'  => array('datetimes'=>0,'ipfilter'=>0,'userfilter'=>0,'downloadidfilter'=>0,'blank'=>2),
 						'detailed' => array('datestart'=>0, 'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'blank'=>2),
-						'comments' => array('datetimes'=>1, 'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'blank'=>2)
+						'comments' => array('datetimes'=>1, 'ipfilter'=>0,'userfilter'=>0,'eventfilter'=>0,'blank'=>2),
+						'online'   => array('ipfilter'=>0,'userfilter'=>0)
 						);
 
 // Arrays determine column widths, headings, displayed fields for each log
@@ -527,21 +527,24 @@ $col_fields = array('adminlog' => array('cf_datestring','dblog_type','dblog_ip',
 					'rolllog'  => array('cf_datestring','dblog_type','dblog_ip','dblog_user_id','dblog_user_name','dblog_eventcode','dblog_caller','dblog_title','dblog_remarks'),
 					'downlog'  => array('cf_datestring','dblog_ip','dblog_user_id','user_name','download_request_download_id','download_name'),
 					'detailed' => array('cf_microtime','cf_microtimediff','source','dblog_type','dblog_ip','dblog_user_id','user_name','dblog_eventcode','dblog_title','dblog_remarks'),
-					'comments' => array('cf_datestring', 'comment_id', 'comment_pid', 'comment_item_id', 'comment_subject', 'comment_author_id', 'comment_author_name', 'comment_ip', 'comment_type', 'comment_comment', 'comment_blocked', 'comment_lock', 'del_check')
+					'comments' => array('cf_datestring', 'comment_id', 'comment_pid', 'comment_item_id', 'comment_subject', 'comment_author_id', 'comment_author_name', 'comment_ip', 'comment_type', 'comment_comment', 'comment_blocked', 'comment_lock', 'del_check'),
+					'online'   => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'online_location', 'online_pagecount', 'online_flag', 'online_active')
 					);
 $col_widths = array('adminlog' => array(18,4,14,7,15,8,14,20),		 // Date - Pri - IP - UID - User - Code - Event - Info
 					'auditlog' => array(18,14,7,15,8,14,24),
 					'rolllog'  => array(15,4,12,6,12,7,13,13,18),	 // Date - Pri - IP - UID - User - Code - Caller - Event - Info
 					'downlog'  => array(18,14,7,15,8,38),
 					'detailed' => array(10,8,6,4,14,6,17,7,17,21),
-					'comments' => array(14,7,7,7,14,3,10,12,5,17,1,1,1)
+					'comments' => array(14,7,7,7,14,3,10,12,5,17,1,1,1),
+					'online'   => array(18,15,7,14,32,6,4,4)
 					);
 $col_titles = array('adminlog' => array(RL_LAN_019,RL_LAN_032,RL_LAN_020,RL_LAN_104,RL_LAN_022,RL_LAN_023,RL_LAN_025,RL_LAN_033),
 					'auditlog' => array(RL_LAN_019,RL_LAN_020,RL_LAN_104,RL_LAN_022,RL_LAN_023,RL_LAN_025,RL_LAN_033),
 					'rolllog'  => array(RL_LAN_019,RL_LAN_032,RL_LAN_020,RL_LAN_104,RL_LAN_022,RL_LAN_023,RL_LAN_024,RL_LAN_025,RL_LAN_033),
 					'downlog'  => array(RL_LAN_019,RL_LAN_020,RL_LAN_104,RL_LAN_022,RL_LAN_068,RL_LAN_069),
 					'detailed' => array(RL_LAN_097,RL_LAN_096,RL_LAN_098,RL_LAN_032,RL_LAN_020,RL_LAN_104,RL_LAN_022,RL_LAN_023,RL_LAN_025,RL_LAN_033),
-					'comments' => array(RL_LAN_019, RL_LAN_100, RL_LAN_101, RL_LAN_102, RL_LAN_103, RL_LAN_104, RL_LAN_105, RL_LAN_020, RL_LAN_106, RL_LAN_107, RL_LAN_108, RL_LAN_109, RL_LAN_110)
+					'comments' => array(RL_LAN_019, RL_LAN_100, RL_LAN_101, RL_LAN_102, RL_LAN_103, RL_LAN_104, RL_LAN_105, RL_LAN_020, RL_LAN_106, RL_LAN_107, RL_LAN_108, RL_LAN_109, RL_LAN_110),
+					'online'   => array(RL_LAN_019, RL_LAN_020,RL_LAN_021,RL_LAN_022,RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116)
 					);
 
 // For DB where the delete option is available, specifies the ID field
@@ -570,7 +573,13 @@ $base_query = array(
 			UNION
 			SELECT dblog_datestamp + (dblog_microtime/1000000) AS dblog_time, dblog_user_id, dblog_eventcode, dblog_title, dblog_remarks, dblog_type, dblog_ip, 'admin' AS source FROM `#admin_log`) AS cl
 			LEFT JOIN `#user` AS u ON cl.dblog_user_id=u.user_id ",
-		'comments' => "SELECT SQL_CALC_FOUND_ROWS *, comment_datestamp AS dblog_datestamp FROM `#comments` AS c"
+		'comments' => "SELECT SQL_CALC_FOUND_ROWS *, comment_datestamp AS dblog_datestamp FROM `#comments` AS c",
+		'online'   => "SELECT SQL_CALC_FOUND_ROWS online_timestamp AS dblog_datestamp, 
+						online_ip AS dblog_ip, 
+						SUBSTRING_INDEX(online_user_id,'.',1) AS dblog_user_id, 
+						SUBSTRING(online_user_id FROM LOCATE('.',online_user_id)+1) AS user_name, 
+						`online_location`, `online_pagecount`, `online_flag`, `online_active`
+						FROM `#online`"
 					);
 
 // The filters have to use the 'actual' db field names. So the following table sets the defaults and the exceptions which vary across the range of tables supported
@@ -578,7 +587,16 @@ $map_filters = array(
 			'default' => array('datetimes' => '`dblog_datestamp`', 'ipfilter' => '`dblog_ip`', 'userfilter' => '`dblog_user_id`', 'eventfilter' => '`dblog_eventcode`'),
 			'downlog' => array('datetimes' => '`download_request_datestamp`', 'ipfilter' => '`download_request_ip`', 'userfilter' => '`download_request_userid`'),
 			'detailed' => array('datestart' => '`dblog_time`'),
-			'comments'  => array('datetimes' => '`comment_datestamp`', 'ipfilter' => '`comment_ip`', 'eventfilter' => 'comment_type', 'userfilter' => '`comment_author_id`')
+			'comments'  => array('datetimes' => '`comment_datestamp`', 'ipfilter' => '`comment_ip`', 'eventfilter' => 'comment_type', 'userfilter' => '`comment_author_id`'),
+			'online'	=> array('online_ip' => '`dblog_ip`', 'online_user_id' => '`dblog_user_id`')
+			);
+
+// Field to sort table on
+$sort_fields = array(
+			'default'	=> 'dblog_id',
+			'detailed'	=> 'dblog_time',
+			'comments' 	=> 'comment_datestamp',
+			'online'	=> 'online_timestamp'
 			);
 
 
@@ -604,17 +622,8 @@ $map_filters = array(
 	    case 'datetimes' :
 		  if ($start_enabled && ($start_time > 0)) $and_array[] = "{$filter_field} >= ".intval($start_time);
 		  if ($end_enabled && ($end_time > 0)) $and_array[] = "{$filter_field} <= ".intval($end_time);
-		  switch ($fpars)
-		  {
-			case 1 :
-			  $sort_field = 'comment_datestamp';
-			  break;
-			default :
-//			  $sort_field = 'dblog_time';		// Non-default sort field
-		  }
 		  break;
 	    case 'datestart' :
-		  $sort_field = 'dblog_time';		// Non-default sort field
 		  if ($start_time == 0)
 		  {
 			$end_time = time();
@@ -693,6 +702,8 @@ $map_filters = array(
 
 
 	$limit_clause = " LIMIT {$from}, {$amount} ";
+	$sort_field = varset($sort_fields[$action],$sort_fields['default']);
+
 	if (isset($base_query[$action]))
 	{
 	  $qry = $base_query[$action].$qry." ORDER BY {$sort_field} ".$sort_order;
@@ -914,6 +925,9 @@ function log_process($matches)
 		  case 'comment_comment' :
 		    $val =$tp->text_truncate($row['comment_comment'],100,'...');	// Just display first bit of comment
 		    break;
+		  case 'online_location' :
+		    $val = str_replace($e107->base_path,'',$row['online_location']);			// Just display site-specific bit of path
+			break;
 		  case 'del_check' :		// Put up a 'delete' checkbox
 		    $val = "<input class='tbox' type='checkbox' name='del_item[]' value='{$row['comment_id']}' >";
 			$delete_button = TRUE;
