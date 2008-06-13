@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-08-25 05:48:53 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-13 20:20:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -49,21 +49,51 @@ else
 			}
 		}
 
-		$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass']);
-		if ($row[0] == "authfail") {
+	require_once(e_HANDLER.'user_handler.php');
+	$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass'], varset($_POST['hashchallenge'],''));
+	if ($row[0] == "authfail") 
+	{
+	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",LAN_ROLL_LOG_11,"U: ".$tp->toDB($_POST['authname']),FALSE,LOG_TO_ROLLING);
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
 			header("location: ../index.php");
 			exit;
-		} else {
+	} 
+	else 
+	{
+	  $cookieval = $row['user_id'].".".md5($row['user_password']);
 
-			$userpass = md5($_POST['authpass']);
-			$cookieval = $row['user_id'].".".md5($userpass);
+//	  $sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['authname'])."'");
+//	  list($user_id, $user_name, $userpass) = $sql->db_Fetch();
 
-			$sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['authname'])."'");
-			list($user_id, $user_name, $userpass) = $sql->db_Fetch();
-			if ($pref['user_tracking'] == "session") {
+	  // Calculate class membership - needed for a couple of things
+	  // Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
+	  $class_list = explode(',',$row['user_class']);
+	  if ($row['user_admin'] && strlen($row['user_perms']))
+	  {
+		$class_list[] = e_UC_ADMIN;
+		if (strpos($row['user_perms'],'0') === 0)
+		{
+		  $class_list[] = e_UC_MAINADMIN;
+		}
+	  }
+	  $class_list[] = e_UC_MEMBER;
+	  $class_list[] = e_UC_PUBLIC;
+
+	  $user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
+	  if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'],''),$class_list))
+	  {  // Need to note in user audit trail
+		$admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
+	  }
+
+	  $edata_li = array("user_id" => $row['user_id'], "user_name" => $row['user_name'], 'class_list' => implode(',',$class_list));
+	  $e_event->trigger("login", $edata_li);
+
+	  if ($pref['user_tracking'] == "session") 
+	  {
 				$_SESSION[$pref['cookie_name']] = $cookieval;
-			} else {
+	  } 
+	  else 
+	  {
 				cookie($pref['cookie_name'], $cookieval, (time()+3600 * 24 * 30));
 			}
 			echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
@@ -73,7 +103,8 @@ else
 	$e_sub_cat = 'logout';
 	require_once(e_ADMIN."header.php");
 
-	if (ADMIN == FALSE) {
+	if (ADMIN == FALSE) 
+	{
 		$obj = new auth;
 		$obj->authform();
 		require_once(e_ADMIN."footer.php");
@@ -84,7 +115,6 @@ else
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class auth
 {
-
 	function authform()
 	{
 		/*
@@ -95,24 +125,32 @@ class auth
 		# - scope		public
 		*/
 
-		global $use_imagecode, $sec_img,$imode;
+		global $use_imagecode, $sec_img,$imode, $pref;
 
         $text = "<div style='padding:20px;text-align:center'>
-			<form method='post' action='".e_SELF."'>\n
+			<form method='post' action='".e_SELF."'";
+		if (varsettrue($pref['password_CHAP'],0))
+		{
+		  $text .= " onsubmit='hashLoginPassword(this)'";
+		}
+		$text .= ">\n
 			<table style='width:50%' class='fborder'>
 			<tr>
             <td rowspan='4' style='vertical-align:middle;width:65px'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."packs/".$imode."/generic/password.png' alt='' />\n" )."</td>
 			<td style='width:35%' class='forumheader3'>".ADLAN_89."</td>
-			<td class='forumheader3' style='text-align:center'><input class='tbox' type='text' name='authname' size='30' value='$authname' maxlength='20' />\n</td>
+			<td class='forumheader3' style='text-align:center'><input class='tbox' type='text' name='authname' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n</td>
 
 			</tr>
 			<tr>
 			<td style='width:35%' class='forumheader3'>".ADLAN_90."</td>
-			<td class='forumheader3' style='text-align:center'><input class='tbox' type='password' name='authpass' size='30' value='' maxlength='20' />\n</td>
+			<td class='forumheader3' style='text-align:center'><input class='tbox' type='password' name='authpass' id='userpass' size='30' value='' maxlength='30' />\n";
+		if (isset($_SESSION['challenge']) && varset($pref['password_CHAP'],0)) $text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='{$_SESSION['challenge']}' />\n\n";
+		$text .= "</td>
 			</tr>
 			";
 
-		if ($use_imagecode) {
+		if ($use_imagecode) 
+		{
 			$text .= "
 			<tr>
 			<td style='width:35%' class='forumheader3'>".ADLAN_152."</td>
@@ -139,7 +177,7 @@ class auth
 		$au->tablerender(ADLAN_92, $text);
 	}
 
-	function authcheck($authname, $authpass)
+	function authcheck($authname, $authpass, $authresponse = '')
 	{
 		/*
 		# Admin auth check
@@ -148,28 +186,50 @@ class auth
 		# - return                                boolean if fail, else result array
 		# - scope                                        public
 		*/
-		global $tp;
+		global $tp, $pref;
 		$sql_auth = new db;
-		$authname = $tp -> toDB(preg_replace("/\sOR\s|\=|\#/", "", $authname));
-		if ($sql_auth->db_Select("user", "*", "user_loginname='$authname' AND user_admin='1' "))
+		$reason = '';
+		$user_info = new UserHandler;
+
+		$authname = $tp -> toDB(preg_replace("/\sOR\s|\=|\#/", "", trim($authname)));
+		$authpass = trim($authpass);
+		if (($authpass == '') || ($authname == '')) $reason = 'np';
+		if (strlen($authname) > varset($pref['loginname_maxlength'],30))  $reason = 'lu';
+
+		if (!$reason)
+		{
+		  if ($sql_auth->db_Select("user", "*", "user_loginname='{$authname}' AND user_admin='1' "))
 		{
 			$row = $sql_auth->db_Fetch();
 		}
+		  elseif ($sql_auth->db_Select("user", "*", "user_name='{$authname}' AND user_admin='1' "))
+		  {
+			$row = $sql_auth->db_Fetch();
+			$authname = $row['user_loginname'];
+		  }
 		else
 		{
-			if ($sql_auth->db_Select("user", "*", "user_name='$authname' AND user_admin='1' "))
+			$reason = 'iu';
+		  }
+		}
+		if (!$reason && ($row['user_id']))
+		{	// Can validate password
+		  if (($authresponse && isset($_SESSION['challenge'])) && ($authresponse != $_SESSION['challenge']))
+		  {  // Verify using CHAP (can't handle login by email address - only loginname - although with this code it does still work if the password is stored unsalted)
+			if (($pass_result = $user_info->CheckCHAP($_SESSION['challenge'], $authresponse, $authname, $row['user_password'])) !== PASSWORD_INVALID)
 			{
-				$row = $sql_auth->db_Fetch();
+			  return $$row;
 			}
 		}
-		if($row['user_id'])
-		{
-			if($row['user_password'] == md5($authpass))
+		  else
+		  {	// Plaintext password
+			if (($pass_result = $user_info->CheckPassword($authpass, $authname,$row['user_password'])) !== PASSWORD_INVALID)
 			{
 				return $row;
 			}
 		}
-		return array("authfail");
+		}
+		return array("authfail", "reason" => $reason);
 	}
 }
 

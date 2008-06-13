@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-03-17 20:48:48 $
+|     $Revision: 1.11 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -41,10 +41,12 @@ City, State, Country
   'adminstyle' => 'classis',
   'sitedisclaimer' => LAN_PREF_3,
   'newsposts' => '10',
+
   'flood_protect' => '1',
   'flood_timeout' => '5',
   'flood_time' => '30',
   'flood_hits' => '100',
+
   'anon_post' => '0',
   'user_reg' => '1',
   'use_coppa' => '1',
@@ -68,8 +70,6 @@ City, State, Country
   'meta_tag' => '',
   'user_reg_veri' => '1',
   'email_notify' => '0',
-  'user_tracking' => 'cookie',
-  'cookie_name' => 'e107cookie',
   'resize_method' => 'gd2',
   'im_path' => '/usr/X11R6/bin/',
   'im_width' => '120',
@@ -156,10 +156,18 @@ City, State, Country
   'comments_disabled' => '0',
   'memberlist_access' => '253',
   'check_updates' => '0',
+
   'enable_rdns' => '0',
   'enable_rdns_on_ban' => '0',
   'ban_max_online_access' => '100,200',
-  'ban_retrigger' => '0'
+  'ban_retrigger' => '0',
+
+  'user_tracking' => 'cookie',
+  'cookie_name' => 'e107cookie',
+  'passwordEncoding' => 0,			// Legacy encoding
+  'allowEmailLogin' => 0,			// Disabled by default
+  'password_CHAP' => '0',			// Disabled by default
+  'predefinedLoginName' => ''		// Allow user to define own login name by default
 
 );
 

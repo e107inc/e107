@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/login.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-05 21:35:12 $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,19 +21,25 @@ require_once("class2.php");
 $HEADER = "";
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
-if ($use_imagecode) {
+if ($use_imagecode) 
+{
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 }
 
-if (!USER) {
+if (!USER) 
+{
 	require_once(e_HANDLER."form_handler.php");
 	$rs = new form;
 	$text = "";
 
 	$LOGIN_TABLE_LOGINMESSAGE = LOGINMESSAGE;
-	$LOGIN_TABLE_USERNAME = "<input class='tbox' type='text' name='username' size='40' maxlength='100' />";
-	$LOGIN_TABLE_PASSWORD = "<input class='tbox' type='password' name='userpass' size='40' maxlength='100' />";
+	$LOGIN_TABLE_USERNAME = "<input class='tbox' type='text' name='username' id='username' size='40' maxlength='100' />";
+	$LOGIN_TABLE_PASSWORD = "<input class='tbox' type='password' name='userpass' id='userpass' size='40' maxlength='100' />";
+	if (!USER && isset($_SESSION['challenge']) && varset($pref['password_CHAP'],0)) 
+	{
+	  $LOGIN_TABLE_PASSWORD .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='{$_SESSION['challenge']}' />\n\n";
+	}
 	if ($use_imagecode)
 	{
 		$LOGIN_TABLE_SECIMG_LAN = LAN_LOGIN_13;

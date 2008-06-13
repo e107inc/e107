@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-06-06 19:14:20 $
+|     $Revision: 1.16 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -52,6 +52,9 @@ require_once("auth.php");
 
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER.'user_handler.php');
+$user_info = new UserHandler;
+$user_data = array();
 
 $rs = new form;
 
@@ -215,11 +218,18 @@ if (isset($_POST['adduser']))
 	}
 
 
+	if (isset($_POST['generateloginname']))
+	{
+	  $loginname = $user_info->generateUserLogin($pref['predefinedLoginName']);
+	}
+	else
+	{
 	$loginname = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
 	if ($loginname != $_POST['loginname'])
 	{
 	  message_handler('P_ALERT',USRLAN_152);
 	  $error = TRUE;
+	}
 	}
 	if ((strlen($loginname) > varset($pref['loginname_maxlength'],30)) || (strlen($loginname) < 3))
 	{
@@ -233,10 +243,17 @@ if (isset($_POST['adduser']))
 	}
 
 
+	if (isset($_POST['generatepassword']))
+	{
+	  $_POST['password1'] = $user_info->generateRandomString('**********');		// 10-char password should be enough
+	}
+	else
+	{
 	if ($_POST['password1'] != $_POST['password2']) 
 	{
 	  message_handler("P_ALERT", USRLAN_67);
 	  $error = TRUE;
+	}
 	}
 
 	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "") 
@@ -260,20 +277,21 @@ if (isset($_POST['adduser']))
 	  $error = TRUE;
 	}
 
-	if (!$error) 
-	{
+	// Always save some of the entered data - then we can redisplay on error
 	  $user_data['user_name'] = $displayname;
 	  $user_data['user_loginname'] = $loginname;
 	  $user_data['user_class'] = implode(",", $_POST['userclass']);
-	  $user_data['user_password'] = md5($_POST['password1']);
 	  $user_data['user_email'] = $tp->toDB($_POST['email']);
 	  $user_data['user_hideemail'] = 1;
-	  $user_data['user_join'] = time();
-	  $user_data['user_lastvisit'] = time();
-	  $user_data['user_currentvisit'] = time();
-	  $user_data['user_pwchange'] = time();
 	  $user_data['user_login'] = $tp->toDB($_POST['realname']);
 
+	if (!$error) 
+	{
+	  $user_data['user_password'] = $user_info->HashPassword($_POST['password1'],$loginname);
+	  $user_data['user_join'] = time();
+	  $user_data['user_lastvisit'] = 0;
+	  $user_data['user_currentvisit'] = 0;
+	  $user_data['user_pwchange'] = 0;
 	  if (admin_update($sql -> db_Insert("user", $user_data), 'insert', USRLAN_70))
 	  {
 		// Add to admin log
@@ -293,6 +311,8 @@ if (isset($_POST['adduser']))
 			$message = USRLAN_159;
 		  }
 		}
+		if (isset($_POST['generateloginname'])) $message .= '<br /><br />'.USRLAN_173.': '.$loginname;
+		if (isset($_POST['generatepassword'])) $message .= '<br /><br />'.USRLAN_172.': '.$_POST['password1'];
 	  }
 	}
 	if (isset($message)) $user->show_message($message);
@@ -592,7 +612,7 @@ switch ($action)
 	break;
 
   case "create" :
-	$user->add_user();
+	$user->add_user($user_data);
 	break;
 
   default :
@@ -1106,37 +1126,40 @@ class users
 
 
 
-	function add_user() 
+	// Add a new user - may be passed existing data if there was an entry error on first pass
+	function add_user($user_data) 
 	{
 		global $rs, $ns, $pref, $e_userclass;
 		if (!is_object($e_userclass)) $e_userclass = new user_class;
-		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF, "adduserform")."
+		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF.(e_QUERY ? '?'.e_QUERY : ''), "adduserform")."
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_61."</td>
 			<td style='width:70%' class='forumheader3'>
-			".$rs->form_text("name", 40, "", 30)."
+			".$rs->form_text("name", 40, varset($user_data['user_name'],""), 30)."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_128."</td>
 			<td style='width:70%' class='forumheader3'>
-			".$rs->form_text("loginname", 40, "", 30)."
+			".$rs->form_text("loginname", 40, varset($user_data['user_loginname'],""), 30)."&nbsp;&nbsp;
+			".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],FALSE)).USRLAN_170."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_129."</td>
 			<td style='width:70%' class='forumheader3'>
-			".$rs->form_text("realname", 40, "", 30)."
+			".$rs->form_text("realname", 40, varset($user_data['user_login'],""), 30)."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_62."</td>
 			<td style='width:70%' class='forumheader3'>
-			".$rs->form_password("password1", 40, "", 20)."
+			".$rs->form_password("password1", 40, "", 20)."&nbsp;&nbsp;
+			".$rs->form_checkbox('generatepassword',1,FALSE).USRLAN_171."
 			</td>
 			</tr>
 			<tr>
@@ -1148,12 +1171,13 @@ class users
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_64."</td>
 			<td style='width:70%' class='forumheader3'>
-			".$rs->form_text("email", 60, "", 100)."
+			".$rs->form_text("email", 60, varset($user_data['user_email'],""), 100)."
 			</td>
 			</tr>\n";
 
 
-		$temp = $e_userclass->vetted_tree('userclass[]',array($e_userclass,'checkbox_desc'), varset($pref['initial_user_classes'],''), 'classes');
+		if (!isset($user_data['user_class'])) $user_data['user_class'] = varset($pref['initial_user_classes'],'');
+		$temp = $e_userclass->vetted_tree('userclass',array($e_userclass,'checkbox_desc'), $user_data['user_class'], 'classes');
 
 
 		if ($temp) 

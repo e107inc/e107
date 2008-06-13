@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-01-15 21:57:31 $
+|     $Revision: 1.11 $
+|     $Date: 2008-06-13 20:20:21 $
 |     $Author: e107steved $
 |
 | Mods to show extended field categories
@@ -90,7 +90,11 @@ SC_END
 
 
 SC_BEGIN SIGNUP_LOGINNAME
-global $rs;
+global $rs, $pref;
+if (varsettrue($pref['predefinedLoginName']))
+{
+  return LAN_SIGNUP_67;
+}
 $log_name_length = varset($pref['loginname_maxlength'],30);
 return $rs->form_text("loginname", $log_name_length+5,  ($_POST['loginname'] ? $_POST['loginname'] : $loginname), $log_name_length);
 SC_END

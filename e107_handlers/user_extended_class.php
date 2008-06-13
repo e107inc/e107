@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-05-25 15:31:58 $
+|     $Revision: 1.13 $
+|     $Date: 2008-06-13 20:20:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -92,6 +92,33 @@ class e107_user_extended
 	{
 	  return (in_array($name, $this->reserved_names));
 	}
+
+
+	// $val is whatever the user entered.
+	// $params is the field definition
+	// Return FALSE if acceptable, TRUE if fail , error message on regex fail if the message is defined
+	function user_extended_validate_entry($val, $params)
+	{
+	  global $tp;
+	  $parms = explode("^,^", $params['user_extended_struct_parms']);
+	  $requiredField = $params['user_extended_struct_required'] == 1;
+	  $regex = $tp->toText($parms[1]);
+	  $regexfail = $tp->toText($parms[2]);
+      if (defined($regexfail)) { $regexfail = constant($regexfail); }
+	  if($val == '' && $requiredField) return TRUE;
+	  switch ($type)
+	  {
+		case EUF_DATE :
+		  if ($requiredField && ($val == '0000-00-00')) return TRUE;
+		  break;
+	  }
+	  if($regex != "" && $val != "")
+	  {
+		if(!preg_match($regex, $val)) return $regexfail ? $regexfail : TRUE;
+	  }
+	  return FALSE;			// Pass by default here
+	}
+
 
 
 	function user_extended_get_categories($byID = TRUE)

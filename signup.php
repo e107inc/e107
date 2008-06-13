@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-03-23 21:43:47 $
+|     $Revision: 1.18 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 $qs = explode(".", e_QUERY);
-if($qs[0] != "activate"){   // multi-language fix.
+if($qs[0] != "activate")
+{   // multi-language fix.
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
 	e107_include_once(e_LANGUAGEDIR."English/lan_signup.php");
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
@@ -35,16 +36,22 @@ include_once(e_HANDLER."user_extended_class.php");
 $usere = new e107_user_extended;
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
+require_once(e_HANDLER.'user_handler.php');
+$user_info = new UserHandler;
 
-if (is_readable(THEME."signup_template.php")) {
+if (is_readable(THEME."signup_template.php")) 
+{
 	require_once(THEME."signup_template.php");
-} else {
+} 
+else 
+{
 	require_once(e_THEME."templates/signup_template.php");
 }
 
 include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
+$text = '';
 
 
 //-------------------------------
@@ -67,36 +74,47 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 	}
 
 	if($_POST['submit_resend'])
-	{
+  {  // Action user's submitted information
+	// 'resend_email' - user name or email address actually used to sign up
+	// 'resend_newemail' - corrected email address
+	// 'resend_password' - password (required if changing email address)
+
 		if($_POST['resend_email'] && !$new_email && $sql->db_Select_gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (user_loginname= \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) "))
-		{
+	{	// Account already activated
 			$ns -> tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
 			require_once(FOOTERF);
 			exit;
 		}
 
+
+	// Start by looking up the user
+	if(!$sql->db_Select("user", "*", "(user_loginname = \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) AND user_ban=".USER_REGISTERED_NOT_VALIDATED." AND user_sess !='' LIMIT 1"))
+	{
+	  require_once(e_HANDLER."message_handler.php");
+	  message_handler("ALERT",LAN_SIGNUP_64); // email (or other info) not valid.
+	  exit;
+	}
+	$row = $sql -> db_Fetch();
+	// We should have a user record here
+
 		if(trim($_POST['resend_password']) !="" && $new_email)
+	{  // Need to change the email address - check password to make sure
+	  if ($user_info->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
 		{
-        	if($sql->db_Select("user", "user_id", "user_password = \"".md5($_POST['resend_password'])."\" AND user_ban=2 AND user_sess !='' LIMIT 1"))
-			{
-				$row = $sql -> db_Fetch();
             	if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
 				{
-                	$clean_email = $new_email;
+		  $row['user_email'] = $new_email;
 				}
 			}
 			else
 			{
 			   	require_once(e_HANDLER."message_handler.php");
 			   	message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
+		exit;
 			}
 		}
 
-
-		if($sql->db_Select("user", "*", "(user_loginname = \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) AND user_ban=2 AND user_sess !='' LIMIT 1"))
-		{
-			$row = $sql -> db_Fetch();
-
+	// Now send the email - got some valid info
 			$_POST['password1'] = "xxxxxxxxx";
 			$_POST['loginname'] = $row['user_loginname'];
 			$_POST['name'] = $row['user_name'];
@@ -124,14 +142,8 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
             require_once(FOOTERF);
             exit;
          }
-
-		require_once(e_HANDLER."message_handler.php");
-		message_handler("ALERT",LAN_106); // email not valid.
-		exit;
-	}
 	elseif(!$_POST['submit_resend'])
-	{
-
+  {	// Display form to get info from user
 		$text .= "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?resend' name='resend_form'>
 		<table style='".USER_WIDTH."' class='fborder'>
@@ -171,7 +183,6 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 		require_once(FOOTERF);
 		exit;
 	}
-
     exit;
 }
 
@@ -402,6 +413,11 @@ if (isset($_POST['register']))
 	if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
 	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
 
+	if (varsettrue($pref['predefinedLoginName']))
+	{
+	  $_POST['loginname'] = $user_info->generateUserLogin($pref['predefinedLoginName']);
+//	  if (empty($username)) $username = $loginname;
+	}
 //	Strip most invalid characters now
 	$temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
 	if ($temp_name != $_POST['loginname'])
@@ -409,7 +425,6 @@ if (isset($_POST['register']))
 		$error_message .= LAN_409."\\n";
 		$error = TRUE;
 	}
-	$_POST['loginname'] = $temp_name;
 
 	if (strcasecmp($_POST['loginname'],"Anonymous") == 0)
 	{
@@ -418,8 +433,8 @@ if (isset($_POST['register']))
 	}
 
 
-	// Use LoginName for DisplayName if restricted   **** MOVED FORWARD ****
-	if (!check_class($pref['displayname_class']))
+	// Use LoginName for DisplayName if restricted
+	if (!check_class($pref['displayname_class'],e_UC_PUBLIC.','.e_UC_MEMBER))
 	{
 		$_POST['name'] = $_POST['loginname'];
 	}
@@ -518,7 +533,7 @@ global $db_debug;
 
 
 	// Password length check.
-	if (trim(strlen($_POST['password1'])) < $pref['signup_pass_len'])
+	if (strlen(trim($_POST['password1'])) < $pref['signup_pass_len'])
 	{
 		$error_message .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		$error = TRUE;
@@ -628,7 +643,7 @@ global $db_debug;
 		if(isset($_POST['ue']['user_'.$ext['user_extended_struct_name']]))
 		{
 			$newval = trim($_POST['ue']['user_'.$ext['user_extended_struct_name']]);
-			if($ext['user_extended_struct_required'] == 1 && $newval == "" )
+			if($ext['user_extended_struct_required'] == 1 && (($newval == "") || (($ext['user_extended_struct_type'] == 7) && ($newval == '0000-00-00')) ))
 			{
 				$_ftext = (defined($ext['user_extended_struct_text']) ? constant($ext['user_extended_struct_text']) : $ext['user_extended_struct_text']);
 				$error_message .= LAN_SIGNUP_6.$_ftext.LAN_SIGNUP_7."\\n";
@@ -674,7 +689,7 @@ global $db_debug;
 			exit;
 		}
 
-		if ($_POST['email'] && $sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1'")) 
+	if ($_POST['email'] && $sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='".USER_BANNED."'")) 
 		{
 			exit;
 		}
@@ -693,12 +708,9 @@ global $db_debug;
 			$ue_fields .= $key."='".$val."'";
 		}
 
-		$u_key = md5(uniqid(rand(), 1));
+	$u_key = md5(uniqid(rand(), 1));				// Key for signup completion
 		// ************* Possible class insert
 		
-		require_once(e_HANDLER.'password_handler.php');
-		$passhandler = new PasswordHandler();
-
 		// Following array will be logged to both admin log and user's entry
 		$signup_data = array(
 		  'user_name' => $username,
@@ -708,20 +720,23 @@ global $db_debug;
 
 		// Following array is logged to user's entry only
 		$new_data = array(
-			'user_password' 	=> $sql->escape($passhandler->HashPassword($_POST['password1']), FALSE),
+			'user_password' 	=> $sql->escape($user_info->HashPassword($_POST['password1'], $loginname), FALSE),
 			'user_sess'			=> $u_key,
 			'user_signature'	=> $tp -> toDB($_POST['signature']),
 			'user_image'		=> $tp -> toDB($_POST['image']),
 			'user_hideemail'	=> $tp -> toDB($_POST['hideemail']),
 			'user_join'			=> time(),
 			'user_currentvisit'	=> time(),
-			'user_ban'			=> 2,
+			'user_ban'			=> USER_REGISTERED_NOT_VALIDATED,
 			'user_login'		=> $tp -> toDB($_POST['realname']),
 			'user_xup'			=> $tp -> toDB($_POST['xupexist'])
 			);
+	if (varsettrue($pref['allowEmailLogin']))
+	{  // Need to create separate password for email login
+	  $new_data['user_prefs'] = serialize(array('email_password' => $user_info->HashPassword($_POST['password1'], $new_data['user_email'])));
+	}
 
 		$nid = $sql->db_Insert("user", array_merge($signup_data,$new_data));
-//		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '0', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '0', '".$tp -> toDB($_POST['xupexist'])."' ");
 
 		// Log to user audit log if enabled
 		$signup_data['user_id'] = $nid;
@@ -736,6 +751,13 @@ global $db_debug;
 			$ns->tablerender("", LAN_SIGNUP_36);
 			require_once(FOOTERF);
 		}
+
+
+	$adviseLoginName = '';
+	if (varsettrue($pref['predefinedLoginName']))
+	{
+	  $adviseLoginName = LAN_SIGNUP_65.': '.$loginname.'<br />'.LAN_SIGNUP_66.'<br />';
+	}
 
 
 		if ($pref['user_reg_veri'])
@@ -778,19 +800,19 @@ global $db_debug;
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			require_once(HEADERF);
-			if($pref['signup_text_after'])
+		if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{
-				$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+		  $text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $loginname, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
 			}
 			else
 			{
 				if ($pref['user_reg_veri'] == 2)
 				{
-					$text = LAN_SIGNUP_37;
+			$text = LAN_SIGNUP_37.'<br /><br />'.$adviseLoginName;
 				}
 				else
 				{
-					$text = LAN_405;
+			$text = LAN_405.'<br /><br />'.$adviseLoginName;
 				}
 			}
 			if(isset($error_message))
@@ -806,7 +828,7 @@ global $db_debug;
 			require_once(HEADERF);
 
 			if(!$sql -> db_Select("user", "user_id", "user_name='{$username}' AND user_password='".$new_data['user_password']."'"))
-			{
+	  {	// Error looking up newly created user
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
 				exit;
@@ -818,7 +840,7 @@ global $db_debug;
 		  if (isset($_POST['class'])) $init_classes = array_unique(array_merge($init_classes, $_POST['class']));
 
 		  // Set member as registered, update classes
-		  $sql->db_Update("user", "user_ban = '0', user_class='".$tp -> toDB(implode(',',$init_classes))."' WHERE user_id = '{$nid}'");
+	  $sql->db_Update("user", "user_ban = '".USER_VALIDATED."', user_class='".$tp -> toDB(implode(',',$init_classes))."' WHERE user_id = '{$nid}'");
 
 
 			// ======== save extended fields to DB table.
@@ -828,14 +850,13 @@ global $db_debug;
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
 
-			// ==========================================================
             $_POST['ip'] = $ip;
-			$_POST['user_id'] = $nid;
+	  $_POST['user_id'] = $nid;			// ID for the user
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
-			if($pref['signup_text_after'])
+	  if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{
-				$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+		$text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $loginname, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
 			}
 			else
 			{
@@ -846,8 +867,9 @@ global $db_debug;
 			exit;
 		}
 	}
-
 }
+
+// Disable the signup form - if either there was an error, or starting from scratch
 require_once(HEADERF);
 
 $qs = ($error ? "stage" : e_QUERY);
@@ -898,13 +920,14 @@ $ns->tablerender(LAN_123, $text);
 
 require_once(FOOTERF);
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
+//----------------------------------
+// Function returns an image if a fild is required.
 function req($field)
 {
 	return ($field == 2 ? REQUIRED_FIELD_MARKER : "");
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//----------------------------------
 
 function headerjs()
 {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-02-06 00:23:28 $
-|     $Author: secretr $
+|     $Revision: 1.5 $
+|     $Date: 2008-06-13 20:20:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,9 +56,22 @@ if (!isset($LOGIN_MENU_FORM)){
     $sc_style['LM_IMAGECODE_BOX']['pre'] = "";
     $sc_style['LM_IMAGECODE_BOX']['post'] = "<br />";
     
-	$LOGIN_MENU_FORM = "
-    	{LM_MESSAGE}
-    	<div style='text-align: center'>
+	$LOGIN_MENU_FORM = "{LM_MESSAGE}";
+
+	if ((varset($pref['password_CHAP'],0) == 2) && ($pref['user_tracking'] == "session"))
+	{
+	  $LOGIN_MENU_FORM .= "
+    	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."
+		</div>
+    	<div style='text-align: center; display:none' id='loginmenuchap'>";
+	}
+	else
+	{
+	  $LOGIN_MENU_FORM .= "
+    	<div style='text-align: center'>";
+	}
+
+	$LOGIN_MENU_FORM .= "
             ".LOGIN_MENU_L1."<br />   
             {LM_USERNAME_INPUT}<br />
             ".LOGIN_MENU_L2."<br />

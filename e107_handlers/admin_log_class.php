@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-04-07 21:35:38 $
+|     $Revision: 1.11 $
+|     $Date: 2008-06-13 20:20:21 $
 |     $Author: e107steved $
 
 To do:
@@ -76,7 +76,7 @@ class e_admin_log {
 	  define('USER_AUDIT_NEW_DN',15);				// User changed display name
 	  define('USER_AUDIT_NEW_PW',16);				// User changed password
 	  define('USER_AUDIT_NEW_EML',17);				// User changed email
-	  define('USER_AUDIT_PW_RES',18);				// Password reset
+	  define('USER_AUDIT_PW_RES',18);				// Password reset/resent activation email
 	  define('USER_AUDIT_NEW_SET',19);				// User changed other settings
 	  define('USER_AUDIT_ADD_ADMIN',20);			// User added by admin
 	}
