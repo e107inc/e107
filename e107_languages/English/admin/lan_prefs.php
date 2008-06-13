@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-13 10:51:42 $
+|     $Revision: 1.12 $
+|     $Date: 2008-06-13 20:20:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -72,11 +72,11 @@ define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
 define("PRFLAN_60", "Enable SSL");
 define("PRFLAN_61", "Only enable SSL if <b>you are sure you know what you are doing!</b>");
-define("PRFLAN_76", "Enable Image-code verification during signup.");
+define("PRFLAN_76", "Enable Image-code verification during signup");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
 define("PRFLAN_80", "Click here to view");
-define("PRFLAN_81", "Enable Image-code verification during login.");
+define("PRFLAN_81", "Enable Image-code verification during login");
 define("PRFLAN_83", "example");
 define("PRFLAN_87", "Comments");
 define("PRFLAN_88", "Turn on nested comments");
@@ -163,36 +163,47 @@ define("PRFLAN_31", "Email Verification");
 define("PRFLAN_152", "No Verification");
 define("PRFLAN_153", "Admin Approval");
 define("PRFLAN_154", "New user verification method <br />If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
-
 define("PRFLAN_155", "Display name and login name may be different for");
 define("PRFLAN_156", "Reset ALL Display Names");
 define("PRFLAN_157", "All Display Names have been reset to the Username");
 define("PRFLAN_158", "Display Name maximum length (5..30)");
 define("PRFLAN_159", "viewing this page with");
-
 define("PRFLAN_160", "Check remote servers when validating email addresses.");
 define("PRFLAN_161", "Disable all comments on the site");
-
 define("PRFLAN_162", "Site Contact Information");
 define("PRFLAN_163", "e.g. Company Name, Address, Phone, etc.");
-
 define("PRFLAN_164", "Allow users to email copy of contact email to self");
 define("PRFLAN_165", "Possible opening for allowing spam, use with caution");
 define("PRFLAN_166", "Show emoticon images on comment form?");
-
 define("PRFLAN_167", "Make entering an email address optional"); // subject to change.
 define("PRFLAN_168", "Site Contact Person(s)");
 define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
-
 //define("PRFLAN_170", "Use reverse DNS to allow host banning");
 //define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
 define("PRFLAN_172", "Login Name maximum length (10..100)");
 define("PRFLAN_173", "Check at SourceForge for E107 updates once/day");
-
 define("PRFLAN_174", "Name for responses to emails from site");
 define("PRFLAN_175", "This will appear in the 'From' field of registration and other emails from this site");
 define("PRFLAN_176", "Email address for emails from site");
 define("PRFLAN_177", "Address specified for replies to emails from this site.");
+define("PRFLAN_178", "Password transmission method");
+define("PRFLAN_179", "(Only supported if using sessions for user tracking.)");
+define("PRFLAN_180", "Plaintext");
+define("PRFLAN_181", "CHAP, plaintext fallback");
+define("PRFLAN_182", "CHAP only");
+define("PRFLAN_183", " CHAP requires JS enabled in user's browser");
+define('PRFLAN_184', 'Allow login by email address');
+define('PRFLAN_185', '(as well as login name)');
+define('PRFLAN_186', 'Yes');
+define('PRFLAN_187', 'No');
+define('PRFLAN_188', 'Password encoding');
+define('PRFLAN_189', 'md5 (Legacy)');
+define('PRFLAN_190', 'Salted');
+define('PRFLAN_191', '(md5 is usually adequate for an Intranet, and often for other sites)');
+define('PRFLAN_192', 'Generate random predefined login names according to a pattern');
+define('PRFLAN_193', 'To allow users to set their own login names, leave blank');
+define('PRFLAN_194', '# - alpha<br />. - numeric<br />* - alphanumeric<br />Other chars used as entered');
+define('PRFLAN_195', '');
 
 
 ?>

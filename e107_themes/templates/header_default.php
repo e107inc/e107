@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-03-13 19:15:56 $
-|     $Author: lisa_ $
+|     $Revision: 1.21 $
+|     $Date: 2008-06-13 20:20:22 $
+|     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -93,11 +93,16 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 //
 
 // Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") 
+{
 	define("e_WYSIWYG",TRUE);
-}else{
+}
+else
+{
 	define("e_WYSIWYG",FALSE);
 }
+
+
 // Load Plugin Header Files
 if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
 {
@@ -110,9 +115,13 @@ if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
 	}
 }
 
-if (isset($theme_js_php) && $theme_js_php) {
+
+if (isset($theme_js_php) && $theme_js_php) 
+{
 	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css' />";
-} else {
+} 
+else 
+{
 	if (!isset($no_core_js) || !$no_core_js)
 	{
 		echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
@@ -120,11 +129,12 @@ if (isset($theme_js_php) && $theme_js_php) {
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 	if (file_exists(THEME.'theme.vbs')) { echo "<script type='text/vbscript' src='".THEME_ABS."theme.vbs'></script>\n"; }
-	if (filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
-	
+  if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
 }
+	
 
-if (isset($eplug_js) && $eplug_js) {
+if (isset($eplug_js) && $eplug_js) 
+{
 	echo "\n<!-- eplug_js -->\n";
 	if(is_array($eplug_js))
 	{
@@ -138,14 +148,29 @@ if (isset($eplug_js) && $eplug_js) {
 	{
     	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 	}
-
 }
 
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
+
+if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
+{
+  if ($pref['password_CHAP'] == 2)
+  {
+		// *** Add in the code to swap the display tags
+	$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
+  }
+  echo "<script type='text/javascript' src='".e_FILE_ABS."chap_script.js'></script>\n";
+  $js_body_onload[] = "getChallenge();";
+}
+
+
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) 
+{
 	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
 }
 
-if (function_exists('headerjs')){echo headerjs();  }
+if (function_exists('headerjs')) {echo headerjs();  }
+
+
 
 //
 // E: Send CSS

@@ -11,31 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/fpw.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-02-18 02:12:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2008-06-13 20:20:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
-if(USER){
+if(USER)
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
 
-if($pref['fpwcode'] && extension_loaded("gd")){
+if($pref['fpwcode'] && extension_loaded("gd"))
+{
 	define("USE_IMAGECODE",TRUE);
-}else{
+  require_once(e_HANDLER."secure_img_handler.php");
+  $sec_img = new secure_image;
+}
+else
+{
 	define("USE_IMAGECODE",FALSE);
 }
 
 
-if (USE_IMAGECODE) {
-	require_once(e_HANDLER."secure_img_handler.php");
-	$sec_img = new secure_image;
-}
 
-if ($pref['membersonly_enabled']) {
+if ($pref['membersonly_enabled']) 
+{
 	if (!$FPW_TABLE_HEADER) {
 		if (file_exists(THEME."fpw_template.php")) {
 			require_once(THEME."fpw_template.php");
@@ -46,6 +49,9 @@ if ($pref['membersonly_enabled']) {
 	$HEADER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_HEADER);
 	$FOOTER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_FOOTER);
 }
+
+require_once(e_HANDLER.'user_handler.php');
+$user_info = new UserHandler;
 
 require_once(HEADERF);
 
@@ -77,7 +83,9 @@ if (e_QUERY)
 		for($a = 0; $a <= $pwlen; $a++) {
 			$newpw .= chr(rand(97, 122));
 		}
-		$mdnewpw = md5($newpw);
+		list($username, $md5) = explode($fpw_sep, $tmp_info);
+//		$mdnewpw = md5($newpw);
+		$mdnewpw = $user_info->HashPassword($newpw,$username);
 
 		// Details for admin log
 		$do_log['password_action'] = LAN_FPW21;
@@ -86,8 +94,7 @@ if (e_QUERY)
 		$do_log['user_password'] = $mdnewpw;
 		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
 
-		list($username, $md5) = explode($fpw_sep, $tmp_info);
-		$sql->db_Update("user", "user_password='{$mdnewpw}', user_viewed='' WHERE user_name='".$tp -> toDB($username, true)."' ");
+		$sql->db_Update("user", "user_password='{$mdnewpw}', user_viewed='' WHERE user_loginname='".$tp -> toDB($username, true)."' ");
 		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
 
@@ -99,7 +106,9 @@ if (e_QUERY)
 		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_FPW11."</a> ".LAN_FPW12."</div>";
 		fpw_error($txt);
 
-	} else {
+	} 
+	else 
+	{
 		fpw_error(LAN_FPW7);
 	}
 }
@@ -155,7 +164,7 @@ if (isset($_POST['pwsubmit']))
 
 		$deltime = time()+86400 * 2;
 		//Set timestamp two days ahead so it doesn't get auto-deleted
-		$sql->db_Insert("tmp", "'pwreset',{$deltime},'{$user_name}{$fpw_sep}{$rcode}'");
+		$sql->db_Insert("tmp", "'pwreset',{$deltime},'{$row['user_loginname']}{$fpw_sep}{$rcode}'");
 
 		$do_log['password_action'] = LAN_FPW18;
 		$do_log['user_id'] = $row['user_id'];

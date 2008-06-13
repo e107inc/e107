@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-01-15 21:57:47 $
+|     $Revision: 1.13 $
+|     $Date: 2008-06-13 20:20:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -23,14 +23,9 @@ define("LAN_106", "That doesn't appear to be a valid email address");
 define("LAN_112", "Email Address: ");
 define("LAN_113", "Hide email address?: ");
 define("LAN_114", "This will prevent your email address from being displayed on site");
-//define("LAN_115", "ICQ Number: ");
-//define("LAN_116", "AIM Address: ");
-//define("LAN_117", "MSN Messenger: ");
-//define("LAN_118", "Birthday: ");
 define("LAN_119", "Location: ");
 define("LAN_120", "Signature: ");
 define("LAN_121", "Avatar: ");
-//define("LAN_122", "Timezone:");
 define("LAN_144", "Website URL: ");
 define("LAN_150", "Settings updated and saved into database.");
 define("LAN_151", "OK");
@@ -114,6 +109,13 @@ define("LAN_USET_16", "Tick box to delete existing photo without uploading anoth
 define("LAN_USET_17", "Display name already used. Please choose another");
 define('LAN_USET_18', 'User data changed by admin: --ID--, login name: --LOGNAME--');
 define('LAN_USET_19', 'Custom Title');
-define('LAN_USET_20', '');
+define('LAN_USET_20', 'You must also change the user\'s password if you are changing their login name or email address');
+define('LAN_USET_21', 'Please validate the changes by re-entering your password: ');
+define('LAN_USET_22', 'Invalid password!');
+define('LAN_USET_23', '');
+define('LAN_USET_24', '');
+define('LAN_USET_25', '');
+
+define('LAN_ENTER', 'Enter');
 
 ?>

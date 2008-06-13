@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-05-24 12:45:27 $
+|     $Revision: 1.11 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -495,7 +495,7 @@ CREATE TABLE user (
   user_name varchar(100) NOT NULL default '',
   user_loginname varchar(100) NOT NULL default '',
   user_customtitle varchar(100) NOT NULL default '',
-  user_password varchar(32) NOT NULL default '',
+  user_password varchar(50) NOT NULL default '',
   user_sess varchar(100) NOT NULL default '',
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,
@@ -522,7 +522,7 @@ CREATE TABLE user (
   user_xup varchar(100) NOT NULL default '',
   PRIMARY KEY  (user_id),
   UNIQUE KEY user_name (user_name),
-  KEY user_ban_index (user_ban)
+  KEY join_ban_index (user_join,user_ban)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 

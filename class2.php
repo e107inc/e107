@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2008-05-29 21:12:42 $
+|     $Revision: 1.60 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -429,6 +429,15 @@ $tp->sch_load();
 if ($pref['user_tracking'] == "session")
 {
 	session_start();
+  if (!isset($_SESSION['challenge']))
+  {	// New session
+	$_SESSION['challenge'] = sha1(time().session_id());		// Create a unique challenge string for CHAP login
+  }
+  $ubrowser = md5('E107'.$_SERVER['HTTP_USER_AGENT']);
+  if (!isset($_SESSION['ubrowser'])) 
+  {
+    $_SESSION['ubrowser'] = $ubrowser;
+  }
 }
 
 define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
@@ -765,12 +774,14 @@ if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") 
 
 $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
 
-if (isset($_POST['userlogin']) || isset($_POST['userlogin_x'])) {
+if (isset($_POST['userlogin']) || isset($_POST['userlogin_x'])) 
+{
 	e107_require_once(e_HANDLER."login.php");
-	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
+	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'],varset($_POST['hashchallenge'],''));
 }
 
-if (e_QUERY == 'logout') 
+if ((e_QUERY == 'logout') || (($pref['user_tracking'] == "session") && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser)))
+//if (e_QUERY == 'logout') 
 {
   if (USER)
   {
@@ -1272,6 +1283,7 @@ function init_session() {
 	if (!isset($_COOKIE[e_COOKIE]) && !isset($_SESSION[e_COOKIE]) && !isset($_E107['cli']))
 	{
 		define("USER", FALSE);
+		define('USERID', 0);
 		define("USERTHEME", FALSE);
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
@@ -1289,12 +1301,14 @@ function init_session() {
         	list($uid, $upw)= explode(".", $cli_log);
 		}
 
-		if (empty($uid) || empty($upw)) {
+		if (empty($uid) || empty($upw)) 
+		{
 			cookie(e_COOKIE, "", (time() - 2592000));
 			$_SESSION[e_COOKIE] = "";
 			session_destroy();
 			define("ADMIN", FALSE);
 			define("USER", FALSE);
+			define('USERID', 0);
 			define("USERCLASS", "");
 			define("LOGINMESSAGE",CORE_LAN10."<br /><br />");
 			return (FALSE);
@@ -1344,25 +1358,32 @@ function init_session() {
 
 			$user_pref = ($result['user_prefs']) ? unserialize($result['user_prefs']) : '';
 
-			if (isset($_POST['settheme'])) {
+			if (isset($_POST['settheme'])) 
+			{
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs("user");
 			}
 
 			define("USERTHEME", (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
 			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-			if ($result['user_admin']) {
+			if ($result['user_admin']) 
+			{
 				define("ADMIN", TRUE);
 				define("ADMINID", $result['user_id']);
 				define("ADMINNAME", $result['user_name']);
 				define("ADMINPERMS", $result['user_perms']);
 				define("ADMINEMAIL", $result['user_email']);
 				define("ADMINPWCHANGE", $result['user_pwchange']);
-			} else {
+			} 
+			else 
+			{
 				define("ADMIN", FALSE);
 			}
-		} else {
+		} 
+		else 
+		{
 			define("USER", FALSE);
+			define('USERID', 0);
 			define("USERTHEME", FALSE);
 			define("ADMIN", FALSE);
 			define("CORRUPT_COOKIE", TRUE);
@@ -1374,6 +1395,8 @@ function init_session() {
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
 	define('e_NOBODY_REGEXP', "(^|,)".e_UC_NOBODY."(,|$)");
 }
+
+
 
 $sql->db_Mark_Time('Start: Go online');
 if(!isset($_E107['no_online']) && varset($pref['track_online']))

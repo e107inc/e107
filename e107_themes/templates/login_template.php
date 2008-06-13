@@ -1,5 +1,5 @@
 <?php
-// $Id: login_template.php,v 1.4 2007-12-06 21:35:55 e107steved Exp $
+// $Id: login_template.php,v 1.5 2008-06-13 20:20:23 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -16,13 +16,44 @@ if(!isset($LOGIN_TABLE_HEADER))
 if(!isset($LOGIN_TABLE))
 {
 		$LOGIN_TABLE = "";
-		if($LOGIN_TABLE_LOGINMESSAGE != ""){
+  if($LOGIN_TABLE_LOGINMESSAGE != "")
+  {
 				$LOGIN_TABLE .= "<div style='text-align:center'>{LOGIN_TABLE_LOGINMESSAGE}</div>";
 		}
+  
+  if (($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
+  {
+	if ($pref['password_CHAP'] == 2)
+	{
 		$LOGIN_TABLE .= "
-		<div style='text-align:center'>
-		".$rs -> form_open("post", e_SELF)."<table class='fborder' style='width:60%' >\n<tr>\n<td class='forumheader' style='text-align:center;' colspan='3'>".LAN_LOGIN_4."</td>\n</tr>\n<tr>\n<td class='forumheader3' width='40%'>".LAN_LOGIN_1."</td>\n<td class='forumheader3' width='40%'>{LOGIN_TABLE_USERNAME}</td>\n<td class='forumheader3' width='20%' rowspan='".($LOGIN_TABLE_SECIMG_SECIMG ? 3 : 2)."' style='vertical-align: middle; margin-left: auto; margin-right: auto; text-align: center;'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."packs/".$imode."/generic/password.png' alt='' />\n" )."</td>\n</tr>\n<tr>\n<td class='forumheader3'>".LAN_LOGIN_2."</td>\n<td class='forumheader3'>{LOGIN_TABLE_PASSWORD}</td>\n</tr>\n";
-	if($LOGIN_TABLE_SECIMG_SECIMG){
+    	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."
+		</div>
+    	<div style='text-align: center; display:none' id='loginmenuchap'>";
+	}
+	else
+	{
+	  $LOGIN_TABLE .= "<div style='text-align:center'>";
+	}
+	$LOGIN_TABLE .= $rs -> form_open("post", e_SELF,'','','',' onsubmit="hashLoginPassword(this)"');
+  }
+  else
+  {
+	$LOGIN_TABLE .= "<div style='text-align:center'>".$rs -> form_open("post", e_SELF);
+  }
+  
+  $LOGIN_TABLE .= 
+		"<table class='fborder' style='width:60%' >\n
+		<tr>\n
+		  <td class='forumheader' style='text-align:center;' colspan='3'>".LAN_LOGIN_4."</td>\n
+		</tr>\n
+		<tr>\n
+		  <td class='forumheader3' style='width:40%'>".LAN_LOGIN_1."</td>\n
+		  <td class='forumheader3' style='width:40%'>{LOGIN_TABLE_USERNAME}</td>\n
+		  <td class='forumheader3' rowspan='".($LOGIN_TABLE_SECIMG_SECIMG ? 3 : 2)."' style='width:20%; vertical-align: middle; margin-left: auto; margin-right: auto; text-align: center;'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."packs/".$imode."/generic/password.png' alt='' />\n" )."</td>\n</tr>\n
+		  <tr>\n<td class='forumheader3'>".LAN_LOGIN_2."</td>\n<td class='forumheader3'>{LOGIN_TABLE_PASSWORD}
+		  </td>\n</tr>\n";
+	if($LOGIN_TABLE_SECIMG_SECIMG)
+	{
 		$LOGIN_TABLE .= "<tr><td class='forumheader3'>{LOGIN_TABLE_SECIMG_LAN}</td>\n<td class='forumheader3'>{LOGIN_TABLE_SECIMG_HIDDEN} {LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}</td>\n</tr>\n";
 	}
 

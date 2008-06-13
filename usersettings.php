@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-03-17 20:45:29 $
+|     $Revision: 1.25 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -27,7 +27,9 @@ Admin log events:
 require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."user_extended_class.php");
+require_once(e_HANDLER."user_handler.php");
 $ue = new e107_user_extended;
+$user_info = new UserHandler;
 
 //define("US_DEBUG",TRUE);
 define("US_DEBUG",FALSE);
@@ -64,6 +66,8 @@ $sesschange = '';						// Notice removal
 $photo_to_delete = '';
 $avatar_to_delete = '';
 $changed_user_data = array();
+$ue_fields = '';
+$promptPassword = FALSE;
 
 require_once(HEADERF);
 
@@ -92,20 +96,9 @@ function addCommonClasses($udata)
 //-----------------------------------
 $error = "";
 
-if (isset($_POST['updatesettings']))
+if (isset($_POST['updatesettings']) || isset($_POST['SaveValidatedInfo']))
 {
-	if(!varsettrue($pref['auth_method']) || $pref['auth_method'] == '>e107')
-	{
-	  $pref['auth_method'] = 'e107';
-	}
-
-	if($pref['auth_method'] != 'e107')
-	{
-	  $_POST['password1'] = '';
-	  $_POST['password2'] = '';
-	}
-
-
+// Get the required user info
 	if ($_uid && ADMIN)
 	{	// Admin logged in and editing another user's settings - so editing a different ID
 	  $inp = $_uid;
@@ -120,13 +113,22 @@ if (isset($_POST['updatesettings']))
 	$udata = get_user_data($inp);				// Get all the existing user data, including any extended fields
 	$udata['user_classlist'] = addCommonClasses($udata);
 
-	$peer = ($inp == USERID ? false : true);
-/*
-	echo "<pre>";
-	var_dump($udata);
-	echo "</pre>";
-*/
+	$peer = ($inp == USERID ? false : true);	// FALSE if editing own data
+}
 
+
+if (isset($_POST['updatesettings']))
+{
+	if(!varsettrue($pref['auth_method']) || $pref['auth_method'] == '>e107')
+	{
+	  $pref['auth_method'] = 'e107';
+	}
+
+	if($pref['auth_method'] != 'e107')
+	{
+	  $_POST['password1'] = '';
+	  $_POST['password2'] = '';
+	}
 
 	// Check external avatar
 	if ($_POST['image'])
@@ -266,6 +268,7 @@ if (isset($_POST['updatesettings']))
 
 
 // Password checks
+	$new_pass = '';
 	if ($_POST['password1'] != $_POST['password2']) 
 	{
 	  $error .= LAN_105."\\n";
@@ -278,7 +281,7 @@ if (isset($_POST['updatesettings']))
 		{
 		  $error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		}
-	    $changed_user_data['user_password'] = md5(trim($_POST['password1']));
+		$new_pass = $_POST['password1'];		// Don't hash it yet
 	  }
 	}
 
@@ -301,7 +304,7 @@ if (isset($_POST['updatesettings']))
 		
 		
 // Uploaded avatar and/or photo
-	if (isset($_FILES['file_userfile']['error']))
+	if ($file_userfile['error'] != 4)
 	{
 	  require_once(e_HANDLER."upload_handler.php");
 	  require_once(e_HANDLER."resize_handler.php");
@@ -374,36 +377,30 @@ if (isset($_POST['updatesettings']))
 		}
 	  }
 
-	  $ue_fields = "";
 	  foreach($_POST['ue'] as $key => $val)
 	  {
-			$err = false;
-			$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
-			$regex = $tp->toText($parms[1]);
-			$regexfail = $tp->toText($parms[2]);
-    		if(defined($regexfail)) {$regexfail = constant($regexfail);}
-	  		if($val == '' && $extList[$key]['user_extended_struct_required'] == 1 && !$_uid)
-			{
-         		$error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
-	    		$err = TRUE;
+			$err = $ue->user_extended_validate_entry($val,$extList[$key]);
+	  		if($err === TRUE && !$_uid)
+			{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+         	  $error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
 			}
-			if($regex != "" && $val != "")
-			{
-				if(!preg_match($regex, $val))
-				{
-               		$error .= $regexfail."\\n";
-         			$err = TRUE;
-	         	}
+			elseif ($err)
+			{	// Specific error message returned - usually regex fail
+			  $error .= $err."\\n";
+			  $err = TRUE;
 			}
 			if(!$err)
 			{
 				$val = $tp->toDB($val);
 				$ue_fields .= ($ue_fields) ? ", " : "";
 				$ue_fields .= $key."='".$val."'";
-				}
+			}
 	  }
     }
 
+
+	unset($_POST['password1']);		// Always clear the password fields - value noted if required
+	unset($_POST['password2']);
 
 
 // All key fields validated here
@@ -412,10 +409,6 @@ if (isset($_POST['updatesettings']))
 // $inp - UID of user whose data is being changed (may not be the currently logged in user)
 	if (!$error)
 	{
-	  unset($_POST['password1']);
-	  unset($_POST['password2']);
-	  
-	  
       $_POST['user_id'] = intval($inp);
 
 
@@ -423,9 +416,7 @@ if (isset($_POST['updatesettings']))
 
 	  if ($ret == '')
 	  {
-		// Either delete this block, or delete user_customtitle from the later loop for non-vetted fields
-		$new_customtitle = "";
-		if(isset($_POST['customtitle']) && ($pref['signup_option_customtitle'] || ADMIN))
+		if(isset($_POST['customtitle']) && ($pref['signup_option_customtitle']))
 		{
 		  $new_customtitle = $tp->toDB($_POST['customtitle']);
 		  if ($new_customtitle != $udata['user_customtitle']) $changed_user_data['user_customtitle'] = $new_customtitle;
@@ -511,8 +502,88 @@ if (isset($_POST['updatesettings']))
 		{
 		  unset($changed_user_data['user_loginname']);
 		}
+	  }
+	  else 
+	  {	// Invalid data - from hooked in trigger event
+		$message = "<div style='text-align:center'>".$ret."</div>";
+		$caption = LAN_151;
+	  }
+	}
+}  // End - update setttings
+elseif (isset($_POST['SaveValidatedInfo']))
+{	// Next bit only valid if user editing their own data
+  if (!$peer && !empty($_POST['updated_data']) && !empty($_POST['currentpassword']) && !empty($_POST['updated_key']))
+  {	// Got some data confirmed with password entry
+	$new_data = base64_decode($_POST['updated_data']);
+	if (md5($new_data) != $_POST['updated_key']) 
+	{  // Should only happen if someone's fooling around
+	  echo "Mismatch on validation key<br />";
+	  exit;
+	}
+
+	if (isset($_POST['updated_extended']))
+	{
+	  $new_extended = base64_decode($_POST['updated_extended']);
+	  if (md5($new_extended) != $_POST['extended_key']) 
+	  {  // Should only happen if someone's fooling around
+		echo "Mismatch on validity key<br />";
+		exit;
+	  }
+	}
+
+	if ($user_info->CheckPassword($_POST['currentpassword'],$udata['user_loginname'], $udata['user_password']) === FALSE)		// Use old data to validate
+	{  // Invalid password
+	  echo "<br />".LAN_USET_22."<br />";
+	  require_once(FOOTERF);
+	  exit;
+	}
+	$changed_user_data = unserialize($new_data);
+	$new_pass = $_POST['currentpassword'];
+	if (!empty($new_extended)) $ue_fields = unserialize($new_extended);
+	unset($new_data);
+	unset($new_extended);
+  }
+}
+unset($_POST['updatesettings']);
+unset($_POST['SaveValidatedInfo']);
 
 
+// At this point we know the error status.
+// $changed_user_data has an array of core changed data, except password, which is in $new_pass if changed (or entered as confirmation).
+if (!$error && (count($changed_user_data) || $new_pass))
+{
+		// Sort out password hashes
+		if ($new_pass)
+		{
+		  if (empty($loginname)) $loginname = $udata['user_loginname'];
+		  $email = $changed_user_data['user_email'] ? $changed_user_data['user_email'] : $udata['user_email'];
+		  $changed_user_data['user_password'] = $sql->escape($user_info->HashPassword($new_pass, $loginname), FALSE);
+		  if (varsettrue($pref['allowEmailLogin']))
+		  {
+			$user_prefs = unserialize($udata['user_prefs']);
+			$user_prefs['email_password'] = $user_info->HashPassword($new_pass, $email);
+			$changed_user_data['user_prefs'] = serialize($user_prefs);
+		  }
+		}
+		else
+		{
+		  if ((isset($changed_user_data['user_loginname']) && $user_info->isPasswordRequired('user_loginname')) 
+		    || (isset($changed_user_data['user_email']) && $user_info->isPasswordRequired('user_email')))
+		  {
+			if ($_uid)
+			{	// Admin is changing it
+			  $error = LAN_USET_20;
+			}
+			else
+			{	// User is changing their own info
+			  $promptPassword = TRUE;
+			}
+		  }
+		}
+}
+
+if ((!$error && !$promptPassword) && (count($changed_user_data) || $ue_fields))
+{
 		// We can update the basic user record now - can just update fields from $changed_user_data
 		if (US_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Usersettings test","Changed data:<br> ".var_export($changed_user_data,TRUE),FALSE,LOG_TO_ROLLING);
 		$sql->db_UpdateArray("user",$changed_user_data," WHERE user_id='".intval($inp)."' ");
@@ -551,7 +622,7 @@ if (isset($_POST['updatesettings']))
 			if (isset($changed_user_data['user_password']))
 			{
 			  if (isset($user_logging_opts[USER_AUDIT_NEW_PW]))
-			  {	// Password has already been changed to an md5(), so OK to leave the data
+			  {	// Password has already been changed to a hashed value, so OK to leave the data
 				$do_log['user_password'] = $changed_user_data['user_password'];
 				$log_action = USER_AUDIT_NEW_PW;
 			  }
@@ -636,22 +707,23 @@ if (isset($_POST['updatesettings']))
 		}
 		$message = "<div style='text-align:center'>".LAN_150."</div>";
 		$caption = LAN_151;
-	  } 
-	  else 
-	  {	// Invalid data
-		$message = "<div style='text-align:center'>".$ret."</div>";
-		$caption = LAN_151;
-	  }
-	  unset($_POST);
-	}
-}
+}	// End - if (!$error)...
+
+
+if (!$error && !$promptPassword) unset($_POST);
+
+
+
 
 if ($error)
 {
-	require_once(e_HANDLER."message_handler.php");
-	message_handler("P_ALERT", $error);
-	$adref = $_POST['adminreturn'];
+  require_once(e_HANDLER."message_handler.php");
+  message_handler("P_ALERT", $error);
+  $adref = $_POST['adminreturn'];
 }
+
+
+
 
 // --- User data has been updated here if appropriate ---
 
@@ -661,11 +733,54 @@ if(isset($message))
 }
 
 
-//-----------------------------------------------------
-// Re-read the user data into curVal (ready for display)
-//-----------------------------------------------------
+
 
 $uuid = ($_uid) ? $_uid : USERID;			// If $_uid is set, its an admin changing another user's data
+
+
+
+if ($promptPassword)
+{	// User has to enter password to validate data
+  $updated_data = serialize($changed_user_data);
+  $validation_key = md5($updated_data);
+  $updated_data = base64_encode($updated_data);
+  $updated_extended = serialize($ue_fields);
+  $extended_key = md5($updated_extended);
+  $updated_extended = base64_encode($updated_extended);
+  $text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : '')."'>
+  <table><tr><td style='text-align:center'>";
+  foreach ($_POST as $k => $v)
+  {
+    if (is_array($v))
+	{
+	  foreach ($v as $sk => $sv)
+	  {
+		$text .= "<input type='hidden' name='{$k}[{$sk}]' value='{$sv}' />\n";
+	  }
+	}
+	else
+	{
+	  $text .= "<input type='hidden' name='{$k}' value='{$v}' />\n";
+	}
+  }
+  $text .= LAN_USET_21."</td></tr><tr><td>&nbsp;</td></tr>
+  <tr><td style='text-align:center'><input type='password' name='currentpassword' value='' size='30' />";
+  $text .= "<input type='hidden' name='updated_data' value='{$updated_data}' /><input type='hidden' name='updated_key' value='{$validation_key}' />
+  <input type='hidden' name='updated_extended' value='{$updated_extended}' /><input type='hidden' name='extended_key' value='{$extended_key}' />
+  </td></tr>
+  <tr><td>&nbsp;</td></tr>
+  <tr><td style='text-align:center'><input type='submit' name='SaveValidatedInfo' value='".LAN_ENTER."' /></td></tr>
+  </table>
+  </form>";
+  $ns->tablerender(LAN_155, $text);
+  require_once(FOOTERF);
+}
+
+
+
+//--------------------------------------------------------
+// Re-read the user data into curVal (ready for display)
+//--------------------------------------------------------
 
 $qry = "
 SELECT u.*, ue.* FROM #user AS u

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-01 12:38:05 $
+|     $Revision: 1.10 $
+|     $Date: 2008-06-13 20:20:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -169,6 +169,12 @@ define('USRLAN_166', 'User ID --UID-- name --NAME-- approved');
 define('USRLAN_167', 'Validation email ID --ID-- resent to --NAME-- at --EMAIL--');
 define('USRLAN_168', 'Re-send --COUNT-- validation emails');
 define('USRLAN_169', 'Total --COUNT-- bounced emails deleted');
+define('USRLAN_170', 'Random user name');
+define('USRLAN_171', 'Random password');
+define('USRLAN_172', 'Password set');
+define('USRLAN_173', 'Login name set');
+define('USRLAN_174', '');
+define('USRLAN_175', '');
 
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");

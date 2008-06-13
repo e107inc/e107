@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-03-13 19:15:56 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2008-06-13 20:20:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@ if(defined("FPW_ACTIVE"))
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
 
-global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR,
+global $eMenuActive, $pref, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR,
        $login_menu_shortcodes, $LOGIN_MENU_FORM, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK;
 $ip = $e107->getip();
 
@@ -167,8 +167,12 @@ else
     	require(e_PLUGIN."login_menu/login_menu_template.php");
 	}
 
-	$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
-	$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
+	$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '');
+	if (varsettrue($pref['password_CHAP'],0))
+	{
+	  $text .= '" onsubmit="hashLoginPassword(this)';
+	}
+	$text .= '">'.$tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
 	$text .= '</form>';
 
 	if (file_exists(THEME.'images/login_menu.png')) {

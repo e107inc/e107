@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-03-23 21:53:34 $
+|     $Revision: 1.14 $
+|     $Date: 2008-06-13 20:20:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -440,36 +440,41 @@ $text .= "</table></div>";
 // =========== Registration Preferences. ==================
 
 $text .= "<div id='registration' style='display:none; text-align:center'><table style='width:100%' class='fborder'>
+	<colgroup>
+	<col style='width:50%' />
+	<col style='width:50%' />
+	</colgroup>
 	<tr>
 	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_28."</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_29."<br /><span class='smalltext'>".PRFLAN_30."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_29."<br /><span class='smalltext'>".PRFLAN_30."</span></td>
+	<td style='text-align:right' class='forumheader3'>
 	<input type='radio' name='user_reg' value='1'".($pref['user_reg'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='user_reg' value='0'".(!$pref['user_reg'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_141."<br /></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_141."<br /></td>
+	<td style='text-align:right' class='forumheader3'>
 	<input type='radio' name='xup_enabled' value='1'".($pref['xup_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='xup_enabled' value='0'".(!$pref['xup_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_154."</td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_154."</td>
+	<td style='text-align:right' class='forumheader3'>
 
 	<select name='user_reg_veri' class='tbox'>";
 	$veri_list[0] = PRFLAN_152;
 	$veri_list[1] = PRFLAN_31;
 	$veri_list[2] = PRFLAN_153;
 
-	foreach($veri_list as $v => $v_title){
+	foreach($veri_list as $v => $v_title)
+	{
 		$sel = ($pref['user_reg_veri'] == $v) ? "selected='selected'" : "";
     	$text .= "<option value='$v' $sel>".$v_title."</option>\n";
 	}
@@ -478,48 +483,48 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_160."<br /></td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".PRFLAN_160."<br /></td>
+	<td class='forumheader3' style='text-align:right' >
 	<input type='radio' name='signup_remote_emailcheck' value='1'".($pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='signup_remote_emailcheck' value='0'".(!$pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_167."<br /></td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".PRFLAN_167."<br /></td>
+	<td class='forumheader3' style='text-align:right' >
 	<input type='radio' name='disable_emailcheck' value='1'".($pref['disable_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='disable_emailcheck' value='0'".(!$pref['disable_emailcheck'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_32."<br /><span class='smalltext'>".PRFLAN_33."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_32."<br /><span class='smalltext'>".PRFLAN_33."</span></td>
+	<td style='text-align:right' class='forumheader3'>
 	<input type='radio' name='anon_post' value='1'".($pref['anon_post'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='anon_post' value='0'".(!$pref['anon_post'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_45."<br /><span class='smalltext'>".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</a></span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_45."<br /><span class='smalltext'>".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</a></span></td>
+	<td style='text-align:right' class='forumheader3'>
 	<input type='radio' name='use_coppa' value='1'".($pref['use_coppa'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='use_coppa' value='0'".(!$pref['use_coppa'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_58."<br /><span class='smalltext'>".PRFLAN_59."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_58."<br /><span class='smalltext'>".PRFLAN_59."</span></td>
+	<td style='text-align:right' class='forumheader3'>
 	<input type='radio' name='membersonly_enabled' value='1'".($pref['membersonly_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='membersonly_enabled' value='0'".(!$pref['membersonly_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".CUSTSIG_16."<br /><span class='smalltext'>".PRFLAN_78."</span></td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".CUSTSIG_16."<br /><span class='smalltext'>".PRFLAN_78."</span></td>
+	<td class='forumheader3' style='text-align:right' >
 	<input type='text' class='tbox' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."' />
 	</td>
 	</tr>
@@ -527,37 +532,44 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_136."</td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".PRFLAN_136."</td>
+	<td class='forumheader3' style='text-align:right' >
 	<input type='text' class='tbox' size='3' name='signup_maxip' value='".$pref['signup_maxip']."' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".CUSTSIG_18."<br /><span class='smalltext'>".CUSTSIG_19."</span></td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".CUSTSIG_18."<br /><span class='smalltext'>".CUSTSIG_19."</span></td>
+	<td class='forumheader3' style='text-align:right' >
 	<textarea class='tbox' name='signup_disallow_text' cols='1' rows='3' style='width: 80%;'>".$pref['signup_disallow_text']."</textarea>
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_155.":</td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".PRFLAN_155.":</td>
+	<td class='forumheader3' style='text-align:right' >
 	".r_userclass('displayname_class',$pref['displayname_class'],'off','nobody,public,admin,classes')."
 	<input class='button' type='submit' name='submit_resetdisplaynames' value='".PRFLAN_156."' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_158.":</td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".PRFLAN_192.":<br /><span class='smalltext'>".PRFLAN_193."</span></td>
+	<td class='forumheader3' style='text-align:right' >
+	<input type='text' class='tbox' size='30' name='predefinedLoginName' value='".varset($pref['predefinedLoginName'],'')."' /><br />".PRFLAN_194."
+	</td>
+	</tr>
+
+	<tr>
+	<td class='forumheader3'>".PRFLAN_158.":</td>
+	<td class='forumheader3' style='text-align:right' >
 	<input type='text' class='tbox' size='3' name='displayname_maxlength' value='".varset($pref['displayname_maxlength'],15)."' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_172.":</td>
-	<td class='forumheader3' style='width:50%;text-align:right' >
+	<td class='forumheader3'>".PRFLAN_172.":</td>
+	<td class='forumheader3' style='text-align:right' >
 	<input type='text' class='tbox' size='3' name='loginname_maxlength' value='".varset($pref['loginname_maxlength'],30)."' />
 	</td>
 	</tr>
@@ -735,33 +747,48 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 $text .= pref_submit();
 $text .= "</table></div>";
 
+
+	function multi_radio($name, $textsVals, $currentval = '')
+	{
+	  $ret = '';
+	  $gap = '';
+	  foreach ($textsVals as $v => $t)
+	  {
+	    $sel = ($v == $currentval) ? " checked='checked'" : "";
+		$ret .= $gap."<input type='radio' name='{$name}' value='{$v}'{$sel} /> ".$t."\n";
+		$gap = "&nbsp;&nbsp;";
+	  }
+	  return $ret;
+	}
+
+
 // Security Options. .
 $hasGD = extension_loaded("gd");
 
 $text .= "<div id='security' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
+	<colgroup>
+	<col style='width:50%' />
+	<col style='width:50%' />
+	</colgroup>
 	<tr>
 	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_47."</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_60."<br /><span class='smalltext'>".PRFLAN_61."</span> </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='ssl_enabled' value='1'".($pref['ssl_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='ssl_enabled' value='0'".(!$pref['ssl_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_60."<br /><span class='smalltext'>".PRFLAN_61."</span> </td>
+	<td style='text-align:right' class='forumheader3'>".
+		multi_radio('ssl_enabled',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['ssl_enabled'])."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_76.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_76.": </td>
+	<td style='text-align:right' class='forumheader3'>
 	";
 	if($hasGD)
 	{
-	$text .= "
-	<input type='radio' name='signcode' value='1'".($pref['signcode'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='signcode' value='0'".(!$pref['signcode'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	";
+	  $text .= multi_radio('signcode', array('1' =>PRFLAN_112,'0' => PRFLAN_113), $pref['signcode']);
 	}
 	else
 	{
@@ -772,15 +799,12 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_81.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_81.": </td>
+	<td style='text-align:right' class='forumheader3'>
 	";
 	if($hasGD)
 	{
-	$text .= "
-	<input type='radio' name='logcode' value='1'".($pref['logcode'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='logcode' value='0'".(!$pref['logcode'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	";
+	  $text .= multi_radio('logcode', array('1' =>PRFLAN_112,'0' => PRFLAN_113), $pref['logcode']);
 	}
 	else
 	{
@@ -791,82 +815,108 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_138.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_138.": </td>
+	<td style='text-align:right' class='forumheader3'>
 	";
 	if($hasGD)
 	{
-	$text .= "
-	<input type='radio' name='fpwcode' value='1'".($pref['fpwcode'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='fpwcode' value='0'".(!$pref['fpwcode'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	";
+	  $text .= multi_radio('fpwcode', array('1' =>PRFLAN_112,'0' => PRFLAN_113), $pref['fpwcode']);
 	}
 	else
 	{
 		$text .= PRFLAN_133;
 	}
+	
 	$text .= "
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_92.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='user_reg_secureveri' value='1'".($pref['user_reg_secureveri'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='user_reg_secureveri' value='0'".(!$pref['user_reg_secureveri'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_92.": </td>
+	<td style='text-align:right' class='forumheader3'>".
+	  multi_radio('user_reg_secureveri',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['user_reg_secureveri'])."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_129.":<br /><span class='smalltext'>".PRFLAN_130."</span> </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='disallowMultiLogin' value='1'".($pref['disallowMultiLogin'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='disallowMultiLogin' value='0'".(!$pref['disallowMultiLogin'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_129.":<br /><span class='smalltext'>".PRFLAN_130."</span> </td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('disallowMultiLogin',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['disallowMultiLogin'])."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_48.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>". ($pref['user_tracking'] == "cookie" ? "<input type='radio' name='user_tracking' value='cookie' checked='checked' /> ".PRFLAN_49 : "<input type='radio' name='user_tracking' value='cookie' /> ".PRFLAN_49). ($pref['user_tracking'] == "session" ? "<input type='radio' name='user_tracking' value='session' checked='checked' /> ".PRFLAN_50 : "<input type='radio' name='user_tracking' value='session' /> ".PRFLAN_50)."
+	<td class='forumheader3'>".PRFLAN_184.": <br /><span class='smalltext'>".PRFLAN_185."</span></td>
+	<td style='text-align:right' class='forumheader3'>".
+		multi_radio('allowEmailLogin',array('1' => PRFLAN_186, '0' => PRFLAN_187),varset($pref['allowEmailLogin'],0))."
+	</td>
+	</tr>
+	
+	<tr>
+	<td class='forumheader3'>".PRFLAN_48.": </td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."
 	<br />
 	".PRFLAN_55.": <input class='tbox' type='text' name='cookie_name' size='20' value='".$pref['cookie_name']."' maxlength='20' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_40."<br /><span class='smalltext'>".PRFLAN_41."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='profanity_filter' value='1'".($pref['profanity_filter'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='profanity_filter' value='0'".(!$pref['profanity_filter'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_188.": <br /><span class='smalltext'>".PRFLAN_191."</span></td>
+	<td style='text-align:right' class='forumheader3'>".
+		multi_radio('passwordEncoding',array('0' => PRFLAN_189, '1' => PRFLAN_190),varset($pref['passwordEncoding'],0))."
+	</td>
+	</tr>
+	
+	<tr>
+	<td class='forumheader3'>".PRFLAN_178."<br /><span class='smalltext'>".PRFLAN_179."</span></td>
+	<td style='text-align:right' class='forumheader3'>
+	<select name='password_CHAP' class='tbox'>";
+    $CHAP_list[0] = PRFLAN_180;
+    $CHAP_list[1] = PRFLAN_181;
+    $CHAP_list[2] = PRFLAN_182;
+
+	foreach($CHAP_list as $ab=>$ab_title){
+		$sel = ($pref['password_CHAP'] == $ab) ? "selected='selected'" : "";
+    	$text .= "<option value='$ab' $sel>".$ab_title."</option>\n";
+	}
+
+	$text .="</select>\n
+	<br /><span class='smalltext'>".PRFLAN_183."</span></td>
+	</tr>
+
+	<tr>
+	<td class='forumheader3'>".PRFLAN_40."<br /><span class='smalltext'>".PRFLAN_41."</span></td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('profanity_filter', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['profanity_filter'])."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_42.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_42.": </td>
+	<td style='text-align:right' class='forumheader3'>
 	<input class='tbox' type='text' name='profanity_replace' size='30' value='".$pref['profanity_replace']."' maxlength='20' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_43.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_43.": </td>
+	<td style='text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='profanity_words' cols='59' rows='2' style='width:100%'>".$pref['profanity_words']."</textarea>
 	<br />".PRFLAN_44."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_35.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='antiflood1' value='1'".($pref['antiflood1'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='antiflood1' value='0'".(!$pref['antiflood1'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_35.": </td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('antiflood1',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['antiflood1'])."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_36.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_36.": </td>
+	<td style='text-align:right' class='forumheader3'>
 	<input class='tbox' type='text' name='antiflood_timeout' size='3' value='".$pref['antiflood_timeout']."' maxlength='3' />
 	<br />
 	<b class=\"smalltext\" >".PRFLAN_38."</b>
@@ -875,8 +925,8 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_37."<br /><span class='smalltext'>".PRFLAN_91."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
+	<td class='forumheader3'>".PRFLAN_37."<br /><span class='smalltext'>".PRFLAN_91."</span></td>
+	<td style='text-align:right' class='forumheader3'>
 	<select name='autoban' class='tbox'>";
     $autoban_list[0] = PRFLAN_113;
     $autoban_list[1] = PRFLAN_144;
@@ -892,10 +942,9 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_139.":</td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='adminpwordchange' value='1'".($pref['adminpwordchange'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='adminpwordchange' value='0'".(!$pref['adminpwordchange'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_139.":</td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('adminpwordchange',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['adminpwordchange'])."
 	</td>
 	</tr>
 	";

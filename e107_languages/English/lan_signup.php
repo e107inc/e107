@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-12-15 15:06:40 $
+|     $Revision: 1.11 $
+|     $Date: 2008-06-13 20:20:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ define("LAN_SIGNUP_44", "Activation email sent to:");
 define("LAN_SIGNUP_45", "Please check your inbox.");
 define("LAN_SIGNUP_47", "Resend Activation Email");
 define("LAN_SIGNUP_48", "Username or Email");
-define("LAN_SIGNUP_49", "If you registered with the wrong email address, type a new one and your password here:");
+define("LAN_SIGNUP_49", "If you registered with the wrong email address, as well as filling in the box above, type a new email address and your password here:");
 define("LAN_SIGNUP_50", "New Email");
 define("LAN_SIGNUP_51", "Old Password");
 define("LAN_SIGNUP_52", "Incorrect Password");
@@ -118,10 +118,10 @@ define('LAN_SIGNUP_60','Signup email resend requested');
 define('LAN_SIGNUP_61','Send succeeded');
 define('LAN_SIGNUP_62','Send failed');
 define('LAN_SIGNUP_63','Password reset email resent requested');
-define('LAN_SIGNUP_64','');
-define('LAN_SIGNUP_65','');
-define('LAN_SIGNUP_66','');
-define('LAN_SIGNUP_67','');
+define('LAN_SIGNUP_64','That doesn\'t appear to be valid user information');
+define('LAN_SIGNUP_65','You have been assigned the following login name');
+define('LAN_SIGNUP_66','Please make a note of it.');
+define('LAN_SIGNUP_67','This will be assigned by the system after signup');
 define('LAN_SIGNUP_68','');
 define('LAN_SIGNUP_69','');
 define('LAN_SIGNUP_70','');

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-01 21:26:23 $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-13 20:20:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -33,5 +33,8 @@ define("LAN_LOGIN_21", "Incorrect login. The entered data doesn't match to a reg
 define("LAN_LOGIN_22", "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please click <a href='".e_BASE."signup.php?resend'>here</a>.");
 define("LAN_LOGIN_23", "Incorrect code entered.");
 define("LAN_LOGIN_24", "That username/password combination is already in use.");
+define("LAN_LOGIN_25", "Banned user attempted to login");
+define("LAN_LOGIN_26", "Login fail - reason unknown");
+define('LAN_LOGIN_27', 'User attempted to log in before responding to confirmation email');
 
 ?>
