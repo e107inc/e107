@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-03-23 11:17:09 $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-15 09:52:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -195,7 +195,7 @@ class db_table_admin
     switch ($list['type'])
 	{
 	  case 'key' :
-	    return 'KEY '.$list['name'].' ('.$list['name'].')';
+	    return 'KEY '.$list['name'].' ('.str_replace(array('(',')'),'',$list['keyfield']).')';
 	  case 'ukey' :
 	    return 'UNIQUE KEY '.$list['name'].' ('.$list['name'].')';
 	  case 'pkey' :
@@ -265,9 +265,24 @@ class db_table_admin
 		  else
 		  {  // Need to insert a field
 			$error_list[] = 'Missing field: '.$list1[$i]['name'].' (found: '.$list2[0]['type'].' '.$list2[0]['name'].')';
-			$change_list[] = 'ADD '.$this->make_def($list1[$i]).(count($created_list) ? ' AFTER '.$created_list[count($created_list)-1] : ' FIRST');
-			$created_list[$j] = $list1[$i]['name'];
-			$j++;
+			switch ($list1[$i]['type'])
+			{
+			  case 'key' :
+			  case 'ukey' :
+			  case 'pkey' :		// Require a key 
+				$change_list[] = 'ADD '.$this->make_def($list1[$i]);
+				$error_list[] = 'Missing index: '.$list1[$i]['name'];
+				$created_list[$j] = $list1[$i]['name'];
+				$j++;
+				break;
+
+			  case 'field' :
+				$change_list[] = 'ADD '.$this->make_def($list1[$i]).(count($created_list) ? ' AFTER '.$created_list[count($created_list)-1] : ' FIRST');
+				$error_list[] = 'Missing field: '.$list1[$i]['name'].' (found: '.$list2[0]['type'].' '.$list2[0]['name'].')';
+				$created_list[$j] = $list1[$i]['name'];
+				$j++;
+				break;
+			}
 		  }
 		}
 		else
@@ -321,6 +336,26 @@ class db_table_admin
 	  }		// End - missing or extra field
 	  
 	  $i++;			// On to next field
+	}
+	if (count($list2))
+	{  // Surplus fields in actual table
+//	  Echo count($list2)." fields at end to delete<br />";
+	  foreach ($list2 as $f)
+	  {
+		switch ($f['type'])
+		{
+		  case 'key' :
+		  case 'ukey' :
+		  case 'pkey' :		// Require a key - got a field
+			$error_list[] = 'Extra index: '.$list2[0]['name'];
+			$change_list[] = 'DROP INDEX '.$list2[0]['name'];
+			break;
+		  case 'field' :
+			$error_list[] = 'Extra field: '.$list2[0]['name'];
+			$change_list[] = 'DROP '.$list2[0]['name'];
+			break;
+		}
+	  }
 	}
 	if ($stop_on_error) return TRUE;			// If doing a simple comparison and we get to here, all matches
 	return array($error_list, $change_list);
