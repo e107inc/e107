@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-01-27 18:52:18 $
+|     $Revision: 1.7 $
+|     $Date: 2008-06-15 10:05:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ case 'transfer' :
   The format of each line in the file is: IP/email, date, expiry, type, reason, notes.<br />
   Date and expiry are in the format YYYYMMDD_HHMMDD, except that a zero value indicates 'unknown' or 'indefinite'<br />
   Only the IP or email address is essential; the other fields are imported if present.<br /><br />
-  <b>Note:</b> You will need to add the 'CSV' file type to admin_filetypes.php";
+  <b>Note:</b> You will need to modify filetypes.xml to allow admins to upload the 'CSV' file type.";
   break;
 case 'times' :
   $text = "This page sets the default behaviour for various types of ban.<br />
@@ -46,6 +46,7 @@ case 'options' :
   $text = '<b>Reverse DNS</b><br />
     If enabled, the user\'s IP address is looked up to obtain the associated domain name. This accesses an external server, so there may
 	be a delay before the information is available - and if the server is off-line, there may be a very long delay.<br /><br />
+	You can choose to look up server names on all site accesses, or only when adding a new ban.<br /><br />
 	<b>Maximum Access Rate</b><br />
 	This sets the maximum number of site accesses permitted from a single user or IP address in any five-minute period, and is intended
 	to detect denial of service attacks. At 90% of the selected limit, the user receives a warning; on reaching the limit they are banned.
