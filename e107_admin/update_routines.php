@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-05-24 12:45:26 $
+|     $Revision: 1.22 $
+|     $Date: 2008-06-16 20:08:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
+// [debug=8] shows the operations on major table update
 
 require_once("../class2.php");
 require_once(e_HANDLER.'db_table_admin_class.php');
@@ -486,17 +487,17 @@ function update_706_to_800($type='')
 	{
 	  $req_defs = $db_parser->get_table_def($ct,e_ADMIN."sql/core_sql.php");
 	  $req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
-//	  echo $db_parser->make_field_list($req_fields);
+	  if (E107_DBG_FILLIN8) echo "Required table structure: <br />".$db_parser->make_field_list($req_fields);
 
 	  if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
 	  {
-	    echo "Couldn't get table structure: {$ct}<br />";
+//	    echo "Couldn't get table structure: {$ct}<br />";
 	  }
 	  else
 	  {
 //		echo $db_parser->make_table_list($actual_defs);
 		$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
-//		echo $db_parser->make_field_list($actual_fields);
+		if (E107_DBG_FILLIN8) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
   
 		$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
 		if (count($diffs[0]))
@@ -504,7 +505,7 @@ function update_706_to_800($type='')
 		  if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
 		// Do the changes here 
 		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
-//		  echo "Query: ".$qry."<br />";
+		  if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
 		  mysql_query($qry);
 		  catch_error();
 		}
