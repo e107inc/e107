@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/login.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-06-13 20:20:20 $
+|     $Revision: 1.5 $
+|     $Date: 2008-06-16 19:37:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 $HEADER = "";
+$FOOTER='';				// Avoids strange displays when debug enabled! (But doesn't completely maintain XHTML formatting)
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 if ($use_imagecode) 
@@ -85,5 +86,6 @@ else
 echo "</body></html>";
 
 $sql->db_Close();
+
 
 ?>
