@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/e107_update.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-06 21:38:20 $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-16 20:48:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ function run_updates($dbupdate)
 function show_updates($dbupdate) 
 {
 	global $ns;
-	$text = "<form method='POST' action='".e_SELF."'>
+	$text = "<form method='post' action='".e_SELF."'>
 	<div style='width:100%'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>

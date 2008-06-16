@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-06-16 20:08:10 $
+|     $Revision: 1.23 $
+|     $Date: 2008-06-16 20:48:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -504,6 +504,7 @@ function update_706_to_800($type='')
 		{  // Changes needed
 		  if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
 		// Do the changes here 
+		  if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
 		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
 		  if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
 		  mysql_query($qry);

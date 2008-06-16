@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-06-15 09:52:09 $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-16 20:48:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -238,9 +238,30 @@ class db_table_admin
 	  elseif ($list1[$i]['type'] == $list2[0]['type'])
 	  {  // Worth doing a compare - fields are same type
 		if (strcasecmp($list1[$i]['name'],$list2[0]['name']) != 0)
-		{		// Names differ, so need to add or subtract a field.
+		{		// Names differ, so need to add or subtract a field. 
 //		  echo $i.': names differ - '.$list1[$i]['name'].', '.$list2[0]['name'].'<br />';
 		  if ($stop_on_error) return FALSE;
+		  $found = FALSE;
+		  for ($k = $i+1; $k < count($list1); $k++)
+		  {
+//		    echo "Compare ".$list1[$k]['name'].' with '.$list2[0]['name'];
+			if (strcasecmp($list1[$k]['name'],$list2[0]['name']) == 0)
+			{  // Field in list2 found later in list1; do nothing
+//			  echo " - match<br />";
+			  $found = TRUE;
+			  break;
+			}
+//			echo " - no match<br />";
+		  }
+
+		  if (!$found)
+		  {	// Field in existing DB no longer required
+			$error_list[] = 'Obsolete field: '.$list2[0]['name'];
+			$change_list[] = 'DROP '.($list2[0]['type'] == 'field' ? '' : 'INDEX ').$list2[0]['name'];
+			array_shift($list2);
+			continue;
+		  }
+
 		  $found = FALSE;
 		  for ($k = 0; $k < count($list2); $k++)
 		  {
@@ -359,6 +380,20 @@ class db_table_admin
 	}
 	if ($stop_on_error) return TRUE;			// If doing a simple comparison and we get to here, all matches
 	return array($error_list, $change_list);
+  }
+
+  function make_changes_list($result)
+  {
+    if (!is_array($result)) return "Not an array<br />";
+	$text = "<table>";
+	for ($i = 0; $i < count($result[0]); $i++)
+	{
+	  $text .= "<tr><td>{$result[0][$i]}</td>";
+	  $text .= "<td>{$result[1][$i]}</td>";
+	  $text .= "</tr>\n";
+	}
+	$text .= "</table><br /><br />";
+	return $text;
   }
   
   
