@@ -39,4 +39,9 @@ define("LAN_LOGIN_16", "Gebruiker probeerde zich aan te melden met een al gebrui
 define("LAN_LOGIN_17", "Wachtwoord gebruiker (versleuteld)");
 define("LAN_LOGIN_18", "Auto-blokkade: Meer dan 10 mislukte inlogpogingen");
 define("LAN_LOGIN_19", "> 10 mislukte inlogpogingen");
+define("LAN_LOGIN_20", "Verplicht veld niet ingevuld");
+define("LAN_LOGIN_21", "Onjuiste inlogpoging. De ingevoerde gegevens komen niet overeen met die van een geregistreerde gebruiker. Controleer of de CAPS-LOCK toets niet is ingedrukt, de gegevens zijn hoofdlettergevoelig");
+define("LAN_LOGIN_22", "Je hebt je account nog niet geactiveerd. Je hebt een e-mailtje ontvangen waarin de instructies voor activering van uw account staan vermeld. Zo niet, klik dan <a href='".e_BASE."signup.php?resend'>hier</a>.");
+define("LAN_LOGIN_23", "Onjuiste gegevens ingevoerd.");
+define("LAN_LOGIN_24", "Deze gebruikersnaam/wachtwoord combinatie is al in gebruik.");
 ?>

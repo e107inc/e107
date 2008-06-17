@@ -48,6 +48,9 @@ define("LAN_FPW14", "is aangevraagd door iemand met het ip-adres");
 define("LAN_FPW15", "Dat betekent nog niet dat je wachtwoord nu al is gewijzigd. Je moet naar de onderstaande link gaan om het proces af te ronden.");
 define("LAN_FPW16", "Als je het niet zelf aanvroeg en je je wachtwoord NIET wilt wijzigen, negeer dan dit berichtje.");
 define("LAN_FPW17", "De onderstaande link zal 48 uur geldig zijn.");
-
+define('LAN_FPW18','Wachtwoordreset aangevraagd');
+define('LAN_FPW19','Verzenden van e-mail mislukt');
+define('LAN_FPW20','E-mail succesvol verzonden');
+define('LAN_FPW21','Gebruiker klikte op wachtwoordreset link');
 
 ?>

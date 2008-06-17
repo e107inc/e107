@@ -161,6 +161,8 @@ define("ADLAN_151", "Beheerscherm");
 define("ADLAN_152", "Invoeren code");
 define("ADLAN_153", "Beheerscherm");
 define('ADLAN_154', "Fout bij benaderen Sourceforge om te controleren op nieuwe versie");
+define('ADLAN_155', 'Systeemlogbestanden');
+define('ADLAN_156', 'Beheerlog, gebruikerscontrole, omlopend log');
 
 define("LAN_SELECT","Selecteer ...");
 define("LAN_ADMIN","Beheer");

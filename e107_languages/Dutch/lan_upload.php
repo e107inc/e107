@@ -46,5 +46,9 @@ define('LAN_UL_001','Ongeldig e-mailadres');
 define('LAN_UL_002', 'Je hebt niet de juiste rechten om bestanden naar deze server te uploaden.');	// LAN_403
 define('LAN_UL_020', 'Fout');
 define('LAN_UL_021', 'Upload fout');
+define('LAN_UL_022', 'Kan afwijken per bestandsformaat');
+define('LAN_UL_023', 'Type');
+define('LAN_UL_024', 'Max omvang');
+define('LAN_UL_025', 'Upload niet toegestaan ');
 
 ?>

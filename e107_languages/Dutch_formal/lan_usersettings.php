@@ -98,8 +98,10 @@ define("LAN_USET_14", "Inlognaam is te lang. Kies een andere");
 define("LAN_USET_15", "Weergavenaam te lang. Kies een andere");
 define("LAN_USET_16", "Aankruisen om de aanwezige foto te verwijderen zonder nieuwe foto te uploaden");
 define("LAN_USET_17", "Weergavenaam al in gebruik. Kies een andere");
+define('LAN_USET_18', 'Gebruikersgegevens gewijzigd door beheerder: --ID--, inloginnaam: --LOGNAME--');
+define('LAN_USET_19', 'Maatwerktitel');
 
-define("LAN_CUSTOMTITLE", "Maatwerk titel");
+define("LAN_CUSTOMTITLE", "Maatwerktitel");
 define("LAN_ICQNUMBER", "ICQ nummer mag alleen bestaan uit cijfers");
 define("LAN_408", "Er is al een deelnemer met dat e-mailadres.");
 define("MAX_AVWIDTH", "Maximale avatar breedte is");

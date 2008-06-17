@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch_formal/admin/lan_fla.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-03-02 18:43:45 $
+|     $Revision: 1.2 $
+|     $Date: 2008-06-17 18:38:17 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -26,4 +26,5 @@ define("FLALAN_14", "alle blokkeerhokjes leegmaken");
 define("FLALAN_15", "Volgende IP adres(sen) automatisch geblokkeerd - gebruiker probeerde meer dan 10 keer vergeefs in te loggen");
 define("FLALAN_16", "verwijder deze autoblok lijst");
 define("FLALAN_17", "Auto-blok lijst verwijderd");
+define('FLALAN_18', "Kon IP-adres niet blokkeren --IP-- - op whitelist");
 ?>

@@ -11,6 +11,12 @@ define("UE_LAN_9", "Naam");
 define("UE_LAN_10", "Type");
 define("UE_LAN_11", "Gebruik");
 
+define("UE_LAN_21", "Naam");
+define("UE_LAN_22", "Type");
+define("UE_LAN_23", "Gebruik");
+define('UE_LAN_TIMEZONE', 'Tijdzone');
+define('UE_LAN_TIMEZONE_DESC', 'Tijdzone gebruiker (uit overzicht)');
+
 define("UE_LAN_HIDE", "Verbergen voor gebruikers");
 define("UE_LAN_LOCATION", "Woonplaats");
 define("UE_LAN_AIM", "AIM");

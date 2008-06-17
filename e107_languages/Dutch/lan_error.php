@@ -49,4 +49,6 @@ define("LAN_ERROR_29", "[5]: Veld(en) niet ingevuld. Biedt het scherm nogmaals a
 define("LAN_ERROR_30", "[6]: Kon een geldige verbinding maken met mySQL. Controleer of e107_config.php de juiste informatie bevat.");
 define("LAN_ERROR_31", "[7]: mySQL draait, maar database ({$mySQLdefaultdb}) kon niet worden aangekoppeld.<br />Controleer dat de database bestaat en dat e107_config.php de juiste informatie bevat.");
 define("LAN_ERROR_32", "Kopieer de volgende tekst in het e107_config.php bestand om de upgrade af te ronden:");
+define("LAN_ERROR_33", "Verwerkingsfout! Normaal gesproken zou ik moeten doorverwijzen naar de startpagina.");
+define("LAN_ERROR_34", "Onbekende fout! Informeer de beheerder over deze melding:");
 ?>

@@ -38,6 +38,7 @@ define("CORE_LAN10", "Corrupt cookie gedetecteerd - uitgelogd.");
 define("CORE_LAN11", "Opbouwtijd: ");
 define("CORE_LAN12", " sec, ");
 define("CORE_LAN13", " daarvan voor queries. ");
+define("CORE_LAN14", "%2.3f cpu sec (%2.2f%% belasting, %2.3f opstart). Klok: ");
 define("CORE_LAN15", "DB queries: ");
 define("CORE_LAN16", "Geheugengebruik: ");
 define("CORE_LAN_B", "b");

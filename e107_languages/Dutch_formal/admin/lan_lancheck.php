@@ -33,4 +33,7 @@ define("LAN_CHECK_16", "Originele bestand");
 define("LAN_CHECK_17", "Er bestaat een schrijfprobleem bij het opslaan van het bestand.");
 define("LAN_CHECK_18", "Taalbestanden in het standaardformaat zijn voor deze plugin/dit thema niet beschikbaar.");
 define("LAN_CHECK_19", "Non-UTF-8 tekens aangetroffen!");
+define("LAN_CHECK_20", "Bestand");
+define("LAN_CHECK_21", "Thema");
+define("LAN_CHECK_22", "Thema's");
 ?>

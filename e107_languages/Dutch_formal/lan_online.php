@@ -20,24 +20,24 @@ define("ONLINE_EL4", "Online");
 define("ONLINE_EL5", "Leden");
 define("ONLINE_EL6", "Nieuwste lid");
 define("ONLINE_EL7", "bekijkt");
-
 define("ONLINE_EL8", "meest gelijk online: ");
 define("ONLINE_EL9", "op");
 define("ONLINE_EL10", "Gebruikersnaam");
 define("ONLINE_EL11", "Bekijkt pagina");
-
 define("ONLINE_EL12", "Reageert op");
 define("ONLINE_EL13", "Forum");
 define("ONLINE_EL14", "Discussie");
 define("ONLINE_EL15", "Pagina");
+define("ONLINE_EL16", "Informatie niet beschikbaar");
 
+define('OTHER', 'Andere pagina: ');
 define("CLASSRESTRICTED", "Voor klasse beperkte pagina");
 define("ARTICLEPAGE", "Artikel/Review");
 define("CHAT", "Chat");
 define("COMMENT", "Reacties");
 define("DOWNLOAD", "Downloads");
 define("EMAIL", "email.php");
-define("FORUM", "Hoofd forum index");
+define("FORUM", "Hoofd forumindex");
 define("LINKS", "Links");
 define("NEWS", "Nieuws");
 define("OLDPOLLS", "Oude peilingen");
