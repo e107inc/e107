@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-15 15:06:40 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-06-17 05:39:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -177,6 +177,9 @@ define('ADLAN_154', "Error contacting Sourceforge to check for new version");
 
 define('ADLAN_155', 'System Logs');
 define('ADLAN_156', 'Admin log, user audit, rolling log');
+
+define("ADLAN_157", "Schedule Tasks");
+define("ADLAN_158", "Cron Jobs and Automated Tasks");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');

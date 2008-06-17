@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-15 15:06:40 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-17 05:39:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -121,6 +121,9 @@ if (!defined('E_16_CACHE')) {
 }
 if (!defined('E_16_CREDITS')) {
 	define('E_16_CREDITS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/credits_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+}
+if (!defined('E_16_CRON')) {
+	define('E_16_CRON', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cron_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_CUST')) {
 	define('E_16_CUST', "<img src='".e_IMAGE."packs/".$imode."/admin_images/custom_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
@@ -245,6 +248,10 @@ if (!defined('E_32_CACHE')) {
 if (!defined('E_32_CREDITS')) {
 	define('E_32_CREDITS', "<img src='".e_IMAGE."packs/".$imode."/admin_images/credits_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
+if (!defined('E_32_CRON')) {
+	define('E_32_CRON', "<img src='".e_IMAGE."packs/".$imode."/admin_images/cron_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+}
+
 if (!defined('E_32_CUST')) {
 	define('E_32_CUST', "<img src='".e_IMAGE."packs/".$imode."/admin_images/custom_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
@@ -364,6 +371,7 @@ $e_icon_array = array(
 	'banner' => E_32_BANNER,
 	'cache' => E_32_CACHE,
 	'credits' => E_32_CREDITS,
+	'cron'	=> E_32_CRON,
 	'custom' => E_32_CUST,
 	'database' => E_32_DATAB,
 	'docs' => E_32_DOCS,
@@ -467,6 +475,7 @@ $array_functions = array(
 	27 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
 	28 => array(e_ADMIN."users_extended.php", ADLAN_78, ADLAN_79, "4", 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
 	29 => array(e_ADMIN."fileinspector.php", ADLAN_147, ADLAN_148, "Y", 4, E_16_INSPECT, E_32_INSPECT),
-	30 => array(e_ADMIN."notify.php", ADLAN_149, ADLAN_150, "O", 4, E_16_NOTIFY, E_32_NOTIFY)
+	30 => array(e_ADMIN."notify.php", ADLAN_149, ADLAN_150, "O", 4, E_16_NOTIFY, E_32_NOTIFY),
+	31 => array(e_ADMIN."cron.php", ADLAN_157, ADLAN_158, "U", 4, E_16_CRON, E_32_CRON)
 	);
 ?>

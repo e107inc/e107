@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-15 15:06:40 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-17 05:39:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -191,7 +191,7 @@ function edit_administrator($row){
 	$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />";			// file inspector
 	$text .= checkb("O", $a_perms).ADMSLAN_68."<br />";			// notify
 	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";			// Oversee news categories
-	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";			// Oversee link categories
+//	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";			// Oversee link categories
 	$text .= checkb("C", $a_perms).ADMSLAN_64."<br />";			// Clear Cache - Previously moderate chatbox
 	$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";			// Take site down for maintenance
 	$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";	// Configure mail settings and mailout
