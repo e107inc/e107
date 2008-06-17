@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-06-16 20:48:47 $
+|     $Revision: 1.24 $
+|     $Date: 2008-06-17 19:45:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -345,21 +345,21 @@ function update_706_to_800($type='')
 			ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
 	  {
 		// Flag error
-		echo "Error<br />";
+		echo "Error adding columns to comment table<br />";
 	  }
 	  else
 	  {
-		if (!$sql->db_Update("comments","comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+		if (FALSE ===$sql->db_Update("comments","comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
 		{
 			// Flag error
-		  echo "Error<br />";
+		  echo "Error modifying data in comment table<br />";
 		}
 		else
 		{	// Delete superceded field - comment_author
 		  if (!$sql->db_Select_gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
 		  {
 			// Flag error
-			echo "Error<br />";
+			echo "Error deleting old field in comment table<br />";
 		  }
 		}
 	  }
