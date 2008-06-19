@@ -1,4 +1,4 @@
-/* $Id: menu.sc,v 1.28 2007-05-11 19:58:08 e107steved Exp $ */
+/* $Id: menu.sc,v 1.29 2008-06-19 22:46:12 e107coders Exp $ */
 global $sql;
 global $ns;
 global $eMenuList;
@@ -78,7 +78,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 			$page  = $sql -> db_Fetch();
 			$caption = $tp -> toHTML($page['page_title'], TRUE, 'parse_sc, constants');
 			$text = $tp -> toHTML($page['page_text'], TRUE, 'parse_sc, constants');
-			$ns -> tablerender($caption, $text);
+			$ns -> tablerender($caption, $text, "custom_menu");
 		}
 		else
 		{
