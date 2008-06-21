@@ -4,9 +4,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e_js.php,v $
-|	$Revision: 1.4 $
-|	$Date: 2008-01-27 11:02:34 $
-|	$Author: e107coders $
+|	$Revision: 1.5 $
+|	$Date: 2008-06-21 15:17:52 $
+|	$Author: secretr $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -199,6 +199,7 @@ var colord = window.screen.colorDepth;
 var res = window.screen.width + \"x\" + window.screen.height;
 var eself = document.location;
 
+/* TODO: @SecretR - Object of removal
 // From http://phpbb.com
 var clientPC = navigator.userAgent.toLowerCase();
 var clientVer = parseInt(navigator.appVersion);
@@ -234,96 +235,81 @@ function mozSwap(txtarea, newtext){
 	txtarea.value = s1 + newtext + s3;
 	return;
 }
+*/
 
 function storeCaret (textAr){
 	e107_selectedInputArea = textAr;
+	/* TODO: @SecretR - Object of removal - not needed anymore
 	if (textAr.createTextRange){
 		e107_selectedRange = document.selection.createRange().duplicate();
-	}
+	}*/
 }
 
-function addtext(text, emote)
-{
-  var val = new Array(2);
-	if (window.e107_selectedInputArea)
-	{
-		var ta = e107_selectedInputArea;
-		if (emote != true)
-		{  // Split if its a paired bbcode
-			val = text.split('][');
-			if (val[0] == text) val[1] = '';
-		}
-		else
-		{
-		val = text;
-		}
-
-		if ((clientVer >= 4) && is_ie && is_win)
-		{
-			theSelection = document.selection.createRange().text; /* wrap selected text */
-			if (theSelection)
-			{
-				if (emote != true)
-				{
-				  if (val[1] == '')
-				  {  // Single piece of text
-					document.selection.createRange().text = val[0];
-				  }
-				  else
-				  {  // bbcode
-					document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
-				  }
-				}
-				else
-				{
-					document.selection.createRange().text = val + theSelection;
-				}
-				ta.focus();
-				theSelection = '';
-				return;
-			}
-
-		}
-		else
-		  if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0))
-		  { // Selected text here
-			if (emote != true)
-			{
-			  if  (val[1] != '')
-			  {  // BBCode to wrap
-				mozWrap(ta, val[0] +']', '[' + val[1]); /* wrap selected text */
-			  }
-			  else
-			  {  // Single piece of text to insert, and delete any selected text
-				mozSwap(ta, text); /* wrap selected text */
-			  }
-			}
-			else
-			{
-				mozWrap(ta, val, ''); /* wrap selected text */
-			}
-			return;
-		  }
-		text = ' ' + text + ' ';
-		if (ta.createTextRange && e107_selectedRange)
-		{
-			var caretPos = e107_selectedRange; /* IE */
-			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? caretPos.text + text + ' ' : caretPos.text + text;
-		}
-		else
-		  if (ta.selectionStart || ta.selectionStart == '0')
-		  { /* Moz */
-		   	var startPos = ta.selectionStart;
-			var endPos = ta.selectionEnd;
-			var charb4 = ta.value.charAt(endPos-1);
-			ta.value = ta.value.substring(0, endPos)+ text + ta.value.substring(endPos);
-		  }
-		  else
-		  {
-			ta.value  += text;
-		  }
-		ta.focus();
+/**
+ * New improved version - fixed scroll to top behaviour when inserting BBcodes
+ * @TODO - improve it more (0.8) - Prototype
+ */
+function addtext(text, emote) {
+	
+	if (!window.e107_selectedInputArea) {
+		return; //[SecretR] TODO - alert the user 
 	}
+		
+	var eField = e107_selectedInputArea;	
+	var eSelection 	= false;  
+	var tagOpen = '';
+	var tagClose = '';
+	
+	if (emote != true) {  // Split if its a paired bbcode
+		var tmp = text.split('][', 2);
+		if (tmp[0] == text) {
+			tagOpen = text;
+		} else {
+			tagOpen = tmp[0] + ']';
+			tagClose = '[' + tmp[1];
+		}
+	} else { //Insert Emote
+		tagOpen = text;
+	}
+		
+	// Windows user  
+	if (document.selection) {
+		eSelection = document.selection.createRange().text;
+		eField.focus();
+		if (eSelection) {
+			document.selection.createRange().text = tagOpen + eSelection + tagClose;
+		} else {
+			document.selection.createRange().text = tagOpen + tagClose;
+		}
+		
+		eSelection = '';
+		
+		eField.blur();
+		eField.focus();
+		
+		return;
+	} 
+	
+	var scrollPos = eField.scrollTop;
+	var selLength = eField.textLength;
+	var selStart = eField.selectionStart;
+	var selEnd = eField.selectionEnd; 
+	if (selEnd <= 2 && typeof(selLength) != 'undefined') {
+		selEnd = selLength;
+	}
+	var sel1 = (eField.value).substring(0,selStart);
+	var sel2 = (eField.value).substring(selStart, selEnd)
+	var sel3 = (eField.value).substring(selEnd, selLength);
+
+	var newStart = selStart + tagOpen.length + sel2.length + tagClose.length;
+	eField.value = sel1 + tagOpen + sel2 + tagClose + sel3;
+
+	eField.focus();
+	eField.selectionStart = newStart;
+	eField.selectionEnd = newStart;
+	eField.scrollTop = scrollPos;
+	return;
+
 }
 
 function help(help,tagid){
