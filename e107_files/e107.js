@@ -5,8 +5,8 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.27 $
-|	$Date: 2008-06-21 15:14:30 $
+|	$Revision: 1.28 $
+|	$Date: 2008-06-24 08:00:32 $
 |	$Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -193,7 +193,7 @@ var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1)
 var is_mac = (clientPC.indexOf("mac")!=-1);
 var e107_selectedInputArea;
 var e107_selectedRange;
-var e107_dupCounter = 1;
+
 
 // From http://www.massless.org/mozedit/
 function mozWrap(txtarea, open, close){
@@ -318,6 +318,7 @@ function eover(object, over) {
 	object.className = over;
 }
 
+var e107_dupCounter = 1;
 function duplicateHTML(copy,paste,baseid){
 		if(document.getElementById(copy)){
 
