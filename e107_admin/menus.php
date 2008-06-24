@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-11-18 03:05:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2008-06-24 20:53:07 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -29,7 +29,7 @@ $frm = new form;
 
 if($_POST)
 {
-	print_a($_POST);
+//	print_a($_POST);
 //	exit;
 	$e107cache->clear("menus_");
 }
@@ -444,26 +444,39 @@ else
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function parseheader($LAYOUT, $check = FALSE) {
-	$tmp = explode("\n", $LAYOUT);
-	for ($c = 0; $c < count($tmp); $c++) {
-		if (preg_match("/[\{|\}]/", $tmp[$c])) {
-			if ($check) {
-				if (strstr($tmp[$c], "{MENU=")) {
-					$str[] = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $tmp[$c]);
-				}
-			} else {
-				checklayout($tmp[$c]);
-			}
-		} else {
-			if (!$check) {
-				echo $tmp[$c];
-			}
+function parseheader($LAYOUT, $check = FALSE) 
+{
+//  $tmp = explode("\n", $LAYOUT);
+// Split up using the same function as the shortcode handler
+  $tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+  for ($c = 0; $c < count($tmp); $c++) 
+  {
+	if (preg_match("/[\{|\}]/", $tmp[$c])) 
+	{
+	  if ($check) 
+	  {
+		if (strstr($tmp[$c], "{MENU=")) 
+		{
+		  $str[] = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $tmp[$c]);
 		}
+	  } 
+	  else 
+	  {
+		checklayout($tmp[$c]);
+	  }
+	} 
+	else 
+	{
+	  if (!$check) 
+	  {
+		echo $tmp[$c];
+	  }
 	}
-	if ($check) {
-		return $str;
-	}
+  }
+  if ($check) 
+  {
+	return $str;
+  }
 }
 
 function checklayout($str) 
