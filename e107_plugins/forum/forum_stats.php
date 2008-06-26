@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-02-27 20:26:07 $
+|     $Revision: 1.16 $
+|     $Date: 2008-06-26 19:59:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -156,7 +156,6 @@ $text = "
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_8.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$db_size}</td></tr>
 	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_9.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
 
-	</tr>
 	</table>
 </td>
 </tr>
