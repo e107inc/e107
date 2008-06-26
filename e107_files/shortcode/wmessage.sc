@@ -1,4 +1,4 @@
-// $Id: wmessage.sc,v 1.5 2007-07-31 19:25:26 e107steved Exp $
+// $Id: wmessage.sc,v 1.6 2008-06-26 20:44:10 e107steved Exp $
 
 $prefwmsc = varset($pref['wmessage_sc'], FALSE);
 if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) )
@@ -11,17 +11,20 @@ if (($prefwmsc && $parm == "header") || (!$prefwmsc && ($parm !='header')) )
   if ($parm != "force")
   {
     $full_url = 'news.php';					// Set a default in case
+	$front_qry = '';
 	$uc_array = explode(',', USERCLASS_LIST);
 	foreach ($pref['frontpage'] as $fk=>$fp)
 	{
 	  if (in_array($fk,$uc_array))
 	  {
-	    $full_url = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$fp;
+	    $full_url = $fp;
 	    break;
 	  }
 	}
 	list($front_url,$front_qry) = explode("?",$full_url."?"); // extra '?' ensure the array is filled
   }
+
+  if (strpos($front_url, 'http') === FALSE) $front_url = SITEURL.$front_url;
 
 
 	if (($parm == "force") || ((e_SELF == $front_url) && (($parm == "ignore_query") || (e_QUERY == $front_qry)))) 
