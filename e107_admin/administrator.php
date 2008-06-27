@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2007-10-05 05:31:14 $
-|     $Author: e107coders $
+|     $Revision: 1.35 $
+|     $Date: 2008-06-27 19:47:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -197,10 +197,10 @@ function edit_administrator($row){
 	$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";	// Configure mail settings and mailout
 
 	$text .= checkb("D", $a_perms).ADMSLAN_29."<br />";			// Manage banners
-	$text .= checkb("E", $a_perms).ADMSLAN_30."<br />";			// Configure news feed headlines
+//	$text .= checkb("E", $a_perms).ADMSLAN_30."<br />";			// Configure news feed headlines - now plugin
 	$text .= checkb("F", $a_perms).ADMSLAN_31."<br />";			// Configure emoticons
 	$text .= checkb("G", $a_perms).ADMSLAN_32."<br />";			// Configure front page content
-	$text .= checkb("S", $a_perms).ADMSLAN_33."<br />";			// Configure log/stats
+//	$text .= checkb("S", $a_perms).ADMSLAN_33."<br />";			// Configure log/stats - now plugin (used for system logs in 0.8)
 	$text .= checkb("T", $a_perms).ADMSLAN_34."<br />";			// Configure meta tags
 	$text .= checkb("V", $a_perms).ADMSLAN_35."<br />";			// Configure public file uploads
 	$text .= checkb("X", $a_perms).ADMSLAN_66."<br />";			// Configure Search
