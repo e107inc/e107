@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-06-27 19:47:25 $
+|     $Revision: 1.6 $
+|     $Date: 2008-06-27 20:16:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -222,7 +222,7 @@ function edit_administrator($row){
 	$sql->db_Select("plugin", "*", "plugin_installflag='1'");
 	while ($row = $sql->db_Fetch())
 	{
-		$text .= checkb("P".$row['plugin_id'], $a_perms).LAN_PLUGIN." - ".$row['plugin_name']."<br />";
+		$text .= checkb("P".$row['plugin_id'], $a_perms).LAN_PLUGIN." - ".$tp->toHTML($row['plugin_name'],FALSE,'RAWTEXT,defs')."<br />";
 	}
 
 // Language Rights.. --------------
