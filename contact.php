@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-09-06 07:25:25 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2008-06-27 21:22:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -90,7 +90,7 @@ if(isset($_POST['send-contactus'])){
     if(!$error)
 	{
 		$body .= "\n\nIP:\t".USERIP."\n";
-		if(USERID !== FALSE)
+		if(USER)
 		{
 			$body .= "User:\t#".USERID." ".USERNAME."\n";
 		}

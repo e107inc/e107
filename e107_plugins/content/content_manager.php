@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.24 $
-|		$Date: 2006-12-07 12:57:01 $
-|		$Author: mrpete $
+|		$Revision: 1.25 $
+|		$Date: 2008-06-27 21:22:19 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -102,7 +102,7 @@ if(isset($message)){
 }
 
 if(!e_QUERY){
-	if(USERID){
+	if(USER){
 		$aform -> show_contentmanager("edit", USERID, USERNAME);
 		require_once(FOOTERF);
 		exit;

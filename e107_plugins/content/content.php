@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.113 $
-|		$Date: 2007-01-20 05:19:21 $
-|		$Author: mrpete $
+|		$Revision: 1.114 $
+|		$Date: 2008-06-27 21:22:19 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -341,7 +341,7 @@ function show_content(){
 				}
 			}
 
-			if(USERID){
+			if(USER){
 				$personalmanagercheck = FALSE;
 				$array = $aa -> getCategoryTree("", "", TRUE);
 				$catarray = array_keys($array);
