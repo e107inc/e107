@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-04-29 19:44:25 $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-27 19:40:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("E")) {
-	header("location:".e_BASE."index.php");
-	 exit;
+if (!getperms("P")) 
+{
+  header("location:".e_BASE."index.php");
+  exit;
 }
 
 require_once(e_ADMIN."auth.php");
