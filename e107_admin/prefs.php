@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-06-13 20:20:20 $
+|     $Revision: 1.15 $
+|     $Date: 2008-06-29 16:40:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -718,7 +718,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_131.":  <div class='smalltext'>".PRFLAN_132."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('php_bbcode',$pref['php_bbcode'],'off','nobody,admin,classes')."
+	".r_userclass('php_bbcode',$pref['php_bbcode'],'off','nobody,admin,main,classes')."
 	</td>
 	</tr>\n
 
