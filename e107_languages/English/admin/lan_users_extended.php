@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-04-14 17:24:13 $
+|     $Revision: 1.21 $
+|     $Date: 2008-06-29 10:00:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,7 @@ define("EXTLAN_47", "Add new parameter");
 define("EXTLAN_48", "Add new value");
 define("EXTLAN_49", "Allow user to hide");
 define("EXTLAN_50", "Setting this to yes will allow the user to hide this value from non-admins");
-define("EXTLAN_51", "Any valid w3c parameter may be entered here<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>");
+define("EXTLAN_51", "Any valid w3c parameter may be entered here<br />e.g. <b><i>class='tbox' size='40' maxlength='80'</i></b>");
 define("EXTLAN_52", "regex validation code");
 define("EXTLAN_53", "Enter the regex code that will need to be matched to make it a valid entry <br />**regex delimiters are required**");
 define("EXTLAN_54", "regex failure text");
