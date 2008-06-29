@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2008-06-29 10:13:23 $
+|     $Revision: 1.60 $
+|     $Date: 2008-06-29 15:23:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -116,9 +116,9 @@ define("ADLAN_106", "Image Settings");
 //define("ADLAN_109", "Information");
 define("ADLAN_110", "Registered members");
 define("ADLAN_111", "Unverified members");
-//define("ADLAN_112", "Banned users");
+define("ADLAN_112", "Banned users");
 define("ADLAN_113", "Forum posts");
-//define("ADLAN_114", "Comments");
+define("ADLAN_114", "Comments");
 define("ADLAN_115", "Chatbox posts");
 define("ADLAN_116", "Admin log ...");
 define("ADLAN_117", "Show all entries");
