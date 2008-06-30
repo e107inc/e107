@@ -4,41 +4,42 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:46 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version
 |			
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Haberler");
-define("LAN_NEWS_1", "Üyelere özel haberler");
-define("LAN_NEWS_2", "Bu haberi görmenize izin verilmiyor");
-define("LAN_NEWS_5", "<b>Hata!</b> Haber güncellenemedi!</b>");
-define("LAN_NEWS_6", "Haber veritabanına kaydedildi.");
-define("LAN_NEWS_7", "<b>Hata!</b> Haber veritabanına kaydedilemedi!</b>");
-define("LAN_NEWS_8", "Haber veri tabanına bütün diller için kaydedildi. ID: ");
-define("LAN_NEWS_9", "Başlığı sadece - <b>sadece haber başlığı gözükecek</b><br />şekilde ayarla");
-define("LAN_NEWS_10", "Yeni haber <b>etkin değil</b> (Ana sayfada gösterilmeyecek). ");
-define("LAN_NEWS_11", "Yeni haber <b>etkin</b> (Ana sayfada gösterilecek). ");
-define("LAN_NEWS_12", "Yorumlara <b>açık</b>. ");
-define("LAN_NEWS_13", "Yorumlara <b>kapalı</b>. ");
+define("LAN_NEWS_1", "Ãœyelere Ã¶zel haberler");
+define("LAN_NEWS_2", "Bu haberi gÃ¶rmenize izin verilmiyor");
+define("LAN_NEWS_5", "<b>Hata!</b> Haber gÃ¼ncellenemedi!</b>");
+define("LAN_NEWS_6", "Haber veritabanÃ½na kaydedildi.");
+define("LAN_NEWS_7", "<b>Hata!</b> Haber veritabanÃ½na kaydedilemedi!</b>");
+define("LAN_NEWS_8", "Haber veri tabanÃ½na bÃ¼tÃ¼n diller iÃ§in kaydedildi. ID: ");
+define("LAN_NEWS_9", "BaÃ¾lÃ½Ã°Ã½ sadece - <b>sadece haber baÃ¾lÃ½Ã°Ã½ gÃ¶zÃ¼kecek</b><br />Ã¾ekilde ayarla");
+define("LAN_NEWS_10", "Yeni haber <b>etkin deÃ°il</b> (Ana sayfada gÃ¶sterilmeyecek). ");
+define("LAN_NEWS_11", "Yeni haber <b>etkin</b> (Ana sayfada gÃ¶sterilecek). ");
+define("LAN_NEWS_12", "Yorumlara <b>aÃ§Ã½k</b>. ");
+define("LAN_NEWS_13", "Yorumlara <b>kapalÃ½</b>. ");
 define("LAN_NEWS_14", "<br/>Aktivasyon periyodu: ");
-define("LAN_NEWS_15", "Asıl Metin Uzunluğu: ");
-define("LAN_NEWS_16", "b. Ek Metin Uzunluğu: ");
+define("LAN_NEWS_15", "AsÃ½l Metin UzunluÃ°u: ");
+define("LAN_NEWS_16", "b. Ek Metin UzunluÃ°u: ");
 define("LAN_NEWS_17", "b.");
 define("LAN_NEWS_18", "Bilgi:");
-define("LAN_NEWS_19", "Şimdi");
-define("LAN_NEWS_20", "Haberler güncellendi görüntülenen dil için: ");
-define("LAN_NEWS_21", "Haberler güncellendi.");
+define("LAN_NEWS_19", "Ãimdi");
+define("LAN_NEWS_20", "Haberler gÃ¼ncellendi gÃ¶rÃ¼ntÃ¼lenen dil iÃ§in: ");
+define("LAN_NEWS_21", "Haberler gÃ¼ncellendi.");
 define("LAN_NEWS_23", "Haber Kategorileri");
-define("LAN_NEWS_24", "Bu haber öğesinin pdf dökümanını oluştur");
+define("LAN_NEWS_24", "Bu haber Ã¶Ã°esinin pdf dÃ¶kÃ¼manÃ½nÃ½ oluÃ¾tur");
 define("LAN_NEWS_82", "Haber - Kategori");
-define("LAN_NEWS_83", "Şu an haber yok - lütfen daha sonra kontrol ediniz.");
-define("LAN_NEWS_84", "Haber Öğeleri");
+define("LAN_NEWS_83", "Ãu an haber yok - lÃ¼tfen daha sonra kontrol ediniz.");
+define("LAN_NEWS_84", "Haber Ã–Ã°eleri");
 define("LAN_NEWS_99", "Yorumlar");
 define("LAN_NEWS_100", " Tarih :");
 define("LAN_NEWS_307", "Bu kategorideki toplam mesaj:");
-define("LAN_NEWS_462", "Bu aya özgü haber yok.");
+define("LAN_NEWS_462", "Bu aya Ã¶zgÃ¼ haber yok.");
 
 
 ?>

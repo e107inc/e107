@@ -4,44 +4,45 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_error.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:45 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Hata");
-define("LAN_ERROR_1", "Hata 401 - İzin Yok");
-define("LAN_ERROR_2", "Bu adresi görmek için izniniz yok");
-define("LAN_ERROR_3", "Bu hata sayfasının yanlışlıkla gösterildiğini düşünüyorsanız lütfen site yöneticisine bildirin.");
-define("LAN_ERROR_4", "Hata 403 - Doğrulama Hatası");
-define("LAN_ERROR_5", "Hatalı kullanıcı adı ve şifre. Kullanıcı adı veya şifrenizden biri geçersiz yada tarayıcınız bu özelliği desteklemiyor. ");
-define("LAN_ERROR_6", "Bu hata sayfasının yanlışlıkla gösterildiğini düşünüyorsanız lütfen site yöneticisine bildirin.");
-define("LAN_ERROR_7", "Hata 404 - Dosya Bulunamadı");
-define("LAN_ERROR_9", "Bu hata sayfasının yanlışlıkla gösterildiğini düşünüyorsanız lütfen site yöneticisine bildirin.");
-define("LAN_ERROR_10", "Hata 500 - Bozuk Başlık");
-define("LAN_ERROR_11", "Sunucu iç hatası veya yanlış biçim, isteğiniz tamamlanamaz.");
-define("LAN_ERROR_12", "Bu hata sayfasının yanlışlıkla gösterildiğini düşünüyorsanız lütfen site yöneticisine bildirin.");
+define("LAN_ERROR_1", "Hata 401 - Ãzin Yok");
+define("LAN_ERROR_2", "Bu adresi gÃ¶rmek iÃ§in izniniz yok");
+define("LAN_ERROR_3", "Bu hata sayfasÃ½nÃ½n yanlÃ½Ã¾lÃ½kla gÃ¶sterildiÃ°ini dÃ¼Ã¾Ã¼nÃ¼yorsanÃ½z lÃ¼tfen site yÃ¶neticisine bildirin.");
+define("LAN_ERROR_4", "Hata 403 - DoÃ°rulama HatasÃ½");
+define("LAN_ERROR_5", "HatalÃ½ kullanÃ½cÃ½ adÃ½ ve Ã¾ifre. KullanÃ½cÃ½ adÃ½ veya Ã¾ifrenizden biri geÃ§ersiz yada tarayÃ½cÃ½nÃ½z bu Ã¶zelliÃ°i desteklemiyor. ");
+define("LAN_ERROR_6", "Bu hata sayfasÃ½nÃ½n yanlÃ½Ã¾lÃ½kla gÃ¶sterildiÃ°ini dÃ¼Ã¾Ã¼nÃ¼yorsanÃ½z lÃ¼tfen site yÃ¶neticisine bildirin.");
+define("LAN_ERROR_7", "Hata 404 - Dosya BulunamadÃ½");
+define("LAN_ERROR_9", "Bu hata sayfasÃ½nÃ½n yanlÃ½Ã¾lÃ½kla gÃ¶sterildiÃ°ini dÃ¼Ã¾Ã¼nÃ¼yorsanÃ½z lÃ¼tfen site yÃ¶neticisine bildirin.");
+define("LAN_ERROR_10", "Hata 500 - Bozuk BaÃ¾lÃ½k");
+define("LAN_ERROR_11", "Sunucu iÃ§ hatasÃ½ veya yanlÃ½Ã¾ biÃ§im, isteÃ°iniz tamamlanamaz.");
+define("LAN_ERROR_12", "Bu hata sayfasÃ½nÃ½n yanlÃ½Ã¾lÃ½kla gÃ¶sterildiÃ°ini dÃ¼Ã¾Ã¼nÃ¼yorsanÃ½z lÃ¼tfen site yÃ¶neticisine bildirin.");
 define("LAN_ERROR_13", "Hata - Bilinmiyor");
-define("LAN_ERROR_14", "Sunucu iç hatası");
-define("LAN_ERROR_15", "Bu hata sayfasının yanlışlıkla gösterildiğini düşünüyorsanız lütfen site yöneticisine bildirin.");
-define("LAN_ERROR_16", "Bağlantı girişiminiz başarısız");
+define("LAN_ERROR_14", "Sunucu iÃ§ hatasÃ½");
+define("LAN_ERROR_15", "Bu hata sayfasÃ½nÃ½n yanlÃ½Ã¾lÃ½kla gÃ¶sterildiÃ°ini dÃ¼Ã¾Ã¼nÃ¼yorsanÃ½z lÃ¼tfen site yÃ¶neticisine bildirin.");
+define("LAN_ERROR_16", "BaÃ°lantÃ½ giriÃ¾iminiz baÃ¾arÃ½sÃ½z");
 define("LAN_ERROR_17", "kaydedildi.");
-define("LAN_ERROR_18", "Görünüşe göre, referansınız :");
-define("LAN_ERROR_19", "Malesef, bu bağlantı eski.");
-define("LAN_ERROR_20", "Sitenin ana sayfasına gitmek için tıklayınız");
-define("LAN_ERROR_21", "URL sunucuda bulunamadı. Bu bağlantı eski olabilir.");
-define("LAN_ERROR_22", "Sitenin arama sayfasına gitmek için tıklayınız");
-define("LAN_ERROR_23", "Bağlanmaya çalışıyorsunuz :");
-define("LAN_ERROR_24", "başarısız.");
-define("LAN_ERROR_25", "[1]: Çekirdek ayarlar veritabanından okunamadı - Ayarlar mevcut fakat dizi haline getirilemedi. Çekirdek yedeği yenilenmeye çalışılıyor...");
-define("LAN_ERROR_26", "[2]: Çekirdek ayarlar veritabanından okunamadı - çekirdek ayarlar bulunamadı.");
-define("LAN_ERROR_27", "[3]: Çekirdek ayarlar kaydedildi - yedekleme aktif.");
-define("LAN_ERROR_28", "[4]: Çekirdek yedeği yok. Lütfen <a href='".e_FILE."resetcore/resetcore.php'>Çekirdek_Sıfırla</a> aracını çalıştırarak çekirdek ayarlarınızı yenileyin.<br/>Daha sonra lütfen admin/sql ekranından çekirdek yedeğini kaydedin.");
-define("LAN_ERROR_29", "[5]: Boş alan(lar) var. Lütfen gerekli alanları doldurun.");
-define("LAN_ERROR_30", "[6]: mySQL bağlantısı yapılamadı. Lütfen e107_config.php dosyasından bilgilerinizi kontrol ediniz.");
-define("LAN_ERROR_31", "[7]: mySQL çalışıyor fakat veritabanına ({$mySQLdefaultdb}) bağlanılamadı.<br/>Lütfen e107_config.php dosyasından bilgilerinizi kontrol ediniz.");
-define("LAN_ERROR_32", "Güncelleme tamamlandı, e107.config.php içindeki yazı kopyalanıyor :");
+define("LAN_ERROR_18", "GÃ¶rÃ¼nÃ¼Ã¾e gÃ¶re, referansÃ½nÃ½z :");
+define("LAN_ERROR_19", "Malesef, bu baÃ°lantÃ½ eski.");
+define("LAN_ERROR_20", "Sitenin ana sayfasÃ½na gitmek iÃ§in tÃ½klayÃ½nÃ½z");
+define("LAN_ERROR_21", "URL sunucuda bulunamadÃ½. Bu baÃ°lantÃ½ eski olabilir.");
+define("LAN_ERROR_22", "Sitenin arama sayfasÃ½na gitmek iÃ§in tÃ½klayÃ½nÃ½z");
+define("LAN_ERROR_23", "BaÃ°lanmaya Ã§alÃ½Ã¾Ã½yorsunuz :");
+define("LAN_ERROR_24", "baÃ¾arÃ½sÃ½z.");
+define("LAN_ERROR_25", "[1]: Ã‡ekirdek ayarlar veritabanÃ½ndan okunamadÃ½ - Ayarlar mevcut fakat dizi haline getirilemedi. Ã‡ekirdek yedeÃ°i yenilenmeye Ã§alÃ½Ã¾Ã½lÃ½yor...");
+define("LAN_ERROR_26", "[2]: Ã‡ekirdek ayarlar veritabanÃ½ndan okunamadÃ½ - Ã§ekirdek ayarlar bulunamadÃ½.");
+define("LAN_ERROR_27", "[3]: Ã‡ekirdek ayarlar kaydedildi - yedekleme aktif.");
+define("LAN_ERROR_28", "[4]: Ã‡ekirdek yedeÃ°i yok. LÃ¼tfen <a href='".e_FILE."resetcore/resetcore.php'>Ã‡ekirdek_SÃ½fÃ½rla</a> aracÃ½nÃ½ Ã§alÃ½Ã¾tÃ½rarak Ã§ekirdek ayarlarÃ½nÃ½zÃ½ yenileyin.<br/>Daha sonra lÃ¼tfen admin/sql ekranÃ½ndan Ã§ekirdek yedeÃ°ini kaydedin.");
+define("LAN_ERROR_29", "[5]: BoÃ¾ alan(lar) var. LÃ¼tfen gerekli alanlarÃ½ doldurun.");
+define("LAN_ERROR_30", "[6]: mySQL baÃ°lantÃ½sÃ½ yapÃ½lamadÃ½. LÃ¼tfen e107_config.php dosyasÃ½ndan bilgilerinizi kontrol ediniz.");
+define("LAN_ERROR_31", "[7]: mySQL Ã§alÃ½Ã¾Ã½yor fakat veritabanÃ½na ({$mySQLdefaultdb}) baÃ°lanÃ½lamadÃ½.<br/>LÃ¼tfen e107_config.php dosyasÃ½ndan bilgilerinizi kontrol ediniz.");
+define("LAN_ERROR_32", "GÃ¼ncelleme tamamlandÃ½, e107.config.php iÃ§indeki yazÃ½ kopyalanÃ½yor :");
 
 
 ?>

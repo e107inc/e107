@@ -4,30 +4,31 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_submitnews.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-01 08:50:43 $
-|     $Author: whoisbig $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Haber Gönder");
-define("LAN_7", "Kullanýcý Adý: ");
+define("PAGE_NAME", "Haber GÃ¶nder");
+define("LAN_7", "KullanÃ½cÃ½ AdÃ½: ");
 define("LAN_62", "Konu: ");
 define("LAN_112", "Eposta: ");
-define("LAN_133", "Teþekkürler");
-define("LAN_134", "Haber site yöneticileri tarafýndan incelenmek üzere gönderildi.");
+define("LAN_133", "TeÃ¾ekkÃ¼rler");
+define("LAN_134", "Haber site yÃ¶neticileri tarafÃ½ndan incelenmek Ã¼zere gÃ¶nderildi.");
 define("LAN_135", "Haber metni: ");
 define("LAN_136", "Haber Metnini Yolla");
 define("NWSLAN_6", "Kategori");
 define("NWSLAN_10", "Haber kategorisi yok");
-define("NWSLAN_11", "Bu alana eriþemezsiniz.");
-define("NWSLAN_12", "Eriþim Engellendi.");
+define("NWSLAN_11", "Bu alana eriÃ¾emezsiniz.");
+define("NWSLAN_12", "EriÃ¾im Engellendi.");
 
-define("SUBNEWSLAN_1", "Baþlýk içermeli.\\n");
-define("SUBNEWSLAN_2", "Haber metni bir takým yazýlar içermeli.\\n");
-define("SUBNEWSLAN_3", "Eklenti jpg, gif veya png dosyasý olmalý");
-define("SUBNEWSLAN_4", "Dosya boyutu büyük");
-define("SUBNEWSLAN_5", "Resim Dosyasý");
+define("SUBNEWSLAN_1", "BaÃ¾lÃ½k iÃ§ermeli.\\n");
+define("SUBNEWSLAN_2", "Haber metni bir takÃ½m yazÃ½lar iÃ§ermeli.\\n");
+define("SUBNEWSLAN_3", "Eklenti jpg, gif veya png dosyasÃ½ olmalÃ½");
+define("SUBNEWSLAN_4", "Dosya boyutu bÃ¼yÃ¼k");
+define("SUBNEWSLAN_5", "Resim DosyasÃ½");
 define("SUBNEWSLAN_6", "(jpg, gif veya png)");
 
 ?>

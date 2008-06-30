@@ -4,45 +4,46 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_fpw.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:45 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version
 |			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Parola Sıfırlama");
-define("LAN_02", "Üzgünüm, mail gönderilemedi - Lütfen site yöneticisiyle iletişim kurunuz.");
-define("LAN_03", "Parola Sıfırla");
-define("LAN_05", "Parolanız sıfırlanacak. Lütfen bilgilerinizi not ediniz...");
-define("LAN_06", "Parola sıfırlanmaya çalışılıyor");
+define("PAGE_NAME", "Parola SÃ½fÃ½rlama");
+define("LAN_02", "ÃœzgÃ¼nÃ¼m, mail gÃ¶nderilemedi - LÃ¼tfen site yÃ¶neticisiyle iletiÃ¾im kurunuz.");
+define("LAN_03", "Parola SÃ½fÃ½rla");
+define("LAN_05", "ParolanÃ½z sÃ½fÃ½rlanacak. LÃ¼tfen bilgilerinizi not ediniz...");
+define("LAN_06", "Parola sÃ½fÃ½rlanmaya Ã§alÃ½Ã¾Ã½lÃ½yor");
 define("LAN_07", "Ip adresiyle birisi ");
-define("LAN_08", "ana yönetici parolasını sıfırlamaya çalışıyor.");
-define("LAN_09", "Parola sıfırlama formu ");
+define("LAN_08", "ana yÃ¶netici parolasÃ½nÃ½ sÃ½fÃ½rlamaya Ã§alÃ½Ã¾Ã½yor.");
+define("LAN_09", "Parola sÃ½fÃ½rlama formu ");
 define("LAN_112", "Eposta adresiniz:");
-define("LAN_156", "Gönder");
-define("LAN_213", "Bu kullanıcı Adı / E-Posta adresi veritabanında bulunamadı...");
-define("LAN_214", "Parola sıfırlanamaz");
-define("LAN_216", "Lütfen, adrese giderek yeni parolanızı onaylayın ...");
-define("LAN_217", "Yeni parolanız onaylandı, şimdi yeni parolanızı kullanarak giriş yapınız.");
-define("LAN_218", "Kullanıcı adınız:");
-define("LAN_219", "Parola bu email adresiyle sıfırlanmış ve tekrar sıfırlanamaz. Ayrıntılı bilgi için lütfen site yöneticisiyle iletişim kurunuz.");
-define("LAN_FPW1", "Kullanıcı Adı");
+define("LAN_156", "GÃ¶nder");
+define("LAN_213", "Bu kullanÃ½cÃ½ AdÃ½ / E-Posta adresi veritabanÃ½nda bulunamadÃ½...");
+define("LAN_214", "Parola sÃ½fÃ½rlanamaz");
+define("LAN_216", "LÃ¼tfen, adrese giderek yeni parolanÃ½zÃ½ onaylayÃ½n ...");
+define("LAN_217", "Yeni parolanÃ½z onaylandÃ½, Ã¾imdi yeni parolanÃ½zÃ½ kullanarak giriÃ¾ yapÃ½nÃ½z.");
+define("LAN_218", "KullanÃ½cÃ½ adÃ½nÃ½z:");
+define("LAN_219", "Parola bu email adresiyle sÃ½fÃ½rlanmÃ½Ã¾ ve tekrar sÃ½fÃ½rlanamaz. AyrÃ½ntÃ½lÃ½ bilgi iÃ§in lÃ¼tfen site yÃ¶neticisiyle iletiÃ¾im kurunuz.");
+define("LAN_FPW1", "KullanÃ½cÃ½ AdÃ½");
 define("LAN_FPW2", "Kodu girin");
-define("LAN_FPW3", "Hatalı kod girildi");
-define("LAN_FPW4", "Bu eposta adresine sıfırlama postası zaten gönderildi, eğer eposta size ulaşmadıysa, lütfen yardım için site yöneticisiyle iletişime geçin.");
-define("LAN_FPW5", "Parola sıfırlama isteği yapan :");
-define("LAN_FPW6", "Parolanızı sıfırlamanıza izin veren bir bağlantı eposta adresinize yollandı.");
-define("LAN_FPW7", "Bu parola sıfırlama bağlantısı geçersiz.<br />Lütfen ayrıntılı bilgi için site yöneticisiyle iletişime geçin.");
-define("LAN_FPW8", "Parola bu kullanıcı adı için");
-define("LAN_FPW9", "başarıyla değiştirildi.<br /><br />Yeni parolanız:");
-define("LAN_FPW10", "Lütfen");
-define("LAN_FPW11", "Şimdi giriş yap");
-define("LAN_FPW12", "ve güvenliğiniz için parolanızı derhal değiştiriniz.");
-define("LAN_FPW13", "lütfen yönergeleri izleyin ve mailinize gelen parolanızı onaylayın.");
-define("LAN_FPW14", "bu IP adresli birisi tarafından gönderildi :");
-define("LAN_FPW15", "Parolanız henüz sıfırlanmadı.  Bağlantıyı izleyerek sıfırlama işlemini tamamlamalısınız.");
-define("LAN_FPW16", "Eğer parola sıfırlama talebinde bulunmadıysanız ve sıfırlamayacaksanız, bu epostayı gözardı edebilirsiniz. ");
-define("LAN_FPW17", "Bu bağlantı 48 saat için geçerlidir.");
+define("LAN_FPW3", "HatalÃ½ kod girildi");
+define("LAN_FPW4", "Bu eposta adresine sÃ½fÃ½rlama postasÃ½ zaten gÃ¶nderildi, eÃ°er eposta size ulaÃ¾madÃ½ysa, lÃ¼tfen yardÃ½m iÃ§in site yÃ¶neticisiyle iletiÃ¾ime geÃ§in.");
+define("LAN_FPW5", "Parola sÃ½fÃ½rlama isteÃ°i yapan :");
+define("LAN_FPW6", "ParolanÃ½zÃ½ sÃ½fÃ½rlamanÃ½za izin veren bir baÃ°lantÃ½ eposta adresinize yollandÃ½.");
+define("LAN_FPW7", "Bu parola sÃ½fÃ½rlama baÃ°lantÃ½sÃ½ geÃ§ersiz.<br />LÃ¼tfen ayrÃ½ntÃ½lÃ½ bilgi iÃ§in site yÃ¶neticisiyle iletiÃ¾ime geÃ§in.");
+define("LAN_FPW8", "Parola bu kullanÃ½cÃ½ adÃ½ iÃ§in");
+define("LAN_FPW9", "baÃ¾arÃ½yla deÃ°iÃ¾tirildi.<br /><br />Yeni parolanÃ½z:");
+define("LAN_FPW10", "LÃ¼tfen");
+define("LAN_FPW11", "Ãimdi giriÃ¾ yap");
+define("LAN_FPW12", "ve gÃ¼venliÃ°iniz iÃ§in parolanÃ½zÃ½ derhal deÃ°iÃ¾tiriniz.");
+define("LAN_FPW13", "lÃ¼tfen yÃ¶nergeleri izleyin ve mailinize gelen parolanÃ½zÃ½ onaylayÃ½n.");
+define("LAN_FPW14", "bu IP adresli birisi tarafÃ½ndan gÃ¶nderildi :");
+define("LAN_FPW15", "ParolanÃ½z henÃ¼z sÃ½fÃ½rlanmadÃ½.  BaÃ°lantÃ½yÃ½ izleyerek sÃ½fÃ½rlama iÃ¾lemini tamamlamalÃ½sÃ½nÃ½z.");
+define("LAN_FPW16", "EÃ°er parola sÃ½fÃ½rlama talebinde bulunmadÃ½ysanÃ½z ve sÃ½fÃ½rlamayacaksanÃ½z, bu epostayÃ½ gÃ¶zardÃ½ edebilirsiniz. ");
+define("LAN_FPW17", "Bu baÃ°lantÃ½ 48 saat iÃ§in geÃ§erlidir.");
 
 
 ?>

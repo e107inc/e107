@@ -4,61 +4,61 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_online.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:46 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
 |		
 +----------------------------------------------------------------------------+
 */
 define("ONLINE_EL1", "Misafir: ");
-define("ONLINE_EL2", "Üyeler: ");
+define("ONLINE_EL2", "Ãœyeler: ");
 define("ONLINE_EL3", "Bu sayfada: ");
-define("ONLINE_EL4", "Çevrimiçi");
-define("ONLINE_EL5", "Üyeler");
-define("ONLINE_EL6", "En yeni üye");
-define("ONLINE_EL7", "bakýyor");
-define("ONLINE_EL8", "En çok Baðlanan: ");
-define("ONLINE_EL9", "þu gün:");
-define("ONLINE_EL10", "Kullanýcý Adý");
-define("ONLINE_EL11", "Görüntülenen Sayfa");
+define("ONLINE_EL4", "Ã‡evrimiÃ§i");
+define("ONLINE_EL5", "Ãœyeler");
+define("ONLINE_EL6", "En yeni Ã¼ye");
+define("ONLINE_EL7", "bakÃ½yor");
+define("ONLINE_EL8", "En Ã§ok BaÃ°lanan: ");
+define("ONLINE_EL9", "Ã¾u gÃ¼n:");
+define("ONLINE_EL10", "KullanÃ½cÃ½ AdÃ½");
+define("ONLINE_EL11", "GÃ¶rÃ¼ntÃ¼lenen Sayfa");
 define("ONLINE_EL12", "Cevaplayan");
 define("ONLINE_EL13", "Forum");
 define("ONLINE_EL14", "Konu");
 define("ONLINE_EL15", "Sayfa");
-define("CLASSRESTRICTED", "Sýnýrlý Sayfa");
-define("ARTICLEPAGE", "Makale/Araþtýrma");
+define("CLASSRESTRICTED", "SÃ½nÃ½rlÃ½ Sayfa");
+define("ARTICLEPAGE", "Makale/AraÃ¾tÃ½rma");
 define("CHAT", "Chat");
 define("COMMENT", "Yorumlar");
 define("DOWNLOAD", "Dosyalar");
 define("EMAIL", "email.php");
 define("FORUM", "Forum Anasayfa");
-define("LINKS", "Baðlantýlar");
+define("LINKS", "BaÃ°lantÃ½lar");
 define("NEWS", "Haberler");
 define("OLDPOLLS", "Eski Anketler");
 define("POLLCOMMENT", "Anketler");
-define("PRINTPAGE", "Yazdýr");
-define("LOGIN", "Giriþ Yapýlýyor...");
+define("PRINTPAGE", "YazdÃ½r");
+define("LOGIN", "GiriÃ¾ YapÃ½lÃ½yor...");
 define("SEARCH", "Arama");
-define("STATS", "Site Ýstatistikleri");
-define("SUBMITNEWS", "Haber Gönder");
-define("UPLOAD", "Yüklemeler");
-define("USERPAGE", "Kullanýcý Profilleri");
-define("USERSETTINGS", "Kullanýcý Ayarlarý");
-define("ONLINE", "Çevrimiçi Kullanýcýlar");
-define("LISTNEW", "Yeni Öðeleri Listele");
-define("USERPOSTS", "Kullanýcý tarafýndan gönderilenler");
-define("SUBCONTENT", "Makale/Araþtýrma Gönder");
+define("STATS", "Site Ãstatistikleri");
+define("SUBMITNEWS", "Haber GÃ¶nder");
+define("UPLOAD", "YÃ¼klemeler");
+define("USERPAGE", "KullanÃ½cÃ½ Profilleri");
+define("USERSETTINGS", "KullanÃ½cÃ½ AyarlarÃ½");
+define("ONLINE", "Ã‡evrimiÃ§i KullanÃ½cÃ½lar");
+define("LISTNEW", "Yeni Ã–Ã°eleri Listele");
+define("USERPOSTS", "KullanÃ½cÃ½ tarafÃ½ndan gÃ¶nderilenler");
+define("SUBCONTENT", "Makale/AraÃ¾tÃ½rma GÃ¶nder");
 define("TOP", "En iyi Haberci/En Aktif Konular");
-define("ADMINAREA", "Yönetici Paneli");
-define("BUGTRACKER", "Hata takipçisi");
+define("ADMINAREA", "YÃ¶netici Paneli");
+define("BUGTRACKER", "Hata takipÃ§isi");
 define("EVENT", "Olay Listesi");
 define("CALENDAR", "Olay Takvimi");
 define("FAQ", "SSS");
-define("PM", "Özel Mesaj");
+define("PM", "Ã–zel Mesaj");
 define("SURVEY", "Anket");
 define("ARTICLE", "Makale");
-define("CONTENT", "Ýçerik Sayfasý");
-define("REVIEW", "Gözden Geçir");
+define("CONTENT", "ÃÃ§erik SayfasÃ½");
+define("REVIEW", "GÃ¶zden GeÃ§ir");
 
 
 ?>

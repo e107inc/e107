@@ -4,37 +4,37 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-01 08:50:43 $
-|     $Author: whoisbig $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
 |			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Yükleme");
+define("PAGE_NAME", "YÃ¼kleme");
 
 define("LAN_20", "Hata");
-define("LAN_61", "Adınız: ");
+define("LAN_61", "AdÃ½nÃ½z: ");
 define("LAN_112", "Email Adresiniz: ");
 define("LAN_144", "Website URL: ");
-define("LAN_402", "Sadece kayıtlı üyeler yükleme yapabilir.");
-define("LAN_403", "Yükleme kabul edilmedi.");
-define("LAN_404", "Teşekkürler. Yükleme yöneticiler tarafından incelenmek üzere yollandı.");
-define("LAN_405", "Dosya boyutu belirlenen limitin üzerinde - silindi"); //File exceeds specified maximum size limit - deleted.
+define("LAN_402", "Sadece kayÃ½tlÃ½ Ã¼yeler yÃ¼kleme yapabilir.");
+define("LAN_403", "YÃ¼kleme kabul edilmedi.");
+define("LAN_404", "TeÃ¾ekkÃ¼rler. YÃ¼kleme yÃ¶neticiler tarafÃ½ndan incelenmek Ã¼zere yollandÃ½.");
+define("LAN_405", "Dosya boyutu belirlenen limitin Ã¼zerinde - silindi"); //File exceeds specified maximum size limit - deleted.
 define("LAN_406", "Not");
-define("LAN_407", "Diğer dosya tipleri silinecek.");
-define("LAN_408", "Altı çizgili");
-define("LAN_409", "Dosyanın Adı");
+define("LAN_407", "DiÃ°er dosya tipleri silinecek.");
+define("LAN_408", "AltÃ½ Ã§izgili");
+define("LAN_409", "DosyanÃ½n AdÃ½");
 define("LAN_410", "Versiyon");
 define("LAN_411", "Dosya");
-define("LAN_412", "Ekran Görüntüsü");
-define("LAN_413", "Açıklama");
-define("LAN_414", "Çalışan demo");
-define("LAN_415", "demonun görüleceği sitenin adresini girin");
-define("LAN_416", "Gönder ve Yükle");
-define("LAN_417", "Dosya Yükle");
+define("LAN_412", "Ekran GÃ¶rÃ¼ntÃ¼sÃ¼");
+define("LAN_413", "AÃ§Ã½klama");
+define("LAN_414", "Ã‡alÃ½Ã¾an demo");
+define("LAN_415", "demonun gÃ¶rÃ¼leceÃ°i sitenin adresini girin");
+define("LAN_416", "GÃ¶nder ve YÃ¼kle");
+define("LAN_417", "Dosya YÃ¼kle");
 define("LAN_418", "Maksimum dosya boyutu: ");
 define("DOWLAN_11", "Kategori");
-define("LAN_419", "İzin verilmeyen dosya tipi");
+define("LAN_419", "Ãzin verilmeyen dosya tipi");
 define("LAN_420", "alanlar gereklidir");
 
 

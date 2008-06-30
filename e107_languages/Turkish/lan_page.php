@@ -4,24 +4,25 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_page.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:46 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("LAN_PAGE_1", "Sayfa listelemesi kapalı");
-define("LAN_PAGE_2", "Şu an sayfa yok");
-define("LAN_PAGE_3", "İstenilen sayfa mevcut değil");
-define("LAN_PAGE_4", "Sayfayı oyla");
-define("LAN_PAGE_5", "Sayfayı oyladığınız için teşekkür ederiz");
-define("LAN_PAGE_6", "Bu sayfayı görmek için izniniz yok");
-define("LAN_PAGE_7", "Geçersiz Parola");
-define("LAN_PAGE_8", "Parola Korumalı Sayfa");
+define("LAN_PAGE_1", "Sayfa listelemesi kapalÃ½");
+define("LAN_PAGE_2", "Ãu an sayfa yok");
+define("LAN_PAGE_3", "Ãstenilen sayfa mevcut deÃ°il");
+define("LAN_PAGE_4", "SayfayÃ½ oyla");
+define("LAN_PAGE_5", "SayfayÃ½ oyladÃ½Ã°Ã½nÃ½z iÃ§in teÃ¾ekkÃ¼r ederiz");
+define("LAN_PAGE_6", "Bu sayfayÃ½ gÃ¶rmek iÃ§in izniniz yok");
+define("LAN_PAGE_7", "GeÃ§ersiz Parola");
+define("LAN_PAGE_8", "Parola KorumalÃ½ Sayfa");
 define("LAN_PAGE_9", "Parola");
-define("LAN_PAGE_10", "Gönder");
+define("LAN_PAGE_10", "GÃ¶nder");
 define("LAN_PAGE_11", "Sayfa Listesi");
-define("LAN_PAGE_12", "Geçersiz Sayfa");
+define("LAN_PAGE_12", "GeÃ§ersiz Sayfa");
 define("LAN_PAGE_13", "Sayfa");
 
 

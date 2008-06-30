@@ -4,18 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_membersonly.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:46 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Sadece Üyeler");
-define("LAN_MEMBERS_0", "kýsýtlý alan");
-define("LAN_MEMBERS_1", "Bu, sýnýrlý bir alandýr.");
-define("LAN_MEMBERS_2", "Giriþ için <a href='".e_LOGIN."'>buraya</a> týklayýn ");
-define("LAN_MEMBERS_3", "veya üye olmak için <a href='".e_SIGNUP."'>buraya</a> týklayýn.");
-define("LAN_MEMBERS_4", "Ön sayfaya dönmek için buraya týklayýn");
+define("PAGE_NAME", "Sadece Ãœyeler");
+define("LAN_MEMBERS_0", "kÃ½sÃ½tlÃ½ alan");
+define("LAN_MEMBERS_1", "Bu, sÃ½nÃ½rlÃ½ bir alandÃ½r.");
+define("LAN_MEMBERS_2", "GiriÃ¾ iÃ§in <a href='".e_LOGIN."'>buraya</a> tÃ½klayÃ½n ");
+define("LAN_MEMBERS_3", "veya Ã¼ye olmak iÃ§in <a href='".e_SIGNUP."'>buraya</a> tÃ½klayÃ½n.");
+define("LAN_MEMBERS_4", "Ã–n sayfaya dÃ¶nmek iÃ§in buraya tÃ½klayÃ½n");
 
 
 ?>

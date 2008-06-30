@@ -4,15 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_sitedown.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:47 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Site geçici olarak kapalý");
-define("LAN_SITEDOWN_00", "geçici olarak kapalýdýr");
-define("LAN_SITEDOWN_01", "Bakým nedeniyle geçici olarak kapalýyýz. Bu iþlem çok uzun sürmeyecek - lütfen en kýsa zamanda tekrar deneyiniz.");
+define("PAGE_NAME", "Site geÃ§ici olarak kapalÃ½");
+define("LAN_SITEDOWN_00", "geÃ§ici olarak kapalÃ½dÃ½r");
+define("LAN_SITEDOWN_01", "BakÃ½m nedeniyle geÃ§ici olarak kapalÃ½yÃ½z. Bu iÃ¾lem Ã§ok uzun sÃ¼rmeyecek - lÃ¼tfen en kÃ½sa zamanda tekrar deneyiniz.");
 
 
 ?>

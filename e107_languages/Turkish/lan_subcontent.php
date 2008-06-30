@@ -4,60 +4,60 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_subcontent.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-06-01 13:21:32 $
-|     $Author: whoisbig $
+|     $Revision: 1.2 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
 |		
 +----------------------------------------------------------------------------+
 */
-define("ARLAN_0", "Teþekkürler, makaleniz site yöneticileri tarafýndan incelenmek üzere gönderildi.");
-define("ARLAN_1", "Alanlarý boþ býrakmayýn.");
-define("ARLAN_2", "Teþekkürler, araþtýrmanýz site yöneticileri tarafýndan incelenmek üzere gönderildi.");
+define("ARLAN_0", "TeÃ¾ekkÃ¼rler, makaleniz site yÃ¶neticileri tarafÃ½ndan incelenmek Ã¼zere gÃ¶nderildi.");
+define("ARLAN_1", "AlanlarÃ½ boÃ¾ bÃ½rakmayÃ½n.");
+define("ARLAN_2", "TeÃ¾ekkÃ¼rler, araÃ¾tÃ½rmanÃ½z site yÃ¶neticileri tarafÃ½ndan incelenmek Ã¼zere gÃ¶nderildi.");
 define("ARLAN_15", "Makale Yolla");
-define("ARLAN_17", "Baþlýk");
-define("ARLAN_18", "Alt Baþlýk");
-define("ARLAN_19", "Özet");
+define("ARLAN_17", "BaÃ¾lÃ½k");
+define("ARLAN_18", "Alt BaÃ¾lÃ½k");
+define("ARLAN_19", "Ã–zet");
 define("ARLAN_20", "Makale");
-define("ARLAN_21", "Yorum yazýlsýn mý?");
+define("ARLAN_21", "Yorum yazÃ½lsÃ½n mÃ½?");
 define("ARLAN_22", "Evet");
-define("ARLAN_23", "Hayýr");
-define("ARLAN_24", "Email/yazýcý ikonu eklensin mi?");
+define("ARLAN_23", "HayÃ½r");
+define("ARLAN_24", "Email/yazÃ½cÃ½ ikonu eklensin mi?");
 define("ARLAN_25", "Evet");
-define("ARLAN_26", "Hayýr");
+define("ARLAN_26", "HayÃ½r");
 define("ARLAN_27", "Makale Yolla");
-define("ARLAN_28", "Önizleme");
-define("ARLAN_55", "Görünürlük");
-define("ARLAN_73", "HTML Düzenleyiciyi Aç");
+define("ARLAN_28", "Ã–nizleme");
+define("ARLAN_55", "GÃ¶rÃ¼nÃ¼rlÃ¼k");
+define("ARLAN_73", "HTML DÃ¼zenleyiciyi AÃ§");
 define("ARLAN_74", "Kategori");
 define("ARLAN_75", "Yok");
-define("ARLAN_82", "Yazar Detaylarý");
-define("ARLAN_84", "yazarýn adý");
-define("ARLAN_85", "yazarýn email adresi");
-define("ARLAN_86", "Araþtýrma");
-define("ARLAN_87", "Deðer");
-define("ARLAN_88", "Lütfen deðer seçiniz");
-define("ARLAN_89", "Araþtýrma Gönder");
+define("ARLAN_82", "Yazar DetaylarÃ½");
+define("ARLAN_84", "yazarÃ½n adÃ½");
+define("ARLAN_85", "yazarÃ½n email adresi");
+define("ARLAN_86", "AraÃ¾tÃ½rma");
+define("ARLAN_87", "DeÃ°er");
+define("ARLAN_88", "LÃ¼tfen deÃ°er seÃ§iniz");
+define("ARLAN_89", "AraÃ¾tÃ½rma GÃ¶nder");
 
-define("ARLAN_90", "Boþ alanlar var, lütfen tarayýcýnýzýn geri butonuna basarak tüm alanlarý doldurun.");
-define("ARLAN_91", "Tekrar Önizle");
-define("ARLAN_92", "Lütfen ad/eposta adresi girin");
+define("ARLAN_90", "BoÃ¾ alanlar var, lÃ¼tfen tarayÃ½cÃ½nÃ½zÃ½n geri butonuna basarak tÃ¼m alanlarÃ½ doldurun.");
+define("ARLAN_91", "Tekrar Ã–nizle");
+define("ARLAN_92", "LÃ¼tfen ad/eposta adresi girin");
 
 
 define("ARLAN_93", "makale");
-define("ARLAN_94", "gözden geçir");
-define("ARLAN_95", "Kullanýcýlar için makale gönderimi kapalý");
-define("ARLAN_96", "Kullanýcýlar için araþtýrma gönderimi kapalý");
-define("ARLAN_97", "Makale gönderebilme yetkisine sahip deðilsiniz");
-define("ARLAN_98", "Araþtýrma gönderebilme yetkisine sahip deðilsiniz");
+define("ARLAN_94", "gÃ¶zden geÃ§ir");
+define("ARLAN_95", "KullanÃ½cÃ½lar iÃ§in makale gÃ¶nderimi kapalÃ½");
+define("ARLAN_96", "KullanÃ½cÃ½lar iÃ§in araÃ¾tÃ½rma gÃ¶nderimi kapalÃ½");
+define("ARLAN_97", "Makale gÃ¶nderebilme yetkisine sahip deÃ°ilsiniz");
+define("ARLAN_98", "AraÃ¾tÃ½rma gÃ¶nderebilme yetkisine sahip deÃ°ilsiniz");
 
 
 define("ARLAN_99", "Ne yollayabilirim?");
 define("ARLAN_100", "Haber");
 define("ARLAN_101", "Olay");
 define("ARLAN_102", "Makale");
-define("ARLAN_103", "Araþtýrma");
-define("ARLAN_104", "Baðlantý");
+define("ARLAN_103", "AraÃ¾tÃ½rma");
+define("ARLAN_104", "BaÃ°lantÃ½");
 define("ARLAN_105", "Dosya");
-define("ARLAN_106", "Gönder");
+define("ARLAN_106", "GÃ¶nder");
 
 ?>

@@ -4,23 +4,24 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_upload_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-01 08:50:43 $
-|     $Author: whoisbig $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("LANUPLOAD_1", "Dosya türü");
-define("LANUPLOAD_2", "onaylanmadý ve silindi.");
-define("LANUPLOAD_3", "Yükleme baþarýlý");
-define("LANUPLOAD_4", "Dizin yok yada yazýlabilir deðil. (chmod 777)");
-define("LANUPLOAD_5", "Yüklenen dosya php.ini içindeki upload_max_filesize deðerinde belirtilenden büyük.");
-define("LANUPLOAD_6", "Yüklenen dosya sayýsý max_file_size deðerinde belirtilenden fazla.");
-define("LANUPLOAD_7", "Dosyanýn bir kýsmý yüklenebildi.");
-define("LANUPLOAD_8", "Hiçbir dosya yüklenmedi.");
-define("LANUPLOAD_9", "Yüklenen dosya boyutu 0 byte");
-define("LANUPLOAD_10", "Yükleme baþarýsýz [Yinelenen dosya adý] - Bu isme sahip bir dosya zaten var.");
-define("LANUPLOAD_11", "Dosya yüklenmedi. Dosya adý: ");
+define("LANUPLOAD_1", "Dosya tÃ¼rÃ¼");
+define("LANUPLOAD_2", "onaylanmadÃ½ ve silindi.");
+define("LANUPLOAD_3", "YÃ¼kleme baÃ¾arÃ½lÃ½");
+define("LANUPLOAD_4", "Dizin yok yada yazÃ½labilir deÃ°il. (chmod 777)");
+define("LANUPLOAD_5", "YÃ¼klenen dosya php.ini iÃ§indeki upload_max_filesize deÃ°erinde belirtilenden bÃ¼yÃ¼k.");
+define("LANUPLOAD_6", "YÃ¼klenen dosya sayÃ½sÃ½ max_file_size deÃ°erinde belirtilenden fazla.");
+define("LANUPLOAD_7", "DosyanÃ½n bir kÃ½smÃ½ yÃ¼klenebildi.");
+define("LANUPLOAD_8", "HiÃ§bir dosya yÃ¼klenmedi.");
+define("LANUPLOAD_9", "YÃ¼klenen dosya boyutu 0 byte");
+define("LANUPLOAD_10", "YÃ¼kleme baÃ¾arÃ½sÃ½z [Yinelenen dosya adÃ½] - Bu isme sahip bir dosya zaten var.");
+define("LANUPLOAD_11", "Dosya yÃ¼klenmedi. Dosya adÃ½: ");
 define("LANUPLOAD_12", "Hata");
 
 ?>

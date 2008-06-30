@@ -4,27 +4,28 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_contact.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:44 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("LANCONTACT_01", "İletişim Bilgileri");
-define("LANCONTACT_02", "İletişim Formu");
-define("LANCONTACT_03", "Adınız:");
+define("LANCONTACT_01", "ÃletiÃ¾im Bilgileri");
+define("LANCONTACT_02", "ÃletiÃ¾im Formu");
+define("LANCONTACT_03", "AdÃ½nÃ½z:");
 define("LANCONTACT_04", "E-Posta adresiniz:");
 define("LANCONTACT_05", "Konu:");
-define("LANCONTACT_06", "Mesajınız...");
-define("LANCONTACT_07", "Bu mesajın bir kopyasını kendi e-postanıza gönderin");
-define("LANCONTACT_08", "Gönder");
-define("LANCONTACT_09", "Mesajınız gönderildi.");
-define("LANCONTACT_10", "Mesaj yollarken bir hata oluştu.");
-define("LANCONTACT_11", "E-Posta adresiniz geçerli gözükmüyor.\\nLütfen, kontrol edip tekrar deneyin");
-define("LANCONTACT_12", "Mesajınız çok kısa...");
-define("LANCONTACT_13", "Lütfen, mesajınıza bir konu ekleyin.");
-define("LANCONTACT_14", "Mesaj gönderildi :");
-define("LANCONTACT_15", "Hatalı kod");
+define("LANCONTACT_06", "MesajÃ½nÃ½z...");
+define("LANCONTACT_07", "Bu mesajÃ½n bir kopyasÃ½nÃ½ kendi e-postanÃ½za gÃ¶nderin");
+define("LANCONTACT_08", "GÃ¶nder");
+define("LANCONTACT_09", "MesajÃ½nÃ½z gÃ¶nderildi.");
+define("LANCONTACT_10", "Mesaj yollarken bir hata oluÃ¾tu.");
+define("LANCONTACT_11", "E-Posta adresiniz geÃ§erli gÃ¶zÃ¼kmÃ¼yor.\\nLÃ¼tfen, kontrol edip tekrar deneyin");
+define("LANCONTACT_12", "MesajÃ½nÃ½z Ã§ok kÃ½sa...");
+define("LANCONTACT_13", "LÃ¼tfen, mesajÃ½nÃ½za bir konu ekleyin.");
+define("LANCONTACT_14", "Mesaj gÃ¶nderildi :");
+define("LANCONTACT_15", "HatalÃ½ kod");
 define("LANCONTACT_16", "Kodu Girin");
 
 

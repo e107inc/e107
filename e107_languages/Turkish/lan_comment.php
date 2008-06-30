@@ -4,63 +4,64 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:44 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version
 |			
 +----------------------------------------------------------------------------+
 */
-define("COMLAN_0", "[yönetici tarafýndan engellendi]");
+define("COMLAN_0", "[yÃ¶netici tarafÃ½ndan engellendi]");
 define("COMLAN_1", "buraya");
-define("COMLAN_2", "kayýt için");
+define("COMLAN_2", "kayÃ½t iÃ§in");
 define("COMLAN_3", "Hata!");
 define("COMLAN_4", "Konu");
 define("COMLAN_5", "Cevap:");
 define("COMLAN_6", "Cevapla");
-define("COMLAN_7", "Deðer");
-define("COMLAN_8", "Yorumlar kapalý");
+define("COMLAN_7", "DeÃ°er");
+define("COMLAN_8", "Yorumlar kapalÃ½");
 define("COMLAN_9", "Yorum Yaz");
-define("COMLAN_10", "Yönetici");
-define("COMLAN_11", "Yorumunuz veritabanýna kaydedilemedi - lütfen standart olmayan karakterleri kullanmadan tekrar giriniz.");
-define("COMLAN_16", "Kullanýcý Adý :");
+define("COMLAN_10", "YÃ¶netici");
+define("COMLAN_11", "Yorumunuz veritabanÃ½na kaydedilemedi - lÃ¼tfen standart olmayan karakterleri kullanmadan tekrar giriniz.");
+define("COMLAN_16", "KullanÃ½cÃ½ AdÃ½ :");
 define("COMLAN_99", "Yorumlar");
 define("COMLAN_100", "Haber");
 define("COMLAN_101", "Anket");
 define("COMLAN_102", "Cevaplayan :");
 define("COMLAN_103", "Makale");
-define("COMLAN_104", "Araþtýrma");
-define("COMLAN_105", "Ýçerik");
-define("COMLAN_145", "Kayýt :");
+define("COMLAN_104", "AraÃ¾tÃ½rma");
+define("COMLAN_105", "ÃÃ§erik");
+define("COMLAN_145", "KayÃ½t :");
 define("COMLAN_194", "Misafir");
-define("COMLAN_195", "Kayýtlý kullanýcý");
-define("COMLAN_310", "Bu kullanýcý adý sitemizde kayýtlý - eðer sizseniz lüütfen giriþ yapýnýz.");
-define("COMLAN_312", "Mükerrer mesaj - kabul edilmedi.");
+define("COMLAN_195", "KayÃ½tlÃ½ kullanÃ½cÃ½");
+define("COMLAN_310", "Bu kullanÃ½cÃ½ adÃ½ sitemizde kayÃ½tlÃ½ - eÃ°er sizseniz lÃ¼Ã¼tfen giriÃ¾ yapÃ½nÃ½z.");
+define("COMLAN_312", "MÃ¼kerrer mesaj - kabul edilmedi.");
 define("COMLAN_313", "Konum");
-define("COMLAN_314", "yorumlarý yönet");
+define("COMLAN_314", "yorumlarÃ½ yÃ¶net");
 define("COMLAN_315", "Trackbackler");
-define("COMLAN_316", "Bu haber mesajý için tracback yok");
-define("COMLAN_317", "Trackbackleri yönet");
-define("COMLAN_318", "Yorumu düzenle");
-define("COMLAN_319", "düzenlendi");
-define("COMLAN_320", "Yorumu güncelle");
+define("COMLAN_316", "Bu haber mesajÃ½ iÃ§in tracback yok");
+define("COMLAN_317", "Trackbackleri yÃ¶net");
+define("COMLAN_318", "Yorumu dÃ¼zenle");
+define("COMLAN_319", "dÃ¼zenlendi");
+define("COMLAN_320", "Yorumu gÃ¼ncelle");
 define("COMLAN_321", "buraya");
-define("COMLAN_322", "kayýt için");
+define("COMLAN_322", "kayÃ½t iÃ§in");
 define("COMLAN_323", "Hata");
 define("COMLAN_324", "Konu");
 define("COMLAN_325", "Cevap :");
 define("COMLAN_326", "Cevapla");
-define("COMLAN_327", "Deðer");
-define("COMLAN_328", "Yorumlarý kilitle");
-define("COMLAN_329", "Doðrulanmamýþ");
+define("COMLAN_327", "DeÃ°er");
+define("COMLAN_328", "YorumlarÃ½ kilitle");
+define("COMLAN_329", "DoÃ°rulanmamÃ½Ã¾");
 define("COMLAN_330", "IP :");
 define("COMLAN_TYPE_1", "haber");
 define("COMLAN_TYPE_2", "dosya");
 define("COMLAN_TYPE_3", "sss");
 define("COMLAN_TYPE_4", "anket");
-define("COMLAN_TYPE_5", "döküman");
+define("COMLAN_TYPE_5", "dÃ¶kÃ¼man");
 define("COMLAN_TYPE_6", "hata izi");
 define("COMLAN_TYPE_7", "fikirler");
-define("COMLAN_TYPE_8", "kullanýcý profili");
+define("COMLAN_TYPE_8", "kullanÃ½cÃ½ profili");
 
 
 ?>

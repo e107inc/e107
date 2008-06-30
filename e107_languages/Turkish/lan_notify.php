@@ -4,32 +4,33 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-01 08:50:43 $
-|     $Author: whoisbig $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version
 |			
 +----------------------------------------------------------------------------+
 */
 
-define("NT_LAN_US_1", "Kullanıcı kayıt");
+define("NT_LAN_US_1", "KullanÃ½cÃ½ kayÃ½t");
 
-define("NT_LAN_UV_1", "İmzası doğrulanan kullanıcı");
-define("NT_LAN_UV_2", "Kullanıcı ID: ");
-define("NT_LAN_UV_3", "Oturum açma adı: ");
-define("NT_LAN_UV_4", "Kullanıcı IP: ");
+define("NT_LAN_UV_1", "ÃmzasÃ½ doÃ°rulanan kullanÃ½cÃ½");
+define("NT_LAN_UV_2", "KullanÃ½cÃ½ ID: ");
+define("NT_LAN_UV_3", "Oturum aÃ§ma adÃ½: ");
+define("NT_LAN_UV_4", "KullanÃ½cÃ½ IP: ");
 
 
-define("NT_LAN_LI_1", "Kullanıcı girişi");
+define("NT_LAN_LI_1", "KullanÃ½cÃ½ giriÃ¾i");
 
-define("NT_LAN_LO_1", "Kullanıcı çıkışı");
-define("NT_LAN_LO_2", " siteden çıkış");
+define("NT_LAN_LO_1", "KullanÃ½cÃ½ Ã§Ã½kÃ½Ã¾Ã½");
+define("NT_LAN_LO_2", " siteden Ã§Ã½kÃ½Ã¾");
 
-define("NT_LAN_FL_1", "Tekrarlama (Flood) Yasağı");
-define("NT_LAN_FL_2", "Tekrarlama (Flood) yaptığı için IP adresi yasaklandı ");
+define("NT_LAN_FL_1", "Tekrarlama (Flood) YasaÃ°Ã½");
+define("NT_LAN_FL_2", "Tekrarlama (Flood) yaptÃ½Ã°Ã½ iÃ§in IP adresi yasaklandÃ½ ");
 
-define("NT_LAN_SN_1", "Haber metni gönderildi");
+define("NT_LAN_SN_1", "Haber metni gÃ¶nderildi");
 
-define("NT_LAN_NU_1", "Güncelle");
+define("NT_LAN_NU_1", "GÃ¼ncelle");
 
 define("NT_LAN_ND_1", "Haber metni silindi");
 define("NT_LAN_ND_2", "Silinen haber metni id");

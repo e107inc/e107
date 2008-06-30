@@ -4,18 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_user_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-01 08:50:43 $
-|     $Author: whoisbig $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
 define("UE_LAN_1", "Metin Kutusu");
 define("UE_LAN_2", "Radyo Buton");
-define("UE_LAN_3", "Açýlýr-Kapanýr Menü");
-define("UE_LAN_4", "DB Tablo Alaný");
-define("UE_LAN_5", "Metin Alaný");
-define("UE_LAN_6", "Tamsayý");
+define("UE_LAN_3", "AÃ§Ã½lÃ½r-KapanÃ½r MenÃ¼");
+define("UE_LAN_4", "DB Tablo AlanÃ½");
+define("UE_LAN_5", "Metin AlanÃ½");
+define("UE_LAN_6", "TamsayÃ½");
 define("UE_LAN_7", "Tarih");
 define("UE_LAN_8", "Dil");
 
@@ -23,25 +24,25 @@ define("UE_LAN_9", "Ad");
 define("UE_LAN_10", "Tip");
 define("UE_LAN_11", "Kullan");
 
-define("UE_LAN_HIDE", "Kullanýcýlardan sakla");
+define("UE_LAN_HIDE", "KullanÃ½cÃ½lardan sakla");
 
 define("UE_LAN_LOCATION", "Konum");
-define("UE_LAN_LOCATION_DESC", "Kullanýcý Konumu");
+define("UE_LAN_LOCATION_DESC", "KullanÃ½cÃ½ Konumu");
 define("UE_LAN_AIM", "AIM Adresi");
 define("UE_LAN_AIM_DESC", "AIM Adresi");
-define("UE_LAN_ICQ", "ICQ Numarasý");
-define("UE_LAN_ICQ_DESC", "ICQ Numarasý");
+define("UE_LAN_ICQ", "ICQ NumarasÃ½");
+define("UE_LAN_ICQ_DESC", "ICQ NumarasÃ½");
 define("UE_LAN_YAHOO", "Yahoo! Adresi");
 define("UE_LAN_YAHOO_DESC", "Yahoo! Address");
 define("UE_LAN_MSN", "MSN");
 define("UE_LAN_MSN_DESC", "MSN Adresi");
 define("UE_LAN_HOMEPAGE", "Anasayfa");
-define("UE_LAN_HOMEPAGE_DESC", "Kullanýcý anasayfasý (url)");
-define("UE_LAN_BIRTHDAY", "Doðum Tarihi");
-define("UE_LAN_BIRTHDAY_DESC", "Doðum Tarihi");
+define("UE_LAN_HOMEPAGE_DESC", "KullanÃ½cÃ½ anasayfasÃ½ (url)");
+define("UE_LAN_BIRTHDAY", "DoÃ°um Tarihi");
+define("UE_LAN_BIRTHDAY_DESC", "DoÃ°um Tarihi");
 define("UE_LAN_LANGUAGE", "Dil");
-define("UE_LAN_LANGUAGE_DESC", "Kullanýcý Dili");
-define("UE_LAN_COUNTRY", "Ülke");
-define("UE_LAN_COUNTRY_DESC", "Kullanýcýnýn Ülkesi (veritabaný tablolarýnda)");
+define("UE_LAN_LANGUAGE_DESC", "KullanÃ½cÃ½ Dili");
+define("UE_LAN_COUNTRY", "Ãœlke");
+define("UE_LAN_COUNTRY_DESC", "KullanÃ½cÃ½nÃ½n Ãœlkesi (veritabanÃ½ tablolarÃ½nda)");
 
 ?>

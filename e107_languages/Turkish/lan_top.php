@@ -4,27 +4,28 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_top.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:47 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("TOP_LAN_0", "En çok mesaj gönderen");
-define("TOP_LAN_1", "Kullanýcý adý");
-define("TOP_LAN_2", "Mesajlarý");
-define("TOP_LAN_3", "En çok yorum yapan");
-define("TOP_LAN_4", "Yorumlarý");
-define("TOP_LAN_5", "En çok sohbet eden");
-define("TOP_LAN_6", "Site Deðeri");
+define("TOP_LAN_0", "En Ã§ok mesaj gÃ¶nderen");
+define("TOP_LAN_1", "KullanÃ½cÃ½ adÃ½");
+define("TOP_LAN_2", "MesajlarÃ½");
+define("TOP_LAN_3", "En Ã§ok yorum yapan");
+define("TOP_LAN_4", "YorumlarÃ½");
+define("TOP_LAN_5", "En Ã§ok sohbet eden");
+define("TOP_LAN_6", "Site DeÃ°eri");
 define("LAN_1", "Konular");
 define("LAN_2", "Yollayan");
-define("LAN_3", "Görüntüleme");
+define("LAN_3", "GÃ¶rÃ¼ntÃ¼leme");
 define("LAN_4", "Cevaplar");
 define("LAN_5", "Son Mesaj");
 define("LAN_6", "Konular");
 define("LAN_7", "En Aktif Konu");
-define("LAN_8", "En çok mesaj gönderen");
+define("LAN_8", "En Ã§ok mesaj gÃ¶nderen");
 
 
 ?>

@@ -4,42 +4,43 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_newspost.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-01 08:50:43 $
-|     $Author: whoisbig $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "Haberler silindi.");
-define("NWSLAN_2", "Silmek istediðiniz haberlerin yanýndaki kutuyu seçiniz.");
-define("NWSLAN_3", "Henüz yeni haber yok.");
+define("NWSLAN_2", "Silmek istediÃ°iniz haberlerin yanÃ½ndaki kutuyu seÃ§iniz.");
+define("NWSLAN_3", "HenÃ¼z yeni haber yok.");
 define("NWSLAN_4", "Varolan Haberler");
-define("NWSLAN_5", "HTML Düzenleyici Aç");
+define("NWSLAN_5", "HTML DÃ¼zenleyici AÃ§");
 define("NWSLAN_6", "Kategori");
-define("NWSLAN_7", "Düzenle");
+define("NWSLAN_7", "DÃ¼zenle");
 define("NWSLAN_8", "Sil");
-define("NWSLAN_9", "doðrulamak için seçin");
-define("NWSLAN_10", "Henüz kategori seçilmedi.");
-define("NWSLAN_11", "Kategori Ekle/Düzenle");
-define("NWSLAN_12", "Baþlýk");
-define("NWSLAN_13", "Asýl Metin");
-define("NWSLAN_14", "Uzatýlmýþ");
+define("NWSLAN_9", "doÃ°rulamak iÃ§in seÃ§in");
+define("NWSLAN_10", "HenÃ¼z kategori seÃ§ilmedi.");
+define("NWSLAN_11", "Kategori Ekle/DÃ¼zenle");
+define("NWSLAN_12", "BaÃ¾lÃ½k");
+define("NWSLAN_13", "AsÃ½l Metin");
+define("NWSLAN_14", "UzatÃ½lmÃ½Ã¾");
 define("NWSLAN_15", "Yorumlar");
 define("NWSLAN_16", "Etkin");
-define("NWSLAN_17", "Etkin Deðil");
-define("NWSLAN_18", "Yeni haberler için yorumlara izin ver");
-define("NWSLAN_19", "Etkinleþtirme");
-define("NWSLAN_20", "Otomatik etkinleþtirmeyi devre dýþý yapmak için alaný boþ býrakýn");
-define("NWSLAN_21", "Etkinleþtirme Aralýðý");
-define("NWSLAN_22", "Görünürlük");
-define("NWSLAN_23", "Ýþaretlenirse sadece seçilen kullanýcýlar görebilir");
-define("NWSLAN_24", "Tekrar Önizle");
-define("NWSLAN_25", "Haberi veritabanýnda güncelle");
-define("NWSLAN_26", "Haberi veritabanýyla yayýmla");
-define("NWSLAN_27", "Önizleme");
+define("NWSLAN_17", "Etkin DeÃ°il");
+define("NWSLAN_18", "Yeni haberler iÃ§in yorumlara izin ver");
+define("NWSLAN_19", "EtkinleÃ¾tirme");
+define("NWSLAN_20", "Otomatik etkinleÃ¾tirmeyi devre dÃ½Ã¾Ã½ yapmak iÃ§in alanÃ½ boÃ¾ bÃ½rakÃ½n");
+define("NWSLAN_21", "EtkinleÃ¾tirme AralÃ½Ã°Ã½");
+define("NWSLAN_22", "GÃ¶rÃ¼nÃ¼rlÃ¼k");
+define("NWSLAN_23", "ÃÃ¾aretlenirse sadece seÃ§ilen kullanÃ½cÃ½lar gÃ¶rebilir");
+define("NWSLAN_24", "Tekrar Ã–nizle");
+define("NWSLAN_25", "Haberi veritabanÃ½nda gÃ¼ncelle");
+define("NWSLAN_26", "Haberi veritabanÃ½yla yayÃ½mla");
+define("NWSLAN_27", "Ã–nizleme");
 define("NWSLAN_28", "Yeni Makale");
 define("NWSLAN_29", "Yeni Posta");
 
-define("NWSLAN_30", "Sadece baþlýðý göster");
+define("NWSLAN_30", "Sadece baÃ¾lÃ½Ã°Ã½ gÃ¶ster");
 
 ?>

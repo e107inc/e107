@@ -4,16 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:46 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |		
 +----------------------------------------------------------------------------+
 */
-define("LAN_PREF_1", "e107 Tabanlý Website");
+define("LAN_PREF_1", "e107 TabanlÃ½ Website");
 define("LAN_PREF_2", "e107 Website Sistemi");
-define("LAN_PREF_3", "Bu site <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a> sistemiyle yapýlmýþtýr, ve <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> Genel Kamu Lisansý ile korunmaktadýr.");
-define("LAN_PREF_4", "sansür");
+define("LAN_PREF_3", "Bu site <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a> sistemiyle yapÃ½lmÃ½Ã¾tÃ½r, ve <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> Genel Kamu LisansÃ½ ile korunmaktadÃ½r.");
+define("LAN_PREF_4", "sansÃ¼r");
 define("LAN_PREF_5", "Forumlar");
 
 

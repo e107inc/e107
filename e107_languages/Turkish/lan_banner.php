@@ -4,35 +4,36 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_banner.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-01 13:47:44 $
-|     $Author: whoisbig $
+|     $Revision: 1.4 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Reklam");
-define("BANNERLAN_16", "Kullanıcı Adı:");
+define("BANNERLAN_16", "KullanÃ½cÃ½ AdÃ½:");
 define("BANNERLAN_17", "Parola :");
 define("BANNERLAN_18", "Devam");
-define("BANNERLAN_19", "Lütfen müşteri adınızı ve parolanızı girerek devam ediniz");
-define("BANNERLAN_20", "Üzgünüm, bu bilgiler veritabanında yok. Lütfen ayrıntılı bilgi için site yöneticisiyle irtibat geçin.");
-define("BANNERLAN_21", "Reklam İstatistikleri");
-define("BANNERLAN_22", "Müşteri");
+define("BANNERLAN_19", "LÃ¼tfen mÃ¼Ã¾teri adÃ½nÃ½zÃ½ ve parolanÃ½zÃ½ girerek devam ediniz");
+define("BANNERLAN_20", "ÃœzgÃ¼nÃ¼m, bu bilgiler veritabanÃ½nda yok. LÃ¼tfen ayrÃ½ntÃ½lÃ½ bilgi iÃ§in site yÃ¶neticisiyle irtibat geÃ§in.");
+define("BANNERLAN_21", "Reklam Ãstatistikleri");
+define("BANNERLAN_22", "MÃ¼Ã¾teri");
 define("BANNERLAN_23", "Reklam ID");
-define("BANNERLAN_24", "Tıklanma");
-define("BANNERLAN_25", "Tıklanma Yüzdesi");
+define("BANNERLAN_24", "TÃ½klanma");
+define("BANNERLAN_25", "TÃ½klanma YÃ¼zdesi");
 define("BANNERLAN_26", "Etkiler");
-define("BANNERLAN_27", "Alınan Etki");
+define("BANNERLAN_27", "AlÃ½nan Etki");
 define("BANNERLAN_28", "Kalan Etki");
 define("BANNERLAN_29", "Reklam yok");
-define("BANNERLAN_30", "Sınırsız");
-define("BANNERLAN_31", "Uygun değil");
+define("BANNERLAN_30", "SÃ½nÃ½rsÃ½z");
+define("BANNERLAN_31", "Uygun deÃ°il");
 define("BANNERLAN_32", "Evet");
-define("BANNERLAN_33", "Hayır");
-define("BANNERLAN_34", "Bitiş:");
-define("BANNERLAN_35", "Tıklayan IP Adresleri");
+define("BANNERLAN_33", "HayÃ½r");
+define("BANNERLAN_34", "BitiÃ¾:");
+define("BANNERLAN_35", "TÃ½klayan IP Adresleri");
 define("BANNERLAN_36", "Aktif:");
-define("BANNERLAN_37", "Başlangıç:");
+define("BANNERLAN_37", "BaÃ¾langÃ½Ã§:");
 define("BANNERLAN_38", "Hata");
 
 

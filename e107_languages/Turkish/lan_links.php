@@ -4,44 +4,45 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-01 13:47:45 $
-|     $Author: whoisbig $
+|     $Revision: 1.5 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version
 |			
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Bağlantılar");
-define("LAN_61", "Bağlantı kategorileri");
+define("PAGE_NAME", "BaÃ°lantÃ½lar");
+define("LAN_61", "BaÃ°lantÃ½ kategorileri");
 define("LAN_62", "Kategoriler");
 define("LAN_63", "Kategori");
 define("LAN_64", "bu kategoride");
-define("LAN_65", "bağlantı");
-define("LAN_66", "bağlantılar");
-define("LAN_67", "Bütün Bağlantıları Göster");
-define("LAN_68", "düzenle");
+define("LAN_65", "baÃ°lantÃ½");
+define("LAN_66", "baÃ°lantÃ½lar");
+define("LAN_67", "BÃ¼tÃ¼n BaÃ°lantÃ½larÃ½ GÃ¶ster");
+define("LAN_68", "dÃ¼zenle");
 define("LAN_69", "sil");
 define("LAN_86", "Kategori:");
 define("LAN_88", "Referanslar:");
-define("LAN_89", "Yönetici: ");
-define("LAN_90", "bu kategoriye yeni bağlantı ekle");
+define("LAN_89", "YÃ¶netici: ");
+define("LAN_90", "bu kategoriye yeni baÃ°lantÃ½ ekle");
 define("LAN_91", "yeni kategori ekle");
-define("LAN_92", "Bir bağlantı gönder");
-define("LAN_93", "Bağlantınız site yöneticileri tarafından incelenip onaylandıktan sonra bağlantılar sayfasında görüntülenecektir..");
-define("LAN_94", "Bağlantı Adı:");
-define("LAN_95", "Bağlantı Yolu (URL):");
-define("LAN_96", "Bağlantı Açıklaması:");
-define("LAN_97", "URL bağlantı butonu:");
-define("LAN_98", "Bağlantı gönder");
-define("LAN_99", "Teşekkürler");
-define("LAN_100", "Bağlantınız kaydedildi ve site yöneticisi tarafından gözden geçirilecek.");
-define("LAN_101", "Bağlantıya gitmek için tıklayın");
+define("LAN_92", "Bir baÃ°lantÃ½ gÃ¶nder");
+define("LAN_93", "BaÃ°lantÃ½nÃ½z site yÃ¶neticileri tarafÃ½ndan incelenip onaylandÃ½ktan sonra baÃ°lantÃ½lar sayfasÃ½nda gÃ¶rÃ¼ntÃ¼lenecektir..");
+define("LAN_94", "BaÃ°lantÃ½ AdÃ½:");
+define("LAN_95", "BaÃ°lantÃ½ Yolu (URL):");
+define("LAN_96", "BaÃ°lantÃ½ AÃ§Ã½klamasÃ½:");
+define("LAN_97", "URL baÃ°lantÃ½ butonu:");
+define("LAN_98", "BaÃ°lantÃ½ gÃ¶nder");
+define("LAN_99", "TeÃ¾ekkÃ¼rler");
+define("LAN_100", "BaÃ°lantÃ½nÃ½z kaydedildi ve site yÃ¶neticisi tarafÃ½ndan gÃ¶zden geÃ§irilecek.");
+define("LAN_101", "BaÃ°lantÃ½ya gitmek iÃ§in tÃ½klayÃ½n");
 define("LAN_102", "Mevcut");
 define("LAN_103", " ");
 define("LAN_104", " ");
 define("LAN_105", "toplam");
-define("LAN_106", "Altı çizili alanların girilmesi zorunludur.");
-define("LAN_Links_1", "Toplam Bağlantı");
-define("LAN_Links_2", "Toplam Etkin Bağlantı");
+define("LAN_106", "AltÃ½ Ã§izili alanlarÃ½n girilmesi zorunludur.");
+define("LAN_Links_1", "Toplam BaÃ°lantÃ½");
+define("LAN_Links_2", "Toplam Etkin BaÃ°lantÃ½");
 define("LAN_LINKS_3", "Anonim");
 
 

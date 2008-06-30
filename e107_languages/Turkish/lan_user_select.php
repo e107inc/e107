@@ -4,16 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Turkish/lan_user_select.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-06-01 08:50:43 $
-|     $Author: whoisbig $
+|     $Revision: 1.3 $
+|     $Date: 2008-06-30 00:52:16 $
+|     $Author: e107coders $
+|     UTF-8 Version    
 |			
 +----------------------------------------------------------------------------+
 */
-define("US_LAN_1", "Kullanýcý seç");
-define("US_LAN_2", "Kullanýcý sýnýfý seç");
-define("US_LAN_3", "Tüm Kullanýcýlar");
-define("US_LAN_4", "Kullanýcý adý ara");
-define("US_LAN_5", "Kullanýcý(lar) bulundu");
+define("US_LAN_1", "KullanÃ½cÃ½ seÃ§");
+define("US_LAN_2", "KullanÃ½cÃ½ sÃ½nÃ½fÃ½ seÃ§");
+define("US_LAN_3", "TÃ¼m KullanÃ½cÃ½lar");
+define("US_LAN_4", "KullanÃ½cÃ½ adÃ½ ara");
+define("US_LAN_5", "KullanÃ½cÃ½(lar) bulundu");
 define("US_LAN_6", "Ara");
 ?>
