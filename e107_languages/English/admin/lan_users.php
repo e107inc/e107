@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-06-13 20:20:21 $
+|     $Revision: 1.11 $
+|     $Date: 2008-07-03 21:23:47 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -147,18 +147,15 @@ define("USRLAN_146", "Member information is available to");
 
 define("USRLAN_147", "Email address is already used by a banned user");
 define("USRLAN_148", "Email address is banned");
-define('USRLAN_149', "User banned: ");
-define('USRLAN_150', "IP address of {IP} appears on whitelist; IP not banned.");
-define('USRLAN_151', "Send confirmation email with password to new user");
-define('USRLAN_152', 'Invalid characters in login name');
-define('USRLAN_153', 'That login name already in use');
-define('USRLAN_154', 'Length of login name outside limits');
-define('USRLAN_155', 'A user account has been created for you at --SITE-- with the following login:<br />Login Name: --LOGIN--<br />Password: --PASSWORD--<br/><br />');
-define('USRLAN_156', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
-						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.');
-define('USRLAN_157', 'Access to website: ');
-define('USRLAN_158', 'Email sent successfully');
-define('USRLAN_159', 'Error sending email');
+
+define("USRLAN_149", "Delete checked emails");
+define("USRLAN_150", "Delete all emails");
+define("USRLAN_151", "Clear bounce, require Activation");
+define("USRLAN_152", "Clear bounce and Activate");
+define("USRLAN_153", "Delete non-bounce emails");
+define("USRLAN_154", "Clear email for checked");
+define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
+
 define('USRLAN_160', 'Total --COUNT-- users of type --TYPE-- pruned');
 define('USRLAN_161', 'User ID --UID-- name --NAME-- banned');
 define('USRLAN_162', 'User ID --UID-- name --NAME-- unbanned');
@@ -176,6 +173,19 @@ define('USRLAN_173', 'Login name set');
 define('USRLAN_174', '');
 define('USRLAN_175', '');
 
+define('USRLAN_179', "User banned: ");
+define('USRLAN_180', "IP address of {IP} appears on whitelist; IP not banned.");
+define('USRLAN_181', "Send confirmation email with password to new user");
+define('USRLAN_182', 'Invalid characters in login name');
+define('USRLAN_183', 'That login name already in use');
+define('USRLAN_184', 'Length of login name outside limits');
+define('USRLAN_185', 'A user account has been created for you at --SITE-- with the following login:<br />Login Name: --LOGIN--<br />Password: --PASSWORD--<br/><br />');
+define('USRLAN_186', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
+						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.');
+define('USRLAN_187', 'Access to website: ');
+define('USRLAN_188', 'Email sent successfully');
+define('USRLAN_189', 'Error sending email');
+
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Not Verified");
@@ -187,7 +197,7 @@ define("DUSRLAN_2", "Display Name");
 define("DUSRLAN_3", "Username");
 define("DUSRLAN_4", "Custom Title");
 define("DUSRLAN_5", "Password");
-define("DUSRLAN_6", "Session");
+define("DUSRLAN_6", "Photo");
 define("DUSRLAN_7", "Email");
 define("DUSRLAN_8", "Website");
 define("DUSRLAN_9", "ICQ");
@@ -196,7 +206,7 @@ define("DUSRLAN_11", "MSN");
 define("DUSRLAN_12", "Location");
 define("DUSRLAN_13", "Birthday");
 define("DUSRLAN_14", "Signature");
-define("DUSRLAN_15", "Image");
+define("DUSRLAN_15", "Avatar");
 define("DUSRLAN_16", "Timezone");
 define("DUSRLAN_17", "Hide Email");
 define("DUSRLAN_18", "Join Date");
@@ -216,7 +226,7 @@ define("DUSRLAN_31", "Admin");
 define("DUSRLAN_32", "Real Name");
 define("DUSRLAN_33", "User Class");
 define("DUSRLAN_34", "Perms");
-define("DUSRLAN_35", "Picture");
+define("DUSRLAN_35", "Tracked threads");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
 

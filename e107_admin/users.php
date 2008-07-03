@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-06-13 20:20:20 $
+|     $Revision: 1.17 $
+|     $Date: 2008-07-03 21:23:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -301,14 +301,14 @@ if (isset($_POST['adduser']))
 		if (isset($_POST['sendconfemail']))
 		{  // Send confirmation email to user
 		  require_once(e_HANDLER.'mail.php');
-		  $e_message = str_replace(array('--SITE--','--LOGIN--','--PASSWORD--'),array(SITEURL,$loginname,$_POST['password1']),USRLAN_155).USRLAN_156;
-		  if (sendemail($user_data['user_email'],USRLAN_157.SITEURL,$e_message,$user_data['user_login'],'',''))
+		  $e_message = str_replace(array('--SITE--','--LOGIN--','--PASSWORD--'),array(SITEURL,$loginname,$_POST['password1']),USRLAN_185).USRLAN_186;
+		  if (sendemail($user_data['user_email'],USRLAN_187.SITEURL,$e_message,$user_data['user_login'],'',''))
 		  {
-			$message = USRLAN_158;
+			$message = USRLAN_188;
 		  }
 		  else
 		  {
-			$message = USRLAN_159;
+			$message = USRLAN_189;
 		  }
 		}
 		if (isset($_POST['generateloginname'])) $message .= '<br /><br />'.USRLAN_173.': '.$loginname;
@@ -853,8 +853,8 @@ class users
 					  break;
 				    case 3 :		// Bounced
 					  $text .= "<option value='ban'>".USRLAN_30."</option>
-							<option value='reqverify'>".USRLAN_151."</option>
-							<option value='verify'>".USRLAN_152."</option>
+							<option value='reqverify'>".USRLAN_181."</option>
+							<option value='verify'>".USRLAN_182."</option>
 							<option value='test'>".USRLAN_118."</option>";
 					  break;
 					default :
@@ -1440,10 +1440,10 @@ class users
 	  if ($tot)
 	  { // Option to delete emails - only if there are some in the list
 		  $text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_153."' /></td>\n
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_154."' /></td>\n
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_149."' /></td>\n
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_150."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
+			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
 			</td></tr>";
 	  }
 	  $text .= "</table></form></div>";
