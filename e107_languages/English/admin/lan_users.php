@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2007-09-28 20:50:23 $
+|     $Revision: 1.33 $
+|     $Date: 2008-07-03 21:23:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -168,7 +168,7 @@ define("DUSRLAN_2", "Display Name");
 define("DUSRLAN_3", "Username");
 define("DUSRLAN_4", "Custom Title");
 define("DUSRLAN_5", "Password");
-define("DUSRLAN_6", "Session");
+define("DUSRLAN_6", "Photo");
 define("DUSRLAN_7", "Email");
 define("DUSRLAN_8", "Website");
 define("DUSRLAN_9", "ICQ");
@@ -177,7 +177,7 @@ define("DUSRLAN_11", "MSN");
 define("DUSRLAN_12", "Location");
 define("DUSRLAN_13", "Birthday");
 define("DUSRLAN_14", "Signature");
-define("DUSRLAN_15", "Image");
+define("DUSRLAN_15", "Avatar");
 define("DUSRLAN_16", "Timezone");
 define("DUSRLAN_17", "Hide Email");
 define("DUSRLAN_18", "Join Date");
@@ -197,7 +197,7 @@ define("DUSRLAN_31", "Admin");
 define("DUSRLAN_32", "Real Name");
 define("DUSRLAN_33", "User Class");
 define("DUSRLAN_34", "Perms");
-define("DUSRLAN_35", "Picture");
+define("DUSRLAN_35", "Tracked threads");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
 
