@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-01-13 17:04:47 $
+|     $Revision: 1.7 $
+|     $Date: 2008-07-03 20:06:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -264,7 +264,7 @@ function parse_userposts_forum_table($row)
 	}
 
 	$tmp = $thread_id;
-	$thread_thread = $tp->toHTML($thread_thread, TRUE, "", $id);
+	$thread_thread = $tp->toHTML($thread_thread, TRUE, "USER_BODY", $id);
 
 	$USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
 	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp.".post'>";
