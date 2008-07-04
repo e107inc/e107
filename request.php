@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/request.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-10-28 22:19:16 $
+|     $Revision: 1.5 $
+|     $Date: 2008-07-04 20:23:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -112,9 +112,19 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 if ($type == "file")
 {
 	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category WHERE d.download_id = {$id}";
-	if ($sql->db_Select_gen($qry)) {
+	if ($sql->db_Select_gen($qry)) 
+	{
 		$row = $sql->db_Fetch();
-		if (check_class($row['download_category_class']) && check_class($row['download_class'])) {
+	  if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
+	  {
+		if ($row['download_active'] == 0)
+		{  // Inactive download - don't allow
+		  require_once(HEADERF);
+		  $ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".str_replace('--LINK--',"<a href='".e_HTTP.'download.php'."'>",LAN_dl_78).'</div>');
+		  require_once(FOOTERF);
+		  exit();
+		}
+
 			if($pref['download_limits'] && $row['download_active'] == 1) {
 				check_download_limits();
 			}
