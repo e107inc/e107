@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-06-13 20:20:21 $
+|     $Revision: 1.14 $
+|     $Date: 2008-07-04 20:59:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -536,34 +536,6 @@ class e107_user_extended
 		return $this->extended_xml;
 	}
 
-	function convert_old_fields()
-	{
-		global $sql;
-		$preList = $this->parse_extended_xml('getfile');
-		$flist = array('user_aim', 'user_birthday', 'user_homepage', 'user_icq', 'user_msn', 'user_location');
-		foreach($flist as $f)
-		{
-			$f = substr($f, 5);
-			$preList[$f]['parms'] = addslashes($preList[$f]['parms']);
-			$this->user_extended_add($preList[$f]);
-		}
-		$sql->db_Select_gen("INSERT IGNORE INTO #user_extended (user_extended_id) SELECT user_id FROM #user ");
-		$qry = "
-		UPDATE #user_extended AS ue , #user as u SET
-		ue.user_aim = u.user_aim,
-		ue.user_birthday = u.user_birthday,
-		ue.user_homepage = u.user_homepage,
-		ue.user_icq = u.user_icq,
-		ue.user_msn = u.user_msn,
-		ue.user_location = u.user_location
-		WHERE ue.user_extended_id = u.user_id
-		";
-		$sql->db_Select_gen($qry);
-		$dlist = implode(", DROP ", $flist);
-		$dlist = "DROP ".$dlist;
-		$qry = "ALTER TABLE #user ".$dlist;
-		$sql->db_Select_gen($qry);
-	}
 	
 	/**
 	* Set the value of an extended field
