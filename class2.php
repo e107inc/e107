@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2008-06-13 20:20:20 $
+|     $Revision: 1.61 $
+|     $Date: 2008-07-04 20:19:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1406,7 +1406,7 @@ if(!isset($_E107['no_online']) && varset($pref['track_online']))
 	$e_online->online($pref['track_online'], $pref['flood_protect']);
 }
 
-function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
+function cookie($name, $value, $expire=0, $path = "/", $domain = "", $secure = 0) {
 	setcookie($name, $value, $expire, $path, $domain, $secure);
 }
 
