@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.14 $
-|   $Date: 2008-05-25 09:04:16 $
+|   $Revision: 1.15 $
+|   $Date: 2008-07-06 21:25:31 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -623,7 +623,7 @@ function file_size_decode($source, $compare = 0, $action = '')
   $source = trim($source);
   if (strtolower(substr($source,-1,1)) == 'b') $source = substr($source,0,-1);		// Trim a trailing byte indicator
   $mult = 1;
-  $nostrip = FALSE;
+  if (strlen($source) && (strtoupper(substr($source,-1,1)) == 'B')) $source = substr($source,0,-1);
   if (!$source || is_numeric($source))
   {
     $val = $source;
