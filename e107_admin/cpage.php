@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-10-08 20:18:11 $
+|     $Revision: 1.8 $
+|     $Date: 2008-07-09 20:08:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -125,10 +125,11 @@ class page
 
 			foreach($pages as $pge)
 			{
+			  $title_text = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
 				$text .= "
 				<tr>
 				<td style='width:5%; text-align: center;' class='forumheader3'>{$pge['page_id']}</td>
-				<td style='width:60%' class='forumheader3'><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$pge['page_title']}</a></td>
+				<td style='width:60%' class='forumheader3'><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a></td>
 				<td style='width:15%; text-align: center;' class='forumheader3'>".($pge['page_theme'] ? "menu" : "page")."</td>
 				<td style='width:20%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?".($pge['page_theme'] ? "createm": "create").".edit.{$pge['page_id']}'>".ADMIN_EDIT_ICON."</a>
