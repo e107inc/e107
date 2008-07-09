@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-12-24 13:27:24 $
-|     $Author: mrpete $
+|     $Revision: 1.23 $
+|     $Date: 2008-07-09 20:37:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -237,7 +237,7 @@ $text .= "</td></tr></table>";
 
 if(isset($_POST['edit']))
 {
-	$sql->db_Select("user", "user_id, user_name, user_class, user_login", "ORDER BY user_name", "no-where");
+	$sql->db_Select("user", "user_id, user_name, user_class, user_login", "user_ban != 1 ORDER BY user_name ");
 	$c = 0;
 	$d = 0;
 	while ($row = $sql->db_Fetch())
