@@ -145,5 +145,9 @@ define("LANINS_103", 'Reviews');
 define("LANINS_104", 'Review Front Page ...');
 
 define("LANINS_105", 'A database name or prefix beginning with some digits followed by \'e\' or \'E\' is not acceptable');
-define("LANINS_106", '');
+define("LANINS_106", 'WARNING - E107 cannot write to the directories and/or files listed. While this will not stop E107 installing, it will mean that certain features are not available. 
+				You will need to change the file permissions to use these features');
+define("LANINS_107", '');
+define("LANINS_108", '');
+
 ?>
