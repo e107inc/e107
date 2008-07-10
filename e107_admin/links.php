@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-06-06 19:14:20 $
+|     $Revision: 1.11 $
+|     $Date: 2008-07-10 20:36:57 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -20,8 +20,10 @@
 */
 
 require_once('../class2.php');
-if (!getperms('I')) {
-	header('location:'.e_BASE.'index.php');
+if (!getperms('I')) 
+{
+  header('location:'.e_BASE.'index.php');
+  exit;
 }
 
 $e_sub_cat = 'links';
