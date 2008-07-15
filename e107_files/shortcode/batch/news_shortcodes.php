@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2007-11-08 21:05:51 $
+|     $Revision: 1.35 $
+|     $Date: 2008-07-15 21:11:50 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -45,13 +45,15 @@ global $tp, $news_shortcodes;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $category_icon = $tp -> parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
+if (!$category_icon) return '';
 return "<a class='".$GLOBALS['NEWS_CSSMODE']."_icon' href='".e_BASE."news.php?cat.".$news_item['news_category']."'><img style='".$param['caticon']."'  src='".$category_icon."' alt='' /></a>";
 SC_END
 
 SC_BEGIN NEWSHEADER
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$category_icon = str_replace("../", "", $news_item['category_icon']);
+$category_icon = str_replace("../", "", trim($news_item['category_icon']));
+if (!$category_icon) return '';
 if ($category_icon && strstr("images", $category_icon)) {
 	return THEME.$category_icon;
 } else {
@@ -264,6 +266,7 @@ global $tp, $news_shortcodes;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $category_icon = $tp -> parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
+if (!$category_icon) return '';
 if($param['caticon'] == ""){$param['caticon'] = "border:0px";}
 return "<a class='".$GLOBALS['NEWS_CSSMODE']."_caticon' href='".e_BASE."news.php?cat.".$news_item['news_category']."'><img style='".$param['caticon']."' src='".$category_icon."' alt='' /></a>";
 SC_END
