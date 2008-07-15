@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2008-06-14 21:01:04 $
+|     $Revision: 1.35 $
+|     $Date: 2008-07-15 21:18:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -427,15 +427,24 @@ class e_parse
 	function text_truncate($text, $len = 200, $more = "[more]") 
 	{
 	  if (strlen($text) <= $len) return $text; 		// Always valid
-	  if (CHARSET !== 'utf-8') return substr($text,0,$len).$more;	// Non-utf-8 - one byte per character - simple
-  
-	  // Its a utf-8 string here - don't know whether its longer than allowed length yet
+	  if (CHARSET !== 'utf-8')
+	  {
+		$ret = substr($text,0,$len);	// Non-utf-8 - one byte per character - simple (unless there's an entity involved)
+	  }
+	  else
+	  {	  // Its a utf-8 string here - don't know whether its longer than allowed length yet
 	  preg_match('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,0}'.
 				'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'})(.{0,1}).*#s',$text,$matches);
 
+		if (empty($matches[2])) return $text;			// return if utf-8 length is less than max as well
 	  $ret = $matches[1];
-	  if (!empty($matches[2])) $ret .= $more;
-	  return $ret;
+	  }
+	  // search for possible broken html entities
+      // - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
+      // it should work for any characters encoding
+      $leftAmp = strrpos(substr($ret,-8), '&');
+      if($leftAmp) $ret = substr($ret,0,strlen($ret)-8+$leftAmp);
+	  return $ret.$more;
 	}
 
 
