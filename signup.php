@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.116 $
-|     $Date: 2008-06-10 19:30:03 $
-|     $Author: e107steved $
+|     $Revision: 1.117 $
+|     $Date: 2008-07-16 22:12:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -336,6 +336,12 @@ if (isset($_POST['register']))
 		  $error_message .= LAN_SIGNUP_3."\\n";
 		  $error = TRUE;
 		}
+	}
+
+	if($invalid = $e_event->trigger("usersup_veri", $_POST))
+	{
+    	$error_message .= $invalid."\\n";
+        $error = TRUE;
 	}
 
 	if($_POST['xupexist'])
