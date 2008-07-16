@@ -10,7 +10,7 @@ function com_search_links_page($row) {
 	global $con;
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$res['link'] = e_PLUGIN."links_page/links.php?comment.".$row['link_id'];
-	$res['pre_title'] = 'Posted in reply to link: ';
+	$res['pre_title'] = LAN_LINKS_SCH_1.': ';
 	$res['title'] = $row['link_name'];
 	$res['summary'] = $row['comment_comment'];
 	preg_match("/([0-9]+)\.(.*)/", $row['comment_author'], $user);
