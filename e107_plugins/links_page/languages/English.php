@@ -4,14 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2006-12-29 12:58:02 $
+|     $Revision: 1.30 $
+|     $Date: 2008-07-16 20:45:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-// if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
-// Lisa, could you please move this out of the language file ?
-
 
 
 define("LCLAN_PLUGIN_LAN_1", "Links Page");
@@ -312,6 +309,8 @@ define("LAN_LINKS_47", "link navigator...");
 define("LAN_LINKS_48", "-- view category --");
 define("LAN_LINKS_49", "");
 define("LAN_LINKS_50", "You do not have permission to submit links at present");
+
+define('LAN_LINKS_SCH_1','Posted in reply to link');
 
 define("LAN_ADMIN_HELP_0", "linkspage help area");
 
