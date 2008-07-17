@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2008-07-04 20:19:46 $
+|     $Revision: 1.62 $
+|     $Date: 2008-07-17 19:31:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1576,19 +1576,25 @@ function include_lan($path, $force = false) {
 	return (isset($ret)) ? $ret : "";
 }
 
-if(!function_exists("print_a")) {
+if(!function_exists("print_a")) 
+{
+  function print_a($var, $return = false) 
+  {
 	$charset = "utf-8";
-	if(defined("CHARSET")) {
-		$charset = CHARSET;
+	if(defined("CHARSET")) 
+	{
+	  $charset = CHARSET;
 	}
-	function print_a($var, $return = false) {
-		if(!$return){
-			echo '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
-			return true;
-		} else {
-			return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
-		}
+	if(!$return)
+	{
+	  echo '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
+	  return true;
+	} 
+	else 
+	{
+	  return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
 	}
+  }
 }
 
 
