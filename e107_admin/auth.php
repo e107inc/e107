@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-08-16 00:00:26 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2008-07-17 21:53:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -117,7 +117,7 @@ class auth
             <tr>
             <td style='width:35%' class='forumheader3'>".ADLAN_152."</td>
             <td style='text-align:center'>
-            <input type='hidden' name='rand_num' value='".$sec_img->random_number."'>".
+            <input type='hidden' name='rand_num' value='".$sec_img->random_number."' />".
             $sec_img->r_image().
             "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20' /></td>
             </tr>
