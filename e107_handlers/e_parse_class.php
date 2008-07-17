@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2008-07-15 21:18:27 $
+|     $Revision: 1.36 $
+|     $Date: 2008-07-17 19:17:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -233,7 +233,7 @@ class e_parse
   $lbrks = "/?!%)-}]\\\"':;&";
 
   // Is $str a UTF8 string?
-	$utf8 = ($utf || CHARSET == 'utf-8') ? "u" : "";
+	$utf8 = ($utf || strtolower(CHARSET) == 'utf-8') ? "u" : "";
 	
 
 // Start of the serious stuff - split into HTML tags and text between
@@ -427,7 +427,7 @@ class e_parse
 	function text_truncate($text, $len = 200, $more = "[more]") 
 	{
 	  if (strlen($text) <= $len) return $text; 		// Always valid
-	  if (CHARSET !== 'utf-8')
+	  if (strtolower(CHARSET) !== 'utf-8')
 	  {
 		$ret = substr($text,0,$len);	// Non-utf-8 - one byte per character - simple (unless there's an entity involved)
 	  }
