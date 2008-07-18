@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2007-06-04 19:42:37 $
-|     $Author: e107steved $
+|     $Revision: 1.58 $
+|     $Date: 2008-07-18 19:50:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,8 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 
 
 // Get language definition files for this theme
-@include_once(e_THEME."jayya/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."jayya/languages/English.php");
+include_lan(e_THEME."jayya/languages/".e_LANGUAGE.".php");
 
 
 // [theme]
