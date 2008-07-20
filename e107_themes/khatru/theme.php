@@ -223,7 +223,7 @@ $COMMENTSTYLE = "
 <br />
 {JOINED}
 </span>
-<br/>
+<br />
 {REPLY}
 </td>
 <td style='width:70%; vertical-align:top'>
