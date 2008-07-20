@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.127 $
-|		$Date: 2007-05-29 20:14:10 $
-|		$Author: lisa_ $
+|		$Revision: 1.128 $
+|		$Date: 2008-07-20 17:11:56 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -2254,8 +2254,8 @@ class contentform{
 		function show_options(){
 			global $sql, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $stylespacer;
 
-			$lan_file = $plugindir."languages/".e_LANGUAGE."/lan_content_options.php";
-			include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English/lan_content_options.php");
+//			$lan_file = $plugindir."languages/".e_LANGUAGE."/lan_content_options.php";
+//			include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English/lan_content_options.php");
 
 			$text = "
 			<div style='text-align:center'>
