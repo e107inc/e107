@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/traffic_class_display.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-07-20 17:08:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -114,7 +114,7 @@ if (!defined('e107_INIT')) { exit; }
             $cTot = number_format($this->calTime*1000.0,4);
 
             $text .="<tr><td class='forumheader3' colspan='6'>
-            <b>Note:</b> These times have been decreased by the calibration offset:<br/>
+            <b>Note:</b> These times have been decreased by the calibration offset:<br />
             $cal2 usec per call(start,stop); $cal1 usec per call(start). Total adjustment: $cTot msec.</td></tr>\n";
             $text .="</table><br />\n";
         }

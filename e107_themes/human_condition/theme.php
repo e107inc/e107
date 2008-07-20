@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-07-20 17:08:38 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -157,7 +157,7 @@ $COMMENTSTYLE = "
 <br />
 {JOINED}
 </span>
-<br/>
+<br />
 {REPLY}
 </td>
 <td style='width:70%; vertical-align:top'>

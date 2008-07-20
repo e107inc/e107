@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-05-17 17:18:36 $
+|     $Revision: 1.8 $
+|     $Date: 2008-07-20 17:08:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -75,7 +75,7 @@ class e107_db_debug {
 		$style='debug';
 		
 		if (!isset($ns)) {
-			echo "Why did ns go away?<br/>";
+			echo "Why did ns go away?<br />";
 			$ns = new e107table;
 		}
 		
@@ -109,7 +109,7 @@ class e107_db_debug {
 	
 		// Add any desired notes to $aMarkNotes[$nMarks]... e.g.
 		//global $eTimingStart;
-		//$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart."<br/>";
+		//$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart."<br />";
 	}
 
 
@@ -223,7 +223,7 @@ class e107_db_debug {
     	       	        <td class='forumheader3'>".$cQuery['query']."</td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 				}
 			}
-			$text .= "\n</table><br/>\n";
+			$text .= "\n</table><br />\n";
 		}
 
 		//
@@ -239,10 +239,10 @@ class e107_db_debug {
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
 				if ($cQuery['ok']) {
 					$text .= "<tr><td class='forumheader3' style='text-align:right'>{$idx}&nbsp;</td>
-	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td><td class='forumheader3'>".$cQuery['query'].'<br/>['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
+	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td><td class='forumheader3'>".$cQuery['query'].'<br />['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
 				}
 			}
-			$text .= "\n</table><br/>\n";
+			$text .= "\n</table><br />\n";
 		}
 
 
@@ -252,7 +252,7 @@ class e107_db_debug {
 		if (E107_DBG_SQLDETAILS) {
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
 				$text .= "\n<table class='fborder' style='width: 100%;'>\n";
-				$text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".$idx.") Query:</b> [".$cQuery['marker']." - ".$cQuery['caller']."]<br/>".$cQuery['query']."</td></tr>\n";
+				$text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".$idx.") Query:</b> [".$cQuery['marker']." - ".$cQuery['caller']."]<br />".$cQuery['query']."</td></tr>\n";
 				if (isset($cQuery['explain'])) {
 					$text .= $cQuery['explain'];
 				}
@@ -358,7 +358,7 @@ class e107_db_debug {
 		$aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
 
 		$text .= "<tr><td class='fcaption'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><td class='fcaption'>&nbsp;</td></tr>\n";
-		$text .= "\n</table><br/>\n";
+		$text .= "\n</table><br />\n";
 
 		//
 		// Stats by Table
@@ -404,7 +404,7 @@ class e107_db_debug {
 		$aSum['%DB Count']=($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
 		$aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
 		$text .= "<tr><td class='fcaption'>".implode("&nbsp;</td><td class='fcaption' style='text-align:right'>", array_values($aSum))."&nbsp;</td></tr>\n";
-		$text .= "\n</table><br/>\n";
+		$text .= "\n</table><br />\n";
 
 		return $text;
 	}
@@ -568,7 +568,7 @@ class e107_db_debug {
 			$text .= "<tr class='forumheader3'><td>".implode("&nbsp;</td><td>", array_values($curLog))."&nbsp;</td></tr>\n";
 		}
 
-		$text .= "</table><br/>\n";
+		$text .= "</table><br />\n";
 
 		return $text;
 	}
@@ -612,7 +612,7 @@ global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 //
 	if (isset($e107_Clean_Exit)) return; // We've now sent a footer...
 	
-//	echo isset($In_e107_Footer) ? "In footer" : "In startup".'<br>';
+//	echo isset($In_e107_Footer) ? "In footer" : "In startup".'<br />';
 
 	while (ob_get_level() > 0) {
 		ob_end_flush();
