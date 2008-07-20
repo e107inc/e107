@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2007-05-29 20:14:51 $
-|		$Author: lisa_ $
+|		$Revision: 1.19 $
+|		$Date: 2008-07-20 17:12:04 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -1714,7 +1714,7 @@ class contentform{
 		function show_options(){
 			global $sql2, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $content_shortcodes, $stylespacer, $pref, $row, $content_pref, $CONTENT_ADMIN_OPTIONS_START, $CONTENT_ADMIN_OPTIONS_TABLE, $CONTENT_ADMIN_OPTIONS_END;
 
-			include_lan($plugindir."languages/".e_LANGUAGE."/lan_content_options.php");
+//			include_lan($plugindir."languages/".e_LANGUAGE."/lan_content_options.php");
 
 			$text = $tp -> parseTemplate($CONTENT_ADMIN_OPTIONS_START, FALSE, $content_shortcodes);
 
