@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-04-05 15:18:23 $
+|     $Revision: 1.5 $
+|     $Date: 2008-07-20 18:05:57 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -365,7 +365,7 @@ if ($action == "create") {
 		}
 
 		if ($fileext1 == swf) {
-			$text .= " /> <br><object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0' width='468' height='60'>
+			$text .= " /> <br /><object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0' width='468' height='60'>
 				<param name='movie' value='".e_IMAGE."banners/".$images[$c]['fname']."'>
 				<param name='quality' value='high'><param name='SCALE' value='noborder'>
 				<embed src='".e_IMAGE."banners/".$images[$c]['fname']."' width='468' height='60' scale='noborder' quality='high' pluginspage='http://www.macromedia.com/go/getflashplayer' type='application/x-shockwave-flash'></embed></object>
