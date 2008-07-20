@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2007-10-08 21:02:52 $
+|     $Revision: 1.22 $
+|     $Date: 2008-07-20 17:08:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ else
 
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br/><br />";
+			$text .= "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br /><br />";
 		}
 		else
 		{

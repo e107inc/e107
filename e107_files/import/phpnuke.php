@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpnuke.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-25 02:02:41 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2008-07-20 17:08:21 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -103,7 +103,7 @@ if(!mysql_select_db($mySQLdefaultdb, $e107Connection))
 	goError("Error! Cound not connect to e107 database.");
 }
 
-echo "Successfully connected to ".ASYSTEM." and e107 databases ...<br><br />";
+echo "Successfully connected to ".ASYSTEM." and e107 databases ...<br /><br />";
 
 /* ++++++++++++++ USERS ++++++++++++++ */
 $result = mysql_query("SELECT * FROM {$dbPrefix}users", $ASystemConnection);
