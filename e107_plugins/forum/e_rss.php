@@ -109,7 +109,7 @@ switch($this->parm){
 		"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name, u.user_email FROM #forum_t AS t
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class IN (0, 251, 252) AND t.thread_parent=0
+		WHERE f.forum_class IN (".USERCLASS_LIST.") AND t.thread_parent=0
 		ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
 		$sqlrss->db_Select_gen($this -> rssQuery);
 		$tmp = $sqlrss->db_getList();
@@ -141,7 +141,7 @@ switch($this->parm){
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class  IN (0, 251, 252)
+		WHERE f.forum_class  IN (".USERCLASS_LIST.")
 		ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
 		$sqlrss->db_Select_gen($this -> rssQuery);
 		$tmp = $sqlrss->db_getList();
@@ -183,7 +183,7 @@ switch($this->parm){
 		FROM #forum_t AS t
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class  IN (0, 251, 255) AND t.thread_id=".intval($this -> topicid);
+		WHERE f.forum_class  IN (".USERCLASS_LIST.") AND t.thread_id=".intval($this -> topicid);
 		$sqlrss->db_Select_gen($this -> rssQuery);
 		$topic = $sqlrss->db_Fetch();
 
@@ -192,7 +192,7 @@ switch($this->parm){
 		FROM #forum_t AS t
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class  IN (0, 251, 255) AND t.thread_parent=".intval($this -> topicid);
+		WHERE f.forum_class  IN (".USERCLASS_LIST.") AND t.thread_parent=".intval($this -> topicid);
 		$sqlrss->db_Select_gen($this -> rssQuery);
 		$replies = $sqlrss->db_getList();
 
