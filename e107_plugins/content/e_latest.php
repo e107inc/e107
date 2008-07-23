@@ -1,9 +1,7 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
-
+include_lan(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_admin.php');
 $plugintable = "pcontent";
 $reported_content = $sql -> db_Count($plugintable, '(*)', "WHERE content_refer='sa' ");
 $text .= "

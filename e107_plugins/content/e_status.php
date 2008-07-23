@@ -1,8 +1,7 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
+include_lan(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_admin.php');
 
 $sql2 = new db;
 $total = $sql -> db_Count("pcontent", "(*)", "WHERE LEFT(content_parent,1) != '0' AND content_refer != 'sa'");
