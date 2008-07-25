@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-02 20:14:13 $
+|     $Revision: 1.4 $
+|     $Date: 2008-07-25 21:15:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -119,7 +119,7 @@ define('LAN_MAILOUT_107','at');
 define('LAN_MAILOUT_108','Result');
 define('LAN_MAILOUT_109','Show detail');
 define('LAN_MAILOUT_110','Send test email');
-define('LAN_MAILOUT_111','Clicking button will send test email to main admin email address');
+//define('LAN_MAILOUT_111','Clicking button will send test email to main admin email address');
 define('LAN_MAILOUT_112','Click to send email to');
 define('LAN_MAILOUT_113','Test email from');
 define('LAN_MAILOUT_114','This is a test email, it appears that your email settings are working ok!\n\nRegards\nfrom the e107 website system.');
