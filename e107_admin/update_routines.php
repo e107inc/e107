@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-06-17 19:45:46 $
+|     $Revision: 1.25 $
+|     $Date: 2008-07-25 19:26:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -242,7 +242,7 @@ function update_706_to_800($type='')
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
 	{
-	  if ($just_check) return update_needed();
+	  if ($just_check) return update_needed('Customtitle change');
 	  $pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
 	  unset($pref['forum_user_customtitle']);
 	  $do_save = TRUE;
@@ -251,7 +251,7 @@ function update_706_to_800($type='')
 	//change menu_path for usertheme_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
 	{
-	  if ($just_check) return update_needed();
+	  if ($just_check) return update_needed('usertheme_menu');
 	  $sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='usertheme_menu' || menu_path='usertheme_menu/' ");
 	  catch_error();
 	}
@@ -259,7 +259,7 @@ function update_706_to_800($type='')
 	//change menu_path for userlanguage_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))
 	{
-	  if ($just_check) return update_needed();
+	  if ($just_check) return update_needed('userlanguage_menu');
 		$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='userlanguage_menu' || menu_path='userlanguage_menu/' ");
 		catch_error();
 	}
@@ -267,7 +267,7 @@ function update_706_to_800($type='')
 	//change menu_path for compliance_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu' || menu_path='compliance_menu/'"))
 	{
-	  if ($just_check) return update_needed();
+	  if ($just_check) return update_needed('compliance_menu');
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='compliance_menu' || menu_path='compliance_menu/' ");
 		catch_error();
 	}
@@ -275,7 +275,7 @@ function update_706_to_800($type='')
 	//change menu_path for powered_by_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu' || menu_path='powered_by_menu/'"))
 	{
-	  if ($just_check) return update_needed();
+	  if ($just_check) return update_needed('poweredby_menu');
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='powered_by_menu' || menu_path='powered_by_menu/' ");
 		catch_error();
 	}

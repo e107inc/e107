@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2008-03-11 01:47:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.36 $
+|     $Date: 2008-07-25 19:26:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -388,24 +388,24 @@ class e107plugin
 
 	function manage_tables($action, $var)
 	{
-		global $sql;
-		if ($action == 'add')
-		{
-			if (is_array($var))
+	  global $sql;
+	  switch ($action)
+	  {
+		case 'add' :
+		  if (is_array($var))
+		  {
+			foreach($var as $tab)
 			{
-				foreach($var as $tab)
-				{
-					if (!$sql->db_Query($tab))
-					{
-						return FALSE;
-					}
-				}
-				return TRUE;
+			  if (!$sql->db_Query($tab))
+			  {
+				return FALSE;
+			  }
 			}
 			return TRUE;
-		}
-		if ($action == 'upgrade')
-		{
+		  }
+		  return TRUE;
+		  break;
+		case 'upgrade' :
 			if (is_array($var))
 			{
 				foreach($var as $tab)
@@ -418,9 +418,8 @@ class e107plugin
 				return TRUE;
 			}
 			return TRUE;
-		}
-		if ($action == 'remove')
-		{
+		  break;
+		case 'remove' :
 			if (is_array($var))
 			{
 				foreach($var as $tab)
@@ -434,7 +433,8 @@ class e107plugin
 				return TRUE;
 			}
 			return TRUE;
-		}
+		  break;
+	  }
 	}
 
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
@@ -883,7 +883,7 @@ class e107plugin
 		$plug['plug_action'] = 'install';
 
 		//	$plug_vars = $this->parse_plugin_php($path);
-		include_once($path.'plugin.php');
+		include_once($_path.'plugin.php');
 
 		$func = $eplug_folder.'_install';
 		if (function_exists($func))
