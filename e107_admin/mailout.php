@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-02 20:14:05 $
+|     $Revision: 1.9 $
+|     $Date: 2008-07-25 21:15:01 $
 |     $Author: e107steved $
 |
 | Work in progress - supplementary mailer plugin
@@ -1027,7 +1027,7 @@ $text = "
 	<col style='width:70%' />
 	</colgroup>
 	<tr>
-	<td class='forumheader3'><span title='".LAN_MAILOUT_111."' style='cursor:help'>".LAN_MAILOUT_110."</span><br /></td>
+	<td class='forumheader3'>".LAN_MAILOUT_110."<br /></td>
 	<td class='forumheader3' style='text-align:right'><input class='button' type='submit' name='testemail' value=\"".LAN_MAILOUT_112."\" />&nbsp;
 	<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".SITEADMINEMAIL."\" />
 	</td>
