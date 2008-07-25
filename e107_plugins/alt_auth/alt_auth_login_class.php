@@ -11,77 +11,92 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-12 02:49:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2008-07-25 19:33:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 class alt_login
 {
 	function alt_login($method, &$username, &$userpass)
 	{
-		global $pref;
-		$newvals=array();
-		define("AUTH_SUCCESS", -1);
-		define("AUTH_NOUSER", 1);
-		define("AUTH_BADPASSWORD", 2);
-		define("AUTH_NOCONNECT", 3);
-		require_once(e_PLUGIN."alt_auth/".$method."_auth.php");
-		$_login = new auth_login;
+	  global $pref;
+	  $newvals=array();
+	  define("AUTH_SUCCESS", -1);
+	  define("AUTH_NOUSER", 1);
+	  define("AUTH_BADPASSWORD", 2);
+	  define("AUTH_NOCONNECT", 3);
+	  require_once(e_PLUGIN."alt_auth/".$method."_auth.php");
+	  $_login = new auth_login;
 
-		if($_login->Available === FALSE)
-		{
-			return false;
-		}
+	  if(isset($_login->Available) && ($_login->Available === FALSE))
+	  {	// Relevant auth method not available (e.g. PHP extension not loaded)
+		return AUTH_NOCONNECT;
+	  }
 
-		$login_result = $_login -> login($username, $userpass, $newvals);
+
+	  $login_result = $_login -> login($username, $userpass, $newvals, FALSE);
 		
-		if($login_result === AUTH_SUCCESS )
+	  if($login_result === AUTH_SUCCESS )
+	  {
+		if (MAGIC_QUOTES_GPC == FALSE)
 		{
-			$sql = new db;
-			if (MAGIC_QUOTES_GPC == FALSE)
-			{
-				$username = mysql_real_escape_string($username);
-			}
-			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
-			$username = substr($username, 0, 30);
+		  $username = mysql_real_escape_string($username);
+		}
+		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+		$username = substr($username, 0, varset($pref['loginname_maxlength'],30));
 			
-			if(!$sql -> db_Select("user", "user_id", "user_loginname='{$username}' "))
-			{
-				// User not found in e107 database - add it now.
-				$qry = "INSERT INTO #user (user_id, user_loginname, user_name, user_join) VALUES ('0','{$username}','{$username}',".time().")";
-				$sql -> db_Select_gen($qry);
-			}
-			// Set password and any other applicable fields
-			$qry="user_password='".md5($userpass)."'";
-			foreach($newvals as $key => $val)
-			{
-				$qry .= " ,user_{$key}='{$val}' ";
-			}
-			$qry.=" WHERE user_loginname='{$username}' ";
-			$sql -> db_Update("user", $qry);
+		$aa_sql = new db;
+		$uh = new UserHandler;
+		$db_vals = array('user_password' => $aa_sql->escape($uh->HashPassword($userpass,$username)));
+		foreach ($newvals as $k => $v)
+		{
+		  if (strpos($k,'user_' !== 0)) $k = 'user_'.$k;			// translate the field names (but latest handlers don't need translation)
+		  $db_vals[$k] = $v;
+		}
+		if($aa_sql -> db_Select("user","*","user_loginname='{$username}' "))
+		{ // Existing user - get current data, see if any changes
+		  $row = $aa_sql->db_Fetch();
+		  foreach ($db_vals as $k => $v)
+		  {
+		    if ($row[$k] == $v) unset($db_vals[$k]);
+		  }
+		  if (count($db_vals)) $aa_sql->db_UpdateArray('user',$db_vals," WHERE `user_id`=".$row['user_id']);
 		}
 		else
+		{  // Just add a new user
+		  if (!isset($db_vals['user_name'])) $db_vals['user_name'] = $username;
+		  if (!isset($db_vals['user_loginname'])) $db_vals['user_loginname'] = $username;
+		  if (!isset($db_vals['user_join'])) $db_vals['user_join'] = time();
+		  $aa_sql->db_Insert('user',$db_vals);
+		}
+		return LOGIN_CONTINUE;
+	  }
+	  else
+	  {	// Failure modes
+		switch($login_result)
 		{
-			switch($login_result)
+		  case AUTH_NOUSER:
+			if(!varset($pref['auth_nouser'],0))
 			{
-				case AUTH_NOUSER:
-					if(!isset($pref['auth_nouser']) || !$pref['auth_nouser'])
-					{
-						$username=md5("xx_nouser_xx");
-					}
-					break;
-				case AUTH_NOCONNECT:
-					if(!isset($pref['auth_noconn']) || !$pref['auth_noconn'])
-					{
-						$username=md5("xx_noconn_xx");
-					}
-					break;
-				case AUTH_BADPASSWORD:
-					$userpass=md5("xx_badpassword_xx");
-					break;
+			  $username=md5("xx_nouser_xx");
+			  return LOGIN_ABORT;
 			}
-		} 
+			break;
+		  case AUTH_NOCONNECT:
+			if(!varset($pref['auth_noconn']))
+			{
+			  $username=md5("xx_noconn_xx");
+			  return LOGIN_ABORT;
+			}
+			break;
+		  case AUTH_BADPASSWORD:
+			$userpass=md5("xx_badpassword_xx");
+			return LOGIN_ABORT;					// Not going to magically be able to log in!
+			break;
+		}
+	  }
+	  return LOGIN_ABORT;			// catch-all just in case
 	}
 }
 ?>
