@@ -11,9 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_auth.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-07-25 19:33:02 $
+|     $Author: e107steved $
+
+To do:
+	1. Sort out a method of just checking the connection on login (needed for test)
 +----------------------------------------------------------------------------+
 */
 
@@ -32,16 +35,22 @@ class auth_login
 	var $ldapVersion;
 	var $Available;
 	var $filter;
+	var $copyAttribs;			// Any attributes which are to be copied on successful login
 
 	function auth_login()
 	{
+		$this->copyAttribs = array();
 		$sql = new db;
 		$sql -> db_Select("alt_auth", "*", "auth_type = 'ldap' ");
 		while($row = $sql -> db_Fetch())
 		{
-			$ldap[$row['auth_parmname']]=$row['auth_parmval'];
+		  $ldap[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
+		  if ((strpos($row['auth_parmname'],'ldap_xf_') === 0) && $ldap[$row['auth_parmname']])
+		  {	// Attribute to copy on successful login
+			$this->copyAttribs[$ldap[$row['auth_parmname']]] = substr($row['auth_parmname'],strlen('ldap_xf_'));	// Key = LDAP attribute. Value = e107 field name
+			unset($row['auth_parmname']);
+		  }
 		}
-
 		$this->server = explode(",", $ldap['ldap_server']);
 		$this->serverType = $ldap['ldap_servertype'];
 		$this->dn = $ldap['ldap_basedn'];
@@ -62,6 +71,8 @@ class auth_login
 		}
 	}
 
+
+
 	function connect()
 	{
 		foreach ($this->server as $key => $host)
@@ -81,6 +92,8 @@ class auth_login
 		return false;
 	}
 
+
+
 	function close()
 	{
 		if ( !@ldap_close( $this->connection))
@@ -95,67 +108,121 @@ class auth_login
 		}
 	}
 
-	function login($uname, $pass)
+
+
+	function login($uname, $pass, &$newvals, $connect_only = FALSE)
 	{
 		/* Construct the full DN, eg:-
 		** "uid=username, ou=People, dc=orgname,dc=com"
 		*/
+//		echo "Login to server type: {$this->serverType}<br />";
+		$current_filter = "";
 		if ($this->serverType == "ActiveDirectory")
 		{
-			$checkDn = "$uname@$this->dn";
+		  $checkDn = $uname.'@'.$this->dn;
 		}
 		else
 		{
-			if ($this -> usr != '' && $this -> pwd != '')
-			{
-				$this -> result = ldap_bind($this -> connection, $this -> usr, $this -> pwd);
-			}
-			else
-			{
-				$this -> result = ldap_bind($this -> connection);
-			}
+		  if ($this -> usr != '' && $this -> pwd != '')
+		  {
+			$this -> result = ldap_bind($this -> connection, $this -> usr, $this -> pwd);
+		  }
+		  else
+		  {
+			$this -> result = ldap_bind($this -> connection);
+		  }
+		  if ($this->result === FALSE)
+		  {
+//		    echo "LDAP bind failed<br />";
+			return AUTH_NOCONNECT;
+		  }
 			
 //			In ldap_auth.php, should look like this instead for eDirectory 
 //			$query = ldap_search($this -> connection, $this -> dn, "cn=".$uname);
 
-			if($this->serverType == "eDirectory")
-			{
-				$_filter = (isset($ldap['ldap_edirfilter']) ? $ldap['ldap_edirfilter'] : "");
-				$current_filter = "(&(cn={$uname})".$this->filter.")";
-				$query = ldap_search($this->connection, $this->dn, $current_filter);
-			}
-			else
-			{
-				$query = ldap_search($this->connection, $this->dn, "uid=".$uname);
-			}
+		  if($this->serverType == "eDirectory")
+		  {
+			$current_filter = "(&(cn={$uname})".$this->filter.")";
+		  }
+		  else
+		  {
+			$current_filter = "uid=".$uname;
+		  }
+//		  echo "LDAP search: {$this->dn}, {$current_filter}<br />";
+		  $query = ldap_search($this->connection, $this->dn, $current_filter);
 
-			if ($query == false)
-			{
+		  if ($query === false)
+		  {
 //				Could not perform query to LDAP directory
-				return AUTH_NOCONNECT;
+			echo "LDAP - search for user failed<br />";
+			return AUTH_NOCONNECT;
+		  }
+		  else
+		  {
+			$query_result = ldap_get_entries($this -> connection, $query);
+
+			if ($query_result["count"] != 1)
+			{
+			  if ($connect_only) return AUTH_SUCCESS; else return AUTH_NOUSER;
 			}
 			else
 			{
-				$query_result = ldap_get_entries($this -> connection, $query);
-
-				if ($query_result["count"] != 1)
-				{
-					return AUTH_NOUSER;
-				}
-				else
-				{
-					$checkDn = $query_result[0]["dn"];
-					$this -> close();
-					$this -> connect();
-				}
+			  $checkDn = $query_result[0]["dn"];
+			  $this -> close();
+			  $this -> connect();
 			}
+		  }
 		}
+
 		// Try and connect...
 		$this->result = ldap_bind($this -> connection, $checkDn, $pass);
 		if ( $this->result)
 		{
-			// Connected OK - login credentials are fine!
-			return AUTH_SUCCESS;
+		  // Connected OK - login credentials are fine!
+		  // But bind can return success even if no password! Does reject an invalid password, however
+		  if ($connect_only) return AUTH_SUCCESS;
+		  if (trim($pass) == '') return AUTH_BADPASSWORD;				// Pick up a blank password
+		  if (count($this->copyAttribs) == 0) return AUTH_SUCCESS;		// No attributes required - we're done
+		  $ldap_attributes = array_keys($this->copyAttribs);
+//		  echo "Validation search: {$checkDn}, {$current_filter},"; print_a($ldap_attributes); echo "<br />";
+		  $this->result = ldap_search($this -> connection, $checkDn, $current_filter, $ldap_attributes);
+
+		  if ($this->result)
+		  {
+			$entries = ldap_get_entries($this->connection, $this->result);
+//			print_a($entries);
+			if (count($entries) == 2)
+			{ // All OK
+			  for ($j = 0; $j < $entries[0]['count']; $j++)
+			  {
+				$k = $entries[0][$j];
+				$tlv = $entries[0][$k];
+				if (is_array($tlv) && isset($this->copyAttribs[$k]))
+				{ // This bit executed if we've successfully got some data. Key is the attribute name, then array of data
+				  $newvals[$this->copyAttribs[$k]] = $tlv[0];				// Just grab the first value
+//				  echo $j.":Key: {$k} (Values: {$tlv['count']})";
+//				  for ($i = 0; $i < $tlv['count']; $i++) { echo '  '.$tlv[$i]; }
+//				  echo "<br />";
+				}
+				else
+				{
+//				  echo " Unexpected non-array value - Key: {$k}   Value: {$tlv}<br />";
+				  return AUTH_NOCONNECT;  		// Not really a suitable return code for this - its an error
+				}
+			  }
+			}
+			else
+			{
+//			  echo "Got wrong number of entries<br />";
+			  return AUTH_NOUSER;			// Bit debateable what to return if this happens
+			}
+		  }
+		  else
+		  {	// Probably a bit strange if we don't get any info back - but possible
+//			echo "No results!<br />";
+		  }
+
+		  return AUTH_SUCCESS;
 		}
 		else
 		{
@@ -170,12 +237,11 @@ class auth_login
 			$this->ldapErrorCode = ldap_errno( $this->connection);
 			$this->ldapErrorText = ldap_error( $this->connection);
 
-			if($this -> ldapErrorCode == 32)
+			switch ($this -> ldapErrorCode)
 			{
+			  case 32 :
 				return AUTH_NOUSER;
-			}
-			if($this -> ldapErrorCode == 49)
-			{
+			  case  49 :
 				return AUTH_BADPASSWORD;
 			}
 			// return error code as if it never connected, maybe change that in the future

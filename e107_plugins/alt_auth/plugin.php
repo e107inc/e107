@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-07-25 19:33:03 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "Alternate Authentication";
-$eplug_version = "0.3";
+$eplug_version = "0.4";
 $eplug_author = "McFly";
 $eplug_logo = "/images/icon_ldap.png";
 $eplug_url = "";

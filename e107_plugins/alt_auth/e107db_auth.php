@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/otherdb_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-07-25 19:33:02 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/e107db_auth.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-07-25 19:33:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -36,16 +36,16 @@ class auth_login
 	{
 //		global $otherdb_conf, $sql;
 		global $sql;
-		$sql -> db_Select("alt_auth", "*", "auth_type = 'otherdb' ");
+		$sql -> db_Select("alt_auth", "*", "auth_type = 'e107db' ");
 		while($row = $sql -> db_Fetch())
 		{
-			$otherdb_conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
+			$e107db_conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
 		}
-		$class_name = "otherdb_mysql_class";
+		$class_name = "e107db_mysql_class";
 
 		if(class_exists($class_name))
 		{
-		  $this->od = new $class_name($otherdb_conf);
+		  $this->od = new $class_name($e107db_conf);
 		  $this->Available = TRUE;
 		}
 		else
@@ -65,15 +65,15 @@ class auth_login
 
 }
 
-class otherdb_mysql_class
+class e107db_mysql_class
 {
 	
 	var $conf;
 	
-	function otherdb_mysql_class($otherdb_conf)
+	function e107db_mysql_class($otherdb_conf)
 	{
-//		global $otherdb_conf;
 		$this->conf = $otherdb_conf;
+//		print_a($this->conf);
 	}
 	
 
@@ -81,36 +81,33 @@ class otherdb_mysql_class
 	function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
 	  //Attempt to open connection to sql database
-	  if(!$res = mysql_connect($this->conf['otherdb_server'], $this->conf['otherdb_username'], $this->conf['otherdb_password']))
+	  if(!$res = mysql_connect($this->conf['e107db_server'], $this->conf['e107db_username'], $this->conf['e107db_password']))
 	  {
 		return AUTH_NOCONNECT;
 	  }
 	  //Select correct db
-	  if(!mysql_select_db($this->conf['otherdb_database'], $res))
+	  if(!mysql_select_db($this->conf['e107db_database'], $res))
 	  {
 		mysql_close($res);
 		return AUTH_NOCONNECT;
 	  }
 	  if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
+	  
 	  $sel_fields = array();
 	  // Make an array of the fields we want from the source DB
 	  foreach($this->conf as $k => $v)
 	  {
-	    if ($v && (strpos($k,'otherdb_xf_') === 0))
+	    if ($v && (strpos($k,'e107db_xf_') === 0))
 		{
-		  $sel_fields[] = $v;
+		  $sel_fields[] = substr($k,strlen('e107db_xf_'));
 		}
 	  }
-	  $sel_fields[] = $this->conf['otherdb_password_field'];
-	  $user_field = $this->conf['otherdb_user_field'];
-	  if (isset($this->conf['otherdb_salt_field']))
-	  {
-		$sel_fields[] = $this->conf['otherdb_salt_field'];
-	  }
+	  $sel_fields[] = 'user_password';
+	  $user_field = 'user_loginname';
 
 
 	  //Get record containing supplied login name
-	  $qry = "SELECT ".implode(',',$sel_fields)." FROM {$this->conf['otherdb_table']} WHERE {$user_field} = '{$uname}'";
+	  $qry = "SELECT ".implode(',',$sel_fields)." FROM ".MPREFIX."user WHERE {$user_field} = '{$uname}'";
 //	  echo "Query: {$qry}<br />";
 	  if(!$r1 = mysql_query($qry))
 	  {
@@ -129,25 +126,25 @@ class otherdb_mysql_class
 	  require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
 	  $pass_check = new ExtendedPasswordHandler();
 
-	  $passMethod = $pass_check->passwordMapping($this->conf['otherdb_password_method']);
+	  $passMethod = $pass_check->passwordMapping($this->conf['e107db_password_method']);
 	  if ($passMethod === FALSE) return AUTH_BADPASSWORD;
 
-	  $pwFromDB = $row[$this->conf['otherdb_password_field']];					// Password stored in DB
-	  if ($salt_field) $pwFromDB .= ':'.$row[$salt_field];
+	  $pwFromDB = $row['user_password'];					// Password stored in DB
 
 	  if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
 	  {
 		return AUTH_BADPASSWORD;
 	  }
+
 	  // Now copy across any values we have selected
 	  foreach($this->conf as $k => $v)
 	  {
-	    if ($v && (strpos($k,'otherdb_xf_') === 0) && isset($row[$v]))
+	    if ($v && (strpos($k,'e107db_xf_') === 0))
 		{
-		  $newvals[substr($k,strlen('otherdb_xf_'))] = $row[$v];
+		  $f = substr($k,strlen('e107db_xf_'));
+		  if (isset($row[$f])) $newvals[$f] = $row[$f];
 		}
 	  }
-
 	  return AUTH_SUCCESS;
 	}
 }
