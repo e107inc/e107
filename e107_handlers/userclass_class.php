@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-04-25 19:39:43 $
+|     $Revision: 1.16 $
+|     $Date: 2008-07-25 19:26:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -108,8 +108,8 @@ class user_class
 		$this->class_tree[$c]['userclass_id'] = $c;
 		$this->class_tree[$c]['userclass_name'] = $d;
 		$this->class_tree[$c]['userclass_description'] = 'Fixed class';
-		$this->class_tree[$c]['userclass_visibility'] = 0;
-		$this->class_tree[$c]['userclass_editclass'] = 0;
+		$this->class_tree[$c]['userclass_visibility'] = e_UC_PUBLIC;
+		$this->class_tree[$c]['userclass_editclass'] = e_UC_MAINADMIN;
 		$this->class_tree[$c]['userclass_accum'] = $c;
 //		$this->class_parents[] = $c;
 	  }
