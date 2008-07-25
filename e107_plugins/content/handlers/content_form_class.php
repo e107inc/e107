@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2008-07-20 17:12:04 $
+|		$Revision: 1.20 $
+|		$Date: 2008-07-25 21:03:19 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -960,7 +960,7 @@ class contentform{
 						$CONTENT_ADMIN_LETTERINDEX .= "<input class='button' style='width:25px' type='submit' name='letter' value='".strtoupper($arrletters[$i])."' />";
 					}
 				}
-				$CONTENT_ADMIN_LETTERINDEX .= "<input class='button' style='width:25px' type='submit' name='letter' value='all' />";
+				$CONTENT_ADMIN_LETTERINDEX .= "<input class='button' style='width:25px' type='submit' name='letter' value='".CONTENT_LAN_ALL."' />";
 				$CONTENT_ADMIN_FORM_TARGET = $formtarget;
 
 				$text .= $tp -> parseTemplate($CONTENT_ADMIN_CONTENT_LIST_LETTER, FALSE, $content_shortcodes);
