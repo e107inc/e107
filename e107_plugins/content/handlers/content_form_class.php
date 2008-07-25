@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.128 $
-|		$Date: 2008-07-20 17:11:56 $
+|		$Revision: 1.129 $
+|		$Date: 2008-07-25 21:03:07 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -1256,7 +1256,7 @@ class contentform{
 						}
 					}
 					$text .= "
-					<input class='button' style='width:20' type='submit' name='letter' value='all' />
+					<input class='button' style='width:20' type='submit' name='letter' value='".CONTENT_LAN_ALL."' />
 					</td>
 					</tr>
 					</table>
