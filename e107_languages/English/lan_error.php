@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_error.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-05 09:41:23 $
+|     $Revision: 1.4 $
+|     $Date: 2008-07-25 20:12:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -47,6 +47,12 @@ define("LAN_ERROR_32", "To complete the upgrade, copy the following text into yo
 
 define("LAN_ERROR_33", "Processing error! Normally, I would redirect to the home page.");
 define("LAN_ERROR_34", "Unknown error! Please inform the site administrator you saw this:");
+
+define('LAN_ERROR_35', 'Error 400 - Bad Request');
+define('LAN_ERROR_36', 'There is a formatting error in the web page you are trying to access.');
+define('LAN_ERROR_37', 'Error Icon');
+define('LAN_ERROR_38', '');
+define('LAN_ERROR_39', '');
 
 
 ?>
