@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2007-10-28 13:03:16 $
+|     $Revision: 1.63 $
+|     $Date: 2008-07-25 21:15:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -524,7 +524,7 @@ $text = "
 	<div id='mail' style='text-align:center;'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td style='width:30%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."</span><br /></td>
+	<td style='width:30%' class='forumheader3'>".PRFLAN_63."<br /></td>
 	<td style='width:70%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value=\"".PRFLAN_65."\" />
 	<input name='testaddress' class='tbox' type='text' value=\"".SITEADMINEMAIL."\" />
 	</td>
