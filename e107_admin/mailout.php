@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2008-07-25 21:15:11 $
+|     $Revision: 1.64 $
+|     $Date: 2008-07-28 21:33:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -41,10 +41,13 @@ if (isset($_POST['testemail']) && getperms("0")) {
 		require_once(e_HANDLER."mail.php");
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
 		$sendto = trim($_POST['testaddress']);
-		if (!sendemail($sendto, PRFLAN_66." ".SITENAME.$add, PRFLAN_67,USERNAME)) {
-			$message = ($pref['mailer'] == "smtp")  ? PRFLAN_75 : PRFLAN_68;
-		} else {
-			$message = PRFLAN_69. "(".$sendto.")";
+		if (!sendemail($sendto, PRFLAN_66." ".SITENAME.$add, PRFLAN_67,MAILAN_68)) 
+		{
+		  $message = ($pref['mailer'] == "smtp")  ? PRFLAN_75 : PRFLAN_68;
+		} 
+		else 
+		{
+		  $message = PRFLAN_69. "(".$sendto.")";
 		}
 	}
 }
