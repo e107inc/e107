@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-22 19:18:39 $
+|     $Revision: 1.3 $
+|     $Date: 2008-07-28 20:16:13 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ if (file_exists(THEME."forum/new_small.png"))
 }
 else
 {
-  $ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
+  $ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' />";
 }
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");

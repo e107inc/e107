@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.7 $
-|    $Date: 2008-05-23 21:03:49 $
+|    $Revision: 1.8 $
+|    $Date: 2008-07-28 20:16:11 $
 |    $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -646,6 +646,7 @@ class linkclass {
         $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'blank*');
         $iconpath = e_PLUGIN."links_page/link_images/";
         $iconlist = $fl->get_files($iconpath,"",$rejectlist);
+        $iconpath = e_PLUGIN_ABS."links_page/link_images/";			// Absolute paths now we've got the files
 
         $text .= "
         <tr>
@@ -664,7 +665,7 @@ class linkclass {
                 $img = $iconpath.$row['link_button'];
             }else{
                 $blank_display = 'display: none';
-                $img = e_PLUGIN."links_page/images/blank.gif";
+                $img = e_PLUGIN_ABS."links_page/images/blank.gif";
             }
             $text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; border:0; ".$blank_display."' /><br /><br /></td></tr></table>";
             $text .= "</div>
@@ -764,7 +765,7 @@ class linkclass {
                         }
 						else
 						{
-                            $img = "<img style='border:0' src='".e_PLUGIN."links_page/link_images/".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
+                            $img = "<img style='border:0' src='".e_PLUGIN_ABS."links_page/link_images/".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
                         }
                     }
                 }
@@ -782,7 +783,7 @@ class linkclass {
                 <tr>
                 <td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$img."</td>
                 <td style='width:65%' class='forumheader3'>
-                    <a href='".e_PLUGIN."links_page/links.php?".$row['link_id']."' rel='external'>".LINK_ICON_LINK."</a> ".$row['link_name']."
+                    <a href='".e_PLUGIN_ABS."links_page/links.php?".$row['link_id']."' rel='external'>".LINK_ICON_LINK."</a> ".$row['link_name']."
                 </td>
                 <td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
                     <a href='".e_SELF."?link.edit.".$linkid."' title='".LCLAN_ITEM_31."'>".LINK_ICON_EDIT."</a>
@@ -930,7 +931,7 @@ class linkclass {
             while ($row = $sql->db_Fetch()) {
                 $linkcatid = $row['link_category_id'];
                 if ($row['link_category_icon']) {
-                    $img = (strstr($row['link_category_icon'], "/") ? "<img src='".e_BASE.$row['link_category_icon']."' alt='' style='vertical-align:middle' />" : "<img src='".e_PLUGIN."links_page/cat_images/".$row['link_category_icon']."' alt='' style='vertical-align:middle' />");
+                    $img = (strstr($row['link_category_icon'], "/") ? "<img src='".e_BASE.$row['link_category_icon']."' alt='' style='vertical-align:middle' />" : "<img src='".e_PLUGIN_ABS."links_page/cat_images/".$row['link_category_icon']."' alt='' style='vertical-align:middle' />");
                 } else {
                     $img = "&nbsp;";
                 }
@@ -938,7 +939,7 @@ class linkclass {
                 <tr>
                 <td style='width:5%; text-align:center' class='forumheader3'>".$img."</td>
                 <td class='forumheader3'>
-                    <a href='".e_PLUGIN."links_page/links.php?cat.".$linkcatid."' rel='external'>".LINK_ICON_LINK."</a>
+                    <a href='".e_PLUGIN_ABS."links_page/links.php?cat.".$linkcatid."' rel='external'>".LINK_ICON_LINK."</a>
                     ".$row['link_category_name']."<br /><span class='smalltext'>".$row['link_category_description']."</span>
                 </td>";
                 if($mode == "cat"){
