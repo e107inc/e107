@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-09-03 21:06:02 $
+|     $Revision: 1.15 $
+|     $Date: 2008-07-28 20:15:56 $
 |     $Author: e107steved $
 |
 | 10.11.06 - mods for next CVS release
@@ -132,13 +132,16 @@ SC_END
 // CALENDAR SHOWEVENT ------------------------------------------------------------
 SC_BEGIN SHOWEVENT_IMAGE
 	global $SHOWEVENT_IMAGE, $ev;
-	if($ev['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon'])){
-		$img = "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
-	}else{
-		$img = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
+	if($ev['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon']))
+	{
+	  $img = "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
+	}
+	else
+	{
+	  $img = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
 	}
 	return $img;
-	//return "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
+	//return "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
 SC_END
 
 SC_BEGIN SHOWEVENT_INDICAT
@@ -177,11 +180,10 @@ SC_END
 SC_BEGIN CALENDAR_CALENDAR_RECENT_ICON
   global $ev;
   if (!isset($ev['is_recent'])) return "";
-//  $recent_icon = e_PLUGIN."calendar_menu/images/recent_icon.png";
-  $recent_icon = e_IMAGE."generic/".IMODE."/new.png";
-  if (file_exists($recent_icon))
+//  $recent_icon = e_IMAGE_ABS."generic/".IMODE."/new.png";
+  if (file_exists(e_IMAGE."generic/".IMODE."/new.png"))
 	{
-	  return "<img style='border:0' src='".$recent_icon."' alt='' /> ";
+	  return "<img style='border:0' src='".e_IMAGE_ABS."generic/".IMODE."/new.png"."' alt='' /> ";
 	}
   return "R";
 SC_END
@@ -287,11 +289,10 @@ SC_BEGIN EVENT_RECENT_ICON
   global $thisevent, $ecal_class;
   if (($ecal_class->max_recent_show == 0) || (time() - $thisevent['event_datestamp']) > $ecal_class->max_recent_show) return "";
 // Can use the generic icon, or a calendar-specific one  
-  $recent_icon = e_IMAGE."generic/".IMODE."/new.png";
-//  $recent_icon = e_PLUGIN."calendar_menu/images/recent_icon.png";
-  if (file_exists($recent_icon))
+//  $recent_icon = e_IMAGE."generic/".IMODE."/new.png";
+  if (file_exists(e_IMAGE."generic/".IMODE."/new.png"))
 	{
-	  return "<img style='border:0' src='".$recent_icon."' alt='' /> ";
+	  return "<img style='border:0' src='".e_IMAGE_ABS."generic/".IMODE."/new.png"."' alt='' /> ";
 	}
   return "";
 SC_END
@@ -338,7 +339,7 @@ SC_BEGIN EVENT_CAT_ICON
   global $thisevent;
   if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']))
 	{
-	  return "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ";
+	  return "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ";
 	}
 	else
 	{
@@ -405,13 +406,13 @@ SC_END
 
 SC_BEGIN EVENT_THREAD
   global $EVENT_THREAD, $thisevent;
-  return (isset($thisevent['event_thread']) && ($thisevent['event_thread'] != "")) ? "<a href='{$thisevent['event_thread']}'><img src='".e_PLUGIN."forum/images/".IMODE."/e.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$thisevent['event_thread']}'>".EC_LAN_39."</a>" : "";
+  return (isset($thisevent['event_thread']) && ($thisevent['event_thread'] != "")) ? "<a href='{$thisevent['event_thread']}'><img src='".e_PLUGIN_ABS."forum/images/".IMODE."/e.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$thisevent['event_thread']}'>".EC_LAN_39."</a>" : "";
 SC_END
 
 SC_BEGIN EVENT_OPTIONS
 	global $EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super;
 	if (USERNAME == $event_author_name || $cal_super){
-		$EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+		$EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 	}
 	return $EVENT_OPTIONS;
 SC_END

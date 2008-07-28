@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-10-30 14:01:47 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2008-07-28 20:15:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 global $sc_style;
 
-define("PM_READ_ICON", "<img src='".e_PLUGIN."/pm/images/read.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_111."' />");
-define("PM_UNREAD_ICON", "<img src='".e_PLUGIN."/pm/images/unread.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_27."' />");
+define("PM_READ_ICON", "<img src='".e_PLUGIN_ABS."/pm/images/read.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_111."' />");
+define("PM_UNREAD_ICON", "<img src='".e_PLUGIN_ABS."/pm/images/unread.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_27."' />");
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 

@@ -4,30 +4,6 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $link_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 
-//SC_BEGIN LINK_NAVIGATOR
-//global $LINK_NAVIGATOR, $linkspage_pref, $qs;
-//$main = "";
-//if(isset($linkspage_pref['link_navigator_frontpage']) && $linkspage_pref['link_navigator_frontpage']){
-//	$main .= "<a href='".e_PLUGIN."links_page/links.php'>".LAN_LINKS_14."</a> >><br />";
-//}
-//if(isset($linkspage_pref['link_navigator_submit']) && $linkspage_pref['link_navigator_submit'] && isset($linkspage_pref['link_submit']) && $linkspage_pref['link_submit'] && check_class($linkspage_pref['link_submit_class'])){
-//	$main .= "<a href='".e_PLUGIN."links_page/links.php?submit'>".LAN_LINKS_27."</a> >><br />";
-//}
-//if(isset($linkspage_pref['link_navigator_manager']) && $linkspage_pref['link_navigator_manager'] && isset($linkspage_pref['link_manager']) && $linkspage_pref['link_manager'] && check_class($linkspage_pref['link_manager_class'])){
-//	$main .= "<a href='".e_PLUGIN."links_page/links.php?manage'>".LCLAN_ITEM_35."</a> >><br />";
-//}
-//if(isset($linkspage_pref['link_navigator_refer']) && $linkspage_pref['link_navigator_refer']){
-//	$main .= "<a href='".e_PLUGIN."links_page/links.php?top'>".LAN_LINKS_12."</a> >><br />";
-//}
-//if(isset($linkspage_pref['link_navigator_rated']) && $linkspage_pref['link_navigator_rated']){
-//	$main .= "<a href='".e_PLUGIN."links_page/links.php?rated'>".LAN_LINKS_13."</a> >><br />";
-//}
-//if(isset($linkspage_pref['link_navigator_category']) && $linkspage_pref['link_navigator_category']){
-//	$main .= "<a href='".e_PLUGIN."links_page/links.php?cat'>".LAN_LINKS_43."</a> >><br />";
-//}
-//return $main;
-//SC_END
-
 SC_BEGIN LINK_NAVIGATOR
 global $LINK_NAVIGATOR, $rs, $linkspage_pref, $qs;
 $mains = "";
@@ -191,7 +167,7 @@ if(isset($linkspage_pref['link_cat_icon']) && $linkspage_pref['link_cat_icon']){
 			}
 		}else{
 			if(file_exists(e_PLUGIN."links_page/cat_images/".$rowl['link_category_icon'])){
-			$LINK_MAIN_ICON = "<img src='".e_PLUGIN."links_page/cat_images/".$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
+			$LINK_MAIN_ICON = "<img src='".e_PLUGIN_ABS."links_page/cat_images/".$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
 			} else {
 				if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty']){
 				$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
@@ -222,7 +198,7 @@ SC_END
 
 SC_BEGIN LINK_MAIN_SHOWALL
 global $LINK_MAIN_SHOWALL, $linkspage_pref;
-return (isset($linkspage_pref['link_cat_total']) && $linkspage_pref['link_cat_total'] ? "<a href='".e_PLUGIN."links_page/links.php?cat.all'>".LAN_LINKS_25."</a>" : "");
+return (isset($linkspage_pref['link_cat_total']) && $linkspage_pref['link_cat_total'] ? "<a href='".e_PLUGIN_ABS."links_page/links.php?cat.all'>".LAN_LINKS_25."</a>" : "");
 SC_END
 
 
@@ -246,27 +222,27 @@ if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' src='".e_BASE.$rowl['link_button']."' alt='' /></a>";
 				} else {
 					if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-						$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+						$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='' /></a>";
 					}
 				}
 			}else{
 				if(file_exists(e_PLUGIN."links_page/link_images/".$rowl['link_button'])){
-					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
+					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' src='".e_PLUGIN_ABS."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
 				}else{
 					if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+					$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='' /></a>";
 					}
 				}
 			}
 		}
 	} else {
 		if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-			$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+			$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='' /></a>";
 		}
 	}
 }else{
 	if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-		$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+		$LINK_BUTTON = $LINK_APPEND."\n<img class='linkspage_button' style='width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='' /></a>";
 	}
 }
 return $LINK_BUTTON;
@@ -379,14 +355,14 @@ $one = $tmp[0];
 $two = round($tmp[1],1);
 $rating = $one.".".$two." ";
 for($c=1; $c<= $one; $c++){
-	$rating .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
+	$rating .= "<img src='".e_IMAGE_ABS."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
 }
 if($one < 10){
 	for($c=9; $c>=$one; $c--){
-		$rating .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+		$rating .= "<img src='".e_IMAGE_ABS."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
 	}
 }
-$rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
+$rating .= "<img src='".e_IMAGE_ABS."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
 return $rating;
 SC_END
 
@@ -400,19 +376,19 @@ if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 			if(strstr($rowl['link_button'], "/")){
 				$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0;' src='".e_BASE.$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
 			}else{
-				$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
+				$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0' src='".e_PLUGIN_ABS."links_page/link_images/".$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
 			}
 		}
 	} else {
 		if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-			$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
+			$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
 		}else{
 			$LINK_RATED_BUTTON = "";
 		}
 	}
 }else{
 	if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-		$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
+		$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
 	}else{
 		$LINK_RATED_BUTTON = "";
 	}

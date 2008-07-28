@@ -1,5 +1,5 @@
 <?php
-// $Id: rss_shortcodes.php,v 1.6 2007-11-27 21:47:14 e107steved Exp $
+// $Id: rss_shortcodes.php,v 1.7 2008-07-28 20:15:59 e107steved Exp $
 if (!defined('e107_INIT')) { exit; }   
 
 include_once(e_HANDLER.'shortcode_handler.php');
@@ -31,10 +31,10 @@ $url3 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE,
 $url4 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".4".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
 
 $text = "
-<a href='".$url1."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='RSS 0.92' /></a>
-<a href='".$url2."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='RSS 2.0' /></a>
-<a href='".$url3."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='RDF' /></a>
-<a href='".$url4."'><img src='".e_PLUGIN."rss_menu/images/rss4.png' alt='ATOM' /></a>
+<a href='".$url1."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss1.png' alt='RSS 0.92' /></a>
+<a href='".$url2."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss2.png' alt='RSS 2.0' /></a>
+<a href='".$url3."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss3.png' alt='RDF' /></a>
+<a href='".$url4."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss4.png' alt='ATOM' /></a>
 ";
 return $text;
 SC_END
@@ -66,7 +66,7 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_URL
 global $row;
-return "<a href='".e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$row['rss_url']."'>".$row['rss_url']."</a>";
+return "<a href='".e_PLUGIN_ABS."rss_menu/rss.php?".e_LANQRY.$row['rss_url']."'>".$row['rss_url']."</a>";
 SC_END
 
 SC_BEGIN RSS_ADMIN_TOPICID
