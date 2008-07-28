@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-03-20 20:49:02 $
+|     $Revision: 1.9 $
+|     $Date: 2008-07-28 20:16:10 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -143,7 +143,7 @@ SC_BEGIN EC_SHOWEVENT_IMAGE
 	global $ev;
 	if($ev['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon']))
 	{
-	  $img = "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
+	  $img = "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
 	}
 	else
 	{
@@ -211,7 +211,7 @@ SC_BEGIN EC_CALENDAR_CALENDAR_RECENT_ICON
   global $ev;
   if (!isset($ev['is_recent'])) return "";
   if (!$ev['startofevent']) return "";		// Only display on first day of multi-day events
-//  $recent_icon = e_PLUGIN."calendar_menu/images/recent_icon.png";
+//  $recent_icon = e_PLUGIN_ABS."calendar_menu/images/recent_icon.png";
   $recent_icon = EC_RECENT_ICON;
   if (file_exists($recent_icon))
 	{
@@ -348,7 +348,7 @@ SC_BEGIN EC_EVENT_CAT_ICON
   global $thisevent;
   if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']))
   {
-	return "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ";
+	return "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ";
   }
   else
   {
