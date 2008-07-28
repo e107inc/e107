@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-07-25 21:15:01 $
+|     $Revision: 1.10 $
+|     $Date: 2008-07-28 21:33:27 $
 |     $Author: e107steved $
 |
 | Work in progress - supplementary mailer plugin
@@ -164,7 +164,7 @@ if (isset($_POST['testemail']) && getperms("0"))
 	  require_once(e_HANDLER."mail.php");
 	  $add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
 	  $sendto = trim($_POST['testaddress']);
-	  if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,USERNAME)) 
+	  if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_125)) 
 	  {
 		$message = ($pref['mailer'] == "smtp")  ? LAN_MAILOUT_67 : LAN_MAILOUT_106;
 	  } 
