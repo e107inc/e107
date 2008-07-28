@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-07-25 21:15:11 $
+|     $Revision: 1.5 $
+|     $Date: 2008-07-28 21:33:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -133,6 +133,7 @@ define('LAN_MAILOUT_121','Standard POP3');
 define('LAN_MAILOUT_122','POP3, TLS disabled');
 define('LAN_MAILOUT_123','POP3 with TLS');
 define('LAN_MAILOUT_124','IMAP');
+define('LAN_MAILOUT_125', 'Test address');
 
 
 
