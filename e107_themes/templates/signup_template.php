@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-15 21:57:52 $
+|     $Revision: 1.9 $
+|     $Date: 2008-07-30 20:13:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,15 @@ if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:100%"); }
 
 
 define("REQUIRED_FIELD_MARKER", "<span style='text-align:right;font-size:15px; color:red'> *</span>");
+
+// Given an email address, returns a link including js-based obfuscation
+function js_obfuscate($email)
+{
+  list($name,$address) = explode('@',$email,2);
+  $reassembled = '"'.$name.'"+"@"+"'.$address.'"';
+  return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$reassembled.";self.close();' onmouseover='window.status=\"mai\"+\"lto:".$reassembled."; return true;' onmouseout='window.status=\"\";return true;'>";
+}
+
 
 $sc_style['SIGNUP_DISPLAYNAME']['pre'] = "
 <tr>
@@ -148,7 +157,7 @@ $sc_style['SIGNUP_IMAGECODE']['post'] = "
 
 if(!defined($COPPA_TEMPLATE))
 {
-$COPPA_TEMPLATE = LAN_109." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href='mailto:".SITEADMINEMAIL."'>".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."
+$COPPA_TEMPLATE = LAN_109." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." ".js_obfuscate(SITEADMINEMAIL).LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."
 <br />
 <br />
 <div style='text-align:center'><b>".LAN_SIGNUP_17."</b>
