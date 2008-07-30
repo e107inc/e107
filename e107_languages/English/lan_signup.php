@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-06-13 20:20:22 $
+|     $Revision: 1.12 $
+|     $Date: 2008-07-30 19:46:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -85,7 +85,7 @@ define("LAN_SIGNUP_26", "Upload your photograph");
 define("LAN_SIGNUP_27", "Show");
 define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
 define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
-define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
+define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please select 'Yes' for the 'Hide email address?' option.");
 define("LAN_SIGNUP_31", "URL to your XUP file");
 define("LAN_SIGNUP_32", "What's an XUP file?");
 define("LAN_SIGNUP_33", "Type path or choose avatar");
