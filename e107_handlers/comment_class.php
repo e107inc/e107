@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2008-05-25 08:25:33 $
+|     $Revision: 1.75 $
+|     $Date: 2008-07-31 19:26:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -272,8 +272,8 @@ class comment {
 			$sub_query = "
 			SELECT c.*, u.*, ue.*
 			FROM #comments AS c
-			LEFT JOIN #user AS u ON c.comment_author = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
+			LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.comment_author,'.',1) = u.user_id
+			LEFT JOIN #user_extended AS ue ON SUBSTRING_INDEX(c.comment_author,'.',1) = ue.user_extended_id
 			WHERE comment_item_id='".intval($thisid)."' AND comment_type='".$tp -> toDB($type, true)."' AND comment_pid='".intval($comrow['comment_id'])."'
 			ORDER BY comment_datestamp
 			";
@@ -478,13 +478,13 @@ class comment {
 
 		$query = $pref['nested_comments'] ?
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author = u.user_id
-		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.comment_author,'.',1) = u.user_id
+		LEFT JOIN #user_extended AS ue ON SUBSTRING_INDEX(c.comment_author,'.',1) = ue.user_extended_id
 		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp -> toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
 		:
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author = u.user_id
-		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
+		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.comment_author,'.',1) = u.user_id
+		LEFT JOIN #user_extended AS ue ON SUBSTRING_INDEX(c.comment_author,'.',1) = ue.user_extended_id
 		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp -> toDB($type, true)."' ORDER BY c.comment_datestamp";
 
 		$text = "";
