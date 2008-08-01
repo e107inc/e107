@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-05-28 16:52:42 $
+|     $Revision: 1.16 $
+|     $Date: 2008-08-01 19:23:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -30,13 +30,14 @@ if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['tr
 
 	global $e107cache;
 	$members_totals = $e107cache->retrieve("online_menu_totals", 120);
-	if($members_totals == false) {
-		$total_members = $sql->db_Count("user");
-		$newest_member = $sql->db_Select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
-		$row = $sql->db_Fetch();
-		extract($row);
-		$members_totals = "<br />".ONLINE_L5.": ".$total_members.", ".ONLINE_L6.": <a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a>";
-		$e107cache->set("online_menu_totals", $members_totals);
+	if($members_totals == false) 
+	{
+	  $total_members = $sql->db_Count("user","(*)","where user_ban = 0");
+	  $newest_member = $sql->db_Select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
+	  $row = $sql->db_Fetch();
+	  extract($row);
+	  $members_totals = "<br />".ONLINE_L5.": ".$total_members.", ".ONLINE_L6.": <a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a>";
+	  $e107cache->set("online_menu_totals", $members_totals);
 	}
 	$text .= $members_totals;
 
