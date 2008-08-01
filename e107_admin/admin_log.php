@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-06-10 21:43:48 $
+|     $Revision: 1.16 $
+|     $Date: 2008-08-01 20:25:34 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -761,7 +761,7 @@ $sort_fields = array(
 			foreach (array(1,2,3,4,5,7,10,15,20,30) as $i)
 			{
 			  $selected = ($timelength == $i) ? " selected='selected'" : '';
-			  $text .= "<option value={$i}{$selected}>{$i}</option>\n";
+			  $text .= "<option value='{$i}'{$selected}>{$i}</option>\n";
 			}
 			$text .= "</select>\n".RL_LAN_093."</td>";
 		  $filter_cols = 4;
