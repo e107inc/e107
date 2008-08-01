@@ -2,7 +2,7 @@
 /*~ class.smtp.php
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
-|   Version: 2.0.0 rc1                                                      |
+|   Version: 2.0.2                                                          |
 |   Contact: via sourceforge.net support pages (also www.codeworxtech.com)  |
 |      Info: http://phpmailer.sourceforge.net                               |
 |   Support: http://sourceforge.net/projects/phpmailer/                     |
