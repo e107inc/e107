@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2008-07-17 19:31:25 $
+|     $Revision: 1.63 $
+|     $Date: 2008-08-03 08:00:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,8 @@ if(($pos = strpos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URL
 {
 	$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
 	$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url."?".$_SERVER['QUERY_STRING'] : $new_url;
-	Header("Location: ".$new_loc);
+	header("Location: ".$new_loc);
+	exit();
 }
 // If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
 $_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], ".php")) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
@@ -168,9 +169,11 @@ unset($inc_path);
 // F: Grab e107_config, get directory paths and create $e107 object
 //
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
-if(!isset($ADMIN_DIRECTORY)){
-	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
-	header("Location: install.php");
+if(!isset($ADMIN_DIRECTORY))
+{
+  // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
+  header("Location: install.php");
+  exit();
 }
 
 //
@@ -512,6 +515,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 	{
 		$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
 		header("Location:".$locat);
+		exit();
 	}
 
 }
@@ -723,8 +727,10 @@ $e107->ban();
 
 if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']))
 {
-	if(force_userupdate()) {
-		header("Location: ".e_BASE."usersettings.php?update");
+	if(force_userupdate()) 
+	{
+	  header("Location: ".e_BASE."usersettings.php?update");
+	  exit();
 	}
 }
 
@@ -747,7 +753,7 @@ if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SEL
 		$url = (e_QUERY) ? e_SELF."?".e_QUERY :  e_SELF;
 		session_set($afterlogin,$url,time()+300);
 	  	header("Location: ".e_HTTP."membersonly.php");
-		exit;
+		exit();
 	}
 }
 
@@ -757,7 +763,7 @@ if(USER && $pref['membersonly_enabled'] && ($_SESSION[e_COOKIE.'_afterlogin'] ||
 	$url = ($_SESSION[e_COOKIE.'_afterlogin']) ? $_SESSION[e_COOKIE.'_afterlogin'] : $_COOKIE[e_COOKIE.'_afterlogin'];
 	session_set(e_COOKIE.'_afterlogin',FALSE,-1000);
 	header("Location: ".$url);
-	exit;
+	exit();
 }
 // ------------------------------------------------------------------------
 
@@ -769,7 +775,7 @@ if(!isset($_E107['no_prunetmp']))
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
 	header("Location: ".SITEURL."sitedown.php");
-	exit;
+	exit();
 }
 
 $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
