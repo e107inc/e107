@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.20 $ 
-|     $Date: 2008-05-25 13:50:46 $
+|     $Revision: 1.21 $ 
+|     $Date: 2008-08-04 20:31:49 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -55,6 +55,9 @@ $template_load_core = '
   }
 ';
 
+$order_options = array('download_id','download_datestamp','download_requested','download_name','download_author');
+$sort_options = array('ASC', 'DESC');
+
 
 if (!e_QUERY || $_GET['elan'])
 {
@@ -83,7 +86,12 @@ else
   switch ($action)
   {
     case 'list' :	// Category-based listing
-	  if (isset($_POST['view'])) extract($_POST);
+	  if (isset($_POST['view'])) 
+	  {
+		$view = intval($_POST['view']);
+		$sort = varset($_POST['sort'],'DESC');
+		$order = varset($_POST['order'],'download_datestamp');
+	  }
 	  if (!isset($dl_from)) $dl_from = 0;
 
 	  // Get category type, page title
@@ -134,6 +142,9 @@ else
 	  exit;
   }
 }
+
+if (isset($order) && !in_array($order,$order_options)) unset($order);
+if (isset($sort)  && !in_array($sort,$sort_options)) unset($sort);
 
 if (!isset($order))	$order = varset($pref['download_order'],"download_datestamp");
 if (!isset($sort))	$sort =  varset($pref['download_sort'], "DESC");

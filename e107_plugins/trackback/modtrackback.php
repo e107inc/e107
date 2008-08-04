@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/modtrackback.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-07 20:38:10 $
+|     $Revision: 1.3 $
+|     $Date: 2008-08-04 20:31:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,16 +24,17 @@ if (!getperms("P") || !$pref['trackbackEnabled'])
 	exit;
 }
 require_once(e_ADMIN."auth.php");
-if (IsSet($_POST['moderate'])) {
-	extract($_POST);
-
-	if (is_array($trackback_delete)) {
-		while (list ($key, $cid) = each ($trackback_delete)) {
-			$sql->db_Delete("trackback", "trackback_id='$cid' ");
-		}
+if (IsSet($_POST['moderate'])) 
+{
+  if (is_array($_POST['trackback_delete'])) 
+  {
+	while (list ($key, $cid) = each ($_POST['trackback_delete'])) 
+	{
+	  $sql->db_Delete("trackback", "trackback_id='".intval($cid)."' ");
 	}
-	$ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");
-	$e107cache->clear("news.php");
+  }
+  $ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");
+  $e107cache->clear("news.php");
 }
 	
 $text = "<div style='text-align:center'>
