@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.95 $ 
-|     $Date: 2008-05-25 08:25:33 $
+|     $Revision: 1.96 $ 
+|     $Date: 2008-08-04 20:31:30 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -55,6 +55,9 @@ $template_load_core = '
   }
 ';
 
+$order_options = array('download_id','download_datestamp','download_requested','download_name','download_author');
+$sort_options = array('ASC', 'DESC');
+
 
 if (!e_QUERY || $_GET['elan'])
 {
@@ -83,7 +86,12 @@ else
   switch ($action)
   {
     case 'list' :	// Category-based listing
-	  if (isset($_POST['view'])) extract($_POST);
+	  if (isset($_POST['view'])) 
+	  {
+		$view = intval($_POST['view']);
+		$sort = varset($_POST['sort'],'DESC');
+		$order = varset($_POST['order'],'download_datestamp');
+	  }
 	  if (!isset($dl_from)) $dl_from = 0;
 
 	  // Get category type, page title
@@ -134,6 +142,9 @@ else
 	  exit;
   }
 }
+
+if (isset($order) && !in_array($order,$order_options)) unset($order);
+if (isset($sort)  && !in_array($sort,$sort_options)) unset($sort);
 
 if (!isset($order))	$order = varset($pref['download_order'],"download_datestamp");
 if (!isset($sort))	$sort =  varset($pref['download_sort'], "DESC");
@@ -549,8 +560,10 @@ if($action == "mirror")
 		extract($row);
 		$array = explode(chr(1), $download_mirror);
 
-		$c = (count($array)-1);
-		for ($i=1; $i<$c; $i++) {
+		// Shuffle the mirror list into a random order
+		$c = count($array) -1;		// Will always be an empty entry at the end
+		for ($i=1; $i<$c; $i++) 
+		{
 			$d = mt_rand(0, $i);
 			$tmp = $array[$i];
 			$array[$i] = $array[$d];
