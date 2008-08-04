@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-07-28 20:16:14 $
+|     $Revision: 1.10 $
+|     $Date: 2008-08-04 20:31:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -53,21 +53,33 @@ class poll
 		*/
 
 		global $tp, $sql;
-		extract($_POST);
 
-		$poll_title = $tp->toDB($poll_title);
+		$poll_title = $tp->toDB($_POST['poll_title']);
+		$poll_comment= $tp -> toDB($_POST['poll_comment']);
+		$multipleChoice = intval($_POST['multipleChoice']);
+		$showResults = intval($_POST['showResults']);
+		$pollUserclass =intval($_POST['pollUserclass']);
+		$storageMethod = intval($_POST['storageMethod']);
 		$active_start = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 		$active_end = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options = "";
 
-		foreach($poll_option as $key => $value)
+		foreach($_POST['poll_option'] as $key => $value)
 		{
-			$poll_options .= $tp->toDB($poll_option[$key]).chr(1);
+			$poll_options .= $tp->toDB($value).chr(1);
 		}
 
 		if(POLLACTION == "edit")
 		{
-			$sql -> db_Update("polls", "poll_title='$poll_title', poll_options='$poll_options', poll_type=$mode, poll_comment='".$tp -> toDB($poll_comment)."', poll_allow_multiple=".intval($multipleChoice).", poll_result_type=".intval($showResults).", poll_vote_userclass=".intval($pollUserclass).", poll_storage_method=".intval($storageMethod)." WHERE poll_id=".intval(POLLID));
+		  $sql -> db_Update("polls", "poll_title='{$poll_title}', 
+									  poll_options='{$poll_options}', 
+									  poll_comment='{$poll_comment}', 
+									  poll_type=$mode,
+									  poll_allow_multiple={$multipleChoice}, 
+									  poll_result_type={$showResults}, 
+									  poll_vote_userclass={$pollUserclass}, 
+									  poll_storage_method={$storageMethod}
+										WHERE poll_id=".intval(POLLID));
 
 			/* update poll results - bugtracker #1124 .... */
 			$sql -> db_Select("polls", "poll_votes", "poll_id='".intval(POLLID)."' ");
