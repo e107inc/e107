@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-02-18 01:58:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-06 19:10:42 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -417,7 +417,6 @@ class rssCreate {
 				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
-				<!-- test=\"".SITEDISCLAIMER."\" -->
 				<rss {$rss_namespace} version=\"2.0\">
 				<channel>
 				<title>".$tp->toRss($rss_title)."</title>
