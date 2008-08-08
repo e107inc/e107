@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-01 10:02:20 $
+|     $Revision: 1.3 $
+|     $Date: 2008-08-08 20:16:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -45,16 +45,23 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		</div>";
 	}
 
-	if (class_exists('e107table')) {
-		$ns = new e107table;
+	if (class_exists('e107table')) 
+	{
+	  $ns = new e107table;
 	}
-	switch($mode) {
-		case "CRITICAL_ERROR":
+	switch($mode) 
+	{
+	  case "CRITICAL_ERROR" :
 		$message = $emessage[$message] ? $emessage[$message] : $message;
+	    if (is_readable(e_THEME.'index.html'))
+		{
+		  require_once(e_THEME.'index.html');
+		  exit;
+		}
 		echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
 		break;
 
-		case "MESSAGE":
+	  case "MESSAGE":
 		if(strstr(e_SELF, "forum_post.php"))
 		{
 			return;

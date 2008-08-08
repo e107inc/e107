@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_error.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-07-25 20:12:31 $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-08 20:16:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ define("LAN_ERROR_27", "[3]: Core settings saved - backup made active.");
 define("LAN_ERROR_28", "[4]: No core backup found. Check that your database has valid content. If not, please run the <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.");
 define("LAN_ERROR_29", "[5]: Field(s) have been left blank. Please resubmit the form and fill in the required fields.");
 define("LAN_ERROR_30", "[6]: Unable to form a valid connection to mySQL. Please check that your e107_config.php contains the correct information.");
-define("LAN_ERROR_31", "[7]: mySQL is running but database ({$mySQLdefaultdb}) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.");
+define("LAN_ERROR_31", "[7]: mySQL is running but database ({$mySQLdefaultdb}) couldn't be connected to.<br />Please check it exists and that your configuration file contains the correct information.");
 define("LAN_ERROR_32", "To complete the upgrade, copy the following text into your e107_config.php file:");
 
 define("LAN_ERROR_33", "Processing error! Normally, I would redirect to the home page.");
@@ -51,8 +51,13 @@ define("LAN_ERROR_34", "Unknown error! Please inform the site administrator you 
 define('LAN_ERROR_35', 'Error 400 - Bad Request');
 define('LAN_ERROR_36', 'There is a formatting error in the web page you are trying to access.');
 define('LAN_ERROR_37', 'Error Icon');
-define('LAN_ERROR_38', '');
-define('LAN_ERROR_39', '');
+define('LAN_ERROR_38', 'Sorry, but the site is unavailable due to a temporary fault');
+define('LAN_ERROR_39', 'Please try again in a few minutes');
+define('LAN_ERROR_40', 'If the problem persists, please contact the site administrator');
+define('LAN_ERROR_41', 'The reported error is:');
+define('LAN_ERROR_42', 'Additional error information: ');
+define('LAN_ERROR_43', 'Site unavailable temporarily');
+define('LAN_ERROR_44', 'Site logo');
 
 
 ?>
