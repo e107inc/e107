@@ -1,5 +1,23 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/e107pdf.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-08 21:13:46 $
+|     $Author: e107steved $
++----------------------------------------------------------------------------+
+*/
 
+// Debug option - adds entries to rolling log (only works in 0.8)
 //define ('PDF_DEBUG', TRUE);
 define ('PDF_DEBUG', FALSE);
 
@@ -241,7 +259,7 @@ class e107PDF extends UFPDF{
 
 	if (PDF_DEBUG) 
 	{
-	  $admin_log->e_log_event(10,'split_vars',"DEBUG","PDF Trace","Write text: : ".$tp->toHTML('[code]'.$html.'[/code]',TRUE),FALSE,LOG_TO_ROLLING);
+//	  $admin_log->e_log_event(10,'split_vars',"DEBUG","PDF Trace","Write text: : ".$tp->toHTML('[code]'.$html.'[/code]',TRUE),FALSE,LOG_TO_ROLLING);
 	  $acc = array();
 	  foreach ($a as $ef) { $acc[] = strlen($ef); }
 	  $admin_log->e_log_event(10,'no_vars',"DEBUG","PDF Trace","Lengths:: ".implode(',',$acc),FALSE,LOG_TO_ROLLING);
@@ -255,46 +273,12 @@ class e107PDF extends UFPDF{
 			if($i%2==0)
 			{
 				//Text between tags
-				if($this->HREF){
+				if($this->HREF)
+				{
 					$this->PutLink($this->HREF,$e);
 					$this->HREF='';
-				}elseif(0 && $this->IMG){		// This bit shouldn't happen now
-					//correct url
-					if(is_readable($this->SRC)){
-						$file = trim($this->SRC);
-						$pos=strrpos($file,'.');
-						$type=substr($file,$pos+1);
-						$type=strtolower($type);
-						//for now only jpg, jpeg and png are supported
-						if($type=='jpg' || $type=='jpeg' || $type=='png')
-						{
-						  if ((strpos($file,'http') !== 0) && (strpos($file,'www.') !== 0))
-						  {  // Its a local file - possibly don't need to do anything at all!
-						    $url = $tp->replaceConstants($file);
-						  }
-/*							Old path-related stuff confused things
-							$url = str_replace("../", "", $this->SRC);
-							$imgsearch = array(e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER);
-							//e_BASE and e_ADMIN are not taken into account !
-							foreach($imgsearch as $p){
-								$p = str_replace("../", "", $p);
-								$l = strpos($url, $p);
-								if ($l !== false) {
-									$url = SITEURL.$url;
-								}
-							}  */
-							$this->Ln();		// Newline with 'default' height to avoid overlaying text
-							$this->PutImage($url,$scale);
-							$this->Ln(2);
-							$this->SetX($this->lMargin);
-						}
-					}
-					$this->IMG='';
-					$this->SRC='';
-					$this->WIDTH='';
-					$this->HEIGHT='';
-
-				}elseif($this->CENTER){
+				}
+				elseif($this->CENTER){
 					$this->Cell(0,5,$e,0,1,'C');
 				}elseif($this->ALIGN == 'center'){
 					$this->Cell(0,5,$e,0,1,'C');
@@ -347,7 +331,7 @@ class e107PDF extends UFPDF{
 
 	function OpenTag($tag,$attr,$scale)
 	{
-	  global $tp;
+	  global $tp, $e107;
 	  global $admin_log;
 	  
 		$tag = strtoupper($tag);
@@ -407,17 +391,19 @@ class e107PDF extends UFPDF{
 			case 'IMG':
 				if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Image tag found: ".$attr['SRC'],FALSE,LOG_TO_ROLLING);
 				$this->IMG=true;
-				$this->SRC=$attr['SRC'];
+				$this->SRC= e_BASE.str_replace($e107->http_path,'',$attr['SRC']);
 				$this->WIDTH=$attr['WIDTH'];
 				$this->HEIGHT=$attr['HEIGHT'];
 				// Its a 'closed' tag - so need to process it immediately
 				
+				if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Image tag noted: ".$this->SRC." W={$this->WIDTH}, H={$this->HEIGHT}",FALSE,LOG_TO_ROLLING);
 				if(is_readable($this->SRC))
 				{
 				  $file = trim($this->SRC);
 				  $pos=strrpos($file,'.');
 				  $type=substr($file,$pos+1);
 				  $type=strtolower($type);
+				if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Image file: {$file} Type: {$type}",FALSE,LOG_TO_ROLLING);
 					//for now only jpg, jpeg and png are supported
 				  if($type=='jpg' || $type=='jpeg' || $type=='png')
 				  {
@@ -426,6 +412,7 @@ class e107PDF extends UFPDF{
 					  $url = $tp->replaceConstants($file);
 					}
 					$this->Ln();		// Newline with 'default' height to avoid overlaying text
+				if (PDF_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","PDF Trace","Process Image file: {$url} Scale: {$scale}",FALSE,LOG_TO_ROLLING);
 					$this->PutImage($url,$scale);
 					$this->Ln(2);
 					$this->SetX($this->lMargin);
