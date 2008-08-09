@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-02-13 02:58:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-09 16:49:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -85,6 +85,19 @@ define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
 define("EPL_ADLAN_62", "Cancel uninstall");
 define("EPL_ADLAN_63", "Uninstall:");
 define("EPL_ADLAN_64", "Folder:");
+
+define ('EPL_ADLAN_70','Required plugin not installed: ');
+define ('EPL_ADLAN_71','Newer plugin version required: ');
+define ('EPL_ADLAN_72',' Version: ');
+define ('EPL_ADLAN_73','Required PHP extension not loaded: ');
+define ('EPL_ADLAN_74','Newer PHP version required: ');
+define ('EPL_ADLAN_75','Newer MySQL version required: ');
+define ('EPL_ADLAN_76','Error in plugin.xml');
+define ('EPL_ADLAN_77','Cannot find plugin.xml');
+define ('EPL_ADLAN_78','');
+define ('EPL_ADLAN_79','');
+define ('EPL_ADLAN_80','');
+
 
 define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
 define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
