@@ -11,9 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2008-07-25 19:26:32 $
+|     $Revision: 1.37 $
+|     $Date: 2008-08-09 16:49:50 $
 |     $Author: e107steved $
+
+Mods for extra plugin.xml variables
+
 +----------------------------------------------------------------------------+
 */
 
@@ -21,14 +24,33 @@ if (!defined('e107_INIT')) { exit; }
 
 class e107plugin
 {
-	var	$plugin_addons = array("e_rss", "e_notify", "e_linkgen", "e_list", "e_bb", "e_meta", "e_emailprint", "e_frontpage", "e_latest", "e_status", "e_search", "e_sc", "e_module", "e_comment", "e_sql", "e_userprofile","e_header");
+	var	$plugin_addons = array(
+		"e_rss", 
+		"e_notify", 
+		"e_linkgen", 
+		"e_list", 
+		"e_bb", 
+		"e_meta", 
+		"e_emailprint", 
+		"e_frontpage", 
+		"e_latest", 
+		"e_status", 
+		"e_search", 
+		"e_sc", 
+		"e_module", 
+		"e_comment", 
+		"e_sql", 
+		"e_userprofile",
+		"e_header"
+		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
+	// Deprecated in 0.8 (used in plugin.php only). Probably delete in 0.9
 	var $all_eplug_install_variables = array(
 	'eplug_link_url',
 	'eplug_link',
 	'eplug_prefs',
-	'eplug_array_pref',		// missing previously
+	'eplug_array_pref',
 	'eplug_table_names',
 	'eplug_sc',
 	'eplug_userclass',
@@ -42,6 +64,7 @@ class e107plugin
 	);
 
 	// List of all plugin variables involved in an update (not used ATM, but worth 'documenting')
+	// Deprecated in 0.8 (used in plugin.php only). Probably delete in 0.9
 	var $all_eplug_update_variables = array (
 	'upgrade_alter_tables',
 	'upgrade_add_eplug_sc',
@@ -121,10 +144,12 @@ class e107plugin
 			if(!$this->parse_plugin($p['path']))
 			{
 				//parsing of plugin.php/plugin.xml failed.
-				break;
+			  echo "Parsing failed - file format error: {$p['path']}<br />";
+			  continue;		// Carry on and do any others that are OK
 			}
 			$plug_info = $this->plug_vars;
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
+
 
 			// scan for addons.
 			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
@@ -171,6 +196,7 @@ class e107plugin
 				{  // New plugin - not in table yet, so add it. If no install needed, mark it as 'installed'
 					if ($plug_info['name'])
 					{
+//					  echo "New plugin to add: {$plug_info['name']}<br />";
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
 						$_installed = ($plug_info['installRequired'] == 'true' || $plug_info['installRequired'] == 1 ? 0 : 1 );
@@ -180,7 +206,7 @@ class e107plugin
 			}
 			else
 			{  // May be useful that we ignore what will usually be copies/backups of plugins - but don't normally say anything
-				//		    echo "Plugin copied to wrong directory. Is in: {$plugin_path} Should be: {$eplug_folder}<br /><br />";
+//						    echo "Plugin copied to wrong directory. Is in: {$plugin_path} Should be: {$plug_info['folder']}<br /><br />";
 			}
 		}
 
@@ -209,7 +235,7 @@ class e107plugin
 
 
 	/**
-	* Returns deatils of a plugin from the plugin table from it's ID
+	* Returns details of a plugin from the plugin table from it's ID
 	*
 	* @param int $id
 	* @return array plugin info
@@ -234,6 +260,8 @@ class e107plugin
 		}
 		return $getinfo_results[$id];
 	}
+
+
 
 	function manage_userclass($action, $class_name, $class_description)
 	{
@@ -287,6 +315,8 @@ class e107plugin
 		}
 	}
 
+
+
 	function manage_link($action, $link_url, $link_name, $link_class=0)
 	{
 		global $sql, $tp;
@@ -331,44 +361,80 @@ class e107plugin
 		}
 	}
 
-	function manage_prefs($action, $var)
+
+
+
+	// Update prefs array according to $action
+	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
+	function manage_prefs($action, $var, $prefType = 'pref', $path = '')
 	{
-		global $pref;
-		if (is_array($var))
+	  global $pref;
+	  if (!is_array($var)) return;
+	  if (($prefType == 'arrayPref') && ($path == '')) return;
+	  foreach($var as $k => $v)
+	  {
+		switch ($prefType)
 		{
+		  case 'pref' :
 			switch ($action)
 			{
-				case 'add' :
-				foreach($var as $k => $v)
-				{
-					$pref[$k] = $v;
-				}
+			  case 'add' :
+				$pref[$k] = $v;
 				break;
 
-				case 'update' :
-				foreach($var as $k => $v)
-				{	// Only update if $pref doesn't exist
-					if (!isset($pref[$k])) $pref[$k] = $v;
-				}
+			  case 'update' :
+				  // Only update if $pref doesn't exist
+				  if (!isset($pref[$k])) $pref[$k] = $v;
 				break;
 
-				case 'remove' :
-				foreach($var as $k => $v)
-				{
-					if (is_numeric($k))
-					{	// Sometimes arrays specified with value being the name of the key to delete
-						unset($pref[$var[$k]]);
-					}
-					else
-					{	// This is how the array should be specified - key is the name of the pref
-						unset($pref[$k]);
-					}
+			  case 'remove' :
+				if (is_numeric($k))
+				{	// Sometimes arrays specified with value being the name of the key to delete
+				  unset($pref[$var[$k]]);
+				}
+				else
+				{	// This is how the array should be specified - key is the name of the pref
+				  unset($pref[$k]);
 				}
 				break;
 			}
-			save_prefs();
+		  break;
+		  case 'listPref' :
+			$tmp = array();
+			if (isset($pref[$k])) $tmp = explode(',',$pref[$k]);
+			switch ($action)
+			{
+			  case 'add' :
+			  case 'update' :
+				if (!in_array($v,$tmp)) $tmp[] = $v;
+				break;
+			  case 'remove' :
+				if (($tkey = array_search($v,$tmp)) !== FALSE) unset($tmp[$tkey]);
+				break;
+			}
+			$pref[$k] = implode(',',$tmp);		// Leaves an empty element if no values - probably acceptable or even preferable
+			break;
+		  case 'arrayPref' :
+			switch($action)
+			{
+			  case 'add' :
+				$pref[$k][$path] = $v;
+				break;
+			  case 'update' :
+				if (!isset($pref[$k][$path])) $pref[$k][$path] = $v;
+				break;
+			  case 'remove' :
+				if (isset($pref[$k][$path])) unset($pref[$k][$path]);		// Leaves an empty element if no values - probably acceptable or even preferable
+				break;
+			}
+			break;
 		}
+	  }
+	  save_prefs();
 	}
+
+
+
 
 	function manage_comments($action, $comment_id)
 	{
@@ -437,6 +503,9 @@ class e107plugin
 	  }
 	}
 
+
+
+	// Handle prefs from arrays (mostly 0.7 stuff, possibly apart from the special cases)
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
 	{  // These prefs are 'cumulative' - several plugins may contribute an array element
 		global $pref;
@@ -478,6 +547,9 @@ class e107plugin
 		}
 		save_prefs();
 	}
+
+
+
 
 	function manage_search($action, $eplug_folder)
 	{
@@ -583,21 +655,25 @@ class e107plugin
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
 
+
+
+	//----------------------------------------------------------
+	//		Install routine for XML file
+	//----------------------------------------------------------
 	function manage_plugin_xml($id, $function='')
 	{
-		global $sql;
+		global $sql, $pref;
+
+		$error = array();			// Array of error messages
+		$canContinue = TRUE;		// Clear flag if must abort part way through
+
 		$id = (int)$id;
-		$plug = $this->getinfo($id);
+		$plug = $this->getinfo($id);			// Get plugin info from DB
 		$this->current_plug = $plug;
 		$txt = '';
 		$path = e_PLUGIN.$plug['plugin_path'].'/';
-		
-		$_folder = strtolower(preg_replace("#![a-zA-Z0-9]#", '', $plug['plugin_path']));
-		
-		//We'll just install using plugin.php file for now.
-		//return $this->install_plugin_php($path);
 
-		//New code to install using plugin.xml below.
+
 		$addons = explode(',', $plug['plugin_addons']);
 		$sql_list = array();
 		foreach($addons as $addon)
@@ -610,19 +686,85 @@ class e107plugin
 
 		if(!file_exists($path.'plugin.xml') || $function == '')
 		{
-			return false;
+		  $error[] = EPL_ADLAN_77;
+		  $canContinue = FALSE;
 		}
 
-		$error = array();
 
-		if($this->parse_plugin_xml($path))
+		if($canContinue && $this->parse_plugin_xml($path))
 		{
-			$plug_vars = $this->plug_vars;
+		  $plug_vars = $this->plug_vars;
 		}
 		else
 		{
-			return false;
+		  $error[] = EPL_ADLAN_76;
+		  $canContinue = FALSE;
 		}
+
+		// First of all, if installing or upgrading, check that any dependencies are met
+		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['depends']))
+		{
+		  foreach ($plug_vars['depends'] as $dt => $dv)
+		  {
+			if (isset($dv['@attributes']) && isset($dv['@attributes']['name']))
+			{
+			  switch ($dt)
+			  {
+				case 'plugin' :
+//				  echo "Check plugin dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
+				  if (!isset($pref['plug_installed'][$dv['@attributes']['name']])) 
+				  { // Plugin not installed
+					$canContinue = FALSE;
+					$error[] = EPL_ADLAN_70.$dv['@attributes']['name'];
+				  }
+				  elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],$pref['plug_installed'][$dv['@attributes']['name']],'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				case 'extension' :
+				  if (!extension_loaded($dv['@attributes']['name']))
+				  {
+					$canContinue = FALSE;
+					$error[] = EPL_ADLAN_73.$dv['@attributes']['name'];
+				  }
+				  elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],phpversion($dv['@attributes']['name']),'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				case 'PHP' :
+				  if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],phpversion(),'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_74.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				case 'MySQL' :
+				  if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],mysql_get_server_info(),'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_75.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				default :
+				  echo "Unknown dependency: {$dt}<br />";
+			  }
+			}
+		  }
+		}
+
+		// Temporary error handling - need to do something with this
+		if (!$canContinue)
+		{
+		  echo implode('<br />',$error);
+		  return false;
+		}
+
+
+		// All the dependencies are OK - can start the install now
 
 		// Let's call any custom pre functions defined in <management> section
 		$txt .= $this->execute_function($path, $function, 'pre');
@@ -671,8 +813,8 @@ class e107plugin
 				$attrib = $link['@attributes'];
 				switch($function)
 				{
-					case 'upgrade':
-					case 'install':
+				  case 'upgrade':
+				  case 'install':
 					// Add any active link
 					if(!isset($attrib['active']) || $attrib['active'] == 'true')
 					{
@@ -688,7 +830,7 @@ class e107plugin
 					}
 					break;
 
-					case 'uninstall':
+				  case 'uninstall':
 					//remove all links
 					$txt .= "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
 					$this->manage_link('remove', $attrib['url'], $attrib['name']);
@@ -700,37 +842,46 @@ class e107plugin
 		//main pref items
 		if(isset($plug_vars['mainPrefs']))
 		{
-			if(isset($plug_vars['mainPrefs']['pref']))
+		  foreach (array('pref','listPref','arrayPref') as $prefType)
+		  {
+			if(isset($plug_vars['mainPrefs'][$prefType]))
 			{
-				$list = $this->parse_prefs($plug_vars['mainPrefs']['pref']);
-				switch($function)
-				{
-					case 'install':
-					case 'upgrade':
+			  $list = $this->parse_prefs($plug_vars['mainPrefs'][$prefType]);
+			  switch($function)
+			  {
+				case 'install':
 					if(is_array($list['active']))
 					{
-						$txt .= "Adding prefs ".print_a($list['active'], true)."<br />";
-						$this->manage_prefs('add', $list['active']);
+						$txt .= "Adding {$prefType} prefs ".print_a($list['active'], true)."<br />";
+						$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path']);
+					}
+					break;
+				case 'upgrade':
+					if(is_array($list['active']))
+					{
+						$txt .= "Updating {$prefType} prefs ".print_a($list['active'], true)."<br />";
+						$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path']);		// This only adds prefs which aren't already defined
 					}
 
 					//If upgrading, removing any inactive pref
-					if($function == 'upgrade' && is_array($list['inactive']))
+					if(is_array($list['inactive']))
 					{
-						$txt .= "Removing prefs ".print_a($list['inactive'], true)."<br />";
-						$this->manage_prefs('remove', $list['inactive']);
+						$txt .= "Removing {$prefType} prefs ".print_a($list['inactive'], true)."<br />";
+						$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path']);
 					}
 					break;
 
 					//If uninstalling, remove all prefs (active or inactive)
-					case 'uninstall':
+				case 'uninstall':
 					if(is_array($list['all']))
 					{
-						$txt .= "Removing prefs ".print_a($list['all'], true)."<br />";
-						$this->manage_prefs('remove', $list['all']);
+						$txt .= "Removing {$prefType} prefs ".print_a($list['all'], true)."<br />";
+						$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path']);
 					}
 					break;
-				}
+			  }
 			}
+		  }
 		}
 
 		//Userclasses
@@ -769,7 +920,7 @@ class e107plugin
 			}
 		}
 		
-		//If and commentIDs are configured, we need to remove all comments on uninstall
+		//If any commentIDs are configured, we need to remove all comments on uninstall
 		if($function == 'uninstall' && isset($plug_vars['commentID']))
 		{
 			$commentArray = (is_array($plug_vars['commentID']) ? $plug_vars['commentID'] : array($plug_vars['commentID']));
@@ -779,7 +930,42 @@ class e107plugin
 
 		$this->manage_search($function, $plug_vars['folder']);
 		$this->manage_notify($function, $plug_vars['folder']);
-		
+
+
+		// Now any 'custom' values for update, language file definitions etc
+		if (isset($plug_vars['management']['upgradeCheck']))
+		{
+		  $tmp = $plug_vars['management']['upgradeCheck'];
+		  switch ($function)
+		  {
+		    case 'install' :
+			case 'upgrade' :
+			  $pref['upgradeCheck'][$plug['plugin_path']]['url'] = $tmp['@attributes']['url'];
+			  $pref['upgradeCheck'][$plug['plugin_path']]['method'] = varset($tmp['@attributes']['method'],'sf_news');
+			  break;
+			case 'uninstall' :
+			  unset($pref['upgradeCheck'][$plug['plugin_path']]);
+			  break;
+		  }
+		  unset($tmp);
+		}
+
+		if (isset($plug_vars['logLanguageFile']))
+		{
+		  switch ($function)
+		  {
+		    case 'install' :
+			case 'upgrade' :
+			  $pref['logLanguageFile'][$plug['plugin_path']] = $plug_vars['logLanguageFile']['@attributes']['filename'];
+			  break;
+			case 'uninstall' :
+			  unset($pref['logLanguageFile'][$plug['plugin_path']]);
+			  break;
+		  }
+		}
+		save_prefs();
+
+
 		// Let's call any custom post functions defined in <management> section
 		$txt .= $this->execute_function($path, $function, 'post');
 
@@ -796,6 +982,8 @@ class e107plugin
 		if($function == 'uninstall')
 		{
 			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['version']}' WHERE plugin_id = ".$id);
+			unset($pref['plug_installed'][$plug['plugin_path']]);
+			save_prefs();
 		}
 
 		if($function == 'install')
@@ -1178,6 +1366,7 @@ class e107plugin
 	}
 
 
+	// Entry point to read plugin configuration data
 	function parse_plugin($path, $force=false)
 	{
 		if(isset($this->parsed_plugin[$path]) && $force != true)
@@ -1200,6 +1389,8 @@ class e107plugin
 		return $ret;
 	}
 
+
+	// Called to parse the (deprecated) plugin.php file
 	function parse_plugin_php($path)
 	{
 		include($path.'plugin.php');
@@ -1230,6 +1421,9 @@ class e107plugin
 		return true;
 	}
 
+
+
+	// Called to parse the plugin.xml file if it exists
 	function parse_plugin_xml($path)
 	{
 		global $tp;
@@ -1238,6 +1432,7 @@ class e107plugin
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
+		if ($this->plug_vars === FALSE) return FALSE;
 //		print_a($this->plug_vars);
 //		$xml->loadXMLfile($path.'plugin.xml', true, true);
 //		$xml->xmlFileContents = $tp->replaceConstants($xml->xmlFileContents, '', true);
