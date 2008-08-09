@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2008-08-09 16:49:50 $
+|     $Revision: 1.38 $
+|     $Date: 2008-08-09 17:23:26 $
 |     $Author: e107steved $
 
 Mods for extra plugin.xml variables
@@ -1342,7 +1342,8 @@ class e107plugin
 		{
 			if(is_readable(e_PLUGIN.$plugin_path."/".$esql['fname']))
 			{
-				$p_addons[] = str_replace(".php","",$esql['fname']);
+			  $fname = str_replace(".php","",$esql['fname']);
+			  if (!in_array($fname, $p_addons)) $p_addons[] = $fname;		// Probably already found - avoid duplication
 			}
 		}
 

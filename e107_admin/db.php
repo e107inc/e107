@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-15 15:55:08 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2008-08-09 17:23:26 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -197,7 +197,7 @@ function plugin_viewscan()
 			  foreach(explode(',',$row['plugin_addons']) as $this_addon)
 			  {
 			    $ret_code = 3;		// Default to 'not checked
-			    if (strpos($this_addon,'e_') === 0)
+			    if ((strpos($this_addon,'e_') === 0) && (substr($this_addon,-4,4) != '_sql'))
 			    {
 //			      echo "Checking: ".$row['plugin_path'].":".$this_addon."<br />";
 			      $ret_code = $ep->checkAddon($row['plugin_path'],$this_addon);		// See whether spaces before opening tag or after closing tag
