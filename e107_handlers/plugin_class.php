@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2008-08-10 09:17:41 $
+|     $Revision: 1.40 $
+|     $Date: 2008-08-10 11:41:02 $
 |     $Author: e107steved $
 
 Mods for extra plugin.xml variables
@@ -149,7 +149,6 @@ class e107plugin
 			}
 			$plug_info = $this->plug_vars;
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
-
 
 			// scan for addons.
 			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
@@ -701,7 +700,14 @@ class e107plugin
 		  $canContinue = FALSE;
 		}
 
-		// First of all, if installing or upgrading, check that any dependencies are met
+
+		// First of all, see if there's a language file specific to install
+		if (isset($plug_vars['installLanguageFile']) && isset($plug_vars['installLanguageFile']['@attributes']['filename']))
+		{
+		  include_lan($path.$plug_vars['installLanguageFile']['@attributes']['filename']);
+		}
+
+		// Next most important, if installing or upgrading, check that any dependencies are met
 		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['depends']))
 		{
 		  foreach ($plug_vars['depends'] as $dt => $dv)
@@ -808,9 +814,10 @@ class e107plugin
 			{
 				$plug_vars['menuLink'] = array($plug_vars['menuLink']);
 			}
-			foreach($plug_vars['menuLink'] as $link)
+//			foreach($plug_vars['menuLink'] as $link)
+			foreach($plug_vars['menuLink'] as $attrib)
 			{
-				$attrib = $link['@attributes'];
+//				$attrib = $link['@attributes'];
 				switch($function)
 				{
 				  case 'upgrade':
@@ -818,9 +825,10 @@ class e107plugin
 					// Add any active link
 					if(!isset($attrib['active']) || $attrib['active'] == 'true')
 					{
+					  $addlink = e_PLUGIN.$attrib['url'];
 						$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
-						$txt .= "Adding link {$attrib['name']} with url [{$attrib['url']}] and perm {$perm} <br />";
-						$this->manage_link('add', $attrib['url'], $attrib['name'], $perm);
+						$txt .= "Adding link {$attrib['name']} with url [{$addlink}] and perm {$perm} <br />";
+						$this->manage_link('add', $addlink, $attrib['name'], $perm);
 					}
 					//remove inactive links on upgrade
 					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
