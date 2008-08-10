@@ -4,8 +4,8 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.2 $
-|	$Date: 2008-08-10 09:17:31 $
+|	$Revision: 1.3 $
+|	$Date: 2008-08-10 11:41:13 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -184,7 +184,7 @@ function makeXML($pluginDir, $extras=array())
   }
   $baseFolder .= '/';
   // 'commentID' tags needed
-  $adminText .= writeTag('configfile',$eplug_conffile,2);
+  $adminText .= writeTag('configFile',$eplug_conffile,2);
   $adminText .= writeTag('icon',str_replace($baseFolder,'',$eplug_icon),2);
   $adminText .= writeTag('iconSmall',str_replace($baseFolder,'',$eplug_icon_small),2);
   $adminText .= writeTag('caption',$eplug_caption,2);

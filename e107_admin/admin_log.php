@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-08-01 20:25:34 $
+|     $Revision: 1.17 $
+|     $Date: 2008-08-10 11:41:01 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -67,7 +67,16 @@ if (e_QUERY)
 
 $action = varset($qs[0],'adminlog');
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php');
+// Load language files for log messages
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php');		//... for core functions
+if (is_array($pref['logLanguageFile']))										//... and for any plugins which support it
+{
+  foreach($pref['logLanguageFile'] as $path => $file)
+  {
+    $file = str_replace('--LAN--',e_LANGUAGE,$file);
+	include_lan(e_PLUGIN.$path.'/'.$file);
+  }
+}
 
 
 
