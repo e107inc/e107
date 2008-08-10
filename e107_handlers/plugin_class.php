@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2008-08-10 11:41:02 $
+|     $Revision: 1.41 $
+|     $Date: 2008-08-10 16:06:15 $
 |     $Author: e107steved $
 
 Mods for extra plugin.xml variables
@@ -809,15 +809,14 @@ class e107plugin
 		//main menu items
 		if(isset($plug_vars['menuLink']))
 		{
-			//Ensure it is an array for use with foreach()
-			if(!is_array($plug_vars['menuLink']))
+			//Ensure it is the right sort of array for use with foreach()
+			if(count($plug_vars['menuLink']) <= 1)
 			{
 				$plug_vars['menuLink'] = array($plug_vars['menuLink']);
 			}
-//			foreach($plug_vars['menuLink'] as $link)
-			foreach($plug_vars['menuLink'] as $attrib)
+			foreach($plug_vars['menuLink'] as $link)
 			{
-//				$attrib = $link['@attributes'];
+				$attrib = $link['@attributes'];
 				switch($function)
 				{
 				  case 'upgrade':
@@ -1010,11 +1009,10 @@ class e107plugin
 		if($what == '' || $when == '') { return true; }
 		if(!isset($this->plug_vars['management'][$what])) { return true; }
 		$vars = $this->plug_vars['management'][$what];
-		if(!is_array($vars)) { $vars = array($vars); }
-//		foreach($vars as $var)
-		foreach($vars as $attrib)
+		if(count($vars) <= 1) { $vars = array($vars); }
+		foreach($vars as $var)
 		{
-//			$attrib = $var['@attributes'];
+			$attrib = $var['@attributes'];
 			if(isset($attrib['when']) && $attrib['when'] == $when)
 			{
 				if(is_readable($path.$attrib['file']))
@@ -1384,6 +1382,7 @@ class e107plugin
 			$this->plug_vars = $this->parsed_plugin[$path];
 			return true;
 		}
+		unset($this->parsed_plugin[$path]);		// In case forced parsing which fails
 		if(file_exists($path.'plugin.xml'))
 		{
 			$ret = $this->parse_plugin_xml($path);
@@ -1437,8 +1436,7 @@ class e107plugin
 	function parse_plugin_xml($path)
 	{
 		global $tp;
-		include_lan($path.'languages/'.e_LANGUAGE.'/lan_config.php');
-		include_lan($path.'languages/admin/'.e_LANGUAGE.'.php');
+		include_lan_admin($path);					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
