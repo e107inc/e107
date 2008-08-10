@@ -4,8 +4,8 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.1 $
-|	$Date: 2008-07-01 20:49:50 $
+|	$Revision: 1.2 $
+|	$Date: 2008-08-10 09:17:31 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -96,8 +96,8 @@ define('LAN_XMLGEN_38','');
 $managementOptions = array(
   'headings' => array('rowname' => '&nbsp;', 'when' => LAN_XMLGEN_30, 'type' => LAN_XMLGEN_25, 'file' => LAN_XMLGEN_28, 'class' => LAN_XMLGEN_34, 'function' => LAN_XMLGEN_29),
   'install' => array('rowname' => LAN_XMLGEN_17, 'when' => TRUE, 'type' => TRUE, 'file' => TRUE, 'class' => TRUE, 'function' => TRUE),
-  'uninstall' => array('rowname' => LAN_XMLGEN_19, 'when' => FALSE, 'type' => TRUE, 'file' => TRUE, 'class' => TRUE, 'function' => TRUE),
-  'upgrade' => array('rowname' => LAN_XMLGEN_18, 'when' => FALSE, 'type' => TRUE, 'file' => TRUE, 'class' => TRUE, 'function' => TRUE),
+  'uninstall' => array('rowname' => LAN_XMLGEN_19, 'when' => TRUE, 'type' => TRUE, 'file' => TRUE, 'class' => TRUE, 'function' => TRUE),
+  'upgrade' => array('rowname' => LAN_XMLGEN_18, 'when' => TRUE, 'type' => TRUE, 'file' => TRUE, 'class' => TRUE, 'function' => TRUE),
   'help' => array('rowname' => '&nbsp;', 'when' => '&nbsp;', 'type' => '&nbsp;', 'file' => LAN_XMLGEN_33, 'class' => LAN_XMLGEN_35, 'function' => '&nbsp;')
 );
 

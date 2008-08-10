@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2008-08-09 17:23:26 $
+|     $Revision: 1.39 $
+|     $Date: 2008-08-10 09:17:41 $
 |     $Author: e107steved $
 
 Mods for extra plugin.xml variables
@@ -1003,9 +1003,10 @@ class e107plugin
 		if(!isset($this->plug_vars['management'][$what])) { return true; }
 		$vars = $this->plug_vars['management'][$what];
 		if(!is_array($vars)) { $vars = array($vars); }
-		foreach($vars as $var)
+//		foreach($vars as $var)
+		foreach($vars as $attrib)
 		{
-			$attrib = $var['@attributes'];
+//			$attrib = $var['@attributes'];
 			if(isset($attrib['when']) && $attrib['when'] == $when)
 			{
 				if(is_readable($path.$attrib['file']))
