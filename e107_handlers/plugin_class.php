@@ -11,12 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2008-08-10 16:06:15 $
+|     $Revision: 1.42 $
+|     $Date: 2008-08-11 20:21:08 $
 |     $Author: e107steved $
-
-Mods for extra plugin.xml variables
-
 +----------------------------------------------------------------------------+
 */
 
@@ -365,13 +362,17 @@ class e107plugin
 
 	// Update prefs array according to $action
 	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
-	function manage_prefs($action, $var, $prefType = 'pref', $path = '')
+	function manage_prefs($action, $var, $prefType = 'pref', $path = '', $unEscape = FALSE)
 	{
 	  global $pref;
 	  if (!is_array($var)) return;
 	  if (($prefType == 'arrayPref') && ($path == '')) return;
 	  foreach($var as $k => $v)
 	  {
+		if ($unEscape)
+		{
+		  $v = str_replace(array('\{','\}'),array('{','}'),$v);
+		}
 		switch ($prefType)
 		{
 		  case 'pref' :
@@ -714,10 +715,10 @@ class e107plugin
 		  {
 			if (isset($dv['@attributes']) && isset($dv['@attributes']['name']))
 			{
+//			  echo "Check {$dt} dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
 			  switch ($dt)
 			  {
 				case 'plugin' :
-//				  echo "Check plugin dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
 				  if (!isset($pref['plug_installed'][$dv['@attributes']['name']])) 
 				  { // Plugin not installed
 					$canContinue = FALSE;
@@ -765,7 +766,7 @@ class e107plugin
 		// Temporary error handling - need to do something with this
 		if (!$canContinue)
 		{
-		  echo implode('<br />',$error);
+		  echo '<b>'.LAN_INSTALL_FAIL.'</b><br />'.implode('<br />',$error);
 		  return false;
 		}
 
@@ -860,21 +861,21 @@ class e107plugin
 					if(is_array($list['active']))
 					{
 						$txt .= "Adding {$prefType} prefs ".print_a($list['active'], true)."<br />";
-						$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path']);
+						$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path'], TRUE);
 					}
 					break;
 				case 'upgrade':
 					if(is_array($list['active']))
 					{
 						$txt .= "Updating {$prefType} prefs ".print_a($list['active'], true)."<br />";
-						$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path']);		// This only adds prefs which aren't already defined
+						$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path'], TRUE);		// This only adds prefs which aren't already defined
 					}
 
 					//If upgrading, removing any inactive pref
 					if(is_array($list['inactive']))
 					{
 						$txt .= "Removing {$prefType} prefs ".print_a($list['inactive'], true)."<br />";
-						$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path']);
+						$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path'], TRUE);
 					}
 					break;
 
@@ -883,7 +884,7 @@ class e107plugin
 					if(is_array($list['all']))
 					{
 						$txt .= "Removing {$prefType} prefs ".print_a($list['all'], true)."<br />";
-						$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path']);
+						$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path'], TRUE);
 					}
 					break;
 			  }
@@ -949,6 +950,7 @@ class e107plugin
 			case 'upgrade' :
 			  $pref['upgradeCheck'][$plug['plugin_path']]['url'] = $tmp['@attributes']['url'];
 			  $pref['upgradeCheck'][$plug['plugin_path']]['method'] = varset($tmp['@attributes']['method'],'sf_news');
+			  $pref['upgradeCheck'][$plug['plugin_path']]['id'] = varset($tmp['@attributes']['id'],$plug['plugin_path']);
 			  break;
 			case 'uninstall' :
 			  unset($pref['upgradeCheck'][$plug['plugin_path']]);

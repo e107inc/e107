@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-08-09 16:49:58 $
+|     $Revision: 1.6 $
+|     $Date: 2008-08-11 20:21:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -99,8 +99,9 @@ define ('EPL_ADLAN_79','');
 define ('EPL_ADLAN_80','');
 
 
-define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
-define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
+define('LAN_UPGRADE_SUCCESSFUL', 'Upgrade Successful');
+define('LAN_INSTALL_SUCCESSFUL', 'Installation Successful');
+define('LAN_INSTALL_FAIL', 'Installation Failed');
 
 
 ?>

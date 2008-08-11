@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-05-25 09:04:16 $
+|     $Revision: 1.17 $
+|     $Date: 2008-08-11 20:21:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -276,9 +276,16 @@ if ($action == 'uninstall')
 if ($action == 'install')
 {
 	$text = $plugin->install_plugin($id);
-	$plugin ->save_addon_prefs();
+	if ($text === FALSE)
+	{ // Tidy this up
+	  $ns->tablerender(LAN_INSTALL_FAIL, "Error messages above this line");
+	}
+	else
+	{
+	  $plugin ->save_addon_prefs();
 //	if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".LAN_CONFIGURE."]</a>"; }
-	$ns->tablerender(EPL_ADLAN_33, $text);
+	  $ns->tablerender(EPL_ADLAN_33, $text);
+	}
 }
 
 if ($action == 'upgrade')
