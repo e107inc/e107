@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-03-09 20:33:17 $
+|     $Revision: 1.7 $
+|     $Date: 2008-08-11 21:24:42 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -28,7 +28,7 @@ if (!getperms("P"))
 }
 	
 	
-include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
+include_lan_admin(e_PLUGIN.'calendar_menu');
 
 
 $message = "";
@@ -65,7 +65,7 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_editmode'] = $_POST['eventpost_editmode'];
 	save_prefs();
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
-	$message = EC_LAN_75; // "Calendar settings updated.";
+	$message = EC_ADLAN_A204; // "Calendar settings updated.";
 }
 
 // ****************** FORTHCOMING EVENTS ******************
@@ -169,10 +169,10 @@ if(isset($ec_qs[0]) && ($ec_qs[0] == "confdel"))
 	<tr>
 		<td class='forumheader3' style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A150.$old_string." </td>
 	</tr>
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdeleteold' value='".EC_LAN_50."' /></td></tr>
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdeleteold' value='".EC_ADLAN_A205."' /></td></tr>
 	</table></form></div>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_LAN_50."</div>", $text);
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text);
 }
 
 
@@ -185,10 +185,10 @@ if (isset($ec_qs[0]) && ($ec_qs[0] == "confcache"))
 	<tr>
 		<td class='forumheader3' style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A162." </td>
 	</tr>
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdelcache' value='".EC_LAN_50."' /></td></tr>
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdelcache' value='".EC_ADLAN_A205."' /></td></tr>
 	</table></form></div>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_LAN_50."</div>", $text);
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text);
 }
 
 

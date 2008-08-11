@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-08-11 20:21:08 $
+|     $Revision: 1.18 $
+|     $Date: 2008-08-11 21:24:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -521,7 +521,7 @@ function render_plugs($pluginList)
 				$text .= "&nbsp;&nbsp;[ <a href='{$plug_vars['authorUrl']}' title='{$plug_vars['authorUrl']}' >".EPL_WEBSITE."</a> ] ";
 			}
 			$text .="</td></tr>
-			<tr><td style='vertical-align:top'><b>".EPL_ADLAN_14."</b>:</td><td style='vertical-align:top'> {$plug_vars['description']}&nbsp;";
+			<tr><td style='vertical-align:top'><b>".EPL_ADLAN_14."</b>:</td><td style='vertical-align:top'> ".$tp->toHTML($plug_vars['description'], false, "defs,emotes_off, no_make_clickable")."&nbsp;";
 			if ($plug_vars['readme'])
 			{
 				$text .= "[ <a href='".e_PLUGIN.$plug['plugin_path']."/".$plug_vars['readme']."'>".$plug_vars['readme']."</a> ]";
