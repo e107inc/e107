@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ecal_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-06-24 20:28:26 $
+|     $Revision: 1.7 $
+|     $Date: 2008-08-11 21:24:42 $
 |     $Author: e107steved $
 |
 | Event calendar class:
@@ -269,13 +269,14 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	   //	2 - edit event
 	   //	3 - delete event
 	   // 	4 - Bulk delete
+	   //	5 - add multiple events
 	  global $pref, $admin_log, $e_event, $PLUGINS_DIRECTORY, $e107;
 	  
-	  $log_titles = array(	'1' => 'Event Calendar - add event',
-							'2' => 'Event Calendar - edit event',
-							'3' => 'Event Calendar - delete event',
-							'4' => 'Event Calendar - Bulk Delete',
-							'5' => 'Event Calendar - Multiple Add',
+	  $log_titles = array(	'1' => 'EC_ADM_01',
+							'2' => 'EC_ADM_02',
+							'3' => 'EC_ADM_03',
+							'4' => 'EC_ADM_04',
+							'5' => 'EC_ADM_05',
 							);
 // Do the notifies first
 	  $cmessage = $log_titles[$event_type]."<br />";
@@ -304,13 +305,13 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 		case 2 : break;   // Continue
 		default : return;   // Invalid or undefined option
 	  }
-	  $log_titles = array(	'1' => 'Event Calendar - add event '.strftime("%d-%B-%Y",$event_start),
+	  $log_detail = array(	'1' => 'Event Calendar - add event '.strftime("%d-%B-%Y",$event_start),
 							'2' => 'Event Calendar - edit event '.strftime("%d-%B-%Y",$event_start),
 							'3' => 'Event Calendar - delete event '.strftime("%d-%B-%Y",$event_start),
 							'4' => 'Event Calendar - Bulk Delete',
 							'5' => 'Event Calendar - multiple add '.strftime("%d-%B-%Y",$event_start)
 							);
-	  $admin_log->log_event($log_titles[$event_type],$event_title."&nbsp;\n".$event_string,4);
+	  $admin_log->log_event($log_titles[$event_type],$event_title."&nbsp;\n".$log_detail[$event_type]."\n".$event_string,'');
 	}
 
 
