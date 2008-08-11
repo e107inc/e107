@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.16 $
-|   $Date: 2008-08-10 16:06:15 $
+|   $Revision: 1.17 $
+|   $Date: 2008-08-11 20:45:01 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -459,13 +459,6 @@ function admin_purge_related($table, $id)
 	}
 }
 
-
-// Searches a defined set of paths and file names to load language files used for admin (including install etc)
-function include_lan_admin($path)
-{
-	include_lan($path.'languages/'.e_LANGUAGE.'/lan_config.php');
-	include_lan($path.'languages/admin/'.e_LANGUAGE.'.php');
-}
 
 
 $sql->db_Mark_Time('Parse Admin Header');
