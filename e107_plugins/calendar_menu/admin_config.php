@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-08-11 21:24:42 $
+|     $Revision: 1.8 $
+|     $Date: 2008-08-12 19:59:59 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -436,9 +436,9 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 				<td style='width:80%' class='forumheader3'>".r_userclass("event_cat_addclass", $event_cat_addclass, "off", 'public, nobody, member, admin, classes')."</td>
 			</tr>			
 			<tr>
-				<td class='forumheader3' style='width:20%'>".EC_LAN_55."</td><td class='forumheader3' >
+				<td class='forumheader3' style='width:20%'>".EC_ADLAN_A219."</td><td class='forumheader3' >
 					<input class='tbox' style='width:150px' id='caticon' type='text' name='ne_new_category_icon' value='".$event_cat_icon."' />
-					<input class='button' type='button' style='width: 45px; cursor:pointer;' value='".EC_LAN_90."' onclick='expandit(\"cat_icons\")' />
+					<input class='button' type='button' style='width: 45px; cursor:pointer;' value='".EC_ADLAN_A220."' onclick='expandit(\"cat_icons\")' />
 					<div style='display:none' id='cat_icons'>";
 					$fi = new e_file;
 					$imagelist = $fi->get_files(e_PLUGIN."calendar_menu/images", "\.\w{3}$");
@@ -497,7 +497,7 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 		$calendarmenu_text .= "
 				</td>
 			</tr>			
-			<tr><td colspan='2' style='text-align:center' class='fcaption'><input type='submit' name='submits' value='".EC_LAN_77."' class='button' /></td></tr>
+			<tr><td colspan='2' style='text-align:center' class='fcaption'><input type='submit' name='submits' value='".EC_ADLAN_A218."' class='button' /></td></tr>
 			</table>
 			</form>";
 		} 
@@ -650,7 +650,7 @@ if (!isset($pref['eventpost_namelink']))    $pref['eventpost_namelink'] = '1';
 	$text .= "</td>
 	</tr>
 	
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updateforthcoming' value='".EC_LAN_77."' /></td></tr>
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updateforthcoming' value='".EC_ADLAN_A218."' /></td></tr>
 	</table>
 	</form>
 	</div>";
@@ -803,16 +803,16 @@ if(!isset($ec_qs[0]) || (isset($ec_qs[0]) && $ec_qs[0] == "config"))
 	<form method='post' action='".e_SELF."'>
 	<table style='width:97%' class='fborder'><colgroup>
 	<col style='width:40%;vertical-align:top;' /><col style='width:60%;vertical-align:top;' /></colgroup>
-	<tr><td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_LAN_78." </td></tr>
+	<tr><td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_ADLAN_A207." </td></tr>
 	<tr>
-		<td class='forumheader3'>".EC_LAN_76." </td>
+		<td class='forumheader3'>".EC_ADLAN_A208." </td>
 		<td class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], "off", 'public, nobody, member, admin, classes')."
 		</td>
 	</tr>
 	";
 $text .= "
 	<tr>
-		<td class='forumheader3'>".EC_LAN_104." </td>
+		<td class='forumheader3'>".EC_ADLAN_A211." </td>
 		<td class='forumheader3'>". r_userclass("eventpost_super", $pref['eventpost_super'], "off",  'public, nobody, member, admin, classes')."
 		</td>
 	</tr>
@@ -833,8 +833,8 @@ $text .= "
 		<td class='forumheader3'>".EC_ADLAN_A165."</td>
 		<td class='forumheader3'>
 			<select name='eventpost_menulink' class='tbox'>
-			<option value='0' ".($pref['eventpost_menulink']=='0'?" selected='selected' ":"")." >".EC_LAN_80." </option>
-			<option value='1' ".($pref['eventpost_menulink']=='1'?" selected='selected' ":"")." >".EC_LAN_83." </option>
+			<option value='0' ".($pref['eventpost_menulink']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A209." </option>
+			<option value='1' ".($pref['eventpost_menulink']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A210." </option>
 			<option value='2' ".($pref['eventpost_menulink']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A185." </option>
 			</select>
 		</td>
@@ -852,7 +852,7 @@ $text .= "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_LAN_102."</td>
+		<td class='forumheader3'>".EC_ADLAN_A213."</td>
 		<td class='forumheader3'>
 		  <input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($pref['eventpost_forum']==1?" checked='checked' ":"")." />
 		  		<span class='smalltext'><em>".EC_ADLAN_A22."</em></span>
@@ -867,11 +867,11 @@ $text .= "
 	</tr>  
 
 	<tr>
-		<td class='forumheader3'>".EC_LAN_114."</td>
+		<td class='forumheader3'>".EC_ADLAN_A212."</td>
 		<td class='forumheader3'>".select_day_start($pref['eventpost_weekstart'])."</td>
 	</tr>
 	<tr>
-		<td class='forumheader3'>".EC_LAN_117."<br /></td>
+		<td class='forumheader3'>".EC_ADLAN_A214."<br /></td>
 		<td class='forumheader3'>
 			<select name='eventpost_lenday' class='tbox'>
 			<option value='1' ".($pref['eventpost_lenday']=='1'?" selected='selected' ":"")." > 1 </option>
@@ -882,11 +882,11 @@ $text .= "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_LAN_118."<br /></td>
+		<td class='forumheader3'>".EC_ADLAN_A215."<br /></td>
 		<td class='forumheader3'>
 			<select name='eventpost_dateformat' class='tbox'>
-			<option value='my' ".($pref['eventpost_dateformat']=='my'?" selected='selected' ":"")." >".EC_LAN_119."</option>
-			<option value='ym' ".($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." >".EC_LAN_120."</option>
+			<option value='my' ".($pref['eventpost_dateformat']=='my'?" selected='selected' ":"")." >".EC_ADLAN_A216."</option>
+			<option value='ym' ".($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." >".EC_ADLAN_A217."</option>
 			</select>
 		</td>
 	</tr>
@@ -1036,12 +1036,12 @@ $text .= "
 		</td>
 	</tr>
 
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' /></td></tr>
+	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updatesettings' value='".EC_ADLAN_A218."' /></td></tr>
 	</table>
 	</form>
 	</div>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_LAN_78."</div>", $text);
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A207."</div>", $text);
 }
 
 

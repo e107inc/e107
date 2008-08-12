@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-08-11 21:24:42 $
+|     $Revision: 1.6 $
+|     $Date: 2008-08-12 19:59:59 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -124,7 +124,7 @@ define('EC_LAN_51', "Event deleted.");
 define('EC_LAN_52', "Event Category:");
 define('EC_LAN_53', "Create new category?:");
 define('EC_LAN_54', "Name:");
-define('EC_LAN_55', "Icon:");
+//define('EC_LAN_55', "Icon:");
 define('EC_LAN_56', "Create");
 define('EC_LAN_57', "Event:");
 define('EC_LAN_58', "source info URL:");
@@ -144,14 +144,14 @@ define('EC_LAN_71', "Event Time:");
 define('EC_LAN_72', "Event Date:");
 define('EC_LAN_73', "End:");
 define('EC_LAN_74', "View Category");
-define('EC_LAN_76', "Events can be added by:");
-define('EC_LAN_77', "Update Settings");
-define('EC_LAN_78', "Calendar Settings");
+//define('EC_LAN_76', "Events can be added by:");
+//define('EC_LAN_77', "Update Settings");
+//define('EC_LAN_78', "Calendar Settings");
 define('EC_LAN_79', "Calendar View");
-define('EC_LAN_80', "Event List");
+//define('EC_LAN_80', "Event List");
 //define('EC_LAN_81', "Configure Event Calendar");
 //define('EC_LAN_82', "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.");
-define('EC_LAN_83', "Calendar");
+//define('EC_LAN_83', "Calendar");
 define('EC_LAN_84', " from ");	
 define('EC_LAN_85', " until ");
 define('EC_LAN_86', "Individual events from entry");
@@ -159,7 +159,7 @@ define('EC_LAN_87', "By checking this box you may generate a large number of ind
 define('EC_LAN_88', "You have chosen to generate -NUM- individual events.");
 define('EC_LAN_89', "If the entry is wrong, you will have to edit or delete the entries individually");
 
-define('EC_LAN_90', "Choose");	
+//define('EC_LAN_90', "Choose");	
 define('EC_LAN_91', "Admin must define first");	
 define('EC_LAN_92', "View Category");		
 define('EC_LAN_93', "View Events List");		
@@ -171,9 +171,9 @@ define('EC_LAN_98', "Required fields left blank");
 define('EC_LAN_99', "Event must either be an all day event or finish after it starts");			
 define('EC_LAN_100', "Invalid Category Selection");			
 //define('EC_LAN_101', "Set to inactive to disable on the new event form.");	
-define('EC_LAN_102', "Show link to 'more information' with events");
+//define('EC_LAN_102', "Show link to 'more information' with events");
 //define('EC_LAN_103', "On new event entry form.");	
-define('EC_LAN_104', "Calendar Administrator Class");		
+//define('EC_LAN_104', "Calendar Administrator Class");		
 define('EC_LAN_105', "* Required Field");		
 define('EC_LAN_106', "Events");	
 //define('EC_LAN_107', "This plugin is a fully featured event calendar with calendar menu.");		
@@ -183,13 +183,13 @@ define('EC_LAN_110', "Event Number ");
 define('EC_LAN_111', "All the events on ");	
 define('EC_LAN_112', "All the Events in ");	
 define('EC_LAN_113', "Event form already submitted.");
-define('EC_LAN_114', "Week starts with:");
+//define('EC_LAN_114', "Week starts with:");
 define('EC_LAN_115', "Sunday");
 define('EC_LAN_116', "Monday");
-define('EC_LAN_117', "Length of daynames (characters)");
-define('EC_LAN_118', "Date format in calendar header:");
-define('EC_LAN_119', "month/year");
-define('EC_LAN_120', "year/month");
+//define('EC_LAN_117', "Length of daynames (characters)");
+//define('EC_LAN_118', "Date format in calendar header:");
+//define('EC_LAN_119', "month/year");
+//define('EC_LAN_120', "year/month");
 define('EC_LAN_121', "Show Calendar");	
 
 define('EC_LAN_123', "Subscriptions");
