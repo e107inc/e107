@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-06-16 20:48:47 $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-12 20:26:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -446,6 +446,69 @@ class db_table_admin
 	}
 	$text .= "</table><br /><br />--Ends--<br />";
 	return $text;
+  }
+  
+
+
+
+  //--------------------------------------------------
+  //		Update a table to required structure
+  //--------------------------------------------------
+
+  // $newStructure is an array element as returned from get_table_def()
+  // If $mlUpdate is TRUE, applies same query to all tables of same language
+  // Return TRUE on success.
+  // Return text string if $justCheck is TRUE and changes needed
+  // Return text string on most failures
+  // Return FALSE on certain failures (generally indicative of code/system problems)
+  function update_table_structure($newStructure, $justCheck=FALSE, $makeNewifNotExist = TRUE, $mlUpdate = FALSE)
+  {
+    global $sql;
+	// Pull out table name
+	$tableName = $newStructure[1];
+	if (!$sql->db_Table_exists($tableName))
+	{
+		if ($makeNewifNotExist === FALSE) return 'Table doesn\'t exist';
+		if ($sql->db_Select_gen($newStructure[0])) return TRUE;
+		return 'Error creating new table: '.$tableName;
+	}
+	$reqFields = $this->parse_field_defs($newStructure[2]);					// Required field definitions
+	if (E107_DBG_FILLIN8) echo "Required table structure: <br />".$this->make_field_list($reqFields);
+
+	if ((($actualDefs = $this->get_current_table($tableName)) === FALSE) || !is_array($actualDefs))			// Get actual table definition (Adds current default prefix)
+	{
+	    return "Couldn't get table structure: {$tableName}<br />";
+	}
+	else
+	{
+//		echo $db_parser->make_table_list($actual_defs);
+		$actualFields = $this->parse_field_defs($actualDefs[0][2]);			// Split into field definitions
+		if (E107_DBG_FILLIN8) echo 'Actual table structure: <br />'.$this->make_field_list($actualFields);
+  
+		$diffs = $this->compare_field_lists($reqFields,$actualFields);		// Work out any differences
+		if (count($diffs[0]))
+		{  // Changes needed
+		  if ($justCheck) return 'Field changes rqd; table: '.$tableName.'<br />';
+		// Do the changes here 
+		  if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$this->make_changes_list($diffs);
+		  $qry = 'ALTER TABLE '.MPREFIX.$tableName.' '.implode(', ',$diffs[1]);
+		  if (E107_DBG_FILLIN8) echo 'Update Query used: '.$qry.'<br />';
+		  if ($mlUpdate)
+		  {
+			$ret = $sql->db_Query_all($qry);	// Returns TRUE = success, FALSE = fail
+		  }
+		  else
+		  {
+			$ret = $sql->db_Select_gen($qry);
+		  }
+		  if ($ret === FALSE)
+		  {
+			return $sql->dbError() ;
+		  }
+		}
+		return TRUE;		// Success even if no changes required
+	}
+	return FALSE;
   }
 }
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2008-08-11 20:21:08 $
+|     $Revision: 1.43 $
+|     $Date: 2008-08-12 20:26:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -452,14 +452,22 @@ class e107plugin
 		}
 	}
 
+
+
+	// Handle table updates - passed an array of actions.
+	// $var array:
+	//   For 'add' - its a query to create the table
+	//	 For 'upgrade' - its a query to modify the table
+	//	 For 'remove' - its a table name
+	//  'upgrade' and 'remove' operate on all language variants of the same table
 	function manage_tables($action, $var)
 	{
 	  global $sql;
+	  if (!is_array($var)) return FALSE;			// Return if nothing to do
+
 	  switch ($action)
 	  {
 		case 'add' :
-		  if (is_array($var))
-		  {
 			foreach($var as $tab)
 			{
 			  if (!$sql->db_Query($tab))
@@ -468,12 +476,8 @@ class e107plugin
 			  }
 			}
 			return TRUE;
-		  }
-		  return TRUE;
 		  break;
 		case 'upgrade' :
-			if (is_array($var))
-			{
 				foreach($var as $tab)
 				{
 					if (!$sql->db_Query_all($tab))
@@ -481,13 +485,9 @@ class e107plugin
 						return FALSE;
 					}
 				}
-				return TRUE;
-			}
 			return TRUE;
 		  break;
 		case 'remove' :
-			if (is_array($var))
-			{
 				foreach($var as $tab)
 				{
 					$qry = 'DROP TABLE '.MPREFIX.$tab;
@@ -497,10 +497,9 @@ class e107plugin
 					}
 				}
 				return TRUE;
-			}
-			return TRUE;
 		  break;
 	  }
+	  return FALSE;
 	}
 
 
@@ -773,40 +772,53 @@ class e107plugin
 
 		// All the dependencies are OK - can start the install now
 
-		// Let's call any custom pre functions defined in <management> section
-		$txt .= $this->execute_function($path, $function, 'pre');
+		if ($canContinue)
+		{	// Let's call any custom pre functions defined in <management> section
+			$txt .= $this->execute_function($path, $function, 'pre');
+		}
 
-		// tables
-		// This will load each _sql.php file found in the plugin directory and parse it.
-		if(($function == 'install' || $function == 'uninstall') && count($sql_list))
-		{
-			foreach($sql_list as $sql_file)
+		if ($canContinue && count($sql_list))
+		{	// Handle tables
+			require_once(e_HANDLER.'db_table_admin_class.php');
+			$dbHandler = new db_table_admin;
+			foreach($sql_list as $sqlFile)
 			{
-				if($sql_data = file_get_contents($path.$sql_file))
+				$tableList = $dbHandler->get_table_def('',$path.$sqlFile);
+				if (!is_array($tableList))
 				{
-					preg_match_all("/create(.*?)myisam.*?;/si", $sql_data, $result );
-					foreach ($result[0] as $sql_table)
+					$error[] = "Can't read SQL definition: ".$path.$sqlFile;
+					break;
+				}
+				// Got the required definition here
+				foreach ($tableList as $ct)
+				{ // Process one table at a time (but they could be multi-language)
+					switch($function)
 					{
-						preg_match("/CREATE TABLE(.*?)\(/si", $sql_table, $match);
-						$tablename = trim($match[1]);
-
-						if($function == 'uninstall' && isset($_POST['delete_tables']) && $_POST['delete_tables'])
-						{
-							$txt .= "Removing table $tablename <br />";
-							$this->manage_tables('remove', array($tablename));
-						}
-						if($function == 'install')
-						{
-							$sql_table = preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $sql_table);
-							$txt .= "Adding table: {$tablename} ... ";
-							$result = $this->manage_tables('add', array($sql_table));
-							$txt .= ($result ? "Success" : "Failed!")."<br />";
-						}
+						case 'install' :
+							$sqlTable = preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $ct[0]);
+							$txt .= "Adding table: {$ct[1]} ... ";
+							$result = $this->manage_tables('add', array($sqlTable));		// Pass the statement to create the table
+							$txt .= ($result ? "Success" : "Failed!").'<br />';
+							break;
+						case 'upgrade' :
+							$tmp = $dbHandler->update_table_structure($ct,FALSE,TRUE, $pref['multilanguage']);
+							if ($tmp === FALSE)
+							{
+								$error[] = "Unspecified error updating table: {$ct[1]}";
+							}
+							elseif ($tmp !== TRUE)
+							{
+								$error[] = $tmp;
+							}
+							break;
+						case 'uninstall' :
+							$txt .= "Removing table {$ct[1]} <br />";
+							$this->manage_tables('remove', array($ct[1]));				// Delete the table
+							break;
 					}
 				}
 			}
 		}
-
 		//main menu items
 		if(isset($plug_vars['menuLink']))
 		{
