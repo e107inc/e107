@@ -4,8 +4,8 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.3 $
-|	$Date: 2008-08-10 11:41:13 $
+|	$Revision: 1.4 $
+|	$Date: 2008-08-12 19:37:56 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -153,13 +153,14 @@ function makeXML($pluginDir, $extras=array())
   $destFile  = $pluginDir.'plugin.xml';
   $backFile  = $pluginDir.'plugin.bak';
   $baseFolder = substr($pluginDir,0,-1);
-  echo $baseFolder;
+//  echo $baseFolder;
   $baseFolder = substr($baseFolder,strrpos($baseFolder,'/')+1);
 //  echo "Transcribing from {$sourceFile} to {$destFile}...<br />";
   $adminText = '';
   $mainPrefText = '';
   $manageText = '';
   $fileText  = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<e107Plugin>\n";
+  $fileText .= '<!-- $'.'Id: plugin.xml,v 0.0 2008/06/26 20:44:10 e107steved Exp '.'$ -'."->\n";	// Split it to stop message getting edited when this file committed!
 
   if (!is_readable($sourceFile))
   {
