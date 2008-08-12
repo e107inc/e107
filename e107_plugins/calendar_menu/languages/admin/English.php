@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/admin/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-08-11 21:24:42 $
+|     $Revision: 1.2 $
+|     $Date: 2008-08-12 19:59:59 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -361,10 +361,30 @@ define('EC_ADLAN_A203', "WYSIWYG");
 define('EC_ADLAN_A204', 'Calendar settings updated.');
 define('EC_ADLAN_A205', 'Confirm Delete');
 define('EC_ADLAN_A206', 'This plugin is a fully featured event calendar with calendar menu.');
-define('EC_ADLAN_A207', '');
-define('EC_ADLAN_A208', '');
-define('EC_ADLAN_A209', '');
-define('EC_ADLAN_A210', '');
+define('EC_ADLAN_A207', 'Calendar Settings');
+define('EC_ADLAN_A208', 'Events can be added by:');
+define('EC_ADLAN_A209', 'Event List');
+define('EC_ADLAN_A210', 'Calendar');
+define('EC_ADLAN_A211', 'Calendar Administrator Class');
+define('EC_ADLAN_A212', 'Week starts with:');
+define('EC_ADLAN_A213', 'Show link to \'more information\' with events');
+define('EC_ADLAN_A214', 'Length of daynames (characters)');
+define('EC_ADLAN_A215', 'Date format in calendar header:');
+define('EC_ADLAN_A216', 'month/year');
+define('EC_ADLAN_A217', 'year/month');
+define('EC_ADLAN_A218', 'Update Settings');
+define('EC_ADLAN_A219', 'Icon:');
+define('EC_ADLAN_A220', 'Choose');
+define('EC_ADLAN_A221', '');
+define('EC_ADLAN_A222', '');
+define('EC_ADLAN_A223', '');
+define('EC_ADLAN_A224', '');
+define('EC_ADLAN_A225', '');
+define('EC_ADLAN_A226', '');
+define('EC_ADLAN_A227', '');
+define('EC_ADLAN_A228', '');
+define('EC_ADLAN_A229', '');
+define('EC_ADLAN_A230', '');
 
 /*
 // Notify

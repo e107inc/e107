@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <e107Plugin>
+<!-- $Id: plugin.xml,v 1.2 2008-08-12 19:59:59 e107steved Exp $ -->
 	<name>EC_ADLAN_1</name>
 	<version>3.70</version>
 	<author>jalist / cameron / McFly / Barry / Lisa_ / steved</author>
