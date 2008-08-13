@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-02-16 14:57:37 $
+|     $Revision: 1.6 $
+|     $Date: 2008-08-13 20:47:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ define("ADSTAT_L34", "Site Stats");
 define ('ADSTAT_L35', 'Options');
 define ('ADSTAT_L36', 'Data Export');
 define ('ADSTAT_L37', 'Create export file');
-define ('ADSTAT_L38', "You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)");
+define ('ADSTAT_L38', "You must set the e107_plugins/log/logs folder to be writable");
 define ('ADSTAT_L39', 'Stats Logging Functions');
 define ('ADSTAT_L40', 'Export log data');
 define ('ADSTAT_L41', 'Date selection');
@@ -98,7 +98,20 @@ define ('ADSTAT_L76', 'Caution! Once deleted, the data cannot be recovered. Back
 define ('ADSTAT_L77', 'Records deleted:');
 define ('ADSTAT_L78', 'Show previous month as well as current month for non-page access stats');
 define ('ADSTAT_L79', '(Only used if monthly stats collected)');
-define ('ADSTAT_L80', '');
+define ('ADSTAT_L80', 'The following pages were deleted:');
+define ('ADSTAT_L81', 'Statistics cleared:');
+define ('ADSTAT_L82', 'Following values now set:');
+define ('ADSTAT_L83', 'Following log ID entries removed:');
+define ('ADSTAT_L84', '');
+define ('ADSTAT_L85', '');
 
+// Messages for log entries
+define('LAN_AL_STAT_01', 'Stats - reset');
+define('LAN_AL_STAT_02', 'Stats - settings changed');
+define('LAN_AL_STAT_03', 'Stats - pages removed');
+define('LAN_AL_STAT_04', 'Stats - historic data removed');
+define('LAN_AL_STAT_05', '');
+define('LAN_AL_STAT_06', '');
+define('LAN_AL_STAT_07', '');
 
 ?>

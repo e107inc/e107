@@ -4,8 +4,8 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.4 $
-|	$Date: 2008-08-12 19:37:56 $
+|	$Revision: 1.5 $
+|	$Date: 2008-08-13 20:46:59 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -203,20 +203,26 @@ function makeXML($pluginDir, $extras=array())
 
 
   // Management section
-  $fileText .= TAB_CHAR."<management>\n";
+  $temp = '';
   foreach ($extras as $k => $v)
   {
     if (in_array($k,array('install','uninstall', 'upgrade')))
 	{
-	  $fileText .= TAB_CHAR.TAB_CHAR.'<'.$k;
+	  $temp1 = '';
 	  foreach (array('when','type','file','class','function') as $t)
 	  {
-	    if (isset($v[$t])) $fileText .= ' '.$t.'="'.$v[$t].'"';
+	    if (isset($v[$t])) $temp1 .= ' '.$t.'="'.$v[$t].'"';
 	  }
-	  $fileText .= ' />'."\n";
+	  if ($temp1)
+	  {
+		$temp .= TAB_CHAR.TAB_CHAR.'<'.$k.$temp1.' />'."\n";
+	  }
 	}
   }
-  $fileText .= TAB_CHAR."</management>\n";
+  if ($temp)
+  {	// Only add management section if something to add
+	$fileText .= TAB_CHAR."<management>\n".$temp.TAB_CHAR."</management>\n";
+  }
 
   
   $fileText .= "</e107Plugin>";	
@@ -278,7 +284,7 @@ if (isset($_POST['do_conversion']))
 	foreach ($v as $r => $s)
 	{
 	  $el_name = $k.'_'.$r;
-	  if (isset($_POST[$el_name]))
+	  if (varset($_POST[$el_name]))
 	  {
 	    switch ($r)
 		{
@@ -302,6 +308,10 @@ if (isset($_POST['do_conversion']))
 		    break;
 		}
 	  }
+	}
+	if (!isset($extras[$k]['file']) || (!isset($extras[$k]['function'])) || (isset($extras[$k]['type']) && ($extras[$k]['type'] == 'classFunction') && !isset($extras[$k]['class'])))
+	{
+		unset($extras[$k]);		// Incomplete definition
 	}
   }
 
