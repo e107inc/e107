@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2008-08-12 20:26:43 $
+|     $Revision: 1.44 $
+|     $Date: 2008-08-13 20:46:59 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -980,7 +980,7 @@ class e107plugin
 			  $pref['logLanguageFile'][$plug['plugin_path']] = $plug_vars['logLanguageFile']['@attributes']['filename'];
 			  break;
 			case 'uninstall' :
-			  unset($pref['logLanguageFile'][$plug['plugin_path']]);
+			  if (isset($pref['logLanguageFile'][$plug['plugin_path']])) unset($pref['logLanguageFile'][$plug['plugin_path']]);
 			  break;
 		  }
 		}

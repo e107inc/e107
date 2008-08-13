@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-04-25 19:17:59 $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-13 20:47:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -173,6 +173,7 @@ if(isset($_POST['remSelP']))
 //---------------------------------------------
 if(IsSet($_POST['wipeSubmit']))
 {
+	$logStr = '';
 	foreach($_POST['wipe'] as $key => $wipe)
 	{
 		switch($key)
@@ -201,7 +202,10 @@ if(IsSet($_POST['wipeSubmit']))
 				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statQuery' ");
 			break;
 		}
+		$logStr .= '[!br!]'.$key;
 	}
+	$admin_log->log_event('STAT_01',ADSTAT_L81.$logStr,'');
+
 	$message = ADSTAT_L25;
 }
 
@@ -214,19 +218,32 @@ if(!is_writable(LOGPATH."logs"))
 
 if (isset($_POST['updatesettings'])) 
 {
-	$pref['statActivate'] 	= $_POST['statActivate'];
-	$pref['statCountAdmin'] = $_POST['statCountAdmin'];
-	$pref['statUserclass'] 	= $_POST['statUserclass'];
-	$pref['statBrowser'] 	= intval($_POST['statBrowser']);
-	$pref['statOs'] 		= intval($_POST['statOs']);
-	$pref['statScreen'] 	= intval($_POST['statScreen']);
-	$pref['statDomain'] 	= intval($_POST['statDomain']);
-	$pref['statRefer'] 		= intval($_POST['statRefer']);
-	$pref['statQuery'] 		= intval($_POST['statQuery']);
-	$pref['statRecent'] 	= intval($_POST['statRecent']);
-	$pref['statDisplayNumber'] = $_POST['statDisplayNumber'];
-	$pref['statPrevMonth']  = intval($_POST['statPrevMonth']);
+  $statList = array(		// Type = 0 for direct text, 1 for integer
+	'statActivate' 		=> 0,
+	'statCountAdmin' 	=> 0,
+	'statUserclass' 	=> 0,
+	'statBrowser'		=> 1,
+	'statOs'			=> 1,
+	'statScreen' 		=> 1,
+	'statDomain' 		=> 1,
+	'statRefer' 		=> 1,
+	'statQuery' 		=> 1,
+	'statRecent' 		=> 1,
+	'statDisplayNumber' => 0,
+	'statPrevMonth'		=> 1
+  );
+  $logStr = '';
+  foreach ($statList as $k => $type)
+  {
+    switch ($type)
+	{
+	  case 0 : $pref[$k] = $_POST[$k]; break;
+	  case 1 : $pref[$k] = intval($_POST[$k]); break;
+	}
+	$logStr .= "[!br!]{$k} => ".$pref[$k];
+  }
 	save_prefs();
+	$admin_log->log_event('STAT_02',ADSTAT_L82.$logStr,'');
 	$message = ADSTAT_L17;
 }
 
@@ -535,14 +552,17 @@ switch ($action)
 	  if (isset($_POST['actually_delete']))
 	  {
 	    $delete_list = get_for_delete($keep_year,$keep_month);
+		$logStr = '';
 //	    $text .= "<tr><td class='forumheader3' colspan='2'>Data notionally deleted {$keep_month}-{$keep_year}</td></tr>";
 		$text .= "<tr><td class='forumheader3'>".ADSTAT_L77."</td><td class='forumheader3'>";
 		foreach ($delete_list as $k => $v)
 		{
 		  $sql->db_Delete('logstats',"log_id='{$k}'");
 		  $text .= $v."<br />";
+		  $logStr .= "[!br!]{$k} => ".$v;
 		}
 		$text .= "</td></tr>";
+		$admin_log->log_event('STAT_04',ADSTAT_L83.$logStr,'');
 	  }
 	$text .= "<tr><td class='forumheader3'>".ADSTAT_L70."</td>";
 	$text .= "<td class='forumheader3'><select class='tbox' name='delete_month'>\n";
@@ -768,7 +788,7 @@ function rempage()
 //---------------------------------------------
 function rempagego()
 {
-	global $sql;
+	global $sql, $admin_log;
 
 	$sql -> db_Select("logstats", "*", "log_id='pageTotal' ");
 	$row = $sql -> db_Fetch();
@@ -787,10 +807,11 @@ function rempagego()
 	}
 
 	$pagetotal = serialize($pageTotal);
-	if(!$sql -> db_Update("logstats", "log_data='$pagetotal' WHERE log_id='pageTotal' "))
+	if(!$sql -> db_Update("logstats", "log_data='{$pagetotal}' WHERE log_id='pageTotal' "))
 	{
-		$sql -> db_Insert("logstats", "0, 'pageTotal', '$pagetotal' ");
+		$sql -> db_Insert("logstats", "0, 'pageTotal', '{$pagetotal}' ");
 	}
+	$admin_log->log_event('STAT_03',ADSTAT_L80."[!br!]".implode("[!br!]",$_POST['remcb']),'');
 
 	$varStart = chr(36);
 	$quote = chr(34);
