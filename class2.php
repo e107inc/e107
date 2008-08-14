@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2008-08-11 20:45:01 $
-|     $Author: e107steved $
+|     $Revision: 1.65 $
+|     $Date: 2008-08-14 13:18:26 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 //
@@ -421,12 +421,6 @@ if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "sessi
 	}
 }
 
-
-//----------------------------
-//	Load shortcode handler
-//----------------------------
-// ********* This is probably a bodge! Work out what to do properly. Has to be done when $pref valid
-$tp->sch_load();
 
 // start a session if session based login is enabled
 if ($pref['user_tracking'] == "session")
@@ -941,6 +935,12 @@ else
 }
 
 
+//----------------------------
+//	Load shortcode handler
+//----------------------------
+// ********* This is probably a bodge! Work out what to do properly. Has to be done when $pref valid
+//FIXED - undefined $register_sc
+$tp->sch_load();
 
 
 $exclude_lan = array("lan_signup.php");  // required for multi-language.
