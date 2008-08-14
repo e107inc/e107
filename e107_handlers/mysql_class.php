@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-05-17 17:18:36 $
-|     $Author: e107steved $
+|     $Revision: 1.25 $
+|     $Date: 2008-08-14 22:34:06 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.24 $
-* @author $Author: e107steved $
+* @version $Revision: 1.25 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -362,6 +362,19 @@ class db {
 			global $db_ConnectionID;
         	$this->mySQLaccess = $db_ConnectionID;
 		}
+
+	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
+	  	{
+	   	 	$new_data = "";
+			$the_where = $arg['WHERE'];
+			unset($arg['WHERE']);
+			foreach ($arg as $fn => $fv)
+			{
+			  $new_data .= ($new_data) ? ", " : "";
+			  $new_data .= "`{$fn}`='{$fv}'";
+			}
+			$arg = $new_data ." WHERE ". $the_where;
+	   	}
 
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
 			$result = mysql_affected_rows($this->mySQLaccess);
