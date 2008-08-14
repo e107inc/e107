@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-10-12 19:54:34 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2008-08-14 22:58:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -483,8 +483,17 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	    foreach ($catlist as $thiscat)
 	    {  // Main categories
 			// Could add a display class to the group, but the default looked OK
-			$boxinfo .= "<optgroup label='".htmlspecialchars($thiscat['download_category_name'])."'>\n";
-		  	$scprefix = '';
+
+            if(count($catlist)>1)
+			{
+				$boxinfo .= "<optgroup label='".htmlspecialchars($thiscat['download_category_name'])."'>\n";
+		  		$scprefix = '';
+			}
+			else
+			{
+				$sel = ($cdc == $sc['download_category_id']) ? " selected='selected'" : "";
+            	$boxinfo .= "<option value='".$thiscat['download_category_id']."' {$sel}>".htmlspecialchars($thiscat['download_category_name'])."</option>\n";
+			}
 
 	      	foreach ($thiscat['subcats'] as $sc)
 	      	{  // Sub-categories
