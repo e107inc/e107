@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-06-24 20:53:07 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2008-08-14 11:23:10 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -134,8 +134,8 @@ if($_POST['menuActivate'])
 			{
 				$qry = "
 				INSERT into #menus
-				(`menu_name`, `menu_location`, `menu_order`, `menu_path`)
-				VALUES ('{$row['menu_name']}', {$location}, {$menu_count}, '{$row['menu_path']}')
+				(`menu_name`, `menu_location`, `menu_order`, `menu_pages`, `menu_path`)
+				VALUES ('{$row['menu_name']}', {$location}, {$menu_count}, '', '{$row['menu_path']}')
 				";
 				$sql->db_Select_gen($qry);
 				$menu_count++;
