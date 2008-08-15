@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2008-08-13 20:46:59 $
-|     $Author: e107steved $
+|     $Revision: 1.45 $
+|     $Date: 2008-08-15 13:15:11 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -795,7 +795,7 @@ class e107plugin
 					switch($function)
 					{
 						case 'install' :
-							$sqlTable = preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $ct[0]);
+							$sqlTable = str_replace("CREATE TABLE ".MPREFIX.'`', "CREATE TABLE `".MPREFIX, preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $ct[0]));
 							$txt .= "Adding table: {$ct[1]} ... ";
 							$result = $this->manage_tables('add', array($sqlTable));		// Pass the statement to create the table
 							$txt .= ($result ? "Success" : "Failed!").'<br />';
