@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<e107Plugin>
+<!-- $Id: plugin.xml,v 1.1 2008-08-16 16:25:45 e107steved Exp $ -->
+	<name>POLL_ADLAN01</name>
+	<version>2.0</version>
+	<author>Steve Dunstan (jalist)</author>
+	<authorUrl>http://e107.org</authorUrl>
+	<description>POLL_ADLAN02</description>
+	<compatibility>0.8</compatibility>
+	<installRequired>true</installRequired>
+	<folder>poll</folder>
+	<commentID>poll</commentID>
+	<administration>
+		<configFile>admin_config.php</configFile>
+		<icon>images/polls_32.png</icon>
+		<iconSmall>images/polls_16.png</iconSmall>
+		<caption>POLL_ADLAN03</caption>
+		<installDone>POLL_ADLAN04</installDone>
+	</administration>
+	<mainPrefs>
+	</mainPrefs>
+</e107Plugin>
