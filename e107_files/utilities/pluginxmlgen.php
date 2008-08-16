@@ -4,8 +4,8 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.5 $
-|	$Date: 2008-08-13 20:46:59 $
+|	$Revision: 1.6 $
+|	$Date: 2008-08-16 16:34:44 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -179,6 +179,14 @@ function makeXML($pluginDir, $extras=array())
   $fileText .= writeTag('readMe',$eplug_readme);
   $fileText .= writeTag('installRequired',$extras['installationrequired'] ? 'true' : 'false');
   $fileText .= writeTag('folder',$baseFolder);
+  if (isset($eplug_comment_ids) && is_array($eplug_comment_ids))
+  {
+	foreach ($eplug_comment_ids as $cid)
+	{
+		if (is_numeric($cid)) $cid = '***'.$baseFolder.$cid.'***';			// Should be text - so draw attention to it
+		$fileText .= writeTag('commentID', $cid);
+	}
+  }
   foreach ($extras as $k => $v)
   {
     if (in_array($k,array('copyright','update_url'))) $fileText .= writeTag($k,$v);
