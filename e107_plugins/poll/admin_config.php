@@ -11,19 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-11-01 22:46:19 $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-16 16:25:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
-if (!getperms("P")) {
+if (!getperms("P")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
 $e_sub_cat = 'poll';
 
+include_lan_admin('poll');
 require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."form_handler.php");

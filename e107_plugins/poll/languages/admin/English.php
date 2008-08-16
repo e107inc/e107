@@ -10,31 +10,32 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.3 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/admin/English.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2008-08-16 16:25:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
-//define("POLL_ADLAN01", "Poll");
-//define("POLL_ADLAN02", "The poll plugin allows you to define polls in either a menu or forum post.");
-//define("POLL_ADLAN03", "Configure polls");
-//define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remember to activate the menu item from your menus page.");
+define("POLL_ADLAN01", "Poll");
+define("POLL_ADLAN02", "The poll plugin allows you to define polls in either a menu or forum post.");
+define("POLL_ADLAN03", "Configure polls");
+define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remember to activate the menu item from your menus page.");
 
-//define("POLL_ADLAN05", "Main Poll: ");
-//define("POLL_ADLAN06", "Forum Thread: ");
-//define("POLL_ADLAN07", "Type");
+define("POLL_ADLAN05", "Main Poll: ");
+define("POLL_ADLAN06", "Forum Thread: ");
+define("POLL_ADLAN07", "Type");
 
 define("POLLAN_MENU_CAPTION", "Poll");
 
-//define("POLLAN_1", "Existing polls");
-//define("POLLAN_2", "Create / edit polls");
-//define("POLLAN_3", "Poll question");
-//define("POLLAN_4", "Options");
-//define("POLLAN_5", "Edit");
-//define("POLLAN_6", "Delete");
-//define("POLLAN_7", "No polls yet.");
+define("POLLAN_1", "Existing polls");
+define("POLLAN_2", "Create / edit polls");
+define("POLLAN_3", "Poll question");
+define("POLLAN_4", "Options");
+define("POLLAN_5", "Edit");
+define("POLLAN_6", "Delete");
+define("POLLAN_7", "No polls yet.");
+/*
 define("POLLAN_8", "Add another option");
 define("POLLAN_9", "Allow multiple choices?");
 define("POLLAN_10", "yes");
@@ -73,6 +74,7 @@ define("POLLAN_42", "This poll is restricted to administrators only");
 define("POLLAN_43", "You do not have the required permissions to vote in this poll");
 define("POLLAN_44", "Delete this poll?");
 define("POLLAN_45", "Poll successfully updated");
-//define("POLLAN_46", "Field(s) left blank");
+*/
+define("POLLAN_46", "Field(s) left blank");
 
 ?>
