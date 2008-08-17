@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/admin/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-08-16 16:25:45 $
+|     $Revision: 1.2 $
+|     $Date: 2008-08-17 11:54:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add 
 define("POLL_ADLAN05", "Main Poll: ");
 define("POLL_ADLAN06", "Forum Thread: ");
 define("POLL_ADLAN07", "Type");
+define("POLL_ADLAN08", "Poll deleted");
 
 define("POLLAN_MENU_CAPTION", "Poll");
 
@@ -73,8 +74,15 @@ define("POLLAN_41", "This poll is restricted to members only");
 define("POLLAN_42", "This poll is restricted to administrators only");
 define("POLLAN_43", "You do not have the required permissions to vote in this poll");
 define("POLLAN_44", "Delete this poll?");
-define("POLLAN_45", "Poll successfully updated");
 */
+define("POLLAN_45", "Poll successfully updated");
 define("POLLAN_46", "Field(s) left blank");
+
+// Log messages
+define('LAN_AL_POLL_01','Poll deleted');
+define('LAN_AL_POLL_02','Poll updated');
+define('LAN_AL_POLL_03','Poll added');
+define('LAN_AL_POLL_04','');
+define('LAN_AL_POLL_05','');
 
 ?>
