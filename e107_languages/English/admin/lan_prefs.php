@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-06-13 20:20:21 $
+|     $Revision: 1.13 $
+|     $Date: 2008-08-17 15:18:14 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -203,7 +203,9 @@ define('PRFLAN_191', '(md5 is usually adequate for an Intranet, and often for ot
 define('PRFLAN_192', 'Generate random predefined login names according to a pattern');
 define('PRFLAN_193', 'To allow users to set their own login names, leave blank');
 define('PRFLAN_194', '# - alpha<br />. - numeric<br />* - alphanumeric<br />Other chars used as entered');
-define('PRFLAN_195', '');
+define('PRFLAN_195', 'Changed values:');
+define('PRFLAN_196', '');
+define('PRFLAN_197', '');
 
 
 ?>
