@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2008-08-15 13:15:11 $
-|     $Author: secretr $
+|     $Revision: 1.46 $
+|     $Date: 2008-08-17 12:02:14 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -447,7 +447,7 @@ class e107plugin
 				$tmp[] = "comment_type='".$tp -> toDB($com, true)."'";
 			}
 			$qry = implode(" OR ",$tmp);
-			echo $qry."<br />";
+//			echo $qry."<br />";
 			return $sql->db_Delete('comments', $qry);
 		}
 	}
@@ -774,7 +774,8 @@ class e107plugin
 
 		if ($canContinue)
 		{	// Let's call any custom pre functions defined in <management> section
-			$txt .= $this->execute_function($path, $function, 'pre');
+			$ret = $this->execute_function($path, $function, 'pre');
+			if (!is_bool($ret)) $txt .= $ret;
 		}
 
 		if ($canContinue && count($sql_list))
@@ -987,8 +988,11 @@ class e107plugin
 		save_prefs();
 
 
-		// Let's call any custom post functions defined in <management> section
-		$txt .= $this->execute_function($path, $function, 'post');
+		if ($canContinue)
+		{	// Let's call any custom post functions defined in <management> section
+			$ret = $this->execute_function($path, $function, 'post');
+			if (!is_bool($ret)) $txt .= $ret;
+		}
 
 
 		$eplug_addons = $this->getAddons($plug['plugin_path']);
