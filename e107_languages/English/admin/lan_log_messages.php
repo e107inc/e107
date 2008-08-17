@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.9 2008-05-17 15:00:41 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.10 2008-08-17 15:18:14 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -99,6 +99,10 @@ define('LAN_ROLL_LOG_08','Excessive username length');
 define('LAN_ROLL_LOG_09','Banned user attempted login');
 define('LAN_ROLL_LOG_10','Login fail - reason unknown');
 define('LAN_ROLL_LOG_11','Admin login fail');
+
+// Prefs events
+//-------------
+define('LAN_AL_PREFS_01', 'Preferences changed');
 
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-06-29 16:40:31 $
+|     $Revision: 1.16 $
+|     $Date: 2008-08-17 15:18:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,17 +21,20 @@ include_once(e_HANDLER."userclass_class.php");
 include_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
 
-if (isset($_POST['newver'])) {
+if (isset($_POST['newver'])) 
+{
 	header("location:http://e107.org/index.php");
 	exit;
 }
 
-if (!getperms("1")) {
+if (!getperms("1")) 
+{
 	header("location:".e_BASE."index.php");
 	 exit;
 }
 $e_sub_cat = 'prefs';
-if (!$pref['timezone']) {
+if (!$pref['timezone']) 
+{
 	$pref['timezone'] = "GMT";
 }
 
@@ -64,6 +67,7 @@ if (isset($_POST['updateprefs']))
 	  'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10)
 	);
 
+	$prefChanges = array();
 	foreach($_POST as $key => $value)
 	{
 	  if (isset($pref_limits[$key]))
@@ -77,17 +81,32 @@ if (isset($_POST['updateprefs']))
 		{
 		  $value = $pref_limits[$key]['default'];
 		} 
-	    $pref[$key] = $value;
+	    $newValue = $value;
 	  }
 	  else
 	  {
-	    $pref[$key] = $tp->toDB($value);
+	    $newValue = $tp->toDB($value);
+	  }
+	  if ($newValue != $pref[$key])
+	  {	// Changed value
+		$pref[$key] = $newValue;
+		$prefChanges[$key] = $newValue;
 	  }
 	}
 
-	$e107cache->clear('',TRUE);
-	$saved = save_prefs();
-	$sql -> db_Select_gen("TRUNCATE ".MPREFIX."online");
+	if (count($prefChanges))
+	{	// Values have changed
+		$e107cache->clear('',TRUE);
+		$saved = save_prefs();
+		$logStr = '';
+		foreach ($prefChanges as $k => $v)
+		{
+			$logStr .= "[!br!]{$k} => {$v}";
+		}
+		$admin_log->log_event('PREFS_01',PRFLAN_195.$logStr,'');
+
+		$sql -> db_Select_gen("TRUNCATE ".MPREFIX."online");
+	}
 	if($saved)
 	{
 	  	header("location:".e_ADMIN."prefs.php?u");
@@ -108,14 +127,18 @@ if($sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' AND plugin_p
 	}
 }
 
-if ($authlist) {
+if ($authlist) 
+{
 	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
-	foreach($authlist as $a) {
+	foreach($authlist as $a) 
+	{
 		$s = ($pref['auth_method'] == $a ? " selected='selected' " : "");
 		$auth_dropdown .= "<option {$s}>".$a."</option>\n";
 	}
 	$auth_dropdown .= "</select>\n";
-} else {
+} 
+else 
+{
 	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />".PRFLAN_151;
 	$pref['auth_method'] = "";
 }
