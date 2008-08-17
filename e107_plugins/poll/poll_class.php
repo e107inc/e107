@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-08-04 20:31:49 $
+|     $Revision: 1.11 $
+|     $Date: 2008-08-17 11:54:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."poll/languages/English.php");
+@include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 define("POLLCLASS", TRUE);
 define("POLL_MODE_COOKIE", 0);
 define("POLL_MODE_IP", 1);
@@ -33,14 +32,15 @@ class poll
 
 	function delete_poll($existing)
 	{
-		global $sql;
+		global $sql, $admin_log;
 		if ($sql -> db_Delete("polls", " poll_id='".intval($existing)."' "))
 		{
 			if(function_exists("admin_purge_related"))
 			{
 				admin_purge_related("poll", $existing);
 			}
-			return "Poll deleted.";
+			$admin_log->log_event('POLL_01',POLL_ADLAN08.': '.$existing,'');
+			return POLL_ADLAN08;
 		}
 	}
 
@@ -52,7 +52,7 @@ class poll
 		$mode = 2 :: poll is forum poll
 		*/
 
-		global $tp, $sql;
+		global $tp, $sql, $admin_log;
 
 		$poll_title = $tp->toDB($_POST['poll_title']);
 		$poll_comment= $tp -> toDB($_POST['poll_comment']);
@@ -74,7 +74,7 @@ class poll
 		  $sql -> db_Update("polls", "poll_title='{$poll_title}', 
 									  poll_options='{$poll_options}', 
 									  poll_comment='{$poll_comment}', 
-									  poll_type=$mode,
+									  poll_type={$mode},
 									  poll_allow_multiple={$multipleChoice}, 
 									  poll_result_type={$showResults}, 
 									  poll_vote_userclass={$pollUserclass}, 
@@ -97,9 +97,11 @@ class poll
 				$sql -> db_Update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
 			}
 
+			$admin_log->log_event('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
 			$message = POLLAN_45;
-		} else {
-
+		} 
+		else 
+		{
 			$votes = "";
 			for($a=1; $a<=count($_POST['poll_option']); $a++)
 			{
@@ -117,7 +119,8 @@ class poll
 						$sql -> db_Update("polls", "poll_end_datestamp='".time()."', poll_vote_userclass='255' WHERE poll_id=".$deacpoll['poll_id']);
 					}
 				}
-				$sql -> db_Insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '$poll_title', '$poll_options', '$votes', '', '1', '".$tp -> toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
+				$ret = $sql -> db_Insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '{$poll_title}', '{$poll_options}', '{$votes}', '', '1', '".$tp -> toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
+				$admin_log->log_event('POLL_03','ID: '.$ret.' - '.$poll_title,'');		// Intentionally only log admin-entered polls
 			}
 			else
 			{

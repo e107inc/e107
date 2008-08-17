@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-08-16 16:25:45 $
+|     $Revision: 1.6 $
+|     $Date: 2008-08-17 11:54:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -31,9 +31,11 @@ require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 
-if(isset($_POST)) {
+if(isset($_POST)) 
+{
 	$_POST = strip_if_magic($_POST);
 }
+
 
 $rs = new form;
 $poll = new poll;
@@ -42,7 +44,8 @@ if (isset($_POST['reset']))
 {
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['multipleChoice'], $_POST['showResults'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear']);
 	define("RESET", TRUE);
-} else if (e_QUERY)
+} 
+elseif (e_QUERY)
 {
 	list($action, $id) = explode(".", e_QUERY);
 	define("POLLACTION", $action);
@@ -54,14 +57,16 @@ else
 	define("POLLID", FALSE);
 }
 
-if ($action == "delete") {
+
+if ($action == "delete") 
+{
 	$message = $poll->delete_poll($id);
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
+
 if (isset($_POST['submit']))
 {
-
 	if($_POST['poll_title'])
 	{
 		$message = $poll -> submit_poll();
@@ -73,10 +78,12 @@ if (isset($_POST['submit']))
 	}
 }
 
+
 if (POLLACTION == "edit" && !$_POST['preview'] && !$_POST['submit'])
 {
 
-	if ($sql->db_Select("polls", "*", "poll_id=".POLLID)) {
+	if ($sql->db_Select("polls", "*", "poll_id=".POLLID)) 
+	{
 		$row = $sql->db_Fetch();
 		extract($row);
 
@@ -130,7 +137,8 @@ if (isset($message))
 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 	<form action='".e_SELF."' method='post' id='del_poll'>";
 
-if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) {
+if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) 
+{
 	$text .= "<table class='fborder' style='width:99%'>
 		<tr>
 		<td style='width:5%' class='fcaption'>ID
