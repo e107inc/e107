@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-03-05 21:35:01 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2008-08-20 12:34:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,6 +45,7 @@ if (!USER) {
 	$LOGIN_TABLE_AUTOLOGIN_LAN = LAN_LOGIN_8;
 	$LOGIN_TABLE_SUBMIT = "<input class='button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
 
+	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	if (!$LOGIN_TABLE)
 	{
 		if (file_exists(THEME."login_template.php"))
@@ -59,7 +60,6 @@ if (!USER) {
 	$text = preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE);
 	echo preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_HEADER);
 
-	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	$ns->tablerender($login_message, $text, 'login_page');
 
 	$LOGIN_TABLE_FOOTER_USERREG = '&nbsp;';		// In case no registration system enabled
