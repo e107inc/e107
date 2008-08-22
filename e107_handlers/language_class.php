@@ -4,13 +4,15 @@
 |     e107 website system - Language Class.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/language_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-03-31 01:01:46 $
+|     $Revision: 1.11 $
+|     $Date: 2008-08-22 09:52:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 class language{
+
+// http://www.loc.gov/standards/iso639-2/php/code_list.php
 
 	var $list = array(
             "aa" => "Afar",
@@ -111,7 +113,7 @@ class language{
 	        "ng" => "Ndonga",
 	        "ne" => "Nepali",
 	        "nl" => "Dutch",
-	        "nb" => "Norwegian",
+	        "no" => "Norwegian",
 
 	        "ny" => "Chichewa",
 	        "or" => "Oriya",
