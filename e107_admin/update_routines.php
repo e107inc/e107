@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-07-25 19:26:32 $
+|     $Revision: 1.26 $
+|     $Date: 2008-08-23 09:08:56 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -31,9 +31,10 @@ require_once(e_HANDLER.'db_table_admin_class.php');
 // To do - how do we handle multi-language tables?
 
 // If following line uncommented, enables a test routine
-//define('TEST_UPDATE',TRUE);
+define('TEST_UPDATE',TRUE);
 $update_debug = FALSE;			// TRUE gives extra messages in places
 //$update_debug = TRUE;			// TRUE gives extra messages in places
+if (defined('TEST_UPDATE')) $update_debug = TRUE;
 
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
@@ -195,8 +196,50 @@ if (defined('TEST_UPDATE'))
 	//--------------**************---------------
 	// Add your test code in here
 	//--------------**************---------------
-
-
+	
+	// Check notify prefs
+	global $sysprefs, $eArrayStorage, $tp;
+	$notify_prefs = $sysprefs -> get('notify_prefs');
+	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+	$nt_changed = 0;
+	foreach ($notify_prefs['event'] as $e => $d)
+	{
+		if (isset($d['type']))
+		{
+			if ($just_check) return update_needed('Notify pref: '.$e.' outdated');
+			switch ($d['type'])
+			{
+				case 'main' :
+					$notify_prefs['event'][$e]['class'] = e_UC_MAINADMIN;
+					break;
+				case 'class' :		// Should already have class defined
+					break;
+				case 'email' :
+					$notify_prefs['event'][$e]['class'] = 'email';
+					break;
+				case 'off' :		// Need to disable
+				default :
+					$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
+			}
+			$nt_changed++;
+			unset($notify_prefs['event'][$e]['type']);
+			echo "Update value for {$e}<br />";
+		}
+	}
+	if ($nt_changed)
+	{
+		$s_prefs = $tp -> toDB($notify_prefs);
+		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
+		if ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") === FALSE)
+		{
+			echo "Error writing notify values<br />";
+		}
+		else
+		{
+			echo "Notify values written - {$nt_changed} updates<br />";
+		}
+	}
 	return $just_check;
   }
 }  // End of test routine
@@ -242,7 +285,7 @@ function update_706_to_800($type='')
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
 	{
-	  if ($just_check) return update_needed('Customtitle change');
+	  if ($just_check) return update_needed();
 	  $pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
 	  unset($pref['forum_user_customtitle']);
 	  $do_save = TRUE;
@@ -251,7 +294,7 @@ function update_706_to_800($type='')
 	//change menu_path for usertheme_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
 	{
-	  if ($just_check) return update_needed('usertheme_menu');
+	  if ($just_check) return update_needed();
 	  $sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='usertheme_menu' || menu_path='usertheme_menu/' ");
 	  catch_error();
 	}
@@ -259,7 +302,7 @@ function update_706_to_800($type='')
 	//change menu_path for userlanguage_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))
 	{
-	  if ($just_check) return update_needed('userlanguage_menu');
+	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='userlanguage_menu' || menu_path='userlanguage_menu/' ");
 		catch_error();
 	}
@@ -267,7 +310,7 @@ function update_706_to_800($type='')
 	//change menu_path for compliance_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu' || menu_path='compliance_menu/'"))
 	{
-	  if ($just_check) return update_needed('compliance_menu');
+	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='compliance_menu' || menu_path='compliance_menu/' ");
 		catch_error();
 	}
@@ -275,7 +318,7 @@ function update_706_to_800($type='')
 	//change menu_path for powered_by_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu' || menu_path='powered_by_menu/'"))
 	{
-	  if ($just_check) return update_needed('poweredby_menu');
+	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='powered_by_menu' || menu_path='powered_by_menu/' ");
 		catch_error();
 	}
