@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2008-08-17 12:02:14 $
+|     $Revision: 1.47 $
+|     $Date: 2008-08-23 09:08:57 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -637,7 +637,7 @@ class e107plugin
 			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
 			foreach ($config_events as $event_id => $event_text)
 			{
-				$notify_prefs['event'][$event_id] = array('type' => 'off', 'class' => '254', 'email' => '');
+				$notify_prefs['event'][$event_id] = array('class' => e_UC_NOBODY, 'email' => '');
 			}
 		}
 		else if ($uninstall_notify)
@@ -1164,10 +1164,6 @@ class e107plugin
 		$pref['plug_installed'][$plugin_path] = $plug['plugin_version'];
 		save_prefs();
 
-		if($rssmess)
-		{
-			$text .= $rssmess;
-		}
 		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 
 		return $text;
