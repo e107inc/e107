@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-08-23 09:08:56 $
+|     $Revision: 1.27 $
+|     $Date: 2008-08-24 09:56:57 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ require_once(e_HANDLER.'db_table_admin_class.php');
 // To do - how do we handle multi-language tables?
 
 // If following line uncommented, enables a test routine
-define('TEST_UPDATE',TRUE);
+//define('TEST_UPDATE',TRUE);
 $update_debug = FALSE;			// TRUE gives extra messages in places
 //$update_debug = TRUE;			// TRUE gives extra messages in places
 if (defined('TEST_UPDATE')) $update_debug = TRUE;
@@ -197,49 +197,6 @@ if (defined('TEST_UPDATE'))
 	// Add your test code in here
 	//--------------**************---------------
 	
-	// Check notify prefs
-	global $sysprefs, $eArrayStorage, $tp;
-	$notify_prefs = $sysprefs -> get('notify_prefs');
-	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
-	$nt_changed = 0;
-	foreach ($notify_prefs['event'] as $e => $d)
-	{
-		if (isset($d['type']))
-		{
-			if ($just_check) return update_needed('Notify pref: '.$e.' outdated');
-			switch ($d['type'])
-			{
-				case 'main' :
-					$notify_prefs['event'][$e]['class'] = e_UC_MAINADMIN;
-					break;
-				case 'class' :		// Should already have class defined
-					break;
-				case 'email' :
-					$notify_prefs['event'][$e]['class'] = 'email';
-					break;
-				case 'off' :		// Need to disable
-				default :
-					$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
-			}
-			$nt_changed++;
-			unset($notify_prefs['event'][$e]['type']);
-			echo "Update value for {$e}<br />";
-		}
-	}
-	if ($nt_changed)
-	{
-		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
-		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
-		if ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") === FALSE)
-		{
-			echo "Error writing notify values<br />";
-		}
-		else
-		{
-			echo "Notify values written - {$nt_changed} updates<br />";
-		}
-	}
 	return $just_check;
   }
 }  // End of test routine
@@ -253,7 +210,8 @@ function update_706_to_800($type='')
 	
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
-						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone');
+						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
+						'plug_sc', 'plug_bb');
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
@@ -281,6 +239,51 @@ function update_706_to_800($type='')
 	$do_save = FALSE;								// Set TRUE to update prefs when update complete
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
+
+
+	// Check notify prefs
+	global $sysprefs, $eArrayStorage, $tp;
+	$notify_prefs = $sysprefs -> get('notify_prefs');
+	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+	$nt_changed = 0;
+	foreach ($notify_prefs['event'] as $e => $d)
+	{
+		if (isset($d['type']))
+		{
+			if ($just_check) return update_needed('Notify pref: '.$e.' outdated');
+			switch ($d['type'])
+			{
+				case 'main' :
+					$notify_prefs['event'][$e]['class'] = e_UC_MAINADMIN;
+					break;
+				case 'class' :		// Should already have class defined
+					break;
+				case 'email' :
+					$notify_prefs['event'][$e]['class'] = 'email';
+					break;
+				case 'off' :		// Need to disable
+				default :
+					$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
+			}
+			$nt_changed++;
+			unset($notify_prefs['event'][$e]['type']);
+		}
+	}
+	if ($nt_changed)
+	{
+		$s_prefs = $tp -> toDB($notify_prefs);
+		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
+		if ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") === FALSE)
+		{
+			echo "Error writing notify values<br />";
+		}
+/*		else
+		{
+			echo "Notify values written - {$nt_changed} updates<br />";
+		} */
+	}
+
 
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))

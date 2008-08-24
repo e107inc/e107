@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_update.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-08-24 09:57:08 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,7 +56,7 @@ pm_block_count int(10) unsigned NOT NULL default '0',
 PRIMARY KEY  (pm_block_id)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;");
 
-$plugin -> manage_plugin_prefs('add', 'plug_sc', 'pm', 'SENDPM');
+//$plugin -> manage_plugin_prefs('add', 'plug_sc', 'pm', 'SENDPM');		// Obsolete pref
 
 pm_convert();
 
