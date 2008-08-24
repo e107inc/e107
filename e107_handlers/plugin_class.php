@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2008-08-23 09:08:57 $
+|     $Revision: 1.48 $
+|     $Date: 2008-08-24 09:56:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -49,10 +49,10 @@ class e107plugin
 	'eplug_prefs',
 	'eplug_array_pref',
 	'eplug_table_names',
-	'eplug_sc',
+//	'eplug_sc',				// Not used in 0.8 (or later 0.7)
 	'eplug_userclass',
 	'eplug_module',
-	'eplug_bb',
+//	'eplug_bb',				// Not used in 0.8 (or later 0.7)
 	'eplug_latest',
 	'eplug_status',
 	'eplug_comment_ids',
@@ -64,10 +64,10 @@ class e107plugin
 	// Deprecated in 0.8 (used in plugin.php only). Probably delete in 0.9
 	var $all_eplug_update_variables = array (
 	'upgrade_alter_tables',
-	'upgrade_add_eplug_sc',
-	'upgrade_remove_eplug_sc',
-	'upgrade_add_eplug_bb',
-	'upgrade_remove_eplug_bb',
+//	'upgrade_add_eplug_sc',				// Not used in 0.8 (or later 0.7)
+//	'upgrade_remove_eplug_sc',			// Not used in 0.8 (or later 0.7)
+//	'upgrade_add_eplug_bb',				// Not used in 0.8 (or later 0.7)
+//	'upgrade_remove_eplug_bb',			// Not used in 0.8 (or later 0.7)
 	'upgrade_add_prefs',
 	'upgrade_remove_prefs',
 	'upgrade_add_array_pref',
@@ -508,6 +508,7 @@ class e107plugin
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
 	{  // These prefs are 'cumulative' - several plugins may contribute an array element
 		global $pref;
+/*
 		if ($prefname == 'plug_sc' || $prefname == 'plug_bb')
 		{  // Special cases - shortcodes and bbcodes - each plugin may contribute several elements
 			foreach($varArray as $code)
@@ -517,9 +518,10 @@ class e107plugin
 		}
 		else
 		{
+*/
 			$prefvals[] = $varArray;
 			//			$prefvals[] = $plugin_folder;
-		}
+//		}
 		$curvals = explode(',', $pref[$prefname]);
 
 		if ($action == 'add')
@@ -1132,7 +1134,7 @@ class e107plugin
 				$this->manage_plugin_prefs('add', $key, $eplug_folder, $val);
 			}
 		}
-
+/*
 		if (is_array($eplug_sc))
 		{
 			$this->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
@@ -1142,7 +1144,7 @@ class e107plugin
 		{
 			$this->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
 		}
-
+*/
 		if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '')
 		{
 			$linkperm = (isset($eplug_link_perms) ? $eplug_link_perms : e_UC_PUBLIC);
@@ -1419,7 +1421,8 @@ class e107plugin
 		include($path.'plugin.php');
 		$ret = array();
 
-		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+//		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
 
 		$ret['version'] = varset($eplug_version);
 		$ret['name'] = varset($eplug_name);
