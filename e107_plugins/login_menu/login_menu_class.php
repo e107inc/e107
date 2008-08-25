@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-03-13 19:15:56 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-25 11:11:10 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -189,7 +189,7 @@ class login_menu_class
         global $menu_pref;
         
         $ret = '';
-        
+
         $lbox_infos = login_menu_class::parse_external_list(false);
         if(!varsettrue($lbox_infos['links'])) return '';
         
@@ -291,19 +291,33 @@ class login_menu_class
         return $ret;
     }
     
-    function get_plugin_data($plugid) {
-        
+    function get_plugin_data($plugid) 
+	{
         if(($tmp = getcachedvars('loginbox_eplug_data_'.$plugid)) !== FALSE) return $tmp;
 
         $ret = array();
-        if(is_readable(e_PLUGIN.$plugid.'/plugin.php')) {
+		if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
+		{
+			require_once(e_HANDLER.'xml_class.php');
+			$xml = new xmlClass;
+			$xml->filter = array('name' => FALSE,'version'=>FALSE);			// Just want a couple of variables
+			$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
+            $ret['eplug_name'] = defined($readFile['name']) ? constant($readFile['name']) : $readFile['name'];
+            $ret['eplug_version'] = $readFile['version'];
+		}
+		elseif (is_readable(e_PLUGIN.$plugid.'/plugin.php')) 
+		{
             
             include(e_PLUGIN.$plugid.'/plugin.php');
             $ret['eplug_name'] = defined($eplug_name) ? constant($eplug_name) : $eplug_name;
             $ret['eplug_version'] = $eplug_version;
-            cachevars('loginbox_eplug_data_'.$plugid, $ret);
         }
-        
+		else
+		{
+			return array();
+		}
+		// Valid data here
+		cachevars('loginbox_eplug_data_'.$plugid, $ret);
         return $ret;
     }
     
