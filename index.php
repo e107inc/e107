@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/index.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-01-12 16:51:43 $
+|     $Revision: 1.5 $
+|     $Date: 2008-08-25 15:25:12 $
 |     $Author: e107steved $
 
 Mods for prioritised system
@@ -53,7 +53,14 @@ else
 	if (in_array($fk,$class_list))
 	{
 		// Debateable whether we should append $query - we may be redirecting to a custom page, for example
-	  $location = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$fp.$query;
+		if (strpos($fp,'{') !== FALSE)
+		{
+			$location = $tp->replaceConstants($fp).$query;
+		}
+		else
+		{
+			$location = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$fp.$query;
+		}
 	  break;
 	}
   }
