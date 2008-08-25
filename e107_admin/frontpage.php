@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-04-04 21:40:37 $
+|     $Revision: 1.6 $
+|     $Date: 2008-08-25 15:25:12 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -99,6 +99,7 @@ if (isset($_POST['fp_inc']))
 	$fp_settings[$mv-1] = $fp_settings[$mv];
 	$fp_settings[$mv] = $temp;
 	$fp_update_prefs = TRUE;
+	frontpage_adminlog('01','Inc '.$mv);
   }
 }
 elseif (isset($_POST['fp_dec']))
@@ -110,6 +111,7 @@ elseif (isset($_POST['fp_dec']))
 	$fp_settings[$mv+1] = $fp_settings[$mv];
 	$fp_settings[$mv] = $temp;
 	$fp_update_prefs = TRUE;
+	frontpage_adminlog('01','Dec '.$mv);
   }
 }
 
@@ -190,11 +192,13 @@ if (isset($_POST['fp_save_new']))
 	  array_unshift($fp_settings,$temp);		// ....because re-indexed from zero
 	  unset($fp_settings[0]);					// Then knock out index zero
 	  $fp_update_prefs = TRUE;
+		frontpage_adminlog('02',"class => {$_POST['class']},[!br!]page => {$frontpage_value},[!br!]force => {$forcepage_value}");
 	}
 	elseif (array_key_exists($temp['order'],$fp_settings))
 	{
 	  $fp_settings[$temp['order']] = $temp;
 	  $fp_update_prefs = TRUE;
+		frontpage_adminlog('03',"posn => {$temp},[!br!]class => {$_POST['class']},[!br!]page => {$frontpage_value},[!br!]force => {$forcepage_value}");
 	}
 	else
 	{  // Someone playing games
@@ -208,6 +212,7 @@ if (isset($_POST['fp_delete_rule']))
   {
     $rule_no = key($_POST['fp_delete_rule']);
 	$array_size = count($fp_settings);
+	frontpage_adminlog('04',"Rule {$rule_no},[!br!]class => {$fp_settings[$rule_no]['class']},[!br!]page => {$fp_settings[$rule_no]['page']},[!br!]force => {$fp_settings[$rule_no]['force']}");
     unset($fp_settings[$rule_no]);
 	while ($rule_no < $array_size)
 	{  // Move up and renumber any entries after the deleted rule
@@ -478,5 +483,14 @@ class frontpage
 }
 
 require_once('footer.php');
+
+
+// Log event to admin log
+function frontpage_adminlog($msg_num='00', $woffle='')
+{
+  global $pref, $admin_log;
+  $admin_log->log_event('FRONTPG_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
+}
+
 
 ?>

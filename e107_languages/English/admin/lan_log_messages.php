@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.10 2008-08-17 15:18:14 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.11 2008-08-25 15:25:19 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -104,5 +104,15 @@ define('LAN_ROLL_LOG_11','Admin login fail');
 //-------------
 define('LAN_AL_PREFS_01', 'Preferences changed');
 
+
+// Front Page events
+//------------------
+define('LAN_AL_FRONTPG_00', 'Unknown front page-related event');
+define('LAN_AL_FRONTPG_01', 'Rules order changed');
+define('LAN_AL_FRONTPG_02', 'Rule added');
+define('LAN_AL_FRONTPG_03', 'Rule edited');
+define('LAN_AL_FRONTPG_04', 'Rule deleted');
+define('LAN_AL_FRONTPG_05', '');
+define('LAN_AL_FRONTPG_06', '');
 
 ?>
