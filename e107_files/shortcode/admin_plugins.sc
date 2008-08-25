@@ -1,6 +1,12 @@
-if (ADMIN) {
+/*
+* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
+* $Id: admin_plugins.sc,v 1.3 2008-08-25 13:34:45 e107steved Exp $
+*/
+if (ADMIN) 
+{
 	global $e107_plug, $ns, $pref;
-	if ($pref['admin_alerts_ok'] == 1) {
+	if ($pref['admin_alerts_ok'] == 1) 
+	{
 		ob_start();
 		$text = "";
 		$i = 0;
