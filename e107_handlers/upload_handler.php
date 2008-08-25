@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.15 $
-|   $Date: 2008-07-06 21:25:31 $
+|   $Revision: 1.16 $
+|   $Date: 2008-08-25 10:46:33 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -701,7 +701,15 @@ function get_XML_filetypes($def_file = FALSE, $file_mask = '')
 	require_once(e_HANDLER.'xml_class.php');
 	$xml = new xmlClass;
 	$temp_vars = $xml->loadXMLfile(e_ADMIN.$def_file, true, false);
-	if ($temp_vars === FALSE) return $ret;
+	if ($temp_vars === FALSE) 
+	{
+		echo "Error reading XML file: {$def_file}<br />";
+		return $ret;
+	}
+	if (count($temp_vars['class']) == 1)
+	{
+		$temp_vars['class'] = array($temp_vars['class']);
+	}
 	foreach ($temp_vars['class'] as $v1)
 	{
 	  $v = $v1['@attributes'];
@@ -769,7 +777,7 @@ function get_filetypes($file_mask = FALSE, $filename = '')
   {
 	if (strtolower(substr($filename) == '.xml'))
 	{
-	  return get_allowed_filetypes($filename, $file_mask);
+	  return get_XML_filetypes($filename, $file_mask);
 	}
 	return get_allowed_filetypes($filename, $file_mask);
   }

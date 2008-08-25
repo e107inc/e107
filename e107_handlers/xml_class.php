@@ -11,20 +11,32 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-03-20 23:05:21 $
+|     $Revision: 1.8 $
+|     $Date: 2008-08-25 10:46:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
-/*
-Update 20.3.08:
-  1. Configurable timeout in call
-  2. Sets socket timeout if possible on socket-based protocols
-*/
 class xmlClass
 {
 	var $xmlFileContents;
+	var $filter;					// Optional filter for loaded XML
+									// Set to FALSE if not enabled (default position)
+									// Otherwise mirrors the required subset of the loaded XML - set a field FALSE to accept all 
+									// ...elements lower down the tree. e.g.:
+									// $filter = array(
+									//		'name' => FALSE,
+									//		'administration' => FALSE,
+									//		'management' => array('install' => FALSE)
+									//		);
+
+
+	// Constructor - set defaults
+	function xmlClass()
+	{
+		$this->xmlFileContents = '';
+		$this->filter = FALSE;
+	}
 
 	function getRemoteFile($address, $timeout=10)
 	{
@@ -116,21 +128,39 @@ class xmlClass
 		{
 			$xml = (array)$xml;
 		}
-		$xml = $this->xml_convert_to_array($xml);
+		$xml = $this->xml_convert_to_array($xml, $this->filter);
 		return $xml;
 	}
 
-	function xml_convert_to_array($xml)
+	function xml_convert_to_array($xml, $localFilter = FALSE)
 	{
 		if(is_array($xml))
 		{
 			foreach($xml as $k => $v)
 			{
-				if(is_object($v))
+				$enabled = FALSE;
+				if ($localFilter === FALSE)
 				{
-					$v = (array)$v;
+					$enabled = TRUE;
+					$onFilter = FALSE;
 				}
-				$xml[$k] = $this->xml_convert_to_array($v);
+				elseif (isset($localFilter[$k]))
+				{
+					$enabled = TRUE;
+					$onFilter = $localFilter[$k];
+				}
+				if ($enabled)
+				{
+					if(is_object($v))
+					{
+						$v = (array)$v;
+					}
+					$xml[$k] = $this->xml_convert_to_array($v, $onFilter);
+				}
+				else
+				{
+					unset($xml[$k]);
+				}
 			}
 			if(count($xml) == 1 && isset($xml[0]))
 			{
@@ -140,9 +170,10 @@ class xmlClass
 		return $xml;
 	}
 
+
+
 	function loadXMLfile($fname='', $parse = false, $replace_constants = false)
 	{
-
 		if($fname == '')
 		{
 			return false;
@@ -174,7 +205,7 @@ class xmlClass
 			}
 			if($parse == true)
 			{
-				return $this->parseXML();
+				return $this->parseXML('');
 			}
 			else
 			{

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-08-12 20:26:53 $
+|     $Revision: 1.8 $
+|     $Date: 2008-08-25 10:46:46 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -148,7 +148,7 @@ define('EC_LAN_74', "View Category");
 //define('EC_LAN_77', "Update Settings");
 //define('EC_LAN_78', "Calendar Settings");
 define('EC_LAN_79', "Calendar View");
-//define('EC_LAN_80', "Event List");
+define('EC_LAN_80', "Event List");
 //define('EC_LAN_81', "Configure Event Calendar");
 //define('EC_LAN_82', "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.");
 define('EC_LAN_83', "Calendar");

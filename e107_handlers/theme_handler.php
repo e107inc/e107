@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-05-25 09:04:16 $
+|     $Revision: 1.10 $
+|     $Date: 2008-08-25 10:46:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -397,12 +397,12 @@ class themeHandler{
 
 			$adminstyles = $file -> get_files(e_ADMIN."includes");
 
-			$astext = "<select id='mode2' name='adminstyle' class='tbox'>\n";
+			$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
 
 			foreach($adminstyles as $as)
 			{
 				$style = str_replace(".php", "", $as['fname']);
-				$astext .= "<option".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
+				$astext .= "<option value='{$style}'".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
 			}
 			$astext .= "</select>";
 
@@ -446,7 +446,7 @@ class themeHandler{
 		$themeArray = $this -> getThemes("id");
 		$pref['sitetheme'] = $themeArray[$this -> id];
 		$pref['themecss'] ='style.css';
-		$e107cache->clear();
+		$e107cache->clear_sys();
 		save_prefs();
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
 	}
@@ -457,7 +457,7 @@ class themeHandler{
 		$themeArray = $this -> getThemes("id");
 		$pref['admintheme'] = $themeArray[$this -> id];
 		$pref['admincss'] = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
-		$e107cache->clear();
+		$e107cache->clear_sys();
 		save_prefs();
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
 	}
@@ -467,7 +467,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$pref['themecss'] = $_POST['themecss'];
 		$pref['image_preload'] = $_POST['image_preload'];
-		$e107cache->clear();
+		$e107cache->clear_sys();
 		save_prefs();
 		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_37.".</div><br />");
 	}
@@ -477,7 +477,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$pref['admincss'] = $_POST['admincss'];
 		$pref['adminstyle'] = $_POST['adminstyle'];
-		$e107cache->clear();
+		$e107cache->clear_sys();
 		save_prefs();
 		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_43.".</div><br />");
 	}
