@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<e107Plugin>
+<!-- $Id: plugin.xml,v 1.1 2008-08-25 13:43:08 e107steved Exp $ -->
+	<name>ADSTAT_L3</name>
+	<version>2.1</version>
+	<author>jalist</author>
+	<authorUrl>http://e107.org</authorUrl>
+	<authorEmail>jalist@e107.org</authorEmail>
+	<description>ADSTAT_L1</description>
+	<compatibility>e107v0.7</compatibility>
+	<installRequired>true</installRequired>
+	<folder>log</folder>
+	<logLanguageFile filename="languages/admin/--LAN--.php" />
+	<administration>
+		<configFile>admin_config.php</configFile>
+		<icon>images/stats_32.png</icon>
+		<iconSmall>images/stats_16.png</iconSmall>
+		<caption>ADSTAT_L33</caption>
+		<installDone>ADSTAT_L2</installDone>
+	</administration>
+	<menuLink name="ADSTAT_L34" url="log/stats.php?1" />
+	<mainPrefs>
+		<pref name="statActivate" value="0" />
+		<pref name="statUserclass" value="" />
+		<pref name="statBrowser" value="1" />
+		<pref name="statOs" value="1" />
+		<pref name="statScreen" value="1" />
+		<pref name="statDomain" value="1" />
+		<pref name="statRefer" value="1" />
+		<pref name="statQuery" value="1" />
+		<pref name="statRecent" value="1" />
+		<pref name="statPrevMonth" value="0" />
+	</mainPrefs>
+</e107Plugin>

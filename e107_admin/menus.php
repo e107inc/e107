@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-08-14 11:23:10 $
-|     $Author: secretr $
+|     $Revision: 1.9 $
+|     $Date: 2008-08-25 13:43:00 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -288,11 +288,13 @@ if (strpos(e_QUERY, 'configure') === FALSE)
 	  $file['fname'] = str_replace(".php","",$file['fname']);
 	  $valid_menu = FALSE;
 	  $existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
-	  if (file_exists(e_PLUGIN.$parent_dir."/plugin.php")) 
+	  if (file_exists(e_PLUGIN.$parent_dir."/plugin.xml") || 
+		file_exists(e_PLUGIN.$parent_dir."/plugin.php")) 
 	  {
-		include(e_PLUGIN.$parent_dir."/plugin.php");
-		if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' ")) 
-		{  // Its a 'new style' plugin with a plugin.php file - ionly include if plugin installed
+//		include(e_PLUGIN.$parent_dir."/plugin.php");
+		if (isset($pref['plug_installed'][$parent_dir]))
+//		if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' ")) 
+		{  // Its a 'new style' plugin with a plugin.php file, or an even newer one with plugin.xml file - only include if plugin installed
 		  $valid_menu = TRUE;		// Whether new or existing, include in list
 		}
 	  } 
@@ -313,10 +315,13 @@ if (strpos(e_QUERY, 'configure') === FALSE)
 
 	//Reorder all menus into 1...x order
 	if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
-	foreach ($menu_areas as $menu_act) {
-		if ($sql->db_Select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC")) {
+	foreach ($menu_areas as $menu_act) 
+	{
+		if ($sql->db_Select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC")) 
+		{
 			$c = 1;
-			while ($row = $sql->db_Fetch()) {
+			while ($row = $sql->db_Fetch()) 
+			{
 				$sql2->db_Update("menus", "menu_order={$c} WHERE menu_id=".$row['menu_id']);
 				$c++;
 			}
@@ -347,7 +352,8 @@ if (strpos(e_QUERY, 'configure') === FALSE)
 else
 {
 
-	if ($CUSTOMPAGES) {
+	if ($CUSTOMPAGES) 
+	{
 		if ($menu_act != 'adv') {
 			$text = "<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'><div style='width: 100%'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -412,7 +418,7 @@ else
 	$text .= "<tr><td style='width:50%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
 	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
 
-	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>";
+	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>\n";
 	while ($row = $sql->db_Fetch())
 	{
 		if($row['menu_pages'] == "dbcustom")
