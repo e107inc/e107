@@ -1,4 +1,10 @@
-if (ADMIN) {
+/*
+* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
+* $Id: admin_alt_nav.sc,v 1.4 2008-08-25 13:34:45 e107steved Exp $
+*/
+
+if (ADMIN) 
+{
 	global $sql, $pref, $tp;
 	parse_str($parm);
 	require(e_ADMIN.'ad_links.php');
@@ -70,9 +76,6 @@ if (ADMIN) {
 				if($plug->parse_plugin($_path))
 				{
 					$plug_vars = $plug->plug_vars;
-//					print_a($plug_vars);
-//					exit;
-//					include_once(e_PLUGIN.$row['plugin_path']."/plugin.php");
 					if($plug_vars['administration']['configFile'])
 					{
 						$plug_vars['name'] = $tp->toHTML($plug_vars['name'], FALSE, "defs");

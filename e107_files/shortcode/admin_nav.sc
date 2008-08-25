@@ -1,8 +1,16 @@
-if (ADMIN) {
-	global $ns, $pref, $e107_plug, $array_functions;
-	if (strstr(e_SELF, "/admin.php")) {
+/*
+* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
+* $Id: admin_nav.sc,v 1.2 2008-08-25 13:34:45 e107steved Exp $
+*/
+if (ADMIN) 
+{
+	global $ns, $pref, $e107_plug, $array_functions, $tp;
+	if (strstr(e_SELF, "/admin.php")) 
+	{
 		$active_page = 'x';
-	} else {
+	} 
+	else 
+	{
 		$active_page = time();
 	}
 	$e107_var['x']['text']=ADLAN_52;
@@ -13,7 +21,8 @@ if (ADMIN) {
 	$text .= show_admin_menu("",$active_page,$e107_var);
 
 	unset($e107_var);
-	foreach ($array_functions as $links_key => $links_value) {
+	foreach ($array_functions as $links_key => $links_value) 
+	{
 		$e107_var[$links_key]['text'] = $links_value[1];
 		$e107_var[$links_key]['link'] = $links_value[0];
 	}
@@ -21,17 +30,33 @@ if (ADMIN) {
 	unset($e107_var);
 	// Plugin links menu
 
-	$sql = new db;
-	if ($sql -> db_Select("plugin", "*", "plugin_installflag=1")) {
+	require_once(e_HANDLER.'xml_class.php');
+	$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
+	$xml->filter = array('name' => FALSE, 'administration' => FALSE);	// .. and they're all going to need the same filter
+
+	$nav_sql = new db;
+	if ($nav_sql -> db_Select("plugin", "*", "plugin_installflag=1")) 
+	{
 		//Link Plugin Manager
 		$e107_var['x']['text'] = "<b>".ADLAN_98."</b>";
 		$e107_var['x']['link'] = e_ADMIN."plugin.php";
 		$e107_var['x']['perm'] = "P";
 
-		while($rowplug = $sql -> db_Fetch()) {
+		while($rowplug = $nav_sql -> db_Fetch()) 
+		{
 			extract($rowplug);
 			$e107_plug[$rowplug[1]] = $rowplug[3];
-			include_once(e_PLUGIN.$plugin_path."/plugin.php");
+			if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
+			{
+				$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
+				include_lan_admin(e_PLUGIN.$plugin_path.'/');
+				$eplug_caption 		= $tp->toHTML($readFile['name'],FALSE,"defs, emotes_off");
+				$eplug_conffile 	= $readFile['administration']['configFile'];
+			}
+			elseif (is_readable(e_PLUGIN.$plugin_path."/plugin.php"))
+			{
+				include(e_PLUGIN.$plugin_path."/plugin.php");
+			}
 
 			// Links Plugins
 			if ($eplug_conffile) {

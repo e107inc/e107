@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-08-12 19:59:59 $
+|     $Revision: 1.9 $
+|     $Date: 2008-08-25 13:34:55 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -789,12 +789,12 @@ if(!isset($ec_qs[0]) || (isset($ec_qs[0]) && $ec_qs[0] == "config"))
   {
     if ($val == 'sun') $val = 0; elseif ($val == 'mon') $val = 1;	// Legacy values
     $ret = "<select name='eventpost_weekstart' class='tbox'>\n";
-	$ret .= "<\select>\n";
 	foreach (array(EC_LAN_18,EC_LAN_12,EC_LAN_13,EC_LAN_14,EC_LAN_15,EC_LAN_16,EC_LAN_17) as $k => $v)
 	{
 	  $sel = ($val == $k) ? " selected='selected'" : "";
 	  $ret .= "<option value='{$k}'{$sel}>{$v}</option>\n";
 	}
+	$ret .= "</select>\n";
 	return $ret;
   }
 
