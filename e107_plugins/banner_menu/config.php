@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/banner_menu/config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-08-26 19:45:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-if (!getperms("1")) {
+if (!getperms("1")) 		// Access to those who can change prefs, theme etc
+{
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
@@ -26,13 +27,11 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	
-@include_once(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."banner_menu/languages/English.php");
+@include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 	
-$lan_file = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php";
-include(file_exists($lan_file) ? $lan_file : e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
-	
-if (e_QUERY) {
+if (e_QUERY) 
+{
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
@@ -40,16 +39,21 @@ if (e_QUERY) {
 	unset($tmp);
 }
 	
-if (isset($_POST['update_menu'])) {
-	foreach($_POST as $k => $v) {
-		if (strpos($k, "banner_") === 0) {
+if (isset($_POST['update_menu'])) 
+{
+	foreach($_POST as $k => $v) 
+	{
+		if (strpos($k, "banner_") === 0) 
+		{
 			$menu_pref[$k] = $v;
 		}
 	}
 	 
-	if (isset($_POST['catid'])) {
+	if (isset($_POST['catid'])) 
+	{
 		$array_cat = explode("-", $_POST['catid']);
-		for($i = 0; $i < count($array_cat); $i++) {
+		for($i = 0; $i < count($array_cat); $i++) 
+		{
 			$cat .= $array_cat[$i]."|";
 		}
 		$cat = substr($cat, 0, -1);
@@ -60,7 +64,8 @@ if (isset($_POST['update_menu'])) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".BANNER_MENU_L2."</b></div>");
 }
 	
-if (!$menu_pref['banner_caption']) {
+if (!$menu_pref['banner_caption']) 
+{
 	$menu_pref['banner2_caption'] = BANNER_MENU_L1;
 }
 	
