@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-06-13 20:20:22 $
+|     $Revision: 1.22 $
+|     $Date: 2008-08-26 21:24:22 $
 |     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -116,16 +116,16 @@ if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
 }
 
 
+if (!isset($no_core_js) || !$no_core_js)
+{
+	echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
+}
 if (isset($theme_js_php) && $theme_js_php) 
 {
-	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css' />";
+	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
 } 
 else 
 {
-	if (!isset($no_core_js) || !$no_core_js)
-	{
-		echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
-	}
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 	if (file_exists(THEME.'theme.vbs')) { echo "<script type='text/vbscript' src='".THEME_ABS."theme.vbs'></script>\n"; }
