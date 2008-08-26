@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-07-20 18:05:57 $
+|     $Revision: 1.6 $
+|     $Date: 2008-08-26 19:45:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("D")) {
+if (!getperms("D")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -29,8 +30,8 @@ require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 
-$lan_file = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php";
-include_once(file_exists($lan_file) ? $lan_file : e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+@include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+@include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 
 
 if(e_QUERY)
@@ -474,7 +475,7 @@ if ($action == "menu")
 
 
 	$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."' name='menu_conf_form'>
+	<form method='post' action='".e_SELF."?menu' name='menu_conf_form'>
 	<table style='".ADMIN_WIDTH."' class='fborder' >
 
 	<tr>
@@ -530,9 +531,11 @@ if ($action == "menu")
 	<tr>
 	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L10."</td>
 	<td style='width:60%' class='forumheader3'>
-	<select class='tbox' id='banner_rendertype' name='banner_rendertype' size='1'>
-	".$rs->form_option(BANNER_MENU_L12, ($menu_pref['banner_rendertype'] == 1 ? "1" : "0"), 1)."
-	".$rs->form_option(BANNER_MENU_L13, ($menu_pref['banner_rendertype'] == 2 ? "1" : "0"), 2)."
+	<select class='tbox' id='banner_rendertype' name='banner_rendertype' size='1'  >
+	".$rs->form_option(BANNER_MENU_L11, (!$menu_pref['banner_rendertype'] || $menu_pref['banner_rendertype'] == "0" ? "1" : "0"), 0)."
+	".$rs->form_option("1 - ".BANNER_MENU_L12."", ($menu_pref['banner_rendertype'] == "1" ? "1" : "0"), 1)."
+	".$rs->form_option("2 - ".BANNER_MENU_L13."", ($menu_pref['banner_rendertype'] == "2" ? "1" : "0"), 2)."
+	".$rs->form_option("3 - ".BANNER_MENU_L14."", ($menu_pref['banner_rendertype'] == "3" ? "1" : "0"), 3)."
 	".$rs->form_select_close()."
 	</td>
 	</tr>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-06-13 20:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2008-08-26 19:45:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -356,6 +356,26 @@ class UserHandler
 	  return $ret;
 	}
 
+	function makeUserCookie($lode,$autologin = FALSE)
+	{
+		global $pref;
+		$cookieval = $lode['user_id'].".".md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
+		if ($pref['user_tracking'] == "session")
+		{
+		  $_SESSION[$pref['cookie_name']] = $cookieval;
+		} 
+		else 
+		{
+		  if ($autologin == 1) 
+		  {	// Cookie valid for up to 30 days
+			cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
+		  } 
+		  else 
+		  {
+			cookie($pref['cookie_name'], $cookieval);
+		  }
+		}
+	}
 
 }
 
