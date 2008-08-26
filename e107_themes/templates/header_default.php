@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.110 $
-|     $Date: 2007-11-23 20:48:09 $
+|     $Revision: 1.111 $
+|     $Date: 2008-08-26 21:24:15 $
 |     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -94,23 +94,32 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") 
+{
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
 	echo wysiwyg($e_wysiwyg);
-}else{
+}
+else
+{
 	define("e_WYSIWYG",FALSE);
 }
 
-if (isset($theme_js_php) && $theme_js_php) {
-	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css' />";
-} else {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
-	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
+
+echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
+if (isset($theme_js_php) && $theme_js_php) 
+{
+	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
+} 
+else 
+{
+	if (is_readable(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
 
-if (isset($eplug_js) && $eplug_js) {
+
+if (isset($eplug_js) && $eplug_js) 
+{
 	echo "\n<!-- eplug_js -->\n";
 	if(is_array($eplug_js))
 	{
